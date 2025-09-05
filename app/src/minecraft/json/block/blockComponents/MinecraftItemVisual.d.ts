@@ -43,9 +43,8 @@ import * as jsoncommon from './../../../jsoncommon';
  * Item Visual (minecraft:item_visual)
  * The description identifier of the geometry and material used to
  * render the item of this block.
-Experimental toggles required:
- * Upcoming Creator Features (in format versions before 
- * 1.21.50).
+Experimental toggles required: Upcoming
+ * Creator Features (in format versions before 1.21.50).
  */
 export default interface MinecraftItemVisual {
 
@@ -58,7 +57,7 @@ export default interface MinecraftItemVisual {
    * Block Fabricator: "geometry.mikeamm_gwve_fabricator_in_hand"
    *
    */
-  geometry: object[];
+  geometry?: object[];
 
   /**
    * @remarks
@@ -69,6 +68,6 @@ export default interface MinecraftItemVisual {
    * Block Fabricator: {"*":{"texture":"mikeamm_gwve_fabricator_in_hand","render_method":"alpha_test"}}
    *
    */
-  material_instances: object[];
+  material_instances?: object[];
 
 }

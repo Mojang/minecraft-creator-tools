@@ -11,17 +11,17 @@
  * 
  * minecraft:behavior.receive_love Samples
 
-Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
-
-"minecraft:behavior.receive_love": {
-  "priority": 6
-}
-
-
 Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager.json
 
 "minecraft:behavior.receive_love": {
   "priority": 7
+}
+
+
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+
+"minecraft:behavior.receive_love": {
+  "priority": 6
 }
 
  */
@@ -42,12 +42,12 @@ export default interface MinecraftBehaviorReceiveLove {
    * goal.
    * 
    * Sample Values:
-   * Villager v2: 6
-   *
    * Villager: 7
+   *
+   * Villager v2: 6
    *
    *
    */
-  priority: number;
+  priority?: number;
 
 }

@@ -48,7 +48,7 @@ export default interface MinecraftBehaviorSonicBoom {
    * Warden: 2
    *
    */
-  attack_cooldown: number;
+  attack_cooldown?: number;
 
   /**
    * @remarks
@@ -58,7 +58,7 @@ export default interface MinecraftBehaviorSonicBoom {
    * Warden: 10
    *
    */
-  attack_damage: number;
+  attack_damage?: number;
 
   /**
    * @remarks
@@ -69,7 +69,7 @@ export default interface MinecraftBehaviorSonicBoom {
    * Warden: 15
    *
    */
-  attack_range_horizontal: number;
+  attack_range_horizontal?: number;
 
   /**
    * @remarks
@@ -80,7 +80,7 @@ export default interface MinecraftBehaviorSonicBoom {
    * Warden: 20
    *
    */
-  attack_range_vertical: number;
+  attack_range_vertical?: number;
 
   /**
    * @remarks
@@ -90,7 +90,7 @@ export default interface MinecraftBehaviorSonicBoom {
    * Warden: "sonic_boom"
    *
    */
-  attack_sound: string;
+  attack_sound?: string;
 
   /**
    * @remarks
@@ -100,7 +100,7 @@ export default interface MinecraftBehaviorSonicBoom {
    * Warden: "sonic_charge"
    *
    */
-  charge_sound: string;
+  charge_sound?: string;
 
   /**
    * @remarks
@@ -110,7 +110,7 @@ export default interface MinecraftBehaviorSonicBoom {
    * Warden: 3
    *
    */
-  duration: number;
+  duration?: number;
 
   /**
    * @remarks
@@ -120,7 +120,7 @@ export default interface MinecraftBehaviorSonicBoom {
    * Warden: 1.7
    *
    */
-  duration_until_attack_sound: number;
+  duration_until_attack_sound?: number;
 
   /**
    * @remarks
@@ -130,7 +130,7 @@ export default interface MinecraftBehaviorSonicBoom {
    * Warden: 0.5
    *
    */
-  knockback_height_cap: number;
+  knockback_height_cap?: number;
 
   /**
    * @remarks
@@ -141,7 +141,7 @@ export default interface MinecraftBehaviorSonicBoom {
    * Warden: 2.5
    *
    */
-  knockback_horizontal_strength: number;
+  knockback_horizontal_strength?: number;
 
   /**
    * @remarks
@@ -152,7 +152,7 @@ export default interface MinecraftBehaviorSonicBoom {
    * Warden: 0.5
    *
    */
-  knockback_vertical_strength: number;
+  knockback_vertical_strength?: number;
 
   /**
    * @remarks
@@ -164,7 +164,7 @@ export default interface MinecraftBehaviorSonicBoom {
    * Warden: 3
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -175,6 +175,6 @@ export default interface MinecraftBehaviorSonicBoom {
    * Warden: 1.2
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

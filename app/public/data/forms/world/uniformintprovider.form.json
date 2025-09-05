@@ -23,5 +23,5 @@
     }
   ],
   "description": "Specifies a uniformly distributed integer",
-  "title": "UniformIntProvider World"
+  "title": "World UniformIntProvider"
 }

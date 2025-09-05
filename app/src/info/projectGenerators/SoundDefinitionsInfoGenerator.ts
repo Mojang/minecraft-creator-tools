@@ -98,12 +98,18 @@ export default class SoundsDefinitionInfoGenerator implements IProjectInfoGenera
         packsWithSoundManifests[pack.projectItem.projectPath] = true;
       }
 
-      await item.ensureStorage();
+      if (!item.isContentLoaded) {
+        await item.loadContent();
+      }
+
       if (!item.primaryFile) {
         continue;
       }
 
-      await item.primaryFile.loadContent();
+      if (!item.primaryFile.isContentLoaded) {
+        await item.primaryFile.loadContent();
+      }
+
       const content = item.primaryFile.content;
 
       if (!content || typeof content !== "string") {

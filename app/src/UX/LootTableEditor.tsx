@@ -118,7 +118,7 @@ export default class LootTableEditor extends Component<ILootTableEditorProps, IL
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
-      if (file.manager !== null) {
+      if (file.manager) {
         const srbd = file.manager as LootTableBehaviorDefinition;
 
         srbd.persist();
@@ -170,6 +170,10 @@ export default class LootTableEditor extends Component<ILootTableEditorProps, IL
     let header = <></>;
     if (this.props.displayHeader === undefined || this.props.displayHeader) {
       header = <div className="ltb-header">Loot Table</div>;
+    }
+
+    if (!form) {
+      return <div className="ltb-loading">Form not found</div>;
     }
 
     return (

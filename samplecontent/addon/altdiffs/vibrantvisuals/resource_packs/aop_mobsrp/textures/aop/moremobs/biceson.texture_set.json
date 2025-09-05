@@ -2,6 +2,6 @@
 	"format_version": "1.16.100",
 	"minecraft:texture_set": {
 		"color": "biceson",
-		"metalness_emissive_roughness": "biceson_mer"
+		"metalness_emissive_roughness": "biceson_mers"
 	}
 }

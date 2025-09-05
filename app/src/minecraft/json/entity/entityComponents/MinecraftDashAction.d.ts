@@ -37,7 +37,7 @@ export default interface MinecraftDashAction {
    * Camel: 2.75
    *
    */
-  cooldown_time: number;
+  cooldown_time?: number;
 
   /**
    * @remarks
@@ -48,7 +48,7 @@ export default interface MinecraftDashAction {
    * be applied in the direction the controlling passenger is
    * looking, using the passenger's pitch and yaw.
    */
-  direction: string;
+  direction?: string;
 
   /**
    * @remarks
@@ -58,7 +58,7 @@ export default interface MinecraftDashAction {
    * Camel: 20
    *
    */
-  horizontal_momentum: number;
+  horizontal_momentum?: number;
 
   /**
    * @remarks
@@ -68,6 +68,6 @@ export default interface MinecraftDashAction {
    * Camel: 0.6
    *
    */
-  vertical_momentum: number;
+  vertical_momentum?: number;
 
 }

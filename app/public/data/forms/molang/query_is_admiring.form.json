@@ -2,5 +2,5 @@
   "id": "query.is_admiring",
   "fields": [],
   "description": "Returns 1.0 if the entity is admiring, else it returns 0.0. Applies to piglin.",
-  "title": "Is Admiring Query"
+  "title": "Is Admiring"
 }

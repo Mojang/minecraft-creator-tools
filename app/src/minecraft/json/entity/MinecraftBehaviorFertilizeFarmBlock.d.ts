@@ -36,14 +36,14 @@ export default interface MinecraftBehaviorFertilizeFarmBlock {
    * Distance in blocks within the mob considers it has reached it's
    * target position. 
    */
-  goal_radius: number;
+  goal_radius?: number;
 
   /**
    * @remarks
    * The maximum number of times the mob will use fertilzer on the
    * target block.
    */
-  max_fertilizer_usage: number;
+  max_fertilizer_usage?: number;
 
   /**
    * @remarks
@@ -55,7 +55,7 @@ export default interface MinecraftBehaviorFertilizeFarmBlock {
    * Villager v2: 8
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -63,7 +63,7 @@ export default interface MinecraftBehaviorFertilizeFarmBlock {
    * before searching again. The time is chosen between 0 and this
    * number.
    */
-  search_cooldown_max_seconds: number;
+  search_cooldown_max_seconds?: number;
 
   /**
    * @remarks
@@ -72,26 +72,26 @@ export default interface MinecraftBehaviorFertilizeFarmBlock {
    * move to. A value of 0 will have the mob check every block within
    * range in one tick.
    */
-  search_count: number;
+  search_count?: number;
 
   /**
    * @remarks
    * The Height in blocks the mob will search within to find a
    * valid target position.
    */
-  search_height: number;
+  search_height?: number;
 
   /**
    * @remarks
    * The distance in blocks the mob will search within to find a
    * valid target position.
    */
-  search_range: number;
+  search_range?: number;
 
   /**
    * @remarks
    * Movement speed multiplier of the mob when using this Goal.
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

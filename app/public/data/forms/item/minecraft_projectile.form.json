@@ -1,38 +1,6 @@
 {
+  "id": "minecraft:projectile",
   "fields": [
-    {
-      "id": "projectile_entity",
-      "dataType": 2,
-      "samples": {
-        "/vanilla/behavior_pack/items/wind_charge.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:projectile/",
-            "content": "wind_charge_projectile"
-          }
-        ],
-        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_chuck.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:projectile/",
-            "content": "minecraft:snowball"
-          }
-        ],
-        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_shoot.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:projectile/",
-            "content": "minecraft:snowball"
-          }
-        ]
-      },
-      "description": "Which entity is to be fired as a projectile.",
-      "title": "Projectile Entity",
-      "isRequired": true,
-      "validity": [
-        {
-          "comparison": "pattern",
-          "value": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
-        }
-      ]
-    },
     {
       "id": "minimum_critical_power",
       "title": "Minimum Critical Power",
@@ -52,19 +20,44 @@
           }
         ]
       }
+    },
+    {
+      "id": "projectile_entity",
+      "title": "Projectile Entity",
+      "description": "Which entity is to be fired as a projectile.",
+      "dataType": 16,
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
+        }
+      ],
+      "isRequired": true,
+      "samples": {
+        "/vanilla/behavior_pack/items/wind_charge.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:projectile/",
+            "content": "wind_charge_projectile"
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_chuck.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:projectile/",
+            "content": "minecraft:snowball"
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_shoot.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:projectile/",
+            "content": "minecraft:snowball"
+          }
+        ]
+      }
     }
   ],
-  "description": "Compels the item to shoot, similarly to an arrow. Items with minecraft:projectile can be shot from dispensers or used as ammunition for items with the minecraft:shooter item component. Additionally, this component sets the entity that is spawned for items that also contain the minecraft:throwable component",
+  "description": "Projectile items shoot out, like an arrow.",
+  "title": "Item Projectile",
   "samples": {
-    "sample": [
-      {
-        "path": "sample",
-        "content": {
-          "minimum_critical_power": 1.25,
-          "projectile_entity": "arrow"
-        }
-      }
-    ],
     "/vanilla/behavior_pack/items/wind_charge.json": [
       {
         "path": "/minecraft:item/components/minecraft:projectile/",
@@ -91,7 +84,5 @@
         }
       }
     ]
-  },
-  "title": "Minecraft Projectile Item",
-  "id": "minecraft:projectile"
+  }
 }

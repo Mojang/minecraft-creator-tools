@@ -138,11 +138,13 @@ export default class ItemTextureCatalogDefinition {
     if (file.manager !== undefined && file.manager instanceof ItemTextureCatalogDefinition) {
       et = file.manager as ItemTextureCatalogDefinition;
 
-      if (!et.isLoaded && loadHandler) {
-        et.onLoaded.subscribe(loadHandler);
-      }
+      if (!et.isLoaded) {
+        if (loadHandler) {
+          et.onLoaded.subscribe(loadHandler);
+        }
 
-      await et.load();
+        await et.load();
+      }
     }
 
     return et;
@@ -210,7 +212,9 @@ export default class ItemTextureCatalogDefinition {
 
     for (const candItem of itemsCopy) {
       if (candItem.itemType === ProjectItemType.texture && packRootFolder && texturePathList) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
           let relativePath = TextureDefinition.canonicalizeTexturePath(
@@ -249,7 +253,9 @@ export default class ItemTextureCatalogDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
       return;

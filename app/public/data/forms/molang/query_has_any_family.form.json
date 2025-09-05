@@ -2,5 +2,5 @@
   "id": "query.has_any_family",
   "fields": [],
   "description": "Returns 1 if the entity has any of the specified type families, else 0.",
-  "title": "Has Any Family Query"
+  "title": "Has Any Family"
 }

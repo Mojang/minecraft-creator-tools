@@ -34,7 +34,7 @@ export default interface MinecraftBehaviorDragonchargeplayer {
    * The speed this entity moves when this behavior has started or
    * while it's active.
    */
-  active_speed: number;
+  active_speed?: number;
 
   /**
    * @remarks
@@ -42,14 +42,14 @@ export default interface MinecraftBehaviorDragonchargeplayer {
    * "continue_charge_threshold_time" seconds, the charge is
    * canceled.
    */
-  continue_charge_threshold_time: number;
+  continue_charge_threshold_time?: number;
 
   /**
    * @remarks
    * The speed this entity moves while this behavior is not 
    * active.
    */
-  flight_speed: number;
+  flight_speed?: number;
 
   /**
    * @remarks
@@ -61,20 +61,20 @@ export default interface MinecraftBehaviorDragonchargeplayer {
    * Ender Dragon: 1
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * Minimum and maximum distance, from the target, this entity can
    * use this behavior.
    */
-  target_zone: number[];
+  target_zone?: number[];
 
   /**
    * @remarks
    * The speed at which this entity turns while using this 
    * behavior.
    */
-  turn_speed: number;
+  turn_speed?: number;
 
 }

@@ -8,16 +8,12 @@
  * Contains types for working with various Minecraft Bedrock Edition JSON schemas.
  * 
  * Client Biomes Documentation - minecraft:sky_color
- * 
- * minecraft:sky_color Samples
-"minecraft:sky_color": {
-	"sky_color": "#000000"}
  */
 
 import * as jsoncommon from './../../jsoncommon';
 
 /**
- * Minecraft Sky Color Client Biome (minecraft:sky_color)
+ * Minecraft Sky Color (minecraft:sky_color)
  * Sets the sky color used during rendering. Biomes without this
  * component will have default sky color behavior.
  */

@@ -16,5 +16,5 @@
     }
   ],
   "description": "Modifier will attempt to add loot to a block entity.",
-  "title": "AppendLoot World"
+  "title": "World AppendLoot"
 }

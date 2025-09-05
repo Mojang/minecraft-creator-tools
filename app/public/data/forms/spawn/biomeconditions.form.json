@@ -3,7 +3,6 @@
   "fields": [
     {
       "id": "biome_filter",
-      "title": "Biome Filter",
       "description": "Filter to limit spawns to specific biomes.",
       "dataType": 16,
       "subForm": {
@@ -79,5 +78,5 @@
     }
   ],
   "description": "Biome specific rules for spawning",
-  "title": "BiomeConditions Spawn"
+  "title": "Spawn BiomeConditions"
 }

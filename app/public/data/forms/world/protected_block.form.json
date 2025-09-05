@@ -16,5 +16,5 @@
     }
   ],
   "description": "Protect blocks from this structure's placement in the world. Ensuring that it does not replace matching blocks in the world",
-  "title": "Protected Block World"
+  "title": "World Protected Block"
 }

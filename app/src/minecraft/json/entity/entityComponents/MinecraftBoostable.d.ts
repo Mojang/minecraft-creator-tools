@@ -59,34 +59,21 @@ export default interface MinecraftBoostable {
    * Sample Values:
    * Pig: [{"item":"carrotOnAStick","damage":2,"replace_item":"fishing_rod"}]
    *
-   * Strider: [{"item":"warped_fungus_on_a_stick","damage":1,"replace_item":"fishing_rod"}]
-   *
    */
-  boost_items: MinecraftBoostableBoostItems;
+  boost_items?: MinecraftBoostableBoostItems;
 
   /**
    * @remarks
    * Time in seconds for the boost.
-   * 
-   * Sample Values:
-   * Pig: 3
-   *
-   * Strider: 16
-   *
    */
-  duration: number;
+  duration?: number;
 
   /**
    * @remarks
    * Factor by which the entity's normal speed increases. E.g. 2.0
    * means go twice as fast.
-   * 
-   * Sample Values:
-   * Pig: 1.35
-   *
-   *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }
 
@@ -102,19 +89,19 @@ export interface MinecraftBoostableBoostItems {
    * This is the damage that the item will take each time it is
    * used.
    */
-  damage: string[];
+  damage?: string[];
 
   /**
    * @remarks
    * Name of the item that can be used to boost.
    */
-  item: string;
+  item?: string;
 
   /**
    * @remarks
    * The item used to boost will become this item once it is used 
    * up.
    */
-  replace_item: string;
+  replace_item?: string;
 
 }

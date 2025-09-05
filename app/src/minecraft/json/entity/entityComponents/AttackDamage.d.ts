@@ -23,6 +23,6 @@ export default interface AttackDamage {
    * @remarks
    * How much an attack should damage a target.
    */
-  value: number[];
+  value?: number[];
 
 }

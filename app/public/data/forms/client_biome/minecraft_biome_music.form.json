@@ -1,4 +1,5 @@
 {
+  "id": "minecraft:biome_music",
   "fields": [
     {
       "id": "music_definition",
@@ -13,8 +14,6 @@
       "dataType": 3
     }
   ],
-  "versionIntroduced": "1.21.50",
-  "description": "Affects how music plays within the biome",
-  "title": "Minecraft Biome Music Client Biome",
-  "id": "minecraft:biome_music"
+  "title": "Minecraft Biome Music",
+  "description": "Affects how music plays within the biome"
 }

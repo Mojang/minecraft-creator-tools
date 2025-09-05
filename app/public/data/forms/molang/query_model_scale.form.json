@@ -2,5 +2,5 @@
   "id": "query.model_scale",
   "fields": [],
   "description": "Returns the scale of the current entity. Can be used with the `is_baby` component.",
-  "title": "Model Scale Query"
+  "title": "Model Scale"
 }

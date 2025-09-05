@@ -57,7 +57,7 @@ export default interface MinecraftBehaviorHoldGround {
    * Pillager: true
    *
    */
-  broadcast: boolean;
+  broadcast?: boolean;
 
   /**
    * @remarks
@@ -67,7 +67,7 @@ export default interface MinecraftBehaviorHoldGround {
    * Pillager: 8
    *
    */
-  broadcast_range: number;
+  broadcast_range?: number;
 
   /**
    * @remarks
@@ -78,7 +78,7 @@ export default interface MinecraftBehaviorHoldGround {
    * Pillager: 10
    *
    */
-  min_radius: number;
+  min_radius?: number;
 
   /**
    * @remarks
@@ -90,7 +90,7 @@ export default interface MinecraftBehaviorHoldGround {
    * Pillager: 5, 6
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -101,6 +101,6 @@ export default interface MinecraftBehaviorHoldGround {
    * Pillager: {"event":"minecraft:ranged_mode","target":"self"}
    *
    */
-  within_radius_event: string;
+  within_radius_event?: string;
 
 }

@@ -36,7 +36,7 @@ export default interface MinecraftBehaviorSwimUpForBreath {
    * considered valid to move to with a block of this material below
    * it. Options are: "water", "lava", or "any".
    */
-  material_type: string;
+  material_type?: string;
 
   /**
    * @remarks
@@ -48,7 +48,7 @@ export default interface MinecraftBehaviorSwimUpForBreath {
    * Dolphin: 1
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -57,19 +57,19 @@ export default interface MinecraftBehaviorSwimUpForBreath {
    * cannot be found, the mob will move to the position this many
    * blocks above it.
    */
-  search_height: number;
+  search_height?: number;
 
   /**
    * @remarks
    * The radius (in blocks) around the mob's current position that it
    * will search for a valid air block to move to.
    */
-  search_radius: number;
+  search_radius?: number;
 
   /**
    * @remarks
    * Movement speed multiplier of the mob when using this Goal.
    */
-  speed_mod: number;
+  speed_mod?: number;
 
 }

@@ -13,10 +13,12 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Multinoise Generation Rules Biome
+ * Biome Multinoise Generation Rules
  * (minecraft:multinoise_generation_rules)
  * Controls how this biome is instantiated (and then potentially modified)
  * during world generation of the nether.
+ * Note: This is a pre-Caves and Cliffs component and is unused for
+ * custom biomes.
  */
 export default interface MinecraftMultinoiseGenerationRules {
 
@@ -25,34 +27,34 @@ export default interface MinecraftMultinoiseGenerationRules {
    * Altitude with which this biome should be generated, relative to
    * other biomes.
    */
-  target_altitude: number;
+  target_altitude?: number;
 
   /**
    * @remarks
    * Humidity with which this biome should be generated, relative to
    * other biomes.
    */
-  target_humidity: number;
+  target_humidity?: number;
 
   /**
    * @remarks
    * Temperature with which this biome should be generated, relative to
    * other biomes.
    */
-  target_temperature: number;
+  target_temperature?: number;
 
   /**
    * @remarks
    * Weirdness with which this biome should be generated, relative to
    * other biomes.
    */
-  target_weirdness: number;
+  target_weirdness?: number;
 
   /**
    * @remarks
    * Weight with which this biome should be generated, relative to
    * other biomes.
    */
-  weight: number;
+  weight?: number;
 
 }

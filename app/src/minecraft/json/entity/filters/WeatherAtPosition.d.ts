@@ -57,7 +57,7 @@ export default interface WeatherAtPosition {
    * Fox: "!="
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
@@ -67,7 +67,7 @@ export default interface WeatherAtPosition {
    * Fox: "self"
    *
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -76,7 +76,7 @@ export default interface WeatherAtPosition {
    * Fox: "weather_at_position"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -86,7 +86,7 @@ export default interface WeatherAtPosition {
    * Fox: "thunderstorm"
    *
    */
-  value: string;
+  value?: string;
 
 }
 

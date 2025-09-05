@@ -32,20 +32,20 @@ export default interface MinecraftBehaviorDragonflaming {
    * Time (in seconds) between each start of the cycle to roar, then
    * breath flame.
    */
-  cooldown_time: number;
+  cooldown_time?: number;
 
   /**
    * @remarks
    * Time (in seconds), after roar, to breath flame.
    */
-  flame_time: number;
+  flame_time?: number;
 
   /**
    * @remarks
    * Number of ground flame-breath attacks to use before 
    * flight-takeoff.
    */
-  ground_flame_count: number;
+  ground_flame_count?: number;
 
   /**
    * @remarks
@@ -57,12 +57,12 @@ export default interface MinecraftBehaviorDragonflaming {
    * Ender Dragon: 1
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * Time (in seconds) to roar, before breathing flame.
    */
-  roar_time: number;
+  roar_time?: number;
 
 }

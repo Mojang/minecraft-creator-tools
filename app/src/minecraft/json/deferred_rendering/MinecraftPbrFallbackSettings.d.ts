@@ -23,13 +23,13 @@ export default interface MinecraftPbrFallbackSettings {
    * @remarks
    * format_version
    */
-  format_version: string;
+  format_version?: string;
 
   /**
    * @remarks
    * minecraft:pbr_fallback_settings
    */
-  "minecraft:pbr_fallback_settings": MinecraftPbrFallbackSettingsMinecraftPbrFallbackSettings;
+  "minecraft:pbr_fallback_settings"?: MinecraftPbrFallbackSettingsMinecraftPbrFallbackSettings;
 
 }
 
@@ -46,25 +46,25 @@ export interface MinecraftPbrFallbackSettingsMinecraftPbrFallbackSettings {
    * @remarks
    * actors
    */
-  actors: MinecraftPbrFallbackSettingsMinecraftPbrFallbackSettingsActors;
+  actors?: MinecraftPbrFallbackSettingsMinecraftPbrFallbackSettingsActors;
 
   /**
    * @remarks
    * blocks
    */
-  blocks: MinecraftPbrFallbackSettingsMinecraftPbrFallbackSettingsBlocks;
+  blocks?: MinecraftPbrFallbackSettingsMinecraftPbrFallbackSettingsBlocks;
 
   /**
    * @remarks
    * items
    */
-  items: MinecraftPbrFallbackSettingsMinecraftPbrFallbackSettingsItems;
+  items?: MinecraftPbrFallbackSettingsMinecraftPbrFallbackSettingsItems;
 
   /**
    * @remarks
    * particles
    */
-  particles: MinecraftPbrFallbackSettingsMinecraftPbrFallbackSettingsParticles;
+  particles?: MinecraftPbrFallbackSettingsMinecraftPbrFallbackSettingsParticles;
 
 }
 
@@ -79,7 +79,7 @@ export interface MinecraftPbrFallbackSettingsMinecraftPbrFallbackSettingsActors 
    * @remarks
    * global_metalness_emissive_roughness
    */
-  global_metalness_emissive_roughness: string;
+  global_metalness_emissive_roughness?: string;
 
 }
 
@@ -94,7 +94,7 @@ export interface MinecraftPbrFallbackSettingsMinecraftPbrFallbackSettingsBlocks 
    * @remarks
    * global_metalness_emissive_roughness
    */
-  global_metalness_emissive_roughness: string;
+  global_metalness_emissive_roughness?: string;
 
 }
 
@@ -109,7 +109,7 @@ export interface MinecraftPbrFallbackSettingsMinecraftPbrFallbackSettingsItems {
    * @remarks
    * global_metalness_emissive_roughness
    */
-  global_metalness_emissive_roughness: string;
+  global_metalness_emissive_roughness?: string;
 
 }
 
@@ -124,6 +124,6 @@ export interface MinecraftPbrFallbackSettingsMinecraftPbrFallbackSettingsParticl
    * @remarks
    * global_metalness_emissive_roughness
    */
-  global_metalness_emissive_roughness: string;
+  global_metalness_emissive_roughness?: string;
 
 }

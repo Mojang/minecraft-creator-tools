@@ -2,5 +2,5 @@
   "id": "query.yaw_speed",
   "fields": [],
   "description": "Returns the entity's yaw speed.",
-  "title": "Yaw Speed Query"
+  "title": "Yaw Speed"
 }

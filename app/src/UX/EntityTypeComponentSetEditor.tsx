@@ -26,6 +26,7 @@ import Carto from "../app/Carto";
 import Project from "../app/Project";
 import MinecraftButton from "./MinecraftButton";
 import ManagedComponentGroup from "../minecraft/ManagedComponentGroup";
+import { ManagedComponent } from "../minecraft/ManagedComponent";
 
 interface IEntityTypeComponentSetEditorProps {
   componentSetItem: IManagedComponentSetItem;
@@ -95,7 +96,11 @@ export default class EntityTypeComponentSetEditor extends Component<
       formName = EntityTypeDefinition.getFormIdFromComponentId(id);
     }
 
-    const form = await Database.ensureFormLoaded("entity", formName);
+    let form = Database.getForm("entity", formName);
+
+    if (!form) {
+      form = await Database.ensureFormLoaded("entity", formName);
+    }
 
     if (form !== undefined) {
       const newDataObject = DataFormUtilities.generateDefaultItem(form);
@@ -138,6 +143,20 @@ export default class EntityTypeComponentSetEditor extends Component<
     });
   }
 
+  componentDidMount(): void {
+    this._updateManager();
+  }
+
+  componentDidUpdate(
+    prevProps: Readonly<IEntityTypeComponentSetEditorProps>,
+    prevState: Readonly<IEntityTypeComponentSetEditorState>,
+    snapshot?: any
+  ): void {
+    if (prevProps.componentSetItem !== this.props.componentSetItem) {
+      this._updateManager();
+    }
+  }
+
   async _updateManager() {
     if (!this.props.componentSetItem) {
       return;
@@ -153,7 +172,11 @@ export default class EntityTypeComponentSetEditor extends Component<
       if (typeof component === "object" && component.id !== undefined) {
         if (!componentsLoaded.includes(component.id)) {
           const formId = EntityTypeDefinition.getFormIdFromComponentId(component.id);
-          await Database.ensureFormLoaded("entity", formId);
+
+          if (!Database.isFormLoaded("entity", formId)) {
+            await Database.ensureFormLoaded("entity", formId);
+          }
+
           componentsLoaded.push(component.id);
         }
       }
@@ -255,8 +278,6 @@ export default class EntityTypeComponentSetEditor extends Component<
 
   render() {
     if (this.state === undefined || this.state.loadedFormCount === undefined) {
-      this._updateManager();
-
       return <div className="etcse-loading">Loading...</div>;
     }
 
@@ -428,7 +449,7 @@ export default class EntityTypeComponentSetEditor extends Component<
                   if (cgsA.length === 1) {
                     noteStr +=
                       "This component is used in the " +
-                      cgsA[0] +
+                      Utilities.humanifyMinecraftName(cgsA[0].id) +
                       " component group. Its' settings will be overridden when that group is applied.";
                   } else if (cgsA.length >= 2) {
                     let strCgList = "";
@@ -472,7 +493,8 @@ export default class EntityTypeComponentSetEditor extends Component<
                       objectKey={component.id}
                       closeButton={false}
                       definition={form}
-                      getsetPropertyObject={component}
+                      directObject={component.getData()}
+                      onPropertyChanged={(component as ManagedComponent).handlePropertyChanged}
                     ></DataForm>
                   </div>
                 );

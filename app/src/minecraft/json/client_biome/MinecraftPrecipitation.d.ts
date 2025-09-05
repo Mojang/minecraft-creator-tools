@@ -13,8 +13,7 @@
 import * as jsoncommon from './../../jsoncommon';
 
 /**
- * Minecraft Precipitation Client Biome 
- * (minecraft:precipitation)
+ * Client Biome Precipitation (minecraft:precipitation)
  * Describes the visuals for a biome's precipitation. Biomes without
  * this component will have default values. At most one
  * precipitation type can be set for a biome.
@@ -25,24 +24,24 @@ export default interface MinecraftPrecipitation {
    * @remarks
    * Density of ash precipitation visuals
    */
-  ash: number;
+  ash?: number;
 
   /**
    * @remarks
    * Density of blue spore precipitation visuals
    */
-  blue_spores: number;
+  blue_spores?: number;
 
   /**
    * @remarks
    * Density of red spore precipitation visuals
    */
-  red_spores: number;
+  red_spores?: number;
 
   /**
    * @remarks
    * Density of white ash precipitation visuals
    */
-  white_ash: number;
+  white_ash?: number;
 
 }

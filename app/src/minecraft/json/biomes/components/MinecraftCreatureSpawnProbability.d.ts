@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Creature Spawn Probability Biome
+ * Biome Creature Spawn Probability 
  * (minecraft:creature_spawn_probability)
  * Probability that creatures will spawn within the biome when a
  * chunk is generated.
@@ -25,6 +25,6 @@ export default interface MinecraftCreatureSpawnProbability {
    * Probabiltity between [0.0, 0.75] of creatures spawning within the
    * biome on chunk generation.
    */
-  probability: number;
+  probability?: number;
 
 }

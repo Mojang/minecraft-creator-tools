@@ -36,12 +36,12 @@ export default interface MinecraftHeartbeat {
    * Warden: "2.0 - math.clamp(query.anger_level / 80 * 1.5, 0, 1.5)"
    *
    */
-  interval: string;
+  interval?: string;
 
   /**
    * @remarks
    * Level sound event to be played as the heartbeat sound.
    */
-  sound_event: jsoncommon.MinecraftEventTrigger;
+  sound_event?: jsoncommon.MinecraftEventTrigger;
 
 }

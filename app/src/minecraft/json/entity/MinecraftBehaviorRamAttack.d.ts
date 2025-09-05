@@ -74,7 +74,7 @@ export default interface MinecraftBehaviorRamAttack {
    * @remarks
    * The modifier to knockback that babies have.
    */
-  baby_knockback_modifier: number;
+  baby_knockback_modifier?: number;
 
   /**
    * @remarks
@@ -85,7 +85,7 @@ export default interface MinecraftBehaviorRamAttack {
    * Goat: [30,300], [5,15]
    *
    */
-  cooldown_range: number[];
+  cooldown_range?: number[];
 
   /**
    * @remarks
@@ -95,7 +95,7 @@ export default interface MinecraftBehaviorRamAttack {
    * Goat: 2.5
    *
    */
-  knockback_force: number;
+  knockback_force?: number;
 
   /**
    * @remarks
@@ -105,7 +105,7 @@ export default interface MinecraftBehaviorRamAttack {
    * Goat: 0.04
    *
    */
-  knockback_height: number;
+  knockback_height?: number;
 
   /**
    * @remarks
@@ -116,7 +116,7 @@ export default interface MinecraftBehaviorRamAttack {
    * Goat: 4
    *
    */
-  min_ram_distance: number;
+  min_ram_distance?: number;
 
   /**
    * @remarks
@@ -126,7 +126,7 @@ export default interface MinecraftBehaviorRamAttack {
    * Goat: [{"event":"start_event","target":"self"}]
    *
    */
-  on_start: jsoncommon.MinecraftEventTrigger[];
+  on_start?: jsoncommon.MinecraftEventTrigger[];
 
   /**
    * @remarks
@@ -137,7 +137,7 @@ export default interface MinecraftBehaviorRamAttack {
    * Goat: "pre_ram", "pre_ram.screamer"
    *
    */
-  pre_ram_sound: string;
+  pre_ram_sound?: string;
 
   /**
    * @remarks
@@ -149,7 +149,7 @@ export default interface MinecraftBehaviorRamAttack {
    * Goat: 5
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -159,7 +159,7 @@ export default interface MinecraftBehaviorRamAttack {
    * Goat: 7
    *
    */
-  ram_distance: number;
+  ram_distance?: number;
 
   /**
    * @remarks
@@ -170,7 +170,7 @@ export default interface MinecraftBehaviorRamAttack {
    * Goat: "ram_impact", "ram_impact.screamer"
    *
    */
-  ram_impact_sound: string;
+  ram_impact_sound?: string;
 
   /**
    * @remarks
@@ -180,7 +180,7 @@ export default interface MinecraftBehaviorRamAttack {
    * Goat: 1.8
    *
    */
-  ram_speed: number;
+  ram_speed?: number;
 
   /**
    * @remarks
@@ -190,6 +190,6 @@ export default interface MinecraftBehaviorRamAttack {
    * Goat: 0.7
    *
    */
-  run_speed: number;
+  run_speed?: number;
 
 }

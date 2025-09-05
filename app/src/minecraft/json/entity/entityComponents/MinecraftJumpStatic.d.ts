@@ -40,6 +40,6 @@ export default interface MinecraftJumpStatic {
    * Dolphin: 0.6
    *
    */
-  jump_power: number;
+  jump_power?: number;
 
 }

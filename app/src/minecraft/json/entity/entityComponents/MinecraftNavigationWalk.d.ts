@@ -137,7 +137,7 @@ export default interface MinecraftNavigationWalk {
    *
    *
    */
-  avoid_damage_blocks: boolean;
+  avoid_damage_blocks?: boolean;
 
   /**
    * @remarks
@@ -148,7 +148,7 @@ export default interface MinecraftNavigationWalk {
    * Zombie Pigman: true
    *
    */
-  avoid_portals: boolean;
+  avoid_portals?: boolean;
 
   /**
    * @remarks
@@ -160,7 +160,7 @@ export default interface MinecraftNavigationWalk {
    *
    *
    */
-  avoid_sun: boolean;
+  avoid_sun?: boolean;
 
   /**
    * @remarks
@@ -171,7 +171,7 @@ export default interface MinecraftNavigationWalk {
    *
    *
    */
-  avoid_water: boolean;
+  avoid_water?: boolean;
 
   /**
    * @remarks
@@ -184,14 +184,14 @@ export default interface MinecraftNavigationWalk {
    * Goat: [{"name":"minecraft:powder_snow"}]
    *
    */
-  blocks_to_avoid: boolean;
+  blocks_to_avoid?: boolean;
 
   /**
    * @remarks
    * Tells the pathfinder whether or not it can jump out of water (like
    * a dolphin)
    */
-  can_breach: boolean;
+  can_breach?: boolean;
 
   /**
    * @remarks
@@ -203,7 +203,7 @@ export default interface MinecraftNavigationWalk {
    *
    *
    */
-  can_break_doors: boolean;
+  can_break_doors?: boolean;
 
   /**
    * @remarks
@@ -213,13 +213,13 @@ export default interface MinecraftNavigationWalk {
    *
    *
    */
-  can_float: boolean;
+  can_float?: boolean;
 
   /**
    * @remarks
    * Tells the pathfinder whether or not it can jump up blocks
    */
-  can_jump: boolean;
+  can_jump?: boolean;
 
   /**
    * @remarks
@@ -231,14 +231,14 @@ export default interface MinecraftNavigationWalk {
    *
    *
    */
-  can_open_doors: boolean;
+  can_open_doors?: boolean;
 
   /**
    * @remarks
    * Tells the pathfinder that it can path through a closed iron door
    * assuming the AI will open the door
    */
-  can_open_iron_doors: boolean;
+  can_open_iron_doors?: boolean;
 
   /**
    * @remarks
@@ -249,14 +249,14 @@ export default interface MinecraftNavigationWalk {
    *
    *
    */
-  can_pass_doors: boolean;
+  can_pass_doors?: boolean;
 
   /**
    * @remarks
    * Tells the pathfinder that it can start pathing when in the 
    * air
    */
-  can_path_from_air: boolean;
+  can_path_from_air?: boolean;
 
   /**
    * @remarks
@@ -268,7 +268,7 @@ export default interface MinecraftNavigationWalk {
    *
    *
    */
-  can_path_over_lava: boolean;
+  can_path_over_lava?: boolean;
 
   /**
    * @remarks
@@ -280,21 +280,21 @@ export default interface MinecraftNavigationWalk {
    *
    *
    */
-  can_path_over_water: boolean;
+  can_path_over_water?: boolean;
 
   /**
    * @remarks
    * Tells the pathfinder whether or not it will be pulled down by
    * gravity while in water
    */
-  can_sink: boolean;
+  can_sink?: boolean;
 
   /**
    * @remarks
    * Tells the pathfinder whether or not it can path anywhere through
    * water and plays swimming animation along that path
    */
-  can_swim: boolean;
+  can_swim?: boolean;
 
   /**
    * @remarks
@@ -306,7 +306,7 @@ export default interface MinecraftNavigationWalk {
    *
    *
    */
-  can_walk: boolean;
+  can_walk?: boolean;
 
   /**
    * @remarks
@@ -317,7 +317,7 @@ export default interface MinecraftNavigationWalk {
    * Strider: true
    *
    */
-  can_walk_in_lava: boolean;
+  can_walk_in_lava?: boolean;
 
   /**
    * @remarks
@@ -329,6 +329,6 @@ export default interface MinecraftNavigationWalk {
    *
    *
    */
-  is_amphibious: boolean;
+  is_amphibious?: boolean;
 
 }

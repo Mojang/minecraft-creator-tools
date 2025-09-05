@@ -1218,6 +1218,7 @@
       "localLogo": "entity/pig/pig.png",
       "id": "pig",
       "type": 4,
+      "nameReplacers": ["pig_v3", "pig.v3", "pig"],
       "logoLocation": { "x": 8, "y": 8, "width": 8, "height": 8, "imageWidth": 64 },
       "fileList": [
         "<BPE>pig",
@@ -1226,10 +1227,22 @@
         "<RPE>pig",
         "<RPRC>pig",
         "<RPA>pig",
-        "<RPME>pig",
-        "<RPTE>pig/pig",
+        "<RPME>pig.v3",
+        "<RPTE>pig/pig_v3",
+        "<RPTE>pig/pig_mers.tga",
+        "<RPTE>pig/pig.texture_set.json",
         "<RPTE>pig/pig_saddle",
-        "<RPTE>pig/pigzombie"
+        "<RPTE>pig/pig_saddle_mers.tga",
+        "<RPTE>pig/pig_saddle.texture_set.json",
+        "<RPTE>pig/pig_cold",
+        "<RPTE>pig/pig_cold_mers.tga",
+        "<RPTE>pig/pig_cold.texture_set.json",
+        "<RPTE>pig/pig_warm",
+        "<RPTE>pig/pig_warm_mers.tga",
+        "<RPTE>pig/pig_warm.texture_set.json",
+        "<RPTE>pig/pigzombie",
+        "<RPTE>pig/pigzombie_mers.tga",
+        "<RPTE>pig/pigzombie.texture_set.json"
       ]
     },
     {
@@ -1539,11 +1552,11 @@
       "targetType": 136
     },
     {
-      "title": "Biome",
+      "title": "Partial Biome",
       "description": "Defines a biome replacement",
-      "id": "biome",
+      "id": "biome_behavior",
       "type": 22,
-      "targetType": 25
+      "targetType": 38
     },
     {
       "title": "Entity (Behavior)",
@@ -1586,6 +1599,12 @@
       "id": "block_catalog",
       "type": 41,
       "targetType": 26
+    },
+    {
+      "title": "Biome client resource",
+      "id": "biome_resource",
+      "type": 42,
+      "targetType": 161
     },
     {
       "title": "Aggregate Feature",

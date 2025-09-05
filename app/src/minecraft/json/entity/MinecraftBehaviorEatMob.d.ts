@@ -41,7 +41,7 @@ export default interface MinecraftBehaviorEatMob {
    * Frog: 0.3
    *
    */
-  eat_animation_time: number;
+  eat_animation_time?: number;
 
   /**
    * @remarks
@@ -51,7 +51,7 @@ export default interface MinecraftBehaviorEatMob {
    * Frog: "tongue"
    *
    */
-  eat_mob_sound: string;
+  eat_mob_sound?: string;
 
   /**
    * @remarks
@@ -61,7 +61,7 @@ export default interface MinecraftBehaviorEatMob {
    * Frog: "loot_tables/entities/frog.json"
    *
    */
-  loot_table: string;
+  loot_table?: string;
 
   /**
    * @remarks
@@ -73,7 +73,7 @@ export default interface MinecraftBehaviorEatMob {
    * Frog: 7
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -84,7 +84,7 @@ export default interface MinecraftBehaviorEatMob {
    * Frog: 0.75
    *
    */
-  pull_in_force: number;
+  pull_in_force?: number;
 
   /**
    * @remarks
@@ -95,7 +95,7 @@ export default interface MinecraftBehaviorEatMob {
    * Frog: 1.75
    *
    */
-  reach_mob_distance: number;
+  reach_mob_distance?: number;
 
   /**
    * @remarks
@@ -105,6 +105,6 @@ export default interface MinecraftBehaviorEatMob {
    * Frog: 2
    *
    */
-  run_speed: number;
+  run_speed?: number;
 
 }

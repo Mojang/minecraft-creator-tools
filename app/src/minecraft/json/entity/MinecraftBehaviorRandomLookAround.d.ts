@@ -106,28 +106,28 @@ export default interface MinecraftBehaviorRandomLookAround {
    * Witch: 8
    *
    */
-  look_distance: number;
+  look_distance?: number;
 
   /**
    * @remarks
    * The range of time in seconds the mob will stay looking in a
    * random direction before looking elsewhere
    */
-  look_time: number[];
+  look_time?: number[];
 
   /**
    * @remarks
    * The rightmost angle a mob can look at on the horizontal plane with
    * respect to its initial facing direction.
    */
-  max_angle_of_view_horizontal: number;
+  max_angle_of_view_horizontal?: number;
 
   /**
    * @remarks
    * The leftmost angle a mob can look at on the horizontal plane with
    * respect to its initial facing direction.
    */
-  min_angle_of_view_horizontal: number;
+  min_angle_of_view_horizontal?: number;
 
   /**
    * @remarks
@@ -144,6 +144,6 @@ export default interface MinecraftBehaviorRandomLookAround {
    * Cave Spider: 7
    *
    */
-  priority: number;
+  priority?: number;
 
 }

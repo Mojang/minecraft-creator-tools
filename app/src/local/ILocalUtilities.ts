@@ -4,8 +4,15 @@
 import IConversionSettings from "../core/IConversionSettings";
 import IStorage from "../storage/IStorage";
 
+export enum Platform {
+  windows,
+  macOS,
+  linux,
+  unsupported,
+}
+
 export default interface ILocalUtilities {
-  readonly isWindows: boolean;
+  readonly platform: Platform;
 
   readonly userDataPath: string;
 

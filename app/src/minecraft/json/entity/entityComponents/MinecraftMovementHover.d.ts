@@ -29,6 +29,6 @@ export default interface MinecraftMovementHover {
    * @remarks
    * The maximum number in degrees the mob can turn per tick.
    */
-  max_turn: number;
+  max_turn?: number;
 
 }

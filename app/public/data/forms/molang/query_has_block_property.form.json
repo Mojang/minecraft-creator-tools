@@ -3,5 +3,5 @@
   "fields": [],
   "isDeprecated": true,
   "description": "Returns 1.0 if the associated block has the given block state or 0.0 if not. (No longer available in packs with `min_engine_version` >= 1.20.40.)",
-  "title": "Has Block Property Query"
+  "title": "Has Block Property"
 }

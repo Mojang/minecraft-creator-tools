@@ -1,4 +1,5 @@
 {
+  "id": "minecraft:food",
   "fields": [
     {
       "id": "can_always_eat",
@@ -50,16 +51,16 @@
             "content": 3
           }
         ],
-        "/vanilla/behavior_pack/items/beetroot_soup.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:food/",
-            "content": 6
-          }
-        ],
         "/vanilla/behavior_pack/items/beetroot.json": [
           {
             "path": "/minecraft:item/components/minecraft:food/",
             "content": 1
+          }
+        ],
+        "/vanilla/behavior_pack/items/beetroot_soup.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": 6
           }
         ],
         "/vanilla/behavior_pack/items/bread.json": [
@@ -148,7 +149,7 @@
             "content": "low"
           }
         ],
-        "/vanilla/behavior_pack/items/beetroot_soup.json": [
+        "/vanilla/behavior_pack/items/beetroot.json": [
           {
             "path": "/minecraft:item/components/minecraft:food/",
             "content": "normal"
@@ -189,6 +190,30 @@
             "path": "/minecraft:item/components/minecraft:food/",
             "content": "supernatural"
           }
+        ],
+        "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/items/cooked_dream_turkey.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": 0.6
+          }
+        ],
+        "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/items/dream_essence.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": 0.2
+          }
+        ],
+        "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/items/dream_turkey.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": 0.2
+          }
+        ],
+        "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/items/cooked_dream_turkey.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": 0.6
+          }
         ]
       }
     },
@@ -222,11 +247,6 @@
             "content": "bowl"
           }
         ]
-      },
-      "subForm": {
-        "fields": [],
-        "description": "Using Converts To",
-        "title": "Using Converts To"
       }
     },
     {
@@ -369,25 +389,9 @@
       "dataType": 17
     }
   ],
-  "description": "Sets the item as a food component, allowing it to be edible to the player.",
-  "requires": [
-    {
-      "id": "minecraft:use_modifier",
-      "type": "item_component"
-    }
-  ],
+  "description": "When an item has a food component, it becomes edible to the player. Must have the 'minecraft:use_duration' component in order to function properly.",
+  "title": "Item Food",
   "samples": {
-    "sample": [
-      {
-        "path": "sample",
-        "content": {
-          "can_always_eat": false,
-          "nutrition": 3,
-          "saturation_modifier": 0.6,
-          "using_converts_to": "bowl"
-        }
-      }
-    ],
     "/vanilla/behavior_pack/items/apple.json": [
       {
         "path": "/minecraft:item/components/minecraft:food/",
@@ -451,6 +455,15 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/items/beetroot.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:food/",
+        "content": {
+          "nutrition": 1,
+          "saturation_modifier": "normal"
+        }
+      }
+    ],
     "/vanilla/behavior_pack/items/beetroot_soup.json": [
       {
         "path": "/minecraft:item/components/minecraft:food/",
@@ -458,15 +471,6 @@
           "nutrition": 6,
           "saturation_modifier": "normal",
           "using_converts_to": "bowl"
-        }
-      }
-    ],
-    "/vanilla/behavior_pack/items/beetroot.json": [
-      {
-        "path": "/minecraft:item/components/minecraft:food/",
-        "content": {
-          "nutrition": 1,
-          "saturation_modifier": "normal"
         }
       }
     ],
@@ -777,6 +781,15 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/items/rabbit.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:food/",
+        "content": {
+          "nutrition": 3,
+          "saturation_modifier": "low"
+        }
+      }
+    ],
     "/vanilla/behavior_pack/items/rabbit_stew.json": [
       {
         "path": "/minecraft:item/components/minecraft:food/",
@@ -784,15 +797,6 @@
           "nutrition": 10,
           "saturation_modifier": "normal",
           "using_converts_to": "bowl"
-        }
-      }
-    ],
-    "/vanilla/behavior_pack/items/rabbit.json": [
-      {
-        "path": "/minecraft:item/components/minecraft:food/",
-        "content": {
-          "nutrition": 3,
-          "saturation_modifier": "low"
         }
       }
     ],
@@ -951,7 +955,5 @@
         }
       }
     ]
-  },
-  "title": "Minecraft Food Item",
-  "id": "minecraft:food"
+  }
 }

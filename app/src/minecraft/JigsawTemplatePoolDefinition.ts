@@ -74,18 +74,20 @@ export default class JigsawTemplatePoolDefinition implements IDefinition {
       return;
     }
 
-    const itemsCopy = project.getItemsCopy();
+    const jigsawProcessorListItems = project.getItemsByType(ProjectItemType.jigsawProcessorList);
 
     // Find structure files and processors referenced by this template pool
     for (const element of elements) {
       // Find structure files referenced by location
       if (element.element.location) {
         const structurePath = element.element.location + ".mcstructure";
-        
-        for (const candItem of itemsCopy) {
+
+        for (const candItem of jigsawProcessorListItems) {
           if (candItem.itemType === ProjectItemType.structure) {
-            if (candItem.projectPath?.endsWith(structurePath) || 
-                candItem.projectPath?.includes(element.element.location)) {
+            if (
+              candItem.projectPath?.endsWith(structurePath) ||
+              candItem.projectPath?.includes(element.element.location)
+            ) {
               item.addChildItem(candItem);
             }
           }
@@ -94,16 +96,16 @@ export default class JigsawTemplatePoolDefinition implements IDefinition {
 
       // Find processors referenced by processors field
       if (element.element.processors) {
-        for (const candItem of itemsCopy) {
-          if (candItem.itemType === ProjectItemType.jigsawProcessorList) {
-            await candItem.ensureStorage();
+        for (const candItem of jigsawProcessorListItems) {
+          if (!candItem.isContentLoaded) {
+            await candItem.loadContent();
+          }
 
-            if (candItem.primaryFile) {
-              const processorList = await JigsawProcessorListDefinition.ensureOnFile(candItem.primaryFile);
+          if (candItem.primaryFile) {
+            const processorList = await JigsawProcessorListDefinition.ensureOnFile(candItem.primaryFile);
 
-              if (processorList && processorList.id === element.element.processors) {
-                item.addChildItem(candItem);
-              }
+            if (processorList && processorList.id === element.element.processors) {
+              item.addChildItem(candItem);
             }
           }
         }
@@ -122,7 +124,9 @@ export default class JigsawTemplatePoolDefinition implements IDefinition {
 
     if (file.manager !== undefined && file.manager instanceof JigsawTemplatePoolDefinition) {
       jigsawTemplatePool = file.manager as JigsawTemplatePoolDefinition;
-      await jigsawTemplatePool.load();
+      if (!jigsawTemplatePool.isLoaded) {
+        await jigsawTemplatePool.load();
+      }
     }
 
     return jigsawTemplatePool;
@@ -137,7 +141,9 @@ export default class JigsawTemplatePoolDefinition implements IDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
       return;

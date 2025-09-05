@@ -20,7 +20,7 @@ export default class HttpFile extends FileBase implements IFile {
   }
 
   get isContentLoaded() {
-    return true;
+    return this.lastLoadedOrSaved !== null;
   }
 
   get parentFolder(): HttpFolder {
@@ -47,7 +47,7 @@ export default class HttpFile extends FileBase implements IFile {
   async loadContent(force?: boolean): Promise<Date> {
     //        Log.assert(this.fullPath.startsWith("/"), "Expecting a full absolute path");
 
-    if (force || !this.lastLoadedOrSaved) {
+    if (force || this.lastLoadedOrSaved === null) {
       if (this._isLoading) {
         const pendingLoad = this._pendingLoadRequests;
 

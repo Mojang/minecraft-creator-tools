@@ -173,7 +173,7 @@ export default class WorldTestManager {
           );
 
           const functionString = "tp " + area.location.x + " " + area.location.y + " " + area.location.z;
-          /*"\r\ngametest run " +
+          /*"\ngametest run " +
             Utilities.getSimpleString(area.title) +
             ":" +
             Utilities.getSimpleString(script.name + (j + 1).toString());*/
@@ -214,11 +214,13 @@ export default class WorldTestManager {
     if (file.manager !== undefined && file.manager instanceof WorldTestManager) {
       wtm = file.manager as WorldTestManager;
 
-      if (!wtm.isLoaded && loadHandler) {
-        wtm.onLoaded.subscribe(loadHandler);
-      }
+      if (!wtm.isLoaded) {
+        if (loadHandler) {
+          wtm.onLoaded.subscribe(loadHandler);
+        }
 
-      await wtm.load();
+        await wtm.load();
+      }
     }
 
     return wtm;

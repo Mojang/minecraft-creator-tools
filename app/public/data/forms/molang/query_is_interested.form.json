@@ -2,5 +2,5 @@
   "id": "query.is_interested",
   "fields": [],
   "description": "Returns 1.0 if the entity is interested, else it returns 0.0. Applies typically to the fox and the wolf.",
-  "title": "Is Interested Query"
+  "title": "Is Interested"
 }

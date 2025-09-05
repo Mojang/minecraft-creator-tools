@@ -53,7 +53,7 @@ export default interface MinecraftBehaviorLeapAtTarget {
    * ground. Setting it to false will allow it to jump even if its
    * already in the air
    */
-  must_be_on_ground: boolean;
+  must_be_on_ground?: boolean;
 
   /**
    * @remarks
@@ -68,14 +68,14 @@ export default interface MinecraftBehaviorLeapAtTarget {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * Allows the actor to be set to persist upon targeting a 
    * player
    */
-  set_persistent: boolean;
+  set_persistent?: boolean;
 
   /**
    * @remarks
@@ -85,7 +85,7 @@ export default interface MinecraftBehaviorLeapAtTarget {
    *
    *
    */
-  target_dist: number;
+  target_dist?: number;
 
   /**
    * @remarks
@@ -96,6 +96,6 @@ export default interface MinecraftBehaviorLeapAtTarget {
    * Cave Spider: 0.4
    *
    */
-  yd: number;
+  yd?: number;
 
 }

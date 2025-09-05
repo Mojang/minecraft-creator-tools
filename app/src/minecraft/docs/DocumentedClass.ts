@@ -212,7 +212,9 @@ export default class DocumentedClass {
 
     const rootFile = classFolder.ensureFile("info.json");
 
-    await rootFile.loadContent();
+    if (!rootFile.isContentLoaded) {
+      await rootFile.loadContent();
+    }
 
     this.infoJsonFiles["_class"] = rootFile;
 
@@ -223,7 +225,9 @@ export default class DocumentedClass {
         const memberFolder = classFolder.ensureFolder(docFunction.name);
         const memberFile = memberFolder.ensureFile("info.json");
 
-        await memberFile.loadContent();
+        if (!memberFile.isContentLoaded) {
+          await memberFile.loadContent();
+        }
 
         if (Utilities.isUsableAsObjectKey(docFunction.name)) {
           this.infoJsonFiles[docFunction.name] = memberFile;
@@ -238,7 +242,9 @@ export default class DocumentedClass {
         const memberFolder = classFolder.ensureFolder(docProp.name);
         const memberFile = memberFolder.ensureFile("info.json");
 
-        await memberFile.loadContent();
+        if (!memberFile.isContentLoaded) {
+          await memberFile.loadContent();
+        }
 
         if (Utilities.isUsableAsObjectKey(docProp.name)) {
           this.infoJsonFiles[docProp.name] = memberFile;

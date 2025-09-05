@@ -2,5 +2,5 @@
   "id": "query.is_idling",
   "fields": [],
   "description": "Returns 1.0 if the entity is idling, else it returns 0.0.",
-  "title": "Is Idling Query"
+  "title": "Is Idling"
 }

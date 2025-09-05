@@ -129,7 +129,7 @@ export default interface MinecraftFlocking {
    *
    *
    */
-  block_distance: number;
+  block_distance?: number;
 
   /**
    * @remarks
@@ -142,7 +142,7 @@ export default interface MinecraftFlocking {
    * Salmon: 0.75
    *
    */
-  block_weight: number;
+  block_weight?: number;
 
   /**
    * @remarks
@@ -154,7 +154,7 @@ export default interface MinecraftFlocking {
    *
    *
    */
-  breach_influence: number;
+  breach_influence?: number;
 
   /**
    * @remarks
@@ -169,7 +169,7 @@ export default interface MinecraftFlocking {
    * Salmon: 1.5
    *
    */
-  cohesion_threshold: number;
+  cohesion_threshold?: number;
 
   /**
    * @remarks
@@ -184,7 +184,7 @@ export default interface MinecraftFlocking {
    * Salmon: 2.25
    *
    */
-  cohesion_weight: number;
+  cohesion_weight?: number;
 
   /**
    * @remarks
@@ -195,7 +195,7 @@ export default interface MinecraftFlocking {
    *
    *
    */
-  goal_weight: number;
+  goal_weight?: number;
 
   /**
    * @remarks
@@ -207,7 +207,7 @@ export default interface MinecraftFlocking {
    *
    *
    */
-  high_flock_limit: number;
+  high_flock_limit?: number;
 
   /**
    * @remarks
@@ -218,7 +218,7 @@ export default interface MinecraftFlocking {
    *
    *
    */
-  in_water: boolean;
+  in_water?: boolean;
 
   /**
    * @remarks
@@ -232,7 +232,7 @@ export default interface MinecraftFlocking {
    *
    *
    */
-  influence_radius: number;
+  influence_radius?: number;
 
   /**
    * @remarks
@@ -248,7 +248,7 @@ export default interface MinecraftFlocking {
    * Salmon: 1.5
    *
    */
-  innner_cohesion_threshold: number;
+  innner_cohesion_threshold?: number;
 
   /**
    * @remarks
@@ -261,7 +261,7 @@ export default interface MinecraftFlocking {
    *
    *
    */
-  loner_chance: number;
+  loner_chance?: number;
 
   /**
    * @remarks
@@ -273,7 +273,7 @@ export default interface MinecraftFlocking {
    *
    *
    */
-  low_flock_limit: number;
+  low_flock_limit?: number;
 
   /**
    * @remarks
@@ -285,7 +285,7 @@ export default interface MinecraftFlocking {
    * Tropicalfish: true
    *
    */
-  match_variants: boolean;
+  match_variants?: boolean;
 
   /**
    * @remarks
@@ -299,7 +299,7 @@ export default interface MinecraftFlocking {
    *
    *
    */
-  max_height: number;
+  max_height?: number;
 
   /**
    * @remarks
@@ -313,7 +313,7 @@ export default interface MinecraftFlocking {
    *
    *
    */
-  min_height: number;
+  min_height?: number;
 
   /**
    * @remarks
@@ -329,7 +329,7 @@ export default interface MinecraftFlocking {
    * Salmon: 0.15
    *
    */
-  separation_threshold: number;
+  separation_threshold?: number;
 
   /**
    * @remarks
@@ -343,7 +343,7 @@ export default interface MinecraftFlocking {
    *
    *
    */
-  separation_weight: number;
+  separation_weight?: number;
 
   /**
    * @remarks
@@ -355,6 +355,6 @@ export default interface MinecraftFlocking {
    *
    *
    */
-  use_center_of_mass: boolean;
+  use_center_of_mass?: boolean;
 
 }

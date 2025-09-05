@@ -58,7 +58,7 @@ export default class GeometryInfoGenerator implements IProjectInfoGenerator {
 
     for (const projectItem of itemsCopy) {
       if (projectItem.itemType === ProjectItemType.modelGeometryJson) {
-        await projectItem.ensureFileStorage();
+        await projectItem.loadFileContent();
 
         if (projectItem.primaryFile) {
           const srPath = projectItem.primaryFile.storageRelativePath.toLowerCase();

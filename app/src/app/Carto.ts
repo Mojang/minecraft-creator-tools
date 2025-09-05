@@ -1086,6 +1086,24 @@ export default class Carto {
     return status.operationId;
   }
 
+  async notifyOperationUpdate(updateOperationId: number, message: string, topic?: StatusTopic) {
+    this.ensureStatusArrayIsTrimmed();
+
+    this.updateOperation(updateOperationId, message);
+
+    const status = {
+      message: message,
+      operationId: updateOperationId,
+      type: StatusType.operationUpdate,
+      time: new Date(),
+      topic: topic,
+    };
+
+    this.status.push(status);
+
+    await this.callStatusAddedListeners(status);
+  }
+
   async notifyOperationStarted(message: string, topic?: StatusTopic): Promise<number> {
     const status: IStatus = {
       time: new Date(),
@@ -1133,6 +1151,16 @@ export default class Carto {
     this.status.push(status);
 
     await this.callStatusAddedListeners(status);
+  }
+
+  updateOperation(id: number, newMessage: string) {
+    for (let i = 0; i < this.activeOperations.length; i++) {
+      const oper = this.activeOperations[i];
+
+      if (oper.operationId === id) {
+        oper.message = newMessage;
+      }
+    }
   }
 
   removeOperation(id: number) {
@@ -1663,7 +1691,9 @@ export default class Carto {
 
     const configFile = this.file;
 
-    await configFile.loadContent(false);
+    if (!configFile.isContentLoaded) {
+      await configFile.loadContent(false);
+    }
 
     if (configFile.content !== null && configFile.content !== undefined && typeof configFile.content === "string") {
       this.#data = JSON.parse(configFile.content as string);
@@ -1881,7 +1911,6 @@ export default class Carto {
         this.lastActiveMinecraftFlavor = MinecraftFlavor.remote;
         this.save();
       }
-      this._onMinecraftStateChanged.dispatch(this.activeMinecraft, CartoMinecraftState.newMinecraft);
 
       if (this.activeMinecraft === undefined) {
         Log.unexpectedUndefined("EMA");

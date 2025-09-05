@@ -38,6 +38,6 @@ export default interface MinecraftBehaviorSilverfishWakeUpFriends {
    * Silverfish: 1
    *
    */
-  priority: number;
+  priority?: number;
 
 }

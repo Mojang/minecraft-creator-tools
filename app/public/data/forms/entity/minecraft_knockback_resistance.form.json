@@ -204,7 +204,7 @@
         }
       }
     ],
-    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave_generator.json": [
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave.json": [
       {
         "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
         "content": {
@@ -213,7 +213,7 @@
         }
       }
     ],
-    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave.json": [
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave_generator.json": [
       {
         "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
         "content": {

@@ -4,7 +4,7 @@
     {
       "id": "allow_simultaneous_interaction",
       "title": "Allow Simultaneous Interaction",
-      "description": "When true multiple mobs with the Transport Items Goal are allowed to simultaneously interact with a container. Default value: false.",
+      "description": "When true the mob will wait until a container is not used by other entities before starting to interact with it. Default value: false.",
       "dataType": 1
     },
     {
@@ -26,7 +26,6 @@
     },
     {
       "id": "destination_container_types",
-      "title": "Destination Container Types",
       "description": "A list of block descriptors that should be a container type to put items in. Default value: empty.",
       "dataType": 15,
       "subForm": {
@@ -170,7 +169,6 @@
     },
     {
       "id": "source_container_types",
-      "title": "Source Container Types",
       "description": "A list of block descriptors that should be a container type to get items from. Default value: empty.",
       "dataType": 15,
       "subForm": {
@@ -217,5 +215,5 @@
     }
   ],
   "description": "A behavior that enables a mob to transport items from and to containers.",
-  "title": "Minecraft Behavior.transport Items Entity"
+  "title": "Entity Transport Items Behavior"
 }

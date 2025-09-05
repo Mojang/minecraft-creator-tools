@@ -2,5 +2,5 @@
   "id": "query.get_root_locator_offset",
   "fields": [],
   "description": "Gets specified axis of the specified locator offset of the root model.",
-  "title": "Get Root Locator Offset Query"
+  "title": "Get Root Locator Offset"
 }

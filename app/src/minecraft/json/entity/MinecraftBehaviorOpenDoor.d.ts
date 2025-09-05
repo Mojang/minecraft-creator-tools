@@ -39,7 +39,7 @@ export default interface MinecraftBehaviorOpenDoor {
    * Villager: true
    *
    */
-  close_door_after: boolean;
+  close_door_after?: boolean;
 
   /**
    * @remarks
@@ -51,6 +51,6 @@ export default interface MinecraftBehaviorOpenDoor {
    * Villager: 6
    *
    */
-  priority: number;
+  priority?: number;
 
 }

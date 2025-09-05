@@ -46,7 +46,7 @@ export default interface MinecraftBehaviorFindCover {
    * Fox: 5
    *
    */
-  cooldown_time: number;
+  cooldown_time?: number;
 
   /**
    * @remarks
@@ -58,7 +58,7 @@ export default interface MinecraftBehaviorFindCover {
    * Fox: 9
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -68,6 +68,6 @@ export default interface MinecraftBehaviorFindCover {
    * Fox: 1
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

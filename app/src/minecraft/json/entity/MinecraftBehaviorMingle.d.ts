@@ -46,7 +46,7 @@ export default interface MinecraftBehaviorMingle {
    * Villager v2: 10
    *
    */
-  cooldown_time: number;
+  cooldown_time?: number;
 
   /**
    * @remarks
@@ -57,7 +57,7 @@ export default interface MinecraftBehaviorMingle {
    * Villager v2: 30
    *
    */
-  duration: number;
+  duration?: number;
 
   /**
    * @remarks
@@ -69,7 +69,7 @@ export default interface MinecraftBehaviorMingle {
    * Villager v2: 2
    *
    */
-  mingle_distance: number;
+  mingle_distance?: number;
 
   /**
    * @remarks
@@ -79,7 +79,7 @@ export default interface MinecraftBehaviorMingle {
    * Villager v2: "minecraft:villager_v2"
    *
    */
-  mingle_partner_type: string[];
+  mingle_partner_type?: string[];
 
   /**
    * @remarks
@@ -91,7 +91,7 @@ export default interface MinecraftBehaviorMingle {
    * Villager v2: 7
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -101,6 +101,6 @@ export default interface MinecraftBehaviorMingle {
    * Villager v2: 0.5
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

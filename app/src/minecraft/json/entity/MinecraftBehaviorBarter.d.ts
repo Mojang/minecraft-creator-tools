@@ -41,6 +41,6 @@ export default interface MinecraftBehaviorBarter {
    * Piglin: 3
    *
    */
-  priority: number;
+  priority?: number;
 
 }

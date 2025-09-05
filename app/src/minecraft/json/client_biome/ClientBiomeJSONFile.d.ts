@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../jsoncommon';
 
 /**
- * Client Biome JSON File Client Biome (Client Biome JSON File)
+ * Client Biome JSON File (Client Biome JSON File)
  * Contains a format version and a Client Biome definition.
  */
 export default interface ClientBiomeJSONFile {
@@ -36,8 +36,7 @@ export default interface ClientBiomeJSONFile {
 
 
 /**
- * Client Biome Definition Client Biome (Client Biome 
- * Definition)
+ * Client Biome Definition (Client Biome Definition)
  * Contains a description and components to define a Client 
  * Biome.
  */
@@ -59,8 +58,7 @@ export interface ClientBiomeJSONFileMinecraftClientBiome {
 
 
 /**
- * Client Biome Components Client Biome (Client Biome 
- * Components)
+ * Client Biome Components (Client Biome Components)
  * Any components that this Client Biome uses.
  */
 export interface ClientBiomeJSONFileMinecraftClientBiomeComponents {
@@ -70,7 +68,7 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponents {
    * Set the ambient sounds for the biome. These sounds must be in
    * the 'individual_named_sounds' in a 'sounds.json' file.
    */
-  "minecraft:ambient_sounds": ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftAmbientSounds;
+  "minecraft:ambient_sounds"?: ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftAmbientSounds;
 
   /**
    * @remarks
@@ -79,13 +77,13 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponents {
    * JSON schemas under the "atmospherics" directory. Biomes without this
    * component will have default atmosphere settings.
    */
-  "minecraft:atmosphere_identifier": ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftAtmosphereIdentifier;
+  "minecraft:atmosphere_identifier"?: ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftAtmosphereIdentifier;
 
   /**
    * @remarks
    * Affect how music plays within the biome
    */
-  "minecraft:biome_music": ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftBiomeMusic;
+  "minecraft:biome_music"?: ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftBiomeMusic;
 
   /**
    * @remarks
@@ -94,35 +92,35 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponents {
    * schemas under the "color_grading" directory. Biomes without this
    * component will have default color_grading settings.
    */
-  "minecraft:color_grading_identifier": ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftColorGradingIdentifier;
+  "minecraft:color_grading_identifier"?: ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftColorGradingIdentifier;
 
   /**
    * @remarks
    * Set the dry foliage color used during rendering. Biomes without this
    * component will have default dry foliage color behavior.
    */
-  "minecraft:dry_foliage_color": ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftDryFoliageColor;
+  "minecraft:dry_foliage_color"?: ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftDryFoliageColor;
 
   /**
    * @remarks
    * Set the fog settings used during rendering. Biomes without this
    * component will have default fog settings.
    */
-  "minecraft:fog_appearance": ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftFogAppearance;
+  "minecraft:fog_appearance"?: ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftFogAppearance;
 
   /**
    * @remarks
    * Set the foliage color or color map used during rendering. Biomes
    * without this component will have default foliage appearance.
    */
-  "minecraft:foliage_appearance": ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftFoliageAppearance;
+  "minecraft:foliage_appearance"?: ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftFoliageAppearance;
 
   /**
    * @remarks
    * Set the grass color or color map used during rendering. Biomes
    * without this component will have default grass appearance.
    */
-  "minecraft:grass_appearance": ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftGrassAppearance;
+  "minecraft:grass_appearance"?: ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftGrassAppearance;
 
   /**
    * @remarks
@@ -131,14 +129,14 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponents {
    * schemas under the "lighting" directory. Biomes without this
    * component will have default lighting settings.
    */
-  "minecraft:lighting_identifier": ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftLightingIdentifier;
+  "minecraft:lighting_identifier"?: ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftLightingIdentifier;
 
   /**
    * @remarks
    * Set the sky color used during rendering. Biomes without this
    * component will have default sky color behavior.
    */
-  "minecraft:sky_color": ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftSkyColor;
+  "minecraft:sky_color"?: ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftSkyColor;
 
   /**
    * @remarks
@@ -146,7 +144,7 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponents {
    * this component will have default water surface color 
    * behavior.
    */
-  "minecraft:water_appearance": ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftWaterAppearance;
+  "minecraft:water_appearance"?: ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftWaterAppearance;
 
   /**
    * @remarks
@@ -155,14 +153,13 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponents {
    * schemas under the "water" directory. Biomes without this
    * component will have default water settings.
    */
-  "minecraft:water_identifier": ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftWaterIdentifier;
+  "minecraft:water_identifier"?: ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftWaterIdentifier;
 
 }
 
 
 /**
- * Minecraft Ambient Sounds Client Biome 
- * (minecraft:ambient_sounds)
+ * Minecraft Ambient Sounds (minecraft:ambient_sounds)
  * Sets the ambient sounds for the biome. These sounds must be in
  * the 'individual_named_sounds' in a 'sounds.json' file.
  */
@@ -172,14 +169,14 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftAmbie
    * @remarks
    * Named sound that occasionally plays at the listener position
    */
-  addition: object;
+  addition?: object;
 
   /**
    * @remarks
    * Named sound that loops while the listener position is inside the
    * biome
    */
-  loop: object;
+  loop?: object;
 
   /**
    * @remarks
@@ -187,13 +184,13 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftAmbie
    * the light level is low. Biomes without an ambient mood sound will
    * use the 'ambient.cave' sound.
    */
-  mood: object;
+  mood?: object;
 
 }
 
 
 /**
- * Minecraft Atmosphere Identifier Client Biome
+ * Client Biome Atmosphere Identifier 
  * (minecraft:atmosphere_identifier)
  * Set the identifier used for atmospherics in Vibrant Visuals mode.
  * Identifiers must resolve to identifiers in valid Atmospheric Scattering
@@ -212,7 +209,7 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftAtmos
 
 
 /**
- * Minecraft Biome Music Client Biome (minecraft:biome_music)
+ * Minecraft Biome Music (minecraft:biome_music)
  * Affects how music plays within the biome.
  */
 export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftBiomeMusic {
@@ -223,7 +220,7 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftBiome
    * found the default music will be determined by the dimension. Empty
    * string will result in no music.
    */
-  music_definition: object;
+  music_definition?: object;
 
   /**
    * @remarks
@@ -231,13 +228,13 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftBiome
    * within this biome. Must be a value between 0 and 1, 
    * inclusive.
    */
-  volume_multiplier: number;
+  volume_multiplier?: number;
 
 }
 
 
 /**
- * Minecraft Color Grading Identifier Client Biome
+ * Client Biome Color Grading Identifier
  * (minecraft:color_grading_identifier)
  * Set the identifier used for color grading in Vibrant Visuals mode.
  * Identifiers must resolve to identifiers in valid Color Grading JSON
@@ -256,8 +253,7 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftColor
 
 
 /**
- * Minecraft Dry Foliage Color Client Biome
- * (minecraft:dry_foliage_color)
+ * Client Biome Dry Foliage Color (minecraft:dry_foliage_color)
  * Set the dry foliage color used during rendering. Biomes without this
  * component will have default dry foliage color behavior.
  */
@@ -273,8 +269,7 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftDryFo
 
 
 /**
- * Minecraft Fog Appearance Client Biome 
- * (minecraft:fog_appearance)
+ * Minecraft Fog Appearance (minecraft:fog_appearance)
  * Sets the fog settings used during rendering. Biomes without this
  * component will have default fog settings.
  */
@@ -290,8 +285,7 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftFogAp
 
 
 /**
- * Minecraft Foliage Appearance Client Biome
- * (minecraft:foliage_appearance)
+ * Minecraft Foliage Appearance (minecraft:foliage_appearance)
  * Sets the foliage color or color map used during rendering. Biomes
  * without this component will have default foliage appearance.
  */
@@ -301,14 +295,13 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftFolia
    * @remarks
    * RGB color of foliage, or a Foliage Color Map object.
    */
-  color: object;
+  color?: object;
 
 }
 
 
 /**
- * Minecraft Grass Appearance Client Biome
- * (minecraft:grass_appearance)
+ * Client Biome Grass Appearance (minecraft:grass_appearance)
  * Set the grass color or color map used during rendering. Biomes
  * without this component will have default grass appearance.
  */
@@ -318,13 +311,13 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftGrass
    * @remarks
    * RGB color of grass.
    */
-  color: object;
+  color?: object;
 
 }
 
 
 /**
- * Minecraft Lighting Identifier Client Biome
+ * Client Biome Lighting Identifier 
  * (minecraft:lighting_identifier)
  * Set the identifier used for lighting in Vibrant Visuals mode.
  * Identifiers must resolve to identifiers in valid Lighting JSON
@@ -343,7 +336,7 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftLight
 
 
 /**
- * Minecraft Sky Color Client Biome (minecraft:sky_color)
+ * Minecraft Sky Color (minecraft:sky_color)
  * Sets the sky color used during rendering. Biomes without this
  * component will have default sky color behavior.
  */
@@ -359,8 +352,7 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftSkyCo
 
 
 /**
- * Minecraft Water Appearance Client Biome
- * (minecraft:water_appearance)
+ * Client Biome Water Appearance (minecraft:water_appearance)
  * Set the water surface color used during rendering. Biomes without
  * this component will have default water surface color 
  * behavior.
@@ -371,21 +363,20 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftWater
    * @remarks
    * RGB color of the water surface
    */
-  surface_color: string;
+  surface_color?: string;
 
   /**
    * @remarks
    * Opacity of the water surface (must be between 0 for invisible and
    * 1 for opaque, inclusive)
    */
-  surface_opacity: number;
+  surface_opacity?: number;
 
 }
 
 
 /**
- * Minecraft Water Identifier Client Biome
- * (minecraft:water_identifier)
+ * Client Biome Water Identifier (minecraft:water_identifier)
  * Set the identifier used for rendering water in Vibrant Visuals mode.
  * Identifiers must resolve to identifiers in valid Water JSON
  * schemas under the "water" directory. Biomes without this
@@ -403,8 +394,7 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftWater
 
 
 /**
- * Client Biome Description Client Biome (Client Biome 
- * Description)
+ * Client Biome Description (Client Biome Description)
  * Contains non-component settings for a Client Biome.
  */
 export interface ClientBiomeJSONFileMinecraftClientBiomeDescription {

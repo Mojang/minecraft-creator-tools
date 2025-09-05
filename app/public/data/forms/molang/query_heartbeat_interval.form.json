@@ -2,5 +2,5 @@
   "id": "query.heartbeat_interval",
   "fields": [],
   "description": "Returns the heartbeat interval of the entity in seconds. Returns 0 when the entity has no heartbeat.",
-  "title": "Heartbeat Interval Query"
+  "title": "Heartbeat Interval"
 }

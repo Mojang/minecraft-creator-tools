@@ -80,7 +80,7 @@ export default interface MinecraftBehaviorTeleportToOwner {
    * The time in seconds that must pass for the entity to be able to
    * try to teleport again.
    */
-  cooldown: number;
+  cooldown?: number;
 
   /**
    * @remarks
@@ -94,7 +94,7 @@ export default interface MinecraftBehaviorTeleportToOwner {
    * Wolf: {"any_of":[{"all_of":[{"test":"owner_distance","operator":">","value":12},{"test":"is_panicking"}]},{"all_of":[{"test":"owner_distance","operator":">","value":24},{"test":"has_target"}]}]}
    *
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -106,6 +106,6 @@ export default interface MinecraftBehaviorTeleportToOwner {
    * Wolf: 1
    *
    */
-  priority: number;
+  priority?: number;
 
 }

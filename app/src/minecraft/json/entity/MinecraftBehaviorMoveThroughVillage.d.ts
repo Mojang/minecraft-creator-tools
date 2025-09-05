@@ -40,7 +40,7 @@ export default interface MinecraftBehaviorMoveThroughVillage {
    * Iron Golem: true
    *
    */
-  only_at_night: boolean;
+  only_at_night?: boolean;
 
   /**
    * @remarks
@@ -52,7 +52,7 @@ export default interface MinecraftBehaviorMoveThroughVillage {
    * Iron Golem: 3
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -62,6 +62,6 @@ export default interface MinecraftBehaviorMoveThroughVillage {
    * Iron Golem: 0.6
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

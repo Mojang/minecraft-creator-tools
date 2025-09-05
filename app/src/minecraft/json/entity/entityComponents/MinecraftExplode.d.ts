@@ -118,6 +118,18 @@ Wind Charge Projectile - https://github.com/Mojang/bedrock-samples/tree/preview/
 }
 
 
+Wither Skull - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/wither_skull.json
+
+ * At /minecraft:entity/component_groups/minecraft:exploding/minecraft:explode/: 
+"minecraft:explode": {
+  "fuse_length": 0,
+  "fuse_lit": true,
+  "power": 1,
+  "causes_fire": false,
+  "destroy_affected_by_griefing": true
+}
+
+
 Wither Skull Dangerous - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/wither_skull_dangerous.json
 
  * At /minecraft:entity/component_groups/minecraft:exploding/minecraft:explode/: 
@@ -127,18 +139,6 @@ Wither Skull Dangerous - https://github.com/Mojang/bedrock-samples/tree/preview/
   "power": 1,
   "causes_fire": false,
   "max_resistance": 4,
-  "destroy_affected_by_griefing": true
-}
-
-
-Wither Skull - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/wither_skull.json
-
- * At /minecraft:entity/component_groups/minecraft:exploding/minecraft:explode/: 
-"minecraft:explode": {
-  "fuse_length": 0,
-  "fuse_lit": true,
-  "power": 1,
-  "causes_fire": false,
   "destroy_affected_by_griefing": true
 }
 
@@ -183,7 +183,7 @@ export default interface MinecraftExplode {
    *
    *
    */
-  add: MinecraftExplodeAdd;
+  add?: MinecraftExplodeAdd;
 
   /**
    * @remarks
@@ -195,14 +195,14 @@ export default interface MinecraftExplode {
    *
    *
    */
-  allow_underwater: boolean;
+  allow_underwater?: boolean;
 
   /**
    * @remarks
    * If true, the explosion will destroy blocks in the explosion 
    * radius.
    */
-  breaks_blocks: boolean;
+  breaks_blocks?: boolean;
 
   /**
    * @remarks
@@ -212,7 +212,7 @@ export default interface MinecraftExplode {
    * Fireball: true
    *
    */
-  causes_fire: boolean;
+  causes_fire?: boolean;
 
   /**
    * @remarks
@@ -220,7 +220,7 @@ export default interface MinecraftExplode {
    * value of 0 prevents the explosion from dealing any damage. Negative
    * values cause the explosion to heal entities instead.
    */
-  damage_scaling: number;
+  damage_scaling?: number;
 
   /**
    * @remarks
@@ -231,7 +231,7 @@ export default interface MinecraftExplode {
    * Creeper: true
    *
    */
-  destroy_affected_by_griefing: boolean;
+  destroy_affected_by_griefing?: boolean;
 
   /**
    * @remarks
@@ -242,7 +242,7 @@ export default interface MinecraftExplode {
    * Fireball: true
    *
    */
-  fire_affected_by_griefing: boolean;
+  fire_affected_by_griefing?: boolean;
 
   /**
    * @remarks
@@ -256,7 +256,7 @@ export default interface MinecraftExplode {
    * Tnt Minecart: 4
    *
    */
-  fuse_length: number[];
+  fuse_length?: number[];
 
   /**
    * @remarks
@@ -267,7 +267,7 @@ export default interface MinecraftExplode {
    * Creeper: true
    *
    */
-  fuse_lit: boolean;
+  fuse_lit?: boolean;
 
   /**
    * @remarks
@@ -280,7 +280,7 @@ export default interface MinecraftExplode {
    * Wind Charge Projectile: 1.22
    *
    */
-  knockback_scaling: number;
+  knockback_scaling?: number;
 
   /**
    * @remarks
@@ -291,7 +291,7 @@ export default interface MinecraftExplode {
    * Wither Skull Dangerous: 4
    *
    */
-  max_resistance: number;
+  max_resistance?: number;
 
   /**
    * @remarks
@@ -302,7 +302,7 @@ export default interface MinecraftExplode {
    * Wind Charge Projectile: true
    *
    */
-  negates_fall_damage: boolean;
+  negates_fall_damage?: boolean;
 
   /**
    * @remarks
@@ -315,7 +315,7 @@ export default interface MinecraftExplode {
    * Wind Charge Projectile: "wind_burst"
    *
    */
-  particle_effect: string;
+  particle_effect?: string;
 
   /**
    * @remarks
@@ -330,7 +330,7 @@ export default interface MinecraftExplode {
    * Fireball: 1
    *
    */
-  power: number;
+  power?: number;
 
   /**
    * @remarks
@@ -345,7 +345,7 @@ export default interface MinecraftExplode {
    * Campghost: "scary"
    *
    */
-  sound_effect: string;
+  sound_effect?: string;
 
   /**
    * @remarks
@@ -357,7 +357,7 @@ export default interface MinecraftExplode {
    *
    *
    */
-  toggles_blocks: boolean;
+  toggles_blocks?: boolean;
 
 }
 
@@ -374,6 +374,6 @@ export interface MinecraftExplodeAdd {
    * Fireball: ["minecraft:exploding"]
    *
    */
-  component_groups: string;
+  component_groups?: string;
 
 }

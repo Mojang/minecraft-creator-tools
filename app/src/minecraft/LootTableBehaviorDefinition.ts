@@ -59,11 +59,13 @@ export default class LootTableBehaviorDefinition {
     if (file.manager !== undefined && file.manager instanceof LootTableBehaviorDefinition) {
       ltb = file.manager as LootTableBehaviorDefinition;
 
-      if (!ltb.isLoaded && loadHandler) {
-        ltb.onLoaded.subscribe(loadHandler);
-      }
+      if (!ltb.isLoaded) {
+        if (loadHandler) {
+          ltb.onLoaded.subscribe(loadHandler);
+        }
 
-      await ltb.load();
+        await ltb.load();
+      }
     }
 
     return ltb;
@@ -124,7 +126,9 @@ export default class LootTableBehaviorDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;
@@ -155,10 +159,12 @@ export default class LootTableBehaviorDefinition {
 
     for (const candItem of itemsCopy) {
       if (candItem.itemType === ProjectItemType.itemTypeBehavior && itemList) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
-        if (candItem.defaultFile) {
-          const itemType = await ItemTypeDefinition.ensureOnFile(candItem.defaultFile);
+        if (candItem.primaryFile) {
+          const itemType = await ItemTypeDefinition.ensureOnFile(candItem.primaryFile);
 
           if (itemType) {
             if (itemList.includes(itemType.id)) {
@@ -169,9 +175,11 @@ export default class LootTableBehaviorDefinition {
           }
         }
       } else if (candItem.itemType === ProjectItemType.lootTableBehavior && lootTableList) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
-        if (candItem.defaultFile) {
+        if (candItem.primaryFile) {
           let lootTablePath = await candItem.getPackRelativePath();
 
           if (lootTablePath) {

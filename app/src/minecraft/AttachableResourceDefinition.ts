@@ -249,11 +249,13 @@ export default class AttachableResourceDefinition {
     if (file.manager !== undefined && file.manager instanceof AttachableResourceDefinition) {
       attachable = file.manager as AttachableResourceDefinition;
 
-      if (!attachable.isLoaded && loadHandler) {
-        attachable.onLoaded.subscribe(loadHandler);
-      }
+      if (!attachable.isLoaded) {
+        if (loadHandler) {
+          attachable.onLoaded.subscribe(loadHandler);
+        }
 
-      await attachable.load();
+        await attachable.load();
+      }
     }
 
     return attachable;
@@ -279,7 +281,9 @@ export default class AttachableResourceDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
       return;
@@ -347,7 +351,9 @@ export default class AttachableResourceDefinition {
     const etrChildItems = rel.parentItem.childItems;
 
     if (rel.childItem.itemType === ProjectItemType.texture && this._data && this._data.textures) {
-      await rel.childItem.ensureStorage();
+      if (!rel.childItem.isContentLoaded) {
+        await rel.childItem.loadContent();
+      }
 
       if (rel.childItem.primaryFile && packRootFolder) {
         let relativePath = this.getRelativePath(rel.childItem.primaryFile, packRootFolder);
@@ -420,7 +426,9 @@ export default class AttachableResourceDefinition {
 
     for (const candItem of itemsCopy) {
       if (candItem.itemType === ProjectItemType.animationResourceJson && animationIdList) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
           const animationDef = await AnimationResourceDefinition.ensureOnFile(candItem.primaryFile);
@@ -437,7 +445,9 @@ export default class AttachableResourceDefinition {
           }
         }
       } else if (candItem.itemType === ProjectItemType.renderControllerJson && renderControllerIdList) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
           const renderControllerDef = await RenderControllerSetDefinition.ensureOnFile(candItem.primaryFile);
@@ -454,7 +464,9 @@ export default class AttachableResourceDefinition {
           }
         }
       } else if (candItem.itemType === ProjectItemType.texture && packRootFolder && textureList) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
           let relativePath = TextureDefinition.canonicalizeTexturePath(
@@ -470,7 +482,9 @@ export default class AttachableResourceDefinition {
           }
         }
       } else if (candItem.itemType === ProjectItemType.modelGeometryJson && geometryList) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
           const model = await ModelGeometryDefinition.ensureOnFile(candItem.primaryFile);

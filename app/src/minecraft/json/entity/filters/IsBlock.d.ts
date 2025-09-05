@@ -85,7 +85,7 @@ export default interface IsBlock {
    * Fox: "=="
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
@@ -95,7 +95,7 @@ export default interface IsBlock {
    * Bee: "block"
    *
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -104,7 +104,7 @@ export default interface IsBlock {
    * Bee: "is_block"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -114,7 +114,7 @@ export default interface IsBlock {
    * Bee: "minecraft:bee_nest", "minecraft:beehive", "minecraft:sweet_berry_bush"
    *
    */
-  value: string;
+  value?: string;
 
 }
 

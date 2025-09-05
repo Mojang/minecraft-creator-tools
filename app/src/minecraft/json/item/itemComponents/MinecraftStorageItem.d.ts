@@ -15,8 +15,6 @@ Black Bundle - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_p
 
 "minecraft:storage_item": {
   "max_slots": 64,
-  "max_weight_limit": 64,
-  "weight_in_storage_item": 4,
   "allow_nested_storage_items": true,
   "banned_items": [
     "minecraft:shulker_box",
@@ -29,14 +27,9 @@ Black Bundle - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_p
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Storage Item Item (minecraft:storage_item)
- * Enables an item to store data of the dynamic container associated with
- * it. A dynamic container is a container for storing items that is
- * linked to an item instead of a block or an entity.
- * Note: While this component can be defined on its own, to be
- * able to interact with the item's storage container the item must
- * have a `minecraft:bundle_interaction` item component 
- * defined.
+ * Item Storage Item (minecraft:storage_item)
+ * [EXPERIMENTAL] Storage Items can be used by other components to
+ * store other items within this item.
  */
 export default interface MinecraftStorageItem {
 
@@ -50,14 +43,14 @@ export default interface MinecraftStorageItem {
    *
    *
    */
-  allow_nested_storage_items: boolean;
+  allow_nested_storage_items?: boolean;
 
   /**
    * @remarks
    * List of items that are exclusively allowed in this Storage Item.
    * If empty all items are allowed.
    */
-  allowed_items: string;
+  allowed_items?: string;
 
   /**
    * @remarks
@@ -68,7 +61,7 @@ export default interface MinecraftStorageItem {
    *
    *
    */
-  banned_items: string;
+  banned_items?: string;
 
   /**
    * @remarks
@@ -80,26 +73,6 @@ export default interface MinecraftStorageItem {
    *
    *
    */
-  max_slots: number;
-
-  /**
-   * @remarks
-   * 
-   * Sample Values:
-   * Black Bundle: 64
-   *
-   *
-   */
-  max_weight_limit: number;
-
-  /**
-   * @remarks
-   * 
-   * Sample Values:
-   * Black Bundle: 4
-   *
-   *
-   */
-  weight_in_storage_item: number;
+  max_slots?: number;
 
 }

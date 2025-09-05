@@ -2,5 +2,5 @@
   "id": "query.timer_flag_3",
   "fields": [],
   "description": "Returns 1.0 if behavior.timer_flag_3 is running, else it returns 0.0.",
-  "title": "Timer Flag 3 Query"
+  "title": "Timer Flag 3"
 }

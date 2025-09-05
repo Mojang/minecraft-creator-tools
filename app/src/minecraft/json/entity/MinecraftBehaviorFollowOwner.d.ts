@@ -69,14 +69,14 @@ export default interface MinecraftBehaviorFollowOwner {
    * Defines if the mob will teleport to its owner when too far 
    * away.
    */
-  can_teleport: boolean;
+  can_teleport?: boolean;
 
   /**
    * @remarks
    * Defines if the mob should disregard following its owner after
    * detecting a recent vibration.
    */
-  ignore_vibration: boolean;
+  ignore_vibration?: boolean;
 
   /**
    * @remarks
@@ -84,7 +84,7 @@ export default interface MinecraftBehaviorFollowOwner {
    * following it. Applicable only when "can_teleport" is set to
    * false.
    */
-  max_distance: number;
+  max_distance?: number;
 
   /**
    * @remarks
@@ -93,7 +93,7 @@ export default interface MinecraftBehaviorFollowOwner {
    * "stop_distance" + 1, allowing the entity to seamlessly resume
    * navigation.
    */
-  post_teleport_distance: boolean;
+  post_teleport_distance?: boolean;
 
   /**
    * @remarks
@@ -110,7 +110,7 @@ export default interface MinecraftBehaviorFollowOwner {
    * Parrot: 3
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -123,7 +123,7 @@ export default interface MinecraftBehaviorFollowOwner {
    *
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -139,7 +139,7 @@ export default interface MinecraftBehaviorFollowOwner {
    * Parrot: 5
    *
    */
-  start_distance: number;
+  start_distance?: number;
 
   /**
    * @remarks
@@ -154,6 +154,6 @@ export default interface MinecraftBehaviorFollowOwner {
    * Parrot: 1
    *
    */
-  stop_distance: number;
+  stop_distance?: number;
 
 }

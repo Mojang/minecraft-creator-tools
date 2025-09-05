@@ -1,0 +1,6 @@
+{
+  "id": "`math.asin(value)`",
+  "fields": [],
+  "description": "arcsin of value",
+  "title": "Asin(value)"
+}

@@ -55,7 +55,7 @@ export default interface MinecraftBehaviorCircleAroundAnchor {
    * Phantom: 15
    *
    */
-  angle_change: number;
+  angle_change?: number;
 
   /**
    * @remarks
@@ -68,7 +68,7 @@ export default interface MinecraftBehaviorCircleAroundAnchor {
    * Phantom: 1
    *
    */
-  goal_radius: number;
+  goal_radius?: number;
 
   /**
    * @remarks
@@ -80,7 +80,7 @@ export default interface MinecraftBehaviorCircleAroundAnchor {
    * Phantom: [20,40]
    *
    */
-  height_above_target_range: number[];
+  height_above_target_range?: number[];
 
   /**
    * @remarks
@@ -93,7 +93,7 @@ export default interface MinecraftBehaviorCircleAroundAnchor {
    * Phantom: 0.002857
    *
    */
-  height_adjustment_chance: number;
+  height_adjustment_chance?: number;
 
   /**
    * @remarks
@@ -104,7 +104,7 @@ export default interface MinecraftBehaviorCircleAroundAnchor {
    * Phantom: [-4,5]
    *
    */
-  height_offset_range: number[];
+  height_offset_range?: number[];
 
   /**
    * @remarks
@@ -116,7 +116,7 @@ export default interface MinecraftBehaviorCircleAroundAnchor {
    * Phantom: 3
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -129,7 +129,7 @@ export default interface MinecraftBehaviorCircleAroundAnchor {
    * Phantom: 0.004
    *
    */
-  radius_adjustment_chance: number;
+  radius_adjustment_chance?: number;
 
   /**
    * @remarks
@@ -143,7 +143,7 @@ export default interface MinecraftBehaviorCircleAroundAnchor {
    * Phantom: 1
    *
    */
-  radius_change: number;
+  radius_change?: number;
 
   /**
    * @remarks
@@ -154,13 +154,13 @@ export default interface MinecraftBehaviorCircleAroundAnchor {
    * Phantom: [5,15]
    *
    */
-  radius_range: number[];
+  radius_range?: number[];
 
   /**
    * @remarks
    * Multiplies the speed at which this entity travels to its next
    * desired position.
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

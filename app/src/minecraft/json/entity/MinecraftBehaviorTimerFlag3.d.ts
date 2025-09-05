@@ -46,7 +46,7 @@ export default interface MinecraftBehaviorTimerFlag3 {
    * have to elapse even before the goal can be selected for the
    * first time.
    */
-  cooldown_range: number[];
+  cooldown_range?: number[];
 
   /**
    * @remarks
@@ -56,7 +56,7 @@ export default interface MinecraftBehaviorTimerFlag3 {
    * Sniffer: [2,5]
    *
    */
-  duration_range: number[];
+  duration_range?: number[];
 
   /**
    * @remarks
@@ -66,13 +66,13 @@ export default interface MinecraftBehaviorTimerFlag3 {
    * Sniffer: {"event":"on_feeling_happy_end","target":"self"}
    *
    */
-  on_end: jsoncommon.MinecraftEventTrigger;
+  on_end?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
    * Event(s) to run when the goal starts.
    */
-  on_start: jsoncommon.MinecraftEventTrigger;
+  on_start?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -84,6 +84,6 @@ export default interface MinecraftBehaviorTimerFlag3 {
    * Sniffer: 5
    *
    */
-  priority: number;
+  priority?: number;
 
 }

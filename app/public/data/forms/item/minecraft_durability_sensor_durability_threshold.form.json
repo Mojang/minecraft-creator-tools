@@ -1,4 +1,5 @@
 {
+  "id": "minecraft:durability_sensor durability_threshold",
   "fields": [
     {
       "id": "durability",
@@ -20,6 +21,5 @@
     }
   ],
   "description": "Defines both the durability threshold, and the effects emitted when that threshold is met.",
-  "title": "Minecraft Durability Sensor Durability Threshold Item",
-  "id": "minecraft:durability_sensor durability_threshold"
+  "title": "Item Durability Sensor Durability Threshold"
 }

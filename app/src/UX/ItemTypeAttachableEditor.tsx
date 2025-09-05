@@ -38,7 +38,7 @@ interface IItemTypeAttachableEditorProps extends IFileProps {
   displayHeader?: boolean;
   project: Project;
   theme: ThemeInput<any>;
-  projectItem: ProjectItem;
+  item: ProjectItem;
 }
 
 interface IItemTypeAttachableEditorState {
@@ -129,6 +129,8 @@ export default class ItemTypeAttachableEditor extends Component<
       await AttachableResourceDefinition.ensureOnFile(this.state.fileToEdit);
     }
 
+    await this.props.item.ensureDependencies();
+
     if (
       this.state.fileToEdit &&
       this.state.fileToEdit.manager !== undefined &&
@@ -149,8 +151,8 @@ export default class ItemTypeAttachableEditor extends Component<
 
     const renderControllerSets: RenderControllerSetDefinition[] = [];
 
-    if (this.props.projectItem && this.props.projectItem.childItems) {
-      for (const item of this.props.projectItem.childItems) {
+    if (this.props.item && this.props.item.childItems) {
+      for (const item of this.props.item.childItems) {
         if (item.childItem.itemType === ProjectItemType.renderControllerJson) {
           const renderControllerSet = (await MinecraftDefinitions.get(item.childItem)) as RenderControllerSetDefinition;
 
@@ -165,12 +167,14 @@ export default class ItemTypeAttachableEditor extends Component<
     let parentBehaviorFile = undefined;
     let parentBehaviorDefinition = undefined;
 
-    if (this.props.projectItem && this.props.projectItem.parentItems) {
-      for (const parentItem of this.props.projectItem.parentItems) {
+    if (this.props.item && this.props.item.parentItems) {
+      for (const parentItem of this.props.item.parentItems) {
         if (parentItem.parentItem.itemType === ProjectItemType.itemTypeBehavior) {
           parentBehaviorItem = parentItem.parentItem;
 
-          await parentBehaviorItem.ensureStorage();
+          if (!parentBehaviorItem.isContentLoaded) {
+            await parentBehaviorItem.loadContent();
+          }
 
           if (parentBehaviorItem.primaryFile) {
             parentBehaviorFile = parentBehaviorItem.primaryFile;
@@ -196,7 +200,7 @@ export default class ItemTypeAttachableEditor extends Component<
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
-      if (file.manager !== null) {
+      if (file.manager) {
         const srbd = file.manager as AttachableResourceDefinition;
 
         srbd.persist();

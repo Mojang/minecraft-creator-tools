@@ -133,6 +133,6 @@ export default class EslintConfig {
   }
 
   static getDefaultContent() {
-    return EslintDefaultConfig.join("\r\n").replace(/'/gi, '"');
+    return EslintDefaultConfig.join("\n").replace(/'/gi, '"');
   }
 }

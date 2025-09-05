@@ -51,7 +51,7 @@ export default interface MinecraftVariableMaxAutoStep {
    *
    *
    */
-  base_value: number;
+  base_value?: number;
 
   /**
    * @remarks
@@ -62,7 +62,7 @@ export default interface MinecraftVariableMaxAutoStep {
    * Camel: 1.5625
    *
    */
-  controlled_value: number;
+  controlled_value?: number;
 
   /**
    * @remarks
@@ -74,6 +74,6 @@ export default interface MinecraftVariableMaxAutoStep {
    *
    *
    */
-  jump_prevented_value: number;
+  jump_prevented_value?: number;
 
 }

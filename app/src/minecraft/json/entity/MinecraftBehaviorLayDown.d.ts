@@ -38,7 +38,7 @@ export default interface MinecraftBehaviorLayDown {
    * Panda: 400
    *
    */
-  interval: number;
+  interval?: number;
 
   /**
    * @remarks
@@ -50,7 +50,7 @@ export default interface MinecraftBehaviorLayDown {
    * Panda: 5
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -61,6 +61,6 @@ export default interface MinecraftBehaviorLayDown {
    * Panda: 2000
    *
    */
-  random_stop_interval: number;
+  random_stop_interval?: number;
 
 }

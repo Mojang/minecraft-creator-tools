@@ -3,5 +3,5 @@
   "fields": [],
   "isInternal": true,
   "description": "Debug log a value to the output debug window for builds that have one.",
-  "title": "Debug Output Query"
+  "title": "Debug Output"
 }

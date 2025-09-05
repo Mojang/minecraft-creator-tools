@@ -321,7 +321,7 @@ export default interface MinecraftBreedable {
    *
    *
    */
-  allow_sitting: boolean;
+  allow_sitting?: boolean;
 
   /**
    * @remarks
@@ -329,13 +329,13 @@ export default interface MinecraftBreedable {
    * offspring after they breed. For example, horses blend their
    * health, movement, and jump_strength in their offspring.
    */
-  blend_attributes: boolean;
+  blend_attributes?: boolean;
 
   /**
    * @remarks
    * Time in seconds before the Entity can breed again.
    */
-  breed_cooldown: number;
+  breed_cooldown?: number;
 
   /**
    * @remarks
@@ -350,7 +350,7 @@ export default interface MinecraftBreedable {
    * Bee: ["minecraft:poppy","minecraft:blue_orchid","minecraft:allium","minecraft:azure_bluet","minecraft:red_tulip","minecraft:orange_tulip","minecraft:white_tulip","minecraft:pink_tulip","minecraft:oxeye_daisy","minecraft:cornflower","minecraft:lily_of_the_valley","minecraft:dandelion","minecraft:wither_rose","minecraft:sunflower","minecraft:lilac","minecraft:rose_bush","minecraft:peony","minecraft:flowering_azalea","minecraft:azalea_leaves_flowered","minecraft:mangrove_propagule","minecraft:pitcher_plant","minecraft:torchflower","minecraft:cherry_leaves","minecraft:pink_petals","minecraft:wildflowers","minecraft:cactus_flower"]
    *
    */
-  breed_items: string[];
+  breed_items?: string[];
 
   /**
    * @remarks
@@ -365,16 +365,16 @@ export default interface MinecraftBreedable {
    * Bee: {"mate_type":"minecraft:bee","baby_type":"minecraft:bee","breed_event":{"event":"minecraft:entity_born","target":"baby"}}
    *
    */
-  breeds_with: MinecraftBreedableBreedsWith[];
+  breeds_with?: MinecraftBreedableBreedsWith[];
 
   /**
    * @remarks
    * If true, the entity will become pregnant instead of spawning a
    * baby.
    */
-  causes_pregnancy: boolean;
+  causes_pregnancy?: boolean;
 
-  combine_parent_colors: string;
+  combine_parent_colors?: string;
 
   /**
    * @remarks
@@ -382,40 +382,40 @@ export default interface MinecraftBreedable {
    * deny that variant and take a random variant within the given range
    * instead.
    */
-  deny_parents_variant: MinecraftBreedableDenyParentsVariant;
+  deny_parents_variant?: MinecraftBreedableDenyParentsVariant;
 
   /**
    * @remarks
    * The list of nearby block requirements to get the entity into the
    * 'love' state.
    */
-  environment_requirements: MinecraftBreedableEnvironmentRequirements[];
+  environment_requirements?: MinecraftBreedableEnvironmentRequirements[];
 
   /**
    * @remarks
    * Chance that up to 16 babies will spawn.
    */
-  extra_baby_chance: number[];
+  extra_baby_chance?: number[];
 
   /**
    * @remarks
    * If true, the babies will be automatically tamed if its parents 
    * are.
    */
-  inherit_tamed: boolean;
+  inherit_tamed?: boolean;
 
   /**
    * @remarks
    * The filters to run when attempting to fall in love.
    */
-  love_filters: jsoncommon.MinecraftFilter;
+  love_filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
    * Determines how likely the babies are to NOT inherit one of
    * their parent's variances.
    */
-  mutation_factor: MinecraftBreedableMutationFactor;
+  mutation_factor?: MinecraftBreedableMutationFactor;
 
   /**
    * @remarks
@@ -423,7 +423,7 @@ export default interface MinecraftBreedable {
    * offspring. Current valid alternatives are 'random' and 
    * 'none'.
    */
-  mutation_strategy: string;
+  mutation_strategy?: string;
 
   /**
    * @remarks
@@ -431,47 +431,47 @@ export default interface MinecraftBreedable {
    * parent centric attribute blending. For example, horses blend their
    * health, movement, and jump_strength in their offspring.
    */
-  parent_centric_attribute_blending: string[];
+  parent_centric_attribute_blending?: string[];
 
   /**
    * @remarks
    * List of Entity Properties that should be inherited from the
    * parent entities and potentially mutated.
    */
-  property_inheritance: string[];
+  property_inheritance?: string[];
 
   /**
    * @remarks
    * Range used to determine random extra variant.
    */
-  random_extra_variant_mutation_interval: number[];
+  random_extra_variant_mutation_interval?: number[];
 
   /**
    * @remarks
    * Range used to determine random variant.
    */
-  random_variant_mutation_interval: number[];
+  random_variant_mutation_interval?: number[];
 
   /**
    * @remarks
    * If true, the entity needs to be at full health before it can
    * breed.
    */
-  require_full_health: boolean;
+  require_full_health?: boolean;
 
   /**
    * @remarks
    * If true, the entities need to be tamed first before they can
    * breed.
    */
-  require_tame: boolean;
+  require_tame?: boolean;
 
   /**
    * @remarks
    * The breed item used will transform to this item upon successful
    * interaction. Format: itemName:auxValue
    */
-  transform_to_item: string;
+  transform_to_item?: string;
 
 }
 
@@ -486,19 +486,19 @@ export interface MinecraftBreedableBreedsWith {
    * @remarks
    * The entity definition of this entity's babies.
    */
-  baby_type: string;
+  baby_type?: string;
 
   /**
    * @remarks
    * Event to run when this entity breeds.
    */
-  breed_event: string;
+  breed_event?: string;
 
   /**
    * @remarks
    * The inclusive minimum of the variant range.
    */
-  mate_type: string;
+  mate_type?: string;
 
 }
 
@@ -514,19 +514,19 @@ export interface MinecraftBreedableDenyParentsVariant {
    * @remarks
    * The percentage chance of denying the parents' variant.
    */
-  chance: number;
+  chance?: number;
 
   /**
    * @remarks
    * The inclusive maximum of the variant range.
    */
-  max_variant: string;
+  max_variant?: string;
 
   /**
    * @remarks
    * The inclusive minimum of the variant range.
    */
-  min_variant: string;
+  min_variant?: string;
 
 }
 
@@ -541,27 +541,27 @@ export interface MinecraftBreedableEnvironmentRequirements {
    * @remarks
    * The block types required nearby for the entity to breed.
    */
-  block_types: string[];
+  block_types?: string[];
 
   /**
    * @remarks
    * The block types required nearby for the entity to breed.
    */
-  blocks: string[];
+  blocks?: string[];
 
   /**
    * @remarks
    * The number of the required block types nearby for the entity to
    * breed.
    */
-  count: number;
+  count?: number;
 
   /**
    * @remarks
    * How many blocks radius from the mob's center to search in for
    * the required blocks. Bounded between 0 and 16.
    */
-  radius: number;
+  radius?: number;
 
 }
 
@@ -577,20 +577,20 @@ export interface MinecraftBreedableMutationFactor {
    * @remarks
    * The percentage chance of denying the parents' variant.
    */
-  color: number[];
+  color?: number[];
 
   /**
    * @remarks
    * The percentage chance of a mutation on the entity's extra variant
    * type.
    */
-  extra_variant: number[];
+  extra_variant?: number[];
 
   /**
    * @remarks
    * The percentage chance of a mutation on the entity's variant 
    * type.
    */
-  variant: number[];
+  variant?: number[];
 
 }

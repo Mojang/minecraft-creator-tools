@@ -60,7 +60,7 @@ export default class ScriptInfoGenerator implements IProjectInfoGenerator {
 
     if (typeDefs) {
       for (const typeDef of typeDefs.typeDefs) {
-        const typeDefContent = typeDef.content.join("\r\n");
+        const typeDefContent = typeDef.content.join("\n");
 
         let name = typeDef.name;
         this.minecraftTokens[name] = {
@@ -113,10 +113,12 @@ export default class ScriptInfoGenerator implements IProjectInfoGenerator {
       const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.js) {
-        await pi.ensureFileStorage();
+        await pi.loadFileContent();
 
         if (pi.primaryFile) {
-          await pi.primaryFile.loadContent();
+          if (!pi.primaryFile.isContentLoaded) {
+            await pi.primaryFile.loadContent();
+          }
 
           const content = pi.primaryFile.content;
 

@@ -68,7 +68,7 @@ export default interface IsUnderwater {
    * Bogged: "=="
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
@@ -78,7 +78,7 @@ export default interface IsUnderwater {
    * Bogged: "self"
    *
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -87,7 +87,7 @@ export default interface IsUnderwater {
    * Bogged: "is_underwater"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -97,7 +97,7 @@ export default interface IsUnderwater {
    * Bogged: true
    *
    */
-  value: boolean;
+  value?: boolean;
 
 }
 

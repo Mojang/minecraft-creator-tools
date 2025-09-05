@@ -50,7 +50,7 @@ export default interface MinecraftBehaviorTimerFlag2 {
    * Sniffer: ["move"]
    *
    */
-  control_flags: string[];
+  control_flags?: string[];
 
   /**
    * @remarks
@@ -58,7 +58,7 @@ export default interface MinecraftBehaviorTimerFlag2 {
    * have to elapse even before the goal can be selected for the
    * first time.
    */
-  cooldown_range: number[];
+  cooldown_range?: number[];
 
   /**
    * @remarks
@@ -68,7 +68,7 @@ export default interface MinecraftBehaviorTimerFlag2 {
    * Sniffer: [2,5]
    *
    */
-  duration_range: number[];
+  duration_range?: number[];
 
   /**
    * @remarks
@@ -78,13 +78,13 @@ export default interface MinecraftBehaviorTimerFlag2 {
    * Sniffer: {"event":"on_rising_end","target":"self"}
    *
    */
-  on_end: jsoncommon.MinecraftEventTrigger;
+  on_end?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
    * Event(s) to run when the goal starts.
    */
-  on_start: jsoncommon.MinecraftEventTrigger;
+  on_start?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -96,6 +96,6 @@ export default interface MinecraftBehaviorTimerFlag2 {
    * Sniffer: 2
    *
    */
-  priority: number;
+  priority?: number;
 
 }

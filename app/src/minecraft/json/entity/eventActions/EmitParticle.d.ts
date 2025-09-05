@@ -25,6 +25,10 @@ import * as jsoncommon from './../../../jsoncommon';
  */
 export default interface EmitParticle {
 
-  particle: string;
+  /**
+   * @remarks
+   * Identifier of the particle to emit.
+   */
+  particle?: string;
 
 }

@@ -364,6 +364,8 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
       await this.props.project.save();
     }
 
+    this.props.project?.processRelations(true);
+
     this.setState({
       activeItem: undefined,
       dialogMode: ProjectAddButtonDialogType.noDialog,
@@ -393,6 +395,8 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
       await this.props.project.save();
     }
 
+    this.props.project?.processRelations(true);
+
     this.setState({
       activeItem: undefined,
       dialogMode: ProjectAddButtonDialogType.noDialog,
@@ -420,6 +424,8 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     if (this.props.project) {
       await this.props.project.save();
     }
+
+    this.props.project?.processRelations(true);
 
     this.setState({
       activeItem: undefined,
@@ -538,9 +544,18 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
 
     if (tentativeNewItem !== undefined && this.props.project !== null) {
       projectItem = await ProjectItemCreateManager.createNewItem(this.props.project, tentativeNewItem);
+
+      if (tentativeNewItem.itemType === ProjectItemType.biomeBehavior) {
+        tentativeNewItem.itemType = ProjectItemType.biomeResource;
+        tentativeNewItem.contentTemplateName = "biome_resource";
+
+        await ProjectItemCreateManager.createNewItem(this.props.project, tentativeNewItem);
+      }
     }
 
     await this.props.project.save();
+
+    this.props.project.processRelations(true);
 
     this.setState({
       activeItem: projectItem,

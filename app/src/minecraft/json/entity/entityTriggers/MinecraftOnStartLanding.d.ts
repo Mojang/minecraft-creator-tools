@@ -38,13 +38,13 @@ export default interface MinecraftOnStartLanding {
    * Ender Dragon: "minecraft:start_land"
    *
    */
-  event: jsoncommon.MinecraftEventTrigger;
+  event?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
    * The list of conditions for this trigger to execute.
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -54,6 +54,6 @@ export default interface MinecraftOnStartLanding {
    * Ender Dragon: "self"
    *
    */
-  target: string;
+  target?: string;
 
 }

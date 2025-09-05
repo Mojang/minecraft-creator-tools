@@ -43,7 +43,7 @@ import * as jsoncommon from './../../../jsoncommon';
  */
 export default interface MinecraftEquipItem {
 
-  can_wear_armor: string;
+  can_wear_armor?: string;
 
   /**
    * @remarks
@@ -54,6 +54,6 @@ export default interface MinecraftEquipItem {
    *
    *
    */
-  excluded_items: string[];
+  excluded_items?: string[];
 
 }

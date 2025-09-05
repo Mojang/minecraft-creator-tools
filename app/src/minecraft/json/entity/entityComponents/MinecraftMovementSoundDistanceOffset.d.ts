@@ -25,6 +25,6 @@ export default interface MinecraftMovementSoundDistanceOffset {
    * The higher the number, the less often the movement sound will be
    * played.
    */
-  value: number;
+  value?: number;
 
 }

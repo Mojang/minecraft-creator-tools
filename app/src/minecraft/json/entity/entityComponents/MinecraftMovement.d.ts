@@ -105,7 +105,7 @@ import * as jsoncommon from './../../../jsoncommon';
  */
 export default interface MinecraftMovement {
 
-  max: number;
+  max?: number;
 
   /**
    * @remarks
@@ -120,6 +120,6 @@ export default interface MinecraftMovement {
    * Bee: 0.3
    *
    */
-  value: number;
+  value?: number;
 
 }

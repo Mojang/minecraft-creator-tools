@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../jsoncommon';
 
 /**
- * Minecraft Biome Music Client Biome (minecraft:biome_music)
+ * Minecraft Biome Music (minecraft:biome_music)
  * Affects how music plays within the biome.
  */
 export default interface MinecraftBiomeMusic {
@@ -24,7 +24,7 @@ export default interface MinecraftBiomeMusic {
    * found the default music will be determined by the dimension. Empty
    * string will result in no music.
    */
-  music_definition: object;
+  music_definition?: object;
 
   /**
    * @remarks
@@ -32,6 +32,6 @@ export default interface MinecraftBiomeMusic {
    * within this biome. Must be a value between 0 and 1, 
    * inclusive.
    */
-  volume_multiplier: number;
+  volume_multiplier?: number;
 
 }

@@ -358,14 +358,14 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
         title: "Show more information in the status area",
       });
 
-      const li = [];
+      const listItems = [];
       let index = 0;
 
       if (Utilities.isDebug) {
         for (let i = 0; i < Log.items.length; i++) {
           const logItem = Log.items[i];
 
-          li.push({
+          listItems.push({
             key: "sli" + i,
             content: (
               <div className="sa-list-item" title={logItem.message}>
@@ -381,7 +381,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
       for (let i = Math.max(0, this.props.carto.status.length - 1000); i < this.props.carto.status.length; i++) {
         const statusItem = this.props.carto.status[i];
 
-        li.push({
+        listItems.push({
           key: "si" + i,
           content: (
             <div className="sa-list-item" title={statusItem.message}>
@@ -398,7 +398,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
           <div className="sa-list" ref={this.scrollArea}>
             <List
               selectable
-              items={li}
+              items={listItems}
               aria-label="List of status items"
               accessibility={selectableListBehavior}
               selectedIndex={index}

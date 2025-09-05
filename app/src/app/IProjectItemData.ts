@@ -45,7 +45,7 @@ export enum ProjectItemType {
   blockMaterialsBehaviorJson = 22,
   itemTypeBehavior = 23,
   lootTableBehavior = 24,
-  biomesClientResource = 25,
+  biomesClientCatalogResource = 25, // legacy mega catalog of biome resources (biomes_client)
   blocksCatalogResourceJson = 26,
   soundCatalog = 27,
   animationResourceJson = 28,
@@ -180,7 +180,7 @@ export enum ProjectItemType {
   skinPackGeometryJson = 158,
   skinPackTextureBackCompatJson = 159,
   uniformsJson = 160,
-  biomeResource = 161,
+  biomeResource = 161, // new style per-biome JSON files
 }
 
 export enum ProjectItemStorageType {

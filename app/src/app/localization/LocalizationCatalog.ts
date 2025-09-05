@@ -9,7 +9,7 @@ export type LocalizationCatalog = {
 export async function parseLocalizationCatalogFromItem(
   item: ProjectItem | undefined
 ): Promise<[null, ValidationError[]] | [LocalizationCatalog, null]> {
-  const file = item && (await item.ensureFileStorage());
+  const file = item && (await item.loadFileContent());
   const json = file && StorageUtilities.getJsonObject(file);
 
   const [langs, errors] = validateJsonAndAssert<string[]>(json, {

@@ -1,4 +1,5 @@
 {
+  "id": "Grass Color Map",
   "fields": [
     {
       "id": "color_map",
@@ -9,6 +10,5 @@
     }
   ],
   "description": "Object specifying a color map for grass instead of a specific color.",
-  "title": "Grass Color Map Client Biome",
-  "id": "Grass Color Map"
+  "title": "Client Biome Grass Color Map"
 }

@@ -530,7 +530,9 @@ export default class BlockType implements IManagedComponentSetItem {
       return;
     }
 
-    await this._behaviorPackFile.loadContent();
+    if (!this._behaviorPackFile.isContentLoaded) {
+      await this._behaviorPackFile.loadContent();
+    }
 
     if (!this._behaviorPackFile.content || this._behaviorPackFile.content instanceof Uint8Array) {
       return;

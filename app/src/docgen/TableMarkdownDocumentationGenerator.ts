@@ -104,7 +104,10 @@ export default class TableMarkdownDocumentationGenerator {
     if (!entitiesFolder) {
       return;
     }
-    await entitiesFolder.load();
+
+    if (!entitiesFolder.isLoaded) {
+      await entitiesFolder.load();
+    }
 
     let i = 0;
     for (const node of entitiesNode.nodes) {
@@ -136,7 +139,7 @@ export default class TableMarkdownDocumentationGenerator {
 
     const file = await outputFolder.ensureFileFromRelativePath("/VanillaListingsReference/Entities.md");
 
-    file.setContent(addonEntityLines.join("\r\n"));
+    file.setContent(addonEntityLines.join("\n"));
 
     await file.saveContent();
   }
@@ -171,7 +174,7 @@ export default class TableMarkdownDocumentationGenerator {
 
     const file = await outputFolder.ensureFileFromRelativePath("/VanillaListingsReference/AddonEntityDamageSources.md");
 
-    file.setContent(addonEntityLines.join("\r\n"));
+    file.setContent(addonEntityLines.join("\n"));
 
     await file.saveContent();
   }
@@ -206,7 +209,10 @@ export default class TableMarkdownDocumentationGenerator {
     if (!itemsFolder) {
       return;
     }
-    await itemsFolder.load();
+
+    if (!itemsFolder.isLoaded) {
+      await itemsFolder.load();
+    }
 
     let i = 0;
     for (const node of itemsNode.nodes) {
@@ -238,7 +244,7 @@ export default class TableMarkdownDocumentationGenerator {
 
     const file = await outputFolder.ensureFileFromRelativePath("/VanillaListingsReference/Items.md");
 
-    file.setContent(addonItemLines.join("\r\n"));
+    file.setContent(addonItemLines.join("\n"));
 
     await file.saveContent();
   }
@@ -285,7 +291,7 @@ export default class TableMarkdownDocumentationGenerator {
 
     const file = await outputFolder.ensureFileFromRelativePath("/VanillaListingsReference/Blocks.md");
 
-    file.setContent(addonBlockLines.join("\r\n"));
+    file.setContent(addonBlockLines.join("\n"));
 
     await file.saveContent();
   }

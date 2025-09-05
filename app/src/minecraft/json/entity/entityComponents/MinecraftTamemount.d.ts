@@ -197,16 +197,16 @@ export default interface MinecraftTamemount {
    * @remarks
    * The amount the entity's temper will increase when mounted.
    */
-  attempt_temper_mod: number;
+  attempt_temper_mod?: number;
 
-  auto_reject_items: MinecraftTamemountAutoRejectItems[];
+  auto_reject_items?: MinecraftTamemountAutoRejectItems[];
 
   /**
    * @remarks
    * The list of items that, if carried while interacting with the
    * entity, will anger it.
    */
-  autoRejectItems: MinecraftTamemountAutoRejectItems[];
+  autoRejectItems?: MinecraftTamemountAutoRejectItems[];
 
   /**
    * @remarks
@@ -216,39 +216,38 @@ export default interface MinecraftTamemount {
    * Sample Values:
    * Donkey: [{"item":"wheat","temper_mod":3},{"item":"sugar","temper_mod":3},{"item":"apple","temper_mod":3},{"item":"carrot","temper_mod":3},{"item":"golden_carrot","temper_mod":5},{"item":"golden_apple","temper_mod":10},{"item":"appleEnchanted","temper_mod":10}]
    *
-   *
    */
-  feed_items: MinecraftTamemountFeedItems[];
+  feed_items?: MinecraftTamemountFeedItems[];
 
   /**
    * @remarks
    * The text that shows in the feeding interact button.
    */
-  feed_text: string;
+  feed_text?: string;
 
   /**
    * @remarks
    * The maximum value for the entity's random starting temper.
    */
-  max_temper: number;
+  max_temper?: number;
 
   /**
    * @remarks
    * The minimum value for the entity's random starting temper.
    */
-  min_temper: number;
+  min_temper?: number;
 
   /**
    * @remarks
    * The text that shows in the riding interact button.
    */
-  ride_text: string;
+  ride_text?: string;
 
   /**
    * @remarks
    * Event that triggers when the entity becomes tamed.
    */
-  tame_event: jsoncommon.MinecraftEventTrigger;
+  tame_event?: jsoncommon.MinecraftEventTrigger;
 
 }
 
@@ -265,7 +264,7 @@ export interface MinecraftTamemountAutoRejectItems {
    * Donkey: "horsearmorleather"
    *
    */
-  item: string;
+  item?: string;
 
 }
 
@@ -281,7 +280,7 @@ export interface MinecraftTamemountAutoRejectItems {
    * Name of the item this entity dislikes and will cause it to get
    * angry if used while untamed.
    */
-  item: string;
+  item?: string;
 
 }
 
@@ -297,12 +296,12 @@ export interface MinecraftTamemountFeedItems {
    * Name of the item this entity likes and can be used to increase this
    * entity's temper.
    */
-  item: string;
+  item?: string;
 
   /**
    * @remarks
    * The amount of temper this entity gains when fed this item.
    */
-  temper_mod: number;
+  temper_mod?: number;
 
 }

@@ -262,7 +262,9 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
     items.push(nbtExperimentsPi);
 
     if (projectItem.itemType === ProjectItemType.dialogueBehaviorJson) {
-      await projectItem.ensureFileStorage();
+      if (!projectItem.isContentLoaded) {
+        await projectItem.loadContent();
+      }
 
       if (projectItem.primaryFile) {
         const diaManifest = await Dialogue.ensureOnFile(projectItem.primaryFile);
@@ -288,7 +290,9 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
         }
       }
     } else if (projectItem.itemType === ProjectItemType.animationControllerBehaviorJson) {
-      await projectItem.ensureFileStorage();
+      if (!projectItem.isContentLoaded) {
+        await projectItem.loadContent();
+      }
 
       if (projectItem.primaryFile) {
         const acManifest = await AnimationControllerBehaviorDefinition.ensureOnFile(projectItem.primaryFile);
@@ -308,7 +312,9 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
         }
       }
     } else if (projectItem.itemType === ProjectItemType.animationBehaviorJson) {
-      await projectItem.ensureFileStorage();
+      if (!projectItem.isContentLoaded) {
+        await projectItem.loadContent();
+      }
 
       if (projectItem.primaryFile) {
         const animManifest = await AnimationBehaviorDefinition.ensureOnFile(projectItem.primaryFile);

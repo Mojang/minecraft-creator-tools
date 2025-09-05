@@ -54,7 +54,7 @@ export default interface MinecraftBehaviorMoveToLand {
    *
    *
    */
-  goal_radius: number;
+  goal_radius?: number;
 
   /**
    * @remarks
@@ -67,7 +67,7 @@ export default interface MinecraftBehaviorMoveToLand {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -80,7 +80,7 @@ export default interface MinecraftBehaviorMoveToLand {
    * Frog: 80
    *
    */
-  search_count: number;
+  search_count?: number;
 
   /**
    * @remarks
@@ -93,7 +93,7 @@ export default interface MinecraftBehaviorMoveToLand {
    *
    *
    */
-  search_height: number;
+  search_height?: number;
 
   /**
    * @remarks
@@ -106,12 +106,12 @@ export default interface MinecraftBehaviorMoveToLand {
    *
    *
    */
-  search_range: number;
+  search_range?: number;
 
   /**
    * @remarks
    * Movement speed multiplier of the mob when using this AI Goal
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

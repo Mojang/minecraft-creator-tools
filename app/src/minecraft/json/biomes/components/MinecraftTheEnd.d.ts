@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft The End Biome (minecraft:the_end)
+ * Biome The End (minecraft:the_end)
  */
 export default interface MinecraftTheEnd {
 

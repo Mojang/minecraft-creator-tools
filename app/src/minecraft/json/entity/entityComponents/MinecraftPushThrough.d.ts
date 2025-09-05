@@ -22,6 +22,6 @@ export default interface MinecraftPushThrough {
    * @remarks
    * The value of the entity's push-through, in blocks.
    */
-  value: number;
+  value?: number;
 
 }

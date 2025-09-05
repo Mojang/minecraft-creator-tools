@@ -1428,6 +1428,90 @@ Skeleton - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/
 }
 
 
+Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager.json
+
+ * At /minecraft:entity/component_groups/behavior_peasant/minecraft:shareables/: 
+"minecraft:shareables": {
+  "items": [
+    {
+      "item": "minecraft:bread",
+      "want_amount": 3,
+      "surplus_amount": 6,
+      "stored_in_inventory": true
+    },
+    {
+      "item": "minecraft:carrot",
+      "want_amount": 60,
+      "surplus_amount": 4,
+      "stored_in_inventory": true
+    },
+    {
+      "item": "minecraft:potato",
+      "want_amount": 60,
+      "surplus_amount": 24,
+      "stored_in_inventory": true
+    },
+    {
+      "item": "minecraft:beetroot",
+      "want_amount": 60,
+      "surplus_amount": 24,
+      "stored_in_inventory": true
+    },
+    {
+      "item": "minecraft:wheat_seeds",
+      "want_amount": 64,
+      "surplus_amount": 64,
+      "stored_in_inventory": true,
+      "pickup_only": true
+    },
+    {
+      "item": "minecraft:beetroot_seeds",
+      "want_amount": 64,
+      "surplus_amount": 64,
+      "stored_in_inventory": true,
+      "pickup_only": true
+    },
+    {
+      "item": "minecraft:wheat",
+      "want_amount": 45,
+      "surplus_amount": 18,
+      "craft_into": "minecraft:bread",
+      "stored_in_inventory": true
+    }
+  ]
+}
+
+ * At /minecraft:entity/component_groups/behavior_non_peasant/minecraft:shareables/: 
+"minecraft:shareables": {
+  "items": [
+    {
+      "item": "minecraft:bread",
+      "want_amount": 3,
+      "surplus_amount": 6,
+      "stored_in_inventory": true
+    },
+    {
+      "item": "minecraft:carrot",
+      "want_amount": 12,
+      "surplus_amount": 24,
+      "stored_in_inventory": true
+    },
+    {
+      "item": "minecraft:potato",
+      "want_amount": 12,
+      "surplus_amount": 24,
+      "stored_in_inventory": true
+    },
+    {
+      "item": "minecraft:beetroot",
+      "want_amount": 12,
+      "surplus_amount": 24,
+      "stored_in_inventory": true
+    }
+  ]
+}
+
+
 Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
  * At /minecraft:entity/component_groups/work_schedule_farmer/minecraft:shareables/: 
@@ -1514,90 +1598,6 @@ Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
       "item": "minecraft:carrot",
       "want_amount": 60,
       "surplus_amount": 24,
-      "stored_in_inventory": true
-    },
-    {
-      "item": "minecraft:potato",
-      "want_amount": 60,
-      "surplus_amount": 24,
-      "stored_in_inventory": true
-    },
-    {
-      "item": "minecraft:beetroot",
-      "want_amount": 60,
-      "surplus_amount": 24,
-      "stored_in_inventory": true
-    },
-    {
-      "item": "minecraft:wheat_seeds",
-      "want_amount": 64,
-      "surplus_amount": 64,
-      "stored_in_inventory": true,
-      "pickup_only": true
-    },
-    {
-      "item": "minecraft:beetroot_seeds",
-      "want_amount": 64,
-      "surplus_amount": 64,
-      "stored_in_inventory": true,
-      "pickup_only": true
-    },
-    {
-      "item": "minecraft:wheat",
-      "want_amount": 45,
-      "surplus_amount": 18,
-      "craft_into": "minecraft:bread",
-      "stored_in_inventory": true
-    }
-  ]
-}
-
- * At /minecraft:entity/component_groups/behavior_non_peasant/minecraft:shareables/: 
-"minecraft:shareables": {
-  "items": [
-    {
-      "item": "minecraft:bread",
-      "want_amount": 3,
-      "surplus_amount": 6,
-      "stored_in_inventory": true
-    },
-    {
-      "item": "minecraft:carrot",
-      "want_amount": 12,
-      "surplus_amount": 24,
-      "stored_in_inventory": true
-    },
-    {
-      "item": "minecraft:potato",
-      "want_amount": 12,
-      "surplus_amount": 24,
-      "stored_in_inventory": true
-    },
-    {
-      "item": "minecraft:beetroot",
-      "want_amount": 12,
-      "surplus_amount": 24,
-      "stored_in_inventory": true
-    }
-  ]
-}
-
-
-Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager.json
-
- * At /minecraft:entity/component_groups/behavior_peasant/minecraft:shareables/: 
-"minecraft:shareables": {
-  "items": [
-    {
-      "item": "minecraft:bread",
-      "want_amount": 3,
-      "surplus_amount": 6,
-      "stored_in_inventory": true
-    },
-    {
-      "item": "minecraft:carrot",
-      "want_amount": 60,
-      "surplus_amount": 4,
       "stored_in_inventory": true
     },
     {
@@ -2067,7 +2067,7 @@ export default interface MinecraftShareables {
    * Fox: true
    *
    */
-  all_items: boolean;
+  all_items?: boolean;
 
   /**
    * @remarks
@@ -2077,20 +2077,20 @@ export default interface MinecraftShareables {
    * Fox: 1
    *
    */
-  all_items_max_amount: number;
+  all_items_max_amount?: number;
 
   /**
    * @remarks
    * Number of this item considered extra that the entity wants to
    * share.
    */
-  all_items_surplus_amount: number;
+  all_items_surplus_amount?: number;
 
   /**
    * @remarks
    * Number of this item this entity wants to share.
    */
-  all_items_want_amount: number;
+  all_items_want_amount?: number;
 
   /**
    * @remarks
@@ -2102,17 +2102,15 @@ export default interface MinecraftShareables {
    * Sample Values:
    * Bogged: [{"item":"minecraft:netherite_sword","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_sword","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_sword","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:golden_sword","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:copper_sword","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:stone_sword","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:wooden_sword","want_amount":1,"surplus_amount":1,"priority":6},{"item":"minecraft:bow","want_amount":1,"surplus_amount":1,"priority":6},{"item":"minecraft:netherite_helmet","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_helmet","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_helmet","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_helmet","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_helmet","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:copper_helmet","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:leather_helmet","want_amount":1,"surplus_amount":1,"priority":6},{"item":"minecraft:turtle_helmet","want_amount":1,"surplus_amount":1,"priority":7},{"item":"minecraft:skull:0","want_amount":1,"surplus_amount":1,"priority":8},{"item":"minecraft:skull:1","want_amount":1,"surplus_amount":1,"priority":8},{"item":"minecraft:carved_pumpkin","want_amount":1,"surplus_amount":1,"priority":8},{"item":"minecraft:netherite_chestplate","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_chestplate","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_chestplate","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_chestplate","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_chestplate","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:copper_chestplate","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:leather_chestplate","want_amount":1,"surplus_amount":1,"priority":6},{"item":"minecraft:netherite_leggings","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_leggings","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_leggings","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_leggings","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_leggings","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:copper_leggings","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:leather_leggings","want_amount":1,"surplus_amount":1,"priority":6},{"item":"minecraft:netherite_boots","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_boots","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_boots","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_boots","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_boots","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:copper_boots","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:leather_boots","want_amount":1,"surplus_amount":1,"priority":6}]
    *
-   * Drowned: [{"item":"minecraft:nautilus_shell","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:trident","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:netherite_sword","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:diamond_sword","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:iron_sword","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:golden_sword","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:copper_sword","want_amount":1,"surplus_amount":1,"priority":6},{"item":"minecraft:stone_sword","want_amount":1,"surplus_amount":1,"priority":7},{"item":"minecraft:wooden_sword","want_amount":1,"surplus_amount":1,"priority":8},{"item":"minecraft:netherite_helmet","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_helmet","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_helmet","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_helmet","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_helmet","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:copper_helmet","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:leather_helmet","want_amount":1,"surplus_amount":1,"priority":6},{"item":"minecraft:turtle_helmet","want_amount":1,"surplus_amount":1,"priority":7},{"item":"minecraft:skull:0","want_amount":1,"surplus_amount":1,"priority":8},{"item":"minecraft:skull:1","want_amount":1,"surplus_amount":1,"priority":8},{"item":"minecraft:carved_pumpkin","want_amount":1,"surplus_amount":1,"priority":8},{"item":"minecraft:netherite_chestplate","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_chestplate","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_chestplate","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_chestplate","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_chestplate","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:copper_chestplate","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:leather_chestplate","want_amount":1,"surplus_amount":1,"priority":6},{"item":"minecraft:netherite_leggings","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_leggings","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_leggings","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_leggings","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_leggings","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:copper_leggings","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:leather_leggings","want_amount":1,"surplus_amount":1,"priority":6},{"item":"minecraft:netherite_boots","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_boots","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_boots","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_boots","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_boots","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:copper_boots","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:leather_boots","want_amount":1,"surplus_amount":1,"priority":6}]
-   *
    */
-  items: MinecraftShareablesItems[];
+  items?: MinecraftShareablesItems[];
 
   /**
    * @remarks
    * Boolean value that controls if the mob is able to pick up more of
    * the same item if it is already holding that item
    */
-  singular_pickup: boolean;
+  singular_pickup?: boolean;
 
 }
 
@@ -2131,7 +2129,7 @@ export interface MinecraftShareablesItems {
    * this to happen the mob needs to have an Admire component and an
    * Admire goal.
    */
-  admire: boolean;
+  admire?: boolean;
 
   /**
    * @remarks
@@ -2139,20 +2137,20 @@ export interface MinecraftShareablesItems {
    * work the mob needs to have a Barter component and a Barter 
    * goal.
    */
-  barter: boolean;
+  barter?: boolean;
 
   /**
    * @remarks
    * Determines whether the mob will consume the item or not.
    */
-  consume_item: boolean;
+  consume_item?: boolean;
 
   /**
    * @remarks
    * Defines the item this entity wants to craft with the item defined by
    * "item". Should be an item name.
    */
-  craft_into: string;
+  craft_into?: string;
 
   /**
    * @remarks
@@ -2160,34 +2158,34 @@ export interface MinecraftShareablesItems {
    * 'minecraft:skull:1'. Alternatively, a tag can be specified to
    * match all items with that tag.
    */
-  item: string;
+  item?: string;
 
   /**
    * @remarks
    * Maximum number of this item the mob will hold.
    */
-  max_amount: number;
+  max_amount?: number;
 
   /**
    * @remarks
    * Maximum number items the mob will pick up during a single goal
    * tick.
    */
-  pickup_limit: number;
+  pickup_limit?: number;
 
   /**
    * @remarks
    * Determines whether the mob can only pickup the item and not drop
    * it.
    */
-  pickup_only: boolean;
+  pickup_only?: boolean;
 
   /**
    * @remarks
    * Prioritizes which items the entity prefers. 0 is the highest
    * priority.
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -2195,19 +2193,19 @@ export interface MinecraftShareablesItems {
    * inventory if it has the inventory component and if it can't be
    * equipped.
    */
-  stored_in_inventory: boolean;
+  stored_in_inventory?: boolean;
 
   /**
    * @remarks
    * Number of this item considered extra that the entity wants to
    * share.
    */
-  surplus_amount: number;
+  surplus_amount?: number;
 
   /**
    * @remarks
    * Number of this item this entity wants to share.
    */
-  want_amount: number;
+  want_amount?: number;
 
 }

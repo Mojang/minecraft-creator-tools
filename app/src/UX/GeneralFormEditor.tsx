@@ -125,6 +125,10 @@ export default class GeneralFormEditor extends Component<IGeneralFormEditorProps
       jsonO = Utilities.selectJsonObject(jsonO, this.props.select, true);
     }
 
+    if (!form) {
+      return <div className="gfe-loading">Form not found</div>;
+    }
+
     return (
       <div
         className="gfe-area"

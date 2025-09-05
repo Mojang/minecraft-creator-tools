@@ -130,11 +130,13 @@ export default class RenderControllerSetDefinition implements IDefinition {
     if (file.manager !== undefined && file.manager instanceof RenderControllerSetDefinition) {
       rc = file.manager as RenderControllerSetDefinition;
 
-      if (!rc.isLoaded && loadHandler) {
-        rc.onLoaded.subscribe(loadHandler);
-      }
+      if (!rc.isLoaded) {
+        if (loadHandler) {
+          rc.onLoaded.subscribe(loadHandler);
+        }
 
-      await rc.load();
+        await rc.load();
+      }
     }
 
     return rc;
@@ -182,7 +184,9 @@ export default class RenderControllerSetDefinition implements IDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

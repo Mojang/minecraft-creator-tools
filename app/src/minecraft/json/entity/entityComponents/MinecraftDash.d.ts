@@ -37,7 +37,7 @@ export default interface MinecraftDash {
    * Camel: 2.75
    *
    */
-  cooldown_time: number;
+  cooldown_time?: number;
 
   /**
    * @remarks
@@ -47,7 +47,7 @@ export default interface MinecraftDash {
    * Camel: 20
    *
    */
-  horizontal_momentum: number;
+  horizontal_momentum?: number;
 
   /**
    * @remarks
@@ -57,6 +57,6 @@ export default interface MinecraftDash {
    * Camel: 0.6
    *
    */
-  vertical_momentum: number;
+  vertical_momentum?: number;
 
 }

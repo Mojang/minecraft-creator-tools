@@ -22,7 +22,7 @@ export enum PackInfoGeneratorTest {
   behaviorPackId = 106,
   behaviorPackMinEngineVersion = 107,
   behaviorPackUuid = 108,
-  behaviorPackManfiest = 109,
+  behaviorPackManifest = 109,
   resourcePackMinEngineVersion = 111,
   resourcePackUuid = 112,
   resourcePackManifest = 113,
@@ -136,7 +136,9 @@ export default class PackInfoGenerator implements IProjectInfoGenerator {
             StorageUtilities.getBaseFromName(itemFile.name) === "pack_icon" &&
             StorageUtilities.getTypeFromName(itemFile.name) === "png"
           ) {
-            await itemFile.loadContent(false);
+            if (!itemFile.isContentLoaded) {
+              await itemFile.loadContent(false);
+            }
 
             if (itemFile.content && typeof itemFile.content !== "string") {
               let index = PackInfoGeneratorTest.resourcePackIcon;
@@ -168,10 +170,9 @@ export default class PackInfoGenerator implements IProjectInfoGenerator {
             new ProjectInfoItem(
               InfoItemType.info,
               this.id,
-              PackInfoGeneratorTest.behaviorPackManfiest,
-              ProjectInfoUtilities.getTitleFromEnum(PackInfoGeneratorTest, PackInfoGeneratorTest.behaviorPackManfiest),
-              pi,
-              JSON.stringify(obj)
+              PackInfoGeneratorTest.behaviorPackManifest,
+              ProjectInfoUtilities.getTitleFromEnum(PackInfoGeneratorTest, PackInfoGeneratorTest.behaviorPackManifest),
+              pi
             )
           );
 
@@ -282,8 +283,7 @@ export default class PackInfoGenerator implements IProjectInfoGenerator {
               this.id,
               PackInfoGeneratorTest.resourcePackManifest,
               ProjectInfoUtilities.getTitleFromEnum(PackInfoGeneratorTest, PackInfoGeneratorTest.resourcePackManifest),
-              pi,
-              JSON.stringify(obj)
+              pi
             )
           );
 

@@ -58,7 +58,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * Villager v2: [5,0,5]
    *
    */
-  dist_from_boundary: number[];
+  dist_from_boundary?: number[];
 
   /**
    * @remarks
@@ -69,7 +69,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * Villager v2: 6
    *
    */
-  explore_dist: number;
+  explore_dist?: number;
 
   /**
    * @remarks
@@ -81,7 +81,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * Villager v2: 60
    *
    */
-  max_travel_time: number;
+  max_travel_time?: number;
 
   /**
    * @remarks
@@ -94,7 +94,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * Villager v2: 10
    *
    */
-  max_wait_time: number;
+  max_wait_time?: number;
 
   /**
    * @remarks
@@ -105,7 +105,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * Villager v2: 2.5
    *
    */
-  min_dist_from_target: number;
+  min_dist_from_target?: number;
 
   /**
    * @remarks
@@ -116,7 +116,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * Villager v2: 1
    *
    */
-  min_perimeter: number;
+  min_perimeter?: number;
 
   /**
    * @remarks
@@ -128,7 +128,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * Villager v2: 3
    *
    */
-  min_wait_time: number;
+  min_wait_time?: number;
 
   /**
    * @remarks
@@ -140,7 +140,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * Villager v2: 5
    *
    */
-  next_xz: number;
+  next_xz?: number;
 
   /**
    * @remarks
@@ -152,7 +152,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * Villager v2: 3
    *
    */
-  next_y: number;
+  next_y?: number;
 
   /**
    * @remarks
@@ -164,7 +164,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * Villager v2: 9
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -175,7 +175,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * Villager v2: 0.6
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -188,6 +188,6 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * Villager v2: 2
    *
    */
-  timer_ratio: number;
+  timer_ratio?: number;
 
 }

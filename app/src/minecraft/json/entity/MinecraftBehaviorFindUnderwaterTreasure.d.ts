@@ -42,7 +42,7 @@ export default interface MinecraftBehaviorFindUnderwaterTreasure {
    * Dolphin: 2
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -53,7 +53,7 @@ export default interface MinecraftBehaviorFindUnderwaterTreasure {
    * Dolphin: 30
    *
    */
-  search_range: number;
+  search_range?: number;
 
   /**
    * @remarks
@@ -63,7 +63,7 @@ export default interface MinecraftBehaviorFindUnderwaterTreasure {
    * Dolphin: 2
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -73,6 +73,6 @@ export default interface MinecraftBehaviorFindUnderwaterTreasure {
    * Dolphin: 50
    *
    */
-  stop_distance: number;
+  stop_distance?: number;
 
 }

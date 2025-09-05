@@ -79,12 +79,17 @@ export default class CheckFeatureDeprecationInfoGenerator implements IProjectInf
 
     for (const item of projItems) {
       if (item.name === "blocks.json") {
-        await item.ensureStorage();
+        if (!item.isContentLoaded) {
+          await item.loadContent();
+        }
+
         if (!item.primaryFile) {
           continue;
         }
 
-        await item.primaryFile.loadContent();
+        if (!item.primaryFile.isContentLoaded) {
+          await item.primaryFile.loadContent();
+        }
 
         const content = item.primaryFile.content;
         if (!content || typeof content !== "string") {
@@ -123,12 +128,17 @@ export default class CheckFeatureDeprecationInfoGenerator implements IProjectInf
       }
 
       if (item.name === "terrain_texture.json") {
-        await item.ensureStorage();
+        if (!item.isContentLoaded) {
+          await item.loadContent();
+        }
+
         if (!item.primaryFile) {
           continue;
         }
 
-        await item.primaryFile.loadContent();
+        if (!item.primaryFile.isContentLoaded) {
+          await item.primaryFile.loadContent();
+        }
 
         const content = item.primaryFile.content;
         if (!content || typeof content !== "string") {

@@ -22,8 +22,8 @@ import TypeScriptDefinition from "./TypeScriptDefinition";
 import Utilities from "../core/Utilities";
 
 export default class ItemTypeDefinition implements IManagedComponentSetItem, IDefinition {
-  public wrapper: IItemTypeWrapper | null = null;
-  private _behaviorPackFile?: IFile;
+  private _wrapper: IItemTypeWrapper | null = null;
+  private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
   private _managed: { [id: string]: IManagedComponent | undefined } = {};
@@ -57,7 +57,7 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
   }
 
   public get behaviorPackFile() {
-    return this._behaviorPackFile;
+    return this._file;
   }
 
   public get onLoaded() {
@@ -65,7 +65,22 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
   }
 
   public set behaviorPackFile(newFile: IFile | undefined) {
-    this._behaviorPackFile = newFile;
+    if (this._file) {
+      this._file.onFileContentUpdated.unsubscribe(this._handleFileUpdated);
+    }
+
+    this._file = newFile;
+
+    if (this._file) {
+      this._file.onFileContentUpdated.subscribe(this._handleFileUpdated);
+    }
+  }
+
+  _handleFileUpdated(file: IFile, fileB: IFile) {
+    this._data = undefined;
+    this._isLoaded = false;
+    this._wrapper = null;
+    this._managed = {};
   }
 
   public get id() {
@@ -78,6 +93,14 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
 
   public set id(newId: string) {
     this._id = newId;
+  }
+
+  public get formatVersion() {
+    if (this._wrapper) {
+      return this._wrapper.format_version;
+    }
+
+    return undefined;
   }
 
   public get shortId() {
@@ -103,11 +126,15 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
   }
 
   public getFormatVersion(): number[] | undefined {
-    if (!this.wrapper) {
+    if (!this._wrapper) {
       return undefined;
     }
 
-    return MinecraftUtilities.getVersionArrayFrom(this.wrapper.format_version);
+    return MinecraftUtilities.getVersionArrayFrom(this._wrapper.format_version);
+  }
+
+  constructor() {
+    this._handleFileUpdated = this._handleFileUpdated.bind(this);
   }
 
   ensureComponent(id: string, defaultData?: IComponent | string | string[] | boolean | number[] | number | undefined) {
@@ -195,10 +222,14 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
     let customComponentIds: string[] = this.getCustomComponentIds();
     for (const candItem of itemsCopy) {
       if (candItem.itemType === ProjectItemType.ts) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
-          await candItem.load();
+          if (!candItem.primaryFile.isContentLoaded) {
+            await candItem.primaryFile.loadContent();
+          }
 
           const tsd = await TypeScriptDefinition.ensureOnFile(candItem.primaryFile);
 
@@ -218,7 +249,9 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
           }
         }
       } else if (candItem.itemType === ProjectItemType.attachableResourceJson) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
           const ard = await AttachableResourceDefinition.ensureOnFile(candItem.primaryFile);
@@ -238,8 +271,8 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
   setBehaviorPackFormatVersion(versionStr: string) {
     this._ensureBehaviorPackDataInitialized();
 
-    if (this.wrapper) {
-      this.wrapper.format_version = versionStr;
+    if (this._wrapper) {
+      this._wrapper.format_version = versionStr;
     }
   }
 
@@ -318,11 +351,13 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
     if (file.manager !== undefined && file.manager instanceof ItemTypeDefinition) {
       itt = file.manager as ItemTypeDefinition;
 
-      if (!itt.isLoaded && loadHandler) {
-        itt.onLoaded.subscribe(loadHandler);
-      }
+      if (!itt.isLoaded) {
+        if (loadHandler) {
+          itt.onLoaded.subscribe(loadHandler);
+        }
 
-      await itt.load();
+        await itt.load();
+      }
     }
 
     return itt;
@@ -342,30 +377,32 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
   }
 
   persist() {
-    if (this._behaviorPackFile === undefined) {
+    if (this._file === undefined) {
       return;
     }
 
-    const bpString = JSON.stringify(this.wrapper, null, 2);
+    const bpString = JSON.stringify(this._wrapper, null, 2);
 
-    this._behaviorPackFile.setContent(bpString);
+    this._file.setContent(bpString);
   }
 
   async load() {
-    if (this._behaviorPackFile === undefined || this._isLoaded) {
+    if (this._file === undefined || this._isLoaded) {
       return;
     }
 
-    await this._behaviorPackFile.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
-    if (this._behaviorPackFile.content === null || this._behaviorPackFile.content instanceof Uint8Array) {
+    if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;
     }
 
-    this.wrapper = StorageUtilities.getJsonObject(this._behaviorPackFile);
+    this._wrapper = StorageUtilities.getJsonObject(this._file);
 
-    if (this.wrapper) {
-      const item = (this.wrapper as any)["minecraft:item"];
+    if (this._wrapper) {
+      const item = (this._wrapper as any)["minecraft:item"];
 
       if (item && item.description) {
         this.id = item.description.identifier;

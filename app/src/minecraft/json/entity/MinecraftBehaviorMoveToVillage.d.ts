@@ -62,7 +62,7 @@ export default interface MinecraftBehaviorMoveToVillage {
    * Time in seconds the mob has to wait before using the goal 
    * again
    */
-  cooldown_time: number;
+  cooldown_time?: number;
 
   /**
    * @remarks
@@ -75,7 +75,7 @@ export default interface MinecraftBehaviorMoveToVillage {
    *
    *
    */
-  goal_radius: number;
+  goal_radius?: number;
 
   /**
    * @remarks
@@ -92,14 +92,14 @@ export default interface MinecraftBehaviorMoveToVillage {
    * Vindicator: 4
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * The distance in blocks to search for villages. If <= 0, find the
    * closest village regardless of distance.
    */
-  search_range: number;
+  search_range?: number;
 
   /**
    * @remarks
@@ -114,6 +114,6 @@ export default interface MinecraftBehaviorMoveToVillage {
    * Witch: 1.2
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

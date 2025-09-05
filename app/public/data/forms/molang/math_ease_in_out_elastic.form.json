@@ -1,0 +1,6 @@
+{
+  "id": "`math.ease_in_out_elastic(start, end, 0_to_1)`",
+  "fields": [],
+  "description": "Output goes from start to end via 0_to_1, oscillating elastically at both start and end, with stable change in the middle",
+  "title": "Ease In Out Elastic(start, End, 0 To 1)"
+}

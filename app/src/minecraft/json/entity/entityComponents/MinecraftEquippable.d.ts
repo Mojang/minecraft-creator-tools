@@ -138,10 +138,8 @@ export default interface MinecraftEquippable {
    * Sample Values:
    * Camel: [{"slot":0,"item":"saddle","accepted_items":["saddle"],"on_equip":{"event":"minecraft:camel_saddled"},"on_unequip":{"event":"minecraft:camel_unsaddled"}}]
    *
-   * Donkey: [{"slot":0,"item":"saddle","accepted_items":["saddle"],"on_equip":{"event":"minecraft:donkey_saddled"},"on_unequip":{"event":"minecraft:donkey_unsaddled"}}]
-   *
    */
-  slots: MinecraftEquippableSlots[];
+  slots?: MinecraftEquippableSlots[];
 
 }
 
@@ -155,38 +153,38 @@ export interface MinecraftEquippableSlots {
    * @remarks
    * The list of items that can go in this slot.
    */
-  accepted_items: string[];
+  accepted_items?: string[];
 
   /**
    * @remarks
    * Text to be displayed when the entity can be equipped with this
    * item when playing with Touch-screen controls.
    */
-  interact_text: string;
+  interact_text?: string;
 
   /**
    * @remarks
    * Identifier of the item that can be equipped for this slot.
    */
-  item: string;
+  item?: string;
 
   /**
    * @remarks
    * Event to trigger when this entity is equipped with this 
    * item.
    */
-  on_equip: jsoncommon.MinecraftEventTrigger;
+  on_equip?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
    * Event to trigger when this item is removed from this entity.
    */
-  on_unequip: jsoncommon.MinecraftEventTrigger;
+  on_unequip?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
    * The slot number of this slot.
    */
-  slot: number;
+  slot?: number;
 
 }

@@ -11,17 +11,17 @@
  * 
  * minecraft:behavior.look_at_trading_player Samples
 
-Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
-
-"minecraft:behavior.look_at_trading_player": {
-  "priority": 7
-}
-
-
 Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager.json
 
 "minecraft:behavior.look_at_trading_player": {
   "priority": 2
+}
+
+
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+
+"minecraft:behavior.look_at_trading_player": {
+  "priority": 7
 }
 
 
@@ -50,27 +50,27 @@ export default interface MinecraftBehaviorLookAtTradingPlayer {
    * The angle in degrees that the mob can see in the Y-axis 
    * (up-down).
    */
-  angle_of_view_horizontal: number;
+  angle_of_view_horizontal?: number;
 
   /**
    * @remarks
    * The angle in degrees that the mob can see in the X-axis
    * (left-right).
    */
-  angle_of_view_vertical: number;
+  angle_of_view_vertical?: number;
 
   /**
    * @remarks
    * The distance in blocks from which the entity will look at the
    * player this mob is trading with.
    */
-  look_distance: number;
+  look_distance?: number;
 
   /**
    * @remarks
    * Time range to look at the player this mob is trading with.
    */
-  look_time: number[];
+  look_time?: number[];
 
   /**
    * @remarks
@@ -79,20 +79,20 @@ export default interface MinecraftBehaviorLookAtTradingPlayer {
    * goal.
    * 
    * Sample Values:
-   * Villager v2: 7
-   *
    * Villager: 2
+   *
+   * Villager v2: 7
    *
    * Wandering Trader: 4
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * The probability of looking at the target. A value of 1.00 is
    * 100%.
    */
-  probability: number;
+  probability?: number;
 
 }

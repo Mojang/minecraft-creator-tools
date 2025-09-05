@@ -54,7 +54,7 @@ export default interface HasRangedWeapon {
    * Bogged: "=="
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
@@ -64,7 +64,7 @@ export default interface HasRangedWeapon {
    * Bogged: "self"
    *
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -73,7 +73,7 @@ export default interface HasRangedWeapon {
    * Bogged: "has_ranged_weapon"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -84,7 +84,7 @@ export default interface HasRangedWeapon {
    *
    *
    */
-  value: boolean;
+  value?: boolean;
 
 }
 

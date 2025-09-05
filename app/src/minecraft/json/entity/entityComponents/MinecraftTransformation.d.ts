@@ -59,16 +59,6 @@ Pig - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entit
 }
 
 
-Piglin Brute - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/piglin_brute.json
-
-"minecraft:transformation": {
-  "into": "minecraft:zombie_pigman",
-  "transformation_sound": "converted_to_zombified",
-  "keep_level": true,
-  "preserve_equipment": true
-}
-
-
 Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/piglin.json
 
 "minecraft:transformation": {
@@ -76,6 +66,16 @@ Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
   "transformation_sound": "converted_to_zombified",
   "keep_level": true,
   "drop_inventory": true,
+  "preserve_equipment": true
+}
+
+
+Piglin Brute - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/piglin_brute.json
+
+"minecraft:transformation": {
+  "into": "minecraft:zombie_pigman",
+  "transformation_sound": "converted_to_zombified",
+  "keep_level": true,
   "preserve_equipment": true
 }
 
@@ -107,7 +107,7 @@ Tadpole - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
 }
 
 
-Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager.json
 
  * At /minecraft:entity/component_groups/become_witch/minecraft:transformation/: 
 "minecraft:transformation": {
@@ -115,10 +115,15 @@ Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
   "delay": 0.5
 }
 
+ * At /minecraft:entity/component_groups/become_villager_v2/minecraft:transformation/: 
+"minecraft:transformation": {
+  "into": "minecraft:villager_v2",
+  "keep_level": true
+}
+
  * At /minecraft:entity/component_groups/become_zombie/minecraft:transformation/: 
 "minecraft:transformation": {
-  "into": "minecraft:zombie_villager_v2",
-  "keep_level": true
+  "into": "minecraft:zombie_villager"
 }
 
  */
@@ -137,18 +142,18 @@ export default interface MinecraftTransformation {
    * List of components to add to the entity after the 
    * transformation
    */
-  add: MinecraftTransformationAdd[];
+  add?: MinecraftTransformationAdd[];
 
   /**
    * @remarks
    * Sound to play when the transformation starts
    * 
    * Sample Values:
-   * Zombie Villager v2: "remedy"
+   * Zombie Villager: "remedy"
    *
    *
    */
-  begin_transform_sound: string;
+  begin_transform_sound?: string;
 
   /**
    * @remarks
@@ -160,10 +165,10 @@ export default interface MinecraftTransformation {
    * Pig: 0.5
    *
    *
-   * Zombie Villager v2: {"value":100,"range_min":80,"range_max":200,"block_assist_chance":0.01,"block_radius":4,"block_chance":0.3,"block_types":["minecraft:bed","minecraft:iron_bars"]}
+   * Zombie Villager: {"value":100,"block_assist_chance":0.01,"block_radius":4,"block_chance":0.3,"block_types":["minecraft:bed","minecraft:iron_bars"]}
    *
    */
-  delay: MinecraftTransformationDelay[];
+  delay?: MinecraftTransformationDelay[];
 
   /**
    * @remarks
@@ -173,7 +178,7 @@ export default interface MinecraftTransformation {
    * Husk: true
    *
    */
-  drop_equipment: boolean;
+  drop_equipment?: boolean;
 
   /**
    * @remarks
@@ -185,7 +190,7 @@ export default interface MinecraftTransformation {
    *
    *
    */
-  drop_inventory: boolean;
+  drop_inventory?: boolean;
 
   /**
    * @remarks
@@ -197,7 +202,7 @@ export default interface MinecraftTransformation {
    * Husk: "minecraft:zombie<minecraft:as_adult>", "minecraft:zombie<minecraft:as_baby>"
    *
    */
-  into: string;
+  into?: string;
 
   /**
    * @remarks
@@ -209,14 +214,14 @@ export default interface MinecraftTransformation {
    *
    *
    */
-  keep_level: boolean;
+  keep_level?: boolean;
 
   /**
    * @remarks
    * If this entity is owned by another entity, it should remain owned
    * after transformation.
    */
-  keep_owner: boolean;
+  keep_owner?: boolean;
 
   /**
    * @remarks
@@ -224,11 +229,11 @@ export default interface MinecraftTransformation {
    * transformation
    * 
    * Sample Values:
-   * Piglin Brute: true
+   * Piglin: true
    *
    *
    */
-  preserve_equipment: boolean;
+  preserve_equipment?: boolean;
 
   /**
    * @remarks
@@ -242,7 +247,7 @@ export default interface MinecraftTransformation {
    * Pig: "mob.pig.death"
    *
    */
-  transformation_sound: string;
+  transformation_sound?: string;
 
 }
 
@@ -257,7 +262,7 @@ export interface MinecraftTransformationAdd {
    * @remarks
    * Names of component groups to add
    */
-  component_groups: string[];
+  component_groups?: string[];
 
 }
 
@@ -273,14 +278,14 @@ export interface MinecraftTransformationDelay {
    * speed up the transformation. Value must be between 0.0 and 
    * 1.0
    */
-  block_assist_chance: number;
+  block_assist_chance?: number;
 
   /**
    * @remarks
    * Chance that, once a block is found, will help speed up the
    * transformation
    */
-  block_chance: number;
+  block_chance?: number;
 
   /**
    * @remarks
@@ -288,21 +293,21 @@ export interface MinecraftTransformationDelay {
    * transformation. If not defined or set to 0, it will be set to
    * the block radius
    */
-  block_max: number;
+  block_max?: number;
 
   /**
    * @remarks
    * Distance in Blocks that the entity will search for blocks that
    * can help the transformation
    */
-  block_radius: number;
+  block_radius?: number;
 
   /**
    * @remarks
    * List of blocks that can help the transformation of this 
    * entity
    */
-  block_types: string[];
+  block_types?: string[];
 
   /**
    * @remarks
@@ -311,7 +316,7 @@ export interface MinecraftTransformationDelay {
    * the time in seconds before the entity transforms will be random
    * between value+range_min and value+range_max)
    */
-  range_max: number;
+  range_max?: number;
 
   /**
    * @remarks
@@ -320,12 +325,12 @@ export interface MinecraftTransformationDelay {
    * the time in seconds before the entity transforms will be random
    * between value+range_min and value+range_max)
    */
-  range_min: number;
+  range_min?: number;
 
   /**
    * @remarks
    * Time in seconds before the entity transforms
    */
-  value: number;
+  value?: number;
 
 }

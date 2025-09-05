@@ -43,34 +43,34 @@ export default interface MinecraftBehaviorSlimeAttack {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * Allows the actor to be set to persist upon targeting a 
    * player
    */
-  set_persistent: boolean;
+  set_persistent?: boolean;
 
   /**
    * @remarks
    * During attack behavior, this multiplier modifies the entity's speed
    * when moving toward the target.
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
    * Maximum rotation (in degrees), on the X-axis, this entity can
    * rotate while trying to look at the target.
    */
-  x_max_rotation: number;
+  x_max_rotation?: number;
 
   /**
    * @remarks
    * Maximum rotation (in degrees), on the Y-axis, this entity can
    * rotate while trying to look at the target.
    */
-  y_max_rotation: number;
+  y_max_rotation?: number;
 
 }

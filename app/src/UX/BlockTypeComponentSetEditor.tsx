@@ -28,6 +28,7 @@ import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
 import { ProjectItemType } from "../app/IProjectItemData";
 import BlocksCatalogDefinition from "../minecraft/BlocksCatalogDefinition";
 import IFormDefinition from "../dataform/IFormDefinition";
+import { ManagedComponent } from "../minecraft/ManagedComponent";
 
 interface IBlockTypeComponentSetEditorProps {
   componentSet: IManagedComponentSetItem;
@@ -121,7 +122,9 @@ export default class BlockTypeComponentSetEditor extends Component<
 
       for (const projectItem of itemsCopy) {
         if (projectItem.itemType === ProjectItemType.blocksCatalogResourceJson) {
-          await projectItem.ensureFileStorage();
+          if (!projectItem.isContentLoaded) {
+            await projectItem.loadContent();
+          }
 
           if (projectItem.primaryFile) {
             const blocksCatalog = await BlocksCatalogDefinition.ensureOnFile(projectItem.primaryFile);
@@ -154,7 +157,9 @@ export default class BlockTypeComponentSetEditor extends Component<
       // we couldn't find an existing definition, so create a new one
       for (const projectItem of itemsCopy) {
         if (projectItem.itemType === ProjectItemType.blocksCatalogResourceJson) {
-          await projectItem.ensureFileStorage();
+          if (!projectItem.isContentLoaded) {
+            await projectItem.loadContent();
+          }
 
           if (projectItem.primaryFile) {
             const blocksCatalog = await BlocksCatalogDefinition.ensureOnFile(projectItem.primaryFile);
@@ -200,7 +205,11 @@ export default class BlockTypeComponentSetEditor extends Component<
       formName = EntityTypeDefinition.getFormIdFromComponentId(id);
     }
 
-    const form = await Database.ensureFormLoaded("block", formName);
+    let form = Database.getForm("block", formName);
+
+    if (!form) {
+      form = await Database.ensureFormLoaded("block", formName);
+    }
 
     if (form !== undefined) {
       const newDataObject = DataFormUtilities.generateDefaultItem(form);
@@ -225,7 +234,10 @@ export default class BlockTypeComponentSetEditor extends Component<
 
       if (typeof component === "object" && component.id !== undefined) {
         const formId = this.getFormIdFromComponentId(component.id);
-        await Database.ensureFormLoaded("block", formId);
+
+        if (!Database.isFormLoaded("block", formId)) {
+          await Database.ensureFormLoaded("block", formId);
+        }
       }
     }
 
@@ -387,7 +399,8 @@ export default class BlockTypeComponentSetEditor extends Component<
           open={true}
           cancelButton="Cancel"
           confirmButton="Add"
-          key="etcse-addComponentOuter"
+          className="bcose-addComponentDialog"
+          key="bcose-addComponentOuter"
           onCancel={this._handleDialogCancel}
           onConfirm={this._handleAddComponentOK}
           content={
@@ -397,7 +410,7 @@ export default class BlockTypeComponentSetEditor extends Component<
               isVisual={this.props.isVisualsMode}
             />
           }
-          header={"Add component"}
+          header={"Add block type component"}
         />
       );
     } else {
@@ -491,7 +504,8 @@ export default class BlockTypeComponentSetEditor extends Component<
                       objectKey={component.id}
                       closeButton={false}
                       definition={form}
-                      getsetPropertyObject={component}
+                      directObject={component.getData()}
+                      onPropertyChanged={(component as ManagedComponent).handlePropertyChanged}
                     ></DataForm>
                   </div>
                 );

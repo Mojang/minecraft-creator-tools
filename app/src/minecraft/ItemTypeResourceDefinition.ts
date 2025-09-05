@@ -236,11 +236,13 @@ export default class ItemTypeResourceDefinition implements IManagedComponentSetI
     if (file.manager !== undefined && file.manager instanceof ItemTypeResourceDefinition) {
       itt = file.manager as ItemTypeResourceDefinition;
 
-      if (!itt.isLoaded && loadHandler) {
-        itt.onLoaded.subscribe(loadHandler);
-      }
+      if (!itt.isLoaded) {
+        if (loadHandler) {
+          itt.onLoaded.subscribe(loadHandler);
+        }
 
-      await itt.load();
+        await itt.load();
+      }
     }
 
     return itt;
@@ -261,7 +263,9 @@ export default class ItemTypeResourceDefinition implements IManagedComponentSetI
       return;
     }
 
-    await this._behaviorPackFile.loadContent();
+    if (!this._behaviorPackFile.isContentLoaded) {
+      await this._behaviorPackFile.loadContent();
+    }
 
     if (this._behaviorPackFile.content === null || this._behaviorPackFile.content instanceof Uint8Array) {
       return;

@@ -49,20 +49,20 @@ export default interface MinecraftGameEventMovementTracking {
    *
    *
    */
-  emit_flap: boolean;
+  emit_flap?: boolean;
 
   /**
    * @remarks
    * If true, the `entityMove` game event will be emitted when the
    * entity moves on ground or through a solid.
    */
-  emit_move: boolean;
+  emit_move?: boolean;
 
   /**
    * @remarks
    * If true, the `swim` game event will be emitted when the entity
    * moves through a liquid.
    */
-  emit_swim: boolean;
+  emit_swim?: boolean;
 
 }

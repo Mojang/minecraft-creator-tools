@@ -23,5 +23,5 @@
     }
   ],
   "description": "Uniform distribution of possible anchor points",
-  "title": "UniformHeightProviderType World"
+  "title": "World UniformHeightProviderType"
 }

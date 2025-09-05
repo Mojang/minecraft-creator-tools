@@ -91,7 +91,9 @@ export default class JigsawProcessorListDefinition implements IDefinition {
 
     if (file.manager !== undefined && file.manager instanceof JigsawProcessorListDefinition) {
       jigsawProcessorList = file.manager as JigsawProcessorListDefinition;
-      await jigsawProcessorList.load();
+      if (!jigsawProcessorList.isLoaded) {
+        await jigsawProcessorList.load();
+      }
     }
 
     return jigsawProcessorList;
@@ -106,7 +108,9 @@ export default class JigsawProcessorListDefinition implements IDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
       return;

@@ -79,6 +79,6 @@ export default interface MinecraftMarkVariant {
    * Horse: 2, 3, 4
    *
    */
-  value: number;
+  value?: number;
 
 }

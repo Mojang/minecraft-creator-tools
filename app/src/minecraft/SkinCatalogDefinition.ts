@@ -110,11 +110,13 @@ export default class SkinCatalogDefinition {
     if (file.manager !== undefined && file.manager instanceof SkinCatalogDefinition) {
       et = file.manager as SkinCatalogDefinition;
 
-      if (!et.isLoaded && loadHandler) {
-        et.onLoaded.subscribe(loadHandler);
-      }
+      if (!et.isLoaded) {
+        if (loadHandler) {
+          et.onLoaded.subscribe(loadHandler);
+        }
 
-      await et.load();
+        await et.load();
+      }
     }
 
     return et;
@@ -152,7 +154,9 @@ export default class SkinCatalogDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
       return;
@@ -203,11 +207,13 @@ export default class SkinCatalogDefinition {
 
     for (const candItem of itemsCopy) {
       if (candItem.itemType === ProjectItemType.texture && packRootFolder && textureList) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
-        if (candItem.defaultFile) {
+        if (candItem.primaryFile) {
           let relativePath = TextureDefinition.canonicalizeTexturePath(
-            this.getRelativePath(candItem.defaultFile, packRootFolder)
+            this.getRelativePath(candItem.primaryFile, packRootFolder)
           );
 
           if (relativePath) {

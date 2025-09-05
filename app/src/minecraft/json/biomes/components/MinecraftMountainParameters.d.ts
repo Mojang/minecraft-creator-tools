@@ -13,8 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Mountain Parameters Biome
- * (minecraft:mountain_parameters)
+ * Biome Mountain Parameters (minecraft:mountain_parameters)
  * Noise parameters used to drive mountain terrain generation in
  * Overworld.
  */
@@ -24,44 +23,44 @@ export default interface MinecraftMountainParameters {
    * @remarks
    * Enable for east-facing slopes
    */
-  east_slopes: boolean;
+  east_slopes?: boolean;
 
   /**
    * @remarks
    * Block type use as steep material
    */
-  material: MinecraftMountainParametersMaterial;
+  material?: MinecraftMountainParametersMaterial;
 
   /**
    * @remarks
    * Enable for north-facing slopes
    */
-  north_slopes: boolean;
+  north_slopes?: boolean;
 
   /**
    * @remarks
    * Enable for south-facing slopes
    */
-  south_slopes: boolean;
+  south_slopes?: boolean;
 
   /**
    * @remarks
    * Defines surface material for steep slopes
    */
-  steep_material_adjustment: MinecraftMountainParametersSteepMaterialAdjustment;
+  steep_material_adjustment?: MinecraftMountainParametersSteepMaterialAdjustment;
 
   /**
    * @remarks
    * Controls the density tapering that happens at the top of the
    * world to prevent terrain from reaching too high
    */
-  top_slide: MinecraftMountainParametersTopSlide;
+  top_slide?: MinecraftMountainParametersTopSlide;
 
   /**
    * @remarks
    * Enable for west-facing slopes
    */
-  west_slopes: boolean;
+  west_slopes?: boolean;
 
 }
 
@@ -88,39 +87,31 @@ export interface MinecraftMountainParametersSteepMaterialAdjustment {
    * @remarks
    * Enable for east-facing slopes
    */
-  east_slopes: boolean;
+  east_slopes?: boolean;
 
   /**
    * @remarks
    * Block type use as steep material
    */
-  material: MinecraftMountainParametersSteepMaterialAdjustmentMaterial;
+  material?: string;
 
   /**
    * @remarks
    * Enable for north-facing slopes
    */
-  north_slopes: boolean;
+  north_slopes?: boolean;
 
   /**
    * @remarks
    * Enable for south-facing slopes
    */
-  south_slopes: boolean;
+  south_slopes?: boolean;
 
   /**
    * @remarks
    * Enable for west-facing slopes
    */
-  west_slopes: boolean;
-
-}
-
-
-/**
- * Material (material)
- */
-export interface MinecraftMountainParametersSteepMaterialAdjustmentMaterial {
+  west_slopes?: boolean;
 
 }
 

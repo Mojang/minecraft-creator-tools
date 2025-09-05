@@ -46,7 +46,7 @@ export default interface MinecraftDamageOverTime {
    *
    *
    */
-  damage_per_hurt: number;
+  damage_per_hurt?: number;
 
   /**
    * @remarks
@@ -56,6 +56,6 @@ export default interface MinecraftDamageOverTime {
    * Vex: 1
    *
    */
-  time_between_hurt: number;
+  time_between_hurt?: number;
 
 }

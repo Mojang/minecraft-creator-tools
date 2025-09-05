@@ -354,11 +354,13 @@ export default class EntityTypeResourceDefinition {
     if (file.manager !== undefined && file.manager instanceof EntityTypeResourceDefinition) {
       et = file.manager as EntityTypeResourceDefinition;
 
-      if (!et.isLoaded && loadHandler) {
-        et.onLoaded.subscribe(loadHandler);
-      }
+      if (!et.isLoaded) {
+        if (loadHandler) {
+          et.onLoaded.subscribe(loadHandler);
+        }
 
-      await et.load();
+        await et.load();
+      }
     }
 
     return et;
@@ -405,7 +407,7 @@ export default class EntityTypeResourceDefinition {
       return;
     }
 
-    const defString = JSON.stringify(this._dataWrapper, null, 2);
+    const defString = Utilities.consistentStringify(this._dataWrapper);
 
     this._file.setContent(defString);
   }
@@ -420,7 +422,9 @@ export default class EntityTypeResourceDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
       return;
@@ -455,10 +459,12 @@ export default class EntityTypeResourceDefinition {
     const etrChildItems = rel.parentItem.childItems;
 
     if (rel.childItem.itemType === ProjectItemType.texture && this._data && this._data.textures) {
-      await rel.childItem.ensureStorage();
+      if (!rel.childItem.isContentLoaded) {
+        await rel.childItem.loadContent();
+      }
 
-      if (rel.childItem.defaultFile && packRootFolder) {
-        let relativePath = this.getRelativePath(rel.childItem.defaultFile, packRootFolder);
+      if (rel.childItem.primaryFile && packRootFolder) {
+        let relativePath = this.getRelativePath(rel.childItem.primaryFile, packRootFolder);
 
         if (relativePath) {
           for (const key in this._data.textures) {
@@ -526,10 +532,12 @@ export default class EntityTypeResourceDefinition {
 
     for (const candItem of itemsCopy) {
       if (candItem.itemType === ProjectItemType.animationResourceJson && animationValList) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
-        if (candItem.defaultFile) {
-          const animationDef = await AnimationResourceDefinition.ensureOnFile(candItem.defaultFile);
+        if (candItem.primaryFile) {
+          const animationDef = await AnimationResourceDefinition.ensureOnFile(candItem.primaryFile);
 
           const animIds = animationDef?.idList;
 
@@ -543,7 +551,9 @@ export default class EntityTypeResourceDefinition {
           }
         }
       } else if (candItem.itemType === ProjectItemType.animationControllerResourceJson && animationControllerIdList) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
           const animationControllerDef = await AnimationControllerResourceDefinition.ensureOnFile(candItem.primaryFile);
@@ -560,7 +570,9 @@ export default class EntityTypeResourceDefinition {
           }
         }
       } else if (candItem.itemType === ProjectItemType.renderControllerJson && renderControllerIdList) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
           const renderControllerDef = await RenderControllerSetDefinition.ensureOnFile(candItem.primaryFile);
@@ -577,7 +589,9 @@ export default class EntityTypeResourceDefinition {
           }
         }
       } else if (candItem.itemType === ProjectItemType.texture && packRootFolder && textureList) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
           let relativePath = TextureDefinition.canonicalizeTexturePath(
@@ -593,7 +607,9 @@ export default class EntityTypeResourceDefinition {
           }
         }
       } else if (candItem.itemType === ProjectItemType.modelGeometryJson && geometryList) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
           const model = await ModelGeometryDefinition.ensureOnFile(candItem.primaryFile);

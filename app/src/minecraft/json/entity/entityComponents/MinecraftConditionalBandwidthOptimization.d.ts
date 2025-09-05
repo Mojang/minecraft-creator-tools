@@ -128,16 +128,15 @@ export default interface MinecraftConditionalBandwidthOptimization {
    * Sample Values:
    * Boat: [{"max_optimized_distance":0,"max_dropped_ticks":0,"use_motion_prediction_hints":true,"conditional_values":[{"test":"is_moving","subject":"self"}]}]
    *
-   *
    */
-  conditional_values: MinecraftConditionalBandwidthOptimizationConditionalValues[];
+  conditional_values?: MinecraftConditionalBandwidthOptimizationConditionalValues[];
 
   /**
    * @remarks
    * The object containing the default bandwidth optimization 
    * values.
    */
-  default_values: MinecraftConditionalBandwidthOptimizationDefaultValues[];
+  default_values?: MinecraftConditionalBandwidthOptimizationDefaultValues[];
 
 }
 
@@ -153,14 +152,14 @@ export interface MinecraftConditionalBandwidthOptimizationConditionalValues {
    * Conditions that must be met for these optimization values to be
    * used.
    */
-  conditional_values: jsoncommon.MinecraftFilter;
+  conditional_values?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
    * In relation to the optimization value, determines the maximum ticks
    * spatial update packets can be not sent.
    */
-  max_dropped_ticks: number;
+  max_dropped_ticks?: number;
 
   /**
    * @remarks
@@ -169,7 +168,7 @@ export interface MinecraftConditionalBandwidthOptimizationConditionalValues {
    * any value greater than or equal to this max results in max
    * optimization.
    */
-  max_optimized_distance: number;
+  max_optimized_distance?: number;
 
   /**
    * @remarks
@@ -179,7 +178,7 @@ export interface MinecraftConditionalBandwidthOptimizationConditionalValues {
    * This should be used when actors are travelling very quickly or
    * teleporting to prevent visual oddities.
    */
-  use_motion_prediction_hints: boolean;
+  use_motion_prediction_hints?: boolean;
 
 }
 
@@ -195,7 +194,7 @@ export interface MinecraftConditionalBandwidthOptimizationDefaultValues {
    * In relation to the optimization value, determines the maximum ticks
    * spatial update packets can be not sent.
    */
-  max_dropped_ticks: number;
+  max_dropped_ticks?: number;
 
   /**
    * @remarks
@@ -204,7 +203,7 @@ export interface MinecraftConditionalBandwidthOptimizationDefaultValues {
    * any value greater than or equal to this max results in max
    * optimization.
    */
-  max_optimized_distance: number;
+  max_optimized_distance?: number;
 
   /**
    * @remarks
@@ -214,6 +213,6 @@ export interface MinecraftConditionalBandwidthOptimizationDefaultValues {
    * This should be used when actors are travelling very quickly or
    * teleporting to prevent visual oddities.
    */
-  use_motion_prediction_hints: boolean;
+  use_motion_prediction_hints?: boolean;
 
 }

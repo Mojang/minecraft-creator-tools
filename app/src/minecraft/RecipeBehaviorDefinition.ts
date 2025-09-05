@@ -146,7 +146,9 @@ export default class RecipeBehaviorDefinition implements IDefinition {
 
       for (const candItem of itemsCopy) {
         if (candItem.itemType === ProjectItemType.itemTypeBehavior) {
-          await candItem.ensureStorage();
+          if (!candItem.isContentLoaded) {
+            await candItem.loadContent();
+          }
 
           if (candItem.primaryFile) {
             const itd = await ItemTypeDefinition.ensureOnFile(candItem.primaryFile);
@@ -184,11 +186,13 @@ export default class RecipeBehaviorDefinition implements IDefinition {
     if (file.manager !== undefined && file.manager instanceof RecipeBehaviorDefinition) {
       rbd = file.manager as RecipeBehaviorDefinition;
 
-      if (!rbd.isLoaded && loadHandler) {
-        rbd.onLoaded.subscribe(loadHandler);
-      }
+      if (!rbd.isLoaded) {
+        if (loadHandler) {
+          rbd.onLoaded.subscribe(loadHandler);
+        }
 
-      await rbd.load();
+        await rbd.load();
+      }
     }
 
     return rbd;
@@ -209,7 +213,9 @@ export default class RecipeBehaviorDefinition implements IDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

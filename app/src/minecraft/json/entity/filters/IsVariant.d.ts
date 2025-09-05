@@ -89,7 +89,7 @@ export default interface IsVariant {
    *
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
@@ -99,7 +99,7 @@ export default interface IsVariant {
    * Chest Boat: "self"
    *
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -108,7 +108,7 @@ export default interface IsVariant {
    * Boat: "is_variant"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -120,7 +120,7 @@ export default interface IsVariant {
    * Panda: 3, 6
    *
    */
-  value: number;
+  value?: number;
 
 }
 

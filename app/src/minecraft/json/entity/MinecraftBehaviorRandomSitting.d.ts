@@ -23,14 +23,14 @@ export default interface MinecraftBehaviorRandomSitting {
    * Time in seconds the mob has to wait before using the goal 
    * again
    */
-  cooldown_time: number;
+  cooldown_time?: number;
 
   /**
    * @remarks
    * The minimum amount of time in seconds before the mob can stand
    * back up
    */
-  min_sit_time: number;
+  min_sit_time?: number;
 
   /**
    * @remarks
@@ -38,20 +38,20 @@ export default interface MinecraftBehaviorRandomSitting {
    * priority, the sooner this behavior will be executed as a 
    * goal.
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * This is the chance that the mob will start this goal, from 0
    * to 1
    */
-  start_chance: number;
+  start_chance?: number;
 
   /**
    * @remarks
    * This is the chance that the mob will stop this goal, from 0 to
    * 1
    */
-  stop_chance: number;
+  stop_chance?: number;
 
 }

@@ -38,9 +38,10 @@ My Sword Shoot - https://github.com/microsoft/minecraft-samples/tree/main/custom
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Use Modifiers Item (minecraft:use_modifiers)
- * Determines how long an item takes to use in combination with
- * components such as Shooter, Throwable, or Food.
+ * Item Use Modifiers (minecraft:use_modifiers)
+ * This component modifies use effects, including how long the item
+ * takes to use and the player's speed when used in combination with
+ * components like "shooter", "throwable", or "food".
  */
 export default interface MinecraftUseModifiers {
 
@@ -52,8 +53,9 @@ export default interface MinecraftUseModifiers {
    * Sample Values:
    * Apple: 0.35
    *
+   *
    */
-  movement_modifier: number;
+  movement_modifier?: number;
 
   /**
    * @remarks
@@ -62,7 +64,12 @@ export default interface MinecraftUseModifiers {
    * Sample Values:
    * Apple: 1.6
    *
+   * Cooked Dream Turkey: 4
+   *
+   *
+   * My Sword Shoot: 3
+   *
    */
-  use_duration: number;
+  use_duration?: number;
 
 }

@@ -2,5 +2,5 @@
   "id": "query.can_swim",
   "fields": [],
   "description": "Returns 1.0 if the entity can swim, else it returns 0.0.",
-  "title": "Can Swim Query"
+  "title": "Can Swim"
 }

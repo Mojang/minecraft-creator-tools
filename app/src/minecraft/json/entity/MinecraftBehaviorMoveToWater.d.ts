@@ -62,7 +62,7 @@ export default interface MinecraftBehaviorMoveToWater {
    * Frog: 1.5
    *
    */
-  goal_radius: number;
+  goal_radius?: number;
 
   /**
    * @remarks
@@ -78,7 +78,7 @@ export default interface MinecraftBehaviorMoveToWater {
    * Frog: 3
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -91,7 +91,7 @@ export default interface MinecraftBehaviorMoveToWater {
    * Axolotl: 1
    *
    */
-  search_count: number;
+  search_count?: number;
 
   /**
    * @remarks
@@ -102,7 +102,7 @@ export default interface MinecraftBehaviorMoveToWater {
    *
    *
    */
-  search_height: number;
+  search_height?: number;
 
   /**
    * @remarks
@@ -117,12 +117,12 @@ export default interface MinecraftBehaviorMoveToWater {
    * Frog: 20
    *
    */
-  search_range: number;
+  search_range?: number;
 
   /**
    * @remarks
    * Movement speed multiplier of the mob when using this AI Goal
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

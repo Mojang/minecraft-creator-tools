@@ -34,28 +34,28 @@ export default interface MinecraftBehaviorGuardianAttack {
    * Amount of additional damage dealt from an elder guardian's magic
    * attack.
    */
-  elder_extra_magic_damage: number;
+  elder_extra_magic_damage?: number;
 
   /**
    * @remarks
    * In hard difficulty, amount of additional damage dealt from a
    * guardian's magic attack.
    */
-  hard_mode_extra_magic_damage: number;
+  hard_mode_extra_magic_damage?: number;
 
   /**
    * @remarks
    * Amount of damage dealt from a guardian's magic attack. Magic
    * attack damage is added to the guardian's base attack damage.
    */
-  magic_damage: number;
+  magic_damage?: number;
 
   /**
    * @remarks
    * Guardian attack behavior stops if the target is closer than this
    * distance (doesn't apply to elders).
    */
-  min_distance: number;
+  min_distance?: number;
 
   /**
    * @remarks
@@ -67,27 +67,27 @@ export default interface MinecraftBehaviorGuardianAttack {
    * Elder Guardian: 4
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * Time (in seconds) to wait after starting an attack before playing
    * the guardian attack sound.
    */
-  sound_delay_time: number;
+  sound_delay_time?: number;
 
   /**
    * @remarks
    * Maximum rotation (in degrees), on the X-axis, this entity can
    * rotate while trying to look at the target.
    */
-  x_max_rotation: number;
+  x_max_rotation?: number;
 
   /**
    * @remarks
    * Maximum rotation (in degrees), on the Y-axis, this entity can
    * rotate its head while trying to look at the target.
    */
-  y_max_head_rotation: number;
+  y_max_head_rotation?: number;
 
 }

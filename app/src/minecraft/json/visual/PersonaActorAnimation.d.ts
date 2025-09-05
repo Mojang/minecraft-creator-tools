@@ -33,18 +33,18 @@ export interface PersonaActorAnimationAnimations {
    * "query.anim_time + query.delta_time" which means advance in
    * seconds.
    */
-  anim_time_update: string;
+  anim_time_update?: string;
 
-  blend_weight: string;
+  blend_weight?: string;
 
-  bones: { [key: string]: any };
+  bones?: { [key: string]: any };
 
   /**
    * @remarks
    * should this animation stop, loop, or stay on the last frame when
    * finished (true, false, "hold_on_last_frame"
    */
-  loop: boolean;
+  loop?: boolean;
 
   /**
    * @remarks
@@ -52,30 +52,30 @@ export interface PersonaActorAnimationAnimations {
    * Note that this expression is evaluated after each loop and on
    * looping animation only.
    */
-  loop_delay: string;
+  loop_delay?: string;
 
   /**
    * @remarks
    * should this animation stop, loop, or stay on the last frame when
    * finished (true, false, "hold_on_last_frame"
    */
-  loopLessThanhold_on_last_frame: string;
+  loopLessThanhold_on_last_frame?: string;
 
   /**
    * @remarks
    * reset bones in this animation to the default pose before applying
    * this animation
    */
-  override_previous_animation: boolean;
+  override_previous_animation?: boolean;
 
-  particle_effects: { [key: string]: any };
+  particle_effects?: { [key: string]: any };
 
   /**
    * @remarks
    * sound effects to trigger as this animation plays, keyed by 
    * time
    */
-  sound_effects: { [key: string]: any };
+  sound_effects?: { [key: string]: any };
 
   /**
    * @remarks
@@ -85,9 +85,9 @@ export interface PersonaActorAnimationAnimations {
    * A looping animation should use 'loop_delay' if it wants a
    * delay between loops.
    */
-  start_delay: string;
+  start_delay?: string;
 
-  timeline: { [key: string]: any };
+  timeline?: { [key: string]: any };
 
 }
 
@@ -96,13 +96,13 @@ export interface PersonaActorAnimationAnimations {
  */
 export interface PersonaActorAnimationAnimationsBones {
 
-  position: { [key: string]: any };
+  position?: { [key: string]: any };
 
-  relative_to: PersonaActorAnimationAnimationsBonesRelativeTo;
+  relative_to?: PersonaActorAnimationAnimationsBonesRelativeTo;
 
-  rotation: { [key: string]: any };
+  rotation?: { [key: string]: any };
 
-  scale: { [key: string]: any };
+  scale?: { [key: string]: any };
 
 }
 
@@ -111,11 +111,11 @@ export interface PersonaActorAnimationAnimationsBones {
  */
 export interface PersonaActorAnimationAnimationsBonesPosition {
 
-  lerp_modeLessThanlinearcatmullrom: string;
+  lerp_modeLessThanlinearcatmullrom?: string;
 
-  post: string[];
+  post?: string[];
 
-  pre: string[];
+  pre?: string[];
 
 }
 
@@ -129,7 +129,7 @@ export interface PersonaActorAnimationAnimationsBonesRelativeTo {
    * if set, makes the bone rotation relative to the entity instead of
    * the bone's parent
    */
-  rotationLessThanentity: string;
+  rotationLessThanentity?: string;
 
 }
 
@@ -138,11 +138,11 @@ export interface PersonaActorAnimationAnimationsBonesRelativeTo {
  */
 export interface PersonaActorAnimationAnimationsBonesRotation {
 
-  lerp_modeLessThanlinearcatmullrom: string;
+  lerp_modeLessThanlinearcatmullrom?: string;
 
-  post: string[];
+  post?: string[];
 
-  pre: string[];
+  pre?: string[];
 
 }
 
@@ -151,11 +151,11 @@ export interface PersonaActorAnimationAnimationsBonesRotation {
  */
 export interface PersonaActorAnimationAnimationsBonesScale {
 
-  lerp_modeLessThanlinearcatmullrom: string;
+  lerp_modeLessThanlinearcatmullrom?: string;
 
-  post: string[];
+  post?: string[];
 
-  pre: string[];
+  pre?: string[];
 
 }
 
@@ -170,7 +170,7 @@ export interface PersonaActorAnimationAnimationsParticleEffects {
    * bound to an actor (by default an effect is bound to the 
    * actor).
    */
-  bind_to_actor: boolean;
+  bind_to_actor?: boolean;
 
   /**
    * @remarks
@@ -183,14 +183,14 @@ export interface PersonaActorAnimationAnimationsParticleEffects {
    * The name of a locator on the actor where the effect should be
    * located
    */
-  locator: string;
+  locator?: string;
 
   /**
    * @remarks
    * A Molang script that will be run when the particle emitter is
    * initialized
    */
-  pre_effect_script: string;
+  pre_effect_script?: string;
 
 }
 
@@ -211,7 +211,7 @@ export interface PersonaActorAnimationAnimationsSoundEffects {
    * The name of a locator on the actor where the sound should originate
    * from
    */
-  locator: string;
+  locator?: string;
 
 }
 

@@ -270,6 +270,11 @@ export default class EntityTypePropertyEditor extends Component<
                 formData = propData;
                 selectedIndex = stateCount;
               }
+            } else if (propData && (propData as any).type === "enum") {
+              formName = "blockstate_string";
+              formKey = key;
+              formData = (propData as any).values;
+              selectedIndex = stateCount;
             }
           }
 
@@ -315,25 +320,27 @@ export default class EntityTypePropertyEditor extends Component<
 
         Log.assertDefined(form);
 
-        propForms.push(
-          <div className="bcose-componentForm">
-            <DataForm
-              displayTitle={true}
-              displayDescription={true}
-              readOnly={false}
-              tag={formKey}
-              project={this.props.project}
-              lookupProvider={this.props.project}
-              theme={this.props.theme}
-              objectKey={formKey}
-              closeButton={false}
-              definition={form}
-              directObject={{
-                values: formData,
-              }}
-            ></DataForm>
-          </div>
-        );
+        if (form) {
+          propForms.push(
+            <div className="bcose-componentForm">
+              <DataForm
+                displayTitle={true}
+                displayDescription={true}
+                readOnly={false}
+                tag={formKey}
+                project={this.props.project}
+                lookupProvider={this.props.project}
+                theme={this.props.theme}
+                objectKey={formKey}
+                closeButton={false}
+                definition={form}
+                directObject={{
+                  values: formData,
+                }}
+              ></DataForm>
+            </div>
+          );
+        }
 
         toolbarItems.push({
           id: "deleteThisProp",

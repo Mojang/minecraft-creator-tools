@@ -223,7 +223,9 @@ export default class StorageProxy {
     }
 
     const canonPath = StorageUtilities.canonicalizePath(ensureFile.fullPath);
-    await ensureFile.loadContent();
+    if (!ensureFile.isContentLoaded) {
+      await ensureFile.loadContent();
+    }
 
     if (this._alternateContents[canonPath] !== undefined) {
       Log.verbose("Loading alternate text content for '" + canonPath + "'");
@@ -248,7 +250,9 @@ export default class StorageProxy {
 
     let content = undefined;
 
-    await ensureFile.loadContent();
+    if (!ensureFile.isContentLoaded) {
+      await ensureFile.loadContent();
+    }
 
     const canonPath = StorageUtilities.canonicalizePath(ensureFile.fullPath);
 
@@ -311,7 +315,9 @@ export default class StorageProxy {
       return;
     }
 
-    await folder.load();
+    if (!folder.isLoaded) {
+      await folder.load();
+    }
 
     const fileNames: string[] = [];
 
@@ -342,7 +348,9 @@ export default class StorageProxy {
       return;
     }
 
-    await folder.load();
+    if (!folder.isLoaded) {
+      await folder.load();
+    }
 
     this._sendMessage(sender, command, this._id, { isDirectory: true, isFile: false });
   }

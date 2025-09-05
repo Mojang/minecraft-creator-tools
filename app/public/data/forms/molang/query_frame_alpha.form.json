@@ -2,5 +2,5 @@
   "id": "query.frame_alpha",
   "fields": [],
   "description": "Returns the ratio (from 0 to 1) of how much between AI ticks this frame is being rendered.",
-  "title": "Frame Alpha Query"
+  "title": "Frame Alpha"
 }

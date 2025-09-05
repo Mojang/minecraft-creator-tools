@@ -410,7 +410,9 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
   summarize(info: any, infoSet: ProjectInfoSet) {}
 
   async generateFromBehaviorPackFolder(project: Project, folder: IFolder, items: ProjectInfoItem[]) {
-    await folder.load();
+    if (!folder.isLoaded) {
+      await folder.load();
+    }
 
     for (const folderName in folder.folders) {
       const childFolder = folder.folders[folderName];
@@ -455,7 +457,9 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
   }
 
   async generateFromResourcePackFolder(project: Project, folder: IFolder, items: ProjectInfoItem[]) {
-    await folder.load();
+    if (!folder.isLoaded) {
+      await folder.load();
+    }
 
     for (const folderName in folder.folders) {
       const childFolder = folder.folders[folderName];
@@ -546,7 +550,9 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
   }
 
   async generateFromFirstLevelFolderCreator_Game(project: Project, folder: IFolder, items: ProjectInfoItem[]) {
-    await folder.load();
+    if (!folder.isLoaded) {
+      await folder.load();
+    }
 
     for (const fileName in folder.files) {
       if (!this.isPerPackCatalogFile(folder.name, fileName)) {
@@ -631,7 +637,9 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
   }
 
   async generateFromFirstLevelFolderCreatorNameGameName(project: Project, folder: IFolder, items: ProjectInfoItem[]) {
-    await folder.load();
+    if (!folder.isLoaded) {
+      await folder.load();
+    }
 
     for (const fileName in folder.files) {
       if (!this.isPerPackCatalogFile(folder.name, fileName)) {
@@ -683,7 +691,9 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
     folder: IFolder,
     items: ProjectInfoItem[]
   ) {
-    await folder.load();
+    if (!folder.isLoaded) {
+      await folder.load();
+    }
 
     for (const fileName in folder.files) {
       const file = folder.files[fileName];

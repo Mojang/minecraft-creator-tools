@@ -5,10 +5,13 @@ import { EventDispatcher } from "ste-events";
 import IComponent from "./IComponent";
 import IManagedComponent from "./IManagedComponent";
 import Utilities from "../core/Utilities";
+import { IComponentContainer } from "./IComponentDataItem";
+import IProperty from "../dataform/IProperty";
 
 export class ManagedComponent implements IManagedComponent {
   private _data: IComponent | string | string[] | boolean | number[] | number | undefined;
-  private _parent: IComponent;
+  private _parent: IComponentContainer;
+  private _uniqueId: string;
   id: string;
 
   private _onPropertyChanged = new EventDispatcher<ManagedComponent, string>();
@@ -18,13 +21,15 @@ export class ManagedComponent implements IManagedComponent {
   }
 
   constructor(
-    parent: IComponent,
+    parent: IComponentContainer,
     id: string,
     data: IComponent | string | string[] | boolean | number[] | number | undefined
   ) {
     this._parent = parent;
     this._data = data;
     this.id = id;
+    this._uniqueId = Utilities.createRandomLowerId(8);
+    this.handlePropertyChanged = this.handlePropertyChanged.bind(this);
   }
 
   getData() {
@@ -47,6 +52,12 @@ export class ManagedComponent implements IManagedComponent {
     this._data = value;
   }
 
+  handlePropertyChanged(props: any, property: IProperty, newValue: any, updatedObject?: object | undefined) {
+    if (updatedObject) {
+      this.setData(updatedObject as any);
+    }
+  }
+
   getProperty(id: string) {
     if (!this._data) {
       return undefined;
@@ -56,19 +67,23 @@ export class ManagedComponent implements IManagedComponent {
   }
 
   setProperty(propertyId: string, value: any) {
-    if (typeof this._data === "string") {
-      if (this.id === "minecraft:geometry") {
-        this._data = {
-          identifier: this._data,
-        };
+    if (
+      typeof this._data === "string" ||
+      typeof this._data === "number" ||
+      typeof this._data === "boolean" ||
+      Array.isArray(this._data)
+    ) {
+      if (typeof this._data === typeof value || typeof value === "object") {
+        this.setData(value);
+        return;
       } else {
-        this._data = {
+        this.setData({
           value: this._data,
-        };
+        });
       }
     }
 
-    if (this._data && typeof this._data !== "string" && Utilities.isUsableAsObjectKey(propertyId)) {
+    if (this._data && Utilities.isUsableAsObjectKey(propertyId)) {
       (this._data as any)[propertyId] = value;
     }
   }

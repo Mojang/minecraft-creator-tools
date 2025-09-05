@@ -43,6 +43,6 @@
     }
   ],
   "description": "Represents the replacement information used to determine the placement of the overriding biome.",
-  "title": "Biome Replacement Biome",
+  "title": "Biome Replacement",
   "id": "Biome Replacement"
 }

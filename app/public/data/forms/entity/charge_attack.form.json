@@ -42,5 +42,5 @@
     }
   ],
   "description": "Allows this entity to damage a target by using a running attack.",
-  "title": "Minecraft Behavior.charge Attack Entity"
+  "title": "Entity Charge Attack Behavior"
 }

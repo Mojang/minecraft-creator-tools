@@ -56,7 +56,7 @@ export default interface MinecraftBehaviorSwimWithEntity {
    * Dolphin: 2.5
    *
    */
-  catch_up_multiplier: number;
+  catch_up_multiplier?: number;
 
   /**
    * @remarks
@@ -67,7 +67,7 @@ export default interface MinecraftBehaviorSwimWithEntity {
    * Dolphin: 12
    *
    */
-  catch_up_threshold: number;
+  catch_up_threshold?: number;
 
   /**
    * @remarks
@@ -78,7 +78,7 @@ export default interface MinecraftBehaviorSwimWithEntity {
    * Dolphin: 0.0333
    *
    */
-  chance_to_stop: number;
+  chance_to_stop?: number;
 
   /**
    * @remarks
@@ -88,7 +88,7 @@ export default interface MinecraftBehaviorSwimWithEntity {
    * Dolphin: [{"filters":{"test":"is_family","subject":"other","value":"player"}}]
    *
    */
-  entity_types: jsoncommon.MinecraftFilter;
+  entity_types?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -99,7 +99,7 @@ export default interface MinecraftBehaviorSwimWithEntity {
    * Dolphin: 2
    *
    */
-  match_direction_threshold: number;
+  match_direction_threshold?: number;
 
   /**
    * @remarks
@@ -111,7 +111,7 @@ export default interface MinecraftBehaviorSwimWithEntity {
    * Dolphin: 4
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -122,7 +122,7 @@ export default interface MinecraftBehaviorSwimWithEntity {
    * Dolphin: 20
    *
    */
-  search_range: number;
+  search_range?: number;
 
   /**
    * @remarks
@@ -133,7 +133,7 @@ export default interface MinecraftBehaviorSwimWithEntity {
    * Dolphin: 1.5
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -145,7 +145,7 @@ export default interface MinecraftBehaviorSwimWithEntity {
    * Dolphin: 0.5
    *
    */
-  state_check_interval: number;
+  state_check_interval?: number;
 
   /**
    * @remarks
@@ -156,7 +156,7 @@ export default interface MinecraftBehaviorSwimWithEntity {
    * Dolphin: 5
    *
    */
-  stop_distance: number;
+  stop_distance?: number;
 
   /**
    * @remarks
@@ -167,6 +167,6 @@ export default interface MinecraftBehaviorSwimWithEntity {
    * Dolphin: 0.1
    *
    */
-  success_rate: number;
+  success_rate?: number;
 
 }

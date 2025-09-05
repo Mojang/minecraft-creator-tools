@@ -102,7 +102,15 @@ export default class Log {
     Log.fail("Unexpected arguments found." + (token ? " (" + token + ")" : ""));
   }
 
-  static log(message: string, level: LogItemLevel, context?: string, category?: string) {
+  static log(message: string | object, level: LogItemLevel, context?: string, category?: string) {
+    if (typeof message !== "string") {
+      if ((message as any).message) {
+        message = (message as any).message as string;
+      } else {
+        message = JSON.stringify(message);
+      }
+    }
+
     const logItem = new LogItem(message, level, context, category);
 
     this._log.push(logItem);
@@ -192,12 +200,12 @@ export default class Log {
         const nextSpace = stack.indexOf(" ", 8);
 
         if (nextSpace >= 0) {
-          header = "=== " + stack.substring(7, nextSpace) + " ===\r\n\r\n";
+          header = "=== " + stack.substring(7, nextSpace) + " ===\n\n";
         }
       }
     }
 
-    const wholeMessage = header + message + "\r\n" + stack;
+    const wholeMessage = header + message + "\n" + stack;
 
     if (LogItem.alertFunction) {
       let stackTrim = stack;
@@ -206,17 +214,17 @@ export default class Log {
         stackTrim = stackTrim.substring(0, 80);
       }
 
-      LogItem.alertFunction(message + "\r\n\r\n" + stackTrim);
+      LogItem.alertFunction(message + "\n\n" + stackTrim);
       // debugger;
       return;
     } else if (AppServiceProxy.hasAppService && CartoApp.isWeb) {
       // @ts-ignore
-      alert(header + message + "\r\n\r\n" + stack);
+      alert(header + message + "\n\n" + stack);
       debugger;
       return;
       // @ts-ignore
     } else if (typeof window === "undefined") {
-      console.log(header + message + "\r\n\r\n" + stack);
+      console.log(header + message + "\n\n" + stack);
       return;
     }
 

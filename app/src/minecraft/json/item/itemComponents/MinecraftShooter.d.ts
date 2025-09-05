@@ -10,20 +10,6 @@
  * Items Documentation - minecraft:shooter
  * 
  * minecraft:shooter Samples
-"minecraft:shooter": {
-  "ammunition": [
-    {
-      "item": "custom_projectile",
-      "use_offhand": true,
-      "search_inventory": true,
-      "use_in_creative": true
-    }
-  ],
-  "max_draw_duration": 1,
-  "scale_power_by_draw_duration": true,
-  "charge_on_draw": false
-}
-
 
 My Sword Shoot - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/behavior_packs/custom_item/items/my_sword_shoot.json
 
@@ -46,16 +32,8 @@ My Sword Shoot - https://github.com/microsoft/minecraft-samples/tree/main/custom
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Shooter Item (minecraft:shooter)
- * Compels an item to shoot projectiles, similarly to a bow or
- * crossbow. Must have the minecraft:use_modifiers component in
- * order to function properly.
- * Note: Ammunition used by minecraft:shooter must have the
- * minecraft:projectile component in order to function 
- * properly.
- * Note: Items equipped with the shooter component will only sustain
- * damage while shooting. Durability will remain unaffected if the
- * item is used for melee attacks.
+ * Item Shooter (minecraft:shooter)
+ * Shooter Item Component.
  */
 export default interface MinecraftShooter {
 
@@ -67,13 +45,13 @@ export default interface MinecraftShooter {
    * My Sword Shoot: [{"item":"minecraft:snowball","use_offhand":true,"search_inventory":true,"use_in_creative":true}]
    *
    */
-  ammunition: MinecraftShooterAmmunition;
+  ammunition?: MinecraftShooterAmmunition;
 
   /**
    * @remarks
    * Charge on draw? Default is set to false.
    */
-  charge_on_draw: boolean;
+  charge_on_draw?: boolean;
 
   /**
    * @remarks
@@ -83,7 +61,7 @@ export default interface MinecraftShooter {
    * My Sword Shoot: 1
    *
    */
-  max_draw_duration: number;
+  max_draw_duration?: number;
 
   /**
    * @remarks
@@ -93,13 +71,13 @@ export default interface MinecraftShooter {
    * My Sword Shoot: true
    *
    */
-  scale_power_by_draw_duration: boolean;
+  scale_power_by_draw_duration?: boolean;
 
 }
 
 
 /**
- * Ammunition Item (Ammunition)
+ * Item Components Ammunition (Ammunition)
  */
 export interface MinecraftShooterAmmunition {
 
@@ -113,18 +91,18 @@ export interface MinecraftShooterAmmunition {
    * @remarks
    * Can search inventory? Default is set to false.
    */
-  search_inventory: boolean;
+  search_inventory?: boolean;
 
   /**
    * @remarks
    * Can use in creative mode? Default is set to false.
    */
-  use_in_creative: boolean;
+  use_in_creative?: boolean;
 
   /**
    * @remarks
    * Can use off-hand? Default is set to false.
    */
-  use_offhand: boolean;
+  use_offhand?: boolean;
 
 }

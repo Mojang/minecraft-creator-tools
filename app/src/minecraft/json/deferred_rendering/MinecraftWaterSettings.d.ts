@@ -23,13 +23,13 @@ export default interface MinecraftWaterSettings {
    * @remarks
    * [editor(readonly:true)]
    */
-  format_version: string;
+  format_version?: string;
 
   /**
    * @remarks
    * minecraft:water_settings
    */
-  "minecraft:water_settings": MinecraftWaterSettingsMinecraftWaterSettings;
+  "minecraft:water_settings"?: MinecraftWaterSettingsMinecraftWaterSettings;
 
 }
 
@@ -44,25 +44,25 @@ export interface MinecraftWaterSettingsMinecraftWaterSettings {
    * @remarks
    * caustics
    */
-  caustics: MinecraftWaterSettingsMinecraftWaterSettingsCaustics;
+  caustics?: MinecraftWaterSettingsMinecraftWaterSettingsCaustics;
 
   /**
    * @remarks
    * description
    */
-  description: MinecraftWaterSettingsMinecraftWaterSettingsDescription;
+  description?: MinecraftWaterSettingsMinecraftWaterSettingsDescription;
 
   /**
    * @remarks
    * particle_concentrations
    */
-  particle_concentrations: MinecraftWaterSettingsMinecraftWaterSettingsParticleConcentrations;
+  particle_concentrations?: MinecraftWaterSettingsMinecraftWaterSettingsParticleConcentrations;
 
   /**
    * @remarks
    * waves
    */
-  waves: MinecraftWaterSettingsMinecraftWaterSettingsWaves;
+  waves?: MinecraftWaterSettingsMinecraftWaterSettingsWaves;
 
 }
 
@@ -77,31 +77,31 @@ export interface MinecraftWaterSettingsMinecraftWaterSettingsCaustics {
    * @remarks
    * enabled
    */
-  enabled: boolean;
+  enabled?: boolean;
 
   /**
    * @remarks
    * frame_length
    */
-  frame_length: number;
+  frame_length?: number;
 
   /**
    * @remarks
    * power
    */
-  power: number;
+  power?: number;
 
   /**
    * @remarks
    * scale
    */
-  scale: number;
+  scale?: number;
 
   /**
    * @remarks
    * texture
    */
-  texture: string;
+  texture?: string;
 
 }
 
@@ -118,7 +118,7 @@ export interface MinecraftWaterSettingsMinecraftWaterSettingsDescription {
    * @remarks
    * identifier
    */
-  identifier: string;
+  identifier?: string;
 
 }
 
@@ -133,19 +133,19 @@ export interface MinecraftWaterSettingsMinecraftWaterSettingsParticleConcentrati
    * @remarks
    * cdom
    */
-  cdom: number;
+  cdom?: number;
 
   /**
    * @remarks
    * chlorophyll
    */
-  chlorophyll: number;
+  chlorophyll?: number;
 
   /**
    * @remarks
    * suspended_sediment
    */
-  suspended_sediment: number;
+  suspended_sediment?: number;
 
 }
 
@@ -160,72 +160,72 @@ export interface MinecraftWaterSettingsMinecraftWaterSettingsWaves {
    * @remarks
    * depth
    */
-  depth: number;
+  depth?: number;
 
   /**
    * @remarks
    * direction_increment
    */
-  direction_increment: number;
+  direction_increment?: number;
 
   /**
    * @remarks
    * enabled
    */
-  enabled: boolean;
+  enabled?: boolean;
 
   /**
    * @remarks
    * frequency
    */
-  frequency: number;
+  frequency?: number;
 
   /**
    * @remarks
    * frequency_scaling
    */
-  frequency_scaling: number;
+  frequency_scaling?: number;
 
   /**
    * @remarks
    * mix
    */
-  mix: number;
+  mix?: number;
 
   /**
    * @remarks
    * octaves
    */
-  octaves: number;
+  octaves?: number;
 
   /**
    * @remarks
    * pull
    */
-  pull: number;
+  pull?: number;
 
   /**
    * @remarks
    * sampleWidth
    */
-  sampleWidth: number;
+  sampleWidth?: number;
 
   /**
    * @remarks
    * shape
    */
-  shape: number;
+  shape?: number;
 
   /**
    * @remarks
    * speed
    */
-  speed: number;
+  speed?: number;
 
   /**
    * @remarks
    * speed_scaling
    */
-  speed_scaling: number;
+  speed_scaling?: number;
 
 }

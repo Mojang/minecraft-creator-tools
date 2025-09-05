@@ -52,7 +52,9 @@ export default class CheckGeometryFormatInfoGenerator implements IProjectInfoGen
 
       for (const item of projItems) {
         if (item.itemType === ProjectItemType.modelGeometryJson) {
-          await item.ensureStorage();
+          if (!item.loadContent) {
+            await item.loadContent();
+          }
           if (!item.primaryFile) {
             continue;
           }

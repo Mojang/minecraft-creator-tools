@@ -51,13 +51,13 @@ export default interface IsBrightness {
    *
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
    * (Optional) The subject of this filter test.
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -66,7 +66,7 @@ export default interface IsBrightness {
    * Cave Spider: "is_brightness"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -76,7 +76,7 @@ export default interface IsBrightness {
    * Cave Spider: 0.49
    *
    */
-  value: number;
+  value?: number;
 
 }
 

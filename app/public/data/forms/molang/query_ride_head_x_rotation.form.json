@@ -2,5 +2,5 @@
   "id": "query.ride_head_x_rotation",
   "fields": [],
   "description": "Returns the head x world-rotation of the ride of an entity, else it returns 0.0.",
-  "title": "Ride Head x Rotation Query"
+  "title": "Ride Head x Rotation"
 }

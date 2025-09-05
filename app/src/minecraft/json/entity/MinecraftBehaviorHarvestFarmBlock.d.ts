@@ -11,6 +11,14 @@
  * 
  * minecraft:behavior.harvest_farm_block Samples
 
+Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager.json
+
+"minecraft:behavior.harvest_farm_block": {
+  "priority": 9,
+  "speed_multiplier": 0.5
+}
+
+
 Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
  * At /minecraft:entity/component_groups/job_specific_goals/minecraft:behavior.harvest_farm_block/: 
@@ -19,14 +27,6 @@ Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
  * At /minecraft:entity/component_groups/work_schedule_farmer/minecraft:behavior.harvest_farm_block/: 
 "minecraft:behavior.harvest_farm_block": {
   "priority": 7
-}
-
-
-Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager.json
-
-"minecraft:behavior.harvest_farm_block": {
-  "priority": 9,
-  "speed_multiplier": 0.5
 }
 
  */
@@ -49,7 +49,7 @@ export default interface MinecraftBehaviorHarvestFarmBlock {
    * Distance in blocks within the entity considers it has reached it's
    * target position. 
    */
-  goal_radius: number;
+  goal_radius?: number;
 
   /**
    * @remarks
@@ -57,7 +57,7 @@ export default interface MinecraftBehaviorHarvestFarmBlock {
    * before searching for the first harvest block. The time is
    * chosen between 0 and this number.
    */
-  max_seconds_before_search: number;
+  max_seconds_before_search?: number;
 
   /**
    * @remarks
@@ -66,12 +66,12 @@ export default interface MinecraftBehaviorHarvestFarmBlock {
    * goal.
    * 
    * Sample Values:
-   * Villager v2: 7
-   *
    * Villager: 9
    *
+   * Villager v2: 7
+   *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -79,7 +79,7 @@ export default interface MinecraftBehaviorHarvestFarmBlock {
    * before searching again, after failing to find a a harvest block
    * already. The time is chosen between 0 and this number.
    */
-  search_cooldown_max_seconds: number;
+  search_cooldown_max_seconds?: number;
 
   /**
    * @remarks
@@ -88,28 +88,28 @@ export default interface MinecraftBehaviorHarvestFarmBlock {
    * move to. A value of 0 will have the mob check every block within
    * range in one tick.
    */
-  search_count: number;
+  search_count?: number;
 
   /**
    * @remarks
    * The Height in blocks the entity will search within to find a
    * valid target position.
    */
-  search_height: number;
+  search_height?: number;
 
   /**
    * @remarks
    * The distance in blocks the entity will search within to find a
    * valid target position.
    */
-  search_range: number;
+  search_range?: number;
 
   /**
    * @remarks
    * The amount of time in seconds that the goal will cooldown after a
    * successful reap/sow, before it can start again.
    */
-  seconds_until_new_task: number;
+  seconds_until_new_task?: number;
 
   /**
    * @remarks
@@ -120,6 +120,6 @@ export default interface MinecraftBehaviorHarvestFarmBlock {
    * Villager: 0.5
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

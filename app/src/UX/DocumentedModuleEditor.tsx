@@ -500,6 +500,10 @@ export default class DocumentedModuleEditor extends Component<
       );
     }
 
+    if (!form) {
+      return <div>(Error loading form)...</div>;
+    }
+
     return (
       <div
         className="dme-area"

@@ -54,7 +54,7 @@ export default interface MinecraftIsBaby {
    * Villager v2: "=="
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
@@ -64,7 +64,7 @@ export default interface MinecraftIsBaby {
    *
    *
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -74,7 +74,7 @@ export default interface MinecraftIsBaby {
    *
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -83,6 +83,6 @@ export default interface MinecraftIsBaby {
    * Villager v2: true
    *
    */
-  value: string;
+  value?: string;
 
 }

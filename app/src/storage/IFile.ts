@@ -5,6 +5,7 @@ import IFolder from "./IFolder";
 import IStorage from "./IStorage";
 import IStorageObject from "./IStorageObject";
 import { EncodingType } from "./StorageUtilities";
+import { IEvent } from "ste-events";
 
 export default interface IFile extends IStorageObject {
   modified: Date | null;
@@ -18,6 +19,7 @@ export default interface IFile extends IStorageObject {
   extendedPath: string;
   readonly coreContentLength: number;
   readonly type: string;
+  onFileContentUpdated: IEvent<IFile, IFile>;
 
   isInErrorState?: boolean;
   errorStateMessage?: string;

@@ -7,6 +7,7 @@ import StorageUtilities from "./StorageUtilities";
 import IStorage from "./IStorage";
 import md5 from "js-md5";
 import Log from "../core/Log";
+import { EventDispatcher } from "ste-events";
 
 export default abstract class FileBase implements IFile {
   abstract get name(): string;
@@ -21,9 +22,14 @@ export default abstract class FileBase implements IFile {
   protected _content: string | Uint8Array | null;
 
   #fileContainerStorage: IStorage | null = null;
+  #onFileContentUpdated = new EventDispatcher<IFile, IFile>();
 
   get fileContainerStorage() {
     return this.#fileContainerStorage;
+  }
+
+  public get onFileContentUpdated() {
+    return this.#onFileContentUpdated.asEvent();
   }
 
   set fileContainerStorage(newStorage: IStorage | null) {
@@ -154,9 +160,15 @@ export default abstract class FileBase implements IFile {
 
     this.modified = new Date();
 
+    this.notifyFileContentUpdated();
+
     if (this.parentFolder.storage) {
       this.parentFolder.storage.notifyFileContentsUpdated(this);
     }
+  }
+
+  notifyFileContentUpdated() {
+    this.#onFileContentUpdated.dispatch(this, this);
   }
 
   async getHash(): Promise<string | undefined> {

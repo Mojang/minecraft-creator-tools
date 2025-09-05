@@ -29,25 +29,25 @@ export default interface FloatProperty {
    * @remarks
    * (Required) The property name to look for
    */
-  domain: string;
+  domain?: string;
 
   /**
    * @remarks
    * (Optional) The comparison to apply with 'value'.
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
    * (Optional) The subject of this filter test.
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
    * (Required) A floating point value.
    */
-  value: number;
+  value?: number;
 
 }
 

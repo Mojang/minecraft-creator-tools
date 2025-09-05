@@ -1,0 +1,6 @@
+{
+  "id": "`math.clamp(value, min, max)`",
+  "fields": [],
+  "description": "Clamp value to between min and max inclusive",
+  "title": "Clamp(value, Min, Max)"
+}

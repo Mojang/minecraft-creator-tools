@@ -7,7 +7,8 @@ import { IProjectInfoTopicData } from "../IProjectInfoGeneratorBase";
 import ProjectInfoItem from "../ProjectInfoItem";
 import { InfoItemType } from "../IInfoItemData";
 import ProjectInfoUtilities from "../ProjectInfoUtilities";
-import { PackType } from "../../minecraft/Pack";
+import { ProjectItemType } from "../../app/IProjectItemData";
+import ProjectItem from "../../app/ProjectItem";
 
 /* Older versions do not require a check */
 const MinVersionForCheck = new SemanticVersion(1, 20, 60);
@@ -35,11 +36,15 @@ export default class CheckParticleIdentifierGenerator implements IProjectInfoGen
   async generate(project: Project): Promise<ProjectInfoItem[]> {
     const results: ProjectInfoItem[] = [];
 
-    for (const pack of project.packs.filter((pack) => pack.type === PackType.resource)) {
-      const particleJsonFilesForPack = await pack.getFiles(isParticleJson);
+    const particleItems = project.getItemsByType(ProjectItemType.particleJson);
 
-      for (const file of particleJsonFilesForPack) {
-        const packResults = await this.getResultsForFile(file);
+    for (const particleItem of particleItems) {
+      if (!particleItem.isContentLoaded) {
+        await particleItem.loadContent();
+      }
+
+      if (particleItem.primaryFile) {
+        const packResults = await this.getResultsForFile(particleItem.primaryFile, particleItem);
         results.push(...packResults);
       }
     }
@@ -47,19 +52,19 @@ export default class CheckParticleIdentifierGenerator implements IProjectInfoGen
     return results;
   }
 
-  async getResultsForFile(file: IFile): Promise<ProjectInfoItem[]> {
+  async getResultsForFile(file: IFile, particleItem: ProjectItem): Promise<ProjectInfoItem[]> {
     const json = await StorageUtilities.getJsonObject(file);
 
     if (!json) {
       const message = `Failed to read file: ${file.name}`;
-      return [this.createResult(CheckParticleIdentifier.FailedToReadFile, message)];
+      return [this.createResult(CheckParticleIdentifier.FailedToReadFile, message, particleItem)];
     }
 
     const version = SemanticVersion.parse(json.format_version);
 
     if (!version) {
       const message = `'format_version' expected in json in file: ${file.name}`;
-      return [this.createResult(CheckParticleIdentifier.FailedToReadVersion, message)];
+      return [this.createResult(CheckParticleIdentifier.FailedToReadVersion, message, particleItem)];
     }
 
     const checkNeeded = version.compareTo(MinVersionForCheck) >= 0;
@@ -72,14 +77,14 @@ export default class CheckParticleIdentifierGenerator implements IProjectInfoGen
 
     if (!isValidParticleIdentifier(indentifier)) {
       const message = "Invalid Particle Identifier. Particle identifier requires a namespace.";
-      return [this.createResult(CheckParticleIdentifier.InvalidParticleIdentifier, message)];
+      return [this.createResult(CheckParticleIdentifier.InvalidParticleIdentifier, message, particleItem)];
     }
 
     return [];
   }
 
-  private createResult(test: CheckParticleIdentifier, message: string) {
-    return new ProjectInfoItem(this.severity, this.id, test, message);
+  private createResult(test: CheckParticleIdentifier, message: string, particleItem: ProjectItem) {
+    return new ProjectInfoItem(this.severity, this.id, test, message, particleItem);
   }
 
   getTopicData(topicId: number): IProjectInfoTopicData | undefined {
@@ -92,8 +97,4 @@ export default class CheckParticleIdentifierGenerator implements IProjectInfoGen
 
 function isValidParticleIdentifier(identifier?: string) {
   return identifier && NamespaceRegexPattern.test(identifier);
-}
-
-function isParticleJson(file: IFile): boolean {
-  return StorageUtilities.isJsonFile(file) && file.parentFolder.name === "particles";
 }

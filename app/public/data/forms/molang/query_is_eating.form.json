@@ -2,5 +2,5 @@
   "id": "query.is_eating",
   "fields": [],
   "description": "Returns 1.0 if the entity is eating, else it returns 0.0. Applies to the panda.",
-  "title": "Is Eating Query"
+  "title": "Is Eating"
 }

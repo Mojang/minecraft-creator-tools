@@ -69,7 +69,7 @@ export default interface MinecraftAngerLevel {
    * Warden: 1
    *
    */
-  anger_decrement_interval: string;
+  anger_decrement_interval?: string;
 
   /**
    * @remarks
@@ -79,7 +79,7 @@ export default interface MinecraftAngerLevel {
    * Warden: 20
    *
    */
-  angry_boost: number;
+  angry_boost?: number;
 
   /**
    * @remarks
@@ -90,14 +90,14 @@ export default interface MinecraftAngerLevel {
    * Warden: 80
    *
    */
-  angry_threshold: number;
+  angry_threshold?: number;
 
   /**
    * @remarks
    * If set, other entities of the same entity definition within the
    * broadcastRange will also become angry
    */
-  broadcast_anger: boolean;
+  broadcast_anger?: boolean;
 
   /**
    * @remarks
@@ -105,32 +105,32 @@ export default interface MinecraftAngerLevel {
    * broadcastRange will also become angry whenever this mob 
    * attacks
    */
-  broadcast_anger_on_attack: boolean;
+  broadcast_anger_on_attack?: boolean;
 
   /**
    * @remarks
    * Conditions that make this entry in the list valid
    */
-  broadcast_filters: jsoncommon.MinecraftFilter;
+  broadcast_filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
    * Distance in blocks within which other entities of the same entity
    * type will become angry
    */
-  broadcast_range: number;
+  broadcast_range?: number;
 
   /**
    * @remarks
    * A list of entity families to broadcast anger to
    */
-  broadcast_targets: string[];
+  broadcast_targets?: string[];
 
   /**
    * @remarks
    * Event to fire when this entity is calmed down
    */
-  calm_event: string;
+  calm_event?: string;
 
   /**
    * @remarks
@@ -141,7 +141,7 @@ export default interface MinecraftAngerLevel {
    * Warden: 35
    *
    */
-  default_annoyingness: string;
+  default_annoyingness?: string;
 
   /**
    * @remarks
@@ -150,26 +150,26 @@ export default interface MinecraftAngerLevel {
    * Warden: 10
    *
    */
-  default_projectile_annoyingness: number;
+  default_projectile_annoyingness?: number;
 
   /**
    * @remarks
    * The amount of time in seconds that the entity will be angry.
    */
-  duration: number;
+  duration?: number;
 
   /**
    * @remarks
    * Variance in seconds added to the duration [-delta, delta].
    */
-  duration_delta: number;
+  duration_delta?: number;
 
   /**
    * @remarks
    * Filter out mob types that it should not attack while angry (other
    * Piglins)
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -180,7 +180,7 @@ export default interface MinecraftAngerLevel {
    * Warden: 150
    *
    */
-  max_anger: number;
+  max_anger?: number;
 
   /**
    * @remarks
@@ -191,7 +191,7 @@ export default interface MinecraftAngerLevel {
    * Warden: {"all_of":[{"test":"is_family","subject":"other","operator":"not","value":"warden"},{"test":"is_family","subject":"other","operator":"not","value":"inanimate"}]}
    *
    */
-  nuisance_filter: jsoncommon.MinecraftFilter;
+  nuisance_filter?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -202,7 +202,7 @@ export default interface MinecraftAngerLevel {
    * Warden: [{"sound":"listening_angry","condition":"query.anger_level(this) >= 40"},{"sound":"listening","condition":"query.anger_level(this) >= 0"}]
    *
    */
-  on_increase_sounds: MinecraftAngerLevelOnIncreaseSounds[];
+  on_increase_sounds?: MinecraftAngerLevelOnIncreaseSounds[];
 
   /**
    * @remarks
@@ -213,14 +213,14 @@ export default interface MinecraftAngerLevel {
    * Warden: true
    *
    */
-  remove_targets_below_angry_threshold: boolean;
+  remove_targets_below_angry_threshold?: boolean;
 
   /**
    * @remarks
    * Anger boost applied to angry threshold when the entity gets
    * angry.
    */
-  sound_interval: number[];
+  sound_interval?: number[];
 
 }
 
@@ -236,12 +236,12 @@ export interface MinecraftAngerLevelOnIncreaseSounds {
    * A Molang expression describing under which conditions to play
    * this sound, given that the entity was provoked
    */
-  condition: string;
+  condition?: string;
 
   /**
    * @remarks
    * The sound to play
    */
-  sound: string;
+  sound?: string;
 
 }

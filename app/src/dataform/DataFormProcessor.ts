@@ -72,7 +72,7 @@ export default class DataFormProcessor {
 
               if (
                 keyCount === 0 &&
-                (field.undefinedIfEmpty ||
+                (!field.retainIfEmptyOrDefault ||
                   field.dataType === FieldDataType.minecraftEventTrigger ||
                   field.dataType === FieldDataType.minecraftFilter)
               ) {
@@ -109,7 +109,7 @@ export default class DataFormProcessor {
                 }
               }
 
-              if (keyCount === 0 && field.undefinedIfEmpty) {
+              if (keyCount === 0 && !field.retainIfEmptyOrDefault) {
                 issues.push({
                   subject: key,
                   message: "Object is defined but empty; should be undefined.",

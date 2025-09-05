@@ -118,7 +118,7 @@ export default class SpawnRulesEditor extends Component<ISpawnRulesEditorProps, 
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
-      if (file.manager !== null) {
+      if (file.manager) {
         const srbd = file.manager as SpawnRulesBehaviorDefinition;
 
         srbd.persist();
@@ -176,6 +176,10 @@ export default class SpawnRulesEditor extends Component<ISpawnRulesEditorProps, 
     let header = <></>;
     if (this.props.displayHeader === undefined || this.props.displayHeader) {
       header = <div className="sre-header">Spawn Rules</div>;
+    }
+
+    if (!form) {
+      return <div className="sre-loading">Form not found</div>;
     }
 
     return (

@@ -28,6 +28,6 @@ export default interface MinecraftIgnoreCannotBeAttacked {
    * subject "other". If this is not specified then all attacks by
    * the owner are allowed.
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
 }

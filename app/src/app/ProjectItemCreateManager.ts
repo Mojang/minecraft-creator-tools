@@ -182,7 +182,7 @@ export default class ProjectItemCreateManager {
       ProjectItemCreationType.normal
     );
 
-    const file = await pi.ensureFileStorage();
+    const file = await pi.loadFileContent();
 
     if (file !== null) {
       const baseName = StorageUtilities.getBaseFromName(file.name);
@@ -242,7 +242,9 @@ export default class ProjectItemCreateManager {
       if (!containerFile.fileContainerStorage) {
         const zipStorage = new ZipStorage();
 
-        await containerFile.loadContent();
+        if (!containerFile.isContentLoaded) {
+          await containerFile.loadContent();
+        }
 
         if (!containerFile.content || !(containerFile.content instanceof Uint8Array)) {
           return undefined;
@@ -311,7 +313,9 @@ export default class ProjectItemCreateManager {
       if (!containerFile.fileContainerStorage) {
         const zipStorage = new ZipStorage();
 
-        await containerFile.loadContent();
+        if (!containerFile.isContentLoaded) {
+          await containerFile.loadContent();
+        }
 
         if (!containerFile.content || !(containerFile.content instanceof Uint8Array)) {
           return undefined;
@@ -372,7 +376,7 @@ export default class ProjectItemCreateManager {
       ProjectItemCreationType.normal
     );
 
-    const file = await pi.ensureFileStorage();
+    const file = await pi.loadFileContent();
 
     if (file !== null) {
       const baseName = StorageUtilities.getBaseFromName(file.name);
@@ -424,7 +428,7 @@ export default class ProjectItemCreateManager {
       ProjectItemCreationType.normal
     );
 
-    const file = await pi.ensureFileStorage();
+    const file = await pi.loadFileContent();
 
     if (file !== null) {
       const content = "say hello";
@@ -463,7 +467,7 @@ export default class ProjectItemCreateManager {
       ProjectItemCreationType.normal
     );
 
-    const file = await pi.ensureFileStorage();
+    const file = await pi.loadFileContent();
 
     if (file !== null) {
       const structureBytes = ProjectContent.generateDefaultStructure();
@@ -504,7 +508,7 @@ export default class ProjectItemCreateManager {
       ProjectItemCreationType.normal
     );
 
-    const file = await pi.ensureFileStorage();
+    const file = await pi.loadFileContent();
 
     if (file !== null) {
       const baseName = StorageUtilities.getBaseFromName(file.name);
@@ -544,7 +548,7 @@ export default class ProjectItemCreateManager {
       ProjectItemCreationType.normal
     );
 
-    await pi.ensureFolderStorage();
+    await pi.loadFolder();
 
     await ProjectAutogeneration.updateProjectAutogeneration(project);
 
@@ -615,7 +619,7 @@ export default class ProjectItemCreateManager {
       ProjectItemCreationType.normal
     );
 
-    const file = await pi.ensureFileStorage();
+    const file = await pi.loadFileContent();
 
     if (file !== null) {
       const content = "{}";
@@ -636,12 +640,16 @@ export default class ProjectItemCreateManager {
     const items = project.getItemsByType(ProjectItemType.soundDefinitionCatalog);
 
     if (items.length > 0) {
-      await items[0].ensureStorage();
+      if (!items[0].isContentLoaded) {
+        await items[0].loadContent();
+      }
 
       const itemFile = items[0].primaryFile;
 
       if (itemFile) {
-        await itemFile.loadContent();
+        if (!itemFile.isContentLoaded) {
+          await itemFile.loadContent();
+        }
 
         if (!itemFile.content) {
           this.setFileToDefaultContent(itemFile);
@@ -684,7 +692,7 @@ export default class ProjectItemCreateManager {
       ProjectItemCreationType.normal
     );
 
-    const file = await pi.ensureFileStorage();
+    const file = await pi.loadFileContent();
 
     if (file === null) {
       return undefined;
@@ -700,7 +708,7 @@ export default class ProjectItemCreateManager {
   }
 
   static setFileToDefaultContent(file: IFile) {
-    const content = '{\r\n   "format_version" : "1.20.20",\r\n   "sound_definitions" : {}\r\n}';
+    const content = '{\n   "format_version" : "1.20.20",\n   "sound_definitions" : {}\n}';
 
     file.setContent(content);
     file.saveContent();
@@ -735,7 +743,9 @@ export default class ProjectItemCreateManager {
     const items = project.getItemsByType(ProjectItemType.soundCatalog);
 
     if (items.length > 0) {
-      await items[0].ensureStorage();
+      if (!items[0].isContentLoaded) {
+        await items[0].loadContent();
+      }
 
       if (items[0].primaryFile) {
         return await SoundCatalogDefinition.ensureOnFile(items[0].primaryFile);
@@ -775,13 +785,13 @@ export default class ProjectItemCreateManager {
       ProjectItemCreationType.normal
     );
 
-    const file = await pi.ensureFileStorage();
+    const file = await pi.loadFileContent();
 
     if (file === null) {
       return undefined;
     }
 
-    const content = "{\r\n}";
+    const content = "{\n}";
 
     file.setContent(content);
 
@@ -850,7 +860,7 @@ export default class ProjectItemCreateManager {
       ProjectItemCreationType.normal
     );
 
-    const file = await pi.ensureFileStorage();
+    const file = await pi.loadFileContent();
 
     if (file !== null) {
       let content = "{}";
@@ -867,7 +877,9 @@ export default class ProjectItemCreateManager {
         );
 
         if (sourceFile) {
-          await sourceFile.loadContent();
+          if (!sourceFile.isContentLoaded) {
+            await sourceFile.loadContent();
+          }
 
           if (sourceFile.content) {
             content = sourceFile.content.toString();
@@ -945,7 +957,7 @@ export default class ProjectItemCreateManager {
       ProjectItemCreationType.normal
     );
 
-    const file = await pi.ensureFileStorage();
+    const file = await pi.loadFileContent();
 
     if (file !== null) {
       let content = "{}";
@@ -962,7 +974,9 @@ export default class ProjectItemCreateManager {
         );
 
         if (sourceFile) {
-          await sourceFile.loadContent();
+          if (!sourceFile.isContentLoaded) {
+            await sourceFile.loadContent();
+          }
 
           if (sourceFile.content) {
             content = sourceFile.content.toString();
@@ -1040,7 +1054,7 @@ export default class ProjectItemCreateManager {
       ProjectItemCreationType.normal
     );
 
-    const file = await pi.ensureFileStorage();
+    const file = await pi.loadFileContent();
 
     if (file !== null) {
       let content = "{}";
@@ -1057,7 +1071,9 @@ export default class ProjectItemCreateManager {
         );
 
         if (sourceFile) {
-          await sourceFile.loadContent();
+          if (!sourceFile.isContentLoaded) {
+            await sourceFile.loadContent();
+          }
 
           if (sourceFile.content) {
             content = sourceFile.content.toString();
@@ -1102,7 +1118,9 @@ export default class ProjectItemCreateManager {
 
     const sourceFile = Database.contentFolder.ensureFile(sourceFileName);
 
-    await sourceFile.loadContent();
+    if (!sourceFile.isContentLoaded) {
+      await sourceFile.loadContent();
+    }
 
     if (!(sourceFile.content instanceof Uint8Array)) {
       Log.error("Could not find source " + extension + " file content.");
@@ -1152,7 +1170,7 @@ export default class ProjectItemCreateManager {
       ProjectItemCreationType.normal
     );
 
-    const file = await pi.ensureFileStorage();
+    const file = await pi.loadFileContent();
 
     if (file !== null) {
       file.setContent(sourceFile.content);
@@ -1190,7 +1208,9 @@ export default class ProjectItemCreateManager {
 
     const sourceFile = Database.contentFolder.ensureFile(sourceFileName);
 
-    await sourceFile.loadContent();
+    if (!sourceFile.isContentLoaded) {
+      await sourceFile.loadContent();
+    }
 
     if (!(sourceFile.content instanceof Uint8Array)) {
       Log.error("Could not find source " + extension + " file content.");
@@ -1240,7 +1260,7 @@ export default class ProjectItemCreateManager {
       ProjectItemCreationType.normal
     );
 
-    const file = await pi.ensureFileStorage();
+    const file = await pi.loadFileContent();
 
     if (file !== null) {
       file.setContent(sourceFile.content);
@@ -1356,7 +1376,7 @@ export default class ProjectItemCreateManager {
       ProjectItemCreationType.normal
     );
 
-    const file = await pi.ensureFileStorage();
+    const file = await pi.loadFileContent();
 
     if (file !== null) {
       const baseName = StorageUtilities.getBaseFromName(file.name);

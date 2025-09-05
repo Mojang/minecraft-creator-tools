@@ -1,12 +1,39 @@
 import Database from "../minecraft/Database";
-import { ProjectItemVariantType } from "./IProjectItemVariant";
+import { MaxVariantCounts, ProjectItemVariantType } from "./IProjectItemVariant";
 import IProjectItemVariantSeed from "./IProjectItemVariantSeed";
+import Project from "./Project";
 import ProjectItem from "./ProjectItem";
 
 export default class ProjectItemVariantCreateManager {
+  static getPredominatingVariantType(project: Project) {
+    let variantStyle = ProjectItemVariantType.versionSliceAlt;
+    const variantCounts: number[] = [];
+    const items = project.getItemsCopy();
+
+    for (const item of items) {
+      const variants = item.getVariantList();
+
+      for (const pv of variants) {
+        variantCounts[pv.variantType] = (variantCounts[pv.variantType] || 0) + 1;
+      }
+    }
+
+    let winningVote = 0;
+
+    for (let i = 0; i < MaxVariantCounts; i++) {
+      if (variantCounts[i] > winningVote) {
+        winningVote = variantCounts[i];
+        variantStyle = i;
+      }
+    }
+
+    return variantStyle;
+  }
+
   static async createVariant(projectItem: ProjectItem, itemSeed: IProjectItemVariantSeed) {
     let content: Uint8Array | string | undefined;
-    let variantStyle = ProjectItemVariantType.versionSlice;
+
+    let variantStyle = this.getPredominatingVariantType(projectItem.project);
 
     if (!projectItem.primaryFile || !projectItem.projectPath) {
       return;
@@ -32,7 +59,9 @@ export default class ProjectItemVariantCreateManager {
       const contentFile = projectItem.getFile(itemSeed.basedOn);
 
       if (contentFile) {
-        await contentFile.loadContent();
+        if (!contentFile.isContentLoaded) {
+          await contentFile.loadContent();
+        }
 
         if (contentFile.content) {
           content = contentFile.content;
@@ -91,8 +120,20 @@ export default class ProjectItemVariantCreateManager {
           );
         }
       }
-    }
+    } else if (variantStyle === ProjectItemVariantType.versionSliceAlt) {
+      const staticAssets = projectPathLower.indexOf("/static-assets/");
 
+      if (staticAssets) {
+        let packFolderName = projectPath.substring(1, staticAssets);
+
+        const lastUnderscore = packFolderName.lastIndexOf("_");
+        if (lastUnderscore > 0) {
+          packFolderName = packFolderName.substring(lastUnderscore);
+        }
+
+        return "/" + packFolderName + "_" + variantLabel + projectPath.substring(staticAssets);
+      }
+    }
     return undefined;
   }
 }

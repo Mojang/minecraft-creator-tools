@@ -65,13 +65,13 @@ export default interface IsDifficulty {
    * Villager v2: "!="
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
    * (Optional) The subject of this filter test.
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -81,7 +81,7 @@ export default interface IsDifficulty {
    *
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -93,7 +93,7 @@ export default interface IsDifficulty {
    * Bee: "easy", "normal"
    *
    */
-  value: string;
+  value?: string;
 
 }
 

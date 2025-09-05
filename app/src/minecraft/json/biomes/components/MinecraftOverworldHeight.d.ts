@@ -13,10 +13,12 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Overworld Height Biome 
- * (minecraft:overworld_height)
+ * Biome Overworld Height (minecraft:overworld_height)
  * Noise parameters used to drive terrain height in the 
  * Overworld.
+ * Note: This is a pre-Caves and Cliffs component. It does not
+ * change overworld height, and currently only affects map item
+ * rendering.
  */
 export default interface MinecraftOverworldHeight {
 
@@ -26,13 +28,13 @@ export default interface MinecraftOverworldHeight {
    * more positive means higher. Second value is scale, which affects how
    * much noise changes as it moves from the surface.
    */
-  noise_params: number[];
+  noise_params?: number[];
 
   /**
    * @remarks
    * Specifies a preset based on a built-in setting rather than
    * manually using noise_params
    */
-  noise_type: string;
+  noise_type?: string;
 
 }

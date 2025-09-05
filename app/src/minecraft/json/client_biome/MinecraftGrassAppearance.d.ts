@@ -13,8 +13,7 @@
 import * as jsoncommon from './../../jsoncommon';
 
 /**
- * Minecraft Grass Appearance Client Biome
- * (minecraft:grass_appearance)
+ * Client Biome Grass Appearance (minecraft:grass_appearance)
  * Set the grass color or color map used during rendering. Biomes
  * without this component will have default grass appearance.
  */
@@ -24,6 +23,6 @@ export default interface MinecraftGrassAppearance {
    * @remarks
    * RGB color of grass.
    */
-  color: object;
+  color?: object;
 
 }

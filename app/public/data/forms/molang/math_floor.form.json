@@ -1,0 +1,6 @@
+{
+  "id": "`math.floor(value)`",
+  "fields": [],
+  "description": "Round value down to nearest integral number",
+  "title": "Floor(value)"
+}

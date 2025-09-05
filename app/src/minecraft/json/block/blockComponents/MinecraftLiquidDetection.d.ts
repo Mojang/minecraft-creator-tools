@@ -44,8 +44,8 @@ import * as jsoncommon from './../../../jsoncommon';
  * one rule definition is allowed per liquid type - if multiple are
  * specified, the first will be used and the rest will be
  * ignored.
-Experimental toggles required: Upcoming Creator Features
- * (in format versions before 1.21.60).
+Experimental toggles required: Upcoming Creator Features (in
+ * format versions before 1.21.60).
  */
 export default interface MinecraftLiquidDetection {
 
@@ -55,7 +55,7 @@ export default interface MinecraftLiquidDetection {
    * liquid type is `water`, this means the block can be
    * waterlogged.
    */
-  can_contain_liquid: boolean;
+  can_contain_liquid?: boolean;
 
   /**
    * @remarks
@@ -63,9 +63,8 @@ export default interface MinecraftLiquidDetection {
    * Sample Values:
    * Block Fabricator: [{"liquid_type":"water","on_liquid_touches":"broken"}]
    *
-   *
    */
-  detection_rules: MinecraftLiquidDetectionDetectionRules[];
+  detection_rules?: MinecraftLiquidDetectionDetectionRules[];
 
   /**
    * @remarks
@@ -73,23 +72,22 @@ export default interface MinecraftLiquidDetection {
    * the only supported liquid type. If this field is omitted, `water`
    * will be the liquid type by default.
    */
-  liquid_type: string;
+  liquid_type?: string;
 
   /**
    * @remarks
    * How the block reacts to flowing water. Must be one of the
    * following options:
-"blocking" - The default value for this
-   * field. The block stops the liquid from flowing.
-"broken" -
-   * The block is destroyed completely.
-"popped" - The block is
-   * destroyed and its item is spawned.
-"no_reaction" - The block is
-   * unaffected; visually, the liquid will flow through the 
-   * block.
+"blocking" - The default value for this field.
+   * The block stops the liquid from flowing.
+"broken" - The block is
+   * destroyed completely.
+"popped" - The block is destroyed and its
+   * item is spawned.
+"no_reaction" - The block is unaffected; visually,
+   * the liquid will flow through the block.
    */
-  on_liquid_touches: jsoncommon.MinecraftEventTrigger;
+  on_liquid_touches?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -101,7 +99,7 @@ export default interface MinecraftLiquidDetection {
    * "east", "west". The default is an empty list; this means that
    * liquid can flow out of all directions by default.
    */
-  stops_liquid_flowing_from_direction: string[];
+  stops_liquid_flowing_from_direction?: string[];
 
 }
 
@@ -118,7 +116,7 @@ export interface MinecraftLiquidDetectionDetectionRules {
    * Block Fabricator: "water"
    *
    */
-  liquid_type: string;
+  liquid_type?: string;
 
   /**
    * @remarks
@@ -127,6 +125,6 @@ export interface MinecraftLiquidDetectionDetectionRules {
    * Block Fabricator: "broken"
    *
    */
-  on_liquid_touches: string;
+  on_liquid_touches?: string;
 
 }

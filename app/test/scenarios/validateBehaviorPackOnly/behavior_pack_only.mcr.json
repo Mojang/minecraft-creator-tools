@@ -35,6 +35,8 @@
     "animationCount": 0,
     "textureCount": 0,
     "textureTexelSize": 0,
+    "vanillaGameTextureCoverage": 0,
+    "vanillaGameTextureCount": 0,
     "minimumSupportablePerformanceTier": 0,
     "invalidCommandSyntaxCount": 0,
     "linesWithSlashCount": 0,
@@ -49,6 +51,9 @@
     "deprecatedTexture": 0,
     "restrictedPolyMeshFound": 0,
     "jsonParseError": 0,
+    "invalidManifestJson": 0,
+    "missingResourcePackDependencies": 0,
+    "internalProcessingErrors": 0,
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
@@ -66,6 +71,39 @@
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CADDONREQ000] Found 1 errors for Cooperative Add-On Requirements (CADDONREQ).",
     "summary": {
+      "CADDONIREQ": {
+        "1": {
+          "defaultMessage": "Cooperative Add-On Item Requirements Generator (CADDONIREQ) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CADDONREQ": {
+        "0": {
+          "title": "Test Failure",
+          "defaultMessage": "Found 1 errors for Cooperative Add-On Requirements (CADDONREQ).",
+          "testCompleteFails": 1
+        },
+        "164": {
+          "title": "Resource Pack Manifest Not Valid",
+          "defaultMessage": "Did not find a valid resource pack manifest.",
+          "errors": 1
+        },
+        "200": {
+          "title": "Found Behavior Pack",
+          "defaultMessage": "Behavior pack manifest found."
+        }
+      },
+      "MINENGINEVER": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "605": {
+          "title": "605",
+          "defaultMessage": "Behavior pack manifest min_engine_version"
+        }
+      },
       "PACKSIZE": {
         "1": {
           "title": "Test Success",
@@ -91,20 +129,11 @@
           "title": "Content Folder Count"
         }
       },
-      "CADDONREQ": {
-        "0": {
-          "title": "Test Failure",
-          "defaultMessage": "Found 1 errors for Cooperative Add-On Requirements (CADDONREQ).",
-          "testCompleteFails": 1
-        },
-        "164": {
-          "title": "Resource Pack Manifest Not Valid",
-          "defaultMessage": "Did not find a valid resource pack manifest.",
-          "errors": 1
-        },
-        "200": {
-          "title": "Found Behavior Pack",
-          "defaultMessage": "Behavior pack manifest found."
+      "STRICT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully",
+          "testCompleteSuccesses": 1
         }
       },
       "TEXTURE": {
@@ -117,38 +146,56 @@
           "title": "Textures"
         }
       },
-      "MINENGINEVER": {
-        "1": {
-          "title": "1",
-          "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "605": {
-          "title": "605",
-          "defaultMessage": "Behavior pack manifest min_engine_version"
-        }
-      },
-      "STRICT": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
       "WORLDDATA": {
         "2": {
           "defaultMessage": "No applicable items found for test World Data Validation (WORLDDATA)"
-        }
-      },
-      "CADDONIREQ": {
-        "1": {
-          "defaultMessage": "Cooperative Add-On Item Requirements Generator (CADDONIREQ) completed successfully",
-          "testCompleteSuccesses": 1
         }
       }
     }
   },
   "items": [
+    {
+      "iTp": 1,
+      "gId": "CADDONIREQ",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "CADDONREQ",
+      "gIx": 0
+    },
+    {
+      "iTp": 3,
+      "gId": "CADDONREQ",
+      "gIx": 164
+    },
+    {
+      "iTp": 2,
+      "gId": "CADDONREQ",
+      "gIx": 200,
+      "p": "/manifest.json"
+    },
+    {
+      "iTp": 1,
+      "gId": "MINENGINEVER",
+      "gIx": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "MINENGINEVER",
+      "gIx": 605,
+      "p": "/manifest.json",
+      "d": [
+        1,
+        20,
+        10
+      ]
+    },
+    {
+      "iTp": 1,
+      "gId": "PACKSIZE",
+      "gIx": 1
+    },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
@@ -186,43 +233,6 @@
       "d": 1
     },
     {
-      "iTp": 2,
-      "gId": "CADDONREQ",
-      "gIx": 200,
-      "p": "/manifest.json"
-    },
-    {
-      "iTp": 3,
-      "gId": "CADDONREQ",
-      "gIx": 164
-    },
-    {
-      "iTp": 7,
-      "gId": "TEXTURE",
-      "gIx": 101
-    },
-    {
-      "iTp": 2,
-      "gId": "MINENGINEVER",
-      "gIx": 605,
-      "p": "/manifest.json",
-      "d": [
-        1,
-        20,
-        10
-      ]
-    },
-    {
-      "iTp": 1,
-      "gId": "PACKSIZE",
-      "gIx": 1
-    },
-    {
-      "iTp": 0,
-      "gId": "CADDONREQ",
-      "gIx": 0
-    },
-    {
       "iTp": 1,
       "gId": "STRICT",
       "gIx": 1
@@ -233,19 +243,14 @@
       "gIx": 1
     },
     {
-      "iTp": 1,
-      "gId": "MINENGINEVER",
-      "gIx": 1
+      "iTp": 7,
+      "gId": "TEXTURE",
+      "gIx": 101
     },
     {
       "iTp": 8,
       "gId": "WORLDDATA",
       "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "CADDONIREQ",
-      "gIx": 1
     }
   ],
   "generatorName": "Minecraft Creator Tools",

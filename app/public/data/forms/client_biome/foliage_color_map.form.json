@@ -1,4 +1,5 @@
 {
+  "id": "Foliage Color Map",
   "fields": [
     {
       "id": "color_map",
@@ -9,6 +10,5 @@
     }
   ],
   "description": "Object specifying a color map for foliage instead of a specific color.",
-  "title": "Foliage Color Map Client Biome",
-  "id": "Foliage Color Map"
+  "title": "Client Biome Foliage Color Map"
 }

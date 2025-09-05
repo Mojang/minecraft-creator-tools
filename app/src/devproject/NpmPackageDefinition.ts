@@ -285,7 +285,9 @@ export default class NpmPackageDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (this._file.isContentLoaded === false) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

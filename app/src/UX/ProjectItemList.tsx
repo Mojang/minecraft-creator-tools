@@ -48,7 +48,6 @@ import ProjectInfoItem from "../info/ProjectInfoItem";
 import { AnnotatedValueSet, IAnnotatedValue } from "../core/AnnotatedValue";
 import ProjectAddButton from "./ProjectAddButton";
 import WebUtilities from "./WebUtilities";
-import ProjectItemCreateManager from "../app/ProjectItemCreateManager";
 
 export enum EntityTypeCommand {
   select,
@@ -132,7 +131,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
   constructor(props: IProjectItemListProps) {
     super(props);
 
-    this._handleNewItem = this._handleNewItem.bind(this);
     this._handleItemSelected = this._handleItemSelected.bind(this);
     this._handleProjectChanged = this._handleProjectChanged.bind(this);
     this._projectUpdated = this._projectUpdated.bind(this);
@@ -460,37 +458,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       collapsedItemTypes: this.state.collapsedItemTypes,
       collapsedStoragePaths: this.state.collapsedStoragePaths,
     });
-  }
-
-  async _handleNewItem() {
-    if (this.state === null) {
-      return;
-    }
-
-    let projectItem = undefined;
-
-    if (this._tentativeNewItem !== undefined && this.props.project !== null) {
-      projectItem = await ProjectItemCreateManager.createNewItem(this.props.project, this._tentativeNewItem);
-    }
-
-    if (this.props.project) {
-      await this.props.project.save();
-    }
-
-    this.setState({
-      activeItem: projectItem,
-      dialogMode: ProjectItemListDialogType.noDialog,
-      maxItemsToShow: this.state.maxItemsToShow,
-      packFilter: this.state.packFilter,
-
-      contextFocusedItem: this.state.contextFocusedItem,
-      collapsedItemTypes: this.state.collapsedItemTypes,
-      collapsedStoragePaths: this.state.collapsedStoragePaths,
-    });
-
-    if (projectItem && this.props.onActiveProjectItemChangeRequested) {
-      this.props.onActiveProjectItemChangeRequested(projectItem, ProjectItemEditorView.singleFileEditor);
-    }
   }
 
   _handleCancel() {
@@ -890,7 +857,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         let errorMessage = "";
 
         for (const issue of issues) {
-          errorMessage += this.props.allInfoSet.getEffectiveMessage(issue) + "\r\n";
+          errorMessage += this.props.allInfoSet.getEffectiveMessage(issue) + "\n";
         }
 
         itemItems.push(
@@ -1061,7 +1028,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         let errorMessage = "";
 
         for (const issue of issues) {
-          errorMessage += this.props.allInfoSet.getEffectiveMessage(issue) + "\r\n";
+          errorMessage += this.props.allInfoSet.getEffectiveMessage(issue) + "\n";
         }
         itemItems.push(
           <MenuButton
@@ -1223,12 +1190,14 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       if (
         !this.state.collapsedItemTypes.includes(projectItem.itemType) &&
         this.shouldShowProjectItem(projectItem) &&
-        !projectItem.isLoaded
+        !projectItem.isContentLoaded
       ) {
         const projectFolderGrouping = projectItem.getFolderGroupingPath();
 
         if (projectFolderGrouping === undefined || !this.state.collapsedStoragePaths.includes(projectFolderGrouping)) {
-          await projectItem.load();
+          if (!projectItem.isContentLoaded) {
+            await projectItem.loadContent();
+          }
           itemsShown++;
           needsUpdate = true;
         }
@@ -1325,6 +1294,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       projectItem.itemType === ProjectItemType.soundCatalog ||
       projectItem.itemType === ProjectItemType.itemTextureJson ||
       projectItem.itemType === ProjectItemType.attachableResourceJson ||
+      projectItem.itemType === ProjectItemType.biomeResource || // this should be handled by biome type editor for bps
       projectItem.itemType === ProjectItemType.terrainTextureCatalogResourceJson || // this should be handled by block type editor for bp block type
       projectItem.itemType === ProjectItemType.blocksCatalogResourceJson || // this should be handled by block type editor for bp block type
       projectItem.itemType === ProjectItemType.blockTypeResourceJsonDoNotUse || // this should be handled by block type editor for bp block type

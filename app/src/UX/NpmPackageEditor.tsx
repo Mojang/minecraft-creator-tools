@@ -119,7 +119,7 @@ export default class NpmPackageEditor extends Component<INpmPackageEditorProps, 
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
-      if (file.manager !== null) {
+      if (file.manager) {
         const et = file.manager as NpmPackageDefinition;
 
         et.persist();
@@ -227,6 +227,10 @@ export default class NpmPackageEditor extends Component<INpmPackageEditorProps, 
     }
 
     const form = Database.getForm("dev", "package_json");
+
+    if (!form) {
+      return <div className="npme-loading">Form not found</div>;
+    }
 
     return (
       <div

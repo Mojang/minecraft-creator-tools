@@ -103,7 +103,7 @@ export default interface MinecraftBehaviorRandomSwim {
    * If true, the mob will avoid surface water blocks by swimming below
    * them
    */
-  avoid_surface: boolean;
+  avoid_surface?: boolean;
 
   /**
    * @remarks
@@ -116,7 +116,7 @@ export default interface MinecraftBehaviorRandomSwim {
    * Tadpole: 100
    *
    */
-  interval: number;
+  interval?: number;
 
   /**
    * @remarks
@@ -132,7 +132,7 @@ export default interface MinecraftBehaviorRandomSwim {
    * Elder Guardian: 7
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -145,7 +145,7 @@ export default interface MinecraftBehaviorRandomSwim {
    *
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -160,7 +160,7 @@ export default interface MinecraftBehaviorRandomSwim {
    * Fish: 16
    *
    */
-  xz_dist: number;
+  xz_dist?: number;
 
   /**
    * @remarks
@@ -175,6 +175,6 @@ export default interface MinecraftBehaviorRandomSwim {
    *
    *
    */
-  y_dist: number;
+  y_dist?: number;
 
 }

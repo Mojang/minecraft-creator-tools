@@ -65,7 +65,7 @@ export default interface MinecraftFlammable {
    * Block Leaf Pile: 100
    *
    */
-  catch_chance_modifier: number;
+  catch_chance_modifier?: number;
 
   /**
    * @remarks
@@ -84,6 +84,6 @@ export default interface MinecraftFlammable {
    * Block Leaf Pile: 100
    *
    */
-  destroy_chance_modifier: number;
+  destroy_chance_modifier?: number;
 
 }

@@ -40,7 +40,7 @@ export default interface MinecraftBehaviorSlimeKeepOnJumping {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -52,6 +52,6 @@ export default interface MinecraftBehaviorSlimeKeepOnJumping {
    *
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

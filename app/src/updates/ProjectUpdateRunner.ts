@@ -5,7 +5,7 @@ import Project from "../app/Project";
 import IProjectUpdater from "./IProjectUpdater";
 import Log from "../core/Log";
 import ProjectUpdateResult from "./ProjectUpdateResult";
-import GeneratorRegistrations from "../info/GeneratorRegistrations";
+import GeneratorRegistrations from "../info/registration/GeneratorRegistrations";
 
 export default class ProjectUpdateRunner {
   project?: Project;

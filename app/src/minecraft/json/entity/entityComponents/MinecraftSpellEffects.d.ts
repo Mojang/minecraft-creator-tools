@@ -56,23 +56,6 @@ Player - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
 "minecraft:spell_effects": {}
 
 
-Zombie Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_villager_v2.json
-
-"minecraft:spell_effects": {
-  "add_effects": [
-    {
-      "effect": "strength",
-      "duration": 300
-    },
-    {
-      "effect": "heal",
-      "duration": 300
-    }
-  ],
-  "remove_effects": "weakness"
-}
-
-
 Zombie Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_villager.json
 
 "minecraft:spell_effects": {
@@ -84,6 +67,23 @@ Zombie Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavio
     {
       "effect": "heal",
       "duration": 100
+    }
+  ],
+  "remove_effects": "weakness"
+}
+
+
+Zombie Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_villager_v2.json
+
+"minecraft:spell_effects": {
+  "add_effects": [
+    {
+      "effect": "strength",
+      "duration": 300
+    },
+    {
+      "effect": "heal",
+      "duration": 300
     }
   ],
   "remove_effects": "weakness"
@@ -115,17 +115,17 @@ export default interface MinecraftSpellEffects {
    * component
    * 
    * Sample Values:
-   * Bee: [{"effect":"poison","duration":25,"display_on_screen_animation":true}], [{"effect":"wither","duration":40,"display_on_screen_animation":true}]
+   * Bee: [{"effect":"poison","duration":25,"display_on_screen_animation":true}]
    *
    */
-  add_effects: MinecraftSpellEffectsAddEffects[];
+  add_effects?: MinecraftSpellEffectsAddEffects[];
 
   /**
    * @remarks
    * List of identifiers of effects to be removed from this entity after
    * adding this component
    */
-  remove_effects: string;
+  remove_effects?: string;
 
 }
 
@@ -136,9 +136,9 @@ export default interface MinecraftSpellEffects {
  */
 export interface MinecraftSpellEffectsAddEffects {
 
-  display_on_screen_animation: string;
+  display_on_screen_animation?: string;
 
-  duration: number;
+  duration?: number;
 
   /**
    * @remarks
@@ -147,6 +147,6 @@ export interface MinecraftSpellEffectsAddEffects {
    * ambient effect, and 'visible' if the effect should be 
    * visible
    */
-  effect: string;
+  effect?: string;
 
 }

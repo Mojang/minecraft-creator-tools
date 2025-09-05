@@ -65,7 +65,7 @@ export default interface MinecraftDryingOutTimer {
    *
    *
    */
-  dried_out_event: jsoncommon.MinecraftEventTrigger;
+  dried_out_event?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -77,7 +77,7 @@ export default interface MinecraftDryingOutTimer {
    *
    *
    */
-  recover_after_dried_out_event: jsoncommon.MinecraftEventTrigger;
+  recover_after_dried_out_event?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -90,7 +90,7 @@ export default interface MinecraftDryingOutTimer {
    * Dolphin: {"event":"stop_dryingout"}
    *
    */
-  stopped_drying_out_event: jsoncommon.MinecraftEventTrigger;
+  stopped_drying_out_event?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -102,7 +102,7 @@ export default interface MinecraftDryingOutTimer {
    * Dolphin: 120
    *
    */
-  total_time: number;
+  total_time?: number;
 
   /**
    * @remarks
@@ -113,6 +113,6 @@ export default interface MinecraftDryingOutTimer {
    * Axolotl: 90
    *
    */
-  water_bottle_refill_time: number;
+  water_bottle_refill_time?: number;
 
 }

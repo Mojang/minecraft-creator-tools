@@ -118,7 +118,7 @@ export default interface MinecraftDespawn {
    * Determines if "min_range_random_chance" is used in the standard
    * despawn rules
    */
-  despawn_from_chance: boolean;
+  despawn_from_chance?: boolean;
 
   /**
    * @remarks
@@ -133,21 +133,21 @@ export default interface MinecraftDespawn {
    *
    *
    */
-  despawn_from_distance: MinecraftDespawnDespawnFromDistance[];
+  despawn_from_distance?: MinecraftDespawnDespawnFromDistance[];
 
   /**
    * @remarks
    * Determines if the "min_range_inactivity_timer" is used in the
    * standard despawn rules.
    */
-  despawn_from_inactivity: boolean;
+  despawn_from_inactivity?: boolean;
 
   /**
    * @remarks
    * Determines if the mob is instantly despawned at the edge of
    * simulation distance in the standard despawn rules.
    */
-  despawn_from_simulation_edge: boolean;
+  despawn_from_simulation_edge?: boolean;
 
   /**
    * @remarks
@@ -162,19 +162,19 @@ export default interface MinecraftDespawn {
    *
    *
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
    * The amount of time in seconds that the mob must be inactive.
    */
-  min_range_inactivity_timer: number;
+  min_range_inactivity_timer?: number;
 
   /**
    * @remarks
    * A random chance between 1 and the given value.
    */
-  min_range_random_chance: number;
+  min_range_random_chance?: number;
 
   /**
    * @remarks
@@ -185,7 +185,7 @@ export default interface MinecraftDespawn {
    * Wandering Trader: true
    *
    */
-  remove_child_entities: boolean;
+  remove_child_entities?: boolean;
 
 }
 
@@ -201,13 +201,13 @@ export interface MinecraftDespawnDespawnFromDistance {
    * maximum distance for standard despawn rules to instantly despawn the
    * mob.
    */
-  max_distance: number;
+  max_distance?: number;
 
   /**
    * @remarks
    * minimum distance for standard despawn rules to try to despawn the
    * mob.
    */
-  min_distance: number;
+  min_distance?: number;
 
 }

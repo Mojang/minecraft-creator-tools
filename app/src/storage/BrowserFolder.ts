@@ -147,7 +147,9 @@ export default class BrowserFolder extends FolderBase implements IFolder {
       return false;
     }
 
-    await this.load();
+    if (this.isLoaded) {
+      await this.load();
+    }
 
     const oldPath = this._lastLoadedPath;
 
@@ -158,13 +160,13 @@ export default class BrowserFolder extends FolderBase implements IFolder {
         throw new Error("Folder exists at specified path.");
       }
 
-      this._parentFolder._clearExistingFolder(this);
+      this._parentFolder._removeExistingFolderFromParent(this);
 
       this._parentFolder = newParentFolder as BrowserFolder;
 
       this._name = newFolderName;
 
-      (newParentFolder as BrowserFolder)._addExistingFolder(this);
+      (newParentFolder as BrowserFolder)._addExistingFolderToParent(this);
     }
 
     this._name = newFolderName;

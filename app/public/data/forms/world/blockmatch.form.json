@@ -16,5 +16,5 @@
     }
   ],
   "description": "Predicate that evaluates to true if the block at the specified location matches the specified block.",
-  "title": "BlockMatch World"
+  "title": "World BlockMatch"
 }

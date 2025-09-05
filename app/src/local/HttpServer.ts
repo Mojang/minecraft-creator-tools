@@ -307,124 +307,6 @@ export default class HttpServer {
           this.sendErrorRequest(400, "Unexpected port or slot specified", req, res);
           return;
         }
-
-        if (urlSegments[3] === "status" && req.method === "GET") {
-          if (!this.hasPermissionLevel(authorizedPermissionLevel, ServerPermissionLevel.displayReadOnly, req, res)) {
-            return;
-          }
-
-          const status = this.getStatus(portOrSlot);
-
-          Log.message(this.getShortReqDescription(req) + "Status: " + JSON.stringify(status));
-
-          res.writeHead(200, this.headers);
-          res.write(JSON.stringify(status));
-          res.end();
-          return;
-        } else if (urlSegments[3] === "updateStatus" && req.method === "POST") {
-          if (!this.hasPermissionLevel(authorizedPermissionLevel, ServerPermissionLevel.updateState, req, res)) {
-            return;
-          }
-
-          const body: any[] = [];
-          req.on("data", (chunk) => {
-            body.push(chunk);
-          });
-          req.on("end", () => {
-            if (body.length === 1) {
-              const val = body[0].toString();
-
-              let updates: any | undefined;
-
-              try {
-                updates = JSON.parse(val);
-              } catch (e) {}
-
-              if (updates && updates.length) {
-                for (let i = 0; i < updates.length; i++) {
-                  const upd = updates[i];
-                }
-              }
-
-              res.writeHead(200, this.headers);
-              res.end();
-              return;
-            } else {
-              res.writeHead(500, this.headers);
-              res.end();
-              return;
-            }
-          });
-        } else if (urlSegments[3] === "command" && req.method === "POST") {
-          if (!this.hasPermissionLevel(authorizedPermissionLevel, ServerPermissionLevel.updateState, req, res)) {
-            return;
-          }
-
-          const body: any[] = [];
-          req.on("data", (chunk) => {
-            body.push(chunk);
-          });
-          req.on("end", () => {
-            if (body.length === 1) {
-              const val = body[0].toString();
-              res.writeHead(200, this.headers);
-              res.end();
-              return;
-            } else {
-              res.writeHead(500, this.headers);
-              res.end();
-              return;
-            }
-          });
-        } else if (
-          urlSegments[3] === "upload" &&
-          (req.method === "POST" || req.method === "PATCH") &&
-          req.headers["content-type"] === "application/zip"
-        ) {
-          if (!this.hasPermissionLevel(authorizedPermissionLevel, ServerPermissionLevel.admin, req, res)) {
-            return;
-          }
-
-          const body: any[] = [];
-          req.on("data", (chunk) => {
-            body.push(chunk);
-          });
-          req.on("end", async () => {
-            if (body.length === 1) {
-              const zipStorage = new ZipStorage();
-
-              const contentUint = new Uint8Array(body[0]);
-
-              Log.message(
-                this.getShortReqDescription(req) + "Received update package of " + contentUint.length + " bytes"
-              );
-
-              try {
-                await zipStorage.loadFromUint8Array(contentUint);
-              } catch (e) {
-                res.writeHead(400, this.headers);
-                res.end();
-                return;
-              }
-
-              let isReloadable = false;
-              if (req.headers["mctools-reloadable"]) {
-                isReloadable = true;
-              }
-
-              res.writeHead(200, this.headers);
-              res.end();
-
-              if (this._serverManager.runOnce) {
-                this._serverManager.shutdown(
-                  "Shutting down due to completion of one deploy operation in runOnce mode."
-                );
-              }
-
-              return;
-            }
-          });
-        }
       }
     }
 
@@ -448,8 +330,10 @@ export default class HttpServer {
     if (!res.headersSent) {
       res.writeHead(statusCode, this.headers);
     }
-    res.write(message);
-    res.end();
+
+    res.write(message, () => {
+      res.end();
+    });
   }
 
   hasPermissionLevel(

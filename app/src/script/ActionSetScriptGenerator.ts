@@ -74,7 +74,7 @@ export default class ActionSetScriptGenerator {
         'empty");'
     );
 
-    return lines.join("\r\n");
+    return lines.join("\n");
   }
 
   static addScriptGroupLinesForFunction(

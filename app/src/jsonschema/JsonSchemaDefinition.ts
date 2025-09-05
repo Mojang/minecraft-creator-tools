@@ -97,7 +97,9 @@ export default class JsonSchemaDefinition implements IDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

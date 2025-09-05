@@ -3,7 +3,6 @@
   "fields": [
     {
       "id": "gives",
-      "title": "Gives",
       "dataType": 15,
       "minLength": 1,
       "subForm": {
@@ -22,7 +21,6 @@
           },
           {
             "id": "filters",
-            "title": "Filters",
             "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects.",
             "dataType": 16,
             "subForm": {
@@ -164,7 +162,6 @@
     },
     {
       "id": "wants",
-      "title": "Wants",
       "dataType": 15,
       "minLength": 1,
       "subForm": {
@@ -183,7 +180,6 @@
           },
           {
             "id": "filters",
-            "title": "Filters",
             "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects.",
             "dataType": 16,
             "subForm": {
@@ -320,5 +316,5 @@
       ]
     }
   ],
-  "title": "Trade Entity"
+  "title": "Entity Trade"
 }

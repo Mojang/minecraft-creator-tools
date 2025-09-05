@@ -191,6 +191,10 @@ export default class DocumentedCommandSetEditor extends Component<
       );
     }
 
+    if (!form) {
+      return <div>(Error loading form)...</div>;
+    }
+
     return (
       <div
         className="dcse-area"

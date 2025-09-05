@@ -10,16 +10,6 @@
  * Items Documentation - minecraft:entity_placer
  * 
  * minecraft:entity_placer Samples
-"minecraft:entity_placer": {
-  "entity": "minecraft:spider",
-  "dispense_on": [
-    "minecraft:web"
-  ],
-  "use_on": [
-    "minecraft:web"
-  ]
-}
-
 
 Item Axe Turret Kit - https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/axe_turret_kit.item.json
 
@@ -77,10 +67,9 @@ My Sword Turtle - https://github.com/microsoft/minecraft-samples/tree/main/custo
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Entity Placer Item (minecraft:entity_placer)
- * Allows an item to place entities into the world. Additionally, in
- * version 1.19.80 and above, the component allows the item to set
- * the spawn type of a monster spawner.
+ * Item Entity Placer (minecraft:entity_placer)
+ * The entity_placer item component specifies the blocks that the
+ * item can be placed on.
  */
 export default interface MinecraftEntityPlacer {
 
@@ -89,17 +78,21 @@ export default interface MinecraftEntityPlacer {
    * List of block descriptors of the blocks that this item can be
    * dispensed on. If left empty, all blocks will be allowed.
    */
-  dispense_on: MinecraftEntityPlacerDispenseOn[];
+  dispense_on?: MinecraftEntityPlacerDispenseOn[];
 
   /**
    * @remarks
    * The entity to be placed in the world.
    * 
    * Sample Values:
-   * My Sword Turtle: "minecraft:turtle"
+   * Item Axe Turret Kit: "mikeamm_gwve:axe_turret"
+   *
+   * Item Bow Turret Kit: "mikeamm_gwve:bow_turret"
+   *
+   * Item Crossbow Turret Kit: "mikeamm_gwve:crossbow_turret"
    *
    */
-  entity: object;
+  entity?: object;
 
   /**
    * @remarks
@@ -110,7 +103,7 @@ export default interface MinecraftEntityPlacer {
    * My Sword Turtle: ["minecraft:sand"]
    *
    */
-  use_on: MinecraftEntityPlacerUseOn[];
+  use_on?: MinecraftEntityPlacerUseOn[];
 
 }
 
@@ -120,11 +113,11 @@ export default interface MinecraftEntityPlacer {
  */
 export interface MinecraftEntityPlacerDispenseOn {
 
-  name: string;
+  name?: string;
 
-  states: number;
+  states?: number;
 
-  tags: string;
+  tags?: string;
 
 }
 
@@ -134,10 +127,10 @@ export interface MinecraftEntityPlacerDispenseOn {
  */
 export interface MinecraftEntityPlacerUseOn {
 
-  name: string;
+  name?: string;
 
-  states: number;
+  states?: number;
 
-  tags: string;
+  tags?: string;
 
 }

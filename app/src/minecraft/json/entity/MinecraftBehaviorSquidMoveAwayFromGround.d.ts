@@ -40,6 +40,6 @@ export default interface MinecraftBehaviorSquidMoveAwayFromGround {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
 }

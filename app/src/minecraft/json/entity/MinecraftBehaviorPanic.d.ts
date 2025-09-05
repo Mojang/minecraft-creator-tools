@@ -131,7 +131,7 @@ export default interface MinecraftBehaviorPanic {
    * Polar Bear: ["campfire","fire","fire_tick","freezing","lightning","lava","magma","temperature","soul_campfire"]
    *
    */
-  damage_sources: string[];
+  damage_sources?: string[];
 
   /**
    * @remarks
@@ -142,7 +142,7 @@ export default interface MinecraftBehaviorPanic {
    * Bee: true
    *
    */
-  force: boolean;
+  force?: boolean;
 
   /**
    * @remarks
@@ -154,7 +154,7 @@ export default interface MinecraftBehaviorPanic {
    *
    *
    */
-  ignore_mob_damage: boolean;
+  ignore_mob_damage?: boolean;
 
   /**
    * @remarks
@@ -163,7 +163,7 @@ export default interface MinecraftBehaviorPanic {
    * Strider: "panic"
    *
    */
-  panic_sound: string;
+  panic_sound?: string;
 
   /**
    * @remarks
@@ -174,7 +174,7 @@ export default interface MinecraftBehaviorPanic {
    *
    *
    */
-  prefer_water: boolean;
+  prefer_water?: boolean;
 
   /**
    * @remarks
@@ -192,7 +192,7 @@ export default interface MinecraftBehaviorPanic {
    * Horse: 3
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -201,7 +201,7 @@ export default interface MinecraftBehaviorPanic {
    * Strider: {"range_min":1,"range_max":3}
    *
    */
-  sound_interval: MinecraftBehaviorPanicSoundInterval;
+  sound_interval?: MinecraftBehaviorPanicSoundInterval;
 
   /**
    * @remarks
@@ -216,7 +216,7 @@ export default interface MinecraftBehaviorPanic {
    * Camel: 4
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }
 
@@ -233,7 +233,7 @@ export interface MinecraftBehaviorPanicSoundInterval {
    * Strider: 3
    *
    */
-  range_max: number;
+  range_max?: number;
 
   /**
    * @remarks
@@ -242,6 +242,6 @@ export interface MinecraftBehaviorPanicSoundInterval {
    * Strider: 1
    *
    */
-  range_min: number;
+  range_min?: number;
 
 }

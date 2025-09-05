@@ -38,6 +38,6 @@ export default interface MinecraftBehaviorSquidDive {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
 }

@@ -57,6 +57,13 @@ export default interface IFormDefinition {
   description?: string;
 
   /**
+   * Optional human-readable description of technical details of the form definition.
+   * In practice, this is not shown in tools but is shown in technical documentation.
+   * This should provide context and details about the form's purpose and usage.
+   */
+  technicalDescription?: string;
+
+  /**
    * Optional version of the form definition.
    * This corresponds to the version of the data structure being described, if available.
    */

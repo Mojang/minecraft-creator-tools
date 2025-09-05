@@ -124,7 +124,9 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
       const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.itemTypeBehavior) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const bpItemType = await ItemTypeDefinition.ensureOnFile(pi.primaryFile);
@@ -152,7 +154,7 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
 
             const fv = bpItemType.getFormatVersion();
 
-            if (!bpItemType || !bpItemType.wrapper || !bpItemType.wrapper.format_version || !fv) {
+            if (!bpItemType || !bpItemType.formatVersion || !fv) {
               infoItems.push(
                 new ProjectInfoItem(InfoItemType.error, this.id, 100, "Item Type does not define a format_version.", pi)
               );
@@ -307,13 +309,15 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
       const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const wtManifest = await ItemTypeDefinition.ensureOnFile(pi.primaryFile);
 
           if (wtManifest) {
-            const mev = wtManifest.wrapper?.format_version;
+            const mev = wtManifest.formatVersion;
 
             if (mev) {
               const mevY = mev?.split(".");

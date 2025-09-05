@@ -2,5 +2,5 @@
   "id": "query.is_riding_any_entity_of_type",
   "fields": [],
   "description": "Returns whether or not the entity is currently riding an entity of any of the designated types.",
-  "title": "Is Riding Any Entity Of Type Query"
+  "title": "Is Riding Any Entity Of Type"
 }

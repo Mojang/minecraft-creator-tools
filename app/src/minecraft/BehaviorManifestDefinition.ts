@@ -246,11 +246,13 @@ export default class BehaviorManifestDefinition implements IDefinition {
     if (file.manager !== undefined && file.manager instanceof BehaviorManifestDefinition) {
       bmj = file.manager as BehaviorManifestDefinition;
 
-      if (!bmj.isLoaded && loadHandler) {
-        bmj.onLoaded.subscribe(loadHandler);
-      }
+      if (!bmj.isLoaded) {
+        if (loadHandler) {
+          bmj.onLoaded.subscribe(loadHandler);
+        }
 
-      await bmj.load();
+        await bmj.load();
+      }
     }
 
     return bmj;
@@ -466,7 +468,9 @@ export default class BehaviorManifestDefinition implements IDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

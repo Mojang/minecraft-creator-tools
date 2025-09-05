@@ -202,7 +202,6 @@ export default class DocumentedClassEditor extends Component<IDocumentedClassEdi
                   subForm: Database.getForm("documentation", "simple_info_json"),
                   visualExperience: FieldVisualExperience.deemphasized,
                   dataType: FieldDataType.object,
-                  undefinedIfEmpty: true,
                 };
 
                 infoForm.fields.push(throwsField);
@@ -218,7 +217,6 @@ export default class DocumentedClassEditor extends Component<IDocumentedClassEdi
                 const argsField: IField = {
                   id: "returns",
                   title: "Returns (" + returnTypeName + ")",
-                  undefinedIfEmpty: true,
                   subForm: Database.getForm("documentation", "simple_info_json"),
                   visualExperience: FieldVisualExperience.deemphasized,
                   dataType: FieldDataType.object,
@@ -266,6 +264,10 @@ export default class DocumentedClassEditor extends Component<IDocumentedClassEdi
           </div>
         );
       }
+    }
+
+    if (!form) {
+      return <div>(Error loading form)...</div>;
     }
 
     return (

@@ -81,7 +81,9 @@ export default class JigsawStructureSetDefinition implements IDefinition {
     for (const structureRef of structures) {
       for (const candItem of itemsCopy) {
         if (candItem.itemType === ProjectItemType.jigsawStructure) {
-          await candItem.ensureStorage();
+          if (!candItem.isContentLoaded) {
+            await candItem.loadContent();
+          }
 
           if (candItem.primaryFile) {
             const jigsawStructure = await JigsawStructureDefinition.ensureOnFile(candItem.primaryFile);
@@ -106,7 +108,9 @@ export default class JigsawStructureSetDefinition implements IDefinition {
 
     if (file.manager !== undefined && file.manager instanceof JigsawStructureSetDefinition) {
       jigsawStructureSet = file.manager as JigsawStructureSetDefinition;
-      await jigsawStructureSet.load();
+      if (!jigsawStructureSet.isLoaded) {
+        await jigsawStructureSet.load();
+      }
     }
 
     return jigsawStructureSet;
@@ -121,7 +125,9 @@ export default class JigsawStructureSetDefinition implements IDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
       return;

@@ -38,7 +38,7 @@ export default interface MinecraftScaleByAge {
    *
    *
    */
-  end_scale: number;
+  end_scale?: number;
 
   /**
    * @remarks
@@ -49,6 +49,6 @@ export default interface MinecraftScaleByAge {
    *
    *
    */
-  start_scale: number;
+  start_scale?: number;
 
 }

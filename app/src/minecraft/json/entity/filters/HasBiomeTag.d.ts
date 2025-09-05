@@ -136,13 +136,13 @@ export default interface HasBiomeTag {
    * Wolf: "not"
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
    * (Optional) The subject of this filter test.
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -151,7 +151,7 @@ export default interface HasBiomeTag {
    * Cave Spider: "has_biome_tag"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -161,7 +161,7 @@ export default interface HasBiomeTag {
    * Cave Spider: "swamp", "mangrove_swamp", "nether"
    *
    */
-  value: string;
+  value?: string;
 
 }
 

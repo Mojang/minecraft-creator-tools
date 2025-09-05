@@ -2,5 +2,5 @@
   "id": "query.any_tag",
   "fields": [],
   "description": "Returns if the item or block has any of the tags specified.",
-  "title": "Any Tag Query"
+  "title": "Any Tag"
 }

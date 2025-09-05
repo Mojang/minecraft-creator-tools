@@ -102,7 +102,7 @@ export default interface MinecraftRailSensor {
    * Command Block Minecart: true
    *
    */
-  check_block_types: boolean;
+  check_block_types?: boolean;
 
   /**
    * @remarks
@@ -113,14 +113,14 @@ export default interface MinecraftRailSensor {
    * Minecart: true
    *
    */
-  eject_on_activate: boolean;
+  eject_on_activate?: boolean;
 
   /**
    * @remarks
    * If true, this entity will eject all of its riders when it
    * passes over a deactivated rail
    */
-  eject_on_deactivate: boolean;
+  eject_on_deactivate?: boolean;
 
   /**
    * @remarks
@@ -134,7 +134,7 @@ export default interface MinecraftRailSensor {
    * Tnt Minecart: {"filters":{"all_of":[{"test":"is_game_rule","domain":"tntexplodes","operator":"==","value":true}]},"event":"minecraft:on_prime"}
    *
    */
-  on_activate: jsoncommon.MinecraftEventTrigger;
+  on_activate?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -146,7 +146,7 @@ export default interface MinecraftRailSensor {
    * Hopper Minecart: {"event":"minecraft:hopper_activate"}
    *
    */
-  on_deactivate: jsoncommon.MinecraftEventTrigger;
+  on_deactivate?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -157,13 +157,13 @@ export default interface MinecraftRailSensor {
    * Command Block Minecart: true
    *
    */
-  tick_command_block_on_activate: boolean;
+  tick_command_block_on_activate?: boolean;
 
   /**
    * @remarks
    * If false, command blocks will stop ticking when passing over a
    * deactivated rail
    */
-  tick_command_block_on_deactivate: boolean;
+  tick_command_block_on_deactivate?: boolean;
 
 }

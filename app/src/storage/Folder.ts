@@ -107,7 +107,7 @@ export default class Folder extends FolderBase implements IFolder {
     throw new Error("Deletion of all folder contents at " + this.fullPath + " is not supported.");
   }
 
-  _addExistingFolder(folder: Folder) {
+  _addExistingFolderToParent(folder: Folder) {
     const nameCanon = StorageUtilities.canonicalizeName(folder.name);
 
     this.folders[nameCanon] = folder;
@@ -129,7 +129,7 @@ export default class Folder extends FolderBase implements IFolder {
       }
       this._parentFolder = newParentFolder as Folder;
 
-      (newParentFolder as Folder)._addExistingFolder(this);
+      (newParentFolder as Folder)._addExistingFolderToParent(this);
     }
 
     this._name = newFolderName;

@@ -295,7 +295,7 @@ export default class ImageEditsDefinition {
         }
 
         if (item) {
-          await item.ensureFileStorage();
+          await item.loadFileContent();
 
           if (item.primaryFile) {
             const blockType = await BlockTypeDefinition.ensureOnFile(item.primaryFile);
@@ -441,7 +441,9 @@ export default class ImageEditsDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

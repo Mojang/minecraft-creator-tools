@@ -116,7 +116,7 @@ export default class EnvSettings {
 
   static async getContent(project: Project, content?: string) {
     if (content === undefined) {
-      content = 'PROJECT_NAME=""\r\nMINECRAFT_PRODUCT="BedrockUWP"\r\nCUSTOM_DEPLOYMENT_PATH=""\r\n';
+      content = 'PROJECT_NAME=""\nMINECRAFT_PRODUCT="BedrockUWP"\nCUSTOM_DEPLOYMENT_PATH=""\n';
     }
 
     const folder = await project.getDefaultBehaviorPackFolder();
@@ -137,10 +137,10 @@ export default class EnvSettings {
         }
       } else {
         if (!content.endsWith("\n")) {
-          content += "\r\n";
+          content += "\n";
         }
 
-        content = content + 'PROJECT_NAME="' + folder.name + '"\r\n';
+        content = content + 'PROJECT_NAME="' + folder.name + '"\n';
       }
     }
 
@@ -159,10 +159,10 @@ export default class EnvSettings {
       }
     } else {
       if (!content.endsWith("\n")) {
-        content += "\r\n";
+        content += "\n";
       }
 
-      content = content + 'MINECRAFT_PRODUCT="' + trackStr + '"\r\n';
+      content = content + 'MINECRAFT_PRODUCT="' + trackStr + '"\n';
     }
 
     return content;

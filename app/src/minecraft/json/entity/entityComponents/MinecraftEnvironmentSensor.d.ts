@@ -473,6 +473,6 @@ export default interface MinecraftEnvironmentSensor {
    * Axolotl: [{"filters":{"test":"in_water","operator":"!=","value":true},"event":"start_drying_out"}], [{"filters":{"test":"in_water_or_rain","operator":"!=","value":true},"event":"start_drying_out"},{"filters":{"test":"in_water","operator":"==","value":true},"event":"enter_water"}]
    *
    */
-  triggers: jsoncommon.MinecraftEventTrigger[];
+  triggers?: jsoncommon.MinecraftEventTrigger[];
 
 }

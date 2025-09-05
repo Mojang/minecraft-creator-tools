@@ -98,6 +98,8 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
       }
     }
 
+    await this.props.item.ensureDependencies();
+
     if (
       this.state.fileToEdit &&
       this.state.fileToEdit.manager !== undefined &&
@@ -135,7 +137,7 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
-      if (file.manager !== null) {
+      if (file.manager) {
         const bt = file.manager as ItemTypeDefinition;
 
         bt.persist();
@@ -217,13 +219,15 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
       const defaultScriptFile = await this.props.project.getDefaultScriptsFile();
 
       if (defaultScriptFile) {
-        await defaultScriptFile.loadContent();
+        if (!defaultScriptFile.isContentLoaded) {
+          await defaultScriptFile.loadContent();
+        }
 
         if (typeof defaultScriptFile.content === "string" && defaultScriptFile.content.length > 0) {
           if (defaultScriptFile.content.indexOf("init" + fileNameSugg) <= 0) {
-            let newContent = "import { init" + fileNameSugg + ' } from "./' + fileNameSugg + '"\r\n';
+            let newContent = "import { init" + fileNameSugg + ' } from "./' + fileNameSugg + '"\n';
 
-            newContent += defaultScriptFile.content + "\r\ninit" + fileNameSugg + "();\r\n";
+            newContent += defaultScriptFile.content + "\ninit" + fileNameSugg + "();\n";
 
             defaultScriptFile.setContent(newContent);
 

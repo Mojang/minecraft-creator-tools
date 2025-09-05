@@ -131,12 +131,12 @@ export default interface MinecraftDestructibleByMining {
    * experiment to be enabled.
    * 
    * Sample Values:
-   * Samples: "{ <br> "minecraft:destructible_by_mining": { <br> "seconds_to_destroy": 10, <br> "item_specific_speeds": [ <br> { <br> "item": { "tags": "q.any_tag('minecraft:is_pickaxe', 'minecraft:is_tool') " }, <br> "destroy_speed": 5.0 <br> } <br> ] <br> } <br>}", "{ <br> "minecraft:destructible_by_mining": { <br> "seconds_to_destroy": 10, <br> "item_specific_speeds": [ <br> { <br> "item": "minecraft:iron_pickaxe", <br> "destroy_speed": 5.0 <br> }, <br> { <br> "item": "minecraft:diamond_pickaxe", <br> "destroy_speed": 2.0 <br> } <br> ] <br> } <br>}"
+   * Samples: "{<br> "minecraft:destructible_by_mining": {<br> "seconds_to_destroy": 10,<br> "item_specific_speeds": [<br> {<br> "item": { "tags": "q.any_tag('minecraft:is_pickaxe', 'minecraft:is_tool') " },<br> "destroy_speed": 5.0<br> }<br> ]<br> }<br>}", "{<br> "minecraft:destructible_by_mining": {<br> "seconds_to_destroy": 10,<br> "item_specific_speeds": [<br> {<br> "item": "minecraft:iron_pickaxe",<br> "destroy_speed": 5.0<br> },<br> {<br> "item": "minecraft:diamond_pickaxe",<br> "destroy_speed": 2.0<br> }<br> ]<br> }<br>}"
    *
    * Block White Sand: [{"item":{"tags":"q.all_tags('minecraft:is_pickaxe', 'minecraft:wooden_tier')"},"destroy_speed":1.15},{"item":{"tags":"q.all_tags('minecraft:is_pickaxe', 'minecraft:stone_tier')"},"destroy_speed":0.6},{"item":{"tags":"q.all_tags('minecraft:is_pickaxe', 'minecraft:iron_tier')"},"destroy_speed":0.4},{"item":{"tags":"q.all_tags('minecraft:is_pickaxe', 'minecraft:golden_tier')"},"destroy_speed":0.2},{"item":{"tags":"q.all_tags('minecraft:is_pickaxe', 'minecraft:diamond_tier')"},"destroy_speed":0.3},{"item":{"tags":"q.all_tags('minecraft:is_pickaxe', 'minecraft:netherite_tier')"},"destroy_speed":0.25}]
    *
    */
-  item_specific_speeds: MinecraftDestructibleByMiningItemSpecificSpeeds[];
+  item_specific_speeds?: MinecraftDestructibleByMiningItemSpecificSpeeds[];
 
   /**
    * @remarks
@@ -153,7 +153,7 @@ export default interface MinecraftDestructibleByMining {
    * Block Leaf Pile: 1
    *
    */
-  seconds_to_destroy: number;
+  seconds_to_destroy?: number;
 
 }
 
@@ -171,13 +171,13 @@ export interface MinecraftDestructibleByMiningItemSpecificSpeeds {
    * Required. A destroy speed applied while using the defined 
    * 'item'.
    */
-  destroy_speed: number;
+  destroy_speed?: number;
 
   /**
    * @remarks
    * Required. A filter for the item used while mining.
    */
-  item: MinecraftDestructibleByMiningItemSpecificSpeedsItem[];
+  item?: MinecraftDestructibleByMiningItemSpecificSpeedsItem[];
 
 }
 
@@ -190,6 +190,6 @@ export interface MinecraftDestructibleByMiningItemSpecificSpeeds {
  */
 export interface MinecraftDestructibleByMiningItemSpecificSpeedsItem {
 
-  tags: number[];
+  tags?: number[];
 
 }

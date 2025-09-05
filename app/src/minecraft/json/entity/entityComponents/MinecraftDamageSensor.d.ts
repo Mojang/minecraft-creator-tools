@@ -300,7 +300,7 @@ export default interface MinecraftDamageSensor {
    * @remarks
    * Defines how received damage affects the entity.
    */
-  deals_damage: boolean;
+  deals_damage?: boolean;
 
   /**
    * @remarks
@@ -310,10 +310,10 @@ export default interface MinecraftDamageSensor {
    * Sample Values:
    * Allay: [{"on_damage":{"filters":{"all_of":[{"test":"is_family","subject":"other","value":"player"},{"test":"is_owner","subject":"other"}]}},"deals_damage":"no"}]
    *
-   * Armadillo: {"on_damage":{"filters":{"any_of":[{"test":"is_family","subject":"other","value":"mob"},{"test":"is_family","subject":"other","value":"player"}]},"event":"minecraft:threat_detected"}}, [{"on_damage":{"filters":{"any_of":[{"test":"is_family","subject":"other","value":"mob"},{"test":"is_family","subject":"other","value":"player"}]},"event":"minecraft:threat_detected"},"damage_multiplier":0.5,"damage_modifier":-1},{"damage_multiplier":0.5,"damage_modifier":-1}]
+   * Armadillo: {"on_damage":{"filters":{"any_of":[{"test":"is_family","subject":"other","value":"mob"},{"test":"is_family","subject":"other","value":"player"}]},"event":"minecraft:threat_detected"}}
    *
    */
-  triggers: jsoncommon.MinecraftEventTrigger[];
+  triggers?: jsoncommon.MinecraftEventTrigger[];
 
 }
 
@@ -350,7 +350,7 @@ export interface MinecraftDamageSensorTriggers {
    * @remarks
    * Type of damage that triggers the events.
    */
-  cause: string;
+  cause?: string;
 
   /**
    * @remarks
@@ -358,7 +358,7 @@ export interface MinecraftDamageSensorTriggers {
    * specified damage cause. It does not reduce damage to less than 
    * 0.
    */
-  damage_modifier: number;
+  damage_modifier?: number;
 
   /**
    * @remarks
@@ -367,37 +367,37 @@ export interface MinecraftDamageSensorTriggers {
    * only reduce the damage the entity will take to a minimum of 
    * 1.
    */
-  damage_multiplier: number;
+  damage_multiplier?: number;
 
   /**
    * @remarks
    * Defines how received damage affects the entity:
-            
-   *                              \n- "yes", received damage is
+             
+   *                             \n- "yes", received damage is
    * applied to the entity.
-                                     
-   *     \n- "no", received damage is not applied to the entity.
- 
-   *                                         \n-
+                                      
+   *    \n- "no", received damage is not applied to the entity.
+  
+   *                                        \n-
    * "no_but_side_effects_apply", received damage is not applied to
    * the entity, but the side effects of the attack are. This means
    * that the attacker's weapon loses durability, enchantment side
    * effects are applied, and so on.
    */
-  deals_damage: boolean;
+  deals_damage?: boolean;
 
   /**
    * @remarks
    * Defines which entities the trigger applies to, and which, if
    * any, event to emit when damaged.
    */
-  on_damage: jsoncommon.MinecraftEventTrigger;
+  on_damage?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
    * Defines what sound to play, if any, when the "on_damage" filters are
    * met.
    */
-  on_damage_sound_event: string;
+  on_damage_sound_event?: string;
 
 }

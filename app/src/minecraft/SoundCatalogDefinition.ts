@@ -221,7 +221,9 @@ export default class SoundCatalogDefinition implements IDefinition {
 
     for (const item of items) {
       if (item.itemType === ProjectItemType.soundCatalog) {
-        await item.ensureFileStorage();
+        if (!item.isContentLoaded) {
+          await item.loadFileContent();
+        }
 
         if (item.primaryFile) {
           const soundCatalog = await SoundCatalogDefinition.ensureOnFile(item.primaryFile);
@@ -266,11 +268,13 @@ export default class SoundCatalogDefinition implements IDefinition {
     if (file.manager !== undefined && file.manager instanceof SoundCatalogDefinition) {
       et = file.manager as SoundCatalogDefinition;
 
-      if (!et.isLoaded && loadHandler) {
-        et.onLoaded.subscribe(loadHandler);
-      }
+      if (!et.isLoaded) {
+        if (loadHandler) {
+          et.onLoaded.subscribe(loadHandler);
+        }
 
-      await et.load();
+        await et.load();
+      }
     }
 
     return et;
@@ -296,7 +300,9 @@ export default class SoundCatalogDefinition implements IDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
       return;
@@ -340,7 +346,9 @@ export default class SoundCatalogDefinition implements IDefinition {
           entityIdList = Utilities.removeItemInArray(entityDef.id, entityIdList);
         }
       } else if (candItem.itemType === ProjectItemType.soundDefinitionCatalog && soundEventList) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
           const soundDef = await SoundDefinitionCatalogDefinition.ensureOnFile(candItem.primaryFile);

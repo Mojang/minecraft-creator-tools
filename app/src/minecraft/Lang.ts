@@ -61,11 +61,13 @@ export default class Lang {
     if (file.manager !== undefined && file.manager instanceof Lang) {
       lang = file.manager as Lang;
 
-      if (!lang.isLoaded && loadHandler) {
-        lang.onLoaded.subscribe(loadHandler);
-      }
+      if (!lang.isLoaded) {
+        if (loadHandler) {
+          lang.onLoaded.subscribe(loadHandler);
+        }
 
-      await lang.load();
+        await lang.load();
+      }
     }
 
     return lang;
@@ -115,14 +117,14 @@ export default class Lang {
                 tokName +
                 "=" +
                 tok.value +
-                "\r\n" +
+                "\n" +
                 content.substring(findSimilar + 1);
               wasInserted = true;
             }
           }
 
           if (!wasInserted) {
-            content += "\r\n" + tokName + "=" + tok.value;
+            content += "\n" + tokName + "=" + tok.value;
           }
         }
 
@@ -148,7 +150,9 @@ export default class Lang {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

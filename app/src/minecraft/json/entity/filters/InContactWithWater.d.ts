@@ -51,13 +51,13 @@ export default interface InContactWithWater {
    * Snow Golem: "=="
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
    * (Optional) The subject of this filter test.
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -67,7 +67,7 @@ export default interface InContactWithWater {
    *
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -77,7 +77,7 @@ export default interface InContactWithWater {
    * Snow Golem: true
    *
    */
-  value: boolean;
+  value?: boolean;
 
 }
 

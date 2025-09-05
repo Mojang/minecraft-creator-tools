@@ -13,8 +13,7 @@
 import * as jsoncommon from './../../jsoncommon';
 
 /**
- * Minecraft Fog Appearance Client Biome 
- * (minecraft:fog_appearance)
+ * Minecraft Fog Appearance (minecraft:fog_appearance)
  * Sets the fog settings used during rendering. Biomes without this
  * component will have default fog settings.
  */

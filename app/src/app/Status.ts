@@ -4,8 +4,9 @@
 export enum StatusType {
   message = 0,
   operationStarted = 1,
-  operationEndedComplete = 2,
-  operationEndedErrors = 3,
+  operationUpdate = 2,
+  operationEndedComplete = 3,
+  operationEndedErrors = 4,
 }
 
 export enum StatusTopic {

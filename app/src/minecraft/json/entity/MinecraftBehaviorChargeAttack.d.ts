@@ -33,14 +33,14 @@ export default interface MinecraftBehaviorChargeAttack {
    * A charge attack cannot start if the entity is farther than this
    * distance to the target.
    */
-  max_distance: number;
+  max_distance?: number;
 
   /**
    * @remarks
    * A charge attack cannot start if the entity is closer than this
    * distance to the target.
    */
-  min_distance: number;
+  min_distance?: number;
 
   /**
    * @remarks
@@ -52,19 +52,19 @@ export default interface MinecraftBehaviorChargeAttack {
    * Vex: 4
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * Modifies the entity's speed when charging toward the target.
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
    * Percent chance this entity will start a charge attack, if not
    * already attacking (1.0 = 100%)
    */
-  success_rate: number;
+  success_rate?: number;
 
 }

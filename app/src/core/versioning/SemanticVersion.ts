@@ -3,9 +3,13 @@ const VersionParts = 3;
   immutable structure defining semantic versioning with 3 parts: major, minor, and patch
 */
 export default class SemanticVersion {
-  static parse(version?: string | number | null): SemanticVersion | undefined {
+  static parse(version?: string | number | number[] | null): SemanticVersion | undefined {
     if (!version) {
       return undefined;
+    }
+
+    if (Array.isArray(version)) {
+      return SemanticVersion.fromArray(version);
     }
     if (typeof version === "number") {
       return SemanticVersion.fromNumber(version);

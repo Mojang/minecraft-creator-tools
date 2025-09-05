@@ -6,6 +6,12 @@ import { FieldValueHumanify } from "../dataform/IField";
 import AppServiceProxy from "./AppServiceProxy";
 import { IErrorable } from "./IErrorable";
 import Log from "./Log";
+import * as stableStringify from "json-stable-stringify";
+
+// json-stable-stringify may be exported either as a function (CommonJS) or as a default property
+// (ES module interop). Create an alias that resolves to the callable function in either case.
+const stableStringifyFunc: (obj: any, options?: any) => string | undefined =
+  (stableStringify as any).default ?? (stableStringify as any);
 
 const singleComment = Symbol("singleComment");
 const multiComment = Symbol("multiComment");
@@ -46,7 +52,7 @@ export default class Utilities {
   }
 
   static get isPreview(): boolean {
-    return false;
+    return true;
   }
 
   static get isAppSim(): boolean {
@@ -590,6 +596,28 @@ export default class Utilities {
     return name;
   }
 
+  static consistentStringifyTrimmed(value: any): string {
+    const retVal = stableStringifyFunc(value);
+
+    if (retVal === undefined || retVal === null) {
+      return "";
+    }
+
+    return retVal;
+  }
+
+  static consistentStringify(value: any): string {
+    const retVal = stableStringifyFunc(value, {
+      space: 2,
+    });
+
+    if (retVal === undefined || retVal === null) {
+      return "";
+    }
+
+    return retVal;
+  }
+
   static humanifyMinecraftName(name: string | boolean | number, doNotReverse?: boolean) {
     if (typeof name === "boolean" || typeof name === "number") {
       return name.toString();
@@ -608,7 +636,11 @@ export default class Utilities {
     name = name.replace("name_actions.", "");
     name = name.replace("tempt.", "");
     name = name.replace("triggers.", "");
+    name = name.replace("math.", "");
+    name = name.replace("query.", "");
     name = name.replace(" on_", " ");
+
+    name = name.replace(/`/gi, "");
 
     if (name.startsWith("on_")) {
       name = name.substring(3, name.length);
@@ -783,9 +815,9 @@ export default class Utilities {
         nextNewLine = content.length;
       }
 
-      content = content.substring(0, prevNewLine) + content.substring(nextNewLine, content.length);
+      content = content.substring(0, prevNewLine) + content.substring(nextNewLine + 1, content.length);
 
-      i = content.indexOf(lineContains);
+      i = content.indexOf(lineContains, prevNewLine);
     }
 
     return content;
@@ -836,6 +868,10 @@ export default class Utilities {
     }
 
     return Boolean(backslashCount % 2);
+  }
+
+  static staticCompare(a: string, b: string) {
+    return a < b ? -1 : a > b ? 1 : 0;
   }
 
   static fixJsonContent(jsonString: string, { whitespace = true, trailingCommas = false } = {}) {

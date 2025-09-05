@@ -1,4 +1,5 @@
 {
+  "id": "minecraft:throwable",
   "fields": [
     {
       "id": "do_swing_animation",
@@ -79,8 +80,8 @@
       "dataType": 1
     }
   ],
-  "description": "Sets the throwable item component.",
-  "title": "Minecraft Throwable Item",
+  "description": "Throwable items can be thrown by the player, such as a snowball.",
+  "title": "Item Throwable",
   "samples": {
     "/vanilla/behavior_pack/items/wind_charge.json": [
       {
@@ -105,6 +106,5 @@
         }
       }
     ]
-  },
-  "id": "minecraft:throwable"
+  }
 }

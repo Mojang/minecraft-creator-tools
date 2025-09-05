@@ -2,5 +2,5 @@
   "id": "query.player_level",
   "fields": [],
   "description": "Returns the players level if the entity is a player, otherwise returns 0.",
-  "title": "Player Level Query"
+  "title": "Player Level"
 }

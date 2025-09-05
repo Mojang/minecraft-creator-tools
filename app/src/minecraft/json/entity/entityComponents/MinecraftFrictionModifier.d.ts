@@ -24,6 +24,6 @@ export default interface MinecraftFrictionModifier {
    * value of 1.0 means regular friction, while 2.0 means twice as
    * much.
    */
-  value: number;
+  value?: number;
 
 }

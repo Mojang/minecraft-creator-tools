@@ -38,6 +38,6 @@ export default interface MinecraftBehaviorSquidFlee {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
 }

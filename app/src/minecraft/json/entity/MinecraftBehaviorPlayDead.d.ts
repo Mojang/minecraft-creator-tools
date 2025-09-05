@@ -59,7 +59,7 @@ export default interface MinecraftBehaviorPlayDead {
    * Axolotl: true
    *
    */
-  apply_regeneration: boolean;
+  apply_regeneration?: boolean;
 
   /**
    * @remarks
@@ -70,7 +70,7 @@ export default interface MinecraftBehaviorPlayDead {
    * Axolotl: ["contact","entity_attack","entity_explosion","magic","projectile","thorns","wither"]
    *
    */
-  damage_sources: string[];
+  damage_sources?: string[];
 
   /**
    * @remarks
@@ -81,7 +81,7 @@ export default interface MinecraftBehaviorPlayDead {
    * Axolotl: 10
    *
    */
-  duration: number;
+  duration?: number;
 
   /**
    * @remarks
@@ -92,7 +92,7 @@ export default interface MinecraftBehaviorPlayDead {
    * Axolotl: {"test":"in_water","operator":"==","value":true}
    *
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -103,7 +103,7 @@ export default interface MinecraftBehaviorPlayDead {
    * Axolotl: 8
    *
    */
-  force_below_health: number;
+  force_below_health?: number;
 
   /**
    * @remarks
@@ -111,7 +111,7 @@ export default interface MinecraftBehaviorPlayDead {
    * priority, the sooner this behavior will be executed as a 
    * goal.
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -124,7 +124,7 @@ export default interface MinecraftBehaviorPlayDead {
    * Axolotl: [0,2]
    *
    */
-  random_damage_range: number[];
+  random_damage_range?: number[];
 
   /**
    * @remarks
@@ -134,6 +134,6 @@ export default interface MinecraftBehaviorPlayDead {
    * Axolotl: 0.33
    *
    */
-  random_start_chance: number;
+  random_start_chance?: number;
 
 }

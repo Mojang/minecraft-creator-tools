@@ -18,8 +18,8 @@ import * as jsoncommon from './../../../jsoncommon';
  */
 export default interface Health {
 
-  max: number;
+  max?: number;
 
-  value: number;
+  value?: number;
 
 }

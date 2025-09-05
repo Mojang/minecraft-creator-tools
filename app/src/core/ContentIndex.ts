@@ -104,6 +104,10 @@ export default class ContentIndex implements IContentIndex {
     return 4;
   }
 
+  get items() {
+    return this.#data.items;
+  }
+
   setItems(items: string[]) {
     this.#data.items = items;
     this._processedPathsCache = undefined; // reset processed paths cache
@@ -334,7 +338,7 @@ export default class ContentIndex implements IContentIndex {
       }
 
       if (aTermMatches === bTermMatches) {
-        return a.value.localeCompare(b.value);
+        return Utilities.staticCompare(a.value, b.value);
       }
 
       return bTermMatches - aTermMatches;

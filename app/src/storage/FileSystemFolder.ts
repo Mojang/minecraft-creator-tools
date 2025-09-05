@@ -8,10 +8,6 @@ import FileSystemStorage from "./FileSystemStorage";
 import StorageUtilities from "./StorageUtilities";
 import Utilities from "./../core/Utilities";
 import Log from "./../core/Log";
-
-import IFolderState from "./IFolderState";
-import IFileState from "./IFileState";
-import IFolderSummaryState from "./IFolderSummaryState";
 import FolderBase from "./FolderBase";
 
 export default class FileSystemFolder extends FolderBase implements IFolder {
@@ -22,6 +18,7 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
   private _parentFolder: FileSystemFolder | null;
   private _handle?: FileSystemDirectoryHandle;
   private _writeHandle?: FileSystemDirectoryHandle;
+  private _lastLoadedPath?: string;
 
   get handle(): FileSystemDirectoryHandle | undefined {
     return this._handle;
@@ -255,7 +252,7 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
     }
   }
 
-  _addExistingFolder(folder: FileSystemFolder) {
+  _addExistingFolderToParent(folder: FileSystemFolder) {
     const nameCanon = StorageUtilities.canonicalizeName(folder.name);
 
     if (Utilities.isUsableAsObjectKey(nameCanon)) {
@@ -263,10 +260,68 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
     }
   }
 
-  async moveTo(newStorageRelativePath: string): Promise<boolean> {
+  async loadAll() {
+    if (!this.isLoaded) {
+      await this.load();
+    }
+
+    for (const fileName in this.files) {
+      const file = this.files[fileName];
+
+      if (file && !file.isContentLoaded) {
+        await (file as FileSystemFile).loadContent();
+      }
+    }
+
+    for (const folderName in this.folders) {
+      const folder = this.folders[folderName];
+
+      if (folder) {
+        await folder.loadAll();
+      }
+    }
+  }
+
+  async resaveAfterMove(newParentPath: string) {
+    this._parentPath = newParentPath;
+    this._handle = undefined;
+    this._writeHandle = undefined;
+
+    await this.getHandle();
+    await this.ensureWriteHandle();
+
+    for (const fileName in this.files) {
+      const file = this.files[fileName];
+
+      if (file) {
+        await (file as FileSystemFile).resaveAfterMove();
+      }
+    }
+
+    for (const folderName in this.folders) {
+      const folder = this.folders[folderName];
+
+      if (folder) {
+        await folder.resaveAfterMove(this.fullPath);
+      }
+    }
+
+    if (this._lastLoadedPath === undefined) {
+      return;
+    }
+
+    if (this._lastLoadedPath !== StorageUtilities.ensureEndsWithDelimiter(this.fullPath)) {
+      await this.save(true);
+    }
+  }
+
+  async moveTo(newStorageRelativePath: string, ignoreParentSave?: boolean): Promise<boolean> {
     const newFolderPath = StorageUtilities.getFolderPath(newStorageRelativePath);
     const newFolderName = StorageUtilities.getLeafName(newStorageRelativePath);
 
+    await this.loadAll();
+
+    const oldPath = this._lastLoadedPath;
     if (newFolderName.length < 2) {
       throw new Error("New path is not correct.");
     }
@@ -275,21 +330,29 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
       return false;
     }
 
-    if (this._parentFolder !== null) {
-      const newParentFolder = await this._parentFolder.storage.ensureFolderFromStorageRelativePath(newFolderPath);
+    let oldParentHandle: FileSystemDirectoryHandle | undefined = undefined;
+    let oldChildFolderName: string | undefined = undefined;
 
-      if (newParentFolder.folders[newFolderName] !== undefined) {
-        throw new Error("Folder exists at specified path.");
-      }
-
-      this._parentFolder._clearExistingFolder(this);
-
-      this._parentFolder = newParentFolder as FileSystemFolder;
-
-      this._name = newFolderName;
-
-      (newParentFolder as FileSystemFolder)._addExistingFolder(this);
+    if (this._parentFolder == null) {
+      return false;
     }
+
+    const newParentFolder = await this._parentFolder.storage.ensureFolderFromStorageRelativePath(newFolderPath);
+
+    if (newParentFolder.folders[newFolderName] !== undefined) {
+      throw new Error("Folder exists at specified path.");
+    }
+
+    oldParentHandle = await this._parentFolder.ensureWriteHandle();
+    oldChildFolderName = this._name;
+
+    this._parentFolder._removeExistingFolderFromParent(this);
+
+    this._parentFolder = newParentFolder as FileSystemFolder;
+
+    this._name = newFolderName;
+
+    (newParentFolder as FileSystemFolder)._addExistingFolderToParent(this);
 
     this._name = newFolderName;
 
@@ -297,9 +360,22 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
       await this._parentFolder.save(true);
     }
 
-    throw new Error("Not implemented.");
+    this.resaveAfterMove(newParentFolder.fullPath);
 
-    //return true;
+    if (oldChildFolderName && oldParentHandle) {
+      for await (const [key, value] of oldParentHandle.entries()) {
+        if (value.kind === "directory" && key.toLowerCase() === oldChildFolderName.toLowerCase()) {
+          await oldParentHandle.removeEntry(oldChildFolderName, { recursive: true });
+          break;
+        }
+      }
+    }
+
+    if (!ignoreParentSave) {
+      this.notifyFolderMoved({ previousStoragePath: oldPath, newStoragePath: this.fullPath, folder: this });
+    }
+
+    return true;
   }
 
   async createFile(name: string): Promise<IFile> {
@@ -317,7 +393,11 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
       }
 
       if (this.parentFolder) {
-        const parentFolderHandle = await this.parentFolder.getHandle();
+        if (!this.parentFolder.handle) {
+          await this.parentFolder.getHandle();
+        }
+
+        const parentFolderHandle = this.parentFolder.handle;
 
         if (parentFolderHandle) {
           try {
@@ -338,7 +418,9 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
   async ensureWriteHandle() {
     if (!this._writeHandle) {
       if (this.parentFolder) {
-        await this.parentFolder.ensureWriteHandle();
+        if (!this.parentFolder.writeHandle) {
+          await this.parentFolder.ensureWriteHandle();
+        }
 
         if (this.parentFolder.writeHandle) {
           try {
@@ -362,6 +444,8 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
       return this.lastLoadedOrSaved;
     }
 
+    this._lastLoadedPath = this.fullPath + FileSystemStorage.slashFolderDelimiter;
+
     const handle = await this.getHandle();
 
     if (handle) {
@@ -383,46 +467,6 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
 
   async save(force: boolean): Promise<Date> {
     this.updateLastLoadedOrSaved();
-
-    const folderState: IFolderState = {
-      updated: this.lastLoadedOrSaved as Date,
-      files: [],
-      folders: [],
-    };
-
-    for (const fileName in this.files) {
-      const file = this.files[fileName];
-
-      if (file !== undefined) {
-        const fileState: IFileState = {
-          name: file.name,
-          size: file.size,
-          modified: file.latestModified == null ? new Date() : file.latestModified,
-        };
-
-        folderState.files.push(fileState);
-      }
-    }
-
-    for (const folderName in this.folders) {
-      const childFolder = this.folders[folderName];
-
-      if (childFolder !== undefined && !childFolder.errorStatus) {
-        const childFolderState: IFolderSummaryState = {
-          name: childFolder.name,
-          fileCount: Utilities.lengthOfDictionary(childFolder.files),
-          modified: childFolder.modifiedAtLoad == null ? new Date() : childFolder.modifiedAtLoad,
-        };
-
-        folderState.folders.push(childFolderState);
-      }
-    }
-
-    const saveContent = JSON.stringify(folderState);
-
-    if (this._lastSavedContent !== saveContent || force) {
-      //  await localforage.setItem<string>(this.fullPath + FileSystemStorage.folderDelimiter, saveContent);
-    }
 
     return this.lastLoadedOrSaved as Date;
   }

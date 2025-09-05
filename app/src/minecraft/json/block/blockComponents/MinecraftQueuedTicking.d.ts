@@ -33,7 +33,7 @@ export default interface MinecraftQueuedTicking {
    * interval_range are the same, the event will always be triggered after
    * that number of ticks.
    */
-  interval_range: string[];
+  interval_range?: string[];
 
   /**
    * @remarks
@@ -43,12 +43,12 @@ export default interface MinecraftQueuedTicking {
    * between events will be equal to a number of ticks randomly chosen
    * from the interval_range.
    */
-  looping: boolean;
+  looping?: boolean;
 
   /**
    * @remarks
    * The event that will be triggered once or on an interval.
    */
-  on_tick: jsoncommon.MinecraftEventTrigger;
+  on_tick?: jsoncommon.MinecraftEventTrigger;
 
 }

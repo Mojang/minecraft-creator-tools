@@ -115,11 +115,13 @@ export default class ParticleEffectResourceDefinition {
     if (file.manager !== undefined && file.manager instanceof ParticleEffectResourceDefinition) {
       et = file.manager as ParticleEffectResourceDefinition;
 
-      if (!et.isLoaded && loadHandler) {
-        et.onLoaded.subscribe(loadHandler);
-      }
+      if (!et.isLoaded) {
+        if (loadHandler) {
+          et.onLoaded.subscribe(loadHandler);
+        }
 
-      await et.load();
+        await et.load();
+      }
     }
 
     return et;
@@ -145,7 +147,9 @@ export default class ParticleEffectResourceDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
       return;
@@ -184,7 +188,9 @@ export default class ParticleEffectResourceDefinition {
     const basicTexture = this.description.basic_render_parameters.texture;
 
     if (rel.childItem.itemType === ProjectItemType.texture) {
-      await rel.childItem.ensureStorage();
+      if (!rel.childItem.isContentLoaded) {
+        await rel.childItem.loadContent();
+      }
 
       if (rel.childItem.primaryFile && packRootFolder) {
         let relativePath = this.getRelativePath(rel.childItem.primaryFile, packRootFolder);
@@ -235,7 +241,9 @@ export default class ParticleEffectResourceDefinition {
 
     for (const candItem of itemsCopy) {
       if (candItem.itemType === ProjectItemType.texture && packRootFolder && textureList) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
           let relativePath = this.getRelativePath(candItem.primaryFile, packRootFolder);

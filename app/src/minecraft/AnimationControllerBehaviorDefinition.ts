@@ -124,27 +124,29 @@ export default class AnimationControllerBehaviorDefinition implements IDefinitio
     file: IFile,
     loadHandler?: IEventHandler<AnimationControllerBehaviorDefinition, AnimationControllerBehaviorDefinition>
   ) {
-    let rbd: AnimationControllerBehaviorDefinition | undefined;
+    let abcd: AnimationControllerBehaviorDefinition | undefined;
 
     if (file.manager === undefined) {
-      rbd = new AnimationControllerBehaviorDefinition();
+      abcd = new AnimationControllerBehaviorDefinition();
 
-      rbd.file = file;
+      abcd.file = file;
 
-      file.manager = rbd;
+      file.manager = abcd;
     }
 
     if (file.manager !== undefined && file.manager instanceof AnimationControllerBehaviorDefinition) {
-      rbd = file.manager as AnimationControllerBehaviorDefinition;
+      abcd = file.manager as AnimationControllerBehaviorDefinition;
 
-      if (!rbd.isLoaded && loadHandler) {
-        rbd.onLoaded.subscribe(loadHandler);
+      if (!abcd.isLoaded) {
+        if (loadHandler) {
+          abcd.onLoaded.subscribe(loadHandler);
+        }
+
+        await abcd.load();
       }
-
-      await rbd.load();
     }
 
-    return rbd;
+    return abcd;
   }
 
   persist() {
@@ -162,7 +164,9 @@ export default class AnimationControllerBehaviorDefinition implements IDefinitio
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

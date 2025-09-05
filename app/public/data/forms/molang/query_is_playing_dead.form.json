@@ -2,5 +2,5 @@
   "id": "query.is_playing_dead",
   "fields": [],
   "description": "Returns 1.0 if the entity is playing dead, else it returns 0.0. Applies generally to the axolotl.",
-  "title": "Is Playing Dead Query"
+  "title": "Is Playing Dead"
 }

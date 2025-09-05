@@ -289,7 +289,7 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/piglin_brute.json": [
+    "/vanilla/behavior_pack/entities/piglin.json": [
       {
         "path": "/minecraft:entity/components/minecraft:follow_range/",
         "content": {
@@ -297,7 +297,7 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/piglin.json": [
+    "/vanilla/behavior_pack/entities/piglin_brute.json": [
       {
         "path": "/minecraft:entity/components/minecraft:follow_range/",
         "content": {

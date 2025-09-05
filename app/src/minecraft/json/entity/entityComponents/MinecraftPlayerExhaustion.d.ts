@@ -36,12 +36,12 @@ export default interface MinecraftPlayerExhaustion {
    * Player: 20
    *
    */
-  max: number;
+  max?: number;
 
   /**
    * @remarks
    * The initial value of a player's exhaustion level.
    */
-  value: number;
+  value?: number;
 
 }

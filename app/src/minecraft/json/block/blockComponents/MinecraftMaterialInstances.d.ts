@@ -43,6 +43,16 @@ Block Frond Top - https://github.com/microsoft/minecraft-samples/tree/main/chill
 }
 
 
+Block Palm Leave - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave.block.json
+
+"minecraft:material_instances": {
+  "*": {
+    "texture": "palm_leave",
+    "render_method": "alpha_test"
+  }
+}
+
+
 Block Palm Leave Corner - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave_corner.block.json
 
 "minecraft:material_instances": {
@@ -58,16 +68,6 @@ Block Palm Leave Tip - https://github.com/microsoft/minecraft-samples/tree/main/
 "minecraft:material_instances": {
   "*": {
     "texture": "palm_leave_tip",
-    "render_method": "alpha_test"
-  }
-}
-
-
-Block Palm Leave - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave.block.json
-
-"minecraft:material_instances": {
-  "*": {
-    "texture": "palm_leave",
     "render_method": "alpha_test"
   }
 }
@@ -158,17 +158,9 @@ import * as jsoncommon from './../../../jsoncommon';
  */
 export default interface MinecraftMaterialInstances {
 
-  down: MinecraftMaterialInstancesDown;
+  down?: MinecraftMaterialInstancesDown;
 
-  east: MinecraftMaterialInstancesEast;
-
-  /**
-   * @remarks
-   * A material instance definition to map to a material instance in
-   * a geometry file. The material instance "*" will be used for any
-   * materials that don't have a match.
-   */
-  MaterialInstance: MinecraftMaterialInstancesMaterialInstance[];
+  east?: MinecraftMaterialInstancesEast;
 
   /**
    * @remarks
@@ -178,7 +170,7 @@ export default interface MinecraftMaterialInstances {
    *
    *
    */
-  north: MinecraftMaterialInstancesNorth;
+  north?: MinecraftMaterialInstancesNorth;
 
   /**
    * @remarks
@@ -188,17 +180,17 @@ export default interface MinecraftMaterialInstances {
    *
    *
    */
-  south: MinecraftMaterialInstancesSouth;
+  south?: MinecraftMaterialInstancesSouth;
 
-  up: MinecraftMaterialInstancesUp;
+  up?: MinecraftMaterialInstancesUp;
 
-  west: MinecraftMaterialInstancesWest;
+  west?: MinecraftMaterialInstancesWest;
 
 }
 
 
 /**
- * * (*)
+ * Material Instance Face (material_instance_face)
  */
 export interface MinecraftMaterialInstancesDown {
 
@@ -208,7 +200,7 @@ export interface MinecraftMaterialInstancesDown {
    * will be created around and underneath the block. Decimal value
    * controls exponent applied to a value after lighting.
    */
-  ambient_occlusion: number;
+  ambient_occlusion?: number;
 
   /**
    * @remarks
@@ -218,14 +210,14 @@ export interface MinecraftMaterialInstancesDown {
    * Blue Bubble Fish: true
    *
    */
-  face_dimming: string;
+  face_dimming?: string;
 
   /**
    * @remarks
    * Should the faces that this material is applied to randomize their
    * UVs?
    */
-  isotropic: boolean;
+  isotropic?: boolean;
 
   /**
    * @remarks
@@ -240,7 +232,7 @@ export interface MinecraftMaterialInstancesDown {
    * Block Frond Top: "alpha_test"
    *
    */
-  render_method: string;
+  render_method?: string;
 
   /**
    * @remarks
@@ -254,7 +246,7 @@ export interface MinecraftMaterialInstancesDown {
    * Green Bubble Fish: "bubble_fish_green"
    *
    */
-  texture: string;
+  texture?: string;
 
   /**
    * @remarks
@@ -264,7 +256,7 @@ export interface MinecraftMaterialInstancesDown {
    * "none", "default_foliage", "birch_foliage", "evergreen_foliage", "dry_foliage",
    * "grass" and "water"
    */
-  tint_method: boolean;
+  tint_method?: boolean;
 
 }
 
@@ -327,7 +319,7 @@ export enum MinecraftMaterialInstancesDownRenderMethod {
 
 
 /**
- * * (*)
+ * Material Instance Face (material_instance_face)
  */
 export interface MinecraftMaterialInstancesEast {
 
@@ -337,7 +329,7 @@ export interface MinecraftMaterialInstancesEast {
    * will be created around and underneath the block. Decimal value
    * controls exponent applied to a value after lighting.
    */
-  ambient_occlusion: number;
+  ambient_occlusion?: number;
 
   /**
    * @remarks
@@ -347,14 +339,14 @@ export interface MinecraftMaterialInstancesEast {
    * Blue Bubble Fish: true
    *
    */
-  face_dimming: string;
+  face_dimming?: string;
 
   /**
    * @remarks
    * Should the faces that this material is applied to randomize their
    * UVs?
    */
-  isotropic: boolean;
+  isotropic?: boolean;
 
   /**
    * @remarks
@@ -369,7 +361,7 @@ export interface MinecraftMaterialInstancesEast {
    * Block Frond Top: "alpha_test"
    *
    */
-  render_method: string;
+  render_method?: string;
 
   /**
    * @remarks
@@ -383,7 +375,7 @@ export interface MinecraftMaterialInstancesEast {
    * Green Bubble Fish: "bubble_fish_green"
    *
    */
-  texture: string;
+  texture?: string;
 
   /**
    * @remarks
@@ -393,7 +385,7 @@ export interface MinecraftMaterialInstancesEast {
    * "none", "default_foliage", "birch_foliage", "evergreen_foliage", "dry_foliage",
    * "grass" and "water"
    */
-  tint_method: boolean;
+  tint_method?: boolean;
 
 }
 
@@ -456,74 +448,7 @@ export enum MinecraftMaterialInstancesEastRenderMethod {
 
 
 /**
- * A material instance definition to map to a material instance in
- * a geometry file. The material instance "*" will be used for any
- * materials that don't have a match.
- */
-export interface MinecraftMaterialInstancesMaterialInstance {
-
-  /**
-   * @remarks
-   * Should this material have ambient occlusion applied when
-   * lighting? If true, shadows will be created around and underneath the
-   * block. Optionally can be constructed with float to control exponent
-   * applied to ao value after lighting.
-   */
-  ambient_occlusion: number;
-
-  /**
-   * @remarks
-   * Should this material be dimmed by the direction it's facing?
-   */
-  face_dimming: boolean;
-
-  /**
-   * @remarks
-   * Should the faces that this material is applied to randomize their
-   * UVs?
-   */
-  isotropic: boolean;
-
-  /**
-   * @remarks
-   * The render method to use. Must be one of these options and must
-   * be the same for each:
-"opaque" - Used for a regular block texture
-   * without an alpha layer. Does not allow for transparency or
-   * translucency.
-"double_sided" - Used for completely disabling backface
-   * culling.
-"blend" - Used for a block like stained glass. Allows for
-   * transparency and translucency (slightly transparent
-   * textures).
-"alpha_test" - Used for a block like the vanilla
-   * (unstained) glass. Does not allow for translucency, only fully
-   * opaque or fully transparent textures. Also disables backface 
-   * culling.
-   */
-  render_method: string;
-
-  /**
-   * @remarks
-   * Texture name for the material.
-   */
-  texture: string;
-
-  /**
-   * @remarks
-   * Tint multiplied to the color. Tint method logic varies, but
-   * often refers to the "rain" and "temperature" of the biome the
-   * block is placed in to compute the tint. Supported tint methods are
-   * "none", "default_foliage", "birch_foliage", "evergreen_foliage", "dry_foliage",
-   * "grass" and "water"
-   */
-  tint_method: boolean;
-
-}
-
-
-/**
- * * (*)
+ * Material Instance Face (material_instance_face)
  */
 export interface MinecraftMaterialInstancesNorth {
 
@@ -533,7 +458,7 @@ export interface MinecraftMaterialInstancesNorth {
    * will be created around and underneath the block. Decimal value
    * controls exponent applied to a value after lighting.
    */
-  ambient_occlusion: number;
+  ambient_occlusion?: number;
 
   /**
    * @remarks
@@ -543,14 +468,14 @@ export interface MinecraftMaterialInstancesNorth {
    * Blue Bubble Fish: true
    *
    */
-  face_dimming: string;
+  face_dimming?: string;
 
   /**
    * @remarks
    * Should the faces that this material is applied to randomize their
    * UVs?
    */
-  isotropic: boolean;
+  isotropic?: boolean;
 
   /**
    * @remarks
@@ -565,7 +490,7 @@ export interface MinecraftMaterialInstancesNorth {
    * Block Frond Top: "alpha_test"
    *
    */
-  render_method: string;
+  render_method?: string;
 
   /**
    * @remarks
@@ -579,7 +504,7 @@ export interface MinecraftMaterialInstancesNorth {
    * Green Bubble Fish: "bubble_fish_green"
    *
    */
-  texture: string;
+  texture?: string;
 
   /**
    * @remarks
@@ -589,7 +514,7 @@ export interface MinecraftMaterialInstancesNorth {
    * "none", "default_foliage", "birch_foliage", "evergreen_foliage", "dry_foliage",
    * "grass" and "water"
    */
-  tint_method: boolean;
+  tint_method?: boolean;
 
 }
 
@@ -652,7 +577,7 @@ export enum MinecraftMaterialInstancesNorthRenderMethod {
 
 
 /**
- * * (*)
+ * Material Instance Face (material_instance_face)
  */
 export interface MinecraftMaterialInstancesSouth {
 
@@ -662,7 +587,7 @@ export interface MinecraftMaterialInstancesSouth {
    * will be created around and underneath the block. Decimal value
    * controls exponent applied to a value after lighting.
    */
-  ambient_occlusion: number;
+  ambient_occlusion?: number;
 
   /**
    * @remarks
@@ -672,14 +597,14 @@ export interface MinecraftMaterialInstancesSouth {
    * Blue Bubble Fish: true
    *
    */
-  face_dimming: string;
+  face_dimming?: string;
 
   /**
    * @remarks
    * Should the faces that this material is applied to randomize their
    * UVs?
    */
-  isotropic: boolean;
+  isotropic?: boolean;
 
   /**
    * @remarks
@@ -694,7 +619,7 @@ export interface MinecraftMaterialInstancesSouth {
    * Block Frond Top: "alpha_test"
    *
    */
-  render_method: string;
+  render_method?: string;
 
   /**
    * @remarks
@@ -708,7 +633,7 @@ export interface MinecraftMaterialInstancesSouth {
    * Green Bubble Fish: "bubble_fish_green"
    *
    */
-  texture: string;
+  texture?: string;
 
   /**
    * @remarks
@@ -718,7 +643,7 @@ export interface MinecraftMaterialInstancesSouth {
    * "none", "default_foliage", "birch_foliage", "evergreen_foliage", "dry_foliage",
    * "grass" and "water"
    */
-  tint_method: boolean;
+  tint_method?: boolean;
 
 }
 
@@ -781,7 +706,7 @@ export enum MinecraftMaterialInstancesSouthRenderMethod {
 
 
 /**
- * * (*)
+ * Material Instance Face (material_instance_face)
  */
 export interface MinecraftMaterialInstancesUp {
 
@@ -791,7 +716,7 @@ export interface MinecraftMaterialInstancesUp {
    * will be created around and underneath the block. Decimal value
    * controls exponent applied to a value after lighting.
    */
-  ambient_occlusion: number;
+  ambient_occlusion?: number;
 
   /**
    * @remarks
@@ -801,14 +726,14 @@ export interface MinecraftMaterialInstancesUp {
    * Blue Bubble Fish: true
    *
    */
-  face_dimming: string;
+  face_dimming?: string;
 
   /**
    * @remarks
    * Should the faces that this material is applied to randomize their
    * UVs?
    */
-  isotropic: boolean;
+  isotropic?: boolean;
 
   /**
    * @remarks
@@ -823,7 +748,7 @@ export interface MinecraftMaterialInstancesUp {
    * Block Frond Top: "alpha_test"
    *
    */
-  render_method: string;
+  render_method?: string;
 
   /**
    * @remarks
@@ -837,7 +762,7 @@ export interface MinecraftMaterialInstancesUp {
    * Green Bubble Fish: "bubble_fish_green"
    *
    */
-  texture: string;
+  texture?: string;
 
   /**
    * @remarks
@@ -847,7 +772,7 @@ export interface MinecraftMaterialInstancesUp {
    * "none", "default_foliage", "birch_foliage", "evergreen_foliage", "dry_foliage",
    * "grass" and "water"
    */
-  tint_method: boolean;
+  tint_method?: boolean;
 
 }
 
@@ -910,7 +835,7 @@ export enum MinecraftMaterialInstancesUpRenderMethod {
 
 
 /**
- * * (*)
+ * Material Instance Face (material_instance_face)
  */
 export interface MinecraftMaterialInstancesWest {
 
@@ -920,7 +845,7 @@ export interface MinecraftMaterialInstancesWest {
    * will be created around and underneath the block. Decimal value
    * controls exponent applied to a value after lighting.
    */
-  ambient_occlusion: number;
+  ambient_occlusion?: number;
 
   /**
    * @remarks
@@ -930,14 +855,14 @@ export interface MinecraftMaterialInstancesWest {
    * Blue Bubble Fish: true
    *
    */
-  face_dimming: string;
+  face_dimming?: string;
 
   /**
    * @remarks
    * Should the faces that this material is applied to randomize their
    * UVs?
    */
-  isotropic: boolean;
+  isotropic?: boolean;
 
   /**
    * @remarks
@@ -952,7 +877,7 @@ export interface MinecraftMaterialInstancesWest {
    * Block Frond Top: "alpha_test"
    *
    */
-  render_method: string;
+  render_method?: string;
 
   /**
    * @remarks
@@ -966,7 +891,7 @@ export interface MinecraftMaterialInstancesWest {
    * Green Bubble Fish: "bubble_fish_green"
    *
    */
-  texture: string;
+  texture?: string;
 
   /**
    * @remarks
@@ -976,7 +901,7 @@ export interface MinecraftMaterialInstancesWest {
    * "none", "default_foliage", "birch_foliage", "evergreen_foliage", "dry_foliage",
    * "grass" and "water"
    */
-  tint_method: boolean;
+  tint_method?: boolean;
 
 }
 

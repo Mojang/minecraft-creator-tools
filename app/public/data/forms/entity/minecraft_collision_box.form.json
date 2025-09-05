@@ -64,16 +64,16 @@
             "content": 1.9
           }
         ],
-        "/vanilla/behavior_pack/entities/breeze_wind_charge_projectile.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:collision_box/",
-            "content": 0.3125
-          }
-        ],
         "/vanilla/behavior_pack/entities/breeze.json": [
           {
             "path": "/minecraft:entity/components/minecraft:collision_box/",
             "content": 1.77
+          }
+        ],
+        "/vanilla/behavior_pack/entities/breeze_wind_charge_projectile.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:collision_box/",
+            "content": 0.3125
           }
         ],
         "/vanilla/behavior_pack/entities/cat.json": [
@@ -109,7 +109,7 @@
         "/vanilla/behavior_pack/entities/copper_golem.json": [
           {
             "path": "/minecraft:entity/components/minecraft:collision_box/",
-            "content": 1
+            "content": 0.98
           }
         ],
         "/vanilla/behavior_pack/entities/cow.json": [
@@ -260,16 +260,16 @@
             "content": 2.9
           }
         ],
-        "/vanilla/behavior_pack/entities/llama_spit.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:collision_box/",
-            "content": 0.31
-          }
-        ],
         "/vanilla/behavior_pack/entities/llama.json": [
           {
             "path": "/minecraft:entity/components/minecraft:collision_box/",
             "content": 1.87
+          }
+        ],
+        "/vanilla/behavior_pack/entities/llama_spit.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:collision_box/",
+            "content": 0.31
           }
         ],
         "/vanilla/behavior_pack/entities/npc.json": [
@@ -282,6 +282,12 @@
           {
             "path": "/minecraft:entity/components/minecraft:collision_box/",
             "content": 1.25
+          }
+        ],
+        "/vanilla/behavior_pack/entities/parrot.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:collision_box/",
+            "content": 1
           }
         ],
         "/vanilla/behavior_pack/entities/pig.json": [
@@ -366,22 +372,22 @@
             "content": 0.3125
           }
         ],
+        "/vanilla/behavior_pack/entities/wither.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:collision_box/",
+            "content": 3
+          }
+        ],
         "/vanilla/behavior_pack/entities/wither_skeleton.json": [
           {
             "path": "/minecraft:entity/components/minecraft:collision_box/",
             "content": 2.01
           }
         ],
-        "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
+        "/vanilla/behavior_pack/entities/wither_skull.json": [
           {
             "path": "/minecraft:entity/components/minecraft:collision_box/",
             "content": 0.15
-          }
-        ],
-        "/vanilla/behavior_pack/entities/wither.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:collision_box/",
-            "content": 3
           }
         ],
         "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/nardolphle.behavior.json": [
@@ -468,16 +474,16 @@
             "content": 0.6
           }
         ],
-        "/vanilla/behavior_pack/entities/breeze_wind_charge_projectile.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:collision_box/",
-            "content": 0.3125
-          }
-        ],
         "/vanilla/behavior_pack/entities/breeze.json": [
           {
             "path": "/minecraft:entity/components/minecraft:collision_box/",
             "content": 0.6
+          }
+        ],
+        "/vanilla/behavior_pack/entities/breeze_wind_charge_projectile.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:collision_box/",
+            "content": 0.3125
           }
         ],
         "/vanilla/behavior_pack/entities/cave_spider.json": [
@@ -660,22 +666,22 @@
             "content": 0.3125
           }
         ],
+        "/vanilla/behavior_pack/entities/wither.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:collision_box/",
+            "content": 1
+          }
+        ],
         "/vanilla/behavior_pack/entities/wither_skeleton.json": [
           {
             "path": "/minecraft:entity/components/minecraft:collision_box/",
             "content": 0.72
           }
         ],
-        "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
+        "/vanilla/behavior_pack/entities/wither_skull.json": [
           {
             "path": "/minecraft:entity/components/minecraft:collision_box/",
             "content": 0.15
-          }
-        ],
-        "/vanilla/behavior_pack/entities/wither.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:collision_box/",
-            "content": 1
           }
         ],
         "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/biceson.behavior.json": [
@@ -792,21 +798,21 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/breeze_wind_charge_projectile.json": [
-      {
-        "path": "/minecraft:entity/components/minecraft:collision_box/",
-        "content": {
-          "width": 0.3125,
-          "height": 0.3125
-        }
-      }
-    ],
     "/vanilla/behavior_pack/entities/breeze.json": [
       {
         "path": "/minecraft:entity/components/minecraft:collision_box/",
         "content": {
           "width": 0.6,
           "height": 1.77
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/breeze_wind_charge_projectile.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:collision_box/",
+        "content": {
+          "width": 0.3125,
+          "height": 0.3125
         }
       }
     ],
@@ -869,7 +875,7 @@
         "path": "/minecraft:entity/components/minecraft:collision_box/",
         "content": {
           "width": 0.6,
-          "height": 1
+          "height": 0.98
         }
       }
     ],
@@ -1177,21 +1183,21 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/llama_spit.json": [
-      {
-        "path": "/minecraft:entity/components/minecraft:collision_box/",
-        "content": {
-          "width": 0.31,
-          "height": 0.31
-        }
-      }
-    ],
     "/vanilla/behavior_pack/entities/llama.json": [
       {
         "path": "/minecraft:entity/components/minecraft:collision_box/",
         "content": {
           "width": 0.9,
           "height": 1.87
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/llama_spit.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:collision_box/",
+        "content": {
+          "width": 0.31,
+          "height": 0.31
         }
       }
     ],
@@ -1276,7 +1282,7 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/piglin_brute.json": [
+    "/vanilla/behavior_pack/entities/piglin.json": [
       {
         "path": "/minecraft:entity/components/minecraft:collision_box/",
         "content": {
@@ -1285,7 +1291,7 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/piglin.json": [
+    "/vanilla/behavior_pack/entities/piglin_brute.json": [
       {
         "path": "/minecraft:entity/components/minecraft:collision_box/",
         "content": {
@@ -1384,21 +1390,21 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/skeleton_horse.json": [
-      {
-        "path": "/minecraft:entity/component_groups/minecraft:skeleton_horse_adult/minecraft:collision_box/",
-        "content": {
-          "width": 1.4,
-          "height": 1.6
-        }
-      }
-    ],
     "/vanilla/behavior_pack/entities/skeleton.json": [
       {
         "path": "/minecraft:entity/components/minecraft:collision_box/",
         "content": {
           "width": 0.6,
           "height": 1.9
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/skeleton_horse.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:skeleton_horse_adult/minecraft:collision_box/",
+        "content": {
+          "width": 1.4,
+          "height": 1.6
         }
       }
     ],
@@ -1501,21 +1507,21 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/tnt_minecart.json": [
-      {
-        "path": "/minecraft:entity/components/minecraft:collision_box/",
-        "content": {
-          "width": 0.98,
-          "height": 0.7
-        }
-      }
-    ],
     "/vanilla/behavior_pack/entities/tnt.json": [
       {
         "path": "/minecraft:entity/components/minecraft:collision_box/",
         "content": {
           "width": 0.98,
           "height": 0.98
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/tnt_minecart.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:collision_box/",
+        "content": {
+          "width": 0.98,
+          "height": 0.7
         }
       }
     ],
@@ -1571,7 +1577,7 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/villager_v2.json": [
+    "/vanilla/behavior_pack/entities/villager.json": [
       {
         "path": "/minecraft:entity/components/minecraft:collision_box/",
         "content": {
@@ -1580,7 +1586,7 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/villager.json": [
+    "/vanilla/behavior_pack/entities/villager_v2.json": [
       {
         "path": "/minecraft:entity/components/minecraft:collision_box/",
         "content": {
@@ -1634,21 +1640,21 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/entities/wither.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:collision_box/",
+        "content": {
+          "width": 1,
+          "height": 3
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/wither_skeleton.json": [
       {
         "path": "/minecraft:entity/components/minecraft:collision_box/",
         "content": {
           "width": 0.72,
           "height": 2.01
-        }
-      }
-    ],
-    "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
-      {
-        "path": "/minecraft:entity/components/minecraft:collision_box/",
-        "content": {
-          "width": 0.15,
-          "height": 0.15
         }
       }
     ],
@@ -1661,12 +1667,12 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/wither.json": [
+    "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
       {
         "path": "/minecraft:entity/components/minecraft:collision_box/",
         "content": {
-          "width": 1,
-          "height": 3
+          "width": 0.15,
+          "height": 0.15
         }
       }
     ],
@@ -1713,6 +1719,15 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/entities/zombie.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:collision_box/",
+        "content": {
+          "width": 0.6,
+          "height": 1.9
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/zombie_horse.json": [
       {
         "path": "/minecraft:entity/components/minecraft:collision_box/",
@@ -1731,15 +1746,6 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/zombie_villager_v2.json": [
-      {
-        "path": "/minecraft:entity/components/minecraft:collision_box/",
-        "content": {
-          "width": 0.6,
-          "height": 1.9
-        }
-      }
-    ],
     "/vanilla/behavior_pack/entities/zombie_villager.json": [
       {
         "path": "/minecraft:entity/components/minecraft:collision_box/",
@@ -1749,7 +1755,7 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/zombie.json": [
+    "/vanilla/behavior_pack/entities/zombie_villager_v2.json": [
       {
         "path": "/minecraft:entity/components/minecraft:collision_box/",
         "content": {

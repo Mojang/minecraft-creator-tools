@@ -167,7 +167,7 @@ export default interface MinecraftBehaviorRangedAttack {
    * Snow Golem: 1
    *
    */
-  attack_interval: number;
+  attack_interval?: number;
 
   /**
    * @remarks
@@ -182,7 +182,7 @@ export default interface MinecraftBehaviorRangedAttack {
    * Piglin: 1
    *
    */
-  attack_interval_max: number;
+  attack_interval_max?: number;
 
   /**
    * @remarks
@@ -199,7 +199,7 @@ export default interface MinecraftBehaviorRangedAttack {
    * Bow Turret: 2.4
    *
    */
-  attack_interval_min: number;
+  attack_interval_min?: number;
 
   /**
    * @remarks
@@ -214,7 +214,7 @@ export default interface MinecraftBehaviorRangedAttack {
    * Drowned: 10
    *
    */
-  attack_radius: number;
+  attack_radius?: number;
 
   /**
    * @remarks
@@ -225,7 +225,7 @@ export default interface MinecraftBehaviorRangedAttack {
    * Piglin: 4
    *
    */
-  attack_radius_min: number;
+  attack_radius_min?: number;
 
   /**
    * @remarks
@@ -236,7 +236,7 @@ export default interface MinecraftBehaviorRangedAttack {
    * Blaze: 0.3
    *
    */
-  burst_interval: number;
+  burst_interval?: number;
 
   /**
    * @remarks
@@ -247,7 +247,7 @@ export default interface MinecraftBehaviorRangedAttack {
    * Blaze: 3
    *
    */
-  burst_shots: number;
+  burst_shots?: number;
 
   /**
    * @remarks
@@ -260,7 +260,7 @@ export default interface MinecraftBehaviorRangedAttack {
    *
    *
    */
-  charge_charged_trigger: number;
+  charge_charged_trigger?: number;
 
   /**
    * @remarks
@@ -275,7 +275,7 @@ export default interface MinecraftBehaviorRangedAttack {
    *
    *
    */
-  charge_shoot_trigger: number;
+  charge_shoot_trigger?: number;
 
   /**
    * @remarks
@@ -292,7 +292,7 @@ export default interface MinecraftBehaviorRangedAttack {
    * Llama: 2
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -304,14 +304,14 @@ export default interface MinecraftBehaviorRangedAttack {
    *
    *
    */
-  ranged_fov: number;
+  ranged_fov?: number;
 
   /**
    * @remarks
    * Allows the actor to be set to persist upon targeting a 
    * player
    */
-  set_persistent: boolean;
+  set_persistent?: boolean;
 
   /**
    * @remarks
@@ -325,7 +325,7 @@ export default interface MinecraftBehaviorRangedAttack {
    *
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -337,7 +337,7 @@ export default interface MinecraftBehaviorRangedAttack {
    * Drowned: true
    *
    */
-  swing: boolean;
+  swing?: boolean;
 
   /**
    * @remarks
@@ -348,7 +348,7 @@ export default interface MinecraftBehaviorRangedAttack {
    * Piglin: 0.1
    *
    */
-  target_in_sight_time: number;
+  target_in_sight_time?: number;
 
   /**
    * @remarks
@@ -360,7 +360,7 @@ export default interface MinecraftBehaviorRangedAttack {
    *
    *
    */
-  x_max_rotation: number;
+  x_max_rotation?: number;
 
   /**
    * @remarks
@@ -372,6 +372,6 @@ export default interface MinecraftBehaviorRangedAttack {
    *
    *
    */
-  y_max_head_rotation: number;
+  y_max_head_rotation?: number;
 
 }

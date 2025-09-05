@@ -19,10 +19,10 @@
     "entityTypeResourceCount": 3,
     "behaviorPackAnimationCount": 1,
     "behaviorPackAnimationControllerCount": 1,
-    "overallSize": 7018312,
+    "overallSize": 7017963,
     "fileCounts": 59,
     "folderCounts": 29,
-    "contentSize": 57665,
+    "contentSize": 57316,
     "contentFileCounts": 43,
     "contentFolderCounts": 22,
     "defaultBehaviorPackUuid": "9ec8af93-4b38-429f-a4bd-7e277a50d238",
@@ -33,9 +33,9 @@
     "defaultBehaviorPackName": "Add-on Pack More Mobs Behaviors - (pack.name)",
     "defaultBehaviorPackDescription": "Adds a set of mobs you can use in your worlds - (pack.description)",
     "defaultResourcePackUuid": "9d6dad89-6e29-46ba-83d5-490a4901caef",
-    "defaultResourcePackMinEngineVersion": "1.20.0",
-    "minResourcePackMinEngineVersionString": "1.20.0",
-    "minResourcePackMinEngineVersion": 11020000,
+    "defaultResourcePackMinEngineVersion": "1.21.100",
+    "minResourcePackMinEngineVersionString": "1.21.100",
+    "minResourcePackMinEngineVersion": 11021100,
     "defaultResourcePackName": "Add-on Pack More Mobs Behaviors - (pack.name)",
     "defaultResourcePackDescription": "Adds a set of mobs you can use in your worlds - (pack.description)",
     "subpackCount": 0,
@@ -154,6 +154,8 @@
     "animationCount": 0,
     "textureCount": 5,
     "textureTexelSize": 28672,
+    "vanillaGameTextureCoverage": 0,
+    "vanillaGameTextureCount": 0,
     "minimumSupportablePerformanceTier": 0,
     "invalidCommandSyntaxCount": 0,
     "linesWithSlashCount": 0,
@@ -168,6 +170,9 @@
     "deprecatedTexture": 0,
     "restrictedPolyMeshFound": 0,
     "jsonParseError": 0,
+    "invalidManifestJson": 0,
+    "missingResourcePackDependencies": 0,
+    "internalProcessingErrors": 0,
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
@@ -177,313 +182,24 @@
       "summon"
     ],
     "featureSets": {
-      "Behavior pack manifest Size": {
-        "Instance Count": 1,
-        "Total": 688,
-        "Max": 688,
-        "Min": 688,
-        "Average": 688
+      "Runtime Identifier (no runtime identifier)": {
+        "Count": 3
       },
-      "Behavior pack manifest Lines": {
-        "Instance Count": 1,
+      "Identifier (no override identifier)": {
+        "Count": 3
+      },
+      "Metadata Spawnable Entity Type": {
+        "Count": 3
+      },
+      "Metadata Summonable Entity Type": {
+        "Count": 3
+      },
+      "Entity Geometry Cubes": {
+        "Instance Count": 3,
         "Total": 34,
-        "Max": 34,
-        "Min": 34,
-        "Average": 34
-      },
-      "Icon Size": {
-        "Instance Count": 2,
-        "Total": 7114,
-        "Max": 3557,
-        "Min": 3557,
-        "Average": 3557
-      },
-      "Behavior pack animation Size": {
-        "Instance Count": 1,
-        "Total": 286,
-        "Max": 286,
-        "Min": 286,
-        "Average": 286
-      },
-      "Behavior pack animation Lines": {
-        "Instance Count": 1,
-        "Total": 15,
-        "Max": 15,
-        "Min": 15,
-        "Average": 15
-      },
-      "Behavior pack animation controller Size": {
-        "Instance Count": 1,
-        "Total": 290,
-        "Max": 290,
-        "Min": 290,
-        "Average": 290
-      },
-      "Behavior pack animation controller Lines": {
-        "Instance Count": 1,
-        "Total": 12,
-        "Max": 12,
-        "Min": 12,
-        "Average": 12
-      },
-      "Entity type Size": {
-        "Instance Count": 3,
-        "Total": 13585,
-        "Max": 5357,
-        "Min": 4102,
-        "Average": 4528
-      },
-      "Entity type Lines": {
-        "Instance Count": 3,
-        "Total": 734,
-        "Max": 279,
-        "Min": 224,
-        "Average": 245
-      },
-      "Loot table Size": {
-        "Instance Count": 2,
-        "Total": 630,
-        "Max": 478,
-        "Min": 152,
-        "Average": 315
-      },
-      "Loot table Lines": {
-        "Instance Count": 2,
-        "Total": 47,
-        "Max": 35,
-        "Min": 12,
-        "Average": 24
-      },
-      "JavaScript Size": {
-        "Instance Count": 2,
-        "Total": 3239,
-        "Max": 2217,
-        "Min": 1022,
-        "Average": 1620
-      },
-      "JavaScript Lines": {
-        "Instance Count": 2,
-        "Total": 85,
-        "Max": 59,
-        "Min": 26,
-        "Average": 43
-      },
-      "Spawn rule Size": {
-        "Instance Count": 3,
-        "Total": 3775,
-        "Max": 2179,
-        "Min": 796,
-        "Average": 1258
-      },
-      "Spawn rule Lines": {
-        "Instance Count": 3,
-        "Total": 232,
-        "Max": 142,
-        "Min": 45,
-        "Average": 77
-      },
-      "Language translations Size": {
-        "Instance Count": 2,
-        "Total": 482,
-        "Max": 393,
-        "Min": 89,
-        "Average": 241
-      },
-      "Language translations Lines": {
-        "Instance Count": 2,
-        "Total": 10,
-        "Max": 8,
-        "Min": 2,
-        "Average": 5
-      },
-      "Language catalog Size": {
-        "Instance Count": 2,
-        "Total": 18,
-        "Max": 9,
-        "Min": 9,
-        "Average": 9
-      },
-      "Language catalog Lines": {
-        "Instance Count": 2,
-        "Total": 4,
-        "Max": 2,
-        "Min": 2,
-        "Average": 2
-      },
-      "Resource pack manifest Size": {
-        "Instance Count": 1,
-        "Total": 333,
-        "Max": 333,
-        "Min": 333,
-        "Average": 333
-      },
-      "Resource pack manifest Lines": {
-        "Instance Count": 1,
-        "Total": 17,
-        "Max": 17,
-        "Min": 17,
-        "Average": 17
-      },
-      "Sound catalog Size": {
-        "Instance Count": 1,
-        "Total": 1071,
-        "Max": 1071,
-        "Min": 1071,
-        "Average": 1071
-      },
-      "Sound catalog Lines": {
-        "Instance Count": 1,
-        "Total": 63,
-        "Max": 63,
-        "Min": 63,
-        "Average": 63
-      },
-      "Animation Size": {
-        "Instance Count": 3,
-        "Total": 2682,
-        "Max": 1112,
-        "Min": 520,
-        "Average": 894
-      },
-      "Animation Lines": {
-        "Instance Count": 3,
-        "Total": 120,
-        "Max": 54,
-        "Min": 20,
-        "Average": 40
-      },
-      "Atmospherics Size": {
-        "Instance Count": 1,
-        "Total": 1458,
-        "Max": 1458,
-        "Min": 1458,
-        "Average": 1458
-      },
-      "Atmospherics Lines": {
-        "Instance Count": 1,
-        "Total": 76,
-        "Max": 76,
-        "Min": 76,
-        "Average": 76
-      },
-      "Color Grading Size": {
-        "Instance Count": 1,
-        "Total": 1043,
-        "Max": 1043,
-        "Min": 1043,
-        "Average": 1043
-      },
-      "Color Grading Lines": {
-        "Instance Count": 1,
-        "Total": 31,
-        "Max": 31,
-        "Min": 31,
-        "Average": 31
-      },
-      "Entity type visuals/audio Size": {
-        "Instance Count": 3,
-        "Total": 2089,
-        "Max": 856,
-        "Min": 505,
-        "Average": 696
-      },
-      "Entity type visuals/audio Lines": {
-        "Instance Count": 3,
-        "Total": 91,
-        "Max": 35,
-        "Min": 24,
-        "Average": 30
-      },
-      "Material Size": {
-        "Instance Count": 1,
-        "Total": 328,
-        "Max": 328,
-        "Min": 328,
-        "Average": 328
-      },
-      "Material Lines": {
-        "Instance Count": 1,
-        "Total": 12,
-        "Max": 12,
-        "Min": 12,
-        "Average": 12
-      },
-      "Model Size": {
-        "Instance Count": 3,
-        "Total": 4182,
-        "Max": 1670,
-        "Min": 1162,
-        "Average": 1394
-      },
-      "Model Lines": {
-        "Instance Count": 3,
-        "Total": 189,
-        "Max": 77,
-        "Min": 54,
-        "Average": 63
-      },
-      "Particle Size": {
-        "Instance Count": 2,
-        "Total": 2764,
-        "Max": 1459,
-        "Min": 1305,
-        "Average": 1382
-      },
-      "Particle Lines": {
-        "Instance Count": 2,
-        "Total": 122,
-        "Max": 66,
-        "Min": 56,
-        "Average": 61
-      },
-      "Texture Size": {
-        "Instance Count": 5,
-        "Total": 10777,
-        "Max": 3882,
-        "Min": 1263,
-        "Average": 2155
-      },
-      "Texture set Size": {
-        "Instance Count": 2,
-        "Total": 244,
-        "Max": 126,
-        "Min": 118,
-        "Average": 122
-      },
-      "Texture set Lines": {
-        "Instance Count": 2,
-        "Total": 10,
-        "Max": 5,
-        "Min": 5,
-        "Average": 5
-      },
-      "Water Size": {
-        "Instance Count": 1,
-        "Total": 587,
-        "Max": 587,
-        "Min": 587,
-        "Average": 587
-      },
-      "Water Lines": {
-        "Instance Count": 1,
-        "Total": 19,
-        "Max": 19,
-        "Min": 19,
-        "Average": 19
-      },
-      "Marketing image Size": {
-        "Instance Count": 8,
-        "Total": 5565201,
-        "Max": 809093,
-        "Min": 369231,
-        "Average": 695650
-      },
-      "Store image Size": {
-        "Instance Count": 8,
-        "Total": 1395446,
-        "Max": 508820,
-        "Min": 26393,
-        "Average": 174431
+        "Max": 14,
+        "Min": 8,
+        "Average": 11
       },
       "Entity Type Default Components": {
         "minecraft:type_family": 2,
@@ -556,6 +272,332 @@
         "remove": 11,
         "sequence": 2
       },
+      "JavaScript Size": {
+        "Instance Count": 2,
+        "Total": 3239,
+        "Max": 2217,
+        "Min": 1022,
+        "Average": 1620
+      },
+      "JavaScript Lines": {
+        "Instance Count": 2,
+        "Total": 85,
+        "Max": 59,
+        "Min": 26,
+        "Average": 43
+      },
+      "Behavior pack manifest Size": {
+        "Instance Count": 1,
+        "Total": 688,
+        "Max": 688,
+        "Min": 688,
+        "Average": 688
+      },
+      "Behavior pack manifest Lines": {
+        "Instance Count": 1,
+        "Total": 34,
+        "Max": 34,
+        "Min": 34,
+        "Average": 34
+      },
+      "Entity type Size": {
+        "Instance Count": 3,
+        "Total": 13585,
+        "Max": 5357,
+        "Min": 4102,
+        "Average": 4528
+      },
+      "Entity type Lines": {
+        "Instance Count": 3,
+        "Total": 734,
+        "Max": 279,
+        "Min": 224,
+        "Average": 245
+      },
+      "Resource pack manifest Size": {
+        "Instance Count": 1,
+        "Total": 335,
+        "Max": 335,
+        "Min": 335,
+        "Average": 335
+      },
+      "Resource pack manifest Lines": {
+        "Instance Count": 1,
+        "Total": 17,
+        "Max": 17,
+        "Min": 17,
+        "Average": 17
+      },
+      "Behavior pack animation Size": {
+        "Instance Count": 1,
+        "Total": 286,
+        "Max": 286,
+        "Min": 286,
+        "Average": 286
+      },
+      "Behavior pack animation Lines": {
+        "Instance Count": 1,
+        "Total": 15,
+        "Max": 15,
+        "Min": 15,
+        "Average": 15
+      },
+      "Behavior pack animation controller Size": {
+        "Instance Count": 1,
+        "Total": 290,
+        "Max": 290,
+        "Min": 290,
+        "Average": 290
+      },
+      "Behavior pack animation controller Lines": {
+        "Instance Count": 1,
+        "Total": 12,
+        "Max": 12,
+        "Min": 12,
+        "Average": 12
+      },
+      "Loot table Size": {
+        "Instance Count": 2,
+        "Total": 630,
+        "Max": 478,
+        "Min": 152,
+        "Average": 315
+      },
+      "Loot table Lines": {
+        "Instance Count": 2,
+        "Total": 47,
+        "Max": 35,
+        "Min": 12,
+        "Average": 24
+      },
+      "Sound catalog Size": {
+        "Instance Count": 1,
+        "Total": 1071,
+        "Max": 1071,
+        "Min": 1071,
+        "Average": 1071
+      },
+      "Sound catalog Lines": {
+        "Instance Count": 1,
+        "Total": 63,
+        "Max": 63,
+        "Min": 63,
+        "Average": 63
+      },
+      "Animation Size": {
+        "Instance Count": 3,
+        "Total": 2682,
+        "Max": 1112,
+        "Min": 520,
+        "Average": 894
+      },
+      "Animation Lines": {
+        "Instance Count": 3,
+        "Total": 120,
+        "Max": 54,
+        "Min": 20,
+        "Average": 40
+      },
+      "Entity type visuals/audio Size": {
+        "Instance Count": 3,
+        "Total": 2089,
+        "Max": 856,
+        "Min": 505,
+        "Average": 696
+      },
+      "Entity type visuals/audio Lines": {
+        "Instance Count": 3,
+        "Total": 91,
+        "Max": 35,
+        "Min": 24,
+        "Average": 30
+      },
+      "Model Size": {
+        "Instance Count": 3,
+        "Total": 4182,
+        "Max": 1670,
+        "Min": 1162,
+        "Average": 1394
+      },
+      "Model Lines": {
+        "Instance Count": 3,
+        "Total": 189,
+        "Max": 77,
+        "Min": 54,
+        "Average": 63
+      },
+      "Particle Size": {
+        "Instance Count": 2,
+        "Total": 2764,
+        "Max": 1459,
+        "Min": 1305,
+        "Average": 1382
+      },
+      "Particle Lines": {
+        "Instance Count": 2,
+        "Total": 122,
+        "Max": 66,
+        "Min": 56,
+        "Average": 61
+      },
+      "Language catalog Size": {
+        "Instance Count": 2,
+        "Total": 18,
+        "Max": 9,
+        "Min": 9,
+        "Average": 9
+      },
+      "Language catalog Lines": {
+        "Instance Count": 2,
+        "Total": 4,
+        "Max": 2,
+        "Min": 2,
+        "Average": 2
+      },
+      "Spawn rule Size": {
+        "Instance Count": 3,
+        "Total": 3775,
+        "Max": 2179,
+        "Min": 796,
+        "Average": 1258
+      },
+      "Spawn rule Lines": {
+        "Instance Count": 3,
+        "Total": 232,
+        "Max": 142,
+        "Min": 45,
+        "Average": 77
+      },
+      "Language translations Size": {
+        "Instance Count": 2,
+        "Total": 183,
+        "Max": 94,
+        "Min": 89,
+        "Average": 92
+      },
+      "Language translations Lines": {
+        "Instance Count": 2,
+        "Total": 4,
+        "Max": 2,
+        "Min": 2,
+        "Average": 2
+      },
+      "Material Size": {
+        "Instance Count": 1,
+        "Total": 328,
+        "Max": 328,
+        "Min": 328,
+        "Average": 328
+      },
+      "Material Lines": {
+        "Instance Count": 1,
+        "Total": 12,
+        "Max": 12,
+        "Min": 12,
+        "Average": 12
+      },
+      "Texture set Size": {
+        "Instance Count": 2,
+        "Total": 246,
+        "Max": 127,
+        "Min": 119,
+        "Average": 123
+      },
+      "Texture set Lines": {
+        "Instance Count": 2,
+        "Total": 10,
+        "Max": 5,
+        "Min": 5,
+        "Average": 5
+      },
+      "Texture Size": {
+        "Instance Count": 5,
+        "Total": 10777,
+        "Max": 3882,
+        "Min": 1263,
+        "Average": 2155
+      },
+      "Marketing image Size": {
+        "Instance Count": 8,
+        "Total": 5565201,
+        "Max": 809093,
+        "Min": 369231,
+        "Average": 695650
+      },
+      "Store image Size": {
+        "Instance Count": 8,
+        "Total": 1395446,
+        "Max": 508820,
+        "Min": 26393,
+        "Average": 174431
+      },
+      "Icon Size": {
+        "Instance Count": 2,
+        "Total": 7114,
+        "Max": 3557,
+        "Min": 3557,
+        "Average": 3557
+      },
+      "Color Grading Size": {
+        "Instance Count": 1,
+        "Total": 1042,
+        "Max": 1042,
+        "Min": 1042,
+        "Average": 1042
+      },
+      "Color Grading Lines": {
+        "Instance Count": 1,
+        "Total": 31,
+        "Max": 31,
+        "Min": 31,
+        "Average": 31
+      },
+      "Atmospherics Size": {
+        "Instance Count": 1,
+        "Total": 1421,
+        "Max": 1421,
+        "Min": 1421,
+        "Average": 1421
+      },
+      "Atmospherics Lines": {
+        "Instance Count": 1,
+        "Total": 78,
+        "Max": 78,
+        "Min": 78,
+        "Average": 78
+      },
+      "Water Size": {
+        "Instance Count": 1,
+        "Total": 571,
+        "Max": 571,
+        "Min": 571,
+        "Average": 571
+      },
+      "Water Lines": {
+        "Instance Count": 1,
+        "Total": 19,
+        "Max": 19,
+        "Min": 19,
+        "Average": 19
+      },
+      "Animations Resource": {
+        "Count": 8
+      },
+      "Bones Resource Animation Bone": {
+        "Count": 23
+      },
+      "Bones Resource Animation Bone Position Continuous": {
+        "Count": 24
+      },
+      "Bones Resource Animation Bone Scale Continuous": {
+        "Count": 2
+      },
+      "Bones Resource Animation Bone Rotation Continuous": {
+        "Count": 77
+      },
+      "Bones Resource Animation Bone Position Keyframe": {
+        "Count": 13
+      },
       "apisUsed world": {
         "Count": 2
       },
@@ -621,24 +663,6 @@
       },
       " pbr": {
         "Count": 1
-      },
-      "Animations Resource": {
-        "Count": 8
-      },
-      "Bones Resource Animation Bone": {
-        "Count": 23
-      },
-      "Bones Resource Animation Bone Position Continuous": {
-        "Count": 24
-      },
-      "Bones Resource Animation Bone Scale Continuous": {
-        "Count": 2
-      },
-      "Bones Resource Animation Bone Rotation Continuous": {
-        "Count": 77
-      },
-      "Bones Resource Animation Bone Position Keyframe": {
-        "Count": 13
       },
       "Textures Entity Resource Count": {
         "Count": 3
@@ -824,6 +848,11 @@
         "Min": 16384,
         "Average": 24576
       },
+      "Texture Images Vanilla Game Texture Coverage": {
+        "Override Count": 0,
+        "Vanilla Texture Count": 2669,
+        "Percent": 0
+      },
       "Texture Images Tier0 Non-Vanilla Texture Memory Tier": {
         "Instance Count": 1,
         "Total": 114688,
@@ -992,25 +1021,6 @@
         "Min": 0,
         "Average": 0
       },
-      "Entity Geometry Cubes": {
-        "Instance Count": 3,
-        "Total": 34,
-        "Max": 14,
-        "Min": 8,
-        "Average": 11
-      },
-      "Runtime Identifier (no runtime identifier)": {
-        "Count": 3
-      },
-      "Identifier (no override identifier)": {
-        "Count": 3
-      },
-      "Metadata Spawnable Entity Type": {
-        "Count": 3
-      },
-      "Metadata Summonable Entity Type": {
-        "Count": 3
-      },
       "Command say": {
         "Count": 1
       },
@@ -1018,17 +1028,190 @@
         "Count": 1
       }
     },
-    "errorCount": 0,
+    "errorCount": 1,
     "internalProcessingErrorCount": 0,
     "warningCount": 2,
-    "testSuccessCount": 36,
-    "testFailCount": 0,
+    "testSuccessCount": 37,
+    "testFailCount": 1,
     "testNotApplicableCount": 10,
-    "errorSummary": "",
+    "errorSummary": "ERROR: [CADDONIREQ170] (/Content/resource_packs/aop_mobsrp/manifest.json) Resource pack manifest does not specify that header/pack_scope that should be 'world'",
     "internalProcessingErrorSummary": "",
-    "warningSummary": "WARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson_mers.png) Texture does not have any items in this pack that are using this.\r\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/sheepomelon_mers.png) Texture does not have any items in this pack that are using this.",
-    "testFailSummary": "",
+    "warningSummary": "WARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson_mers.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/sheepomelon_mers.png) Texture does not have any items in this pack that are using this.",
+    "testFailSummary": "TESTFAIL: [CADDONIREQ000] Found 1 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).",
     "summary": {
+      "BASEGAMEVER": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test Base Game Version (BASEGAMEVER)"
+        }
+      },
+      "BLOCKSCAT": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test Blocks Catalog (BLOCKSCAT)"
+        }
+      },
+      "CADDONIREQ": {
+        "0": {
+          "defaultMessage": "Found 1 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).",
+          "testCompleteFails": 1
+        },
+        "170": {
+          "defaultMessage": "Resource pack manifest does not specify that header/pack_scope that should be 'world'",
+          "errors": 1
+        }
+      },
+      "CBFG": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Beta Features Generator (CBFG) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CHECKFEATUREDEPRECATION": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Check Feature Deprecation (CHECKFEATUREDEPRECATION)"
+        }
+      },
+      "CHKMANIF": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Manifest Generator (CHKMANIF) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CPACKICON": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Pack Icon Generator (CPACKICON) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CPARTI": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Particle Identifier Generator (CPARTI) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CSPJ": {
+        "1": {
+          "title": "Unknown Test: 1",
+          "defaultMessage": "Check Skin Pack Json Generator (CSPJ) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CWI": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check World Icon Generator (CWI) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "ENTITYTYPE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Entity Type (ENTITYTYPE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "52": {
+          "title": "Runtime Identifier",
+          "defaultMessage": "Entity Type Runtime Identifier"
+        },
+        "53": {
+          "title": "Identifier",
+          "defaultMessage": "Entity Type Identifier"
+        },
+        "54": {
+          "title": "Metadata",
+          "defaultMessage": "Entity Type Metadata"
+        },
+        "120": {
+          "title": "Format Version Minor Version Lower Than Current",
+          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100.06)",
+          "recommendations": 3
+        }
+      },
+      "EXPFLAG": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Check Experimental Flag (EXPFLAG)"
+        }
+      },
+      "FORBFILE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Forbidden Files Generator (FORBFILE) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "FORMATVER": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "Format Version (FORMATVER) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "216": {
+          "title": "Resource animation Version Minor Version Higher than Current",
+          "defaultMessage": "Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.10.0)",
+          "recommendations": 3
+        },
+        "256": {
+          "title": "256",
+          "defaultMessage": "Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)",
+          "recommendations": 3
+        },
+        "296": {
+          "title": "296",
+          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100)",
+          "recommendations": 3
+        },
+        "619": {
+          "title": "619",
+          "defaultMessage": "Behavior pack animation format_version"
+        },
+        "620": {
+          "title": "620",
+          "defaultMessage": "Behavior pack animation controller format_version"
+        },
+        "628": {
+          "title": "628",
+          "defaultMessage": "Animation format_version"
+        },
+        "630": {
+          "title": "630",
+          "defaultMessage": "Entity type visuals/audio format_version"
+        },
+        "644": {
+          "title": "644",
+          "defaultMessage": "Spawn rule format_version"
+        }
+      },
+      "GEOFMT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Geometry Format (GEOFMT) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "GEOMETRY": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Model Geometry Validation (GEOMETRY) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Block Geometry"
+        },
+        "102": {
+          "title": "Entity Geometry"
+        },
+        "103": {
+          "title": "Item Geometry",
+          "defaultMessage": "Items Geometry"
+        }
+      },
       "ITEMS": {
         "1": {
           "title": "1",
@@ -1148,6 +1331,57 @@
           "defaultMessage": "Water item count"
         }
       },
+      "ITEMTYPE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Item Type (ITEMTYPE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "53": {
+          "title": "Identifier",
+          "defaultMessage": "Item Type Identifier"
+        },
+        "55": {
+          "title": "Category",
+          "defaultMessage": "Item Type Category"
+        }
+      },
+      "JSON": {
+        "1": {
+          "defaultMessage": "JSON Structure Validation (JSON) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "1110": {
+          "defaultMessage": "Entity type is not at a current format version"
+        },
+        "1119": {
+          "defaultMessage": "Behavior pack animation is not at a current format version (is at 1.10.0)"
+        },
+        "1128": {
+          "defaultMessage": "Animation is not at a current format version (is at 1.8.0)"
+        }
+      },
+      "JSONF": {
+        "1": {
+          "defaultMessage": "JSON Structure Validation (via Minecraft docs) (JSONF) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "JSONTAGS": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "JSON Tags (JSONTAGS) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Entity Type",
+          "defaultMessage": "Entity file"
+        },
+        "108": {
+          "title": "Sound",
+          "defaultMessage": "Sounds file"
+        }
+      },
       "LINESIZE": {
         "1": {
           "title": "1",
@@ -1259,29 +1493,31 @@
           "defaultMessage": "Water file lines"
         }
       },
-      "PACKSIZE": {
+      "MCFUNCTION": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test MC Function Validation (MCFUNCTION)"
+        }
+      },
+      "MINENGINEVER": {
         "1": {
-          "title": "Test Success",
-          "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully",
+          "title": "1",
+          "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "101": {
-          "title": "Overall Size"
+        "605": {
+          "title": "605",
+          "defaultMessage": "Behavior pack manifest min_engine_version"
         },
-        "102": {
-          "title": "File Count"
-        },
-        "103": {
-          "title": "Folder Count"
-        },
-        "104": {
-          "title": "Content Size"
-        },
-        "105": {
-          "title": "Content File Count"
-        },
-        "106": {
-          "title": "Content Folder Count"
+        "614": {
+          "title": "614",
+          "defaultMessage": "Resource pack manifest format_version"
+        }
+      },
+      "NOBOM": {
+        "1": {
+          "defaultMessage": "No Byte Order Mark allowed in json file. (NOBOM) completed successfully",
+          "testCompleteSuccesses": 1
         }
       },
       "PACK": {
@@ -1312,7 +1548,7 @@
         },
         "109": {
           "title": "109",
-          "defaultMessage": "Behavior Pack Manfiest"
+          "defaultMessage": "Behavior Pack Manifest"
         },
         "111": {
           "title": "111",
@@ -1347,61 +1583,68 @@
           "defaultMessage": "Entity Geometry"
         }
       },
-      "JSONTAGS": {
+      "PACKMETADATA": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test General info (PACKMETADATA)"
+        }
+      },
+      "PACKSIZE": {
         "1": {
           "title": "Test Success",
-          "defaultMessage": "JSON Tags (JSONTAGS) completed successfully",
+          "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully",
           "testCompleteSuccesses": 1
         },
         "101": {
-          "title": "Entity Type",
-          "defaultMessage": "Entity file"
+          "title": "Overall Size"
         },
-        "108": {
-          "title": "Sound",
-          "defaultMessage": "Sounds file"
+        "102": {
+          "title": "File Count"
+        },
+        "103": {
+          "title": "Folder Count"
+        },
+        "104": {
+          "title": "Content Size"
+        },
+        "105": {
+          "title": "Content File Count"
+        },
+        "106": {
+          "title": "Content Folder Count"
         }
       },
-      "FORMATVER": {
+      "PATHLENGTH": {
         "1": {
-          "title": "1",
-          "defaultMessage": "Format Version (FORMATVER) completed successfully",
+          "defaultMessage": "Path Length (PATHLENGTH) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "PRJINT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Project Integrity Generator (PRJINT) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "RESOURCEANIMATION": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Resource Animation (RESOURCEANIMATION) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "216": {
-          "title": "Resource animation Version Minor Version Higher than Current",
-          "defaultMessage": "Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.10.0)",
-          "recommendations": 3
+        "101": {
+          "title": "Animations"
         },
-        "256": {
-          "title": "256",
-          "defaultMessage": "Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)",
-          "recommendations": 3
-        },
-        "296": {
-          "title": "296",
-          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100)",
-          "recommendations": 3
-        },
-        "619": {
-          "title": "619",
-          "defaultMessage": "Behavior pack animation format_version"
-        },
-        "620": {
-          "title": "620",
-          "defaultMessage": "Behavior pack animation controller format_version"
-        },
-        "628": {
-          "title": "628",
-          "defaultMessage": "Animation format_version"
-        },
-        "630": {
-          "title": "630",
-          "defaultMessage": "Entity type visuals/audio format_version"
-        },
-        "644": {
-          "title": "644",
-          "defaultMessage": "Spawn rule format_version"
+        "102": {
+          "title": "Bones"
+        }
+      },
+      "RPDEPENDS": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Resource Pack Dependencies (RPDEPENDS) completed successfully",
+          "testCompleteSuccesses": 1
         }
       },
       "SCRIPT": {
@@ -1412,6 +1655,30 @@
         },
         "101": {
           "title": "apisUsed"
+        }
+      },
+      "SCRIPTMODULE": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "Script Modules (SCRIPTMODULE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "100": {
+          "title": "100",
+          "defaultMessage": "Behavior pack dependency on 1.1.0 at @minecraft/server-ui"
+        }
+      },
+      "SNDSDEF": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Sounds Definition Manifest Validation (SNDSDEF)"
+        }
+      },
+      "STRICT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully",
+          "testCompleteSuccesses": 1
         }
       },
       "SUMMARY": {
@@ -1429,19 +1696,6 @@
           "defaultMessage": "Behavior Manifests"
         }
       },
-      "RESOURCEANIMATION": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Resource Animation (RESOURCEANIMATION) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "101": {
-          "title": "Animations"
-        },
-        "102": {
-          "title": "Bones"
-        }
-      },
       "TEXTURE": {
         "1": {
           "title": "Test Success",
@@ -1450,26 +1704,6 @@
         },
         "101": {
           "title": "Textures"
-        }
-      },
-      "TEXTUREREF": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Texture Reference Info Aggregation (TEXTUREREF) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "101": {
-          "title": "Texture References"
-        }
-      },
-      "TYPES": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Types Info Aggregation (TYPES) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "101": {
-          "title": "Types"
         }
       },
       "TEXTUREIMAGE": {
@@ -1506,101 +1740,66 @@
           "defaultMessage": "Texture Images Tier 5"
         }
       },
-      "GEOMETRY": {
+      "TEXTUREREF": {
         "1": {
           "title": "Test Success",
-          "defaultMessage": "Model Geometry Validation (GEOMETRY) completed successfully",
+          "defaultMessage": "Texture Reference Info Aggregation (TEXTUREREF) completed successfully",
           "testCompleteSuccesses": 1
         },
         "101": {
-          "title": "Block Geometry"
-        },
-        "102": {
-          "title": "Entity Geometry"
-        },
-        "103": {
-          "title": "Item Geometry",
-          "defaultMessage": "Items Geometry"
+          "title": "Texture References"
         }
       },
-      "SCRIPTMODULE": {
-        "1": {
-          "title": "1",
-          "defaultMessage": "Script Modules (SCRIPTMODULE) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "100": {
-          "title": "100",
-          "defaultMessage": "Behavior pack dependency on 1.5.0 at @minecraft/server"
-        }
-      },
-      "MINENGINEVER": {
-        "1": {
-          "title": "1",
-          "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "605": {
-          "title": "605",
-          "defaultMessage": "Behavior pack manifest min_engine_version"
-        },
-        "614": {
-          "title": "614",
-          "defaultMessage": "Resource pack manifest format_version"
-        }
-      },
-      "ENTITYTYPE": {
+      "TYPES": {
         "1": {
           "title": "Test Success",
-          "defaultMessage": "Entity Type (ENTITYTYPE) completed successfully",
+          "defaultMessage": "Types Info Aggregation (TYPES) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "52": {
-          "title": "Runtime Identifier",
-          "defaultMessage": "Entity Type Runtime Identifier"
-        },
-        "53": {
-          "title": "Identifier",
-          "defaultMessage": "Entity Type Identifier"
-        },
-        "54": {
-          "title": "Metadata",
-          "defaultMessage": "Entity Type Metadata"
-        },
-        "120": {
-          "title": "Format Version Minor Version Lower Than Current",
-          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100.06)",
-          "recommendations": 3
+        "101": {
+          "title": "Types"
         }
       },
-      "ITEMTYPE": {
+      "UNKFILE": {
         "1": {
-          "title": "Test Success",
-          "defaultMessage": "Item Type (ITEMTYPE) completed successfully",
+          "defaultMessage": "Unknown files (UNKFILE) completed successfully",
           "testCompleteSuccesses": 1
-        },
-        "53": {
-          "title": "Identifier",
-          "defaultMessage": "Item Type Identifier"
-        },
-        "55": {
-          "title": "Category",
-          "defaultMessage": "Item Type Category"
         }
       },
-      "JSON": {
+      "UNKJSON": {
         "1": {
-          "defaultMessage": "JSON Structure Validation (JSON) completed successfully",
+          "defaultMessage": "Unknown JSON (UNKJSON) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "UNLINK": {
+        "1": {
+          "defaultMessage": "Unlinked item info generator (UNLINK) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "1110": {
-          "defaultMessage": "Entity type is not at a current format version (is at 1.16.0)"
+        "191": {
+          "defaultMessage": "Texture does not have any items in this pack that are using this.",
+          "warnings": 2
         },
-        "1119": {
-          "defaultMessage": "Behavior pack animation is not at a current format version (is at 1.10.0)"
-        },
-        "1128": {
-          "defaultMessage": "Animation is not at a current format version (is at 1.8.0)"
+        "205": {
+          "defaultMessage": "Link to vanilla item type item; avoid if possible",
+          "recommendations": 24
+        }
+      },
+      "VALFILE": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Valid files (VALFILE)"
+        }
+      },
+      "VSCODEFILE": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test VSCode Files (VSCODEFILE)"
+        }
+      },
+      "WORLD": {
+        "2": {
+          "defaultMessage": "No applicable items found for test World Validation (WORLD)"
         }
       },
       "WORLDDATA": {
@@ -1626,182 +1825,352 @@
         "126": {
           "defaultMessage": "Level Dat Experiments"
         }
-      },
-      "UNLINK": {
-        "1": {
-          "defaultMessage": "Unlinked item info generator (UNLINK) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "191": {
-          "defaultMessage": "Texture does not have any items in this pack that are using this.",
-          "warnings": 2
-        },
-        "205": {
-          "defaultMessage": "Link to vanilla item type item; avoid if possible",
-          "recommendations": 24
-        }
-      },
-      "SHARING": {
-        "1": {
-          "title": "1",
-          "defaultMessage": "Sharing Best Practices Information (SHARING) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "PACKMETADATA": {
-        "2": {
-          "title": "2",
-          "defaultMessage": "No applicable items found for test General info (PACKMETADATA)"
-        }
-      },
-      "STRICT": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "MCFUNCTION": {
-        "2": {
-          "title": "Test Not Applicable",
-          "defaultMessage": "No applicable items found for test MC Function Validation (MCFUNCTION)"
-        }
-      },
-      "CPACKICON": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check Pack Icon Generator (CPACKICON) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "CWI": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check World Icon Generator (CWI) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "SNDSDEF": {
-        "2": {
-          "title": "Test Not Applicable",
-          "defaultMessage": "No applicable items found for test Sounds Definition Manifest Validation (SNDSDEF)"
-        }
-      },
-      "CPARTI": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check Particle Identifier Generator (CPARTI) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "EXPFLAG": {
-        "2": {
-          "title": "Test Not Applicable",
-          "defaultMessage": "No applicable items found for test Check Experimental Flag (EXPFLAG)"
-        }
-      },
-      "CHECKFEATUREDEPRECATION": {
-        "2": {
-          "title": "Test Not Applicable",
-          "defaultMessage": "No applicable items found for test Check Feature Deprecation (CHECKFEATUREDEPRECATION)"
-        }
-      },
-      "FORBFILE": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check Forbidden Files Generator (FORBFILE) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "PRJINT": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check Project Integrity Generator (PRJINT) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "GEOFMT": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Geometry Format (GEOFMT) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "CBFG": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check Beta Features Generator (CBFG) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "LANGFILES": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check Lang File Generator (LANGFILES) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "VSCODEFILE": {
-        "2": {
-          "title": "2",
-          "defaultMessage": "No applicable items found for test VSCode Files (VSCODEFILE)"
-        }
-      },
-      "BASEGAMEVER": {
-        "2": {
-          "title": "2",
-          "defaultMessage": "No applicable items found for test Base Game Version (BASEGAMEVER)"
-        }
-      },
-      "BLOCKSCAT": {
-        "2": {
-          "title": "2",
-          "defaultMessage": "No applicable items found for test Blocks Catalog (BLOCKSCAT)"
-        }
-      },
-      "UNKJSON": {
-        "1": {
-          "defaultMessage": "Unknown JSON (UNKJSON) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "JSONF": {
-        "1": {
-          "defaultMessage": "JSON Structure Validation (via Minecraft docs) (JSONF) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "WORLD": {
-        "2": {
-          "defaultMessage": "No applicable items found for test World Validation (WORLD)"
-        }
-      },
-      "UNKFILE": {
-        "1": {
-          "defaultMessage": "Unknown files (UNKFILE) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "VALFILE": {
-        "2": {
-          "defaultMessage": "No applicable items found for test Valid files (VALFILE)"
-        }
-      },
-      "PATHLENGTH": {
-        "1": {
-          "defaultMessage": "Path Length (PATHLENGTH) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "NOBOM": {
-        "1": {
-          "defaultMessage": "No Byte Order Mark allowed in json file. (NOBOM) completed successfully",
-          "testCompleteSuccesses": 1
-        }
       }
     }
   },
   "items": [
+    {
+      "iTp": 8,
+      "gId": "BASEGAMEVER",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "BLOCKSCAT",
+      "gIx": 2
+    },
+    {
+      "iTp": 0,
+      "gId": "CADDONIREQ",
+      "gIx": 0
+    },
+    {
+      "iTp": 3,
+      "gId": "CADDONIREQ",
+      "gIx": 170,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
+    },
+    {
+      "iTp": 1,
+      "gId": "CBFG",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "CHECKFEATUREDEPRECATION",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "CHKMANIF",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CPACKICON",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CPARTI",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CSPJ",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CWI",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "ENTITYTYPE",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 52,
+      "fs": {
+        "(no runtime identifier)": {
+          "Count": 3
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 53,
+      "fs": {
+        "(no override identifier)": {
+          "Count": 3
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 54,
+      "fs": {
+        "Spawnable Entity Type": {
+          "Count": 3
+        },
+        "Summonable Entity Type": {
+          "Count": 3
+        }
+      }
+    },
+    {
+      "iTp": 6,
+      "gId": "ENTITYTYPE",
+      "gIx": 120,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "ENTITYTYPE",
+      "gIx": 120,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "ENTITYTYPE",
+      "gIx": 120,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
+    },
+    {
+      "iTp": 8,
+      "gId": "EXPFLAG",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "FORBFILE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "FORMATVER",
+      "gIx": 1
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 216,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 216,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 216,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 256,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 256,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 256,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 296,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 296,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 296,
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100)",
+      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 619,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
+      "d": [
+        1,
+        10,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 620,
+      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json",
+      "d": [
+        1,
+        10,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 628,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json",
+      "d": [
+        1,
+        8,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 628,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json",
+      "d": [
+        1,
+        8,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 628,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json",
+      "d": [
+        1,
+        8,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 630,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json",
+      "d": [
+        1,
+        8,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 630,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json",
+      "d": [
+        1,
+        8,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 630,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json",
+      "d": [
+        1,
+        10,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 644,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json",
+      "d": [
+        1,
+        8,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 644,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json",
+      "d": [
+        1,
+        8,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 644,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json",
+      "d": [
+        1,
+        8,
+        0
+      ]
+    },
+    {
+      "iTp": 1,
+      "gId": "GEOFMT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "GEOMETRY",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 102,
+      "fs": {
+        "Cubes": {
+          "Instance Count": 3,
+          "Total": 34,
+          "Max": 14,
+          "Min": 8,
+          "Average": 11
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 103
+    },
+    {
+      "iTp": 1,
+      "gId": "ITEMS",
+      "gIx": 1
+    },
     {
       "iTp": 2,
       "gId": "ITEMS",
@@ -1971,663 +2340,76 @@
       "d": 1
     },
     {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 209,
-      "p": "/Content/behavior_packs/aop_mobsbp/"
+      "iTp": 1,
+      "gId": "ITEMTYPE",
+      "gIx": 1
     },
     {
       "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 105,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 688,
-          "Max": 688,
-          "Min": 688,
-          "Average": 688
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 34,
-          "Max": 34,
-          "Min": 34,
-          "Average": 34
-        }
-      }
+      "gId": "ITEMTYPE",
+      "gIx": 53
     },
     {
       "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 203,
-      "p": "/Content/behavior_packs/aop_mobsbp/pack_icon.png",
-      "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 7114,
-          "Max": 3557,
-          "Min": 3557,
-          "Average": 3557
-        }
-      }
+      "gId": "ITEMTYPE",
+      "gIx": 55
     },
     {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 119,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 286,
-          "Max": 286,
-          "Min": 286,
-          "Average": 286
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 15,
-          "Max": 15,
-          "Min": 15,
-          "Average": 15
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 120,
-      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 290,
-          "Max": 290,
-          "Min": 290,
-          "Average": 290
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 12,
-          "Max": 12,
-          "Min": 12,
-          "Average": 12
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 110,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 3,
-          "Total": 13585,
-          "Max": 5357,
-          "Min": 4102,
-          "Average": 4528
-        },
-        "Lines": {
-          "Instance Count": 3,
-          "Total": 734,
-          "Max": 279,
-          "Min": 224,
-          "Average": 245
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 124,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/aop/mobs/sheepomelon.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 630,
-          "Max": 478,
-          "Min": 152,
-          "Average": 315
-        },
-        "Lines": {
-          "Instance Count": 2,
-          "Total": 47,
-          "Max": 35,
-          "Min": 12,
-          "Average": 24
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 102,
-      "p": "/Content/behavior_packs/aop_mobsbp/scripts/main.js",
-      "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 3239,
-          "Max": 2217,
-          "Min": 1022,
-          "Average": 1620
-        },
-        "Lines": {
-          "Instance Count": 2,
-          "Total": 85,
-          "Max": 59,
-          "Min": 26,
-          "Average": 43
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 144,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 3,
-          "Total": 3775,
-          "Max": 2179,
-          "Min": 796,
-          "Average": 1258
-        },
-        "Lines": {
-          "Instance Count": 3,
-          "Total": 232,
-          "Max": 142,
-          "Min": 45,
-          "Average": 77
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 179,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang",
-      "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 482,
-          "Max": 393,
-          "Min": 89,
-          "Average": 241
-        },
-        "Lines": {
-          "Instance Count": 2,
-          "Total": 10,
-          "Max": 8,
-          "Min": 2,
-          "Average": 5
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 137,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/languages.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 18,
-          "Max": 9,
-          "Min": 9,
-          "Average": 9
-        },
-        "Lines": {
-          "Instance Count": 2,
-          "Total": 4,
-          "Max": 2,
-          "Min": 2,
-          "Average": 2
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 210,
-      "p": "/Content/resource_packs/aop_mobsrp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 114,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 333,
-          "Max": 333,
-          "Min": 333,
-          "Average": 333
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 17,
-          "Max": 17,
-          "Min": 17,
-          "Average": 17
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 127,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 1071,
-          "Max": 1071,
-          "Min": 1071,
-          "Average": 1071
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 63,
-          "Max": 63,
-          "Min": 63,
-          "Average": 63
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 128,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 3,
-          "Total": 2682,
-          "Max": 1112,
-          "Min": 520,
-          "Average": 894
-        },
-        "Lines": {
-          "Instance Count": 3,
-          "Total": 120,
-          "Max": 54,
-          "Min": 20,
-          "Average": 40
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 233,
-      "p": "/Content/resource_packs/aop_mobsrp/atmospherics/atmospherics.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 1458,
-          "Max": 1458,
-          "Min": 1458,
-          "Average": 1458
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 76,
-          "Max": 76,
-          "Min": 76,
-          "Average": 76
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 232,
-      "p": "/Content/resource_packs/aop_mobsrp/color_grading/color_grading.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 1043,
-          "Max": 1043,
-          "Min": 1043,
-          "Average": 1043
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 31,
-          "Max": 31,
-          "Min": 31,
-          "Average": 31
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 130,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 3,
-          "Total": 2089,
-          "Max": 856,
-          "Min": 505,
-          "Average": 696
-        },
-        "Lines": {
-          "Instance Count": 3,
-          "Total": 91,
-          "Max": 35,
-          "Min": 24,
-          "Average": 30
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 183,
-      "p": "/Content/resource_packs/aop_mobsrp/materials/entity.material",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 328,
-          "Max": 328,
-          "Min": 328,
-          "Average": 328
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 12,
-          "Max": 12,
-          "Min": 12,
-          "Average": 12
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 132,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 3,
-          "Total": 4182,
-          "Max": 1670,
-          "Min": 1162,
-          "Average": 1394
-        },
-        "Lines": {
-          "Instance Count": 3,
-          "Total": 189,
-          "Max": 77,
-          "Min": 54,
-          "Average": 63
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 133,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 2764,
-          "Max": 1459,
-          "Min": 1305,
-          "Average": 1382
-        },
-        "Lines": {
-          "Instance Count": 2,
-          "Total": 122,
-          "Max": 66,
-          "Min": 56,
-          "Average": 61
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 199,
-      "p": "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson.png",
-      "fs": {
-        "Size": {
-          "Instance Count": 5,
-          "Total": 10777,
-          "Max": 3882,
-          "Min": 1263,
-          "Average": 2155
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 189,
-      "p": "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson.texture_set.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 244,
-          "Max": 126,
-          "Min": 118,
-          "Average": 122
-        },
-        "Lines": {
-          "Instance Count": 2,
-          "Total": 10,
-          "Max": 5,
-          "Min": 5,
-          "Average": 5
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 236,
-      "p": "/Content/resource_packs/aop_mobsrp/water/water.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 587,
-          "Max": 587,
-          "Min": 587,
-          "Average": 587
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 19,
-          "Max": 19,
-          "Min": 19,
-          "Average": 19
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 200,
-      "p": "/Marketing Art/aopmoremobs_MarketingKeyArt.jpg",
-      "fs": {
-        "Size": {
-          "Instance Count": 8,
-          "Total": 5565201,
-          "Max": 809093,
-          "Min": 369231,
-          "Average": 695650
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 201,
-      "p": "/Store Art/aopmoremobs_packicon.jpg",
-      "fs": {
-        "Size": {
-          "Instance Count": 8,
-          "Total": 1395446,
-          "Max": 508820,
-          "Min": 26393,
-          "Average": 174431
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "PACKSIZE",
-      "gIx": 101,
-      "d": 7018312
-    },
-    {
-      "iTp": 7,
-      "gId": "PACKSIZE",
-      "gIx": 102,
-      "d": 59
-    },
-    {
-      "iTp": 7,
-      "gId": "PACKSIZE",
-      "gIx": 103,
-      "d": 29
-    },
-    {
-      "iTp": 7,
-      "gId": "PACKSIZE",
-      "gIx": 104,
-      "d": 57665
-    },
-    {
-      "iTp": 7,
-      "gId": "PACKSIZE",
-      "gIx": 105,
-      "d": 43
-    },
-    {
-      "iTp": 7,
-      "gId": "PACKSIZE",
-      "gIx": 106,
-      "d": 22
-    },
-    {
-      "iTp": 7,
-      "gId": "PACK",
-      "gIx": 245
+      "iTp": 1,
+      "gId": "JSON",
+      "gIx": 1
     },
     {
       "iTp": 2,
-      "gId": "PACK",
-      "gIx": 109,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
-      "d": "{\"format_version\":2,\"header\":{\"name\":\"pack.name\",\"description\":\"pack.description\",\"uuid\":\"9ec8af93-4b38-429f-a4bd-7e277a50d238\",\"version\":[1,0,0],\"min_engine_version\":[1,20,0]},\"metadata\":{\"product_type\":\"addon\"},\"modules\":[{\"description\":\"Behavior\",\"version\":[1,0,0],\"uuid\":\"2d59a3f6-d348-496d-a0c7-6d59ddb05c5e\",\"type\":\"data\"},{\"description\":\"Script resources\",\"language\":\"javascript\",\"type\":\"script\",\"uuid\":\"f43bb32a-c814-45e4-a428-3f4f1f59b2a3\",\"version\":[1,0,0],\"entry\":\"scripts/main.js\"}],\"dependencies\":[{\"uuid\":\"9d6dad89-6e29-46ba-83d5-490a4901caef\",\"version\":[1,0,0]},{\"module_name\":\"@minecraft/server\",\"version\":\"1.5.0\"},{\"module_name\":\"@minecraft/server-ui\",\"version\":\"1.1.0\"}]}"
+      "gId": "JSON",
+      "gIx": 1110,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
     },
     {
       "iTp": 2,
-      "gId": "PACK",
-      "gIx": 107,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
-      "d": 2
+      "gId": "JSON",
+      "gIx": 1110,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
     },
     {
       "iTp": 2,
-      "gId": "PACK",
-      "gIx": 108,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
-      "d": "9ec8af93-4b38-429f-a4bd-7e277a50d238"
+      "gId": "JSON",
+      "gIx": 1110,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
     },
     {
       "iTp": 2,
-      "gId": "PACK",
-      "gIx": 106,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
-      "d": "9ec8af93-4b38-429f-a4bd-7e277a50d238|1.0.0"
+      "gId": "JSON",
+      "gIx": 1119,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     },
     {
       "iTp": 2,
-      "gId": "PACK",
-      "gIx": 104,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
-      "d": "Add-on Pack More Mobs Behaviors - (pack.name)"
+      "gId": "JSON",
+      "gIx": 1128,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
     },
     {
       "iTp": 2,
-      "gId": "PACK",
-      "gIx": 105,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
-      "d": "Adds a set of mobs you can use in your worlds - (pack.description)"
+      "gId": "JSON",
+      "gIx": 1128,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
     },
     {
       "iTp": 2,
-      "gId": "PACK",
-      "gIx": 107,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
-      "d": [
-        1,
-        20,
-        0
-      ]
+      "gId": "JSON",
+      "gIx": 1128,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
     },
     {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 113,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
-      "d": "{\"format_version\":2,\"header\":{\"name\":\"pack.name\",\"description\":\"pack.description\",\"uuid\":\"9d6dad89-6e29-46ba-83d5-490a4901caef\",\"version\":[1,0,0],\"min_engine_version\":[1,20,0]},\"modules\":[{\"description\":\"Add-on Pack Resources\",\"type\":\"resources\",\"uuid\":\"523d72d2-3ba9-498a-bc63-8beb5fe268cb\",\"version\":[1,0,0]}],\"capabilities\":[\"pbr\"]}"
+      "iTp": 1,
+      "gId": "JSONF",
+      "gIx": 1
     },
     {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 117,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
-      "d": 2
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 112,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
-      "d": "9d6dad89-6e29-46ba-83d5-490a4901caef"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 116,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
-      "d": "9d6dad89-6e29-46ba-83d5-490a4901caef|1.0.0"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 114,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
-      "d": "Add-on Pack More Mobs Behaviors - (pack.name)"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 115,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
-      "d": "Adds a set of mobs you can use in your worlds - (pack.description)"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 111,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
-      "d": [
-        1,
-        20,
-        0
-      ]
+      "iTp": 1,
+      "gId": "JSONTAGS",
+      "gIx": 1
     },
     {
       "iTp": 2,
@@ -2804,180 +2586,749 @@
       "d": "/Content/resource_packs/aop_mobsrp/sounds.json"
     },
     {
+      "iTp": 1,
+      "gId": "LINESIZE",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 102,
+      "fs": {
+        "Size": {
+          "Instance Count": 2,
+          "Total": 3239,
+          "Max": 2217,
+          "Min": 1022,
+          "Average": 1620
+        },
+        "Lines": {
+          "Instance Count": 2,
+          "Total": 85,
+          "Max": 59,
+          "Min": 26,
+          "Average": 43
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 105,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 688,
+          "Max": 688,
+          "Min": 688,
+          "Average": 688
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 34,
+          "Max": 34,
+          "Min": 34,
+          "Average": 34
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 110,
+      "fs": {
+        "Size": {
+          "Instance Count": 3,
+          "Total": 13585,
+          "Max": 5357,
+          "Min": 4102,
+          "Average": 4528
+        },
+        "Lines": {
+          "Instance Count": 3,
+          "Total": 734,
+          "Max": 279,
+          "Min": 224,
+          "Average": 245
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 114,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 335,
+          "Max": 335,
+          "Min": 335,
+          "Average": 335
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 17,
+          "Max": 17,
+          "Min": 17,
+          "Average": 17
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 119,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 286,
+          "Max": 286,
+          "Min": 286,
+          "Average": 286
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 15,
+          "Max": 15,
+          "Min": 15,
+          "Average": 15
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 120,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 290,
+          "Max": 290,
+          "Min": 290,
+          "Average": 290
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 12,
+          "Max": 12,
+          "Min": 12,
+          "Average": 12
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 124,
+      "fs": {
+        "Size": {
+          "Instance Count": 2,
+          "Total": 630,
+          "Max": 478,
+          "Min": 152,
+          "Average": 315
+        },
+        "Lines": {
+          "Instance Count": 2,
+          "Total": 47,
+          "Max": 35,
+          "Min": 12,
+          "Average": 24
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 127,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 1071,
+          "Max": 1071,
+          "Min": 1071,
+          "Average": 1071
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 63,
+          "Max": 63,
+          "Min": 63,
+          "Average": 63
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 128,
+      "fs": {
+        "Size": {
+          "Instance Count": 3,
+          "Total": 2682,
+          "Max": 1112,
+          "Min": 520,
+          "Average": 894
+        },
+        "Lines": {
+          "Instance Count": 3,
+          "Total": 120,
+          "Max": 54,
+          "Min": 20,
+          "Average": 40
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 130,
+      "fs": {
+        "Size": {
+          "Instance Count": 3,
+          "Total": 2089,
+          "Max": 856,
+          "Min": 505,
+          "Average": 696
+        },
+        "Lines": {
+          "Instance Count": 3,
+          "Total": 91,
+          "Max": 35,
+          "Min": 24,
+          "Average": 30
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 132,
+      "fs": {
+        "Size": {
+          "Instance Count": 3,
+          "Total": 4182,
+          "Max": 1670,
+          "Min": 1162,
+          "Average": 1394
+        },
+        "Lines": {
+          "Instance Count": 3,
+          "Total": 189,
+          "Max": 77,
+          "Min": 54,
+          "Average": 63
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 133,
+      "fs": {
+        "Size": {
+          "Instance Count": 2,
+          "Total": 2764,
+          "Max": 1459,
+          "Min": 1305,
+          "Average": 1382
+        },
+        "Lines": {
+          "Instance Count": 2,
+          "Total": 122,
+          "Max": 66,
+          "Min": 56,
+          "Average": 61
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 137,
+      "fs": {
+        "Size": {
+          "Instance Count": 2,
+          "Total": 18,
+          "Max": 9,
+          "Min": 9,
+          "Average": 9
+        },
+        "Lines": {
+          "Instance Count": 2,
+          "Total": 4,
+          "Max": 2,
+          "Min": 2,
+          "Average": 2
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 144,
+      "fs": {
+        "Size": {
+          "Instance Count": 3,
+          "Total": 3775,
+          "Max": 2179,
+          "Min": 796,
+          "Average": 1258
+        },
+        "Lines": {
+          "Instance Count": 3,
+          "Total": 232,
+          "Max": 142,
+          "Min": 45,
+          "Average": 77
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 179,
+      "fs": {
+        "Size": {
+          "Instance Count": 2,
+          "Total": 183,
+          "Max": 94,
+          "Min": 89,
+          "Average": 92
+        },
+        "Lines": {
+          "Instance Count": 2,
+          "Total": 4,
+          "Max": 2,
+          "Min": 2,
+          "Average": 2
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 183,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 328,
+          "Max": 328,
+          "Min": 328,
+          "Average": 328
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 12,
+          "Max": 12,
+          "Min": 12,
+          "Average": 12
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 189,
+      "fs": {
+        "Size": {
+          "Instance Count": 2,
+          "Total": 246,
+          "Max": 127,
+          "Min": 119,
+          "Average": 123
+        },
+        "Lines": {
+          "Instance Count": 2,
+          "Total": 10,
+          "Max": 5,
+          "Min": 5,
+          "Average": 5
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 199,
+      "fs": {
+        "Size": {
+          "Instance Count": 5,
+          "Total": 10777,
+          "Max": 3882,
+          "Min": 1263,
+          "Average": 2155
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 200,
+      "fs": {
+        "Size": {
+          "Instance Count": 8,
+          "Total": 5565201,
+          "Max": 809093,
+          "Min": 369231,
+          "Average": 695650
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 201,
+      "fs": {
+        "Size": {
+          "Instance Count": 8,
+          "Total": 1395446,
+          "Max": 508820,
+          "Min": 26393,
+          "Average": 174431
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 203,
+      "fs": {
+        "Size": {
+          "Instance Count": 2,
+          "Total": 7114,
+          "Max": 3557,
+          "Min": 3557,
+          "Average": 3557
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 209
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 210
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 232,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 1042,
+          "Max": 1042,
+          "Min": 1042,
+          "Average": 1042
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 31,
+          "Max": 31,
+          "Min": 31,
+          "Average": 31
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 233,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 1421,
+          "Max": 1421,
+          "Min": 1421,
+          "Average": 1421
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 78,
+          "Max": 78,
+          "Min": 78,
+          "Average": 78
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 236,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 571,
+          "Max": 571,
+          "Min": 571,
+          "Average": 571
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 19,
+          "Max": 19,
+          "Min": 19,
+          "Average": 19
+        }
+      }
+    },
+    {
+      "iTp": 8,
+      "gId": "MCFUNCTION",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "MINENGINEVER",
+      "gIx": 1
+    },
+    {
       "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 619,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
+      "gId": "MINENGINEVER",
+      "gIx": 605,
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
       "d": [
         1,
-        10,
+        20,
         0
       ]
     },
     {
       "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 620,
-      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json",
+      "gId": "MINENGINEVER",
+      "gIx": 614,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
       "d": [
         1,
-        10,
-        0
+        21,
+        100
       ]
     },
     {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 256,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"
+      "iTp": 1,
+      "gId": "NOBOM",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "PACK",
+      "gIx": 1
     },
     {
       "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 644,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json",
-      "d": [
-        1,
-        8,
-        0
-      ]
-    },
-    {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 256,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
+      "gId": "PACK",
+      "gIx": 104,
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
+      "d": "Add-on Pack More Mobs Behaviors - (pack.name)"
     },
     {
       "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 644,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json",
-      "d": [
-        1,
-        8,
-        0
-      ]
-    },
-    {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 256,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
+      "gId": "PACK",
+      "gIx": 105,
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
+      "d": "Adds a set of mobs you can use in your worlds - (pack.description)"
     },
     {
       "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 644,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json",
-      "d": [
-        1,
-        8,
-        0
-      ]
-    },
-    {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 216,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
+      "gId": "PACK",
+      "gIx": 106,
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
+      "d": "9ec8af93-4b38-429f-a4bd-7e277a50d238|1.0.0"
     },
     {
       "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 628,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json",
-      "d": [
-        1,
-        8,
-        0
-      ]
-    },
-    {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 216,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
+      "gId": "PACK",
+      "gIx": 107,
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
+      "d": 2
     },
     {
       "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 628,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json",
+      "gId": "PACK",
+      "gIx": 107,
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
       "d": [
         1,
-        8,
+        20,
         0
       ]
-    },
-    {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 216,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
     },
     {
       "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 628,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json",
-      "d": [
-        1,
-        8,
-        0
-      ]
-    },
-    {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 296,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
+      "gId": "PACK",
+      "gIx": 108,
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
+      "d": "9ec8af93-4b38-429f-a4bd-7e277a50d238"
     },
     {
       "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 630,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json",
-      "d": [
-        1,
-        8,
-        0
-      ]
-    },
-    {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 296,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
+      "gId": "PACK",
+      "gIx": 109,
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
     },
     {
       "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 630,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json",
+      "gId": "PACK",
+      "gIx": 111,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
       "d": [
         1,
-        8,
-        0
+        21,
+        100
       ]
-    },
-    {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 296,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100)",
-      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
     },
     {
       "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 630,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json",
-      "d": [
-        1,
-        10,
-        0
-      ]
+      "gId": "PACK",
+      "gIx": 112,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
+      "d": "9d6dad89-6e29-46ba-83d5-490a4901caef"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 113,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 114,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
+      "d": "Add-on Pack More Mobs Behaviors - (pack.name)"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 115,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
+      "d": "Adds a set of mobs you can use in your worlds - (pack.description)"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 116,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
+      "d": "9d6dad89-6e29-46ba-83d5-490a4901caef|1.0.0"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 117,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
+      "d": 2
+    },
+    {
+      "iTp": 7,
+      "gId": "PACK",
+      "gIx": 245
+    },
+    {
+      "iTp": 8,
+      "gId": "PACKMETADATA",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "PACKSIZE",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 101,
+      "d": 7017963
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 102,
+      "d": 59
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 103,
+      "d": 29
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 104,
+      "d": 57316
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 105,
+      "d": 43
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 106,
+      "d": 22
+    },
+    {
+      "iTp": 1,
+      "gId": "PATHLENGTH",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "PRJINT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "RESOURCEANIMATION",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "RESOURCEANIMATION",
+      "gIx": 101,
+      "fs": {
+        "Resource": {
+          "Count": 8
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "RESOURCEANIMATION",
+      "gIx": 102,
+      "fs": {
+        "Resource Animation Bone": {
+          "Count": 23
+        },
+        "Resource Animation Bone Position Continuous": {
+          "Count": 24
+        },
+        "Resource Animation Bone Scale Continuous": {
+          "Count": 2
+        },
+        "Resource Animation Bone Rotation Continuous": {
+          "Count": 77
+        },
+        "Resource Animation Bone Position Keyframe": {
+          "Count": 13
+        }
+      }
+    },
+    {
+      "iTp": 1,
+      "gId": "RPDEPENDS",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "SCRIPT",
+      "gIx": 1
     },
     {
       "iTp": 7,
@@ -3050,6 +3401,43 @@
       }
     },
     {
+      "iTp": 1,
+      "gId": "SCRIPTMODULE",
+      "gIx": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "SCRIPTMODULE",
+      "gIx": 100,
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
+      "d": "1.1.0",
+      "iId": "@minecraft/server-ui"
+    },
+    {
+      "iTp": 2,
+      "gId": "SCRIPTMODULE",
+      "gIx": 100,
+      "m": "Behavior pack dependency on 1.5.0 at @minecraft/server",
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
+      "d": "1.5.0",
+      "iId": "@minecraft/server"
+    },
+    {
+      "iTp": 8,
+      "gId": "SNDSDEF",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "STRICT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "SUMMARY",
+      "gIx": 1
+    },
+    {
       "iTp": 7,
       "gId": "SUMMARY",
       "gIx": 101,
@@ -3065,36 +3453,9 @@
       "gIx": 102
     },
     {
-      "iTp": 7,
-      "gId": "RESOURCEANIMATION",
-      "gIx": 101,
-      "fs": {
-        "Resource": {
-          "Count": 8
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "RESOURCEANIMATION",
-      "gIx": 102,
-      "fs": {
-        "Resource Animation Bone": {
-          "Count": 23
-        },
-        "Resource Animation Bone Position Continuous": {
-          "Count": 24
-        },
-        "Resource Animation Bone Scale Continuous": {
-          "Count": 2
-        },
-        "Resource Animation Bone Rotation Continuous": {
-          "Count": 77
-        },
-        "Resource Animation Bone Position Keyframe": {
-          "Count": 13
-        }
-      }
+      "iTp": 1,
+      "gId": "TEXTURE",
+      "gIx": 1
     },
     {
       "iTp": 7,
@@ -3131,14 +3492,9 @@
       }
     },
     {
-      "iTp": 7,
-      "gId": "TEXTUREREF",
-      "gIx": 101
-    },
-    {
-      "iTp": 7,
-      "gId": "TYPES",
-      "gIx": 101
+      "iTp": 1,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 1
     },
     {
       "iTp": 7,
@@ -3301,6 +3657,11 @@
           "Max": 32768,
           "Min": 16384,
           "Average": 24576
+        },
+        "Vanilla Game Texture Coverage": {
+          "Override Count": 0,
+          "Vanilla Texture Count": 2669,
+          "Percent": 0
         }
       }
     },
@@ -3515,232 +3876,51 @@
       }
     },
     {
+      "iTp": 1,
+      "gId": "TEXTUREREF",
+      "gIx": 1
+    },
+    {
       "iTp": 7,
-      "gId": "GEOMETRY",
+      "gId": "TEXTUREREF",
       "gIx": 101
     },
     {
-      "iTp": 7,
-      "gId": "GEOMETRY",
-      "gIx": 102,
-      "fs": {
-        "Cubes": {
-          "Instance Count": 3,
-          "Total": 34,
-          "Max": 14,
-          "Min": 8,
-          "Average": 11
-        }
-      }
+      "iTp": 1,
+      "gId": "TYPES",
+      "gIx": 1
     },
     {
       "iTp": 7,
-      "gId": "GEOMETRY",
-      "gIx": 103
+      "gId": "TYPES",
+      "gIx": 101
     },
     {
-      "iTp": 2,
-      "gId": "SCRIPTMODULE",
-      "gIx": 100,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
-      "d": "1.5.0",
-      "iId": "@minecraft/server"
+      "iTp": 1,
+      "gId": "UNKFILE",
+      "gIx": 1
     },
     {
-      "iTp": 2,
-      "gId": "SCRIPTMODULE",
-      "gIx": 100,
-      "m": "Behavior pack dependency on 1.1.0 at @minecraft/server-ui",
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
-      "d": "1.1.0",
-      "iId": "@minecraft/server-ui"
+      "iTp": 1,
+      "gId": "UNKJSON",
+      "gIx": 1
     },
     {
-      "iTp": 2,
-      "gId": "MINENGINEVER",
-      "gIx": 605,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
-      "d": [
-        1,
-        20,
-        0
-      ]
+      "iTp": 1,
+      "gId": "UNLINK",
+      "gIx": 1
     },
     {
-      "iTp": 2,
-      "gId": "MINENGINEVER",
-      "gIx": 614,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
-      "d": [
-        1,
-        20,
-        0
-      ]
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 191,
+      "p": "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson_mers.png"
     },
     {
-      "iTp": 7,
-      "gId": "ENTITYTYPE",
-      "gIx": 52,
-      "fs": {
-        "(no runtime identifier)": {
-          "Count": 3
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "ENTITYTYPE",
-      "gIx": 53,
-      "fs": {
-        "(no override identifier)": {
-          "Count": 3
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "ENTITYTYPE",
-      "gIx": 54,
-      "fs": {
-        "Spawnable Entity Type": {
-          "Count": 3
-        },
-        "Summonable Entity Type": {
-          "Count": 3
-        }
-      }
-    },
-    {
-      "iTp": 6,
-      "gId": "ENTITYTYPE",
-      "gIx": 120,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
-    },
-    {
-      "iTp": 6,
-      "gId": "ENTITYTYPE",
-      "gIx": 120,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
-    },
-    {
-      "iTp": 6,
-      "gId": "ENTITYTYPE",
-      "gIx": 120,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "ITEMTYPE",
-      "gIx": 53
-    },
-    {
-      "iTp": 7,
-      "gId": "ITEMTYPE",
-      "gIx": 55
-    },
-    {
-      "iTp": 2,
-      "gId": "JSON",
-      "gIx": 1119,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 121,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 122,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 123,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
-      "fs": {
-        "say": {
-          "Count": 1
-        },
-        "summon": {
-          "Count": 1
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 124,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 125,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 126,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 121,
-      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 122,
-      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 123,
-      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 124,
-      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 125,
-      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 126,
-      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "JSON",
-      "gIx": 1110,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "JSON",
-      "gIx": 1110,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "JSON",
-      "gIx": 1110,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 191,
+      "p": "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/sheepomelon_mers.png"
     },
     {
       "iTp": 6,
@@ -3767,17 +3947,25 @@
       "iTp": 6,
       "gId": "UNLINK",
       "gIx": 205,
-      "m": "Link to vanilla sound catalog item; avoid if possible",
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.dolphin.idle"
+      "m": "Link to vanilla model item; avoid if possible",
+      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json",
+      "d": "geometry.sheep.sheared.v1.8"
     },
     {
       "iTp": 6,
       "gId": "UNLINK",
       "gIx": 205,
-      "m": "Link to vanilla sound catalog item; avoid if possible",
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.dolphin.idle_water"
+      "m": "Link to vanilla texture item; avoid if possible",
+      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
+      "d": "textures/particle/particles"
+    },
+    {
+      "iTp": 6,
+      "gId": "UNLINK",
+      "gIx": 205,
+      "m": "Link to vanilla texture item; avoid if possible",
+      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json",
+      "d": "textures/particle/particles"
     },
     {
       "iTp": 6,
@@ -3825,6 +4013,22 @@
       "gIx": 205,
       "m": "Link to vanilla sound catalog item; avoid if possible",
       "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "d": "mob.dolphin.idle"
+    },
+    {
+      "iTp": 6,
+      "gId": "UNLINK",
+      "gIx": 205,
+      "m": "Link to vanilla sound catalog item; avoid if possible",
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "d": "mob.dolphin.idle_water"
+    },
+    {
+      "iTp": 6,
+      "gId": "UNLINK",
+      "gIx": 205,
+      "m": "Link to vanilla sound catalog item; avoid if possible",
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
       "d": "mob.dolphin.jump"
     },
     {
@@ -3849,22 +4053,6 @@
       "gIx": 205,
       "m": "Link to vanilla sound catalog item; avoid if possible",
       "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.polarbear.idle"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "m": "Link to vanilla sound catalog item; avoid if possible",
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.polarbear_baby.idle"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "m": "Link to vanilla sound catalog item; avoid if possible",
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
       "d": "mob.polarbear.death"
     },
     {
@@ -3881,7 +4069,7 @@
       "gIx": 205,
       "m": "Link to vanilla sound catalog item; avoid if possible",
       "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.polarbear.warning"
+      "d": "mob.polarbear.idle"
     },
     {
       "iTp": 6,
@@ -3890,6 +4078,22 @@
       "m": "Link to vanilla sound catalog item; avoid if possible",
       "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
       "d": "mob.polarbear.step"
+    },
+    {
+      "iTp": 6,
+      "gId": "UNLINK",
+      "gIx": 205,
+      "m": "Link to vanilla sound catalog item; avoid if possible",
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "d": "mob.polarbear.warning"
+    },
+    {
+      "iTp": 6,
+      "gId": "UNLINK",
+      "gIx": 205,
+      "m": "Link to vanilla sound catalog item; avoid if possible",
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "d": "mob.polarbear_baby.idle"
     },
     {
       "iTp": 6,
@@ -3908,253 +4112,14 @@
       "d": "mob.sheep.step"
     },
     {
-      "iTp": 2,
-      "gId": "JSON",
-      "gIx": 1128,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "JSON",
-      "gIx": 1128,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "JSON",
-      "gIx": 1128,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "m": "Link to vanilla model item; avoid if possible",
-      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json",
-      "d": "geometry.sheep.sheared.v1.8"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "m": "Link to vanilla texture item; avoid if possible",
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "d": "textures/particle/particles"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "m": "Link to vanilla texture item; avoid if possible",
-      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json",
-      "d": "textures/particle/particles"
-    },
-    {
-      "iTp": 4,
-      "gId": "UNLINK",
-      "gIx": 191,
-      "p": "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson_mers.png"
-    },
-    {
-      "iTp": 4,
-      "gId": "UNLINK",
-      "gIx": 191,
-      "p": "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/sheepomelon_mers.png"
-    },
-    {
-      "iTp": 1,
-      "gId": "ITEMS",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "LINESIZE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "PACKSIZE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "PACK",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "JSONTAGS",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "FORMATVER",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "SCRIPT",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "SHARING",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "SUMMARY",
-      "gIx": 1
-    },
-    {
       "iTp": 8,
-      "gId": "PACKMETADATA",
+      "gId": "VALFILE",
       "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "RESOURCEANIMATION",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "STRICT",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "TEXTURE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "TEXTUREREF",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "TYPES",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "TEXTUREIMAGE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "GEOMETRY",
-      "gIx": 1
-    },
-    {
-      "iTp": 8,
-      "gId": "MCFUNCTION",
-      "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "CPACKICON",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "CWI",
-      "gIx": 1
-    },
-    {
-      "iTp": 8,
-      "gId": "SNDSDEF",
-      "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "CPARTI",
-      "gIx": 1
-    },
-    {
-      "iTp": 8,
-      "gId": "EXPFLAG",
-      "gIx": 2
-    },
-    {
-      "iTp": 8,
-      "gId": "CHECKFEATUREDEPRECATION",
-      "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "FORBFILE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "PRJINT",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "GEOFMT",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "CBFG",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "LANGFILES",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "SCRIPTMODULE",
-      "gIx": 1
     },
     {
       "iTp": 8,
       "gId": "VSCODEFILE",
       "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "MINENGINEVER",
-      "gIx": 1
-    },
-    {
-      "iTp": 8,
-      "gId": "BASEGAMEVER",
-      "gIx": 2
-    },
-    {
-      "iTp": 8,
-      "gId": "BLOCKSCAT",
-      "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "ENTITYTYPE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "ITEMTYPE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "UNKJSON",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "JSONF",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "JSON",
-      "gIx": 1
     },
     {
       "iTp": 8,
@@ -4167,29 +4132,84 @@
       "gIx": 1
     },
     {
-      "iTp": 1,
-      "gId": "UNLINK",
-      "gIx": 1
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 121,
+      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
-      "iTp": 1,
-      "gId": "UNKFILE",
-      "gIx": 1
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 121,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     },
     {
-      "iTp": 8,
-      "gId": "VALFILE",
-      "gIx": 2
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 122,
+      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
-      "iTp": 1,
-      "gId": "PATHLENGTH",
-      "gIx": 1
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 122,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     },
     {
-      "iTp": 1,
-      "gId": "NOBOM",
-      "gIx": 1
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 123,
+      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 123,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
+      "fs": {
+        "say": {
+          "Count": 1
+        },
+        "summon": {
+          "Count": 1
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 124,
+      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 124,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 125,
+      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 125,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 126,
+      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 126,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     }
   ],
   "generatorName": "Minecraft Creator Tools",

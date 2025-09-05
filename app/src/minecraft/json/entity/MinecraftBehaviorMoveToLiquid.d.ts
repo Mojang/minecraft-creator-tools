@@ -42,7 +42,7 @@ export default interface MinecraftBehaviorMoveToLiquid {
    * Strider: 0.9
    *
    */
-  goal_radius: number;
+  goal_radius?: number;
 
   /**
    * @remarks
@@ -53,7 +53,7 @@ export default interface MinecraftBehaviorMoveToLiquid {
    * Strider: "Lava"
    *
    */
-  material_type: string;
+  material_type?: string;
 
   /**
    * @remarks
@@ -65,7 +65,7 @@ export default interface MinecraftBehaviorMoveToLiquid {
    * Strider: 7
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -78,7 +78,7 @@ export default interface MinecraftBehaviorMoveToLiquid {
    * Strider: 30
    *
    */
-  search_count: number;
+  search_count?: number;
 
   /**
    * @remarks
@@ -89,7 +89,7 @@ export default interface MinecraftBehaviorMoveToLiquid {
    * Strider: 10
    *
    */
-  search_height: number;
+  search_height?: number;
 
   /**
    * @remarks
@@ -100,12 +100,12 @@ export default interface MinecraftBehaviorMoveToLiquid {
    * Strider: 16
    *
    */
-  search_range: number;
+  search_range?: number;
 
   /**
    * @remarks
    * Movement speed multiplier of the mob when using this AI Goal
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

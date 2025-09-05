@@ -130,7 +130,7 @@ export default interface HasComponent {
    *
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
@@ -143,7 +143,7 @@ export default interface HasComponent {
    *
    *
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -152,7 +152,7 @@ export default interface HasComponent {
    * Axolotl: "has_component"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -164,7 +164,7 @@ export default interface HasComponent {
    * Cat: "minecraft:is_baby"
    *
    */
-  value: string;
+  value?: string;
 
 }
 

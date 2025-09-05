@@ -463,7 +463,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
   static async ensureOnItem(projectItem: ProjectItem) {
     let mcworld: MCWorld | undefined = undefined;
 
-    await projectItem.ensureStorage();
+    if (!projectItem.isContentLoaded) {
+      await projectItem.loadContent();
+    }
 
     if (projectItem.defaultFolder) {
       mcworld = await MCWorld.ensureMCWorldOnFolder(projectItem.defaultFolder, projectItem.project);
@@ -898,7 +900,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     }
 
     if (this._file) {
-      await this._file.loadContent();
+      if (!this._file.isContentLoaded) {
+        await this._file.loadContent();
+      }
 
       if (this._file.content === undefined || !(this._file.content instanceof Uint8Array)) {
         return;
@@ -1242,7 +1246,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     const rootDataFile = await rootFolder.getFileFromRelativePath(LEVELDAT_RELPATH);
 
     if (rootDataFile !== undefined) {
-      await rootDataFile.loadContent();
+      if (!this.file?.isContentLoaded) {
+        await rootDataFile.loadContent();
+      }
 
       if (rootDataFile.content !== undefined && rootDataFile.content instanceof Uint8Array) {
         this.levelData = new WorldLevelDat();
@@ -1258,7 +1264,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     const levelNameTextFile = await rootFolder.getFileFromRelativePath(LEVELNAMETXT_RELPATH);
 
     if (levelNameTextFile !== undefined) {
-      await levelNameTextFile.loadContent();
+      if (!levelNameTextFile.isContentLoaded) {
+        await levelNameTextFile.loadContent();
+      }
 
       if (levelNameTextFile.content !== undefined && typeof levelNameTextFile.content === "string") {
         this.name = levelNameTextFile.content;
@@ -1268,7 +1276,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     const manifestJsonFile = await rootFolder.getFileFromRelativePath(MANIFEST_RELPATH);
 
     if (manifestJsonFile !== undefined) {
-      await manifestJsonFile.loadContent();
+      if (!manifestJsonFile.isContentLoaded) {
+        await manifestJsonFile.loadContent();
+      }
 
       if (manifestJsonFile.content !== undefined && typeof manifestJsonFile.content === "string") {
         this._manifest = StorageUtilities.getJsonObject(manifestJsonFile);
@@ -1278,7 +1288,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     let packsFile = await rootFolder.getFileFromRelativePath(BEHAVIOR_PACKS_RELPATH);
 
     if (packsFile !== undefined) {
-      await packsFile.loadContent();
+      if (!packsFile.isContentLoaded) {
+        await packsFile.loadContent();
+      }
 
       if (packsFile.content !== undefined && typeof packsFile.content === "string") {
         try {
@@ -1293,7 +1305,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     packsFile = await rootFolder.getFileFromRelativePath(RESOURCE_PACKS_RELPATH);
 
     if (packsFile !== undefined) {
-      await packsFile.loadContent();
+      if (!packsFile.isContentLoaded) {
+        await packsFile.loadContent();
+      }
 
       if (packsFile.content !== undefined && typeof packsFile.content === "string") {
         try {
@@ -1308,7 +1322,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     let packHistoryFile = await rootFolder.getFileFromRelativePath(BEHAVIOR_PACK_HISTORY_RELPATH);
 
     if (packHistoryFile !== undefined) {
-      await packHistoryFile.loadContent();
+      if (!packHistoryFile.isContentLoaded) {
+        await packHistoryFile.loadContent();
+      }
 
       if (packHistoryFile.content !== undefined && typeof packHistoryFile.content === "string") {
         try {
@@ -1323,7 +1339,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     packHistoryFile = await rootFolder.getFileFromRelativePath(RESOURCE_PACK_HISTORY_RELPATH);
 
     if (packHistoryFile !== undefined) {
-      await packHistoryFile.loadContent();
+      if (!packHistoryFile.isContentLoaded) {
+        await packHistoryFile.loadContent();
+      }
 
       if (packHistoryFile.content !== undefined && typeof packHistoryFile.content === "string") {
         try {
@@ -1338,7 +1356,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     const imageFile = await rootFolder.getFileFromRelativePath("/world_icon.jpeg");
 
     if (imageFile !== undefined) {
-      await imageFile.loadContent();
+      if (!imageFile.isContentLoaded) {
+        await imageFile.loadContent();
+      }
 
       if (imageFile.content instanceof Uint8Array) {
         this.imageBase64 = Utilities.uint8ArrayToBase64(imageFile.content);
@@ -1366,7 +1386,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
       return;
     }
 
-    await rootFolder.load();
+    if (!rootFolder.isLoaded) {
+      await rootFolder.load();
+    }
 
     const dbFolder = await rootFolder.getFolderFromRelativePath("/db");
 
@@ -1375,7 +1397,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     const manifestFileArr: IFile[] = [];
 
     if (dbFolder) {
-      await dbFolder.load();
+      if (!dbFolder.isLoaded) {
+        await dbFolder.load();
+      }
 
       for (const fileName in dbFolder.files) {
         const file = dbFolder.files[fileName];

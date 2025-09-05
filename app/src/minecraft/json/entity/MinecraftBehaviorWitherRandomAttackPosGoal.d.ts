@@ -38,6 +38,6 @@ export default interface MinecraftBehaviorWitherRandomAttackPosGoal {
    * Wither: 3
    *
    */
-  priority: number;
+  priority?: number;
 
 }

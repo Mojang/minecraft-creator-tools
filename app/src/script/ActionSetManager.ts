@@ -183,7 +183,7 @@ export default class ActionSetManager {
       await ProjectUtilities.ensureContentInDefaultScriptFile(
         project,
         "import * as " + scriptSafeName,
-        "import * as " + scriptSafeName + ' from "./_gen/' + baseName + '";\r\n' + scriptSafeName + ".init();\r\n",
+        "import * as " + scriptSafeName + ' from "./_gen/' + baseName + '";\n' + scriptSafeName + ".init();\n",
         false
       );
     }
@@ -213,11 +213,13 @@ export default class ActionSetManager {
     if (file.manager !== undefined && file.manager instanceof ActionSetManager) {
       autos = file.manager as ActionSetManager;
 
-      if (!autos.isLoaded && loadHandler) {
-        autos.onLoaded.subscribe(loadHandler);
-      }
+      if (!autos.isLoaded) {
+        if (loadHandler) {
+          autos.onLoaded.subscribe(loadHandler);
+        }
 
-      await autos.load();
+        await autos.load();
+      }
     }
 
     return autos;

@@ -45,6 +45,6 @@ export default interface MinecraftWaterMovement {
    *
    *
    */
-  drag_factor: number;
+  drag_factor?: number;
 
 }

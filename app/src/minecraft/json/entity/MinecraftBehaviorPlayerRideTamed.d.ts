@@ -43,6 +43,6 @@ export default interface MinecraftBehaviorPlayerRideTamed {
    * Happy Ghast: 1
    *
    */
-  priority: number;
+  priority?: number;
 
 }

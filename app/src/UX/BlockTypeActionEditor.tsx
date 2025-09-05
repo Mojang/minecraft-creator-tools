@@ -135,7 +135,7 @@ export default class BlockTypeActionEditor extends Component<IBlockTypeActionEdi
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
-      if (file.manager !== null) {
+      if (file.manager) {
         const bt = file.manager as BlockTypeDefinition;
 
         bt.persist();
@@ -217,7 +217,7 @@ export default class BlockTypeActionEditor extends Component<IBlockTypeActionEdi
       await ProjectUtilities.ensureContentInDefaultScriptFile(
         this.props.project,
         "init" + fileNameSugg,
-        "import { init" + fileNameSugg + ' } from "./' + fileNameSugg + '"\r\n',
+        "import { init" + fileNameSugg + ' } from "./' + fileNameSugg + '"\n',
         false
       );
 

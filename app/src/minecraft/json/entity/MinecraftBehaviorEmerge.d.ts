@@ -36,7 +36,7 @@ export default interface MinecraftBehaviorEmerge {
    * Time in seconds the mob has to wait before using the goal 
    * again
    */
-  cooldown_time: number;
+  cooldown_time?: number;
 
   /**
    * @remarks
@@ -46,7 +46,7 @@ export default interface MinecraftBehaviorEmerge {
    * Warden: 7
    *
    */
-  duration: number;
+  duration?: number;
 
   /**
    * @remarks
@@ -57,7 +57,7 @@ export default interface MinecraftBehaviorEmerge {
    * Warden: {"event":"minecraft:emerged","target":"self"}
    *
    */
-  on_done: jsoncommon.MinecraftEventTrigger;
+  on_done?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -65,6 +65,6 @@ export default interface MinecraftBehaviorEmerge {
    * priority, the sooner this behavior will be executed as a 
    * goal.
    */
-  priority: number;
+  priority?: number;
 
 }

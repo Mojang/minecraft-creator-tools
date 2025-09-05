@@ -36,7 +36,7 @@ export default interface MinecraftGrowsCrop {
    * Bee: 0.03
    *
    */
-  chance: number;
+  chance?: number;
 
   /**
    * @remarks
@@ -46,6 +46,6 @@ export default interface MinecraftGrowsCrop {
    * Bee: 10
    *
    */
-  charges: number;
+  charges?: number;
 
 }

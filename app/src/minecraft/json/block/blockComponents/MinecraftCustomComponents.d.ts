@@ -39,6 +39,6 @@ export default interface MinecraftCustomComponents {
    * Luckyblock: "mike_luck:luckyblock_actions"
    *
    */
-  _0: string;
+  _0?: string;
 
 }

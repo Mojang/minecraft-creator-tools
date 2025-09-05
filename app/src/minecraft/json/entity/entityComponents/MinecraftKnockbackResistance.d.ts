@@ -70,7 +70,7 @@ export default interface MinecraftKnockbackResistance {
    *
    *
    */
-  max: number;
+  max?: number;
 
   /**
    * @remarks
@@ -85,6 +85,6 @@ export default interface MinecraftKnockbackResistance {
    * Hoglin: 0.6
    *
    */
-  value: number;
+  value?: number;
 
 }

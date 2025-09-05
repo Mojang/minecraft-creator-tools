@@ -2,5 +2,5 @@
   "id": "query.wing_flap_speed",
   "fields": [],
   "description": "Returns the wing flap speed of the entity, or 0.0 if this doesn't make sense. Pertains to the parrot.",
-  "title": "Wing Flap Speed Query"
+  "title": "Wing Flap Speed"
 }

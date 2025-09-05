@@ -37,6 +37,6 @@ export default interface MinecraftVerticalMovementAction {
    * Happy Ghast: 0.5
    *
    */
-  vertical_velocity: number;
+  vertical_velocity?: number;
 
 }

@@ -25,5 +25,5 @@
     }
   ],
   "description": "Allow slimes to float in water / lava. Can only be used by Slime and Magma Cubes.",
-  "title": "Minecraft Behavior.slime Float Entity"
+  "title": "Entity Slime Float Behavior"
 }

@@ -22,13 +22,13 @@ export default interface MinecraftLightingSettings {
    * @remarks
    * format_version
    */
-  format_version: string;
+  format_version?: string;
 
   /**
    * @remarks
    * minecraft:lighting_settings
    */
-  "minecraft:lighting_settings": MinecraftLightingSettingsMinecraftLightingSettings;
+  "minecraft:lighting_settings"?: MinecraftLightingSettingsMinecraftLightingSettings;
 
 }
 
@@ -43,31 +43,31 @@ export interface MinecraftLightingSettingsMinecraftLightingSettings {
    * @remarks
    * ambient
    */
-  ambient: MinecraftLightingSettingsMinecraftLightingSettingsAmbient;
+  ambient?: MinecraftLightingSettingsMinecraftLightingSettingsAmbient;
 
   /**
    * @remarks
    * description
    */
-  description: MinecraftLightingSettingsMinecraftLightingSettingsDescription;
+  description?: MinecraftLightingSettingsMinecraftLightingSettingsDescription;
 
   /**
    * @remarks
    * directional_lights
    */
-  directional_lights: MinecraftLightingSettingsMinecraftLightingSettingsDirectionalLights;
+  directional_lights?: MinecraftLightingSettingsMinecraftLightingSettingsDirectionalLights;
 
   /**
    * @remarks
    * emissive
    */
-  emissive: MinecraftLightingSettingsMinecraftLightingSettingsEmissive;
+  emissive?: MinecraftLightingSettingsMinecraftLightingSettingsEmissive;
 
   /**
    * @remarks
    * sky
    */
-  sky: MinecraftLightingSettingsMinecraftLightingSettingsSky;
+  sky?: MinecraftLightingSettingsMinecraftLightingSettingsSky;
 
 }
 
@@ -82,13 +82,13 @@ export interface MinecraftLightingSettingsMinecraftLightingSettingsAmbient {
    * @remarks
    * color
    */
-  color: string;
+  color?: string;
 
   /**
    * @remarks
    * illuminance
    */
-  illuminance: number;
+  illuminance?: number;
 
 }
 
@@ -103,7 +103,7 @@ export interface MinecraftLightingSettingsMinecraftLightingSettingsDescription {
    * @remarks
    * identifier
    */
-  identifier: string;
+  identifier?: string;
 
 }
 
@@ -120,19 +120,19 @@ export interface MinecraftLightingSettingsMinecraftLightingSettingsDirectionalLi
    * @remarks
    * moon
    */
-  moon: MinecraftLightingSettingsMinecraftLightingSettingsDirectionalLightsMoon;
+  moon?: MinecraftLightingSettingsMinecraftLightingSettingsDirectionalLightsMoon;
 
   /**
    * @remarks
    * orbital_offset_degrees
    */
-  orbital_offset_degrees: number;
+  orbital_offset_degrees?: number;
 
   /**
    * @remarks
    * sun
    */
-  sun: MinecraftLightingSettingsMinecraftLightingSettingsDirectionalLightsSun;
+  sun?: MinecraftLightingSettingsMinecraftLightingSettingsDirectionalLightsSun;
 
 }
 
@@ -149,13 +149,13 @@ export interface MinecraftLightingSettingsMinecraftLightingSettingsDirectionalLi
    * @remarks
    * color
    */
-  color: { [key: string]: string };
+  color?: { [key: string]: string };
 
   /**
    * @remarks
    * illuminance
    */
-  illuminance: number;
+  illuminance?: number;
 
 }
 
@@ -172,13 +172,13 @@ export interface MinecraftLightingSettingsMinecraftLightingSettingsDirectionalLi
    * @remarks
    * color
    */
-  color: { [key: string]: string };
+  color?: { [key: string]: string };
 
   /**
    * @remarks
    * illuminance
    */
-  illuminance: number;
+  illuminance?: number;
 
 }
 
@@ -193,7 +193,7 @@ export interface MinecraftLightingSettingsMinecraftLightingSettingsEmissive {
    * @remarks
    * desaturation
    */
-  desaturation: number;
+  desaturation?: number;
 
 }
 
@@ -208,6 +208,6 @@ export interface MinecraftLightingSettingsMinecraftLightingSettingsSky {
    * @remarks
    * intensity
    */
-  intensity: number;
+  intensity?: number;
 
 }

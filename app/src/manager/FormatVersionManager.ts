@@ -203,7 +203,9 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
       const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.blockTypeBehavior) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const btdef = await BlockTypeDefinition.ensureOnFile(pi.primaryFile);
@@ -225,7 +227,9 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
           }
         }
       } else if (pi.itemType === ProjectItemType.itemTypeBehavior) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const itdef = await ItemTypeDefinition.ensureOnFile(pi.primaryFile);
@@ -247,7 +251,9 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
           }
         }
       } else if (pi.itemType === ProjectItemType.recipeBehavior) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const rbdef = await RecipeBehaviorDefinition.ensureOnFile(pi.primaryFile);
@@ -270,7 +276,9 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
           }
         }
       } else if (pi.itemType === ProjectItemType.animationBehaviorJson) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const abdef = await AnimationControllerBehaviorDefinition.ensureOnFile(pi.primaryFile);
@@ -292,7 +300,9 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
           }
         }
       } else if (pi.itemType === ProjectItemType.animationControllerBehaviorJson) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const abdef = await AnimationControllerBehaviorDefinition.ensureOnFile(pi.primaryFile);
@@ -315,7 +325,9 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
           }
         }
       } else if (pi.itemType === ProjectItemType.animationResourceJson) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const ardef = await AnimationResourceDefinition.ensureOnFile(pi.primaryFile);
@@ -338,7 +350,9 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
           }
         }
       } else if (pi.itemType === ProjectItemType.animationControllerResourceJson) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const acrdef = await AnimationControllerResourceDefinition.ensureOnFile(pi.primaryFile);
@@ -361,7 +375,9 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
           }
         }
       } else if (pi.itemType === ProjectItemType.spawnRuleBehavior) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const srbdef = await SpawnRulesBehaviorDefinition.ensureOnFile(pi.primaryFile);
@@ -384,7 +400,9 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
           }
         }
       } else if (pi.itemType === ProjectItemType.attachableResourceJson) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const srbdef = await AttachableResourceDefinition.ensureOnFile(pi.primaryFile);
@@ -406,7 +424,9 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
           }
         }
       } else if (pi.itemType === ProjectItemType.entityTypeResource) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const etrdef = await EntityTypeResourceDefinition.ensureOnFile(pi.primaryFile);
@@ -428,7 +448,9 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
           }
         }
       } else if (pi.itemType === ProjectItemType.fogResourceJson) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const etrdef = await FogResourceDefinition.ensureOnFile(pi.primaryFile);
@@ -642,7 +664,9 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
       const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.worldTemplateManifestJson) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const wtManifest = await WorldTemplateManifestDefinition.ensureOnFile(pi.primaryFile);

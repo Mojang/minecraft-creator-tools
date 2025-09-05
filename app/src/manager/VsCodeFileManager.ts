@@ -41,7 +41,9 @@ export default class VsCodeFileManager implements IProjectInfoGenerator, IProjec
 
     for (const pi of itemsCopy) {
       if (pi.itemType === ProjectItemType.vsCodeTasksJson && pi.storageType === ProjectItemStorageType.singleFile) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const vscodeTasksJson = await VsCodeTasksDefinition.ensureOnFile(pi.primaryFile);
@@ -68,7 +70,9 @@ export default class VsCodeFileManager implements IProjectInfoGenerator, IProjec
         pi.itemType === ProjectItemType.vsCodeLaunchJson &&
         pi.storageType === ProjectItemStorageType.singleFile
       ) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const vscodeLaunchJson = await VsCodeLaunchDefinition.ensureOnFile(pi.primaryFile);
@@ -124,7 +128,9 @@ export default class VsCodeFileManager implements IProjectInfoGenerator, IProjec
 
     for (const pi of itemsCopy) {
       if (pi.itemType === ProjectItemType.vsCodeTasksJson && pi.storageType === ProjectItemStorageType.singleFile) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const vscodeTasksJson = await VsCodeTasksDefinition.ensureOnFile(pi.primaryFile);
@@ -157,7 +163,9 @@ export default class VsCodeFileManager implements IProjectInfoGenerator, IProjec
 
     for (const pi of itemsCopy) {
       if (pi.itemType === ProjectItemType.vsCodeLaunchJson && pi.storageType === ProjectItemStorageType.singleFile) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const vscodeLaunchJson = await VsCodeLaunchDefinition.ensureOnFile(pi.primaryFile);

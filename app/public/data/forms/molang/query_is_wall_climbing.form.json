@@ -2,5 +2,5 @@
   "id": "query.is_wall_climbing",
   "fields": [],
   "description": "Returns 1.0 if the entity is climbing a wall, else it returns 0.0.",
-  "title": "Is Wall Climbing Query"
+  "title": "Is Wall Climbing"
 }

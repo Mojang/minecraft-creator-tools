@@ -2,5 +2,5 @@
   "id": "query.sleep_rotation",
   "fields": [],
   "description": "Returns the rotation of the bed the player is sleeping on.",
-  "title": "Sleep Rotation Query"
+  "title": "Sleep Rotation"
 }

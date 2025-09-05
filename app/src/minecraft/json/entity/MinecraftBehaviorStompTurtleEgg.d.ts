@@ -56,7 +56,7 @@ export default interface MinecraftBehaviorStompTurtleEgg {
    *
    *
    */
-  goal_radius: number;
+  goal_radius?: number;
 
   /**
    * @remarks
@@ -68,7 +68,7 @@ export default interface MinecraftBehaviorStompTurtleEgg {
    *
    *
    */
-  interval: number;
+  interval?: number;
 
   /**
    * @remarks
@@ -83,7 +83,7 @@ export default interface MinecraftBehaviorStompTurtleEgg {
    * Zombie Pigman: 5
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -95,7 +95,7 @@ export default interface MinecraftBehaviorStompTurtleEgg {
    *
    *
    */
-  search_height: number;
+  search_height?: number;
 
   /**
    * @remarks
@@ -107,7 +107,7 @@ export default interface MinecraftBehaviorStompTurtleEgg {
    *
    *
    */
-  search_range: number;
+  search_range?: number;
 
   /**
    * @remarks
@@ -118,6 +118,6 @@ export default interface MinecraftBehaviorStompTurtleEgg {
    *
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

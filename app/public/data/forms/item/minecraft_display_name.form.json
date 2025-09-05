@@ -1,4 +1,5 @@
 {
+  "id": "minecraft:display_name",
   "fields": [
     {
       "id": "value",
@@ -36,6 +37,12 @@
             "content": "item.wind_charge.name"
           }
         ],
+        "/samples/creator_camp/behavior_packs/creator_camp/items/bag_o_leaves.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:display_name/",
+            "content": "Bag o' Leaves"
+          }
+        ],
         "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
           {
             "path": "/minecraft:item/components/minecraft:display_name/",
@@ -66,6 +73,12 @@
             "content": "My Custom Leggings"
           }
         ],
+        "/samples/custom_items/behavior_packs/custom_item/items/my_sword.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:display_name/",
+            "content": "Secret Weapon"
+          }
+        ],
         "/samples/custom_items/behavior_packs/custom_item/items/my_sword_chuck.json": [
           {
             "path": "/minecraft:item/components/minecraft:display_name/",
@@ -81,13 +94,13 @@
         "/samples/custom_items/behavior_packs/custom_item/items/my_sword_singing.json": [
           {
             "path": "/minecraft:item/components/minecraft:display_name/",
-            "content": "Sword Singer"
+            "content": "Sword Singer (as a Record)"
           }
         ],
         "/samples/custom_items/behavior_packs/custom_item/items/my_sword_turtle.json": [
           {
             "path": "/minecraft:item/components/minecraft:display_name/",
-            "content": "Turtle Sword"
+            "content": "Turtle Sword on Sand"
           }
         ],
         "/samples/custom_items/behavior_packs/custom_item/items/my_sword_weak.json": [
@@ -95,32 +108,13 @@
             "path": "/minecraft:item/components/minecraft:display_name/",
             "content": "Really Just Wet Paper"
           }
-        ],
-        "/samples/custom_items/behavior_packs/custom_item/items/my_sword.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:display_name/",
-            "content": "Secret Weapon"
-          }
         ]
       }
     }
   ],
-  "description": "Sets the item display name within Minecraft: Bedrock Edition. This component may also be used to pull from the localization file by referencing a key from it.",
+  "description": "The display_name item component specifies the text shown whenever an item's name is displayed, like in hover text.",
+  "title": "Item Display Name",
   "samples": {
-    "sample": [
-      {
-        "path": "sample",
-        "content": {
-          "value": "secret_weapon"
-        }
-      },
-      {
-        "path": "sample with localication key",
-        "content": {
-          "value": "item.snowball.name"
-        }
-      }
-    ],
     "/vanilla/behavior_pack/items/apple.json": [
       {
         "path": "/minecraft:item/components/minecraft:display_name/",
@@ -209,6 +203,14 @@
         }
       }
     ],
+    "/samples/custom_items/behavior_packs/custom_item/items/my_sword.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:display_name/",
+        "content": {
+          "value": "Secret Weapon"
+        }
+      }
+    ],
     "/samples/custom_items/behavior_packs/custom_item/items/my_sword_chuck.json": [
       {
         "path": "/minecraft:item/components/minecraft:display_name/",
@@ -229,7 +231,7 @@
       {
         "path": "/minecraft:item/components/minecraft:display_name/",
         "content": {
-          "value": "Sword Singer"
+          "value": "Sword Singer (as a Record)"
         }
       }
     ],
@@ -237,7 +239,7 @@
       {
         "path": "/minecraft:item/components/minecraft:display_name/",
         "content": {
-          "value": "Turtle Sword"
+          "value": "Turtle Sword on Sand"
         }
       }
     ],
@@ -248,16 +250,6 @@
           "value": "Really Just Wet Paper"
         }
       }
-    ],
-    "/samples/custom_items/behavior_packs/custom_item/items/my_sword.json": [
-      {
-        "path": "/minecraft:item/components/minecraft:display_name/",
-        "content": {
-          "value": "Secret Weapon"
-        }
-      }
     ]
-  },
-  "title": "Minecraft Display Name Item",
-  "id": "minecraft:display_name"
+  }
 }

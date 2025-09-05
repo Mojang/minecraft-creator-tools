@@ -351,21 +351,21 @@ export default interface MinecraftBehaviorAvoidMobType {
    *
    *
    */
-  avoid_mob_sound: string;
+  avoid_mob_sound?: string;
 
   /**
    * @remarks
    * The next target position the entity chooses to avoid another entity
    * will be chosen within this XZ Distance.
    */
-  avoid_target_xz: number;
+  avoid_target_xz?: number;
 
   /**
    * @remarks
    * The next target position the entity chooses to avoid another entity
    * will be chosen within this Y Distance.
    */
-  avoid_target_y: number;
+  avoid_target_y?: number;
 
   /**
    * @remarks
@@ -380,7 +380,7 @@ export default interface MinecraftBehaviorAvoidMobType {
    * Cave Spider: [{"filters":{"all_of":[{"test":"is_family","subject":"other","value":"armadillo"},{"test":"enum_property","subject":"other","domain":"minecraft:armadillo_state","value":"unrolled"}]},"max_dist":6,"sprint_speed_multiplier":1.2}]
    *
    */
-  entity_types: jsoncommon.MinecraftFilter;
+  entity_types?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -391,7 +391,7 @@ export default interface MinecraftBehaviorAvoidMobType {
    * Phantom: true
    *
    */
-  ignore_visibility: boolean;
+  ignore_visibility?: boolean;
 
   /**
    * @remarks
@@ -404,7 +404,7 @@ export default interface MinecraftBehaviorAvoidMobType {
    * Wandering Trader: 6
    *
    */
-  max_dist: number;
+  max_dist?: number;
 
   /**
    * @remarks
@@ -415,7 +415,7 @@ export default interface MinecraftBehaviorAvoidMobType {
    * Panda: 20
    *
    */
-  max_flee: number;
+  max_flee?: number;
 
   /**
    * @remarks
@@ -425,7 +425,7 @@ export default interface MinecraftBehaviorAvoidMobType {
    * Piglin: {"event":"become_calm_event","target":"self"}
    *
    */
-  on_escape_event: jsoncommon.MinecraftEventTrigger;
+  on_escape_event?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -441,7 +441,7 @@ export default interface MinecraftBehaviorAvoidMobType {
    * Cave Spider: 2
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -453,7 +453,7 @@ export default interface MinecraftBehaviorAvoidMobType {
    *
    *
    */
-  probability_per_strength: number;
+  probability_per_strength?: number;
 
   /**
    * @remarks
@@ -464,7 +464,7 @@ export default interface MinecraftBehaviorAvoidMobType {
    *
    *
    */
-  remove_target: boolean;
+  remove_target?: boolean;
 
   /**
    * @remarks
@@ -476,27 +476,27 @@ export default interface MinecraftBehaviorAvoidMobType {
    *
    *
    */
-  sound_interval: number[];
+  sound_interval?: number[];
 
   /**
    * @remarks
    * How many blocks within range of its avoid target the entity must
    * be for it to begin sprinting away from the avoid target.
    */
-  sprint_distance: number;
+  sprint_distance?: number;
 
   /**
    * @remarks
    * Multiplier for sprint speed. 1.0 means keep the regular speed,
    * while higher numbers make the sprint speed faster.
    */
-  sprint_speed_multiplier: number;
+  sprint_speed_multiplier?: number;
 
   /**
    * @remarks
    * Multiplier for walking speed. 1.0 means keep the regular speed,
    * while higher numbers make the walking speed faster.
    */
-  walk_speed_multiplier: number;
+  walk_speed_multiplier?: number;
 
 }

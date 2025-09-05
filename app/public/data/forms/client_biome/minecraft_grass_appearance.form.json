@@ -1,4 +1,5 @@
 {
+  "id": "minecraft:grass_appearance",
   "fields": [
     {
       "id": "color",
@@ -8,6 +9,5 @@
     }
   ],
   "description": "Set the grass color or color map used during rendering. Biomes without this component will have default grass appearance.",
-  "title": "Minecraft Grass Appearance Client Biome",
-  "id": "minecraft:grass_appearance"
+  "title": "Client Biome Grass Appearance"
 }

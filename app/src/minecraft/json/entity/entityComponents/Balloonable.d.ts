@@ -24,31 +24,31 @@ export default interface Balloonable {
    * Mass that this entity will have when computing balloon pull
    * forces.
    */
-  mass: number;
+  mass?: number;
 
   /**
    * @remarks
    * Distance in blocks at which the balloon breaks.
    */
-  max_distance: number;
+  max_distance?: number;
 
   /**
    * @remarks
    * Event to call when this entity is ballooned.
    */
-  on_balloon: jsoncommon.MinecraftEventTrigger;
+  on_balloon?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
    * Event to call when this entity is unballooned.
    */
-  on_unballoon: jsoncommon.MinecraftEventTrigger;
+  on_unballoon?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
    * Distance in blocks at which the 'spring' effect that lifts 
    * it.
    */
-  soft_distance: number;
+  soft_distance?: number;
 
 }

@@ -2,5 +2,5 @@
   "id": "query.is_powered",
   "fields": [],
   "description": "Returns 1.0 if the entity is powered, else it returns 0.0. Applies generally to the bee.",
-  "title": "Is Powered Query"
+  "title": "Is Powered"
 }

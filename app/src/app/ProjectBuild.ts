@@ -74,7 +74,7 @@ export default class ProjectBuild implements IErrorable {
     for (const typeDef of this.libs.typeDefs) {
       if (typeDef.name === name) {
         return {
-          contents: typeDef.content.join("\r\n"),
+          contents: typeDef.content.join("\n"),
           loader: isTs ? "ts" : "js",
         };
       }
@@ -134,7 +134,10 @@ export default class ProjectBuild implements IErrorable {
 
     let file = await this.mainScriptsFolder.ensureFileFromRelativePath(path);
 
-    await file.loadContent();
+    if (!file.isContentLoaded) {
+      await file.loadContent();
+    }
+
     let content = file.content;
 
     if (!content || typeof content !== "string") {
@@ -143,7 +146,9 @@ export default class ProjectBuild implements IErrorable {
 
         file = await this.mainScriptsFolder.ensureFileFromRelativePath(path);
 
-        await file.loadContent();
+        if (!file.isContentLoaded) {
+          await file.loadContent();
+        }
         content = file.content;
 
         if (!content || typeof content !== "string") {
@@ -250,7 +255,9 @@ export default class ProjectBuild implements IErrorable {
   }
 
   async aggregateScripts(scriptFolder: IFolder) {
-    await scriptFolder.load();
+    if (!scriptFolder.isLoaded) {
+      await scriptFolder.load();
+    }
 
     let script = "";
 
@@ -261,10 +268,12 @@ export default class ProjectBuild implements IErrorable {
         const scriptFile = scriptFolder.files[fileName];
 
         if (scriptFile) {
-          await scriptFile?.loadContent();
+          if (!scriptFile.isContentLoaded) {
+            await scriptFile.loadContent();
+          }
 
           if (scriptFile.content && typeof scriptFile.content === "string") {
-            script += "// " + fileName + "\r\n" + scriptFile.content + "\r\n";
+            script += "// " + fileName + "\n" + scriptFile.content + "\n";
           }
         }
       }

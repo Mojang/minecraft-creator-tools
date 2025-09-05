@@ -118,27 +118,29 @@ export default class AnimationBehaviorDefinition implements IDefinition {
     file: IFile,
     loadHandler?: IEventHandler<AnimationBehaviorDefinition, AnimationBehaviorDefinition>
   ) {
-    let rbd: AnimationBehaviorDefinition | undefined;
+    let abd: AnimationBehaviorDefinition | undefined;
 
     if (file.manager === undefined) {
-      rbd = new AnimationBehaviorDefinition();
+      abd = new AnimationBehaviorDefinition();
 
-      rbd.file = file;
+      abd.file = file;
 
-      file.manager = rbd;
+      file.manager = abd;
     }
 
     if (file.manager !== undefined && file.manager instanceof AnimationBehaviorDefinition) {
-      rbd = file.manager as AnimationBehaviorDefinition;
+      abd = file.manager as AnimationBehaviorDefinition;
 
-      if (!rbd.isLoaded && loadHandler) {
-        rbd.onLoaded.subscribe(loadHandler);
+      if (!abd.isLoaded) {
+        if (loadHandler) {
+          abd.onLoaded.subscribe(loadHandler);
+        }
+
+        await abd.load();
       }
-
-      await rbd.load();
     }
 
-    return rbd;
+    return abd;
   }
 
   persist() {
@@ -156,7 +158,9 @@ export default class AnimationBehaviorDefinition implements IDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

@@ -51,7 +51,7 @@ export default interface MinecraftBehaviorCelebrate {
    *
    *
    */
-  celebration_sound: string;
+  celebration_sound?: string;
 
   /**
    * @remarks
@@ -62,7 +62,7 @@ export default interface MinecraftBehaviorCelebrate {
    *
    *
    */
-  duration: number;
+  duration?: number;
 
   /**
    * @remarks
@@ -74,7 +74,7 @@ export default interface MinecraftBehaviorCelebrate {
    *
    *
    */
-  jump_interval: number[];
+  jump_interval?: number[];
 
   /**
    * @remarks
@@ -85,7 +85,7 @@ export default interface MinecraftBehaviorCelebrate {
    *
    *
    */
-  on_celebration_end_event: jsoncommon.MinecraftEventTrigger;
+  on_celebration_end_event?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -98,7 +98,7 @@ export default interface MinecraftBehaviorCelebrate {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -110,6 +110,6 @@ export default interface MinecraftBehaviorCelebrate {
    *
    *
    */
-  sound_interval: number[];
+  sound_interval?: number[];
 
 }

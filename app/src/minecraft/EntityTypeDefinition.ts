@@ -95,8 +95,8 @@ export enum EntityPropertyType {
 }
 
 export default class EntityTypeDefinition implements IManagedComponentSetItem, IDefinition {
-  public behaviorPackWrapper?: IEntityTypeWrapper;
-  private _behaviorPackFile?: IFile;
+  private _wrapper?: IEntityTypeWrapper;
+  private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
 
@@ -190,6 +190,10 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     return EntityTypeComponentExtendedCategory.complex;
   }
 
+  get formatVersion() {
+    return this._wrapper?.format_version;
+  }
+
   static getComponentFromBaseFileName(name: string) {
     let canonName = name;
 
@@ -264,14 +268,29 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
   }
 
   public get behaviorPackFile() {
-    return this._behaviorPackFile;
+    return this._file;
   }
   public get onLoaded() {
     return this._onLoaded.asEvent();
   }
 
   public set behaviorPackFile(newFile: IFile | undefined) {
-    this._behaviorPackFile = newFile;
+    if (this._file) {
+      this._file.onFileContentUpdated.unsubscribe(this._handleFileUpdated);
+    }
+
+    this._file = newFile;
+
+    if (this._file) {
+      this._file.onFileContentUpdated.subscribe(this._handleFileUpdated);
+    }
+  }
+
+  _handleFileUpdated(file: IFile, fileB: IFile) {
+    this._data = undefined;
+    this._isLoaded = false;
+    this._wrapper = undefined;
+    this._managedComponents = {};
   }
 
   public get id() {
@@ -316,8 +335,12 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     return this._data.description.properties;
   }
 
+  constructor() {
+    this._handleFileUpdated = this._handleFileUpdated.bind(this);
+  }
+
   public async getFormatVersionIsCurrent() {
-    const fv = this.getFormatVersion();
+    const fv = this.getFormatVersionAsNumberArray();
 
     if (fv === undefined || fv.length !== 3) {
       return false;
@@ -326,12 +349,12 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     return await Database.isRecentVersionFromVersionArray(fv);
   }
 
-  public getFormatVersion(): number[] | undefined {
-    if (!this.behaviorPackWrapper) {
+  public getFormatVersionAsNumberArray(): number[] | undefined {
+    if (!this._wrapper) {
       return undefined;
     }
 
-    return MinecraftUtilities.getVersionArrayFrom(this.behaviorPackWrapper.format_version);
+    return MinecraftUtilities.getVersionArrayFrom(this._wrapper.format_version);
   }
 
   public removeProperty(propertyName: string) {
@@ -440,18 +463,18 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
   }
 
   get behaviorPackFormatVersion() {
-    if (!this.behaviorPackWrapper || !this.behaviorPackWrapper.format_version) {
+    if (!this._wrapper || !this._wrapper.format_version) {
       return undefined;
     }
 
-    return this.behaviorPackWrapper.format_version;
+    return this._wrapper.format_version;
   }
 
   setBehaviorPackFormatVersion(versionStr: string) {
     this._ensureBehaviorPackDataInitialized();
 
-    if (this.behaviorPackWrapper) {
-      this.behaviorPackWrapper.format_version = versionStr;
+    if (this._wrapper) {
+      this._wrapper.format_version = versionStr;
     }
   }
 
@@ -533,14 +556,18 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
   }
 
   getEvent(eventName: string): IEventActionSet | IEventAction | undefined {
-    if (this._data !== undefined && Utilities.isUsableAsObjectKey(eventName)) {
-      if (!this._events[eventName]) {
-        const eventData = this._data.events[eventName];
+    try {
+      if (this._data !== undefined && Utilities.isUsableAsObjectKey(eventName)) {
+        if (!this._events[eventName]) {
+          const eventData = this._data.events[eventName];
 
-        this._events[eventName] = eventData;
+          this._events[eventName] = eventData;
+        }
+
+        return this._events[eventName];
       }
-
-      return this._events[eventName];
+    } catch (e) {
+      console.log(e);
     }
 
     return undefined;
@@ -686,8 +713,8 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
   }
 
   _ensureBehaviorPackDataInitialized() {
-    if (!this.behaviorPackWrapper) {
-      this.behaviorPackWrapper = {
+    if (!this._wrapper) {
+      this._wrapper = {
         format_version: "1.20.0",
       };
     }
@@ -704,9 +731,9 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
         events: {},
       };
 
-      if (this.behaviorPackWrapper) {
+      if (this._wrapper) {
         //@ts-ignore
-        this.behaviorPackWrapper["minecraft:entity"] = this._data;
+        this._wrapper["minecraft:entity"] = this._data;
       }
     }
   }
@@ -802,7 +829,9 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
 
     for (const candItem of itemsCopy) {
       if (candItem.itemType === ProjectItemType.entityTypeResource) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
           const etrd = await EntityTypeResourceDefinition.ensureOnFile(candItem.primaryFile);
@@ -816,7 +845,9 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
           }
         }
       } else if (candItem.itemType === ProjectItemType.spawnRuleBehavior) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
           const srb = await SpawnRulesBehaviorDefinition.ensureOnFile(candItem.primaryFile);
@@ -856,11 +887,13 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     if (behaviorPackFile.manager !== undefined && behaviorPackFile.manager instanceof EntityTypeDefinition) {
       et = behaviorPackFile.manager as EntityTypeDefinition;
 
-      if (!et.isLoaded && loadHandler) {
-        et.onLoaded.subscribe(loadHandler);
-      }
+      if (!et.isLoaded) {
+        if (loadHandler) {
+          et.onLoaded.subscribe(loadHandler);
+        }
 
-      await et.load();
+        await et.load();
+      }
     }
 
     return et;
@@ -883,12 +916,12 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
       results.push("  _entity : mc.Entity;");
       results.push("  constructor(entity : mc.Entity) {");
     } else {
-      results.push("  _entity;\r\n");
+      results.push("  _entity;\n");
       results.push("  constructor(entity) {");
     }
 
     results.push("    this._entity = entity;");
-    results.push("  }\r\n\r\n");
+    results.push("  }\n\n");
 
     if (isTypeScript) {
       results.push("  static spawn(location : mc.Vector3) {");
@@ -899,7 +932,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     results.push('    const entity = world.getDimension("overworld").spawnEntity("' + this.id + '", location);');
     results.push("    const " + ScriptGen.getInstanceName(this.shortId) + " = new " + className + "(entity);");
     results.push("    return " + ScriptGen.getInstanceName(this.shortId) + ";");
-    results.push("  }\r\n");
+    results.push("  }\n");
 
     if (this._data !== undefined) {
       const healthC = this._data.components["minecraft:health"];
@@ -907,7 +940,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
       if (healthC !== undefined) {
         results.push("  fullyHeal() {");
         results.push('    this._entity.getComponent("minecraft:health").resetToMaxValue();');
-        results.push("  }\r\n");
+        results.push("  }\n");
         if (isTypeScript) {
           results.push("  setHealth(newValue : number) {");
         } else {
@@ -915,7 +948,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
         }
 
         results.push('    this._entity.getComponent("minecraft:health").setCurrent(newValue);');
-        results.push("  }\r\n");
+        results.push("  }\n");
       }
 
       const rideableC = this._data.components["minecraft:rideable"];
@@ -927,7 +960,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
         }
 
         results.push('    this._entity.getComponent("minecraft:rideable").addRider(newRider);');
-        results.push("  }\r\n");
+        results.push("  }\n");
 
         if (isTypeScript) {
           results.push("  ejectRider(rider : mc.Entity) {");
@@ -935,30 +968,30 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
           results.push("  ejectRider(rider) {");
         }
         results.push('    this._entity.getComponent("minecraft:rideable").addRider(rider);');
-        results.push("  }\r\n");
+        results.push("  }\n");
       }
 
       const tameableC = this._data.components["minecraft:tameable"];
       if (tameableC !== undefined) {
         results.push("  tame() {");
         results.push('    return this._entity.getComponent("minecraft:tameable").tame();');
-        results.push("  }\r\n");
+        results.push("  }\n");
       }
     }
 
     results.push("}");
 
-    return results.join("\r\n");
+    return results.join("\n");
   }
 
   persist() {
-    if (this._behaviorPackFile === undefined) {
+    if (this._file === undefined) {
       return;
     }
 
-    const bpString = JSON.stringify(this.behaviorPackWrapper, null, 2);
+    const bpString = Utilities.consistentStringify(this._wrapper);
 
-    this._behaviorPackFile.setContent(bpString);
+    this._file.setContent(bpString);
   }
 
   async load() {
@@ -966,26 +999,28 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
       return;
     }
 
-    if (this._behaviorPackFile === undefined) {
+    if (this._file === undefined) {
       Log.unexpectedUndefined("ETBPF");
       return;
     }
 
-    await this._behaviorPackFile.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
-    if (!this._behaviorPackFile.content || this._behaviorPackFile.content instanceof Uint8Array) {
+    if (!this._file.content || this._file.content instanceof Uint8Array) {
       return;
     }
 
     let data: any = {};
 
-    let result = StorageUtilities.getJsonObject(this._behaviorPackFile);
+    let result = StorageUtilities.getJsonObject(this._file);
 
     if (result) {
       data = result;
     }
 
-    this.behaviorPackWrapper = data;
+    this._wrapper = data;
 
     const entity = data["minecraft:entity"];
 

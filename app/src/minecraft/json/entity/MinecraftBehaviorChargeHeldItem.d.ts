@@ -41,7 +41,7 @@ export default interface MinecraftBehaviorChargeHeldItem {
    *
    *
    */
-  items: string[];
+  items?: string[];
 
   /**
    * @remarks
@@ -54,6 +54,6 @@ export default interface MinecraftBehaviorChargeHeldItem {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
 }

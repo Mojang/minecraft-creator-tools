@@ -131,7 +131,7 @@ export default interface MinecraftBehaviorFollowParent {
    * Dolphin: 4
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -146,6 +146,6 @@ export default interface MinecraftBehaviorFollowParent {
    * Camel: 2.5
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

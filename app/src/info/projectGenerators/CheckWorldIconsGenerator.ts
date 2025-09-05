@@ -46,7 +46,9 @@ export default class CheckWorldIconsGenerator implements IProjectInfoGenerator {
 
     for (const projectItem of itemsCopy) {
       if (projectItem.itemType === ProjectItemType.worldTemplateManifestJson) {
-        await projectItem.ensureStorage();
+        if (!projectItem.isContentLoaded) {
+          await projectItem.loadContent();
+        }
 
         const folder = projectItem.getFolder();
 

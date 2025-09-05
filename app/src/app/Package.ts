@@ -69,7 +69,9 @@ export default class Package {
     let summaryObject: IProjectInfoData | undefined;
 
     if (summaryFileExists) {
-      await summaryFile.loadContent();
+      if (!summaryFile.isContentLoaded) {
+        await summaryFile.loadContent();
+      }
 
       const content = summaryFile.content;
 
@@ -110,7 +112,9 @@ export default class Package {
     }
 
     if (!summaryObject) {
-      await file.loadContent();
+      if (!file.isContentLoaded) {
+        await file.loadContent();
+      }
 
       if (file.content && file.content instanceof Uint8Array) {
         let packRootZipFolder = undefined;

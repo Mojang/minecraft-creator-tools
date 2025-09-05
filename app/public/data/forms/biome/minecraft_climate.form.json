@@ -3,7 +3,7 @@
     {
       "id": "downfall",
       "title": "Downfall",
-      "description": "Amount that precipitation affects colors and block changes",
+      "description": "Amount that precipitation affects colors and block changes. Setting to 0 will stop rain from falling in the biome.",
       "dataType": 3
     },
     {
@@ -19,33 +19,9 @@
       "title": "Temperature",
       "description": "Temperature affects a variety of visual and behavioral things, including snow and ice placement, sponge drying, and sky color",
       "dataType": 3
-    },
-    {
-      "id": "blue_spores",
-      "title": "blue_spores",
-      "description": "Density of blue spore precipitation visuals",
-      "dataType": 3
-    },
-    {
-      "id": "white_ash",
-      "title": "white_ash",
-      "description": "Density of white ash precipitation visuals",
-      "dataType": 3
-    },
-    {
-      "id": "red_spores",
-      "title": "red_spores",
-      "description": "Density of red spore precipitation visuals",
-      "dataType": 3
-    },
-    {
-      "id": "ash",
-      "title": "ash",
-      "description": "Density of ash precipitation visuals",
-      "dataType": 3
     }
   ],
   "description": "Describes temperature, humidity, precipitation, and similar. Biomes without this component will have default values.",
-  "title": "Minecraft Climate Biome",
+  "title": "Biome Climate",
   "id": "minecraft:climate"
 }

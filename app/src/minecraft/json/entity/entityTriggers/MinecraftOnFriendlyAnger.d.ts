@@ -50,13 +50,13 @@ export default interface MinecraftOnFriendlyAnger {
    *
    *
    */
-  event: jsoncommon.MinecraftEventTrigger;
+  event?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
    * The list of conditions for this trigger to execute.
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -67,6 +67,6 @@ export default interface MinecraftOnFriendlyAnger {
    *
    *
    */
-  target: string;
+  target?: string;
 
 }

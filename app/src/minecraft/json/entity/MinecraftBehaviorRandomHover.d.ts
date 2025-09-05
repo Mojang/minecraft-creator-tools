@@ -76,7 +76,7 @@ export default interface MinecraftBehaviorRandomHover {
    *
    *
    */
-  hover_height: number[];
+  hover_height?: number[];
 
   /**
    * @remarks
@@ -88,7 +88,7 @@ export default interface MinecraftBehaviorRandomHover {
    *
    *
    */
-  interval: number;
+  interval?: number;
 
   /**
    * @remarks
@@ -104,13 +104,13 @@ export default interface MinecraftBehaviorRandomHover {
    * Happy Ghast: 8
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * Movement speed multiplier of the mob when using this AI Goal
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -122,7 +122,7 @@ export default interface MinecraftBehaviorRandomHover {
    *
    *
    */
-  xz_dist: number;
+  xz_dist?: number;
 
   /**
    * @remarks
@@ -134,7 +134,7 @@ export default interface MinecraftBehaviorRandomHover {
    *
    *
    */
-  y_dist: number;
+  y_dist?: number;
 
   /**
    * @remarks
@@ -145,6 +145,6 @@ export default interface MinecraftBehaviorRandomHover {
    *
    *
    */
-  y_offset: number;
+  y_offset?: number;
 
 }

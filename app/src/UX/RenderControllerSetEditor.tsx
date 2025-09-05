@@ -84,6 +84,16 @@ export default class RenderControllerSetEditor extends Component<
     this._updateManager();
   }
 
+  componentDidUpdate(
+    prevProps: Readonly<IRenderControllerSetEditorProps>,
+    prevState: Readonly<IRenderControllerSetEditorState>,
+    snapshot?: any
+  ): void {
+    if (this.state && prevProps.file !== this.state.fileToEdit) {
+      this._updateManager();
+    }
+  }
+
   async _updateManager() {
     if (this.state !== undefined && this.state.fileToEdit !== undefined) {
       if (this.state.fileToEdit !== this._lastFileEdited) {
@@ -135,7 +145,7 @@ export default class RenderControllerSetEditor extends Component<
     if (this.state && this.state.fileToEdit) {
       const file = this.state.fileToEdit;
 
-      if (file.manager !== null) {
+      if (file.manager) {
         const rcsd = file.manager as RenderControllerSetDefinition;
 
         await rcsd.persist();

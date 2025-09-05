@@ -38,6 +38,6 @@ export default interface MinecraftBehaviorSilverfishMergeWithStone {
    * Silverfish: 5
    *
    */
-  priority: number;
+  priority?: number;
 
 }

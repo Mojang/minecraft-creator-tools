@@ -7,7 +7,7 @@ import Database from "./Database";
 import { FieldDataType } from "../dataform/IField";
 import { MinecraftEventTrigger } from "./jsoncommon";
 import { ManagedComponent } from "./ManagedComponent";
-import IComponent from "./IComponent";
+import { IComponentContainer } from "./IComponentDataItem";
 
 export interface TriggerDescription {
   path: string;
@@ -62,7 +62,7 @@ export default class EntityTypeComponentSetUtilities {
               await this.processFormForTriggers(
                 triggers,
                 field.subForm,
-                new ManagedComponent(data as IComponent, field.id, arrObj),
+                new ManagedComponent(data as IComponentContainer, field.id, arrObj),
                 propertyPath + "." + field.id + "." + index
               );
               index++;
@@ -71,7 +71,7 @@ export default class EntityTypeComponentSetUtilities {
             await this.processFormForTriggers(
               triggers,
               field.subForm,
-              new ManagedComponent(data as IComponent, field.id, obj),
+              new ManagedComponent(data as IComponentContainer, field.id, obj),
               propertyPath + "." + field.id
             );
           }

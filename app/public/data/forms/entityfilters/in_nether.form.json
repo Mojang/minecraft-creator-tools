@@ -140,7 +140,7 @@
             "content": true
           }
         ],
-        "/vanilla/behavior_pack/entities/piglin_brute.json": [
+        "/vanilla/behavior_pack/entities/piglin.json": [
           {
             "path": "/minecraft:entity/component_groups/start_zombification/minecraft:environment_sensor/triggers/filters/",
             "content": true
@@ -205,7 +205,7 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/piglin_brute.json": [
+    "/vanilla/behavior_pack/entities/piglin.json": [
       {
         "path": "/minecraft:entity/component_groups/zombification_sensor/minecraft:environment_sensor/triggers/filters/",
         "content": {
@@ -225,7 +225,7 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/piglin.json": [
+    "/vanilla/behavior_pack/entities/piglin_brute.json": [
       {
         "path": "/minecraft:entity/component_groups/zombification_sensor/minecraft:environment_sensor/triggers/filters/",
         "content": {

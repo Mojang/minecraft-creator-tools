@@ -136,16 +136,16 @@
             "content": "query.last_hit_by_player ? query.variant : 0"
           }
         ],
-        "/vanilla/behavior_pack/entities/piglin_brute.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:experience_reward/",
-            "content": "query.last_hit_by_player ? 20 : 0"
-          }
-        ],
         "/vanilla/behavior_pack/entities/piglin.json": [
           {
             "path": "/minecraft:entity/component_groups/piglin_baby/minecraft:experience_reward/",
             "content": "query.last_hit_by_player ? 1 + (query.equipment_count * Math.Random(1,2)) : 0"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/piglin_brute.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:experience_reward/",
+            "content": "query.last_hit_by_player ? 20 : 0"
           }
         ],
         "/vanilla/behavior_pack/entities/pillager.json": [
@@ -306,7 +306,7 @@
     }
   ],
   "description": ".",
-  "title": "Minecraft Experience Reward Entity",
+  "title": "Entity Experience Reward",
   "samples": {
     "/vanilla/behavior_pack/entities/armadillo.json": [
       {
@@ -651,14 +651,6 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/piglin_brute.json": [
-      {
-        "path": "/minecraft:entity/components/minecraft:experience_reward/",
-        "content": {
-          "on_death": "query.last_hit_by_player ? 20 : 0"
-        }
-      }
-    ],
     "/vanilla/behavior_pack/entities/piglin.json": [
       {
         "path": "/minecraft:entity/component_groups/piglin_baby/minecraft:experience_reward/",
@@ -670,6 +662,14 @@
         "path": "/minecraft:entity/component_groups/piglin_adult/minecraft:experience_reward/",
         "content": {
           "on_death": "query.last_hit_by_player ? 5 + (query.equipment_count * Math.Random(1,3)) : 0"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/piglin_brute.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:experience_reward/",
+        "content": {
+          "on_death": "query.last_hit_by_player ? 20 : 0"
         }
       }
     ],
@@ -755,19 +755,19 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/skeleton_horse.json": [
-      {
-        "path": "/minecraft:entity/component_groups/minecraft:skeleton_horse_adult/minecraft:experience_reward/",
-        "content": {
-          "on_death": "query.last_hit_by_player ? Math.Random(1,3) : 0"
-        }
-      }
-    ],
     "/vanilla/behavior_pack/entities/skeleton.json": [
       {
         "path": "/minecraft:entity/components/minecraft:experience_reward/",
         "content": {
           "on_death": "query.last_hit_by_player ? 5 + (query.equipment_count * Math.Random(1,3)) : 0"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/skeleton_horse.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:skeleton_horse_adult/minecraft:experience_reward/",
+        "content": {
+          "on_death": "query.last_hit_by_player ? Math.Random(1,3) : 0"
         }
       }
     ],
@@ -880,19 +880,19 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/wither_skeleton.json": [
-      {
-        "path": "/minecraft:entity/components/minecraft:experience_reward/",
-        "content": {
-          "on_death": "query.last_hit_by_player ? 5 + (query.equipment_count * Math.Random(1,3)) : 0"
-        }
-      }
-    ],
     "/vanilla/behavior_pack/entities/wither.json": [
       {
         "path": "/minecraft:entity/components/minecraft:experience_reward/",
         "content": {
           "on_death": "50"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/wither_skeleton.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:experience_reward/",
+        "content": {
+          "on_death": "query.last_hit_by_player ? 5 + (query.equipment_count * Math.Random(1,3)) : 0"
         }
       }
     ],
@@ -910,6 +910,20 @@
         "path": "/minecraft:entity/components/minecraft:experience_reward/",
         "content": {
           "on_death": "query.last_hit_by_player ? 5 : 0"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_baby/minecraft:experience_reward/",
+        "content": {
+          "on_death": "query.last_hit_by_player ? 12 + (query.equipment_count * Math.Random(1,3)) : 0"
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_adult/minecraft:experience_reward/",
+        "content": {
+          "on_death": "query.last_hit_by_player ? 5 + (query.equipment_count * Math.Random(1,3)) : 0"
         }
       }
     ],
@@ -935,20 +949,6 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/zombie_villager_v2.json": [
-      {
-        "path": "/minecraft:entity/component_groups/baby/minecraft:experience_reward/",
-        "content": {
-          "on_death": "query.last_hit_by_player ? 12 + (query.equipment_count * Math.Random(1,3)) : 0"
-        }
-      },
-      {
-        "path": "/minecraft:entity/component_groups/adult/minecraft:experience_reward/",
-        "content": {
-          "on_death": "query.last_hit_by_player ? 5 + (query.equipment_count * Math.Random(1,3)) : 0"
-        }
-      }
-    ],
     "/vanilla/behavior_pack/entities/zombie_villager.json": [
       {
         "path": "/minecraft:entity/component_groups/baby/minecraft:experience_reward/",
@@ -963,15 +963,15 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/zombie.json": [
+    "/vanilla/behavior_pack/entities/zombie_villager_v2.json": [
       {
-        "path": "/minecraft:entity/component_groups/minecraft:zombie_baby/minecraft:experience_reward/",
+        "path": "/minecraft:entity/component_groups/baby/minecraft:experience_reward/",
         "content": {
           "on_death": "query.last_hit_by_player ? 12 + (query.equipment_count * Math.Random(1,3)) : 0"
         }
       },
       {
-        "path": "/minecraft:entity/component_groups/minecraft:zombie_adult/minecraft:experience_reward/",
+        "path": "/minecraft:entity/component_groups/adult/minecraft:experience_reward/",
         "content": {
           "on_death": "query.last_hit_by_player ? 5 + (query.equipment_count * Math.Random(1,3)) : 0"
         }

@@ -45,7 +45,7 @@ export default interface MinecraftBehaviorSwoopAttack {
    * Phantom: 0.2
    *
    */
-  damage_reach: number;
+  damage_reach?: number;
 
   /**
    * @remarks
@@ -56,7 +56,7 @@ export default interface MinecraftBehaviorSwoopAttack {
    * Phantom: [10,20]
    *
    */
-  delay_range: number[];
+  delay_range?: number[];
 
   /**
    * @remarks
@@ -68,7 +68,7 @@ export default interface MinecraftBehaviorSwoopAttack {
    * Phantom: 2
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -79,6 +79,6 @@ export default interface MinecraftBehaviorSwoopAttack {
    * Phantom: 1
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

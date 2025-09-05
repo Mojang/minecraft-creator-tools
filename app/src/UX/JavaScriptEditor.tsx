@@ -354,7 +354,9 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
   }
 
   async _loadModelsFromFolder(monacoInstance: any, folder: IFolder) {
-    await folder.load();
+    if (!folder.isLoaded) {
+      await folder.load();
+    }
 
     for (const fileName in folder.files) {
       const childFile = folder.files[fileName];
@@ -404,14 +406,18 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
     let lang = "javascript";
     let content = "";
 
-    await file.loadContent();
+    if (!file.isContentLoaded) {
+      await file.loadContent();
+    }
 
     if (file.type === "ts") {
       lang = "typescript";
 
       const tsFile = parentFolder.ensureFile(StorageUtilities.getBaseFromName(file.name) + ".ts");
 
-      await tsFile.loadContent();
+      if (!tsFile.isContentLoaded) {
+        await tsFile.loadContent();
+      }
 
       if (
         tsFile.content === "" ||

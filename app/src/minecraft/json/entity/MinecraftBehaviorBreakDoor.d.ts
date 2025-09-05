@@ -28,6 +28,6 @@ export default interface MinecraftBehaviorBreakDoor {
    * priority, the sooner this behavior will be executed as a 
    * goal.
    */
-  priority: number;
+  priority?: number;
 
 }

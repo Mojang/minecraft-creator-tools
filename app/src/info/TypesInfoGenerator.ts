@@ -49,7 +49,9 @@ export default class TypesInfoGenerator implements IProjectInfoGenerator {
 
     for (const projectItem of itemsCopy) {
       if (projectItem.itemType === ProjectItemType.entityTypeBehavior) {
-        await projectItem.ensureFileStorage();
+        if (!projectItem.isContentLoaded) {
+          await projectItem.loadContent();
+        }
 
         if (projectItem.primaryFile) {
           const etd = await EntityTypeDefinition.ensureOnFile(projectItem.primaryFile);
@@ -59,7 +61,9 @@ export default class TypesInfoGenerator implements IProjectInfoGenerator {
           }
         }
       } else if (projectItem.itemType === ProjectItemType.blockTypeBehavior) {
-        await projectItem.ensureFileStorage();
+        if (!projectItem.isContentLoaded) {
+          await projectItem.loadContent();
+        }
 
         if (projectItem.primaryFile) {
           const blockTypeDef = await BlockTypeDefinition.ensureOnFile(projectItem.primaryFile);
@@ -79,7 +83,9 @@ export default class TypesInfoGenerator implements IProjectInfoGenerator {
           }
         }
       } else if (projectItem.itemType === ProjectItemType.blocksCatalogResourceJson) {
-        await projectItem.ensureFileStorage();
+        if (!projectItem.isContentLoaded) {
+          await projectItem.loadContent();
+        }
 
         if (projectItem.primaryFile) {
           const blockCatalog = await BlocksCatalogDefinition.ensureOnFile(projectItem.primaryFile);
@@ -101,7 +107,9 @@ export default class TypesInfoGenerator implements IProjectInfoGenerator {
           }
         }
       } else if (projectItem.itemType === ProjectItemType.itemTypeBehavior) {
-        await projectItem.ensureFileStorage();
+        if (!projectItem.isContentLoaded) {
+          await projectItem.loadContent();
+        }
 
         if (projectItem.primaryFile) {
           const itemTypeDef = await ItemTypeDefinition.ensureOnFile(projectItem.primaryFile);

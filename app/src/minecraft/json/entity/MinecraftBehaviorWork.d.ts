@@ -51,14 +51,14 @@ export default interface MinecraftBehaviorWork {
    * Villager v2: 250
    *
    */
-  active_time: number;
+  active_time?: number;
 
   /**
    * @remarks
    * If true, this entity can work when their jobsite POI is being
    * rained on.
    */
-  can_work_in_rain: boolean;
+  can_work_in_rain?: boolean;
 
   /**
    * @remarks
@@ -69,7 +69,7 @@ export default interface MinecraftBehaviorWork {
    * Villager v2: 200
    *
    */
-  goal_cooldown: number;
+  goal_cooldown?: number;
 
   /**
    * @remarks
@@ -79,7 +79,7 @@ export default interface MinecraftBehaviorWork {
    * Villager v2: {"event":"minecraft:resupply_trades","target":"self"}
    *
    */
-  on_arrival: jsoncommon.MinecraftEventTrigger;
+  on_arrival?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -91,7 +91,7 @@ export default interface MinecraftBehaviorWork {
    * Villager v2: 7
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -101,7 +101,7 @@ export default interface MinecraftBehaviorWork {
    * Villager v2: 200
    *
    */
-  sound_delay_max: number;
+  sound_delay_max?: number;
 
   /**
    * @remarks
@@ -111,7 +111,7 @@ export default interface MinecraftBehaviorWork {
    * Villager v2: 100
    *
    */
-  sound_delay_min: number;
+  sound_delay_min?: number;
 
   /**
    * @remarks
@@ -121,7 +121,7 @@ export default interface MinecraftBehaviorWork {
    * Villager v2: 0.5
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -133,6 +133,6 @@ export default interface MinecraftBehaviorWork {
    * Villager v2: 100
    *
    */
-  work_in_rain_tolerance: number;
+  work_in_rain_tolerance?: number;
 
 }

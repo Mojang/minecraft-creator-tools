@@ -106,7 +106,7 @@ export default interface MinecraftBehaviorMountPathing {
    * Chicken: 2
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -120,7 +120,7 @@ export default interface MinecraftBehaviorMountPathing {
    *
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -131,7 +131,7 @@ export default interface MinecraftBehaviorMountPathing {
    * Skeleton Horse: 4
    *
    */
-  target_dist: number;
+  target_dist?: number;
 
   /**
    * @remarks
@@ -143,6 +143,6 @@ export default interface MinecraftBehaviorMountPathing {
    *
    *
    */
-  track_target: boolean;
+  track_target?: boolean;
 
 }

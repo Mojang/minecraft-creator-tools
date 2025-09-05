@@ -25,6 +25,6 @@ export default interface MinecraftBehaviorEndermanLeaveBlock {
    * priority, the sooner this behavior will be executed as a 
    * goal.
    */
-  priority: number;
+  priority?: number;
 
 }

@@ -406,7 +406,9 @@ export default class ProjectExporter {
       "Deploying world '" + worldProjectItem.name + "' and test assets."
     );
 
-    await worldProjectItem.load();
+    if (!worldProjectItem.isContentLoaded) {
+      await worldProjectItem.loadContent();
+    }
 
     const itemFile = worldProjectItem.primaryFile;
     if (!itemFile && !worldProjectItem.defaultFolder) {
@@ -519,7 +521,10 @@ export default class ProjectExporter {
   ) {
     let mcworld: MCWorld | undefined;
     const operId = await carto.notifyOperationStarted("Deploying world '" + worldProjectItem.name + "'");
-    await worldProjectItem.load();
+
+    if (!worldProjectItem.isContentLoaded) {
+      await worldProjectItem.loadContent();
+    }
 
     if (!worldProjectItem.primaryFile && !worldProjectItem.defaultFolder) {
       Log.unexpectedUndefined("DAWATA");
@@ -847,7 +852,9 @@ export default class ProjectExporter {
 
     const file = Database.contentFolder.ensureFile("flatcreativegt.mcworld");
 
-    await file.loadContent();
+    if (!file.isContentLoaded) {
+      await file.loadContent();
+    }
 
     if (file.content instanceof Uint8Array) {
       const mcworld = await this.generateBetaApisWorldWithPackRefs(project, worldName, file.content);
@@ -941,12 +948,16 @@ export default class ProjectExporter {
 
     for (const projectItem of itemsCopy) {
       if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
-        await projectItem.ensureFileStorage();
+        if (!projectItem.isContentLoaded) {
+          await projectItem.loadContent();
+        }
 
         const itemFile = projectItem.primaryFile;
 
         if (itemFile) {
-          await itemFile.loadContent();
+          if (!itemFile.isContentLoaded) {
+            await itemFile.loadContent();
+          }
 
           let content = itemFile.content;
 
@@ -955,11 +966,15 @@ export default class ProjectExporter {
           }
         }
       } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
-        await projectItem.ensureFileStorage();
+        if (!projectItem.isContentLoaded) {
+          await projectItem.loadContent();
+        }
 
         const itemFile = projectItem.primaryFile;
         if (itemFile) {
-          await itemFile.loadContent();
+          if (!itemFile.isContentLoaded) {
+            await itemFile.loadContent();
+          }
 
           let content = itemFile.content;
 

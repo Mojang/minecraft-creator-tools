@@ -164,7 +164,7 @@ export default class DataFormUtilities {
     }
 
     if (fieldA.id && fieldB.id) {
-      return fieldA.id.localeCompare(fieldB.id);
+      return Utilities.staticCompare(fieldA.id, fieldB.id);
     }
 
     return 0;

@@ -36,8 +36,9 @@ My Sword Chuck - https://github.com/microsoft/minecraft-samples/tree/main/custom
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Throwable Item (minecraft:throwable)
- * Sets the throwable item component.
+ * Item Throwable (minecraft:throwable)
+ * Throwable items can be thrown by the player, such as a
+ * snowball.
  */
 export default interface MinecraftThrowable {
 
@@ -51,7 +52,7 @@ export default interface MinecraftThrowable {
    *
    *
    */
-  do_swing_animation: boolean;
+  do_swing_animation?: boolean;
 
   /**
    * @remarks
@@ -64,14 +65,14 @@ export default interface MinecraftThrowable {
    * My Sword Chuck: 1
    *
    */
-  launch_power_scale: number;
+  launch_power_scale?: number;
 
   /**
    * @remarks
    * The maximum duration to draw a throwable item. Default is set to
    * 0.0.
    */
-  max_draw_duration: number;
+  max_draw_duration?: number;
 
   /**
    * @remarks
@@ -84,20 +85,20 @@ export default interface MinecraftThrowable {
    * My Sword Chuck: 1
    *
    */
-  max_launch_power: number;
+  max_launch_power?: number;
 
   /**
    * @remarks
    * The minimum duration to draw a throwable item. Default is set to
    * 0.0.
    */
-  min_draw_duration: number;
+  min_draw_duration?: number;
 
   /**
    * @remarks
    * Whether or not the power of the throw increases with duration
    * charged. Default is set to false.
    */
-  scale_power_by_draw_duration: boolean;
+  scale_power_by_draw_duration?: boolean;
 
 }

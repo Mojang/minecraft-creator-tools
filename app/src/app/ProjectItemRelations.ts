@@ -1,4 +1,5 @@
 import AttachableResourceDefinition from "../minecraft/AttachableResourceDefinition";
+import BiomeBehaviorDefinition from "../minecraft/BiomeBehaviorDefinition";
 import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import EntityTypeResourceDefinition from "../minecraft/EntityTypeResourceDefinition";
@@ -51,9 +52,22 @@ const ITEM_TYPE_CONFIG = new Map<ProjectItemType, { ensureOnFile: EnsureOnFileMe
   [ProjectItemType.jigsawTemplatePool, JigsawTemplatePoolDefinition],
   [ProjectItemType.jigsawProcessorList, JigsawProcessorListDefinition],
   [ProjectItemType.texture, TextureDefinition],
+  [ProjectItemType.biomeBehavior, BiomeBehaviorDefinition],
 ]);
 
 export default class ProjectItemRelations {
+  static clearDependencies(project: Project) {
+    ProjectItemRelations.clearDependenciesForItems(project.getItemsCopy());
+  }
+
+  static clearDependenciesForItems(items: ProjectItem[]) {
+    // clear all existing relations
+    for (const item of items) {
+      item.childItems = undefined;
+      item.parentItems = undefined;
+    }
+  }
+
   static async calculate(project: Project) {
     const items = project.getItemsCopy();
 
@@ -64,17 +78,29 @@ export default class ProjectItemRelations {
     }
 
     for (const item of items) {
-      const handlerClass = ITEM_TYPE_CONFIG.get(item.itemType);
+      await this.calculateForItem(item);
+    }
+  }
 
-      if (handlerClass) {
-        await item.ensureStorage();
+  static async calculateForItems(items: ProjectItem[]) {
+    for (const item of items) {
+      await this.calculateForItem(item);
+    }
+  }
 
-        if (item.primaryFile) {
-          const handler = await handlerClass.ensureOnFile(item.primaryFile);
+  static async calculateForItem(item: ProjectItem) {
+    const project = item.project;
 
-          if (handler) {
-            await handler.addChildItems(project, item);
-          }
+    const handlerClass = ITEM_TYPE_CONFIG.get(item.itemType);
+
+    if (handlerClass) {
+      await item.ensureStorage();
+
+      if (item.primaryFile) {
+        const handler = await handlerClass.ensureOnFile(item.primaryFile);
+
+        if (handler) {
+          await handler.addChildItems(project, item);
         }
       }
     }
@@ -88,7 +114,9 @@ export default class ProjectItemRelations {
     for (const rel of item.parentItems) {
       if (rel.parentItem && rel.childItem) {
         if (rel.parentItem.itemType === ProjectItemType.entityTypeResource) {
-          await item.ensureStorage();
+          if (!item.isContentLoaded) {
+            await item.loadContent();
+          }
 
           if (rel.parentItem.primaryFile) {
             const entityTypeResource = await EntityTypeResourceDefinition.ensureOnFile(rel.parentItem.primaryFile);
@@ -98,7 +126,9 @@ export default class ProjectItemRelations {
             }
           }
         } else if (rel.parentItem.itemType === ProjectItemType.particleJson) {
-          await item.ensureStorage();
+          if (!item.isContentLoaded) {
+            await item.loadContent();
+          }
 
           if (rel.parentItem.primaryFile) {
             const particleResource = await ParticleEffectResourceDefinition.ensureOnFile(rel.parentItem.primaryFile);
@@ -108,7 +138,9 @@ export default class ProjectItemRelations {
             }
           }
         } else if (rel.parentItem.itemType === ProjectItemType.attachableResourceJson) {
-          await item.ensureStorage();
+          if (!item.isContentLoaded) {
+            await item.loadContent();
+          }
 
           if (rel.parentItem.primaryFile) {
             const attachableResource = await AttachableResourceDefinition.ensureOnFile(rel.parentItem.primaryFile);
@@ -118,7 +150,9 @@ export default class ProjectItemRelations {
             }
           }
         } else if (rel.parentItem.itemType === ProjectItemType.soundCatalog) {
-          await item.ensureStorage();
+          if (!item.isContentLoaded) {
+            await item.loadContent();
+          }
 
           if (rel.parentItem.primaryFile) {
             const soundCat = await SoundDefinitionCatalogDefinition.ensureOnFile(rel.parentItem.primaryFile);

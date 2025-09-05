@@ -10,12 +10,6 @@
  * Items Documentation - minecraft:record
  * 
  * minecraft:record Samples
-"minecraft:record": {
-  "comparator_signal": 1,
-  "duration": 5,
-  "sound_event": "ambient.tame"
-}
-
 
 My Sword Singing - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/behavior_packs/custom_item/items/my_sword_singing.json
 
@@ -30,8 +24,8 @@ My Sword Singing - https://github.com/microsoft/minecraft-samples/tree/main/cust
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Record Item (minecraft:record)
- * Used by record items to play music.
+ * Item Record (minecraft:record)
+ * Record Item Component. Used by record items to play music.
  */
 export default interface MinecraftRecord {
 
@@ -44,7 +38,7 @@ export default interface MinecraftRecord {
    * My Sword Singing: 1
    *
    */
-  comparator_signal: number;
+  comparator_signal?: number;
 
   /**
    * @remarks
@@ -54,7 +48,7 @@ export default interface MinecraftRecord {
    * My Sword Singing: 5
    *
    */
-  duration: number;
+  duration?: number;
 
   /**
    * @remarks
@@ -65,6 +59,6 @@ export default interface MinecraftRecord {
    * My Sword Singing: "pre_ram.screamer"
    *
    */
-  sound_event: string;
+  sound_event?: string;
 
 }

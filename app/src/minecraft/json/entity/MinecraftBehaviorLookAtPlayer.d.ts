@@ -134,14 +134,14 @@ export default interface MinecraftBehaviorLookAtPlayer {
    * Ravager: 45
    *
    */
-  angle_of_view_horizontal: number;
+  angle_of_view_horizontal?: number;
 
   /**
    * @remarks
    * The angle in degrees that the mob can see in the X-axis
    * (left-right).
    */
-  angle_of_view_vertical: number;
+  angle_of_view_vertical?: number;
 
   /**
    * @remarks
@@ -156,7 +156,7 @@ export default interface MinecraftBehaviorLookAtPlayer {
    * Cave Spider: 6
    *
    */
-  look_distance: number;
+  look_distance?: number;
 
   /**
    * @remarks
@@ -166,7 +166,7 @@ export default interface MinecraftBehaviorLookAtPlayer {
    * Campghost: [0,100]
    *
    */
-  look_time: number[];
+  look_time?: number[];
 
   /**
    * @remarks
@@ -175,7 +175,7 @@ export default interface MinecraftBehaviorLookAtPlayer {
    * Armadillo: 80
    *
    */
-  max_look_time: number;
+  max_look_time?: number;
 
   /**
    * @remarks
@@ -184,7 +184,7 @@ export default interface MinecraftBehaviorLookAtPlayer {
    * Armadillo: 40
    *
    */
-  min_look_time: number;
+  min_look_time?: number;
 
   /**
    * @remarks
@@ -200,7 +200,7 @@ export default interface MinecraftBehaviorLookAtPlayer {
    * Axolotl: 10
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -216,7 +216,7 @@ export default interface MinecraftBehaviorLookAtPlayer {
    * Enderman: 8
    *
    */
-  probability: number;
+  probability?: number;
 
   /**
    * @remarks
@@ -226,6 +226,6 @@ export default interface MinecraftBehaviorLookAtPlayer {
    *
    *
    */
-  target_distance: number;
+  target_distance?: number;
 
 }

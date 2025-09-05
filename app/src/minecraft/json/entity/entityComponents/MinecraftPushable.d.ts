@@ -60,7 +60,7 @@ export default interface MinecraftPushable {
    *
    *
    */
-  is_pushable: boolean;
+  is_pushable?: boolean;
 
   /**
    * @remarks
@@ -71,6 +71,6 @@ export default interface MinecraftPushable {
    *
    *
    */
-  is_pushable_by_piston: boolean;
+  is_pushable_by_piston?: boolean;
 
 }

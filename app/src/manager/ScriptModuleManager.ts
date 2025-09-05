@@ -52,7 +52,9 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
       const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const bpManifest = await BehaviorManifestDefinition.ensureOnFile(pi.primaryFile);
@@ -95,7 +97,9 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
           }
         }
       } else if (pi.itemType === ProjectItemType.packageJson) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const npmPackageJson = await NpmPackageDefinition.ensureOnFile(pi.primaryFile);
@@ -162,7 +166,9 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
           }
         }
       } else if (pi.itemType === ProjectItemType.env) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const envFile = await EnvSettings.ensureOnFile(pi.primaryFile);
@@ -206,11 +212,9 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
                       114,
                       "For " +
                         moduleName +
-                        ", using an out of date beta version: " +
+                        ", using an out of date beta version " +
                         mod.version +
-                        " compared to what is available (" +
-                        npmModule.betaVersion +
-                        ")",
+                        " compared to the current version",
                       mod.item,
                       mod.version
                     )

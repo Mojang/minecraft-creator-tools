@@ -75,7 +75,7 @@ export default interface MinecraftBehaviorFloatTempt {
    * If true, the mob can stop being tempted if the player moves too
    * fast while close to this mob.
    */
-  can_get_scared: boolean;
+  can_get_scared?: boolean;
 
   /**
    * @remarks
@@ -86,14 +86,14 @@ export default interface MinecraftBehaviorFloatTempt {
    * Happy Ghast: true
    *
    */
-  can_tempt_vertically: boolean;
+  can_tempt_vertically?: boolean;
 
   /**
    * @remarks
    * If true, the mob can be tempted even if it has a passenger (i.e.
    * if being ridden).
    */
-  can_tempt_while_ridden: boolean;
+  can_tempt_while_ridden?: boolean;
 
   /**
    * @remarks
@@ -103,7 +103,7 @@ export default interface MinecraftBehaviorFloatTempt {
    * Happy Ghast: ["minecraft:snowball","minecraft:black_harness","minecraft:blue_harness","minecraft:brown_harness","minecraft:cyan_harness","minecraft:gray_harness","minecraft:green_harness","minecraft:light_blue_harness","minecraft:light_gray_harness","minecraft:lime_harness","minecraft:magenta_harness","minecraft:orange_harness","minecraft:pink_harness","minecraft:purple_harness","minecraft:red_harness","minecraft:white_harness","minecraft:yellow_harness"], ["minecraft:snowball"]
    *
    */
-  items: string[];
+  items?: string[];
 
   /**
    * @remarks
@@ -112,7 +112,7 @@ export default interface MinecraftBehaviorFloatTempt {
    * Happy Ghast: {"event":"minecraft:on_stop_tempting"}
    *
    */
-  on_tempt_end: jsoncommon.MinecraftEventTrigger;
+  on_tempt_end?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -124,19 +124,19 @@ export default interface MinecraftBehaviorFloatTempt {
    * Happy Ghast: 4, 5
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * Range of random ticks to wait between tempt sounds.
    */
-  sound_interval: number[];
+  sound_interval?: number[];
 
   /**
    * @remarks
    * Movement speed multiplier of the mob when using this AI Goal
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -147,13 +147,13 @@ export default interface MinecraftBehaviorFloatTempt {
    * Happy Ghast: 7
    *
    */
-  stop_distance: number;
+  stop_distance?: number;
 
   /**
    * @remarks
    * Sound to play while the mob is being tempted.
    */
-  tempt_sound: string;
+  tempt_sound?: string;
 
   /**
    * @remarks
@@ -164,6 +164,6 @@ export default interface MinecraftBehaviorFloatTempt {
    * Happy Ghast: 16
    *
    */
-  within_radius: number;
+  within_radius?: number;
 
 }

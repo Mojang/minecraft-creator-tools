@@ -23,30 +23,30 @@ export default interface MinecraftTransformation {
    * @remarks
    * The block's rotation in increments of 90 degrees
    */
-  rotation: string[];
+  rotation?: string[];
 
   /**
    * @remarks
    * The point to apply rotation around
    */
-  rotation_pivot: number[];
+  rotation_pivot?: number[];
 
   /**
    * @remarks
    * The block's scale
    */
-  scale: number[];
+  scale?: number[];
 
   /**
    * @remarks
    * The point to apply scale around
    */
-  scale_pivot: number[];
+  scale_pivot?: number[];
 
   /**
    * @remarks
    * The block's translation
    */
-  translation: number[];
+  translation?: number[];
 
 }

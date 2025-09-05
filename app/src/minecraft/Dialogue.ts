@@ -45,11 +45,13 @@ export default class Dialogue {
     if (file.manager !== undefined && file.manager instanceof Dialogue) {
       dia = file.manager as Dialogue;
 
-      if (!dia.isLoaded && loadHandler) {
-        dia.onLoaded.subscribe(loadHandler);
-      }
+      if (!dia.isLoaded) {
+        if (loadHandler) {
+          dia.onLoaded.subscribe(loadHandler);
+        }
 
-      await dia.load();
+        await dia.load();
+      }
     }
 
     return dia;
@@ -107,7 +109,9 @@ export default class Dialogue {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

@@ -1241,7 +1241,9 @@ async function setAndDisplayAllWorlds() {
                 FolderContext.unknown
               );
 
-              await pi.ensureFolderStorage();
+              if (!pi.isContentLoaded) {
+                await pi.loadContent();
+              }
 
               await setAndDisplayWorld(pi, true);
             }

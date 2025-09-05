@@ -106,11 +106,13 @@ export default class FeatureRuleDefinition implements IDefinition {
     if (file.manager !== undefined && file.manager instanceof FeatureRuleDefinition) {
       fd = file.manager as FeatureRuleDefinition;
 
-      if (!fd.isLoaded && loadHandler) {
-        fd.onLoaded.subscribe(loadHandler);
-      }
+      if (!fd.isLoaded) {
+        if (loadHandler) {
+          fd.onLoaded.subscribe(loadHandler);
+        }
 
-      await fd.load();
+        await fd.load();
+      }
     }
 
     return fd;
@@ -131,7 +133,9 @@ export default class FeatureRuleDefinition implements IDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

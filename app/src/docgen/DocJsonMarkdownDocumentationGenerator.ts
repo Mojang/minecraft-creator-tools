@@ -117,7 +117,7 @@ export default class DocJsonMarkdownDocumentationGenerator {
       )
     );
 
-    docLines.push("# " + category + "\r\n");
+    docLines.push("# " + category + "\n");
 
     for (const docNodePath of docNodePaths) {
       const docNode = await LegacyDocumentationDefinition.loadNode(docCatalogName, docNodePath, true);
@@ -133,7 +133,7 @@ export default class DocJsonMarkdownDocumentationGenerator {
             if (childNode.examples) {
               for (const example of childNode.examples) {
                 if (example.name && example.text) {
-                  docLines.push("\r\n### " + example.name);
+                  docLines.push("\n### " + example.name);
                   docLines.push(...example.text);
                 }
               }
@@ -145,7 +145,7 @@ export default class DocJsonMarkdownDocumentationGenerator {
       }
     }
 
-    targetFile.setContent(docLines.join("\r\n"));
+    targetFile.setContent(docLines.join("\n"));
     await targetFile.saveContent();
   }
 
@@ -157,11 +157,21 @@ export default class DocJsonMarkdownDocumentationGenerator {
         descrip += ".";
       }
 
-      content.push(descrip + "\r\n");
+      content.push(descrip + "\n");
+    }
+
+    if (form.technicalDescription) {
+      let techDescrip = form.technicalDescription.trim();
+
+      if (techDescrip.length > 10 && !techDescrip.endsWith(".")) {
+        techDescrip += ".";
+      }
+
+      content.push(techDescrip + "\n");
     }
 
     const subContent: string[] = [];
-    content.push("\r\n## Properties\r\n");
+    content.push("\n## Properties\n");
 
     content.push("|Name       |Default Value |Type |Description |Example Values |");
     content.push("|:----------|:-------------|:----|:-----------|:------------- |");
@@ -185,10 +195,14 @@ export default class DocJsonMarkdownDocumentationGenerator {
         fieldRow += field.description;
       }
 
+      if (field.technicalDescription) {
+        fieldRow += field.technicalDescription;
+      }
+
       fieldRow += " | ";
 
       if (field.subForm && field.subForm.fields.length > 0) {
-        subContent.push("\r\n### Sub item: " + field.id + "\r\n");
+        subContent.push("\n### Sub item: " + field.id + "\n");
 
         this.appendForm(field.subForm, subContent);
       }
@@ -262,12 +276,12 @@ export default class DocJsonMarkdownDocumentationGenerator {
       )
     );
 
-    content.push("# " + category + " Documentation - " + canonName + "\r\n");
+    content.push("# " + category + " Documentation - " + canonName + "\n");
 
     this.appendForm(form, content);
 
     if (form.samples) {
-      content.push("\r\n## Samples\r\n");
+      content.push("\n## Samples\n");
       let samplesAdded = 0;
       for (const samplePath in form.samples) {
         let sampleArr = form.samples[samplePath];
@@ -286,19 +300,19 @@ export default class DocJsonMarkdownDocumentationGenerator {
           );
           for (const sample of sampleArr) {
             if (sampleArr.length > 1) {
-              content.push("\r\nAt " + sample.path + ": ");
+              content.push("\nAt " + sample.path + ": ");
             }
             if (typeof sample.content === "object" || Array.isArray(sample.content)) {
-              content.push("\r\n```json\r\n" + JSON.stringify(sample.content, undefined, 2) + "\r\n```\r\n");
+              content.push("\n```json\n" + JSON.stringify(sample.content, undefined, 2) + "\n```\n");
             } else {
-              content.push("\r\n`" + sample.content + "`\r\n");
+              content.push("\n`" + sample.content + "`\n");
             }
           }
         }
       }
     }
 
-    markdownFile.setContent(content.join("\r\n"));
+    markdownFile.setContent(content.join("\n"));
 
     await markdownFile.saveContent();
   }
@@ -325,7 +339,9 @@ export default class DocJsonMarkdownDocumentationGenerator {
     inputFolder: IFolder,
     outputFolder: IFolder
   ) {
-    await inputFolder.load();
+    if (!inputFolder.isLoaded) {
+      await inputFolder.load();
+    }
 
     const fileList: IIndexJson = { files: [], folders: [] };
 

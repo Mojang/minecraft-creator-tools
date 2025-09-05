@@ -71,6 +71,6 @@ export default interface MinecraftInsideBlockNotifier {
    *
    *
    */
-  block_list: string[];
+  block_list?: string[];
 
 }

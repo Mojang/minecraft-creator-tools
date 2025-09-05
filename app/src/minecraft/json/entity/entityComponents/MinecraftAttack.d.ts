@@ -130,7 +130,7 @@ export default interface MinecraftAttack {
    * Bogged: 3
    *
    */
-  damage: number[];
+  damage?: number[];
 
   /**
    * @remarks
@@ -143,7 +143,7 @@ export default interface MinecraftAttack {
    * Cave Spider: 7, 15
    *
    */
-  effect_duration: number;
+  effect_duration?: number;
 
   /**
    * @remarks
@@ -158,6 +158,6 @@ export default interface MinecraftAttack {
    * Stray: "slowness"
    *
    */
-  effect_name: string;
+  effect_name?: string;
 
 }

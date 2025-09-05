@@ -37,7 +37,7 @@ export default interface MinecraftBehaviorStayNearNoteblock {
    * Sets the time an entity should stay near a noteblock after hearing
    * it.
    */
-  listen_time: number;
+  listen_time?: number;
 
   /**
    * @remarks
@@ -49,7 +49,7 @@ export default interface MinecraftBehaviorStayNearNoteblock {
    * Allay: 5
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -59,7 +59,7 @@ export default interface MinecraftBehaviorStayNearNoteblock {
    * Allay: 8
    *
    */
-  speed: number;
+  speed?: number;
 
   /**
    * @remarks
@@ -70,7 +70,7 @@ export default interface MinecraftBehaviorStayNearNoteblock {
    * Allay: 16
    *
    */
-  start_distance: number;
+  start_distance?: number;
 
   /**
    * @remarks
@@ -81,6 +81,6 @@ export default interface MinecraftBehaviorStayNearNoteblock {
    * Allay: 4
    *
    */
-  stop_distance: number;
+  stop_distance?: number;
 
 }

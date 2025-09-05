@@ -11,85 +11,52 @@ const textReplaceStream = require("./tools/gulp-textReplaceStream");
 const textReplace = require("./tools/gulp-textReplace");
 const gulpWebpack = require("webpack-stream");
 
-const jsnbuildfilesigs = [
+const jsncorebuildfilesigs = [
   "src/**/*.ts",
   "!src/vscode/*.ts",
   "!src/UX/*.ts",
   "!src/UXex/*.ts",
-  "!out/**/*",
-  "!debugoutput/**/*",
-  "!build/**/*",
-  "!toolbuild/**/*",
-  "!scriptlibs/**/*",
-  "!test/results/**/*",
-  "!test/scenarios/**/*",
-  "!dist/**/*",
-  "!res/**/*",
+  "!src/test/**/*",
+  "!src/testweb/**/*",
   "!src/monaco/*.ts",
   "!src/setupTests.ts",
   "!src/worldux/*.ts",
   "!src/vscodeweb/*.ts",
   "!src/babylon/*.ts",
-  "!node_modules/@types/leaflet/*.ts",
-  "!node_modules/babylonjs/*.ts",
 ];
 
 const vsccorebuildfilesigs = [
   "src/**/*.ts",
   "!src/UX/*.ts",
   "!src/UXex/*.ts",
-  "!out/**/*",
-  "!build/**/*",
-  "!toolbuild/**/*",
-  "!scriptlibs/**/*",
-  "!test/results/**/*",
-  "!test/scenarios/**/*",
-  "!dist/**/*",
-  "!res/**/*",
+  "!src/test/**/*",
+  "!src/testweb/**/*",
   "!src/vscodeweb/*.ts",
   "!src/monaco/*.ts",
   "!src/setupTests.ts",
   "!src/worldux/*.ts",
   "!src/local/*.ts",
   "!src/babylon/*.ts",
-  "!node_modules/@types/leaflet/*.ts",
-  "!node_modules/babylonjs/*.ts",
 ];
 
 const vscwebbuildfilesigs = [
   "src/**/*.ts",
   "!src/monaco/*.ts",
   "!src/vscode/*.ts",
-  "!out/**/*",
-  "!build/**/*",
-  "!toolbuild/**/*",
-  "!scriptlibs/**/*",
-  "!test/results/**/*",
-  "!test/scenarios/**/*",
-  "!dist/**/*",
-  "!res/**/*",
+  "!src/test/**/*",
+  "!src/testweb/**/*",
   "!src/setupTests.ts",
   "!src/local/*.ts",
-  "!node_modules/@types/leaflet/*.ts",
-  "!node_modules/babylonjs/*.ts",
 ];
 
 const jsnwebbuildfilesigs = [
   "src/**/*.ts",
   "!src/vscode/*.ts",
   "!src/vscodeweb/*.ts",
-  "!out/**/*",
-  "!build/**/*",
-  "!toolbuild/**/*",
-  "!scriptlibs/**/*",
-  "!test/results/**/*",
-  "!test/scenarios/**/*",
-  "!dist/**/*",
-  "!res/**/*",
+  "!src/test/**/*",
+  "!src/testweb/**/*",
   "!src/setupTests.ts",
   "!src/local/*.ts",
-  "!node_modules/@types/leaflet/*.ts",
-  "!node_modules/babylonjs/*.ts",
 ];
 
 const mcbuildsigs = ["app/actionset/*.js", "app/tools/*.js"];
@@ -165,14 +132,14 @@ function compileJsNodeBuild() {
     target: "es2022",
     outDir: "jsn",
     moduleResolution: "node",
-    skipLibCheck: true,
     sourceMap: true,
+    skipLibCheck: true,
     allowSyntheticDefaultImports: true,
     noImplicitAny: true,
   });
 
   return gulp
-    .src(jsnbuildfilesigs, { base: "" })
+    .src(jsncorebuildfilesigs, { base: "" })
     .pipe(sourcemaps.init())
     .pipe(tsProject())
     .pipe(
@@ -236,6 +203,10 @@ function copyJsNodeData() {
   return gulp
     .src(["public/data/**/*.ogg", "public/data/**/*.png", "public/data/**/*.json", "public/data/**/*.mcworld"])
     .pipe(gulp.dest("toolbuild/jsn/data/"));
+}
+
+function copyJsNodeDist() {
+  return gulp.src(["public/dist/**/*"]).pipe(gulp.dest("toolbuild/jsn/dist/"));
 }
 
 function copyMonacoNpmDist() {
@@ -343,7 +314,7 @@ gulp.task(
 
 gulp.task("jsncorebuild", gulp.series(compileJsNodeBuild));
 
-gulp.task("copyjsnodedata", gulp.series(copyJsNodeData));
+gulp.task("copyjsnodedata", gulp.parallel(copyJsNodeData, copyJsNodeDist));
 
 gulp.task(
   "vsccorebuild",
@@ -400,7 +371,7 @@ function compileWebJsBuild() {
   });
 
   return gulp
-    .src(jsnbuildfilesigs, { base: "" })
+    .src(jsnwebbuildfilesigs, { base: "" })
     .pipe(sourcemaps.init())
     .pipe(tsProject())
     .pipe(
@@ -461,6 +432,7 @@ function runUpdateVersions() {
         "./package.json",
         "./package-lock.json",
         "./jsnode/package.json",
+        "./vscode/package.json",
         "./src/core/Constants.ts",
       ])
     );
@@ -534,7 +506,7 @@ gulp.task("npmdepends", gulp.parallel(copyMonacoNpmDist, copyMonacoMapsNpmDist, 
 gulp.task("default", gulp.parallel("jsnbuild", "vscbuild"));
 
 gulp.task("watch", function () {
-  gulp.watch(jsnbuildfilesigs, gulp.series("jsnbuild"));
+  gulp.watch(jsncorebuildfilesigs, gulp.series("jsnbuild"));
 });
 
 gulp.task(

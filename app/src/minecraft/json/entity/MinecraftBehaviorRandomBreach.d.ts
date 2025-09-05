@@ -39,7 +39,7 @@ export default interface MinecraftBehaviorRandomBreach {
    * Dolphin: 2
    *
    */
-  cooldown_time: number;
+  cooldown_time?: number;
 
   /**
    * @remarks
@@ -50,7 +50,7 @@ export default interface MinecraftBehaviorRandomBreach {
    * Dolphin: 50
    *
    */
-  interval: number;
+  interval?: number;
 
   /**
    * @remarks
@@ -62,13 +62,13 @@ export default interface MinecraftBehaviorRandomBreach {
    * Dolphin: 6
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * Movement speed multiplier of the mob when using this AI Goal
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -79,13 +79,13 @@ export default interface MinecraftBehaviorRandomBreach {
    * Dolphin: 6
    *
    */
-  xz_dist: number;
+  xz_dist?: number;
 
   /**
    * @remarks
    * Distance in blocks that the mob will look up or down for a new
    * spot to move to. Must be at least 1
    */
-  y_dist: number;
+  y_dist?: number;
 
 }

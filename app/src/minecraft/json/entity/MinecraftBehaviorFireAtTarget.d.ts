@@ -67,7 +67,7 @@ export default interface MinecraftBehaviorFireAtTarget {
    * Breeze: 0.5
    *
    */
-  attack_cooldown: number;
+  attack_cooldown?: number;
 
   /**
    * @remarks
@@ -78,7 +78,7 @@ export default interface MinecraftBehaviorFireAtTarget {
    * Breeze: [0,16]
    *
    */
-  attack_range: number[];
+  attack_range?: number[];
 
   /**
    * @remarks
@@ -88,21 +88,21 @@ export default interface MinecraftBehaviorFireAtTarget {
    * Breeze: {"all_of":[{"test":"is_navigating","value":false}]}
    *
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
    * Maximum head rotation (in degrees), on the X-axis, that this
    * entity can apply while trying to look at the target.
    */
-  max_head_rotation_x: number;
+  max_head_rotation_x?: number;
 
   /**
    * @remarks
    * Maximum head rotation (in degrees), on the Y-axis, that this
    * entity can apply while trying to look at the target.
    */
-  max_head_rotation_y: number;
+  max_head_rotation_y?: number;
 
   /**
    * @remarks
@@ -112,7 +112,7 @@ export default interface MinecraftBehaviorFireAtTarget {
    * Breeze: 2
    *
    */
-  owner_anchor: number;
+  owner_anchor?: number;
 
   /**
    * @remarks
@@ -122,7 +122,7 @@ export default interface MinecraftBehaviorFireAtTarget {
    * Breeze: [0,0.3,0]
    *
    */
-  owner_offset: number[];
+  owner_offset?: number[];
 
   /**
    * @remarks
@@ -133,7 +133,7 @@ export default interface MinecraftBehaviorFireAtTarget {
    * Breeze: 0.2
    *
    */
-  post_shoot_delay: number;
+  post_shoot_delay?: number;
 
   /**
    * @remarks
@@ -143,7 +143,7 @@ export default interface MinecraftBehaviorFireAtTarget {
    * Breeze: 0.75
    *
    */
-  pre_shoot_delay: number;
+  pre_shoot_delay?: number;
 
   /**
    * @remarks
@@ -155,7 +155,7 @@ export default interface MinecraftBehaviorFireAtTarget {
    * Breeze: 2
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -167,7 +167,7 @@ export default interface MinecraftBehaviorFireAtTarget {
    * Breeze: "minecraft:breeze_wind_charge_projectile"
    *
    */
-  projectile_def: string;
+  projectile_def?: string;
 
   /**
    * @remarks
@@ -178,13 +178,13 @@ export default interface MinecraftBehaviorFireAtTarget {
    * Breeze: 90
    *
    */
-  ranged_fov: number;
+  ranged_fov?: number;
 
   /**
    * @remarks
    * Entity anchor for projectile target.
    */
-  target_anchor: number;
+  target_anchor?: number;
 
   /**
    * @remarks
@@ -194,6 +194,6 @@ export default interface MinecraftBehaviorFireAtTarget {
    * Breeze: [0,0.5,0]
    *
    */
-  target_offset: number[];
+  target_offset?: number[];
 
 }

@@ -121,7 +121,7 @@ export default interface MinecraftBehaviorSneeze {
    * Panda: 1
    *
    */
-  cooldown_time: number;
+  cooldown_time?: number;
 
   /**
    * @remarks
@@ -132,7 +132,7 @@ export default interface MinecraftBehaviorSneeze {
    * Panda: 0.001
    *
    */
-  drop_item_chance: number;
+  drop_item_chance?: number;
 
   /**
    * @remarks
@@ -143,80 +143,52 @@ export default interface MinecraftBehaviorSneeze {
    * Panda: [{"filters":{"all_of":[{"test":"has_component","subject":"other","operator":"!=","value":"minecraft:is_baby"},{"test":"is_family","subject":"other","value":"panda"},{"test":"in_water","subject":"other","operator":"!=","value":true},{"test":"on_ground","operator":"==","value":true}]},"max_dist":10}]
    *
    */
-  entity_types: MinecraftBehaviorSneezeEntityTypes[];
+  entity_types?: MinecraftBehaviorSneezeEntityTypes[];
 
   /**
    * @remarks
    * Loot table to select dropped items from.
-   * 
-   * Sample Values:
-   * Panda: "loot_tables/entities/panda_sneeze.json"
-   *
    */
-  loot_table: string;
+  loot_table?: string;
 
   /**
    * @remarks
    * Sound to play when the sneeze is about to happen.
-   * 
-   * Sample Values:
-   * Panda: "presneeze"
-   *
    */
-  prepare_sound: string;
+  prepare_sound?: string;
 
   /**
    * @remarks
    * The time in seconds that the mob takes to prepare to sneeze (while
    * the prepare_sound is playing).
-   * 
-   * Sample Values:
-   * Panda: 1
-   *
    */
-  prepare_time: number;
+  prepare_time?: number;
 
   /**
    * @remarks
    * As priority approaches 0, the priority is increased. The higher the
    * priority, the sooner this behavior will be executed as a 
    * goal.
-   * 
-   * Sample Values:
-   * Panda: 7
-   *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * The probability of sneezing. A value of 1.00 is 100%
-   * 
-   * Sample Values:
-   * Panda: 0.0001666, 0.002
-   *
    */
-  probability: number;
+  probability?: number;
 
   /**
    * @remarks
    * Sound to play when the sneeze occurs.
-   * 
-   * Sample Values:
-   * Panda: "sneeze"
-   *
    */
-  sound: string;
+  sound?: string;
 
   /**
    * @remarks
    * Distance in blocks that mobs will be startled.
-   * 
-   * Sample Values:
-   * Panda: 10
-   *
    */
-  within_radius: number;
+  within_radius?: number;
 
 }
 
@@ -232,25 +204,25 @@ export interface MinecraftBehaviorSneezeEntityTypes {
    * The amount of time in seconds that the mob has to wait before
    * selecting a target of the same type again
    */
-  cooldown: number;
+  cooldown?: number;
 
   /**
    * @remarks
    * Conditions that make this entry in the list valid
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
    * Maximum distance this mob can be away to be a valid choice
    */
-  max_dist: number;
+  max_dist?: number;
 
   /**
    * @remarks
    * If true, the mob has to be visible to be a valid choice
    */
-  must_see: boolean;
+  must_see?: boolean;
 
   /**
    * @remarks
@@ -258,27 +230,27 @@ export interface MinecraftBehaviorSneezeEntityTypes {
    * for a target before forgetting about it and looking for a new
    * one when the target isn't visible any more
    */
-  must_see_forget_duration: number;
+  must_see_forget_duration?: number;
 
   /**
    * @remarks
    * If true, the mob will stop being targeted if it stops meeting any
    * conditions.
    */
-  reevaluate_description: boolean;
+  reevaluate_description?: boolean;
 
   /**
    * @remarks
    * Multiplier for the running speed. A value of 1.0 means the speed
    * is unchanged
    */
-  sprint_speed_multiplier: number;
+  sprint_speed_multiplier?: number;
 
   /**
    * @remarks
    * Multiplier for the walking speed. A value of 1.0 means the speed
    * is unchanged
    */
-  walk_speed_multiplier: number;
+  walk_speed_multiplier?: number;
 
 }

@@ -47,7 +47,9 @@ export default class NewItemType extends Component<INewItemTypeProps, INewItemTy
 
     const itemsFolder = Database.releaseVanillaBehaviorPackFolder.ensureFolder("items");
 
-    await itemsFolder.load();
+    if (!itemsFolder.isLoaded) {
+      await itemsFolder.load();
+    }
 
     this.setState({
       entitiesFolder: itemsFolder,

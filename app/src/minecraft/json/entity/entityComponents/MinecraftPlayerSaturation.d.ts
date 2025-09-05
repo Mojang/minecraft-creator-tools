@@ -36,7 +36,7 @@ export default interface MinecraftPlayerSaturation {
    * Player: 20
    *
    */
-  max: number;
+  max?: number;
 
   /**
    * @remarks
@@ -46,6 +46,6 @@ export default interface MinecraftPlayerSaturation {
    * Player: 5
    *
    */
-  value: number;
+  value?: number;
 
 }

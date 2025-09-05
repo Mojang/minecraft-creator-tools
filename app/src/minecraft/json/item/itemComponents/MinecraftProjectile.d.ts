@@ -10,11 +10,6 @@
  * Items Documentation - minecraft:projectile
  * 
  * minecraft:projectile Samples
-"minecraft:projectile": {
-  "minimum_critical_power": 1.25,
-  "projectile_entity": "arrow"
-}
-
 
 Wind Charge - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/wind_charge.json
 
@@ -35,12 +30,8 @@ My Sword Chuck - https://github.com/microsoft/minecraft-samples/tree/main/custom
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Projectile Item (minecraft:projectile)
- * Compels the item to shoot, similarly to an arrow. Items with
- * minecraft:projectile can be shot from dispensers or used as
- * ammunition for items with the minecraft:shooter item component.
- * Additionally, this component sets the entity that is spawned for
- * items that also contain the minecraft:throwable component.
+ * Item Projectile (minecraft:projectile)
+ * Projectile items shoot out, like an arrow.
  */
 export default interface MinecraftProjectile {
 
@@ -54,7 +45,7 @@ export default interface MinecraftProjectile {
    *
    *
    */
-  minimum_critical_power: number;
+  minimum_critical_power?: number;
 
   /**
    * @remarks
@@ -67,6 +58,6 @@ export default interface MinecraftProjectile {
    *
    *
    */
-  projectile_entity: string;
+  projectile_entity: object;
 
 }

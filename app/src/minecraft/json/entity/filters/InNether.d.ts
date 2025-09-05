@@ -53,7 +53,7 @@ export default interface InNether {
    * Hoglin: "=="
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
@@ -63,7 +63,7 @@ export default interface InNether {
    * Hoglin: "self"
    *
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -72,7 +72,7 @@ export default interface InNether {
    * Hoglin: "in_nether"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -83,7 +83,7 @@ export default interface InNether {
    *
    *
    */
-  value: boolean;
+  value?: boolean;
 
 }
 

@@ -58,13 +58,13 @@ export default interface MinecraftBehaviorDefendVillageTarget {
    * Iron Golem: 0.05
    *
    */
-  attack_chance: number;
+  attack_chance?: number;
 
   /**
    * @remarks
    * If true, this entity can attack its owner.
    */
-  attack_owner: boolean;
+  attack_owner?: boolean;
 
   /**
    * @remarks
@@ -74,7 +74,7 @@ export default interface MinecraftBehaviorDefendVillageTarget {
    * Iron Golem: {"filters":{"any_of":[{"test":"is_family","subject":"other","value":"mob"},{"test":"is_family","subject":"other","value":"player"}]}}
    *
    */
-  entity_types: jsoncommon.MinecraftFilter;
+  entity_types?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -84,28 +84,28 @@ export default interface MinecraftBehaviorDefendVillageTarget {
    * Iron Golem: true
    *
    */
-  must_reach: boolean;
+  must_reach?: boolean;
 
   /**
    * @remarks
    * Determines if target-validity requires this entity to be in
    * range only, or both in range and in sight.
    */
-  must_see: boolean;
+  must_see?: boolean;
 
   /**
    * @remarks
    * Time (in seconds) the target must not be seen by this entity to
    * become invalid. Used only if "must_see" is true.
    */
-  must_see_forget_duration: number;
+  must_see_forget_duration?: number;
 
   /**
    * @remarks
    * Time (in seconds) this entity can continue attacking the target
    * after the target is no longer valid.
    */
-  persist_time: number;
+  persist_time?: number;
 
   /**
    * @remarks
@@ -117,7 +117,7 @@ export default interface MinecraftBehaviorDefendVillageTarget {
    * Iron Golem: 1
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -126,6 +126,6 @@ export default interface MinecraftBehaviorDefendVillageTarget {
    * only used if the entity doesn't declare 
    * "minecraft:follow_range".
    */
-  within_radius: number;
+  within_radius?: number;
 
 }

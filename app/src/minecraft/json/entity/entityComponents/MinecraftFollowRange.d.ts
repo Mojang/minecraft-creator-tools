@@ -113,7 +113,7 @@ export default interface MinecraftFollowRange {
    * Elder Guardian: 16
    *
    */
-  max: number;
+  max?: number;
 
   /**
    * @remarks
@@ -129,6 +129,6 @@ export default interface MinecraftFollowRange {
    * Breeze: 32
    *
    */
-  value: number;
+  value?: number;
 
 }

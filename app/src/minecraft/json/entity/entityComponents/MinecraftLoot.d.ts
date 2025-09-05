@@ -120,6 +120,6 @@ export default interface MinecraftLoot {
    * Boat: "loot_tables/entities/boat.json"
    *
    */
-  table: string;
+  table?: string;
 
 }

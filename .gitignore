@@ -24,6 +24,9 @@ debugoutput
 
 # testing
 /coverage
+/test-results/
+/playwright-report/
+/playwright/.cache/
 
 # production
 app/build
@@ -39,6 +42,7 @@ out/
 results/
 dist/
 mci/
+mch/
 /app/forge.config.js
 .vscode-test-web/
 node_modules/

@@ -13,7 +13,7 @@ import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition"
 import NpmPackageDefinition from "../devproject/NpmPackageDefinition";
 import ResourceManifestDefinition from "../minecraft/ResourceManifestDefinition";
 import ISnippet from "./ISnippet";
-import IGalleryItem, { GalleryItemType } from "./IGalleryItem";
+import IGalleryItem from "./IGalleryItem";
 import IFolder from "../storage/IFolder";
 import ProjectItemUtilities from "./ProjectItemUtilities";
 import { PackType } from "../minecraft/Pack";
@@ -60,7 +60,9 @@ export default class ProjectUtilities {
     const defaultScriptFile = await project.getDefaultScriptsFile();
 
     if (defaultScriptFile) {
-      await defaultScriptFile.loadContent();
+      if (!defaultScriptFile.isContentLoaded) {
+        await defaultScriptFile.loadContent();
+      }
 
       if (typeof defaultScriptFile.content === "string" && defaultScriptFile.content.length > 0) {
         if (defaultScriptFile.content.indexOf(signatureToken) < 0) {
@@ -185,7 +187,7 @@ export default class ProjectUtilities {
 
   static async isVibrantVisualsCompatible(project: Project) {
     for (const item of project.items) {
-      await item.ensureFileStorage();
+      await item.loadFileContent();
 
       if (item.primaryFile) {
         const manifestJson = await ResourceManifestDefinition.ensureOnFile(item.primaryFile);
@@ -223,7 +225,7 @@ export default class ProjectUtilities {
         ProjectItemStorageType.singleFile
       );
 
-      let file = await pi.ensureFileStorage();
+      let file = await pi.loadFileContent();
 
       if (file !== null) {
         let content = "";
@@ -255,7 +257,7 @@ export default class ProjectUtilities {
         ProjectItemStorageType.singleFile
       );
 
-      file = await pi.ensureFileStorage();
+      file = await pi.loadFileContent();
 
       if (file !== null) {
         const result = ProjectContent.generateDefaultStructure();
@@ -268,39 +270,32 @@ export default class ProjectUtilities {
   }
 
   static hasEntities(project: Project) {
-    const projectItems = project.getItemsCopy();
+    const projectItems = project.getItemsByType(ProjectItemType.entityTypeBehavior);
+    if (projectItems.length > 0) {
+      return true;
+    }
 
-    for (const projectItem of projectItems) {
-      if (
-        projectItem.itemType === ProjectItemType.entityTypeBehavior ||
-        projectItem.itemType === ProjectItemType.entityTypeResource
-      ) {
-        return true;
-      }
+    const projectItemsResource = project.getItemsByType(ProjectItemType.entityTypeResource);
+    if (projectItemsResource.length > 0) {
+      return true;
     }
 
     return false;
   }
 
   static hasBlocks(project: Project) {
-    const projectItems = project.getItemsCopy();
-
-    for (const projectItem of projectItems) {
-      if (projectItem.itemType === ProjectItemType.blockTypeBehavior) {
-        return true;
-      }
+    const projectItems = project.getItemsByType(ProjectItemType.blockTypeBehavior);
+    if (projectItems.length > 0) {
+      return true;
     }
 
     return false;
   }
 
   static hasItems(project: Project) {
-    const projectItems = project.getItemsCopy();
-
-    for (const projectItem of projectItems) {
-      if (projectItem.itemType === ProjectItemType.itemTypeBehavior) {
-        return true;
-      }
+    const projectItems = project.getItemsByType(ProjectItemType.itemTypeBehavior);
+    if (projectItems.length > 0) {
+      return true;
     }
 
     return false;
@@ -383,7 +378,7 @@ export default class ProjectUtilities {
 
       for (const projectItem of itemsCopy) {
         if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
-          await projectItem.ensureFileStorage();
+          await projectItem.loadFileContent();
 
           if (projectItem.primaryFile) {
             const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.primaryFile);
@@ -413,7 +408,7 @@ export default class ProjectUtilities {
 
       for (const projectItem of itemsCopy) {
         if (projectItem.itemType === ProjectItemType.packageJson) {
-          await projectItem.ensureFileStorage();
+          await projectItem.loadFileContent();
 
           if (projectItem.primaryFile) {
             const npmPackageJson = await NpmPackageDefinition.ensureOnFile(projectItem.primaryFile);
@@ -425,7 +420,7 @@ export default class ProjectUtilities {
             }
           }
         } else if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
-          await projectItem.ensureFileStorage();
+          await projectItem.loadFileContent();
 
           if (projectItem.primaryFile) {
             const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.primaryFile);
@@ -443,7 +438,7 @@ export default class ProjectUtilities {
             }
           }
         } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
-          await projectItem.ensureFileStorage();
+          await projectItem.loadFileContent();
 
           if (projectItem.primaryFile) {
             const manifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.primaryFile);
@@ -514,7 +509,7 @@ export default class ProjectUtilities {
             await npmPackageJson.save();
           }
         } else if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
-          await projectItem.ensureFileStorage();
+          await projectItem.loadFileContent();
 
           if (projectItem.primaryFile) {
             const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.primaryFile);
@@ -532,7 +527,7 @@ export default class ProjectUtilities {
             }
           }
         } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
-          await projectItem.ensureFileStorage();
+          await projectItem.loadFileContent();
 
           if (projectItem.primaryFile) {
             const manifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.primaryFile);
@@ -572,7 +567,7 @@ export default class ProjectUtilities {
 
       for (const projectItem of itemsCopy) {
         if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
-          await projectItem.ensureFileStorage();
+          await projectItem.loadFileContent();
 
           if (projectItem.primaryFile) {
             const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.primaryFile);
@@ -614,7 +609,7 @@ export default class ProjectUtilities {
 
       for (const projectItem of itemsCopy) {
         if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
-          await projectItem.ensureFileStorage();
+          await projectItem.loadFileContent();
 
           if (projectItem.primaryFile) {
             const manifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.primaryFile);
@@ -702,6 +697,7 @@ export default class ProjectUtilities {
 
     return scriptsFolder.getFolderRelativePath(project.projectFolder);
   }
+
   static async renameDefaultFolders(project: Project, newTokenName: string) {
     const bpFolder = await project.getDefaultBehaviorPackFolder(true);
     const rpFolder = await project.getDefaultResourcePackFolder(true);
@@ -711,16 +707,18 @@ export default class ProjectUtilities {
     if (bpFolder) {
       try {
         await bpFolder.rename(newTokenName);
-      } catch (e) {
+      } catch (e: any) {
         // perhaps folder could not be renamed because a folder exists; continue in this case.
+        Log.error(e.toString());
       }
     }
 
     if (rpFolder) {
       try {
         await rpFolder.rename(newTokenName);
-      } catch (e) {
+      } catch (e: any) {
         // perhaps folder could not be renamed because a folder exists; continue in this case.
+        Log.error(e.toString());
       }
     }
   }
@@ -1124,7 +1122,9 @@ export default class ProjectUtilities {
     );
 
     if (blockTypeItem) {
-      await blockTypeItem.ensureStorage();
+      if (!blockTypeItem.isContentLoaded) {
+        await blockTypeItem.loadContent();
+      }
 
       if (blockTypeItem.primaryFile) {
         const blockType = await BlockTypeDefinition.ensureOnFile(blockTypeItem.primaryFile);
@@ -1184,7 +1184,9 @@ export default class ProjectUtilities {
 
       const gh = new HttpStorage(url); //new GitHubStorage(carto.anonGitHub, gitHubRepoName, gitHubOwner, gitHubBranch, gitHubFolder);
 
-      await gh.rootFolder.load();
+      if (!gh.rootFolder.isLoaded) {
+        await gh.rootFolder.load();
+      }
 
       const bps = gh.rootFolder.folders["behavior_packs"];
       const rps = gh.rootFolder.folders["resource_packs"];
@@ -1194,8 +1196,13 @@ export default class ProjectUtilities {
         return newTypeName;
       }
 
-      await rps.load();
-      await bps.load();
+      if (!rps.isLoaded) {
+        await rps.load();
+      }
+
+      if (!bps.isLoaded) {
+        await bps.load();
+      }
 
       if (rps.folderCount < 1 || bps.folderCount < 1) {
         Log.unexpectedUndefined("AETFLY");
@@ -1221,11 +1228,8 @@ export default class ProjectUtilities {
       return newTypeName;
     }
 
-    let contentReplacements = ['"identifier"', '"materials"'];
-
-    if (galleryProject.type === GalleryItemType.itemType || galleryProject.type === GalleryItemType.blockType) {
-      contentReplacements = ['"materials"'];
-    }
+    // note: '"identifier"', was in this list for entity types, but was removed.
+    let contentReplacements = ['"materials"'];
 
     for (const filePath of files) {
       if (filePath.startsWith("/behavior_pack")) {
@@ -1263,7 +1267,9 @@ export default class ProjectUtilities {
           }
 
           if (update) {
-            await sourceFile.loadContent();
+            if (!sourceFile.isContentLoaded) {
+              await sourceFile.loadContent();
+            }
 
             let content = sourceFile.content;
 
@@ -1321,7 +1327,9 @@ export default class ProjectUtilities {
               }
             }
 
-            await sourceFile.loadContent();
+            if (!sourceFile.isContentLoaded) {
+              await sourceFile.loadContent();
+            }
 
             let content = sourceFile.content;
 
@@ -1361,19 +1369,23 @@ export default class ProjectUtilities {
     newName = newName.replace(/-/g, "_");
     newName = newName.replace(/ /g, "_");
 
-    for (const pathReplacer of pathReplacers) {
-      path = Utilities.replaceAll(path, "/" + pathReplacer + ".", "/" + newName + ".");
-      path = Utilities.replaceAll(path, "\\" + pathReplacer + ".", "\\" + newName + ".");
-      path = Utilities.replaceAll(path, "/" + pathReplacer + "/", "/" + newName + "/");
-      path = Utilities.replaceAll(path, "\\" + pathReplacer + "\\", "\\" + newName + "\\");
-      path = Utilities.replaceAll(path, "\\" + pathReplacer + "_", "\\" + newName + "_");
-      path = Utilities.replaceAll(path, "/" + pathReplacer + "_", "/" + newName + "_");
+    const tempName = Utilities.createRandomId(10);
 
-      path = Utilities.replaceAll(path, "/" + pathReplacer + "_ico.", "/" + newName + "_ico.");
-      path = Utilities.replaceAll(path, "\\" + pathReplacer + "_ico.", "\\" + newName + "_ico.");
-      path = Utilities.replaceAll(path, "/" + pathReplacer + "_ico/", "/" + newName + "_ico/");
-      path = Utilities.replaceAll(path, "\\" + pathReplacer + "_ico\\", "\\" + newName + "_ico\\");
+    for (const pathReplacer of pathReplacers) {
+      path = Utilities.replaceAll(path, "/" + pathReplacer + ".", "/" + tempName + ".");
+      path = Utilities.replaceAll(path, "\\" + pathReplacer + ".", "\\" + tempName + ".");
+      path = Utilities.replaceAll(path, "/" + pathReplacer + "/", "/" + tempName + "/");
+      path = Utilities.replaceAll(path, "\\" + pathReplacer + "\\", "\\" + tempName + "\\");
+      path = Utilities.replaceAll(path, "\\" + pathReplacer + "_", "\\" + tempName + "_");
+      path = Utilities.replaceAll(path, "/" + pathReplacer + "_", "/" + tempName + "_");
+
+      path = Utilities.replaceAll(path, "/" + pathReplacer + "_ico.", "/" + tempName + "_ico.");
+      path = Utilities.replaceAll(path, "\\" + pathReplacer + "_ico.", "\\" + tempName + "_ico.");
+      path = Utilities.replaceAll(path, "/" + pathReplacer + "_ico/", "/" + tempName + "_ico/");
+      path = Utilities.replaceAll(path, "\\" + pathReplacer + "_ico\\", "\\" + tempName + "_ico\\");
     }
+
+    path = Utilities.replaceAll(path, tempName, newName);
 
     return path;
   }
@@ -1409,32 +1421,40 @@ export default class ProjectUtilities {
     newName = newName.replace(/-/g, "_");
     newName = newName.replace(/ /g, "_");
 
+    const tempName = Utilities.createRandomLowerId(10);
+
     for (const replacer of replacers) {
       content = Utilities.replaceAll(
         content,
         "minecraft:" + replacer,
-        project.effectiveDefaultNamespace + ":" + newName
+        project.effectiveDefaultNamespace + ":" + tempName
       );
 
-      content = Utilities.replaceAll(content, "demo:" + replacer, project.effectiveDefaultNamespace + ":" + newName);
-      content = Utilities.replaceAll(content, "starter:" + replacer, project.effectiveDefaultNamespace + ":" + newName);
-      content = Utilities.replaceAll(content, "sample:" + replacer, project.effectiveDefaultNamespace + ":" + newName);
+      content = Utilities.replaceAll(content, "demo:" + replacer, project.effectiveDefaultNamespace + ":" + tempName);
+      content = Utilities.replaceAll(
+        content,
+        "starter:" + replacer,
+        project.effectiveDefaultNamespace + ":" + tempName
+      );
+      content = Utilities.replaceAll(content, "sample:" + replacer, project.effectiveDefaultNamespace + ":" + tempName);
 
-      content = Utilities.replaceAllExceptInLines(content, ":" + replacer, ":" + newName, replaceAllExclusions);
+      content = Utilities.replaceAllExceptInLines(content, ":" + replacer, ":" + tempName, replaceAllExclusions);
 
-      content = Utilities.replaceAllExceptInLines(content, "/" + replacer, "/" + newName, replaceAllExclusions);
+      content = Utilities.replaceAllExceptInLines(content, "/" + replacer, "/" + tempName, replaceAllExclusions);
 
-      content = Utilities.replaceAllExceptInLines(content, "." + replacer, "." + newName, replaceAllExclusions);
+      content = Utilities.replaceAllExceptInLines(content, "." + replacer, "." + tempName, replaceAllExclusions);
 
-      content = Utilities.replaceAllExceptInLines(content, replacer + "_", newName + "_", replaceAllExclusions);
+      content = Utilities.replaceAllExceptInLines(content, replacer + "_", tempName + "_", replaceAllExclusions);
 
       content = Utilities.replaceAllExceptInLines(
         content,
         '"' + replacer + '"',
-        '"' + newName + '"',
+        '"' + tempName + '"',
         replaceAllExclusions
       );
     }
+
+    content = Utilities.replaceAll(content, tempName, newName);
 
     return content;
   }
@@ -1651,7 +1671,7 @@ export default class ProjectUtilities {
         let importLineIndex = introSection.indexOf('from "' + moduleName + '";');
 
         if (importLineIndex < 0) {
-          introSection = 'import {} from "' + moduleName + '";\r\n' + introSection;
+          introSection = 'import {} from "' + moduleName + '";\n' + introSection;
           importLineIndex = 10;
         }
 
@@ -1702,7 +1722,7 @@ export default class ProjectUtilities {
 
     for (const projectItem of itemsCopy) {
       if (projectItem.itemType === ProjectItemType.ts) {
-        await projectItem.ensureFileStorage();
+        await projectItem.loadFileContent();
 
         if (projectItem.primaryFile) {
           const tsJson = await TypeScriptDefinition.ensureOnFile(projectItem.primaryFile);
@@ -1726,7 +1746,7 @@ export default class ProjectUtilities {
 
     const file = scriptFolder.ensureFile(fileNameCore + ".ts");
 
-    let snippetInjectContent = "\r\n" + snippet.body.join("\n") + "\r\n";
+    let snippetInjectContent = "\n" + snippet.body.join("\n") + "\n";
 
     for (const replacerToken in replacers) {
       const targetReplace = replacers[replacerToken];
@@ -1747,7 +1767,7 @@ export default class ProjectUtilities {
   }
 
   static async injectSnippet(project: Project, snippet: ISnippet, fullScriptBoxReplace: boolean) {
-    let snippetInjectContent = "\r\n" + snippet.body.join("\n") + "\r\n";
+    let snippetInjectContent = "\n" + snippet.body.join("\n") + "\n";
 
     const folder = await project.ensureDefaultScriptsFolder();
 
@@ -1766,7 +1786,9 @@ export default class ProjectUtilities {
           const type = StorageUtilities.getTypeFromName(file.name);
 
           if (type === "ts" || type === "js") {
-            await file.loadContent();
+            if (!file.isContentLoaded) {
+              await file.loadContent();
+            }
 
             // Log.debugAlert("Inject snippet considering file: " + file.storageRelativePath + "|" + file.content?.length);
             if (file.content && typeof file.content === "string") {
@@ -1792,7 +1814,7 @@ export default class ProjectUtilities {
                       if (firstComment >= 0) {
                         content =
                           content.substring(0, firstComment) +
-                          '  const overworld = mc.world.getDimension("overworld");\r\n' +
+                          '  const overworld = mc.world.getDimension("overworld");\n' +
                           content.substring(firstComment, content.length);
                       }
                     }
@@ -1829,7 +1851,9 @@ export default class ProjectUtilities {
       .ensureFolder("blocks")
       .ensureFile(blockTypeId + ".json");
 
-    await sourceFile.loadContent(true);
+    if (!sourceFile.isContentLoaded) {
+      await sourceFile.loadContent(true);
+    }
 
     if (
       !sourceFile.content ||
@@ -1867,7 +1891,7 @@ export default class ProjectUtilities {
       ProjectItemCreationType.normal
     );
 
-    const file = await pi.ensureFileStorage();
+    const file = await pi.loadFileContent();
 
     if (file !== null) {
       const content = Utilities.fixJsonContent(sourceFile.content);

@@ -143,7 +143,7 @@ export default class NodeFile extends FileBase implements IFile {
     let writer = fs.createWriteStream(this.fullPath);
 
     for (const str of content) {
-      writer.write(str + "\r\n");
+      writer.write(str + "\n");
     }
 
     writer.end();

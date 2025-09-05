@@ -84,7 +84,7 @@ export default interface MinecraftBehaviorEatBlock {
    *
    *
    */
-  eat_and_replace_block_pairs: string[];
+  eat_and_replace_block_pairs?: string[];
 
   /**
    * @remarks
@@ -96,7 +96,7 @@ export default interface MinecraftBehaviorEatBlock {
    *
    *
    */
-  on_eat: jsoncommon.MinecraftEventTrigger;
+  on_eat?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -109,7 +109,7 @@ export default interface MinecraftBehaviorEatBlock {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -121,7 +121,7 @@ export default interface MinecraftBehaviorEatBlock {
    *
    *
    */
-  success_chance: string;
+  success_chance?: string;
 
   /**
    * @remarks
@@ -133,6 +133,6 @@ export default interface MinecraftBehaviorEatBlock {
    *
    *
    */
-  time_until_eat: number;
+  time_until_eat?: number;
 
 }

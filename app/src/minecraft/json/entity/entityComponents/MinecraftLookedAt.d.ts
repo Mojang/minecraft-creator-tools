@@ -131,7 +131,7 @@ export default interface MinecraftLookedAt {
    * Creaking: 120
    *
    */
-  field_of_view: number;
+  field_of_view?: number;
 
   /**
    * @remarks
@@ -144,7 +144,7 @@ export default interface MinecraftLookedAt {
    * Enderman: {"test":"has_equipment","domain":"head","subject":"other","operator":"not","value":"carved_pumpkin"}
    *
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -155,7 +155,7 @@ export default interface MinecraftLookedAt {
    * Creaking: true
    *
    */
-  find_players_only: boolean;
+  find_players_only?: boolean;
 
   /**
    * @remarks
@@ -167,7 +167,7 @@ export default interface MinecraftLookedAt {
    * Creaking: "collision_for_camera"
    *
    */
-  line_of_sight_obstruction_type: string;
+  line_of_sight_obstruction_type?: string;
 
   /**
    * @remarks
@@ -179,7 +179,7 @@ export default interface MinecraftLookedAt {
    * Creaking: [{"location":"head"},{"location":"body"},{"location":"feet","vertical_offset":0.5}]
    *
    */
-  look_at_locations: string[];
+  look_at_locations?: string[];
 
   /**
    * @remarks
@@ -191,7 +191,7 @@ export default interface MinecraftLookedAt {
    * Creaking: 0.1
    *
    */
-  looked_at_cooldown: number[];
+  looked_at_cooldown?: number[];
 
   /**
    * @remarks
@@ -202,7 +202,7 @@ export default interface MinecraftLookedAt {
    * Creaking: {"event":"minecraft:become_hostile","filter":"self"}, {"event":"minecraft:on_target_start_looking","filter":"self"}
    *
    */
-  looked_at_event: jsoncommon.MinecraftEventTrigger;
+  looked_at_event?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -214,7 +214,7 @@ export default interface MinecraftLookedAt {
    * Enderman: 0.25
    *
    */
-  min_looked_at_duration: number;
+  min_looked_at_duration?: number;
 
   /**
    * @remarks
@@ -225,7 +225,7 @@ export default interface MinecraftLookedAt {
    * Creaking: {"event":"minecraft:on_target_stop_looking","filter":"self"}
    *
    */
-  not_looked_at_event: jsoncommon.MinecraftEventTrigger;
+  not_looked_at_event?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -234,7 +234,7 @@ export default interface MinecraftLookedAt {
    * that the width of the view cone remains somewhat constant towards
    * the owner entity position, regardless of distance.
    */
-  scale_fov_by_distance: boolean;
+  scale_fov_by_distance?: boolean;
 
   /**
    * @remarks
@@ -247,17 +247,17 @@ export default interface MinecraftLookedAt {
    * Enderman: 64
    *
    */
-  search_radius: number;
+  search_radius?: number;
 
   /**
    * @remarks
    * Defines if and how the owner entity will set entities that are
    * looking at it as its combat targets. Valid values:
-         
-   *                                 \n- "never", looking entities are
+          
+   *                                \n- "never", looking entities are
    * never set as targets, but events are emitted.
-              
-   *                            \n- "once_and_stop_scanning", the
+               
+   *                           \n- "once_and_stop_scanning", the
    * first detected looking entity is set as target. Scanning and
    * event emission is suspended if and until the owner entity has a
    * target.
@@ -271,6 +271,6 @@ export default interface MinecraftLookedAt {
    * Enderman: "once_and_stop_scanning"
    *
    */
-  set_target: boolean;
+  set_target?: boolean;
 
 }

@@ -11,10 +11,10 @@
  * 
  * minecraft:behavior.share_items Samples
 
-Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager.json
 
 "minecraft:behavior.share_items": {
-  "priority": 10,
+  "priority": 8,
   "max_dist": 3,
   "goal_radius": 2,
   "speed_multiplier": 0.5,
@@ -30,10 +30,10 @@ Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
 }
 
 
-Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
 "minecraft:behavior.share_items": {
-  "priority": 8,
+  "priority": 10,
   "max_dist": 3,
   "goal_radius": 2,
   "speed_multiplier": 0.5,
@@ -82,11 +82,10 @@ export default interface MinecraftBehaviorShareItems {
    * List of entities this mob will share items with
    * 
    * Sample Values:
-   * Villager v2: [{"filters":{"test":"is_family","subject":"other","value":"villager"}}]
-   *
+   * Villager: [{"filters":{"test":"is_family","subject":"other","value":"villager"}}]
    *
    */
-  entity_types: MinecraftBehaviorShareItemsEntityTypes[];
+  entity_types?: MinecraftBehaviorShareItemsEntityTypes[];
 
   /**
    * @remarks
@@ -94,14 +93,14 @@ export default interface MinecraftBehaviorShareItems {
    * goal. This is the "wiggle room" to stop the AI from bouncing back
    * and forth trying to reach a specific spot
    */
-  goal_radius: number;
+  goal_radius?: number;
 
   /**
    * @remarks
    * Maximum distance in blocks this mob will look for entities to
    * share items with
    */
-  max_dist: number;
+  max_dist?: number;
 
   /**
    * @remarks
@@ -109,13 +108,13 @@ export default interface MinecraftBehaviorShareItems {
    * priority, the sooner this behavior will be executed as a 
    * goal.
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * Movement speed multiplier of the mob when using this AI Goal
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }
 
@@ -130,25 +129,25 @@ export interface MinecraftBehaviorShareItemsEntityTypes {
    * The amount of time in seconds that the mob has to wait before
    * selecting a target of the same type again
    */
-  cooldown: number;
+  cooldown?: number;
 
   /**
    * @remarks
    * Conditions that make this entry in the list valid
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
    * Maximum distance this mob can be away to be a valid choice
    */
-  max_dist: number;
+  max_dist?: number;
 
   /**
    * @remarks
    * If true, the mob has to be visible to be a valid choice
    */
-  must_see: boolean;
+  must_see?: boolean;
 
   /**
    * @remarks
@@ -156,27 +155,27 @@ export interface MinecraftBehaviorShareItemsEntityTypes {
    * for a target before forgetting about it and looking for a new
    * one when the target isn't visible any more
    */
-  must_see_forget_duration: number;
+  must_see_forget_duration?: number;
 
   /**
    * @remarks
    * If true, the mob will stop being targeted if it stops meeting any
    * conditions.
    */
-  reevaluate_description: boolean;
+  reevaluate_description?: boolean;
 
   /**
    * @remarks
    * Multiplier for the running speed. A value of 1.0 means the speed
    * is unchanged
    */
-  sprint_speed_multiplier: number;
+  sprint_speed_multiplier?: number;
 
   /**
    * @remarks
    * Multiplier for the walking speed. A value of 1.0 means the speed
    * is unchanged
    */
-  walk_speed_multiplier: number;
+  walk_speed_multiplier?: number;
 
 }

@@ -37,13 +37,13 @@ export default interface HasNametag {
    * @remarks
    * (Optional) The comparison to apply with 'value'.
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
    * (Optional) The subject of this filter test.
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -52,13 +52,13 @@ export default interface HasNametag {
    * Evocation Illager: "has_nametag"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
    * (Optional) true or false.
    */
-  value: boolean;
+  value?: boolean;
 
 }
 

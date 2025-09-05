@@ -3,6 +3,10 @@
 
 import IComponent from "./IComponent";
 
+export type IComponentContainer = {
+  [name: string]: IComponent | string | string[] | boolean | number[] | number | undefined;
+};
+
 export default interface IComponentDataItem {
-  components: { [name: string]: IComponent | string | string[] | boolean | number[] | number | undefined };
+  components: IComponentContainer;
 }

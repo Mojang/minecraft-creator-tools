@@ -43,7 +43,7 @@ export default interface MinecraftExhaustionValues {
    * Player: 0.1
    *
    */
-  attack: number;
+  attack?: number;
 
   /**
    * @remarks
@@ -53,7 +53,7 @@ export default interface MinecraftExhaustionValues {
    * Player: 0.1
    *
    */
-  damage: number;
+  damage?: number;
 
   /**
    * @remarks
@@ -64,7 +64,7 @@ export default interface MinecraftExhaustionValues {
    * Player: 6
    *
    */
-  heal: number;
+  heal?: number;
 
   /**
    * @remarks
@@ -74,7 +74,7 @@ export default interface MinecraftExhaustionValues {
    * Player: 0.05
    *
    */
-  jump: number;
+  jump?: number;
 
   /**
    * @remarks
@@ -84,7 +84,7 @@ export default interface MinecraftExhaustionValues {
    * Player: 0.005
    *
    */
-  mine: number;
+  mine?: number;
 
   /**
    * @remarks
@@ -94,7 +94,7 @@ export default interface MinecraftExhaustionValues {
    * Player: 0.1
    *
    */
-  sprint: number;
+  sprint?: number;
 
   /**
    * @remarks
@@ -104,7 +104,7 @@ export default interface MinecraftExhaustionValues {
    * Player: 0.2
    *
    */
-  sprint_jump: number;
+  sprint_jump?: number;
 
   /**
    * @remarks
@@ -114,12 +114,12 @@ export default interface MinecraftExhaustionValues {
    * Player: 0.01
    *
    */
-  swim: number;
+  swim?: number;
 
   /**
    * @remarks
    * Amount of exhaustion applied when walking.
    */
-  walk: number;
+  walk?: number;
 
 }

@@ -1,4 +1,5 @@
 {
+  "id": "Client Biome JSON File",
   "fields": [
     {
       "id": "format_version",
@@ -17,6 +18,5 @@
     }
   ],
   "description": "Contains a format version and a Client Biome definition",
-  "title": "Client Biome JSON File Client Biome",
-  "id": "Client Biome JSON File"
+  "title": "Client Biome JSON File"
 }

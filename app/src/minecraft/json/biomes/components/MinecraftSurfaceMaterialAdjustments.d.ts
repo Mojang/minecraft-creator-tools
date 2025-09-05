@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Surface Material Adjustments Biome
+ * Biome Surface Material Adjustments
  * (minecraft:surface_material_adjustments)
  * Specify fine-detail changes to blocks used in terrain generation (based
  * on a noise function).
@@ -25,42 +25,7 @@ export default interface MinecraftSurfaceMaterialAdjustments {
    * All adjustments that match the column's noise values will be
    * applied in the order listed.
    */
-  adjustments: MinecraftSurfaceMaterialAdjustmentsAdjustments[];
-
-  /**
-   * @remarks
-   * Controls the block type used deep underground in this biome when
-   * this adjustment is active.
-   */
-  foundation_material: MinecraftSurfaceMaterialAdjustmentsFoundationMaterial;
-
-  /**
-   * @remarks
-   * Controls the block type used in a layer below the surface of
-   * this biome when this adjustment is active.
-   */
-  mid_material: MinecraftSurfaceMaterialAdjustmentsMidMaterial;
-
-  /**
-   * @remarks
-   * Controls the block type used as a floor for bodies of water in
-   * this biome when this adjustment is active.
-   */
-  sea_floor_material: MinecraftSurfaceMaterialAdjustmentsSeaFloorMaterial;
-
-  /**
-   * @remarks
-   * Controls the block type used in the bodies of water in this biome
-   * when this adjustment is active.
-   */
-  sea_material: MinecraftSurfaceMaterialAdjustmentsSeaMaterial;
-
-  /**
-   * @remarks
-   * Controls the block type used for the surface of this biome when
-   * this adjustment is active.
-   */
-  top_material: MinecraftSurfaceMaterialAdjustmentsTopMaterial;
+  adjustments?: MinecraftSurfaceMaterialAdjustmentsAdjustments[];
 
 }
 
@@ -79,7 +44,7 @@ export interface MinecraftSurfaceMaterialAdjustmentsAdjustments {
    * Defines a range of noise values [min, max] for which this
    * adjustment should be applied.
    */
-  height_range: number;
+  height_range?: number;
 
   /**
    * @remarks
@@ -92,14 +57,14 @@ export interface MinecraftSurfaceMaterialAdjustmentsAdjustments {
    * The scale to multiply by the position when accessing the noise
    * value for the material adjustments.
    */
-  noise_frequency_scale: number;
+  noise_frequency_scale?: number;
 
   /**
    * @remarks
    * Defines a range of noise values [min, max] for which this
    * adjustment should be applied.
    */
-  noise_range: number[];
+  noise_range?: number[];
 
 }
 
@@ -117,124 +82,34 @@ export interface MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterials {
    * Controls the block type used deep underground in this biome when
    * this adjustment is active.
    */
-  foundation_material: MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsFoundationMaterial;
+  foundation_material?: string;
 
   /**
    * @remarks
    * Controls the block type used in a layer below the surface of
    * this biome when this adjustment is active.
    */
-  mid_material: MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsMidMaterial;
+  mid_material?: string;
 
   /**
    * @remarks
    * Controls the block type used as a floor for bodies of water in
    * this biome when this adjustment is active.
    */
-  sea_floor_material: MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsSeaFloorMaterial;
+  sea_floor_material?: string;
 
   /**
    * @remarks
    * Controls the block type used in the bodies of water in this biome
    * when this adjustment is active.
    */
-  sea_material: MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsSeaMaterial;
+  sea_material?: string;
 
   /**
    * @remarks
    * Controls the block type used for the surface of this biome when
    * this adjustment is active.
    */
-  top_material: MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsTopMaterial;
-
-}
-
-
-/**
- * Foundation Material (foundation_material)
- */
-export interface MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsFoundationMaterial {
-
-}
-
-
-/**
- * Mid Material (mid_material)
- */
-export interface MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsMidMaterial {
-
-}
-
-
-/**
- * Sea Floor Material (sea_floor_material)
- */
-export interface MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsSeaFloorMaterial {
-
-}
-
-
-/**
- * Sea Material (sea_material)
- */
-export interface MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsSeaMaterial {
-
-}
-
-
-/**
- * Top Material (top_material)
- */
-export interface MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsTopMaterial {
-
-}
-
-
-/**
- * Foundation Material
- * Specifies a particular block. Can be a string block name or a
- * JSON object.
- */
-export interface MinecraftSurfaceMaterialAdjustmentsFoundationMaterial {
-
-}
-
-
-/**
- * Mid Material
- * Specifies a particular block. Can be a string block name or a
- * JSON object.
- */
-export interface MinecraftSurfaceMaterialAdjustmentsMidMaterial {
-
-}
-
-
-/**
- * Sea Floor Material
- * Specifies a particular block. Can be a string block name or a
- * JSON object.
- */
-export interface MinecraftSurfaceMaterialAdjustmentsSeaFloorMaterial {
-
-}
-
-
-/**
- * Sea Material
- * Specifies a particular block. Can be a string block name or a
- * JSON object.
- */
-export interface MinecraftSurfaceMaterialAdjustmentsSeaMaterial {
-
-}
-
-
-/**
- * Top Material
- * Specifies a particular block. Can be a string block name or a
- * JSON object.
- */
-export interface MinecraftSurfaceMaterialAdjustmentsTopMaterial {
+  top_material?: string;
 
 }

@@ -38,7 +38,7 @@ export default interface MinecraftAdmireItem {
    * Piglin: 20
    *
    */
-  cooldown_after_being_attacked: number;
+  cooldown_after_being_attacked?: number;
 
   /**
    * @remarks
@@ -48,6 +48,6 @@ export default interface MinecraftAdmireItem {
    * Piglin: 8
    *
    */
-  duration: number;
+  duration?: number;
 
 }

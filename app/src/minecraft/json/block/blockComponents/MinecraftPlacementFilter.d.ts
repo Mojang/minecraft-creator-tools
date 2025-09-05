@@ -24,7 +24,7 @@ export default interface MinecraftPlacementFilter {
    * List of conditions where the block can be placed/survive. Limited to
    * 64 conditions.
    */
-  conditions: MinecraftPlacementFilterConditions[];
+  conditions?: MinecraftPlacementFilterConditions[];
 
 }
 
@@ -41,7 +41,7 @@ export interface MinecraftPlacementFilterConditions {
    * block can be placed on: "up", "down", "north", "south", "east",
    * "west", "side", "all". Limited to 6 faces.
    */
-  allowed_faces: string[];
+  allowed_faces?: string[];
 
   /**
    * @remarks
@@ -53,7 +53,7 @@ export interface MinecraftPlacementFilterConditions {
    * or based on its name and states. The fields of a
    * BlockDescriptor are described below.
    */
-  block_filter: MinecraftPlacementFilterConditionsBlockFilter[];
+  block_filter?: MinecraftPlacementFilterConditionsBlockFilter[];
 
 }
 
@@ -73,20 +73,20 @@ export interface MinecraftPlacementFilterConditionsBlockFilter {
    * @remarks
    * The name of a block.
    */
-  name: string;
+  name?: string;
 
   /**
    * @remarks
    * The list of Vanilla block states and their values that the block
    * can have, expressed in key/value pairs.
    */
-  states: string[];
+  states?: string[];
 
   /**
    * @remarks
    * A condition using Molang queries that results to true/false that
    * can be used to query for blocks with certain tags.
    */
-  tags: string;
+  tags?: string;
 
 }

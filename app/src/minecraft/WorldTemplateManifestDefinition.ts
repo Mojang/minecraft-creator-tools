@@ -94,11 +94,13 @@ export default class WorldTemplateManifestDefinition {
     if (file.manager !== undefined && file.manager instanceof WorldTemplateManifestDefinition) {
       bmj = file.manager as WorldTemplateManifestDefinition;
 
-      if (!bmj.isLoaded && loadHandler) {
-        bmj.onLoaded.subscribe(loadHandler);
-      }
+      if (!bmj.isLoaded) {
+        if (loadHandler) {
+          bmj.onLoaded.subscribe(loadHandler);
+        }
 
-      await bmj.load();
+        await bmj.load();
+      }
     }
 
     return bmj;
@@ -189,7 +191,9 @@ export default class WorldTemplateManifestDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

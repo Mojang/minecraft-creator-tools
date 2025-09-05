@@ -71,7 +71,7 @@ export default interface MinecraftGroupSize {
    * Piglin: {"all_of":[{"test":"has_component","operator":"!=","value":"minecraft:is_baby"},{"test":"is_family","value":"piglin"}]}
    *
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -82,6 +82,6 @@ export default interface MinecraftGroupSize {
    *
    *
    */
-  radius: number;
+  radius?: number;
 
 }

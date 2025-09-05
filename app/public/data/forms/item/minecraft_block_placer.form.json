@@ -1,4 +1,5 @@
 {
+  "id": "minecraft:block_placer",
   "fields": [
     {
       "id": "block",
@@ -23,7 +24,6 @@
     },
     {
       "id": "use_on",
-      "title": "Use On",
       "description": "List of block descriptors of the blocks that this item can be used on. If left empty, all blocks will be allowed.",
       "dataType": 15,
       "subForm": {
@@ -72,46 +72,42 @@
           {
             "path": "/minecraft:item/components/minecraft:block_placer/",
             "content": [
-              "dirt",
-              "grass",
-              "anvil"
+              {
+                "name": "minecraft:dirt"
+              },
+              {
+                "name": "minecraft:grass_block"
+              },
+              {
+                "name": "minecraft:anvil"
+              }
             ]
           }
         ]
       }
     }
   ],
-  "description": "Sets the item as a planter item component for blocks. Items with this component will place a block when used.",
-  "note": "This component can also be used instead of the minecraft:icon component to render the block this item will place as the icon.",
-  "versionIntroduced": "1.21.50",
+  "description": "Items with the block_placer component will place a block when used. \nThis component can also be used instead of the \"minecraft:icon\" component to render the referenced block as the item icon.",
+  "title": "Item Block Placer",
   "samples": {
-    "sample": [
-      {
-        "path": "/minecraft:item/components/minecraft:block_placer/",
-        "content": {
-          "block": "seeds",
-          "use_on": [
-            "dirt",
-            "grass"
-          ],
-          "replace_block_item": true
-        }
-      }
-    ],
     "/samples/custom_items/behavior_packs/custom_item/items/my_sword_singing.json": [
       {
         "path": "/minecraft:item/components/minecraft:block_placer/",
         "content": {
           "block": "minecraft:dirt",
           "use_on": [
-            "dirt",
-            "grass",
-            "anvil"
+            {
+              "name": "minecraft:dirt"
+            },
+            {
+              "name": "minecraft:grass_block"
+            },
+            {
+              "name": "minecraft:anvil"
+            }
           ]
         }
       }
     ]
-  },
-  "title": "Minecraft Block Placer Item",
-  "id": "minecraft:block_placer"
+  }
 }

@@ -37,6 +37,6 @@ export default interface MinecraftInsomnia {
    * Player: 3
    *
    */
-  days_until_insomnia: number;
+  days_until_insomnia?: number;
 
 }

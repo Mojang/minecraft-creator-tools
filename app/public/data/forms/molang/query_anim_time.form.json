@@ -2,5 +2,5 @@
   "id": "query.anim_time",
   "fields": [],
   "description": "Returns the time in seconds since the current animation started, else 0.0 if not called within an animation.",
-  "title": "Anim Time Query"
+  "title": "Anim Time"
 }

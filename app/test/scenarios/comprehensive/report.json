@@ -105,6 +105,8 @@
     "animationCount": 0,
     "textureCount": 0,
     "textureTexelSize": 0,
+    "vanillaGameTextureCoverage": 0,
+    "vanillaGameTextureCount": 0,
     "minimumSupportablePerformanceTier": 0,
     "invalidCommandSyntaxCount": 0,
     "linesWithSlashCount": 0,
@@ -119,6 +121,9 @@
     "deprecatedTexture": 0,
     "restrictedPolyMeshFound": 0,
     "jsonParseError": 0,
+    "invalidManifestJson": 0,
+    "missingResourcePackDependencies": 0,
+    "internalProcessingErrors": 0,
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
@@ -138,6 +143,76 @@
       "tp"
     ],
     "featureSets": {
+      "Runtime Identifier (no runtime identifier)": {
+        "Count": 1
+      },
+      "Identifier (no override identifier)": {
+        "Count": 3
+      },
+      "Metadata Spawnable Entity Type": {
+        "Count": 1
+      },
+      "Metadata Summonable Entity Type": {
+        "Count": 1
+      },
+      "Entity Geometry Cubes": {
+        "Instance Count": 1,
+        "Total": 2,
+        "Max": 2,
+        "Min": 2,
+        "Average": 2
+      },
+      "Entity Type Default Components": {
+        "minecraft:type_family": 1,
+        "minecraft:collision_box": 1,
+        "minecraft:health": 1,
+        "minecraft:movement": 1,
+        "minecraft:navigation.walk": 1,
+        "minecraft:movement.basic": 1,
+        "minecraft:jump.static": 1,
+        "minecraft:can_climb": 1,
+        "minecraft:physics": 1,
+        "minecraft:pushable": 1,
+        "minecraft:behavior.look_at_player": 1,
+        "minecraft:behavior.random_stroll": 1,
+        "minecraft:behavior.random_look_around": 1
+      },
+      "Block Type Block Default Components": {
+        "minecraft:destructible_by_mining": 1,
+        "minecraft:destructible_by_explosion": 1,
+        "minecraft:flammable": 1,
+        "minecraft:friction": 1,
+        "minecraft:light_emission": 1,
+        "minecraft:map_color": 1,
+        "minecraft:material_instances": 1
+      },
+      "Item Type Components": {
+        "minecraft:icon": 2,
+        "minecraft:display_name": 2,
+        "minecraft:hand_equipped": 2,
+        "minecraft:stacked_by_data": 1,
+        "minecraft:foil": 1,
+        "minecraft:max_stack_size": 1,
+        "minecraft:durability": 2,
+        "minecraft:enchantable": 1,
+        "minecraft:weapon": 1,
+        "minecraft:can_destroy_in_creative": 1,
+        "minecraft:digger": 1
+      },
+      "JavaScript Size": {
+        "Instance Count": 1,
+        "Total": 783,
+        "Max": 783,
+        "Min": 783,
+        "Average": 783
+      },
+      "JavaScript Lines": {
+        "Instance Count": 1,
+        "Total": 21,
+        "Max": 21,
+        "Min": 21,
+        "Average": 21
+      },
       "Behavior pack manifest Size": {
         "Instance Count": 1,
         "Total": 515,
@@ -151,6 +226,48 @@
         "Max": 22,
         "Min": 22,
         "Average": 22
+      },
+      "Function Size": {
+        "Instance Count": 2,
+        "Total": 762,
+        "Max": 658,
+        "Min": 104,
+        "Average": 381
+      },
+      "Function Lines": {
+        "Instance Count": 2,
+        "Total": 23,
+        "Max": 19,
+        "Min": 4,
+        "Average": 12
+      },
+      "Entity type Size": {
+        "Instance Count": 1,
+        "Total": 851,
+        "Max": 851,
+        "Min": 851,
+        "Average": 851
+      },
+      "Entity type Lines": {
+        "Instance Count": 1,
+        "Total": 47,
+        "Max": 47,
+        "Min": 47,
+        "Average": 47
+      },
+      "Resource pack manifest Size": {
+        "Instance Count": 1,
+        "Total": 336,
+        "Max": 336,
+        "Min": 336,
+        "Average": 336
+      },
+      "Resource pack manifest Lines": {
+        "Instance Count": 1,
+        "Total": 13,
+        "Max": 13,
+        "Min": 13,
+        "Average": 13
       },
       "Behavior pack animation Size": {
         "Instance Count": 1,
@@ -194,48 +311,6 @@
         "Min": 27,
         "Average": 27
       },
-      "Entity dialogue Size": {
-        "Instance Count": 1,
-        "Total": 375,
-        "Max": 375,
-        "Min": 375,
-        "Average": 375
-      },
-      "Entity dialogue Lines": {
-        "Instance Count": 1,
-        "Total": 27,
-        "Max": 27,
-        "Min": 27,
-        "Average": 27
-      },
-      "Entity type Size": {
-        "Instance Count": 1,
-        "Total": 851,
-        "Max": 851,
-        "Min": 851,
-        "Average": 851
-      },
-      "Entity type Lines": {
-        "Instance Count": 1,
-        "Total": 47,
-        "Max": 47,
-        "Min": 47,
-        "Average": 47
-      },
-      "Function Size": {
-        "Instance Count": 2,
-        "Total": 762,
-        "Max": 658,
-        "Min": 104,
-        "Average": 381
-      },
-      "Function Lines": {
-        "Instance Count": 2,
-        "Total": 23,
-        "Max": 19,
-        "Min": 4,
-        "Average": 12
-      },
       "Item type Size": {
         "Instance Count": 2,
         "Total": 1124,
@@ -264,76 +339,6 @@
         "Min": 16,
         "Average": 24
       },
-      "Recipe Size": {
-        "Instance Count": 2,
-        "Total": 501,
-        "Max": 254,
-        "Min": 247,
-        "Average": 251
-      },
-      "Recipe Lines": {
-        "Instance Count": 2,
-        "Total": 34,
-        "Max": 19,
-        "Min": 15,
-        "Average": 17
-      },
-      "JavaScript Size": {
-        "Instance Count": 1,
-        "Total": 783,
-        "Max": 783,
-        "Min": 783,
-        "Average": 783
-      },
-      "JavaScript Lines": {
-        "Instance Count": 1,
-        "Total": 21,
-        "Max": 21,
-        "Min": 21,
-        "Average": 21
-      },
-      "Spawn rule Size": {
-        "Instance Count": 1,
-        "Total": 638,
-        "Max": 638,
-        "Min": 638,
-        "Average": 638
-      },
-      "Spawn rule Lines": {
-        "Instance Count": 1,
-        "Total": 38,
-        "Max": 38,
-        "Min": 38,
-        "Average": 38
-      },
-      "Trading Size": {
-        "Instance Count": 1,
-        "Total": 296,
-        "Max": 296,
-        "Min": 296,
-        "Average": 296
-      },
-      "Trading Lines": {
-        "Instance Count": 1,
-        "Total": 22,
-        "Max": 22,
-        "Min": 22,
-        "Average": 22
-      },
-      "Resource pack manifest Size": {
-        "Instance Count": 1,
-        "Total": 336,
-        "Max": 336,
-        "Min": 336,
-        "Average": 336
-      },
-      "Resource pack manifest Lines": {
-        "Instance Count": 1,
-        "Total": 13,
-        "Max": 13,
-        "Min": 13,
-        "Average": 13
-      },
       "Animation Size": {
         "Instance Count": 1,
         "Total": 403,
@@ -361,20 +366,6 @@
         "Max": 19,
         "Min": 19,
         "Average": 19
-      },
-      "Attachable Size": {
-        "Instance Count": 1,
-        "Total": 421,
-        "Max": 421,
-        "Min": 421,
-        "Average": 421
-      },
-      "Attachable Lines": {
-        "Instance Count": 1,
-        "Total": 18,
-        "Max": 18,
-        "Min": 18,
-        "Average": 18
       },
       "Entity type visuals/audio Size": {
         "Instance Count": 1,
@@ -432,20 +423,6 @@
         "Min": 7,
         "Average": 7
       },
-      "Language translations Size": {
-        "Instance Count": 1,
-        "Total": 87,
-        "Max": 87,
-        "Min": 87,
-        "Average": 87
-      },
-      "Language translations Lines": {
-        "Instance Count": 1,
-        "Total": 3,
-        "Max": 3,
-        "Min": 3,
-        "Average": 3
-      },
       "Language catalog Size": {
         "Instance Count": 1,
         "Total": 9,
@@ -460,42 +437,89 @@
         "Min": 2,
         "Average": 2
       },
-      "Block Type Block Default Components": {
-        "minecraft:destructible_by_mining": 1,
-        "minecraft:destructible_by_explosion": 1,
-        "minecraft:flammable": 1,
-        "minecraft:friction": 1,
-        "minecraft:light_emission": 1,
-        "minecraft:map_color": 1,
-        "minecraft:material_instances": 1
+      "Entity dialogue Size": {
+        "Instance Count": 1,
+        "Total": 375,
+        "Max": 375,
+        "Min": 375,
+        "Average": 375
       },
-      "Entity Type Default Components": {
-        "minecraft:type_family": 1,
-        "minecraft:collision_box": 1,
-        "minecraft:health": 1,
-        "minecraft:movement": 1,
-        "minecraft:navigation.walk": 1,
-        "minecraft:movement.basic": 1,
-        "minecraft:jump.static": 1,
-        "minecraft:can_climb": 1,
-        "minecraft:physics": 1,
-        "minecraft:pushable": 1,
-        "minecraft:behavior.look_at_player": 1,
-        "minecraft:behavior.random_stroll": 1,
-        "minecraft:behavior.random_look_around": 1
+      "Entity dialogue Lines": {
+        "Instance Count": 1,
+        "Total": 27,
+        "Max": 27,
+        "Min": 27,
+        "Average": 27
       },
-      "Item Type Components": {
-        "minecraft:icon": 2,
-        "minecraft:display_name": 2,
-        "minecraft:hand_equipped": 2,
-        "minecraft:stacked_by_data": 1,
-        "minecraft:foil": 1,
-        "minecraft:max_stack_size": 1,
-        "minecraft:durability": 2,
-        "minecraft:enchantable": 1,
-        "minecraft:weapon": 1,
-        "minecraft:can_destroy_in_creative": 1,
-        "minecraft:digger": 1
+      "Recipe Size": {
+        "Instance Count": 2,
+        "Total": 501,
+        "Max": 254,
+        "Min": 247,
+        "Average": 251
+      },
+      "Recipe Lines": {
+        "Instance Count": 2,
+        "Total": 34,
+        "Max": 19,
+        "Min": 15,
+        "Average": 17
+      },
+      "Spawn rule Size": {
+        "Instance Count": 1,
+        "Total": 638,
+        "Max": 638,
+        "Min": 638,
+        "Average": 638
+      },
+      "Spawn rule Lines": {
+        "Instance Count": 1,
+        "Total": 38,
+        "Max": 38,
+        "Min": 38,
+        "Average": 38
+      },
+      "Trading Size": {
+        "Instance Count": 1,
+        "Total": 296,
+        "Max": 296,
+        "Min": 296,
+        "Average": 296
+      },
+      "Trading Lines": {
+        "Instance Count": 1,
+        "Total": 22,
+        "Max": 22,
+        "Min": 22,
+        "Average": 22
+      },
+      "Attachable Size": {
+        "Instance Count": 1,
+        "Total": 421,
+        "Max": 421,
+        "Min": 421,
+        "Average": 421
+      },
+      "Attachable Lines": {
+        "Instance Count": 1,
+        "Total": 18,
+        "Max": 18,
+        "Min": 18,
+        "Average": 18
+      },
+      "Language translations Size": {
+        "Instance Count": 1,
+        "Total": 87,
+        "Max": 87,
+        "Min": 87,
+        "Average": 87
+      },
+      "Language translations Lines": {
+        "Instance Count": 1,
+        "Total": 3,
+        "Max": 3,
+        "Min": 3,
+        "Average": 3
       },
       "Animations Resource": {
         "Count": 1
@@ -704,25 +728,6 @@
         "Min": 0,
         "Average": 0
       },
-      "Entity Geometry Cubes": {
-        "Instance Count": 1,
-        "Total": 2,
-        "Max": 2,
-        "Min": 2,
-        "Average": 2
-      },
-      "Runtime Identifier (no runtime identifier)": {
-        "Count": 1
-      },
-      "Identifier (no override identifier)": {
-        "Count": 3
-      },
-      "Metadata Spawnable Entity Type": {
-        "Count": 1
-      },
-      "Metadata Summonable Entity Type": {
-        "Count": 1
-      },
       "Command #": {
         "Count": 8
       },
@@ -763,14 +768,242 @@
     "errorCount": 4,
     "internalProcessingErrorCount": 3,
     "warningCount": 14,
-    "testSuccessCount": 32,
+    "testSuccessCount": 34,
     "testFailCount": 4,
     "testNotApplicableCount": 10,
-    "errorSummary": "ERROR: [CPACKICON101] pack_icon image file not found for comprehensive_bp. It must use the .png extension.\r\nERROR: [CPACKICON101] pack_icon image file not found for comprehensive_rp. It must use the .png extension.\r\nERROR: [LANGFILES101] languages.json Not Found\r\nERROR: [SCRIPTMODULE114] (/behavior_packs/comprehensive_bp/manifest.json) For @minecraft/server, using an out of date beta version: 1.8.0-beta compared to what is available (2.3.0): 1.8.0-beta",
-    "internalProcessingErrorSummary": "UNKNOWN: [JSONF402] Could not find expected form: entity/actor_document\r\nUNKNOWN: [JSONF402] Could not find expected form: spawn/spawn_rules\r\nUNKNOWN: [JSONF402] Could not find expected form: visual/geometry.v1.21.0",
-    "warningSummary": "WARNING: [FORMATVER178] (/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json) Behavior animation version (1.20.10) has a higher minor version number compared to current version (1.10.0)\r\nWARNING: [FORMATVER198] (/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json) Behavior animation controller version (1.20.10) has a higher minor version number compared to current version (1.10.0)\r\nWARNING: [FORMATVER258] (/behavior_packs/comprehensive_bp/spawn_rules/sample_entity.json) Spawn rules version (1.20.10) has a higher minor version number compared to current version (1.12.0)\r\nWARNING: [FORMATVER218] (/resource_packs/comprehensive_rp/animations/sample_entity_resource.json) Resource animation version (1.20.10) has a higher minor version number compared to current version (1.10.0)\r\nWARNING: [FORMATVER238] (/resource_packs/comprehensive_rp/animation_controllers/sample_entity_resource.json) Resource animation controller version (1.20.10) has a higher minor version number compared to current version (1.10.0)\r\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/sample_loot_table.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/sample_loot_table.json to `minecraft:stick`\r\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json to `minecraft:diamond`\r\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json to `minecraft:emerald`\r\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json to `minecraft:gold_ingot`\r\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/sample_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/sample_recipe.json to `minecraft:stick`\r\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json to `minecraft:dirt`\r\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json to `minecraft:stick`\r\nWARNING: [UNLINK399] (/resource_packs/comprehensive_rp/entity/sample_entity.json) Link to texture is not found in this pack: /resource_packs/comprehensive_rp/entity/sample_entity.json to `textures/entity/sample_entity`\r\nWARNING: [UNLINK399] (/resource_packs/comprehensive_rp/particles/sample_particle.json) Link to texture is not found in this pack: /resource_packs/comprehensive_rp/particles/sample_particle.json to `textures/particle/sample_particle`",
-    "testFailSummary": "TESTFAIL: [CPACKICON000] Found 2 errors for Check Pack Icon Generator (CPACKICON).\r\nTESTFAIL: [LANGFILES000] Found 1 errors for Check Lang File Generator (LANGFILES).\r\nTESTFAIL: [SCRIPTMODULE000] Found 1 errors for Script Modules (SCRIPTMODULE).\r\nTESTFAIL: [JSONF000] Found 3 internal errors for JSON Structure Validation (via Minecraft docs) (JSONF). This may be a temporary issue with the test run.",
+    "errorSummary": "ERROR: [CADDONIREQ170] (/resource_packs/comprehensive_rp/manifest.json) Resource pack manifest does not specify that header/pack_scope that should be 'world'\nERROR: [CPACKICON101] pack_icon image file not found for comprehensive_bp. It must use the .png extension.\nERROR: [CPACKICON101] pack_icon image file not found for comprehensive_rp. It must use the .png extension.\nERROR: [SCRIPTMODULE114] (/behavior_packs/comprehensive_bp/manifest.json) For @minecraft/server, using an out of date beta version 1.8.0-beta compared to the current version: 1.8.0-beta",
+    "internalProcessingErrorSummary": "UNKNOWN: [JSONF402] Could not find expected form: entity/actor_document\nUNKNOWN: [JSONF402] Could not find expected form: spawn/spawn_rules\nUNKNOWN: [JSONF402] Could not find expected form: visual/geometry.v1.21.0",
+    "warningSummary": "WARNING: [FORMATVER178] (/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json) Behavior animation version (1.20.10) has a higher minor version number compared to current version (1.10.0)\nWARNING: [FORMATVER198] (/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json) Behavior animation controller version (1.20.10) has a higher minor version number compared to current version (1.10.0)\nWARNING: [FORMATVER218] (/resource_packs/comprehensive_rp/animations/sample_entity_resource.json) Resource animation version (1.20.10) has a higher minor version number compared to current version (1.10.0)\nWARNING: [FORMATVER238] (/resource_packs/comprehensive_rp/animation_controllers/sample_entity_resource.json) Resource animation controller version (1.20.10) has a higher minor version number compared to current version (1.10.0)\nWARNING: [FORMATVER258] (/behavior_packs/comprehensive_bp/spawn_rules/sample_entity.json) Spawn rules version (1.20.10) has a higher minor version number compared to current version (1.12.0)\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/sample_loot_table.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/sample_loot_table.json to `minecraft:stick`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json to `minecraft:diamond`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json to `minecraft:emerald`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json to `minecraft:gold_ingot`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/sample_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/sample_recipe.json to `minecraft:stick`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json to `minecraft:dirt`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json to `minecraft:stick`\nWARNING: [UNLINK399] (/resource_packs/comprehensive_rp/entity/sample_entity.json) Link to texture is not found in this pack: /resource_packs/comprehensive_rp/entity/sample_entity.json to `textures/entity/sample_entity`\nWARNING: [UNLINK399] (/resource_packs/comprehensive_rp/particles/sample_particle.json) Link to texture is not found in this pack: /resource_packs/comprehensive_rp/particles/sample_particle.json to `textures/particle/sample_particle`",
+    "testFailSummary": "TESTFAIL: [CADDONIREQ000] Found 1 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).\nTESTFAIL: [CPACKICON000] Found 2 errors for Check Pack Icon Generator (CPACKICON).\nTESTFAIL: [JSONF000] Found 3 internal errors for JSON Structure Validation (via Minecraft docs) (JSONF). This may be a temporary issue with the test run.\nTESTFAIL: [SCRIPTMODULE000] Found 1 errors for Script Modules (SCRIPTMODULE).",
     "summary": {
+      "BASEGAMEVER": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test Base Game Version (BASEGAMEVER)"
+        }
+      },
+      "BLOCKSCAT": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test Blocks Catalog (BLOCKSCAT)"
+        }
+      },
+      "CADDONIREQ": {
+        "0": {
+          "defaultMessage": "Found 1 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).",
+          "testCompleteFails": 1
+        },
+        "170": {
+          "defaultMessage": "Resource pack manifest does not specify that header/pack_scope that should be 'world'",
+          "errors": 1
+        }
+      },
+      "CBFG": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Beta Features Generator (CBFG) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CHECKFEATUREDEPRECATION": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Check Feature Deprecation (CHECKFEATUREDEPRECATION)"
+        }
+      },
+      "CHKMANIF": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Manifest Generator (CHKMANIF) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CPACKICON": {
+        "0": {
+          "title": "Test Failure",
+          "defaultMessage": "Found 2 errors for Check Pack Icon Generator (CPACKICON).",
+          "testCompleteFails": 1
+        },
+        "101": {
+          "title": "No Icon Found",
+          "defaultMessage": "pack_icon image file not found for comprehensive_bp. It must use the .png extension.",
+          "errors": 2
+        }
+      },
+      "CPARTI": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Particle Identifier Generator (CPARTI) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CSPJ": {
+        "1": {
+          "title": "Unknown Test: 1",
+          "defaultMessage": "Check Skin Pack Json Generator (CSPJ) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CWI": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check World Icon Generator (CWI) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "ENTITYTYPE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Entity Type (ENTITYTYPE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "52": {
+          "title": "Runtime Identifier",
+          "defaultMessage": "Entity Type Runtime Identifier"
+        },
+        "53": {
+          "title": "Identifier",
+          "defaultMessage": "Entity Type Identifier"
+        },
+        "54": {
+          "title": "Metadata",
+          "defaultMessage": "Entity Type Metadata"
+        },
+        "130": {
+          "title": "Format Version Patch Version Lower Than Current",
+          "defaultMessage": "Behavior pack entity type format version (1.20.10) has a lower patch version number compared to current version (1.21.100.06)",
+          "recommendations": 1
+        }
+      },
+      "EXPFLAG": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Check Experimental Flag (EXPFLAG)"
+        }
+      },
+      "FORBFILE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Forbidden Files Generator (FORBFILE) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "FORMATVER": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "Format Version (FORMATVER) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "120": {
+          "title": "Block type Version Patch Version Higher than Current",
+          "defaultMessage": "Block type version (1.20.10) has a lower patch version number compared to current version (1.21.100)",
+          "recommendations": 1
+        },
+        "140": {
+          "title": "Item type Version Patch Version Higher than Current",
+          "defaultMessage": "Item type version (1.20.10) has a lower patch version number compared to current version (1.21.100)",
+          "recommendations": 2
+        },
+        "160": {
+          "title": "Recipe Version Patch Version Higher than Current",
+          "defaultMessage": "Recipe version (1.20.10) has a lower patch version number compared to current version (1.21.100)",
+          "recommendations": 2
+        },
+        "178": {
+          "title": "Behavior animation Version Patch Version Lower than Current",
+          "defaultMessage": "Behavior animation version (1.20.10) has a higher minor version number compared to current version (1.10.0)",
+          "warnings": 1
+        },
+        "198": {
+          "title": "Behavior animation controller Version Patch Version Lower than Current",
+          "defaultMessage": "Behavior animation controller version (1.20.10) has a higher minor version number compared to current version (1.10.0)",
+          "warnings": 1
+        },
+        "218": {
+          "title": "Resource animation Version Patch Version Lower than Current",
+          "defaultMessage": "Resource animation version (1.20.10) has a higher minor version number compared to current version (1.10.0)",
+          "warnings": 1
+        },
+        "238": {
+          "title": "Resource animation controller Version Patch Version Lower than Current",
+          "defaultMessage": "Resource animation controller version (1.20.10) has a higher minor version number compared to current version (1.10.0)",
+          "warnings": 1
+        },
+        "258": {
+          "title": "258",
+          "defaultMessage": "Spawn rules version (1.20.10) has a higher minor version number compared to current version (1.12.0)",
+          "warnings": 1
+        },
+        "300": {
+          "title": "300",
+          "defaultMessage": "Entity type resource version (1.20.10) has a lower patch version number compared to current version (1.21.100)",
+          "recommendations": 1
+        },
+        "619": {
+          "title": "619",
+          "defaultMessage": "Behavior pack animation format_version"
+        },
+        "620": {
+          "title": "620",
+          "defaultMessage": "Behavior pack animation controller format_version"
+        },
+        "621": {
+          "title": "621",
+          "defaultMessage": "Block type format_version"
+        },
+        "623": {
+          "title": "623",
+          "defaultMessage": "Item type format_version"
+        },
+        "628": {
+          "title": "628",
+          "defaultMessage": "Animation format_version"
+        },
+        "629": {
+          "title": "629",
+          "defaultMessage": "Animation controller format_version"
+        },
+        "630": {
+          "title": "630",
+          "defaultMessage": "Entity type visuals/audio format_version"
+        },
+        "643": {
+          "title": "643",
+          "defaultMessage": "Recipe format_version"
+        },
+        "644": {
+          "title": "644",
+          "defaultMessage": "Spawn rule format_version"
+        },
+        "647": {
+          "title": "647",
+          "defaultMessage": "Attachable format_version"
+        }
+      },
+      "GEOFMT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Geometry Format (GEOFMT) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "GEOMETRY": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Model Geometry Validation (GEOMETRY) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Block Geometry"
+        },
+        "102": {
+          "title": "Entity Geometry"
+        },
+        "103": {
+          "title": "Item Geometry",
+          "defaultMessage": "Items Geometry"
+        }
+      },
       "ITEMS": {
         "1": {
           "title": "1",
@@ -886,6 +1119,61 @@
           "defaultMessage": "Resource pack item count"
         }
       },
+      "ITEMTYPE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Item Type (ITEMTYPE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "53": {
+          "title": "Identifier",
+          "defaultMessage": "Item Type Identifier"
+        },
+        "55": {
+          "title": "Category",
+          "defaultMessage": "Item Type Category"
+        },
+        "130": {
+          "title": "Format Version Patch Version Lower Than Current",
+          "defaultMessage": "Behavior pack item type format version (1.20.10) has a lower patch version number compared to current version (1.21.100.06)",
+          "recommendations": 2
+        }
+      },
+      "JSON": {
+        "1": {
+          "defaultMessage": "JSON Structure Validation (JSON) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "JSONF": {
+        "0": {
+          "defaultMessage": "Found 3 internal errors for JSON Structure Validation (via Minecraft docs) (JSONF). This may be a temporary issue with the test run.",
+          "testCompleteFails": 1
+        },
+        "402": {
+          "defaultMessage": "Could not find expected form",
+          "internalProcessingErrors": 3
+        }
+      },
+      "JSONTAGS": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "JSON Tags (JSONTAGS) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Entity Type",
+          "defaultMessage": "Entity file"
+        },
+        "102": {
+          "title": "Block Type",
+          "defaultMessage": "Block file"
+        },
+        "103": {
+          "title": "Item Type",
+          "defaultMessage": "Item file"
+        }
+      },
       "LINESIZE": {
         "1": {
           "title": "1",
@@ -993,29 +1281,31 @@
           "defaultMessage": "Resource pack file lines"
         }
       },
-      "PACKSIZE": {
+      "MCFUNCTION": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test MC Function Validation (MCFUNCTION)"
+        }
+      },
+      "MINENGINEVER": {
         "1": {
-          "title": "Test Success",
-          "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully",
+          "title": "1",
+          "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "101": {
-          "title": "Overall Size"
+        "605": {
+          "title": "605",
+          "defaultMessage": "Behavior pack manifest min_engine_version"
         },
-        "102": {
-          "title": "File Count"
-        },
-        "103": {
-          "title": "Folder Count"
-        },
-        "104": {
-          "title": "Content Size"
-        },
-        "105": {
-          "title": "Content File Count"
-        },
-        "106": {
-          "title": "Content Folder Count"
+        "614": {
+          "title": "614",
+          "defaultMessage": "Resource pack manifest format_version"
+        }
+      },
+      "NOBOM": {
+        "1": {
+          "defaultMessage": "No Byte Order Mark allowed in json file. (NOBOM) completed successfully",
+          "testCompleteSuccesses": 1
         }
       },
       "PACK": {
@@ -1046,7 +1336,7 @@
         },
         "109": {
           "title": "109",
-          "defaultMessage": "Behavior Pack Manfiest"
+          "defaultMessage": "Behavior Pack Manifest"
         },
         "111": {
           "title": "111",
@@ -1081,115 +1371,68 @@
           "defaultMessage": "Entity Geometry"
         }
       },
-      "JSONTAGS": {
+      "PACKMETADATA": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test General info (PACKMETADATA)"
+        }
+      },
+      "PACKSIZE": {
         "1": {
           "title": "Test Success",
-          "defaultMessage": "JSON Tags (JSONTAGS) completed successfully",
+          "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully",
           "testCompleteSuccesses": 1
         },
         "101": {
-          "title": "Entity Type",
-          "defaultMessage": "Entity file"
+          "title": "Overall Size"
         },
         "102": {
-          "title": "Block Type",
-          "defaultMessage": "Block file"
+          "title": "File Count"
         },
         "103": {
-          "title": "Item Type",
-          "defaultMessage": "Item file"
+          "title": "Folder Count"
+        },
+        "104": {
+          "title": "Content Size"
+        },
+        "105": {
+          "title": "Content File Count"
+        },
+        "106": {
+          "title": "Content Folder Count"
         }
       },
-      "FORMATVER": {
+      "PATHLENGTH": {
         "1": {
-          "title": "1",
-          "defaultMessage": "Format Version (FORMATVER) completed successfully",
+          "defaultMessage": "Path Length (PATHLENGTH) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "PRJINT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Project Integrity Generator (PRJINT) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "RESOURCEANIMATION": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Resource Animation (RESOURCEANIMATION) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "120": {
-          "title": "Block type Version Patch Version Higher than Current",
-          "defaultMessage": "Block type version (1.20.10) has a lower patch version number compared to current version (1.21.100)",
-          "recommendations": 1
+        "101": {
+          "title": "Animations"
         },
-        "140": {
-          "title": "Item type Version Patch Version Higher than Current",
-          "defaultMessage": "Item type version (1.20.10) has a lower patch version number compared to current version (1.21.100)",
-          "recommendations": 2
-        },
-        "160": {
-          "title": "Recipe Version Patch Version Higher than Current",
-          "defaultMessage": "Recipe version (1.20.10) has a lower patch version number compared to current version (1.21.100)",
-          "recommendations": 2
-        },
-        "178": {
-          "title": "Behavior animation Version Patch Version Lower than Current",
-          "defaultMessage": "Behavior animation version (1.20.10) has a higher minor version number compared to current version (1.10.0)",
-          "warnings": 1
-        },
-        "198": {
-          "title": "Behavior animation controller Version Patch Version Lower than Current",
-          "defaultMessage": "Behavior animation controller version (1.20.10) has a higher minor version number compared to current version (1.10.0)",
-          "warnings": 1
-        },
-        "218": {
-          "title": "Resource animation Version Patch Version Lower than Current",
-          "defaultMessage": "Resource animation version (1.20.10) has a higher minor version number compared to current version (1.10.0)",
-          "warnings": 1
-        },
-        "238": {
-          "title": "Resource animation controller Version Patch Version Lower than Current",
-          "defaultMessage": "Resource animation controller version (1.20.10) has a higher minor version number compared to current version (1.10.0)",
-          "warnings": 1
-        },
-        "258": {
-          "title": "258",
-          "defaultMessage": "Spawn rules version (1.20.10) has a higher minor version number compared to current version (1.12.0)",
-          "warnings": 1
-        },
-        "300": {
-          "title": "300",
-          "defaultMessage": "Entity type resource version (1.20.10) has a lower patch version number compared to current version (1.21.100)",
-          "recommendations": 1
-        },
-        "619": {
-          "title": "619",
-          "defaultMessage": "Behavior pack animation format_version"
-        },
-        "620": {
-          "title": "620",
-          "defaultMessage": "Behavior pack animation controller format_version"
-        },
-        "621": {
-          "title": "621",
-          "defaultMessage": "Block type format_version"
-        },
-        "623": {
-          "title": "623",
-          "defaultMessage": "Item type format_version"
-        },
-        "628": {
-          "title": "628",
-          "defaultMessage": "Animation format_version"
-        },
-        "629": {
-          "title": "629",
-          "defaultMessage": "Animation controller format_version"
-        },
-        "630": {
-          "title": "630",
-          "defaultMessage": "Entity type visuals/audio format_version"
-        },
-        "643": {
-          "title": "643",
-          "defaultMessage": "Recipe format_version"
-        },
-        "644": {
-          "title": "644",
-          "defaultMessage": "Spawn rule format_version"
-        },
-        "647": {
-          "title": "647",
-          "defaultMessage": "Attachable format_version"
+        "102": {
+          "title": "Bones"
+        }
+      },
+      "RPDEPENDS": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Resource Pack Dependencies (RPDEPENDS) completed successfully",
+          "testCompleteSuccesses": 1
         }
       },
       "SCRIPT": {
@@ -1200,6 +1443,35 @@
         },
         "101": {
           "title": "apisUsed"
+        }
+      },
+      "SCRIPTMODULE": {
+        "0": {
+          "title": "0",
+          "defaultMessage": "Found 1 errors for Script Modules (SCRIPTMODULE).",
+          "testCompleteFails": 1
+        },
+        "100": {
+          "title": "100",
+          "defaultMessage": "Behavior pack dependency on 1.8.0-beta at @minecraft/server"
+        },
+        "114": {
+          "title": "114",
+          "defaultMessage": "For @minecraft/server, using an out of date beta version 1.8.0-beta compared to the current version",
+          "errors": 1
+        }
+      },
+      "SNDSDEF": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Sounds Definition Manifest Validation (SNDSDEF)"
+        }
+      },
+      "STRICT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully",
+          "testCompleteSuccesses": 1
         }
       },
       "SUMMARY": {
@@ -1217,19 +1489,6 @@
           "defaultMessage": "Behavior Manifests"
         }
       },
-      "RESOURCEANIMATION": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Resource Animation (RESOURCEANIMATION) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "101": {
-          "title": "Animations"
-        },
-        "102": {
-          "title": "Bones"
-        }
-      },
       "TEXTURE": {
         "1": {
           "title": "Test Success",
@@ -1238,26 +1497,6 @@
         },
         "101": {
           "title": "Textures"
-        }
-      },
-      "TEXTUREREF": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Texture Reference Info Aggregation (TEXTUREREF) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "101": {
-          "title": "Texture References"
-        }
-      },
-      "TYPES": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Types Info Aggregation (TYPES) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "101": {
-          "title": "Types"
         }
       },
       "TEXTUREIMAGE": {
@@ -1294,119 +1533,66 @@
           "defaultMessage": "Texture Images Tier 5"
         }
       },
-      "GEOMETRY": {
+      "TEXTUREREF": {
         "1": {
           "title": "Test Success",
-          "defaultMessage": "Model Geometry Validation (GEOMETRY) completed successfully",
+          "defaultMessage": "Texture Reference Info Aggregation (TEXTUREREF) completed successfully",
           "testCompleteSuccesses": 1
         },
         "101": {
-          "title": "Block Geometry"
-        },
-        "102": {
-          "title": "Entity Geometry"
-        },
-        "103": {
-          "title": "Item Geometry",
-          "defaultMessage": "Items Geometry"
+          "title": "Texture References"
         }
       },
-      "CPACKICON": {
-        "0": {
-          "title": "Test Failure",
-          "defaultMessage": "Found 2 errors for Check Pack Icon Generator (CPACKICON).",
-          "testCompleteFails": 1
-        },
-        "101": {
-          "title": "No Icon Found",
-          "defaultMessage": "pack_icon image file not found for comprehensive_bp. It must use the .png extension.",
-          "errors": 2
-        }
-      },
-      "LANGFILES": {
-        "0": {
-          "title": "Test Failure",
-          "defaultMessage": "Found 1 errors for Check Lang File Generator (LANGFILES).",
-          "testCompleteFails": 1
-        },
-        "101": {
-          "title": "languages.json Not Found",
-          "errors": 1
-        }
-      },
-      "SCRIPTMODULE": {
-        "0": {
-          "title": "0",
-          "defaultMessage": "Found 1 errors for Script Modules (SCRIPTMODULE).",
-          "testCompleteFails": 1
-        },
-        "100": {
-          "title": "100",
-          "defaultMessage": "Behavior pack dependency on 1.8.0-beta at @minecraft/server"
-        },
-        "114": {
-          "title": "114",
-          "defaultMessage": "For @minecraft/server, using an out of date beta version: 1.8.0-beta compared to what is available (2.3.0)",
-          "errors": 1
-        }
-      },
-      "MINENGINEVER": {
-        "1": {
-          "title": "1",
-          "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "605": {
-          "title": "605",
-          "defaultMessage": "Behavior pack manifest min_engine_version"
-        },
-        "614": {
-          "title": "614",
-          "defaultMessage": "Resource pack manifest format_version"
-        }
-      },
-      "ENTITYTYPE": {
+      "TYPES": {
         "1": {
           "title": "Test Success",
-          "defaultMessage": "Entity Type (ENTITYTYPE) completed successfully",
+          "defaultMessage": "Types Info Aggregation (TYPES) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "52": {
-          "title": "Runtime Identifier",
-          "defaultMessage": "Entity Type Runtime Identifier"
-        },
-        "53": {
-          "title": "Identifier",
-          "defaultMessage": "Entity Type Identifier"
-        },
-        "54": {
-          "title": "Metadata",
-          "defaultMessage": "Entity Type Metadata"
-        },
-        "130": {
-          "title": "Format Version Patch Version Lower Than Current",
-          "defaultMessage": "Behavior pack entity type format version (1.20.10) has a lower patch version number compared to current version (1.21.100.06)",
-          "recommendations": 1
+        "101": {
+          "title": "Types"
         }
       },
-      "ITEMTYPE": {
+      "UNKFILE": {
         "1": {
-          "title": "Test Success",
-          "defaultMessage": "Item Type (ITEMTYPE) completed successfully",
+          "defaultMessage": "Unknown files (UNKFILE) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "UNKJSON": {
+        "1": {
+          "defaultMessage": "Unknown JSON (UNKJSON) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "UNLINK": {
+        "1": {
+          "defaultMessage": "Unlinked item info generator (UNLINK) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "53": {
-          "title": "Identifier",
-          "defaultMessage": "Item Type Identifier"
+        "323": {
+          "defaultMessage": "Link to item type is not found in this pack",
+          "warnings": 7
         },
-        "55": {
-          "title": "Category",
-          "defaultMessage": "Item Type Category"
-        },
-        "130": {
-          "title": "Format Version Patch Version Lower Than Current",
-          "defaultMessage": "Behavior pack item type format version (1.20.10) has a lower patch version number compared to current version (1.21.100.06)",
-          "recommendations": 2
+        "399": {
+          "defaultMessage": "Link to texture is not found in this pack",
+          "warnings": 2
+        }
+      },
+      "VALFILE": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Valid files (VALFILE)"
+        }
+      },
+      "VSCODEFILE": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test VSCode Files (VSCODEFILE)"
+        }
+      },
+      "WORLD": {
+        "2": {
+          "defaultMessage": "No applicable items found for test World Validation (WORLD)"
         }
       },
       "WORLDDATA": {
@@ -1432,178 +1618,373 @@
         "126": {
           "defaultMessage": "Level Dat Experiments"
         }
-      },
-      "JSONF": {
-        "0": {
-          "defaultMessage": "Found 3 internal errors for JSON Structure Validation (via Minecraft docs) (JSONF). This may be a temporary issue with the test run.",
-          "testCompleteFails": 1
-        },
-        "402": {
-          "defaultMessage": "Could not find expected form",
-          "internalProcessingErrors": 3
-        }
-      },
-      "UNLINK": {
-        "1": {
-          "defaultMessage": "Unlinked item info generator (UNLINK) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "323": {
-          "defaultMessage": "Link to item type is not found in this pack",
-          "warnings": 7
-        },
-        "399": {
-          "defaultMessage": "Link to texture is not found in this pack",
-          "warnings": 2
-        }
-      },
-      "SHARING": {
-        "1": {
-          "title": "1",
-          "defaultMessage": "Sharing Best Practices Information (SHARING) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "PACKMETADATA": {
-        "2": {
-          "title": "2",
-          "defaultMessage": "No applicable items found for test General info (PACKMETADATA)"
-        }
-      },
-      "STRICT": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "MCFUNCTION": {
-        "2": {
-          "title": "Test Not Applicable",
-          "defaultMessage": "No applicable items found for test MC Function Validation (MCFUNCTION)"
-        }
-      },
-      "CWI": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check World Icon Generator (CWI) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "SNDSDEF": {
-        "2": {
-          "title": "Test Not Applicable",
-          "defaultMessage": "No applicable items found for test Sounds Definition Manifest Validation (SNDSDEF)"
-        }
-      },
-      "CPARTI": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check Particle Identifier Generator (CPARTI) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "EXPFLAG": {
-        "2": {
-          "title": "Test Not Applicable",
-          "defaultMessage": "No applicable items found for test Check Experimental Flag (EXPFLAG)"
-        }
-      },
-      "CHECKFEATUREDEPRECATION": {
-        "2": {
-          "title": "Test Not Applicable",
-          "defaultMessage": "No applicable items found for test Check Feature Deprecation (CHECKFEATUREDEPRECATION)"
-        }
-      },
-      "FORBFILE": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check Forbidden Files Generator (FORBFILE) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "PRJINT": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check Project Integrity Generator (PRJINT) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "GEOFMT": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Geometry Format (GEOFMT) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "CBFG": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check Beta Features Generator (CBFG) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "VSCODEFILE": {
-        "2": {
-          "title": "2",
-          "defaultMessage": "No applicable items found for test VSCode Files (VSCODEFILE)"
-        }
-      },
-      "BASEGAMEVER": {
-        "2": {
-          "title": "2",
-          "defaultMessage": "No applicable items found for test Base Game Version (BASEGAMEVER)"
-        }
-      },
-      "BLOCKSCAT": {
-        "2": {
-          "title": "2",
-          "defaultMessage": "No applicable items found for test Blocks Catalog (BLOCKSCAT)"
-        }
-      },
-      "UNKJSON": {
-        "1": {
-          "defaultMessage": "Unknown JSON (UNKJSON) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "JSON": {
-        "1": {
-          "defaultMessage": "JSON Structure Validation (JSON) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "WORLD": {
-        "2": {
-          "defaultMessage": "No applicable items found for test World Validation (WORLD)"
-        }
-      },
-      "UNKFILE": {
-        "1": {
-          "defaultMessage": "Unknown files (UNKFILE) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "VALFILE": {
-        "2": {
-          "defaultMessage": "No applicable items found for test Valid files (VALFILE)"
-        }
-      },
-      "PATHLENGTH": {
-        "1": {
-          "defaultMessage": "Path Length (PATHLENGTH) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "NOBOM": {
-        "1": {
-          "defaultMessage": "No Byte Order Mark allowed in json file. (NOBOM) completed successfully",
-          "testCompleteSuccesses": 1
-        }
       }
     }
   },
   "items": [
+    {
+      "iTp": 8,
+      "gId": "BASEGAMEVER",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "BLOCKSCAT",
+      "gIx": 2
+    },
+    {
+      "iTp": 0,
+      "gId": "CADDONIREQ",
+      "gIx": 0
+    },
+    {
+      "iTp": 3,
+      "gId": "CADDONIREQ",
+      "gIx": 170,
+      "p": "/resource_packs/comprehensive_rp/manifest.json"
+    },
+    {
+      "iTp": 1,
+      "gId": "CBFG",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "CHECKFEATUREDEPRECATION",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "CHKMANIF",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "CPACKICON",
+      "gIx": 0
+    },
+    {
+      "iTp": 3,
+      "gId": "CPACKICON",
+      "gIx": 101
+    },
+    {
+      "iTp": 3,
+      "gId": "CPACKICON",
+      "gIx": 101,
+      "m": "pack_icon image file not found for comprehensive_rp. It must use the .png extension."
+    },
+    {
+      "iTp": 1,
+      "gId": "CPARTI",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CSPJ",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CWI",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "ENTITYTYPE",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 52,
+      "fs": {
+        "(no runtime identifier)": {
+          "Count": 1
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 53,
+      "fs": {
+        "(no override identifier)": {
+          "Count": 1
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 54,
+      "fs": {
+        "Spawnable Entity Type": {
+          "Count": 1
+        },
+        "Summonable Entity Type": {
+          "Count": 1
+        }
+      }
+    },
+    {
+      "iTp": 6,
+      "gId": "ENTITYTYPE",
+      "gIx": 130,
+      "p": "/behavior_packs/comprehensive_bp/entities/sample_entity.json"
+    },
+    {
+      "iTp": 8,
+      "gId": "EXPFLAG",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "FORBFILE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "FORMATVER",
+      "gIx": 1
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 120,
+      "p": "/behavior_packs/comprehensive_bp/blocks/sample_block.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 140,
+      "p": "/behavior_packs/comprehensive_bp/items/sample_item.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 140,
+      "p": "/behavior_packs/comprehensive_bp/items/simple_tool.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 160,
+      "p": "/behavior_packs/comprehensive_bp/recipes/sample_recipe.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 160,
+      "p": "/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "FORMATVER",
+      "gIx": 178,
+      "p": "/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "FORMATVER",
+      "gIx": 198,
+      "p": "/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "FORMATVER",
+      "gIx": 218,
+      "p": "/resource_packs/comprehensive_rp/animations/sample_entity_resource.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "FORMATVER",
+      "gIx": 238,
+      "p": "/resource_packs/comprehensive_rp/animation_controllers/sample_entity_resource.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "FORMATVER",
+      "gIx": 258,
+      "p": "/behavior_packs/comprehensive_bp/spawn_rules/sample_entity.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 300,
+      "p": "/resource_packs/comprehensive_rp/entity/sample_entity.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 619,
+      "p": "/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json",
+      "d": [
+        1,
+        20,
+        10
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 620,
+      "p": "/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json",
+      "d": [
+        1,
+        20,
+        10
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 621,
+      "p": "/behavior_packs/comprehensive_bp/blocks/sample_block.json",
+      "d": [
+        1,
+        20,
+        10
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 623,
+      "p": "/behavior_packs/comprehensive_bp/items/sample_item.json",
+      "d": [
+        1,
+        20,
+        10
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 623,
+      "p": "/behavior_packs/comprehensive_bp/items/simple_tool.json",
+      "d": [
+        1,
+        20,
+        10
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 628,
+      "p": "/resource_packs/comprehensive_rp/animations/sample_entity_resource.json",
+      "d": [
+        1,
+        20,
+        10
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 629,
+      "p": "/resource_packs/comprehensive_rp/animation_controllers/sample_entity_resource.json",
+      "d": [
+        1,
+        20,
+        10
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 630,
+      "p": "/resource_packs/comprehensive_rp/entity/sample_entity.json",
+      "d": [
+        1,
+        20,
+        10
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 643,
+      "p": "/behavior_packs/comprehensive_bp/recipes/sample_recipe.json",
+      "d": [
+        1,
+        20,
+        10
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 643,
+      "p": "/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json",
+      "d": [
+        1,
+        20,
+        10
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 644,
+      "p": "/behavior_packs/comprehensive_bp/spawn_rules/sample_entity.json",
+      "d": [
+        1,
+        20,
+        10
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 647,
+      "p": "/resource_packs/comprehensive_rp/attachables/sample_attachable.json",
+      "d": [
+        1,
+        20,
+        10
+      ]
+    },
+    {
+      "iTp": 1,
+      "gId": "GEOFMT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "GEOMETRY",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 102,
+      "fs": {
+        "Cubes": {
+          "Instance Count": 1,
+          "Total": 2,
+          "Max": 2,
+          "Min": 2,
+          "Average": 2
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 103
+    },
+    {
+      "iTp": 1,
+      "gId": "ITEMS",
+      "gIx": 1
+    },
     {
       "iTp": 2,
       "gId": "ITEMS",
@@ -1767,687 +2148,69 @@
       "d": 1
     },
     {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 209,
-      "p": "/behavior_packs/comprehensive_bp/"
+      "iTp": 1,
+      "gId": "ITEMTYPE",
+      "gIx": 1
     },
     {
       "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 105,
-      "p": "/behavior_packs/comprehensive_bp/manifest.json",
+      "gId": "ITEMTYPE",
+      "gIx": 53,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 515,
-          "Max": 515,
-          "Min": 515,
-          "Average": 515
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 22,
-          "Max": 22,
-          "Min": 22,
-          "Average": 22
+        "(no override identifier)": {
+          "Count": 2
         }
       }
     },
     {
       "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 119,
-      "p": "/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 358,
-          "Max": 358,
-          "Min": 358,
-          "Average": 358
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 24,
-          "Max": 24,
-          "Min": 24,
-          "Average": 24
-        }
-      }
+      "gId": "ITEMTYPE",
+      "gIx": 55
     },
     {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 120,
-      "p": "/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 376,
-          "Max": 376,
-          "Min": 376,
-          "Average": 376
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 19,
-          "Max": 19,
-          "Min": 19,
-          "Average": 19
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 121,
-      "p": "/behavior_packs/comprehensive_bp/blocks/sample_block.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 552,
-          "Max": 552,
-          "Min": 552,
-          "Average": 552
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 27,
-          "Max": 27,
-          "Min": 27,
-          "Average": 27
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 139,
-      "p": "/behavior_packs/comprehensive_bp/dialogue/sample_dialogue.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 375,
-          "Max": 375,
-          "Min": 375,
-          "Average": 375
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 27,
-          "Max": 27,
-          "Min": 27,
-          "Average": 27
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 110,
-      "p": "/behavior_packs/comprehensive_bp/entities/sample_entity.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 851,
-          "Max": 851,
-          "Min": 851,
-          "Average": 851
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 47,
-          "Max": 47,
-          "Min": 47,
-          "Average": 47
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 109,
-      "p": "/behavior_packs/comprehensive_bp/functions/complex_function.mcfunction",
-      "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 762,
-          "Max": 658,
-          "Min": 104,
-          "Average": 381
-        },
-        "Lines": {
-          "Instance Count": 2,
-          "Total": 23,
-          "Max": 19,
-          "Min": 4,
-          "Average": 12
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 123,
-      "p": "/behavior_packs/comprehensive_bp/items/sample_item.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 1124,
-          "Max": 601,
-          "Min": 523,
-          "Average": 562
-        },
-        "Lines": {
-          "Instance Count": 2,
-          "Total": 63,
-          "Max": 34,
-          "Min": 29,
-          "Average": 32
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 124,
-      "p": "/behavior_packs/comprehensive_bp/loot_tables/sample_loot_table.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 600,
-          "Max": 395,
-          "Min": 205,
-          "Average": 300
-        },
-        "Lines": {
-          "Instance Count": 2,
-          "Total": 47,
-          "Max": 31,
-          "Min": 16,
-          "Average": 24
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 143,
-      "p": "/behavior_packs/comprehensive_bp/recipes/sample_recipe.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 501,
-          "Max": 254,
-          "Min": 247,
-          "Average": 251
-        },
-        "Lines": {
-          "Instance Count": 2,
-          "Total": 34,
-          "Max": 19,
-          "Min": 15,
-          "Average": 17
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 102,
-      "p": "/behavior_packs/comprehensive_bp/scripts/main.js",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 783,
-          "Max": 783,
-          "Min": 783,
-          "Average": 783
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 21,
-          "Max": 21,
-          "Min": 21,
-          "Average": 21
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 144,
-      "p": "/behavior_packs/comprehensive_bp/spawn_rules/sample_entity.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 638,
-          "Max": 638,
-          "Min": 638,
-          "Average": 638
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 38,
-          "Max": 38,
-          "Min": 38,
-          "Average": 38
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 145,
-      "p": "/behavior_packs/comprehensive_bp/trading/sample_trading.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 296,
-          "Max": 296,
-          "Min": 296,
-          "Average": 296
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 22,
-          "Max": 22,
-          "Min": 22,
-          "Average": 22
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 210,
-      "p": "/resource_packs/comprehensive_rp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 114,
-      "p": "/resource_packs/comprehensive_rp/manifest.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 336,
-          "Max": 336,
-          "Min": 336,
-          "Average": 336
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 13,
-          "Max": 13,
-          "Min": 13,
-          "Average": 13
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 128,
-      "p": "/resource_packs/comprehensive_rp/animations/sample_entity_resource.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 403,
-          "Max": 403,
-          "Min": 403,
-          "Average": 403
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 30,
-          "Max": 30,
-          "Min": 30,
-          "Average": 30
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 129,
-      "p": "/resource_packs/comprehensive_rp/animation_controllers/sample_entity_resource.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 403,
-          "Max": 403,
-          "Min": 403,
-          "Average": 403
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 19,
-          "Max": 19,
-          "Min": 19,
-          "Average": 19
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 147,
-      "p": "/resource_packs/comprehensive_rp/attachables/sample_attachable.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 421,
-          "Max": 421,
-          "Min": 421,
-          "Average": 421
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 18,
-          "Max": 18,
-          "Min": 18,
-          "Average": 18
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
+      "iTp": 6,
+      "gId": "ITEMTYPE",
       "gIx": 130,
-      "p": "/resource_packs/comprehensive_rp/entity/sample_entity.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 514,
-          "Max": 514,
-          "Min": 514,
-          "Average": 514
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 21,
-          "Max": 21,
-          "Min": 21,
-          "Average": 21
-        }
-      }
+      "p": "/behavior_packs/comprehensive_bp/items/sample_item.json"
     },
     {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 132,
-      "p": "/resource_packs/comprehensive_rp/models/entity/sample_entity.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 437,
-          "Max": 437,
-          "Min": 437,
-          "Average": 437
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 26,
-          "Max": 26,
-          "Min": 26,
-          "Average": 26
-        }
-      }
+      "iTp": 6,
+      "gId": "ITEMTYPE",
+      "gIx": 130,
+      "p": "/behavior_packs/comprehensive_bp/items/simple_tool.json"
     },
     {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 133,
-      "p": "/resource_packs/comprehensive_rp/particles/sample_particle.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 661,
-          "Max": 661,
-          "Min": 661,
-          "Average": 661
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 30,
-          "Max": 30,
-          "Min": 30,
-          "Average": 30
-        }
-      }
+      "iTp": 1,
+      "gId": "JSON",
+      "gIx": 1
     },
     {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 134,
-      "p": "/resource_packs/comprehensive_rp/render_controllers/sample_entity.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 187,
-          "Max": 187,
-          "Min": 187,
-          "Average": 187
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 7,
-          "Max": 7,
-          "Min": 7,
-          "Average": 7
-        }
-      }
+      "iTp": 0,
+      "gId": "JSONF",
+      "gIx": 0
     },
     {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 179,
-      "p": "/resource_packs/comprehensive_rp/texts/en_US.lang",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 87,
-          "Max": 87,
-          "Min": 87,
-          "Average": 87
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 3,
-          "Max": 3,
-          "Min": 3,
-          "Average": 3
-        }
-      }
+      "iTp": 5,
+      "gId": "JSONF",
+      "gIx": 402,
+      "d": "entity/actor_document"
     },
     {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 137,
-      "p": "/resource_packs/comprehensive_rp/texts/languages.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 9,
-          "Max": 9,
-          "Min": 9,
-          "Average": 9
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 2,
-          "Max": 2,
-          "Min": 2,
-          "Average": 2
-        }
-      }
+      "iTp": 5,
+      "gId": "JSONF",
+      "gIx": 402,
+      "d": "spawn/spawn_rules"
     },
     {
-      "iTp": 7,
-      "gId": "PACKSIZE",
-      "gIx": 101,
-      "d": 11189
+      "iTp": 5,
+      "gId": "JSONF",
+      "gIx": 402,
+      "d": "visual/geometry.v1.21.0"
     },
     {
-      "iTp": 7,
-      "gId": "PACKSIZE",
-      "gIx": 102,
-      "d": 27
-    },
-    {
-      "iTp": 7,
-      "gId": "PACKSIZE",
-      "gIx": 103,
-      "d": 25
-    },
-    {
-      "iTp": 7,
-      "gId": "PACKSIZE",
-      "gIx": 104,
-      "d": 11189
-    },
-    {
-      "iTp": 7,
-      "gId": "PACKSIZE",
-      "gIx": 105,
-      "d": 27
-    },
-    {
-      "iTp": 7,
-      "gId": "PACKSIZE",
-      "gIx": 106,
-      "d": 21
-    },
-    {
-      "iTp": 7,
-      "gId": "PACK",
-      "gIx": 245
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 109,
-      "p": "/behavior_packs/comprehensive_bp/manifest.json",
-      "d": "{\"format_version\":2,\"header\":{\"name\":\"Comprehensive Test Behavior Pack\",\"description\":\"A comprehensive behavior pack for testing different content types\",\"uuid\":\"85c5e4b8-8b93-4e3f-9a5b-7c8d9e0f1a2b\",\"version\":[1,0,0],\"min_engine_version\":[1,20,10]},\"modules\":[{\"type\":\"data\",\"uuid\":\"95c5e4b8-8b93-4e3f-9a5b-7c8d9e0f1a2c\",\"version\":[1,0,0]},{\"type\":\"script\",\"uuid\":\"a5c5e4b8-8b93-4e3f-9a5b-7c8d9e0f1a2d\",\"version\":[1,0,0],\"entry\":\"scripts/main.js\"}],\"dependencies\":[{\"module_name\":\"@minecraft/server\",\"version\":\"1.8.0-beta\"}]}"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 107,
-      "p": "/behavior_packs/comprehensive_bp/manifest.json",
-      "d": 2
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 108,
-      "p": "/behavior_packs/comprehensive_bp/manifest.json",
-      "d": "85c5e4b8-8b93-4e3f-9a5b-7c8d9e0f1a2b"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 106,
-      "p": "/behavior_packs/comprehensive_bp/manifest.json",
-      "d": "85c5e4b8-8b93-4e3f-9a5b-7c8d9e0f1a2b|1.0.0"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 104,
-      "p": "/behavior_packs/comprehensive_bp/manifest.json",
-      "d": "Comprehensive Test Behavior Pack"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 105,
-      "p": "/behavior_packs/comprehensive_bp/manifest.json",
-      "d": "A comprehensive behavior pack for testing different content types"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 107,
-      "p": "/behavior_packs/comprehensive_bp/manifest.json",
-      "d": [
-        1,
-        20,
-        10
-      ]
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 113,
-      "p": "/resource_packs/comprehensive_rp/manifest.json",
-      "d": "{\"format_version\":2,\"header\":{\"name\":\"Comprehensive Test Resource Pack\",\"description\":\"A comprehensive resource pack for testing different content types\",\"uuid\":\"75c5e4b8-8b93-4e3f-9a5b-7c8d9e0f1a2e\",\"version\":[1,0,0],\"min_engine_version\":[1,20,10]},\"modules\":[{\"type\":\"resources\",\"uuid\":\"65c5e4b8-8b93-4e3f-9a5b-7c8d9e0f1a2f\",\"version\":[1,0,0]}]}"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 117,
-      "p": "/resource_packs/comprehensive_rp/manifest.json",
-      "d": 2
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 112,
-      "p": "/resource_packs/comprehensive_rp/manifest.json",
-      "d": "75c5e4b8-8b93-4e3f-9a5b-7c8d9e0f1a2e"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 116,
-      "p": "/resource_packs/comprehensive_rp/manifest.json",
-      "d": "75c5e4b8-8b93-4e3f-9a5b-7c8d9e0f1a2e|1.0.0"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 114,
-      "p": "/resource_packs/comprehensive_rp/manifest.json",
-      "d": "Comprehensive Test Resource Pack"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 115,
-      "p": "/resource_packs/comprehensive_rp/manifest.json",
-      "d": "A comprehensive resource pack for testing different content types"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 111,
-      "p": "/resource_packs/comprehensive_rp/manifest.json",
-      "d": [
-        1,
-        20,
-        10
-      ]
-    },
-    {
-      "iTp": 2,
+      "iTp": 1,
       "gId": "JSONTAGS",
-      "gIx": 102,
-      "p": "/behavior_packs/comprehensive_bp/blocks/sample_block.json",
-      "d": "/behavior_packs/comprehensive_bp/blocks/sample_block.json",
-      "fs": {
-        "Block Default Components": {
-          "minecraft:destructible_by_mining": 1,
-          "minecraft:destructible_by_explosion": 1,
-          "minecraft:flammable": 1,
-          "minecraft:friction": 1,
-          "minecraft:light_emission": 1,
-          "minecraft:map_color": 1,
-          "minecraft:material_instances": 1
-        }
-      }
+      "gIx": 1
     },
     {
       "iTp": 2,
@@ -2470,6 +2233,24 @@
           "minecraft:behavior.look_at_player": 1,
           "minecraft:behavior.random_stroll": 1,
           "minecraft:behavior.random_look_around": 1
+        }
+      }
+    },
+    {
+      "iTp": 2,
+      "gId": "JSONTAGS",
+      "gIx": 102,
+      "p": "/behavior_packs/comprehensive_bp/blocks/sample_block.json",
+      "d": "/behavior_packs/comprehensive_bp/blocks/sample_block.json",
+      "fs": {
+        "Block Default Components": {
+          "minecraft:destructible_by_mining": 1,
+          "minecraft:destructible_by_explosion": 1,
+          "minecraft:flammable": 1,
+          "minecraft:friction": 1,
+          "minecraft:light_emission": 1,
+          "minecraft:map_color": 1,
+          "minecraft:material_instances": 1
         }
       }
     },
@@ -2511,217 +2292,714 @@
       }
     },
     {
-      "iTp": 4,
-      "gId": "FORMATVER",
-      "gIx": 178,
-      "p": "/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json"
+      "iTp": 1,
+      "gId": "LINESIZE",
+      "gIx": 1
     },
     {
-      "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 619,
-      "p": "/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json",
-      "d": [
-        1,
-        20,
-        10
-      ]
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 102,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 783,
+          "Max": 783,
+          "Min": 783,
+          "Average": 783
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 21,
+          "Max": 21,
+          "Min": 21,
+          "Average": 21
+        }
+      }
     },
     {
-      "iTp": 4,
-      "gId": "FORMATVER",
-      "gIx": 198,
-      "p": "/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json"
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 105,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 515,
+          "Max": 515,
+          "Min": 515,
+          "Average": 515
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 22,
+          "Max": 22,
+          "Min": 22,
+          "Average": 22
+        }
+      }
     },
     {
-      "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 620,
-      "p": "/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json",
-      "d": [
-        1,
-        20,
-        10
-      ]
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 109,
+      "fs": {
+        "Size": {
+          "Instance Count": 2,
+          "Total": 762,
+          "Max": 658,
+          "Min": 104,
+          "Average": 381
+        },
+        "Lines": {
+          "Instance Count": 2,
+          "Total": 23,
+          "Max": 19,
+          "Min": 4,
+          "Average": 12
+        }
+      }
     },
     {
-      "iTp": 6,
-      "gId": "FORMATVER",
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 110,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 851,
+          "Max": 851,
+          "Min": 851,
+          "Average": 851
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 47,
+          "Max": 47,
+          "Min": 47,
+          "Average": 47
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 114,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 336,
+          "Max": 336,
+          "Min": 336,
+          "Average": 336
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 13,
+          "Max": 13,
+          "Min": 13,
+          "Average": 13
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 119,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 358,
+          "Max": 358,
+          "Min": 358,
+          "Average": 358
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 24,
+          "Max": 24,
+          "Min": 24,
+          "Average": 24
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
       "gIx": 120,
-      "p": "/behavior_packs/comprehensive_bp/blocks/sample_block.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 621,
-      "p": "/behavior_packs/comprehensive_bp/blocks/sample_block.json",
-      "d": [
-        1,
-        20,
-        10
-      ]
-    },
-    {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 140,
-      "p": "/behavior_packs/comprehensive_bp/items/sample_item.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 623,
-      "p": "/behavior_packs/comprehensive_bp/items/sample_item.json",
-      "d": [
-        1,
-        20,
-        10
-      ]
-    },
-    {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 140,
-      "p": "/behavior_packs/comprehensive_bp/items/simple_tool.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 623,
-      "p": "/behavior_packs/comprehensive_bp/items/simple_tool.json",
-      "d": [
-        1,
-        20,
-        10
-      ]
-    },
-    {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 160,
-      "p": "/behavior_packs/comprehensive_bp/recipes/sample_recipe.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 643,
-      "p": "/behavior_packs/comprehensive_bp/recipes/sample_recipe.json",
-      "d": [
-        1,
-        20,
-        10
-      ]
-    },
-    {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 160,
-      "p": "/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 643,
-      "p": "/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json",
-      "d": [
-        1,
-        20,
-        10
-      ]
-    },
-    {
-      "iTp": 4,
-      "gId": "FORMATVER",
-      "gIx": 258,
-      "p": "/behavior_packs/comprehensive_bp/spawn_rules/sample_entity.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 644,
-      "p": "/behavior_packs/comprehensive_bp/spawn_rules/sample_entity.json",
-      "d": [
-        1,
-        20,
-        10
-      ]
-    },
-    {
-      "iTp": 4,
-      "gId": "FORMATVER",
-      "gIx": 218,
-      "p": "/resource_packs/comprehensive_rp/animations/sample_entity_resource.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 628,
-      "p": "/resource_packs/comprehensive_rp/animations/sample_entity_resource.json",
-      "d": [
-        1,
-        20,
-        10
-      ]
-    },
-    {
-      "iTp": 4,
-      "gId": "FORMATVER",
-      "gIx": 238,
-      "p": "/resource_packs/comprehensive_rp/animation_controllers/sample_entity_resource.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 629,
-      "p": "/resource_packs/comprehensive_rp/animation_controllers/sample_entity_resource.json",
-      "d": [
-        1,
-        20,
-        10
-      ]
-    },
-    {
-      "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 647,
-      "p": "/resource_packs/comprehensive_rp/attachables/sample_attachable.json",
-      "d": [
-        1,
-        20,
-        10
-      ]
-    },
-    {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 300,
-      "p": "/resource_packs/comprehensive_rp/entity/sample_entity.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 630,
-      "p": "/resource_packs/comprehensive_rp/entity/sample_entity.json",
-      "d": [
-        1,
-        20,
-        10
-      ]
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 376,
+          "Max": 376,
+          "Min": 376,
+          "Average": 376
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 19,
+          "Max": 19,
+          "Min": 19,
+          "Average": 19
+        }
+      }
     },
     {
       "iTp": 7,
-      "gId": "SCRIPT",
-      "gIx": 101
+      "gId": "LINESIZE",
+      "gIx": 121,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 552,
+          "Max": 552,
+          "Min": 552,
+          "Average": 552
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 27,
+          "Max": 27,
+          "Min": 27,
+          "Average": 27
+        }
+      }
     },
     {
       "iTp": 7,
-      "gId": "SUMMARY",
-      "gIx": 101
+      "gId": "LINESIZE",
+      "gIx": 123,
+      "fs": {
+        "Size": {
+          "Instance Count": 2,
+          "Total": 1124,
+          "Max": 601,
+          "Min": 523,
+          "Average": 562
+        },
+        "Lines": {
+          "Instance Count": 2,
+          "Total": 63,
+          "Max": 34,
+          "Min": 29,
+          "Average": 32
+        }
+      }
     },
     {
       "iTp": 7,
-      "gId": "SUMMARY",
-      "gIx": 102
+      "gId": "LINESIZE",
+      "gIx": 124,
+      "fs": {
+        "Size": {
+          "Instance Count": 2,
+          "Total": 600,
+          "Max": 395,
+          "Min": 205,
+          "Average": 300
+        },
+        "Lines": {
+          "Instance Count": 2,
+          "Total": 47,
+          "Max": 31,
+          "Min": 16,
+          "Average": 24
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 128,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 403,
+          "Max": 403,
+          "Min": 403,
+          "Average": 403
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 30,
+          "Max": 30,
+          "Min": 30,
+          "Average": 30
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 129,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 403,
+          "Max": 403,
+          "Min": 403,
+          "Average": 403
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 19,
+          "Max": 19,
+          "Min": 19,
+          "Average": 19
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 130,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 514,
+          "Max": 514,
+          "Min": 514,
+          "Average": 514
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 21,
+          "Max": 21,
+          "Min": 21,
+          "Average": 21
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 132,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 437,
+          "Max": 437,
+          "Min": 437,
+          "Average": 437
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 26,
+          "Max": 26,
+          "Min": 26,
+          "Average": 26
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 133,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 661,
+          "Max": 661,
+          "Min": 661,
+          "Average": 661
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 30,
+          "Max": 30,
+          "Min": 30,
+          "Average": 30
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 134,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 187,
+          "Max": 187,
+          "Min": 187,
+          "Average": 187
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 7,
+          "Max": 7,
+          "Min": 7,
+          "Average": 7
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 137,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 9,
+          "Max": 9,
+          "Min": 9,
+          "Average": 9
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 2,
+          "Max": 2,
+          "Min": 2,
+          "Average": 2
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 139,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 375,
+          "Max": 375,
+          "Min": 375,
+          "Average": 375
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 27,
+          "Max": 27,
+          "Min": 27,
+          "Average": 27
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 143,
+      "fs": {
+        "Size": {
+          "Instance Count": 2,
+          "Total": 501,
+          "Max": 254,
+          "Min": 247,
+          "Average": 251
+        },
+        "Lines": {
+          "Instance Count": 2,
+          "Total": 34,
+          "Max": 19,
+          "Min": 15,
+          "Average": 17
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 144,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 638,
+          "Max": 638,
+          "Min": 638,
+          "Average": 638
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 38,
+          "Max": 38,
+          "Min": 38,
+          "Average": 38
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 145,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 296,
+          "Max": 296,
+          "Min": 296,
+          "Average": 296
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 22,
+          "Max": 22,
+          "Min": 22,
+          "Average": 22
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 147,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 421,
+          "Max": 421,
+          "Min": 421,
+          "Average": 421
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 18,
+          "Max": 18,
+          "Min": 18,
+          "Average": 18
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 179,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 87,
+          "Max": 87,
+          "Min": 87,
+          "Average": 87
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 3,
+          "Max": 3,
+          "Min": 3,
+          "Average": 3
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 209
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 210
+    },
+    {
+      "iTp": 8,
+      "gId": "MCFUNCTION",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "MINENGINEVER",
+      "gIx": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "MINENGINEVER",
+      "gIx": 605,
+      "p": "/behavior_packs/comprehensive_bp/manifest.json",
+      "d": [
+        1,
+        20,
+        10
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "MINENGINEVER",
+      "gIx": 614,
+      "p": "/resource_packs/comprehensive_rp/manifest.json",
+      "d": [
+        1,
+        20,
+        10
+      ]
+    },
+    {
+      "iTp": 1,
+      "gId": "NOBOM",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "PACK",
+      "gIx": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 104,
+      "p": "/behavior_packs/comprehensive_bp/manifest.json",
+      "d": "Comprehensive Test Behavior Pack"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 105,
+      "p": "/behavior_packs/comprehensive_bp/manifest.json",
+      "d": "A comprehensive behavior pack for testing different content types"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 106,
+      "p": "/behavior_packs/comprehensive_bp/manifest.json",
+      "d": "85c5e4b8-8b93-4e3f-9a5b-7c8d9e0f1a2b|1.0.0"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 107,
+      "p": "/behavior_packs/comprehensive_bp/manifest.json",
+      "d": 2
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 107,
+      "p": "/behavior_packs/comprehensive_bp/manifest.json",
+      "d": [
+        1,
+        20,
+        10
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 108,
+      "p": "/behavior_packs/comprehensive_bp/manifest.json",
+      "d": "85c5e4b8-8b93-4e3f-9a5b-7c8d9e0f1a2b"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 109,
+      "p": "/behavior_packs/comprehensive_bp/manifest.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 111,
+      "p": "/resource_packs/comprehensive_rp/manifest.json",
+      "d": [
+        1,
+        20,
+        10
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 112,
+      "p": "/resource_packs/comprehensive_rp/manifest.json",
+      "d": "75c5e4b8-8b93-4e3f-9a5b-7c8d9e0f1a2e"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 113,
+      "p": "/resource_packs/comprehensive_rp/manifest.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 114,
+      "p": "/resource_packs/comprehensive_rp/manifest.json",
+      "d": "Comprehensive Test Resource Pack"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 115,
+      "p": "/resource_packs/comprehensive_rp/manifest.json",
+      "d": "A comprehensive resource pack for testing different content types"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 116,
+      "p": "/resource_packs/comprehensive_rp/manifest.json",
+      "d": "75c5e4b8-8b93-4e3f-9a5b-7c8d9e0f1a2e|1.0.0"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 117,
+      "p": "/resource_packs/comprehensive_rp/manifest.json",
+      "d": 2
+    },
+    {
+      "iTp": 7,
+      "gId": "PACK",
+      "gIx": 245
+    },
+    {
+      "iTp": 8,
+      "gId": "PACKMETADATA",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "PACKSIZE",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 101,
+      "d": 11189
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 102,
+      "d": 27
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 103,
+      "d": 25
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 104,
+      "d": 11189
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 105,
+      "d": 27
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 106,
+      "d": 21
+    },
+    {
+      "iTp": 1,
+      "gId": "PATHLENGTH",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "PRJINT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "RESOURCEANIMATION",
+      "gIx": 1
     },
     {
       "iTp": 7,
@@ -2751,6 +3029,71 @@
           "Count": 36
         }
       }
+    },
+    {
+      "iTp": 1,
+      "gId": "RPDEPENDS",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "SCRIPT",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "SCRIPT",
+      "gIx": 101
+    },
+    {
+      "iTp": 0,
+      "gId": "SCRIPTMODULE",
+      "gIx": 0
+    },
+    {
+      "iTp": 2,
+      "gId": "SCRIPTMODULE",
+      "gIx": 100,
+      "p": "/behavior_packs/comprehensive_bp/manifest.json",
+      "d": "1.8.0-beta",
+      "iId": "@minecraft/server"
+    },
+    {
+      "iTp": 3,
+      "gId": "SCRIPTMODULE",
+      "gIx": 114,
+      "p": "/behavior_packs/comprehensive_bp/manifest.json",
+      "d": "1.8.0-beta"
+    },
+    {
+      "iTp": 8,
+      "gId": "SNDSDEF",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "STRICT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "SUMMARY",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "SUMMARY",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "SUMMARY",
+      "gIx": 102
+    },
+    {
+      "iTp": 1,
+      "gId": "TEXTURE",
+      "gIx": 1
     },
     {
       "iTp": 7,
@@ -2784,14 +3127,9 @@
       }
     },
     {
-      "iTp": 7,
-      "gId": "TEXTUREREF",
-      "gIx": 101
-    },
-    {
-      "iTp": 7,
-      "gId": "TYPES",
-      "gIx": 101
+      "iTp": 1,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 1
     },
     {
       "iTp": 7,
@@ -3009,376 +3347,39 @@
       }
     },
     {
+      "iTp": 1,
+      "gId": "TEXTUREREF",
+      "gIx": 1
+    },
+    {
       "iTp": 7,
-      "gId": "GEOMETRY",
+      "gId": "TEXTUREREF",
       "gIx": 101
     },
     {
-      "iTp": 7,
-      "gId": "GEOMETRY",
-      "gIx": 102,
-      "fs": {
-        "Cubes": {
-          "Instance Count": 1,
-          "Total": 2,
-          "Max": 2,
-          "Min": 2,
-          "Average": 2
-        }
-      }
+      "iTp": 1,
+      "gId": "TYPES",
+      "gIx": 1
     },
     {
       "iTp": 7,
-      "gId": "GEOMETRY",
-      "gIx": 103
-    },
-    {
-      "iTp": 3,
-      "gId": "CPACKICON",
+      "gId": "TYPES",
       "gIx": 101
     },
     {
-      "iTp": 3,
-      "gId": "CPACKICON",
-      "gIx": 101,
-      "m": "pack_icon image file not found for comprehensive_rp. It must use the .png extension."
+      "iTp": 1,
+      "gId": "UNKFILE",
+      "gIx": 1
     },
     {
-      "iTp": 3,
-      "gId": "LANGFILES",
-      "gIx": 101
+      "iTp": 1,
+      "gId": "UNKJSON",
+      "gIx": 1
     },
     {
-      "iTp": 2,
-      "gId": "SCRIPTMODULE",
-      "gIx": 100,
-      "p": "/behavior_packs/comprehensive_bp/manifest.json",
-      "d": "1.8.0-beta",
-      "iId": "@minecraft/server"
-    },
-    {
-      "iTp": 3,
-      "gId": "SCRIPTMODULE",
-      "gIx": 114,
-      "p": "/behavior_packs/comprehensive_bp/manifest.json",
-      "d": "1.8.0-beta"
-    },
-    {
-      "iTp": 2,
-      "gId": "MINENGINEVER",
-      "gIx": 605,
-      "p": "/behavior_packs/comprehensive_bp/manifest.json",
-      "d": [
-        1,
-        20,
-        10
-      ]
-    },
-    {
-      "iTp": 2,
-      "gId": "MINENGINEVER",
-      "gIx": 614,
-      "p": "/resource_packs/comprehensive_rp/manifest.json",
-      "d": [
-        1,
-        20,
-        10
-      ]
-    },
-    {
-      "iTp": 7,
-      "gId": "ENTITYTYPE",
-      "gIx": 52,
-      "fs": {
-        "(no runtime identifier)": {
-          "Count": 1
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "ENTITYTYPE",
-      "gIx": 53,
-      "fs": {
-        "(no override identifier)": {
-          "Count": 1
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "ENTITYTYPE",
-      "gIx": 54,
-      "fs": {
-        "Spawnable Entity Type": {
-          "Count": 1
-        },
-        "Summonable Entity Type": {
-          "Count": 1
-        }
-      }
-    },
-    {
-      "iTp": 6,
-      "gId": "ENTITYTYPE",
-      "gIx": 130,
-      "p": "/behavior_packs/comprehensive_bp/entities/sample_entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "ITEMTYPE",
-      "gIx": 53,
-      "fs": {
-        "(no override identifier)": {
-          "Count": 2
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "ITEMTYPE",
-      "gIx": 55
-    },
-    {
-      "iTp": 6,
-      "gId": "ITEMTYPE",
-      "gIx": 130,
-      "p": "/behavior_packs/comprehensive_bp/items/sample_item.json"
-    },
-    {
-      "iTp": 6,
-      "gId": "ITEMTYPE",
-      "gIx": 130,
-      "p": "/behavior_packs/comprehensive_bp/items/simple_tool.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 121,
-      "p": "/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 122,
-      "p": "/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 123,
-      "p": "/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 124,
-      "p": "/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 125,
-      "p": "/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 126,
-      "p": "/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 121,
-      "p": "/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 122,
-      "p": "/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 123,
-      "p": "/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 124,
-      "p": "/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 125,
-      "p": "/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 126,
-      "p": "/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 121,
-      "p": "/behavior_packs/comprehensive_bp/dialogue/sample_dialogue.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 122,
-      "p": "/behavior_packs/comprehensive_bp/dialogue/sample_dialogue.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 123,
-      "p": "/behavior_packs/comprehensive_bp/dialogue/sample_dialogue.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 124,
-      "p": "/behavior_packs/comprehensive_bp/dialogue/sample_dialogue.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 125,
-      "p": "/behavior_packs/comprehensive_bp/dialogue/sample_dialogue.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 126,
-      "p": "/behavior_packs/comprehensive_bp/dialogue/sample_dialogue.json"
-    },
-    {
-      "iTp": 5,
-      "gId": "JSONF",
-      "gIx": 402,
-      "d": "entity/actor_document"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 121,
-      "p": "/behavior_packs/comprehensive_bp/functions/complex_function.mcfunction"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 122,
-      "p": "/behavior_packs/comprehensive_bp/functions/complex_function.mcfunction"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 123,
-      "p": "/behavior_packs/comprehensive_bp/functions/complex_function.mcfunction",
-      "fs": {
-        "#": {
-          "Count": 7
-        },
-        "execute": {
-          "Count": 4
-        },
-        "scoreboard": {
-          "Count": 2
-        },
-        "particle": {
-          "Count": 1
-        },
-        "playsound": {
-          "Count": 1
-        },
-        "tp": {
-          "Count": 1
-        },
-        "effect": {
-          "Count": 1
-        },
-        "setblock": {
-          "Count": 1
-        },
-        "fill": {
-          "Count": 1
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 124,
-      "p": "/behavior_packs/comprehensive_bp/functions/complex_function.mcfunction"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 125,
-      "p": "/behavior_packs/comprehensive_bp/functions/complex_function.mcfunction"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 126,
-      "p": "/behavior_packs/comprehensive_bp/functions/complex_function.mcfunction"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 121,
-      "p": "/behavior_packs/comprehensive_bp/functions/sample_function.mcfunction"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 122,
-      "p": "/behavior_packs/comprehensive_bp/functions/sample_function.mcfunction"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 123,
-      "p": "/behavior_packs/comprehensive_bp/functions/sample_function.mcfunction",
-      "fs": {
-        "#": {
-          "Count": 1
-        },
-        "say": {
-          "Count": 1
-        },
-        "give": {
-          "Count": 1
-        },
-        "summon": {
-          "Count": 1
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 124,
-      "p": "/behavior_packs/comprehensive_bp/functions/sample_function.mcfunction"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 125,
-      "p": "/behavior_packs/comprehensive_bp/functions/sample_function.mcfunction"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 126,
-      "p": "/behavior_packs/comprehensive_bp/functions/sample_function.mcfunction"
+      "iTp": 1,
+      "gId": "UNLINK",
+      "gIx": 1
     },
     {
       "iTp": 4,
@@ -3430,23 +3431,11 @@
       "d": "/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json to `minecraft:stick`"
     },
     {
-      "iTp": 5,
-      "gId": "JSONF",
-      "gIx": 402,
-      "d": "spawn/spawn_rules"
-    },
-    {
       "iTp": 4,
       "gId": "UNLINK",
       "gIx": 399,
       "p": "/resource_packs/comprehensive_rp/entity/sample_entity.json",
       "d": "/resource_packs/comprehensive_rp/entity/sample_entity.json to `textures/entity/sample_entity`"
-    },
-    {
-      "iTp": 5,
-      "gId": "JSONF",
-      "gIx": 402,
-      "d": "visual/geometry.v1.21.0"
     },
     {
       "iTp": 4,
@@ -3456,199 +3445,14 @@
       "d": "/resource_packs/comprehensive_rp/particles/sample_particle.json to `textures/particle/sample_particle`"
     },
     {
-      "iTp": 1,
-      "gId": "ITEMS",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "LINESIZE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "PACKSIZE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "PACK",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "JSONTAGS",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "FORMATVER",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "SCRIPT",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "SHARING",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "SUMMARY",
-      "gIx": 1
-    },
-    {
       "iTp": 8,
-      "gId": "PACKMETADATA",
+      "gId": "VALFILE",
       "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "RESOURCEANIMATION",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "STRICT",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "TEXTURE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "TEXTUREREF",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "TYPES",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "TEXTUREIMAGE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "GEOMETRY",
-      "gIx": 1
-    },
-    {
-      "iTp": 8,
-      "gId": "MCFUNCTION",
-      "gIx": 2
-    },
-    {
-      "iTp": 0,
-      "gId": "CPACKICON",
-      "gIx": 0
-    },
-    {
-      "iTp": 1,
-      "gId": "CWI",
-      "gIx": 1
-    },
-    {
-      "iTp": 8,
-      "gId": "SNDSDEF",
-      "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "CPARTI",
-      "gIx": 1
-    },
-    {
-      "iTp": 8,
-      "gId": "EXPFLAG",
-      "gIx": 2
-    },
-    {
-      "iTp": 8,
-      "gId": "CHECKFEATUREDEPRECATION",
-      "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "FORBFILE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "PRJINT",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "GEOFMT",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "CBFG",
-      "gIx": 1
-    },
-    {
-      "iTp": 0,
-      "gId": "LANGFILES",
-      "gIx": 0
-    },
-    {
-      "iTp": 0,
-      "gId": "SCRIPTMODULE",
-      "gIx": 0
     },
     {
       "iTp": 8,
       "gId": "VSCODEFILE",
       "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "MINENGINEVER",
-      "gIx": 1
-    },
-    {
-      "iTp": 8,
-      "gId": "BASEGAMEVER",
-      "gIx": 2
-    },
-    {
-      "iTp": 8,
-      "gId": "BLOCKSCAT",
-      "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "ENTITYTYPE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "ITEMTYPE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "UNKJSON",
-      "gIx": 1
-    },
-    {
-      "iTp": 0,
-      "gId": "JSONF",
-      "gIx": 0
-    },
-    {
-      "iTp": 1,
-      "gId": "JSON",
-      "gIx": 1
     },
     {
       "iTp": 8,
@@ -3661,29 +3465,227 @@
       "gIx": 1
     },
     {
-      "iTp": 1,
-      "gId": "UNLINK",
-      "gIx": 1
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 121,
+      "p": "/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json"
     },
     {
-      "iTp": 1,
-      "gId": "UNKFILE",
-      "gIx": 1
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 121,
+      "p": "/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json"
     },
     {
-      "iTp": 8,
-      "gId": "VALFILE",
-      "gIx": 2
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 121,
+      "p": "/behavior_packs/comprehensive_bp/dialogue/sample_dialogue.json"
     },
     {
-      "iTp": 1,
-      "gId": "PATHLENGTH",
-      "gIx": 1
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 121,
+      "p": "/behavior_packs/comprehensive_bp/functions/complex_function.mcfunction"
     },
     {
-      "iTp": 1,
-      "gId": "NOBOM",
-      "gIx": 1
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 121,
+      "p": "/behavior_packs/comprehensive_bp/functions/sample_function.mcfunction"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 122,
+      "p": "/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 122,
+      "p": "/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 122,
+      "p": "/behavior_packs/comprehensive_bp/dialogue/sample_dialogue.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 122,
+      "p": "/behavior_packs/comprehensive_bp/functions/complex_function.mcfunction"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 122,
+      "p": "/behavior_packs/comprehensive_bp/functions/sample_function.mcfunction"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 123,
+      "p": "/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 123,
+      "p": "/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 123,
+      "p": "/behavior_packs/comprehensive_bp/dialogue/sample_dialogue.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 123,
+      "p": "/behavior_packs/comprehensive_bp/functions/complex_function.mcfunction",
+      "fs": {
+        "#": {
+          "Count": 7
+        },
+        "execute": {
+          "Count": 4
+        },
+        "scoreboard": {
+          "Count": 2
+        },
+        "particle": {
+          "Count": 1
+        },
+        "playsound": {
+          "Count": 1
+        },
+        "tp": {
+          "Count": 1
+        },
+        "effect": {
+          "Count": 1
+        },
+        "setblock": {
+          "Count": 1
+        },
+        "fill": {
+          "Count": 1
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 123,
+      "p": "/behavior_packs/comprehensive_bp/functions/sample_function.mcfunction",
+      "fs": {
+        "#": {
+          "Count": 1
+        },
+        "say": {
+          "Count": 1
+        },
+        "give": {
+          "Count": 1
+        },
+        "summon": {
+          "Count": 1
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 124,
+      "p": "/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 124,
+      "p": "/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 124,
+      "p": "/behavior_packs/comprehensive_bp/dialogue/sample_dialogue.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 124,
+      "p": "/behavior_packs/comprehensive_bp/functions/complex_function.mcfunction"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 124,
+      "p": "/behavior_packs/comprehensive_bp/functions/sample_function.mcfunction"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 125,
+      "p": "/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 125,
+      "p": "/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 125,
+      "p": "/behavior_packs/comprehensive_bp/dialogue/sample_dialogue.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 125,
+      "p": "/behavior_packs/comprehensive_bp/functions/complex_function.mcfunction"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 125,
+      "p": "/behavior_packs/comprehensive_bp/functions/sample_function.mcfunction"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 126,
+      "p": "/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 126,
+      "p": "/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 126,
+      "p": "/behavior_packs/comprehensive_bp/dialogue/sample_dialogue.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 126,
+      "p": "/behavior_packs/comprehensive_bp/functions/complex_function.mcfunction"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 126,
+      "p": "/behavior_packs/comprehensive_bp/functions/sample_function.mcfunction"
     }
   ],
   "index": {

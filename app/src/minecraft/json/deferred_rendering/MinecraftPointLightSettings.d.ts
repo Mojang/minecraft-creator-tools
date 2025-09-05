@@ -23,13 +23,13 @@ export default interface MinecraftPointLightSettings {
    * @remarks
    * format_version
    */
-  format_version: string;
+  format_version?: string;
 
   /**
    * @remarks
    * minecraft:point_light_settings
    */
-  "minecraft:point_light_settings": MinecraftPointLightSettingsMinecraftPointLightSettings;
+  "minecraft:point_light_settings"?: MinecraftPointLightSettingsMinecraftPointLightSettings;
 
 }
 
@@ -45,6 +45,6 @@ export interface MinecraftPointLightSettingsMinecraftPointLightSettings {
    * @remarks
    * colors
    */
-  colors: string;
+  colors?: string;
 
 }

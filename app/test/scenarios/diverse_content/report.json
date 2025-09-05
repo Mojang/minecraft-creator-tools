@@ -84,6 +84,8 @@
     "animationCount": 0,
     "textureCount": 0,
     "textureTexelSize": 0,
+    "vanillaGameTextureCoverage": 0,
+    "vanillaGameTextureCount": 0,
     "minimumSupportablePerformanceTier": 0,
     "invalidCommandSyntaxCount": 0,
     "linesWithSlashCount": 0,
@@ -98,6 +100,9 @@
     "deprecatedTexture": 0,
     "restrictedPolyMeshFound": 0,
     "jsonParseError": 0,
+    "invalidManifestJson": 0,
+    "missingResourcePackDependencies": 0,
+    "internalProcessingErrors": 0,
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
@@ -107,6 +112,57 @@
       "say"
     ],
     "featureSets": {
+      "Runtime Identifier (no runtime identifier)": {
+        "Count": 1
+      },
+      "Identifier (no override identifier)": {
+        "Count": 3
+      },
+      "Metadata Spawnable Entity Type": {
+        "Count": 1
+      },
+      "Metadata Summonable Entity Type": {
+        "Count": 1
+      },
+      "Category nature": {
+        "Count": 1
+      },
+      "Category equipment": {
+        "Count": 1
+      },
+      "Entity Type Default Components": {
+        "minecraft:type_family": 1,
+        "minecraft:health": 1,
+        "minecraft:attack": 1,
+        "minecraft:movement": 1,
+        "minecraft:navigation.walk": 1,
+        "minecraft:movement.basic": 1,
+        "minecraft:jump.static": 1,
+        "minecraft:can_climb": 1,
+        "minecraft:collision_box": 1,
+        "minecraft:nameable": 1
+      },
+      "Entity Type Components Used in Component Groups": {
+        "minecraft:experience_reward": 1
+      },
+      "Entity Type Entity Events": {
+        "add": 1
+      },
+      "Block Type Block Default Components": {
+        "minecraft:destructible_by_mining": 1,
+        "minecraft:destructible_by_explosion": 1,
+        "minecraft:friction": 1,
+        "minecraft:map_color": 1
+      },
+      "Item Type Components": {
+        "minecraft:max_stack_size": 2,
+        "minecraft:use_duration": 1,
+        "minecraft:food": 1,
+        "minecraft:hand_equipped": 1,
+        "minecraft:durability": 1,
+        "minecraft:weapon": 1,
+        "minecraft:damage": 1
+      },
       "Behavior pack manifest Size": {
         "Instance Count": 1,
         "Total": 324,
@@ -121,12 +177,33 @@
         "Min": 13,
         "Average": 13
       },
-      "Icon Size": {
-        "Instance Count": 2,
-        "Total": 608,
-        "Max": 304,
-        "Min": 304,
-        "Average": 304
+      "Entity type Size": {
+        "Instance Count": 1,
+        "Total": 770,
+        "Max": 770,
+        "Min": 770,
+        "Average": 770
+      },
+      "Entity type Lines": {
+        "Instance Count": 1,
+        "Total": 45,
+        "Max": 45,
+        "Min": 45,
+        "Average": 45
+      },
+      "Resource pack manifest Size": {
+        "Instance Count": 1,
+        "Total": 328,
+        "Max": 328,
+        "Min": 328,
+        "Average": 328
+      },
+      "Resource pack manifest Lines": {
+        "Instance Count": 1,
+        "Total": 13,
+        "Max": 13,
+        "Min": 13,
+        "Average": 13
       },
       "Block type Size": {
         "Instance Count": 1,
@@ -141,34 +218,6 @@
         "Max": 17,
         "Min": 17,
         "Average": 17
-      },
-      "Entity dialogue Size": {
-        "Instance Count": 1,
-        "Total": 606,
-        "Max": 606,
-        "Min": 606,
-        "Average": 606
-      },
-      "Entity dialogue Lines": {
-        "Instance Count": 1,
-        "Total": 20,
-        "Max": 20,
-        "Min": 20,
-        "Average": 20
-      },
-      "Entity type Size": {
-        "Instance Count": 1,
-        "Total": 770,
-        "Max": 770,
-        "Min": 770,
-        "Average": 770
-      },
-      "Entity type Lines": {
-        "Instance Count": 1,
-        "Total": 45,
-        "Max": 45,
-        "Min": 45,
-        "Average": 45
       },
       "Item type Size": {
         "Instance Count": 2,
@@ -197,6 +246,48 @@
         "Max": 16,
         "Min": 16,
         "Average": 16
+      },
+      "Animation Size": {
+        "Instance Count": 1,
+        "Total": 321,
+        "Max": 321,
+        "Min": 321,
+        "Average": 321
+      },
+      "Animation Lines": {
+        "Instance Count": 1,
+        "Total": 22,
+        "Max": 22,
+        "Min": 22,
+        "Average": 22
+      },
+      "Animation controller Size": {
+        "Instance Count": 1,
+        "Total": 322,
+        "Max": 322,
+        "Min": 322,
+        "Average": 322
+      },
+      "Animation controller Lines": {
+        "Instance Count": 1,
+        "Total": 17,
+        "Max": 17,
+        "Min": 17,
+        "Average": 17
+      },
+      "Entity dialogue Size": {
+        "Instance Count": 1,
+        "Total": 606,
+        "Max": 606,
+        "Min": 606,
+        "Average": 606
+      },
+      "Entity dialogue Lines": {
+        "Instance Count": 1,
+        "Total": 20,
+        "Max": 20,
+        "Min": 20,
+        "Average": 20
       },
       "Recipe Size": {
         "Instance Count": 1,
@@ -240,80 +331,12 @@
         "Min": 19,
         "Average": 19
       },
-      "Resource pack manifest Size": {
-        "Instance Count": 1,
-        "Total": 328,
-        "Max": 328,
-        "Min": 328,
-        "Average": 328
-      },
-      "Resource pack manifest Lines": {
-        "Instance Count": 1,
-        "Total": 13,
-        "Max": 13,
-        "Min": 13,
-        "Average": 13
-      },
-      "Animation Size": {
-        "Instance Count": 1,
-        "Total": 321,
-        "Max": 321,
-        "Min": 321,
-        "Average": 321
-      },
-      "Animation Lines": {
-        "Instance Count": 1,
-        "Total": 22,
-        "Max": 22,
-        "Min": 22,
-        "Average": 22
-      },
-      "Animation controller Size": {
-        "Instance Count": 1,
-        "Total": 322,
-        "Max": 322,
-        "Min": 322,
-        "Average": 322
-      },
-      "Animation controller Lines": {
-        "Instance Count": 1,
-        "Total": 17,
-        "Max": 17,
-        "Min": 17,
-        "Average": 17
-      },
-      "Block Type Block Default Components": {
-        "minecraft:destructible_by_mining": 1,
-        "minecraft:destructible_by_explosion": 1,
-        "minecraft:friction": 1,
-        "minecraft:map_color": 1
-      },
-      "Entity Type Default Components": {
-        "minecraft:type_family": 1,
-        "minecraft:health": 1,
-        "minecraft:attack": 1,
-        "minecraft:movement": 1,
-        "minecraft:navigation.walk": 1,
-        "minecraft:movement.basic": 1,
-        "minecraft:jump.static": 1,
-        "minecraft:can_climb": 1,
-        "minecraft:collision_box": 1,
-        "minecraft:nameable": 1
-      },
-      "Entity Type Components Used in Component Groups": {
-        "minecraft:experience_reward": 1
-      },
-      "Entity Type Entity Events": {
-        "add": 1
-      },
-      "Item Type Components": {
-        "minecraft:max_stack_size": 2,
-        "minecraft:use_duration": 1,
-        "minecraft:food": 1,
-        "minecraft:hand_equipped": 1,
-        "minecraft:durability": 1,
-        "minecraft:weapon": 1,
-        "minecraft:damage": 1
+      "Icon Size": {
+        "Instance Count": 2,
+        "Total": 608,
+        "Max": 304,
+        "Min": 304,
+        "Average": 304
       },
       "Animations Resource": {
         "Count": 2
@@ -492,24 +515,6 @@
         "Min": 0,
         "Average": 0
       },
-      "Runtime Identifier (no runtime identifier)": {
-        "Count": 1
-      },
-      "Identifier (no override identifier)": {
-        "Count": 3
-      },
-      "Metadata Spawnable Entity Type": {
-        "Count": 1
-      },
-      "Metadata Summonable Entity Type": {
-        "Count": 1
-      },
-      "Category nature": {
-        "Count": 1
-      },
-      "Category equipment": {
-        "Count": 1
-      },
       "Command say": {
         "Count": 2
       },
@@ -517,17 +522,209 @@
         "Count": 1
       }
     },
-    "errorCount": 2,
+    "errorCount": 1,
     "internalProcessingErrorCount": 2,
     "warningCount": 6,
-    "testSuccessCount": 33,
+    "testSuccessCount": 35,
     "testFailCount": 2,
     "testNotApplicableCount": 11,
-    "errorSummary": "ERROR: [LANGFILES101] languages.json Not Found\r\nERROR: [LANGFILES101] languages.json Not Found",
-    "internalProcessingErrorSummary": "UNKNOWN: [JSONF402] Could not find expected form: entity/actor_document\r\nUNKNOWN: [JSONF402] Could not find expected form: spawn/spawn_rules",
-    "warningSummary": "WARNING: [FORMATVER258] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) Spawn rules version (1.21.0) has a higher minor version number compared to current version (1.12.0)\r\nWARNING: [FORMATVER218] (/resource_packs/diverse_rp/animations/sample_mob_animations.json) Resource animation version (1.21.0) has a higher minor version number compared to current version (1.10.0)\r\nWARNING: [FORMATVER238] (/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json) Resource animation controller version (1.21.0) has a higher minor version number compared to current version (1.10.0)\r\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/loot_tables/sample_loot.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/loot_tables/sample_loot.json to `minecraft:stick`\r\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:iron_ingot`\r\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:stick`",
-    "testFailSummary": "TESTFAIL: [LANGFILES000] Found 2 errors for Check Lang File Generator (LANGFILES).\r\nTESTFAIL: [JSONF000] Found 2 internal errors for JSON Structure Validation (via Minecraft docs) (JSONF). This may be a temporary issue with the test run.",
+    "errorSummary": "ERROR: [CADDONIREQ170] (/resource_packs/diverse_rp/manifest.json) Resource pack manifest does not specify that header/pack_scope that should be 'world'",
+    "internalProcessingErrorSummary": "UNKNOWN: [JSONF402] Could not find expected form: entity/actor_document\nUNKNOWN: [JSONF402] Could not find expected form: spawn/spawn_rules",
+    "warningSummary": "WARNING: [FORMATVER218] (/resource_packs/diverse_rp/animations/sample_mob_animations.json) Resource animation version (1.21.0) has a higher minor version number compared to current version (1.10.0)\nWARNING: [FORMATVER238] (/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json) Resource animation controller version (1.21.0) has a higher minor version number compared to current version (1.10.0)\nWARNING: [FORMATVER258] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) Spawn rules version (1.21.0) has a higher minor version number compared to current version (1.12.0)\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/loot_tables/sample_loot.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/loot_tables/sample_loot.json to `minecraft:stick`\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:iron_ingot`\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:stick`",
+    "testFailSummary": "TESTFAIL: [CADDONIREQ000] Found 1 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).\nTESTFAIL: [JSONF000] Found 2 internal errors for JSON Structure Validation (via Minecraft docs) (JSONF). This may be a temporary issue with the test run.",
     "summary": {
+      "BASEGAMEVER": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test Base Game Version (BASEGAMEVER)"
+        }
+      },
+      "BLOCKSCAT": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test Blocks Catalog (BLOCKSCAT)"
+        }
+      },
+      "CADDONIREQ": {
+        "0": {
+          "defaultMessage": "Found 1 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).",
+          "testCompleteFails": 1
+        },
+        "170": {
+          "defaultMessage": "Resource pack manifest does not specify that header/pack_scope that should be 'world'",
+          "errors": 1
+        }
+      },
+      "CBFG": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Beta Features Generator (CBFG) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CHECKFEATUREDEPRECATION": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Check Feature Deprecation (CHECKFEATUREDEPRECATION)"
+        }
+      },
+      "CHKMANIF": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Manifest Generator (CHKMANIF) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CPACKICON": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Pack Icon Generator (CPACKICON) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CPARTI": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Particle Identifier Generator (CPARTI) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CSPJ": {
+        "1": {
+          "title": "Unknown Test: 1",
+          "defaultMessage": "Check Skin Pack Json Generator (CSPJ) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CWI": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check World Icon Generator (CWI) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "ENTITYTYPE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Entity Type (ENTITYTYPE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "52": {
+          "title": "Runtime Identifier",
+          "defaultMessage": "Entity Type Runtime Identifier"
+        },
+        "53": {
+          "title": "Identifier",
+          "defaultMessage": "Entity Type Identifier"
+        },
+        "54": {
+          "title": "Metadata",
+          "defaultMessage": "Entity Type Metadata"
+        },
+        "130": {
+          "title": "Format Version Patch Version Lower Than Current",
+          "defaultMessage": "Behavior pack entity type format version (1.21.0) has a lower patch version number compared to current version (1.21.100.06)",
+          "recommendations": 1
+        }
+      },
+      "EXPFLAG": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Check Experimental Flag (EXPFLAG)"
+        }
+      },
+      "FORBFILE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Forbidden Files Generator (FORBFILE) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "FORMATVER": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "Format Version (FORMATVER) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "120": {
+          "title": "Block type Version Patch Version Higher than Current",
+          "defaultMessage": "Block type version (1.21.0) has a lower patch version number compared to current version (1.21.100)",
+          "recommendations": 1
+        },
+        "140": {
+          "title": "Item type Version Patch Version Higher than Current",
+          "defaultMessage": "Item type version (1.21.0) has a lower patch version number compared to current version (1.21.100)",
+          "recommendations": 2
+        },
+        "160": {
+          "title": "Recipe Version Patch Version Higher than Current",
+          "defaultMessage": "Recipe version (1.21.0) has a lower patch version number compared to current version (1.21.100)",
+          "recommendations": 1
+        },
+        "218": {
+          "title": "Resource animation Version Patch Version Lower than Current",
+          "defaultMessage": "Resource animation version (1.21.0) has a higher minor version number compared to current version (1.10.0)",
+          "warnings": 1
+        },
+        "238": {
+          "title": "Resource animation controller Version Patch Version Lower than Current",
+          "defaultMessage": "Resource animation controller version (1.21.0) has a higher minor version number compared to current version (1.10.0)",
+          "warnings": 1
+        },
+        "258": {
+          "title": "258",
+          "defaultMessage": "Spawn rules version (1.21.0) has a higher minor version number compared to current version (1.12.0)",
+          "warnings": 1
+        },
+        "621": {
+          "title": "621",
+          "defaultMessage": "Block type format_version"
+        },
+        "623": {
+          "title": "623",
+          "defaultMessage": "Item type format_version"
+        },
+        "628": {
+          "title": "628",
+          "defaultMessage": "Animation format_version"
+        },
+        "629": {
+          "title": "629",
+          "defaultMessage": "Animation controller format_version"
+        },
+        "643": {
+          "title": "643",
+          "defaultMessage": "Recipe format_version"
+        },
+        "644": {
+          "title": "644",
+          "defaultMessage": "Spawn rule format_version"
+        }
+      },
+      "GEOFMT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Geometry Format (GEOFMT) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "GEOMETRY": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Model Geometry Validation (GEOMETRY) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Block Geometry"
+        },
+        "102": {
+          "title": "Entity Geometry"
+        },
+        "103": {
+          "title": "Item Geometry",
+          "defaultMessage": "Items Geometry"
+        }
+      },
       "ITEMS": {
         "1": {
           "title": "1",
@@ -603,6 +800,61 @@
           "defaultMessage": "Resource pack item count"
         }
       },
+      "ITEMTYPE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Item Type (ITEMTYPE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "53": {
+          "title": "Identifier",
+          "defaultMessage": "Item Type Identifier"
+        },
+        "55": {
+          "title": "Category",
+          "defaultMessage": "Item Type Category"
+        },
+        "130": {
+          "title": "Format Version Patch Version Lower Than Current",
+          "defaultMessage": "Behavior pack item type format version (1.21.0) has a lower patch version number compared to current version (1.21.100.06)",
+          "recommendations": 2
+        }
+      },
+      "JSON": {
+        "1": {
+          "defaultMessage": "JSON Structure Validation (JSON) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "JSONF": {
+        "0": {
+          "defaultMessage": "Found 2 internal errors for JSON Structure Validation (via Minecraft docs) (JSONF). This may be a temporary issue with the test run.",
+          "testCompleteFails": 1
+        },
+        "402": {
+          "defaultMessage": "Could not find expected form",
+          "internalProcessingErrors": 2
+        }
+      },
+      "JSONTAGS": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "JSON Tags (JSONTAGS) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Entity Type",
+          "defaultMessage": "Entity file"
+        },
+        "102": {
+          "title": "Block Type",
+          "defaultMessage": "Block file"
+        },
+        "103": {
+          "title": "Item Type",
+          "defaultMessage": "Item file"
+        }
+      },
       "LINESIZE": {
         "1": {
           "title": "1",
@@ -670,29 +922,31 @@
           "defaultMessage": "Resource pack file lines"
         }
       },
-      "PACKSIZE": {
+      "MCFUNCTION": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test MC Function Validation (MCFUNCTION)"
+        }
+      },
+      "MINENGINEVER": {
         "1": {
-          "title": "Test Success",
-          "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully",
+          "title": "1",
+          "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "101": {
-          "title": "Overall Size"
+        "605": {
+          "title": "605",
+          "defaultMessage": "Behavior pack manifest min_engine_version"
         },
-        "102": {
-          "title": "File Count"
-        },
-        "103": {
-          "title": "Folder Count"
-        },
-        "104": {
-          "title": "Content Size"
-        },
-        "105": {
-          "title": "Content File Count"
-        },
-        "106": {
-          "title": "Content Folder Count"
+        "614": {
+          "title": "614",
+          "defaultMessage": "Resource pack manifest format_version"
+        }
+      },
+      "NOBOM": {
+        "1": {
+          "defaultMessage": "No Byte Order Mark allowed in json file. (NOBOM) completed successfully",
+          "testCompleteSuccesses": 1
         }
       },
       "PACK": {
@@ -723,7 +977,7 @@
         },
         "109": {
           "title": "109",
-          "defaultMessage": "Behavior Pack Manfiest"
+          "defaultMessage": "Behavior Pack Manifest"
         },
         "111": {
           "title": "111",
@@ -758,84 +1012,68 @@
           "defaultMessage": "Entity Geometry"
         }
       },
-      "JSONTAGS": {
+      "PACKMETADATA": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test General info (PACKMETADATA)"
+        }
+      },
+      "PACKSIZE": {
         "1": {
           "title": "Test Success",
-          "defaultMessage": "JSON Tags (JSONTAGS) completed successfully",
+          "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully",
           "testCompleteSuccesses": 1
         },
         "101": {
-          "title": "Entity Type",
-          "defaultMessage": "Entity file"
+          "title": "Overall Size"
         },
         "102": {
-          "title": "Block Type",
-          "defaultMessage": "Block file"
+          "title": "File Count"
         },
         "103": {
-          "title": "Item Type",
-          "defaultMessage": "Item file"
+          "title": "Folder Count"
+        },
+        "104": {
+          "title": "Content Size"
+        },
+        "105": {
+          "title": "Content File Count"
+        },
+        "106": {
+          "title": "Content Folder Count"
         }
       },
-      "FORMATVER": {
+      "PATHLENGTH": {
         "1": {
-          "title": "1",
-          "defaultMessage": "Format Version (FORMATVER) completed successfully",
+          "defaultMessage": "Path Length (PATHLENGTH) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "PRJINT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Project Integrity Generator (PRJINT) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "RESOURCEANIMATION": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Resource Animation (RESOURCEANIMATION) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "120": {
-          "title": "Block type Version Patch Version Higher than Current",
-          "defaultMessage": "Block type version (1.21.0) has a lower patch version number compared to current version (1.21.100)",
-          "recommendations": 1
+        "101": {
+          "title": "Animations"
         },
-        "140": {
-          "title": "Item type Version Patch Version Higher than Current",
-          "defaultMessage": "Item type version (1.21.0) has a lower patch version number compared to current version (1.21.100)",
-          "recommendations": 2
-        },
-        "160": {
-          "title": "Recipe Version Patch Version Higher than Current",
-          "defaultMessage": "Recipe version (1.21.0) has a lower patch version number compared to current version (1.21.100)",
-          "recommendations": 1
-        },
-        "218": {
-          "title": "Resource animation Version Patch Version Lower than Current",
-          "defaultMessage": "Resource animation version (1.21.0) has a higher minor version number compared to current version (1.10.0)",
-          "warnings": 1
-        },
-        "238": {
-          "title": "Resource animation controller Version Patch Version Lower than Current",
-          "defaultMessage": "Resource animation controller version (1.21.0) has a higher minor version number compared to current version (1.10.0)",
-          "warnings": 1
-        },
-        "258": {
-          "title": "258",
-          "defaultMessage": "Spawn rules version (1.21.0) has a higher minor version number compared to current version (1.12.0)",
-          "warnings": 1
-        },
-        "621": {
-          "title": "621",
-          "defaultMessage": "Block type format_version"
-        },
-        "623": {
-          "title": "623",
-          "defaultMessage": "Item type format_version"
-        },
-        "628": {
-          "title": "628",
-          "defaultMessage": "Animation format_version"
-        },
-        "629": {
-          "title": "629",
-          "defaultMessage": "Animation controller format_version"
-        },
-        "643": {
-          "title": "643",
-          "defaultMessage": "Recipe format_version"
-        },
-        "644": {
-          "title": "644",
-          "defaultMessage": "Spawn rule format_version"
+        "102": {
+          "title": "Bones"
+        }
+      },
+      "RPDEPENDS": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Resource Pack Dependencies (RPDEPENDS) completed successfully",
+          "testCompleteSuccesses": 1
         }
       },
       "SCRIPT": {
@@ -846,6 +1084,25 @@
         },
         "101": {
           "title": "apisUsed"
+        }
+      },
+      "SCRIPTMODULE": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test Script Modules (SCRIPTMODULE)"
+        }
+      },
+      "SNDSDEF": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Sounds Definition Manifest Validation (SNDSDEF)"
+        }
+      },
+      "STRICT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully",
+          "testCompleteSuccesses": 1
         }
       },
       "SUMMARY": {
@@ -863,19 +1120,6 @@
           "defaultMessage": "Behavior Manifests"
         }
       },
-      "RESOURCEANIMATION": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Resource Animation (RESOURCEANIMATION) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "101": {
-          "title": "Animations"
-        },
-        "102": {
-          "title": "Bones"
-        }
-      },
       "TEXTURE": {
         "1": {
           "title": "Test Success",
@@ -884,26 +1128,6 @@
         },
         "101": {
           "title": "Textures"
-        }
-      },
-      "TEXTUREREF": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Texture Reference Info Aggregation (TEXTUREREF) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "101": {
-          "title": "Texture References"
-        }
-      },
-      "TYPES": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Types Info Aggregation (TYPES) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "101": {
-          "title": "Types"
         }
       },
       "TEXTUREIMAGE": {
@@ -940,91 +1164,62 @@
           "defaultMessage": "Texture Images Tier 5"
         }
       },
-      "GEOMETRY": {
+      "TEXTUREREF": {
         "1": {
           "title": "Test Success",
-          "defaultMessage": "Model Geometry Validation (GEOMETRY) completed successfully",
+          "defaultMessage": "Texture Reference Info Aggregation (TEXTUREREF) completed successfully",
           "testCompleteSuccesses": 1
         },
         "101": {
-          "title": "Block Geometry"
-        },
-        "102": {
-          "title": "Entity Geometry"
-        },
-        "103": {
-          "title": "Item Geometry",
-          "defaultMessage": "Items Geometry"
+          "title": "Texture References"
         }
       },
-      "LANGFILES": {
-        "0": {
-          "title": "Test Failure",
-          "defaultMessage": "Found 2 errors for Check Lang File Generator (LANGFILES).",
-          "testCompleteFails": 1
+      "TYPES": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Types Info Aggregation (TYPES) completed successfully",
+          "testCompleteSuccesses": 1
         },
         "101": {
-          "title": "languages.json Not Found",
-          "errors": 2
+          "title": "Types"
         }
       },
-      "MINENGINEVER": {
+      "UNKFILE": {
         "1": {
-          "title": "1",
-          "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully",
+          "defaultMessage": "Unknown files (UNKFILE) completed successfully",
           "testCompleteSuccesses": 1
-        },
-        "605": {
-          "title": "605",
-          "defaultMessage": "Behavior pack manifest min_engine_version"
-        },
-        "614": {
-          "title": "614",
-          "defaultMessage": "Resource pack manifest format_version"
         }
       },
-      "ENTITYTYPE": {
+      "UNKJSON": {
         "1": {
-          "title": "Test Success",
-          "defaultMessage": "Entity Type (ENTITYTYPE) completed successfully",
+          "defaultMessage": "Unknown JSON (UNKJSON) completed successfully",
           "testCompleteSuccesses": 1
-        },
-        "52": {
-          "title": "Runtime Identifier",
-          "defaultMessage": "Entity Type Runtime Identifier"
-        },
-        "53": {
-          "title": "Identifier",
-          "defaultMessage": "Entity Type Identifier"
-        },
-        "54": {
-          "title": "Metadata",
-          "defaultMessage": "Entity Type Metadata"
-        },
-        "130": {
-          "title": "Format Version Patch Version Lower Than Current",
-          "defaultMessage": "Behavior pack entity type format version (1.21.0) has a lower patch version number compared to current version (1.21.100.06)",
-          "recommendations": 1
         }
       },
-      "ITEMTYPE": {
+      "UNLINK": {
         "1": {
-          "title": "Test Success",
-          "defaultMessage": "Item Type (ITEMTYPE) completed successfully",
+          "defaultMessage": "Unlinked item info generator (UNLINK) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "53": {
-          "title": "Identifier",
-          "defaultMessage": "Item Type Identifier"
-        },
-        "55": {
-          "title": "Category",
-          "defaultMessage": "Item Type Category"
-        },
-        "130": {
-          "title": "Format Version Patch Version Lower Than Current",
-          "defaultMessage": "Behavior pack item type format version (1.21.0) has a lower patch version number compared to current version (1.21.100.06)",
-          "recommendations": 2
+        "323": {
+          "defaultMessage": "Link to item type is not found in this pack",
+          "warnings": 3
+        }
+      },
+      "VALFILE": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Valid files (VALFILE)"
+        }
+      },
+      "VSCODEFILE": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test VSCode Files (VSCODEFILE)"
+        }
+      },
+      "WORLD": {
+        "2": {
+          "defaultMessage": "No applicable items found for test World Validation (WORLD)"
         }
       },
       "WORLDDATA": {
@@ -1050,187 +1245,274 @@
         "126": {
           "defaultMessage": "Level Dat Experiments"
         }
-      },
-      "JSONF": {
-        "0": {
-          "defaultMessage": "Found 2 internal errors for JSON Structure Validation (via Minecraft docs) (JSONF). This may be a temporary issue with the test run.",
-          "testCompleteFails": 1
-        },
-        "402": {
-          "defaultMessage": "Could not find expected form",
-          "internalProcessingErrors": 2
-        }
-      },
-      "UNLINK": {
-        "1": {
-          "defaultMessage": "Unlinked item info generator (UNLINK) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "323": {
-          "defaultMessage": "Link to item type is not found in this pack",
-          "warnings": 3
-        }
-      },
-      "SHARING": {
-        "1": {
-          "title": "1",
-          "defaultMessage": "Sharing Best Practices Information (SHARING) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "PACKMETADATA": {
-        "2": {
-          "title": "2",
-          "defaultMessage": "No applicable items found for test General info (PACKMETADATA)"
-        }
-      },
-      "STRICT": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "MCFUNCTION": {
-        "2": {
-          "title": "Test Not Applicable",
-          "defaultMessage": "No applicable items found for test MC Function Validation (MCFUNCTION)"
-        }
-      },
-      "CPACKICON": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check Pack Icon Generator (CPACKICON) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "CWI": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check World Icon Generator (CWI) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "SNDSDEF": {
-        "2": {
-          "title": "Test Not Applicable",
-          "defaultMessage": "No applicable items found for test Sounds Definition Manifest Validation (SNDSDEF)"
-        }
-      },
-      "CPARTI": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check Particle Identifier Generator (CPARTI) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "EXPFLAG": {
-        "2": {
-          "title": "Test Not Applicable",
-          "defaultMessage": "No applicable items found for test Check Experimental Flag (EXPFLAG)"
-        }
-      },
-      "CHECKFEATUREDEPRECATION": {
-        "2": {
-          "title": "Test Not Applicable",
-          "defaultMessage": "No applicable items found for test Check Feature Deprecation (CHECKFEATUREDEPRECATION)"
-        }
-      },
-      "FORBFILE": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check Forbidden Files Generator (FORBFILE) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "PRJINT": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check Project Integrity Generator (PRJINT) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "GEOFMT": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Geometry Format (GEOFMT) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "CBFG": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check Beta Features Generator (CBFG) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "SCRIPTMODULE": {
-        "2": {
-          "title": "2",
-          "defaultMessage": "No applicable items found for test Script Modules (SCRIPTMODULE)"
-        }
-      },
-      "VSCODEFILE": {
-        "2": {
-          "title": "2",
-          "defaultMessage": "No applicable items found for test VSCode Files (VSCODEFILE)"
-        }
-      },
-      "BASEGAMEVER": {
-        "2": {
-          "title": "2",
-          "defaultMessage": "No applicable items found for test Base Game Version (BASEGAMEVER)"
-        }
-      },
-      "BLOCKSCAT": {
-        "2": {
-          "title": "2",
-          "defaultMessage": "No applicable items found for test Blocks Catalog (BLOCKSCAT)"
-        }
-      },
-      "UNKJSON": {
-        "1": {
-          "defaultMessage": "Unknown JSON (UNKJSON) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "JSON": {
-        "1": {
-          "defaultMessage": "JSON Structure Validation (JSON) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "WORLD": {
-        "2": {
-          "defaultMessage": "No applicable items found for test World Validation (WORLD)"
-        }
-      },
-      "UNKFILE": {
-        "1": {
-          "defaultMessage": "Unknown files (UNKFILE) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "VALFILE": {
-        "2": {
-          "defaultMessage": "No applicable items found for test Valid files (VALFILE)"
-        }
-      },
-      "PATHLENGTH": {
-        "1": {
-          "defaultMessage": "Path Length (PATHLENGTH) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "NOBOM": {
-        "1": {
-          "defaultMessage": "No Byte Order Mark allowed in json file. (NOBOM) completed successfully",
-          "testCompleteSuccesses": 1
-        }
       }
     }
   },
   "items": [
+    {
+      "iTp": 8,
+      "gId": "BASEGAMEVER",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "BLOCKSCAT",
+      "gIx": 2
+    },
+    {
+      "iTp": 0,
+      "gId": "CADDONIREQ",
+      "gIx": 0
+    },
+    {
+      "iTp": 3,
+      "gId": "CADDONIREQ",
+      "gIx": 170,
+      "p": "/resource_packs/diverse_rp/manifest.json"
+    },
+    {
+      "iTp": 1,
+      "gId": "CBFG",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "CHECKFEATUREDEPRECATION",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "CHKMANIF",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CPACKICON",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CPARTI",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CSPJ",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CWI",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "ENTITYTYPE",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 52,
+      "fs": {
+        "(no runtime identifier)": {
+          "Count": 1
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 53,
+      "fs": {
+        "(no override identifier)": {
+          "Count": 1
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 54,
+      "fs": {
+        "Spawnable Entity Type": {
+          "Count": 1
+        },
+        "Summonable Entity Type": {
+          "Count": 1
+        }
+      }
+    },
+    {
+      "iTp": 6,
+      "gId": "ENTITYTYPE",
+      "gIx": 130,
+      "p": "/behavior_packs/diverse_bp/entities/sample_mob.json"
+    },
+    {
+      "iTp": 8,
+      "gId": "EXPFLAG",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "FORBFILE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "FORMATVER",
+      "gIx": 1
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 120,
+      "p": "/behavior_packs/diverse_bp/blocks/sample_block.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 140,
+      "p": "/behavior_packs/diverse_bp/items/sample_food.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 140,
+      "p": "/behavior_packs/diverse_bp/items/sample_sword.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 160,
+      "p": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "FORMATVER",
+      "gIx": 218,
+      "p": "/resource_packs/diverse_rp/animations/sample_mob_animations.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "FORMATVER",
+      "gIx": 238,
+      "p": "/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "FORMATVER",
+      "gIx": 258,
+      "p": "/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 621,
+      "p": "/behavior_packs/diverse_bp/blocks/sample_block.json",
+      "d": [
+        1,
+        21,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 623,
+      "p": "/behavior_packs/diverse_bp/items/sample_food.json",
+      "d": [
+        1,
+        21,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 623,
+      "p": "/behavior_packs/diverse_bp/items/sample_sword.json",
+      "d": [
+        1,
+        21,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 628,
+      "p": "/resource_packs/diverse_rp/animations/sample_mob_animations.json",
+      "d": [
+        1,
+        21,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 629,
+      "p": "/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json",
+      "d": [
+        1,
+        21,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 643,
+      "p": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json",
+      "d": [
+        1,
+        21,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 644,
+      "p": "/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json",
+      "d": [
+        1,
+        21,
+        0
+      ]
+    },
+    {
+      "iTp": 1,
+      "gId": "GEOFMT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "GEOMETRY",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 102
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 103
+    },
+    {
+      "iTp": 1,
+      "gId": "ITEMS",
+      "gIx": 1
+    },
     {
       "iTp": 2,
       "gId": "ITEMS",
@@ -1334,16 +1616,153 @@
       "d": 1
     },
     {
+      "iTp": 1,
+      "gId": "ITEMTYPE",
+      "gIx": 1
+    },
+    {
       "iTp": 7,
+      "gId": "ITEMTYPE",
+      "gIx": 53,
+      "fs": {
+        "(no override identifier)": {
+          "Count": 2
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "ITEMTYPE",
+      "gIx": 55,
+      "fs": {
+        "nature": {
+          "Count": 1
+        },
+        "equipment": {
+          "Count": 1
+        }
+      }
+    },
+    {
+      "iTp": 6,
+      "gId": "ITEMTYPE",
+      "gIx": 130,
+      "p": "/behavior_packs/diverse_bp/items/sample_food.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "ITEMTYPE",
+      "gIx": 130,
+      "p": "/behavior_packs/diverse_bp/items/sample_sword.json"
+    },
+    {
+      "iTp": 1,
+      "gId": "JSON",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "JSONF",
+      "gIx": 0
+    },
+    {
+      "iTp": 5,
+      "gId": "JSONF",
+      "gIx": 402,
+      "d": "entity/actor_document"
+    },
+    {
+      "iTp": 5,
+      "gId": "JSONF",
+      "gIx": 402,
+      "d": "spawn/spawn_rules"
+    },
+    {
+      "iTp": 1,
+      "gId": "JSONTAGS",
+      "gIx": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "JSONTAGS",
+      "gIx": 101,
+      "p": "/behavior_packs/diverse_bp/entities/sample_mob.json",
+      "d": "/behavior_packs/diverse_bp/entities/sample_mob.json",
+      "fs": {
+        "Default Components": {
+          "minecraft:type_family": 1,
+          "minecraft:health": 1,
+          "minecraft:attack": 1,
+          "minecraft:movement": 1,
+          "minecraft:navigation.walk": 1,
+          "minecraft:movement.basic": 1,
+          "minecraft:jump.static": 1,
+          "minecraft:can_climb": 1,
+          "minecraft:collision_box": 1,
+          "minecraft:nameable": 1
+        },
+        "Components Used in Component Groups": {
+          "minecraft:experience_reward": 1
+        },
+        "Entity Events": {
+          "add": 1
+        }
+      }
+    },
+    {
+      "iTp": 2,
+      "gId": "JSONTAGS",
+      "gIx": 102,
+      "p": "/behavior_packs/diverse_bp/blocks/sample_block.json",
+      "d": "/behavior_packs/diverse_bp/blocks/sample_block.json",
+      "fs": {
+        "Block Default Components": {
+          "minecraft:destructible_by_mining": 1,
+          "minecraft:destructible_by_explosion": 1,
+          "minecraft:friction": 1,
+          "minecraft:map_color": 1
+        }
+      }
+    },
+    {
+      "iTp": 2,
+      "gId": "JSONTAGS",
+      "gIx": 103,
+      "p": "/behavior_packs/diverse_bp/items/sample_food.json",
+      "d": "/behavior_packs/diverse_bp/items/sample_food.json",
+      "fs": {
+        "Components": {
+          "minecraft:max_stack_size": 1,
+          "minecraft:use_duration": 1,
+          "minecraft:food": 1
+        }
+      }
+    },
+    {
+      "iTp": 2,
+      "gId": "JSONTAGS",
+      "gIx": 103,
+      "p": "/behavior_packs/diverse_bp/items/sample_sword.json",
+      "d": "/behavior_packs/diverse_bp/items/sample_sword.json",
+      "fs": {
+        "Components": {
+          "minecraft:max_stack_size": 1,
+          "minecraft:hand_equipped": 1,
+          "minecraft:durability": 1,
+          "minecraft:weapon": 1,
+          "minecraft:damage": 1
+        }
+      }
+    },
+    {
+      "iTp": 1,
       "gId": "LINESIZE",
-      "gIx": 209,
-      "p": "/behavior_packs/diverse_bp/"
+      "gIx": 1
     },
     {
       "iTp": 7,
       "gId": "LINESIZE",
       "gIx": 105,
-      "p": "/behavior_packs/diverse_bp/manifest.json",
       "fs": {
         "Size": {
           "Instance Count": 1,
@@ -1364,67 +1783,7 @@
     {
       "iTp": 7,
       "gId": "LINESIZE",
-      "gIx": 203,
-      "p": "/behavior_packs/diverse_bp/pack_icon.png",
-      "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 608,
-          "Max": 304,
-          "Min": 304,
-          "Average": 304
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 121,
-      "p": "/behavior_packs/diverse_bp/blocks/sample_block.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 341,
-          "Max": 341,
-          "Min": 341,
-          "Average": 341
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 17,
-          "Max": 17,
-          "Min": 17,
-          "Average": 17
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 139,
-      "p": "/behavior_packs/diverse_bp/dialogue/sample_dialogue.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 606,
-          "Max": 606,
-          "Min": 606,
-          "Average": 606
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 20,
-          "Max": 20,
-          "Min": 20,
-          "Average": 20
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
       "gIx": 110,
-      "p": "/behavior_packs/diverse_bp/entities/sample_mob.json",
       "fs": {
         "Size": {
           "Instance Count": 1,
@@ -1445,8 +1804,49 @@
     {
       "iTp": 7,
       "gId": "LINESIZE",
+      "gIx": 114,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 328,
+          "Max": 328,
+          "Min": 328,
+          "Average": 328
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 13,
+          "Max": 13,
+          "Min": 13,
+          "Average": 13
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 121,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 341,
+          "Max": 341,
+          "Min": 341,
+          "Average": 341
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 17,
+          "Max": 17,
+          "Min": 17,
+          "Average": 17
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
       "gIx": 123,
-      "p": "/behavior_packs/diverse_bp/items/sample_food.json",
       "fs": {
         "Size": {
           "Instance Count": 2,
@@ -1468,7 +1868,6 @@
       "iTp": 7,
       "gId": "LINESIZE",
       "gIx": 124,
-      "p": "/behavior_packs/diverse_bp/loot_tables/sample_loot.json",
       "fs": {
         "Size": {
           "Instance Count": 1,
@@ -1489,102 +1888,7 @@
     {
       "iTp": 7,
       "gId": "LINESIZE",
-      "gIx": 143,
-      "p": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 274,
-          "Max": 274,
-          "Min": 274,
-          "Average": 274
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 21,
-          "Max": 21,
-          "Min": 21,
-          "Average": 21
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 144,
-      "p": "/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 442,
-          "Max": 442,
-          "Min": 442,
-          "Average": 442
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 25,
-          "Max": 25,
-          "Min": 25,
-          "Average": 25
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 145,
-      "p": "/behavior_packs/diverse_bp/trading/sample_trading.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 264,
-          "Max": 264,
-          "Min": 264,
-          "Average": 264
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 19,
-          "Max": 19,
-          "Min": 19,
-          "Average": 19
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 210,
-      "p": "/resource_packs/diverse_rp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 114,
-      "p": "/resource_packs/diverse_rp/manifest.json",
-      "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 328,
-          "Max": 328,
-          "Min": 328,
-          "Average": 328
-        },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 13,
-          "Max": 13,
-          "Min": 13,
-          "Average": 13
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
       "gIx": 128,
-      "p": "/resource_packs/diverse_rp/animations/sample_mob_animations.json",
       "fs": {
         "Size": {
           "Instance Count": 1,
@@ -1606,7 +1910,6 @@
       "iTp": 7,
       "gId": "LINESIZE",
       "gIx": 129,
-      "p": "/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json",
       "fs": {
         "Size": {
           "Instance Count": 1,
@@ -1623,6 +1926,275 @@
           "Average": 17
         }
       }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 139,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 606,
+          "Max": 606,
+          "Min": 606,
+          "Average": 606
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 20,
+          "Max": 20,
+          "Min": 20,
+          "Average": 20
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 143,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 274,
+          "Max": 274,
+          "Min": 274,
+          "Average": 274
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 21,
+          "Max": 21,
+          "Min": 21,
+          "Average": 21
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 144,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 442,
+          "Max": 442,
+          "Min": 442,
+          "Average": 442
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 25,
+          "Max": 25,
+          "Min": 25,
+          "Average": 25
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 145,
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 264,
+          "Max": 264,
+          "Min": 264,
+          "Average": 264
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 19,
+          "Max": 19,
+          "Min": 19,
+          "Average": 19
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 203,
+      "fs": {
+        "Size": {
+          "Instance Count": 2,
+          "Total": 608,
+          "Max": 304,
+          "Min": 304,
+          "Average": 304
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 209
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 210
+    },
+    {
+      "iTp": 8,
+      "gId": "MCFUNCTION",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "MINENGINEVER",
+      "gIx": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "MINENGINEVER",
+      "gIx": 605,
+      "p": "/behavior_packs/diverse_bp/manifest.json",
+      "d": [
+        1,
+        21,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "MINENGINEVER",
+      "gIx": 614,
+      "p": "/resource_packs/diverse_rp/manifest.json",
+      "d": [
+        1,
+        21,
+        0
+      ]
+    },
+    {
+      "iTp": 1,
+      "gId": "NOBOM",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "PACK",
+      "gIx": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 104,
+      "p": "/behavior_packs/diverse_bp/manifest.json",
+      "d": "Diverse Content Behavior Pack"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 105,
+      "p": "/behavior_packs/diverse_bp/manifest.json",
+      "d": "A behavior pack with multiple diverse content types for testing"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 106,
+      "p": "/behavior_packs/diverse_bp/manifest.json",
+      "d": "123e4567-e89b-12d3-a456-426614174000|1.0.0"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 107,
+      "p": "/behavior_packs/diverse_bp/manifest.json",
+      "d": 2
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 107,
+      "p": "/behavior_packs/diverse_bp/manifest.json",
+      "d": [
+        1,
+        21,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 108,
+      "p": "/behavior_packs/diverse_bp/manifest.json",
+      "d": "123e4567-e89b-12d3-a456-426614174000"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 109,
+      "p": "/behavior_packs/diverse_bp/manifest.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 111,
+      "p": "/resource_packs/diverse_rp/manifest.json",
+      "d": [
+        1,
+        21,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 112,
+      "p": "/resource_packs/diverse_rp/manifest.json",
+      "d": "123e4567-e89b-12d3-a456-426614174002"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 113,
+      "p": "/resource_packs/diverse_rp/manifest.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 114,
+      "p": "/resource_packs/diverse_rp/manifest.json",
+      "d": "Diverse Content Resource Pack"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 115,
+      "p": "/resource_packs/diverse_rp/manifest.json",
+      "d": "A resource pack with animations and visual content for testing"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 116,
+      "p": "/resource_packs/diverse_rp/manifest.json",
+      "d": "123e4567-e89b-12d3-a456-426614174002|1.0.0"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 117,
+      "p": "/resource_packs/diverse_rp/manifest.json",
+      "d": 2
+    },
+    {
+      "iTp": 7,
+      "gId": "PACK",
+      "gIx": 245
+    },
+    {
+      "iTp": 8,
+      "gId": "PACKMETADATA",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "PACKSIZE",
+      "gIx": 1
     },
     {
       "iTp": 7,
@@ -1661,321 +2233,19 @@
       "d": 10
     },
     {
-      "iTp": 7,
-      "gId": "PACK",
-      "gIx": 245
+      "iTp": 1,
+      "gId": "PATHLENGTH",
+      "gIx": 1
     },
     {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 109,
-      "p": "/behavior_packs/diverse_bp/manifest.json",
-      "d": "{\"format_version\":2,\"header\":{\"name\":\"Diverse Content Behavior Pack\",\"description\":\"A behavior pack with multiple diverse content types for testing\",\"uuid\":\"123e4567-e89b-12d3-a456-426614174000\",\"version\":[1,0,0],\"min_engine_version\":[1,21,0]},\"modules\":[{\"type\":\"data\",\"uuid\":\"123e4567-e89b-12d3-a456-426614174001\",\"version\":[1,0,0]}]}"
+      "iTp": 1,
+      "gId": "PRJINT",
+      "gIx": 1
     },
     {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 107,
-      "p": "/behavior_packs/diverse_bp/manifest.json",
-      "d": 2
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 108,
-      "p": "/behavior_packs/diverse_bp/manifest.json",
-      "d": "123e4567-e89b-12d3-a456-426614174000"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 106,
-      "p": "/behavior_packs/diverse_bp/manifest.json",
-      "d": "123e4567-e89b-12d3-a456-426614174000|1.0.0"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 104,
-      "p": "/behavior_packs/diverse_bp/manifest.json",
-      "d": "Diverse Content Behavior Pack"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 105,
-      "p": "/behavior_packs/diverse_bp/manifest.json",
-      "d": "A behavior pack with multiple diverse content types for testing"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 107,
-      "p": "/behavior_packs/diverse_bp/manifest.json",
-      "d": [
-        1,
-        21,
-        0
-      ]
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 113,
-      "p": "/resource_packs/diverse_rp/manifest.json",
-      "d": "{\"format_version\":2,\"header\":{\"name\":\"Diverse Content Resource Pack\",\"description\":\"A resource pack with animations and visual content for testing\",\"uuid\":\"123e4567-e89b-12d3-a456-426614174002\",\"version\":[1,0,0],\"min_engine_version\":[1,21,0]},\"modules\":[{\"type\":\"resources\",\"uuid\":\"123e4567-e89b-12d3-a456-426614174003\",\"version\":[1,0,0]}]}"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 117,
-      "p": "/resource_packs/diverse_rp/manifest.json",
-      "d": 2
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 112,
-      "p": "/resource_packs/diverse_rp/manifest.json",
-      "d": "123e4567-e89b-12d3-a456-426614174002"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 116,
-      "p": "/resource_packs/diverse_rp/manifest.json",
-      "d": "123e4567-e89b-12d3-a456-426614174002|1.0.0"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 114,
-      "p": "/resource_packs/diverse_rp/manifest.json",
-      "d": "Diverse Content Resource Pack"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 115,
-      "p": "/resource_packs/diverse_rp/manifest.json",
-      "d": "A resource pack with animations and visual content for testing"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 111,
-      "p": "/resource_packs/diverse_rp/manifest.json",
-      "d": [
-        1,
-        21,
-        0
-      ]
-    },
-    {
-      "iTp": 2,
-      "gId": "JSONTAGS",
-      "gIx": 102,
-      "p": "/behavior_packs/diverse_bp/blocks/sample_block.json",
-      "d": "/behavior_packs/diverse_bp/blocks/sample_block.json",
-      "fs": {
-        "Block Default Components": {
-          "minecraft:destructible_by_mining": 1,
-          "minecraft:destructible_by_explosion": 1,
-          "minecraft:friction": 1,
-          "minecraft:map_color": 1
-        }
-      }
-    },
-    {
-      "iTp": 2,
-      "gId": "JSONTAGS",
-      "gIx": 101,
-      "p": "/behavior_packs/diverse_bp/entities/sample_mob.json",
-      "d": "/behavior_packs/diverse_bp/entities/sample_mob.json",
-      "fs": {
-        "Default Components": {
-          "minecraft:type_family": 1,
-          "minecraft:health": 1,
-          "minecraft:attack": 1,
-          "minecraft:movement": 1,
-          "minecraft:navigation.walk": 1,
-          "minecraft:movement.basic": 1,
-          "minecraft:jump.static": 1,
-          "minecraft:can_climb": 1,
-          "minecraft:collision_box": 1,
-          "minecraft:nameable": 1
-        },
-        "Components Used in Component Groups": {
-          "minecraft:experience_reward": 1
-        },
-        "Entity Events": {
-          "add": 1
-        }
-      }
-    },
-    {
-      "iTp": 2,
-      "gId": "JSONTAGS",
-      "gIx": 103,
-      "p": "/behavior_packs/diverse_bp/items/sample_food.json",
-      "d": "/behavior_packs/diverse_bp/items/sample_food.json",
-      "fs": {
-        "Components": {
-          "minecraft:max_stack_size": 1,
-          "minecraft:use_duration": 1,
-          "minecraft:food": 1
-        }
-      }
-    },
-    {
-      "iTp": 2,
-      "gId": "JSONTAGS",
-      "gIx": 103,
-      "p": "/behavior_packs/diverse_bp/items/sample_sword.json",
-      "d": "/behavior_packs/diverse_bp/items/sample_sword.json",
-      "fs": {
-        "Components": {
-          "minecraft:max_stack_size": 1,
-          "minecraft:hand_equipped": 1,
-          "minecraft:durability": 1,
-          "minecraft:weapon": 1,
-          "minecraft:damage": 1
-        }
-      }
-    },
-    {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 120,
-      "p": "/behavior_packs/diverse_bp/blocks/sample_block.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 621,
-      "p": "/behavior_packs/diverse_bp/blocks/sample_block.json",
-      "d": [
-        1,
-        21,
-        0
-      ]
-    },
-    {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 140,
-      "p": "/behavior_packs/diverse_bp/items/sample_food.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 623,
-      "p": "/behavior_packs/diverse_bp/items/sample_food.json",
-      "d": [
-        1,
-        21,
-        0
-      ]
-    },
-    {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 140,
-      "p": "/behavior_packs/diverse_bp/items/sample_sword.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 623,
-      "p": "/behavior_packs/diverse_bp/items/sample_sword.json",
-      "d": [
-        1,
-        21,
-        0
-      ]
-    },
-    {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 160,
-      "p": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 643,
-      "p": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json",
-      "d": [
-        1,
-        21,
-        0
-      ]
-    },
-    {
-      "iTp": 4,
-      "gId": "FORMATVER",
-      "gIx": 258,
-      "p": "/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 644,
-      "p": "/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json",
-      "d": [
-        1,
-        21,
-        0
-      ]
-    },
-    {
-      "iTp": 4,
-      "gId": "FORMATVER",
-      "gIx": 218,
-      "p": "/resource_packs/diverse_rp/animations/sample_mob_animations.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 628,
-      "p": "/resource_packs/diverse_rp/animations/sample_mob_animations.json",
-      "d": [
-        1,
-        21,
-        0
-      ]
-    },
-    {
-      "iTp": 4,
-      "gId": "FORMATVER",
-      "gIx": 238,
-      "p": "/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 629,
-      "p": "/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json",
-      "d": [
-        1,
-        21,
-        0
-      ]
-    },
-    {
-      "iTp": 7,
-      "gId": "SCRIPT",
-      "gIx": 101
-    },
-    {
-      "iTp": 7,
-      "gId": "SUMMARY",
-      "gIx": 101
-    },
-    {
-      "iTp": 7,
-      "gId": "SUMMARY",
-      "gIx": 102
+      "iTp": 1,
+      "gId": "RESOURCEANIMATION",
+      "gIx": 1
     },
     {
       "iTp": 7,
@@ -2001,19 +2271,64 @@
       }
     },
     {
+      "iTp": 1,
+      "gId": "RPDEPENDS",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "SCRIPT",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "SCRIPT",
+      "gIx": 101
+    },
+    {
+      "iTp": 8,
+      "gId": "SCRIPTMODULE",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "SNDSDEF",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "STRICT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "SUMMARY",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "SUMMARY",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "SUMMARY",
+      "gIx": 102
+    },
+    {
+      "iTp": 1,
+      "gId": "TEXTURE",
+      "gIx": 1
+    },
+    {
       "iTp": 7,
       "gId": "TEXTURE",
       "gIx": 101
     },
     {
-      "iTp": 7,
-      "gId": "TEXTUREREF",
-      "gIx": 101
-    },
-    {
-      "iTp": 7,
-      "gId": "TYPES",
-      "gIx": 101
+      "iTp": 1,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 1
     },
     {
       "iTp": 7,
@@ -2231,125 +2546,80 @@
       }
     },
     {
+      "iTp": 1,
+      "gId": "TEXTUREREF",
+      "gIx": 1
+    },
+    {
       "iTp": 7,
-      "gId": "GEOMETRY",
+      "gId": "TEXTUREREF",
       "gIx": 101
     },
     {
-      "iTp": 7,
-      "gId": "GEOMETRY",
-      "gIx": 102
+      "iTp": 1,
+      "gId": "TYPES",
+      "gIx": 1
     },
     {
       "iTp": 7,
-      "gId": "GEOMETRY",
-      "gIx": 103
-    },
-    {
-      "iTp": 3,
-      "gId": "LANGFILES",
+      "gId": "TYPES",
       "gIx": 101
     },
     {
-      "iTp": 3,
-      "gId": "LANGFILES",
-      "gIx": 101
+      "iTp": 1,
+      "gId": "UNKFILE",
+      "gIx": 1
     },
     {
-      "iTp": 2,
-      "gId": "MINENGINEVER",
-      "gIx": 605,
-      "p": "/behavior_packs/diverse_bp/manifest.json",
-      "d": [
-        1,
-        21,
-        0
-      ]
+      "iTp": 1,
+      "gId": "UNKJSON",
+      "gIx": 1
     },
     {
-      "iTp": 2,
-      "gId": "MINENGINEVER",
-      "gIx": 614,
-      "p": "/resource_packs/diverse_rp/manifest.json",
-      "d": [
-        1,
-        21,
-        0
-      ]
+      "iTp": 1,
+      "gId": "UNLINK",
+      "gIx": 1
     },
     {
-      "iTp": 7,
-      "gId": "ENTITYTYPE",
-      "gIx": 52,
-      "fs": {
-        "(no runtime identifier)": {
-          "Count": 1
-        }
-      }
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 323,
+      "p": "/behavior_packs/diverse_bp/loot_tables/sample_loot.json",
+      "d": "/behavior_packs/diverse_bp/loot_tables/sample_loot.json to `minecraft:stick`"
     },
     {
-      "iTp": 7,
-      "gId": "ENTITYTYPE",
-      "gIx": 53,
-      "fs": {
-        "(no override identifier)": {
-          "Count": 1
-        }
-      }
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 323,
+      "p": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json",
+      "d": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:iron_ingot`"
     },
     {
-      "iTp": 7,
-      "gId": "ENTITYTYPE",
-      "gIx": 54,
-      "fs": {
-        "Spawnable Entity Type": {
-          "Count": 1
-        },
-        "Summonable Entity Type": {
-          "Count": 1
-        }
-      }
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 323,
+      "p": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json",
+      "d": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:stick`"
     },
     {
-      "iTp": 6,
-      "gId": "ENTITYTYPE",
-      "gIx": 130,
-      "p": "/behavior_packs/diverse_bp/entities/sample_mob.json"
+      "iTp": 8,
+      "gId": "VALFILE",
+      "gIx": 2
     },
     {
-      "iTp": 7,
-      "gId": "ITEMTYPE",
-      "gIx": 53,
-      "fs": {
-        "(no override identifier)": {
-          "Count": 2
-        }
-      }
+      "iTp": 8,
+      "gId": "VSCODEFILE",
+      "gIx": 2
     },
     {
-      "iTp": 7,
-      "gId": "ITEMTYPE",
-      "gIx": 55,
-      "fs": {
-        "nature": {
-          "Count": 1
-        },
-        "equipment": {
-          "Count": 1
-        }
-      }
+      "iTp": 8,
+      "gId": "WORLD",
+      "gIx": 2
     },
     {
-      "iTp": 6,
-      "gId": "ITEMTYPE",
-      "gIx": 130,
-      "p": "/behavior_packs/diverse_bp/items/sample_food.json"
-    },
-    {
-      "iTp": 6,
-      "gId": "ITEMTYPE",
-      "gIx": 130,
-      "p": "/behavior_packs/diverse_bp/items/sample_sword.json"
+      "iTp": 1,
+      "gId": "WORLDDATA",
+      "gIx": 1
     },
     {
       "iTp": 7,
@@ -2394,269 +2664,6 @@
       "gId": "WORLDDATA",
       "gIx": 126,
       "p": "/behavior_packs/diverse_bp/dialogue/sample_dialogue.json"
-    },
-    {
-      "iTp": 5,
-      "gId": "JSONF",
-      "gIx": 402,
-      "d": "entity/actor_document"
-    },
-    {
-      "iTp": 4,
-      "gId": "UNLINK",
-      "gIx": 323,
-      "p": "/behavior_packs/diverse_bp/loot_tables/sample_loot.json",
-      "d": "/behavior_packs/diverse_bp/loot_tables/sample_loot.json to `minecraft:stick`"
-    },
-    {
-      "iTp": 4,
-      "gId": "UNLINK",
-      "gIx": 323,
-      "p": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json",
-      "d": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:iron_ingot`"
-    },
-    {
-      "iTp": 4,
-      "gId": "UNLINK",
-      "gIx": 323,
-      "p": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json",
-      "d": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:stick`"
-    },
-    {
-      "iTp": 5,
-      "gId": "JSONF",
-      "gIx": 402,
-      "d": "spawn/spawn_rules"
-    },
-    {
-      "iTp": 1,
-      "gId": "ITEMS",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "LINESIZE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "PACKSIZE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "PACK",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "JSONTAGS",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "FORMATVER",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "SCRIPT",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "SHARING",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "SUMMARY",
-      "gIx": 1
-    },
-    {
-      "iTp": 8,
-      "gId": "PACKMETADATA",
-      "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "RESOURCEANIMATION",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "STRICT",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "TEXTURE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "TEXTUREREF",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "TYPES",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "TEXTUREIMAGE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "GEOMETRY",
-      "gIx": 1
-    },
-    {
-      "iTp": 8,
-      "gId": "MCFUNCTION",
-      "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "CPACKICON",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "CWI",
-      "gIx": 1
-    },
-    {
-      "iTp": 8,
-      "gId": "SNDSDEF",
-      "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "CPARTI",
-      "gIx": 1
-    },
-    {
-      "iTp": 8,
-      "gId": "EXPFLAG",
-      "gIx": 2
-    },
-    {
-      "iTp": 8,
-      "gId": "CHECKFEATUREDEPRECATION",
-      "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "FORBFILE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "PRJINT",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "GEOFMT",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "CBFG",
-      "gIx": 1
-    },
-    {
-      "iTp": 0,
-      "gId": "LANGFILES",
-      "gIx": 0
-    },
-    {
-      "iTp": 8,
-      "gId": "SCRIPTMODULE",
-      "gIx": 2
-    },
-    {
-      "iTp": 8,
-      "gId": "VSCODEFILE",
-      "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "MINENGINEVER",
-      "gIx": 1
-    },
-    {
-      "iTp": 8,
-      "gId": "BASEGAMEVER",
-      "gIx": 2
-    },
-    {
-      "iTp": 8,
-      "gId": "BLOCKSCAT",
-      "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "ENTITYTYPE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "ITEMTYPE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "UNKJSON",
-      "gIx": 1
-    },
-    {
-      "iTp": 0,
-      "gId": "JSONF",
-      "gIx": 0
-    },
-    {
-      "iTp": 1,
-      "gId": "JSON",
-      "gIx": 1
-    },
-    {
-      "iTp": 8,
-      "gId": "WORLD",
-      "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "WORLDDATA",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "UNLINK",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "UNKFILE",
-      "gIx": 1
-    },
-    {
-      "iTp": 8,
-      "gId": "VALFILE",
-      "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "PATHLENGTH",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "NOBOM",
-      "gIx": 1
     }
   ],
   "index": {

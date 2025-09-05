@@ -49,5 +49,5 @@
     }
   ],
   "description": "Allows the entity to eat a specified Mob.",
-  "title": "Minecraft Behavior.eat Mob Entity"
+  "title": "Entity Eat Mob Behavior"
 }

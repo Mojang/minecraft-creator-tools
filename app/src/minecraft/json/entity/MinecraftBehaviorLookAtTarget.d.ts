@@ -85,14 +85,14 @@ export default interface MinecraftBehaviorLookAtTarget {
    * The angle in degrees that the mob can see in the Y-axis 
    * (up-down).
    */
-  angle_of_view_horizontal: number;
+  angle_of_view_horizontal?: number;
 
   /**
    * @remarks
    * The angle in degrees that the mob can see in the X-axis
    * (left-right).
    */
-  angle_of_view_vertical: number;
+  angle_of_view_vertical?: number;
 
   /**
    * @remarks
@@ -107,7 +107,7 @@ export default interface MinecraftBehaviorLookAtTarget {
    * Crossbow Turret: 15
    *
    */
-  look_distance: number;
+  look_distance?: number;
 
   /**
    * @remarks
@@ -118,7 +118,7 @@ export default interface MinecraftBehaviorLookAtTarget {
    *
    *
    */
-  look_time: number[];
+  look_time?: number[];
 
   /**
    * @remarks
@@ -134,7 +134,7 @@ export default interface MinecraftBehaviorLookAtTarget {
    * Bow Turret: 1
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -146,6 +146,6 @@ export default interface MinecraftBehaviorLookAtTarget {
    *
    *
    */
-  probability: number;
+  probability?: number;
 
 }

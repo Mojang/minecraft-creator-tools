@@ -231,7 +231,7 @@ export default interface MinecraftHealable {
    * Parrot: {"test":"is_riding","operator":"!=","value":true}
    *
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -242,7 +242,7 @@ export default interface MinecraftHealable {
    * Parrot: true
    *
    */
-  force_use: boolean;
+  force_use?: boolean;
 
   /**
    * @remarks
@@ -251,10 +251,8 @@ export default interface MinecraftHealable {
    * Sample Values:
    * Camel: [{"item":"cactus","heal_amount":2}]
    *
-   * Cat: [{"item":"fish","heal_amount":2},{"item":"salmon","heal_amount":2}]
-   *
    */
-  items: MinecraftHealableItems[];
+  items?: MinecraftHealableItems[];
 
 }
 
@@ -268,12 +266,12 @@ export interface MinecraftHealableItems {
    * @remarks
    * The amount of health this entity gains when fed this item.
    */
-  heal_amount: number;
+  heal_amount?: number;
 
   /**
    * @remarks
    * Item identifier that can be used to heal this entity.
    */
-  item: string;
+  item?: string;
 
 }

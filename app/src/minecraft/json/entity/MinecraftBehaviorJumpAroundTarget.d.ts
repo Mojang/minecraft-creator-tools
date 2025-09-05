@@ -84,7 +84,7 @@ export default interface MinecraftBehaviorJumpAroundTarget {
    * check_collision to true may affect performance and should be
    * used with care.
    */
-  check_collision: boolean;
+  check_collision?: boolean;
 
   /**
    * @remarks
@@ -97,7 +97,7 @@ export default interface MinecraftBehaviorJumpAroundTarget {
    * Breeze: 0.7
    *
    */
-  entity_bounding_box_scale: number;
+  entity_bounding_box_scale?: number;
 
   /**
    * @remarks
@@ -107,7 +107,7 @@ export default interface MinecraftBehaviorJumpAroundTarget {
    * Breeze: {"all_of":[{"any_of":[{"test":"in_water","value":true},{"test":"on_ground","value":true}]},{"test":"is_riding","value":false},{"test":"in_lava","value":false}]}
    *
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -119,7 +119,7 @@ export default interface MinecraftBehaviorJumpAroundTarget {
    * Breeze: [40,55,60,75,80]
    *
    */
-  jump_angles: string[];
+  jump_angles?: string[];
 
   /**
    * @remarks
@@ -130,7 +130,7 @@ export default interface MinecraftBehaviorJumpAroundTarget {
    * Breeze: 0.5
    *
    */
-  jump_cooldown_duration: number;
+  jump_cooldown_duration?: number;
 
   /**
    * @remarks
@@ -141,7 +141,7 @@ export default interface MinecraftBehaviorJumpAroundTarget {
    * Breeze: 0.1
    *
    */
-  jump_cooldown_when_hurt_duration: number;
+  jump_cooldown_when_hurt_duration?: number;
 
   /**
    * @remarks
@@ -152,7 +152,7 @@ export default interface MinecraftBehaviorJumpAroundTarget {
    * Breeze: [4,8]
    *
    */
-  landing_distance_from_target: number[];
+  landing_distance_from_target?: number[];
 
   /**
    * @remarks
@@ -167,7 +167,7 @@ export default interface MinecraftBehaviorJumpAroundTarget {
    * Breeze: 90
    *
    */
-  landing_position_spread_degrees: number;
+  landing_position_spread_degrees?: number;
 
   /**
    * @remarks
@@ -179,7 +179,7 @@ export default interface MinecraftBehaviorJumpAroundTarget {
    * Breeze: 2
    *
    */
-  last_hurt_duration: number;
+  last_hurt_duration?: number;
 
   /**
    * @remarks
@@ -192,7 +192,7 @@ export default interface MinecraftBehaviorJumpAroundTarget {
    * Breeze: 4
    *
    */
-  line_of_sight_obstruction_height_ignore: number;
+  line_of_sight_obstruction_height_ignore?: number;
 
   /**
    * @remarks
@@ -202,7 +202,7 @@ export default interface MinecraftBehaviorJumpAroundTarget {
    * Breeze: 1.4
    *
    */
-  max_jump_velocity: number;
+  max_jump_velocity?: number;
 
   /**
    * @remarks
@@ -212,7 +212,7 @@ export default interface MinecraftBehaviorJumpAroundTarget {
    * Breeze: 0.5
    *
    */
-  prepare_jump_duration: number;
+  prepare_jump_duration?: number;
 
   /**
    * @remarks
@@ -224,7 +224,7 @@ export default interface MinecraftBehaviorJumpAroundTarget {
    * Breeze: 5
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -235,7 +235,7 @@ export default interface MinecraftBehaviorJumpAroundTarget {
    * Breeze: 4
    *
    */
-  required_vertical_space: number;
+  required_vertical_space?: number;
 
   /**
    * @remarks
@@ -246,7 +246,7 @@ export default interface MinecraftBehaviorJumpAroundTarget {
    * Breeze: 10
    *
    */
-  snap_to_surface_block_range: number;
+  snap_to_surface_block_range?: number;
 
   /**
    * @remarks
@@ -256,6 +256,6 @@ export default interface MinecraftBehaviorJumpAroundTarget {
    * Breeze: [4,20]
    *
    */
-  valid_distance_to_target: number[];
+  valid_distance_to_target?: number[];
 
 }

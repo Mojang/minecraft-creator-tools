@@ -138,7 +138,7 @@ export default interface EnumProperty {
    * Creaking: "minecraft:creaking_state"
    *
    */
-  domain: string;
+  domain?: string;
 
   /**
    * @remarks
@@ -148,7 +148,7 @@ export default interface EnumProperty {
    * Armadillo: "not"
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
@@ -158,7 +158,7 @@ export default interface EnumProperty {
    * Egg: "other"
    *
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -167,7 +167,7 @@ export default interface EnumProperty {
    * Armadillo: "enum_property"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -177,7 +177,7 @@ export default interface EnumProperty {
    * Armadillo: "unrolled", "rolled_up", "rolled_up_peeking", "rolled_up_relaxing", "rolled_up_unrolling"
    *
    */
-  value: string;
+  value?: string;
 
 }
 

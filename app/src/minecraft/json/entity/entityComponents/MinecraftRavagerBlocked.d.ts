@@ -49,7 +49,7 @@ export default interface MinecraftRavagerBlocked {
    * Ravager: 3
    *
    */
-  knockback_strength: number;
+  knockback_strength?: number;
 
   /**
    * @remarks
@@ -60,6 +60,6 @@ export default interface MinecraftRavagerBlocked {
    * Ravager: [{"weight":1,"value":{"event":"minecraft:become_stunned","target":"self"}},{"weight":1}]
    *
    */
-  reaction_choices: string[];
+  reaction_choices?: string[];
 
 }

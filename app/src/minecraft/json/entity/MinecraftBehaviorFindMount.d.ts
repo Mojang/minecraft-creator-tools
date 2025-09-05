@@ -60,7 +60,7 @@ export default interface MinecraftBehaviorFindMount {
    * Parrot: true
    *
    */
-  avoid_water: boolean;
+  avoid_water?: boolean;
 
   /**
    * @remarks
@@ -70,7 +70,7 @@ export default interface MinecraftBehaviorFindMount {
    *
    *
    */
-  max_failed_attempts: number;
+  max_failed_attempts?: number;
 
   /**
    * @remarks
@@ -82,7 +82,7 @@ export default interface MinecraftBehaviorFindMount {
    * Parrot: 2
    *
    */
-  mount_distance: number;
+  mount_distance?: number;
 
   /**
    * @remarks
@@ -97,7 +97,7 @@ export default interface MinecraftBehaviorFindMount {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -111,14 +111,14 @@ export default interface MinecraftBehaviorFindMount {
    *
    *
    */
-  start_delay: number;
+  start_delay?: number;
 
   /**
    * @remarks
    * If true, the mob will only look for a mount if it has a 
    * target
    */
-  target_needed: boolean;
+  target_needed?: boolean;
 
   /**
    * @remarks
@@ -130,6 +130,6 @@ export default interface MinecraftBehaviorFindMount {
    *
    *
    */
-  within_radius: number;
+  within_radius?: number;
 
 }

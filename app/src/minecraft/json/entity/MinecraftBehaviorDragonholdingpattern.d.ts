@@ -39,6 +39,6 @@ export default interface MinecraftBehaviorDragonholdingpattern {
    * Ender Dragon: 3
    *
    */
-  priority: number;
+  priority?: number;
 
 }

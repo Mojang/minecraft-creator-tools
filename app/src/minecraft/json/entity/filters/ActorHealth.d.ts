@@ -50,7 +50,7 @@ export default interface ActorHealth {
    * Creaking: ">"
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
@@ -60,7 +60,7 @@ export default interface ActorHealth {
    * Creaking: "target", "other"
    *
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -69,13 +69,13 @@ export default interface ActorHealth {
    * Creaking: "actor_health"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
    * (Required) An integer value.
    */
-  value: number;
+  value?: number;
 
 }
 

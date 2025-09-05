@@ -10,16 +10,6 @@
  * Items Documentation - minecraft:display_name
  * 
  * minecraft:display_name Samples
- * At sample: 
-"minecraft:display_name": {
-  "value": "secret_weapon"
-}
-
- * At sample with localication key: 
-"minecraft:display_name": {
-  "value": "item.snowball.name"
-}
-
 
 Apple - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/apple.json
 
@@ -90,15 +80,28 @@ My Helm - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/
   "value": "My Custom Helmet"
 }
 
+
+My Leggings - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/behavior_packs/custom_item/items/my_leggings.json
+
+"minecraft:display_name": {
+  "value": "My Custom Leggings"
+}
+
+
+My Sword - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/behavior_packs/custom_item/items/my_sword.json
+
+"minecraft:display_name": {
+  "value": "Secret Weapon"
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Display Name Item (minecraft:display_name)
- * Sets the item display name within Minecraft: Bedrock Edition. This
- * component may also be used to pull from the localization file by
- * referencing a key from it.
+ * Item Display Name (minecraft:display_name)
+ * The display_name item component specifies the text shown whenever an
+ * item's name is displayed, like in hover text.
  */
 export default interface MinecraftDisplayName {
 
@@ -114,6 +117,6 @@ export default interface MinecraftDisplayName {
    * Ominous Trial Key: "item.ominous_trial_key.name"
    *
    */
-  value: string;
+  value?: string;
 
 }

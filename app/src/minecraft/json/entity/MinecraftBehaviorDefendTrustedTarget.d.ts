@@ -48,26 +48,26 @@ export default interface MinecraftBehaviorDefendTrustedTarget {
    * Fox: "mad"
    *
    */
-  aggro_sound: string;
+  aggro_sound?: string;
 
   /**
    * @remarks
    * Time in seconds between attacks
    */
-  attack_interval: number;
+  attack_interval?: number;
 
   /**
    * @remarks
    * List of entity types that this mob considers valid targets
    */
-  entity_types: MinecraftBehaviorDefendTrustedTargetEntityTypes[];
+  entity_types?: MinecraftBehaviorDefendTrustedTargetEntityTypes[];
 
   /**
    * @remarks
    * If true, only entities in this mob's viewing range can be
    * selected as targets
    */
-  must_see: boolean;
+  must_see?: boolean;
 
   /**
    * @remarks
@@ -75,7 +75,7 @@ export default interface MinecraftBehaviorDefendTrustedTarget {
    * for a target before forgetting about it and looking for a new
    * one when the target isn't visible any more
    */
-  must_see_forget_duration: number;
+  must_see_forget_duration?: number;
 
   /**
    * @remarks
@@ -84,7 +84,7 @@ export default interface MinecraftBehaviorDefendTrustedTarget {
    * Fox: {"event":"minecraft:fox_configure_defending","target":"self"}
    *
    */
-  on_defend_start: jsoncommon.MinecraftEventTrigger;
+  on_defend_start?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -92,7 +92,7 @@ export default interface MinecraftBehaviorDefendTrustedTarget {
    * priority, the sooner this behavior will be executed as a 
    * goal.
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -101,7 +101,7 @@ export default interface MinecraftBehaviorDefendTrustedTarget {
    * Fox: 0.05
    *
    */
-  sound_chance: number;
+  sound_chance?: number;
 
   /**
    * @remarks
@@ -112,7 +112,7 @@ export default interface MinecraftBehaviorDefendTrustedTarget {
    * Fox: 25
    *
    */
-  within_radius: number;
+  within_radius?: number;
 
 }
 
@@ -127,25 +127,25 @@ export interface MinecraftBehaviorDefendTrustedTargetEntityTypes {
    * The amount of time in seconds that the mob has to wait before
    * selecting a target of the same type again
    */
-  cooldown: number;
+  cooldown?: number;
 
   /**
    * @remarks
    * Conditions that make this entry in the list valid
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
    * Maximum distance this mob can be away to be a valid choice
    */
-  max_dist: number;
+  max_dist?: number;
 
   /**
    * @remarks
    * If true, the mob has to be visible to be a valid choice
    */
-  must_see: boolean;
+  must_see?: boolean;
 
   /**
    * @remarks
@@ -153,27 +153,27 @@ export interface MinecraftBehaviorDefendTrustedTargetEntityTypes {
    * for a target before forgetting about it and looking for a new
    * one when the target isn't visible any more
    */
-  must_see_forget_duration: number;
+  must_see_forget_duration?: number;
 
   /**
    * @remarks
    * If true, the mob will stop being targeted if it stops meeting any
    * conditions.
    */
-  reevaluate_description: boolean;
+  reevaluate_description?: boolean;
 
   /**
    * @remarks
    * Multiplier for the running speed. A value of 1.0 means the speed
    * is unchanged
    */
-  sprint_speed_multiplier: number;
+  sprint_speed_multiplier?: number;
 
   /**
    * @remarks
    * Multiplier for the walking speed. A value of 1.0 means the speed
    * is unchanged
    */
-  walk_speed_multiplier: number;
+  walk_speed_multiplier?: number;
 
 }

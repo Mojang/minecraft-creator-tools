@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Durability Sensor Durability Threshold Item
+ * Item Durability Sensor Durability Threshold
  * (minecraft:durability_sensor durability_threshold)
  * Defines both the durability threshold, and the effects emitted when
  * that threshold is met.
@@ -25,18 +25,18 @@ export default interface MinecraftDurabilitySensorDurabilityThreshold {
    * The effects are emitted when the item durability value is less
    * than or equal to this value.
    */
-  durability: number;
+  durability?: number;
 
   /**
    * @remarks
    * Particle effect to emit when the threshold is met.
    */
-  particle_type: string;
+  particle_type?: string;
 
   /**
    * @remarks
    * Sound effect to emit when the threshold is met.
    */
-  sound_event: string;
+  sound_event?: string;
 
 }

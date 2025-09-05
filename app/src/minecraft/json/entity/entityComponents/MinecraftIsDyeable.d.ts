@@ -37,6 +37,6 @@ export default interface MinecraftIsDyeable {
    *
    *
    */
-  interact_text: string;
+  interact_text?: string;
 
 }

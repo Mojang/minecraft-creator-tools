@@ -2,5 +2,5 @@
   "id": "query.variant",
   "fields": [],
   "description": "Returns the entity's variant index. Relates to `variant` component.",
-  "title": "Variant Query"
+  "title": "Variant"
 }

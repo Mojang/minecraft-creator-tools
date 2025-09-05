@@ -159,13 +159,13 @@
             "content": "item.trident.hit"
           }
         ],
-        "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
+        "/vanilla/behavior_pack/entities/wither_skull.json": [
           {
             "path": "/minecraft:entity/components/minecraft:projectile/",
             "content": "bow.hit"
           }
         ],
-        "/vanilla/behavior_pack/entities/wither_skull.json": [
+        "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
           {
             "path": "/minecraft:entity/components/minecraft:projectile/",
             "content": "bow.hit"
@@ -451,16 +451,16 @@
             "content": 4
           }
         ],
-        "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:projectile/",
-            "content": 0.6
-          }
-        ],
         "/vanilla/behavior_pack/entities/wither_skull.json": [
           {
             "path": "/minecraft:entity/components/minecraft:projectile/",
             "content": 1.2
+          }
+        ],
+        "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:projectile/",
+            "content": 0.6
           }
         ]
       }
@@ -528,13 +528,13 @@
       "description": "The sound that plays when the projectile is shot",
       "dataType": 2,
       "samples": {
-        "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
+        "/vanilla/behavior_pack/entities/wither_skull.json": [
           {
             "path": "/minecraft:entity/components/minecraft:projectile/",
             "content": "bow"
           }
         ],
-        "/vanilla/behavior_pack/entities/wither_skull.json": [
+        "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
           {
             "path": "/minecraft:entity/components/minecraft:projectile/",
             "content": "bow"
@@ -621,13 +621,13 @@
             "content": 1
           }
         ],
-        "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
+        "/vanilla/behavior_pack/entities/wither_skull.json": [
           {
             "path": "/minecraft:entity/components/minecraft:projectile/",
             "content": 7.5
           }
         ],
-        "/vanilla/behavior_pack/entities/wither_skull.json": [
+        "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
           {
             "path": "/minecraft:entity/components/minecraft:projectile/",
             "content": 7.5
@@ -654,13 +654,13 @@
             "content": 4
           }
         ],
-        "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
+        "/vanilla/behavior_pack/entities/wither_skull.json": [
           {
             "path": "/minecraft:entity/components/minecraft:projectile/",
             "content": 1
           }
         ],
-        "/vanilla/behavior_pack/entities/wither_skull.json": [
+        "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
           {
             "path": "/minecraft:entity/components/minecraft:projectile/",
             "content": 1
@@ -919,7 +919,7 @@
             }
           }
         ],
-        "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
+        "/vanilla/behavior_pack/entities/wither_skull.json": [
           {
             "path": "/minecraft:entity/components/minecraft:projectile/",
             "content": {
@@ -940,7 +940,7 @@
             }
           }
         ],
-        "/vanilla/behavior_pack/entities/wither_skull.json": [
+        "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
           {
             "path": "/minecraft:entity/components/minecraft:projectile/",
             "content": {
@@ -1450,6 +1450,44 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/entities/wither_skull.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:projectile/",
+        "content": {
+          "on_hit": {
+            "definition_event": {
+              "affect_projectile": true,
+              "event_trigger": {
+                "event": "minecraft:explode",
+                "target": "self"
+              }
+            },
+            "mob_effect": {
+              "effect": "wither",
+              "durationeasy": 0,
+              "durationnormal": 200,
+              "durationhard": 800,
+              "amplifier": 1
+            }
+          },
+          "power": 1.2,
+          "gravity": 0,
+          "uncertainty_base": 7.5,
+          "uncertainty_multiplier": 1,
+          "shoot_sound": "bow",
+          "hit_sound": "bow.hit",
+          "anchor": 1,
+          "offset": [
+            0,
+            -0.1,
+            0
+          ],
+          "inertia": 1,
+          "liquid_inertia": 1,
+          "shoot_target": false
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
       {
         "path": "/minecraft:entity/components/minecraft:projectile/",
@@ -1487,44 +1525,6 @@
           "liquid_inertia": 1,
           "shoot_target": false,
           "reflect_on_hurt": true
-        }
-      }
-    ],
-    "/vanilla/behavior_pack/entities/wither_skull.json": [
-      {
-        "path": "/minecraft:entity/components/minecraft:projectile/",
-        "content": {
-          "on_hit": {
-            "definition_event": {
-              "affect_projectile": true,
-              "event_trigger": {
-                "event": "minecraft:explode",
-                "target": "self"
-              }
-            },
-            "mob_effect": {
-              "effect": "wither",
-              "durationeasy": 0,
-              "durationnormal": 200,
-              "durationhard": 800,
-              "amplifier": 1
-            }
-          },
-          "power": 1.2,
-          "gravity": 0,
-          "uncertainty_base": 7.5,
-          "uncertainty_multiplier": 1,
-          "shoot_sound": "bow",
-          "hit_sound": "bow.hit",
-          "anchor": 1,
-          "offset": [
-            0,
-            -0.1,
-            0
-          ],
-          "inertia": 1,
-          "liquid_inertia": 1,
-          "shoot_target": false
         }
       }
     ],

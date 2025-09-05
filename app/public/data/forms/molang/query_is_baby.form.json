@@ -2,5 +2,5 @@
   "id": "query.is_baby",
   "fields": [],
   "description": "Returns 1.0 if the entity has a `is_baby` component, else it returns 0.0.",
-  "title": "Is Baby Query"
+  "title": "Is Baby"
 }

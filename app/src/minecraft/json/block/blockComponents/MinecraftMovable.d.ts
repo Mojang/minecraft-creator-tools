@@ -28,27 +28,26 @@ export default interface MinecraftMovable {
 "push_pull" -
    * The default value for this field. The block will be pushed and
    * pulled by a piston.
-"push" - The block will only be pulled by
-   * a piston and will ignore a sticky piston.
+"push" - The block will only be pulled by a
+   * piston and will ignore a sticky piston.
 "popped" - The block is
    * destroyed when moved by a piston.
 "immovable" - The block is
    * unaffected by a piston.
    */
-  movement_type: string;
+  movement_type?: string;
 
   /**
    * @remarks
    * [Optional] How the block should handle adjacent blocks around it
    * when being pushed by another block like a piston. Must be one of
    * the following options:
-"same" - Adjacent blocks to this block
-   * will be moved when moved. This excludes other blocks with the
-   * "same" property. This will only work with the movement_type:
-   * "push_pull".
-"none" - The default and will not move adjacent 
-   * blocks.
+"same" - Adjacent blocks to this block will
+   * be moved when moved. This excludes other blocks with the "same"
+   * property. This will only work with the movement_type: "push_pull".
+"none" -
+   * The default and will not move adjacent blocks.
    */
-  sticky: string;
+  sticky?: string;
 
 }

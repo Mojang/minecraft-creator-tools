@@ -87,7 +87,7 @@ export default interface MinecraftHome {
    * Bee: ["minecraft:bee_nest","minecraft:beehive"]
    *
    */
-  home_block_list: string[];
+  home_block_list?: string[];
 
   /**
    * @remarks
@@ -102,7 +102,7 @@ export default interface MinecraftHome {
    * Elder Guardian: 16
    *
    */
-  restriction_radius: number;
+  restriction_radius?: number;
 
   /**
    * @remarks
@@ -127,6 +127,6 @@ export default interface MinecraftHome {
    *
    *
    */
-  restriction_type: string;
+  restriction_type?: string;
 
 }

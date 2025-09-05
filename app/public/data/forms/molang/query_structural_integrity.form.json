@@ -2,5 +2,5 @@
   "id": "query.structural_integrity",
   "fields": [],
   "description": "Returns the structural integrity for the entity, otherwise returns 0. Generally applies to the minecart.",
-  "title": "Structural Integrity Query"
+  "title": "Structural Integrity"
 }

@@ -48,7 +48,7 @@ export default interface MinecraftBehaviorSwimIdle {
    *
    *
    */
-  idle_time: number;
+  idle_time?: number;
 
   /**
    * @remarks
@@ -63,7 +63,7 @@ export default interface MinecraftBehaviorSwimIdle {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -76,6 +76,6 @@ export default interface MinecraftBehaviorSwimIdle {
    *
    *
    */
-  success_rate: number;
+  success_rate?: number;
 
 }

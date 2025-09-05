@@ -127,7 +127,9 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
       const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.worldTemplateManifestJson) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const bpManifest = await WorldTemplateManifestDefinition.ensureOnFile(pi.primaryFile);
@@ -300,7 +302,9 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
       const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.worldTemplateManifestJson) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const wtManifest = await WorldTemplateManifestDefinition.ensureOnFile(pi.primaryFile);

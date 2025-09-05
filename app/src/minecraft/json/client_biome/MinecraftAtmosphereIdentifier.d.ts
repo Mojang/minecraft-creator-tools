@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../jsoncommon';
 
 /**
- * Minecraft Atmosphere Identifier Client Biome
+ * Client Biome Atmosphere Identifier 
  * (minecraft:atmosphere_identifier)
  * Set the identifier used for atmospherics in Vibrant Visuals mode.
  * Identifiers must resolve to identifiers in valid Atmospheric Scattering

@@ -22,7 +22,7 @@ export default interface MinecraftBehaviorMoveToPoi {
    * @remarks
    * Tells the goal what POI type it should be looking for
    */
-  poi_type: string;
+  poi_type?: string;
 
   /**
    * @remarks
@@ -30,12 +30,12 @@ export default interface MinecraftBehaviorMoveToPoi {
    * priority, the sooner this behavior will be executed as a 
    * goal.
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * Movement speed multiplier of the mob when using this AI Goal
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

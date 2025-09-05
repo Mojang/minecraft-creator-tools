@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../jsoncommon';
 
 /**
- * Minecraft Color Grading Identifier Client Biome
+ * Client Biome Color Grading Identifier
  * (minecraft:color_grading_identifier)
  * Set the identifier used for color grading in Vibrant Visuals mode.
  * Identifiers must resolve to identifiers in valid Color Grading JSON

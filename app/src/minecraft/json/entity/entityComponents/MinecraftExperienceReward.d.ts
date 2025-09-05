@@ -103,8 +103,7 @@ Magma Cube - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pac
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Experience Reward Entity 
- * (minecraft:experience_reward)
+ * Entity Experience Reward (minecraft:experience_reward)
  * .
  */
 export default interface MinecraftExperienceReward {
@@ -119,9 +118,9 @@ export default interface MinecraftExperienceReward {
    *
    *
    */
-  on_bred: string;
+  on_bred?: string;
 
-  on_bred_array: { [key: string]: string };
+  on_bred_array?: { [key: string]: string };
 
   /**
    * @remarks
@@ -137,8 +136,8 @@ export default interface MinecraftExperienceReward {
    * Bogged: "query.last_hit_by_player ? 5 + (query.equipment_count * Math.Random(1,3)) : 0"
    *
    */
-  on_death: string;
+  on_death?: string;
 
-  on_death_array: { [key: string]: string };
+  on_death_array?: { [key: string]: string };
 
 }

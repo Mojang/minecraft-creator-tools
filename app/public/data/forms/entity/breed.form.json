@@ -19,5 +19,5 @@
     }
   ],
   "description": "Allows this mob to breed with other mobs.",
-  "title": "Minecraft Behavior.breed Entity"
+  "title": "Entity Breed Behavior"
 }

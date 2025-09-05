@@ -47,7 +47,7 @@ export default interface MinecraftBehaviorInspectBookshelf {
    * Villager v2: 0.8
    *
    */
-  goal_radius: number;
+  goal_radius?: number;
 
   /**
    * @remarks
@@ -59,7 +59,7 @@ export default interface MinecraftBehaviorInspectBookshelf {
    * Villager v2: 8
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -68,7 +68,7 @@ export default interface MinecraftBehaviorInspectBookshelf {
    * 0 will have the mob check every block within range in one 
    * tick
    */
-  search_count: number;
+  search_count?: number;
 
   /**
    * @remarks
@@ -78,7 +78,7 @@ export default interface MinecraftBehaviorInspectBookshelf {
    * Villager v2: 3
    *
    */
-  search_height: number;
+  search_height?: number;
 
   /**
    * @remarks
@@ -88,7 +88,7 @@ export default interface MinecraftBehaviorInspectBookshelf {
    * Villager v2: 4
    *
    */
-  search_range: number;
+  search_range?: number;
 
   /**
    * @remarks
@@ -98,6 +98,6 @@ export default interface MinecraftBehaviorInspectBookshelf {
    * Villager v2: 0.6
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

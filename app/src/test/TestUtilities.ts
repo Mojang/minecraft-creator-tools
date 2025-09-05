@@ -1,16 +1,17 @@
 import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
-import { expect, assert } from "chai";
+import { assert } from "chai";
 
-const volatileLineTokens = [
-  '"uuid":',
-  '"pack_id":',
-  '"version":',
+export const volatileAttributes = [
+  "uuid",
+  "pack_id",
+  "version",
   "generator_version",
   "generatorVersion",
-  "version:",
-  "version number",
+  "index",
+  "Vanilla Texture Count",
 ];
+export const volatileFileExtensions = [".report.html"];
 
 export async function ensureReportJsonMatchesScenario(
   scenariosFolder: IFolder | undefined,
@@ -35,7 +36,7 @@ export async function ensureReportJsonMatchesScenario(
 
   assert(exists, "report.json file for scenario '" + scenarioName + "' does not exist.");
 
-  const isEqual = await StorageUtilities.fileContentsEqual(scenarioFile, outFile, true, volatileLineTokens);
+  const isEqual = await StorageUtilities.fileContentsEqual(scenarioFile, outFile, true, volatileAttributes);
   assert(
     isEqual,
     "report.json file '" + scenarioFile.fullPath + "' does not match for scenario '" + scenarioName + "'"
@@ -62,7 +63,7 @@ export async function folderMatches(
     resultOutFolder,
     excludeList,
     true,
-    volatileLineTokens
+    volatileAttributes
   );
 
   assert(

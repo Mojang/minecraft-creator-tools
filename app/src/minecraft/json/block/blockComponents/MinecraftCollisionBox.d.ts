@@ -73,7 +73,7 @@ export default interface MinecraftCollisionBox {
    * Block Leaf Pile: [-8,2,-8]
    *
    */
-  origin: number[];
+  origin?: number[];
 
   /**
    * @remarks
@@ -85,6 +85,6 @@ export default interface MinecraftCollisionBox {
    * Block Leaf Pile: [16,4,16]
    *
    */
-  size: number[];
+  size?: number[];
 
 }

@@ -79,7 +79,7 @@ export default interface MinecraftBehaviorFloat {
    * Cave Spider: 1
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -90,6 +90,6 @@ export default interface MinecraftBehaviorFloat {
    * Camel: true
    *
    */
-  sink_with_passengers: boolean;
+  sink_with_passengers?: boolean;
 
 }

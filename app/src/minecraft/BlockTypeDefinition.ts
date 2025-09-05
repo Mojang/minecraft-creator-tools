@@ -572,7 +572,7 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
 
   constructor(name: string) {
     this._typeId = name;
-
+    this._handleFileUpdated = this._handleFileUpdated.bind(this);
     this._typeData = {
       name: name,
     };
@@ -627,7 +627,22 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
   }
 
   public set behaviorPackFile(newFile: IFile | undefined) {
+    if (this._file) {
+      this._file.onFileContentUpdated.unsubscribe(this._handleFileUpdated);
+    }
+
     this._file = newFile;
+
+    if (this._file) {
+      this._file.onFileContentUpdated.subscribe(this._handleFileUpdated);
+    }
+  }
+
+  _handleFileUpdated(file: IFile, fileB: IFile) {
+    this._data = undefined;
+    this._wrapper = null;
+    this._isLoaded = false;
+    this._managed = {};
   }
 
   public get shortId() {
@@ -654,6 +669,16 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
     }
 
     return undefined;
+  }
+
+  static getComponentFromBaseFileName(name: string) {
+    let canonName = name;
+
+    if (canonName.startsWith("minecraft_")) {
+      canonName = canonName.substring(10);
+    }
+
+    return canonName;
   }
 
   ensureComponent(id: string, defaultData?: IComponent | string | string[] | boolean | number[] | number | undefined) {
@@ -809,7 +834,9 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
       let candItem = childItem.childItem;
 
       if (candItem.itemType === ProjectItemType.terrainTextureCatalogResourceJson) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile && candItem.childItems) {
           const blockTextureCatalog = await TerrainTextureCatalogDefinition.ensureOnFile(candItem.primaryFile);
@@ -945,6 +972,14 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
       }
     }
 
+    const allComponentsInUse = this.getAllComponents();
+
+    for (const component of allComponentsInUse) {
+      if (component && component.id && !component.id.startsWith("minecraft:") && !component.id.startsWith("tag:")) {
+        customComponentIds.push(component.id);
+      }
+    }
+
     return customComponentIds;
   }
 
@@ -981,10 +1016,14 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
 
     for (const candItem of itemsCopy) {
       if (candItem.itemType === ProjectItemType.ts) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
-          await candItem.load();
+          if (!candItem.primaryFile.isContentLoaded) {
+            await candItem.primaryFile.loadContent();
+          }
 
           const tsd = await TypeScriptDefinition.ensureOnFile(candItem.primaryFile);
 
@@ -1004,7 +1043,9 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
           }
         }
       } else if (candItem.itemType === ProjectItemType.terrainTextureCatalogResourceJson) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
           const blockTextureCatalog = await TerrainTextureCatalogDefinition.ensureOnFile(candItem.primaryFile);
@@ -1027,7 +1068,9 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
           }
         }
       } else if (candItem.itemType === ProjectItemType.blocksCatalogResourceJson) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
           const blockCatalog = await BlocksCatalogDefinition.ensureOnFile(candItem.primaryFile);
@@ -1041,7 +1084,9 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
           }
         }
       } else if (candItem.itemType === ProjectItemType.modelGeometryJson && geometryList) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
           const model = await ModelGeometryDefinition.ensureOnFile(candItem.primaryFile);
@@ -1085,11 +1130,13 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
     if (file.manager !== undefined && file.manager instanceof BlockTypeDefinition) {
       bt = file.manager as BlockTypeDefinition;
 
-      if (!bt.isLoaded && loadHandler) {
-        bt.onLoaded.subscribe(loadHandler);
-      }
+      if (!bt.isLoaded) {
+        if (loadHandler) {
+          bt.onLoaded.subscribe(loadHandler);
+        }
 
-      await bt.load();
+        await bt.load();
+      }
     }
 
     return bt;
@@ -1110,7 +1157,9 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
       return;

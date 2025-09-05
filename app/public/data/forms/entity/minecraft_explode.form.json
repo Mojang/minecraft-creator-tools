@@ -296,7 +296,7 @@
             "content": 1.2
           }
         ],
-        "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
+        "/vanilla/behavior_pack/entities/wither_skull.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:exploding/minecraft:explode/",
             "content": 1
@@ -340,7 +340,7 @@
             }
           }
         ],
-        "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
+        "/vanilla/behavior_pack/entities/wither_skull.json": [
           {
             "path": "/minecraft:entity/events/minecraft:explode/",
             "content": {
@@ -489,7 +489,7 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
+    "/vanilla/behavior_pack/entities/wither_skull.json": [
       {
         "path": "/minecraft:entity/component_groups/minecraft:exploding/minecraft:explode/",
         "content": {
@@ -497,7 +497,6 @@
           "fuse_lit": true,
           "power": 1,
           "causes_fire": false,
-          "max_resistance": 4,
           "destroy_affected_by_griefing": true
         }
       },
@@ -512,7 +511,7 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/wither_skull.json": [
+    "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
       {
         "path": "/minecraft:entity/component_groups/minecraft:exploding/minecraft:explode/",
         "content": {
@@ -520,6 +519,7 @@
           "fuse_lit": true,
           "power": 1,
           "causes_fire": false,
+          "max_resistance": 4,
           "destroy_affected_by_griefing": true
         }
       },

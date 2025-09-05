@@ -10,14 +10,6 @@
  * Items Documentation - minecraft:durability
  * 
  * minecraft:durability Samples
-"minecraft:durability": {
-  "damage_chance": {
-    "min": 10,
-    "max": 50
-  },
-  "max_durability": 36
-}
-
 
 Item Axe Turret Kit - https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/axe_turret_kit.item.json
 
@@ -30,6 +22,17 @@ Chestplate - https://github.com/microsoft/minecraft-samples/tree/main/custom_ite
 
 "minecraft:durability": {
   "max_durability": 200
+}
+
+
+My Sword - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/behavior_packs/custom_item/items/my_sword.json
+
+"minecraft:durability": {
+  "damage_chance": {
+    "min": 10,
+    "max": 50
+  },
+  "max_durability": 36
 }
 
 
@@ -70,10 +73,10 @@ My Sword Weak - https://github.com/microsoft/minecraft-samples/tree/main/custom_
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Durability Item (minecraft:durability)
- * Sets how much damage the item can take before breaking, and
- * allows the item to be combined at an anvil, grindstone, or
- * crafting table.
+ * Item Durability (minecraft:durability)
+ * The durability item component specifies how much damage the item
+ * takes before breaking, and allows the item to be combined to
+ * repair or augment them.
  */
 export default interface MinecraftDurability {
 
@@ -84,7 +87,7 @@ export default interface MinecraftDurability {
    * value.
    * 
    * Sample Values:
-   * My Sword Chuck: {"min":10,"max":50}
+   * My Sword: {"min":10,"max":50}
    *
    *
    * My Sword Singing: {"min":0,"max":0}
@@ -92,7 +95,7 @@ export default interface MinecraftDurability {
    * My Sword Weak: {"min":100,"max":100}
    *
    */
-  damage_chance: MinecraftDurabilityDamageChance;
+  damage_chance?: MinecraftDurabilityDamageChance;
 
   /**
    * @remarks
@@ -101,13 +104,13 @@ export default interface MinecraftDurability {
    * minimum of 0.
    * 
    * Sample Values:
+   * Item Axe Turret Kit: 251
+   *
+   *
    * Chestplate: 200
    *
    *
-   * My Sword Chuck: 10
-   *
-   *
-   * My Sword Singing: 1000
+   * My Sword: 36
    *
    */
   max_durability: number;
@@ -116,12 +119,12 @@ export default interface MinecraftDurability {
 
 
 /**
- * IntRange Item (IntRange)
+ * Item Components IntRange (IntRange)
  */
 export interface MinecraftDurabilityDamageChance {
 
-  max: number;
+  max?: number;
 
-  min: number;
+  min?: number;
 
 }

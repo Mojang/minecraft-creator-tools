@@ -197,7 +197,9 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
         contentIndex
       );
     } else if (this.props.file) {
-      await this.props.file.loadContent(false);
+      if (!this.props.file.isContentLoaded) {
+        await this.props.file.loadContent(false);
+      }
 
       const jsonO = StorageUtilities.getJsonObject(this.props.file) as IProjectInfoData | undefined;
 
@@ -274,13 +276,18 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   }
 
   getDataSummary(data: string | number | boolean | undefined) {
-    if (data) {
+    if (data !== undefined) {
       if (typeof data === "number") {
         return Utilities.addCommasToNumber(data);
       } else if (typeof data === "boolean") {
         return data.toString();
       } else if (typeof data === "object") {
-        return "(object)";
+        let str = Utilities.consistentStringifyTrimmed(data);
+
+        if (str.length > 1000) {
+          str = str.substring(0, 1000) + "...";
+        }
+        return str;
       }
 
       return data;
@@ -590,7 +597,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     const pisLines = this.state.selectedInfoSet.getItemCsvLines();
 
     const projName = this.props.project ? this.props.project.name : "report";
-    const csvContent = ProjectInfoSet.CommonCsvHeader + "\r\n" + pisLines.join("\n");
+    const csvContent = ProjectInfoSet.CommonCsvHeader + "\n" + pisLines.join("\n");
 
     saveAs(new Blob([csvContent]), projName + " " + SuiteTitles[this.state.activeSuite] + ".csv");
 

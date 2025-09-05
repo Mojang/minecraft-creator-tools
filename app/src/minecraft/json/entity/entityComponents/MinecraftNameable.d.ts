@@ -64,7 +64,7 @@ export default interface MinecraftNameable {
    * @remarks
    * If true, this entity can be renamed with name tags
    */
-  allow_name_tag_renaming: boolean;
+  allow_name_tag_renaming?: boolean;
 
   /**
    * @remarks
@@ -74,7 +74,7 @@ export default interface MinecraftNameable {
    * Player: true
    *
    */
-  always_show: boolean;
+  always_show?: boolean;
 
   /**
    * @remarks
@@ -84,7 +84,7 @@ export default interface MinecraftNameable {
    * Vindicator: {"event":"minecraft:stop_johnny","target":"self"}
    *
    */
-  default_trigger: string;
+  default_trigger?: string;
 
   /**
    * @remarks
@@ -95,7 +95,7 @@ export default interface MinecraftNameable {
    * Vindicator: [{"name_filter":"Johnny","on_named":{"event":"minecraft:start_johnny","target":"self"}}]
    *
    */
-  name_actions: MinecraftNameableNameActions[];
+  name_actions?: MinecraftNameableNameActions[];
 
 }
 
@@ -111,13 +111,13 @@ export interface MinecraftNameableNameActions {
    * List of special names that will cause the events defined in
    * 'on_named' to fire
    */
-  name_filter: string;
+  name_filter?: string;
 
   /**
    * @remarks
    * Event to be called when this entity acquires the name specified in
    * 'name_filter'
    */
-  on_named: jsoncommon.MinecraftEventTrigger;
+  on_named?: jsoncommon.MinecraftEventTrigger;
 
 }

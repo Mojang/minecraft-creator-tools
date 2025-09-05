@@ -47,6 +47,7 @@ export default class ProjectItem {
   private _isFileContentProcessed: boolean = false;
   private _imageUrlBase64Cache: string | undefined;
   private _pack: Pack | undefined;
+  private _primaryFile?: IFile;
 
   private _accessoryFolder: IFolder | null;
 
@@ -167,7 +168,11 @@ export default class ProjectItem {
 
   hasVersionSliceCustomVariants() {
     for (const key in this._data.variants) {
-      if (key !== "" && this._data.variants[key].variantType === ProjectItemVariantType.versionSlice) {
+      const varType = this._data.variants[key].variantType;
+      if (
+        key !== "" &&
+        (varType === ProjectItemVariantType.versionSlice || varType === ProjectItemVariantType.versionSliceAlt)
+      ) {
         return true;
       }
     }
@@ -320,6 +325,8 @@ export default class ProjectItem {
         this._data.variants[label] = { label: label, variantType: ProjectItemVariantType.general };
       }
 
+      this._primaryFile = undefined;
+
       this._variants[label] = new ProjectItemVariant(this, this._data.variants[label], pv);
     }
 
@@ -393,6 +400,10 @@ export default class ProjectItem {
     }
 
     this.unfulfilledRelationships.push(pir);
+  }
+
+  async ensureDependencies() {
+    await ProjectItemRelations.calculateForItem(this);
   }
 
   addChildItem(childItem: ProjectItem) {
@@ -725,7 +736,7 @@ export default class ProjectItem {
     }
 
     if (!this._variants) {
-      return a.localeCompare(b);
+      return Utilities.staticCompare(a, b);
     }
 
     const va = this._variants[a];
@@ -736,8 +747,10 @@ export default class ProjectItem {
     }
 
     if (
-      va.variantType === ProjectItemVariantType.versionSlice &&
-      vb.variantType === ProjectItemVariantType.versionSlice
+      (va.variantType === ProjectItemVariantType.versionSlice &&
+        vb.variantType === ProjectItemVariantType.versionSlice) ||
+      (va.variantType === ProjectItemVariantType.versionSliceAlt &&
+        vb.variantType === ProjectItemVariantType.versionSliceAlt)
     ) {
       const versionIndexA = Database.getVersionIndexFromVersionStr(va.label);
       const versionIndexB = Database.getVersionIndexFromVersionStr(vb.label);
@@ -745,7 +758,7 @@ export default class ProjectItem {
       return versionIndexA - versionIndexB;
     }
 
-    return va.label.toString().localeCompare(vb.label.toString());
+    return Utilities.staticCompare(va.label.toString(), vb.label.toString());
   }
 
   sortVariantsMostImportantFirst(a: string, b: string) {
@@ -754,7 +767,7 @@ export default class ProjectItem {
     }
 
     if (!this._variants) {
-      return a.localeCompare(b);
+      return Utilities.staticCompare(a, b);
     }
 
     const va = this._variants[a];
@@ -765,8 +778,10 @@ export default class ProjectItem {
     }
 
     if (
-      va.variantType === ProjectItemVariantType.versionSlice &&
-      vb.variantType === ProjectItemVariantType.versionSlice
+      (va.variantType === ProjectItemVariantType.versionSlice &&
+        vb.variantType === ProjectItemVariantType.versionSlice) ||
+      (va.variantType === ProjectItemVariantType.versionSliceAlt &&
+        vb.variantType === ProjectItemVariantType.versionSliceAlt)
     ) {
       const versionIndexA = Database.getVersionIndexFromVersionStr(va.label);
       const versionIndexB = Database.getVersionIndexFromVersionStr(vb.label);
@@ -781,13 +796,16 @@ export default class ProjectItem {
     const variantKeys = Object.keys(this._variants);
 
     // if we have version slices, return the latest one that has a file
-    if (variantKeys.length > 0) {
+    if (this.hasVersionSliceCustomVariants()) {
       variantKeys.sort(this.sortVariantsMostImportantFirst);
 
       for (const variantName of variantKeys) {
         const variant = this._variants[variantName];
 
-        if (variant.variantType === ProjectItemVariantType.versionSlice) {
+        if (
+          variant.variantType === ProjectItemVariantType.versionSlice ||
+          variant.variantType === ProjectItemVariantType.versionSliceAlt
+        ) {
           if (variant.file) {
             return variant.label;
           }
@@ -813,6 +831,10 @@ export default class ProjectItem {
   }
 
   get primaryFile(): IFile | null {
+    if (this._primaryFile) {
+      return this._primaryFile;
+    }
+
     // if we have version slices, return the latest one that has a file
     if (this.hasVersionSliceCustomVariants()) {
       const variantKeys = Object.keys(this._variants);
@@ -822,9 +844,13 @@ export default class ProjectItem {
       for (const variantName of variantKeys) {
         const variant = this._variants[variantName];
 
-        if (variant.variantType === ProjectItemVariantType.versionSlice) {
+        if (
+          variant.variantType === ProjectItemVariantType.versionSlice ||
+          variant.variantType === ProjectItemVariantType.versionSliceAlt
+        ) {
           if (variant.file) {
-            return variant.file;
+            this._primaryFile = variant.file;
+            return this._primaryFile;
           }
         }
       }
@@ -843,14 +869,16 @@ export default class ProjectItem {
         const variant = this._variants[variantName];
 
         if (variant.file) {
-          return variant.file;
+          this._primaryFile = variant.file;
+          return this._primaryFile;
         }
       }
     }
 
     // as a last fallback, return an assumedly content-less default file
     if (this._defaultFile) {
-      return this._defaultFile;
+      this._primaryFile = this._defaultFile;
+      return this._primaryFile;
     }
 
     return null;
@@ -868,7 +896,7 @@ export default class ProjectItem {
     this._project.notifyProjectItemChanged(this);
   }
 
-  get isLoaded() {
+  get isContentLoaded() {
     if (this.storageType === ProjectItemStorageType.folder) {
       if (!this.defaultFolder) {
         return false;
@@ -977,7 +1005,9 @@ export default class ProjectItem {
   }
 
   async rename(newFileBaseName: string) {
-    await this.load();
+    if (!this.isContentLoaded) {
+      await this.loadContent();
+    }
 
     await this._project.ensureProjectFolder();
 
@@ -1004,8 +1034,9 @@ export default class ProjectItem {
   }
 
   async deleteItem() {
-    await this.load();
-
+    if (!this.isContentLoaded) {
+      await this.loadContent();
+    }
     await ProjectItemRelations.deleteLinksFromParents(this);
 
     if (this._defaultFile !== null) {
@@ -1100,7 +1131,7 @@ export default class ProjectItem {
     return "untitled";
   }
 
-  async ensureFolderStorage() {
+  async loadFolder() {
     if (this.storageType === ProjectItemStorageType.folder) {
       if (
         this._defaultFolder === null &&
@@ -1119,7 +1150,9 @@ export default class ProjectItem {
             if (folderToLoadFrom) {
               const zipFile: IFile = await folderToLoadFrom.ensureFileFromRelativePath(prefixPaths[i]);
 
-              await zipFile.loadContent();
+              if (!zipFile.isContentLoaded) {
+                await zipFile.loadContent();
+              }
 
               if (zipFile.content && zipFile.content instanceof Uint8Array) {
                 if (!zipFile.fileContainerStorage) {
@@ -1187,13 +1220,15 @@ export default class ProjectItem {
   }
 
   _fireLoadedEvent() {
-    if (this._onLoaded && this.isLoaded) {
+    if (this._onLoaded && this.isContentLoaded) {
       this._onLoaded.dispatch(this, this);
     }
   }
 
   async getManager() {
-    await this.load();
+    if (!this.isContentLoaded) {
+      await this.loadContent();
+    }
 
     if (this.storageType === ProjectItemStorageType.singleFile && this._defaultFile) {
       return this._defaultFile.manager;
@@ -1208,17 +1243,28 @@ export default class ProjectItem {
 
   async ensureStorage() {
     if (this.storageType === ProjectItemStorageType.folder) {
-      await this.ensureFolderStorage();
+      await this.loadFolder();
     } else if (this.storageType === ProjectItemStorageType.singleFile) {
       await this.ensureFileStorage();
     }
   }
 
-  async ensureFileStorage() {
-    if (this._isFileContentProcessed && this._defaultFile) {
-      return this._defaultFile;
+  get isStorageEnsured() {
+    if (this.storageType === ProjectItemStorageType.folder) {
+      return !!this._defaultFolder;
     }
+    return !!this.primaryFile;
+  }
 
+  async loadContentDirect() {
+    if (this.storageType === ProjectItemStorageType.folder) {
+      await this.loadFolder();
+    } else if (this.storageType === ProjectItemStorageType.singleFile) {
+      await this.loadFileContent();
+    }
+  }
+
+  async ensureFileStorage() {
     if (
       this.storageType === ProjectItemStorageType.singleFile &&
       this._defaultFile === null &&
@@ -1237,7 +1283,9 @@ export default class ProjectItem {
           if (folderToLoadFrom) {
             const zipFile: IFile = await folderToLoadFrom.ensureFileFromRelativePath(prefixPaths[i]);
 
-            await zipFile.loadContent();
+            if (!zipFile.isContentLoaded) {
+              await zipFile.loadContent();
+            }
 
             if (zipFile.content && zipFile.content instanceof Uint8Array) {
               if (!zipFile.fileContainerStorage) {
@@ -1272,17 +1320,39 @@ export default class ProjectItem {
       }
     }
 
+    return this._defaultFile;
+  }
+
+  async loadFileContent() {
+    if (this._isFileContentProcessed && this._defaultFile) {
+      return this._defaultFile;
+    }
+
+    if (!this._defaultFile) {
+      await this.ensureFileStorage();
+    }
+
     const variants = this._getVariantList();
 
     for (const variant of variants) {
-      await variant.ensureFileStorage();
+      await variant.ensureAndLoadFileStorage();
     }
 
+    if (this._defaultFile) {
+      await this.loadFileStorage();
+    }
+
+    return this._defaultFile;
+  }
+
+  async loadFileStorage() {
     if (!this._isFileContentProcessed && this._defaultFile) {
       if (this._data.creationType === ProjectItemCreationType.generated) {
         await ProjectAutogeneration.updateItemAutogeneration(this, true);
       } else {
-        await this._defaultFile.loadContent();
+        if (!this._defaultFile.isContentLoaded) {
+          await this._defaultFile.loadContent();
+        }
       }
 
       await ProjectAutogeneration.updateItemAutogeneratedSideFiles(this);
@@ -1311,8 +1381,6 @@ export default class ProjectItem {
         this._fireLoadedEvent();
       }
     }
-
-    return this._defaultFile;
   }
 
   async getJsonObject(): Promise<object | undefined> {
@@ -1335,23 +1403,34 @@ export default class ProjectItem {
   }
 
   async getStringContent(): Promise<string | undefined> {
-    await this.load();
+    if (!this.isContentLoaded) {
+      await this.loadContent();
+    }
 
-    if (!this._defaultFile) {
+    const pf = this.primaryFile;
+
+    if (!pf) {
       return undefined;
     }
 
-    await this._defaultFile.loadContent();
+    if (!pf.isContentLoaded) {
+      await pf.loadContent();
+    }
 
-    if (this._defaultFile.content instanceof Uint8Array || this._defaultFile.content === null) {
+    if (pf.content instanceof Uint8Array || pf.content === null) {
       return undefined;
     }
 
-    return this._defaultFile.content;
+    return pf.content;
   }
 
-  async load() {
-    if (this.isLoaded) {
+  async getContentAsJson(): Promise<any | null> {
+    const file = await this.loadFileContent();
+    return file && (await StorageUtilities.getJsonObject(file));
+  }
+
+  async loadContent() {
+    if (this.isContentLoaded) {
       return true;
     }
 
@@ -1368,7 +1447,7 @@ export default class ProjectItem {
     } else {
       this._isLoading = true;
 
-      await this.ensureStorage();
+      await this.loadContentDirect();
 
       this._isLoading = false;
 
@@ -1384,7 +1463,9 @@ export default class ProjectItem {
   }
 
   async prepareToSave() {
-    await this.load();
+    if (!this.isContentLoaded) {
+      await this.loadContent();
+    }
 
     await ProjectAutogeneration.updateItemAutogeneration(this);
     await ProjectAutogeneration.updateItemAutogeneratedSideFiles(this);

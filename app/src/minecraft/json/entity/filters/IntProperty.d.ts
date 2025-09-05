@@ -60,7 +60,7 @@ export default interface IntProperty {
    * Creaking: "minecraft:creaking_swaying_ticks"
    *
    */
-  domain: string;
+  domain?: string;
 
   /**
    * @remarks
@@ -70,13 +70,13 @@ export default interface IntProperty {
    * Creaking: ">", "<="
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
    * (Optional) The subject of this filter test.
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -85,7 +85,7 @@ export default interface IntProperty {
    * Creaking: "int_property"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -95,7 +95,7 @@ export default interface IntProperty {
    * Creaking: 5
    *
    */
-  value: number;
+  value?: number;
 
 }
 

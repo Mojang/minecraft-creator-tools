@@ -56,14 +56,14 @@ export default interface MinecraftReflectProjectiles {
    * Breeze: "180.0 + Math.random(-20.0, 20.0)"
    *
    */
-  azimuth_angle: string;
+  azimuth_angle?: string;
 
   /**
    * @remarks
    * [EXPERIMENTAL] A Molang expression defining the angle in
    * degrees to add to the projectile's x axis rotation.
    */
-  elevation_angle: string;
+  elevation_angle?: string;
 
   /**
    * @remarks
@@ -74,7 +74,7 @@ export default interface MinecraftReflectProjectiles {
    * Breeze: ["xp_bottle","thrown_trident","shulker_bullet","dragon_fireball","arrow","snowball","egg","fireball","splash_potion","ender_pearl","wither_skull","wither_skull_dangerous","small_fireball","lingering_potion","llama_spit","fireworks_rocket","fishing_hook"]
    *
    */
-  reflected_projectiles: string[];
+  reflected_projectiles?: string[];
 
   /**
    * @remarks
@@ -86,7 +86,7 @@ export default interface MinecraftReflectProjectiles {
    * Breeze: "0.5"
    *
    */
-  reflection_scale: string;
+  reflection_scale?: string;
 
   /**
    * @remarks
@@ -94,6 +94,6 @@ export default interface MinecraftReflectProjectiles {
    * be played when a projectile is reflected. "reflect" unless
    * specified.
    */
-  reflection_sound: string;
+  reflection_sound?: string;
 
 }

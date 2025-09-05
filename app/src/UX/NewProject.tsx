@@ -259,7 +259,7 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
 
         if (safeMessage !== undefined) {
           this.setState({
-            errorMessage: "You can only create new projects in empty folders.\r\n\r\n" + safeMessage,
+            errorMessage: "You can only create new projects in empty folders.\n\n" + safeMessage,
             newProjectName: this.state.newProjectName,
             newProjectPath: undefined,
             newProjectFolder: undefined,

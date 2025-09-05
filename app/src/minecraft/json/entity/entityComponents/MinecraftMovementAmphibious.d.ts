@@ -51,6 +51,6 @@ export default interface MinecraftMovementAmphibious {
    *
    *
    */
-  max_turn: number;
+  max_turn?: number;
 
 }

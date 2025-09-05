@@ -29,5 +29,5 @@
     }
   ],
   "description": "Predicate that evaluates to true with a given probability if the block at the specified location matches the specified block.",
-  "title": "RandomBlockMatch World"
+  "title": "World RandomBlockMatch"
 }

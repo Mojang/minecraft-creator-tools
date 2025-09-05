@@ -199,7 +199,7 @@ export default interface MinecraftAngry {
    *
    *
    */
-  angry_sound: string;
+  angry_sound?: string;
 
   /**
    * @remarks
@@ -211,7 +211,7 @@ export default interface MinecraftAngry {
    *
    *
    */
-  broadcast_anger: boolean;
+  broadcast_anger?: boolean;
 
   /**
    * @remarks
@@ -219,7 +219,7 @@ export default interface MinecraftAngry {
    * broadcastRange will also become angry whenever this mob 
    * attacks
    */
-  broadcast_anger_on_attack: boolean;
+  broadcast_anger_on_attack?: boolean;
 
   /**
    * @remarks
@@ -227,7 +227,7 @@ export default interface MinecraftAngry {
    * broadcastRange will also become angry whenever this mob is
    * attacked
    */
-  broadcast_anger_on_being_attacked: boolean;
+  broadcast_anger_on_being_attacked?: boolean;
 
   /**
    * @remarks
@@ -235,7 +235,7 @@ export default interface MinecraftAngry {
    * other entities of the same entity definition within the
    * broadcastRange
    */
-  broadcast_anger_when_dying: boolean;
+  broadcast_anger_when_dying?: boolean;
 
   /**
    * @remarks
@@ -249,7 +249,7 @@ export default interface MinecraftAngry {
    * Wandering Trader: {"test":"is_leashed_to","subject":"other","value":true}
    *
    */
-  broadcast_filters: jsoncommon.MinecraftFilter;
+  broadcast_filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -265,7 +265,7 @@ export default interface MinecraftAngry {
    * Polar Bear: 20
    *
    */
-  broadcast_range: number;
+  broadcast_range?: number;
 
   /**
    * @remarks
@@ -275,7 +275,7 @@ export default interface MinecraftAngry {
    * Wandering Trader: ["llama","trader_llama"]
    *
    */
-  broadcast_targets: string[];
+  broadcast_targets?: string[];
 
   /**
    * @remarks
@@ -285,7 +285,7 @@ export default interface MinecraftAngry {
    *
    *
    */
-  broadcastAnger: string;
+  broadcastAnger?: string;
 
   /**
    * @remarks
@@ -296,7 +296,7 @@ export default interface MinecraftAngry {
    * Wandering Trader: 10
    *
    */
-  broadcastRange: number;
+  broadcastRange?: number;
 
   /**
    * @remarks
@@ -310,7 +310,7 @@ export default interface MinecraftAngry {
    * Dolphin: {"event":"on_calm","target":"self"}
    *
    */
-  calm_event: string;
+  calm_event?: string;
 
   /**
    * @remarks
@@ -326,7 +326,7 @@ export default interface MinecraftAngry {
    * Llama: 4, -1
    *
    */
-  duration: number;
+  duration?: number;
 
   /**
    * @remarks
@@ -337,14 +337,14 @@ export default interface MinecraftAngry {
    *
    *
    */
-  duration_delta: number;
+  duration_delta?: number;
 
   /**
    * @remarks
    * Filter out mob types that it should not attack while angry (other
    * Piglins)
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -356,6 +356,6 @@ export default interface MinecraftAngry {
    *
    *
    */
-  sound_interval: number[];
+  sound_interval?: number[];
 
 }

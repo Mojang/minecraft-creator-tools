@@ -58,7 +58,7 @@ export default interface MinecraftBehaviorKnockbackRoar {
    * Ravager: 0.5
    *
    */
-  attack_time: number;
+  attack_time?: number;
 
   /**
    * @remarks
@@ -69,7 +69,7 @@ export default interface MinecraftBehaviorKnockbackRoar {
    * Ravager: 0.1
    *
    */
-  cooldown_time: number;
+  cooldown_time?: number;
 
   /**
    * @remarks
@@ -80,7 +80,7 @@ export default interface MinecraftBehaviorKnockbackRoar {
    * Ravager: {"test":"is_family","subject":"other","operator":"!=","value":"illager"}
    *
    */
-  damage_filters: jsoncommon.MinecraftFilter;
+  damage_filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -90,7 +90,7 @@ export default interface MinecraftBehaviorKnockbackRoar {
    * Ravager: 1
    *
    */
-  duration: number;
+  duration?: number;
 
   /**
    * @remarks
@@ -100,7 +100,7 @@ export default interface MinecraftBehaviorKnockbackRoar {
    * Ravager: 6
    *
    */
-  knockback_damage: number;
+  knockback_damage?: number;
 
   /**
    * @remarks
@@ -111,13 +111,13 @@ export default interface MinecraftBehaviorKnockbackRoar {
    * Ravager: {"test":"is_family","subject":"other","operator":"!=","value":"ravager"}
    *
    */
-  knockback_filters: jsoncommon.MinecraftFilter;
+  knockback_filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
    * The maximum height for vertical knockback.
    */
-  knockback_height_cap: number;
+  knockback_height_cap?: number;
 
   /**
    * @remarks
@@ -127,7 +127,7 @@ export default interface MinecraftBehaviorKnockbackRoar {
    * Ravager: 3
    *
    */
-  knockback_horizontal_strength: number;
+  knockback_horizontal_strength?: number;
 
   /**
    * @remarks
@@ -137,7 +137,7 @@ export default interface MinecraftBehaviorKnockbackRoar {
    * Ravager: 4
    *
    */
-  knockback_range: number;
+  knockback_range?: number;
 
   /**
    * @remarks
@@ -147,7 +147,7 @@ export default interface MinecraftBehaviorKnockbackRoar {
    * Ravager: 3
    *
    */
-  knockback_vertical_strength: number;
+  knockback_vertical_strength?: number;
 
   /**
    * @remarks
@@ -157,7 +157,7 @@ export default interface MinecraftBehaviorKnockbackRoar {
    * Ravager: {"event":"minecraft:end_roar"}
    *
    */
-  on_roar_end: jsoncommon.MinecraftEventTrigger;
+  on_roar_end?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -169,6 +169,6 @@ export default interface MinecraftBehaviorKnockbackRoar {
    * Ravager: 1
    *
    */
-  priority: number;
+  priority?: number;
 
 }

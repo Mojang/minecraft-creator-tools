@@ -116,70 +116,6 @@
               }
             ]
           }
-        ],
-        "/vanilla/behavior_pack/entities/panda.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:genetics/",
-            "content": [
-              {
-                "name": "panda_variant",
-                "allele_range": {
-                  "range_min": 0,
-                  "range_max": 15
-                },
-                "genetic_variants": [
-                  {
-                    "main_allele": 0,
-                    "birth_event": {
-                      "event": "minecraft:panda_lazy",
-                      "target": "self"
-                    }
-                  },
-                  {
-                    "main_allele": 1,
-                    "birth_event": {
-                      "event": "minecraft:panda_worried",
-                      "target": "self"
-                    }
-                  },
-                  {
-                    "main_allele": 2,
-                    "birth_event": {
-                      "event": "minecraft:panda_playful",
-                      "target": "self"
-                    }
-                  },
-                  {
-                    "main_allele": 3,
-                    "birth_event": {
-                      "event": "minecraft:panda_aggressive",
-                      "target": "self"
-                    }
-                  },
-                  {
-                    "both_allele": {
-                      "range_min": 4,
-                      "range_max": 7
-                    },
-                    "birth_event": {
-                      "event": "minecraft:panda_weak",
-                      "target": "self"
-                    }
-                  },
-                  {
-                    "both_allele": {
-                      "range_min": 8,
-                      "range_max": 9
-                    },
-                    "birth_event": {
-                      "event": "minecraft:panda_brown",
-                      "target": "self"
-                    }
-                  }
-                ]
-              }
-            ]
-          }
         ]
       },
       "description": "The list of genes that this entity has and will cross with a partner during breeding."
@@ -189,21 +125,7 @@
       "title": "Mutation Rate",
       "description": "Chance that an allele will be replaced with a random one instead of the parent's allele during birth.",
       "defaultValue": 0.03125,
-      "dataType": 3,
-      "samples": {
-        "/vanilla/behavior_pack/entities/goat.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:genetics/",
-            "content": 0.02
-          }
-        ],
-        "/vanilla/behavior_pack/entities/panda.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:genetics/",
-            "content": 0.03125
-          }
-        ]
-      }
+      "dataType": 3
     }
   ],
   "description": "Defines the way a mob's genes and alleles are passed on to its offspring, and how those traits manifest in the child. Compatible parent genes are crossed together, the alleles are handed down from the parents to the child, and any matching genetic variants fire off JSON events to modify the child and express the traits.",

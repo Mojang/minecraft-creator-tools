@@ -139,13 +139,13 @@ export default interface MinecraftBehaviorMeleeBoxAttack {
    *
    *
    */
-  attack_once: boolean;
+  attack_once?: boolean;
 
   /**
    * @remarks
    * Defines the entity types this entity will attack.
    */
-  attack_types: string;
+  attack_types?: string;
 
   /**
    * @remarks
@@ -157,7 +157,7 @@ export default interface MinecraftBehaviorMeleeBoxAttack {
    *
    *
    */
-  can_spread_on_fire: boolean;
+  can_spread_on_fire?: boolean;
 
   /**
    * @remarks
@@ -169,7 +169,7 @@ export default interface MinecraftBehaviorMeleeBoxAttack {
    * Hoglin: 0.75
    *
    */
-  cooldown_time: number;
+  cooldown_time?: number;
 
   /**
    * @remarks
@@ -177,21 +177,21 @@ export default interface MinecraftBehaviorMeleeBoxAttack {
    * mobs bounds increased by this value in all horizontal 
    * directions.
    */
-  horizontal_reach: number;
+  horizontal_reach?: number;
 
   /**
    * @remarks
    * Time (in seconds) to add to attack path recalculation when the
    * target is beyond the "path_inner_boundary".
    */
-  inner_boundary_time_increase: number;
+  inner_boundary_time_increase?: number;
 
   /**
    * @remarks
    * Maximum base time (in seconds) to recalculate new attack path to
    * target (before increases applied).
    */
-  max_path_time: number;
+  max_path_time?: number;
 
   /**
    * @remarks
@@ -202,14 +202,14 @@ export default interface MinecraftBehaviorMeleeBoxAttack {
    * Warden: 360
    *
    */
-  melee_fov: number;
+  melee_fov?: number;
 
   /**
    * @remarks
    * Minimum base time (in seconds) to recalculate new attack path to
    * target (before increases applied).
    */
-  min_path_time: number;
+  min_path_time?: number;
 
   /**
    * @remarks
@@ -220,7 +220,7 @@ export default interface MinecraftBehaviorMeleeBoxAttack {
    * Bee: {"event":"countdown_to_perish_event","target":"self"}
    *
    */
-  on_attack: jsoncommon.MinecraftEventTrigger;
+  on_attack?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -231,35 +231,35 @@ export default interface MinecraftBehaviorMeleeBoxAttack {
    * Axolotl: {"event":"killed_enemy_event","target":"self"}
    *
    */
-  on_kill: jsoncommon.MinecraftEventTrigger;
+  on_kill?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
    * Time (in seconds) to add to attack path recalculation when the
    * target is beyond the "path_outer_boundary".
    */
-  outer_boundary_time_increase: number;
+  outer_boundary_time_increase?: number;
 
   /**
    * @remarks
    * Time (in seconds) to add to attack path recalculation when this
    * entity cannot move along the current path.
    */
-  path_fail_time_increase: number;
+  path_fail_time_increase?: number;
 
   /**
    * @remarks
    * Distance at which to increase attack path recalculation by
    * "inner_boundary_tick_increase".
    */
-  path_inner_boundary: number;
+  path_inner_boundary?: number;
 
   /**
    * @remarks
    * Distance at which to increase attack path recalculation by
    * "outer_boundary_tick_increase".
    */
-  path_outer_boundary: number;
+  path_outer_boundary?: number;
 
   /**
    * @remarks
@@ -275,7 +275,7 @@ export default interface MinecraftBehaviorMeleeBoxAttack {
    * Blaze: 3
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -286,7 +286,7 @@ export default interface MinecraftBehaviorMeleeBoxAttack {
    * Cave Spider: 100
    *
    */
-  random_stop_interval: number;
+  random_stop_interval?: number;
 
   /**
    * @remarks
@@ -298,7 +298,7 @@ export default interface MinecraftBehaviorMeleeBoxAttack {
    *
    *
    */
-  require_complete_path: boolean;
+  require_complete_path?: boolean;
 
   /**
    * @remarks
@@ -313,7 +313,7 @@ export default interface MinecraftBehaviorMeleeBoxAttack {
    * Drowned: 1
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -325,20 +325,20 @@ export default interface MinecraftBehaviorMeleeBoxAttack {
    *
    *
    */
-  track_target: boolean;
+  track_target?: boolean;
 
   /**
    * @remarks
    * Maximum rotation (in degrees), on the X-axis, this entity can
    * rotate while trying to look at the target.
    */
-  x_max_rotation: number;
+  x_max_rotation?: number;
 
   /**
    * @remarks
    * Maximum rotation (in degrees), on the Y-axis, this entity can
    * rotate its head while trying to look at the target.
    */
-  y_max_head_rotation: number;
+  y_max_head_rotation?: number;
 
 }

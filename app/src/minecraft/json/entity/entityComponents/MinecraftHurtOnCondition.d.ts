@@ -162,9 +162,8 @@ export default interface MinecraftHurtOnCondition {
    * Sample Values:
    * Allay: [{"filters":{"test":"in_lava","subject":"self"},"cause":"lava","damage_per_tick":4}]
    *
-   *
    */
-  damage_conditions: MinecraftHurtOnConditionDamageConditions[];
+  damage_conditions?: MinecraftHurtOnConditionDamageConditions[];
 
 }
 
@@ -180,20 +179,20 @@ export interface MinecraftHurtOnConditionDamageConditions {
    * The kind of damage that is caused to the entity. Various armors and
    * spells use this to determine if the entity is immune.
    */
-  cause: string;
+  cause?: string;
 
   /**
    * @remarks
    * The amount of damage done each tick that the conditions are 
    * met.
    */
-  damage_per_tick: number;
+  damage_per_tick?: number;
 
   /**
    * @remarks
    * The set of conditions that must be satisfied before the entity
    * takes the defined damage.
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
 }

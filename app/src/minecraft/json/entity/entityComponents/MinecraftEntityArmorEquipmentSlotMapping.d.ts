@@ -32,6 +32,6 @@ export default interface MinecraftEntityArmorEquipmentSlotMapping {
    * entities with a format version prior to 1.21.10, and to
    * 'slot.armor.body' otherwise.
    */
-  armor_slot: string;
+  armor_slot?: string;
 
 }

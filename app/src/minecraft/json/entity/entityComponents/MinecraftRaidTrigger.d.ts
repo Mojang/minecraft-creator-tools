@@ -39,29 +39,13 @@ export default interface MinecraftRaidTrigger {
    * Player: {"triggered_event":{"event":"minecraft:remove_raid_trigger","target":"self"}}
    *
    */
-  "minecraft:raid_trigger": MinecraftRaidTriggerMinecraftRaidTrigger;
+  "minecraft:raid_trigger"?: MinecraftRaidTriggerMinecraftRaidTrigger;
 
   /**
    * @remarks
    * Event to run when a raid is triggered on the village.
    */
-  triggered_event: jsoncommon.MinecraftEventTrigger;
+  triggered_event?: jsoncommon.MinecraftEventTrigger;
 
 }
 
-
-/**
- * Minecraft:raid_trigger (minecraft:raid_trigger)
- */
-export interface MinecraftRaidTriggerMinecraftRaidTrigger {
-
-  /**
-   * @remarks
-   * 
-   * Sample Values:
-   * Player: {"event":"minecraft:remove_raid_trigger","target":"self"}
-   *
-   */
-  triggered_event: string;
-
-}

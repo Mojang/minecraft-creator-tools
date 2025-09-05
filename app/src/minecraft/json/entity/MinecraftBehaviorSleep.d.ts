@@ -43,14 +43,14 @@ export default interface MinecraftBehaviorSleep {
    * If true, the mob will be able to use the sleep goal if riding
    * something
    */
-  can_sleep_while_riding: boolean;
+  can_sleep_while_riding?: boolean;
 
   /**
    * @remarks
    * Time in seconds the mob has to wait before using the goal 
    * again
    */
-  cooldown_time: number;
+  cooldown_time?: number;
 
   /**
    * @remarks
@@ -59,7 +59,7 @@ export default interface MinecraftBehaviorSleep {
    * Villager v2: 1.5
    *
    */
-  goal_radius: number;
+  goal_radius?: number;
 
   /**
    * @remarks
@@ -71,7 +71,7 @@ export default interface MinecraftBehaviorSleep {
    * Villager v2: 3
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -81,7 +81,7 @@ export default interface MinecraftBehaviorSleep {
    * Villager v2: 0.3
    *
    */
-  sleep_collider_height: number;
+  sleep_collider_height?: number;
 
   /**
    * @remarks
@@ -91,7 +91,7 @@ export default interface MinecraftBehaviorSleep {
    * Villager v2: 1
    *
    */
-  sleep_collider_width: number;
+  sleep_collider_width?: number;
 
   /**
    * @remarks
@@ -101,7 +101,7 @@ export default interface MinecraftBehaviorSleep {
    * Villager v2: 0.6
    *
    */
-  sleep_y_offset: number;
+  sleep_y_offset?: number;
 
   /**
    * @remarks
@@ -111,7 +111,7 @@ export default interface MinecraftBehaviorSleep {
    * Villager v2: 0.6
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -122,6 +122,6 @@ export default interface MinecraftBehaviorSleep {
    * Villager v2: 10
    *
    */
-  timeout_cooldown: number;
+  timeout_cooldown?: number;
 
 }

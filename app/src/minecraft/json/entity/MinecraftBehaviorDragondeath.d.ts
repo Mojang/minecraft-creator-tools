@@ -34,6 +34,6 @@ export default interface MinecraftBehaviorDragondeath {
    * priority, the sooner this behavior will be executed as a 
    * goal.
    */
-  priority: number;
+  priority?: number;
 
 }

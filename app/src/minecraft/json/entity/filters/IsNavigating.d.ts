@@ -29,19 +29,19 @@ export default interface IsNavigating {
    * @remarks
    * (Optional) The comparison to apply with 'value'.
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
    * (Optional) The subject of this filter test.
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
    * (Optional) true or false.
    */
-  value: boolean;
+  value?: boolean;
 
 }
 

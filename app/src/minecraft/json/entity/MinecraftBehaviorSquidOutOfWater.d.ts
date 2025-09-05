@@ -39,6 +39,6 @@ export default interface MinecraftBehaviorSquidOutOfWater {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
 }

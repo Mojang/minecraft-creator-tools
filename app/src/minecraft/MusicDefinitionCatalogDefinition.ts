@@ -118,7 +118,9 @@ export default class MusicDefinitionCatalogDefinition implements IDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
       return;
@@ -146,7 +148,9 @@ export default class MusicDefinitionCatalogDefinition implements IDefinition {
 
     for (const candItem of itemsCopy) {
       if (candItem.itemType === ProjectItemType.soundDefinitionCatalog && musicDefList) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
           const soundDef = await SoundDefinitionCatalogDefinition.ensureOnFile(candItem.primaryFile);
