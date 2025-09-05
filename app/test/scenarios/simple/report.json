@@ -298,7 +298,7 @@
     "errorCount": 0,
     "internalProcessingErrorCount": 0,
     "warningCount": 0,
-    "testSuccessCount": 35,
+    "testSuccessCount": 34,
     "testFailCount": 0,
     "testNotApplicableCount": 13,
     "errorSummary": "",
@@ -316,12 +316,6 @@
         "2": {
           "title": "2",
           "defaultMessage": "No applicable items found for test Blocks Catalog (BLOCKSCAT)"
-        }
-      },
-      "CADDONIREQ": {
-        "1": {
-          "defaultMessage": "Cooperative Add-On Item Requirements Generator (CADDONIREQ) completed successfully",
-          "testCompleteSuccesses": 1
         }
       },
       "CBFG": {
@@ -815,11 +809,6 @@
       "iTp": 8,
       "gId": "BLOCKSCAT",
       "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "CADDONIREQ",
-      "gIx": 1
     },
     {
       "iTp": 1,

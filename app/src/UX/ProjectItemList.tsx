@@ -48,6 +48,7 @@ import ProjectInfoItem from "../info/ProjectInfoItem";
 import { AnnotatedValueSet, IAnnotatedValue } from "../core/AnnotatedValue";
 import ProjectAddButton from "./ProjectAddButton";
 import WebUtilities from "./WebUtilities";
+import ProjectCreateManager from "../app/ProjectCreateManager";
 
 export enum EntityTypeCommand {
   select,
@@ -408,7 +409,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     }
 
     if (this.tentativeNewBlockTypeName && this.tentativeNewBlockTypeItem && this.props.project !== null) {
-      await ProjectUtilities.addBlockTypeFromGallery(
+      await ProjectCreateManager.addBlockTypeFromGallery(
         this.props.project,
         this.tentativeNewBlockTypeItem,
         this.tentativeNewBlockTypeName
@@ -436,7 +437,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     }
 
     if (this.tentativeNewEntityTypeItem !== undefined && this.props.project !== null) {
-      await ProjectUtilities.addEntityTypeFromGallery(
+      await ProjectCreateManager.addEntityTypeFromGallery(
         this.props.project,
         this.tentativeNewEntityTypeItem,
         this.tentativeNewEntityTypeName,

@@ -8,7 +8,7 @@ import { Dialog, ThemeInput, MenuButton, Button, MenuItemProps } from "@fluentui
 
 import { GitHubPropertyType } from "./ProjectPropertyEditor";
 import NewEntityType from "./NewEntityType";
-import ProjectUtilities, { NewEntityTypeAddMode, NewItemTypeAddMode } from "../app/ProjectUtilities";
+import { NewEntityTypeAddMode, NewItemTypeAddMode } from "../app/ProjectUtilities";
 import IGitHubInfo from "../app/IGitHubInfo";
 import "./ProjectAddButton.css";
 import Utilities from "../core/Utilities";
@@ -25,6 +25,7 @@ import SetName from "./SetName";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import SetNameAndFolder from "./SetNameAndFolder";
+import ProjectCreateManager from "../app/ProjectCreateManager";
 
 export enum EntityTypeCommand {
   select,
@@ -353,7 +354,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     }
 
     if (this.tentativeNewName && this.tentativeNewBlockTypeItem && this.props.project !== null) {
-      await ProjectUtilities.addBlockTypeFromGallery(
+      await ProjectCreateManager.addBlockTypeFromGallery(
         this.props.project,
         this.tentativeNewBlockTypeItem,
         this.tentativeNewName
@@ -383,7 +384,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     }
 
     if (this.tentativeNewEntityTypeItem !== undefined && this.props.project !== null) {
-      await ProjectUtilities.addEntityTypeFromGallery(
+      await ProjectCreateManager.addEntityTypeFromGallery(
         this.props.project,
         this.tentativeNewEntityTypeItem,
         this.tentativeNewName,
@@ -414,7 +415,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     }
 
     if (this.tentativeNewItemTypeItem !== undefined && this.props.project !== null) {
-      await ProjectUtilities.addItemTypeFromGallery(
+      await ProjectCreateManager.addItemTypeFromGallery(
         this.props.project,
         this.tentativeNewItemTypeItem,
         this.tentativeNewName

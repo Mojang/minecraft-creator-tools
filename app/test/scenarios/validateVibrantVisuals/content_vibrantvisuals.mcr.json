@@ -1028,16 +1028,16 @@
         "Count": 1
       }
     },
-    "errorCount": 1,
+    "errorCount": 0,
     "internalProcessingErrorCount": 0,
     "warningCount": 2,
     "testSuccessCount": 37,
-    "testFailCount": 1,
+    "testFailCount": 0,
     "testNotApplicableCount": 10,
-    "errorSummary": "ERROR: [CADDONIREQ170] (/Content/resource_packs/aop_mobsrp/manifest.json) Resource pack manifest does not specify that header/pack_scope that should be 'world'",
+    "errorSummary": "",
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson_mers.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/sheepomelon_mers.png) Texture does not have any items in this pack that are using this.",
-    "testFailSummary": "TESTFAIL: [CADDONIREQ000] Found 1 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).",
+    "testFailSummary": "",
     "summary": {
       "BASEGAMEVER": {
         "2": {
@@ -1049,16 +1049,6 @@
         "2": {
           "title": "2",
           "defaultMessage": "No applicable items found for test Blocks Catalog (BLOCKSCAT)"
-        }
-      },
-      "CADDONIREQ": {
-        "0": {
-          "defaultMessage": "Found 1 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).",
-          "testCompleteFails": 1
-        },
-        "170": {
-          "defaultMessage": "Resource pack manifest does not specify that header/pack_scope that should be 'world'",
-          "errors": 1
         }
       },
       "CBFG": {
@@ -1838,17 +1828,6 @@
       "iTp": 8,
       "gId": "BLOCKSCAT",
       "gIx": 2
-    },
-    {
-      "iTp": 0,
-      "gId": "CADDONIREQ",
-      "gIx": 0
-    },
-    {
-      "iTp": 3,
-      "gId": "CADDONIREQ",
-      "gIx": 170,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
     },
     {
       "iTp": 1,

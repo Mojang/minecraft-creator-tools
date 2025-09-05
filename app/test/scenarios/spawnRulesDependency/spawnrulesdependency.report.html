@@ -1,0 +1,211 @@
+<html><head>
+<script>
+const _reportObjects = [];
+
+function _addReportJson(data) {
+  _reportObjects.push(data);
+}
+
+_addReportJson({"info":{"capabilities":["behaviorPack"],"behaviorPackManifestCount":1,"unknownJsonCount":0,"entityTypeManifestCount":1,"itemTypeManifestCount":0,"blockTypeManifestCount":0,"resourcePackManifestCount":0,"worldCount":0,"entityTypeResourceCount":0,"behaviorPackAnimationCount":0,"behaviorPackAnimationControllerCount":0,"overallSize":1382,"fileCounts":3,"folderCounts":4,"contentSize":1382,"contentFileCounts":3,"contentFolderCounts":2,"defaultBehaviorPackUuid":"12345678-1234-1234-1234-123456789012","defaultBehaviorPackMinEngineVersion":"1.20.0","minBehaviorPackMinEngineVersionString":"1.20.0","minBehaviorPackMinEngineVersion":11020000,"defaultBehaviorPackName":"Test Spawn Rules BP","defaultBehaviorPackDescription":"Test behavior pack for spawn rules dependency tracking","minResourcePackMinEngineVersion":0,"subpackCount":0,"entityTypeComponents":["behavior.look_at_player","behavior.random_look_around","behavior.random_stroll","health","movement","navigation.walk"],"blockTypeComponents":[],"itemTypeComponents":[],"apisUsed":[],"mctoolsVersion":10002009,"itemTypes":["Behavior pack","Behavior pack manifest","Entity type","Spawn rule"],"animationCount":0,"textureCount":0,"textureTexelSize":0,"vanillaGameTextureCoverage":0,"vanillaGameTextureCount":0,"minimumSupportablePerformanceTier":0,"invalidCommandSyntaxCount":0,"linesWithSlashCount":0,"multipleSoundsManifests":0,"soundsDefinitionManifestFormatIsValid":0,"soundsDefinitionManifestIsNotValidJson":0,"flagIsOrWasTrue":0,"levelDatNotFound":0,"worldNotFound":0,"deprecatedBlockOverride":0,"deprecatedTerrainTexture":0,"deprecatedTexture":0,"restrictedPolyMeshFound":0,"jsonParseError":0,"invalidManifestJson":0,"missingResourcePackDependencies":0,"internalProcessingErrors":0,"minBaseGameVersion":0,"chunkCount":0,"subchunkLessChunkCount":0,"worldLoadErrors":0,"commands":[],"featureSets":{"Runtime Identifier (no runtime identifier)":{"Count":1},"Identifier (no override identifier)":{"Count":1},"Metadata Spawnable Entity Type":{"Count":1},"Metadata Summonable Entity Type":{"Count":1},"Entity Type Default Components":{"minecraft:health":1,"minecraft:movement":1,"minecraft:navigation.walk":1,"minecraft:behavior.random_stroll":1,"minecraft:behavior.look_at_player":1,"minecraft:behavior.random_look_around":1},"Behavior pack manifest Size":{"Instance Count":1,"Total":358,"Max":358,"Min":358,"Average":358},"Behavior pack manifest Lines":{"Instance Count":1,"Total":16,"Max":16,"Min":16,"Average":16},"Entity type Size":{"Instance Count":1,"Total":550,"Max":550,"Min":550,"Average":550},"Entity type Lines":{"Instance Count":1,"Total":32,"Max":32,"Min":32,"Average":32},"Spawn rule Size":{"Instance Count":1,"Total":474,"Max":474,"Min":474,"Average":474},"Spawn rule Lines":{"Instance Count":1,"Total":26,"Max":26,"Min":26,"Average":26},"Texture Images Vanilla Game Texture Coverage":{"Override Count":0,"Vanilla Texture Count":2669,"Percent":0},"Texture Images Tier0 Non-Vanilla Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier0 Total Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier0 Block Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier0 Item Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier1 Non-Vanilla Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier1 Total Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier1 Block Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier1 Item Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier2 Non-Vanilla Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier2 Total Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier2 Block Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier2 Item Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier3 Non-Vanilla Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier3 Total Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier3 Block Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier3 Item Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier4 Non-Vanilla Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier4 Total Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier4 Block Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier4 Item Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier5 Non-Vanilla Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier5 Total Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier5 Block Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Texture Images Tier5 Item Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0}},"errorCount":1,"internalProcessingErrorCount":0,"warningCount":0,"testSuccessCount":34,"testFailCount":1,"testNotApplicableCount":12,"errorSummary":"ERROR: [CPACKICON101] pack_icon image file not found for test_bp. It must use the .png extension.","internalProcessingErrorSummary":"","warningSummary":"","testFailSummary":"TESTFAIL: [CPACKICON000] Found 1 errors for Check Pack Icon Generator (CPACKICON).","summary":{"BASEGAMEVER":{"2":{"title":"2","defaultMessage":"No applicable items found for test Base Game Version (BASEGAMEVER)"}},"BLOCKSCAT":{"2":{"title":"2","defaultMessage":"No applicable items found for test Blocks Catalog (BLOCKSCAT)"}},"CBFG":{"1":{"title":"Test Success","defaultMessage":"Check Beta Features Generator (CBFG) completed successfully","testCompleteSuccesses":1}},"CHECKFEATUREDEPRECATION":{"2":{"title":"Test Not Applicable","defaultMessage":"No applicable items found for test Check Feature Deprecation (CHECKFEATUREDEPRECATION)"}},"CHKMANIF":{"1":{"title":"Test Success","defaultMessage":"Check Manifest Generator (CHKMANIF) completed successfully","testCompleteSuccesses":1}},"CPACKICON":{"0":{"title":"Test Failure","defaultMessage":"Found 1 errors for Check Pack Icon Generator (CPACKICON).","testCompleteFails":1},"101":{"title":"No Icon Found","defaultMessage":"pack_icon image file not found for test_bp. It must use the .png extension.","errors":1}},"CPARTI":{"1":{"title":"Test Success","defaultMessage":"Check Particle Identifier Generator (CPARTI) completed successfully","testCompleteSuccesses":1}},"CSPJ":{"1":{"title":"Unknown Test: 1","defaultMessage":"Check Skin Pack Json Generator (CSPJ) completed successfully","testCompleteSuccesses":1}},"CWI":{"1":{"title":"Test Success","defaultMessage":"Check World Icon Generator (CWI) completed successfully","testCompleteSuccesses":1}},"ENTITYTYPE":{"1":{"title":"Test Success","defaultMessage":"Entity Type (ENTITYTYPE) completed successfully","testCompleteSuccesses":1},"52":{"title":"Runtime Identifier","defaultMessage":"Entity Type Runtime Identifier"},"53":{"title":"Identifier","defaultMessage":"Entity Type Identifier"},"54":{"title":"Metadata","defaultMessage":"Entity Type Metadata"},"130":{"title":"Format Version Patch Version Lower Than Current","defaultMessage":"Behavior pack entity type format version (1.20.0) has a lower patch version number compared to current version (1.21.100.06)","recommendations":1}},"EXPFLAG":{"2":{"title":"Test Not Applicable","defaultMessage":"No applicable items found for test Check Experimental Flag (EXPFLAG)"}},"FORBFILE":{"1":{"title":"Test Success","defaultMessage":"Check Forbidden Files Generator (FORBFILE) completed successfully","testCompleteSuccesses":1}},"FORMATVER":{"1":{"title":"1","defaultMessage":"Format Version (FORMATVER) completed successfully","testCompleteSuccesses":1},"256":{"title":"256","defaultMessage":"Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)","recommendations":1},"644":{"title":"644","defaultMessage":"Spawn rule format_version"}},"GEOFMT":{"1":{"title":"Test Success","defaultMessage":"Geometry Format (GEOFMT) completed successfully","testCompleteSuccesses":1}},"GEOMETRY":{"1":{"title":"Test Success","defaultMessage":"Model Geometry Validation (GEOMETRY) completed successfully","testCompleteSuccesses":1},"101":{"title":"Block Geometry"},"102":{"title":"Entity Geometry"},"103":{"title":"Item Geometry","defaultMessage":"Items Geometry"}},"ITEMS":{"1":{"title":"1","defaultMessage":"Minimum Definition of a Pack (ITEMS) completed successfully","testCompleteSuccesses":1},"102":{"title":"102","defaultMessage":"Behavior pack manifest found"},"205":{"title":"Behavior pack manifest count","defaultMessage":"Behavior pack manifest item count"},"210":{"title":"Entity type count","defaultMessage":"Entity type item count"},"244":{"title":"Spawn rule count","defaultMessage":"Spawn rule item count"},"309":{"title":"Behavior pack count","defaultMessage":"Behavior pack item count"}},"ITEMTYPE":{"1":{"title":"Test Success","defaultMessage":"Item Type (ITEMTYPE) completed successfully","testCompleteSuccesses":1},"53":{"title":"Identifier","defaultMessage":"Item Type Identifier"},"55":{"title":"Category","defaultMessage":"Item Type Category"}},"JSON":{"1":{"defaultMessage":"JSON Structure Validation (JSON) completed successfully","testCompleteSuccesses":1}},"JSONF":{"1":{"defaultMessage":"JSON Structure Validation (via Minecraft docs) (JSONF) completed successfully","testCompleteSuccesses":1}},"JSONTAGS":{"1":{"title":"Test Success","defaultMessage":"JSON Tags (JSONTAGS) completed successfully","testCompleteSuccesses":1},"101":{"title":"Entity Type","defaultMessage":"Entity file"}},"LINESIZE":{"1":{"title":"1","defaultMessage":"File Line/Size Information (LINESIZE) completed successfully","testCompleteSuccesses":1},"105":{"title":"Behavior pack manifest","defaultMessage":"Behavior pack manifest file lines"},"110":{"title":"Entity type","defaultMessage":"Entity type file lines"},"144":{"title":"Spawn rule","defaultMessage":"Spawn rule file lines"},"209":{"title":"Behavior pack","defaultMessage":"Behavior pack file lines"}},"MCFUNCTION":{"2":{"title":"Test Not Applicable","defaultMessage":"No applicable items found for test MC Function Validation (MCFUNCTION)"}},"MINENGINEVER":{"1":{"title":"1","defaultMessage":"Min Engine Version (MINENGINEVER) completed successfully","testCompleteSuccesses":1},"605":{"title":"605","defaultMessage":"Behavior pack manifest min_engine_version"}},"NOBOM":{"1":{"defaultMessage":"No Byte Order Mark allowed in json file. (NOBOM) completed successfully","testCompleteSuccesses":1}},"PACK":{"1":{"title":"1","defaultMessage":"General info (PACK) completed successfully","testCompleteSuccesses":1},"104":{"title":"104","defaultMessage":"Behavior Pack Name"},"105":{"title":"105","defaultMessage":"Behavior Pack Description"},"106":{"title":"106","defaultMessage":"Behavior Pack Id"},"107":{"title":"107","defaultMessage":"Behavior Pack Min Engine Version"},"108":{"title":"108","defaultMessage":"Behavior Pack Uuid"},"109":{"title":"109","defaultMessage":"Behavior Pack Manifest"},"245":{"title":"245","defaultMessage":"Entity Geometry"}},"PACKMETADATA":{"2":{"title":"2","defaultMessage":"No applicable items found for test General info (PACKMETADATA)"}},"PACKSIZE":{"1":{"title":"Test Success","defaultMessage":"Pack Size Information (PACKSIZE) completed successfully","testCompleteSuccesses":1},"101":{"title":"Overall Size"},"102":{"title":"File Count"},"103":{"title":"Folder Count"},"104":{"title":"Content Size"},"105":{"title":"Content File Count"},"106":{"title":"Content Folder Count"}},"PATHLENGTH":{"1":{"defaultMessage":"Path Length (PATHLENGTH) completed successfully","testCompleteSuccesses":1}},"PRJINT":{"1":{"title":"Test Success","defaultMessage":"Check Project Integrity Generator (PRJINT) completed successfully","testCompleteSuccesses":1}},"RESOURCEANIMATION":{"1":{"title":"Test Success","defaultMessage":"Resource Animation (RESOURCEANIMATION) completed successfully","testCompleteSuccesses":1},"101":{"title":"Animations"},"102":{"title":"Bones"}},"RPDEPENDS":{"1":{"title":"Test Success","defaultMessage":"Resource Pack Dependencies (RPDEPENDS) completed successfully","testCompleteSuccesses":1}},"SCRIPT":{"1":{"title":"Test Success","defaultMessage":"Script (SCRIPT) completed successfully","testCompleteSuccesses":1},"101":{"title":"apisUsed"}},"SCRIPTMODULE":{"2":{"title":"2","defaultMessage":"No applicable items found for test Script Modules (SCRIPTMODULE)"}},"SNDSDEF":{"2":{"title":"Test Not Applicable","defaultMessage":"No applicable items found for test Sounds Definition Manifest Validation (SNDSDEF)"}},"STRICT":{"1":{"title":"Test Success","defaultMessage":"Strict Platform Info Generator (STRICT) completed successfully","testCompleteSuccesses":1}},"SUMMARY":{"1":{"title":"","defaultMessage":"Summary Information (SUMMARY) completed successfully","testCompleteSuccesses":1},"101":{"title":"","defaultMessage":"Resource Manifests"},"102":{"title":"","defaultMessage":"Behavior Manifests"}},"TEXTURE":{"1":{"title":"Test Success","defaultMessage":"Texture Validation (TEXTURE) completed successfully","testCompleteSuccesses":1},"101":{"title":"Textures"}},"TEXTUREIMAGE":{"1":{"title":"Test Success","defaultMessage":"Texture Image Validation (TEXTUREIMAGE) completed successfully","testCompleteSuccesses":1},"101":{"title":"Texture Images"},"200":{"title":"Texture Images Tier0","defaultMessage":"Texture Images Tier 0"},"201":{"title":"Texture Images Tier1","defaultMessage":"Texture Images Tier 1"},"202":{"title":"Texture Images Tier2","defaultMessage":"Texture Images Tier 2"},"203":{"title":"Texture Images Tier3","defaultMessage":"Texture Images Tier 3"},"204":{"title":"Texture Images Tier4","defaultMessage":"Texture Images Tier 4"},"205":{"title":"Texture Images Tier5","defaultMessage":"Texture Images Tier 5"}},"TEXTUREREF":{"1":{"title":"Test Success","defaultMessage":"Texture Reference Info Aggregation (TEXTUREREF) completed successfully","testCompleteSuccesses":1},"101":{"title":"Texture References"}},"TYPES":{"1":{"title":"Test Success","defaultMessage":"Types Info Aggregation (TYPES) completed successfully","testCompleteSuccesses":1},"101":{"title":"Types"}},"UNKFILE":{"1":{"defaultMessage":"Unknown files (UNKFILE) completed successfully","testCompleteSuccesses":1}},"UNKJSON":{"1":{"defaultMessage":"Unknown JSON (UNKJSON) completed successfully","testCompleteSuccesses":1}},"UNLINK":{"1":{"defaultMessage":"Unlinked item info generator (UNLINK) completed successfully","testCompleteSuccesses":1}},"VALFILE":{"2":{"defaultMessage":"No applicable items found for test Valid files (VALFILE)"}},"VSCODEFILE":{"2":{"title":"2","defaultMessage":"No applicable items found for test VSCode Files (VSCODEFILE)"}},"WORLD":{"2":{"defaultMessage":"No applicable items found for test World Validation (WORLD)"}},"WORLDDATA":{"2":{"defaultMessage":"No applicable items found for test World Data Validation (WORLDDATA)"}}}},"items":[{"iTp":8,"gId":"BASEGAMEVER","gIx":2},{"iTp":8,"gId":"BLOCKSCAT","gIx":2},{"iTp":1,"gId":"CBFG","gIx":1},{"iTp":8,"gId":"CHECKFEATUREDEPRECATION","gIx":2},{"iTp":1,"gId":"CHKMANIF","gIx":1},{"iTp":0,"gId":"CPACKICON","gIx":0},{"iTp":3,"gId":"CPACKICON","gIx":101},{"iTp":1,"gId":"CPARTI","gIx":1},{"iTp":1,"gId":"CSPJ","gIx":1},{"iTp":1,"gId":"CWI","gIx":1},{"iTp":1,"gId":"ENTITYTYPE","gIx":1},{"iTp":7,"gId":"ENTITYTYPE","gIx":52,"fs":{"(no runtime identifier)":{"Count":1}}},{"iTp":7,"gId":"ENTITYTYPE","gIx":53,"fs":{"(no override identifier)":{"Count":1}}},{"iTp":7,"gId":"ENTITYTYPE","gIx":54,"fs":{"Spawnable Entity Type":{"Count":1},"Summonable Entity Type":{"Count":1}}},{"iTp":6,"gId":"ENTITYTYPE","gIx":130,"p":"/behavior_packs/test_bp/entities/example_entity.json"},{"iTp":8,"gId":"EXPFLAG","gIx":2},{"iTp":1,"gId":"FORBFILE","gIx":1},{"iTp":1,"gId":"FORMATVER","gIx":1},{"iTp":6,"gId":"FORMATVER","gIx":256,"p":"/behavior_packs/test_bp/spawn_rules/example_entity.json"},{"iTp":2,"gId":"FORMATVER","gIx":644,"p":"/behavior_packs/test_bp/spawn_rules/example_entity.json","d":[1,8,0]},{"iTp":1,"gId":"GEOFMT","gIx":1},{"iTp":1,"gId":"GEOMETRY","gIx":1},{"iTp":7,"gId":"GEOMETRY","gIx":101},{"iTp":7,"gId":"GEOMETRY","gIx":102},{"iTp":7,"gId":"GEOMETRY","gIx":103},{"iTp":1,"gId":"ITEMS","gIx":1},{"iTp":2,"gId":"ITEMS","gIx":102,"p":"/behavior_packs/test_bp/manifest.json"},{"iTp":2,"gId":"ITEMS","gIx":205,"d":1},{"iTp":2,"gId":"ITEMS","gIx":210,"d":1},{"iTp":2,"gId":"ITEMS","gIx":244,"d":1},{"iTp":2,"gId":"ITEMS","gIx":309,"d":1},{"iTp":1,"gId":"ITEMTYPE","gIx":1},{"iTp":7,"gId":"ITEMTYPE","gIx":53},{"iTp":7,"gId":"ITEMTYPE","gIx":55},{"iTp":1,"gId":"JSON","gIx":1},{"iTp":1,"gId":"JSONF","gIx":1},{"iTp":1,"gId":"JSONTAGS","gIx":1},{"iTp":2,"gId":"JSONTAGS","gIx":101,"p":"/behavior_packs/test_bp/entities/example_entity.json","d":"/behavior_packs/test_bp/entities/example_entity.json","fs":{"Default Components":{"minecraft:health":1,"minecraft:movement":1,"minecraft:navigation.walk":1,"minecraft:behavior.random_stroll":1,"minecraft:behavior.look_at_player":1,"minecraft:behavior.random_look_around":1}}},{"iTp":1,"gId":"LINESIZE","gIx":1},{"iTp":7,"gId":"LINESIZE","gIx":105,"fs":{"Size":{"Instance Count":1,"Total":358,"Max":358,"Min":358,"Average":358},"Lines":{"Instance Count":1,"Total":16,"Max":16,"Min":16,"Average":16}}},{"iTp":7,"gId":"LINESIZE","gIx":110,"fs":{"Size":{"Instance Count":1,"Total":550,"Max":550,"Min":550,"Average":550},"Lines":{"Instance Count":1,"Total":32,"Max":32,"Min":32,"Average":32}}},{"iTp":7,"gId":"LINESIZE","gIx":144,"fs":{"Size":{"Instance Count":1,"Total":474,"Max":474,"Min":474,"Average":474},"Lines":{"Instance Count":1,"Total":26,"Max":26,"Min":26,"Average":26}}},{"iTp":7,"gId":"LINESIZE","gIx":209},{"iTp":8,"gId":"MCFUNCTION","gIx":2},{"iTp":1,"gId":"MINENGINEVER","gIx":1},{"iTp":2,"gId":"MINENGINEVER","gIx":605,"p":"/behavior_packs/test_bp/manifest.json","d":[1,20,0]},{"iTp":1,"gId":"NOBOM","gIx":1},{"iTp":1,"gId":"PACK","gIx":1},{"iTp":2,"gId":"PACK","gIx":104,"p":"/behavior_packs/test_bp/manifest.json","d":"Test Spawn Rules BP"},{"iTp":2,"gId":"PACK","gIx":105,"p":"/behavior_packs/test_bp/manifest.json","d":"Test behavior pack for spawn rules dependency tracking"},{"iTp":2,"gId":"PACK","gIx":106,"p":"/behavior_packs/test_bp/manifest.json","d":"12345678-1234-1234-1234-123456789012|1.0.0"},{"iTp":2,"gId":"PACK","gIx":107,"p":"/behavior_packs/test_bp/manifest.json","d":2},{"iTp":2,"gId":"PACK","gIx":107,"p":"/behavior_packs/test_bp/manifest.json","d":[1,20,0]},{"iTp":2,"gId":"PACK","gIx":108,"p":"/behavior_packs/test_bp/manifest.json","d":"12345678-1234-1234-1234-123456789012"},{"iTp":2,"gId":"PACK","gIx":109,"p":"/behavior_packs/test_bp/manifest.json"},{"iTp":7,"gId":"PACK","gIx":245},{"iTp":8,"gId":"PACKMETADATA","gIx":2},{"iTp":1,"gId":"PACKSIZE","gIx":1},{"iTp":7,"gId":"PACKSIZE","gIx":101,"d":1382},{"iTp":7,"gId":"PACKSIZE","gIx":102,"d":3},{"iTp":7,"gId":"PACKSIZE","gIx":103,"d":4},{"iTp":7,"gId":"PACKSIZE","gIx":104,"d":1382},{"iTp":7,"gId":"PACKSIZE","gIx":105,"d":3},{"iTp":7,"gId":"PACKSIZE","gIx":106,"d":2},{"iTp":1,"gId":"PATHLENGTH","gIx":1},{"iTp":1,"gId":"PRJINT","gIx":1},{"iTp":1,"gId":"RESOURCEANIMATION","gIx":1},{"iTp":7,"gId":"RESOURCEANIMATION","gIx":101},{"iTp":7,"gId":"RESOURCEANIMATION","gIx":102},{"iTp":1,"gId":"RPDEPENDS","gIx":1},{"iTp":1,"gId":"SCRIPT","gIx":1},{"iTp":7,"gId":"SCRIPT","gIx":101},{"iTp":8,"gId":"SCRIPTMODULE","gIx":2},{"iTp":8,"gId":"SNDSDEF","gIx":2},{"iTp":1,"gId":"STRICT","gIx":1},{"iTp":1,"gId":"SUMMARY","gIx":1},{"iTp":7,"gId":"SUMMARY","gIx":101},{"iTp":7,"gId":"SUMMARY","gIx":102},{"iTp":1,"gId":"TEXTURE","gIx":1},{"iTp":7,"gId":"TEXTURE","gIx":101},{"iTp":1,"gId":"TEXTUREIMAGE","gIx":1},{"iTp":7,"gId":"TEXTUREIMAGE","gIx":101,"fs":{"Vanilla Game Texture Coverage":{"Override Count":0,"Vanilla Texture Count":2669,"Percent":0}}},{"iTp":7,"gId":"TEXTUREIMAGE","gIx":200,"fs":{"Non-Vanilla Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Total Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Block Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Item Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0}}},{"iTp":7,"gId":"TEXTUREIMAGE","gIx":201,"fs":{"Non-Vanilla Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Total Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Block Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Item Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0}}},{"iTp":7,"gId":"TEXTUREIMAGE","gIx":202,"fs":{"Non-Vanilla Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Total Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Block Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Item Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0}}},{"iTp":7,"gId":"TEXTUREIMAGE","gIx":203,"fs":{"Non-Vanilla Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Total Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Block Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Item Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0}}},{"iTp":7,"gId":"TEXTUREIMAGE","gIx":204,"fs":{"Non-Vanilla Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Total Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Block Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Item Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0}}},{"iTp":7,"gId":"TEXTUREIMAGE","gIx":205,"fs":{"Non-Vanilla Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Total Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Block Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0},"Item Atlas Texture Memory Tier":{"Instance Count":1,"Total":0,"Max":0,"Min":0,"Average":0}}},{"iTp":1,"gId":"TEXTUREREF","gIx":1},{"iTp":7,"gId":"TEXTUREREF","gIx":101},{"iTp":1,"gId":"TYPES","gIx":1},{"iTp":7,"gId":"TYPES","gIx":101},{"iTp":1,"gId":"UNKFILE","gIx":1},{"iTp":1,"gId":"UNKJSON","gIx":1},{"iTp":1,"gId":"UNLINK","gIx":1},{"iTp":8,"gId":"VALFILE","gIx":2},{"iTp":8,"gId":"VSCODEFILE","gIx":2},{"iTp":8,"gId":"WORLD","gIx":2},{"iTp":8,"gId":"WORLDDATA","gIx":2}],"generatorName":"Minecraft Creator Tools","suite":0,"generatorVersion":"0.2.9","sourceName":"spawnRulesDependency","sourcePath":"/"});
+</script><script>
+
+    function getDataName(name) {
+      if (typeof name === "boolean" || typeof name === "number") {
+        return name.toString();
+      }
+    
+      let retVal = "";
+    
+      for (let i = 0; i < name.length; i++) {
+        if (i === 0) {
+          retVal += name[i].toUpperCase();
+        } else {
+          if (name[i] >= "A" && name[i] <= "Z") {
+            retVal += " ";
+          }
+          retVal += name[i];
+        }
+      }
+      return retVal;
+    }
+    
+    function getDataSummary(data) {
+      if (data) {
+        return data;
+      }
+      
+      if (typeof data === "number" || typeof data === "boolean") {
+        return data.toString();
+      }
+      
+      if (typeof data === "object") {
+        return JSON.stringify(data);
+      }
+    
+      return "(not defined)";
+    }  
+    
+    function getEmptySummary(data) {
+    
+      if (typeof data === "object") {
+        return JSON.stringify(data);
+      }
+      
+      if (typeof data === "number" || typeof data === "boolean") {
+        return data.toString();
+      }
+    
+      if (data) {
+        return data;
+      }
+      
+      return "";
+    }  
+
+    function getEffectiveMessage(reportObj, item) {
+      if (item.m !== undefined) {
+        return item.m;
+      }
+
+      if (reportObj.info === undefined || reportObj.info.summary === undefined) {
+        return undefined;
+      }
+
+      let gen = reportObj.info.summary[item.gId];
+
+      if (gen === undefined) {
+        return undefined;
+      }
+
+      let genI = gen[item.gIx];
+ 
+      if (genI === undefined) {
+        return undefined;
+      }
+
+      return genI.defaultMessage;
+    }	    
+    
+    function generateReports() {
+      for (let i=0; i<_reportObjects.length; i++) {
+        document.write("<h1>" + _reportObjects[i].sourceName + "</h1>");
+        document.write("<h3>Summary</h3>");
+    
+        document.write("<table class='summary-table'>");
+        document.write("<tr><th>Measure</th><th>Value</th></tr>");
+        const info = _reportObjects[i].info;
+    
+        if (info) {
+          for (const key in info) {
+            const val = info[key];
+    
+            if (key !== 'featureSets' && key !== 'defaultIcon' && key !== 'summary') {
+              document.write("<tr>");
+              document.write("<td class='summary-key items-cell'>" + getDataName(key) + "</td>");
+              document.write("<td class='summary-value items-cell'>" + getDataSummary(val) + "</td>");
+              document.write("</tr>");
+            }
+          }
+    
+          if (info["featureSets"]) {
+            for (const featureName in info.featureSets) {
+              const feature = info.featureSets[featureName];
+    
+              for (const measureName in feature) {
+                const val = feature[measureName];
+
+                 document.write("<tr>");
+                document.write("<td class='summary-key items-cell'>" + featureName + " " + measureName + "</td>");
+                document.write("<td class='summary-value items-cell'>" + getDataSummary(val) + "</td>");
+                document.write("</tr>");
+              }
+            }
+          }
+        }
+        document.write("</table>");
+      }
+    
+      for (let i=0; i<_reportObjects.length; i++) {
+        document.write("<h3>Items</h3>");
+        document.write("<table class='items-table'>");
+        document.write("<tr><th>Type</th><th>Test Category</th><th>Category Id</th><th>Message</th><th>Data</th><th>Path</th></tr>");
+        const info = _reportObjects[i].info;
+        
+        const items = _reportObjects[i].items;
+    
+        if (items && items.length) {
+          for (const item of items) {
+            if (item.itemType !== 2) {
+              document.write("<tr>");
+              document.write("<td class='items-type items-cell'>" + getDescriptionForItemType(item.iTp) + "</td>");
+              document.write("<td class='items-generator items-cell'>" + item.gId + "</td>");
+              document.write("<td class='items-generatorIndex items-cell'>" + item.gIx + "</td>");
+              document.write("<td class='items-message items-cell'>" + getEmptySummary(getEffectiveMessage(_reportObjects[i], item)) + "</td>");
+              document.write("<td class='items-data items-cell'>" + getEmptySummary(item.d) + "</td>");
+              document.write("<td class='items-path items-cell'>" + getEmptySummary(item.p) + "</td>");
+              document.write("</tr>");
+            }
+          }
+        }
+        document.write("</table>");
+      }
+    } 
+
+    function getDescriptionForItemType(itemType) {
+      switch (itemType) {
+        case 0: 
+          return "SUCCESS";
+          break;
+        case 1: 
+          return "FAIL";
+          break;
+        case 3: 
+          return "ERROR";
+          break;
+        case 4: 
+          return "WARN";
+          break;
+        case 5: 
+          return "INTERNALERR";
+          break;
+        case 6: 
+          return "RECOMMEND";
+          break;          
+      }
+      return "INFO";
+    }
+
+    </script>
+    <style>
+      body {
+        font-family: Noto Sans, Arial, Helvetica, sans-serif;
+        padding: 8px;
+      }
+    
+      .items-table {
+        border: solid 1px #606060;
+        padding: 0px;
+        max-width: 100vw;
+      }
+    
+      .items-cell {
+        border: solid 1px #606060;
+        padding: 4px;
+        vertical-align: top;
+        font-size: x-small;
+        overflow-wrap: anywhere;
+        max-width: 25vw;
+      }
+    
+      .summary-table {
+        border: solid 1px #606060;
+        padding: 0px;
+        max-width: 100vw;
+      }
+    </style>
+    </head><body> 
+
+<script>
+generateReports();
+</script>
+</body></html>

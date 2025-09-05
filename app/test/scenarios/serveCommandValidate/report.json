@@ -905,16 +905,16 @@
         "Count": 1
       }
     },
-    "errorCount": 11,
+    "errorCount": 0,
     "internalProcessingErrorCount": 0,
     "warningCount": 2,
     "testSuccessCount": 37,
-    "testFailCount": 1,
+    "testFailCount": 0,
     "testNotApplicableCount": 10,
-    "errorSummary": "ERROR: [CADDONIREQ111] (/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json) Behavior pack animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.sheepomelon.sheared\nERROR: [CADDONIREQ111] (/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json) Behavior pack animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.sheepomelon.spawn\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.biceson.baby_transform\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.biceson.move\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.biceson.walk\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.nardolphle.move\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.sheepomelon.baby_transform\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.sheepomelon.grazing\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.sheepomelon.setup\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.sheepomelon.walk\nERROR: [CADDONIREQ170] (/Content/resource_packs/aop_mobsrp/manifest.json) Resource pack manifest does not specify that header/pack_scope that should be 'world'",
+    "errorSummary": "",
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:boomfly`\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:robot`",
-    "testFailSummary": "TESTFAIL: [CADDONIREQ000] Found 11 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).",
+    "testFailSummary": "",
     "summary": {
       "BASEGAMEVER": {
         "2": {
@@ -926,24 +926,6 @@
         "2": {
           "title": "2",
           "defaultMessage": "No applicable items found for test Blocks Catalog (BLOCKSCAT)"
-        }
-      },
-      "CADDONIREQ": {
-        "0": {
-          "defaultMessage": "Found 11 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).",
-          "testCompleteFails": 1
-        },
-        "111": {
-          "defaultMessage": "Behavior pack animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name",
-          "errors": 2
-        },
-        "131": {
-          "defaultMessage": "Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name",
-          "errors": 8
-        },
-        "170": {
-          "defaultMessage": "Resource pack manifest does not specify that header/pack_scope that should be 'world'",
-          "errors": 1
         }
       },
       "CBFG": {
@@ -1683,87 +1665,6 @@
       "iTp": 8,
       "gId": "BLOCKSCAT",
       "gIx": 2
-    },
-    {
-      "iTp": 0,
-      "gId": "CADDONIREQ",
-      "gIx": 0
-    },
-    {
-      "iTp": 3,
-      "gId": "CADDONIREQ",
-      "gIx": 111,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
-      "d": "animation.sheepomelon.sheared"
-    },
-    {
-      "iTp": 3,
-      "gId": "CADDONIREQ",
-      "gIx": 111,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
-      "d": "animation.sheepomelon.spawn"
-    },
-    {
-      "iTp": 3,
-      "gId": "CADDONIREQ",
-      "gIx": 131,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json",
-      "d": "animation.biceson.baby_transform"
-    },
-    {
-      "iTp": 3,
-      "gId": "CADDONIREQ",
-      "gIx": 131,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json",
-      "d": "animation.biceson.move"
-    },
-    {
-      "iTp": 3,
-      "gId": "CADDONIREQ",
-      "gIx": 131,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json",
-      "d": "animation.biceson.walk"
-    },
-    {
-      "iTp": 3,
-      "gId": "CADDONIREQ",
-      "gIx": 131,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json",
-      "d": "animation.nardolphle.move"
-    },
-    {
-      "iTp": 3,
-      "gId": "CADDONIREQ",
-      "gIx": 131,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json",
-      "d": "animation.sheepomelon.baby_transform"
-    },
-    {
-      "iTp": 3,
-      "gId": "CADDONIREQ",
-      "gIx": 131,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json",
-      "d": "animation.sheepomelon.grazing"
-    },
-    {
-      "iTp": 3,
-      "gId": "CADDONIREQ",
-      "gIx": 131,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json",
-      "d": "animation.sheepomelon.setup"
-    },
-    {
-      "iTp": 3,
-      "gId": "CADDONIREQ",
-      "gIx": 131,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json",
-      "d": "animation.sheepomelon.walk"
-    },
-    {
-      "iTp": 3,
-      "gId": "CADDONIREQ",
-      "gIx": 170,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
     },
     {
       "iTp": 1,

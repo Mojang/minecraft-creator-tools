@@ -211,7 +211,11 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
     const itemsCopy = project.getItemsCopy();
 
     for (const projectItem of itemsCopy) {
-      if (projectItem.itemType === ProjectItemType.texture) {
+      if (
+        projectItem.itemType === ProjectItemType.texture &&
+        projectItem.projectPath &&
+        !projectItem.projectPath.endsWith(".hdr") // ignore HDR files
+      ) {
         if (!projectItem.isContentLoaded) {
           await projectItem.loadContent();
         }
@@ -788,16 +792,22 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
 
       if (actualOverridePercent >= TextureOverrideThresholdPercent) {
         if (actualOverridePercent < TextureOverrideThresholdErrorPercent) {
-          items.push(
-            new ProjectInfoItem(
-              InfoItemType.error,
-              this.id,
-              TextureImageInfoGeneratorTest.texturePackDoesntOverrideMostTextures,
-              `Content seems like a texture pack (overrides >70% of a textures), but does not override the vast majority of textures. This pack should override at least 95% of vanilla textures.`,
-              undefined,
-              actualOverridePercent
-            )
-          );
+          const nonRpItemCount =
+            project.getItemsByType(ProjectItemType.behaviorPackManifestJson).length +
+            project.getItemsByType(ProjectItemType.worldFolder).length;
+
+          if (nonRpItemCount === 0) {
+            items.push(
+              new ProjectInfoItem(
+                InfoItemType.error,
+                this.id,
+                TextureImageInfoGeneratorTest.texturePackDoesntOverrideMostTextures,
+                `Content seems like a texture pack (overrides >70% of a textures), but does not override the vast majority of textures. This pack should override at least 95% of vanilla textures.`,
+                undefined,
+                actualOverridePercent
+              )
+            );
+          }
         }
 
         for (const path in vanillaTexturePathNonMers) {

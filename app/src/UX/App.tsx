@@ -24,6 +24,7 @@ import { ProjectImportExclusions } from "../app/ProjectExporter";
 import Database from "../minecraft/Database";
 import IProjectSeed from "../app/IProjectSeed";
 import ImportFromUrl from "./ImportFromUrl";
+import ProjectCreateManager from "../app/ProjectCreateManager";
 
 export enum NewProjectTemplateType {
   empty,
@@ -947,11 +948,11 @@ export default class App extends Component<AppProps, AppState> {
 
         if (galleryProject) {
           if (galleryType === GalleryItemType.entityType) {
-            await ProjectUtilities.addEntityTypeFromGallery(newProject, galleryProject, suggestedName);
+            await ProjectCreateManager.addEntityTypeFromGallery(newProject, galleryProject, suggestedName);
           } else if (galleryType === GalleryItemType.blockType) {
-            await ProjectUtilities.addBlockTypeFromGallery(newProject, galleryProject, suggestedName);
+            await ProjectCreateManager.addBlockTypeFromGallery(newProject, galleryProject, suggestedName);
           } else if (galleryType === GalleryItemType.itemType) {
-            await ProjectUtilities.addItemTypeFromGallery(newProject, galleryProject, suggestedName);
+            await ProjectCreateManager.addItemTypeFromGallery(newProject, galleryProject, suggestedName);
           }
         }
       }

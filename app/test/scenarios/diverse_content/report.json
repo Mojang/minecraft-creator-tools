@@ -522,16 +522,16 @@
         "Count": 1
       }
     },
-    "errorCount": 1,
+    "errorCount": 0,
     "internalProcessingErrorCount": 2,
     "warningCount": 6,
     "testSuccessCount": 35,
-    "testFailCount": 2,
+    "testFailCount": 1,
     "testNotApplicableCount": 11,
-    "errorSummary": "ERROR: [CADDONIREQ170] (/resource_packs/diverse_rp/manifest.json) Resource pack manifest does not specify that header/pack_scope that should be 'world'",
+    "errorSummary": "",
     "internalProcessingErrorSummary": "UNKNOWN: [JSONF402] Could not find expected form: entity/actor_document\nUNKNOWN: [JSONF402] Could not find expected form: spawn/spawn_rules",
     "warningSummary": "WARNING: [FORMATVER218] (/resource_packs/diverse_rp/animations/sample_mob_animations.json) Resource animation version (1.21.0) has a higher minor version number compared to current version (1.10.0)\nWARNING: [FORMATVER238] (/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json) Resource animation controller version (1.21.0) has a higher minor version number compared to current version (1.10.0)\nWARNING: [FORMATVER258] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) Spawn rules version (1.21.0) has a higher minor version number compared to current version (1.12.0)\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/loot_tables/sample_loot.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/loot_tables/sample_loot.json to `minecraft:stick`\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:iron_ingot`\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:stick`",
-    "testFailSummary": "TESTFAIL: [CADDONIREQ000] Found 1 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).\nTESTFAIL: [JSONF000] Found 2 internal errors for JSON Structure Validation (via Minecraft docs) (JSONF). This may be a temporary issue with the test run.",
+    "testFailSummary": "TESTFAIL: [JSONF000] Found 2 internal errors for JSON Structure Validation (via Minecraft docs) (JSONF). This may be a temporary issue with the test run.",
     "summary": {
       "BASEGAMEVER": {
         "2": {
@@ -543,16 +543,6 @@
         "2": {
           "title": "2",
           "defaultMessage": "No applicable items found for test Blocks Catalog (BLOCKSCAT)"
-        }
-      },
-      "CADDONIREQ": {
-        "0": {
-          "defaultMessage": "Found 1 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).",
-          "testCompleteFails": 1
-        },
-        "170": {
-          "defaultMessage": "Resource pack manifest does not specify that header/pack_scope that should be 'world'",
-          "errors": 1
         }
       },
       "CBFG": {
@@ -1258,17 +1248,6 @@
       "iTp": 8,
       "gId": "BLOCKSCAT",
       "gIx": 2
-    },
-    {
-      "iTp": 0,
-      "gId": "CADDONIREQ",
-      "gIx": 0
-    },
-    {
-      "iTp": 3,
-      "gId": "CADDONIREQ",
-      "gIx": 170,
-      "p": "/resource_packs/diverse_rp/manifest.json"
     },
     {
       "iTp": 1,

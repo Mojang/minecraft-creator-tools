@@ -1133,12 +1133,19 @@
         "<BPLE>cow",
         "<BPSR>cow",
         "<RPE>cow",
-        "<RPME>cow",
-        "<RPRC>cow",
+        "<RPME>cow.v2",
+        "<RPME>cow.cold",
+        "<RPME>cow.warm",
+        "<RPRC>cow.v2",
         "<RPA>cow",
         "<RPTE>cow/cow",
+        "<RPTE>cow/cow_cold",
+        "<RPTE>cow/cow_v2",
+        "<RPTE>cow/cow_warm",
         "<RPTE>cow/brown_mooshroom",
-        "<RPTE>cow/mooshroom"
+        "<RPTE>cow/brown_mooshroom_v2",
+        "<RPTE>cow/mooshroom",
+        "<RPTE>cow/mooshroom_v2"
       ]
     },
     {

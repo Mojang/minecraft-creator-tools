@@ -1,11 +1,11 @@
 {
   "info": {
     "capabilities": [
-      "skinPack"
+      "behaviorPack"
     ],
-    "behaviorPackManifestCount": 0,
+    "behaviorPackManifestCount": 1,
     "unknownJsonCount": 0,
-    "entityTypeManifestCount": 0,
+    "entityTypeManifestCount": 1,
     "itemTypeManifestCount": 0,
     "blockTypeManifestCount": 0,
     "resourcePackManifestCount": 0,
@@ -13,31 +13,41 @@
     "entityTypeResourceCount": 0,
     "behaviorPackAnimationCount": 0,
     "behaviorPackAnimationControllerCount": 0,
-    "overallSize": 1283,
-    "fileCounts": 7,
-    "folderCounts": 1,
-    "contentSize": 1283,
-    "contentFileCounts": 7,
-    "contentFolderCounts": 1,
-    "minBehaviorPackMinEngineVersion": 0,
+    "overallSize": 1382,
+    "fileCounts": 3,
+    "folderCounts": 4,
+    "contentSize": 1382,
+    "contentFileCounts": 3,
+    "contentFolderCounts": 2,
+    "defaultBehaviorPackUuid": "12345678-1234-1234-1234-123456789012",
+    "defaultBehaviorPackMinEngineVersion": "1.20.0",
+    "minBehaviorPackMinEngineVersionString": "1.20.0",
+    "minBehaviorPackMinEngineVersion": 11020000,
+    "defaultBehaviorPackName": "Test Spawn Rules BP",
+    "defaultBehaviorPackDescription": "Test behavior pack for spawn rules dependency tracking",
     "minResourcePackMinEngineVersion": 0,
     "subpackCount": 0,
-    "entityTypeComponents": [],
+    "entityTypeComponents": [
+      "behavior.look_at_player",
+      "behavior.random_look_around",
+      "behavior.random_stroll",
+      "health",
+      "movement",
+      "navigation.walk"
+    ],
     "blockTypeComponents": [],
     "itemTypeComponents": [],
     "apisUsed": [],
     "mctoolsVersion": 10002009,
     "itemTypes": [
-      "Language catalog",
-      "Language translations",
-      "Skin pack",
-      "Skin pack manifest",
-      "Skins Catalog",
-      "Texture"
+      "Behavior pack",
+      "Behavior pack manifest",
+      "Entity type",
+      "Spawn rule"
     ],
     "animationCount": 0,
-    "textureCount": 2,
-    "textureTexelSize": 8192,
+    "textureCount": 0,
+    "textureTexelSize": 0,
     "vanillaGameTextureCoverage": 0,
     "vanillaGameTextureCount": 0,
     "minimumSupportablePerformanceTier": 0,
@@ -63,158 +73,86 @@
     "worldLoadErrors": 0,
     "commands": [],
     "featureSets": {
-      "Language catalog Size": {
+      "Runtime Identifier (no runtime identifier)": {
+        "Count": 1
+      },
+      "Identifier (no override identifier)": {
+        "Count": 1
+      },
+      "Metadata Spawnable Entity Type": {
+        "Count": 1
+      },
+      "Metadata Summonable Entity Type": {
+        "Count": 1
+      },
+      "Entity Type Default Components": {
+        "minecraft:health": 1,
+        "minecraft:movement": 1,
+        "minecraft:navigation.walk": 1,
+        "minecraft:behavior.random_stroll": 1,
+        "minecraft:behavior.look_at_player": 1,
+        "minecraft:behavior.random_look_around": 1
+      },
+      "Behavior pack manifest Size": {
         "Instance Count": 1,
-        "Total": 17,
-        "Max": 17,
-        "Min": 17,
-        "Average": 17
+        "Total": 358,
+        "Max": 358,
+        "Min": 358,
+        "Average": 358
       },
-      "Language catalog Lines": {
+      "Behavior pack manifest Lines": {
         "Instance Count": 1,
-        "Total": 1,
-        "Max": 1,
-        "Min": 1,
-        "Average": 1
+        "Total": 16,
+        "Max": 16,
+        "Min": 16,
+        "Average": 16
       },
-      "Skin pack manifest Size": {
+      "Entity type Size": {
         "Instance Count": 1,
-        "Total": 288,
-        "Max": 288,
-        "Min": 288,
-        "Average": 288
+        "Total": 550,
+        "Max": 550,
+        "Min": 550,
+        "Average": 550
       },
-      "Skin pack manifest Lines": {
+      "Entity type Lines": {
         "Instance Count": 1,
-        "Total": 13,
-        "Max": 13,
-        "Min": 13,
-        "Average": 13
+        "Total": 32,
+        "Max": 32,
+        "Min": 32,
+        "Average": 32
       },
-      "Language translations Size": {
-        "Instance Count": 2,
-        "Total": 309,
-        "Max": 164,
-        "Min": 145,
-        "Average": 155
-      },
-      "Language translations Lines": {
-        "Instance Count": 2,
-        "Total": 6,
-        "Max": 3,
-        "Min": 3,
-        "Average": 3
-      },
-      "Texture Size": {
-        "Instance Count": 2,
-        "Total": 354,
-        "Max": 177,
-        "Min": 177,
-        "Average": 177
-      },
-      "Skins Catalog Size": {
+      "Spawn rule Size": {
         "Instance Count": 1,
-        "Total": 315,
-        "Max": 315,
-        "Min": 315,
-        "Average": 315
+        "Total": 474,
+        "Max": 474,
+        "Min": 474,
+        "Average": 474
       },
-      "Skins Catalog Lines": {
+      "Spawn rule Lines": {
         "Instance Count": 1,
-        "Total": 13,
-        "Max": 13,
-        "Min": 13,
-        "Average": 13
+        "Total": 26,
+        "Max": 26,
+        "Min": 26,
+        "Average": 26
       },
-      "Textures File Count": {
-        "Count": 2
-      },
-      "Texture Images Custom Texture": {
-        "Count": 2
-      },
-      "Texture Images PNGJPG Width": {
-        "Instance Count": 2,
-        "Total": 128,
-        "Max": 64,
-        "Min": 64,
-        "Average": 64
-      },
-      "Texture Images PNGJPG Height": {
-        "Instance Count": 2,
-        "Total": 128,
-        "Max": 64,
-        "Min": 64,
-        "Average": 64
-      },
-      "Texture Images PNGJPG Texels": {
-        "Instance Count": 2,
-        "Total": 8192,
-        "Max": 4096,
-        "Min": 4096,
-        "Average": 4096
-      },
-      "Texture Images PNGJPG Texture Memory": {
-        "Instance Count": 2,
-        "Total": 32768,
-        "Max": 16384,
-        "Min": 16384,
-        "Average": 16384
-      },
-      "Texture Images Width": {
-        "Instance Count": 2,
-        "Total": 128,
-        "Max": 64,
-        "Min": 64,
-        "Average": 64
-      },
-      "Texture Images Height": {
-        "Instance Count": 2,
-        "Total": 128,
-        "Max": 64,
-        "Min": 64,
-        "Average": 64
-      },
-      "Texture Images Texels": {
-        "Instance Count": 2,
-        "Total": 8192,
-        "Max": 4096,
-        "Min": 4096,
-        "Average": 4096
-      },
-      "Texture Images Texture Memory": {
-        "Instance Count": 2,
-        "Total": 32768,
-        "Max": 16384,
-        "Min": 16384,
-        "Average": 16384
-      },
-      "Texture Images Non-Vanilla Texels": {
-        "Instance Count": 2,
-        "Total": 8192,
-        "Max": 4096,
-        "Min": 4096,
-        "Average": 4096
-      },
-      "Texture Images Non-Vanilla Texture Memory": {
-        "Instance Count": 2,
-        "Total": 32768,
-        "Max": 16384,
-        "Min": 16384,
-        "Average": 16384
+      "Texture Images Vanilla Game Texture Coverage": {
+        "Override Count": 0,
+        "Vanilla Texture Count": 2669,
+        "Percent": 0
       },
       "Texture Images Tier0 Non-Vanilla Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 32768,
-        "Max": 32768,
-        "Min": 32768,
-        "Average": 32768
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
       },
       "Texture Images Tier0 Total Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 32768,
-        "Max": 32768,
-        "Min": 32768,
-        "Average": 32768
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
       },
       "Texture Images Tier0 Block Atlas Texture Memory Tier": {
         "Instance Count": 1,
@@ -232,17 +170,17 @@
       },
       "Texture Images Tier1 Non-Vanilla Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 32768,
-        "Max": 32768,
-        "Min": 32768,
-        "Average": 32768
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
       },
       "Texture Images Tier1 Total Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 32768,
-        "Max": 32768,
-        "Min": 32768,
-        "Average": 32768
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
       },
       "Texture Images Tier1 Block Atlas Texture Memory Tier": {
         "Instance Count": 1,
@@ -260,17 +198,17 @@
       },
       "Texture Images Tier2 Non-Vanilla Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 32768,
-        "Max": 32768,
-        "Min": 32768,
-        "Average": 32768
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
       },
       "Texture Images Tier2 Total Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 32768,
-        "Max": 32768,
-        "Min": 32768,
-        "Average": 32768
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
       },
       "Texture Images Tier2 Block Atlas Texture Memory Tier": {
         "Instance Count": 1,
@@ -288,17 +226,17 @@
       },
       "Texture Images Tier3 Non-Vanilla Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 32768,
-        "Max": 32768,
-        "Min": 32768,
-        "Average": 32768
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
       },
       "Texture Images Tier3 Total Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 32768,
-        "Max": 32768,
-        "Min": 32768,
-        "Average": 32768
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
       },
       "Texture Images Tier3 Block Atlas Texture Memory Tier": {
         "Instance Count": 1,
@@ -316,17 +254,17 @@
       },
       "Texture Images Tier4 Non-Vanilla Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 32768,
-        "Max": 32768,
-        "Min": 32768,
-        "Average": 32768
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
       },
       "Texture Images Tier4 Total Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 32768,
-        "Max": 32768,
-        "Min": 32768,
-        "Average": 32768
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
       },
       "Texture Images Tier4 Block Atlas Texture Memory Tier": {
         "Instance Count": 1,
@@ -344,17 +282,17 @@
       },
       "Texture Images Tier5 Non-Vanilla Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 32768,
-        "Max": 32768,
-        "Min": 32768,
-        "Average": 32768
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
       },
       "Texture Images Tier5 Total Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 32768,
-        "Max": 32768,
-        "Min": 32768,
-        "Average": 32768
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
       },
       "Texture Images Tier5 Block Atlas Texture Memory Tier": {
         "Instance Count": 1,
@@ -371,16 +309,16 @@
         "Average": 0
       }
     },
-    "errorCount": 0,
+    "errorCount": 1,
     "internalProcessingErrorCount": 0,
     "warningCount": 0,
-    "testSuccessCount": 33,
-    "testFailCount": 0,
-    "testNotApplicableCount": 14,
-    "errorSummary": "",
+    "testSuccessCount": 34,
+    "testFailCount": 1,
+    "testNotApplicableCount": 12,
+    "errorSummary": "ERROR: [CPACKICON101] pack_icon image file not found for test_bp. It must use the .png extension.",
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
-    "testFailSummary": "",
+    "testFailSummary": "TESTFAIL: [CPACKICON000] Found 1 errors for Check Pack Icon Generator (CPACKICON).",
     "summary": {
       "BASEGAMEVER": {
         "2": {
@@ -415,10 +353,15 @@
         }
       },
       "CPACKICON": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check Pack Icon Generator (CPACKICON) completed successfully",
-          "testCompleteSuccesses": 1
+        "0": {
+          "title": "Test Failure",
+          "defaultMessage": "Found 1 errors for Check Pack Icon Generator (CPACKICON).",
+          "testCompleteFails": 1
+        },
+        "101": {
+          "title": "No Icon Found",
+          "defaultMessage": "pack_icon image file not found for test_bp. It must use the .png extension.",
+          "errors": 1
         }
       },
       "CPARTI": {
@@ -459,6 +402,11 @@
         "54": {
           "title": "Metadata",
           "defaultMessage": "Entity Type Metadata"
+        },
+        "130": {
+          "title": "Format Version Patch Version Lower Than Current",
+          "defaultMessage": "Behavior pack entity type format version (1.20.0) has a lower patch version number compared to current version (1.21.100.06)",
+          "recommendations": 1
         }
       },
       "EXPFLAG": {
@@ -475,9 +423,19 @@
         }
       },
       "FORMATVER": {
-        "2": {
-          "title": "2",
-          "defaultMessage": "No applicable items found for test Format Version (FORMATVER)"
+        "1": {
+          "title": "1",
+          "defaultMessage": "Format Version (FORMATVER) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "256": {
+          "title": "256",
+          "defaultMessage": "Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)",
+          "recommendations": 1
+        },
+        "644": {
+          "title": "644",
+          "defaultMessage": "Spawn rule format_version"
         }
       },
       "GEOFMT": {
@@ -510,29 +468,25 @@
           "defaultMessage": "Minimum Definition of a Pack (ITEMS) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "237": {
-          "title": "Language catalog count",
-          "defaultMessage": "Language catalog item count"
+        "102": {
+          "title": "102",
+          "defaultMessage": "Behavior pack manifest found"
         },
-        "267": {
-          "title": "Skin pack manifest count",
-          "defaultMessage": "Skin pack manifest item count"
+        "205": {
+          "title": "Behavior pack manifest count",
+          "defaultMessage": "Behavior pack manifest item count"
         },
-        "279": {
-          "title": "Language translations count",
-          "defaultMessage": "Language translations item count"
+        "210": {
+          "title": "Entity type count",
+          "defaultMessage": "Entity type item count"
         },
-        "299": {
-          "title": "Texture count",
-          "defaultMessage": "Texture item count"
+        "244": {
+          "title": "Spawn rule count",
+          "defaultMessage": "Spawn rule item count"
         },
-        "311": {
-          "title": "Skin pack count",
-          "defaultMessage": "Skin pack item count"
-        },
-        "323": {
-          "title": "Skins Catalog count",
-          "defaultMessage": "Skins Catalog item count"
+        "309": {
+          "title": "Behavior pack count",
+          "defaultMessage": "Behavior pack item count"
         }
       },
       "ITEMTYPE": {
@@ -567,6 +521,10 @@
           "title": "Test Success",
           "defaultMessage": "JSON Tags (JSONTAGS) completed successfully",
           "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Entity Type",
+          "defaultMessage": "Entity file"
         }
       },
       "LINESIZE": {
@@ -575,29 +533,21 @@
           "defaultMessage": "File Line/Size Information (LINESIZE) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "137": {
-          "title": "Language catalog",
-          "defaultMessage": "Language catalog file lines"
+        "105": {
+          "title": "Behavior pack manifest",
+          "defaultMessage": "Behavior pack manifest file lines"
         },
-        "167": {
-          "title": "Skin pack manifest",
-          "defaultMessage": "Skin pack manifest file lines"
+        "110": {
+          "title": "Entity type",
+          "defaultMessage": "Entity type file lines"
         },
-        "179": {
-          "title": "Language translations",
-          "defaultMessage": "Language translations file lines"
+        "144": {
+          "title": "Spawn rule",
+          "defaultMessage": "Spawn rule file lines"
         },
-        "199": {
-          "title": "Texture",
-          "defaultMessage": "Texture file size"
-        },
-        "211": {
-          "title": "Skin pack",
-          "defaultMessage": "Skin pack file lines"
-        },
-        "223": {
-          "title": "Skins Catalog",
-          "defaultMessage": "Skins Catalog file lines"
+        "209": {
+          "title": "Behavior pack",
+          "defaultMessage": "Behavior pack file lines"
         }
       },
       "MCFUNCTION": {
@@ -607,9 +557,14 @@
         }
       },
       "MINENGINEVER": {
-        "2": {
-          "title": "2",
-          "defaultMessage": "No applicable items found for test Min Engine Version (MINENGINEVER)"
+        "1": {
+          "title": "1",
+          "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "605": {
+          "title": "605",
+          "defaultMessage": "Behavior pack manifest min_engine_version"
         }
       },
       "NOBOM": {
@@ -623,6 +578,30 @@
           "title": "1",
           "defaultMessage": "General info (PACK) completed successfully",
           "testCompleteSuccesses": 1
+        },
+        "104": {
+          "title": "104",
+          "defaultMessage": "Behavior Pack Name"
+        },
+        "105": {
+          "title": "105",
+          "defaultMessage": "Behavior Pack Description"
+        },
+        "106": {
+          "title": "106",
+          "defaultMessage": "Behavior Pack Id"
+        },
+        "107": {
+          "title": "107",
+          "defaultMessage": "Behavior Pack Min Engine Version"
+        },
+        "108": {
+          "title": "108",
+          "defaultMessage": "Behavior Pack Uuid"
+        },
+        "109": {
+          "title": "109",
+          "defaultMessage": "Behavior Pack Manifest"
         },
         "245": {
           "title": "245",
@@ -869,9 +848,14 @@
       "gIx": 1
     },
     {
-      "iTp": 1,
+      "iTp": 0,
       "gId": "CPACKICON",
-      "gIx": 1
+      "gIx": 0
+    },
+    {
+      "iTp": 3,
+      "gId": "CPACKICON",
+      "gIx": 101
     },
     {
       "iTp": 1,
@@ -896,17 +880,41 @@
     {
       "iTp": 7,
       "gId": "ENTITYTYPE",
-      "gIx": 52
+      "gIx": 52,
+      "fs": {
+        "(no runtime identifier)": {
+          "Count": 1
+        }
+      }
     },
     {
       "iTp": 7,
       "gId": "ENTITYTYPE",
-      "gIx": 53
+      "gIx": 53,
+      "fs": {
+        "(no override identifier)": {
+          "Count": 1
+        }
+      }
     },
     {
       "iTp": 7,
       "gId": "ENTITYTYPE",
-      "gIx": 54
+      "gIx": 54,
+      "fs": {
+        "Spawnable Entity Type": {
+          "Count": 1
+        },
+        "Summonable Entity Type": {
+          "Count": 1
+        }
+      }
+    },
+    {
+      "iTp": 6,
+      "gId": "ENTITYTYPE",
+      "gIx": 130,
+      "p": "/behavior_packs/test_bp/entities/example_entity.json"
     },
     {
       "iTp": 8,
@@ -919,9 +927,26 @@
       "gIx": 1
     },
     {
-      "iTp": 8,
+      "iTp": 1,
       "gId": "FORMATVER",
-      "gIx": 2
+      "gIx": 1
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 256,
+      "p": "/behavior_packs/test_bp/spawn_rules/example_entity.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 644,
+      "p": "/behavior_packs/test_bp/spawn_rules/example_entity.json",
+      "d": [
+        1,
+        8,
+        0
+      ]
     },
     {
       "iTp": 1,
@@ -956,37 +981,31 @@
     {
       "iTp": 2,
       "gId": "ITEMS",
-      "gIx": 237,
+      "gIx": 102,
+      "p": "/behavior_packs/test_bp/manifest.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 205,
       "d": 1
     },
     {
       "iTp": 2,
       "gId": "ITEMS",
-      "gIx": 267,
+      "gIx": 210,
       "d": 1
     },
     {
       "iTp": 2,
       "gId": "ITEMS",
-      "gIx": 279,
-      "d": 2
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 299,
-      "d": 2
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 311,
+      "gIx": 244,
       "d": 1
     },
     {
       "iTp": 2,
       "gId": "ITEMS",
-      "gIx": 323,
+      "gIx": 309,
       "d": 1
     },
     {
@@ -1020,6 +1039,23 @@
       "gIx": 1
     },
     {
+      "iTp": 2,
+      "gId": "JSONTAGS",
+      "gIx": 101,
+      "p": "/behavior_packs/test_bp/entities/example_entity.json",
+      "d": "/behavior_packs/test_bp/entities/example_entity.json",
+      "fs": {
+        "Default Components": {
+          "minecraft:health": 1,
+          "minecraft:movement": 1,
+          "minecraft:navigation.walk": 1,
+          "minecraft:behavior.random_stroll": 1,
+          "minecraft:behavior.look_at_player": 1,
+          "minecraft:behavior.random_look_around": 1
+        }
+      }
+    },
+    {
       "iTp": 1,
       "gId": "LINESIZE",
       "gIx": 1
@@ -1027,105 +1063,70 @@
     {
       "iTp": 7,
       "gId": "LINESIZE",
-      "gIx": 137,
+      "gIx": 105,
       "fs": {
         "Size": {
           "Instance Count": 1,
-          "Total": 17,
-          "Max": 17,
-          "Min": 17,
-          "Average": 17
+          "Total": 358,
+          "Max": 358,
+          "Min": 358,
+          "Average": 358
         },
         "Lines": {
           "Instance Count": 1,
-          "Total": 1,
-          "Max": 1,
-          "Min": 1,
-          "Average": 1
+          "Total": 16,
+          "Max": 16,
+          "Min": 16,
+          "Average": 16
         }
       }
     },
     {
       "iTp": 7,
       "gId": "LINESIZE",
-      "gIx": 167,
+      "gIx": 110,
       "fs": {
         "Size": {
           "Instance Count": 1,
-          "Total": 288,
-          "Max": 288,
-          "Min": 288,
-          "Average": 288
+          "Total": 550,
+          "Max": 550,
+          "Min": 550,
+          "Average": 550
         },
         "Lines": {
           "Instance Count": 1,
-          "Total": 13,
-          "Max": 13,
-          "Min": 13,
-          "Average": 13
+          "Total": 32,
+          "Max": 32,
+          "Min": 32,
+          "Average": 32
         }
       }
     },
     {
       "iTp": 7,
       "gId": "LINESIZE",
-      "gIx": 179,
-      "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 309,
-          "Max": 164,
-          "Min": 145,
-          "Average": 155
-        },
-        "Lines": {
-          "Instance Count": 2,
-          "Total": 6,
-          "Max": 3,
-          "Min": 3,
-          "Average": 3
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 199,
-      "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 354,
-          "Max": 177,
-          "Min": 177,
-          "Average": 177
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 211
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 223,
+      "gIx": 144,
       "fs": {
         "Size": {
           "Instance Count": 1,
-          "Total": 315,
-          "Max": 315,
-          "Min": 315,
-          "Average": 315
+          "Total": 474,
+          "Max": 474,
+          "Min": 474,
+          "Average": 474
         },
         "Lines": {
           "Instance Count": 1,
-          "Total": 13,
-          "Max": 13,
-          "Min": 13,
-          "Average": 13
+          "Total": 26,
+          "Max": 26,
+          "Min": 26,
+          "Average": 26
         }
       }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 209
     },
     {
       "iTp": 8,
@@ -1133,9 +1134,20 @@
       "gIx": 2
     },
     {
-      "iTp": 8,
+      "iTp": 1,
       "gId": "MINENGINEVER",
-      "gIx": 2
+      "gIx": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "MINENGINEVER",
+      "gIx": 605,
+      "p": "/behavior_packs/test_bp/manifest.json",
+      "d": [
+        1,
+        20,
+        0
+      ]
     },
     {
       "iTp": 1,
@@ -1146,6 +1158,58 @@
       "iTp": 1,
       "gId": "PACK",
       "gIx": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 104,
+      "p": "/behavior_packs/test_bp/manifest.json",
+      "d": "Test Spawn Rules BP"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 105,
+      "p": "/behavior_packs/test_bp/manifest.json",
+      "d": "Test behavior pack for spawn rules dependency tracking"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 106,
+      "p": "/behavior_packs/test_bp/manifest.json",
+      "d": "12345678-1234-1234-1234-123456789012|1.0.0"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 107,
+      "p": "/behavior_packs/test_bp/manifest.json",
+      "d": 2
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 107,
+      "p": "/behavior_packs/test_bp/manifest.json",
+      "d": [
+        1,
+        20,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 108,
+      "p": "/behavior_packs/test_bp/manifest.json",
+      "d": "12345678-1234-1234-1234-123456789012"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 109,
+      "p": "/behavior_packs/test_bp/manifest.json"
     },
     {
       "iTp": 7,
@@ -1166,37 +1230,37 @@
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 101,
-      "d": 1283
+      "d": 1382
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 102,
-      "d": 7
+      "d": 3
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 103,
-      "d": 1
+      "d": 4
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 104,
-      "d": 1283
+      "d": 1382
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 105,
-      "d": 7
+      "d": 3
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 106,
-      "d": 1
+      "d": 2
     },
     {
       "iTp": 1,
@@ -1276,12 +1340,7 @@
     {
       "iTp": 7,
       "gId": "TEXTURE",
-      "gIx": 101,
-      "fs": {
-        "File Count": {
-          "Count": 2
-        }
-      }
+      "gIx": 101
     },
     {
       "iTp": 1,
@@ -1293,78 +1352,10 @@
       "gId": "TEXTUREIMAGE",
       "gIx": 101,
       "fs": {
-        "Custom Texture": {
-          "Count": 2
-        },
-        "PNGJPG Width": {
-          "Instance Count": 2,
-          "Total": 128,
-          "Max": 64,
-          "Min": 64,
-          "Average": 64
-        },
-        "PNGJPG Height": {
-          "Instance Count": 2,
-          "Total": 128,
-          "Max": 64,
-          "Min": 64,
-          "Average": 64
-        },
-        "PNGJPG Texels": {
-          "Instance Count": 2,
-          "Total": 8192,
-          "Max": 4096,
-          "Min": 4096,
-          "Average": 4096
-        },
-        "PNGJPG Texture Memory": {
-          "Instance Count": 2,
-          "Total": 32768,
-          "Max": 16384,
-          "Min": 16384,
-          "Average": 16384
-        },
-        "Width": {
-          "Instance Count": 2,
-          "Total": 128,
-          "Max": 64,
-          "Min": 64,
-          "Average": 64
-        },
-        "Height": {
-          "Instance Count": 2,
-          "Total": 128,
-          "Max": 64,
-          "Min": 64,
-          "Average": 64
-        },
-        "Texels": {
-          "Instance Count": 2,
-          "Total": 8192,
-          "Max": 4096,
-          "Min": 4096,
-          "Average": 4096
-        },
-        "Texture Memory": {
-          "Instance Count": 2,
-          "Total": 32768,
-          "Max": 16384,
-          "Min": 16384,
-          "Average": 16384
-        },
-        "Non-Vanilla Texels": {
-          "Instance Count": 2,
-          "Total": 8192,
-          "Max": 4096,
-          "Min": 4096,
-          "Average": 4096
-        },
-        "Non-Vanilla Texture Memory": {
-          "Instance Count": 2,
-          "Total": 32768,
-          "Max": 16384,
-          "Min": 16384,
-          "Average": 16384
+        "Vanilla Game Texture Coverage": {
+          "Override Count": 0,
+          "Vanilla Texture Count": 2669,
+          "Percent": 0
         }
       }
     },
@@ -1375,17 +1366,17 @@
       "fs": {
         "Non-Vanilla Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 32768,
-          "Max": 32768,
-          "Min": 32768,
-          "Average": 32768
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
         },
         "Total Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 32768,
-          "Max": 32768,
-          "Min": 32768,
-          "Average": 32768
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
         },
         "Block Atlas Texture Memory Tier": {
           "Instance Count": 1,
@@ -1410,17 +1401,17 @@
       "fs": {
         "Non-Vanilla Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 32768,
-          "Max": 32768,
-          "Min": 32768,
-          "Average": 32768
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
         },
         "Total Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 32768,
-          "Max": 32768,
-          "Min": 32768,
-          "Average": 32768
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
         },
         "Block Atlas Texture Memory Tier": {
           "Instance Count": 1,
@@ -1445,17 +1436,17 @@
       "fs": {
         "Non-Vanilla Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 32768,
-          "Max": 32768,
-          "Min": 32768,
-          "Average": 32768
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
         },
         "Total Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 32768,
-          "Max": 32768,
-          "Min": 32768,
-          "Average": 32768
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
         },
         "Block Atlas Texture Memory Tier": {
           "Instance Count": 1,
@@ -1480,17 +1471,17 @@
       "fs": {
         "Non-Vanilla Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 32768,
-          "Max": 32768,
-          "Min": 32768,
-          "Average": 32768
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
         },
         "Total Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 32768,
-          "Max": 32768,
-          "Min": 32768,
-          "Average": 32768
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
         },
         "Block Atlas Texture Memory Tier": {
           "Instance Count": 1,
@@ -1515,17 +1506,17 @@
       "fs": {
         "Non-Vanilla Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 32768,
-          "Max": 32768,
-          "Min": 32768,
-          "Average": 32768
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
         },
         "Total Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 32768,
-          "Max": 32768,
-          "Min": 32768,
-          "Average": 32768
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
         },
         "Block Atlas Texture Memory Tier": {
           "Instance Count": 1,
@@ -1550,17 +1541,17 @@
       "fs": {
         "Non-Vanilla Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 32768,
-          "Max": 32768,
-          "Min": 32768,
-          "Average": 32768
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
         },
         "Total Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 32768,
-          "Max": 32768,
-          "Min": 32768,
-          "Average": 32768
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
         },
         "Block Atlas Texture Memory Tier": {
           "Instance Count": 1,
@@ -1634,193 +1625,6 @@
       "gIx": 2
     }
   ],
-  "index": {
-    "items": [
-      "/alex_skin.png",
-      "/manifest.json",
-      "/skins.json",
-      "/steve_skin.png",
-      "/texts/en_US.lang",
-      "/texts/es_ES.lang",
-      "/texts/languages.json"
-    ],
-    "trie": {
-      "alex_skin": {
-        "±": [
-          0
-        ],
-        ".png": [
-          2
-        ]
-      },
-      "/": {
-        "alex_skin.png": [
-          0
-        ],
-        "manifest.json": [
-          1
-        ],
-        "s": {
-          "kins.json": [
-            2
-          ],
-          "teve_skin.png": [
-            3
-          ]
-        },
-        "texts/": {
-          "e": {
-            "n_us.lang": [
-              4
-            ],
-            "s_es.lang": [
-              5
-            ]
-          },
-          "languages.json": [
-            6
-          ]
-        }
-      },
-      "header": [
-        1
-      ],
-      "name": [
-        1
-      ],
-      "s": {
-        "ample": {
-          "±": [
-            1
-          ],
-          "_skin_pack": [
-            2
-          ]
-        },
-        "kin": {
-          "±": [
-            1
-          ],
-          "_pack": [
-            1
-          ],
-          "s": [
-            2
-          ]
-        },
-        "erialize_name": [
-          2
-        ],
-        "teve_skin": {
-          ".png": [
-            2
-          ],
-          "±": [
-            3
-          ]
-        }
-      },
-      "description": [
-        1
-      ],
-      "uuid": [
-        1
-      ],
-      "version": [
-        1
-      ],
-      "m": {
-        "anifest": [
-          1
-        ],
-        "in_engine_version": [
-          1
-        ],
-        "odules": [
-          1
-        ]
-      },
-      "t": {
-        "ype": [
-          1,
-          -1
-        ],
-        "e": {
-          "st": {
-            "ing": [
-              1
-            ],
-            "skin": {
-              "1": [
-                2
-              ],
-              "2": [
-                2
-              ]
-            }
-          },
-          "xture": [
-            2
-          ]
-        }
-      },
-      "550e8400-e29b-41d4-a716-44665544000": {
-        "0": [
-          1
-        ],
-        "1": [
-          1
-        ]
-      },
-      "geometry": {
-        "±": [
-          2
-        ],
-        ".humanoid.custom": {
-          "±": [
-            2
-          ],
-          "slim": [
-            2
-          ]
-        }
-      },
-      "f": {
-        "ormat_version": [
-          1
-        ],
-        "ree": [
-          2
-        ]
-      },
-      "pa": {
-        "ck": [
-          1
-        ],
-        "id": [
-          2
-        ]
-      },
-      "e": {
-        "n_us": [
-          4,
-          6
-        ],
-        "s_es": [
-          5,
-          -1
-        ]
-      },
-      "l": {
-        "ocalization_name": [
-          2
-        ],
-        "anguages": [
-          6
-        ]
-      }
-    }
-  },
   "generatorName": "Minecraft Creator Tools",
   "suite": 0,
   "generatorVersion": "0.2.9"

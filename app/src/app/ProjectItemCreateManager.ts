@@ -19,9 +19,10 @@ import SoundCatalogDefinition from "../minecraft/SoundCatalogDefinition";
 import IFile from "../storage/IFile";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import IGalleryItem, { GalleryItemType } from "./IGalleryItem";
-import ProjectUtilities, { NewEntityTypeAddMode } from "./ProjectUtilities";
+import { NewEntityTypeAddMode } from "./ProjectUtilities";
 import ImageEditsDefinition from "../design/ImageEditsDefinition";
 import IImageEdits from "../design/IImageEdits";
+import ProjectCreateManager from "./ProjectCreateManager";
 
 /// Does create operations for project items.
 
@@ -114,7 +115,7 @@ export default class ProjectItemCreateManager {
     let creationData = itemSeed.creationData;
 
     if (creationData) {
-      creationData = ProjectUtilities.getReplacedCreationDataInObject(project, creationData, itemSeed.name);
+      creationData = ProjectCreateManager.getReplacedCreationDataInObject(project, creationData, itemSeed.name);
     }
 
     if (itemSeed.itemType) {
@@ -716,7 +717,7 @@ export default class ProjectItemCreateManager {
 
   static async addFromGallery(project: Project, newName: string, galleryItem: IGalleryItem) {
     if (galleryItem.type === GalleryItemType.entityType) {
-      await ProjectUtilities.addEntityTypeFromGallery(
+      await ProjectCreateManager.addEntityTypeFromGallery(
         project,
         galleryItem,
         newName,
@@ -726,9 +727,9 @@ export default class ProjectItemCreateManager {
         }
       );
     } else if (galleryItem.type === GalleryItemType.itemType) {
-      await ProjectUtilities.addItemTypeFromGallery(project, galleryItem, newName);
+      await ProjectCreateManager.addItemTypeFromGallery(project, galleryItem, newName);
     } else if (galleryItem.type === GalleryItemType.blockType) {
-      await ProjectUtilities.addBlockTypeFromGallery(project, galleryItem, newName);
+      await ProjectCreateManager.addBlockTypeFromGallery(project, galleryItem, newName);
     } else if (galleryItem.type >= GalleryItemType.spawnLootRecipes && galleryItem.targetType) {
       await ProjectItemCreateManager.createNewItem(project, {
         itemType: galleryItem.targetType,

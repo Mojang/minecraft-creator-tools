@@ -59,7 +59,7 @@ import { SuiteConfigs } from "./RegistrationData";
 import CheckManifestGenerator from "../projectGenerators/checkManifest/CheckManifestGenerator";
 import CheckResourcePackDependenciesGenerator from "../projectGenerators/CheckResourcePackDependenciesGenerator";
 
-export const TestsToExcludeFromDefaultSuite = ["CADDONREQ", "CADDONITEMREQ", "LANGFILES", "SHARING"];
+export const TestsToExcludeFromDefaultSuite = ["CADDONREQ", "CADDONIREQ", "LANGFILES", "SHARING"];
 
 export default class GeneratorRegistrations {
   static managers = [
