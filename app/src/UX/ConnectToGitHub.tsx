@@ -131,13 +131,23 @@ export default class ConnectToGitHub extends Component<IConnectToGitHubProps, IC
               title: "New repository",
               content: (
                 <div key="new" className="ppe-toolArea">
-                  <div>Name:</div>
+                  <div id="cgh-name">Name:</div>
                   <div>
-                    <Input clearable placeholder="Name" onChange={this._handleNewProjectName} />
+                    <Input
+                      aria-labelledby="cgh-name"
+                      clearable
+                      placeholder="Name"
+                      onChange={this._handleNewProjectName}
+                    />
                   </div>
-                  <div>Description:</div>
+                  <div id="cgh-description">Description:</div>
                   <div>
-                    <Input clearable placeholder="Description " onChange={this._handleNewProjectDescription} />
+                    <Input
+                      aria-labelledby="cgh-description"
+                      clearable
+                      placeholder="Description "
+                      onChange={this._handleNewProjectDescription}
+                    />
                   </div>
                 </div>
               ),

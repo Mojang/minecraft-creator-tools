@@ -898,9 +898,13 @@ export default class BlockbenchModel {
       return;
     }
 
-    const pjString = JSON.stringify(this._data, null, 2);
+    Log.assert(this._data !== null, "ITDP");
 
-    this._file.setContent(pjString);
+    if (this._data) {
+      const pjString = JSON.stringify(this._data, null, 2);
+
+      this._file.setContent(pjString);
+    }
   }
 
   async save() {

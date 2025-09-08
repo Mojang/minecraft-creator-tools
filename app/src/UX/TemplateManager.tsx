@@ -265,7 +265,7 @@ export default class TemplateManager extends Component<ITemplateManagerProps, IT
       <div className="tmmn-outer">
         <div className={"tmmn-grid" + outerClassNameModifier}>
           <div className="tmmn-list">
-            <input type="file" title="uploadPack" onChange={this._handleFileUpload} />
+            <input aria-label="Upload pack" type="file" title="uploadPack" onChange={this._handleFileUpload} />
             {additional}
             <RadioGroup
               checkedValue={defaultValue}

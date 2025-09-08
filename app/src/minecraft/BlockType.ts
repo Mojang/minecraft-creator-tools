@@ -520,9 +520,13 @@ export default class BlockType implements IManagedComponentSetItem {
       return;
     }
 
-    const bpString = JSON.stringify(this._behaviorPackData, null, 2);
+    Log.assert(this._behaviorPackData !== null, "BTP");
 
-    this._behaviorPackFile.setContent(bpString);
+    if (this._behaviorPackData) {
+      const bpString = JSON.stringify(this._behaviorPackData, null, 2);
+
+      this._behaviorPackFile.setContent(bpString);
+    }
   }
 
   async load() {

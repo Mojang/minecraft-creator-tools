@@ -351,6 +351,7 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
           <CustomSelectableLabel
             icon={<FontAwesomeIcon icon={icon} className="fa-lg" />}
             theme={this.props.theme}
+            aria-selected={!this.state.newProjectFolder}
             text={"Temporary browser storage"}
             isSelected={!this.state.newProjectFolder}
             isCompact={false}
@@ -366,6 +367,7 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
           <CustomSelectableLabel
             icon={<FontAwesomeIcon icon={faComputer} className="fa-lg" />}
             isSelected={this.state.newProjectFolder !== undefined}
+            aria-selected={this.state.newProjectFolder !== undefined}
             text={this.state.newProjectPath ? this.state.newProjectPath + " folder on device" : "Use device storage"}
             theme={this.props.theme}
             isCompact={false}
@@ -379,7 +381,9 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
       additionalDialogButtons.push(
         <div className="nepro-browserOptions" key="newPath">
           <Toolbar aria-label="Form accesory toolbar overflow menu" items={accessoryToolbar} />
-          <div className="nepro-errorMessage">{this.state.errorMessage}</div>
+          <div className="nepro-errorMessage" aria-live="assertive" aria-atomic="true" aria-relevant="all" role="alert">
+            {this.state.errorMessage}
+          </div>
         </div>
       );
     }
@@ -396,30 +400,39 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
 
     return (
       <div className="nepro-dialog">
-        <div className="nepro-newName">Title:</div>
+        <div className="nepro-newName" id="nepro-newNameLabel">
+          Title:
+        </div>
         <div className="nepro-newNameInput">
           <Input
             clearable
+            aria-labelledby="nepro-newNameLabel"
             placeholder="Name"
             key="newProjectName"
             defaultValue={this.state.newProjectName}
             onChange={this._handleNewProjectNameChange}
           />
         </div>
-        <div className="nepro-newCreator">Creator Name:</div>
+        <div className="nepro-newCreator" id="nepro-newCreatorLabel">
+          Creator Name:
+        </div>
         <div className="nepro-SnewCreatorInput">
           <Input
             clearable
+            aria-labelledby="nepro-newCreatorLabel"
             placeholder="Creator Name"
             key="newCreatorName"
             defaultValue={this.state.newProjectCreator}
             onChange={this._handleNewProjectCreatorChange}
           />
         </div>
-        <div className="nepro-newShortName">Short Name:</div>
+        <div className="nepro-newShortName" id="nepro-newShortNameLabel">
+          Short Name:
+        </div>
         <div className="nepro-newShortNameInput">
           <Input
             clearable
+            aria-labelledby="nepro-newShortNameLabel"
             placeholder={
               this.state.newProjectCreator &&
               this.state.newProjectCreator.length > 0 &&
@@ -433,18 +446,28 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
             onChange={this._handleNewProjectShortNameChange}
           />
         </div>
-        <div className="nepro-newDescription">Description:</div>
+        <div className="nepro-newDescription" id="nepro-newDescriptionLabel">
+          Description:
+        </div>
         <div className="nepro-newDescriptionInput">
           <TextArea
             placeholder={this.state.newProjectName ? this.state.newProjectName : "Description"}
             key="newProjectDescription"
+            aria-labelledby="nepro-newDescriptionLabel"
             defaultValue={this.state.newProjectDescription}
             onChange={this._handleNewProjectDescriptionChange}
           />
         </div>
-        <div className="nepro-newTrack">Target:</div>
+        <div className="nepro-newTrack" id="nepro-newTrackLabel">
+          Target:
+        </div>
         <div className="nepro-newTrackInput">
-          <Dropdown items={targetStrings} defaultValue={targetStrings[0]} onChange={this._handleTrackChange} />
+          <Dropdown
+            aria-labelledby="nepro-newTrackLabel"
+            items={targetStrings}
+            defaultValue={targetStrings[0]}
+            onChange={this._handleTrackChange}
+          />
         </div>
         {additionalDialogButtons}
       </div>

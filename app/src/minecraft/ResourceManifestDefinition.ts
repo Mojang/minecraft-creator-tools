@@ -9,6 +9,7 @@ import Project from "../app/Project";
 import StorageUtilities from "../storage/StorageUtilities";
 import { ProjectItemType } from "../app/IProjectItemData";
 import BehaviorManifestDefinition from "./BehaviorManifestDefinition";
+import Log from "../core/Log";
 
 export default class ResourceManifestDefinition {
   private _file?: IFile;
@@ -273,6 +274,11 @@ export default class ResourceManifestDefinition {
 
   persist() {
     if (this._file === undefined) {
+      return;
+    }
+
+    if (!this.definition) {
+      Log.unexpectedUndefined("RMDP");
       return;
     }
 

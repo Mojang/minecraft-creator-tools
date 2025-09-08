@@ -534,9 +534,16 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
           </div>
           {gitHubFolder}
           <div>
-            <div className="ppe-ghshareableUrl">Shareable URL:</div>
-            <Input inline clearable value={ghUrl} className="ppe-uniqueIdInputValue" />
-
+            <div className="ppe-ghshareableUrl" id="ppe-ghshareableUrlLabel">
+              Shareable URL:
+            </div>
+            <Input
+              aria-labelledby="ppe-ghshareableUrlLabel"
+              inline
+              clearable
+              value={ghUrl}
+              className="ppe-uniqueIdInputValue"
+            />
             <div>
               <a target="_blank" rel="noreferrer" href={ghUrl} className="ppe-link">
                 Link
@@ -675,9 +682,12 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
             maxHeight: height,
           }}
         >
-          <div className="ppe-label ppe-creatorlabel">Creator</div>
+          <div className="ppe-label ppe-creatorlabel" id="ppe-creatorlabel">
+            Creator
+          </div>
           <div className="ppe-creatorinput">
             <Input
+              aria-labelledby="ppe-creatorlabel"
               inline
               clearable
               placeholder={this.props.project.effectiveCreator}
@@ -685,9 +695,12 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
               onChange={this._handleCreatorChanged}
             />
           </div>
-          <div className="ppe-label ppe-namelabel">Name</div>
+          <div className="ppe-label ppe-namelabel" id="ppe-namelabel">
+            Name
+          </div>
           <div className="ppe-nameinput">
             <Input
+              aria-labelledby="ppe-namelabel"
               inline
               clearable
               placeholder="project name"
@@ -695,9 +708,12 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
               onChange={this._handleNameChanged}
             />
           </div>
-          <div className="ppe-label ppe-shortNamelabel">Short Name</div>
+          <div className="ppe-label ppe-shortNamelabel" id="ppe-shortNamelabel">
+            Short Name
+          </div>
           <div className="ppe-shortNameinput">
             <Input
+              aria-labelledby="ppe-shortNamelabel"
               clearable
               placeholder={
                 this.state.creator && this.state.creator.length > 0 && this.state.name && this.state.name.length > 0
@@ -709,39 +725,51 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
               onChange={this._handleShortNameChanged}
             />
           </div>
-          <div className="ppe-label ppe-namespacelabel">Namespace</div>
+          <div className="ppe-label ppe-namespacelabel" id="ppe-namespacelabel">
+            Namespace
+          </div>
           <div className="ppe-namespaceinput">
             <Input
               inline
               clearable
+              aria-labelledby="ppe-namespacelabel"
               placeholder={this.props.project.effectiveShortName}
               defaultValue={this.props.project.defaultNamespace}
               value={this.props.project.defaultNamespace !== "" ? this.state.defaultNamespace : undefined}
               onChange={this._handleDefaultNamespaceChanged}
             />
           </div>
-          <div className="ppe-label ppe-titlelabel">Title</div>
+          <div className="ppe-label ppe-titlelabel" id="ppe-titlelabel">
+            Title
+          </div>
           <div className="ppe-titleinput">
             <Input
               inline
+              aria-labelledby="ppe-titlelabel"
               clearable
               placeholder="project title"
               value={this.state.title}
               onChange={this._handleTitleChanged}
             />
           </div>
-          <div className="ppe-label ppe-descriptionlabel">Description</div>
+          <div className="ppe-label ppe-descriptionlabel" id="ppe-descriptionlabel">
+            Description
+          </div>
           <div className="ppe-descriptioninput">
             <TextArea
+              aria-labelledby="ppe-descriptionlabel"
               placeholder="description"
               value={this.props.project.description}
               onChange={this._handleDescriptionChanged}
             />
           </div>
-          <div className="ppe-label ppe-defaultEditlabel">Default Edit Experience</div>
+          <div className="ppe-label ppe-defaultEditlabel" id="ppe-defaultEditlabel">
+            Default Edit Experience
+          </div>
           <div className="ppe-defaultEditinput">
             <Dropdown
               items={this.editorPreferences}
+              aria-labelledby="=ppe-defaultEditlabel"
               placeholder="Select your edit experience"
               defaultValue={this.editorPreferences[this.props.project.editPreference]}
               onChange={this._handleEditPreferenceChange}
@@ -754,10 +782,13 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
               . You can edit items as Raw JSON using the '...' menu on items in the list.
             </div>
           </div>
-          <div className="ppe-label ppe-scriptLanguagelabel">Script Language</div>
+          <div className="ppe-label ppe-scriptLanguagelabel" id="ppe-scriptLanguagelabel">
+            Script Language
+          </div>
           <div className="ppe-scriptLanguageinput">
             <Dropdown
               items={["JavaScript", "TypeScript"]}
+              aria-labelledby="ppe-scriptLanguagelabel"
               placeholder="Select your language"
               defaultValue={
                 this.props.project.preferredScriptLanguage === ProjectScriptLanguage.javaScript
@@ -767,28 +798,37 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
               onChange={this._handleLanguageChange}
             />
           </div>
-          <div className="ppe-label ppe-tracklabel">Target Minecraft</div>
+          <div className="ppe-label ppe-tracklabel" id="ppe-tracklabel">
+            Target Minecraft
+          </div>
           <div className="ppe-trackinput">
             <Dropdown
+              aria-labelledby="ppe-tracklabel"
               items={targetStrings}
               placeholder="Select which version of Minecraft to target"
               defaultValue={targetStrings[this.props.project.track ? (this.props.project.track as number) + 1 : 0]}
               onChange={this._handleTrackChange}
             />
           </div>
-          <div className="ppe-label ppe-focuslabel">Type</div>
+          <div className="ppe-label ppe-focuslabel" id="ppe-focuslabel">
+            Type
+          </div>
           <div className="ppe-focusinput">
             <Dropdown
+              aria-labelledby="ppe-focuslabel"
               items={ProjectFocusStrings}
               placeholder="Select your focus"
               defaultValue={ProjectFocusStrings[this.props.project.focus]}
               onChange={this._handleFocusChange}
             />
           </div>
-          <div className="ppe-label ppe-scriptVersionlabel">Script Version</div>
+          <div className="ppe-label ppe-scriptVersionlabel" id="ppe-scriptVersionlabel">
+            Script Version
+          </div>
           <div className="ppe-scriptVersioninput">
             <Dropdown
               items={ScriptVersionStrings}
+              aria-labelledby="ppe-scriptVersionlabel"
               placeholder="Select your language"
               defaultValue={
                 this.props.project.scriptVersion === ProjectScriptVersion.latestStable ? "Latest Stable" : "Stable 1.x"
@@ -796,12 +836,15 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
               onChange={this._handleVersionChange}
             />
           </div>
-          <div className="ppe-label ppe-versionlabel">Version</div>
+          <div className="ppe-label ppe-versionlabel" id="ppe-versionlabel">
+            Version
+          </div>
           <div className="ppe-versioninput">
             <div className="ppe-versioninputline">
               <Input
                 inline
                 clearable
+                aria-label="Major version number"
                 required={false}
                 placeholder="major"
                 value={versionMajor + ""}
@@ -810,6 +853,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
               <Input
                 inline
                 clearable
+                aria-label="Minor version number"
                 required={false}
                 placeholder="minor"
                 value={versionMinor + ""}
@@ -818,6 +862,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
               <Input
                 inline
                 clearable
+                aria-label="Patch version number"
                 required={false}
                 placeholder="patch"
                 value={versionPatch + ""}
@@ -846,9 +891,12 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
             </div>
             <h3>Advanced</h3>
             <div key="adv" className="ppe-advgrid">
-              <div className="ppe-label ppe-bpuniqueidlabel">Behavior Pack Unique Id</div>
+              <div className="ppe-label ppe-bpuniqueidlabel" id="ppe-bpuniqueidlabel">
+                Behavior Pack Unique Id
+              </div>
               <div className="ppe-bpuniqueidinput">
                 <Input
+                  aria-labelledby="ppe-bpuniqueidlabel"
                   inline
                   clearable
                   error={behaviorPackUniqueIdIsError}
@@ -862,15 +910,19 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
                   content="Create new"
                   icon={<FontAwesomeIcon icon={faDice} className="fa-lg" />}
                   onClick={this._createNewBehaviorPackUniqueId}
+                  aria-label="Randomly generate a new Behavior Pack Unique Id"
                   iconPosition="before"
                   primary
                 />
               </div>
-              <div className="ppe-label ppe-rpuniqueidlabel">Resource Pack Unique Id</div>
+              <div className="ppe-label ppe-rpuniqueidlabel" id="ppe-rpuniqueidlabel">
+                Resource Pack Unique Id
+              </div>
               <div className="ppe-rpuniqueidinput">
                 <Input
                   inline
                   clearable
+                  aria-labelledby="ppe-rpuniqueidlabel"
                   error={resourcePackUniqueIdIsError}
                   onChange={this._handleResourcePackUuidChanged}
                   value={this.props.project.defaultResourcePackUniqueId}
@@ -882,16 +934,20 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
                   content="Create new"
                   icon={<FontAwesomeIcon icon={faDice} className="fa-lg" />}
                   onClick={this._createNewResourcePackUniqueId}
+                  aria-label="Randomly generate a new Resource Pack Unique Id"
                   iconPosition="before"
                   primary
                 />
               </div>
-              <div className="ppe-label ppe-datauniqueidlabel">Data Unique Id</div>
+              <div className="ppe-label ppe-datauniqueidlabel" id="ppe-datauniqueidlabel">
+                Data Unique Id
+              </div>
               <div className="ppe-datauniqueidinput">
                 <Input
                   inline
                   clearable
                   error={dataUniqueIdIsError}
+                  aria-labelledby="ppe-datauniqueidlabel"
                   onChange={this._handleBehaviorPackUuidChanged}
                   value={this.props.project.defaultDataUniqueId}
                   className="ppe-uniqueIdInputValue"
@@ -902,15 +958,19 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
                   content="Create new"
                   icon={<FontAwesomeIcon icon={faDice} className="fa-lg" />}
                   onClick={this._createNewDataUniqueId}
+                  aria-label="Randomly generate a new Data Unique Id"
                   iconPosition="before"
                   primary
                 />
               </div>
-              <div className="ppe-label ppe-scriptuniqueidlabel">Script Unique Id</div>
+              <div className="ppe-label ppe-scriptuniqueidlabel" id="ppe-scriptuniqueidlabel">
+                Script Unique Id
+              </div>
               <div className="ppe-scriptuniqueidinput">
                 <Input
                   inline
                   clearable
+                  aria-labelledby="ppe-scriptuniqueidlabel"
                   error={scriptUniqueIdIsError}
                   onChange={this._handleBehaviorPackUuidChanged}
                   value={this.props.project.defaultScriptModuleUniqueId}
@@ -922,6 +982,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
                   content="Create new"
                   icon={<FontAwesomeIcon icon={faDice} className="fa-lg" />}
                   onClick={this._createNewScriptUniqueId}
+                  aria-label="Randomly generate a new Script Unique Id"
                   iconPosition="before"
                   primary
                 />

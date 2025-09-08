@@ -8,6 +8,7 @@ import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
 import IResourceAnimationControllerDefinition from "./IAnimationControllerResource";
 import IDefinition from "./IDefinition";
+import Log from "../core/Log";
 
 export default class AnimationControllerResourceDefinition implements IDefinition {
   private _file?: IFile;
@@ -148,9 +149,13 @@ export default class AnimationControllerResourceDefinition implements IDefinitio
       return;
     }
 
-    const bpString = JSON.stringify(this._data, null, 2);
+    Log.assert(this._data !== null, "ITDP");
 
-    this._file.setContent(bpString);
+    if (this._data) {
+      const bpString = JSON.stringify(this._data, null, 2);
+
+      this._file.setContent(bpString);
+    }
   }
 
   async load() {

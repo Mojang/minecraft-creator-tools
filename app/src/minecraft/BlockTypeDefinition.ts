@@ -28,6 +28,7 @@ import TerrainTextureCatalogDefinition from "./TerrainTextureCatalogDefinition";
 import TypeScriptDefinition from "./TypeScriptDefinition";
 import { IBlockTypeCreationData } from "./IBlockTypeCreationData";
 import { ITerrainTextureDataItem } from "./ITerrainTextureCatalog";
+import ProjectUtilities from "../app/ProjectUtilities";
 
 export enum BlockStateType {
   string = 0,
@@ -1142,8 +1143,56 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
     return bt;
   }
 
+  async addCustomComponent(blockTypeItem: ProjectItem, componentName: string) {
+    let componentNameShort = componentName;
+
+    const idx = componentName.indexOf(":");
+    if (idx >= 0) {
+      componentNameShort = componentName.substring(idx + 1);
+    }
+
+    this.ensureComponent(componentName, {});
+
+    const fileNameSugg = Utilities.getHumanifiedObjectNameNoSpaces(componentNameShort);
+
+    await ProjectUtilities.ensureTypeScriptFileWith(
+      blockTypeItem.project,
+      componentName,
+      "new-templates",
+      "blockCustomComponent",
+      fileNameSugg,
+      {
+        "example:newComponentId": componentName,
+        ExampleNewComponent: fileNameSugg,
+        initExampleNew: "init" + fileNameSugg,
+      }
+    );
+
+    await ProjectUtilities.ensureContentInDefaultScriptFile(
+      blockTypeItem.project,
+      "import { init" + fileNameSugg,
+      "import { init" + fileNameSugg + ' } from "./' + fileNameSugg + '"\n',
+      false
+    );
+
+    await ProjectUtilities.ensureContentInDefaultScriptFile(
+      blockTypeItem.project,
+      "init" + fileNameSugg + "()",
+      "init" + fileNameSugg + "();\n",
+      true
+    );
+
+    this.persist();
+  }
+
   persist() {
     if (this._file === undefined) {
+      return;
+    }
+
+    Log.assert(!this._isLoaded || this._wrapper !== null, "BTP");
+
+    if (!this._wrapper) {
       return;
     }
 

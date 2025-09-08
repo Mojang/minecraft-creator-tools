@@ -11,6 +11,7 @@ import { ProjectItemType } from "../app/IProjectItemData";
 import { ProjectFocus } from "../app/IProjectData";
 import ResourceManifestDefinition from "./ResourceManifestDefinition";
 import IDefinition from "./IDefinition";
+import Log from "../core/Log";
 
 export default class BehaviorManifestDefinition implements IDefinition {
   private _file?: IFile;
@@ -326,9 +327,13 @@ export default class BehaviorManifestDefinition implements IDefinition {
       return;
     }
 
-    const pjString = JSON.stringify(this.definition, null, 2);
+    Log.assert(this.definition !== null, "BMDP");
 
-    this._file.setContent(pjString);
+    if (this.definition) {
+      const pjString = JSON.stringify(this.definition, null, 2);
+
+      this._file.setContent(pjString);
+    }
   }
 
   public ensureDefinition(name: string, description: string) {

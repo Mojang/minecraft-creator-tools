@@ -32,12 +32,14 @@ const MESSAGE_FADEOUT_TIME = 20000;
 
 export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaState> {
   scrollArea: React.RefObject<HTMLDivElement>;
+  scrollAreaList: React.RefObject<HTMLUListElement>;
   private _isMountedInternal: boolean = false;
 
   constructor(props: IStatusAreaProps) {
     super(props);
 
     this.scrollArea = React.createRef();
+    this.scrollAreaList = React.createRef();
 
     this._handleKeyPress = this._handleKeyPress.bind(this);
     this._handleStatusAdded = this._handleStatusAdded.bind(this);
@@ -136,6 +138,11 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
     } else {
       this.props.onSetExpandedSize(ProjectStatusAreaMode.expanded);
       this.scrollToListBottom();
+      window.setTimeout(() => {
+        if (this.scrollAreaList && this.scrollAreaList.current) {
+          this.scrollAreaList.current.focus();
+        }
+      }, 10);
     }
   }
 
@@ -399,6 +406,9 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
             <List
               selectable
               items={listItems}
+              autoFocus={true}
+              tabIndex={0}
+              ref={this.scrollAreaList}
               aria-label="List of status items"
               accessibility={selectableListBehavior}
               selectedIndex={index}

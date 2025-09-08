@@ -294,7 +294,7 @@ export const CustomSelectableLabel: React.FC<React.HTMLAttributes<HTMLSpanElemen
         ? props.theme.siteVariables?.colorScheme.brand.background2
         : props.theme.siteVariables?.colorScheme.brand.background1,
       color: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.foreground
+        ? props.theme.siteVariables?.colorScheme.brand.foreground1
         : props.theme.siteVariables?.colorScheme.brand.foreground6,
       fontWeight: props.isSelected ? "bold" : "normal",
       textDecoration: props.isSelected ? "underline" : "none",

@@ -579,6 +579,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         keyAliases[data.value] = this.state.keyAliases[keySplit[1]] ? this.state.keyAliases[keySplit[1]] : keySplit[1];
       }
     }
+    this._setPropertyValue(keySplit[0], arrayOfDataVal);
 
     this.setState({
       objectIncrement: this.state.objectIncrement,
@@ -2866,6 +2867,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           arrayOfDataVal.push({});
         }
 
+        this._setPropertyValue(field.id, arrayOfDataVal);
+
         this._incrementObjectState();
       }
     }
@@ -2888,6 +2891,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
         arrayOfDataVal[newName] = true;
 
+        this._setPropertyValue(field.id, arrayOfDataVal);
+
         this._incrementObjectState();
       }
     }
@@ -2909,6 +2914,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         }
 
         arrayOfDataVal[newName] = "value";
+
+        this._setPropertyValue(field.id, arrayOfDataVal);
 
         this._incrementObjectState();
       }

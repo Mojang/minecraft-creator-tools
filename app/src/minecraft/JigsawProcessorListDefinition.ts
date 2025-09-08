@@ -6,6 +6,7 @@ import IDefinition from "./IDefinition";
 import StorageUtilities from "../storage/StorageUtilities";
 import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
+import Log from "../core/Log";
 
 export interface IJigsawProcessorRule {
   input_predicate: {
@@ -127,6 +128,11 @@ export default class JigsawProcessorListDefinition implements IDefinition {
 
   persist() {
     if (this._file === undefined) {
+      return;
+    }
+
+    if (!this._data) {
+      Log.unexpectedUndefined("ITRDP");
       return;
     }
 

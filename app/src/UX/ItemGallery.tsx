@@ -8,6 +8,7 @@ import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
 import { ThemeInput } from "@fluentui/react-northstar";
 import Project from "../app/Project";
 import ItemTileButton, { ItemTileButtonDisplayMode } from "./ItemTileButton";
+import React from "react";
 import Database from "../minecraft/Database";
 
 export enum GalleryItemCommand {
@@ -37,6 +38,8 @@ interface IItemGalleryState {
 }
 
 export default class ItemGallery extends Component<IItemGalleryProps, IItemGalleryState> {
+  itemButtonRefs: React.RefObject<ItemTileButton>[] = [];
+
   constructor(props: IItemGalleryProps) {
     super(props);
 
@@ -116,40 +119,56 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
     return seed;
   }
 
-  _handleCommand(command: GalleryItemCommand, project: IGalleryItem) {
+  _handleCommand(command: GalleryItemCommand, galItem: IGalleryItem) {
     if (this.props.isSelectable) {
       this.setState({
         loadedProjectHash: this.state.loadedProjectHash,
-        selectedItem: project,
+        selectedItem: galItem,
       });
     }
 
-    this.props.onGalleryItemCommand(command, project);
+    this.props.onGalleryItemCommand(command, galItem);
   }
 
   render() {
     const galleryButtons = [];
     let itemGalleriesElt = <></>;
-
     const gal = this.props.gallery;
-
     let didPushSnippet = false;
     let didPushStarter = false;
 
+    // Helper to handle arrow key navigation
+    const handleArrowNav = (idx: number, dir: -1 | 1) => {
+      const nextIdx = idx + dir;
+      if (nextIdx >= 0 && nextIdx < this.itemButtonRefs.length) {
+        this.itemButtonRefs[nextIdx].current?.selectAndFocus();
+
+        this._handleCommand(GalleryItemCommand.itemSelect, this.itemButtonRefs[nextIdx].current!.props.project);
+      }
+    };
+
+    let buttonsAdded = 0;
+
+    // Build buttons for code snippets
     if (this.props.search || this.state.mode === ItemGalleryMode.codeSnippets) {
       for (let i = 0; i < gal.items.length; i++) {
         const galItem = gal.items[i];
-
         if (
           Database.itemMatchesSearch(galItem, this.props.search) &&
           (this.props.filterOn === undefined || this.props.filterOn.includes(galItem.type)) &&
           (galItem.type === GalleryItemType.codeSample || galItem.type === GalleryItemType.editorCodeSample)
         ) {
           let view = this.props.view;
-
           if (this.state.mode === ItemGalleryMode.codeSnippets) {
             view = ItemTileButtonDisplayMode.smallCodeSample;
           }
+          buttonsAdded++;
+
+          if (this.itemButtonRefs[buttonsAdded - 1] === undefined) {
+            this.itemButtonRefs[buttonsAdded - 1] = React.createRef<ItemTileButton>();
+          }
+
+          const ref = this.itemButtonRefs[buttonsAdded - 1];
 
           galleryButtons.push(
             <ItemTileButton
@@ -161,25 +180,24 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
               isSelected={this.state.selectedItem === galItem}
               displayOpenButton={false}
               carto={this.props.carto}
+              buttonIndex={buttonsAdded - 1}
               project={galItem}
+              ref={ref}
+              tabIndex={0}
+              onArrowNav={(index, dir) => handleArrowNav(index, dir)}
             />
           );
-
           didPushSnippet = true;
         }
       }
-
       let binClassName = "ig-binWrap";
-
       if (this.props.view === ItemTileButtonDisplayMode.smallImage) {
         binClassName += " ig-binWrap-small";
       }
-
       if (!didPushSnippet && !didPushStarter) {
         galleryButtons.push(<div className="ig-notFound">No snippets found.</div>);
         binClassName += " ig-binWrap-empty";
       }
-
       itemGalleriesElt = (
         <div
           className={binClassName}
@@ -193,10 +211,10 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
       );
     }
 
+    // Build buttons for starters
     if (this.props.search || this.state.mode === ItemGalleryMode.starters) {
       for (let i = 0; i < gal.items.length; i++) {
         const galItem = gal.items[i];
-
         if (
           Database.itemMatchesSearch(galItem, this.props.search) &&
           (this.props.filterOn === undefined || this.props.filterOn.includes(galItem.type)) &&
@@ -205,7 +223,13 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
             galItem.type === GalleryItemType.itemType)
         ) {
           const displayOpen = this.state.loadedProjectHash.indexOf("[" + this.getGalleryHash(galItem) + "]") >= 0;
+          buttonsAdded++;
 
+          if (this.itemButtonRefs[buttonsAdded - 1] === undefined) {
+            this.itemButtonRefs[buttonsAdded - 1] = React.createRef<ItemTileButton>();
+          }
+
+          const ref = this.itemButtonRefs[buttonsAdded - 1];
           galleryButtons.push(
             <ItemTileButton
               key={"galitem" + i}
@@ -217,13 +241,15 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
               displayOpenButton={displayOpen}
               carto={this.props.carto}
               project={galItem}
+              ref={ref}
+              buttonIndex={buttonsAdded - 1}
+              tabIndex={0}
+              onArrowNav={(index, dir) => handleArrowNav(index, dir)}
             />
           );
-
           didPushStarter = true;
         }
       }
-
       if (galleryButtons.length > 0) {
         itemGalleriesElt = (
           <div
@@ -232,6 +258,7 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
               backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
               borderColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
             }}
+            tabIndex={0}
             role="radiogroup"
           >
             {galleryButtons}
@@ -239,7 +266,6 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
         );
       }
     }
-
     return <div className="ig-outer">{itemGalleriesElt}</div>;
   }
 }

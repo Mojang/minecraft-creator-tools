@@ -81,9 +81,13 @@ export default class PrettierRcConfig {
       return;
     }
 
-    const prettierRcJsonString = Utilities.consistentStringify(this.definition);
+    Log.assert(this.definition !== null, "PRCP");
 
-    this._file.setContent(prettierRcJsonString);
+    if (this.definition) {
+      const prettierRcJsonString = Utilities.consistentStringify(this.definition);
+
+      this._file.setContent(prettierRcJsonString);
+    }
   }
 
   async save() {

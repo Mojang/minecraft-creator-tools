@@ -8,6 +8,7 @@ import IVsCodeLaunch, { IVsCodeConfiguration } from "./IVsCodeLaunch";
 import StorageUtilities from "../storage/StorageUtilities";
 import Project from "../app/Project";
 import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition";
+import Log from "../core/Log";
 
 export default class VsCodeLaunchDefinition {
   private _file?: IFile;
@@ -203,9 +204,13 @@ export default class VsCodeLaunchDefinition {
       return;
     }
 
-    const launchJsonString = JSON.stringify(this.definition, null, 2);
+    Log.assert(this.definition !== null, "VSLP");
 
-    this._file.setContent(launchJsonString);
+    if (this.definition) {
+      const launchJsonString = JSON.stringify(this.definition, null, 2);
+
+      this._file.setContent(launchJsonString);
+    }
   }
 
   async save() {

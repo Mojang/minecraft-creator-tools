@@ -3,7 +3,7 @@
     "description": "Starts a very basic block custom component",
     "prefix": ["mc"],
     "body": [
-      "import { world, BlockCustomComponent, BlockComponentStepOnEvent, BlockPermutation } from '@minecraft/server';",
+      "import { world, system, BlockCustomComponent, BlockComponentStepOnEvent, BlockPermutation } from '@minecraft/server';",
       "",
       "export default class ExampleNewComponent implements BlockCustomComponent {",
       "  constructor() {",
@@ -16,7 +16,7 @@
       "}",
       "",
       "export function initExampleNew() {",
-      "  world.beforeEvents.worldInitialize.subscribe(initEvent => {",
+      "  system.beforeEvents.startup.subscribe(initEvent => {",
       "      initEvent.blockComponentRegistry.registerCustomComponent('example:newComponentId', new ExampleNewComponent());",
       "  });",
       "}"
@@ -26,7 +26,7 @@
     "description": "Starts a very basic item custom component",
     "prefix": ["mc"],
     "body": [
-      "import { world, ItemCustomComponent, ItemComponentUseEvent } from '@minecraft/server';",
+      "import { world, system, ItemCustomComponent, ItemComponentUseEvent } from '@minecraft/server';",
       "",
       "export default class ExampleNewComponent implements ItemCustomComponent {",
       "  constructor() {",
@@ -39,7 +39,7 @@
       "}",
       "",
       "export function initExampleNew() {",
-      "  world.beforeEvents.worldInitialize.subscribe(initEvent => {",
+      "  system.beforeEvents.startup.subscribe(initEvent => {",
       "      initEvent.itemComponentRegistry.registerCustomComponent('example:newComponentId', new ExampleNewComponent());",
       "  });",
       "}"

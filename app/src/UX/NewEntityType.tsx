@@ -127,6 +127,7 @@ export default class NewEntityType extends Component<INewEntityTypeProps, INewEn
         <div className="net-optionsArea">
           <div>
             <Input
+              aria-label="Entity type name"
               value={inputText}
               defaultValue={inputText}
               placeholder={this.state.selectedEntityType ? this.state.selectedEntityType.id : "myMobName"}

@@ -276,10 +276,13 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
       fileArea = (
         <div>
           <div className="iitem-optionsArea">
-            <div className="iitem-nameLabel">File Name</div>
+            <div className="iitem-nameLabel" id="iitem-nameLabel">
+              File Name
+            </div>
             <div className="iitem-nameArea">
               <Input
                 value={this.state.name}
+                aria-labelledby="iitem-nameLabel"
                 defaultValue={this.props.data.fileSource ? this.props.data.fileSource.name : this.state.name}
                 placeholder={ProjectItemUtilities.getNewItemName(this.props.data.itemType) + " name"}
                 onChange={this._handleNameChanged}

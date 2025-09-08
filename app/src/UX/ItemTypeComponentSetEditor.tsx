@@ -141,6 +141,10 @@ export default class ItemTypeComponentSetEditor extends Component<
       const component = components[i];
 
       if (typeof component === "object" && component.id !== undefined) {
+        if (!component.id.startsWith("minecraft:")) {
+          continue;
+        }
+
         const formId = this.getFormIdFromComponentId(component.id);
 
         if (!Database.isFormLoaded("item_components", formId)) {
@@ -275,6 +279,18 @@ export default class ItemTypeComponentSetEditor extends Component<
         const component = components[i];
 
         if (typeof component === "object" && component.id !== undefined) {
+          if (
+            !component.id.startsWith("minecraft:") &&
+            !component.id.startsWith("tag:") &&
+            component.id === this.state?.activeComponentId
+          ) {
+            componentForms.push(
+              <div className="icose-noeditor">(No editor is available for the {component.id} custom component.)</div>
+            );
+
+            continue;
+          }
+
           const isVisual = ItemTypeDefinition.isVisualComponent(component.id);
 
           if (isVisual === this.props.isVisualsMode) {

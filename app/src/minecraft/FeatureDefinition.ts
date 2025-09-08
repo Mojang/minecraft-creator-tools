@@ -32,6 +32,7 @@ import MinecraftUnderwaterCaveCarverFeature from "./json/features/MinecraftUnder
 import MinecraftVegetationPatchFeature from "./json/features/MinecraftVegetationPatchFeature";
 import MinecraftWeightedRandomFeature from "./json/features/MinecraftWeightedRandomFeature";
 import MinecraftFeatureBase from "./jsoncommon/MinecraftFeatureBase";
+import Log from "../core/Log";
 
 export const FeatureTypes = [
   "aggregate_feature",
@@ -212,9 +213,13 @@ export default class FeatureDefinition implements IDefinition {
       return;
     }
 
-    const bpString = JSON.stringify(this._data, null, 2);
+    Log.assert(this._data !== null, "FDP");
 
-    this._file.setContent(bpString);
+    if (this._data) {
+      const bpString = JSON.stringify(this._data, null, 2);
+
+      this._file.setContent(bpString);
+    }
   }
 
   async load() {

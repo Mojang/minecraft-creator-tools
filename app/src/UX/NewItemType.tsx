@@ -129,6 +129,7 @@ export default class NewItemType extends Component<INewItemTypeProps, INewItemTy
         <div className="net-optionsArea">
           <div>
             <Input
+              aria-label="Item type name"
               value={inputText}
               defaultValue={inputText}
               placeholder={this.state.selectedItemType ? this.state.selectedItemType.id : "myMobName"}

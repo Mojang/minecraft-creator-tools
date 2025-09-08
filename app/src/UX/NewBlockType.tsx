@@ -99,7 +99,12 @@ export default class NewBlockType extends Component<INewBlockTypeProps, INewBloc
       <div className="nbt-outer">
         <div className="nbt-optionsArea">
           <div>
-            <Input value={inputText} defaultValue={inputText} onChange={this._handleNameChanged} />
+            <Input
+              aria-label="Block type name"
+              value={inputText}
+              defaultValue={inputText}
+              onChange={this._handleNameChanged}
+            />
           </div>
         </div>
         <div

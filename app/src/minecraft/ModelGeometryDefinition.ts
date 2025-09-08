@@ -244,6 +244,11 @@ export default class ModelGeometryDefinition {
       return;
     }
 
+    if (!this._data) {
+      Log.unexpectedUndefined("MGDP");
+      return;
+    }
+
     const pjString = JSON.stringify(this._data, null, 2);
 
     this._file.setContent(pjString);

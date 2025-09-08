@@ -5,6 +5,7 @@ import IFile from "../storage/IFile";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import { IMaterialWrapper } from "./IMaterial";
+import Log from "../core/Log";
 
 export default class Material {
   private _file?: IFile;
@@ -66,6 +67,11 @@ export default class Material {
 
   persist() {
     if (this._file === undefined) {
+      return;
+    }
+
+    if (!this.definition) {
+      Log.unexpectedUndefined("MATP");
       return;
     }
 

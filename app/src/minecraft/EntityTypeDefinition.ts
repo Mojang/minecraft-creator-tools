@@ -988,6 +988,11 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     if (this._file === undefined) {
       return;
     }
+    Log.assert(!this._isLoaded || this._wrapper !== null, "ETDP");
+
+    if (!this._wrapper) {
+      return;
+    }
 
     const bpString = Utilities.consistentStringify(this._wrapper);
 

@@ -11,6 +11,7 @@ import { ProjectItemType } from "../app/IProjectItemData";
 import ItemTypeDefinition from "./ItemTypeDefinition";
 import Utilities from "../core/Utilities";
 import Database from "./Database";
+import Log from "../core/Log";
 
 export default class LootTableBehaviorDefinition {
   private _file?: IFile;
@@ -113,6 +114,11 @@ export default class LootTableBehaviorDefinition {
 
   persist() {
     if (this._file === undefined) {
+      return;
+    }
+
+    if (!this.data) {
+      Log.unexpectedUndefined("ITRDP");
       return;
     }
 

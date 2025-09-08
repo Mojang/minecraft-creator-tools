@@ -78,6 +78,11 @@ export default class JsonUIResourceDefinition {
       return;
     }
 
+    if (!this.jsonUIScreen) {
+      Log.unexpectedUndefined("ITRDP");
+      return;
+    }
+
     const defString = JSON.stringify(this.jsonUIScreen, null, 2);
 
     this._file.setContent(defString);

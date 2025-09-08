@@ -50,11 +50,12 @@ export default class SetName extends Component<ISetNameProps, ISetNameState> {
             style={{
               borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
             }}
+            id="setna-label-name"
           >
             Name:
           </div>
           <div className="setna-name">
-            <Input onChange={this._handleValueSelected} />
+            <Input aria-labelledby="setna-label-name" onChange={this._handleValueSelected} />
           </div>
         </div>
       </div>

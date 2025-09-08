@@ -7,6 +7,7 @@ import { IAddonManifestHeader, IDesignPackManifest } from "./IAddonManifest";
 import Utilities from "../core/Utilities";
 import Project from "../app/Project";
 import StorageUtilities from "../storage/StorageUtilities";
+import Log from "../core/Log";
 
 export default class DesignManifestDefinition {
   private _file?: IFile;
@@ -145,9 +146,13 @@ export default class DesignManifestDefinition {
       return;
     }
 
-    const pjString = JSON.stringify(this.definition, null, 2);
+    Log.assert(this.definition !== null, "DMDP");
 
-    this._file.setContent(pjString);
+    if (this.definition) {
+      const pjString = JSON.stringify(this.definition, null, 2);
+
+      this._file.setContent(pjString);
+    }
   }
 
   public ensureDefinition(name: string, description: string) {

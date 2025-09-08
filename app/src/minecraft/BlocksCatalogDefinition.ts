@@ -305,9 +305,13 @@ export default class BlocksCatalogDefinition {
       return;
     }
 
-    const defString = JSON.stringify(this.blocksCatalog, null, 2);
+    Log.assert(this.blocksCatalog !== null, "ITDP");
 
-    this._file.setContent(defString);
+    if (this.blocksCatalog) {
+      const defString = JSON.stringify(this.blocksCatalog, null, 2);
+
+      this._file.setContent(defString);
+    }
   }
 
   async load() {

@@ -8,6 +8,7 @@ import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
 import JigsawProcessorListDefinition from "./JigsawProcessorListDefinition";
+import Log from "../core/Log";
 
 export interface IJigsawTemplatePoolElement {
   element: {
@@ -160,6 +161,11 @@ export default class JigsawTemplatePoolDefinition implements IDefinition {
 
   persist() {
     if (this._file === undefined) {
+      return;
+    }
+
+    if (!this._data) {
+      Log.unexpectedUndefined("ITRDP");
       return;
     }
 

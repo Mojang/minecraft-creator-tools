@@ -54,6 +54,17 @@
   padding-top: 6px;
 }
 
+.pg-tabButton-selected {
+  border-top-left-radius: 3px !important;
+  border-top-right-radius: 3px !important;
+  box-shadow: none !important;
+  height: 32px;
+  padding: 20px !important;
+  text-decoration: underline;
+  text-underline-offset: 3px; 
+  text-decoration-thickness: 2px;
+}
+
 .pg-tabButton {
   border-top-left-radius: 3px !important;
   border-top-right-radius: 3px !important;

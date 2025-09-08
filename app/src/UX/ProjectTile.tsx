@@ -269,7 +269,7 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
                   }}
                 >
                   {additionalButtons}
-                  <Button primary onClick={this._projectClick}>
+                  <Button primary onClick={this._projectClick} title={"Open " + proj.title}>
                     <span
                       style={{
                         color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
@@ -312,11 +312,12 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
                     href={ghurl}
                     target="_blank"
                     rel="noreferrer noopener"
+                    title={`On GitHub at ${proj.gitHubOwner}/${proj.gitHubRepoName}`}
                     style={{
                       color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
                     }}
                   >
-                    {proj.gitHubOwner}/{proj.gitHubRepoName}
+                    GitHub project
                   </a>
                 </div>
               </div>

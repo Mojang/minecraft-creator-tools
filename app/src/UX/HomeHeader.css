@@ -18,7 +18,7 @@
 }
 
 .hhdr-sublink {
-  line-height: 5px;
+  line-height: normal;
   padding-bottom: 10px;
   font-size: small;
   color: white;
@@ -54,7 +54,7 @@
 .hhdr-image-outer {
   display: inline-block;
   margin: 0px;
-  line-height: 1;
+  line-height: 0.9 !important;
   background-size: cover;
 }
 

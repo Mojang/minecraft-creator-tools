@@ -628,6 +628,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
         icon: (
           <SummaryTabLabel
             theme={this.props.theme}
+            role="tab"
+            aria-selected={this.state.viewMode === ProjectInfoDisplayMode.summary}
             isSelected={this.state.viewMode === ProjectInfoDisplayMode.summary}
             isCompact={width < 1100}
           />
@@ -641,6 +643,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
         icon: (
           <InfoTabLabel
             theme={this.props.theme}
+            role="tab"
+            aria-selected={this.state.viewMode === ProjectInfoDisplayMode.info}
             isSelected={this.state.viewMode === ProjectInfoDisplayMode.info}
             isCompact={width < 1100}
           />
@@ -731,6 +735,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
           <ErrorFilterLabel
             theme={this.props.theme}
             isSelected={this.state.displayErrors}
+            role="tab"
+            aria-selected={this.state.viewMode === ProjectInfoDisplayMode.summary}
             value={countsByType[InfoItemType.error] + countsByType[InfoItemType.internalProcessingError]}
             isCompact={width < 1116}
           />
@@ -1149,10 +1155,13 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             <div className="pid-topToolbar">
               <Toolbar aria-label="Actions toolbar overflow menu" items={topToolbarItems} />
             </div>
-            <div className="pid-suiteTitle">Suite:</div>
+            <div className="pid-suiteTitle" id="pid-suiteTitle">
+              Suite:
+            </div>
             <div className="pid-suiteDropdown">
               <Dropdown
                 items={SuiteTitles}
+                aria-labelledby="pid-suiteTitle"
                 defaultValue={SuiteTitles[this.state.activeSuite]}
                 key="testSuiteDropdown"
                 onChange={this._handleSuiteChange}

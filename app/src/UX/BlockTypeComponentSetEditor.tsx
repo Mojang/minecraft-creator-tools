@@ -203,18 +203,18 @@ export default class BlockTypeComponentSetEditor extends Component<
 
     if (formName.startsWith("minecraft:")) {
       formName = EntityTypeDefinition.getFormIdFromComponentId(id);
-    }
 
-    let form = Database.getForm("block", formName);
+      let form = Database.getForm("block", formName);
 
-    if (!form) {
-      form = await Database.ensureFormLoaded("block", formName);
-    }
+      if (!form) {
+        form = await Database.ensureFormLoaded("block", formName);
+      }
 
-    if (form !== undefined) {
-      const newDataObject = DataFormUtilities.generateDefaultItem(form);
+      if (form !== undefined) {
+        const newDataObject = DataFormUtilities.generateDefaultItem(form);
 
-      this.props.componentSet.addComponent(id, newDataObject);
+        this.props.componentSet.addComponent(id, newDataObject);
+      }
     }
   }
 
@@ -235,8 +235,10 @@ export default class BlockTypeComponentSetEditor extends Component<
       if (typeof component === "object" && component.id !== undefined) {
         const formId = this.getFormIdFromComponentId(component.id);
 
-        if (!Database.isFormLoaded("block", formId)) {
-          await Database.ensureFormLoaded("block", formId);
+        if (formId.startsWith("minecraft:")) {
+          if (!Database.isFormLoaded("block", formId)) {
+            await Database.ensureFormLoaded("block", formId);
+          }
         }
       }
     }
@@ -470,9 +472,6 @@ export default class BlockTypeComponentSetEditor extends Component<
 
           if (isVisual === this.props.isVisualsMode) {
             const formId = component.id.replace(/:/gi, "_").replace(/\./gi, "_");
-
-            const form = Database.getForm("block", formId);
-
             componentList.push({
               key: component.id,
               content: (
@@ -488,7 +487,23 @@ export default class BlockTypeComponentSetEditor extends Component<
               ),
             });
 
-            if (component && component.id) {
+            if (!component.id.startsWith("minecraft:") && !component.id.startsWith("tag:")) {
+              if (component.id === this.state?.activeComponentId) {
+                componentForms.push(
+                  <div className="bcose-noeditor">
+                    (No editor is available for the {component.id} custom component.)
+                  </div>
+                );
+              }
+            } else if (component.id.startsWith("tag:")) {
+              if (component.id === this.state?.activeComponentId) {
+                componentForms.push(
+                  <div className="bcose-noeditor">(No editor is available for the {component.id} custom tag.)</div>
+                );
+              }
+            } else {
+              const form = Database.getForm("block", formId);
+
               if (form !== undefined && component.id === this.state?.activeComponentId) {
                 selectedIndex = curItem + componentOffset;
                 componentForms.push(
@@ -516,6 +531,7 @@ export default class BlockTypeComponentSetEditor extends Component<
                 );
               }
             }
+
             curItem++;
           }
         }

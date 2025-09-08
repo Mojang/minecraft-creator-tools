@@ -3,6 +3,7 @@ import { EventDispatcher, IEventHandler } from "ste-events";
 import IFormDefinition from "./IFormDefinition";
 import StorageUtilities from "../storage/StorageUtilities";
 import Utilities from "../core/Utilities";
+import Log from "../core/Log";
 
 export default class DataFormFile {
   private _file?: IFile;
@@ -84,11 +85,15 @@ export default class DataFormFile {
     if (this._file === undefined) {
       return;
     }
+    
+    Log.assert(this.formDefinition !== null, "DFFP");
 
-    const fdString = Utilities.consistentStringify(this.formDefinition);
+    if (this.formDefinition) {
+      const fdString = Utilities.consistentStringify(this.formDefinition);
 
-    if (fdString) {
-      this._file.setContent(fdString);
+      if (fdString) {
+        this._file.setContent(fdString);
+      }
     }
   }
 

@@ -103,6 +103,11 @@ export default class MusicDefinitionCatalogDefinition implements IDefinition {
       return;
     }
 
+    if (!this._data) {
+      Log.unexpectedUndefined("MUSP");
+      return;
+    }
+
     const defString = JSON.stringify(this._data, null, 2);
 
     this._file.setContent(defString);

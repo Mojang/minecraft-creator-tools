@@ -66,23 +66,30 @@ export default class SetNamespacedId extends Component<ISetNamespacedIdProps, IS
             style={{
               borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
             }}
+            id="setnaid-label-name"
           >
             Name:
           </div>
           <div className="setnaid-name">
-            <Input onChange={this._handleNameSelected} defaultValue={this.props.defaultName} />
+            <Input
+              aria-labelledby="setnaid-label-name"
+              onChange={this._handleNameSelected}
+              defaultValue={this.props.defaultName}
+            />
           </div>
           <div
             className="setnaid-namespaceLabel"
             style={{
               borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
             }}
+            id="setnaid-label-namespace"
           >
             <div>Namespace</div>
             <div>(should likely be {this.props.defaultNamespace})</div>
           </div>
           <div className="setnaid-namespace">
             <Input
+              aria-labelledby="setnaid-label-namespace"
               onChange={this._handleNamespaceSelected}
               defaultValue={this.props.defaultNamespace}
               style={{

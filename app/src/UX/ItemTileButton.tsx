@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import "./ItemTileButton.css";
 import IAppProps from "./IAppProps";
 import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
@@ -20,11 +20,16 @@ interface IItemTileButtonProps extends IAppProps {
   isSelectable?: boolean;
   isSelected?: boolean;
   onGalleryItemCommand: (command: GalleryItemCommand, project: IGalleryItem) => void;
+  buttonIndex: number;
+  tabIndex?: number;
+  onArrowNav?: (index: number, dir: -1 | 1) => void;
 }
 
 interface IItemTileButtonState {}
 
 export default class ItemTileButton extends Component<IItemTileButtonProps, IItemTileButtonState> {
+  buttonRef = React.createRef<HTMLButtonElement>();
+
   constructor(props: IItemTileButtonProps) {
     super(props);
 
@@ -41,6 +46,12 @@ export default class ItemTileButton extends Component<IItemTileButtonProps, IIte
   _projectClick() {
     if (this.props.onGalleryItemCommand !== undefined) {
       this.props.onGalleryItemCommand(GalleryItemCommand.itemSelect, this.props.project);
+    }
+  }
+
+  selectAndFocus() {
+    if (this.buttonRef && this.buttonRef.current) {
+      this.buttonRef.current.focus();
     }
   }
 
@@ -163,6 +174,17 @@ export default class ItemTileButton extends Component<IItemTileButtonProps, IIte
         onClick={this._projectClick}
         role="radio"
         aria-checked={this.props.isSelected}
+        tabIndex={this.props.tabIndex ?? 0}
+        ref={this.buttonRef}
+        onKeyDown={(e: React.KeyboardEvent<HTMLButtonElement>) => {
+          if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+            e.preventDefault();
+            this.props.onArrowNav && this.props.onArrowNav(this.props.buttonIndex, -1);
+          } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+            e.preventDefault();
+            this.props.onArrowNav && this.props.onArrowNav(this.props.buttonIndex, 1);
+          }
+        }}
       >
         <div
           className="itbi-button"

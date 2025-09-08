@@ -10,6 +10,7 @@ import IAnimationControllerBehaviorWrapper, {
   IAnimationControllerBehaviorStateWrapper,
 } from "./IAnimationControllerBehavior";
 import IDefinition from "./IDefinition";
+import Log from "../core/Log";
 
 export default class AnimationControllerBehaviorDefinition implements IDefinition {
   private _file?: IFile;
@@ -154,9 +155,13 @@ export default class AnimationControllerBehaviorDefinition implements IDefinitio
       return;
     }
 
-    const bpString = JSON.stringify(this.data, null, 2);
+    Log.assert(this.data !== null, "ITDP");
 
-    this._file.setContent(bpString);
+    if (this.data) {
+      const bpString = JSON.stringify(this.data, null, 2);
+
+      this._file.setContent(bpString);
+    }
   }
 
   async load() {

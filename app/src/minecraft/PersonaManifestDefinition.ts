@@ -7,6 +7,7 @@ import { IAddonManifestHeader, IPersonaManifest } from "./IAddonManifest";
 import Utilities from "../core/Utilities";
 import Project from "../app/Project";
 import StorageUtilities from "../storage/StorageUtilities";
+import Log from "../core/Log";
 
 export default class PersonaManifestDefinition {
   private _file?: IFile;
@@ -142,6 +143,11 @@ export default class PersonaManifestDefinition {
 
   persist() {
     if (this._file === undefined) {
+      return;
+    }
+
+    if (!this.definition) {
+      Log.unexpectedUndefined("ITRDP");
       return;
     }
 

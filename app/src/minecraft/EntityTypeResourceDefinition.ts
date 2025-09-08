@@ -407,9 +407,13 @@ export default class EntityTypeResourceDefinition {
       return;
     }
 
-    const defString = Utilities.consistentStringify(this._dataWrapper);
+    Log.assert(this._dataWrapper !== null, "ETRDP");
 
-    this._file.setContent(defString);
+    if (this._dataWrapper) {
+      const defString = Utilities.consistentStringify(this._dataWrapper);
+
+      this._file.setContent(defString);
+    }
   }
 
   async load() {

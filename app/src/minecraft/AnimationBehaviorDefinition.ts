@@ -8,6 +8,7 @@ import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
 import IAnimationBehaviorWrapper, { IAnimationBehaviorTimelineWrapper } from "./IAnimationBehavior";
 import IDefinition from "./IDefinition";
+import Log from "../core/Log";
 
 export default class AnimationBehaviorDefinition implements IDefinition {
   private _file?: IFile;
@@ -148,9 +149,13 @@ export default class AnimationBehaviorDefinition implements IDefinition {
       return;
     }
 
-    const bpString = JSON.stringify(this.data, null, 2);
+    Log.assert(this.data !== null, "ITDP");
 
-    this._file.setContent(bpString);
+    if (this.data) {
+      const bpString = JSON.stringify(this.data, null, 2);
+
+      this._file.setContent(bpString);
+    }
   }
 
   async load() {

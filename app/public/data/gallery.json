@@ -204,7 +204,7 @@
       "type": 2
     },
     {
-      "title": "Block with Custom Block State",
+      "title": "Block with Custom State",
       "description": "The fish bowl is a simple block with custom state.",
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-samples",

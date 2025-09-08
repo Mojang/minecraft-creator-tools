@@ -265,7 +265,11 @@ export default class BiomeResourceDefinition implements IManagedComponentSetItem
       return;
     }
 
-    this._file.setContent(JSON.stringify(this._data, null, 2));
+    Log.assert(this._data !== null, "ITDP");
+
+    if (this._data) {
+      this._file.setContent(JSON.stringify(this._data, null, 2));
+    }
   }
 
   async load() {

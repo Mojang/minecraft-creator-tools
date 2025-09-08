@@ -14,13 +14,13 @@ import Carto from "../app/Carto";
 import Project from "../app/Project";
 import IManagedComponentSetItem from "../minecraft/IManagedComponentSetItem";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
-import ProjectUtilities from "../app/ProjectUtilities";
 import Utilities from "../core/Utilities";
 import { ProjectItemType } from "../app/IProjectItemData";
 import JavaScriptEditor, { ScriptEditorRole } from "./JavaScriptEditor";
 import IPersistable from "./IPersistable";
 import { ProjectScriptLanguage } from "../app/IProjectData";
 import SetNamespacedId from "./SetNamespacedId";
+import ProjectItemRelations from "../app/ProjectItemRelations";
 
 interface IItemTypeActionEditorProps extends IFileProps {
   isVisualsMode: boolean;
@@ -64,14 +64,6 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
     this._onUpdatePreferredTextSize = this._onUpdatePreferredTextSize.bind(this);
 
     const selectedAction: string | undefined = undefined;
-    const comp = this.props.itemTypeItem.getComponent("minecraft:custom_components");
-
-    if (comp) {
-      const sarr = comp.getData();
-
-      if (sarr && Array.isArray(sarr) && sarr.length > 0) {
-      }
-    }
 
     this.state = {
       fileToEdit: props.file,
@@ -173,71 +165,18 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
   }
 
   async _addAction(actionName: string) {
-    const comp = this.props.itemTypeItem.ensureComponent("minecraft:custom_components", []);
+    await this.props.itemTypeItem.addCustomComponent(this.props.item, actionName);
 
-    if (comp) {
-      let sarr = comp.getData();
+    await ProjectItemRelations.calculateForItem(this.props.item);
 
-      if (!sarr) {
-        sarr = [actionName];
-
-        comp.setData(sarr);
-      } else if (!Array.isArray(sarr)) {
-        if (typeof sarr === "string") {
-          sarr = [sarr, actionName];
-        } else {
-          sarr = [actionName];
-        }
-
-        comp.setData(sarr);
-      } else {
-        (sarr as string[]).push(actionName);
-      }
-
-      let actionNameShort = actionName;
-
-      const idx = actionName.indexOf(":");
-      if (idx >= 0) {
-        actionNameShort = actionName.substring(idx + 1);
-      }
-
-      const fileNameSugg = Utilities.getHumanifiedObjectNameNoSpaces(actionNameShort);
-
-      await ProjectUtilities.ensureTypeScriptFileWith(
-        this.props.project,
-        actionName,
-        "new-templates",
-        "itemCustomComponent",
-        fileNameSugg,
-        {
-          "example:newComponentId": actionName,
-          ExampleNewComponent: fileNameSugg,
-          initExampleNew: "init" + fileNameSugg,
-        }
-      );
-
-      const defaultScriptFile = await this.props.project.getDefaultScriptsFile();
-
-      if (defaultScriptFile) {
-        if (!defaultScriptFile.isContentLoaded) {
-          await defaultScriptFile.loadContent();
-        }
-
-        if (typeof defaultScriptFile.content === "string" && defaultScriptFile.content.length > 0) {
-          if (defaultScriptFile.content.indexOf("init" + fileNameSugg) <= 0) {
-            let newContent = "import { init" + fileNameSugg + ' } from "./' + fileNameSugg + '"\n';
-
-            newContent += defaultScriptFile.content + "\ninit" + fileNameSugg + "();\n";
-
-            defaultScriptFile.setContent(newContent);
-
-            await defaultScriptFile.saveContent();
-          }
-        }
-      }
-
-      this.forceUpdate();
-    }
+    this.setState({
+      fileToEdit: this.state.fileToEdit,
+      selectedActionComponentId: this.state.selectedActionComponentId,
+      dialogMode: ItemTypeActionEditorDialogMode.none,
+      selectedItem: this.state.selectedItem,
+      selectedNewActionName: this.state.selectedNewActionName,
+      isLoaded: false,
+    });
   }
 
   setNewName(newName: string) {
@@ -400,22 +339,18 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
 
       const toolbarItems = [];
 
-      const comp = this.props.itemTypeItem.getComponent("minecraft:custom_components");
+      const compIdArr = this.props.itemTypeItem.getCustomComponentIds();
 
-      if (comp) {
-        const sarr = comp.getData();
-
-        if (sarr && Array.isArray(sarr) && sarr.length > 0) {
-          dropdownArea = (
-            <Dropdown
-              items={sarr}
-              placeholder="Select an action component"
-              defaultValue={this.state.selectedActionComponentId}
-              value={this.state.selectedActionComponentId}
-              onChange={this._handleActionChange}
-            />
-          );
-        }
+      if (compIdArr && Array.isArray(compIdArr) && compIdArr.length > 0) {
+        dropdownArea = (
+          <Dropdown
+            items={compIdArr}
+            placeholder="Select an action component"
+            defaultValue={this.state.selectedActionComponentId}
+            value={this.state.selectedActionComponentId}
+            onChange={this._handleActionChange}
+          />
+        );
       }
 
       toolbarItems.push({

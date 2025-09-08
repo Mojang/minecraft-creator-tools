@@ -5,6 +5,7 @@ import IFile from "../storage/IFile";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import IDialogueWrapper, { IDialogueSceneButton } from "./IDialogue";
+import Log from "../core/Log";
 
 export default class Dialogue {
   private _file?: IFile;
@@ -78,9 +79,13 @@ export default class Dialogue {
       return;
     }
 
-    const pjString = JSON.stringify(this.definition, null, 2);
+    Log.assert(this.definition !== null, "DGUEP");
 
-    this._file.setContent(pjString);
+    if (this.definition) {
+      const pjString = JSON.stringify(this.definition, null, 2);
+
+      this._file.setContent(pjString);
+    }
   }
 
   public ensureDefinition(name: string, description: string) {

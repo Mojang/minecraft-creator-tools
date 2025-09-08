@@ -36,11 +36,26 @@
   }
 }
 
-.pt-grid {
-  display: grid;
-  height: 100%;
-  grid-template-columns: 56px 1fr;
-  grid-template-rows: 59px 84px 45px;
+@media only screen and (min-width: 280px) {
+  .pt-grid {
+    display: grid;
+    height: 100%;
+    grid-template-columns: 56px 1fr;
+    grid-template-rows: 59px 84px 45px;
+  }
+}
+
+@media only screen and (max-width: 280px) {
+  .pt-grid {
+    display: grid;
+    height: 100%;
+    grid-template-columns: 56px 1fr;
+    min-height: 200px;
+  }
+
+  .pt-description{
+    min-height: 150px;
+  }
 }
 
 .pt-mainArea {
@@ -180,15 +195,15 @@
 
 .pt-ghpath a {
   color: white;
-  font-size: small;
+  font-size: medium;
 }
 
 .pts-button {
-  width: 360px;
-  height: 138px;
+  width: 400px;
+  height: 168px;
   max-width: calc(100vw - 46px);
   border: solid 2px #202020;
-}
+} 
 
 .pts-outer-selected {
   background-color: green;
@@ -199,7 +214,7 @@
   height: 100%;
   cursor: pointer;
   text-align: left;
-  grid-template-rows: 88px 1px 50px;
+  grid-template-rows: 118px 1px 50px;
 }
 
 .pts-tag {
@@ -257,11 +272,11 @@
   grid-column-start: 1;
   grid-column-end: 3;
   padding: 3px;
-  height: 60px;
+  height: 90px;
   overflow: hidden;
   padding-left: 5px;
   padding-right: 8px;
-  font-size: small;
+  font-size: medium
 }
 
 .pt-docLink {

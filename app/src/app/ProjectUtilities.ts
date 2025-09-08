@@ -1329,7 +1329,7 @@ export default class ProjectUtilities {
 
     await file.saveContent();
 
-    await project.inferProjectItemsFromFiles(true);
+    project.ensureItemFromFile(file, ProjectItemType.ts, FolderContext.behaviorPack);
   }
 
   static async injectSnippet(project: Project, snippet: ISnippet, fullScriptBoxReplace: boolean) {

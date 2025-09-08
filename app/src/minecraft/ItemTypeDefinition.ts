@@ -20,6 +20,7 @@ import { ProjectItemType } from "../app/IProjectItemData";
 import AttachableResourceDefinition from "./AttachableResourceDefinition";
 import TypeScriptDefinition from "./TypeScriptDefinition";
 import Utilities from "../core/Utilities";
+import ProjectUtilities from "../app/ProjectUtilities";
 
 export default class ItemTypeDefinition implements IManagedComponentSetItem, IDefinition {
   private _wrapper: IItemTypeWrapper | null = null;
@@ -133,6 +134,14 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
     return MinecraftUtilities.getVersionArrayFrom(this._wrapper.format_version);
   }
 
+  public setFormatVersion(version: string): void {
+    if (!this._wrapper) {
+      return;
+    }
+
+    this._wrapper.format_version = version;
+  }
+
   constructor() {
     this._handleFileUpdated = this._handleFileUpdated.bind(this);
   }
@@ -194,6 +203,12 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
             customComponentIds.push(str);
           }
         }
+      }
+    }
+
+    for (const comp of this.getComponents()) {
+      if (!comp.id.startsWith("minecraft:") && !comp.id.startsWith("tag:")) {
+        customComponentIds.push(comp.id);
       }
     }
 
@@ -337,6 +352,50 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
     }
   }
 
+  async addCustomComponent(itemTypeItem: ProjectItem, componentName: string) {
+    let componentNameShort = componentName;
+
+    const idx = componentName.indexOf(":");
+    if (idx >= 0) {
+      componentNameShort = componentName.substring(idx + 1);
+    }
+
+    this.ensureComponent(componentName, {});
+
+    const fileNameSugg = Utilities.getHumanifiedObjectNameNoSpaces(componentNameShort);
+
+    this.setFormatVersion("1.21.100");
+
+    await ProjectUtilities.ensureTypeScriptFileWith(
+      itemTypeItem.project,
+      componentName,
+      "new-templates",
+      "itemCustomComponent",
+      fileNameSugg,
+      {
+        "example:newComponentId": componentName,
+        ExampleNewComponent: fileNameSugg,
+        initExampleNew: "init" + fileNameSugg,
+      }
+    );
+
+    await ProjectUtilities.ensureContentInDefaultScriptFile(
+      itemTypeItem.project,
+      "import { init" + fileNameSugg,
+      "import { init" + fileNameSugg + ' } from "./' + fileNameSugg + '"\n',
+      false
+    );
+
+    await ProjectUtilities.ensureContentInDefaultScriptFile(
+      itemTypeItem.project,
+      "init" + fileNameSugg + "()",
+      "init" + fileNameSugg + "();\n",
+      true
+    );
+
+    this.persist();
+  }
+
   static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<ItemTypeDefinition, ItemTypeDefinition>) {
     let itt: ItemTypeDefinition | undefined;
 
@@ -378,6 +437,12 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
 
   persist() {
     if (this._file === undefined) {
+      return;
+    }
+
+    Log.assert(!this._isLoaded || this._wrapper !== null, "ITDP");
+
+    if (!this._wrapper) {
       return;
     }
 
