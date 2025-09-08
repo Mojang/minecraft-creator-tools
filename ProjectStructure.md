@@ -1,6 +1,6 @@
 # Project Structure
 
-Most logic source is located under the /app folder. This application compiles to a web app (`npm run web` and/or `gulp webbuild`) and as NodeJS-compatible libraries (`gulp jsncorebuild`). Also, there is a small suite of tests (`npm run test`).  
+Most logic source is located under the /app folder. Run `npm run all` to do a full build of the project. This application compiles to a web app (`npm run web` and/or `gulp webbuild`) and as NodeJS-compatible libraries (`gulp jsncorebuild`). Also, there is a small suite of tests (`npm run test`).  
 
 ## Core Types: Carto, Project, and ProjectItem
 
@@ -39,6 +39,18 @@ It:
 The project item represents a single logical "atom" object of the project - e.g., a behavior pack entity type definition or a single .TS file. It uses IProjectItemData - which is typically saved in the parent project's JSON preferences file. Project Items are identified by their canonicalized `storagePath` which should be relative to the root of a Project.  
 
 A project item is typically associated with an IFile (in some limited cases, it points at a Folder, e.g., in the case of a World). IFiles have a .manager generic Object property. Typically, ProjectItem uses this dummy property to store a per-file manager - e.g., an EntityTypeDefinition object is stored on the IFile for an entity type definition (e.g., skeleton.json) which has the actual logic for managing an entity type definition.
+
+Project Items have a concept of Variants. A variant is an equivalent of a logical file in the project folder hierarchy. For example, when a project has subpacks, it might have a JSON file at:
+
+    RP/particles/fireworks.json
+
+and 
+
+    RP/subpacks/fancy/particles/fireworks.json
+
+These are two separate files that are variants of the same logic project item (RP/particles/fireworks.json). ProjectItem .defaultFile will refer to the first of these (RP/particles/fireworks.json) - though it is important to note that not every structure has a non-null default file. When working with ProjectItem, you'll typically want to get the .primaryFile, which, based on the organization scheme of the project, will return the "foremost" version of the file for the project item.
+
+In *most* projects, one project item has one file (or folder), and one variant (""), which corresponds to the default file.
 
 ## File System Abstractions
 
