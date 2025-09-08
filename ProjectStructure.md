@@ -1,6 +1,6 @@
 # Project Structure
 
-Most logic source is located under the /app folder. Run `npm run all` to do a full build of the project. This application compiles to a web app (`npm run web` and/or `gulp webbuild`) and as NodeJS-compatible libraries (`gulp jsncorebuild`). Also, there is a small suite of tests (`npm run test`).  
+Most logic source is located under the /app folder. Run `npm run all` to do a synchronization of NPM and pre-build activities plus a full build (it should be a one-stop-shop for getting everything set up). This application compiles to a web app (`npm run web` and/or `gulp webbuild`) and as NodeJS-compatible libraries (`gulp jsncorebuild`). Also, there is a small suite of tests (`npm run test`).  
 
 ## Core Types: Carto, Project, and ProjectItem
 
