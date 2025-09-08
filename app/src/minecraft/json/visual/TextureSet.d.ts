@@ -31,30 +31,30 @@ export interface TextureSetMinecraftTextureSet {
    * @remarks
    * The texture name of a textureset layer
    */
-  color: string;
+  color?: string;
 
   /**
    * @remarks
    * The texture name of a textureset layer
    */
-  heightmap: string;
+  heightmap?: string;
 
   /**
    * @remarks
    * The texture name of a textureset layer
    */
-  metalness_emissive_roughness: string;
+  metalness_emissive_roughness?: string;
 
   /**
    * @remarks
    * The texture name of a textureset layer
    */
-  metalness_emissive_roughness_subsurface: string;
+  metalness_emissive_roughness_subsurface?: string;
 
   /**
    * @remarks
    * The texture name of a textureset layer
    */
-  normal: string;
+  normal?: string;
 
 }

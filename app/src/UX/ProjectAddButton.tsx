@@ -8,7 +8,7 @@ import { Dialog, ThemeInput, MenuButton, Button, MenuItemProps } from "@fluentui
 
 import { GitHubPropertyType } from "./ProjectPropertyEditor";
 import NewEntityType from "./NewEntityType";
-import ProjectUtilities, { NewEntityTypeAddMode, NewItemTypeAddMode } from "../app/ProjectUtilities";
+import { NewEntityTypeAddMode, NewItemTypeAddMode } from "../app/ProjectUtilities";
 import IGitHubInfo from "../app/IGitHubInfo";
 import "./ProjectAddButton.css";
 import Utilities from "../core/Utilities";
@@ -25,6 +25,7 @@ import SetName from "./SetName";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import SetNameAndFolder from "./SetNameAndFolder";
+import ProjectCreateManager from "../app/ProjectCreateManager";
 
 export enum EntityTypeCommand {
   select,
@@ -353,7 +354,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     }
 
     if (this.tentativeNewName && this.tentativeNewBlockTypeItem && this.props.project !== null) {
-      await ProjectUtilities.addBlockTypeFromGallery(
+      await ProjectCreateManager.addBlockTypeFromGallery(
         this.props.project,
         this.tentativeNewBlockTypeItem,
         this.tentativeNewName
@@ -363,6 +364,8 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     if (this.props.project) {
       await this.props.project.save();
     }
+
+    this.props.project?.processRelations(true);
 
     this.setState({
       activeItem: undefined,
@@ -381,7 +384,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     }
 
     if (this.tentativeNewEntityTypeItem !== undefined && this.props.project !== null) {
-      await ProjectUtilities.addEntityTypeFromGallery(
+      await ProjectCreateManager.addEntityTypeFromGallery(
         this.props.project,
         this.tentativeNewEntityTypeItem,
         this.tentativeNewName,
@@ -392,6 +395,8 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     if (this.props.project) {
       await this.props.project.save();
     }
+
+    this.props.project?.processRelations(true);
 
     this.setState({
       activeItem: undefined,
@@ -410,7 +415,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     }
 
     if (this.tentativeNewItemTypeItem !== undefined && this.props.project !== null) {
-      await ProjectUtilities.addItemTypeFromGallery(
+      await ProjectCreateManager.addItemTypeFromGallery(
         this.props.project,
         this.tentativeNewItemTypeItem,
         this.tentativeNewName
@@ -420,6 +425,8 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     if (this.props.project) {
       await this.props.project.save();
     }
+
+    this.props.project?.processRelations(true);
 
     this.setState({
       activeItem: undefined,
@@ -538,9 +545,18 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
 
     if (tentativeNewItem !== undefined && this.props.project !== null) {
       projectItem = await ProjectItemCreateManager.createNewItem(this.props.project, tentativeNewItem);
+
+      if (tentativeNewItem.itemType === ProjectItemType.biomeBehavior) {
+        tentativeNewItem.itemType = ProjectItemType.biomeResource;
+        tentativeNewItem.contentTemplateName = "biome_resource";
+
+        await ProjectItemCreateManager.createNewItem(this.props.project, tentativeNewItem);
+      }
     }
 
     await this.props.project.save();
+
+    this.props.project.processRelations(true);
 
     this.setState({
       activeItem: projectItem,

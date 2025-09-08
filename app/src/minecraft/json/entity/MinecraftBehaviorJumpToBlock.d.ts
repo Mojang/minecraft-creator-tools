@@ -72,7 +72,7 @@ export default interface MinecraftBehaviorJumpToBlock {
    * Goat: [30,60]
    *
    */
-  cooldown_range: number[];
+  cooldown_range?: number[];
 
   /**
    * @remarks
@@ -82,7 +82,7 @@ export default interface MinecraftBehaviorJumpToBlock {
    * Frog: ["minecraft:water"]
    *
    */
-  forbidden_blocks: string[];
+  forbidden_blocks?: string[];
 
   /**
    * @remarks
@@ -92,7 +92,7 @@ export default interface MinecraftBehaviorJumpToBlock {
    * Frog: 1
    *
    */
-  max_velocity: number;
+  max_velocity?: number;
 
   /**
    * @remarks
@@ -104,7 +104,7 @@ export default interface MinecraftBehaviorJumpToBlock {
    *
    *
    */
-  minimum_distance: number;
+  minimum_distance?: number;
 
   /**
    * @remarks
@@ -117,7 +117,7 @@ export default interface MinecraftBehaviorJumpToBlock {
    * Goat: 8
    *
    */
-  minimum_path_length: number;
+  minimum_path_length?: number;
 
   /**
    * @remarks
@@ -127,7 +127,7 @@ export default interface MinecraftBehaviorJumpToBlock {
    * Frog: ["minecraft:waterlily","minecraft:big_dripleaf"]
    *
    */
-  preferred_blocks: string[];
+  preferred_blocks?: string[];
 
   /**
    * @remarks
@@ -139,7 +139,7 @@ export default interface MinecraftBehaviorJumpToBlock {
    * Frog: 0.5
    *
    */
-  preferred_blocks_chance: number;
+  preferred_blocks_chance?: number;
 
   /**
    * @remarks
@@ -153,7 +153,7 @@ export default interface MinecraftBehaviorJumpToBlock {
    * Goat: 8
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -165,7 +165,7 @@ export default interface MinecraftBehaviorJumpToBlock {
    *
    *
    */
-  scale_factor: number;
+  scale_factor?: number;
 
   /**
    * @remarks
@@ -178,7 +178,7 @@ export default interface MinecraftBehaviorJumpToBlock {
    * Goat: 10
    *
    */
-  search_height: number;
+  search_height?: number;
 
   /**
    * @remarks
@@ -191,6 +191,6 @@ export default interface MinecraftBehaviorJumpToBlock {
    * Goat: 10
    *
    */
-  search_width: number;
+  search_width?: number;
 
 }

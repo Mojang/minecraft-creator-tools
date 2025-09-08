@@ -7,6 +7,7 @@ import { IAddonManifestHeader, IDesignPackManifest } from "./IAddonManifest";
 import Utilities from "../core/Utilities";
 import Project from "../app/Project";
 import StorageUtilities from "../storage/StorageUtilities";
+import Log from "../core/Log";
 
 export default class DesignManifestDefinition {
   private _file?: IFile;
@@ -128,11 +129,13 @@ export default class DesignManifestDefinition {
     if (file.manager !== undefined && file.manager instanceof DesignManifestDefinition) {
       rmj = file.manager as DesignManifestDefinition;
 
-      if (!rmj.isLoaded && loadHandler) {
-        rmj.onLoaded.subscribe(loadHandler);
-      }
+      if (!rmj.isLoaded) {
+        if (loadHandler) {
+          rmj.onLoaded.subscribe(loadHandler);
+        }
 
-      await rmj.load();
+        await rmj.load();
+      }
     }
 
     return rmj;
@@ -143,9 +146,13 @@ export default class DesignManifestDefinition {
       return;
     }
 
-    const pjString = JSON.stringify(this.definition, null, 2);
+    Log.assert(this.definition !== null, "DMDP");
 
-    this._file.setContent(pjString);
+    if (this.definition) {
+      const pjString = JSON.stringify(this.definition, null, 2);
+
+      this._file.setContent(pjString);
+    }
   }
 
   public ensureDefinition(name: string, description: string) {
@@ -205,7 +212,9 @@ export default class DesignManifestDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

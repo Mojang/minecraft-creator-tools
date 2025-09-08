@@ -62,20 +62,20 @@ export default interface MinecraftBehaviorRaidGarden {
    * Rabbit: ["minecraft:carrots"]
    *
    */
-  blocks: string[];
+  blocks?: string[];
 
   /**
    * @remarks
    * Time in seconds between each time it eats/raids
    */
-  eat_delay: number;
+  eat_delay?: number;
 
   /**
    * @remarks
    * Amount of time in seconds before this mob wants to eat/raid again
    * after eating its maximum
    */
-  full_delay: number;
+  full_delay?: number;
 
   /**
    * @remarks
@@ -89,7 +89,7 @@ export default interface MinecraftBehaviorRaidGarden {
    * Rabbit: 1
    *
    */
-  goal_radius: number;
+  goal_radius?: number;
 
   /**
    * @remarks
@@ -100,14 +100,14 @@ export default interface MinecraftBehaviorRaidGarden {
    * Fox: 2
    *
    */
-  initial_eat_delay: number;
+  initial_eat_delay?: number;
 
   /**
    * @remarks
    * Maximum number of crops this entity wants to eat/raid. If set to
    * zero or less then it doesn't have a maximum
    */
-  max_to_eat: number;
+  max_to_eat?: number;
 
   /**
    * @remarks
@@ -121,7 +121,7 @@ export default interface MinecraftBehaviorRaidGarden {
    * Rabbit: 5
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -130,7 +130,7 @@ export default interface MinecraftBehaviorRaidGarden {
    * Fox: 2
    *
    */
-  search_height: number;
+  search_height?: number;
 
   /**
    * @remarks
@@ -142,7 +142,7 @@ export default interface MinecraftBehaviorRaidGarden {
    * Rabbit: 16
    *
    */
-  search_range: number;
+  search_range?: number;
 
   /**
    * @remarks
@@ -154,6 +154,6 @@ export default interface MinecraftBehaviorRaidGarden {
    * Rabbit: 0.6
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

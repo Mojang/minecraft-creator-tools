@@ -155,8 +155,9 @@ export default class DocumentedScriptEnum {
     const enumFolder = rootFolder.ensureFolder(this._id);
 
     const rootFile = enumFolder.ensureFile("info.json");
-
-    await rootFile.loadContent();
+    if (!rootFile.isContentLoaded) {
+      await rootFile.loadContent();
+    }
 
     this.infoJsonFiles["_enum"] = rootFile;
 
@@ -167,7 +168,9 @@ export default class DocumentedScriptEnum {
         const memberFolder = enumFolder.ensureFolder(docConstant.name);
         const memberFile = memberFolder.ensureFile("info.json");
 
-        await memberFile.loadContent();
+        if (!memberFile.isContentLoaded) {
+          await memberFile.loadContent();
+        }
 
         this.infoJsonFiles[docConstant.name] = memberFile;
       }

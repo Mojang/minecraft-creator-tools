@@ -4,6 +4,7 @@
 import IFile from "../storage/IFile";
 import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
+import Utilities from "../core/Utilities";
 
 export const PrettierRcDefaultSettings: { [name: string]: any } = {
   trailingComma: "es5",
@@ -80,9 +81,13 @@ export default class PrettierRcConfig {
       return;
     }
 
-    const prettierRcJsonString = JSON.stringify(this.definition, null, 2);
+    Log.assert(this.definition !== null, "PRCP");
 
-    this._file.setContent(prettierRcJsonString);
+    if (this.definition) {
+      const prettierRcJsonString = Utilities.consistentStringify(this.definition);
+
+      this._file.setContent(prettierRcJsonString);
+    }
   }
 
   async save() {
@@ -136,7 +141,9 @@ export default class PrettierRcConfig {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

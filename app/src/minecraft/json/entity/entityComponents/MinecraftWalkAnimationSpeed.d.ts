@@ -25,6 +25,6 @@ export default interface MinecraftWalkAnimationSpeed {
    * A value of 1.0 means normal speed, while 2.0 means twice as
    * fast.
    */
-  value: number;
+  value?: number;
 
 }

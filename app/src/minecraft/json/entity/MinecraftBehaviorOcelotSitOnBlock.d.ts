@@ -50,7 +50,7 @@ export default interface MinecraftBehaviorOcelotSitOnBlock {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -61,6 +61,6 @@ export default interface MinecraftBehaviorOcelotSitOnBlock {
    *
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

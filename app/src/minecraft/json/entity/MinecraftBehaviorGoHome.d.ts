@@ -129,7 +129,7 @@ export default interface MinecraftBehaviorGoHome {
    * the end of the current path. A new path will then be calculated to
    * continue toward home.
    */
-  calculate_new_path_radius: number;
+  calculate_new_path_radius?: number;
 
   /**
    * @remarks
@@ -144,7 +144,7 @@ export default interface MinecraftBehaviorGoHome {
    *
    *
    */
-  goal_radius: number;
+  goal_radius?: number;
 
   /**
    * @remarks
@@ -159,7 +159,7 @@ export default interface MinecraftBehaviorGoHome {
    * Turtle: 700
    *
    */
-  interval: number;
+  interval?: number;
 
   /**
    * @remarks
@@ -171,7 +171,7 @@ export default interface MinecraftBehaviorGoHome {
    * Piglin Brute: [{"event":"go_back_to_spawn_failed","target":"self"}]
    *
    */
-  on_failed: jsoncommon.MinecraftEventTrigger;
+  on_failed?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -185,7 +185,7 @@ export default interface MinecraftBehaviorGoHome {
    * Nardolphle: {"event":"minecraft:go_lay_egg","target":"self"}
    *
    */
-  on_home: jsoncommon.MinecraftEventTrigger;
+  on_home?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -201,7 +201,7 @@ export default interface MinecraftBehaviorGoHome {
    * Turtle: 1
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -215,6 +215,6 @@ export default interface MinecraftBehaviorGoHome {
    *
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

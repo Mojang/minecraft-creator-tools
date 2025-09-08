@@ -31,20 +31,20 @@ export default interface MinecraftCombatRegeneration {
    * Determines if the mob will grant mobs of the same type combat buffs
    * if they kill the target.
    */
-  apply_to_family: boolean;
+  apply_to_family?: boolean;
 
   /**
    * @remarks
    * Determines if the mob will grant itself the combat buffs if it
    * kills the target.
    */
-  apply_to_self: boolean;
+  apply_to_self?: boolean;
 
   /**
    * @remarks
    * The duration in seconds of Regeneration I added to the mob. Can
    * also be set to "infinite"
    */
-  regeneration_duration: number;
+  regeneration_duration?: number;
 
 }

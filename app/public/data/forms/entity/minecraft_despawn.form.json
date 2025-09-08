@@ -542,6 +542,14 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/entities/piglin.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:despawn/",
+        "content": {
+          "despawn_from_distance": {}
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/piglin_brute.json": [
       {
         "path": "/minecraft:entity/components/minecraft:despawn/",
@@ -585,14 +593,6 @@
               }
             ]
           }
-        }
-      }
-    ],
-    "/vanilla/behavior_pack/entities/piglin.json": [
-      {
-        "path": "/minecraft:entity/components/minecraft:despawn/",
-        "content": {
-          "despawn_from_distance": {}
         }
       }
     ],
@@ -666,7 +666,7 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/skeleton_horse.json": [
+    "/vanilla/behavior_pack/entities/skeleton.json": [
       {
         "path": "/minecraft:entity/components/minecraft:despawn/",
         "content": {
@@ -674,7 +674,7 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/skeleton.json": [
+    "/vanilla/behavior_pack/entities/skeleton_horse.json": [
       {
         "path": "/minecraft:entity/components/minecraft:despawn/",
         "content": {
@@ -874,6 +874,14 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/entities/zombie.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:despawn/",
+        "content": {
+          "despawn_from_distance": {}
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/zombie_horse.json": [
       {
         "path": "/minecraft:entity/components/minecraft:despawn/",
@@ -890,14 +898,6 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/zombie_villager_v2.json": [
-      {
-        "path": "/minecraft:entity/components/minecraft:despawn/",
-        "content": {
-          "despawn_from_distance": {}
-        }
-      }
-    ],
     "/vanilla/behavior_pack/entities/zombie_villager.json": [
       {
         "path": "/minecraft:entity/components/minecraft:despawn/",
@@ -906,7 +906,7 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/zombie.json": [
+    "/vanilla/behavior_pack/entities/zombie_villager_v2.json": [
       {
         "path": "/minecraft:entity/components/minecraft:despawn/",
         "content": {

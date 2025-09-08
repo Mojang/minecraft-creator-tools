@@ -48,6 +48,8 @@
     "animationCount": 0,
     "textureCount": 0,
     "textureTexelSize": 0,
+    "vanillaGameTextureCoverage": 0,
+    "vanillaGameTextureCount": 0,
     "minimumSupportablePerformanceTier": 0,
     "invalidCommandSyntaxCount": 0,
     "linesWithSlashCount": 0,
@@ -62,12 +64,35 @@
     "deprecatedTexture": 0,
     "restrictedPolyMeshFound": 0,
     "jsonParseError": 0,
+    "invalidManifestJson": 0,
+    "missingResourcePackDependencies": 0,
+    "internalProcessingErrors": 0,
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
     "worldLoadErrors": 0,
     "commands": [],
     "featureSets": {
+      "Runtime Identifier (no runtime identifier)": {
+        "Count": 1
+      },
+      "Identifier (no override identifier)": {
+        "Count": 1
+      },
+      "Metadata Spawnable Entity Type": {
+        "Count": 1
+      },
+      "Metadata Summonable Entity Type": {
+        "Count": 1
+      },
+      "Entity Type Default Components": {
+        "minecraft:health": 1,
+        "minecraft:movement": 1,
+        "minecraft:navigation.walk": 1,
+        "minecraft:behavior.random_stroll": 1,
+        "minecraft:behavior.look_at_player": 1,
+        "minecraft:behavior.random_look_around": 1
+      },
       "Behavior pack manifest Size": {
         "Instance Count": 1,
         "Total": 358,
@@ -110,13 +135,10 @@
         "Min": 26,
         "Average": 26
       },
-      "Entity Type Default Components": {
-        "minecraft:health": 1,
-        "minecraft:movement": 1,
-        "minecraft:navigation.walk": 1,
-        "minecraft:behavior.random_stroll": 1,
-        "minecraft:behavior.look_at_player": 1,
-        "minecraft:behavior.random_look_around": 1
+      "Texture Images Vanilla Game Texture Coverage": {
+        "Override Count": 0,
+        "Vanilla Texture Count": 2669,
+        "Percent": 0
       },
       "Texture Images Tier0 Non-Vanilla Texture Memory Tier": {
         "Instance Count": 1,
@@ -285,31 +307,161 @@
         "Max": 0,
         "Min": 0,
         "Average": 0
-      },
-      "Runtime Identifier (no runtime identifier)": {
-        "Count": 1
-      },
-      "Identifier (no override identifier)": {
-        "Count": 1
-      },
-      "Metadata Spawnable Entity Type": {
-        "Count": 1
-      },
-      "Metadata Summonable Entity Type": {
-        "Count": 1
       }
     },
-    "errorCount": 2,
+    "errorCount": 1,
     "internalProcessingErrorCount": 0,
     "warningCount": 0,
-    "testSuccessCount": 33,
-    "testFailCount": 2,
+    "testSuccessCount": 34,
+    "testFailCount": 1,
     "testNotApplicableCount": 12,
-    "errorSummary": "ERROR: [CPACKICON101] pack_icon image file not found for test_bp. It must use the .png extension.\r\nERROR: [LANGFILES101] languages.json Not Found",
+    "errorSummary": "ERROR: [CPACKICON101] pack_icon image file not found for test_bp. It must use the .png extension.",
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
-    "testFailSummary": "TESTFAIL: [CPACKICON000] Found 1 errors for Check Pack Icon Generator (CPACKICON).\r\nTESTFAIL: [LANGFILES000] Found 1 errors for Check Lang File Generator (LANGFILES).",
+    "testFailSummary": "TESTFAIL: [CPACKICON000] Found 1 errors for Check Pack Icon Generator (CPACKICON).",
     "summary": {
+      "BASEGAMEVER": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test Base Game Version (BASEGAMEVER)"
+        }
+      },
+      "BLOCKSCAT": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test Blocks Catalog (BLOCKSCAT)"
+        }
+      },
+      "CBFG": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Beta Features Generator (CBFG) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CHECKFEATUREDEPRECATION": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Check Feature Deprecation (CHECKFEATUREDEPRECATION)"
+        }
+      },
+      "CHKMANIF": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Manifest Generator (CHKMANIF) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CPACKICON": {
+        "0": {
+          "title": "Test Failure",
+          "defaultMessage": "Found 1 errors for Check Pack Icon Generator (CPACKICON).",
+          "testCompleteFails": 1
+        },
+        "101": {
+          "title": "No Icon Found",
+          "defaultMessage": "pack_icon image file not found for test_bp. It must use the .png extension.",
+          "errors": 1
+        }
+      },
+      "CPARTI": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Particle Identifier Generator (CPARTI) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CSPJ": {
+        "1": {
+          "title": "Unknown Test: 1",
+          "defaultMessage": "Check Skin Pack Json Generator (CSPJ) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CWI": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check World Icon Generator (CWI) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "ENTITYTYPE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Entity Type (ENTITYTYPE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "52": {
+          "title": "Runtime Identifier",
+          "defaultMessage": "Entity Type Runtime Identifier"
+        },
+        "53": {
+          "title": "Identifier",
+          "defaultMessage": "Entity Type Identifier"
+        },
+        "54": {
+          "title": "Metadata",
+          "defaultMessage": "Entity Type Metadata"
+        },
+        "130": {
+          "title": "Format Version Patch Version Lower Than Current",
+          "defaultMessage": "Behavior pack entity type format version (1.20.0) has a lower patch version number compared to current version (1.21.100.06)",
+          "recommendations": 1
+        }
+      },
+      "EXPFLAG": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Check Experimental Flag (EXPFLAG)"
+        }
+      },
+      "FORBFILE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Forbidden Files Generator (FORBFILE) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "FORMATVER": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "Format Version (FORMATVER) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "256": {
+          "title": "256",
+          "defaultMessage": "Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)",
+          "recommendations": 1
+        },
+        "644": {
+          "title": "644",
+          "defaultMessage": "Spawn rule format_version"
+        }
+      },
+      "GEOFMT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Geometry Format (GEOFMT) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "GEOMETRY": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Model Geometry Validation (GEOMETRY) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Block Geometry"
+        },
+        "102": {
+          "title": "Entity Geometry"
+        },
+        "103": {
+          "title": "Item Geometry",
+          "defaultMessage": "Items Geometry"
+        }
+      },
       "ITEMS": {
         "1": {
           "title": "1",
@@ -337,6 +489,44 @@
           "defaultMessage": "Behavior pack item count"
         }
       },
+      "ITEMTYPE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Item Type (ITEMTYPE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "53": {
+          "title": "Identifier",
+          "defaultMessage": "Item Type Identifier"
+        },
+        "55": {
+          "title": "Category",
+          "defaultMessage": "Item Type Category"
+        }
+      },
+      "JSON": {
+        "1": {
+          "defaultMessage": "JSON Structure Validation (JSON) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "JSONF": {
+        "1": {
+          "defaultMessage": "JSON Structure Validation (via Minecraft docs) (JSONF) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "JSONTAGS": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "JSON Tags (JSONTAGS) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Entity Type",
+          "defaultMessage": "Entity file"
+        }
+      },
       "LINESIZE": {
         "1": {
           "title": "1",
@@ -360,29 +550,27 @@
           "defaultMessage": "Behavior pack file lines"
         }
       },
-      "PACKSIZE": {
+      "MCFUNCTION": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test MC Function Validation (MCFUNCTION)"
+        }
+      },
+      "MINENGINEVER": {
         "1": {
-          "title": "Test Success",
-          "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully",
+          "title": "1",
+          "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "101": {
-          "title": "Overall Size"
-        },
-        "102": {
-          "title": "File Count"
-        },
-        "103": {
-          "title": "Folder Count"
-        },
-        "104": {
-          "title": "Content Size"
-        },
-        "105": {
-          "title": "Content File Count"
-        },
-        "106": {
-          "title": "Content Folder Count"
+        "605": {
+          "title": "605",
+          "defaultMessage": "Behavior pack manifest min_engine_version"
+        }
+      },
+      "NOBOM": {
+        "1": {
+          "defaultMessage": "No Byte Order Mark allowed in json file. (NOBOM) completed successfully",
+          "testCompleteSuccesses": 1
         }
       },
       "PACK": {
@@ -413,38 +601,75 @@
         },
         "109": {
           "title": "109",
-          "defaultMessage": "Behavior Pack Manfiest"
+          "defaultMessage": "Behavior Pack Manifest"
         },
         "245": {
           "title": "245",
           "defaultMessage": "Entity Geometry"
         }
       },
-      "JSONTAGS": {
+      "PACKMETADATA": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test General info (PACKMETADATA)"
+        }
+      },
+      "PACKSIZE": {
         "1": {
           "title": "Test Success",
-          "defaultMessage": "JSON Tags (JSONTAGS) completed successfully",
+          "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully",
           "testCompleteSuccesses": 1
         },
         "101": {
-          "title": "Entity Type",
-          "defaultMessage": "Entity file"
+          "title": "Overall Size"
+        },
+        "102": {
+          "title": "File Count"
+        },
+        "103": {
+          "title": "Folder Count"
+        },
+        "104": {
+          "title": "Content Size"
+        },
+        "105": {
+          "title": "Content File Count"
+        },
+        "106": {
+          "title": "Content Folder Count"
         }
       },
-      "FORMATVER": {
+      "PATHLENGTH": {
         "1": {
-          "title": "1",
-          "defaultMessage": "Format Version (FORMATVER) completed successfully",
+          "defaultMessage": "Path Length (PATHLENGTH) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "PRJINT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Project Integrity Generator (PRJINT) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "RESOURCEANIMATION": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Resource Animation (RESOURCEANIMATION) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "256": {
-          "title": "256",
-          "defaultMessage": "Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)",
-          "recommendations": 1
+        "101": {
+          "title": "Animations"
         },
-        "644": {
-          "title": "644",
-          "defaultMessage": "Spawn rule format_version"
+        "102": {
+          "title": "Bones"
+        }
+      },
+      "RPDEPENDS": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Resource Pack Dependencies (RPDEPENDS) completed successfully",
+          "testCompleteSuccesses": 1
         }
       },
       "SCRIPT": {
@@ -455,6 +680,25 @@
         },
         "101": {
           "title": "apisUsed"
+        }
+      },
+      "SCRIPTMODULE": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test Script Modules (SCRIPTMODULE)"
+        }
+      },
+      "SNDSDEF": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Sounds Definition Manifest Validation (SNDSDEF)"
+        }
+      },
+      "STRICT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully",
+          "testCompleteSuccesses": 1
         }
       },
       "SUMMARY": {
@@ -472,19 +716,6 @@
           "defaultMessage": "Behavior Manifests"
         }
       },
-      "RESOURCEANIMATION": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Resource Animation (RESOURCEANIMATION) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "101": {
-          "title": "Animations"
-        },
-        "102": {
-          "title": "Bones"
-        }
-      },
       "TEXTURE": {
         "1": {
           "title": "Test Success",
@@ -493,26 +724,6 @@
         },
         "101": {
           "title": "Textures"
-        }
-      },
-      "TEXTUREREF": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Texture Reference Info Aggregation (TEXTUREREF) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "101": {
-          "title": "Texture References"
-        }
-      },
-      "TYPES": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Types Info Aggregation (TYPES) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "101": {
-          "title": "Types"
         }
       },
       "TEXTUREIMAGE": {
@@ -549,211 +760,30 @@
           "defaultMessage": "Texture Images Tier 5"
         }
       },
-      "GEOMETRY": {
+      "TEXTUREREF": {
         "1": {
           "title": "Test Success",
-          "defaultMessage": "Model Geometry Validation (GEOMETRY) completed successfully",
+          "defaultMessage": "Texture Reference Info Aggregation (TEXTUREREF) completed successfully",
           "testCompleteSuccesses": 1
         },
         "101": {
-          "title": "Block Geometry"
-        },
-        "102": {
-          "title": "Entity Geometry"
-        },
-        "103": {
-          "title": "Item Geometry",
-          "defaultMessage": "Items Geometry"
+          "title": "Texture References"
         }
       },
-      "CPACKICON": {
-        "0": {
-          "title": "Test Failure",
-          "defaultMessage": "Found 1 errors for Check Pack Icon Generator (CPACKICON).",
-          "testCompleteFails": 1
+      "TYPES": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Types Info Aggregation (TYPES) completed successfully",
+          "testCompleteSuccesses": 1
         },
         "101": {
-          "title": "No Icon Found",
-          "defaultMessage": "pack_icon image file not found for test_bp. It must use the .png extension.",
-          "errors": 1
+          "title": "Types"
         }
       },
-      "LANGFILES": {
-        "0": {
-          "title": "Test Failure",
-          "defaultMessage": "Found 1 errors for Check Lang File Generator (LANGFILES).",
-          "testCompleteFails": 1
-        },
-        "101": {
-          "title": "languages.json Not Found",
-          "errors": 1
-        }
-      },
-      "MINENGINEVER": {
+      "UNKFILE": {
         "1": {
-          "title": "1",
-          "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully",
+          "defaultMessage": "Unknown files (UNKFILE) completed successfully",
           "testCompleteSuccesses": 1
-        },
-        "605": {
-          "title": "605",
-          "defaultMessage": "Behavior pack manifest min_engine_version"
-        }
-      },
-      "ENTITYTYPE": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Entity Type (ENTITYTYPE) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "52": {
-          "title": "Runtime Identifier",
-          "defaultMessage": "Entity Type Runtime Identifier"
-        },
-        "53": {
-          "title": "Identifier",
-          "defaultMessage": "Entity Type Identifier"
-        },
-        "54": {
-          "title": "Metadata",
-          "defaultMessage": "Entity Type Metadata"
-        },
-        "130": {
-          "title": "Format Version Patch Version Lower Than Current",
-          "defaultMessage": "Behavior pack entity type format version (1.20.0) has a lower patch version number compared to current version (1.21.100.06)",
-          "recommendations": 1
-        }
-      },
-      "ITEMTYPE": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Item Type (ITEMTYPE) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "53": {
-          "title": "Identifier",
-          "defaultMessage": "Item Type Identifier"
-        },
-        "55": {
-          "title": "Category",
-          "defaultMessage": "Item Type Category"
-        }
-      },
-      "SHARING": {
-        "1": {
-          "title": "1",
-          "defaultMessage": "Sharing Best Practices Information (SHARING) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "PACKMETADATA": {
-        "2": {
-          "title": "2",
-          "defaultMessage": "No applicable items found for test General info (PACKMETADATA)"
-        }
-      },
-      "STRICT": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "MCFUNCTION": {
-        "2": {
-          "title": "Test Not Applicable",
-          "defaultMessage": "No applicable items found for test MC Function Validation (MCFUNCTION)"
-        }
-      },
-      "CWI": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check World Icon Generator (CWI) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "SNDSDEF": {
-        "2": {
-          "title": "Test Not Applicable",
-          "defaultMessage": "No applicable items found for test Sounds Definition Manifest Validation (SNDSDEF)"
-        }
-      },
-      "CPARTI": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check Particle Identifier Generator (CPARTI) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "CSPJ": {
-        "1": {
-          "title": "Unknown Test: 1",
-          "defaultMessage": "Check Skin Pack Json Generator (CSPJ) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "EXPFLAG": {
-        "2": {
-          "title": "Test Not Applicable",
-          "defaultMessage": "No applicable items found for test Check Experimental Flag (EXPFLAG)"
-        }
-      },
-      "CHECKFEATUREDEPRECATION": {
-        "2": {
-          "title": "Test Not Applicable",
-          "defaultMessage": "No applicable items found for test Check Feature Deprecation (CHECKFEATUREDEPRECATION)"
-        }
-      },
-      "FORBFILE": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check Forbidden Files Generator (FORBFILE) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "PRJINT": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check Project Integrity Generator (PRJINT) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "GEOFMT": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Geometry Format (GEOFMT) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "CBFG": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check Beta Features Generator (CBFG) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "SCRIPTMODULE": {
-        "2": {
-          "title": "2",
-          "defaultMessage": "No applicable items found for test Script Modules (SCRIPTMODULE)"
-        }
-      },
-      "VSCODEFILE": {
-        "2": {
-          "title": "2",
-          "defaultMessage": "No applicable items found for test VSCode Files (VSCODEFILE)"
-        }
-      },
-      "BASEGAMEVER": {
-        "2": {
-          "title": "2",
-          "defaultMessage": "No applicable items found for test Base Game Version (BASEGAMEVER)"
-        }
-      },
-      "BLOCKSCAT": {
-        "2": {
-          "title": "2",
-          "defaultMessage": "No applicable items found for test Blocks Catalog (BLOCKSCAT)"
         }
       },
       "UNKJSON": {
@@ -762,16 +792,21 @@
           "testCompleteSuccesses": 1
         }
       },
-      "JSONF": {
+      "UNLINK": {
         "1": {
-          "defaultMessage": "JSON Structure Validation (via Minecraft docs) (JSONF) completed successfully",
+          "defaultMessage": "Unlinked item info generator (UNLINK) completed successfully",
           "testCompleteSuccesses": 1
         }
       },
-      "JSON": {
-        "1": {
-          "defaultMessage": "JSON Structure Validation (JSON) completed successfully",
-          "testCompleteSuccesses": 1
+      "VALFILE": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Valid files (VALFILE)"
+        }
+      },
+      "VSCODEFILE": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test VSCode Files (VSCODEFILE)"
         }
       },
       "WORLD": {
@@ -783,39 +818,166 @@
         "2": {
           "defaultMessage": "No applicable items found for test World Data Validation (WORLDDATA)"
         }
-      },
-      "UNLINK": {
-        "1": {
-          "defaultMessage": "Unlinked item info generator (UNLINK) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "UNKFILE": {
-        "1": {
-          "defaultMessage": "Unknown files (UNKFILE) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "VALFILE": {
-        "2": {
-          "defaultMessage": "No applicable items found for test Valid files (VALFILE)"
-        }
-      },
-      "PATHLENGTH": {
-        "1": {
-          "defaultMessage": "Path Length (PATHLENGTH) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "NOBOM": {
-        "1": {
-          "defaultMessage": "No Byte Order Mark allowed in json file. (NOBOM) completed successfully",
-          "testCompleteSuccesses": 1
-        }
       }
     }
   },
   "items": [
+    {
+      "iTp": 8,
+      "gId": "BASEGAMEVER",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "BLOCKSCAT",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "CBFG",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "CHECKFEATUREDEPRECATION",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "CHKMANIF",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "CPACKICON",
+      "gIx": 0
+    },
+    {
+      "iTp": 3,
+      "gId": "CPACKICON",
+      "gIx": 101
+    },
+    {
+      "iTp": 1,
+      "gId": "CPARTI",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CSPJ",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CWI",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "ENTITYTYPE",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 52,
+      "fs": {
+        "(no runtime identifier)": {
+          "Count": 1
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 53,
+      "fs": {
+        "(no override identifier)": {
+          "Count": 1
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 54,
+      "fs": {
+        "Spawnable Entity Type": {
+          "Count": 1
+        },
+        "Summonable Entity Type": {
+          "Count": 1
+        }
+      }
+    },
+    {
+      "iTp": 6,
+      "gId": "ENTITYTYPE",
+      "gIx": 130,
+      "p": "/behavior_packs/test_bp/entities/example_entity.json"
+    },
+    {
+      "iTp": 8,
+      "gId": "EXPFLAG",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "FORBFILE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "FORMATVER",
+      "gIx": 1
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 256,
+      "p": "/behavior_packs/test_bp/spawn_rules/example_entity.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 644,
+      "p": "/behavior_packs/test_bp/spawn_rules/example_entity.json",
+      "d": [
+        1,
+        8,
+        0
+      ]
+    },
+    {
+      "iTp": 1,
+      "gId": "GEOFMT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "GEOMETRY",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 102
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 103
+    },
+    {
+      "iTp": 1,
+      "gId": "ITEMS",
+      "gIx": 1
+    },
     {
       "iTp": 2,
       "gId": "ITEMS",
@@ -847,16 +1009,61 @@
       "d": 1
     },
     {
+      "iTp": 1,
+      "gId": "ITEMTYPE",
+      "gIx": 1
+    },
+    {
       "iTp": 7,
+      "gId": "ITEMTYPE",
+      "gIx": 53
+    },
+    {
+      "iTp": 7,
+      "gId": "ITEMTYPE",
+      "gIx": 55
+    },
+    {
+      "iTp": 1,
+      "gId": "JSON",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "JSONF",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "JSONTAGS",
+      "gIx": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "JSONTAGS",
+      "gIx": 101,
+      "p": "/behavior_packs/test_bp/entities/example_entity.json",
+      "d": "/behavior_packs/test_bp/entities/example_entity.json",
+      "fs": {
+        "Default Components": {
+          "minecraft:health": 1,
+          "minecraft:movement": 1,
+          "minecraft:navigation.walk": 1,
+          "minecraft:behavior.random_stroll": 1,
+          "minecraft:behavior.look_at_player": 1,
+          "minecraft:behavior.random_look_around": 1
+        }
+      }
+    },
+    {
+      "iTp": 1,
       "gId": "LINESIZE",
-      "gIx": 209,
-      "p": "/behavior_packs/test_bp/"
+      "gIx": 1
     },
     {
       "iTp": 7,
       "gId": "LINESIZE",
       "gIx": 105,
-      "p": "/behavior_packs/test_bp/manifest.json",
       "fs": {
         "Size": {
           "Instance Count": 1,
@@ -878,7 +1085,6 @@
       "iTp": 7,
       "gId": "LINESIZE",
       "gIx": 110,
-      "p": "/behavior_packs/test_bp/entities/example_entity.json",
       "fs": {
         "Size": {
           "Instance Count": 1,
@@ -900,7 +1106,6 @@
       "iTp": 7,
       "gId": "LINESIZE",
       "gIx": 144,
-      "p": "/behavior_packs/test_bp/spawn_rules/example_entity.json",
       "fs": {
         "Size": {
           "Instance Count": 1,
@@ -917,6 +1122,109 @@
           "Average": 26
         }
       }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 209
+    },
+    {
+      "iTp": 8,
+      "gId": "MCFUNCTION",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "MINENGINEVER",
+      "gIx": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "MINENGINEVER",
+      "gIx": 605,
+      "p": "/behavior_packs/test_bp/manifest.json",
+      "d": [
+        1,
+        20,
+        0
+      ]
+    },
+    {
+      "iTp": 1,
+      "gId": "NOBOM",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "PACK",
+      "gIx": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 104,
+      "p": "/behavior_packs/test_bp/manifest.json",
+      "d": "Test Spawn Rules BP"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 105,
+      "p": "/behavior_packs/test_bp/manifest.json",
+      "d": "Test behavior pack for spawn rules dependency tracking"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 106,
+      "p": "/behavior_packs/test_bp/manifest.json",
+      "d": "12345678-1234-1234-1234-123456789012|1.0.0"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 107,
+      "p": "/behavior_packs/test_bp/manifest.json",
+      "d": 2
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 107,
+      "p": "/behavior_packs/test_bp/manifest.json",
+      "d": [
+        1,
+        20,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 108,
+      "p": "/behavior_packs/test_bp/manifest.json",
+      "d": "12345678-1234-1234-1234-123456789012"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 109,
+      "p": "/behavior_packs/test_bp/manifest.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "PACK",
+      "gIx": 245
+    },
+    {
+      "iTp": 8,
+      "gId": "PACKMETADATA",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "PACKSIZE",
+      "gIx": 1
     },
     {
       "iTp": 7,
@@ -955,96 +1263,39 @@
       "d": 2
     },
     {
+      "iTp": 1,
+      "gId": "PATHLENGTH",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "PRJINT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "RESOURCEANIMATION",
+      "gIx": 1
+    },
+    {
       "iTp": 7,
-      "gId": "PACK",
-      "gIx": 245
+      "gId": "RESOURCEANIMATION",
+      "gIx": 101
     },
     {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 109,
-      "p": "/behavior_packs/test_bp/manifest.json",
-      "d": "{\"format_version\":2,\"header\":{\"description\":\"Test behavior pack for spawn rules dependency tracking\",\"name\":\"Test Spawn Rules BP\",\"uuid\":\"12345678-1234-1234-1234-123456789012\",\"version\":[1,0,0],\"min_engine_version\":[1,20,0]},\"modules\":[{\"description\":\"Test behavior pack\",\"type\":\"data\",\"uuid\":\"22345678-1234-1234-1234-123456789012\",\"version\":[1,0,0]}],\"dependencies\":[]}"
+      "iTp": 7,
+      "gId": "RESOURCEANIMATION",
+      "gIx": 102
     },
     {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 107,
-      "p": "/behavior_packs/test_bp/manifest.json",
-      "d": 2
+      "iTp": 1,
+      "gId": "RPDEPENDS",
+      "gIx": 1
     },
     {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 108,
-      "p": "/behavior_packs/test_bp/manifest.json",
-      "d": "12345678-1234-1234-1234-123456789012"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 106,
-      "p": "/behavior_packs/test_bp/manifest.json",
-      "d": "12345678-1234-1234-1234-123456789012|1.0.0"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 104,
-      "p": "/behavior_packs/test_bp/manifest.json",
-      "d": "Test Spawn Rules BP"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 105,
-      "p": "/behavior_packs/test_bp/manifest.json",
-      "d": "Test behavior pack for spawn rules dependency tracking"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
-      "gIx": 107,
-      "p": "/behavior_packs/test_bp/manifest.json",
-      "d": [
-        1,
-        20,
-        0
-      ]
-    },
-    {
-      "iTp": 2,
-      "gId": "JSONTAGS",
-      "gIx": 101,
-      "p": "/behavior_packs/test_bp/entities/example_entity.json",
-      "d": "/behavior_packs/test_bp/entities/example_entity.json",
-      "fs": {
-        "Default Components": {
-          "minecraft:health": 1,
-          "minecraft:movement": 1,
-          "minecraft:navigation.walk": 1,
-          "minecraft:behavior.random_stroll": 1,
-          "minecraft:behavior.look_at_player": 1,
-          "minecraft:behavior.random_look_around": 1
-        }
-      }
-    },
-    {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 256,
-      "p": "/behavior_packs/test_bp/spawn_rules/example_entity.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 644,
-      "p": "/behavior_packs/test_bp/spawn_rules/example_entity.json",
-      "d": [
-        1,
-        8,
-        0
-      ]
+      "iTp": 1,
+      "gId": "SCRIPT",
+      "gIx": 1
     },
     {
       "iTp": 7,
@@ -1052,6 +1303,26 @@
       "gIx": 101
     },
     {
+      "iTp": 8,
+      "gId": "SCRIPTMODULE",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "SNDSDEF",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "STRICT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "SUMMARY",
+      "gIx": 1
+    },
+    {
       "iTp": 7,
       "gId": "SUMMARY",
       "gIx": 101
@@ -1062,14 +1333,9 @@
       "gIx": 102
     },
     {
-      "iTp": 7,
-      "gId": "RESOURCEANIMATION",
-      "gIx": 101
-    },
-    {
-      "iTp": 7,
-      "gId": "RESOURCEANIMATION",
-      "gIx": 102
+      "iTp": 1,
+      "gId": "TEXTURE",
+      "gIx": 1
     },
     {
       "iTp": 7,
@@ -1077,19 +1343,21 @@
       "gIx": 101
     },
     {
-      "iTp": 7,
-      "gId": "TEXTUREREF",
-      "gIx": 101
-    },
-    {
-      "iTp": 7,
-      "gId": "TYPES",
-      "gIx": 101
+      "iTp": 1,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 1
     },
     {
       "iTp": 7,
       "gId": "TEXTUREIMAGE",
-      "gIx": 101
+      "gIx": 101,
+      "fs": {
+        "Vanilla Game Texture Coverage": {
+          "Override Count": 0,
+          "Vanilla Texture Count": 2669,
+          "Percent": 0
+        }
+      }
     },
     {
       "iTp": 7,
@@ -1302,159 +1570,14 @@
       }
     },
     {
-      "iTp": 7,
-      "gId": "GEOMETRY",
-      "gIx": 101
-    },
-    {
-      "iTp": 7,
-      "gId": "GEOMETRY",
-      "gIx": 102
-    },
-    {
-      "iTp": 7,
-      "gId": "GEOMETRY",
-      "gIx": 103
-    },
-    {
-      "iTp": 3,
-      "gId": "CPACKICON",
-      "gIx": 101
-    },
-    {
-      "iTp": 3,
-      "gId": "LANGFILES",
-      "gIx": 101
-    },
-    {
-      "iTp": 2,
-      "gId": "MINENGINEVER",
-      "gIx": 605,
-      "p": "/behavior_packs/test_bp/manifest.json",
-      "d": [
-        1,
-        20,
-        0
-      ]
-    },
-    {
-      "iTp": 7,
-      "gId": "ENTITYTYPE",
-      "gIx": 52,
-      "fs": {
-        "(no runtime identifier)": {
-          "Count": 1
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "ENTITYTYPE",
-      "gIx": 53,
-      "fs": {
-        "(no override identifier)": {
-          "Count": 1
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "ENTITYTYPE",
-      "gIx": 54,
-      "fs": {
-        "Spawnable Entity Type": {
-          "Count": 1
-        },
-        "Summonable Entity Type": {
-          "Count": 1
-        }
-      }
-    },
-    {
-      "iTp": 6,
-      "gId": "ENTITYTYPE",
-      "gIx": 130,
-      "p": "/behavior_packs/test_bp/entities/example_entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "ITEMTYPE",
-      "gIx": 53
-    },
-    {
-      "iTp": 7,
-      "gId": "ITEMTYPE",
-      "gIx": 55
-    },
-    {
-      "iTp": 1,
-      "gId": "ITEMS",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "LINESIZE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "PACKSIZE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "PACK",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "JSONTAGS",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "FORMATVER",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "SCRIPT",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "SHARING",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "SUMMARY",
-      "gIx": 1
-    },
-    {
-      "iTp": 8,
-      "gId": "PACKMETADATA",
-      "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "RESOURCEANIMATION",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "STRICT",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "TEXTURE",
-      "gIx": 1
-    },
-    {
       "iTp": 1,
       "gId": "TEXTUREREF",
       "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREREF",
+      "gIx": 101
     },
     {
       "iTp": 1,
@@ -1462,113 +1585,13 @@
       "gIx": 1
     },
     {
-      "iTp": 1,
-      "gId": "TEXTUREIMAGE",
-      "gIx": 1
+      "iTp": 7,
+      "gId": "TYPES",
+      "gIx": 101
     },
     {
       "iTp": 1,
-      "gId": "GEOMETRY",
-      "gIx": 1
-    },
-    {
-      "iTp": 8,
-      "gId": "MCFUNCTION",
-      "gIx": 2
-    },
-    {
-      "iTp": 0,
-      "gId": "CPACKICON",
-      "gIx": 0
-    },
-    {
-      "iTp": 1,
-      "gId": "CWI",
-      "gIx": 1
-    },
-    {
-      "iTp": 8,
-      "gId": "SNDSDEF",
-      "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "CPARTI",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "CSPJ",
-      "gIx": 1
-    },
-    {
-      "iTp": 8,
-      "gId": "EXPFLAG",
-      "gIx": 2
-    },
-    {
-      "iTp": 8,
-      "gId": "CHECKFEATUREDEPRECATION",
-      "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "FORBFILE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "PRJINT",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "GEOFMT",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "CBFG",
-      "gIx": 1
-    },
-    {
-      "iTp": 0,
-      "gId": "LANGFILES",
-      "gIx": 0
-    },
-    {
-      "iTp": 8,
-      "gId": "SCRIPTMODULE",
-      "gIx": 2
-    },
-    {
-      "iTp": 8,
-      "gId": "VSCODEFILE",
-      "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "MINENGINEVER",
-      "gIx": 1
-    },
-    {
-      "iTp": 8,
-      "gId": "BASEGAMEVER",
-      "gIx": 2
-    },
-    {
-      "iTp": 8,
-      "gId": "BLOCKSCAT",
-      "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "ENTITYTYPE",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "ITEMTYPE",
+      "gId": "UNKFILE",
       "gIx": 1
     },
     {
@@ -1578,13 +1601,18 @@
     },
     {
       "iTp": 1,
-      "gId": "JSONF",
+      "gId": "UNLINK",
       "gIx": 1
     },
     {
-      "iTp": 1,
-      "gId": "JSON",
-      "gIx": 1
+      "iTp": 8,
+      "gId": "VALFILE",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "VSCODEFILE",
+      "gIx": 2
     },
     {
       "iTp": 8,
@@ -1595,31 +1623,6 @@
       "iTp": 8,
       "gId": "WORLDDATA",
       "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "UNLINK",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "UNKFILE",
-      "gIx": 1
-    },
-    {
-      "iTp": 8,
-      "gId": "VALFILE",
-      "gIx": 2
-    },
-    {
-      "iTp": 1,
-      "gId": "PATHLENGTH",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "NOBOM",
-      "gIx": 1
     }
   ],
   "generatorName": "Minecraft Creator Tools",

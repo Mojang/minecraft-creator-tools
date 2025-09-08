@@ -36,12 +36,12 @@ export default interface MinecraftPlayerLevel {
    * Player: 24791
    *
    */
-  max: number;
+  max?: number;
 
   /**
    * @remarks
    * The initial value of the player level.
    */
-  value: number;
+  value?: number;
 
 }

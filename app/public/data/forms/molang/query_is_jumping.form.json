@@ -2,5 +2,5 @@
   "id": "query.is_jumping",
   "fields": [],
   "description": "Returns 1.0 if the entity is jumping, else it returns 0.0.",
-  "title": "Is Jumping Query"
+  "title": "Is Jumping"
 }

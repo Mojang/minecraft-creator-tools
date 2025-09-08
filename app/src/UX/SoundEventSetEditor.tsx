@@ -99,6 +99,10 @@ export default class SoundEventSetEditor extends Component<ISoundEventSetSoundEd
       header = <div className="sevs-header">Sound Event Set</div>;
     }
 
+    if (!form) {
+      return <div className="sevs-loading">Form not found</div>;
+    }
+
     return (
       <div className="sevs-area">
         {header}

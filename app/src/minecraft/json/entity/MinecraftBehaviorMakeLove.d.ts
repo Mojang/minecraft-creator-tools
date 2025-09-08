@@ -11,17 +11,17 @@
  * 
  * minecraft:behavior.make_love Samples
 
-Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
-
-"minecraft:behavior.make_love": {
-  "priority": 5
-}
-
-
 Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager.json
 
 "minecraft:behavior.make_love": {
   "priority": 6
+}
+
+
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+
+"minecraft:behavior.make_love": {
+  "priority": 5
 }
 
  */
@@ -42,12 +42,12 @@ export default interface MinecraftBehaviorMakeLove {
    * goal.
    * 
    * Sample Values:
-   * Villager v2: 5
-   *
    * Villager: 6
+   *
+   * Villager v2: 5
    *
    *
    */
-  priority: number;
+  priority?: number;
 
 }

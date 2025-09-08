@@ -101,7 +101,7 @@ export default interface BoolProperty {
    * Wolf: "minecraft:has_increased_max_health", "minecraft:is_armorable", "minecraft:was_upgraded_to_1_21_100"
    *
    */
-  domain: string;
+  domain?: string;
 
   /**
    * @remarks
@@ -111,13 +111,13 @@ export default interface BoolProperty {
    * Bee: "!="
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
    * (Optional) The subject of this filter test.
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -126,7 +126,7 @@ export default interface BoolProperty {
    * Bee: "bool_property"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -136,7 +136,7 @@ export default interface BoolProperty {
    * Happy Ghast: true
    *
    */
-  value: boolean;
+  value?: boolean;
 
 }
 

@@ -40,13 +40,13 @@
             "content": 2
           }
         ],
-        "/vanilla/behavior_pack/entities/zombie_villager_v2.json": [
+        "/vanilla/behavior_pack/entities/zombie_villager.json": [
           {
             "path": "/minecraft:entity/component_groups/from_abandoned_village/minecraft:behavior.flee_sun/",
             "content": 4
           }
         ],
-        "/vanilla/behavior_pack/entities/zombie_villager.json": [
+        "/vanilla/behavior_pack/entities/zombie_villager_v2.json": [
           {
             "path": "/minecraft:entity/component_groups/from_abandoned_village/minecraft:behavior.flee_sun/",
             "content": 4
@@ -94,7 +94,7 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/zombie_villager_v2.json": [
+    "/vanilla/behavior_pack/entities/zombie_villager.json": [
       {
         "path": "/minecraft:entity/component_groups/from_abandoned_village/minecraft:behavior.flee_sun/",
         "content": {
@@ -103,7 +103,7 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/zombie_villager.json": [
+    "/vanilla/behavior_pack/entities/zombie_villager_v2.json": [
       {
         "path": "/minecraft:entity/component_groups/from_abandoned_village/minecraft:behavior.flee_sun/",
         "content": {

@@ -11,10 +11,10 @@
  * 
  * minecraft:behavior.trade_with_player Samples
 
-Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager.json
 
 "minecraft:behavior.trade_with_player": {
-  "priority": 2,
+  "priority": 1,
   "filters": {
     "all_of": [
       {
@@ -42,10 +42,10 @@ Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
 }
 
 
-Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
 "minecraft:behavior.trade_with_player": {
-  "priority": 1,
+  "priority": 2,
   "filters": {
     "all_of": [
       {
@@ -96,18 +96,18 @@ export default interface MinecraftBehaviorTradeWithPlayer {
    * Conditions that need to be met for the behavior to start.
    * 
    * Sample Values:
-   * Villager v2: {"all_of":[{"all_of":[{"test":"in_water","value":false}]},{"any_of":[{"test":"on_ground","value":true},{"test":"is_sleeping","value":true}]}]}
+   * Villager: {"all_of":[{"all_of":[{"test":"in_water","value":false}]},{"any_of":[{"test":"on_ground","value":true},{"test":"is_sleeping","value":true}]}]}
    *
    *
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
    * The max distance that the mob can be from the player before exiting
    * the goal.
    */
-  max_distance_from_player: number;
+  max_distance_from_player?: number;
 
   /**
    * @remarks
@@ -116,13 +116,13 @@ export default interface MinecraftBehaviorTradeWithPlayer {
    * goal.
    * 
    * Sample Values:
-   * Villager v2: 2
-   *
    * Villager: 1
+   *
+   * Villager v2: 2
    *
    *
    *
    */
-  priority: number;
+  priority?: number;
 
 }

@@ -1,4 +1,5 @@
 {
+  "id": "minecraft:sky_color",
   "fields": [
     {
       "id": "sky_color",
@@ -16,15 +17,6 @@
       "isRequired": true
     }
   ],
-  "description": "Sets the sky color used during rendering. Biomes without this component will have default sky color behavior.",
-  "samples": {
-    "samples": [
-      {
-        "path": "Example:",
-        "content": "{\r\n\t\"sky_color\": \"#000000\"}"
-      }
-    ]
-  },
-  "title": "Minecraft Sky Color Client Biome",
-  "id": "minecraft:sky_color"
+  "title": "Minecraft Sky Color",
+  "description": "Sets the sky color used during rendering. Biomes without this component will have default sky color behavior."
 }

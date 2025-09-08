@@ -7,7 +7,8 @@
   "fields": [
     {
       "id": "identifier",
-      "description": "Specifies the geometry description identifier to use to render this block. This identifier must match an existing geometry identifier in any of the currently loaded resource packs.",
+      "description": "Specifies the geometry description identifier to use to render this block.",
+      "technicalDescription": "This identifier must match an existing geometry identifier in any of the currently loaded resource packs.",
       "samples": {
         "/samples/culled_block_sample/culled_block_behavior_pack/blocks/tuna_roll.json": [
           {
@@ -46,7 +47,8 @@
     {
       "id": "bone_visibility",
       "title": "Bone Visibility",
-      "description": "An optional array of Booleans that define the visibility of individual bones in the geometry file. In order to set up 'bone_visibility', the geometry file name must be entered as an identifier. After the identifier has been specified, bone_visibility can be defined based on the names of the bones in the specified geometry file on a true/false basis. Note that all bones default to 'true,' so bones should only be defined if they are being set to 'false.' Including bones set to 'true' will work the same as the default.",
+      "description": "An optional list of true/false values that define the visibility of individual bones in the geometry file.",
+      "technicalDescription": "In order to set up 'bone_visibility', the geometry file name must be entered as an identifier. After the identifier has been specified, bone_visibility can be defined based on the names of the bones in the specified geometry file on a true/false basis. Note that all bones default to 'true,' so bones should only be defined if they are being set to 'false.' Including bones set to 'true' will work the same as the default.",
       "dataType": 27,
       "hideSamples": true,
       "samples": {
@@ -68,44 +70,13 @@
             }
           }
         ]
-      },
-      "subForm": {
-        "fields": [
-          {
-            "id": "bb_main",
-            "title": "Bb_main",
-            "dataType": 2,
-            "samples": {
-              "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/blue_bubble_fish.json": [
-                {
-                  "path": "bb_main",
-                  "content": true
-                }
-              ]
-            }
-          },
-          {
-            "id": "fish",
-            "title": "Fish",
-            "dataType": 2,
-            "samples": {
-              "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/blue_bubble_fish.json": [
-                {
-                  "path": "fish",
-                  "content": true
-                }
-              ]
-            }
-          }
-        ],
-        "title": "Bone_visibility",
-        "id": "bone_visibility"
       }
     },
     {
       "id": "culling",
       "dataType": 2,
-      "description": "An optional identifer of a culling definition. This identifier must match an existing culling definition in any of the currently loaded resource packs. The culling definition is used to determine which faces of the block should be culled when rendering. The culling definition can be used to optimize rendering performance by reducing the number of faces that need to be rendered.",
+      "description": "An optional identifer of a culling definition. The culling definition is used to determine which faces of the block should be culled when rendering. The culling definition can be used to optimize rendering performance by reducing the number of faces that need to be rendered.",
+      "technicalDescription": "This identifier must match an existing culling definition in any of the currently loaded resource packs.",
       "samples": {
         "/samples/culled_block_sample/culled_block_behavior_pack/blocks/tuna_roll.json": [
           {
@@ -120,49 +91,15 @@
       "id": "culling_layer",
       "title": "Culling Layer",
       "dataType": 2,
-      "description": "[Experimental] - A string that allows culling rule to group multiple blocks together when comparing them. When using the minecraft namespace, the only allowed culling layer identifiers are : \"minecraft:culling_layer.undefined\" or \"minecraft:culling_layer.leaves\". When using no namespaces or a custom one, the names must start and end with an alpha-numeric character. Additionally, the feature is currently only usable behind the \"upcoming creator features\" toggle."
+      "description": "[Experimental] - A string that allows culling rule to group multiple blocks together when comparing them. When using the minecraft namespace, the only allowed culling layer identifiers are : \"minecraft:culling_layer.undefined\" or \"minecraft:culling_layer.leaves\". Additionally, the feature is currently only usable behind the \"upcoming creator features\" toggle.",
+      "technicalDescription": "When using no namespaces or a custom one, the names must start and end with an alpha-numeric character.",
+      "defaultValue": "minecraft:culling_layer.undefined"
     },
     {
-      "id": "As an object",
-      "title": "As An Object",
-      "description": "The component can be defined as an object to gain control over more specific behaviors.",
-      "dataType": 15,
-      "subForm": {
-        "description": "The component can be defined as an object to gain control over more specific behaviors.",
-        "fields": [
-          {
-            "id": "bone_visibility",
-            "title": "Bone Visibility",
-            "description": "A JSON object that contains a list of key/value pairs that map from bone name in the specified geometry file (key) to a boolean that tells whether the bone should be visible or not (value).",
-            "dataType": 15
-          },
-          {
-            "id": "culling",
-            "title": "Culling",
-            "description": "Which block_culling .json file to use when rendering this block.",
-            "dataType": 2
-          },
-          {
-            "id": "culling_layer",
-            "title": "Culling Layer",
-            "description": "A string that allows culling rule to group multiple blocks together when comparing them. When using the minecraft namespace, the only allowed culling layer identifiers are : \"minecraft:culling_layer.undefined\" or \"minecraft:culling_layer.leaves\". When using no namespaces or a custom one, the names must start and end with an alpha-numeric character.",
-            "defaultValue": "minecraft:culling_layer.undefined",
-            "dataType": 2
-          },
-          {
-            "id": "identifier",
-            "title": "Identifier",
-            "description": "The description identifier of the geometry to use to render this block.",
-            "dataType": 2
-          },
-          {
-            "id": "uv_lock",
-            "title": "Uv Lock",
-            "description": "A Boolean locking UV orientation of all bones in the geometry, or an array of strings locking UV orientation of specific bones in the geometry. For performance reasons it is recommended to use the Boolean. Note that for cubes using Box UVs, rather than Per-face UVs, 'uv_lock' is only supported if the cube faces are square.",
-            "dataType": 2
-          }
-        ]
-      }
+      "id": "uv_lock",
+      "title": "Uv Lock",
+      "description": "A Boolean locking UV orientation of all bones in the geometry, or an array of strings locking UV orientation of specific bones in the geometry. For performance reasons it is recommended to use the Boolean. Note that for cubes using Box UVs, rather than Per-face UVs, 'uv_lock' is only supported if the cube faces are square.",
+      "dataType": 2
     }
   ],
   "scalarFieldUpgradeName": "identifier",
@@ -186,6 +123,12 @@
         "content": "geometry.frond_top"
       }
     ],
+    "/samples/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": "geometry.palm_leave"
+      }
+    ],
     "/samples/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave_corner.block.json": [
       {
         "path": "/minecraft:block/components/minecraft:geometry/",
@@ -196,12 +139,6 @@
       {
         "path": "/minecraft:block/components/minecraft:geometry/",
         "content": "geometry.palm_leave_tip"
-      }
-    ],
-    "/samples/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave.block.json": [
-      {
-        "path": "/minecraft:block/components/minecraft:geometry/",
-        "content": "geometry.palm_leave"
       }
     ],
     "/samples/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_tree_top.block.json": [
@@ -317,6 +254,12 @@
         "content": "geometry.frond_top"
       }
     ],
+    "/samples/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/palm_leave.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": "geometry.palm_leave"
+      }
+    ],
     "/samples/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/palm_leave_corner.block.json": [
       {
         "path": "/minecraft:block/components/minecraft:geometry/",
@@ -327,12 +270,6 @@
       {
         "path": "/minecraft:block/components/minecraft:geometry/",
         "content": "geometry.palm_leave_tip"
-      }
-    ],
-    "/samples/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/palm_leave.block.json": [
-      {
-        "path": "/minecraft:block/components/minecraft:geometry/",
-        "content": "geometry.palm_leave"
       }
     ],
     "/samples/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/palm_tree_top.block.json": [

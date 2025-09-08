@@ -39,9 +39,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import IFile from "../storage/IFile";
 import { faFile } from "@fortawesome/free-regular-svg-icons";
 import ItemTypeAttachableEditor from "./ItemTypeAttachableEditor";
+import BiomeEditor from "./BiomeEditor";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { ProjectItemEditorView } from "./ProjectEditorUtilities";
 import ProjectMap from "./ProjectMap";
+import BiomeResourceEditor from "./BiomeResourceEditor";
 
 enum ProjectItemEditorDirtyState {
   clean = 0,
@@ -88,7 +90,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
     this._handleDefaultVariant = this._handleDefaultVariant.bind(this);
     this._handleDrodownValChange = this._handleDrodownValChange.bind(this);
 
-    if (this.props.activeProjectItem && this.props.activeProjectItem.isLoaded) {
+    if (this.props.activeProjectItem && this.props.activeProjectItem.isContentLoaded) {
       this.state = {
         dirtyState: ProjectItemEditorDirtyState.clean,
         loadedItem: this.props.activeProjectItem,
@@ -111,10 +113,11 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
 
   private async _updateFromProps() {
     if (this.props.activeProjectItem !== null && this.props.activeProjectItem !== undefined) {
-      if (!this.props.activeProjectItem.isLoaded) {
+      if (!this.props.activeProjectItem.isContentLoaded) {
         this.props.activeProjectItem.onLoaded.subscribe(this._handleItemLoaded);
 
-        await this.props.activeProjectItem.load();
+        await this.props.activeProjectItem.loadContent();
+
         this._handleItemLoaded(this.props.activeProjectItem);
       } else {
         if (!this.state.loadedItem) {
@@ -249,11 +252,10 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
             descrip += " - No file for variant `" + this.props.activeVariant + "`.";
           }
         } else if (file.isContentLoaded) {
-          descrip = Utilities.lowerCaseStartOfString(descrip);
           if (file.content === null) {
-            descrip = "No default content for " + descrip;
+            descrip = "No default content for " + descrip[0].toLowerCase() + descrip.substring(1);
           } else {
-            descrip = "Loaded " + descrip;
+            descrip = "Loaded " + descrip[0].toLowerCase() + descrip.substring(1);
           }
         }
       }
@@ -315,11 +317,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
 
         const formCategoryData = FormMappings["" + projItem.itemType];
 
-        if (
-          (file.type === "js" || file.type === "ts" || file.type === "mjs") &&
-          file.name !== "just.config.ts" &&
-          file.name !== "eslint.config.mjs"
-        ) {
+        if (file.type === "js" || file.type === "ts" || file.type === "mjs") {
           let pref = this.props.project.preferredScriptLanguage;
 
           if (file.type === "ts") {
@@ -527,7 +525,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           interior = (
             <EntityTypeResourceEditor
               theme={this.props.theme}
-              projectItem={this.props.activeProjectItem}
+              item={this.props.activeProjectItem}
               heightOffset={heightOffset}
               project={this.props.project}
               file={file}
@@ -539,12 +537,38 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           interior = (
             <ItemTypeAttachableEditor
               theme={this.props.theme}
-              projectItem={this.props.activeProjectItem}
+              item={this.props.activeProjectItem}
               carto={this.props.carto}
               heightOffset={heightOffset}
               project={this.props.project}
               file={file}
               readOnly={this.props.readOnly}
+              setActivePersistable={this._handleNewChildPersistable}
+            />
+          );
+        } else if (file.type === "json" && projItem.itemType === ProjectItemType.biomeBehavior && !showRaw) {
+          interior = (
+            <BiomeEditor
+              project={this.props.project}
+              carto={this.props.carto}
+              readOnly={this.props.readOnly}
+              heightOffset={heightOffset}
+              theme={this.props.theme}
+              file={file}
+              item={this.props.activeProjectItem}
+              setActivePersistable={this._handleNewChildPersistable}
+            />
+          );
+        } else if (file.type === "json" && projItem.itemType === ProjectItemType.biomeResource && !showRaw) {
+          interior = (
+            <BiomeResourceEditor
+              project={this.props.project}
+              carto={this.props.carto}
+              readOnly={this.props.readOnly}
+              heightOffset={heightOffset}
+              theme={this.props.theme}
+              file={file}
+              item={this.props.activeProjectItem}
               setActivePersistable={this._handleNewChildPersistable}
             />
           );
@@ -607,9 +631,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           file.type === "geometry" ||
           file.type === "vertex" ||
           file.type === "fragment" ||
-          file.type === "env" ||
-          file.name === "just.config.ts" ||
-          file.name === "eslint.config.mjs"
+          file.type === ".env"
         ) {
           interior = (
             <TextEditor

@@ -38,6 +38,6 @@ export default interface MinecraftBehaviorDragonscanning {
    * Ender Dragon: 2
    *
    */
-  priority: number;
+  priority?: number;
 
 }

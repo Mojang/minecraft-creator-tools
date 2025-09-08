@@ -183,6 +183,13 @@ program
   });
 
 program
+  .command("docsupdateformsource")
+  .description("Updates sources for documentation.")
+  .action(() => {
+    executionTaskType = TaskType.docsUpdateFormSource;
+  });
+
+program
   .command("docsgenerateformjson")
   .description("Generates finalized form json for consumption.")
   .action(() => {
@@ -1241,7 +1248,9 @@ async function setAndDisplayAllWorlds() {
                 FolderContext.unknown
               );
 
-              await pi.ensureFolderStorage();
+              if (!pi.isContentLoaded) {
+                await pi.loadContent();
+              }
 
               await setAndDisplayWorld(pi, true);
             }

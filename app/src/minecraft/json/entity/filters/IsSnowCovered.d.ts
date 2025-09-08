@@ -45,13 +45,13 @@ export default interface IsSnowCovered {
    * @remarks
    * (Optional) The comparison to apply with 'value'.
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
    * (Optional) The subject of this filter test.
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -60,7 +60,7 @@ export default interface IsSnowCovered {
    * Fox: "is_snow_covered"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -71,7 +71,7 @@ export default interface IsSnowCovered {
    *
    *
    */
-  value: boolean;
+  value?: boolean;
 
 }
 

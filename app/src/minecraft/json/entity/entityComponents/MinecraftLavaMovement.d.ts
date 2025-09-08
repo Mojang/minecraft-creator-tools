@@ -35,6 +35,6 @@ export default interface MinecraftLavaMovement {
    * Strider: 0.32
    *
    */
-  value: number;
+  value?: number;
 
 }

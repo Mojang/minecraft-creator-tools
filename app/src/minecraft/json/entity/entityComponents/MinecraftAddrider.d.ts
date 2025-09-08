@@ -103,7 +103,7 @@ export default interface MinecraftAddrider {
    * Cave Spider: "minecraft:skeleton", "minecraft:stray", "minecraft:bogged", "minecraft:wither_skeleton"
    *
    */
-  entity_type: string;
+  entity_type?: string;
 
   /**
    * @remarks
@@ -115,6 +115,6 @@ export default interface MinecraftAddrider {
    * Strider: "minecraft:spawn_as_strider_jockey", "minecraft:spawn_baby_strider_jockey"
    *
    */
-  spawn_event: string;
+  spawn_event?: string;
 
 }

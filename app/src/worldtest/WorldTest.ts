@@ -68,7 +68,7 @@ export default class WorldTest {
       scripts.push(area.generateGameTestJavaScript(area.title));
     }
 
-    return scripts.join("\r\n");
+    return scripts.join("\n");
   }
 
   generateCommandLine() {

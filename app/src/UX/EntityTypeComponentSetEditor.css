@@ -42,10 +42,12 @@
   margin-bottom: 1px;
   font-size: small;
 }
+
 .etcse-componentWrapperInner {
   padding-top: 6px;
   padding-bottom: 6px;
 }
+
 .etcse-componentForm .ui-form__input {
   padding-top: 3px;
   margin-bottom: 4px;
@@ -60,6 +62,7 @@
 .etcse-componentForm .pu > :last-child {
   margin-top: 0px;
 }
+
 .etcse-componentForm .pt > :not(:last-child) {
   margin-bottom: 0px;
 }

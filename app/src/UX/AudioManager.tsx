@@ -242,7 +242,9 @@ export default class AudioManager extends Component<IAudioManagerProps, IAudioMa
       const audioWorkingFolder = await this.props.project.ensureWorkingFolderForFile(this.props.file);
 
       if (audioWorkingFolder) {
-        await audioWorkingFolder.load();
+        if (!audioWorkingFolder.isLoaded) {
+          await audioWorkingFolder.load();
+        }
 
         if (
           audioWorkingFolder.fileCount === 0 &&
@@ -267,10 +269,13 @@ export default class AudioManager extends Component<IAudioManagerProps, IAudioMa
 
     if (this.rootElt !== null && this.rootElt.current !== null) {
       if (this.props.file) {
-        await this.props.file.loadContent();
-
+        if (!this.props.file.isContentLoaded) {
+          await this.props.file.loadContent();
+        }
         if (this.props.file.content && this.props.file.content instanceof Uint8Array) {
-          const blob = new Blob([this.props.file.content], { type: StorageUtilities.getMimeType(this.props.file) });
+          const blob = new Blob([this.props.file.content as BlobPart], {
+            type: StorageUtilities.getMimeType(this.props.file),
+          });
 
           while (this.rootElt.current && this.rootElt.current.childNodes.length > 0) {
             this.rootElt.current.removeChild(this.rootElt.current.childNodes[0]);
@@ -345,9 +350,11 @@ export default class AudioManager extends Component<IAudioManagerProps, IAudioMa
                 const workingFile = audioWorkingFolder.files[workingFileName];
 
                 if (workingFile) {
-                  await workingFile.loadContent();
+                  if (!workingFile.isContentLoaded) {
+                    await workingFile.loadContent();
+                  }
                   if (workingFile.content && workingFile.content instanceof Uint8Array) {
-                    const workingBlob = new Blob([workingFile.content], {
+                    const workingBlob = new Blob([workingFile.content as BlobPart], {
                       type: StorageUtilities.getMimeType(this.props.file),
                     });
 

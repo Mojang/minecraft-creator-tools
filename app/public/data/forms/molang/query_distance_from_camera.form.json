@@ -2,5 +2,5 @@
   "id": "query.distance_from_camera",
   "fields": [],
   "description": "Returns the distance of the root of this entity or particle emitter from the camera.",
-  "title": "Distance From Camera Query"
+  "title": "Distance From Camera"
 }

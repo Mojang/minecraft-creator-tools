@@ -214,7 +214,7 @@ export default interface MinecraftAreaAttack {
    * Pufferfish: "contact"
    *
    */
-  cause: string;
+  cause?: string;
 
   /**
    * @remarks
@@ -225,7 +225,7 @@ export default interface MinecraftAreaAttack {
    * Magma Cube: 0.5
    *
    */
-  damage_cooldown: number;
+  damage_cooldown?: number;
 
   /**
    * @remarks
@@ -236,7 +236,7 @@ export default interface MinecraftAreaAttack {
    * Magma Cube: 6, 4, 3
    *
    */
-  damage_per_tick: number;
+  damage_per_tick?: number;
 
   /**
    * @remarks
@@ -249,7 +249,7 @@ export default interface MinecraftAreaAttack {
    * Pufferfish: 0.2
    *
    */
-  damage_range: string;
+  damage_range?: string;
 
   /**
    * @remarks
@@ -264,13 +264,13 @@ export default interface MinecraftAreaAttack {
    * Slime: {"any_of":[{"test":"is_family","subject":"other","value":"player"},{"test":"is_family","subject":"other","value":"irongolem"},{"test":"is_family","subject":"other","value":"snowgolem"}]}
    *
    */
-  entity_filter: jsoncommon.MinecraftFilter;
+  entity_filter?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
    * If the entity should play their attack sound when attacking a
    * target.
    */
-  play_attack_sound: boolean;
+  play_attack_sound?: boolean;
 
 }

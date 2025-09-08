@@ -44,7 +44,7 @@ export default interface MinecraftBehaviorPetSleepWithOwner {
    *
    *
    */
-  goal_radius: number;
+  goal_radius?: number;
 
   /**
    * @remarks
@@ -57,7 +57,7 @@ export default interface MinecraftBehaviorPetSleepWithOwner {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -69,7 +69,7 @@ export default interface MinecraftBehaviorPetSleepWithOwner {
    *
    *
    */
-  search_height: number;
+  search_height?: number;
 
   /**
    * @remarks
@@ -79,14 +79,14 @@ export default interface MinecraftBehaviorPetSleepWithOwner {
    *
    *
    */
-  search_radius: number;
+  search_radius?: number;
 
   /**
    * @remarks
    * The distance in blocks from the owner the pet can be to sleep with
    * owner.
    */
-  search_range: number;
+  search_range?: number;
 
   /**
    * @remarks
@@ -97,6 +97,6 @@ export default interface MinecraftBehaviorPetSleepWithOwner {
    *
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

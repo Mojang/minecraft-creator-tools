@@ -44,7 +44,7 @@ export default interface MinecraftTrusting {
    * Ocelot: 0.33
    *
    */
-  probability: number;
+  probability?: number;
 
   /**
    * @remarks
@@ -54,7 +54,7 @@ export default interface MinecraftTrusting {
    * Ocelot: {"event":"minecraft:on_trust","target":"self"}
    *
    */
-  trust_event: jsoncommon.MinecraftEventTrigger;
+  trust_event?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -65,6 +65,6 @@ export default interface MinecraftTrusting {
    * Ocelot: ["fish","salmon"]
    *
    */
-  trust_items: string[];
+  trust_items?: string[];
 
 }

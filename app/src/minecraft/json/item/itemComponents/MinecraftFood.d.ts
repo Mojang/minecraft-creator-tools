@@ -10,13 +10,6 @@
  * Items Documentation - minecraft:food
  * 
  * minecraft:food Samples
-"minecraft:food": {
-  "can_always_eat": false,
-  "nutrition": 3,
-  "saturation_modifier": 0.6,
-  "using_converts_to": "bowl"
-}
-
 
 Apple - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/apple.json
 
@@ -77,20 +70,20 @@ Beef - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/item
 }
 
 
+Beetroot - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/beetroot.json
+
+"minecraft:food": {
+  "nutrition": 1,
+  "saturation_modifier": "normal"
+}
+
+
 Beetroot Soup - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/beetroot_soup.json
 
 "minecraft:food": {
   "nutrition": 6,
   "saturation_modifier": "normal",
   "using_converts_to": "bowl"
-}
-
-
-Beetroot - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/beetroot.json
-
-"minecraft:food": {
-  "nutrition": 1,
-  "saturation_modifier": "normal"
 }
 
 
@@ -150,14 +143,23 @@ Cooked Beef - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
   "saturation_modifier": "good"
 }
 
+
+Cooked Chicken - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/cooked_chicken.json
+
+"minecraft:food": {
+  "nutrition": 6,
+  "saturation_modifier": "normal"
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Food Item (minecraft:food)
- * Sets the item as a food component, allowing it to be edible to
- * the player.
+ * Item Food (minecraft:food)
+ * When an item has a food component, it becomes edible to the
+ * player. Must have the 'minecraft:use_duration' component in
+ * order to function properly.
  */
 export default interface MinecraftFood {
 
@@ -171,11 +173,11 @@ export default interface MinecraftFood {
    *
    *
    */
-  can_always_eat: boolean;
+  can_always_eat?: boolean;
 
-  cooldown_time: number;
+  cooldown_time?: number;
 
-  cooldown_type: string;
+  cooldown_type?: string;
 
   /**
    * @remarks
@@ -186,9 +188,9 @@ export default interface MinecraftFood {
    * Chicken: [{"name":"hunger","chance":0.3,"duration":30,"amplifier":0}]
    *
    */
-  effects: MinecraftFoodEffects[];
+  effects?: MinecraftFoodEffects[];
 
-  is_meat: string;
+  is_meat?: string;
 
   /**
    * @remarks
@@ -204,13 +206,13 @@ export default interface MinecraftFood {
    * Beef: 3
    *
    */
-  nutrition: number;
+  nutrition?: number;
 
-  on_use_action: jsoncommon.MinecraftEventTrigger;
+  on_use_action?: jsoncommon.MinecraftEventTrigger;
 
-  on_use_range: jsoncommon.MinecraftEventTrigger;
+  on_use_range?: jsoncommon.MinecraftEventTrigger;
 
-  remove_effects: string[];
+  remove_effects?: string[];
 
   /**
    * @remarks
@@ -226,7 +228,7 @@ export default interface MinecraftFood {
    * Baked Potato: "normal"
    *
    */
-  saturation_modifier: number;
+  saturation_modifier?: number;
 
   /**
    * @remarks
@@ -240,7 +242,7 @@ export default interface MinecraftFood {
    *
    *
    */
-  using_converts_to: string;
+  using_converts_to?: string;
 
 }
 
@@ -257,7 +259,7 @@ export interface MinecraftFoodEffects {
    * AppleEnchanted: 1
    *
    */
-  amplifier: number;
+  amplifier?: number;
 
   /**
    * @remarks
@@ -266,7 +268,7 @@ export interface MinecraftFoodEffects {
    * AppleEnchanted: 1
    *
    */
-  chance: number;
+  chance?: number;
 
   /**
    * @remarks
@@ -275,7 +277,7 @@ export interface MinecraftFoodEffects {
    * AppleEnchanted: 30
    *
    */
-  duration: number;
+  duration?: number;
 
   /**
    * @remarks
@@ -284,15 +286,6 @@ export interface MinecraftFoodEffects {
    * AppleEnchanted: "regeneration"
    *
    */
-  name: string;
-
-}
-
-
-/**
- * Using Converts To
- * Using Converts To.
- */
-export interface MinecraftFoodUsingConvertsTo {
+  name?: string;
 
 }

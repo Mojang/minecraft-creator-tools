@@ -57,11 +57,13 @@ export default class BlocksCatalogDefinition {
     if (file.manager !== undefined && file.manager instanceof BlocksCatalogDefinition) {
       et = file.manager as BlocksCatalogDefinition;
 
-      if (!et.isLoaded && loadHandler) {
-        et.onLoaded.subscribe(loadHandler);
-      }
+      if (!et.isLoaded) {
+        if (loadHandler) {
+          et.onLoaded.subscribe(loadHandler);
+        }
 
-      await et.load();
+        await et.load();
+      }
     }
 
     return et;
@@ -136,10 +138,14 @@ export default class BlocksCatalogDefinition {
     const blockCatalogItems = project.getItemsByType(ProjectItemType.blocksCatalogResourceJson);
 
     if (blockCatalogItems && blockCatalogItems.length > 0) {
-      await blockCatalogItems[0].ensureStorage();
+      const blockCatalogItem = blockCatalogItems[0];
 
-      if (blockCatalogItems[0].primaryFile) {
-        return await BlocksCatalogDefinition.ensureOnFile(blockCatalogItems[0].primaryFile);
+      if (!blockCatalogItem.isContentLoaded) {
+        await blockCatalogItem.loadContent();
+      }
+
+      if (blockCatalogItem.primaryFile) {
+        return await BlocksCatalogDefinition.ensureOnFile(blockCatalogItem.primaryFile);
       }
     }
 
@@ -223,7 +229,9 @@ export default class BlocksCatalogDefinition {
 
       for (const item of projectItemsCopy) {
         if (item.itemType === ProjectItemType.blockTypeBehavior) {
-          await item.ensureFileStorage();
+          if (!item.isContentLoaded) {
+            await item.loadContent();
+          }
 
           if (item.primaryFile) {
             const blockTypeDef = await BlockTypeDefinition.ensureOnFile(item.primaryFile);
@@ -297,9 +305,13 @@ export default class BlocksCatalogDefinition {
       return;
     }
 
-    const defString = JSON.stringify(this.blocksCatalog, null, 2);
+    Log.assert(this.blocksCatalog !== null, "ITDP");
 
-    this._file.setContent(defString);
+    if (this.blocksCatalog) {
+      const defString = JSON.stringify(this.blocksCatalog, null, 2);
+
+      this._file.setContent(defString);
+    }
   }
 
   async load() {
@@ -312,7 +324,9 @@ export default class BlocksCatalogDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
       return;

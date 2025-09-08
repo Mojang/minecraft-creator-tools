@@ -65,8 +65,6 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
       mode: BlockTypeEditorMode.states,
       isLoaded: false,
     };
-
-    this._updateManager(false);
   }
 
   static getDerivedStateFromProps(props: IBlockTypeEditorProps, state: IBlockTypeEditorState) {
@@ -90,11 +88,21 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
     return null; // No change to state
   }
 
-  componentDidUpdate(prevProps: IBlockTypeEditorProps, prevState: IBlockTypeEditorState) {
-    this._updateManager(true);
+  componentDidMount(): void {
+    this._updateManager();
   }
 
-  async _updateManager(setState: boolean) {
+  componentDidUpdate(
+    prevProps: Readonly<IBlockTypeEditorProps>,
+    prevState: Readonly<IBlockTypeEditorState>,
+    snapshot?: any
+  ): void {
+    if (prevProps.file !== this.state.fileToEdit) {
+      this._updateManager();
+    }
+  }
+
+  async _updateManager() {
     if (this.state !== undefined && this.state.fileToEdit !== undefined) {
       if (this.state.fileToEdit !== this._lastFileEdited) {
         this._lastFileEdited = this.state.fileToEdit;
@@ -110,34 +118,26 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
       (this.state.fileToEdit.manager as BlockTypeDefinition).isLoaded &&
       !this.state.isLoaded
     ) {
-      this._doUpdate(setState);
+      this._doUpdate();
     }
   }
 
   _handleBlockTypeLoaded(blockType: BlockTypeDefinition, typeA: BlockTypeDefinition) {
-    this._doUpdate(true);
+    this._doUpdate();
   }
 
-  async _doUpdate(setState: boolean) {
-    if (setState) {
-      this.setState({
-        fileToEdit: this.state.fileToEdit,
-        isLoaded: true,
-      });
-    } else {
-      this.state = {
-        fileToEdit: this.props.file,
-        mode: this.state.mode,
-        isLoaded: true,
-      };
-    }
+  async _doUpdate() {
+    this.setState({
+      fileToEdit: this.state.fileToEdit,
+      isLoaded: true,
+    });
   }
 
   async persist() {
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
-      if (file.manager !== null) {
+      if (file.manager) {
         const bt = file.manager as BlockTypeDefinition;
 
         bt.persist();
@@ -219,12 +219,6 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
       this.state.fileToEdit.manager === undefined ||
       Database.uxCatalog === null
     ) {
-      if (this.state.fileToEdit !== null) {
-        if (this.state.fileToEdit.manager === undefined) {
-          this._updateManager(true);
-        }
-      }
-
       return <div className="bte_loading">Loading...</div>;
     }
 

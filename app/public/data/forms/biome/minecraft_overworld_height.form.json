@@ -15,7 +15,8 @@
       "dataType": 2
     }
   ],
+  "note": "This is a pre-Caves and Cliffs component. It does not change overworld height, and currently only affects map item rendering",
   "description": "Noise parameters used to drive terrain height in the Overworld.",
-  "title": "Minecraft Overworld Height Biome",
+  "title": "Biome Overworld Height",
   "id": "minecraft:overworld_height"
 }

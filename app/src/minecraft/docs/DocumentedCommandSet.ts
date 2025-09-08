@@ -114,11 +114,13 @@ export default class DocumentedCommandSet {
     if (file.manager !== undefined && file.manager instanceof DocumentedCommandSet) {
       dt = file.manager as DocumentedCommandSet;
 
-      if (!dt.isLoaded && loadHandler) {
-        dt.onLoaded.subscribe(loadHandler);
-      }
+      if (!dt.isLoaded) {
+        if (loadHandler) {
+          dt.onLoaded.subscribe(loadHandler);
+        }
 
-      await dt.load();
+        await dt.load();
+      }
     }
 
     return dt;
@@ -200,7 +202,9 @@ export default class DocumentedCommandSet {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

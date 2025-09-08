@@ -76,7 +76,7 @@ export default class FileExplorerFolderDetail extends Component<
         <button
           className="fexfod-expander"
           onClick={this._handleExpanderClick}
-          title={"Expand/collapse " + this.props.folder.name}
+          title={(this.props.isExpanded ? "Collapse" : "Expand") + " " + this.props.folder.name}
         >
           {this.props.isExpanded ? (
             <FontAwesomeIcon icon={faCaretDown} className="fa-lg" />

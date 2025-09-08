@@ -41,7 +41,7 @@ export default interface MinecraftBehaviorSwell {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -53,7 +53,7 @@ export default interface MinecraftBehaviorSwell {
    *
    *
    */
-  start_distance: number;
+  start_distance?: number;
 
   /**
    * @remarks
@@ -65,6 +65,6 @@ export default interface MinecraftBehaviorSwell {
    *
    *
    */
-  stop_distance: number;
+  stop_distance?: number;
 
 }

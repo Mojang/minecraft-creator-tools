@@ -29,19 +29,19 @@ export default interface AnySlotEmpty {
    * @remarks
    * (Optional) The comparison to apply with 'value'.
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
    * (Optional) The subject of this filter test.
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
    * (Optional) The equipment location to test
    */
-  value: string;
+  value?: string;
 
 }
 
@@ -143,5 +143,6 @@ export enum AnySlotEmptyValue {
   Head = `head`,
   Inventory = `inventory`,
   Leg = `leg`,
+  MainHand = `main_hand`,
   Torso = `torso`
 }

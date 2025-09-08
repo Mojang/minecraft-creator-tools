@@ -117,7 +117,7 @@ export default interface MinecraftMobEffect {
    * Warden: 6
    *
    */
-  cooldown_time: number;
+  cooldown_time?: number;
 
   /**
    * @remarks
@@ -130,7 +130,7 @@ export default interface MinecraftMobEffect {
    * Warden: 20
    *
    */
-  effect_range: number;
+  effect_range?: number;
 
   /**
    * @remarks
@@ -143,7 +143,7 @@ export default interface MinecraftMobEffect {
    * Warden: 13
    *
    */
-  effect_time: number;
+  effect_time?: number;
 
   /**
    * @remarks
@@ -156,7 +156,7 @@ export default interface MinecraftMobEffect {
    * Warden: {"all_of":[{"test":"is_family","subject":"other","value":"player"},{"operator":"not","test":"has_ability","subject":"other","value":"invulnerable"}]}
    *
    */
-  entity_filter: jsoncommon.MinecraftFilter;
+  entity_filter?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -169,6 +169,6 @@ export default interface MinecraftMobEffect {
    * Warden: "darkness"
    *
    */
-  mob_effect: string;
+  mob_effect?: string;
 
 }

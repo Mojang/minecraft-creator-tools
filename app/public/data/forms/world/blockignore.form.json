@@ -16,5 +16,5 @@
     }
   ],
   "description": "Specifies block types in the template that should be ignored by other processors.",
-  "title": "BlockIgnore World"
+  "title": "World BlockIgnore"
 }

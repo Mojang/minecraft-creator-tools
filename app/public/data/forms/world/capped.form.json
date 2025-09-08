@@ -23,5 +23,5 @@
     }
   ],
   "description": "Processor that wraps a processor and caps the number of times the delegated processor can be applied.",
-  "title": "Capped World"
+  "title": "World Capped"
 }

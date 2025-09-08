@@ -65,7 +65,7 @@ export default interface MinecraftTargetNearbySensor {
    * Drowned: 3
    *
    */
-  inside_range: number;
+  inside_range?: number;
 
   /**
    * @remarks
@@ -76,7 +76,7 @@ export default interface MinecraftTargetNearbySensor {
    * Blaze: true
    *
    */
-  must_see: boolean;
+  must_see?: boolean;
 
   /**
    * @remarks
@@ -90,7 +90,7 @@ export default interface MinecraftTargetNearbySensor {
    * Drowned: {"event":"minecraft:switch_to_melee","target":"self"}
    *
    */
-  on_inside_range: jsoncommon.MinecraftEventTrigger;
+  on_inside_range?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -104,7 +104,7 @@ export default interface MinecraftTargetNearbySensor {
    * Drowned: {"event":"minecraft:switch_to_ranged","target":"self"}
    *
    */
-  on_outside_range: jsoncommon.MinecraftEventTrigger;
+  on_outside_range?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -112,7 +112,7 @@ export default interface MinecraftTargetNearbySensor {
    * for the name of the event and 'target' for the target of the
    * event
    */
-  on_vision_lost_inside_range: jsoncommon.MinecraftEventTrigger;
+  on_vision_lost_inside_range?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -125,6 +125,6 @@ export default interface MinecraftTargetNearbySensor {
    * Drowned: 5
    *
    */
-  outside_range: number;
+  outside_range?: number;
 
 }

@@ -5,7 +5,7 @@ import * as os from "os";
 import * as crypto from "crypto";
 import NodeStorage from "./NodeStorage";
 import IStorage from "./../storage/IStorage";
-import ILocalUtilities from "./ILocalUtilities";
+import ILocalUtilities, { Platform } from "./ILocalUtilities";
 import Log from "../core/Log";
 import IConversionSettings from "../core/IConversionSettings";
 
@@ -22,8 +22,17 @@ export default class LocalUtilities implements ILocalUtilities {
     this.#basePathAdjust = pathAdjust;
   }
 
-  get isWindows() {
-    return os.platform() === "win32";
+  get platform() {
+    switch (os.platform()) {
+      case "win32":
+        return Platform.windows;
+      case "darwin":
+        return Platform.macOS;
+      case "linux":
+        return Platform.linux;
+      default:
+        return Platform.unsupported;
+    }
   }
 
   get productNameSeed() {
@@ -39,7 +48,7 @@ export default class LocalUtilities implements ILocalUtilities {
   }
 
   get localAppDataPath() {
-    if (this.isWindows) {
+    if (this.platform === Platform.windows) {
       return (
         this.userDataPath +
         NodeStorage.platformFolderDelimiter +
@@ -54,7 +63,7 @@ export default class LocalUtilities implements ILocalUtilities {
   }
 
   get localServerLogPath() {
-    if (this.isWindows) {
+    if (this.platform === Platform.windows) {
       return (
         this.userDataPath +
         NodeStorage.platformFolderDelimiter +
@@ -107,7 +116,7 @@ export default class LocalUtilities implements ILocalUtilities {
 
     path =
       NodeStorage.ensureEndsWithDelimiter(path) +
-      (this.isWindows ? "" : ".") +
+      (this.platform === Platform.windows ? "" : ".") +
       this.#productNameSeed +
       "_test" +
       NodeStorage.platformFolderDelimiter;
@@ -120,7 +129,7 @@ export default class LocalUtilities implements ILocalUtilities {
 
     path =
       NodeStorage.ensureEndsWithDelimiter(path) +
-      (this.isWindows ? "" : ".") +
+      (this.platform === Platform.windows ? "" : ".") +
       this.#productNameSeed +
       "_cli" +
       NodeStorage.platformFolderDelimiter;
@@ -133,7 +142,7 @@ export default class LocalUtilities implements ILocalUtilities {
 
     path =
       NodeStorage.ensureEndsWithDelimiter(path) +
-      (this.isWindows ? "" : ".") +
+      (this.platform === Platform.windows ? "" : ".") +
       this.#productNameSeed +
       "_server" +
       NodeStorage.platformFolderDelimiter;
@@ -146,7 +155,7 @@ export default class LocalUtilities implements ILocalUtilities {
 
     path =
       NodeStorage.ensureEndsWithDelimiter(path) +
-      (this.isWindows ? "" : ".") +
+      (this.platform === Platform.windows ? "" : ".") +
       this.#productNameSeed +
       "_worlds" +
       NodeStorage.platformFolderDelimiter;
@@ -273,7 +282,7 @@ export default class LocalUtilities implements ILocalUtilities {
       fullPath += this.#basePathAdjust;
     }
 
-    if (this.isWindows) {
+    if (this.platform === Platform.windows) {
       fullPath += path.replace(/\//g, "\\");
     } else {
       fullPath += path.replace(/\\/g, NodeStorage.platformFolderDelimiter);

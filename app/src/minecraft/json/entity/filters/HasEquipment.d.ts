@@ -65,7 +65,7 @@ export default interface HasEquipment {
    * Pig: "hand"
    *
    */
-  domain: string;
+  domain?: string;
 
   /**
    * @remarks
@@ -75,7 +75,7 @@ export default interface HasEquipment {
    * Enderman: "not"
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
@@ -86,7 +86,7 @@ export default interface HasEquipment {
    *
    *
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -96,7 +96,7 @@ export default interface HasEquipment {
    *
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -108,7 +108,7 @@ export default interface HasEquipment {
    * Pig: "saddle", "shears"
    *
    */
-  value: string;
+  value?: string;
 
 }
 
@@ -122,6 +122,7 @@ export enum HasEquipmentDomain {
   Head = `head`,
   Inventory = `inventory`,
   Leg = `leg`,
+  MainHand = `main_hand`,
   Torso = `torso`
 }
 

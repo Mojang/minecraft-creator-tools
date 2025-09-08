@@ -2,6 +2,8 @@ import IFile from "../storage/IFile";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import IFormDefinition from "./IFormDefinition";
 import StorageUtilities from "../storage/StorageUtilities";
+import Utilities from "../core/Utilities";
+import Log from "../core/Log";
 
 export default class DataFormFile {
   private _file?: IFile;
@@ -83,10 +85,16 @@ export default class DataFormFile {
     if (this._file === undefined) {
       return;
     }
+    
+    Log.assert(this.formDefinition !== null, "DFFP");
 
-    const fdString = JSON.stringify(this.formDefinition, null, 2);
+    if (this.formDefinition) {
+      const fdString = Utilities.consistentStringify(this.formDefinition);
 
-    this._file.setContent(fdString);
+      if (fdString) {
+        this._file.setContent(fdString);
+      }
+    }
   }
 
   async load() {
@@ -94,7 +102,9 @@ export default class DataFormFile {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

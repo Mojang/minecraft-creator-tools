@@ -2,5 +2,5 @@
   "id": "query.time_since_last_vibration_detection",
   "fields": [],
   "description": "Returns the time in seconds since the last vibration detected by the entity. On errors or if no vibration has been detected yet, returns -1. Available on the Client (Resource Packs) only.",
-  "title": "Time Since Last Vibration Detection Query"
+  "title": "Time Since Last Vibration Detection"
 }

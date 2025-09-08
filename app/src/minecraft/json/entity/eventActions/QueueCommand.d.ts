@@ -32,9 +32,17 @@ import * as jsoncommon from './../../../jsoncommon';
  */
 export default interface QueueCommand {
 
-  command: string;
+  /**
+   * @remarks
+   * Slash command to run.
+   */
+  command?: string;
 
-  target: string;
+  /**
+   * @remarks
+   * The target context to execute against.
+   */
+  target?: string;
 
 }
 

@@ -6,6 +6,7 @@ import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import IDefinition from "./../minecraft/IDefinition";
 import * as jsonschema from "json-schema";
+import Log from "../core/Log";
 
 export default class JsonSchemaDefinition implements IDefinition {
   private _file?: IFile;
@@ -87,9 +88,13 @@ export default class JsonSchemaDefinition implements IDefinition {
       return;
     }
 
-    const bpString = JSON.stringify(this.data, null, 2);
+    Log.assert(this.data !== null, "JSDP");
 
-    this._file.setContent(bpString);
+    if (this.data) {
+      const bpString = JSON.stringify(this.data, null, 2);
+
+      this._file.setContent(bpString);
+    }
   }
 
   async load() {
@@ -97,7 +102,9 @@ export default class JsonSchemaDefinition implements IDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

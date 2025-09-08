@@ -10,13 +10,6 @@
  * Items Documentation - minecraft:repairable
  * 
  * minecraft:repairable Samples
-"minecraft:repairable": {
-  "on_repaired": "minecraft:celebrate",
-  "repair_items": [
-    "anvil"
-  ]
-}
-
 
 Item Axe Turret Kit - https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/axe_turret_kit.item.json
 
@@ -64,12 +57,10 @@ My Sword Chuck - https://github.com/microsoft/minecraft-samples/tree/main/custom
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Repairable Item (minecraft:repairable)
- * Defines the items that can be used to repair a defined item, and
- * the amount of durability each item restores upon repair. Each
- * entry needs to define a list of strings for 'items' that can be
- * used for the repair and an optional 'repair_amount' for how much
- * durability is repaired.
+ * Item Repairable (minecraft:repairable)
+ * The repairable item component specifies which items can be used
+ * to repair this item, along with how much durability is 
+ * gained.
  */
 export default interface MinecraftRepairable {
 
@@ -80,13 +71,15 @@ export default interface MinecraftRepairable {
    * optional `repair_amount` for how much durability is gained.
    * 
    * Sample Values:
+   * Item Axe Turret Kit: [{"items":["iron_ingot"],"repair_amount":62}]
+   *
+   *
    * Chestplate: [{"items":["minecraft:stick"],"repair_amount":"context.other->query.remaining_durability + 0.05 * context.other->query.max_durability"}]
    *
    *
    * My Sword Chuck: [{"items":["minecraft:diamond"],"repair_amount":"query.max_durability * 0.25"}]
    *
-   *
    */
-  repair_items: string;
+  repair_items?: string;
 
 }

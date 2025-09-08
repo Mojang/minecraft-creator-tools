@@ -105,7 +105,7 @@ export default interface MinecraftOnTargetEscape {
    * Magma Cube: "minecraft:become_calm"
    *
    */
-  event: jsoncommon.MinecraftEventTrigger;
+  event?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -116,7 +116,7 @@ export default interface MinecraftOnTargetEscape {
    *
    *
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -127,6 +127,6 @@ export default interface MinecraftOnTargetEscape {
    *
    *
    */
-  target: string;
+  target?: string;
 
 }

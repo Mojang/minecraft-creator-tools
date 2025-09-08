@@ -8,33 +8,13 @@
  * Contains types for working with various Minecraft Bedrock Edition JSON schemas.
  * 
  * Items Documentation - minecraft:digger
- * 
- * minecraft:digger Samples
-"minecraft:digger": {
-  "minecraft:digger": {
-    "use_efficiency": true,
-    "destroy_speeds": [
-      {
-        "speed": 6,
-        "block": {
-          "tags": "query.any_tag( 'wood' )"
-        }
-      },
-      {
-        "block": "minecraft:coal_ore",
-        "speed": 2
-      }
-    ]
-  }
-}
-
  */
 
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Digger Item (minecraft:digger)
- * Allows a creator to determine how quickly an item can dig
+ * Item Digger (minecraft:digger)
+ * Digger item component specifies how quickly this item can dig
  * specific blocks.
  */
 export default interface MinecraftDigger {
@@ -43,20 +23,20 @@ export default interface MinecraftDigger {
    * @remarks
    * A list of blocks to dig with correlating speeds of digging.
    */
-  destroy_speeds: MinecraftDiggerDestroySpeeds;
+  destroy_speeds?: MinecraftDiggerDestroySpeeds;
 
   /**
    * @remarks
    * Determines whether this item should be impacted if the
    * efficiency enchantment is applied to it.
    */
-  use_efficiency: boolean;
+  use_efficiency?: boolean;
 
 }
 
 
 /**
- * BlockInfo Item (BlockInfo)
+ * Item Components BlockInfo (BlockInfo)
  */
 export interface MinecraftDiggerDestroySpeeds {
 
@@ -80,10 +60,10 @@ export interface MinecraftDiggerDestroySpeeds {
  */
 export interface MinecraftDiggerDestroySpeedsBlock {
 
-  name: string;
+  name?: string;
 
-  states: number;
+  states?: number;
 
-  tags: string;
+  tags?: string;
 
 }

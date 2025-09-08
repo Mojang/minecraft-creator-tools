@@ -44,7 +44,7 @@ export default interface MinecraftPeek {
    * Shulker: {"event":"minecraft:on_close"}
    *
    */
-  on_close: jsoncommon.MinecraftEventTrigger;
+  on_close?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -54,7 +54,7 @@ export default interface MinecraftPeek {
    * Shulker: {"event":"minecraft:on_open"}
    *
    */
-  on_open: jsoncommon.MinecraftEventTrigger;
+  on_open?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -65,6 +65,6 @@ export default interface MinecraftPeek {
    * Shulker: {"event":"minecraft:on_open"}
    *
    */
-  on_target_open: jsoncommon.MinecraftEventTrigger;
+  on_target_open?: jsoncommon.MinecraftEventTrigger;
 
 }

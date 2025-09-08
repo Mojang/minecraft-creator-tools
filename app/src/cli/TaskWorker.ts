@@ -121,7 +121,9 @@ async function validate(
     jsonFileExists = await jsonFile.exists();
 
     if (jsonFileExists && !force && !displayInfo) {
-      await jsonFile.loadContent(false);
+      if (!jsonFile.isContentLoaded) {
+        await jsonFile.loadContent(false);
+      }
 
       let projectInfoData = StorageUtilities.getJsonObject(jsonFile) as IProjectInfoData | undefined;
 
@@ -331,13 +333,20 @@ async function outputResults(
 
     if (outputMci) {
       const indexFolder = outputStorage.rootFolder.ensureFolder("mci");
+      const hashCatalogFolder = outputStorage.rootFolder.ensureFolder("mch");
 
       await indexFolder.ensureExists();
+      await hashCatalogFolder.ensureExists();
 
       const mciContentFile = indexFolder.ensureFile(
         StorageUtilities.ensureFileNameIsSafe(StorageUtilities.getBaseFromName(projectSet.projectContainerName)) +
           fileNameModifier +
           ".mci.json"
+      );
+      const mchContentFile = hashCatalogFolder.ensureFile(
+        StorageUtilities.ensureFileNameIsSafe(StorageUtilities.getBaseFromName(projectSet.projectContainerName)) +
+          fileNameModifier +
+          ".mch.json"
       );
 
       if (outputType === OutputType.noReports) {
@@ -347,6 +356,12 @@ async function outputResults(
       }
 
       mciContentFile.saveContent();
+
+      const hashCatalogContent = pis.getHashCatalogJson();
+
+      mchContentFile.setContent(hashCatalogContent);
+
+      mchContentFile.saveContent();
 
       const mciContentFileZip = indexFolder.ensureFile(
         StorageUtilities.ensureFileNameIsSafe(StorageUtilities.getBaseFromName(projectSet.projectContainerName)) +
@@ -383,7 +398,7 @@ async function outputResults(
 
       const pisLines = pis.getItemCsvLines();
 
-      const csvContent = ProjectInfoSet.CommonCsvHeader + "\r\n" + pisLines.join("\n");
+      const csvContent = ProjectInfoSet.CommonCsvHeader + "\n" + pisLines.join("\n");
 
       csvFile.setContent(csvContent);
 

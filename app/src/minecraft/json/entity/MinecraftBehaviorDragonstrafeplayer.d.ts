@@ -34,21 +34,21 @@ export default interface MinecraftBehaviorDragonstrafeplayer {
    * The speed this entity moves when this behavior has started or
    * while it's active.
    */
-  active_speed: number;
+  active_speed?: number;
 
   /**
    * @remarks
    * Maximum distance of this entity's fireball attack while 
    * strafing.
    */
-  fireball_range: number;
+  fireball_range?: number;
 
   /**
    * @remarks
    * The speed this entity moves while this behavior is not 
    * active.
    */
-  flight_speed: number;
+  flight_speed?: number;
 
   /**
    * @remarks
@@ -60,7 +60,7 @@ export default interface MinecraftBehaviorDragonstrafeplayer {
    * Ender Dragon: 2
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -68,7 +68,7 @@ export default interface MinecraftBehaviorDragonstrafeplayer {
    * clockwise and counterclockwise. Switch direction chance occurs each
    * time a new target is chosen (1.0 = 100%).
    */
-  switch_direction_probability: number;
+  switch_direction_probability?: number;
 
   /**
    * @remarks
@@ -76,27 +76,27 @@ export default interface MinecraftBehaviorDragonstrafeplayer {
    * view [ie, no solid terrain in-between the target and this
    * entity], before a fireball can be shot.
    */
-  target_in_range_and_in_view_time: number;
+  target_in_range_and_in_view_time?: number;
 
   /**
    * @remarks
    * Minimum and maximum distance, from the target, this entity can
    * use this behavior.
    */
-  target_zone: number[];
+  target_zone?: number[];
 
   /**
    * @remarks
    * The speed at which this entity turns while using this 
    * behavior.
    */
-  turn_speed: number;
+  turn_speed?: number;
 
   /**
    * @remarks
    * The target must be within "view_angle" degrees of the dragon's
    * current rotation before a fireball can be shot.
    */
-  view_angle: number;
+  view_angle?: number;
 
 }

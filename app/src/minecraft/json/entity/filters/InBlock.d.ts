@@ -54,7 +54,7 @@ export default interface InBlock {
    * Skeleton: "!=", "=="
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
@@ -64,7 +64,7 @@ export default interface InBlock {
    * Skeleton: "self"
    *
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -73,7 +73,7 @@ export default interface InBlock {
    * Skeleton: "in_block"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -83,7 +83,7 @@ export default interface InBlock {
    * Skeleton: "minecraft:powder_snow"
    *
    */
-  value: string;
+  value?: string;
 
 }
 

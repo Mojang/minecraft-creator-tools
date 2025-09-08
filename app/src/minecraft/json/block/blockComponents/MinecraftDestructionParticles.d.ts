@@ -24,13 +24,13 @@ export default interface MinecraftDestructionParticles {
    * Optional, number of particles to spawn of destruction. Default is
    * 100, maximum is 255 inclusively
    */
-  particle_count: number;
+  particle_count?: number;
 
   /**
    * @remarks
    * The texture name used for the particle.
    */
-  texture: string;
+  texture?: string;
 
   /**
    * @remarks
@@ -38,7 +38,7 @@ export default interface MinecraftDestructionParticles {
    * often refers to the "rain" and "temperature" of the biome the
    * block is placed in to compute the tint.
    */
-  tint_method: string;
+  tint_method?: string;
 
 }
 

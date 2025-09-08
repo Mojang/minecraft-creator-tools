@@ -51,7 +51,7 @@ export default interface MinecraftBehaviorMoveToRandomBlock {
    *
    *
    */
-  block_distance: number;
+  block_distance?: number;
 
   /**
    * @remarks
@@ -65,7 +65,7 @@ export default interface MinecraftBehaviorMoveToRandomBlock {
    * Vindicator: 5
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -75,7 +75,7 @@ export default interface MinecraftBehaviorMoveToRandomBlock {
    *
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -87,6 +87,6 @@ export default interface MinecraftBehaviorMoveToRandomBlock {
    *
    *
    */
-  within_radius: number;
+  within_radius?: number;
 
 }

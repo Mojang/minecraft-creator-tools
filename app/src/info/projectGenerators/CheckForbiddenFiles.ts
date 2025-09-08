@@ -39,7 +39,7 @@ export default class CheckForbiddenFilesGenerator implements IProjectInfoGenerat
     return results.flat();
   }
 
-  private async validateItemPackage(items: ProjectItem[], type: PackageType): Promise<ProjectInfoItem[]> {
+  private async validateItemPackage(items: readonly ProjectItem[], type: PackageType): Promise<ProjectInfoItem[]> {
     // I'm avoiding reading ("ensuring") the whole file, we just need the path, we do need to extract the extension though
     const files = items.map((item) => [item, "." + StorageUtilities.getTypeFromName(item.name)] as const);
     const fileResults = files.flatMap(([item, ext]) => this.resultsForFile(type, item, ext));

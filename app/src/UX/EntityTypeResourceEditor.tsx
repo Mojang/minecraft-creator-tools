@@ -42,7 +42,7 @@ interface IEntityTypeResourceEditorProps extends IFileProps {
   displayHeader?: boolean;
   project: Project;
   theme: ThemeInput<any>;
-  projectItem: ProjectItem;
+  item: ProjectItem;
 }
 
 interface IEntityTypeResourceEditorState {
@@ -134,6 +134,8 @@ export default class EntityTypeResourceEditor extends Component<
       await EntityTypeResourceDefinition.ensureOnFile(this.state.fileToEdit);
     }
 
+    await this.props.item.ensureDependencies();
+
     if (
       this.state.fileToEdit &&
       this.state.fileToEdit.manager !== undefined &&
@@ -154,8 +156,8 @@ export default class EntityTypeResourceEditor extends Component<
 
     const renderControllerSets: RenderControllerSetDefinition[] = [];
 
-    if (this.props.projectItem && this.props.projectItem.childItems) {
-      for (const item of this.props.projectItem.childItems) {
+    if (this.props.item && this.props.item.childItems) {
+      for (const item of this.props.item.childItems) {
         if (item.childItem.itemType === ProjectItemType.renderControllerJson) {
           const renderControllerSet = (await MinecraftDefinitions.get(item.childItem)) as RenderControllerSetDefinition;
 
@@ -166,7 +168,7 @@ export default class EntityTypeResourceEditor extends Component<
 
     const etrd = await EntityTypeResourceDefinition.ensureOnFile(this.state.fileToEdit);
 
-    const items = this.props.projectItem.project.getItemsCopy();
+    const items = this.props.item.project.getItemsCopy();
     let soundEvent: ISoundEventSet | undefined = undefined;
 
     for (const projItem of items) {
@@ -200,7 +202,7 @@ export default class EntityTypeResourceEditor extends Component<
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
-      if (file.manager !== null) {
+      if (file.manager) {
         const srbd = file.manager as EntityTypeResourceDefinition;
 
         srbd.persist();
@@ -459,9 +461,9 @@ export default class EntityTypeResourceEditor extends Component<
             key={"sevse"}
             typeId={this.state.entityTypeResource?.id}
             eventType={SoundEventSetType.entity}
-            project={this.props.projectItem.project}
+            project={this.props.item.project}
             theme={this.props.theme}
-            carto={this.props.projectItem.project.carto}
+            carto={this.props.item.project.carto}
           />
         );
       }

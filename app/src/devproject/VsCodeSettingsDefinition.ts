@@ -103,9 +103,13 @@ export default class VsCodeSettingsDefinition {
       return;
     }
 
-    const extensionsJsonString = JSON.stringify(this.definition, null, 2);
+    Log.assert(this.definition !== null, "VCSP");
 
-    this._file.setContent(extensionsJsonString);
+    if (this.definition) {
+      const extensionsJsonString = JSON.stringify(this.definition, null, 2);
+
+      this._file.setContent(extensionsJsonString);
+    }
   }
 
   async save() {

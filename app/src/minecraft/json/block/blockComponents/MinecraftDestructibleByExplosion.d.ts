@@ -99,6 +99,6 @@ export default interface MinecraftDestructibleByExplosion {
    * Block Palm Leave: 1.3
    *
    */
-  explosion_resistance: number;
+  explosion_resistance?: number;
 
 }

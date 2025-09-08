@@ -75,13 +75,6 @@ Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/enti
 }
 
 
-Piglin Brute - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/piglin_brute.json
-
-"minecraft:equipment": {
-  "table": "loot_tables/entities/piglin_brute_gear.json"
-}
-
-
 Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/piglin.json
 
  * At /minecraft:entity/component_groups/ranged_unit/minecraft:equipment/: 
@@ -92,6 +85,13 @@ Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
  * At /minecraft:entity/component_groups/melee_unit/minecraft:equipment/: 
 "minecraft:equipment": {
   "table": "loot_tables/entities/piglin_gear_melee.json"
+}
+
+
+Piglin Brute - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/piglin_brute.json
+
+"minecraft:equipment": {
+  "table": "loot_tables/entities/piglin_brute_gear.json"
 }
 
 
@@ -144,7 +144,7 @@ export default interface MinecraftEquipment {
    * Villager v2: [{"slot":"slot.weapon.mainhand","drop_chance":0}]
    *
    */
-  slot_drop_chance: string[];
+  slot_drop_chance?: string[];
 
   /**
    * @remarks
@@ -157,6 +157,6 @@ export default interface MinecraftEquipment {
    * Drowned: "loot_tables/entities/drowned_ranged_equipment.json", "loot_tables/entities/drowned_equipment.json"
    *
    */
-  table: string;
+  table?: string;
 
 }

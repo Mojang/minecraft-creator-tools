@@ -1,0 +1,6 @@
+{
+  "id": "`math.acos(value)`",
+  "fields": [],
+  "description": "arccos of value",
+  "title": "Acos(value)"
+}

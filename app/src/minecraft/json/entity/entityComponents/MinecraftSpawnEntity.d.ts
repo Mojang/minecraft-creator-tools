@@ -198,87 +198,87 @@ export default interface MinecraftSpawnEntity {
    * Ocelot: {"filters":[{"test":"random_chance","value":7}],"min_wait_time":0,"max_wait_time":0,"num_to_spawn":2,"single_use":true,"spawn_entity":"minecraft:ocelot","spawn_event":"minecraft:entity_born","spawn_method":"born","spawn_sound":""}
    *
    */
-  entities: MinecraftSpawnEntityEntities;
+  entities?: MinecraftSpawnEntityEntities;
 
   /**
    * @remarks
    * If present, the specified entity will only spawn if the filter
    * evaluates to true.
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
    * Maximum amount of time to randomly wait in seconds before another
    * entity is spawned.
    */
-  max_wait_time: number;
+  max_wait_time?: number;
 
   /**
    * @remarks
    * Minimum amount of time to randomly wait in seconds before another
    * entity is spawned.
    */
-  min_wait_time: number;
+  min_wait_time?: number;
 
   /**
    * @remarks
    * The number of entities of this type to spawn each time that this
    * triggers.
    */
-  num_to_spawn: number;
+  num_to_spawn?: number;
 
   /**
    * @remarks
    * If true, this the spawned entity will be leashed to the 
    * parent.
    */
-  should_leash: boolean;
+  should_leash?: boolean;
 
   /**
    * @remarks
    * If true, this component will only ever spawn the specified entity
    * once.
    */
-  single_use: boolean;
+  single_use?: boolean;
 
   /**
    * @remarks
    * Identifier of the entity to spawn, leave empty to spawn the item
    * defined by "spawn_item" instead.
    */
-  spawn_entity: string;
+  spawn_entity?: string;
 
   /**
    * @remarks
    * Event to call on the spawned entity when it spawns.
    */
-  spawn_event: jsoncommon.MinecraftEventTrigger;
+  spawn_event?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
    * Item identifier of the item to spawn.
    */
-  spawn_item: string;
+  spawn_item?: string;
 
   /**
    * @remarks
    * Event to call on this entity when the item is spawned.
    */
-  spawn_item_event: jsoncommon.MinecraftEventTrigger;
+  spawn_item_event?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
    * Method to use to spawn the entity.
    */
-  spawn_method: string;
+  spawn_method?: string;
 
   /**
    * @remarks
    * Identifier of the sound effect to play when the entity is
    * spawned.
    */
-  spawn_sound: string;
+  spawn_sound?: string;
 
 }
 
@@ -288,7 +288,7 @@ export default interface MinecraftSpawnEntity {
  */
 export interface MinecraftSpawnEntityEntities {
 
-  filters: MinecraftSpawnEntityEntitiesFilters[];
+  filters?: MinecraftSpawnEntityEntitiesFilters[];
 
   /**
    * @remarks
@@ -297,7 +297,7 @@ export interface MinecraftSpawnEntityEntities {
    * Armadillo: 600
    *
    */
-  max_wait_time: number;
+  max_wait_time?: number;
 
   /**
    * @remarks
@@ -306,17 +306,17 @@ export interface MinecraftSpawnEntityEntities {
    * Armadillo: 300
    *
    */
-  min_wait_time: number;
+  min_wait_time?: number;
 
-  num_to_spawn: number;
+  num_to_spawn?: number;
 
-  should_leash: string;
+  should_leash?: string;
 
-  single_use: string;
+  single_use?: string;
 
-  spawn_entity: string;
+  spawn_entity?: string;
 
-  spawn_event: string;
+  spawn_event?: string;
 
   /**
    * @remarks
@@ -325,7 +325,7 @@ export interface MinecraftSpawnEntityEntities {
    * Armadillo: "armadillo_scute"
    *
    */
-  spawn_item: string;
+  spawn_item?: string;
 
   /**
    * @remarks
@@ -334,7 +334,7 @@ export interface MinecraftSpawnEntityEntities {
    * Armadillo: "mob.armadillo.scute_drop"
    *
    */
-  spawn_sound: string;
+  spawn_sound?: string;
 
 }
 
@@ -351,7 +351,7 @@ export interface MinecraftSpawnEntityEntitiesFilters {
    * Chicken: "=="
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
@@ -360,7 +360,7 @@ export interface MinecraftSpawnEntityEntitiesFilters {
    * Chicken: "self"
    *
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -369,7 +369,7 @@ export interface MinecraftSpawnEntityEntitiesFilters {
    * Chicken: "rider_count"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -378,6 +378,6 @@ export interface MinecraftSpawnEntityEntitiesFilters {
    * Chicken: 0
    *
    */
-  value: number;
+  value?: number;
 
 }

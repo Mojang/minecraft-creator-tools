@@ -2,5 +2,5 @@
   "id": "query.is_sniffing",
   "fields": [],
   "description": "Returns 1.0 if the entity is sniffing, else it returns 0.0. Applies generally to the sniffer.",
-  "title": "Is Sniffing Query"
+  "title": "Is Sniffing"
 }

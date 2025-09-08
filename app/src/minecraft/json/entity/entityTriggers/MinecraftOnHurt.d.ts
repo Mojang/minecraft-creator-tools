@@ -58,13 +58,13 @@ export default interface MinecraftOnHurt {
    * Pillager: "minecraft:ranged_mode"
    *
    */
-  event: jsoncommon.MinecraftEventTrigger;
+  event?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
    * The list of conditions for this trigger to execute.
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -75,6 +75,6 @@ export default interface MinecraftOnHurt {
    *
    *
    */
-  target: string;
+  target?: string;
 
 }

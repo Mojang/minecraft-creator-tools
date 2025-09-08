@@ -45,7 +45,7 @@ export default interface MinecraftBehaviorRoll {
    * Panda: 12
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -55,6 +55,6 @@ export default interface MinecraftBehaviorRoll {
    * Panda: 0.0016, 0.013
    *
    */
-  probability: number;
+  probability?: number;
 
 }

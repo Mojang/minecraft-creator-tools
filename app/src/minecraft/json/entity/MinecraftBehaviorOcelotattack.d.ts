@@ -46,7 +46,7 @@ export default interface MinecraftBehaviorOcelotattack {
    *
    *
    */
-  cooldown_time: number;
+  cooldown_time?: number;
 
   /**
    * @remarks
@@ -58,7 +58,7 @@ export default interface MinecraftBehaviorOcelotattack {
    *
    *
    */
-  max_distance: number;
+  max_distance?: number;
 
   /**
    * @remarks
@@ -69,7 +69,7 @@ export default interface MinecraftBehaviorOcelotattack {
    *
    *
    */
-  max_sneak_range: number;
+  max_sneak_range?: number;
 
   /**
    * @remarks
@@ -81,7 +81,7 @@ export default interface MinecraftBehaviorOcelotattack {
    *
    *
    */
-  max_sprint_range: number;
+  max_sprint_range?: number;
 
   /**
    * @remarks
@@ -94,7 +94,7 @@ export default interface MinecraftBehaviorOcelotattack {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -106,7 +106,7 @@ export default interface MinecraftBehaviorOcelotattack {
    *
    *
    */
-  reach_multiplier: number;
+  reach_multiplier?: number;
 
   /**
    * @remarks
@@ -118,7 +118,7 @@ export default interface MinecraftBehaviorOcelotattack {
    *
    *
    */
-  sneak_speed_multiplier: number;
+  sneak_speed_multiplier?: number;
 
   /**
    * @remarks
@@ -130,7 +130,7 @@ export default interface MinecraftBehaviorOcelotattack {
    *
    *
    */
-  sprint_speed_multiplier: number;
+  sprint_speed_multiplier?: number;
 
   /**
    * @remarks
@@ -142,7 +142,7 @@ export default interface MinecraftBehaviorOcelotattack {
    *
    *
    */
-  walk_speed_multiplier: number;
+  walk_speed_multiplier?: number;
 
   /**
    * @remarks
@@ -154,7 +154,7 @@ export default interface MinecraftBehaviorOcelotattack {
    *
    *
    */
-  x_max_rotation: number;
+  x_max_rotation?: number;
 
   /**
    * @remarks
@@ -166,6 +166,6 @@ export default interface MinecraftBehaviorOcelotattack {
    *
    *
    */
-  y_max_head_rotation: number;
+  y_max_head_rotation?: number;
 
 }

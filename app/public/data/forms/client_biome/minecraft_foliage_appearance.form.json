@@ -1,4 +1,5 @@
 {
+  "id": "minecraft:foliage_appearance",
   "fields": [
     {
       "id": "color",
@@ -7,15 +8,6 @@
       "dataType": 16
     }
   ],
-  "description": "Sets the foliage color or color map used during rendering. Biomes without this component will have default foliage appearance.",
-  "samples": {
-    "samples": [
-      {
-        "path": "Example:",
-        "content": "{\r\n\t\"minecraft:fog_appearance\": {\r\n\t\t\"fog_identifier\": \"minecraft:fog_the_end\"\r\n\t}"
-      }
-    ]
-  },
-  "title": "Minecraft Foliage Appearance Client Biome",
-  "id": "minecraft:foliage_appearance"
+  "title": "Minecraft Foliage Appearance",
+  "description": "Sets the foliage color or color map used during rendering. Biomes without this component will have default foliage appearance."
 }

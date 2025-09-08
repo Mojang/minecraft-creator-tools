@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../jsoncommon';
 
 /**
- * Grass Color Map Client Biome (Grass Color Map)
+ * Client Biome Grass Color Map (Grass Color Map)
  * Object specifying a color map for grass instead of a specific 
  * color.
  */

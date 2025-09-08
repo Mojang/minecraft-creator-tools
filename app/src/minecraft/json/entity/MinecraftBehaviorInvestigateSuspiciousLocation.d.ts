@@ -35,7 +35,7 @@ export default interface MinecraftBehaviorInvestigateSuspiciousLocation {
    * Distance in blocks within the entity considers it has reached it's
    * target position.
    */
-  goal_radius: number;
+  goal_radius?: number;
 
   /**
    * @remarks
@@ -47,7 +47,7 @@ export default interface MinecraftBehaviorInvestigateSuspiciousLocation {
    * Warden: 5
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -57,6 +57,6 @@ export default interface MinecraftBehaviorInvestigateSuspiciousLocation {
    * Warden: 0.7
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

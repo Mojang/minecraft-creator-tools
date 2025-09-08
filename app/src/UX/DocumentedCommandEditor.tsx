@@ -268,6 +268,10 @@ export default class DocumentedCommandEditor extends Component<
       }
     }
 
+    if (!form) {
+      return <div>(Error loading form)...</div>;
+    }
+
     return (
       <div
         className="dcomme-area"

@@ -55,7 +55,7 @@ export default interface MinecraftBehaviorBeg {
    * Wolf: ["bone","porkchop","cooked_porkchop","chicken","cooked_chicken","beef","cooked_beef","rotten_flesh","muttonraw","muttoncooked","rabbit","cooked_rabbit"]
    *
    */
-  items: string[];
+  items?: string[];
 
   /**
    * @remarks
@@ -65,7 +65,7 @@ export default interface MinecraftBehaviorBeg {
    * Wolf: 8
    *
    */
-  look_distance: number;
+  look_distance?: number;
 
   /**
    * @remarks
@@ -76,7 +76,7 @@ export default interface MinecraftBehaviorBeg {
    * Wolf: [2,4]
    *
    */
-  look_time: number[];
+  look_time?: number[];
 
   /**
    * @remarks
@@ -88,6 +88,6 @@ export default interface MinecraftBehaviorBeg {
    * Wolf: 9
    *
    */
-  priority: number;
+  priority?: number;
 
 }

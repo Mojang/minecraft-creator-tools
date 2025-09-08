@@ -205,7 +205,9 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
       const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           foundBpManifest = true;
@@ -301,7 +303,9 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
           }
         }
       } else if (pi.itemType === ProjectItemType.resourcePackManifestJson) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const rpManifest = await ResourceManifestDefinition.ensureOnFile(pi.primaryFile);
@@ -396,7 +400,9 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
           }
         }
       } else if (pi.itemType === ProjectItemType.skinPackManifestJson) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const spManifest = await SkinManifestDefinition.ensureOnFile(pi.primaryFile);
@@ -406,7 +412,9 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
           }
         }
       } else if (pi.itemType === ProjectItemType.worldTemplateManifestJson) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const wtManifest = await WorldTemplateManifestDefinition.ensureOnFile(pi.primaryFile);
@@ -416,7 +424,9 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
           }
         }
       } else if (pi.itemType === ProjectItemType.personaManifestJson) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const paManifest = await PersonaManifestDefinition.ensureOnFile(pi.primaryFile);
@@ -504,7 +514,9 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
       const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const bpManifest = await BehaviorManifestDefinition.ensureOnFile(pi.primaryFile);
@@ -532,7 +544,9 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
       }
 
       if (pi.itemType === ProjectItemType.resourcePackManifestJson) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const rpManifest = await ResourceManifestDefinition.ensureOnFile(pi.primaryFile);

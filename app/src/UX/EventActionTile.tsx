@@ -346,74 +346,84 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
 
     if (this.props.event.hasSound && this.state.formsLoaded) {
       const form = Database.getForm("entityevents", "play_sound");
-      actionElements.push(
-        <DataForm
-          displayTitle={true}
-          displayDescription={true}
-          readOnly={false}
-          theme={this.props.theme}
-          project={this.props.project}
-          lookupProvider={this.props.project}
-          objectKey={this.props.eventContextId + "sound"}
-          closeButton={false}
-          definition={form}
-          directObject={this.props.event.ensureSound()}
-        ></DataForm>
-      );
+
+      if (form) {
+        actionElements.push(
+          <DataForm
+            displayTitle={true}
+            displayDescription={true}
+            readOnly={false}
+            theme={this.props.theme}
+            project={this.props.project}
+            lookupProvider={this.props.project}
+            objectKey={this.props.eventContextId + "sound"}
+            closeButton={false}
+            definition={form}
+            directObject={this.props.event.ensureSound()}
+          ></DataForm>
+        );
+      }
     }
 
     if (this.props.event.hasVibration && this.state.formsLoaded) {
       const form = Database.getForm("entityevents", "emit_vibration");
-      actionElements.push(
-        <DataForm
-          displayTitle={true}
-          displayDescription={true}
-          readOnly={false}
-          theme={this.props.theme}
-          project={this.props.project}
-          lookupProvider={this.props.project}
-          objectKey={this.props.eventContextId + "vibration"}
-          closeButton={false}
-          definition={form}
-          directObject={this.props.event.ensureVibration()}
-        ></DataForm>
-      );
+      if (form) {
+        actionElements.push(
+          <DataForm
+            displayTitle={true}
+            displayDescription={true}
+            readOnly={false}
+            theme={this.props.theme}
+            project={this.props.project}
+            lookupProvider={this.props.project}
+            objectKey={this.props.eventContextId + "vibration"}
+            closeButton={false}
+            definition={form}
+            directObject={this.props.event.ensureVibration()}
+          ></DataForm>
+        );
+      }
     }
 
     if (this.props.event.hasParticle && this.state.formsLoaded) {
       const form = Database.getForm("entityevents", "emit_particle");
-      actionElements.push(
-        <DataForm
-          displayTitle={true}
-          displayDescription={true}
-          readOnly={false}
-          theme={this.props.theme}
-          project={this.props.project}
-          lookupProvider={this.props.project}
-          objectKey={this.props.eventContextId + "particle"}
-          closeButton={false}
-          definition={form}
-          directObject={this.props.event.ensureParticle()}
-        ></DataForm>
-      );
+      if (form) {
+        actionElements.push(
+          <DataForm
+            displayTitle={true}
+            displayDescription={true}
+            readOnly={false}
+            theme={this.props.theme}
+            project={this.props.project}
+            lookupProvider={this.props.project}
+            objectKey={this.props.eventContextId + "particle"}
+            closeButton={false}
+            definition={form}
+            directObject={this.props.event.ensureParticle()}
+          ></DataForm>
+        );
+      }
     }
 
     if (this.props.event.hasTrigger && this.state.formsLoaded) {
       const form = Database.getForm("entityevents", "trigger");
-      actionElements.push(
-        <DataForm
-          displayTitle={true}
-          displayDescription={true}
-          readOnly={false}
-          theme={this.props.theme}
-          project={this.props.project}
-          lookupProvider={this.props.project}
-          objectKey={this.props.eventContextId + "trigger"}
-          closeButton={false}
-          definition={form}
-          directObject={this.props.event.ensureTrigger()}
-        ></DataForm>
-      );
+
+      if (form) {
+        actionElements.push(
+          <DataForm
+            displayTitle={true}
+            displayDescription={true}
+            readOnly={false}
+            theme={this.props.theme}
+            project={this.props.project}
+            lookupProvider={this.props.project}
+            objectKey={this.props.eventContextId + "trigger"}
+            closeButton={false}
+            definition={form}
+            directObject={this.props.event.ensureTrigger()}
+          ></DataForm>
+        );
+      }
     }
 
     if (this.props.event.hasCommand) {

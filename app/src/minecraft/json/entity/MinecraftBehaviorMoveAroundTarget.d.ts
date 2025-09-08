@@ -68,7 +68,7 @@ export default interface MinecraftBehaviorMoveAroundTarget {
    * Breeze: 360
    *
    */
-  destination_pos_spread_degrees: number;
+  destination_pos_spread_degrees?: number;
 
   /**
    * @remarks
@@ -79,7 +79,7 @@ export default interface MinecraftBehaviorMoveAroundTarget {
    * Breeze: [4,8]
    *
    */
-  destination_position_range: number[];
+  destination_position_range?: number[];
 
   /**
    * @remarks
@@ -89,7 +89,7 @@ export default interface MinecraftBehaviorMoveAroundTarget {
    * Breeze: {"all_of":[{"test":"on_ground","value":true},{"test":"target_distance","subject":"self","value":24,"operator":"<="}]}
    *
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -99,14 +99,14 @@ export default interface MinecraftBehaviorMoveAroundTarget {
    * needs to be bigger than zero for the move away logic to
    * trigger.
    */
-  height_difference_limit: number;
+  height_difference_limit?: number;
 
   /**
    * @remarks
    * Horizontal search distance (in blocks) when searching for a
    * position to move away from target.
    */
-  horizontal_search_distance: number;
+  horizontal_search_distance?: number;
 
   /**
    * @remarks
@@ -117,7 +117,7 @@ export default interface MinecraftBehaviorMoveAroundTarget {
    * Breeze: 1.2
    *
    */
-  movement_speed: number;
+  movement_speed?: number;
 
   /**
    * @remarks
@@ -129,13 +129,13 @@ export default interface MinecraftBehaviorMoveAroundTarget {
    * Breeze: 3
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * Vertical search distance (in blocks) when searching for a
    * position to move away from target.
    */
-  vertical_search_distance: number;
+  vertical_search_distance?: number;
 
 }

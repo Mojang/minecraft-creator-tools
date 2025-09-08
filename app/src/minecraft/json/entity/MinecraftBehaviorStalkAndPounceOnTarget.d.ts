@@ -54,7 +54,7 @@ export default interface MinecraftBehaviorStalkAndPounceOnTarget {
    * Fox: 2
    *
    */
-  interest_time: number;
+  interest_time?: number;
 
   /**
    * @remarks
@@ -63,14 +63,14 @@ export default interface MinecraftBehaviorStalkAndPounceOnTarget {
    * Fox: 0.8
    *
    */
-  leap_dist: number;
+  leap_dist?: number;
 
   /**
    * @remarks
    * The distance in blocks the mob jumps in the direction of its
    * target
    */
-  leap_distance: number;
+  leap_distance?: number;
 
   /**
    * @remarks
@@ -81,7 +81,7 @@ export default interface MinecraftBehaviorStalkAndPounceOnTarget {
    * Fox: 0.9
    *
    */
-  leap_height: number;
+  leap_height?: number;
 
   /**
    * @remarks
@@ -92,7 +92,7 @@ export default interface MinecraftBehaviorStalkAndPounceOnTarget {
    * Fox: 12
    *
    */
-  max_stalk_dist: number;
+  max_stalk_dist?: number;
 
   /**
    * @remarks
@@ -103,7 +103,7 @@ export default interface MinecraftBehaviorStalkAndPounceOnTarget {
    * Fox: 5
    *
    */
-  pounce_max_dist: number;
+  pounce_max_dist?: number;
 
   /**
    * @remarks
@@ -115,14 +115,14 @@ export default interface MinecraftBehaviorStalkAndPounceOnTarget {
    * Fox: 7
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * Allows the actor to be set to persist upon targeting a 
    * player
    */
-  set_persistent: boolean;
+  set_persistent?: boolean;
 
   /**
    * @remarks
@@ -132,7 +132,7 @@ export default interface MinecraftBehaviorStalkAndPounceOnTarget {
    * Fox: 1.2
    *
    */
-  stalk_speed: number;
+  stalk_speed?: number;
 
   /**
    * @remarks
@@ -143,7 +143,7 @@ export default interface MinecraftBehaviorStalkAndPounceOnTarget {
    * Fox: 2
    *
    */
-  strike_dist: number;
+  strike_dist?: number;
 
   /**
    * @remarks
@@ -152,7 +152,7 @@ export default interface MinecraftBehaviorStalkAndPounceOnTarget {
    * Fox: {"test":"is_block","subject":"block","operator":"==","value":"snow_layer"}
    *
    */
-  stuck_blocks: MinecraftBehaviorStalkAndPounceOnTargetStuckBlocks;
+  stuck_blocks?: MinecraftBehaviorStalkAndPounceOnTargetStuckBlocks;
 
   /**
    * @remarks
@@ -163,7 +163,7 @@ export default interface MinecraftBehaviorStalkAndPounceOnTarget {
    * Fox: 2
    *
    */
-  stuck_time: number;
+  stuck_time?: number;
 
 }
 
@@ -180,7 +180,7 @@ export interface MinecraftBehaviorStalkAndPounceOnTargetStuckBlocks {
    * Fox: "=="
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
@@ -189,7 +189,7 @@ export interface MinecraftBehaviorStalkAndPounceOnTargetStuckBlocks {
    * Fox: "block"
    *
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -198,7 +198,7 @@ export interface MinecraftBehaviorStalkAndPounceOnTargetStuckBlocks {
    * Fox: "is_block"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -207,6 +207,6 @@ export interface MinecraftBehaviorStalkAndPounceOnTargetStuckBlocks {
    * Fox: "snow_layer"
    *
    */
-  value: string;
+  value?: string;
 
 }

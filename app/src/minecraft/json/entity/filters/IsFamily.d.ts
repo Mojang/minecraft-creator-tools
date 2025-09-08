@@ -171,7 +171,7 @@ export default interface IsFamily {
    * Iron Golem: "not"
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
@@ -185,7 +185,7 @@ export default interface IsFamily {
    * Breeze: "damager"
    *
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -194,7 +194,7 @@ export default interface IsFamily {
    * Arrow: "is_family"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -206,7 +206,7 @@ export default interface IsFamily {
    * Bee: "pacified"
    *
    */
-  value: string;
+  value?: string;
 
 }
 

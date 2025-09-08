@@ -214,6 +214,10 @@ export default class ProjectItemVariant {
       }
     }
 
+    return this._file;
+  }
+
+  async loadFileStorage() {
     if (!this._isFileContentProcessed && this._file) {
       /*if (this._data.creationType === ProjectItemCreationType.generated) {
         await ProjectAutogeneration.updateItemAutogeneration(this, true);
@@ -244,6 +248,12 @@ export default class ProjectItemVariant {
         this._fireLoadedEvent();
       }
     }
+  }
+
+  async ensureAndLoadFileStorage() {
+    await this.ensureFileStorage();
+
+    await this.loadFileStorage();
 
     return this._file;
   }

@@ -1,0 +1,6 @@
+{
+  "id": "`math.ease_in_back(start, end, 0_to_1)`",
+  "fields": [],
+  "description": "Output goes from start to end via 0_to_1, overshooting backward before accelerating into the end",
+  "title": "Ease In Back(start, End, 0 To 1)"
+}

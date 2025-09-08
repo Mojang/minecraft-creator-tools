@@ -32,6 +32,7 @@ const _allowedExtensions = [
   "bin",
   "obj",
   "pdn",
+  "py",
   "h",
   "fontdata",
   "properties",

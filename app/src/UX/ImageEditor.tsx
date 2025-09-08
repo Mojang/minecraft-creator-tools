@@ -1074,27 +1074,29 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
     if (this.state.dialogState === ImageEditorDialogState.properties) {
       const form = Database.getForm("imageeditor", "image_editor");
 
-      dialogArea = (
-        <Dialog
-          open={true}
-          closeOnOutsideClick={true}
-          confirmButton="Done"
-          key="ie-cancel"
-          onConfirm={this._handleCloseDialog}
-          content={
-            <DataForm
-              theme={this.props.theme}
-              key="pab-newEntityDia"
-              definition={form}
-              readOnly={false}
-              directObject={this.state.imageEdits?.data}
-              project={this.props.projectItem.project}
-              carto={this.props.carto}
-            />
-          }
-          header={StorageUtilities.getBaseFromName(this.props.name) + " Properties"}
-        />
-      );
+      if (form) {
+        dialogArea = (
+          <Dialog
+            open={true}
+            closeOnOutsideClick={true}
+            confirmButton="Done"
+            key="ie-cancel"
+            onConfirm={this._handleCloseDialog}
+            content={
+              <DataForm
+                theme={this.props.theme}
+                key="pab-newEntityDia"
+                definition={form}
+                readOnly={false}
+                directObject={this.state.imageEdits?.data}
+                project={this.props.projectItem.project}
+                carto={this.props.carto}
+              />
+            }
+            header={StorageUtilities.getBaseFromName(this.props.name) + " Properties"}
+          />
+        );
+      }
     }
 
     return (

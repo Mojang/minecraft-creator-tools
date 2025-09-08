@@ -23,18 +23,18 @@ export default interface MinecraftOnIgnite {
    * The event to run when the conditions for this trigger are 
    * met.
    */
-  event: jsoncommon.MinecraftEventTrigger;
+  event?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
    * The list of conditions for this trigger to execute.
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
    * The target of the event.
    */
-  target: string;
+  target?: string;
 
 }

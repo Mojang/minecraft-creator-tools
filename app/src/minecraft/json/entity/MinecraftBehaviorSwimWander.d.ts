@@ -67,7 +67,7 @@ export default interface MinecraftBehaviorSwimWander {
    * Salmon: 0.0166
    *
    */
-  interval: number;
+  interval?: number;
 
   /**
    * @remarks
@@ -81,7 +81,7 @@ export default interface MinecraftBehaviorSwimWander {
    * Salmon: 5
    *
    */
-  look_ahead: number;
+  look_ahead?: number;
 
   /**
    * @remarks
@@ -96,7 +96,7 @@ export default interface MinecraftBehaviorSwimWander {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -109,7 +109,7 @@ export default interface MinecraftBehaviorSwimWander {
    * Salmon: 0.014
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -121,6 +121,6 @@ export default interface MinecraftBehaviorSwimWander {
    *
    *
    */
-  wander_time: number;
+  wander_time?: number;
 
 }

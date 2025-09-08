@@ -27,10 +27,13 @@
   min-height: 220px;
 }
 
+.bcose-addComponentDialog {
+  max-width: 500px !important;
+}
+
 .bcose-componentWrapper {
   margin-top: 1px;
   margin-bottom: 1px;
-
   padding: 10px 6px 10px 6px;
   border: 2px outset;
   font-size: small;

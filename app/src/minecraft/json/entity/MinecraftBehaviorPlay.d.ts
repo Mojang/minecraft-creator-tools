@@ -11,6 +11,14 @@
  * 
  * minecraft:behavior.play Samples
 
+Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager.json
+
+"minecraft:behavior.play": {
+  "priority": 8,
+  "speed_multiplier": 0.32
+}
+
+
 Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
 "minecraft:behavior.play": {
@@ -37,14 +45,6 @@ Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
   ]
 }
 
-
-Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager.json
-
-"minecraft:behavior.play": {
-  "priority": 8,
-  "speed_multiplier": 0.32
-}
-
  */
 
 import * as jsoncommon from './../../jsoncommon';
@@ -61,21 +61,21 @@ export default interface MinecraftBehaviorPlay {
    * Percent chance that the mob will start this goal, from 0 to 
    * 1.
    */
-  chance_to_start: number;
+  chance_to_start?: number;
 
   /**
    * @remarks
    * The distance (in blocks) that the mob tries to be in range of
    * the friend it's following.
    */
-  follow_distance: number;
+  follow_distance?: number;
 
   /**
    * @remarks
    * The dimensions of the AABB used to search for a potential friend to
    * play with.
    */
-  friend_search_area: number[];
+  friend_search_area?: number[];
 
   /**
    * @remarks
@@ -86,14 +86,14 @@ export default interface MinecraftBehaviorPlay {
    * Villager v2: [{"filters":{"all_of":[{"test":"is_family","subject":"other","value":"villager"},{"test":"is_baby","subject":"other","operator":"==","value":true}]}}]
    *
    */
-  friend_types: jsoncommon.MinecraftFilter;
+  friend_types?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
    * The max amount of seconds that the mob will play for before exiting
    * the Goal.
    */
-  max_play_duration_seconds: number;
+  max_play_duration_seconds?: number;
 
   /**
    * @remarks
@@ -102,25 +102,25 @@ export default interface MinecraftBehaviorPlay {
    * goal.
    * 
    * Sample Values:
-   * Villager v2: 8
+   * Villager: 8
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * The height (in blocks) that the mob will search within to find a
    * random position position to move to. Must be at least 1.
    */
-  random_pos_search_height: number;
+  random_pos_search_height?: number;
 
   /**
    * @remarks
    * The distance (in blocks) on ground that the mob will search within
    * to find a random position to move to. Must be at least 1.
    */
-  random_pos_search_range: number;
+  random_pos_search_range?: number;
 
   /**
    * @remarks
@@ -128,11 +128,11 @@ export default interface MinecraftBehaviorPlay {
    * Goal.
    * 
    * Sample Values:
-   * Villager v2: 0.6
-   *
    * Villager: 0.32
    *
+   * Villager v2: 0.6
+   *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

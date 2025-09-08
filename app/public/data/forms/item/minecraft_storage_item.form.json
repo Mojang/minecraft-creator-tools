@@ -1,4 +1,5 @@
 {
+  "id": "minecraft:storage_item",
   "fields": [
     {
       "id": "allow_nested_storage_items",
@@ -89,58 +90,16 @@
           }
         ]
       }
-    },
-    {
-      "id": "max_weight_limit",
-      "title": "Max Weight Limit",
-      "dataType": 7,
-      "samples": {
-        "/vanilla/behavior_pack/items/black_bundle.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:storage_item/",
-            "content": 64
-          }
-        ],
-        "/vanilla/behavior_pack/items/blue_bundle.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:storage_item/",
-            "content": 64
-          }
-        ]
-      }
-    },
-    {
-      "id": "weight_in_storage_item",
-      "title": "Weight In Storage Item",
-      "dataType": 7,
-      "samples": {
-        "/vanilla/behavior_pack/items/black_bundle.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:storage_item/",
-            "content": 4
-          }
-        ],
-        "/vanilla/behavior_pack/items/blue_bundle.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:storage_item/",
-            "content": 4
-          }
-        ]
-      }
     }
   ],
-  "description": "Enables an item to store data of the dynamic container associated with it. A dynamic container is a container for storing items that is linked to an item instead of a block or an entity.",
-  "note": "While this component can be defined on its own, to be able to interact with the item's storage container the item must have a `minecraft:bundle_interaction` item component defined.",
-  "versionIntroduced": "1.21.40",
-  "title": "Minecraft Storage Item Item",
+  "description": "[EXPERIMENTAL] Storage Items can be used by other components to store other items within this item.",
+  "title": "Item Storage Item",
   "samples": {
     "/vanilla/behavior_pack/items/black_bundle.json": [
       {
         "path": "/minecraft:item/components/minecraft:storage_item/",
         "content": {
           "max_slots": 64,
-          "max_weight_limit": 64,
-          "weight_in_storage_item": 4,
           "allow_nested_storage_items": true,
           "banned_items": [
             "minecraft:shulker_box",
@@ -154,8 +113,6 @@
         "path": "/minecraft:item/components/minecraft:storage_item/",
         "content": {
           "max_slots": 64,
-          "max_weight_limit": 64,
-          "weight_in_storage_item": 4,
           "allow_nested_storage_items": true,
           "banned_items": [
             "minecraft:shulker_box",
@@ -169,8 +126,6 @@
         "path": "/minecraft:item/components/minecraft:storage_item/",
         "content": {
           "max_slots": 64,
-          "max_weight_limit": 64,
-          "weight_in_storage_item": 4,
           "allow_nested_storage_items": true,
           "banned_items": [
             "minecraft:shulker_box",
@@ -184,8 +139,6 @@
         "path": "/minecraft:item/components/minecraft:storage_item/",
         "content": {
           "max_slots": 64,
-          "max_weight_limit": 64,
-          "weight_in_storage_item": 4,
           "allow_nested_storage_items": true,
           "banned_items": [
             "minecraft:shulker_box",
@@ -199,8 +152,6 @@
         "path": "/minecraft:item/components/minecraft:storage_item/",
         "content": {
           "max_slots": 64,
-          "max_weight_limit": 64,
-          "weight_in_storage_item": 4,
           "allow_nested_storage_items": true,
           "banned_items": [
             "minecraft:shulker_box",
@@ -214,8 +165,6 @@
         "path": "/minecraft:item/components/minecraft:storage_item/",
         "content": {
           "max_slots": 64,
-          "max_weight_limit": 64,
-          "weight_in_storage_item": 4,
           "allow_nested_storage_items": true,
           "banned_items": [
             "minecraft:shulker_box",
@@ -229,8 +178,6 @@
         "path": "/minecraft:item/components/minecraft:storage_item/",
         "content": {
           "max_slots": 64,
-          "max_weight_limit": 64,
-          "weight_in_storage_item": 4,
           "allow_nested_storage_items": true,
           "banned_items": [
             "minecraft:shulker_box",
@@ -244,8 +191,6 @@
         "path": "/minecraft:item/components/minecraft:storage_item/",
         "content": {
           "max_slots": 64,
-          "max_weight_limit": 64,
-          "weight_in_storage_item": 4,
           "allow_nested_storage_items": true,
           "banned_items": [
             "minecraft:shulker_box",
@@ -259,8 +204,6 @@
         "path": "/minecraft:item/components/minecraft:storage_item/",
         "content": {
           "max_slots": 64,
-          "max_weight_limit": 64,
-          "weight_in_storage_item": 4,
           "allow_nested_storage_items": true,
           "banned_items": [
             "minecraft:shulker_box",
@@ -274,8 +217,6 @@
         "path": "/minecraft:item/components/minecraft:storage_item/",
         "content": {
           "max_slots": 64,
-          "max_weight_limit": 64,
-          "weight_in_storage_item": 4,
           "allow_nested_storage_items": true,
           "banned_items": [
             "minecraft:shulker_box",
@@ -289,8 +230,6 @@
         "path": "/minecraft:item/components/minecraft:storage_item/",
         "content": {
           "max_slots": 64,
-          "max_weight_limit": 64,
-          "weight_in_storage_item": 4,
           "allow_nested_storage_items": true,
           "banned_items": [
             "minecraft:shulker_box",
@@ -304,8 +243,6 @@
         "path": "/minecraft:item/components/minecraft:storage_item/",
         "content": {
           "max_slots": 64,
-          "max_weight_limit": 64,
-          "weight_in_storage_item": 4,
           "allow_nested_storage_items": true,
           "banned_items": [
             "minecraft:shulker_box",
@@ -319,8 +256,6 @@
         "path": "/minecraft:item/components/minecraft:storage_item/",
         "content": {
           "max_slots": 64,
-          "max_weight_limit": 64,
-          "weight_in_storage_item": 4,
           "allow_nested_storage_items": true,
           "banned_items": [
             "minecraft:shulker_box",
@@ -334,8 +269,6 @@
         "path": "/minecraft:item/components/minecraft:storage_item/",
         "content": {
           "max_slots": 64,
-          "max_weight_limit": 64,
-          "weight_in_storage_item": 4,
           "allow_nested_storage_items": true,
           "banned_items": [
             "minecraft:shulker_box",
@@ -349,8 +282,6 @@
         "path": "/minecraft:item/components/minecraft:storage_item/",
         "content": {
           "max_slots": 64,
-          "max_weight_limit": 64,
-          "weight_in_storage_item": 4,
           "allow_nested_storage_items": true,
           "banned_items": [
             "minecraft:shulker_box",
@@ -364,8 +295,6 @@
         "path": "/minecraft:item/components/minecraft:storage_item/",
         "content": {
           "max_slots": 64,
-          "max_weight_limit": 64,
-          "weight_in_storage_item": 4,
           "allow_nested_storage_items": true,
           "banned_items": [
             "minecraft:shulker_box",
@@ -379,8 +308,6 @@
         "path": "/minecraft:item/components/minecraft:storage_item/",
         "content": {
           "max_slots": 64,
-          "max_weight_limit": 64,
-          "weight_in_storage_item": 4,
           "allow_nested_storage_items": true,
           "banned_items": [
             "minecraft:shulker_box",
@@ -389,6 +316,5 @@
         }
       }
     ]
-  },
-  "id": "minecraft:storage_item"
+  }
 }

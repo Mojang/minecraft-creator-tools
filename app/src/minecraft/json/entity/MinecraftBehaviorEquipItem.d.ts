@@ -57,6 +57,6 @@ export default interface MinecraftBehaviorEquipItem {
    * Piglin: 5
    *
    */
-  priority: number;
+  priority?: number;
 
 }

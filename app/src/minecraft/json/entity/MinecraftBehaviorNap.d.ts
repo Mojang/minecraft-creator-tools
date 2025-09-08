@@ -89,7 +89,7 @@ export default interface MinecraftBehaviorNap {
    * Fox: {"all_of":[{"test":"in_water","subject":"self","operator":"==","value":false},{"test":"on_ground","subject":"self","operator":"==","value":true},{"test":"is_underground","subject":"self","operator":"==","value":true},{"test":"weather_at_position","subject":"self","operator":"!=","value":"thunderstorm"}]}
    *
    */
-  can_nap_filters: MinecraftBehaviorNapCanNapFilters;
+  can_nap_filters?: MinecraftBehaviorNapCanNapFilters;
 
   /**
    * @remarks
@@ -100,7 +100,7 @@ export default interface MinecraftBehaviorNap {
    * Fox: 7
    *
    */
-  cooldown_max: number;
+  cooldown_max?: number;
 
   /**
    * @remarks
@@ -111,7 +111,7 @@ export default interface MinecraftBehaviorNap {
    * Fox: 2
    *
    */
-  cooldown_min: number;
+  cooldown_min?: number;
 
   /**
    * @remarks
@@ -122,7 +122,7 @@ export default interface MinecraftBehaviorNap {
    * Fox: 12
    *
    */
-  mob_detect_dist: number;
+  mob_detect_dist?: number;
 
   /**
    * @remarks
@@ -133,7 +133,7 @@ export default interface MinecraftBehaviorNap {
    * Fox: 6
    *
    */
-  mob_detect_height: number;
+  mob_detect_height?: number;
 
   /**
    * @remarks
@@ -145,7 +145,7 @@ export default interface MinecraftBehaviorNap {
    * Fox: 8
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -154,7 +154,7 @@ export default interface MinecraftBehaviorNap {
    * Fox: {"any_of":[{"test":"trusts","subject":"other","operator":"==","value":true},{"test":"is_family","subject":"other","operator":"==","value":"fox"},{"test":"is_sneaking","subject":"other","operator":"==","value":true}]}
    *
    */
-  wake_mob_exceptions: MinecraftBehaviorNapWakeMobExceptions;
+  wake_mob_exceptions?: MinecraftBehaviorNapWakeMobExceptions;
 
 }
 
@@ -171,7 +171,7 @@ export interface MinecraftBehaviorNapCanNapFilters {
    * Fox: [{"test":"in_water","subject":"self","operator":"==","value":false},{"test":"on_ground","subject":"self","operator":"==","value":true},{"test":"is_underground","subject":"self","operator":"==","value":true},{"test":"weather_at_position","subject":"self","operator":"!=","value":"thunderstorm"}]
    *
    */
-  all_of: string;
+  all_of?: string;
 
 }
 
@@ -188,6 +188,6 @@ export interface MinecraftBehaviorNapWakeMobExceptions {
    * Fox: [{"test":"trusts","subject":"other","operator":"==","value":true},{"test":"is_family","subject":"other","operator":"==","value":"fox"},{"test":"is_sneaking","subject":"other","operator":"==","value":true}]
    *
    */
-  any_of: string;
+  any_of?: string;
 
 }

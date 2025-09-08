@@ -6,7 +6,7 @@
     "samples": [
       {
         "path": "Example:",
-        "content": "\t\t\"randomize\": [\r\n\t\t\t{\r\n\t\t\t\t\"weight\": <float>\r\n\t\t\t\t// actions like 'add' or 'remove'\r\n\t\t\t}\r\n\t\t]\r\n\t"
+        "content": "\t\t\"randomize\": [\n\t\t\t{\n\t\t\t\t\"weight\": <float>\n\t\t\t\t// actions like 'add' or 'remove'\n\t\t\t}\n\t\t]\n\t"
       }
     ]
   },

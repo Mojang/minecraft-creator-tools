@@ -1,4 +1,5 @@
 {
+  "id": "minecraft:repairable",
   "fields": [
     {
       "id": "repair_items",
@@ -67,6 +68,32 @@
         }
       ],
       "samples": {
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/axe_turret_kit.item.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:repairable/",
+            "content": [
+              {
+                "items": [
+                  "iron_ingot"
+                ],
+                "repair_amount": 62
+              }
+            ]
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/bow_turret_kit.item.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:repairable/",
+            "content": [
+              {
+                "items": [
+                  "iron_ingot"
+                ],
+                "repair_amount": 62
+              }
+            ]
+          }
+        ],
         "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
           {
             "path": "/minecraft:item/components/minecraft:repairable/",
@@ -122,19 +149,9 @@
       }
     }
   ],
-  "description": "Defines the items that can be used to repair a defined item, and the amount of durability each item restores upon repair. Each entry needs to define a list of strings for 'items' that can be used for the repair and an optional 'repair_amount' for how much durability is repaired.",
+  "description": "The repairable item component specifies which items can be used to repair this item, along with how much durability is gained.",
+  "title": "Item Repairable",
   "samples": {
-    "sample": [
-      {
-        "path": "sample",
-        "content": {
-          "on_repaired": "minecraft:celebrate",
-          "repair_items": [
-            "anvil"
-          ]
-        }
-      }
-    ],
     "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/axe_turret_kit.item.json": [
       {
         "path": "/minecraft:item/components/minecraft:repairable/",
@@ -330,7 +347,5 @@
         }
       }
     ]
-  },
-  "title": "Minecraft Repairable Item",
-  "id": "minecraft:repairable"
+  }
 }

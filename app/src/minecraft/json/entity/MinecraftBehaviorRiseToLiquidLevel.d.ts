@@ -40,7 +40,7 @@ export default interface MinecraftBehaviorRiseToLiquidLevel {
    * Strider: 0.25
    *
    */
-  liquid_y_offset: number;
+  liquid_y_offset?: number;
 
   /**
    * @remarks
@@ -48,7 +48,7 @@ export default interface MinecraftBehaviorRiseToLiquidLevel {
    * priority, the sooner this behavior will be executed as a 
    * goal.
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -58,7 +58,7 @@ export default interface MinecraftBehaviorRiseToLiquidLevel {
    * Strider: 0.01
    *
    */
-  rise_delta: number;
+  rise_delta?: number;
 
   /**
    * @remarks
@@ -68,6 +68,6 @@ export default interface MinecraftBehaviorRiseToLiquidLevel {
    * Strider: 0.01
    *
    */
-  sink_delta: number;
+  sink_delta?: number;
 
 }

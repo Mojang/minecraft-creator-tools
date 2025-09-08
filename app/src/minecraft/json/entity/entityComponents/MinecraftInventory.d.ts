@@ -97,7 +97,7 @@ Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
 }
 
 
-Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager.json
 
 "minecraft:inventory": {
   "inventory_size": 8,
@@ -123,7 +123,7 @@ export default interface MinecraftInventory {
    *
    *
    */
-  additional_slots_per_strength: number;
+  additional_slots_per_strength?: number;
 
   /**
    * @remarks
@@ -135,7 +135,7 @@ export default interface MinecraftInventory {
    *
    *
    */
-  can_be_siphoned_from: boolean;
+  can_be_siphoned_from?: boolean;
 
   /**
    * @remarks
@@ -150,7 +150,7 @@ export default interface MinecraftInventory {
    * Chest Minecart: "minecart_chest"
    *
    */
-  container_type: string;
+  container_type?: string;
 
   /**
    * @remarks
@@ -165,7 +165,7 @@ export default interface MinecraftInventory {
    * Donkey: 16
    *
    */
-  inventory_size: number;
+  inventory_size?: number;
 
   /**
    * @remarks
@@ -176,13 +176,13 @@ export default interface MinecraftInventory {
    *
    *
    */
-  private: boolean;
+  private?: boolean;
 
   /**
    * @remarks
    * If true, the entity's inventory can only be accessed by its
    * owner or itself
    */
-  restrict_to_owner: boolean;
+  restrict_to_owner?: boolean;
 
 }

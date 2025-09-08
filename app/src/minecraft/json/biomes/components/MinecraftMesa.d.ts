@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Mesa Biome (minecraft:mesa)
+ * Biome Mesa (minecraft:mesa)
  * Similar to overworld_surface. Adds colored strata and optional
  * pillars.
  */
@@ -29,19 +29,19 @@ export default interface MinecraftMesa {
    * @remarks
    * Base clay block to use
    */
-  clay_material: MinecraftMesaClayMaterial;
+  clay_material: string;
 
   /**
    * @remarks
    * Controls the block type used deep underground in this biome
    */
-  foundation_material: MinecraftMesaFoundationMaterial;
+  foundation_material: string;
 
   /**
    * @remarks
    * Hardened clay block to use
    */
-  hard_clay_material: MinecraftMesaHardClayMaterial;
+  hard_clay_material: string;
 
   /**
    * @remarks
@@ -54,7 +54,7 @@ export default interface MinecraftMesa {
    * Controls the block type used in a layer below the surface of
    * this biome
    */
-  mid_material: MinecraftMesaMidMaterial;
+  mid_material: string;
 
   /**
    * @remarks
@@ -68,81 +68,25 @@ export default interface MinecraftMesa {
    * Controls the block type used as a floor for bodies of water in
    * this biome
    */
-  sea_floor_material: MinecraftMesaSeaFloorMaterial;
+  sea_floor_material: string;
 
   /**
    * @remarks
    * Controls the block type used for the bodies of water in this
    * biome
    */
-  sea_material: MinecraftMesaSeaMaterial;
+  sea_material: string;
 
   /**
    * @remarks
    * Controls the block type used for the surface of this biome
    */
-  top_material: MinecraftMesaTopMaterial;
+  top_material: string;
 
   /**
    * @remarks
    * Controls the type of surface builder to use
    */
   type: string;
-
-}
-
-
-/**
- * Clay Material (clay_material)
- */
-export interface MinecraftMesaClayMaterial {
-
-}
-
-
-/**
- * Foundation Material (foundation_material)
- */
-export interface MinecraftMesaFoundationMaterial {
-
-}
-
-
-/**
- * Hard Clay Material (hard_clay_material)
- */
-export interface MinecraftMesaHardClayMaterial {
-
-}
-
-
-/**
- * Mid Material (mid_material)
- */
-export interface MinecraftMesaMidMaterial {
-
-}
-
-
-/**
- * Sea Floor Material (sea_floor_material)
- */
-export interface MinecraftMesaSeaFloorMaterial {
-
-}
-
-
-/**
- * Sea Material (sea_material)
- */
-export interface MinecraftMesaSeaMaterial {
-
-}
-
-
-/**
- * Top Material (top_material)
- */
-export interface MinecraftMesaTopMaterial {
 
 }

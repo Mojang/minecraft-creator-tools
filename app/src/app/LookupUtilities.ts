@@ -248,7 +248,7 @@ export default class LookupUtilities {
       }
 
       if (a.id && b.id) {
-        return a.id.toString().localeCompare(b.id.toString());
+        return Utilities.staticCompare(a.id.toString(), b.id.toString());
       }
 
       return 0;

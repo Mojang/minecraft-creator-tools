@@ -11,7 +11,7 @@
  * 
  * minecraft:behavior.move_outdoors Samples
 
-Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager.json
 
 "minecraft:behavior.move_outdoors": {
   "priority": 2,
@@ -34,7 +34,7 @@ export default interface MinecraftBehaviorMoveOutdoors {
    * The radius away from the target block to count as reaching the
    * goal.
    */
-  goal_radius: number;
+  goal_radius?: number;
 
   /**
    * @remarks
@@ -43,30 +43,30 @@ export default interface MinecraftBehaviorMoveOutdoors {
    * goal.
    * 
    * Sample Values:
-   * Villager v2: 2
+   * Villager: 2
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * The amount of times to try finding a random outdoors position before
    * failing.
    */
-  search_count: number;
+  search_count?: number;
 
   /**
    * @remarks
    * The y range to search for an outdoors position for.
    */
-  search_height: number;
+  search_height?: number;
 
   /**
    * @remarks
    * The x and z range to search for an outdoors position for.
    */
-  search_range: number;
+  search_range?: number;
 
   /**
    * @remarks
@@ -74,11 +74,11 @@ export default interface MinecraftBehaviorMoveOutdoors {
    * moving outdoors.
    * 
    * Sample Values:
-   * Villager v2: 0.8
+   * Villager: 0.8
    *
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -86,10 +86,10 @@ export default interface MinecraftBehaviorMoveOutdoors {
    * pathfinding fails
    * 
    * Sample Values:
-   * Villager v2: 8
+   * Villager: 8
    *
    *
    */
-  timeout_cooldown: number;
+  timeout_cooldown?: number;
 
 }

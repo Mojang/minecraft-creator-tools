@@ -48,7 +48,9 @@ export default class TextureReferenceInfoGenerator implements IProjectInfoGenera
 
     for (const projectItem of itemsCopy) {
       if (projectItem.itemType === ProjectItemType.blocksCatalogResourceJson) {
-        await projectItem.ensureFileStorage();
+        if (!projectItem.isContentLoaded) {
+          await projectItem.loadContent();
+        }
 
         if (projectItem.primaryFile) {
           const blockCat = await BlocksCatalogDefinition.ensureOnFile(projectItem.primaryFile);
@@ -66,7 +68,9 @@ export default class TextureReferenceInfoGenerator implements IProjectInfoGenera
           }
         }
       } else if (projectItem.itemType === ProjectItemType.terrainTextureCatalogResourceJson) {
-        await projectItem.ensureFileStorage();
+        if (!projectItem.isContentLoaded) {
+          await projectItem.loadContent();
+        }
 
         if (projectItem.primaryFile) {
           const blockCat = await TerrainTextureCatalogDefinition.ensureOnFile(projectItem.primaryFile);
@@ -80,7 +84,9 @@ export default class TextureReferenceInfoGenerator implements IProjectInfoGenera
           }
         }
       } else if (projectItem.itemType === ProjectItemType.itemTextureJson) {
-        await projectItem.ensureFileStorage();
+        if (!projectItem.isContentLoaded) {
+          await projectItem.loadContent();
+        }
 
         if (projectItem.primaryFile) {
           const itemCat = await ItemTextureCatalogDefinition.ensureOnFile(projectItem.primaryFile);

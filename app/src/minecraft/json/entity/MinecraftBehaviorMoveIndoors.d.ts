@@ -11,20 +11,20 @@
  * 
  * minecraft:behavior.move_indoors Samples
 
+Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager.json
+
+"minecraft:behavior.move_indoors": {
+  "priority": 4,
+  "speed_multiplier": 0.8
+}
+
+
 Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
 "minecraft:behavior.move_indoors": {
   "priority": 6,
   "speed_multiplier": 0.8,
   "timeout_cooldown": 8
-}
-
-
-Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager.json
-
-"minecraft:behavior.move_indoors": {
-  "priority": 4,
-  "speed_multiplier": 0.8
 }
 
  */
@@ -44,13 +44,13 @@ export default interface MinecraftBehaviorMoveIndoors {
    * goal.
    * 
    * Sample Values:
-   * Villager v2: 6
-   *
    * Villager: 4
+   *
+   * Villager v2: 6
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -58,11 +58,11 @@ export default interface MinecraftBehaviorMoveIndoors {
    * moving indoors.
    * 
    * Sample Values:
-   * Villager v2: 0.8
+   * Villager: 0.8
    *
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -74,6 +74,6 @@ export default interface MinecraftBehaviorMoveIndoors {
    *
    *
    */
-  timeout_cooldown: number;
+  timeout_cooldown?: number;
 
 }

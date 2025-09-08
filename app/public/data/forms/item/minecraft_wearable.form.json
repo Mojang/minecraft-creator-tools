@@ -1,25 +1,6 @@
 {
+  "id": "minecraft:wearable",
   "fields": [
-    {
-      "id": "dispensable",
-      "dataType": 1,
-      "isDeprecated": true,
-      "samples": {
-        "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:wearable/",
-            "content": true
-          }
-        ],
-        "/samples/custom_items/behavior_packs/custom_item/items/crown.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:wearable/",
-            "content": true
-          }
-        ]
-      },
-      "title": "Dispensable"
-    },
     {
       "id": "hides_player_location",
       "title": "Hides Player Location",
@@ -39,6 +20,18 @@
       "dataType": 2,
       "isRequired": true,
       "samples": {
+        "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/journal.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:wearable/",
+            "content": "slot.weapon.offhand"
+          }
+        ],
+        "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/journal_pencil.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:wearable/",
+            "content": "slot.weapon.offhand"
+          }
+        ],
         "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
           {
             "path": "/minecraft:item/components/minecraft:wearable/",
@@ -68,21 +61,33 @@
             "path": "/minecraft:item/components/minecraft:wearable/",
             "content": "slot.armor.legs"
           }
-        ],
-        "/samples/custom_items/behavior_packs/custom_item/items/wrench.json": [
+        ]
+      }
+    },
+    {
+      "id": "dispensable",
+      "title": "Dispensable",
+      "dataType": 2,
+      "samples": {
+        "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/journal.json": [
           {
             "path": "/minecraft:item/components/minecraft:wearable/",
-            "content": "slot.weapon.offhand"
+            "content": true
+          }
+        ],
+        "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/journal_pencil.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:wearable/",
+            "content": true
           }
         ]
       }
     }
   ],
-  "description": "Sets the wearable item component.",
-  "note": "Here are the following equipment slots that can be set for the value of slot: slot.weapon.mainhand, slot.weapon.offhand, slot.armor.head, slot.armor.chest, slot.armor.legs, slot.armor.feet, slot.hotbar, slot.inventory, slot.enderchest, slot.saddle, slot.armor, slot.chest, slot.equippable",
-  "title": "Minecraft Wearable Item",
+  "description": "Wearable items can be worn by a player in a specified slot.",
+  "title": "Item Wearable",
   "samples": {
-    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/journal_pencil.json": [
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/journal.json": [
       {
         "path": "/minecraft:item/components/minecraft:wearable/",
         "content": {
@@ -91,7 +96,7 @@
         }
       }
     ],
-    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/journal.json": [
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/journal_pencil.json": [
       {
         "path": "/minecraft:item/components/minecraft:wearable/",
         "content": {
@@ -104,7 +109,6 @@
       {
         "path": "/minecraft:item/components/minecraft:wearable/",
         "content": {
-          "dispensable": true,
           "slot": "slot.armor.chest"
         }
       }
@@ -113,7 +117,6 @@
       {
         "path": "/minecraft:item/components/minecraft:wearable/",
         "content": {
-          "dispensable": true,
           "slot": "slot.armor.head"
         }
       }
@@ -122,7 +125,6 @@
       {
         "path": "/minecraft:item/components/minecraft:wearable/",
         "content": {
-          "dispensable": true,
           "slot": "slot.armor.feet"
         }
       }
@@ -131,7 +133,6 @@
       {
         "path": "/minecraft:item/components/minecraft:wearable/",
         "content": {
-          "dispensable": true,
           "slot": "slot.armor.head"
         }
       }
@@ -140,7 +141,6 @@
       {
         "path": "/minecraft:item/components/minecraft:wearable/",
         "content": {
-          "dispensable": true,
           "slot": "slot.armor.legs"
         }
       }
@@ -149,7 +149,6 @@
       {
         "path": "/minecraft:item/components/minecraft:wearable/",
         "content": {
-          "dispensable": true,
           "slot": "slot.weapon.offhand"
         }
       }
@@ -172,6 +171,5 @@
         }
       }
     ]
-  },
-  "id": "minecraft:wearable"
+  }
 }

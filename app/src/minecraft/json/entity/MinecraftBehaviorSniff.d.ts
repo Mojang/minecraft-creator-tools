@@ -45,7 +45,7 @@ export default interface MinecraftBehaviorSniff {
    * Warden: [5,10]
    *
    */
-  cooldown_range: number[];
+  cooldown_range?: number[];
 
   /**
    * @remarks
@@ -55,7 +55,7 @@ export default interface MinecraftBehaviorSniff {
    * Warden: 4.16
    *
    */
-  duration: number;
+  duration?: number;
 
   /**
    * @remarks
@@ -67,7 +67,7 @@ export default interface MinecraftBehaviorSniff {
    * Warden: 6
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -77,7 +77,7 @@ export default interface MinecraftBehaviorSniff {
    * Warden: 24
    *
    */
-  sniffing_radius: number;
+  sniffing_radius?: number;
 
   /**
    * @remarks
@@ -89,7 +89,7 @@ export default interface MinecraftBehaviorSniff {
    * Warden: 6
    *
    */
-  suspicion_radius_horizontal: number;
+  suspicion_radius_horizontal?: number;
 
   /**
    * @remarks
@@ -101,6 +101,6 @@ export default interface MinecraftBehaviorSniff {
    * Warden: 20
    *
    */
-  suspicion_radius_vertical: number;
+  suspicion_radius_vertical?: number;
 
 }

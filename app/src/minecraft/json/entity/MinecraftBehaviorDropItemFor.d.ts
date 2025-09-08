@@ -125,7 +125,7 @@ export default interface MinecraftBehaviorDropItemFor {
    *
    *
    */
-  cooldown: number;
+  cooldown?: number;
 
   /**
    * @remarks
@@ -137,7 +137,7 @@ export default interface MinecraftBehaviorDropItemFor {
    *
    *
    */
-  drop_item_chance: number;
+  drop_item_chance?: number;
 
   /**
    * @remarks
@@ -149,7 +149,7 @@ export default interface MinecraftBehaviorDropItemFor {
    *
    *
    */
-  entity_types: jsoncommon.MinecraftFilter;
+  entity_types?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -161,7 +161,7 @@ export default interface MinecraftBehaviorDropItemFor {
    *
    *
    */
-  goal_radius: number;
+  goal_radius?: number;
 
   /**
    * @remarks
@@ -174,7 +174,7 @@ export default interface MinecraftBehaviorDropItemFor {
    * Eliza: "loot_tables/entities/eliza_gift.json"
    *
    */
-  loot_table: string;
+  loot_table?: string;
 
   /**
    * @remarks
@@ -186,7 +186,7 @@ export default interface MinecraftBehaviorDropItemFor {
    *
    *
    */
-  max_head_look_at_height: number;
+  max_head_look_at_height?: number;
 
   /**
    * @remarks
@@ -198,7 +198,7 @@ export default interface MinecraftBehaviorDropItemFor {
    *
    *
    */
-  minimum_teleport_distance: number;
+  minimum_teleport_distance?: number;
 
   /**
    * @remarks
@@ -210,7 +210,7 @@ export default interface MinecraftBehaviorDropItemFor {
    *
    *
    */
-  offering_distance: number;
+  offering_distance?: number;
 
   /**
    * @remarks
@@ -223,7 +223,7 @@ export default interface MinecraftBehaviorDropItemFor {
    * Eliza: {"event":"mike_eliz:eliza_gifted_owner","target":"self"}
    *
    */
-  on_drop_attempt: jsoncommon.MinecraftEventTrigger;
+  on_drop_attempt?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -236,7 +236,7 @@ export default interface MinecraftBehaviorDropItemFor {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -245,7 +245,7 @@ export default interface MinecraftBehaviorDropItemFor {
    * value of 0 will have the mob check every block within range in
    * one tick.
    */
-  search_count: number;
+  search_count?: number;
 
   /**
    * @remarks
@@ -257,7 +257,7 @@ export default interface MinecraftBehaviorDropItemFor {
    *
    *
    */
-  search_height: number;
+  search_height?: number;
 
   /**
    * @remarks
@@ -269,14 +269,14 @@ export default interface MinecraftBehaviorDropItemFor {
    *
    *
    */
-  search_range: number;
+  search_range?: number;
 
   /**
    * @remarks
    * The numbers of seconds that will pass before the dropped entity can
    * be picked up from the ground.
    */
-  seconds_before_pickup: number;
+  seconds_before_pickup?: number;
 
   /**
    * @remarks
@@ -288,7 +288,7 @@ export default interface MinecraftBehaviorDropItemFor {
    *
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -300,7 +300,7 @@ export default interface MinecraftBehaviorDropItemFor {
    *
    *
    */
-  target_range: number[];
+  target_range?: number[];
 
   /**
    * @remarks
@@ -312,7 +312,7 @@ export default interface MinecraftBehaviorDropItemFor {
    *
    *
    */
-  teleport_offset: number[];
+  teleport_offset?: number[];
 
   /**
    * @remarks
@@ -325,6 +325,6 @@ export default interface MinecraftBehaviorDropItemFor {
    *
    *
    */
-  time_of_day_range: number[];
+  time_of_day_range?: number[];
 
 }

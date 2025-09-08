@@ -136,7 +136,7 @@ export default interface MinecraftBreathable {
    * List of blocks this entity can breathe in, in addition to the
    * selected items above.
    */
-  breathe_blocks: string[];
+  breathe_blocks?: string[];
 
   /**
    * @remarks
@@ -147,7 +147,7 @@ export default interface MinecraftBreathable {
    *
    *
    */
-  breathes_air: boolean;
+  breathes_air?: boolean;
 
   /**
    * @remarks
@@ -157,13 +157,13 @@ export default interface MinecraftBreathable {
    * Magma Cube: true
    *
    */
-  breathes_lava: boolean;
+  breathes_lava?: boolean;
 
   /**
    * @remarks
    * If set, this entity can breathe in solid blocks.
    */
-  breathes_solids: boolean;
+  breathes_solids?: boolean;
 
   /**
    * @remarks
@@ -174,14 +174,14 @@ export default interface MinecraftBreathable {
    *
    *
    */
-  breathes_water: boolean;
+  breathes_water?: boolean;
 
   /**
    * @remarks
    * If set, this entity will have visible bubbles while in 
    * water.
    */
-  generates_bubbles: boolean;
+  generates_bubbles?: boolean;
 
   /**
    * @remarks
@@ -191,14 +191,14 @@ export default interface MinecraftBreathable {
    * Player: 3.75
    *
    */
-  inhale_time: number;
+  inhale_time?: number;
 
   /**
    * @remarks
    * List of blocks this entity cannot breathe in, in addition to
    * the selected items above.
    */
-  non_breathe_blocks: string[];
+  non_breathe_blocks?: string[];
 
   /**
    * @remarks
@@ -208,7 +208,7 @@ export default interface MinecraftBreathable {
    * Player: -1
    *
    */
-  suffocate_time: number;
+  suffocate_time?: number;
 
   /**
    * @remarks
@@ -217,7 +217,7 @@ export default interface MinecraftBreathable {
    * Bee: -1
    *
    */
-  suffocateTime: number;
+  suffocateTime?: number;
 
   /**
    * @remarks
@@ -232,7 +232,7 @@ export default interface MinecraftBreathable {
    * Happy Ghast: 5
    *
    */
-  total_supply: number;
+  total_supply?: number;
 
   /**
    * @remarks
@@ -242,6 +242,6 @@ export default interface MinecraftBreathable {
    *
    *
    */
-  totalSupply: number;
+  totalSupply?: number;
 
 }

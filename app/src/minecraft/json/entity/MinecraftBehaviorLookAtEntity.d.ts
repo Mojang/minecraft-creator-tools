@@ -71,14 +71,14 @@ export default interface MinecraftBehaviorLookAtEntity {
    * Ravager: 45
    *
    */
-  angle_of_view_horizontal: number;
+  angle_of_view_horizontal?: number;
 
   /**
    * @remarks
    * The angle in degrees that the mob can see in the X-axis
    * (left-right).
    */
-  angle_of_view_vertical: number;
+  angle_of_view_vertical?: number;
 
   /**
    * @remarks
@@ -90,7 +90,7 @@ export default interface MinecraftBehaviorLookAtEntity {
    *
    *
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -104,13 +104,13 @@ export default interface MinecraftBehaviorLookAtEntity {
    * Vex: 6
    *
    */
-  look_distance: number;
+  look_distance?: number;
 
   /**
    * @remarks
    * Time range to look at the nearest entity.
    */
-  look_time: number[];
+  look_time?: number[];
 
   /**
    * @remarks
@@ -125,7 +125,7 @@ export default interface MinecraftBehaviorLookAtEntity {
    * Vex: 9
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -136,6 +136,6 @@ export default interface MinecraftBehaviorLookAtEntity {
    * Vex: 0.02
    *
    */
-  probability: number;
+  probability?: number;
 
 }

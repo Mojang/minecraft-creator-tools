@@ -381,11 +381,11 @@ describe("Diverse Content Types", async () => {
     const itemItems = project.items.filter((item) => item.itemType === ProjectItemType.itemTypeBehavior);
     expect(itemItems.length).to.be.equal(2); // sword and food
 
-    const itemNames = itemItems.map(item => item.name);
+    const itemNames = itemItems.map((item) => item.name);
     expect(itemNames).to.include("sample_sword.json");
     expect(itemNames).to.include("sample_food.json");
 
-    const swordItem = itemItems.find(item => item.name === "sample_sword.json");
+    const swordItem = itemItems.find((item) => item.name === "sample_sword.json");
     expect(swordItem?.projectPath).to.contain("items");
   });
 
@@ -458,7 +458,9 @@ describe("Diverse Content Types", async () => {
   it("validates animation controller content", async () => {
     const project = await _loadProject("diverse_content");
 
-    const animationControllerItems = project.items.filter((item) => item.itemType === ProjectItemType.animationControllerResourceJson);
+    const animationControllerItems = project.items.filter(
+      (item) => item.itemType === ProjectItemType.animationControllerResourceJson
+    );
     expect(animationControllerItems.length).to.be.equal(1);
 
     const animationControllerItem = animationControllerItems[0];
@@ -499,11 +501,11 @@ describe("Diverse Content Types", async () => {
   });
 });
 
-describe("Skin Pack Content", async () => {
+describe("Skin Pack Content - Errors", async () => {
   it("loads sample skin pack", async () => {
-    const project = await _loadProject("sample_skins");
+    const project = await _loadProject("sample_skins_errors");
 
-    // Should have skin pack content 
+    // Should have skin pack content
     expect(project.items.length).to.be.greaterThan(3);
 
     // Check for skin pack specific content types
@@ -515,7 +517,7 @@ describe("Skin Pack Content", async () => {
   });
 
   it("validates skin pack manifest", async () => {
-    const project = await _loadProject("sample_skins");
+    const project = await _loadProject("sample_skins_errors");
 
     const manifestItems = project.items.filter((item) => item.itemType === ProjectItemType.skinPackManifestJson);
     expect(manifestItems.length).to.be.equal(1);
@@ -525,7 +527,7 @@ describe("Skin Pack Content", async () => {
   });
 
   it("validates skins.json catalog", async () => {
-    const project = await _loadProject("sample_skins");
+    const project = await _loadProject("sample_skins_errors");
 
     const skinCatalogItems = project.items.filter((item) => item.itemType === ProjectItemType.skinCatalogJson);
     expect(skinCatalogItems.length).to.be.equal(1);
@@ -535,34 +537,102 @@ describe("Skin Pack Content", async () => {
   });
 
   it("validates skin texture files", async () => {
-    const project = await _loadProject("sample_skins");
+    const project = await _loadProject("sample_skins_errors");
 
     const textureItems = project.items.filter((item) => item.itemType === ProjectItemType.texture);
     expect(textureItems.length).to.be.greaterThanOrEqual(2); // steve and alex skins
 
-    const textureNames = textureItems.map(item => item.name);
+    const textureNames = textureItems.map((item) => item.name);
     expect(textureNames).to.include("steve_skin.png");
     expect(textureNames).to.include("alex_skin.png");
   });
 
   it("validates skin pack language files", async () => {
-    const project = await _loadProject("sample_skins");
+    const project = await _loadProject("sample_skins_errors");
 
     const langItems = project.items.filter((item) => item.itemType === ProjectItemType.lang);
     expect(langItems.length).to.be.greaterThanOrEqual(2); // en_US and es_ES
 
-    const langNames = langItems.map(item => item.name);
+    const langNames = langItems.map((item) => item.name);
     expect(langNames).to.include("en_US.lang");
     expect(langNames).to.include("es_ES.lang");
   });
 
   it("skin pack validation report", async () => {
-    const project = await _loadProject("sample_skins");
+    const project = await _loadProject("sample_skins_errors");
 
     const pis = new ProjectInfoSet(project, ProjectInfoSuite.default);
     await pis.generateForProject();
 
     const dataObject = pis.getDataObject();
-    await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "sample_skins");
+    await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "sample_skins_errors");
+  });
+});
+
+describe("Skin Pack Content - Good", async () => {
+  it("loads sample skin pack", async () => {
+    const project = await _loadProject("sample_skins_good");
+
+    // Should have skin pack content
+    expect(project.items.length).to.be.greaterThan(3);
+
+    // Check for skin pack specific content types
+    const itemTypes = project.items.map((item) => item.itemType);
+    expect(itemTypes).to.include(ProjectItemType.skinPackManifestJson);
+    expect(itemTypes).to.include(ProjectItemType.skinCatalogJson);
+    expect(itemTypes).to.include(ProjectItemType.texture);
+    expect(itemTypes).to.include(ProjectItemType.lang);
+  });
+
+  it("validates skin pack manifest", async () => {
+    const project = await _loadProject("sample_skins_good");
+
+    const manifestItems = project.items.filter((item) => item.itemType === ProjectItemType.skinPackManifestJson);
+    expect(manifestItems.length).to.be.equal(1);
+
+    const manifestItem = manifestItems[0];
+    expect(manifestItem.name).to.equal("manifest.json");
+  });
+
+  it("validates skins.json catalog", async () => {
+    const project = await _loadProject("sample_skins_good");
+
+    const skinCatalogItems = project.items.filter((item) => item.itemType === ProjectItemType.skinCatalogJson);
+    expect(skinCatalogItems.length).to.be.equal(1);
+
+    const skinCatalogItem = skinCatalogItems[0];
+    expect(skinCatalogItem.name).to.equal("skins.json");
+  });
+
+  it("validates skin texture files", async () => {
+    const project = await _loadProject("sample_skins_good");
+
+    const textureItems = project.items.filter((item) => item.itemType === ProjectItemType.texture);
+    expect(textureItems.length).to.be.greaterThanOrEqual(2); // steve and alex skins
+
+    const textureNames = textureItems.map((item) => item.name);
+    expect(textureNames).to.include("steve_skin.png");
+    expect(textureNames).to.include("alex_skin.png");
+  });
+
+  it("validates skin pack language files", async () => {
+    const project = await _loadProject("sample_skins_good");
+
+    const langItems = project.items.filter((item) => item.itemType === ProjectItemType.lang);
+    expect(langItems.length).to.be.greaterThanOrEqual(2); // en_US and es_ES
+
+    const langNames = langItems.map((item) => item.name);
+    expect(langNames).to.include("en_US.lang");
+    expect(langNames).to.include("es_ES.lang");
+  });
+
+  it("skin pack validation report", async () => {
+    const project = await _loadProject("sample_skins_good");
+
+    const pis = new ProjectInfoSet(project, ProjectInfoSuite.default);
+    await pis.generateForProject();
+
+    const dataObject = pis.getDataObject();
+    await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "sample_skins_good");
   });
 });

@@ -408,25 +408,27 @@ export default class BlockTypeStateEditor extends Component<IBlockTypeStateEdito
 
         Log.assertDefined(form);
 
-        stateForms.push(
-          <div className="bcose-componentForm">
-            <DataForm
-              displayTitle={true}
-              displayDescription={true}
-              readOnly={false}
-              tag={formKey}
-              project={this.props.project}
-              lookupProvider={this.props.project}
-              theme={this.props.theme}
-              objectKey={formKey}
-              closeButton={false}
-              definition={form}
-              directObject={{
-                values: formData,
-              }}
-            ></DataForm>
-          </div>
-        );
+        if (form) {
+          stateForms.push(
+            <div className="bcose-componentForm">
+              <DataForm
+                displayTitle={true}
+                displayDescription={true}
+                readOnly={false}
+                tag={formKey}
+                project={this.props.project}
+                lookupProvider={this.props.project}
+                theme={this.props.theme}
+                objectKey={formKey}
+                closeButton={false}
+                definition={form}
+                directObject={{
+                  values: formData,
+                }}
+              ></DataForm>
+            </div>
+          );
+        }
 
         toolbarItems.push({
           id: "deleteThisComponent",

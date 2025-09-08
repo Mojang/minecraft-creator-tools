@@ -5,6 +5,8 @@
   "description": "Add-on Pack Samples",
   "private": true,
   "devDependencies": {
+    "@types/normalize-package-data": "^2.4.4",
+    "@types/semver": "^7.7.1",
     "del": "^6.0.0",
     "gulp": "^4.0.2",
     "gulp-cli": "^2.3.0",

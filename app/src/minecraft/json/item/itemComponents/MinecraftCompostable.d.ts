@@ -22,7 +22,7 @@ Bag o Leaves - https://github.com/microsoft/minecraft-samples/tree/main/creator_
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Compostable Item (minecraft:compostable)
+ * Item Compostable (minecraft:compostable)
  * Specifies that an item is compostable and provides the chance of
  * creating a composting layer in the composter.
  */
@@ -32,6 +32,10 @@ export default interface MinecraftCompostable {
    * @remarks
    * The chance of this item to create a layer upon composting with
    * the composter. Valid value range is 1 - 100 inclusive
+   * 
+   * Sample Values:
+   * Bag o Leaves: 100
+   *
    */
   composting_chance: number;
 

@@ -57,7 +57,9 @@ export default class BlocksCatalogManager implements IProjectInfoGenerator, IPro
       const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.blocksCatalogResourceJson) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const blocksCatalog = await BlocksCatalogDefinition.ensureOnFile(pi.primaryFile);
@@ -116,7 +118,9 @@ export default class BlocksCatalogManager implements IProjectInfoGenerator, IPro
       const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.blocksCatalogResourceJson) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const blocksCatalog = await BlocksCatalogDefinition.ensureOnFile(pi.primaryFile);

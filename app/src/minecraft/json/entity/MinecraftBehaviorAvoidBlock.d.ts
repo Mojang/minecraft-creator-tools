@@ -81,7 +81,7 @@ export default interface MinecraftBehaviorAvoidBlock {
    *
    *
    */
-  avoid_block_sound: string;
+  avoid_block_sound?: string;
 
   /**
    * @remarks
@@ -91,7 +91,7 @@ export default interface MinecraftBehaviorAvoidBlock {
    * Hoglin: [{"event":"escaped_event","target":"self"}]
    *
    */
-  on_escape: jsoncommon.MinecraftEventTrigger;
+  on_escape?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -105,7 +105,7 @@ export default interface MinecraftBehaviorAvoidBlock {
    * Piglin: 9
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -116,7 +116,7 @@ export default interface MinecraftBehaviorAvoidBlock {
    *
    *
    */
-  search_height: number;
+  search_height?: number;
 
   /**
    * @remarks
@@ -127,7 +127,7 @@ export default interface MinecraftBehaviorAvoidBlock {
    *
    *
    */
-  search_range: number;
+  search_range?: number;
 
   /**
    * @remarks
@@ -139,7 +139,7 @@ export default interface MinecraftBehaviorAvoidBlock {
    *
    *
    */
-  sound_interval: number[];
+  sound_interval?: number[];
 
   /**
    * @remarks
@@ -152,7 +152,7 @@ export default interface MinecraftBehaviorAvoidBlock {
    * Piglin: 1.1
    *
    */
-  sprint_speed_modifier: number;
+  sprint_speed_modifier?: number;
 
   /**
    * @remarks
@@ -164,7 +164,7 @@ export default interface MinecraftBehaviorAvoidBlock {
    * Piglin: ["minecraft:soul_fire","minecraft:soul_lantern","minecraft:soul_torch","minecraft:item.soul_campfire"]
    *
    */
-  target_blocks: string[];
+  target_blocks?: string[];
 
   /**
    * @remarks
@@ -175,7 +175,7 @@ export default interface MinecraftBehaviorAvoidBlock {
    *
    *
    */
-  target_selection_method: string;
+  target_selection_method?: string;
 
   /**
    * @remarks
@@ -186,7 +186,7 @@ export default interface MinecraftBehaviorAvoidBlock {
    *
    *
    */
-  tick_interval: number;
+  tick_interval?: number;
 
   /**
    * @remarks
@@ -197,6 +197,6 @@ export default interface MinecraftBehaviorAvoidBlock {
    * Hoglin: 1
    *
    */
-  walk_speed_modifier: number;
+  walk_speed_modifier?: number;
 
 }

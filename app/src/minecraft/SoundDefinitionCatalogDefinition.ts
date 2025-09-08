@@ -189,11 +189,13 @@ export default class SoundDefinitionCatalogDefinition {
     if (file.manager !== undefined && file.manager instanceof SoundDefinitionCatalogDefinition) {
       et = file.manager as SoundDefinitionCatalogDefinition;
 
-      if (!et.isLoaded && loadHandler) {
-        et.onLoaded.subscribe(loadHandler);
-      }
+      if (!et.isLoaded) {
+        if (loadHandler) {
+          et.onLoaded.subscribe(loadHandler);
+        }
 
-      await et.load();
+        await et.load();
+      }
     }
 
     return et;
@@ -201,6 +203,11 @@ export default class SoundDefinitionCatalogDefinition {
 
   persist() {
     if (this._file === undefined) {
+      return;
+    }
+
+    if (!this._data) {
+      Log.unexpectedUndefined("SDCDP");
       return;
     }
 
@@ -219,7 +226,9 @@ export default class SoundDefinitionCatalogDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
       return;
@@ -248,7 +257,9 @@ export default class SoundDefinitionCatalogDefinition {
     }
 
     if (childItem.itemType === ProjectItemType.texture && this._data && this._data.sound_definitions) {
-      await childItem.ensureStorage();
+      if (!childItem.isContentLoaded) {
+        await childItem.loadContent();
+      }
 
       if (childItem.primaryFile && packRootFolder) {
         let relativePath = this.getRelativePath(childItem.primaryFile, packRootFolder);
@@ -432,7 +443,9 @@ export default class SoundDefinitionCatalogDefinition {
 
     for (const candItem of itemsCopy) {
       if (candItem.itemType === ProjectItemType.audio && packRootFolder && soundPathList) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
           let relativePath = this.getRelativePath(candItem.primaryFile, packRootFolder);

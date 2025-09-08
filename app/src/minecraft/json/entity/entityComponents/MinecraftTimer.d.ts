@@ -178,7 +178,7 @@ export default interface MinecraftTimer {
    *
    *
    */
-  looping: boolean;
+  looping?: boolean;
 
   /**
    * @remarks
@@ -190,7 +190,7 @@ export default interface MinecraftTimer {
    * Wandering Trader: [{"weight":50,"value":2400},{"weight":50,"value":3600}]
    *
    */
-  random_time_choices: string[];
+  random_time_choices?: string[];
 
   /**
    * @remarks
@@ -201,7 +201,7 @@ export default interface MinecraftTimer {
    * Bee: true
    *
    */
-  randomInterval: boolean;
+  randomInterval?: boolean;
 
   /**
    * @remarks
@@ -217,7 +217,7 @@ export default interface MinecraftTimer {
    * Bee: [20,50], [10,60], 5, 180, [5,20]
    *
    */
-  time: number[];
+  time?: number[];
 
   /**
    * @remarks
@@ -231,6 +231,6 @@ export default interface MinecraftTimer {
    * Bee: {"event":"stop_panicking_after_fire","target":"self"}, {"event":"perish_event","target":"self"}, {"event":"calmed_down","target":"self"}, {"event":"find_flower_timeout"}, {"event":"find_hive_timeout","target":"self"}, {"event":"find_hive_event","target":"self"}
    *
    */
-  time_down_event: jsoncommon.MinecraftEventTrigger;
+  time_down_event?: jsoncommon.MinecraftEventTrigger;
 
 }

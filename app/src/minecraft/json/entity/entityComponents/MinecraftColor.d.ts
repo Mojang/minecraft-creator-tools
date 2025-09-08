@@ -97,6 +97,6 @@ export default interface MinecraftColor {
    * Sheep: 12, 15, 7, 8, 6, 11, 3, 9, 1, 4
    *
    */
-  value: number;
+  value?: number;
 
 }

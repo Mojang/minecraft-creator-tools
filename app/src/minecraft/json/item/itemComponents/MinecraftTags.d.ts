@@ -10,15 +10,6 @@
  * Items Documentation - minecraft:tags
  * 
  * minecraft:tags Samples
-"minecraft:tags": {
-  "do_swing_animation": false,
-  "launch_power_scale": 1,
-  "max_draw_duration": 0,
-  "max_launch_power": 1,
-  "min_draw_duration": 0,
-  "scale_power_by_draw_duration": false
-}
-
 
 Apple - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/apple.json
 
@@ -33,8 +24,8 @@ Apple - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ite
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Tags Item (minecraft:tags)
- * Determines which tags are included on a given item.
+ * Item Tags (minecraft:tags)
+ * The tags component specifies which tags an item has on it.
  */
 export default interface MinecraftTags {
 
@@ -45,7 +36,8 @@ export default interface MinecraftTags {
    * Sample Values:
    * Apple: ["minecraft:is_food"]
    *
+   *
    */
-  tags: string[];
+  tags?: string[];
 
 }

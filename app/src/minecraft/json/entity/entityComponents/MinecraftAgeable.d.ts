@@ -254,14 +254,14 @@ export default interface MinecraftAgeable {
 
   /**
    * @remarks
-   * List of items that the entity drops when it grows up.
+   * List of items that are dropped when an entity grows up
    * 
    * Sample Values:
    * Turtle: ["turtle_shell_piece"]
    *
    *
    */
-  drop_items: string[];
+  drop_items?: string[];
 
   /**
    * @remarks
@@ -275,7 +275,7 @@ export default interface MinecraftAgeable {
    * Sniffer: 2400
    *
    */
-  duration: number;
+  duration?: number;
 
   /**
    * @remarks
@@ -291,13 +291,17 @@ export default interface MinecraftAgeable {
    * Bee: ["minecraft:poppy","minecraft:blue_orchid","minecraft:allium","minecraft:azure_bluet","minecraft:red_tulip","minecraft:orange_tulip","minecraft:white_tulip","minecraft:pink_tulip","minecraft:oxeye_daisy","minecraft:cornflower","minecraft:lily_of_the_valley","minecraft:dandelion","minecraft:wither_rose","minecraft:sunflower","minecraft:lilac","minecraft:rose_bush","minecraft:peony","minecraft:flowering_azalea","minecraft:azalea_leaves_flowered","minecraft:mangrove_propagule","minecraft:pitcher_plant","minecraft:torchflower","minecraft:cherry_leaves","minecraft:pink_petals","minecraft:wildflowers","minecraft:cactus_flower"]
    *
    */
-  feed_items: string[];
-
-  feedItems: string[];
+  feed_items?: string[];
 
   /**
    * @remarks
-   * Event to run when this entity grows up.
+   * List of items that can be fed to an entity to age them up
+   */
+  feedItems?: string[];
+
+  /**
+   * @remarks
+   * Event to fire when an entity grows up
    * 
    * Sample Values:
    * Armadillo: {"event":"minecraft:ageable_grow_up","target":"self"}
@@ -308,7 +312,7 @@ export default interface MinecraftAgeable {
    * Rabbit: {"event":"grow_up","target":"self"}
    *
    */
-  grow_up: jsoncommon.MinecraftEventTrigger;
+  grow_up?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -318,7 +322,7 @@ export default interface MinecraftAgeable {
    * Armadillo: {"test":"enum_property","domain":"minecraft:armadillo_state","value":"unrolled"}
    *
    */
-  interact_filters: jsoncommon.MinecraftFilter;
+  interact_filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -329,6 +333,6 @@ export default interface MinecraftAgeable {
    * Axolotl: "water_bucket:0"
    *
    */
-  transform_to_item: string[];
+  transform_to_item?: string[];
 
 }

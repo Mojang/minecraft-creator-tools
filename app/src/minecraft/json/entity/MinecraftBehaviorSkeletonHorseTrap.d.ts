@@ -43,7 +43,7 @@ export default interface MinecraftBehaviorSkeletonHorseTrap {
    * Skeleton Horse: 900
    *
    */
-  duration: number;
+  duration?: number;
 
   /**
    * @remarks
@@ -55,7 +55,7 @@ export default interface MinecraftBehaviorSkeletonHorseTrap {
    * Skeleton Horse: 2
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -66,6 +66,6 @@ export default interface MinecraftBehaviorSkeletonHorseTrap {
    * Skeleton Horse: 10
    *
    */
-  within_radius: number;
+  within_radius?: number;
 
 }

@@ -44,7 +44,7 @@ export default interface MinecraftBehaviorFollowTargetCaptain {
    *
    *
    */
-  follow_distance: number;
+  follow_distance?: number;
 
   /**
    * @remarks
@@ -57,7 +57,7 @@ export default interface MinecraftBehaviorFollowTargetCaptain {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -67,7 +67,7 @@ export default interface MinecraftBehaviorFollowTargetCaptain {
    *
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -79,6 +79,6 @@ export default interface MinecraftBehaviorFollowTargetCaptain {
    *
    *
    */
-  within_radius: number;
+  within_radius?: number;
 
 }

@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Tick World Entity (minecraft:tick_world)
+ * Entity Tick World (minecraft:tick_world)
  * Defines if the entity ticks the world and the radius around it
  * to tick.
  */
@@ -25,7 +25,7 @@ export default interface MinecraftTickWorld {
    * entity despawns. This option will be ignored if never_despawn is
    * true. Default value: 128.
    */
-  distance_to_players: number;
+  distance_to_players?: number;
 
   /**
    * @remarks
@@ -33,13 +33,13 @@ export default interface MinecraftTickWorld {
    * away. If false, distance_to_players will be used to determine when
    * to despawn. Default value: true.
    */
-  never_despawn: boolean;
+  never_despawn?: boolean;
 
   /**
    * @remarks
    * The area around the entity to tick. Allowed range: 2-6. Default
    * value: 2.
    */
-  radius: number;
+  radius?: number;
 
 }

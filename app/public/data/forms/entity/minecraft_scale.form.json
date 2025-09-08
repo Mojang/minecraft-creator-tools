@@ -401,7 +401,7 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/villager_v2.json": [
+    "/vanilla/behavior_pack/entities/villager.json": [
       {
         "path": "/minecraft:entity/component_groups/baby/minecraft:scale/",
         "content": {
@@ -409,7 +409,7 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/villager.json": [
+    "/vanilla/behavior_pack/entities/villager_v2.json": [
       {
         "path": "/minecraft:entity/component_groups/baby/minecraft:scale/",
         "content": {
@@ -441,17 +441,17 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/zombie_pigman.json": [
+    "/vanilla/behavior_pack/entities/zombie.json": [
       {
-        "path": "/minecraft:entity/component_groups/minecraft:pig_zombie_baby/minecraft:scale/",
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_baby/minecraft:scale/",
         "content": {
           "value": 0.5
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/zombie_villager_v2.json": [
+    "/vanilla/behavior_pack/entities/zombie_pigman.json": [
       {
-        "path": "/minecraft:entity/component_groups/baby/minecraft:scale/",
+        "path": "/minecraft:entity/component_groups/minecraft:pig_zombie_baby/minecraft:scale/",
         "content": {
           "value": 0.5
         }
@@ -465,9 +465,9 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/zombie.json": [
+    "/vanilla/behavior_pack/entities/zombie_villager_v2.json": [
       {
-        "path": "/minecraft:entity/component_groups/minecraft:zombie_baby/minecraft:scale/",
+        "path": "/minecraft:entity/component_groups/baby/minecraft:scale/",
         "content": {
           "value": 0.5
         }

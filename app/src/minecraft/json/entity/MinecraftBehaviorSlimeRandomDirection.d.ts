@@ -42,7 +42,7 @@ export default interface MinecraftBehaviorSlimeRandomDirection {
    *
    *
    */
-  add_random_time_range: number;
+  add_random_time_range?: number;
 
   /**
    * @remarks
@@ -54,7 +54,7 @@ export default interface MinecraftBehaviorSlimeRandomDirection {
    *
    *
    */
-  min_change_direction_time: number;
+  min_change_direction_time?: number;
 
   /**
    * @remarks
@@ -67,7 +67,7 @@ export default interface MinecraftBehaviorSlimeRandomDirection {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -79,6 +79,6 @@ export default interface MinecraftBehaviorSlimeRandomDirection {
    *
    *
    */
-  turn_range: number;
+  turn_range?: number;
 
 }

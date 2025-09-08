@@ -40,7 +40,7 @@ export default interface MinecraftBehaviorMoveTowardsTarget {
    * Iron Golem: 2
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -49,7 +49,7 @@ export default interface MinecraftBehaviorMoveTowardsTarget {
    * Iron Golem: 0.9
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -61,6 +61,6 @@ export default interface MinecraftBehaviorMoveTowardsTarget {
    * Iron Golem: 32
    *
    */
-  within_radius: number;
+  within_radius?: number;
 
 }

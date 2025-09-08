@@ -65,7 +65,7 @@ export default interface MinecraftDweller {
    * Whether or not the entity can find and add POIs to the 
    * dwelling.
    */
-  can_find_poi: boolean;
+  can_find_poi?: boolean;
 
   /**
    * @remarks
@@ -77,7 +77,7 @@ export default interface MinecraftDweller {
    *
    *
    */
-  can_migrate: boolean;
+  can_migrate?: boolean;
 
   /**
    * @remarks
@@ -90,21 +90,21 @@ export default interface MinecraftDweller {
    * Iron Golem: "defender"
    *
    */
-  dweller_role: string;
+  dweller_role?: string;
 
   /**
    * @remarks
    * A padding distance for checking if the entity is within the
    * dwelling.
    */
-  dwelling_bounds_tolerance: number;
+  dwelling_bounds_tolerance?: number;
 
   /**
    * @remarks
    * The role of which the entity plays in the dwelling. Current Roles:
    * inhabitant, defender, hostile, passive.
    */
-  dwelling_role: string;
+  dwelling_role?: string;
 
   /**
    * @remarks
@@ -116,14 +116,14 @@ export default interface MinecraftDweller {
    *
    *
    */
-  dwelling_type: string;
+  dwelling_type?: string;
 
   /**
    * @remarks
    * Determines how much reputation players are rewarded on first
    * founding.
    */
-  first_founding_reward: number;
+  first_founding_reward?: number;
 
   /**
    * @remarks
@@ -132,7 +132,7 @@ export default interface MinecraftDweller {
    * still need to gain experience from trading before this takes
    * effect.)
    */
-  preferred_profession: string;
+  preferred_profession?: string;
 
   /**
    * @remarks
@@ -144,7 +144,7 @@ export default interface MinecraftDweller {
    *
    *
    */
-  update_interval_base: number;
+  update_interval_base?: number;
 
   /**
    * @remarks
@@ -156,6 +156,6 @@ export default interface MinecraftDweller {
    *
    *
    */
-  update_interval_variant: number;
+  update_interval_variant?: number;
 
 }

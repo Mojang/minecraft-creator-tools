@@ -74,7 +74,7 @@ export default interface IsMarkVariant {
    * @remarks
    * (Optional) The comparison to apply with 'value'.
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
@@ -84,7 +84,7 @@ export default interface IsMarkVariant {
    * Villager v2: "other"
    *
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -93,7 +93,7 @@ export default interface IsMarkVariant {
    * Villager v2: "is_mark_variant"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -103,7 +103,7 @@ export default interface IsMarkVariant {
    * Villager v2: 1, 2, 3, 4, 5, 6
    *
    */
-  value: number;
+  value?: number;
 
 }
 

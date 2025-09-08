@@ -415,7 +415,7 @@ Copper Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_p
           "all_of": [
             {
               "test": "all_slots_empty",
-              "domain": "hand",
+              "value": "hand",
               "operator": "not"
             },
             {
@@ -425,7 +425,7 @@ Copper Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_p
             },
             {
               "test": "all_slots_empty",
-              "domain": "hand",
+              "value": "main_hand",
               "subject": "other"
             }
           ]
@@ -879,14 +879,14 @@ export default interface MinecraftInteract {
    * Time in seconds before this entity can be interacted with 
    * again.
    */
-  cooldown: number;
+  cooldown?: number;
 
   /**
    * @remarks
    * Time in seconds before this entity can be interacted with after
    * being attacked.
    */
-  cooldown_after_being_attacked: number;
+  cooldown_after_being_attacked?: number;
 
   /**
    * @remarks
@@ -896,14 +896,14 @@ export default interface MinecraftInteract {
    * 'slot.weapon.offhand', 'slot.armor.head', 'slot.armor.chest', 'slot.armor.legs',
    * 'slot.armor.feet' and 'slot.armor.body'.
    */
-  drop_item_slot: string;
+  drop_item_slot?: string;
 
   /**
    * @remarks
    * Will offset the item drop position this amount in the y
    * direction. Requires "drop_item_slot" to be specified.
    */
-  drop_item_y_offset: number;
+  drop_item_y_offset?: number;
 
   /**
    * @remarks
@@ -913,7 +913,7 @@ export default interface MinecraftInteract {
    * 'slot.armor.head', 'slot.armor.chest', 'slot.armor.legs', 'slot.armor.feet'
    * and 'slot.armor.body'.
    */
-  equip_item_slot: string;
+  equip_item_slot?: string;
 
   /**
    * @remarks
@@ -921,7 +921,7 @@ export default interface MinecraftInteract {
    * interacting with this item. Negative values will harm the
    * entity.
    */
-  health_amount: number;
+  health_amount?: number;
 
   /**
    * @remarks
@@ -929,14 +929,14 @@ export default interface MinecraftInteract {
    * this entity. A value of 0 means the item won't lose 
    * durability.
    */
-  hurt_item: number;
+  hurt_item?: number;
 
   /**
    * @remarks
    * Text to show when the player is able to interact in this way
    * with this entity when playing with touch-screen controls.
    */
-  interact_text: string;
+  interact_text?: string;
 
   /**
    * @remarks
@@ -944,10 +944,8 @@ export default interface MinecraftInteract {
    * Sample Values:
    * Allay: [{"on_interact":{"filters":{"all_of":[{"test":"has_equipment","subject":"other","domain":"hand","operator":"not","value":"lead"},{"test":"is_sneak_held","subject":"other","value":false},{"any_of":[{"test":"all_slots_empty","subject":"other","operator":"not","value":"hand"},{"test":"all_slots_empty","subject":"self","operator":"not","value":"hand"}]}]}},"give_item":true,"take_item":true,"interact_text":"action.interact.allay"}]
    *
-   * Armadillo: [{"on_interact":{"filters":{"all_of":[{"test":"is_family","subject":"other","value":"player"},{"test":"has_equipment","subject":"other","domain":"hand","value":"brush"}]}},"play_sounds":"mob.armadillo.brush","interact_text":"action.interact.brush","hurt_item":16,"swing":true,"spawn_items":{"table":"loot_tables/entities/armadillo_brush.json"}}]
-   *
    */
-  interactions: MinecraftInteractInteractions[];
+  interactions?: MinecraftInteractInteractions[];
 
 }
 
@@ -964,9 +962,9 @@ export interface MinecraftInteractInteractions {
    * Allay: true
    *
    */
-  give_item: string;
+  give_item?: string;
 
-  hurt_item: number;
+  hurt_item?: number;
 
   /**
    * @remarks
@@ -975,7 +973,7 @@ export interface MinecraftInteractInteractions {
    * Allay: "action.interact.allay"
    *
    */
-  interact_text: string;
+  interact_text?: string;
 
   /**
    * @remarks
@@ -984,46 +982,46 @@ export interface MinecraftInteractInteractions {
    * Allay: {"filters":{"all_of":[{"test":"has_equipment","subject":"other","domain":"hand","operator":"not","value":"lead"},{"test":"is_sneak_held","subject":"other","value":false},{"any_of":[{"test":"all_slots_empty","subject":"other","operator":"not","value":"hand"},{"test":"all_slots_empty","subject":"self","operator":"not","value":"hand"}]}]}}
    *
    */
-  on_interact: string;
+  on_interact?: string;
 
   /**
    * @remarks
    * Particle effect that will be triggered at the start of the
    * interaction.
    */
-  particle_on_start: MinecraftInteractInteractionsParticleOnStart[];
+  particle_on_start?: MinecraftInteractInteractionsParticleOnStart[];
 
   /**
    * @remarks
    * List of sounds to play when the interaction occurs.
    */
-  play_sounds: string;
+  play_sounds?: string;
 
   /**
    * @remarks
    * Allows to repair one of the entity's items.
    */
-  repair_entity_item: MinecraftInteractInteractionsRepairEntityItem[];
+  repair_entity_item?: MinecraftInteractInteractionsRepairEntityItem[];
 
   /**
    * @remarks
    * List of entities to spawn when the interaction occurs.
    */
-  spawn_entities: string;
+  spawn_entities?: string;
 
   /**
    * @remarks
    * Loot table with items to drop on the ground upon successful
    * interaction.
    */
-  spawn_items: MinecraftInteractInteractionsSpawnItems[];
+  spawn_items?: MinecraftInteractInteractionsSpawnItems[];
 
   /**
    * @remarks
    * If true, the player will do the 'swing' animation when
    * interacting with this entity.
    */
-  swing: boolean;
+  swing?: boolean;
 
   /**
    * @remarks
@@ -1032,20 +1030,20 @@ export interface MinecraftInteractInteractions {
    * Allay: true
    *
    */
-  take_item: string;
+  take_item?: string;
 
   /**
    * @remarks
    * The item used will transform to this item upon successful interaction.
    * Format: itemName:auxValue
    */
-  transform_to_item: string;
+  transform_to_item?: string;
 
   /**
    * @remarks
    * If true, the interaction will use an item.
    */
-  use_item: boolean;
+  use_item?: boolean;
 
   /**
    * @remarks
@@ -1053,7 +1051,7 @@ export interface MinecraftInteractInteractions {
    * none (no vibration emitted), shear, entity_die, entity_act,
    * entity_interact.
    */
-  vibration: string;
+  vibration?: string;
 
 }
 
@@ -1069,19 +1067,19 @@ export interface MinecraftInteractInteractionsParticleOnStart {
    * Whether or not the particle will appear closer to who performed the
    * interaction.
    */
-  particle_offset_towards_interactor: boolean;
+  particle_offset_towards_interactor?: boolean;
 
   /**
    * @remarks
    * The type of particle that will be spawned.
    */
-  particle_type: string;
+  particle_type?: string;
 
   /**
    * @remarks
    * Will offset the particle this amount in the y direction.
    */
-  particle_y_offset: number;
+  particle_y_offset?: number;
 
 }
 
@@ -1096,7 +1094,7 @@ export interface MinecraftInteractInteractionsRepairEntityItem {
    * How much of the item durability should be restored upon
    * interaction.
    */
-  amount: number;
+  amount?: number;
 
   /**
    * @remarks
@@ -1105,7 +1103,7 @@ export interface MinecraftInteractInteractionsRepairEntityItem {
    * 'slot.armor.head', 'slot.armor.chest', 'slot.armor.legs', 'slot.armor.feet'
    * and 'slot.armor.body'.
    */
-  slot: number;
+  slot?: number;
 
 }
 
@@ -1121,13 +1119,13 @@ export interface MinecraftInteractInteractionsSpawnItems {
    * File path, relative to the Behavior Pack's path, to the loot
    * table file.
    */
-  table: string;
+  table?: string;
 
   /**
    * @remarks
    * Will offset the items spawn position this amount in the y
    * direction.
    */
-  y_offset: number;
+  y_offset?: number;
 
 }

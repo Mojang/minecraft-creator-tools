@@ -74,11 +74,12 @@ export interface IDataFormProps extends IDataContainer {
   tagData?: any;
   readOnly: boolean;
   onClose?: (props: IDataFormProps) => void;
-  onPropertyChanged?: (props: IDataFormProps, property: IProperty, newValue: any) => void;
+  onPropertyChanged?: (props: IDataFormProps, property: IProperty, newValue: any, updatingObject?: any) => void;
 }
 
 interface IDataFormState {
   objectIncrement: number;
+  updatedDirectObject?: any;
   subFormLoadState: string | undefined;
   keyAliases: { [name: string]: string };
   lookups: { [name: string]: ISimpleReference[] | undefined };
@@ -162,6 +163,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     const subFormLoadState = await DataFormUtilities.loadSubForms(this.props.definition);
 
     this.setState({
+      updatedDirectObject: undefined,
       objectIncrement: this.state.objectIncrement,
       keyAliases: this.state.keyAliases,
       subFormLoadState: subFormLoadState,
@@ -189,6 +191,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       await VanillaProjectManager.getTerrainTexturesCatalog();
 
       this.setState({
+        updatedDirectObject: undefined,
         objectIncrement: this.state.objectIncrement,
         keyAliases: this.state.keyAliases,
         subFormLoadState: subFormLoadState,
@@ -214,7 +217,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       return this.props.objectKey;
     }
 
-    const fieldId = this._getProperty("id", undefined);
+    const fieldId = this._getProperty("id");
 
     if (fieldId) {
       return fieldId;
@@ -223,8 +226,16 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     return this.state.objectIncrement.toString();
   }
 
-  _getProperty(name: string, defaultValue: any) {
+  _getProperty(name: string, defaultValue?: any) {
     let value = undefined;
+
+    if (defaultValue === undefined) {
+      const field = this._getFieldById(name);
+
+      if (field) {
+        defaultValue = field.defaultValue;
+      }
+    }
 
     if (this.props.dataPropertyObject !== undefined) {
       const prop = this.props.dataPropertyObject.getProperty(name);
@@ -242,21 +253,27 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
     let directObject: { [name: string]: any } | undefined = undefined;
 
-    if (this.props.directObject !== undefined) {
-      directObject = this._upscaleDirectObject(this.props.directObject);
+    if (this.state.updatedDirectObject !== undefined) {
+      directObject = this.state.updatedDirectObject;
+    } else if (this.props.directObject !== undefined) {
+      directObject = this.props.directObject;
+    }
+
+    if (directObject) {
+      directObject = this._upscaleDirectObject(directObject);
 
       value = directObject[name];
     }
 
     if (value === undefined) {
-      if (typeof defaultValue === "object") {
-        if (directObject && directObject[name] === undefined && Utilities.isUsableAsObjectKey(name)) {
+      if (defaultValue !== undefined && typeof defaultValue === "object") {
+        /*if (directObject && directObject[name] === undefined && Utilities.isUsableAsObjectKey(name)) {
           directObject[name] = defaultValue;
         }
 
         if (this.props.getsetPropertyObject !== undefined) {
           this.props.getsetPropertyObject.setProperty(name, defaultValue);
-        }
+        }*/
       }
 
       return defaultValue;
@@ -265,34 +282,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     return value;
   }
 
-  _getPropertyAsInt(name: string, defaultValue: number) {
-    let value = undefined;
-
-    if (this.props.dataPropertyObject !== undefined) {
-      const prop = this.props.dataPropertyObject.getProperty(name);
-
-      if (prop !== undefined) {
-        value = prop.value;
-      }
-    }
-
-    if (this.props.getsetPropertyObject !== undefined) {
-      value = this.props.getsetPropertyObject.getProperty(name);
-    }
-
-    let directObject: { [name: string]: any } | undefined = undefined;
-
-    if (this.props.directObject !== undefined) {
-      directObject = this._upscaleDirectObject(this.props.directObject);
-    }
-
-    if (directObject !== undefined) {
-      value = directObject[name];
-    }
-
-    if (value === undefined) {
-      return defaultValue;
-    }
+  _getPropertyAsInt(name: string, defaultValue?: number) {
+    let value = this._getProperty(name, defaultValue);
 
     if (typeof value === "boolean") {
       if (value) {
@@ -309,10 +300,28 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     return defaultValue;
   }
 
+  _getPropertyAsBoolean(name: string, defaultValue?: boolean) {
+    let value = this._getProperty(name, defaultValue);
+
+    if (typeof value === "boolean") {
+      return value;
+    } else if (typeof value === "number") {
+      return value !== 0;
+    } else if (typeof value === "string") {
+      if (value !== undefined && value !== "" && value !== "false" && value !== "0") {
+        return true;
+      }
+
+      return false;
+    }
+
+    return defaultValue === true;
+  }
+
   _getFieldById(id: string) {
     const fields = this.props.definition.fields;
 
-    if (id === "__scalar" && this.props.definition.scalarField) {
+    if (id === "__scalar" && this.props.definition.scalarField && !this.props.definition.scalarFieldUpgradeName) {
       return this.props.definition.scalarField;
     }
 
@@ -332,6 +341,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       return;
     }
 
+    let updatedObject: object | any = undefined;
     const protoObj = this.props.dataPropertyObject;
 
     if (!Utilities.isUsableAsObjectKey(id)) {
@@ -369,15 +379,19 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       }
     }
 
-    let dirObj = this.props.directObject;
+    let dirObj = this.state.updatedDirectObject;
 
-    if (dirObj !== undefined) {
-      dirObj = this._upscaleDirectObject(dirObj);
-
-      dirObj[id] = val;
-
-      this._downscaleDirectObject(dirObj);
+    if (dirObj === undefined) {
+      dirObj = this.props.directObject;
     }
+
+    dirObj = this._upscaleDirectObject(dirObj);
+
+    dirObj[id] = val;
+
+    dirObj = this._downscaleDirectObject(dirObj);
+
+    updatedObject = dirObj;
 
     Log.assert(
       dirObj !== undefined || protogsObj !== undefined || protoObj !== undefined,
@@ -385,19 +399,28 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     );
 
     if (this.props.onPropertyChanged !== undefined) {
-      this.props.onPropertyChanged(this.props, { id: id, value: val }, val);
+      this.props.onPropertyChanged(this.props, { id: id, value: val }, val, updatedObject);
     }
 
-    this.forceUpdate();
+    this.setState({
+      updatedDirectObject: updatedObject,
+      objectIncrement: this.state.objectIncrement + 1,
+      subFormLoadState: this.state.subFormLoadState,
+      keyAliases: this.state.keyAliases,
+    });
   }
 
-  _directObjectHasUniqueValues(directObject: { [propName: string]: any }) {
+  _directObjectHasUniqueValuesBesidesScalar(directObject: { [propName: string]: any }) {
     const fields = this.props.definition.fields;
 
     for (let i = 0; i < fields.length; i++) {
       const field = fields[i];
 
-      if (field.id !== "__scalar") {
+      if (
+        field.id !== "__scalar" &&
+        (this.props.definition.scalarFieldUpgradeName === undefined ||
+          field.id !== this.props.definition.scalarFieldUpgradeName)
+      ) {
         if (directObject[field.id] !== undefined && directObject[field.id] !== field.defaultValue) {
           return true;
         }
@@ -409,7 +432,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
   _upscaleDirectObject(directObject: { [propName: string]: any } | string | number | boolean): { [name: string]: any } {
     if (typeof directObject === "string" || typeof directObject === "number" || typeof directObject === "boolean") {
-      if (this.props.definition.scalarField) {
+      if (this.props.definition.scalarField && !this.props.definition.scalarFieldUpgradeName) {
         return {
           __scalar: directObject,
         };
@@ -433,41 +456,63 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       return { value: directObject };
     }
 
+    if (directObject === undefined) {
+      return {};
+    }
+
     return directObject;
   }
 
   _downscaleDirectObject(directObject: { [propName: string]: any }) {
     const fields = this.props.definition.fields;
 
-    const hasUniqueValues = this._directObjectHasUniqueValues(directObject);
-
+    // collapse empty objects and default values
     for (let i = 0; i < fields.length; i++) {
       const field = fields[i];
 
-      if (field.id === "__scalar") {
-        if (!hasUniqueValues && directObject["__scalar"]) {
-          directObject = directObject["__scalar"];
-        } else {
-          directObject["__scalar"] = undefined;
-        }
-      } else {
-        if (field.undefinedIfEmpty) {
-          let hasContent = false;
+      if (!field.retainIfEmptyOrDefault) {
+        let hasContent = false;
 
-          for (const propVal in directObject[field.id]) {
-            if (propVal.length !== undefined && propVal.length > 0) {
+        if (directObject[field.id] !== undefined) {
+          const fieldData = directObject[field.id];
+
+          if (typeof fieldData === "object") {
+            for (const propVal in directObject[field.id]) {
+              if (propVal.length !== undefined && propVal.length > 0) {
+                hasContent = true;
+              }
+            }
+          } else {
+            if (field.defaultValue === undefined || fieldData !== field.defaultValue) {
               hasContent = true;
             }
           }
+        }
 
-          if (!hasContent) {
-            if (Utilities.isUsableAsObjectKey(field.id)) {
-              directObject[field.id] = undefined;
-            }
+        if (!hasContent) {
+          if (Utilities.isUsableAsObjectKey(field.id)) {
+            directObject[field.id] = undefined;
           }
         }
       }
     }
+
+    const hasUniqueValuesBesidesScalar = this._directObjectHasUniqueValuesBesidesScalar(directObject);
+
+    if (!hasUniqueValuesBesidesScalar) {
+      // convert down to a scalar value if possible
+      if (this.props.definition.scalarFieldUpgradeName) {
+        if (directObject[this.props.definition.scalarFieldUpgradeName] !== undefined) {
+          directObject = directObject[this.props.definition.scalarFieldUpgradeName];
+        }
+      } else {
+        if (directObject["__scalar"] !== undefined) {
+          directObject = directObject["__scalar"];
+        }
+      }
+    }
+
+    return directObject;
   }
 
   _handleSliderChange(
@@ -534,6 +579,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         keyAliases[data.value] = this.state.keyAliases[keySplit[1]] ? this.state.keyAliases[keySplit[1]] : keySplit[1];
       }
     }
+    this._setPropertyValue(keySplit[0], arrayOfDataVal);
 
     this.setState({
       objectIncrement: this.state.objectIncrement,
@@ -758,10 +804,11 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       return;
     }
 
+    let updatedObject: object | any = undefined;
     const protoObj = this.props.dataPropertyObject;
     const id = event.currentTarget.id;
 
-    const val = FieldUtilities.getFieldValueAsBoolean(id, false, this.props);
+    const val = this._getPropertyAsBoolean(id);
 
     if (protoObj !== undefined) {
       const property = protoObj.ensureProperty(id);
@@ -789,7 +836,11 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       }
     }
 
-    let dirObj = this.props.directObject;
+    let dirObj = this.state.updatedDirectObject;
+
+    if (!dirObj) {
+      dirObj = this.props.directObject;
+    }
 
     if (dirObj !== undefined) {
       let newBoolVal: boolean | number = val;
@@ -800,14 +851,19 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
       dirObj[id] = newBoolVal;
 
-      this._downscaleDirectObject(dirObj);
+      updatedObject = this._downscaleDirectObject(dirObj);
     }
 
     if (this.props.onPropertyChanged !== undefined) {
-      this.props.onPropertyChanged(this.props, { id: id, value: val }, val);
+      this.props.onPropertyChanged(this.props, { id: id, value: val }, val, updatedObject);
     }
 
-    this._incrementObjectState();
+    this.setState({
+      updatedDirectObject: updatedObject,
+      objectIncrement: this.state.objectIncrement + 1,
+      subFormLoadState: this.state.subFormLoadState,
+      keyAliases: this.state.keyAliases,
+    });
   }
 
   _handleDropdownChange(
@@ -886,18 +942,29 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       }
     }
 
-    let directO = this.props.directObject;
+    let directO = this.state.updatedDirectObject;
+
+    if (!directO) {
+      directO = this.props.directObject;
+    }
 
     if (directO !== undefined) {
       directO = this._upscaleDirectObject(directO);
 
       directO[id] = val;
 
-      this._downscaleDirectObject(directO);
+      directO = this._downscaleDirectObject(directO);
 
       if (this.props.onPropertyChanged !== undefined) {
-        this.props.onPropertyChanged(this.props, { id: id, value: val }, val);
+        this.props.onPropertyChanged(this.props, { id: id, value: val }, val, directO);
       }
+
+      this.setState({
+        updatedDirectObject: directO,
+        objectIncrement: this.state.objectIncrement + 1,
+        subFormLoadState: this.state.subFormLoadState,
+        keyAliases: this.state.keyAliases,
+      });
     }
   }
 
@@ -1090,42 +1157,38 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
             }
           }
         }
-        this._downscaleDirectObject(directO);
+
+        directO = this._downscaleDirectObject(directO);
+
+        this.setState({
+          updatedDirectObject: directO,
+          objectIncrement: this.state.objectIncrement + 1,
+          subFormLoadState: this.state.subFormLoadState,
+          keyAliases: this.state.keyAliases,
+        });
       }
     }
   }
 
-  _handleObjectSubFormPropertyChange(props: IDataFormProps, property: IProperty, newValue: any) {
-    const propId = props.formId;
+  _handleObjectSubFormPropertyChange(
+    props: IDataFormProps,
+    property: IProperty,
+    newValue: any,
+    updatedDirectObject: any
+  ) {
+    let propId = props.formId;
 
     if (!propId) {
       return;
     }
 
-    let directO = this.props.directObject;
+    const firstPeriod = propId.indexOf(".");
 
-    if (directO !== undefined && property.id !== undefined) {
-      directO = this._upscaleDirectObject(directO);
-
-      let obj = directO[propId];
-
-      if (!obj) {
-        obj = {};
-
-        directO[propId] = obj;
-      }
-
-      if (obj[property.id] !== newValue) {
-        obj[property.id] = newValue;
-      }
-
-      this._downscaleDirectObject(directO);
-
-      // this might have been changed in the sub text area, but fire the onpropertychanged in any case.
-      if (this.props.onPropertyChanged !== undefined) {
-        this.props.onPropertyChanged(this.props, { id: props.formId, value: newValue }, newValue);
-      }
+    if (firstPeriod >= 0) {
+      propId = propId.substring(firstPeriod + 1);
     }
+
+    this._setPropertyValue(propId, updatedDirectObject);
   }
 
   _handleRangePropertyChange(
@@ -1214,6 +1277,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
       if (
         formDef.scalarField &&
+        !formDef.scalarFieldUpgradeName &&
         (formDef.scalarField.dataType !== FieldDataType.boolean ||
           !formDef.scalarField.tags ||
           !formDef.scalarField.tags.includes("presence"))
@@ -1230,7 +1294,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           !field.isDeprecated &&
           !field.isInternal
         ) {
-          let curVal = FieldUtilities.getFieldValue(field, this.props);
+          let curVal = this._getProperty(field.id, field.defaultValue);
           const defaultVal = curVal ? curVal : field.defaultValue;
 
           let baseKey = this._getObjectId() + "." + field.id;
@@ -1747,6 +1811,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                   {sampleElements}
                 </div>
               );
+            } else if (field.dataType === FieldDataType.minecraftEventTriggerArray) {
+              this.addMinecraftEventTriggerArrayComponent(field, formInterior, descriptionElements, sampleElements);
             } else {
               this.addTextboxComponent(field, formInterior, descriptionElements, sampleElements, curVal, defaultVal);
             }
@@ -2004,11 +2070,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     descriptionElements: JSX.Element[],
     sampleElements: JSX.Element[]
   ) {
-    const bool = FieldUtilities.getFieldValueAsBoolean(
-      field.id,
-      field.defaultValue === true || field.defaultValue === 1,
-      this.props
-    );
+    const bool = this._getPropertyAsBoolean(field.id, field.defaultValue === true || field.defaultValue === 1);
 
     const title = FieldUtilities.getFieldTitle(field);
 
@@ -2593,59 +2655,57 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     descriptionElements: JSX.Element[],
     sampleElements: JSX.Element[]
   ) {
-    const val = this._getProperty(field.id, {});
+    const val = this._getProperty(field.id);
     const fieldInterior = [];
     const childElements = [];
     const fieldTopper = [];
 
-    Log.assert(val !== undefined, "Keyed string boolean not available in data form.");
-
     let baseKey = this._getObjectId() + "." + field.id;
 
+    const keys = [];
+
+    if (field.displayTitle !== false) {
+      const headerElement = (
+        <div className="df-elementBinTitle" key={baseKey + "kbch"}>
+          {FieldUtilities.getFieldTitle(field)}
+        </div>
+      );
+      this.formComponentNames.push(field.id);
+      this.formComponents.push(headerElement);
+      fieldTopper.push(headerElement);
+    }
+
+    fieldTopper.push(descriptionElements);
+    fieldTopper.push(sampleElements);
+
+    if (!this.props.readOnly) {
+      const toolbarItems = [];
+
+      if (field.allowCreateDelete !== false) {
+        toolbarItems.push({
+          icon: <FontAwesomeIcon icon={faPlus} className="fa-lg" />,
+          key: "add",
+          tag: field.id,
+          onClick: this._addKeyedBooleanItem,
+          title: "Add item",
+        });
+      }
+
+      const toolBarElement = (
+        <div>
+          <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
+        </div>
+      );
+      this.formComponentNames.push(field.id + "toolbar");
+      this.formComponents.push(toolBarElement);
+      fieldTopper.push(toolBarElement);
+    }
+
+    let index = 0;
+
+    const valList = [];
+
     if (val) {
-      const keys = [];
-
-      if (field.displayTitle !== false) {
-        const headerElement = (
-          <div className="df-elementBinTitle" key={baseKey + "kbch"}>
-            {FieldUtilities.getFieldTitle(field)}
-          </div>
-        );
-        this.formComponentNames.push(field.id);
-        this.formComponents.push(headerElement);
-        fieldTopper.push(headerElement);
-      }
-
-      fieldTopper.push(descriptionElements);
-      fieldTopper.push(sampleElements);
-
-      if (!this.props.readOnly) {
-        const toolbarItems = [];
-
-        if (field.allowCreateDelete !== false) {
-          toolbarItems.push({
-            icon: <FontAwesomeIcon icon={faPlus} className="fa-lg" />,
-            key: "add",
-            tag: field.id,
-            onClick: this._addKeyedBooleanItem,
-            title: "Add item",
-          });
-        }
-
-        const toolBarElement = (
-          <div>
-            <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
-          </div>
-        );
-        this.formComponentNames.push(field.id + "toolbar");
-        this.formComponents.push(toolBarElement);
-        fieldTopper.push(toolBarElement);
-      }
-
-      let index = 0;
-
-      const valList = [];
-
       for (const key in val) {
         if (this.state.keyAliases[key]) {
           valList.push(this.state.keyAliases[key] + "     |" + key);
@@ -2653,81 +2713,81 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           valList.push(key);
         }
       }
+    }
 
-      valList.sort();
+    valList.sort();
 
-      for (let key of valList) {
-        const lastPeriod = key.lastIndexOf("|");
+    for (let key of valList) {
+      const lastPeriod = key.lastIndexOf("|");
 
-        if (lastPeriod >= 0) {
-          key = key.substring(lastPeriod + 1);
+      if (lastPeriod >= 0) {
+        key = key.substring(lastPeriod + 1);
+      }
+
+      const boolVal = val[key] as boolean | undefined;
+
+      if (boolVal !== undefined) {
+        keys.push(key);
+
+        let objKey = field.id;
+
+        if (this.props.objectKey) {
+          objKey += this.props.objectKey;
         }
 
-        const boolVal = val[key] as boolean | undefined;
+        objKey += "." + index;
 
-        if (boolVal !== undefined) {
-          keys.push(key);
+        let title = <div>{key}</div>;
 
-          let objKey = field.id;
-
-          if (this.props.objectKey) {
-            objKey += this.props.objectKey;
-          }
-
-          objKey += "." + index;
-
-          let title = <div>{key}</div>;
-
-          if (!this.props.readOnly) {
-            title = (
-              <FormInput
-                key={objKey + ".title.text"}
-                id={field.id + "." + key + ".text"}
-                value={key as string}
-                defaultValue={key as string}
-                onChange={this._handleKeyedBooleanTextChange}
-              />
-            );
-          }
-
-          let propertyId = field.id;
-
-          propertyId += "." + key;
-
-          const checkboxControl = (
-            <FormCheckbox
-              key={objKey + ".check"}
-              label="On/off"
-              id={field.id + "." + key + ".check"}
-              checked={boolVal}
-              toggle={true}
-              onChange={this._handleKeyedBooleanValueChange}
+        if (!this.props.readOnly) {
+          title = (
+            <FormInput
+              key={objKey + ".title.text"}
+              id={field.id + "." + key + ".text"}
+              value={key as string}
+              defaultValue={key as string}
+              onChange={this._handleKeyedBooleanTextChange}
             />
           );
-
-          this.formComponentNames.push(propertyId);
-          this.formComponents.push(checkboxControl);
-
-          const closeRow = (
-            <Button
-              icon={<FontAwesomeIcon key="closeClick" icon={faXmark} className="fa-lg" />}
-              key={objKey + ".close"}
-              id={field.id + "." + key + ".close"}
-              onClick={this._handleKeyedBooleanValueClose}
-              title="Close"
-            />
-          );
-
-          childElements.push(
-            <div className="df-keyedBooleanCollection" key={objKey}>
-              <div className="df-keyedBooleanCollectionTitle">{title}</div>
-              <div className="df-keyedBooleanCollectionData">{checkboxControl}</div>
-              <div className="df-keyedBooleanCollectionClose">{closeRow}</div>
-            </div>
-          );
-
-          index++;
         }
+
+        let propertyId = field.id;
+
+        propertyId += "." + key;
+
+        const checkboxControl = (
+          <FormCheckbox
+            key={objKey + ".check"}
+            label="On/off"
+            id={field.id + "." + key + ".check"}
+            checked={boolVal}
+            toggle={true}
+            onChange={this._handleKeyedBooleanValueChange}
+          />
+        );
+
+        this.formComponentNames.push(propertyId);
+        this.formComponents.push(checkboxControl);
+
+        const closeRow = (
+          <Button
+            icon={<FontAwesomeIcon key="closeClick" icon={faXmark} className="fa-lg" />}
+            key={objKey + ".close"}
+            id={field.id + "." + key + ".close"}
+            onClick={this._handleKeyedBooleanValueClose}
+            title="Close"
+          />
+        );
+
+        childElements.push(
+          <div className="df-keyedBooleanCollection" key={objKey}>
+            <div className="df-keyedBooleanCollectionTitle">{title}</div>
+            <div className="df-keyedBooleanCollectionData">{checkboxControl}</div>
+            <div className="df-keyedBooleanCollectionClose">{closeRow}</div>
+          </div>
+        );
+
+        index++;
       }
     }
 
@@ -2759,7 +2819,6 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
         }}
       >
-        {descriptionElements}
         {fieldTopper}
         {fieldInterior}
         {sampleElements}
@@ -2795,13 +2854,20 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       const field = this._getFieldById(data.tag);
 
       if (field) {
-        const arrayOfDataVal = this._getProperty(field.id, []);
+        let arrayOfDataVal = this._getProperty(field.id, []);
+
+        if (!Array.isArray(arrayOfDataVal)) {
+          arrayOfDataVal = [arrayOfDataVal];
+          this._setPropertyValue(field.id, arrayOfDataVal);
+        }
 
         if (field.newItemPrototype) {
           arrayOfDataVal.push(JSON.parse(JSON.stringify(field.newItemPrototype)));
         } else {
           arrayOfDataVal.push({});
         }
+
+        this._setPropertyValue(field.id, arrayOfDataVal);
 
         this._incrementObjectState();
       }
@@ -2825,6 +2891,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
         arrayOfDataVal[newName] = true;
 
+        this._setPropertyValue(field.id, arrayOfDataVal);
+
         this._incrementObjectState();
       }
     }
@@ -2846,6 +2914,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         }
 
         arrayOfDataVal[newName] = "value";
+
+        this._setPropertyValue(field.id, arrayOfDataVal);
 
         this._incrementObjectState();
       }
@@ -3103,6 +3173,173 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     );
   }
 
+  addMinecraftEventTriggerArrayComponent(
+    field: IField,
+    formInterior: any[],
+    descriptionElements: JSX.Element[],
+    sampleElements: JSX.Element[]
+  ) {
+    let arrayOfDataVal = this._getProperty(field.id, []);
+
+    if (!Array.isArray(arrayOfDataVal)) {
+      arrayOfDataVal = [arrayOfDataVal];
+    }
+
+    const fieldTopper = [];
+    const fieldInterior = [];
+    const childElements = [];
+
+    Log.assert(arrayOfDataVal, "DFAOAC");
+
+    const fieldSubForm = this.getFieldSubForm(field);
+
+    if (arrayOfDataVal !== undefined && fieldSubForm && arrayOfDataVal instanceof Array) {
+      if (field.displayTitle !== false) {
+        const headerElement = <div className="df-elementBinTitle">{FieldUtilities.getFieldTitle(field)}</div>;
+        this.formComponentNames.push(field.id);
+        this.formComponents.push(headerElement);
+        fieldTopper.push(headerElement);
+      }
+
+      fieldTopper.push(descriptionElements);
+      fieldTopper.push(sampleElements);
+
+      if (!this.props.readOnly) {
+        const toolbarItems = [];
+
+        if (field.allowCreateDelete !== false) {
+          toolbarItems.push({
+            icon: (
+              <CustomLabel
+                isCompact={false}
+                icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
+                text={field.noun ? "Add " + field.noun.toLowerCase() : "Add"}
+              />
+            ),
+            key: "add",
+            tag: field.id,
+            onClick: this._addObjectArrayItem,
+            title: "Add item",
+          });
+        }
+
+        const toolBarElement = (
+          <div>
+            <Toolbar aria-label="Actions  toolbar overflow menu" items={toolbarItems} />
+          </div>
+        );
+        this.formComponentNames.push(field.id + "toolbar");
+        this.formComponents.push(toolBarElement);
+        fieldTopper.push(toolBarElement);
+      }
+
+      for (const index in arrayOfDataVal) {
+        let visualIndex = 0;
+        let title = index;
+
+        try {
+          visualIndex = parseInt(index);
+        } catch (e) {}
+
+        if (!isNaN(visualIndex)) {
+          title = String(visualIndex + 1);
+        }
+
+        let objKey = field.id;
+
+        if (this.props.objectKey) {
+          objKey += this.props.objectKey;
+        }
+
+        objKey += "." + index;
+
+        let propertyId = field.id;
+
+        propertyId += "." + index;
+
+        let obj = arrayOfDataVal[index];
+
+        if (!obj) {
+          obj = {};
+          arrayOfDataVal[index] = obj;
+        }
+
+        if (field.objectArrayTitleFieldKey) {
+          const val = obj[field.objectArrayTitleFieldKey];
+
+          if (val) {
+            title = val;
+          }
+        } else if (field.objectArrayToSubFieldKey) {
+          const val = obj[field.objectArrayToSubFieldKey];
+
+          if (field.subFields && val) {
+            const subField = field.subFields[val];
+
+            if (subField && subField.title) {
+              title = subField.title;
+            }
+          }
+        } else if (field.noun) {
+          title = field.noun + " " + title;
+        }
+
+        if (this.props.carto && this.props.project) {
+          const subForm = (
+            <MinecraftEventTriggerEditor
+              data={obj}
+              objectKey={objKey}
+              key={propertyId}
+              heightOffset={30}
+              form={this.props.definition}
+              field={field}
+              entityTypeDefinition={this.props.itemDefinition as EntityTypeDefinition}
+              carto={this.props.carto}
+              project={this.props.project}
+              theme={this.props.theme}
+              constrainHeight={true}
+              readOnly={this.props.readOnly}
+            />
+          );
+
+          this.formComponentNames.push(propertyId);
+          this.formComponents.push(subForm);
+
+          childElements.push(subForm);
+        }
+      }
+    }
+
+    let binClassName = "df-elementBinNoScroll";
+
+    fieldInterior.push(
+      <div
+        className={binClassName}
+        key="dfelfb5"
+        style={{
+          backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+          borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
+        }}
+      >
+        {childElements}
+      </div>
+    );
+
+    formInterior.push(
+      <div
+        className={this.getCssClassName("fieldWrap")}
+        key={"fwp" + field.id}
+        style={{
+          borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+          borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+        }}
+      >
+        {fieldTopper}
+        {fieldInterior}
+      </div>
+    );
+  }
+
   addStringArrayComponent(
     field: IField,
     formInterior: any[],
@@ -3213,14 +3450,14 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     descriptionElements: JSX.Element[],
     sampleElements: JSX.Element[]
   ) {
-    const val = this._getProperty(field.id, {});
+    const val = this._getProperty(field.id);
     const fieldInterior = [];
 
     let baseKey = this._getObjectId() + "." + field.id;
 
     const fieldSubForm = this.getFieldSubForm(field);
 
-    if (val && fieldSubForm) {
+    if (fieldSubForm) {
       if (field.displayTitle !== false) {
         const headerElement = (
           <div className="df-elementBinTitle" key={baseKey + "och"}>

@@ -60,7 +60,7 @@ export default interface MinecraftBehaviorRandomLookAroundAndSit {
    * Camel: true
    *
    */
-  continue_if_leashed: boolean;
+  continue_if_leashed?: boolean;
 
   /**
    * @remarks
@@ -70,7 +70,7 @@ export default interface MinecraftBehaviorRandomLookAroundAndSit {
    * Camel: true
    *
    */
-  continue_sitting_on_reload: boolean;
+  continue_sitting_on_reload?: boolean;
 
   /**
    * @remarks
@@ -81,7 +81,7 @@ export default interface MinecraftBehaviorRandomLookAroundAndSit {
    * Camel: 30
    *
    */
-  max_angle_of_view_horizontal: number;
+  max_angle_of_view_horizontal?: number;
 
   /**
    * @remarks
@@ -93,7 +93,7 @@ export default interface MinecraftBehaviorRandomLookAroundAndSit {
    *
    *
    */
-  max_look_count: number;
+  max_look_count?: number;
 
   /**
    * @remarks
@@ -105,7 +105,7 @@ export default interface MinecraftBehaviorRandomLookAroundAndSit {
    *
    *
    */
-  max_look_time: number;
+  max_look_time?: number;
 
   /**
    * @remarks
@@ -116,7 +116,7 @@ export default interface MinecraftBehaviorRandomLookAroundAndSit {
    * Camel: -30
    *
    */
-  min_angle_of_view_horizontal: number;
+  min_angle_of_view_horizontal?: number;
 
   /**
    * @remarks
@@ -128,7 +128,7 @@ export default interface MinecraftBehaviorRandomLookAroundAndSit {
    *
    *
    */
-  min_look_count: number;
+  min_look_count?: number;
 
   /**
    * @remarks
@@ -140,7 +140,7 @@ export default interface MinecraftBehaviorRandomLookAroundAndSit {
    *
    *
    */
-  min_look_time: number;
+  min_look_time?: number;
 
   /**
    * @remarks
@@ -154,7 +154,7 @@ export default interface MinecraftBehaviorRandomLookAroundAndSit {
    * Fox: 12
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -165,7 +165,7 @@ export default interface MinecraftBehaviorRandomLookAroundAndSit {
    *
    *
    */
-  probability: number;
+  probability?: number;
 
   /**
    * @remarks
@@ -175,6 +175,6 @@ export default interface MinecraftBehaviorRandomLookAroundAndSit {
    * Camel: 5
    *
    */
-  random_look_around_cooldown: number;
+  random_look_around_cooldown?: number;
 
 }

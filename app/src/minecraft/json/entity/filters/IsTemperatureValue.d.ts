@@ -30,19 +30,19 @@ export default interface IsTemperatureValue {
    * @remarks
    * (Optional) The comparison to apply with 'value'.
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
    * (Optional) The subject of this filter test.
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
    * (Required) The Biome temperature value to compare with.
    */
-  value: number;
+  value?: number;
 
 }
 

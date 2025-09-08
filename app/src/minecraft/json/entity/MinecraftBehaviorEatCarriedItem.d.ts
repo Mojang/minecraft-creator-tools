@@ -40,7 +40,7 @@ export default interface MinecraftBehaviorEatCarriedItem {
    * Fox: 28
    *
    */
-  delay_before_eating: number;
+  delay_before_eating?: number;
 
   /**
    * @remarks
@@ -52,6 +52,6 @@ export default interface MinecraftBehaviorEatCarriedItem {
    * Fox: 12
    *
    */
-  priority: number;
+  priority?: number;
 
 }

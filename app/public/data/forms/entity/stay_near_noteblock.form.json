@@ -37,5 +37,5 @@
     }
   ],
   "description": "The entity will attempt to toss the items from its inventory to a nearby recently played noteblock.",
-  "title": "Minecraft Behavior.stay Near Noteblock Entity"
+  "title": "Entity Stay Near Noteblock Behavior"
 }

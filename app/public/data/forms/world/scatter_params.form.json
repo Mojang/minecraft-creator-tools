@@ -267,6 +267,6 @@
     }
   ],
   "description": "Controls the scatter distribution of a particular object.",
-  "title": "Scatter Params World",
+  "title": "World Scatter Params",
   "id": "Scatter Params"
 }

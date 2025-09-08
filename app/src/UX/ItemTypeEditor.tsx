@@ -62,11 +62,25 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
     this._updateManager();
   }
 
-  componentDidUpdate(prevProps: IItemTypeEditorProps, prevState: IItemTypeEditorState) {
-    this._updateManager();
+  componentDidUpdate(
+    prevProps: Readonly<IItemTypeEditorProps>,
+    prevState: Readonly<IItemTypeEditorState>,
+    snapshot?: any
+  ): void {
+    if (this.state && this.props.file !== this.state.fileToEdit) {
+      this.setState(
+        {
+          fileToEdit: this.props.file,
+          isLoaded: false,
+        },
+        () => {
+          this._updateManager();
+        }
+      );
+    }
   }
 
-  async _updateManager() {
+  async _updateManager(force?: boolean) {
     if (this.state !== undefined && this.state.fileToEdit !== undefined) {
       if (this.state.fileToEdit !== this._lastFileEdited) {
         const itbd = await ItemTypeDefinition.ensureOnFile(this.state.fileToEdit, this._handleItemTypeLoaded);
@@ -78,6 +92,8 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
         this._lastFileEdited = this.state.fileToEdit;
       }
     }
+
+    await this.props.item.ensureDependencies();
 
     this._doUpdate();
   }
@@ -95,7 +111,7 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
       !this.state.isLoaded
     ) {
       this.setState({
-        fileToEdit: this.state.fileToEdit,
+        fileToEdit: this.props.file,
         isLoaded: true,
       });
     }
@@ -105,7 +121,7 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
-      if (file.manager !== null) {
+      if (file.manager) {
         const et = file.manager as ItemTypeDefinition;
 
         et.persist();
@@ -245,7 +261,7 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
               readOnly={this.props.readOnly}
               theme={this.props.theme}
               displayHeader={false}
-              projectItem={attachableItem}
+              item={attachableItem}
               project={this.props.project}
               carto={this.props.carto}
               file={attachableItem.primaryFile}

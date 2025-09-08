@@ -9,6 +9,7 @@ import IProjectFileInfoGenerator from "./IProjectFileInfoGenerator";
 import IProjectInfo from "./IProjectInfo";
 import ProjectInfoItem from "./ProjectInfoItem";
 import IFolder from "../storage/IFolder";
+import IFile from "../storage/IFile";
 import IInfoItemData, { InfoItemType } from "./IInfoItemData";
 import IProjectInfoGeneratorBase, { IProjectInfoTopicData } from "./IProjectInfoGeneratorBase";
 import IProjectInfoData, { ProjectInfoSuite } from "./IProjectInfoData";
@@ -16,12 +17,14 @@ import { constants } from "../core/Constants";
 import Utilities from "../core/Utilities";
 import Log from "../core/Log";
 import { StatusTopic } from "../app/Status";
-import GeneratorRegistrations from "./GeneratorRegistrations";
+import GeneratorRegistrations, { TestsToExcludeFromDefaultSuite } from "./registration/GeneratorRegistrations";
 import StorageUtilities from "../storage/StorageUtilities";
 import ContentIndex from "../core/ContentIndex";
 import IProjectMetaState from "./IProjectMetaState";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import SummaryInfoGenerator from "./SummaryInfoGenerator";
+import HashUtilities from "../core/HashUtilities";
+import { HashCatalog } from "../core/HashUtilities";
 
 export default class ProjectInfoSet {
   project?: Project;
@@ -30,6 +33,7 @@ export default class ProjectInfoSet {
   items: ProjectInfoItem[] = [];
   itemsByStoragePath: { [storagePath: string]: ProjectInfoItem[] | undefined } = {};
   contentIndex: ContentIndex;
+  hashCatalog: HashCatalog = {};
 
   static _generatorsById: { [name: string]: IProjectInfoGenerator } = {};
   _isGenerating: boolean = false;
@@ -123,7 +127,7 @@ export default class ProjectInfoSet {
       }
     }
 
-    return str.join("\r\n");
+    return str.join("\n");
   }
 
   constructor(
@@ -256,13 +260,13 @@ export default class ProjectInfoSet {
       }
     }
 
-    return str.join("\r\n");
+    return str.join("\n");
   }
 
   matchesSuite(
     generator: IProjectFileInfoGenerator | IProjectInfoGenerator | IProjectItemInfoGenerator | IProjectInfoGeneratorBase
   ) {
-    if (this.suite === ProjectInfoSuite.default && generator.id.indexOf("CADDON") < 0) {
+    if (this.suite === ProjectInfoSuite.default && !TestsToExcludeFromDefaultSuite.includes(generator.id)) {
       return true;
     }
 
@@ -394,7 +398,9 @@ export default class ProjectInfoSet {
         for (let i = 0; i < itemsCopy.length; i++) {
           const pi = itemsCopy[i];
 
-          await pi.load();
+          if (!pi.isContentLoaded) {
+            await pi.loadContent();
+          }
 
           for (let j = 0; j < itemGenerators.length; j++) {
             const gen = itemGenerators[j];
@@ -436,6 +442,57 @@ export default class ProjectInfoSet {
       this.addTestSummations(genItems, genItemsByStoragePath, projGenerators, this._excludeTests);
       this.addTestSummations(genItems, genItemsByStoragePath, itemGenerators, this._excludeTests);
       this.addTestSummations(genItems, genItemsByStoragePath, fileGenerators, this._excludeTests);
+
+      genItems.sort((a: ProjectInfoItem, b: ProjectInfoItem) => {
+        if (a.generatorId !== b.generatorId) {
+          return Utilities.staticCompare(a.generatorId, b.generatorId);
+        }
+
+        if (a.generatorIndex !== b.generatorIndex) {
+          return a.generatorIndex - b.generatorIndex;
+        }
+
+        const aPath = a.projectItemPath;
+        const bPath = b.projectItemPath;
+
+        if (aPath !== bPath && aPath && bPath) {
+          return Utilities.staticCompare(aPath, bPath);
+        }
+
+        if (aPath !== bPath && aPath) {
+          return 1;
+        }
+
+        if (aPath !== bPath && bPath) {
+          return -1;
+        }
+
+        if (a.message !== b.message && a.message && b.message) {
+          return Utilities.staticCompare(a.message, b.message);
+        }
+
+        if (a.message !== b.message && a.message) {
+          return 1;
+        }
+
+        if (a.message !== b.message && b.message) {
+          return -1;
+        }
+
+        if (a.data !== b.data && a.data && b.data && typeof b.data === "string" && typeof a.data === "string") {
+          return Utilities.staticCompare(a.data, b.data);
+        }
+
+        if (a.data !== b.data && a.data) {
+          return 1;
+        }
+
+        if (a.data !== b.data && b.data) {
+          return -1;
+        }
+
+        return 0;
+      });
 
       this.items = genItems;
 
@@ -1197,7 +1254,7 @@ function _addReportJson(data) {
     a = a.replace("minecraft:", "_");
     b = b.replace("minecraft:", "_");
 
-    return a.localeCompare(b);
+    return Utilities.staticCompare(a, b);
   }
 
   getArea(title: string) {
@@ -1670,13 +1727,17 @@ function _addReportJson(data) {
     fileGenerators: IProjectFileInfoGenerator[],
     depth: number
   ) {
-    await folder.load();
+    if (!folder.isLoaded) {
+      await folder.load();
+    }
 
     for (const fileName in folder.files) {
       const file = folder.files[fileName];
 
       if (file) {
-        await file.loadContent();
+        if (!file.isContentLoaded) {
+          await file.loadContent();
+        }
 
         if (file.content !== null) {
           const projectItem = project.getItemByFile(file);
@@ -1685,7 +1746,9 @@ function _addReportJson(data) {
             genContentIndex.insert(StorageUtilities.getBaseFromName(fileName), projectItem.projectPath);
             genContentIndex.insert(file.storageRelativePath, projectItem.projectPath);
 
-            await file.loadContent();
+            if (!file.isContentLoaded) {
+              await file.loadContent();
+            }
 
             if (file.content && typeof file.content === "string") {
               const fileExtension = StorageUtilities.getTypeFromName(fileName);
@@ -1703,6 +1766,7 @@ function _addReportJson(data) {
                 }
               }
             }
+            await this.generateHashesForFile(file, projectItem.projectPath);
 
             for (const fileGen of fileGenerators) {
               if (this.matchesSuite(fileGen)) {
@@ -1929,6 +1993,27 @@ function _addReportJson(data) {
     return 0;
   }
 
+  getAverageFeatureValue(validatorName: string, validatorId: number, setName: string, measureName: string) {
+    let sum = 0;
+    let count = 0;
+    for (const item of this.items) {
+      if (item.generatorId === validatorName && item.generatorIndex === validatorId) {
+        const feat = item.getFeatureMeasureNumber(setName, measureName);
+
+        if (typeof feat === "number") {
+          sum += feat;
+          count++;
+        }
+      }
+    }
+
+    if (count === 0) {
+      return 0;
+    }
+
+    return sum / count;
+  }
+
   getSummedFeatureValue(validatorName: string, validatorId: number, setName: string, measureName: string) {
     let sum = 0;
     for (const item of this.items) {
@@ -2054,7 +2139,9 @@ function _addReportJson(data) {
     const itemGenerators: IProjectItemInfoGenerator[] = GeneratorRegistrations.itemGenerators;
     let genItems: ProjectInfoItem[] = [];
 
-    await projectItem.load();
+    if (!projectItem.isContentLoaded) {
+      await projectItem.loadContent();
+    }
 
     for (let j = 0; j < itemGenerators.length; j++) {
       try {
@@ -2071,5 +2158,19 @@ function _addReportJson(data) {
     }
 
     return genItems;
+  }
+
+  /**
+   * Generates hash catalog entries for a file (both complete file hash and property hashes for JSON files)
+   */
+  private async generateHashesForFile(file: IFile, filePath: string) {
+    await HashUtilities.generateHashesForFile(file, filePath, this.hashCatalog);
+  }
+
+  /**
+   * Gets the hash catalog as JSON string
+   */
+  getHashCatalogJson(): string {
+    return JSON.stringify(this.hashCatalog, null, 2);
   }
 }

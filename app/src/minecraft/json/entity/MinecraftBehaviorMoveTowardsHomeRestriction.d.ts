@@ -62,7 +62,7 @@ export default interface MinecraftBehaviorMoveTowardsHomeRestriction {
    * Wandering Trader: 6
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -76,6 +76,6 @@ export default interface MinecraftBehaviorMoveTowardsHomeRestriction {
    * Wandering Trader: 0.6
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

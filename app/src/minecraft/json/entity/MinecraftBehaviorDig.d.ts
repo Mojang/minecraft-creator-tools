@@ -41,14 +41,14 @@ export default interface MinecraftBehaviorDig {
    * If true, this behavior can run when this entity is named. Otherwise
    * not.
    */
-  allow_dig_when_named: boolean;
+  allow_dig_when_named?: boolean;
 
   /**
    * @remarks
    * Indicates that the actor should start digging when it sees
    * daylight
    */
-  digs_in_daylight: boolean;
+  digs_in_daylight?: boolean;
 
   /**
    * @remarks
@@ -58,7 +58,7 @@ export default interface MinecraftBehaviorDig {
    * Warden: 5.5
    *
    */
-  duration: number;
+  duration?: number;
 
   /**
    * @remarks
@@ -69,7 +69,7 @@ export default interface MinecraftBehaviorDig {
    * Warden: 60
    *
    */
-  idle_time: number;
+  idle_time?: number;
 
   /**
    * @remarks
@@ -79,7 +79,7 @@ export default interface MinecraftBehaviorDig {
    * Warden: {"event":"on_digging_event","target":"self"}
    *
    */
-  on_start: jsoncommon.MinecraftEventTrigger;
+  on_start?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -91,7 +91,7 @@ export default interface MinecraftBehaviorDig {
    * Warden: 1
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -102,7 +102,7 @@ export default interface MinecraftBehaviorDig {
    * Warden: true
    *
    */
-  suspicion_is_disturbance: boolean;
+  suspicion_is_disturbance?: boolean;
 
   /**
    * @remarks
@@ -113,6 +113,6 @@ export default interface MinecraftBehaviorDig {
    * Warden: true
    *
    */
-  vibration_is_disturbance: boolean;
+  vibration_is_disturbance?: boolean;
 
 }

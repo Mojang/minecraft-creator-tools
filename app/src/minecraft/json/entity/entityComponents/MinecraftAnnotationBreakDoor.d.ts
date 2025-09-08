@@ -44,7 +44,7 @@ export default interface MinecraftAnnotationBreakDoor {
    * Vindicator: 30
    *
    */
-  break_time: number;
+  break_time?: number;
 
   /**
    * @remarks
@@ -55,6 +55,6 @@ export default interface MinecraftAnnotationBreakDoor {
    * Vindicator: "normal"
    *
    */
-  min_difficulty: string;
+  min_difficulty?: string;
 
 }

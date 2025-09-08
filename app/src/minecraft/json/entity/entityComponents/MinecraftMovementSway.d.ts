@@ -37,18 +37,18 @@ export default interface MinecraftMovementSway {
    * @remarks
    * The maximum number in degrees the mob can turn per tick.
    */
-  max_turn: number;
+  max_turn?: number;
 
   /**
    * @remarks
    * Strength of the sway movement.
    */
-  sway_amplitude: number;
+  sway_amplitude?: number;
 
   /**
    * @remarks
    * Multiplier for the frequency of the sway movement.
    */
-  sway_frequency: number;
+  sway_frequency?: number;
 
 }

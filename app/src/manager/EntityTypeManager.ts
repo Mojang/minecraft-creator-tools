@@ -136,7 +136,9 @@ export default class EntityTypeManager implements IProjectInfoGenerator, IProjec
       const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.entityTypeBehavior) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const bpEntityType = await EntityTypeDefinition.ensureOnFile(pi.primaryFile);
@@ -192,13 +194,8 @@ export default class EntityTypeManager implements IProjectInfoGenerator, IProjec
               piiMetadata.incrementFeature("Entity Type without description");
             }
 
-            const fv = bpEntityType.getFormatVersion();
-            if (
-              !bpEntityType ||
-              !bpEntityType.behaviorPackWrapper ||
-              !bpEntityType.behaviorPackWrapper.format_version ||
-              !fv
-            ) {
+            const fv = bpEntityType.getFormatVersionAsNumberArray();
+            if (!bpEntityType || !fv) {
               infoItems.push(
                 new ProjectInfoItem(
                   InfoItemType.error,
@@ -364,13 +361,15 @@ export default class EntityTypeManager implements IProjectInfoGenerator, IProjec
       const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
-        await pi.ensureFileStorage();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           const wtManifest = await EntityTypeDefinition.ensureOnFile(pi.primaryFile);
 
           if (wtManifest) {
-            const mev = wtManifest.behaviorPackWrapper?.format_version;
+            const mev = wtManifest.formatVersion;
 
             if (mev) {
               const mevY = mev?.split(".");

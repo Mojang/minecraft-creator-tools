@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Biome JSON File Biome (Biome JSON File)
+ * Biome JSON File (Biome JSON File)
  * Contains a format version and a biome definition.
  */
 export default interface BiomeJSONFile {
@@ -34,7 +34,7 @@ export default interface BiomeJSONFile {
 
 
 /**
- * Biome Definition Biome (Biome Definition)
+ * Biome Definition (Biome Definition)
  * Contains a description and components to define a Biome.
  */
 export interface BiomeJSONFileMinecraftBiome {
@@ -55,7 +55,7 @@ export interface BiomeJSONFileMinecraftBiome {
 
 
 /**
- * Biome Components Biome (Biome Components)
+ * Biome Components (Biome Components)
  * Any components that this Biome uses.
  */
 export interface BiomeJSONFileMinecraftBiomeComponents {
@@ -65,14 +65,14 @@ export interface BiomeJSONFileMinecraftBiomeComponents {
    * Describes temperature, humidity, precipitation, and similar. Biomes
    * without this component will have default values.
    */
-  "minecraft:climate": BiomeJSONFileMinecraftBiomeComponentsMinecraftClimate;
+  "minecraft:climate"?: BiomeJSONFileMinecraftBiomeComponentsMinecraftClimate;
 
   /**
    * @remarks
    * Probability that creatures will spawn within the biome when a
    * chunk is generated.
    */
-  "minecraft:creature_spawn_probability": BiomeJSONFileMinecraftBiomeComponentsMinecraftCreatureSpawnProbability;
+  "minecraft:creature_spawn_probability"?: BiomeJSONFileMinecraftBiomeComponentsMinecraftCreatureSpawnProbability;
 
   /**
    * @remarks
@@ -80,69 +80,69 @@ export interface BiomeJSONFileMinecraftBiomeComponents {
    * effects the spread chance, and spread rate of fire in the 
    * biome
    */
-  "minecraft:humidity": BiomeJSONFileMinecraftBiomeComponentsMinecraftHumidity;
+  "minecraft:humidity"?: BiomeJSONFileMinecraftBiomeComponentsMinecraftHumidity;
 
   /**
    * @remarks
    * Sets the color grass and foliage will be tinted by in this biome
    * on the map.
    */
-  "minecraft:map_tints": BiomeJSONFileMinecraftBiomeComponentsMinecraftMapTints;
+  "minecraft:map_tints"?: BiomeJSONFileMinecraftBiomeComponentsMinecraftMapTints;
 
   /**
    * @remarks
    * Noise parameters used to drive mountain terrain generation in
    * Overworld.
    */
-  "minecraft:mountain_parameters": BiomeJSONFileMinecraftBiomeComponentsMinecraftMountainParameters;
+  "minecraft:mountain_parameters"?: BiomeJSONFileMinecraftBiomeComponentsMinecraftMountainParameters;
 
   /**
    * @remarks
    * Controls how this biome is instantiated (and then potentially modified)
    * during world generation of the nether.
    */
-  "minecraft:multinoise_generation_rules": BiomeJSONFileMinecraftBiomeComponentsMinecraftMultinoiseGenerationRules;
+  "minecraft:multinoise_generation_rules"?: BiomeJSONFileMinecraftBiomeComponentsMinecraftMultinoiseGenerationRules;
 
   /**
    * @remarks
    * Controls how this biome is instantiated (and then potentially modified)
    * during world generation of the overworld.
    */
-  "minecraft:overworld_generation_rules": BiomeJSONFileMinecraftBiomeComponentsMinecraftOverworldGenerationRules;
+  "minecraft:overworld_generation_rules"?: BiomeJSONFileMinecraftBiomeComponentsMinecraftOverworldGenerationRules;
 
   /**
    * @remarks
    * Noise parameters used to drive terrain height in the 
    * Overworld.
    */
-  "minecraft:overworld_height": BiomeJSONFileMinecraftBiomeComponentsMinecraftOverworldHeight;
+  "minecraft:overworld_height"?: BiomeJSONFileMinecraftBiomeComponentsMinecraftOverworldHeight;
 
   /**
    * @remarks
    * Component will impact the temperature in a frozen biome, causing
    * some areas to not be frozen. Ex: patchy ice, patchy snow
    */
-  "minecraft:partially_frozen": object;
+  "minecraft:partially_frozen"?: object;
 
   /**
    * @remarks
    * Replaces a specified portion of one or more Minecraft 
    * biomes.
    */
-  "minecraft:replace_biomes": BiomeJSONFileMinecraftBiomeComponentsMinecraftReplaceBiomes;
+  "minecraft:replace_biomes"?: BiomeJSONFileMinecraftBiomeComponentsMinecraftReplaceBiomes;
 
   /**
    * @remarks
    * Controls the materials used for terrain generation.
    */
-  "minecraft:surface_builder": BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceBuilder;
+  "minecraft:surface_builder"?: BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceBuilder;
 
   /**
    * @remarks
    * Specify fine-detail changes to blocks used in terrain generation (based
    * on a noise function).
    */
-  "minecraft:surface_material_adjustments": BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustments;
+  "minecraft:surface_material_adjustments"?: BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustments;
 
   /**
    * @remarks
@@ -222,13 +222,13 @@ taiga: Biomes tagged "forest" or "forest_generation" will
    * use normal Overworld flowers instead of forest flowers.
 
    */
-  "minecraft:tags": BiomeJSONFileMinecraftBiomeComponentsMinecraftTags;
+  "minecraft:tags"?: BiomeJSONFileMinecraftBiomeComponentsMinecraftTags;
 
 }
 
 
 /**
- * Minecraft Climate Biome (minecraft:climate)
+ * Biome Climate (minecraft:climate)
  * Describes temperature, humidity, precipitation, and similar. Biomes
  * without this component will have default values.
  */
@@ -236,34 +236,17 @@ export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftClimate {
 
   /**
    * @remarks
-   * Density of ash precipitation visuals
+   * Amount that precipitation affects colors and block changes. Setting
+   * to 0 will stop rain from falling in the biome.
    */
-  ash: number;
-
-  /**
-   * @remarks
-   * Density of blue spore precipitation visuals
-   */
-  blue_spores: number;
-
-  /**
-   * @remarks
-   * Amount that precipitation affects colors and block changes
-   */
-  downfall: number;
-
-  /**
-   * @remarks
-   * Density of red spore precipitation visuals
-   */
-  red_spores: number;
+  downfall?: number;
 
   /**
    * @remarks
    * Minimum and maximum snow level, each multiple of 0.125 is
    * another snow layer
    */
-  snow_accumulation: number[];
+  snow_accumulation?: number[];
 
   /**
    * @remarks
@@ -271,19 +254,13 @@ export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftClimate {
    * including snow and ice placement, sponge drying, and sky 
    * color
    */
-  temperature: number;
-
-  /**
-   * @remarks
-   * Density of white ash precipitation visuals
-   */
-  white_ash: number;
+  temperature?: number;
 
 }
 
 
 /**
- * Minecraft Creature Spawn Probability Biome
+ * Biome Creature Spawn Probability 
  * (minecraft:creature_spawn_probability)
  * Probability that creatures will spawn within the biome when a
  * chunk is generated.
@@ -295,13 +272,13 @@ export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftCreatureSpawnProb
    * Probabiltity between [0.0, 0.75] of creatures spawning within the
    * biome on chunk generation.
    */
-  probability: number;
+  probability?: number;
 
 }
 
 
 /**
- * Minecraft Humidity Biome (minecraft:humidity)
+ * Biome Humidity (minecraft:humidity)
  * Forces a biome to ether always be humid or never humid. Humidity
  * effects the spread chance, and spread rate of fire in the 
  * biome.
@@ -314,7 +291,7 @@ export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftHumidity {
 
 
 /**
- * Minecraft Map Tints Biome (minecraft:map_tints)
+ * Biome Map Tints (minecraft:map_tints)
  * Sets the color grass and foliage will be tinted by in this biome
  * on the map.
  */
@@ -325,7 +302,7 @@ export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftMapTints {
    * Sets the color foliage will be tinted by in this biome on the
    * map.
    */
-  foliage: string;
+  foliage?: string;
 
   /**
    * @remarks
@@ -338,8 +315,7 @@ export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftMapTints {
 
 
 /**
- * Minecraft Mountain Parameters Biome
- * (minecraft:mountain_parameters)
+ * Biome Mountain Parameters (minecraft:mountain_parameters)
  * Noise parameters used to drive mountain terrain generation in
  * Overworld.
  */
@@ -349,44 +325,44 @@ export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftMountainParameter
    * @remarks
    * Enable for east-facing slopes
    */
-  east_slopes: boolean;
+  east_slopes?: boolean;
 
   /**
    * @remarks
    * Block type use as steep material
    */
-  material: BiomeJSONFileMinecraftBiomeComponentsMinecraftMountainParametersMaterial;
+  material?: BiomeJSONFileMinecraftBiomeComponentsMinecraftMountainParametersMaterial;
 
   /**
    * @remarks
    * Enable for north-facing slopes
    */
-  north_slopes: boolean;
+  north_slopes?: boolean;
 
   /**
    * @remarks
    * Enable for south-facing slopes
    */
-  south_slopes: boolean;
+  south_slopes?: boolean;
 
   /**
    * @remarks
    * Defines surface material for steep slopes
    */
-  steep_material_adjustment: BiomeJSONFileMinecraftBiomeComponentsMinecraftMountainParametersSteepMaterialAdjustment;
+  steep_material_adjustment?: BiomeJSONFileMinecraftBiomeComponentsMinecraftMountainParametersSteepMaterialAdjustment;
 
   /**
    * @remarks
    * Controls the density tapering that happens at the top of the
    * world to prevent terrain from reaching too high
    */
-  top_slide: BiomeJSONFileMinecraftBiomeComponentsMinecraftMountainParametersTopSlide;
+  top_slide?: BiomeJSONFileMinecraftBiomeComponentsMinecraftMountainParametersTopSlide;
 
   /**
    * @remarks
    * Enable for west-facing slopes
    */
-  west_slopes: boolean;
+  west_slopes?: boolean;
 
 }
 
@@ -413,39 +389,31 @@ export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftMountainParameter
    * @remarks
    * Enable for east-facing slopes
    */
-  east_slopes: boolean;
+  east_slopes?: boolean;
 
   /**
    * @remarks
    * Block type use as steep material
    */
-  material: BiomeJSONFileMinecraftBiomeComponentsMinecraftMountainParametersSteepMaterialAdjustmentMaterial;
+  material?: string;
 
   /**
    * @remarks
    * Enable for north-facing slopes
    */
-  north_slopes: boolean;
+  north_slopes?: boolean;
 
   /**
    * @remarks
    * Enable for south-facing slopes
    */
-  south_slopes: boolean;
+  south_slopes?: boolean;
 
   /**
    * @remarks
    * Enable for west-facing slopes
    */
-  west_slopes: boolean;
-
-}
-
-
-/**
- * Material (material)
- */
-export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftMountainParametersSteepMaterialAdjustmentMaterial {
+  west_slopes?: boolean;
 
 }
 
@@ -469,10 +437,12 @@ export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftMountainParameter
 
 
 /**
- * Minecraft Multinoise Generation Rules Biome
+ * Biome Multinoise Generation Rules
  * (minecraft:multinoise_generation_rules)
  * Controls how this biome is instantiated (and then potentially modified)
  * during world generation of the nether.
+ * Note: This is a pre-Caves and Cliffs component and is unused for
+ * custom biomes.
  */
 export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftMultinoiseGenerationRules {
 
@@ -481,44 +451,46 @@ export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftMultinoiseGenerat
    * Altitude with which this biome should be generated, relative to
    * other biomes.
    */
-  target_altitude: number;
+  target_altitude?: number;
 
   /**
    * @remarks
    * Humidity with which this biome should be generated, relative to
    * other biomes.
    */
-  target_humidity: number;
+  target_humidity?: number;
 
   /**
    * @remarks
    * Temperature with which this biome should be generated, relative to
    * other biomes.
    */
-  target_temperature: number;
+  target_temperature?: number;
 
   /**
    * @remarks
    * Weirdness with which this biome should be generated, relative to
    * other biomes.
    */
-  target_weirdness: number;
+  target_weirdness?: number;
 
   /**
    * @remarks
    * Weight with which this biome should be generated, relative to
    * other biomes.
    */
-  weight: number;
+  weight?: number;
 
 }
 
 
 /**
- * Minecraft Overworld Generation Rules Biome
+ * Biome Overworld Generation Rules
  * (minecraft:overworld_generation_rules)
  * Controls how this biome is instantiated (and then potentially modified)
  * during world generation of the overworld.
+ * Note: This is a pre-Caves and Cliffs component and is unused for
+ * custom biomes.
  */
 export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftOverworldGenerationRules {
 
@@ -531,7 +503,7 @@ export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftOverworldGenerati
    * other entries. If no weight is provided, a weight of 1 is 
    * used.
    */
-  generate_for_climates: object[];
+  generate_for_climates?: object[];
 
   /**
    * @remarks
@@ -541,35 +513,37 @@ export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftOverworldGenerati
    * element is a positive integer for how much that entry is
    * weighted relative to other entries.
    */
-  hills_transformation: string[];
+  hills_transformation?: string[];
 
   /**
    * @remarks
    * What biome to switch to when converting to a mutated biome
    */
-  mutate_transformation: string[];
+  mutate_transformation?: string[];
 
   /**
    * @remarks
    * What biome to switch to when converting to a river biome (if not
    * the Vanilla 'river' biome)
    */
-  river_transformation: string[];
+  river_transformation?: string[];
 
   /**
    * @remarks
    * What biome to switch to when adjacent to an ocean biome
    */
-  shore_transformation: string[];
+  shore_transformation?: string[];
 
 }
 
 
 /**
- * Minecraft Overworld Height Biome 
- * (minecraft:overworld_height)
+ * Biome Overworld Height (minecraft:overworld_height)
  * Noise parameters used to drive terrain height in the 
  * Overworld.
+ * Note: This is a pre-Caves and Cliffs component. It does not
+ * change overworld height, and currently only affects map item
+ * rendering.
  */
 export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftOverworldHeight {
 
@@ -579,20 +553,20 @@ export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftOverworldHeight {
    * more positive means higher. Second value is scale, which affects how
    * much noise changes as it moves from the surface.
    */
-  noise_params: number[];
+  noise_params?: number[];
 
   /**
    * @remarks
    * Specifies a preset based on a built-in setting rather than
    * manually using noise_params
    */
-  noise_type: string;
+  noise_type?: string;
 
 }
 
 
 /**
- * Minecraft Replace Biomes Biome (minecraft:replace_biomes)
+ * Biome Replace Biomes (minecraft:replace_biomes)
  * Replaces a specified portion of one or more Minecraft 
  * biomes.
  */
@@ -611,7 +585,7 @@ export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftReplaceBiomes {
 
 
 /**
- * Biome Replacement Biome (Biome Replacement)
+ * Biome Replacement (Biome Replacement)
  * Represents the replacement information used to determine the
  * placement of the overriding biome.
  */
@@ -653,7 +627,7 @@ export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftReplaceBiomesRepl
 
 
 /**
- * Minecraft Surface Builder Biome (minecraft:surface_builder)
+ * Biome Surface Builder (minecraft:surface_builder)
  * Controls the materials used for terrain generation.
  */
 export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceBuilder {
@@ -662,13 +636,69 @@ export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceBuilder {
    * @remarks
    * Controls the block types used for terrain generation.
    */
-  builder: object;
+  builder: BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceBuilderBuilder;
 
 }
 
 
 /**
- * Minecraft Surface Material Adjustments Biome
+ * Biome Overworld (minecraft:overworld)
+ * Controls the blocks used for the default Minecraft Overworld terrain
+ * generation.
+ */
+export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceBuilderBuilder {
+
+  /**
+   * @remarks
+   * Controls the block type used deep underground in this biome
+   */
+  foundation_material: string;
+
+  /**
+   * @remarks
+   * Controls the block type used in a layer below the surface of
+   * this biome
+   */
+  mid_material: string;
+
+  /**
+   * @remarks
+   * Controls how deep below the world water level the floor should
+   * occur
+   */
+  sea_floor_depth: number;
+
+  /**
+   * @remarks
+   * Controls the block type used as a floor for bodies of water in
+   * this biome
+   */
+  sea_floor_material: string;
+
+  /**
+   * @remarks
+   * Controls the block type used for the bodies of water in this
+   * biome
+   */
+  sea_material: string;
+
+  /**
+   * @remarks
+   * Controls the block type used for the surface of this biome
+   */
+  top_material: string;
+
+  /**
+   * @remarks
+   * Controls the type of surface builder to use
+   */
+  type: string;
+
+}
+
+
+/**
+ * Biome Surface Material Adjustments
  * (minecraft:surface_material_adjustments)
  * Specify fine-detail changes to blocks used in terrain generation (based
  * on a noise function).
@@ -680,42 +710,7 @@ export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAd
    * All adjustments that match the column's noise values will be
    * applied in the order listed.
    */
-  adjustments: BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsAdjustments[];
-
-  /**
-   * @remarks
-   * Controls the block type used deep underground in this biome when
-   * this adjustment is active.
-   */
-  foundation_material: BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsFoundationMaterial;
-
-  /**
-   * @remarks
-   * Controls the block type used in a layer below the surface of
-   * this biome when this adjustment is active.
-   */
-  mid_material: BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsMidMaterial;
-
-  /**
-   * @remarks
-   * Controls the block type used as a floor for bodies of water in
-   * this biome when this adjustment is active.
-   */
-  sea_floor_material: BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsSeaFloorMaterial;
-
-  /**
-   * @remarks
-   * Controls the block type used in the bodies of water in this biome
-   * when this adjustment is active.
-   */
-  sea_material: BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsSeaMaterial;
-
-  /**
-   * @remarks
-   * Controls the block type used for the surface of this biome when
-   * this adjustment is active.
-   */
-  top_material: BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsTopMaterial;
+  adjustments?: BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsAdjustments[];
 
 }
 
@@ -734,7 +729,7 @@ export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAd
    * Defines a range of noise values [min, max] for which this
    * adjustment should be applied.
    */
-  height_range: number;
+  height_range?: number;
 
   /**
    * @remarks
@@ -747,14 +742,14 @@ export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAd
    * The scale to multiply by the position when accessing the noise
    * value for the material adjustments.
    */
-  noise_frequency_scale: number;
+  noise_frequency_scale?: number;
 
   /**
    * @remarks
    * Defines a range of noise values [min, max] for which this
    * adjustment should be applied.
    */
-  noise_range: number[];
+  noise_range?: number[];
 
 }
 
@@ -772,131 +767,41 @@ export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAd
    * Controls the block type used deep underground in this biome when
    * this adjustment is active.
    */
-  foundation_material: BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsFoundationMaterial;
+  foundation_material?: string;
 
   /**
    * @remarks
    * Controls the block type used in a layer below the surface of
    * this biome when this adjustment is active.
    */
-  mid_material: BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsMidMaterial;
+  mid_material?: string;
 
   /**
    * @remarks
    * Controls the block type used as a floor for bodies of water in
    * this biome when this adjustment is active.
    */
-  sea_floor_material: BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsSeaFloorMaterial;
+  sea_floor_material?: string;
 
   /**
    * @remarks
    * Controls the block type used in the bodies of water in this biome
    * when this adjustment is active.
    */
-  sea_material: BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsSeaMaterial;
+  sea_material?: string;
 
   /**
    * @remarks
    * Controls the block type used for the surface of this biome when
    * this adjustment is active.
    */
-  top_material: BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsTopMaterial;
+  top_material?: string;
 
 }
 
 
 /**
- * Foundation Material (foundation_material)
- */
-export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsFoundationMaterial {
-
-}
-
-
-/**
- * Mid Material (mid_material)
- */
-export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsMidMaterial {
-
-}
-
-
-/**
- * Sea Floor Material (sea_floor_material)
- */
-export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsSeaFloorMaterial {
-
-}
-
-
-/**
- * Sea Material (sea_material)
- */
-export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsSeaMaterial {
-
-}
-
-
-/**
- * Top Material (top_material)
- */
-export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsTopMaterial {
-
-}
-
-
-/**
- * Foundation Material
- * Specifies a particular block. Can be a string block name or a
- * JSON object.
- */
-export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsFoundationMaterial {
-
-}
-
-
-/**
- * Mid Material
- * Specifies a particular block. Can be a string block name or a
- * JSON object.
- */
-export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsMidMaterial {
-
-}
-
-
-/**
- * Sea Floor Material
- * Specifies a particular block. Can be a string block name or a
- * JSON object.
- */
-export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsSeaFloorMaterial {
-
-}
-
-
-/**
- * Sea Material
- * Specifies a particular block. Can be a string block name or a
- * JSON object.
- */
-export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsSeaMaterial {
-
-}
-
-
-/**
- * Top Material
- * Specifies a particular block. Can be a string block name or a
- * JSON object.
- */
-export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsTopMaterial {
-
-}
-
-
-/**
- * Minecraft Tags Biome (minecraft:tags)
+ * Biome Tags (minecraft:tags)
  * Attach arbitrary string tags to this biome.
 Most biome tags are
  * referenced by JSON settings, but some meanings of tags are
@@ -984,7 +889,7 @@ export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftTags {
 
 
 /**
- * Biome Description Biome (Biome Description)
+ * Biome Description (Biome Description)
  * Contains non-component settings for a Biome.
  */
 export interface BiomeJSONFileMinecraftBiomeDescription {

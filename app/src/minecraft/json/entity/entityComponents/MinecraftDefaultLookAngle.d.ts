@@ -22,6 +22,6 @@ export default interface MinecraftDefaultLookAngle {
    * @remarks
    * Angle in degrees.
    */
-  value: number;
+  value?: number;
 
 }

@@ -50,34 +50,34 @@ export default interface MinecraftBehaviorWorkComposter {
    * Villager v2: 250
    *
    */
-  active_time: number;
+  active_time?: number;
 
   /**
    * @remarks
    * The maximum number of times the mob will interact with the
    * composter.
    */
-  block_interaction_max: number;
+  block_interaction_max?: number;
 
   /**
    * @remarks
    * Determines whether the mob can empty a full composter.
    */
-  can_empty_composter: boolean;
+  can_empty_composter?: boolean;
 
   /**
    * @remarks
    * Determines whether the mob can add items to a composter given that
    * it is not full.
    */
-  can_fill_composter: boolean;
+  can_fill_composter?: boolean;
 
   /**
    * @remarks
    * If true, this entity can work when their jobsite POI is being
    * rained on.
    */
-  can_work_in_rain: boolean;
+  can_work_in_rain?: boolean;
 
   /**
    * @remarks
@@ -88,21 +88,21 @@ export default interface MinecraftBehaviorWorkComposter {
    * Villager v2: 200
    *
    */
-  goal_cooldown: number;
+  goal_cooldown?: number;
 
   /**
    * @remarks
    * The maximum number of items which can be added to the composter per
    * block interaction.
    */
-  items_per_use_max: number;
+  items_per_use_max?: number;
 
   /**
    * @remarks
    * Limits the amount of each compostable item the mob can use. Any
    * amount held over this number will be composted if possible
    */
-  min_item_count: number;
+  min_item_count?: number;
 
   /**
    * @remarks
@@ -112,7 +112,7 @@ export default interface MinecraftBehaviorWorkComposter {
    * Villager v2: {"event":"minecraft:resupply_trades","target":"self"}
    *
    */
-  on_arrival: jsoncommon.MinecraftEventTrigger;
+  on_arrival?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -124,7 +124,7 @@ export default interface MinecraftBehaviorWorkComposter {
    * Villager v2: 9
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -134,21 +134,21 @@ export default interface MinecraftBehaviorWorkComposter {
    * Villager v2: 0.5
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
    * The maximum interval in which the mob will interact with the
    * composter.
    */
-  use_block_max: number;
+  use_block_max?: number;
 
   /**
    * @remarks
    * The minimum interval in which the mob will interact with the
    * composter.
    */
-  use_block_min: number;
+  use_block_min?: number;
 
   /**
    * @remarks
@@ -160,6 +160,6 @@ export default interface MinecraftBehaviorWorkComposter {
    * Villager v2: 100
    *
    */
-  work_in_rain_tolerance: number;
+  work_in_rain_tolerance?: number;
 
 }

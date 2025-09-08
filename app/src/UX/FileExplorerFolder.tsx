@@ -27,7 +27,7 @@ interface IFileExplorerFolderProps {
 }
 
 interface IFileExplorerFolderState {
-  isLoaded: boolean;
+  loadedExtendedPath: string | undefined;
   isExpanded: boolean;
 }
 
@@ -35,20 +35,34 @@ export default class FileExplorerFolder extends Component<IFileExplorerFolderPro
   constructor(props: IFileExplorerFolderProps) {
     super(props);
     this.state = {
-      isLoaded: false,
+      loadedExtendedPath: undefined,
       isExpanded: this.props.startExpanded,
     };
 
     this._folderExpandToggle = this._folderExpandToggle.bind(this);
+  }
 
+  componentDidMount(): void {
     this.loadFolder();
   }
 
+  componentDidUpdate(
+    prevProps: Readonly<IFileExplorerFolderProps>,
+    prevState: Readonly<IFileExplorerFolderState>,
+    snapshot?: any
+  ): void {
+    if (prevProps.folder !== this.props.folder) {
+      this.loadFolder();
+    }
+  }
+
   async loadFolder() {
-    await this.props.folder.load();
+    if (this.props.folder.extendedPath !== this.state.loadedExtendedPath) {
+      await this.props.folder.load();
+    }
 
     this.setState({
-      isLoaded: true,
+      loadedExtendedPath: this.props.folder.extendedPath,
     });
   }
 
@@ -72,13 +86,13 @@ export default class FileExplorerFolder extends Component<IFileExplorerFolderPro
 
   _folderExpandToggle(newExpandedValue: boolean) {
     this.setState({
-      isLoaded: this.state.isLoaded,
+      loadedExtendedPath: this.state.loadedExtendedPath,
       isExpanded: newExpandedValue,
     });
   }
 
   render() {
-    if (!this.state || !this.state.isLoaded) {
+    if (!this.state || !this.state.loadedExtendedPath) {
       return <></>;
     }
 

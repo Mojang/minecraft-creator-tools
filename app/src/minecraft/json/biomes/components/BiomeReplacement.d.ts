@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Biome Replacement Biome (Biome Replacement)
+ * Biome Replacement (Biome Replacement)
  * Represents the replacement information used to determine the
  * placement of the overriding biome.
  */

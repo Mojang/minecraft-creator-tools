@@ -22,6 +22,6 @@ export default interface MinecraftSoundVolume {
    * @remarks
    * The value of the volume the entity uses for sound effects.
    */
-  value: number;
+  value?: number;
 
 }

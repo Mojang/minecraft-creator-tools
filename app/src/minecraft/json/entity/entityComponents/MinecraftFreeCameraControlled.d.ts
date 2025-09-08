@@ -38,7 +38,7 @@ export default interface MinecraftFreeCameraControlled {
    * Happy Ghast: 0.5
    *
    */
-  backwards_movement_modifier: number;
+  backwards_movement_modifier?: number;
 
   /**
    * @remarks
@@ -48,6 +48,6 @@ export default interface MinecraftFreeCameraControlled {
    * Happy Ghast: 1
    *
    */
-  strafe_speed_modifier: number;
+  strafe_speed_modifier?: number;
 
 }

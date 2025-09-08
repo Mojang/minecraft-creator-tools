@@ -56,22 +56,18 @@ export default class LineSizeInfoGenerator implements IProjectInfoGenerator {
           " file " +
           (ProjectItemUtilities.isBinaryType(pi.itemType) ? "size" : "lines");
 
-        projInfoItem = new ProjectInfoItem(
-          InfoItemType.featureAggregate,
-          this.id,
-          TopicTestIdBase + pi.itemType,
-          name,
-          pi
-        );
+        projInfoItem = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, TopicTestIdBase + pi.itemType, name);
         itemsByType[pi.itemType] = projInfoItem;
         items.push(projInfoItem);
       }
 
       if (pi.storageType === ProjectItemStorageType.singleFile) {
-        let file = await pi.ensureFileStorage();
+        let file = await pi.loadFileContent();
 
         if (file) {
-          await file.loadContent();
+          if (!file.isContentLoaded) {
+            await file.loadContent();
+          }
 
           projInfoItem.spectrumIntFeature("Size", file.coreContentLength);
 

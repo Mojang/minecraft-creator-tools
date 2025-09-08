@@ -22,13 +22,13 @@ export default interface MinecraftAtmosphereSettings {
    * @remarks
    * format_version
    */
-  format_version: string;
+  format_version?: string;
 
   /**
    * @remarks
    * minecraft:atmosphere_settings
    */
-  "minecraft:atmosphere_settings": MinecraftAtmosphereSettingsMinecraftAtmosphereSettings;
+  "minecraft:atmosphere_settings"?: MinecraftAtmosphereSettingsMinecraftAtmosphereSettings;
 
 }
 
@@ -45,49 +45,49 @@ export interface MinecraftAtmosphereSettingsMinecraftAtmosphereSettings {
    * @remarks
    * description
    */
-  description: MinecraftAtmosphereSettingsMinecraftAtmosphereSettingsDescription;
+  description?: MinecraftAtmosphereSettingsMinecraftAtmosphereSettingsDescription;
 
   /**
    * @remarks
    * horizon_blend_stops
    */
-  horizon_blend_stops: MinecraftAtmosphereSettingsMinecraftAtmosphereSettingsHorizonBlendStops;
+  horizon_blend_stops?: MinecraftAtmosphereSettingsMinecraftAtmosphereSettingsHorizonBlendStops;
 
   /**
    * @remarks
    * moon_mie_strength
    */
-  moon_mie_strength: number;
+  moon_mie_strength?: number;
 
   /**
    * @remarks
    * rayleigh_strength
    */
-  rayleigh_strength: number;
+  rayleigh_strength?: number;
 
   /**
    * @remarks
    * sky_horizon_color
    */
-  sky_horizon_color: { [key: string]: string };
+  sky_horizon_color?: { [key: string]: string };
 
   /**
    * @remarks
    * sky_zenith_color
    */
-  sky_zenith_color: { [key: string]: string };
+  sky_zenith_color?: { [key: string]: string };
 
   /**
    * @remarks
    * sun_glare_shape
    */
-  sun_glare_shape: number;
+  sun_glare_shape?: number;
 
   /**
    * @remarks
    * sun_mie_strength
    */
-  sun_mie_strength: number;
+  sun_mie_strength?: number;
 
 }
 
@@ -104,7 +104,7 @@ export interface MinecraftAtmosphereSettingsMinecraftAtmosphereSettingsDescripti
    * @remarks
    * identifier
    */
-  identifier: string;
+  identifier?: string;
 
 }
 
@@ -121,24 +121,24 @@ export interface MinecraftAtmosphereSettingsMinecraftAtmosphereSettingsHorizonBl
    * @remarks
    * max
    */
-  max: number;
+  max?: number;
 
   /**
    * @remarks
    * mie_start
    */
-  mie_start: number;
+  mie_start?: number;
 
   /**
    * @remarks
    * min
    */
-  min: number;
+  min?: number;
 
   /**
    * @remarks
    * start
    */
-  start: number;
+  start?: number;
 
 }

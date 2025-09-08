@@ -1,4 +1,5 @@
 {
+  "id": "minecraft:use_modifiers",
   "fields": [
     {
       "id": "movement_modifier",
@@ -17,6 +18,12 @@
             "path": "/minecraft:item/components/minecraft:use_modifiers/",
             "content": 0.35
           }
+        ],
+        "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/items/cooked_dream_turkey.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:use_modifiers/",
+            "content": 0.35
+          }
         ]
       }
     },
@@ -31,12 +38,30 @@
             "path": "/minecraft:item/components/minecraft:use_modifiers/",
             "content": 1.6
           }
+        ],
+        "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/items/cooked_dream_turkey.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:use_modifiers/",
+            "content": 4
+          }
+        ],
+        "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/items/dream_essence.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:use_modifiers/",
+            "content": 4
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_shoot.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:use_modifiers/",
+            "content": 3
+          }
         ]
       }
     }
   ],
-  "description": "Determines how long an item takes to use in combination with components such as Shooter, Throwable, or Food.",
-  "title": "Minecraft Use Modifiers Item",
+  "description": "This component modifies use effects, including how long the item takes to use and the player's speed when used in combination with components like \"shooter\", \"throwable\", or \"food\".",
+  "title": "Item Use Modifiers",
   "samples": {
     "/vanilla/behavior_pack/items/apple.json": [
       {
@@ -136,6 +161,5 @@
         }
       }
     ]
-  },
-  "id": "minecraft:use_modifiers"
+  }
 }

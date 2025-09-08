@@ -157,7 +157,9 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
   }
 
   async generateFromFolder(project: Project, folder: IFolder, items: ProjectInfoItem[], index: ContentIndex) {
-    await folder.load();
+    if (!folder.isLoaded) {
+      await folder.load();
+    }
 
     for (const fileName in folder.files) {
       const baseType = StorageUtilities.getTypeFromName(fileName);
@@ -166,7 +168,9 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       if (baseType === "json" && file) {
         await this.generateFromFile(project, file, items, index);
       } else if (StorageUtilities.isContainerFile(fileName) && file) {
-        await file.loadContent();
+        if (!file.isContentLoaded) {
+          await file.loadContent();
+        }
 
         if (file.content && file.content instanceof Uint8Array) {
           if (!file.fileContainerStorage) {
@@ -208,7 +212,9 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         file.storageRelativePath
       );
 
-      await file.loadContent(false);
+      if (!file.isContentLoaded) {
+        await file.loadContent(false);
+      }
 
       const jsonO = StorageUtilities.getJsonObject(file);
 
@@ -260,7 +266,9 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         file.storageRelativePath
       );
 
-      await file.loadContent(false);
+      if (!file.isContentLoaded) {
+        await file.loadContent(false);
+      }
 
       const jsonO = StorageUtilities.getJsonObject(file);
 
@@ -291,7 +299,9 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         file.storageRelativePath
       );
 
-      await file.loadContent(false);
+      if (!file.isContentLoaded) {
+        await file.loadContent(false);
+      }
 
       const jsonO = StorageUtilities.getJsonObject(file);
 
@@ -417,7 +427,9 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         file.storageRelativePath
       );
 
-      await file.loadContent(false);
+      if (!file.isContentLoaded) {
+        await file.loadContent(false);
+      }
 
       const jsonO = StorageUtilities.getJsonObject(file);
 
@@ -469,7 +481,9 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         file.storageRelativePath
       );
 
-      await file.loadContent(false);
+      if (!file.isContentLoaded) {
+        await file.loadContent(false);
+      }
 
       const jsonO = StorageUtilities.getJsonObject(file);
 
@@ -499,7 +513,9 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         file.storageRelativePath
       );
 
-      await file.loadContent(false);
+      if (!file.isContentLoaded) {
+        await file.loadContent(false);
+      }
 
       const jsonO = StorageUtilities.getJsonObject(file);
 
@@ -525,7 +541,9 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         file.storageRelativePath
       );
 
-      await file.loadContent(false);
+      if (!file.isContentLoaded) {
+        await file.loadContent(false);
+      }
 
       const jsonO = StorageUtilities.getJsonObject(file);
 

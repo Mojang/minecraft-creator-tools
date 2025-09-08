@@ -385,7 +385,7 @@ export default interface MinecraftProjectile {
    *
    *
    */
-  anchor: number;
+  anchor?: number;
 
   /**
    * @remarks
@@ -396,7 +396,7 @@ export default interface MinecraftProjectile {
    *
    *
    */
-  angle_offset: number;
+  angle_offset?: number;
 
   /**
    * @remarks
@@ -406,7 +406,7 @@ export default interface MinecraftProjectile {
    * Fireball: true
    *
    */
-  catch_fire: boolean;
+  catch_fire?: boolean;
 
   /**
    * @remarks
@@ -417,13 +417,13 @@ export default interface MinecraftProjectile {
    * Shulker Bullet: true
    *
    */
-  crit_particle_on_hurt: boolean;
+  crit_particle_on_hurt?: boolean;
 
   /**
    * @remarks
    * If true, this entity will be destroyed when hit
    */
-  destroy_on_hurt: boolean;
+  destroy_on_hurt?: boolean;
 
   /**
    * @remarks
@@ -432,21 +432,21 @@ export default interface MinecraftProjectile {
    * Shulker Bullet: true
    *
    */
-  destroyOnHurt: string;
+  destroyOnHurt?: string;
 
   /**
    * @remarks
    * Entity Definitions defined here can't be hurt by the 
    * projectile
    */
-  filter: string;
+  filter?: string;
 
   /**
    * @remarks
    * If true, whether the projectile causes fire is affected by the
    * mob griefing game rule
    */
-  fire_affected_by_griefing: boolean;
+  fire_affected_by_griefing?: boolean;
 
   /**
    * @remarks
@@ -461,7 +461,7 @@ export default interface MinecraftProjectile {
    * Llama Spit: 0.06
    *
    */
-  gravity: number;
+  gravity?: number;
 
   /**
    * @remarks
@@ -470,7 +470,7 @@ export default interface MinecraftProjectile {
    * Thrown Trident: "item.trident.hit_ground"
    *
    */
-  hit_ground_sound: string;
+  hit_ground_sound?: string;
 
   /**
    * @remarks
@@ -479,7 +479,7 @@ export default interface MinecraftProjectile {
    * passenger closest to the projectile impact point. If there are
    * no passengers, this setting does nothing.
    */
-  hit_nearest_passenger: boolean;
+  hit_nearest_passenger?: boolean;
 
   /**
    * @remarks
@@ -493,7 +493,7 @@ export default interface MinecraftProjectile {
    * Shulker Bullet: "bullet.hit"
    *
    */
-  hit_sound: string;
+  hit_sound?: string;
 
   /**
    * @remarks
@@ -503,7 +503,7 @@ export default interface MinecraftProjectile {
    * Shulker Bullet: true
    *
    */
-  homing: boolean;
+  homing?: boolean;
 
   /**
    * @remarks
@@ -515,7 +515,7 @@ export default interface MinecraftProjectile {
    *
    *
    */
-  ignored_entities: string[];
+  ignored_entities?: string[];
 
   /**
    * @remarks
@@ -527,7 +527,7 @@ export default interface MinecraftProjectile {
    *
    *
    */
-  inertia: number;
+  inertia?: number;
 
   /**
    * @remarks
@@ -538,19 +538,19 @@ export default interface MinecraftProjectile {
    * Wither Skull Dangerous: true
    *
    */
-  is_dangerous: boolean;
+  is_dangerous?: boolean;
 
   /**
    * @remarks
    * If true, the projectile will knock back the entity it hits
    */
-  knockback: boolean;
+  knockback?: boolean;
 
   /**
    * @remarks
    * If true, the entity hit will be struck by lightning
    */
-  lightning: boolean;
+  lightning?: boolean;
 
   /**
    * @remarks
@@ -564,13 +564,13 @@ export default interface MinecraftProjectile {
    * Thrown Trident: 0.99
    *
    */
-  liquid_inertia: number;
+  liquid_inertia?: number;
 
   /**
    * @remarks
    * If true, the projectile can hit multiple entities per flight
    */
-  multiple_targets: boolean;
+  multiple_targets?: boolean;
 
   /**
    * @remarks
@@ -585,13 +585,13 @@ export default interface MinecraftProjectile {
    * Llama Spit: [0,-0.1,0]
    *
    */
-  offset: number[];
+  offset?: number[];
 
   /**
    * @remarks
    * Time in seconds that the entity hit will be on fire for
    */
-  on_fire_time: number;
+  on_fire_time?: number;
 
   /**
    * @remarks
@@ -604,20 +604,20 @@ export default interface MinecraftProjectile {
    * Dragon Fireball: {"spawn_aoe_cloud":{"radius":6,"radius_on_use":0,"potion":23,"particle":"dragonbreath","duration":120,"color":[220,0,239],"affect_owner":false,"reapplication_delay":20},"remove_on_hit":{}}
    *
    */
-  on_hit: jsoncommon.MinecraftEventTrigger;
+  on_hit?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
    * Particle to use upon collision
    */
-  particle: string;
+  particle?: string;
 
   /**
    * @remarks
    * Defines the effect the arrow will apply to the entity it 
    * hits
    */
-  potion_effect: number;
+  potion_effect?: number;
 
   /**
    * @remarks
@@ -631,7 +631,7 @@ export default interface MinecraftProjectile {
    * Dragon Fireball: 1.3
    *
    */
-  power: number;
+  power?: number;
 
   /**
    * @remarks
@@ -642,7 +642,7 @@ export default interface MinecraftProjectile {
    * Wind Charge Projectile: 0.5
    *
    */
-  reflect_immunity: number;
+  reflect_immunity?: number;
 
   /**
    * @remarks
@@ -653,7 +653,7 @@ export default interface MinecraftProjectile {
    *
    *
    */
-  reflect_on_hurt: boolean;
+  reflect_on_hurt?: boolean;
 
   /**
    * @remarks
@@ -664,25 +664,25 @@ export default interface MinecraftProjectile {
    *
    *
    */
-  semi_random_diff_damage: boolean;
+  semi_random_diff_damage?: boolean;
 
   /**
    * @remarks
    * The sound that plays when the projectile is shot
    * 
    * Sample Values:
-   * Wither Skull Dangerous: "bow"
+   * Wither Skull: "bow"
    *
    *
    */
-  shoot_sound: string;
+  shoot_sound?: string;
 
   /**
    * @remarks
    * If true, the projectile will be shot towards the target of the
    * entity firing it
    */
-  shoot_target: boolean;
+  shoot_target?: boolean;
 
   /**
    * @remarks
@@ -692,19 +692,19 @@ export default interface MinecraftProjectile {
    * Thrown Trident: true
    *
    */
-  should_bounce: boolean;
+  should_bounce?: boolean;
 
   /**
    * @remarks
    * If true, the projectile will be treated like a splash potion
    */
-  splash_potion: boolean;
+  splash_potion?: boolean;
 
   /**
    * @remarks
    * Radius in blocks of the 'splash' effect
    */
-  splash_range: number;
+  splash_range?: number;
 
   /**
    * @remarks
@@ -713,7 +713,7 @@ export default interface MinecraftProjectile {
    * Thrown Trident: true
    *
    */
-  stop_on_hurt: string;
+  stop_on_hurt?: string;
 
   /**
    * @remarks
@@ -728,7 +728,7 @@ export default interface MinecraftProjectile {
    * Dragon Fireball: 10
    *
    */
-  uncertainty_base: number;
+  uncertainty_base?: number;
 
   /**
    * @remarks
@@ -740,10 +740,10 @@ export default interface MinecraftProjectile {
    * Breeze Wind Charge Projectile: 4
    *
    *
-   * Wither Skull Dangerous: 1
+   * Wither Skull: 1
    *
    *
    */
-  uncertainty_multiplier: number;
+  uncertainty_multiplier?: number;
 
 }

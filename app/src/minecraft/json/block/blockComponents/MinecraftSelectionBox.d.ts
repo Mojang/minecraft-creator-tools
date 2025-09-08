@@ -37,7 +37,7 @@ export default interface MinecraftSelectionBox {
    * specified as [x, y, z] and must be in the range (-8, 0, -8) to
    * (8, 16, 8), inclusive.
    */
-  origin: number[];
+  origin?: number[];
 
   /**
    * @remarks
@@ -45,6 +45,6 @@ export default interface MinecraftSelectionBox {
    * [x, y, z]. "origin" + "size" must be in the range (-8, 0, -8) to
    * (8, 16, 8), inclusive.
    */
-  size: number[];
+  size?: number[];
 
 }

@@ -123,7 +123,7 @@ export default interface MinecraftTradeTable {
    * Villager: true
    *
    */
-  convert_trades_economy: boolean;
+  convert_trades_economy?: boolean;
 
   /**
    * @remarks
@@ -133,14 +133,14 @@ export default interface MinecraftTradeTable {
    * Villager: "entity.villager.farmer", "entity.villager.fisherman", "entity.villager.shepherd", "entity.villager.fletcher", "entity.villager.librarian", "entity.villager.cartographer", "entity.villager.cleric", "entity.villager.armor", "entity.villager.weapon", "entity.villager.tool", "entity.villager.butcher", "entity.villager.leather"
    *
    */
-  display_name: string;
+  display_name?: string;
 
   /**
    * @remarks
    * Used to determine if trading with entity opens the new trade
    * screen.
    */
-  new_screen: boolean;
+  new_screen?: boolean;
 
   /**
    * @remarks
@@ -149,7 +149,7 @@ export default interface MinecraftTradeTable {
    * something with a trade_table or economy_trade_table, then it
    * keeps their trades.
    */
-  persist_trades: boolean;
+  persist_trades?: boolean;
 
   /**
    * @remarks
@@ -160,6 +160,6 @@ export default interface MinecraftTradeTable {
    * Villager: "trading/farmer_trades.json", "trading/fisherman_trades.json", "trading/shepherd_trades.json", "trading/fletcher_trades.json", "trading/librarian_trades.json", "trading/cartographer_trades.json", "trading/cleric_trades.json", "trading/armorer_trades.json", "trading/weapon_smith_trades.json", "trading/tool_smith_trades.json", "trading/butcher_trades.json", "trading/leather_worker_trades.json"
    *
    */
-  table: string;
+  table?: string;
 
 }

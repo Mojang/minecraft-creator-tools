@@ -169,6 +169,6 @@ export default class JustConfig {
   }
 
   static getDefaultContent() {
-    return JustDefaultConfig.join("\r\n").replace(/'/gi, '"').replace(/\$_{/gi, "${");
+    return JustDefaultConfig.join("\n").replace(/'/gi, '"').replace(/\$_{/gi, "${");
   }
 }

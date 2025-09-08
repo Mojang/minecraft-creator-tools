@@ -37,7 +37,7 @@ export default class FormDefinitionTypeScriptGenerator {
 
     await this.loadFormJsonFromFolder(formsByPath, formJsonInputFolder, outputFolder);
 
-    this.exportTypeScriptDocs(
+    await this.exportTypeScriptDocs(
       formsByPath,
       outputFolder,
       ExportMode.features,
@@ -46,7 +46,7 @@ export default class FormDefinitionTypeScriptGenerator {
       "Feature"
     );
 
-    this.exportTypeScriptDocs(
+    await this.exportTypeScriptDocs(
       formsByPath,
       outputFolder,
       ExportMode.featureCore,
@@ -55,7 +55,7 @@ export default class FormDefinitionTypeScriptGenerator {
       "Feature Rule"
     );
 
-    this.exportTypeScriptDocs(
+    await this.exportTypeScriptDocs(
       formsByPath,
       outputFolder,
       ExportMode.AIGoals,
@@ -64,11 +64,11 @@ export default class FormDefinitionTypeScriptGenerator {
       "Entity"
     );
 
-    this.exportTypeScriptDocs(formsByPath, outputFolder, ExportMode.visuals, "/visual/", "/visual/", "Visuals");
+    await this.exportTypeScriptDocs(formsByPath, outputFolder, ExportMode.visuals, "/visual/", "/visual/", "Visuals");
 
-    this.exportTypeScriptDocs(formsByPath, outputFolder, ExportMode.fogs, "/fogs/", "/fogs/", "Fogs");
+    await this.exportTypeScriptDocs(formsByPath, outputFolder, ExportMode.fogs, "/fogs/", "/fogs/", "Fogs");
 
-    this.exportTypeScriptDocs(
+    await this.exportTypeScriptDocs(
       formsByPath,
       outputFolder,
       ExportMode.clientBiomes,
@@ -77,7 +77,7 @@ export default class FormDefinitionTypeScriptGenerator {
       "Client Biomes"
     );
 
-    this.exportTypeScriptDocs(
+    await this.exportTypeScriptDocs(
       formsByPath,
       outputFolder,
       ExportMode.clientBiomes,
@@ -85,7 +85,8 @@ export default class FormDefinitionTypeScriptGenerator {
       "/client_deferred_rendering/",
       "Client Biomes"
     );
-    this.exportTypeScriptDocs(
+
+    await this.exportTypeScriptDocs(
       formsByPath,
       outputFolder,
       ExportMode.websockets,
@@ -94,7 +95,7 @@ export default class FormDefinitionTypeScriptGenerator {
       "Websockets"
     );
 
-    this.exportTypeScriptDocs(
+    await this.exportTypeScriptDocs(
       formsByPath,
       outputFolder,
       ExportMode.triggers,
@@ -103,7 +104,7 @@ export default class FormDefinitionTypeScriptGenerator {
       "Entity"
     );
 
-    this.exportTypeScriptDocs(
+    await this.exportTypeScriptDocs(
       formsByPath,
       outputFolder,
       ExportMode.filters,
@@ -112,7 +113,7 @@ export default class FormDefinitionTypeScriptGenerator {
       "Entity Filters"
     );
 
-    this.exportTypeScriptDocs(
+    await this.exportTypeScriptDocs(
       formsByPath,
       outputFolder,
       ExportMode.eventResponses,
@@ -121,7 +122,7 @@ export default class FormDefinitionTypeScriptGenerator {
       "Entity Actions"
     );
 
-    this.exportTypeScriptDocs(
+    await this.exportTypeScriptDocs(
       formsByPath,
       outputFolder,
       ExportMode.blockComponents,
@@ -130,7 +131,7 @@ export default class FormDefinitionTypeScriptGenerator {
       "Block Components"
     );
 
-    this.exportTypeScriptDocs(
+    await this.exportTypeScriptDocs(
       formsByPath,
       outputFolder,
       ExportMode.itemComponents,
@@ -139,7 +140,7 @@ export default class FormDefinitionTypeScriptGenerator {
       "Items"
     );
 
-    this.exportTypeScriptDocs(
+    await this.exportTypeScriptDocs(
       formsByPath,
       outputFolder,
       ExportMode.entityComponents,
@@ -148,7 +149,7 @@ export default class FormDefinitionTypeScriptGenerator {
       "Entity"
     );
 
-    this.exportTypeScriptDocs(
+    await this.exportTypeScriptDocs(
       formsByPath,
       outputFolder,
       ExportMode.clientBiomes,
@@ -157,7 +158,14 @@ export default class FormDefinitionTypeScriptGenerator {
       "Client Biome"
     );
 
-    this.exportTypeScriptDocs(formsByPath, outputFolder, ExportMode.biomes, "/biomes/components/", "/biome/", "Biome");
+    await this.exportTypeScriptDocs(
+      formsByPath,
+      outputFolder,
+      ExportMode.biomes,
+      "/biomes/components/",
+      "/biome/",
+      "Biome"
+    );
   }
 
   private getFileNameFromBaseName(baseName: string, exportMode: ExportMode) {
@@ -210,10 +218,10 @@ export default class FormDefinitionTypeScriptGenerator {
 
         let fileName = this.getFileNameFromBaseName(typeName, exportMode);
 
-        const markdownFile = targetFolder.ensureFile(fileName + ".d.ts");
+        const typeScriptFile = targetFolder.ensureFile(fileName + ".d.ts");
 
         await this.saveFormDefinitionTypeScriptDocForm(
-          markdownFile,
+          typeScriptFile,
           formO,
           baseName,
           exportMode,
@@ -278,7 +286,7 @@ export default class FormDefinitionTypeScriptGenerator {
             }
 
             if (typeof sample.content === "object" || Array.isArray(sample.content)) {
-              line += JSON.stringify(sample.content, undefined, 2) + "\r\n";
+              line += JSON.stringify(sample.content, undefined, 2) + "\n";
             } else {
               if (typeof sample.content === "string") {
                 let cont = sample.content.trim();
@@ -329,11 +337,11 @@ export default class FormDefinitionTypeScriptGenerator {
       }
     }
     content.push(" */");
-    content.push("\r\nimport * as jsoncommon from './" + "../".repeat(folderDepth) + "jsoncommon';\r\n");
+    content.push("\nimport * as jsoncommon from './" + "../".repeat(folderDepth) + "jsoncommon';\n");
 
     await this.appendType(form, content, 0);
 
-    dtsFile.setContent(content.join("\r\n"));
+    dtsFile.setContent(content.join("\n"));
 
     await dtsFile.saveContent();
   }
@@ -360,8 +368,18 @@ export default class FormDefinitionTypeScriptGenerator {
     return key;
   }
 
-  public async appendType(form: IFormDefinition, content: string[], depth: number, altTitle?: string) {
-    content.push("/**");
+  public async appendType(
+    form: IFormDefinition,
+    content: string[],
+    depth: number,
+    altTitle?: string,
+    typeStack?: string[]
+  ) {
+    if (!typeStack) {
+      typeStack = [];
+    } else {
+      typeStack = typeStack.slice();
+    }
 
     let typeName = altTitle ? altTitle : form.id ? form.id : form.title;
 
@@ -371,6 +389,15 @@ export default class FormDefinitionTypeScriptGenerator {
     }
 
     typeName = Utilities.javascriptifyName(typeName, true);
+
+    const formId = form.id ? form.id : form.title ? form.title : JSON.stringify(form.fields);
+    if (typeStack.includes(formId)) {
+      Log.message("Dependency loop in the stack with " + typeName + " in " + typeStack.join(" -> ") + " detected.");
+      return;
+    }
+
+    content.push("/**");
+    typeStack.push(formId);
 
     if (form.title) {
       FormDefinitionTypeScriptGenerator.appendLongTextWithAsterisks(
@@ -434,7 +461,7 @@ export default class FormDefinitionTypeScriptGenerator {
     const scalarField = DataFormUtilities.getScalarField(form);
 
     if (scalarField) {
-      content.push(" * NOTE: Alternate Simple Representations\r\n");
+      content.push(" * NOTE: Alternate Simple Representations\n");
 
       for (const scalarFieldInst of DataFormUtilities.getFieldAndAlternates(scalarField)) {
         content.push(
@@ -543,12 +570,12 @@ export default class FormDefinitionTypeScriptGenerator {
           }
 
           if (subForm) {
-            subContent.push("\r\n");
+            subContent.push("\n");
 
-            await this.appendType(subForm, subContent, depth + 1, fieldTypeName);
+            await this.appendType(subForm, subContent, depth + 1, fieldTypeName, typeStack);
           } else if (field.choices) {
             const choices = field.choices;
-            subContent.push("\r\n");
+            subContent.push("\n");
 
             if (choices.length > 0) {
               await this.appendEnum(form, subContent, choices, depth + 1, fieldTypeName);
@@ -557,7 +584,13 @@ export default class FormDefinitionTypeScriptGenerator {
             fieldTypeName = "object";
           }
 
-          let propLine = "  " + fieldName + ": ";
+          let propLine = "  " + fieldName;
+
+          if (!field.isRequired) {
+            propLine += "?";
+          }
+
+          propLine += ": ";
 
           if (!field.alternates) {
             propLine += FormDefinitionTypeScriptGenerator.getTypeScriptFieldTypeDescription(field, fieldTypeName);
@@ -835,7 +868,9 @@ export default class FormDefinitionTypeScriptGenerator {
     inputFolder: IFolder,
     outputFolder: IFolder
   ) {
-    await inputFolder.load();
+    if (!inputFolder.isLoaded) {
+      await inputFolder.load();
+    }
 
     const fileList: IIndexJson = { files: [], folders: [] };
 
@@ -853,7 +888,9 @@ export default class FormDefinitionTypeScriptGenerator {
       const file = inputFolder.files[fileName];
 
       if (file) {
-        await file.loadContent();
+        if (!file.isContentLoaded) {
+          await file.loadContent();
+        }
 
         const jsonO = StorageUtilities.getJsonObject(file);
 

@@ -90,6 +90,6 @@ export default interface MinecraftUnderwaterMovement {
    * Elder Guardian: 0.3
    *
    */
-  value: number;
+  value?: number;
 
 }

@@ -1,4 +1,5 @@
 {
+  "id": "minecraft:ambient_sounds",
   "fields": [
     {
       "id": "addition",
@@ -19,8 +20,6 @@
       "dataType": 16
     }
   ],
-  "versionIntroduced": "1.21.50",
-  "description": "Sets the ambient sounds for the biome. These sounds must be in the 'individual_named_sounds' in a 'sounds.json' file.",
-  "title": "Minecraft Ambient Sounds Client Biome",
-  "id": "minecraft:ambient_sounds"
+  "title": "Minecraft Ambient Sounds",
+  "description": "Sets the ambient sounds for the biome. These sounds must be in the 'individual_named_sounds' in a 'sounds.json' file."
 }

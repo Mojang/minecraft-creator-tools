@@ -41,19 +41,19 @@ export default interface IsGameRule {
    * Ender Pearl: "domobspawning"
    *
    */
-  domain: string;
+  domain?: string;
 
   /**
    * @remarks
    * (Optional) The comparison to apply with 'value'.
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
    * (Optional) The subject of this filter test.
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -62,13 +62,13 @@ export default interface IsGameRule {
    * Ender Pearl: "is_game_rule"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
    * (Optional) true or false.
    */
-  value: boolean;
+  value?: boolean;
 
 }
 

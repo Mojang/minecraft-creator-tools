@@ -127,6 +127,6 @@ export default interface MinecraftVariant {
    * Axolotl: 1, 2, 3, 4
    *
    */
-  value: number;
+  value?: number;
 
 }

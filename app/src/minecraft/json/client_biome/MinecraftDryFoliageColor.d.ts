@@ -13,8 +13,7 @@
 import * as jsoncommon from './../../jsoncommon';
 
 /**
- * Minecraft Dry Foliage Color Client Biome
- * (minecraft:dry_foliage_color)
+ * Client Biome Dry Foliage Color (minecraft:dry_foliage_color)
  * Set the dry foliage color used during rendering. Biomes without this
  * component will have default dry foliage color behavior.
  */

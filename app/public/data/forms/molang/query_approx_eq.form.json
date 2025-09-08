@@ -2,5 +2,5 @@
   "id": "query.approx_eq",
   "fields": [],
   "description": "Returns 1.0 if all of the arguments are  within the smallest unit of measurement possible for the computer running this query of each other, else 0.0.",
-  "title": "Approx Eq Query"
+  "title": "Approx Eq"
 }

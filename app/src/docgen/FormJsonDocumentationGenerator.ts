@@ -162,6 +162,16 @@ export default class FormJsonDocumentationGenerator {
     if (molangQfNode) {
       await this.generateFormNodesFromLegacyDocNode(formJsonFolder, molangQfNode, "molang");
     }
+
+    const molangMfNode = await LegacyDocumentationDefinition.loadNode(
+      "molang",
+      "/Lexical Structure/Math Functions/",
+      isPreview
+    );
+
+    if (molangMfNode) {
+      await this.generateFormNodesFromLegacyDocNode(formJsonFolder, molangMfNode, "molang");
+    }
   }
 
   public async generateSubformsFromFields(
@@ -271,7 +281,10 @@ export default class FormJsonDocumentationGenerator {
             objectSkippedAt[i] = 0;
           }
 
-          const form: IFormDefinition = { id: docLineTrim.substring(0, firstColon), fields: [] };
+          const form: IFormDefinition = {
+            id: FormJsonDocumentationGenerator.cleanForId(docLineTrim.substring(0, firstColon)),
+            fields: [],
+          };
 
           outerForms.push(form);
           formStack[formStackIndex] = form;
@@ -295,7 +308,9 @@ export default class FormJsonDocumentationGenerator {
         }
 
         const form: IFormDefinition = {
-          id: (prefix ? prefix : "obj") + (outerForms.length > 0 ? outerForms.length + 1 : ""),
+          id: FormJsonDocumentationGenerator.cleanForId(
+            (prefix ? prefix : "obj") + (outerForms.length > 0 ? outerForms.length + 1 : "")
+          ),
           fields: [],
         };
 
@@ -333,31 +348,31 @@ export default class FormJsonDocumentationGenerator {
         if (docLineTrim.startsWith('int"')) {
           fieldDefinition = {
             dataType: FieldDataType.int,
-            id: mainStr,
+            id: FormJsonDocumentationGenerator.cleanForId(mainStr),
             title: Utilities.humanifyMinecraftName(mainStr),
           };
         } else if (docLineTrim.startsWith('bool"')) {
           fieldDefinition = {
             dataType: FieldDataType.boolean,
-            id: mainStr,
+            id: FormJsonDocumentationGenerator.cleanForId(mainStr),
             title: Utilities.humanifyMinecraftName(mainStr),
           };
         } else if (docLineTrim.startsWith('string"')) {
           fieldDefinition = {
             dataType: FieldDataType.string,
-            id: mainStr,
+            id: FormJsonDocumentationGenerator.cleanForId(mainStr),
             title: Utilities.humanifyMinecraftName(mainStr),
           };
         } else if (docLineTrim.startsWith('molang"')) {
           fieldDefinition = {
             dataType: FieldDataType.molang,
-            id: mainStr,
+            id: FormJsonDocumentationGenerator.cleanForId(mainStr),
             title: Utilities.humanifyMinecraftName(mainStr),
           };
         } else if (docLineTrim.startsWith('array"')) {
           fieldDefinition = {
             dataType: FieldDataType.stringArray,
-            id: mainStr,
+            id: FormJsonDocumentationGenerator.cleanForId(mainStr),
             title: Utilities.humanifyMinecraftName(mainStr),
           };
 
@@ -393,7 +408,7 @@ export default class FormJsonDocumentationGenerator {
 
             for (const choice of choices) {
               if (choice.length > 0) {
-                choiceSet.push({ id: Utilities.removeQuotes(choice) });
+                choiceSet.push({ id: FormJsonDocumentationGenerator.cleanForId(choice) });
               }
             }
 
@@ -508,6 +523,15 @@ export default class FormJsonDocumentationGenerator {
     return outerForms;
   }
 
+  static cleanForId(id: string | undefined) {
+    if (!id) {
+      return "";
+    }
+
+    id = Utilities.removeQuotes(id.replace(/\`/gi, ""));
+    return id;
+  }
+
   public async generateFormJson(inputFolder: IFolder, outputFolder: IFolder) {
     await outputFolder.deleteAllFolderContents();
 
@@ -516,7 +540,10 @@ export default class FormJsonDocumentationGenerator {
 
   public async generateFormJsonFromFolder(inputFolder: IFolder, outputFolder: IFolder) {
     await outputFolder.ensureExists();
-    await inputFolder.load();
+
+    if (!inputFolder.isLoaded) {
+      await inputFolder.load();
+    }
 
     const fileList: IIndexJson = { files: [], folders: [] };
 
@@ -552,8 +579,11 @@ export default class FormJsonDocumentationGenerator {
       }
     }
 
+    fileList.files.sort();
+    fileList.folders.sort();
+
     const indexFile = outputFolder.ensureFile("index.json");
-    indexFile.setContent(JSON.stringify(fileList));
+    indexFile.setContent(Utilities.consistentStringifyTrimmed(fileList));
     await indexFile.saveContent();
   }
 
@@ -586,6 +616,11 @@ export default class FormJsonDocumentationGenerator {
     if (!targetForm.description || targetForm.description === "") {
       targetForm.description = formToMergeOn.description;
     }
+
+    if (!targetForm.technicalDescription || targetForm.technicalDescription === "") {
+      targetForm.technicalDescription = formToMergeOn.technicalDescription;
+    }
+
     if (!targetForm.title || targetForm.title === "") {
       targetForm.title = formToMergeOn.title;
     }
@@ -622,16 +657,15 @@ export default class FormJsonDocumentationGenerator {
       targetForm.requires = formToMergeOn.requires;
     }
 
-    if (!targetForm.scalarField) {
+    if (!targetForm.scalarFieldUpgradeName && formToMergeOn.scalarFieldUpgradeName) {
+      targetForm.scalarFieldUpgradeName = formToMergeOn.scalarFieldUpgradeName;
+      targetForm.scalarField = undefined; // you can either have a scalarFieldUpgradeName, or a scalarField, but not both. defer to scalarFieldUpgradeName
+    } else if (!targetForm.scalarField) {
       targetForm.scalarField = formToMergeOn.scalarField;
     }
 
     if (!targetForm.customField) {
       targetForm.customField = formToMergeOn.customField;
-    }
-
-    if (!targetForm.scalarFieldUpgradeName) {
-      targetForm.scalarFieldUpgradeName = formToMergeOn.scalarFieldUpgradeName;
     }
 
     if (!targetForm.isDeprecated) {
@@ -693,12 +727,7 @@ export default class FormJsonDocumentationGenerator {
               if (!targetField.defaultValue) {
                 targetField.defaultValue = mergeOnField.defaultValue;
               }
-
-              if (mergeOnField.subFormId) {
-                targetField.subFormId = mergeOnField.subFormId;
-              }
-
-              if (mergeOnField.subForm) {
+              if (mergeOnField.subForm && !targetField.subFormId) {
                 if (!targetField.subForm) {
                   targetField.subForm = {
                     fields: [],
@@ -706,6 +735,11 @@ export default class FormJsonDocumentationGenerator {
                 }
 
                 this.mergeOntoForm(targetField.subForm, mergeOnField.subForm);
+              }
+
+              if (mergeOnField.subFormId) {
+                targetField.subFormId = mergeOnField.subFormId;
+                targetField.subForm = undefined; // you can either have a subFormId, or a subForm, but not both. defer to subFormId
               }
 
               if (!targetField.alternates) {
@@ -768,8 +802,8 @@ export default class FormJsonDocumentationGenerator {
                 targetField.fixedLength = mergeOnField.fixedLength;
               }
 
-              if (!targetField.undefinedIfEmpty) {
-                targetField.undefinedIfEmpty = mergeOnField.undefinedIfEmpty;
+              if (!targetField.retainIfEmptyOrDefault) {
+                targetField.retainIfEmptyOrDefault = mergeOnField.retainIfEmptyOrDefault;
               }
 
               if (!targetField.allowedKeys) {
@@ -1095,7 +1129,7 @@ export default class FormJsonDocumentationGenerator {
 
     const docForm: IFormDefinition = {
       id: this.humanifyId(nodeName),
-      title: Utilities.humanifyMinecraftName(nodeName),
+      title: FormJsonDocumentationGenerator.humanifySchemaTag(nodeName),
       description: node.description ? node.description : undefined,
       fields: fields,
     };
@@ -1103,8 +1137,27 @@ export default class FormJsonDocumentationGenerator {
     return docForm;
   }
 
+  static humanifySchemaTag(name: string) {
+    const firstPeriod = name.indexOf(".");
+
+    if (firstPeriod >= 2) {
+      const category = Utilities.humanifyMinecraftName(name.substring(0, firstPeriod));
+
+      const adjustedHumanify =
+        Utilities.humanifyMinecraftName(name.substring(0, firstPeriod)) +
+        " " +
+        Utilities.humanifyMinecraftName(name.substring(firstPeriod + 1));
+
+      return adjustedHumanify.replace(category + " " + category, category);
+    }
+
+    return Utilities.humanifyMinecraftName(name);
+  }
+
   public async loadSchemas(schemaFolder: IFolder, categoryName: string) {
-    await schemaFolder.load();
+    if (!schemaFolder.isLoaded) {
+      await schemaFolder.load();
+    }
 
     for (const fileName in schemaFolder.files) {
       const file = schemaFolder.files[fileName];
@@ -1113,7 +1166,7 @@ export default class FormJsonDocumentationGenerator {
         const jsonSchema = await JsonSchemaDefinition.ensureOnFile(file);
 
         if (jsonSchema && jsonSchema.data) {
-          this.processDef(jsonSchema.data, categoryName);
+          this.processJsonSchemaDefinition(jsonSchema.data, categoryName);
         }
       }
     }
@@ -1122,7 +1175,12 @@ export default class FormJsonDocumentationGenerator {
       const folder = schemaFolder.folders[folderName];
 
       if (folder) {
-        if (!folder.name.startsWith("v1") && folder.name !== "common" && folder.name !== "components") {
+        if (
+          !folder.name.startsWith("1.") &&
+          !folder.name.startsWith("v1") &&
+          folder.name !== "common" &&
+          folder.name !== "components"
+        ) {
           categoryName = folder.name;
         }
 
@@ -1143,7 +1201,7 @@ export default class FormJsonDocumentationGenerator {
     }
   }
 
-  private processDef(schemaDef: JSONSchema7, category: string, depth: number = 0) {
+  private processJsonSchemaDefinition(schemaDef: JSONSchema7, category: string, depth: number = 0) {
     if (schemaDef["$id"]) {
       this.defsById[schemaDef["$id"]] = schemaDef;
 
@@ -1190,7 +1248,7 @@ export default class FormJsonDocumentationGenerator {
         if (def && typeof def !== "boolean" && Utilities.isUsableAsObjectKey(defName.toString())) {
           this.defsById[defName.toString()] = def;
           this.defCategories[defName.toString()] = category;
-          this.processDef(def, category, depth + 1);
+          this.processJsonSchemaDefinition(def, category, depth + 1);
         }
       }
     }
@@ -1224,7 +1282,9 @@ export default class FormJsonDocumentationGenerator {
 
     const file = formJsonFolder.ensureFile(name + ".form.json");
 
-    await file.loadContent();
+    if (!file.isContentLoaded) {
+      await file.loadContent();
+    }
 
     return StorageUtilities.getJsonObject(file) as IFormDefinition | undefined;
   }
@@ -1245,7 +1305,9 @@ export default class FormJsonDocumentationGenerator {
 
     const file = formJsonFolder.ensureFile(name + ".form.json");
 
-    await file.loadContent();
+    if (!file.isContentLoaded) {
+      await file.loadContent();
+    }
 
     let jsonO = StorageUtilities.getJsonObject(file);
 
@@ -1254,7 +1316,7 @@ export default class FormJsonDocumentationGenerator {
         (jsonO as IFormDefinition).generatedFromSchema_doNotEdit = formDefNode;
       } else {
         jsonO = {
-          id: formDefNode.id,
+          id: FormJsonDocumentationGenerator.cleanForId(formDefNode.id),
           fields: [],
           generatedFromSchema_doNotEdit: formDefNode,
         };
@@ -1264,7 +1326,7 @@ export default class FormJsonDocumentationGenerator {
         (jsonO as IFormDefinition).generated_doNotEdit = formDefNode;
       } else {
         jsonO = {
-          id: formDefNode.id,
+          id: FormJsonDocumentationGenerator.cleanForId(formDefNode.id),
           fields: [],
           generated_doNotEdit: formDefNode,
         };
@@ -1408,7 +1470,7 @@ export default class FormJsonDocumentationGenerator {
                   }
 
                   const newField = {
-                    id: fieldName,
+                    id: FormJsonDocumentationGenerator.cleanForId(fieldName),
                     title: Utilities.humanifyMinecraftName(fieldName),
                     dataType: dataType,
                     subForm: subForm,
@@ -1529,7 +1591,9 @@ export default class FormJsonDocumentationGenerator {
           const file = await vanillaPreview.getFileFromRelativePath(match.value);
 
           if (file && (await file.exists())) {
-            await file.loadContent();
+            if (!file.isContentLoaded) {
+              await file.loadContent();
+            }
             const jsonO = StorageUtilities.getJsonObject(file);
 
             if (jsonO) {
@@ -1563,7 +1627,9 @@ export default class FormJsonDocumentationGenerator {
           const file = await samples.getFileFromRelativePath(match.value);
 
           if (file && (await file.exists())) {
-            await file.loadContent();
+            if (!file.isContentLoaded) {
+              await file.loadContent();
+            }
             const jsonO = StorageUtilities.getJsonObject(file);
 
             if (jsonO) {
@@ -1616,15 +1682,21 @@ export default class FormJsonDocumentationGenerator {
         const field = this.getFieldFromDocNode(fieldNode);
 
         if (field) {
-          fields.push(field);
+          if (field.id.toLowerCase().indexOf("s an obj") >= 0 && field.subForm) {
+            for (const subField of field.subForm.fields) {
+              fields.push(subField);
+            }
+          } else {
+            fields.push(field);
+          }
         }
       }
     }
 
     const docForm: IFormDefinition = {
-      id: name,
+      id: FormJsonDocumentationGenerator.cleanForId(name),
       title: name ? Utilities.humanifyMinecraftName(name) : undefined,
-      description: childNode.description ? childNode.description.join("\r\n") : undefined,
+      description: childNode.description ? childNode.description.join("\n") : undefined,
       fields: fields,
     };
 
@@ -1635,7 +1707,7 @@ export default class FormJsonDocumentationGenerator {
         if (example.name && example.text) {
           examples.push({
             path: example.name,
-            content: example.text.join("\r\n"),
+            content: example.text.join("\n"),
           });
         }
       }
@@ -1822,9 +1894,9 @@ export default class FormJsonDocumentationGenerator {
     }
 
     const fieldNode: IField = {
-      id: childNode.name,
+      id: FormJsonDocumentationGenerator.cleanForId(childNode.name),
       title: Utilities.humanifyMinecraftName(childNode.name),
-      description: childNode.description ? childNode.description.join("\r\n") : undefined,
+      description: childNode.description ? childNode.description.join("\n") : undefined,
       defaultValue: defaultVal,
       dataType: type,
     };
@@ -1849,11 +1921,11 @@ export default class FormJsonDocumentationGenerator {
             if (typeof choiceNode.description === "string") {
               desc = choiceNode.description;
             } else if (Array.isArray(choiceNode.description)) {
-              desc = choiceNode.description.join("\r\n");
+              desc = choiceNode.description.join("\n");
             }
 
             fieldNode.choices.push({
-              id: choiceNode.name,
+              id: FormJsonDocumentationGenerator.cleanForId(choiceNode.name),
               title: Utilities.humanifyMinecraftName(choiceNode.name),
               description: desc,
             });
@@ -1884,7 +1956,7 @@ export default class FormJsonDocumentationGenerator {
         if (example.name && example.text) {
           examples.push({
             path: example.name,
-            content: example.text.join("\r\n"),
+            content: example.text.join("\n"),
           });
         }
       }
@@ -1933,7 +2005,7 @@ export default class FormJsonDocumentationGenerator {
     }
 
     const fieldNode: IField = {
-      id: id,
+      id: FormJsonDocumentationGenerator.cleanForId(id),
       title: title,
       description: childNode.description ? childNode.description : undefined,
       dataType: FieldDataType.object,
@@ -2134,7 +2206,10 @@ export default class FormJsonDocumentationGenerator {
       let isFirst = true;
 
       for (const valObj of keyTypeNodes) {
-        let childFieldNode: IField = { id: fieldNode.id, dataType: FieldDataType.object };
+        let childFieldNode: IField = {
+          id: FormJsonDocumentationGenerator.cleanForId(fieldNode.id),
+          dataType: FieldDataType.object,
+        };
 
         switch (valObj.type) {
           case "integer":
@@ -2231,7 +2306,10 @@ export default class FormJsonDocumentationGenerator {
 
       for (const subDef of subDefNode.oneOf) {
         if (typeof subDef !== "boolean") {
-          let childFieldNode: IField | undefined = { id: fieldNode.id, dataType: FieldDataType.object };
+          let childFieldNode: IField | undefined = {
+            id: FormJsonDocumentationGenerator.cleanForId(fieldNode.id),
+            dataType: FieldDataType.object,
+          };
 
           if (subDef && (subDef as any).$ref) {
             const id = (subDef as any).$ref;
@@ -2241,7 +2319,13 @@ export default class FormJsonDocumentationGenerator {
               alreadyProcessedFieldList.push(id);
 
               if (propSubDefNode) {
-                if (propSubDefNode.oneOf && !propSubDefNode.properties) {
+                if (propSubDefNode.type && propSubDefNode.type !== "object") {
+                  if (propSubDefNode.type === "string") {
+                    childFieldNode.dataType = FieldDataType.string;
+                  } else {
+                    throw new Error();
+                  }
+                } else if (propSubDefNode.oneOf && !propSubDefNode.properties) {
                   for (const propField of propSubDefNode.oneOf) {
                     if (typeof propField !== "boolean") {
                       const propChildFieldNode = await this.getFieldFromJsonPropertyNode(
@@ -2283,6 +2367,7 @@ export default class FormJsonDocumentationGenerator {
             if (isFirst) {
               fieldNode.dataType = childFieldNode.dataType;
               fieldNode.subForm = childFieldNode.subForm;
+              fieldNode.title = childFieldNode.title;
               isFirst = false;
             } else if (this.getFieldIsDifferentType(childFieldNode, fieldNode)) {
               childFieldNode.description = undefined;
@@ -2369,7 +2454,13 @@ export default class FormJsonDocumentationGenerator {
   }
 
   public getFormFileName(name: string, dataVersion?: string) {
-    name = name.replace(/:/gi, "_").replace(/\./gi, "_");
+    name = name.replace(/:/gi, "_").replace(/\./gi, "_").replace(/\`/gi, "_");
+
+    let leftParen = name.lastIndexOf("(");
+
+    if (leftParen >= 4) {
+      name = name.substring(0, leftParen);
+    }
 
     // fix up bone visibility
     if (name === "bone_visibility") {

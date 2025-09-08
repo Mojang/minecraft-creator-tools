@@ -13,10 +13,12 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Overworld Generation Rules Biome
+ * Biome Overworld Generation Rules
  * (minecraft:overworld_generation_rules)
  * Controls how this biome is instantiated (and then potentially modified)
  * during world generation of the overworld.
+ * Note: This is a pre-Caves and Cliffs component and is unused for
+ * custom biomes.
  */
 export default interface MinecraftOverworldGenerationRules {
 
@@ -29,7 +31,7 @@ export default interface MinecraftOverworldGenerationRules {
    * other entries. If no weight is provided, a weight of 1 is 
    * used.
    */
-  generate_for_climates: object[];
+  generate_for_climates?: object[];
 
   /**
    * @remarks
@@ -39,25 +41,25 @@ export default interface MinecraftOverworldGenerationRules {
    * element is a positive integer for how much that entry is
    * weighted relative to other entries.
    */
-  hills_transformation: string[];
+  hills_transformation?: string[];
 
   /**
    * @remarks
    * What biome to switch to when converting to a mutated biome
    */
-  mutate_transformation: string[];
+  mutate_transformation?: string[];
 
   /**
    * @remarks
    * What biome to switch to when converting to a river biome (if not
    * the Vanilla 'river' biome)
    */
-  river_transformation: string[];
+  river_transformation?: string[];
 
   /**
    * @remarks
    * What biome to switch to when adjacent to an ocean biome
    */
-  shore_transformation: string[];
+  shore_transformation?: string[];
 
 }

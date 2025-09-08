@@ -39,7 +39,7 @@ export default interface MinecraftBehaviorSlimeFloat {
    *
    *
    */
-  jump_chance_percentage: number;
+  jump_chance_percentage?: number;
 
   /**
    * @remarks
@@ -52,7 +52,7 @@ export default interface MinecraftBehaviorSlimeFloat {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -64,6 +64,6 @@ export default interface MinecraftBehaviorSlimeFloat {
    *
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

@@ -129,6 +129,20 @@ function create_rp_mcpack() {
     .pipe(gulp.dest("build/packages/"));
 }
 
+function create_bp_mcpack_vibrantvisuals() {
+  return gulp
+    .src(["build/content_vibrantvisuals/Content/behavior_packs/" + bpfoldername + "/**/*"])
+    .pipe(zip(bpfoldername + "_vibrantvisuals.mcpack"))
+    .pipe(gulp.dest("build/packages/"));
+}
+
+function create_rp_mcpack_vibrantvisuals() {
+  return gulp
+    .src(["build/content_vibrantvisuals/Content/resource_packs/" + rpfoldername + "/**/*"])
+    .pipe(zip(rpfoldername + "_vibrantvisuals.mcpack"))
+    .pipe(gulp.dest("build/packages/"));
+}
+
 function create_content_layout_1_rp() {
   return gulp
     .src(["build/resource_packs/" + rpfoldername + "/**/*"])
@@ -299,8 +313,8 @@ function create_content_layout_vibrantvisuals_base_acc() {
 
 function create_content_vibrantvisuals_zip() {
   return gulp
-    .src(["build/content_linkerrors/**/*"])
-    .pipe(zip("aop_moremobs_linkerrors.zip"))
+    .src(["build/content_vibrantvisuals/**/*"])
+    .pipe(zip("aop_moremobs_vibrantvisuals.zip"))
     .pipe(gulp.dest("build/packages/"));
 }
 
@@ -567,6 +581,13 @@ function create_mcaddon() {
   return gulp
     .src(["build/packages/" + bpfoldername + ".mcpack", "build/packages/" + rpfoldername + ".mcpack"])
     .pipe(zip(bpfoldername + ".mcaddon"))
+    .pipe(gulp.dest("build/packages/"));
+}
+
+function create_mcaddon_vibrantvisuals() {
+  return gulp
+    .src(["build/packages/" + bpfoldername + "_vibrantvisuals.mcpack", "build/packages/" + rpfoldername + "_vibrantvisuals.mcpack"])
+    .pipe(zip(bpfoldername + "_vibrantvisuals.mcaddon"))
     .pipe(gulp.dest("build/packages/"));
 }
 
@@ -852,7 +873,12 @@ exports.package = gulp.series(
     create_content_layout_vnext6_acc,
   ),
   gulp.parallel(
+    create_bp_mcpack_vibrantvisuals,
+    create_rp_mcpack_vibrantvisuals,
+  ),
+  gulp.parallel(
     create_mcaddon, 
+    create_mcaddon_vibrantvisuals,
     create_content_1_zip, 
     create_content_2_zip, 
     create_content_3_zip,

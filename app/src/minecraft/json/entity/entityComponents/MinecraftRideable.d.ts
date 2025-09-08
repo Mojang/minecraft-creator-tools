@@ -314,7 +314,7 @@ export default interface MinecraftRideable {
    * the "minecraft:behavior.controlled_by_player" goal ignore this
    * field and give control to any player in any seat.
    */
-  controlling_seat: number;
+  controlling_seat?: number;
 
   /**
    * @remarks
@@ -326,7 +326,7 @@ export default interface MinecraftRideable {
    *
    *
    */
-  crouching_skip_interact: boolean;
+  crouching_skip_interact?: boolean;
 
   /**
    * @remarks
@@ -342,7 +342,7 @@ export default interface MinecraftRideable {
    * Happy Ghast: "on_top_center"
    *
    */
-  dismount_mode: string;
+  dismount_mode?: string;
 
   /**
    * @remarks
@@ -357,7 +357,7 @@ export default interface MinecraftRideable {
    * Donkey: ["player","zombie"]
    *
    */
-  family_types: string[];
+  family_types?: string[];
 
   /**
    * @remarks
@@ -373,7 +373,7 @@ export default interface MinecraftRideable {
    * Minecart: "action.interact.ride.minecart"
    *
    */
-  interact_text: string;
+  interact_text?: string;
 
   /**
    * @remarks
@@ -384,7 +384,7 @@ export default interface MinecraftRideable {
    * Happy Ghast: "minecraft:on_passenger_mount"
    *
    */
-  on_rider_enter_event: string;
+  on_rider_enter_event?: string;
 
   /**
    * @remarks
@@ -395,21 +395,21 @@ export default interface MinecraftRideable {
    * Happy Ghast: "minecraft:on_passenger_dismount"
    *
    */
-  on_rider_exit_event: string;
+  on_rider_exit_event?: string;
 
   /**
    * @remarks
    * The max width a mob can have to be a rider. A value of 0
    * ignores this parameter.
    */
-  passenger_max_width: number;
+  passenger_max_width?: number;
 
   /**
    * @remarks
    * This field may exist in old data but isn't used by
    * "minecraft:rideable".
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -424,16 +424,16 @@ export default interface MinecraftRideable {
    *
    *
    */
-  pull_in_entities: boolean;
+  pull_in_entities?: boolean;
 
-  pulls_in_entities: boolean;
+  pulls_in_entities?: boolean;
 
   /**
    * @remarks
    * If true, this entity will be picked when looked at by the 
    * rider.
    */
-  rider_can_interact: boolean;
+  rider_can_interact?: boolean;
 
   /**
    * @remarks
@@ -449,7 +449,7 @@ export default interface MinecraftRideable {
    * Happy Ghast: 4
    *
    */
-  seat_count: number;
+  seat_count?: number;
 
   /**
    * @remarks
@@ -464,7 +464,7 @@ export default interface MinecraftRideable {
    * Chicken: {"position":[0,0.48,0]}
    *
    */
-  seats: MinecraftRideableSeats[];
+  seats?: MinecraftRideableSeats[];
 
 }
 
@@ -481,41 +481,41 @@ export enum MinecraftRideableDismountMode {
  */
 export interface MinecraftRideableSeats {
 
-  camera_relax_distance_smoothing: number;
+  camera_relax_distance_smoothing?: number;
 
   /**
    * @remarks
    * Angle in degrees that a rider is allowed to rotate while riding
    * this entity. Omit this property for no limit.
    */
-  lock_rider_rotation: number;
+  lock_rider_rotation?: number;
 
   /**
    * @remarks
    * Defines the maximum number of riders that can be riding this
    * entity for this seat to be valid.
    */
-  max_rider_count: number;
+  max_rider_count?: number;
 
   /**
    * @remarks
    * Defines the minimum number of riders that need to be riding this
    * entity before this seat can be used.
    */
-  min_rider_count: number;
+  min_rider_count?: number;
 
   /**
    * @remarks
    * Position of this seat relative to this entity's position.
    */
-  position: number[];
+  position?: number[];
 
   /**
    * @remarks
    * Offset to rotate riders by.
    */
-  rotate_rider_by: string;
+  rotate_rider_by?: string;
 
-  third_person_camera_radius: number;
+  third_person_camera_radius?: number;
 
 }

@@ -49,7 +49,7 @@ export default interface MinecraftBehaviorAdmireItem {
    * Piglin: "admire"
    *
    */
-  admire_item_sound: string;
+  admire_item_sound?: string;
 
   /**
    * @remarks
@@ -58,7 +58,7 @@ export default interface MinecraftBehaviorAdmireItem {
    * Piglin: {"event":"admire_item_started_event","target":"self"}
    *
    */
-  on_admire_item_start: jsoncommon.MinecraftEventTrigger;
+  on_admire_item_start?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -67,7 +67,7 @@ export default interface MinecraftBehaviorAdmireItem {
    * Piglin: {"event":"admire_item_stopped_event","target":"self"}
    *
    */
-  on_admire_item_stop: jsoncommon.MinecraftEventTrigger;
+  on_admire_item_stop?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -79,7 +79,7 @@ export default interface MinecraftBehaviorAdmireItem {
    * Piglin: 2
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -90,6 +90,6 @@ export default interface MinecraftBehaviorAdmireItem {
    * Piglin: {"range_min":2,"range_max":5}
    *
    */
-  sound_interval: number[];
+  sound_interval?: number[];
 
 }

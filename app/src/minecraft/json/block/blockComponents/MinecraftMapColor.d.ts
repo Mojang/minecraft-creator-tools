@@ -19,13 +19,13 @@ Block Gray Ore - https://github.com/microsoft/minecraft-samples/tree/main/casual
 
 "minecraft:map_color": "#ffcd17
 
-Block Palm Leave Corner - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave_corner.block.json
-
-"minecraft:map_color": "#495f2b
-
 Block Palm Leave - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave.block.json
 
 "minecraft:map_color": "#639f28
+
+Block Palm Leave Corner - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave_corner.block.json
+
+"minecraft:map_color": "#495f2b
 
 Block Palm Trunk - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_trunk.block.json
 
@@ -62,7 +62,7 @@ export default interface MinecraftMapColor {
    * The color is represented as a hex value in the format "#RRGGBB". May
    * also be expressed as an array of [R, G, B] from 0 to 255.
    */
-  color: string;
+  color?: string;
 
   /**
    * @remarks
@@ -72,6 +72,6 @@ export default interface MinecraftMapColor {
    * "none", "default_foliage", "birch_foliage", "evergreen_foliage", "dry_foliage",
    * "grass" and "water"
    */
-  tint_method: string;
+  tint_method?: string;
 
 }

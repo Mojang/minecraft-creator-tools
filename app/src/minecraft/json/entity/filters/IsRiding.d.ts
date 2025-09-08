@@ -82,7 +82,7 @@ export default interface IsRiding {
    * Parrot: "equals", "!="
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
@@ -92,7 +92,7 @@ export default interface IsRiding {
    * Enderman: "self"
    *
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -101,7 +101,7 @@ export default interface IsRiding {
    * Enderman: "is_riding"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -112,7 +112,7 @@ export default interface IsRiding {
    *
    *
    */
-  value: boolean;
+  value?: boolean;
 
 }
 

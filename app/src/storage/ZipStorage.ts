@@ -82,7 +82,9 @@ export default class ZipStorage extends StorageBase implements IStorage {
   static async toJsObject(storage: IStorage) {
     const file = storage.rootFolder.ensureFile("d.json");
 
-    await file.loadContent();
+    if (!file.isContentLoaded) {
+      await file.loadContent();
+    }
 
     return StorageUtilities.getJsonObject(file);
   }

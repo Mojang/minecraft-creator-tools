@@ -40,7 +40,7 @@ export default interface MinecraftBehaviorRoar {
    * Warden: 4.2
    *
    */
-  duration: number;
+  duration?: number;
 
   /**
    * @remarks
@@ -52,6 +52,6 @@ export default interface MinecraftBehaviorRoar {
    * Warden: 2
    *
    */
-  priority: number;
+  priority?: number;
 
 }

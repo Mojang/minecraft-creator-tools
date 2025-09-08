@@ -189,7 +189,12 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
             <span>):</span>
           </div>
           <div className="fex-newFolderName">
-            <Input value={this.state.newFolderName} placeholder="New Folder" onChange={this._handleNewFolderChanged} />
+            <Input
+              value={this.state.newFolderName}
+              aria-label="New Folder"
+              placeholder="New Folder"
+              onChange={this._handleNewFolderChanged}
+            />
           </div>
           <div className="fex-newFolderGo">
             <Button

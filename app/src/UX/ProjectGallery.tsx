@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import Carto from "./../app/Carto";
 import "./ProjectGallery.css";
 import IAppProps from "./IAppProps";
@@ -41,8 +41,16 @@ interface IProjectGalleryState {
 }
 
 export default class ProjectGallery extends Component<IProjectGalleryProps, IProjectGalleryState> {
+  private startersElt: React.RefObject<HTMLButtonElement>;
+  private mobsElt: React.RefObject<HTMLButtonElement>;
+  private snippetsElt: React.RefObject<HTMLButtonElement>;
+
   constructor(props: IProjectGalleryProps) {
     super(props);
+
+    this.startersElt = React.createRef();
+    this.mobsElt = React.createRef();
+    this.snippetsElt = React.createRef();
 
     this._handleStatusAdded = this._handleStatusAdded.bind(this);
     this._handleCommand = this._handleCommand.bind(this);
@@ -192,10 +200,19 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
       tabsElt = (
         <div className="pg-tabArea" role="tablist">
           <Button
-            className="pg-tabButton"
+            className={this.state.mode === ProjectGalleryMode.starters ? "pg-tabButton-selected" : "pg-tabButton"}
             role="tab"
             onClick={this._selectProjectStarters}
+            ref={this.startersElt}
             aria-selected={this.state.mode === ProjectGalleryMode.starters}
+            onKeyDown={(keyboardEvent: React.KeyboardEvent<HTMLButtonElement>) => {
+              if (keyboardEvent.key === "ArrowRight") {
+                if (this.mobsElt && this.mobsElt.current) {
+                  this.mobsElt.current.focus();
+                  this.mobsElt.current.click();
+                }
+              }
+            }}
             style={{
               backgroundColor:
                 this.state.mode === ProjectGalleryMode.starters
@@ -225,10 +242,25 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
             &#160;
           </div>
           <Button
-            className="pg-tabButton"
+            className={this.state.mode === ProjectGalleryMode.entities ? "pg-tabButton-selected" : "pg-tabButton"}
             role="tab"
             onClick={this._selectEntities}
+            ref={this.mobsElt}
             aria-selected={this.state.mode === ProjectGalleryMode.entities}
+            onKeyDown={(keyboardEvent: React.KeyboardEvent<HTMLButtonElement>) => {
+              if (keyboardEvent.key === "ArrowLeft") {
+                if (this.startersElt && this.startersElt.current) {
+                  this.startersElt.current.focus();
+                  this.startersElt.current.click();
+                }
+              }
+              if (keyboardEvent.key === "ArrowRight") {
+                if (this.snippetsElt && this.snippetsElt.current) {
+                  this.snippetsElt.current.focus();
+                  this.snippetsElt.current.click();
+                }
+              }
+            }}
             style={{
               backgroundColor:
                 this.state.mode === ProjectGalleryMode.entities
@@ -258,9 +290,18 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
             &#160;
           </div>
           <Button
-            className="pg-tabButton"
+            className={this.state.mode === ProjectGalleryMode.codeSnippets ? "pg-tabButton-selected" : "pg-tabButton"}
             onClick={this._selectCodeSnippets}
             role="tab"
+            ref={this.snippetsElt}
+            onKeyDown={(keyboardEvent: React.KeyboardEvent<HTMLButtonElement>) => {
+              if (keyboardEvent.key === "ArrowLeft") {
+                if (this.mobsElt && this.mobsElt.current) {
+                  this.mobsElt.current.focus();
+                  this.mobsElt.current.click();
+                }
+              }
+            }}
             aria-selected={this.state.mode === ProjectGalleryMode.codeSnippets}
             style={{
               backgroundColor:

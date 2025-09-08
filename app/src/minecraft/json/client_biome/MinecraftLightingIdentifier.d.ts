@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../jsoncommon';
 
 /**
- * Minecraft Lighting Identifier Client Biome
+ * Client Biome Lighting Identifier 
  * (minecraft:lighting_identifier)
  * Set the identifier used for lighting in Vibrant Visuals mode.
  * Identifiers must resolve to identifiers in valid Lighting JSON

@@ -58,6 +58,7 @@ export const AllowedExtensionsSet = new Set([
   "bin",
   "obj",
   "pdn",
+  "py",
   "hdr",
   "h",
   "fontdata",
@@ -389,7 +390,9 @@ export default class StorageUtilities {
     let zipStorage = file.fileContainerStorage as ZipStorage;
 
     if (!zipStorage) {
-      await file.loadContent();
+      if (!file.isContentLoaded) {
+        await file.loadContent();
+      }
 
       if (!file.content || !(file.content instanceof Uint8Array)) {
         return undefined;
@@ -691,7 +694,7 @@ export default class StorageUtilities {
     folderB: IFolder | undefined,
     excludingFiles?: string[],
     whitespaceAgnostic?: boolean,
-    ignoreLinesContaining?: string[]
+    ignoreAttributes?: string[]
   ): Promise<{ result: boolean; reason: string }> {
     if (folderA === undefined && folderB === undefined) {
       return { result: true, reason: "Both folders are undefined." };
@@ -736,13 +739,23 @@ export default class StorageUtilities {
         return { result: false, reason: "File '" + fileName + "' does not exist in '" + folderB.fullPath + "'" };
       }
 
-      if (!excludingFiles || !excludingFiles.includes(fileA.name)) {
-        const result = await StorageUtilities.fileContentsEqual(
-          fileA,
-          fileB,
-          whitespaceAgnostic,
-          ignoreLinesContaining
-        );
+      let processFile = true;
+
+      if (excludingFiles) {
+        if (excludingFiles.includes(fileA.name)) {
+          processFile = false;
+        }
+
+        for (const excludeExt of excludingFiles) {
+          if (fileA.name.toLowerCase().endsWith(excludeExt.toLowerCase())) {
+            processFile = false;
+            break;
+          }
+        }
+      }
+
+      if (processFile) {
+        const result = await StorageUtilities.fileContentsEqual(fileA, fileB, whitespaceAgnostic, ignoreAttributes);
 
         if (!result) {
           return {
@@ -781,7 +794,7 @@ export default class StorageUtilities {
         childFolderB,
         excludingFiles,
         whitespaceAgnostic,
-        ignoreLinesContaining
+        ignoreAttributes
       );
 
       if (!result.result) {
@@ -796,7 +809,7 @@ export default class StorageUtilities {
     fileA: IFile | undefined,
     fileB: IFile | undefined,
     whitespaceAgnostic?: boolean,
-    ignoreLinesContaining?: string[]
+    ignoreAttributes?: string[]
   ) {
     if (fileA === undefined && fileB === undefined) {
       return true;
@@ -843,15 +856,8 @@ export default class StorageUtilities {
       return false;
     }
 
-    if (ignoreLinesContaining && typeof contentA === "string" && typeof contentB === "string") {
-      for (const ignoreLine of ignoreLinesContaining) {
-        contentA = Utilities.stripLinesContaining(contentA, ignoreLine);
-        contentB = Utilities.stripLinesContaining(contentB, ignoreLine);
-      }
-    }
-
     if (extA === "json" && extB === "json" && typeof contentA === "string" && typeof contentB === "string") {
-      return this.jsonContentsAreEqualIgnoreWhitespace(contentA, contentB);
+      return this.jsonContentsAreEqualIgnoreWhitespace(contentA, contentB, ignoreAttributes);
     } else if (whitespaceAgnostic) {
       return StorageUtilities.contentsAreEqualIgnoreWhitespace(contentA, contentB);
     }
@@ -859,11 +865,71 @@ export default class StorageUtilities {
     return StorageUtilities.contentsAreEqual(contentA, contentB);
   }
 
-  public static jsonContentsAreEqualIgnoreWhitespace(contentA: string, contentB: string) {
+  public static jsonContentsAreEqualIgnoreWhitespace(contentA: string, contentB: string, ignoreAttributes?: string[]) {
+    try {
+      let objA = JSON.parse(contentA);
+      let objB = JSON.parse(contentB);
+
+      if (ignoreAttributes && objA) {
+        objA = StorageUtilities.removeAttributesFromObject(objA, ignoreAttributes);
+      }
+
+      if (ignoreAttributes && objB) {
+        objB = StorageUtilities.removeAttributesFromObject(objB, ignoreAttributes);
+      }
+
+      return Utilities.consistentStringifyTrimmed(objA) === Utilities.consistentStringifyTrimmed(objB);
+    } catch (e) {
+      console.error("Error parsing JSON for comparison:", e);
+    }
+
+    if (ignoreAttributes && typeof contentA === "string" && typeof contentB === "string") {
+      for (const ignoreLine of ignoreAttributes) {
+        contentA = Utilities.stripLinesContaining(contentA, '"' + ignoreLine + '":');
+        contentB = Utilities.stripLinesContaining(contentB, "'" + ignoreLine + "':");
+      }
+    }
     contentA = this.stripWhitespace(contentA);
     contentB = this.stripWhitespace(contentB);
 
     return contentA === contentB;
+  }
+
+  /**
+   * Recursively sets attributes to undefined in a JSON object if they match any of the provided attribute names
+   * @param obj The object to process
+   * @param attributeNames Array of attribute names to set to undefined
+   * @returns A new object with specified attributes set to undefined
+   */
+  public static removeAttributesFromObject(obj: any, attributeNames: string[]): any {
+    if (obj === null || obj === undefined) {
+      return obj;
+    }
+
+    // Handle arrays
+    if (Array.isArray(obj)) {
+      return obj.map((item) => this.removeAttributesFromObject(item, attributeNames));
+    }
+
+    // Handle objects
+    if (typeof obj === "object") {
+      const result: any = {};
+
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          if (attributeNames.includes(key)) {
+            result[key] = undefined;
+          } else {
+            result[key] = this.removeAttributesFromObject(obj[key], attributeNames);
+          }
+        }
+      }
+
+      return result;
+    }
+
+    // Handle primitives
+    return obj;
   }
 
   public static stripWhitespace(content: string) {
@@ -1421,8 +1487,13 @@ export default class StorageUtilities {
       );
     }*/
 
-    await source.load(forceFolders);
-    await target.load(forceFolders);
+    if (forceFolders || !source.isLoaded) {
+      await source.load(forceFolders);
+    }
+
+    if (forceFolders || !target.isLoaded) {
+      await target.load(forceFolders);
+    }
 
     // get a list of existing files and folders in the target
     let targetFiles: { [id: string]: boolean } = {};
@@ -1638,7 +1709,9 @@ export default class StorageUtilities {
 
     if (!force) {
       if (await target.exists()) {
-        await target.loadContent(false);
+        if (!target.isContentLoaded) {
+          await target.loadContent(false);
+        }
 
         if (StorageUtilities.contentsAreEqual(source.content, target.content)) {
           return;

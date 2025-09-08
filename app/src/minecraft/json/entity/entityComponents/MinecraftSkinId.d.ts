@@ -65,6 +65,6 @@ export default interface MinecraftSkinId {
    * Villager v2: 1, 2, 3, 4, 5
    *
    */
-  value: number;
+  value?: number;
 
 }

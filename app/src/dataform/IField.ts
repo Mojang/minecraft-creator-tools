@@ -250,6 +250,13 @@ export default interface IField {
   description?: string;
 
   /**
+   * Optional human-readable description of technical details of the field - for example, any notes
+   * on how the field is persisted in JSON, or other technical details.
+   * In practice, this is not shown in tools but is shown in technical documentation.
+   */
+  technicalDescription?: string;
+
+  /**
    * Any additional English descriptions about notes for this data of this field definition.
    * .note vs. .note2 vs. .note3 are expected to be different "topics" for notes.
    */
@@ -267,7 +274,7 @@ export default interface IField {
   /**
    * Whether this field should be defined if it's functionally empty (e.g., an empty string or a 0 item array).
    */
-  undefinedIfEmpty?: boolean;
+  retainIfEmptyOrDefault?: boolean;
 
   /**
    * If this field references an object (e.g., has a dataType of 16 - object or 15 - object Array), this describes the structure of that object.

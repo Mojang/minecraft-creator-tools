@@ -52,11 +52,13 @@ export default class TypeScriptDefinition implements IDefinition {
     if (file.manager !== undefined && file.manager instanceof TypeScriptDefinition) {
       tsd = file.manager as TypeScriptDefinition;
 
-      if (!tsd.isLoaded && loadHandler) {
-        tsd.onLoaded.subscribe(loadHandler);
-      }
+      if (!tsd.isLoaded) {
+        if (loadHandler) {
+          tsd.onLoaded.subscribe(loadHandler);
+        }
 
-      await tsd.load();
+        await tsd.load();
+      }
     }
 
     return tsd;
@@ -74,7 +76,9 @@ export default class TypeScriptDefinition implements IDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
       return;

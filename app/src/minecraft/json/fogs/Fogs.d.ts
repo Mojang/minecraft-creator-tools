@@ -33,13 +33,13 @@ export interface FogsMinecraftFogSettings {
    * @remarks
    * The distance fog settings for different camera locations.
    */
-  distance: FogsMinecraftFogSettingsDistance;
+  distance?: FogsMinecraftFogSettingsDistance;
 
   /**
    * @remarks
    * The volumetric fog settings.
    */
-  volumetric: FogsMinecraftFogSettingsVolumetric;
+  volumetric?: FogsMinecraftFogSettingsVolumetric;
 
 }
 
@@ -66,40 +66,40 @@ export interface FogsMinecraftFogSettingsDistance {
    * @remarks
    * The fog settings when the camera is in the air.
    */
-  air: FogsMinecraftFogSettingsDistanceAir;
+  air?: FogsMinecraftFogSettingsDistanceAir;
 
   /**
    * @remarks
    * The fog settings when the camera is in lava.
    */
-  lava: FogsMinecraftFogSettingsDistanceLava;
+  lava?: FogsMinecraftFogSettingsDistanceLava;
 
   /**
    * @remarks
    * The fog settings when the camera is in lava and the player has
    * the lava resistance effect active.
    */
-  lava_resistance: FogsMinecraftFogSettingsDistanceLavaResistance;
+  lava_resistance?: FogsMinecraftFogSettingsDistanceLavaResistance;
 
   /**
    * @remarks
    * The fog settings when the camera is inside a Powder Snow 
    * block.
    */
-  powder_snow: FogsMinecraftFogSettingsDistancePowderSnow;
+  powder_snow?: FogsMinecraftFogSettingsDistancePowderSnow;
 
   /**
    * @remarks
    * The fog settings when the camera is in water.
    */
-  water: FogsMinecraftFogSettingsDistanceWater;
+  water?: FogsMinecraftFogSettingsDistanceWater;
 
   /**
    * @remarks
    * The fog settings for when the camera is in the air with active
    * weather (rain, snow, etc..).
    */
-  weather: FogsMinecraftFogSettingsDistanceWeather;
+  weather?: FogsMinecraftFogSettingsDistanceWeather;
 
 }
 
@@ -121,7 +121,7 @@ export interface FogsMinecraftFogSettingsDistanceAir {
    * Additional fog data which will slowly transition to the distance fog
    * of current biome.
    */
-  transition_fog: FogsMinecraftFogSettingsDistanceAirTransitionFog;
+  transition_fog?: FogsMinecraftFogSettingsDistanceAirTransitionFog;
 
 }
 
@@ -172,7 +172,7 @@ export interface FogsMinecraftFogSettingsDistanceLava {
    * Additional fog data which will slowly transition to the distance fog
    * of current biome.
    */
-  transition_fog: FogsMinecraftFogSettingsDistanceLavaTransitionFog;
+  transition_fog?: FogsMinecraftFogSettingsDistanceLavaTransitionFog;
 
 }
 
@@ -223,7 +223,7 @@ export interface FogsMinecraftFogSettingsDistanceLavaResistance {
    * Additional fog data which will slowly transition to the distance fog
    * of current biome.
    */
-  transition_fog: FogsMinecraftFogSettingsDistanceLavaResistanceTransitionFog;
+  transition_fog?: FogsMinecraftFogSettingsDistanceLavaResistanceTransitionFog;
 
 }
 
@@ -274,7 +274,7 @@ export interface FogsMinecraftFogSettingsDistancePowderSnow {
    * Additional fog data which will slowly transition to the distance fog
    * of current biome.
    */
-  transition_fog: FogsMinecraftFogSettingsDistancePowderSnowTransitionFog;
+  transition_fog?: FogsMinecraftFogSettingsDistancePowderSnowTransitionFog;
 
 }
 
@@ -325,7 +325,7 @@ export interface FogsMinecraftFogSettingsDistanceWater {
    * Additional fog data which will slowly transition to the distance fog
    * of current biome.
    */
-  transition_fog: FogsMinecraftFogSettingsDistanceWaterTransitionFog;
+  transition_fog?: FogsMinecraftFogSettingsDistanceWaterTransitionFog;
 
 }
 
@@ -376,7 +376,7 @@ export interface FogsMinecraftFogSettingsDistanceWeather {
    * Additional fog data which will slowly transition to the distance fog
    * of current biome.
    */
-  transition_fog: FogsMinecraftFogSettingsDistanceWeatherTransitionFog;
+  transition_fog?: FogsMinecraftFogSettingsDistanceWeatherTransitionFog;
 
 }
 
@@ -418,14 +418,14 @@ export interface FogsMinecraftFogSettingsVolumetric {
    * @remarks
    * The density settings for different camera locations.
    */
-  density: FogsMinecraftFogSettingsVolumetricDensity;
+  density?: FogsMinecraftFogSettingsVolumetricDensity;
 
   /**
    * @remarks
    * The coefficient settings for the volumetric fog in different 
    * blocks.
    */
-  media_coefficients: FogsMinecraftFogSettingsVolumetricMediaCoefficients;
+  media_coefficients?: FogsMinecraftFogSettingsVolumetricMediaCoefficients;
 
 }
 
@@ -438,33 +438,33 @@ export interface FogsMinecraftFogSettingsVolumetricDensity {
    * @remarks
    * Fog density values as light passes through air blocks.
    */
-  air: FogsMinecraftFogSettingsVolumetricDensityAir;
+  air?: FogsMinecraftFogSettingsVolumetricDensityAir;
 
   /**
    * @remarks
    * Fog density values as light passes through lava blocks.
    */
-  lava: FogsMinecraftFogSettingsVolumetricDensityLava;
+  lava?: FogsMinecraftFogSettingsVolumetricDensityLava;
 
   /**
    * @remarks
    * Fog density values as light passes through lava blocks while the
    * player has lava resistance.
    */
-  lava_resistance: FogsMinecraftFogSettingsVolumetricDensityLavaResistance;
+  lava_resistance?: FogsMinecraftFogSettingsVolumetricDensityLavaResistance;
 
   /**
    * @remarks
    * Fog density values as light passes through water blocks.
    */
-  water: FogsMinecraftFogSettingsVolumetricDensityWater;
+  water?: FogsMinecraftFogSettingsVolumetricDensityWater;
 
   /**
    * @remarks
    * Fog density values as light passes through air blocks with active
    * weather (rain, snow, etc..).
    */
-  weather: FogsMinecraftFogSettingsVolumetricDensityWeather;
+  weather?: FogsMinecraftFogSettingsVolumetricDensityWeather;
 
 }
 
@@ -478,7 +478,7 @@ export interface FogsMinecraftFogSettingsVolumetricDensityAir {
    * When set to true, the density will be uniform across all
    * heights.
    */
-  uniform: boolean;
+  uniform?: boolean;
 
 }
 
@@ -492,7 +492,7 @@ export interface FogsMinecraftFogSettingsVolumetricDensityLava {
    * When set to true, the density will be uniform across all
    * heights.
    */
-  uniform: boolean;
+  uniform?: boolean;
 
 }
 
@@ -506,7 +506,7 @@ export interface FogsMinecraftFogSettingsVolumetricDensityLavaResistance {
    * When set to true, the density will be uniform across all
    * heights.
    */
-  uniform: boolean;
+  uniform?: boolean;
 
 }
 
@@ -520,7 +520,7 @@ export interface FogsMinecraftFogSettingsVolumetricDensityWater {
    * When set to true, the density will be uniform across all
    * heights.
    */
-  uniform: boolean;
+  uniform?: boolean;
 
 }
 
@@ -534,7 +534,7 @@ export interface FogsMinecraftFogSettingsVolumetricDensityWeather {
    * When set to true, the density will be uniform across all
    * heights.
    */
-  uniform: boolean;
+  uniform?: boolean;
 
 }
 
@@ -547,19 +547,19 @@ export interface FogsMinecraftFogSettingsVolumetricMediaCoefficients {
    * @remarks
    * Fog coefficient values while light passes through air.
    */
-  air: FogsMinecraftFogSettingsVolumetricMediaCoefficientsAir;
+  air?: FogsMinecraftFogSettingsVolumetricMediaCoefficientsAir;
 
   /**
    * @remarks
    * Fog coefficient values while light passes through clouds.
    */
-  cloud: FogsMinecraftFogSettingsVolumetricMediaCoefficientsCloud;
+  cloud?: FogsMinecraftFogSettingsVolumetricMediaCoefficientsCloud;
 
   /**
    * @remarks
    * Fog coefficient values while light passes through water.
    */
-  water: FogsMinecraftFogSettingsVolumetricMediaCoefficientsWater;
+  water?: FogsMinecraftFogSettingsVolumetricMediaCoefficientsWater;
 
 }
 

@@ -40,7 +40,7 @@ export default interface MinecraftBehaviorRandomFly {
    * Parrot: true
    *
    */
-  avoid_damage_blocks: string;
+  avoid_damage_blocks?: string;
 
   /**
    * @remarks
@@ -51,7 +51,7 @@ export default interface MinecraftBehaviorRandomFly {
    * Parrot: true
    *
    */
-  can_land_on_trees: boolean;
+  can_land_on_trees?: boolean;
 
   /**
    * @remarks
@@ -63,7 +63,7 @@ export default interface MinecraftBehaviorRandomFly {
    * Parrot: 3
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -73,7 +73,7 @@ export default interface MinecraftBehaviorRandomFly {
    * Parrot: 1
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -84,7 +84,7 @@ export default interface MinecraftBehaviorRandomFly {
    * Parrot: 15
    *
    */
-  xz_dist: number;
+  xz_dist?: number;
 
   /**
    * @remarks
@@ -95,8 +95,8 @@ export default interface MinecraftBehaviorRandomFly {
    * Parrot: 1
    *
    */
-  y_dist: number;
+  y_dist?: number;
 
-  y_offset: number;
+  y_offset?: number;
 
 }

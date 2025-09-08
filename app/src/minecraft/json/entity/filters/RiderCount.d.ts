@@ -64,7 +64,7 @@ export default interface RiderCount {
    *
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
@@ -74,7 +74,7 @@ export default interface RiderCount {
    * Happy Ghast: "self"
    *
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -83,7 +83,7 @@ export default interface RiderCount {
    * Happy Ghast: "rider_count"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -93,7 +93,7 @@ export default interface RiderCount {
    * Happy Ghast: 1
    *
    */
-  value: number;
+  value?: number;
 
 }
 

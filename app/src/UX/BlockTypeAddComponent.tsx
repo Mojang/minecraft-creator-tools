@@ -7,6 +7,7 @@ import { List, ListProps, selectableListBehavior } from "@fluentui/react-northst
 import Utilities from "../core/Utilities";
 import IFormDefinition from "../dataform/IFormDefinition";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
+import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
 
 interface IBlockTypeAddComponentProps {
   theme: ThemeInput<any>;
@@ -33,15 +34,9 @@ export default class BlockTypeAddComponent extends Component<IBlockTypeAddCompon
       selectedComponentId: undefined,
       selectedForm: undefined,
     };
-
-    this._updateManager();
   }
 
   componentDidMount(): void {
-    this._updateManager();
-  }
-
-  componentDidUpdate(prevProps: IBlockTypeAddComponentProps, prevState: IBlockTypeAddComponentState) {
     this._updateManager();
   }
 
@@ -80,7 +75,7 @@ export default class BlockTypeAddComponent extends Component<IBlockTypeAddCompon
           ((!this.props.isVisual && (!form.tags || !form.tags.includes("visual"))) ||
             (this.props.isVisual && form.tags && form.tags.includes("visual")))
         ) {
-          let canonName = "minecraft:" + EntityTypeDefinition.getComponentFromBaseFileName(baseName);
+          let canonName = "minecraft:" + BlockTypeDefinition.getComponentFromBaseFileName(baseName);
 
           componentMenuItems.push({
             key: canonName,

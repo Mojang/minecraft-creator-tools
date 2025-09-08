@@ -8,6 +8,7 @@ import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
 import IResourceAnimationControllerDefinition from "./IAnimationControllerResource";
 import IDefinition from "./IDefinition";
+import Log from "../core/Log";
 
 export default class AnimationControllerResourceDefinition implements IDefinition {
   private _file?: IFile;
@@ -131,11 +132,13 @@ export default class AnimationControllerResourceDefinition implements IDefinitio
     if (file.manager !== undefined && file.manager instanceof AnimationControllerResourceDefinition) {
       rbd = file.manager as AnimationControllerResourceDefinition;
 
-      if (!rbd.isLoaded && loadHandler) {
-        rbd.onLoaded.subscribe(loadHandler);
-      }
+      if (!rbd.isLoaded) {
+        if (loadHandler) {
+          rbd.onLoaded.subscribe(loadHandler);
+        }
 
-      await rbd.load();
+        await rbd.load();
+      }
     }
 
     return rbd;
@@ -146,9 +149,13 @@ export default class AnimationControllerResourceDefinition implements IDefinitio
       return;
     }
 
-    const bpString = JSON.stringify(this._data, null, 2);
+    Log.assert(this._data !== null, "ITDP");
 
-    this._file.setContent(bpString);
+    if (this._data) {
+      const bpString = JSON.stringify(this._data, null, 2);
+
+      this._file.setContent(bpString);
+    }
   }
 
   async load() {
@@ -156,7 +163,9 @@ export default class AnimationControllerResourceDefinition implements IDefinitio
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

@@ -3,5 +3,5 @@
   "fields": [],
   "description": "Returns the value of the associated block's block state. (No longer available in pack min_engine_version 1.20.40.)",
   "isDeprecated": true,
-  "title": "Block Property Query"
+  "title": "Block Property"
 }

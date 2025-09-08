@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../jsoncommon';
 
 /**
- * Foliage Color Map Client Biome (Foliage Color Map)
+ * Client Biome Foliage Color Map (Foliage Color Map)
  * Object specifying a color map for foliage instead of a
  * specific color.
  */

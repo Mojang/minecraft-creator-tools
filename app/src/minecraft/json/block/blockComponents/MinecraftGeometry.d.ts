@@ -23,6 +23,10 @@ Block Frond Top - https://github.com/microsoft/minecraft-samples/tree/main/chill
 
 "minecraft:geometry": "geometry.frond_top
 
+Block Palm Leave - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave.block.json
+
+"minecraft:geometry": "geometry.palm_leave
+
 Block Palm Leave Corner - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave_corner.block.json
 
 "minecraft:geometry": "geometry.palm_leave_corner
@@ -30,10 +34,6 @@ Block Palm Leave Corner - https://github.com/microsoft/minecraft-samples/tree/ma
 Block Palm Leave Tip - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave_tip.block.json
 
 "minecraft:geometry": "geometry.palm_leave_tip
-
-Block Palm Leave - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave.block.json
-
-"minecraft:geometry": "geometry.palm_leave
 
 Block Palm Tree Top - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_tree_top.block.json
 
@@ -92,44 +92,29 @@ export default interface MinecraftGeometry {
 
   /**
    * @remarks
-   * The component can be defined as an object to gain control over
-   * more specific behaviors.
-   */
-  Asanobject: MinecraftGeometryAsanobject[];
-
-  /**
-   * @remarks
-   * An optional array of Booleans that define the visibility of
-   * individual bones in the geometry file. In order to set up
-   * 'bone_visibility', the geometry file name must be entered as an
-   * identifier. After the identifier has been specified, bone_visibility can
-   * be defined based on the names of the bones in the specified geometry
-   * file on a true/false basis. Note that all bones default to
-   * 'true,' so bones should only be defined if they are being set to
-   * 'false.' Including bones set to 'true' will work the same as
-   * the default.
+   * An optional list of true/false values that define the visibility of
+   * individual bones in the geometry file.
    * 
    * Sample Values:
    * Blue Bubble Fish: {"bb_main":true,"fish":true}
    *
    *
    */
-  bone_visibility: { [key: string]: boolean };
+  bone_visibility?: { [key: string]: boolean };
 
   /**
    * @remarks
-   * An optional identifer of a culling definition. This identifier must
-   * match an existing culling definition in any of the currently loaded
-   * resource packs. The culling definition is used to determine which
-   * faces of the block should be culled when rendering. The culling
-   * definition can be used to optimize rendering performance by
-   * reducing the number of faces that need to be rendered.
+   * An optional identifer of a culling definition. The culling
+   * definition is used to determine which faces of the block should be
+   * culled when rendering. The culling definition can be used to
+   * optimize rendering performance by reducing the number of faces
+   * that need to be rendered.
    * 
    * Sample Values:
    * Tuna Roll: "test:sushi_cull"
    *
    */
-  culling: string;
+  culling?: string;
 
   /**
    * @remarks
@@ -137,18 +122,16 @@ export default interface MinecraftGeometry {
    * multiple blocks together when comparing them. When using the
    * minecraft namespace, the only allowed culling layer identifiers are
    * : "minecraft:culling_layer.undefined" or
-   * "minecraft:culling_layer.leaves". When using no namespaces or a
-   * custom one, the names must start and end with an alpha-numeric character.
-   * Additionally, the feature is currently only usable behind the
-   * "upcoming creator features" toggle.
+   * "minecraft:culling_layer.leaves". Additionally, the feature is
+   * currently only usable behind the "upcoming creator features" 
+   * toggle.
    */
-  culling_layer: string;
+  culling_layer?: string;
 
   /**
    * @remarks
    * Specifies the geometry description identifier to use to render this
-   * block. This identifier must match an existing geometry identifier in
-   * any of the currently loaded resource packs.
+   * block.
    * 
    * Sample Values:
    * Tuna Roll: "geometry.sushi"
@@ -158,51 +141,7 @@ export default interface MinecraftGeometry {
    * Die: "minecraft:geometry.full_block"
    *
    */
-  identifier: string;
-
-}
-
-
-/**
- * The component can be defined as an object to gain control over
- * more specific behaviors.
- */
-export interface MinecraftGeometryAsanobject {
-
-  /**
-   * @remarks
-   * A JSON object that contains a list of key/value pairs that map
-   * from bone name in the specified geometry file (key) to a
-   * boolean that tells whether the bone should be visible or not
-   * (value).
-   */
-  bone_visibility: object[];
-
-  /**
-   * @remarks
-   * Which block_culling .json file to use when rendering this 
-   * block.
-   */
-  culling: string;
-
-  /**
-   * @remarks
-   * A string that allows culling rule to group multiple blocks together
-   * when comparing them. When using the minecraft namespace, the
-   * only allowed culling layer identifiers are :
-   * "minecraft:culling_layer.undefined" or
-   * "minecraft:culling_layer.leaves". When using no namespaces or a
-   * custom one, the names must start and end with an alpha-numeric 
-   * character.
-   */
-  culling_layer: string;
-
-  /**
-   * @remarks
-   * The description identifier of the geometry to use to render this
-   * block.
-   */
-  identifier: string;
+  identifier?: string;
 
   /**
    * @remarks
@@ -213,32 +152,6 @@ export interface MinecraftGeometryAsanobject {
    * Per-face UVs, 'uv_lock' is only supported if the cube faces are
    * square.
    */
-  uv_lock: string;
-
-}
-
-
-/**
- * Bone_visibility (bone_visibility)
- */
-export interface MinecraftGeometryBoneVisibility {
-
-  /**
-   * @remarks
-   * 
-   * Sample Values:
-   * Blue Bubble Fish: true
-   *
-   */
-  bb_main: string;
-
-  /**
-   * @remarks
-   * 
-   * Sample Values:
-   * Blue Bubble Fish: true
-   *
-   */
-  fish: string;
+  uv_lock?: string;
 
 }

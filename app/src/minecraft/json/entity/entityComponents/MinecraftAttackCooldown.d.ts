@@ -26,13 +26,13 @@ export default interface MinecraftAttackCooldown {
    * @remarks
    * Event to be run when the cooldown is complete.
    */
-  attack_cooldown_complete_event: string;
+  attack_cooldown_complete_event?: string;
 
   /**
    * @remarks
    * Amount of time in seconds for the cooldown. Can be specified as
    * a number or a pair of numbers (min and max).
    */
-  attack_cooldown_time: number[];
+  attack_cooldown_time?: number[];
 
 }

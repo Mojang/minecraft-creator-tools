@@ -35,7 +35,7 @@ export default class ProjectItemInference {
     }
 
     if (processingCallback) {
-      processingCallback("Scanning `" + folder.storageRelativePath + "` for Minecraft project items.");
+      processingCallback("Scanning '" + folder.storageRelativePath + "' for Minecraft project items.");
     }
 
     await folder.load(force ? force : false);
@@ -235,7 +235,9 @@ export default class ProjectItemInference {
                 project.worldContainer = parentFolder;
               }
 
-              await candidateFile.loadContent(false);
+              if (!candidateFile.isContentLoaded) {
+                await candidateFile.loadContent(false);
+              }
 
               let newPiType = ProjectItemType.unknown;
               let tag = "";
@@ -396,7 +398,9 @@ export default class ProjectItemInference {
                 isInWorld
               );
             } else if (projectPathLower.endsWith("/scripts/index.js")) {
-              await candidateFile.loadContent();
+              if (!candidateFile.isContentLoaded) {
+                await candidateFile.loadContent();
+              }
 
               let creationType = ProjectItemCreationType.normal;
 
@@ -1006,7 +1010,7 @@ export default class ProjectItemInference {
               } else if (folderContext === FolderContext.docs && baseName === "example_files") {
                 newJsonType = ProjectItemType.fileListArrayJson;
               } else if (isResourcePack && baseName === "biomes_client") {
-                newJsonType = ProjectItemType.biomesClientResource;
+                newJsonType = ProjectItemType.biomesClientCatalogResource;
               } else if (isResourcePack && folderPathLower.indexOf("/biomes/") >= 0) {
                 newJsonType = ProjectItemType.biomeResource;
               } else if (folderPathLower.indexOf("/biomes/") >= 0) {

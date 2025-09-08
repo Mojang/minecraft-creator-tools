@@ -117,7 +117,7 @@ export default interface MinecraftLeashable {
    * If true, players can cut both incoming and outgoing leashes by
    * using shears on the entity.
    */
-  can_be_cut: boolean;
+  can_be_cut?: boolean;
 
   /**
    * @remarks
@@ -129,20 +129,20 @@ export default interface MinecraftLeashable {
    *
    *
    */
-  can_be_stolen: boolean;
+  can_be_stolen?: boolean;
 
   /**
    * @remarks
    * Distance in blocks at which the leash stiffens, restricting 
    * movement.
    */
-  hard_distance: number;
+  hard_distance?: number;
 
   /**
    * @remarks
    * Distance in blocks it which the leash breaks.
    */
-  max_distance: number;
+  max_distance?: number;
 
   /**
    * @remarks
@@ -153,7 +153,7 @@ export default interface MinecraftLeashable {
    *
    *
    */
-  on_leash: jsoncommon.MinecraftEventTrigger;
+  on_leash?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -166,7 +166,7 @@ export default interface MinecraftLeashable {
    *
    *
    */
-  on_unleash: jsoncommon.MinecraftEventTrigger;
+  on_unleash?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -174,7 +174,7 @@ export default interface MinecraftLeashable {
    * gets unleashed for reasons other than the player directly interacting
    * with it.
    */
-  on_unleash_interact_only: boolean;
+  on_unleash_interact_only?: boolean;
 
   /**
    * @remarks
@@ -185,17 +185,15 @@ export default interface MinecraftLeashable {
    * Sample Values:
    * Boat: [{"filter":{"test":"is_family","subject":"other","value":"happy_ghast"},"spring_type":"quad_dampened","rotation_adjustment":90},{"rotation_adjustment":90,"soft_distance":2,"hard_distance":4}]
    *
-   * Camel: [{"filter":{"test":"is_family","subject":"other","value":"happy_ghast"},"spring_type":"quad_dampened"}]
-   *
    */
-  presets: MinecraftLeashablePresets[];
+  presets?: MinecraftLeashablePresets[];
 
   /**
    * @remarks
    * Distance in blocks at which the 'spring' effect starts acting to
    * keep this entity close to the entity that leashed it.
    */
-  soft_distance: number;
+  soft_distance?: number;
 
 }
 
@@ -211,7 +209,7 @@ export interface MinecraftLeashablePresets {
    * @remarks
    * Conditions that must be met for this preset to be applied.
    */
-  filter: jsoncommon.MinecraftFilter;
+  filter?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -220,27 +218,27 @@ export interface MinecraftLeashablePresets {
    * enter and stay in vehicles if the leash is stretched under this
    * distance, but will dismount once it exceeds it.
    */
-  hard_distance: number;
+  hard_distance?: number;
 
   /**
    * @remarks
    * Distance in blocks at which the leash breaks.
    */
-  max_distance: number;
+  max_distance?: number;
 
   /**
    * @remarks
    * Adjusts the rotation at which the entity reaches equilibrium, when
    * "spring_type" is set to "dampened" or "quad_dampened".
    */
-  rotation_adjustment: number;
+  rotation_adjustment?: number;
 
   /**
    * @remarks
    * Distance (in blocks) over which the entity starts pathfinding toward
    * the leash holder, if able.
    */
-  soft_distance: number;
+  soft_distance?: number;
 
   /**
    * @remarks
@@ -259,6 +257,6 @@ export interface MinecraftLeashablePresets {
    * suspended mid-air and gradually aligns with the leash holder over
    * time.
    */
-  spring_type: string;
+  spring_type?: string;
 
 }

@@ -9,6 +9,7 @@ import IField, { FieldDataType } from "../dataform/IField";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import { ComparisonType } from "../dataform/ICondition";
 import FieldUtilities from "../dataform/FieldUtilities";
+import Log from "../core/Log";
 
 export const MarkdownTop = `---
 author: mammerla
@@ -49,7 +50,7 @@ export default class FormMarkdownDocumentationGenerator {
 
     await this.loadFormJsonFromFolder(formsByPath, formJsonInputFolder, outputFolder);
 
-    this.exportMarkdownCatalogDocs(
+    await this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
       ExportMode.features,
@@ -59,7 +60,7 @@ export default class FormMarkdownDocumentationGenerator {
       "Feature Type"
     );
 
-    this.exportMarkdownDocListPage(
+    await this.exportMarkdownDocListPage(
       formsByPath,
       outputFolder,
       ExportMode.features,
@@ -69,7 +70,7 @@ export default class FormMarkdownDocumentationGenerator {
       "Features"
     );
 
-    this.exportMarkdownCatalogDocs(
+    await this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
       ExportMode.featureCore,
@@ -79,17 +80,17 @@ export default class FormMarkdownDocumentationGenerator {
       "Feature Type"
     );
 
-    this.exportListYml(
+    await this.exportListYml(
       formsByPath,
       outputFolder,
       ExportMode.features,
       "/FeaturesReference/Examples/Features/TOC.yml",
       "/features/minecraft_",
-      "- name: Features List\r\n  href: ../FeatureList.md",
+      "- name: Features List\n  href: ../FeatureList.md",
       "minecraft_"
     );
 
-    this.exportMarkdownCatalogDocs(
+    await this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
       ExportMode.AIGoals,
@@ -99,7 +100,7 @@ export default class FormMarkdownDocumentationGenerator {
       "AI Behavior Component"
     );
 
-    this.exportMarkdownCatalogDocs(
+    await this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
       ExportMode.visuals,
@@ -109,7 +110,7 @@ export default class FormMarkdownDocumentationGenerator {
       "Visual Element"
     );
 
-    this.exportMarkdownCatalogDocs(
+    await this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
       ExportMode.fogs,
@@ -119,7 +120,7 @@ export default class FormMarkdownDocumentationGenerator {
       "Fog Element"
     );
 
-    this.exportMarkdownCatalogDocs(
+    await this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
       ExportMode.websockets,
@@ -129,7 +130,7 @@ export default class FormMarkdownDocumentationGenerator {
       "Websocket Packet"
     );
 
-    this.exportValidatorMarkdownCatalogDocs(
+    await this.exportValidatorMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
       ExportMode.MCToolsVal,
@@ -139,7 +140,7 @@ export default class FormMarkdownDocumentationGenerator {
       "MCTools Validation Rules"
     );
 
-    this.exportMarkdownCatalogDocs(
+    await this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
       ExportMode.triggers,
@@ -149,7 +150,7 @@ export default class FormMarkdownDocumentationGenerator {
       "Entity Trigger"
     );
 
-    this.exportMarkdownCatalogDocs(
+    await this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
       ExportMode.filters,
@@ -159,7 +160,7 @@ export default class FormMarkdownDocumentationGenerator {
       "Entity Filter Element"
     );
 
-    this.exportMarkdownCatalogDocs(
+    await this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
       ExportMode.eventResponses,
@@ -169,7 +170,7 @@ export default class FormMarkdownDocumentationGenerator {
       "Entity Action Types"
     );
 
-    this.exportMarkdownCatalogDocs(
+    await this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
       ExportMode.blockComponents,
@@ -179,17 +180,17 @@ export default class FormMarkdownDocumentationGenerator {
       "Block Component"
     );
 
-    this.exportMarkdownCatalogDocs(
+    await this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
       ExportMode.itemComponents,
       "/ItemReference/Examples/ItemComponents/",
-      "/item/minecraft_",
+      "/item_components/minecraft_",
       "Items",
       "Item Component"
     );
 
-    this.exportMarkdownCatalogDocs(
+    await this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
       ExportMode.entityComponents,
@@ -199,7 +200,7 @@ export default class FormMarkdownDocumentationGenerator {
       "Entity Component"
     );
 
-    this.exportMarkdownCatalogDocs(
+    await this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
       ExportMode.deferredRendering,
@@ -209,7 +210,7 @@ export default class FormMarkdownDocumentationGenerator {
       "Deferred Rendering"
     );
 
-    this.exportMarkdownCatalogDocs(
+    await this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
       ExportMode.clientBiomes,
@@ -219,7 +220,7 @@ export default class FormMarkdownDocumentationGenerator {
       "Client Biome"
     );
 
-    this.exportMarkdownCatalogDocs(
+    await this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
       ExportMode.manifest,
@@ -229,7 +230,7 @@ export default class FormMarkdownDocumentationGenerator {
       "Pack Manifest"
     );
 
-    this.exportMarkdownDocListPage(
+    await this.exportMarkdownDocListPage(
       formsByPath,
       outputFolder,
       ExportMode.clientBiomes,
@@ -239,7 +240,7 @@ export default class FormMarkdownDocumentationGenerator {
       "Components"
     );
 
-    this.exportListYml(
+    await this.exportListYml(
       formsByPath,
       outputFolder,
       ExportMode.clientBiomes,
@@ -249,7 +250,7 @@ export default class FormMarkdownDocumentationGenerator {
       "minecraftClientBiomes_"
     );
 
-    this.exportMarkdownDocListPage(
+    await this.exportMarkdownDocListPage(
       formsByPath,
       outputFolder,
       ExportMode.entityComponents,
@@ -259,17 +260,17 @@ export default class FormMarkdownDocumentationGenerator {
       "EntityComponents"
     );
 
-    this.exportListYml(
+    await this.exportListYml(
       formsByPath,
       outputFolder,
       ExportMode.entityComponents,
       "/EntityReference/Examples/EntityComponents/TOC.yml",
       "/entity/minecraft_",
-      "- name: Components List\r\n  href: ../ComponentList.md",
+      "- name: Components List\n  href: ../ComponentList.md",
       "minecraftComponent_"
     );
 
-    this.exportMarkdownCatalogDocs(
+    await this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
       ExportMode.biomes,
@@ -279,27 +280,29 @@ export default class FormMarkdownDocumentationGenerator {
       "Biome"
     );
 
-    this.exportMarkdownDocListPage(
+    await this.exportMarkdownDocListPage(
       formsByPath,
       outputFolder,
       ExportMode.biomes,
       "/BiomesReference/Examples/ComponentList.md",
       "/biome/minecraft_",
       "Biomes",
-      "Components"
+      "Components",
+      ["capped.", "frozen_ocean.", "mesa.", "overworld.", "swamp", "the_end."] // these end up as children of surface_builder
     );
 
-    this.exportListYml(
+    await this.exportListYml(
       formsByPath,
       outputFolder,
       ExportMode.biomes,
       "/BiomesReference/Examples/Components/TOC.yml",
       "/biome/minecraft_",
-      "- name: Components List\r\n  href: ../ComponentList.md",
-      "minecraftBiomes_"
+      "- name: Components List\n  href: ../ComponentList.md",
+      "minecraftBiomes_",
+      ["capped.", "frozen_ocean.", "mesa.", "overworld.", "swamp.", "the_end."]
     );
 
-    this.exportMarkdownDocListPage(
+    await this.exportMarkdownDocListPage(
       formsByPath,
       outputFolder,
       ExportMode.blockComponents,
@@ -309,35 +312,35 @@ export default class FormMarkdownDocumentationGenerator {
       "."
     );
 
-    this.exportListYml(
+    await this.exportListYml(
       formsByPath,
       outputFolder,
       ExportMode.blockComponents,
       "/BlockReference/Examples/BlockComponents/TOC.yml",
       "/block/minecraft_",
-      "- name: Block Components List\r\n  href: BlockComponentsList.md"
+      "- name: Block Components List\n  href: BlockComponentsList.md"
     );
 
-    this.exportMarkdownDocListPage(
+    await this.exportMarkdownDocListPage(
       formsByPath,
       outputFolder,
       ExportMode.itemComponents,
       "/ItemReference/Examples/ItemComponentList.md",
-      "/item/minecraft_",
+      "/item_components/minecraft_",
       "Item Components",
       "./ItemComponents"
     );
 
-    this.exportListYml(
+    await this.exportListYml(
       formsByPath,
       outputFolder,
       ExportMode.itemComponents,
       "/ItemReference/Examples/ItemComponents/TOC.yml",
-      "/item/minecraft_",
-      "- name: Item Components List\r\n  href: ../ItemComponentList.md"
+      "/item_components/minecraft_",
+      "- name: Item Components List\n  href: ../ItemComponentList.md"
     );
 
-    this.exportMarkdownCatalogDocs(
+    await this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
       ExportMode.culling,
@@ -347,7 +350,7 @@ export default class FormMarkdownDocumentationGenerator {
       "Block Culling"
     );
 
-    this.exportListYml(
+    await this.exportListYml(
       formsByPath,
       outputFolder,
       ExportMode.culling,
@@ -355,7 +358,7 @@ export default class FormMarkdownDocumentationGenerator {
       "/block_culling/"
     );
 
-    this.exportMarkdownDocListPage(
+    await this.exportMarkdownDocListPage(
       formsByPath,
       outputFolder,
       ExportMode.triggers,
@@ -365,17 +368,17 @@ export default class FormMarkdownDocumentationGenerator {
       "EntityTriggers"
     );
 
-    this.exportListYml(
+    await this.exportListYml(
       formsByPath,
       outputFolder,
       ExportMode.entityComponents,
       "/EntityReference/Examples/EntityTriggers/TOC.yml",
       "/entity/minecraft_on",
-      "- name: Triggers List\r\n  href: ../TriggerList.md",
+      "- name: Triggers List\n  href: ../TriggerList.md",
       "minecraftTrigger_"
     );
 
-    this.exportMarkdownDocListPage(
+    await this.exportMarkdownDocListPage(
       formsByPath,
       outputFolder,
       ExportMode.AIGoals,
@@ -385,16 +388,16 @@ export default class FormMarkdownDocumentationGenerator {
       "EntityGoals"
     );
 
-    this.exportListYml(
+    await this.exportListYml(
       formsByPath,
       outputFolder,
       ExportMode.AIGoals,
       "/EntityReference/Examples/EntityGoals/TOC.yml",
       "/entity/minecraft_behavior",
-      "- name: AI Component List\r\n  href: ../AIGoalList.md"
+      "- name: AI Component List\n  href: ../AIGoalList.md"
     );
 
-    this.exportMarkdownDocListPage(
+    await this.exportMarkdownDocListPage(
       formsByPath,
       outputFolder,
       ExportMode.filters,
@@ -404,16 +407,16 @@ export default class FormMarkdownDocumentationGenerator {
       "Filters"
     );
 
-    this.exportListYml(
+    await this.exportListYml(
       formsByPath,
       outputFolder,
       ExportMode.filters,
       "/EntityReference/Examples/Filters/TOC.yml",
       "/entityfilters/",
-      "- name: Entity Filter List\r\n  href: ../FilterList.md"
+      "- name: Entity Filter List\n  href: ../FilterList.md"
     );
 
-    this.exportMarkdownDocListPage(
+    await this.exportMarkdownDocListPage(
       formsByPath,
       outputFolder,
       ExportMode.eventResponses,
@@ -423,42 +426,71 @@ export default class FormMarkdownDocumentationGenerator {
       "EventActions"
     );
 
-    this.exportListYml(
+    await this.exportListYml(
       formsByPath,
       outputFolder,
       ExportMode.eventResponses,
       "/EntityReference/Examples/EventActions/TOC.yml",
       "/entityevents/",
-      "- name: Entity Event List\r\n  href: ../EventActions.md"
+      "- name: Entity Event List\n  href: ../EventActions.md"
     );
 
-    this.exportMarkdownCatalogDocs(
+    await this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
       ExportMode.molang,
       "/MolangReference/Examples/MolangConcepts/QueryFunctions/",
-      "/molang/",
+      "/molang/query_",
       "Molang",
       "Molang"
     );
 
-    this.exportMarkdownDocListPage(
+    await this.exportMarkdownDocListPage(
       formsByPath,
       outputFolder,
       ExportMode.molang,
       "/MolangReference/Examples/MolangConcepts/QueryFunctions.md",
-      "/molang/",
+      "/molang/query_",
       "Molang Query Functions",
       "queryfunctions"
     );
 
-    this.exportListYml(
+    await this.exportListYml(
       formsByPath,
       outputFolder,
       ExportMode.eventResponses,
       "/MolangReference/Examples/MolangConcepts/QueryFunctions/TOC.yml",
-      "/molang/",
-      "- name: Molang Query Function List\r\n  href: ../QueryFunctions.md"
+      "/molang/query_",
+      "- name: Molang Query Function List\n  href: ../QueryFunctions.md"
+    );
+
+    await this.exportMarkdownCatalogDocs(
+      formsByPath,
+      outputFolder,
+      ExportMode.molang,
+      "/MolangReference/Examples/MolangConcepts/MathFunctions/",
+      "/molang/math_",
+      "Molang",
+      "Molang"
+    );
+
+    await this.exportMarkdownDocListPage(
+      formsByPath,
+      outputFolder,
+      ExportMode.molang,
+      "/MolangReference/Examples/MolangConcepts/MathFunctions.md",
+      "/molang/math_",
+      "Molang Math Functions",
+      "mathfunctions"
+    );
+
+    await this.exportListYml(
+      formsByPath,
+      outputFolder,
+      ExportMode.eventResponses,
+      "/MolangReference/Examples/MolangConcepts/MathFunctions/TOC.yml",
+      "/molang/math_",
+      "- name: Molang Math Function List\n  href: ../MathFunctions.md"
     );
   }
 
@@ -502,7 +534,8 @@ export default class FormMarkdownDocumentationGenerator {
     filePath: string,
     formsPath: string,
     category: string,
-    categoryExtended: string
+    categoryExtended: string,
+    exclusionList?: string[]
   ) {
     const targetFolder = await outputFolder.ensureFolderFromRelativePath(filePath);
 
@@ -512,7 +545,7 @@ export default class FormMarkdownDocumentationGenerator {
 
     let hasEnsuredFolder = false;
 
-    formsByPath = this.getFormsFromFilter(formsByPath, formsPath, exportMode);
+    formsByPath = this.getFormsFromFilter(formsByPath, formsPath, exportMode, exclusionList);
 
     for (const formPath in formsByPath) {
       const formO = formsByPath[formPath];
@@ -545,7 +578,8 @@ export default class FormMarkdownDocumentationGenerator {
     subFolderPath: string,
     formsPath: string,
     categoryPlural: string,
-    categorySingular: string
+    categorySingular: string,
+    exclusionList?: string[]
   ) {
     const targetFolder = await outputFolder.ensureFolderFromRelativePath(subFolderPath);
 
@@ -555,7 +589,7 @@ export default class FormMarkdownDocumentationGenerator {
 
     let hasEnsuredFolder = false;
 
-    formsByPath = this.getFormsFromFilter(formsByPath, formsPath, exportMode);
+    formsByPath = this.getFormsFromFilter(formsByPath, formsPath, exportMode, exclusionList);
 
     for (const formPath in formsByPath) {
       const formO = formsByPath[formPath];
@@ -595,7 +629,8 @@ export default class FormMarkdownDocumentationGenerator {
     subFolderPath: string,
     formsPath: string,
     categoryPlural: string,
-    categorySingular: string
+    categorySingular: string,
+    exclusionList?: string[]
   ) {
     const targetFolder = await outputFolder.ensureFolderFromRelativePath(subFolderPath);
 
@@ -605,7 +640,7 @@ export default class FormMarkdownDocumentationGenerator {
 
     let hasEnsuredFolder = false;
 
-    formsByPath = this.getFormsFromFilter(formsByPath, formsPath, exportMode);
+    formsByPath = this.getFormsFromFilter(formsByPath, formsPath, exportMode, exclusionList);
 
     for (const formPath in formsByPath) {
       const formO = formsByPath[formPath];
@@ -638,7 +673,8 @@ export default class FormMarkdownDocumentationGenerator {
     subFolderPath: string,
     formsPath: string,
     category: string,
-    subFolderName: string
+    subFolderName: string,
+    exclusionList?: string[]
   ) {
     const targetFile = await outputFolder.ensureFileFromRelativePath(subFolderPath);
 
@@ -646,7 +682,7 @@ export default class FormMarkdownDocumentationGenerator {
       return;
     }
 
-    formsByPath = this.getFormsFromFilter(formsByPath, formsPath, exportMode);
+    formsByPath = this.getFormsFromFilter(formsByPath, formsPath, exportMode, exclusionList);
 
     const content: string[] = [];
     content.push(
@@ -659,7 +695,7 @@ export default class FormMarkdownDocumentationGenerator {
 
     let internalDepCount = 0;
 
-    content.push("# " + category + " Documentation\r\n");
+    content.push("# " + category + " Documentation\n");
     content.push("| " + category + " | Description |");
     content.push("|:-----|:----------|");
 
@@ -680,6 +716,8 @@ export default class FormMarkdownDocumentationGenerator {
         } else if (formO.title) {
           canonName = formO.title;
         }
+
+        canonName = canonName?.replace(/\`/gi, "");
 
         content.push(
           "| [" +
@@ -733,7 +771,7 @@ export default class FormMarkdownDocumentationGenerator {
       }
     }
 
-    targetFile.setContent(content.join("\r\n"));
+    targetFile.setContent(content.join("\n"));
 
     await targetFile.saveContent();
   }
@@ -745,7 +783,8 @@ export default class FormMarkdownDocumentationGenerator {
     subFolderPath: string,
     formsPath: string,
     header?: string,
-    prefix?: string
+    prefix?: string,
+    exclusionList?: string[]
   ) {
     const targetFile = await outputFolder.ensureFileFromRelativePath(subFolderPath);
 
@@ -758,7 +797,7 @@ export default class FormMarkdownDocumentationGenerator {
       content.push(header);
     }
 
-    formsByPath = this.getFormsFromFilter(formsByPath, formsPath, exportMode);
+    formsByPath = this.getFormsFromFilter(formsByPath, formsPath, exportMode, exclusionList);
 
     for (const formPath in formsByPath) {
       const formO = formsByPath[formPath];
@@ -778,12 +817,16 @@ export default class FormMarkdownDocumentationGenerator {
           baseName = prefix + baseName;
         }
 
-        content.push("- name: " + (formO.id ? formO.id : formO.title));
+        let name = formO.id ? formO.id : formO.title;
+
+        name = name?.replace(/\`/gi, "");
+
+        content.push("- name: " + name);
         content.push("  href: " + this.getFileNameFromBaseName(baseName, exportMode) + ".md");
       }
     }
 
-    targetFile.setContent(content.join("\r\n"));
+    targetFile.setContent(content.join("\n"));
 
     await targetFile.saveContent();
   }
@@ -822,7 +865,7 @@ export default class FormMarkdownDocumentationGenerator {
       )
     );
 
-    content.push("# " + category + " Documentation - " + canonName + "\r\n");
+    content.push("# " + category + " Documentation - " + canonName + "\n");
 
     if (form.isDeprecated) {
       content.push("> [!IMPORTANT]");
@@ -841,7 +884,7 @@ export default class FormMarkdownDocumentationGenerator {
     await this.appendForm(form, content, 0);
 
     if (form.samples) {
-      content.push("\r\n## Samples\r\n");
+      content.push("\n## Samples\n");
       let samplesAdded = 0;
       const linesAdded: string[] = [];
 
@@ -858,7 +901,7 @@ export default class FormMarkdownDocumentationGenerator {
             console.log("Malformed sample node at `" + samplePath + "` for file at `" + markdownFile.fullPath + "`");
           } else {
             for (const sample of sampleArr) {
-              let line = "\r\n```json\r\n";
+              let line = "\n```json\n";
 
               if (
                 baseName.startsWith("minecraft_") &&
@@ -868,18 +911,18 @@ export default class FormMarkdownDocumentationGenerator {
               }
 
               if (typeof sample.content === "object" || Array.isArray(sample.content)) {
-                line += JSON.stringify(sample.content, undefined, 2) + "\r\n```\r\n";
+                line += JSON.stringify(sample.content, undefined, 2) + "\n```\n";
               } else {
                 if (typeof sample.content === "string") {
                   let cont = sample.content.trim();
 
                   if (cont.startsWith("{") && cont.endsWith("}")) {
-                    line += cont + "\r\n```\r\n";
+                    line += cont + "\n```\n";
                   } else {
-                    line += '"' + cont + '"\r\n```\r\n';
+                    line += '"' + cont + '"\n```\n';
                   }
                 } else {
-                  line += sample.content + "\r\n```\r\n";
+                  line += sample.content + "\n```\n";
                 }
               }
 
@@ -901,7 +944,7 @@ export default class FormMarkdownDocumentationGenerator {
                         ) +
                         "](" +
                         targetPath +
-                        ")\r\n"
+                        ")\n"
                     );
                   }
                 }
@@ -920,7 +963,7 @@ export default class FormMarkdownDocumentationGenerator {
       }
     }
 
-    markdownFile.setContent(content.join("\r\n"));
+    markdownFile.setContent(content.join("\n"));
 
     await markdownFile.saveContent();
   }
@@ -949,7 +992,7 @@ export default class FormMarkdownDocumentationGenerator {
       )
     );
 
-    content.push("# " + category + " Documentation - " + canonName + "\r\n");
+    content.push("# " + category + " Documentation - " + canonName + "\n");
 
     if (form.isDeprecated) {
       content.push("> [!IMPORTANT]");
@@ -959,7 +1002,7 @@ export default class FormMarkdownDocumentationGenerator {
 
     await this.appendValidatorForm(form, content, 0);
 
-    markdownFile.setContent(content.join("\r\n"));
+    markdownFile.setContent(content.join("\n"));
 
     await markdownFile.saveContent();
   }
@@ -984,37 +1027,65 @@ export default class FormMarkdownDocumentationGenerator {
     return key;
   }
 
-  public async appendForm(form: IFormDefinition, content: string[], depth: number, altTitle?: string) {
+  public async appendForm(
+    form: IFormDefinition,
+    content: string[],
+    depth: number,
+    altTitle?: string,
+    formStack?: string[],
+    formsAppended?: { [name: string]: boolean }
+  ) {
+    if (!formStack) {
+      formStack = [];
+    } else {
+      formStack = formStack.slice();
+    }
+
+    if (!formsAppended) {
+      formsAppended = {};
+    }
+
+    const formId = form.id ? form.id : form.title ? form.title : JSON.stringify(form.fields);
+
+    if (formStack.includes(formId)) {
+      Log.message("Dependency loop in the stack with " + formId + " in " + formStack.join(" -> ") + " detected.");
+      return;
+    }
+
+    formStack.push(formId);
+
     if (form.description) {
-      content.push(this.sanitizeDescription(form.description) + "\r\n");
+      content.push(this.sanitizeDescription(form.description) + "\n");
+    }
+
+    if (form.technicalDescription) {
+      content.push(this.sanitizeDescription(form.technicalDescription) + "\n");
     }
 
     if (form.note) {
       content.push("> [!Note]");
-      content.push("> " + this.sanitizeDescription(form.note) + "\r\n");
+      content.push("> " + this.sanitizeDescription(form.note) + "\n");
     }
 
     if (form.note2) {
       content.push("> [!Note]");
-      content.push("> " + this.sanitizeDescription(form.note2) + "\r\n");
+      content.push("> " + this.sanitizeDescription(form.note2) + "\n");
     }
 
     if (form.note3) {
       content.push("> [!Note]");
-      content.push("> " + this.sanitizeDescription(form.note3) + "\r\n");
+      content.push("> " + this.sanitizeDescription(form.note3) + "\n");
     }
 
     if (form.versionIntroduced || form.versionDeprecated) {
       content.push("> [!Note]");
 
       if (form.versionDeprecated) {
-        content.push(
-          "> This item no longer works after format versions of at least " + form.versionIntroduced + ".\r\n"
-        );
+        content.push("> This item no longer works after format versions of at least " + form.versionIntroduced + ".\n");
       }
 
       if (form.versionIntroduced) {
-        content.push("> This item requires a format version of at least " + form.versionIntroduced + ".\r\n");
+        content.push("> This item requires a format version of at least " + form.versionIntroduced + ".\n");
       }
     }
 
@@ -1122,7 +1193,7 @@ export default class FormMarkdownDocumentationGenerator {
     const scalarField = DataFormUtilities.getScalarField(form);
 
     if (scalarField) {
-      content.push("## Alternate Simple Representations\r\n");
+      content.push("## Alternate Simple Representations\n");
 
       for (const scalarFieldInst of DataFormUtilities.getFieldAndAlternates(scalarField)) {
         content.push(
@@ -1139,12 +1210,12 @@ export default class FormMarkdownDocumentationGenerator {
 
     if (form.title) {
       if (form.title === form.id) {
-        title = Utilities.humanifyMinecraftName(form.id);
+        title = Utilities.humanifyMinecraftName(form.id, true);
       } else {
         title = form.title;
       }
     } else if (form.id) {
-      title = Utilities.humanifyMinecraftName(form.id);
+      title = Utilities.humanifyMinecraftName(form.id, true);
     } else if (altTitle) {
       title = altTitle;
     } else {
@@ -1154,9 +1225,9 @@ export default class FormMarkdownDocumentationGenerator {
     if (form.fields && form.fields.length > 0) {
       const subContent: string[] = [];
       if (depth > 0) {
-        content.push("\r\n#### " + title + " Properties\r\n");
+        content.push("\n#### " + title + " Properties\n");
       } else {
-        content.push("\r\n## " + title + " Properties\r\n");
+        content.push("\n## " + title + " Properties\n");
       }
 
       content.push("|Name       |Default Value |Type |Description |Example Values |");
@@ -1191,13 +1262,36 @@ export default class FormMarkdownDocumentationGenerator {
       }
 
       for (const field of fullFieldList) {
-        let fieldId = field.id;
+        let modifiedSubFieldId = field.id;
+        let subFormTitle = undefined;
+        let subForm = await FieldUtilities.getSubForm(field);
 
-        if (field.isDeprecated) {
-          fieldId = "(deprecated) " + fieldId;
+        if (subForm) {
+          subFormTitle = subForm.title
+            ? subForm.title
+            : subForm.id
+            ? Utilities.humanifyMinecraftName(subForm.id)
+            : undefined;
+
+          if (subFormTitle) {
+            const lastAlt = modifiedSubFieldId.lastIndexOf("(Alternate");
+
+            if (lastAlt >= 0) {
+              modifiedSubFieldId = modifiedSubFieldId.substring(0, lastAlt);
+              modifiedSubFieldId += "(" + subFormTitle + ")";
+            } else {
+              modifiedSubFieldId += " (" + subFormTitle + ")";
+            }
+          } else {
+            subFormTitle = "item type";
+          }
         }
 
-        let fieldRow = "| " + fieldId + " | ";
+        if (field.isDeprecated) {
+          modifiedSubFieldId = "(deprecated) " + modifiedSubFieldId;
+        }
+
+        let fieldRow = "| " + (field.alternates ? modifiedSubFieldId : field.id) + " | ";
 
         if (field.defaultValue !== undefined) {
           fieldRow += this.getValueAsString(field.defaultValue);
@@ -1205,14 +1299,11 @@ export default class FormMarkdownDocumentationGenerator {
           fieldRow += "*not set*";
         }
 
-        let fieldName = Utilities.humanifyMinecraftName(field.id);
+        let fieldName = Utilities.humanifyMinecraftName(modifiedSubFieldId);
 
-        const fieldLink =
-          "(#" + this.getMarkdownBookmark(fieldName) + "-" + (field.choices ? "choices" : "item-type") + ")";
+        if (subForm && subForm.fields && subForm.fields.length > 0 && subFormTitle && field.subFormId) {
+          const fieldLink = "(#" + this.getMarkdownBookmark(subFormTitle) + ")";
 
-        let subForm = await FieldUtilities.getSubForm(field);
-
-        if (subForm && subForm.fields && subForm.fields.length > 0) {
           if (field.dataType === FieldDataType.objectArray) {
             fieldRow += " | Array of [" + fieldName + "]" + fieldLink + " items | ";
           } else if (field.dataType === FieldDataType.keyedObjectCollection) {
@@ -1220,10 +1311,36 @@ export default class FormMarkdownDocumentationGenerator {
           } else {
             fieldRow += " | [" + fieldName + "]" + fieldLink + " item | ";
           }
+
+          if (!formsAppended[subFormTitle]) {
+            subContent.push("\n## " + subFormTitle);
+
+            await this.appendForm(subForm, subContent, depth + 1, subFormTitle, formStack, formsAppended);
+            formsAppended[subFormTitle] = true;
+          }
+        } else if (subForm && subForm.fields && subForm.fields.length > 0 && subFormTitle) {
+          const fieldLink = "(#" + this.getMarkdownBookmark(fieldName) + ")";
+
+          if (field.dataType === FieldDataType.objectArray) {
+            fieldRow += " | Array of [" + fieldName + "]" + fieldLink + " items | ";
+          } else if (field.dataType === FieldDataType.keyedObjectCollection) {
+            fieldRow += " | Key/item pairs of [" + fieldName + "]" + fieldLink + " items | ";
+          } else {
+            fieldRow += " | [" + fieldName + "]" + fieldLink + " item | ";
+          }
+
+          if (!formsAppended[fieldName]) {
+            subContent.push("\n## " + fieldName);
+
+            await this.appendForm(subForm, subContent, depth + 1, fieldName, formStack, formsAppended);
+            formsAppended[fieldName] = true;
+          }
         } else if (field.choices) {
+          const fieldLink = "(#" + this.getMarkdownBookmark(fieldName) + "-choices)";
+
           fieldRow += " | [" + fieldName + "]" + fieldLink + " choices | ";
 
-          subContent.push("\r\n### " + fieldName + " choices\r\n");
+          subContent.push("\n### " + fieldName + " choices\n");
 
           subContent.push("|Value       |Title |Description |");
           subContent.push("|:-----------|:-----|:-----------|");
@@ -1256,6 +1373,10 @@ export default class FormMarkdownDocumentationGenerator {
 
           descrip += " " + this.addAdditionalNotes(field);
 
+          if (field.technicalDescription) {
+            descrip += " " + field.technicalDescription;
+          }
+
           descrip = descrip.trim();
 
           if (field.isDeprecated) {
@@ -1287,12 +1408,6 @@ export default class FormMarkdownDocumentationGenerator {
         }
 
         fieldRow += " | ";
-
-        if (subForm && subForm.fields.length > 0) {
-          subContent.push("\r\n## " + fieldName + " item type");
-
-          await this.appendForm(subForm, subContent, depth + 1, fieldName);
-        }
 
         if (field.samples) {
           let samplesAdded = 0;
@@ -1368,22 +1483,26 @@ export default class FormMarkdownDocumentationGenerator {
 
   public async appendValidatorForm(form: IFormDefinition, content: string[], depth: number, altTitle?: string) {
     if (form.description) {
-      content.push(this.sanitizeDescription(form.description) + "\r\n");
+      content.push(this.sanitizeDescription(form.description) + "\n");
+    }
+
+    if (form.technicalDescription) {
+      content.push(this.sanitizeDescription(form.technicalDescription) + "\n");
     }
 
     if (form.note) {
       content.push("> [!Note]");
-      content.push("> " + this.sanitizeDescription(form.note) + "\r\n");
+      content.push("> " + this.sanitizeDescription(form.note) + "\n");
     }
 
     if (form.note2) {
       content.push("> [!Note]");
-      content.push("> " + this.sanitizeDescription(form.note2) + "\r\n");
+      content.push("> " + this.sanitizeDescription(form.note2) + "\n");
     }
 
     if (form.note3) {
       content.push("> [!Note]");
-      content.push("> " + this.sanitizeDescription(form.note3) + "\r\n");
+      content.push("> " + this.sanitizeDescription(form.note3) + "\n");
     }
 
     let title = undefined;
@@ -1405,9 +1524,9 @@ export default class FormMarkdownDocumentationGenerator {
     if (form.fields && form.fields.length > 0) {
       const subContent: string[] = [];
       if (depth > 0) {
-        content.push("\r\n#### " + title + " Properties\r\n");
+        content.push("\n#### " + title + " Properties\n");
       } else {
-        content.push("\r\n## " + title + " Properties\r\n");
+        content.push("\n## " + title + " Properties\n");
       }
 
       content.push("|Name       |Description |");
@@ -1499,10 +1618,15 @@ export default class FormMarkdownDocumentationGenerator {
   }
 
   public getMarkdownBookmark(id: string) {
-    return id.toLowerCase().replace(/ /gi, "-");
+    return id.toLowerCase().replace(/ /gi, "-").replace(/\(/gi, "").replace(/\)/gi, "");
   }
 
-  public getFormsFromFilter(formsByPath: { [name: string]: IFormDefinition }, formsPath: string, mode: ExportMode) {
+  public getFormsFromFilter(
+    formsByPath: { [name: string]: IFormDefinition },
+    formsPath: string,
+    mode: ExportMode,
+    exclusionList?: string[]
+  ) {
     const filteredList: { [name: string]: IFormDefinition } = {};
 
     for (const formPath in formsByPath) {
@@ -1515,6 +1639,15 @@ export default class FormMarkdownDocumentationGenerator {
         formPath.indexOf("versioned") >= 0
       ) {
         includeFile = false;
+      }
+
+      if (exclusionList && includeFile) {
+        for (const exclude of exclusionList) {
+          if (formPath.indexOf(exclude) >= 0) {
+            includeFile = false;
+            break;
+          }
+        }
       }
 
       if (
@@ -1537,7 +1670,9 @@ export default class FormMarkdownDocumentationGenerator {
     inputFolder: IFolder,
     outputFolder: IFolder
   ) {
-    await inputFolder.load();
+    if (!inputFolder.isLoaded) {
+      await inputFolder.load();
+    }
 
     const fileList: IIndexJson = { files: [], folders: [] };
 
@@ -1555,7 +1690,9 @@ export default class FormMarkdownDocumentationGenerator {
       const file = inputFolder.files[fileName];
 
       if (file) {
-        await file.loadContent();
+        if (!file.isContentLoaded) {
+          await file.loadContent();
+        }
 
         const jsonO = StorageUtilities.getJsonObject(file);
 

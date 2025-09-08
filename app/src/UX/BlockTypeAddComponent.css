@@ -1,5 +1,6 @@
 .btac-area {
-  height: 400px;
+  height: calc(100vh - 200px);
+  padding-top: 8px;
 }
 
 .btac-mainArea {
@@ -8,7 +9,8 @@
 }
 
 .btac-list {
-  max-height: 400px;
+  max-height: calc(100vh - 280px);
+  min-width: 400px;
   overflow-y: auto;
   overflow-x: hidden;
   border: solid 1px;

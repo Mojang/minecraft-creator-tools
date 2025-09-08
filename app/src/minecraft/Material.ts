@@ -5,6 +5,7 @@ import IFile from "../storage/IFile";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import { IMaterialWrapper } from "./IMaterial";
+import Log from "../core/Log";
 
 export default class Material {
   private _file?: IFile;
@@ -52,11 +53,13 @@ export default class Material {
     if (file.manager !== undefined && file.manager instanceof Material) {
       rc = file.manager as Material;
 
-      if (!rc.isLoaded && loadHandler) {
-        rc.onLoaded.subscribe(loadHandler);
-      }
+      if (!rc.isLoaded) {
+        if (loadHandler) {
+          rc.onLoaded.subscribe(loadHandler);
+        }
 
-      await rc.load();
+        await rc.load();
+      }
     }
 
     return rc;
@@ -64,6 +67,11 @@ export default class Material {
 
   persist() {
     if (this._file === undefined) {
+      return;
+    }
+
+    if (!this.definition) {
+      Log.unexpectedUndefined("MATP");
       return;
     }
 
@@ -87,7 +95,9 @@ export default class Material {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

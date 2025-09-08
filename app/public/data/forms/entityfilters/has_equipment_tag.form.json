@@ -41,6 +41,10 @@
           "title": "Leg"
         },
         {
+          "id": "main_hand",
+          "title": "Main Hand"
+        },
+        {
           "id": "torso",
           "title": "Torso"
         }

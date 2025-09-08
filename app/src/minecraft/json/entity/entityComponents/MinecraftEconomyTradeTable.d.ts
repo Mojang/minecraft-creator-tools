@@ -246,7 +246,7 @@ export default interface MinecraftEconomyTradeTable {
    * Enchanted Iron Sword, then the enchantment will be Sharpness 
    * 1.
    */
-  convert_trades_economy: boolean;
+  convert_trades_economy?: boolean;
 
   /**
    * @remarks
@@ -260,7 +260,7 @@ export default interface MinecraftEconomyTradeTable {
    * Villager v2: [-25,-20]
    *
    */
-  cured_discount: number[];
+  cured_discount?: number[];
 
   /**
    * @remarks
@@ -270,7 +270,7 @@ export default interface MinecraftEconomyTradeTable {
    * Villager v2: "entity.villager.farmer", "entity.villager.fisherman", "entity.villager.shepherd", "entity.villager.fletcher", "entity.villager.librarian", "entity.villager.cartographer", "entity.villager.cleric", "entity.villager.armor", "entity.villager.weapon", "entity.villager.tool", "entity.villager.butcher", "entity.villager.leather", "entity.villager.mason"
    *
    */
-  display_name: string;
+  display_name?: string;
 
   /**
    * @remarks
@@ -278,7 +278,7 @@ export default interface MinecraftEconomyTradeTable {
    * modified by when the player has the Hero of the Village mob
    * effect
    */
-  hero_demand_discount: number;
+  hero_demand_discount?: number;
 
   /**
    * @remarks
@@ -292,7 +292,7 @@ export default interface MinecraftEconomyTradeTable {
    * Villager v2: [-25,-20]
    *
    */
-  max_cured_discount: number[];
+  max_cured_discount?: number[];
 
   /**
    * @remarks
@@ -301,14 +301,14 @@ export default interface MinecraftEconomyTradeTable {
    * use_legacy_price_formula is true, otherwise max_cured_discount (low)
    * is used.
    */
-  max_nearby_cured_discount: number;
+  max_nearby_cured_discount?: number;
 
   /**
    * @remarks
    * How much should the discount be modified by when the player has
    * cured a nearby Zombie Villager
    */
-  nearby_cured_discount: number;
+  nearby_cured_discount?: number;
 
   /**
    * @remarks
@@ -319,7 +319,7 @@ export default interface MinecraftEconomyTradeTable {
    * Villager v2: true
    *
    */
-  new_screen: boolean;
+  new_screen?: boolean;
 
   /**
    * @remarks
@@ -332,13 +332,13 @@ export default interface MinecraftEconomyTradeTable {
    * Villager v2: true
    *
    */
-  persist_trades: boolean;
+  persist_trades?: boolean;
 
   /**
    * @remarks
    * Show an in game trade screen when interacting with the mob.
    */
-  show_trade_screen: boolean;
+  show_trade_screen?: boolean;
 
   /**
    * @remarks
@@ -349,13 +349,13 @@ export default interface MinecraftEconomyTradeTable {
    * Villager v2: "trading/economy_trades/farmer_trades.json", "trading/economy_trades/fisherman_trades.json", "trading/economy_trades/shepherd_trades.json", "trading/economy_trades/fletcher_trades.json", "trading/economy_trades/librarian_trades.json", "trading/economy_trades/cartographer_trades.json", "trading/economy_trades/cleric_trades.json", "trading/economy_trades/armorer_trades.json", "trading/economy_trades/weapon_smith_trades.json", "trading/economy_trades/tool_smith_trades.json", "trading/economy_trades/butcher_trades.json", "trading/economy_trades/leather_worker_trades.json", "trading/economy_trades/stone_mason_trades.json"
    *
    */
-  table: string;
+  table?: string;
 
   /**
    * @remarks
    * Determines whether the legacy formula is used to determines the
    * trade prices.
    */
-  use_legacy_price_formula: boolean;
+  use_legacy_price_formula?: boolean;
 
 }

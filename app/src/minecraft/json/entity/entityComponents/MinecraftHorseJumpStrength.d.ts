@@ -50,7 +50,7 @@ export default interface MinecraftHorseJumpStrength {
    *
    *
    */
-  value: MinecraftHorseJumpStrengthValue[];
+  value?: MinecraftHorseJumpStrengthValue[];
 
 }
 
@@ -64,12 +64,12 @@ export interface MinecraftHorseJumpStrengthValue {
    * @remarks
    * Defines the maximum strength level.
    */
-  range_max: number;
+  range_max?: number;
 
   /**
    * @remarks
    * Defines the minimum strength level.
    */
-  range_min: number;
+  range_min?: number;
 
 }

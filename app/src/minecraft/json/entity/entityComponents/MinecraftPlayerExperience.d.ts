@@ -36,12 +36,12 @@ export default interface MinecraftPlayerExperience {
    * Player: 1
    *
    */
-  max: number;
+  max?: number;
 
   /**
    * @remarks
    * The initial value of the player experience.
    */
-  value: number;
+  value?: number;
 
 }

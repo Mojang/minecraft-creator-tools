@@ -51,14 +51,14 @@ export default interface MinecraftCelebrateHunt {
    * Piglin: true
    *
    */
-  broadcast: boolean;
+  broadcast?: boolean;
 
   /**
    * @remarks
    * The list of conditions that target of hunt must satisfy to
    * initiate celebration.
    */
-  celeberation_targets: jsoncommon.MinecraftFilter;
+  celeberation_targets?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -68,7 +68,7 @@ export default interface MinecraftCelebrateHunt {
    * Piglin: "celebrate"
    *
    */
-  celebrate_sound: string;
+  celebrate_sound?: string;
 
   /**
    * @remarks
@@ -77,7 +77,7 @@ export default interface MinecraftCelebrateHunt {
    * Piglin: {"all_of":[{"test":"is_family","value":"hoglin"}]}
    *
    */
-  celebration_targets: MinecraftCelebrateHuntCelebrationTargets;
+  celebration_targets?: MinecraftCelebrateHuntCelebrationTargets;
 
   /**
    * @remarks
@@ -87,7 +87,7 @@ export default interface MinecraftCelebrateHunt {
    * Piglin: 10
    *
    */
-  duration: number;
+  duration?: number;
 
   /**
    * @remarks
@@ -98,7 +98,7 @@ export default interface MinecraftCelebrateHunt {
    * Piglin: 16
    *
    */
-  radius: number;
+  radius?: number;
 
   /**
    * @remarks
@@ -109,7 +109,7 @@ export default interface MinecraftCelebrateHunt {
    * Piglin: {"range_min":2,"range_max":5}
    *
    */
-  sound_interval: number[];
+  sound_interval?: number[];
 
 }
 
@@ -126,6 +126,6 @@ export interface MinecraftCelebrateHuntCelebrationTargets {
    * Piglin: [{"test":"is_family","value":"hoglin"}]
    *
    */
-  all_of: string;
+  all_of?: string;
 
 }

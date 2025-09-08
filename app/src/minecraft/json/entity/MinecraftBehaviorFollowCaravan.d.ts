@@ -45,7 +45,7 @@ export default interface MinecraftBehaviorFollowCaravan {
    *
    *
    */
-  entity_count: number;
+  entity_count?: number;
 
   /**
    * @remarks
@@ -56,7 +56,7 @@ export default interface MinecraftBehaviorFollowCaravan {
    *
    *
    */
-  entity_types: MinecraftBehaviorFollowCaravanEntityTypes[];
+  entity_types?: MinecraftBehaviorFollowCaravanEntityTypes[];
 
   /**
    * @remarks
@@ -69,7 +69,7 @@ export default interface MinecraftBehaviorFollowCaravan {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -80,7 +80,7 @@ export default interface MinecraftBehaviorFollowCaravan {
    *
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }
 
@@ -95,25 +95,25 @@ export interface MinecraftBehaviorFollowCaravanEntityTypes {
    * The amount of time in seconds that the mob has to wait before
    * selecting a target of the same type again
    */
-  cooldown: number;
+  cooldown?: number;
 
   /**
    * @remarks
    * Conditions that make this entry in the list valid
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
    * Maximum distance this mob can be away to be a valid choice
    */
-  max_dist: number;
+  max_dist?: number;
 
   /**
    * @remarks
    * If true, the mob has to be visible to be a valid choice
    */
-  must_see: boolean;
+  must_see?: boolean;
 
   /**
    * @remarks
@@ -121,27 +121,27 @@ export interface MinecraftBehaviorFollowCaravanEntityTypes {
    * for a target before forgetting about it and looking for a new
    * one when the target isn't visible any more
    */
-  must_see_forget_duration: number;
+  must_see_forget_duration?: number;
 
   /**
    * @remarks
    * If true, the mob will stop being targeted if it stops meeting any
    * conditions.
    */
-  reevaluate_description: boolean;
+  reevaluate_description?: boolean;
 
   /**
    * @remarks
    * Multiplier for the running speed. A value of 1.0 means the speed
    * is unchanged
    */
-  sprint_speed_multiplier: number;
+  sprint_speed_multiplier?: number;
 
   /**
    * @remarks
    * Multiplier for the walking speed. A value of 1.0 means the speed
    * is unchanged
    */
-  walk_speed_multiplier: number;
+  walk_speed_multiplier?: number;
 
 }

@@ -29,18 +29,18 @@ export default interface MinecraftMovementFly {
    * @remarks
    * The maximum number in degrees the mob can turn per tick.
    */
-  max_turn: number;
+  max_turn?: number;
 
   /**
    * @remarks
    * Speed that the mob adjusts to when it has to turn quickly.
    */
-  speed_when_turning: number;
+  speed_when_turning?: number;
 
   /**
    * @remarks
    * Initial speed of the mob when it starts gliding.
    */
-  start_speed: number;
+  start_speed?: number;
 
 }

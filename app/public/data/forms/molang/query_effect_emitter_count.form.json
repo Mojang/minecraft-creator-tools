@@ -2,5 +2,5 @@
   "id": "query.effect_emitter_count",
   "fields": [],
   "description": "Returns the total number of active emitters of the callee's particle effect type.",
-  "title": "Effect Emitter Count Query"
+  "title": "Effect Emitter Count"
 }

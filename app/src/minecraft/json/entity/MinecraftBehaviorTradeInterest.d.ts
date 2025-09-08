@@ -59,7 +59,7 @@ export default interface MinecraftBehaviorTradeInterest {
    * Villager v2: 2
    *
    */
-  carried_item_switch_time: number;
+  carried_item_switch_time?: number;
 
   /**
    * @remarks
@@ -70,7 +70,7 @@ export default interface MinecraftBehaviorTradeInterest {
    * Villager v2: 2
    *
    */
-  cooldown: number;
+  cooldown?: number;
 
   /**
    * @remarks
@@ -81,7 +81,7 @@ export default interface MinecraftBehaviorTradeInterest {
    * Villager v2: 45
    *
    */
-  interest_time: number;
+  interest_time?: number;
 
   /**
    * @remarks
@@ -95,7 +95,7 @@ export default interface MinecraftBehaviorTradeInterest {
    * Wandering Trader: 3
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -106,7 +106,7 @@ export default interface MinecraftBehaviorTradeInterest {
    * Villager v2: 1
    *
    */
-  remove_item_time: number;
+  remove_item_time?: number;
 
   /**
    * @remarks
@@ -117,6 +117,6 @@ export default interface MinecraftBehaviorTradeInterest {
    * Villager v2: 6
    *
    */
-  within_radius: number;
+  within_radius?: number;
 
 }

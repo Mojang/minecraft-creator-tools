@@ -44,20 +44,20 @@ export default interface MinecraftGiveable {
    * An optional cool down in seconds to prevent spamming 
    * interactions.
    */
-  cooldown: number;
+  cooldown?: number;
 
   /**
    * @remarks
    * The list of items that can be given to the entity to place in
    * their inventory.
    */
-  items: string[];
+  items?: string[];
 
   /**
    * @remarks
    * Event to fire when the correct item is given.
    */
-  on_give: jsoncommon.MinecraftEventTrigger;
+  on_give?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -66,7 +66,7 @@ export default interface MinecraftGiveable {
    * Panda: {"cooldown":3,"items":["bamboo","cake"],"on_give":{"event":"minecraft:on_calm","target":"self"}}
    *
    */
-  triggers: MinecraftGiveableTriggers;
+  triggers?: MinecraftGiveableTriggers;
 
 }
 
@@ -83,7 +83,7 @@ export interface MinecraftGiveableTriggers {
    * Panda: 3
    *
    */
-  cooldown: number;
+  cooldown?: number;
 
   /**
    * @remarks
@@ -92,7 +92,7 @@ export interface MinecraftGiveableTriggers {
    * Panda: ["bamboo","cake"]
    *
    */
-  items: string;
+  items?: string;
 
   /**
    * @remarks
@@ -101,6 +101,6 @@ export interface MinecraftGiveableTriggers {
    * Panda: {"event":"minecraft:on_calm","target":"self"}
    *
    */
-  on_give: string;
+  on_give?: string;
 
 }

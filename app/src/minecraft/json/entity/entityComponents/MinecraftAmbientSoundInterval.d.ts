@@ -128,7 +128,7 @@ export default interface MinecraftAmbientSoundInterval {
    * Creaking: "undefined"
    *
    */
-  event_name: string;
+  event_name?: string;
 
   /**
    * @remarks
@@ -139,41 +139,22 @@ export default interface MinecraftAmbientSoundInterval {
    * Sample Values:
    * Allay: [{"event_name":"ambient.tame","condition":"query.is_using_item"},{"event_name":"ambient","condition":"!query.is_using_item"}]
    *
-   * Warden: [{"event_name":"angry","condition":"query.anger_level(this) >= 80"},{"event_name":"agitated","condition":"query.anger_level(this) >= 40"}]
-   *
    */
-  event_names: MinecraftAmbientSoundIntervalEventNames[];
+  event_names?: MinecraftAmbientSoundIntervalEventNames[];
 
   /**
    * @remarks
    * Maximum time in seconds to randomly add to the ambient sound delay
    * time.
-   * 
-   * Sample Values:
-   * Allay: 5
-   *
-   * Bee: 3
-   *
-   * Evocation Illager: 4
-   *
    */
-  range: number;
+  range?: number;
 
   /**
    * @remarks
    * Minimum time in seconds before the entity plays its ambient sound
    * again.
-   * 
-   * Sample Values:
-   * Allay: 5
-   *
-   * Bee: 2
-   *
-   *
-   * Fox: 80
-   *
    */
-  value: number;
+  value?: number;
 
 }
 
@@ -190,12 +171,12 @@ export interface MinecraftAmbientSoundIntervalEventNames {
    * The condition that must be satisfied to select the given ambient
    * sound
    */
-  condition: string;
+  condition?: string;
 
   /**
    * @remarks
    * Level sound event to be played as the ambient sound
    */
-  event_name: string;
+  event_name?: string;
 
 }

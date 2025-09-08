@@ -50,6 +50,10 @@ input[type="file"]:hover {
   padding-top: 2px;
 }
 
+.ui-header {
+  white-space: nowrap;
+}
+
 .ui-dialog {
   border-radius: 0px;
   grid-template-rows: 24px 1fr 24px;
@@ -57,6 +61,7 @@ input[type="file"]:hover {
   margin: 4px;
   width: calc(100vw - 40px) !important;
   max-width: 900px !important;
+  overflow-x: auto !important;
 }
 
 .ui-menu__item__submenu__submenu {

@@ -397,14 +397,14 @@ export default interface MinecraftEntitySensor {
    * Happy Ghast: true
    *
    */
-  find_players_only: boolean;
+  find_players_only?: boolean;
 
   /**
    * @remarks
    * If true the subsensors' range is additive on top of the entity's
    * size.
    */
-  relative_range: boolean;
+  relative_range?: boolean;
 
   /**
    * @remarks
@@ -414,10 +414,8 @@ export default interface MinecraftEntitySensor {
    * Sample Values:
    * Armadillo: [{"event":"minecraft:no_threat_detected","cooldown":0.2,"range":[7,2],"minimum_count":0,"maximum_count":0,"event_filters":{"any_of":[{"test":"is_family","subject":"other","value":"undead"},{"all_of":[{"test":"is_family","subject":"other","value":"player"},{"any_of":[{"test":"was_last_hurt_by","subject":"other"},{"test":"is_sprinting","subject":"other"},{"test":"is_riding","subject":"other"}]}]}]}},{"event":"minecraft:threat_detected","cooldown":0.2,"range":[7,2],"minimum_count":1,"event_filters":{"any_of":[{"test":"is_family","subject":"other","value":"undead"},{"all_of":[{"test":"is_family","subject":"other","value":"player"},{"any_of":[{"test":"was_last_hurt_by","subject":"other"},{"test":"is_sprinting","subject":"other"},{"test":"is_riding","subject":"other"}]}]}]}}]
    *
-   * Happy Ghast: [{"event":"minecraft:become_mobile","cooldown":0,"y_offset":4.5,"range":[3.5,2],"minimum_count":0,"maximum_count":0,"event_filters":{"all_of":[{"test":"is_vehicle_family","subject":"other","operator":"not","value":"happy_ghast"},{"test":"actor_health","operator":">","value":0}]}},{"event":"minecraft:become_immobile","cooldown":0,"y_offset":4.5,"range":[3,1.5],"minimum_count":1,"event_filters":{"all_of":[{"test":"is_vehicle_family","subject":"other","operator":"not","value":"happy_ghast"},{"test":"actor_health","operator":">","value":0}]}}]
-   *
    */
-  subsensors: MinecraftEntitySensorSubsensors[];
+  subsensors?: MinecraftEntitySensorSubsensors[];
 
 }
 
@@ -435,54 +433,54 @@ export interface MinecraftEntitySensorSubsensors {
    * base 1 tick (0.05 seconds) delay. Negative values will result in
    * no cooldown being used.
    */
-  cooldown: number;
+  cooldown?: number;
 
   /**
    * @remarks
    * Event to fire when the conditions are met.
    */
-  event: jsoncommon.MinecraftEventTrigger;
+  event?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
    * The set of conditions that must be satisfied to fire the 
    * event.
    */
-  event_filters: jsoncommon.MinecraftFilter;
+  event_filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
    * The maximum number of entities that must pass the filter conditions for
    * the event to send.
    */
-  maximum_count: number;
+  maximum_count?: number;
 
   /**
    * @remarks
    * The minimum number of entities that must pass the filter conditions for
    * the event to send.
    */
-  minimum_count: number;
+  minimum_count?: number;
 
   /**
    * @remarks
    * The maximum horizontal and vertical distance another entity can
    * be from this and have the filters checked against it.
    */
-  range: number[];
+  range?: number[];
 
   /**
    * @remarks
    * If true requires all nearby entities to pass the filter conditions for
    * the events to send.
    */
-  require_all: boolean;
+  require_all?: boolean;
 
   /**
    * @remarks
    * Vertical offset applied to the entity's position when computing the
    * distance from other entities.
    */
-  y_offset: number;
+  y_offset?: number;
 
 }

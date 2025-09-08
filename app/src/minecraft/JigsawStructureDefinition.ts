@@ -74,7 +74,9 @@ export default class JigsawStructureDefinition implements IDefinition {
     // Find template pool referenced by start_pool
     for (const candItem of itemsCopy) {
       if (candItem.itemType === ProjectItemType.jigsawTemplatePool) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
           const templatePool = await JigsawTemplatePoolDefinition.ensureOnFile(candItem.primaryFile);
@@ -98,7 +100,9 @@ export default class JigsawStructureDefinition implements IDefinition {
 
     if (file.manager !== undefined && file.manager instanceof JigsawStructureDefinition) {
       jigsawStructure = file.manager as JigsawStructureDefinition;
-      await jigsawStructure.load();
+      if (!jigsawStructure.isLoaded) {
+        await jigsawStructure.load();
+      }
     }
 
     return jigsawStructure;
@@ -113,7 +117,9 @@ export default class JigsawStructureDefinition implements IDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
       return;

@@ -119,6 +119,6 @@ export default interface MinecraftScale {
    * Camel: 0.45
    *
    */
-  value: number;
+  value?: number;
 
 }

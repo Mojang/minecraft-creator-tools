@@ -45,6 +45,6 @@ export default interface MinecraftItemControllable {
    * Strider: "warped_fungus_on_a_stick"
    *
    */
-  control_items: string[];
+  control_items?: string[];
 
 }

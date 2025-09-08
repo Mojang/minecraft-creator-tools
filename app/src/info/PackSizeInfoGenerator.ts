@@ -176,7 +176,9 @@ export default class PackSizeInfoGenerator implements IProjectInfoGenerator {
     depth: number,
     isInContent: boolean
   ) {
-    await folder.load();
+    if (!folder.isLoaded) {
+      await folder.load();
+    }
 
     if (!isInContent && folder.files["manifest.json"]) {
       isInContent = true;
@@ -186,7 +188,9 @@ export default class PackSizeInfoGenerator implements IProjectInfoGenerator {
       const file = folder.files[fileName];
 
       if (file) {
-        await file.loadContent();
+        if (!file.isContentLoaded) {
+          await file.loadContent();
+        }
 
         results.fileCounts++;
 

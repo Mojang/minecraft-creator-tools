@@ -23,7 +23,7 @@ export default interface MinecraftBehaviorSnacking {
    * @remarks
    * Items that we are interested in snacking on
    */
-  items: string[];
+  items?: string[];
 
   /**
    * @remarks
@@ -31,27 +31,27 @@ export default interface MinecraftBehaviorSnacking {
    * priority, the sooner this behavior will be executed as a 
    * goal.
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * The cooldown time in seconds before the mob is able to snack 
    * again
    */
-  snacking_cooldown: number;
+  snacking_cooldown?: number;
 
   /**
    * @remarks
    * The minimum time in seconds before the mob is able to snack 
    * again
    */
-  snacking_cooldown_min: number;
+  snacking_cooldown_min?: number;
 
   /**
    * @remarks
    * This is the chance that the mob will stop snacking, from 0 to 
    * 1
    */
-  snacking_stop_chance: number;
+  snacking_stop_chance?: number;
 
 }

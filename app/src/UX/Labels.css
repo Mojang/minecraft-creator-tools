@@ -26,6 +26,9 @@
   padding-left: 6px;
   padding-right: 6px;
   grid-column: 2;
+  min-width: 40px;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
   vertical-align: top;
   white-space: nowrap;
 }

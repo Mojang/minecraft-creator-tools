@@ -1,4 +1,5 @@
 {
+  "id": "minecraft:enchantable",
   "fields": [
     {
       "id": "slot",
@@ -7,6 +8,18 @@
       "dataType": 2,
       "isRequired": true,
       "samples": {
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/axe_turret_kit.item.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:enchantable/",
+            "content": "pickaxe"
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/bow_turret_kit.item.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:enchantable/",
+            "content": "pickaxe"
+          }
+        ],
         "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
           {
             "path": "/minecraft:item/components/minecraft:enchantable/",
@@ -40,6 +53,18 @@
       "dataType": 0,
       "isRequired": true,
       "samples": {
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/axe_turret_kit.item.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:enchantable/",
+            "content": 14
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/bow_turret_kit.item.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:enchantable/",
+            "content": 14
+          }
+        ],
         "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
           {
             "path": "/minecraft:item/components/minecraft:enchantable/",
@@ -55,9 +80,8 @@
       }
     }
   ],
-  "description": "Determines what enchantments can be applied to the item. Not all enchantments will have an effect on all item components.",
-  "note": "The following enchantment slot types that can be set for the value of `slot`: sword, bow, pickaxe, armor_head, armor_torso, armor_legs, armor_feet",
-  "title": "Minecraft Enchantable Item",
+  "description": "The enchantable component specifies what enchantments can be applied to the item. Not all enchantments will have an effect on all item components.",
+  "title": "Item Enchantable",
   "samples": {
     "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/axe_turret_kit.item.json": [
       {
@@ -149,6 +173,5 @@
         }
       }
     ]
-  },
-  "id": "minecraft:enchantable"
+  }
 }

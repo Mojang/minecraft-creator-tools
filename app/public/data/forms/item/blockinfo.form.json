@@ -3,7 +3,6 @@
   "fields": [
     {
       "id": "block",
-      "title": "Block",
       "description": "Block to be dug.",
       "dataType": 16,
       "subForm": {
@@ -57,5 +56,5 @@
       "isRequired": true
     }
   ],
-  "title": "BlockInfo Item"
+  "title": "Item BlockInfo"
 }

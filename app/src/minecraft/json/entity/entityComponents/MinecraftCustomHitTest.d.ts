@@ -63,6 +63,6 @@ export default interface MinecraftCustomHitTest {
    *
    *
    */
-  hitboxes: string[];
+  hitboxes?: string[];
 
 }

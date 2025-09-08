@@ -123,7 +123,9 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
     let lang = "json";
     let content = "";
 
-    await file.loadContent();
+    if (!file.isContentLoaded) {
+      await file.loadContent();
+    }
 
     if (file.content !== undefined && typeof file.content === "string") {
       const modelUri = monacoInstance.Uri.parse(baseUri);

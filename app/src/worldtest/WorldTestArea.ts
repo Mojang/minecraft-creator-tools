@@ -99,7 +99,7 @@ export default class WorldTestArea {
       );
     }
 
-    return scripts.join("\r\n");
+    return scripts.join("\n");
   }
 
   createScript(type: string) {

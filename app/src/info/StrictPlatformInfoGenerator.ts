@@ -42,7 +42,7 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
       const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.entityTypeBehavior) {
-        await pi.ensureFileStorage();
+        await pi.loadFileContent();
 
         if (pi.primaryFile) {
           const bpEntityType = await EntityTypeDefinition.ensureOnFile(pi.primaryFile);
@@ -86,7 +86,7 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
           }
         }
       } else if (pi.itemType === ProjectItemType.itemTypeBehavior) {
-        await pi.ensureFileStorage();
+        await pi.loadFileContent();
 
         if (pi.primaryFile) {
           const bpItemType = await ItemTypeDefinition.ensureOnFile(pi.primaryFile);

@@ -81,7 +81,7 @@ export default interface MinecraftBehaviorBreed {
    * Bee: 4
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -95,6 +95,6 @@ export default interface MinecraftBehaviorBreed {
    *
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

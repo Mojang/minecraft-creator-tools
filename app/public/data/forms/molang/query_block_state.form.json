@@ -2,5 +2,5 @@
   "id": "query.block_state",
   "fields": [],
   "description": "Returns the value of the associated block's block state.",
-  "title": "Block State Query"
+  "title": "Block State"
 }

@@ -82,7 +82,9 @@ export class ActionSetCatalog {
       const file = formsFolder.files[fileName];
 
       if (file) {
-        await file.loadContent();
+        if (!file.isContentLoaded) {
+          await file.loadContent();
+        }
 
         const form = await DataFormFile.ensureOnFile(file);
 

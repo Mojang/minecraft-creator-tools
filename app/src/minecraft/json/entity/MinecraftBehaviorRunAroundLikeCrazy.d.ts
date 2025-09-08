@@ -40,7 +40,7 @@ export default interface MinecraftBehaviorRunAroundLikeCrazy {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -51,6 +51,6 @@ export default interface MinecraftBehaviorRunAroundLikeCrazy {
    *
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

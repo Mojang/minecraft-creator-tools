@@ -1,0 +1,6 @@
+{
+  "id": "`math.inverse_lerp(start, end, value)`",
+  "fields": [],
+  "description": "Returns the normalized progress between start and end given value",
+  "title": "Inverse Lerp(start, End, Value)"
+}

@@ -218,7 +218,7 @@ export default abstract class FolderBase implements IFolder {
     return false;
   }
 
-  _addExistingFolder(folder: IFolder) {
+  _addExistingFolderToParent(folder: IFolder) {
     const nameCanon = StorageUtilities.canonicalizeName(folder.name);
 
     if (Utilities.isUsableAsObjectKey(nameCanon)) {
@@ -226,7 +226,7 @@ export default abstract class FolderBase implements IFolder {
     }
   }
 
-  _clearExistingFolder(folder: IFolder) {
+  _removeExistingFolderFromParent(folder: IFolder) {
     const nameCanon = StorageUtilities.canonicalizeName(folder.name);
 
     if (Utilities.isUsableAsObjectKey(nameCanon)) {

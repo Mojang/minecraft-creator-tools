@@ -1,0 +1,158 @@
+{
+  "fields": [
+    {
+      "id": "dispense_on",
+      "description": "List of block descriptors of the blocks that this item can be dispensed on. If left empty, all blocks will be allowed.",
+      "dataType": 15,
+      "subForm": {
+        "id": "dispense_on",
+        "title": "Dispense On",
+        "fields": [
+          {
+            "id": "name",
+            "title": "Name",
+            "dataType": 2
+          },
+          {
+            "id": "states",
+            "title": "States",
+            "dataType": 0,
+            "alternates": [
+              {
+                "id": "states",
+                "dataType": 2
+              },
+              {
+                "id": "states",
+                "dataType": 1
+              }
+            ]
+          },
+          {
+            "id": "tags",
+            "title": "Tags",
+            "dataType": 2
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "dispense_on",
+          "dataType": 2
+        },
+        {
+          "id": "dispense_on",
+          "dataType": 16
+        }
+      ],
+      "title": "dispense_on"
+    },
+    {
+      "id": "entity",
+      "title": "Entity",
+      "description": "The entity to be placed in the world.",
+      "dataType": 16,
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
+        }
+      ],
+      "samples": {
+        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_turtle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:entity_placer/",
+            "content": "minecraft:turtle"
+          }
+        ]
+      }
+    },
+    {
+      "id": "use_on",
+      "description": "List of block descriptors of the blocks that this item can be used on. If left empty, all blocks will be allowed.",
+      "dataType": 15,
+      "subForm": {
+        "id": "use_on",
+        "title": "Use On",
+        "fields": [
+          {
+            "id": "name",
+            "title": "Name",
+            "dataType": 2
+          },
+          {
+            "id": "states",
+            "title": "States",
+            "dataType": 0,
+            "alternates": [
+              {
+                "id": "states",
+                "dataType": 2
+              },
+              {
+                "id": "states",
+                "dataType": 1
+              }
+            ]
+          },
+          {
+            "id": "tags",
+            "title": "Tags",
+            "dataType": 2
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "use_on",
+          "dataType": 2
+        },
+        {
+          "id": "use_on",
+          "dataType": 16
+        }
+      ],
+      "samples": {
+        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_turtle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:entity_placer/",
+            "content": [
+              "minecraft:sand"
+            ]
+          }
+        ]
+      },
+      "title": "use_on"
+    }
+  ],
+  "description": "Allows an item to place entities into the world. Additionally, in version 1.19.80 and above, the component allows the item to set the spawn type of a monster spawner.",
+  "samples": {
+    "sample": [
+      {
+        "path": "sample",
+        "content": {
+          "entity": "minecraft:spider",
+          "dispense_on": [
+            "minecraft:web"
+          ],
+          "use_on": [
+            "minecraft:web"
+          ]
+        }
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/my_sword_turtle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:entity_placer/",
+        "content": {
+          "entity": "minecraft:turtle",
+          "use_on": [
+            "minecraft:sand"
+          ]
+        }
+      }
+    ]
+  },
+  "title": "Item Components Entity Placer",
+  "id": "minecraft:entity_placer"
+}

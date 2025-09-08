@@ -125,11 +125,13 @@ export default class SkinManifestDefinition {
     if (file.manager !== undefined && file.manager instanceof SkinManifestDefinition) {
       rmj = file.manager as SkinManifestDefinition;
 
-      if (!rmj.isLoaded && loadHandler) {
-        rmj.onLoaded.subscribe(loadHandler);
-      }
+      if (!rmj.isLoaded) {
+        if (loadHandler) {
+          rmj.onLoaded.subscribe(loadHandler);
+        }
 
-      await rmj.load();
+        await rmj.load();
+      }
     }
 
     return rmj;
@@ -202,7 +204,9 @@ export default class SkinManifestDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

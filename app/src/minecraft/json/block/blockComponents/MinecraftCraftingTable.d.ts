@@ -58,7 +58,7 @@ export default interface MinecraftCraftingTable {
    * Block Fabricator: ["graywave_fabricator"]
    *
    */
-  crafting_tags: string[];
+  crafting_tags?: string[];
 
   /**
    * @remarks
@@ -74,6 +74,6 @@ export default interface MinecraftCraftingTable {
    * Block Fabricator: "Fabricator"
    *
    */
-  table_name: string;
+  table_name?: string;
 
 }

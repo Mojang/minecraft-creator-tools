@@ -203,14 +203,18 @@ export default class CartoSettingsPanel extends Component<ICartoSettingsPanelPro
         openFolderCtrl = <Button onClick={this._handleSelectFolderClick} content="Open folder" />;
       }
       serverProps.push(
-        <div className="csp-label csp-namelabel" key="csp-nl">
+        <div className="csp-label csp-namelabel" key="csp-nl" id="csp-nl">
           Dedicated Server Path
         </div>
       );
 
       serverProps.push(
         <div className="csp-nameinput" key="csp-ni">
-          <Input value={this.state.serverFolderPath} onChange={this._handleServerPathChanged} />
+          <Input
+            value={this.state.serverFolderPath}
+            onChange={this._handleServerPathChanged}
+            aria-labelledby="csp-nl"
+          />
           {openFolderCtrl}
         </div>
       );

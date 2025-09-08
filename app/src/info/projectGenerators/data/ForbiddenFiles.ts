@@ -13,6 +13,7 @@ const SharedBPRPExtensions = [
   ".tga",
   ".jpg",
   ".jpeg",
+  ".hdr",
   ".wav",
   ".ogg",
   ".fsb",

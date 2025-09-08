@@ -2,5 +2,5 @@
   "id": "query.max_durability",
   "fields": [],
   "description": "Returns the max durability an item can take.",
-  "title": "Max Durability Query"
+  "title": "Max Durability"
 }

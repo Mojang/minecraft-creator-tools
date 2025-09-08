@@ -1,13 +1,14 @@
 {
+  "id": "minecraft:durability",
   "fields": [
     {
       "id": "damage_chance",
       "title": "Damage Chance",
       "description": "Specifies the percentage chance of this item losing durability. Default is set to 100. Defined as an int range with min and max value.",
       "dataType": 16,
-      "subFormId": "item/intrange",
+      "subFormId": "item_components/intrange",
       "samples": {
-        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_chuck.json": [
+        "/samples/custom_items/behavior_packs/custom_item/items/my_sword.json": [
           {
             "path": "/minecraft:item/components/minecraft:durability/",
             "content": {
@@ -16,7 +17,7 @@
             }
           }
         ],
-        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_shoot.json": [
+        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_chuck.json": [
           {
             "path": "/minecraft:item/components/minecraft:durability/",
             "content": {
@@ -52,6 +53,18 @@
       "dataType": 0,
       "isRequired": true,
       "samples": {
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/axe_turret_kit.item.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:durability/",
+            "content": 251
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/bow_turret_kit.item.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:durability/",
+            "content": 251
+          }
+        ],
         "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
           {
             "path": "/minecraft:item/components/minecraft:durability/",
@@ -62,6 +75,12 @@
           {
             "path": "/minecraft:item/components/minecraft:durability/",
             "content": 200
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/my_sword.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:durability/",
+            "content": 36
           }
         ],
         "/samples/custom_items/behavior_packs/custom_item/items/my_sword_chuck.json": [
@@ -87,30 +106,13 @@
             "path": "/minecraft:item/components/minecraft:durability/",
             "content": 2
           }
-        ],
-        "/samples/custom_items/behavior_packs/custom_item/items/my_sword.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:durability/",
-            "content": 36
-          }
         ]
       }
     }
   ],
-  "description": "Sets how much damage the item can take before breaking, and allows the item to be combined at an anvil, grindstone, or crafting table.",
+  "description": "The durability item component specifies how much damage the item takes before breaking, and allows the item to be combined to repair or augment them.",
+  "title": "Item Durability",
   "samples": {
-    "sample": [
-      {
-        "path": "sample",
-        "content": {
-          "damage_chance": {
-            "min": 10,
-            "max": 50
-          },
-          "max_durability": 36
-        }
-      }
-    ],
     "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/axe_turret_kit.item.json": [
       {
         "path": "/minecraft:item/components/minecraft:durability/",
@@ -191,6 +193,18 @@
         }
       }
     ],
+    "/samples/custom_items/behavior_packs/custom_item/items/my_sword.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:durability/",
+        "content": {
+          "damage_chance": {
+            "min": 10,
+            "max": 50
+          },
+          "max_durability": 36
+        }
+      }
+    ],
     "/samples/custom_items/behavior_packs/custom_item/items/my_sword_chuck.json": [
       {
         "path": "/minecraft:item/components/minecraft:durability/",
@@ -250,20 +264,6 @@
           "max_durability": 2
         }
       }
-    ],
-    "/samples/custom_items/behavior_packs/custom_item/items/my_sword.json": [
-      {
-        "path": "/minecraft:item/components/minecraft:durability/",
-        "content": {
-          "damage_chance": {
-            "min": 10,
-            "max": 50
-          },
-          "max_durability": 36
-        }
-      }
     ]
-  },
-  "title": "Minecraft Durability Item",
-  "id": "minecraft:durability"
+  }
 }

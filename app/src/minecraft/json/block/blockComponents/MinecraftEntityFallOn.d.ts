@@ -41,6 +41,6 @@ export default interface MinecraftEntityFallOn {
    * Fall Distance Of 2 Blocks: 2
    *
    */
-  minimum_fall_distance: number;
+  minimum_fall_distance?: number;
 
 }

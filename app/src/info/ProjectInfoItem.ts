@@ -357,6 +357,23 @@ export default class ProjectInfoItem {
     setVal[measureName] = (setVal[measureName] ?? 0) + incrementalValue;
   }
 
+  setFeature(setName: string, measureName: string, value: number) {
+    if (this.#data.fs === undefined) {
+      this.#data.fs = {};
+    }
+
+    if (!Utilities.isUsableAsObjectKey(setName)) {
+      return;
+    }
+
+    let setVal = this.#data.fs[setName];
+    if (setVal === undefined) {
+      setVal = this.#data.fs[setName] = {};
+    }
+
+    setVal[measureName] = value;
+  }
+
   constructor(
     itemType: InfoItemType,
     generatorId: string,

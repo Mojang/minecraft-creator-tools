@@ -92,33 +92,30 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     };
   }
 
-  static getDerivedStateFromProps(props: IEntityTypeEditorProps, state: IEntityTypeEditorState) {
-    if (state === undefined || state === null) {
-      state = {
-        fileToEdit: props.file,
-        isLoaded: false,
-        mode: COMPONENTS_MODE_DEFAULT,
-        selectedItem: undefined,
-      };
-
-      return state;
-    }
-
-    if (props.file !== state.fileToEdit) {
-      state.fileToEdit = props.file;
-      state.isLoaded = false;
-
-      return state;
-    }
-
-    return null; // No change to state
+  componentDidMount(): void {
+    this._updateManager();
   }
 
-  componentDidUpdate(prevProps: IEntityTypeEditorProps, prevState: IEntityTypeEditorState) {
-    this._updateManager(true);
+  componentDidUpdate(
+    prevProps: Readonly<IEntityTypeEditorProps>,
+    prevState: Readonly<IEntityTypeEditorState>,
+    snapshot?: any
+  ): void {
+    if (this.state && this.props.file !== this.state.fileToEdit) {
+      this.setState(
+        {
+          fileToEdit: this.props.file,
+          isLoaded: false,
+          selectedItem: this.state.selectedItem,
+        },
+        () => {
+          this._updateManager();
+        }
+      );
+    }
   }
 
-  async _updateManager(setState: boolean) {
+  async _updateManager() {
     let didLoadDb = false;
 
     if (Database.uxCatalog === null) {
@@ -134,6 +131,8 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     if (this.state !== undefined && this.state.fileToEdit !== undefined) {
       await EntityTypeDefinition.ensureOnFile(this.state.fileToEdit, this._handleEntityTypeLoaded);
     }
+
+    await this.props.item.ensureDependencies();
 
     if (
       (this.state.fileToEdit &&
@@ -169,7 +168,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
-      if (file.manager !== null) {
+      if (file.manager) {
         const et = file.manager as EntityTypeDefinition;
 
         et.persist();
@@ -480,7 +479,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
 
     const et = this.state.fileToEdit.manager as EntityTypeDefinition;
 
-    if (et._data === undefined) {
+    if (et.data === undefined) {
       return <div className="ete-message">Loading mob definition...</div>;
     }
 
@@ -745,7 +744,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
               readOnly={this.props.readOnly}
               theme={this.props.theme}
               displayHeader={false}
-              projectItem={resourceItem}
+              item={resourceItem}
               project={this.props.project}
               file={resourceItem.primaryFile}
               heightOffset={this.props.heightOffset + VISUALS_MODE_HEIGHT_OFFSET}

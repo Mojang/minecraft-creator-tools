@@ -61,11 +61,13 @@ export default class JsonUIResourceDefinition {
     if (file.manager !== undefined && file.manager instanceof JsonUIResourceDefinition) {
       et = file.manager as JsonUIResourceDefinition;
 
-      if (!et.isLoaded && loadHandler) {
-        et.onLoaded.subscribe(loadHandler);
-      }
+      if (!et.isLoaded) {
+        if (loadHandler) {
+          et.onLoaded.subscribe(loadHandler);
+        }
 
-      await et.load();
+        await et.load();
+      }
     }
 
     return et;
@@ -73,6 +75,11 @@ export default class JsonUIResourceDefinition {
 
   persist() {
     if (this._file === undefined) {
+      return;
+    }
+
+    if (!this.jsonUIScreen) {
+      Log.unexpectedUndefined("ITRDP");
       return;
     }
 
@@ -145,7 +152,9 @@ export default class JsonUIResourceDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
       return;
@@ -206,7 +215,9 @@ export default class JsonUIResourceDefinition {
           packRootFolder &&
           textureList
         ) {
-          await candItem.ensureStorage();
+          if (!candItem.isContentLoaded) {
+            await candItem.loadContent();
+          }
 
           if (candItem.primaryFile) {
             let relativePath = TextureDefinition.canonicalizeTexturePath(

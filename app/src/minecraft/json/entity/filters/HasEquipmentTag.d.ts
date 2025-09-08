@@ -29,25 +29,25 @@ export default interface HasEquipmentTag {
    * @remarks
    * (Optional) The equipment location to test
    */
-  domain: string;
+  domain?: string;
 
   /**
    * @remarks
    * (Optional) The comparison to apply with 'value'.
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
    * (Optional) The subject of this filter test.
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
    * (Required) The item name to look for
    */
-  value: string;
+  value?: string;
 
 }
 
@@ -61,6 +61,7 @@ export enum HasEquipmentTagDomain {
   Head = `head`,
   Inventory = `inventory`,
   Leg = `leg`,
+  MainHand = `main_hand`,
   Torso = `torso`
 }
 

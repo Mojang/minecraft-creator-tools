@@ -135,7 +135,9 @@ export default class LevelDb implements IErrorable {
     for (let i = 0; i < ldbFileInfoSorted.length; i++) {
       const ldbFile = ldbFileInfoSorted[i].file;
 
-      await ldbFile.loadContent(false);
+      if (!ldbFile.isContentLoaded) {
+        await ldbFile.loadContent(false);
+      }
 
       const content = ldbFile.content;
 

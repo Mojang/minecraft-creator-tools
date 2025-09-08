@@ -157,7 +157,7 @@ export default class NodeFolder extends FolderBase implements IFolder {
     return candFolder;
   }
 
-  _addExistingFolder(folder: NodeFolder) {
+  _addExistingFolderToParent(folder: NodeFolder) {
     const nameCanon = StorageUtilities.canonicalizeName(folder.name);
 
     this.folders[nameCanon] = folder;
@@ -184,12 +184,12 @@ export default class NodeFolder extends FolderBase implements IFolder {
         throw new Error("Could not move folder; folder exists at specified path: " + newStorageRelativePath);
       }
 
-      this._parentFolder._clearExistingFolder(this);
+      this._parentFolder._removeExistingFolderFromParent(this);
 
       this._parentFolder = newParentFolder as NodeFolder;
 
       this._name = newFolderName;
-      (newParentFolder as NodeFolder)._addExistingFolder(this);
+      (newParentFolder as NodeFolder)._addExistingFolderToParent(this);
     }
 
     this._name = newFolderName;
@@ -226,7 +226,9 @@ export default class NodeFolder extends FolderBase implements IFolder {
     if (this.files["files.json"] !== undefined) {
       const file = this.files["files.json"];
 
-      await file.loadContent(false);
+      if (!file.isContentLoaded) {
+        await file.loadContent(false);
+      }
 
       const obj: IListingsFile | undefined = StorageUtilities.getJsonObject(file);
 
@@ -459,7 +461,9 @@ export default class NodeFolder extends FolderBase implements IFolder {
     if (this.files["files.json"] !== undefined) {
       const file = this.files["files.json"];
 
-      await file.loadContent(false);
+      if (!file.isContentLoaded) {
+        await file.loadContent(false);
+      }
 
       const obj: IListingsFile | undefined = StorageUtilities.getJsonObject(file);
 
@@ -477,7 +481,9 @@ export default class NodeFolder extends FolderBase implements IFolder {
             }
 
             if (file) {
-              await file.loadContent();
+              if (!file.isContentLoaded) {
+                await file.loadContent();
+              }
 
               if (file.content !== null) {
                 const targetFile = await destFolder.ensureFileFromRelativePath(

@@ -33,6 +33,6 @@ export default interface MinecraftLeashableTo {
    * Allows players to retrieve entities that are leashed to this
    * entity.
    */
-  can_retrieve_from: boolean;
+  can_retrieve_from?: boolean;
 
 }

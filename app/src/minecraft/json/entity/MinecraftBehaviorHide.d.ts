@@ -42,7 +42,7 @@ export default interface MinecraftBehaviorHide {
    *
    *
    */
-  duration: number;
+  duration?: number;
 
   /**
    * @remarks
@@ -53,7 +53,7 @@ export default interface MinecraftBehaviorHide {
    *
    *
    */
-  poi_type: string;
+  poi_type?: string;
 
   /**
    * @remarks
@@ -61,7 +61,7 @@ export default interface MinecraftBehaviorHide {
    * priority, the sooner this behavior will be executed as a 
    * goal.
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -72,13 +72,13 @@ export default interface MinecraftBehaviorHide {
    *
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
    * The cooldown time in seconds before the goal can be reused after a
    * internal failure or timeout condition.
    */
-  timeout_cooldown: number;
+  timeout_cooldown?: number;
 
 }

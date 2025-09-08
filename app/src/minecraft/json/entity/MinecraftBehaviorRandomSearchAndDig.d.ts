@@ -83,7 +83,7 @@ export default interface MinecraftBehaviorRandomSearchAndDig {
    * @remarks
    * Goal cooldown range in seconds.
    */
-  cooldown_range: number[];
+  cooldown_range?: number[];
 
   /**
    * @remarks
@@ -93,7 +93,7 @@ export default interface MinecraftBehaviorRandomSearchAndDig {
    * Sniffer: [8,10]
    *
    */
-  digging_duration_range: number[];
+  digging_duration_range?: number[];
 
   /**
    * @remarks
@@ -104,7 +104,7 @@ export default interface MinecraftBehaviorRandomSearchAndDig {
    * Sniffer: 5
    *
    */
-  find_valid_position_retries: number;
+  find_valid_position_retries?: number;
 
   /**
    * @remarks
@@ -115,7 +115,7 @@ export default interface MinecraftBehaviorRandomSearchAndDig {
    * Sniffer: 2
    *
    */
-  goal_radius: number;
+  goal_radius?: number;
 
   /**
    * @remarks
@@ -126,7 +126,7 @@ export default interface MinecraftBehaviorRandomSearchAndDig {
    * Sniffer: "loot_tables/gameplay/entities/sniffer_seeds.json"
    *
    */
-  item_table: string;
+  item_table?: string;
 
   /**
    * @remarks
@@ -137,7 +137,7 @@ export default interface MinecraftBehaviorRandomSearchAndDig {
    * Sniffer: {"event":"on_digging_start","target":"self"}
    *
    */
-  on_digging_start: jsoncommon.MinecraftEventTrigger;
+  on_digging_start?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -147,7 +147,7 @@ export default interface MinecraftBehaviorRandomSearchAndDig {
    * Sniffer: {"event":"on_fail_during_digging","target":"self"}
    *
    */
-  on_fail_during_digging: jsoncommon.MinecraftEventTrigger;
+  on_fail_during_digging?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -157,7 +157,7 @@ export default interface MinecraftBehaviorRandomSearchAndDig {
    * Sniffer: {"event":"on_fail_during_searching","target":"self"}
    *
    */
-  on_fail_during_searching: jsoncommon.MinecraftEventTrigger;
+  on_fail_during_searching?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -167,7 +167,7 @@ export default interface MinecraftBehaviorRandomSearchAndDig {
    * Sniffer: {"event":"on_item_found","target":"self"}
    *
    */
-  on_item_found: jsoncommon.MinecraftEventTrigger;
+  on_item_found?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -177,7 +177,7 @@ export default interface MinecraftBehaviorRandomSearchAndDig {
    * Sniffer: {"event":"on_searching_start","target":"self"}
    *
    */
-  on_searching_start: jsoncommon.MinecraftEventTrigger;
+  on_searching_start?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -187,7 +187,7 @@ export default interface MinecraftBehaviorRandomSearchAndDig {
    * Sniffer: {"event":"on_search_and_digging_success","target":"self"}
    *
    */
-  on_success: jsoncommon.MinecraftEventTrigger;
+  on_success?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -199,7 +199,7 @@ export default interface MinecraftBehaviorRandomSearchAndDig {
    * Sniffer: 5
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -210,7 +210,7 @@ export default interface MinecraftBehaviorRandomSearchAndDig {
    * Sniffer: 20
    *
    */
-  search_range_xz: number;
+  search_range_xz?: number;
 
   /**
    * @remarks
@@ -221,7 +221,7 @@ export default interface MinecraftBehaviorRandomSearchAndDig {
    * Sniffer: 3
    *
    */
-  search_range_y: number;
+  search_range_y?: number;
 
   /**
    * @remarks
@@ -231,7 +231,7 @@ export default interface MinecraftBehaviorRandomSearchAndDig {
    * Sniffer: 6
    *
    */
-  spawn_item_after_seconds: number;
+  spawn_item_after_seconds?: number;
 
   /**
    * @remarks
@@ -242,7 +242,7 @@ export default interface MinecraftBehaviorRandomSearchAndDig {
    * Sniffer: 2.25
    *
    */
-  spawn_item_pos_offset: number;
+  spawn_item_pos_offset?: number;
 
   /**
    * @remarks
@@ -252,7 +252,7 @@ export default interface MinecraftBehaviorRandomSearchAndDig {
    * Sniffer: 1.25
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -263,13 +263,13 @@ export default interface MinecraftBehaviorRandomSearchAndDig {
    * Sniffer: ["minecraft:dirt","minecraft:coarse_dirt","minecraft:grass","minecraft:podzol","minecraft:dirt_with_roots","minecraft:moss_block","minecraft:pale_moss_block","minecraft:mud","minecraft:muddy_mangrove_roots"]
    *
    */
-  target_blocks: string[];
+  target_blocks?: string[];
 
   /**
    * @remarks
    * Dig target position offset from the feet position of the mob in
    * their facing direction.
    */
-  target_dig_position_offset: number;
+  target_dig_position_offset?: number;
 
 }

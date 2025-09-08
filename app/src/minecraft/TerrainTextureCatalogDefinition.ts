@@ -105,7 +105,9 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
     const terrainTextureItems = project.getItemsByType(ProjectItemType.terrainTextureCatalogResourceJson);
 
     if (terrainTextureItems && terrainTextureItems.length > 0) {
-      await terrainTextureItems[0].ensureStorage();
+      if (!terrainTextureItems[0].isContentLoaded) {
+        await terrainTextureItems[0].loadContent();
+      }
 
       if (terrainTextureItems[0].primaryFile) {
         return await TerrainTextureCatalogDefinition.ensureOnFile(terrainTextureItems[0].primaryFile);
@@ -165,11 +167,13 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
     if (file.manager !== undefined && file.manager instanceof TerrainTextureCatalogDefinition) {
       et = file.manager as TerrainTextureCatalogDefinition;
 
-      if (!et.isLoaded && loadHandler) {
-        et.onLoaded.subscribe(loadHandler);
-      }
+      if (!et.isLoaded) {
+        if (loadHandler) {
+          et.onLoaded.subscribe(loadHandler);
+        }
 
-      await et.load();
+        await et.load();
+      }
     }
 
     return et;
@@ -309,7 +313,9 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
 
     for (const candItem of itemsCopy) {
       if (candItem.itemType === ProjectItemType.texture && packRootFolder && texturePathList) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
           let relativePath = this.getRelativePath(candItem.primaryFile, packRootFolder);
@@ -346,7 +352,9 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
       return;

@@ -44,13 +44,13 @@ export default interface InWaterOrRain {
    *
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
    * (Optional) The subject of this filter test.
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -60,7 +60,7 @@ export default interface InWaterOrRain {
    *
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -71,7 +71,7 @@ export default interface InWaterOrRain {
    *
    *
    */
-  value: boolean;
+  value?: boolean;
 
 }
 

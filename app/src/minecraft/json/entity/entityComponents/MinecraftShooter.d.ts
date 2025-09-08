@@ -235,7 +235,7 @@ export default interface MinecraftShooter {
    * Witch: 23
    *
    */
-  aux_val: number;
+  aux_val?: number;
 
   /**
    * @remarks
@@ -251,7 +251,7 @@ export default interface MinecraftShooter {
    * Drowned: "minecraft:thrown_trident"
    *
    */
-  def: string;
+  def?: string;
 
   /**
    * @remarks
@@ -263,7 +263,7 @@ export default interface MinecraftShooter {
    * Witch: true
    *
    */
-  magic: boolean;
+  magic?: boolean;
 
   /**
    * @remarks
@@ -278,7 +278,7 @@ export default interface MinecraftShooter {
    * Bow Turret: 7
    *
    */
-  power: number;
+  power?: number;
 
   /**
    * @remarks
@@ -290,7 +290,7 @@ export default interface MinecraftShooter {
    * Witch: [{"def":"minecraft:splash_potion","aux_val":21,"filters":{"all_of":[{"test":"is_raider","subject":"other","value":true},{"test":"actor_health","subject":"other","value":4,"operator":"<="}]},"lose_target":true},{"def":"minecraft:splash_potion","aux_val":28,"filters":{"all_of":[{"test":"is_raider","subject":"other","value":true}]},"lose_target":true},{"def":"minecraft:splash_potion","aux_val":17,"filters":{"all_of":[{"test":"target_distance","subject":"self","value":8,"operator":">="},{"none_of":[{"test":"has_mob_effect","subject":"other","value":"slowness"}]}]}},{"def":"minecraft:splash_potion","aux_val":25,"filters":{"all_of":[{"test":"actor_health","subject":"other","value":8,"operator":">="},{"none_of":[{"test":"has_mob_effect","subject":"other","value":"poison"}]}]}},{"def":"minecraft:splash_potion","aux_val":34,"filters":{"all_of":[{"test":"target_distance","subject":"self","value":3,"operator":"<="},{"none_of":[{"test":"has_mob_effect","subject":"other","value":"weakness"}]}]},"chance":0.25}]
    *
    */
-  projectiles: string[];
+  projectiles?: string[];
 
   /**
    * @remarks
@@ -304,6 +304,6 @@ export default interface MinecraftShooter {
    * Witch: "throw"
    *
    */
-  sound: string;
+  sound?: string;
 
 }

@@ -68,19 +68,19 @@ export default interface InCaravan {
    *
    *
    */
-  "minecraft:damage_sensor": InCaravanMinecraftDamageSensor;
+  "minecraft:damage_sensor"?: InCaravanMinecraftDamageSensor;
 
   /**
    * @remarks
    * (Optional) The comparison to apply with 'value'.
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
    * (Optional) The subject of this filter test.
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -90,13 +90,13 @@ export default interface InCaravan {
    *
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
    * (Optional) true or false.
    */
-  value: boolean;
+  value?: boolean;
 
 }
 
@@ -113,7 +113,7 @@ export interface InCaravanMinecraftDamageSensor {
    * Llama: {"cause":"all","deals_damage":"yes"}
    *
    */
-  triggers: string;
+  triggers?: string;
 
 }
 

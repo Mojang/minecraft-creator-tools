@@ -56,6 +56,8 @@
     "animationCount": 0,
     "textureCount": 0,
     "textureTexelSize": 0,
+    "vanillaGameTextureCoverage": 0,
+    "vanillaGameTextureCount": 0,
     "minimumSupportablePerformanceTier": 0,
     "invalidCommandSyntaxCount": 0,
     "linesWithSlashCount": 0,
@@ -70,6 +72,9 @@
     "deprecatedTexture": 0,
     "restrictedPolyMeshFound": 0,
     "jsonParseError": 0,
+    "invalidManifestJson": 0,
+    "missingResourcePackDependencies": 0,
+    "internalProcessingErrors": 0,
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
@@ -119,34 +124,27 @@
     "testSuccessCount": 5,
     "testFailCount": 2,
     "testNotApplicableCount": 0,
-    "errorSummary": "ERROR: [CADDONREQ168] (/Content/resource_packs/aop_mobsrp/manifest.json) Did not find exactly one dependency on the corresponding behavior pack in the resource pack manifest.\r\nERROR: [CADDONREQ102] Found an cooperative add-on common name folder 'entity' in a parent folder pack\\textures. Should be named 'creatorshortname' and not a common term: entity\r\nERROR: [CADDONREQ104] Found a loose file 'biceson.png' in textures\\entity. Files should only be in the folder textures\\entity\\<mygamename>: biceson.png\r\nERROR: [CADDONREQ104] Found a loose file 'nardolphle.png' in textures\\entity. Files should only be in the folder textures\\entity\\<mygamename>: nardolphle.png\r\nERROR: [CADDONREQ104] Found a loose file 'sheepomelon.png' in textures\\entity. Files should only be in the folder textures\\entity\\<mygamename>: sheepomelon.png\r\nERROR: [CADDONIREQ111] (/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json) Behavior pack animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.sheepomelon.spawn\r\nERROR: [CADDONIREQ111] (/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json) Behavior pack animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.sheepomelon.sheared\r\nERROR: [CADDONIREQ170] (/Content/resource_packs/aop_mobsrp/manifest.json) Resource pack manifest does not specify that header/pack_scope that should be 'world'\r\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.biceson.baby_transform\r\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.biceson.move\r\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.biceson.walk\r\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.nardolphle.move\r\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.sheepomelon.baby_transform\r\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.sheepomelon.grazing\r\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.sheepomelon.walk",
+    "errorSummary": "ERROR: [CADDONIREQ111] (/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json) Behavior pack animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.sheepomelon.sheared\nERROR: [CADDONIREQ111] (/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json) Behavior pack animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.sheepomelon.spawn\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.biceson.baby_transform\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.biceson.move\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.biceson.walk\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.nardolphle.move\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.sheepomelon.baby_transform\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.sheepomelon.grazing\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.sheepomelon.setup\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.sheepomelon.walk\nERROR: [CADDONIREQ170] (/Content/resource_packs/aop_mobsrp/manifest.json) Resource pack manifest does not specify that header/pack_scope that should be 'world'\nERROR: [CADDONREQ102] Found an cooperative add-on common name folder 'entity' in a parent folder pack\\textures. Should be named 'creatorshortname' and not a common term: entity\nERROR: [CADDONREQ104] Found a loose file 'biceson.png' in textures\\entity. Files should only be in the folder textures\\entity\\<mygamename>: biceson.png\nERROR: [CADDONREQ104] Found a loose file 'nardolphle.png' in textures\\entity. Files should only be in the folder textures\\entity\\<mygamename>: nardolphle.png\nERROR: [CADDONREQ104] Found a loose file 'sheepomelon.png' in textures\\entity. Files should only be in the folder textures\\entity\\<mygamename>: sheepomelon.png",
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
-    "testFailSummary": "TESTFAIL: [CADDONREQ000] Found 5 errors for Cooperative Add-On Requirements (CADDONREQ).\r\nTESTFAIL: [CADDONIREQ000] Found 11 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).",
+    "testFailSummary": "TESTFAIL: [CADDONIREQ000] Found 11 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).\nTESTFAIL: [CADDONREQ000] Found 5 errors for Cooperative Add-On Requirements (CADDONREQ).",
     "summary": {
-      "PACKSIZE": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully",
-          "testCompleteSuccesses": 1
+      "CADDONIREQ": {
+        "0": {
+          "defaultMessage": "Found 11 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).",
+          "testCompleteFails": 1
         },
-        "101": {
-          "title": "Overall Size"
+        "111": {
+          "defaultMessage": "Behavior pack animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name",
+          "errors": 2
         },
-        "102": {
-          "title": "File Count"
+        "131": {
+          "defaultMessage": "Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name",
+          "errors": 8
         },
-        "103": {
-          "title": "Folder Count"
-        },
-        "104": {
-          "title": "Content Size"
-        },
-        "105": {
-          "title": "Content File Count"
-        },
-        "106": {
-          "title": "Content Folder Count"
+        "170": {
+          "defaultMessage": "Resource pack manifest does not specify that header/pack_scope that should be 'world'",
+          "errors": 1
         }
       },
       "CADDONREQ": {
@@ -175,16 +173,6 @@
           "defaultMessage": "Behavior pack manifest found."
         }
       },
-      "TEXTURE": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Texture Validation (TEXTURE) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "101": {
-          "title": "Textures"
-        }
-      },
       "MINENGINEVER": {
         "1": {
           "title": "1",
@@ -198,6 +186,48 @@
         "614": {
           "title": "614",
           "defaultMessage": "Resource pack manifest format_version"
+        }
+      },
+      "PACKSIZE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Overall Size"
+        },
+        "102": {
+          "title": "File Count"
+        },
+        "103": {
+          "title": "Folder Count"
+        },
+        "104": {
+          "title": "Content Size"
+        },
+        "105": {
+          "title": "Content File Count"
+        },
+        "106": {
+          "title": "Content Folder Count"
+        }
+      },
+      "STRICT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "TEXTURE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Texture Validation (TEXTURE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Textures"
         }
       },
       "WORLDDATA": {
@@ -223,215 +253,14 @@
         "126": {
           "defaultMessage": "Level Dat Experiments"
         }
-      },
-      "CADDONIREQ": {
-        "0": {
-          "defaultMessage": "Found 11 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).",
-          "testCompleteFails": 1
-        },
-        "111": {
-          "defaultMessage": "Behavior pack animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name",
-          "errors": 2
-        },
-        "131": {
-          "defaultMessage": "Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name",
-          "errors": 8
-        },
-        "170": {
-          "defaultMessage": "Resource pack manifest does not specify that header/pack_scope that should be 'world'",
-          "errors": 1
-        }
-      },
-      "STRICT": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully",
-          "testCompleteSuccesses": 1
-        }
       }
     }
   },
   "items": [
     {
-      "iTp": 7,
-      "gId": "PACKSIZE",
-      "gIx": 101,
-      "d": 7011149
-    },
-    {
-      "iTp": 7,
-      "gId": "PACKSIZE",
-      "gIx": 102,
-      "d": 51
-    },
-    {
-      "iTp": 7,
-      "gId": "PACKSIZE",
-      "gIx": 103,
-      "d": 24
-    },
-    {
-      "iTp": 7,
-      "gId": "PACKSIZE",
-      "gIx": 104,
-      "d": 50502
-    },
-    {
-      "iTp": 7,
-      "gId": "PACKSIZE",
-      "gIx": 105,
-      "d": 35
-    },
-    {
-      "iTp": 7,
-      "gId": "PACKSIZE",
-      "gIx": 106,
-      "d": 17
-    },
-    {
-      "iTp": 2,
-      "gId": "CADDONREQ",
-      "gIx": 200,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
-    },
-    {
-      "iTp": 3,
-      "gId": "CADDONREQ",
-      "gIx": 168,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
-    },
-    {
-      "iTp": 3,
-      "gId": "CADDONREQ",
-      "gIx": 102,
-      "d": "entity"
-    },
-    {
-      "iTp": 3,
-      "gId": "CADDONREQ",
-      "gIx": 104,
-      "d": "biceson.png"
-    },
-    {
-      "iTp": 3,
-      "gId": "CADDONREQ",
-      "gIx": 104,
-      "m": "Found a loose file 'nardolphle.png' in textures\\entity. Files should only be in the folder textures\\entity\\<mygamename>",
-      "d": "nardolphle.png"
-    },
-    {
-      "iTp": 3,
-      "gId": "CADDONREQ",
-      "gIx": 104,
-      "m": "Found a loose file 'sheepomelon.png' in textures\\entity. Files should only be in the folder textures\\entity\\<mygamename>",
-      "d": "sheepomelon.png"
-    },
-    {
-      "iTp": 7,
-      "gId": "TEXTURE",
-      "gIx": 101,
-      "fs": {
-        "Entity Resource Count": {
-          "Count": 3
-        },
-        "Texture References": {
-          "Count": 3
-        },
-        "Entity References": {
-          "Count": 3
-        },
-        "File Count": {
-          "Count": 3
-        },
-        "Unique Texture Handles (estimated)": {
-          "Count": 3
-        },
-        "Unique Texture Paths": {
-          "Count": 3
-        },
-        "Unique Particle Texture Paths": {
-          "Count": 0
-        },
-        "Unique Particle Texture Vanilla Paths": {
-          "Count": 1
-        },
-        "Unique Entity Texture Paths": {
-          "Count": 3
-        }
-      }
-    },
-    {
-      "iTp": 2,
-      "gId": "MINENGINEVER",
-      "gIx": 605,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
-      "d": [
-        1,
-        20,
-        0
-      ]
-    },
-    {
-      "iTp": 2,
-      "gId": "MINENGINEVER",
-      "gIx": 614,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
-      "d": [
-        1,
-        20,
-        0
-      ]
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 121,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 122,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 123,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
-      "fs": {
-        "say": {
-          "Count": 1
-        },
-        "summon": {
-          "Count": 1
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 124,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 125,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 126,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
-    },
-    {
-      "iTp": 3,
+      "iTp": 0,
       "gId": "CADDONIREQ",
-      "gIx": 111,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
-      "d": "animation.sheepomelon.spawn"
+      "gIx": 0
     },
     {
       "iTp": 3,
@@ -441,46 +270,11 @@
       "d": "animation.sheepomelon.sheared"
     },
     {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 121,
-      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 122,
-      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 123,
-      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 124,
-      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 125,
-      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 126,
-      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
-    },
-    {
       "iTp": 3,
       "gId": "CADDONIREQ",
-      "gIx": 170,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
+      "gIx": 111,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
+      "d": "animation.sheepomelon.spawn"
     },
     {
       "iTp": 3,
@@ -529,14 +323,90 @@
       "gId": "CADDONIREQ",
       "gIx": 131,
       "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json",
-      "d": "animation.sheepomelon.walk"
+      "d": "animation.sheepomelon.setup"
     },
     {
       "iTp": 3,
       "gId": "CADDONIREQ",
       "gIx": 131,
       "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json",
-      "d": "animation.sheepomelon.setup"
+      "d": "animation.sheepomelon.walk"
+    },
+    {
+      "iTp": 3,
+      "gId": "CADDONIREQ",
+      "gIx": 170,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
+    },
+    {
+      "iTp": 0,
+      "gId": "CADDONREQ",
+      "gIx": 0
+    },
+    {
+      "iTp": 3,
+      "gId": "CADDONREQ",
+      "gIx": 102,
+      "d": "entity"
+    },
+    {
+      "iTp": 3,
+      "gId": "CADDONREQ",
+      "gIx": 104,
+      "d": "biceson.png"
+    },
+    {
+      "iTp": 3,
+      "gId": "CADDONREQ",
+      "gIx": 104,
+      "m": "Found a loose file 'nardolphle.png' in textures\\entity. Files should only be in the folder textures\\entity\\<mygamename>",
+      "d": "nardolphle.png"
+    },
+    {
+      "iTp": 3,
+      "gId": "CADDONREQ",
+      "gIx": 104,
+      "m": "Found a loose file 'sheepomelon.png' in textures\\entity. Files should only be in the folder textures\\entity\\<mygamename>",
+      "d": "sheepomelon.png"
+    },
+    {
+      "iTp": 3,
+      "gId": "CADDONREQ",
+      "gIx": 168,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "CADDONREQ",
+      "gIx": 200,
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
+    },
+    {
+      "iTp": 1,
+      "gId": "MINENGINEVER",
+      "gIx": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "MINENGINEVER",
+      "gIx": 605,
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
+      "d": [
+        1,
+        20,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "MINENGINEVER",
+      "gIx": 614,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
+      "d": [
+        1,
+        20,
+        0
+      ]
     },
     {
       "iTp": 1,
@@ -544,9 +414,40 @@
       "gIx": 1
     },
     {
-      "iTp": 0,
-      "gId": "CADDONREQ",
-      "gIx": 0
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 101,
+      "d": 7011149
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 102,
+      "d": 51
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 103,
+      "d": 24
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 104,
+      "d": 50502
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 105,
+      "d": 35
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 106,
+      "d": 17
     },
     {
       "iTp": 1,
@@ -559,9 +460,38 @@
       "gIx": 1
     },
     {
-      "iTp": 1,
-      "gId": "MINENGINEVER",
-      "gIx": 1
+      "iTp": 7,
+      "gId": "TEXTURE",
+      "gIx": 101,
+      "fs": {
+        "Entity Resource Count": {
+          "Count": 3
+        },
+        "Texture References": {
+          "Count": 3
+        },
+        "Entity References": {
+          "Count": 3
+        },
+        "File Count": {
+          "Count": 3
+        },
+        "Unique Texture Handles (estimated)": {
+          "Count": 3
+        },
+        "Unique Texture Paths": {
+          "Count": 3
+        },
+        "Unique Particle Texture Paths": {
+          "Count": 0
+        },
+        "Unique Particle Texture Vanilla Paths": {
+          "Count": 1
+        },
+        "Unique Entity Texture Paths": {
+          "Count": 3
+        }
+      }
     },
     {
       "iTp": 1,
@@ -569,9 +499,84 @@
       "gIx": 1
     },
     {
-      "iTp": 0,
-      "gId": "CADDONIREQ",
-      "gIx": 0
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 121,
+      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 121,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 122,
+      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 122,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 123,
+      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 123,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
+      "fs": {
+        "say": {
+          "Count": 1
+        },
+        "summon": {
+          "Count": 1
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 124,
+      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 124,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 125,
+      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 125,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 126,
+      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 126,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     }
   ],
   "generatorName": "Minecraft Creator Tools",

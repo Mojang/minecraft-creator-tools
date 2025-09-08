@@ -207,7 +207,7 @@ export default interface MinecraftBehaviorFollowMob {
    * Happy Ghast: {"all_of":[{"test":"is_underwater","subject":"other","value":false},{"test":"is_baby","subject":"other","value":false},{"any_of":[{"test":"is_family","subject":"other","value":"player"},{"test":"is_family","subject":"other","value":"armadillo"},{"test":"is_family","subject":"other","value":"bee"},{"test":"is_family","subject":"other","value":"camel"},{"test":"is_family","subject":"other","value":"cat"},{"test":"is_family","subject":"other","value":"chicken"},{"test":"is_family","subject":"other","value":"cow"},{"test":"is_family","subject":"other","value":"donkey"},{"test":"is_family","subject":"other","value":"fox"},{"test":"is_family","subject":"other","value":"goat"},{"test":"is_family","subject":"other","value":"happy_ghast"},{"test":"is_family","subject":"other","value":"horse"},{"test":"is_family","subject":"other","value":"skeleton_horse"},{"test":"is_family","subject":"other","value":"llama"},{"test":"is_family","subject":"other","value":"mule"},{"test":"is_family","subject":"other","value":"ocelot"},{"test":"is_family","subject":"other","value":"panda"},{"test":"is_family","subject":"other","value":"parrot"},{"test":"is_family","subject":"other","value":"pig"},{"test":"is_family","subject":"other","value":"polar_bear"},{"test":"is_family","subject":"other","value":"rabbit"},{"test":"is_family","subject":"other","value":"sheep"},{"test":"is_family","subject":"other","value":"sniffer"},{"test":"is_family","subject":"other","value":"strider"},{"test":"is_family","subject":"other","value":"villager"},{"test":"is_family","subject":"other","value":"villager_v2"},{"test":"is_family","subject":"other","value":"wolf"}]}]}
    *
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -218,7 +218,7 @@ export default interface MinecraftBehaviorFollowMob {
    * Happy Ghast: "player"
    *
    */
-  preferred_actor_type: string;
+  preferred_actor_type?: string;
 
   /**
    * @remarks
@@ -232,7 +232,7 @@ export default interface MinecraftBehaviorFollowMob {
    * Parrot: 4
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -244,7 +244,7 @@ export default interface MinecraftBehaviorFollowMob {
    * Parrot: 20
    *
    */
-  search_range: number;
+  search_range?: number;
 
   /**
    * @remarks
@@ -256,7 +256,7 @@ export default interface MinecraftBehaviorFollowMob {
    * Parrot: 1
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -269,7 +269,7 @@ export default interface MinecraftBehaviorFollowMob {
    * Parrot: 3
    *
    */
-  stop_distance: number;
+  stop_distance?: number;
 
   /**
    * @remarks
@@ -282,6 +282,6 @@ export default interface MinecraftBehaviorFollowMob {
    * Happy Ghast: true
    *
    */
-  use_home_position_restriction: boolean;
+  use_home_position_restriction?: boolean;
 
 }

@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Capped Biome (minecraft:capped)
+ * Biome Capped (minecraft:capped)
  * Generates surface on blocks with non-solid blocks above or
  * below.
  */
@@ -23,77 +23,37 @@ export default interface MinecraftCapped {
    * @remarks
    * Material used to decorate surface near sea level.
    */
-  beach_material: MinecraftCappedBeachMaterial;
+  beach_material?: string;
 
   /**
    * @remarks
    * Materials used for the surface ceiling.
    */
-  ceiling_materials: MinecraftCappedCeilingMaterials[];
+  ceiling_materials: string;
 
   /**
    * @remarks
    * Materials used for the surface floor.
    */
-  floor_materials: MinecraftCappedFloorMaterials[];
+  floor_materials: string;
 
   /**
    * @remarks
    * Material used to replace solid blocks that are not surface 
    * blocks.
    */
-  foundation_material: MinecraftCappedFoundationMaterial;
+  foundation_material: string;
 
   /**
    * @remarks
    * Material used to replace air blocks below sea level.
    */
-  sea_material: MinecraftCappedSeaMaterial;
+  sea_material: string;
 
   /**
    * @remarks
    * Controls the type of surface builder to use
    */
   type: string;
-
-}
-
-
-/**
- * Beach Material (beach_material)
- */
-export interface MinecraftCappedBeachMaterial {
-
-}
-
-
-/**
- * Ceiling Materials (ceiling_materials)
- */
-export interface MinecraftCappedCeilingMaterials {
-
-}
-
-
-/**
- * Floor Materials (floor_materials)
- */
-export interface MinecraftCappedFloorMaterials {
-
-}
-
-
-/**
- * Foundation Material (foundation_material)
- */
-export interface MinecraftCappedFoundationMaterial {
-
-}
-
-
-/**
- * Sea Material (sea_material)
- */
-export interface MinecraftCappedSeaMaterial {
 
 }

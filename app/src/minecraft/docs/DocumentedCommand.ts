@@ -134,7 +134,9 @@ export default class DocumentedCommand {
 
     const rootFile = commandFolder.ensureFile("info.json");
 
-    await rootFile.loadContent();
+    if (!rootFile.isContentLoaded) {
+      await rootFile.loadContent();
+    }
 
     this.infoJsonFiles["_command"] = rootFile;
     const paramTypeNames: string[] = [];
@@ -158,7 +160,9 @@ export default class DocumentedCommand {
         if (exists) {
           const enumFile = enumFolder.ensureFile("info.json");
 
-          await enumFile.loadContent();
+          if (!enumFile.isContentLoaded) {
+            await enumFile.loadContent();
+          }
 
           if (Utilities.isUsableAsObjectKey(enumVal.name)) {
             this.infoJsonFiles[enumVal.name] = enumFile;

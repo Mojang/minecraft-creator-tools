@@ -28,6 +28,6 @@ export default interface MinecraftRandomTicking {
    * @remarks
    * The event that will be triggered on random ticks.
    */
-  on_tick: jsoncommon.MinecraftEventTrigger;
+  on_tick?: jsoncommon.MinecraftEventTrigger;
 
 }

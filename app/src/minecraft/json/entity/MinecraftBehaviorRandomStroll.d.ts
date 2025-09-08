@@ -126,7 +126,7 @@ export default interface MinecraftBehaviorRandomStroll {
    *
    *
    */
-  interval: number;
+  interval?: number;
 
   /**
    * @remarks
@@ -142,7 +142,7 @@ export default interface MinecraftBehaviorRandomStroll {
    * Blaze: 4
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -157,7 +157,7 @@ export default interface MinecraftBehaviorRandomStroll {
    * Cat: 0.8
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -172,7 +172,7 @@ export default interface MinecraftBehaviorRandomStroll {
    * Rabbit: 2
    *
    */
-  xz_dist: number;
+  xz_dist?: number;
 
   /**
    * @remarks
@@ -183,6 +183,6 @@ export default interface MinecraftBehaviorRandomStroll {
    * Rabbit: 1
    *
    */
-  y_dist: number;
+  y_dist?: number;
 
 }

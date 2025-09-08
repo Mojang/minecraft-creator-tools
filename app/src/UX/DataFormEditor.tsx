@@ -107,6 +107,10 @@ export default class DataFormEditor extends Component<IDataFormEditorProps, IDat
     const dform = this.state.fileToEdit.manager as DataFormFile;
     const form = Database.getForm("form", "dataform");
 
+    if (!form) {
+      return <div>(Error loading form)...</div>;
+    }
+
     return (
       <div
         className="dfe-area"

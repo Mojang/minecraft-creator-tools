@@ -76,7 +76,7 @@ export default interface MinecraftTameable {
    *
    *
    */
-  probability: number;
+  probability?: number;
 
   /**
    * @remarks
@@ -87,7 +87,7 @@ export default interface MinecraftTameable {
    *
    *
    */
-  tame_event: jsoncommon.MinecraftEventTrigger;
+  tame_event?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -101,8 +101,8 @@ export default interface MinecraftTameable {
    * Wolf: "bone"
    *
    */
-  tame_items: string[];
+  tame_items?: string[];
 
-  tameItems: string;
+  tameItems?: string;
 
 }

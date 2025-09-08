@@ -13,25 +13,19 @@ import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition"
 import NpmPackageDefinition from "../devproject/NpmPackageDefinition";
 import ResourceManifestDefinition from "../minecraft/ResourceManifestDefinition";
 import ISnippet from "./ISnippet";
-import IGalleryItem, { GalleryItemType } from "./IGalleryItem";
+import IGalleryItem from "./IGalleryItem";
 import IFolder from "../storage/IFolder";
 import ProjectItemUtilities from "./ProjectItemUtilities";
 import { PackType } from "../minecraft/Pack";
 import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
 import { IAnnotatedValue } from "../core/AnnotatedValue";
 import ProjectItem from "./ProjectItem";
-import HttpStorage from "../storage/HttpStorage";
-import CartoApp from "./CartoApp";
 import ProjectUpdateRunner from "../updates/ProjectUpdateRunner";
 import ProjectStandard from "./ProjectStandard";
 import ProjectAutogeneration from "./ProjectAutogeneration";
-import MinecraftDefinitions from "../minecraft/MinecraftDefinitions";
-import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import TypeScriptDefinition from "../minecraft/TypeScriptDefinition";
 import { constants } from "../core/Constants";
 import ProjectContent from "./ProjectContent";
-
-export const STANDARD_NAME_TOKEN = "_name_";
 
 export enum NewEntityTypeAddMode {
   baseId,
@@ -60,7 +54,9 @@ export default class ProjectUtilities {
     const defaultScriptFile = await project.getDefaultScriptsFile();
 
     if (defaultScriptFile) {
-      await defaultScriptFile.loadContent();
+      if (!defaultScriptFile.isContentLoaded) {
+        await defaultScriptFile.loadContent();
+      }
 
       if (typeof defaultScriptFile.content === "string" && defaultScriptFile.content.length > 0) {
         if (defaultScriptFile.content.indexOf(signatureToken) < 0) {
@@ -185,7 +181,7 @@ export default class ProjectUtilities {
 
   static async isVibrantVisualsCompatible(project: Project) {
     for (const item of project.items) {
-      await item.ensureFileStorage();
+      await item.loadFileContent();
 
       if (item.primaryFile) {
         const manifestJson = await ResourceManifestDefinition.ensureOnFile(item.primaryFile);
@@ -223,7 +219,7 @@ export default class ProjectUtilities {
         ProjectItemStorageType.singleFile
       );
 
-      let file = await pi.ensureFileStorage();
+      let file = await pi.loadFileContent();
 
       if (file !== null) {
         let content = "";
@@ -255,7 +251,7 @@ export default class ProjectUtilities {
         ProjectItemStorageType.singleFile
       );
 
-      file = await pi.ensureFileStorage();
+      file = await pi.loadFileContent();
 
       if (file !== null) {
         const result = ProjectContent.generateDefaultStructure();
@@ -268,39 +264,32 @@ export default class ProjectUtilities {
   }
 
   static hasEntities(project: Project) {
-    const projectItems = project.getItemsCopy();
+    const projectItems = project.getItemsByType(ProjectItemType.entityTypeBehavior);
+    if (projectItems.length > 0) {
+      return true;
+    }
 
-    for (const projectItem of projectItems) {
-      if (
-        projectItem.itemType === ProjectItemType.entityTypeBehavior ||
-        projectItem.itemType === ProjectItemType.entityTypeResource
-      ) {
-        return true;
-      }
+    const projectItemsResource = project.getItemsByType(ProjectItemType.entityTypeResource);
+    if (projectItemsResource.length > 0) {
+      return true;
     }
 
     return false;
   }
 
   static hasBlocks(project: Project) {
-    const projectItems = project.getItemsCopy();
-
-    for (const projectItem of projectItems) {
-      if (projectItem.itemType === ProjectItemType.blockTypeBehavior) {
-        return true;
-      }
+    const projectItems = project.getItemsByType(ProjectItemType.blockTypeBehavior);
+    if (projectItems.length > 0) {
+      return true;
     }
 
     return false;
   }
 
   static hasItems(project: Project) {
-    const projectItems = project.getItemsCopy();
-
-    for (const projectItem of projectItems) {
-      if (projectItem.itemType === ProjectItemType.itemTypeBehavior) {
-        return true;
-      }
+    const projectItems = project.getItemsByType(ProjectItemType.itemTypeBehavior);
+    if (projectItems.length > 0) {
+      return true;
     }
 
     return false;
@@ -383,7 +372,7 @@ export default class ProjectUtilities {
 
       for (const projectItem of itemsCopy) {
         if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
-          await projectItem.ensureFileStorage();
+          await projectItem.loadFileContent();
 
           if (projectItem.primaryFile) {
             const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.primaryFile);
@@ -413,7 +402,7 @@ export default class ProjectUtilities {
 
       for (const projectItem of itemsCopy) {
         if (projectItem.itemType === ProjectItemType.packageJson) {
-          await projectItem.ensureFileStorage();
+          await projectItem.loadFileContent();
 
           if (projectItem.primaryFile) {
             const npmPackageJson = await NpmPackageDefinition.ensureOnFile(projectItem.primaryFile);
@@ -425,7 +414,7 @@ export default class ProjectUtilities {
             }
           }
         } else if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
-          await projectItem.ensureFileStorage();
+          await projectItem.loadFileContent();
 
           if (projectItem.primaryFile) {
             const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.primaryFile);
@@ -443,7 +432,7 @@ export default class ProjectUtilities {
             }
           }
         } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
-          await projectItem.ensureFileStorage();
+          await projectItem.loadFileContent();
 
           if (projectItem.primaryFile) {
             const manifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.primaryFile);
@@ -514,7 +503,7 @@ export default class ProjectUtilities {
             await npmPackageJson.save();
           }
         } else if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
-          await projectItem.ensureFileStorage();
+          await projectItem.loadFileContent();
 
           if (projectItem.primaryFile) {
             const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.primaryFile);
@@ -532,7 +521,7 @@ export default class ProjectUtilities {
             }
           }
         } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
-          await projectItem.ensureFileStorage();
+          await projectItem.loadFileContent();
 
           if (projectItem.primaryFile) {
             const manifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.primaryFile);
@@ -572,7 +561,7 @@ export default class ProjectUtilities {
 
       for (const projectItem of itemsCopy) {
         if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
-          await projectItem.ensureFileStorage();
+          await projectItem.loadFileContent();
 
           if (projectItem.primaryFile) {
             const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.primaryFile);
@@ -614,7 +603,7 @@ export default class ProjectUtilities {
 
       for (const projectItem of itemsCopy) {
         if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
-          await projectItem.ensureFileStorage();
+          await projectItem.loadFileContent();
 
           if (projectItem.primaryFile) {
             const manifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.primaryFile);
@@ -702,6 +691,7 @@ export default class ProjectUtilities {
 
     return scriptsFolder.getFolderRelativePath(project.projectFolder);
   }
+
   static async renameDefaultFolders(project: Project, newTokenName: string) {
     const bpFolder = await project.getDefaultBehaviorPackFolder(true);
     const rpFolder = await project.getDefaultResourcePackFolder(true);
@@ -711,16 +701,18 @@ export default class ProjectUtilities {
     if (bpFolder) {
       try {
         await bpFolder.rename(newTokenName);
-      } catch (e) {
+      } catch (e: any) {
         // perhaps folder could not be renamed because a folder exists; continue in this case.
+        Log.error(e.toString());
       }
     }
 
     if (rpFolder) {
       try {
         await rpFolder.rename(newTokenName);
-      } catch (e) {
+      } catch (e: any) {
         // perhaps folder could not be renamed because a folder exists; continue in this case.
+        Log.error(e.toString());
       }
     }
   }
@@ -1022,85 +1014,6 @@ export default class ProjectUtilities {
     await project.save();
   }
 
-  static async addEntityTypeFromGallery(
-    project: Project,
-    entityTypeProject: IGalleryItem,
-    entityTypeName?: string,
-    addMode?: NewEntityTypeAddMode,
-    messageUpdater?: (message: string) => Promise<void>,
-    dontOverwriteExistingFiles?: boolean
-  ) {
-    await ProjectUtilities.copyGalleryPackFilesAndFixupIds(
-      project,
-      entityTypeProject,
-      entityTypeName,
-      messageUpdater,
-      dontOverwriteExistingFiles
-    );
-
-    await project.inferProjectItemsFromFiles(true);
-
-    const items = project.getItemsCopy();
-
-    for (const item of items) {
-      if (item.itemType === ProjectItemType.entityTypeBehavior) {
-        let minecraftEntityType = (await MinecraftDefinitions.get(item)) as EntityTypeDefinition | undefined;
-
-        if (minecraftEntityType) {
-          const targetId = entityTypeName ? entityTypeName : entityTypeProject.id;
-
-          if (minecraftEntityType.id?.endsWith(targetId)) {
-            minecraftEntityType.runtimeIdentifier = entityTypeProject.targetRuntimeIdentifier
-              ? entityTypeProject.targetRuntimeIdentifier
-              : "minecraft:" + entityTypeProject.id;
-
-            minecraftEntityType.persist();
-          }
-        }
-      }
-    }
-
-    await project.save();
-  }
-
-  static getReplacedCreationData(project: Project, galleryItem: IGalleryItem, newName: string) {
-    if (galleryItem.creationData === undefined) {
-      return undefined;
-    }
-
-    try {
-      let creationDataStr = JSON.stringify(galleryItem.creationData);
-
-      creationDataStr = this.replaceNamesInContent(creationDataStr, project, galleryItem, newName, []);
-
-      return JSON.parse(creationDataStr);
-    } catch (e) {
-      return galleryItem.creationData;
-    }
-  }
-
-  static getReplacedCreationDataInObject(project: Project, creationObject: object, newName: string) {
-    if (creationObject === undefined) {
-      return undefined;
-    }
-
-    try {
-      let creationDataStr = JSON.stringify(creationObject);
-
-      creationDataStr = this.replaceNamesInContentFromReplacers(
-        creationDataStr,
-        project,
-        [STANDARD_NAME_TOKEN],
-        newName,
-        []
-      );
-
-      return JSON.parse(creationDataStr);
-    } catch (e) {
-      return creationObject;
-    }
-  }
-
   static sanitizeProjectName(name: string) {
     const lastDash = name.lastIndexOf("-");
 
@@ -1110,333 +1023,6 @@ export default class ProjectUtilities {
     }
 
     return name;
-  }
-
-  static async addBlockTypeFromGallery(project: Project, blockTypeProject: IGalleryItem, blockTypeName?: string) {
-    blockTypeName = await ProjectUtilities.copyGalleryPackFilesAndFixupIds(project, blockTypeProject, blockTypeName);
-
-    await project.inferProjectItemsFromFiles(true);
-
-    const blockTypeItem = ProjectItemUtilities.getItemByTypeAndName(
-      project,
-      blockTypeName,
-      ProjectItemType.blockTypeBehavior
-    );
-
-    if (blockTypeItem) {
-      await blockTypeItem.ensureStorage();
-
-      if (blockTypeItem.primaryFile) {
-        const blockType = await BlockTypeDefinition.ensureOnFile(blockTypeItem.primaryFile);
-
-        const creationData = this.getReplacedCreationData(project, blockTypeProject, blockTypeName);
-
-        if (blockType) {
-          await blockType.ensureBlockAndTerrainLinks(project, creationData);
-        }
-      }
-    }
-
-    await project.save();
-  }
-
-  static async addItemTypeFromGallery(project: Project, itemTypeProject: IGalleryItem, itemTypeName?: string) {
-    await ProjectUtilities.copyGalleryPackFilesAndFixupIds(project, itemTypeProject, itemTypeName);
-
-    await project.inferProjectItemsFromFiles(true);
-
-    await project.save();
-  }
-
-  static async copyGalleryPackFilesAndFixupIds(
-    project: Project,
-    galleryProject: IGalleryItem,
-    newTypeName?: string,
-    messagerUpdater?: (message: string) => Promise<void>,
-    dontOverwriteExistingFiles?: boolean
-  ): Promise<string> {
-    const files = galleryProject.fileList;
-
-    if (newTypeName === undefined) {
-      newTypeName = galleryProject.id;
-    }
-
-    if (files === undefined) {
-      Log.unexpectedUndefined("AETFLS");
-      return newTypeName;
-    }
-
-    let sourceBpFolder = undefined;
-    let sourceRpFolder = undefined;
-
-    if (galleryProject.gitHubRepoName === "bedrock-samples") {
-      sourceBpFolder = await Database.getReleaseVanillaBehaviorPackFolder();
-      sourceRpFolder = await Database.getReleaseVanillaResourcePackFolder();
-    } else {
-      const url =
-        Utilities.ensureEndsWithSlash(CartoApp.contentRoot) +
-        "res/samples/" +
-        Utilities.ensureEndsWithSlash(galleryProject.gitHubOwner) +
-        galleryProject.gitHubRepoName +
-        "-" +
-        Utilities.ensureEndsWithSlash(galleryProject.gitHubBranch ? galleryProject.gitHubBranch : "main") +
-        (galleryProject.gitHubFolder ? Utilities.ensureNotStartsWithSlash(galleryProject.gitHubFolder) : "");
-
-      const gh = new HttpStorage(url); //new GitHubStorage(carto.anonGitHub, gitHubRepoName, gitHubOwner, gitHubBranch, gitHubFolder);
-
-      await gh.rootFolder.load();
-
-      const bps = gh.rootFolder.folders["behavior_packs"];
-      const rps = gh.rootFolder.folders["resource_packs"];
-
-      if (!bps || !rps) {
-        Log.unexpectedUndefined("AETFLT");
-        return newTypeName;
-      }
-
-      await rps.load();
-      await bps.load();
-
-      if (rps.folderCount < 1 || bps.folderCount < 1) {
-        Log.unexpectedUndefined("AETFLY");
-        return newTypeName;
-      }
-
-      sourceBpFolder = bps.getFolderByIndex(0);
-      sourceRpFolder = rps.getFolderByIndex(0);
-    }
-
-    const targetBpFolder = await project.ensureDefaultBehaviorPackFolder();
-    const targetRpFolder = await project.ensureDefaultResourcePackFolder();
-
-    if (
-      !sourceBpFolder ||
-      !sourceRpFolder ||
-      !sourceBpFolder ||
-      !sourceRpFolder ||
-      !targetBpFolder ||
-      !targetRpFolder
-    ) {
-      Log.unexpectedUndefined("AETVA");
-      return newTypeName;
-    }
-
-    let contentReplacements = ['"identifier"', '"materials"'];
-
-    if (galleryProject.type === GalleryItemType.itemType || galleryProject.type === GalleryItemType.blockType) {
-      contentReplacements = ['"materials"'];
-    }
-
-    for (const filePath of files) {
-      if (filePath.startsWith("/behavior_pack")) {
-        let subPath = undefined;
-
-        if (filePath.startsWith("/behavior_pack/")) {
-          subPath = filePath.substring(14);
-        } else {
-          const nextSlash = filePath.indexOf("/", 16);
-
-          if (nextSlash < 0) {
-            Log.unexpectedUndefined("AETVB");
-            return newTypeName;
-          }
-
-          subPath = filePath.substring(nextSlash);
-        }
-
-        const targetPath = ProjectUtilities.replaceNamesInPath(subPath, project, galleryProject, newTypeName);
-
-        const sourceFile = await sourceBpFolder.getFileFromRelativePath(subPath);
-
-        if (!sourceFile) {
-          Log.debugAlert("Could not find file '" + subPath + "'  (GPFFIA)");
-        } else {
-          const targetFile = await targetBpFolder.ensureFileFromRelativePath(targetPath);
-          let update = true;
-
-          if (dontOverwriteExistingFiles) {
-            const targetExists = await targetFile.exists();
-
-            if (targetExists) {
-              update = false;
-            }
-          }
-
-          if (update) {
-            await sourceFile.loadContent();
-
-            let content = sourceFile.content;
-
-            if (typeof content === "string") {
-              content = ProjectUtilities.replaceNamesInContent(
-                content,
-                project,
-                galleryProject,
-                newTypeName,
-                contentReplacements
-              );
-            }
-
-            if (content !== null) {
-              if (messagerUpdater) {
-                messagerUpdater("Updating '" + targetFile.fullPath + "'");
-              }
-
-              targetFile.setContent(content);
-            }
-          }
-        }
-      } else if (filePath.startsWith("/resource_pack")) {
-        let subPath = undefined;
-
-        if (filePath.startsWith("/resource_pack/")) {
-          subPath = filePath.substring(14);
-        } else {
-          const nextSlash = filePath.indexOf("/", 16);
-
-          if (nextSlash < 0) {
-            Log.unexpectedUndefined("AETVC");
-            return newTypeName;
-          }
-
-          subPath = filePath.substring(nextSlash);
-        }
-
-        const targetPath = ProjectUtilities.replaceNamesInPath(subPath, project, galleryProject, newTypeName);
-
-        const sourceFile = await sourceRpFolder.getFileFromRelativePath(subPath);
-
-        if (!sourceFile) {
-          Log.debugAlert("Could not find file '" + subPath + "' (GPFFIB)");
-        } else {
-          const targetFile = await targetRpFolder.ensureFileFromRelativePath(targetPath);
-          let update = true;
-
-          if (update) {
-            if (dontOverwriteExistingFiles) {
-              const targetExists = await targetFile.exists();
-
-              if (targetExists) {
-                update = false;
-              }
-            }
-
-            await sourceFile.loadContent();
-
-            let content = sourceFile.content;
-
-            if (typeof content === "string") {
-              content = ProjectUtilities.replaceNamesInContent(
-                content,
-                project,
-                galleryProject,
-                newTypeName,
-                contentReplacements
-              );
-            }
-
-            if (content !== null) {
-              if (messagerUpdater) {
-                messagerUpdater("Updating '" + targetFile.fullPath + "'");
-              }
-
-              targetFile.setContent(content);
-            }
-          }
-        }
-      }
-    }
-
-    return newTypeName;
-  }
-
-  static replaceNamesInPath(path: string, project: Project, galleryProject: IGalleryItem, newName: string) {
-    let pathReplacers = galleryProject.nameReplacers;
-
-    if (!pathReplacers) {
-      pathReplacers = [galleryProject.id];
-    }
-
-    newName = newName.toLowerCase();
-    newName = newName.replace(/-/g, "_");
-    newName = newName.replace(/ /g, "_");
-
-    for (const pathReplacer of pathReplacers) {
-      path = Utilities.replaceAll(path, "/" + pathReplacer + ".", "/" + newName + ".");
-      path = Utilities.replaceAll(path, "\\" + pathReplacer + ".", "\\" + newName + ".");
-      path = Utilities.replaceAll(path, "/" + pathReplacer + "/", "/" + newName + "/");
-      path = Utilities.replaceAll(path, "\\" + pathReplacer + "\\", "\\" + newName + "\\");
-      path = Utilities.replaceAll(path, "\\" + pathReplacer + "_", "\\" + newName + "_");
-      path = Utilities.replaceAll(path, "/" + pathReplacer + "_", "/" + newName + "_");
-
-      path = Utilities.replaceAll(path, "/" + pathReplacer + "_ico.", "/" + newName + "_ico.");
-      path = Utilities.replaceAll(path, "\\" + pathReplacer + "_ico.", "\\" + newName + "_ico.");
-      path = Utilities.replaceAll(path, "/" + pathReplacer + "_ico/", "/" + newName + "_ico/");
-      path = Utilities.replaceAll(path, "\\" + pathReplacer + "_ico\\", "\\" + newName + "_ico\\");
-    }
-
-    return path;
-  }
-
-  static replaceNamesInContent(
-    content: string,
-    project: Project,
-    galleryProject: IGalleryItem,
-    newName: string,
-    replaceAllExclusions: string[]
-  ) {
-    let replacers = galleryProject.nameReplacers;
-
-    if (!replacers) {
-      replacers = [galleryProject.id];
-    }
-
-    // copy & extend
-    replacers = replacers.slice();
-    replacers.push(STANDARD_NAME_TOKEN);
-
-    return this.replaceNamesInContentFromReplacers(content, project, replacers, newName, replaceAllExclusions);
-  }
-
-  static replaceNamesInContentFromReplacers(
-    content: string,
-    project: Project,
-    replacers: string[],
-    newName: string,
-    replaceAllExclusions: string[]
-  ) {
-    newName = newName.toLowerCase();
-    newName = newName.replace(/-/g, "_");
-    newName = newName.replace(/ /g, "_");
-
-    for (const replacer of replacers) {
-      content = Utilities.replaceAll(
-        content,
-        "minecraft:" + replacer,
-        project.effectiveDefaultNamespace + ":" + newName
-      );
-
-      content = Utilities.replaceAll(content, "demo:" + replacer, project.effectiveDefaultNamespace + ":" + newName);
-      content = Utilities.replaceAll(content, "starter:" + replacer, project.effectiveDefaultNamespace + ":" + newName);
-      content = Utilities.replaceAll(content, "sample:" + replacer, project.effectiveDefaultNamespace + ":" + newName);
-
-      content = Utilities.replaceAllExceptInLines(content, ":" + replacer, ":" + newName, replaceAllExclusions);
-
-      content = Utilities.replaceAllExceptInLines(content, "/" + replacer, "/" + newName, replaceAllExclusions);
-
-      content = Utilities.replaceAllExceptInLines(content, "." + replacer, "." + newName, replaceAllExclusions);
-
-      content = Utilities.replaceAllExceptInLines(content, replacer + "_", newName + "_", replaceAllExclusions);
-
-      content = Utilities.replaceAllExceptInLines(
-        content,
-        '"' + replacer + '"',
-        '"' + newName + '"',
-        replaceAllExclusions
-      );
-    }
-
-    return content;
   }
 
   static CodeReplaceTokens = ["say Hello", 'sendMessage("Hello world'];
@@ -1651,7 +1237,7 @@ export default class ProjectUtilities {
         let importLineIndex = introSection.indexOf('from "' + moduleName + '";');
 
         if (importLineIndex < 0) {
-          introSection = 'import {} from "' + moduleName + '";\r\n' + introSection;
+          introSection = 'import {} from "' + moduleName + '";\n' + introSection;
           importLineIndex = 10;
         }
 
@@ -1702,7 +1288,7 @@ export default class ProjectUtilities {
 
     for (const projectItem of itemsCopy) {
       if (projectItem.itemType === ProjectItemType.ts) {
-        await projectItem.ensureFileStorage();
+        await projectItem.loadFileContent();
 
         if (projectItem.primaryFile) {
           const tsJson = await TypeScriptDefinition.ensureOnFile(projectItem.primaryFile);
@@ -1726,7 +1312,7 @@ export default class ProjectUtilities {
 
     const file = scriptFolder.ensureFile(fileNameCore + ".ts");
 
-    let snippetInjectContent = "\r\n" + snippet.body.join("\n") + "\r\n";
+    let snippetInjectContent = "\n" + snippet.body.join("\n") + "\n";
 
     for (const replacerToken in replacers) {
       const targetReplace = replacers[replacerToken];
@@ -1743,11 +1329,11 @@ export default class ProjectUtilities {
 
     await file.saveContent();
 
-    await project.inferProjectItemsFromFiles(true);
+    project.ensureItemFromFile(file, ProjectItemType.ts, FolderContext.behaviorPack);
   }
 
   static async injectSnippet(project: Project, snippet: ISnippet, fullScriptBoxReplace: boolean) {
-    let snippetInjectContent = "\r\n" + snippet.body.join("\n") + "\r\n";
+    let snippetInjectContent = "\n" + snippet.body.join("\n") + "\n";
 
     const folder = await project.ensureDefaultScriptsFolder();
 
@@ -1766,7 +1352,9 @@ export default class ProjectUtilities {
           const type = StorageUtilities.getTypeFromName(file.name);
 
           if (type === "ts" || type === "js") {
-            await file.loadContent();
+            if (!file.isContentLoaded) {
+              await file.loadContent();
+            }
 
             // Log.debugAlert("Inject snippet considering file: " + file.storageRelativePath + "|" + file.content?.length);
             if (file.content && typeof file.content === "string") {
@@ -1792,7 +1380,7 @@ export default class ProjectUtilities {
                       if (firstComment >= 0) {
                         content =
                           content.substring(0, firstComment) +
-                          '  const overworld = mc.world.getDimension("overworld");\r\n' +
+                          '  const overworld = mc.world.getDimension("overworld");\n' +
                           content.substring(firstComment, content.length);
                       }
                     }
@@ -1829,7 +1417,9 @@ export default class ProjectUtilities {
       .ensureFolder("blocks")
       .ensureFile(blockTypeId + ".json");
 
-    await sourceFile.loadContent(true);
+    if (!sourceFile.isContentLoaded) {
+      await sourceFile.loadContent(true);
+    }
 
     if (
       !sourceFile.content ||
@@ -1867,7 +1457,7 @@ export default class ProjectUtilities {
       ProjectItemCreationType.normal
     );
 
-    const file = await pi.ensureFileStorage();
+    const file = await pi.loadFileContent();
 
     if (file !== null) {
       const content = Utilities.fixJsonContent(sourceFile.content);

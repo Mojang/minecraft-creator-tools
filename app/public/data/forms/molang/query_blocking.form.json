@@ -2,5 +2,5 @@
   "id": "query.blocking",
   "fields": [],
   "description": "Returns 1.0 if the entity is blocking, else it returns 0.0.",
-  "title": "Blocking Query"
+  "title": "Blocking"
 }

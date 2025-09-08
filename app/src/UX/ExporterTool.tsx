@@ -129,19 +129,25 @@ export default class ExporterToolEditor extends Component<IExporterToolProps, IE
             onCheckedValueChange={this._handleTypeChange}
           />
         </div>
-        <div className="et-import-label">Import path</div>
+        <div className="et-import-label" id="et-import-label">
+          Import path
+        </div>
         <div className="et-import-input">
           <Input
             clearable
+            aria-labelledby="et-import-label"
             placeholder="Import path"
             value={this.state.importPath}
             onChange={this._handleImportPathUpdate}
           />
         </div>
-        <div className="et-export-label">Export file</div>
+        <div className="et-export-label" id="et-export-label">
+          Export file
+        </div>
         <div className="et-export-input">
           <Input
             clearable
+            aria-labelledby="et-export-label"
             placeholder="Export path"
             value={this.state.exportPath}
             onChange={this._handleExportPathUpdate}

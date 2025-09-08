@@ -37,13 +37,13 @@ export default interface MinecraftOnDeath {
    * Ender Dragon: "minecraft:start_death"
    *
    */
-  event: jsoncommon.MinecraftEventTrigger;
+  event?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
    * The list of conditions for this trigger to execute.
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -53,6 +53,6 @@ export default interface MinecraftOnDeath {
    * Ender Dragon: "self"
    *
    */
-  target: string;
+  target?: string;
 
 }

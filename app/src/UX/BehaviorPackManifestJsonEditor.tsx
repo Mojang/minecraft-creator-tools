@@ -131,7 +131,7 @@ export default class BehaviorPackManifestJsonEditor extends Component<
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
-      if (file.manager !== null) {
+      if (file.manager) {
         const et = file.manager as BehaviorManifestDefinition;
 
         et.persist();
@@ -257,6 +257,10 @@ export default class BehaviorPackManifestJsonEditor extends Component<
 
     if (def && def.header) {
       behaviorPackTitle = def.header.uuid;
+    }
+
+    if (!headerForm || !restOfForm) {
+      return <div>(Error loading form)...</div>;
     }
 
     return (

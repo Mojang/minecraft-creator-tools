@@ -154,7 +154,7 @@ export default class HttpFolder extends FolderBase implements IFolder {
       try {
         response = await axios.get(this.fullPath + "index.json");
       } catch (e: any) {
-        Log.debug(e);
+        Log.debug(e.message + " at " + this.fullPath + "index.json");
       }
 
       if (response) {

@@ -38,6 +38,6 @@ export default interface MinecraftBehaviorRestrictOpenDoor {
    * Villager: 5
    *
    */
-  priority: number;
+  priority?: number;
 
 }

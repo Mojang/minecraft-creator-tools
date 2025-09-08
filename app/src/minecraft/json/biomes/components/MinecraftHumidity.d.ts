@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Humidity Biome (minecraft:humidity)
+ * Biome Humidity (minecraft:humidity)
  * Forces a biome to ether always be humid or never humid. Humidity
  * effects the spread chance, and spread rate of fire in the 
  * biome.

@@ -484,7 +484,7 @@ export default class ProjectIntegrator implements IErrorable {
       }
 
       const currentFile = dbFolder.ensureFile("CURRENT");
-      currentFile.setContent(manifestFileName + "\r\n");
+      currentFile.setContent(manifestFileName + "\n");
     }
   }
 
@@ -542,7 +542,9 @@ export default class ProjectIntegrator implements IErrorable {
       const extension = StorageUtilities.getTypeFromName(file.name);
 
       if (file.name.indexOf("evel") >= 0 && extension === "dat") {
-        await file.loadContent();
+        if (!file.isContentLoaded) {
+          await file.loadContent();
+        }
 
         if (file.content && file.content instanceof Uint8Array) {
           const levelDat = new WorldLevelDat();
@@ -570,7 +572,9 @@ export default class ProjectIntegrator implements IErrorable {
       } else {
         switch (extension) {
           case "ldb":
-            await file.loadContent();
+            if (!file.isContentLoaded) {
+              await file.loadContent();
+            }
 
             if (file.isBinary) {
               const levelDb = new LevelDb([file], [], [], file.name);

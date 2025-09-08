@@ -61,7 +61,7 @@ export default interface MinecraftStrength {
    * Llama: 5
    *
    */
-  max: number;
+  max?: number;
 
   /**
    * @remarks
@@ -71,6 +71,6 @@ export default interface MinecraftStrength {
    * Llama: 1, 2, 3, 4, 5
    *
    */
-  value: number;
+  value?: number;
 
 }

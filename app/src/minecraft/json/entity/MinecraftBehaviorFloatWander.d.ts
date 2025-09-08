@@ -77,14 +77,14 @@ export default interface MinecraftBehaviorFloatWander {
    * Happy Ghast: true
    *
    */
-  additional_collision_buffer: boolean;
+  additional_collision_buffer?: boolean;
 
   /**
    * @remarks
    * If true allows the mob to navigate through liquids on its way to
    * the target position.
    */
-  allow_navigating_through_liquids: boolean;
+  allow_navigating_through_liquids?: boolean;
 
   /**
    * @remarks
@@ -98,7 +98,7 @@ export default interface MinecraftBehaviorFloatWander {
    *
    *
    */
-  float_duration: number[];
+  float_duration?: number[];
 
   /**
    * @remarks
@@ -106,7 +106,7 @@ export default interface MinecraftBehaviorFloatWander {
    * means that it can no longer be active at the same time as other
    * behaviors with MoveControl.
    */
-  float_wander_has_move_control: boolean;
+  float_wander_has_move_control?: boolean;
 
   /**
    * @remarks
@@ -117,7 +117,7 @@ export default interface MinecraftBehaviorFloatWander {
    *
    *
    */
-  must_reach: boolean;
+  must_reach?: boolean;
 
   /**
    * @remarks
@@ -129,7 +129,7 @@ export default interface MinecraftBehaviorFloatWander {
    * Happy Ghast: true
    *
    */
-  navigate_around_surface: boolean;
+  navigate_around_surface?: boolean;
 
   /**
    * @remarks
@@ -143,7 +143,7 @@ export default interface MinecraftBehaviorFloatWander {
    * Happy Ghast: 7
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -155,7 +155,7 @@ export default interface MinecraftBehaviorFloatWander {
    *
    *
    */
-  random_reselect: boolean;
+  random_reselect?: boolean;
 
   /**
    * @remarks
@@ -167,7 +167,7 @@ export default interface MinecraftBehaviorFloatWander {
    * Happy Ghast: 16
    *
    */
-  surface_xz_dist: number;
+  surface_xz_dist?: number;
 
   /**
    * @remarks
@@ -179,7 +179,7 @@ export default interface MinecraftBehaviorFloatWander {
    * Happy Ghast: 16
    *
    */
-  surface_y_dist: number;
+  surface_y_dist?: number;
 
   /**
    * @remarks
@@ -191,7 +191,7 @@ export default interface MinecraftBehaviorFloatWander {
    * Happy Ghast: true
    *
    */
-  use_home_position_restriction: boolean;
+  use_home_position_restriction?: boolean;
 
   /**
    * @remarks
@@ -202,7 +202,7 @@ export default interface MinecraftBehaviorFloatWander {
    * Bat: 10
    *
    */
-  xz_dist: number;
+  xz_dist?: number;
 
   /**
    * @remarks
@@ -213,7 +213,7 @@ export default interface MinecraftBehaviorFloatWander {
    * Bat: 7
    *
    */
-  y_dist: number;
+  y_dist?: number;
 
   /**
    * @remarks
@@ -223,6 +223,6 @@ export default interface MinecraftBehaviorFloatWander {
    * Bat: -2
    *
    */
-  y_offset: number;
+  y_offset?: number;
 
 }

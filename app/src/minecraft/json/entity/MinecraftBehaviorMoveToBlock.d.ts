@@ -110,7 +110,7 @@ export default interface MinecraftBehaviorMoveToBlock {
    * Bee: 1, 0.633
    *
    */
-  goal_radius: number;
+  goal_radius?: number;
 
   /**
    * @remarks
@@ -120,7 +120,7 @@ export default interface MinecraftBehaviorMoveToBlock {
    * Bee: [{"event":"minecraft:bee_returned_to_hive","target":"block"}]
    *
    */
-  on_reach: jsoncommon.MinecraftEventTrigger;
+  on_reach?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -131,7 +131,7 @@ export default interface MinecraftBehaviorMoveToBlock {
    * Bee: [{"event":"collected_nectar","target":"self"}]
    *
    */
-  on_stay_completed: jsoncommon.MinecraftEventTrigger;
+  on_stay_completed?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -143,7 +143,7 @@ export default interface MinecraftBehaviorMoveToBlock {
    * Bee: 10
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -153,7 +153,7 @@ export default interface MinecraftBehaviorMoveToBlock {
    * Bee: 4, 10
    *
    */
-  search_height: number;
+  search_height?: number;
 
   /**
    * @remarks
@@ -163,13 +163,13 @@ export default interface MinecraftBehaviorMoveToBlock {
    * Bee: 6, 16
    *
    */
-  search_range: number;
+  search_range?: number;
 
   /**
    * @remarks
    * Movement speed multiplier of the mob when using this AI Goal
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -180,7 +180,7 @@ export default interface MinecraftBehaviorMoveToBlock {
    * Bee: 0.5
    *
    */
-  start_chance: number;
+  start_chance?: number;
 
   /**
    * @remarks
@@ -190,7 +190,7 @@ export default interface MinecraftBehaviorMoveToBlock {
    * Bee: 20
    *
    */
-  stay_duration: number;
+  stay_duration?: number;
 
   /**
    * @remarks
@@ -199,7 +199,7 @@ export default interface MinecraftBehaviorMoveToBlock {
    * Bee: {"test":"is_waterlogged","subject":"block","operator":"==","value":false}
    *
    */
-  target_block_filters: MinecraftBehaviorMoveToBlockTargetBlockFilters;
+  target_block_filters?: MinecraftBehaviorMoveToBlockTargetBlockFilters;
 
   /**
    * @remarks
@@ -209,7 +209,7 @@ export default interface MinecraftBehaviorMoveToBlock {
    * Bee: ["minecraft:poppy","minecraft:blue_orchid","minecraft:allium","minecraft:azure_bluet","minecraft:red_tulip","minecraft:orange_tulip","minecraft:white_tulip","minecraft:pink_tulip","minecraft:oxeye_daisy","minecraft:cornflower","minecraft:lily_of_the_valley","minecraft:dandelion","minecraft:wither_rose","minecraft:sunflower","minecraft:lilac","minecraft:rose_bush","minecraft:peony","minecraft:flowering_azalea","minecraft:azalea_leaves_flowered","minecraft:mangrove_propagule","minecraft:pitcher_plant","minecraft:torchflower","minecraft:cherry_leaves","minecraft:pink_petals","minecraft:open_eyeblossom","minecraft:wildflowers","minecraft:cactus_flower"], ["bee_nest","beehive"]
    *
    */
-  target_blocks: string[];
+  target_blocks?: string[];
 
   /**
    * @remarks
@@ -219,7 +219,7 @@ export default interface MinecraftBehaviorMoveToBlock {
    * Bee: [0,0.25,0]
    *
    */
-  target_offset: number[];
+  target_offset?: number[];
 
   /**
    * @remarks
@@ -230,7 +230,7 @@ export default interface MinecraftBehaviorMoveToBlock {
    * Bee: "random"
    *
    */
-  target_selection_method: string;
+  target_selection_method?: string;
 
   /**
    * @remarks
@@ -240,7 +240,7 @@ export default interface MinecraftBehaviorMoveToBlock {
    * Bee: 1
    *
    */
-  tick_interval: number;
+  tick_interval?: number;
 
 }
 
@@ -257,7 +257,7 @@ export interface MinecraftBehaviorMoveToBlockTargetBlockFilters {
    * Bee: "=="
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
@@ -266,7 +266,7 @@ export interface MinecraftBehaviorMoveToBlockTargetBlockFilters {
    * Bee: "block"
    *
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -275,7 +275,7 @@ export interface MinecraftBehaviorMoveToBlockTargetBlockFilters {
    * Bee: "is_waterlogged"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -284,6 +284,6 @@ export interface MinecraftBehaviorMoveToBlockTargetBlockFilters {
    * Bee: false
    *
    */
-  value: string;
+  value?: string;
 
 }

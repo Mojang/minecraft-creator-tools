@@ -132,7 +132,7 @@ export default interface MinecraftOnTargetAcquired {
    * Drowned: "minecraft:has_target"
    *
    */
-  event: jsoncommon.MinecraftEventTrigger;
+  event?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -143,7 +143,7 @@ export default interface MinecraftOnTargetAcquired {
    *
    *
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -154,6 +154,6 @@ export default interface MinecraftOnTargetAcquired {
    *
    *
    */
-  target: string;
+  target?: string;
 
 }

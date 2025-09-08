@@ -40,6 +40,6 @@ export default interface MinecraftMovementBasic {
    * Wither: 180
    *
    */
-  max_turn: number;
+  max_turn?: number;
 
 }

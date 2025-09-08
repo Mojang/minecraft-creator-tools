@@ -2,5 +2,5 @@
   "id": "query.sneeze_counter",
   "fields": [],
   "description": "Returns the sneeze counter of the entity. Applies generally to the panda.",
-  "title": "Sneeze Counter Query"
+  "title": "Sneeze Counter"
 }

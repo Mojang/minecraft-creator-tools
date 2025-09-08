@@ -31,6 +31,6 @@ export default interface MinecraftRailMovement {
    * Maximum speed that this entity will move at when on the 
    * rail.
    */
-  max_speed: number;
+  max_speed?: number;
 
 }

@@ -41,18 +41,6 @@
               }
             ]
           }
-        ],
-        "/vanilla/behavior_pack/entities/strider.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:strider_saddled/minecraft:boostable/",
-            "content": [
-              {
-                "item": "warped_fungus_on_a_stick",
-                "damage": 1,
-                "replace_item": "fishing_rod"
-              }
-            ]
-          }
         ]
       },
       "title": "Boost Items"
@@ -62,20 +50,6 @@
       "description": "Time in seconds for the boost.",
       "dataType": 3,
       "defaultValue": 3,
-      "samples": {
-        "/vanilla/behavior_pack/entities/pig.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:pig_saddled/minecraft:boostable/",
-            "content": 3
-          }
-        ],
-        "/vanilla/behavior_pack/entities/strider.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:strider_saddled/minecraft:boostable/",
-            "content": 16
-          }
-        ]
-      },
       "title": "Duration"
     },
     {
@@ -83,20 +57,6 @@
       "description": "Factor by which the entity's normal speed increases. E.g. 2.0 means go twice as fast.",
       "dataType": 3,
       "defaultValue": 1,
-      "samples": {
-        "/vanilla/behavior_pack/entities/pig.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:pig_saddled/minecraft:boostable/",
-            "content": 1.35
-          }
-        ],
-        "/vanilla/behavior_pack/entities/strider.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:strider_saddled/minecraft:boostable/",
-            "content": 1.35
-          }
-        ]
-      },
       "title": "Speed Multiplier"
     }
   ],

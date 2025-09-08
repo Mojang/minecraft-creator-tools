@@ -2,5 +2,5 @@
   "id": "query.vertical_speed",
   "fields": [],
   "description": "Returns the speed of the entity up or down in meters/second, where positive is up.",
-  "title": "Vertical Speed Query"
+  "title": "Vertical Speed"
 }

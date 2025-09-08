@@ -116,7 +116,9 @@ export default class GitHubManager {
       return;
     }
 
-    await this._prefsFile.loadContent();
+    if (!this._prefsFile.isContentLoaded) {
+      await this._prefsFile.loadContent();
+    }
 
     if (this._prefsFile.content !== undefined && typeof this._prefsFile.content === "string") {
       this._data = JSON.parse(this._prefsFile.content);
@@ -210,7 +212,9 @@ export default class GitHubManager {
       ) {
         const updatedFile = diff.updated;
 
-        await updatedFile.loadContent();
+        if (!updatedFile.isContentLoaded) {
+          await updatedFile.loadContent();
+        }
 
         if (updatedFile.content !== null) {
           let targetPath = diff.path;

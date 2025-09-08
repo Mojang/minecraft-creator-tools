@@ -2,5 +2,5 @@
   "id": "query.is_selected_item",
   "fields": [],
   "description": "Returns true if the player has selected an item in the inventory, else it returns 0.0.",
-  "title": "Is Selected Item Query"
+  "title": "Is Selected Item"
 }

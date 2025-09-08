@@ -49,14 +49,14 @@ export default interface MinecraftBehaviorControlledByPlayer {
    * FractionalRotationLimit. A value of 0.0 will result in the
    * entity no longer turning to where the player is facing.
    */
-  fractional_rotation: number;
+  fractional_rotation?: number;
 
   /**
    * @remarks
    * Limits the total degrees the entity can rotate to face where the
    * player is facing on each tick.
    */
-  fractional_rotation_limit: number;
+  fractional_rotation_limit?: number;
 
   /**
    * @remarks
@@ -66,7 +66,7 @@ export default interface MinecraftBehaviorControlledByPlayer {
    * Strider: 1.45
    *
    */
-  mount_speed_multiplier: number;
+  mount_speed_multiplier?: number;
 
   /**
    * @remarks
@@ -74,6 +74,6 @@ export default interface MinecraftBehaviorControlledByPlayer {
    * priority, the sooner this behavior will be executed as a 
    * goal.
    */
-  priority: number;
+  priority?: number;
 
 }

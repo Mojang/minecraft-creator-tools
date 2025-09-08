@@ -49,7 +49,7 @@ export default interface MinecraftTick {
    * Tick Every 1 To 3 Seconds: [20,60]
    *
    */
-  interval_range: number[];
+  interval_range?: number[];
 
   /**
    * @remarks
@@ -63,6 +63,6 @@ export default interface MinecraftTick {
    * Tick Every 1 To 3 Seconds: true
    *
    */
-  looping: boolean;
+  looping?: boolean;
 
 }

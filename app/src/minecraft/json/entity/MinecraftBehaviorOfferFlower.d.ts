@@ -37,7 +37,7 @@ export default interface MinecraftBehaviorOfferFlower {
    * Percent chance that the mob will start this goal from 0.0 to
    * 1.0 (where 1.0 = 100%).
    */
-  chance_to_start: number;
+  chance_to_start?: number;
 
   /**
    * @remarks
@@ -47,28 +47,28 @@ export default interface MinecraftBehaviorOfferFlower {
    * Iron Golem: {"test":"is_daytime"}
    *
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
    * Maximum rotation (in degrees), on the Y-axis, this entity can
    * rotate its head while trying to look at the target.
    */
-  max_head_rotation_y: number;
+  max_head_rotation_y?: number;
 
   /**
    * @remarks
    * The max amount of time (in seconds) that the mob will offer the
    * flower for before exiting the Goal.
    */
-  max_offer_flower_duration: number;
+  max_offer_flower_duration?: number;
 
   /**
    * @remarks
    * Maximum rotation (in degrees), on the X-axis, this entity can
    * rotate while trying to look at the target.
    */
-  max_rotation_x: number;
+  max_rotation_x?: number;
 
   /**
    * @remarks
@@ -80,13 +80,13 @@ export default interface MinecraftBehaviorOfferFlower {
    * Iron Golem: 5
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * The dimensions of the AABB used to search for a potential mob to
    * offer flower to.
    */
-  search_area: number[];
+  search_area?: number[];
 
 }

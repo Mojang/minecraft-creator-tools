@@ -1,0 +1,6 @@
+{
+  "id": "`math.sign(value)`",
+  "fields": [],
+  "description": "Returns 1 if value is positive, -1 otherwise",
+  "title": "Sign(value)"
+}

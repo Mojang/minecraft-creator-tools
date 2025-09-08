@@ -91,19 +91,19 @@ Bogged - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
 }
 
 
-Breeze Wind Charge Projectile - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/breeze_wind_charge_projectile.json
-
-"minecraft:collision_box": {
-  "width": 0.3125,
-  "height": 0.3125
-}
-
-
 Breeze - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/breeze.json
 
 "minecraft:collision_box": {
   "width": 0.6,
   "height": 1.77
+}
+
+
+Breeze Wind Charge Projectile - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/breeze_wind_charge_projectile.json
+
+"minecraft:collision_box": {
+  "width": 0.3125,
+  "height": 0.3125
 }
 
  */
@@ -129,7 +129,7 @@ export default interface MinecraftCollisionBox {
    * Armor Stand: 1.975
    *
    */
-  height: number;
+  height?: number;
 
   /**
    * @remarks
@@ -145,6 +145,6 @@ export default interface MinecraftCollisionBox {
    * Armor Stand: 0.5
    *
    */
-  width: number;
+  width?: number;
 
 }

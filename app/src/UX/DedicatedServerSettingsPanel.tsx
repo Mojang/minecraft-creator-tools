@@ -228,13 +228,14 @@ export default class DedicatedServerSettingsPanel extends Component<
 
     if (this.state.dedicatedServerMode !== DedicatedServerMode.auto) {
       serverProps.push(
-        <div key="pathlabel" className="dssp-label dssp-pathlabel">
+        <div key="pathlabel" className="dssp-label dssp-pathlabel" id="dssp-pathlabel">
           Folder Path:
         </div>
       );
       serverProps.push(
         <div key="pathinput" className="dssp-pathinput">
           <Input
+            aria-labelledby="dssp-pathlabel"
             value={this.state.dedicatedServerPath}
             onChange={this._handleServerPathChanged}
             placeholder="<path to Minecraft Dedicated Server>"

@@ -15,7 +15,10 @@ Enderman - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/
 
 "minecraft:behavior.take_block": {
   "priority": 11,
-  "xz_range": 2,
+  "xz_range": [
+    -2,
+    2
+  ],
   "y_range": [
     0,
     3
@@ -83,7 +86,7 @@ export default interface MinecraftBehaviorTakeBlock {
    * If true, whether the goal is affected by the mob griefing game
    * rule.
    */
-  affected_by_griefing_rule: boolean;
+  affected_by_griefing_rule?: boolean;
 
   /**
    * @remarks
@@ -94,14 +97,14 @@ export default interface MinecraftBehaviorTakeBlock {
    * Enderman: ["dirt","grass_block","podzol","coarse_dirt","mycelium","dirt_with_roots","moss_block","pale_moss_block","muddy_mangrove_roots","mud","sand","red_sand","gravel","brown_mushroom","red_mushroom","tnt","cactus","cactus_flower","clay","pumpkin","carved_pumpkin","melon_block","crimson_fungus","crimson_nylium","crimson_roots","warped_fungus","warped_nylium","warped_roots","dandelion","open_eyeblossom","closed_eyeblossom","poppy","blue_orchid","allium","azure_bluet","red_tulip","orange_tulip","white_tulip","pink_tulip","oxeye_daisy","cornflower","lily_of_the_valley","wither_rose","torchflower"]
    *
    */
-  blocks: string[];
+  blocks?: string[];
 
   /**
    * @remarks
    * Filters for if the entity should try to take a block. Self and
    * Target are set.
    */
-  can_take: jsoncommon.MinecraftFilter;
+  can_take?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -111,14 +114,14 @@ export default interface MinecraftBehaviorTakeBlock {
    * Enderman: 0.05
    *
    */
-  chance: number;
+  chance?: number;
 
   /**
    * @remarks
    * Trigger ran if the entity does take a block. Self, Target, and
    * Block are set.
    */
-  on_take: jsoncommon.MinecraftEventTrigger;
+  on_take?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -130,14 +133,14 @@ export default interface MinecraftBehaviorTakeBlock {
    * Enderman: 11
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * If true, whether the entity needs line of sight to the block they
    * are trying to take.
    */
-  requires_line_of_sight: boolean;
+  requires_line_of_sight?: boolean;
 
   /**
    * @remarks
@@ -145,10 +148,10 @@ export default interface MinecraftBehaviorTakeBlock {
    * from.
    * 
    * Sample Values:
-   * Enderman: 2
+   * Enderman: [-2,2]
    *
    */
-  xz_range: number[];
+  xz_range?: number[];
 
   /**
    * @remarks
@@ -158,6 +161,6 @@ export default interface MinecraftBehaviorTakeBlock {
    * Enderman: [0,3]
    *
    */
-  y_range: number[];
+  y_range?: number[];
 
 }

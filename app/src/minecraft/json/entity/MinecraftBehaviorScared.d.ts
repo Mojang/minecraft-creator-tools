@@ -39,7 +39,7 @@ export default interface MinecraftBehaviorScared {
    * Panda: 1
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -50,6 +50,6 @@ export default interface MinecraftBehaviorScared {
    * Panda: 20
    *
    */
-  sound_interval: number;
+  sound_interval?: number;
 
 }

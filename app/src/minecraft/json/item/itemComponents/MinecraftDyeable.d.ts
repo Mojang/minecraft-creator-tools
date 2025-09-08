@@ -8,28 +8,15 @@
  * Contains types for working with various Minecraft Bedrock Edition JSON schemas.
  * 
  * Items Documentation - minecraft:dyeable
- * 
- * minecraft:dyeable Samples
-"minecraft:dyeable": {
-  "default_color": "#175882"
-}
-
  */
 
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Dyeable Item (minecraft:dyeable)
- * Enables custom items to be dyed in cauldrons. To use the dyeable
- * component, the format version on the item and the attachable needs
- * to have a format_version of 1.21.30 or greater.
+ * Item Dyeable (minecraft:dyeable)
  */
 export default interface MinecraftDyeable {
 
-  /**
-   * @remarks
-   * default_color
-   */
-  default_color: string;
+  default_color?: string;
 
 }

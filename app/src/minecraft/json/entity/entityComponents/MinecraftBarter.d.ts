@@ -36,7 +36,7 @@ export default interface MinecraftBarter {
    * Piglin: "loot_tables/entities/piglin_barter.json"
    *
    */
-  barter_table: string;
+  barter_table?: string;
 
   /**
    * @remarks
@@ -47,6 +47,6 @@ export default interface MinecraftBarter {
    * Piglin: 20
    *
    */
-  cooldown_after_being_attacked: number[];
+  cooldown_after_being_attacked?: number[];
 
 }

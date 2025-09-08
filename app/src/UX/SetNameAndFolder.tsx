@@ -136,10 +136,13 @@ export default class SetNameAndFolder extends Component<ISetNameAndFolderProps, 
     return (
       <div className="nitem-outer">
         <div className="nitem-optionsArea">
-          <div className="nitem-nameLabel">Name</div>
+          <div className="nitem-nameLabel" id="nitem-label-name">
+            Name
+          </div>
           <div className="nitem-nameArea">
             <Input
               value={inputText}
+              aria-labelledby="nitem-label-name"
               defaultValue={inputText}
               placeholder={ProjectItemUtilities.getNewItemName(this.props.itemType) + " name"}
               onChange={this._handleNameChanged}

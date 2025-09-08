@@ -1,4 +1,5 @@
 {
+  "id": "minecraft:record",
   "fields": [
     {
       "id": "comparator_signal",
@@ -43,18 +44,9 @@
       }
     }
   ],
-  "description": "Used by record items to play music.",
+  "description": "Record Item Component. Used by record items to play music.",
+  "title": "Item Record",
   "samples": {
-    "sample": [
-      {
-        "path": "sample",
-        "content": {
-          "comparator_signal": 1,
-          "duration": 5,
-          "sound_event": "ambient.tame"
-        }
-      }
-    ],
     "/samples/custom_items/behavior_packs/custom_item/items/my_sword_singing.json": [
       {
         "path": "/minecraft:item/components/minecraft:record/",
@@ -65,7 +57,5 @@
         }
       }
     ]
-  },
-  "title": "Minecraft Record Item",
-  "id": "minecraft:record"
+  }
 }

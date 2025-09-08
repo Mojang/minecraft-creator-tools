@@ -49,6 +49,6 @@ export default interface MinecraftMobEffectImmunity {
    * Slime: ["oozing"]
    *
    */
-  mob_effects: string[];
+  mob_effects?: string[];
 
 }

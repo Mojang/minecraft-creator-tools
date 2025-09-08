@@ -186,6 +186,10 @@ export default class AudioItemProperties extends Component<IAudioItemPropertiesP
 
     const form = Database.getForm("resource", "audio_item_properties");
 
+    if (!form) {
+      return <div>(Error loading form)...</div>;
+    }
+
     return (
       <div className="aipro-area">
         <div className="aipro-mainArea">

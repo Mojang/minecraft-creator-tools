@@ -22,7 +22,7 @@ Black Bundle - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_p
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Storage Weight Modifier Item
+ * Item Storage Weight Modifier 
  * (minecraft:storage_weight_modifier)
  * Specifies the maximum weight limit that a storage item can 
  * hold.
@@ -39,6 +39,6 @@ export default interface MinecraftStorageWeightModifier {
    *
    *
    */
-  weight_in_storage_item: number;
+  weight_in_storage_item?: number;
 
 }

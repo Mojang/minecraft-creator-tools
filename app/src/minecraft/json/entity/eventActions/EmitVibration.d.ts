@@ -26,7 +26,11 @@ import * as jsoncommon from './../../../jsoncommon';
  */
 export default interface EmitVibration {
 
-  vibration: string;
+  /**
+   * @remarks
+   * Type of vibration to emit.
+   */
+  vibration?: string;
 
 }
 

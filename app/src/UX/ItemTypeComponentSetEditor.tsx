@@ -22,6 +22,7 @@ import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import Carto from "../app/Carto";
 import Project from "../app/Project";
 import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
+import { ManagedComponent } from "../minecraft/ManagedComponent";
 
 interface IItemTypeComponentSetEditorProps {
   itemTypeDefinition: IManagedComponentSetItem;
@@ -112,7 +113,11 @@ export default class ItemTypeComponentSetEditor extends Component<
       formName = EntityTypeDefinition.getFormIdFromComponentId(id);
     }
 
-    const form = await Database.ensureFormLoaded("item", formName);
+    let form = Database.getForm("item_components", formName);
+
+    if (!form) {
+      form = await Database.ensureFormLoaded("item_components", formName);
+    }
 
     if (form !== undefined) {
       const newDataObject = DataFormUtilities.generateDefaultItem(form);
@@ -136,8 +141,15 @@ export default class ItemTypeComponentSetEditor extends Component<
       const component = components[i];
 
       if (typeof component === "object" && component.id !== undefined) {
+        if (!component.id.startsWith("minecraft:")) {
+          continue;
+        }
+
         const formId = this.getFormIdFromComponentId(component.id);
-        await Database.ensureFormLoaded("item", formId);
+
+        if (!Database.isFormLoaded("item_components", formId)) {
+          await Database.ensureFormLoaded("item_components", formId);
+        }
       }
     }
 
@@ -267,12 +279,24 @@ export default class ItemTypeComponentSetEditor extends Component<
         const component = components[i];
 
         if (typeof component === "object" && component.id !== undefined) {
+          if (
+            !component.id.startsWith("minecraft:") &&
+            !component.id.startsWith("tag:") &&
+            component.id === this.state?.activeComponentId
+          ) {
+            componentForms.push(
+              <div className="icose-noeditor">(No editor is available for the {component.id} custom component.)</div>
+            );
+
+            continue;
+          }
+
           const isVisual = ItemTypeDefinition.isVisualComponent(component.id);
 
           if (isVisual === this.props.isVisualsMode) {
             const formId = component.id.replace(/:/gi, "_").replace(/\./gi, "_");
 
-            const form = Database.getForm("item", formId);
+            const form = Database.getForm("item_components", formId);
 
             componentList.push({
               key: component.id,
@@ -306,7 +330,8 @@ export default class ItemTypeComponentSetEditor extends Component<
                       objectKey={component.id}
                       closeButton={false}
                       definition={form}
-                      getsetPropertyObject={component}
+                      directObject={component.getData()}
+                      onPropertyChanged={(component as ManagedComponent).handlePropertyChanged}
                     ></DataForm>
                   </div>
                 );

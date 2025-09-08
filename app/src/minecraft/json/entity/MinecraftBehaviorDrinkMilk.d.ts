@@ -51,7 +51,7 @@ export default interface MinecraftBehaviorDrinkMilk {
    * Time (in seconds) that the goal is on cooldown before it can be
    * used again.
    */
-  cooldown_seconds: number;
+  cooldown_seconds?: number;
 
   /**
    * @remarks
@@ -61,7 +61,7 @@ export default interface MinecraftBehaviorDrinkMilk {
    * Wandering Trader: {"all_of":[{"test":"is_daytime","value":true},{"test":"is_visible","subject":"self","value":false},{"test":"is_avoiding_mobs","subject":"self","value":false}]}
    *
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -73,6 +73,6 @@ export default interface MinecraftBehaviorDrinkMilk {
    * Wandering Trader: 5
    *
    */
-  priority: number;
+  priority?: number;
 
 }

@@ -2,5 +2,5 @@
   "id": "query.eye_target_y_rotation",
   "fields": [],
   "description": "Returns the Y eye rotation of the entity, else it returns 0.0.  Applies to the guardian.",
-  "title": "Eye Target y Rotation Query"
+  "title": "Eye Target y Rotation"
 }

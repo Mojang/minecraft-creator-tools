@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Custom Map Tint Grass Noise Biome 
+ * Biome Custom Map Tint Grass Noise 
  * (custom_map_tint_grass_noise)
  * Makes grass use the noise based colors for tinting in this biome
  * on the map.

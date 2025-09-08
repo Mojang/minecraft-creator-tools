@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Swamp Biome (minecraft:swamp)
+ * Biome Swamp (minecraft:swamp)
  * Used to add decoration to the surface of swamp biomes such as
  * water lilies.
  */
@@ -23,7 +23,7 @@ export default interface MinecraftSwamp {
    * @remarks
    * Controls the block type used deep underground in this biome.
    */
-  foundation_material: MinecraftSwampFoundationMaterial;
+  foundation_material: string;
 
   /**
    * @remarks
@@ -39,7 +39,7 @@ export default interface MinecraftSwamp {
    * Controls the block type used in a layer below the surface of
    * this biome.
    */
-  mid_material: MinecraftSwampMidMaterial;
+  mid_material: string;
 
   /**
    * @remarks
@@ -53,65 +53,25 @@ export default interface MinecraftSwamp {
    * Controls the block type used as a floor for bodies of water in
    * this biome.
    */
-  sea_floor_material: MinecraftSwampSeaFloorMaterial;
+  sea_floor_material: string;
 
   /**
    * @remarks
    * Controls the block type used for the bodies of water in this
    * biome.
    */
-  sea_material: MinecraftSwampSeaMaterial;
+  sea_material: string;
 
   /**
    * @remarks
    * Controls the block type used for the surface of this biome.
    */
-  top_material: MinecraftSwampTopMaterial;
+  top_material: string;
 
   /**
    * @remarks
    * Controls the type of surface builder to use
    */
   type: string;
-
-}
-
-
-/**
- * Foundation Material (foundation_material)
- */
-export interface MinecraftSwampFoundationMaterial {
-
-}
-
-
-/**
- * Mid Material (mid_material)
- */
-export interface MinecraftSwampMidMaterial {
-
-}
-
-
-/**
- * Sea Floor Material (sea_floor_material)
- */
-export interface MinecraftSwampSeaFloorMaterial {
-
-}
-
-
-/**
- * Sea Material (sea_material)
- */
-export interface MinecraftSwampSeaMaterial {
-
-}
-
-
-/**
- * Top Material (top_material)
- */
-export interface MinecraftSwampTopMaterial {
 
 }

@@ -31,7 +31,8 @@
       "dataType": 3
     }
   ],
+  "note": "This is a pre-Caves and Cliffs component and is unused for custom biomes.",
   "description": "Controls how this biome is instantiated (and then potentially modified) during world generation of the nether.",
-  "title": "Minecraft Multinoise Generation Rules Biome",
+  "title": "Biome Multinoise Generation Rules",
   "id": "minecraft:multinoise_generation_rules"
 }

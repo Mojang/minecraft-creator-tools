@@ -11,7 +11,7 @@
  * 
  * minecraft:wearable Samples
 
-Journal Pencil - https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/journal_pencil.json
+Journal - https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/journal.json
 
 "minecraft:wearable": {
   "dispensable": true,
@@ -22,7 +22,6 @@ Journal Pencil - https://github.com/microsoft/minecraft-samples/tree/main/casual
 Chestplate - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/behavior_packs/custom_item/items/chestplate.json
 
 "minecraft:wearable": {
-  "dispensable": true,
   "slot": "slot.armor.chest"
 }
 
@@ -30,7 +29,6 @@ Chestplate - https://github.com/microsoft/minecraft-samples/tree/main/custom_ite
 Crown - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/behavior_packs/custom_item/items/crown.json
 
 "minecraft:wearable": {
-  "dispensable": true,
   "slot": "slot.armor.head"
 }
 
@@ -38,7 +36,6 @@ Crown - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/be
 My Boots - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/behavior_packs/custom_item/items/my_boots.json
 
 "minecraft:wearable": {
-  "dispensable": true,
   "slot": "slot.armor.feet"
 }
 
@@ -46,8 +43,14 @@ My Boots - https://github.com/microsoft/minecraft-samples/tree/main/custom_items
 My Leggings - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/behavior_packs/custom_item/items/my_leggings.json
 
 "minecraft:wearable": {
-  "dispensable": true,
   "slot": "slot.armor.legs"
+}
+
+
+Wrench - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/behavior_packs/custom_item/items/wrench.json
+
+"minecraft:wearable": {
+  "slot": "slot.weapon.offhand"
 }
 
  */
@@ -55,13 +58,8 @@ My Leggings - https://github.com/microsoft/minecraft-samples/tree/main/custom_it
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Wearable Item (minecraft:wearable)
- * Sets the wearable item component.
- * Note: Here are the following equipment slots that can be set for
- * the value of slot: slot.weapon.mainhand, slot.weapon.offhand, slot.armor.head,
- * slot.armor.chest, slot.armor.legs, slot.armor.feet, slot.hotbar,
- * slot.inventory, slot.enderchest, slot.saddle, slot.armor, slot.chest,
- * slot.equippable.
+ * Item Wearable (minecraft:wearable)
+ * Wearable items can be worn by a player in a specified slot.
  */
 export default interface MinecraftWearable {
 
@@ -69,11 +67,11 @@ export default interface MinecraftWearable {
    * @remarks
    * 
    * Sample Values:
-   * Chestplate: true
+   * Journal: true
    *
    *
    */
-  dispensable: boolean;
+  dispensable?: string;
 
   /**
    * @remarks
@@ -81,14 +79,14 @@ export default interface MinecraftWearable {
    * and the Locator Bar when the wearable item is worn. Default is
    * false.
    */
-  hides_player_location: boolean;
+  hides_player_location?: boolean;
 
   /**
    * @remarks
    * How much protection the wearable item provides. Default is set
    * to 0.
    */
-  protection: number;
+  protection?: number;
 
   /**
    * @remarks
@@ -96,11 +94,12 @@ export default interface MinecraftWearable {
    * chosen, the max stack size is set to 1.
    * 
    * Sample Values:
+   * Journal: "slot.weapon.offhand"
+   *
+   *
    * Chestplate: "slot.armor.chest"
    *
    * Crown: "slot.armor.head"
-   *
-   * My Boots: "slot.armor.feet"
    *
    */
   slot: string;

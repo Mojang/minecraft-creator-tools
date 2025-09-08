@@ -10,24 +10,21 @@
  * Items Documentation - minecraft:block_placer
  * 
  * minecraft:block_placer Samples
-"minecraft:block_placer": {
-  "block": "seeds",
-  "use_on": [
-    "dirt",
-    "grass"
-  ],
-  "replace_block_item": true
-}
-
 
 My Sword Singing - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/behavior_packs/custom_item/items/my_sword_singing.json
 
 "minecraft:block_placer": {
   "block": "minecraft:dirt",
   "use_on": [
-    "dirt",
-    "grass",
-    "anvil"
+    {
+      "name": "minecraft:dirt"
+    },
+    {
+      "name": "minecraft:grass_block"
+    },
+    {
+      "name": "minecraft:anvil"
+    }
   ]
 }
 
@@ -36,12 +33,12 @@ My Sword Singing - https://github.com/microsoft/minecraft-samples/tree/main/cust
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Block Placer Item (minecraft:block_placer)
- * Sets the item as a planter item component for blocks. Items with
- * this component will place a block when used.
- * Note: This component can also be used instead of the
- * minecraft:icon component to render the block this item will place
- * as the icon.
+ * Item Block Placer (minecraft:block_placer)
+ * Items with the block_placer component will place a block when
+ * used. 
+This component can also be used instead of the
+ * "minecraft:icon" component to render the referenced block as
+ * the item icon.
  */
 export default interface MinecraftBlockPlacer {
 
@@ -62,7 +59,7 @@ export default interface MinecraftBlockPlacer {
    * broken/picked. Note: the identifier for this item must match the
    * block's identifier for this field to be valid.
    */
-  replace_block_item: boolean;
+  replace_block_item?: boolean;
 
   /**
    * @remarks
@@ -70,10 +67,10 @@ export default interface MinecraftBlockPlacer {
    * used on. If left empty, all blocks will be allowed.
    * 
    * Sample Values:
-   * My Sword Singing: ["dirt","grass","anvil"]
+   * My Sword Singing: [{"name":"minecraft:dirt"},{"name":"minecraft:grass_block"},{"name":"minecraft:anvil"}]
    *
    */
-  use_on: MinecraftBlockPlacerUseOn[];
+  use_on?: MinecraftBlockPlacerUseOn[];
 
 }
 
@@ -83,10 +80,10 @@ export default interface MinecraftBlockPlacer {
  */
 export interface MinecraftBlockPlacerUseOn {
 
-  name: string;
+  name?: string;
 
-  states: number;
+  states?: number;
 
-  tags: string;
+  tags?: string;
 
 }

@@ -5,7 +5,6 @@ import "./NewBlockType.css";
 import { Input, InputProps, ThemeInput } from "@fluentui/react-northstar";
 import Database from "./../minecraft/Database";
 import Log from "./../core/Log";
-import IFolder from "./../storage/IFolder";
 import ItemGallery, { GalleryItemCommand } from "./ItemGallery";
 import { ItemTileButtonDisplayMode } from "./ItemTileButton";
 import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
@@ -17,7 +16,6 @@ interface INewBlockTypeProps extends IAppProps {
 }
 
 interface INewBlockTypeState {
-  blockTypesFolder?: IFolder;
   selectedBlockType?: IGalleryItem;
   nameIsManuallySet?: boolean;
   name?: string;
@@ -44,12 +42,7 @@ export default class NewBlockType extends Component<INewBlockTypeProps, INewBloc
       return;
     }
 
-    const blocksFolder = Database.releaseVanillaBehaviorPackFolder.ensureFolder("blocks");
-
-    await blocksFolder.load();
-
     this.setState({
-      blockTypesFolder: blocksFolder,
       selectedBlockType: this.state.selectedBlockType,
       name: this.state.name,
     });
@@ -78,7 +71,6 @@ export default class NewBlockType extends Component<INewBlockTypeProps, INewBloc
 
     this.setState({
       selectedBlockType: item,
-      blockTypesFolder: this.state.blockTypesFolder,
       name: newName,
       nameIsManuallySet: this.state.nameIsManuallySet,
     });
@@ -92,7 +84,6 @@ export default class NewBlockType extends Component<INewBlockTypeProps, INewBloc
     if (
       this.state === null ||
       Database.releaseVanillaBehaviorPackFolder === null ||
-      this.state.blockTypesFolder === undefined ||
       this.props.carto.gallery === undefined
     ) {
       return <div>Loading...</div>;
@@ -108,7 +99,12 @@ export default class NewBlockType extends Component<INewBlockTypeProps, INewBloc
       <div className="nbt-outer">
         <div className="nbt-optionsArea">
           <div>
-            <Input value={inputText} defaultValue={inputText} onChange={this._handleNameChanged} />
+            <Input
+              aria-label="Block type name"
+              value={inputText}
+              defaultValue={inputText}
+              onChange={this._handleNameChanged}
+            />
           </div>
         </div>
         <div

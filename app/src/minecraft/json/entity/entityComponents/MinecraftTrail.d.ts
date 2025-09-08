@@ -43,7 +43,7 @@ export default interface MinecraftTrail {
    * Snow Golem: "minecraft:snow_layer"
    *
    */
-  block_type: string;
+  block_type?: string;
 
   /**
    * @remarks
@@ -54,7 +54,7 @@ export default interface MinecraftTrail {
    * Snow Golem: {"test":"is_temperature_value","operator":"<","value":0.81}
    *
    */
-  spawn_filter: jsoncommon.MinecraftFilter;
+  spawn_filter?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -63,6 +63,6 @@ export default interface MinecraftTrail {
    * left/right(-/+), the Z value is backward/forward(-/+), the Y
    * value is below/above(-/+).
    */
-  spawn_offset: number[];
+  spawn_offset?: number[];
 
 }

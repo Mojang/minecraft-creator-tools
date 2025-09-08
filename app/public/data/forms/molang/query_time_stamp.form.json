@@ -2,5 +2,5 @@
   "id": "query.time_stamp",
   "fields": [],
   "description": "Returns the current time stamp of the level. Generally applies to cod, piglin, pufferfish, tropical fish, salmon.",
-  "title": "Time Stamp Query"
+  "title": "Time Stamp"
 }

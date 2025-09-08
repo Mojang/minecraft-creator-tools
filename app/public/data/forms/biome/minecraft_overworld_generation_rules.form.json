@@ -12,12 +12,7 @@
       "alternates": [
         {
           "id": "hills_transformation",
-          "dataType": 16,
-          "subForm": {
-            "id": "hills_transformation",
-            "title": "Hills Transformation",
-            "fields": []
-          }
+          "dataType": 2
         }
       ],
       "title": "Hills Transformation",
@@ -31,12 +26,7 @@
       "alternates": [
         {
           "id": "mutate_transformation",
-          "dataType": 16,
-          "subForm": {
-            "id": "mutate_transformation",
-            "title": "Mutate Transformation",
-            "fields": []
-          }
+          "dataType": 2
         }
       ]
     },
@@ -48,12 +38,7 @@
       "alternates": [
         {
           "id": "river_transformation",
-          "dataType": 16,
-          "subForm": {
-            "id": "river_transformation",
-            "title": "River Transformation",
-            "fields": []
-          }
+          "dataType": 2
         }
       ]
     },
@@ -65,17 +50,13 @@
       "alternates": [
         {
           "id": "shore_transformation",
-          "dataType": 16,
-          "subForm": {
-            "id": "shore_transformation",
-            "title": "Shore Transformation",
-            "fields": []
-          }
+          "dataType": 2
         }
       ]
     }
   ],
+  "note": "This is a pre-Caves and Cliffs component and is unused for custom biomes.",
   "description": "Controls how this biome is instantiated (and then potentially modified) during world generation of the overworld.",
-  "title": "Minecraft Overworld Generation Rules Biome",
+  "title": "Biome Overworld Generation Rules",
   "id": "minecraft:overworld_generation_rules"
 }

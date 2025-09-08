@@ -12,7 +12,9 @@ export class BasicValidators {
       return folder.name + " is an unsupported folder name.";
     }
 
-    await folder.load();
+    if (!folder.isLoaded) {
+      await folder.load();
+    }
 
     if (!isChildFolder && folder.fileCount > 0) {
       return "Folder that contains files at the root.";
@@ -94,7 +96,9 @@ export class BasicValidators {
   }
 
   public static async hasStrongLanguageContent(file: IFile) {
-    await file.loadContent();
+    if (!file.isContentLoaded) {
+      await file.loadContent();
+    }
 
     if (file.isBinary) {
       return undefined;

@@ -25,7 +25,7 @@ export default class GitHubFile extends FileBase implements IFile {
   }
 
   get isContentLoaded() {
-    return true;
+    return this.lastLoadedOrSaved !== null;
   }
 
   get parentFolder(): GitHubFolder {

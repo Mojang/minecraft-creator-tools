@@ -274,9 +274,12 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
             />
           </div>
           <div className="mts-toolName">
-            <span className="mts-label">Name:</span>
+            <span className="mts-label" id="mts-toolNameLabel">
+              Name:
+            </span>
             <Input
               clearable
+              aria-labelledby="mts-toolNameLabel"
               placeholder={
                 "Ctrl-" +
                 (this.state.activeCommandIndex + 1).toString() +

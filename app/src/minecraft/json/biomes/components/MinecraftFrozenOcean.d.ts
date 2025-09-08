@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Frozen Ocean Biome (minecraft:frozen_ocean)
+ * Biome Frozen Ocean (minecraft:frozen_ocean)
  * Similar to overworld_surface. Adds icebergs.
  */
 export default interface MinecraftFrozenOcean {
@@ -22,14 +22,14 @@ export default interface MinecraftFrozenOcean {
    * @remarks
    * Controls the block type used deep underground in this biome
    */
-  foundation_material: MinecraftFrozenOceanFoundationMaterial;
+  foundation_material: string;
 
   /**
    * @remarks
    * Controls the block type used in a layer below the surface of
    * this biome
    */
-  mid_material: MinecraftFrozenOceanMidMaterial;
+  mid_material: string;
 
   /**
    * @remarks
@@ -43,65 +43,25 @@ export default interface MinecraftFrozenOcean {
    * Controls the block type used as a floor for bodies of water in
    * this biome
    */
-  sea_floor_material: MinecraftFrozenOceanSeaFloorMaterial;
+  sea_floor_material: string;
 
   /**
    * @remarks
    * Controls the block type used for the bodies of water in this
    * biome
    */
-  sea_material: MinecraftFrozenOceanSeaMaterial;
+  sea_material: string;
 
   /**
    * @remarks
    * Controls the block type used for the surface of this biome
    */
-  top_material: MinecraftFrozenOceanTopMaterial;
+  top_material: string;
 
   /**
    * @remarks
    * Controls the type of surface builder to use
    */
   type: string;
-
-}
-
-
-/**
- * Foundation Material (foundation_material)
- */
-export interface MinecraftFrozenOceanFoundationMaterial {
-
-}
-
-
-/**
- * Mid Material (mid_material)
- */
-export interface MinecraftFrozenOceanMidMaterial {
-
-}
-
-
-/**
- * Sea Floor Material (sea_floor_material)
- */
-export interface MinecraftFrozenOceanSeaFloorMaterial {
-
-}
-
-
-/**
- * Sea Material (sea_material)
- */
-export interface MinecraftFrozenOceanSeaMaterial {
-
-}
-
-
-/**
- * Top Material (top_material)
- */
-export interface MinecraftFrozenOceanTopMaterial {
 
 }

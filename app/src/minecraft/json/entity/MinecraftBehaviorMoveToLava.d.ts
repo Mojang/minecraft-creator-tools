@@ -26,7 +26,7 @@ export default interface MinecraftBehaviorMoveToLava {
    * goal. This is the "wiggle room" to stop the AI from bouncing back
    * and forth trying to reach a specific spot
    */
-  goal_radius: number;
+  goal_radius?: number;
 
   /**
    * @remarks
@@ -34,7 +34,7 @@ export default interface MinecraftBehaviorMoveToLava {
    * priority, the sooner this behavior will be executed as a 
    * goal.
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -43,24 +43,24 @@ export default interface MinecraftBehaviorMoveToLava {
    * 0 will have the mob check every block within range in one 
    * tick
    */
-  search_count: number;
+  search_count?: number;
 
   /**
    * @remarks
    * Height in blocks the mob will look for lava to move towards
    */
-  search_height: number;
+  search_height?: number;
 
   /**
    * @remarks
    * The distance in blocks it will look for lava to move towards
    */
-  search_range: number;
+  search_range?: number;
 
   /**
    * @remarks
    * Movement speed multiplier of the mob when using this AI Goal
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

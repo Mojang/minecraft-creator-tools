@@ -1,0 +1,56 @@
+.bior-areaOuter {
+  width: calc(100% - 2px);
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+}
+
+.bior-area {
+  width: calc(100% - 2px);
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  overflow-y: auto;
+}
+
+.bior-headerTransition {
+  background-position-x: left;
+  background-repeat: repeat-x;
+  height: 40px;
+}
+
+.bior-header {
+  font-size: 16pt;
+  padding-top: 10px;
+  padding-left: 15px;
+  padding-bottom: 15px;
+}
+
+.bior-componentHeader {
+  padding-top: 20px;
+  font-size: 14pt;
+  padding: 12px;
+  padding-top: 40px;
+  padding-bottom: 14px;
+}
+
+.bior-extraArea {
+  margin-bottom: 5px;
+}
+
+.bior-commands {
+  display: grid;
+  padding: 3px;
+  grid-template-columns: 200px 1fr;
+}
+
+.bior-toolBarArea {
+  padding-bottom: 0px;
+  height: 31px;
+}
+
+.bior-extraArea {
+  grid-column: 2;
+}
+
+.bior-loading {
+  padding: 6px;
+}

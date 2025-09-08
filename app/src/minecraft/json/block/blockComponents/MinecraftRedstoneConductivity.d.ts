@@ -27,12 +27,12 @@ export default interface MinecraftRedstoneConductivity {
    * Specifies if redstone wire can stair-step downward on the 
    * block.
    */
-  allows_wire_to_step_down: boolean;
+  allows_wire_to_step_down?: boolean;
 
   /**
    * @remarks
    * Specifies if the block can be powered by redstone.
    */
-  redstone_conductor: boolean;
+  redstone_conductor?: boolean;
 
 }

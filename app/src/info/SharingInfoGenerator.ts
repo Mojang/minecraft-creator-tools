@@ -67,7 +67,7 @@ export default class SharingInfoGenerator implements IProjectInfoGenerator {
       let projInfoItem = undefined;
 
       if (pi.storageType === ProjectItemStorageType.singleFile) {
-        await pi.ensureFileStorage();
+        await pi.loadFileContent();
 
         if (pi.primaryFile) {
           /*
@@ -98,7 +98,7 @@ export default class SharingInfoGenerator implements IProjectInfoGenerator {
         itemsByType[pi.itemType] = projInfoItem;
         items.push(projInfoItem);
       } else if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
-        await pi.ensureFileStorage();
+        await pi.loadFileContent();
 
         if (pi.primaryFile) {
           const bpManifest = await BehaviorManifestDefinition.ensureOnFile(pi.primaryFile);

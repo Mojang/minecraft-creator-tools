@@ -10,11 +10,6 @@
  * Items Documentation - minecraft:cooldown
  * 
  * minecraft:cooldown Samples
-"minecraft:cooldown": {
-  "category": "attack",
-  "duration": 0.2
-}
-
 
 Wind Charge - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/wind_charge.json
 
@@ -28,16 +23,16 @@ Wind Charge - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Cooldown Item (minecraft:cooldown)
- * The duration of time (in seconds) items with a matching category will
- * spend cooling down before becoming usable again.
+ * Item Cooldown (minecraft:cooldown)
+ * After you use an item, all items with a "minecraft:cooldown" component
+ * with the same "category" become unusable for the amount of
+ * seconds specified in "duration".
  */
 export default interface MinecraftCooldown {
 
   /**
    * @remarks
-   * The type of cool down for this item. All items with a cool down
-   * component with the same category are put on cool down when one
+   * All items with the same "category" are put on cooldown when one
    * is used.
    * 
    * Sample Values:
@@ -48,8 +43,8 @@ export default interface MinecraftCooldown {
 
   /**
    * @remarks
-   * The duration of time (in seconds) items with a matching category will
-   * spend cooling down before becoming usable again.
+   * How long the item is on cooldown before being able to be used
+   * again.
    * 
    * Sample Values:
    * Wind Charge: 0.5

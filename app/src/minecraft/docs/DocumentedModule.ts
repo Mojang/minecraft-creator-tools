@@ -178,7 +178,9 @@ export default class DocumentedModule {
   }
 
   async loadUnassociatedDocumentationFolder(folder: IFolder) {
-    await folder.load();
+    if (!folder.isLoaded) {
+      await folder.load();
+    }
 
     for (const fileName in folder.files) {
       const file = folder.files[fileName];
@@ -213,11 +215,13 @@ export default class DocumentedModule {
     if (file.manager !== undefined && file.manager instanceof DocumentedModule) {
       const dt = file.manager as DocumentedModule;
 
-      if (!dt.isLoaded && loadHandler) {
-        dt.onLoaded.subscribe(loadHandler);
-      }
+      if (!dt.isLoaded) {
+        if (loadHandler) {
+          dt.onLoaded.subscribe(loadHandler);
+        }
 
-      await dt.load();
+        await dt.load();
+      }
     }
   }
 
@@ -268,7 +272,9 @@ export default class DocumentedModule {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

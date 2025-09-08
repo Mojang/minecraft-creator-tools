@@ -315,21 +315,30 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
 
     if (this.props.displayName) {
       settingsProps.push(
-        <div className={"wsa-label wsa-namelabel" + outerClassNameModifier} key="namelabel">
+        <div className={"wsa-label wsa-namelabel" + outerClassNameModifier} key="namelabel" id="wsa-label-name">
           World name
         </div>
       );
 
       settingsProps.push(
         <div className="wsa-nameinput" key="nameinput">
-          <Input value={this.state.slotName} onChange={this._handleNameChanged} placeholder="1" />
+          <Input
+            aria-labelledby="wsa-label-name"
+            value={this.state.slotName}
+            onChange={this._handleNameChanged}
+            placeholder="1"
+          />
         </div>
       );
     }
 
     if (this.props.displayGameTypeProperties) {
       settingsProps.push(
-        <div className={"wsa-label wsa-gametypelabel" + outerClassNameModifier} key="gametypelabel">
+        <div
+          className={"wsa-label wsa-gametypelabel" + outerClassNameModifier}
+          key="gametypelabel"
+          id="wsa-label-gametype"
+        >
           Game type
         </div>
       );
@@ -339,6 +348,7 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
           <Dropdown
             items={this._gameTypes}
             key="gtInput"
+            aria-labelledby="wsa-label-gametype"
             defaultValue={
               this.props.worldSettings && this.props.worldSettings.gameType !== undefined
                 ? this._gameTypes[this.props.worldSettings.gameType]
@@ -352,7 +362,11 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
       );
 
       settingsProps.push(
-        <div className={"wsa-label wsa-gamedifflabel" + outerClassNameModifier} key="gamedifflabel">
+        <div
+          className={"wsa-label wsa-gamedifflabel" + outerClassNameModifier}
+          key="gamedifflabel"
+          id="wsa-label-gamediff"
+        >
           Difficulty
         </div>
       );
@@ -362,6 +376,7 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
           <Dropdown
             items={this._difficulty}
             key="gdInput"
+            aria-labelledby="wsa-label-gamediff"
             defaultValue={
               this.props.worldSettings && this.props.worldSettings.difficulty !== undefined
                 ? this._difficulty[this.props.worldSettings.difficulty]
@@ -450,6 +465,7 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
           <Dropdown
             items={this._generator}
             key="genInput"
+            aria-label="Map Style"
             disabled={!enableCustomWorldOptions}
             defaultValue={
               this.props.worldSettings && this.props.worldSettings.generator !== undefined
@@ -471,6 +487,7 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
       settingsProps.push(
         <div className="wsa-seedinput" key="seedinput">
           <Input
+            aria-label="World Seed"
             value={this.state.seed === undefined ? "" : this.state.seed.toString()}
             disabled={!enableCustomWorldOptions}
             onChange={this._handleSeedChanged}
@@ -482,7 +499,7 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
 
     if (this.props.displayGameAdminProperties) {
       settingsProps.push(
-        <div className={"wsa-label wsa-backuplabel" + outerClassNameModifier} key="backuplabel">
+        <div className={"wsa-label wsa-backuplabel" + outerClassNameModifier} key="backuplabel" id="wsa-label-backup">
           Backup
         </div>
       );
@@ -492,6 +509,7 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
           <Dropdown
             items={this._backupTypes}
             key="backupInput"
+            aria-labelledby="wsa-label-backup"
             defaultValue={
               this.props.worldSettings && this.props.worldSettings.backupType !== undefined
                 ? this._backupTypes[this.props.worldSettings.backupType]

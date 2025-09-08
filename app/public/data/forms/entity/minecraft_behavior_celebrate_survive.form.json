@@ -7,13 +7,13 @@
       "defaultValue": 30,
       "dataType": 3,
       "samples": {
-        "/vanilla/behavior_pack/entities/villager_v2.json": [
+        "/vanilla/behavior_pack/entities/villager.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:celebrate/minecraft:behavior.celebrate_survive/",
             "content": 30
           }
         ],
-        "/vanilla/behavior_pack/entities/villager.json": [
+        "/vanilla/behavior_pack/entities/villager_v2.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:celebrate/minecraft:behavior.celebrate_survive/",
             "content": 30
@@ -27,7 +27,7 @@
       "description": "Minimum and maximum time between firework (positive, in seconds).",
       "dataType": 18,
       "samples": {
-        "/vanilla/behavior_pack/entities/villager_v2.json": [
+        "/vanilla/behavior_pack/entities/villager.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:celebrate/minecraft:behavior.celebrate_survive/",
             "content": {
@@ -36,7 +36,7 @@
             }
           }
         ],
-        "/vanilla/behavior_pack/entities/villager.json": [
+        "/vanilla/behavior_pack/entities/villager_v2.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:celebrate/minecraft:behavior.celebrate_survive/",
             "content": {
@@ -53,7 +53,7 @@
       "description": "The event to trigger when the goal's duration expires.",
       "dataType": 22,
       "samples": {
-        "/vanilla/behavior_pack/entities/villager_v2.json": [
+        "/vanilla/behavior_pack/entities/villager.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:celebrate/minecraft:behavior.celebrate_survive/",
             "content": {
@@ -62,7 +62,7 @@
             }
           }
         ],
-        "/vanilla/behavior_pack/entities/villager.json": [
+        "/vanilla/behavior_pack/entities/villager_v2.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:celebrate/minecraft:behavior.celebrate_survive/",
             "content": {
@@ -80,13 +80,13 @@
       "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
       "dataType": 0,
       "samples": {
-        "/vanilla/behavior_pack/entities/villager_v2.json": [
+        "/vanilla/behavior_pack/entities/villager.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:celebrate/minecraft:behavior.celebrate_survive/",
             "content": 5
           }
         ],
-        "/vanilla/behavior_pack/entities/villager.json": [
+        "/vanilla/behavior_pack/entities/villager_v2.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:celebrate/minecraft:behavior.celebrate_survive/",
             "content": 5
@@ -98,7 +98,7 @@
   "description": "Allows this entity to celebrate surviving a raid by shooting fireworks.",
   "title": "Celebrate Survive Behavior",
   "samples": {
-    "/vanilla/behavior_pack/entities/villager_v2.json": [
+    "/vanilla/behavior_pack/entities/villager.json": [
       {
         "path": "/minecraft:entity/component_groups/minecraft:celebrate/minecraft:behavior.celebrate_survive/",
         "content": {
@@ -115,7 +115,7 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/villager.json": [
+    "/vanilla/behavior_pack/entities/villager_v2.json": [
       {
         "path": "/minecraft:entity/component_groups/minecraft:celebrate/minecraft:behavior.celebrate_survive/",
         "content": {

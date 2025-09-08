@@ -54,7 +54,7 @@ export default interface MinecraftBehaviorCroak {
    * Frog: 4.5
    *
    */
-  duration: number[];
+  duration?: number[];
 
   /**
    * @remarks
@@ -65,7 +65,7 @@ export default interface MinecraftBehaviorCroak {
    * Frog: {"all_of":[{"test":"in_water","value":false},{"test":"in_lava","value":false}]}
    *
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -76,7 +76,7 @@ export default interface MinecraftBehaviorCroak {
    * Frog: [10,20]
    *
    */
-  interval: number[];
+  interval?: number[];
 
   /**
    * @remarks
@@ -88,6 +88,6 @@ export default interface MinecraftBehaviorCroak {
    * Frog: 9
    *
    */
-  priority: number;
+  priority?: number;
 
 }

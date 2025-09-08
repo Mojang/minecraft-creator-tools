@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Replace Biomes Biome (minecraft:replace_biomes)
+ * Biome Replace Biomes (minecraft:replace_biomes)
  * Replaces a specified portion of one or more Minecraft 
  * biomes.
  */
@@ -32,7 +32,7 @@ export default interface MinecraftReplaceBiomes {
 
 
 /**
- * Biome Replacement Biome (Biome Replacement)
+ * Biome Replacement (Biome Replacement)
  * Represents the replacement information used to determine the
  * placement of the overriding biome.
  */

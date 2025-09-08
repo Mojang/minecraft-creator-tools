@@ -104,7 +104,7 @@ export default class BlockTypePermutationEditor extends Component<
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
-      if (file.manager !== null) {
+      if (file.manager) {
         const bt = file.manager as BlockTypeDefinition;
 
         bt.persist();

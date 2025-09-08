@@ -38,13 +38,13 @@ export default interface MinecraftOnStartTakeoff {
    * Ender Dragon: "minecraft:start_fly"
    *
    */
-  event: jsoncommon.MinecraftEventTrigger;
+  event?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
    * The list of conditions for this trigger to execute.
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -54,6 +54,6 @@ export default interface MinecraftOnStartTakeoff {
    * Ender Dragon: "self"
    *
    */
-  target: string;
+  target?: string;
 
 }

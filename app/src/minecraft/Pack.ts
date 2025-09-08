@@ -10,6 +10,7 @@ import ResourceManifestDefinition from "./ResourceManifestDefinition";
 import SkinManifestDefinition from "./SkinManifestDefinition";
 import PersonaManifestDefinition from "./PersonaManifestDefinition";
 import DesignManifestDefinition from "./DesignManifestDefinition";
+import Log from "../core/Log";
 
 export enum PackType {
   resource = 0,
@@ -32,6 +33,13 @@ export default class Pack {
     | PersonaManifestDefinition
     | DesignManifestDefinition
     | undefined;
+
+  private _items: ProjectItem[] | undefined;
+
+  //stubbing in for use later
+  get isEDUOffer() {
+    return false;
+  }
 
   constructor(folderIn: IFolder, packTypeIn: PackType, project: Project, projectItem: ProjectItem) {
     this.project = project;
@@ -70,14 +78,24 @@ export default class Pack {
     return this.manifest;
   }
 
-  getPackItems(): ProjectItem[] {
+  getManifest(): ProjectItem {
+    const manifest = this.getPackItems().find((item) => item.name === "manifest.json");
+    Log.assert(!!manifest, "Pack should always have a manifest item");
+    return manifest;
+  }
+
+  getPackItems(): readonly ProjectItem[] {
+    if (!!this._items) {
+      return this._items;
+    }
     const folderPath = this.projectItem.projectPath;
 
     if (!folderPath) {
       throw new Error("Pack.getPackItems called without a project path");
     }
 
-    return this.project.items.filter((item) => item.projectPath?.startsWith(folderPath));
+    this._items = this.project.items.filter((item) => item.projectPath?.startsWith(folderPath));
+    return this._items;
   }
 
   static ensureOnFolder(folder: IFolder, packType: PackType, project: Project, projectItem: ProjectItem) {
@@ -100,7 +118,9 @@ export default class Pack {
   async getFiles(predicate?: (file: IFile) => boolean): Promise<IFile[]> {
     const result = [];
     for await (const file of this.folder.allFiles) {
-      await file.loadContent();
+      if (!file.isContentLoaded) {
+        await file.loadContent();
+      }
 
       if (file.content && (!predicate || predicate(file))) {
         result.push(file);

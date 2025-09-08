@@ -16,9 +16,9 @@ enum CheckBetaTest {
 }
 
 const CheckBetaTests: Record<CheckBetaTest, TestDefinition> = {
-  FailedToReadFile: { id: 101, title: "Failed To Read File" },
-  FailedToParseJson: { id: 102, title: "Failed To Parse Json", defaultMessage: "Failed to parse json in file" },
-  UsingBetaFeatures: { id: 103, title: "Using Beta Features Flag Not Allowed" },
+  FailedToReadFile: { id: 101, title: "Failed to read file" },
+  FailedToParseJson: { id: 102, title: "Failed to parse Json", defaultMessage: "Failed to parse json in file" },
+  UsingBetaFeatures: { id: 103, title: "Using beta features flag in custom definitions is not allowed" },
 };
 
 const JsonTypesToRead = new Set([

@@ -59,13 +59,13 @@ export default interface MinecraftPhysics {
    * @remarks
    * Whether or not the object collides with things.
    */
-  has_collision: boolean;
+  has_collision?: boolean;
 
   /**
    * @remarks
    * Whether or not the entity is affected by gravity.
    */
-  has_gravity: boolean;
+  has_gravity?: boolean;
 
   /**
    * @remarks
@@ -76,6 +76,6 @@ export default interface MinecraftPhysics {
    * Player: true
    *
    */
-  push_towards_closest_space: boolean;
+  push_towards_closest_space?: boolean;
 
 }

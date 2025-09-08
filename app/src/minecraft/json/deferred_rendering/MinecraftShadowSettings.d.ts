@@ -23,13 +23,13 @@ export default interface MinecraftShadowSettings {
    * @remarks
    * format_version
    */
-  format_version: string;
+  format_version?: string;
 
   /**
    * @remarks
    * minecraft:shadow_settings
    */
-  "minecraft:shadow_settings": MinecraftShadowSettingsMinecraftShadowSettings;
+  "minecraft:shadow_settings"?: MinecraftShadowSettingsMinecraftShadowSettings;
 
 }
 
@@ -48,12 +48,12 @@ export interface MinecraftShadowSettingsMinecraftShadowSettings {
    * 
    * ShadowStylizationConfig_ShadowStylizationConfigSettings_ShadowStylizationSettings_ShadowStyle
    */
-  shadow_style: string;
+  shadow_style?: string;
 
   /**
    * @remarks
    * texel_size
    */
-  texel_size: number;
+  texel_size?: number;
 
 }

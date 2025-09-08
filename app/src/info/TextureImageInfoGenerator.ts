@@ -10,9 +10,7 @@ import Project from "../app/Project";
 import Database from "../minecraft/Database";
 import StorageUtilities from "../storage/StorageUtilities";
 import ContentIndex from "../core/ContentIndex";
-import { Exifr } from "exifr";
 import ProjectInfoUtilities from "./ProjectInfoUtilities";
-import { decodeTga } from "@lunapaint/tga-codec";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import TextureDefinition from "../minecraft/TextureDefinition";
 import ProjectUtilities, { ProjectMetaCategory } from "../app/ProjectUtilities";
@@ -38,11 +36,16 @@ export enum TextureImageInfoGeneratorTest {
   invalidTieringConfiguration = 409,
   invalidTieringForVibrantVisuals = 410,
   totalTextureMemoryExceedsBudgetBase = 420,
+  texturePackDoesntOverrideVanillaGameTexture = 460,
+  texturePackDoesntOverrideMostTextures = 461,
 }
 
 export const TexturePerformanceTierCount = 6;
 
 const TextureTiersBase = 200;
+
+const TextureOverrideThresholdPercent = 0.7; // if you override at least 70% of vanilla game textures, we assume you're trying to create a "texture pack" and should warn when you're not "covering" a vanilla texture.
+const TextureOverrideThresholdErrorPercent = 0.95; // if you override at least 95% of vanilla game textures, we assume you're trying to create a "texture pack" and should error if you don't have 95% coverage.
 
 /*
 export enum ProjectMetaCategory {
@@ -90,6 +93,20 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
       "Total"
     );
 
+    info.vanillaGameTextureCoverage = infoSet.getAverageFeatureValue(
+      this.id,
+      TextureImageInfoGeneratorTest.textureImages,
+      "Vanilla Game Texture Coverage",
+      "Percent"
+    );
+
+    info.vanillaGameTextureCount = infoSet.getAverageFeatureValue(
+      this.id,
+      TextureImageInfoGeneratorTest.textureImages,
+      "Vanilla Game Texture Coverage",
+      "Override Count"
+    );
+
     let minimumSupportablePerformanceTier = 0;
 
     for (let i = 0; i < TexturePerformanceTierCount; i++) {
@@ -106,6 +123,22 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
     info.minimumSupportablePerformanceTier = minimumSupportablePerformanceTier;
   }
 
+  static isGameTexturePath(path: string) {
+    path = path.toLowerCase();
+
+    return (
+      path.startsWith("/resource_pack/textures/") &&
+      (path.endsWith(".png") || path.endsWith(".tga") || path.indexOf(".") < 0) &&
+      path.indexOf("_mers.") < 0 &&
+      path.indexOf("_mer.") < 0 &&
+      path.indexOf("_normal.") < 0 &&
+      path.indexOf("_mipmap.") < 0 &&
+      (path.indexOf("/textures/blocks") >= 0 ||
+        path.indexOf("/textures/entity") >= 0 ||
+        path.indexOf("/textures/items") >= 0)
+    );
+  }
+
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
@@ -118,6 +151,8 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
 
     items.push(textureImagePi);
 
+    const vanillaPathList = await Database.getVanillaPathList();
+
     const nonVanillaTextureMemoryByTier: { [path: string]: number }[] = [];
     const totalTextureMemoryByTier: { [path: string]: number }[] = [];
     const itemAtlasTextureMemoryByTier: { [path: string]: number }[] = [];
@@ -126,6 +161,25 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
     const hasSupportForTier: boolean[] = [];
     const tierTotalMemorySizes: number[] = [];
     let isExplicitlyTargetingTiers = false;
+
+    const vanillaTexturePathNonMers: { [path: string]: boolean } = {};
+    let vanillaTexturePathNonMersCount = 0;
+
+    if (vanillaPathList) {
+      for (const path of vanillaPathList) {
+        if (TextureImageInfoGenerator.isGameTexturePath(path)) {
+          vanillaTexturePathNonMersCount++;
+          let extensionlessPath = path;
+          let period = path.lastIndexOf(".");
+
+          if (period >= 0) {
+            extensionlessPath = path.substring(0, period);
+          }
+
+          vanillaTexturePathNonMers[extensionlessPath] = false;
+        }
+      }
+    }
 
     for (let i = 0; i < TexturePerformanceTierCount; i++) {
       hasSupportForTier[i] = false;
@@ -157,8 +211,14 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
     const itemsCopy = project.getItemsCopy();
 
     for (const projectItem of itemsCopy) {
-      if (projectItem.itemType === ProjectItemType.texture) {
-        await projectItem.ensureFileStorage();
+      if (
+        projectItem.itemType === ProjectItemType.texture &&
+        projectItem.projectPath &&
+        !projectItem.projectPath.endsWith(".hdr") // ignore HDR files
+      ) {
+        if (!projectItem.isContentLoaded) {
+          await projectItem.loadContent();
+        }
 
         const variantList = projectItem.getVariantList();
 
@@ -210,6 +270,13 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
 
             if (pathInRp) {
               pathInRp = StorageUtilities.getBaseFromName(StorageUtilities.ensureNotStartsWithDelimiter(pathInRp));
+
+              const vanillaRpPath = "/resource_pack/" + pathInRp;
+
+              if (vanillaTexturePathNonMers[vanillaRpPath] === false) {
+                vanillaTexturePathNonMers[vanillaRpPath] = true;
+              }
+
               if (await Database.matchesVanillaPath(pathInRp)) {
                 textureImagePi.incrementFeature("Vanilla Override Texture");
 
@@ -232,82 +299,53 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
             let imageWidth = -1;
             let imageHeight = -1;
 
-            if (variantFile.type !== "tga") {
-              await variantFile.loadContent();
+            if (variantFile.content && variantFile.content instanceof Uint8Array) {
+              const textureDefinition = await TextureDefinition.ensureOnFile(variantFile);
 
-              if (variantFile.content && variantFile.content instanceof Uint8Array) {
-                const exifr = new Exifr({});
+              if (textureDefinition) {
+                await textureDefinition.processContent();
 
-                try {
-                  await exifr.read(variantFile.content);
-
-                  const results = await exifr.parse();
-
-                  if (!results) {
+                if (textureDefinition.errorProcessing) {
+                  if (variantFile.type === "tga") {
+                    items.push(
+                      new ProjectInfoItem(
+                        InfoItemType.internalProcessingError,
+                        this.id,
+                        TextureImageInfoGeneratorTest.tgaImageProcessingError,
+                        `Error processing TGA image`,
+                        projectItem,
+                        textureDefinition.errorMessage
+                      )
+                    );
+                  } else {
                     items.push(
                       new ProjectInfoItem(
                         InfoItemType.internalProcessingError,
                         this.id,
                         TextureImageInfoGeneratorTest.pngJpgImageProcessingNoResults,
-                        `Error processing PNG/JPG/TIF/HEIC image - no results returned`,
-                        projectItem
+                        `Error processing PNG/JPG/TIF/HEIC image`,
+                        projectItem,
+                        textureDefinition.errorMessage
                       )
                     );
-                  } else {
-                    if (results.ImageWidth && results.ImageHeight) {
-                      imageWidth = results.ImageWidth;
-                      imageHeight = results.ImageHeight;
-
-                      const pngJpgTextureMem = imageWidth * imageHeight * 4;
-
-                      textureImagePi.spectrumIntFeature("PNGJPG Width", imageWidth);
-                      textureImagePi.spectrumIntFeature("PNGJPG Height", imageHeight);
-                      textureImagePi.spectrumIntFeature("PNGJPG Texels", imageWidth * imageHeight);
-                      textureImagePi.spectrumIntFeature("PNGJPG Texture Memory", pngJpgTextureMem);
-                    }
                   }
-                } catch (e: any) {
-                  items.push(
-                    new ProjectInfoItem(
-                      InfoItemType.internalProcessingError,
-                      this.id,
-                      TextureImageInfoGeneratorTest.pngJpgImageProcessingError,
-                      `Error processing PNG/JPG/TIF/HEIC image`,
-                      projectItem,
-                      e.toString()
-                    )
-                  );
-                }
-              }
+                } else if (textureDefinition.width !== undefined && textureDefinition.height !== undefined) {
+                  imageWidth = textureDefinition.width;
+                  imageHeight = textureDefinition.height;
 
-              variantFile.unload();
-            } else {
-              await variantFile.loadContent();
+                  const textureMem = imageWidth * imageHeight * 4;
 
-              if (variantFile.content && variantFile.content instanceof Uint8Array) {
-                try {
-                  const tga = await decodeTga(variantFile.content);
-
-                  imageWidth = tga.image.width;
-                  imageHeight = tga.image.height;
-
-                  const tgaTextureMem = imageWidth * imageHeight * 4;
-
-                  textureImagePi.spectrumIntFeature("TGA Width", imageWidth);
-                  textureImagePi.spectrumIntFeature("TGA Height", imageHeight);
-                  textureImagePi.spectrumIntFeature("TGA Texels", imageWidth * imageHeight);
-                  textureImagePi.spectrumIntFeature("TGA Texture Memory", tgaTextureMem);
-                } catch (e: any) {
-                  items.push(
-                    new ProjectInfoItem(
-                      InfoItemType.internalProcessingError,
-                      this.id,
-                      TextureImageInfoGeneratorTest.tgaImageProcessingError,
-                      `Error processing TGA image`,
-                      projectItem,
-                      e.toString()
-                    )
-                  );
+                  if (variantFile.type === "tga") {
+                    textureImagePi.spectrumIntFeature("TGA Width", imageWidth);
+                    textureImagePi.spectrumIntFeature("TGA Height", imageHeight);
+                    textureImagePi.spectrumIntFeature("TGA Texels", imageWidth * imageHeight);
+                    textureImagePi.spectrumIntFeature("TGA Texture Memory", textureMem);
+                  } else {
+                    textureImagePi.spectrumIntFeature("PNGJPG Width", imageWidth);
+                    textureImagePi.spectrumIntFeature("PNGJPG Height", imageHeight);
+                    textureImagePi.spectrumIntFeature("PNGJPG Texels", imageWidth * imageHeight);
+                    textureImagePi.spectrumIntFeature("PNGJPG Texture Memory", textureMem);
+                  }
                 }
               }
             }
@@ -727,6 +765,66 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
           maxTotalTextureMemory
         )
       );
+    }
+
+    if (vanillaTexturePathNonMersCount > 0) {
+      let vanillaOverrideTextureCount = 0;
+
+      for (const path in vanillaTexturePathNonMers) {
+        if (vanillaTexturePathNonMers[path] === true) {
+          vanillaOverrideTextureCount++;
+        }
+      }
+
+      textureImagePi.setFeature("Vanilla Game Texture Coverage", "Override Count", vanillaOverrideTextureCount);
+      textureImagePi.setFeature(
+        "Vanilla Game Texture Coverage",
+        "Vanilla Texture Count",
+        vanillaTexturePathNonMersCount
+      );
+      textureImagePi.setFeature(
+        "Vanilla Game Texture Coverage",
+        "Percent",
+        vanillaOverrideTextureCount / vanillaTexturePathNonMersCount
+      );
+
+      const actualOverridePercent = vanillaOverrideTextureCount / vanillaTexturePathNonMersCount;
+
+      if (actualOverridePercent >= TextureOverrideThresholdPercent) {
+        if (actualOverridePercent < TextureOverrideThresholdErrorPercent) {
+          const nonRpItemCount =
+            project.getItemsByType(ProjectItemType.behaviorPackManifestJson).length +
+            project.getItemsByType(ProjectItemType.worldFolder).length;
+
+          if (nonRpItemCount === 0) {
+            items.push(
+              new ProjectInfoItem(
+                InfoItemType.error,
+                this.id,
+                TextureImageInfoGeneratorTest.texturePackDoesntOverrideMostTextures,
+                `Content seems like a texture pack (overrides >70% of a textures), but does not override the vast majority of textures. This pack should override at least 95% of vanilla textures.`,
+                undefined,
+                actualOverridePercent
+              )
+            );
+          }
+        }
+
+        for (const path in vanillaTexturePathNonMers) {
+          if (vanillaTexturePathNonMers[path] === false) {
+            items.push(
+              new ProjectInfoItem(
+                InfoItemType.warning,
+                this.id,
+                TextureImageInfoGeneratorTest.texturePackDoesntOverrideVanillaGameTexture,
+                `Content seems like a texture pack, but does not override vanilla texture`,
+                undefined,
+                path
+              )
+            );
+          }
+        }
+      }
     }
 
     return items;

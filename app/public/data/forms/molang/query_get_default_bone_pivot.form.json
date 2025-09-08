@@ -2,5 +2,5 @@
   "id": "query.get_default_bone_pivot",
   "fields": [],
   "description": "Gets specified axis of the specified bone orientation pivot.",
-  "title": "Get Default Bone Pivot Query"
+  "title": "Get Default Bone Pivot"
 }

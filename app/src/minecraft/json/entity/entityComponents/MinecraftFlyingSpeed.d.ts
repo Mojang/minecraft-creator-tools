@@ -71,6 +71,6 @@ export default interface MinecraftFlyingSpeed {
    * Ender Dragon: 0.6
    *
    */
-  value: number;
+  value?: number;
 
 }

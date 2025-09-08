@@ -54,6 +54,8 @@ export default class LocalEnvironment {
   #displayInfo: boolean = false;
   #displayVerbose: boolean = false;
 
+  _inmemTokenEncryptionPassword?: string;
+
   _inmemDisplayReadOnlyPasscode?: string;
   _inmemDisplayReadOnlyPasscodeComplement?: string;
 
@@ -140,6 +142,14 @@ export default class LocalEnvironment {
     if (messageOfTheDay !== this.#data.serverMessageOfTheDay) {
       this.#data.serverMessageOfTheDay = messageOfTheDay;
     }
+  }
+
+  get tokenEncryptionKey() {
+    if (this._inmemTokenEncryptionPassword === undefined) {
+      this._inmemTokenEncryptionPassword = this.generateRandomTokenPassword();
+    }
+
+    return this._inmemTokenEncryptionPassword;
   }
 
   get displayReadOnlyPasscode() {
@@ -338,7 +348,9 @@ export default class LocalEnvironment {
       return;
     }
 
-    await this.#configFile.loadContent(false);
+    if (!this.#configFile.isContentLoaded) {
+      await this.#configFile.loadContent(false);
+    }
 
     if (
       this.#configFile.content !== null &&

@@ -110,10 +110,15 @@
 }
 
 .sa-list {
-  height: 200px;
+  max-height: 200px;
+  height: 42vh;
   overflow-y: auto;
-  overflow-x: hidden;
-  max-width: calc(100vw - 42px);
+  overflow-x: auto;
+  max-width: calc(100vw - 43px);
+}
+
+.sa-list UL {
+  max-width: calc(100vw - 44px);
 }
 
 .sa-list LI {

@@ -9,7 +9,9 @@ import StorageUtilities from "./StorageUtilities";
 */
 export async function parseImageMetadata(file: IFile): Promise<any | null> {
   try {
-    await file.loadContent();
+    if (!file.isContentLoaded) {
+      await file.loadContent();
+    }
     const imageReader = new Exifr();
     const fileData = StorageUtilities.getContentsAsBinary(file);
 

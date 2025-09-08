@@ -73,7 +73,7 @@ export default interface MinecraftBehaviorLayEgg {
    * Frog: true
    *
    */
-  allow_laying_from_below: boolean;
+  allow_laying_from_below?: boolean;
 
   /**
    * @remarks
@@ -84,7 +84,7 @@ export default interface MinecraftBehaviorLayEgg {
    * Frog: "minecraft:frog_spawn"
    *
    */
-  egg_type: string;
+  egg_type?: string;
 
   /**
    * @remarks
@@ -99,7 +99,7 @@ export default interface MinecraftBehaviorLayEgg {
    *
    *
    */
-  goal_radius: number;
+  goal_radius?: number;
 
   /**
    * @remarks
@@ -110,7 +110,7 @@ export default interface MinecraftBehaviorLayEgg {
    * Frog: "lay_spawn"
    *
    */
-  lay_egg_sound: string;
+  lay_egg_sound?: string;
 
   /**
    * @remarks
@@ -120,7 +120,7 @@ export default interface MinecraftBehaviorLayEgg {
    * Frog: 2
    *
    */
-  lay_seconds: number;
+  lay_seconds?: number;
 
   /**
    * @remarks
@@ -133,7 +133,7 @@ export default interface MinecraftBehaviorLayEgg {
    *
    *
    */
-  on_lay: jsoncommon.MinecraftEventTrigger;
+  on_lay?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -148,7 +148,7 @@ export default interface MinecraftBehaviorLayEgg {
    *
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -162,7 +162,7 @@ export default interface MinecraftBehaviorLayEgg {
    *
    *
    */
-  search_height: number;
+  search_height?: number;
 
   /**
    * @remarks
@@ -176,7 +176,7 @@ export default interface MinecraftBehaviorLayEgg {
    *
    *
    */
-  search_range: number;
+  search_range?: number;
 
   /**
    * @remarks
@@ -187,7 +187,7 @@ export default interface MinecraftBehaviorLayEgg {
    *
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -197,7 +197,7 @@ export default interface MinecraftBehaviorLayEgg {
    * Frog: ["minecraft:water"]
    *
    */
-  target_blocks: string[];
+  target_blocks?: string[];
 
   /**
    * @remarks
@@ -208,13 +208,13 @@ export default interface MinecraftBehaviorLayEgg {
    * Frog: ["Air"]
    *
    */
-  target_materials_above_block: string[];
+  target_materials_above_block?: string[];
 
   /**
    * @remarks
    * Specifies if the default lay-egg animation should be played when
    * the egg is placed or not.
    */
-  use_default_animation: boolean;
+  use_default_animation?: boolean;
 
 }

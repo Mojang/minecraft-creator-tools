@@ -47,6 +47,6 @@ export default interface MinecraftIsStackable {
    * Chest Minecart: true
    *
    */
-  value: string;
+  value?: string;
 
 }

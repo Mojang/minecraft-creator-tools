@@ -2257,7 +2257,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     const downloadTitle = projectItem.name + " deployment - " + Utilities.getFriendlySummarySeconds(date);
 
     if (zipBytes instanceof Uint8Array) {
-      saveAs(new Blob([zipBytes], { type: "application/octet-stream" }), downloadTitle + ".mcworld");
+      saveAs(new Blob([zipBytes as BlobPart], { type: "application/octet-stream" }), downloadTitle + ".mcworld");
     }
 
     Log.message("Done saving " + projectItem.name, this.props.project.name);
@@ -2304,7 +2304,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     const downloadTitle = projectItem.name + " deployment - " + Utilities.getFriendlySummarySeconds(date);
 
     if (zipBytes instanceof Uint8Array) {
-      saveAs(new Blob([zipBytes], { type: "application/octet-stream" }), downloadTitle + ".mcworld");
+      saveAs(new Blob([zipBytes as BlobPart], { type: "application/octet-stream" }), downloadTitle + ".mcworld");
     }
 
     Log.message("Done saving " + projectItem.name, this.props.project.name);
@@ -2350,7 +2350,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
 
     if (zipBytes instanceof Uint8Array) {
-      saveAs(new Blob([zipBytes], { type: "application/octet-stream" }), downloadTitle);
+      saveAs(new Blob([zipBytes as BlobPart], { type: "application/octet-stream" }), downloadTitle);
     }
 
     Log.message("Done saving " + projectItem.name, this.props.project.name);
@@ -2456,7 +2456,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       return;
     }
 
-    await projectItem.load();
+    if (!projectItem.isContentLoaded) {
+      await projectItem.loadContent();
+    }
 
     if (projectItem.primaryFile === null) {
       return;
@@ -2467,7 +2469,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     Log.message("About to save " + projectItem.primaryFile.name, this.props.project.name);
 
     if (content instanceof Uint8Array) {
-      saveAs(new Blob([content], { type: "application/octet-stream" }), projectItem.primaryFile.name);
+      saveAs(new Blob([content as BlobPart], { type: "application/octet-stream" }), projectItem.primaryFile.name);
     }
 
     Log.message("Done saving " + projectItem.primaryFile.name, this.props.project.name);
@@ -2511,7 +2513,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       return;
     }
 
-    await projectItem.load();
+    if (!projectItem.isContentLoaded) {
+      await projectItem.loadContent();
+    }
 
     if (projectItem.primaryFile === null) {
       return;
@@ -2579,7 +2583,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       return;
     }
 
-    await projectItem.load();
+    if (!projectItem.isContentLoaded) {
+      await projectItem.loadContent();
+    }
 
     if (projectItem.primaryFile === null) {
       return;
@@ -2615,7 +2621,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     Log.message("About to save " + name, this.props.project.name);
     if (newBytes !== undefined) {
-      saveAs(new Blob([newBytes], { type: "application/octet-stream" }), name);
+      saveAs(new Blob([newBytes as BlobPart], { type: "application/octet-stream" }), name);
     }
     Log.message("Done with save " + name, this.props.project.name, this.props.project.name);
   }
@@ -2630,7 +2636,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     const newBytes = await mcworld.getBytes();
 
     if (newBytes !== undefined) {
-      saveAs(new Blob([newBytes]), name);
+      saveAs(new Blob([newBytes as BlobPart]), name);
     }
   }
 
@@ -2774,7 +2780,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       const newBytes = await mcworld.getBytes();
 
       if (newBytes !== undefined) {
-        saveAs(new Blob([newBytes]), fileName);
+        saveAs(new Blob([newBytes as BlobPart]), fileName);
       }
     }
 
@@ -2939,13 +2945,15 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       const file = projectItem.primaryFile;
 
       if (file) {
-        await file.loadContent();
+        if (!file.isContentLoaded) {
+          await file.loadContent();
+        }
 
         if (file.content) {
           const mimeType = ProjectItemUtilities.getMimeTypes(projectItem);
 
           if (mimeType.length > 0) {
-            saveAs(new Blob([file.content], { type: mimeType[0] }), projectItem.name);
+            saveAs(new Blob([file.content as BlobPart], { type: mimeType[0] }), projectItem.name);
           }
         }
       }
@@ -2957,9 +2965,12 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       const file = projectItem.primaryFile;
 
       if (file) {
-        await file.loadContent();
+        if (!file.isContentLoaded) {
+          await file.loadContent();
+        }
 
         if (file.content) {
+          await projectItem.project.processRelations(false);
           const def = await BlockbenchModel.exportModel(projectItem);
 
           if (def) {
@@ -4243,7 +4254,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     let itemList = <></>;
 
-    if (this.state.displayFileView && this.state.searchFilter === undefined) {
+    if (this.state.displayFileView) {
       if (this.props.project.projectFolder) {
         const selectedFile = this.state.activeProjectItem ? this.state.activeProjectItem.primaryFile : undefined;
 

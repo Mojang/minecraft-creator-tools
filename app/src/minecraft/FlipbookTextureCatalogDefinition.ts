@@ -78,11 +78,13 @@ export default class FlipbookTextureCatalogDefinition implements IDefinition {
     if (file.manager !== undefined && file.manager instanceof FlipbookTextureCatalogDefinition) {
       et = file.manager as FlipbookTextureCatalogDefinition;
 
-      if (!et.isLoaded && loadHandler) {
-        et.onLoaded.subscribe(loadHandler);
-      }
+      if (!et.isLoaded) {
+        if (loadHandler) {
+          et.onLoaded.subscribe(loadHandler);
+        }
 
-      await et.load();
+        await et.load();
+      }
     }
 
     return et;
@@ -108,7 +110,9 @@ export default class FlipbookTextureCatalogDefinition implements IDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
       return;
@@ -133,14 +137,18 @@ export default class FlipbookTextureCatalogDefinition implements IDefinition {
     let packRootFolder = this.getPackRootFolder();
 
     if (this._data === undefined) {
-      await this.load();
+      if (!this.isLoaded) {
+        await this.load();
+      }
     }
 
     if (!this._data) {
       return;
     }
     if (rel.childItem.itemType === ProjectItemType.texture) {
-      await rel.childItem.ensureStorage();
+      if (!rel.childItem.isContentLoaded) {
+        await rel.childItem.loadContent();
+      }
 
       if (rel.childItem.primaryFile && packRootFolder) {
         let relativePath = this.getRelativePath(rel.childItem.primaryFile, packRootFolder);
@@ -212,7 +220,9 @@ export default class FlipbookTextureCatalogDefinition implements IDefinition {
 
     for (const candItem of itemsCopy) {
       if (candItem.itemType === ProjectItemType.texture && packRootFolder && textureList) {
-        await candItem.ensureStorage();
+        if (!candItem.isContentLoaded) {
+          await candItem.loadContent();
+        }
 
         if (candItem.primaryFile) {
           let relativePath = this.getRelativePath(candItem.primaryFile, packRootFolder);

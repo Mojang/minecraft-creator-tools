@@ -603,7 +603,9 @@ export default class BlockbenchModel {
       // first pass: find the model name and the ETRD
       for (const item of project.items) {
         if (item.itemType === ProjectItemType.modelGeometryJson && geoToUpdate === undefined) {
-          await item.ensureFileStorage();
+          if (!item.isContentLoaded) {
+            await item.loadContent();
+          }
 
           if (item.primaryFile) {
             const modelDefOuter = await ModelGeometryDefinition.ensureOnFile(item.primaryFile);
@@ -615,7 +617,9 @@ export default class BlockbenchModel {
           }
         } else if (item.itemType === ProjectItemType.entityTypeResource) {
           // ensure references to textures if an entiy exists
-          await item.ensureFileStorage();
+          if (!item.isContentLoaded) {
+            await item.loadContent();
+          }
 
           if (item.primaryFile) {
             const etrd = await EntityTypeResourceDefinition.ensureOnFile(item.primaryFile);
@@ -674,7 +678,9 @@ export default class BlockbenchModel {
       ) {
         for (const item of entityTypeResourceProjectItem.childItems) {
           if (item.childItem.itemType === ProjectItemType.animationResourceJson && animationToUpdate === undefined) {
-            await item.childItem.ensureFileStorage();
+            if (!item.childItem.isContentLoaded) {
+              await item.childItem.loadFileContent();
+            }
 
             if (item.childItem.primaryFile) {
               const animationOuter = await AnimationResourceDefinition.ensureOnFile(item.childItem.primaryFile);
@@ -797,8 +803,9 @@ export default class BlockbenchModel {
             // first, try to match an item by its path leaf
             for (const item of project.items) {
               if (item.itemType === ProjectItemType.texture && !setItem) {
-                await item.ensureFileStorage();
-
+                if (!item.isContentLoaded) {
+                  await item.loadContent();
+                }
                 if (item.primaryFile) {
                   const projectPath = item.primaryFile.getFolderRelativePath(project.projectFolder);
 
@@ -891,9 +898,13 @@ export default class BlockbenchModel {
       return;
     }
 
-    const pjString = JSON.stringify(this._data, null, 2);
+    Log.assert(this._data !== null, "ITDP");
 
-    this._file.setContent(pjString);
+    if (this._data) {
+      const pjString = JSON.stringify(this._data, null, 2);
+
+      this._file.setContent(pjString);
+    }
   }
 
   async save() {
@@ -911,7 +922,9 @@ export default class BlockbenchModel {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;
@@ -1070,8 +1083,9 @@ export default class BlockbenchModel {
     if (modelIndex === undefined) {
       modelIndex = 0;
     }
-
-    await modelProjectItem.ensureFileStorage();
+    if (!modelProjectItem.isContentLoaded) {
+      await modelProjectItem.loadContent();
+    }
 
     let clientItemProjectItem: ProjectItem | undefined = undefined;
     let clientItem: AttachableResourceDefinition | undefined = undefined;
@@ -1312,7 +1326,9 @@ export default class BlockbenchModel {
         if (parentItemOuter.parentItem.childItems) {
           for (const childItemOuter of parentItemOuter.parentItem.childItems) {
             if (childItemOuter.childItem.itemType === ProjectItemType.animationResourceJson) {
-              await childItemOuter.childItem.ensureFileStorage();
+              if (!childItemOuter.childItem.isContentLoaded) {
+                await childItemOuter.childItem.loadContent();
+              }
 
               if (childItemOuter.childItem.primaryFile) {
                 const animationDef = await AnimationResourceDefinition.ensureOnFile(
@@ -1340,7 +1356,7 @@ export default class BlockbenchModel {
 
           // Check if animation file name is related to model file name
           if (animationBaseName.includes(modelBaseName) || modelBaseName.includes(animationBaseName)) {
-            await projectItem.ensureFileStorage();
+            await projectItem.loadFileContent();
 
             if (projectItem.primaryFile) {
               const animationDef = await AnimationResourceDefinition.ensureOnFile(projectItem.primaryFile);
@@ -1376,7 +1392,9 @@ export default class BlockbenchModel {
         const textureItem = textures[textureName];
 
         if (textureName && textureItem && textureItem.primaryFile) {
-          await textureItem.primaryFile.loadContent();
+          if (!textureItem.primaryFile.isContentLoaded) {
+            await textureItem.primaryFile.loadContent();
+          }
           const exifr = new Exifr({});
 
           if (textureItem.primaryFile.content) {

@@ -99,11 +99,13 @@ export default class FogResourceDefinition {
     if (file.manager !== undefined && file.manager instanceof FogResourceDefinition) {
       rbd = file.manager as FogResourceDefinition;
 
-      if (!rbd.isLoaded && loadHandler) {
-        rbd.onLoaded.subscribe(loadHandler);
-      }
+      if (!rbd.isLoaded) {
+        if (loadHandler) {
+          rbd.onLoaded.subscribe(loadHandler);
+        }
 
-      await rbd.load();
+        await rbd.load();
+      }
     }
 
     return rbd;
@@ -124,7 +126,9 @@ export default class FogResourceDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

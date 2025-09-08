@@ -34,7 +34,7 @@ export default interface MinecraftBribeable {
    * @remarks
    * Time in seconds before the Entity can be bribed again.
    */
-  bribe_cooldown: number;
+  bribe_cooldown?: number;
 
   /**
    * @remarks
@@ -44,6 +44,6 @@ export default interface MinecraftBribeable {
    * Dolphin: ["fish","salmon"]
    *
    */
-  bribe_items: string[];
+  bribe_items?: string[];
 
 }

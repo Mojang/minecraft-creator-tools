@@ -69,7 +69,7 @@ export default interface InLava {
    *
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
@@ -80,7 +80,7 @@ export default interface InLava {
    *
    *
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -90,7 +90,7 @@ export default interface InLava {
    *
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -101,7 +101,7 @@ export default interface InLava {
    *
    *
    */
-  value: boolean;
+  value?: boolean;
 
 }
 

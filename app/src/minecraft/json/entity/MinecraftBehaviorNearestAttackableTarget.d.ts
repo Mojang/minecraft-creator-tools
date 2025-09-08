@@ -505,7 +505,7 @@ export default interface MinecraftBehaviorNearestAttackableTarget {
    * Llama: 16
    *
    */
-  attack_interval: number;
+  attack_interval?: number;
 
   /**
    * @remarks
@@ -514,13 +514,13 @@ export default interface MinecraftBehaviorNearestAttackableTarget {
    * Elder Guardian: 1
    *
    */
-  attack_interval_min: number;
+  attack_interval_min?: number;
 
   /**
    * @remarks
    * If true, this entity can attack its owner.
    */
-  attack_owner: boolean;
+  attack_owner?: boolean;
 
   /**
    * @remarks
@@ -534,7 +534,7 @@ export default interface MinecraftBehaviorNearestAttackableTarget {
    * Blaze: [{"filters":{"test":"is_family","subject":"other","value":"player"},"max_dist":48}]
    *
    */
-  entity_types: MinecraftBehaviorNearestAttackableTargetEntityTypes[];
+  entity_types?: MinecraftBehaviorNearestAttackableTargetEntityTypes[];
 
   /**
    * @remarks
@@ -545,7 +545,7 @@ export default interface MinecraftBehaviorNearestAttackableTarget {
    *
    *
    */
-  must_reach: boolean;
+  must_reach?: boolean;
 
   /**
    * @remarks
@@ -557,7 +557,7 @@ export default interface MinecraftBehaviorNearestAttackableTarget {
    *
    *
    */
-  must_see: boolean;
+  must_see?: boolean;
 
   /**
    * @remarks
@@ -573,7 +573,7 @@ export default interface MinecraftBehaviorNearestAttackableTarget {
    * Phantom: 0.5
    *
    */
-  must_see_forget_duration: number;
+  must_see_forget_duration?: number;
 
   /**
    * @remarks
@@ -584,7 +584,7 @@ export default interface MinecraftBehaviorNearestAttackableTarget {
    * Drowned: 0.5
    *
    */
-  persist_time: number;
+  persist_time?: number;
 
   /**
    * @remarks
@@ -601,7 +601,7 @@ export default interface MinecraftBehaviorNearestAttackableTarget {
    * Breeze: 1
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -614,7 +614,7 @@ export default interface MinecraftBehaviorNearestAttackableTarget {
    *
    *
    */
-  reselect_targets: boolean;
+  reselect_targets?: boolean;
 
   /**
    * @remarks
@@ -629,21 +629,21 @@ export default interface MinecraftBehaviorNearestAttackableTarget {
    * Phantom: 20
    *
    */
-  scan_interval: number;
+  scan_interval?: number;
 
   /**
    * @remarks
    * Allows the actor to be set to persist upon targeting a 
    * player
    */
-  set_persistent: boolean;
+  set_persistent?: boolean;
 
   /**
    * @remarks
    * Multiplied with the target's armor coverage percentage to
    * modify "max_dist" when detecting an invisible target.
    */
-  target_invisible_multiplier: number;
+  target_invisible_multiplier?: number;
 
   /**
    * @remarks
@@ -655,14 +655,14 @@ export default interface MinecraftBehaviorNearestAttackableTarget {
    * Phantom: 80
    *
    */
-  target_search_height: number;
+  target_search_height?: number;
 
   /**
    * @remarks
    * Multiplied with the target type's "max_dist" when trying to
    * detect a sneaking target.
    */
-  target_sneak_visibility_multiplier: number;
+  target_sneak_visibility_multiplier?: number;
 
   /**
    * @remarks
@@ -679,7 +679,7 @@ export default interface MinecraftBehaviorNearestAttackableTarget {
    * Cat: 16
    *
    */
-  within_radius: number;
+  within_radius?: number;
 
 }
 
@@ -694,25 +694,25 @@ export interface MinecraftBehaviorNearestAttackableTargetEntityTypes {
    * The amount of time in seconds that the mob has to wait before
    * selecting a target of the same type again
    */
-  cooldown: number;
+  cooldown?: number;
 
   /**
    * @remarks
    * Conditions that make this entry in the list valid
    */
-  filters: jsoncommon.MinecraftFilter;
+  filters?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
    * Maximum distance this mob can be away to be a valid choice
    */
-  max_dist: number;
+  max_dist?: number;
 
   /**
    * @remarks
    * If true, the mob has to be visible to be a valid choice
    */
-  must_see: boolean;
+  must_see?: boolean;
 
   /**
    * @remarks
@@ -720,29 +720,29 @@ export interface MinecraftBehaviorNearestAttackableTargetEntityTypes {
    * for a target before forgetting about it and looking for a new
    * one when the target isn't visible any more
    */
-  must_see_forget_duration: number;
+  must_see_forget_duration?: number;
 
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * If true, the mob will stop being targeted if it stops meeting any
    * conditions.
    */
-  reevaluate_description: boolean;
+  reevaluate_description?: boolean;
 
   /**
    * @remarks
    * Multiplier for the running speed. A value of 1.0 means the speed
    * is unchanged
    */
-  sprint_speed_multiplier: number;
+  sprint_speed_multiplier?: number;
 
   /**
    * @remarks
    * Multiplier for the walking speed. A value of 1.0 means the speed
    * is unchanged
    */
-  walk_speed_multiplier: number;
+  walk_speed_multiplier?: number;
 
 }

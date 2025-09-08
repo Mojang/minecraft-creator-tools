@@ -70,5 +70,5 @@
     }
   ],
   "description": "Causes an entity to circle around an anchor point placed near a point or target.",
-  "title": "Minecraft Behavior.circle Around Anchor Entity"
+  "title": "Entity Circle Around Anchor Behavior"
 }

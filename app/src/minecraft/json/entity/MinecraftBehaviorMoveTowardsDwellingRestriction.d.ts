@@ -60,7 +60,7 @@ export default interface MinecraftBehaviorMoveTowardsDwellingRestriction {
    * Villager v2: 11
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -73,6 +73,6 @@ export default interface MinecraftBehaviorMoveTowardsDwellingRestriction {
    * Villager v2: 0.6
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
 }

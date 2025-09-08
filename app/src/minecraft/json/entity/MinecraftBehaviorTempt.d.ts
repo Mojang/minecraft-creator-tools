@@ -214,7 +214,7 @@ export default interface MinecraftBehaviorTempt {
    *
    *
    */
-  can_get_scared: boolean;
+  can_get_scared?: boolean;
 
   /**
    * @remarks
@@ -226,7 +226,7 @@ export default interface MinecraftBehaviorTempt {
    *
    *
    */
-  can_tempt_vertically: boolean;
+  can_tempt_vertically?: boolean;
 
   /**
    * @remarks
@@ -237,7 +237,7 @@ export default interface MinecraftBehaviorTempt {
    * Strider: true
    *
    */
-  can_tempt_while_ridden: boolean;
+  can_tempt_while_ridden?: boolean;
 
   /**
    * @remarks
@@ -251,7 +251,7 @@ export default interface MinecraftBehaviorTempt {
    * Bee: ["minecraft:poppy","minecraft:blue_orchid","minecraft:allium","minecraft:azure_bluet","minecraft:red_tulip","minecraft:orange_tulip","minecraft:white_tulip","minecraft:pink_tulip","minecraft:oxeye_daisy","minecraft:cornflower","minecraft:lily_of_the_valley","minecraft:dandelion","minecraft:wither_rose","minecraft:sunflower","minecraft:lilac","minecraft:rose_bush","minecraft:peony","minecraft:flowering_azalea","minecraft:azalea_leaves_flowered","minecraft:mangrove_propagule","minecraft:pitcher_plant","minecraft:torchflower","minecraft:cherry_leaves","minecraft:pink_petals","minecraft:open_eyeblossom","minecraft:wildflowers","minecraft:cactus_flower"]
    *
    */
-  items: string[];
+  items?: string[];
 
   /**
    * @remarks
@@ -260,7 +260,7 @@ export default interface MinecraftBehaviorTempt {
    * Happy Ghast: {"event":"minecraft:on_stop_tempting"}
    *
    */
-  on_tempt_end: jsoncommon.MinecraftEventTrigger;
+  on_tempt_end?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -276,7 +276,7 @@ export default interface MinecraftBehaviorTempt {
    * Bee: 5
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -289,7 +289,7 @@ export default interface MinecraftBehaviorTempt {
    *
    *
    */
-  sound_interval: number[];
+  sound_interval?: number[];
 
   /**
    * @remarks
@@ -304,14 +304,14 @@ export default interface MinecraftBehaviorTempt {
    * Camel: 2.5
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
    * The distance at which the mob will stop following the 
    * player.
    */
-  stop_distance: number;
+  stop_distance?: number;
 
   /**
    * @remarks
@@ -322,7 +322,7 @@ export default interface MinecraftBehaviorTempt {
    *
    *
    */
-  tempt_sound: string;
+  tempt_sound?: string;
 
   /**
    * @remarks
@@ -337,6 +337,6 @@ export default interface MinecraftBehaviorTempt {
    * Robot: 7
    *
    */
-  within_radius: number;
+  within_radius?: number;
 
 }

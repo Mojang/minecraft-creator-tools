@@ -127,7 +127,7 @@ export default interface MinecraftBehaviorTimerFlag1 {
    * Sniffer: ["move","look"]
    *
    */
-  control_flags: string[];
+  control_flags?: string[];
 
   /**
    * @remarks
@@ -141,7 +141,7 @@ export default interface MinecraftBehaviorTimerFlag1 {
    * Sniffer: [400,500]
    *
    */
-  cooldown_range: number[];
+  cooldown_range?: number[];
 
   /**
    * @remarks
@@ -153,7 +153,7 @@ export default interface MinecraftBehaviorTimerFlag1 {
    * Bee: [0.05,0.05]
    *
    */
-  duration_range: number[];
+  duration_range?: number[];
 
   /**
    * @remarks
@@ -165,7 +165,7 @@ export default interface MinecraftBehaviorTimerFlag1 {
    * Bee: {"event":"minecraft:on_poison_effect_added","target":"self"}, {"event":"minecraft:on_wither_effect_added","target":"self"}
    *
    */
-  on_end: jsoncommon.MinecraftEventTrigger;
+  on_end?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -175,7 +175,7 @@ export default interface MinecraftBehaviorTimerFlag1 {
    * Armadillo: {"event":"minecraft:stop_peeking"}, {"event":"minecraft:start_unrolling"}
    *
    */
-  on_start: jsoncommon.MinecraftEventTrigger;
+  on_start?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -187,6 +187,6 @@ export default interface MinecraftBehaviorTimerFlag1 {
    * Sniffer: 6
    *
    */
-  priority: number;
+  priority?: number;
 
 }

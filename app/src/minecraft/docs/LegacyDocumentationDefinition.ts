@@ -118,11 +118,13 @@ export default class LegacyDocumentationDefinition {
     if (file.manager !== undefined && file.manager instanceof LegacyDocumentationDefinition) {
       ldd = file.manager as LegacyDocumentationDefinition;
 
-      if (!ldd.isLoaded && loadHandler) {
-        ldd.onLoaded.subscribe(loadHandler);
-      }
+      if (!ldd.isLoaded) {
+        if (loadHandler) {
+          ldd.onLoaded.subscribe(loadHandler);
+        }
 
-      await ldd.load();
+        await ldd.load();
+      }
     }
 
     return ldd;
@@ -148,7 +150,9 @@ export default class LegacyDocumentationDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
       return;

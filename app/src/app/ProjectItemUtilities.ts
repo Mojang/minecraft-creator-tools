@@ -99,7 +99,7 @@ export const ProjectItemSortOrder = [
   ProjectItemType.cameraResourceJson,
   ProjectItemType.fogResourceJson,
   ProjectItemType.biomeResource,
-  ProjectItemType.biomesClientResource,
+  ProjectItemType.biomesClientCatalogResource,
   ProjectItemType.globalVariablesJson,
   ProjectItemType.sdlLayout,
   ProjectItemType.lodJson,
@@ -281,7 +281,7 @@ export default class ProjectItemUtilities {
         return "biome/biome_json_file";
       case ProjectItemType.blockCulling:
         return "block_culling/blockculling";
-      case ProjectItemType.biomesClientResource:
+      case ProjectItemType.biomesClientCatalogResource:
         return "client_biome/client_biome_json_file";
       case ProjectItemType.atmosphericsJson:
         return "client_deferred_rendering/atmosphericscattering_atmosphericscatteringconfigsettings";
@@ -354,7 +354,7 @@ export default class ProjectItemUtilities {
         return "resource/fog/fog.json";
       case ProjectItemType.modelGeometryJson:
         return "resource/models/entity/model_entity.json";
-      case ProjectItemType.biomesClientResource:
+      case ProjectItemType.biomesClientCatalogResource:
         return "resource/biomes_client.json";
       case ProjectItemType.particleJson:
         return "resource/particles/particles.json";
@@ -499,7 +499,7 @@ export default class ProjectItemUtilities {
   }
 
   static getItemByTypeAndName(project: Project, name: string, projectItemType: ProjectItemType) {
-    const itemsCopy = project.getItemsCopy();
+    const itemsCopy = project.getItemsByType(projectItemType);
 
     for (const item of itemsCopy) {
       if (item.itemType === projectItemType && (item.name === name || item.name.startsWith(name.toLowerCase() + "."))) {
@@ -584,7 +584,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.recipeBehavior:
       case ProjectItemType.biomeBehavior:
       case ProjectItemType.biomeResource:
-      case ProjectItemType.biomesClientResource:
+      case ProjectItemType.biomesClientCatalogResource:
       case ProjectItemType.lootTableBehavior:
       case ProjectItemType.spawnRuleBehavior:
       case ProjectItemType.dialogueBehaviorJson:
@@ -787,7 +787,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.blockMaterialsBehaviorJson:
       case ProjectItemType.itemTypeBehavior:
       case ProjectItemType.lootTableBehavior:
-      case ProjectItemType.biomesClientResource:
+      case ProjectItemType.biomesClientCatalogResource:
       case ProjectItemType.fileListArrayJson:
       case ProjectItemType.blocksCatalogResourceJson:
       case ProjectItemType.soundCatalog:
@@ -1009,7 +1009,7 @@ export default class ProjectItemUtilities {
         return "Item type";
       case ProjectItemType.lootTableBehavior:
         return "Loot table";
-      case ProjectItemType.biomesClientResource:
+      case ProjectItemType.biomesClientCatalogResource:
         return "Biome resources";
       case ProjectItemType.fileListArrayJson:
         return "File list";
@@ -1040,7 +1040,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.languagesCatalogJson:
         return "Language catalog";
       case ProjectItemType.biomeBehavior:
-        return "Biome Behavior";
+        return "Biome";
       case ProjectItemType.biomeResource:
         return "Biome Resources";
       case ProjectItemType.dialogueBehaviorJson:
@@ -1301,6 +1301,7 @@ export default class ProjectItemUtilities {
       itemType === ProjectItemType.spawnRuleBehavior ||
       itemType === ProjectItemType.lootTableBehavior ||
       itemType === ProjectItemType.recipeBehavior ||
+      itemType === ProjectItemType.biomeBehavior ||
       itemType === ProjectItemType.featureBehavior ||
       itemType === ProjectItemType.featureRuleBehavior ||
       itemType === ProjectItemType.jigsawProcessorList ||
@@ -1372,6 +1373,8 @@ export default class ProjectItemUtilities {
       itemType === ProjectItemType.entityTypeResource ||
       itemType === ProjectItemType.renderControllerJson ||
       itemType === ProjectItemType.modelGeometryJson ||
+      itemType === ProjectItemType.biomeResource ||
+      itemType === ProjectItemType.biomesClientCatalogResource ||
       itemType === ProjectItemType.texture ||
       itemType === ProjectItemType.uiJson ||
       itemType === ProjectItemType.uiTexture ||
@@ -1562,7 +1565,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.globalVariablesJson:
       case ProjectItemType.materialGeometry:
       case ProjectItemType.atmosphericsJson:
-      case ProjectItemType.biomesClientResource:
+      case ProjectItemType.biomesClientCatalogResource:
       case ProjectItemType.vsCodeTasksJson:
       case ProjectItemType.vsCodeSettingsJson:
       case ProjectItemType.vsCodeExtensionsJson:
@@ -1717,6 +1720,10 @@ export default class ProjectItemUtilities {
       case ProjectItemType.jigsawStructureSet:
         return ["worldgen", "structure_sets"];
 
+      case ProjectItemType.biomeResource:
+      case ProjectItemType.biomeBehavior:
+        return ["biomes"];
+
       case ProjectItemType.texture:
       case ProjectItemType.terrainTextureCatalogResourceJson:
       case ProjectItemType.itemTextureJson:
@@ -1820,7 +1827,7 @@ export default class ProjectItemUtilities {
 export function getEnsuredFile(items: readonly ProjectItem[], predicate: (item: ProjectItem) => boolean) {
   const foundItem = items.find(predicate);
 
-  return foundItem ? foundItem.ensureFileStorage() : Promise.resolve(undefined);
+  return foundItem ? foundItem.loadFileContent() : Promise.resolve(undefined);
 }
 
 export const getEnsuredFileOfType = (items: readonly ProjectItem[], type: ProjectItemType) =>
@@ -1829,7 +1836,7 @@ export const getEnsuredFileOfType = (items: readonly ProjectItem[], type: Projec
 export function findEnsuredFiles(items: readonly ProjectItem[], predicate: (item: ProjectItem) => boolean) {
   const filteredItems = items.filter(predicate);
 
-  return Promise.all(filteredItems.map((item) => item.ensureFileStorage()));
+  return Promise.all(filteredItems.map((item) => item.loadFileContent()));
 }
 
 export const findEnsuredFilesOfType = (items: readonly ProjectItem[], type: ProjectItemType) =>
@@ -1862,9 +1869,7 @@ export function getMarketContent(items: readonly ProjectItem[]) {
 export async function tryEnsureFiles(items: ProjectItem[], predicate: (item: ProjectItem) => boolean = () => true) {
   const filteredItems = items.filter(predicate);
 
-  const fileReads = await Promise.all(
-    filteredItems.map(async (item) => [item, await item.ensureFileStorage()] as const)
-  );
+  const fileReads = await Promise.all(filteredItems.map(async (item) => [item, await item.loadFileContent()] as const));
 
   const success: ProjectItem[] = [];
   const failed: ProjectItem[] = [];

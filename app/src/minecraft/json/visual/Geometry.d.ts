@@ -16,7 +16,7 @@ import * as jsoncommon from './../../jsoncommon';
  */
 export default interface Geometry {
 
-  debug: boolean;
+  debug?: boolean;
 
   format_version: string | number[];
 
@@ -29,17 +29,17 @@ export default interface Geometry {
  */
 export interface GeometryGeometryazAZ09Plus {
 
-  bones: GeometryGeometryazAZ09PlusBones[];
+  bones?: GeometryGeometryazAZ09PlusBones[];
 
-  cape: string;
+  cape?: string;
 
-  debug: boolean;
+  debug?: boolean;
 
-  textureheight: number;
+  textureheight?: number;
 
-  texturewidth: number;
+  texturewidth?: number;
 
-  visible_bounds_offset: string[];
+  visible_bounds_offset?: string[];
 
 }
 
@@ -48,33 +48,33 @@ export interface GeometryGeometryazAZ09Plus {
  */
 export interface GeometryGeometryazAZ09PlusBones {
 
-  bind_pose_rotation: string[];
+  bind_pose_rotation?: string[];
 
-  cubes: GeometryGeometryazAZ09PlusBonesCubes[];
+  cubes?: GeometryGeometryazAZ09PlusBonesCubes[];
 
-  debug: boolean;
+  debug?: boolean;
 
-  locators: { [key: string]: any };
+  locators?: { [key: string]: any };
 
-  mirror: boolean;
+  mirror?: boolean;
 
   name: string;
 
-  neverRender: boolean;
+  neverRender?: boolean;
 
-  parent: string;
+  parent?: string;
 
-  pivot: string[];
+  pivot?: string[];
 
-  poly_mesh: { [key: string]: any };
+  poly_mesh?: { [key: string]: any };
 
-  render_group_id: number;
+  render_group_id?: number;
 
-  reset: boolean;
+  reset?: boolean;
 
-  rotation: string[];
+  rotation?: string[];
 
-  texture_meshes: GeometryGeometryazAZ09PlusBonesTextureMeshes[];
+  texture_meshes?: GeometryGeometryazAZ09PlusBonesTextureMeshes[];
 
 }
 
@@ -83,13 +83,13 @@ export interface GeometryGeometryazAZ09PlusBones {
  */
 export interface GeometryGeometryazAZ09PlusBonesCubes {
 
-  mirror: boolean;
+  mirror?: boolean;
 
-  origin: string[];
+  origin?: string[];
 
-  size: string[];
+  size?: string[];
 
-  uv: string[];
+  uv?: string[];
 
 }
 
@@ -105,15 +105,15 @@ export interface GeometryGeometryazAZ09PlusBonesLocators {
  */
 export interface GeometryGeometryazAZ09PlusBonesPolyMesh {
 
-  normalized_uvs: boolean;
+  normalized_uvs?: boolean;
 
-  normals: string[];
+  normals?: string[];
 
   polys: string[];
 
-  positions: string[];
+  positions?: string[];
 
-  uvs: string[];
+  uvs?: string[];
 
 }
 
@@ -122,16 +122,16 @@ export interface GeometryGeometryazAZ09PlusBonesPolyMesh {
  */
 export interface GeometryGeometryazAZ09PlusBonesTextureMeshes {
 
-  local_pivot: string[];
+  local_pivot?: string[];
 
-  position: string[];
+  position?: string[];
 
-  rotation: string[];
+  rotation?: string[];
 
-  scale: string[];
+  scale?: string[];
 
   texture: string;
 
-  use_pixel_depth: boolean;
+  use_pixel_depth?: boolean;
 
 }

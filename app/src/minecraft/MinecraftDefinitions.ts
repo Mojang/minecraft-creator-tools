@@ -6,12 +6,18 @@ import AnimationControllerResourceDefinition from "./AnimationControllerResource
 import AnimationResourceDefinition from "./AnimationResourceDefinition";
 import AudioDefinition from "./AudioDefinition";
 import BehaviorManifestDefinition from "./BehaviorManifestDefinition";
+import BiomeBehaviorDefinition from "./BiomeBehaviorDefinition";
+import BiomeResourceDefinition from "./BiomeResourceDefinition";
 import BlockTypeDefinition from "./BlockTypeDefinition";
 import EntityTypeDefinition from "./EntityTypeDefinition";
 import EntityTypeResourceDefinition from "./EntityTypeResourceDefinition";
 import FlipbookTextureCatalogDefinition from "./FlipbookTextureCatalogDefinition";
 import IDefinition from "./IDefinition";
 import ItemTypeDefinition from "./ItemTypeDefinition";
+import JigsawProcessorListDefinition from "./JigsawProcessorListDefinition";
+import JigsawStructureDefinition from "./JigsawStructureDefinition";
+import JigsawStructureSetDefinition from "./JigsawStructureSetDefinition";
+import JigsawTemplatePoolDefinition from "./JigsawTemplatePoolDefinition";
 import MusicDefinitionCatalogDefinition from "./MusicDefinitionCatalogDefinition";
 import RenderControllerSetDefinition from "./RenderControllerSetDefinition";
 import ResourceManifestDefinition from "./ResourceManifestDefinition";
@@ -20,18 +26,22 @@ import SoundDefinitionCatalogDefinition from "./SoundDefinitionCatalogDefinition
 
 export default class MinecraftDefinitions {
   static async get(projectItem: ProjectItem): Promise<IDefinition | undefined> {
+    if (!projectItem.isContentLoaded) {
+      await projectItem.loadContent();
+    }
+
     if (
       !projectItem.primaryFile ||
       !projectItem.primaryFile.content ||
       typeof projectItem.primaryFile.content !== "string"
     ) {
-      await projectItem.ensureFileStorage();
-
       if (!projectItem.primaryFile) {
         return undefined;
       }
 
-      await projectItem.primaryFile.loadContent();
+      if (!projectItem.primaryFile.isContentLoaded) {
+        await projectItem.primaryFile.loadContent();
+      }
 
       if (!projectItem.primaryFile.content || typeof projectItem.primaryFile.content !== "string") {
         return undefined;
@@ -69,6 +79,18 @@ export default class MinecraftDefinitions {
         return await MusicDefinitionCatalogDefinition.ensureOnFile(projectItem.primaryFile);
       case ProjectItemType.renderControllerJson:
         return await RenderControllerSetDefinition.ensureOnFile(projectItem.primaryFile);
+      case ProjectItemType.biomeBehavior:
+        return await BiomeBehaviorDefinition.ensureOnFile(projectItem.primaryFile);
+      case ProjectItemType.biomeResource:
+        return await BiomeResourceDefinition.ensureOnFile(projectItem.primaryFile);
+      case ProjectItemType.jigsawProcessorList:
+        return await JigsawProcessorListDefinition.ensureOnFile(projectItem.primaryFile);
+      case ProjectItemType.jigsawStructureSet:
+        return await JigsawStructureSetDefinition.ensureOnFile(projectItem.primaryFile);
+      case ProjectItemType.jigsawTemplatePool:
+        return await JigsawTemplatePoolDefinition.ensureOnFile(projectItem.primaryFile);
+      case ProjectItemType.jigsawStructure:
+        return await JigsawStructureDefinition.ensureOnFile(projectItem.primaryFile);
     }
 
     return undefined;
@@ -76,7 +98,9 @@ export default class MinecraftDefinitions {
 
   static async ensureFoundationalDependencies(item: ProjectItem) {
     if (item.itemType === ProjectItemType.audio) {
-      await item.ensureStorage();
+      if (!item.isContentLoaded) {
+        await item.loadContent();
+      }
 
       if (item.primaryFile) {
         const audioFile = await AudioDefinition.ensureOnFile(item.primaryFile);

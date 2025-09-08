@@ -49,6 +49,6 @@ export default interface MinecraftBehaviorStayWhileSitting {
    * Parrot: 2
    *
    */
-  priority: number;
+  priority?: number;
 
 }

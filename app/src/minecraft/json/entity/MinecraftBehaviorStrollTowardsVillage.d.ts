@@ -43,7 +43,7 @@ export default interface MinecraftBehaviorStrollTowardsVillage {
    * Fox: 10
    *
    */
-  cooldown_time: number;
+  cooldown_time?: number;
 
   /**
    * @remarks
@@ -55,7 +55,7 @@ export default interface MinecraftBehaviorStrollTowardsVillage {
    * Fox: 3
    *
    */
-  goal_radius: number;
+  goal_radius?: number;
 
   /**
    * @remarks
@@ -67,7 +67,7 @@ export default interface MinecraftBehaviorStrollTowardsVillage {
    * Fox: 11
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -78,7 +78,7 @@ export default interface MinecraftBehaviorStrollTowardsVillage {
    * Fox: 32
    *
    */
-  search_range: number;
+  search_range?: number;
 
   /**
    * @remarks
@@ -88,7 +88,7 @@ export default interface MinecraftBehaviorStrollTowardsVillage {
    * Fox: 1
    *
    */
-  speed_multiplier: number;
+  speed_multiplier?: number;
 
   /**
    * @remarks
@@ -99,6 +99,6 @@ export default interface MinecraftBehaviorStrollTowardsVillage {
    * Fox: 0.005
    *
    */
-  start_chance: number;
+  start_chance?: number;
 
 }

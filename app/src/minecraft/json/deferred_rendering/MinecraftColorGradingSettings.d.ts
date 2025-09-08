@@ -28,13 +28,13 @@ export default interface MinecraftColorGradingSettings {
    * @remarks
    * format_version
    */
-  format_version: string;
+  format_version?: string;
 
   /**
    * @remarks
    * minecraft:color_grading_settings
    */
-  "minecraft:color_grading_settings": MinecraftColorGradingSettingsMinecraftColorGradingSettings;
+  "minecraft:color_grading_settings"?: MinecraftColorGradingSettingsMinecraftColorGradingSettings;
 
 }
 
@@ -51,19 +51,19 @@ export interface MinecraftColorGradingSettingsMinecraftColorGradingSettings {
    * @remarks
    * color_grading
    */
-  color_grading: MinecraftColorGradingSettingsMinecraftColorGradingSettingsColorGrading;
+  color_grading?: MinecraftColorGradingSettingsMinecraftColorGradingSettingsColorGrading;
 
   /**
    * @remarks
    * description
    */
-  description: MinecraftColorGradingSettingsMinecraftColorGradingSettingsDescription;
+  description?: MinecraftColorGradingSettingsMinecraftColorGradingSettingsDescription;
 
   /**
    * @remarks
    * tone_mapping
    */
-  tone_mapping: MinecraftColorGradingSettingsMinecraftColorGradingSettingsToneMapping;
+  tone_mapping?: MinecraftColorGradingSettingsMinecraftColorGradingSettingsToneMapping;
 
 }
 
@@ -80,19 +80,19 @@ export interface MinecraftColorGradingSettingsMinecraftColorGradingSettingsColor
    * @remarks
    * highlights
    */
-  highlights: MinecraftColorGradingSettingsMinecraftColorGradingSettingsColorGradingHighlights;
+  highlights?: MinecraftColorGradingSettingsMinecraftColorGradingSettingsColorGradingHighlights;
 
   /**
    * @remarks
    * midtones
    */
-  midtones: MinecraftColorGradingSettingsMinecraftColorGradingSettingsColorGradingMidtones;
+  midtones?: MinecraftColorGradingSettingsMinecraftColorGradingSettingsColorGradingMidtones;
 
   /**
    * @remarks
    * shadows
    */
-  shadows: MinecraftColorGradingSettingsMinecraftColorGradingSettingsColorGradingShadows;
+  shadows?: MinecraftColorGradingSettingsMinecraftColorGradingSettingsColorGradingShadows;
 
 }
 
@@ -109,43 +109,43 @@ export interface MinecraftColorGradingSettingsMinecraftColorGradingSettingsColor
    * @remarks
    * contrast
    */
-  contrast: number[];
+  contrast?: number[];
 
   /**
    * @remarks
    * enabled
    */
-  enabled: boolean;
+  enabled?: boolean;
 
   /**
    * @remarks
    * gain
    */
-  gain: number[];
+  gain?: number[];
 
   /**
    * @remarks
    * gamma
    */
-  gamma: number[];
+  gamma?: number[];
 
   /**
    * @remarks
    * highlightsMin
    */
-  highlightsMin: number;
+  highlightsMin?: number;
 
   /**
    * @remarks
    * offset
    */
-  offset: number[];
+  offset?: number[];
 
   /**
    * @remarks
    * saturation
    */
-  saturation: number[];
+  saturation?: number[];
 
 }
 
@@ -162,31 +162,31 @@ export interface MinecraftColorGradingSettingsMinecraftColorGradingSettingsColor
    * @remarks
    * contrast
    */
-  contrast: number[];
+  contrast?: number[];
 
   /**
    * @remarks
    * gain
    */
-  gain: number[];
+  gain?: number[];
 
   /**
    * @remarks
    * gamma
    */
-  gamma: number[];
+  gamma?: number[];
 
   /**
    * @remarks
    * offset
    */
-  offset: number[];
+  offset?: number[];
 
   /**
    * @remarks
    * saturation
    */
-  saturation: number[];
+  saturation?: number[];
 
 }
 
@@ -203,43 +203,43 @@ export interface MinecraftColorGradingSettingsMinecraftColorGradingSettingsColor
    * @remarks
    * contrast
    */
-  contrast: number[];
+  contrast?: number[];
 
   /**
    * @remarks
    * enabled
    */
-  enabled: boolean;
+  enabled?: boolean;
 
   /**
    * @remarks
    * gain
    */
-  gain: number[];
+  gain?: number[];
 
   /**
    * @remarks
    * gamma
    */
-  gamma: number[];
+  gamma?: number[];
 
   /**
    * @remarks
    * offset
    */
-  offset: number[];
+  offset?: number[];
 
   /**
    * @remarks
    * saturation
    */
-  saturation: number[];
+  saturation?: number[];
 
   /**
    * @remarks
    * shadowsMax
    */
-  shadowsMax: number;
+  shadowsMax?: number;
 
 }
 
@@ -256,7 +256,7 @@ export interface MinecraftColorGradingSettingsMinecraftColorGradingSettingsDescr
    * @remarks
    * identifier
    */
-  identifier: string;
+  identifier?: string;
 
 }
 
@@ -273,6 +273,6 @@ export interface MinecraftColorGradingSettingsMinecraftColorGradingSettingsToneM
    * @remarks
    * enum dragon_framerenderer_modules_Tonemapper
    */
-  operator: string;
+  operator?: string;
 
 }

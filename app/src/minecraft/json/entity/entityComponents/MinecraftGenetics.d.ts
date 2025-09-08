@@ -137,23 +137,15 @@ export default interface MinecraftGenetics {
    * Sample Values:
    * Goat: [{"name":"goat_variant","use_simplified_breeding":true,"allele_range":{"range_min":1,"range_max":100},"genetic_variants":[{"main_allele":{"range_min":1,"range_max":2},"birth_event":{"event":"minecraft:born_screamer","target":"self"}},{"main_allele":{"range_min":3,"range_max":100},"birth_event":{"event":"minecraft:born_default","target":"self"}}]}]
    *
-   * Panda: [{"name":"panda_variant","allele_range":{"range_min":0,"range_max":15},"genetic_variants":[{"main_allele":0,"birth_event":{"event":"minecraft:panda_lazy","target":"self"}},{"main_allele":1,"birth_event":{"event":"minecraft:panda_worried","target":"self"}},{"main_allele":2,"birth_event":{"event":"minecraft:panda_playful","target":"self"}},{"main_allele":3,"birth_event":{"event":"minecraft:panda_aggressive","target":"self"}},{"both_allele":{"range_min":4,"range_max":7},"birth_event":{"event":"minecraft:panda_weak","target":"self"}},{"both_allele":{"range_min":8,"range_max":9},"birth_event":{"event":"minecraft:panda_brown","target":"self"}}]}]
-   *
    */
-  genes: MinecraftGeneticsGenes[];
+  genes?: MinecraftGeneticsGenes[];
 
   /**
    * @remarks
    * Chance that an allele will be replaced with a random one instead of
    * the parent's allele during birth.
-   * 
-   * Sample Values:
-   * Goat: 0.02
-   *
-   * Panda: 0.03125
-   *
    */
-  mutation_rate: number;
+  mutation_rate?: number;
 
 }
 
@@ -170,7 +162,7 @@ export interface MinecraftGeneticsGenes {
    * mobs will have a random number in this range assigned to 
    * them.
    */
-  allele_range: number;
+  allele_range?: number;
 
   /**
    * @remarks
@@ -178,7 +170,7 @@ export interface MinecraftGeneticsGenes {
    * particular allele combinations and fire events when all of them
    * are satisfied.
    */
-  genetic_variants: MinecraftGeneticsGenesGeneticVariants[];
+  genetic_variants?: MinecraftGeneticsGenesGeneticVariants[];
 
   /**
    * @remarks
@@ -187,13 +179,13 @@ export interface MinecraftGeneticsGenes {
    * the parent's allele during birth. Non-negative values greater than
    * `1` will be the same as the value `1`.
    */
-  mutation_rate: number;
+  mutation_rate?: number;
 
   /**
    * @remarks
    * The name of the gene.
    */
-  name: string;
+  name?: string;
 
   /**
    * @remarks
@@ -201,7 +193,7 @@ export interface MinecraftGeneticsGenes {
    * alleles from parents' main alleles and hidden alleles from the
    * hidden ones.
    */
-  use_simplified_breeding: string;
+  use_simplified_breeding?: string;
 
 }
 
@@ -218,7 +210,7 @@ export interface MinecraftGeneticsGenesGeneticVariants {
    * Event to run when this mob is created and matches the allele
    * conditions.
    */
-  birth_event: jsoncommon.MinecraftEventTrigger;
+  birth_event?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -226,7 +218,7 @@ export interface MinecraftGeneticsGenesGeneticVariants {
    * hidden alleles with this value for a match with both. Can also be
    * a range of integers.
    */
-  both_allele: number;
+  both_allele?: number;
 
   /**
    * @remarks
@@ -234,20 +226,20 @@ export interface MinecraftGeneticsGenesGeneticVariants {
    * hidden alleles with this value for a match with either. Can also
    * be a range of integers.
    */
-  either_allele: number;
+  either_allele?: number;
 
   /**
    * @remarks
    * If this value is non-negative, compare the mob's hidden allele with
    * this value for a match. Can also be a range of integers.
    */
-  hidden_allele: number;
+  hidden_allele?: number;
 
   /**
    * @remarks
    * If this value is non-negative, compare the mob's main allele with
    * this value for a match. Can also be a range of integers.
    */
-  main_allele: number;
+  main_allele?: number;
 
 }

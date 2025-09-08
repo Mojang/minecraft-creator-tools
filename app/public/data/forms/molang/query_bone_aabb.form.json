@@ -2,5 +2,5 @@
   "id": "query.bone_aabb",
   "fields": [],
   "description": "Returns the axis aligned bounding box of a bone as a struct with members '.min', '.max', along with '.x', '.y', and '.z' values for each.",
-  "title": "Bone Aabb Query"
+  "title": "Bone Aabb"
 }

@@ -11,6 +11,7 @@ import Log from "../core/Log";
 export default class FileSystemFile extends FileBase implements IFile {
   private _name: string;
   private _parentFolder: FileSystemFolder;
+  private _lastLoadedOrSavedPath?: string;
 
   lastSavedSize: number;
   private _handle?: FileSystemFileHandle;
@@ -84,6 +85,13 @@ export default class FileSystemFile extends FileBase implements IFile {
     }
 
     return this._handle;
+  }
+
+  async resaveAfterMove() {
+    this._handle = undefined;
+    this._writeHandle = undefined;
+
+    await this.saveContent(true);
   }
 
   async ensureWriteHandle() {
@@ -213,6 +221,7 @@ export default class FileSystemFile extends FileBase implements IFile {
               offset += byteArray.length;
             }
 
+            this._lastLoadedOrSavedPath = this.fullPath;
             this._content = mergedArray;
           }
         } else if (encoding === EncodingType.Utf8String) {
@@ -258,7 +267,8 @@ export default class FileSystemFile extends FileBase implements IFile {
         if (handle) {
           const writable = await handle.createWritable();
 
-          await writable.write(this.content);
+          this._lastLoadedOrSavedPath = this.fullPath;
+          await writable.write(this.content as FileSystemWriteChunkType);
 
           await writable.close();
         }

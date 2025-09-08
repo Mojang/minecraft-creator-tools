@@ -29,12 +29,12 @@ export default interface MinecraftSittable {
    * @remarks
    * Event to run when the entity enters the 'sit' state
    */
-  sit_event: jsoncommon.MinecraftEventTrigger;
+  sit_event?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
    * Event to run when the entity exits the 'sit' state
    */
-  stand_event: jsoncommon.MinecraftEventTrigger;
+  stand_event?: jsoncommon.MinecraftEventTrigger;
 
 }

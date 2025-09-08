@@ -32,6 +32,7 @@ import MinecraftUnderwaterCaveCarverFeature from "./json/features/MinecraftUnder
 import MinecraftVegetationPatchFeature from "./json/features/MinecraftVegetationPatchFeature";
 import MinecraftWeightedRandomFeature from "./json/features/MinecraftWeightedRandomFeature";
 import MinecraftFeatureBase from "./jsoncommon/MinecraftFeatureBase";
+import Log from "../core/Log";
 
 export const FeatureTypes = [
   "aggregate_feature",
@@ -195,11 +196,13 @@ export default class FeatureDefinition implements IDefinition {
     if (file.manager !== undefined && file.manager instanceof FeatureDefinition) {
       fd = file.manager as FeatureDefinition;
 
-      if (!fd.isLoaded && loadHandler) {
-        fd.onLoaded.subscribe(loadHandler);
-      }
+      if (!fd.isLoaded) {
+        if (loadHandler) {
+          fd.onLoaded.subscribe(loadHandler);
+        }
 
-      await fd.load();
+        await fd.load();
+      }
     }
 
     return fd;
@@ -210,9 +213,13 @@ export default class FeatureDefinition implements IDefinition {
       return;
     }
 
-    const bpString = JSON.stringify(this._data, null, 2);
+    Log.assert(this._data !== null, "FDP");
 
-    this._file.setContent(bpString);
+    if (this._data) {
+      const bpString = JSON.stringify(this._data, null, 2);
+
+      this._file.setContent(bpString);
+    }
   }
 
   async load() {
@@ -220,7 +227,9 @@ export default class FeatureDefinition implements IDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

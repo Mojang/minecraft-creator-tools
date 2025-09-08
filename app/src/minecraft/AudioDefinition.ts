@@ -57,11 +57,13 @@ export default class AudioDefinition implements IDefinition {
     if (file.manager !== undefined && file.manager instanceof AudioDefinition) {
       afd = file.manager as AudioDefinition;
 
-      if (!afd.isLoaded && loadHandler) {
-        afd.onLoaded.subscribe(loadHandler);
-      }
+      if (!afd.isLoaded) {
+        if (loadHandler) {
+          afd.onLoaded.subscribe(loadHandler);
+        }
 
-      await afd.load();
+        await afd.load();
+      }
     }
 
     return afd;
@@ -130,7 +132,9 @@ export default class AudioDefinition implements IDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

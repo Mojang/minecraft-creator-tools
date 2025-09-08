@@ -2,5 +2,5 @@
   "id": "query.lie_amount",
   "fields": [],
   "description": "Returns the lie down amount for the entity. Applies generally to the panda.",
-  "title": "Lie Amount Query"
+  "title": "Lie Amount"
 }

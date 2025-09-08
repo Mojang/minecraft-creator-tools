@@ -47,7 +47,9 @@ export default class NewItemType extends Component<INewItemTypeProps, INewItemTy
 
     const itemsFolder = Database.releaseVanillaBehaviorPackFolder.ensureFolder("items");
 
-    await itemsFolder.load();
+    if (!itemsFolder.isLoaded) {
+      await itemsFolder.load();
+    }
 
     this.setState({
       entitiesFolder: itemsFolder,
@@ -127,6 +129,7 @@ export default class NewItemType extends Component<INewItemTypeProps, INewItemTy
         <div className="net-optionsArea">
           <div>
             <Input
+              aria-label="Item type name"
               value={inputText}
               defaultValue={inputText}
               placeholder={this.state.selectedItemType ? this.state.selectedItemType.id : "myMobName"}

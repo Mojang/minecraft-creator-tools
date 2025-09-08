@@ -204,7 +204,7 @@ export default class ProjectEditorUtilities {
     await carto.notifyStatusUpdate("Now downloading " + fileName);
 
     if (newBytes !== undefined) {
-      saveAs(new Blob([newBytes], { type: "application/octet-stream" }), fileName);
+      saveAs(new Blob([newBytes as BlobPart], { type: "application/octet-stream" }), fileName);
     }
 
     await carto.notifyOperationEnded(operId, "Done with save " + fileName);
@@ -224,7 +224,7 @@ export default class ProjectEditorUtilities {
     const newBytes = await mcworld.getBytes();
 
     if (newBytes !== undefined) {
-      saveAs(new Blob([newBytes], { type: "application/octet-stream" }), fileName);
+      saveAs(new Blob([newBytes as BlobPart], { type: "application/octet-stream" }), fileName);
     }
 
     await carto.notifyStatusUpdate("Downloading mcworld with packs embedded '" + project.name + "'.");

@@ -48,13 +48,13 @@ export default interface MinecraftBoss {
    * Wither: 55
    *
    */
-  hud_range: number;
+  hud_range?: number;
 
   /**
    * @remarks
    * The name that will be displayed above the boss's health bar.
    */
-  name: string;
+  name?: string;
 
   /**
    * @remarks
@@ -64,6 +64,6 @@ export default interface MinecraftBoss {
    * Wither: true
    *
    */
-  should_darken_sky: boolean;
+  should_darken_sky?: boolean;
 
 }

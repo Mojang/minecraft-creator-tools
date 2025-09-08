@@ -32,12 +32,14 @@ const MESSAGE_FADEOUT_TIME = 20000;
 
 export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaState> {
   scrollArea: React.RefObject<HTMLDivElement>;
+  scrollAreaList: React.RefObject<HTMLUListElement>;
   private _isMountedInternal: boolean = false;
 
   constructor(props: IStatusAreaProps) {
     super(props);
 
     this.scrollArea = React.createRef();
+    this.scrollAreaList = React.createRef();
 
     this._handleKeyPress = this._handleKeyPress.bind(this);
     this._handleStatusAdded = this._handleStatusAdded.bind(this);
@@ -136,6 +138,11 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
     } else {
       this.props.onSetExpandedSize(ProjectStatusAreaMode.expanded);
       this.scrollToListBottom();
+      window.setTimeout(() => {
+        if (this.scrollAreaList && this.scrollAreaList.current) {
+          this.scrollAreaList.current.focus();
+        }
+      }, 10);
     }
   }
 
@@ -358,14 +365,14 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
         title: "Show more information in the status area",
       });
 
-      const li = [];
+      const listItems = [];
       let index = 0;
 
       if (Utilities.isDebug) {
         for (let i = 0; i < Log.items.length; i++) {
           const logItem = Log.items[i];
 
-          li.push({
+          listItems.push({
             key: "sli" + i,
             content: (
               <div className="sa-list-item" title={logItem.message}>
@@ -381,7 +388,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
       for (let i = Math.max(0, this.props.carto.status.length - 1000); i < this.props.carto.status.length; i++) {
         const statusItem = this.props.carto.status[i];
 
-        li.push({
+        listItems.push({
           key: "si" + i,
           content: (
             <div className="sa-list-item" title={statusItem.message}>
@@ -398,7 +405,10 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
           <div className="sa-list" ref={this.scrollArea}>
             <List
               selectable
-              items={li}
+              items={listItems}
+              autoFocus={true}
+              tabIndex={0}
+              ref={this.scrollAreaList}
               aria-label="List of status items"
               accessibility={selectableListBehavior}
               selectedIndex={index}

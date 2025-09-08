@@ -103,13 +103,13 @@
         "content": {}
       }
     ],
-    "/vanilla/behavior_pack/entities/breeze_wind_charge_projectile.json": [
+    "/vanilla/behavior_pack/entities/breeze.json": [
       {
         "path": "/minecraft:entity/components/minecraft:physics/",
         "content": {}
       }
     ],
-    "/vanilla/behavior_pack/entities/breeze.json": [
+    "/vanilla/behavior_pack/entities/breeze_wind_charge_projectile.json": [
       {
         "path": "/minecraft:entity/components/minecraft:physics/",
         "content": {}
@@ -368,13 +368,13 @@
         "content": {}
       }
     ],
-    "/vanilla/behavior_pack/entities/llama_spit.json": [
+    "/vanilla/behavior_pack/entities/llama.json": [
       {
         "path": "/minecraft:entity/components/minecraft:physics/",
         "content": {}
       }
     ],
-    "/vanilla/behavior_pack/entities/llama.json": [
+    "/vanilla/behavior_pack/entities/llama_spit.json": [
       {
         "path": "/minecraft:entity/components/minecraft:physics/",
         "content": {}
@@ -442,13 +442,13 @@
         "content": {}
       }
     ],
-    "/vanilla/behavior_pack/entities/piglin_brute.json": [
+    "/vanilla/behavior_pack/entities/piglin.json": [
       {
         "path": "/minecraft:entity/components/minecraft:physics/",
         "content": {}
       }
     ],
-    "/vanilla/behavior_pack/entities/piglin.json": [
+    "/vanilla/behavior_pack/entities/piglin_brute.json": [
       {
         "path": "/minecraft:entity/components/minecraft:physics/",
         "content": {}
@@ -508,6 +508,12 @@
         "content": {}
       }
     ],
+    "/vanilla/behavior_pack/entities/shulker.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:physics/",
+        "content": {}
+      }
+    ],
     "/vanilla/behavior_pack/entities/shulker_bullet.json": [
       {
         "path": "/minecraft:entity/components/minecraft:physics/",
@@ -516,25 +522,19 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/shulker.json": [
-      {
-        "path": "/minecraft:entity/components/minecraft:physics/",
-        "content": {}
-      }
-    ],
     "/vanilla/behavior_pack/entities/silverfish.json": [
       {
         "path": "/minecraft:entity/components/minecraft:physics/",
         "content": {}
       }
     ],
-    "/vanilla/behavior_pack/entities/skeleton_horse.json": [
+    "/vanilla/behavior_pack/entities/skeleton.json": [
       {
         "path": "/minecraft:entity/components/minecraft:physics/",
         "content": {}
       }
     ],
-    "/vanilla/behavior_pack/entities/skeleton.json": [
+    "/vanilla/behavior_pack/entities/skeleton_horse.json": [
       {
         "path": "/minecraft:entity/components/minecraft:physics/",
         "content": {}
@@ -612,13 +612,13 @@
         "content": {}
       }
     ],
-    "/vanilla/behavior_pack/entities/tnt_minecart.json": [
+    "/vanilla/behavior_pack/entities/tnt.json": [
       {
         "path": "/minecraft:entity/components/minecraft:physics/",
         "content": {}
       }
     ],
-    "/vanilla/behavior_pack/entities/tnt.json": [
+    "/vanilla/behavior_pack/entities/tnt_minecart.json": [
       {
         "path": "/minecraft:entity/components/minecraft:physics/",
         "content": {}
@@ -659,13 +659,13 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/villager_v2.json": [
+    "/vanilla/behavior_pack/entities/villager.json": [
       {
         "path": "/minecraft:entity/components/minecraft:physics/",
         "content": {}
       }
     ],
-    "/vanilla/behavior_pack/entities/villager.json": [
+    "/vanilla/behavior_pack/entities/villager_v2.json": [
       {
         "path": "/minecraft:entity/components/minecraft:physics/",
         "content": {}
@@ -701,13 +701,13 @@
         "content": {}
       }
     ],
-    "/vanilla/behavior_pack/entities/wither_skeleton.json": [
+    "/vanilla/behavior_pack/entities/wither.json": [
       {
         "path": "/minecraft:entity/components/minecraft:physics/",
         "content": {}
       }
     ],
-    "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
+    "/vanilla/behavior_pack/entities/wither_skeleton.json": [
       {
         "path": "/minecraft:entity/components/minecraft:physics/",
         "content": {}
@@ -719,7 +719,7 @@
         "content": {}
       }
     ],
-    "/vanilla/behavior_pack/entities/wither.json": [
+    "/vanilla/behavior_pack/entities/wither_skull_dangerous.json": [
       {
         "path": "/minecraft:entity/components/minecraft:physics/",
         "content": {}
@@ -749,6 +749,12 @@
         "content": {}
       }
     ],
+    "/vanilla/behavior_pack/entities/zombie.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:physics/",
+        "content": {}
+      }
+    ],
     "/vanilla/behavior_pack/entities/zombie_horse.json": [
       {
         "path": "/minecraft:entity/components/minecraft:physics/",
@@ -761,19 +767,13 @@
         "content": {}
       }
     ],
-    "/vanilla/behavior_pack/entities/zombie_villager_v2.json": [
-      {
-        "path": "/minecraft:entity/components/minecraft:physics/",
-        "content": {}
-      }
-    ],
     "/vanilla/behavior_pack/entities/zombie_villager.json": [
       {
         "path": "/minecraft:entity/components/minecraft:physics/",
         "content": {}
       }
     ],
-    "/vanilla/behavior_pack/entities/zombie.json": [
+    "/vanilla/behavior_pack/entities/zombie_villager_v2.json": [
       {
         "path": "/minecraft:entity/components/minecraft:physics/",
         "content": {}
@@ -899,13 +899,13 @@
         "content": {}
       }
     ],
-    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave_generator.json": [
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave.json": [
       {
         "path": "/minecraft:entity/components/minecraft:physics/",
         "content": {}
       }
     ],
-    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave.json": [
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave_generator.json": [
       {
         "path": "/minecraft:entity/components/minecraft:physics/",
         "content": {}

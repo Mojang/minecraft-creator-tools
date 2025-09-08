@@ -69,7 +69,7 @@ export default interface InWater {
    *
    *
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
@@ -81,7 +81,7 @@ export default interface InWater {
    * Pillager: "self"
    *
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -90,7 +90,7 @@ export default interface InWater {
    * Axolotl: "in_water"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -100,7 +100,7 @@ export default interface InWater {
    * Axolotl: true
    *
    */
-  value: boolean;
+  value?: boolean;
 
 }
 

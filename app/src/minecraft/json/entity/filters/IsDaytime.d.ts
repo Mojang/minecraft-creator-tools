@@ -52,13 +52,13 @@ export default interface IsDaytime {
    * @remarks
    * (Optional) The comparison to apply with 'value'.
    */
-  operator: string;
+  operator?: string;
 
   /**
    * @remarks
    * (Optional) The subject of this filter test.
    */
-  subject: string;
+  subject?: string;
 
   /**
    * @remarks
@@ -67,7 +67,7 @@ export default interface IsDaytime {
    * Fox: "is_daytime"
    *
    */
-  test: string;
+  test?: string;
 
   /**
    * @remarks
@@ -77,7 +77,7 @@ export default interface IsDaytime {
    * Fox: true
    *
    */
-  value: boolean;
+  value?: boolean;
 
 }
 

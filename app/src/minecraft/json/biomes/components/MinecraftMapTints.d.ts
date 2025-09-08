@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Map Tints Biome (minecraft:map_tints)
+ * Biome Map Tints (minecraft:map_tints)
  * Sets the color grass and foliage will be tinted by in this biome
  * on the map.
  */
@@ -24,7 +24,7 @@ export default interface MinecraftMapTints {
    * Sets the color foliage will be tinted by in this biome on the
    * map.
    */
-  foliage: string;
+  foliage?: string;
 
   /**
    * @remarks

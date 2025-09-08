@@ -154,9 +154,13 @@ export default class NpmPackageDefinition {
       return;
     }
 
-    const pjString = JSON.stringify(this.definition, null, 2);
+    Log.assert(this.definition !== null, "NPDP");
 
-    this._file.setContent(pjString);
+    if (this.definition) {
+      const pjString = JSON.stringify(this.definition, null, 2);
+
+      this._file.setContent(pjString);
+    }
   }
 
   async save() {
@@ -285,7 +289,9 @@ export default class NpmPackageDefinition {
       return;
     }
 
-    await this._file.loadContent();
+    if (this._file.isContentLoaded === false) {
+      await this._file.loadContent();
+    }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;

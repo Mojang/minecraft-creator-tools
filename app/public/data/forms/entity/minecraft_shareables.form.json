@@ -383,259 +383,6 @@
               }
             ]
           }
-        ],
-        "/vanilla/behavior_pack/entities/drowned.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:shareables/",
-            "content": [
-              {
-                "item": "minecraft:nautilus_shell",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 0
-              },
-              {
-                "item": "minecraft:trident",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 1
-              },
-              {
-                "item": "minecraft:netherite_sword",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 2
-              },
-              {
-                "item": "minecraft:diamond_sword",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 3
-              },
-              {
-                "item": "minecraft:iron_sword",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 4
-              },
-              {
-                "item": "minecraft:golden_sword",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 5
-              },
-              {
-                "item": "minecraft:copper_sword",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 6
-              },
-              {
-                "item": "minecraft:stone_sword",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 7
-              },
-              {
-                "item": "minecraft:wooden_sword",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 8
-              },
-              {
-                "item": "minecraft:netherite_helmet",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 0
-              },
-              {
-                "item": "minecraft:diamond_helmet",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 1
-              },
-              {
-                "item": "minecraft:iron_helmet",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 2
-              },
-              {
-                "item": "minecraft:chainmail_helmet",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 3
-              },
-              {
-                "item": "minecraft:golden_helmet",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 4
-              },
-              {
-                "item": "minecraft:copper_helmet",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 5
-              },
-              {
-                "item": "minecraft:leather_helmet",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 6
-              },
-              {
-                "item": "minecraft:turtle_helmet",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 7
-              },
-              {
-                "item": "minecraft:skull:0",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 8
-              },
-              {
-                "item": "minecraft:skull:1",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 8
-              },
-              {
-                "item": "minecraft:carved_pumpkin",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 8
-              },
-              {
-                "item": "minecraft:netherite_chestplate",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 0
-              },
-              {
-                "item": "minecraft:diamond_chestplate",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 1
-              },
-              {
-                "item": "minecraft:iron_chestplate",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 2
-              },
-              {
-                "item": "minecraft:chainmail_chestplate",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 3
-              },
-              {
-                "item": "minecraft:golden_chestplate",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 4
-              },
-              {
-                "item": "minecraft:copper_chestplate",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 5
-              },
-              {
-                "item": "minecraft:leather_chestplate",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 6
-              },
-              {
-                "item": "minecraft:netherite_leggings",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 0
-              },
-              {
-                "item": "minecraft:diamond_leggings",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 1
-              },
-              {
-                "item": "minecraft:iron_leggings",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 2
-              },
-              {
-                "item": "minecraft:chainmail_leggings",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 3
-              },
-              {
-                "item": "minecraft:golden_leggings",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 4
-              },
-              {
-                "item": "minecraft:copper_leggings",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 5
-              },
-              {
-                "item": "minecraft:leather_leggings",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 6
-              },
-              {
-                "item": "minecraft:netherite_boots",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 0
-              },
-              {
-                "item": "minecraft:diamond_boots",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 1
-              },
-              {
-                "item": "minecraft:iron_boots",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 2
-              },
-              {
-                "item": "minecraft:chainmail_boots",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 3
-              },
-              {
-                "item": "minecraft:golden_boots",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 4
-              },
-              {
-                "item": "minecraft:copper_boots",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 5
-              },
-              {
-                "item": "minecraft:leather_boots",
-                "want_amount": 1,
-                "surplus_amount": 1,
-                "priority": 6
-              }
-            ]
-          }
         ]
       }
     },
@@ -2339,6 +2086,91 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/entities/villager.json": [
+      {
+        "path": "/minecraft:entity/component_groups/behavior_peasant/minecraft:shareables/",
+        "content": {
+          "items": [
+            {
+              "item": "minecraft:bread",
+              "want_amount": 3,
+              "surplus_amount": 6,
+              "stored_in_inventory": true
+            },
+            {
+              "item": "minecraft:carrot",
+              "want_amount": 60,
+              "surplus_amount": 4,
+              "stored_in_inventory": true
+            },
+            {
+              "item": "minecraft:potato",
+              "want_amount": 60,
+              "surplus_amount": 24,
+              "stored_in_inventory": true
+            },
+            {
+              "item": "minecraft:beetroot",
+              "want_amount": 60,
+              "surplus_amount": 24,
+              "stored_in_inventory": true
+            },
+            {
+              "item": "minecraft:wheat_seeds",
+              "want_amount": 64,
+              "surplus_amount": 64,
+              "stored_in_inventory": true,
+              "pickup_only": true
+            },
+            {
+              "item": "minecraft:beetroot_seeds",
+              "want_amount": 64,
+              "surplus_amount": 64,
+              "stored_in_inventory": true,
+              "pickup_only": true
+            },
+            {
+              "item": "minecraft:wheat",
+              "want_amount": 45,
+              "surplus_amount": 18,
+              "craft_into": "minecraft:bread",
+              "stored_in_inventory": true
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/behavior_non_peasant/minecraft:shareables/",
+        "content": {
+          "items": [
+            {
+              "item": "minecraft:bread",
+              "want_amount": 3,
+              "surplus_amount": 6,
+              "stored_in_inventory": true
+            },
+            {
+              "item": "minecraft:carrot",
+              "want_amount": 12,
+              "surplus_amount": 24,
+              "stored_in_inventory": true
+            },
+            {
+              "item": "minecraft:potato",
+              "want_amount": 12,
+              "surplus_amount": 24,
+              "stored_in_inventory": true
+            },
+            {
+              "item": "minecraft:beetroot",
+              "want_amount": 12,
+              "surplus_amount": 24,
+              "stored_in_inventory": true
+            }
+          ]
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/villager_v2.json": [
       {
         "path": "/minecraft:entity/component_groups/work_schedule_farmer/minecraft:shareables/",
@@ -2426,91 +2258,6 @@
               "item": "minecraft:carrot",
               "want_amount": 60,
               "surplus_amount": 24,
-              "stored_in_inventory": true
-            },
-            {
-              "item": "minecraft:potato",
-              "want_amount": 60,
-              "surplus_amount": 24,
-              "stored_in_inventory": true
-            },
-            {
-              "item": "minecraft:beetroot",
-              "want_amount": 60,
-              "surplus_amount": 24,
-              "stored_in_inventory": true
-            },
-            {
-              "item": "minecraft:wheat_seeds",
-              "want_amount": 64,
-              "surplus_amount": 64,
-              "stored_in_inventory": true,
-              "pickup_only": true
-            },
-            {
-              "item": "minecraft:beetroot_seeds",
-              "want_amount": 64,
-              "surplus_amount": 64,
-              "stored_in_inventory": true,
-              "pickup_only": true
-            },
-            {
-              "item": "minecraft:wheat",
-              "want_amount": 45,
-              "surplus_amount": 18,
-              "craft_into": "minecraft:bread",
-              "stored_in_inventory": true
-            }
-          ]
-        }
-      },
-      {
-        "path": "/minecraft:entity/component_groups/behavior_non_peasant/minecraft:shareables/",
-        "content": {
-          "items": [
-            {
-              "item": "minecraft:bread",
-              "want_amount": 3,
-              "surplus_amount": 6,
-              "stored_in_inventory": true
-            },
-            {
-              "item": "minecraft:carrot",
-              "want_amount": 12,
-              "surplus_amount": 24,
-              "stored_in_inventory": true
-            },
-            {
-              "item": "minecraft:potato",
-              "want_amount": 12,
-              "surplus_amount": 24,
-              "stored_in_inventory": true
-            },
-            {
-              "item": "minecraft:beetroot",
-              "want_amount": 12,
-              "surplus_amount": 24,
-              "stored_in_inventory": true
-            }
-          ]
-        }
-      }
-    ],
-    "/vanilla/behavior_pack/entities/villager.json": [
-      {
-        "path": "/minecraft:entity/component_groups/behavior_peasant/minecraft:shareables/",
-        "content": {
-          "items": [
-            {
-              "item": "minecraft:bread",
-              "want_amount": 3,
-              "surplus_amount": 6,
-              "stored_in_inventory": true
-            },
-            {
-              "item": "minecraft:carrot",
-              "want_amount": 60,
-              "surplus_amount": 4,
               "stored_in_inventory": true
             },
             {
@@ -3008,10 +2755,11 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/zombie_pigman.json": [
+    "/vanilla/behavior_pack/entities/zombie.json": [
       {
         "path": "/minecraft:entity/components/minecraft:shareables/",
         "content": {
+          "singular_pickup": true,
           "items": [
             {
               "item": "minecraft:netherite_sword",
@@ -3251,11 +2999,10 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/zombie_villager_v2.json": [
+    "/vanilla/behavior_pack/entities/zombie_pigman.json": [
       {
         "path": "/minecraft:entity/components/minecraft:shareables/",
         "content": {
-          "singular_pickup": true,
           "items": [
             {
               "item": "minecraft:netherite_sword",
@@ -3709,7 +3456,7 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/zombie.json": [
+    "/vanilla/behavior_pack/entities/zombie_villager_v2.json": [
       {
         "path": "/minecraft:entity/components/minecraft:shareables/",
         "content": {

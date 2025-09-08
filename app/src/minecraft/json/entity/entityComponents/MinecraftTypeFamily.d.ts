@@ -97,16 +97,6 @@ Bogged - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
 }
 
 
-Breeze Wind Charge Projectile - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/breeze_wind_charge_projectile.json
-
-"minecraft:type_family": {
-  "family": [
-    "wind_charge",
-    "wind_charge_projectile"
-  ]
-}
-
-
 Breeze - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/breeze.json
 
 "minecraft:type_family": {
@@ -114,6 +104,16 @@ Breeze - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
     "breeze",
     "monster",
     "mob"
+  ]
+}
+
+
+Breeze Wind Charge Projectile - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/breeze_wind_charge_projectile.json
+
+"minecraft:type_family": {
+  "family": [
+    "wind_charge",
+    "wind_charge_projectile"
   ]
 }
 
@@ -162,7 +162,7 @@ export default interface MinecraftTypeFamily {
    * Armor Stand: ["armor_stand","inanimate","mob"]
    *
    */
-  family: string[];
+  family?: string[];
 
 }
 

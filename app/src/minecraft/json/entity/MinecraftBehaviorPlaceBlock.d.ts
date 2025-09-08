@@ -143,7 +143,10 @@ Enderman - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/
 
 "minecraft:behavior.place_block": {
   "priority": 10,
-  "xz_range": 1,
+  "xz_range": [
+    -1,
+    1
+  ],
   "y_range": [
     0,
     2
@@ -165,7 +168,7 @@ export default interface MinecraftBehaviorPlaceBlock {
    * If true, whether the goal is affected by the mob griefing game
    * rule.
    */
-  affected_by_griefing_rule: boolean;
+  affected_by_griefing_rule?: boolean;
 
   /**
    * @remarks
@@ -176,7 +179,7 @@ export default interface MinecraftBehaviorPlaceBlock {
    * Copper Golem: {"test":"bool_property","domain":"minecraft:is_becoming_statue","value":false}
    *
    */
-  can_place: jsoncommon.MinecraftFilter;
+  can_place?: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
@@ -188,7 +191,7 @@ export default interface MinecraftBehaviorPlaceBlock {
    * Enderman: 0.0005
    *
    */
-  chance: number;
+  chance?: number;
 
   /**
    * @remarks
@@ -199,14 +202,14 @@ export default interface MinecraftBehaviorPlaceBlock {
    * Copper Golem: {"event":"minecraft:become_statue","target":"self"}
    *
    */
-  on_place: jsoncommon.MinecraftEventTrigger;
+  on_place?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
    * Block descriptors for which blocks are valid to be placed from
    * the entity's carried item, if empty all blocks are valid.
    */
-  placeable_carried_blocks: string[];
+  placeable_carried_blocks?: string[];
 
   /**
    * @remarks
@@ -220,7 +223,7 @@ export default interface MinecraftBehaviorPlaceBlock {
    * Enderman: 10
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
@@ -232,17 +235,17 @@ export default interface MinecraftBehaviorPlaceBlock {
    * Copper Golem: [{"block":{"name":"minecraft:oxidized_copper_golem_statue","states":{"minecraft:cardinal_direction":"north"}},"filter":{"any_of":[{"all_of":[{"test":"y_rotation","operator":">=","value":135},{"test":"y_rotation","operator":"<","value":180}]},{"all_of":[{"test":"y_rotation","operator":">=","value":-180},{"test":"y_rotation","operator":"<","value":-135}]}]}},{"block":{"name":"minecraft:oxidized_copper_golem_statue","states":{"minecraft:cardinal_direction":"east"}},"filter":{"all_of":[{"test":"y_rotation","operator":">=","value":-135},{"test":"y_rotation","operator":"<","value":-45}]}},{"block":{"name":"minecraft:oxidized_copper_golem_statue","states":{"minecraft:cardinal_direction":"south"}},"filter":{"all_of":[{"test":"y_rotation","operator":">=","value":-45},{"test":"y_rotation","operator":"<","value":45}]}},{"block":{"name":"minecraft:oxidized_copper_golem_statue","states":{"minecraft:cardinal_direction":"west"}},"filter":{"all_of":[{"test":"y_rotation","operator":">=","value":45},{"test":"y_rotation","operator":"<","value":135}]}}]
    *
    */
-  randomly_placeable_blocks: string[];
+  randomly_placeable_blocks?: string[];
 
   /**
    * @remarks
    * XZ range from which the entity will try and place blocks in.
    * 
    * Sample Values:
-   * Enderman: 1
+   * Enderman: [-1,1]
    *
    */
-  xz_range: number[];
+  xz_range?: number[];
 
   /**
    * @remarks
@@ -252,6 +255,6 @@ export default interface MinecraftBehaviorPlaceBlock {
    * Enderman: [0,2]
    *
    */
-  y_range: number[];
+  y_range?: number[];
 
 }

@@ -55,12 +55,10 @@ My Leggings - https://github.com/microsoft/minecraft-samples/tree/main/custom_it
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Minecraft Enchantable Item (minecraft:enchantable)
- * Determines what enchantments can be applied to the item. Not all
- * enchantments will have an effect on all item components.
- * Note: The following enchantment slot types that can be set for
- * the value of `slot`: sword, bow, pickaxe, armor_head, armor_torso,
- * armor_legs, armor_feet.
+ * Item Enchantable (minecraft:enchantable)
+ * The enchantable component specifies what enchantments can be
+ * applied to the item. Not all enchantments will have an effect on
+ * all item components.
  */
 export default interface MinecraftEnchantable {
 
@@ -71,11 +69,12 @@ export default interface MinecraftEnchantable {
    * were a bow.
    * 
    * Sample Values:
+   * Item Axe Turret Kit: "pickaxe"
+   *
+   *
    * Chestplate: "armor_torso"
    *
    * My Boots: "armor_feet"
-   *
-   * My Helm: "armor_head"
    *
    */
   slot: string;
@@ -85,6 +84,9 @@ export default interface MinecraftEnchantable {
    * Specifies the value of the enchantment (minimum of 0).
    * 
    * Sample Values:
+   * Item Axe Turret Kit: 14
+   *
+   *
    * Chestplate: 10
    *
    *

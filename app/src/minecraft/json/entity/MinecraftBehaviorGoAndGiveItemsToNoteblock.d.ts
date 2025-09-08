@@ -42,7 +42,7 @@ export default interface MinecraftBehaviorGoAndGiveItemsToNoteblock {
    * Sets the time an entity should continue delivering items to a
    * noteblock after hearing it.
    */
-  listen_time: number;
+  listen_time?: number;
 
   /**
    * @remarks
@@ -52,7 +52,7 @@ export default interface MinecraftBehaviorGoAndGiveItemsToNoteblock {
    * Allay: [{"event":"pickup_item_delay","target":"self"}]
    *
    */
-  on_item_throw: jsoncommon.MinecraftEventTrigger;
+  on_item_throw?: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -64,14 +64,14 @@ export default interface MinecraftBehaviorGoAndGiveItemsToNoteblock {
    * Allay: 3
    *
    */
-  priority: number;
+  priority?: number;
 
   /**
    * @remarks
    * Sets the desired distance to be reached before throwing the
    * items towards the block.
    */
-  reach_block_distance: number;
+  reach_block_distance?: number;
 
   /**
    * @remarks
@@ -81,13 +81,13 @@ export default interface MinecraftBehaviorGoAndGiveItemsToNoteblock {
    * Allay: 8
    *
    */
-  run_speed: number;
+  run_speed?: number;
 
   /**
    * @remarks
    * Sets the throw force.
    */
-  throw_force: number;
+  throw_force?: number;
 
   /**
    * @remarks
@@ -97,13 +97,13 @@ export default interface MinecraftBehaviorGoAndGiveItemsToNoteblock {
    * Allay: "item_thrown"
    *
    */
-  throw_sound: string;
+  throw_sound?: string;
 
   /**
    * @remarks
    * Sets the vertical throw multiplier that is applied on top of
    * the throw force in the vertical direction.
    */
-  vertical_throw_mul: number;
+  vertical_throw_mul?: number;
 
 }

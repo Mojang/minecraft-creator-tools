@@ -2,5 +2,5 @@
   "id": "query.has_rider",
   "fields": [],
   "description": "Returns 1.0 if the entity has a rider, else it returns 0.0",
-  "title": "Has Rider Query"
+  "title": "Has Rider"
 }
