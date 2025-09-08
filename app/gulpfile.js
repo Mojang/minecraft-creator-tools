@@ -306,6 +306,7 @@ gulp.task(
       copyJsNodeDocs,
       copyJsNodeResSchemas,
       copyJsNodeMc,
+      copyJsNodeDist,
       compileJsnWebBuild
     ),
     "postclean-jsnwebbuild"
@@ -314,7 +315,7 @@ gulp.task(
 
 gulp.task("jsncorebuild", gulp.series(compileJsNodeBuild));
 
-gulp.task("copyjsnodedata", gulp.parallel(copyJsNodeData, copyJsNodeDist));
+gulp.task("copyjsnodedata", gulp.series(copyJsNodeData));
 
 gulp.task(
   "vsccorebuild",
