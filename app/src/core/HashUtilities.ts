@@ -4,7 +4,7 @@
 import IFile from "../storage/IFile";
 import StorageUtilities from "../storage/StorageUtilities";
 import Log from "./Log";
-import md5 from "js-md5";
+import * as md5 from "js-md5";
 import * as JSONC from "jsonc-parser";
 
 export interface IHashCatalogEntry {
@@ -28,13 +28,15 @@ export default class HashUtilities {
       // Complete file hash with filename included
       await file.loadContent();
       if (file.content !== null && file.content !== undefined) {
-        const fileHash = md5(file.content + file.name);
+        const fileHash = await file.getHash();
 
-        hashCatalog[fileHash] = {
-          fileName: file.name,
-          propertyName: "",
-          filePath: filePath,
-        };
+        if (fileHash) {
+          hashCatalog[fileHash] = {
+            fileName: file.name,
+            propertyName: "",
+            filePath: filePath,
+          };
+        }
       }
 
       // Property hashes for JSON files
@@ -64,7 +66,7 @@ export default class HashUtilities {
                 const stringifiedObj = JSON.stringify(value);
                 const stringifiedObjAndKey = stringifiedObj + key;
 
-                const propertyHash = md5(stringifiedObjAndKey).toLowerCase();
+                const propertyHash = md5.md5(stringifiedObjAndKey).toLowerCase();
 
                 hashCatalog[propertyHash] = {
                   fileName: file.name,

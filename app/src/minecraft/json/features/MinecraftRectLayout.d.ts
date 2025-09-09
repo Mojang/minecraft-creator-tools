@@ -22,9 +22,9 @@ export default interface MinecraftRectLayout {
 
   description: MinecraftRectLayoutDescription;
 
-  feature_areas: MinecraftRectLayoutFeatureAreas[];
+  feature_areas?: MinecraftRectLayoutFeatureAreas[];
 
-  format_version: string;
+  format_version?: string;
 
 }
 

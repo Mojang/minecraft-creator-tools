@@ -140,6 +140,7 @@ UNLINK,351,Warning,,"Link to sound catalog is not found in this pack","/Content/
 UNLINK,399,Warning,,"Link to texture is not found in this pack","/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json to `textures/aop/moremobs/biceson_filethatdoesnotexist`",/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json,
 UNLINK,408,Warning,,"Link to audio is not found in this pack","/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json to `sounds/ambientsounds/co_doesnotexist`",/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json,
 VALFILE,2,Unknown,,"No applicable items found for test Valid files (VALFILE)",,,
+VANDUPES,2,Unknown,,"No applicable items found for test Check Vanilla Duplicates (VANDUPES)",,,
 VSCODEFILE,2,Unknown,,"No applicable items found for test VSCode Files (VSCODEFILE)",,,
 WORLD,2,Unknown,,"No applicable items found for test World Validation (WORLD)",,,
 WORLDDATA,1,Test success,,"World Data Validation (WORLDDATA) completed successfully",,,

@@ -23,19 +23,19 @@ export default interface FeatureRuleDefinition {
    * Parameters to control where and when the feature will be
    * placed.
    */
-  conditions: object;
+  conditions?: object;
 
   /**
    * @remarks
    * Identifier for the Feature Rule and Feture to place.
    */
-  description: object;
+  description?: object;
 
   /**
    * @remarks
    * Parameters controlling the initial scatter of the feature.
    */
-  distribution: FeatureRuleDefinitionDistribution;
+  distribution?: FeatureRuleDefinitionDistribution;
 
 }
 
@@ -53,38 +53,38 @@ export interface FeatureRuleDefinitionDistribution {
    * "xzy". Supported orders are defined by "Coordinate Evaluation 
    * Order".
    */
-  coordinate_eval_order: string;
+  coordinate_eval_order?: string;
 
   /**
    * @remarks
    * Number of scattered positions to generate.
    */
-  iterations: FeatureRuleDefinitionDistributionIterations;
+  iterations?: FeatureRuleDefinitionDistributionIterations;
 
   /**
    * @remarks
    * Probability that this scatter will occur. Not evaluated each
    * iteration; either no iterations will run, or all will.
    */
-  scatter_chance: FeatureRuleDefinitionDistributionScatterChance;
+  scatter_chance?: FeatureRuleDefinitionDistributionScatterChance;
 
   /**
    * @remarks
    * Distribution for the coordinate (evaluated each iteration).
    */
-  x: FeatureRuleDefinitionDistributionx;
+  x?: FeatureRuleDefinitionDistributionx;
 
   /**
    * @remarks
    * Distribution for the coordinate (evaluated each iteration).
    */
-  y: FeatureRuleDefinitionDistributiony;
+  y?: FeatureRuleDefinitionDistributiony;
 
   /**
    * @remarks
    * Distribution for the coordinate (evaluated each iteration).
    */
-  z: FeatureRuleDefinitionDistributionz;
+  z?: FeatureRuleDefinitionDistributionz;
 
 }
 

@@ -23,7 +23,7 @@ export default interface FeatureRuleConditions {
    * List of filter tests to determine which biomes this rule will
    * attach to.
    */
-  "minecraft:biome_filter": FeatureRuleConditionsMinecraftBiomeFilter;
+  "minecraft:biome_filter"?: FeatureRuleConditionsMinecraftBiomeFilter;
 
   /**
    * @remarks
@@ -31,7 +31,7 @@ export default interface FeatureRuleConditions {
    * in the list are guaranteed to occur before later passes. Order is
    * not guaranteed within each pass.
    */
-  placement_pass: string;
+  placement_pass?: string;
 
 }
 

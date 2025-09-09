@@ -9,10 +9,11 @@ import ProjectInfoUtilities from "../ProjectInfoUtilities";
 import Project from "../../app/Project";
 import ProjectItem from "../../app/ProjectItem";
 import Database from "../../minecraft/Database";
+import ContentIndex from "../../core/ContentIndex";
 
 export enum CheckVanillaDuplicatesInfoGeneratorTest {
-  completeVanillaCopy = 1,
-  partialVanillaCopy = 2,
+  completeVanillaCopy = 101,
+  partialVanillaCopy = 102,
 }
 
 // Files that are allowed to be complete copies of vanilla
@@ -45,10 +46,8 @@ const RESOURCE_PACK_SUFFIX = "Vanilla files can be seen at https://aka.ms/resour
  */
 
 export default class CheckVanillaDuplicatesInfoGenerator implements IProjectInfoGenerator {
-  id = "CHECKVANILLADUPLICATES";
+  id = "VANDUPES";
   title = "Check Vanilla Duplicates";
-
-  constructor() {}
 
   getTopicData(topicId: number) {
     return {
@@ -68,15 +67,14 @@ export default class CheckVanillaDuplicatesInfoGenerator implements IProjectInfo
     );
   }
 
-  async generate(project: Project): Promise<ProjectInfoItem[]> {
+  async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
     // Get the hash catalog from the project's info set
-    const projectInfoSet = project.infoSet;
-    const hashCatalog = projectInfoSet.hashCatalog;
+    const hashCatalog = contentIndex.hashCatalog;
 
     // Load vanilla hash catalog for comparison
-    await Database.ensureVanillaHashesLoaded();
+    await Database.loadReleaseVanillaInfoHashes();
 
     const projItems = project.getItemsCopy();
 
@@ -128,7 +126,12 @@ export default class CheckVanillaDuplicatesInfoGenerator implements IProjectInfo
 
   private async checkCompleteVanillaCopy(fileHash: string, item: ProjectItem): Promise<ProjectInfoItem | null> {
     // Check if this hash exists in the vanilla hash catalog
-    const vanillaDetails = Database.vanillaHashes[fileHash];
+
+    if (!Database.releaseVanillaContentHashes) {
+      return null;
+    }
+
+    const vanillaDetails = Database.releaseVanillaContentHashes[fileHash];
     if (vanillaDetails && vanillaDetails.propertyName === "") {
       // This is a complete file match
       return new ProjectInfoItem(
@@ -150,11 +153,15 @@ export default class CheckVanillaDuplicatesInfoGenerator implements IProjectInfo
   ): Promise<ProjectInfoItem[]> {
     const results: ProjectInfoItem[] = [];
 
+    if (!Database.releaseVanillaContentHashes) {
+      return results;
+    }
+
     try {
       // Check each property hash from the catalog
       for (const [hash, details] of propertyHashes) {
         // Check if this property hash exists in the vanilla hash catalog
-        const vanillaDetails = Database.vanillaHashes[hash];
+        const vanillaDetails = Database.releaseVanillaContentHashes[hash];
 
         if (
           vanillaDetails &&

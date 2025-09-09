@@ -54,7 +54,7 @@ export default interface MinecraftSequenceFeature {
    */
   features: string[];
 
-  format_version: string;
+  format_version?: string;
 
 }
 

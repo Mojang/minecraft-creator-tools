@@ -72,7 +72,7 @@ export default class ProjectItemVariant {
 
   get file() {
     if (this._isDefault) {
-      return this._item.primaryFile;
+      return this._item.defaultFile;
     }
 
     return this._file;

@@ -135,62 +135,62 @@ import * as jsoncommon from './../../jsoncommon';
  */
 export default interface MinecraftTreeFeature {
 
-  acacia_canopy: MinecraftTreeFeatureAcaciaCanopy;
+  acacia_canopy?: MinecraftTreeFeatureAcaciaCanopy;
 
-  acacia_trunk: MinecraftTreeFeatureAcaciaTrunk;
+  acacia_trunk?: MinecraftTreeFeatureAcaciaTrunk;
 
-  base_block: string[];
+  base_block?: string[];
 
   /**
    * @remarks
-   * Allows you to define a number of clusters for the base of the
-   * tree. Used to generate mega tree variants.
+   * Clusters of blocks randomly replaced with "base_block" around the
+   * base of the tree.
    */
-  base_cluster: MinecraftTreeFeatureBaseCluster;
+  base_cluster?: MinecraftTreeFeatureBaseCluster;
 
-  canopy: MinecraftTreeFeatureCanopy;
+  canopy?: MinecraftTreeFeatureCanopy;
 
-  cherry_canopy: MinecraftTreeFeatureCherryCanopy;
+  cherry_canopy?: MinecraftTreeFeatureCherryCanopy;
 
-  cherry_trunk: MinecraftTreeFeatureCherryTrunk;
+  cherry_trunk?: MinecraftTreeFeatureCherryTrunk;
 
   description: MinecraftTreeFeatureDescription;
 
-  fallen_trunk: MinecraftTreeFeatureFallenTrunk;
+  fallen_trunk?: MinecraftTreeFeatureFallenTrunk;
 
-  fancy_canopy: MinecraftTreeFeatureFancyCanopy;
+  fancy_canopy?: MinecraftTreeFeatureFancyCanopy;
 
-  fancy_trunk: MinecraftTreeFeatureFancyTrunk;
+  fancy_trunk?: MinecraftTreeFeatureFancyTrunk;
 
-  format_version: string;
+  format_version?: string;
 
-  mangrove_canopy: { [key: string]: any };
+  mangrove_canopy?: { [key: string]: any };
 
-  mangrove_roots: MinecraftTreeFeatureMangroveRoots;
+  mangrove_roots?: MinecraftTreeFeatureMangroveRoots;
 
-  mangrove_trunk: MinecraftTreeFeatureMangroveTrunk;
+  mangrove_trunk?: MinecraftTreeFeatureMangroveTrunk;
 
-  may_grow_on: string[];
+  may_grow_on?: string[];
 
-  may_grow_through: string[];
+  may_grow_through?: string[];
 
-  may_replace: string[];
+  may_replace?: string[];
 
-  mega_canopy: MinecraftTreeFeatureMegaCanopy;
+  mega_canopy?: MinecraftTreeFeatureMegaCanopy;
 
-  mega_pine_canopy: MinecraftTreeFeatureMegaPineCanopy;
+  mega_pine_canopy?: MinecraftTreeFeatureMegaPineCanopy;
 
-  mega_trunk: MinecraftTreeFeatureMegaTrunk;
+  mega_trunk?: MinecraftTreeFeatureMegaTrunk;
 
-  pine_canopy: MinecraftTreeFeaturePineCanopy;
+  pine_canopy?: MinecraftTreeFeaturePineCanopy;
 
-  random_spread_canopy: { [key: string]: any };
+  random_spread_canopy?: { [key: string]: any };
 
-  roofed_canopy: MinecraftTreeFeatureRoofedCanopy;
+  roofed_canopy?: MinecraftTreeFeatureRoofedCanopy;
 
-  spruce_canopy: MinecraftTreeFeatureSpruceCanopy;
+  spruce_canopy?: MinecraftTreeFeatureSpruceCanopy;
 
-  trunk: MinecraftTreeFeatureTrunk;
+  trunk?: MinecraftTreeFeatureTrunk;
 
 }
 
@@ -209,7 +209,7 @@ export interface MinecraftTreeFeatureAcaciaCanopy {
    * @remarks
    * If true the canopy uses a simple pattern.
    */
-  simplify_canopy: boolean;
+  simplify_canopy?: boolean;
 
 }
 
@@ -222,13 +222,13 @@ export interface MinecraftTreeFeatureAcaciaTrunk {
    * @remarks
    * Configuration object for branches.
    */
-  branches: MinecraftTreeFeatureAcaciaTrunkBranches;
+  branches?: MinecraftTreeFeatureAcaciaTrunkBranches;
 
   /**
    * @remarks
    * Configuration object for the trunk decoration.
    */
-  trunk_decoration: MinecraftTreeFeatureAcaciaTrunkTrunkDecoration;
+  trunk_decoration?: MinecraftTreeFeatureAcaciaTrunkTrunkDecoration;
 
   /**
    * @remarks
@@ -259,7 +259,7 @@ export interface MinecraftTreeFeatureAcaciaTrunkBranches {
    * @remarks
    * Configuration object for the canopy.
    */
-  branch_canopy: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopy;
+  branch_canopy?: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopy;
 
 }
 
@@ -268,25 +268,25 @@ export interface MinecraftTreeFeatureAcaciaTrunkBranches {
  */
 export interface MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopy {
 
-  acacia_canopy: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyAcaciaCanopy;
+  acacia_canopy?: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyAcaciaCanopy;
 
-  canopy: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyCanopy;
+  canopy?: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyCanopy;
 
-  cherry_canopy: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyCherryCanopy;
+  cherry_canopy?: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyCherryCanopy;
 
-  fancy_canopy: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyFancyCanopy;
+  fancy_canopy?: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyFancyCanopy;
 
-  mangrove_canopy: { [key: string]: any };
+  mangrove_canopy?: { [key: string]: any };
 
-  mega_canopy: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyMegaCanopy;
+  mega_canopy?: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyMegaCanopy;
 
-  mega_pine_canopy: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyMegaPineCanopy;
+  mega_pine_canopy?: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyMegaPineCanopy;
 
-  pine_canopy: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyPineCanopy;
+  pine_canopy?: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyPineCanopy;
 
-  roofed_canopy: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyRoofedCanopy;
+  roofed_canopy?: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyRoofedCanopy;
 
-  spruce_canopy: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopySpruceCanopy;
+  spruce_canopy?: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopySpruceCanopy;
 
 }
 
@@ -305,7 +305,7 @@ export interface MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyAcaciaCanopy
    * @remarks
    * If true the canopy uses a simple pattern.
    */
-  simplify_canopy: boolean;
+  simplify_canopy?: boolean;
 
 }
 
@@ -318,7 +318,7 @@ export interface MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyCanopy {
    * @remarks
    * Configuration object for the canopy decoration.
    */
-  canopy_decoration: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyCanopyCanopyDecoration;
+  canopy_decoration?: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyCanopyCanopyDecoration;
 
   /**
    * @remarks
@@ -331,15 +331,15 @@ export interface MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyCanopy {
    * @remarks
    * Configuration object for the canopy slope.
    */
-  canopy_slope: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyCanopyCanopySlope;
+  canopy_slope?: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyCanopyCanopySlope;
 
   /**
    * @remarks
    * Min width for the canopy.
    */
-  min_width: number;
+  min_width?: number;
 
-  variation_chance: string[];
+  variation_chance?: string[];
 
 }
 
@@ -352,13 +352,13 @@ export interface MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyCanopyCanopy
    * @remarks
    * Number of decoration blocks to place.
    */
-  num_steps: number;
+  num_steps?: number;
 
   /**
    * @remarks
    * Directions to spread decoration blocks.
    */
-  step_directionLessThandownupoutaway: string;
+  step_directionLessThandownupoutaway?: string;
 
 }
 
@@ -390,13 +390,13 @@ export interface MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyCanopyCanopy
    * @remarks
    * The numerator for the slope fraction.
    */
-  rise: number;
+  rise?: number;
 
   /**
    * @remarks
    * The denominator for the slope fraction.
    */
-  run: number;
+  run?: number;
 
 }
 
@@ -409,7 +409,7 @@ export interface MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyCherryCanopy
    * @remarks
    * The width of the tree trunk.
    */
-  trunk_width: number;
+  trunk_width?: number;
 
 }
 
@@ -441,7 +441,7 @@ export interface MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyMangroveCano
    * @remarks
    * Configuration object for the canopy decoration.
    */
-  canopy_decoration: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyMangroveCanopyCanopyDecoration;
+  canopy_decoration?: MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyMangroveCanopyCanopyDecoration;
 
   leaf_blocks: string[];
 
@@ -462,13 +462,13 @@ export interface MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyMangroveCano
    * @remarks
    * Number of decoration blocks to place.
    */
-  num_steps: number;
+  num_steps?: number;
 
   /**
    * @remarks
    * Directions to spread decoration blocks.
    */
-  step_directionLessThandownupoutaway: string;
+  step_directionLessThandownupoutaway?: string;
 
 }
 
@@ -487,13 +487,13 @@ export interface MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyMegaCanopy {
    * @remarks
    * Width of the tree trunk.
    */
-  core_width: number;
+  core_width?: number;
 
   /**
    * @remarks
    * If true the canopy uses a simple pattern.
    */
-  simplify_canopy: boolean;
+  simplify_canopy?: boolean;
 
 }
 
@@ -512,7 +512,7 @@ export interface MinecraftTreeFeatureAcaciaTrunkBranchesBranchCanopyMegaPineCano
    * @remarks
    * Width of the tree trunk.
    */
-  core_width: number;
+  core_width?: number;
 
 }
 
@@ -578,13 +578,13 @@ export interface MinecraftTreeFeatureAcaciaTrunkTrunkDecoration {
    * @remarks
    * Number of decoration blocks to place.
    */
-  num_steps: number;
+  num_steps?: number;
 
   /**
    * @remarks
    * Directions to spread decoration blocks.
    */
-  step_directionLessThandownupoutaway: string;
+  step_directionLessThandownupoutaway?: string;
 
 }
 
@@ -599,13 +599,13 @@ export interface MinecraftTreeFeatureAcaciaTrunkTrunkHeight {
    */
   base: number;
 
-  intervals: string[];
+  intervals?: string[];
 
   /**
    * @remarks
    * Min height where the canopy can be placed.
    */
-  min_height_for_canopy: number;
+  min_height_for_canopy?: number;
 
 }
 
@@ -629,7 +629,7 @@ export interface MinecraftTreeFeatureBaseCluster {
 
   /**
    * @remarks
-   * Radius where the clusters that can be generated.
+   * The radius of each cluster.
    */
   cluster_radius: number;
 
@@ -637,7 +637,7 @@ export interface MinecraftTreeFeatureBaseCluster {
 
   /**
    * @remarks
-   * Number of clusters that can be generated.
+   * Number of clusters to generate.
    */
   num_clusters: number;
 
@@ -652,7 +652,7 @@ export interface MinecraftTreeFeatureCanopy {
    * @remarks
    * Configuration object for the canopy decoration.
    */
-  canopy_decoration: MinecraftTreeFeatureCanopyCanopyDecoration;
+  canopy_decoration?: MinecraftTreeFeatureCanopyCanopyDecoration;
 
   /**
    * @remarks
@@ -665,15 +665,15 @@ export interface MinecraftTreeFeatureCanopy {
    * @remarks
    * Configuration object for the canopy slope.
    */
-  canopy_slope: MinecraftTreeFeatureCanopyCanopySlope;
+  canopy_slope?: MinecraftTreeFeatureCanopyCanopySlope;
 
   /**
    * @remarks
    * Min width for the canopy.
    */
-  min_width: number;
+  min_width?: number;
 
-  variation_chance: string[];
+  variation_chance?: string[];
 
 }
 
@@ -686,13 +686,13 @@ export interface MinecraftTreeFeatureCanopyCanopyDecoration {
    * @remarks
    * Number of decoration blocks to place.
    */
-  num_steps: number;
+  num_steps?: number;
 
   /**
    * @remarks
    * Directions to spread decoration blocks.
    */
-  step_directionLessThandownupoutaway: string;
+  step_directionLessThandownupoutaway?: string;
 
 }
 
@@ -724,13 +724,13 @@ export interface MinecraftTreeFeatureCanopyCanopySlope {
    * @remarks
    * The numerator for the slope fraction.
    */
-  rise: number;
+  rise?: number;
 
   /**
    * @remarks
    * The denominator for the slope fraction.
    */
-  run: number;
+  run?: number;
 
 }
 
@@ -743,7 +743,7 @@ export interface MinecraftTreeFeatureCherryCanopy {
    * @remarks
    * The width of the tree trunk.
    */
-  trunk_width: number;
+  trunk_width?: number;
 
 }
 
@@ -775,14 +775,14 @@ export interface MinecraftTreeFeatureCherryTrunkBranches {
    * @remarks
    * Configuration object for the canopy.
    */
-  branch_canopy: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopy;
+  branch_canopy?: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopy;
 
   /**
    * @remarks
    * Configuration object to pick a tree variant based on a
    * weighted random number.
    */
-  tree_type_weights: MinecraftTreeFeatureCherryTrunkBranchesTreeTypeWeights;
+  tree_type_weights?: MinecraftTreeFeatureCherryTrunkBranchesTreeTypeWeights;
 
 }
 
@@ -791,25 +791,25 @@ export interface MinecraftTreeFeatureCherryTrunkBranches {
  */
 export interface MinecraftTreeFeatureCherryTrunkBranchesBranchCanopy {
 
-  acacia_canopy: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyAcaciaCanopy;
+  acacia_canopy?: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyAcaciaCanopy;
 
-  canopy: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyCanopy;
+  canopy?: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyCanopy;
 
-  cherry_canopy: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyCherryCanopy;
+  cherry_canopy?: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyCherryCanopy;
 
-  fancy_canopy: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyFancyCanopy;
+  fancy_canopy?: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyFancyCanopy;
 
-  mangrove_canopy: { [key: string]: any };
+  mangrove_canopy?: { [key: string]: any };
 
-  mega_canopy: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyMegaCanopy;
+  mega_canopy?: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyMegaCanopy;
 
-  mega_pine_canopy: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyMegaPineCanopy;
+  mega_pine_canopy?: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyMegaPineCanopy;
 
-  pine_canopy: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyPineCanopy;
+  pine_canopy?: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyPineCanopy;
 
-  roofed_canopy: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyRoofedCanopy;
+  roofed_canopy?: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyRoofedCanopy;
 
-  spruce_canopy: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopySpruceCanopy;
+  spruce_canopy?: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopySpruceCanopy;
 
 }
 
@@ -828,7 +828,7 @@ export interface MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyAcaciaCanopy
    * @remarks
    * If true the canopy uses a simple pattern.
    */
-  simplify_canopy: boolean;
+  simplify_canopy?: boolean;
 
 }
 
@@ -841,7 +841,7 @@ export interface MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyCanopy {
    * @remarks
    * Configuration object for the canopy decoration.
    */
-  canopy_decoration: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyCanopyCanopyDecoration;
+  canopy_decoration?: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyCanopyCanopyDecoration;
 
   /**
    * @remarks
@@ -854,15 +854,15 @@ export interface MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyCanopy {
    * @remarks
    * Configuration object for the canopy slope.
    */
-  canopy_slope: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyCanopyCanopySlope;
+  canopy_slope?: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyCanopyCanopySlope;
 
   /**
    * @remarks
    * Min width for the canopy.
    */
-  min_width: number;
+  min_width?: number;
 
-  variation_chance: string[];
+  variation_chance?: string[];
 
 }
 
@@ -875,13 +875,13 @@ export interface MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyCanopyCanopy
    * @remarks
    * Number of decoration blocks to place.
    */
-  num_steps: number;
+  num_steps?: number;
 
   /**
    * @remarks
    * Directions to spread decoration blocks.
    */
-  step_directionLessThandownupoutaway: string;
+  step_directionLessThandownupoutaway?: string;
 
 }
 
@@ -913,13 +913,13 @@ export interface MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyCanopyCanopy
    * @remarks
    * The numerator for the slope fraction.
    */
-  rise: number;
+  rise?: number;
 
   /**
    * @remarks
    * The denominator for the slope fraction.
    */
-  run: number;
+  run?: number;
 
 }
 
@@ -932,7 +932,7 @@ export interface MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyCherryCanopy
    * @remarks
    * The width of the tree trunk.
    */
-  trunk_width: number;
+  trunk_width?: number;
 
 }
 
@@ -964,7 +964,7 @@ export interface MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyMangroveCano
    * @remarks
    * Configuration object for the canopy decoration.
    */
-  canopy_decoration: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyMangroveCanopyCanopyDecoration;
+  canopy_decoration?: MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyMangroveCanopyCanopyDecoration;
 
   leaf_blocks: string[];
 
@@ -985,13 +985,13 @@ export interface MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyMangroveCano
    * @remarks
    * Number of decoration blocks to place.
    */
-  num_steps: number;
+  num_steps?: number;
 
   /**
    * @remarks
    * Directions to spread decoration blocks.
    */
-  step_directionLessThandownupoutaway: string;
+  step_directionLessThandownupoutaway?: string;
 
 }
 
@@ -1010,13 +1010,13 @@ export interface MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyMegaCanopy {
    * @remarks
    * Width of the tree trunk.
    */
-  core_width: number;
+  core_width?: number;
 
   /**
    * @remarks
    * If true the canopy uses a simple pattern.
    */
-  simplify_canopy: boolean;
+  simplify_canopy?: boolean;
 
 }
 
@@ -1035,7 +1035,7 @@ export interface MinecraftTreeFeatureCherryTrunkBranchesBranchCanopyMegaPineCano
    * @remarks
    * Width of the tree trunk.
    */
-  core_width: number;
+  core_width?: number;
 
 }
 
@@ -1128,7 +1128,7 @@ export interface MinecraftTreeFeatureCherryTrunkTrunkHeight {
    */
   base: number;
 
-  intervals: string[];
+  intervals?: string[];
 
 }
 
@@ -1156,7 +1156,7 @@ export interface MinecraftTreeFeatureFallenTrunk {
    * @remarks
    * Configuration object for the trunk decoration.
    */
-  trunk_decoration: MinecraftTreeFeatureFallenTrunkTrunkDecoration;
+  trunk_decoration?: MinecraftTreeFeatureFallenTrunkTrunkDecoration;
 
 }
 
@@ -1169,13 +1169,13 @@ export interface MinecraftTreeFeatureFallenTrunkTrunkDecoration {
    * @remarks
    * Number of decoration blocks to place.
    */
-  num_steps: number;
+  num_steps?: number;
 
   /**
    * @remarks
    * Directions to spread decoration blocks.
    */
-  step_directionLessThandownupoutaway: string;
+  step_directionLessThandownupoutaway?: string;
 
 }
 
@@ -1258,7 +1258,7 @@ export interface MinecraftTreeFeatureMangroveCanopy {
    * @remarks
    * Configuration object for the canopy decoration.
    */
-  canopy_decoration: MinecraftTreeFeatureMangroveCanopyCanopyDecoration;
+  canopy_decoration?: MinecraftTreeFeatureMangroveCanopyCanopyDecoration;
 
   leaf_blocks: string[];
 
@@ -1279,13 +1279,13 @@ export interface MinecraftTreeFeatureMangroveCanopyCanopyDecoration {
    * @remarks
    * Number of decoration blocks to place.
    */
-  num_steps: number;
+  num_steps?: number;
 
   /**
    * @remarks
    * Directions to spread decoration blocks.
    */
-  step_directionLessThandownupoutaway: string;
+  step_directionLessThandownupoutaway?: string;
 
 }
 
@@ -1299,7 +1299,7 @@ export interface MinecraftTreeFeatureMangroveRoots {
    * Configuration object for blocks decorating the top of the 
    * roots.
    */
-  above_root: MinecraftTreeFeatureMangroveRootsAboveRoot;
+  above_root?: MinecraftTreeFeatureMangroveRootsAboveRoot;
 
   /**
    * @remarks
@@ -1319,7 +1319,7 @@ export interface MinecraftTreeFeatureMangroveRoots {
    * @remarks
    * Configuration object for the root decoration.
    */
-  root_decoration: MinecraftTreeFeatureMangroveRootsRootDecoration;
+  root_decoration?: MinecraftTreeFeatureMangroveRootsRootDecoration;
 
   roots_may_grow_through: string[];
 
@@ -1341,13 +1341,13 @@ export interface MinecraftTreeFeatureMangroveRootsRootDecoration {
    * @remarks
    * Number of decoration blocks to place.
    */
-  num_steps: number;
+  num_steps?: number;
 
   /**
    * @remarks
    * Directions to spread decoration blocks.
    */
-  step_directionLessThandownupoutaway: string;
+  step_directionLessThandownupoutaway?: string;
 
 }
 
@@ -1360,13 +1360,13 @@ export interface MinecraftTreeFeatureMangroveTrunk {
    * @remarks
    * Configuration object for branches.
    */
-  branches: MinecraftTreeFeatureMangroveTrunkBranches;
+  branches?: MinecraftTreeFeatureMangroveTrunkBranches;
 
   /**
    * @remarks
    * Configuration object for the trunk decoration.
    */
-  trunk_decoration: MinecraftTreeFeatureMangroveTrunkTrunkDecoration;
+  trunk_decoration?: MinecraftTreeFeatureMangroveTrunkTrunkDecoration;
 
   /**
    * @remarks
@@ -1398,13 +1398,13 @@ export interface MinecraftTreeFeatureMangroveTrunkTrunkDecoration {
    * @remarks
    * Number of decoration blocks to place.
    */
-  num_steps: number;
+  num_steps?: number;
 
   /**
    * @remarks
    * Directions to spread decoration blocks.
    */
-  step_directionLessThandownupoutaway: string;
+  step_directionLessThandownupoutaway?: string;
 
 }
 
@@ -1448,13 +1448,13 @@ export interface MinecraftTreeFeatureMegaCanopy {
    * @remarks
    * Width of the tree trunk.
    */
-  core_width: number;
+  core_width?: number;
 
   /**
    * @remarks
    * If true the canopy uses a simple pattern.
    */
-  simplify_canopy: boolean;
+  simplify_canopy?: boolean;
 
 }
 
@@ -1473,7 +1473,7 @@ export interface MinecraftTreeFeatureMegaPineCanopy {
    * @remarks
    * Width of the tree trunk.
    */
-  core_width: number;
+  core_width?: number;
 
 }
 
@@ -1486,13 +1486,13 @@ export interface MinecraftTreeFeatureMegaTrunk {
    * @remarks
    * Configuration object for branches.
    */
-  branches: MinecraftTreeFeatureMegaTrunkBranches;
+  branches?: MinecraftTreeFeatureMegaTrunkBranches;
 
   /**
    * @remarks
    * Configuration object for the trunk decoration.
    */
-  trunk_decoration: MinecraftTreeFeatureMegaTrunkTrunkDecoration;
+  trunk_decoration?: MinecraftTreeFeatureMegaTrunkTrunkDecoration;
 
   /**
    * @remarks
@@ -1524,7 +1524,7 @@ export interface MinecraftTreeFeatureMegaTrunkBranches {
    * @remarks
    * Configuration object for the canopy.
    */
-  branch_canopy: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopy;
+  branch_canopy?: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopy;
 
   /**
    * @remarks
@@ -1546,25 +1546,25 @@ export interface MinecraftTreeFeatureMegaTrunkBranchesBranchAltitudeFactor {
  */
 export interface MinecraftTreeFeatureMegaTrunkBranchesBranchCanopy {
 
-  acacia_canopy: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyAcaciaCanopy;
+  acacia_canopy?: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyAcaciaCanopy;
 
-  canopy: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyCanopy;
+  canopy?: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyCanopy;
 
-  cherry_canopy: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyCherryCanopy;
+  cherry_canopy?: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyCherryCanopy;
 
-  fancy_canopy: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyFancyCanopy;
+  fancy_canopy?: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyFancyCanopy;
 
-  mangrove_canopy: { [key: string]: any };
+  mangrove_canopy?: { [key: string]: any };
 
-  mega_canopy: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyMegaCanopy;
+  mega_canopy?: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyMegaCanopy;
 
-  mega_pine_canopy: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyMegaPineCanopy;
+  mega_pine_canopy?: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyMegaPineCanopy;
 
-  pine_canopy: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyPineCanopy;
+  pine_canopy?: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyPineCanopy;
 
-  roofed_canopy: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyRoofedCanopy;
+  roofed_canopy?: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyRoofedCanopy;
 
-  spruce_canopy: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopySpruceCanopy;
+  spruce_canopy?: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopySpruceCanopy;
 
 }
 
@@ -1583,7 +1583,7 @@ export interface MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyAcaciaCanopy {
    * @remarks
    * If true the canopy uses a simple pattern.
    */
-  simplify_canopy: boolean;
+  simplify_canopy?: boolean;
 
 }
 
@@ -1596,7 +1596,7 @@ export interface MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyCanopy {
    * @remarks
    * Configuration object for the canopy decoration.
    */
-  canopy_decoration: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyCanopyCanopyDecoration;
+  canopy_decoration?: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyCanopyCanopyDecoration;
 
   /**
    * @remarks
@@ -1609,15 +1609,15 @@ export interface MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyCanopy {
    * @remarks
    * Configuration object for the canopy slope.
    */
-  canopy_slope: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyCanopyCanopySlope;
+  canopy_slope?: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyCanopyCanopySlope;
 
   /**
    * @remarks
    * Min width for the canopy.
    */
-  min_width: number;
+  min_width?: number;
 
-  variation_chance: string[];
+  variation_chance?: string[];
 
 }
 
@@ -1630,13 +1630,13 @@ export interface MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyCanopyCanopyDe
    * @remarks
    * Number of decoration blocks to place.
    */
-  num_steps: number;
+  num_steps?: number;
 
   /**
    * @remarks
    * Directions to spread decoration blocks.
    */
-  step_directionLessThandownupoutaway: string;
+  step_directionLessThandownupoutaway?: string;
 
 }
 
@@ -1668,13 +1668,13 @@ export interface MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyCanopyCanopySl
    * @remarks
    * The numerator for the slope fraction.
    */
-  rise: number;
+  rise?: number;
 
   /**
    * @remarks
    * The denominator for the slope fraction.
    */
-  run: number;
+  run?: number;
 
 }
 
@@ -1687,7 +1687,7 @@ export interface MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyCherryCanopy {
    * @remarks
    * The width of the tree trunk.
    */
-  trunk_width: number;
+  trunk_width?: number;
 
 }
 
@@ -1719,7 +1719,7 @@ export interface MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyMangroveCanopy
    * @remarks
    * Configuration object for the canopy decoration.
    */
-  canopy_decoration: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyMangroveCanopyCanopyDecoration;
+  canopy_decoration?: MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyMangroveCanopyCanopyDecoration;
 
   leaf_blocks: string[];
 
@@ -1740,13 +1740,13 @@ export interface MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyMangroveCanopy
    * @remarks
    * Number of decoration blocks to place.
    */
-  num_steps: number;
+  num_steps?: number;
 
   /**
    * @remarks
    * Directions to spread decoration blocks.
    */
-  step_directionLessThandownupoutaway: string;
+  step_directionLessThandownupoutaway?: string;
 
 }
 
@@ -1765,13 +1765,13 @@ export interface MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyMegaCanopy {
    * @remarks
    * Width of the tree trunk.
    */
-  core_width: number;
+  core_width?: number;
 
   /**
    * @remarks
    * If true the canopy uses a simple pattern.
    */
-  simplify_canopy: boolean;
+  simplify_canopy?: boolean;
 
 }
 
@@ -1790,7 +1790,7 @@ export interface MinecraftTreeFeatureMegaTrunkBranchesBranchCanopyMegaPineCanopy
    * @remarks
    * Width of the tree trunk.
    */
-  core_width: number;
+  core_width?: number;
 
 }
 
@@ -1856,13 +1856,13 @@ export interface MinecraftTreeFeatureMegaTrunkTrunkDecoration {
    * @remarks
    * Number of decoration blocks to place.
    */
-  num_steps: number;
+  num_steps?: number;
 
   /**
    * @remarks
    * Directions to spread decoration blocks.
    */
-  step_directionLessThandownupoutaway: string;
+  step_directionLessThandownupoutaway?: string;
 
 }
 
@@ -1877,7 +1877,7 @@ export interface MinecraftTreeFeatureMegaTrunkTrunkHeight {
    */
   base: number;
 
-  intervals: string[];
+  intervals?: string[];
 
 }
 
@@ -1958,13 +1958,13 @@ export interface MinecraftTreeFeatureTrunk {
    * @remarks
    * Specifies if the trunk can be submerged.
    */
-  can_be_submerged: MinecraftTreeFeatureTrunkCanBeSubmerged;
+  can_be_submerged?: MinecraftTreeFeatureTrunkCanBeSubmerged;
 
   /**
    * @remarks
    * Configuration object for the trunk decoration.
    */
-  trunk_decoration: MinecraftTreeFeatureTrunkTrunkDecoration;
+  trunk_decoration?: MinecraftTreeFeatureTrunkTrunkDecoration;
 
 }
 
@@ -1990,12 +1990,12 @@ export interface MinecraftTreeFeatureTrunkTrunkDecoration {
    * @remarks
    * Number of decoration blocks to place.
    */
-  num_steps: number;
+  num_steps?: number;
 
   /**
    * @remarks
    * Directions to spread decoration blocks.
    */
-  step_directionLessThandownupoutaway: string;
+  step_directionLessThandownupoutaway?: string;
 
 }

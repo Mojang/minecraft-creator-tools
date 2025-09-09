@@ -45,7 +45,7 @@ export default class ProjectItem {
   private _pendingLoadRequests: ((value: unknown) => void)[] = [];
   private _isLoading: boolean = false;
   private _isFileContentProcessed: boolean = false;
-  private _imageUrlBase64Cache: string | undefined;
+  private _imageUrlBase64Cache: string | undefined | null;
   private _pack: Pack | undefined;
   private _primaryFile?: IFile;
 
@@ -1047,13 +1047,23 @@ export default class ProjectItem {
   }
 
   get imageUrl() {
+    if (this._imageUrlBase64Cache === null) {
+      return undefined;
+    }
+
+    if (this._imageUrlBase64Cache) {
+      return this._imageUrlBase64Cache;
+    }
+
     if (this.itemType === ProjectItemType.worldFolder) {
       if (this.defaultFolder) {
         if (this.defaultFolder.manager instanceof MCWorld) {
           const world = this.defaultFolder.manager as MCWorld;
 
           if (world.isLoaded) {
-            return "data:image/jpg;base64, " + world.imageBase64;
+            this._imageUrlBase64Cache = "data:image/jpg;base64, " + world.imageBase64;
+
+            return this._imageUrlBase64Cache;
           }
         }
       }
@@ -1069,12 +1079,15 @@ export default class ProjectItem {
           }
         }
       }
-    } else if (ProjectItemUtilities.isImageType(this.itemType)) {
-      if (this._imageUrlBase64Cache) {
-        return this._imageUrlBase64Cache;
-      }
+    } else if (this.projectPath && ProjectItemUtilities.isImageType(this.itemType)) {
+      if (this.projectPath && this.projectPath.endsWith(".tga")) {
+        this._imageUrlBase64Cache = null;
+      } else if (this._defaultFile && this._defaultFile.content && this._defaultFile.content instanceof Uint8Array) {
+        if (this._defaultFile.content.length > 10000) {
+          this._imageUrlBase64Cache = null;
+          return undefined;
+        }
 
-      if (this._defaultFile && this._defaultFile.content && this._defaultFile.content instanceof Uint8Array) {
         this._imageUrlBase64Cache = "data:image/jpg;base64, " + Utilities.uint8ArrayToBase64(this._defaultFile.content);
 
         return this._imageUrlBase64Cache;

@@ -38,6 +38,7 @@ import BlocksCatalogManager from "../../manager/BlocksCatalogManager";
 import EntityTypeManager from "../../manager/EntityTypeManager";
 import ItemTypeManager from "../../manager/ItemTypeManager";
 import SharingInfoGenerator from "../SharingInfoGenerator";
+import CheckVanillaDuplicatesInfoGenerator from "../projectGenerators/CheckVanillaDuplicatesInfoGenerator";
 import CheckNoBOMGenerator from "../fileGenerators/CheckNoBOMGenerator";
 import MCFunctionInfoGenerator from "../MCFunctionInfoGenerator";
 import CheckPackIconsGenerator from "../projectGenerators/CheckPackIconsGenerator";
@@ -82,6 +83,7 @@ export default class GeneratorRegistrations {
     new ScriptInfoGenerator(),
     new SharingInfoGenerator(),
     new SummaryInfoGenerator(),
+    new CheckVanillaDuplicatesInfoGenerator(),
     new PackMetaDataInformationGenerator(),
     new AnimationResourceInfoGenerator(),
     new CooperativeAddOnRequirementsGenerator(),

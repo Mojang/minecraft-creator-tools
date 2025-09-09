@@ -35,7 +35,9 @@ export enum TextureImageInfoGeneratorTest {
   pngJpgImageProcessingNoResults = 408,
   invalidTieringConfiguration = 409,
   invalidTieringForVibrantVisuals = 410,
-  totalTextureMemoryExceedsBudgetBase = 420,
+
+  totalTextureMemoryExceedsBudgetErrorBase = 420,
+  totalTextureMemoryExceedsBudgetWarningBase = 440,
   texturePackDoesntOverrideVanillaGameTexture = 460,
   texturePackDoesntOverrideMostTextures = 461,
 }
@@ -112,7 +114,7 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
     for (let i = 0; i < TexturePerformanceTierCount; i++) {
       const overBudgetTierErrors = infoSet.getCount(
         this.id,
-        TextureImageInfoGeneratorTest.totalTextureMemoryExceedsBudgetBase + i
+        TextureImageInfoGeneratorTest.totalTextureMemoryExceedsBudgetWarningBase + i
       );
 
       if (overBudgetTierErrors > 0) {
@@ -683,32 +685,42 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
       const tierTotalTextureMemoryBudget = 1024 * 1024 * TextureMemoryLimitsByTier[category][curTier];
 
       if (curMemoryUsedInTier > tierTotalTextureMemoryBudget) {
-        let errorOrWarningType = InfoItemType.warning;
         let warningMessage = `Total texture memory exceeds budget of ${Utilities.addCommasToNumber(
           tierTotalTextureMemoryBudget
         )} bytes for items of type ${ProjectUtilities.getMetaCategoryDescription(category)} at tier ${curTier}.`;
-
-        for (const pvLabel in project.variants) {
-          const pv = project.variants[pvLabel];
-
-          if (pv && pv.effectiveUnifiedTier === curTier && errorOrWarningType === InfoItemType.warning) {
-            errorOrWarningType = InfoItemType.error;
-            warningMessage += " Because this project specifically targets this tier, it is an error.";
-          }
-        }
 
         warningMessage += " Total texture memory used";
 
         items.push(
           new ProjectInfoItem(
-            errorOrWarningType,
+            InfoItemType.warning,
             this.id,
-            TextureImageInfoGeneratorTest.totalTextureMemoryExceedsBudgetBase + curTier,
+            TextureImageInfoGeneratorTest.totalTextureMemoryExceedsBudgetWarningBase + curTier,
             warningMessage,
             undefined,
             curMemoryUsedInTier
           )
         );
+
+        for (const pvLabel in project.variants) {
+          const pv = project.variants[pvLabel];
+
+          if (pv && pv.effectiveUnifiedTier === curTier) {
+            warningMessage += " Because this project specifically targets this tier, it is an error.";
+            items.push(
+              new ProjectInfoItem(
+                InfoItemType.error,
+                this.id,
+                TextureImageInfoGeneratorTest.totalTextureMemoryExceedsBudgetErrorBase + curTier,
+                warningMessage,
+                undefined,
+                curMemoryUsedInTier
+              )
+            );
+
+            break;
+          }
+        }
 
         // vibrant visuals content must support tier 2 memory limits.
         if (curTier === 2) {

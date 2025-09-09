@@ -31,6 +31,8 @@
       "Resource pack",
       "Resource pack manifest"
     ],
+    "completeVanillaCopy": 0,
+    "partialVanillaCopy": 0,
     "animationCount": 0,
     "textureCount": 0,
     "textureTexelSize": 0,

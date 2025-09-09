@@ -63,7 +63,7 @@ export default interface MinecraftStructureTemplateFeature {
    * valid placement position. Search is radial, stopping when the
    * nearest valid position is found. Defaults to 0 if omitted.
    */
-  adjustment_radius: number;
+  adjustment_radius?: number;
 
   /**
    * @remarks
@@ -79,9 +79,9 @@ export default interface MinecraftStructureTemplateFeature {
    * Direction the structure will face when placed in the world.
    * Defaults to "random" if omitted.
    */
-  facing_directionLessThannorthsoutheastwestrandom: string;
+  facing_directionLessThannorthsoutheastwestrandom?: string;
 
-  format_version: string;
+  format_version?: string;
 
 }
 
@@ -95,19 +95,19 @@ export interface MinecraftStructureTemplateFeatureConstraints {
    * When specified, ensures the structure only intersects with
    * allowlisted blocks.
    */
-  block_intersection: MinecraftStructureTemplateFeatureConstraintsBlockIntersection;
+  block_intersection?: MinecraftStructureTemplateFeatureConstraintsBlockIntersection;
 
   /**
    * @remarks
    * When specified, ensures the structure is on the ground.
    */
-  grounded: object;
+  grounded?: object;
 
   /**
    * @remarks
    * When specified, ensures the structure has air above it.
    */
-  unburied: object;
+  unburied?: object;
 
 }
 

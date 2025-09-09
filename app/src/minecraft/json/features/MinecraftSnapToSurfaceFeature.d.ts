@@ -46,14 +46,14 @@ export default interface MinecraftSnapToSurfaceFeature {
    * Determines whether the feature can snap through air blocks. Defaults
    * to true.
    */
-  allow_air_placement: boolean;
+  allow_air_placement?: boolean;
 
   /**
    * @remarks
    * Determines whether the feature can snap through water blocks.
    * Defaults to false.
    */
-  allow_underwater_placement: boolean;
+  allow_underwater_placement?: boolean;
 
   /**
    * @remarks
@@ -61,11 +61,11 @@ export default interface MinecraftSnapToSurfaceFeature {
    * Leaving this empty results in the feature snapping to blocks that
    * can provide support for the given face (up/down/horizontal)
    */
-  allowed_surface_blocks: string[];
+  allowed_surface_blocks?: string[];
 
   description: MinecraftSnapToSurfaceFeatureDescription;
 
-  format_version: string;
+  format_version?: string;
 
   /**
    * @remarks
@@ -73,7 +73,7 @@ export default interface MinecraftSnapToSurfaceFeature {
    * be snapped to. Valid values: 'ceiling', 'floor' and
    * 'random_horizontal'
    */
-  surface: string;
+  surface?: string;
 
   /**
    * @remarks

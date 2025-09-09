@@ -40,7 +40,7 @@ export default interface MinecraftFossilFeature {
 
   description: MinecraftFossilFeatureDescription;
 
-  format_version: string;
+  format_version?: string;
 
   max_empty_corners: number;
 

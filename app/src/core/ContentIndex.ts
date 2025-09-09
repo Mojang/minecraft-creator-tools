@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 import { IAnnotatedValue } from "./AnnotatedValue";
+import { HashCatalog } from "./HashUtilities";
 import IContextIndexData from "./IContentIndexData";
 import Log from "./Log";
 import Utilities from "./Utilities";
@@ -59,10 +60,16 @@ export interface IContentIndex {
 
 export default class ContentIndex implements IContentIndex {
   private _processedPathsCache?: string[];
+  private _hashCatalog: HashCatalog = {};
+
   #data: IContextIndexData = {
     items: [],
     trie: {},
   };
+
+  public get hashCatalog(): HashCatalog {
+    return this._hashCatalog;
+  }
 
   #iteration: number = Math.floor(Math.random() * 1000000);
 

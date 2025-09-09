@@ -11,7 +11,6 @@ import IBlockTypeData from "./IBlockTypeData";
 import Log from "./../core/Log";
 import HttpStorage from "../storage/HttpStorage";
 import IFolder from "../storage/IFolder";
-import IFile from "../storage/IFile";
 import IFormField from "../dataform/IFormField";
 import ILocalUtilities from "../local/ILocalUtilities";
 import ITypeDefCatalog from "./ITypeDefCatalog";
@@ -34,7 +33,6 @@ import ILegacyDocumentationNode from "./docs/ILegacyDocumentation";
 import IEntitiesMetadata from "./IEntitiesMetadata";
 import IItemsMetadata from "./IItemsMetadata";
 import ZipStorage from "../storage/ZipStorage";
-import HashUtilities from "../core/HashUtilities";
 import { HashCatalog } from "../core/HashUtilities";
 
 export default class Database {
@@ -60,9 +58,12 @@ export default class Database {
   static local: ILocalUtilities | null = null;
   static vanillaInfoData: IProjectInfoData | null = null;
   static vanillaContentIndex: ContentIndex | null = null;
-  static vanillaHashes: HashCatalog = {};
   static previewVanillaInfoData: IProjectInfoData | null = null;
   static previewVanillaContentIndex: ContentIndex | null = null;
+  static releaseVanillaContentHashes: HashCatalog | null = null;
+  private static _isLoadingReleaseVanillaHashes: boolean = false;
+  private static _pendingLoadReleaseVanillaHashRequests: ((value: unknown) => void)[] = [];
+
   static samplesInfoData: IProjectInfoData | null = null;
   static samplesContentIndex: ContentIndex | null = null;
   static addonsDocs: ILegacyDocumentationNode | null = null;
@@ -1498,6 +1499,51 @@ export default class Database {
     }
   }
 
+  static async loadReleaseVanillaInfoHashes() {
+    if (Database.releaseVanillaContentHashes) {
+      return;
+    }
+
+    if (this._isLoadingReleaseVanillaHashes) {
+      const pendingLoad = this._pendingLoadReleaseVanillaHashRequests;
+
+      const prom = (resolve: (value: unknown) => void, reject: (reason?: any) => void) => {
+        pendingLoad.push(resolve);
+      };
+
+      await new Promise(prom);
+    } else {
+      this._isLoadingReleaseVanillaHashes = true;
+
+      try {
+        // @ts-ignore
+        if (typeof window !== "undefined") {
+          const response = await axios.get(CartoApp.contentRoot + "data/mch/release.mch.json");
+
+          if (response) {
+            Database.releaseVanillaContentHashes = await ZipStorage.fromZipBytesToJsonObject(response.data);
+          }
+        } else if (Database.local) {
+          const result = await Database.local.readJsonFile("data/mch/preview.mch.json");
+          if (result !== null) {
+            Database.releaseVanillaContentHashes = result as HashCatalog;
+          }
+        }
+      } catch {
+        // Log.fail("Could not load preview vanilla metadata.");
+      }
+
+      this._isLoadingReleaseVanillaHashes = false;
+
+      const pendingLoad = this._pendingLoadReleaseVanillaHashRequests;
+      this._pendingLoadReleaseVanillaHashRequests = [];
+
+      for (const prom of pendingLoad) {
+        prom(undefined);
+      }
+    }
+  }
+
   static async loadSampleInfoData() {
     if (Database.samplesContentIndex) {
       return;
@@ -1625,119 +1671,5 @@ export default class Database {
     } catch {
       Log.fail("Could not load Minecraft types catalog.");
     }
-    /*
-    try {
-      // @ts-ignore
-      if (typeof window !== "undefined") {
-        const response = await axios.get(CartoApp.contentRoot + "data/javacat.json");
-
-        Database.javaBlockTypeData = response.data;
-      } else if (Database.local) {
-        const result = await Database.local.readJsonFile("data/javacat.json");
-        if (result !== null) {
-          Database.javaBlockTypeData = result as { [id: string]: IJavaBlockTypeData };
-        }
-      }
-
-      if (Database.javaBlockTypeData) {
-        for (const blockName in Database.javaBlockTypeData) {
-          const jtnBlock = Database.javaBlockTypeData[blockName];
-          jtnBlock.source = blockName;
-
-          this.ensureBlockType(blockName).javaData = jtnBlock;
-        }
-      }
-
-      Database.isLoaded = true;
-    } catch {
-      Log.fail("Could not load java catalog.");
-    }*/
-  }
-
-  private static _isLoadingVanillaHashes: boolean = false;
-  private static _pendingLoadVanillaHashesRequests: (() => void)[] = [];
-
-  /**
-   * Ensures vanilla hash catalog is loaded for duplicate checking
-   */
-  static async ensureVanillaHashesLoaded(): Promise<void> {
-    if (Object.keys(Database.vanillaHashes).length > 0) {
-      return;
-    }
-
-    if (Database._isLoadingVanillaHashes) {
-      return new Promise<void>((resolve) => {
-        Database._pendingLoadVanillaHashesRequests.push(resolve);
-      });
-    }
-
-    Database._isLoadingVanillaHashes = true;
-
-    try {
-      await Database.loadVanillaHashes();
-    } catch (error) {
-      Log.error("Failed to load vanilla hashes: " + error);
-    } finally {
-      Database._isLoadingVanillaHashes = false;
-
-      for (const resolve of Database._pendingLoadVanillaHashesRequests) {
-        resolve();
-      }
-      Database._pendingLoadVanillaHashesRequests = [];
-    }
-  }
-
-  /**
-   * Loads and generates hash catalog for vanilla files
-   */
-  private static async loadVanillaHashes(): Promise<void> {
-    try {
-      // Get both behavior pack and resource pack folders
-      const behaviorPackFolder = await Database.getReleaseVanillaBehaviorPackFolder();
-      const resourcePackFolder = await Database.getReleaseVanillaResourcePackFolder();
-
-      if (behaviorPackFolder) {
-        await Database.generateHashesForFolder(behaviorPackFolder);
-      }
-
-      if (resourcePackFolder) {
-        await Database.generateHashesForFolder(resourcePackFolder);
-      }
-
-      Log.verbose(`Loaded ${Object.keys(Database.vanillaHashes).length} vanilla file hashes`);
-    } catch (error) {
-      Log.error("Error loading vanilla hashes: " + error);
-      throw error;
-    }
-  }
-
-  /**
-   * Recursively generates hash catalog entries for all files in a folder
-   */
-  private static async generateHashesForFolder(folder: IFolder): Promise<void> {
-    await folder.load();
-
-    // Process all files in current folder
-    for (const fileName in folder.files) {
-      const file = folder.files[fileName];
-      if (file) {
-        await Database.generateHashesForVanillaFile(file);
-      }
-    }
-
-    // Recursively process subfolders
-    for (const folderName in folder.folders) {
-      const subFolder = folder.folders[folderName];
-      if (subFolder) {
-        await Database.generateHashesForFolder(subFolder);
-      }
-    }
-  }
-
-  /**
-   * Generates hash catalog entries for a vanilla file (both complete file hash and property hashes for JSON files)
-   */
-  private static async generateHashesForVanillaFile(file: IFile): Promise<void> {
-    await HashUtilities.generateHashesForFile(file, file.storageRelativePath || file.name, Database.vanillaHashes);
   }
 }

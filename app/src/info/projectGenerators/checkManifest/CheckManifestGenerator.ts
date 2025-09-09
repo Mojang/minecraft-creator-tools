@@ -1,6 +1,5 @@
 import Project from "../../../app/Project";
 import ProjectItem from "../../../app/ProjectItem";
-import SubpackTypes from "../../../app/subpacks/SubpackTypes";
 import Versioning from "../../../app/Versioning";
 import { filterAndSeparate, findDuplicates } from "../../../core/ArrayUtilities";
 import ContentIndex from "../../../core/ContentIndex";
@@ -229,12 +228,15 @@ export default class CheckManifestGenerator implements IProjectInfoGenerator {
       .map((name) => ({ id: this.id, item: manifestItem, data: name }))
       .map((data) => resultFromTest(Tests.DuplicateSubpackName, data));
 
+    /*
+    Disable name checks and .memory tier checks for 
     const validNames = new Set(Object.values(SubpackTypes).map((type) => type.name));
 
     const invalidNameResults = subpacks
       .filter((subp) => !validNames.has(subp.name))
       .map((subp) => ({ id: this.id, item: manifestItem, data: subp.name }))
       .map((data) => resultFromTest(Tests.InvalidSubpackName, data));
+    
 
     const invalidMemoryTierResults = subpacks
       .map((subp) => [subp, SubpackTypes[subp.name]?.minTier] as const)
@@ -242,8 +244,9 @@ export default class CheckManifestGenerator implements IProjectInfoGenerator {
       .filter(([subp, minTier]) => subp.memoryTier < minTier)
       .map(([subp]) => ({ id: this.id, item: manifestItem, data: subp.memoryTier }))
       .map((data) => resultFromTest(Tests.InvalidSubpackMemoryTier, data));
+    */
 
-    return [...dupFolderResults, ...dupNameResults, ...invalidNameResults, ...invalidMemoryTierResults];
+    return [...dupFolderResults, ...dupNameResults]; //, ...invalidNameResults, ...invalidMemoryTierResults];
   }
 
   private validateDependencies(pack: PackDesc, manifest: Manifest, manifestItem: ProjectItem) {

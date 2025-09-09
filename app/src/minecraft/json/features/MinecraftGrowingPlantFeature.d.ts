@@ -91,13 +91,13 @@ export default interface MinecraftGrowingPlantFeature {
    * @remarks
    * Plant blocks can be placed in water.
    */
-  allow_water: boolean;
+  allow_water?: boolean;
 
   body_blocks: string[];
 
   description: MinecraftGrowingPlantFeatureDescription;
 
-  format_version: string;
+  format_version?: string;
 
   /**
    * @remarks

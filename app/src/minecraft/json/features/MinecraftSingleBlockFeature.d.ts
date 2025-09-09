@@ -92,29 +92,29 @@ export default interface MinecraftSingleBlockFeature {
    */
   enforce_survivability_rules: boolean;
 
-  format_version: string;
+  format_version?: string;
 
   /**
    * @remarks
    * Allowlist which specifies where the block can be placed.
    */
-  may_attach_to: MinecraftSingleBlockFeatureMayAttachTo;
+  may_attach_to?: MinecraftSingleBlockFeatureMayAttachTo;
 
   /**
    * @remarks
    * Denylist which specifies where the block can't be placed.
    */
-  may_not_attach_to: MinecraftSingleBlockFeatureMayNotAttachTo;
+  may_not_attach_to?: MinecraftSingleBlockFeatureMayNotAttachTo;
 
-  may_replace: string[];
+  may_replace?: string[];
 
-  places_block: MinecraftSingleBlockFeaturePlacesBlock[];
+  places_block?: MinecraftSingleBlockFeaturePlacesBlock[];
 
   /**
    * @remarks
    * If true, randomizes the block's cardinal orientation.
    */
-  randomize_rotation: boolean;
+  randomize_rotation?: boolean;
 
 }
 
@@ -138,37 +138,37 @@ export interface MinecraftSingleBlockFeatureDescription {
  */
 export interface MinecraftSingleBlockFeatureMayAttachTo {
 
-  all: string[];
+  all?: string[];
 
   /**
    * @remarks
    * Automatically rotate the block to attach sensibly. This setting is
    * ignored if 'randomize_rotation' is enabled.
    */
-  auto_rotate: boolean;
+  auto_rotate?: boolean;
 
-  bottom: string[];
+  bottom?: string[];
 
-  diagonal: string[];
+  diagonal?: string[];
 
-  east: string[];
+  east?: string[];
 
   /**
    * @remarks
    * Number of side faces that need to pass the attach conditions before
    * the block can be placed. Default value is four.
    */
-  min_sides_must_attach: number;
+  min_sides_must_attach?: number;
 
-  north: string[];
+  north?: string[];
 
-  sides: string[];
+  sides?: string[];
 
-  south: string[];
+  south?: string[];
 
-  top: string[];
+  top?: string[];
 
-  west: string[];
+  west?: string[];
 
 }
 
@@ -177,23 +177,23 @@ export interface MinecraftSingleBlockFeatureMayAttachTo {
  */
 export interface MinecraftSingleBlockFeatureMayNotAttachTo {
 
-  all: string[];
+  all?: string[];
 
-  bottom: string[];
+  bottom?: string[];
 
-  diagonal: string[];
+  diagonal?: string[];
 
-  east: string[];
+  east?: string[];
 
-  north: string[];
+  north?: string[];
 
-  sides: string[];
+  sides?: string[];
 
-  south: string[];
+  south?: string[];
 
-  top: string[];
+  top?: string[];
 
-  west: string[];
+  west?: string[];
 
 }
 

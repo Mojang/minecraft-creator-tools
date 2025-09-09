@@ -35,6 +35,8 @@
       "Skins Catalog",
       "Texture"
     ],
+    "completeVanillaCopy": 0,
+    "partialVanillaCopy": 0,
     "animationCount": 0,
     "textureCount": 3,
     "textureTexelSize": 24576,
@@ -376,7 +378,7 @@
     "warningCount": 1,
     "testSuccessCount": 33,
     "testFailCount": 0,
-    "testNotApplicableCount": 14,
+    "testNotApplicableCount": 15,
     "errorSummary": "",
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [UNLINK191] (/pack_icon.png) Texture does not have any items in this pack that are using this.",
@@ -826,6 +828,12 @@
       "VALFILE": {
         "2": {
           "defaultMessage": "No applicable items found for test Valid files (VALFILE)"
+        }
+      },
+      "VANDUPES": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Check Vanilla Duplicates (VANDUPES)"
         }
       },
       "VSCODEFILE": {
@@ -1626,6 +1634,11 @@
     {
       "iTp": 8,
       "gId": "VALFILE",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "VANDUPES",
       "gIx": 2
     },
     {

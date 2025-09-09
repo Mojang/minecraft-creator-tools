@@ -34,7 +34,7 @@ export default interface MinecraftBeardsAndShavers {
 
   description: MinecraftBeardsAndShaversDescription;
 
-  format_version: string;
+  format_version?: string;
 
 }
 

@@ -22,7 +22,7 @@ export default interface MinecraftScanSurface {
 
   description: MinecraftScanSurfaceDescription;
 
-  format_version: string;
+  format_version?: string;
 
 }
 

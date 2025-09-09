@@ -41,7 +41,7 @@ export default interface MinecraftSurfaceRelativeThresholdFeature {
 
   description: MinecraftSurfaceRelativeThresholdFeatureDescription;
 
-  format_version: string;
+  format_version?: string;
 
   /**
    * @remarks
@@ -49,7 +49,7 @@ export default interface MinecraftSurfaceRelativeThresholdFeature {
    * estimated surface level and a valid place for this feature. Defaults
    * to zero.
    */
-  minimum_distance_below_surface: number;
+  minimum_distance_below_surface?: number;
 
 }
 
