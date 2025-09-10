@@ -19,10 +19,10 @@
     "entityTypeResourceCount": 3,
     "behaviorPackAnimationCount": 1,
     "behaviorPackAnimationControllerCount": 1,
-    "overallSize": 7017963,
+    "overallSize": 7018103,
     "fileCounts": 59,
     "folderCounts": 29,
-    "contentSize": 57316,
+    "contentSize": 57456,
     "contentFileCounts": 43,
     "contentFolderCounts": 22,
     "defaultBehaviorPackUuid": "9ec8af93-4b38-429f-a4bd-7e277a50d238",
@@ -151,6 +151,8 @@
       "Texture set",
       "Water"
     ],
+    "completeVanillaCopy": 0,
+    "partialVanillaCopy": 0,
     "animationCount": 0,
     "textureCount": 5,
     "textureTexelSize": 28672,
@@ -316,17 +318,17 @@
       },
       "Resource pack manifest Size": {
         "Instance Count": 1,
-        "Total": 335,
-        "Max": 335,
-        "Min": 335,
-        "Average": 335
+        "Total": 475,
+        "Max": 475,
+        "Min": 475,
+        "Average": 475
       },
       "Resource pack manifest Lines": {
         "Instance Count": 1,
-        "Total": 17,
-        "Max": 17,
-        "Min": 17,
-        "Average": 17
+        "Total": 25,
+        "Max": 25,
+        "Min": 25,
+        "Average": 25
       },
       "Behavior pack animation Size": {
         "Instance Count": 1,
@@ -2639,17 +2641,17 @@
       "fs": {
         "Size": {
           "Instance Count": 1,
-          "Total": 335,
-          "Max": 335,
-          "Min": 335,
-          "Average": 335
+          "Total": 475,
+          "Max": 475,
+          "Min": 475,
+          "Average": 475
         },
         "Lines": {
           "Instance Count": 1,
-          "Total": 17,
-          "Max": 17,
-          "Min": 17,
-          "Average": 17
+          "Total": 25,
+          "Max": 25,
+          "Min": 25,
+          "Average": 25
         }
       }
     },
@@ -3220,7 +3222,7 @@
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 101,
-      "d": 7017963
+      "d": 7018103
     },
     {
       "iTp": 7,
@@ -3238,7 +3240,7 @@
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 104,
-      "d": 57316
+      "d": 57456
     },
     {
       "iTp": 7,

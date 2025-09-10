@@ -24,12 +24,12 @@ export default interface FeatureRuleDescription {
    * 'namespace_name:rule_name'. 'rule_name' must match the 
    * filename.
    */
-  identifier: string;
+  identifier?: string;
 
   /**
    * @remarks
    * Named reference to the feature controlled by this rule.
    */
-  places_feature: string;
+  places_feature?: string;
 
 }

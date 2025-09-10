@@ -72,9 +72,9 @@ export default interface MinecraftGeodeFeature {
 
   description: MinecraftGeodeFeatureDescription;
 
-  format_version: string;
+  format_version?: string;
 
-  inner_placements: string[];
+  inner_placements?: string[];
 
   /**
    * @remarks

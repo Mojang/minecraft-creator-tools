@@ -9,7 +9,6 @@ import IProjectFileInfoGenerator from "./IProjectFileInfoGenerator";
 import IProjectInfo from "./IProjectInfo";
 import ProjectInfoItem from "./ProjectInfoItem";
 import IFolder from "../storage/IFolder";
-import IFile from "../storage/IFile";
 import IInfoItemData, { InfoItemType } from "./IInfoItemData";
 import IProjectInfoGeneratorBase, { IProjectInfoTopicData } from "./IProjectInfoGeneratorBase";
 import IProjectInfoData, { ProjectInfoSuite } from "./IProjectInfoData";
@@ -24,7 +23,6 @@ import IProjectMetaState from "./IProjectMetaState";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import SummaryInfoGenerator from "./SummaryInfoGenerator";
 import HashUtilities from "../core/HashUtilities";
-import { HashCatalog } from "../core/HashUtilities";
 
 export default class ProjectInfoSet {
   project?: Project;
@@ -33,7 +31,6 @@ export default class ProjectInfoSet {
   items: ProjectInfoItem[] = [];
   itemsByStoragePath: { [storagePath: string]: ProjectInfoItem[] | undefined } = {};
   contentIndex: ContentIndex;
-  hashCatalog: HashCatalog = {};
 
   static _generatorsById: { [name: string]: IProjectInfoGenerator } = {};
   _isGenerating: boolean = false;
@@ -360,6 +357,18 @@ export default class ProjectInfoSet {
           )
         );
       } else {
+        const projectFolder = await this.project.ensureProjectFolder();
+
+        await this.preProcessFolder(
+          this.project,
+          projectFolder,
+          genItems,
+          genItemsByStoragePath,
+          genContentIndex,
+          fileGenerators,
+          0
+        );
+
         for (let i = 0; i < projGenerators.length; i++) {
           const gen = projGenerators[i];
 
@@ -430,7 +439,7 @@ export default class ProjectInfoSet {
 
         await this.processFolder(
           this.project,
-          await this.project.ensureProjectFolder(),
+          projectFolder,
           genItems,
           genItemsByStoragePath,
           genContentIndex,
@@ -1718,6 +1727,58 @@ function _addReportJson(data) {
     return resultItems;
   }
 
+  async preProcessFolder(
+    project: Project,
+    folder: IFolder,
+    genItems: ProjectInfoItem[],
+    genItemsByStoragePath: { [storagePath: string]: ProjectInfoItem[] | undefined },
+    genContentIndex: ContentIndex,
+    fileGenerators: IProjectFileInfoGenerator[],
+    depth: number
+  ) {
+    if (!folder.isLoaded) {
+      await folder.load();
+    }
+
+    for (const fileName in folder.files) {
+      const file = folder.files[fileName];
+
+      if (file) {
+        if (!file.isContentLoaded) {
+          await file.loadContent();
+        }
+
+        if (file.content !== null) {
+          const projectItem = project.getItemByFile(file);
+
+          if (projectItem && projectItem.projectPath) {
+            await HashUtilities.generateHashesForFile(file, projectItem.projectPath, genContentIndex.hashCatalog);
+          }
+        }
+      }
+    }
+
+    if (depth < 15) {
+      for (const folderName in folder.folders) {
+        const childFolder = folder.folders[folderName];
+
+        if (childFolder && !childFolder.errorStatus && childFolder.name) {
+          if (ProjectInfoSet.isFolderThatShouldBeProcessed(childFolder)) {
+            await this.preProcessFolder(
+              project,
+              childFolder,
+              genItems,
+              genItemsByStoragePath,
+              genContentIndex,
+              fileGenerators,
+              depth + 1
+            );
+          }
+        }
+      }
+    }
+  }
+
   async processFolder(
     project: Project,
     folder: IFolder,
@@ -1766,7 +1827,6 @@ function _addReportJson(data) {
                 }
               }
             }
-            await this.generateHashesForFile(file, projectItem.projectPath);
 
             for (const fileGen of fileGenerators) {
               if (this.matchesSuite(fileGen)) {
@@ -1814,9 +1874,7 @@ function _addReportJson(data) {
         const childFolder = folder.folders[folderName];
 
         if (childFolder && !childFolder.errorStatus && childFolder.name) {
-          const name = childFolder.name.toLowerCase();
-
-          if ((!name.startsWith(".") || name.startsWith(".vscode")) && !name.startsWith("node_modules")) {
+          if (ProjectInfoSet.isFolderThatShouldBeProcessed(childFolder)) {
             await this.processFolder(
               project,
               childFolder,
@@ -1830,6 +1888,16 @@ function _addReportJson(data) {
         }
       }
     }
+  }
+
+  static isFolderThatShouldBeProcessed(folder: IFolder): boolean {
+    const name = folder.name.toLowerCase();
+
+    if (name.startsWith(".") || name.startsWith("node_modules")) {
+      return false;
+    }
+
+    return true;
   }
 
   generateProjectMetaInfo() {
@@ -2161,16 +2229,9 @@ function _addReportJson(data) {
   }
 
   /**
-   * Generates hash catalog entries for a file (both complete file hash and property hashes for JSON files)
-   */
-  private async generateHashesForFile(file: IFile, filePath: string) {
-    await HashUtilities.generateHashesForFile(file, filePath, this.hashCatalog);
-  }
-
-  /**
    * Gets the hash catalog as JSON string
    */
   getHashCatalogJson(): string {
-    return JSON.stringify(this.hashCatalog, null, 2);
+    return JSON.stringify(this.contentIndex.hashCatalog);
   }
 }

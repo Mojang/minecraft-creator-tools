@@ -88,9 +88,9 @@ export default interface MinecraftOreFeature {
 
   description: MinecraftOreFeatureDescription;
 
-  format_version: string;
+  format_version?: string;
 
-  replace_rules: MinecraftOreFeatureReplaceRules[];
+  replace_rules?: MinecraftOreFeatureReplaceRules[];
 
 }
 
@@ -114,6 +114,6 @@ export interface MinecraftOreFeatureDescription {
  */
 export interface MinecraftOreFeatureReplaceRules {
 
-  may_replace: string[];
+  may_replace?: string[];
 
 }

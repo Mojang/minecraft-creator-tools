@@ -5,7 +5,7 @@ import IFile from "./IFile";
 import IFolder from "./IFolder";
 import StorageUtilities from "./StorageUtilities";
 import IStorage from "./IStorage";
-import md5 from "js-md5";
+import * as md5 from "js-md5";
 import Log from "../core/Log";
 import { EventDispatcher } from "ste-events";
 
@@ -172,13 +172,15 @@ export default abstract class FileBase implements IFile {
   }
 
   async getHash(): Promise<string | undefined> {
-    await this.loadContent(false);
+    if (!this.isContentLoaded) {
+      await this.loadContent(false);
+    }
 
     if (this._content === undefined || this._content === null) {
       return undefined;
     }
 
-    return md5.base64(this._content);
+    return (md5 as any).md5(this._content);
   }
 
   unload() {

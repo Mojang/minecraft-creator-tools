@@ -51,7 +51,7 @@ export default interface MinecraftAggregateFeature {
    */
   features: string[];
 
-  format_version: string;
+  format_version?: string;
 
 }
 

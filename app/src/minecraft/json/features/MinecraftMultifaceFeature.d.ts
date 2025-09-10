@@ -49,7 +49,7 @@ import * as jsoncommon from './../../jsoncommon';
  */
 export default interface MinecraftMultifaceFeature {
 
-  can_place_on: string[];
+  can_place_on?: string[];
 
   /**
    * @remarks
@@ -74,7 +74,7 @@ export default interface MinecraftMultifaceFeature {
 
   description: MinecraftMultifaceFeatureDescription;
 
-  format_version: string;
+  format_version?: string;
 
   /**
    * @remarks

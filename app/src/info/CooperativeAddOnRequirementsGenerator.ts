@@ -15,7 +15,6 @@ import Utilities from "../core/Utilities";
 import ResourceManifestDefinition from "../minecraft/ResourceManifestDefinition";
 import ContentIndex from "../core/ContentIndex";
 import ProjectInfoUtilities from "./ProjectInfoUtilities";
-import ProjectItemUtilities from "../app/ProjectItemUtilities";
 
 const UniqueRegEx = new RegExp(/[a-zA-Z0-9]{2,}_[a-zA-Z0-9]{2,}:[\w]+/);
 
@@ -233,18 +232,6 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
 
     for (const projectItem of itemsCopy) {
       if (projectItem.primaryFile) {
-        if (ProjectItemUtilities.isVibrantVisualsRelated(projectItem)) {
-          // CADDONREQ210
-          items.push(
-            new ProjectInfoItem(
-              InfoItemType.error,
-              this.id,
-              CooperativeAddOnRequirementsGeneratorTest.noVibrantVisualsForNow,
-              `Found a Vibrant Visuals related file, which is not supported in cooperative add-ons (for now).`,
-              projectItem
-            )
-          );
-        }
         if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
           if (behaviorPackManifest) {
             // CADDONREQ160

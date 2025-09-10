@@ -66,7 +66,7 @@ export default interface MinecraftVegetationPatchFeature {
 
   description: MinecraftVegetationPatchFeatureDescription;
 
-  format_version: string;
+  format_version?: string;
 
   replaceable_blocks: string[];
 
@@ -75,7 +75,7 @@ export default interface MinecraftVegetationPatchFeature {
    * Determines if a vegetation patch will grow from the ceiling or
    * the floor.
    */
-  surface: string;
+  surface?: string;
 
   /**
    * @remarks
@@ -89,7 +89,7 @@ export default interface MinecraftVegetationPatchFeature {
    * If true, waterlogs the positions occupied by the ground 
    * blocks.
    */
-  waterlogged: boolean;
+  waterlogged?: boolean;
 
 }
 

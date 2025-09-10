@@ -72,14 +72,14 @@ export default interface MinecraftScatterFeature {
    */
   distribution: object;
 
-  format_version: string;
+  format_version?: string;
 
   /**
    * @remarks
    * If true, snaps the y-value of the scattered position to the
    * terrain heightmap. If false or unset, y-value is unmodified.
    */
-  project_input_to_floor: boolean;
+  project_input_to_floor?: boolean;
 
 }
 

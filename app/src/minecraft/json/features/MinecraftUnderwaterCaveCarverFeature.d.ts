@@ -42,26 +42,26 @@ export default interface MinecraftUnderwaterCaveCarverFeature {
 
   description: MinecraftUnderwaterCaveCarverFeatureDescription;
 
-  format_version: string;
+  format_version?: string;
 
   /**
    * @remarks
    * The height limit where we attempt to carve.
    */
-  height_limit: number;
+  height_limit?: number;
 
   /**
    * @remarks
    * The chance to skip doing the carve (1 / value).
    */
-  skip_carve_chance: number;
+  skip_carve_chance?: number;
 
   /**
    * @remarks
    * How many blocks to increase the cave radius by, from the center
    * point of the cave.
    */
-  width_modifier: string;
+  width_modifier?: string;
 
 }
 

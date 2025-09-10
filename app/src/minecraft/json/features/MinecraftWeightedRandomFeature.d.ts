@@ -53,7 +53,7 @@ export default interface MinecraftWeightedRandomFeature {
 
   features: string[];
 
-  format_version: string;
+  format_version?: string;
 
 }
 

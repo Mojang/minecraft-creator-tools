@@ -15,15 +15,13 @@ Example - example
 
 "minecraft:cave_carver_feature": {
   "format_version": "1.13.0",
-  "minecraft:aggregate_feature": {
+  "minecraft:cave_carver_feature": {
     "description": {
-      "identifier": "example:monument_with_flowers_feature"
+      "identifier": "example:underground_cave_carver_feature"
     },
-    "features": [
-      "example:monument_feature",
-      "example:scatter_white_flowers_feature",
-      "example:scatter_yellow_flower_feature"
-    ]
+    "fill_with": "minecraft:air",
+    "width_modifier": 0,
+    "skip_carve_chance": 15
   }
 }
 
@@ -42,26 +40,26 @@ export default interface MinecraftCaveCarverFeature {
 
   description: MinecraftCaveCarverFeatureDescription;
 
-  format_version: string;
+  format_version?: string;
 
   /**
    * @remarks
    * The height limit where we attempt to carve.
    */
-  height_limit: number;
+  height_limit?: number;
 
   /**
    * @remarks
    * The chance to skip doing the carve (1 / value).
    */
-  skip_carve_chance: number;
+  skip_carve_chance?: number;
 
   /**
    * @remarks
    * How many blocks to increase the cave radius by, from the center
    * point of the cave.
    */
-  width_modifier: string;
+  width_modifier?: string;
 
 }
 

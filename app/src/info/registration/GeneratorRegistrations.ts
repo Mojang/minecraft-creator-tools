@@ -38,6 +38,7 @@ import BlocksCatalogManager from "../../manager/BlocksCatalogManager";
 import EntityTypeManager from "../../manager/EntityTypeManager";
 import ItemTypeManager from "../../manager/ItemTypeManager";
 import SharingInfoGenerator from "../SharingInfoGenerator";
+import CheckVanillaDuplicatesInfoGenerator from "../projectGenerators/CheckVanillaDuplicatesInfoGenerator";
 import CheckNoBOMGenerator from "../fileGenerators/CheckNoBOMGenerator";
 import MCFunctionInfoGenerator from "../MCFunctionInfoGenerator";
 import CheckPackIconsGenerator from "../projectGenerators/CheckPackIconsGenerator";
@@ -59,7 +60,7 @@ import { SuiteConfigs } from "./RegistrationData";
 import CheckManifestGenerator from "../projectGenerators/checkManifest/CheckManifestGenerator";
 import CheckResourcePackDependenciesGenerator from "../projectGenerators/CheckResourcePackDependenciesGenerator";
 
-export const TestsToExcludeFromDefaultSuite = ["CADDONREQ", "CADDONIREQ", "LANGFILES", "SHARING"];
+export const TestsToExcludeFromDefaultSuite = ["CADDONREQ", "CADDONIREQ", "LANGFILES", "SHARING", "VANDUPES"];
 
 export default class GeneratorRegistrations {
   static managers = [
@@ -82,6 +83,7 @@ export default class GeneratorRegistrations {
     new ScriptInfoGenerator(),
     new SharingInfoGenerator(),
     new SummaryInfoGenerator(),
+    new CheckVanillaDuplicatesInfoGenerator(),
     new PackMetaDataInformationGenerator(),
     new AnimationResourceInfoGenerator(),
     new CooperativeAddOnRequirementsGenerator(),

@@ -20,7 +20,7 @@ import * as jsoncommon from './../../jsoncommon';
  */
 export default interface MinecraftConditionalList {
 
-  conditional_features: MinecraftConditionalListConditionalFeatures[];
+  conditional_features?: MinecraftConditionalListConditionalFeatures[];
 
   description: MinecraftConditionalListDescription;
 
@@ -29,9 +29,9 @@ export default interface MinecraftConditionalList {
    * Denote whether placement should end on first successful placement or
    * first passed condition.
    */
-  early_out_schemeLessThancondition_successplacement_success: string;
+  early_out_schemeLessThancondition_successplacement_success?: string;
 
-  format_version: string;
+  format_version?: string;
 
 }
 

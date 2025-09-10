@@ -28,7 +28,7 @@ export default interface MinecraftSculkPatchFeature {
 
   description: MinecraftSculkPatchFeatureDescription;
 
-  format_version: string;
+  format_version?: string;
 
   growth_rounds: number;
 

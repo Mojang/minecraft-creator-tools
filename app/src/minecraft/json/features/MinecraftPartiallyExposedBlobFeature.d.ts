@@ -47,9 +47,9 @@ export default interface MinecraftPartiallyExposedBlobFeature {
    * water. Other faces need to be embedded for blocks to be placed by
    * this feature. Defaults to upwards face.
    */
-  exposed_face: string;
+  exposed_face?: string;
 
-  format_version: string;
+  format_version?: string;
 
   /**
    * @remarks

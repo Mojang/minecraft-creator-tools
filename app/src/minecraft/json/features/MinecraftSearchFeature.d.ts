@@ -63,14 +63,14 @@ export default interface MinecraftSearchFeature {
 
   description: MinecraftSearchFeatureDescription;
 
-  format_version: string;
+  format_version?: string;
 
   /**
    * @remarks
    * Number of valid positions the search must find in order to
    * place the referenced feature
    */
-  required_successes: number;
+  required_successes?: number;
 
   /**
    * @remarks
