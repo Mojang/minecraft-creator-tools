@@ -529,7 +529,7 @@
     "warningCount": 6,
     "testSuccessCount": 35,
     "testFailCount": 1,
-    "testNotApplicableCount": 12,
+    "testNotApplicableCount": 11,
     "errorSummary": "",
     "internalProcessingErrorSummary": "UNKNOWN: [JSONF402] Could not find expected form: entity/actor_document\nUNKNOWN: [JSONF402] Could not find expected form: spawn/spawn_rules",
     "warningSummary": "WARNING: [FORMATVER218] (/resource_packs/diverse_rp/animations/sample_mob_animations.json) Resource animation version (1.21.0) has a higher minor version number compared to current version (1.10.0)\nWARNING: [FORMATVER238] (/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json) Resource animation controller version (1.21.0) has a higher minor version number compared to current version (1.10.0)\nWARNING: [FORMATVER258] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) Spawn rules version (1.21.0) has a higher minor version number compared to current version (1.12.0)\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/loot_tables/sample_loot.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/loot_tables/sample_loot.json to `minecraft:stick`\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:iron_ingot`\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:stick`",
@@ -1201,12 +1201,6 @@
       "VALFILE": {
         "2": {
           "defaultMessage": "No applicable items found for test Valid files (VALFILE)"
-        }
-      },
-      "VANDUPES": {
-        "2": {
-          "title": "Test Not Applicable",
-          "defaultMessage": "No applicable items found for test Check Vanilla Duplicates (VANDUPES)"
         }
       },
       "VSCODEFILE": {
@@ -2591,11 +2585,6 @@
     {
       "iTp": 8,
       "gId": "VALFILE",
-      "gIx": 2
-    },
-    {
-      "iTp": 8,
-      "gId": "VANDUPES",
       "gIx": 2
     },
     {

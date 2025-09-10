@@ -302,7 +302,7 @@
     "warningCount": 0,
     "testSuccessCount": 34,
     "testFailCount": 0,
-    "testNotApplicableCount": 14,
+    "testNotApplicableCount": 13,
     "errorSummary": "",
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
@@ -781,12 +781,6 @@
       "VALFILE": {
         "2": {
           "defaultMessage": "No applicable items found for test Valid files (VALFILE)"
-        }
-      },
-      "VANDUPES": {
-        "2": {
-          "title": "Test Not Applicable",
-          "defaultMessage": "No applicable items found for test Check Vanilla Duplicates (VANDUPES)"
         }
       },
       "VSCODEFILE": {
@@ -1563,11 +1557,6 @@
     {
       "iTp": 8,
       "gId": "VALFILE",
-      "gIx": 2
-    },
-    {
-      "iTp": 8,
-      "gId": "VANDUPES",
       "gIx": 2
     },
     {

@@ -316,7 +316,7 @@
     "warningCount": 0,
     "testSuccessCount": 34,
     "testFailCount": 1,
-    "testNotApplicableCount": 13,
+    "testNotApplicableCount": 12,
     "errorSummary": "ERROR: [CPACKICON101] pack_icon image file not found for test_bp. It must use the .png extension.",
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
@@ -803,12 +803,6 @@
       "VALFILE": {
         "2": {
           "defaultMessage": "No applicable items found for test Valid files (VALFILE)"
-        }
-      },
-      "VANDUPES": {
-        "2": {
-          "title": "Test Not Applicable",
-          "defaultMessage": "No applicable items found for test Check Vanilla Duplicates (VANDUPES)"
         }
       },
       "VSCODEFILE": {
@@ -1615,11 +1609,6 @@
     {
       "iTp": 8,
       "gId": "VALFILE",
-      "gIx": 2
-    },
-    {
-      "iTp": 8,
-      "gId": "VANDUPES",
       "gIx": 2
     },
     {

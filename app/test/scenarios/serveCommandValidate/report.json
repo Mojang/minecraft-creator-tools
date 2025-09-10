@@ -912,7 +912,7 @@
     "warningCount": 2,
     "testSuccessCount": 37,
     "testFailCount": 0,
-    "testNotApplicableCount": 11,
+    "testNotApplicableCount": 10,
     "errorSummary": "",
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:boomfly`\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:robot`",
@@ -1618,12 +1618,6 @@
       "VALFILE": {
         "2": {
           "defaultMessage": "No applicable items found for test Valid files (VALFILE)"
-        }
-      },
-      "VANDUPES": {
-        "2": {
-          "title": "Test Not Applicable",
-          "defaultMessage": "No applicable items found for test Check Vanilla Duplicates (VANDUPES)"
         }
       },
       "VSCODEFILE": {
@@ -3838,11 +3832,6 @@
     {
       "iTp": 8,
       "gId": "VALFILE",
-      "gIx": 2
-    },
-    {
-      "iTp": 8,
-      "gId": "VANDUPES",
       "gIx": 2
     },
     {

@@ -1524,7 +1524,7 @@ export default class Database {
             Database.releaseVanillaContentHashes = await ZipStorage.fromZipBytesToJsonObject(response.data);
           }
         } else if (Database.local) {
-          const result = await Database.local.readJsonFile("data/mch/preview.mch.json");
+          const result = await Database.local.readJsonFile("data/mch/release.mch.json");
           if (result !== null) {
             Database.releaseVanillaContentHashes = result as HashCatalog;
           }

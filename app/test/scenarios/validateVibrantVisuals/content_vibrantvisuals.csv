@@ -149,7 +149,6 @@ UNLINK,205,Recommendation,,"Link to vanilla sound catalog item; avoid if possibl
 UNLINK,205,Recommendation,,"Link to vanilla sound catalog item; avoid if possible","mob.sheep.say",/Content/resource_packs/aop_mobsrp/sounds.json,
 UNLINK,205,Recommendation,,"Link to vanilla sound catalog item; avoid if possible","mob.sheep.step",/Content/resource_packs/aop_mobsrp/sounds.json,
 VALFILE,2,Unknown,,"No applicable items found for test Valid files (VALFILE)",,,
-VANDUPES,2,Unknown,,"No applicable items found for test Check Vanilla Duplicates (VANDUPES)",,,
 VSCODEFILE,2,Unknown,,"No applicable items found for test VSCode Files (VSCODEFILE)",,,
 WORLD,2,Unknown,,"No applicable items found for test World Validation (WORLD)",,,
 WORLDDATA,1,Test success,,"World Data Validation (WORLDDATA) completed successfully",,,
