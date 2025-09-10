@@ -1,0 +1,14 @@
+{
+  "files": [
+    "chicken.png",
+    "chicken.texture_set.json",
+    "chicken_cold.png",
+    "chicken_cold.texture_set.json",
+    "chicken_cold_mers.tga",
+    "chicken_mers.tga",
+    "chicken_warm.png",
+    "chicken_warm.texture_set.json",
+    "chicken_warm_mers.tga"
+  ],
+  "folders": []
+}

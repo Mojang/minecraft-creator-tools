@@ -1,0 +1,15 @@
+{
+  "id": "test_idle",
+  "title": "Idle",
+  "tags": [
+    "test",
+    "action"
+  ],
+  "fields": [
+    {
+      "id": "idle",
+      "title": "Ticks",
+      "dataType": 2
+    }
+  ]
+}

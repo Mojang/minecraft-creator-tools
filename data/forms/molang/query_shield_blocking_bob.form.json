@@ -1,0 +1,6 @@
+{
+  "id": "query.shield_blocking_bob",
+  "fields": [],
+  "description": "Returns the how much the offhand shield should translate down when blocking and being hit.",
+  "title": "Shield Blocking Bob"
+}

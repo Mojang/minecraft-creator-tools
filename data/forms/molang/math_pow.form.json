@@ -1,0 +1,6 @@
+{
+  "id": "`math.pow(base, exponent)`",
+  "fields": [],
+  "description": "Elevates `base` to the `exponent`'th power",
+  "title": "Pow(base, Exponent)"
+}

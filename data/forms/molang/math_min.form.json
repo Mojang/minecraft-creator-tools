@@ -1,0 +1,6 @@
+{
+  "id": "`math.min(A, B)`",
+  "fields": [],
+  "description": "Return lowest value of A or B",
+  "title": "Min(A, B)"
+}

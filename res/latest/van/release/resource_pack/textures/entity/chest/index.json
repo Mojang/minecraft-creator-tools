@@ -1,0 +1,20 @@
+{
+  "files": [
+    "double_normal.png",
+    "double_normal.texture_set.json",
+    "double_normal_mers.tga",
+    "ender.png",
+    "ender.texture_set.json",
+    "ender_mers.tga",
+    "normal.png",
+    "normal.texture_set.json",
+    "normal_mers.tga",
+    "trapped.png",
+    "trapped.texture_set.json",
+    "trapped_double.png",
+    "trapped_double.texture_set.json",
+    "trapped_double_mers.tga",
+    "trapped_mers.tga"
+  ],
+  "folders": []
+}

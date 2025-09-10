@@ -1,0 +1,13 @@
+{
+  "id": "BlockDefinitionDocument",
+  "fields": [
+    {
+      "id": "description",
+      "title": "Description",
+      "dataType": 16,
+      "subFormId": "misc/description",
+      "isRequired": true
+    }
+  ],
+  "title": "BlockDefinitionDocument Misc"
+}

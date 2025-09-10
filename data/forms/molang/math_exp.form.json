@@ -1,0 +1,6 @@
+{
+  "id": "`math.exp(value)`",
+  "fields": [],
+  "description": "Returns _e_ raised to the `value` power",
+  "title": "Exp(value)"
+}

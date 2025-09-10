@@ -1,0 +1,6 @@
+{
+  "id": "`math.atan(value)`",
+  "fields": [],
+  "description": "arctan of value",
+  "title": "Atan(value)"
+}

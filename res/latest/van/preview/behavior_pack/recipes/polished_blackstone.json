@@ -1,0 +1,27 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "minecraft:polished_blackstone"
+    },
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "##",
+      "##"
+    ],
+    "key": {
+      "#": {
+          "item": "minecraft:blackstone"
+      }
+    },
+	"unlock": [
+      {
+        "item": "minecraft:blackstone"
+      }
+    ],
+    "result": {
+      "item": "minecraft:polished_blackstone",
+      "count": 4
+    }
+  }
+}
