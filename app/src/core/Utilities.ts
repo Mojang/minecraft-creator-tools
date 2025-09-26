@@ -297,7 +297,13 @@ export default class Utilities {
       return name.toString();
     }
 
-    if (name.indexOf("Apis Used") >= 0 || name.indexOf("apisUsed") >= 0) {
+    if (name.toLowerCase().indexOf("apis used") >= 0) {
+      return name;
+    }
+
+    if (name.startsWith("apisUsed")) {
+      name = "APIs Used" + name.substring(8);
+
       return name;
     }
 
@@ -336,7 +342,7 @@ export default class Utilities {
 
   static humanifyObject(sampVal: any) {
     if (typeof sampVal === "object") {
-      sampVal = JSON.stringify(sampVal, undefined, 2);
+      sampVal = JSON.stringify(sampVal, null, 2);
     } else {
       sampVal = sampVal.toString();
     }
@@ -477,6 +483,21 @@ export default class Utilities {
     name = Utilities.humanifyMinecraftName(name);
 
     return name;
+  }
+
+  static replaceAllCaseInsensitive(str: string, find: string, replace: string) {
+    find = find.toLowerCase();
+    let strLower = str.toLowerCase();
+
+    let start = strLower.indexOf(find);
+
+    while (start >= 0) {
+      str = str.substring(0, start) + replace + str.substring(start + find.length);
+      strLower = str.toLowerCase();
+      start = strLower.indexOf(find, start + replace.length);
+    }
+
+    return strLower;
   }
 
   static addCommasToNumber(num: number): string {

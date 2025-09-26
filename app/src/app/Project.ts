@@ -123,16 +123,17 @@ export default class Project {
   loc: LocManager;
   #errorState = ProjectErrorState.noError;
   #errorMessage?: string | undefined;
-  #infoSet: ProjectInfoSet | null = null;
+  #indevInfoSet: ProjectInfoSet | null = null;
 
   #gitHubStorage?: GitHubStorage;
 
   public differencesFromGitHub?: DifferenceSet;
 
+  #hasMultiplePacksOfSameType: boolean | undefined;
   #relationsProcessed: boolean = false;
 
   #folderStructureLoaded: boolean = false;
-  #infoSetNeedsUpdating: boolean = false;
+  #indevInfoSetNeedsUpdating: boolean = false;
 
   #mainDeployFolder: IFolder | null = null;
   #projectFolder: IFolder | null;
@@ -175,8 +176,8 @@ export default class Project {
   defaultResourcePackFolder: IFolder | null;
 
   #items: ProjectItem[];
-  #itemsByProjectPath: { [storagePath: string]: ProjectItem | undefined } = {};
-  #itemsByType: { [itemType: number]: ProjectItem[] | undefined } = {};
+  #itemsByProjectPath: Map<string, ProjectItem | undefined> = new Map();
+  #itemsByType: Map<number, ProjectItem[] | undefined> = new Map();
 
   public changedFilesSinceLastSaved: { [storagePath: string]: IFile | undefined } = {};
 
@@ -219,6 +220,26 @@ export default class Project {
 
   addUnknownFile(file: IFile) {
     this._unknownFiles.add(file);
+  }
+
+  get hasMultiplePacksOfSameType() {
+    if (this.#hasMultiplePacksOfSameType !== undefined) {
+      return this.#hasMultiplePacksOfSameType;
+    }
+
+    // Determine if there are multiple packs of the same type
+    const packTypes: number[] = [];
+    for (const pack of this.#packs) {
+      if (packTypes[pack.packType] !== undefined) {
+        this.#hasMultiplePacksOfSameType = true;
+        return true;
+      } else {
+        packTypes[pack.packType] = 1;
+      }
+    }
+
+    this.#hasMultiplePacksOfSameType = false;
+    return false;
   }
 
   public get readOnlySafety() {
@@ -277,12 +298,12 @@ export default class Project {
     this.#accessoryFilePaths = files;
   }
 
-  public get infoSet() {
-    if (!this.#infoSet) {
-      this.#infoSet = new ProjectInfoSet(this, ProjectInfoSuite.default);
+  public get indevInfoSet() {
+    if (!this.#indevInfoSet) {
+      this.#indevInfoSet = new ProjectInfoSet(this, ProjectInfoSuite.defaultInDevelopment);
     }
 
-    return this.#infoSet;
+    return this.#indevInfoSet;
   }
 
   public get collapsedStoragePaths() {
@@ -723,7 +744,7 @@ export default class Project {
   }
 
   getItemsByType(itemType: ProjectItemType): ProjectItem[] {
-    let itemsByTypeArr: ProjectItem[] | undefined = this.#itemsByType[itemType];
+    let itemsByTypeArr: ProjectItem[] | undefined = this.#itemsByType.get(itemType);
 
     if (itemsByTypeArr) {
       return itemsByTypeArr;
@@ -737,7 +758,7 @@ export default class Project {
       }
     }
 
-    this.#itemsByType[itemType] = itemsByTypeArr;
+    this.#itemsByType.set(itemType, itemsByTypeArr);
 
     return itemsByTypeArr;
   }
@@ -839,8 +860,8 @@ export default class Project {
       return;
     }
 
-    this.#itemsByProjectPath[path] = undefined;
-    this.#itemsByType[item.itemType] = undefined;
+    this.#itemsByProjectPath.set(path, undefined);
+    this.#itemsByType.set(item.itemType, undefined);
 
     this.#items = newArr;
 
@@ -853,7 +874,7 @@ export default class Project {
     }
 
     this.#data.items = newDataArr;
-    this.#infoSetNeedsUpdating = true;
+    this.#indevInfoSetNeedsUpdating = true;
 
     this._onItemRemoved.dispatch(this, item);
   }
@@ -1420,15 +1441,15 @@ export default class Project {
   }
 
   public async ensureInfoSetGenerated() {
-    const infoSet = this.infoSet;
+    const infoSet = this.indevInfoSet;
 
     if (infoSet.completedGeneration) {
       return infoSet;
     }
 
-    await infoSet.generateForProject(this.#infoSetNeedsUpdating);
+    await infoSet.generateForProject(this.#indevInfoSetNeedsUpdating);
 
-    this.#infoSetNeedsUpdating = false;
+    this.#indevInfoSetNeedsUpdating = false;
 
     return infoSet;
   }
@@ -2071,10 +2092,8 @@ export default class Project {
         "Processing relations for '" +
           this.name +
           "' (" +
-          String(Math.floor(this.#itemsProcessed / ProcessItemRelationsBatchSize) + 1) +
-          " of " +
-          String(Math.ceil(this.#itemsToBeProcessed / ProcessItemRelationsBatchSize) + 1) +
-          ")",
+          String(Math.floor((this.#itemsProcessed / this.#itemsToBeProcessed) * 100)) +
+          "%)",
         StatusTopic.processing
       );
     }
@@ -2306,12 +2325,12 @@ export default class Project {
   }
 
   public getItemByProjectPath(projectPath: string): ProjectItem | undefined {
-    return this.#itemsByProjectPath[ProjectUtilities.canonicalizeStoragePath(projectPath)];
+    return this.#itemsByProjectPath.get(ProjectUtilities.canonicalizeStoragePath(projectPath));
   }
 
   public getItemByExtendedOrProjectPath(storagePath: string): ProjectItem | undefined {
     let path = ProjectUtilities.canonicalizeStoragePath(storagePath);
-    let result = this.#itemsByProjectPath[path];
+    let result = this.#itemsByProjectPath.get(path);
 
     if (result) {
       return result;
@@ -2320,7 +2339,7 @@ export default class Project {
     let nextSlash = path.indexOf("/", 1);
 
     if (nextSlash > 1) {
-      result = this.#itemsByProjectPath[path.substring(nextSlash)];
+      result = this.#itemsByProjectPath.get(path.substring(nextSlash));
 
       if (result) {
         return result;
@@ -2333,7 +2352,7 @@ export default class Project {
       nextSlash = path.indexOf("/", nextSlash + 5);
 
       if (nextSlash > 1) {
-        result = this.#itemsByProjectPath[path.substring(nextSlash)];
+        result = this.#itemsByProjectPath.get(path.substring(nextSlash));
 
         if (result) {
           return result;
@@ -2590,11 +2609,11 @@ export default class Project {
     const path = ProjectUtilities.canonicalizeStoragePath(pi.projectPath);
 
     if (Utilities.isUsableAsObjectKey(path)) {
-      this.#itemsByProjectPath[path] = pi;
-      this.#itemsByType[initialSettings.itemType] = undefined;
+      this.#itemsByProjectPath.set(path, pi);
+      this.#itemsByType.set(initialSettings.itemType, undefined);
 
       this.#items.push(pi);
-      this.#infoSetNeedsUpdating = true;
+      this.#indevInfoSetNeedsUpdating = true;
       this._onItemAdded.dispatch(this, pi);
     }
 
@@ -2618,7 +2637,7 @@ export default class Project {
 
     this.hasInferredFiles = false;
     this.#items = [];
-    this.#itemsByProjectPath = {};
+    this.#itemsByProjectPath = new Map();
     this.#data.items = [];
 
     if (Utilities.isString(this.#preferencesFile.content) && this.#preferencesFile.content != null) {
@@ -2642,7 +2661,7 @@ export default class Project {
     await this.ensurePreferencesAndFolderLoadedFromFile();
 
     this.#items = [];
-    this.#itemsByProjectPath = {};
+    this.#itemsByProjectPath = new Map();
 
     if (this.#data) {
       for (let i = 0; i < this.#data.items.length; i++) {
@@ -2652,8 +2671,8 @@ export default class Project {
         const path = ProjectUtilities.canonicalizeStoragePath(projectItem.projectPath);
 
         if (Utilities.isUsableAsObjectKey(path)) {
-          this.#itemsByProjectPath[path] = projectItem;
-          this.#itemsByType[projectItem.itemType] = undefined;
+          this.#itemsByProjectPath.set(path, projectItem);
+          this.#itemsByType.set(projectItem.itemType, undefined);
 
           this.#items.push(projectItem);
 
@@ -2670,10 +2689,14 @@ export default class Project {
     this.#isInflated = true;
   }
 
-  async deleteThisProject() {
+  async deletePreferencesFile() {
     if (this.#preferencesFile) {
       await this.#preferencesFile.deleteThisFile();
     }
+  }
+
+  async deleteThisProject() {
+    await this.deletePreferencesFile();
 
     await this.loadFolderStructure();
 
@@ -2763,13 +2786,13 @@ export default class Project {
   }
 
   updateProjectItemsFromContent() {
-    this.#itemsByProjectPath = {};
+    this.#itemsByProjectPath = new Map();
 
     for (const projectItem of this.items) {
       if (projectItem && projectItem.projectPath) {
         projectItem.updateProjectPath();
 
-        this.#itemsByProjectPath[ProjectUtilities.canonicalizeStoragePath(projectItem.projectPath)] = projectItem;
+        this.#itemsByProjectPath.set(ProjectUtilities.canonicalizeStoragePath(projectItem.projectPath), projectItem);
       }
     }
   }
@@ -2886,8 +2909,6 @@ export default class Project {
 
           await this.#mainDeploySync.fullIngestIntoProject();
         }
-      } else {
-        this.#errorState = ProjectErrorState.projectFolderOrFileDoesNotExist;
       }
     } else if (
       this.#data.mainDeployFolderPath !== undefined &&
@@ -2908,6 +2929,7 @@ export default class Project {
       const deployFolder = await this.#carto.deploymentStorage.ensureFolderFromStorageRelativePath(
         this.#data.mainDeployFolderPath
       );
+
       const deployFolderExists = await deployFolder.exists();
 
       if (deployFolderExists) {
@@ -2917,8 +2939,6 @@ export default class Project {
 
           await this.#mainDeploySync.fullIngestIntoProject();
         }
-      } else {
-        this.#errorState = ProjectErrorState.projectFolderOrFileDoesNotExist;
       }
     } else if (
       this.#data.localFilePath !== undefined &&
@@ -3121,7 +3141,7 @@ export default class Project {
     }
 
     let rootRelativePath = file.storageRelativePath;
-    this.#infoSetNeedsUpdating = true;
+    this.#indevInfoSetNeedsUpdating = true;
 
     if (
       this.#projectFolder.storageRelativePath.length > 0 &&
@@ -3139,7 +3159,7 @@ export default class Project {
         this._onNeedsSaveChanged.dispatch(this, this);
       }
 
-      const item = this.#itemsByProjectPath[storagePath];
+      const item = this.#itemsByProjectPath.get(storagePath);
       if (item) {
         this.notifyProjectItemChanged(item);
       }

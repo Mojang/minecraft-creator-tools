@@ -36,6 +36,9 @@ export default interface IStorage {
   isContentUpdated: boolean;
   readOnly: boolean;
 
+  available?: boolean;
+  getAvailable(): Promise<boolean>;
+
   resetContentUpdated(): void;
 
   notifyFileContentsUpdated(file: IFile): void;

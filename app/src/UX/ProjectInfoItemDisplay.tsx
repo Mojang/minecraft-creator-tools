@@ -112,9 +112,11 @@ export default class ProjectInfoItemDisplay extends Component<
     }
 
     let indicatorCellBg = "";
+    let cellAriaLabel = "";
 
     if (item.itemType === InfoItemType.internalProcessingError) {
       indicatorCellBg = "piid-failIconCell";
+      cellAriaLabel = "Internal Error";
       typeElt = (
         <span className="piid-icon piid-errorIcon" title="Internal Error">
           <FontAwesomeIcon icon={faCircleExclamation} className="fa-lg" />
@@ -122,6 +124,7 @@ export default class ProjectInfoItemDisplay extends Component<
       );
     } else if (item.itemType === InfoItemType.error) {
       indicatorCellBg = "piid-errorIconCell";
+      cellAriaLabel = "Error";
       typeElt = (
         <span className="piid-icon piid-errorIcon" title="Error">
           <FontAwesomeIcon icon={faCircleExclamation} className="fa-lg" />
@@ -129,6 +132,7 @@ export default class ProjectInfoItemDisplay extends Component<
       );
     } else if (item.itemType === InfoItemType.recommendation) {
       indicatorCellBg = "piid-infoIconCell";
+      cellAriaLabel = "Recommendation";
       typeElt = (
         <span className="piid-icon piid-infoIcon" title="Recommendation">
           <FontAwesomeIcon icon={faCircleArrowUp} className="fa-lg" />
@@ -136,7 +140,7 @@ export default class ProjectInfoItemDisplay extends Component<
       );
     } else if (item.itemType === InfoItemType.warning) {
       indicatorCellBg = "piid-errorIconCell";
-
+      cellAriaLabel = "Warning";
       typeElt = (
         <span className="piid-icon piid-errorIcon" title="Warning">
           <FontAwesomeIcon icon={faCircleQuestion} className="fa-lg" />
@@ -144,7 +148,7 @@ export default class ProjectInfoItemDisplay extends Component<
       );
     } else if (item.itemType === InfoItemType.info || item.itemType === InfoItemType.featureAggregate) {
       indicatorCellBg = "piid-infoIconCell";
-
+      cellAriaLabel = "Information";
       typeElt = (
         <span className="piid-icon piid-infoIcon" title="Information">
           <FontAwesomeIcon icon={faCircleInfo} className="fa-lg" />
@@ -153,6 +157,7 @@ export default class ProjectInfoItemDisplay extends Component<
     } else if (item.itemType === InfoItemType.testCompleteSuccess) {
       indicatorCellBg = "piid-successIconCell";
 
+      cellAriaLabel = "Test Success";
       typeElt = (
         <span className="piid-icon piid-successIcon" title="Test Success">
           <FontAwesomeIcon icon={faCircleCheck} className="fa-lg" />
@@ -160,7 +165,7 @@ export default class ProjectInfoItemDisplay extends Component<
       );
     } else if (item.itemType === InfoItemType.testCompleteFail) {
       indicatorCellBg = "piid-failIconCell";
-
+      cellAriaLabel = "Test Failure";
       typeElt = (
         <span className="piid-icon piid-failIcon" title="Test Failure">
           <FontAwesomeIcon icon={faCircleXmark} className="fa-lg" />
@@ -179,6 +184,7 @@ export default class ProjectInfoItemDisplay extends Component<
       >
         <td
           className={"piid-cell piid-indicator " + indicatorCellBg}
+          aria-label={cellAriaLabel}
           style={{
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
             borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,

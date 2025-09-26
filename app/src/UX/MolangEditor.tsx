@@ -356,7 +356,7 @@ export default class MolangEditor extends Component<IMolangEditorProps, IMolangE
           <span>Molang Expression</span>
         </div>
         <div className="mcme-toolbar">
-          <Toolbar aria-label="Molang editor toolbar" items={toolbarItems} />
+          <Toolbar aria-label="Molang editor actions" items={toolbarItems} />
         </div>
       </div>
     );

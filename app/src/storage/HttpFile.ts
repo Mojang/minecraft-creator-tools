@@ -88,7 +88,7 @@ export default class HttpFile extends FileBase implements IFile {
 
             if (typeof result === "object") {
               try {
-                result = JSON.stringify(result, undefined, 2);
+                result = JSON.stringify(result, null, 2);
               } catch (e) {
                 Log.fail("Could not convert file to JSON");
               }

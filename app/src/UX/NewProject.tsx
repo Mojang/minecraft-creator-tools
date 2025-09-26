@@ -327,7 +327,7 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
         </div>
       );
     } else {
-      const accessoryToolbar = [];
+      const storageTypeChoices = [];
 
       let icon = faWindowRestore;
 
@@ -346,28 +346,33 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
           break;
       }
 
-      accessoryToolbar.push({
+      storageTypeChoices.push({
         icon: (
           <CustomSelectableLabel
             icon={<FontAwesomeIcon icon={icon} className="fa-lg" />}
             theme={this.props.theme}
             aria-selected={!this.state.newProjectFolder}
             text={"Temporary browser storage"}
+            aria-label={"Use temporary browser storage"}
             isSelected={!this.state.newProjectFolder}
             isCompact={false}
           />
         ),
         key: "npUseBrowserStorage",
         onClick: this._useBrowserStorage,
-        title: "Use browser storage",
+        active: !this.state.newProjectFolder,
+        title: "Use browser storage" + (!this.state.newProjectFolder ? " selected" : ""),
       });
 
-      accessoryToolbar.push({
+      storageTypeChoices.push({
         icon: (
           <CustomSelectableLabel
             icon={<FontAwesomeIcon icon={faComputer} className="fa-lg" />}
             isSelected={this.state.newProjectFolder !== undefined}
             aria-selected={this.state.newProjectFolder !== undefined}
+            aria-label={
+              this.state.newProjectPath ? this.state.newProjectPath + " folder on device" : "Use device storage"
+            }
             text={this.state.newProjectPath ? this.state.newProjectPath + " folder on device" : "Use device storage"}
             theme={this.props.theme}
             isCompact={false}
@@ -375,13 +380,30 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
         ),
         key: "npUsdeLocalStorage",
         onClick: this._useLocalStorage,
-        title: "Use local storage",
+        active: this.state.newProjectFolder !== undefined,
+        title: "Use local storage" + (this.state.newProjectFolder ? " selected" : ""),
       });
 
       additionalDialogButtons.push(
         <div className="nepro-browserOptions" key="newPath">
-          <Toolbar aria-label="Form accesory toolbar overflow menu" items={accessoryToolbar} />
-          <div className="nepro-errorMessage" aria-live="assertive" aria-atomic="true" aria-relevant="all" role="alert">
+          <Toolbar
+            aria-label="Storage choice"
+            items={[
+              {
+                key: "radiogroup",
+                kind: "group",
+                items: storageTypeChoices,
+              },
+            ]}
+          />
+          <div
+            className="nepro-errorMessage"
+            aria-live="polite"
+            aria-atomic="true"
+            aria-relevant="all"
+            role="alert"
+            aria-label={this.state.errorMessage}
+          >
             {this.state.errorMessage}
           </div>
         </div>

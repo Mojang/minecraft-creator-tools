@@ -32,6 +32,7 @@ import ProjectItemVariant from "./ProjectItemVariant";
 import { ProjectItemVariantType } from "./IProjectItemVariant";
 import Database from "../minecraft/Database";
 import ProjectVariant from "./ProjectVariant";
+import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 
 export default class ProjectItem {
   private _data: IProjectItemData;
@@ -415,8 +416,11 @@ export default class ProjectItem {
       }
     }
 
+    if (childItem === this) {
+      return;
+    }
+
     if (ProjectItemUtilities.wouldBeCircular(childItem)) {
-      Log.debugAlert("Circular relationship detected: " + this.projectPath + " -> " + childItem.projectPath);
       return;
     }
 
@@ -459,6 +463,10 @@ export default class ProjectItem {
 
   addParentItem(parentItem: ProjectItem) {
     if (ProjectItemUtilities.wouldBeCircular(parentItem)) {
+      return;
+    }
+
+    if (parentItem === this) {
       return;
     }
 
@@ -593,6 +601,14 @@ export default class ProjectItem {
     return undefined;
   }
 
+  get folderPath() {
+    if (this.projectPath === undefined || this.projectPath === null) {
+      return undefined;
+    }
+
+    return StorageUtilities.getFolderPath(this.projectPath);
+  }
+
   getFolderGroupingPath() {
     if (this.projectPath === undefined || this.projectPath === null) {
       return undefined;
@@ -604,6 +620,7 @@ export default class ProjectItem {
       return undefined;
     }
 
+    folderStoragePath = MinecraftUtilities.clearCommonTerms(folderStoragePath);
     let folderStoragePathLower = folderStoragePath.toLowerCase();
 
     const folderTypeRoots = ProjectItemUtilities.getFolderRootsForType(this.itemType);
@@ -611,19 +628,23 @@ export default class ProjectItem {
     folderTypeRoots.push("zip");
 
     for (const folderTypeRoot of folderTypeRoots) {
-      const start = folderStoragePathLower.indexOf("/" + folderTypeRoot + "/");
+      if (this.project.hasMultiplePacksOfSameType) {
+        folderStoragePath = Utilities.replaceAllCaseInsensitive(folderStoragePath, "/" + folderTypeRoot + "/", "/");
+      } else {
+        const start = folderStoragePathLower.indexOf("/" + folderTypeRoot + "/");
 
-      if (start >= 0) {
-        let packPrefix = this.getPackFolderName();
+        if (start >= 0) {
+          let packPrefix = this.getPackFolderName();
 
-        if (packPrefix === undefined) {
-          packPrefix = "";
-        } else {
-          packPrefix += " ";
+          if (packPrefix === undefined) {
+            packPrefix = "";
+          } else {
+            packPrefix += " ";
+          }
+
+          folderStoragePath = packPrefix + folderStoragePath.substring(start + 2 + folderTypeRoot.length);
+          folderStoragePathLower = folderStoragePath.toLowerCase();
         }
-
-        folderStoragePath = packPrefix + folderStoragePath.substring(start + 2 + folderTypeRoot.length);
-        folderStoragePathLower = folderStoragePath.toLowerCase();
       }
     }
 

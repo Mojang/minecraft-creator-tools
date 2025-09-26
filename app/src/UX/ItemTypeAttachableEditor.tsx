@@ -496,7 +496,7 @@ export default class ItemTypeAttachableEditor extends Component<
               color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
             }}
           >
-            <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
+            <Toolbar aria-label="Actions" items={toolbarItems} />
           </div>
 
           <div className="itae-form">{mainInterior}</div>

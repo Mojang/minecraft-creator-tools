@@ -361,7 +361,7 @@ export default class SoundCatalogDefinition implements IDefinition {
           const soundSetNames = soundDef?.getSoundDefinitionSetNameList();
           if (soundSetNames) {
             for (const soundEventName of soundEventList) {
-              if (soundEventName.trim().length > 0) {
+              if (typeof soundEventName === "string" && soundEventName.trim().length > 0) {
                 if (soundSetNames.includes(soundEventName)) {
                   item.addChildItem(candItem);
 
@@ -376,7 +376,7 @@ export default class SoundCatalogDefinition implements IDefinition {
 
     if (soundEventList) {
       for (const soundEvent of soundEventList) {
-        if (soundEvent.trim().length > 0) {
+        if (typeof soundEvent === "string" && soundEvent.trim().length > 0) {
           const isVanilla = await Database.isVanillaToken(soundEvent);
           item.addUnfulfilledRelationship(soundEvent, ProjectItemType.soundDefinitionCatalog, isVanilla);
         }

@@ -12,5 +12,10 @@ export interface IItemTextureDataSet {
 }
 
 export interface IItemTextureDataItem {
-  textures: string | string[];
+  textures: string | string[] | IItemTextureNode;
+}
+
+export interface IItemTextureNode {
+  path: string;
+  tint_color?: string;
 }

@@ -121,9 +121,11 @@ export default class RecipeBehaviorDefinition implements IDefinition {
 
     // Collect all item IDs that this recipe depends on
     if (this._interior) {
+      const ingredientsArray = (this._interior as any).ingredients;
+
       // For shapeless recipes, collect ingredients
-      if ("ingredients" in this._interior && this._interior.ingredients) {
-        for (const ingredient of this._interior.ingredients) {
+      if (ingredientsArray && Array.isArray(ingredientsArray)) {
+        for (const ingredient of ingredientsArray) {
           if (ingredient && ingredient.item) {
             dependentItemIds.push(ingredient.item);
           }

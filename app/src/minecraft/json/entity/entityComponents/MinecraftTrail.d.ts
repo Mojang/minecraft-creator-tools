@@ -10,18 +10,6 @@
  * Entity Documentation - minecraft:trail
  * 
  * minecraft:trail Samples
-
-Snow Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/snow_golem.json
-
-"minecraft:trail": {
-  "block_type": "minecraft:snow_layer",
-  "spawn_filter": {
-    "test": "is_temperature_value",
-    "operator": "<",
-    "value": 0.81
-  }
-}
-
  */
 
 import * as jsoncommon from './../../../jsoncommon';
@@ -38,10 +26,6 @@ export default interface MinecraftTrail {
    * The type of block you wish to be spawned by the entity as it
    * move about the world. Solid blocks may not be spawned at an
    * offset of (0,0,0).
-   * 
-   * Sample Values:
-   * Snow Golem: "minecraft:snow_layer"
-   *
    */
   block_type?: string;
 
@@ -49,10 +33,6 @@ export default interface MinecraftTrail {
    * @remarks
    * One or more conditions that must be met in order to cause the
    * chosen block type to spawn.
-   * 
-   * Sample Values:
-   * Snow Golem: {"test":"is_temperature_value","operator":"<","value":0.81}
-   *
    */
   spawn_filter?: jsoncommon.MinecraftFilter;
 

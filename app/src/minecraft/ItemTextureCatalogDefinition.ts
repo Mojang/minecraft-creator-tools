@@ -5,7 +5,7 @@ import IFile from "../storage/IFile";
 import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
-import { IItemTexture } from "./IItemTexture";
+import { IItemTexture, IItemTextureNode } from "./IItemTexture";
 import IFolder from "../storage/IFolder";
 import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
@@ -71,9 +71,19 @@ export default class ItemTextureCatalogDefinition {
           }
         } else if (Array.isArray(texturePathArr.textures)) {
           for (const texturePath of texturePathArr.textures) {
-            const path = TextureDefinition.canonicalizeTexturePath(texturePath);
-            if (path) {
-              textureList.push(path);
+            if (typeof texturePath === "string") {
+              const path = TextureDefinition.canonicalizeTexturePath(texturePath);
+              if (path) {
+                textureList.push(path);
+              }
+            } else if (texturePath) {
+              let tpath: string | undefined = (texturePath as IItemTextureNode).path;
+              if (typeof tpath === "string") {
+                tpath = TextureDefinition.canonicalizeTexturePath(tpath);
+                if (tpath) {
+                  textureList.push(tpath);
+                }
+              }
             }
           }
         }
@@ -98,7 +108,20 @@ export default class ItemTextureCatalogDefinition {
           textureList.push(texturePathArr.textures);
         } else if (Array.isArray(texturePathArr.textures)) {
           for (const texturePath of texturePathArr.textures) {
-            textureList.push(texturePath);
+            if (typeof texturePath === "string") {
+              const path = TextureDefinition.canonicalizeTexturePath(texturePath);
+              if (path) {
+                textureList.push(path);
+              }
+            } else if (texturePath) {
+              let tpath: string | undefined = (texturePath as IItemTextureNode).path;
+              if (typeof tpath === "string") {
+                tpath = TextureDefinition.canonicalizeTexturePath(tpath);
+                if (tpath) {
+                  textureList.push(tpath);
+                }
+              }
+            }
           }
         }
       }

@@ -33,6 +33,7 @@ import { LocalFolderLabel, ExportBackupLabel } from "./Labels";
 import FileSystemStorage from "../storage/FileSystemStorage";
 import CartoApp from "../app/CartoApp";
 import { ProjectTileDisplayMode } from "./ProjectTile";
+import { LocalFolderType, LocalGalleryCommand } from "./LocalGalleryCommand";
 import ProjectUtilities from "../app/ProjectUtilities";
 import { ProjectEditorMode } from "./ProjectEditorUtilities";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -56,6 +57,7 @@ enum HomeDialogMode {
   confirmProjectDelete = 3,
   infoMessage = 4,
   webLocalDeploy = 5,
+  confirmProjectRemove = 6,
 }
 
 interface IHomeProps extends IAppProps {
@@ -64,11 +66,12 @@ interface IHomeProps extends IAppProps {
   heightOffset: number;
   visualSeed?: number;
   isPersisted?: boolean;
-  onModeChangeRequested?: (mode: AppMode) => void;
+  onModeChangeRequested?: (mode: AppMode, errorMessage?: string) => void;
   onProjectSelected?: (project: Project) => void;
   onLog: (message: string) => Promise<void>;
   onSetProject: (project: Project) => void;
   onGalleryItemCommand: (command: GalleryProjectCommand, newProjectSeed: IProjectSeed) => void;
+  onLocalGalleryItemCommand: (command: LocalGalleryCommand, folderType: LocalFolderType, folder: IFolder) => void;
   onNewProjectSelected?: (
     newProjectSeed: IProjectSeed,
     newProjectType: NewProjectTemplateType,
@@ -107,6 +110,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     super(props);
 
     this._handleProjectGalleryCommand = this._handleProjectGalleryCommand.bind(this);
+    this._handleLocalGalleryCommand = this._handleLocalGalleryCommand.bind(this);
 
     if (this.props.errorMessage) {
       this.state = {
@@ -140,6 +144,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     this._handleNewProjectConfirm = this._handleNewProjectConfirm.bind(this);
     this._handleErrorMessageConfirm = this._handleErrorMessageConfirm.bind(this);
     this._handleDeleteProjectConfirm = this._handleDeleteProjectConfirm.bind(this);
+    this._handleRemoveProjectConfirm = this._handleRemoveProjectConfirm.bind(this);
     this._doManageConsent = this._doManageConsent.bind(this);
     this._handleExportAll = this._handleExportAll.bind(this);
     this._handleNewSearch = this._handleNewSearch.bind(this);
@@ -287,13 +292,13 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       const safeMessage = await (fss.rootFolder as FileSystemFolder).getFirstUnsafeError();
 
       if (safeMessage !== undefined) {
-        this.setState({
-          errorMessage:
-            "Folder has unsupported files within it. Please choose a folder on your device that only has Minecraft asset files in it (.json, .png, .mcfunction, etc.)\r\n\r\nDetails: " +
-            safeMessage,
-          dialogMode: HomeDialogMode.errorMessage,
-          isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
-        });
+        if (this.props.onModeChangeRequested) {
+          this.props.onModeChangeRequested(
+            AppMode.home,
+            "Folder has unsupported files within it. Please choose a folder on your device that only has Minecraft asset files in it (.json, .png, .mcfunction, etc.)\n\nDetails: " +
+              safeMessage
+          );
+        }
         return false;
       }
 
@@ -592,6 +597,18 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     });
   }
 
+  private async _handleRemoveProjectConfirm() {
+    if (this.state.selectedProject) {
+      await this.props.carto.removeProjectByName(this.state.selectedProject);
+    }
+
+    this.setState({
+      gallery: this.state?.gallery,
+      dialogMode: HomeDialogMode.none,
+      isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
+    });
+  }
+
   private _handleNewProjectConfirm() {
     this.setState({
       gallery: this.state?.gallery,
@@ -715,6 +732,12 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     }
   }
 
+  private _handleLocalGalleryCommand(command: LocalGalleryCommand, folderType: LocalFolderType, folder: IFolder) {
+    if (this.props.onLocalGalleryItemCommand !== undefined) {
+      this.props.onLocalGalleryItemCommand(command, folderType, folder);
+    }
+  }
+
   private _compareProjects(projectA: Project, projectB: Project) {
     if (projectA.modified === null || projectB.modified === null) {
       return 0;
@@ -739,17 +762,33 @@ export default class Home extends Component<IHomeProps, IHomeState> {
 
   _recentItemContextMenuClick(e: SyntheticEvent<HTMLElement, Event>, data?: any | undefined) {
     if (data !== undefined && data.tag !== undefined && this.props.carto !== null) {
-      const project = this.props.carto.getProjectByName(data.tag);
+      const tokens = data.tag.split("|");
+
+      if (tokens.length < 2) {
+        return;
+      }
+
+      const project = this.props.carto.getProjectByName(tokens[1]);
 
       if (project !== null) {
-        if (data.content === "Delete") {
+        if (tokens[0] === "delete") {
           this.setState({
             gallery: this.state.gallery,
             dialogMode: HomeDialogMode.confirmProjectDelete,
             isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
             search: this.state.search,
             effect: this.state.effect,
-            selectedProject: data.tag,
+            selectedProject: tokens[1],
+            contextFocusedProject: undefined,
+          });
+        } else if (tokens[0] === "remove") {
+          this.setState({
+            gallery: this.state.gallery,
+            dialogMode: HomeDialogMode.confirmProjectRemove,
+            isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
+            search: this.state.search,
+            effect: this.state.effect,
+            selectedProject: tokens[1],
             contextFocusedProject: undefined,
           });
         }
@@ -825,18 +864,30 @@ export default class Home extends Component<IHomeProps, IHomeState> {
 
     for (let i = 0; i < sortedProjects.length; i++) {
       const project = sortedProjects[i];
+      const contextMenuItems = [];
+
+      if (AppServiceProxy.hasAppService) {
+        contextMenuItems.push({
+          key: "removeProject" + project.name,
+          content: "Remove " + project.name,
+          accessibility: menuItemBehavior,
+          tag: "remove|" + project.name,
+        });
+      } else {
+        contextMenuItems.push({
+          key: "deleteProject" + project.name,
+          content: "Delete " + project.name,
+          accessibility: menuItemBehavior,
+          tag: "delete|" + project.name,
+        });
+      }
+
       const itemMenu: ShorthandValue<MenuProps> = {
         activeIndex: 0,
         defaultActiveIndex: 0,
-        items: [
-          {
-            key: "delete",
-            content: "Delete",
-            accessibility: menuItemBehavior,
-            tag: project.name,
-          },
-        ],
+        items: contextMenuItems,
       };
+
       let modifiedSummary = "";
 
       if (project.modified != null) {
@@ -930,11 +981,12 @@ export default class Home extends Component<IHomeProps, IHomeState> {
               </span>
               <span>&#160;Validate/Inspect Content</span>
             </h3>
-            <div className="home-toolTile-instruction">
+            <div className="home-toolTile-instruction" id="home-inspectFileUploadInstruction">
               Upload a zip/MCAddon/MCPack/MCWorld of Minecraft files to get an Inspector report.
             </div>
             <input
               type="file"
+              aria-labelledby="home-inspectFileUploadInstruction"
               accept=".mcaddon, .mcpack, .mcworld, .mcproject, .mctemplate, .zip"
               title="Upload a .mcpack, .mcaddon, or ZIP file to validate"
               className="home-inspectFileUpload"
@@ -1065,8 +1117,8 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     } else if (this.state?.dialogMode === HomeDialogMode.confirmProjectDelete) {
       const newDialogInnerContent = (
         <div>
-          Do you want to delete '{this.state.selectedProject}' from your browser's storage? This action cannot be
-          undone.
+          Do you want to delete '{this.state.selectedProject}' and all its files from your browser's storage? This
+          action cannot be undone.
         </div>
       );
 
@@ -1079,6 +1131,20 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           onConfirm={this._handleDeleteProjectConfirm}
           content={newDialogInnerContent}
           header={"Delete Project"}
+        />
+      );
+    } else if (this.state?.dialogMode === HomeDialogMode.confirmProjectRemove) {
+      const newDialogInnerContent = <div>Do you want to remove '{this.state.selectedProject}' from this list?</div>;
+
+      dialogArea = (
+        <Dialog
+          open={true}
+          cancelButton="Cancel"
+          confirmButton="Remove"
+          onCancel={this._handleDialogCancel}
+          onConfirm={this._handleRemoveProjectConfirm}
+          content={newDialogInnerContent}
+          header={"Remove Project"}
         />
       );
     }
@@ -1148,7 +1214,14 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     let accessoryToolArea = <></>;
 
     const actionsToolbar = [];
-    if (window.showDirectoryPicker !== undefined) {
+    if (AppServiceProxy.hasAppService) {
+      actionsToolbar.push({
+        icon: <LocalFolderLabel isCompact={false} />,
+        key: "openFolder",
+        onClick: this._handleOpenFolderViaAppServiceClick,
+        title: "Open folder on this device",
+      });
+    } else if (window.showDirectoryPicker !== undefined) {
       actionsToolbar.push({
         icon: <LocalFolderLabel isCompact={false} />,
         key: "openFolderA",
@@ -1188,11 +1261,13 @@ export default class Home extends Component<IHomeProps, IHomeState> {
                 style={{
                   color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
                 }}
+                id="home-uploadFileLabel"
               >
                 From MC/Zip File:
               </span>
               <input
                 type="file"
+                aria-labelledby="home-uploadFileLabel"
                 className="home-uploadFile"
                 accept=".mcaddon, .mcpack, .mcworld, .mcproject, .mctemplate, .zip"
                 title="Upload a .MCPack, .MCAddon, .MCWorld or .zip file to edit"
@@ -1203,7 +1278,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
                 onChange={this._handleFileUpload}
               />
             </div>
-            <Toolbar aria-label="Home toolbar overflow menu" items={actionsToolbar} />
+            <Toolbar aria-label="Home" items={actionsToolbar} />
           </div>
         </div>
       </div>

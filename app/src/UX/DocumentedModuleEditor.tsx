@@ -526,7 +526,7 @@ export default class DocumentedModuleEditor extends Component<
             theme={this.props.theme}
             readOnly={this.props.typesReadOnly}
           ></DataForm>
-          <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
+          <Toolbar aria-label="Documented module actions" items={toolbarItems} />
         </div>
         {interior}
       </div>

@@ -35,4 +35,10 @@ export default class BrowserStorage extends StorageBase implements IStorage {
 
     this.rootFolder = new BrowserFolder(this, null, "fs" + name, "root");
   }
+
+  async getAvailable() {
+    this.available = true;
+
+    return this.available;
+  }
 }

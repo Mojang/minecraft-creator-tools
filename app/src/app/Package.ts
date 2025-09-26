@@ -136,7 +136,7 @@ export default class Package {
 
         await packProject.inferProjectItemsFromFiles();
 
-        const pis = packProject.infoSet;
+        const pis = packProject.indevInfoSet;
 
         await pis.generateForProject();
 

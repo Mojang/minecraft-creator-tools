@@ -586,7 +586,7 @@ if (options.logVerbose) {
               await setProjectProperty(ClUtils.createProject(carto, projectStart), subCommand, propertyValue);
             }
           }
-        } catch (e) {
+        } catch (e: any) {
           errorLevel = ERROR_INIT_ERROR;
           console.error("Error adding to a project. " + e.toString());
         }
@@ -600,7 +600,7 @@ if (options.logVerbose) {
             await add(ClUtils.createProject(carto, projectStart));
           }
         }
-      } catch (e) {
+      } catch (e: any) {
         errorLevel = ERROR_INIT_ERROR;
         console.error("Error adding to a project. " + e.toString());
       }
@@ -613,7 +613,7 @@ if (options.logVerbose) {
             await create(ClUtils.createProject(carto, projectStart), projectStarts.length <= 1);
           }
         }
-      } catch (e) {
+      } catch (e: any) {
         errorLevel = ERROR_INIT_ERROR;
         console.error("Error creating a project. " + e.toString());
       }
@@ -1154,7 +1154,7 @@ async function displayInfo() {
         }
       }
 
-      const pis = project.infoSet;
+      const pis = project.indevInfoSet;
 
       await pis.generateForProject();
 
@@ -1376,7 +1376,7 @@ async function processProjectsSequentially(projectList: IProjectMetaState[]) {
       if (global.gc) {
         global.gc();
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(
         "Processing Error for " + ps.ctorProjectName + ": " + e.toString() + (e.stack ? "\n" + e.stack : "")
       );
@@ -1552,7 +1552,7 @@ async function profileValidation() {
             displayVerbose: localEnvConst.displayVerbose,
             force: force,
           });
-        } catch (e) {
+        } catch (e: any) {
           console.error("Internal Processing Error 3: " + e.toString());
           setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
         }
@@ -1840,7 +1840,7 @@ async function saveAggregatedReports(projectList: IProjectMetaState[], inputFold
 
     sampleProjectInfoSets[suiteName] = pis;
 
-    if (projectSet.suite === undefined || projectSet.suite === ProjectInfoSuite.default) {
+    if (projectSet.suite === undefined || projectSet.suite === ProjectInfoSuite.defaultInDevelopment) {
       if (projectSet.infoSetData.info) {
         for (const memberName in projectSet.infoSetData.info) {
           if (ProjectInfoSet.isAggregableFieldName(memberName)) {
@@ -2862,28 +2862,6 @@ async function serve() {
   await sm.prepare();
 }
 
-async function loadPacks() {
-  if (!carto) {
-    return;
-  }
-
-  if (options.mctemplate) {
-    const file = await this.getFileFromPath(options.mctemplate);
-
-    const pack = await carto.ensurePackForFile(file);
-
-    templateReferenceSets.push(pack.createReference());
-  }
-
-  if (options.mcpack) {
-    const file = await this.getFileFromPath(options.mcpack);
-
-    const pack = await carto.ensurePackForFile(file);
-
-    packageReferenceSets.push(pack.createReference());
-  }
-}
-
 function getFilePath(defaultFileName: string) {
   let path = options.outputFolder;
 
@@ -2896,4 +2874,10 @@ function getFilePath(defaultFileName: string) {
   ns.rootFolder.ensureExists();
 
   return path + "/" + defaultFileName;
+}
+
+async function loadPacks() {
+  if (!carto) {
+    return;
+  }
 }

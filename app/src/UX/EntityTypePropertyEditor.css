@@ -10,6 +10,10 @@
   grid-template-columns: 280px 1fr;
 }
 
+.etpe-loading {
+  padding: 6px;
+}
+
 .etpe-header {
   font-size: 12pt;
   font-size: 17pt;

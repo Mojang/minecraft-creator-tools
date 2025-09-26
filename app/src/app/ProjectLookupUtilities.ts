@@ -47,8 +47,8 @@ export default class ProjectLookupUtilities {
   }
 
   static async getBlockTypeReferences(project: Project): Promise<ISimpleReference[] | undefined> {
-    if (project.infoSet.contentIndex.iteration !== ProjectLookupUtilities.cacheIteration) {
-      ProjectLookupUtilities.cacheIteration = project.infoSet.contentIndex.iteration;
+    if (project.indevInfoSet.contentIndex.iteration !== ProjectLookupUtilities.cacheIteration) {
+      ProjectLookupUtilities.cacheIteration = project.indevInfoSet.contentIndex.iteration;
       ProjectLookupUtilities.referenceCache = {};
     }
 
@@ -61,7 +61,7 @@ export default class ProjectLookupUtilities {
     let simpleRefs: ISimpleReference[] = [];
 
     const refs = LookupUtilities.getReferencesFromAnnotatedValues(
-      project.infoSet.contentIndex.getAll([AnnotationCategory.blockTypeSource]),
+      project.indevInfoSet.contentIndex.getAll([AnnotationCategory.blockTypeSource]),
       AnnotationCategory.blockTypeSource,
       "{0} block type from " + project.name
     );
@@ -80,8 +80,8 @@ export default class ProjectLookupUtilities {
   }
 
   static async getEntityTypeReferences(project: Project): Promise<ISimpleReference[] | undefined> {
-    if (project.infoSet.contentIndex.iteration !== ProjectLookupUtilities.cacheIteration) {
-      ProjectLookupUtilities.cacheIteration = project.infoSet.contentIndex.iteration;
+    if (project.indevInfoSet.contentIndex.iteration !== ProjectLookupUtilities.cacheIteration) {
+      ProjectLookupUtilities.cacheIteration = project.indevInfoSet.contentIndex.iteration;
       ProjectLookupUtilities.referenceCache = {};
     }
 
@@ -94,7 +94,7 @@ export default class ProjectLookupUtilities {
     let simpleRefs: ISimpleReference[] = [];
 
     const refs = LookupUtilities.getReferencesFromAnnotatedValues(
-      project.infoSet.contentIndex.getAll([AnnotationCategory.blockTypeSource]),
+      project.indevInfoSet.contentIndex.getAll([AnnotationCategory.blockTypeSource]),
       AnnotationCategory.entityTypeSource,
       "{0} entity type from " + project.name
     );
@@ -113,8 +113,8 @@ export default class ProjectLookupUtilities {
   }
 
   static async getItemTypeReferences(project: Project): Promise<ISimpleReference[] | undefined> {
-    if (project.infoSet.contentIndex.iteration !== ProjectLookupUtilities.cacheIteration) {
-      ProjectLookupUtilities.cacheIteration = project.infoSet.contentIndex.iteration;
+    if (project.indevInfoSet.contentIndex.iteration !== ProjectLookupUtilities.cacheIteration) {
+      ProjectLookupUtilities.cacheIteration = project.indevInfoSet.contentIndex.iteration;
       ProjectLookupUtilities.referenceCache = {};
     }
 
@@ -127,7 +127,7 @@ export default class ProjectLookupUtilities {
     let simpleRefs: ISimpleReference[] = [];
 
     const refs = LookupUtilities.getReferencesFromAnnotatedValues(
-      project.infoSet.contentIndex.getAll([AnnotationCategory.blockTypeSource]),
+      project.indevInfoSet.contentIndex.getAll([AnnotationCategory.blockTypeSource]),
       AnnotationCategory.itemTypeSource,
       "{0} item type from " + project.name
     );
@@ -146,8 +146,8 @@ export default class ProjectLookupUtilities {
   }
 
   static async getSoundDefinitionReferences(project: Project): Promise<ISimpleReference[] | undefined> {
-    if (project.infoSet.contentIndex.iteration !== ProjectLookupUtilities.cacheIteration) {
-      ProjectLookupUtilities.cacheIteration = project.infoSet.contentIndex.iteration;
+    if (project.indevInfoSet.contentIndex.iteration !== ProjectLookupUtilities.cacheIteration) {
+      ProjectLookupUtilities.cacheIteration = project.indevInfoSet.contentIndex.iteration;
       ProjectLookupUtilities.referenceCache = {};
     }
 
@@ -160,7 +160,7 @@ export default class ProjectLookupUtilities {
     let simpleRefs: ISimpleReference[] = [];
 
     const refs = LookupUtilities.getReferencesFromAnnotatedValues(
-      project.infoSet.contentIndex.getAll([AnnotationCategory.blockTypeSource]),
+      project.indevInfoSet.contentIndex.getAll([AnnotationCategory.blockTypeSource]),
       AnnotationCategory.blockTypeSource,
       "{0} sound from " + project.name
     );
@@ -179,8 +179,8 @@ export default class ProjectLookupUtilities {
   }
 
   static async getTerrainTextureReferences(project: Project): Promise<ISimpleReference[] | undefined> {
-    if (project.infoSet.contentIndex.iteration !== ProjectLookupUtilities.cacheIteration) {
-      ProjectLookupUtilities.cacheIteration = project.infoSet.contentIndex.iteration;
+    if (project.indevInfoSet.contentIndex.iteration !== ProjectLookupUtilities.cacheIteration) {
+      ProjectLookupUtilities.cacheIteration = project.indevInfoSet.contentIndex.iteration;
       ProjectLookupUtilities.referenceCache = {};
     }
 
@@ -193,7 +193,7 @@ export default class ProjectLookupUtilities {
     let simpleRefs: ISimpleReference[] = [];
 
     const refs = LookupUtilities.getReferencesFromAnnotatedValues(
-      project.infoSet.contentIndex.getAll([AnnotationCategory.terrainTextureSource]),
+      project.indevInfoSet.contentIndex.getAll([AnnotationCategory.terrainTextureSource]),
       AnnotationCategory.terrainTextureSource,
       "{0} terrain texture from " + project.name
     );
@@ -212,8 +212,8 @@ export default class ProjectLookupUtilities {
   }
 
   static async getItemTextureReferences(project: Project): Promise<ISimpleReference[] | undefined> {
-    if (project.infoSet.contentIndex.iteration !== ProjectLookupUtilities.cacheIteration) {
-      ProjectLookupUtilities.cacheIteration = project.infoSet.contentIndex.iteration;
+    if (project.indevInfoSet.contentIndex.iteration !== ProjectLookupUtilities.cacheIteration) {
+      ProjectLookupUtilities.cacheIteration = project.indevInfoSet.contentIndex.iteration;
       ProjectLookupUtilities.referenceCache = {};
     }
 
@@ -226,7 +226,7 @@ export default class ProjectLookupUtilities {
     let simpleRefs: ISimpleReference[] = [];
 
     const refs = LookupUtilities.getReferencesFromAnnotatedValues(
-      project.infoSet.contentIndex.getAll([AnnotationCategory.itemTextureSource]),
+      project.indevInfoSet.contentIndex.getAll([AnnotationCategory.itemTextureSource]),
       AnnotationCategory.itemTextureSource,
       "{0} item texture from " + project.name
     );

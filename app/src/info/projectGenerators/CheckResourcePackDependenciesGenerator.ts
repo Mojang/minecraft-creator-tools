@@ -5,9 +5,10 @@ import IProjectInfoGenerator from "../IProjectInfoGenerator";
 import { InfoItemType } from "../IInfoItemData";
 import ProjectInfoUtilities from "../ProjectInfoUtilities";
 import { ProjectItemType } from "../../app/IProjectItemData";
-import StorageUtilities from "../../storage/StorageUtilities";
 import Utilities from "../../core/Utilities";
 import ProjectItem from "../../app/ProjectItem";
+import BehaviorManifestDefinition from "../../minecraft/BehaviorManifestDefinition";
+import ResourceManifestDefinition from "../../minecraft/ResourceManifestDefinition";
 
 export enum CheckResourcePackDependenciesGeneratorTest {
   invalidManifestJson = 101,
@@ -58,59 +59,85 @@ export default class CheckResourcePackDependenciesGenerator implements IProjectI
         continue;
       }
 
-      await item.ensureStorage();
+      if (!item.isContentLoaded) {
+        await item.loadContent();
+      }
+
       if (!item.primaryFile) {
         continue;
       }
 
-      await item.primaryFile.loadContent();
-      const content = item.primaryFile.content;
-
-      if (!content || typeof content !== "string") {
-        continue;
+      if (!item.primaryFile.isContentLoaded) {
+        await item.primaryFile.loadContent();
       }
 
-      const parsedContent = StorageUtilities.getJsonObject(item.primaryFile);
+      try {
+        if (item.itemType === ProjectItemType.resourcePackManifestJson) {
+          const resourceManifest = await ResourceManifestDefinition.ensureOnFile(item.primaryFile);
 
-      if (!parsedContent) {
+          if (!resourceManifest || !resourceManifest.isLoaded) {
+            items.push(
+              new ProjectInfoItem(
+                InfoItemType.error,
+                this.id,
+                CheckResourcePackDependenciesGeneratorTest.invalidManifestJson,
+                this.getTopicData(CheckResourcePackDependenciesGeneratorTest.invalidManifestJson).title,
+                item
+              )
+            );
+            continue;
+          }
+
+          if (resourceManifest.id && Utilities.isValidUuid(resourceManifest.id)) {
+            availablePacks.push({
+              uuid: resourceManifest.id,
+              manifestItem: item,
+            });
+          }
+
+          if (resourceManifest.dependencies) {
+            for (const dependency of resourceManifest.dependencies) {
+              if (dependency.uuid && typeof dependency.uuid === "string" && Utilities.isValidUuid(dependency.uuid)) {
+                manifestDependencies.push({
+                  uuid: dependency.uuid,
+                  manifestItem: item,
+                });
+              }
+            }
+          }
+        } else if (item.itemType === ProjectItemType.behaviorPackManifestJson) {
+          const behaviorManifest = await BehaviorManifestDefinition.ensureOnFile(item.primaryFile);
+
+          if (!behaviorManifest || !behaviorManifest.isLoaded) {
+            items.push(
+              new ProjectInfoItem(
+                InfoItemType.error,
+                this.id,
+                CheckResourcePackDependenciesGeneratorTest.invalidManifestJson,
+                this.getTopicData(CheckResourcePackDependenciesGeneratorTest.invalidManifestJson).title,
+                item
+              )
+            );
+            continue;
+          }
+
+          if (behaviorManifest.id && Utilities.isValidUuid(behaviorManifest.id)) {
+            availablePacks.push({
+              uuid: behaviorManifest.id,
+              manifestItem: item,
+            });
+          }
+        }
+      } catch (error) {
         items.push(
           new ProjectInfoItem(
             InfoItemType.error,
             this.id,
-            CheckResourcePackDependenciesGeneratorTest.invalidManifestJson,
-            this.getTopicData(CheckResourcePackDependenciesGeneratorTest.invalidManifestJson).title,
+            CheckResourcePackDependenciesGeneratorTest.internalProcessingError,
+            `Error processing manifest ${item.name}: ${error}`,
             item
           )
         );
-        continue;
-      }
-
-      // Collect available pack UUIDs from headers
-      if (parsedContent.header && parsedContent.header.uuid && typeof parsedContent.header.uuid === "string") {
-        if (Utilities.isValidUuid(parsedContent.header.uuid)) {
-          availablePacks.push({
-            uuid: parsedContent.header.uuid,
-            manifestItem: item,
-          });
-        }
-      }
-
-      // Collect dependencies
-      if (
-        item.itemType === ProjectItemType.resourcePackManifestJson &&
-        parsedContent.dependencies &&
-        Array.isArray(parsedContent.dependencies)
-      ) {
-        for (const dependency of parsedContent.dependencies) {
-          if (dependency.uuid && typeof dependency.uuid === "string") {
-            if (Utilities.isValidUuid(dependency.uuid)) {
-              manifestDependencies.push({
-                uuid: dependency.uuid,
-                manifestItem: item,
-              });
-            }
-          }
-        }
       }
     }
 

@@ -266,13 +266,13 @@ Drowned - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
   "singular_pickup": true,
   "items": [
     {
-      "item": "minecraft:nautilus_shell",
+      "item": "minecraft:trident",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 0
     },
     {
-      "item": "minecraft:trident",
+      "item": "minecraft:nautilus_shell",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 1
@@ -1667,13 +1667,13 @@ Wither Skeleton - https://github.com/Mojang/bedrock-samples/tree/preview/behavio
       "priority": 3
     },
     {
-      "item": "minecraft:stone_sword",
+      "item": "minecraft:copper_sword",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 4
     },
     {
-      "item": "minecraft:copper_sword",
+      "item": "minecraft:stone_sword",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 5

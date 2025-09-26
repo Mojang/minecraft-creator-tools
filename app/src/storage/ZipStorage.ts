@@ -153,6 +153,7 @@ export default class ZipStorage extends StorageBase implements IStorage {
 
     return result;
   }
+
   async generateCompressedBase64Async(): Promise<string> {
     const result = await this._jsz.generateAsync({
       type: "base64",
@@ -164,6 +165,7 @@ export default class ZipStorage extends StorageBase implements IStorage {
 
     return result;
   }
+
   async generateCompressedUint8ArrayAsync(): Promise<Uint8Array> {
     const result = await this._jsz.generateAsync({
       type: "uint8array",
@@ -186,5 +188,11 @@ export default class ZipStorage extends StorageBase implements IStorage {
     const result = await this._jsz.generateAsync({ type: type as any });
 
     return result;
+  }
+
+  async getAvailable() {
+    this.available = true;
+
+    return this.available;
   }
 }

@@ -22,7 +22,12 @@ export const SuiteConfigs: Record<ProjectInfoSuite, SuiteConfig> = {
     performPlatformVersionValidation: false,
     identifierOverridesAreErrors: false,
   },
-  [ProjectInfoSuite.default]: {
+  [ProjectInfoSuite.sharingStrict]: {
+    performAddOnValidations: false,
+    performPlatformVersionValidation: false,
+    identifierOverridesAreErrors: false,
+  },
+  [ProjectInfoSuite.defaultInDevelopment]: {
     performAddOnValidations: false,
     performPlatformVersionValidation: false,
     identifierOverridesAreErrors: false,

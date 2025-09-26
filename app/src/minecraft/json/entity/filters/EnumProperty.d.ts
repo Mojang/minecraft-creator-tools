@@ -121,7 +121,7 @@ import * as jsoncommon from './../../../jsoncommon';
 
 /**
  * Property (enum_property)
- * Returns true when the enum actor property matches the value
+ * Returns true when the actor property matches the value 
  * provided.
  */
 export default interface EnumProperty {

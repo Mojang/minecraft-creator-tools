@@ -430,7 +430,8 @@ export default class LocalEnvironment {
 
   async save() {
     const content = JSON.stringify(this.#data, null, 2);
-    this.#configFile.setContent(JSON.stringify(this.#data, null, 2));
+
+    this.#configFile.setContent(content);
 
     this.#configFile.saveContent();
   }

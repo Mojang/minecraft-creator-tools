@@ -315,7 +315,7 @@ export default class BlockTypePermutationEditor extends Component<
                 color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
               }}
             >
-              <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
+              <Toolbar aria-label="Block type permutations actions" items={toolbarItems} />
             </div>
           </div>
           <div className="btpe-componentList">

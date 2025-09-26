@@ -11,13 +11,6 @@
  * 
  * minecraft:projectile Samples
 
-Wind Charge - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/wind_charge.json
-
-"minecraft:projectile": {
-  "projectile_entity": "wind_charge_projectile"
-}
-
-
 My Sword Chuck - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/behavior_packs/custom_item/items/my_sword_chuck.json
 
 "minecraft:projectile": {
@@ -52,8 +45,6 @@ export default interface MinecraftProjectile {
    * Which entity is to be fired as a projectile.
    * 
    * Sample Values:
-   * Wind Charge: "wind_charge_projectile"
-   *
    * My Sword Chuck: "minecraft:snowball"
    *
    *

@@ -6,6 +6,7 @@
       "description": "The object containing the conditional bandwidth optimization values.",
       "dataType": 15,
       "subForm": {
+        "id": "",
         "description": "The object containing the conditional bandwidth optimization values.",
         "fields": [
           {
@@ -70,6 +71,7 @@
       "description": "The object containing the default bandwidth optimization values.",
       "dataType": 15,
       "subForm": {
+        "id": "",
         "description": "The object containing the default bandwidth optimization values.",
         "fields": [
           {

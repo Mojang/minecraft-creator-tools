@@ -50,7 +50,6 @@ export default class ProjectInfoUtilities {
     }
 
     const pisSharing = new ProjectInfoSet(project, ProjectInfoSuite.sharing);
-
     await pisSharing.generateForProject();
 
     const sharing = {

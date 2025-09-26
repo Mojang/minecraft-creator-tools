@@ -160,7 +160,11 @@ export default class FileExplorerFolder extends Component<IFileExplorerFolderPro
     let bin = <></>;
 
     if (this.state.isExpanded) {
-      bin = <div className={binHeader}>{items}</div>;
+      bin = (
+        <div className={binHeader} role="group">
+          {items}
+        </div>
+      );
       this.props.folder.getSortedFolderKeys().forEach((folderName) => {
         const childFolder = this.props.folder.folders[folderName];
 

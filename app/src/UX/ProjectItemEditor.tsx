@@ -598,8 +598,8 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
               heightOffset={heightOffset}
               file={file}
               project={this.props.project}
-              allInfoSet={this.props.project.infoSet}
-              allInfoSetGenerated={this.props.project.infoSet.completedGeneration}
+              indevInfoSet={this.props.project.indevInfoSet}
+              indevInfoSetGenerated={this.props.project.indevInfoSet.completedGeneration}
             />
           );
         } else if (file.type === "json" && projItem.itemType === ProjectItemType.dataForm && !showRaw) {
@@ -631,6 +631,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           file.type === "geometry" ||
           file.type === "vertex" ||
           file.type === "fragment" ||
+          file.type === "lang" ||
           file.type === ".env"
         ) {
           interior = (
@@ -820,7 +821,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
               backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
             }}
           >
-            <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
+            <Toolbar aria-label="Item actions" items={toolbarItems} />
           </div>
           <div className="pie-interior">{interior}</div>
         </div>

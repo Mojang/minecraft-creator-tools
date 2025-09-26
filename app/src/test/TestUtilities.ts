@@ -8,6 +8,7 @@ export const volatileAttributes = [
   "version",
   "generator_version",
   "generatorVersion",
+  "infoGenerationTime",
   "index",
   "Vanilla Texture Count",
 ];

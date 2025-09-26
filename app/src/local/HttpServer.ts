@@ -232,60 +232,65 @@ export default class HttpServer {
                 return;
               }
 
-              const zipStorage = new ZipStorage();
-
-              const contentUint = new Uint8Array(bodyContent);
-
-              Log.message(this.getShortReqDescription(req) + "Received package of " + contentUint.length + " bytes");
-
               try {
-                await zipStorage.loadFromUint8Array(contentUint);
-              } catch (e) {
-                this.sendErrorRequest(400, "Error processing passed-in validation package.", req, res);
+                const zipStorage = new ZipStorage();
+
+                const contentUint = new Uint8Array(bodyContent);
+
+                Log.message(this.getShortReqDescription(req) + "Received package of " + contentUint.length + " bytes");
+
+                try {
+                  await zipStorage.loadFromUint8Array(contentUint);
+                } catch (e) {
+                  this.sendErrorRequest(400, "Error processing passed-in validation package.", req, res);
+                  return;
+                }
+
+                if (!res.headersSent) {
+                  res.writeHead(200, this.headers);
+                }
+
+                const packProject = new Project(this.carto, "Test", null);
+                packProject.setProjectFolder(zipStorage.rootFolder);
+
+                await packProject.inferProjectItemsFromFiles();
+
+                let suiteInst: ProjectInfoSuite = ProjectInfoSuite.defaultInDevelopment;
+                let excludeTests: string[] = [];
+
+                if (req.headers["mctsuite"] && typeof req.headers["mctsuite"] == "string") {
+                  suiteInst = ProjectInfoSet.getSuiteFromString(req.headers["mctsuite"]);
+                }
+
+                if (req.headers["mctexcludeTests"] && typeof req.headers["mctexcludeTests"] == "string") {
+                  excludeTests = req.headers["mctexcludeTests"].split(",");
+                }
+
+                const pis = new ProjectInfoSet(packProject, suiteInst, excludeTests);
+
+                await pis.generateForProject();
+
+                let subsetReports: IProjectMetaState[] = [];
+
+                if (req.headers["mctsuite"] === "all") {
+                  subsetReports = await ProjectInfoUtilities.getDerivedStates(packProject, pis);
+                }
+
+                const result = JSON.stringify(pis.getDataObject(undefined, undefined, undefined, false, subsetReports));
+
+                res.write(result, () => {
+                  res.end();
+
+                  if (this._serverManager.runOnce) {
+                    this._serverManager.shutdown(
+                      "Shutting down due to completion of one validation operation in runOnce mode."
+                    );
+                  }
+                });
+              } catch (e: any) {
+                this.sendErrorRequest(500, "Error processing request. " + (e.message || e.toString()), req, res);
                 return;
               }
-
-              if (!res.headersSent) {
-                res.writeHead(200, this.headers);
-              }
-
-              const packProject = new Project(this.carto, "Test", null);
-              packProject.setProjectFolder(zipStorage.rootFolder);
-
-              await packProject.inferProjectItemsFromFiles();
-
-              let suiteInst: ProjectInfoSuite = ProjectInfoSuite.default;
-              let excludeTests: string[] = [];
-
-              if (req.headers["mctsuite"] && typeof req.headers["mctsuite"] == "string") {
-                suiteInst = ProjectInfoSet.getSuiteFromString(req.headers["mctsuite"]);
-              }
-
-              if (req.headers["mctexcludeTests"] && typeof req.headers["mctexcludeTests"] == "string") {
-                excludeTests = req.headers["mctexcludeTests"].split(",");
-              }
-
-              const pis = new ProjectInfoSet(packProject, suiteInst, excludeTests);
-
-              await pis.generateForProject();
-
-              let subsetReports: IProjectMetaState[] = [];
-
-              if (req.headers["mctsuite"] === "all") {
-                subsetReports = await ProjectInfoUtilities.getDerivedStates(packProject, pis);
-              }
-
-              const result = JSON.stringify(pis.getDataObject(undefined, undefined, undefined, false, subsetReports));
-
-              res.write(result, () => {
-                res.end();
-
-                if (this._serverManager.runOnce) {
-                  this._serverManager.shutdown(
-                    "Shutting down due to completion of one validation operation in runOnce mode."
-                  );
-                }
-              });
 
               return;
             } else {
@@ -334,6 +339,10 @@ export default class HttpServer {
     res.write(message, () => {
       res.end();
     });
+
+    if (this._serverManager.runOnce) {
+      this._serverManager.shutdown("Shutting down due to completion of one validation operation in runOnce mode.");
+    }
   }
 
   hasPermissionLevel(

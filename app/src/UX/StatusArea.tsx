@@ -244,7 +244,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
               displayAbove={true}
               theme={this.props.theme}
               onActionRequested={this.props.onActionRequested}
-              contentIndex={this.props.project?.infoSet.contentIndex}
+              contentIndex={this.props.project?.indevInfoSet.contentIndex}
               onFilterTextChanged={this.props.onFilterTextChanged}
               carto={this.props.carto}
               heightOffset={heightOffset}
@@ -402,7 +402,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
 
       interior = (
         <div className="sa-listOuter">
-          <div className="sa-list" ref={this.scrollArea}>
+          <div className="sa-list" ref={this.scrollArea} tabIndex={0}>
             <List
               selectable
               items={listItems}

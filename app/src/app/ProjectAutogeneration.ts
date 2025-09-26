@@ -17,7 +17,7 @@ import JustConfig from "../devproject/JustConfig";
 import NpmPackageDefinition from "../devproject/NpmPackageDefinition";
 
 export default class ProjectAutogeneration {
-  static async updateProjectAutogeneration(project: Project) {
+  static async updateProjectAutogeneration(project: Project, createNewArtifacts: boolean) {
     let packageItems = 0;
     let envItems = 0;
     let justConfigItems = 0;
@@ -66,7 +66,7 @@ export default class ProjectAutogeneration {
       }
     }
 
-    if (envItems === 0 && (justConfigItems > 0 || needsJustConfig)) {
+    if (envItems === 0 && (justConfigItems > 0 || needsJustConfig) && createNewArtifacts) {
       project.ensureItemByProjectPath(
         "/.env",
         ProjectItemStorageType.singleFile,
@@ -78,7 +78,7 @@ export default class ProjectAutogeneration {
       );
     }
 
-    if (prettierRcItems === 0 && packageItems > 0) {
+    if (prettierRcItems === 0 && packageItems > 0 && createNewArtifacts) {
       project.ensureItemByProjectPath(
         "/.prettierrc.json",
         ProjectItemStorageType.singleFile,
@@ -90,7 +90,7 @@ export default class ProjectAutogeneration {
       );
     }
 
-    if (justConfigItems === 0 && needsJustConfig) {
+    if (justConfigItems === 0 && needsJustConfig && createNewArtifacts) {
       project.ensureItemByProjectPath(
         "/just.config.ts",
         ProjectItemStorageType.singleFile,
@@ -102,7 +102,7 @@ export default class ProjectAutogeneration {
       );
     }
 
-    if (eslintConfigItems === 0 && needsEslintConfig) {
+    if (eslintConfigItems === 0 && needsEslintConfig && createNewArtifacts) {
       project.ensureItemByProjectPath(
         "/eslint.config.mjs",
         ProjectItemStorageType.singleFile,
@@ -114,7 +114,7 @@ export default class ProjectAutogeneration {
       );
     }
 
-    if (vsCodeLaunchItems === 0 && packageItems > 0 && project.projectFolder) {
+    if (vsCodeLaunchItems === 0 && packageItems > 0 && project.projectFolder && createNewArtifacts) {
       project.ensureItemByProjectPath(
         "/.vscode/launch.json",
         ProjectItemStorageType.singleFile,
@@ -126,7 +126,7 @@ export default class ProjectAutogeneration {
       );
     }
 
-    if (vsCodeSettingsItems === 0 && packageItems > 0 && project.projectFolder) {
+    if (vsCodeSettingsItems === 0 && packageItems > 0 && project.projectFolder && createNewArtifacts) {
       project.ensureItemByProjectPath(
         "/.vscode/settings.json",
         ProjectItemStorageType.singleFile,
@@ -138,7 +138,7 @@ export default class ProjectAutogeneration {
       );
     }
 
-    if (vsCodeTasksItems === 0 && packageItems > 0 && project.projectFolder) {
+    if (vsCodeTasksItems === 0 && packageItems > 0 && project.projectFolder && createNewArtifacts) {
       project.ensureItemByProjectPath(
         "/.vscode/tasks.json",
         ProjectItemStorageType.singleFile,
@@ -150,7 +150,7 @@ export default class ProjectAutogeneration {
       );
     }
 
-    if (vsCodeExtensionsItems === 0 && packageItems > 0 && project.projectFolder) {
+    if (vsCodeExtensionsItems === 0 && packageItems > 0 && project.projectFolder && createNewArtifacts) {
       project.ensureItemByProjectPath(
         "/.vscode/extensions.json",
         ProjectItemStorageType.singleFile,

@@ -377,7 +377,7 @@ export default class BlockTypeActionEditor extends Component<IBlockTypeActionEdi
         >
           <div className="btae-toolBarArea">
             <div className="btae-tools">
-              <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
+              <Toolbar aria-label="Block type actions" items={toolbarItems} />
             </div>
             <div className="btae-dropdown">{dropdownArea}</div>
           </div>

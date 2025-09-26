@@ -568,7 +568,7 @@ export default class BlockTypeComponentSetEditor extends Component<
             <div className="bcose-componentArea">
               <div className="bcose-titleArea">{title}</div>
               <div className="bcose-componentToolBarArea">
-                <Toolbar aria-label="Component editing toolbar" items={toolbarItems} />
+                <Toolbar aria-label="Block type component actions" items={toolbarItems} />
               </div>
             </div>
             <div

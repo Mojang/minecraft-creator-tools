@@ -114,7 +114,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
   regionsByDimension: { [dim: number]: IRegion[] } = {};
 
-  chunks: { [dim: number]: { [x: number]: { [z: number]: WorldChunk } } } = {};
+  chunks: Map<number, Map<number, Map<number, WorldChunk>>> = new Map();
 
   public get project() {
     return this._project;
@@ -523,37 +523,43 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
   public _updateMeta() {
     this.regionsByDimension = {};
 
-    for (const dimNum in this.chunks) {
-      const dim = this.chunks[dimNum];
+    const chunkDims = this.chunks.keys();
+
+    for (const dimNum of chunkDims) {
+      const dim = this.chunks.get(dimNum);
 
       let regions: IRegion[] = [];
 
-      for (const xNumStr in dim) {
-        const xNum = parseInt(xNumStr);
-        const xPlane = dim[xNum];
+      if (dim) {
+        const xNums = dim.keys();
 
-        for (const zNumStr in xPlane) {
-          const zNum = parseInt(zNumStr);
+        for (const xNum of xNums) {
+          const xPlane = dim.get(xNum);
 
-          let addedToRegion = false;
+          if (xPlane) {
+            const zNums = xPlane.keys();
+            for (const zNum of zNums) {
+              let addedToRegion = false;
 
-          for (const region of regions) {
-            if (xNum >= region.minX && xNum <= region.maxX && zNum >= region.minZ && zNum <= region.maxZ) {
-              region.minX = Math.min(region.minX, xNum - 1);
-              region.minZ = Math.min(region.minZ, zNum - 1);
-              region.maxX = Math.max(region.maxX, xNum + 1);
-              region.maxZ = Math.max(region.maxZ, zNum + 1);
-              addedToRegion = true;
+              for (const region of regions) {
+                if (xNum >= region.minX && xNum <= region.maxX && zNum >= region.minZ && zNum <= region.maxZ) {
+                  region.minX = Math.min(region.minX, xNum - 1);
+                  region.minZ = Math.min(region.minZ, zNum - 1);
+                  region.maxX = Math.max(region.maxX, xNum + 1);
+                  region.maxZ = Math.max(region.maxZ, zNum + 1);
+                  addedToRegion = true;
+                }
+              }
+
+              if (!addedToRegion) {
+                regions.push({
+                  minX: xNum - 1,
+                  minZ: zNum - 1,
+                  maxX: xNum + 1,
+                  maxZ: zNum + 1,
+                });
+              }
             }
-          }
-
-          if (!addedToRegion) {
-            regions.push({
-              minX: xNum - 1,
-              minZ: zNum - 1,
-              maxX: xNum + 1,
-              maxZ: zNum + 1,
-            });
           }
         }
       }
@@ -1453,14 +1459,15 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
   getTopBlockY(x: number, z: number, dim?: number) {
     const chunkX = Math.floor(x / CHUNK_X_SIZE);
-    const xDim = this.chunks[dim ? dim : 0][chunkX];
+
+    const xDim = this.chunks.get(dim ? dim : 0)?.get(chunkX);
 
     if (xDim === undefined) {
       return undefined;
     }
 
     const chunkZ = Math.floor(z / CHUNK_Z_SIZE);
-    const zDim = xDim[chunkZ];
+    const zDim = xDim.get(chunkZ);
 
     if (zDim === undefined) {
       return undefined;
@@ -1471,14 +1478,14 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
   getTopBlock(x: number, z: number, dim?: number) {
     const chunkX = Math.floor(x / CHUNK_X_SIZE);
-    const xDim = this.chunks[dim ? dim : 0][chunkX];
+    const xDim = this.chunks.get(dim ? dim : 0)?.get(chunkX);
 
     if (xDim === undefined) {
       return undefined;
     }
 
     const chunkZ = Math.floor(z / CHUNK_Z_SIZE);
-    const zDim = xDim[chunkZ];
+    const zDim = xDim.get(chunkZ);
 
     if (zDim === undefined) {
       return undefined;
@@ -1495,14 +1502,14 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
   getBlock(blockLocation: BlockLocation, dim?: number) {
     const chunkX = Math.floor(blockLocation.x / CHUNK_X_SIZE);
-    const xDim = this.chunks[dim ? dim : 0][chunkX];
+    const xDim = this.chunks.get(dim ? dim : 0)?.get(chunkX);
 
     if (xDim === undefined) {
       return new Block("air");
     }
 
     const chunkZ = Math.floor(blockLocation.z / CHUNK_Z_SIZE);
-    const chunk = xDim[chunkZ];
+    const chunk = xDim.get(chunkZ);
     if (chunk === undefined) {
       return new Block("air");
     }
@@ -1531,7 +1538,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
       return;
     }
 
-    this.chunks = [];
+    this.chunks = new Map();
     this.chunkCount = 0;
 
     const processOper = await this._project?.carto.notifyOperationStarted(
@@ -1539,8 +1546,10 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
       StatusTopic.worldLoad
     );
 
-    for (const keyname in this.levelDb.keys) {
-      const keyValue = this.levelDb.keys[keyname];
+    const levelDbKeys = this.levelDb.keys.keys();
+
+    for (const keyname of levelDbKeys) {
+      const keyValue = this.levelDb.keys.get(keyname);
 
       if (keyname.startsWith("AutonomousEntities")) {
       } else if (keyname.startsWith("schedulerWT")) {
@@ -1647,19 +1656,27 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
             Log.assert(dim >= 0 && dim <= 2, "Unexpected dimension index - digp (" + dim + ")");
           }
 
-          if (this.chunks[dim] === undefined) {
-            this.chunks[dim] = [];
+          let dimMap = this.chunks.get(dim);
+
+          if (!dimMap) {
+            dimMap = new Map();
+            this.chunks.set(dim, dimMap);
           }
 
-          if (this.chunks[dim][x] === undefined) {
-            this.chunks[dim][x] = [];
+          let xPlane = dimMap.get(x);
+
+          if (!xPlane) {
+            xPlane = new Map();
+            dimMap.set(x, xPlane);
           }
 
-          if (this.chunks[dim][x][z] === undefined) {
-            const wc = new WorldChunk(this, x, z);
+          let wc = xPlane.get(z);
+
+          if (wc === undefined) {
+            wc = new WorldChunk(this, x, z);
             this.chunkCount++;
 
-            this.chunks[dim][x][z] = wc;
+            xPlane.set(z, wc);
           }
 
           if (keyValue.value !== undefined) {
@@ -1680,7 +1697,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
                 ]);
               }
 
-              this.chunks[dim][x][z].addActorDigest(hexStr);
+              wc.addActorDigest(hexStr);
             } else if (keyValueBytes.length !== 0) {
               // Log.error("Unexpected actor digest length", this.name);
             }
@@ -1815,25 +1832,31 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
             this._maxZ = (z + 1) * 16;
           }
 
-          if (this.chunks[dim] === undefined) {
-            this.chunks[dim] = [];
-          }
-
-          if (this.chunks[dim][x] === undefined) {
-            this.chunks[dim][x] = [];
-          }
-
           let didIncrement = false;
+          let dimMap = this.chunks.get(dim);
 
-          if (this.chunks[dim][x][z] === undefined) {
-            const wc = new WorldChunk(this, x, z);
+          if (!dimMap) {
+            dimMap = new Map();
+            this.chunks.set(dim, dimMap);
+          }
+
+          let xPlane = dimMap.get(x);
+
+          if (!xPlane) {
+            xPlane = new Map();
+            dimMap.set(x, xPlane);
+          }
+
+          let wc = xPlane.get(z);
+
+          if (wc === undefined) {
+            wc = new WorldChunk(this, x, z);
             this.chunkCount++;
             didIncrement = true;
-
-            this.chunks[dim][x][z] = wc;
+            xPlane.set(z, wc);
           }
 
-          this.chunks[dim][x][z].addKeyValue(keyValue);
+          wc.addKeyValue(keyValue);
 
           if (this.chunkCount % 10000 === 0 && didIncrement) {
             await this._project?.carto.notifyStatusUpdate(
@@ -1875,13 +1898,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
           Log.assert(dim >= 0 && dim <= 2, "Unexpected dimension index. (" + dim + ")");
         }
 
-        if (
-          this.chunks[dim] !== undefined &&
-          this.chunks[dim][x] !== undefined &&
-          this.chunks[dim][x][z] !== undefined
-        ) {
-          this.chunks[dim][x][z].clearKeyValue(keyname);
-        }
+        this.chunks.get(dim)?.get(x)?.get(z)?.clearKeyValue(keyname);
       } else if (keyValue === false) {
         // console.log("Nulling record '" + keyname + "'");
       } else if (keyValue !== undefined) {
@@ -2002,10 +2019,10 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
       let toGoZ = Math.abs(to.z - from.z) + 1;
 
       for (let iZ = subChunkZStart; iZ <= subChunkZEnd; iZ++) {
-        const chunkX = this.chunks[dim ? dim : 0][iX];
+        const chunkX = this.chunks.get(dim ? dim : 0)?.get(iX);
 
         if (chunkX) {
-          const chunk = chunkX[iZ];
+          const chunk = chunkX.get(iZ);
           const nextChunkToGoZ = Math.min(toGoZ, 16, 16 - insetZ);
 
           if (chunk) {
@@ -2048,13 +2065,13 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
   }
 
   getSubChunkCube(x: number, y: number, z: number, dim?: number) {
-    const xDim = this.chunks[dim ? dim : 0][Math.floor(x / 16)];
+    const xDim = this.chunks.get(dim ? dim : 0)?.get(Math.floor(x / 16));
 
-    if (xDim === null) {
+    if (!xDim) {
       return undefined;
     }
 
-    const zDim = xDim[Math.floor(z / 16)];
+    const zDim = xDim.get(Math.floor(z / 16));
 
     if (zDim === undefined) {
       return undefined;

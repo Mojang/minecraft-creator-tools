@@ -30,8 +30,10 @@ export default class FileExplorerFolderDetail extends Component<
   constructor(props: IFileExplorerFolderDetailProps) {
     super(props);
 
-    this._handleExpanderClick = this._handleExpanderClick.bind(this);
+    this._handleToggleExpandedClick = this._handleToggleExpandedClick.bind(this);
     this._handleFolderClick = this._handleFolderClick.bind(this);
+    this._handleExpandClick = this._handleExpandClick.bind(this);
+    this._handleCollapseClick = this._handleCollapseClick.bind(this);
   }
 
   _handleFolderClick() {
@@ -40,9 +42,21 @@ export default class FileExplorerFolderDetail extends Component<
     }
   }
 
-  _handleExpanderClick() {
+  _handleToggleExpandedClick() {
     if (this.props.onExpandedSet) {
       this.props.onExpandedSet(!this.props.isExpanded);
+    }
+  }
+
+  _handleCollapseClick() {
+    if (this.props.onExpandedSet) {
+      this.props.onExpandedSet(false);
+    }
+  }
+
+  _handleExpandClick() {
+    if (this.props.onExpandedSet) {
+      this.props.onExpandedSet(true);
     }
   }
 
@@ -73,9 +87,9 @@ export default class FileExplorerFolderDetail extends Component<
       (this.props.mode !== FileExplorerMode.folderPicker && this.props.folder.fileCount > 0)
     ) {
       expander = (
-        <button
+        <div
           className="fexfod-expander"
-          onClick={this._handleExpanderClick}
+          onClick={this._handleToggleExpandedClick}
           title={(this.props.isExpanded ? "Collapse" : "Expand") + " " + this.props.folder.name}
         >
           {this.props.isExpanded ? (
@@ -83,19 +97,40 @@ export default class FileExplorerFolderDetail extends Component<
           ) : (
             <FontAwesomeIcon icon={faCaretRight} className="fa-lg" />
           )}
-        </button>
+        </div>
       );
     }
 
     return (
-      <div className={outerTag} style={{ backgroundColor: backgroundColor }}>
+      <div
+        className={outerTag}
+        style={{ backgroundColor: backgroundColor }}
+        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+          if (e.key === "Space") {
+            this._handleToggleExpandedClick();
+          } else if (e.key === "ArrowLeft") {
+            this._handleCollapseClick();
+          } else if (e.key === "ArrowRight") {
+            this._handleExpandClick();
+          } else if (e.key === "Enter") {
+            this._handleFolderClick();
+          }
+        }}
+      >
         {expander}
-        <button className="fexfod-summary" onClick={this._handleFolderClick} title={"Select " + this.props.folder.name}>
+        <div
+          aria-selected={!!this.props.selectedItem && this.props.selectedItem === this.props.folder}
+          className="fexfod-summary"
+          role="treeitem"
+          tabIndex={0}
+          onClick={this._handleFolderClick}
+          title={"Select " + this.props.folder.name}
+        >
           <div className="fexfod-icon">
             <FontAwesomeIcon icon={faFolder} className="fa-lg" />
           </div>
           <div className="fexfod-label">{this.props.folder.name}</div>
-        </button>
+        </div>
       </div>
     );
   }

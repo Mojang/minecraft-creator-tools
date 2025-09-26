@@ -539,37 +539,40 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
   _handleStoragePathToggle(e: SyntheticEvent<HTMLElement, Event>, data?: any | undefined) {
     if (data && data.content && data.content.key && this.props.project) {
-      const keyData = data.content.key.split(".");
+      const keyData = data.content.key.split("|");
 
-      if (keyData.length === 3) {
-        const folder = keyData[2];
+      if (keyData.length >= 3) {
+        const folder = keyData[keyData.length - 1];
         const itemType = parseInt(keyData[1]);
 
         if (!isNaN(itemType)) {
           for (let i = 0; i < this.props.project.items.length; i++) {
             const item = this.props.project.items[i];
-            const groupingPath = item.getFolderGroupingPath();
 
-            if (groupingPath && groupingPath === folder && itemType === item.itemType) {
-              if (this.props.project.collapsedStoragePaths.includes(groupingPath)) {
-                this.props.project.ensureStoragePathIsNotCollapsed(groupingPath);
-                this._loadItems();
-              } else {
-                this.props.project.ensureStoragePathIsCollapsed(groupingPath);
+            if (item.projectPath) {
+              const keyPath = item.folderPath;
+
+              if (keyPath && keyPath === folder && itemType === item.itemType) {
+                if (this.props.project.collapsedStoragePaths.includes(keyPath)) {
+                  this.props.project.ensureStoragePathIsNotCollapsed(keyPath);
+                  this._loadItems();
+                } else {
+                  this.props.project.ensureStoragePathIsCollapsed(keyPath);
+                }
+
+                this.setState({
+                  activeItem: this.state.activeItem,
+                  dialogMode: this.state.dialogMode,
+                  packFilter: this.state.packFilter,
+
+                  maxItemsToShow: this.state.maxItemsToShow,
+                  contextFocusedItem: this.state.contextFocusedItem,
+                  collapsedItemTypes: this.props.carto.collapsedTypes,
+                  collapsedStoragePaths: this.props.project.collapsedStoragePaths,
+                });
+
+                return;
               }
-
-              this.setState({
-                activeItem: this.state.activeItem,
-                dialogMode: this.state.dialogMode,
-                packFilter: this.state.packFilter,
-
-                maxItemsToShow: this.state.maxItemsToShow,
-                contextFocusedItem: this.state.contextFocusedItem,
-                collapsedItemTypes: this.props.carto.collapsedTypes,
-                collapsedStoragePaths: this.props.project.collapsedStoragePaths,
-              });
-
-              return;
             }
           }
         }
@@ -638,12 +641,11 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         const totalVal = Utilities.getSimpleNumeric(items[0].getFeatureContaining("total"));
 
         if (countVal !== undefined && totalVal !== undefined) {
-          const isBinary = ProjectItemUtilities.isBinaryType(itemType);
-          const statSummary = countVal + " files, " + totalVal + " " + (isBinary ? "bytes" : "lines");
+          const statSummary = countVal + " files, " + totalVal + " bytes";
 
           additionalData = (
             <span className="pil-stats" title={statSummary}>
-              {countVal} - {totalVal}
+              {countVal} - {totalVal}b
             </span>
           );
         }
@@ -656,7 +658,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     if (isToggleable) {
       toggle = (
-        <div className="pil-itemTypeCollapsedToggle" title={isExpanded ? "Hide" : "Show"}>
+        <div className="pil-itemTypeCollapsedToggle" title={(isExpanded ? "Hide" : "Show") + " " + name}>
           <FontAwesomeIcon icon={isExpanded ? faCaretDown : faCaretRight} className="fa-md" />
         </div>
       );
@@ -697,7 +699,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
   _addStoragePathSpacer(
     projectListItems: ListItemProps[],
-    storagePathFolder: string,
+    folderPath: string,
+    folderDisplayPath: string,
     itemType: ProjectItemType,
     isToggleable: boolean,
     itemIndex: number
@@ -708,16 +711,16 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     let toggle = <></>;
 
-    if (isToggleable) {
-      const isExpanded = !this.props.project?.collapsedStoragePaths.includes(storagePathFolder);
+    const isExpanded = !this.props.project?.collapsedStoragePaths.includes(folderPath);
 
+    if (isToggleable) {
       toggle = (
         <div
           className="pil-storagePathCollapsedToggle"
           style={{
             backgroundColor: ColorUtilities.toCss(ColorUtilities.darker(typeColor, 0.1)),
           }}
-          title={isExpanded ? "Hide" : "Show"}
+          title={(isExpanded ? "Hide" : "Show") + " " + folderPath}
         >
           <FontAwesomeIcon icon={isExpanded ? faCaretDown : faCaretRight} className="fa-md" />
         </div>
@@ -736,15 +739,17 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       );
     }
 
+    const keyPath = StorageUtilities.getFolderPath(folderPath);
+
     (projectListItems as any).push({
       accessibility: selectableListItemBehavior,
       onClick: this._handleStoragePathToggle,
-      key: "eitb." + itemType + "." + storagePathFolder,
+      key: "eitb." + itemType + "." + keyPath,
       content: (
         <div
           className="pil-pathHeader"
-          key={"eita." + itemType + "." + storagePathFolder}
-          title={"Toggle " + storagePathFolder + " visibility"}
+          key={"eita|" + itemType + "|" + keyPath}
+          title={(isExpanded ? "Hide " : "Show ") + folderPath}
           style={{
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
           }}
@@ -777,9 +782,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
                 style={{
                   backgroundColor: ColorUtilities.toCss(ColorUtilities.darker(typeColor, 0.1)),
                 }}
-                title={storagePathFolder}
+                title={folderPath}
               >
-                <span className="pil-name">{storagePathFolder}</span>
+                <span className="pil-name">{folderDisplayPath}</span>
               </span>
             }
             onMenuItemClick={this._contextMenuClick}
@@ -1031,11 +1036,11 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         for (const issue of issues) {
           errorMessage += this.props.allInfoSet.getEffectiveMessage(issue) + "\n";
         }
+
         itemItems.push(
           <MenuButton
             style={{
               gridColumn: 4,
-              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background,
               color: this.props.theme.siteVariables?.colorScheme.brand.foreground4,
             }}
             className="pil-itemIndicator"
@@ -1191,9 +1196,10 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       if (
         !this.state.collapsedItemTypes.includes(projectItem.itemType) &&
         this.shouldShowProjectItem(projectItem) &&
+        projectItem.projectPath &&
         !projectItem.isContentLoaded
       ) {
-        const projectFolderGrouping = projectItem.getFolderGroupingPath();
+        const projectFolderGrouping = StorageUtilities.getFolderPath(projectItem.projectPath);
 
         if (projectFolderGrouping === undefined || !this.state.collapsedStoragePaths.includes(projectFolderGrouping)) {
           if (!projectItem.isContentLoaded) {
@@ -1489,16 +1495,20 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
               this.props.filteredItems !== undefined ||
               !this.state.collapsedItemTypes.includes(projectItem.itemType)
             ) {
+              const folderPath = projectItem.folderPath;
               const folderGroupingPath = projectItem.getFolderGroupingPath();
 
-              if (folderGroupingPath !== lastStorageRoot) {
+              if (folderPath !== lastStorageRoot) {
                 if (
+                  folderPath !== undefined &&
                   folderGroupingPath !== undefined &&
-                  folderGroupingPath.length > 1 &&
+                  folderGroupingPath.length > 0 &&
+                  folderPath.length > 1 &&
                   projectItem.itemType !== ProjectItemType.soundCatalog
                 ) {
                   this._addStoragePathSpacer(
                     projectListItems,
+                    folderPath,
                     folderGroupingPath,
                     projectItem.itemType,
                     this.props.filteredItems === undefined,
@@ -1507,13 +1517,13 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
                   this._itemTypes[itemsAdded] = ListItemType.pathSpacer;
                   itemsAdded++;
                 }
-                lastStorageRoot = folderGroupingPath;
+                lastStorageRoot = folderPath;
               }
 
               if (
                 this.props.filteredItems !== undefined ||
-                !folderGroupingPath ||
-                !this.state.collapsedStoragePaths.includes(folderGroupingPath)
+                !folderPath ||
+                !this.state.collapsedStoragePaths.includes(folderPath)
               ) {
                 if (
                   projectItem === this.props.activeProjectItem &&

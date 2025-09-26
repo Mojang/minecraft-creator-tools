@@ -105,6 +105,12 @@
     "invalidManifestJson": 0,
     "missingResourcePackDependencies": 0,
     "internalProcessingErrors": 0,
+    "invalidWorldPackReferencesJson": 0,
+    "missingWorldPackReferencesFile": 0,
+    "invalidPackIds": 0,
+    "missingManifestVersion": 0,
+    "invalidManifestVersion": 0,
+    "packReferencesNotFound": 0,
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
@@ -527,13 +533,14 @@
     "errorCount": 0,
     "internalProcessingErrorCount": 2,
     "warningCount": 6,
-    "testSuccessCount": 35,
+    "testSuccessCount": 36,
     "testFailCount": 1,
     "testNotApplicableCount": 11,
     "errorSummary": "",
     "internalProcessingErrorSummary": "UNKNOWN: [JSONF402] Could not find expected form: entity/actor_document\nUNKNOWN: [JSONF402] Could not find expected form: spawn/spawn_rules",
     "warningSummary": "WARNING: [FORMATVER218] (/resource_packs/diverse_rp/animations/sample_mob_animations.json) Resource animation version (1.21.0) has a higher minor version number compared to current version (1.10.0)\nWARNING: [FORMATVER238] (/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json) Resource animation controller version (1.21.0) has a higher minor version number compared to current version (1.10.0)\nWARNING: [FORMATVER258] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) Spawn rules version (1.21.0) has a higher minor version number compared to current version (1.12.0)\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/loot_tables/sample_loot.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/loot_tables/sample_loot.json to `minecraft:stick`\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:iron_ingot`\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:stick`",
     "testFailSummary": "TESTFAIL: [JSONF000] Found 2 internal errors for JSON Structure Validation (via Minecraft docs) (JSONF). This may be a temporary issue with the test run.",
+    "infoGenerationTime": 13,
     "summary": {
       "BASEGAMEVER": {
         "2": {
@@ -1075,7 +1082,7 @@
           "testCompleteSuccesses": 1
         },
         "101": {
-          "title": "apisUsed"
+          "title": "APIs Used"
         }
       },
       "SCRIPTMODULE": {
@@ -1236,6 +1243,13 @@
         },
         "126": {
           "defaultMessage": "Level Dat Experiments"
+        }
+      },
+      "WPACKREFS": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "World Pack References (WPACKREFS) completed successfully",
+          "testCompleteSuccesses": 1
         }
       }
     }
@@ -2645,6 +2659,11 @@
       "gId": "WORLDDATA",
       "gIx": 126,
       "p": "/behavior_packs/diverse_bp/dialogue/sample_dialogue.json"
+    },
+    {
+      "iTp": 1,
+      "gId": "WPACKREFS",
+      "gIx": 1
     }
   ],
   "index": {

@@ -296,7 +296,7 @@ describe("Comprehensive Content Types", async () => {
   it("comprehensive project validation report matches", async () => {
     const project = await _loadProject("comprehensive");
 
-    const pis = new ProjectInfoSet(project, ProjectInfoSuite.default);
+    const pis = new ProjectInfoSet(project, ProjectInfoSuite.defaultInDevelopment);
     await pis.generateForProject();
 
     const dataObject = pis.getDataObject();
@@ -493,7 +493,7 @@ describe("Diverse Content Types", async () => {
   it("diverse content pack validation report", async () => {
     const project = await _loadProject("diverse_content");
 
-    const pis = new ProjectInfoSet(project, ProjectInfoSuite.default);
+    const pis = new ProjectInfoSet(project, ProjectInfoSuite.defaultInDevelopment);
     await pis.generateForProject();
 
     const dataObject = pis.getDataObject();
@@ -561,7 +561,7 @@ describe("Skin Pack Content - Errors", async () => {
   it("skin pack validation report", async () => {
     const project = await _loadProject("sample_skins_errors");
 
-    const pis = new ProjectInfoSet(project, ProjectInfoSuite.default);
+    const pis = new ProjectInfoSet(project, ProjectInfoSuite.defaultInDevelopment);
     await pis.generateForProject();
 
     const dataObject = pis.getDataObject();
@@ -629,7 +629,7 @@ describe("Skin Pack Content - Good", async () => {
   it("skin pack validation report", async () => {
     const project = await _loadProject("sample_skins_good");
 
-    const pis = new ProjectInfoSet(project, ProjectInfoSuite.default);
+    const pis = new ProjectInfoSet(project, ProjectInfoSuite.defaultInDevelopment);
     await pis.generateForProject();
 
     const dataObject = pis.getDataObject();

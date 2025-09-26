@@ -10,14 +10,6 @@
  * Items Documentation - minecraft:cooldown
  * 
  * minecraft:cooldown Samples
-
-Wind Charge - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/wind_charge.json
-
-"minecraft:cooldown": {
-  "category": "wind_charge",
-  "duration": 0.5
-}
-
  */
 
 import * as jsoncommon from './../../../jsoncommon';
@@ -34,10 +26,6 @@ export default interface MinecraftCooldown {
    * @remarks
    * All items with the same "category" are put on cooldown when one
    * is used.
-   * 
-   * Sample Values:
-   * Wind Charge: "wind_charge"
-   *
    */
   category: string;
 
@@ -45,10 +33,6 @@ export default interface MinecraftCooldown {
    * @remarks
    * How long the item is on cooldown before being able to be used
    * again.
-   * 
-   * Sample Values:
-   * Wind Charge: 0.5
-   *
    */
   duration: number;
 

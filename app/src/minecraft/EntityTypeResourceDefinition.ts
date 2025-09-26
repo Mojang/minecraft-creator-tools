@@ -410,7 +410,7 @@ export default class EntityTypeResourceDefinition {
     Log.assert(this._dataWrapper !== null, "ETRDP");
 
     if (this._dataWrapper) {
-      const defString = Utilities.consistentStringify(this._dataWrapper);
+      const defString = JSON.stringify(this._dataWrapper, null, 2);
 
       this._file.setContent(defString);
     }

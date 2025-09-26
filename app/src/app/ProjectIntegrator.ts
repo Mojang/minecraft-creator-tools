@@ -280,8 +280,8 @@ export default class ProjectIntegrator implements IErrorable {
       ) {
         for (const keySet of keySets) {
           if (
-            file.levelDbSubset.keys[keySet.largest] !== undefined &&
-            file.levelDbSubset.keys[keySet.smallest] !== undefined
+            file.levelDbSubset.keys.get(keySet.largest) !== undefined &&
+            file.levelDbSubset.keys.get(keySet.smallest) !== undefined
           ) {
             if (file.type === ProjectItemType.levelDbLog) {
               file.isUsed = true;

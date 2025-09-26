@@ -171,12 +171,7 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
       for (const path of vanillaPathList) {
         if (TextureImageInfoGenerator.isGameTexturePath(path)) {
           vanillaTexturePathNonMersCount++;
-          let extensionlessPath = path;
-          let period = path.lastIndexOf(".");
-
-          if (period >= 0) {
-            extensionlessPath = path.substring(0, period);
-          }
+          let extensionlessPath = StorageUtilities.stripExtension(path);
 
           vanillaTexturePathNonMers[extensionlessPath] = false;
         }

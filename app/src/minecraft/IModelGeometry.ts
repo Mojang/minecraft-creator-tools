@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { Item } from "./Items";
+
 export default interface IModelGeometry {
   format_version: string;
   __comment__?: string;
@@ -10,11 +12,33 @@ export default interface IModelGeometry {
 export interface IGeometry {
   description: IGeometryDescription;
   bones: IGeometryBone[];
+  item_display_transforms?: ItemDisplayTransformsCollection;
   texturewidth?: number; // geometry 1.8.0 prop
   textureheight?: number; // geometry 1.8.0 prop
   visible_bounds_width?: number; // geometry 1.8.0 prop
   visible_bounds_height?: number; // geometry 1.8.0 prop
   visible_bounds_offset?: number[]; // geometry 1.8.0 prop
+}
+
+export interface ItemDisplayTransformsCollection {
+  thirdperson_righthand?: ItemDisplayTransforms;
+  thirdperson_lefthand?: ItemDisplayTransforms;
+  firstperson_righthand?: ItemDisplayTransforms;
+  firstperson_lefthand?: ItemDisplayTransforms;
+  head?: ItemDisplayTransforms;
+  embedded?: ItemDisplayTransforms;
+  gui?: ItemDisplayTransforms;
+  ground?: ItemDisplayTransforms;
+  fixed?: ItemDisplayTransforms;
+}
+
+export interface ItemDisplayTransforms {
+  rotation?: number[]; // should be three elements
+  translation?: number[]; // should be three elements
+  scale?: number[]; // should be three elements
+  rotation_pivot?: number[]; // should be three elements
+  scale_pivot?: number[]; // should be three elements
+  fit_to_frame?: boolean;
 }
 
 export interface IGeometryDescription {

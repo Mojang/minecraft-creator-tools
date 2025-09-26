@@ -73,7 +73,7 @@ export default class LootTableBehaviorDefinition {
   }
 
   getTargetItemTypeIdList() {
-    if (!this.data || !this.data.pools) {
+    if (!this.data || !this.data.pools || !Array.isArray(this.data.pools)) {
       return;
     }
 
@@ -93,7 +93,7 @@ export default class LootTableBehaviorDefinition {
   }
 
   getTargetLootTablePathList() {
-    if (!this.data || !this.data.pools) {
+    if (!this.data || !this.data.pools || !Array.isArray(this.data.pools)) {
       return;
     }
 
@@ -202,8 +202,10 @@ export default class LootTableBehaviorDefinition {
 
     if (itemList) {
       for (const itemTypeId of itemList) {
-        const isVanilla = await Database.isVanillaToken(itemTypeId);
-        item.addUnfulfilledRelationship(itemTypeId, ProjectItemType.itemTypeBehavior, isVanilla);
+        if (typeof itemTypeId === "string") {
+          const isVanilla = await Database.isVanillaToken(itemTypeId);
+          item.addUnfulfilledRelationship(itemTypeId, ProjectItemType.itemTypeBehavior, isVanilla);
+        }
       }
     }
 

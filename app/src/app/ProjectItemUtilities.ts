@@ -1192,6 +1192,10 @@ export default class ProjectItemUtilities {
     }
 
     if (considering.projectPath) {
+      if (visitedPaths.has(considering.projectPath)) {
+        return true;
+      }
+
       visitedPaths.add(considering.projectPath);
     } else {
       return false;
@@ -1264,29 +1268,29 @@ export default class ProjectItemUtilities {
     return type === ProjectItemType.uiJson || type === ProjectItemType.uiTexture;
   }
 
-  static isUIRelated(projectItem: ProjectItem, dontGoUpward?: boolean, dontGoDownward?: boolean) {
-    if (projectItem.parentItems && !dontGoUpward) {
+  static isUIRelated(projectItem: ProjectItem, goUpwardOnly?: boolean, goDownwardOnly?: boolean) {
+    if (projectItem.parentItems && (goUpwardOnly || goUpwardOnly === undefined)) {
       for (const parentItem of projectItem.parentItems) {
         if (parentItem.parentItem) {
           if (this.isUI(parentItem.parentItem.itemType)) {
             return true;
           }
 
-          if (this.isUIRelated(parentItem.parentItem, false, true)) {
+          if (this.isUIRelated(parentItem.parentItem, true, false)) {
             return true;
           }
         }
       }
     }
 
-    if (projectItem.childItems && !dontGoDownward) {
-      for (const parentItem of projectItem.childItems) {
-        if (parentItem.childItem) {
-          if (this.isUI(parentItem.childItem.itemType)) {
+    if (projectItem.childItems && (goDownwardOnly || goDownwardOnly === undefined)) {
+      for (const childItem of projectItem.childItems) {
+        if (childItem.childItem) {
+          if (this.isUI(childItem.childItem.itemType)) {
             return true;
           }
 
-          if (this.isUIRelated(parentItem.childItem, true, false)) {
+          if (this.isUIRelated(childItem.childItem, false, true)) {
             return true;
           }
         }
@@ -1698,6 +1702,9 @@ export default class ProjectItemUtilities {
 
       case ProjectItemType.image:
         return ["subpacks"];
+
+      case ProjectItemType.craftingItemCatalog:
+        return ["item_catalog"];
 
       case ProjectItemType.lightingJson:
         return ["lighting"];

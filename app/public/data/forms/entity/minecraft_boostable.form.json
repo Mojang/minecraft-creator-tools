@@ -27,7 +27,8 @@
             "title": "Replace Item"
           }
         ],
-        "description": "List of items that can be used to boost while riding this entity. Each item has the following properties:"
+        "description": "List of items that can be used to boost while riding this entity. Each item has the following properties:",
+        "id": ""
       },
       "samples": {
         "/vanilla/behavior_pack/entities/pig.json": [

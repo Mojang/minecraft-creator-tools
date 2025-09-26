@@ -495,7 +495,7 @@ export default class BlockTypeStateEditor extends Component<IBlockTypeStateEdito
             }}
           >
             <div className="btse-componentToolBarArea">
-              <Toolbar aria-label="Component editing toolbar" items={toolbarItems} />
+              <Toolbar aria-label="Block type state editing" items={toolbarItems} />
             </div>
             {message}
             {stateForms}

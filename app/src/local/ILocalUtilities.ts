@@ -24,6 +24,10 @@ export default interface ILocalUtilities {
 
   readonly minecraftPreviewPath: string;
 
+  readonly minecraftUwpPath: string;
+
+  readonly minecraftPreviewUwpPath: string;
+
   generateCryptoRandomNumber(toVal: number): number;
 
   validateFolderPath(path: string): void;

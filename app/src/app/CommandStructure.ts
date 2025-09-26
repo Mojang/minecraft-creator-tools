@@ -2,12 +2,28 @@
 // Licensed under the MIT License.
 
 export default class CommandStructure {
-  public name: string;
+  public fullName: string;
   public commandArguments: string[];
 
-  constructor(commandName: string, commandArguments: string[]) {
-    this.name = commandName;
+  constructor(commandFullName: string, commandArguments: string[]) {
+    this.fullName = commandFullName;
     this.commandArguments = commandArguments;
+  }
+
+  get isNamespaced() {
+    const namespaceColon = this.fullName.indexOf(":");
+
+    return namespaceColon > 0;
+  }
+
+  get namespace() {
+    const namespaceColon = this.fullName.indexOf(":");
+
+    if (namespaceColon > 0) {
+      return this.fullName.substring(0, namespaceColon);
+    }
+
+    return undefined;
   }
 
   static parse(commandText: string) {

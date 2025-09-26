@@ -30,6 +30,7 @@ const MinecraftCommands = [
   "clear",
   "clearspawnpoint",
   "clone",
+  "commandbuilder",
   "connect",
   "controlscheme",
   "damage",
@@ -228,17 +229,17 @@ export default class CommandRegistry {
   async runCommand(context: IContext, commandText: string): Promise<ICommandResult | undefined> {
     const command = CommandStructure.parse(commandText);
 
-    if (!command || !command.name || !command.commandArguments) {
+    if (!command || !command.fullName || !command.commandArguments) {
       return undefined;
     }
 
-    const scope = this._commandsByScope[command.name];
-    const commandName = this._commandsByName[command.name];
+    const scope = this._commandsByScope[command.fullName];
+    const commandName = this._commandsByName[command.fullName];
 
-    if (command.name === "help") {
+    if (command.fullName === "help") {
       this.logHelp();
       return { status: CommandStatus.completed };
-    } else if (CommandRegistry.isMinecraftBuiltInCommand(command.name) && context.minecraft) {
+    } else if (CommandRegistry.isMinecraftBuiltInCommand(command.fullName) && context.minecraft) {
       Log.debug("Sending '" + commandText + "' to Minecraft.");
 
       let result = await context.minecraft.runCommand(commandText);
@@ -258,32 +259,32 @@ export default class CommandRegistry {
       }
 
       if ((scope === CommandScope.project || scope === CommandScope.debugProject) && !context.project) {
-        Log.message("Could not run command '" + command.name + "'; no active project.");
+        Log.message("Could not run command '" + command.fullName + "'; no active project.");
         return undefined;
       }
 
       if ((scope === CommandScope.minecraft || scope === CommandScope.debugMinecraft) && !context.minecraft) {
-        Log.message("Could not run command '" + command.name + "'; no active Minecraft deploy target was set.");
+        Log.message("Could not run command '" + command.fullName + "'; no active Minecraft deploy target was set.");
         return undefined;
       }
 
       if ((scope === CommandScope.host || scope === CommandScope.debugHost) && !context.host) {
-        Log.message("Could not run command '" + command.name + "'; no host was set.");
+        Log.message("Could not run command '" + command.fullName + "'; no host was set.");
         return undefined;
       }
 
-      const result = await commandName(context, command.name, command.commandArguments);
+      const result = await commandName(context, command.fullName, command.commandArguments);
 
       if (result.status === CommandStatus.invalidEnvironment) {
-        Log.error("'" + command.name + "' was not set up properly.");
+        Log.error("'" + command.fullName + "' was not set up properly.");
       } else if (result.status === CommandStatus.invalidArguments) {
-        Log.error("'" + command.name + "' command arguments were not set up.");
+        Log.error("'" + command.fullName + "' command arguments were not set up.");
       }
 
       return result;
     }
 
-    context.carto.notifyStatusUpdate("Could not find a command '" + command.name + "'.");
+    context.carto.notifyStatusUpdate("Could not find a command '" + command.fullName + "'.");
     return undefined;
   }
 }

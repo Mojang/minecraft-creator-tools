@@ -81,6 +81,48 @@ export default class LocalUtilities implements ILocalUtilities {
 
   get minecraftPath() {
     return (
+      this.userDataPath +
+      NodeStorage.platformFolderDelimiter +
+      "AppData" +
+      NodeStorage.platformFolderDelimiter +
+      "Roaming" +
+      NodeStorage.platformFolderDelimiter +
+      "Microsoft Bedrock" +
+      NodeStorage.platformFolderDelimiter +
+      "Users" +
+      NodeStorage.platformFolderDelimiter +
+      "Shared" +
+      NodeStorage.platformFolderDelimiter +
+      "games" +
+      NodeStorage.platformFolderDelimiter +
+      "com.mojang" +
+      NodeStorage.platformFolderDelimiter
+    );
+  }
+
+  get minecraftPreviewPath() {
+    return (
+      this.userDataPath +
+      NodeStorage.platformFolderDelimiter +
+      "AppData" +
+      NodeStorage.platformFolderDelimiter +
+      "Roaming" +
+      NodeStorage.platformFolderDelimiter +
+      "Microsoft Bedrock Preview" +
+      NodeStorage.platformFolderDelimiter +
+      "Users" +
+      NodeStorage.platformFolderDelimiter +
+      "Shared" +
+      NodeStorage.platformFolderDelimiter +
+      "games" +
+      NodeStorage.platformFolderDelimiter +
+      "com.mojang" +
+      NodeStorage.platformFolderDelimiter
+    );
+  }
+
+  get minecraftUwpPath() {
+    return (
       this.localAppDataPath +
       "Packages" +
       NodeStorage.platformFolderDelimiter +
@@ -95,7 +137,7 @@ export default class LocalUtilities implements ILocalUtilities {
     );
   }
 
-  get minecraftPreviewPath() {
+  get minecraftPreviewUwpPath() {
     return (
       this.localAppDataPath +
       "Packages" +

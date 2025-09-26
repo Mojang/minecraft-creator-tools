@@ -144,26 +144,26 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       if (commandList[i].trim().length > 2 && (!checkForSlash || commandList[i].startsWith("/"))) {
         const command = CommandStructure.parse(commandList[i]);
 
-        if (CommandRegistry.isMinecraftBuiltInCommand(command.name)) {
-          if (this.performAddOnValidations && CommandRegistry.isAddOnBlockedCommand(command.name)) {
+        if (CommandRegistry.isMinecraftBuiltInCommand(command.fullName)) {
+          if (this.performAddOnValidations && CommandRegistry.isAddOnBlockedCommand(command.fullName)) {
             items.push(
               new ProjectInfoItem(
                 InfoItemType.warning,
                 this.id,
                 WorldDataInfoGeneratorTest.containsWorldImpactingCommand,
                 "Contains command '" +
-                  command.name +
+                  command.fullName +
                   "' which is impacts the state of the entire world, and generally shouldn't be used in an add-on",
                 projectItem,
-                command.name,
+                command.fullName,
                 undefined,
                 commandList[i]
               )
             );
           }
-          commandsPi.incrementFeature(command.name);
+          commandsPi.incrementFeature(command.fullName);
 
-          if (command.name === "execute") {
+          if (command.fullName === "execute") {
             let foundRun = false;
             for (const arg of command.commandArguments) {
               if (arg === "run") {
@@ -180,9 +180,9 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
               InfoItemType.error,
               this.id,
               WorldDataInfoGeneratorTest.unexpectedCommandInCommandBlock,
-              "Unexpected command '" + command.name + "'",
+              "Unexpected command '" + command.fullName + "'",
               projectItem,
-              command.name,
+              command.fullName,
               undefined,
               commandList[i]
             )
@@ -455,15 +455,23 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       let chunkCount = 0;
       let subchunkLessChunkCount = 0;
 
-      for (const dimIndex in mcworld.chunks) {
-        let dim = mcworld.chunks[dimIndex];
+      const chunkKeys = mcworld.chunks.keys();
 
-        for (const chunkSliverIndex in dim) {
-          const chunkSliver = dim[chunkSliverIndex];
+      for (const dimIndex of chunkKeys) {
+        let dim = mcworld.chunks.get(dimIndex);
+
+        if (!dim) {
+          continue;
+        }
+
+        const xKeys = dim.keys();
+        for (const chunkSliverIndex of xKeys) {
+          const chunkSliver = dim.get(chunkSliverIndex);
 
           if (chunkSliver) {
-            for (const chunkId in chunkSliver) {
-              const chunk = chunkSliver[chunkId];
+            const zKeys = chunkSliver.keys();
+            for (const chunkId of zKeys) {
+              const chunk = chunkSliver.get(chunkId);
 
               if (chunk) {
                 chunkCount++;
@@ -517,27 +525,27 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                     if (cba.command && cba.command.trim().length > 2) {
                       let command = CommandStructure.parse(cba.command);
 
-                      if (CommandRegistry.isMinecraftBuiltInCommand(command.name)) {
-                        if (this.performAddOnValidations && CommandRegistry.isAddOnBlockedCommand(command.name)) {
+                      if (CommandRegistry.isMinecraftBuiltInCommand(command.fullName)) {
+                        if (this.performAddOnValidations && CommandRegistry.isAddOnBlockedCommand(command.fullName)) {
                           items.push(
                             new ProjectInfoItem(
                               InfoItemType.warning,
                               this.id,
                               WorldDataInfoGeneratorTest.containsWorldImpactingCommand,
                               "Contains command '" +
-                                command.name +
+                                command.fullName +
                                 "' which is impacts the state of the entire world, and generally shouldn't be used in an add-on",
                               projectItem,
-                              command.name,
+                              command.fullName,
                               undefined,
                               cba.command
                             )
                           );
                         }
 
-                        commandsPi.incrementFeature(command.name);
+                        commandsPi.incrementFeature(command.fullName);
 
-                        if (command.name === "execute") {
+                        if (command.fullName === "execute") {
                           let foundRun = false;
                           for (const arg of command.commandArguments) {
                             if (arg === "run") {
@@ -554,9 +562,9 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                             InfoItemType.error,
                             this.id,
                             WorldDataInfoGeneratorTest.unexpectedCommandInCommandBlock,
-                            "Unexpected command '" + command.name + "'",
+                            "Unexpected command '" + command.fullName + "'",
                             projectItem,
-                            command.name,
+                            command.fullName,
                             undefined,
                             cba.command
                           )

@@ -37,7 +37,9 @@ export default class FileExplorerFileDetail extends Component<
     super(props);
 
     this._handleCloseClick = this._handleCloseClick.bind(this);
-    this._handleExpanderClick = this._handleExpanderClick.bind(this);
+    this._handleToggleExpanderClick = this._handleToggleExpanderClick.bind(this);
+    this._handleExpandClick = this._handleExpandClick.bind(this);
+    this._handleCollapseClick = this._handleCollapseClick.bind(this);
     this._handleFileClick = this._handleFileClick.bind(this);
   }
 
@@ -53,7 +55,19 @@ export default class FileExplorerFileDetail extends Component<
     }
   }
 
-  _handleExpanderClick() {
+  _handleCollapseClick() {
+    if (this.props.onExpandedSet) {
+      this.props.onExpandedSet(false);
+    }
+  }
+
+  _handleExpandClick() {
+    if (this.props.onExpandedSet) {
+      this.props.onExpandedSet(true);
+    }
+  }
+
+  _handleToggleExpanderClick() {
     if (this.props.onExpandedSet) {
       this.props.onExpandedSet(!this.props.isExpanded);
     }
@@ -64,10 +78,6 @@ export default class FileExplorerFileDetail extends Component<
     let title = "";
 
     let backgroundColor = undefined;
-
-    if (this.props.selectedItem && this.props.selectedItem === this.props.file) {
-      backgroundColor = this.props.theme.siteVariables?.colorScheme.brand.background3;
-    }
 
     if (this.props.itemAnnotations) {
       for (const storageName in this.props.itemAnnotations) {
@@ -86,13 +96,18 @@ export default class FileExplorerFileDetail extends Component<
       }
     }
 
+    if (this.props.selectedItem && this.props.selectedItem === this.props.file) {
+      backgroundColor = this.props.theme.siteVariables?.colorScheme.brand.background3;
+      title += " Selected";
+    }
+
     let expandable = <></>;
 
     if (this.props.isExpandable) {
       expandable = (
-        <button
+        <div
           className="fexfid-expander"
-          onClick={this._handleExpanderClick}
+          onClick={this._handleToggleExpanderClick}
           title={"Expand/collapse " + this.props.file.name}
         >
           {this.props.isExpanded ? (
@@ -100,19 +115,40 @@ export default class FileExplorerFileDetail extends Component<
           ) : (
             <FontAwesomeIcon icon={faCaretRight} className="fa-lg" />
           )}
-        </button>
+        </div>
       );
     }
 
     return (
-      <div className={outerCss} title={title} style={{ backgroundColor: backgroundColor }}>
+      <div
+        className={outerCss}
+        style={{ backgroundColor: backgroundColor }}
+        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+          if (e.key === "Space") {
+            this._handleToggleExpanderClick();
+          } else if (e.key === "ArrowLeft") {
+            this._handleCollapseClick();
+          } else if (e.key === "ArrowRight") {
+            this._handleExpandClick();
+          } else if (e.key === "Enter") {
+            this._handleFileClick();
+          }
+        }}
+      >
         {expandable}
-        <button className="fexfid-summary" onClick={this._handleFileClick} title={"Select " + this.props.file.name}>
+        <div
+          title={title}
+          aria-selected={!!this.props.selectedItem && this.props.selectedItem === this.props.file}
+          className="fexfid-summary"
+          role="treeitem"
+          tabIndex={0}
+          onClick={this._handleFileClick}
+        >
           <div className="fexfid-icon">
             <FontAwesomeIcon icon={faFile} className="fa-lg" />
           </div>
           <div className="fexfid-label">{this.props.file.name}</div>
-        </button>
+        </div>
       </div>
     );
   }

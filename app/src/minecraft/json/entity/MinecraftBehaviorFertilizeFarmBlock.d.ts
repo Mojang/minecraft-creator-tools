@@ -34,7 +34,7 @@ export default interface MinecraftBehaviorFertilizeFarmBlock {
   /**
    * @remarks
    * Distance in blocks within the mob considers it has reached it's
-   * target position. 
+   * target position.
    */
   goal_radius?: number;
 

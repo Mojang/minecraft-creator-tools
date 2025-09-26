@@ -7,6 +7,14 @@ export default interface IEntityTypeDescription {
   is_spawnable: boolean;
   is_summonable: boolean;
   is_experimental: boolean;
-  properties?: { [propertyName: string]: object | undefined };
+  properties?: { [propertyName: string]: IEntityTypeDescriptionProperty | undefined };
   aliases?: { [aliasName: string]: object };
+}
+
+export interface IEntityTypeDescriptionProperty {
+  type: "enum" | "bool" | "int" | "float" | string;
+  values?: string[] | number[];
+  default: string | boolean | number;
+  range?: [number, number];
+  client_sync?: boolean;
 }

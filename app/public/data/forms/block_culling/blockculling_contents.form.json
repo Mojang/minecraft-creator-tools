@@ -1,6 +1,12 @@
 {
   "fields": [
     {
+      "id": "face",
+      "title": "Facing",
+      "description": "Facing",
+      "dataType": 2
+    },
+    {
       "id": "bone",
       "title": "bone",
       "description": "bone",
@@ -11,12 +17,6 @@
       "title": "cube",
       "description": "cube",
       "dataType": 0
-    },
-    {
-      "id": "face",
-      "title": "enum SharedTypes_Facing",
-      "description": "enum SharedTypes_Facing",
-      "dataType": 2
     }
   ],
   "description": "BlockCulling Contents",

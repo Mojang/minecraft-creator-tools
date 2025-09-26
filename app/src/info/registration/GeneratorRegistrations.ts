@@ -59,6 +59,7 @@ import CheckLangFilesGenerator from "../projectGenerators/CheckLangFilesGenerato
 import { SuiteConfigs } from "./RegistrationData";
 import CheckManifestGenerator from "../projectGenerators/checkManifest/CheckManifestGenerator";
 import CheckResourcePackDependenciesGenerator from "../projectGenerators/CheckResourcePackDependenciesGenerator";
+import CheckWorldPackReferencesGenerator from "../projectGenerators/CheckWorldPackReferencesGenerator";
 
 export const TestsToExcludeFromDefaultSuite = ["CADDONREQ", "CADDONIREQ", "LANGFILES", "SHARING", "VANDUPES"];
 
@@ -108,6 +109,7 @@ export default class GeneratorRegistrations {
     new CheckGeometryFormatInfoGenerator(),
     new CheckLangFilesGenerator(),
     new CheckResourcePackDependenciesGenerator(),
+    new CheckWorldPackReferencesGenerator(),
     ...this.managers,
   ];
 

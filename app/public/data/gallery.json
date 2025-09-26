@@ -37,8 +37,8 @@
       "type": 0
     },
     {
-      "title": "Deferred Lighting Starter",
-      "description": "A simple resource pack for experimenting with deferred lighting (preview).",
+      "title": "Vibrant Visuals",
+      "description": "A simple resource pack for experimenting with Vibrant Visuals.",
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-samples",
       "gitHubFolder": "/deferred_lighting_starter",
@@ -224,6 +224,97 @@
       ],
       "id": "fishBowlBlock",
       "type": 2
+    },
+    {
+      "title": "Simple Food (Biscuit)",
+      "description": "A starter example of a simple food item (a hard biscuit).",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-samples",
+      "gitHubFolder": "/starter_items",
+      "logoImage": "resource_packs/starter_items/textures/items/hard_biscuit.png",
+      "id": "hardBiscuit",
+      "fileList": [
+        "/behavior_packs/starter_items/items/hard_biscuit.json",
+        "/resource_packs/starter_items/texts/en_US.lang",
+        "/resource_packs/starter_items/textures/items/hard_biscuit.png",
+        "/resource_packs/starter_items/textures/items/hard_biscuit_mers.tga",
+        "/resource_packs/starter_items/textures/items/hard_biscuit.texture_set.json",
+        "/resource_packs/starter_items/textures/item_texture.json"
+      ],
+      "type": 7
+    },
+    {
+      "title": "Simple Food (Pear)",
+      "description": "A starter example of a simple food item (a pear).",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-samples",
+      "gitHubFolder": "/starter_items",
+      "logoImage": "resource_packs/starter_items/textures/items/pear.png",
+      "id": "pear",
+      "fileList": [
+        "/behavior_packs/starter_items/items/pear.json",
+        "/resource_packs/starter_items/texts/en_US.lang",
+        "/resource_packs/starter_items/textures/items/pear.png",
+        "/resource_packs/starter_items/textures/items/pear_mers.tga",
+        "/resource_packs/starter_items/textures/items/pear.texture_set.json",
+        "/resource_packs/starter_items/textures/item_texture.json"
+      ],
+      "type": 7
+    },
+    {
+      "title": "Simple Drink (Elixir)",
+      "description": "A starter example of a simple drink item (an elixir).",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-samples",
+      "gitHubFolder": "/starter_items",
+      "logoImage": "resource_packs/starter_items/textures/items/elixir.png",
+      "id": "elixir",
+      "fileList": [
+        "/behavior_packs/starter_items/items/elixir.json",
+        "/behavior_packs/starter_items/recipes/elixir.json",
+        "/resource_packs/starter_items/texts/en_US.lang",
+        "/resource_packs/starter_items/textures/items/elixir.png",
+        "/resource_packs/starter_items/textures/items/elixir_mers.tga",
+        "/resource_packs/starter_items/textures/items/elixir.texture_set.json",
+        "/resource_packs/starter_items/textures/item_texture.json"
+      ],
+      "type": 7
+    },
+    {
+      "title": "Simple Tool (Rod)",
+      "description": "A starter example of a simple tool item (a rod).",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-samples",
+      "gitHubFolder": "/starter_items",
+      "logoImage": "resource_packs/starter_items/textures/items/rod.png",
+      "id": "rod",
+      "fileList": [
+        "/behavior_packs/starter_items/items/rod.json",
+        "/resource_packs/starter_items/texts/en_US.lang",
+        "/resource_packs/starter_items/textures/items/rod.png",
+        "/resource_packs/starter_items/textures/items/rod_mers.tga",
+        "/resource_packs/starter_items/textures/items/rod.texture_set.json",
+        "/resource_packs/starter_items/textures/item_texture.json"
+      ],
+      "type": 7
+    },
+    {
+      "title": "Simple Item (Key)",
+      "description": "A starter example of a simple item (a key).",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-samples",
+      "gitHubFolder": "/starter_items",
+      "logoImage": "resource_packs/starter_items/textures/items/key.png",
+      "id": "key",
+      "fileList": [
+        "/behavior_packs/starter_items/items/key.json",
+        "/resource_packs/starter_items/texts/en_US.lang",
+        "/resource_packs/starter_items/textures/items/key.png",
+        "/resource_packs/starter_items/textures/items/key_mers.tga",
+        "/resource_packs/starter_items/textures/items/key.texture_set.json",
+        "/resource_packs/starter_items/textures/item_texture.json"
+      ],
+      "type": 7
     },
     {
       "title": "Custom sword",
@@ -1453,18 +1544,16 @@
       "gitHubFolder": "/starterTestsTutorial",
       "logoImage": "behavior_packs/starterTestsTutorial/pack_icon.png",
       "id": "helloWorldGameTest",
-      "tags": ["gametest"],
       "type": 0
     },
     {
-      "title": "Basic GameTests",
+      "title": "Basic GameTest",
       "description": "A collection of GameTests focused on exploring different facets of Mob Behavior.",
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-gametests",
       "gitHubFolder": "/js-gametests",
       "logoImage": "behavior_packs/JsGameTests/pack_icon.png",
       "id": "mobGameTest",
-      "tags": ["gametest"],
       "type": 0
     },
     {

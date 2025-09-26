@@ -769,7 +769,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
           <div className="ppe-defaultEditinput">
             <Dropdown
               items={this.editorPreferences}
-              aria-labelledby="=ppe-defaultEditlabel"
+              aria-labelledby="ppe-defaultEditlabel"
               placeholder="Select your edit experience"
               defaultValue={this.editorPreferences[this.props.project.editPreference]}
               onChange={this._handleEditPreferenceChange}

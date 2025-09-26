@@ -2,8 +2,8 @@
   "fields": [
     {
       "id": "type",
-      "title": "enum SharedTypes_v1_21_20_IntProviderType",
-      "description": "enum SharedTypes_v1_21_20_IntProviderType",
+      "title": "Provider Type",
+      "description": "Provider Type",
       "dataType": 2
     },
     {

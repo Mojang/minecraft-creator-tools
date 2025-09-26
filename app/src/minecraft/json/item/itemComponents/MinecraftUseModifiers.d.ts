@@ -39,16 +39,22 @@ import * as jsoncommon from './../../../jsoncommon';
 
 /**
  * Item Use Modifiers (minecraft:use_modifiers)
- * This component modifies use effects, including how long the item
- * takes to use and the player's speed when used in combination with
- * components like "shooter", "throwable", or "food".
+ * Modifies use behavior, including how long the item takes to use
+ * and the player's movement speed.
  */
 export default interface MinecraftUseModifiers {
 
   /**
    * @remarks
-   * Modifier value to scale the players movement speed when item is
-   * in use.
+   * Whether vibrations are emitted when the item starts or stops being
+   * used. Default value: true.
+   */
+  emit_vibrations?: boolean;
+
+  /**
+   * @remarks
+   * Multiplier applied to the player's movement speed while the item
+   * is in use.
    * 
    * Sample Values:
    * Apple: 0.35
@@ -59,7 +65,8 @@ export default interface MinecraftUseModifiers {
 
   /**
    * @remarks
-   * How long the item takes to use in seconds.
+   * Time, in seconds, that the item takes to use. Default value: 
+   * 0.
    * 
    * Sample Values:
    * Apple: 1.6

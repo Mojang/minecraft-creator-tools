@@ -4,7 +4,6 @@
 import IFile from "../storage/IFile";
 import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
-import Utilities from "../core/Utilities";
 
 export const PrettierRcDefaultSettings: { [name: string]: any } = {
   trailingComma: "es5",
@@ -84,7 +83,7 @@ export default class PrettierRcConfig {
     Log.assert(this.definition !== null, "PRCP");
 
     if (this.definition) {
-      const prettierRcJsonString = Utilities.consistentStringify(this.definition);
+      const prettierRcJsonString = JSON.stringify(this.definition, null, 2);
 
       this._file.setContent(prettierRcJsonString);
     }

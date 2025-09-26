@@ -7,10 +7,11 @@ import IProjectInfo from "./IProjectInfo";
 import IProjectMetaState from "./IProjectMetaState";
 
 export enum ProjectInfoSuite {
-  default = 0,
+  defaultInDevelopment = 0,
   currentPlatformVersions = 1,
   cooperativeAddOn = 2,
   sharing = 3,
+  sharingStrict = 4,
 }
 
 export default interface IProjectInfoData {

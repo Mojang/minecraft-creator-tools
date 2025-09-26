@@ -397,7 +397,11 @@ export default class EntityTypeComponentSetEditor extends Component<
 
             if (component.id === this.state?.activeComponentId) {
               componentForms.push(
-                <Toolbar aria-label="Component editing toolbar" key="etcse.toolbar" items={perComponentToolbarItems} />
+                <Toolbar
+                  aria-label="Entity type component list actions"
+                  key="etcse.toolbar"
+                  items={perComponentToolbarItems}
+                />
               );
 
               if (this.state.activeComponentId) {
@@ -587,7 +591,7 @@ export default class EntityTypeComponentSetEditor extends Component<
           <div className="etcse-componentArea">
             <div className="etcse-titleArea">{title}</div>
             <div className="etcse-componentToolBarArea">
-              <Toolbar aria-label="Component editing toolbar" items={toolbarItems} />
+              <Toolbar aria-label="Entity type components actions" items={toolbarItems} />
             </div>
           </div>
 

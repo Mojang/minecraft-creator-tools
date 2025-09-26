@@ -393,7 +393,7 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
           }}
         >
-          <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
+          <Toolbar aria-label="Block type actions" items={toolbarItems} />
         </div>
         {mode}
       </div>

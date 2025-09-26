@@ -2,7 +2,7 @@
   "fields": [
     {
       "id": "value",
-      "title": "enum SharedTypes_Legacy_UseAnimation",
+      "title": "Value",
       "description": "Specifies which animation to play when the the item is used.",
       "dataType": 2
     }

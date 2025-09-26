@@ -24,6 +24,8 @@ import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import SummaryInfoGenerator from "./SummaryInfoGenerator";
 import HashUtilities from "../core/HashUtilities";
 
+const ItemBatchSize = 500;
+
 export default class ProjectInfoSet {
   project?: Project;
   suite: ProjectInfoSuite;
@@ -49,11 +51,14 @@ export default class ProjectInfoSet {
       case "sharing":
         return ProjectInfoSuite.sharing;
 
+      case "sharingstrict":
+        return ProjectInfoSuite.sharingStrict;
+
       case "currentplatform":
         return ProjectInfoSuite.currentPlatformVersions;
 
       default:
-        return ProjectInfoSuite.default; // default is all infogenerators except cooperative add-on and sharing
+        return ProjectInfoSuite.defaultInDevelopment; // default is all infogenerators except cooperative add-on and sharing
     }
   }
 
@@ -61,6 +66,9 @@ export default class ProjectInfoSet {
     switch (suite) {
       case ProjectInfoSuite.sharing:
         return "sharing";
+
+      case ProjectInfoSuite.sharingStrict:
+        return "sharingstrict";
 
       case ProjectInfoSuite.cooperativeAddOn:
         return "addon";
@@ -177,7 +185,7 @@ export default class ProjectInfoSet {
     if (suite) {
       this.suite = suite;
     } else {
-      this.suite = ProjectInfoSuite.default;
+      this.suite = ProjectInfoSuite.defaultInDevelopment;
     }
 
     if (index) {
@@ -263,12 +271,21 @@ export default class ProjectInfoSet {
   matchesSuite(
     generator: IProjectFileInfoGenerator | IProjectInfoGenerator | IProjectItemInfoGenerator | IProjectInfoGeneratorBase
   ) {
-    if (this.suite === ProjectInfoSuite.default && !TestsToExcludeFromDefaultSuite.includes(generator.id)) {
+    if (
+      this.suite === ProjectInfoSuite.defaultInDevelopment &&
+      !TestsToExcludeFromDefaultSuite.includes(generator.id)
+    ) {
       return true;
     }
 
-    if (this.suite === ProjectInfoSuite.sharing) {
+    if (this.suite === ProjectInfoSuite.sharing || this.suite === ProjectInfoSuite.sharingStrict) {
       if (generator.id === "SHARING") {
+        return true;
+      }
+    }
+
+    if (this.suite === ProjectInfoSuite.sharingStrict) {
+      if (generator.id === "LANGFILES" || generator.id === "VANDUPES") {
         return true;
       }
     }
@@ -322,11 +339,16 @@ export default class ProjectInfoSet {
       await new Promise(prom);
     } else {
       this._isGenerating = true;
+      const generationStartTime = Date.now();
 
-      const valOperId = await this.project?.carto.notifyOperationStarted(
-        "Validating '" + this.project.name + "'",
-        StatusTopic.validation
-      );
+      if (!this.project) {
+        Log.throwUnexpectedUndefined("PISGFP");
+        return;
+      }
+
+      let baseValidationMessage = "Validating '" + this.project.name + "'";
+
+      const valOperId = await this.project?.carto.notifyOperationStarted(baseValidationMessage, StatusTopic.validation);
 
       this.info.summary = undefined;
 
@@ -339,11 +361,6 @@ export default class ProjectInfoSet {
       const genContentIndex = new ContentIndex();
 
       genContentIndex.iteration = new Date().getTime();
-
-      if (!this.project) {
-        Log.throwUnexpectedUndefined("PISGFP");
-        return;
-      }
 
       await this.project.loc.load();
 
@@ -373,6 +390,8 @@ export default class ProjectInfoSet {
           const gen = projGenerators[i];
 
           if ((!this._excludeTests || !this._excludeTests.includes(gen.id)) && gen && this.matchesSuite(gen)) {
+            await this.project?.carto.notifyOperationUpdate(valOperId, baseValidationMessage + " (" + gen.title + ")");
+
             GeneratorRegistrations.configureForSuite(gen, this.suite);
 
             try {
@@ -407,6 +426,13 @@ export default class ProjectInfoSet {
         for (let i = 0; i < itemsCopy.length; i++) {
           const pi = itemsCopy[i];
 
+          if (i % ItemBatchSize === ItemBatchSize - 1) {
+            await this.project?.carto.notifyOperationUpdate(
+              valOperId,
+              baseValidationMessage + " (items " + Math.ceil((i / itemsCopy.length) * 100) + "%)"
+            );
+          }
+
           if (!pi.isContentLoaded) {
             await pi.loadContent();
           }
@@ -416,6 +442,7 @@ export default class ProjectInfoSet {
 
             if ((!this._excludeTests || !this._excludeTests.includes(gen.id)) && this.matchesSuite(gen)) {
               GeneratorRegistrations.configureForSuite(gen, this.suite);
+
               try {
                 const results = await gen.generate(pi, genContentIndex);
 
@@ -447,6 +474,8 @@ export default class ProjectInfoSet {
           0
         );
       }
+
+      await this.project?.carto.notifyOperationUpdate(valOperId, baseValidationMessage + " (finishing)");
 
       this.addTestSummations(genItems, genItemsByStoragePath, projGenerators, this._excludeTests);
       this.addTestSummations(genItems, genItemsByStoragePath, itemGenerators, this._excludeTests);
@@ -527,6 +556,10 @@ export default class ProjectInfoSet {
       this.info.internalProcessingErrorSummary = this.getSummaryByType(InfoItemType.internalProcessingError);
       this.info.warningSummary = this.getSummaryByType(InfoItemType.warning);
       this.info.testFailSummary = this.getSummaryByType(InfoItemType.testCompleteFail);
+
+      const generationEndTime = Date.now();
+
+      this.info.infoGenerationTime = generationEndTime - generationStartTime;
 
       if (valOperId !== undefined) {
         await this.project?.carto.notifyOperationEnded(

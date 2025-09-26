@@ -6,13 +6,15 @@ import IManagedComponentSetItem from "./IManagedComponentSetItem";
 import ManagedComponentGroup from "./ManagedComponentGroup";
 import ManagedEventActionOrActionSet from "./ManagedEventActionOrActionSet";
 
+export const MaxStatesToProcess = 1024;
+
 class EntityTypeStateBuilderContext {
   entityType: EntityTypeDefinition;
 
   baseTriggers: TriggerDescription[] = [];
   eventsById: { [eventId: string]: ManagedEventActionOrActionSet } = {};
 
-  states: { [stateId: string]: IEntityTypeState } = {};
+  states: Map<string, IEntityTypeState> = new Map();
 
   constructor(entityTypeParent: EntityTypeDefinition) {
     this.entityType = entityTypeParent;
@@ -35,19 +37,21 @@ export class EntityTypeStateBuilder {
 
     await EntityTypeStateBuilder.considerState(context, entityType, []);
 
-    for (const stateId in context.states) {
-      const state = context.states[stateId];
+    const stateKeys = context.states.keys();
 
-      if (!state.isLikely) {
+    for (const stateId of stateKeys) {
+      const state = context.states.get(stateId);
+
+      if (state && !state.isLikely) {
         for (const conn of state.outboundConnections) {
           conn.isLikely = false;
         }
       }
     }
 
-    for (const stateId in context.states) {
-      const state = context.states[stateId];
-      if (state.isLikely) {
+    for (const stateId of stateKeys) {
+      const state = context.states.get(stateId);
+      if (state && state.isLikely) {
         let foundALikely = false;
 
         for (const conn of state.outboundConnections) {
@@ -66,6 +70,7 @@ export class EntityTypeStateBuilder {
         }
       }
     }
+
     return context.states;
   }
 
@@ -95,7 +100,7 @@ export class EntityTypeStateBuilder {
 
     stateId += "|" + cgAddsRemoveList.join("|");
 
-    const targetState = context.states[stateId];
+    const targetState = context.states.get(stateId);
 
     if (targetState) {
       if (inboundConnection && inboundConnection.source !== targetState) {
@@ -158,7 +163,7 @@ export class EntityTypeStateBuilder {
       outboundConnections: [],
     };
 
-    context.states[stateId] = state;
+    context.states.set(stateId, state);
 
     if (inboundConnection) {
       inboundConnection.target = state;
@@ -166,6 +171,10 @@ export class EntityTypeStateBuilder {
         state.isLikely = true;
       }
       state.inboundConnections.push(inboundConnection);
+    }
+
+    if (context.states.size >= MaxStatesToProcess) {
+      return;
     }
 
     for (const evId in context.eventsById) {
@@ -221,7 +230,9 @@ export class EntityTypeStateBuilder {
 
               state.outboundConnections.push(connection);
 
-              await this.considerState(context, context.entityType, newComponentGroupAddRemoves, connection);
+              if (context.states.size < MaxStatesToProcess) {
+                await this.considerState(context, context.entityType, newComponentGroupAddRemoves, connection);
+              }
             }
           }
         }

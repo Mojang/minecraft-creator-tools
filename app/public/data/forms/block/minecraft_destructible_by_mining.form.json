@@ -52,7 +52,8 @@
               "content": "{\n\t\"minecraft:destructible_by_mining\": {\n\t\t\"seconds_to_destroy\": 10,\n\t\t\"item_specific_speeds\": [\n\t\t\t{\n\t\t\t\t\"item\": \"minecraft:iron_pickaxe\",\n\t\t\t\t\"destroy_speed\": 5.0\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"item\": \"minecraft:diamond_pickaxe\",\n\t\t\t\t\"destroy_speed\": 2.0\n\t\t\t}\n\t\t]\n\t}\n}"
             }
           ]
-        }
+        },
+        "id": ""
       },
       "samples": {
         "samples": [

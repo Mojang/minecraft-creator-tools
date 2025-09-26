@@ -55,7 +55,8 @@
                   "defaultValue": -1,
                   "dataType": 0
                 }
-              ]
+              ],
+              "id": ""
             }
           },
           {
@@ -77,7 +78,8 @@
             "description": "If true, mobs spawned from breeding will always inherit main alleles from parents' main alleles and hidden alleles from the hidden ones.",
             "dataType": 2
           }
-        ]
+        ],
+        "id": ""
       },
       "samples": {
         "/vanilla/behavior_pack/entities/goat.json": [

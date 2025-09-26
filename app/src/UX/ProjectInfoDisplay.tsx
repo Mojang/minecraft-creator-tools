@@ -6,7 +6,15 @@ import ProjectInfoSet from "../info/ProjectInfoSet";
 import ProjectInfoItemDisplay from "./ProjectInfoItemDisplay";
 import ProjectInfoItem from "../info/ProjectInfoItem";
 import Utilities from "../core/Utilities";
-import { Dropdown, DropdownProps, MenuItemProps, ThemeInput, Toolbar } from "@fluentui/react-northstar";
+import {
+  Dropdown,
+  DropdownProps,
+  Input,
+  InputProps,
+  MenuItemProps,
+  ThemeInput,
+  Toolbar,
+} from "@fluentui/react-northstar";
 import {
   CustomLabel,
   DownArrowLabel,
@@ -38,8 +46,8 @@ interface IProjectInfoDisplayProps extends IAppProps {
   theme: ThemeInput<any>;
   file?: IFile;
   data?: IProjectInfoData;
-  allInfoSet?: ProjectInfoSet;
-  allInfoSetGenerated?: boolean;
+  indevInfoSet?: ProjectInfoSet;
+  indevInfoSetGenerated?: boolean;
   onNotifyInfoSetLoaded?: (infoSet: ProjectInfoSet) => void;
   onInfoItemCommand?: (command: InfoItemCommand, item: ProjectInfoItem) => Promise<void>;
 }
@@ -60,6 +68,7 @@ interface IProjectInfoDisplayState {
   displayInfo: boolean;
   isLoading: boolean;
   maxItems: number;
+  searchTerm?: string;
   loadStatus?: string;
 }
 
@@ -74,7 +83,7 @@ export enum ProjectInfoDisplayMenuState {
 }
 
 export const SuiteTitles = [
-  "All",
+  "In-Development Validation",
   "Current Platform Versions",
   "Cooperative Add-On Best Practices",
   "Sharing Best Practices",
@@ -108,11 +117,12 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     this._downloadCsvReport = this._downloadCsvReport.bind(this);
     this._handleListScroll = this._handleListScroll.bind(this);
     this._handleExportMenuOpen = this._handleExportMenuOpen.bind(this);
+    this._handleSearchTermChanged = this._handleSearchTermChanged.bind(this);
 
     let suite = this.props.carto.preferredSuite;
 
     if (suite === undefined) {
-      suite = ProjectInfoSuite.default;
+      suite = ProjectInfoSuite.defaultInDevelopment;
     }
 
     this.state = {
@@ -219,12 +229,12 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
           contentIndex
         );
       }
-    } else if (this.props.project && this.state.activeSuite === ProjectInfoSuite.default) {
-      newInfoSet = this.props.project.infoSet;
+    } else if (this.props.project && this.state.activeSuite === ProjectInfoSuite.defaultInDevelopment) {
+      newInfoSet = this.props.project.indevInfoSet;
     } else if (this.props.project) {
       newInfoSet = new ProjectInfoSet(this.props.project, this.state.activeSuite);
 
-      await this.props.project.infoSet.generateForProject(force);
+      await this.props.project.indevInfoSet.generateForProject(force);
     }
 
     if (newInfoSet === undefined) {
@@ -234,7 +244,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     if (!this.props.file && !this.props.data) {
       await newInfoSet.generateForProject(force);
 
-      if (this.state.activeSuite === ProjectInfoSuite.default && this.props.onNotifyInfoSetLoaded) {
+      if (this.state.activeSuite === ProjectInfoSuite.defaultInDevelopment && this.props.onNotifyInfoSetLoaded) {
         this.props.onNotifyInfoSetLoaded(newInfoSet);
       }
     }
@@ -283,10 +293,16 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
         return data.toString();
       } else if (typeof data === "object") {
         let str = Utilities.consistentStringifyTrimmed(data);
+        if (Array.isArray(data)) {
+          if (str === "[]") {
+            return "(empty)";
+          }
 
-        if (str.length > 1000) {
-          str = str.substring(0, 1000) + "...";
+          str = str.substring(1, str.length - 1);
+
+          str = str.replace(/","/g, '", "');
         }
+
         return str;
       }
 
@@ -437,7 +453,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
     data: DropdownProps
   ) {
-    let targetedSuite = ProjectInfoSuite.default;
+    let targetedSuite = ProjectInfoSuite.defaultInDevelopment;
 
     if (data.value === SuiteTitles[1]) {
       targetedSuite = ProjectInfoSuite.currentPlatformVersions;
@@ -445,6 +461,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       targetedSuite = ProjectInfoSuite.cooperativeAddOn;
     } else if (data.value === SuiteTitles[3]) {
       targetedSuite = ProjectInfoSuite.sharing;
+    } else if (data.value === SuiteTitles[4]) {
+      targetedSuite = ProjectInfoSuite.sharingStrict;
     }
 
     if (targetedSuite !== this.props.carto.preferredSuite) {
@@ -613,6 +631,47 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     //    await this._generateInfoSetInternal(true);
   }
 
+  matchesSearch(key: string) {
+    if (!this.state.searchTerm || this.state.searchTerm.length < 3) {
+      return true;
+    }
+
+    const searchTerms = this.state.searchTerm.toLowerCase().split(" ");
+
+    for (const term of searchTerms) {
+      if (key.toLowerCase().indexOf(term) < 0) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  _handleSearchTermChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
+    if (data === undefined || this.props.carto === null || this.state == null) {
+      return;
+    }
+
+    this.setState({
+      searchTerm: data.value,
+      activeSuite: this.state.activeSuite,
+      selectedInfoSet: this.state.selectedInfoSet,
+      menuState: this.state.menuState,
+      lastExportKey: this.state.lastExportKey,
+      lastExportFunction: this.state.lastExportFunction,
+      lastExportData: this.state.lastExportData,
+      displayErrors: this.state.displayErrors,
+      displaySuccess: this.state.displaySuccess,
+      maxItems: this.state.maxItems,
+      displayFailure: this.state.displayFailure,
+      displayWarnings: this.state.displayWarnings,
+      displayRecommendation: this.state.displayRecommendation,
+      displayInfo: this.state.displayInfo,
+      isLoading: this.state.isLoading,
+      loadStatus: this.state.loadStatus,
+    });
+  }
+
   render() {
     let contentAreaHeightSmall = "calc(100vh - " + (this.props.heightOffset + 120) + "px)";
     let contentAreaHeightLarge = "calc(100vh - " + (this.props.heightOffset + 89) + "px)";
@@ -622,40 +681,6 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
     const lines = [];
     const contentSummaryLines = [];
-
-    const topToolbarItems = [
-      {
-        icon: (
-          <SummaryTabLabel
-            theme={this.props.theme}
-            role="tab"
-            aria-selected={this.state.viewMode === ProjectInfoDisplayMode.summary}
-            isSelected={this.state.viewMode === ProjectInfoDisplayMode.summary}
-            isCompact={width < 1100}
-          />
-        ),
-        key: "infoFilter",
-        kind: "toggle",
-        onClick: this._setSummaryMode,
-        title: "Toggle whether a summary view is shown",
-      },
-      {
-        icon: (
-          <InfoTabLabel
-            theme={this.props.theme}
-            role="tab"
-            aria-selected={this.state.viewMode === ProjectInfoDisplayMode.info}
-            isSelected={this.state.viewMode === ProjectInfoDisplayMode.info}
-            isCompact={width < 1100}
-          />
-        ),
-        key: "errorFilter",
-        kind: "toggle",
-        onClick: this._setInfoMode,
-        title: "Toggle whether an info view is shown",
-      },
-    ];
-
     const actionToolbarItems: any[] = [];
 
     let exportKeys: { [exportOptionKey: string]: any } = {};
@@ -821,6 +846,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     }
 
     let outer = <></>;
+    let rowCount = 0;
 
     if (this.state.isLoading) {
       outer = (
@@ -842,53 +868,82 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
         </div>
       );
     } else if (this.state.viewMode === ProjectInfoDisplayMode.summary) {
-      let keyVals = undefined;
+      let summaryKeyVals = undefined;
 
       if ((this.props.file || this.props.data) && this.state.selectedInfoSet) {
-        keyVals = this.state.selectedInfoSet.info as { [index: string]: any };
-      } else if (this.props.allInfoSet && this.props.allInfoSet.info.featureSets) {
-        keyVals = this.props.allInfoSet.info as { [index: string]: any };
+        summaryKeyVals = this.state.selectedInfoSet.info as { [index: string]: any };
+      } else if (this.props.indevInfoSet && this.props.indevInfoSet.info.featureSets) {
+        summaryKeyVals = this.props.indevInfoSet.info as { [index: string]: any };
       }
 
-      if (keyVals) {
-        for (const key in keyVals) {
+      if (summaryKeyVals) {
+        const keys = Object.keys(summaryKeyVals);
+        keys.sort();
+
+        lines.push(<div className="pis-areaHeader">Key Items</div>);
+        const rows = [];
+
+        for (const key of keys) {
           if (key !== "featureSets" && key !== "summary" && key !== "features") {
-            const val = keyVals[key];
+            const val = summaryKeyVals[key];
 
-            if (key === "defaultIcon" && val && val.length > 100) {
-              lines.push(
-                <div className="pis-itemHeader" key={key + "headerA"}>
-                  {Utilities.humanifyJsName(key)}
-                </div>
-              );
-              lines.push(
-                <div
-                  className="pis-itemData pis-image"
-                  key={key + "dataC"}
-                  style={{
-                    backgroundImage: "url('data:image/png;base64, " + val + "')",
-                  }}
-                >
-                  &#160;
-                </div>
-              );
-            } else if (val) {
-              lines.push(
-                <div className="pis-itemHeader" key={key + "headerA"}>
-                  {Utilities.humanifyJsName(key)}
-                </div>
-              );
+            const cells = [];
 
-              lines.push(
-                <div className="pis-itemData" key={key + "dataA"}>
-                  {this.getDataSummary(val)}
-                </div>
-              );
+            if (this.matchesSearch(key) || this.matchesSearch(this.getDataSummary(val + ""))) {
+              if (key === "defaultIcon" && val && val.length > 100) {
+                cells.push(
+                  <td className="pis-itemHeader" key={key + "headerA"}>
+                    {Utilities.humanifyJsName(key)}
+                  </td>
+                );
+                cells.push(
+                  <td className="pis-itemData pis-image" key={key + "dataC"}>
+                    <div
+                      style={{
+                        width: 256,
+                        height: 256,
+                        backgroundImage: "url('data:image/png;base64, " + val + "')",
+                      }}
+                    >
+                      &#160;
+                    </div>
+                  </td>
+                );
+              } else if (val !== undefined) {
+                cells.push(
+                  <td className="pis-itemHeader" key={key + "headerA"}>
+                    <div>{Utilities.humanifyJsName(key)}</div>
+                  </td>
+                );
+
+                cells.push(
+                  <td className="pis-itemDataCell" key={key + "dataA"}>
+                    <div className="pis-itemData">{this.getDataSummary(val)}</div>
+                  </td>
+                );
+              }
+
+              if (cells.length > 0) {
+                rows.push(<tr key={"mainRow" + rowCount}>{cells}</tr>);
+                rowCount++;
+              }
             }
           }
         }
 
-        let infoSet = this.props.allInfoSet;
+        lines.push(
+          <table className="pis-detailTable">
+            <thead>
+              <tr>
+                <td className="pis-itemDataHeader">Item</td>
+                <td className="pis-itemValueHeader">Value</td>
+              </tr>
+            </thead>
+            <tbody>{rows}</tbody>
+          </table>
+        );
+
+        let infoSet = this.props.indevInfoSet;
 
         if (infoSet === undefined) {
           infoSet = this.state.selectedInfoSet;
@@ -897,106 +952,124 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
         if (infoSet) {
           let rowCount = 2;
 
-          for (const featName in infoSet.info.featureSets) {
-            const featureSet = infoSet.info.featureSets[featName];
+          if (infoSet.info.featureSets) {
+            const featNames = Object.keys(infoSet.info.featureSets);
+            featNames.sort();
 
-            if (featureSet) {
-              if (
-                featureSet["Total"] &&
-                featureSet["Average"] &&
-                featureSet["Instance Count"] &&
-                featureSet["Max"] &&
-                featureSet["Min"]
-              ) {
-                let featNameAdj = featName;
+            const rows = [];
+            for (const featName of featNames) {
+              const featureSet = infoSet.info.featureSets[featName];
 
-                contentSummaryLines.push(
-                  <div
-                    className="pis-itemSummName"
-                    key={featName + "NameheaderB"}
-                    style={{
-                      gridRow: rowCount,
-                    }}
-                  >
-                    {Utilities.humanifyJsName(featNameAdj)}
-                  </div>
-                );
-                contentSummaryLines.push(
-                  <div
-                    className="pis-itemSummCt"
-                    key={featName + "CtDataB"}
-                    style={{
-                      gridRow: rowCount,
-                    }}
-                  >
-                    {this.getDataSummary(featureSet["Instance Count"])}
-                  </div>
-                );
-                contentSummaryLines.push(
-                  <div
-                    className="pis-itemDataSummTotal"
-                    key={featName + "TotalDataB"}
-                    style={{
-                      gridRow: rowCount,
-                    }}
-                  >
-                    {this.getDataSummary(featureSet["Total"])}
-                  </div>
-                );
-                contentSummaryLines.push(
-                  <div
-                    className="pis-itemSummMax"
-                    key={featName + "MaxDataB"}
-                    style={{
-                      gridRow: rowCount,
-                    }}
-                  >
-                    {this.getDataSummary(featureSet["Max"])}
-                  </div>
-                );
-                contentSummaryLines.push(
-                  <div
-                    className="pis-itemSummAvg"
-                    key={featName + "AvgDataB"}
-                    style={{
-                      gridRow: rowCount,
-                    }}
-                  >
-                    {this.getDataSummary(featureSet["Average"])}
-                  </div>
-                );
+              if (this.matchesSearch(featName) && featureSet) {
+                if (
+                  featureSet["Total"] !== undefined &&
+                  featureSet["Average"] !== undefined &&
+                  featureSet["Instance Count"] !== undefined &&
+                  featureSet["Max"] !== undefined &&
+                  featureSet["Min"] !== undefined
+                ) {
+                  let featNameAdj = featName;
 
-                contentSummaryLines.push(
-                  <div
-                    className="pis-itemSummMin"
-                    key={featName + "MinDataB"}
-                    style={{
-                      gridRow: rowCount,
-                    }}
-                  >
-                    {this.getDataSummary(featureSet["Min"])}
-                  </div>
-                );
-                rowCount++;
-              } else {
-                for (const measureName in featureSet) {
-                  const measureVal = featureSet[measureName];
+                  contentSummaryLines.push(
+                    <div
+                      className="pis-itemSummName"
+                      key={featName + "NameheaderB"}
+                      style={{
+                        gridRow: rowCount,
+                      }}
+                    >
+                      {Utilities.humanifyJsName(featNameAdj)}
+                    </div>
+                  );
+                  contentSummaryLines.push(
+                    <div
+                      className="pis-itemSummCt"
+                      key={featName + "CtDataB"}
+                      style={{
+                        gridRow: rowCount,
+                      }}
+                    >
+                      {this.getDataSummary(featureSet["Instance Count"])}
+                    </div>
+                  );
+                  contentSummaryLines.push(
+                    <div
+                      className="pis-itemDataSummTotal"
+                      key={featName + "TotalDataB"}
+                      style={{
+                        gridRow: rowCount,
+                      }}
+                    >
+                      {this.getDataSummary(featureSet["Total"])}
+                    </div>
+                  );
+                  contentSummaryLines.push(
+                    <div
+                      className="pis-itemSummMax"
+                      key={featName + "MaxDataB"}
+                      style={{
+                        gridRow: rowCount,
+                      }}
+                    >
+                      {this.getDataSummary(featureSet["Max"])}
+                    </div>
+                  );
+                  contentSummaryLines.push(
+                    <div
+                      className="pis-itemSummAvg"
+                      key={featName + "AvgDataB"}
+                      style={{
+                        gridRow: rowCount,
+                      }}
+                    >
+                      {this.getDataSummary(featureSet["Average"])}
+                    </div>
+                  );
 
-                  if (typeof measureVal === "number") {
-                    lines.push(
-                      <div className="pis-itemHeader" key={featName + measureName + "headerB"}>
-                        {Utilities.humanifyJsName(featName + " " + measureName)}
-                      </div>
-                    );
-                    lines.push(
-                      <div className="pis-itemData" key={featName + measureName + "dataB"}>
-                        {this.getDataSummary(measureVal)}
-                      </div>
-                    );
+                  contentSummaryLines.push(
+                    <div
+                      className="pis-itemSummMin"
+                      key={featName + "MinDataB"}
+                      style={{
+                        gridRow: rowCount,
+                      }}
+                    >
+                      {this.getDataSummary(featureSet["Min"])}
+                    </div>
+                  );
+                  rowCount++;
+                } else {
+                  for (const measureName in featureSet) {
+                    const measureVal = featureSet[measureName];
+
+                    if (typeof measureVal === "number") {
+                      const cells = [];
+                      cells.push(
+                        <td className="pis-itemHeader" key={featName + measureName + "headerB"}>
+                          <div>{Utilities.humanifyJsName(featName + " " + measureName)}</div>
+                        </td>
+                      );
+                      cells.push(
+                        <td className="pis-itemDataCell" key={featName + measureName + "dataB"}>
+                          <div className="pis-itemData">{this.getDataSummary(measureVal)}</div>
+                        </td>
+                      );
+                      if (cells.length > 0) {
+                        rows.push(<tr key={"detailRow" + rowCount}>{cells}</tr>);
+                        rowCount++;
+                      }
+                    }
                   }
                 }
               }
             }
+            lines.push(<div className="pis-areaHeader">Details</div>);
+
+            lines.push(
+              <table className="pis-detailTable">
+                <tbody>{rows}</tbody>
+              </table>
+            );
           }
         }
       }
@@ -1010,6 +1083,14 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             }}
           >
             <div className="pid-header">Summary</div>
+            <div className="pis-searchArea">
+              <Input
+                aria-labelledby="dssp-pathlabel"
+                value={this.state.searchTerm}
+                onChange={this._handleSearchTermChanged}
+                placeholder="<filter summary properties>"
+              />
+            </div>
             <div className="pid-summary">
               <div className="pis-summaryArea">{lines}</div>
               <div className="pis-contentSummaryHeader">Content Summary</div>
@@ -1028,8 +1109,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       );
     } else {
       let itemsShown = 0;
-      const itemTiles = [];
-      if (this.state && this.state.selectedInfoSet && this.props.allInfoSet) {
+      const itemRows = [];
+      if (this.state && this.state.selectedInfoSet && this.props.indevInfoSet) {
         const items = this.state.selectedInfoSet.items.slice();
 
         items.sort((a: ProjectInfoItem, b: ProjectInfoItem): number => {
@@ -1068,7 +1149,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             (this.state.displayFailure && item.itemType === InfoItemType.testCompleteFail) ||
             (this.state.displayInfo && item.itemType === InfoItemType.info)
           ) {
-            itemTiles.push(
+            itemRows.push(
               <ProjectInfoItemDisplay
                 itemSet={this.state.selectedInfoSet}
                 item={item}
@@ -1086,7 +1167,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       outer = (
         <div className="pid-areaOuter">
           <div className="pid-filterToolbar">
-            <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
+            <Toolbar aria-label="Filter actions" items={toolbarItems} />
           </div>
           <div
             className="pid-tableWrapper"
@@ -1106,21 +1187,23 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
               cellPadding={0}
               cellSpacing={0}
             >
-              <tr
-                className="pid-headerRow"
-                style={{
-                  backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-                  color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
-                }}
-              >
-                <th className="pid-headerCell pid-headerTypeCell">Type</th>
-                <th className="pid-headerCell">Area</th>
-                <th className="pid-headerCell">Test</th>
-                <th className="pid-headerCell">Actions</th>
-                <th className="pid-headerCell">Message</th>
-                <th className="pid-headerCell">File</th>
-              </tr>
-              {itemTiles}
+              <thead>
+                <tr
+                  className="pid-headerRow"
+                  style={{
+                    backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+                    color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
+                  }}
+                >
+                  <th className="pid-headerCell pid-headerTypeCell">Type</th>
+                  <th className="pid-headerCell">Area</th>
+                  <th className="pid-headerCell">Test</th>
+                  <th className="pid-headerCell">Actions</th>
+                  <th className="pid-headerCell">Message</th>
+                  <th className="pid-headerCell">File</th>
+                </tr>
+              </thead>
+              <tbody>{itemRows}</tbody>
             </table>
           </div>
         </div>
@@ -1152,8 +1235,23 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             Project Inspector for {title}
           </h2>
           <div className="pid-toolArea">
-            <div className="pid-topToolbar">
-              <Toolbar aria-label="Actions toolbar overflow menu" items={topToolbarItems} />
+            <div className="pid-topToolbar" role="tablist">
+              <button onClick={this._setSummaryMode} title={"Summary Tab"} role="tab" className="pid-hiddenButton">
+                <SummaryTabLabel
+                  theme={this.props.theme}
+                  aria-selected={this.state.viewMode === ProjectInfoDisplayMode.summary}
+                  isSelected={this.state.viewMode === ProjectInfoDisplayMode.summary}
+                  isCompact={width < 1100}
+                />
+              </button>
+              <button onClick={this._setInfoMode} title={"Info Tab"} role="tab" className="pid-hiddenButton">
+                <InfoTabLabel
+                  theme={this.props.theme}
+                  aria-selected={this.state.viewMode === ProjectInfoDisplayMode.info}
+                  isSelected={this.state.viewMode === ProjectInfoDisplayMode.info}
+                  isCompact={width < 1100}
+                />
+              </button>
             </div>
             <div className="pid-suiteTitle" id="pid-suiteTitle">
               Suite:
@@ -1168,7 +1266,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
               />
             </div>
             <div className="pid-actionToolbar">
-              <Toolbar aria-label="Actions toolbar overflow menu" items={actionToolbarItems} />
+              <Toolbar aria-label="Report actions" items={actionToolbarItems} />
             </div>
           </div>
           {outer}

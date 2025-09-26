@@ -161,7 +161,7 @@ export default class ExporterToolEditor extends Component<IExporterToolProps, IE
         <div className="et-area">
           <div className="et-actionsHeader">Export</div>
           <div className="et-actionsToolBarArea">
-            <Toolbar aria-label="Export toolbar overflow menu" items={toolbarItems} />
+            <Toolbar aria-label="Export" items={toolbarItems} />
           </div>
           {dialogInterior}
           <div className="et-buttonArea">

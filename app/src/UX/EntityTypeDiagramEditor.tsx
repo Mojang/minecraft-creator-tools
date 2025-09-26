@@ -306,8 +306,9 @@ export default class EntityTypeDiagramEditor extends Component<
     let stateIndex = 0;
     let hiddenStateIndex = 0;
 
-    for (const stateId in states) {
-      const state = states[stateId];
+    const stateKeys = states.keys();
+    for (const stateId of stateKeys) {
+      const state = states.get(stateId);
 
       if (state && state.isLikely) {
         let xPos = 0;
@@ -790,7 +791,7 @@ export default class EntityTypeDiagramEditor extends Component<
             />
           </div>
           <div className="etde-toolBar">
-            <Toolbar aria-label="Component editing toolbar" items={toolbarItems} />
+            <Toolbar aria-label="Diagram editing" items={toolbarItems} />
           </div>
         </div>
         <div className={containerClassName}>{diagram}</div>

@@ -11,87 +11,53 @@
  * 
  * minecraft:movement Samples
 
-Allay - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/allay.json
-
-"minecraft:movement": {
-  "value": 0.1
-}
-
-
-Armadillo - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/armadillo.json
-
- * At /minecraft:entity/component_groups/minecraft:unrolled/minecraft:movement/: 
-"minecraft:movement": {
-  "value": 0.14
-}
-
- * At /minecraft:entity/component_groups/minecraft:rolled_up/minecraft:movement/: 
-"minecraft:movement": {
-  "value": 0
-}
-
-
-Bee - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/bee.json
-
-"minecraft:movement": {
-  "value": 0.3
-}
-
-
-Blaze - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/blaze.json
-
-"minecraft:movement": {
-  "value": 0.23
-}
-
-
-Bogged - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/bogged.json
+Robot - https://github.com/microsoft/minecraft-samples/tree/main/add_entity_robot/full/robot_example_full_behavior/entities/robot.json
 
 "minecraft:movement": {
   "value": 0.25
 }
 
 
-Breeze - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/breeze.json
+Nardolphle - https://github.com/microsoft/minecraft-samples/tree/main/addon_starter/2_entities/behavior_packs/aop_mobs/entities/nardolphle.behavior.json
 
 "minecraft:movement": {
-  "value": 0.4
+  "value": 0.1
 }
 
 
-Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/camel.json
+Eliza - https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json
 
 "minecraft:movement": {
-  "value": 0.09
+  "value": 0.3
 }
 
 
-Copper Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/copper_golem.json
+Axe Turret - https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/axe_turret.behavior.json
 
 "minecraft:movement": {
-  "value": 0.2
+  "value": 0,
+  "max": 0
 }
 
 
-Donkey - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/donkey.json
+Gray Zombie Leader - https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_zombie_leader.behavior.json
 
 "minecraft:movement": {
-  "value": 0.175
+  "value": 0.23
 }
 
 
-Enderman - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/enderman.json
-
- * At /minecraft:entity/component_groups/minecraft:enderman_angry/minecraft:movement/: 
-"minecraft:movement": {
-  "value": 0.45
-}
-
-
-Evocation Illager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/evocation_illager.json
+Beachager - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/entities/beachager.behavior.json
 
 "minecraft:movement": {
   "value": 0.5
+}
+
+
+Campghost - https://github.com/microsoft/minecraft-samples/tree/main/creator_camp/behavior_packs/creator_camp/entities/campghost.json
+
+"minecraft:movement": {
+  "value": 0.2
 }
 
  */
@@ -112,12 +78,13 @@ export default interface MinecraftMovement {
    * The standard movement speed value.
    * 
    * Sample Values:
-   * Allay: 0.1
-   *
-   * Armadillo: 0.14
+   * Robot: 0.25
    *
    *
-   * Bee: 0.3
+   * Nardolphle: 0.1
+   *
+   *
+   * Eliza: 0.3
    *
    */
   value?: number;

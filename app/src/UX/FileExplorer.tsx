@@ -252,7 +252,6 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
         className={outerClass}
         style={{
           maxHeight: explorerHeight,
-          minHeight: explorerHeight,
           borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
         }}
       >
@@ -261,8 +260,8 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
           style={{
             backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
             maxHeight: folderAreaHeight,
-            minHeight: folderAreaHeight,
           }}
+          role="tree"
         >
           <FileExplorerFolder
             folder={this.props.rootFolder}

@@ -1,6 +1,6 @@
 {
   "fields": [],
-  "description": "Sets the value of an entity property. The property must be defined in the 'properties' section of the file. ",
+  "description": "Sets the value of an entity property. The property must be defined in the 'properties' section of the file.",
   "title": "Set Entity Property",
   "samples": {
     "samples": [

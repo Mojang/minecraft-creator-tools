@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./ItemTileButton.css";
 import IAppProps from "./IAppProps";
 import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
-import { Button, ThemeInput } from "@fluentui/react-northstar";
+import { ThemeInput } from "@fluentui/react-northstar";
 import Utilities from "../core/Utilities";
 import CartoApp from "../app/CartoApp";
 import { GalleryItemCommand } from "./ItemGallery";
@@ -23,12 +23,13 @@ interface IItemTileButtonProps extends IAppProps {
   buttonIndex: number;
   tabIndex?: number;
   onArrowNav?: (index: number, dir: -1 | 1) => void;
+  onExitBin?: () => void;
 }
 
 interface IItemTileButtonState {}
 
 export default class ItemTileButton extends Component<IItemTileButtonProps, IItemTileButtonState> {
-  buttonRef = React.createRef<HTMLButtonElement>();
+  buttonRef = React.createRef<HTMLDivElement>();
 
   constructor(props: IItemTileButtonProps) {
     super(props);
@@ -51,7 +52,11 @@ export default class ItemTileButton extends Component<IItemTileButtonProps, IIte
 
   selectAndFocus() {
     if (this.buttonRef && this.buttonRef.current) {
-      this.buttonRef.current.focus();
+      this.buttonRef.current.focus({
+        preventScroll: false,
+      });
+
+      this.buttonRef.current.scrollIntoView({ block: "nearest" });
     }
   }
 
@@ -168,23 +173,13 @@ export default class ItemTileButton extends Component<IItemTileButtonProps, IIte
     }
 
     return (
-      <Button
+      <div
         className={outerClassName}
         key="tileOuter"
         onClick={this._projectClick}
         role="radio"
         aria-checked={this.props.isSelected}
-        tabIndex={this.props.tabIndex ?? 0}
         ref={this.buttonRef}
-        onKeyDown={(e: React.KeyboardEvent<HTMLButtonElement>) => {
-          if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
-            e.preventDefault();
-            this.props.onArrowNav && this.props.onArrowNav(this.props.buttonIndex, -1);
-          } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
-            e.preventDefault();
-            this.props.onArrowNav && this.props.onArrowNav(this.props.buttonIndex, 1);
-          }
-        }}
       >
         <div
           className="itbi-button"
@@ -205,7 +200,7 @@ export default class ItemTileButton extends Component<IItemTileButtonProps, IIte
             </div>
           </div>
         </div>
-      </Button>
+      </div>
     );
   }
 }

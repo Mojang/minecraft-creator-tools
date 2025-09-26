@@ -94,7 +94,7 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
       const topics = this.props.project.topics;
 
       if (topics && topics.length > 0) {
-        description.push(<span>{"Uses"}</span>);
+        description.push(<span key="usesTag">{"Uses"}</span>);
         for (var i = 0; i < Math.min(topics.length, 5); i++) {
           const topic = topics[i];
           const url = ProjectUtilities.getTopicUrl(topic);
@@ -106,6 +106,7 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
                 target="_blank"
                 className="pt-docLink pts-code-topic"
                 rel="noreferrer noopener"
+                key={"topicUrl" + i}
                 style={{
                   color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
                 }}
@@ -116,7 +117,7 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
             );
           } else {
             description.push(
-              <span className="pts-code-topic">
+              <span className="pts-code-topic" key={"codeTopicUrl" + i}>
                 {topic}
                 {i < Math.min(topics.length - 1, 4) ? ", " : " "}
               </span>
@@ -269,7 +270,12 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
                   }}
                 >
                   {additionalButtons}
-                  <Button primary onClick={this._projectClick} title={"Open " + proj.title}>
+                  <Button
+                    primary
+                    onClick={this._projectClick}
+                    title={"Open " + proj.title}
+                    aria-label={"Open " + proj.title}
+                  >
                     <span
                       style={{
                         color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
@@ -338,7 +344,12 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
                   }}
                 >
                   {additionalButtons}
-                  <Button primary onClick={this._handleNewProject}>
+                  <Button
+                    primary
+                    onClick={this._handleNewProject}
+                    title={"New " + proj.title}
+                    aria-label={"New " + proj.title}
+                  >
                     <span
                       style={{
                         color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,

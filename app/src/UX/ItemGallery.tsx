@@ -32,6 +32,7 @@ interface IItemGalleryProps extends IAppProps {
 }
 
 interface IItemGalleryState {
+  selectedIndex: number;
   loadedProjectHash: string;
   selectedItem?: IGalleryItem;
   mode: ItemGalleryMode;
@@ -39,9 +40,11 @@ interface IItemGalleryState {
 
 export default class ItemGallery extends Component<IItemGalleryProps, IItemGalleryState> {
   itemButtonRefs: React.RefObject<ItemTileButton>[] = [];
-
+  nextBinButton: React.RefObject<HTMLDivElement>;
   constructor(props: IItemGalleryProps) {
     super(props);
+
+    this.nextBinButton = React.createRef();
 
     this._handleStatusAdded = this._handleStatusAdded.bind(this);
     this._handleCommand = this._handleCommand.bind(this);
@@ -51,6 +54,7 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
     this.getProjectHash = this.getProjectHash.bind(this);
 
     this.state = {
+      selectedIndex: 0,
       loadedProjectHash: this.getProjectHash(),
       selectedItem: undefined,
       mode: ItemGalleryMode.starters,
@@ -61,6 +65,7 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
 
   _selectProjectStarters() {
     this.setState({
+      selectedIndex: this.state.selectedIndex,
       loadedProjectHash: this.state.loadedProjectHash,
       mode: ItemGalleryMode.starters,
       selectedItem: this.state.selectedItem,
@@ -68,6 +73,7 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
   }
   _selectCodeSnippets() {
     this.setState({
+      selectedIndex: this.state.selectedIndex,
       loadedProjectHash: this.state.loadedProjectHash,
       mode: ItemGalleryMode.codeSnippets,
       selectedItem: this.state.selectedItem,
@@ -128,6 +134,57 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
     }
 
     this.props.onGalleryItemCommand(command, galItem);
+  }
+
+  _handleArrowNav(dir: -1 | 1) {
+    const nextIdx = this.state.selectedIndex + dir;
+    if (nextIdx >= 0 && nextIdx < this.itemButtonRefs.length) {
+      this.itemButtonRefs[nextIdx].current?.selectAndFocus();
+
+      const galItem = this.getFilteredItems()[nextIdx];
+      this._handleCommand(GalleryItemCommand.itemSelect, galItem);
+
+      this.setState({
+        selectedIndex: nextIdx,
+        loadedProjectHash: this.state.loadedProjectHash,
+        selectedItem: galItem,
+      });
+    }
+  }
+
+  getFilteredItems() {
+    const items: IGalleryItem[] = [];
+    const gal = this.props.gallery;
+    if (this.props.search || this.state.mode === ItemGalleryMode.codeSnippets) {
+      for (let i = 0; i < gal.items.length; i++) {
+        const galItem = gal.items[i];
+        if (
+          Database.itemMatchesSearch(galItem, this.props.search) &&
+          (this.props.filterOn === undefined || this.props.filterOn.includes(galItem.type)) &&
+          (galItem.type === GalleryItemType.codeSample || galItem.type === GalleryItemType.editorCodeSample)
+        ) {
+          items.push(galItem);
+        }
+      }
+    }
+
+    // Build buttons for starters
+    if (this.props.search || this.state.mode === ItemGalleryMode.starters) {
+      for (let i = 0; i < gal.items.length; i++) {
+        const galItem = gal.items[i];
+        if (
+          Database.itemMatchesSearch(galItem, this.props.search) &&
+          (this.props.filterOn === undefined || this.props.filterOn.includes(galItem.type)) &&
+          (galItem.type === GalleryItemType.blockType ||
+            galItem.type === GalleryItemType.entityType ||
+            galItem.type === GalleryItemType.itemType)
+        ) {
+          items.push(galItem);
+        }
+      }
+    }
+
+    return items;
   }
 
   render() {
@@ -258,7 +315,6 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
               backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
               borderColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
             }}
-            tabIndex={0}
             role="radiogroup"
           >
             {galleryButtons}
@@ -266,6 +322,23 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
         );
       }
     }
-    return <div className="ig-outer">{itemGalleriesElt}</div>;
+    return (
+      <div
+        className="ig-outer"
+        ref={this.nextBinButton}
+        tabIndex={0}
+        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+          if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+            e.preventDefault();
+            this._handleArrowNav(-1);
+          } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+            e.preventDefault();
+            this._handleArrowNav(1);
+          }
+        }}
+      >
+        {itemGalleriesElt}
+      </div>
+    );
   }
 }

@@ -53,4 +53,10 @@ export default class GitHubStorage extends StorageBase implements IStorage {
 
     return path.substring(0, lastDelim);
   }
+
+  async getAvailable() {
+    this.available = true;
+
+    return this.available;
+  }
 }

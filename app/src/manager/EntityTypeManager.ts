@@ -15,6 +15,7 @@ import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
 import ProjectInfoUtilities from "../info/ProjectInfoUtilities";
+import Log from "../core/Log";
 
 export enum EntityTypeUpdate {
   UpdateFormatVersionToLatest = 1051,
@@ -173,9 +174,29 @@ export default class EntityTypeManager implements IProjectInfoGenerator, IProjec
               }
 
               if (desc.properties) {
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 for (const propName in desc.properties) {
-                  piiMetadata.incrementFeature("Entity Type Property");
+                  const prop = desc.properties[propName];
+
+                  if (prop) {
+                    piiMetadata.incrementFeature("Entity Type Property");
+
+                    if (prop.client_sync === true) {
+                      piiMetadata.incrementFeature("Entity Type Property Client Sync=true");
+                    }
+                    if (prop.client_sync === false) {
+                      piiMetadata.incrementFeature("Entity Type Property Client Sync=false");
+                    }
+                    if (prop.type === "bool" || prop.type === "int" || prop.type === "float" || prop.type === "enum") {
+                      piiMetadata.incrementFeature("Entity Type " + prop.type + " Property");
+                    } else if (prop.type) {
+                      Log.debug("Unknown entity property type found: " + prop.type);
+                      piiMetadata.incrementFeature("Entity Type Unknown Property");
+                    }
+
+                    if (prop.values) {
+                      piiMetadata.spectrumFeature("Entity Type Property Value Count", prop.values.length);
+                    }
+                  }
                 }
               }
 
@@ -360,7 +381,7 @@ export default class EntityTypeManager implements IProjectInfoGenerator, IProjec
     for (let i = 0; i < itemsCopy.length; i++) {
       const pi = itemsCopy[i];
 
-      if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
+      if (pi.itemType === ProjectItemType.entityTypeBehavior) {
         if (!pi.isContentLoaded) {
           await pi.loadContent();
         }

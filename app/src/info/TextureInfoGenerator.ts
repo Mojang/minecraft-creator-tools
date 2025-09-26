@@ -231,7 +231,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
         if (projectItem.primaryFile) {
           const flipbookTexturesCat = await FlipbookTextureCatalogDefinition.ensureOnFile(projectItem.primaryFile);
 
-          if (flipbookTexturesCat && flipbookTexturesCat && flipbookTexturesCat.data) {
+          if (flipbookTexturesCat && flipbookTexturesCat.data && Array.isArray(flipbookTexturesCat.data)) {
             const pathId = projectItem.primaryFile.storageRelativePath + "_flipbooktextures";
 
             if (!allTexturePaths.includes(pathId)) {
@@ -266,42 +266,19 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
         if (projectItem.primaryFile) {
           const itemTextureCat = await ItemTextureCatalogDefinition.ensureOnFile(projectItem.primaryFile);
 
-          if (itemTextureCat && itemTextureCat.data && itemTextureCat.data.texture_data) {
-            for (const itemTextureId in itemTextureCat.data.texture_data) {
-              const itemTexture = itemTextureCat.data.texture_data[itemTextureId];
+          if (itemTextureCat) {
+            const texturePaths = itemTextureCat.getTexturePathList();
 
-              if (itemTexture && itemTexture.textures) {
-                textureCountPi.incrementFeature("Item Texture Resource Count");
+            if (texturePaths) {
+              textureCountPi.incrementFeature("Item Texture Resource Count");
 
-                if (itemTexture.textures) {
-                  if (typeof itemTexture.textures === "string") {
-                    const matchesVanillaPath = await Database.matchesVanillaPath(itemTexture.textures);
+              for (let str of texturePaths) {
+                const matchesVanillaPath = await Database.matchesVanillaPath(str);
 
-                    if (!matchesVanillaPath && !itemTexturePaths.includes(itemTexture.textures)) {
-                      itemTexturePaths.push(itemTexture.textures);
-                    } else if (matchesVanillaPath && !itemTextureVanillaPaths.includes(itemTexture.textures)) {
-                      itemTextureVanillaPaths.push(itemTexture.textures);
-                    }
-                  } else if (itemTexture.textures.constructor === Array) {
-                    for (let str of itemTexture.textures) {
-                      const matchesVanillaPath = await Database.matchesVanillaPath(str);
-
-                      if (!matchesVanillaPath && !itemTexturePaths.includes(str)) {
-                        itemTexturePaths.push(str);
-                      } else if (matchesVanillaPath && !itemTextureVanillaPaths.includes(str)) {
-                        itemTextureVanillaPaths.push(str);
-                      }
-                    }
-                  } else if ((itemTexture.textures as any).path) {
-                    const texturePath = (itemTexture.textures as any).path;
-                    const matchesVanillaPath = await Database.matchesVanillaPath(texturePath);
-
-                    if (!matchesVanillaPath && !itemTexturePaths.includes(texturePath)) {
-                      itemTexturePaths.push(texturePath);
-                    } else if (matchesVanillaPath && !itemTextureVanillaPaths.includes(texturePath)) {
-                      itemTextureVanillaPaths.push(texturePath);
-                    }
-                  }
+                if (!matchesVanillaPath && !itemTexturePaths.includes(str)) {
+                  itemTexturePaths.push(str);
+                } else if (matchesVanillaPath && !itemTextureVanillaPaths.includes(str)) {
+                  itemTextureVanillaPaths.push(str);
                 }
               }
             }

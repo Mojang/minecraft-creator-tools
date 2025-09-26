@@ -9,7 +9,7 @@ import IFolder from "../storage/IFolder";
 import { GalleryProjectCommand } from "./ProjectGallery";
 import Log from "../core/Log";
 import { ProjectFocus, ProjectScriptLanguage } from "../app/IProjectData";
-import CartoApp from "../app/CartoApp";
+import CartoApp, { HostType } from "../app/CartoApp";
 import StorageUtilities from "../storage/StorageUtilities";
 import { ThemeInput } from "@fluentui/react-northstar";
 import { CartoEditorViewMode } from "../app/ICartoData";
@@ -60,6 +60,9 @@ interface AppState {
 }
 
 // Layout and UI constants
+const DEFAULT_BANNER_HEIGHT = 96;
+const MIN_BANNER_OFFSET_HEIGHT = 20;
+const BANNER_EXTRA_HEIGHT = 17;
 const LOADING_INTERVAL_MS = 50;
 const TOOLBAR_MENU_TRANSFORM_OFFSET = " 235px";
 
@@ -78,6 +81,7 @@ export default class App extends Component<AppProps, AppState> {
     this._handleNewProjectFromFolderInstance = this._handleNewProjectFromFolderInstance.bind(this);
     this._handleProjectSelected = this._handleProjectSelected.bind(this);
     this._handleCartoInit = this._handleCartoInit.bind(this);
+    this.processInitialUrl = this.processInitialUrl.bind(this);
     this._handlePersistenceUpgraded = this._handlePersistenceUpgraded.bind(this);
     this._newProjectFromGallery = this._newProjectFromGallery.bind(this);
     this._handleProjectGalleryCommand = this._handleProjectGalleryCommand.bind(this);
@@ -178,6 +182,9 @@ export default class App extends Component<AppProps, AppState> {
       case "info":
         return AppMode.project;
 
+      case "codetoolbox":
+        return AppMode.codeToolbox;
+
       default:
         return undefined;
     }
@@ -265,16 +272,16 @@ export default class App extends Component<AppProps, AppState> {
 
   private _getStateFromUrlWithSideEffects(dontProcessQueryStrings?: boolean): AppState | undefined {
     let hash = window.location.hash;
-    let search = window.location.search;
-    const searchVals: { [path: string]: string } = {};
+    let query = window.location.search;
+    const queryVals: { [path: string]: string } = {};
 
-    if (!search && hash.startsWith("#open=")) {
-      search = hash;
+    if (!query && hash.startsWith("#open=")) {
+      query = hash;
       hash = "";
     }
 
-    if (search) {
-      const params = search.split("&");
+    if (query) {
+      const params = query.split("&");
 
       if (params.length > 0) {
         for (let i = 0; i < params.length; i++) {
@@ -290,39 +297,41 @@ export default class App extends Component<AppProps, AppState> {
               key = key.substring(1);
             }
 
-            searchVals[key] = params[i].substring(firstEqual + 1);
+            queryVals[key] = params[i].substring(firstEqual + 1);
           }
         }
       }
     }
 
-    if (!dontProcessQueryStrings && (searchVals["open"] !== undefined || searchVals["view"] !== undefined)) {
-      let openSearch = searchVals["view"];
+    if (!dontProcessQueryStrings && (queryVals["open"] !== undefined || queryVals["view"] !== undefined)) {
+      let openQuery = queryVals["view"];
 
-      if (searchVals["open"]) {
-        openSearch = searchVals["open"];
+      if (queryVals["open"]) {
+        openQuery = queryVals["open"];
       }
 
-      const firstSlash = openSearch.indexOf("/");
+      const firstSlash = openQuery.indexOf("/");
 
       if (firstSlash > 1) {
-        const openToken = openSearch.substring(0, firstSlash).toLowerCase();
-
-        let openData = openSearch.substring(firstSlash + 1, openSearch.length);
-
-        if (openToken === "gp" && search.indexOf("updatesJson=") <= 0) {
-          const lastPeriod = openData.lastIndexOf(".");
-
-          if (lastPeriod > 0) {
-            openData = openData.substring(0, lastPeriod);
-          }
-
-          this._ensureProjectFromGalleryId(openData);
-        } else {
+        if (queryVals["updates"] !== undefined) {
           return {
             mode: AppMode.importFromUrl,
             activeProject: null,
           };
+        } else {
+          const openToken = openQuery.substring(0, firstSlash).toLowerCase();
+
+          let openData = openQuery.substring(firstSlash + 1, openQuery.length);
+
+          if (openToken === "gp") {
+            const lastPeriod = openData.lastIndexOf(".");
+
+            if (lastPeriod > 0) {
+              openData = openData.substring(0, lastPeriod);
+            }
+
+            this._ensureProjectFromGalleryId(openData);
+          }
         }
       }
     }
@@ -408,45 +417,9 @@ export default class App extends Component<AppProps, AppState> {
       if (CartoApp.carto && !CartoApp.carto.isLoaded) {
         CartoApp.onInitialized.subscribe(this._handleCartoInit);
 
-        this.loadCarto(CartoApp.carto);
+        this.loadCarto(CartoApp.carto).then(this.processInitialUrl);
       } else {
-        const stateFromUrl = this._getStateFromUrlWithSideEffects();
-
-        let initialAppMode = AppMode.home;
-
-        if (stateFromUrl) {
-          initialAppMode = stateFromUrl.mode;
-        } else if (CartoApp.initialMode) {
-          const mode = this._getModeFromString(CartoApp.initialMode);
-
-          if (mode) {
-            initialAppMode = mode;
-          }
-        }
-
-        let selectedItem = undefined;
-
-        if (CartoApp.modeParameter && CartoApp.modeParameter.startsWith("project/")) {
-          const segments = CartoApp.modeParameter.split("/");
-
-          if (segments.length === 2) {
-            this._handleNewProject({ name: "Project" }, NewProjectTemplateType.gameTest);
-
-            selectedItem = segments[1];
-          }
-        } else if (
-          CartoApp.initialMode &&
-          (CartoApp.modeParameter || CartoApp.initialMode === "info") &&
-          CartoApp.projectPath
-        ) {
-          this._loadLocalStorageProject();
-        }
-
-        this.setState({
-          mode: initialAppMode,
-          selectedItem: selectedItem,
-          activeProject: null,
-        });
+        this.processInitialUrl();
       }
 
       if (typeof window !== "undefined") {
@@ -457,6 +430,52 @@ export default class App extends Component<AppProps, AppState> {
     }
 
     this._isMountedInternal = true;
+  }
+
+  processInitialUrl() {
+    const stateFromUrl = this._getStateFromUrlWithSideEffects();
+
+    let initialAppMode = AppMode.home;
+
+    if (stateFromUrl) {
+      initialAppMode = stateFromUrl.mode;
+    } else if (CartoApp.initialMode) {
+      const mode = this._getModeFromString(CartoApp.initialMode);
+
+      if (mode) {
+        initialAppMode = mode;
+      }
+    }
+
+    let selectedItem = undefined;
+
+    if (
+      (CartoApp.hostType === HostType.vsCodeWebWeb || CartoApp.hostType === HostType.vsCodeMainWeb) &&
+      CartoApp.projectPath &&
+      initialAppMode === AppMode.codeToolbox
+    ) {
+      this._loadLocalStorageProject();
+    } else if (CartoApp.modeParameter && CartoApp.modeParameter.startsWith("project/")) {
+      const segments = CartoApp.modeParameter.split("/");
+
+      if (segments.length === 2) {
+        this._handleNewProject({ name: "Project" }, NewProjectTemplateType.gameTest);
+
+        selectedItem = segments[1];
+      }
+    } else if (
+      CartoApp.initialMode &&
+      (CartoApp.modeParameter || CartoApp.initialMode === "info") &&
+      CartoApp.projectPath
+    ) {
+      this._loadLocalStorageProject();
+    }
+
+    this.setState({
+      mode: initialAppMode,
+      selectedItem: selectedItem,
+      activeProject: null,
+    });
   }
 
   componentWillUnmount() {
@@ -897,7 +916,9 @@ export default class App extends Component<AppProps, AppState> {
         false
       );
 
-      await gh.rootFolder.load();
+      if (!gh.rootFolder.isLoaded) {
+        await gh.rootFolder.load();
+      }
 
       const rootFolder = await newProject.ensureProjectFolder();
 
@@ -1285,11 +1306,12 @@ export default class App extends Component<AppProps, AppState> {
     });
   }
 
-  private _handleModeChangeRequested = (newMode: AppMode) => {
+  private _handleModeChangeRequested = (newMode: AppMode, errorMessage?: string) => {
     this._updateWindowTitle(newMode, this.state.activeProject);
 
     this.setState({
       mode: newMode,
+      errorMessage: errorMessage,
       hasBanner: this.state.hasBanner,
       visualSeed: this.state.visualSeed,
       isPersisted: this.state.isPersisted,
@@ -1311,13 +1333,13 @@ export default class App extends Component<AppProps, AppState> {
     let heightOffset = 0;
 
     if (this.state.hasBanner) {
-      let bannerHeight = 96;
+      let bannerHeight = DEFAULT_BANNER_HEIGHT;
       const elt = window.document.getElementById("cookie-banner");
-      if (elt && elt.offsetHeight > 20) {
-        bannerHeight = elt.offsetHeight + 17;
+      if (elt && elt.offsetHeight > MIN_BANNER_OFFSET_HEIGHT) {
+        bannerHeight = elt.offsetHeight + BANNER_EXTRA_HEIGHT;
       }
 
-      height = "calc(100vh - " + bannerHeight + "px)";
+      height = `calc(100vh - ${bannerHeight}px)`;
       heightOffset = bannerHeight;
     }
 
@@ -1376,6 +1398,7 @@ export default class App extends Component<AppProps, AppState> {
           key="app-h"
           onSetProject={this._setProject}
           onGalleryItemCommand={this._handleProjectGalleryCommand}
+          onLocalGalleryItemCommand={this._handleLocalGalleryCommand}
           onModeChangeRequested={this._handleModeChangeRequested}
           onNewProjectSelected={this._handleNewProject}
           onProgressLog={this._doLog}
@@ -1441,6 +1464,7 @@ export default class App extends Component<AppProps, AppState> {
             key="app-hoa"
             onSetProject={this._setProject}
             onGalleryItemCommand={this._handleProjectGalleryCommand}
+            onLocalGalleryItemCommand={this._handleLocalGalleryCommand}
             onModeChangeRequested={this._handleModeChangeRequested}
             onNewProjectSelected={this._handleNewProject}
             onNewProjectFromFolderSelected={this._handleNewProjectFromFolder}

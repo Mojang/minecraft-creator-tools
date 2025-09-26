@@ -13,6 +13,7 @@
       "description": "Specifies if the \"min_distance\" and \"max_distance\" are used in the standard despawn rules.",
       "dataType": 15,
       "subForm": {
+        "id": "",
         "description": "Specifies if the \"min_distance\" and \"max_distance\" are used in the standard despawn rules.",
         "fields": [
           {

@@ -35,10 +35,11 @@
 
   .pg-tabArea {
     display: block;
-
-    padding-top: 10px;
-    padding-left: 5px;
+    padding-top: 0px;
+    padding-right: 0px;
     padding-bottom: 0px;
+    margin-top: 10px;
+    margin-left: 4px;
   }
 }
 
@@ -57,20 +58,22 @@
 .pg-tabButton-selected {
   border-top-left-radius: 3px !important;
   border-top-right-radius: 3px !important;
-  box-shadow: none !important;
-  height: 32px;
-  padding: 20px !important;
+  display: inline-block;
+  height: 42px;
+  padding: 10px 20px 10px 20px;
   text-decoration: underline;
-  text-underline-offset: 3px; 
+  text-underline-offset: 3px;
   text-decoration-thickness: 2px;
+  margin: 0px;
 }
 
 .pg-tabButton {
   border-top-left-radius: 3px !important;
   border-top-right-radius: 3px !important;
-  box-shadow: none !important;
-  height: 32px;
-  padding: 20px !important;
+  display: inline-block;
+  height: 42px;
+  padding: 10px 20px 10px 20px;
+  margin: 0px;
 }
 
 .pg-tabsTop {
