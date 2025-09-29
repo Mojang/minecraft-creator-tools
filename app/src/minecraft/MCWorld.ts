@@ -1927,7 +1927,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     }
 
     if (this._autogenTsFile === undefined) {
-      const newFileName = "LocalWorld.ts";
+      /*const newFileName = "LocalWorld.ts";
 
       const genFolder = await this._project.ensureScriptGenFolder();
 
@@ -1943,7 +1943,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
           undefined,
           ProjectItemCreationType.generated
         );
-      }
+      }*/
     }
 
     if (this._autogenTsFile) {
