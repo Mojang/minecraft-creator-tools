@@ -54,17 +54,6 @@ Bee - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entit
   "value": "minecraft:sweet_berry_bush"
 }
 
-
-Fox - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/fox.json
-
- * At /minecraft:entity/components/minecraft:behavior.stalk_and_pounce_on_target/stuck_blocks/: 
-{
-  "test": "is_block",
-  "subject": "block",
-  "operator": "==",
-  "value": "snow_layer"
-}
-
  */
 
 import * as jsoncommon from './../../../jsoncommon';
@@ -81,8 +70,6 @@ export default interface IsBlock {
    * 
    * Sample Values:
    * Bee: "!="
-   *
-   * Fox: "=="
    *
    */
   operator?: string;

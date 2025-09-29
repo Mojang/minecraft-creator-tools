@@ -89,9 +89,10 @@ export const AttributeComponents: { [id: string]: string } = {
 };
 
 export enum EntityPropertyType {
-  string = 0,
+  enum = 0,
   boolean = 1,
-  number = 2,
+  float = 2,
+  int = 3,
 }
 
 export default class EntityTypeDefinition implements IManagedComponentSetItem, IDefinition {
@@ -764,26 +765,45 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     return propertyList;
   }
 
-  public addProperty(propertyName: string, stateType: EntityPropertyType) {
+  static getPropertyTypeString(stateType: EntityPropertyType) {
+    switch (stateType) {
+      case EntityPropertyType.boolean:
+        return "bool";
+      case EntityPropertyType.float:
+        return "float";
+      case EntityPropertyType.enum:
+        return "enum";
+    }
+
+    return "int";
+  }
+
+  public addProperty(propertyName: string, propertyType: EntityPropertyType) {
     if (!this._data || !this._data.description) {
       return;
     }
 
-    let dataArr: string[] | number[] | boolean[] = [];
+    let dataArr: string[] | number[] | undefined = undefined;
+    let typeStr = EntityTypeDefinition.getPropertyTypeString(propertyType);
+    let defaultValue: string | number | boolean = false;
 
-    if (stateType === EntityPropertyType.boolean) {
-      dataArr = [false, true];
-    } else if (stateType === EntityPropertyType.number) {
+    if (propertyType === EntityPropertyType.float) {
       dataArr = [0, 1, 2];
-    } else if (stateType === EntityPropertyType.string) {
+      defaultValue = 0;
+    } else if (propertyType === EntityPropertyType.enum) {
       dataArr = ["value1", "value2"];
+      defaultValue = "value1";
     }
 
     if (!this._data.description.properties) {
       this._data.description.properties = {};
     }
 
-    this._data.description.properties[propertyName] = dataArr;
+    this._data.description.properties[propertyName] = {
+      type: typeStr,
+      values: dataArr,
+      default: defaultValue,
+    };
   }
 
   public addEvent(eventName?: string) {
@@ -994,7 +1014,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
       return;
     }
 
-    const bpString = Utilities.consistentStringify(this._wrapper);
+    const bpString = JSON.stringify(this._wrapper, null, 2);
 
     this._file.setContent(bpString);
   }

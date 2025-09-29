@@ -10,6 +10,7 @@ import CartoApp, { HostType } from "../app/CartoApp";
 export enum AppServiceProxyCommands {
   fsExists = "fsExists",
   fsFolderExists = "fsFolderExists",
+  fsRootStorageExists = "fsRootStorageExists",
   fsMkdir = "fsMkdir",
   fsReadUtf8File = "fsReadUtf8File",
   fsReadFile = "fsReadFile",

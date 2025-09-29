@@ -75,7 +75,7 @@ export async function executeTask(task: ITask) {
           task.force
         );
     }
-  } catch (e) {
+  } catch (e: any) {
     return e.toString();
   }
 
@@ -89,7 +89,7 @@ if (!isMainThread) {
       try {
         const result = await executeTask(task);
         parentPort!.postMessage(result);
-      } catch (error) {
+      } catch (error: any) {
         parentPort!.postMessage(error.toString());
       }
     });
@@ -180,7 +180,7 @@ async function validateAndDisposeProject(
   let suiteInst: ProjectInfoSuite | undefined;
 
   if (!suite && !exclusionList) {
-    pis = project.infoSet;
+    pis = project.indevInfoSet;
   } else {
     suiteInst = ProjectInfoSet.getSuiteFromString(suite ? suite : "default");
     pis = new ProjectInfoSet(project, suiteInst, exclusionList ? [exclusionList] : undefined);
@@ -236,7 +236,7 @@ async function validateAndDisposeProject(
 
   try {
     await outputResults(projectSet, pis, "", outputStorage, mcrJsonFile, outputMci, outputType);
-  } catch (e) {
+  } catch (e: any) {
     Log.error(e);
   }
 

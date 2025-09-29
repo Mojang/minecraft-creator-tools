@@ -246,6 +246,26 @@ export default class MinecraftUtilities {
     return descript;
   }
 
+  static clearCommonTerms(path: string) {
+    path = Utilities.replaceAllCaseInsensitive(path, "/resource_packs/", "/");
+    path = Utilities.replaceAllCaseInsensitive(path, "/behavior_packs/", "/");
+    path = Utilities.replaceAllCaseInsensitive(path, "/design_packs/", "/");
+    path = Utilities.replaceAllCaseInsensitive(path, "/skin_packs/", "/");
+    path = Utilities.replaceAllCaseInsensitive(path, "/resource_pack/", "/");
+    path = Utilities.replaceAllCaseInsensitive(path, "/behavior_pack/", "/");
+    path = Utilities.replaceAllCaseInsensitive(path, "/design_pack/", "/");
+    path = Utilities.replaceAllCaseInsensitive(path, "/skin_pack/", "/");
+    path = Utilities.replaceAllCaseInsensitive(path, "/behavior/", "/");
+    path = Utilities.replaceAllCaseInsensitive(path, "/resource/", "/");
+    path = Utilities.replaceAllCaseInsensitive(path, "/design/", "/");
+    path = Utilities.replaceAllCaseInsensitive(path, "/static-assets/", "/");
+    path = Utilities.replaceAllCaseInsensitive(path, "/zips/", "/");
+
+    path = path.replace(/\/\//gi, "/");
+
+    return path;
+  }
+
   static pathLooksLikeResourcePackName(path: string) {
     let pathCanon = path.toLowerCase();
 

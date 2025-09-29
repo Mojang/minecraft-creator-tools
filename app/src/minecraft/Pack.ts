@@ -21,7 +21,7 @@ export enum PackType {
 }
 
 export default class Pack {
-  type: PackType;
+  packType: PackType;
   manifestFile?: IFile;
   folder: IFolder;
   project: Project;
@@ -45,7 +45,7 @@ export default class Pack {
     this.project = project;
     this.projectItem = projectItem;
     this.folder = folderIn;
-    this.type = packTypeIn;
+    this.packType = packTypeIn;
   }
 
   ensureManifestFile() {
@@ -63,13 +63,13 @@ export default class Pack {
 
     this.manifestFile = this.ensureManifestFile();
 
-    if (this.type === PackType.behavior) {
+    if (this.packType === PackType.behavior) {
       this.manifest = await BehaviorManifestDefinition.ensureOnFile(this.manifestFile);
-    } else if (this.type === PackType.skin) {
+    } else if (this.packType === PackType.skin) {
       this.manifest = await SkinManifestDefinition.ensureOnFile(this.manifestFile);
-    } else if (this.type === PackType.persona) {
+    } else if (this.packType === PackType.persona) {
       this.manifest = await PersonaManifestDefinition.ensureOnFile(this.manifestFile);
-    } else if (this.type === PackType.design) {
+    } else if (this.packType === PackType.design) {
       this.manifest = await PersonaManifestDefinition.ensureOnFile(this.manifestFile);
     } else {
       this.manifest = await ResourceManifestDefinition.ensureOnFile(this.manifestFile);
@@ -103,7 +103,7 @@ export default class Pack {
       const pack = new Pack(folder, packType, project, projectItem);
 
       pack.project = project;
-      pack.type = packType;
+      pack.packType = packType;
 
       return pack;
     } else {

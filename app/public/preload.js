@@ -81,7 +81,7 @@ function _canonicalizePathForValidation(path) {
     throw new Error("PLD: Unsupported canon path: " + path);
   }
 
-  if (path.startsWith("<UDRP>") || path.startsWith("<UDLP>") || path.startsWith("<DOCP>")) {
+  if (path.startsWith("<MCRP>") || path.startsWith("<MCPP>") || path.startsWith("<DOCP>")) {
     path = path.substring(6);
   } else if (path.startsWith("<pt_")) {
     const endGreater = path.indexOf(">", 4);
@@ -227,6 +227,7 @@ contextBridge.exposeInMainWorld("api", {
           return ipcRenderer.invoke(commandName, position + "|" + data);
 
         case "asyncfsFolderExists":
+        case "asyncfsRootStorageExists":
         case "asyncfsMkdir":
         case "asyncfsReaddir":
         case "asyncfsStat":

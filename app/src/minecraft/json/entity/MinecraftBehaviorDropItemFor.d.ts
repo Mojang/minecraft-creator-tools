@@ -154,7 +154,7 @@ export default interface MinecraftBehaviorDropItemFor {
   /**
    * @remarks
    * Distance in blocks within the entity considers it has reached it's
-   * target position. 
+   * target position.
    * 
    * Sample Values:
    * Cat: 1

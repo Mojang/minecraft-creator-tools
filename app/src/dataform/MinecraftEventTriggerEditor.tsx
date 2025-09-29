@@ -203,7 +203,7 @@ export default class MinecraftEventTriggerEditor extends Component<
               color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
             }}
           >
-            <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
+            <Toolbar aria-label="Event trigger actions" items={toolbarItems} />
           </div>
           <div className="miet-actionList">
             <div className="miet-actionListDropdown">

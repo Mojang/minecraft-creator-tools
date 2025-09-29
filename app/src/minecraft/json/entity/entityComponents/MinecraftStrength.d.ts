@@ -11,7 +11,7 @@
  * 
  * minecraft:strength Samples
 
-Llama - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/llama.json
+Frost Moose - https://github.com/microsoft/minecraft-samples/tree/main/addon_starter/2_entities/behavior_packs/aop_mobs/entities/frost_moose.behavior.json
 
  * At /minecraft:entity/component_groups/minecraft:strength_1/minecraft:strength/: 
 "minecraft:strength": {
@@ -58,7 +58,7 @@ export default interface MinecraftStrength {
    * The maximum strength of this entity
    * 
    * Sample Values:
-   * Llama: 5
+   * Frost Moose: 5
    *
    */
   max?: number;
@@ -68,7 +68,7 @@ export default interface MinecraftStrength {
    * The initial value of the strength
    * 
    * Sample Values:
-   * Llama: 1, 2, 3, 4, 5
+   * Frost Moose: 1, 2, 3, 4, 5
    *
    */
   value?: number;

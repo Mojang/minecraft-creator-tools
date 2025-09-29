@@ -207,6 +207,16 @@ export default class StorageUtilities {
     return path;
   }
 
+  public static stripExtension(path: string) {
+    const lastPeriodEnd = path.lastIndexOf(".");
+
+    if (lastPeriodEnd >= 0) {
+      path = path.substring(0, lastPeriodEnd);
+    }
+
+    return path;
+  }
+
   public static getUniqueChildFolderName(name: string, folder: IFolder) {
     let num = 1;
     let nameCand = name;

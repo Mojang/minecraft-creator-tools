@@ -15,7 +15,7 @@ export default class LevelDb implements IErrorable {
   ldbFiles: IFile[];
   logFiles: IFile[];
   manifestFiles: IFile[];
-  keys: { [id: string]: LevelKeyValue | false | undefined };
+  keys: Map<string, LevelKeyValue | false | undefined> = new Map();
 
   isInErrorState?: boolean;
   errorMessages?: IErrorMessage[];
@@ -42,7 +42,6 @@ export default class LevelDb implements IErrorable {
     this.logFiles = logFileArr;
     this.manifestFiles = manifestFilesArr;
     this.context = context;
-    this.keys = {};
   }
 
   private _pushError(message: string, contextIn?: string) {
@@ -71,7 +70,7 @@ export default class LevelDb implements IErrorable {
   }
 
   public async init(log?: (message: string) => Promise<void>) {
-    this.keys = {};
+    this.keys = new Map<string, LevelKeyValue | false | undefined>();
     this.isInErrorState = false;
     this.errorMessages = undefined;
 
@@ -376,7 +375,7 @@ export default class LevelDb implements IErrorable {
       lastKeyValuePair = lb;
 
       if (Utilities.isUsableAsObjectKey(key)) {
-        this.keys[key] = lb;
+        this.keys.set(key, lb);
       }
 
       if (lb.length === undefined || lb.length < 0) {
@@ -517,12 +516,12 @@ export default class LevelDb implements IErrorable {
             kv.value = data;
 
             if (Utilities.isUsableAsObjectKey(key)) {
-              this.keys[key] = kv;
+              this.keys.set(key, kv);
             }
           }
         } else {
           if (Utilities.isUsableAsObjectKey(key)) {
-            this.keys[key] = false;
+            this.keys.set(key, false);
           }
         }
       }

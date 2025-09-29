@@ -22,4 +22,10 @@ export default class DirectoryStorage extends Storage {
   async processDirectory(dirEntry: FileSystemDirectoryEntry) {
     // const results = await DirectoryStorage.getEntriesAsPromise(dirEntry);
   }
+
+  async getAvailable() {
+    this.available = true;
+
+    return this.available;
+  }
 }

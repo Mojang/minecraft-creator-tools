@@ -59,6 +59,12 @@
     "invalidManifestJson": 0,
     "missingResourcePackDependencies": 0,
     "internalProcessingErrors": 0,
+    "invalidWorldPackReferencesJson": 0,
+    "missingWorldPackReferencesFile": 0,
+    "invalidPackIds": 0,
+    "missingManifestVersion": 0,
+    "invalidManifestVersion": 0,
+    "packReferencesNotFound": 0,
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
@@ -376,13 +382,14 @@
     "errorCount": 0,
     "internalProcessingErrorCount": 0,
     "warningCount": 0,
-    "testSuccessCount": 33,
+    "testSuccessCount": 34,
     "testFailCount": 0,
     "testNotApplicableCount": 14,
     "errorSummary": "",
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "",
+    "infoGenerationTime": 6,
     "summary": {
       "BASEGAMEVER": {
         "2": {
@@ -702,7 +709,7 @@
           "testCompleteSuccesses": 1
         },
         "101": {
-          "title": "apisUsed"
+          "title": "APIs Used"
         }
       },
       "SCRIPTMODULE": {
@@ -840,6 +847,13 @@
       "WORLDDATA": {
         "2": {
           "defaultMessage": "No applicable items found for test World Data Validation (WORLDDATA)"
+        }
+      },
+      "WPACKREFS": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "World Pack References (WPACKREFS) completed successfully",
+          "testCompleteSuccesses": 1
         }
       }
     }
@@ -1634,6 +1648,11 @@
       "iTp": 8,
       "gId": "WORLDDATA",
       "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "WPACKREFS",
+      "gIx": 1
     }
   ],
   "index": {

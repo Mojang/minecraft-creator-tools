@@ -104,8 +104,7 @@ export default interface BiomeComponents {
 
   /**
    * @remarks
-   * 
-Attach arbitrary string tags to this biome.
+   * Attach arbitrary string tags to this biome.
 Most biome tags are
    * referenced by JSON settings, but some meanings of tags are
    * directly implemented in the game's code. These tags are listed
@@ -178,7 +177,6 @@ swamp: Allows ruined portals to be found underwater. Biome
    * tags).
 taiga: Biomes tagged "forest" or "forest_generation" will
    * use normal Overworld flowers instead of forest flowers.
-
    */
   "minecraft:tags"?: BiomeComponentsMinecraftTags;
 

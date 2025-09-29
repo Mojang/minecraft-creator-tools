@@ -151,7 +151,7 @@ export default class EntityTypePropertyEditor extends Component<
     this.setState({
       loadedFormCount: this.state.loadedFormCount,
       dialogMode: EntityTypePropertyEditorDialogMode.newPropertyName,
-      newPropertyType: EntityPropertyType.string,
+      newPropertyType: EntityPropertyType.enum,
     });
   }
 
@@ -167,7 +167,7 @@ export default class EntityTypePropertyEditor extends Component<
     this.setState({
       loadedFormCount: this.state.loadedFormCount,
       dialogMode: EntityTypePropertyEditorDialogMode.newPropertyName,
-      newPropertyType: EntityPropertyType.number,
+      newPropertyType: EntityPropertyType.float,
     });
   }
 
@@ -220,8 +220,9 @@ export default class EntityTypePropertyEditor extends Component<
     if (this.state === undefined || this.state.loadedFormCount === undefined) {
       this._updateManager();
 
-      return <div>Loading...</div>;
+      return <div className="etpe-loading">Loading...</div>;
     }
+
     if (this.state.dialogMode === EntityTypePropertyEditorDialogMode.newPropertyName) {
       return (
         <Dialog

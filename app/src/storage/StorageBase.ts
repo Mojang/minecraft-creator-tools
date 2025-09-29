@@ -24,6 +24,8 @@ export default abstract class StorageBase implements IStorage {
 
   #storagePath: string | undefined;
 
+  available?: boolean | undefined;
+
   errorStatus?: StorageErrorStatus;
   errorMessage?: string;
 
@@ -104,4 +106,6 @@ export default abstract class StorageBase implements IStorage {
 
     return path.substring(0, lastDelim);
   }
+
+  abstract getAvailable(): Promise<boolean>;
 }

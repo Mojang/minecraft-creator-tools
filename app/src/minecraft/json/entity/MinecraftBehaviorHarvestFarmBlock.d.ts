@@ -47,7 +47,7 @@ export default interface MinecraftBehaviorHarvestFarmBlock {
   /**
    * @remarks
    * Distance in blocks within the entity considers it has reached it's
-   * target position. 
+   * target position.
    */
   goal_radius?: number;
 

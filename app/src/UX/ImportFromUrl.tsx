@@ -44,7 +44,7 @@ export default class ImportFromUrl extends Component<IImportFromUrlProps, IImpor
   async _load() {
     let hash = window.location.hash;
 
-    const queryVals: { [path: string]: string } = {};
+    const queryVals: { [key: string]: string } = {};
 
     if (hash) {
       const params = hash.split("&");
@@ -102,18 +102,20 @@ export default class ImportFromUrl extends Component<IImportFromUrlProps, IImpor
             openData = openData.substring(0, lastPeriod);
           }
 
-          const storageOrError = await StorageUtilities.createStorageFromUntrustedString(updateContent);
+          if (updateContent) {
+            const storageOrError = await StorageUtilities.createStorageFromUntrustedString(updateContent);
 
-          if (!storageOrError || typeof storageOrError === "string") {
+            if (!storageOrError || typeof storageOrError === "string") {
+              this.setState({
+                errorMessage: storageOrError,
+              });
+              return;
+            }
             this.setState({
-              errorMessage: storageOrError,
+              storage: storageOrError,
+              galleryId: openData,
             });
-            return;
           }
-          this.setState({
-            storage: storageOrError,
-            galleryId: openData,
-          });
           return;
         }
       }
@@ -137,12 +139,16 @@ export default class ImportFromUrl extends Component<IImportFromUrlProps, IImpor
     let interior = <></>;
 
     if (!this.state || (!this.state.errorMessage && !this.state.storage)) {
-      interior = <>Loading content from URL...</>;
+      interior = <div className="ifu-loading">Loading content from URL...</div>;
     }
 
     let buttonArea = [];
 
-    buttonArea.push(<Button onClick={this._navigateToHome}>Cancel/Home Page</Button>);
+    buttonArea.push(
+      <Button key="cancelHomePage" onClick={this._navigateToHome}>
+        Cancel/Home Page
+      </Button>
+    );
 
     if (this.state.errorMessage) {
       interior = (
@@ -153,7 +159,7 @@ export default class ImportFromUrl extends Component<IImportFromUrlProps, IImpor
       );
     } else if (this.state.storage) {
       buttonArea.push(
-        <Button className="ifu-button" primary={true} onClick={this._openProject}>
+        <Button className="ifu-button" primary={true} onClick={this._openProject} key="createButton">
           Create
         </Button>
       );

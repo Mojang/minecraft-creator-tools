@@ -18,6 +18,7 @@ export default interface IProjectInfo {
   internalProcessingErrorCount?: number;
   warningCount?: number;
   testSuccessCount?: number;
+  infoGenerationTime?: number;
   testFailCount?: number;
   testNotApplicableCount?: number;
   errorSummary?: string;

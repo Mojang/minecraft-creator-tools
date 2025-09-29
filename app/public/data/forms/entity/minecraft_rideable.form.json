@@ -202,7 +202,8 @@
             "dataType": 2
           }
         ],
-        "description": "The list of positions and number of riders for each position for entities riding this entity."
+        "description": "The list of positions and number of riders for each position for entities riding this entity.",
+        "id": ""
       },
       "samples": {
         "/vanilla/behavior_pack/entities/camel.json": [

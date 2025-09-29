@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import StorageUtilities from "../storage/StorageUtilities";
 import { IAnnotatedValue } from "./AnnotatedValue";
 import { HashCatalog } from "./HashUtilities";
 import IContextIndexData from "./IContentIndexData";
@@ -268,15 +269,17 @@ export default class ContentIndex implements IContentIndex {
   hasPathMatches(pathEnd: string) {
     pathEnd = pathEnd.toLowerCase();
 
-    const lastPeriodEnd = pathEnd.lastIndexOf(".");
-    if (lastPeriodEnd >= 0) {
-      pathEnd = pathEnd.substring(0, lastPeriodEnd);
-    }
+    pathEnd = StorageUtilities.stripExtension(pathEnd);
 
     return this._getProcessedPaths().some((path) => path.endsWith(pathEnd));
   }
 
   async getMatches(searchString: string, wholeTermSearch?: boolean, withAnyAnnotation?: AnnotationCategory[]) {
+    if (typeof searchString !== "string") {
+      Log.unexpectedContentState("CIMGMS");
+      return undefined;
+    }
+
     searchString = searchString.trim().toLowerCase();
 
     let terms = [searchString];

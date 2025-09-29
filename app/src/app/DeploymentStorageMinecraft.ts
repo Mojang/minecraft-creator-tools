@@ -140,6 +140,16 @@ export default class DeploymentStorageMinecraft implements IMinecraft {
       return;
     }
 
+    let isAvailable = this._carto.deploymentStorage.available;
+
+    if (isAvailable === undefined) {
+      isAvailable = await this._carto.deploymentStorage.getAvailable();
+    }
+
+    if (!isAvailable) {
+      return;
+    }
+
     const deployFolderExists = await this._carto.deployBehaviorPacksFolder.exists();
 
     if (deployFolderExists) {

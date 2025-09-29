@@ -379,7 +379,7 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
         >
           <div className="itae-toolBarArea">
             <div className="itae-tools">
-              <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
+              <Toolbar aria-label="Actions" items={toolbarItems} />
             </div>
             <div className="itae-dropdown">{dropdownArea}</div>
           </div>

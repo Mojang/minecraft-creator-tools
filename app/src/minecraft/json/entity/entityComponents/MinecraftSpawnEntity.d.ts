@@ -91,6 +91,22 @@ Chicken - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
 }
 
 
+Copper Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/copper_golem.json
+
+"minecraft:spawn_entity": {
+  "entities": {
+    "min_wait_time": 0,
+    "max_wait_time": 0,
+    "spawn_item": "poppy",
+    "filters": {
+      "test": "bool_property",
+      "domain": "minecraft:has_flower",
+      "value": true
+    }
+  }
+}
+
+
 Ocelot - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/ocelot.json
 
 "minecraft:spawn_entity": {
@@ -195,7 +211,7 @@ export default interface MinecraftSpawnEntity {
    *
    * Chicken: [{"min_wait_time":300,"max_wait_time":600,"spawn_sound":"plop","spawn_item":"egg","filters":[{"test":"rider_count","subject":"self","operator":"==","value":0},{"test":"enum_property","subject":"self","domain":"minecraft:climate_variant","value":"temperate"}]},{"min_wait_time":300,"max_wait_time":600,"spawn_sound":"plop","spawn_item":"brown_egg","filters":[{"test":"rider_count","subject":"self","operator":"==","value":0},{"test":"enum_property","subject":"self","domain":"minecraft:climate_variant","value":"warm"}]},{"min_wait_time":300,"max_wait_time":600,"spawn_sound":"plop","spawn_item":"blue_egg","filters":[{"test":"rider_count","subject":"self","operator":"==","value":0},{"test":"enum_property","subject":"self","domain":"minecraft:climate_variant","value":"cold"}]}]
    *
-   * Ocelot: {"filters":[{"test":"random_chance","value":7}],"min_wait_time":0,"max_wait_time":0,"num_to_spawn":2,"single_use":true,"spawn_entity":"minecraft:ocelot","spawn_event":"minecraft:entity_born","spawn_method":"born","spawn_sound":""}
+   * Copper Golem: {"min_wait_time":0,"max_wait_time":0,"spawn_item":"poppy","filters":{"test":"bool_property","domain":"minecraft:has_flower","value":true}}
    *
    */
   entities?: MinecraftSpawnEntityEntities;

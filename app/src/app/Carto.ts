@@ -1461,6 +1461,34 @@ export default class Carto {
     }
   }
 
+  async removeProjectByName(projectName: string) {
+    let projectToRemove: Project | undefined;
+
+    for (let i = 0; i < this.projects.length; i++) {
+      const proj = this.projects[i];
+
+      if (proj.name === projectName) {
+        if (projectToRemove !== undefined) {
+          Log.fail("Encountered multiple projects with the same name.");
+          return;
+        }
+
+        projectToRemove = proj;
+      }
+    }
+
+    if (!projectToRemove) {
+      Log.fail("Could not find project to remove: " + projectName);
+      return;
+    }
+
+    await projectToRemove.deletePreferencesFile();
+
+    this.removeProject(projectToRemove);
+
+    projectToRemove.dispose();
+  }
+
   removeProject(project: Project) {
     const newProjects: Project[] = [];
 
@@ -1827,6 +1855,7 @@ export default class Carto {
 
     await this.activeMinecraft.prepareAndStart(push);
   }
+
   private _bubbleMinecraftRefreshed(minecraft: IMinecraft, newState: CartoMinecraftState) {
     if (minecraft !== this.activeMinecraft) {
       return;
@@ -1911,6 +1940,7 @@ export default class Carto {
         this.lastActiveMinecraftFlavor = MinecraftFlavor.remote;
         this.save();
       }
+      this._onMinecraftStateChanged.dispatch(this.activeMinecraft, CartoMinecraftState.newMinecraft);
 
       if (this.activeMinecraft === undefined) {
         Log.unexpectedUndefined("EMA");

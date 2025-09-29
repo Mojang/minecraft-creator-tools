@@ -54,7 +54,6 @@ export default class FileExplorerFilePreview extends Component<
               color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
             }}
             readOnly={this.props.readOnly}
-            defaultValue={content}
             value={content}
           ></textarea>
         );

@@ -111,8 +111,9 @@ export default class MCFunctionInfoGenerator implements IProjectInfoGenerator {
 
     for (const command of commands) {
       if (
-        !CommandRegistry.isMinecraftBuiltInCommand(command.name) &&
-        !CommandRegistry.isAddOnBlockedCommand(command.name)
+        !command.isNamespaced &&
+        !CommandRegistry.isMinecraftBuiltInCommand(command.fullName) &&
+        !CommandRegistry.isAddOnBlockedCommand(command.fullName)
       ) {
         results.push(
           new ProjectInfoItem(
@@ -121,7 +122,7 @@ export default class MCFunctionInfoGenerator implements IProjectInfoGenerator {
             MCFunctionInfoGeneratorTest.invalidCommandSyntax,
             this.getTopicData(MCFunctionInfoGeneratorTest.invalidCommandSyntax).title,
             item,
-            `${command.name} ${command.commandArguments.join(" ")}`
+            `${command.fullName} ${command.commandArguments.join(" ")}`
           )
         );
       }

@@ -724,7 +724,7 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
 
     const perms = this.getManagedPermutations();
 
-    if (perms) {
+    if (perms && Array.isArray(perms)) {
       for (const perm of perms) {
         if (perm) {
           comp = perm.getComponent(id);

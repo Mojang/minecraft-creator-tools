@@ -190,7 +190,7 @@ export default class ProjectItemVariant {
 
       const pack = await this._item.getPack();
 
-      if (pack && pack.type === PackType.resource && this._item.projectPath) {
+      if (pack && pack.packType === PackType.resource && this._item.projectPath) {
         const manifest = (await pack.ensureManifest()) as ResourceManifestDefinition | undefined;
         const folder = pack.folder;
 

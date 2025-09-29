@@ -140,6 +140,7 @@ export default class JigsawStructureDefinition implements IDefinition {
     }
 
     const dataString = JSON.stringify(this._data, null, 2);
+    
     this._file.setContent(dataString);
   }
 }

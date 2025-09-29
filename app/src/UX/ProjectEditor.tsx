@@ -390,8 +390,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       activeReference: null,
       mode: initialMode,
       visualSeed: 0 + (this.props.visualSeed ? this.props.visualSeed : 0),
-      allInfoSet: this.props.project.infoSet,
-      allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+      allInfoSet: this.props.project.indevInfoSet,
+      allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
       menuState: ProjectEditorMenuState.noMenu,
       statusAreaMode: sam,
       displayFileView: false,
@@ -492,8 +492,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
               mode: ProjectEditorMode.activeItem,
               viewMode: viewMode,
               menuState: state.menuState,
-              allInfoSet: this.props.project.infoSet,
-              allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+              allInfoSet: this.props.project.indevInfoSet,
+              allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
               tab: state.tab,
               itemView: state.itemView,
               filteredItems: state.filteredItems,
@@ -518,8 +518,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
                 mode: i,
                 viewMode: state.viewMode,
                 menuState: state.menuState,
-                allInfoSet: this.props.project.infoSet,
-                allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+                allInfoSet: this.props.project.indevInfoSet,
+                allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
                 tab: state.tab,
                 itemView: state.itemView,
                 filteredItems: state.filteredItems,
@@ -550,8 +550,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       menuState: this.state.menuState,
       mode: this.state.mode,
       viewMode: this.state.viewMode,
-      allInfoSet: this.props.project.infoSet,
-      allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+      allInfoSet: this.props.project.indevInfoSet,
+      allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
       displayFileView: this.state.displayFileView,
       itemView: this.state.itemView,
       filteredItems: this.state.filteredItems,
@@ -583,8 +583,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       activeVariant: name,
       visualSeed: this.state.visualSeed ? this.state.visualSeed + 1 : 1,
       viewMode: this.state.viewMode,
-      allInfoSet: this.props.project.infoSet,
-      allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+      allInfoSet: this.props.project.indevInfoSet,
+      allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
       displayFileView: this.state.displayFileView,
       menuState: this.state.menuState,
       itemView: this.state.itemView,
@@ -604,7 +604,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     if (this._isMountedInternal && this.state) {
       if (!this.state.allInfoSet || !this.state.allInfoSet.completedGeneration) {
         await this.props.project.processRelations();
-        await this.props.project.infoSet.generateForProject(false);
+        await this.props.project.indevInfoSet.generateForProject(false);
         this._onNotifyNewAllItemSetLoaded();
       }
     } else if (this._asyncLoadAttempts < 5) {
@@ -679,8 +679,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           dragStyle: undefined,
           visualSeed: this.state.visualSeed ? this.state.visualSeed + 1 : 1,
           viewMode: this.state.viewMode,
-          allInfoSet: this.props.project.infoSet,
-          allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+          allInfoSet: this.props.project.indevInfoSet,
+          allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
           displayFileView: this.state.displayFileView,
           menuState: this.state.menuState,
           itemView: this.state.itemView,
@@ -709,8 +709,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         dragStyle: undefined,
         visualSeed: this.state.visualSeed ? this.state.visualSeed + 1 : 1,
         viewMode: this.state.viewMode,
-        allInfoSet: this.props.project.infoSet,
-        allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+        allInfoSet: this.props.project.indevInfoSet,
+        allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
         displayFileView: this.state.displayFileView,
         menuState: this.state.menuState,
         itemView: this.state.itemView,
@@ -730,8 +730,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   private _onNotifyNewAllItemSetLoaded() {
     if (this.state) {
       if (
-        this.state.allInfoSet !== this.props.project.infoSet ||
-        this.state.allInfoSetGenerated !== this.props.project.infoSet.completedGeneration
+        this.state.allInfoSet !== this.props.project.indevInfoSet ||
+        this.state.allInfoSetGenerated !== this.props.project.indevInfoSet.completedGeneration
       ) {
         this.setState({
           activeProjectItem: this.state.activeProjectItem,
@@ -742,8 +742,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           dragStyle: this.state.dragStyle,
           visualSeed: this.state.visualSeed,
           viewMode: this.state.viewMode,
-          allInfoSet: this.props.project.infoSet,
-          allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+          allInfoSet: this.props.project.indevInfoSet,
+          allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
           displayFileView: this.state.displayFileView,
           menuState: this.state.menuState,
           itemView: this.state.itemView,
@@ -778,8 +778,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         dialogData: this.state.dialogData,
         dialogActiveItem: this.state.dialogActiveItem,
         viewMode: this.state.viewMode,
-        allInfoSet: this.props.project.infoSet,
-        allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+        allInfoSet: this.props.project.indevInfoSet,
+        allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
         displayFileView: this.state.displayFileView,
         menuState: this.state.menuState,
         itemView: this.state.itemView,
@@ -918,8 +918,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
             menuState: this.state.menuState,
             mode: this.state.mode,
             viewMode: this.state.viewMode,
-            allInfoSet: this.props.project.infoSet,
-            allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+            allInfoSet: this.props.project.indevInfoSet,
+            allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
             displayFileView: this.state.displayFileView,
             itemView: this.state.itemView,
             filteredItems: this.state.filteredItems,
@@ -1097,8 +1097,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
               menuState: this.state.menuState,
               mode: this.state.mode,
               viewMode: this.state.viewMode,
-              allInfoSet: this.props.project.infoSet,
-              allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+              allInfoSet: this.props.project.indevInfoSet,
+              allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
               displayFileView: this.state.displayFileView,
               itemView: this.state.itemView,
               filteredItems: this.state.filteredItems,
@@ -1517,7 +1517,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     await this._ensurePersisted();
 
-    await ProjectAutogeneration.updateProjectAutogeneration(this.props.project);
+    await ProjectAutogeneration.updateProjectAutogeneration(this.props.project, false);
 
     await this.props.carto.save();
 
@@ -1766,8 +1766,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         menuState: this.state.menuState,
         mode: this.state.mode,
         viewMode: this.state.viewMode,
-        allInfoSet: this.props.project.infoSet,
-        allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+        allInfoSet: this.props.project.indevInfoSet,
+        allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
         displayFileView: this.state.displayFileView,
         itemView: this.state.itemView,
         filteredItems: this.state.filteredItems,
@@ -1806,8 +1806,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         menuState: this.state.menuState,
         mode: this.state.mode,
         viewMode: this.state.viewMode,
-        allInfoSet: this.props.project.infoSet,
-        allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+        allInfoSet: this.props.project.indevInfoSet,
+        allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
         displayFileView: this.state.displayFileView,
         itemView: this.state.itemView,
         filteredItems: this.state.filteredItems,
@@ -1888,8 +1888,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           menuState: this.state.menuState,
           mode: this.state.mode,
           viewMode: this.state.viewMode,
-          allInfoSet: this.props.project.infoSet,
-          allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+          allInfoSet: this.props.project.indevInfoSet,
+          allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
           displayFileView: this.state.displayFileView,
           itemView: this.state.itemView,
           filteredItems: this.state.filteredItems,
@@ -2724,8 +2724,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         tentativeProjectItem: this.state.tentativeProjectItem,
         mode: newMode,
         viewMode: newStateViewMode,
-        allInfoSet: this.props.project.infoSet,
-        allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+        allInfoSet: this.props.project.indevInfoSet,
+        allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
         statusAreaMode: this.state.statusAreaMode,
         lastDeployKey: this.state.lastDeployKey,
         itemView: this.state.itemView,
@@ -2829,8 +2829,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       tentativeProjectItem: this.state.tentativeProjectItem,
       mode: newMode,
       viewMode: this.state.viewMode,
-      allInfoSet: this.props.project.infoSet,
-      allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+      allInfoSet: this.props.project.indevInfoSet,
+      allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
       statusAreaMode: this.state.statusAreaMode,
       lastDeployKey: this.state.lastDeployKey,
       itemView: this.state.itemView,
@@ -2884,8 +2884,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         activeReference: null,
         mode: newMode,
         viewMode: newStateViewMode,
-        allInfoSet: this.props.project.infoSet,
-        allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+        allInfoSet: this.props.project.indevInfoSet,
+        allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
         itemView: itemView,
         filteredItems: this.state.filteredItems,
         searchFilter: this.state.searchFilter,
@@ -3013,8 +3013,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       dragStyle: this.state.dragStyle,
       visualSeed: this.state.visualSeed,
       viewMode: this.state.viewMode,
-      allInfoSet: this.props.project.infoSet,
-      allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+      allInfoSet: this.props.project.indevInfoSet,
+      allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
       displayFileView: this.state.displayFileView,
       menuState: this.state.menuState,
       itemView: this.state.itemView,
@@ -3064,8 +3064,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           dragStyle: this.state.dragStyle,
           visualSeed: this.state.visualSeed,
           viewMode: this.state.viewMode,
-          allInfoSet: this.props.project.infoSet,
-          allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+          allInfoSet: this.props.project.indevInfoSet,
+          allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
           displayFileView: this.state.displayFileView,
           menuState: this.state.menuState,
           itemView: this.state.itemView,
@@ -3116,8 +3116,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       dragStyle: this.state.dragStyle,
       visualSeed: this.state.visualSeed,
       viewMode: this.state.viewMode,
-      allInfoSet: this.props.project.infoSet,
-      allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+      allInfoSet: this.props.project.indevInfoSet,
+      allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
       displayFileView: this.state.displayFileView,
       menuState: this.state.menuState,
       itemView: this.state.itemView,
@@ -3973,8 +3973,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       interior = (
         <ProjectInfoDisplay
           onNotifyInfoSetLoaded={this._onNotifyNewAllItemSetLoaded}
-          allInfoSet={this.state.allInfoSet}
-          allInfoSetGenerated={this.state.allInfoSetGenerated}
+          indevInfoSet={this.state.allInfoSet}
+          indevInfoSetGenerated={this.state.allInfoSetGenerated}
           theme={this.props.theme}
           heightOffset={heightOffset}
           project={this.props.project}

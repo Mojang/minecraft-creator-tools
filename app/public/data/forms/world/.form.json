@@ -1,4 +1,5 @@
 {
+  "id": "Rules used by Jigsaw Structures to determine which blocks to modify or replace when placing a Structure Template in the world.",
   "fields": [
     {
       "id": "description",
@@ -22,6 +23,5 @@
       "dataType": 16
     }
   ],
-  "title": "World Used To Pair Block Rules With Structure Templates And To Randomly Place Structure Templates Using a Weighted List",
-  "id": "Used to pair block rules with Structure Templates and to randomly place Structure Templates using a weighted list."
+  "title": "World Used To Pair Block Rules With Structure Templates And To Randomly Place Structure Templates Using a Weighted List"
 }

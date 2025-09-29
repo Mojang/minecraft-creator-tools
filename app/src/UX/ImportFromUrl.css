@@ -22,6 +22,10 @@
   }
 }
 
+.ifu-loading {
+  padding-top: 20px;
+}
+
 .ifu-header {
   font-size: 30pt;
   height: 100%;
@@ -49,6 +53,7 @@
 .ifu-warning {
   padding: 10px;
   display: grid;
+  padding-top: 17px;
   grid-template-columns: 30px 1fr;
 }
 

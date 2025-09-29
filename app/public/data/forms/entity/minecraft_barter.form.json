@@ -6,14 +6,6 @@
       "description": "Loot table that's used to drop a random item.",
       "dataType": 8,
       "lookupId": "lootTable",
-      "samples": {
-        "/vanilla/behavior_pack/entities/piglin.json": [
-          {
-            "path": "/minecraft:entity/component_groups/piglin_adult/minecraft:barter/",
-            "content": "loot_tables/entities/piglin_barter.json"
-          }
-        ]
-      },
       "title": "Barter Table"
     },
     {
@@ -21,29 +13,11 @@
       "description": "Duration, in seconds, for which mob won't barter items if it was hurt.",
       "dataType": 18,
       "maxValue": 60,
-      "samples": {
-        "/vanilla/behavior_pack/entities/piglin.json": [
-          {
-            "path": "/minecraft:entity/component_groups/piglin_adult/minecraft:barter/",
-            "content": 20
-          }
-        ]
-      },
       "defaultValue": 0,
       "title": "Cooldown After Being Attacked"
     }
   ],
   "title": "Barter",
-  "samples": {
-    "/vanilla/behavior_pack/entities/piglin.json": [
-      {
-        "path": "/minecraft:entity/component_groups/piglin_adult/minecraft:barter/",
-        "content": {
-          "barter_table": "loot_tables/entities/piglin_barter.json",
-          "cooldown_after_being_attacked": 20
-        }
-      }
-    ]
-  },
+  "samples": {},
   "id": "minecraft:barter"
 }

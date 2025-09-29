@@ -1,15 +1,15 @@
 {
   "fields": [
     {
-      "id": "event",
-      "title": "event",
-      "description": "event",
+      "id": "target",
+      "title": "Filter target subject",
+      "description": "Filter target subject",
       "dataType": 2
     },
     {
-      "id": "target",
-      "title": "enum SharedTypes_Legacy_FilterSubject",
-      "description": "enum SharedTypes_Legacy_FilterSubject",
+      "id": "event",
+      "title": "event",
+      "description": "event",
       "dataType": 2
     },
     {

@@ -6,7 +6,7 @@ import IStatus from "../app/Status";
 import IGallery from "../app/IGallery";
 import ProjectTile, { ProjectTileDisplayMode } from "./ProjectTile";
 import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
-import { Button, ThemeInput } from "@fluentui/react-northstar";
+import { ThemeInput } from "@fluentui/react-northstar";
 import Project from "../app/Project";
 import Log from "../core/Log";
 import Database from "../minecraft/Database";
@@ -41,9 +41,9 @@ interface IProjectGalleryState {
 }
 
 export default class ProjectGallery extends Component<IProjectGalleryProps, IProjectGalleryState> {
-  private startersElt: React.RefObject<HTMLButtonElement>;
-  private mobsElt: React.RefObject<HTMLButtonElement>;
-  private snippetsElt: React.RefObject<HTMLButtonElement>;
+  private startersElt: React.RefObject<HTMLDivElement>;
+  private mobsElt: React.RefObject<HTMLDivElement>;
+  private snippetsElt: React.RefObject<HTMLDivElement>;
 
   constructor(props: IProjectGalleryProps) {
     super(props);
@@ -198,21 +198,44 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
 
     if (this.props.search === undefined || this.props.search.length === 0) {
       tabsElt = (
-        <div className="pg-tabArea" role="tablist">
-          <Button
+        <div
+          className="pg-tabArea"
+          role="tablist"
+          tabIndex={0}
+          onKeyDown={(keyboardEvent: React.KeyboardEvent<HTMLDivElement>) => {
+            if (keyboardEvent.key === "ArrowRight") {
+              if (this.state.mode === ProjectGalleryMode.starters && this.mobsElt && this.mobsElt.current) {
+                this.mobsElt.current.focus();
+                this.mobsElt.current.click();
+              } else if (
+                this.state.mode === ProjectGalleryMode.entities &&
+                this.snippetsElt &&
+                this.snippetsElt.current
+              ) {
+                this.snippetsElt.current.focus();
+                this.snippetsElt.current.click();
+              }
+            } else if (keyboardEvent.key === "ArrowLeft") {
+              if (this.state.mode === ProjectGalleryMode.codeSnippets && this.mobsElt && this.mobsElt.current) {
+                this.mobsElt.current.focus();
+                this.mobsElt.current.click();
+              } else if (
+                this.state.mode === ProjectGalleryMode.entities &&
+                this.startersElt &&
+                this.startersElt.current
+              ) {
+                this.startersElt.current.focus();
+                this.startersElt.current.click();
+              }
+            }
+          }}
+        >
+          <span
             className={this.state.mode === ProjectGalleryMode.starters ? "pg-tabButton-selected" : "pg-tabButton"}
             role="tab"
             onClick={this._selectProjectStarters}
             ref={this.startersElt}
             aria-selected={this.state.mode === ProjectGalleryMode.starters}
-            onKeyDown={(keyboardEvent: React.KeyboardEvent<HTMLButtonElement>) => {
-              if (keyboardEvent.key === "ArrowRight") {
-                if (this.mobsElt && this.mobsElt.current) {
-                  this.mobsElt.current.focus();
-                  this.mobsElt.current.click();
-                }
-              }
-            }}
             style={{
               backgroundColor:
                 this.state.mode === ProjectGalleryMode.starters
@@ -231,8 +254,8 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
             }}
           >
             Starters
-          </Button>
-          <div
+          </span>
+          <span
             className="pg-underline"
             aria-hidden="true"
             style={{
@@ -240,27 +263,13 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
             }}
           >
             &#160;
-          </div>
-          <Button
+          </span>
+          <span
             className={this.state.mode === ProjectGalleryMode.entities ? "pg-tabButton-selected" : "pg-tabButton"}
             role="tab"
             onClick={this._selectEntities}
             ref={this.mobsElt}
             aria-selected={this.state.mode === ProjectGalleryMode.entities}
-            onKeyDown={(keyboardEvent: React.KeyboardEvent<HTMLButtonElement>) => {
-              if (keyboardEvent.key === "ArrowLeft") {
-                if (this.startersElt && this.startersElt.current) {
-                  this.startersElt.current.focus();
-                  this.startersElt.current.click();
-                }
-              }
-              if (keyboardEvent.key === "ArrowRight") {
-                if (this.snippetsElt && this.snippetsElt.current) {
-                  this.snippetsElt.current.focus();
-                  this.snippetsElt.current.click();
-                }
-              }
-            }}
             style={{
               backgroundColor:
                 this.state.mode === ProjectGalleryMode.entities
@@ -279,8 +288,8 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
             }}
           >
             From a Mob
-          </Button>
-          <div
+          </span>
+          <span
             className="pg-underline"
             aria-hidden="true"
             style={{
@@ -288,20 +297,12 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
             }}
           >
             &#160;
-          </div>
-          <Button
+          </span>
+          <span
             className={this.state.mode === ProjectGalleryMode.codeSnippets ? "pg-tabButton-selected" : "pg-tabButton"}
             onClick={this._selectCodeSnippets}
             role="tab"
             ref={this.snippetsElt}
-            onKeyDown={(keyboardEvent: React.KeyboardEvent<HTMLButtonElement>) => {
-              if (keyboardEvent.key === "ArrowLeft") {
-                if (this.mobsElt && this.mobsElt.current) {
-                  this.mobsElt.current.focus();
-                  this.mobsElt.current.click();
-                }
-              }
-            }}
             aria-selected={this.state.mode === ProjectGalleryMode.codeSnippets}
             style={{
               backgroundColor:
@@ -321,7 +322,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
             }}
           >
             Code Snippets
-          </Button>
+          </span>
         </div>
       );
     }

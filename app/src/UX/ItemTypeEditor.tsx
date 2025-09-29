@@ -326,7 +326,7 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
           }}
         >
-          <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
+          <Toolbar aria-label="Actions" items={toolbarItems} />
         </div>
         {mode}
       </div>

@@ -9,6 +9,7 @@ import Project from "../app/Project";
 import StorageUtilities from "../storage/StorageUtilities";
 import { ProjectItemType } from "../app/IProjectItemData";
 import BehaviorManifestDefinition from "./BehaviorManifestDefinition";
+import MinecraftUtilities from "./MinecraftUtilities";
 import Log from "../core/Log";
 
 export default class ResourceManifestDefinition {
@@ -106,6 +107,14 @@ export default class ResourceManifestDefinition {
     }
 
     return this.definition.header.version;
+  }
+
+  get dependencies() {
+    if (!this.definition || !this.definition.dependencies) {
+      return undefined;
+    }
+
+    return this.definition.dependencies;
   }
 
   public get name() {
@@ -405,5 +414,37 @@ export default class ResourceManifestDefinition {
     this.definition = StorageUtilities.getJsonObject(this._file);
 
     this._isLoaded = true;
+  }
+
+  static validatePackReferenceVersion(version: any): {
+    isValid: boolean;
+    versionArray?: number[];
+    errorMessage?: string;
+  } {
+    if (!version) {
+      return {
+        isValid: false,
+        errorMessage: "Missing version",
+      };
+    }
+
+    // Use MinecraftUtilities to parse version
+    const versionArray = MinecraftUtilities.getVersionArrayFrom(version);
+
+    if (
+      !versionArray ||
+      versionArray.length !== 3 ||
+      !versionArray.every((v: number) => typeof v === "number" && v >= 0)
+    ) {
+      return {
+        isValid: false,
+        errorMessage: "Invalid version format. Expected valid version string or array of 3 non-negative numbers",
+      };
+    }
+
+    return {
+      isValid: true,
+      versionArray: versionArray,
+    };
   }
 }

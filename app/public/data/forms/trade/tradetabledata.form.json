@@ -2,8 +2,8 @@
   "fields": [
     {
       "id": "56017534",
-      "title": "struct SharedTypes_v1_21_30_TradeItem",
-      "description": "struct SharedTypes_v1_21_30_TradeItem",
+      "title": "TradeItem",
+      "description": "TradeItem",
       "dataType": 16
     },
     {
@@ -14,8 +14,8 @@
     },
     {
       "id": "943617905",
-      "title": "struct SharedTypes_v1_21_30_TradeTier",
-      "description": "struct SharedTypes_v1_21_30_TradeTier",
+      "title": "TradeTier",
+      "description": "TradeTier",
       "dataType": 16
     },
     {
@@ -26,26 +26,26 @@
     },
     {
       "id": "1093643626",
-      "title": "struct SharedTypes_v1_21_30_TradeItemList",
-      "description": "struct SharedTypes_v1_21_30_TradeItemList",
+      "title": "TradeItemList",
+      "description": "TradeItemList",
       "dataType": 16
     },
     {
       "id": "2298823339",
-      "title": "struct SharedTypes_v1_21_30_TradeItem_Quantity",
-      "description": "struct SharedTypes_v1_21_30_TradeItem_Quantity",
+      "title": "TradeItem_Quantity",
+      "description": "TradeItem_Quantity",
       "dataType": 16
     },
     {
       "id": "3153354884",
-      "title": "struct SharedTypes_v1_21_30_TradeGroup",
-      "description": "struct SharedTypes_v1_21_30_TradeGroup",
+      "title": "TradeGroup",
+      "description": "TradeGroup",
       "dataType": 16
     },
     {
       "id": "3738829565",
-      "title": "struct SharedTypes_v1_21_30_Trade",
-      "description": "struct SharedTypes_v1_21_30_Trade",
+      "title": "Trade",
+      "description": "Trade",
       "dataType": 16
     },
     {

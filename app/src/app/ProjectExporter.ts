@@ -236,6 +236,16 @@ export default class ProjectExporter {
       return undefined;
     }
 
+    let isAvailable = carto.deploymentStorage.available;
+
+    if (isAvailable === undefined) {
+      isAvailable = await carto.deploymentStorage.getAvailable();
+    }
+
+    if (!isAvailable) {
+      return;
+    }
+
     return await this.ensureWorldsFolder(carto.deploymentStorage.rootFolder);
   }
 

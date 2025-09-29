@@ -13,7 +13,7 @@
       "title": "Targets",
       "description": "List of potential pools",
       "dataType": 16,
-      "subFormId": "world/weightedrandomitem",
+      "subFormId": "world/jigsawtemplatepool",
       "isRequired": true
     }
   ],

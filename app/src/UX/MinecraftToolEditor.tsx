@@ -262,7 +262,7 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
       <div className="mts-outer">
         <div className="mts-toolArea">
           <div className="cose-componentToolBarArea">
-            <Toolbar aria-label="Minecraft tool action toolbar" items={toolbarItems} />
+            <Toolbar aria-label="Minecraft tool actions" items={toolbarItems} />
           </div>
           <div className="mts-toolPicker">
             <Dropdown

@@ -139,7 +139,7 @@
 .pil-headerLabel {
   grid-column-start: 2;
   grid-column-end: 4;
-  grid-template-columns: 1fr 80px;
+  grid-template-columns: 1fr 92px;
   text-overflow: ellipsis;
   display: grid;
 }
@@ -187,6 +187,7 @@
   margin: 6px 0px 0px 1px;
   box-shadow: none;
   width: 24px;
+  background-color: #d88800;
   height: 25px;
 }
 
@@ -203,7 +204,7 @@
   box-shadow: none;
   width: 24px;
   height: 25px;
-  background-color: green;
+  background-color: #d88800;
   text-align: center;
 }
 

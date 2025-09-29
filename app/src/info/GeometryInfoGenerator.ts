@@ -10,6 +10,7 @@ import Project from "../app/Project";
 import ContentIndex from "../core/ContentIndex";
 import ProjectInfoUtilities from "./ProjectInfoUtilities";
 import ModelGeometryDefinition from "../minecraft/ModelGeometryDefinition";
+import { ItemDisplayTransforms } from "../minecraft/IModelGeometry";
 
 export enum GeometryInfoGeneratorTest {
   blockGeometry = 101,
@@ -95,6 +96,39 @@ export default class GeometryInfoGenerator implements IProjectInfoGenerator {
                   itemGeometryPi.spectrumIntFeature("Cubes", totalCubes);
                 } else if (srPath.indexOf("/entity/") >= 0) {
                   entityGeometryPi.spectrumIntFeature("Cubes", totalCubes);
+                }
+              }
+
+              if (geoDef.item_display_transforms) {
+                for (const itemDisplayKey in geoDef.item_display_transforms) {
+                  const itemDisplayTransform = (geoDef.item_display_transforms as any)[
+                    itemDisplayKey
+                  ] as ItemDisplayTransforms;
+                  if (!itemDisplayTransform) {
+                    continue;
+                  }
+
+                  itemGeometryPi.incrementFeature(itemDisplayKey + " Item Display Transform");
+
+                  if (itemDisplayTransform.fit_to_frame === true) {
+                    itemGeometryPi.incrementFeature(itemDisplayKey + " Item Display Transform Fit To Frame True");
+                  }
+
+                  if (itemDisplayTransform.fit_to_frame === false) {
+                    itemGeometryPi.incrementFeature(itemDisplayKey + " Item Display Transform Fit To Frame False");
+                  }
+
+                  if (itemDisplayTransform.scale) {
+                    for (const scaleNum of itemDisplayTransform.scale) {
+                      itemGeometryPi.spectrumFeature(itemDisplayKey + " Item Display Transform Scale ", scaleNum);
+                    }
+                  }
+
+                  if (itemDisplayTransform.rotation) {
+                    for (const rotationNum of itemDisplayTransform.rotation) {
+                      itemGeometryPi.spectrumFeature(itemDisplayKey + " Item Display Transform Rotation ", rotationNum);
+                    }
+                  }
                 }
               }
             }

@@ -22,6 +22,13 @@
   }
 }
 
+.pid-hiddenButton {
+  background: transparent;
+  border: 0px;
+  padding: 0px;
+  display: inline-block;
+}
+
 .pid-outer {
   height: 100%;
   text-align: left;
@@ -83,17 +90,27 @@
 .pis-itemDataSummMin {
   grid-column: 6;
 }
+
 .pid-summaryArea {
   overflow-y: auto;
 }
 
 .pis-summaryArea {
-  display: grid;
   margin-bottom: 20px;
   margin-left: 10px;
   margin-top: 10px;
   font-size: small;
-  grid-template-columns: 500px 1fr;
+}
+
+.pis-areaHeader {
+  font-size: large;
+  padding-top: 15px;
+  padding-bottom: 10px;
+}
+
+.pis-detailTable {
+  width: 100%;
+  vertical-align: top;
 }
 
 .pis-image {
@@ -102,13 +119,31 @@
   height: 64px;
 }
 
-.pis-itemHeader {
-  grid-column: 1;
+.pis-itemDataHeader {
   font-weight: bold;
+  min-width: 150px;
 }
 
-.pis-itemData {
-  grid-column: 2;
+.pis-itemValueHeader {
+  width: 100%;
+}
+
+.pis-itemHeader {
+  vertical-align: top;
+  min-width: 250px;
+}
+
+.pis-itemDataCell {
+  vertical-align: top;
+  width: 100%;
+}
+
+.pis-searchArea {
+  padding: 9px;
+}
+
+.pis-searchArea .ui-input__input {
+  width: 300px;
 }
 
 .pid-area {

@@ -1397,7 +1397,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           if (this.props.readOnly || field.readOnly) {
             if (field.defaultValue === undefined || field.defaultValue !== curVal) {
               if (typeof curVal === "object") {
-                curVal = JSON.stringify(curVal, undefined, 2);
+                curVal = JSON.stringify(curVal, null, 2);
               }
               formInterior.push(
                 <div className={this.getCssClassName("ro-row")} key={baseKey + "row" + title}>
@@ -1893,7 +1893,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
       header.push(
         <div className={this.getCssClassName("closeArea")} key="closeArea">
-          <Toolbar aria-label="Form accesory toolbar overflow menu" items={accessoryToolbar} />
+          <Toolbar aria-label="Form accesory" items={accessoryToolbar} />
         </div>
       );
     }
@@ -2525,7 +2525,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
         const toolBarElement = (
           <div key={baseKey + "tb"}>
-            <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
+            <Toolbar aria-label="Keyed strings actions" items={toolbarItems} />
           </div>
         );
         this.formComponentNames.push(field.id + "toolbar");
@@ -2693,7 +2693,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
       const toolBarElement = (
         <div>
-          <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
+          <Toolbar aria-label="Keyed true/false actions" items={toolbarItems} />
         </div>
       );
       this.formComponentNames.push(field.id + "toolbar");
@@ -2976,7 +2976,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
         const toolBarElement = (
           <div>
-            <Toolbar aria-label="Actions  toolbar overflow menu" items={toolbarItems} />
+            <Toolbar aria-label="List of items actions" items={toolbarItems} />
           </div>
         );
         this.formComponentNames.push(field.id + "toolbar");
@@ -3225,7 +3225,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
         const toolBarElement = (
           <div>
-            <Toolbar aria-label="Actions  toolbar overflow menu" items={toolbarItems} />
+            <Toolbar aria-label="Minecraft event trigger list actions" items={toolbarItems} />
           </div>
         );
         this.formComponentNames.push(field.id + "toolbar");

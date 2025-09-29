@@ -163,7 +163,7 @@ describe("simple", async () => {
   it("report file matches", async () => {
     const project = await _loadProject("simple");
 
-    const pis = new ProjectInfoSet(project, ProjectInfoSuite.default);
+    const pis = new ProjectInfoSet(project, ProjectInfoSuite.defaultInDevelopment);
 
     await pis.generateForProject();
 

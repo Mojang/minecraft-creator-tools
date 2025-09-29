@@ -1128,9 +1128,9 @@ export default class FormJsonDocumentationGenerator {
     }
 
     const docForm: IFormDefinition = {
-      id: this.humanifyId(nodeName),
+      id: FormJsonDocumentationGenerator.humanifyId(nodeName),
       title: FormJsonDocumentationGenerator.humanifySchemaTag(nodeName),
-      description: node.description ? node.description : undefined,
+      description: node.description ? FormJsonDocumentationGenerator.humanifyText(node.description) : undefined,
       fields: fields,
     };
 
@@ -1138,6 +1138,8 @@ export default class FormJsonDocumentationGenerator {
   }
 
   static humanifySchemaTag(name: string) {
+    name = FormJsonDocumentationGenerator.humanifyText(name);
+
     const firstPeriod = name.indexOf(".");
 
     if (firstPeriod >= 2) {
@@ -1657,6 +1659,13 @@ export default class FormJsonDocumentationGenerator {
     }
   }
 
+  static sanitizeTitle(title: string) {
+    if (title.indexOf("enum ") || title.indexOf("struct ")) {
+      title = title.replace("enum ", "");
+      title = title.replace("struct ", "");
+    }
+  }
+
   public getFormFromDocNode(childNode: ILegacyDocumentationNode, name?: string) {
     /*"title": "Break doors annotation",
     "description": "Allows an entity to break doors, assuming that that flags set up for the component to use in navigation. Requires the entity's navigation component to have the parameter can_break_doors set to true.",
@@ -1696,7 +1705,9 @@ export default class FormJsonDocumentationGenerator {
     const docForm: IFormDefinition = {
       id: FormJsonDocumentationGenerator.cleanForId(name),
       title: name ? Utilities.humanifyMinecraftName(name) : undefined,
-      description: childNode.description ? childNode.description.join("\n") : undefined,
+      description: childNode.description
+        ? FormJsonDocumentationGenerator.humanifyText(childNode.description.join("\n"))
+        : undefined,
       fields: fields,
     };
 
@@ -1896,7 +1907,9 @@ export default class FormJsonDocumentationGenerator {
     const fieldNode: IField = {
       id: FormJsonDocumentationGenerator.cleanForId(childNode.name),
       title: Utilities.humanifyMinecraftName(childNode.name),
-      description: childNode.description ? childNode.description.join("\n") : undefined,
+      description: childNode.description
+        ? FormJsonDocumentationGenerator.humanifyText(childNode.description.join("\n"))
+        : undefined,
       defaultValue: defaultVal,
       dataType: type,
     };
@@ -2006,8 +2019,10 @@ export default class FormJsonDocumentationGenerator {
 
     const fieldNode: IField = {
       id: FormJsonDocumentationGenerator.cleanForId(id),
-      title: title,
-      description: childNode.description ? childNode.description : undefined,
+      title: FormJsonDocumentationGenerator.humanifyText(title),
+      description: childNode.description
+        ? FormJsonDocumentationGenerator.humanifyText(childNode.description)
+        : undefined,
       dataType: FieldDataType.object,
     };
 
@@ -2390,11 +2405,25 @@ export default class FormJsonDocumentationGenerator {
     }
   }
 
-  public humanifyId(title: string) {
+  public static humanifyId(title: string) {
     let i = title.indexOf(".");
 
     if (i > 1) {
       title = title.substring(i + 1);
+    }
+
+    title = FormJsonDocumentationGenerator.humanifyText(title);
+
+    return title;
+  }
+
+  public static humanifyText(title: string) {
+    if (title.indexOf("enum_") >= 0 || title.indexOf("StructuredTypes_") >= 0) {
+      let lastUnderScore = title.lastIndexOf("_");
+
+      if (lastUnderScore > 0 && lastUnderScore < title.length - 1) {
+        title = title.substring(lastUnderScore + 1);
+      }
     }
 
     title = title.replace(/::/gi, "_");

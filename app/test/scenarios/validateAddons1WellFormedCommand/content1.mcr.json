@@ -78,6 +78,12 @@
     "invalidManifestJson": 0,
     "missingResourcePackDependencies": 0,
     "internalProcessingErrors": 0,
+    "invalidWorldPackReferencesJson": 0,
+    "missingWorldPackReferencesFile": 0,
+    "invalidPackIds": 0,
+    "missingManifestVersion": 0,
+    "invalidManifestVersion": 0,
+    "packReferencesNotFound": 0,
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
@@ -131,6 +137,7 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "",
+    "infoGenerationTime": 163,
     "summary": {
       "CADDONIREQ": {
         "1": {

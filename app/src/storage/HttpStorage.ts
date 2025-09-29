@@ -21,4 +21,10 @@ export default class HttpStorage extends StorageBase implements IStorage {
 
     this.rootFolder = new HttpFolder(this, null, "");
   }
+
+  async getAvailable() {
+    this.available = true;
+
+    return this.available;
+  }
 }

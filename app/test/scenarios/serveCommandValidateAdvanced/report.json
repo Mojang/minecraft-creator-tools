@@ -153,6 +153,12 @@
     "invalidManifestJson": 0,
     "missingResourcePackDependencies": 0,
     "internalProcessingErrors": 0,
+    "invalidWorldPackReferencesJson": 0,
+    "missingWorldPackReferencesFile": 0,
+    "invalidPackIds": 0,
+    "missingManifestVersion": 0,
+    "invalidManifestVersion": 0,
+    "packReferencesNotFound": 0,
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
@@ -945,13 +951,14 @@
     "errorCount": 0,
     "internalProcessingErrorCount": 0,
     "warningCount": 2,
-    "testSuccessCount": 37,
+    "testSuccessCount": 38,
     "testFailCount": 0,
     "testNotApplicableCount": 10,
     "errorSummary": "",
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:boomfly`\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:robot`",
     "testFailSummary": "",
+    "infoGenerationTime": 638,
     "summary": {
       "BASEGAMEVER": {
         "2": {
@@ -1582,7 +1589,7 @@
           "testCompleteSuccesses": 1
         },
         "101": {
-          "title": "apisUsed"
+          "title": "APIs Used"
         }
       },
       "SCRIPTMODULE": {
@@ -1752,6 +1759,13 @@
         },
         "126": {
           "defaultMessage": "Level Dat Experiments"
+        }
+      },
+      "WPACKREFS": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "World Pack References (WPACKREFS) completed successfully",
+          "testCompleteSuccesses": 1
         }
       }
     }
@@ -4178,6 +4192,11 @@
       "gId": "WORLDDATA",
       "gIx": 126,
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
+    },
+    {
+      "iTp": 1,
+      "gId": "WPACKREFS",
+      "gIx": 1
     }
   ],
   "index": {
@@ -11189,6 +11208,12 @@
           "invalidManifestJson": 0,
           "missingResourcePackDependencies": 0,
           "internalProcessingErrors": 0,
+          "invalidWorldPackReferencesJson": 0,
+          "missingWorldPackReferencesFile": 0,
+          "invalidPackIds": 0,
+          "missingManifestVersion": 0,
+          "invalidManifestVersion": 0,
+          "packReferencesNotFound": 0,
           "minBaseGameVersion": 0,
           "chunkCount": 0,
           "subchunkLessChunkCount": 0,
@@ -11205,6 +11230,7 @@
           "internalProcessingErrorSummary": "",
           "warningSummary": "",
           "testFailSummary": "",
+          "infoGenerationTime": 21,
           "summary": {
             "SHARING": {
               "1": {

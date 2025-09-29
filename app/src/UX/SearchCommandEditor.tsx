@@ -348,7 +348,7 @@ export default class SearchCommandEditor extends Component<ISearchCommandEditorP
 
       accessoryToolbar = (
         <div className="sceed-bottomToolBarArea">
-          <Toolbar aria-label="Search command editor toolbar" items={accessoryToolbarItems} />
+          <Toolbar aria-label="Search command editor actions" items={accessoryToolbarItems} />
         </div>
       );
     }

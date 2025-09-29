@@ -92,5 +92,5 @@ export default class CheckPackIconsGenerator implements IProjectInfoGenerator {
   }
 }
 function requiresPackIcon(pack: Pack): pack is Pack {
-  return pack.type !== PackType.skin && pack.type !== PackType.design;
+  return pack.packType !== PackType.skin && pack.packType !== PackType.design;
 }

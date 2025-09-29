@@ -781,7 +781,6 @@ export const InfoTabLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISel
 ) => (
   <span
     className={props.isSelected ? "label-button label-selected" : "label-button"}
-    role="tab"
     style={{
       width: !props.isCompact ? "130px" : "",
       fontWeight: props.isSelected ? "bold" : "normal",
@@ -834,7 +833,6 @@ export const SummaryTabLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & I
         ? props.theme.siteVariables?.colorScheme.brand.background4
         : props.theme.siteVariables?.colorScheme.brand.background1,
     }}
-    role="tab"
     title="Summary"
   >
     {" "}

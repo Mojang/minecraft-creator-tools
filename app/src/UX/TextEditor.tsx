@@ -243,7 +243,7 @@ export default class TextEditor extends Component<ITextEditorProps, ITextEditorS
 
       accessoryToolbar = (
         <div className="texed-bottomToolBarArea">
-          <Toolbar aria-label="Text editor toolbar" items={accessoryToolbarItems} />
+          <Toolbar aria-label="Text editor actions" items={accessoryToolbarItems} />
         </div>
       );
     }
@@ -314,7 +314,7 @@ export default class TextEditor extends Component<ITextEditorProps, ITextEditorS
         <div className="texed-toolBarArea">
           <div className="texed-title">&#160;</div>
           <div className="texed-toolbar">
-            <Toolbar aria-label="Text editor toolbar" items={toolbarItems} />
+            <Toolbar aria-label="Text editor actions" items={toolbarItems} />
           </div>
         </div>
       );

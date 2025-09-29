@@ -10,14 +10,6 @@
  * Entity Documentation - minecraft:on_death
  * 
  * minecraft:on_death Samples
-
-Ender Dragon - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/ender_dragon.json
-
-"minecraft:on_death": {
-  "event": "minecraft:start_death",
-  "target": "self"
-}
-
  */
 
 import * as jsoncommon from './../../../jsoncommon';
@@ -32,10 +24,6 @@ export default interface MinecraftOnDeath {
    * @remarks
    * The event to run when the conditions for this trigger are 
    * met.
-   * 
-   * Sample Values:
-   * Ender Dragon: "minecraft:start_death"
-   *
    */
   event?: jsoncommon.MinecraftEventTrigger;
 
@@ -48,10 +36,6 @@ export default interface MinecraftOnDeath {
   /**
    * @remarks
    * The target of the event.
-   * 
-   * Sample Values:
-   * Ender Dragon: "self"
-   *
    */
   target?: string;
 

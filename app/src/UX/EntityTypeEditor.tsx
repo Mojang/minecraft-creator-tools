@@ -808,7 +808,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
               color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
             }}
           >
-            <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
+            <Toolbar aria-label="Entity type actions" items={toolbarItems} />
           </div>
           {modeArea}
         </div>

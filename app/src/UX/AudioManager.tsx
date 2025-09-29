@@ -825,7 +825,7 @@ export default class AudioManager extends Component<IAudioManagerProps, IAudioMa
     return (
       <div className="aum-outer">
         <div className="jse-toolBarArea">
-          <Toolbar aria-label="Javascript Editor toolbar" items={toolbarItems} />
+          <Toolbar aria-label="Javascript editor" items={toolbarItems} />
         </div>
         <div
           className="aum-bin"

@@ -29,7 +29,7 @@ export default class CheckForbiddenFilesGenerator implements IProjectInfoGenerat
   canAlwaysProcess = true;
 
   async generate(project: Project): Promise<ProjectInfoItem[]> {
-    const packs = project.packs.map((pack) => [pack.getPackItems(), pack.type] as const);
+    const packs = project.packs.map((pack) => [pack.getPackItems(), pack.packType] as const);
     const templates = getWorldTemplates(project.items).map((template) => [template.items, "WorldTemplate"] as const);
 
     const packages = [...packs, ...templates];

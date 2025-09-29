@@ -427,8 +427,8 @@ export default interface MinecraftBreedable {
 
   /**
    * @remarks
-   *  [EXPERIMENTAL] List of attributes that should benefit from
-   * parent centric attribute blending. For example, horses blend their
+   * [EXPERIMENTAL] List of attributes that should benefit from parent
+   * centric attribute blending. For example, horses blend their
    * health, movement, and jump_strength in their offspring.
    */
   parent_centric_attribute_blending?: string[];

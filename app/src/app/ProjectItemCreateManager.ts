@@ -195,7 +195,8 @@ export default class ProjectItemCreateManager {
       }
     }
 
-    await ProjectAutogeneration.updateProjectAutogeneration(project);
+    await ProjectAutogeneration.updateProjectAutogeneration(project, false);
+
     await project.save();
 
     return pi;
@@ -519,7 +520,7 @@ export default class ProjectItemCreateManager {
       file.setContent(content);
     }
 
-    await ProjectAutogeneration.updateProjectAutogeneration(project);
+    await ProjectAutogeneration.updateProjectAutogeneration(project, false);
   }
 
   static async createNewDocumentedType(project: Project) {
@@ -551,7 +552,7 @@ export default class ProjectItemCreateManager {
 
     await pi.loadFolder();
 
-    await ProjectAutogeneration.updateProjectAutogeneration(project);
+    await ProjectAutogeneration.updateProjectAutogeneration(project, false);
 
     await project.save();
   }
@@ -628,7 +629,7 @@ export default class ProjectItemCreateManager {
       file.setContent(content);
     }
 
-    await ProjectAutogeneration.updateProjectAutogeneration(project);
+    await ProjectAutogeneration.updateProjectAutogeneration(project, false);
 
     await project.save();
 
@@ -701,7 +702,7 @@ export default class ProjectItemCreateManager {
 
     this.setFileToDefaultContent(file);
 
-    await ProjectAutogeneration.updateProjectAutogeneration(project);
+    await ProjectAutogeneration.updateProjectAutogeneration(project, false);
 
     await project.save();
 
@@ -796,7 +797,7 @@ export default class ProjectItemCreateManager {
 
     file.setContent(content);
 
-    await ProjectAutogeneration.updateProjectAutogeneration(project);
+    await ProjectAutogeneration.updateProjectAutogeneration(project, false);
 
     await project.save();
 
@@ -893,7 +894,7 @@ export default class ProjectItemCreateManager {
       file.setContent(content);
     }
 
-    await ProjectAutogeneration.updateProjectAutogeneration(project);
+    await ProjectAutogeneration.updateProjectAutogeneration(project, false);
 
     await project.save();
 
@@ -990,7 +991,7 @@ export default class ProjectItemCreateManager {
       file.setContent(content);
     }
 
-    await ProjectAutogeneration.updateProjectAutogeneration(project);
+    await ProjectAutogeneration.updateProjectAutogeneration(project, false);
 
     await project.save();
 
@@ -1087,7 +1088,7 @@ export default class ProjectItemCreateManager {
       file.setContent(content);
     }
 
-    await ProjectAutogeneration.updateProjectAutogeneration(project);
+    await ProjectAutogeneration.updateProjectAutogeneration(project, false);
 
     await project.save();
 
@@ -1177,7 +1178,7 @@ export default class ProjectItemCreateManager {
       file.setContent(sourceFile.content);
     }
 
-    await ProjectAutogeneration.updateProjectAutogeneration(project);
+    await ProjectAutogeneration.updateProjectAutogeneration(project, false);
 
     await project.save();
 
@@ -1267,7 +1268,7 @@ export default class ProjectItemCreateManager {
       file.setContent(sourceFile.content);
     }
 
-    await ProjectAutogeneration.updateProjectAutogeneration(project);
+    await ProjectAutogeneration.updateProjectAutogeneration(project, false);
 
     await project.save();
 
@@ -1387,7 +1388,7 @@ export default class ProjectItemCreateManager {
       file.setContent(content);
     }
 
-    await ProjectAutogeneration.updateProjectAutogeneration(project);
+    await ProjectAutogeneration.updateProjectAutogeneration(project, false);
 
     await project.save();
   }

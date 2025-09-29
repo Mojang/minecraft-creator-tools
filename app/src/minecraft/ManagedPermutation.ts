@@ -128,7 +128,13 @@ export default class ManagedPermutation implements IManagedComponentSetItem {
     }
 
     if (!this._managed[id]) {
-      const data = this._data.components[id];
+      const comps = this._data.components;
+
+      if (!comps) {
+        return undefined;
+      }
+
+      const data = comps[id];
 
       if (data) {
         this._managed[id] = new ManagedComponent(this._data.components, id, data);

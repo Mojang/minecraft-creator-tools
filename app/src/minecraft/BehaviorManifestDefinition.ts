@@ -11,6 +11,7 @@ import { ProjectItemType } from "../app/IProjectItemData";
 import { ProjectFocus } from "../app/IProjectData";
 import ResourceManifestDefinition from "./ResourceManifestDefinition";
 import IDefinition from "./IDefinition";
+import MinecraftUtilities from "./MinecraftUtilities";
 import Log from "../core/Log";
 
 export default class BehaviorManifestDefinition implements IDefinition {
@@ -581,5 +582,55 @@ export default class BehaviorManifestDefinition implements IDefinition {
     }
 
     return JSON.stringify(manifest, null, 2);
+  }
+
+  static validatePackReferenceVersion(version: any): {
+    isValid: boolean;
+    versionArray?: number[];
+    errorMessage?: string;
+  } {
+    if (!version) {
+      return {
+        isValid: false,
+        errorMessage: "Missing version",
+      };
+    }
+
+    // Use MinecraftUtilities to parse version (handles both string and array formats)
+    const versionArray = MinecraftUtilities.getVersionArrayFrom(version);
+
+    if (
+      !versionArray ||
+      versionArray.length !== 3 ||
+      !versionArray.every((v: number) => typeof v === "number" && v >= 0)
+    ) {
+      return {
+        isValid: false,
+        errorMessage: "Invalid version format. Expected valid version string or array of 3 non-negative numbers",
+      };
+    }
+
+    return {
+      isValid: true,
+      versionArray: versionArray,
+    };
+  }
+
+  static validatePackId(packId: any): { isValid: boolean; errorMessage?: string } {
+    if (!packId || typeof packId !== "string") {
+      return {
+        isValid: false,
+        errorMessage: "Missing or invalid pack_id",
+      };
+    }
+
+    if (!MinecraftUtilities.isValidUuid(packId)) {
+      return {
+        isValid: false,
+        errorMessage: `Invalid UUID format for pack_id [${packId}]`,
+      };
+    }
+
+    return { isValid: true };
   }
 }

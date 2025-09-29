@@ -730,7 +730,7 @@ export default class ProjectUtilities {
       await ProjectUtilities.renameDefaultFolders(project, suggestedShortName);
     }
 
-    await ProjectAutogeneration.updateProjectAutogeneration(project);
+    await ProjectAutogeneration.updateProjectAutogeneration(project, true);
 
     await ProjectUtilities.randomizeAllUids(project);
 

@@ -1,6 +1,12 @@
 {
   "fields": [
     {
+      "id": "sound_event",
+      "title": "Sound Event",
+      "description": "Sound effect to emit when the threshold is met.",
+      "dataType": 2
+    },
+    {
       "id": "durability_thresholds",
       "title": "Durability Thresholds",
       "description": "The list of both durability thresholds and effects emitted when each threshold is met. When multiple thresholds are met, only the threshold with the lowest durability after applying the damage is considered.",
@@ -19,12 +25,6 @@
       "id": "particle_type",
       "title": "enum ParticleType",
       "description": "Particle effect to emit when the threshold is met.",
-      "dataType": 2
-    },
-    {
-      "id": "sound_event",
-      "title": "enum SharedTypes_Legacy_LevelSoundEvent",
-      "description": "Sound effect to emit when the threshold is met.",
       "dataType": 2
     }
   ],

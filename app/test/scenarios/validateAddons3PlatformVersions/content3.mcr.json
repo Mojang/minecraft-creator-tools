@@ -80,6 +80,12 @@
     "invalidManifestJson": 0,
     "missingResourcePackDependencies": 0,
     "internalProcessingErrors": 0,
+    "invalidWorldPackReferencesJson": 0,
+    "missingWorldPackReferencesFile": 0,
+    "invalidPackIds": 0,
+    "missingManifestVersion": 0,
+    "invalidManifestVersion": 0,
+    "packReferencesNotFound": 0,
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
@@ -106,6 +112,7 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [MINENGINEVER000] Found 2 errors for Min Engine Version (MINENGINEVER).",
+    "infoGenerationTime": 141,
     "summary": {
       "BASEGAMEVER": {
         "2": {

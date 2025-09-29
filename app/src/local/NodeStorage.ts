@@ -72,4 +72,10 @@ export default class NodeStorage extends StorageBase implements IStorage {
 
     return pth;
   }
+
+  async getAvailable() {
+    this.available = true;
+
+    return this.available;
+  }
 }
