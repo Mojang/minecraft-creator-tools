@@ -313,7 +313,7 @@ export default class App extends Component<AppProps, AppState> {
       const firstSlash = openQuery.indexOf("/");
 
       if (firstSlash > 1) {
-        if (queryVals["updates"] !== undefined) {
+        if (queryVals["updates"] !== undefined || queryVals["updatesJson"] !== undefined) {
           return {
             mode: AppMode.importFromUrl,
             activeProject: null,

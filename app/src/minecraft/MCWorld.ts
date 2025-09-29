@@ -27,12 +27,11 @@ import MinecraftUtilities from "./MinecraftUtilities";
 import NbtBinary from "./NbtBinary";
 import { NbtTagType } from "./NbtBinaryTag";
 import AnchorSet from "./AnchorSet";
-import Project, { FolderContext } from "../app/Project";
+import Project from "../app/Project";
 import ActorItem from "./ActorItem";
 import { StatusTopic } from "../app/Status";
 import { IErrorMessage, IErrorable } from "../core/IErrorable";
 import ProjectItem from "../app/ProjectItem";
-import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
 
 const BEHAVIOR_PACKS_RELPATH = "/world_behavior_packs.json";
 const BEHAVIOR_PACK_HISTORY_RELPATH = "/world_behavior_pack_history.json";
