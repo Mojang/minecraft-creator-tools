@@ -1,0 +1,26 @@
+{
+   "format_version" : "1.20.20",
+   "sound_definitions" : {
+      "ambientsounds.co2" : {
+         "category" : "ambient",
+         "max_distance" : null,
+         "min_distance" : null,
+         "sounds" : [
+            {
+               "is3D" : false,
+               "name" : "sounds/ambientsounds/co2",
+               "volume" : 0.550,
+               "weight" : 10
+            }
+         ]
+      },
+      "ambientsounds.co_doesnotexist" : {
+         "category" : "ambient",
+         "max_distance" : null,
+         "min_distance" : null,
+         "sounds" : [
+            "sounds/ambientsounds/co_doesnotexist"
+         ]
+      }
+   }
+}

@@ -136,8 +136,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CADDONIREQ000] Found 11 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).\nTESTFAIL: [CADDONREQ000] Found 5 errors for Cooperative Add-On Requirements (CADDONREQ).",
-    "infoGenerationTime": 243,
-    "endToEndGenerationTime": 449,
+    "infoGenerationTime": 217,
+    "endToEndGenerationTime": 415,
     "summary": {
       "CADDONIREQ": {
         "0": {

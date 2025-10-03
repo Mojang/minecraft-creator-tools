@@ -56,4 +56,8 @@ jobs:
           npm ci
           npx gulp package
           popd
+          pushd world
+          npm ci
+          npx gulp package
+          popd
           popd

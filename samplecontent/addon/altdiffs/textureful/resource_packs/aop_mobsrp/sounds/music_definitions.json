@@ -1,0 +1,12 @@
+{
+   "co2" : {
+      "event_name" : "ambientsounds.co2",
+      "max_delay" : 180,
+      "min_delay" : 60
+   },
+   "cofoo_doesnotexist": {
+      "event_name" : "ambientsounds.cofoo_doesnotexist",
+      "max_delay" : 180,
+      "min_delay" : 60
+   }
+}

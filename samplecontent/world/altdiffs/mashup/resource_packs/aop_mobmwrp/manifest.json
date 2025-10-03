@@ -1,0 +1,19 @@
+{
+  "format_version": 3,
+  "header": {
+    "name": "pack.name",
+    "description": "pack.description",
+    "uuid": "849920e6-e9b8-4ef8-8cfc-39849a7B18f4",
+    "version": "1.0.0",
+    "min_engine_version": "1.21.100"
+  },
+  "modules": [
+    {
+      "description": "Mashup Pack Resources",
+      "type": "resources",
+      "uuid": "03be1a74-8c15-4318-9bc2-42ad513976bc",
+      "version": "1.0.0"
+    }
+  ],
+  "capabilities": ["pbr"]
+}

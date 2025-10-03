@@ -1046,8 +1046,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson_mers.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/sheepomelon_mers.png) Texture does not have any items in this pack that are using this.",
     "testFailSummary": "TESTFAIL: [CHKMANIF000] Found 1 errors for Check Manifest Generator (CHKMANIF).",
-    "infoGenerationTime": 748,
-    "endToEndGenerationTime": 920,
+    "infoGenerationTime": 832,
+    "endToEndGenerationTime": 995,
     "summary": {
       "BASEGAMEVER": {
         "2": {
@@ -1574,10 +1574,6 @@
         "115": {
           "title": "115",
           "defaultMessage": "Resource Pack Description"
-        },
-        "116": {
-          "title": "116",
-          "defaultMessage": "Resource Pack Id"
         },
         "117": {
           "title": "117",
@@ -3110,11 +3106,7 @@
       "gId": "MINENGINEVER",
       "gIx": 614,
       "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
-      "d": [
-        1,
-        21,
-        100
-      ]
+      "d": "1.21.100"
     },
     {
       "iTp": 1,
@@ -3183,11 +3175,7 @@
       "gId": "PACK",
       "gIx": 111,
       "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
-      "d": [
-        1,
-        21,
-        100
-      ]
+      "d": "1.21.100"
     },
     {
       "iTp": 2,
@@ -3219,16 +3207,9 @@
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 116,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
-      "d": "9d6dad89-6e29-46ba-83d5-490a4901caef|1.0.0"
-    },
-    {
-      "iTp": 2,
-      "gId": "PACK",
       "gIx": 117,
       "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
-      "d": 2
+      "d": 3
     },
     {
       "iTp": 7,

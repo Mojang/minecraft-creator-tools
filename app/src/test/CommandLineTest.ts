@@ -388,6 +388,212 @@ describe("serveCommandValidateAddon", async () => {
   });
 });
 
+describe("serveCommandValidateWorld", async () => {
+  let exitCode: number | null = null;
+  const stdoutLines: string[] = [];
+  const stderrLines: string[] = [];
+  let process: ChildProcessWithoutNullStreams | null = null;
+
+  before(function (done) {
+    this.timeout(20000);
+
+    removeResultFolder("serveCommandValidateWorld");
+    const passcode = Utilities.createUuid().substring(0, 8);
+
+    if (!sampleFolder) {
+      throw new Error("Sample folder does not exist.");
+    }
+
+    sampleFolder
+      .ensureFileFromRelativePath("/world/build/packages/aop_moremobs_linkerrors.zip")
+      .then((sampleFile: IFile) => {
+        console.log("Starting web server.");
+
+        process = spawn("node", [
+          " ./../toolbuild/jsn/cli",
+          "serve",
+          "basicwebservices",
+          "localhost",
+          "6126",
+          "-lv",
+          "-once",
+          "-updatepc",
+          passcode,
+        ]);
+
+        collectLines(process.stdout, stdoutLines);
+        collectLines(process.stderr, stderrLines);
+
+        sampleFile.loadContent().then(() => {
+          const content = sampleFile.content;
+
+          Utilities.sleep(3000).then(() => {
+            console.log(
+              "Making validation web request to http://localhost:6126/api/validate/ " + content?.length + " bytes"
+            );
+
+            axios
+              .post("http://localhost:6126/api/validate/", content, {
+                headers: { mctpc: passcode, "content-type": "application/zip" },
+                method: "POST",
+              })
+              .then((response: AxiosResponse) => {
+                ensureReportJsonMatchesScenario(
+                  scenariosFolder,
+                  resultsFolder,
+                  response.data,
+                  "serveCommandValidateWorld"
+                );
+
+                if (response === undefined) {
+                  throw new Error("Could not connect to server.");
+                }
+
+                if (process) {
+                  process.on("exit", (code) => {
+                    exitCode = code;
+                    process = null;
+                    done();
+                  });
+                }
+              });
+          });
+        });
+      });
+  });
+
+  it("should have no stderr lines", async () => {
+    if (process) {
+      process.kill();
+      process = null;
+    }
+    assert.equal(stderrLines.length, 0, "Error: " + stderrLines.join("\n") + "|");
+  }).timeout(10000);
+
+  it("exit code should be zero", async () => {
+    if (process) {
+      process.kill();
+      process = null;
+    }
+    assert.equal(exitCode, 0);
+  }).timeout(10000);
+
+  it("output matches", async () => {
+    await folderMatches(scenariosFolder, resultsFolder, "serveCommandValidateWorld", volatileFileExtensions);
+  });
+
+  after(function () {
+    if (process) {
+      console.log("Ending web process in serverCommandValidateWorld after function.");
+      process.kill();
+      process = null;
+    }
+  });
+});
+
+describe("serveCommandValidateMashup", async () => {
+  let exitCode: number | null = null;
+  const stdoutLines: string[] = [];
+  const stderrLines: string[] = [];
+  let process: ChildProcessWithoutNullStreams | null = null;
+
+  before(function (done) {
+    this.timeout(20000);
+
+    removeResultFolder("serveCommandValidateMashup");
+    const passcode = Utilities.createUuid().substring(0, 8);
+
+    if (!sampleFolder) {
+      throw new Error("Sample folder does not exist.");
+    }
+
+    sampleFolder
+      .ensureFileFromRelativePath("/world/build/packages/aop_moremobs_mashup.zip")
+      .then((sampleFile: IFile) => {
+        console.log("Starting web server.");
+
+        process = spawn("node", [
+          " ./../toolbuild/jsn/cli",
+          "serve",
+          "basicwebservices",
+          "localhost",
+          "6126",
+          "-lv",
+          "-once",
+          "-updatepc",
+          passcode,
+        ]);
+
+        collectLines(process.stdout, stdoutLines);
+        collectLines(process.stderr, stderrLines);
+
+        sampleFile.loadContent().then(() => {
+          const content = sampleFile.content;
+
+          Utilities.sleep(3000).then(() => {
+            console.log(
+              "Making validation web request to http://localhost:6126/api/validate/ " + content?.length + " bytes"
+            );
+
+            axios
+              .post("http://localhost:6126/api/validate/", content, {
+                headers: { mctpc: passcode, "content-type": "application/zip" },
+                method: "POST",
+              })
+              .then((response: AxiosResponse) => {
+                ensureReportJsonMatchesScenario(
+                  scenariosFolder,
+                  resultsFolder,
+                  response.data,
+                  "serveCommandValidateMashup"
+                );
+
+                if (response === undefined) {
+                  throw new Error("Could not connect to server.");
+                }
+
+                if (process) {
+                  process.on("exit", (code) => {
+                    exitCode = code;
+                    process = null;
+                    done();
+                  });
+                }
+              });
+          });
+        });
+      });
+  });
+
+  it("should have no stderr lines", async () => {
+    if (process) {
+      process.kill();
+      process = null;
+    }
+    assert.equal(stderrLines.length, 0, "Error: " + stderrLines.join("\n") + "|");
+  }).timeout(10000);
+
+  it("exit code should be zero", async () => {
+    if (process) {
+      process.kill();
+      process = null;
+    }
+    assert.equal(exitCode, 0);
+  }).timeout(10000);
+
+  it("output matches", async () => {
+    await folderMatches(scenariosFolder, resultsFolder, "serveCommandValidateMashup", volatileFileExtensions);
+  });
+
+  after(function () {
+    if (process) {
+      console.log("Ending web process in serverCommandValidateMashup after function.");
+      process.kill();
+      process = null;
+    }
+  });
+});
+
 describe("serveCommandValidateAdvanced", () => {
   let exitCode: number | null = null;
   const stdoutLines: string[] = [];
@@ -529,7 +735,7 @@ describe("createCommandAddonStarter", async () => {
 
       // exclude eslint because we know the .ts comes with some warnings due to
       // the starter TS having some unused variables.
-      allProjectInfoSet = new ProjectInfoSet(project, ProjectInfoSuite.default);
+      allProjectInfoSet = new ProjectInfoSet(project, ProjectInfoSuite.defaultInDevelopment);
 
       addonProjectInfoSet = new ProjectInfoSet(project, ProjectInfoSuite.cooperativeAddOn);
 
@@ -621,7 +827,7 @@ describe("addLootTable", async () => {
 
       // exclude eslint because we know the .ts comes with some warnings due to
       // the starter TS having some unused variables.
-      allProjectInfoSet = new ProjectInfoSet(project, ProjectInfoSuite.default);
+      allProjectInfoSet = new ProjectInfoSet(project, ProjectInfoSuite.defaultInDevelopment);
 
       project.autoDeploymentMode = ProjectAutoDeploymentMode.noAutoDeployment;
       project.localFolderPath = __dirname + "/../../test/results/addLootTable/";
@@ -930,6 +1136,94 @@ describe("validateLinkErrors", async () => {
 
   it("output matches", async function () {
     await folderMatches(scenariosFolder, resultsFolder, "validateLinkErrors", volatileFileExtensions);
+  });
+});
+
+describe("validateTextureful", async () => {
+  let exitCode: number | null = null;
+  const stdoutLines: string[] = [];
+  const stderrLines: string[] = [];
+
+  before(function (done) {
+    this.timeout(20000);
+
+    removeResultFolder("validateTextureful");
+
+    const process = spawn("node", [
+      " ./../toolbuild/jsn/cli",
+      "val",
+      "all",
+      "-i",
+      "./../samplecontent/addon/build/content_textureful",
+      "-o",
+      "./test/results/validateTextureful/",
+    ]);
+
+    collectLines(process.stdout, stdoutLines);
+    collectLines(process.stderr, stderrLines);
+
+    process.on("exit", (code) => {
+      exitCode = code;
+      done();
+    });
+  });
+
+  it("should have no stderr lines", async (done) => {
+    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    done();
+  }).timeout(10000);
+
+  it("exit code should be zero", async (done) => {
+    assert.equal(exitCode, 0);
+    done();
+  }).timeout(10000);
+
+  it("output matches", async function () {
+    await folderMatches(scenariosFolder, resultsFolder, "validateTextureful", volatileFileExtensions);
+  });
+});
+
+describe("validateTexturefulvv", async () => {
+  let exitCode: number | null = null;
+  const stdoutLines: string[] = [];
+  const stderrLines: string[] = [];
+
+  before(function (done) {
+    this.timeout(20000);
+
+    removeResultFolder("validateTexturefulvv");
+
+    const process = spawn("node", [
+      " ./../toolbuild/jsn/cli",
+      "val",
+      "all",
+      "-i",
+      "./../samplecontent/addon/build/content_texturefulvv",
+      "-o",
+      "./test/results/validateTexturefulvv/",
+    ]);
+
+    collectLines(process.stdout, stdoutLines);
+    collectLines(process.stderr, stderrLines);
+
+    process.on("exit", (code) => {
+      exitCode = code;
+      done();
+    });
+  });
+
+  it("should have no stderr lines", async (done) => {
+    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    done();
+  }).timeout(10000);
+
+  it("exit code should be zero", async (done) => {
+    assert.equal(exitCode, 0);
+    done();
+  }).timeout(10000);
+
+  it("output matches", async function () {
+    await folderMatches(scenariosFolder, resultsFolder, "validateTexturefulvv", volatileFileExtensions);
   });
 });
 
