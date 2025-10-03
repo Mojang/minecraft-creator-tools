@@ -543,7 +543,6 @@ export default class ProjectInfoSet {
 
       const pendingLoad = this._pendingGenerateRequests;
       this._pendingGenerateRequests = [];
-      this._isGenerating = false;
 
       this.info.errorCount = this.getCountByType(InfoItemType.error);
       this.info.internalProcessingErrorCount = this.getCountByType(InfoItemType.internalProcessingError);
@@ -560,6 +559,12 @@ export default class ProjectInfoSet {
       const generationEndTime = Date.now();
 
       this.info.infoGenerationTime = generationEndTime - generationStartTime;
+
+      if (this.project) {
+        this.info.endToEndGenerationTime = generationEndTime - this.project.creationTime;
+      }
+
+      this._isGenerating = false;
 
       if (valOperId !== undefined) {
         await this.project?.carto.notifyOperationEnded(

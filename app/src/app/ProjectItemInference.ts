@@ -1,5 +1,6 @@
 import Log from "../core/Log";
 import Utilities from "../core/Utilities";
+import SemanticVersion from "../core/versioning/SemanticVersion";
 import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition";
 import DesignManifestDefinition from "../minecraft/DesignManifestDefinition";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
@@ -282,12 +283,19 @@ export default class ProjectItemInference {
                     }
 
                     if (bpManifest.version) {
-                      project.defaultBehaviorPackVersion = bpManifest.version;
+                      const sv = SemanticVersion.from(bpManifest.version);
 
-                      if (bpManifest.version !== undefined && bpManifest.version.length === 3) {
-                        project.versionMajor = bpManifest.version[0];
-                        project.versionMinor = bpManifest.version[1];
-                        project.versionPatch = bpManifest.version[2];
+                      if (sv) {
+                        project.defaultBehaviorPackVersion = sv.asArray();
+
+                        if (
+                          project.defaultBehaviorPackVersion !== undefined &&
+                          project.defaultBehaviorPackVersion.length >= 3
+                        ) {
+                          project.versionMajor = project.defaultBehaviorPackVersion[0];
+                          project.versionMinor = project.defaultBehaviorPackVersion[1];
+                          project.versionPatch = project.defaultBehaviorPackVersion[2];
+                        }
                       }
                     }
                     project.defaultBehaviorPackFolder = folder;
@@ -298,7 +306,7 @@ export default class ProjectItemInference {
                       project.defaultScriptModuleUniqueId = scriptModuleId;
                     }
 
-                    project.ensurePackByFolder(folder, PackType.behavior);
+                    project.ensurePackByFolder(folder, PackType.behavior, isInWorld);
                   }
                 } else if (newPiType === ProjectItemType.resourcePackManifestJson) {
                   const rpManifest = await ResourceManifestDefinition.ensureOnFile(candidateFile);
@@ -314,12 +322,19 @@ export default class ProjectItemInference {
                     }
 
                     if (rpManifest.version) {
-                      project.defaultResourcePackVersion = rpManifest.version;
+                      const sv = SemanticVersion.from(rpManifest.version);
 
-                      if (rpManifest.version !== undefined && rpManifest.version.length === 3) {
-                        project.versionMajor = rpManifest.version[0];
-                        project.versionMinor = rpManifest.version[1];
-                        project.versionPatch = rpManifest.version[2];
+                      if (sv) {
+                        project.defaultResourcePackVersion = sv.asArray();
+
+                        if (
+                          project.defaultResourcePackVersion !== undefined &&
+                          project.defaultResourcePackVersion.length >= 3
+                        ) {
+                          project.versionMajor = project.defaultResourcePackVersion[0];
+                          project.versionMinor = project.defaultResourcePackVersion[1];
+                          project.versionPatch = project.defaultResourcePackVersion[2];
+                        }
                       }
                     }
                     project.defaultResourcePackFolder = folder;
@@ -347,7 +362,7 @@ export default class ProjectItemInference {
                       }
                     }
 
-                    project.ensurePackByFolder(folder, PackType.resource);
+                    project.ensurePackByFolder(folder, PackType.resource, isInWorld);
                   }
                 } else if (newPiType === ProjectItemType.skinPackManifestJson) {
                   const spManifest = await SkinManifestDefinition.ensureOnFile(candidateFile);
@@ -363,7 +378,7 @@ export default class ProjectItemInference {
                     project.defaultSkinPackFolder = folder;
                     project.skinPacksContainer = parentFolder;
 
-                    project.ensurePackByFolder(folder, PackType.skin);
+                    project.ensurePackByFolder(folder, PackType.skin, isInWorld);
                   }
                 } else if (newPiType === ProjectItemType.designPackManifestJson) {
                   const dpManifest = await DesignManifestDefinition.ensureOnFile(candidateFile);
@@ -379,7 +394,7 @@ export default class ProjectItemInference {
                     project.defaultDesignPackFolder = folder;
                     project.designPacksContainer = parentFolder;
 
-                    project.ensurePackByFolder(folder, PackType.design);
+                    project.ensurePackByFolder(folder, PackType.design, isInWorld);
                   }
                 }
               }

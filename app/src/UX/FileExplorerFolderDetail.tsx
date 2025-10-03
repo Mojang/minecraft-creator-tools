@@ -90,6 +90,7 @@ export default class FileExplorerFolderDetail extends Component<
         <div
           className="fexfod-expander"
           onClick={this._handleToggleExpandedClick}
+          tabIndex={0}
           title={(this.props.isExpanded ? "Collapse" : "Expand") + " " + this.props.folder.name}
         >
           {this.props.isExpanded ? (
@@ -122,8 +123,28 @@ export default class FileExplorerFolderDetail extends Component<
           aria-selected={!!this.props.selectedItem && this.props.selectedItem === this.props.folder}
           className="fexfod-summary"
           role="treeitem"
+          aria-expanded={this.props.isExpanded}
           tabIndex={0}
           onClick={this._handleFolderClick}
+          onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+            if (e.key === "Space") {
+              this._handleToggleExpandedClick();
+              e.preventDefault();
+              e.stopPropagation();
+            } else if (e.key === "ArrowLeft") {
+              this._handleCollapseClick();
+              e.preventDefault();
+              e.stopPropagation();
+            } else if (e.key === "ArrowRight") {
+              this._handleExpandClick();
+              e.preventDefault();
+              e.stopPropagation();
+            } else if (e.key === "Enter") {
+              this._handleFolderClick();
+              e.preventDefault();
+              e.stopPropagation();
+            }
+          }}
           title={"Select " + this.props.folder.name}
         >
           <div className="fexfod-icon">

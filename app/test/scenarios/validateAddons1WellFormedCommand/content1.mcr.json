@@ -137,7 +137,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "",
-    "infoGenerationTime": 163,
+    "infoGenerationTime": 300,
+    "endToEndGenerationTime": 501,
     "summary": {
       "CADDONIREQ": {
         "1": {

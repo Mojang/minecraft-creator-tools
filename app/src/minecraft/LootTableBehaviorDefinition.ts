@@ -80,7 +80,7 @@ export default class LootTableBehaviorDefinition {
     const targetItems: string[] = [];
 
     for (const pool of this.data.pools) {
-      if (pool.entries) {
+      if (pool.entries && Array.isArray(pool.entries)) {
         for (const entry of pool.entries) {
           if (entry.type === "item" && entry.name) {
             targetItems.push(entry.name);
@@ -100,7 +100,7 @@ export default class LootTableBehaviorDefinition {
     const targetLootTablePaths: string[] = [];
 
     for (const pool of this.data.pools) {
-      if (pool.entries) {
+      if (pool.entries && Array.isArray(pool.entries)) {
         for (const entry of pool.entries) {
           if (entry.type === "loot_table" && entry.name) {
             targetLootTablePaths.push(this.canonicalizeLootTablePath(entry.name));
@@ -200,7 +200,7 @@ export default class LootTableBehaviorDefinition {
       }
     }
 
-    if (itemList) {
+    if (itemList && Array.isArray(itemList)) {
       for (const itemTypeId of itemList) {
         if (typeof itemTypeId === "string") {
           const isVanilla = await Database.isVanillaToken(itemTypeId);
@@ -209,7 +209,7 @@ export default class LootTableBehaviorDefinition {
       }
     }
 
-    if (lootTableList) {
+    if (lootTableList && Array.isArray(lootTableList)) {
       for (const lootTablePath of lootTableList) {
         const isVanilla = await Database.matchesVanillaPathFromIndex(lootTablePath);
         item.addUnfulfilledRelationship(lootTablePath, ProjectItemType.lootTableBehavior, isVanilla);

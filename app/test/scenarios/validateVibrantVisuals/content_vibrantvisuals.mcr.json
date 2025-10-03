@@ -858,7 +858,7 @@
       },
       "Texture Images Vanilla Game Texture Coverage": {
         "Override Count": 0,
-        "Vanilla Texture Count": 2669,
+        "Vanilla Texture Count": 2266,
         "Percent": 0
       },
       "Texture Images Tier0 Non-Vanilla Texture Memory Tier": {
@@ -1036,17 +1036,18 @@
         "Count": 1
       }
     },
-    "errorCount": 0,
+    "errorCount": 1,
     "internalProcessingErrorCount": 0,
     "warningCount": 2,
-    "testSuccessCount": 38,
-    "testFailCount": 0,
+    "testSuccessCount": 37,
+    "testFailCount": 1,
     "testNotApplicableCount": 10,
-    "errorSummary": "",
+    "errorSummary": "ERROR: [CHKMANIF134] (/Content/resource_packs/aop_mobsrp/manifest.json) Packs that support PBR must have a minimum min_engine_version of at least 1.21.120: 1.21.100",
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson_mers.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/sheepomelon_mers.png) Texture does not have any items in this pack that are using this.",
-    "testFailSummary": "",
-    "infoGenerationTime": 577,
+    "testFailSummary": "TESTFAIL: [CHKMANIF000] Found 1 errors for Check Manifest Generator (CHKMANIF).",
+    "infoGenerationTime": 748,
+    "endToEndGenerationTime": 920,
     "summary": {
       "BASEGAMEVER": {
         "2": {
@@ -1074,10 +1075,15 @@
         }
       },
       "CHKMANIF": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check Manifest Generator (CHKMANIF) completed successfully",
-          "testCompleteSuccesses": 1
+        "0": {
+          "title": "Test Failure",
+          "defaultMessage": "Found 1 errors for Check Manifest Generator (CHKMANIF).",
+          "testCompleteFails": 1
+        },
+        "134": {
+          "title": "PBR Pack Min Engine Version",
+          "defaultMessage": "Packs that support PBR must have a minimum min_engine_version of at least 1.21.120",
+          "errors": 1
         }
       },
       "CPACKICON": {
@@ -1128,7 +1134,7 @@
         },
         "120": {
           "title": "Format Version Minor Version Lower Than Current",
-          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100.06)",
+          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.110.02)",
           "recommendations": 3
         }
       },
@@ -1163,7 +1169,7 @@
         },
         "296": {
           "title": "296",
-          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100)",
+          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.110)",
           "recommendations": 3
         },
         "619": {
@@ -1856,9 +1862,16 @@
       "gIx": 2
     },
     {
-      "iTp": 1,
+      "iTp": 0,
       "gId": "CHKMANIF",
-      "gIx": 1
+      "gIx": 0
+    },
+    {
+      "iTp": 3,
+      "gId": "CHKMANIF",
+      "gIx": 134,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
+      "d": "1.21.100"
     },
     {
       "iTp": 1,
@@ -2003,7 +2016,7 @@
       "iTp": 6,
       "gId": "FORMATVER",
       "gIx": 296,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100)",
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.110)",
       "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
     },
     {
@@ -3655,7 +3668,7 @@
         },
         "Vanilla Game Texture Coverage": {
           "Override Count": 0,
-          "Vanilla Texture Count": 2669,
+          "Vanilla Texture Count": 2266,
           "Percent": 0
         }
       }

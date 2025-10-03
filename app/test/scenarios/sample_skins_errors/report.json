@@ -389,7 +389,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "",
-    "infoGenerationTime": 6,
+    "infoGenerationTime": 9,
+    "endToEndGenerationTime": 13,
     "summary": {
       "BASEGAMEVER": {
         "2": {

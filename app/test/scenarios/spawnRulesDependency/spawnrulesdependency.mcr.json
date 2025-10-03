@@ -145,7 +145,7 @@
       },
       "Texture Images Vanilla Game Texture Coverage": {
         "Override Count": 0,
-        "Vanilla Texture Count": 2669,
+        "Vanilla Texture Count": 2266,
         "Percent": 0
       },
       "Texture Images Tier0 Non-Vanilla Texture Memory Tier": {
@@ -327,7 +327,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CPACKICON000] Found 1 errors for Check Pack Icon Generator (CPACKICON).",
-    "infoGenerationTime": 280,
+    "infoGenerationTime": 558,
+    "endToEndGenerationTime": 570,
     "summary": {
       "BASEGAMEVER": {
         "2": {
@@ -414,7 +415,7 @@
         },
         "130": {
           "title": "Format Version Patch Version Lower Than Current",
-          "defaultMessage": "Behavior pack entity type format version (1.20.0) has a lower patch version number compared to current version (1.21.100.06)",
+          "defaultMessage": "Behavior pack entity type format version (1.20.0) has a lower patch version number compared to current version (1.21.110.02)",
           "recommendations": 1
         }
       },
@@ -1370,7 +1371,7 @@
       "fs": {
         "Vanilla Game Texture Coverage": {
           "Override Count": 0,
-          "Vanilla Texture Count": 2669,
+          "Vanilla Texture Count": 2266,
           "Percent": 0
         }
       }

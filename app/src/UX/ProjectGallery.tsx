@@ -197,11 +197,21 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
     const gal = this.props.gallery;
 
     if (this.props.search === undefined || this.props.search.length === 0) {
+      let tabsLabel = "Project gallery tabs - ";
+      if (this.state.mode === ProjectGalleryMode.starters) {
+        tabsLabel += "Starters selected";
+      } else if (this.state.mode === ProjectGalleryMode.entities) {
+        tabsLabel += "From a mob selected";
+      } else if (this.state.mode === ProjectGalleryMode.codeSnippets) {
+        tabsLabel += "Code snippets selected";
+      }
+
       tabsElt = (
         <div
           className="pg-tabArea"
           role="tablist"
           tabIndex={0}
+          aria-label={tabsLabel}
           onKeyDown={(keyboardEvent: React.KeyboardEvent<HTMLDivElement>) => {
             if (keyboardEvent.key === "ArrowRight") {
               if (this.state.mode === ProjectGalleryMode.starters && this.mobsElt && this.mobsElt.current) {

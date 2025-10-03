@@ -389,7 +389,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [UNLINK191] (/pack_icon.png) Texture does not have any items in this pack that are using this.",
     "testFailSummary": "",
-    "infoGenerationTime": 6,
+    "infoGenerationTime": 7,
+    "endToEndGenerationTime": 12,
     "summary": {
       "BASEGAMEVER": {
         "2": {

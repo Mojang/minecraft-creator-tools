@@ -61,9 +61,13 @@ export default class Dialogue {
   getAllButtons() {
     const buttons: IDialogueSceneButton[] = [];
 
-    if (this.definition && this.definition["minecraft:npc_dialogue"]) {
+    if (
+      this.definition &&
+      this.definition["minecraft:npc_dialogue"] &&
+      Array.isArray(this.definition["minecraft:npc_dialogue"].scenes)
+    ) {
       for (const scene of this.definition["minecraft:npc_dialogue"].scenes) {
-        if (scene && scene.buttons) {
+        if (scene && scene.buttons && Array.isArray(scene.buttons)) {
           for (const button of scene.buttons) {
             buttons.push(button);
           }

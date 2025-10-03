@@ -31,7 +31,8 @@ const SubpackSchema = z.array(
   z.object({
     folder_name: z.string(),
     name: z.string(),
-    memory_tier: z.number(),
+    memory_tier: z.number().optional(),
+    memory_performance_tier: z.number().optional(),
   })
 );
 

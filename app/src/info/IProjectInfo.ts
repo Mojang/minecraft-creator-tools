@@ -19,6 +19,7 @@ export default interface IProjectInfo {
   warningCount?: number;
   testSuccessCount?: number;
   infoGenerationTime?: number;
+  endToEndGenerationTime?: number;
   testFailCount?: number;
   testNotApplicableCount?: number;
   errorSummary?: string;

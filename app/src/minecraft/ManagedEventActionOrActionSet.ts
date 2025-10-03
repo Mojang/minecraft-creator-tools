@@ -310,7 +310,7 @@ export default class ManagedEventActionOrActionSet {
 
     const randomize = (this._data as IEntityActionSet).randomize;
 
-    if (!randomize) {
+    if (!randomize || !Array.isArray(randomize)) {
       return undefined;
     }
 
@@ -338,7 +338,7 @@ export default class ManagedEventActionOrActionSet {
 
     const sequence = (this._data as IEntityActionSet).sequence;
 
-    if (!sequence) {
+    if (!sequence || !Array.isArray(sequence)) {
       return undefined;
     }
 
@@ -379,7 +379,7 @@ export default class ManagedEventActionOrActionSet {
     const randomize = this.randomize;
     const sequence = this.sequence;
 
-    if (randomize) {
+    if (randomize && Array.isArray(randomize)) {
       const actions: IPotentialAction[] = [];
 
       for (const randomNode of randomize) {
@@ -396,7 +396,7 @@ export default class ManagedEventActionOrActionSet {
 
         actions.push(...randomNode.getPotentialActions(conditionSeed));
       }
-    } else if (sequence) {
+    } else if (sequence && Array.isArray(sequence)) {
       const actions: IPotentialAction[] = [];
 
       for (const sequenceNode of sequence) {
@@ -525,7 +525,7 @@ export default class ManagedEventActionOrActionSet {
 
     const action = this._data as IEntityAction;
 
-    if (!action.add || !action.add.component_groups) {
+    if (!action.add || !action.add.component_groups || !Array.isArray(action.add.component_groups)) {
       return false;
     }
 
@@ -590,7 +590,7 @@ export default class ManagedEventActionOrActionSet {
 
     const remove = (this._data as IEntityAction).remove;
 
-    if (!remove) {
+    if (!remove || !remove.component_groups || !Array.isArray(remove.component_groups)) {
       return false;
     }
 

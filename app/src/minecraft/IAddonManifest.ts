@@ -63,8 +63,8 @@ export interface IAddonManifestHeader {
   description: string;
   name: string;
   uuid: string;
-  version: number[];
-  min_engine_version: number[];
+  version: string | number[];
+  min_engine_version: string | number[];
 }
 
 export interface IResourceAddonManifestHeader extends IAddonManifestHeader {

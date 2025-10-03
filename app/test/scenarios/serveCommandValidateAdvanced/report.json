@@ -770,7 +770,7 @@
       },
       "Texture Images Vanilla Game Texture Coverage": {
         "Override Count": 0,
-        "Vanilla Texture Count": 2669,
+        "Vanilla Texture Count": 2266,
         "Percent": 0
       },
       "Texture Images Tier0 Non-Vanilla Texture Memory Tier": {
@@ -958,7 +958,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:boomfly`\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:robot`",
     "testFailSummary": "",
-    "infoGenerationTime": 638,
+    "infoGenerationTime": 655,
+    "endToEndGenerationTime": 855,
     "summary": {
       "BASEGAMEVER": {
         "2": {
@@ -1040,7 +1041,7 @@
         },
         "120": {
           "title": "Format Version Minor Version Lower Than Current",
-          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100.06)",
+          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.110.02)",
           "recommendations": 3
         }
       },
@@ -1075,7 +1076,7 @@
         },
         "296": {
           "title": "296",
-          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100)",
+          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.110)",
           "recommendations": 3
         },
         "619": {
@@ -1939,7 +1940,7 @@
       "iTp": 6,
       "gId": "FORMATVER",
       "gIx": 296,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100)",
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.110)",
       "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
     },
     {
@@ -3560,7 +3561,7 @@
         },
         "Vanilla Game Texture Coverage": {
           "Override Count": 0,
-          "Vanilla Texture Count": 2669,
+          "Vanilla Texture Count": 2266,
           "Percent": 0
         }
       }
@@ -11230,7 +11231,8 @@
           "internalProcessingErrorSummary": "",
           "warningSummary": "",
           "testFailSummary": "",
-          "infoGenerationTime": 21,
+          "infoGenerationTime": 19,
+          "endToEndGenerationTime": 874,
           "summary": {
             "SHARING": {
               "1": {

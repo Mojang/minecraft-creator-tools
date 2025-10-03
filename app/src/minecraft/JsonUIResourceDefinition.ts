@@ -118,6 +118,10 @@ export default class JsonUIResourceDefinition {
   }
 
   addTexturesFromArrayOfKeyPaths(controlSets: { [name: string]: IJsonUIControl | string }[], texturePaths: string[]) {
+    if (!Array.isArray(controlSets)) {
+      return;
+    }
+
     for (const controlSet of controlSets) {
       for (const key in controlSet) {
         const control = controlSet[key];

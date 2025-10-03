@@ -10,6 +10,7 @@ export const AllowedDependencyModules: Record<string, SemanticVersion> = {
   "@minecraft/server": new SemanticVersion(1, 0, 0),
   "@minecraft/server-ui": new SemanticVersion(1, 0, 0),
 };
+export const TargetMevForVV = new SemanticVersion(1, 21, 120);
 export const NamespaceFormat = /.+:.+/;
 export const FormatVersion1 = 1;
 export const FormatVersion2 = 2;
@@ -43,12 +44,12 @@ export const Tests = {
   HeaderPropertyRequiredV2: {
     id: 105,
     title: "Header Property Required",
-    defaultMessage: "Header property is required for format version 2 and above.",
+    defaultMessage: "Header property is required for format version 2 and above",
   },
   MinEngineVersionTooHigh: {
     id: 106,
     title: "Min Engine Version Too High For Format Version 1",
-    defaultMessage: `[min_engine_version] is too high. To use a higher version, you need to use [format_version] [${FormatVersion2}].`,
+    defaultMessage: `[min_engine_version] is too high. To use a higher version, you need to use [format_version] [${FormatVersion2}]`,
   },
   InvalidPackScope: {
     id: 107,
@@ -58,7 +59,7 @@ export const Tests = {
   TooManyWorldTemplates: {
     id: 108,
     title: "More Than 1 World Templates",
-    defaultMessage: "manifest.modules can have only 1 world_template module.",
+    defaultMessage: "manifest.modules can have only 1 world_template module",
   },
   InvalidModuleType: {
     id: 109,
@@ -67,7 +68,7 @@ export const Tests = {
   DuplicateId: {
     id: 110,
     title: "Duplicate Id Found",
-    defaultMessage: "Duplicate UUID found. All UUIDs must be unique.",
+    defaultMessage: "Duplicate UUID found. All UUIDs must be unique",
   },
   InvalidId: {
     id: 111,
@@ -76,12 +77,12 @@ export const Tests = {
   NoDependencyIdentifier: {
     id: 112,
     title: "No Dependency Identifier",
-    defaultMessage: "Dependency is invalid, no 'module_name' or 'uuid' identifier found.",
+    defaultMessage: "Dependency is invalid, no 'module_name' or 'uuid' identifier found",
   },
   MultipleDependencyIdentifier: {
     id: 113,
     title: "Multiple Dependency Identifier",
-    defaultMessage: "Dependencies should be expressed by 'module_name' or UUID, not both.",
+    defaultMessage: "Dependencies should be expressed by 'module_name' or UUID, not both",
   },
   ModuleNameNotAllowed: {
     id: 114,
@@ -121,12 +122,12 @@ export const Tests = {
   MissingSettingsProperty: {
     id: 122,
     title: "Manifest Settings Missing Property",
-    defaultMessage: "Property in manifest settings is missing or undefined.",
+    defaultMessage: "Property in manifest settings is missing or undefined",
   },
   InvalidSettingType: {
     id: 123,
     title: "Invalid Setting Type",
-    defaultMessage: "Manifest settings has invalid type property.",
+    defaultMessage: "Manifest settings has invalid type property",
   },
   InvalidSettingsMin: {
     id: 124,
@@ -170,12 +171,18 @@ export const Tests = {
   InvalidBaseGameVersion: {
     id: 132,
     title: "Invalid Base Game Version",
-    defaultMessage: `Use of [base_game_version] requires [format_version] [${FormatVersion2}] or higher.`,
+    defaultMessage: `Use of [base_game_version] requires [format_version] [${FormatVersion2}] or higher`,
   },
   WildCardGameVersion: {
     id: 133,
     title: "WildCard Game Version",
-    defaultMessage: `[base_game_version] wildcards are frowned upon.`,
+    defaultMessage: `[base_game_version] wildcards are not recommended`,
     severity: InfoItemType.warning,
+  },
+  MinEngineVersionForVV: {
+    id: 134,
+    title: "PBR Pack Min Engine Version",
+    defaultMessage: `Packs that support PBR must have a minimum min_engine_version of at least ${TargetMevForVV.asString()}`,
+    severity: InfoItemType.error,
   },
 } as const;

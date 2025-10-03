@@ -29,7 +29,7 @@ export default class FlipbookTextureCatalogDefinition implements IDefinition {
   }
 
   public get texturesList() {
-    if (!this._data) {
+    if (!this._data || !Array.isArray(this._data)) {
       return undefined;
     }
 
@@ -142,7 +142,7 @@ export default class FlipbookTextureCatalogDefinition implements IDefinition {
       }
     }
 
-    if (!this._data) {
+    if (!this._data || !Array.isArray(this._data)) {
       return;
     }
     if (rel.childItem.itemType === ProjectItemType.texture) {
@@ -172,7 +172,7 @@ export default class FlipbookTextureCatalogDefinition implements IDefinition {
 
   getTexturePaths() {
     const texturePaths: string[] = [];
-    if (this.data) {
+    if (this.data && Array.isArray(this.data)) {
       for (const flipbookResource of this.data) {
         const resource = flipbookResource.flipbook_texture;
 

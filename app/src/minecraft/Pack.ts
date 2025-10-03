@@ -26,6 +26,7 @@ export default class Pack {
   folder: IFolder;
   project: Project;
   projectItem: ProjectItem;
+  isInWorld: boolean = false;
   manifest?:
     | BehaviorManifestDefinition
     | ResourceManifestDefinition
@@ -102,6 +103,9 @@ export default class Pack {
     if (folder.manager === undefined) {
       const pack = new Pack(folder, packType, project, projectItem);
 
+      if (projectItem.isInWorld) {
+        pack.isInWorld = true;
+      }
       pack.project = project;
       pack.packType = packType;
 
