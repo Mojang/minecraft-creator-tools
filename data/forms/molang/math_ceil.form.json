@@ -1,0 +1,6 @@
+{
+  "id": "`math.ceil(value)`",
+  "fields": [],
+  "description": "Round value up to nearest integral number",
+  "title": "Ceil(value)"
+}

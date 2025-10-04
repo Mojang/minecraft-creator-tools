@@ -1,0 +1,58 @@
+{
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "Specifies which animation to play when the the item is used.",
+      "dataType": 2
+    }
+  ],
+  "scalarFieldUpgradeName": "value",
+  "description": "Use_animation specifies which animation is played when the player uses the item.",
+  "title": "Use Animation",
+  "samples": {
+    "/vanilla/behavior_pack/items/apple.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:use_animation/",
+        "content": "eat"
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/items/cooked_dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:use_animation/",
+        "content": "eat"
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/items/dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:use_animation/",
+        "content": "eat"
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/items/cooked_dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:use_animation/",
+        "content": "eat"
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/items/dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:use_animation/",
+        "content": "eat"
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/cooked_dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:use_animation/",
+        "content": "eat"
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:use_animation/",
+        "content": "eat"
+      }
+    ]
+  },
+  "id": "minecraft:use_animation"
+}

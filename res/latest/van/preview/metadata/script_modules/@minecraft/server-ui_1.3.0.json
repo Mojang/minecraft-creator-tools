@@ -1,0 +1,12 @@
+{
+  "module_type": "script",
+  "name": "@minecraft/server-ui",
+  "parentModule": {
+    "name": "@minecraft/server-ui-bindings",
+    "version": "1.3.0"
+  },
+  "peer_dependencies": [
+  ],
+  "uuid": "2BD50A27-AB5F-4F40-A596-3641627C635E",
+  "wrapper_module": "@minecraft/server-ui-bindings-v1-wrapper"
+}

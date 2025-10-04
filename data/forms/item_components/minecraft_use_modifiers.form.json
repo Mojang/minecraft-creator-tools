@@ -1,0 +1,58 @@
+{
+  "fields": [
+    {
+      "id": "emit_vibrations",
+      "title": "Emit Vibrations",
+      "description": "Whether vibrations are emitted when the item starts or stops being used. Default value: true.",
+      "dataType": 1
+    },
+    {
+      "id": "movement_modifier",
+      "title": "Movement Modifier",
+      "description": "Multiplier applied to the player's movement speed while the item is in use.",
+      "dataType": 3,
+      "validity": [
+        {
+          "comparison": "<=",
+          "value": 1
+        }
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/items/apple.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:use_modifiers/",
+            "content": 0.35
+          }
+        ]
+      }
+    },
+    {
+      "id": "use_duration",
+      "title": "Use Duration",
+      "description": "Time, in seconds, that the item takes to use. Default value: 0.",
+      "dataType": 3,
+      "samples": {
+        "/vanilla/behavior_pack/items/apple.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:use_modifiers/",
+            "content": 1.6
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Determines how long an item takes to use in combination with components such as Shooter, Throwable, or Food.",
+  "title": "Item Components Use Modifiers",
+  "samples": {
+    "/vanilla/behavior_pack/items/apple.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:use_modifiers/",
+        "content": {
+          "use_duration": 1.6,
+          "movement_modifier": 0.35
+        }
+      }
+    ]
+  },
+  "id": "minecraft:use_modifiers"
+}

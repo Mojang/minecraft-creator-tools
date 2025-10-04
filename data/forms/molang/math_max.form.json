@@ -1,0 +1,6 @@
+{
+  "id": "`math.max(A, B)`",
+  "fields": [],
+  "description": "Return highest value of A or B",
+  "title": "Max(A, B)"
+}

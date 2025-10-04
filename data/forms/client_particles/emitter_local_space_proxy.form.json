@@ -1,0 +1,21 @@
+{
+  "fields": [
+    {
+      "id": "position",
+      "title": "Position",
+      "dataType": 1
+    },
+    {
+      "id": "rotation",
+      "title": "Rotation",
+      "dataType": 1
+    },
+    {
+      "id": "velocity",
+      "title": "Velocity",
+      "dataType": 1
+    }
+  ],
+  "title": "Client Particles Emitter Local Space Proxy",
+  "id": "emitter_local_space proxy"
+}

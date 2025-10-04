@@ -1,0 +1,14 @@
+{
+  "id": "AnchorAbsolute",
+  "fields": [
+    {
+      "id": "absolute",
+      "title": "Absolute",
+      "description": "Offset from anchored vertical position",
+      "dataType": 0,
+      "isRequired": true
+    }
+  ],
+  "description": "Specifies the vertical anchor",
+  "title": "Structure AnchorAbsolute"
+}

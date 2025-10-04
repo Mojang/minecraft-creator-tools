@@ -1,0 +1,24 @@
+{
+  "fields": [
+    {
+      "id": "processor_type",
+      "title": "Processors Type",
+      "description": "Processors Type",
+      "dataType": 2
+    },
+    {
+      "id": "delegate",
+      "title": "delegate",
+      "description": "The processor that will be executed.",
+      "dataType": 16
+    },
+    {
+      "id": "limit",
+      "title": "limit",
+      "description": "The maximum number of times that this delegate can be applied.",
+      "dataType": 16
+    }
+  ],
+  "description": "Processor that wraps a processor and caps the number of times the delegated processor can be applied.",
+  "title": "JigsawStructure Processors Capped"
+}

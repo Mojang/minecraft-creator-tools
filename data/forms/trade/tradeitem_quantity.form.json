@@ -1,0 +1,18 @@
+{
+  "fields": [
+    {
+      "id": "max",
+      "title": "max",
+      "description": "max",
+      "dataType": 0
+    },
+    {
+      "id": "min",
+      "title": "min",
+      "description": "min",
+      "dataType": 0
+    }
+  ],
+  "description": ":Quantity",
+  "title": ":Quantity"
+}
