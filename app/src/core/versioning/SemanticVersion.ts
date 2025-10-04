@@ -18,6 +18,18 @@ export default class SemanticVersion {
     return SemanticVersion.fromString(version);
   }
 
+  static from(version: number[] | number | string) {
+    if (typeof version === "string") {
+      return SemanticVersion.fromString(version);
+    } else if (typeof version === "number") {
+      return SemanticVersion.fromNumber(version);
+    } else if (Array.isArray(version)) {
+      return SemanticVersion.fromArray(version);
+    }
+
+    return undefined;
+  }
+
   static fromNumber(version: number): SemanticVersion | undefined {
     if (version < 0) {
       return undefined;

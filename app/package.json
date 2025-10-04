@@ -61,7 +61,7 @@
   },
   "scripts": {
     "preparedevenv": "gulp preparedevenv --max_old_space_size=16384",
-    "preparetest": "cd ../samplecontent/addon && npm ci && npx gulp package && cd ../../app",
+    "preparetest": "cd ../samplecontent/addon && npm ci && npx gulp package && cd ../world && npm ci && npx gulp package && cd ../../app",
     "web": "react-scripts --max_old_space_size=16384 start",
     "start": "react-scripts --max_old_space_size=16384 start",
     "webbuild": "cross-env CI=true react-scripts --max_old_space_size=16384 build",

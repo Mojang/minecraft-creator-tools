@@ -48,7 +48,7 @@ export default class ManagedFilterClauseOrFilterClauseSet {
 
     const anyOfData = (this._data as MinecraftFilterClauseSet).any_of;
 
-    if (!anyOfData) {
+    if (!anyOfData || !Array.isArray(anyOfData)) {
       return undefined;
     }
 
@@ -68,7 +68,7 @@ export default class ManagedFilterClauseOrFilterClauseSet {
 
     const allOfData = (this._data as MinecraftFilterClauseSet).all_of;
 
-    if (!allOfData) {
+    if (!allOfData || !Array.isArray(allOfData)) {
       return undefined;
     }
 
@@ -84,13 +84,13 @@ export default class ManagedFilterClauseOrFilterClauseSet {
   getHumanSummary() {
     let results = "";
 
-    if (this.anyOf) {
+    if (this.anyOf && Array.isArray(this.anyOf)) {
       results += "Any condition must match:";
 
       for (const anyOfNode of this.anyOf) {
         results += anyOfNode.getHumanSummary();
       }
-    } else if (this.allOf) {
+    } else if (this.allOf && Array.isArray(this.allOf)) {
       results += "All conditions must match:";
 
       for (const allOfNode of this.allOf) {

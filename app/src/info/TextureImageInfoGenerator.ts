@@ -16,6 +16,7 @@ import TextureDefinition from "../minecraft/TextureDefinition";
 import ProjectUtilities, { ProjectMetaCategory } from "../app/ProjectUtilities";
 import ProjectItemVariant from "../app/ProjectItemVariant";
 import Utilities from "../core/Utilities";
+import { PackType } from "../minecraft/Pack";
 
 export enum TextureImageInfoGeneratorTest {
   textureImages = 101,
@@ -40,14 +41,157 @@ export enum TextureImageInfoGeneratorTest {
   totalTextureMemoryExceedsBudgetWarningBase = 440,
   texturePackDoesntOverrideVanillaGameTexture = 460,
   texturePackDoesntOverrideMostTextures = 461,
+  mashupPackDoesntOverrideMostTextures = 462,
 }
 
 export const TexturePerformanceTierCount = 6;
 
 const TextureTiersBase = 200;
 
+const MashupResourcePackThresholdErrorPercent = 0.6; // for a global resource pack in content that also has a world (i.e., a mashup), return an error if it doesn't override at least 60% of vanilla game textures.
 const TextureOverrideThresholdPercent = 0.7; // if you override at least 70% of vanilla game textures, we assume you're trying to create a "texture pack" and should warn when you're not "covering" a vanilla texture.
 const TextureOverrideThresholdErrorPercent = 0.95; // if you override at least 95% of vanilla game textures, we assume you're trying to create a "texture pack" and should error if you don't have 95% coverage.
+
+const ExemptVanillaOverridePaths = [
+  "/entity/npc/",
+  "/entity/banner/",
+  "/entity/horse/",
+  "/entity/horse/armor/",
+  "/entity/zombie_villager/",
+  "/entity/villager/",
+  "/entity/zombie_villager2/professions/",
+  "/colormap/",
+  "/particle/",
+  "/misc/",
+  "/persona_thumbnails/",
+  "/ui/",
+  "/gui/",
+  "/entity/shield_patterns/",
+  "/textures/trims/",
+  // Blocks
+  "/blocks/glowing_obsidian",
+  "/blocks/missing_tile",
+  "/blocks/camera_back",
+  "/blocks/camera_front",
+  "/blocks/camera_side",
+  "/blocks/camera_top",
+  "/blocks/reactor_core_stage_0",
+  "/blocks/reactor_core_stage_1",
+  "/blocks/reactor_core_stage_2",
+  "/blocks/bed_feet_end",
+  "/blocks/bed_feet_side",
+  "/blocks/bed_feet_top",
+  "/blocks/bed_head_end",
+  "/blocks/bed_head_side",
+  "/blocks/bed_head_top",
+  "/blocks/flower_rose_blue",
+  "/blocks/flower_paeonia",
+  "/blocks/llama",
+  "/blocks/border",
+  "/blocks/build_allow",
+  "/blocks/build_deny",
+  "/blocks/Missing_tile",
+  "/blocks/smithing_table_top",
+  "/blocks/end_gateway",
+  "/blocks/end_portal",
+  "/blocks/water_flow",
+  "/blocks/water_still",
+  "/blocks/carrots_stage3",
+  "/blocks/bell_side",
+  "/blocks/bell_top",
+
+  // Entity
+  "/entity/agent",
+  "/entity/alex",
+  "/entity/camera_tripod",
+  "/entity/char",
+  "/entity/dummy",
+  "/entity/screenshot_frame",
+  "/entity/enchanting_table_book_shadow",
+  "/entity/loyalty_rope",
+  "/entity/egg_null",
+  "/entity/egg_template",
+  "/entity/dragon_exploding",
+  "/entity/dragon_eyes",
+  "/entity/llama",
+  "/entity/pigzombie",
+  "/entity/steve",
+  "/entity/cape_invisible",
+
+  // Entity subcategories
+  "/entity/cat/blackcat",
+  "/entity/cat/graytabby_tame",
+  "/entity/cat/red",
+  "/entity/cat/siamese",
+  "/entity/fish/clownfish",
+  "/entity/fish/fish",
+  "/entity/villager2/professions/unskilled",
+  "/entity/horse2/horse_markings_none",
+  "/entity/horse2/armor/horse_armor_none",
+  "/entity/llama/decor/decor_none",
+  "/entity/llama/spit",
+  "/entity/iron_golem/cracked_none",
+  "/entity/wolf/wolf_armor_cracked_none",
+
+  // Items
+  "/items/camera",
+  "/items/chalkboard_large",
+  "/items/chalkboard_medium",
+  "/items/chalkboard_small",
+  "/items/egg_agent",
+  "/items/egg_npc",
+  "/items/quiver",
+  "/items/ruby",
+  "/items/spawn_egg_overlay",
+  "/items/book_portfolio",
+  "/items/boat",
+  "/items/tipped_arrow_base",
+  "/items/tipped_arrow_head",
+  "/items/tipped_arrow_luck",
+  "/items/potion_bottle_saturation",
+  "/items/potion_overlay",
+  "/items/egg_template",
+  "/items/egg_mask",
+  "/items/spawn_egg",
+  "/items/hoglin_meat_cooked",
+  "/items/hoglin_meat_raw",
+  "/items/egg_fish",
+  "/items/boat_dark_oak",
+  "/items/light_block_0",
+  "/items/light_block_1",
+  "/items/light_block_10",
+  "/items/light_block_11",
+  "/items/light_block_12",
+  "/items/light_block_13",
+  "/items/light_block_14",
+  "/items/light_block_15",
+  "/items/light_block_2",
+  "/items/light_block_3",
+  "/items/light_block_4",
+  "/items/light_block_5",
+  "/items/light_block_6",
+  "/items/light_block_7",
+  "/items/light_block_8",
+  "/items/light_block_9",
+
+  // Models
+  "models/armor/cloth_1",
+  "models/armor/cloth_2",
+
+  // Map
+  "map/player_icon_background",
+  "map/jungle_temple",
+  "map/swamp_hut",
+  "map/village_desert",
+  "map/village_plains",
+  "map/village_savanna",
+  "map/village_snowy",
+  "map/village_taiga",
+  "map/trial_chambers",
+
+  // Root level
+  "forcefield_atlas",
+];
 
 /*
 export enum ProjectMetaCategory {
@@ -128,7 +272,7 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
   static isGameTexturePath(path: string) {
     path = path.toLowerCase();
 
-    return (
+    let result =
       path.startsWith("/resource_pack/textures/") &&
       (path.endsWith(".png") || path.endsWith(".tga") || path.indexOf(".") < 0) &&
       path.indexOf("_mers.") < 0 &&
@@ -137,8 +281,19 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
       path.indexOf("_mipmap.") < 0 &&
       (path.indexOf("/textures/blocks") >= 0 ||
         path.indexOf("/textures/entity") >= 0 ||
-        path.indexOf("/textures/items") >= 0)
-    );
+        path.indexOf("/textures/items") >= 0);
+
+    if (!result) {
+      return false;
+    }
+
+    for (let exemptPath of ExemptVanillaOverridePaths) {
+      if (path.toLowerCase().indexOf(exemptPath) >= 0) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
@@ -796,6 +951,29 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
       );
 
       const actualOverridePercent = vanillaOverrideTextureCount / vanillaTexturePathNonMersCount;
+      if (actualOverridePercent < MashupResourcePackThresholdErrorPercent) {
+        let hasGlobalResourcePack = false;
+        for (const pack of project.packs) {
+          if (pack.packType === PackType.resource && !pack.isInWorld) {
+            hasGlobalResourcePack = true;
+          }
+        }
+
+        const worldCount = project.getItemsByType(ProjectItemType.worldFolder).length;
+
+        if (hasGlobalResourcePack && worldCount > 0) {
+          items.push(
+            new ProjectInfoItem(
+              InfoItemType.error,
+              this.id,
+              TextureImageInfoGeneratorTest.mashupPackDoesntOverrideMostTextures,
+              `Content seems like a mashup pack, but the resource pack does not override >60% of a textures of vanilla textures.`,
+              undefined,
+              actualOverridePercent
+            )
+          );
+        }
+      }
 
       if (actualOverridePercent >= TextureOverrideThresholdPercent) {
         if (actualOverridePercent < TextureOverrideThresholdErrorPercent) {

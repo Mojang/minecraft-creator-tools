@@ -36,7 +36,7 @@ Stackable behavior
  * "minecraft:is_stackable" component describes how an entity
  * interacts with others of its own kind, the
  * "minecraft:is_collidable" component governs how other mobs
- * interact with the component's owner.).
+ * interact with the component's owner.
  */
 export default interface MinecraftIsStackable {
 

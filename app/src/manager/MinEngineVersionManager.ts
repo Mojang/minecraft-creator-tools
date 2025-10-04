@@ -19,6 +19,7 @@ import SkinManifestDefinition from "../minecraft/SkinManifestDefinition";
 import WorldTemplateManifestDefinition from "../minecraft/WorldTemplateManifestDefinition";
 import PersonaManifestDefinition from "../minecraft/PersonaManifestDefinition";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
+import SemanticVersion from "../core/versioning/SemanticVersion";
 
 export enum MinEngineVersionManagerTest {
   behaviorPackMinEngineVersion = 100,
@@ -240,64 +241,68 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                 )
               );
 
-              const bpVer = bpManifest?.definition?.header.min_engine_version;
+              const sv = SemanticVersion.from(bpManifest.definition.header.min_engine_version);
 
-              if (bpVer[0] < parseInt(verSplit[0])) {
-                infoItems.push(
-                  new ProjectInfoItem(
-                    this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
-                    this.id,
-                    MinEngineVersionManagerTest.behaviorPackMinEngineVersionMajorLowerThanCurrent,
-                    "Behavior pack manifest (" +
-                      bpVer.join(".") +
-                      ") has a lower major version number compared to current version (" +
-                      verShort +
-                      ")",
-                    pi
-                  )
-                );
-              } else if (bpVer[0] > parseInt(verSplit[0])) {
-                infoItems.push(
-                  new ProjectInfoItem(
-                    InfoItemType.error,
-                    this.id,
-                    MinEngineVersionManagerTest.behaviorPackMinEngineVersionMajorHigherThanCurrent,
-                    "Behavior pack manifest (" +
-                      bpVer.join(".") +
-                      ") has a higher major version number compared to current version (" +
-                      verShort +
-                      ")",
-                    pi
-                  )
-                );
-              } else if (bpVer[1] < parseInt(verSplit[1]) - 1) {
-                infoItems.push(
-                  new ProjectInfoItem(
-                    this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
-                    this.id,
-                    MinEngineVersionManagerTest.behaviorPackMinEngineVersionMinorLowerThanCurrent,
-                    "Behavior pack manifest (" +
-                      bpVer.join(".") +
-                      ") has a lower minor version number compared to the current version or the previous current minor version (" +
-                      verShort +
-                      ")",
-                    pi
-                  )
-                );
-              } else if (bpVer[1] > parseInt(verSplit[1])) {
-                infoItems.push(
-                  new ProjectInfoItem(
-                    InfoItemType.error,
-                    this.id,
-                    MinEngineVersionManagerTest.behaviorPackMinEngineVersionMinorHigherThanCurrent,
-                    "Behavior pack manifest (" +
-                      bpVer.join(".") +
-                      ") has a higher minor version number compared to current version (" +
-                      verShort +
-                      ")",
-                    pi
-                  )
-                );
+              if (sv) {
+                const bpVer = sv.asArray();
+
+                if (bpVer[0] < parseInt(verSplit[0])) {
+                  infoItems.push(
+                    new ProjectInfoItem(
+                      this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
+                      this.id,
+                      MinEngineVersionManagerTest.behaviorPackMinEngineVersionMajorLowerThanCurrent,
+                      "Behavior pack manifest (" +
+                        bpVer.join(".") +
+                        ") has a lower major version number compared to current version (" +
+                        verShort +
+                        ")",
+                      pi
+                    )
+                  );
+                } else if (bpVer[0] > parseInt(verSplit[0])) {
+                  infoItems.push(
+                    new ProjectInfoItem(
+                      InfoItemType.error,
+                      this.id,
+                      MinEngineVersionManagerTest.behaviorPackMinEngineVersionMajorHigherThanCurrent,
+                      "Behavior pack manifest (" +
+                        bpVer.join(".") +
+                        ") has a higher major version number compared to current version (" +
+                        verShort +
+                        ")",
+                      pi
+                    )
+                  );
+                } else if (bpVer[1] < parseInt(verSplit[1]) - 1) {
+                  infoItems.push(
+                    new ProjectInfoItem(
+                      this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
+                      this.id,
+                      MinEngineVersionManagerTest.behaviorPackMinEngineVersionMinorLowerThanCurrent,
+                      "Behavior pack manifest (" +
+                        bpVer.join(".") +
+                        ") has a lower minor version number compared to the current version or the previous current minor version (" +
+                        verShort +
+                        ")",
+                      pi
+                    )
+                  );
+                } else if (bpVer[1] > parseInt(verSplit[1])) {
+                  infoItems.push(
+                    new ProjectInfoItem(
+                      InfoItemType.error,
+                      this.id,
+                      MinEngineVersionManagerTest.behaviorPackMinEngineVersionMinorHigherThanCurrent,
+                      "Behavior pack manifest (" +
+                        bpVer.join(".") +
+                        ") has a higher minor version number compared to current version (" +
+                        verShort +
+                        ")",
+                      pi
+                    )
+                  );
+                }
               }
             }
           }
@@ -337,64 +342,68 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                 )
               );
 
-              const rpVer = rpManifest?.definition?.header.min_engine_version;
+              const sv = SemanticVersion.from(rpManifest.definition.header.min_engine_version);
 
-              if (rpVer[0] < parseInt(verSplit[0])) {
-                infoItems.push(
-                  new ProjectInfoItem(
-                    InfoItemType.error,
-                    this.id,
-                    MinEngineVersionManagerTest.resourcePackMinEngineVersionMajorLowerThanCurrent,
-                    "Resource pack manifest (" +
-                      rpVer.join(".") +
-                      ") has a lower major version number compared to current version (" +
-                      verShort +
-                      ")",
-                    pi
-                  )
-                );
-              } else if (rpVer[0] > parseInt(verSplit[0])) {
-                infoItems.push(
-                  new ProjectInfoItem(
-                    InfoItemType.error,
-                    this.id,
-                    MinEngineVersionManagerTest.resourcePackMinEngineVersionMajorHigherThanCurrent,
-                    "Resource pack manifest (" +
-                      rpVer.join(".") +
-                      ") has a higher major version number compared to current version (" +
-                      verShort +
-                      ")",
-                    pi
-                  )
-                );
-              } else if (rpVer[1] < parseInt(verSplit[1]) - 1) {
-                infoItems.push(
-                  new ProjectInfoItem(
-                    this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
-                    this.id,
-                    MinEngineVersionManagerTest.resourcePackMinEngineVersionMinorLowerThanCurrent,
-                    "Resource pack manifest (" +
-                      rpVer.join(".") +
-                      ") has a lower minor version number compared to current version or the previous current minor version (" +
-                      verShort +
-                      ")",
-                    pi
-                  )
-                );
-              } else if (rpVer[1] > parseInt(verSplit[1])) {
-                infoItems.push(
-                  new ProjectInfoItem(
-                    InfoItemType.error,
-                    this.id,
-                    MinEngineVersionManagerTest.resourcePackMinEngineVersionMinorHigherThanCurrent,
-                    "Resource pack manifest (" +
-                      rpVer.join(".") +
-                      ") has a higher minor version number compared to current version (" +
-                      verShort +
-                      ")",
-                    pi
-                  )
-                );
+              if (sv) {
+                const rpVer = sv.asArray();
+
+                if (rpVer[0] < parseInt(verSplit[0])) {
+                  infoItems.push(
+                    new ProjectInfoItem(
+                      InfoItemType.error,
+                      this.id,
+                      MinEngineVersionManagerTest.resourcePackMinEngineVersionMajorLowerThanCurrent,
+                      "Resource pack manifest (" +
+                        rpVer.join(".") +
+                        ") has a lower major version number compared to current version (" +
+                        verShort +
+                        ")",
+                      pi
+                    )
+                  );
+                } else if (rpVer[0] > parseInt(verSplit[0])) {
+                  infoItems.push(
+                    new ProjectInfoItem(
+                      InfoItemType.error,
+                      this.id,
+                      MinEngineVersionManagerTest.resourcePackMinEngineVersionMajorHigherThanCurrent,
+                      "Resource pack manifest (" +
+                        rpVer.join(".") +
+                        ") has a higher major version number compared to current version (" +
+                        verShort +
+                        ")",
+                      pi
+                    )
+                  );
+                } else if (rpVer[1] < parseInt(verSplit[1]) - 1) {
+                  infoItems.push(
+                    new ProjectInfoItem(
+                      this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
+                      this.id,
+                      MinEngineVersionManagerTest.resourcePackMinEngineVersionMinorLowerThanCurrent,
+                      "Resource pack manifest (" +
+                        rpVer.join(".") +
+                        ") has a lower minor version number compared to current version or the previous current minor version (" +
+                        verShort +
+                        ")",
+                      pi
+                    )
+                  );
+                } else if (rpVer[1] > parseInt(verSplit[1])) {
+                  infoItems.push(
+                    new ProjectInfoItem(
+                      InfoItemType.error,
+                      this.id,
+                      MinEngineVersionManagerTest.resourcePackMinEngineVersionMinorHigherThanCurrent,
+                      "Resource pack manifest (" +
+                        rpVer.join(".") +
+                        ") has a higher minor version number compared to current version (" +
+                        verShort +
+                        ")",
+                      pi
+                    )
+                  );
+                }
               }
             }
           }

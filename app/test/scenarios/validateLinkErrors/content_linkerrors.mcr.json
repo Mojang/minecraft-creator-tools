@@ -16,11 +16,11 @@
     "entityTypeResourceCount": 3,
     "behaviorPackAnimationCount": 1,
     "behaviorPackAnimationControllerCount": 1,
-    "overallSize": 7069154,
-    "fileCounts": 57,
+    "overallSize": 7072325,
+    "fileCounts": 58,
     "folderCounts": 28,
-    "contentSize": 108507,
-    "contentFileCounts": 41,
+    "contentSize": 111678,
+    "contentFileCounts": 42,
     "contentFolderCounts": 21,
     "defaultBehaviorPackUuid": "9ec8af93-4b38-429f-a4bd-7e277a50d238",
     "defaultIcon": "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",
@@ -149,8 +149,8 @@
     "completeVanillaCopy": 0,
     "partialVanillaCopy": 0,
     "animationCount": 0,
-    "textureCount": 4,
-    "textureTexelSize": 20480,
+    "textureCount": 5,
+    "textureTexelSize": 36864,
     "vanillaGameTextureCoverage": 0,
     "vanillaGameTextureCount": 0,
     "minimumSupportablePerformanceTier": 0,
@@ -517,11 +517,11 @@
         "Average": 12
       },
       "Texture Size": {
-        "Instance Count": 4,
-        "Total": 9171,
+        "Instance Count": 5,
+        "Total": 12342,
         "Max": 3882,
         "Min": 1489,
-        "Average": 2293
+        "Average": 2468
       },
       "Marketing image Size": {
         "Instance Count": 8,
@@ -642,7 +642,7 @@
         "Count": 3
       },
       "Textures File Count": {
-        "Count": 4
+        "Count": 5
       },
       "Textures Unique Texture Handles (estimated)": {
         "Count": 3
@@ -660,119 +660,119 @@
         "Count": 3
       },
       "Texture Images Custom Texture": {
-        "Count": 4
+        "Count": 5
       },
       "Texture Images PNGJPG Width": {
-        "Instance Count": 4,
-        "Total": 320,
+        "Instance Count": 5,
+        "Total": 448,
         "Max": 128,
         "Min": 64,
-        "Average": 80
+        "Average": 90
       },
       "Texture Images PNGJPG Height": {
-        "Instance Count": 4,
-        "Total": 256,
-        "Max": 64,
+        "Instance Count": 5,
+        "Total": 384,
+        "Max": 128,
         "Min": 64,
-        "Average": 64
+        "Average": 77
       },
       "Texture Images PNGJPG Texels": {
-        "Instance Count": 4,
-        "Total": 20480,
-        "Max": 8192,
+        "Instance Count": 5,
+        "Total": 36864,
+        "Max": 16384,
         "Min": 4096,
-        "Average": 5120
+        "Average": 7373
       },
       "Texture Images PNGJPG Texture Memory": {
-        "Instance Count": 4,
-        "Total": 81920,
-        "Max": 32768,
+        "Instance Count": 5,
+        "Total": 147456,
+        "Max": 65536,
         "Min": 16384,
-        "Average": 20480
+        "Average": 29491
       },
       "Texture Images Width": {
-        "Instance Count": 4,
+        "Instance Count": 5,
+        "Total": 448,
+        "Max": 128,
+        "Min": 64,
+        "Average": 90
+      },
+      "Texture Images Height": {
+        "Instance Count": 5,
+        "Total": 384,
+        "Max": 128,
+        "Min": 64,
+        "Average": 77
+      },
+      "Texture Images Texels": {
+        "Instance Count": 5,
+        "Total": 36864,
+        "Max": 16384,
+        "Min": 4096,
+        "Average": 7373
+      },
+      "Texture Images Texture Memory": {
+        "Instance Count": 5,
+        "Total": 147456,
+        "Max": 65536,
+        "Min": 16384,
+        "Average": 29491
+      },
+      "Texture Images Non-Vanilla Texels": {
+        "Instance Count": 5,
+        "Total": 36864,
+        "Max": 16384,
+        "Min": 4096,
+        "Average": 7373
+      },
+      "Texture Images Non-Vanilla Texture Memory": {
+        "Instance Count": 5,
+        "Total": 147456,
+        "Max": 65536,
+        "Min": 16384,
+        "Average": 29491
+      },
+      "Texture Images Non-tied Width": {
+        "Instance Count": 3,
         "Total": 320,
         "Max": 128,
         "Min": 64,
-        "Average": 80
-      },
-      "Texture Images Height": {
-        "Instance Count": 4,
-        "Total": 256,
-        "Max": 64,
-        "Min": 64,
-        "Average": 64
-      },
-      "Texture Images Texels": {
-        "Instance Count": 4,
-        "Total": 20480,
-        "Max": 8192,
-        "Min": 4096,
-        "Average": 5120
-      },
-      "Texture Images Texture Memory": {
-        "Instance Count": 4,
-        "Total": 81920,
-        "Max": 32768,
-        "Min": 16384,
-        "Average": 20480
-      },
-      "Texture Images Non-Vanilla Texels": {
-        "Instance Count": 4,
-        "Total": 20480,
-        "Max": 8192,
-        "Min": 4096,
-        "Average": 5120
-      },
-      "Texture Images Non-Vanilla Texture Memory": {
-        "Instance Count": 4,
-        "Total": 81920,
-        "Max": 32768,
-        "Min": 16384,
-        "Average": 20480
-      },
-      "Texture Images Non-tied Width": {
-        "Instance Count": 2,
-        "Total": 192,
-        "Max": 128,
-        "Min": 64,
-        "Average": 96
+        "Average": 107
       },
       "Texture Images Non-tied Height": {
-        "Instance Count": 2,
-        "Total": 128,
-        "Max": 64,
+        "Instance Count": 3,
+        "Total": 256,
+        "Max": 128,
         "Min": 64,
-        "Average": 64
+        "Average": 85
       },
       "Texture Images Non-tied Texels": {
-        "Instance Count": 2,
-        "Total": 12288,
-        "Max": 8192,
+        "Instance Count": 3,
+        "Total": 28672,
+        "Max": 16384,
         "Min": 4096,
-        "Average": 6144
+        "Average": 9557
       },
       "Texture Images Non-tied Texture Memory": {
-        "Instance Count": 2,
-        "Total": 49152,
-        "Max": 32768,
+        "Instance Count": 3,
+        "Total": 114688,
+        "Max": 65536,
         "Min": 16384,
-        "Average": 24576
+        "Average": 38229
       },
       "Texture Images Non-tied Non-Vanilla Texels": {
-        "Instance Count": 2,
-        "Total": 12288,
-        "Max": 8192,
+        "Instance Count": 3,
+        "Total": 28672,
+        "Max": 16384,
         "Min": 4096,
-        "Average": 6144
+        "Average": 9557
       },
       "Texture Images Non-tied Non-Vanilla Texture Memory": {
-        "Instance Count": 2,
-        "Total": 49152,
-        "Max": 32768,
+        "Instance Count": 3,
+        "Total": 114688,
+        "Max": 65536,
         "Min": 16384,
-        "Average": 24576
+        "Average": 38229
       },
       "Texture Images Entity Width": {
         "Instance Count": 2,
@@ -818,22 +818,22 @@
       },
       "Texture Images Vanilla Game Texture Coverage": {
         "Override Count": 0,
-        "Vanilla Texture Count": 2669,
+        "Vanilla Texture Count": 2266,
         "Percent": 0
       },
       "Texture Images Tier0 Non-Vanilla Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 81920,
-        "Max": 81920,
-        "Min": 81920,
-        "Average": 81920
+        "Total": 147456,
+        "Max": 147456,
+        "Min": 147456,
+        "Average": 147456
       },
       "Texture Images Tier0 Total Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 81920,
-        "Max": 81920,
-        "Min": 81920,
-        "Average": 81920
+        "Total": 147456,
+        "Max": 147456,
+        "Min": 147456,
+        "Average": 147456
       },
       "Texture Images Tier0 Block Atlas Texture Memory Tier": {
         "Instance Count": 1,
@@ -851,17 +851,17 @@
       },
       "Texture Images Tier1 Non-Vanilla Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 81920,
-        "Max": 81920,
-        "Min": 81920,
-        "Average": 81920
+        "Total": 147456,
+        "Max": 147456,
+        "Min": 147456,
+        "Average": 147456
       },
       "Texture Images Tier1 Total Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 81920,
-        "Max": 81920,
-        "Min": 81920,
-        "Average": 81920
+        "Total": 147456,
+        "Max": 147456,
+        "Min": 147456,
+        "Average": 147456
       },
       "Texture Images Tier1 Block Atlas Texture Memory Tier": {
         "Instance Count": 1,
@@ -879,17 +879,17 @@
       },
       "Texture Images Tier2 Non-Vanilla Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 81920,
-        "Max": 81920,
-        "Min": 81920,
-        "Average": 81920
+        "Total": 147456,
+        "Max": 147456,
+        "Min": 147456,
+        "Average": 147456
       },
       "Texture Images Tier2 Total Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 81920,
-        "Max": 81920,
-        "Min": 81920,
-        "Average": 81920
+        "Total": 147456,
+        "Max": 147456,
+        "Min": 147456,
+        "Average": 147456
       },
       "Texture Images Tier2 Block Atlas Texture Memory Tier": {
         "Instance Count": 1,
@@ -907,17 +907,17 @@
       },
       "Texture Images Tier3 Non-Vanilla Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 81920,
-        "Max": 81920,
-        "Min": 81920,
-        "Average": 81920
+        "Total": 147456,
+        "Max": 147456,
+        "Min": 147456,
+        "Average": 147456
       },
       "Texture Images Tier3 Total Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 81920,
-        "Max": 81920,
-        "Min": 81920,
-        "Average": 81920
+        "Total": 147456,
+        "Max": 147456,
+        "Min": 147456,
+        "Average": 147456
       },
       "Texture Images Tier3 Block Atlas Texture Memory Tier": {
         "Instance Count": 1,
@@ -935,17 +935,17 @@
       },
       "Texture Images Tier4 Non-Vanilla Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 81920,
-        "Max": 81920,
-        "Min": 81920,
-        "Average": 81920
+        "Total": 147456,
+        "Max": 147456,
+        "Min": 147456,
+        "Average": 147456
       },
       "Texture Images Tier4 Total Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 81920,
-        "Max": 81920,
-        "Min": 81920,
-        "Average": 81920
+        "Total": 147456,
+        "Max": 147456,
+        "Min": 147456,
+        "Average": 147456
       },
       "Texture Images Tier4 Block Atlas Texture Memory Tier": {
         "Instance Count": 1,
@@ -963,17 +963,17 @@
       },
       "Texture Images Tier5 Non-Vanilla Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 81920,
-        "Max": 81920,
-        "Min": 81920,
-        "Average": 81920
+        "Total": 147456,
+        "Max": 147456,
+        "Min": 147456,
+        "Average": 147456
       },
       "Texture Images Tier5 Total Texture Memory Tier": {
         "Instance Count": 1,
-        "Total": 81920,
-        "Max": 81920,
-        "Min": 81920,
-        "Average": 81920
+        "Total": 147456,
+        "Max": 147456,
+        "Min": 147456,
+        "Average": 147456
       },
       "Texture Images Tier5 Block Atlas Texture Memory Tier": {
         "Instance Count": 1,
@@ -998,15 +998,16 @@
     },
     "errorCount": 0,
     "internalProcessingErrorCount": 0,
-    "warningCount": 10,
+    "warningCount": 11,
     "testSuccessCount": 38,
     "testFailCount": 0,
     "testNotApplicableCount": 10,
     "errorSummary": "",
     "internalProcessingErrorSummary": "",
-    "warningSummary": "WARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co3_unlinked.ogg) Audio does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/nardolphle_imageisnotlinked.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:mob_that_does_not_exist`\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `ambientsounds.co2_extranotexists`\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `ambientsounds.co2_notexists`\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `individual_event_sound_that_does_not_exist`\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds/music_definitions.json to `ambientsounds.cofoo_doesnotexist`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobsrp/entity/biceson.entity.json to `textures/aop/moremobs/biceson_filethatdoesnotexist`\nWARNING: [UNLINK408] (/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json) Link to audio is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json to `sounds/ambientsounds/co_doesnotexist`",
+    "warningSummary": "WARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co3_unlinked.ogg) Audio does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/nardolphle_imageisnotlinked.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/randomvanillacopy.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:mob_that_does_not_exist`\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `ambientsounds.co2_extranotexists`\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `ambientsounds.co2_notexists`\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `individual_event_sound_that_does_not_exist`\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds/music_definitions.json to `ambientsounds.cofoo_doesnotexist`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobsrp/entity/biceson.entity.json to `textures/aop/moremobs/biceson_filethatdoesnotexist`\nWARNING: [UNLINK408] (/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json) Link to audio is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json to `sounds/ambientsounds/co_doesnotexist`",
     "testFailSummary": "",
-    "infoGenerationTime": 667,
+    "infoGenerationTime": 720,
+    "endToEndGenerationTime": 876,
     "summary": {
       "BASEGAMEVER": {
         "2": {
@@ -1088,7 +1089,7 @@
         },
         "120": {
           "title": "Format Version Minor Version Lower Than Current",
-          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100.06)",
+          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.110.02)",
           "recommendations": 3
         }
       },
@@ -1123,7 +1124,7 @@
         },
         "296": {
           "title": "296",
-          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100)",
+          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.110)",
           "recommendations": 3
         },
         "619": {
@@ -1738,7 +1739,7 @@
         },
         "191": {
           "defaultMessage": "Audio does not have any items in this pack that are using this.",
-          "warnings": 3
+          "warnings": 4
         },
         "205": {
           "defaultMessage": "Link to vanilla item type item; avoid if possible",
@@ -1979,7 +1980,7 @@
       "iTp": 6,
       "gId": "FORMATVER",
       "gIx": 296,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100)",
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.110)",
       "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
     },
     {
@@ -2266,7 +2267,7 @@
       "iTp": 2,
       "gId": "ITEMS",
       "gIx": 299,
-      "d": 4
+      "d": 5
     },
     {
       "iTp": 2,
@@ -2958,11 +2959,11 @@
       "gIx": 199,
       "fs": {
         "Size": {
-          "Instance Count": 4,
-          "Total": 9171,
+          "Instance Count": 5,
+          "Total": 12342,
           "Max": 3882,
           "Min": 1489,
-          "Average": 2293
+          "Average": 2468
         }
       }
     },
@@ -3197,13 +3198,13 @@
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 101,
-      "d": 7069154
+      "d": 7072325
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 102,
-      "d": 57
+      "d": 58
     },
     {
       "iTp": 7,
@@ -3215,13 +3216,13 @@
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 104,
-      "d": 108507
+      "d": 111678
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 105,
-      "d": 41
+      "d": 42
     },
     {
       "iTp": 7,
@@ -3423,7 +3424,7 @@
           "Count": 3
         },
         "File Count": {
-          "Count": 4
+          "Count": 5
         },
         "Unique Texture Handles (estimated)": {
           "Count": 3
@@ -3453,119 +3454,119 @@
       "gIx": 101,
       "fs": {
         "Custom Texture": {
-          "Count": 4
+          "Count": 5
         },
         "PNGJPG Width": {
-          "Instance Count": 4,
-          "Total": 320,
+          "Instance Count": 5,
+          "Total": 448,
           "Max": 128,
           "Min": 64,
-          "Average": 80
+          "Average": 90
         },
         "PNGJPG Height": {
-          "Instance Count": 4,
-          "Total": 256,
-          "Max": 64,
+          "Instance Count": 5,
+          "Total": 384,
+          "Max": 128,
           "Min": 64,
-          "Average": 64
+          "Average": 77
         },
         "PNGJPG Texels": {
-          "Instance Count": 4,
-          "Total": 20480,
-          "Max": 8192,
+          "Instance Count": 5,
+          "Total": 36864,
+          "Max": 16384,
           "Min": 4096,
-          "Average": 5120
+          "Average": 7373
         },
         "PNGJPG Texture Memory": {
-          "Instance Count": 4,
-          "Total": 81920,
-          "Max": 32768,
+          "Instance Count": 5,
+          "Total": 147456,
+          "Max": 65536,
           "Min": 16384,
-          "Average": 20480
+          "Average": 29491
         },
         "Width": {
-          "Instance Count": 4,
+          "Instance Count": 5,
+          "Total": 448,
+          "Max": 128,
+          "Min": 64,
+          "Average": 90
+        },
+        "Height": {
+          "Instance Count": 5,
+          "Total": 384,
+          "Max": 128,
+          "Min": 64,
+          "Average": 77
+        },
+        "Texels": {
+          "Instance Count": 5,
+          "Total": 36864,
+          "Max": 16384,
+          "Min": 4096,
+          "Average": 7373
+        },
+        "Texture Memory": {
+          "Instance Count": 5,
+          "Total": 147456,
+          "Max": 65536,
+          "Min": 16384,
+          "Average": 29491
+        },
+        "Non-Vanilla Texels": {
+          "Instance Count": 5,
+          "Total": 36864,
+          "Max": 16384,
+          "Min": 4096,
+          "Average": 7373
+        },
+        "Non-Vanilla Texture Memory": {
+          "Instance Count": 5,
+          "Total": 147456,
+          "Max": 65536,
+          "Min": 16384,
+          "Average": 29491
+        },
+        "Non-tied Width": {
+          "Instance Count": 3,
           "Total": 320,
           "Max": 128,
           "Min": 64,
-          "Average": 80
-        },
-        "Height": {
-          "Instance Count": 4,
-          "Total": 256,
-          "Max": 64,
-          "Min": 64,
-          "Average": 64
-        },
-        "Texels": {
-          "Instance Count": 4,
-          "Total": 20480,
-          "Max": 8192,
-          "Min": 4096,
-          "Average": 5120
-        },
-        "Texture Memory": {
-          "Instance Count": 4,
-          "Total": 81920,
-          "Max": 32768,
-          "Min": 16384,
-          "Average": 20480
-        },
-        "Non-Vanilla Texels": {
-          "Instance Count": 4,
-          "Total": 20480,
-          "Max": 8192,
-          "Min": 4096,
-          "Average": 5120
-        },
-        "Non-Vanilla Texture Memory": {
-          "Instance Count": 4,
-          "Total": 81920,
-          "Max": 32768,
-          "Min": 16384,
-          "Average": 20480
-        },
-        "Non-tied Width": {
-          "Instance Count": 2,
-          "Total": 192,
-          "Max": 128,
-          "Min": 64,
-          "Average": 96
+          "Average": 107
         },
         "Non-tied Height": {
-          "Instance Count": 2,
-          "Total": 128,
-          "Max": 64,
+          "Instance Count": 3,
+          "Total": 256,
+          "Max": 128,
           "Min": 64,
-          "Average": 64
+          "Average": 85
         },
         "Non-tied Texels": {
-          "Instance Count": 2,
-          "Total": 12288,
-          "Max": 8192,
+          "Instance Count": 3,
+          "Total": 28672,
+          "Max": 16384,
           "Min": 4096,
-          "Average": 6144
+          "Average": 9557
         },
         "Non-tied Texture Memory": {
-          "Instance Count": 2,
-          "Total": 49152,
-          "Max": 32768,
+          "Instance Count": 3,
+          "Total": 114688,
+          "Max": 65536,
           "Min": 16384,
-          "Average": 24576
+          "Average": 38229
         },
         "Non-tied Non-Vanilla Texels": {
-          "Instance Count": 2,
-          "Total": 12288,
-          "Max": 8192,
+          "Instance Count": 3,
+          "Total": 28672,
+          "Max": 16384,
           "Min": 4096,
-          "Average": 6144
+          "Average": 9557
         },
         "Non-tied Non-Vanilla Texture Memory": {
-          "Instance Count": 2,
-          "Total": 49152,
-          "Max": 32768,
+          "Instance Count": 3,
+          "Total": 114688,
+          "Max": 65536,
           "Min": 16384,
-          "Average": 24576
+          "Average": 38229
         },
         "Entity Width": {
           "Instance Count": 2,
@@ -3611,7 +3612,7 @@
         },
         "Vanilla Game Texture Coverage": {
           "Override Count": 0,
-          "Vanilla Texture Count": 2669,
+          "Vanilla Texture Count": 2266,
           "Percent": 0
         }
       }
@@ -3623,17 +3624,17 @@
       "fs": {
         "Non-Vanilla Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 81920,
-          "Max": 81920,
-          "Min": 81920,
-          "Average": 81920
+          "Total": 147456,
+          "Max": 147456,
+          "Min": 147456,
+          "Average": 147456
         },
         "Total Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 81920,
-          "Max": 81920,
-          "Min": 81920,
-          "Average": 81920
+          "Total": 147456,
+          "Max": 147456,
+          "Min": 147456,
+          "Average": 147456
         },
         "Block Atlas Texture Memory Tier": {
           "Instance Count": 1,
@@ -3658,17 +3659,17 @@
       "fs": {
         "Non-Vanilla Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 81920,
-          "Max": 81920,
-          "Min": 81920,
-          "Average": 81920
+          "Total": 147456,
+          "Max": 147456,
+          "Min": 147456,
+          "Average": 147456
         },
         "Total Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 81920,
-          "Max": 81920,
-          "Min": 81920,
-          "Average": 81920
+          "Total": 147456,
+          "Max": 147456,
+          "Min": 147456,
+          "Average": 147456
         },
         "Block Atlas Texture Memory Tier": {
           "Instance Count": 1,
@@ -3693,17 +3694,17 @@
       "fs": {
         "Non-Vanilla Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 81920,
-          "Max": 81920,
-          "Min": 81920,
-          "Average": 81920
+          "Total": 147456,
+          "Max": 147456,
+          "Min": 147456,
+          "Average": 147456
         },
         "Total Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 81920,
-          "Max": 81920,
-          "Min": 81920,
-          "Average": 81920
+          "Total": 147456,
+          "Max": 147456,
+          "Min": 147456,
+          "Average": 147456
         },
         "Block Atlas Texture Memory Tier": {
           "Instance Count": 1,
@@ -3728,17 +3729,17 @@
       "fs": {
         "Non-Vanilla Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 81920,
-          "Max": 81920,
-          "Min": 81920,
-          "Average": 81920
+          "Total": 147456,
+          "Max": 147456,
+          "Min": 147456,
+          "Average": 147456
         },
         "Total Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 81920,
-          "Max": 81920,
-          "Min": 81920,
-          "Average": 81920
+          "Total": 147456,
+          "Max": 147456,
+          "Min": 147456,
+          "Average": 147456
         },
         "Block Atlas Texture Memory Tier": {
           "Instance Count": 1,
@@ -3763,17 +3764,17 @@
       "fs": {
         "Non-Vanilla Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 81920,
-          "Max": 81920,
-          "Min": 81920,
-          "Average": 81920
+          "Total": 147456,
+          "Max": 147456,
+          "Min": 147456,
+          "Average": 147456
         },
         "Total Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 81920,
-          "Max": 81920,
-          "Min": 81920,
-          "Average": 81920
+          "Total": 147456,
+          "Max": 147456,
+          "Min": 147456,
+          "Average": 147456
         },
         "Block Atlas Texture Memory Tier": {
           "Instance Count": 1,
@@ -3798,17 +3799,17 @@
       "fs": {
         "Non-Vanilla Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 81920,
-          "Max": 81920,
-          "Min": 81920,
-          "Average": 81920
+          "Total": 147456,
+          "Max": 147456,
+          "Min": 147456,
+          "Average": 147456
         },
         "Total Texture Memory Tier": {
           "Instance Count": 1,
-          "Total": 81920,
-          "Max": 81920,
-          "Min": 81920,
-          "Average": 81920
+          "Total": 147456,
+          "Max": 147456,
+          "Min": 147456,
+          "Average": 147456
         },
         "Block Atlas Texture Memory Tier": {
           "Instance Count": 1,
@@ -3880,6 +3881,13 @@
       "gIx": 191,
       "m": "Texture does not have any items in this pack that are using this.",
       "p": "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/nardolphle_imageisnotlinked.png"
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 191,
+      "m": "Texture does not have any items in this pack that are using this.",
+      "p": "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/randomvanillacopy.png"
     },
     {
       "iTp": 6,

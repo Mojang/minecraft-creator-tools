@@ -256,11 +256,14 @@ export default class EntityTypeResourceDefinition {
     const animationList = this._data.scripts["animate"];
 
     let hasScript = false;
-    for (const val of animationList) {
-      if (typeof val === "string" && val === animationShortName) {
-        hasScript = true;
-      } else if (typeof val === "object" && val[animationShortName]) {
-        hasScript = true;
+
+    if (animationList && Array.isArray(animationList)) {
+      for (const val of animationList) {
+        if (typeof val === "string" && val === animationShortName) {
+          hasScript = true;
+        } else if (typeof val === "object" && val[animationShortName]) {
+          hasScript = true;
+        }
       }
     }
 

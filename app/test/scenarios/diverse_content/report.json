@@ -540,7 +540,8 @@
     "internalProcessingErrorSummary": "UNKNOWN: [JSONF402] Could not find expected form: entity/actor_document\nUNKNOWN: [JSONF402] Could not find expected form: spawn/spawn_rules",
     "warningSummary": "WARNING: [FORMATVER218] (/resource_packs/diverse_rp/animations/sample_mob_animations.json) Resource animation version (1.21.0) has a higher minor version number compared to current version (1.10.0)\nWARNING: [FORMATVER238] (/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json) Resource animation controller version (1.21.0) has a higher minor version number compared to current version (1.10.0)\nWARNING: [FORMATVER258] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) Spawn rules version (1.21.0) has a higher minor version number compared to current version (1.12.0)\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/loot_tables/sample_loot.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/loot_tables/sample_loot.json to `minecraft:stick`\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:iron_ingot`\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:stick`",
     "testFailSummary": "TESTFAIL: [JSONF000] Found 2 internal errors for JSON Structure Validation (via Minecraft docs) (JSONF). This may be a temporary issue with the test run.",
-    "infoGenerationTime": 13,
+    "infoGenerationTime": 18,
+    "endToEndGenerationTime": 28,
     "summary": {
       "BASEGAMEVER": {
         "2": {
@@ -622,7 +623,7 @@
         },
         "130": {
           "title": "Format Version Patch Version Lower Than Current",
-          "defaultMessage": "Behavior pack entity type format version (1.21.0) has a lower patch version number compared to current version (1.21.100.06)",
+          "defaultMessage": "Behavior pack entity type format version (1.21.0) has a lower patch version number compared to current version (1.21.110.02)",
           "recommendations": 1
         }
       },
@@ -647,17 +648,17 @@
         },
         "120": {
           "title": "Block type Version Patch Version Higher than Current",
-          "defaultMessage": "Block type version (1.21.0) has a lower patch version number compared to current version (1.21.100)",
+          "defaultMessage": "Block type version (1.21.0) has a lower patch version number compared to current version (1.21.110)",
           "recommendations": 1
         },
         "140": {
           "title": "Item type Version Patch Version Higher than Current",
-          "defaultMessage": "Item type version (1.21.0) has a lower patch version number compared to current version (1.21.100)",
+          "defaultMessage": "Item type version (1.21.0) has a lower patch version number compared to current version (1.21.110)",
           "recommendations": 2
         },
         "160": {
           "title": "Recipe Version Patch Version Higher than Current",
-          "defaultMessage": "Recipe version (1.21.0) has a lower patch version number compared to current version (1.21.100)",
+          "defaultMessage": "Recipe version (1.21.0) has a lower patch version number compared to current version (1.21.110)",
           "recommendations": 1
         },
         "218": {
@@ -815,7 +816,7 @@
         },
         "130": {
           "title": "Format Version Patch Version Lower Than Current",
-          "defaultMessage": "Behavior pack item type format version (1.21.0) has a lower patch version number compared to current version (1.21.100.06)",
+          "defaultMessage": "Behavior pack item type format version (1.21.0) has a lower patch version number compared to current version (1.21.110.02)",
           "recommendations": 2
         }
       },

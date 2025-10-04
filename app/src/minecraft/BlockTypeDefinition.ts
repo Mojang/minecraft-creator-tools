@@ -282,7 +282,7 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
   }
 
   public hasCustomPermutationConditions() {
-    if (!this._data || !this._data.permutations) {
+    if (!this._data || !this._data.permutations || !Array.isArray(this._data.permutations)) {
       return false;
     }
 
@@ -319,7 +319,7 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
   getManagedPermutations() {
     const permData = this.getPermutations();
 
-    if (!permData) {
+    if (!permData || !Array.isArray(permData)) {
       return undefined;
     }
 
@@ -659,7 +659,7 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
   }
 
   getPermutationByCondition(permutationCondition: string) {
-    if (!this._data || !this.data?.permutations) {
+    if (!this._data || !this.data?.permutations || !Array.isArray(this.data.permutations)) {
       return undefined;
     }
 

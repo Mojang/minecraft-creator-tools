@@ -1,0 +1,8 @@
+entity.aop_mobw:sheepomelon.name=Sheepomelon
+item.spawn_egg.entity.aop_mobw:sheepomelon.name=Spawn Sheepomelon
+entity.aop_mobw:biceson.name=Biceson
+item.spawn_egg.entity.aop_mobw:biceson.name=Spawn Biceson
+entity.aop_mobw:nardolphle.name=Nardolphle
+item.spawn_egg.entity.aop_mobw:nardolphle.name=Spawn Nardolphle
+pack.name=More Mob World Resources
+pack.description=Adds a world with a zoo of mobs

@@ -374,7 +374,7 @@ export default class SoundCatalogDefinition implements IDefinition {
       }
     }
 
-    if (soundEventList) {
+    if (soundEventList && Array.isArray(soundEventList)) {
       for (const soundEvent of soundEventList) {
         if (typeof soundEvent === "string" && soundEvent.trim().length > 0) {
           const isVanilla = await Database.isVanillaToken(soundEvent);
@@ -383,7 +383,7 @@ export default class SoundCatalogDefinition implements IDefinition {
       }
     }
 
-    if (entityIdList) {
+    if (entityIdList && Array.isArray(entityIdList)) {
       for (const entityId of entityIdList) {
         if (entityId.length > 0) {
           const isVanilla = await Database.isVanillaToken(entityId);

@@ -138,7 +138,8 @@ export default interface MinecraftGeometry {
    *
    * Blue Bubble Fish: "geometry.bubble_fish"
    *
-   * Die: "minecraft:geometry.full_block"
+   *
+   * Simple Cube: "minecraft:geometry.full_block"
    *
    */
   identifier?: string;

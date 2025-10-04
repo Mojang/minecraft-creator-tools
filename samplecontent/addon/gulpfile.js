@@ -31,6 +31,9 @@ function clean_build(callbackFunction) {
   del([
     "build/behavior_packs/", 
     "build/content_linkerrors/", 
+    "build/content_textureful/", 
+    "build/content_subpacks/", 
+    "build/content_texturefulvv/", 
     "build/content_vibrantvisuals/", 
     "build/content1/", 
     "build/content2/", 
@@ -286,6 +289,119 @@ function create_content_linkerrors_zip() {
   return gulp
     .src(["build/content_linkerrors/**/*"])
     .pipe(zip("aop_moremobs_linkerrors.zip"))
+    .pipe(gulp.dest("build/packages/"));
+}
+
+function create_content_layout_subpacks_rp() {
+  return gulp
+    .src(["altdiffs/subpacks/resource_packs/" + rpfoldername + "/**/*"])
+    .pipe(gulp.dest("build/content_subpacks/Content/resource_packs/" + rpfoldername + "/"));
+}
+
+function create_content_layout_subpacks_base_bp() {
+  return gulp
+    .src(["build/behavior_packs/" + bpfoldername + "/**/*"])
+    .pipe(gulp.dest("build/content_subpacks/Content/behavior_packs/" + bpfoldername + "/"));
+}
+
+function create_content_layout_subpacks_base_rp() {
+  return gulp
+    .src(["build/resource_packs/" + rpfoldername + "/**/*"])
+    .pipe(gulp.dest("build/content_subpacks/Content/resource_packs/" + rpfoldername + "/"));
+}
+
+function create_content_layout_subpacks_base_acc() {
+  return gulp.src(["accessory_files/**/*"]).pipe(gulp.dest("build/content_subpacks/"));
+}
+
+function create_content_subpacks_mcaddon() {
+  return gulp
+    .src(["build/content_subpacks/content/**/*"])
+    .pipe(zip("aop_moremobs_subpacks.mcaddon"))
+    .pipe(gulp.dest("build/packages/"));
+}
+
+function create_content_subpacks_zip() {
+  return gulp
+    .src(["build/content_subpacks/**/*"])
+    .pipe(zip("aop_moremobs_subpacks.zip"))
+    .pipe(gulp.dest("build/packages/"));
+}
+
+function create_content_textureful_zip() {
+  return gulp
+    .src(["build/content_textureful/**/*"])
+    .pipe(zip("aop_moremobs_textureful.zip"))
+    .pipe(gulp.dest("build/packages/"));
+}
+
+function create_content_layout_textureful_rp() {
+  return gulp
+    .src(["altdiffs/textureful/resource_packs/" + rpfoldername + "/**/*"])
+    .pipe(gulp.dest("build/content_textureful/Content/resource_packs/" + rpfoldername + "/"));
+}
+
+function create_content_layout_textureful_base_bp() {
+  return gulp
+    .src(["build/behavior_packs/" + bpfoldername + "/**/*"])
+    .pipe(gulp.dest("build/content_textureful/Content/behavior_packs/" + bpfoldername + "/"));
+}
+
+function create_content_layout_textureful_base_rp() {
+  return gulp
+    .src(["build/resource_packs/" + rpfoldername + "/**/*"])
+    .pipe(gulp.dest("build/content_textureful/Content/resource_packs/" + rpfoldername + "/"));
+}
+
+function create_content_layout_textureful_base_acc() {
+  return gulp.src(["accessory_files/**/*"]).pipe(gulp.dest("build/content_textureful/"));
+}
+
+function create_content_textureful_zip() {
+  return gulp
+    .src(["build/content_textureful/**/*"])
+    .pipe(zip("aop_moremobs_textureful.zip"))
+    .pipe(gulp.dest("build/packages/"));
+}
+
+function create_content_layout_texturefulvv_rp() {
+  return gulp
+    .src(["altdiffs/textureful/resource_packs/" + rpfoldername + "/**/*"])
+    .pipe(gulp.dest("build/content_texturefulvv/Content/resource_packs/" + rpfoldername + "/"));
+}
+
+function create_content_layout_texturefulvv2_rp() {
+  return gulp
+    .src(["altdiffs/vibrantvisuals/resource_packs/" + rpfoldername + "/**/*"])
+    .pipe(gulp.dest("build/content_texturefulvv/Content/resource_packs/" + rpfoldername + "/"));
+}
+
+function create_content_layout_texturefulvv3_rp() {
+  return gulp
+    .src(["altdiffs/texturefulvv/resource_packs/" + rpfoldername + "/**/*"])
+    .pipe(gulp.dest("build/content_texturefulvv/Content/resource_packs/" + rpfoldername + "/"));
+}
+
+function create_content_layout_texturefulvv_base_bp() {
+  return gulp
+    .src(["build/behavior_packs/" + bpfoldername + "/**/*"])
+    .pipe(gulp.dest("build/content_texturefulvv/Content/behavior_packs/" + bpfoldername + "/"));
+}
+
+function create_content_layout_texturefulvv_base_rp() {
+  return gulp
+    .src(["build/resource_packs/" + rpfoldername + "/**/*"])
+    .pipe(gulp.dest("build/content_texturefulvv/Content/resource_packs/" + rpfoldername + "/"));
+}
+
+function create_content_layout_texturefulvv_base_acc() {
+  return gulp.src(["accessory_files/**/*"]).pipe(gulp.dest("build/content_texturefulvv/"));
+}
+
+function create_content_texturefulvv_zip() {
+  return gulp
+    .src(["build/content_texturefulvv/**/*"])
+    .pipe(zip("aop_moremobs_texturefulvv.zip"))
     .pipe(gulp.dest("build/packages/"));
 }
 
@@ -815,6 +931,15 @@ exports.package = gulp.series(
     create_content_layout_linkerrors_base_bp,
     create_content_layout_linkerrors_base_rp, 
     create_content_layout_linkerrors_base_acc,
+    create_content_layout_subpacks_base_bp,
+    create_content_layout_subpacks_base_rp, 
+    create_content_layout_subpacks_base_acc,
+    create_content_layout_textureful_base_bp,
+    create_content_layout_textureful_base_rp, 
+    create_content_layout_textureful_base_acc,
+    create_content_layout_texturefulvv_base_bp,
+    create_content_layout_texturefulvv_base_rp, 
+    create_content_layout_texturefulvv_base_acc,
     create_content_layout_vibrantvisuals_base_bp,
     create_content_layout_vibrantvisuals_base_rp, 
     create_content_layout_vibrantvisuals_base_acc,
@@ -852,6 +977,9 @@ exports.package = gulp.series(
     create_content_layout_4_scripts,
     create_content_layout_4_acc,
     create_content_layout_linkerrors_rp,
+    create_content_layout_subpacks_rp,
+    create_content_layout_textureful_rp,
+    create_content_layout_texturefulvv_rp,
     create_content_layout_vibrantvisuals_rp,
     create_content_layout_vnext_rp,
     create_content_layout_vnext_bp,
@@ -874,7 +1002,11 @@ exports.package = gulp.series(
   ),
   gulp.parallel(
     create_bp_mcpack_vibrantvisuals,
-    create_rp_mcpack_vibrantvisuals,
+    create_rp_mcpack_vibrantvisuals,    
+    create_content_layout_texturefulvv2_rp,
+  ),
+  gulp.parallel( 
+    create_content_layout_texturefulvv3_rp
   ),
   gulp.parallel(
     create_mcaddon, 
@@ -884,6 +1016,10 @@ exports.package = gulp.series(
     create_content_3_zip,
     create_content_4_zip,
     create_content_linkerrors_zip, 
+    create_content_textureful_zip, 
+    create_content_subpacks_zip, 
+    create_content_subpacks_mcaddon,
+    create_content_texturefulvv_zip, 
     create_content_vibrantvisuals_zip, 
     create_content_vnext_zip,
     create_content_vnext_mcaddon,

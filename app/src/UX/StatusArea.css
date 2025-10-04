@@ -112,7 +112,7 @@
 .sa-list {
   max-height: 200px;
   height: 42vh;
-  min-height: 126px;
+  min-height: 108px;
   overflow-y: auto;
   overflow-x: auto;
   max-width: calc(100vw - 43px);

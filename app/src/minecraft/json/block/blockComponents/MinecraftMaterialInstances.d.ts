@@ -158,8 +158,22 @@ import * as jsoncommon from './../../../jsoncommon';
  */
 export default interface MinecraftMaterialInstances {
 
+  /**
+   * @remarks
+   * 
+   * Sample Values:
+   * Die: {"texture":"die_6"}
+   *
+   */
   down?: MinecraftMaterialInstancesDown;
 
+  /**
+   * @remarks
+   * 
+   * Sample Values:
+   * Die: {"texture":"die_2"}
+   *
+   */
   east?: MinecraftMaterialInstancesEast;
 
   /**
@@ -168,6 +182,8 @@ export default interface MinecraftMaterialInstances {
    * Sample Values:
    * Tuna Roll: "sushi_side"
    *
+   *
+   * Die: {"texture":"die_3"}
    *
    */
   north?: MinecraftMaterialInstancesNorth;
@@ -179,11 +195,27 @@ export default interface MinecraftMaterialInstances {
    * Tuna Roll: "sushi_side"
    *
    *
+   * Die: {"texture":"die_4"}
+   *
    */
   south?: MinecraftMaterialInstancesSouth;
 
+  /**
+   * @remarks
+   * 
+   * Sample Values:
+   * Die: {"texture":"die_1"}
+   *
+   */
   up?: MinecraftMaterialInstancesUp;
 
+  /**
+   * @remarks
+   * 
+   * Sample Values:
+   * Die: {"texture":"die_5"}
+   *
+   */
   west?: MinecraftMaterialInstancesWest;
 
 }

@@ -139,9 +139,11 @@ export default class BehaviorManifestDefinition implements IDefinition {
             } else if (bpManifestJson.definition && bpManifestJson.definition.dependencies) {
               const deps = bpManifestJson.definition?.dependencies;
 
-              for (const dep of deps) {
-                if (dep.uuid === oldBehaviorPackId) {
-                  dep.uuid = newBehaviorPackId;
+              if (deps && Array.isArray(deps)) {
+                for (const dep of deps) {
+                  if (dep.uuid === oldBehaviorPackId) {
+                    dep.uuid = newBehaviorPackId;
+                  }
                 }
               }
 
@@ -155,9 +157,11 @@ export default class BehaviorManifestDefinition implements IDefinition {
             if (rpManifestJson.definition && rpManifestJson.definition.dependencies) {
               const deps = rpManifestJson.definition?.dependencies;
 
-              for (const dep of deps) {
-                if (dep.uuid === oldBehaviorPackId) {
-                  dep.uuid = newBehaviorPackId;
+              if (deps && Array.isArray(deps)) {
+                for (const dep of deps) {
+                  if (dep.uuid === oldBehaviorPackId) {
+                    dep.uuid = newBehaviorPackId;
+                  }
                 }
               }
 
@@ -202,7 +206,7 @@ export default class BehaviorManifestDefinition implements IDefinition {
   }
 
   public getNonScriptModuleDependencyCount() {
-    if (!this.definition || !this.definition.dependencies) {
+    if (!this.definition || !this.definition.dependencies || !Array.isArray(this.definition.dependencies)) {
       return 0;
     }
 
@@ -218,7 +222,7 @@ export default class BehaviorManifestDefinition implements IDefinition {
   }
 
   public getFirstNonScriptModuleDependency() {
-    if (!this.definition || !this.definition.dependencies) {
+    if (!this.definition || !this.definition.dependencies || !Array.isArray(this.definition.dependencies)) {
       return undefined;
     }
 

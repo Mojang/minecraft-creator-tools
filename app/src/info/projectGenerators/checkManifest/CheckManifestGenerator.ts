@@ -70,7 +70,8 @@ export default class CheckManifestGenerator implements IProjectInfoGenerator {
       ...this.validateModules(pack, manifest, manifestItem),
       ...this.validateDependencies(pack, manifest, manifestItem),
       ...this.validateSubpacks(pack, manifest, manifestItem),
-      ...this.validateCapabilties(pack, manifest, manifestItem),
+      ...this.validateCapabilities(pack, manifest, manifestItem),
+      ...this.validateCapabilitiesForMinEngineVersionPlusPbr(pack, manifest, manifestItem),
       ...this.validateSettings(pack, manifest, manifestItem),
     ];
 
@@ -96,6 +97,7 @@ export default class CheckManifestGenerator implements IProjectInfoGenerator {
 
     return [...invalidIdResults, ...dupIdResults];
   }
+
   private validateSettings(pack: PackDesc, manifest: Manifest, manifestItem: ProjectItem) {
     const settings = manifest.settings;
     if (!settings) {
@@ -202,14 +204,50 @@ export default class CheckManifestGenerator implements IProjectInfoGenerator {
     ];
   }
 
-  private validateCapabilties(pack: PackDesc, manifest: Manifest, manifestItem: ProjectItem) {
+  private validateCapabilitiesForMinEngineVersionPlusPbr(
+    pack: PackDesc,
+    manifest: Manifest,
+    manifestItem: ProjectItem
+  ) {
+    const capabilities = manifest.capabilities;
+    if (!capabilities) {
+      return [];
+    }
+
+    for (const cap of capabilities) {
+      if (cap.toLowerCase() === "pbr") {
+        if (!manifest.header.minEngineVersion) {
+          return [];
+        }
+
+        const minVersion = SemanticVersion.parse(manifest.header.minEngineVersion);
+        if (!minVersion) {
+          return [];
+        }
+
+        if (minVersion.compareTo(ValidationData.TargetMevForVV) < 0) {
+          return [
+            resultFromTest(Tests.MinEngineVersionForVV, {
+              id: this.id,
+              item: manifestItem,
+              data: minVersion.asString(),
+            }),
+          ];
+        }
+      }
+    }
+
+    return [];
+  }
+
+  private validateCapabilities(pack: PackDesc, manifest: Manifest, manifestItem: ProjectItem) {
     const capabilities = manifest.capabilities;
     if (!capabilities) {
       return [];
     }
 
     return capabilities
-      .filter((capability) => !ValidationData.AllowedCapabilities.has(capability))
+      .filter((capability) => !ValidationData.AllowedCapabilities.has(capability.toLowerCase()))
       .map((capability) => ({ id: this.id, item: manifestItem, data: capability }))
       .map((data) => resultFromTest(Tests.InvalidCapability, data));
   }

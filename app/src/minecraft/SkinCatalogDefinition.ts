@@ -61,7 +61,7 @@ export default class SkinCatalogDefinition {
   }
 
   public getCanonicalizedTexturesList() {
-    if (!this._data || !this._data.skins) {
+    if (!this._data || !this._data.skins || !Array.isArray(this._data.skins)) {
       return undefined;
     }
 
@@ -81,7 +81,7 @@ export default class SkinCatalogDefinition {
   }
 
   public get skinNameList() {
-    if (!this._data || !this._data.skins) {
+    if (!this._data || !this._data.skins || !Array.isArray(this._data.skins)) {
       return undefined;
     }
 

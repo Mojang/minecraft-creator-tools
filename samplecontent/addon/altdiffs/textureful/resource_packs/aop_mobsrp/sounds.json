@@ -1,0 +1,21 @@
+{
+    "entity_sounds": {
+        "entities": {
+            "aop_mobs:biceson": {
+                "volume": 1,
+                "pitch": 1,
+                "events": { "exists": "ambientsounds.co2", "doesnotexistsample": "ambientsounds.co2_notexists" }
+            },
+            "aop_mobs:mob_that_does_not_exist": {
+                "volume": 1,
+                "pitch": 1,
+                "events": { "exists_second": "ambientsounds.co2", "doesnotexistsample_second": "ambientsounds.co2_extranotexists" }
+            }
+        }
+    },
+    "individual_event_sounds": {
+        "events": {
+            "sample_that_does_not_exist": { "pitch": [ 1, 1 ], "sound": "individual_event_sound_that_does_not_exist", "volume": 0.6 }
+        }
+    }
+}

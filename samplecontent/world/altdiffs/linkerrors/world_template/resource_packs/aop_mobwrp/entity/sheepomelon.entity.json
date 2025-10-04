@@ -1,0 +1,42 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "aop_mobw:sheepomelon",
+      "min_engine_version": "1.8.0",
+      "materials": {
+        "default": "sheep"
+      },
+      "textures": {
+        "default": "textures/aop/moremobs/sheepomelon"
+      },
+      "geometry": {
+        "default": "geometry.aop_mobw.sheepomelon",
+        "sheared": "geometry.sheep.sheared.v1.8"
+      },
+      "animations": {
+        "setup": "animation.aop_moremobs.sheepomelon.setup",
+        "grazing": "animation.aop_moremobs.sheepomelon.grazing",
+        "walk": "animation.aop_moremobs.sheepomelon.walk",
+        "look_at_target": "animation.common.look_at_target",
+        "baby_transform": "animation.aop_moremobs.sheepomelon.baby_transform",
+        "move": "controller.animation.sheep.move"
+      },
+      "scripts": {
+        "animate": [
+          "setup",
+          "look_at_target",
+          "move",
+          {
+            "baby_transform": "query.is_baby"
+          }
+        ]
+      },
+      "render_controllers": ["controller.render.sheep"],
+      "spawn_egg": {
+        "base_color": "#5e9e13",
+        "overlay_color": "#e06b77"
+      }
+    }
+  }
+}
