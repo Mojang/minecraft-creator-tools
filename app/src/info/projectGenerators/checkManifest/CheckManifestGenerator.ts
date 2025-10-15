@@ -16,6 +16,7 @@ import Manifest, { parseManifest } from "../../../minecraft/manifests/Manifest";
 import { Tests } from "./CheckManifestData";
 import * as ValidationData from "./CheckManifestData";
 import { ProjectItemType } from "../../../app/IProjectItemData";
+import ProjectUtilities from "../../../app/ProjectUtilities";
 
 type PackDesc = {
   type?: PackType;
@@ -208,36 +209,49 @@ export default class CheckManifestGenerator implements IProjectInfoGenerator {
     pack: PackDesc,
     manifest: Manifest,
     manifestItem: ProjectItem
-  ) {
-    const capabilities = manifest.capabilities;
-    if (!capabilities) {
-      return [];
+  ): ProjectInfoItem[] {
+    let results: ProjectInfoItem[] = [];
+
+    if (manifestItem.itemType !== ProjectItemType.resourcePackManifestJson) {
+      return results;
     }
 
-    for (const cap of capabilities) {
-      if (cap.toLowerCase() === "pbr") {
-        if (!manifest.header.minEngineVersion) {
-          return [];
-        }
+    const hasVVFiles = ProjectUtilities.isVibrantVisualsEnhanced(manifestItem.project);
 
-        const minVersion = SemanticVersion.parse(manifest.header.minEngineVersion);
-        if (!minVersion) {
-          return [];
-        }
+    const capabilities = manifest.capabilities;
+    let hasPbr = false;
 
-        if (minVersion.compareTo(ValidationData.TargetMevForVV) < 0) {
-          return [
-            resultFromTest(Tests.MinEngineVersionForVV, {
-              id: this.id,
-              item: manifestItem,
-              data: minVersion.asString(),
-            }),
-          ];
+    if (capabilities) {
+      for (const cap of capabilities) {
+        if (cap.toLowerCase() === "pbr") {
+          hasPbr = true;
+
+          if (manifest.header?.minEngineVersion) {
+            const minVersion = SemanticVersion.parse(manifest.header.minEngineVersion);
+            if (minVersion && minVersion.compareTo(ValidationData.TargetMevForVV) < 0) {
+              results.push(
+                resultFromTest(Tests.MinEngineVersionForVV, {
+                  id: this.id,
+                  item: manifestItem,
+                  data: minVersion.asString(),
+                })
+              );
+            }
+          }
         }
       }
     }
 
-    return [];
+    if (hasVVFiles && !hasPbr) {
+      results.push(
+        resultFromTest(Tests.HasPBRFilesButNoManifestCapability, {
+          id: this.id,
+          item: manifestItem,
+        })
+      );
+    }
+
+    return results;
   }
 
   private validateCapabilities(pack: PackDesc, manifest: Manifest, manifestItem: ProjectItem) {

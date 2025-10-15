@@ -74,7 +74,7 @@ export default class HomeFooter extends Component<IHomeFooterProps, IHomeFooterS
     let termsArea = (
       <span>
         <a
-          href={constants.repositoryUrl + "/blob/main/LICENSE"}
+          href={constants.repositoryUrl + "/blob/main/LICENSE.md"}
           className="hftr-docsLink"
           target="_blank"
           rel="noreferrer noopener"

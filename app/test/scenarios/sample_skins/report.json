@@ -1,0 +1,1835 @@
+{
+  "info": {
+    "capabilities": [
+      "skinPack"
+    ],
+    "behaviorPackManifestCount": 0,
+    "unknownJsonCount": 0,
+    "entityTypeManifestCount": 0,
+    "itemTypeManifestCount": 0,
+    "blockTypeManifestCount": 0,
+    "resourcePackManifestCount": 0,
+    "worldCount": 0,
+    "entityTypeResourceCount": 0,
+    "behaviorPackAnimationCount": 0,
+    "behaviorPackAnimationControllerCount": 0,
+    "overallSize": 1587,
+    "fileCounts": 8,
+    "folderCounts": 1,
+    "contentSize": 1587,
+    "contentFileCounts": 8,
+    "contentFolderCounts": 1,
+    "minBehaviorPackMinEngineVersion": 0,
+    "minResourcePackMinEngineVersion": 0,
+    "subpackCount": 0,
+    "entityTypeComponents": [],
+    "blockTypeComponents": [],
+    "itemTypeComponents": [],
+    "apisUsed": [],
+    "mctoolsVersion": 10002009,
+    "itemTypes": [
+      "Language catalog",
+      "Language translations",
+      "Skin pack",
+      "Skin pack manifest",
+      "Skins Catalog",
+      "Texture"
+    ],
+    "animationCount": 0,
+    "textureCount": 3,
+    "textureTexelSize": 24576,
+    "minimumSupportablePerformanceTier": 0,
+    "invalidCommandSyntaxCount": 0,
+    "linesWithSlashCount": 0,
+    "multipleSoundsManifests": 0,
+    "soundsDefinitionManifestFormatIsValid": 0,
+    "soundsDefinitionManifestIsNotValidJson": 0,
+    "flagIsOrWasTrue": 0,
+    "levelDatNotFound": 0,
+    "worldNotFound": 0,
+    "deprecatedBlockOverride": 0,
+    "deprecatedTerrainTexture": 0,
+    "deprecatedTexture": 0,
+    "restrictedPolyMeshFound": 0,
+    "jsonParseError": 0,
+    "minBaseGameVersion": 0,
+    "chunkCount": 0,
+    "subchunkLessChunkCount": 0,
+    "worldLoadErrors": 0,
+    "commands": [],
+    "featureSets": {
+      "Texture Size": {
+        "Instance Count": 3,
+        "Total": 658,
+        "Max": 304,
+        "Min": 177,
+        "Average": 219
+      },
+      "Skin pack manifest Size": {
+        "Instance Count": 1,
+        "Total": 288,
+        "Max": 288,
+        "Min": 288,
+        "Average": 288
+      },
+      "Skin pack manifest Lines": {
+        "Instance Count": 1,
+        "Total": 13,
+        "Max": 13,
+        "Min": 13,
+        "Average": 13
+      },
+      "Skins Catalog Size": {
+        "Instance Count": 1,
+        "Total": 315,
+        "Max": 315,
+        "Min": 315,
+        "Average": 315
+      },
+      "Skins Catalog Lines": {
+        "Instance Count": 1,
+        "Total": 13,
+        "Max": 13,
+        "Min": 13,
+        "Average": 13
+      },
+      "Language translations Size": {
+        "Instance Count": 2,
+        "Total": 309,
+        "Max": 164,
+        "Min": 145,
+        "Average": 155
+      },
+      "Language translations Lines": {
+        "Instance Count": 2,
+        "Total": 6,
+        "Max": 3,
+        "Min": 3,
+        "Average": 3
+      },
+      "Language catalog Size": {
+        "Instance Count": 1,
+        "Total": 17,
+        "Max": 17,
+        "Min": 17,
+        "Average": 17
+      },
+      "Language catalog Lines": {
+        "Instance Count": 1,
+        "Total": 1,
+        "Max": 1,
+        "Min": 1,
+        "Average": 1
+      },
+      "Textures File Count": {
+        "Count": 3
+      },
+      "Texture Images Custom Texture": {
+        "Count": 3
+      },
+      "Texture Images PNGJPG Width": {
+        "Instance Count": 3,
+        "Total": 256,
+        "Max": 128,
+        "Min": 64,
+        "Average": 85
+      },
+      "Texture Images PNGJPG Height": {
+        "Instance Count": 3,
+        "Total": 256,
+        "Max": 128,
+        "Min": 64,
+        "Average": 85
+      },
+      "Texture Images PNGJPG Texels": {
+        "Instance Count": 3,
+        "Total": 24576,
+        "Max": 16384,
+        "Min": 4096,
+        "Average": 8192
+      },
+      "Texture Images PNGJPG Texture Memory": {
+        "Instance Count": 3,
+        "Total": 98304,
+        "Max": 65536,
+        "Min": 16384,
+        "Average": 32768
+      },
+      "Texture Images Width": {
+        "Instance Count": 3,
+        "Total": 256,
+        "Max": 128,
+        "Min": 64,
+        "Average": 85
+      },
+      "Texture Images Height": {
+        "Instance Count": 3,
+        "Total": 256,
+        "Max": 128,
+        "Min": 64,
+        "Average": 85
+      },
+      "Texture Images Texels": {
+        "Instance Count": 3,
+        "Total": 24576,
+        "Max": 16384,
+        "Min": 4096,
+        "Average": 8192
+      },
+      "Texture Images Texture Memory": {
+        "Instance Count": 3,
+        "Total": 98304,
+        "Max": 65536,
+        "Min": 16384,
+        "Average": 32768
+      },
+      "Texture Images Non-Vanilla Texels": {
+        "Instance Count": 3,
+        "Total": 24576,
+        "Max": 16384,
+        "Min": 4096,
+        "Average": 8192
+      },
+      "Texture Images Non-Vanilla Texture Memory": {
+        "Instance Count": 3,
+        "Total": 98304,
+        "Max": 65536,
+        "Min": 16384,
+        "Average": 32768
+      },
+      "Texture Images Tier0 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 98304,
+        "Max": 98304,
+        "Min": 98304,
+        "Average": 98304
+      },
+      "Texture Images Tier0 Total Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 98304,
+        "Max": 98304,
+        "Min": 98304,
+        "Average": 98304
+      },
+      "Texture Images Tier0 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier0 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier1 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 98304,
+        "Max": 98304,
+        "Min": 98304,
+        "Average": 98304
+      },
+      "Texture Images Tier1 Total Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 98304,
+        "Max": 98304,
+        "Min": 98304,
+        "Average": 98304
+      },
+      "Texture Images Tier1 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier1 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier2 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 98304,
+        "Max": 98304,
+        "Min": 98304,
+        "Average": 98304
+      },
+      "Texture Images Tier2 Total Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 98304,
+        "Max": 98304,
+        "Min": 98304,
+        "Average": 98304
+      },
+      "Texture Images Tier2 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier2 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier3 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 98304,
+        "Max": 98304,
+        "Min": 98304,
+        "Average": 98304
+      },
+      "Texture Images Tier3 Total Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 98304,
+        "Max": 98304,
+        "Min": 98304,
+        "Average": 98304
+      },
+      "Texture Images Tier3 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier3 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier4 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 98304,
+        "Max": 98304,
+        "Min": 98304,
+        "Average": 98304
+      },
+      "Texture Images Tier4 Total Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 98304,
+        "Max": 98304,
+        "Min": 98304,
+        "Average": 98304
+      },
+      "Texture Images Tier4 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier4 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier5 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 98304,
+        "Max": 98304,
+        "Min": 98304,
+        "Average": 98304
+      },
+      "Texture Images Tier5 Total Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 98304,
+        "Max": 98304,
+        "Min": 98304,
+        "Average": 98304
+      },
+      "Texture Images Tier5 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier5 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      }
+    },
+    "errorCount": 0,
+    "internalProcessingErrorCount": 0,
+    "warningCount": 1,
+    "testSuccessCount": 32,
+    "testFailCount": 0,
+    "testNotApplicableCount": 14,
+    "errorSummary": "",
+    "internalProcessingErrorSummary": "",
+    "warningSummary": "WARNING: [UNLINK191] (/pack_icon.png) Texture does not have any items in this pack that are using this.",
+    "testFailSummary": "",
+    "summary": {
+      "ITEMS": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "Minimum Definition of a Pack (ITEMS) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "237": {
+          "title": "Language catalog count",
+          "defaultMessage": "Language catalog item count"
+        },
+        "267": {
+          "title": "Skin pack manifest count",
+          "defaultMessage": "Skin pack manifest item count"
+        },
+        "279": {
+          "title": "Language translations count",
+          "defaultMessage": "Language translations item count"
+        },
+        "299": {
+          "title": "Texture count",
+          "defaultMessage": "Texture item count"
+        },
+        "311": {
+          "title": "Skin pack count",
+          "defaultMessage": "Skin pack item count"
+        },
+        "323": {
+          "title": "Skins Catalog count",
+          "defaultMessage": "Skins Catalog item count"
+        }
+      },
+      "LINESIZE": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "File Line/Size Information (LINESIZE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "137": {
+          "title": "Language catalog",
+          "defaultMessage": "Language catalog file lines"
+        },
+        "167": {
+          "title": "Skin pack manifest",
+          "defaultMessage": "Skin pack manifest file lines"
+        },
+        "179": {
+          "title": "Language translations",
+          "defaultMessage": "Language translations file lines"
+        },
+        "199": {
+          "title": "Texture",
+          "defaultMessage": "Texture file size"
+        },
+        "211": {
+          "title": "Skin pack",
+          "defaultMessage": "Skin pack file lines"
+        },
+        "223": {
+          "title": "Skins Catalog",
+          "defaultMessage": "Skins Catalog file lines"
+        }
+      },
+      "PACKSIZE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Overall Size"
+        },
+        "102": {
+          "title": "File Count"
+        },
+        "103": {
+          "title": "Folder Count"
+        },
+        "104": {
+          "title": "Content Size"
+        },
+        "105": {
+          "title": "Content File Count"
+        },
+        "106": {
+          "title": "Content Folder Count"
+        }
+      },
+      "PACK": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "General info (PACK) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "245": {
+          "title": "245",
+          "defaultMessage": "Entity Geometry"
+        }
+      },
+      "SCRIPT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Script (SCRIPT) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "apisUsed"
+        }
+      },
+      "SUMMARY": {
+        "1": {
+          "title": "",
+          "defaultMessage": "Summary Information (SUMMARY) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "",
+          "defaultMessage": "Resource Manifests"
+        },
+        "102": {
+          "title": "",
+          "defaultMessage": "Behavior Manifests"
+        }
+      },
+      "RESOURCEANIMATION": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Resource Animation (RESOURCEANIMATION) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Animations"
+        },
+        "102": {
+          "title": "Bones"
+        }
+      },
+      "TEXTURE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Texture Validation (TEXTURE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Textures"
+        }
+      },
+      "TEXTUREREF": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Texture Reference Info Aggregation (TEXTUREREF) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Texture References"
+        }
+      },
+      "TYPES": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Types Info Aggregation (TYPES) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Types"
+        }
+      },
+      "TEXTUREIMAGE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Texture Image Validation (TEXTUREIMAGE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Texture Images"
+        },
+        "200": {
+          "title": "Texture Images Tier0",
+          "defaultMessage": "Texture Images Tier 0"
+        },
+        "201": {
+          "title": "Texture Images Tier1",
+          "defaultMessage": "Texture Images Tier 1"
+        },
+        "202": {
+          "title": "Texture Images Tier2",
+          "defaultMessage": "Texture Images Tier 2"
+        },
+        "203": {
+          "title": "Texture Images Tier3",
+          "defaultMessage": "Texture Images Tier 3"
+        },
+        "204": {
+          "title": "Texture Images Tier4",
+          "defaultMessage": "Texture Images Tier 4"
+        },
+        "205": {
+          "title": "Texture Images Tier5",
+          "defaultMessage": "Texture Images Tier 5"
+        }
+      },
+      "GEOMETRY": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Model Geometry Validation (GEOMETRY) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Block Geometry"
+        },
+        "102": {
+          "title": "Entity Geometry"
+        },
+        "103": {
+          "title": "Item Geometry",
+          "defaultMessage": "Items Geometry"
+        }
+      },
+      "ENTITYTYPE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Entity Type (ENTITYTYPE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "52": {
+          "title": "Runtime Identifier",
+          "defaultMessage": "Entity Type Runtime Identifier"
+        },
+        "53": {
+          "title": "Identifier",
+          "defaultMessage": "Entity Type Identifier"
+        },
+        "54": {
+          "title": "Metadata",
+          "defaultMessage": "Entity Type Metadata"
+        }
+      },
+      "ITEMTYPE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Item Type (ITEMTYPE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "53": {
+          "title": "Identifier",
+          "defaultMessage": "Item Type Identifier"
+        },
+        "55": {
+          "title": "Category",
+          "defaultMessage": "Item Type Category"
+        }
+      },
+      "UNLINK": {
+        "1": {
+          "defaultMessage": "Unlinked item info generator (UNLINK) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "191": {
+          "defaultMessage": "Texture does not have any items in this pack that are using this.",
+          "warnings": 1
+        }
+      },
+      "JSONTAGS": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "JSON Tags (JSONTAGS) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "FORMATVER": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test Format Version (FORMATVER)"
+        }
+      },
+      "SHARING": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "Sharing Best Practices Information (SHARING) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "PACKMETADATA": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test General info (PACKMETADATA)"
+        }
+      },
+      "STRICT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "MCFUNCTION": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test MC Function Validation (MCFUNCTION)"
+        }
+      },
+      "CPACKICON": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Pack Icon Generator (CPACKICON) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CWI": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check World Icon Generator (CWI) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "SNDSDEF": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Sounds Definition Manifest Validation (SNDSDEF)"
+        }
+      },
+      "CPARTI": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Particle Identifier Generator (CPARTI) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "EXPFLAG": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Check Experimental Flag (EXPFLAG)"
+        }
+      },
+      "CHECKFEATUREDEPRECATION": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Check Feature Deprecation (CHECKFEATUREDEPRECATION)"
+        }
+      },
+      "FORBFILE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Forbidden Files Generator (FORBFILE) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "PRJINT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Project Integrity Generator (PRJINT) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "GEOFMT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Geometry Format (GEOFMT) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CBFG": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Beta Features Generator (CBFG) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "LANGFILES": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Lang File Generator (LANGFILES) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "SCRIPTMODULE": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test Script Modules (SCRIPTMODULE)"
+        }
+      },
+      "VSCODEFILE": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test VSCode Files (VSCODEFILE)"
+        }
+      },
+      "MINENGINEVER": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test Min Engine Version (MINENGINEVER)"
+        }
+      },
+      "BASEGAMEVER": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test Base Game Version (BASEGAMEVER)"
+        }
+      },
+      "BLOCKSCAT": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test Blocks Catalog (BLOCKSCAT)"
+        }
+      },
+      "UNKJSON": {
+        "1": {
+          "defaultMessage": "Unknown JSON (UNKJSON) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "JSONF": {
+        "1": {
+          "defaultMessage": "JSON Structure Validation (via Minecraft docs) (JSONF) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "JSON": {
+        "1": {
+          "defaultMessage": "JSON Structure Validation (JSON) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "WORLD": {
+        "2": {
+          "defaultMessage": "No applicable items found for test World Validation (WORLD)"
+        }
+      },
+      "WORLDDATA": {
+        "2": {
+          "defaultMessage": "No applicable items found for test World Data Validation (WORLDDATA)"
+        }
+      },
+      "UNKFILE": {
+        "1": {
+          "defaultMessage": "Unknown files (UNKFILE) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "VALFILE": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Valid files (VALFILE)"
+        }
+      },
+      "PATHLENGTH": {
+        "1": {
+          "defaultMessage": "Path Length (PATHLENGTH) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "NOBOM": {
+        "1": {
+          "defaultMessage": "No Byte Order Mark allowed in json file. (NOBOM) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      }
+    }
+  },
+  "items": [
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 237,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 267,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 279,
+      "d": 2
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 299,
+      "d": 3
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 311,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 323,
+      "d": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 199,
+      "p": "/alex_skin.png",
+      "fs": {
+        "Size": {
+          "Instance Count": 3,
+          "Total": 658,
+          "Max": 304,
+          "Min": 177,
+          "Average": 219
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 211,
+      "p": "/"
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 167,
+      "p": "/manifest.json",
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 288,
+          "Max": 288,
+          "Min": 288,
+          "Average": 288
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 13,
+          "Max": 13,
+          "Min": 13,
+          "Average": 13
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 223,
+      "p": "/skins.json",
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 315,
+          "Max": 315,
+          "Min": 315,
+          "Average": 315
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 13,
+          "Max": 13,
+          "Min": 13,
+          "Average": 13
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 179,
+      "p": "/texts/en_US.lang",
+      "fs": {
+        "Size": {
+          "Instance Count": 2,
+          "Total": 309,
+          "Max": 164,
+          "Min": 145,
+          "Average": 155
+        },
+        "Lines": {
+          "Instance Count": 2,
+          "Total": 6,
+          "Max": 3,
+          "Min": 3,
+          "Average": 3
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 137,
+      "p": "/texts/languages.json",
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 17,
+          "Max": 17,
+          "Min": 17,
+          "Average": 17
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 1,
+          "Max": 1,
+          "Min": 1,
+          "Average": 1
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 101,
+      "d": 1587
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 102,
+      "d": 8
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 103,
+      "d": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 104,
+      "d": 1587
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 105,
+      "d": 8
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 106,
+      "d": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "PACK",
+      "gIx": 245
+    },
+    {
+      "iTp": 7,
+      "gId": "SCRIPT",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "SUMMARY",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "SUMMARY",
+      "gIx": 102
+    },
+    {
+      "iTp": 7,
+      "gId": "RESOURCEANIMATION",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "RESOURCEANIMATION",
+      "gIx": 102
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTURE",
+      "gIx": 101,
+      "fs": {
+        "File Count": {
+          "Count": 3
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREREF",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "TYPES",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 101,
+      "fs": {
+        "Custom Texture": {
+          "Count": 3
+        },
+        "PNGJPG Width": {
+          "Instance Count": 3,
+          "Total": 256,
+          "Max": 128,
+          "Min": 64,
+          "Average": 85
+        },
+        "PNGJPG Height": {
+          "Instance Count": 3,
+          "Total": 256,
+          "Max": 128,
+          "Min": 64,
+          "Average": 85
+        },
+        "PNGJPG Texels": {
+          "Instance Count": 3,
+          "Total": 24576,
+          "Max": 16384,
+          "Min": 4096,
+          "Average": 8192
+        },
+        "PNGJPG Texture Memory": {
+          "Instance Count": 3,
+          "Total": 98304,
+          "Max": 65536,
+          "Min": 16384,
+          "Average": 32768
+        },
+        "Width": {
+          "Instance Count": 3,
+          "Total": 256,
+          "Max": 128,
+          "Min": 64,
+          "Average": 85
+        },
+        "Height": {
+          "Instance Count": 3,
+          "Total": 256,
+          "Max": 128,
+          "Min": 64,
+          "Average": 85
+        },
+        "Texels": {
+          "Instance Count": 3,
+          "Total": 24576,
+          "Max": 16384,
+          "Min": 4096,
+          "Average": 8192
+        },
+        "Texture Memory": {
+          "Instance Count": 3,
+          "Total": 98304,
+          "Max": 65536,
+          "Min": 16384,
+          "Average": 32768
+        },
+        "Non-Vanilla Texels": {
+          "Instance Count": 3,
+          "Total": 24576,
+          "Max": 16384,
+          "Min": 4096,
+          "Average": 8192
+        },
+        "Non-Vanilla Texture Memory": {
+          "Instance Count": 3,
+          "Total": 98304,
+          "Max": 65536,
+          "Min": 16384,
+          "Average": 32768
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 200,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 98304,
+          "Max": 98304,
+          "Min": 98304,
+          "Average": 98304
+        },
+        "Total Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 98304,
+          "Max": 98304,
+          "Min": 98304,
+          "Average": 98304
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 201,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 98304,
+          "Max": 98304,
+          "Min": 98304,
+          "Average": 98304
+        },
+        "Total Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 98304,
+          "Max": 98304,
+          "Min": 98304,
+          "Average": 98304
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 202,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 98304,
+          "Max": 98304,
+          "Min": 98304,
+          "Average": 98304
+        },
+        "Total Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 98304,
+          "Max": 98304,
+          "Min": 98304,
+          "Average": 98304
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 203,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 98304,
+          "Max": 98304,
+          "Min": 98304,
+          "Average": 98304
+        },
+        "Total Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 98304,
+          "Max": 98304,
+          "Min": 98304,
+          "Average": 98304
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 204,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 98304,
+          "Max": 98304,
+          "Min": 98304,
+          "Average": 98304
+        },
+        "Total Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 98304,
+          "Max": 98304,
+          "Min": 98304,
+          "Average": 98304
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 205,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 98304,
+          "Max": 98304,
+          "Min": 98304,
+          "Average": 98304
+        },
+        "Total Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 98304,
+          "Max": 98304,
+          "Min": 98304,
+          "Average": 98304
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 102
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 103
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 52
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 53
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 54
+    },
+    {
+      "iTp": 7,
+      "gId": "ITEMTYPE",
+      "gIx": 53
+    },
+    {
+      "iTp": 7,
+      "gId": "ITEMTYPE",
+      "gIx": 55
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 191,
+      "p": "/pack_icon.png"
+    },
+    {
+      "iTp": 1,
+      "gId": "ITEMS",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "LINESIZE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "PACKSIZE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "PACK",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "JSONTAGS",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "FORMATVER",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "SCRIPT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "SHARING",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "SUMMARY",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "PACKMETADATA",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "RESOURCEANIMATION",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "STRICT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "TEXTURE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "TEXTUREREF",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "TYPES",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "GEOMETRY",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "MCFUNCTION",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "CPACKICON",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CWI",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "SNDSDEF",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "CPARTI",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "EXPFLAG",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "CHECKFEATUREDEPRECATION",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "FORBFILE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "PRJINT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "GEOFMT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CBFG",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "LANGFILES",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "SCRIPTMODULE",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "VSCODEFILE",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "MINENGINEVER",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "BASEGAMEVER",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "BLOCKSCAT",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "ENTITYTYPE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "ITEMTYPE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "UNKJSON",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "JSONF",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "JSON",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "WORLD",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "WORLDDATA",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "UNLINK",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "UNKFILE",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "VALFILE",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "PATHLENGTH",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "NOBOM",
+      "gIx": 1
+    }
+  ],
+  "index": {
+    "items": [
+      "/alex_skin.png",
+      "/manifest.json",
+      "/pack_icon.png",
+      "/skins.json",
+      "/steve_skin.png",
+      "/texts/en_US.lang",
+      "/texts/es_ES.lang",
+      "/texts/languages.json"
+    ],
+    "trie": {
+      "alex_skin": {
+        "±": [
+          0
+        ],
+        ".png": [
+          3
+        ]
+      },
+      "/": {
+        "alex_skin.png": [
+          0
+        ],
+        "manifest.json": [
+          1
+        ],
+        "pack_icon.png": [
+          2
+        ],
+        "s": {
+          "kins.json": [
+            3
+          ],
+          "teve_skin.png": [
+            4
+          ]
+        },
+        "texts/": {
+          "e": {
+            "n_us.lang": [
+              5
+            ],
+            "s_es.lang": [
+              6
+            ]
+          },
+          "languages.json": [
+            7
+          ]
+        }
+      },
+      "header": [
+        1
+      ],
+      "name": [
+        1
+      ],
+      "s": {
+        "ample": {
+          "±": [
+            1
+          ],
+          "_skin_pack": [
+            3
+          ]
+        },
+        "kin": {
+          "±": [
+            1
+          ],
+          "_pack": [
+            1
+          ],
+          "s": [
+            3
+          ]
+        },
+        "erialize_name": [
+          3
+        ],
+        "teve_skin": {
+          ".png": [
+            3
+          ],
+          "±": [
+            4
+          ]
+        }
+      },
+      "description": [
+        1
+      ],
+      "uuid": [
+        1
+      ],
+      "version": [
+        1
+      ],
+      "m": {
+        "anifest": [
+          1
+        ],
+        "in_engine_version": [
+          1
+        ],
+        "odules": [
+          1
+        ]
+      },
+      "t": {
+        "ype": [
+          1,
+          3
+        ],
+        "e": {
+          "st": {
+            "ing": [
+              1
+            ],
+            "skin": {
+              "1": [
+                3
+              ],
+              "2": [
+                3
+              ]
+            }
+          },
+          "xture": [
+            3
+          ]
+        }
+      },
+      "550e8400-e29b-41d4-a716-44665544000": {
+        "0": [
+          1
+        ],
+        "1": [
+          1
+        ]
+      },
+      "geometry": {
+        "±": [
+          3
+        ],
+        ".humanoid.custom": {
+          "±": [
+            3
+          ],
+          "slim": [
+            3
+          ]
+        }
+      },
+      "f": {
+        "ormat_version": [
+          1
+        ],
+        "ree": [
+          3
+        ]
+      },
+      "pa": {
+        "ck": {
+          "±": [
+            1
+          ],
+          "_icon": [
+            2
+          ]
+        },
+        "id": [
+          3
+        ]
+      },
+      "e": {
+        "n_us": [
+          5,
+          7
+        ],
+        "s_es": [
+          6,
+          -1
+        ]
+      },
+      "l": {
+        "ocalization_name": [
+          3
+        ],
+        "anguages": [
+          7
+        ]
+      }
+    }
+  },
+  "generatorName": "Minecraft Creator Tools",
+  "suite": 0,
+  "generatorVersion": "0.2.9"
+}

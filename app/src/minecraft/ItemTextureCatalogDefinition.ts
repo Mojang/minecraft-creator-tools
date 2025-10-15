@@ -6,7 +6,6 @@ import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import { IItemTexture, IItemTextureNode } from "./IItemTexture";
-import IFolder from "../storage/IFolder";
 import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
@@ -211,21 +210,6 @@ export default class ItemTextureCatalogDefinition {
     return textureRefs;
   }
 
-  getRelativePath(file: IFile, packRootFolder: IFolder) {
-    let relativePath = file.getFolderRelativePath(packRootFolder);
-
-    if (relativePath) {
-      const lastPeriod = relativePath?.lastIndexOf(".");
-      if (lastPeriod >= 0) {
-        relativePath = relativePath?.substring(0, lastPeriod).toLowerCase();
-      }
-
-      relativePath = StorageUtilities.ensureNotStartsWithDelimiter(relativePath);
-    }
-
-    return relativePath;
-  }
-
   async addChildItems(project: Project, item: ProjectItem) {
     const itemsCopy = project.getItemsCopy();
 
@@ -241,7 +225,7 @@ export default class ItemTextureCatalogDefinition {
 
         if (candItem.primaryFile) {
           let relativePath = TextureDefinition.canonicalizeTexturePath(
-            this.getRelativePath(candItem.primaryFile, packRootFolder)
+            StorageUtilities.getBaseRelativePath(candItem.primaryFile, packRootFolder)
           );
 
           if (relativePath) {

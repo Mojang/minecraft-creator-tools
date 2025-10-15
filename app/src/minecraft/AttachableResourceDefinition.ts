@@ -9,7 +9,6 @@ import { IClientAttachableDescription, IClientAttachableWrapper } from "./IClien
 import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
-import IFolder from "../storage/IFolder";
 import AnimationResourceDefinition from "./AnimationResourceDefinition";
 import RenderControllerSetDefinition from "./RenderControllerSetDefinition";
 import Utilities from "../core/Utilities";
@@ -356,7 +355,7 @@ export default class AttachableResourceDefinition {
       }
 
       if (rel.childItem.primaryFile && packRootFolder) {
-        let relativePath = this.getRelativePath(rel.childItem.primaryFile, packRootFolder);
+        let relativePath = StorageUtilities.getBaseRelativePath(rel.childItem.primaryFile, packRootFolder);
 
         if (relativePath) {
           for (const key in this._data.textures) {
@@ -397,21 +396,6 @@ export default class AttachableResourceDefinition {
     }
 
     return packRootFolder;
-  }
-
-  getRelativePath(file: IFile, packRootFolder: IFolder) {
-    let relativePath = file.getFolderRelativePath(packRootFolder);
-
-    if (relativePath) {
-      const lastPeriod = relativePath?.lastIndexOf(".");
-      if (lastPeriod >= 0) {
-        relativePath = relativePath?.substring(0, lastPeriod).toLowerCase();
-      }
-
-      relativePath = StorageUtilities.ensureNotStartsWithDelimiter(relativePath);
-    }
-
-    return relativePath;
   }
 
   async addChildItems(project: Project, item: ProjectItem) {
@@ -470,7 +454,7 @@ export default class AttachableResourceDefinition {
 
         if (candItem.primaryFile) {
           let relativePath = TextureDefinition.canonicalizeTexturePath(
-            this.getRelativePath(candItem.primaryFile, packRootFolder)
+            StorageUtilities.getBaseRelativePath(candItem.primaryFile, packRootFolder)
           );
 
           if (relativePath) {

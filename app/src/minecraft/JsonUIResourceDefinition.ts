@@ -8,7 +8,6 @@ import StorageUtilities from "../storage/StorageUtilities";
 import { IJsonUIControl, IJsonUIScreen } from "./IJsonUIScreen";
 import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
-import IFolder from "../storage/IFolder";
 import { ProjectItemType } from "../app/IProjectItemData";
 import Utilities from "../core/Utilities";
 import Database from "./Database";
@@ -190,21 +189,6 @@ export default class JsonUIResourceDefinition {
     return packRootFolder;
   }
 
-  getRelativePath(file: IFile, packRootFolder: IFolder) {
-    let relativePath = file.getFolderRelativePath(packRootFolder);
-
-    if (relativePath) {
-      const lastPeriod = relativePath?.lastIndexOf(".");
-      if (lastPeriod >= 0) {
-        relativePath = relativePath?.substring(0, lastPeriod).toLowerCase();
-      }
-
-      relativePath = StorageUtilities.ensureNotStartsWithDelimiter(relativePath);
-    }
-
-    return relativePath;
-  }
-
   async addChildItems(project: Project, item: ProjectItem) {
     const itemsCopy = project.getItemsCopy();
 
@@ -225,7 +209,7 @@ export default class JsonUIResourceDefinition {
 
           if (candItem.primaryFile) {
             let relativePath = TextureDefinition.canonicalizeTexturePath(
-              this.getRelativePath(candItem.primaryFile, packRootFolder)
+              StorageUtilities.getBaseRelativePath(candItem.primaryFile, packRootFolder)
             );
 
             if (relativePath) {

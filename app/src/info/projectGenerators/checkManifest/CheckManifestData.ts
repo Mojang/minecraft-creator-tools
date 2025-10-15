@@ -185,4 +185,10 @@ export const Tests = {
     defaultMessage: `Packs that support PBR must have a minimum min_engine_version of at least ${TargetMevForVV.asString()}`,
     severity: InfoItemType.error,
   },
+  HasPBRFilesButNoManifestCapability: {
+    id: 135,
+    title: "Has Vibrant Visuals Enhanced Files But No Manifest Capability",
+    defaultMessage: `Packs that contain PBR related files must declare the "pbr" capability in the manifest`,
+    severity: InfoItemType.error,
+  },
 } as const;

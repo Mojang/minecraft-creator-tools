@@ -11,7 +11,6 @@ import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
 import Utilities from "../core/Utilities";
 import Database from "./Database";
-import IFolder from "../storage/IFolder";
 import IDefinition from "./IDefinition";
 
 export default class TerrainTextureCatalogDefinition implements IDefinition {
@@ -76,7 +75,11 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
               textureList.push(texturePath.path.toLowerCase());
             } else if (typeof texturePath === "object" && (texturePath as any).variations) {
               for (const variation of (texturePath as any).variations) {
-                textureList.push(variation.path.toLowerCase());
+                if (typeof variation === "string") {
+                  textureList.push(variation.toLowerCase());
+                } else if (variation.path && typeof variation.path === "string") {
+                  textureList.push(variation.path.toLowerCase());
+                }
               }
             }
           }
@@ -289,21 +292,6 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
     return packRootFolder;
   }
 
-  getRelativePath(file: IFile, packRootFolder: IFolder) {
-    let relativePath = file.getFolderRelativePath(packRootFolder);
-
-    if (relativePath) {
-      const lastPeriod = relativePath?.lastIndexOf(".");
-      if (lastPeriod >= 0) {
-        relativePath = relativePath?.substring(0, lastPeriod).toLowerCase();
-      }
-
-      relativePath = StorageUtilities.ensureNotStartsWithDelimiter(relativePath);
-    }
-
-    return relativePath;
-  }
-
   async addChildItems(project: Project, item: ProjectItem) {
     const itemsCopy = project.getItemsCopy();
 
@@ -318,7 +306,7 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
         }
 
         if (candItem.primaryFile) {
-          let relativePath = this.getRelativePath(candItem.primaryFile, packRootFolder);
+          let relativePath = StorageUtilities.getBaseRelativePath(candItem.primaryFile, packRootFolder);
 
           if (relativePath) {
             if (texturePathList && texturePathList.includes(relativePath)) {

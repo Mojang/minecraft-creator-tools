@@ -6,7 +6,6 @@ import NodeStorage from "./NodeStorage";
 import IFile from "../storage/IFile";
 import FileBase from "../storage/FileBase";
 import StorageUtilities, { EncodingType } from "../storage/StorageUtilities";
-import * as crypto from "crypto";
 import * as fs from "fs";
 
 export default class NodeFile extends FileBase implements IFile {
@@ -91,7 +90,9 @@ export default class NodeFile extends FileBase implements IFile {
     }
   }
 
-  async getHash(): Promise<string | undefined> {
+  /*  update: rely consistenly on getHash() implementation in FileBase which uses the js-md5 library
+
+    async getHash(): Promise<string | undefined> {
     await this.loadContent(false);
 
     if (this._content === undefined || this._content === null) {
@@ -104,6 +105,7 @@ export default class NodeFile extends FileBase implements IFile {
 
     return hash.digest("base64");
   }
+    */
 
   async saveContent(): Promise<Date> {
     if (this.parentFolder.storage.readOnly) {

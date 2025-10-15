@@ -9,7 +9,6 @@ import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
 import Utilities from "../core/Utilities";
-import IFolder from "../storage/IFolder";
 import TextureDefinition from "./TextureDefinition";
 import ISkinCatalog from "./ISkinCatalog";
 
@@ -182,21 +181,6 @@ export default class SkinCatalogDefinition {
     this._onLoaded.dispatch(this, this);
   }
 
-  getRelativePath(file: IFile, packRootFolder: IFolder) {
-    let relativePath = file.getFolderRelativePath(packRootFolder);
-
-    if (relativePath) {
-      const lastPeriod = relativePath?.lastIndexOf(".");
-      if (lastPeriod >= 0) {
-        relativePath = relativePath?.substring(0, lastPeriod).toLowerCase();
-      }
-
-      relativePath = StorageUtilities.ensureNotStartsWithDelimiter(relativePath);
-    }
-
-    return relativePath;
-  }
-
   async addChildItems(project: Project, item: ProjectItem) {
     const itemsCopy = project.getItemsCopy();
 
@@ -218,7 +202,7 @@ export default class SkinCatalogDefinition {
 
         if (candItem.primaryFile) {
           let relativePath = TextureDefinition.canonicalizeTexturePath(
-            this.getRelativePath(candItem.primaryFile, packRootFolder)
+            StorageUtilities.getBaseRelativePath(candItem.primaryFile, packRootFolder)
           );
 
           if (relativePath) {

@@ -1787,10 +1787,26 @@ function _addReportJson(data) {
         }
 
         if (file.content !== null) {
+          if (StorageUtilities.isContainerFile(file.storageRelativePath)) {
+            const zipFolder = await StorageUtilities.getFileStorageFolder(file);
+
+            if (zipFolder && typeof zipFolder !== "string") {
+              await this.preProcessFolder(
+                project,
+                zipFolder,
+                genItems,
+                genItemsByStoragePath,
+                genContentIndex,
+                fileGenerators,
+                depth + 1
+              );
+            }
+          }
+
           const projectItem = project.getItemByFile(file);
 
           if (projectItem && projectItem.projectPath) {
-            await HashUtilities.generateHashesForFile(file, projectItem.projectPath, genContentIndex.hashCatalog);
+            await HashUtilities.addHashesForFile(genContentIndex.hashCatalog, file, projectItem.projectPath);
           }
         }
       }

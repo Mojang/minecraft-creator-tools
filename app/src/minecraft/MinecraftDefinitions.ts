@@ -23,6 +23,7 @@ import RenderControllerSetDefinition from "./RenderControllerSetDefinition";
 import ResourceManifestDefinition from "./ResourceManifestDefinition";
 import SoundCatalogDefinition from "./SoundCatalogDefinition";
 import SoundDefinitionCatalogDefinition from "./SoundDefinitionCatalogDefinition";
+import TextureSetDefinition from "./TextureSetDefinition";
 
 export default class MinecraftDefinitions {
   static async get(projectItem: ProjectItem): Promise<IDefinition | undefined> {
@@ -57,6 +58,8 @@ export default class MinecraftDefinitions {
         return await ItemTypeDefinition.ensureOnFile(projectItem.primaryFile);
       case ProjectItemType.blockTypeBehavior:
         return await BlockTypeDefinition.ensureOnFile(projectItem.primaryFile);
+      case ProjectItemType.textureSetJson:
+        return await TextureSetDefinition.ensureOnFile(projectItem.primaryFile);
       case ProjectItemType.flipbookTexturesJson:
         return await FlipbookTextureCatalogDefinition.ensureOnFile(projectItem.primaryFile);
       case ProjectItemType.behaviorPackManifestJson:
