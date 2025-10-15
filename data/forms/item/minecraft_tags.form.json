@@ -1,0 +1,133 @@
+{
+  "id": "minecraft:tags",
+  "fields": [
+    {
+      "id": "tags",
+      "title": "Tags",
+      "description": "An array that can contain multiple item tags.",
+      "dataType": 17,
+      "samples": {
+        "/vanilla/behavior_pack/items/apple.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:tags/",
+            "content": [
+              "minecraft:is_food"
+            ]
+          }
+        ],
+        "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/items/cooked_dream_turkey.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:tags/",
+            "content": [
+              "minecraft:is_food"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "description": "The tags component specifies which tags an item has on it.",
+  "title": "Item Tags",
+  "samples": {
+    "/vanilla/behavior_pack/items/apple.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:tags/",
+        "content": {
+          "tags": [
+            "minecraft:is_food"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/items/cooked_dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:tags/",
+        "content": {
+          "tags": [
+            "minecraft:is_food"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/items/dream_essence.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:tags/",
+        "content": {
+          "tags": [
+            "minecraft:is_food"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/items/dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:tags/",
+        "content": {
+          "tags": [
+            "minecraft:is_food"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/items/cooked_dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:tags/",
+        "content": {
+          "tags": [
+            "minecraft:is_food"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/items/dream_essence.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:tags/",
+        "content": {
+          "tags": [
+            "minecraft:is_food"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/items/dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:tags/",
+        "content": {
+          "tags": [
+            "minecraft:is_food"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/cooked_dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:tags/",
+        "content": {
+          "tags": [
+            "minecraft:is_food"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/dream_essence.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:tags/",
+        "content": {
+          "tags": [
+            "minecraft:is_food"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:tags/",
+        "content": {
+          "tags": [
+            "minecraft:is_food"
+          ]
+        }
+      }
+    ]
+  }
+}

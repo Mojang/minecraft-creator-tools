@@ -1,0 +1,402 @@
+{
+  "versionIntroduced": "1.21.50",
+  "fields": [
+    {
+      "id": "item_specific_speeds",
+      "title": "Item Specific Speeds",
+      "description": "Optional array of objects to describe item specific block destroy speeds, each object contains an 'item' ItemDescriptor and a 'destroy_speed' float. This array currently requires UpcomingFeatures experiment to be enabled.",
+      "dataType": 15,
+      "subForm": {
+        "description": "Optional array of objects to describe item specific block destroy speeds, each object contains an 'item' ItemDescriptor and a 'destroy_speed' float. This array currently requires UpcomingFeatures experiment to be enabled.",
+        "fields": [
+          {
+            "id": "destroy_speed",
+            "title": "Destroy Speed",
+            "description": "Required. A destroy speed applied while using the defined 'item'.",
+            "dataType": 3
+          },
+          {
+            "id": "item",
+            "title": "Item",
+            "description": "Required. A filter for the item used while mining.",
+            "dataType": 15,
+            "subForm": {
+              "description": "Optional array of objects to describe item specific block destroy speeds, each object contains an 'item' ItemDescriptor and a 'destroy_speed' float. This array currently requires UpcomingFeatures experiment to be enabled.",
+              "fields": [
+                {
+                  "id": "tags",
+                  "title": "Tags",
+                  "dataType": 32
+                }
+              ]
+            },
+            "alternates": [
+              {
+                "id": "item",
+                "title": "Item",
+                "description": "An item tag that is usable for the item.",
+                "dataType": 2,
+                "lookupId": "itemType"
+              }
+            ]
+          }
+        ],
+        "samples": {
+          "samples": [
+            {
+              "path": "Example1",
+              "content": "{\n\t\"minecraft:destructible_by_mining\": {\n\t\t\"seconds_to_destroy\": 10,\n\t\t\"item_specific_speeds\": [\n\t\t\t{\n\t\t\t\t\"item\": { \"tags\": \"q.any_tag('minecraft:is_pickaxe', 'minecraft:is_tool') \" },\n\t\t\t\t\"destroy_speed\": 5.0\n\t\t\t}\n\t\t]\n\t}\n}"
+            },
+            {
+              "path": "Example2",
+              "content": "{\n\t\"minecraft:destructible_by_mining\": {\n\t\t\"seconds_to_destroy\": 10,\n\t\t\"item_specific_speeds\": [\n\t\t\t{\n\t\t\t\t\"item\": \"minecraft:iron_pickaxe\",\n\t\t\t\t\"destroy_speed\": 5.0\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"item\": \"minecraft:diamond_pickaxe\",\n\t\t\t\t\"destroy_speed\": 2.0\n\t\t\t}\n\t\t]\n\t}\n}"
+            }
+          ]
+        },
+        "id": ""
+      },
+      "samples": {
+        "samples": [
+          {
+            "path": "Example1",
+            "content": "{\n\t\"minecraft:destructible_by_mining\": {\n\t\t\"seconds_to_destroy\": 10,\n\t\t\"item_specific_speeds\": [\n\t\t\t{\n\t\t\t\t\"item\": { \"tags\": \"q.any_tag('minecraft:is_pickaxe', 'minecraft:is_tool') \" },\n\t\t\t\t\"destroy_speed\": 5.0\n\t\t\t}\n\t\t]\n\t}\n}"
+          },
+          {
+            "path": "Example2",
+            "content": "{\n\t\"minecraft:destructible_by_mining\": {\n\t\t\"seconds_to_destroy\": 10,\n\t\t\"item_specific_speeds\": [\n\t\t\t{\n\t\t\t\t\"item\": \"minecraft:iron_pickaxe\",\n\t\t\t\t\"destroy_speed\": 5.0\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"item\": \"minecraft:diamond_pickaxe\",\n\t\t\t\t\"destroy_speed\": 2.0\n\t\t\t}\n\t\t]\n\t}\n}"
+          }
+        ],
+        "/samples/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/white_sand.block.json": [
+          {
+            "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+            "content": [
+              {
+                "item": {
+                  "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:wooden_tier')"
+                },
+                "destroy_speed": 1.15
+              },
+              {
+                "item": {
+                  "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:stone_tier')"
+                },
+                "destroy_speed": 0.6
+              },
+              {
+                "item": {
+                  "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:iron_tier')"
+                },
+                "destroy_speed": 0.4
+              },
+              {
+                "item": {
+                  "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:golden_tier')"
+                },
+                "destroy_speed": 0.2
+              },
+              {
+                "item": {
+                  "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:diamond_tier')"
+                },
+                "destroy_speed": 0.3
+              },
+              {
+                "item": {
+                  "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:netherite_tier')"
+                },
+                "destroy_speed": 0.25
+              }
+            ]
+          }
+        ],
+        "/samples/lucky_block/version_1/behavior_packs/mike_luck/blocks/luckyblock.json": [
+          {
+            "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+            "content": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "seconds_to_destroy",
+      "title": "Seconds To Destroy",
+      "description": "Sets the number of seconds it takes to destroy the block with base equipment. Greater numbers result in greater mining times.",
+      "defaultValue": 0,
+      "dataType": 3,
+      "samples": {
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json": [
+          {
+            "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+            "content": 0.4
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/gray_ore.block.json": [
+          {
+            "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+            "content": 0.4
+          }
+        ],
+        "/samples/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/white_sand.block.json": [
+          {
+            "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+            "content": 7.5
+          }
+        ],
+        "/samples/creator_camp/behavior_packs/creator_camp/blocks/leaf_pile.block.json": [
+          {
+            "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+            "content": 1
+          }
+        ],
+        "/samples/custom_features/basic_orange_ore/behavior_packs/basic_orange_ore/blocks/orange_ore.block.json": [
+          {
+            "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+            "content": 1
+          }
+        ],
+        "/samples/lucky_block/version_1/behavior_packs/mike_luck/blocks/luckyblock.json": [
+          {
+            "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+            "content": 5
+          }
+        ]
+      }
+    }
+  ],
+  "scalarField": {
+    "id": "boolean",
+    "title": "Object enabled",
+    "tags": [
+      "presence"
+    ],
+    "dataType": 1
+  },
+  "samples": {
+    "samples": [
+      {
+        "path": "JSON Object (Item Tags)",
+        "content": {
+          "seconds_to_destroy": 10,
+          "item_specific_speeds": [
+            {
+              "item": {
+                "tags": "q.any_tag('minecraft:is_pickaxe', 'my_pack:custom_tool') "
+              },
+              "destroy_speed": 5
+            }
+          ]
+        }
+      },
+      {
+        "path": "JSON Object (Item Ids)",
+        "content": {
+          "seconds_to_destroy": 10,
+          "item_specific_speeds": [
+            {
+              "item": "minecraft:iron_pickaxe",
+              "destroy_speed": 5
+            },
+            {
+              "item": "minecraft:diamond_pickaxe",
+              "destroy_speed": 2
+            }
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+        "content": {
+          "seconds_to_destroy": 0.4
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/gray_ore.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+        "content": {
+          "seconds_to_destroy": 0.4
+        }
+      }
+    ],
+    "/samples/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/frond_top.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+        "content": {
+          "seconds_to_destroy": 0.4
+        }
+      }
+    ],
+    "/samples/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+        "content": {
+          "seconds_to_destroy": 0.4
+        }
+      }
+    ],
+    "/samples/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave_corner.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+        "content": {
+          "seconds_to_destroy": 0.4
+        }
+      }
+    ],
+    "/samples/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave_tip.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+        "content": {
+          "seconds_to_destroy": 0.4
+        }
+      }
+    ],
+    "/samples/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_tree_top.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+        "content": {
+          "seconds_to_destroy": 0.4
+        }
+      }
+    ],
+    "/samples/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_trunk.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+        "content": {
+          "seconds_to_destroy": 0.4
+        }
+      }
+    ],
+    "/samples/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/white_sand.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+        "content": {
+          "seconds_to_destroy": 7.5,
+          "item_specific_speeds": [
+            {
+              "item": {
+                "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:wooden_tier')"
+              },
+              "destroy_speed": 1.15
+            },
+            {
+              "item": {
+                "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:stone_tier')"
+              },
+              "destroy_speed": 0.6
+            },
+            {
+              "item": {
+                "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:iron_tier')"
+              },
+              "destroy_speed": 0.4
+            },
+            {
+              "item": {
+                "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:golden_tier')"
+              },
+              "destroy_speed": 0.2
+            },
+            {
+              "item": {
+                "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:diamond_tier')"
+              },
+              "destroy_speed": 0.3
+            },
+            {
+              "item": {
+                "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:netherite_tier')"
+              },
+              "destroy_speed": 0.25
+            }
+          ]
+        }
+      }
+    ],
+    "/samples/creator_camp/behavior_packs/creator_camp/blocks/leaf_pile.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+        "content": {
+          "seconds_to_destroy": 1
+        }
+      }
+    ],
+    "/samples/custom_features/basic_orange_ore/behavior_packs/basic_orange_ore/blocks/orange_ore.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+        "content": {
+          "seconds_to_destroy": 1
+        }
+      }
+    ],
+    "/samples/custom_features/example_feature_set/behavior_packs/example_feature_set/blocks/apple_block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+        "content": {
+          "seconds_to_destroy": 0.4
+        }
+      }
+    ],
+    "/samples/lucky_block/version_1/behavior_packs/mike_luck/blocks/luckyblock.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+        "content": {
+          "seconds_to_destroy": 5,
+          "item_specific_speeds": []
+        }
+      }
+    ],
+    "/samples/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/frond_top.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+        "content": {
+          "seconds_to_destroy": 0.4
+        }
+      }
+    ],
+    "/samples/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/palm_leave.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+        "content": {
+          "seconds_to_destroy": 0.4
+        }
+      }
+    ],
+    "/samples/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/palm_leave_corner.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+        "content": {
+          "seconds_to_destroy": 0.4
+        }
+      }
+    ],
+    "/samples/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/palm_leave_tip.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+        "content": {
+          "seconds_to_destroy": 0.4
+        }
+      }
+    ],
+    "/samples/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/palm_tree_top.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+        "content": {
+          "seconds_to_destroy": 0.4
+        }
+      }
+    ],
+    "/samples/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/palm_trunk.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
+        "content": {
+          "seconds_to_destroy": 0.4
+        }
+      }
+    ]
+  },
+  "description": "Describes the destructible by mining properties for this block. If set to true, the block will take the default number of seconds to destroy. If set to false, this block is indestructible by mining. If the component is omitted, the block will take the default number of seconds to destroy.",
+  "title": "Destructible By Mining",
+  "id": "minecraft:destructible_by_mining"
+}

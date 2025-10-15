@@ -1,0 +1,27 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "minecraft:crimson_planks_from_stripped_log"
+    },
+    "tags": [ "crafting_table" ],
+    "group": "planks",
+    "pattern": [
+      "#"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:stripped_crimson_stem"
+      }
+    },
+	"unlock": [
+        {
+            "item": "minecraft:stripped_crimson_stem"
+        }
+    ],
+    "result": {
+      "item": "minecraft:crimson_planks",
+      "count": 4
+    }
+  }
+}

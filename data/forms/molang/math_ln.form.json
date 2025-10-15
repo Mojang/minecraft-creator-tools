@@ -1,0 +1,6 @@
+{
+  "id": "`math.ln(value)`",
+  "fields": [],
+  "description": "Natural logarithm of value",
+  "title": "Ln(value)"
+}

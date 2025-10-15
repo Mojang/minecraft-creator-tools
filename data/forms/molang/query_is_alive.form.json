@@ -1,0 +1,6 @@
+{
+  "id": "query.is_alive",
+  "fields": [],
+  "description": "Returns 1.0 if the entity is alive, and 0.0 if it's dead.",
+  "title": "Is Alive"
+}

@@ -1,0 +1,13 @@
+{
+  "fields": [
+    {
+      "id": "on_use_on",
+      "title": "on_use_on",
+      "description": "Event trigger for when the item is used.",
+      "dataType": 16
+    }
+  ],
+  "isDeprecated": true,
+  "description": "The on_use_on item component allows you to receive an event when the item is used on a block in the world.",
+  "title": "On Use"
+}

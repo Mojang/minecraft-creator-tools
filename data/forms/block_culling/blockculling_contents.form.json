@@ -1,0 +1,24 @@
+{
+  "fields": [
+    {
+      "id": "face",
+      "title": "Facing",
+      "description": "Facing",
+      "dataType": 2
+    },
+    {
+      "id": "bone",
+      "title": "bone",
+      "description": "bone",
+      "dataType": 2
+    },
+    {
+      "id": "cube",
+      "title": "cube",
+      "description": "cube",
+      "dataType": 0
+    }
+  ],
+  "description": "BlockCulling Contents",
+  "title": "BlockCulling Contents"
+}

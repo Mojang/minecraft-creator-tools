@@ -1,0 +1,24 @@
+{
+  "fields": [
+    {
+      "id": "distance",
+      "title": "Distance",
+      "dataType": 3,
+      "isRequired": true
+    },
+    {
+      "id": "effects",
+      "title": "Effects",
+      "dataType": 15,
+      "alternates": [
+        {
+          "id": "effects",
+          "dataType": 2
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "title": "Client Particles Emitter Lifetime Events Travel Distance Events",
+  "id": "emitter_lifetime_events travel_distance_events"
+}

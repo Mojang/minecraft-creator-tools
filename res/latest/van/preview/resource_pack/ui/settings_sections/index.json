@@ -1,0 +1,11 @@
+{
+  "files": [
+    "controls_section.json",
+    "realms_world_section.json",
+    "settings_common.json",
+    "social_section.json",
+    "world_section.json",
+    "general_section.json"
+  ],
+  "folders": []
+}

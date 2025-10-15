@@ -1,0 +1,18 @@
+{
+  "id": "Range",
+  "fields": [
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": 0,
+      "isRequired": true
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": 0,
+      "isRequired": true
+    }
+  ],
+  "title": "Block Range"
+}

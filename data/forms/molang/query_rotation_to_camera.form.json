@@ -1,0 +1,6 @@
+{
+  "id": "query.rotation_to_camera",
+  "fields": [],
+  "description": "Returns the rotation required to aim at the camera.  Requires one argument representing the rotation axis you would like (0 for x, 1 for y).",
+  "title": "Rotation To Camera"
+}

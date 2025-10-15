@@ -1,0 +1,32 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:armor_stand"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "///",
+      " / ",
+      "/_/"
+    ],
+    "key": {
+      "/": {
+        "item": "minecraft:stick"
+      },
+      "_": {
+      	"item": "minecraft:smooth_stone_slab"
+      }
+    },
+	"unlock": [
+      {
+        "item": "minecraft:smooth_stone_slab"
+      }
+    ],
+    "result": {
+      "item": "minecraft:armor_stand"
+    }
+  }
+}
