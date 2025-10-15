@@ -69,7 +69,7 @@
     }
   ],
   "description": "The entity will attempt to toss the items from its inventory to a nearby recently played noteblock.",
-  "title": "Stay Near Noteblock Behavior",
+  "title": "Stay Near Noteblock (See JSON Schema Since 1.21.110) Behavior",
   "samples": {
     "/vanilla/behavior_pack/entities/allay.json": [
       {
@@ -83,5 +83,5 @@
       }
     ]
   },
-  "id": "minecraft:behavior.stay_near_noteblock"
+  "id": "minecraft:behavior.stay_near_noteblock (See JSON Schema since 1.21.110)"
 }

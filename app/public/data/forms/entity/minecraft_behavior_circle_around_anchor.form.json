@@ -150,7 +150,7 @@
     }
   ],
   "description": "Causes an entity to circle around an anchor point placed near a point or target.",
-  "title": "Circle Around Anchor Behavior",
+  "title": "Circle Around Anchor (See JSON Schema Since 1.21.100) Behavior",
   "samples": {
     "/vanilla/behavior_pack/entities/phantom.json": [
       {
@@ -178,5 +178,5 @@
       }
     ]
   },
-  "id": "minecraft:behavior.circle_around_anchor"
+  "id": "minecraft:behavior.circle_around_anchor (See JSON Schema since 1.21.100)"
 }

@@ -948,18 +948,18 @@
         "Count": 1
       }
     },
-    "errorCount": 0,
+    "errorCount": 1,
     "internalProcessingErrorCount": 0,
-    "warningCount": 2,
-    "testSuccessCount": 38,
-    "testFailCount": 0,
+    "warningCount": 4,
+    "testSuccessCount": 37,
+    "testFailCount": 1,
     "testNotApplicableCount": 10,
-    "errorSummary": "",
+    "errorSummary": "ERROR: [CHKMANIF135] (/Content/resource_packs/aop_mobsrp/manifest.json) Packs that contain PBR related files must declare the \"pbr\" capability in the manifest",
     "internalProcessingErrorSummary": "",
-    "warningSummary": "WARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:boomfly`\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:robot`",
-    "testFailSummary": "",
-    "infoGenerationTime": 655,
-    "endToEndGenerationTime": 855,
+    "warningSummary": "WARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:boomfly`\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:robot`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobsrp/textures/entity/biceson.texture_set.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobsrp/textures/entity/biceson.texture_set.json to `textures/entity/biceson_mer`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon.texture_set.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon.texture_set.json to `textures/entity/sheepomelon_mer`",
+    "testFailSummary": "TESTFAIL: [CHKMANIF000] Found 1 errors for Check Manifest Generator (CHKMANIF).",
+    "infoGenerationTime": 527,
+    "endToEndGenerationTime": 779,
     "summary": {
       "BASEGAMEVER": {
         "2": {
@@ -987,10 +987,15 @@
         }
       },
       "CHKMANIF": {
-        "1": {
-          "title": "Test Success",
-          "defaultMessage": "Check Manifest Generator (CHKMANIF) completed successfully",
-          "testCompleteSuccesses": 1
+        "0": {
+          "title": "Test Failure",
+          "defaultMessage": "Found 1 errors for Check Manifest Generator (CHKMANIF).",
+          "testCompleteFails": 1
+        },
+        "135": {
+          "title": "Has Vibrant Visuals Enhanced Files But No Manifest Capability",
+          "defaultMessage": "Packs that contain PBR related files must declare the \"pbr\" capability in the manifest",
+          "errors": 1
         }
       },
       "CPACKICON": {
@@ -1720,6 +1725,10 @@
         "310": {
           "defaultMessage": "Link to entity type is not found in this pack",
           "warnings": 2
+        },
+        "399": {
+          "defaultMessage": "Link to texture is not found in this pack",
+          "warnings": 2
         }
       },
       "VALFILE": {
@@ -1793,9 +1802,15 @@
       "gIx": 2
     },
     {
-      "iTp": 1,
+      "iTp": 0,
       "gId": "CHKMANIF",
-      "gIx": 1
+      "gIx": 0
+    },
+    {
+      "iTp": 3,
+      "gId": "CHKMANIF",
+      "gIx": 135,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
     },
     {
       "iTp": 1,
@@ -4093,6 +4108,20 @@
       "gIx": 310,
       "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
       "d": "/Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:robot`"
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 399,
+      "p": "/Content/resource_packs/aop_mobsrp/textures/entity/biceson.texture_set.json",
+      "d": "/Content/resource_packs/aop_mobsrp/textures/entity/biceson.texture_set.json to `textures/entity/biceson_mer`"
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 399,
+      "p": "/Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon.texture_set.json",
+      "d": "/Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon.texture_set.json to `textures/entity/sheepomelon_mer`"
     },
     {
       "iTp": 8,
@@ -11231,8 +11260,8 @@
           "internalProcessingErrorSummary": "",
           "warningSummary": "",
           "testFailSummary": "",
-          "infoGenerationTime": 19,
-          "endToEndGenerationTime": 874,
+          "infoGenerationTime": 26,
+          "endToEndGenerationTime": 805,
           "summary": {
             "SHARING": {
               "1": {

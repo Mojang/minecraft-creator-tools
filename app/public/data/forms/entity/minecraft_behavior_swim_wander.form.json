@@ -137,7 +137,7 @@
     }
   ],
   "description": "Allows the entity to wander around while swimming, when not path-finding.",
-  "title": "Swim Wander Behavior",
+  "title": "Swim Wander (See JSON Schema Since 1.21.110) Behavior",
   "samples": {
     "/vanilla/behavior_pack/entities/fish.json": [
       {
@@ -188,5 +188,5 @@
       }
     ]
   },
-  "id": "minecraft:behavior.swim_wander"
+  "id": "minecraft:behavior.swim_wander (See JSON Schema since 1.21.110)"
 }

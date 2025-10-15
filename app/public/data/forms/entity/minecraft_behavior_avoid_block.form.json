@@ -237,7 +237,7 @@
     }
   ],
   "description": "Allows this entity to avoid certain blocks.",
-  "title": "Avoid Block Behavior",
+  "title": "Avoid Block (See JSON Schema Since 1.21.120) Behavior",
   "samples": {
     "/vanilla/behavior_pack/entities/hoglin.json": [
       {
@@ -294,5 +294,5 @@
       }
     ]
   },
-  "id": "minecraft:behavior.avoid_block"
+  "id": "minecraft:behavior.avoid_block (See JSON Schema since 1.21.120)"
 }

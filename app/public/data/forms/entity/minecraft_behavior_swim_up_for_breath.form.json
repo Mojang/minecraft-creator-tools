@@ -45,7 +45,7 @@
     }
   ],
   "description": "Allows the mob to try to move to air once it is close to running out of its total breathable supply. Requires \"minecraft:breathable\".",
-  "title": "Swim Up For Breath Behavior",
+  "title": "Swim Up For Breath (See JSON Schema Since 1.21.110) Behavior",
   "samples": {
     "/vanilla/behavior_pack/entities/dolphin.json": [
       {
@@ -56,5 +56,5 @@
       }
     ]
   },
-  "id": "minecraft:behavior.swim_up_for_breath"
+  "id": "minecraft:behavior.swim_up_for_breath (See JSON Schema since 1.21.110)"
 }

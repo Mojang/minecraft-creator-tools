@@ -1523,7 +1523,7 @@ export default class Database {
           const response = await axios.get(CartoApp.contentRoot + "data/mch/release.mch.json");
 
           if (response) {
-            Database.releaseVanillaContentHashes = await ZipStorage.fromZipBytesToJsonObject(response.data);
+            Database.releaseVanillaContentHashes = response.data;
           }
         } else if (Database.local) {
           const result = await Database.local.readJsonFile("data/mch/preview.mch.json");

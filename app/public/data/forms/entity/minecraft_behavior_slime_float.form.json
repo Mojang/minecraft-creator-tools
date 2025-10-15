@@ -75,7 +75,7 @@
     }
   ],
   "description": "Allow slimes to float in water / lava.",
-  "title": "Slime Float Behavior",
+  "title": "Slime Float (See JSON Schema Since 1.21.110) Behavior",
   "samples": {
     "/vanilla/behavior_pack/entities/magma_cube.json": [
       {
@@ -98,5 +98,5 @@
       }
     ]
   },
-  "id": "minecraft:behavior.slime_float"
+  "id": "minecraft:behavior.slime_float (See JSON Schema since 1.21.110)"
 }

@@ -715,6 +715,10 @@ export default class ProjectItemUtilities {
           return true;
         }
       }
+
+      if (this.isTextureSetTexture(item)) {
+        return true;
+      }
     }
 
     return false;
@@ -1223,6 +1227,20 @@ export default class ProjectItemUtilities {
     return false;
   }
 
+  static isTextureSetTexture(projectItem: ProjectItem) {
+    if (projectItem.parentItems) {
+      for (const parentItem of projectItem.parentItems) {
+        if (parentItem.parentItem) {
+          if (parentItem.parentItem.itemType === ProjectItemType.textureSetJson) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
   static isBlock(type: ProjectItemType) {
     return (
       type === ProjectItemType.blockCulling ||
@@ -1264,6 +1282,7 @@ export default class ProjectItemUtilities {
 
     return false;
   }
+
   static isUI(type: ProjectItemType) {
     return type === ProjectItemType.uiJson || type === ProjectItemType.uiTexture;
   }

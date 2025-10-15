@@ -634,13 +634,26 @@ export default class StorageUtilities {
     return nameW;
   }
 
+  // returns path relative to folder, with the file extension removed, as is commonly used in Minecraft resource references
+  public static getBaseRelativePath(file: IFile, folder: IFolder) {
+    let relativePath = file.getFolderRelativePath(folder);
+
+    if (relativePath) {
+      relativePath = StorageUtilities.getBaseFromName(relativePath).toLowerCase();
+
+      relativePath = StorageUtilities.ensureNotStartsWithDelimiter(relativePath);
+    }
+
+    return relativePath;
+  }
+
   public static getBaseFromName(name: string): string {
     const nameW = name.trim();
 
     const lastPeriod = nameW.lastIndexOf(".");
 
     if (lastPeriod < 0) {
-      return name;
+      return nameW;
     }
 
     return nameW.substring(0, lastPeriod);

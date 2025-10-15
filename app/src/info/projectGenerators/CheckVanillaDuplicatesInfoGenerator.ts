@@ -70,7 +70,7 @@ export default class CheckVanillaDuplicatesInfoGenerator implements IProjectInfo
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
-    // Get the hash catalog from the project's info set
+    // Get the hash catalog from the content index
     const hashCatalog = contentIndex.hashCatalog;
 
     // Load vanilla hash catalog for comparison
@@ -79,14 +79,15 @@ export default class CheckVanillaDuplicatesInfoGenerator implements IProjectInfo
     const projItems = project.getItemsCopy();
 
     for (const item of projItems) {
-      await item.ensureStorage();
-      if (!item.primaryFile) {
+      const itemPath = item.projectPath || "";
+
+      if (ALLOWLISTED_FILES.some((allowedFile) => itemPath.includes(allowedFile))) {
         continue;
       }
 
-      const itemPath = item.getFile()?.fullPath || "";
+      await item.ensureStorage();
 
-      if (ALLOWLISTED_FILES.some((allowedFile) => itemPath.includes(allowedFile))) {
+      if (!item.primaryFile) {
         continue;
       }
 

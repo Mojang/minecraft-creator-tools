@@ -3,6 +3,7 @@ import BiomeBehaviorDefinition from "../minecraft/BiomeBehaviorDefinition";
 import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import EntityTypeResourceDefinition from "../minecraft/EntityTypeResourceDefinition";
+import FlipbookTextureCatalogDefinition from "../minecraft/FlipbookTextureCatalogDefinition";
 import ItemTextureCatalogDefinition from "../minecraft/ItemTextureCatalogDefinition";
 import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
 import JigsawProcessorListDefinition from "../minecraft/JigsawProcessorListDefinition";
@@ -20,6 +21,7 @@ import SoundDefinitionCatalogDefinition from "../minecraft/SoundDefinitionCatalo
 import SpawnRulesBehaviorDefinition from "../minecraft/SpawnRulesBehaviorDefinition";
 import TerrainTextureCatalogDefinition from "../minecraft/TerrainTextureCatalogDefinition";
 import TextureDefinition from "../minecraft/TextureDefinition";
+import TextureSetDefinition from "../minecraft/TextureSetDefinition";
 import { ProjectItemType } from "./IProjectItemData";
 import Project from "./Project";
 import ProjectItem from "./ProjectItem";
@@ -51,6 +53,8 @@ const ITEM_TYPE_CONFIG = new Map<ProjectItemType, { ensureOnFile: EnsureOnFileMe
   [ProjectItemType.jigsawStructure, JigsawStructureDefinition],
   [ProjectItemType.jigsawTemplatePool, JigsawTemplatePoolDefinition],
   [ProjectItemType.jigsawProcessorList, JigsawProcessorListDefinition],
+  [ProjectItemType.flipbookTexturesJson, FlipbookTextureCatalogDefinition],
+  [ProjectItemType.textureSetJson, TextureSetDefinition],
   [ProjectItemType.texture, TextureDefinition],
   [ProjectItemType.biomeBehavior, BiomeBehaviorDefinition],
 ]);

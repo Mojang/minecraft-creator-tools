@@ -5,21 +5,20 @@ import IFile from "../storage/IFile";
 import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
-import { IFlipbookTexture } from "./IFlipbookTexture";
 import { ProjectItemType } from "../app/IProjectItemData";
 import Utilities from "../core/Utilities";
 import Database from "./Database";
-import IProjectItemRelationship from "../app/IProjectItemRelationship";
 import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
 import IDefinition from "./IDefinition";
+import TextureSet from "./json/visual/TextureSet";
 
-export default class FlipbookTextureCatalogDefinition implements IDefinition {
-  private _data?: IFlipbookTexture[];
+export default class TextureSetDefinition implements IDefinition {
+  private _data?: TextureSet;
   private _file?: IFile;
   private _isLoaded: boolean = false;
 
-  private _onLoaded = new EventDispatcher<FlipbookTextureCatalogDefinition, FlipbookTextureCatalogDefinition>();
+  private _onLoaded = new EventDispatcher<TextureSetDefinition, TextureSetDefinition>();
 
   public id: string | undefined;
 
@@ -28,18 +27,31 @@ export default class FlipbookTextureCatalogDefinition implements IDefinition {
   }
 
   public get texturesList() {
-    if (!this._data || !Array.isArray(this._data)) {
+    if (!this._data || !this._data["minecraft:texture_set"]) {
       return undefined;
     }
 
     const textureList = [];
 
-    for (const flipbookTexture of this._data) {
-      const texturePath = flipbookTexture.flipbook_texture;
+    const textureSet = this._data["minecraft:texture_set"];
 
-      if (texturePath) {
-        textureList.push(texturePath.toLowerCase());
-      }
+    if (textureSet.metalness_emissive_roughness && typeof textureSet.metalness_emissive_roughness === "string") {
+      textureList.push(this.adaptTexturePath(textureSet.metalness_emissive_roughness));
+    }
+
+    if (
+      textureSet.metalness_emissive_roughness_subsurface &&
+      typeof textureSet.metalness_emissive_roughness_subsurface === "string"
+    ) {
+      textureList.push(this.adaptTexturePath(textureSet.metalness_emissive_roughness_subsurface));
+    }
+
+    if (textureSet.heightmap && typeof textureSet.heightmap === "string") {
+      textureList.push(this.adaptTexturePath(textureSet.heightmap));
+    }
+
+    if (textureSet.normal && typeof textureSet.normal === "string") {
+      textureList.push(this.adaptTexturePath(textureSet.normal));
     }
 
     return textureList;
@@ -60,33 +72,44 @@ export default class FlipbookTextureCatalogDefinition implements IDefinition {
     this._file = newFile;
   }
 
-  static async ensureOnFile(
-    file: IFile,
-    loadHandler?: IEventHandler<FlipbookTextureCatalogDefinition, FlipbookTextureCatalogDefinition>
-  ) {
-    let et: FlipbookTextureCatalogDefinition | undefined;
+  private adaptTexturePath(path: string) {
+    path = path.toLowerCase();
 
-    if (file.manager === undefined) {
-      et = new FlipbookTextureCatalogDefinition();
-
-      et.file = file;
-
-      file.manager = et;
+    if (path.indexOf("/") >= 0) {
+      return path;
     }
 
-    if (file.manager !== undefined && file.manager instanceof FlipbookTextureCatalogDefinition) {
-      et = file.manager as FlipbookTextureCatalogDefinition;
+    if (this._file) {
+      return this._file.parentFolder.fullPath + "/" + path;
+    }
 
-      if (!et.isLoaded) {
+    return path;
+  }
+
+  static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<TextureSetDefinition, TextureSetDefinition>) {
+    let tsd: TextureSetDefinition | undefined;
+
+    if (file.manager === undefined) {
+      tsd = new TextureSetDefinition();
+
+      tsd.file = file;
+
+      file.manager = tsd;
+    }
+
+    if (file.manager !== undefined && file.manager instanceof TextureSetDefinition) {
+      tsd = file.manager as TextureSetDefinition;
+
+      if (!tsd.isLoaded) {
         if (loadHandler) {
-          et.onLoaded.subscribe(loadHandler);
+          tsd.onLoaded.subscribe(loadHandler);
         }
 
-        await et.load();
+        await tsd.load();
       }
     }
 
-    return et;
+    return tsd;
   }
 
   persist() {
@@ -105,7 +128,7 @@ export default class FlipbookTextureCatalogDefinition implements IDefinition {
     }
 
     if (this._file === undefined) {
-      Log.unexpectedUndefined("FBTCDF");
+      Log.unexpectedUndefined("TSTCDF");
       return;
     }
 
@@ -132,58 +155,6 @@ export default class FlipbookTextureCatalogDefinition implements IDefinition {
     this._onLoaded.dispatch(this, this);
   }
 
-  async deleteLinkToChild(rel: IProjectItemRelationship) {
-    let packRootFolder = this.getPackRootFolder();
-
-    if (this._data === undefined) {
-      if (!this.isLoaded) {
-        await this.load();
-      }
-    }
-
-    if (!this._data || !Array.isArray(this._data)) {
-      return;
-    }
-    if (rel.childItem.itemType === ProjectItemType.texture) {
-      if (!rel.childItem.isContentLoaded) {
-        await rel.childItem.loadContent();
-      }
-
-      if (rel.childItem.primaryFile && packRootFolder) {
-        let relativePath = StorageUtilities.getBaseRelativePath(rel.childItem.primaryFile, packRootFolder);
-
-        if (relativePath) {
-          let newFlipbookTextures: IFlipbookTexture[] = [];
-
-          for (const flipbookTexture of this._data) {
-            if (flipbookTexture.flipbook_texture !== relativePath) {
-              newFlipbookTextures.push(flipbookTexture);
-            }
-          }
-
-          this._data = newFlipbookTextures;
-        }
-      }
-    }
-
-    this.persist();
-  }
-
-  getTexturePaths() {
-    const texturePaths: string[] = [];
-    if (this.data && Array.isArray(this.data)) {
-      for (const flipbookResource of this.data) {
-        const resource = flipbookResource.flipbook_texture;
-
-        if (!texturePaths.includes(resource)) {
-          texturePaths.push(resource);
-        }
-      }
-    }
-
-    return texturePaths;
-  }
-
   getPackRootFolder() {
     let packRootFolder = undefined;
     if (this.file && this.file.parentFolder) {
@@ -200,7 +171,23 @@ export default class FlipbookTextureCatalogDefinition implements IDefinition {
 
     let packRootFolder = this.getPackRootFolder();
 
-    let textureList = this.texturesList;
+    let textureListInitial = this.texturesList;
+    let textureList: string[] = [];
+
+    if (!packRootFolder || !textureListInitial) {
+      return;
+    }
+
+    for (let texturePath of textureListInitial) {
+      texturePath = StorageUtilities.canonicalizePath(texturePath).toLowerCase();
+      const basePath = StorageUtilities.canonicalizePath(packRootFolder.fullPath).toLowerCase();
+
+      if (texturePath.startsWith(basePath)) {
+        textureList.push(texturePath.substring(basePath.length + 1).toLowerCase());
+      } else {
+        textureList.push(texturePath.toLowerCase());
+      }
+    }
 
     for (const candItem of itemsCopy) {
       if (candItem.itemType === ProjectItemType.texture && packRootFolder && textureList) {

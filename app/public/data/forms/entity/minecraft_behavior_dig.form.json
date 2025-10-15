@@ -108,7 +108,7 @@
     }
   ],
   "description": "Allows this entity to dig into the ground before despawning.",
-  "title": "Dig Behavior",
+  "title": "Dig (See JSON Schema Since 1.21.120) Behavior",
   "samples": {
     "/vanilla/behavior_pack/entities/warden.json": [
       {
@@ -128,5 +128,5 @@
       }
     ]
   },
-  "id": "minecraft:behavior.dig"
+  "id": "minecraft:behavior.dig (See JSON Schema since 1.21.120)"
 }

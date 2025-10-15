@@ -8,7 +8,6 @@ import StorageUtilities from "../storage/StorageUtilities";
 import { IParticleEffectWrapper } from "./IParticleEffect";
 import MinecraftUtilities from "./MinecraftUtilities";
 import { ProjectItemType } from "../app/IProjectItemData";
-import IFolder from "../storage/IFolder";
 import ProjectItem from "../app/ProjectItem";
 import Project from "../app/Project";
 import Database from "./Database";
@@ -193,7 +192,7 @@ export default class ParticleEffectResourceDefinition {
       }
 
       if (rel.childItem.primaryFile && packRootFolder) {
-        let relativePath = this.getRelativePath(rel.childItem.primaryFile, packRootFolder);
+        let relativePath = StorageUtilities.getBaseRelativePath(rel.childItem.primaryFile, packRootFolder);
 
         if (relativePath) {
           if (basicTexture === relativePath) {
@@ -217,21 +216,6 @@ export default class ParticleEffectResourceDefinition {
     return packRootFolder;
   }
 
-  getRelativePath(file: IFile, packRootFolder: IFolder) {
-    let relativePath = file.getFolderRelativePath(packRootFolder);
-
-    if (relativePath) {
-      const lastPeriod = relativePath?.lastIndexOf(".");
-      if (lastPeriod >= 0) {
-        relativePath = relativePath?.substring(0, lastPeriod).toLowerCase();
-      }
-
-      relativePath = StorageUtilities.ensureNotStartsWithDelimiter(relativePath);
-    }
-
-    return relativePath;
-  }
-
   async addChildItems(project: Project, item: ProjectItem) {
     const itemsCopy = project.getItemsCopy();
 
@@ -246,7 +230,7 @@ export default class ParticleEffectResourceDefinition {
         }
 
         if (candItem.primaryFile) {
-          let relativePath = this.getRelativePath(candItem.primaryFile, packRootFolder);
+          let relativePath = StorageUtilities.getBaseRelativePath(candItem.primaryFile, packRootFolder);
 
           if (relativePath) {
             if (textureList && textureList.includes(relativePath)) {

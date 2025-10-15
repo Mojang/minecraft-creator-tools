@@ -23,7 +23,7 @@ export default class HashUtilities {
    * @param hashCatalog The hash catalog to populate
    * @param onError Optional error callback for handling errors
    */
-  static async generateHashesForFile(file: IFile, filePath: string, hashCatalog: HashCatalog): Promise<void> {
+  static async addHashesForFile(hashCatalog: HashCatalog, file: IFile, filePath: string): Promise<void> {
     try {
       // Complete file hash with filename included
       await file.loadContent();

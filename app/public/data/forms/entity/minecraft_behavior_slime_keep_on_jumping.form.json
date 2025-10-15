@@ -54,7 +54,7 @@
     }
   ],
   "description": "Allows the entity to continuously jump around like a slime.",
-  "title": "Slime Keep On Jumping Behavior",
+  "title": "Slime Keep On Jumping (See JSON Schema Since 1.21.110) Behavior",
   "samples": {
     "/vanilla/behavior_pack/entities/magma_cube.json": [
       {
@@ -75,5 +75,5 @@
       }
     ]
   },
-  "id": "minecraft:behavior.slime_keep_on_jumping"
+  "id": "minecraft:behavior.slime_keep_on_jumping (See JSON Schema since 1.21.110)"
 }
