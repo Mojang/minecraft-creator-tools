@@ -100,7 +100,7 @@
     }
   ],
   "description": "Allows this entity to detect the nearest player within \"sniffing_radius\" and update its \"minecraft:suspect_tracking\" component state",
-  "title": "Sniff (See JSON Schema Since 1.21.110) Behavior",
+  "title": "Sniff Behavior",
   "samples": {
     "/vanilla/behavior_pack/entities/warden.json": [
       {
@@ -119,5 +119,5 @@
       }
     ]
   },
-  "id": "minecraft:behavior.sniff (See JSON Schema since 1.21.110)"
+  "id": "minecraft:behavior.sniff"
 }

@@ -45,7 +45,7 @@
     }
   ],
   "description": "Allows this entity to damage a target by using a running attack.",
-  "title": "Charge Attack (See JSON Schema Since 1.21.100) Behavior",
+  "title": "Charge Attack Behavior",
   "samples": {
     "/vanilla/behavior_pack/entities/vex.json": [
       {
@@ -56,5 +56,5 @@
       }
     ]
   },
-  "id": "minecraft:behavior.charge_attack (See JSON Schema since 1.21.100)"
+  "id": "minecraft:behavior.charge_attack"
 }

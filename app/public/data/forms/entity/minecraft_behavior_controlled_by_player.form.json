@@ -52,7 +52,7 @@
     }
   ],
   "description": "Allows the entity to be controlled by the player using an item in the item_controllable property (required). On every tick, the entity will attempt to rotate towards where the player is facing with the control item whilst simultaneously moving forward.",
-  "title": "Controlled By Player (See JSON Schema Since 1.21.100) Behavior",
+  "title": "Controlled By Player Behavior",
   "samples": {
     "/vanilla/behavior_pack/entities/pig.json": [
       {
@@ -72,5 +72,5 @@
       }
     ]
   },
-  "id": "minecraft:behavior.controlled_by_player (See JSON Schema since 1.21.100)"
+  "id": "minecraft:behavior.controlled_by_player"
 }

@@ -76,7 +76,7 @@
   ],
   "note": "In order to attack, the entity must have a `runtime_identifier` set to `minecraft:slime` and a `variant` component with a value greater than 1. Otherwise it will still path towards a target, but it will not cause damage.",
   "description": "Causes the entity to grow tired every once in a while, while attacking.",
-  "title": "Slime Attack (See JSON Schema Since 1.21.110) Behavior",
+  "title": "Slime Attack Behavior",
   "samples": {
     "/vanilla/behavior_pack/entities/magma_cube.json": [
       {
@@ -95,5 +95,5 @@
       }
     ]
   },
-  "id": "minecraft:behavior.slime_attack (See JSON Schema since 1.21.110)"
+  "id": "minecraft:behavior.slime_attack"
 }

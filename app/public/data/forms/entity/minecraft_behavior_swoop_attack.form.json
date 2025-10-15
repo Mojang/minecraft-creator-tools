@@ -64,7 +64,7 @@
     }
   ],
   "description": "Allows an entity to attack using swoop attack behavior; Ideal for use with flying mobs. The behavior ends if the entity has a horizontal collision or gets hit.",
-  "title": "Swoop Attack (See JSON Schema Since 1.21.110) Behavior",
+  "title": "Swoop Attack Behavior",
   "samples": {
     "/vanilla/behavior_pack/entities/phantom.json": [
       {
@@ -81,5 +81,5 @@
       }
     ]
   },
-  "id": "minecraft:behavior.swoop_attack (See JSON Schema since 1.21.110)"
+  "id": "minecraft:behavior.swoop_attack"
 }

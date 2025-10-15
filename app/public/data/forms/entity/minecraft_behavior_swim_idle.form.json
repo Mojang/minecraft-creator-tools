@@ -77,7 +77,7 @@
     }
   ],
   "description": "Allows the entity go idle, if swimming. Entity must be in water.",
-  "title": "Swim Idle (See JSON Schema Since 1.21.110) Behavior",
+  "title": "Swim Idle Behavior",
   "samples": {
     "/vanilla/behavior_pack/entities/axolotl.json": [
       {
@@ -120,5 +120,5 @@
       }
     ]
   },
-  "id": "minecraft:behavior.swim_idle (See JSON Schema since 1.21.110)"
+  "id": "minecraft:behavior.swim_idle"
 }

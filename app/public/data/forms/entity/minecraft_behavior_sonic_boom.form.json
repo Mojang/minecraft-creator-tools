@@ -92,7 +92,7 @@
       "id": "duration",
       "title": "Duration",
       "description": "Goal duration in seconds",
-      "defaultValue": 0,
+      "defaultValue": 3,
       "dataType": 3,
       "samples": {
         "/vanilla/behavior_pack/entities/warden.json": [
@@ -195,7 +195,7 @@
     }
   ],
   "description": "Allows this entity to perform a 'sonic boom' ranged attack",
-  "title": "Sonic Boom (See JSON Schema Since 1.21.110) Behavior",
+  "title": "Sonic Boom Behavior",
   "samples": {
     "/vanilla/behavior_pack/entities/warden.json": [
       {
@@ -218,5 +218,5 @@
       }
     ]
   },
-  "id": "minecraft:behavior.sonic_boom (See JSON Schema since 1.21.110)"
+  "id": "minecraft:behavior.sonic_boom"
 }

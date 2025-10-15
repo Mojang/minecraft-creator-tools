@@ -51,7 +51,7 @@
     }
   ],
   "description": "Allows this entity to use a flame-breath attack.",
-  "title": "Dragonflaming (See JSON Schema Since 1.21.100) Behavior",
+  "title": "Dragonflaming Behavior",
   "samples": {
     "/vanilla/behavior_pack/entities/ender_dragon.json": [
       {
@@ -62,5 +62,5 @@
       }
     ]
   },
-  "id": "minecraft:behavior.dragonflaming (See JSON Schema since 1.21.100)"
+  "id": "minecraft:behavior.dragonflaming"
 }

@@ -38,7 +38,7 @@
       "id": "entity_types",
       "title": "Entity Types",
       "description": "The list of conditions another entity must meet to be a valid target to avoid.",
-      "dataType": 17,
+      "dataType": 20,
       "samples": {
         "/vanilla/behavior_pack/entities/bogged.json": [
           {
@@ -1018,7 +1018,7 @@
     }
   ],
   "description": "Allows the entity to run away from other entities that meet the criteria specified.",
-  "title": "Avoid Mob Type (See JSON Schema Since 1.21.120) Behavior",
+  "title": "Avoid Mob Type Behavior",
   "samples": {
     "/vanilla/behavior_pack/entities/bogged.json": [
       {
@@ -1924,5 +1924,5 @@
       }
     ]
   },
-  "id": "minecraft:behavior.avoid_mob_type (See JSON Schema since 1.21.120)"
+  "id": "minecraft:behavior.avoid_mob_type"
 }

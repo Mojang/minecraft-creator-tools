@@ -55,7 +55,7 @@
     }
   ],
   "description": "Allows the mob to drink milk based on specified environment conditions.",
-  "title": "Drink Milk (See JSON Schema Since 1.21.120) Behavior",
+  "title": "Drink Milk Behavior",
   "samples": {
     "/vanilla/behavior_pack/entities/wandering_trader.json": [
       {
@@ -84,5 +84,5 @@
       }
     ]
   },
-  "id": "minecraft:behavior.drink_milk (See JSON Schema since 1.21.120)"
+  "id": "minecraft:behavior.drink_milk"
 }

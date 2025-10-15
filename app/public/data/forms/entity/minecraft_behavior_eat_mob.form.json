@@ -105,7 +105,7 @@
     }
   ],
   "description": "Allows the entity to eat a specified Mob.",
-  "title": "Eat Mob (See JSON Schema Since 1.21.100) Behavior",
+  "title": "Eat Mob Behavior",
   "samples": {
     "/vanilla/behavior_pack/entities/frog.json": [
       {
@@ -122,5 +122,5 @@
       }
     ]
   },
-  "id": "minecraft:behavior.eat_mob (See JSON Schema since 1.21.100)"
+  "id": "minecraft:behavior.eat_mob"
 }
