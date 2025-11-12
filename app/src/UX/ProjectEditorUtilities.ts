@@ -26,6 +26,7 @@ export enum ProjectEditorItemAction {
   viewOnMap,
   download,
   focus,
+  unfocus,
 }
 
 export enum ProjectItemEditorView {
@@ -110,7 +111,7 @@ export default class ProjectEditorUtilities {
     }
   }
 
-  static getItemMenuItems(projectItem: ProjectItem) {
+  static getItemMenuItems(projectItem: ProjectItem, focusFilterPath: string | undefined) {
     let path = "";
 
     if (projectItem.projectPath !== null && projectItem.projectPath !== undefined) {
@@ -120,8 +121,14 @@ export default class ProjectEditorUtilities {
     const itemMenu = [
       {
         key: "focusMenu|" + path,
-        content: "Focus",
-        tag: { path: projectItem.projectPath, action: ProjectEditorItemAction.focus },
+        content: focusFilterPath === projectItem.projectPath ? "Clear focus" : "Focus",
+        tag: {
+          path: projectItem.projectPath,
+          action:
+            focusFilterPath === projectItem.projectPath
+              ? ProjectEditorItemAction.unfocus
+              : ProjectEditorItemAction.focus,
+        },
       },
       {
         key: "download|" + path,

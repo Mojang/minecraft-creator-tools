@@ -46,7 +46,6 @@ import {
   MCPackLabel,
   DownArrowLabel,
   CustomLabel,
-  OpenInExplorerLabel,
   ItemActionsLabel,
 } from "./Labels";
 
@@ -103,6 +102,7 @@ import NewVariant from "./NewVariant";
 import IProjectItemVariantSeed from "../app/IProjectItemVariantSeed";
 import ProjectItemVariantCreateManager from "../app/ProjectItemVariantCreateManager";
 import ProjectMap from "./ProjectMap";
+import IVersionContent from "../storage/IVersionContent";
 
 const EDITOR_TICK_INTERVAL = 50;
 
@@ -155,6 +155,7 @@ interface IProjectEditorState {
   activeProjectItem: ProjectItem | null;
   tentativeProjectItem: ProjectItem | null;
   activeReference: IGitHubInfo | null;
+  undoStackState?: string;
   undoStackIndex?: number;
   mode: ProjectEditorMode;
   itemView: ProjectItemEditorView;
@@ -225,7 +226,6 @@ export enum ProjectStatusAreaMode {
 }
 
 export default class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> {
-  private _authWindow: Window | null = null;
   private _activeEditorPersistable?: IPersistable;
   private _isMountedInternal = false;
   private _lastHashProcessed: string | undefined;
@@ -408,12 +408,15 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       initialMode = this.props.mode;
     }
 
+    let changes = this.props.project.getChangeList();
+
     return {
       activeProjectItem: initialItem,
       tentativeProjectItem: null,
       activeReference: null,
       mode: initialMode,
       visualSeed: 0 + (this.props.visualSeed ? this.props.visualSeed : 0),
+      undoStackState: StorageUtilities.getSerializationOfChangeList(changes),
       allInfoSet: this.props.project.indevInfoSet,
       allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
       menuState: ProjectEditorMenuState.noMenu,
@@ -584,6 +587,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       effectMode: this.state.effectMode,
       dragStyle: this.state.dragStyle,
       visualSeed: this.state.visualSeed,
+      undoStackState: this.state.undoStackState,
       dialog: ProjectEditorDialog.newVariant,
       dialogData: this.state.dialogData,
       dialogActiveItem: this.state.dialogActiveItem,
@@ -608,6 +612,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       dragStyle: this.state.dragStyle,
       activeVariant: name,
       visualSeed: this.state.visualSeed ? this.state.visualSeed + 1 : 1,
+      undoStackState: this.state.undoStackState,
       viewMode: this.state.viewMode,
       allInfoSet: this.props.project.indevInfoSet,
       allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
@@ -681,10 +686,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private _handleItemContentChanged(project: Project, itemUpdate: IProjectItemContentUpdateEvent) {
-    if (
-      itemUpdate.fileUpdate.updateType !== FileUpdateType.regularEdit &&
-      itemUpdate.fileUpdate.updateType !== FileUpdateType.versionlessEdit
-    ) {
+    if (itemUpdate.fileUpdate.updateType === FileUpdateType.regularEdit) {
+      let currentUndoStack = StorageUtilities.getSerializationOfChangeList(this.props.project.getChangeList());
+
+      if (currentUndoStack !== this.state.undoStackState) {
+        this._changeUndoStackState(currentUndoStack);
+      }
+    } else if (itemUpdate.fileUpdate.updateType !== FileUpdateType.versionlessEdit) {
       this._incrementVisualSeed();
     }
   }
@@ -721,6 +729,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           effectMode: undefined,
           dragStyle: undefined,
           visualSeed: this.state.visualSeed ? this.state.visualSeed + 1 : 1,
+          undoStackState: this.state.undoStackState,
           viewMode: this.state.viewMode,
           allInfoSet: this.props.project.indevInfoSet,
           allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
@@ -741,6 +750,37 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
   }
 
+  private _changeUndoStackState(newChanges?: string) {
+    if (this.state !== undefined) {
+      this.setState({
+        activeProjectItem: this.state.activeProjectItem,
+        tentativeProjectItem: this.state.tentativeProjectItem,
+        activeReference: this.state.activeReference,
+        mode: this.state.mode,
+        undoStackIndex: this.state.undoStackIndex,
+        effectMode: undefined,
+        dragStyle: undefined,
+        visualSeed: this.state.visualSeed ? this.state.visualSeed + 1 : 1,
+        undoStackState: newChanges,
+        viewMode: this.state.viewMode,
+        allInfoSet: this.props.project.indevInfoSet,
+        allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
+        displayFileView: this.state.displayFileView,
+        menuState: this.state.menuState,
+        itemView: this.state.itemView,
+        filteredItems: this.state.filteredItems,
+        searchFilter: this.state.searchFilter,
+        statusAreaMode: this.state.statusAreaMode,
+        lastDeployKey: this.state.lastDeployKey,
+        lastExportKey: this.state.lastExportKey,
+        lastDeployFunction: this.state.lastDeployFunction,
+        lastExportFunction: this.state.lastExportFunction,
+        lastDeployData: this.state.lastDeployData,
+        lastExportData: this.state.lastExportData,
+      });
+    }
+  }
+
   private _incrementVisualSeed() {
     if (this.state !== undefined) {
       this.setState({
@@ -752,6 +792,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         effectMode: undefined,
         dragStyle: undefined,
         visualSeed: this.state.visualSeed ? this.state.visualSeed + 1 : 1,
+        undoStackState: this.state.undoStackState,
         viewMode: this.state.viewMode,
         allInfoSet: this.props.project.indevInfoSet,
         allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
@@ -786,6 +827,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           effectMode: this.state.effectMode,
           dragStyle: this.state.dragStyle,
           visualSeed: this.state.visualSeed,
+          undoStackState: this.state.undoStackState,
           viewMode: this.state.viewMode,
           allInfoSet: this.props.project.indevInfoSet,
           allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
@@ -879,6 +921,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
             item.primaryFile.setContentIfSemanticallyDifferent(content);
           }
+
           this._incrementVisualSeed();
         } else if ((this.state.dialogData as IProjectItemSeed).action === ProjectItemSeedAction.fileOrFolder) {
           const folder = (this.state.dialogData as IProjectItemSeed).folder;
@@ -974,6 +1017,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
             effectMode: ProjectEditorEffect.dragOver,
             dragStyle: dragStyle,
             visualSeed: this.state.visualSeed,
+            undoStackState: this.state.undoStackState,
             statusAreaMode: this.state.statusAreaMode,
             lastDeployKey: this.state.lastDeployKey,
             lastExportKey: this.state.lastExportKey,
@@ -1165,6 +1209,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
               effectMode: undefined,
               dragStyle: undefined,
               visualSeed: this.state.visualSeed,
+              undoStackState: this.state.undoStackState,
               dialog: ProjectEditorDialog.integrateItem,
               dialogActiveItem: this.state.activeProjectItem ? this.state.activeProjectItem : undefined,
               dialogData: {
@@ -1818,6 +1863,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         effectMode: this.state.effectMode,
         dragStyle: this.state.dragStyle,
         visualSeed: this.state.visualSeed,
+        undoStackState: this.state.undoStackState,
         dialog: ProjectEditorDialog.shareableLink,
         dialogData: this.state.dialogData,
         dialogActiveItem: this.state.dialogActiveItem,
@@ -1858,6 +1904,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         effectMode: this.state.effectMode,
         dragStyle: this.state.dragStyle,
         visualSeed: this.state.visualSeed,
+        undoStackState: this.state.undoStackState,
         dialog: ProjectEditorDialog.worldSettings,
         dialogData: this.state.dialogData,
         dialogActiveItem: this.state.dialogActiveItem,
@@ -1947,6 +1994,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           effectMode: this.state.effectMode,
           dragStyle: this.state.dragStyle,
           visualSeed: this.state.visualSeed,
+          undoStackState: this.state.undoStackState,
           dialog: ProjectEditorDialog.convertTo,
           dialogActiveItem: projectItem,
           dialogData: {
@@ -3067,6 +3115,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       effectMode: this.state.effectMode,
       dragStyle: this.state.dragStyle,
       visualSeed: this.state.visualSeed,
+      undoStackState: this.state.undoStackState,
       viewMode: this.state.viewMode,
       allInfoSet: this.props.project.indevInfoSet,
       allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
@@ -3118,6 +3167,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           effectMode: this.state.effectMode,
           dragStyle: this.state.dragStyle,
           visualSeed: this.state.visualSeed,
+          undoStackState: this.state.undoStackState,
           viewMode: this.state.viewMode,
           allInfoSet: this.props.project.indevInfoSet,
           allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
@@ -3170,6 +3220,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       effectMode: this.state.effectMode,
       dragStyle: this.state.dragStyle,
       visualSeed: this.state.visualSeed,
+      undoStackState: this.state.undoStackState,
       viewMode: this.state.viewMode,
       allInfoSet: this.props.project.indevInfoSet,
       allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
@@ -3946,7 +3997,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       });
 
       if (this.state.activeProjectItem) {
-        const itemMenuItems = ProjectEditorUtilities.getItemMenuItems(this.state.activeProjectItem);
+        const itemMenuItems = ProjectEditorUtilities.getItemMenuItems(this.state.activeProjectItem, undefined);
 
         for (const item of itemMenuItems) {
           (item as any).onClick = this._itemMenuClick;

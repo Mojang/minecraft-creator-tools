@@ -2295,7 +2295,7 @@ export default class Project {
     }
   }
 
-  public getChangeList() {
+  public getChangeList(): IVersionContent[] {
     if (!this.#projectFolder) {
       return [];
     }

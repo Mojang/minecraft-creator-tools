@@ -649,6 +649,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     ) {
       if (data.tag.action === ProjectEditorItemAction.focus) {
         this._setFocus(data.tag.path);
+      } else if (data.tag.action === ProjectEditorItemAction.unfocus) {
+        this._setFocus(undefined);
       } else {
         this.props.onProjectItemAction(data.tag.path, data.tag.action);
       }
@@ -951,7 +953,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         ),
       });
     } else {
-      const itemMenu = ProjectEditorUtilities.getItemMenuItems(projectItem);
+      const itemMenu = ProjectEditorUtilities.getItemMenuItems(projectItem, this.state.focusFilter);
 
       let path = "";
 
@@ -1441,7 +1443,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
   }
 
   _setFocus(projectItemPath: string | undefined | null) {
-    if (projectItemPath) {
+    if (projectItemPath === null || projectItemPath === undefined) {
+      this._clearFocus();
+    } else {
       this.setState({
         activeItem: this.state.activeItem,
         dialogMode: this.state.dialogMode,

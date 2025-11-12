@@ -1,19 +1,18 @@
 import { createTheme, Theme } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../../app/CreatorToolsHost";
 
 type ThemeMode = "light" | "dark";
 
 export function useTheme() {
   const getInitialMode = () => {
-    const stored = localStorage.getItem("color-mode") as ThemeMode | null;
-    if (stored) return stored;
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    return prefersDark ? "dark" : "light";
+    return CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? "dark" : "light";
   };
 
   const [mode, setMode] = useState<ThemeMode>(getInitialMode());
 
   useEffect(() => {
+    CreatorToolsHost.theme = mode === "dark" ? CreatorToolsThemeStyle.dark : CreatorToolsThemeStyle.light;
     localStorage.setItem("color-mode", mode);
   }, [mode]);
 

@@ -186,6 +186,16 @@ export default class StorageUtilities {
     );
   }
 
+  public static getSerializationOfChangeList(versionContentList: IVersionContent[]) {
+    let str = "";
+
+    for (const versionContent of versionContentList) {
+      str += "|" + versionContent.file.extendedPath + "\n";
+    }
+
+    return str;
+  }
+
   public static getEncodingByFileName(name: string): EncodingType {
     const fileType = this.getTypeFromName(name);
     const nameLow = name.toLowerCase();

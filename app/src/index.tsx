@@ -52,7 +52,9 @@ async function initVsLoader() {
 
 initVsLoader();
 
-let theme = undefined;
+let darkTheme = mergeThemes(teamsDarkTheme, minecraftToolDarkTheme);
+let lightTheme = mergeThemes(teamsTheme, minecraftToolLightTheme);
+
 const storedMode = localStorage.getItem("color-mode") as string;
 
 if (window.location.search.indexOf("theme=l") > 0) {
@@ -69,16 +71,10 @@ if (window.location.search.indexOf("theme=l") > 0) {
   }
 }
 
-if (CreatorToolsHost.theme === CreatorToolsThemeStyle.dark) {
-  theme = mergeThemes(teamsDarkTheme, minecraftToolDarkTheme);
-} else {
-  theme = mergeThemes(teamsTheme, minecraftToolLightTheme);
-}
-
 ReactDOM.render(
   <React.StrictMode>
-    <Provider theme={theme}>
-      <App theme={theme} />
+    <Provider theme={CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? darkTheme : lightTheme}>
+      <App darkTheme={darkTheme} lightTheme={lightTheme} />
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")

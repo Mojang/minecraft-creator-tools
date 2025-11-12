@@ -10,7 +10,7 @@ import IFolder from "../storage/IFolder";
 import { GalleryProjectCommand } from "./ProjectGallery";
 import Log from "../core/Log";
 import { ProjectFocus, ProjectScriptLanguage } from "../app/IProjectData";
-import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
+import CreatorToolsHost, { CreatorToolsThemeStyle, HostType } from "../app/CreatorToolsHost";
 import StorageUtilities from "../storage/StorageUtilities";
 import { ThemeInput } from "@fluentui/react-northstar";
 import { CreatorToolsEditorViewMode } from "../app/ICreatorToolsData";
@@ -42,7 +42,8 @@ export enum AppMode {
 }
 
 interface AppProps {
-  theme: ThemeInput<any>;
+  darkTheme: ThemeInput<any>;
+  lightTheme: ThemeInput<any>;
   fileContentRetriever?: (func: () => Promise<any>) => void;
   saveAllRetriever?: (func: () => Promise<void>) => void;
 }
@@ -1390,6 +1391,10 @@ export default class App extends Component<AppProps, AppState> {
     });
   };
 
+  getTheme() {
+    return CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? this.props.darkTheme : this.props.lightTheme;
+  }
+
   render() {
     let interior = <></>;
 
@@ -1449,7 +1454,7 @@ export default class App extends Component<AppProps, AppState> {
     } else if (this.state.mode === AppMode.importFromUrl) {
       interior = (
         <ImportFromUrl
-          theme={this.props.theme}
+          theme={this.getTheme()}
           creatorTools={CreatorToolsHost.creatorTools}
           key="app-cot"
           project={this.state.activeProject}
@@ -1460,7 +1465,7 @@ export default class App extends Component<AppProps, AppState> {
     } else if (this.state.mode === AppMode.home) {
       interior = (
         <Home
-          theme={{}}
+          theme={this.getTheme()}
           creatorTools={CreatorToolsHost.creatorTools}
           isPersisted={this.state.isPersisted}
           heightOffset={heightOffset}
@@ -1484,7 +1489,7 @@ export default class App extends Component<AppProps, AppState> {
       interior = (
         <ProjectEditor
           creatorTools={CreatorToolsHost.creatorTools}
-          theme={this.props.theme}
+          theme={this.getTheme()}
           hideMainToolbar={true}
           key="app-pe"
           heightOffset={heightOffset}
@@ -1503,7 +1508,7 @@ export default class App extends Component<AppProps, AppState> {
       interior = (
         <ProjectEditor
           creatorTools={CreatorToolsHost.creatorTools}
-          theme={this.props.theme}
+          theme={this.getTheme()}
           hideMainToolbar={true}
           key="app-pea"
           heightOffset={heightOffset}
@@ -1551,7 +1556,7 @@ export default class App extends Component<AppProps, AppState> {
           <ProjectEditor
             creatorTools={CreatorToolsHost.creatorTools}
             key="app-pec"
-            theme={this.props.theme}
+            theme={this.getTheme()}
             heightOffset={heightOffset}
             viewMode={CreatorToolsEditorViewMode.mainFocus}
             project={this.state.activeProject}
@@ -1567,7 +1572,7 @@ export default class App extends Component<AppProps, AppState> {
         interior = (
           <ProjectEditor
             creatorTools={CreatorToolsHost.creatorTools}
-            theme={this.props.theme}
+            theme={this.getTheme()}
             key="app-pef"
             heightOffset={heightOffset}
             project={this.state.activeProject}
@@ -1588,14 +1593,14 @@ export default class App extends Component<AppProps, AppState> {
         id="top-level"
         style={{
           backgroundColor: "#0",
-          color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+          color: this.props.darkTheme.siteVariables?.colorScheme.brand.foreground1,
         }}
       >
         {top}
         <div
           style={{
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+            backgroundColor: this.getTheme().siteVariables?.colorScheme.brand.background1,
+            color: this.getTheme().siteVariables?.colorScheme.brand.foreground1,
           }}
         >
           {top}
