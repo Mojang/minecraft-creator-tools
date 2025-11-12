@@ -130,14 +130,16 @@ export default class LegacyDocumentationDefinition {
     return ldd;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
-    const defString = JSON.stringify(this._data, null, 2);
+    if (!this._data) {
+      return false;
+    }
 
-    this._file.setContent(defString);
+    return this._file.setObjectContentIfSemanticallyDifferent(this._data);
   }
 
   async load() {

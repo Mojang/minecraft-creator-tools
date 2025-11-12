@@ -105,7 +105,7 @@ export default interface MinecraftLiquidDetection {
 
 
 /**
- * Detection_rules (detection_rules)
+ * Detection rules (detection_rules)
  */
 export interface MinecraftLiquidDetectionDetectionRules {
 

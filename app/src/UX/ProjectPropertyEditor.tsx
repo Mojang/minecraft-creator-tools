@@ -22,11 +22,11 @@ import Utilities from "../core/Utilities";
 import GitHubManager from "../github/GitHubManager";
 import AppServiceProxy from "../core/AppServiceProxy";
 import { ProjectEditPreference, ProjectScriptLanguage, ProjectScriptVersion } from "../app/IProjectData";
-import CartoApp, { HostType } from "../app/CartoApp";
+import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
 import ProjectUtilities from "../app/ProjectUtilities";
 import StatusList from "./StatusList";
-import { MinecraftTrack } from "../app/ICartoData";
-import { CartoTargetStrings } from "../app/Carto";
+import { MinecraftTrack } from "../app/ICreatorToolsData";
+import { CartoTargetStrings } from "../app/CreatorTools";
 
 interface IProjectPropertyEditorProps extends IAppProps {
   project: Project;
@@ -55,18 +55,18 @@ export enum GitHubPropertyType {
 
 export const ScriptVersionStrings = ["Latest Stable (2.0)", "Stable 1.x"];
 export const ProjectFocusStrings = ["General", "GameTests", "World", "Sample Behavior", "Editor Extension"];
+export const ProjectEditorPreferences = [
+  "<default Creator Tools preferences>",
+  "Visual editors, plus hide advanced items",
+  "Visual editors",
+  "Raw JSON/JavaScript Editing",
+];
 
 export default class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProjectPropertyEditorState> {
   private tentativeGitHubMode: string = "existing";
   private tentativeGitHubRepoName?: string;
   private tentativeGitHubOwner?: string;
   private tentativeGitHubNewDescription?: string;
-
-  private editorPreferences = [
-    "Simplified editor experience",
-    "Visual editors where possible",
-    "Raw JSON/JavaScript Editing",
-  ];
 
   constructor(props: IProjectPropertyEditorProps) {
     super(props);
@@ -144,7 +144,9 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
 
   _connectToProps() {
     if (this.props.project !== undefined) {
-      this.props.project.onPropertyChanged.subscribe(this._update);
+      if (!this.props.project.onPropertyChanged.has(this._update)) {
+        this.props.project.onPropertyChanged.subscribe(this._update);
+      }
     }
   }
 
@@ -243,7 +245,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
   async _rescanFiles() {
     this.props.project.resetProjectItems();
     await this.props.project.inferProjectItemsFromFilesRootFolder(true);
-    await this.props.carto.notifyStatusUpdate("Rescanned " + this.props.project.projectFolder?.fullPath);
+    await this.props.creatorTools.notifyStatusUpdate("Rescanned " + this.props.project.projectFolder?.fullPath);
     this.forceUpdate();
 
     if (this.props.onContentUpdated) {
@@ -345,7 +347,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
       this.tentativeGitHubRepoName !== undefined &&
       this.tentativeGitHubNewDescription !== undefined
     ) {
-      const gh = this.props.carto.userGitHub;
+      const gh = this.props.creatorTools.userGitHub;
 
       if (gh !== null && gh.authenticatedUser !== undefined && gh.authenticatedUser.name !== null) {
         await gh.createRepo(this.tentativeGitHubRepoName, this.tentativeGitHubNewDescription);
@@ -380,6 +382,8 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     } else {
       this.props.project.preferredScriptLanguage = ProjectScriptLanguage.javaScript;
     }
+
+    this.props.project.save();
   }
 
   _handleTrackChange(
@@ -397,19 +401,25 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     } else {
       this.props.project.track = undefined;
     }
+
+    this.props.project.save();
   }
 
   _handleEditPreferenceChange(
     event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
     data: DropdownProps
   ) {
-    if (data.value === this.editorPreferences[0]) {
+    if (data.value === ProjectEditorPreferences[1]) {
       this.props.project.editPreference = ProjectEditPreference.summarized;
-    } else if (data.value === this.editorPreferences[1]) {
+    } else if (data.value === ProjectEditorPreferences[2]) {
       this.props.project.editPreference = ProjectEditPreference.editors;
-    } else {
+    } else if (data.value === ProjectEditorPreferences[3]) {
       this.props.project.editPreference = ProjectEditPreference.raw;
+    } else {
+      this.props.project.editPreference = ProjectEditPreference.default;
     }
+
+    this.props.project.save();
   }
 
   _handleFocusChange(
@@ -438,7 +448,9 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
   }
 
   _doSignIn() {
-    GitHubManager.onAuthenticated.subscribe(this._handleSignedIn);
+    if (!GitHubManager.onAuthenticated.has(this._handleSignedIn)) {
+      GitHubManager.onAuthenticated.subscribe(this._handleSignedIn);
+    }
     GitHubManager.signIn();
   }
 
@@ -455,7 +467,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
 
     const targetStrings = [];
 
-    const index = this.props.carto.track ? (this.props.carto.track as number) : 0;
+    const index = this.props.creatorTools.track ? (this.props.creatorTools.track as number) : 0;
 
     targetStrings.push("<default to " + CartoTargetStrings[index] + ">");
 
@@ -465,7 +477,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
 
     let gitHubConnect = <></>;
 
-    if (!GitHubManager.isSignedIn && CartoApp.hostType === HostType.webPlusServices) {
+    if (!GitHubManager.isSignedIn && CreatorToolsHost.hostType === HostType.webPlusServices) {
       gitHubInner.push(
         <div className="ppe-signInButton" key="signInButton">
           <Button
@@ -482,13 +494,17 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     if (this.props.project.messages) {
       statusArea = (
         <div className="ppe-statusArea">
-          <StatusList theme={this.props.theme} carto={this.props.carto} status={this.props.project.messages} />
+          <StatusList
+            theme={this.props.theme}
+            creatorTools={this.props.creatorTools}
+            status={this.props.project.messages}
+          />
         </div>
       );
     }
 
     if (
-      CartoApp.hostType === HostType.webPlusServices &&
+      CreatorToolsHost.hostType === HostType.webPlusServices &&
       (this.props.project.gitHubOwner === undefined || this.props.project.gitHubRepoName === undefined)
     ) {
       gitHubInner.push(<div key="notConnected">(project is not connected to GitHub)</div>);
@@ -503,7 +519,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
               <ConnectToGitHub
                 onGitHubProjectUpdated={this._githubProjectUpdated}
                 project={this.props.project}
-                carto={this.props.carto}
+                creatorTools={this.props.creatorTools}
               />
             }
             onConfirm={this._handleConnectToGitHub}
@@ -512,7 +528,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
           />
         );
       }
-    } else if (CartoApp.hostType === HostType.webPlusServices) {
+    } else if (CreatorToolsHost.hostType === HostType.webPlusServices) {
       let gitHubFolder = <></>;
 
       const ghUrl = baseUrl + "#open=gh/" + this.props.project.gitHubOwner + "/" + this.props.project.gitHubRepoName;
@@ -563,7 +579,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
               <ConnectToGitHub
                 onGitHubProjectUpdated={this._githubProjectUpdated}
                 project={this.props.project}
-                carto={this.props.carto}
+                creatorTools={this.props.creatorTools}
               />
             }
             onConfirm={this._handleConnectToGitHub}
@@ -614,7 +630,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
       }
     }
 
-    if (this.props.carto.workingStorage !== null && AppServiceProxy.hasAppServiceOrDebug) {
+    if (this.props.creatorTools.workingStorage !== null && AppServiceProxy.hasAppServiceOrDebug) {
       let rescanStr = "Re-scan files";
 
       const projFolder = this.props.project.projectFolder;
@@ -768,18 +784,18 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
           </div>
           <div className="ppe-defaultEditinput">
             <Dropdown
-              items={this.editorPreferences}
+              items={ProjectEditorPreferences}
               aria-labelledby="ppe-defaultEditlabel"
               placeholder="Select your edit experience"
-              defaultValue={this.editorPreferences[this.props.project.editPreference]}
+              defaultValue={ProjectEditorPreferences[this.props.project.editPreference]}
               onChange={this._handleEditPreferenceChange}
             />
             <div className="ppe-propertyNote">
-              {this.props.project.editPreference === ProjectEditPreference.summarized ||
+              {this.props.project.effectiveEditPreference === ProjectEditPreference.summarized ||
               this.props.project.editPreference === ProjectEditPreference.editors
-                ? "When using visual editors, some existing formatting and comments in JSON files may be removed as you edit"
+                ? "When using visual editors, some existing formatting and comments in JSON files may be removed as you edit."
                 : ""}
-              . You can edit items as Raw JSON using the '...' menu on items in the list.
+              You can edit items as Raw JSON using the '...' menu on items in the list.
             </div>
           </div>
           <div className="ppe-label ppe-scriptLanguagelabel" id="ppe-scriptLanguagelabel">
@@ -872,7 +888,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
           </div>
 
           <div className="ppe-label ppe-ghlabel">
-            {CartoApp.hostType === HostType.webPlusServices ? (
+            {CreatorToolsHost.hostType === HostType.webPlusServices ? (
               <div>
                 <FontAwesomeIcon icon={faGithub} className="fa-lg" />
                 &#160;GitHub

@@ -169,7 +169,7 @@ export default interface MinecraftBehaviorStalkAndPounceOnTarget {
 
 
 /**
- * Stuck_blocks (stuck_blocks)
+ * Stuck blocks (stuck_blocks)
  */
 export interface MinecraftBehaviorStalkAndPounceOnTargetStuckBlocks {
 

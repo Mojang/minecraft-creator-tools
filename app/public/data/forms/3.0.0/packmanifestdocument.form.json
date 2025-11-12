@@ -15,6 +15,12 @@
       "id": "format_version",
       "title": "Format Version",
       "dataType": 0,
+      "validity": [
+        {
+          "comparison": "<=",
+          "value": 255
+        }
+      ],
       "isRequired": true
     },
     {
@@ -47,7 +53,8 @@
       "id": "settings",
       "title": "Settings",
       "dataType": 17,
-      "minLength": 1
+      "minLength": 1,
+      "maxLength": 50
     },
     {
       "id": "subpacks",

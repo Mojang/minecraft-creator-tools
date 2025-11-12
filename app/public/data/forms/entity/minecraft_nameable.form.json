@@ -143,6 +143,12 @@
         "content": {}
       }
     ],
+    "/vanilla/behavior_pack/entities/camel_husk.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:nameable/",
+        "content": {}
+      }
+    ],
     "/vanilla/behavior_pack/entities/cat.json": [
       {
         "path": "/minecraft:entity/components/minecraft:nameable/",
@@ -323,6 +329,12 @@
         "content": {}
       }
     ],
+    "/vanilla/behavior_pack/entities/nautilus.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:nameable/",
+        "content": {}
+      }
+    ],
     "/vanilla/behavior_pack/entities/npc.json": [
       {
         "path": "/minecraft:entity/components/minecraft:nameable/",
@@ -339,6 +351,12 @@
       }
     ],
     "/vanilla/behavior_pack/entities/panda.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:nameable/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/parched.json": [
       {
         "path": "/minecraft:entity/components/minecraft:nameable/",
         "content": {}
@@ -602,6 +620,12 @@
       }
     ],
     "/vanilla/behavior_pack/entities/zombie_horse.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:nameable/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
       {
         "path": "/minecraft:entity/components/minecraft:nameable/",
         "content": {}

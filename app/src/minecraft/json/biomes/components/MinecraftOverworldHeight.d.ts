@@ -38,3 +38,22 @@ export default interface MinecraftOverworldHeight {
   noise_type?: string;
 
 }
+
+
+export enum MinecraftOverworldHeightNoiseType {
+  beach = `beach`,
+  deepOcean = `deep_ocean`,
+  default = `default`,
+  defaultMutated = `default_mutated`,
+  extreme = `extreme`,
+  highlands = `highlands`,
+  lessExtreme = `less_extreme`,
+  lowlands = `lowlands`,
+  mountains = `mountains`,
+  mushroom = `mushroom`,
+  ocean = `ocean`,
+  river = `river`,
+  stoneBeach = `stone_beach`,
+  swamp = `swamp`,
+  taiga = `taiga`
+}

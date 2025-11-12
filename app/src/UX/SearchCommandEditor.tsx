@@ -1,6 +1,6 @@
 import React, { Component, SyntheticEvent } from "react";
 import "./SearchCommandEditor.css";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import {
   FormInput,
   InputProps,
@@ -29,7 +29,7 @@ interface ISearchCommandEditorProps {
   project?: Project;
   heightOffset?: number;
   isLarge: boolean;
-  carto: Carto;
+  creatorTools: CreatorTools;
   displayAbove: boolean;
   onUpdateContent?: (newContent: string) => void;
   onCommit?: (newContent: string) => void;
@@ -98,7 +98,7 @@ export default class SearchCommandEditor extends Component<ISearchCommandEditorP
       return;
     }
 
-    await CommandRunner.runCommandText(this.props.carto, this.state.content);
+    await CommandRunner.runCommandText(this.props.creatorTools, this.state.content);
   }
 
   _handleInputDown(event: React.KeyboardEvent<Element>) {
@@ -132,9 +132,9 @@ export default class SearchCommandEditor extends Component<ISearchCommandEditorP
         const command = this.state.content;
 
         if (command && command.length > 4 && command.startsWith("/")) {
-          this.props.carto.notifyStatusUpdate(command);
+          this.props.creatorTools.notifyStatusUpdate(command);
 
-          this.props.carto.runCommand(command, this.props.project);
+          this.props.creatorTools.runCommand(command, this.props.project);
         }
       }
     }

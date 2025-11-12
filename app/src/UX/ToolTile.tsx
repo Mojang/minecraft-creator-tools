@@ -27,7 +27,7 @@ export default class ToolTile extends Component<IToolTileProps, IToolTileState> 
   _handleNewProject() {}
 
   _toolClick() {
-    ProjectTools.executeTool(this.props.tool, this.props.carto, this.props.project);
+    ProjectTools.executeTool(this.props.tool, this.props.creatorTools, this.props.project);
   }
 
   render() {

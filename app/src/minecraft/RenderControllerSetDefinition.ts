@@ -142,9 +142,9 @@ export default class RenderControllerSetDefinition implements IDefinition {
     return rc;
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     if (this._data) {
@@ -155,9 +155,7 @@ export default class RenderControllerSetDefinition implements IDefinition {
       }
     }
 
-    const pjString = JSON.stringify(this._data, null, 2);
-
-    this._file.setContent(pjString);
+    return this._file.setObjectContentIfSemanticallyDifferent(this._data);
   }
 
   public ensureDefinition(name: string, description: string) {
@@ -174,9 +172,9 @@ export default class RenderControllerSetDefinition implements IDefinition {
       return;
     }
 
-    await this.persist();
-
-    await this._file.saveContent(false);
+    if (await this.persist()) {
+      await this._file.saveContent(false);
+    }
   }
 
   async load() {

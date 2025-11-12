@@ -27,6 +27,7 @@ export interface LogoLocation {
   y: number;
   width: number;
   height: number;
+  imageHeight: number;
   imageWidth: number;
 }
 

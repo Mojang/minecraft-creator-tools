@@ -91,6 +91,15 @@
       "description": "Time range to look at the nearest player.",
       "dataType": 18,
       "samples": {
+        "/vanilla/behavior_pack/entities/zombie_horse.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.look_at_player/",
+            "content": [
+              2,
+              4
+            ]
+          }
+        ],
         "/samples/creator_camp/behavior_packs/creator_camp/entities/campghost.json": [
           {
             "path": "/minecraft:entity/components/minecraft:behavior.look_at_player/",
@@ -184,6 +193,12 @@
             "content": 7
           }
         ],
+        "/vanilla/behavior_pack/entities/camel_husk.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.look_at_player/",
+            "content": 8
+          }
+        ],
         "/vanilla/behavior_pack/entities/cat.json": [
           {
             "path": "/minecraft:entity/components/minecraft:behavior.look_at_player/",
@@ -200,12 +215,6 @@
           {
             "path": "/minecraft:entity/components/minecraft:behavior.look_at_player/",
             "content": 6
-          }
-        ],
-        "/vanilla/behavior_pack/entities/dolphin.json": [
-          {
-            "path": "/minecraft:entity/component_groups/dolphin_swimming_navigation/minecraft:behavior.look_at_player/",
-            "content": 8
           }
         ],
         "/vanilla/behavior_pack/entities/evocation_illager.json": [
@@ -386,6 +395,16 @@
         "path": "/minecraft:entity/components/minecraft:behavior.look_at_player/",
         "content": {
           "priority": 7,
+          "target_distance": 6,
+          "probability": 0.02
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/camel_husk.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.look_at_player/",
+        "content": {
+          "priority": 8,
           "target_distance": 6,
           "probability": 0.02
         }
@@ -642,6 +661,15 @@
           "priority": 8,
           "look_distance": 6,
           "probability": 0.02
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/parched.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.look_at_player/",
+        "content": {
+          "priority": 8,
+          "look_distance": 8
         }
       }
     ],
@@ -950,7 +978,11 @@
         "content": {
           "priority": 7,
           "look_distance": 6,
-          "probability": 0.02
+          "probability": 0.02,
+          "look_time": [
+            2,
+            4
+          ]
         }
       }
     ],
@@ -958,7 +990,7 @@
       {
         "path": "/minecraft:entity/components/minecraft:behavior.look_at_player/",
         "content": {
-          "priority": 8,
+          "priority": 9,
           "look_distance": 6,
           "probability": 0.02
         }

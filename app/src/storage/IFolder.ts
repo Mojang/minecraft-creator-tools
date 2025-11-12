@@ -60,6 +60,8 @@ export default interface IFolder extends IStorageObject {
   getSortedFolderKeys(): string[];
   getSortedFileKeys(): string[];
 
+  scanForChanges(): Promise<void>;
+
   ensureFolderFromRelativePath(serverRelativePath: string): Promise<IFolder>;
   ensureFileFromRelativePath(serverRelativePath: string): Promise<IFile>;
   setStructureFromFileList(fileList: string[]): Promise<void>;

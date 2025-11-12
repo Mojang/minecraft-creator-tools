@@ -481,7 +481,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                 }
 
                 if (chunkCount % 1000 === 0) {
-                  await projectItem.project.carto.notifyStatusUpdate(
+                  await projectItem.project.creatorTools.notifyStatusUpdate(
                     "World data validation: scanned " +
                       chunkCount / 1000 +
                       "K of " +

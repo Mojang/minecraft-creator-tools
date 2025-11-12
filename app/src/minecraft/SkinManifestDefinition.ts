@@ -137,14 +137,16 @@ export default class SkinManifestDefinition {
     return rmj;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
-    const pjString = JSON.stringify(this.definition, null, 2);
+    if (!this.definition) {
+      return false;
+    }
 
-    this._file.setContent(pjString);
+    return this._file.setObjectContentIfSemanticallyDifferent(this.definition);
   }
 
   public ensureDefinition(name: string, description: string) {
@@ -194,9 +196,9 @@ export default class SkinManifestDefinition {
       return;
     }
 
-    this.persist();
-
-    await this._file.saveContent(false);
+    if (this.persist()) {
+      await this._file.saveContent(false);
+    }
   }
 
   async load() {

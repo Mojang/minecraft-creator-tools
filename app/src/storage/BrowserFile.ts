@@ -3,7 +3,7 @@
 
 import FileBase from "./FileBase";
 import BrowserFolder from "./BrowserFolder";
-import IFile from "./IFile";
+import IFile, { FileUpdateType } from "./IFile";
 import BrowserStorage from "./BrowserStorage";
 import StorageUtilities from "./StorageUtilities";
 import localforage from "localforage";
@@ -120,28 +120,37 @@ export default class BrowserFile extends FileBase implements IFile {
     }
   }
 
-  setContent(newContent: string | Uint8Array | null) {
+  async scanForChanges(): Promise<void> {
+    // No-op for browser storage
+  }
+
+  setContent(newContent: string | Uint8Array | null, updateType?: FileUpdateType) {
     const areEqual = StorageUtilities.contentsAreEqual(this._content, newContent);
 
-    if (!areEqual) {
-      if (!this.lastLoadedOrSaved) {
-        this.lastLoadedOrSaved = new Date();
-        this.lastLoadedOrSaved = new Date(this.lastLoadedOrSaved.getTime() - 1);
-        // Log.debugAlert("Setting a file without loading it first.");
-      }
-
-      this._content = newContent;
-
-      if (
-        this.isInErrorState &&
-        typeof newContent === "string" &&
-        StorageUtilities.getMimeType(this) === "application/json"
-      ) {
-        StorageUtilities.getJsonObject(this);
-      }
-
-      this.contentWasModified();
+    if (areEqual) {
+      return false;
     }
+
+    if (!this.lastLoadedOrSaved) {
+      this.lastLoadedOrSaved = new Date();
+      this.lastLoadedOrSaved = new Date(this.lastLoadedOrSaved.getTime() - 1);
+      // Log.debugAlert("Setting a file without loading it first.");
+    }
+
+    let oldContent = this._content;
+    this._content = newContent;
+
+    if (
+      this.isInErrorState &&
+      typeof newContent === "string" &&
+      StorageUtilities.getMimeType(this) === "application/json"
+    ) {
+      StorageUtilities.getJsonObject(this);
+    }
+
+    this.contentWasModified(oldContent, updateType);
+
+    return true;
   }
 
   async saveContent(force?: boolean, skipParentFolderSave?: boolean): Promise<Date> {

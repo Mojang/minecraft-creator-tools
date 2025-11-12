@@ -18,4 +18,7 @@ export default interface IAction {
   value?: string;
   withId?: string;
   setId?: string;
+
+  name?: string;
+  location?: number[];
 }

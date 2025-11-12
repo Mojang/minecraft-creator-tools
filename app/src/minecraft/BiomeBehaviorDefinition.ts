@@ -255,16 +255,18 @@ export default class BiomeBehaviorDefinition implements IManagedComponentSetItem
     return undefined;
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     Log.assert(this._data !== null, "BBDP");
 
-    if (this._data) {
-      this._file.setContent(JSON.stringify(this._data, null, 2));
+    if (!this._data) {
+      return false;
     }
+
+    return this._file.setObjectContentIfSemanticallyDifferent(this._data);
   }
 
   async load() {

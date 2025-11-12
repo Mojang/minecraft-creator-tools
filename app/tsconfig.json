@@ -6,7 +6,11 @@
       "dom.iterable",
       "esnext"
     ],
-    "types": [ "@types/wicg-file-system-access", "mocha"],
+    "types": [
+      "vite/client",
+      "@types/wicg-file-system-access",
+      "mocha"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -31,9 +35,11 @@
     "out",
     "build",
     "toolbuild",
-    "public/**/*",		
+    "public/**/*",
     "src/cli/**/*.ts",
     "src/cli/*.ts",
+    "src/mcp/**/*.ts",
+    "src/mcp/*.ts",
     "src/test/**/*",
     "src/testweb/**/*",
     "src/local/**/*.ts",

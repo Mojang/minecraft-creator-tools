@@ -510,9 +510,7 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
             typeString +
               " version (" +
               ver.join(".") +
-              ") has a lower major version number compared to current version (" +
-              verShort +
-              ")",
+              ") has a lower major version number compared to current version",
             pi
           )
         );
@@ -525,9 +523,7 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
             typeString +
               " version (" +
               ver.join(".") +
-              ") has a higher major version number compared to current version (" +
-              verShort +
-              ")",
+              ") has a higher major version number compared to current version",
             pi
           )
         );
@@ -541,9 +537,7 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
             typeString +
               " version (" +
               ver.join(".") +
-              ") has a lower minor version number compared to the current version or the previous current minor version (" +
-              verShort +
-              ")",
+              ") has a lower minor version number compared to the current version or the previous current minor version",
             pi
           )
         );
@@ -560,9 +554,7 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
             typeString +
               " version (" +
               ver.join(".") +
-              ") has a higher minor version number compared to current version (" +
-              verShort +
-              ")",
+              ") has a higher minor version number compared to current version",
             pi
           )
         );
@@ -576,9 +568,7 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
             typeString +
               " version (" +
               ver.join(".") +
-              ") has a lower patch version number compared to current version (" +
-              verShort +
-              ")",
+              ") has a lower patch version number compared to current version",
             pi
           )
         );
@@ -596,9 +586,7 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
             typeString +
               " version (" +
               ver.join(".") +
-              ") has a higher patch version number compared to current version (" +
-              verShort +
-              ")",
+              ") has a higher patch version number compared to current version",
             pi
           )
         );

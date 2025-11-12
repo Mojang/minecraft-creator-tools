@@ -65,6 +65,9 @@ Donkey - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       "item": "minecraft:copper_horse_armor"
     },
     {
+      "item": "minecraft:netherite_horse_armor"
+    },
+    {
       "item": "saddle"
     }
   ],
@@ -131,6 +134,52 @@ Trader Llama - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_p
     },
     {
       "item": "minecraft:copper_horse_armor"
+    },
+    {
+      "item": "minecraft:netherite_horse_armor"
+    },
+    {
+      "item": "saddle"
+    }
+  ],
+  "tame_event": {
+    "event": "minecraft:on_tame",
+    "target": "self"
+  }
+}
+
+
+Zombie Horse - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_horse.json
+
+"minecraft:tamemount": {
+  "min_temper": 0,
+  "max_temper": 100,
+  "feed_text": "action.interact.feed",
+  "ride_text": "action.interact.mount",
+  "feed_items": [
+    {
+      "item": "red_mushroom",
+      "temper_mod": 10
+    }
+  ],
+  "auto_reject_items": [
+    {
+      "item": "horsearmorleather"
+    },
+    {
+      "item": "horsearmoriron"
+    },
+    {
+      "item": "horsearmorgold"
+    },
+    {
+      "item": "horsearmordiamond"
+    },
+    {
+      "item": "minecraft:copper_horse_armor"
+    },
+    {
+      "item": "minecraft:netherite_horse_armor"
     },
     {
       "item": "saddle"
@@ -253,7 +302,7 @@ export default interface MinecraftTamemount {
 
 
 /**
- * Auto_reject_items (auto_reject_items)
+ * Auto reject items (auto_reject_items)
  */
 export interface MinecraftTamemountAutoRejectItems {
 

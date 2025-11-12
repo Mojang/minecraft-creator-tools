@@ -49,7 +49,12 @@ export default class TemplateManager extends Component<ITemplateManagerProps, IT
   }
 
   private async _handleFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
-    if (!event.target || !event.target.files || event.target.files.length <= 0 || !this.props.carto.packStorage) {
+    if (
+      !event.target ||
+      !event.target.files ||
+      event.target.files.length <= 0 ||
+      !this.props.creatorTools.packStorage
+    ) {
       return;
     }
 
@@ -72,7 +77,7 @@ export default class TemplateManager extends Component<ITemplateManagerProps, IT
 
     let fileCount = 0;
     let fileName = file.name;
-    let packFile = await this.props.carto.packStorage.rootFolder.ensureFileFromRelativePath("/" + fileName);
+    let packFile = await this.props.creatorTools.packStorage.rootFolder.ensureFileFromRelativePath("/" + fileName);
     let packFileExists = await packFile.exists();
 
     while (packFileExists) {
@@ -80,13 +85,13 @@ export default class TemplateManager extends Component<ITemplateManagerProps, IT
 
       fileName =
         StorageUtilities.getBaseFromName(fileName) + " " + fileCount + "." + StorageUtilities.getTypeFromName(fileName);
-      packFile = await this.props.carto.packStorage.rootFolder.ensureFileFromRelativePath("/" + fileName);
+      packFile = await this.props.creatorTools.packStorage.rootFolder.ensureFileFromRelativePath("/" + fileName);
       packFileExists = await packFile.exists();
     }
 
     packFile.setContent(new Uint8Array(arrayBuf));
     await packFile.saveContent();
-    const pack = await this.props.carto.ensurePackForFile(packFile);
+    const pack = await this.props.creatorTools.ensurePackForFile(packFile);
 
     let nextErrorMessage = undefined;
 
@@ -96,14 +101,14 @@ export default class TemplateManager extends Component<ITemplateManagerProps, IT
     }
 
     this.setState({
-      packs: this.props.carto.packs,
+      packs: this.props.creatorTools.packs,
       packReferences: this.state.packReferences,
       errorMessage: nextErrorMessage,
     });
   }
 
   private async load() {
-    await this.props.carto.loadPacks();
+    await this.props.creatorTools.loadPacks();
 
     const newState = {
       packs: this.getPacksCopy(),
@@ -116,8 +121,8 @@ export default class TemplateManager extends Component<ITemplateManagerProps, IT
   getPacksCopy() {
     const packArr = [];
 
-    if (this.props.carto.packs) {
-      for (const pack of this.props.carto.packs) {
+    if (this.props.creatorTools.packs) {
+      for (const pack of this.props.creatorTools.packs) {
         packArr.push(pack);
       }
     }
@@ -129,10 +134,12 @@ export default class TemplateManager extends Component<ITemplateManagerProps, IT
     this.#activeEditorPersistable = newPersistable;
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this.#activeEditorPersistable !== undefined) {
-      await this.#activeEditorPersistable.persist();
+      return await this.#activeEditorPersistable.persist();
     }
+
+    return false;
   }
 
   hasPackRef(packName: string) {
@@ -152,7 +159,7 @@ export default class TemplateManager extends Component<ITemplateManagerProps, IT
       return;
     }
 
-    const pack = this.props.carto.getPackByName(packName, true);
+    const pack = this.props.creatorTools.getPackByName(packName, true);
 
     if (!pack) {
       Log.unexpectedUndefined("EPF");
@@ -223,10 +230,10 @@ export default class TemplateManager extends Component<ITemplateManagerProps, IT
     // let index = 0;
     let defaultValue = undefined;
 
-    if (this.props.carto.packs === undefined) {
+    if (this.props.creatorTools.packs === undefined) {
       return <div>(Opening packs...)</div>;
     }
-    if (this.props.carto.packs.length > 0) {
+    if (this.props.creatorTools.packs.length > 0) {
       li.push({
         name: StorageUtilities.getBaseFromName("__notemplate"),
         value: StorageUtilities.getBaseFromName("__notemplate"),
@@ -237,8 +244,8 @@ export default class TemplateManager extends Component<ITemplateManagerProps, IT
       defaultValue = "__notemplate";
     }
 
-    for (let i = 0; i < this.props.carto.packs.length; i++) {
-      const pack = this.props.carto.packs[i];
+    for (let i = 0; i < this.props.creatorTools.packs.length; i++) {
+      const pack = this.props.creatorTools.packs[i];
 
       if (pack.isWorldType) {
         const packName = StorageUtilities.getBaseFromName(pack.name);

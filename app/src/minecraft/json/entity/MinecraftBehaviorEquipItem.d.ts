@@ -25,6 +25,13 @@ Fox - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entit
 }
 
 
+Parched - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/parched.json
+
+"minecraft:behavior.equip_item": {
+  "priority": 4
+}
+
+
 Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/piglin.json
 
 "minecraft:behavior.equip_item": {
@@ -54,7 +61,7 @@ export default interface MinecraftBehaviorEquipItem {
    * Fox: 2
    *
    *
-   * Piglin: 5
+   * Parched: 4
    *
    */
   priority?: number;

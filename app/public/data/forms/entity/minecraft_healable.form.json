@@ -88,6 +88,19 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/entities/camel_husk.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:healable/",
+        "content": {
+          "items": [
+            {
+              "item": "rabbit_foot",
+              "heal_amount": 2
+            }
+          ]
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/cat.json": [
       {
         "path": "/minecraft:entity/components/minecraft:healable/",
@@ -245,6 +258,59 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/entities/nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_tame/minecraft:healable/",
+        "content": {
+          "items": [
+            {
+              "item": "pufferfish_bucket",
+              "result_item": "water_bucket:0",
+              "heal_amount": 2
+            },
+            {
+              "item": "cod_bucket",
+              "result_item": "water_bucket:0",
+              "heal_amount": 4
+            },
+            {
+              "item": "salmon_bucket",
+              "result_item": "water_bucket:0",
+              "heal_amount": 4
+            },
+            {
+              "item": "tropical_fish_bucket",
+              "result_item": "water_bucket:0",
+              "heal_amount": 2
+            },
+            {
+              "item": "fish",
+              "heal_amount": 4
+            },
+            {
+              "item": "salmon",
+              "heal_amount": 4
+            },
+            {
+              "item": "clownfish",
+              "heal_amount": 2
+            },
+            {
+              "item": "pufferfish",
+              "heal_amount": 2
+            },
+            {
+              "item": "cooked_fish",
+              "heal_amount": 10
+            },
+            {
+              "item": "cooked_salmon",
+              "heal_amount": 12
+            }
+          ]
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/parrot.json": [
       {
         "path": "/minecraft:entity/components/minecraft:healable/",
@@ -378,6 +444,72 @@
             {
               "item": "rabbit_stew",
               "heal_amount": 20
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_horse.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:healable/",
+        "content": {
+          "items": [
+            {
+              "item": "red_mushroom",
+              "heal_amount": 3
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_tame/minecraft:healable/",
+        "content": {
+          "items": [
+            {
+              "item": "pufferfish_bucket",
+              "result_item": "water_bucket:0",
+              "heal_amount": 2
+            },
+            {
+              "item": "cod_bucket",
+              "result_item": "water_bucket:0",
+              "heal_amount": 4
+            },
+            {
+              "item": "salmon_bucket",
+              "result_item": "water_bucket:0",
+              "heal_amount": 4
+            },
+            {
+              "item": "tropical_fish_bucket",
+              "result_item": "water_bucket:0",
+              "heal_amount": 2
+            },
+            {
+              "item": "fish",
+              "heal_amount": 4
+            },
+            {
+              "item": "salmon",
+              "heal_amount": 4
+            },
+            {
+              "item": "clownfish",
+              "heal_amount": 2
+            },
+            {
+              "item": "pufferfish",
+              "heal_amount": 2
+            },
+            {
+              "item": "cooked_fish",
+              "heal_amount": 10
+            },
+            {
+              "item": "cooked_salmon",
+              "heal_amount": 12
             }
           ]
         }

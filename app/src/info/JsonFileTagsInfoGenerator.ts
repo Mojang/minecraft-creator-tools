@@ -68,7 +68,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       let entityComponentSets = entityTypeComponent.featureSets;
 
       if (entityComponentSets) {
-        const ecInCg = entityComponentSets["Components Used in Component Groups"];
+        const ecInCg = entityComponentSets["componentsUsedInComponentGroups"];
 
         if (ecInCg) {
           for (let cgId in ecInCg) {
@@ -81,7 +81,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
             }
           }
         }
-        const defaultEcInCg = entityComponentSets["Default Components"];
+        const defaultEcInCg = entityComponentSets["defaultComponents"];
 
         if (defaultEcInCg) {
           for (let cgId in defaultEcInCg) {
@@ -101,7 +101,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       let blockComponentSets = blockTypeComponent.featureSets;
 
       if (blockComponentSets) {
-        const blockTypeComponents = blockComponentSets["Block Default Components"];
+        const blockTypeComponents = blockComponentSets["blockDefaultComponents"];
 
         if (blockTypeComponents) {
           for (let cgId in blockTypeComponents) {
@@ -115,7 +115,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
           }
         }
 
-        const blockPermutationTypeComponents = blockComponentSets["Block Permutation Components"];
+        const blockPermutationTypeComponents = blockComponentSets["blockPermutationComponents"];
 
         if (blockPermutationTypeComponents) {
           for (let cgId in blockPermutationTypeComponents) {
@@ -135,7 +135,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       let itemComponentSets = itemTypeComponent.featureSets;
 
       if (itemComponentSets) {
-        const itemTypeComponents = itemComponentSets["Components"];
+        const itemTypeComponents = itemComponentSets["components"];
 
         if (itemTypeComponents) {
           for (let cgId in itemTypeComponents) {
@@ -224,7 +224,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         if (entityNode) {
           await this.addSubTags(
             pi,
-            "Default Components",
+            "defaultComponents",
             index,
             AnnotationCategory.entityComponentDependent,
             entityNode["components"]
@@ -236,7 +236,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
             for (const compNodeName in compGroupsNode) {
               await this.addSubTags(
                 pi,
-                "Components Used in Component Groups",
+                "componentsUsedInComponentGroups",
                 index,
                 AnnotationCategory.entityComponentDependentInGroup,
                 compGroupsNode[compNodeName]
@@ -247,7 +247,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
 
           if (eventsNode) {
             for (const evNodeName in eventsNode) {
-              await this.addSubTags(pi, "Entity Events", index, AnnotationCategory.entityEvent, eventsNode[evNodeName]);
+              await this.addSubTags(pi, "entityEvents", index, AnnotationCategory.entityEvent, eventsNode[evNodeName]);
             }
           }
         }
@@ -278,7 +278,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         if (itemNode) {
           await this.addSubTags(
             pi,
-            "Components",
+            "components",
             index,
             AnnotationCategory.itemComponentDependent,
             itemNode["components"]
@@ -311,7 +311,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         if (blockNode) {
           await this.addSubTags(
             pi,
-            "Block Default Components",
+            "blockDefaultComponents",
             index,
             AnnotationCategory.blockComponentDependent,
             blockNode["components"]
@@ -339,7 +339,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
                     permutations *= val.length;
                   }
 
-                  pi.maxFeature("Permutation", "Values per property", val.length);
+                  pi.maxFeature("Permutation", "values_per_property", val.length);
                 }
               }
             }
@@ -403,7 +403,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
               if (permComponentsNode) {
                 await this.addSubTags(
                   pi,
-                  "Block Permutation Components",
+                  "blockPermutationComponents",
                   index,
                   AnnotationCategory.blockComponentDependentInPermutation,
                   permComponentsNode
@@ -436,7 +436,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       if (jsonO && jsonO.texture_data) {
         await this.addSubTags(
           pi,
-          "Terrain Texture Elements",
+          "terrain_texture_elements",
           index,
           AnnotationCategory.terrainTextureSource,
           jsonO.texture_data,
@@ -462,7 +462,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       if (jsonO && jsonO.texture_data) {
         await this.addSubTags(
           pi,
-          "Item Texture Elements",
+          "item_texture_elements",
           index,
           AnnotationCategory.itemTextureSource,
           jsonO.texture_data,
@@ -493,7 +493,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         if (soundDef) {
           await this.addSubTags(
             pi,
-            "Sound definition elements",
+            "sound_definition_elements",
             index,
             AnnotationCategory.soundDefinitionSource,
             soundDef,
@@ -522,7 +522,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       if (jsonO) {
         await this.addSubTags(
           pi,
-          "Music definition elements",
+          "music_definition_elements",
           index,
           AnnotationCategory.musicDefinitionSource,
           jsonO,
@@ -550,19 +550,19 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       if (jsonO) {
         const blockSounds = jsonO["block_sounds"];
         if (blockSounds) {
-          await this.addSubTags(pi, "Block sounds", index, AnnotationCategory.blockSounds, blockSounds, true);
+          await this.addSubTags(pi, "block_sounds", index, AnnotationCategory.blockSounds, blockSounds, true);
         }
 
         const entitySounds = jsonO["entity_sounds"];
         if (entitySounds) {
-          await this.addSubTags(pi, "Entity sounds", index, AnnotationCategory.entitySounds, entitySounds, true);
+          await this.addSubTags(pi, "entity_sounds", index, AnnotationCategory.entitySounds, entitySounds, true);
         }
 
         const individualEventSounds = jsonO["individual_event_sounds"];
         if (individualEventSounds) {
           await this.addSubTags(
             pi,
-            "Individual sounds",
+            "individual_sounds",
             index,
             AnnotationCategory.individualEventSoundsSource,
             individualEventSounds
@@ -573,7 +573,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         if (interactiveSounds) {
           await this.addSubTags(
             pi,
-            "Interactive sounds",
+            "interactive_sounds",
             index,
             AnnotationCategory.interactiveSounds,
             interactiveSounds,

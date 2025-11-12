@@ -47,6 +47,7 @@ export default interface MinecraftVariableMaxAutoStep {
    * Sample Values:
    * Camel: 1.5625
    *
+   *
    * Creaking: 1.0625
    *
    *
@@ -60,6 +61,7 @@ export default interface MinecraftVariableMaxAutoStep {
    * 
    * Sample Values:
    * Camel: 1.5625
+   *
    *
    */
   controlled_value?: number;

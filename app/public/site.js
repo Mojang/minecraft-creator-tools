@@ -57,6 +57,10 @@ if (WcpConsent) {
           },
           []
         );
+
+        // Expose the 1DS instance globally for the Telemetry service
+        window.oneDSInstance = analytics;
+        console.log("1DS ApplicationInsights initialized and exposed to window.oneDSInstance");
       }
     }
   });

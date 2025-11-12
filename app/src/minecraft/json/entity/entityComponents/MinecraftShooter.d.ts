@@ -56,6 +56,15 @@ Llama - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 }
 
 
+Parched - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/parched.json
+
+"minecraft:shooter": {
+  "def": "minecraft:arrow",
+  "sound": "bow",
+  "aux_val": 35
+}
+
+
 Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/piglin.json
 
 "minecraft:shooter": {
@@ -201,14 +210,6 @@ Axe Turret - https://github.com/microsoft/minecraft-samples/tree/main/casual_cre
   "power": 10
 }
 
-
-Bow Turret - https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/bow_turret.behavior.json
-
-"minecraft:shooter": {
-  "def": "minecraft:arrow",
-  "power": 7
-}
-
  */
 
 import * as jsoncommon from './../../../jsoncommon';
@@ -231,6 +232,8 @@ export default interface MinecraftShooter {
    * 
    * Sample Values:
    * Bogged: 26
+   *
+   * Parched: 35
    *
    * Witch: 23
    *
@@ -300,6 +303,7 @@ export default interface MinecraftShooter {
    * Bogged: "bow"
    *
    * Drowned: "item.trident.throw"
+   *
    *
    * Witch: "throw"
    *

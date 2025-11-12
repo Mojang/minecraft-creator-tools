@@ -196,6 +196,48 @@ Breeze - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
 }
 
 
+Camel Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/camel_husk.json
+
+"minecraft:environment_sensor": {
+  "triggers": [
+    {
+      "filters": {
+        "all_of": [
+          {
+            "test": "bool_property",
+            "domain": "minecraft:has_rider_mounted"
+          },
+          {
+            "test": "rider_count",
+            "subject": "self",
+            "value": 0
+          }
+        ]
+      },
+      "event": "minecraft:all_riders_dismounted"
+    },
+    {
+      "filters": {
+        "all_of": [
+          {
+            "test": "bool_property",
+            "domain": "minecraft:has_rider_mounted",
+            "value": false
+          },
+          {
+            "test": "rider_count",
+            "subject": "self",
+            "operator": ">",
+            "value": 0
+          }
+        ]
+      },
+      "event": "minecraft:rider_mounted"
+    }
+  ]
+}
+
+
 Cave Spider - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/cave_spider.json
 
  * At /minecraft:entity/component_groups/minecraft:spider_neutral/minecraft:environment_sensor/: 

@@ -4,6 +4,11 @@
       "id": "direction",
       "title": "Direction",
       "dataType": 24,
+      "defaultValue": [
+        0,
+        0,
+        0
+      ],
       "minLength": 3,
       "maxLength": 3,
       "alternates": [
@@ -25,6 +30,16 @@
                 "id": "version",
                 "title": "Version",
                 "dataType": 0,
+                "validity": [
+                  {
+                    "comparison": ">=",
+                    "value": -32768
+                  },
+                  {
+                    "comparison": "<=",
+                    "value": 32767
+                  }
+                ],
                 "isRequired": true
               }
             ]
@@ -40,6 +55,11 @@
       "id": "offset",
       "title": "Offset",
       "dataType": 24,
+      "defaultValue": [
+        0,
+        0,
+        0
+      ],
       "minLength": 3,
       "maxLength": 3,
       "alternates": [
@@ -61,6 +81,16 @@
                 "id": "version",
                 "title": "Version",
                 "dataType": 0,
+                "validity": [
+                  {
+                    "comparison": ">=",
+                    "value": -32768
+                  },
+                  {
+                    "comparison": "<=",
+                    "value": 32767
+                  }
+                ],
                 "isRequired": true
               }
             ]

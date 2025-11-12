@@ -1,0 +1,6 @@
+{
+  "id": "query.kinetic_weapon_damage_duration",
+  "fields": [],
+  "description": "Returns the \"max_duration\" value of \"damage_conditions\" from the main-hand item's \"minecraft:kinetic_weapon\" component, or 0 if the component is not present.",
+  "title": "Kinetic Weapon Damage Duration"
+}

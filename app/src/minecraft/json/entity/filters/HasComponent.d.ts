@@ -67,6 +67,13 @@ Creeper - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
 
 Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/husk.json
 
+ * At /minecraft:entity/events/minecraft:convert_to_zombie/sequence/0/filters/: 
+{
+  "test": "has_component",
+  "operator": "not",
+  "value": "minecraft:is_baby"
+}
+
  * At /minecraft:entity/events/minecraft:convert_to_zombie/sequence/1/filters/: 
 {
   "test": "has_component",
@@ -74,38 +81,19 @@ Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/enti
 }
 
 
-Panda - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/panda.json
+Nautilus - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/nautilus.json
 
- * At /minecraft:entity/component_groups/minecraft:panda_baby/minecraft:behavior.sneeze/entity_types/0/filters/all_of/0/: 
+ * At /minecraft:entity/events/minecraft:ageable_grow_up/sequence/1/filters/: 
 {
   "test": "has_component",
-  "subject": "other",
-  "operator": "!=",
-  "value": "minecraft:is_baby"
+  "value": "minecraft:is_tamed"
 }
 
- * At /minecraft:entity/events/minecraft:panda_weak/sequence/1/filters/: 
+ * At /minecraft:entity/events/minecraft:ageable_grow_up/sequence/2/filters/: 
 {
-  "test": "has_component",
-  "operator": "==",
-  "value": "minecraft:is_baby"
-}
-
-
-Sheep - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/sheep.json
-
- * At /minecraft:entity/components/minecraft:interact/interactions/0/on_interact/filters/all_of/3/: 
-{
-  "test": "has_component",
-  "value": "minecraft:is_dyeable"
-}
-
- * At /minecraft:entity/events/minecraft:on_eat_block/sequence/1/filters/: 
-{
-  "subject": "self",
   "test": "has_component",
   "operator": "!=",
-  "value": "minecraft:is_baby"
+  "value": "minecraft:is_tamed"
 }
 
  */
@@ -126,8 +114,9 @@ export default interface HasComponent {
    * Sample Values:
    * Axolotl: "!="
    *
-   * Panda: "=="
+   * Husk: "not"
    *
+   * Panda: "=="
    *
    */
   operator?: string;
@@ -174,47 +163,47 @@ export enum HasComponentOperator {
    * @remarks
    * Test for inequality.
    */
-  NotEquals = `!=`,
+  notEquals = `!=`,
   /**
    * @remarks
    * Test for less-than the value.
    */
-  LessThan = `<`,
+  lessThan = `<`,
   /**
    * @remarks
    * Test for less-than or equal to the value.
    */
-  LessThanEquals = `<=`,
+  lessThanEquals = `<=`,
   /**
    * @remarks
    * Test for inequality.
    */
-  LessThanGreaterThan = `<>`,
+  lessThanGreaterThan = `<>`,
   /**
    * @remarks
    * Test for equality.
    */
-  Equals = `=`,
+  equals = `=`,
   /**
    * @remarks
    * Test for equality.
    */
-  EqualsEquals = `==`,
+  equalsEquals = `==`,
   /**
    * @remarks
    * Test for greater-than the value.
    */
-  GreaterThan = `>`,
+  greaterThan = `>`,
   /**
    * @remarks
    * Test for greater-than or equal to the value.
    */
-  GreaterThanEquals = `>=`,
+  greaterThanEquals = `>=`,
   /**
    * @remarks
    * Test for inequality.
    */
-  Not = `not`
+  not = `not`
 }
 
 
@@ -223,35 +212,35 @@ export enum HasComponentSubject {
    * @remarks
    * The block involved with the interaction.
    */
-  Block = `block`,
+  block = `block`,
   /**
    * @remarks
    * The damaging actor involved with the interaction.
    */
-  Damager = `damager`,
+  damager = `damager`,
   /**
    * @remarks
    * The other member of an interaction, not the caller.
    */
-  Other = `other`,
+  other = `other`,
   /**
    * @remarks
    * The caller's current parent.
    */
-  Parent = `parent`,
+  parent = `parent`,
   /**
    * @remarks
    * The player involved with the interaction.
    */
-  Player = `player`,
+  player = `player`,
   /**
    * @remarks
    * The entity or object calling the test
    */
-  Self = `self`,
+  self = `self`,
   /**
    * @remarks
    * The caller's current target.
    */
-  Target = `target`
+  target = `target`
 }

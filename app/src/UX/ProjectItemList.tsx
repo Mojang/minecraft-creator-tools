@@ -74,6 +74,7 @@ interface IProjectItemListProps extends IAppProps {
   onVisualSeedUpdateRequested: () => void;
   filteredItems?: IAnnotatedValue[];
   searchFilter?: string;
+  initialFocusPath?: string;
   project: Project | null;
   visualSeed?: number;
   editorMode: ProjectEditorMode;
@@ -89,7 +90,9 @@ interface IProjectItemListState {
   activeItem: ProjectItem | undefined;
   dialogMode: ProjectItemListDialogType;
   maxItemsToShow: number;
+  didApplyFocusPath?: boolean;
   packFilter?: string;
+  focusFilter?: string;
   newItemType?: ProjectItemType;
   activeProjectInfoSet?: ProjectInfoSet | undefined;
   collapsedItemTypes: number[];
@@ -132,6 +135,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
   constructor(props: IProjectItemListProps) {
     super(props);
 
+    this._clearFocus = this._clearFocus.bind(this);
     this._handleItemSelected = this._handleItemSelected.bind(this);
     this._handleProjectChanged = this._handleProjectChanged.bind(this);
     this._projectUpdated = this._projectUpdated.bind(this);
@@ -161,7 +165,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       activeItem: undefined,
       dialogMode: ProjectItemListDialogType.noDialog,
       maxItemsToShow: 300,
-      collapsedItemTypes: this.props.carto.collapsedTypes,
+      didApplyFocusPath: false,
+      collapsedItemTypes: this.props.creatorTools.collapsedTypes,
       collapsedStoragePaths: this.props.project ? this.props.project.collapsedStoragePaths : [],
     };
 
@@ -195,7 +200,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           activeItem: this.state.activeItem,
           dialogMode: this.state.dialogMode,
           packFilter: this.state.packFilter,
-
+          didApplyFocusPath: this.state.didApplyFocusPath,
+          focusFilter: this.state.focusFilter,
           maxItemsToShow: this.state.maxItemsToShow + Math.min(this.state.maxItemsToShow, 1100),
           contextFocusedItem: this.state.contextFocusedItem,
           collapsedItemTypes: this.state.collapsedItemTypes,
@@ -253,12 +259,29 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       this._loadItems();
 
       if (this.props.project != null) {
-        this.props.project.onItemAdded.subscribe(this._handleProjectChanged);
-        this.props.project.onPropertyChanged.subscribe(this._handleProjectChanged);
-        this.props.project.onItemRemoved.subscribe(this._handleProjectChanged);
-        this.props.project.onItemChanged.subscribe(this._handleProjectChanged);
-        this.props.project.onNeedsSaveChanged.subscribe(this._handleProjectChanged);
-        this.props.project.onSaved.subscribe(this._handleProjectChanged);
+        if (!this.props.project.onItemAdded.has(this._handleProjectChanged)) {
+          this.props.project.onItemAdded.subscribe(this._handleProjectChanged);
+        }
+
+        if (!this.props.project.onPropertyChanged.has(this._handleProjectChanged)) {
+          this.props.project.onPropertyChanged.subscribe(this._handleProjectChanged);
+        }
+
+        if (!this.props.project.onItemRemoved.has(this._handleProjectChanged)) {
+          this.props.project.onItemRemoved.subscribe(this._handleProjectChanged);
+        }
+
+        if (!this.props.project.onItemChanged.has(this._handleProjectChanged)) {
+          this.props.project.onItemChanged.subscribe(this._handleProjectChanged);
+        }
+
+        if (!this.props.project.onNeedsSaveChanged.has(this._handleProjectChanged)) {
+          this.props.project.onNeedsSaveChanged.subscribe(this._handleProjectChanged);
+        }
+
+        if (!this.props.project.onSaved.has(this._handleProjectChanged)) {
+          this.props.project.onSaved.subscribe(this._handleProjectChanged);
+        }
       }
     }
   }
@@ -297,6 +320,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     } else {
       this.props.project.showHiddenItems = true;
     }
+
     this._loadItems();
   }
 
@@ -324,7 +348,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         activeItem: this.state.activeItem,
         dialogMode: this.state.dialogMode,
         maxItemsToShow: this.state.maxItemsToShow,
+        didApplyFocusPath: this.state.didApplyFocusPath,
         packFilter: this.state.packFilter === (event as any).content ? undefined : (event as any).content,
+        focusFilter: this.state.focusFilter,
         contextFocusedItem: this.state.contextFocusedItem,
         collapsedItemTypes: this.state.collapsedItemTypes,
         collapsedStoragePaths: this.state.collapsedStoragePaths,
@@ -425,7 +451,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       dialogMode: ProjectItemListDialogType.noDialog,
       maxItemsToShow: this.state.maxItemsToShow,
       packFilter: this.state.packFilter,
+      focusFilter: this.state.focusFilter,
       contextFocusedItem: this.state.contextFocusedItem,
+      didApplyFocusPath: this.state.didApplyFocusPath,
       collapsedItemTypes: this.state.collapsedItemTypes,
       collapsedStoragePaths: this.state.collapsedStoragePaths,
     });
@@ -454,8 +482,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       dialogMode: ProjectItemListDialogType.noDialog,
       maxItemsToShow: this.state.maxItemsToShow,
       packFilter: this.state.packFilter,
-
+      focusFilter: this.state.focusFilter,
       contextFocusedItem: this.state.contextFocusedItem,
+      didApplyFocusPath: this.state.didApplyFocusPath,
       collapsedItemTypes: this.state.collapsedItemTypes,
       collapsedStoragePaths: this.state.collapsedStoragePaths,
     });
@@ -471,7 +500,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       dialogMode: ProjectItemListDialogType.noDialog,
       maxItemsToShow: this.state.maxItemsToShow,
       packFilter: this.state.packFilter,
-
+      focusFilter: this.state.focusFilter,
+      didApplyFocusPath: this.state.didApplyFocusPath,
       contextFocusedItem: this.state.contextFocusedItem,
       collapsedItemTypes: this.state.collapsedItemTypes,
       collapsedStoragePaths: this.state.collapsedStoragePaths,
@@ -486,23 +516,24 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         const liIndex = parseInt(data.content.key.substring(period + 1));
 
         if (!isNaN(liIndex)) {
-          if (this.props.carto.collapsedTypes.includes(liIndex)) {
-            this.props.carto.ensureTypeIsNotCollapsed(liIndex);
+          if (this.props.creatorTools.collapsedTypes.includes(liIndex)) {
+            this.props.creatorTools.ensureTypeIsNotCollapsed(liIndex);
             this._loadItems();
           } else {
-            this.props.carto.ensureTypeIsCollapsed(liIndex);
+            this.props.creatorTools.ensureTypeIsCollapsed(liIndex);
           }
 
-          this.props.carto.save();
+          this.props.creatorTools.save();
 
           this.setState({
             activeItem: this.state.activeItem,
             dialogMode: this.state.dialogMode,
             packFilter: this.state.packFilter,
-
+            focusFilter: this.state.focusFilter,
+            didApplyFocusPath: this.state.didApplyFocusPath,
             maxItemsToShow: this.state.maxItemsToShow,
             contextFocusedItem: this.state.contextFocusedItem,
-            collapsedItemTypes: this.props.carto.collapsedTypes,
+            collapsedItemTypes: this.props.creatorTools.collapsedTypes,
             collapsedStoragePaths: this.state.collapsedStoragePaths,
           });
         }
@@ -517,18 +548,19 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         const showName = "Show " + ProjectItemUtilities.getPluralDescriptionForType(i) + " items";
 
         if (hideName === e.currentTarget.title || showName === e.currentTarget.title) {
-          this.props.carto.ensureAllTypesCollapsedExcept(i);
+          this.props.creatorTools.ensureAllTypesCollapsedExcept(i);
 
-          this.props.carto.save();
+          this.props.creatorTools.save();
 
           this.setState({
             activeItem: this.state.activeItem,
             dialogMode: this.state.dialogMode,
             packFilter: this.state.packFilter,
-
+            focusFilter: this.state.focusFilter,
+            didApplyFocusPath: this.state.didApplyFocusPath,
             maxItemsToShow: this.state.maxItemsToShow,
             contextFocusedItem: this.state.contextFocusedItem,
-            collapsedItemTypes: this.props.carto.collapsedTypes,
+            collapsedItemTypes: this.props.creatorTools.collapsedTypes,
             collapsedStoragePaths: this.state.collapsedStoragePaths,
           });
           return;
@@ -564,10 +596,11 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
                   activeItem: this.state.activeItem,
                   dialogMode: this.state.dialogMode,
                   packFilter: this.state.packFilter,
-
+                  focusFilter: this.state.focusFilter,
+                  didApplyFocusPath: this.state.didApplyFocusPath,
                   maxItemsToShow: this.state.maxItemsToShow,
                   contextFocusedItem: this.state.contextFocusedItem,
-                  collapsedItemTypes: this.props.carto.collapsedTypes,
+                  collapsedItemTypes: this.props.creatorTools.collapsedTypes,
                   collapsedStoragePaths: this.props.project.collapsedStoragePaths,
                 });
 
@@ -596,7 +629,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         dialogMode: this.state.dialogMode,
         maxItemsToShow: this.state.maxItemsToShow,
         packFilter: this.state.packFilter,
-
+        focusFilter: this.state.focusFilter,
+        didApplyFocusPath: this.state.didApplyFocusPath,
         contextFocusedItem: undefined,
         collapsedItemTypes: this.state.collapsedItemTypes,
         collapsedStoragePaths: this.state.collapsedStoragePaths,
@@ -613,7 +647,11 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       data.tag.action !== undefined &&
       data.tag.path !== undefined
     ) {
-      this.props.onProjectItemAction(data.tag.path, data.tag.action);
+      if (data.tag.action === ProjectEditorItemAction.focus) {
+        this._setFocus(data.tag.path);
+      } else {
+        this.props.onProjectItemAction(data.tag.path, data.tag.action);
+      }
     }
 
     e.stopPropagation();
@@ -645,7 +683,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
           additionalData = (
             <span className="pil-stats" title={statSummary}>
-              {countVal} - {totalVal}b
+              {countVal} @ {totalVal}b
             </span>
           );
         }
@@ -654,7 +692,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     let toggle = <></>;
 
-    const isExpanded = !this.props.carto.collapsedTypes.includes(itemType);
+    const isExpanded = !this.props.creatorTools.collapsedTypes.includes(itemType);
 
     if (isToggleable) {
       toggle = (
@@ -798,7 +836,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     projectListItems: ListItemProps[],
     projectItem: ProjectItem,
     isGitHubRef: boolean,
-    itemIndex: number
+    itemIndex: number,
+    isFocused?: boolean
   ) {
     let name = StorageUtilities.getBaseFromName(projectItem.name);
     let sourceImage = "";
@@ -844,7 +883,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         itemItems.push(
           <span
             className="pil-itemIcon"
-            key={"pil-ij." + projectItem.projectPath}
+            key={"pil-ij." + projectItem.projectPath + (isFocused ? ".focus" : "")}
             style={{
               gridColumn: issues ? 3 : 4,
               backgroundImage: sourceImage,
@@ -867,7 +906,11 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         }
 
         itemItems.push(
-          <span className="pil-itemIndicatorRO" title={errorMessage} key={"pil-ii" + projectItem.projectPath}>
+          <span
+            className="pil-itemIndicatorRO"
+            title={errorMessage}
+            key={"pil-ii" + projectItem.projectPath + (isFocused ? ".focus" : "")}
+          >
             {issues.length}
           </span>
         );
@@ -881,9 +924,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
       (projectListItems as any).push({
         accessibility: selectableListItemBehavior,
-        key: "pila-ro" + projectItem.projectPath,
+        key: "pila-ro" + projectItem.projectPath + (isFocused ? ".focus" : ""),
         content: (
-          <div className="pil-item" key={"pil-ro" + projectItem.projectPath}>
+          <div className="pil-item" key={"pil-ro" + projectItem.projectPath + (isFocused ? ".focus" : "")}>
             <div
               className="pil-itemTypeTag"
               style={{ backgroundColor: ColorUtilities.toCss(typeColor) }}
@@ -946,7 +989,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       itemItems.push(
         <div
           className="pil-itemTypeTag"
-          key={"pil-itt." + projectItem.projectPath}
+          key={"pil-itt." + projectItem.projectPath + (isFocused ? ".focus" : "")}
           style={{ backgroundColor: ColorUtilities.toCss(typeColor) }}
           aria-hidden="true"
           role="presentation"
@@ -966,13 +1009,13 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
       itemItems.push(
         <MenuButton
-          key={"pil-mb." + projectItem.projectPath}
+          key={"pil-mb." + projectItem.projectPath + (isFocused ? ".focus" : "")}
           contextMenu={itemIndex !== this.state.contextFocusedItem}
           open={itemIndex === this.state.contextFocusedItem ? true : undefined}
           onBlur={this._itemContextBlurred}
           trigger={
             <span
-              className="pil-itemLabel"
+              className={isFocused ? "pil-itemLabelFocused" : "pil-itemLabel"}
               style={{
                 gridColumnStart: 2,
                 gridColumnEnd: 2 + nameSpan,
@@ -1012,7 +1055,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
               gridColumn: issues ? 3 : 4,
               backgroundImage: sourceImage,
             }}
-            key={"pil-mba." + projectItem.projectPath}
+            key={"pil-mba." + projectItem.projectPath + (isFocused ? ".focus" : "")}
             trigger={
               <span
                 className={
@@ -1044,7 +1087,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
               color: this.props.theme.siteVariables?.colorScheme.brand.foreground4,
             }}
             className="pil-itemIndicator"
-            key={"pil-mbc." + projectItem.projectPath}
+            key={"pil-mbc." + projectItem.projectPath + (isFocused ? ".focus" : "")}
             title={errorMessage}
             trigger={<div className="pil-itemIndicatorInterior">{issues.length}</div>}
             menu={itemMenu}
@@ -1055,7 +1098,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
       (projectListItems as any).push({
         accessibility: selectableListItemBehavior,
-        key: "pila-eoa" + projectItem.projectPath,
+        key: "pila-eoa" + projectItem.projectPath + (isFocused ? ".focus" : ""),
         content: (
           <div className="pil-item" key={"pil-eoa" + projectItem.projectPath} aria-haspopup={true}>
             {itemItems}
@@ -1209,6 +1252,27 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           needsUpdate = true;
         }
       }
+
+      if (
+        !this.state.didApplyFocusPath &&
+        this.props.initialFocusPath &&
+        projectItem.projectPath &&
+        this.props.initialFocusPath.length > 0
+      ) {
+        if (StorageUtilities.canonicalizePath(projectItem.projectPath).endsWith(this.props.initialFocusPath)) {
+          this.setState({
+            activeItem: this.state.activeItem,
+            dialogMode: this.state.dialogMode,
+            maxItemsToShow: this.state.maxItemsToShow,
+            packFilter: this.state.packFilter,
+            focusFilter: projectItem.projectPath,
+            didApplyFocusPath: true,
+            contextFocusedItem: this.state.contextFocusedItem,
+            collapsedItemTypes: this.state.collapsedItemTypes,
+            collapsedStoragePaths: this.state.collapsedStoragePaths,
+          });
+        }
+      }
     }
 
     if (needsUpdate) {
@@ -1230,7 +1294,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
             dialogMode: this.state.dialogMode,
             maxItemsToShow: this.state.maxItemsToShow,
             packFilter: this.state.packFilter,
-
+            focusFilter: this.state.focusFilter,
+            didApplyFocusPath: this.state.didApplyFocusPath,
             contextFocusedItem: curIndex,
             collapsedItemTypes: this.state.collapsedItemTypes,
             collapsedStoragePaths: this.state.collapsedStoragePaths,
@@ -1258,6 +1323,10 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       return AnnotatedValueSet.includes(this.props.filteredItems, projectItem.projectPath);
     }
 
+    if (this.state.focusFilter) {
+      return ProjectItemUtilities.isDescendentOfPath(projectItem, this.state.focusFilter);
+    }
+
     const cat = ProjectItemUtilities.getCategory(projectItem.itemType);
 
     if (this.state.packFilter) {
@@ -1280,7 +1349,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       return false;
     }
 
-    if (this.props.project.showHiddenItems) {
+    if (this.props.project.effectiveShowHiddenItems) {
       return true;
     }
 
@@ -1340,7 +1409,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         projectItem.itemType === ProjectItemType.personaManifestJson ||
         projectItem.itemType === ProjectItemType.ninesliceJson ||
         projectItem.itemType === ProjectItemType.worldTemplateManifestJson) &&
-      this.props.project.editPreference === ProjectEditPreference.summarized
+      this.props.project.effectiveEditPreference === ProjectEditPreference.summarized
     ) {
       perTypeShouldShow = false;
     }
@@ -1348,13 +1417,43 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     return (
       (projectItem.creationType === undefined ||
         projectItem.creationType === ProjectItemCreationType.normal ||
-        this.props.project.showHiddenItems) &&
+        this.props.project.effectiveShowHiddenItems) &&
       perTypeShouldShow &&
       (projectItem.itemType !== ProjectItemType.unknownJson || !fileName.startsWith(".")) && // hide files like .prettierrc.json from view
       (projectItem.itemType !== ProjectItemType.unknownJson || !fileName.startsWith("extensions")) && // hide files like extensions.json from view
       (projectItem.itemType !== ProjectItemType.unknownJson || !fileName.startsWith("settings")) && // hide files like settings.json from view
       (projectItem.gitHubReference === undefined || projectItem.gitHubReference.owner === undefined)
     );
+  }
+
+  _clearFocus() {
+    this.setState({
+      activeItem: this.state.activeItem,
+      dialogMode: this.state.dialogMode,
+      packFilter: this.state.packFilter,
+      focusFilter: undefined,
+      didApplyFocusPath: this.state.didApplyFocusPath,
+      maxItemsToShow: this.state.maxItemsToShow,
+      contextFocusedItem: this.state.contextFocusedItem,
+      collapsedItemTypes: this.state.collapsedItemTypes,
+      collapsedStoragePaths: this.state.collapsedStoragePaths,
+    });
+  }
+
+  _setFocus(projectItemPath: string | undefined | null) {
+    if (projectItemPath) {
+      this.setState({
+        activeItem: this.state.activeItem,
+        dialogMode: this.state.dialogMode,
+        packFilter: this.state.packFilter,
+        didApplyFocusPath: this.state.didApplyFocusPath,
+        focusFilter: projectItemPath,
+        maxItemsToShow: this.state.maxItemsToShow,
+        contextFocusedItem: this.state.contextFocusedItem,
+        collapsedItemTypes: this.state.collapsedItemTypes,
+        collapsedStoragePaths: this.state.collapsedStoragePaths,
+      });
+    }
   }
 
   render() {
@@ -1381,6 +1480,14 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         </div>
       </div>
     );
+
+    const focusMenuItems: ShorthandCollection<MenuItemProps> = [];
+    const entityMenuItems: ShorthandCollection<MenuItemProps> = [];
+    let addedEntityMenu = false;
+    const blockMenuItems: ShorthandCollection<MenuItemProps> = [];
+    let addedBlockMenu = false;
+    const itemMenuItems: ShorthandCollection<MenuItemProps> = [];
+    let addedItemMenu = false;
 
     (projectListItems as any).push({
       accessibility: listItemBehavior,
@@ -1473,8 +1580,86 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     if (this.props.project) {
       const projectItems = this._getSortedItems();
 
+      if (this.state.focusFilter) {
+        let focusItem = undefined;
+
+        for (let i = 0; i < projectItems.length && itemsAdded < this.state.maxItemsToShow; i++) {
+          const projectItem = projectItems[i];
+
+          if (projectItem.projectPath === this.state.focusFilter) {
+            focusItem = projectItem;
+            break;
+          }
+        }
+
+        if (focusItem) {
+          this._addProjectItem(projectListItems, focusItem, false, itemsAdded, true);
+        }
+
+        itemsAdded++;
+      }
+
       for (let i = 0; i < projectItems.length && itemsAdded < this.state.maxItemsToShow; i++) {
         const projectItem = projectItems[i];
+
+        if (projectItem.itemType === ProjectItemType.entityTypeBehavior) {
+          entityMenuItems.push({
+            key: "fe-" + projectItem.projectPath,
+            content: Utilities.humanifyMinecraftName(StorageUtilities.getBaseFromName(projectItem.name)),
+            onClick: () => {
+              this._setFocus(projectItem.projectPath);
+            },
+          });
+
+          if (!addedEntityMenu) {
+            addedEntityMenu = true;
+
+            focusMenuItems.push({
+              key: "focus-entities-header",
+              content: "Entities",
+              kind: "header",
+              menu: entityMenuItems,
+            });
+          }
+        } else if (projectItem.itemType === ProjectItemType.blockTypeBehavior) {
+          blockMenuItems.push({
+            key: "fb-" + projectItem.projectPath,
+            content: Utilities.humanifyMinecraftName(StorageUtilities.getBaseFromName(projectItem.name)),
+            onClick: () => {
+              this._setFocus(projectItem.projectPath);
+            },
+          });
+
+          if (!addedBlockMenu) {
+            addedBlockMenu = true;
+
+            focusMenuItems.push({
+              key: "focus-blocks-header",
+              content: "Blocks",
+              kind: "header",
+              menu: blockMenuItems,
+            });
+          }
+        } else if (projectItem.itemType === ProjectItemType.itemTypeBehavior) {
+          itemMenuItems.push({
+            key: "fi-" + projectItem.projectPath,
+            content: Utilities.humanifyMinecraftName(StorageUtilities.getBaseFromName(projectItem.name)),
+            onClick: () => {
+              this._setFocus(projectItem.projectPath);
+            },
+          });
+
+          if (!addedItemMenu) {
+            addedItemMenu = true;
+
+            focusMenuItems.push({
+              key: "focus-items-header",
+              content: "Items",
+              kind: "header",
+              menu: itemMenuItems,
+            });
+          }
+        }
 
         if (projectItem !== undefined && projectItem.projectPath !== null && projectItem.projectPath !== undefined) {
           if (this.shouldShowProjectItem(projectItem)) {
@@ -1571,38 +1756,71 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     const showMenuItems: ShorthandCollection<MenuItemProps> = [];
 
-    if (this.props.project?.editPreference === ProjectEditPreference.summarized) {
+    showMenuItems.push({
+      icon: (
+        <FunctionsIcon
+          theme={this.props.theme}
+          isSelected={this.props.project?.showFunctions === true}
+          isCompact={true}
+        />
+      ),
+      content: "Script and Functions",
+      key: "pil-hideShowFunctions",
+      onClick: this._showFunctionsClick,
+      title: "Toggle whether functions and scripts are shown",
+    });
+
+    showMenuItems.push({
+      icon: <TypesIcon theme={this.props.theme} isSelected={this.props.project?.showTypes === true} isCompact={true} />,
+      key: "pil-hideShowTypes",
+      content: "Types",
+      onClick: this._showTypesClick,
+      title: "Toggle whether world details and entity, block, and item types are shown",
+    });
+
+    showMenuItems.push({
+      icon: (
+        <AssetsIcon theme={this.props.theme} isSelected={this.props.project?.showAssets === true} isCompact={true} />
+      ),
+      key: "pil-hideShowAssets",
+      content: "Assets",
+      onClick: this._showAssetsClick,
+      title: "Toggle whether assets (models, images, UI and sound) are shown",
+    });
+
+    if (addedEntityMenu || addedItemMenu || addedBlockMenu || this.state.focusFilter) {
       showMenuItems.push({
-        icon: (
-          <FunctionsIcon theme={this.props.theme} isSelected={this.props.project?.showFunctions} isCompact={true} />
-        ),
-        content: "Script and Functions",
-        key: "pil-hideShowFunctions",
-        onClick: this._showFunctionsClick,
-        title: "Toggle whether functions and scripts are shown",
+        key: "dividerShow",
+        kind: "divider",
       });
 
-      showMenuItems.push({
-        icon: <TypesIcon theme={this.props.theme} isSelected={this.props.project?.showTypes} isCompact={true} />,
-        key: "pil-hideShowTypes",
-        content: "Types",
-        onClick: this._showTypesClick,
-        title: "Toggle whether world details and entity, block, and item types are shown",
-      });
+      if (this.state.focusFilter) {
+        showMenuItems.push({
+          key: "pil-clearFocus",
+          content: "Clear focus",
+          onClick: this._clearFocus,
+          title: "Clear focus",
+        });
+      }
 
-      showMenuItems.push({
-        icon: <AssetsIcon theme={this.props.theme} isSelected={this.props.project?.showAssets} isCompact={true} />,
-        key: "pil-hideShowAssets",
-        content: "Assets",
-        onClick: this._showAssetsClick,
-        title: "Toggle whether assets (models, images, UI and sound) are shown",
-      });
+      if (addedEntityMenu || addedItemMenu || addedBlockMenu) {
+        showMenuItems.push({
+          key: "pil-focus",
+          content: "Focus on...",
+          menu: {
+            items: focusMenuItems,
+          },
+          title: "Focus on",
+        });
+      }
+    }
 
+    if (this.props.project?.effectiveEditPreference === ProjectEditPreference.summarized) {
       showMenuItems.push({
         icon: (
           <AdvancedFilesIcon
             theme={this.props.theme}
-            isSelected={this.props.project?.showHiddenItems}
+            isSelected={this.props.project?.effectiveShowHiddenItems === true}
             isCompact={true}
           />
         ),
@@ -1645,7 +1863,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     if (this.props.project && !this.props.readOnly && this.props.project.role !== ProjectRole.explorer) {
       splitButton = (
         <ProjectAddButton
-          carto={this.props.carto}
+          creatorTools={this.props.creatorTools}
           heightOffset={this.props.heightOffset}
           theme={this.props.theme}
           project={this.props.project}
@@ -1670,7 +1888,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           }}
         >
           {splitButton}
-          <div className={this.props.readOnly ? "pil-newarea" : "pil-commands"}>
+          <div className={this.props.readOnly ? "pil-newarea" : "pil-showMenu"}>
             <MenuButton
               menu={showMenuItems}
               trigger={

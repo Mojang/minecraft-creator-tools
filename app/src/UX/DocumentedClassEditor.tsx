@@ -5,7 +5,6 @@ import "./DocumentedClassEditor.css";
 import DocumentedClass from "../minecraft/docs/DocumentedClass";
 import DataForm, { IDataFormProps } from "../dataform/DataForm";
 import Database from "../minecraft/Database";
-import CartoApp from "../app/CartoApp";
 import Project from "../app/Project";
 import { ThemeInput } from "@fluentui/react-northstar";
 import StorageUtilities from "../storage/StorageUtilities";
@@ -15,6 +14,7 @@ import Log from "../core/Log";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import IFormDefinition from "../dataform/IFormDefinition";
 import Utilities from "../core/Utilities";
+import CreatorTools from "../app/CreatorTools";
 
 interface IDocumentedClassEditorProps extends IFileProps {
   heightOffset: number;
@@ -22,7 +22,7 @@ interface IDocumentedClassEditorProps extends IFileProps {
   typesReadOnly: boolean;
   docsReadOnly: boolean;
   docClass: DocumentedClass;
-  carto: CartoApp;
+  creatorTools: CreatorTools;
   project: Project;
   onDocumentedClassUpdate?: (docClass: DocumentedClass) => void;
 }
@@ -39,8 +39,8 @@ export default class DocumentedClassEditor extends Component<IDocumentedClassEdi
     this._handleDataFormPropertyChange = this._handleDataFormPropertyChange.bind(this);
   }
 
-  async persist() {
-    await this.props.docClass.persist();
+  async persist(): Promise<boolean> {
+    return await this.props.docClass.persist();
   }
 
   static getDerivedStateFromProps(props: IDocumentedClassEditorProps, state: IDocumentedClassEditorState) {
@@ -85,9 +85,7 @@ export default class DocumentedClassEditor extends Component<IDocumentedClassEdi
     if (props.tagData && props.directObject) {
       const file = props.tagData as IFile;
 
-      const newData = JSON.stringify(props.directObject, null, 2);
-
-      file.setContent(newData);
+      file.setObjectContentIfSemanticallyDifferent(props.directObject);
 
       this.props.docClass.generateUndocumentedCount();
 

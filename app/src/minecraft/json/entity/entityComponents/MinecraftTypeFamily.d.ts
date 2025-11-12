@@ -128,12 +128,13 @@ Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 }
 
 
-Cat - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/cat.json
+Camel Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/camel_husk.json
 
 "minecraft:type_family": {
   "family": [
-    "cat",
-    "mob"
+    "camel_husk",
+    "mob",
+    "undead"
   ]
 }
 
@@ -168,15 +169,15 @@ export default interface MinecraftTypeFamily {
 
 
 export enum MinecraftTypeFamilyFamily {
-  Mob = `mob`,
-  Inanimate = `inanimate`,
-  Aquatic = `aquatic`,
-  Monster = `monster`,
-  Undead = `undead`,
-  Skeleton = `skeleton`,
-  Arthropod = `arthropod`,
-  Zombie = `zombie`,
-  Lightweight = `lightweight`,
-  Fish = `fish`,
-  Player = `player`
+  mob = `mob`,
+  inanimate = `inanimate`,
+  aquatic = `aquatic`,
+  monster = `monster`,
+  undead = `undead`,
+  skeleton = `skeleton`,
+  arthropod = `arthropod`,
+  zombie = `zombie`,
+  lightweight = `lightweight`,
+  fish = `fish`,
+  player = `player`
 }

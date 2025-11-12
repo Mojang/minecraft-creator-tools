@@ -16,7 +16,9 @@ import * as jsoncommon from './../../../jsoncommon';
  * Precipitation Interactions 
  * (minecraft:precipitation_interactions)
  * Component that determines how the block will interact with rain
- * and snow.
+ * and snow
+Experimental toggles required: Upcoming Creator Features (in
+ * format versions before 1.21.120).
  */
 export default interface MinecraftPrecipitationInteractions {
 

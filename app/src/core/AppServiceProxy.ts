@@ -5,7 +5,7 @@ import IAppServiceChannel from "./IAppServiceChannel";
 import Utilities from "./../core/Utilities";
 import Log, { LogItem } from "./../core/Log";
 import { EventDispatcher } from "ste-events";
-import CartoApp, { HostType } from "../app/CartoApp";
+import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
 
 export enum AppServiceProxyCommands {
   fsExists = "fsExists",
@@ -86,11 +86,11 @@ export default class AppServiceProxy {
 
       if (
         AppServiceProxy._api &&
-        CartoApp.hostType !== HostType.vsCodeMainWeb &&
-        CartoApp.hostType !== HostType.vsCodeWebWeb
+        CreatorToolsHost.hostType !== HostType.vsCodeMainWeb &&
+        CreatorToolsHost.hostType !== HostType.vsCodeWebWeb
       ) {
-        CartoApp.hostType = HostType.electronWeb;
-        CartoApp.fullLocalStorage = true;
+        CreatorToolsHost.hostType = HostType.electronWeb;
+        CreatorToolsHost.fullLocalStorage = true;
       }
     }
 

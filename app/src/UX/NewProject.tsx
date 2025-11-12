@@ -17,8 +17,8 @@ import IProjectSeed from "../app/IProjectSeed";
 import ProjectUtilities from "../app/ProjectUtilities";
 import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProxy";
 import { CustomSelectableLabel, LocalFolderLabel } from "./Labels";
-import { MinecraftTrack } from "../app/ICartoData";
-import { CartoTargetStrings } from "../app/Carto";
+import { MinecraftTrack } from "../app/ICreatorToolsData";
+import { CartoTargetStrings } from "../app/CreatorTools";
 import { ProjectTargetStrings } from "../app/Project";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChrome, faEdge, faFirefoxBrowser, faSafari } from "@fortawesome/free-brands-svg-icons";
@@ -28,7 +28,6 @@ import WebUtilities, { BrowserType } from "./WebUtilities";
 import IFolder from "../storage/IFolder";
 import FileSystemStorage from "../storage/FileSystemStorage";
 import FileSystemFolder from "../storage/FileSystemFolder";
-
 interface INewProjectProps extends IAppProps {
   theme: ThemeInput<any>;
   projectSeed: IProjectSeed;
@@ -211,9 +210,9 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
     this.setState(newState);
     this._updateSeed(newState);
 
-    if (this.props.carto) {
-      this.props.carto.creator = data.value;
-      this.props.carto.save();
+    if (this.props.creatorTools) {
+      this.props.creatorTools.creator = data.value;
+      this.props.creatorTools.save();
     }
   }
 
@@ -311,7 +310,7 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
           delimiter = "/";
         }
 
-        path = this.props.carto.projectsStorage.rootFolder.fullPath + delimiter + this.state.newProjectName;
+        path = this.props.creatorTools.projectsStorage.rootFolder.fullPath + delimiter + this.state.newProjectName;
       }
 
       additionalDialogButtons.push(
@@ -412,7 +411,7 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
 
     const targetStrings = [];
 
-    const index = this.props.carto.track ? (this.props.carto.track as number) : 0;
+    const index = this.props.creatorTools.track ? (this.props.creatorTools.track as number) : 0;
 
     targetStrings.push("<default to " + CartoTargetStrings[index] + ">");
 

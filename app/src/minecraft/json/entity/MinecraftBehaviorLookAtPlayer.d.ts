@@ -163,6 +163,8 @@ export default interface MinecraftBehaviorLookAtPlayer {
    * Time range to look at the nearest player.
    * 
    * Sample Values:
+   * Zombie Horse: [2,4]
+   *
    * Campghost: [0,100]
    *
    */

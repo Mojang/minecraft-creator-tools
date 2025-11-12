@@ -13,6 +13,9 @@ const path = require("path");
 const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
+// Read version from package.json
+const packageJson = require("./package.json");
+
 /** @type WebpackConfig */
 const webExtensionConfig = {
   mode: "production",
@@ -27,6 +30,10 @@ const webExtensionConfig = {
   },
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".css"],
+    alias: {
+      "react/jsx-dev-runtime": "react/jsx-dev-runtime.js",
+      "react/jsx-runtime": "react/jsx-runtime.js",
+    },
   },
   optimization: {
     runtimeChunk: false,
@@ -43,7 +50,15 @@ const webExtensionConfig = {
       },
     },
   },
-  plugins: [new MiniCssExtractPlugin({ filename: "web.css" })],
+  plugins: [
+    new MiniCssExtractPlugin({ filename: "web.css" }),
+    new webpack.DefinePlugin({
+      ENABLE_ANALYTICS: JSON.stringify(process.env.NODE_ENV === "production"),
+      BUILD_TARGET: JSON.stringify("cli-web"),
+      BUILD_VERSION: JSON.stringify(packageJson.version),
+      BUILD_DATE: JSON.stringify(new Date().toISOString()),
+    }),
+  ],
   module: {
     rules: [
       {

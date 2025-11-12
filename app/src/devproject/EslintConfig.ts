@@ -108,7 +108,9 @@ export default class EslintConfig {
     }
   }
 
-  async persist() {}
+  async persist(): Promise<boolean> {
+    return false;
+  }
 
   async save() {
     if (this._file === undefined) {

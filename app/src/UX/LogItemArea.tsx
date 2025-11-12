@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import Carto from "./../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import "./LogItemArea.css";
 import IAppProps from "./IAppProps";
-import IStatus from "../app/Status";
-import { LogItem, LogItemLevel } from "./../core/Log";
+import IStatus, { StatusTopic } from "../app/Status";
+import { LogItemLevel } from "./../core/Log";
 import { ProjectStatusAreaMode } from "./ProjectEditor";
 import { Toolbar, List } from "@fluentui/react-northstar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,7 +14,7 @@ interface ILogItemAreaProps extends IAppProps {
   mode: ProjectStatusAreaMode;
   widthOffset: number;
   minLogLevel?: LogItemLevel;
-  filterCategories?: string[];
+  filterTopics?: StatusTopic[];
 }
 
 interface ILogItemAreaState {}
@@ -36,15 +36,15 @@ export default class LogItemArea extends Component<ILogItemAreaProps, ILogItemAr
     this._update = this._update.bind(this);
     this.scrollToListBottom = this.scrollToListBottom.bind(this);
 
-    this.props.carto.onStatusAdded.subscribe(this._handleStatusAdded);
-    this.props.carto.onOperationCompleted.subscribe(this._handleOperationEnded);
+    this.props.creatorTools.onStatusAdded.subscribe(this._handleStatusAdded);
+    this.props.creatorTools.onOperationCompleted.subscribe(this._handleOperationEnded);
   }
 
-  _handleOperationEnded(carto: Carto, operationId: number) {
+  _handleOperationEnded(creatorTools: CreatorTools, operationId: number) {
     this._update();
   }
 
-  _handleStatusAdded(carto: Carto, status: IStatus) {
+  _handleStatusAdded(creatorTools: CreatorTools, status: IStatus) {
     this._update();
   }
 
@@ -56,7 +56,7 @@ export default class LogItemArea extends Component<ILogItemAreaProps, ILogItemAr
     window.setTimeout(this._checkForTimeOut, MESSAGE_FADEOUT_TIME + 100);
   }
 
-  _checkForTimeOut(carto: Carto, status: IStatus) {
+  _checkForTimeOut(creatorTools: CreatorTools, status: IStatus) {
     this.forceUpdate();
   }
 
@@ -78,15 +78,15 @@ export default class LogItemArea extends Component<ILogItemAreaProps, ILogItemAr
     }
   }
 
-  matchesFilter(item: LogItem) {
-    if (!this.props.filterCategories) {
+  matchesFilter(item: IStatus) {
+    if (!this.props.filterTopics) {
       return true;
     }
-    if (!item.category) {
+    if (!item.topic) {
       return false;
     }
 
-    if (this.props.filterCategories.includes(item.category)) {
+    if (this.props.filterTopics.includes(item.topic)) {
       return true;
     }
 
@@ -110,11 +110,20 @@ export default class LogItemArea extends Component<ILogItemAreaProps, ILogItemAr
         title: "Show more information in the status area",
       });
 
-      if (this.props.carto.status.length > 0) {
-        const statusItem = this.props.carto.status[this.props.carto.status.length - 1];
+      if (this.props.creatorTools.status.length > 0) {
+        let statusItem = undefined;
+        for (let i = this.props.creatorTools.status.length - 1; i >= 0; i--) {
+          const statusItemCand = this.props.creatorTools.status[i];
 
-        toolTip = statusItem.message;
-        interior = <span>{statusItem.message}</span>;
+          if (statusItemCand && this.matchesFilter(statusItemCand)) {
+            statusItem = statusItemCand;
+          }
+        }
+
+        if (statusItem !== undefined) {
+          toolTip = statusItem.message;
+          interior = <span>{statusItem.message}</span>;
+        }
       }
     } else {
       toolbarItems.push({
@@ -128,8 +137,12 @@ export default class LogItemArea extends Component<ILogItemAreaProps, ILogItemAr
 
       const li = [];
 
-      for (let i = 0; i < this.props.carto.status.length; i++) {
-        const statusItem = this.props.carto.status[i];
+      for (let i = 0; i < this.props.creatorTools.status.length; i++) {
+        const statusItem = this.props.creatorTools.status[i];
+
+        if (this.matchesFilter(statusItem) === false) {
+          continue;
+        }
 
         li.push({
           key: "si" + i,

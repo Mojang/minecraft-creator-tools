@@ -13,7 +13,6 @@ import FolderBase from "./FolderBase";
 export default class FileSystemFolder extends FolderBase implements IFolder {
   private _name: string;
   private _parentPath: string;
-  private _lastSavedContent: string;
   private _storage: FileSystemStorage;
   private _parentFolder: FileSystemFolder | null;
   private _handle?: FileSystemDirectoryHandle;
@@ -76,7 +75,6 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
 
     this._parentPath = parentPath;
     this._name = folderName;
-    this._lastSavedContent = "";
 
     this.lastSavedFileCount = 0;
 
@@ -120,6 +118,10 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
     }
 
     return undefined;
+  }
+
+  async scanForChanges() {
+    await this.load(true);
   }
 
   async getFirstUnsafeError(depth?: number, processedFolders?: number): Promise<string | undefined> {
@@ -205,6 +207,8 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
       candFolder = new FileSystemFolder(this._storage, this, this.fullPath, name);
 
       this.folders[nameCanon] = candFolder;
+
+      this.storage.notifyFolderAdded(candFolder);
     }
 
     if (handle) {
@@ -449,12 +453,40 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
     const handle = await this.getHandle();
 
     if (handle) {
+      const canonFolderNames: string[] = [];
+      const canonFileNames: string[] = [];
+
       for await (const [key, value] of handle.entries()) {
+        const nameCanon = StorageUtilities.canonicalizeName(key);
         if (value.kind === "file") {
           this.ensureFile(key, value as FileSystemFileHandle);
+          canonFileNames.push(nameCanon);
         } else if (value.kind === "directory") {
+          canonFolderNames.push(nameCanon);
           if (!StorageUtilities.isIgnorableFolder(key)) {
             this.ensureFolder(key, value as FileSystemDirectoryHandle);
+          }
+        }
+      }
+
+      for (const folderKey in this.folders) {
+        if (!canonFolderNames.includes(folderKey)) {
+          const folderToRemove = this.folders[folderKey];
+
+          if (folderToRemove) {
+            this.folders[folderKey] = undefined;
+            this.storage.notifyFolderRemoved(folderToRemove);
+          }
+        }
+      }
+
+      for (const fileKey in this.files) {
+        if (!canonFileNames.includes(fileKey)) {
+          const fileToRemove = this.files[fileKey];
+
+          if (fileToRemove) {
+            this.files[fileKey] = undefined;
+            this.storage.notifyFileRemoved(fileToRemove.name);
           }
         }
       }

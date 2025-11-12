@@ -112,14 +112,17 @@ export default class TextureSetDefinition implements IDefinition {
     return tsd;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
-    const defString = JSON.stringify(this._data, null, 2);
+    if (!this._data) {
+      Log.unexpectedUndefined("TSTDF");
+      return false;
+    }
 
-    this._file.setContent(defString);
+    return this._file.setObjectContentIfSemanticallyDifferent(this._data);
   }
 
   async load() {

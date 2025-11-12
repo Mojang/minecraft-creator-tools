@@ -127,7 +127,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
       dialogMode: ProjectAddButtonDialogType.noDialog,
       maxItemsToShow: 300,
       isLoaded: false,
-      collapsedItemTypes: this.props.carto.collapsedTypes,
+      collapsedItemTypes: this.props.creatorTools.collapsedTypes,
       collapsedStoragePaths: this.props.project ? this.props.project.collapsedStoragePaths : [],
     };
   }
@@ -173,7 +173,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
   }
 
   async _load() {
-    await this.props.carto.loadGallery();
+    await this.props.creatorTools.loadGallery();
 
     this.setState({
       activeItem: this.state.activeItem,
@@ -258,7 +258,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
 
   async _handleGalleryItemClick(event: React.SyntheticEvent<HTMLElement>, menuItem: MenuItemProps | undefined) {
     if (menuItem && menuItem.content) {
-      let galleryItem = await this.props.carto.getGalleryProjectByCaption(menuItem.content as string);
+      let galleryItem = await this.props.creatorTools.getGalleryProjectByCaption(menuItem.content as string);
 
       if (galleryItem && galleryItem.targetType) {
         this.launchNewNamespacedDefinition(galleryItem.targetType, galleryItem.id);
@@ -603,7 +603,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
   }
 
   getMenuItemsFromGalleryItems(itemType: GalleryItemType) {
-    const galleryItems = this.props.carto.getGalleryProjectByType(itemType);
+    const galleryItems = this.props.creatorTools.getGalleryProjectByType(itemType);
 
     const menuItems: (MenuItemProps & { key: string })[] = [];
 
@@ -868,7 +868,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
               key="pab-newEntityDia"
               onNewEntityTypeUpdated={this._newEntityTypeUpdated}
               project={this.props.project}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
             />
           }
           header={"New mob"}
@@ -893,7 +893,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
               key="pab-newItemDia"
               onNewItemTypeUpdated={this._newItemTypeUpdated}
               project={this.props.project}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
             />
           }
           header={"New Item Type"}
@@ -918,7 +918,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
               theme={this.props.theme}
               onNewBlockTypeUpdated={this._newBlockTypeUpdated}
               project={this.props.project}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
             />
           }
           header={"New Block Type"}
@@ -989,7 +989,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
               heightOffset={this.props.heightOffset}
               theme={this.props.theme}
               project={this.props.project}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               rootFolder={this.state.newItemSeed?.folder}
               defaultName={this.state.newItemSeed?.name}
               creationData={this.state.newItemSeed?.creationData}

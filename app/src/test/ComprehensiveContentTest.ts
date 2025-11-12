@@ -2,9 +2,9 @@
 // Licensed under the MIT License.
 
 import { expect, assert } from "chai";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import Project, { ProjectAutoDeploymentMode } from "../app/Project";
-import CartoApp, { HostType } from "../app/CartoApp";
+import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
 import NodeStorage from "../local/NodeStorage";
 import Database from "../minecraft/Database";
 import LocalEnvironment from "../local/LocalEnvironment";
@@ -14,9 +14,9 @@ import IFolder from "../storage/IFolder";
 import { ProjectItemType } from "../app/IProjectItemData";
 import { ensureReportJsonMatchesScenario } from "./TestUtilities";
 
-CartoApp.hostType = HostType.testLocal;
+CreatorToolsHost.hostType = HostType.testLocal;
 
-let carto: Carto | undefined = undefined;
+let creatorTools: CreatorTools | undefined = undefined;
 let localEnv: LocalEnvironment | undefined = undefined;
 let scenariosFolder: IFolder | undefined = undefined;
 let resultsFolder: IFolder | undefined = undefined;
@@ -24,8 +24,8 @@ let resultsFolder: IFolder | undefined = undefined;
 localEnv = new LocalEnvironment(false);
 
 (async () => {
-  CartoApp.localFolderExists = _localFolderExists;
-  CartoApp.ensureLocalFolder = _ensureLocalFolder;
+  CreatorToolsHost.localFolderExists = _localFolderExists;
+  CreatorToolsHost.ensureLocalFolder = _ensureLocalFolder;
 
   const scenariosStorage = new NodeStorage(
     NodeStorage.ensureEndsWithDelimiter(__dirname) + "/../../test/",
@@ -39,31 +39,31 @@ localEnv = new LocalEnvironment(false);
   resultsFolder = resultsStorage.rootFolder;
   await resultsFolder.ensureExists();
 
-  CartoApp.prefsStorage = new NodeStorage(
+  CreatorToolsHost.prefsStorage = new NodeStorage(
     localEnv.utilities.testWorkingPath + "prefs" + NodeStorage.platformFolderDelimiter,
     ""
   );
 
-  CartoApp.projectsStorage = new NodeStorage(
+  CreatorToolsHost.projectsStorage = new NodeStorage(
     localEnv.utilities.testWorkingPath + "projects" + NodeStorage.platformFolderDelimiter,
     ""
   );
 
-  CartoApp.packStorage = new NodeStorage(
+  CreatorToolsHost.packStorage = new NodeStorage(
     localEnv.utilities.testWorkingPath + "packs" + NodeStorage.platformFolderDelimiter,
     ""
   );
 
-  CartoApp.worldStorage = new NodeStorage(
+  CreatorToolsHost.worldStorage = new NodeStorage(
     localEnv.utilities.testWorkingPath + "worlds" + NodeStorage.platformFolderDelimiter,
     ""
   );
 
-  CartoApp.deploymentStorage = new NodeStorage(
+  CreatorToolsHost.deploymentStorage = new NodeStorage(
     localEnv.utilities.testWorkingPath + "deployment" + NodeStorage.platformFolderDelimiter,
     ""
   );
-  CartoApp.workingStorage = new NodeStorage(
+  CreatorToolsHost.workingStorage = new NodeStorage(
     localEnv.utilities.testWorkingPath + "working" + NodeStorage.platformFolderDelimiter,
     ""
   );
@@ -71,17 +71,17 @@ localEnv = new LocalEnvironment(false);
   const coreStorage = new NodeStorage(__dirname + "/../../public/data/content/", "");
   Database.contentFolder = coreStorage.rootFolder;
 
-  await CartoApp.init();
-  carto = CartoApp.carto;
+  await CreatorToolsHost.init();
+  creatorTools = CreatorToolsHost.creatorTools;
 
-  if (!carto) {
+  if (!creatorTools) {
     return;
   }
 
-  await carto.load();
+  await creatorTools.load();
 
   Database.local = localEnv.utilities;
-  carto.local = localEnv.utilities;
+  creatorTools.local = localEnv.utilities;
 })();
 
 function _ensureLocalFolder(path: string) {
@@ -95,11 +95,11 @@ async function _localFolderExists(path: string) {
 }
 
 async function _loadProject(name: string) {
-  if (!carto || !scenariosFolder || !resultsFolder) {
+  if (!creatorTools || !scenariosFolder || !resultsFolder) {
     assert.fail("Not properly initialized");
   }
 
-  const project = new Project(carto, name, null);
+  const project = new Project(creatorTools, name, null);
   project.autoDeploymentMode = ProjectAutoDeploymentMode.noAutoDeployment;
   project.localFolderPath = __dirname + "/../../../samplecontent/" + name + "/";
 

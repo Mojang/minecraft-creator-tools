@@ -260,14 +260,12 @@ export default class AttachableResourceDefinition {
     return attachable;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
-    const defString = JSON.stringify(this._dataWrapper, null, 2);
-
-    this._file.setContent(defString);
+    return this._file.setObjectContentIfSemanticallyDifferent(this._dataWrapper);
   }
 
   async load() {

@@ -19,7 +19,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import ItemTypeAddComponent from "./ItemTypeAddComponent";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import Project from "../app/Project";
 import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
 import { ManagedComponent } from "../minecraft/ManagedComponent";
@@ -29,7 +29,7 @@ interface IItemTypeComponentSetEditorProps {
   isVisualsMode: boolean;
   isDefault: boolean;
   project: Project;
-  carto: Carto;
+  creatorTools: CreatorTools;
   height?: number;
   heightOffset?: number;
   title?: string;
@@ -325,7 +325,7 @@ export default class ItemTypeComponentSetEditor extends Component<
                       tag={component.id}
                       project={this.props.project}
                       lookupProvider={this.props.project}
-                      carto={this.props.carto}
+                      carto={this.props.creatorTools}
                       theme={this.props.theme}
                       objectKey={component.id}
                       closeButton={false}

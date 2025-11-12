@@ -45,6 +45,14 @@
         "content": {}
       }
     ],
+    "/vanilla/behavior_pack/entities/nautilus.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement.sway/",
+        "content": {
+          "sway_amplitude": 0
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/pufferfish.json": [
       {
         "path": "/minecraft:entity/components/minecraft:movement.sway/",
@@ -70,6 +78,14 @@
       }
     ],
     "/vanilla/behavior_pack/entities/tropicalfish.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement.sway/",
+        "content": {
+          "sway_amplitude": 0
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
       {
         "path": "/minecraft:entity/components/minecraft:movement.sway/",
         "content": {

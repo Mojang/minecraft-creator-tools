@@ -122,6 +122,14 @@
             ]
           }
         ],
+        "/vanilla/behavior_pack/entities/camel_husk.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:camel_husk_with_no_hostile_rider/minecraft:behavior.tempt/",
+            "content": [
+              "rabbit_foot"
+            ]
+          }
+        ],
         "/vanilla/behavior_pack/entities/cat.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:cat_wild/minecraft:behavior.tempt/",
@@ -220,6 +228,45 @@
             ]
           }
         ],
+        "/vanilla/behavior_pack/entities/nautilus.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_baby/minecraft:behavior.tempt/",
+            "content": [
+              "pufferfish_bucket",
+              "cod_bucket",
+              "salmon_bucket",
+              "tropical_fish_bucket",
+              "pufferfish",
+              "fish",
+              "salmon",
+              "clownfish",
+              "cooked_fish",
+              "cooked_salmon"
+            ]
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_wild_adult_calm/minecraft:behavior.tempt/",
+            "content": [
+              "pufferfish",
+              "pufferfish_bucket"
+            ]
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_tame/minecraft:behavior.tempt/",
+            "content": [
+              "pufferfish_bucket",
+              "cod_bucket",
+              "salmon_bucket",
+              "tropical_fish_bucket",
+              "pufferfish",
+              "fish",
+              "salmon",
+              "clownfish",
+              "cooked_fish",
+              "cooked_salmon"
+            ]
+          }
+        ],
         "/vanilla/behavior_pack/entities/panda.json": [
           {
             "path": "/minecraft:entity/components/minecraft:behavior.tempt/",
@@ -287,6 +334,23 @@
             "path": "/minecraft:entity/components/minecraft:behavior.tempt/",
             "content": [
               "seagrass"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/zombie_horse.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.tempt/",
+            "content": [
+              "red_mushroom"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_tameable/minecraft:behavior.tempt/",
+            "content": [
+              "pufferfish",
+              "pufferfish_bucket"
             ]
           }
         ],
@@ -403,6 +467,12 @@
             "content": 2.5
           }
         ],
+        "/vanilla/behavior_pack/entities/camel_husk.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:camel_husk_with_no_hostile_rider/minecraft:behavior.tempt/",
+            "content": 2.5
+          }
+        ],
         "/vanilla/behavior_pack/entities/cat.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:cat_wild/minecraft:behavior.tempt/",
@@ -435,6 +505,16 @@
           {
             "path": "/minecraft:entity/components/minecraft:behavior.tempt/",
             "content": 1.2
+          }
+        ],
+        "/vanilla/behavior_pack/entities/nautilus.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_baby/minecraft:behavior.tempt/",
+            "content": 2
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_wild_adult_calm/minecraft:behavior.tempt/",
+            "content": 2
           }
         ],
         "/vanilla/behavior_pack/entities/rabbit.json": [
@@ -546,6 +626,12 @@
             "content": 3
           }
         ],
+        "/vanilla/behavior_pack/entities/camel_husk.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:camel_husk_with_no_hostile_rider/minecraft:behavior.tempt/",
+            "content": 4
+          }
+        ],
         "/vanilla/behavior_pack/entities/cat.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:cat_wild/minecraft:behavior.tempt/",
@@ -558,10 +644,10 @@
             "content": 4
           }
         ],
-        "/vanilla/behavior_pack/entities/cow.json": [
+        "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
           {
-            "path": "/minecraft:entity/components/minecraft:behavior.tempt/",
-            "content": 4
+            "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_tameable/minecraft:behavior.tempt/",
+            "content": 2
           }
         ],
         "/samples/add_entity_robot/full/robot_example_full_behavior/entities/robot.json": [
@@ -580,6 +666,14 @@
         "/vanilla/behavior_pack/entities/happy_ghast.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:baby/minecraft:behavior.tempt/",
+            "content": {
+              "event": "minecraft:on_stop_tempting"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/entities/nautilus.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_baby/minecraft:behavior.tempt/",
             "content": {
               "event": "minecraft:on_stop_tempting"
             }
@@ -666,6 +760,19 @@
           "can_tempt_vertically": true,
           "items": [
             "cactus"
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/camel_husk.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:camel_husk_with_no_hostile_rider/minecraft:behavior.tempt/",
+        "content": {
+          "priority": 4,
+          "speed_multiplier": 2.5,
+          "can_tempt_vertically": true,
+          "items": [
+            "rabbit_foot"
           ]
         }
       }
@@ -854,6 +961,66 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/entities/nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_baby/minecraft:behavior.tempt/",
+        "content": {
+          "priority": 4,
+          "speed_multiplier": 2,
+          "items": [
+            "pufferfish_bucket",
+            "cod_bucket",
+            "salmon_bucket",
+            "tropical_fish_bucket",
+            "pufferfish",
+            "fish",
+            "salmon",
+            "clownfish",
+            "cooked_fish",
+            "cooked_salmon"
+          ],
+          "on_tempt_end": {
+            "event": "minecraft:on_stop_tempting"
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_wild_adult_calm/minecraft:behavior.tempt/",
+        "content": {
+          "priority": 4,
+          "speed_multiplier": 2,
+          "items": [
+            "pufferfish",
+            "pufferfish_bucket"
+          ],
+          "on_tempt_end": {
+            "event": "minecraft:on_stop_tempting"
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_tame/minecraft:behavior.tempt/",
+        "content": {
+          "priority": 4,
+          "speed_multiplier": 2,
+          "items": [
+            "pufferfish_bucket",
+            "cod_bucket",
+            "salmon_bucket",
+            "tropical_fish_bucket",
+            "pufferfish",
+            "fish",
+            "salmon",
+            "clownfish",
+            "cooked_fish",
+            "cooked_salmon"
+          ],
+          "on_tempt_end": {
+            "event": "minecraft:on_stop_tempting"
+          }
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/ocelot.json": [
       {
         "path": "/minecraft:entity/component_groups/minecraft:ocelot_wild/minecraft:behavior.tempt/",
@@ -1000,6 +1167,56 @@
           "items": [
             "seagrass"
           ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_horse.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.tempt/",
+        "content": {
+          "priority": 3,
+          "speed_multiplier": 1.2,
+          "items": [
+            "red_mushroom"
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_tameable/minecraft:behavior.tempt/",
+        "content": {
+          "priority": 2,
+          "speed_multiplier": 2,
+          "items": [
+            "pufferfish",
+            "pufferfish_bucket"
+          ],
+          "on_tempt_end": {
+            "event": "minecraft:on_stop_tempting"
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_tame/minecraft:behavior.tempt/",
+        "content": {
+          "priority": 2,
+          "speed_multiplier": 2,
+          "items": [
+            "pufferfish_bucket",
+            "cod_bucket",
+            "salmon_bucket",
+            "tropical_fish_bucket",
+            "pufferfish",
+            "fish",
+            "salmon",
+            "clownfish",
+            "cooked_fish",
+            "cooked_salmon"
+          ],
+          "on_tempt_end": {
+            "event": "minecraft:on_stop_tempting"
+          }
         }
       }
     ],

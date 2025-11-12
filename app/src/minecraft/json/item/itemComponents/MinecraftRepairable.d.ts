@@ -11,6 +11,150 @@
  * 
  * minecraft:repairable Samples
 
+Copper Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/copper_spear.json
+
+"minecraft:repairable": {
+  "repair_items": [
+    {
+      "items": [
+        "minecraft:copper_spear"
+      ],
+      "repair_amount": "context.other->query.remaining_durability"
+    },
+    {
+      "items": [
+        "minecraft:copper_ingot"
+      ],
+      "repair_amount": "query.max_durability * 0.25"
+    }
+  ]
+}
+
+
+Diamond Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/diamond_spear.json
+
+"minecraft:repairable": {
+  "repair_items": [
+    {
+      "items": [
+        "minecraft:diamond_spear"
+      ],
+      "repair_amount": "context.other->query.remaining_durability"
+    },
+    {
+      "items": [
+        "minecraft:diamond"
+      ],
+      "repair_amount": "query.max_durability * 0.25"
+    }
+  ]
+}
+
+
+Golden Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/golden_spear.json
+
+"minecraft:repairable": {
+  "repair_items": [
+    {
+      "items": [
+        "minecraft:golden_spear"
+      ],
+      "repair_amount": "context.other->query.remaining_durability"
+    },
+    {
+      "items": [
+        "minecraft:gold_ingot"
+      ],
+      "repair_amount": "query.max_durability * 0.25"
+    }
+  ]
+}
+
+
+Iron Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/iron_spear.json
+
+"minecraft:repairable": {
+  "repair_items": [
+    {
+      "items": [
+        "minecraft:iron_spear"
+      ],
+      "repair_amount": "context.other->query.remaining_durability"
+    },
+    {
+      "items": [
+        "minecraft:iron_ingot"
+      ],
+      "repair_amount": "query.max_durability * 0.25"
+    }
+  ]
+}
+
+
+Netherite Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/netherite_spear.json
+
+"minecraft:repairable": {
+  "repair_items": [
+    {
+      "items": [
+        "minecraft:netherite_spear"
+      ],
+      "repair_amount": "context.other->query.remaining_durability"
+    },
+    {
+      "items": [
+        "minecraft:netherite_ingot"
+      ],
+      "repair_amount": "query.max_durability * 0.25"
+    }
+  ]
+}
+
+
+Stone Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/stone_spear.json
+
+"minecraft:repairable": {
+  "repair_items": [
+    {
+      "items": [
+        "minecraft:stone_spear"
+      ],
+      "repair_amount": "context.other->query.remaining_durability"
+    },
+    {
+      "items": [
+        {
+          "tags": "q.all_tags('minecraft:stone_tool_materials')"
+        }
+      ],
+      "repair_amount": "query.max_durability * 0.25"
+    }
+  ]
+}
+
+
+Wooden Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/wooden_spear.json
+
+"minecraft:repairable": {
+  "repair_items": [
+    {
+      "items": [
+        "minecraft:wooden_spear"
+      ],
+      "repair_amount": "context.other->query.remaining_durability"
+    },
+    {
+      "items": [
+        {
+          "tags": "q.all_tags('minecraft:planks')"
+        }
+      ],
+      "repair_amount": "query.max_durability * 0.25"
+    }
+  ]
+}
+
+
 Item Axe Turret Kit - https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/axe_turret_kit.item.json
 
 "minecraft:repairable": {
@@ -71,13 +215,11 @@ export default interface MinecraftRepairable {
    * optional `repair_amount` for how much durability is gained.
    * 
    * Sample Values:
-   * Item Axe Turret Kit: [{"items":["iron_ingot"],"repair_amount":62}]
+   * Copper Spear: [{"items":["minecraft:copper_spear"],"repair_amount":"context.other->query.remaining_durability"},{"items":["minecraft:copper_ingot"],"repair_amount":"query.max_durability * 0.25"}]
    *
+   * Diamond Spear: [{"items":["minecraft:diamond_spear"],"repair_amount":"context.other->query.remaining_durability"},{"items":["minecraft:diamond"],"repair_amount":"query.max_durability * 0.25"}]
    *
-   * Chestplate: [{"items":["minecraft:stick"],"repair_amount":"context.other->query.remaining_durability + 0.05 * context.other->query.max_durability"}]
-   *
-   *
-   * My Sword Chuck: [{"items":["minecraft:diamond"],"repair_amount":"query.max_durability * 0.25"}]
+   * Golden Spear: [{"items":["minecraft:golden_spear"],"repair_amount":"context.other->query.remaining_durability"},{"items":["minecraft:gold_ingot"],"repair_amount":"query.max_durability * 0.25"}]
    *
    */
   repair_items?: string;

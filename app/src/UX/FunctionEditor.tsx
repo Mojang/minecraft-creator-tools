@@ -4,13 +4,13 @@ import Editor from "@monaco-editor/react";
 import "./FunctionEditor.css";
 import * as monaco from "monaco-editor";
 import IPersistable from "./IPersistable";
-import Carto, { CartoMinecraftState } from "../app/Carto";
+import CreatorTools, { CreatorToolsMinecraftState } from "../app/CreatorTools";
 import { ThemeInput, Toolbar } from "@fluentui/react-northstar";
 import Log from "./../core/Log";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearchPlus, faSearchMinus, faPlay, faRemoveFormat } from "@fortawesome/free-solid-svg-icons";
 import { ICommandResponseBody } from "../minecraft/ICommandResponse";
-import CartoApp, { CartoThemeStyle } from "../app/CartoApp";
+import CreatorToolsHost, { CreatorToolsThemeStyle } from "../app/CreatorToolsHost";
 import Project from "../app/Project";
 
 interface IFunctionEditorProps {
@@ -28,7 +28,7 @@ interface IFunctionEditorProps {
   fixedHeight?: number;
   readOnly: boolean;
   preferredTextSize: number;
-  carto: Carto;
+  creatorTools: CreatorTools;
   onCommandTextChanged?: (newCommandText: string) => void;
   onUpdatePreferredTextSize?: (newSize: number) => void;
   onUpdateContent?: (newContent: string) => void;
@@ -102,7 +102,7 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
 
     let theme = "vs-dark";
 
-    if (CartoApp.theme === CartoThemeStyle.light) {
+    if (CreatorToolsHost.theme === CreatorToolsThemeStyle.light) {
       theme = "vs";
     }
 
@@ -190,12 +190,16 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
     }
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
+    let didPersist = false;
+
     if (this.editor !== undefined) {
       const value = this.editor.getValue();
 
       if (this.state.fileToEdit !== undefined) {
-        this.state.fileToEdit.setContent(value);
+        if (this.state.fileToEdit.setContent(value)) {
+          didPersist = true;
+        }
       }
 
       if (this.state.content !== undefined) {
@@ -209,6 +213,8 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
         this.props.onUpdateContent(value);
       }
     }
+
+    return didPersist;
   }
 
   _zoomIn() {
@@ -246,7 +252,7 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
       if (this.props.onUpdatePreferredTextSize) {
         this.props.onUpdatePreferredTextSize(Math.round(val));
       } else {
-        this.props.carto.preferredTextSize = Math.round(val);
+        this.props.creatorTools.preferredTextSize = Math.round(val);
       }
     }
   }
@@ -345,9 +351,9 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
 
         this._decorationIds = this.editor.deltaDecorations(this._decorationIds, commands);
 
-        this.props.carto.notifyStatusUpdate(command);
+        this.props.creatorTools.notifyStatusUpdate(command);
 
-        const result = await this.props.carto.runCommand(command, this.props.project);
+        const result = await this.props.creatorTools.runCommand(command, this.props.project);
 
         let commandSuccess = false;
         let successMessage = "Run.";
@@ -387,16 +393,20 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
 
     let height = "106px";
     let editorHeight = "23px";
+    let editorContainerHeight = "39px";
 
     if (this.props.fixedHeight) {
       height = this.props.fixedHeight + "px";
       editorHeight = this.props.fixedHeight - 90 + "px";
+      editorContainerHeight = this.props.fixedHeight - 74 + "px";
     } else if (this.props.singleCommandMode) {
       height = "32px";
       editorHeight = "32px";
+      editorContainerHeight = "50px";
     } else if (this.props.heightOffset) {
       height = "calc(100vh - " + this.props.heightOffset + "px)";
       editorHeight = "calc(100vh - " + (this.props.heightOffset + 44) + "px)";
+      editorContainerHeight = "calc(100vh - " + (this.props.heightOffset + 60) + "px)";
     }
 
     const toolbarItems = [
@@ -416,7 +426,7 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
 
     const bottomToolbarItems = [];
 
-    if (this.props.carto.activeMinecraftState !== CartoMinecraftState.none) {
+    if (this.props.creatorTools.activeMinecraftState !== CreatorToolsMinecraftState.none) {
       if (!this.props.singleCommandMode) {
         bottomToolbarItems.push({
           icon: <FontAwesomeIcon icon={faRemoveFormat} className="fa-lg" />,
@@ -523,10 +533,10 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
             className={functionClass}
             onKeyDown={this._handleInputKey}
             style={{
-              minHeight: editorHeight,
-              maxHeight: editorHeight,
+              minHeight: editorContainerHeight,
+              maxHeight: editorContainerHeight,
               backgroundColor:
-                CartoApp.theme === CartoThemeStyle.dark
+                CreatorToolsHost.theme === CreatorToolsThemeStyle.dark
                   ? "#000000"
                   : this.props.theme.siteVariables?.colorScheme.brand.background1,
             }}

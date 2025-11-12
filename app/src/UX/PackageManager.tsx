@@ -49,7 +49,12 @@ export default class PackManager extends Component<IPackManagerProps, IPackManag
   }
 
   private async _handleFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
-    if (!event.target || !event.target.files || event.target.files.length <= 0 || !this.props.carto.packStorage) {
+    if (
+      !event.target ||
+      !event.target.files ||
+      event.target.files.length <= 0 ||
+      !this.props.creatorTools.packStorage
+    ) {
       return;
     }
 
@@ -72,7 +77,7 @@ export default class PackManager extends Component<IPackManagerProps, IPackManag
 
     let fileCount = 0;
     let fileName = file.name;
-    let packFile = await this.props.carto.packStorage.rootFolder.ensureFileFromRelativePath("/" + fileName);
+    let packFile = await this.props.creatorTools.packStorage.rootFolder.ensureFileFromRelativePath("/" + fileName);
     let packFileExists = await packFile.exists();
 
     while (packFileExists) {
@@ -80,13 +85,15 @@ export default class PackManager extends Component<IPackManagerProps, IPackManag
 
       fileName =
         StorageUtilities.getBaseFromName(fileName) + " " + fileCount + "." + StorageUtilities.getTypeFromName(fileName);
-      packFile = await this.props.carto.packStorage.rootFolder.ensureFileFromRelativePath("/" + fileName);
+      packFile = await this.props.creatorTools.packStorage.rootFolder.ensureFileFromRelativePath("/" + fileName);
       packFileExists = await packFile.exists();
     }
 
-    packFile.setContent(new Uint8Array(arrayBuf));
-    await packFile.saveContent();
-    const pack = await this.props.carto.ensurePackForFile(packFile);
+    if (packFile.setContentIfSemanticallyDifferent(new Uint8Array(arrayBuf))) {
+      await packFile.saveContent();
+    }
+
+    const pack = await this.props.creatorTools.ensurePackForFile(packFile);
 
     let nextErrorMessage = undefined;
 
@@ -99,14 +106,14 @@ export default class PackManager extends Component<IPackManagerProps, IPackManag
     }
 
     this.setState({
-      packs: this.props.carto.packs,
+      packs: this.props.creatorTools.packs,
       packReferences: this.state.packReferences,
       errorMessage: nextErrorMessage,
     });
   }
 
   private async load() {
-    await this.props.carto.loadPacks();
+    await this.props.creatorTools.loadPacks();
 
     const newState = {
       packs: this.getPacksCopy(),
@@ -119,8 +126,8 @@ export default class PackManager extends Component<IPackManagerProps, IPackManag
   getPacksCopy() {
     const packArr = [];
 
-    if (this.props.carto.packs) {
-      for (const pack of this.props.carto.packs) {
+    if (this.props.creatorTools.packs) {
+      for (const pack of this.props.creatorTools.packs) {
         packArr.push(pack);
       }
     }
@@ -132,10 +139,12 @@ export default class PackManager extends Component<IPackManagerProps, IPackManag
     this.#activeEditorPersistable = newPersistable;
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this.#activeEditorPersistable !== undefined) {
-      await this.#activeEditorPersistable.persist();
+      return await this.#activeEditorPersistable.persist();
     }
+
+    return false;
   }
 
   hasPackRef(packName: string) {
@@ -155,7 +164,7 @@ export default class PackManager extends Component<IPackManagerProps, IPackManag
       return;
     }
 
-    const pack = this.props.carto.getPackByName(packName, this.props.isWorldFocused);
+    const pack = this.props.creatorTools.getPackByName(packName, this.props.isWorldFocused);
 
     if (!pack) {
       Log.unexpectedUndefined("EPF");
@@ -223,12 +232,12 @@ export default class PackManager extends Component<IPackManagerProps, IPackManag
     const li = [];
     let index = 0;
 
-    if (this.props.carto.packs === undefined) {
+    if (this.props.creatorTools.packs === undefined) {
       return <div>(Opening packs...)</div>;
     }
 
-    for (let i = 0; i < this.props.carto.packs.length; i++) {
-      const pack = this.props.carto.packs[i];
+    for (let i = 0; i < this.props.creatorTools.packs.length; i++) {
+      const pack = this.props.creatorTools.packs[i];
       if ((this.props.isWorldFocused && pack.isWorldType) || (!this.props.isWorldFocused && !pack.isWorldType)) {
         li.push({
           key: "pcki" + i,
@@ -244,7 +253,7 @@ export default class PackManager extends Component<IPackManagerProps, IPackManag
         });
       }
     }
-    index += this.props.carto.status.length;
+    index += this.props.creatorTools.status.length;
 
     if (this.state.errorMessage) {
       additional.push(<div>{this.state.errorMessage}</div>);

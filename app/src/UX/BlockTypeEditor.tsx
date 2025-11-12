@@ -15,7 +15,7 @@ import { faBolt, faBone, faCow, faSliders } from "@fortawesome/free-solid-svg-ic
 import { Toolbar } from "@fluentui/react-northstar";
 import { faSquarePlus } from "@fortawesome/free-regular-svg-icons";
 import BlockTypeStateEditor from "./BlockTypeStateEditor";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import Project from "../app/Project";
 import BlockTypePermutationEditor from "./BlockTypePermutationEditor";
 import BlockTypeActionEditor from "./BlockTypeActionEditor";
@@ -34,7 +34,7 @@ interface IBlockTypeEditorProps extends IFileProps {
   readOnly: boolean;
   item: ProjectItem;
   project: Project;
-  carto: Carto;
+  creatorTools: CreatorTools;
   theme: ThemeInput<any>;
 }
 
@@ -133,16 +133,18 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
     });
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
       if (file.manager) {
         const bt = file.manager as BlockTypeDefinition;
 
-        bt.persist();
+        return bt.persist();
       }
     }
+
+    return false;
   }
 
   _setStatesMode() {
@@ -328,7 +330,7 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
             blockTypeItem={bt}
             readOnly={this.props.readOnly}
             item={this.props.item}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             file={this.props.file}
             project={this.props.project}
             theme={this.props.theme}
@@ -344,7 +346,7 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
             blockTypeItem={bt}
             readOnly={this.props.readOnly}
             item={this.props.item}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             file={this.props.file}
             project={this.props.project}
             theme={this.props.theme}
@@ -359,7 +361,7 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
             isVisualsMode={true}
             componentSet={bt}
             readOnly={this.props.readOnly}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             project={this.props.project}
             theme={this.props.theme}
             isDefault={true}

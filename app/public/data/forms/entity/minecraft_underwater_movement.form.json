@@ -45,16 +45,24 @@
             "content": 0.12
           }
         ],
+        "/vanilla/behavior_pack/entities/nautilus.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_mounted/minecraft:underwater_movement/",
+            "content": 0.055
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_unmounted/minecraft:underwater_movement/",
+            "content": 0.07
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_charging/minecraft:underwater_movement/",
+            "content": 0.12
+          }
+        ],
         "/vanilla/behavior_pack/entities/pufferfish.json": [
           {
             "path": "/minecraft:entity/components/minecraft:underwater_movement/",
             "content": 0.13
-          }
-        ],
-        "/vanilla/behavior_pack/entities/salmon.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:underwater_movement/",
-            "content": 0.12
           }
         ],
         "/vanilla/behavior_pack/entities/skeleton_horse.json": [
@@ -75,9 +83,13 @@
             "content": 0.06
           }
         ],
-        "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/nardolphle.behavior.json": [
+        "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
           {
-            "path": "/minecraft:entity/component_groups/minecraft:baby/minecraft:underwater_movement/",
+            "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_tame_mounted/minecraft:underwater_movement/",
+            "content": 0.055
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_charging/minecraft:underwater_movement/",
             "content": 0.06
           }
         ]
@@ -128,6 +140,32 @@
     "/vanilla/behavior_pack/entities/guardian.json": [
       {
         "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.12
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_baby/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.15
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_mounted/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.055
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_unmounted/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.07
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_charging/minecraft:underwater_movement/",
         "content": {
           "value": 0.12
         }
@@ -184,6 +222,32 @@
         "path": "/minecraft:entity/component_groups/minecraft:adult/minecraft:underwater_movement/",
         "content": {
           "value": 0.12
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_wild_mounted/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.15
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_tame_mounted/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.055
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_tame_unmounted/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.1
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_charging/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.06
         }
       }
     ],

@@ -115,6 +115,10 @@ export default class BrowserFolder extends FolderBase implements IFolder {
     return candFolder;
   }
 
+  async scanForChanges(): Promise<void> {
+    // no-op for browser storage
+  }
+
   _removeFile(file: IFile) {
     const nameCanon = StorageUtilities.canonicalizeName(file.name);
 

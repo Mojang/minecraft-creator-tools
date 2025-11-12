@@ -3,12 +3,13 @@
 
 import { constants } from "../core/Constants";
 import IProjectInfoData from "../info/IProjectInfoData";
+import Database from "../minecraft/Database";
 import { IPackageReference } from "../minecraft/IWorldSettings";
-import IFile from "../storage/IFile";
+import IFile, { FileUpdateType } from "../storage/IFile";
 import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
 import ZipStorage from "../storage/ZipStorage";
-import Carto from "./Carto";
+import CreatorTools from "./CreatorTools";
 import Project from "./Project";
 
 export enum PackageType {
@@ -40,6 +41,30 @@ export default class Package {
     this.type = this._getPackTypeFromPath(path);
   }
 
+  static ensureMinecraftCreatorToolsPackageReference(packRefs: IPackageReference[]) {
+    for (const packRef of packRefs) {
+      if (packRef.behaviorPackReferences) {
+        for (const bpRef of packRef.behaviorPackReferences) {
+          if (bpRef.uuid === Database.creatorToolsIngameBehaviorPackUUID) {
+            return;
+          }
+        }
+      }
+    }
+
+    packRefs.push({
+      name: "creator_tools_ingame.mcaddon",
+      behaviorPackReferences: [
+        { uuid: Database.creatorToolsIngameBehaviorPackUUID, version: Database.creatorToolsIngameBehaviorPackVersion },
+      ],
+      resourcePackReferences: [
+        { uuid: Database.creatorToolsIngameResourcePackUUID, version: Database.creatorToolsIngameResourcePackVersion },
+      ],
+    });
+
+    return packRefs;
+  }
+
   _getPackTypeFromPath(path: string) {
     const type = StorageUtilities.getTypeFromName(path);
 
@@ -59,7 +84,7 @@ export default class Package {
     }
   }
 
-  async ensureData(carto: Carto, file: IFile) {
+  async ensureData(creatorTools: CreatorTools, file: IFile) {
     this.file = file;
 
     const summaryFile = file.parentFolder.ensureFile(file.name + ".report.html");
@@ -126,12 +151,13 @@ export default class Package {
 
           await zipStorage.loadFromUint8Array(file.content, file.name);
 
+          zipStorage.containerFile = file;
           file.fileContainerStorage = zipStorage;
         }
 
         packRootZipFolder = file.fileContainerStorage.rootFolder;
 
-        const packProject = new Project(carto, file.name, null);
+        const packProject = new Project(creatorTools, file.name, null);
         packProject.setProjectFolder(packRootZipFolder);
 
         await packProject.inferProjectItemsFromFiles();
@@ -144,7 +170,8 @@ export default class Package {
 
         const reportHtml = pis.getReportHtml(file.name, file.storageRelativePath, hash);
 
-        summaryFile.setContent(reportHtml);
+        summaryFile.setContent(reportHtml, FileUpdateType.versionlessEdit);
+
         await summaryFile.saveContent();
 
         this.reportFile = summaryFile;

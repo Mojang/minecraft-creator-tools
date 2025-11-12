@@ -15,6 +15,7 @@ import VsCodeSettingsDefinition from "../devproject/VsCodeSettingsDefinition";
 import PrettierRcConfig from "../devproject/PrettierRcConfig";
 import JustConfig from "../devproject/JustConfig";
 import NpmPackageDefinition from "../devproject/NpmPackageDefinition";
+import { FileUpdateType } from "../storage/IFile";
 
 export default class ProjectAutogeneration {
   static async updateProjectAutogeneration(project: Project, createNewArtifacts: boolean) {
@@ -203,11 +204,12 @@ export default class ProjectAutogeneration {
 
       ProjectAutogeneration.updateCatalogJsContent(item, await ProjectAutogeneration.getCatalogJsContent(item.project));
     } else if (item.itemType === ProjectItemType.env) {
-      item.primaryFile.setContent(
+      item.primaryFile.setContentIfSemanticallyDifferent(
         await EnvSettings.getContent(
           item.project,
           typeof item.primaryFile.content === "string" ? item.primaryFile.content : undefined
-        )
+        ),
+        FileUpdateType.versionlessEdit
       );
     } else if (item.itemType === ProjectItemType.justConfigTs) {
       const justConfigTs = await JustConfig.ensureOnFile(item.primaryFile);
@@ -264,7 +266,7 @@ export default class ProjectAutogeneration {
       const content = await ProjectAutogeneration.getGeneratedEntityTypeScript(item);
 
       if (content.javaScript !== undefined) {
-        item.primaryFile.setContent(content.javaScript);
+        item.primaryFile.setContent(content.javaScript, FileUpdateType.versionlessEdit);
       }
       if (
         item.project.preferredScriptLanguage === ProjectScriptLanguage.typeScript &&
@@ -274,7 +276,7 @@ export default class ProjectAutogeneration {
           StorageUtilities.getBaseFromName(item.primaryFile.name) + ".ts"
         );
 
-        file.setContent(content.typeScript);
+        file.setContent(content.typeScript, FileUpdateType.versionlessEdit);
       }
 
       if (
@@ -285,13 +287,13 @@ export default class ProjectAutogeneration {
           StorageUtilities.getBaseFromName(item.primaryFile.name) + ".ts"
         );
 
-        file.setContent(content.typeScript);
+        file.setContent(content.typeScript, FileUpdateType.versionlessEdit);
       }
     } else if (item.itemType === ProjectItemType.entityTypeBaseTs) {
       const content = await ProjectAutogeneration.getGeneratedEntityTypeScript(item);
 
       if (content.typeScript !== undefined) {
-        item.primaryFile.setContent(content.typeScript);
+        item.primaryFile.setContent(content.typeScript, FileUpdateType.versionlessEdit);
       }
     }
   }
@@ -358,7 +360,7 @@ export default class ProjectAutogeneration {
       item.primaryFile.content === null ||
       item.primaryFile.content.trim() === ""
     ) {
-      item.primaryFile.setContent(newContent);
+      item.primaryFile.setContent(newContent, FileUpdateType.versionlessEdit);
       return;
     }
 
@@ -391,7 +393,7 @@ export default class ProjectAutogeneration {
 
     updatedContent += newContent;
 
-    item.primaryFile.setContent(updatedContent);
+    item.primaryFile.setContent(updatedContent, FileUpdateType.versionlessEdit);
   }
 
   static async getGeneratedEntityTypeScript(item: ProjectItem) {

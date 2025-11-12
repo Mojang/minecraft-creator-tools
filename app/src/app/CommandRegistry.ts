@@ -173,7 +173,7 @@ export default class CommandRegistry {
             } catch (e) {}
 
             if (delay > 0) {
-              context.carto.notifyStatusUpdate("(Delaying commands for " + delay + "ms).");
+              context.creatorTools.notifyStatusUpdate("(Delaying commands for " + delay + "ms).");
 
               await Utilities.sleep(delay);
             }
@@ -284,7 +284,7 @@ export default class CommandRegistry {
       return result;
     }
 
-    context.carto.notifyStatusUpdate("Could not find a command '" + command.fullName + "'.");
+    context.creatorTools.notifyStatusUpdate("Could not find a command '" + command.fullName + "'.");
     return undefined;
   }
 }

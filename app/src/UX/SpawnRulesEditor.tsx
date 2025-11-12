@@ -114,16 +114,18 @@ export default class SpawnRulesEditor extends Component<ISpawnRulesEditorProps, 
     }
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
       if (file.manager) {
         const srbd = file.manager as SpawnRulesBehaviorDefinition;
 
-        srbd.persist();
+        return srbd.persist();
       }
     }
+
+    return false;
   }
 
   _handleDataFormPropertyChange(props: IDataFormProps, property: IProperty, newValue: any) {

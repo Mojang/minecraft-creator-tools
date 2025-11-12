@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { Difficulty, GameType, Generator } from "./WorldLevelDat";
+import { Difficulty, GameType, Generator, PlayerPermissionsLevel } from "./WorldLevelDat";
 
 export enum BackupType {
   none,
@@ -23,7 +23,10 @@ export interface IWorldSettings {
   difficulty?: Difficulty;
   maxPlayerCount?: number;
   cheatsEnabled?: boolean;
+  permissionLevel?: PlayerPermissionsLevel;
+  playerPermissionLevel?: PlayerPermissionsLevel;
   randomSeed?: string;
+  worldContentPath?: string;
   name?: string;
   commandsEnabled?: boolean; // same as 'cheats enabled'.
   backupType?: BackupType;

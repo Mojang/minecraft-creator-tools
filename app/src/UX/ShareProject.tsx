@@ -5,13 +5,13 @@ import "./ShareProject.css";
 import { Button, InputProps, ThemeInput } from "@fluentui/react-northstar";
 import Utilities from "../core/Utilities";
 import StorageUtilities from "../storage/StorageUtilities";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
 import { constants } from "../core/Constants";
 import Log from "../core/Log";
 import HttpStorage from "../storage/HttpStorage";
-import CartoApp from "../app/CartoApp";
+import CreatorToolsHost from "../app/CreatorToolsHost";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import IStorage from "../storage/IStorage";
 import FileExplorer, { FileExplorerMode } from "./FileExplorer";
@@ -88,7 +88,7 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
       url += "#open=gp/" + this.props.project.originalGalleryId;
       title = this.props.project.originalGalleryId;
 
-      const galProject = await this.props.carto.getGalleryProjectById(this.props.project.originalGalleryId);
+      const galProject = await this.props.creatorTools.getGalleryProjectById(this.props.project.originalGalleryId);
 
       if (galProject) {
         title = galProject.title;
@@ -118,7 +118,7 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
     if (appendDiffList) {
       baseProjectUrl = url;
 
-      const fileDiff64 = await this._getFileDiffsBase64(this.props.carto, this.props.project);
+      const fileDiff64 = await this._getFileDiffsBase64(this.props.creatorTools, this.props.project);
 
       if (fileDiff64 !== undefined) {
         url += "&updates=" + fileDiff64;
@@ -142,7 +142,7 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
     });
   }
 
-  async _getFileDiffsBase64(carto: Carto, project: Project) {
+  async _getFileDiffsBase64(creatorTools: CreatorTools, project: Project) {
     if (project.projectFolder === undefined || project.projectFolder === null) {
       return undefined;
     }
@@ -154,7 +154,7 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
     let ghFiles = this.props.project.originalFileList;
 
     if (this.props.project.originalGalleryId) {
-      const gp = await carto.getGalleryProjectById(this.props.project.originalGalleryId);
+      const gp = await creatorTools.getGalleryProjectById(this.props.project.originalGalleryId);
 
       if (gp) {
         ghRepoName = gp.gitHubRepoName;
@@ -164,7 +164,7 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
         ghFiles = gp.fileList;
 
         if (ghFiles === undefined) {
-          const gpA = await carto.getGalleryProjectByGitHub(
+          const gpA = await creatorTools.getGalleryProjectByGitHub(
             gp.gitHubRepoName,
             gp.gitHubOwner,
             gp.gitHubBranch,
@@ -184,7 +184,7 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
     }
 
     const gh = new HttpStorage(
-      CartoApp.contentRoot +
+      CreatorToolsHost.contentRoot +
         "res/samples/" +
         ghRepoOwner +
         "/" +
@@ -215,7 +215,7 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
   }
 
   _handleNameChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
-    if (data === undefined || this.props.carto === null || this.state == null) {
+    if (data === undefined || this.props.creatorTools === null || this.state == null) {
       return;
     }
 
@@ -425,7 +425,7 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
           <div className="shp-contentDisplay">
             <FileExplorer
               rootFolder={this.state.exampleStorage.rootFolder}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               readOnly={true}
               selectFirstFile={true}
               height={260}

@@ -4,7 +4,7 @@ import IAppProps from "./IAppProps";
 import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
 import { ThemeInput } from "@fluentui/react-northstar";
 import Utilities from "../core/Utilities";
-import CartoApp from "../app/CartoApp";
+import CreatorToolsHost from "../app/CreatorToolsHost";
 import { GalleryItemCommand } from "./ItemGallery";
 
 export enum ItemTileButtonDisplayMode {
@@ -106,14 +106,15 @@ export default class ItemTileButton extends Component<IItemTileButtonProps, IIte
       let imagePath = proj.logoImage;
 
       if (imagePath === undefined) {
-        imagePath = CartoApp.contentRoot + "res/latest/van/release/resource_pack/textures/" + proj.localLogo;
+        imagePath = CreatorToolsHost.contentRoot + "res/latest/van/release/resource_pack/textures/" + proj.localLogo;
       }
 
       if (proj.logoImage !== undefined) {
         if (proj.gitHubRepoName === "bedrock-samples") {
-          imagePath = CartoApp.contentRoot + Utilities.ensureEndsWithSlash("res/latest/van/release/");
+          imagePath = CreatorToolsHost.contentRoot + Utilities.ensureEndsWithSlash("res/latest/van/release/");
         } else {
-          imagePath = CartoApp.contentRoot + "res/samples/" + proj.gitHubOwner + "/" + proj.gitHubRepoName + "-";
+          imagePath =
+            CreatorToolsHost.contentRoot + "res/samples/" + proj.gitHubOwner + "/" + proj.gitHubRepoName + "-";
 
           if (proj.gitHubBranch !== undefined) {
             imagePath += Utilities.ensureEndsWithSlash(proj.gitHubBranch);

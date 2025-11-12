@@ -9,7 +9,7 @@ import { faSearchPlus, faSearchMinus } from "@fortawesome/free-solid-svg-icons";
 import ProjectItem from "../app/ProjectItem";
 import StorageUtilities from "../storage/StorageUtilities";
 import Database from "../minecraft/Database";
-import CartoApp, { CartoThemeStyle } from "../app/CartoApp";
+import CreatorToolsHost, { CreatorToolsThemeStyle } from "../app/CreatorToolsHost";
 import Project from "../app/Project";
 import { constants } from "../core/Constants";
 import IPersistable from "./IPersistable";
@@ -136,6 +136,11 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
         content = file.content as string;
 
         model = monacoInstance.editor.createModel(content, lang, modelUri);
+      } else {
+        let existingContent = model.getValue();
+        if (existingContent.trim() !== file.content.trim()) {
+          model.setValue(file.content as string);
+        }
       }
 
       if (this.props.item) {
@@ -183,7 +188,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
   }
 
   async _considerFormat() {
-    if (this.editor && this.props.project && this.props.project.carto.formatBeforeSave) {
+    if (this.editor && this.props.project && this.props.project.creatorTools.formatBeforeSave) {
       const action = this.editor.getAction("editor.action.formatDocument");
 
       if (action) {
@@ -200,7 +205,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
     }
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this.editor !== undefined && this.state.fileToEdit && !this.props.readOnly && this._needsPersistence) {
       this._needsPersistence = false;
 
@@ -210,8 +215,11 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
 
       if (value.length > 0 || !this.state.fileToEdit.content || this.state.fileToEdit.content.length < 1) {
         this.state.fileToEdit.setContent(value);
+        return true;
       }
     }
+
+    return false;
   }
 
   _zoomIn() {
@@ -278,7 +286,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
 
       let theme = "vs-dark";
 
-      if (CartoApp.theme === CartoThemeStyle.light) {
+      if (CreatorToolsHost.theme === CreatorToolsThemeStyle.light) {
         theme = "vs";
       }
 

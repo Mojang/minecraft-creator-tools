@@ -1,6 +1,6 @@
 import { Component, SyntheticEvent } from "react";
 import IAppProps from "./IAppProps";
-import Carto from "./../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import "./DedicatedServerSettingsPanel.css";
 import {
   Input,
@@ -13,7 +13,7 @@ import {
   ThemeInput,
 } from "@fluentui/react-northstar";
 import IPersistable from "./IPersistable";
-import { DedicatedServerMode, MinecraftTrack } from "../app/ICartoData";
+import { DedicatedServerMode, MinecraftTrack } from "../app/ICreatorToolsData";
 import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProxy";
 import Log from "../core/Log";
 
@@ -52,7 +52,7 @@ export default class DedicatedServerSettingsPanel extends Component<
 
     this._onCartoLoaded = this._onCartoLoaded.bind(this);
 
-    let port = this.props.carto.dedicatedServerSlotCount;
+    let port = this.props.creatorTools.dedicatedServerSlotCount;
 
     if (!port) {
       port = 4;
@@ -60,14 +60,16 @@ export default class DedicatedServerSettingsPanel extends Component<
 
     this.state = {
       dedicatedServerSlotCount: port,
-      dedicatedServerMode: this.props.carto.dedicatedServerMode,
-      dedicatedServerPath: this.props.carto.dedicatedServerPath,
-      iagree: this.props.carto.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula,
+      dedicatedServerMode: this.props.creatorTools.dedicatedServerMode,
+      dedicatedServerPath: this.props.creatorTools.dedicatedServerPath,
+      iagree:
+        this.props.creatorTools
+          .iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula,
     };
 
-    this.props.carto.onLoaded.subscribe(this._onCartoLoaded);
+    this.props.creatorTools.onLoaded.subscribe(this._onCartoLoaded);
 
-    this.props.carto.load();
+    this.props.creatorTools.load();
   }
 
   private _notifyOnChange() {
@@ -76,9 +78,9 @@ export default class DedicatedServerSettingsPanel extends Component<
     }
   }
 
-  private _onCartoLoaded(source: Carto, target: Carto) {
+  private _onCartoLoaded(source: CreatorTools, target: CreatorTools) {
     this.setState({
-      dedicatedServerSlotCount: this.props.carto.dedicatedServerSlotCount,
+      dedicatedServerSlotCount: this.props.creatorTools.dedicatedServerSlotCount,
     });
   }
 
@@ -86,17 +88,19 @@ export default class DedicatedServerSettingsPanel extends Component<
     this._activeEditorPersistable = newPersistable;
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this._activeEditorPersistable !== undefined) {
-      await this._activeEditorPersistable.persist();
+      return await this._activeEditorPersistable.persist();
     }
+
+    return false;
   }
 
   _handleIAgreeChanged(e: SyntheticEvent, data: (CheckboxProps & { checked: boolean }) | undefined) {
     if (data) {
-      this.props.carto.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula =
+      this.props.creatorTools.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula =
         data.checked;
-      this.props.carto.save();
+      this.props.creatorTools.save();
       this._notifyOnChange();
     }
   }
@@ -104,12 +108,12 @@ export default class DedicatedServerSettingsPanel extends Component<
   _handleUsePreview(e: SyntheticEvent, data: (CheckboxProps & { checked: boolean }) | undefined) {
     if (data) {
       if (data.checked) {
-        this.props.carto.track = MinecraftTrack.preview;
+        this.props.creatorTools.track = MinecraftTrack.preview;
       } else {
-        this.props.carto.track = MinecraftTrack.main;
+        this.props.creatorTools.track = MinecraftTrack.main;
       }
 
-      this.props.carto.save();
+      this.props.creatorTools.save();
       this._notifyOnChange();
     }
   }
@@ -122,9 +126,9 @@ export default class DedicatedServerSettingsPanel extends Component<
       const mode = this.modeOptions[i];
 
       if (mode === data.value) {
-        this.props.carto.dedicatedServerMode = i;
+        this.props.creatorTools.dedicatedServerMode = i;
 
-        this.props.carto.save();
+        this.props.creatorTools.save();
 
         this.setState({
           dedicatedServerPath: this.state.dedicatedServerPath,
@@ -140,12 +144,12 @@ export default class DedicatedServerSettingsPanel extends Component<
   }
 
   _handleServerPathChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
-    if (data === undefined || this.props.carto === null || this.state == null) {
+    if (data === undefined || this.props.creatorTools === null || this.state == null) {
       return;
     }
 
-    this.props.carto.dedicatedServerPath = data.value;
-    this.props.carto.save();
+    this.props.creatorTools.dedicatedServerPath = data.value;
+    this.props.creatorTools.save();
 
     this.setState({
       dedicatedServerPath: data.value,
@@ -161,8 +165,8 @@ export default class DedicatedServerSettingsPanel extends Component<
     const result = await AppServiceProxy.sendAsync(AppServiceProxyCommands.openFolder, "");
 
     if (result && result.length > 0) {
-      this.props.carto.dedicatedServerPath = result;
-      this.props.carto.save();
+      this.props.creatorTools.dedicatedServerPath = result;
+      this.props.creatorTools.save();
 
       this.setState({
         dedicatedServerSlotCount: this.state.dedicatedServerSlotCount,
@@ -174,7 +178,7 @@ export default class DedicatedServerSettingsPanel extends Component<
   }
 
   _handleDedicatedServerSlotCountChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
-    if (data === undefined || this.props.carto === null || this.state == null) {
+    if (data === undefined || this.props.creatorTools === null || this.state == null) {
       return;
     }
 
@@ -190,9 +194,9 @@ export default class DedicatedServerSettingsPanel extends Component<
       return;
     }
 
-    if (valInt !== this.props.carto.dedicatedServerSlotCount) {
-      this.props.carto.dedicatedServerSlotCount = valInt;
-      this.props.carto.save();
+    if (valInt !== this.props.creatorTools.dedicatedServerSlotCount) {
+      this.props.creatorTools.dedicatedServerSlotCount = valInt;
+      this.props.creatorTools.save();
 
       this.setState({
         dedicatedServerSlotCount: valInt,
@@ -219,7 +223,9 @@ export default class DedicatedServerSettingsPanel extends Component<
           items={this.modeOptions}
           key="modeinput"
           defaultValue={
-            this.modeOptions[this.props.carto.dedicatedServerMode ? this.props.carto.dedicatedServerMode : 0]
+            this.modeOptions[
+              this.props.creatorTools.dedicatedServerMode ? this.props.creatorTools.dedicatedServerMode : 0
+            ]
           }
           onChange={this._handleModeChanged}
         />
@@ -248,7 +254,8 @@ export default class DedicatedServerSettingsPanel extends Component<
         <div className="dssp-iagreeinput" key="iagreeinput">
           <Checkbox
             checked={
-              this.props.carto.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula
+              this.props.creatorTools
+                .iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula
             }
             onClick={this._handleIAgreeChanged}
           />
@@ -287,7 +294,10 @@ export default class DedicatedServerSettingsPanel extends Component<
 
       serverProps.push(
         <div className="dssp-usepreviewinput" key="usepreviewinput">
-          <Checkbox checked={this.props.carto.track === MinecraftTrack.preview} onClick={this._handleUsePreview} />
+          <Checkbox
+            checked={this.props.creatorTools.track === MinecraftTrack.preview}
+            onClick={this._handleUsePreview}
+          />
         </div>
       );
 

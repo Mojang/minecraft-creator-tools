@@ -6,7 +6,7 @@ import IEventAction from "../minecraft/IEventAction";
 import EventActionTile from "./EventActionTile";
 import ManagedEventActionOrActionSet from "../minecraft/ManagedEventActionOrActionSet";
 import { Toolbar } from "@fluentui/react-northstar";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
@@ -22,7 +22,7 @@ interface IEventActionSetProps {
   isRandomize: boolean;
   eventContextId: string;
   project: Project;
-  carto: Carto;
+  creatorTools: CreatorTools;
   theme: ThemeInput<any>;
 }
 
@@ -98,7 +98,7 @@ export default class EventActionSet extends Component<IEventActionSetProps, IEve
           displayNarrow={this.props.displayNarrow}
           displayAddRemoveGroups={this.props.displayAddRemoveGroups}
           eventContextId={this.props.eventContextId}
-          carto={this.props.carto}
+          creatorTools={this.props.creatorTools}
           key={"eata"}
           project={this.props.project}
           event={new ManagedEventActionOrActionSet(this.props.event)}
@@ -125,7 +125,7 @@ export default class EventActionSet extends Component<IEventActionSetProps, IEve
                 eventContextId={this.props.eventContextId}
                 isRandomize={(elt as IEventActionSet).randomize !== undefined}
                 event={elt as IEventActionSet}
-                carto={this.props.carto}
+                creatorTools={this.props.creatorTools}
                 theme={this.props.theme}
               />
             );
@@ -140,7 +140,7 @@ export default class EventActionSet extends Component<IEventActionSetProps, IEve
                 displayWeight={this.props.isRandomize}
                 eventContextId={this.props.eventContextId}
                 event={new ManagedEventActionOrActionSet(elt as IEventAction)}
-                carto={this.props.carto}
+                creatorTools={this.props.creatorTools}
                 theme={this.props.theme}
               />
             );

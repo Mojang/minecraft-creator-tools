@@ -183,6 +183,8 @@ export default interface MinecraftNavigationWalk {
    *
    * Goat: [{"name":"minecraft:powder_snow"}]
    *
+   * Zombie Horse: ["minecraft:rail","minecraft:activator_rail","minecraft:detector_rail","minecraft:golden_rail"]
+   *
    */
   blocks_to_avoid?: boolean;
 

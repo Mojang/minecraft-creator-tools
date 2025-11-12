@@ -214,6 +214,10 @@ export enum FieldDataType {
    * Represents an array of Minecraft event triggers, which can be used to specify multiple identifiers and contexts for actions that should fire.
    */
   minecraftEventTriggerArray = 42,
+  /**
+   * Represents a two dimensional string array, i.e.., string[][], e.g., [ ["a", "b"], ["c", "d"] ]
+   */
+  twoDStringArray = 43,
 }
 
 /**

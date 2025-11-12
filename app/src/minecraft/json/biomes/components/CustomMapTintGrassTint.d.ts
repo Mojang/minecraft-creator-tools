@@ -33,3 +33,9 @@ export default interface CustomMapTintGrassTint {
   type: string;
 
 }
+
+
+export enum CustomMapTintGrassTintType {
+  noise = `noise`,
+  tint = `tint`
+}

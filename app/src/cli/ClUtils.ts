@@ -1,5 +1,5 @@
-import Carto from "../app/Carto";
-import CartoApp from "../app/CartoApp";
+import CreatorTools from "../app/CreatorTools";
+import CreatorToolsHost from "../app/CreatorToolsHost";
 import Project, { ProjectAutoDeploymentMode } from "../app/Project";
 import IStatus, { StatusType } from "../app/Status";
 import Log from "../core/Log";
@@ -42,8 +42,8 @@ export enum OutputType {
 }
 
 export default class ClUtils {
-  static createProject(carto: Carto, startInfo: IProjectStartInfo) {
-    const proj = new Project(carto, startInfo.ctorProjectName, null);
+  static createProject(creatorTools: CreatorTools, startInfo: IProjectStartInfo) {
+    const proj = new Project(creatorTools, startInfo.ctorProjectName, null);
 
     if (startInfo.localFilePath) {
       proj.localFilePath = startInfo.localFilePath;
@@ -62,7 +62,7 @@ export default class ClUtils {
     return proj;
   }
 
-  static handleStatusAdded(carto: Carto, status: IStatus) {
+  static handleStatusAdded(creatorTools: CreatorTools, status: IStatus) {
     let message = status.message;
 
     if (status.type === StatusType.operationStarted) {
@@ -152,39 +152,39 @@ export default class ClUtils {
     return workFolder;
   }
 
-  static getCarto(localEnv: LocalEnvironment, basePath?: string) {
-    CartoApp.localFolderExists = ClUtils.localFolderExists;
-    CartoApp.localFileExists = ClUtils.localFileExists;
-    CartoApp.ensureLocalFolder = ClUtils.ensureLocalFolder;
+  static getCreatorTools(localEnv: LocalEnvironment, basePath?: string) {
+    CreatorToolsHost.localFolderExists = ClUtils.localFolderExists;
+    CreatorToolsHost.localFileExists = ClUtils.localFileExists;
+    CreatorToolsHost.ensureLocalFolder = ClUtils.ensureLocalFolder;
 
-    CartoApp.prefsStorage = new NodeStorage(
+    CreatorToolsHost.prefsStorage = new NodeStorage(
       localEnv.utilities.cliWorkingPath + "prefs" + NodeStorage.platformFolderDelimiter,
       ""
     );
 
-    CartoApp.projectsStorage = new NodeStorage(
+    CreatorToolsHost.projectsStorage = new NodeStorage(
       localEnv.utilities.cliWorkingPath + "projects" + NodeStorage.platformFolderDelimiter,
       ""
     );
 
-    CartoApp.packStorage = new NodeStorage(
+    CreatorToolsHost.packStorage = new NodeStorage(
       localEnv.utilities.cliWorkingPath + "packs" + NodeStorage.platformFolderDelimiter,
       ""
     );
 
-    CartoApp.deploymentStorage = new NodeStorage(
+    CreatorToolsHost.deploymentStorage = new NodeStorage(
       localEnv.utilities.cliWorkingPath + "deployment" + NodeStorage.platformFolderDelimiter,
       ""
     );
 
-    CartoApp.workingStorage = new NodeStorage(
+    CreatorToolsHost.workingStorage = new NodeStorage(
       localEnv.utilities.cliWorkingPath + "working" + NodeStorage.platformFolderDelimiter,
       ""
     );
 
     if (localEnv.utilities && basePath) {
       (localEnv.utilities as LocalUtilities).basePathAdjust = basePath;
-      CartoApp.fullLocalStorage = true;
+      CreatorToolsHost.fullLocalStorage = true;
     }
 
     const coreStorage = new NodeStorage(__dirname + "/../data/content/", "");
@@ -192,12 +192,12 @@ export default class ClUtils {
 
     Database.local = localEnv.utilities;
 
-    CartoApp.init();
+    CreatorToolsHost.init();
 
-    if (CartoApp.carto) {
-      CartoApp.carto.local = localEnv.utilities;
+    if (CreatorToolsHost.creatorTools) {
+      CreatorToolsHost.creatorTools.local = localEnv.utilities;
     }
 
-    return CartoApp.carto;
+    return CreatorToolsHost.creatorTools;
   }
 }

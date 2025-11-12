@@ -248,19 +248,17 @@ export default class ItemTypeResourceDefinition implements IManagedComponentSetI
     return itt;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._behaviorPackFile === undefined) {
-      return;
+      return false;
     }
 
     if (!this.wrapper) {
       Log.unexpectedUndefined("ITRDP");
-      return;
+      return false;
     }
 
-    const bpString = JSON.stringify(this.wrapper, null, 2);
-
-    this._behaviorPackFile.setContent(bpString);
+    return this._behaviorPackFile.setObjectContentIfSemanticallyDifferent(this.wrapper);
   }
 
   async load() {

@@ -55,6 +55,10 @@ export default class Folder extends FolderBase implements IFolder {
     return true;
   }
 
+  async scanForChanges(): Promise<void> {
+    // No-op for in-memory storage
+  }
+
   ensureFile(name: string): File {
     const nameCanon = StorageUtilities.canonicalizeName(name);
 

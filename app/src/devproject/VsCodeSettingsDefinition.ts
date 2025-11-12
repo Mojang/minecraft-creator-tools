@@ -98,18 +98,18 @@ export default class VsCodeSettingsDefinition {
     return dt;
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     Log.assert(this.definition !== null, "VCSP");
 
-    if (this.definition) {
-      const extensionsJsonString = JSON.stringify(this.definition, null, 2);
-
-      this._file.setContent(extensionsJsonString);
+    if (!this.definition) {
+      return false;
     }
+
+    return this._file.setObjectContentIfSemanticallyDifferent(this.definition);
   }
 
   async save() {
@@ -117,9 +117,9 @@ export default class VsCodeSettingsDefinition {
       return;
     }
 
-    this.persist();
-
-    await this._file.saveContent(false);
+    if (await this.persist()) {
+      await this._file.saveContent(false);
+    }
   }
 
   async hasMinContent() {

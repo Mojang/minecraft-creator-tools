@@ -5,7 +5,7 @@ import Database from "../minecraft/Database";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import MinecraftDefinitions from "../minecraft/MinecraftDefinitions";
 import HttpStorage from "../storage/HttpStorage";
-import CartoApp from "./CartoApp";
+import CreatorToolsHost from "./CreatorToolsHost";
 import IGalleryItem from "./IGalleryItem";
 import { ProjectItemType } from "./IProjectItemData";
 import Project from "./Project";
@@ -187,7 +187,7 @@ export default class ProjectCreateManager {
       sourceRpFolder = await Database.getReleaseVanillaResourcePackFolder();
     } else {
       const url =
-        Utilities.ensureEndsWithSlash(CartoApp.contentRoot) +
+        Utilities.ensureEndsWithSlash(CreatorToolsHost.contentRoot) +
         "res/samples/" +
         Utilities.ensureEndsWithSlash(galleryProject.gitHubOwner) +
         galleryProject.gitHubRepoName +
@@ -383,8 +383,7 @@ export default class ProjectCreateManager {
     }
 
     newName = newName.toLowerCase();
-    newName = newName.replace(/-/g, "_");
-    newName = newName.replace(/ /g, "_");
+    newName = newName.replace(/[- ]/g, "_");
 
     const tempName = Utilities.createRandomId(10);
 

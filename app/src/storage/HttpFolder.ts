@@ -54,6 +54,10 @@ export default class HttpFolder extends FolderBase implements IFolder {
     this.files = {};
   }
 
+  async scanForChanges(): Promise<void> {
+    await this.load(true);
+  }
+
   async exists() {
     return true;
   }

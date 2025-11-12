@@ -83,8 +83,6 @@ const BLOCK_TYPE_MATERIALS = [
 ];
 
 export default class BlockType implements IManagedComponentSetItem {
-  private _typeId = "";
-
   public data: IBlockTypeData;
   public javaData: IJavaBlockTypeData | null;
 
@@ -115,7 +113,7 @@ export default class BlockType implements IManagedComponentSetItem {
   }
 
   public get mapColor() {
-    return this.data.mapColor;
+    return this.data.mc;
   }
 
   public get isCustom() {
@@ -142,7 +140,7 @@ export default class BlockType implements IManagedComponentSetItem {
   public renderType: BlockRenderType = BlockRenderType.Custom;
 
   get icon() {
-    let val = this.data.icon;
+    let val = this.data.ic;
 
     if (val === undefined && this.baseType !== undefined) {
       val = this.baseType.icon;
@@ -151,41 +149,25 @@ export default class BlockType implements IManagedComponentSetItem {
     return val;
   }
 
-  get typeId() {
-    return this._typeId;
-  }
-
-  get shortTypeName() {
-    let name = this._typeId;
-
-    const colonIndex = name.indexOf(":");
-
-    if (colonIndex >= 0) {
-      name = name.substring(colonIndex + 1, name.length);
-    }
-
-    return name;
-  }
-
   get title() {
-    const id = this.shortTypeName;
+    const id = this.shortId;
 
     return Utilities.humanifyMinecraftName(id);
   }
 
-  constructor(name: string) {
-    this._typeId = name;
+  constructor(typeId: string) {
+    this._id = typeId;
     this.javaData = null;
 
     this.data = {
-      name: name,
+      n: typeId,
     };
 
-    if (name.indexOf(":") >= 0 && !name.startsWith("minecraft:")) {
+    if (typeId.indexOf(":") >= 0 && !typeId.startsWith("minecraft:")) {
       this._isCustom = true;
     }
 
-    const baseTypeShort = MinecraftUtilities.canonicalizeName(name);
+    const baseTypeShort = MinecraftUtilities.canonicalizeName(typeId);
 
     for (const material of BLOCK_TYPE_MATERIALS) {
       if (baseTypeShort.indexOf(material) >= 0) {
@@ -199,10 +181,10 @@ export default class BlockType implements IManagedComponentSetItem {
     const icon = this.icon;
 
     if (icon === undefined) {
-      return this.shortTypeName;
+      return this.shortId;
     }
 
-    const typeName = MinecraftUtilities.canonicalizeName(this.shortTypeName);
+    const typeName = MinecraftUtilities.canonicalizeName(this.id);
 
     const lastUnder = typeName.lastIndexOf("_");
 
@@ -340,7 +322,7 @@ export default class BlockType implements IManagedComponentSetItem {
       return this.icon;
     }
 
-    return this.shortTypeName;
+    return this.shortId;
   }
 
   public get id() {
@@ -350,6 +332,10 @@ export default class BlockType implements IManagedComponentSetItem {
 
     if (this._id === undefined) {
       return "";
+    }
+
+    if (this._id.endsWith("_")) {
+      return this._id + this.baseTypeId;
     }
 
     return this._id;
@@ -392,15 +378,12 @@ export default class BlockType implements IManagedComponentSetItem {
   }
 
   public get shortId() {
-    if (this._id !== undefined) {
-      if (this._id.startsWith("minecraft:")) {
-        return this._id.substring(10, this._id.length);
-      }
-
-      return this._id;
+    let id = this.id;
+    if (id.startsWith("minecraft:")) {
+      return id.substring(10, id.length);
     }
 
-    return undefined;
+    return id;
   }
 
   getComponent(id: string) {
@@ -515,18 +498,18 @@ export default class BlockType implements IManagedComponentSetItem {
     }
   }
 
-  persist() {
+  persist(): boolean {
     if (this._behaviorPackFile === undefined) {
-      return;
+      return false;
     }
 
     Log.assert(this._behaviorPackData !== null, "BTP");
 
-    if (this._behaviorPackData) {
-      const bpString = JSON.stringify(this._behaviorPackData, null, 2);
-
-      this._behaviorPackFile.setContent(bpString);
+    if (!this._behaviorPackData) {
+      return false;
     }
+
+    return this._behaviorPackFile.setObjectContentIfSemanticallyDifferent(this._behaviorPackData);
   }
 
   async load() {

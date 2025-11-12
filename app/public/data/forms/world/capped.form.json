@@ -5,7 +5,25 @@
       "id": "processor_type",
       "title": "Jigsaw Processor Type",
       "isRequired": true,
-      "dataType": 2
+      "dataType": 2,
+      "choices": [
+        {
+          "id": "minecraft:block_ignore",
+          "title": "Minecraft:block ignore"
+        },
+        {
+          "id": "minecraft:capped",
+          "title": "Minecraft:capped"
+        },
+        {
+          "id": "minecraft:protected_blocks",
+          "title": "Minecraft:protected blocks"
+        },
+        {
+          "id": "minecraft:rule",
+          "title": "Minecraft:rule"
+        }
+      ]
     },
     {
       "id": "delegate",

@@ -2603,6 +2603,18 @@
       "dataType": 16
     },
     {
+      "id": "minecraft:rotation_locked_to_vehicle",
+      "title": "Minecraft Rotation Locked To Vehicle",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:underwater_mount_breathing",
+      "title": "Minecraft Underwater Mount Breathing",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
       "id": "minecraft:vertical_movement_action",
       "title": "Minecraft Vertical Movement Action",
       "description": "Dynamic value",

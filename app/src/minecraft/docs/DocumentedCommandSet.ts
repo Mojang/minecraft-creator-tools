@@ -181,20 +181,22 @@ export default class DocumentedCommandSet {
     return false;
   }
 
-  persist() {
+  async persist(): Promise<boolean> {
     if (this._file === undefined) {
-      return;
+      return false;
     }
+
+    let didPersist = false;
 
     for (const docCommandName in this._docCommands) {
       const docCommand = this._docCommands[docCommandName];
 
-      docCommand.persist();
+      if (await docCommand.persist()) {
+        didPersist = true;
+      }
     }
 
-    //const cdString = JSON.stringify(this.moduleDefinition, null, 2);
-
-    //this._behaviorPackFile.setContent(bpString);
+    return didPersist;
   }
 
   async load() {

@@ -17,8 +17,8 @@ Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
   "priority": 2,
   "admire_item_sound": "admire",
   "sound_interval": {
-    "range_min": 2,
-    "range_max": 5
+    "range_min": 8,
+    "range_max": 8
   },
   "on_admire_item_start": {
     "event": "admire_item_started_event",
@@ -87,7 +87,7 @@ export default interface MinecraftBehaviorAdmireItem {
    * sound again.
    * 
    * Sample Values:
-   * Piglin: {"range_min":2,"range_max":5}
+   * Piglin: {"range_min":8,"range_max":8}
    *
    */
   sound_interval?: number[];

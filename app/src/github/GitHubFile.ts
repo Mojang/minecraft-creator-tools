@@ -3,11 +3,11 @@
 
 import FileBase from "../storage/FileBase";
 import GitHubFolder from "./GitHubFolder";
-import IFile from "../storage/IFile";
+import IFile, { FileUpdateType } from "../storage/IFile";
 import Utilities from "../core/Utilities";
 import StorageUtilities, { EncodingType } from "../storage/StorageUtilities";
 import GitHubStorage from "./GitHubStorage";
-import CartoApp from "../app/CartoApp";
+import CreatorToolsHost from "../app/CreatorToolsHost";
 import axios from "axios";
 import Log from "../core/Log";
 
@@ -59,6 +59,10 @@ export default class GitHubFile extends FileBase implements IFile {
     throw new Error("Not implemented.");
   }
 
+  async scanForChanges(): Promise<void> {
+    // No-op for GitHub storage
+  }
+
   async loadContent(force?: boolean): Promise<Date> {
     if (force || !this.lastLoadedOrSaved) {
       this._content = null;
@@ -67,7 +71,7 @@ export default class GitHubFile extends FileBase implements IFile {
 
       // on web sources, use GH APIs to retrieve content because that should work from a web/CORS/permissions perspective to retrieve binary files
       // on non-web sources, just retrieve the binary directly from raw.githubusercontent.com
-      if (CartoApp.isWeb) {
+      if (CreatorToolsHost.isWeb) {
         const octo = storage.manager.octokit;
 
         let fullPathMinusSlash = this.fullPath;
@@ -197,14 +201,19 @@ export default class GitHubFile extends FileBase implements IFile {
     return this.lastLoadedOrSaved;
   }
 
-  setContent(newContent: string | Uint8Array | null) {
+  setContent(newContent: string | Uint8Array | null, updateType?: FileUpdateType) {
     const areEqual = StorageUtilities.contentsAreEqual(this._content, newContent);
 
-    if (!areEqual) {
-      this._content = newContent;
-
-      this.contentWasModified();
+    if (areEqual) {
+      return false;
     }
+
+    let oldContent = this._content;
+    this._content = newContent;
+
+    this.contentWasModified(oldContent, updateType);
+
+    return true;
   }
 
   async saveContent(): Promise<Date> {

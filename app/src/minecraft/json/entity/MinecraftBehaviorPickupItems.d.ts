@@ -73,6 +73,18 @@ Fox - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entit
 }
 
 
+Parched - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/parched.json
+
+"minecraft:behavior.pickup_items": {
+  "priority": 6,
+  "max_dist": 3,
+  "goal_radius": 2,
+  "speed_multiplier": 1,
+  "pickup_based_on_chance": true,
+  "can_pickup_any_item": true
+}
+
+
 Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/piglin.json
 
 "minecraft:behavior.pickup_items": {
@@ -122,7 +134,7 @@ Wither Skeleton - https://github.com/Mojang/bedrock-samples/tree/preview/behavio
 Zombie Pigman - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_pigman.json
 
 "minecraft:behavior.pickup_items": {
-  "priority": 6,
+  "priority": 7,
   "max_dist": 3,
   "goal_radius": 2,
   "speed_multiplier": 1,
@@ -139,21 +151,6 @@ Zombie Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavio
   "goal_radius": 2,
   "speed_multiplier": 1,
   "pickup_based_on_chance": false,
-  "can_pickup_any_item": true,
-  "excluded_items": [
-    "minecraft:glow_ink_sac"
-  ]
-}
-
-
-Zombie Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_villager_v2.json
-
-"minecraft:behavior.pickup_items": {
-  "priority": 8,
-  "max_dist": 3,
-  "goal_radius": 2,
-  "speed_multiplier": 1,
-  "pickup_based_on_chance": true,
   "can_pickup_any_item": true,
   "excluded_items": [
     "minecraft:glow_ink_sac"

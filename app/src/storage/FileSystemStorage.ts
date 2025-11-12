@@ -47,4 +47,8 @@ export default class FileSystemStorage extends StorageBase implements IStorage {
 
     return this.available;
   }
+
+  getUsesPollingBasedUpdating() {
+    return true;
+  }
 }

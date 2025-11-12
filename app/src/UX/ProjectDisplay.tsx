@@ -20,6 +20,7 @@ export default class ProjectDisplay extends Component<IProjectDisplayProps, IPro
     super(props);
 
     this._update = this._update.bind(this);
+    this._updateEvent = this._updateEvent.bind(this);
     this._pushGameTestReferenceMap = this._pushGameTestReferenceMap.bind(this);
 
     this._connectToProps();
@@ -34,9 +35,13 @@ export default class ProjectDisplay extends Component<IProjectDisplayProps, IPro
   }
 
   _connectToProps() {
-    if (this.props.project !== undefined) {
-      this.props.project.onPropertyChanged.subscribe(this._update);
+    if (this.props.project !== undefined && !this.props.project.onPropertyChanged.has(this._updateEvent)) {
+      this.props.project.onPropertyChanged.subscribe(this._updateEvent);
     }
+  }
+
+  _updateEvent(project: Project, propertyName: string) {
+    this.forceUpdate();
   }
 
   _update() {
@@ -44,7 +49,7 @@ export default class ProjectDisplay extends Component<IProjectDisplayProps, IPro
   }
 
   _pushGameTestReferenceMap() {
-    ProjectExporter.generateAndInvokeFlatPackRefMCWorld(this.props.carto, this.props.project);
+    ProjectExporter.generateAndInvokeFlatPackRefMCWorld(this.props.creatorTools, this.props.project);
   }
 
   render() {
@@ -77,7 +82,11 @@ export default class ProjectDisplay extends Component<IProjectDisplayProps, IPro
     if (this.props.project.messages) {
       statusArea = (
         <div className="pdisp-statusArea">
-          <StatusList theme={this.props.theme} carto={this.props.carto} status={this.props.project.messages} />
+          <StatusList
+            theme={this.props.theme}
+            creatorTools={this.props.creatorTools}
+            status={this.props.project.messages}
+          />
         </div>
       );
     }

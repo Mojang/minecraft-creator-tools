@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import CartoApp, { HostType } from "../app/CartoApp";
+import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
 import { FieldValueHumanify } from "../dataform/IField";
 import AppServiceProxy from "./AppServiceProxy";
 import { IErrorable } from "./IErrorable";
@@ -15,6 +15,8 @@ const stableStringifyFunc: (obj: any, options?: any) => string | undefined =
 
 const singleComment = Symbol("singleComment");
 const multiComment = Symbol("multiComment");
+
+const javascriptStringTranslations: Map<string, string> = new Map<string, string>();
 
 export const ObjectKeyAvoidTermList = new Set([
   "__proto__",
@@ -36,6 +38,19 @@ export default class Utilities {
   static _isAppSim?: boolean;
   static defaultEncoding = "UTF-8";
   static replacementChar = 0xfffd;
+
+  static isScientificFloat(value: number) {
+    // Ensure it's a number (not NaN, not Infinity)
+    if (typeof value !== "number" || !isFinite(value)) {
+      return false;
+    }
+
+    // Convert to string in default format
+    const str = value.toString();
+
+    // Match scientific notation pattern: e.g., 1.23e4, -5E-3
+    return /^[+-]?\d+(\.\d+)?e[+-]?\d+$/i.test(str);
+  }
 
   static isUsableAsObjectKey(term: string) {
     if (term === undefined || term === null) {
@@ -327,6 +342,8 @@ export default class Utilities {
       }
     }
 
+    retVal = retVal.replace(/_/gi, " ");
+
     retVal = retVal.replace("Java Script", "JavaScript");
 
     return retVal;
@@ -450,6 +467,15 @@ export default class Utilities {
     return name;
   }
 
+  static ensureFirstCharIsLowerCase(name: string) {
+    if (name.length > 1) {
+      if (name[0] >= "A" && name[0] <= "Z") {
+        name = name[0].toLowerCase() + name.substring(1, name.length);
+      }
+    }
+    return name;
+  }
+
   static humanifyString(val: string, humanify?: FieldValueHumanify) {
     if (!humanify || val === undefined) {
       return val;
@@ -534,63 +560,84 @@ export default class Utilities {
     name = name.replace(/=/gi, "Equals");
     name = name.replace(/!/gi, "Not");
     name = name.replace(/\+/gi, "Plus");
-    name = name.replace(/,/gi, "");
-    name = name.replace(/-/gi, "");
-    name = name.replace(/\./gi, "");
-    name = name.replace(/'/gi, "");
-    name = name.replace(/ /gi, "");
-    name = name.replace(/\[/gi, "");
-    name = name.replace(/\]/gi, "");
-    name = name.replace(/"/gi, "");
-    name = name.replace(/\{/gi, "");
-    name = name.replace(/\}/gi, "");
-    name = name.replace(/</gi, "");
-    name = name.replace(/>/gi, "");
-    name = name.replace(/\*/gi, "");
-    name = name.replace(/\?/gi, "");
-    name = name.replace(/\\/gi, "");
-    name = name.replace(/\|/gi, "");
+    name = name.replace(/[,\-\.' \[\]\(\)\{\}<>\*\"\?\\\|]/gi, "");
 
     if (name.length > 0 && name[0] >= "0" && name[0] <= "9") {
       name = "_" + name;
     }
 
-    if (name.indexOf(":") >= 0) {
-      name = '"' + name + '"';
-    }
-
     return name;
   }
 
-  static javascriptifyName(name: string, capitalizeFrst?: boolean) {
-    name = name.trim();
+  static wrapJavascriptNameIfNeeded(name: string, capitalizeFirst?: boolean) {
+    let trimName = name.trim();
+
+    trimName = trimName.replace(/[\+]/gi, "");
+
+    if (trimName.startsWith('"') && trimName.endsWith('"')) {
+      return trimName;
+    }
+
+    let needsWrap = false;
+
+    trimName = this.sanitizeJavascriptName(trimName);
+
+    for (let i = 0; i < trimName.length; i++) {
+      if (
+        trimName[i] === " " ||
+        trimName[i] === ":" ||
+        trimName[i] === "," ||
+        trimName[i] === "(" ||
+        trimName[i] === ")" ||
+        trimName[i] === "." ||
+        trimName[i] === "*" ||
+        trimName[i] === '"' ||
+        trimName[i] === "'" ||
+        trimName[i] === "-" ||
+        trimName[i] === "[" ||
+        trimName[i] === "]"
+      ) {
+        needsWrap = true;
+      }
+    }
+
+    if (needsWrap) {
+      trimName = '"' + trimName + '"';
+    }
+
+    return trimName;
+  }
+
+  static javascriptifyName(name: string, capitalizeFirst?: boolean) {
+    let trimName = name.trim();
 
     let retVal = "";
-    let capitalizeNext = capitalizeFrst === true;
+    let capitalizeNext = capitalizeFirst === true;
 
-    for (let i = 0; i < name.length; i++) {
+    for (let i = 0; i < trimName.length; i++) {
       if (
-        name[i] === " " ||
-        name[i] === "_" ||
-        name[i] === ":" ||
-        name[i] === "," ||
-        name[i] === "." ||
-        name[i] === '"' ||
-        name[i] === "'" ||
-        name[i] === "+" ||
-        name[i] === "-" ||
-        name[i] === ":" ||
-        name[i] === "[" ||
-        name[i] === "]"
+        trimName[i] === " " ||
+        trimName[i] === "_" ||
+        trimName[i] === ":" ||
+        trimName[i] === "," ||
+        trimName[i] === "(" ||
+        trimName[i] === ")" ||
+        trimName[i] === "." ||
+        trimName[i] === '"' ||
+        trimName[i] === "'" ||
+        trimName[i] === "+" ||
+        trimName[i] === "-" ||
+        trimName[i] === "[" ||
+        trimName[i] === "]"
       ) {
         capitalizeNext = true;
       } else {
         if (capitalizeNext) {
-          retVal += name[i].toUpperCase();
+          retVal += trimName[i].toUpperCase();
 
           capitalizeNext = false;
         } else {
-          retVal += name[i];
+          retVal += trimName[i];
         }
       }
     }
@@ -660,6 +707,14 @@ export default class Utilities {
     name = name.replace("math.", "");
     name = name.replace("query.", "");
     name = name.replace(" on_", " ");
+
+    let parenStart = name.indexOf(" (");
+
+    let parenEnd = name.indexOf(")");
+
+    if (parenStart > 0 && parenEnd > parenStart) {
+      name = name.substring(0, parenStart) + name.substring(parenEnd + 1);
+    }
 
     name = name.replace(/`/gi, "");
 
@@ -754,11 +809,41 @@ export default class Utilities {
       return name.toLowerCase();
     }
 
+    if (name.startsWith("APIs")) {
+      return "apis" + name.substring(4);
+    }
+
+    if (name.startsWith("PNGJPG")) {
+      return "pngjpg" + name.substring(6);
+    }
+
+    if (name.startsWith("TGA")) {
+      return "tga" + name.substring(3);
+    }
+
     if (name.charAt(1) < "A" || name.charAt(1) > "Z") {
       return name.charAt(0).toLowerCase() + name.substring(1);
     }
 
     return name;
+  }
+
+  static convertToJsonKey(name: string) {
+    if (!name) {
+      return name;
+    }
+
+    const cache = javascriptStringTranslations.get(name);
+
+    if (cache) {
+      return cache;
+    }
+
+    let val = Utilities.lowerCaseStartOfString(Utilities.javascriptifyName(name, false));
+
+    javascriptStringTranslations.set(name, val);
+
+    return val;
   }
 
   static dehumanifyMinecraftName(name: string | boolean | number) {
@@ -1269,9 +1354,9 @@ export default class Utilities {
     }
 
     if (
-      CartoApp.isWeb ||
-      CartoApp.hostType === HostType.vsCodeMainWeb ||
-      CartoApp.hostType === HostType.vsCodeWebService
+      CreatorToolsHost.isWeb ||
+      CreatorToolsHost.hostType === HostType.vsCodeMainWeb ||
+      CreatorToolsHost.hostType === HostType.vsCodeWebService
     ) {
       return btoa(binary);
     }
@@ -1290,9 +1375,9 @@ export default class Utilities {
     }
 
     if (
-      CartoApp.isWeb ||
-      CartoApp.hostType === HostType.vsCodeMainWeb ||
-      CartoApp.hostType === HostType.vsCodeWebService
+      CreatorToolsHost.isWeb ||
+      CreatorToolsHost.hostType === HostType.vsCodeMainWeb ||
+      CreatorToolsHost.hostType === HostType.vsCodeWebService
     ) {
       return btoa(binary);
     }
@@ -1718,7 +1803,7 @@ export default class Utilities {
 
   static createUuid() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-      let val = CartoApp.generateCryptoRandomNumber(16);
+      let val = CreatorToolsHost.generateCryptoRandomNumber(16);
 
       const r = val | 0,
         v = c === "x" ? r : (r & 0x3) | 0x8;
@@ -1837,6 +1922,28 @@ export default class Utilities {
     return short;
   }
 
+  static getFriendlySummaryHoursMinutesSeconds(date: Date | null) {
+    if (!date) {
+      return "";
+    }
+
+    return Utilities.getFriendlySummaryHoursMinutes(date) + ":" + Utilities.frontPadToLength(date.getSeconds(), 2, "0");
+  }
+
+  static getFriendlySummaryHoursMinutes(date: Date | null) {
+    if (!date) {
+      return "";
+    }
+
+    let hours = date.getHours() % 12;
+
+    if (hours === 0) {
+      hours = 12;
+    }
+
+    return Utilities.frontPadToLength(hours, 2, "0") + ":" + Utilities.frontPadToLength(date.getMinutes(), 2, "0");
+  }
+
   static getFriendlySummary(date: Date) {
     if (date === undefined || !(date instanceof Date)) {
       Log.fail("Empty/wrong-typed date passed in.");
@@ -1849,14 +1956,7 @@ export default class Utilities {
     if (date.getFullYear() !== now.getFullYear()) {
       returnValue += " " + this.getShortYear(date.getFullYear());
     } else {
-      let hours = date.getHours() % 12;
-
-      if (hours === 0) {
-        hours = 12;
-      }
-
-      returnValue +=
-        " " + Utilities.frontPadToLength(hours, 2, "0") + ":" + Utilities.frontPadToLength(date.getMinutes(), 2, "0");
+      returnValue += " " + this.getFriendlySummaryHoursMinutes(date);
     }
 
     return returnValue;

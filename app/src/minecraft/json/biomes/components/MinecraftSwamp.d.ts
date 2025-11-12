@@ -75,3 +75,13 @@ export default interface MinecraftSwamp {
   type: string;
 
 }
+
+
+export enum MinecraftSwampType {
+  minecraftCapped = `minecraft:capped`,
+  minecraftFrozenOcean = `minecraft:frozen_ocean`,
+  minecraftMesa = `minecraft:mesa`,
+  minecraftOverworld = `minecraft:overworld`,
+  minecraftSwamp = `minecraft:swamp`,
+  minecraftTheEnd = `minecraft:the_end`
+}

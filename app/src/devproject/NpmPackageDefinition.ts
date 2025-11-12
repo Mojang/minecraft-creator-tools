@@ -149,18 +149,18 @@ export default class NpmPackageDefinition {
     return dt;
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     Log.assert(this.definition !== null, "NPDP");
 
     if (this.definition) {
-      const pjString = JSON.stringify(this.definition, null, 2);
-
-      this._file.setContent(pjString);
+      return this._file.setObjectContentIfSemanticallyDifferent(this.definition);
     }
+
+    return false;
   }
 
   async save() {
@@ -168,9 +168,9 @@ export default class NpmPackageDefinition {
       return;
     }
 
-    this.persist();
-
-    await this._file.saveContent(false);
+    if (await this.persist()) {
+      await this._file.saveContent(false);
+    }
   }
 
   async ensureMinContent(project: Project) {

@@ -19,21 +19,10 @@
   height: 25px;
 }
 
-.pil-commands .ui-menu__item {
-  padding: 1px;
-}
-
-.pil-commands .ui-menu__itemicon {
-  height: inherit;
-}
-
-.pil-commands .ui-menu__itemcontent {
+.pil-showMenu .ui-menu__itemicon {
   padding: 6px;
-}
-
-.pil-commands .ui-button {
-  padding-left: 10px;
-  min-width: none;
+  padding-left: 1px;
+  width: 30px;
 }
 
 .pil-newarea {
@@ -59,7 +48,7 @@
   display: inline-block;
 }
 
-.pil-commands {
+.pil-showMenu {
   grid-column: 2;
   grid-row: 1;
   text-align: left;
@@ -81,6 +70,16 @@
   font-size: 0.875rem;
   height: 32px;
   padding-top: 6px;
+}
+
+.pil-fixedLineFocus {
+  padding-left: 17px;
+  font-size: 0.875rem;
+  height: 32px;
+  padding-top: 6px;
+  text-overflow: ellipsis;
+  background-color: #d88800;
+  text-wrap: nowrap;
 }
 
 .pil-projectResults {
@@ -162,6 +161,15 @@
 
 .pil-itemTypeTag {
   grid-column: 1;
+}
+
+.pil-itemLabelFocused {
+  text-overflow: ellipsis;
+  padding-left: 6px;
+  display: block;
+  height: 36px;
+  padding-top: 1px;
+  background-color: #d88800;
 }
 
 .pil-itemLabel {

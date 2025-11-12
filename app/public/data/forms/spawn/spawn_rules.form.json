@@ -5,6 +5,7 @@
       "id": "conditions",
       "title": "Conditions",
       "dataType": 16,
+      "defaultValue": [],
       "subFormId": "spawn/spawn_biomeconditions"
     },
     {

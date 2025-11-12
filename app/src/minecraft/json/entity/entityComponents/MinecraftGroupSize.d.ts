@@ -39,7 +39,7 @@ Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
     "all_of": [
       {
         "test": "has_component",
-        "operator": "!=",
+        "operator": "not",
         "value": "minecraft:is_baby"
       },
       {
@@ -68,7 +68,7 @@ export default interface MinecraftGroupSize {
    * Sample Values:
    * Hoglin: {"all_of":[{"test":"has_component","operator":"!=","value":"minecraft:is_baby"},{"test":"is_family","value":"hoglin"}]}
    *
-   * Piglin: {"all_of":[{"test":"has_component","operator":"!=","value":"minecraft:is_baby"},{"test":"is_family","value":"piglin"}]}
+   * Piglin: {"all_of":[{"test":"has_component","operator":"not","value":"minecraft:is_baby"},{"test":"is_family","value":"piglin"}]}
    *
    */
   filters?: jsoncommon.MinecraftFilter;

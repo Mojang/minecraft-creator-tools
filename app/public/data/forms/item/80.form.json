@@ -17,7 +17,8 @@
                 "id": "value",
                 "title": "Value",
                 "description": "Determines whether the item can be placed in the off hand slot.",
-                "dataType": 1
+                "dataType": 1,
+                "defaultValue": false
               }
             ]
           }
@@ -55,7 +56,8 @@
                 "id": "value",
                 "title": "Value",
                 "description": "Determines whether the item can be used to destroy blocks while in creative mode.",
-                "dataType": 1
+                "dataType": 1,
+                "defaultValue": false
               }
             ]
           }
@@ -72,7 +74,7 @@
     {
       "id": "minecraft:cooldown",
       "title": "Minecraft Cooldown",
-      "description": "After you use an item, all items with a \"minecraft:cooldown\" component with the same \"category\" become unusable for the amount of seconds specified in \"duration\".",
+      "description": "Adds a cooldown to the item so that, after performing an action of the specified \"type\", all items with a \"minecraft:cooldown\" component in the same \"category\" become unable to perform that same type of action for the number of seconds defined in \"duration\".",
       "dataType": 16,
       "subFormId": "item_components/minecraft_cooldown"
     },
@@ -99,7 +101,14 @@
                 "id": "value",
                 "title": "Value",
                 "description": "Specifies how much extra damage the item does, must be a positive number.",
-                "dataType": 0
+                "dataType": 0,
+                "defaultValue": 0,
+                "validity": [
+                  {
+                    "comparison": "<=",
+                    "value": 32767
+                  }
+                ]
               }
             ]
           }
@@ -186,6 +195,7 @@
                 "title": "Duration",
                 "description": "Amount of time, in seconds, this fuel will cook items.",
                 "dataType": 3,
+                "defaultValue": 0.05000000074505806,
                 "validity": [
                   {
                     "comparison": ">=",
@@ -215,7 +225,8 @@
                 "id": "value",
                 "title": "Value",
                 "description": "Determines whether the item has the glint effect.",
-                "dataType": 1
+                "dataType": 1,
+                "defaultValue": false
               }
             ]
           }
@@ -239,7 +250,8 @@
                 "id": "value",
                 "title": "Value",
                 "description": "Determines whether the item is rendered like a tool while in the player's hand.",
-                "dataType": 1
+                "dataType": 1,
+                "defaultValue": false
               }
             ]
           }
@@ -263,7 +275,8 @@
                 "id": "value",
                 "title": "Value",
                 "description": "Specifies the color of the item's hover text.",
-                "dataType": 2
+                "dataType": 2,
+                "defaultValue": ""
               }
             ]
           }
@@ -287,7 +300,8 @@
                 "id": "textures",
                 "title": "Textures",
                 "description": "This map contains the different textures that can be used for the item's icon. Default will contain the actual icon texture. Armor trim textures and palettes and bundle open textures can be specified here too. The icon textures are the keys from the resource_pack/textures/item_texture.json 'texture_data' object associated with the texture file.",
-                "dataType": 16
+                "dataType": 16,
+                "defaultValue": {}
               }
             ]
           }
@@ -323,7 +337,8 @@
                 "id": "value",
                 "title": "Value",
                 "description": "Deterines whether the item interacts with liquid blocks on use.",
-                "dataType": 1
+                "dataType": 1,
+                "defaultValue": false
               }
             ]
           }
@@ -348,6 +363,7 @@
                 "title": "Value",
                 "description": "Specifies how many of the item that can be stacked.",
                 "dataType": 0,
+                "defaultValue": 1,
                 "validity": [
                   {
                     "comparison": ">=",
@@ -388,7 +404,8 @@
                 "id": "value",
                 "title": "Value",
                 "description": "Sets the base rarity of the item. The rarity of an item automatically increases when enchanted, either to Rare when the base rarity is Common or Uncommon, or Epic when the base rarity is Rare.",
-                "dataType": 2
+                "dataType": 2,
+                "defaultValue": ""
               }
             ]
           }
@@ -433,7 +450,8 @@
                 "id": "value",
                 "title": "Value",
                 "description": "Determines whether the item should eventually despawn while floating in the world.",
-                "dataType": 1
+                "dataType": 1,
+                "defaultValue": false
               }
             ]
           }
@@ -457,7 +475,8 @@
                 "id": "value",
                 "title": "Value",
                 "description": "Determines whether the same item with different aux values can stack. Also defines whether the item entities can merge while floating in the world.",
-                "dataType": 1
+                "dataType": 1,
+                "defaultValue": false
               }
             ]
           }
@@ -516,7 +535,50 @@
                 "id": "value",
                 "title": "Animation",
                 "description": "Specifies which animation to play when the the item is used.",
-                "dataType": 2
+                "dataType": 2,
+                "choices": [
+                  {
+                    "id": "block",
+                    "title": "Block"
+                  },
+                  {
+                    "id": "bow",
+                    "title": "Bow"
+                  },
+                  {
+                    "id": "brush",
+                    "title": "Brush"
+                  },
+                  {
+                    "id": "camera",
+                    "title": "Camera"
+                  },
+                  {
+                    "id": "crossbow",
+                    "title": "Crossbow"
+                  },
+                  {
+                    "id": "drink",
+                    "title": "Drink"
+                  },
+                  {
+                    "id": "eat",
+                    "title": "Eat"
+                  },
+                  {
+                    "id": "none",
+                    "title": "None"
+                  },
+                  {
+                    "id": "spear",
+                    "title": "Spear"
+                  },
+                  {
+                    "id": "spyglass",
+                    "title": "Spyglass"
+                  }
+                ],
+                "defaultValue": "none"
               }
             ]
           }

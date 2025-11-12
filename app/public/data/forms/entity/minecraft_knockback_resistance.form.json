@@ -34,6 +34,12 @@
             "content": 0.6
           }
         ],
+        "/vanilla/behavior_pack/entities/nautilus.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+            "content": 0.3
+          }
+        ],
         "/vanilla/behavior_pack/entities/ravager.json": [
           {
             "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
@@ -44,6 +50,12 @@
           {
             "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
             "content": 0.6
+          }
+        ],
+        "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+            "content": 0.3
           }
         ],
         "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/axe_turret.behavior.json": [
@@ -145,6 +157,14 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/entities/nautilus.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "value": 0.3
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/ravager.json": [
       {
         "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
@@ -166,6 +186,14 @@
         "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
         "content": {
           "value": 0.6
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "value": 0.3
         }
       }
     ],

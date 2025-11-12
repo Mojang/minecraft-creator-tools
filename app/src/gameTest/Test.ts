@@ -5,7 +5,7 @@ import Entity from "./../minecraft/Entity";
 import ItemStack from "./../minecraft/ItemStack";
 import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
 import IDimension from "./../minecraft/IDimension";
-import BlockCube from "../minecraft/BlockCube";
+import BlockVolume from "../minecraft/BlockVolume";
 import { FenceConnectivity } from "./FenceConnectivity";
 import { Direction } from "../minecraft/Direction";
 import Location from "../minecraft/Location";
@@ -375,7 +375,7 @@ export default class Test {
    * @throws This function can throw errors.
    */
   getDimension(): IDimension {
-    return new BlockCube();
+    return new BlockVolume();
   }
   /**
    * @remarks

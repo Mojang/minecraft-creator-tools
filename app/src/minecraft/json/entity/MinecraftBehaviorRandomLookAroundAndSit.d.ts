@@ -28,6 +28,23 @@ Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 }
 
 
+Camel Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/camel_husk.json
+
+"minecraft:behavior.random_look_around_and_sit": {
+  "priority": 5,
+  "continue_if_leashed": true,
+  "continue_sitting_on_reload": true,
+  "min_look_count": 2,
+  "max_look_count": 5,
+  "min_look_time": 80,
+  "max_look_time": 100,
+  "min_angle_of_view_horizontal": -30,
+  "max_angle_of_view_horizontal": 30,
+  "random_look_around_cooldown": 5,
+  "probability": 0.001
+}
+
+
 Fox - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/fox.json
 
 "minecraft:behavior.random_look_around_and_sit": {
@@ -59,6 +76,7 @@ export default interface MinecraftBehaviorRandomLookAroundAndSit {
    * Sample Values:
    * Camel: true
    *
+   *
    */
   continue_if_leashed?: boolean;
 
@@ -68,6 +86,7 @@ export default interface MinecraftBehaviorRandomLookAroundAndSit {
    * 
    * Sample Values:
    * Camel: true
+   *
    *
    */
   continue_sitting_on_reload?: boolean;
@@ -79,6 +98,7 @@ export default interface MinecraftBehaviorRandomLookAroundAndSit {
    * 
    * Sample Values:
    * Camel: 30
+   *
    *
    */
   max_angle_of_view_horizontal?: number;
@@ -114,6 +134,7 @@ export default interface MinecraftBehaviorRandomLookAroundAndSit {
    * 
    * Sample Values:
    * Camel: -30
+   *
    *
    */
   min_angle_of_view_horizontal?: number;
@@ -151,6 +172,8 @@ export default interface MinecraftBehaviorRandomLookAroundAndSit {
    * Sample Values:
    * Camel: 4
    *
+   * Camel Husk: 5
+   *
    * Fox: 12
    *
    */
@@ -173,6 +196,7 @@ export default interface MinecraftBehaviorRandomLookAroundAndSit {
    * 
    * Sample Values:
    * Camel: 5
+   *
    *
    */
   random_look_around_cooldown?: number;

@@ -14,7 +14,8 @@
       }
     }
   ],
-  "note": "See the [Scripting 2.0.0-beta Overview](https://learn.microsoft.com/minecraft/creator/documents/scriptingv2.0.0overview) article for an overview of upcoming changes to custom components functionality.",
+  "isDeprecated": true,
+  "note": "See the [Scripting 2.0.0 Overview](https://learn.microsoft.com/minecraft/creator/documents/scriptingv2.0.0overview) article for an overview of upcoming changes to custom components functionality.",
   "description": "Sets an ordered list of custom component names which are bound in script to be executed upon a block event.",
   "title": "Custom Components",
   "samples": {

@@ -22,6 +22,17 @@ Fish - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/enti
 }
 
 
+Nautilus - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/nautilus.json
+
+"minecraft:behavior.swim_wander": {
+  "priority": 7,
+  "interval": 10,
+  "look_ahead": 2,
+  "speed_multiplier": 1.5,
+  "wander_time": 5
+}
+
+
 Pufferfish - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/pufferfish.json
 
 "minecraft:behavior.swim_wander": {
@@ -40,6 +51,17 @@ Salmon - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
   "interval": 0.0166,
   "look_ahead": 5,
   "speed_multiplier": 0.014,
+  "wander_time": 5
+}
+
+
+Zombie Nautilus - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_nautilus.json
+
+"minecraft:behavior.swim_wander": {
+  "priority": 5,
+  "interval": 10,
+  "look_ahead": 2,
+  "speed_multiplier": 1.5,
   "wander_time": 5
 }
 
@@ -62,9 +84,9 @@ export default interface MinecraftBehaviorSwimWander {
    * Sample Values:
    * Fish: 0.1
    *
-   * Pufferfish: 1
+   * Nautilus: 10
    *
-   * Salmon: 0.0166
+   * Pufferfish: 1
    *
    */
   interval?: number;
@@ -92,8 +114,9 @@ export default interface MinecraftBehaviorSwimWander {
    * Sample Values:
    * Fish: 4
    *
-   * Pufferfish: 5
+   * Nautilus: 7
    *
+   * Pufferfish: 5
    *
    */
   priority?: number;
@@ -104,6 +127,8 @@ export default interface MinecraftBehaviorSwimWander {
    * 
    * Sample Values:
    * Fish: 1
+   *
+   * Nautilus: 1.5
    *
    *
    * Salmon: 0.014

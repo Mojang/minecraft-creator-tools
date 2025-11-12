@@ -404,18 +404,18 @@ export default class EntityTypeResourceDefinition {
     return this._data;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     Log.assert(this._dataWrapper !== null, "ETRDP");
 
-    if (this._dataWrapper) {
-      const defString = JSON.stringify(this._dataWrapper, null, 2);
-
-      this._file.setContent(defString);
+    if (!this._dataWrapper) {
+      return false;
     }
+
+    return this._file.setObjectContentIfSemanticallyDifferent(this._dataWrapper);
   }
 
   async load() {

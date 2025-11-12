@@ -198,22 +198,29 @@ export default class EntityTypeResourceEditor extends Component<
     });
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
+    let didPersist = false;
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
       if (file.manager) {
-        const srbd = file.manager as EntityTypeResourceDefinition;
+        const etrd = file.manager as EntityTypeResourceDefinition;
 
-        srbd.persist();
+        if (etrd.persist()) {
+          didPersist = true;
+        }
       }
     }
 
     if (this._childPersistables) {
       for (const persister of this._childPersistables) {
-        persister.persist();
+        if (await persister.persist()) {
+          didPersist = true;
+        }
       }
     }
+
+    return didPersist;
   }
 
   _handleNewChildPersistable(newPersistable: IPersistable) {
@@ -226,9 +233,7 @@ export default class EntityTypeResourceEditor extends Component<
     if (props.tagData && props.directObject) {
       const file = props.tagData as IFile;
 
-      const newData = JSON.stringify(props.directObject, null, 2);
-
-      file.setContent(newData);
+      file.setObjectContentIfSemanticallyDifferent(props.directObject);
     }
   }
 
@@ -463,7 +468,7 @@ export default class EntityTypeResourceEditor extends Component<
             eventType={SoundEventSetType.entity}
             project={this.props.item.project}
             theme={this.props.theme}
-            carto={this.props.item.project.carto}
+            creatorTools={this.props.item.project.creatorTools}
           />
         );
       }

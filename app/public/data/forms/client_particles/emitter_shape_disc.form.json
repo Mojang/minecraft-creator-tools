@@ -29,6 +29,16 @@
                     "id": "version",
                     "title": "Version",
                     "dataType": 0,
+                    "validity": [
+                      {
+                        "comparison": ">=",
+                        "value": -32768
+                      },
+                      {
+                        "comparison": "<=",
+                        "value": 32767
+                      }
+                    ],
                     "isRequired": true
                   }
                 ]
@@ -46,6 +56,11 @@
       "id": "offset",
       "title": "Offset",
       "dataType": 24,
+      "defaultValue": [
+        0,
+        0,
+        0
+      ],
       "minLength": 3,
       "maxLength": 3,
       "alternates": [
@@ -67,6 +82,16 @@
                 "id": "version",
                 "title": "Version",
                 "dataType": 0,
+                "validity": [
+                  {
+                    "comparison": ">=",
+                    "value": -32768
+                  },
+                  {
+                    "comparison": "<=",
+                    "value": 32767
+                  }
+                ],
                 "isRequired": true
               }
             ]
@@ -82,6 +107,11 @@
       "id": "plane_normal",
       "title": "Plane Normal Type",
       "dataType": 2,
+      "defaultValue": [
+        0,
+        1,
+        0
+      ],
       "alternates": [
         {
           "id": "plane_normal",
@@ -107,6 +137,16 @@
                     "id": "version",
                     "title": "Version",
                     "dataType": 0,
+                    "validity": [
+                      {
+                        "comparison": ">=",
+                        "value": -32768
+                      },
+                      {
+                        "comparison": "<=",
+                        "value": 32767
+                      }
+                    ],
                     "isRequired": true
                   }
                 ]
@@ -124,6 +164,7 @@
       "id": "radius",
       "title": "Radius",
       "dataType": 24,
+      "defaultValue": 1,
       "alternates": [
         {
           "id": "radius",
@@ -143,6 +184,16 @@
                 "id": "version",
                 "title": "Version",
                 "dataType": 0,
+                "validity": [
+                  {
+                    "comparison": ">=",
+                    "value": -32768
+                  },
+                  {
+                    "comparison": "<=",
+                    "value": 32767
+                  }
+                ],
                 "isRequired": true
               }
             ]
@@ -157,7 +208,8 @@
     {
       "id": "surface_only",
       "title": "Surface Only",
-      "dataType": 1
+      "dataType": 1,
+      "defaultValue": false
     }
   ],
   "title": "Client Particles Emitter Shape Disc",

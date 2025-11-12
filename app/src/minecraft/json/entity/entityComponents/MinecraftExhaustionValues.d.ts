@@ -22,7 +22,8 @@ Player - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
   "damage": 0.1,
   "walk": 0,
   "sprint": 0.1,
-  "swim": 0.01
+  "swim": 0.01,
+  "lunge": 4
 }
 
  */
@@ -75,6 +76,17 @@ export default interface MinecraftExhaustionValues {
    *
    */
   jump?: number;
+
+  /**
+   * @remarks
+   * Amount of exhaustion applied when triggering the lunge
+   * enchantment, multiplied by the enchantment level.
+   * 
+   * Sample Values:
+   * Player: 4
+   *
+   */
+  lunge?: number;
 
   /**
    * @remarks

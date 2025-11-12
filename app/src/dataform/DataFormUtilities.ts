@@ -7,7 +7,7 @@ import IField, { FieldDataType } from "./IField";
 import IFormDefinition, { IFormSample } from "./IFormDefinition";
 
 export default class DataFormUtilities {
-  static generateDefaultItem(formDefinition: IFormDefinition) {
+  public static generateDefaultItem(formDefinition: IFormDefinition) {
     const newDataObject: any = {};
 
     for (let i = 0; i < formDefinition.fields.length; i++) {

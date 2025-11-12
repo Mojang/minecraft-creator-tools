@@ -78,18 +78,18 @@ export default class Dialogue {
     return buttons;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     Log.assert(this.definition !== null, "DGUEP");
 
-    if (this.definition) {
-      const pjString = JSON.stringify(this.definition, null, 2);
-
-      this._file.setContent(pjString);
+    if (!this.definition) {
+      return false;
     }
+
+    return this._file.setObjectContentIfSemanticallyDifferent(this.definition);
   }
 
   public ensureDefinition(name: string, description: string) {
@@ -108,9 +108,9 @@ export default class Dialogue {
       return;
     }
 
-    this.persist();
-
-    await this._file.saveContent(false);
+    if (this.persist()) {
+      await this._file.saveContent(false);
+    }
   }
 
   async load() {

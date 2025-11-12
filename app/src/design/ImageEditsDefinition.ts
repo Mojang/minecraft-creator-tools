@@ -285,7 +285,7 @@ export default class ImageEditsDefinition {
         let item = ProjectItemUtilities.getItemByTypeAndName(project, targetName, ProjectItemType.blockTypeBehavior);
 
         if (!item) {
-          const galleryItem = await project.carto.getGalleryProjectById("basicDieBlock");
+          const galleryItem = await project.creatorTools.getGalleryProjectById("basicDieBlock");
 
           if (galleryItem) {
             await ProjectItemCreateManager.addFromGallery(project, targetName, galleryItem);
@@ -402,14 +402,12 @@ export default class ImageEditsDefinition {
     return imageEdits;
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
-    const imageEditorString = JSON.stringify(this.data, null, 2);
-
-    this._file.setContent(imageEditorString);
+    return this._file.setObjectContentIfSemanticallyDifferent(this.data);
   }
 
   async save() {

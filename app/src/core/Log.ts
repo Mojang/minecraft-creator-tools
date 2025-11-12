@@ -1,7 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import CartoApp from "../app/CartoApp";
+import { get } from "http";
+import CreatorToolsHost from "../app/CreatorToolsHost";
 import AppServiceProxy from "./AppServiceProxy";
 import Utilities from "./Utilities";
 import { EventDispatcher } from "ste-events";
@@ -130,12 +131,24 @@ export default class Log {
     }
   }
 
+  static getStack() {
+    let stack = "";
+
+    try {
+      throw new Error();
+    } catch (e: any) {
+      stack = e.stack ? e.stack : "";
+    }
+
+    return stack;
+  }
+
   static assert(condition: boolean, message?: string, context?: string): asserts condition {
     if (!condition) {
       if (!message) {
-        Log.debugAlert("Assertion failed.", context);
+        Log.debugAlert("Assertion failed. - " + this.getStack(), context);
       } else {
-        Log.debugAlert("Assertion failed: " + message, context);
+        Log.debugAlert("Assertion failed: " + message + " - " + this.getStack(), context);
       }
     }
   }
@@ -188,6 +201,10 @@ export default class Log {
       stack = err.stack;
     }
 
+    if (!stack || stack === "") {
+      stack = this.getStack();
+    }
+
     let i = stack.lastIndexOf("at Function.");
 
     if (i >= 0) {
@@ -217,7 +234,7 @@ export default class Log {
       LogItem.alertFunction(message + "\n\n" + stackTrim);
       // debugger;
       return;
-    } else if (AppServiceProxy.hasAppService && CartoApp.isWeb) {
+    } else if (AppServiceProxy.hasAppService && CreatorToolsHost.isWeb) {
       // @ts-ignore
       alert(header + message + "\n\n" + stack);
       debugger;

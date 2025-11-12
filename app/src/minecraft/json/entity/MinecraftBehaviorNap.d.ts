@@ -160,7 +160,7 @@ export default interface MinecraftBehaviorNap {
 
 
 /**
- * Can_nap_filters (can_nap_filters)
+ * Can nap filters (can_nap_filters)
  */
 export interface MinecraftBehaviorNapCanNapFilters {
 
@@ -177,7 +177,7 @@ export interface MinecraftBehaviorNapCanNapFilters {
 
 
 /**
- * Wake_mob_exceptions (wake_mob_exceptions)
+ * Wake mob exceptions (wake_mob_exceptions)
  */
 export interface MinecraftBehaviorNapWakeMobExceptions {
 

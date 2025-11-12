@@ -11,6 +11,7 @@ import ITypeDefCatalog from "../minecraft/ITypeDefCatalog";
 import { IErrorMessage, IErrorable } from "../core/IErrorable";
 import { StatusTopic } from "./Status";
 import { ProjectItemType } from "./IProjectItemData";
+import { FileUpdateType } from "../storage/IFile";
 
 export default class ProjectBuild implements IErrorable {
   private project: Project;
@@ -175,7 +176,9 @@ export default class ProjectBuild implements IErrorable {
       return;
     }
 
-    const operId = await this.project.carto.notifyOperationStarted("Script building '" + this.project.name + "'");
+    const operId = await this.project.creatorTools.notifyOperationStarted(
+      "Script building '" + this.project.name + "'"
+    );
 
     const defaultBehaviorPack = await this.project.getDefaultBehaviorPack();
 
@@ -234,7 +237,7 @@ export default class ProjectBuild implements IErrorable {
           if (result && result.outputFiles && result.outputFiles.length > 0) {
             const mainJsFile = await this.distScriptsFolder.ensureFileFromRelativePath(this.entry);
 
-            mainJsFile.setContent(result.outputFiles[0].text);
+            mainJsFile.setContent(result.outputFiles[0].text, FileUpdateType.regularEdit);
 
             await mainJsFile.saveContent();
           }
@@ -244,7 +247,7 @@ export default class ProjectBuild implements IErrorable {
           }
         }
 
-        await me.project.carto?.notifyOperationEnded(
+        await me.project.creatorTools?.notifyOperationEnded(
           operId,
           "Completed script building '" + this.project.name + "'",
           StatusTopic.scriptBuild,

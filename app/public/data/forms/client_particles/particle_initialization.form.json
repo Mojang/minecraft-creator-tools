@@ -4,6 +4,7 @@
       "id": "per_render_expression",
       "title": "Per Render Expression",
       "dataType": 24,
+      "defaultValue": 0,
       "alternates": [
         {
           "id": "per_render_expression",
@@ -23,6 +24,16 @@
                 "id": "version",
                 "title": "Version",
                 "dataType": 0,
+                "validity": [
+                  {
+                    "comparison": ">=",
+                    "value": -32768
+                  },
+                  {
+                    "comparison": "<=",
+                    "value": 32767
+                  }
+                ],
                 "isRequired": true
               }
             ]
@@ -38,6 +49,7 @@
       "id": "per_update_expression",
       "title": "Per Update Expression",
       "dataType": 24,
+      "defaultValue": 0,
       "alternates": [
         {
           "id": "per_update_expression",
@@ -57,6 +69,16 @@
                 "id": "version",
                 "title": "Version",
                 "dataType": 0,
+                "validity": [
+                  {
+                    "comparison": ">=",
+                    "value": -32768
+                  },
+                  {
+                    "comparison": "<=",
+                    "value": 32767
+                  }
+                ],
                 "isRequired": true
               }
             ]

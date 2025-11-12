@@ -474,6 +474,7 @@ export default interface MinecraftBehaviorAvoidMobType {
    * Sample Values:
    * Hoglin: {"range_min":2,"range_max":5}
    *
+   * Piglin: {"min":2,"max":5}
    *
    */
   sound_interval?: number[];

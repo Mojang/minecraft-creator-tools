@@ -7,7 +7,7 @@ import WorldLevelDat from "../minecraft/WorldLevelDat";
 import IFile from "../storage/IFile";
 import IFolder from "../storage/IFolder";
 import StorageUtilities, { EncodingType } from "../storage/StorageUtilities";
-import Carto from "./Carto";
+import CreatorTools from "./CreatorTools";
 import { ProjectFocus, ProjectScriptLanguage } from "./IProjectData";
 import { ProjectItemType } from "./IProjectItemData";
 import Project from "./Project";
@@ -73,13 +73,13 @@ export default class ProjectIntegrator implements IErrorable {
   }
 
   static async createProjectFromFolder(
-    carto: Carto,
+    creatorTools: CreatorTools,
     newProjectName: string,
     folder: IFolder,
     operationDescriptor?: string,
     log?: (message: string) => Promise<void>
   ): Promise<Project | undefined> {
-    let newProject = await carto.createNewProject(
+    let newProject = await creatorTools.createNewProject(
       newProjectName,
       undefined,
       undefined,
@@ -89,15 +89,15 @@ export default class ProjectIntegrator implements IErrorable {
       ProjectScriptLanguage.typeScript
     );
 
-    await this.extendProjectFromCollectionFolder(carto, newProject, folder, operationDescriptor, log);
+    await this.extendProjectFromCollectionFolder(creatorTools, newProject, folder, operationDescriptor, log);
 
-    await carto.save();
+    await creatorTools.save();
 
     return newProject;
   }
 
   static async extendProjectFromCollectionFolder(
-    carto: Carto,
+    creatorTools: CreatorTools,
     project: Project,
     folder: IFolder,
     operationDescriptor?: string,

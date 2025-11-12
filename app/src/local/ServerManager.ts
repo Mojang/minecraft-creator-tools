@@ -9,9 +9,9 @@ import IMainInfoVersions from "../minecraft/IMainInfoVersions";
 import StorageUtilities from "../storage/StorageUtilities";
 import Log from "../core/Log";
 import Utilities from "../core/Utilities";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import HttpServer from "./HttpServer";
-import { DedicatedServerMode, MinecraftTrack } from "../app/ICartoData";
+import { DedicatedServerMode, MinecraftTrack } from "../app/ICreatorToolsData";
 import { IMinecraftStartMessage } from "../app/IMinecraftStartMessage";
 import { FileListings } from "./NodeFolder";
 import Database from "../minecraft/Database";
@@ -26,7 +26,7 @@ export default class ServerManager {
   #usePreview: boolean | undefined;
   #httpServer: HttpServer | undefined;
 
-  #carto: Carto;
+  #creatorTools: CreatorTools;
 
   #utilities: LocalUtilities;
   #env: LocalEnvironment;
@@ -51,7 +51,7 @@ export default class ServerManager {
   }
 
   public get carto() {
-    return this.#carto;
+    return this.#creatorTools;
   }
 
   public get features() {
@@ -74,10 +74,10 @@ export default class ServerManager {
     this.#usePreview = newUsePreview;
   }
 
-  constructor(env: LocalEnvironment, carto: Carto) {
+  constructor(env: LocalEnvironment, creatorTools: CreatorTools) {
     this.#utilities = env.utilities;
     this.#env = env;
-    this.#carto = carto;
+    this.#creatorTools = creatorTools;
 
     this.dataStorage = new NodeStorage(this.getRootPath() + "data/", "");
   }
@@ -99,7 +99,7 @@ export default class ServerManager {
   public ensureHttpServer() {
     if (!this.#httpServer) {
       this.#httpServer = new HttpServer(this.#env, this);
-      this.#httpServer.carto = this.#carto;
+      this.#httpServer.creatorTools = this.#creatorTools;
       this.#httpServer.init();
     }
 
@@ -126,7 +126,7 @@ export default class ServerManager {
   }
 
   get effectiveIsUsingPreview() {
-    return this.#usePreview || (this.#carto && this.#carto.track === MinecraftTrack.preview);
+    return this.#usePreview || (this.#creatorTools && this.#creatorTools.track === MinecraftTrack.preview);
   }
 
   replaceVersion(versionString: string, stub: string) {

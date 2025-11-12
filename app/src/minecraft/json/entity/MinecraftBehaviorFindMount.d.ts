@@ -14,7 +14,7 @@
 Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/husk.json
 
 "minecraft:behavior.find_mount": {
-  "priority": 1,
+  "priority": 0,
   "within_radius": 16
 }
 
@@ -38,6 +38,14 @@ Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
   "within_radius": 16,
   "start_delay": 15,
   "max_failed_attempts": 20
+}
+
+
+Zombie Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_villager.json
+
+"minecraft:behavior.find_mount": {
+  "priority": 1,
+  "within_radius": 16
 }
 
  */
@@ -91,9 +99,9 @@ export default interface MinecraftBehaviorFindMount {
    * goal.
    * 
    * Sample Values:
-   * Husk: 1
-   *
    * Parrot: 4
+   *
+   * Piglin: 1
    *
    *
    */

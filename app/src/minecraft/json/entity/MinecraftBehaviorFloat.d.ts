@@ -36,7 +36,8 @@ Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 
 "minecraft:behavior.float": {
   "priority": 0,
-  "sink_with_passengers": true
+  "chance_per_tick_to_float": 1,
+  "time_under_water_to_dismount_passengers": 2
 }
 
 
@@ -67,6 +68,17 @@ export default interface MinecraftBehaviorFloat {
 
   /**
    * @remarks
+   * The chance per tick to cause an upward impulse.
+   * 
+   * Sample Values:
+   * Camel: 1
+   *
+   *
+   */
+  chance_per_tick_to_float?: number;
+
+  /**
+   * @remarks
    * As priority approaches 0, the priority is increased. The higher the
    * priority, the sooner this behavior will be executed as a 
    * goal.
@@ -85,11 +97,19 @@ export default interface MinecraftBehaviorFloat {
    * @remarks
    * If true, the mob will keep sinking as long as it has 
    * passengers.
-   * 
-   * Sample Values:
-   * Camel: true
-   *
    */
   sink_with_passengers?: boolean;
+
+  /**
+   * @remarks
+   * Time in seconds that a floating vehicles head can be underwater before
+   * it causes its passengers to dismount.
+   * 
+   * Sample Values:
+   * Camel: 2
+   *
+   *
+   */
+  time_under_water_to_dismount_passengers?: number;
 
 }

@@ -56,8 +56,6 @@ import * as jsoncommon from './../../../jsoncommon';
  * Item Visual (minecraft:item_visual)
  * The description identifier of the geometry and material used to
  * render the item of this block.
-Experimental toggles required: Upcoming
- * Creator Features (in format versions before 1.21.50).
  */
 export default interface MinecraftItemVisual {
 

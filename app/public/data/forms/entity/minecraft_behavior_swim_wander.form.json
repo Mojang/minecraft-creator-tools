@@ -13,6 +13,12 @@
             "content": 0.1
           }
         ],
+        "/vanilla/behavior_pack/entities/nautilus.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.swim_wander/",
+            "content": 10
+          }
+        ],
         "/vanilla/behavior_pack/entities/pufferfish.json": [
           {
             "path": "/minecraft:entity/components/minecraft:behavior.swim_wander/",
@@ -30,6 +36,12 @@
             "path": "/minecraft:entity/components/minecraft:behavior.swim_wander/",
             "content": 0.1
           }
+        ],
+        "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.swim_wander/",
+            "content": 10
+          }
         ]
       }
     },
@@ -46,7 +58,7 @@
             "content": 2
           }
         ],
-        "/vanilla/behavior_pack/entities/pufferfish.json": [
+        "/vanilla/behavior_pack/entities/nautilus.json": [
           {
             "path": "/minecraft:entity/components/minecraft:behavior.swim_wander/",
             "content": 2
@@ -73,6 +85,12 @@
             "content": 1
           }
         ],
+        "/vanilla/behavior_pack/entities/nautilus.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.swim_wander/",
+            "content": 1.5
+          }
+        ],
         "/vanilla/behavior_pack/entities/pufferfish.json": [
           {
             "path": "/minecraft:entity/components/minecraft:behavior.swim_wander/",
@@ -83,6 +101,12 @@
           {
             "path": "/minecraft:entity/components/minecraft:behavior.swim_wander/",
             "content": 0.014
+          }
+        ],
+        "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.swim_wander/",
+            "content": 1.5
           }
         ]
       }
@@ -100,7 +124,7 @@
             "content": 5
           }
         ],
-        "/vanilla/behavior_pack/entities/pufferfish.json": [
+        "/vanilla/behavior_pack/entities/nautilus.json": [
           {
             "path": "/minecraft:entity/components/minecraft:behavior.swim_wander/",
             "content": 5
@@ -121,6 +145,12 @@
             "content": 4
           }
         ],
+        "/vanilla/behavior_pack/entities/nautilus.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.swim_wander/",
+            "content": 7
+          }
+        ],
         "/vanilla/behavior_pack/entities/pufferfish.json": [
           {
             "path": "/minecraft:entity/components/minecraft:behavior.swim_wander/",
@@ -131,6 +161,12 @@
           {
             "path": "/minecraft:entity/components/minecraft:behavior.swim_wander/",
             "content": 4
+          }
+        ],
+        "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.swim_wander/",
+            "content": 5
           }
         ]
       }
@@ -147,6 +183,18 @@
           "interval": 0.1,
           "look_ahead": 2,
           "speed_multiplier": 1,
+          "wander_time": 5
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/nautilus.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.swim_wander/",
+        "content": {
+          "priority": 7,
+          "interval": 10,
+          "look_ahead": 2,
+          "speed_multiplier": 1.5,
           "wander_time": 5
         }
       }
@@ -183,6 +231,18 @@
           "interval": 0.1,
           "look_ahead": 2,
           "speed_multiplier": 1,
+          "wander_time": 5
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.swim_wander/",
+        "content": {
+          "priority": 5,
+          "interval": 10,
+          "look_ahead": 2,
+          "speed_multiplier": 1.5,
           "wander_time": 5
         }
       }

@@ -21,7 +21,7 @@ import BlockTypeAddComponent from "./BlockTypeAddComponent";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import Project from "../app/Project";
 import MolangEditor from "./MolangEditor";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import ManagedPermutation from "../minecraft/ManagedPermutation";
 import { IBlockResource } from "../minecraft/IBlocksCatalog";
 import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
@@ -37,7 +37,7 @@ interface IBlockTypeComponentSetEditorProps {
   isDefault: boolean;
   readOnly: boolean;
   project: Project;
-  carto: Carto;
+  creatorTools: CreatorTools;
   heightOffset: number;
   title?: string;
   theme: ThemeInput<any>;
@@ -363,7 +363,7 @@ export default class BlockTypeComponentSetEditor extends Component<
   }
 
   _onUpdatePreferredTextSize(newTextSize: number) {
-    this.props.carto.preferredTextSize = newTextSize;
+    this.props.creatorTools.preferredTextSize = newTextSize;
   }
 
   _updateCondition(permutationContent: string) {
@@ -383,12 +383,12 @@ export default class BlockTypeComponentSetEditor extends Component<
     if (this.props.permutation) {
       permutationEditor = (
         <MolangEditor
-          carto={this.props.carto}
+          creatorTools={this.props.creatorTools}
           readOnly={this.props.readOnly}
           initialContent={this.props.permutation.condition}
           onMolangTextChanged={this._updateCondition}
           onUpdatePreferredTextSize={this._onUpdatePreferredTextSize}
-          preferredTextSize={this.props.carto.preferredTextSize}
+          preferredTextSize={this.props.creatorTools.preferredTextSize}
           project={this.props.project}
           theme={this.props.theme}
         />

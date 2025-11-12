@@ -19,7 +19,7 @@ import { Toolbar } from "@fluentui/react-northstar";
 import Project from "../app/Project";
 import AttachableResourceDefinition from "../minecraft/AttachableResourceDefinition";
 import ItemTypeComponentSetEditor from "./ItemTypeComponentSetEditor";
-import Carto from "../app/Carto";
+import creatorTools from "../app/CreatorTools";
 import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
 import { faSquarePlus } from "@fortawesome/free-regular-svg-icons";
 
@@ -34,7 +34,7 @@ export enum ItemTypeAttachableEditorMode {
 interface IItemTypeAttachableEditorProps extends IFileProps {
   heightOffset: number;
   readOnly: boolean;
-  carto: Carto;
+  creatorTools: creatorTools;
   displayHeader?: boolean;
   project: Project;
   theme: ThemeInput<any>;
@@ -196,22 +196,30 @@ export default class ItemTypeAttachableEditor extends Component<
     });
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
+    let didPersist = false;
+
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
       if (file.manager) {
         const srbd = file.manager as AttachableResourceDefinition;
 
-        srbd.persist();
+        if (srbd.persist()) {
+          didPersist = true;
+        }
       }
     }
 
     if (this._childPersistables) {
       for (const persister of this._childPersistables) {
-        persister.persist();
+        if (await persister.persist()) {
+          didPersist = true;
+        }
       }
     }
+
+    return didPersist;
   }
 
   _handleNewChildPersistable(newPersistable: IPersistable) {
@@ -224,9 +232,7 @@ export default class ItemTypeAttachableEditor extends Component<
     if (props.tagData && props.directObject) {
       const file = props.tagData as IFile;
 
-      const newData = JSON.stringify(props.directObject, null, 2);
-
-      file.setContent(newData);
+      file.setObjectContentIfSemanticallyDifferent(props.directObject);
     }
   }
 
@@ -458,7 +464,7 @@ export default class ItemTypeAttachableEditor extends Component<
           theme={this.props.theme}
           isDefault={true}
           project={this.props.project}
-          carto={this.props.carto}
+          creatorTools={this.props.creatorTools}
           isVisualsMode={true}
           heightOffset={this.props.heightOffset + 60}
         />

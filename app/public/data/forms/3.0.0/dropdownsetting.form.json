@@ -24,6 +24,7 @@
       "title": "Options",
       "dataType": 16,
       "minLength": 2,
+      "maxLength": 20,
       "subFormId": "3.0.0/dropdownoption",
       "isRequired": true
     },
@@ -37,6 +38,24 @@
       "id": "type",
       "title": "SettingType",
       "dataType": 2,
+      "choices": [
+        {
+          "id": "dropdown",
+          "title": "Dropdown"
+        },
+        {
+          "id": "label",
+          "title": "Label"
+        },
+        {
+          "id": "slider",
+          "title": "Slider"
+        },
+        {
+          "id": "toggle",
+          "title": "Toggle"
+        }
+      ],
       "isRequired": true
     }
   ],

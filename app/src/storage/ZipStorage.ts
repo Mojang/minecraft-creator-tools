@@ -5,8 +5,10 @@ import JSZip from "jszip";
 import IStorage, { StorageErrorStatus } from "./IStorage";
 import ZipFolder from "./ZipFolder";
 import StorageBase from "./StorageBase";
-import CartoApp, { HostType } from "../app/CartoApp";
+import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
 import StorageUtilities from "./StorageUtilities";
+import IFile from "./IFile";
+import Log from "../core/Log";
 
 export default class ZipStorage extends StorageBase implements IStorage {
   private _jsz: JSZip;
@@ -15,6 +17,8 @@ export default class ZipStorage extends StorageBase implements IStorage {
   rootFolder: ZipFolder;
   modified: Date | null = null;
   lastLoadedOrSaved: Date | null = null;
+
+  allowAllFiles = false;
 
   get updatedSinceLoad() {
     if (this.modified === null || (this.lastLoadedOrSaved === null && this.modified === null)) {
@@ -37,7 +41,7 @@ export default class ZipStorage extends StorageBase implements IStorage {
   }
 
   static zipFixup() {
-    if (CartoApp.hostType === HostType.electronNodeJs || CartoApp.hostType === HostType.toolsNodejs) {
+    if (CreatorToolsHost.hostType === HostType.electronNodeJs || CreatorToolsHost.hostType === HostType.toolsNodejs) {
       // eslint-disable-next-line
       eval("jszip_1.default = jszip_1");
     }
@@ -112,6 +116,31 @@ export default class ZipStorage extends StorageBase implements IStorage {
     await this.rootFolder.load(true);
   }
 
+  static async loadFromFile(file: IFile) {
+    if (file.fileContainerStorage && file.fileContainerStorage instanceof ZipStorage) {
+      return file.fileContainerStorage;
+    }
+
+    if (!file.isContentLoaded) {
+      await file.loadContent();
+    }
+
+    const data = file.content;
+
+    if (data && data instanceof Uint8Array) {
+      const zs = new ZipStorage();
+
+      await zs.loadFromUint8Array(data, file.name);
+
+      file.fileContainerStorage = zs;
+      zs.containerFile = file;
+
+      return zs;
+    }
+
+    return undefined;
+  }
+
   async loadFromUint8Array(data: Uint8Array, name?: string) {
     try {
       await this._jsz.loadAsync(data, {
@@ -181,7 +210,7 @@ export default class ZipStorage extends StorageBase implements IStorage {
   async generateBlobAsync(): Promise<any> {
     let type = "blob";
 
-    if (CartoApp.isLocalNode) {
+    if (CreatorToolsHost.isLocalNode) {
       type = "nodebuffer";
     }
 

@@ -72,6 +72,10 @@ export default class NodeFolder extends FolderBase implements IFolder {
     this.files = {};
   }
 
+  async scanForChanges(): Promise<void> {
+    // No-op for node storage
+  }
+
   ensureFile(name: string): NodeFile {
     Log.assert(name.indexOf("/") < 0, "Unexpected to find / in file name: " + name);
 
@@ -512,7 +516,7 @@ export default class NodeFolder extends FolderBase implements IFolder {
     return this.ensureFile(name);
   }
 
-  async load(force?: boolean): Promise<Date> {
+  loadSync(force?: boolean): Date {
     if (this.lastLoadedOrSaved != null && !force) {
       return this.lastLoadedOrSaved;
     }
@@ -552,5 +556,13 @@ export default class NodeFolder extends FolderBase implements IFolder {
     this.updateLastLoadedOrSaved();
 
     return this.lastLoadedOrSaved as Date;
+  }
+
+  async load(force?: boolean): Promise<Date> {
+    if (this.lastLoadedOrSaved != null && !force) {
+      return this.lastLoadedOrSaved;
+    }
+
+    return this.loadSync(force);
   }
 }

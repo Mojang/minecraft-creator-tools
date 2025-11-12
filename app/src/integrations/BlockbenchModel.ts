@@ -893,18 +893,18 @@ export default class BlockbenchModel {
     return bd;
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     Log.assert(this._data !== null, "ITDP");
 
     if (this._data) {
-      const pjString = JSON.stringify(this._data, null, 2);
-
-      this._file.setContent(pjString);
+      return this._file.setObjectContentIfSemanticallyDifferent(this._data);
     }
+
+    return false;
   }
 
   async save() {
@@ -912,9 +912,9 @@ export default class BlockbenchModel {
       return;
     }
 
-    this.persist();
-
-    await this._file.saveContent(false);
+    if (await this.persist()) {
+      await this._file.saveContent(false);
+    }
   }
 
   async load() {

@@ -11,7 +11,7 @@ import { CustomLabel } from "./Labels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import WebUtilities from "./WebUtilities";
 import { List, ListProps, Toolbar, selectableListBehavior } from "@fluentui/react-northstar";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import Project from "../app/Project";
 import IManagedComponentSetItem from "../minecraft/IManagedComponentSetItem";
 import ManagedPermutation from "../minecraft/ManagedPermutation";
@@ -24,7 +24,7 @@ interface IBlockTypePermutationEditorProps extends IFileProps {
   blockTypeItem: BlockTypeDefinition;
   item: ProjectItem;
   project: Project;
-  carto: Carto;
+  creatorTools: CreatorTools;
   theme: ThemeInput<any>;
 }
 
@@ -100,16 +100,18 @@ export default class BlockTypePermutationEditor extends Component<
     }
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
       if (file.manager) {
         const bt = file.manager as BlockTypeDefinition;
 
-        bt.persist();
+        return bt.persist();
       }
     }
+
+    return false;
   }
 
   getPermutationListings() {
@@ -281,7 +283,7 @@ export default class BlockTypePermutationEditor extends Component<
           isVisualsMode={false}
           componentSet={bt}
           readOnly={this.props.readOnly}
-          carto={this.props.carto}
+          creatorTools={this.props.creatorTools}
           permutation={
             this.state.selectedItem instanceof ManagedPermutation
               ? (this.state.selectedItem as ManagedPermutation)

@@ -27,6 +27,16 @@ Horse - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
   }
 }
 
+
+Zombie Horse - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_horse.json
+
+"minecraft:horse.jump_strength": {
+  "value": {
+    "range_min": 0.5,
+    "range_max": 0.7
+  }
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';
@@ -48,6 +58,8 @@ export default interface MinecraftHorseJumpStrength {
    * Horse: {"range_min":0.4,"range_max":1}
    *
    *
+   *
+   * Zombie Horse: {"range_min":0.5,"range_max":0.7}
    *
    */
   value?: MinecraftHorseJumpStrengthValue[];

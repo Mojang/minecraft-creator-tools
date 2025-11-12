@@ -89,14 +89,12 @@ export default class FlipbookTextureCatalogDefinition implements IDefinition {
     return et;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
-    const defString = JSON.stringify(this._data, null, 2);
-
-    this._file.setContent(defString);
+    return this._file.setObjectContentIfSemanticallyDifferent(this._data);
   }
 
   async load() {

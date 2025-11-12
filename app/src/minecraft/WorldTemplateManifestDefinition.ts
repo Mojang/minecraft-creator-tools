@@ -7,6 +7,7 @@ import Utilities from "../core/Utilities";
 import Project from "../app/Project";
 import StorageUtilities from "../storage/StorageUtilities";
 import IWorldManifest, { IWorldManifestHeader } from "./IWorldManifest";
+import Log from "../core/Log";
 
 export default class WorldTemplateManifestDefinition {
   private _file?: IFile;
@@ -120,14 +121,17 @@ export default class WorldTemplateManifestDefinition {
     header.base_game_version = versionArray;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
-    const pjString = JSON.stringify(this.definition, null, 2);
+    if (!this.definition) {
+      Log.unexpectedUndefined("WTMDF");
+      return false;
+    }
 
-    this._file.setContent(pjString);
+    return this._file.setObjectContentIfSemanticallyDifferent(this.definition);
   }
 
   public ensureDefinition(name: string, description: string) {
@@ -181,9 +185,9 @@ export default class WorldTemplateManifestDefinition {
       return;
     }
 
-    this.persist();
-
-    await this._file.saveContent(false);
+    if (this.persist()) {
+      await this._file.saveContent(false);
+    }
   }
 
   async load() {

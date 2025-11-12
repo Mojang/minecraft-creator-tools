@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Carto from "./../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import "./ProjectGallery.css";
 import IAppProps from "./IAppProps";
 import IStatus from "../app/Status";
@@ -68,7 +68,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
     };
   }
 
-  _handleStatusAdded(carto: Carto, status: IStatus) {}
+  _handleStatusAdded(creatorTools: CreatorTools, status: IStatus) {}
 
   componentDidMount() {
     this.loadProjects();
@@ -77,9 +77,9 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
   async loadProjects() {
     let didLoad = false;
 
-    await this.props.carto.load();
+    await this.props.creatorTools.load();
 
-    const projects = this.props.carto.projects;
+    const projects = this.props.creatorTools.projects;
 
     for (let i = 0; i < projects.length; i++) {
       const proj = projects[i];
@@ -126,7 +126,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
   }
 
   getProjectHash() {
-    const projects = this.props.carto.projects;
+    const projects = this.props.creatorTools.projects;
     let projectHash = "";
 
     for (let i = 0; i < projects.length; i++) {
@@ -364,7 +364,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
               onGalleryItemCommand={this._handleCommand}
               isSelected={this.state.selectedItem === galItem}
               displayOpenButton={false}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               project={galItem}
             />
           );
@@ -416,7 +416,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
               isSelected={this.state.selectedItem === galItem}
               onGalleryItemCommand={this._handleCommand}
               displayOpenButton={displayOpen}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               project={galItem}
             />
           );
@@ -460,7 +460,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
               isSelected={this.state.selectedItem === galItem}
               onGalleryItemCommand={this._handleCommand}
               displayOpenButton={displayOpen}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               project={galItem}
             />
           );

@@ -19,14 +19,41 @@ Bogged - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
 Magma Cube - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/magma_cube.json
 
 "minecraft:burns_in_daylight": false
+
+Zombie Horse - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_horse.json
+
+"minecraft:burns_in_daylight": {
+  "protection_slot": "slot.armor.body"
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Burns In Daylight (minecraft:burns_in_daylight)
- * Specifies if a mob burns in daylight.
+ * Entity Burns In Daylight (minecraft:burns_in_daylight)
+ * .
  */
 export default interface MinecraftBurnsInDaylight {
 
+  /**
+   * @remarks
+   * 
+   * Sample Values:
+   * Zombie Horse: "slot.armor.body"
+   *
+   *
+   */
+  protection_slot?: string;
+
+}
+
+
+export enum MinecraftBurnsInDaylightProtectionSlot {
+  slotArmorBody = `slot.armor.body`,
+  slotArmorChest = `slot.armor.chest`,
+  slotArmorFeet = `slot.armor.feet`,
+  slotArmorHead = `slot.armor.head`,
+  slotArmorLegs = `slot.armor.legs`,
+  slotWeaponOffhand = `slot.weapon.offhand`
 }

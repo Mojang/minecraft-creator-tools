@@ -176,7 +176,7 @@ export default class ImportFromUrl extends Component<IImportFromUrlProps, IImpor
           </div>
           <FileExplorer
             rootFolder={this.state.storage.rootFolder}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             readOnly={true}
             showPreview={true}
             selectFirstFile={true}
@@ -196,14 +196,14 @@ export default class ImportFromUrl extends Component<IImportFromUrlProps, IImpor
             borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
           }}
         >
-          <HomeHeader theme={this.props.theme} carto={this.props.carto} />
+          <HomeHeader />
         </header>
         <main className="ifu-main">
           <div className="ifu-content">{interior}</div>
           <div className="ifu-buttonBar">{buttonArea}</div>
         </main>
         <footer className="ifu-footer">
-          <HomeFooter theme={this.props.theme} carto={this.props.carto} displayStorageHandling={false} />
+          <HomeFooter theme={this.props.theme} creatorTools={this.props.creatorTools} displayStorageHandling={false} />
         </footer>
       </div>
     );

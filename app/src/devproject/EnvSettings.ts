@@ -1,10 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import IFile from "../storage/IFile";
+import IFile, { FileUpdateType } from "../storage/IFile";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import Project from "../app/Project";
-import { MinecraftTrack } from "../app/ICartoData";
+import { MinecraftTrack } from "../app/ICreatorToolsData";
 
 export default class EnvSettings {
   private _file?: IFile;
@@ -82,10 +82,12 @@ export default class EnvSettings {
     }
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this._file === undefined) {
-      return;
+      return false;
     }
+
+    return false;
   }
 
   async save() {
@@ -94,7 +96,10 @@ export default class EnvSettings {
     }
 
     if (this._file.isContentLoaded && this.project && this._file.content && typeof this._file.content === "string") {
-      this._file.setContent(await EnvSettings.getContent(this.project, this._file.content));
+      this._file.setContent(
+        await EnvSettings.getContent(this.project, this._file.content),
+        FileUpdateType.versionlessEdit
+      );
     }
 
     await this._file.saveContent(false);

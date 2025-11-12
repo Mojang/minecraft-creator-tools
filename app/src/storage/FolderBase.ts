@@ -681,6 +681,8 @@ export default abstract class FolderBase implements IFolder {
     }
   }
 
+  abstract scanForChanges(): Promise<void>;
+
   abstract deleteThisFolder(): Promise<boolean>;
   abstract deleteAllFolderContents(): Promise<boolean>;
 

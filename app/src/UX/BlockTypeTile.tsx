@@ -1,5 +1,5 @@
 import { Component } from "react";
-import CartoApp from "../app/CartoApp";
+import CreatorToolsHost from "../app/CreatorToolsHost";
 import Database from "./../minecraft/Database";
 import "./BlockTypeTile.css";
 import IAppProps from "./IAppProps";
@@ -48,7 +48,7 @@ export default class BlockTypeTile extends Component<IBlockTypeTileProps, IBlock
           className="btt-icon"
           alt=""
           src={
-            CartoApp.contentRoot +
+            CreatorToolsHost.contentRoot +
             "res/latest/van/release/resource_pack/textures/blocks/" +
             blockType.getIcon() +
             ".png"

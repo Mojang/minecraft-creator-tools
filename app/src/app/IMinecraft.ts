@@ -1,12 +1,13 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CartoMinecraftErrorStatus, CartoMinecraftState } from "./Carto";
+import { CreatorToolsMinecraftErrorStatus, CreatorToolsMinecraftState } from "./CreatorTools";
 import { IEvent } from "ste-events";
 import Project from "./Project";
 import MinecraftPush from "./MinecraftPush";
 import GameStateManager from "../minecraft/GameStateManager";
 import IFolder from "../storage/IFolder";
+import IActionSetData from "../actions/IActionSetData";
 
 export interface IMinecraftMessage {
   message: string;
@@ -24,23 +25,24 @@ export interface IPrepareAndStartResult {
 }
 
 export default interface IMinecraft {
-  state: CartoMinecraftState;
+  state: CreatorToolsMinecraftState;
   activeProject: Project | undefined;
 
   canDeployFiles: boolean;
 
-  errorStatus?: CartoMinecraftErrorStatus;
+  errorStatus?: CreatorToolsMinecraftErrorStatus;
   errorMessage?: string;
 
   gameStateManager: GameStateManager | undefined;
 
   runCommand(command: string): Promise<string | undefined>;
+  runActionSet(actionSet: IActionSetData): Promise<string | undefined>;
 
   worldFolder: IFolder | undefined;
   projectFolder: IFolder | undefined;
 
-  onRefreshed: IEvent<IMinecraft, CartoMinecraftState>;
-  onStateChanged: IEvent<IMinecraft, CartoMinecraftState>;
+  onRefreshed: IEvent<IMinecraft, CreatorToolsMinecraftState>;
+  onStateChanged: IEvent<IMinecraft, CreatorToolsMinecraftState>;
   onWorldFolderReady: IEvent<IMinecraft, IFolder>;
   onProjectFolderReady: IEvent<IMinecraft, IFolder>;
   onMessage: IEvent<IMinecraft, IMinecraftMessage>;
@@ -55,7 +57,7 @@ export default interface IMinecraft {
   stop(): Promise<void>;
   syncWithDeployment(): Promise<void>;
 
-  updateStatus(): Promise<CartoMinecraftState>;
+  updateStatus(): Promise<CreatorToolsMinecraftState>;
 
   processExternalMessage(command: string, data: string): void;
 }

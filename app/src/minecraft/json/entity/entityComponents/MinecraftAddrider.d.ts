@@ -11,26 +11,67 @@
  * 
  * minecraft:addrider Samples
 
+Camel Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/camel_husk.json
+
+"minecraft:addrider": {
+  "riders": [
+    {
+      "entity_type": "minecraft:husk",
+      "spawn_event": "minecraft:spawn_as_rider"
+    },
+    {
+      "entity_type": "minecraft:parched",
+      "spawn_event": "minecraft:ranged_mode"
+    }
+  ]
+}
+
+
 Cave Spider - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/cave_spider.json
 
  * At /minecraft:entity/component_groups/minecraft:spider_jockey/minecraft:addrider/: 
 "minecraft:addrider": {
-  "entity_type": "minecraft:skeleton"
+  "riders": [
+    {
+      "entity_type": "minecraft:skeleton"
+    }
+  ]
 }
 
  * At /minecraft:entity/component_groups/minecraft:spider_stray_jockey/minecraft:addrider/: 
 "minecraft:addrider": {
-  "entity_type": "minecraft:stray"
+  "riders": [
+    {
+      "entity_type": "minecraft:stray"
+    }
+  ]
 }
 
  * At /minecraft:entity/component_groups/minecraft:spider_bogged_jockey/minecraft:addrider/: 
 "minecraft:addrider": {
-  "entity_type": "minecraft:bogged"
+  "riders": [
+    {
+      "entity_type": "minecraft:bogged"
+    }
+  ]
+}
+
+ * At /minecraft:entity/component_groups/minecraft:spider_parched_jockey/minecraft:addrider/: 
+"minecraft:addrider": {
+  "riders": [
+    {
+      "entity_type": "minecraft:parched"
+    }
+  ]
 }
 
  * At /minecraft:entity/component_groups/minecraft:spider_wither_jockey/minecraft:addrider/: 
 "minecraft:addrider": {
-  "entity_type": "minecraft:wither_skeleton"
+  "riders": [
+    {
+      "entity_type": "minecraft:wither_skeleton"
+    }
+  ]
 }
 
 
@@ -70,21 +111,6 @@ Ravager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
   "spawn_event": "minecraft:spawn_as_illager_captain"
 }
 
-
-Strider - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/strider.json
-
- * At /minecraft:entity/component_groups/minecraft:strider_piglin_jockey/minecraft:addrider/: 
-"minecraft:addrider": {
-  "entity_type": "minecraft:zombie_pigman",
-  "spawn_event": "minecraft:spawn_as_strider_jockey"
-}
-
- * At /minecraft:entity/component_groups/minecraft:strider_parent_jockey/minecraft:addrider/: 
-"minecraft:addrider": {
-  "entity_type": "minecraft:strider",
-  "spawn_event": "minecraft:spawn_baby_strider_jockey"
-}
-
  */
 
 import * as jsoncommon from './../../../jsoncommon';
@@ -100,10 +126,21 @@ export default interface MinecraftAddrider {
    * Type of entity to acquire as a rider
    * 
    * Sample Values:
-   * Cave Spider: "minecraft:skeleton", "minecraft:stray", "minecraft:bogged", "minecraft:wither_skeleton"
+   * Ravager: "minecraft:pillager", "minecraft:evocation_illager", "minecraft:vindicator"
    *
    */
   entity_type?: string;
+
+  /**
+   * @remarks
+   * List of riders to be added to the entity. Can only spawn as
+   * many riders as "minecraft:rideable" has "seat_count".
+   * 
+   * Sample Values:
+   * Camel Husk: [{"entity_type":"minecraft:husk","spawn_event":"minecraft:spawn_as_rider"},{"entity_type":"minecraft:parched","spawn_event":"minecraft:ranged_mode"}]
+   *
+   */
+  riders?: MinecraftAddriderRiders;
 
   /**
    * @remarks
@@ -114,6 +151,29 @@ export default interface MinecraftAddrider {
    *
    * Strider: "minecraft:spawn_as_strider_jockey", "minecraft:spawn_baby_strider_jockey"
    *
+   */
+  spawn_event?: string;
+
+}
+
+
+/**
+ * Entity Rider Data (Rider Data)
+ * List of riders to be added to the entity. Must have no more
+ * riders than "minecraft:rideable" has "seat_count".
+ */
+export interface MinecraftAddriderRiders {
+
+  /**
+   * @remarks
+   * The entity type that will be riding this entity.
+   */
+  entity_type: string;
+
+  /**
+   * @remarks
+   * The spawn event that will be used when the riding entity is
+   * created.
    */
   spawn_event?: string;
 

@@ -5,7 +5,7 @@ import "./ProjectMap.css";
 import { ThemeInput } from "@fluentui/react-northstar";
 import { ProjectEditorAction, ProjectEditorMode } from "./ProjectEditorUtilities";
 import { Background, Controls, Edge, MiniMap, Node, ReactFlow } from "@xyflow/react";
-import CartoApp, { CartoThemeStyle } from "../app/CartoApp";
+import CreatorToolsHost, { CreatorToolsThemeStyle } from "../app/CreatorToolsHost";
 import ProjectItemNode from "./ProjectItemNode";
 import ProjectItemRelationshipEdge from "./ProjectItemRelationshipEdge";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
@@ -165,7 +165,7 @@ export default class ProjectMap extends Component<IProjectMapProps, IProjectMapS
           }}
           nodesDraggable
           defaultEdges={this.state.context.edges}
-          colorMode={CartoApp.theme === CartoThemeStyle.dark ? "dark" : "light"}
+          colorMode={CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? "dark" : "light"}
         >
           <Controls />
           <MiniMap />

@@ -3,7 +3,7 @@
 
 import IFolder from "../storage/IFolder";
 import { IWorldSettings } from "./IWorldSettings";
-import { Difficulty, GameType } from "./WorldLevelDat";
+import { Difficulty, GameType, PlayerPermissionsLevel } from "./WorldLevelDat";
 
 enum ServerGameMode {
   survival = "survival",
@@ -79,6 +79,16 @@ export default class ServerPropertiesManager {
   }
 
   public applyFromWorldSettings(worldSettings: IWorldSettings) {
+    if (worldSettings.playerPermissionLevel) {
+      switch (worldSettings.playerPermissionLevel) {
+        case PlayerPermissionsLevel.member:
+          this.defaultPlayerPermissionLevel = ServerPermissionLevel.member;
+          break;
+        case PlayerPermissionsLevel.operator:
+          this.defaultPlayerPermissionLevel = ServerPermissionLevel.operator;
+          break;
+      }
+    }
     if (worldSettings.difficulty !== undefined) {
       switch (worldSettings.difficulty) {
         case Difficulty.easy:

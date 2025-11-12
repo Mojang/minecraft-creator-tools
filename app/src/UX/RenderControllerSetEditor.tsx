@@ -141,18 +141,25 @@ export default class RenderControllerSetEditor extends Component<
     });
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
+    let didPersist = false;
     if (this.state && this.state.fileToEdit) {
       const file = this.state.fileToEdit;
 
       if (file.manager) {
         const rcsd = file.manager as RenderControllerSetDefinition;
 
-        await rcsd.persist();
+        if (await rcsd.persist()) {
+          didPersist = true;
+        }
       }
     } else if (this.state && this.state.renderControllerSet) {
-      await this.state.renderControllerSet.persist();
+      if (await this.state.renderControllerSet.persist()) {
+        didPersist = true;
+      }
     }
+
+    return didPersist;
   }
 
   async _handleDataFormPropertyChange(props: IDataFormProps, property: IProperty, newValue: any) {
@@ -163,9 +170,7 @@ export default class RenderControllerSetEditor extends Component<
         await DataFormProcessor.process(props.directObject, this.state.form);
       }
 
-      const newData = JSON.stringify(props.directObject, null, 2);
-
-      file.setContent(newData);
+      file.setObjectContentIfSemanticallyDifferent(props.directObject);
     }
   }
 

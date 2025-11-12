@@ -1,6 +1,3 @@
-
-
-export default interface IPersistable
-{
-    persist() : Promise<void>;
+export default interface IPersistable {
+  persist(): Promise<boolean>;
 }

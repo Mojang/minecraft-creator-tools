@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import WebUtilities from "./WebUtilities";
 import { faTreeCity, faSliders } from "@fortawesome/free-solid-svg-icons";
 import { Button, Toolbar } from "@fluentui/react-northstar";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import Project from "../app/Project";
 import { ProjectItemType } from "../app/IProjectItemData";
 import BiomeResourceEditor from "./BiomeResourceEditor";
@@ -30,7 +30,7 @@ interface IBiomeEditorProps extends IFileProps {
   readOnly: boolean;
   item: ProjectItem;
   project: Project;
-  carto: Carto;
+  creatorTools: CreatorTools;
   theme: ThemeInput<any>;
 }
 
@@ -153,14 +153,16 @@ export default class BiomeEditor extends Component<IBiomeEditorProps, IBiomeEdit
     }
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this.state !== undefined && this.state.fileToEdit !== undefined) {
       const biomeDefinition = this.state.fileToEdit.manager;
 
       if (biomeDefinition !== undefined && biomeDefinition instanceof BiomeBehaviorDefinition) {
-        biomeDefinition.persist();
+        return await biomeDefinition.persist();
       }
     }
+
+    return false;
   }
 
   _setComponentsMode() {
@@ -271,7 +273,7 @@ export default class BiomeEditor extends Component<IBiomeEditorProps, IBiomeEdit
           heightOffset={this.props.heightOffset + 92}
           readOnly={this.props.readOnly}
           project={this.props.project}
-          carto={this.props.carto}
+          creatorTools={this.props.creatorTools}
         />
       );
     } else if (this.state.mode === BiomeEditorMode.visuals) {
@@ -284,7 +286,7 @@ export default class BiomeEditor extends Component<IBiomeEditorProps, IBiomeEdit
             heightOffset={this.props.heightOffset + 92}
             readOnly={this.props.readOnly}
             project={this.props.project}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
           />
         );
       } else {

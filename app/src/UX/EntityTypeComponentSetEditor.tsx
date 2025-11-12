@@ -22,7 +22,7 @@ import { CustomLabel } from "./Labels";
 import { faAdd, faRemove } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import EntityTypeAddComponent from "./EntityTypeAddComponent";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import Project from "../app/Project";
 import MinecraftButton from "./MinecraftButton";
 import ManagedComponentGroup from "../minecraft/ManagedComponentGroup";
@@ -35,7 +35,7 @@ interface IEntityTypeComponentSetEditorProps {
   displayNarrow?: boolean;
   heightOffset: number;
   project: Project;
-  carto: Carto;
+  creatorTools: CreatorTools;
   title?: string;
   theme: ThemeInput<any>;
 }
@@ -488,7 +488,7 @@ export default class EntityTypeComponentSetEditor extends Component<
                       displayDescription={true}
                       displayNarrow={this.props.displayNarrow}
                       readOnly={false}
-                      carto={this.props.carto}
+                      carto={this.props.creatorTools}
                       project={this.props.project}
                       lookupProvider={this.props.project}
                       tag={component.id}

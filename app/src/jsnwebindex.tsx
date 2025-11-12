@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./jsnwebindex.css";
 import App from "./UX/App";
-import CartoApp from "./app/CartoApp";
+import CreatorToolsHost from "./app/CreatorToolsHost";
 import { loader } from "@monaco-editor/react";
 
 import { Provider, teamsDarkTheme, mergeThemes } from "@fluentui/react-northstar";
@@ -26,7 +26,7 @@ loader.config({
 });
 
 async function initAsync() {
-  CartoApp.init();
+  CreatorToolsHost.init();
 
   const theme = mergeThemes(teamsDarkTheme, minecraftToolDarkTheme);
 

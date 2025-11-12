@@ -31,7 +31,7 @@ import {
 
 import { InfoItemType, NumberInfoItemTypes } from "../info/IInfoItemData";
 import WebUtilities from "./WebUtilities";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import IStatus, { StatusTopic } from "../app/Status";
 import IProjectInfoData, { ProjectInfoSuite } from "../info/IProjectInfoData";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -119,7 +119,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     this._handleExportMenuOpen = this._handleExportMenuOpen.bind(this);
     this._handleSearchTermChanged = this._handleSearchTermChanged.bind(this);
 
-    let suite = this.props.carto.preferredSuite;
+    let suite = this.props.creatorTools.preferredSuite;
 
     if (suite === undefined) {
       suite = ProjectInfoSuite.defaultInDevelopment;
@@ -149,7 +149,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     await this._generateInfoSetInternal(false);
   }
 
-  private async _handleStatusUpdates(carto: Carto, status: IStatus): Promise<void> {
+  private async _handleStatusUpdates(creatorTools: CreatorTools, status: IStatus): Promise<void> {
     if (
       status.topic === StatusTopic.projectLoad ||
       status.topic === StatusTopic.validation ||
@@ -186,7 +186,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   }
 
   private async _generateInfoSetInternal(force: boolean) {
-    this.props.carto.subscribeStatusAddedAsync(this._handleStatusUpdates);
+    this.props.creatorTools.subscribeStatusAddedAsync(this._handleStatusUpdates);
 
     let newInfoSet = undefined;
 
@@ -272,7 +272,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       });
     }
 
-    this.props.carto.unsubscribeStatusAddedAsync(this._handleStatusUpdates);
+    this.props.creatorTools.unsubscribeStatusAddedAsync(this._handleStatusUpdates);
   }
 
   componentDidMount() {
@@ -465,9 +465,9 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       targetedSuite = ProjectInfoSuite.sharingStrict;
     }
 
-    if (targetedSuite !== this.props.carto.preferredSuite) {
-      this.props.carto.preferredSuite = targetedSuite;
-      this.props.carto.save();
+    if (targetedSuite !== this.props.creatorTools.preferredSuite) {
+      this.props.creatorTools.preferredSuite = targetedSuite;
+      this.props.creatorTools.save();
     }
 
     this.setState({
@@ -596,7 +596,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     }
 
     const date = new Date();
-    const projName = this.props.project ? this.props.project.name : "report";
+    const projName = this.props.project ? this.props.project.simplifiedName : "report";
 
     const reportHtml = this.state.selectedInfoSet.getReportHtml(projName, projName, date.getTime().toString());
 
@@ -648,7 +648,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   }
 
   _handleSearchTermChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
-    if (data === undefined || this.props.carto === null || this.state == null) {
+    if (data === undefined || this.props.creatorTools === null || this.state == null) {
       return;
     }
 
@@ -962,11 +962,11 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
               if (this.matchesSearch(featName) && featureSet) {
                 if (
-                  featureSet["Total"] !== undefined &&
-                  featureSet["Average"] !== undefined &&
-                  featureSet["Instance Count"] !== undefined &&
-                  featureSet["Max"] !== undefined &&
-                  featureSet["Min"] !== undefined
+                  featureSet["total"] !== undefined &&
+                  featureSet["average"] !== undefined &&
+                  featureSet["instanceCount"] !== undefined &&
+                  featureSet["max"] !== undefined &&
+                  featureSet["min"] !== undefined
                 ) {
                   let featNameAdj = featName;
 
@@ -989,7 +989,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
                         gridRow: rowCount,
                       }}
                     >
-                      {this.getDataSummary(featureSet["Instance Count"])}
+                      {this.getDataSummary(featureSet["instanceCount"])}
                     </div>
                   );
                   contentSummaryLines.push(
@@ -1000,7 +1000,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
                         gridRow: rowCount,
                       }}
                     >
-                      {this.getDataSummary(featureSet["Total"])}
+                      {this.getDataSummary(featureSet["total"])}
                     </div>
                   );
                   contentSummaryLines.push(
@@ -1011,7 +1011,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
                         gridRow: rowCount,
                       }}
                     >
-                      {this.getDataSummary(featureSet["Max"])}
+                      {this.getDataSummary(featureSet["max"])}
                     </div>
                   );
                   contentSummaryLines.push(
@@ -1022,7 +1022,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
                         gridRow: rowCount,
                       }}
                     >
-                      {this.getDataSummary(featureSet["Average"])}
+                      {this.getDataSummary(featureSet["average"])}
                     </div>
                   );
 
@@ -1034,7 +1034,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
                         gridRow: rowCount,
                       }}
                     >
-                      {this.getDataSummary(featureSet["Min"])}
+                      {this.getDataSummary(featureSet["min"])}
                     </div>
                   );
                   rowCount++;
@@ -1156,7 +1156,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
                 isBand={itemsShown % 2 === 1}
                 theme={this.props.theme}
                 key={"pid" + i}
-                carto={this.props.carto}
+                creatorTools={this.props.creatorTools}
                 onInfoItemCommand={this._handleInfoItemCommand}
               />
             );

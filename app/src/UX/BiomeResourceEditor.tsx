@@ -6,7 +6,7 @@ import Database from "../minecraft/Database";
 import DataFormUtilities from "../dataform/DataFormUtilities";
 import { ThemeInput } from "@fluentui/styles";
 import ProjectItem from "../app/ProjectItem";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import Project from "../app/Project";
 import DataForm from "../dataform/DataForm";
 import BiomeResourceDefinition from "../minecraft/BiomeResourceDefinition";
@@ -20,7 +20,7 @@ interface IBiomeResourceEditorProps extends IFileProps {
   readOnly: boolean;
   item: ProjectItem;
   project: Project;
-  carto: Carto;
+  creatorTools: CreatorTools;
   theme: ThemeInput<any>;
 }
 
@@ -114,14 +114,16 @@ export default class BiomeResourceEditor extends Component<IBiomeResourceEditorP
     }
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this.state !== undefined && this.state.fileToEdit !== undefined) {
       const biomeDefinition = this.state.fileToEdit.manager;
 
       if (biomeDefinition !== undefined && biomeDefinition instanceof BiomeResourceDefinition) {
-        biomeDefinition.persist();
+        return await biomeDefinition.persist();
       }
     }
+
+    return false;
   }
 
   _setComponentsMode() {

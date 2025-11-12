@@ -67,7 +67,9 @@ export default interface MinecraftCollisionBox {
    * @remarks
    * Minimal position of the bounds of the collision box. "origin" is
    * specified as [x, y, z] and must be in the range (-8, 0, -8) to
-   * (8, 16, 8), inclusive.
+   * (8, 24, 8), inclusive. A max Y value above 16 requires
+   * 'format_version' >= 1.21.130 and the `Upcoming Creator Features`
+   * toggle
    * 
    * Sample Values:
    * Block Leaf Pile: [-8,2,-8]
@@ -79,7 +81,9 @@ export default interface MinecraftCollisionBox {
    * @remarks
    * Size of each side of the collision box. Size is specified as
    * [x, y, z]. "origin" + "size" must be in the range (-8, 0, -8) to
-   * (8, 16, 8), inclusive.
+   * (8, 24, 8), inclusive. A max Y value above 16 requires
+   * 'format_version' >= 1.21.130 and the `Upcoming Creator Features`
+   * toggle
    * 
    * Sample Values:
    * Block Leaf Pile: [16,4,16]

@@ -2,7 +2,7 @@ import { Handle, Position } from "@xyflow/react";
 import Project from "../app/Project";
 import { ThemeInput } from "@fluentui/react-northstar";
 import "./EntityTypeStateNode.css";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import Utilities from "../core/Utilities";
 import IEntityTypeState from "../minecraft/IEntityTypeState";
@@ -18,7 +18,7 @@ export interface EntityTypeStateNodeData {
   project: Project;
   entityType: EntityTypeDefinition;
   isLikely: boolean;
-  carto: Carto;
+  creatorTools: CreatorTools;
   isSelected: boolean;
   theme: ThemeInput<any>;
 }

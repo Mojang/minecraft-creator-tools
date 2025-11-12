@@ -1,7 +1,7 @@
 import { Argument, Command } from "commander";
-import Carto from "./../app/Carto.js";
+import CreatorTools from "./../app/CreatorTools.js";
 import Project, { FolderContext, ProjectAutoDeploymentMode } from "./../app/Project.js";
-import CartoApp, { HostType } from "./../app/CartoApp.js";
+import CreatorToolsHost, { HostType } from "./../app/CreatorToolsHost.js";
 import Utilities from "./../core/Utilities.js";
 import ServerManager, { ServerManagerFeatures } from "../local/ServerManager.js";
 
@@ -59,7 +59,7 @@ if (typeof atob === "undefined") {
   };
 }
 
-CartoApp.hostType = HostType.toolsNodejs;
+CreatorToolsHost.hostType = HostType.toolsNodejs;
 
 const MAX_LINES_PER_CSV_FILE = 500000;
 
@@ -72,7 +72,7 @@ const ERROR_VALIDATION_ERROR = 57;
 
 const program = new Command();
 
-let carto: Carto | undefined;
+let creatorTools: CreatorTools | undefined;
 const projectStarts: (IProjectStartInfo | undefined)[] = [];
 let localEnv: LocalEnvironment | undefined;
 let mode: string | undefined;
@@ -501,20 +501,19 @@ if (options.logVerbose) {
 }
 
 (async () => {
-  carto = ClUtils.getCarto(localEnv, options.basePath);
+  creatorTools = ClUtils.getCreatorTools(localEnv, options.basePath);
 
-  if (!carto) {
+  if (!creatorTools) {
     return;
   }
 
-  sm = new ServerManager(localEnv, carto);
+  sm = new ServerManager(localEnv, creatorTools);
   sm.runOnce = serverRunOnce;
 
-  await carto.load();
+  await creatorTools.load();
 
-  carto.onStatusAdded.subscribe(ClUtils.handleStatusAdded);
+  creatorTools.onStatusAdded.subscribe(ClUtils.handleStatusAdded);
 
-  await loadPacks();
   await loadProjects();
 
   if (
@@ -583,7 +582,7 @@ if (options.logVerbose) {
         try {
           for (const projectStart of projectStarts) {
             if (projectStart) {
-              await setProjectProperty(ClUtils.createProject(carto, projectStart), subCommand, propertyValue);
+              await setProjectProperty(ClUtils.createProject(creatorTools, projectStart), subCommand, propertyValue);
             }
           }
         } catch (e: any) {
@@ -597,7 +596,7 @@ if (options.logVerbose) {
       try {
         for (const projectStart of projectStarts) {
           if (projectStart) {
-            await add(ClUtils.createProject(carto, projectStart));
+            await add(ClUtils.createProject(creatorTools, projectStart));
           }
         }
       } catch (e: any) {
@@ -610,7 +609,7 @@ if (options.logVerbose) {
       try {
         for (const projectStart of projectStarts) {
           if (projectStart) {
-            await create(ClUtils.createProject(carto, projectStart), projectStarts.length <= 1);
+            await create(ClUtils.createProject(creatorTools, projectStart), projectStarts.length <= 1);
           }
         }
       } catch (e: any) {
@@ -642,7 +641,7 @@ if (options.logVerbose) {
 })();
 
 async function fix() {
-  if (!carto) {
+  if (!creatorTools) {
     throw new Error("Not properly configured.");
   }
 
@@ -657,7 +656,7 @@ async function fix() {
 
   for (const projectStart of projectStarts) {
     if (projectStart) {
-      const project = ClUtils.createProject(carto, projectStart);
+      const project = ClUtils.createProject(creatorTools, projectStart);
       await project.inferProjectItemsFromFiles();
 
       switch (subCommandCanon) {
@@ -695,7 +694,7 @@ function getSubFunctionCommaSeparatedList(): string[] {
 }
 
 async function loadProjects() {
-  if (!carto || !carto.ensureLocalFolder) {
+  if (!creatorTools || !creatorTools.ensureLocalFolder) {
     throw new Error("Not properly configured.");
   }
 
@@ -723,7 +722,7 @@ async function loadProjects() {
       throw new Error("Could not process file with path: `" + options.inputFile + "`");
     }
 
-    const containingFolder = carto.ensureLocalFolder(inputFolderPath);
+    const containingFolder = creatorTools.ensureLocalFolder(inputFolderPath);
 
     containingFolder.storage.readOnly = true;
 
@@ -1017,8 +1016,8 @@ async function displayVersion() {
   console.log("\n" + constants.name + " Tools");
   console.log("Version: " + constants.version);
 
-  if (carto && carto.local) {
-    const local = carto.local as LocalUtilities;
+  if (creatorTools && creatorTools.local) {
+    const local = creatorTools.local as LocalUtilities;
     console.log("\n");
     console.log("Machine user data path: " + local.userDataPath);
     console.log("Machine app data path: " + local.localAppDataPath);
@@ -1119,8 +1118,8 @@ async function minecraftEulaAndPrivacyStatement() {
 
 async function displayInfo() {
   for (const projectStart of projectStarts) {
-    if (projectStart && carto) {
-      const project = ClUtils.createProject(carto, projectStart);
+    if (projectStart && creatorTools) {
+      const project = ClUtils.createProject(creatorTools, projectStart);
       await project.inferProjectItemsFromFiles();
 
       console.log("Project name: " + project.name);
@@ -1182,8 +1181,8 @@ async function setAndDisplayAllWorlds() {
   }
 
   for (const projectStart of projectStarts) {
-    if (projectStart && carto) {
-      const project = ClUtils.createProject(carto, projectStart);
+    if (projectStart && creatorTools) {
+      const project = ClUtils.createProject(creatorTools, projectStart);
       await project.inferProjectItemsFromFiles();
 
       let setWorld = false;
@@ -1325,7 +1324,7 @@ async function setAndDisplayWorld(item: ProjectItem, isSettable: boolean) {
 }
 
 async function validate() {
-  if (!carto || !localEnv) {
+  if (!creatorTools || !localEnv) {
     return;
   }
 
@@ -1522,7 +1521,7 @@ async function processValidationResult(result: any, ps: IProjectStartInfo, proje
 }
 
 async function profileValidation() {
-  if (!carto || !localEnv) {
+  if (!creatorTools || !localEnv) {
     return;
   }
 
@@ -2029,7 +2028,7 @@ function countFeatureSetMeasures(featureSets: {
 }
 
 async function docsUpdateFormSource() {
-  if (!carto) {
+  if (!creatorTools) {
     errorLevel = ERROR_INIT_ERROR;
     console.error("Not configured correctly to generate documents.");
     return;
@@ -2059,7 +2058,7 @@ async function docsUpdateFormSource() {
 }
 
 async function docsGenerateFormJson() {
-  if (!carto) {
+  if (!creatorTools) {
     errorLevel = ERROR_INIT_ERROR;
     console.error("Not configured correctly to generate documents.");
     return;
@@ -2091,7 +2090,7 @@ async function docsGenerateFormJson() {
 }
 
 async function docsGenerateMarkdown() {
-  if (!carto) {
+  if (!creatorTools) {
     errorLevel = ERROR_INIT_ERROR;
     console.error("Not configured correctly to generate documents.");
     return;
@@ -2133,7 +2132,7 @@ async function docsGenerateMarkdown() {
 }
 
 async function docsGenerateTypes() {
-  if (!carto) {
+  if (!creatorTools) {
     errorLevel = ERROR_INIT_ERROR;
     console.error("Not configured correctly to generate types and schemas.");
     return;
@@ -2167,7 +2166,7 @@ async function docsGenerateTypes() {
 }
 
 async function exportWorld() {
-  if (!carto || projectStarts.length === 0) {
+  if (!creatorTools || projectStarts.length === 0) {
     errorLevel = ERROR_INIT_ERROR;
     console.error("Not configured correctly to export a project.");
     return;
@@ -2175,7 +2174,7 @@ async function exportWorld() {
 
   for (const projectStart of projectStarts) {
     if (projectStart) {
-      const project = ClUtils.createProject(carto, projectStart);
+      const project = ClUtils.createProject(creatorTools, projectStart);
 
       await project.inferProjectItemsFromFiles();
 
@@ -2183,7 +2182,7 @@ async function exportWorld() {
 
       console.log("Exporting flat pack world to '" + path + "'");
 
-      await LocalTools.exportWorld(carto, project, path);
+      await LocalTools.exportWorld(creatorTools, project, path);
     }
   }
 }
@@ -2204,7 +2203,7 @@ async function doExit() {
 
 async function ensureRefWorld() {
   const ns: NodeStorage | undefined = getTargetFolderFromMode();
-  if (!carto || !carto.local || projectStarts.length === 0) {
+  if (!creatorTools || !creatorTools.local || projectStarts.length === 0) {
     errorLevel = ERROR_INIT_ERROR;
     console.error("Not configured correctly to export a project.");
     return;
@@ -2216,14 +2215,14 @@ async function ensureRefWorld() {
         return;
       }
 
-      const project = ClUtils.createProject(carto, projectStart);
+      const project = ClUtils.createProject(creatorTools, projectStart);
 
       await ns.rootFolder.ensureExists();
 
-      await LocalTools.ensureFlatPackRefWorldTo(carto, project, ns.rootFolder, project.name);
+      await LocalTools.ensureFlatPackRefWorldTo(creatorTools, project, ns.rootFolder, project.name);
 
       if (options.launch) {
-        await LocalTools.launchWorld(carto, project.name);
+        await LocalTools.launchWorld(creatorTools, project.name);
       }
     }
   }
@@ -2232,7 +2231,7 @@ async function ensureRefWorld() {
 async function setProjectProperty(project: Project, propertyName: string, propertyValue: string) {
   outputLogo("Minecraft Creator Tools (preview)");
 
-  if (!carto) {
+  if (!creatorTools) {
     errorLevel = ERROR_INIT_ERROR;
     console.error("Not configured correctly to create a project (no mctools core).");
     return;
@@ -2281,7 +2280,7 @@ async function setProjectProperty(project: Project, propertyName: string, proper
 async function create(project: Project, isSingleFolder: boolean) {
   outputLogo("Minecraft Creator Tools (preview)");
 
-  if (!localEnv || !carto) {
+  if (!localEnv || !creatorTools) {
     errorLevel = ERROR_INIT_ERROR;
     console.error("Not configured correctly to create a project (no mctools core).");
     return;
@@ -2303,9 +2302,9 @@ async function create(project: Project, isSingleFolder: boolean) {
     }
   }
 
-  await carto.loadGallery();
+  await creatorTools.loadGallery();
 
-  if (!carto.gallery) {
+  if (!creatorTools.gallery) {
     errorLevel = ERROR_INIT_ERROR;
     console.error("Not configured correctly to create a project (no gallery).");
     return;
@@ -2415,7 +2414,7 @@ async function create(project: Project, isSingleFolder: boolean) {
     }
   }
 
-  const galProjects = carto.gallery.items;
+  const galProjects = creatorTools.gallery.items;
   let galProject: IGalleryItem | undefined;
 
   if (template) {
@@ -2476,7 +2475,7 @@ async function create(project: Project, isSingleFolder: boolean) {
 
   project = await ProjectExporter.syncProjectFromGitHub(
     true,
-    carto,
+    creatorTools,
     galProject.gitHubRepoName,
     galProject.gitHubOwner,
     galProject.gitHubBranch,
@@ -2510,7 +2509,7 @@ async function create(project: Project, isSingleFolder: boolean) {
 }
 
 async function add(project: Project) {
-  if (!localEnv || !carto) {
+  if (!localEnv || !creatorTools) {
     errorLevel = ERROR_INIT_ERROR;
     console.error("Not configured correctly to create a project (no mctools core).");
     return;
@@ -2553,15 +2552,15 @@ async function add(project: Project) {
 
   outputLogo("Minecraft Add " + typeDesc);
 
-  if (!carto) {
+  if (!creatorTools) {
     errorLevel = ERROR_INIT_ERROR;
     console.error("Not configured correctly to add an item (no mctools core).");
     return;
   }
 
-  await carto.loadGallery();
+  await creatorTools.loadGallery();
 
-  if (!carto.gallery) {
+  if (!creatorTools.gallery) {
     errorLevel = ERROR_INIT_ERROR;
     console.error("Not configured correctly to add an item (no gallery).");
     return;
@@ -2570,7 +2569,7 @@ async function add(project: Project) {
   const typeQuestions: inquirer.DistinctQuestion<any>[] = [];
 
   if (type) {
-    const galleryItem = await carto.getGalleryProjectById(type);
+    const galleryItem = await creatorTools.getGalleryProjectById(type);
 
     if (galleryItem) {
       if (!newName) {
@@ -2679,12 +2678,12 @@ async function add(project: Project) {
 }
 
 async function chooseAddItem(project: Project, itemType: GalleryItemType, typeDescriptor: string) {
-  if (!carto) {
+  if (!creatorTools) {
     return;
   }
   const questions: inquirer.DistinctQuestion<any>[] = [];
 
-  const gallery = await carto.loadGallery();
+  const gallery = await creatorTools.loadGallery();
 
   if (gallery) {
     const templateTypeChoices: inquirer.DistinctChoice[] = [];
@@ -2745,14 +2744,14 @@ function outputLogo(message: string) {
 async function deploy() {
   const ns: NodeStorage | undefined = getTargetFolderFromMode();
 
-  if (!carto || !carto.local || projectStarts.length === 0) {
+  if (!creatorTools || !creatorTools.local || projectStarts.length === 0) {
     errorLevel = ERROR_INIT_ERROR;
     console.error("Not configured correctly to deploy a project.");
     return;
   }
   for (const projectStart of projectStarts) {
     if (projectStart) {
-      const project = ClUtils.createProject(carto, projectStart);
+      const project = ClUtils.createProject(creatorTools, projectStart);
 
       await project.inferProjectItemsFromFiles();
 
@@ -2763,7 +2762,7 @@ async function deploy() {
 
       await ns.rootFolder.ensureExists();
 
-      await LocalTools.deploy(carto, project, ns, ns.rootFolder, project.name);
+      await LocalTools.deploy(creatorTools, project, ns, ns.rootFolder, project.name);
     }
   }
 }
@@ -2771,7 +2770,7 @@ async function deploy() {
 function getTargetFolderFromMode() {
   let ns: NodeStorage | undefined;
 
-  if (!carto || !carto.local || projectStarts.length === 0) {
+  if (!creatorTools || !creatorTools.local || projectStarts.length === 0) {
     errorLevel = ERROR_INIT_ERROR;
     console.error("Not configured correctly to sync a project.");
     return;
@@ -2781,10 +2780,10 @@ function getTargetFolderFromMode() {
     case "mcuwp":
     case undefined:
     case "":
-      ns = new NodeStorage(carto.local.minecraftPath, "");
+      ns = new NodeStorage(creatorTools.local.minecraftPath, "");
       break;
     case "mcpreview":
-      ns = new NodeStorage(carto.local.minecraftPreviewPath, "");
+      ns = new NodeStorage(creatorTools.local.minecraftPreviewPath, "");
       break;
     case "server":
       ns = new NodeStorage(options.serverPath, "");
@@ -2806,7 +2805,7 @@ function getTargetFolderFromMode() {
 async function deployTestWorld() {
   const ns: NodeStorage | undefined = getTargetFolderFromMode();
 
-  if (!carto || !carto.local || projectStarts.length === 0) {
+  if (!creatorTools || !creatorTools.local || projectStarts.length === 0) {
     errorLevel = ERROR_INIT_ERROR;
     console.error("Not configured correctly to sync a project.");
     return;
@@ -2818,7 +2817,7 @@ async function deployTestWorld() {
         return;
       }
 
-      const project = ClUtils.createProject(carto, projectStart);
+      const project = ClUtils.createProject(creatorTools, projectStart);
 
       await ns.rootFolder.ensureExists();
 
@@ -2829,21 +2828,21 @@ async function deployTestWorld() {
       };
 
       const worldName = await ProjectExporter.deployProjectAndGeneratedWorldTo(
-        carto,
+        creatorTools,
         project,
         worldSettings,
         ns.rootFolder
       );
 
       if (options.launch && worldName && typeof worldName === "string") {
-        await LocalTools.launchWorld(carto, worldName);
+        await LocalTools.launchWorld(creatorTools, worldName);
       }
     }
   }
 }
 
 async function serve() {
-  if (!carto || !carto.local || projectStarts.length === 0 || !localEnv || !sm) {
+  if (!creatorTools || !creatorTools.local || projectStarts.length === 0 || !localEnv || !sm) {
     errorLevel = ERROR_INIT_ERROR;
     console.error("Not configured correctly to run a server.");
     return;
@@ -2874,10 +2873,4 @@ function getFilePath(defaultFileName: string) {
   ns.rootFolder.ensureExists();
 
   return path + "/" + defaultFileName;
-}
-
-async function loadPacks() {
-  if (!carto) {
-    return;
-  }
 }

@@ -9,6 +9,6 @@
       "dataType": 2
     }
   ],
-  "description": "Component that determines how the block will interact with rain and snow",
+  "description": "Component that determines how the block will interact with rain and snow\nExperimental toggles required: Upcoming Creator Features (in format versions before 1.21.120)",
   "title": "Precipitation Interactions"
 }

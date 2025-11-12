@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import IPlayerTravelledEvent from "./IPlayerTravelledEvent";
 import Location from "./Location";
 import { EventDispatcher } from "ste-events";
@@ -62,7 +62,7 @@ export default class GameStateManager {
     return this._onBlockBroken.asEvent();
   }
 
-  constructor(carto: Carto) {
+  constructor(creatorTools: CreatorTools) {
     this._tick = this._tick.bind(this);
 
     // @ts-ignore

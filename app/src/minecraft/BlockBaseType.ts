@@ -9,7 +9,7 @@ export default class BlockBaseType {
   public data: IBlockBaseTypeData;
 
   get icon() {
-    return this.data.icon;
+    return this.data.ic;
   }
 
   getProperty(name: string) {
@@ -50,7 +50,7 @@ export default class BlockBaseType {
     this._name = name;
 
     this.data = {
-      name: name,
+      n: name,
     };
   }
 }

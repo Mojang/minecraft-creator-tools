@@ -1,18 +1,22 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import IFile from "./IFile";
+import IFile, { FileUpdateType } from "./IFile";
 import IFolder from "./IFolder";
 import StorageUtilities from "./StorageUtilities";
 import IStorage from "./IStorage";
 import * as md5 from "js-md5";
 import Log from "../core/Log";
 import { EventDispatcher } from "ste-events";
+import Utilities from "../core/Utilities";
+import IVersionContent from "./IVersionContent";
 
 export default abstract class FileBase implements IFile {
   abstract get name(): string;
   abstract get parentFolder(): IFolder;
   abstract get isContentLoaded(): boolean;
+
+  priorVersions: IVersionContent[] = [];
 
   isDisposed: boolean = false;
 
@@ -153,9 +157,28 @@ export default abstract class FileBase implements IFile {
     this._content = null;
   }
 
-  contentWasModified() {
+  contentWasModified(oldContent: string | Uint8Array | null, updateType?: FileUpdateType) {
     if (this.isDisposed) {
       Log.throwIsDisposed();
+    }
+
+    let oldVersionContent: IVersionContent | undefined = undefined;
+
+    if (updateType !== FileUpdateType.versionRestoration && updateType !== FileUpdateType.versionlessEdit) {
+      let oldModified = this.modified;
+
+      if (oldModified === null) {
+        oldModified = this.lastLoadedOrSaved;
+      }
+
+      oldVersionContent = {
+        id: Utilities.createRandomId(10),
+        content: oldContent,
+        file: this,
+        versionTime: oldModified,
+      };
+
+      this.parentFolder.storage.addVersion(oldVersionContent, updateType ? updateType : FileUpdateType.regularEdit);
     }
 
     this.modified = new Date();
@@ -163,7 +186,11 @@ export default abstract class FileBase implements IFile {
     this.notifyFileContentUpdated();
 
     if (this.parentFolder.storage) {
-      this.parentFolder.storage.notifyFileContentsUpdated(this);
+      this.parentFolder.storage.notifyFileContentsUpdated({
+        file: this,
+        updateType: updateType ? updateType : FileUpdateType.regularEdit,
+        priorVersion: oldVersionContent,
+      });
     }
   }
 
@@ -240,9 +267,108 @@ export default abstract class FileBase implements IFile {
     return relativePath + StorageUtilities.ensureNotStartsWithDelimiter(folderRelativePath);
   }
 
+  setObjectContentIfSemanticallyDifferent(value: object | null | undefined, updateType?: FileUpdateType) {
+    if (value === null || value === undefined) {
+      if (this._content !== null) {
+        this.setContent(null, updateType);
+        return true;
+      }
+
+      return false;
+    }
+
+    if (!(typeof this._content === "string")) {
+      this.setContent(JSON.stringify(value, null, 2), updateType);
+      return true;
+    }
+
+    try {
+      const currentObj = JSON.parse(this._content);
+
+      if (Utilities.consistentStringify(currentObj) !== Utilities.consistentStringify(value)) {
+        this.setContent(JSON.stringify(value, null, 2), updateType);
+        return true;
+      }
+    } catch (e) {
+      this.setContent(JSON.stringify(value, null, 2), updateType);
+      return true;
+    }
+
+    return false;
+  }
+
+  async reloadAfterExternalUpdate() {
+    let existingContent = this._content;
+
+    Log.message("Reloading file after external update: " + this.storageRelativePath);
+
+    await this.loadContent(true);
+
+    if (this._content !== existingContent) {
+      this.contentWasModified(existingContent, FileUpdateType.externalChange);
+    }
+  }
+
+  setContentIfSemanticallyDifferent(value: string | Uint8Array | null, updateType?: FileUpdateType) {
+    if (value === null) {
+      if (this._content !== null) {
+        this.setContent(null, updateType);
+        return true;
+      }
+
+      return false;
+    }
+
+    if (value instanceof Uint8Array) {
+      if (!(this._content instanceof Uint8Array) || this._content.length !== value.length) {
+        this.setContent(value, updateType);
+        return true;
+      } else {
+        for (let i = 0; i < value.length; i++) {
+          if (this._content[i] !== value[i]) {
+            this.setContent(value, updateType);
+            return true;
+          }
+        }
+      }
+    } else if (typeof value === "string") {
+      if (!(typeof this._content === "string")) {
+        this.setContent(value, updateType);
+
+        return true;
+      } else {
+        if (this.type === "json") {
+          try {
+            const currentObj = JSON.parse(this._content);
+            const newObj = JSON.parse(value);
+
+            if (Utilities.consistentStringify(currentObj) !== Utilities.consistentStringify(newObj)) {
+              return this.setContent(value, updateType);
+            }
+          } catch (e) {
+            return this.setContent(value);
+          }
+        } else {
+          if (this._content.length !== value.length) {
+            return this.setContent(value, updateType);
+          }
+
+          for (let i = 0; i < value.length; i++) {
+            if (this._content[i] !== value[i]) {
+              return this.setContent(value, updateType);
+            }
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
+  abstract scanForChanges(): Promise<void>;
   abstract deleteThisFile(skipRemoveFromParent?: boolean): Promise<boolean>;
   abstract moveTo(newStorageRelativePath: string): Promise<boolean>;
   abstract loadContent(force?: boolean): Promise<Date>;
-  abstract setContent(value: String | Uint8Array | null): void;
+  abstract setContent(value: string | Uint8Array | null, updateType?: FileUpdateType): boolean;
   abstract saveContent(): Promise<Date>;
 }

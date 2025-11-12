@@ -10,7 +10,8 @@
     {
       "id": "population_control",
       "title": "Population Control",
-      "dataType": 2
+      "dataType": 2,
+      "defaultValue": ""
     }
   ],
   "title": "Spawn Description"

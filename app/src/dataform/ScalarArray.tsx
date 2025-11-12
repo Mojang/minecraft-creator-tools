@@ -226,7 +226,7 @@ export default class ScalarArray extends Component<IScalarArrayProps, IScalarArr
           vals.push({
             key: val,
             header: Utilities.humanify(val, this.props.field.humanifyValues),
-            image: hasImages ? "/images/onepx.png" : undefined,
+            image: hasImages ? "/res/images/onepx.png" : undefined,
           });
         }
       }

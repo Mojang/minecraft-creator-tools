@@ -5,13 +5,13 @@ import "./DocumentedCommandEditor.css";
 import DocumentedCommand from "../minecraft/docs/DocumentedCommand";
 import DataForm, { IDataFormProps } from "../dataform/DataForm";
 import Database from "../minecraft/Database";
-import CartoApp from "../app/CartoApp";
 import Project from "../app/Project";
 import { ThemeInput } from "@fluentui/react-northstar";
 import StorageUtilities from "../storage/StorageUtilities";
 import IField, { FieldDataType } from "../dataform/IField";
 import IProperty from "../dataform/IProperty";
 import IFormDefinition from "../dataform/IFormDefinition";
+import CreatorTools from "../app/CreatorTools";
 
 interface IDocumentedCommandEditorProps extends IFileProps {
   heightOffset: number;
@@ -19,7 +19,7 @@ interface IDocumentedCommandEditorProps extends IFileProps {
   typesReadOnly: boolean;
   docsReadOnly: boolean;
   docCommand: DocumentedCommand;
-  carto: CartoApp;
+  creatorTools: CreatorTools;
   project: Project;
 }
 
@@ -38,8 +38,8 @@ export default class DocumentedCommandEditor extends Component<
     this._handleDataFormPropertyChange = this._handleDataFormPropertyChange.bind(this);
   }
 
-  async persist() {
-    await this.props.docCommand.persist();
+  async persist(): Promise<boolean> {
+    return await this.props.docCommand.persist();
   }
 
   static getDerivedStateFromProps(props: IDocumentedCommandEditorProps, state: IDocumentedCommandEditorState) {
@@ -86,9 +86,7 @@ export default class DocumentedCommandEditor extends Component<
     if (props.tagData && props.directObject) {
       const file = props.tagData as IFile;
 
-      const newData = JSON.stringify(props.directObject, null, 2);
-
-      file.setContent(newData);
+      file.setObjectContentIfSemanticallyDifferent(props.directObject);
     }
   }
 

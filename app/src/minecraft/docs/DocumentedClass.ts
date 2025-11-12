@@ -133,14 +133,17 @@ export default class DocumentedClass {
     return undefined;
   }
 
-  public async persist() {
+  public async persist(): Promise<boolean> {
     if (this.infoJsonFiles) {
       for (const fileName in this.infoJsonFiles) {
         const infoJsonFile = this.infoJsonFiles[fileName];
 
         await infoJsonFile.saveContent();
+        return true;
       }
     }
+
+    return false;
   }
 
   generateUndocumentedCount() {

@@ -19,6 +19,22 @@ Bogged - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
 }
 
 
+Parched - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/parched.json
+
+"minecraft:behavior.flee_sun": {
+  "priority": 3,
+  "speed_multiplier": 1
+}
+
+
+Zombie Horse - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_horse.json
+
+"minecraft:behavior.flee_sun": {
+  "priority": 1,
+  "speed_multiplier": 1.2
+}
+
+
 Zombie Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_villager.json
 
 "minecraft:behavior.flee_sun": {
@@ -47,8 +63,9 @@ export default interface MinecraftBehaviorFleeSun {
    * Bogged: 2
    *
    *
-   * Zombie Villager: 4
+   * Parched: 3
    *
+   * Zombie Horse: 1
    *
    */
   priority?: number;
@@ -60,6 +77,8 @@ export default interface MinecraftBehaviorFleeSun {
    * Sample Values:
    * Bogged: 1
    *
+   *
+   * Zombie Horse: 1.2
    *
    */
   speed_multiplier?: number;

@@ -28,6 +28,24 @@ Fish - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/enti
   "success_rate": 0.1
 }
 
+
+Nautilus - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/nautilus.json
+
+"minecraft:behavior.swim_idle": {
+  "priority": 8,
+  "idle_time": 5,
+  "success_rate": 0.1
+}
+
+
+Zombie Nautilus - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_nautilus.json
+
+"minecraft:behavior.swim_idle": {
+  "priority": 6,
+  "idle_time": 5,
+  "success_rate": 0.1
+}
+
  */
 
 import * as jsoncommon from './../../jsoncommon';
@@ -61,6 +79,7 @@ export default interface MinecraftBehaviorSwimIdle {
    *
    * Fish: 5
    *
+   * Nautilus: 8
    *
    */
   priority?: number;

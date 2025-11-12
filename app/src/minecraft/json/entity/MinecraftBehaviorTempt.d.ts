@@ -86,6 +86,18 @@ Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 }
 
 
+Camel Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/camel_husk.json
+
+"minecraft:behavior.tempt": {
+  "priority": 4,
+  "speed_multiplier": 2.5,
+  "can_tempt_vertically": true,
+  "items": [
+    "rabbit_foot"
+  ]
+}
+
+
 Cat - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/cat.json
 
  * At /minecraft:entity/component_groups/minecraft:cat_wild/minecraft:behavior.tempt/: 
@@ -182,17 +194,6 @@ Frog - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/enti
   ]
 }
 
-
-Goat - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/goat.json
-
-"minecraft:behavior.tempt": {
-  "priority": 4,
-  "speed_multiplier": 0.75,
-  "items": [
-    "wheat"
-  ]
-}
-
  */
 
 import * as jsoncommon from './../../jsoncommon';
@@ -258,6 +259,7 @@ export default interface MinecraftBehaviorTempt {
    * 
    * Sample Values:
    * Happy Ghast: {"event":"minecraft:on_stop_tempting"}
+   *
    *
    */
   on_tempt_end?: jsoncommon.MinecraftEventTrigger;

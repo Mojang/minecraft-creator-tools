@@ -27,10 +27,10 @@ export default class ConnectToGitHub extends Component<IConnectToGitHubProps, IC
   }
 
   async _loadGitHub() {
-    await this.props.carto.userGitHub.ensureUserStateLoaded();
+    await this.props.creatorTools.userGitHub.ensureUserStateLoaded();
 
     this.setState({
-      gitHub: this.props.carto.userGitHub,
+      gitHub: this.props.creatorTools.userGitHub,
     });
   }
 

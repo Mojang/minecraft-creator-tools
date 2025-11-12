@@ -3,40 +3,40 @@
 
 import Command from "../minecraft/Command";
 import { ICommandResponseBody } from "../minecraft/ICommandResponse";
-import Carto, { CartoMinecraftState } from "./Carto";
+import CreatorTools, { CreatorToolsMinecraftState } from "./CreatorTools";
 import { ICustomToolResultItem } from "./ICustomTool";
 
 export default class CommandRunner {
-  static async runCustomTool(carto: Carto, commandNumber: number) {
-    if (carto.activeMinecraftState !== CartoMinecraftState.started) {
+  static async runCustomTool(creatorTools: CreatorTools, commandNumber: number) {
+    if (creatorTools.activeMinecraftState !== CreatorToolsMinecraftState.started) {
       // alert("Cannot run command " + commandNumber + "; not connected to Minecraft.");
     }
 
-    const cartoCommand = carto.getCustomTool(commandNumber - 1);
+    const cartoCommand = creatorTools.getCustomTool(commandNumber - 1);
     let commandName = commandNumber + "";
 
     if (cartoCommand.name !== undefined && cartoCommand.name.length > 0) {
       commandName = cartoCommand.name;
     }
 
-    const operId = await carto.notifyOperationStarted("Running command " + commandName);
+    const operId = await creatorTools.notifyOperationStarted("Running command " + commandName);
 
     if (cartoCommand.text !== undefined) {
-      await CommandRunner.runCommandText(carto, cartoCommand.text);
+      await CommandRunner.runCommandText(creatorTools, cartoCommand.text);
     } else {
       // alert("This command is not defined, yet.");
     }
 
-    await carto.notifyOperationEnded(operId, "Command " + commandName + " complete.");
+    await creatorTools.notifyOperationEnded(operId, "Command " + commandName + " complete.");
   }
 
-  static async runCommandText(carto: Carto, commandText: string) {
+  static async runCommandText(creatorTools: CreatorTools, commandText: string) {
     const commandItems = commandText.split("\n");
 
-    await this.runCommandList(carto, commandItems);
+    await this.runCommandList(creatorTools, commandItems);
   }
 
-  static async runCommandList(carto: Carto, commandItems: string[]) {
+  static async runCommandList(creatorTools: CreatorTools, commandItems: string[]) {
     const resultItems = [];
 
     let lastStoredBlockX = -1;
@@ -78,9 +78,9 @@ export default class CommandRunner {
 
         commandText = command.toString();
 
-        await carto.notifyStatusUpdate("Running command '" + commandText + "'");
+        await creatorTools.notifyStatusUpdate("Running command '" + commandText + "'");
 
-        const commandResult = await carto.runCommand(commandText);
+        const commandResult = await creatorTools.runCommand(commandText);
         const result = commandResult?.data;
 
         let resultData: ICommandResponseBody | undefined;

@@ -4,7 +4,7 @@
 import Project from "./Project";
 import ITool, { ToolType, ToolScope } from "./ITool";
 import { ProjectItemType } from "./IProjectItemData";
-import Carto from "./Carto";
+import CreatorTools from "./CreatorTools";
 import CommandRunner from "./CommandRunner";
 
 export default class ProjectTools {
@@ -23,13 +23,13 @@ export default class ProjectTools {
     });
   }
 
-  static generateTools(carto: Carto, project?: Project) {
+  static generateTools(creatorTools: CreatorTools, project?: Project) {
     const tools: ITool[] = [];
 
     ProjectTools.addGlobalTools(tools);
 
     for (let i = 0; i < 10; i++) {
-      const ctool = carto.getCustomTool(i);
+      const ctool = creatorTools.getCustomTool(i);
 
       if (ctool.text && ctool.text.length > 3) {
         let title = ctool.name;
@@ -70,29 +70,29 @@ export default class ProjectTools {
     return tools;
   }
 
-  static async executeTool(tool: ITool, carto: Carto, project?: Project) {
+  static async executeTool(tool: ITool, creatorTools: CreatorTools, project?: Project) {
     switch (tool.type) {
       case ToolType.customTool:
         if (tool.parameter1) {
-          CommandRunner.runCustomTool(carto, parseInt(tool.parameter1) + 1);
+          CommandRunner.runCustomTool(creatorTools, parseInt(tool.parameter1) + 1);
         }
         break;
       case ToolType.reload:
-        ProjectTools.reload(carto);
+        ProjectTools.reload(creatorTools);
         break;
       case ToolType.say:
         if (tool.parameter1 && tool.parameter1.length > 0) {
-          ProjectTools.say(carto, tool.parameter1);
+          ProjectTools.say(creatorTools, tool.parameter1);
         }
         break;
     }
   }
 
-  static async reload(carto: Carto) {
-    await carto.runMinecraftCommand("reload");
+  static async reload(creatorTools: CreatorTools) {
+    await creatorTools.runMinecraftCommand("reload");
   }
 
-  static async say(carto: Carto, message: string) {
-    await carto.runMinecraftCommand("say " + message);
+  static async say(creatorTools: CreatorTools, message: string) {
+    await creatorTools.runMinecraftCommand("say " + message);
   }
 }

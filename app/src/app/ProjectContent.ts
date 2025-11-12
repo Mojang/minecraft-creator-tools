@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import Utilities from "../core/Utilities";
-import BlockCube from "../minecraft/BlockCube";
+import BlockVolume from "../minecraft/BlockVolume";
 import Structure from "../minecraft/Structure";
 
 export default class ProjectContent {
@@ -133,7 +133,7 @@ function myFunction()
 
   static generateDefaultStructure() {
     const structure = new Structure();
-    const cube = new BlockCube();
+    const cube = new BlockVolume();
 
     cube.setMaxDimensions(8, 8, 8);
 

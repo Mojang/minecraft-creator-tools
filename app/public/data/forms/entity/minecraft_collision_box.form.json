@@ -272,6 +272,12 @@
             "content": 0.31
           }
         ],
+        "/vanilla/behavior_pack/entities/nautilus.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_adult/minecraft:collision_box/",
+            "content": 0.95
+          }
+        ],
         "/vanilla/behavior_pack/entities/npc.json": [
           {
             "path": "/minecraft:entity/components/minecraft:collision_box/",
@@ -388,6 +394,12 @@
           {
             "path": "/minecraft:entity/components/minecraft:collision_box/",
             "content": 0.15
+          }
+        ],
+        "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:collision_box/",
+            "content": 0.95
           }
         ],
         "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/nardolphle.behavior.json": [
@@ -606,6 +618,16 @@
             "content": 0.31
           }
         ],
+        "/vanilla/behavior_pack/entities/nautilus.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_baby/minecraft:collision_box/",
+            "content": 0.44
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_adult/minecraft:collision_box/",
+            "content": 0.875
+          }
+        ],
         "/vanilla/behavior_pack/entities/panda.json": [
           {
             "path": "/minecraft:entity/components/minecraft:collision_box/",
@@ -682,6 +704,12 @@
           {
             "path": "/minecraft:entity/components/minecraft:collision_box/",
             "content": 0.15
+          }
+        ],
+        "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:collision_box/",
+            "content": 0.875
           }
         ],
         "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/biceson.behavior.json": [
@@ -1228,6 +1256,22 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/entities/nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_baby/minecraft:collision_box/",
+        "content": {
+          "width": 0.44,
+          "height": 0.5
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_adult/minecraft:collision_box/",
+        "content": {
+          "width": 0.875,
+          "height": 0.95
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/npc.json": [
       {
         "path": "/minecraft:entity/components/minecraft:collision_box/",
@@ -1252,6 +1296,15 @@
         "content": {
           "width": 1.3,
           "height": 1.25
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/parched.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:collision_box/",
+        "content": {
+          "width": 0.6,
+          "height": 1.9
         }
       }
     ],
@@ -1734,6 +1787,15 @@
         "content": {
           "width": 1.4,
           "height": 1.6
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:collision_box/",
+        "content": {
+          "width": 0.875,
+          "height": 0.95
         }
       }
     ],

@@ -104,6 +104,14 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
     return textureIdList;
   }
 
+  getTerrainTextureDefinition(id: string) {
+    if (!this._data || !this._data.texture_data) {
+      return undefined;
+    }
+
+    return this._data.texture_data[id];
+  }
+
   static async getTerrainTextureCatalog(project: Project) {
     const terrainTextureItems = project.getItemsByType(ProjectItemType.terrainTextureCatalogResourceJson);
 
@@ -254,14 +262,17 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
     return undefined;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
-    const defString = JSON.stringify(this._data, null, 2);
+    if (!this._data) {
+      Log.unexpectedUndefined("TTCDF");
+      return false;
+    }
 
-    this._file.setContent(defString);
+    return this._file.setObjectContentIfSemanticallyDifferent(this._data);
   }
 
   getTextureReferences() {

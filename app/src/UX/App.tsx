@@ -1,18 +1,19 @@
 import { Component } from "react";
 import ProjectEditor, { ProjectStatusAreaMode } from "./ProjectEditor";
-import Home from "./Home";
+import ExporterTool from "./ExporterTool";
+import Home from "./pages/home/Home";
 import "./App.css";
-import Carto from "./../app/Carto";
+import CreatorTools from "./../app/CreatorTools";
 import Project, { ProjectErrorState } from "./../app/Project";
 import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
 import IFolder from "../storage/IFolder";
 import { GalleryProjectCommand } from "./ProjectGallery";
 import Log from "../core/Log";
 import { ProjectFocus, ProjectScriptLanguage } from "../app/IProjectData";
-import CartoApp, { HostType } from "../app/CartoApp";
+import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
 import StorageUtilities from "../storage/StorageUtilities";
 import { ThemeInput } from "@fluentui/react-northstar";
-import { CartoEditorViewMode } from "../app/ICartoData";
+import { CreatorToolsEditorViewMode } from "../app/ICreatorToolsData";
 import MCWorld from "../minecraft/MCWorld";
 import ProjectItem from "../app/ProjectItem";
 import ProjectUtilities from "../app/ProjectUtilities";
@@ -52,6 +53,7 @@ interface AppState {
   errorMessage?: string;
   activeProject: Project | null;
   selectedItem?: string;
+  initialFocusPath?: string;
   hasBanner?: boolean;
   initialProjectEditorMode?: ProjectEditorMode;
   loadingMessage?: string;
@@ -60,6 +62,7 @@ interface AppState {
 }
 
 // Layout and UI constants
+const ELECTRON_TITLEBAR_HEIGHT = 41;
 const DEFAULT_BANNER_HEIGHT = 96;
 const MIN_BANNER_OFFSET_HEIGHT = 20;
 const BANNER_EXTRA_HEIGHT = 17;
@@ -80,7 +83,7 @@ export default class App extends Component<AppProps, AppState> {
     this._handleNewProjectFromFolder = this._handleNewProjectFromFolder.bind(this);
     this._handleNewProjectFromFolderInstance = this._handleNewProjectFromFolderInstance.bind(this);
     this._handleProjectSelected = this._handleProjectSelected.bind(this);
-    this._handleCartoInit = this._handleCartoInit.bind(this);
+    this._handleCreatorToolsInit = this._handleCreatorToolsInit.bind(this);
     this.processInitialUrl = this.processInitialUrl.bind(this);
     this._handlePersistenceUpgraded = this._handlePersistenceUpgraded.bind(this);
     this._newProjectFromGallery = this._newProjectFromGallery.bind(this);
@@ -116,16 +119,16 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   public async _loadLocalStorageProject() {
-    if (!CartoApp.carto || !CartoApp.carto.isLoaded) {
+    if (!CreatorToolsHost.creatorTools || !CreatorToolsHost.creatorTools.isLoaded) {
       return;
     }
 
     let newProject = undefined;
 
-    newProject = await CartoApp.carto.ensureProjectFromLocalStoragePath(CartoApp.projectPath);
+    newProject = await CreatorToolsHost.creatorTools.ensureProjectFromLocalStoragePath(CreatorToolsHost.projectPath);
 
     if (newProject) {
-      let mode = this._getModeFromString(CartoApp.initialMode);
+      let mode = this._getModeFromString(CreatorToolsHost.initialMode);
 
       if (mode === undefined) {
         mode = AppMode.home;
@@ -133,8 +136,8 @@ export default class App extends Component<AppProps, AppState> {
 
       let selValue = this.state.selectedItem;
 
-      if (CartoApp.modeParameter) {
-        selValue = CartoApp.modeParameter;
+      if (CreatorToolsHost.modeParameter) {
+        selValue = CreatorToolsHost.modeParameter;
       }
 
       this.initProject(newProject);
@@ -182,6 +185,9 @@ export default class App extends Component<AppProps, AppState> {
       case "info":
         return AppMode.project;
 
+      case "input":
+        return AppMode.project;
+
       case "codetoolbox":
         return AppMode.codeToolbox;
 
@@ -209,6 +215,7 @@ export default class App extends Component<AppProps, AppState> {
       loadingMessage: this.state.loadingMessage,
       additionalLoadingMessage: this.state.additionalLoadingMessage,
       activeProject: this.state.activeProject,
+      initialFocusPath: this.state.initialFocusPath,
       hasBanner: this.state.hasBanner,
       selectedItem: this.state.selectedItem,
       initialProjectEditorMode: this.state.initialProjectEditorMode,
@@ -227,6 +234,7 @@ export default class App extends Component<AppProps, AppState> {
         additionalLoadingMessage: this.state.additionalLoadingMessage,
         activeProject: this.state.activeProject,
         hasBanner: this.state.hasBanner,
+        initialFocusPath: this.state.initialFocusPath,
         selectedItem: result.selectedItem,
         visualSeed: this.state.visualSeed,
         initialProjectEditorMode: this.state.initialProjectEditorMode,
@@ -234,15 +242,15 @@ export default class App extends Component<AppProps, AppState> {
     }
   }
 
-  private async _handleCartoInit(source: Carto, instance: Carto) {
+  private async _handleCreatorToolsInit(source: CreatorTools, instance: CreatorTools) {
     if (this.state === undefined) {
       return;
     }
 
-    await this.loadCarto(instance);
+    await this.loadCreatorTools(instance);
   }
 
-  private async loadCarto(instance: Carto) {
+  private async loadCreatorTools(instance: CreatorTools) {
     await instance.load();
 
     const isPersisted = await WebUtilities.getIsPersisted();
@@ -259,10 +267,11 @@ export default class App extends Component<AppProps, AppState> {
     this._updateWindowTitle(nextMode, this.state.activeProject);
 
     const newComponentState = {
-      carto: CartoApp.carto,
+      creatorTools: CreatorToolsHost.creatorTools,
       mode: nextMode,
       isPersisted: isPersisted,
       activeProject: this.state.activeProject,
+      initialFocusPath: this.state.initialFocusPath,
       hasBanner: this.state.hasBanner,
       visualSeed: this.state.visualSeed,
     };
@@ -273,10 +282,14 @@ export default class App extends Component<AppProps, AppState> {
   private _getStateFromUrlWithSideEffects(dontProcessQueryStrings?: boolean): AppState | undefined {
     let hash = window.location.hash;
     let query = window.location.search;
+
     const queryVals: { [path: string]: string } = {};
 
-    if (!query && hash.startsWith("#open=")) {
-      query = hash;
+    if (hash.startsWith("#open=") || hash.startsWith("#view=") || hash.startsWith("#input=")) {
+      if (!query) {
+        query = "";
+      }
+      query += hash.replace(/#/gi, "&");
       hash = "";
     }
 
@@ -313,7 +326,7 @@ export default class App extends Component<AppProps, AppState> {
       const firstSlash = openQuery.indexOf("/");
 
       if (firstSlash > 1) {
-        if (queryVals["updates"] !== undefined || queryVals["updatesJson"] !== undefined) {
+        if (queryVals["updates"] !== undefined) {
           return {
             mode: AppMode.importFromUrl,
             activeProject: null,
@@ -334,6 +347,13 @@ export default class App extends Component<AppProps, AppState> {
           }
         }
       }
+    }
+
+    if (!dontProcessQueryStrings && queryVals["input"] !== undefined) {
+      let rootAndFocus = StorageUtilities.getRootAndFocusPathFromInputPath(decodeURIComponent(queryVals["input"]));
+
+      CreatorToolsHost.projectPath = rootAndFocus.basePath;
+      CreatorToolsHost.focusPath = rootAndFocus.focusPath;
     }
 
     if (hash === "" && !this._lastHashProcessed) {
@@ -398,6 +418,7 @@ export default class App extends Component<AppProps, AppState> {
       activeProject: null,
       isPersisted: this.state.isPersisted,
       hasBanner: this.state.hasBanner,
+      initialFocusPath: this.state.initialFocusPath,
       errorMessage: errorMessage,
       visualSeed: this.state.visualSeed,
       initialProjectEditorMode: undefined,
@@ -414,10 +435,10 @@ export default class App extends Component<AppProps, AppState> {
         this.props.saveAllRetriever(this._saveAll);
       }
 
-      if (CartoApp.carto && !CartoApp.carto.isLoaded) {
-        CartoApp.onInitialized.subscribe(this._handleCartoInit);
+      if (CreatorToolsHost.creatorTools && !CreatorToolsHost.creatorTools.isLoaded) {
+        CreatorToolsHost.onInitialized.subscribe(this._handleCreatorToolsInit);
 
-        this.loadCarto(CartoApp.carto).then(this.processInitialUrl);
+        this.loadCreatorTools(CreatorToolsHost.creatorTools).then(this.processInitialUrl);
       } else {
         this.processInitialUrl();
       }
@@ -439,8 +460,8 @@ export default class App extends Component<AppProps, AppState> {
 
     if (stateFromUrl) {
       initialAppMode = stateFromUrl.mode;
-    } else if (CartoApp.initialMode) {
-      const mode = this._getModeFromString(CartoApp.initialMode);
+    } else if (CreatorToolsHost.initialMode) {
+      const mode = this._getModeFromString(CreatorToolsHost.initialMode);
 
       if (mode) {
         initialAppMode = mode;
@@ -449,14 +470,8 @@ export default class App extends Component<AppProps, AppState> {
 
     let selectedItem = undefined;
 
-    if (
-      (CartoApp.hostType === HostType.vsCodeWebWeb || CartoApp.hostType === HostType.vsCodeMainWeb) &&
-      CartoApp.projectPath &&
-      initialAppMode === AppMode.codeToolbox
-    ) {
-      this._loadLocalStorageProject();
-    } else if (CartoApp.modeParameter && CartoApp.modeParameter.startsWith("project/")) {
-      const segments = CartoApp.modeParameter.split("/");
+    if (CreatorToolsHost.modeParameter && CreatorToolsHost.modeParameter.startsWith("project/")) {
+      const segments = CreatorToolsHost.modeParameter.split("/");
 
       if (segments.length === 2) {
         this._handleNewProject({ name: "Project" }, NewProjectTemplateType.gameTest);
@@ -464,9 +479,9 @@ export default class App extends Component<AppProps, AppState> {
         selectedItem = segments[1];
       }
     } else if (
-      CartoApp.initialMode &&
-      (CartoApp.modeParameter || CartoApp.initialMode === "info") &&
-      CartoApp.projectPath
+      CreatorToolsHost.initialMode &&
+      (CreatorToolsHost.modeParameter || CreatorToolsHost.initialMode === "info") &&
+      CreatorToolsHost.projectPath
     ) {
       this._loadLocalStorageProject();
     }
@@ -474,6 +489,7 @@ export default class App extends Component<AppProps, AppState> {
     this.setState({
       mode: initialAppMode,
       selectedItem: selectedItem,
+      initialFocusPath: this.state.initialFocusPath,
       activeProject: null,
     });
   }
@@ -491,6 +507,7 @@ export default class App extends Component<AppProps, AppState> {
     this.setState({
       isPersisted: this.state.isPersisted,
       mode: AppMode.loading,
+      initialFocusPath: this.state.initialFocusPath,
       hasBanner: this.state.hasBanner,
       visualSeed: this.state.visualSeed,
       loadingMessage: message,
@@ -505,7 +522,7 @@ export default class App extends Component<AppProps, AppState> {
     editorStartMode?: ProjectEditorMode,
     startInReadOnly?: boolean
   ) {
-    if (!CartoApp.carto || !CartoApp.carto.isLoaded) {
+    if (!CreatorToolsHost.creatorTools || !CreatorToolsHost.creatorTools.isLoaded) {
       return;
     }
 
@@ -531,7 +548,7 @@ export default class App extends Component<AppProps, AppState> {
     }
 
     if (newProjectSeed.path === undefined) {
-      newProject = await CartoApp.carto.createNewProject(
+      newProject = await CreatorToolsHost.creatorTools.createNewProject(
         newProjectName,
         newProjectSeed.path,
         newProjectSeed.targetFolder,
@@ -541,7 +558,11 @@ export default class App extends Component<AppProps, AppState> {
         ProjectScriptLanguage.typeScript
       );
     } else {
-      newProject = await CartoApp.carto.ensureProjectForLocalFolder(newProjectSeed.path, newProjectName, false);
+      newProject = await CreatorToolsHost.creatorTools.ensureProjectForLocalFolder(
+        newProjectSeed.path,
+        newProjectName,
+        false
+      );
 
       await newProject.ensureProjectFolder();
 
@@ -555,7 +576,7 @@ export default class App extends Component<AppProps, AppState> {
     }
 
     await newProject.save(true);
-    await CartoApp.carto.save();
+    await CreatorToolsHost.creatorTools.save();
 
     this._updateWindowTitle(AppMode.project, newProject);
 
@@ -576,6 +597,7 @@ export default class App extends Component<AppProps, AppState> {
         mode: nextMode,
         isPersisted: this.state.isPersisted,
         activeProject: newProject,
+        initialFocusPath: this.state.initialFocusPath,
         hasBanner: this.state.hasBanner,
         selectedItem: this.state.selectedItem,
         visualSeed: this.state.visualSeed,
@@ -584,20 +606,49 @@ export default class App extends Component<AppProps, AppState> {
     }
   }
 
-  private async _handleNewProjectFromFolder(folderPath: string) {
-    if (!CartoApp.carto || !CartoApp.carto.isLoaded) {
+  private async _ensureProjectFromFolder(folderPath: string, focusPath?: string) {
+    if (!CreatorToolsHost.creatorTools || !CreatorToolsHost.creatorTools.isLoaded) {
       return;
     }
 
-    const newProject = await CartoApp.carto.ensureProjectForLocalFolder(folderPath);
+    let folderPathCanon = StorageUtilities.ensureEndsWithDelimiter(StorageUtilities.canonicalizePath(folderPath));
 
-    newProject.save();
-    CartoApp.carto.save();
+    // this will have the effect of loading all existing projects' pref files, which might be a bit slow
+    for (const project of CreatorToolsHost.creatorTools.projects) {
+      if (!project.isLoaded) {
+        await project.ensurePreferencesAndFolderLoadedFromFile();
+      }
 
-    this._setProject(newProject);
+      if (
+        project.localFolderPath &&
+        StorageUtilities.ensureEndsWithDelimiter(StorageUtilities.canonicalizePath(project.localFolderPath)) ===
+          folderPathCanon
+      ) {
+        await project.ensurePreferencesAndFolderLoadedFromFile();
+        await project.ensureInflated();
+
+        this._setProject(project, focusPath);
+        return;
+      }
+    }
+
+    this._handleNewProjectFromFolder(folderPath, focusPath);
   }
 
-  private _setProject(project: Project) {
+  private async _handleNewProjectFromFolder(folderPath: string, focusPath?: string) {
+    if (!CreatorToolsHost.creatorTools || !CreatorToolsHost.creatorTools.isLoaded) {
+      return;
+    }
+
+    const newProject = await CreatorToolsHost.creatorTools.ensureProjectForLocalFolder(folderPath);
+
+    newProject.save();
+    CreatorToolsHost.creatorTools.save();
+
+    this._setProject(newProject, focusPath);
+  }
+
+  private _setProject(project: Project, focusPath?: string) {
     this._updateWindowTitle(AppMode.project, project);
     this.initProject(project);
 
@@ -606,18 +657,23 @@ export default class App extends Component<AppProps, AppState> {
       isPersisted: this.state.isPersisted,
       hasBanner: this.state.hasBanner,
       visualSeed: this.state.visualSeed,
+      initialFocusPath: focusPath,
       activeProject: project,
     });
   }
 
   private async _handleNewProjectFromFolderInstance(folder: IFolder, name?: string, isDocumentationProject?: boolean) {
-    if (!CartoApp.carto || !CartoApp.carto.isLoaded) {
+    if (!CreatorToolsHost.creatorTools || !CreatorToolsHost.creatorTools.isLoaded) {
       return;
     }
 
     this._doLog("Loading project from '" + name + "' folder.");
 
-    const newProject = new Project(CartoApp.carto, name ? name : folder.name, null);
+    const newProject = new Project(
+      CreatorToolsHost.creatorTools,
+      StorageUtilities.convertFolderPlaceholders(name ? name : folder.name),
+      null
+    );
 
     newProject.setProjectFolder(folder);
     newProject.projectFolderTitle = name;
@@ -632,17 +688,17 @@ export default class App extends Component<AppProps, AppState> {
 
     this._doLog("Opening project...");
 
-    CartoApp.carto.save();
+    CreatorToolsHost.creatorTools.save();
 
     this._setProject(newProject);
   }
 
   private async _newProjectFromGalleryId(galleryId: string, updateContent?: IFolder) {
-    if (CartoApp.carto === undefined) {
+    if (CreatorToolsHost.creatorTools === undefined) {
       return;
     }
 
-    const gp = await CartoApp.carto.getGalleryProjectById(galleryId);
+    const gp = await CreatorToolsHost.creatorTools.getGalleryProjectById(galleryId);
 
     if (gp === undefined) {
       this.setHomeWithError("We could not find a starter/sample named '" + galleryId + "' that could be opened.");
@@ -653,11 +709,11 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   private async _ensureProjectFromGalleryId(galleryId: string, updateContent?: IFolder) {
-    if (CartoApp.carto === undefined) {
+    if (CreatorToolsHost.creatorTools === undefined) {
       return;
     }
 
-    const gp = await CartoApp.carto.getGalleryProjectById(galleryId);
+    const gp = await CreatorToolsHost.creatorTools.getGalleryProjectById(galleryId);
 
     if (gp === undefined) {
       this.setHomeWithError("We could not find a starter/sample named '" + galleryId + "' that could be opened.");
@@ -697,9 +753,9 @@ export default class App extends Component<AppProps, AppState> {
     updateContent?: IFolder,
     description?: string
   ) {
-    const carto = CartoApp.carto;
+    const creatorTools = CreatorToolsHost.creatorTools;
 
-    if (this.state === null || carto === undefined || this._loadingMessage !== undefined) {
+    if (this.state === null || creatorTools === undefined || this._loadingMessage !== undefined) {
       return;
     }
 
@@ -718,14 +774,15 @@ export default class App extends Component<AppProps, AppState> {
       activeProject: null,
       isPersisted: this.state.isPersisted,
       hasBanner: this.state.hasBanner,
+      initialFocusPath: this.state.initialFocusPath,
       loadingMessage: this._loadingMessage,
       visualSeed: this.state.visualSeed,
       additionalLoadingMessage: undefined,
     });
 
-    await carto.load();
+    await creatorTools.load();
 
-    const projects = carto.projects;
+    const projects = creatorTools.projects;
 
     for (let i = 0; i < projects.length; i++) {
       const proj = projects[i];
@@ -750,6 +807,7 @@ export default class App extends Component<AppProps, AppState> {
           mode: newMode,
           visualSeed: this.state.visualSeed,
           hasBanner: this.state.hasBanner,
+          initialFocusPath: this.state.initialFocusPath,
           isPersisted: this.state.isPersisted,
           activeProject: proj,
         });
@@ -818,9 +876,9 @@ export default class App extends Component<AppProps, AppState> {
     projectSeed?: IProjectSeed,
     galleryType?: GalleryItemType
   ) {
-    const carto = CartoApp.carto;
+    const creatorTools = CreatorToolsHost.creatorTools;
 
-    if (this.state === null || carto === undefined) {
+    if (this.state === null || creatorTools === undefined) {
       return;
     }
 
@@ -830,7 +888,7 @@ export default class App extends Component<AppProps, AppState> {
     let description = projectSeed?.description;
 
     if (suggestedCreator === undefined) {
-      suggestedCreator = carto.creator;
+      suggestedCreator = creatorTools.creator;
     }
 
     if (suggestedName === undefined) {
@@ -853,11 +911,12 @@ export default class App extends Component<AppProps, AppState> {
       visualSeed: this.state.visualSeed,
       loadingMessage: this._loadingMessage,
       additionalLoadingMessage: undefined,
+      initialFocusPath: this.state.initialFocusPath,
     });
 
-    await carto.load();
+    await creatorTools.load();
 
-    const operId = await carto.notifyOperationStarted("Creating new project from '" + title + "'");
+    const operId = await creatorTools.notifyOperationStarted("Creating new project from '" + title + "'");
 
     if (gitHubOwner !== undefined && gitHubRepoName !== undefined) {
       let gh = undefined;
@@ -869,10 +928,10 @@ export default class App extends Component<AppProps, AppState> {
         galleryType === GalleryItemType.blockType ||
         galleryType === GalleryItemType.itemType
       ) {
-        repoUrl = CartoApp.contentRoot + "res/samples/microsoft/minecraft-samples-main/addon_starter/start/";
+        repoUrl = CreatorToolsHost.contentRoot + "res/samples/microsoft/minecraft-samples-main/addon_starter/start/";
       } else {
         repoUrl =
-          CartoApp.contentRoot +
+          CreatorToolsHost.contentRoot +
           "res/samples/" +
           gitHubOwner +
           "/" +
@@ -883,8 +942,8 @@ export default class App extends Component<AppProps, AppState> {
           gitHubFolder;
       }
 
-      if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
-        gh = await Database.local.createStorage(repoUrl);
+      if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
+        gh = Database.local.createStorage(repoUrl);
 
         if (!gh) {
           throw new Error("Could not load local storage: " + repoUrl);
@@ -897,7 +956,7 @@ export default class App extends Component<AppProps, AppState> {
         ? suggestedName
         : ProjectUtilities.getSuggestedProjectNameFromElements(galleryId, gitHubFolder, gitHubRepoName);
 
-      const newProjectName = await carto.getNewProjectName(projName);
+      const newProjectName = await creatorTools.getNewProjectName(projName);
 
       let focus = ProjectFocus.general;
 
@@ -907,7 +966,7 @@ export default class App extends Component<AppProps, AppState> {
         focus = ProjectFocus.focusedCodeSnippet;
       }
 
-      const newProject = await carto.createNewProject(
+      const newProject = await creatorTools.createNewProject(
         newProjectName,
         projectSeed?.path,
         projectSeed?.targetFolder,
@@ -938,6 +997,7 @@ export default class App extends Component<AppProps, AppState> {
           mode: AppMode.home,
           activeProject: this.state.activeProject,
           selectedItem: this.state.selectedItem,
+          initialFocusPath: this.state.initialFocusPath,
           initialProjectEditorMode: this.state.initialProjectEditorMode,
           hasBanner: this.state.hasBanner,
           visualSeed: this.state.visualSeed,
@@ -965,7 +1025,7 @@ export default class App extends Component<AppProps, AppState> {
           galleryType === GalleryItemType.itemType) &&
         galleryId
       ) {
-        const galleryProject = await carto.getGalleryProjectById(galleryId);
+        const galleryProject = await creatorTools.getGalleryProjectById(galleryId);
 
         if (galleryProject) {
           if (galleryType === GalleryItemType.entityType) {
@@ -1014,12 +1074,12 @@ export default class App extends Component<AppProps, AppState> {
 
       await ProjectUtilities.processNewProject(newProject, suggestedName, description, suggestedShortName, true);
 
-      await carto.save();
+      await creatorTools.save();
 
       this._setProject(newProject);
     }
 
-    await carto.notifyOperationEnded(operId, "New project '" + title + "' created.  Have fun!");
+    await creatorTools.notifyOperationEnded(operId, "New project '" + title + "' created.  Have fun!");
   }
 
   private async _handlePersistenceUpgraded() {
@@ -1028,6 +1088,7 @@ export default class App extends Component<AppProps, AppState> {
       isPersisted: true,
       activeProject: this.state.activeProject,
       selectedItem: this.state.selectedItem,
+      initialFocusPath: this.state.initialFocusPath,
       hasBanner: this.state.hasBanner,
       visualSeed: this.state.visualSeed,
       loadingMessage: this.state.loadingMessage,
@@ -1047,6 +1108,7 @@ export default class App extends Component<AppProps, AppState> {
       isPersisted: this.state.isPersisted,
       activeProject: this.state.activeProject,
       selectedItem: this.state.selectedItem,
+      initialFocusPath: this.state.initialFocusPath,
       hasBanner: this.state.hasBanner,
       visualSeed: this.state.visualSeed,
       loadingMessage: message,
@@ -1055,7 +1117,7 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   private async _newProjectFromMinecraftFolder(folderType: LocalFolderType, folder: IFolder) {
-    if (!CartoApp.carto || !CartoApp.carto.isLoaded) {
+    if (!CreatorToolsHost.creatorTools || !CreatorToolsHost.creatorTools.isLoaded) {
       return;
     }
 
@@ -1066,10 +1128,13 @@ export default class App extends Component<AppProps, AppState> {
       proposedProjectName = mcw.name;
     }
 
-    const newProject = await CartoApp.carto.ensureProjectForLocalFolder(folder.fullPath, proposedProjectName);
+    const newProject = await CreatorToolsHost.creatorTools.ensureProjectForLocalFolder(
+      folder.fullPath,
+      proposedProjectName
+    );
 
     newProject.save();
-    CartoApp.carto.save();
+    CreatorToolsHost.creatorTools.save();
 
     this._updateWindowTitle(AppMode.project, newProject);
     this.initProject(newProject);
@@ -1077,6 +1142,7 @@ export default class App extends Component<AppProps, AppState> {
     this.setState({
       mode: AppMode.project,
       isPersisted: this.state.isPersisted,
+      initialFocusPath: this.state.initialFocusPath,
       hasBanner: this.state.hasBanner,
       visualSeed: this.state.visualSeed,
       activeProject: newProject,
@@ -1084,9 +1150,9 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   private async _ensureProjectFromMinecraftFolder(folderType: LocalFolderType, folder: IFolder, isReadOnly: boolean) {
-    const carto = CartoApp.carto;
+    const creatorTools = CreatorToolsHost.creatorTools;
 
-    if (this.state === null || carto === undefined) {
+    if (this.state === null || creatorTools === undefined) {
       return;
     }
 
@@ -1104,14 +1170,15 @@ export default class App extends Component<AppProps, AppState> {
       mode: AppMode.loading,
       activeProject: null,
       isPersisted: this.state.isPersisted,
+      initialFocusPath: this.state.initialFocusPath,
       hasBanner: this.state.hasBanner,
       visualSeed: this.state.visualSeed,
       loadingMessage: this._loadingMessage,
     });
 
-    await carto.load();
+    await creatorTools.load();
 
-    const projects = carto.projects;
+    const projects = creatorTools.projects;
     const canonPath = StorageUtilities.canonicalizePath(folder.fullPath);
 
     for (let i = 0; i < projects.length; i++) {
@@ -1128,6 +1195,7 @@ export default class App extends Component<AppProps, AppState> {
         this.setState({
           mode: newMode,
           isPersisted: this.state.isPersisted,
+          initialFocusPath: this.state.initialFocusPath,
           hasBanner: this.state.hasBanner,
           visualSeed: this.state.visualSeed,
           activeProject: proj,
@@ -1139,12 +1207,12 @@ export default class App extends Component<AppProps, AppState> {
 
     const folderName = StorageUtilities.getLeafName(canonPath);
 
-    const operId = await carto.notifyOperationStarted("Creating new project from '" + canonPath + "'");
+    const operId = await creatorTools.notifyOperationStarted("Creating new project from '" + canonPath + "'");
 
     if (folderName !== undefined) {
       let projName = "my-" + folderName;
 
-      const newProjectName = await carto.getNewProjectName(projName);
+      const newProjectName = await creatorTools.getNewProjectName(projName);
 
       let newFocus = ProjectFocus.focusedCodeSnippet;
 
@@ -1157,7 +1225,7 @@ export default class App extends Component<AppProps, AppState> {
       projName = projName.replace(/\\/gi, "");
       projName = projName.replace(/ /gi, "");
 
-      const newProject = await carto.createNewProject(
+      const newProject = await creatorTools.createNewProject(
         newProjectName,
         folder.fullPath,
         undefined,
@@ -1172,12 +1240,12 @@ export default class App extends Component<AppProps, AppState> {
 
       newProject.save();
 
-      carto.save();
+      creatorTools.save();
 
       this._setProject(newProject);
     }
 
-    await carto.notifyOperationEnded(operId, "New project '" + folderName + "' created. Have fun!");
+    await creatorTools.notifyOperationEnded(operId, "New project '" + folderName + "' created. Have fun!");
   }
 
   private initProject(newProject: Project) {
@@ -1192,7 +1260,7 @@ export default class App extends Component<AppProps, AppState> {
       case AppMode.project:
       case AppMode.projectReadOnly:
         if (activeProject !== null) {
-          const projName = activeProject.loc.getTokenValueOrDefault(activeProject.name);
+          const projName = activeProject.loc.getTokenValueOrDefault(activeProject.simplifiedName);
           title = projName + " - " + title;
         }
         break;
@@ -1234,6 +1302,7 @@ export default class App extends Component<AppProps, AppState> {
           mode: this.state.mode,
           isPersisted: this.state.isPersisted,
           loadingMessage: this.state.loadingMessage,
+          initialFocusPath: this.state.initialFocusPath,
           additionalLoadingMessage: this.state.additionalLoadingMessage,
           activeProject: this.state.activeProject,
           hasBanner: true,
@@ -1247,6 +1316,7 @@ export default class App extends Component<AppProps, AppState> {
         mode: this.state.mode,
         isPersisted: this.state.isPersisted,
         loadingMessage: this.state.loadingMessage,
+        initialFocusPath: this.state.initialFocusPath,
         additionalLoadingMessage: this.state.additionalLoadingMessage,
         activeProject: this.state.activeProject,
         hasBanner: false,
@@ -1301,6 +1371,7 @@ export default class App extends Component<AppProps, AppState> {
       mode: AppMode.project,
       isPersisted: this.state.isPersisted,
       hasBanner: this.state.hasBanner,
+      initialFocusPath: this.state.initialFocusPath,
       visualSeed: this.state.visualSeed,
       activeProject: project,
     });
@@ -1312,6 +1383,7 @@ export default class App extends Component<AppProps, AppState> {
     this.setState({
       mode: newMode,
       errorMessage: errorMessage,
+      initialFocusPath: this.state.initialFocusPath,
       hasBanner: this.state.hasBanner,
       visualSeed: this.state.visualSeed,
       isPersisted: this.state.isPersisted,
@@ -1343,7 +1415,7 @@ export default class App extends Component<AppProps, AppState> {
       heightOffset = bannerHeight;
     }
 
-    if (CartoApp.carto === undefined || !CartoApp.carto.isLoaded) {
+    if (CreatorToolsHost.creatorTools === undefined || !CreatorToolsHost.creatorTools.isLoaded) {
       interior = (
         <div className="app-loadingArea" key="app-la">
           <div className="app-loading" aria-live="polite">
@@ -1378,7 +1450,7 @@ export default class App extends Component<AppProps, AppState> {
       interior = (
         <ImportFromUrl
           theme={this.props.theme}
-          carto={CartoApp.carto}
+          creatorTools={CreatorToolsHost.creatorTools}
           key="app-cot"
           project={this.state.activeProject}
           onModeChangeRequested={this._handleModeChangeRequested}
@@ -1388,8 +1460,8 @@ export default class App extends Component<AppProps, AppState> {
     } else if (this.state.mode === AppMode.home) {
       interior = (
         <Home
-          theme={this.props.theme}
-          carto={CartoApp.carto}
+          theme={{}}
+          creatorTools={CreatorToolsHost.creatorTools}
           isPersisted={this.state.isPersisted}
           heightOffset={heightOffset}
           errorMessage={this.state.errorMessage}
@@ -1407,10 +1479,11 @@ export default class App extends Component<AppProps, AppState> {
           onProjectSelected={this._handleProjectSelected}
         />
       );
-    } else if (this.state.activeProject !== null && CartoApp.initialMode === "projectitem") {
+      return <>{interior}</>;
+    } else if (this.state.activeProject !== null && CreatorToolsHost.initialMode === "projectitem") {
       interior = (
         <ProjectEditor
-          carto={CartoApp.carto}
+          creatorTools={CreatorToolsHost.creatorTools}
           theme={this.props.theme}
           hideMainToolbar={true}
           key="app-pe"
@@ -1420,16 +1493,16 @@ export default class App extends Component<AppProps, AppState> {
           onPersistenceUpgraded={this._handlePersistenceUpgraded}
           project={this.state.activeProject}
           selectedItem={this.state.selectedItem}
-          viewMode={CartoEditorViewMode.mainFocus}
+          viewMode={CreatorToolsEditorViewMode.mainFocus}
           mode={this.state.initialProjectEditorMode ? this.state.initialProjectEditorMode : undefined}
           readOnly={isReadOnly}
           onModeChangeRequested={this._handleModeChangeRequested}
         />
       );
-    } else if (this.state.activeProject !== null && CartoApp.initialMode === "info") {
+    } else if (this.state.activeProject !== null && CreatorToolsHost.initialMode === "info") {
       interior = (
         <ProjectEditor
-          carto={CartoApp.carto}
+          creatorTools={CreatorToolsHost.creatorTools}
           theme={this.props.theme}
           hideMainToolbar={true}
           key="app-pea"
@@ -1439,7 +1512,7 @@ export default class App extends Component<AppProps, AppState> {
           statusAreaMode={ProjectStatusAreaMode.hidden}
           project={this.state.activeProject}
           mode={ProjectEditorMode.inspector}
-          viewMode={CartoEditorViewMode.mainFocus}
+          viewMode={CreatorToolsEditorViewMode.mainFocus}
           readOnly={isReadOnly}
           onModeChangeRequested={this._handleModeChangeRequested}
         />
@@ -1456,8 +1529,8 @@ export default class App extends Component<AppProps, AppState> {
 
         interior = (
           <Home
-            theme={this.props.theme}
-            carto={CartoApp.carto}
+            theme={{}}
+            creatorTools={CreatorToolsHost.creatorTools}
             heightOffset={heightOffset}
             errorMessage={error}
             onLog={this._doLog}
@@ -1471,15 +1544,16 @@ export default class App extends Component<AppProps, AppState> {
             onProjectSelected={this._handleProjectSelected}
           />
         );
+        return <>{interior}</>;
       } else if (this.state.activeProject.originalSampleId) {
         // show main view (no sidebar) if it's a code sample.
         interior = (
           <ProjectEditor
-            carto={CartoApp.carto}
+            creatorTools={CreatorToolsHost.creatorTools}
             key="app-pec"
             theme={this.props.theme}
             heightOffset={heightOffset}
-            viewMode={CartoEditorViewMode.mainFocus}
+            viewMode={CreatorToolsEditorViewMode.mainFocus}
             project={this.state.activeProject}
             isPersisted={this.state.isPersisted}
             onPersistenceUpgraded={this._handlePersistenceUpgraded}
@@ -1492,11 +1566,12 @@ export default class App extends Component<AppProps, AppState> {
       } else {
         interior = (
           <ProjectEditor
-            carto={CartoApp.carto}
+            creatorTools={CreatorToolsHost.creatorTools}
             theme={this.props.theme}
             key="app-pef"
             heightOffset={heightOffset}
             project={this.state.activeProject}
+            initialFocusPath={CreatorToolsHost.focusPath}
             isPersisted={this.state.isPersisted}
             onPersistenceUpgraded={this._handlePersistenceUpgraded}
             mode={this.state.initialProjectEditorMode ? this.state.initialProjectEditorMode : undefined}
@@ -1510,23 +1585,32 @@ export default class App extends Component<AppProps, AppState> {
 
     return (
       <div
+        id="top-level"
         style={{
-          backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+          backgroundColor: "#0",
           color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
         }}
       >
         {top}
         <div
-          className="app-editor"
           style={{
-            minHeight: height,
-            maxHeight: height,
-            borderLeft: borderStr,
-            borderRight: borderStr,
-            borderBottom: borderStr,
+            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
           }}
         >
-          {interior}
+          {top}
+          <div
+            className="app-editor"
+            style={{
+              minHeight: height,
+              maxHeight: height,
+              borderLeft: borderStr,
+              borderRight: borderStr,
+              borderBottom: borderStr,
+            }}
+          >
+            {interior}
+          </div>
         </div>
       </div>
     );

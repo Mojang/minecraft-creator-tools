@@ -91,7 +91,7 @@
         "fields": [
           {
             "id": "min_wait_time",
-            "title": "Min_wait_time",
+            "title": "Min wait time",
             "dataType": 7,
             "samples": {
               "/vanilla/behavior_pack/entities/armadillo.json": [
@@ -104,7 +104,7 @@
           },
           {
             "id": "max_wait_time",
-            "title": "Max_wait_time",
+            "title": "Max wait time",
             "dataType": 7,
             "samples": {
               "/vanilla/behavior_pack/entities/armadillo.json": [
@@ -117,7 +117,7 @@
           },
           {
             "id": "spawn_sound",
-            "title": "Spawn_sound",
+            "title": "Spawn sound",
             "dataType": 2,
             "samples": {
               "/vanilla/behavior_pack/entities/armadillo.json": [
@@ -130,7 +130,7 @@
           },
           {
             "id": "spawn_item",
-            "title": "Spawn_item",
+            "title": "Spawn item",
             "dataType": 2,
             "samples": {
               "/vanilla/behavior_pack/entities/armadillo.json": [
@@ -325,6 +325,19 @@
             }
           }
         ],
+        "/vanilla/behavior_pack/entities/drowned.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:drowned_rider/minecraft:spawn_entity/",
+            "content": {
+              "min_wait_time": 0,
+              "max_wait_time": 0,
+              "num_to_spawn": 1,
+              "single_use": true,
+              "spawn_entity": "minecraft:zombie_nautilus",
+              "spawn_event": "minecraft:entity_spawned"
+            }
+          }
+        ],
         "/vanilla/behavior_pack/entities/ocelot.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:wild_child_ocelot_spawn/minecraft:spawn_entity/",
@@ -463,6 +476,21 @@
               "domain": "minecraft:has_flower",
               "value": true
             }
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/drowned.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:drowned_rider/minecraft:spawn_entity/",
+        "content": {
+          "entities": {
+            "min_wait_time": 0,
+            "max_wait_time": 0,
+            "num_to_spawn": 1,
+            "single_use": true,
+            "spawn_entity": "minecraft:zombie_nautilus",
+            "spawn_event": "minecraft:entity_spawned"
           }
         }
       }

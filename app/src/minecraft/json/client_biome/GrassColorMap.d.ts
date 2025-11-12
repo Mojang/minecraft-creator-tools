@@ -27,3 +27,9 @@ export default interface GrassColorMap {
   color_map: string;
 
 }
+
+
+export enum GrassColorMapColorMap {
+  grass = `grass`,
+  swampGrass = `swamp_grass`
+}

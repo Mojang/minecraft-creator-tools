@@ -24,3 +24,13 @@ export default interface MinecraftTheEnd {
   type: string;
 
 }
+
+
+export enum MinecraftTheEndType {
+  minecraftCapped = `minecraft:capped`,
+  minecraftFrozenOcean = `minecraft:frozen_ocean`,
+  minecraftMesa = `minecraft:mesa`,
+  minecraftOverworld = `minecraft:overworld`,
+  minecraftSwamp = `minecraft:swamp`,
+  minecraftTheEnd = `minecraft:the_end`
+}

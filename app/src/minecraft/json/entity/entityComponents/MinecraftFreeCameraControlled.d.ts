@@ -18,6 +18,14 @@ Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
   "backwards_movement_modifier": 0.5
 }
 
+
+Nautilus - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/nautilus.json
+
+"minecraft:free_camera_controlled": {
+  "strafe_speed_modifier": 0.35,
+  "backwards_movement_modifier": 0.5
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';
@@ -37,6 +45,7 @@ export default interface MinecraftFreeCameraControlled {
    * Sample Values:
    * Happy Ghast: 0.5
    *
+   *
    */
   backwards_movement_modifier?: number;
 
@@ -46,6 +55,9 @@ export default interface MinecraftFreeCameraControlled {
    * 
    * Sample Values:
    * Happy Ghast: 1
+   *
+   * Nautilus: 0.35
+   *
    *
    */
   strafe_speed_modifier?: number;

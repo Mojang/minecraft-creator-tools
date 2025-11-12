@@ -17,10 +17,10 @@ Phantom - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
   "priority": 2,
   "damage_reach": 0.2,
   "speed_multiplier": 1,
-  "delay_range": [
-    10,
-    20
-  ]
+  "delay_range": {
+    "min": 10,
+    "max": 20
+  }
 }
 
  */
@@ -53,7 +53,7 @@ export default interface MinecraftBehaviorSwoopAttack {
    * attempted swoop attack.
    * 
    * Sample Values:
-   * Phantom: [10,20]
+   * Phantom: {"min":10,"max":20}
    *
    */
   delay_range?: number[];

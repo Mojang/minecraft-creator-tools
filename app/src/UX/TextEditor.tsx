@@ -2,7 +2,7 @@ import { Component, SyntheticEvent } from "react";
 import IFile from "./../storage/IFile";
 import "./TextEditor.css";
 import IPersistable from "./IPersistable";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import { FormInput, InputProps, TextArea, TextAreaProps, ThemeInput, Toolbar } from "@fluentui/react-northstar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearchPlus, faSearchMinus, faPlay } from "@fortawesome/free-solid-svg-icons";
@@ -24,7 +24,7 @@ interface ITextEditorProps {
   heightOffset?: number;
   readOnly: boolean;
   preferredTextSize: number;
-  carto: Carto;
+  creatorTools: CreatorTools;
   onUpdatePreferredTextSize: (newSize: number) => void;
   onUpdateContent?: (newContent: string) => void;
   onCommit?: (newContent: string) => void;
@@ -84,7 +84,9 @@ export default class TextEditor extends Component<ITextEditorProps, ITextEditorS
 
   _handleContentUpdated(newValue: string | undefined, event: any) {}
 
-  async persist() {}
+  async persist(): Promise<boolean> {
+    return false;
+  }
 
   _zoomIn() {
     this._updateZoom();
@@ -99,7 +101,7 @@ export default class TextEditor extends Component<ITextEditorProps, ITextEditorS
       return;
     }
 
-    await CommandRunner.runCommandText(this.props.carto, this.state.content);
+    await CommandRunner.runCommandText(this.props.creatorTools, this.state.content);
   }
 
   _updateZoom() {

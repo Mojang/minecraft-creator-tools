@@ -57,6 +57,12 @@
         "content": {}
       }
     ],
+    "/vanilla/behavior_pack/entities/camel_husk.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:is_hidden_when_invisible/",
+        "content": {}
+      }
+    ],
     "/vanilla/behavior_pack/entities/cat.json": [
       {
         "path": "/minecraft:entity/components/minecraft:is_hidden_when_invisible/",
@@ -237,6 +243,12 @@
         "content": {}
       }
     ],
+    "/vanilla/behavior_pack/entities/nautilus.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:is_hidden_when_invisible/",
+        "content": {}
+      }
+    ],
     "/vanilla/behavior_pack/entities/ocelot.json": [
       {
         "path": "/minecraft:entity/components/minecraft:is_hidden_when_invisible/",
@@ -244,6 +256,12 @@
       }
     ],
     "/vanilla/behavior_pack/entities/panda.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:is_hidden_when_invisible/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/parched.json": [
       {
         "path": "/minecraft:entity/components/minecraft:is_hidden_when_invisible/",
         "content": {}
@@ -490,6 +508,12 @@
       }
     ],
     "/vanilla/behavior_pack/entities/zombie_horse.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:is_hidden_when_invisible/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
       {
         "path": "/minecraft:entity/components/minecraft:is_hidden_when_invisible/",
         "content": {}

@@ -90,3 +90,13 @@ export default interface MinecraftMesa {
   type: string;
 
 }
+
+
+export enum MinecraftMesaType {
+  minecraftCapped = `minecraft:capped`,
+  minecraftFrozenOcean = `minecraft:frozen_ocean`,
+  minecraftMesa = `minecraft:mesa`,
+  minecraftOverworld = `minecraft:overworld`,
+  minecraftSwamp = `minecraft:swamp`,
+  minecraftTheEnd = `minecraft:the_end`
+}

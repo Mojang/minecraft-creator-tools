@@ -83,18 +83,18 @@ export default class JsonSchemaDefinition implements IDefinition {
     return rbd;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     Log.assert(this.data !== null, "JSDP");
 
     if (this.data) {
-      const bpString = JSON.stringify(this.data, null, 2);
-
-      this._file.setContent(bpString);
+      return this._file.setObjectContentIfSemanticallyDifferent(this.data);
     }
+
+    return false;
   }
 
   async load() {

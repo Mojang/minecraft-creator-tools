@@ -55,6 +55,16 @@ Bogged - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
 }
 
 
+Camel Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/camel_husk.json
+
+"minecraft:breathable": {
+  "total_supply": 15,
+  "suffocate_time": 0,
+  "breathes_air": true,
+  "breathes_water": true
+}
+
+
 Dolphin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/dolphin.json
 
 "minecraft:breathable": {
@@ -63,16 +73,6 @@ Dolphin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
   "breathes_air": true,
   "breathes_water": false,
   "generates_bubbles": false
-}
-
-
-Drowned - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/drowned.json
-
-"minecraft:breathable": {
-  "total_supply": 15,
-  "suffocate_time": 0,
-  "breathes_air": true,
-  "breathes_water": true
 }
 
 
@@ -175,6 +175,17 @@ export default interface MinecraftBreathable {
    *
    */
   breathes_water?: boolean;
+
+  /**
+   * @remarks
+   * If true, water-only breathers will take Dehydration damage when
+   * out of water.
+   * 
+   * Sample Values:
+   * Nautilus: true
+   *
+   */
+  can_dehydrate?: boolean;
 
   /**
    * @remarks

@@ -171,6 +171,17 @@ Breeze - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
 }
 
 
+Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/camel.json
+
+"minecraft:damage_sensor": {
+  "triggers": {
+    "cause": "fall",
+    "deals_damage": "yes",
+    "damage_modifier": -4
+  }
+}
+
+
 Copper Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/copper_golem.json
 
 "minecraft:damage_sensor": {
@@ -267,24 +278,6 @@ Creeper - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
   }
 }
 
-
-Fox - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/fox.json
-
-"minecraft:damage_sensor": {
-  "triggers": [
-    {
-      "on_damage": {
-        "filters": {
-          "test": "is_block",
-          "subject": "block",
-          "value": "minecraft:sweet_berry_bush"
-        }
-      },
-      "deals_damage": "no"
-    }
-  ]
-}
-
  */
 
 import * as jsoncommon from './../../../jsoncommon';
@@ -323,12 +316,12 @@ export enum MinecraftDamageSensorDealsDamage {
    * @remarks
    * Received damage is applied to the entity.
    */
-  Yes = `yes`,
+  yes = `yes`,
   /**
    * @remarks
    * Received damage is not applied to the entity.
    */
-  No = `no`,
+  no = `no`,
   /**
    * @remarks
    * Received damage is not applied to the entity, but the side
@@ -336,7 +329,7 @@ export enum MinecraftDamageSensorDealsDamage {
    * loses durability, enchantment side effects are applied, and so
    * on.
    */
-  NoButSideEffectsApply = `no_but_side_effects_apply`
+  noButSideEffectsApply = `no_but_side_effects_apply`
 }
 
 

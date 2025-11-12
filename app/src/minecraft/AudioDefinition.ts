@@ -69,10 +69,8 @@ export default class AudioDefinition implements IDefinition {
     return afd;
   }
 
-  persist() {
-    if (this._file === undefined) {
-      return;
-    }
+  persist(): boolean {
+    return false;
   }
 
   static canonicalizeAudioPath(projectPath: string | undefined) {

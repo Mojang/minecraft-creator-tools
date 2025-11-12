@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Carto from "./../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import "./StatusArea.css";
 import IAppProps from "./IAppProps";
 import IStatus, { StatusType } from "../app/Status";
@@ -63,14 +63,14 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
     this._update();
   }
 
-  async _handleOperationCompleted(carto: Carto, operation: number) {
+  async _handleOperationCompleted(creatorTools: CreatorTools, operation: number) {
     this.setState({
       displayEditor: this.state.displayEditor,
-      activeOperations: this.props.carto.activeOperations.length,
+      activeOperations: this.props.creatorTools.activeOperations.length,
     });
   }
 
-  async _handleStatusAdded(carto: Carto, status: IStatus): Promise<void> {
+  async _handleStatusAdded(creatorTools: CreatorTools, status: IStatus): Promise<void> {
     if (status.type === StatusType.operationStarted) {
       return new Promise((resolve: () => void, reject: () => void) => {
         this.setState(
@@ -92,7 +92,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
         this.setState(
           {
             displayEditor: this.state.displayEditor,
-            activeOperations: this.props.carto.activeOperations.length,
+            activeOperations: this.props.creatorTools.activeOperations.length,
           },
           () => {
             this._prepareForFadeout();
@@ -126,7 +126,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
     window.setTimeout(this._checkForTimeOut, MESSAGE_FADEOUT_TIME + 100);
   }
 
-  _checkForTimeOut(carto: Carto, status: IStatus) {
+  _checkForTimeOut(creatorTools: CreatorTools, status: IStatus) {
     if (this._isMountedInternal) {
       this.forceUpdate();
     }
@@ -176,12 +176,15 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
       Log.onItemAdded.subscribe(this._handleLogItemAdded);
     }
 
-    for (const status of this.props.carto.status) {
-      this._handleStatusAdded(this.props.carto, status);
+    for (const status of this.props.creatorTools.status) {
+      this._handleStatusAdded(this.props.creatorTools, status);
     }
 
-    this.props.carto.subscribeStatusAddedAsync(this._handleStatusAdded);
-    this.props.carto.onOperationCompleted.subscribe(this._handleOperationCompleted);
+    this.props.creatorTools.subscribeStatusAddedAsync(this._handleStatusAdded);
+
+    if (!this.props.creatorTools.onOperationCompleted.has(this._handleOperationCompleted)) {
+      this.props.creatorTools.onOperationCompleted.subscribe(this._handleOperationCompleted);
+    }
   }
 
   componentWillUnmount(): void {
@@ -195,7 +198,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
       Log.onItemAdded.unsubscribe(this._handleLogItemAdded);
     }
 
-    this.props.carto.unsubscribeStatusAddedAsync(this._handleStatusAdded);
+    this.props.creatorTools.unsubscribeStatusAddedAsync(this._handleStatusAdded);
   }
 
   scrollToListBottom() {
@@ -246,7 +249,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
               onActionRequested={this.props.onActionRequested}
               contentIndex={this.props.project?.indevInfoSet.contentIndex}
               onFilterTextChanged={this.props.onFilterTextChanged}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               heightOffset={heightOffset}
               initialContent={""}
             />
@@ -269,13 +272,13 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
         interior = editor;
         setInterior = true;
       } else {
-        if (this.props.carto.status.length > 0) {
-          let lastItemIndex = this.props.carto.status.length - 1;
-          let lastStatus = this.props.carto.status[lastItemIndex];
+        if (this.props.creatorTools.status.length > 0) {
+          let lastItemIndex = this.props.creatorTools.status.length - 1;
+          let lastStatus = this.props.creatorTools.status[lastItemIndex];
 
           while (lastStatus.type === StatusType.operationEndedErrors && lastItemIndex > 0) {
             lastItemIndex--;
-            lastStatus = this.props.carto.status[lastItemIndex];
+            lastStatus = this.props.creatorTools.status[lastItemIndex];
           }
 
           const lastStatusUpdate = new Date().getTime() - lastStatus.time.getTime();
@@ -385,8 +388,12 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
         index += Log.items.length;
       }
 
-      for (let i = Math.max(0, this.props.carto.status.length - 1000); i < this.props.carto.status.length; i++) {
-        const statusItem = this.props.carto.status[i];
+      for (
+        let i = Math.max(0, this.props.creatorTools.status.length - 1000);
+        i < this.props.creatorTools.status.length;
+        i++
+      ) {
+        const statusItem = this.props.creatorTools.status[i];
 
         listItems.push({
           key: "si" + i,
@@ -398,7 +405,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
         });
       }
 
-      index += this.props.carto.status.length;
+      index += this.props.creatorTools.status.length;
 
       interior = (
         <div className="sa-listOuter">

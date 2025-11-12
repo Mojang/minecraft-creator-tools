@@ -1,6 +1,6 @@
 import { Component } from "react";
 import "./GitHubReferenceEditor.css";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import Project from "../app/Project";
 import { Toolbar } from "@fluentui/react-northstar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,7 +13,7 @@ interface IGitHubReferenceEditorProps {
   preferredTextSize: number;
   project: Project;
   reference: IGitHubInfo;
-  carto: Carto;
+  creatorTools: CreatorTools;
 }
 
 interface IGitHubReferenceEditorState {}
@@ -29,7 +29,9 @@ export default class GitHubReferenceEditor extends Component<IGitHubReferenceEdi
 
   _handleContentUpdated(newValue: string | undefined, event: any) {}
 
-  async persist() {}
+  async persist(): Promise<boolean> {
+    return false;
+  }
 
   render() {
     const interior = <>GitHub Reference</>;

@@ -6,7 +6,7 @@ import IGitHubInfo from "./IGitHubInfo";
 import ITool from "./ITool";
 import { IWorldSettings } from "../minecraft/IWorldSettings";
 import IStatus from "./Status";
-import { MinecraftTrack } from "./ICartoData";
+import { MinecraftTrack } from "./ICreatorToolsData";
 import IProjectVariant from "./IProjectVariant";
 
 export enum ProjectDataType {
@@ -34,9 +34,10 @@ export enum ProjectScriptVersion {
 }
 
 export enum ProjectEditPreference {
-  summarized = 0,
-  editors = 1,
-  raw = 2,
+  default = 0,
+  summarized = 1,
+  editors = 2,
+  raw = 3,
 }
 
 export enum ProjectRole {

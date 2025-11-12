@@ -73,9 +73,9 @@ export default class Lang {
     return lang;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     let content = this._file.content;
@@ -132,7 +132,7 @@ export default class Lang {
       }
     }
 
-    this._file.setContent(content);
+    return this._file.setContent(content);
   }
 
   async save() {
@@ -140,9 +140,9 @@ export default class Lang {
       return;
     }
 
-    this.persist();
-
-    await this._file.saveContent(false);
+    if (this.persist()) {
+      await this._file.saveContent(false);
+    }
   }
 
   async load() {

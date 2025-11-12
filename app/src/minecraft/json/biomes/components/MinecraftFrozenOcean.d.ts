@@ -65,3 +65,13 @@ export default interface MinecraftFrozenOcean {
   type: string;
 
 }
+
+
+export enum MinecraftFrozenOceanType {
+  minecraftCapped = `minecraft:capped`,
+  minecraftFrozenOcean = `minecraft:frozen_ocean`,
+  minecraftMesa = `minecraft:mesa`,
+  minecraftOverworld = `minecraft:overworld`,
+  minecraftSwamp = `minecraft:swamp`,
+  minecraftTheEnd = `minecraft:the_end`
+}

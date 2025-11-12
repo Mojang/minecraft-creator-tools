@@ -39,6 +39,16 @@ Axolotl - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
 }
 
 
+Nautilus - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/nautilus.json
+
+ * At /minecraft:entity/component_groups/minecraft:nautilus_tame_saddled_in_water/minecraft:environment_sensor/triggers/0/filters/: 
+{
+  "test": "in_water",
+  "operator": "==",
+  "value": false
+}
+
+
 Pillager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/pillager.json
 
 {
@@ -46,6 +56,20 @@ Pillager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/
   "subject": "self",
   "operator": "==",
   "value": false
+}
+
+
+Zombie Nautilus - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_nautilus.json
+
+ * At /minecraft:entity/component_groups/minecraft:zombie_nautilus_tame_saddled_in_water/minecraft:environment_sensor/triggers/0/filters/: 
+{
+  "test": "in_water",
+  "value": false
+}
+
+ * At /minecraft:entity/component_groups/minecraft:zombie_nautilus_tame_saddled_on_ground/minecraft:environment_sensor/triggers/0/filters/: 
+{
+  "test": "in_water"
 }
 
  */
@@ -110,47 +134,47 @@ export enum InWaterOperator {
    * @remarks
    * Test for inequality.
    */
-  NotEquals = `!=`,
+  notEquals = `!=`,
   /**
    * @remarks
    * Test for less-than the value.
    */
-  LessThan = `<`,
+  lessThan = `<`,
   /**
    * @remarks
    * Test for less-than or equal to the value.
    */
-  LessThanEquals = `<=`,
+  lessThanEquals = `<=`,
   /**
    * @remarks
    * Test for inequality.
    */
-  LessThanGreaterThan = `<>`,
+  lessThanGreaterThan = `<>`,
   /**
    * @remarks
    * Test for equality.
    */
-  Equals = `=`,
+  equals = `=`,
   /**
    * @remarks
    * Test for equality.
    */
-  EqualsEquals = `==`,
+  equalsEquals = `==`,
   /**
    * @remarks
    * Test for greater-than the value.
    */
-  GreaterThan = `>`,
+  greaterThan = `>`,
   /**
    * @remarks
    * Test for greater-than or equal to the value.
    */
-  GreaterThanEquals = `>=`,
+  greaterThanEquals = `>=`,
   /**
    * @remarks
    * Test for inequality.
    */
-  Not = `not`
+  not = `not`
 }
 
 
@@ -159,35 +183,35 @@ export enum InWaterSubject {
    * @remarks
    * The block involved with the interaction.
    */
-  Block = `block`,
+  block = `block`,
   /**
    * @remarks
    * The damaging actor involved with the interaction.
    */
-  Damager = `damager`,
+  damager = `damager`,
   /**
    * @remarks
    * The other member of an interaction, not the caller.
    */
-  Other = `other`,
+  other = `other`,
   /**
    * @remarks
    * The caller's current parent.
    */
-  Parent = `parent`,
+  parent = `parent`,
   /**
    * @remarks
    * The player involved with the interaction.
    */
-  Player = `player`,
+  player = `player`,
   /**
    * @remarks
    * The entity or object calling the test
    */
-  Self = `self`,
+  self = `self`,
   /**
    * @remarks
    * The caller's current target.
    */
-  Target = `target`
+  target = `target`
 }

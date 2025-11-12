@@ -123,14 +123,16 @@ export default class SpawnRulesBehaviorDefinition {
     return srb;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
-    const bpString = JSON.stringify(this.data, null, 2);
+    if (!this.data) {
+      return false;
+    }
 
-    this._file.setContent(bpString);
+    return this._file.setObjectContentIfSemanticallyDifferent(this.data);
   }
 
   async addChildItems(project: Project, item: ProjectItem) {

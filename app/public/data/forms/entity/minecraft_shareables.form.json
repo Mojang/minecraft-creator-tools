@@ -995,6 +995,298 @@
               "priority": 6
             },
             {
+              "item": "minecraft:netherite_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 0
+            },
+            {
+              "item": "minecraft:diamond_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 1
+            },
+            {
+              "item": "minecraft:iron_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 2
+            },
+            {
+              "item": "minecraft:golden_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 3
+            },
+            {
+              "item": "minecraft:copper_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 4
+            },
+            {
+              "item": "minecraft:stone_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 5
+            },
+            {
+              "item": "minecraft:wooden_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 6
+            },
+            {
+              "item": "minecraft:netherite_helmet",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 0
+            },
+            {
+              "item": "minecraft:diamond_helmet",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 1
+            },
+            {
+              "item": "minecraft:iron_helmet",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 2
+            },
+            {
+              "item": "minecraft:chainmail_helmet",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 3
+            },
+            {
+              "item": "minecraft:golden_helmet",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 4
+            },
+            {
+              "item": "minecraft:copper_helmet",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 5
+            },
+            {
+              "item": "minecraft:leather_helmet",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 6
+            },
+            {
+              "item": "minecraft:turtle_helmet",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 7
+            },
+            {
+              "item": "minecraft:skull:0",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 8
+            },
+            {
+              "item": "minecraft:skull:1",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 8
+            },
+            {
+              "item": "minecraft:carved_pumpkin",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 8
+            },
+            {
+              "item": "minecraft:netherite_chestplate",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 0
+            },
+            {
+              "item": "minecraft:diamond_chestplate",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 1
+            },
+            {
+              "item": "minecraft:iron_chestplate",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 2
+            },
+            {
+              "item": "minecraft:chainmail_chestplate",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 3
+            },
+            {
+              "item": "minecraft:golden_chestplate",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 4
+            },
+            {
+              "item": "minecraft:copper_chestplate",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 5
+            },
+            {
+              "item": "minecraft:leather_chestplate",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 6
+            },
+            {
+              "item": "minecraft:netherite_leggings",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 0
+            },
+            {
+              "item": "minecraft:diamond_leggings",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 1
+            },
+            {
+              "item": "minecraft:iron_leggings",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 2
+            },
+            {
+              "item": "minecraft:chainmail_leggings",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 3
+            },
+            {
+              "item": "minecraft:golden_leggings",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 4
+            },
+            {
+              "item": "minecraft:copper_leggings",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 5
+            },
+            {
+              "item": "minecraft:leather_leggings",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 6
+            },
+            {
+              "item": "minecraft:netherite_boots",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 0
+            },
+            {
+              "item": "minecraft:diamond_boots",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 1
+            },
+            {
+              "item": "minecraft:iron_boots",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 2
+            },
+            {
+              "item": "minecraft:chainmail_boots",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 3
+            },
+            {
+              "item": "minecraft:golden_boots",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 4
+            },
+            {
+              "item": "minecraft:copper_boots",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 5
+            },
+            {
+              "item": "minecraft:leather_boots",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 6
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/parched.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:shareables/",
+        "content": {
+          "singular_pickup": true,
+          "items": [
+            {
+              "item": "minecraft:netherite_sword",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 0
+            },
+            {
+              "item": "minecraft:diamond_sword",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 1
+            },
+            {
+              "item": "minecraft:iron_sword",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 2
+            },
+            {
+              "item": "minecraft:golden_sword",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 3
+            },
+            {
+              "item": "minecraft:copper_sword",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 4
+            },
+            {
+              "item": "minecraft:stone_sword",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 5
+            },
+            {
+              "item": "minecraft:wooden_sword",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 6
+            },
+            {
+              "item": "minecraft:bow",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 6
+            },
+            {
               "item": "minecraft:netherite_helmet",
               "want_amount": 1,
               "surplus_amount": 1,
@@ -1204,6 +1496,13 @@
               "stored_in_inventory": true
             },
             {
+              "item": "minecraft:golden_spear",
+              "priority": 2,
+              "admire": true,
+              "pickup_limit": 1,
+              "stored_in_inventory": true
+            },
+            {
               "item": "minecraft:golden_axe",
               "priority": 2,
               "admire": true,
@@ -1336,6 +1635,13 @@
             },
             {
               "item": "minecraft:horsearmorgold",
+              "priority": 2,
+              "admire": true,
+              "pickup_limit": 1,
+              "stored_in_inventory": true
+            },
+            {
+              "item": "minecraft:golden_nautilus_armor",
               "priority": 2,
               "admire": true,
               "pickup_limit": 1,
@@ -1555,6 +1861,30 @@
             },
             {
               "item": "minecraft:wooden_sword",
+              "priority": 8
+            },
+            {
+              "item": "minecraft:netherite_spear",
+              "priority": 3
+            },
+            {
+              "item": "minecraft:diamond_spear",
+              "priority": 4
+            },
+            {
+              "item": "minecraft:iron_spear",
+              "priority": 5
+            },
+            {
+              "item": "minecraft:copper_spear",
+              "priority": 6
+            },
+            {
+              "item": "minecraft:stone_spear",
+              "priority": 7
+            },
+            {
+              "item": "minecraft:wooden_spear",
               "priority": 8
             },
             {
@@ -2805,6 +3135,48 @@
               "priority": 6
             },
             {
+              "item": "minecraft:netherite_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 0
+            },
+            {
+              "item": "minecraft:diamond_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 1
+            },
+            {
+              "item": "minecraft:iron_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 2
+            },
+            {
+              "item": "minecraft:golden_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 3
+            },
+            {
+              "item": "minecraft:copper_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 4
+            },
+            {
+              "item": "minecraft:stone_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 5
+            },
+            {
+              "item": "minecraft:wooden_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 6
+            },
+            {
               "item": "minecraft:netherite_helmet",
               "want_amount": 1,
               "surplus_amount": 1,
@@ -3043,6 +3415,48 @@
             },
             {
               "item": "minecraft:wooden_sword",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 6
+            },
+            {
+              "item": "minecraft:netherite_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 0
+            },
+            {
+              "item": "minecraft:diamond_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 1
+            },
+            {
+              "item": "minecraft:iron_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 2
+            },
+            {
+              "item": "minecraft:golden_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 3
+            },
+            {
+              "item": "minecraft:copper_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 4
+            },
+            {
+              "item": "minecraft:stone_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 5
+            },
+            {
+              "item": "minecraft:wooden_spear",
               "want_amount": 1,
               "surplus_amount": 1,
               "priority": 6
@@ -3501,6 +3915,48 @@
             },
             {
               "item": "minecraft:wooden_sword",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 6
+            },
+            {
+              "item": "minecraft:netherite_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 0
+            },
+            {
+              "item": "minecraft:diamond_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 1
+            },
+            {
+              "item": "minecraft:iron_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 2
+            },
+            {
+              "item": "minecraft:golden_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 3
+            },
+            {
+              "item": "minecraft:copper_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 4
+            },
+            {
+              "item": "minecraft:stone_spear",
+              "want_amount": 1,
+              "surplus_amount": 1,
+              "priority": 5
+            },
+            {
+              "item": "minecraft:wooden_spear",
               "want_amount": 1,
               "surplus_amount": 1,
               "priority": 6

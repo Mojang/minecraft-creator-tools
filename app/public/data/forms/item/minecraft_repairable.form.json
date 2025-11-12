@@ -6,6 +6,7 @@
       "title": "Repair Items",
       "description": "List of repair item entries. Each entry needs to define a list of strings for `items` that can be used for the repair and an optional `repair_amount` for how much durability is gained.",
       "dataType": 2,
+      "defaultValue": [],
       "alternates": [
         {
           "id": "repair_items",
@@ -33,6 +34,10 @@
                 "title": "Repair Amount",
                 "description": "How much the item is repaired.",
                 "dataType": 24,
+                "defaultValue": {
+                  "expression": "",
+                  "version": -1
+                },
                 "alternates": [
                   {
                     "id": "repair_amount",
@@ -52,6 +57,16 @@
                           "id": "version",
                           "title": "Version",
                           "dataType": 0,
+                          "validity": [
+                            {
+                              "comparison": ">=",
+                              "value": -32768
+                            },
+                            {
+                              "comparison": "<=",
+                              "value": 32767
+                            }
+                          ],
                           "isRequired": true
                         }
                       ]
@@ -68,6 +83,143 @@
         }
       ],
       "samples": {
+        "/vanilla/behavior_pack/items/copper_spear.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:repairable/",
+            "content": [
+              {
+                "items": [
+                  "minecraft:copper_spear"
+                ],
+                "repair_amount": "context.other->query.remaining_durability"
+              },
+              {
+                "items": [
+                  "minecraft:copper_ingot"
+                ],
+                "repair_amount": "query.max_durability * 0.25"
+              }
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/items/diamond_spear.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:repairable/",
+            "content": [
+              {
+                "items": [
+                  "minecraft:diamond_spear"
+                ],
+                "repair_amount": "context.other->query.remaining_durability"
+              },
+              {
+                "items": [
+                  "minecraft:diamond"
+                ],
+                "repair_amount": "query.max_durability * 0.25"
+              }
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/items/golden_spear.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:repairable/",
+            "content": [
+              {
+                "items": [
+                  "minecraft:golden_spear"
+                ],
+                "repair_amount": "context.other->query.remaining_durability"
+              },
+              {
+                "items": [
+                  "minecraft:gold_ingot"
+                ],
+                "repair_amount": "query.max_durability * 0.25"
+              }
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/items/iron_spear.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:repairable/",
+            "content": [
+              {
+                "items": [
+                  "minecraft:iron_spear"
+                ],
+                "repair_amount": "context.other->query.remaining_durability"
+              },
+              {
+                "items": [
+                  "minecraft:iron_ingot"
+                ],
+                "repair_amount": "query.max_durability * 0.25"
+              }
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/items/netherite_spear.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:repairable/",
+            "content": [
+              {
+                "items": [
+                  "minecraft:netherite_spear"
+                ],
+                "repair_amount": "context.other->query.remaining_durability"
+              },
+              {
+                "items": [
+                  "minecraft:netherite_ingot"
+                ],
+                "repair_amount": "query.max_durability * 0.25"
+              }
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/items/stone_spear.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:repairable/",
+            "content": [
+              {
+                "items": [
+                  "minecraft:stone_spear"
+                ],
+                "repair_amount": "context.other->query.remaining_durability"
+              },
+              {
+                "items": [
+                  {
+                    "tags": "q.all_tags('minecraft:stone_tool_materials')"
+                  }
+                ],
+                "repair_amount": "query.max_durability * 0.25"
+              }
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/items/wooden_spear.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:repairable/",
+            "content": [
+              {
+                "items": [
+                  "minecraft:wooden_spear"
+                ],
+                "repair_amount": "context.other->query.remaining_durability"
+              },
+              {
+                "items": [
+                  {
+                    "tags": "q.all_tags('minecraft:planks')"
+                  }
+                ],
+                "repair_amount": "query.max_durability * 0.25"
+              }
+            ]
+          }
+        ],
         "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/axe_turret_kit.item.json": [
           {
             "path": "/minecraft:item/components/minecraft:repairable/",
@@ -152,6 +304,157 @@
   "description": "The repairable item component specifies which items can be used to repair this item, along with how much durability is gained.",
   "title": "Item Repairable",
   "samples": {
+    "/vanilla/behavior_pack/items/copper_spear.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:repairable/",
+        "content": {
+          "repair_items": [
+            {
+              "items": [
+                "minecraft:copper_spear"
+              ],
+              "repair_amount": "context.other->query.remaining_durability"
+            },
+            {
+              "items": [
+                "minecraft:copper_ingot"
+              ],
+              "repair_amount": "query.max_durability * 0.25"
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/diamond_spear.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:repairable/",
+        "content": {
+          "repair_items": [
+            {
+              "items": [
+                "minecraft:diamond_spear"
+              ],
+              "repair_amount": "context.other->query.remaining_durability"
+            },
+            {
+              "items": [
+                "minecraft:diamond"
+              ],
+              "repair_amount": "query.max_durability * 0.25"
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/golden_spear.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:repairable/",
+        "content": {
+          "repair_items": [
+            {
+              "items": [
+                "minecraft:golden_spear"
+              ],
+              "repair_amount": "context.other->query.remaining_durability"
+            },
+            {
+              "items": [
+                "minecraft:gold_ingot"
+              ],
+              "repair_amount": "query.max_durability * 0.25"
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/iron_spear.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:repairable/",
+        "content": {
+          "repair_items": [
+            {
+              "items": [
+                "minecraft:iron_spear"
+              ],
+              "repair_amount": "context.other->query.remaining_durability"
+            },
+            {
+              "items": [
+                "minecraft:iron_ingot"
+              ],
+              "repair_amount": "query.max_durability * 0.25"
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/netherite_spear.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:repairable/",
+        "content": {
+          "repair_items": [
+            {
+              "items": [
+                "minecraft:netherite_spear"
+              ],
+              "repair_amount": "context.other->query.remaining_durability"
+            },
+            {
+              "items": [
+                "minecraft:netherite_ingot"
+              ],
+              "repair_amount": "query.max_durability * 0.25"
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/stone_spear.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:repairable/",
+        "content": {
+          "repair_items": [
+            {
+              "items": [
+                "minecraft:stone_spear"
+              ],
+              "repair_amount": "context.other->query.remaining_durability"
+            },
+            {
+              "items": [
+                {
+                  "tags": "q.all_tags('minecraft:stone_tool_materials')"
+                }
+              ],
+              "repair_amount": "query.max_durability * 0.25"
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/wooden_spear.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:repairable/",
+        "content": {
+          "repair_items": [
+            {
+              "items": [
+                "minecraft:wooden_spear"
+              ],
+              "repair_amount": "context.other->query.remaining_durability"
+            },
+            {
+              "items": [
+                {
+                  "tags": "q.all_tags('minecraft:planks')"
+                }
+              ],
+              "repair_amount": "query.max_durability * 0.25"
+            }
+          ]
+        }
+      }
+    ],
     "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/axe_turret_kit.item.json": [
       {
         "path": "/minecraft:item/components/minecraft:repairable/",

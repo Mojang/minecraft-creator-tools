@@ -12,17 +12,29 @@
           {
             "id": "__DEP_fltrs",
             "title": "DEP Fltrs",
-            "dataType": 16
+            "dataType": 16,
+            "defaultValue": {}
           },
           {
             "id": "__DEP_fnctns",
             "title": "DEP Fnctns",
-            "dataType": 16
+            "dataType": 16,
+            "defaultValue": {}
           },
           {
             "id": "filters",
             "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects.",
             "dataType": 16,
+            "defaultValue": {
+              "AND": null,
+              "NOT": null,
+              "OR": null,
+              "all": null,
+              "all_of": null,
+              "any": null,
+              "any_of": null,
+              "none_of": null
+            },
             "subForm": {
               "id": "filters",
               "title": "Filters",
@@ -81,12 +93,17 @@
           {
             "id": "price_multiplier",
             "title": "Price Multiplier",
-            "dataType": 3
+            "dataType": 3,
+            "defaultValue": 0
           },
           {
             "id": "quantity",
             "title": "Quantity",
             "dataType": 0,
+            "defaultValue": {
+              "max": 1,
+              "min": 1
+            },
             "alternates": [
               {
                 "id": "quantity",
@@ -99,6 +116,7 @@
                       "id": "max",
                       "title": "Max",
                       "dataType": 0,
+                      "defaultValue": 1,
                       "validity": [
                         {
                           "comparison": ">=",
@@ -110,6 +128,7 @@
                       "id": "min",
                       "title": "Min",
                       "dataType": 0,
+                      "defaultValue": 1,
                       "validity": [
                         {
                           "comparison": ">=",
@@ -148,17 +167,20 @@
     {
       "id": "max_uses",
       "title": "Max Uses",
-      "dataType": 0
+      "dataType": 0,
+      "defaultValue": 7
     },
     {
       "id": "reward_exp",
       "title": "Reward Exp",
-      "dataType": 1
+      "dataType": 1,
+      "defaultValue": true
     },
     {
       "id": "trader_exp",
       "title": "Trader Exp",
-      "dataType": 0
+      "dataType": 0,
+      "defaultValue": 1
     },
     {
       "id": "wants",
@@ -171,17 +193,29 @@
           {
             "id": "__DEP_fltrs",
             "title": "DEP Fltrs",
-            "dataType": 16
+            "dataType": 16,
+            "defaultValue": {}
           },
           {
             "id": "__DEP_fnctns",
             "title": "DEP Fnctns",
-            "dataType": 16
+            "dataType": 16,
+            "defaultValue": {}
           },
           {
             "id": "filters",
             "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects.",
             "dataType": 16,
+            "defaultValue": {
+              "AND": null,
+              "NOT": null,
+              "OR": null,
+              "all": null,
+              "all_of": null,
+              "any": null,
+              "any_of": null,
+              "none_of": null
+            },
             "subForm": {
               "id": "filters",
               "title": "Filters",
@@ -240,12 +274,17 @@
           {
             "id": "price_multiplier",
             "title": "Price Multiplier",
-            "dataType": 3
+            "dataType": 3,
+            "defaultValue": 0
           },
           {
             "id": "quantity",
             "title": "Quantity",
             "dataType": 0,
+            "defaultValue": {
+              "max": 1,
+              "min": 1
+            },
             "alternates": [
               {
                 "id": "quantity",
@@ -258,6 +297,7 @@
                       "id": "max",
                       "title": "Max",
                       "dataType": 0,
+                      "defaultValue": 1,
                       "validity": [
                         {
                           "comparison": ">=",
@@ -269,6 +309,7 @@
                       "id": "min",
                       "title": "Min",
                       "dataType": 0,
+                      "defaultValue": 1,
                       "validity": [
                         {
                           "comparison": ">=",
@@ -308,6 +349,7 @@
       "id": "weight",
       "title": "Weight",
       "dataType": 0,
+      "defaultValue": 1,
       "validity": [
         {
           "comparison": ">=",

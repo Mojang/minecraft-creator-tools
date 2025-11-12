@@ -8,6 +8,7 @@ import IFile from "../storage/IFile";
 import ProjectInfoSet from "./ProjectInfoSet";
 import Project from "../app/Project";
 import ContentIndex from "../core/ContentIndex";
+import StorageUtilities, { PackContainerFolderHints, PackFolderHints } from "../storage/StorageUtilities";
 
 export enum PathLengthFileGeneratorTest {
   filePathExceeds8DirectorySegments = 102,
@@ -83,22 +84,7 @@ export default class PathLengthFileGenerator implements IProjectFileInfoGenerato
       );
     }
 
-    const packContentFolderHints = [
-      "bp",
-      "rp",
-      "resource pack",
-      "resource packs",
-      "content/resource_packs",
-      "behavior pack",
-      "behavior packs",
-      "content/behavior_packs",
-      "skin pack",
-      "skin packs",
-      "content/skin_packs",
-      "world_template",
-    ];
-
-    for (const hint of packContentFolderHints) {
+    for (const hint of PackContainerFolderHints) {
       const hintIndex = path.toLowerCase().indexOf("/" + hint + "/");
 
       if (hintIndex >= 0) {
@@ -106,18 +92,7 @@ export default class PathLengthFileGenerator implements IProjectFileInfoGenerato
       }
     }
 
-    const packStarterFolderHints = [
-      "resource_packs",
-      "behavior_packs",
-      "resource_pack",
-      "behavior_pack",
-      "world_templates",
-      "world_template",
-      "skin_packs",
-      "skin_pack",
-    ];
-
-    for (const hint of packStarterFolderHints) {
+    for (const hint of PackFolderHints) {
       if (path.toLowerCase().startsWith("/" + hint + "/")) {
         path = path.substring(hint.length + 2);
       }

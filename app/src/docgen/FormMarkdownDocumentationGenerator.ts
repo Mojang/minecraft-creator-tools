@@ -42,6 +42,7 @@ export enum ExportMode {
   molang = 17,
   culling = 18,
   manifest = 19,
+  blockCullingComponents = 20,
 }
 
 export default class FormMarkdownDocumentationGenerator {
@@ -168,6 +169,16 @@ export default class FormMarkdownDocumentationGenerator {
       "/entityevents/",
       "Entity Actions",
       "Entity Action Types"
+    );
+
+    await this.exportMarkdownCatalogDocs(
+      formsByPath,
+      outputFolder,
+      ExportMode.blockCullingComponents,
+      "/BlockCullingReference/Examples/BlockCullingRules/",
+      "/client_block/",
+      "Block Culling",
+      "Block Culling"
     );
 
     await this.exportMarkdownCatalogDocs(
@@ -1598,6 +1609,8 @@ export default class FormMarkdownDocumentationGenerator {
         index++;
       }
       return result + "]";
+    } else if (typeof value === "object") {
+      return JSON.stringify(value);
     }
 
     return value.toString();

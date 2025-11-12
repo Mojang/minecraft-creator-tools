@@ -1,13 +1,13 @@
 import { Component, SyntheticEvent } from "react";
 import IAppProps from "./IAppProps";
 import "./MinecraftToolEditor.css";
-import { CartoMinecraftState } from "../app/Carto";
+import { CreatorToolsMinecraftState } from "../app/CreatorTools";
 import { Dropdown, DropdownProps, Input, InputProps, ThemeInput, Toolbar } from "@fluentui/react-northstar";
 import FunctionEditor from "./FunctionEditor";
 import IPersistable from "./IPersistable";
 import IMinecraft from "../app/IMinecraft";
 import Utilities from "../core/Utilities";
-import CartoApp, { HostType } from "../app/CartoApp";
+import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
 import TextEditor from "./TextEditor";
 import { CustomToolType } from "../app/ICustomTool";
 import JavaScriptEditor, { ScriptEditorRole } from "./JavaScriptEditor";
@@ -15,6 +15,7 @@ import { ProjectScriptLanguage } from "../app/IProjectData";
 import Project from "../app/Project";
 import LogItemArea from "./LogItemArea";
 import { ProjectStatusAreaMode } from "./ProjectEditor";
+import { StatusTopic } from "../app/Status";
 
 interface IMinecraftToolEditorProps extends IAppProps {
   heightOffset: number;
@@ -55,7 +56,7 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
     this.state = {
       activeCommandIndex: 0,
       toolName: this.getNameForTool(0),
-      minecraftStatus: ProjectStatusAreaMode.expanded,
+      minecraftStatus: ProjectStatusAreaMode.minimized,
     };
   }
 
@@ -63,27 +64,29 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
     this._activeEditorPersistable = newPersistable;
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this._activeEditorPersistable !== undefined) {
-      await this._activeEditorPersistable.persist();
+      return await this._activeEditorPersistable.persist();
     }
+
+    return false;
   }
 
-  _connectionStateChanged(minecraft: IMinecraft, connectionState: CartoMinecraftState) {
+  _connectionStateChanged(minecraft: IMinecraft, connectionState: CreatorToolsMinecraftState) {
     this.forceUpdate();
   }
 
   componentDidUpdate(prevProps: IMinecraftToolEditorProps, prevState: IMinecraftToolEditorState) {
-    if (prevProps !== undefined && prevProps.carto !== undefined) {
-      prevProps.carto.onMinecraftStateChanged.unsubscribe(this._connectionStateChanged);
+    if (prevProps !== undefined && prevProps.creatorTools !== undefined) {
+      prevProps.creatorTools.onMinecraftStateChanged.unsubscribe(this._connectionStateChanged);
     }
 
     this._connectToProps();
   }
 
   _connectToProps() {
-    if (this.props.carto !== undefined) {
-      this.props.carto.onMinecraftStateChanged.subscribe(this._connectionStateChanged);
+    if (this.props.creatorTools !== undefined) {
+      this.props.creatorTools.onMinecraftStateChanged.subscribe(this._connectionStateChanged);
     }
   }
 
@@ -96,13 +99,13 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
   }
 
   _updateToolContent(newFunction: string) {
-    const command = this.props.carto.getCustomTool(this.state.activeCommandIndex);
+    const command = this.props.creatorTools.getCustomTool(this.state.activeCommandIndex);
 
     command.text = newFunction;
   }
 
   _updatePreferredTextSize(newTextSize: number) {
-    this.props.carto.preferredTextSize = newTextSize;
+    this.props.creatorTools.preferredTextSize = newTextSize;
   }
 
   async _handleCommandChange(
@@ -127,7 +130,7 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
     event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
     data: DropdownProps
   ) {
-    const customTool = this.props.carto.getCustomTool(this.state.activeCommandIndex);
+    const customTool = this.props.creatorTools.getCustomTool(this.state.activeCommandIndex);
 
     if (data.value === "Script") {
       customTool.type = CustomToolType.script;
@@ -145,11 +148,11 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
       return;
     }
 
-    const customTool = this.props.carto.getCustomTool(this.state.activeCommandIndex);
+    const customTool = this.props.creatorTools.getCustomTool(this.state.activeCommandIndex);
 
     customTool.name = data.value;
 
-    this.props.carto.save();
+    this.props.creatorTools.save();
 
     this.persist();
 
@@ -169,7 +172,7 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
   }
 
   getNameForTool(index: number) {
-    const customTool = this.props.carto.getCustomTool(index);
+    const customTool = this.props.creatorTools.getCustomTool(index);
 
     let name = "Tool " + (index + 1);
 
@@ -191,7 +194,7 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
 
     let content = "";
 
-    const command = this.props.carto.getCustomTool(this.state.activeCommandIndex);
+    const command = this.props.creatorTools.getCustomTool(this.state.activeCommandIndex);
 
     if (command.text) {
       content = command.text;
@@ -206,19 +209,19 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
     }
 
     let interior = <></>;
-    const customTool = this.props.carto.getCustomTool(this.state.activeCommandIndex);
+    const customTool = this.props.creatorTools.getCustomTool(this.state.activeCommandIndex);
 
-    if (Utilities.isDebug && CartoApp.hostType === HostType.electronWeb) {
+    if (Utilities.isDebug && CreatorToolsHost.hostType === HostType.electronWeb) {
       interior = (
         <TextEditor
           theme={this.props.theme}
           onUpdatePreferredTextSize={this._updatePreferredTextSize}
-          preferredTextSize={this.props.carto.preferredTextSize}
+          preferredTextSize={this.props.creatorTools.preferredTextSize}
           readOnly={false}
           project={this.props.project}
           runCommandButton={true}
           onUpdateContent={this._updateToolContent}
-          carto={this.props.carto}
+          creatorTools={this.props.creatorTools}
           initialContent={content}
         />
       );
@@ -226,13 +229,13 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
       interior = (
         <JavaScriptEditor
           theme={this.props.theme}
-          carto={this.props.carto}
+          creatorTools={this.props.creatorTools}
           initialContent={content}
           onUpdateContent={this._updateToolContent}
           readOnly={false}
           scriptLanguage={ProjectScriptLanguage.typeScript}
           role={ScriptEditorRole.script}
-          preferredTextSize={this.props.carto.preferredTextSize}
+          preferredTextSize={this.props.creatorTools.preferredTextSize}
           setActivePersistable={this._handleNewChildPersistable}
           onUpdatePreferredTextSize={this._updatePreferredTextSize}
           heightOffset={this.props.heightOffset + 240}
@@ -248,8 +251,8 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
           roleId={"toolEditor"}
           onUpdateContent={this._updateToolContent}
           readOnly={false}
-          carto={this.props.carto}
-          preferredTextSize={this.props.carto.preferredTextSize}
+          creatorTools={this.props.creatorTools}
+          preferredTextSize={this.props.creatorTools.preferredTextSize}
           setActivePersistable={this._handleNewChildPersistable}
           onUpdatePreferredTextSize={this._updatePreferredTextSize}
           heightOffset={this.props.heightOffset + 240}
@@ -302,8 +305,9 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
           <div className="mts-interior">{interior}</div>
           <div className="mts-logArea">
             <LogItemArea
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               onSetExpandedSize={this._statusExpandedSizeChanged}
+              filterTopics={[StatusTopic.minecraft]}
               mode={this.state.minecraftStatus}
               widthOffset={this.props.widthOffset}
             />
