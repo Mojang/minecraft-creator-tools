@@ -299,6 +299,7 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
 
       if (!this._trackingUpdates) {
         this._trackingUpdates = true;
+
         this._scriptsFolder = scriptsFolder;
 
         if (!scriptsFolder.storage.onFileAdded.has(this._handleFileStateAdded)) {
@@ -334,7 +335,9 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
   }
 
   _handleFileStateChanged(storage: IStorage, fileUpdate: IFileUpdateEvent) {
-    this._updateFiles(fileUpdate.file.storageRelativePath);
+    if (fileUpdate.sourceId !== this.getEditorInstanceId()) {
+      this._updateFiles(fileUpdate.file.storageRelativePath);
+    }
   }
 
   _updateFiles(path: string) {
@@ -415,6 +418,10 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
     return baseUri;
   }
 
+  getEditorInstanceId() {
+    return "JavaScriptEditor|" + (this.props.file ? this.props.file.extendedPath : "noFile");
+  }
+
   async _ensureModelForFile(monacoInstance: any, parentFolder: IFolder, file: IFile) {
     const baseUri = JavaScriptEditor.getUriForFile(file, this.props.scriptLanguage);
     let lang = "javascript";
@@ -441,7 +448,7 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
       ) {
         content = file.content as string;
 
-        tsFile.setContentIfSemanticallyDifferent(content);
+        tsFile.setContentIfSemanticallyDifferent(content, FileUpdateType.regularEdit, this.getEditorInstanceId());
       } else {
         content = tsFile.content as string;
       }
@@ -475,7 +482,11 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
 
   _handleContentUpdated(newValue: string | undefined, event: any) {
     if (this.editor && this.props.file && !this.props.readOnly && newValue) {
-      this.props.file.setContentIfSemanticallyDifferent(newValue);
+      this.props.file.setContentIfSemanticallyDifferent(
+        newValue,
+        FileUpdateType.regularEdit,
+        this.getEditorInstanceId()
+      );
     }
   }
 
@@ -528,7 +539,13 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
       const value = this.editor.getValue();
 
       if (value) {
-        if (this.props.file.setContentIfSemanticallyDifferent(value)) {
+        if (
+          this.props.file.setContentIfSemanticallyDifferent(
+            value,
+            FileUpdateType.regularEdit,
+            this.getEditorInstanceId()
+          )
+        ) {
           didPersist = true;
 
           if (StorageUtilities.getTypeFromName(file.name) === "ts") {
@@ -567,7 +584,11 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
         if (result.outputFiles.length > 0) {
           const jsContent = result.outputFiles[0].text;
 
-          jsFile.setContentIfSemanticallyDifferent(jsContent, FileUpdateType.versionlessEdit);
+          jsFile.setContentIfSemanticallyDifferent(
+            jsContent,
+            FileUpdateType.versionlessEdit,
+            this.getEditorInstanceId()
+          );
 
           if (doSave) {
             jsFile.saveContent();

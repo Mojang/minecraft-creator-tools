@@ -52,8 +52,16 @@ export default interface IFile extends IStorageObject {
   getRootRelativePath(): string | undefined;
   getFolderRelativePath(toFolder: IFolder): string | undefined;
   loadContent(force?: boolean, forceEncoding?: EncodingType): Promise<Date>;
-  setObjectContentIfSemanticallyDifferent(value: object | null | undefined, updateType?: FileUpdateType): boolean;
-  setContentIfSemanticallyDifferent(content: string | Uint8Array, updateType?: FileUpdateType): boolean;
-  setContent(content: string | Uint8Array, updateType?: FileUpdateType): boolean;
+  setObjectContentIfSemanticallyDifferent(
+    value: object | null | undefined,
+    updateType?: FileUpdateType,
+    sourceId?: string
+  ): boolean;
+  setContentIfSemanticallyDifferent(
+    content: string | Uint8Array,
+    updateType?: FileUpdateType,
+    sourceId?: string
+  ): boolean;
+  setContent(content: string | Uint8Array, updateType?: FileUpdateType, sourceId?: string): boolean;
   saveContent(force?: boolean): Promise<Date>;
 }

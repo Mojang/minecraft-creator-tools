@@ -21,6 +21,7 @@ export interface IFolderMove {
 export interface IFileUpdateEvent {
   file: IFile;
   updateType: FileUpdateType;
+  sourceId?: string;
   priorVersion?: IVersionContent;
 }
 

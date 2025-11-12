@@ -85,7 +85,7 @@ export default class File extends FileBase implements IFile {
     return true;
   }
 
-  setContent(newContent: string | Uint8Array | null, updateType?: FileUpdateType) {
+  setContent(newContent: string | Uint8Array | null, updateType?: FileUpdateType, sourceId?: string) {
     if (this._content === newContent) {
       return false;
     }
@@ -101,7 +101,7 @@ export default class File extends FileBase implements IFile {
 
     this._content = newContent;
 
-    this.contentWasModified(oldContent, updateType);
+    this.contentWasModified(oldContent, updateType, sourceId);
 
     return true;
   }

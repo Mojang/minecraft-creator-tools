@@ -37,41 +37,41 @@
     "defaultResourcePackDescription": "A comprehensive resource pack for testing different content types",
     "subpackCount": 0,
     "entityTypeComponents": [
-      "behavior.look_at_player",
-      "behavior.random_look_around",
-      "behavior.random_stroll",
-      "can_climb",
-      "collision_box",
-      "health",
-      "jump.static",
-      "movement",
-      "movement.basic",
-      "navigation.walk",
-      "physics",
-      "pushable",
-      "type_family"
+      "minecraftBehaviorLookAtPlayer",
+      "minecraftBehaviorRandomLookAround",
+      "minecraftBehaviorRandomStroll",
+      "minecraftCanClimb",
+      "minecraftCollisionBox",
+      "minecraftHealth",
+      "minecraftJumpStatic",
+      "minecraftMovement",
+      "minecraftMovementBasic",
+      "minecraftNavigationWalk",
+      "minecraftPhysics",
+      "minecraftPushable",
+      "minecraftTypeFamily"
     ],
     "blockTypeComponents": [
-      "destructible_by_explosion",
-      "destructible_by_mining",
-      "flammable",
-      "friction",
-      "light_emission",
-      "map_color",
-      "material_instances"
+      "minecraftDestructibleByExplosion",
+      "minecraftDestructibleByMining",
+      "minecraftFlammable",
+      "minecraftFriction",
+      "minecraftLightEmission",
+      "minecraftMapColor",
+      "minecraftMaterialInstances"
     ],
     "itemTypeComponents": [
-      "can_destroy_in_creative",
-      "digger",
-      "display_name",
-      "durability",
-      "enchantable",
-      "foil",
-      "hand_equipped",
-      "icon",
-      "max_stack_size",
-      "stacked_by_data",
-      "weapon"
+      "minecraftCanDestroyInCreative",
+      "minecraftDigger",
+      "minecraftDisplayName",
+      "minecraftDurability",
+      "minecraftEnchantable",
+      "minecraftFoil",
+      "minecraftHandEquipped",
+      "minecraftIcon",
+      "minecraftMaxStackSize",
+      "minecraftStackedByData",
+      "minecraftWeapon"
     ],
     "apisUsed": [],
     "mctoolsVersion": 10002009,
@@ -151,626 +151,626 @@
       "tp"
     ],
     "featureSets": {
-      "Runtime Identifier (no runtime identifier)": {
-        "Count": 1
-      },
-      "Identifier (no override identifier)": {
-        "Count": 3
-      },
-      "Metadata Spawnable Entity Type": {
-        "Count": 1
-      },
-      "Metadata Summonable Entity Type": {
-        "Count": 1
-      },
-      "Entity Geometry Cubes": {
-        "Instance Count": 1,
-        "Total": 2,
-        "Max": 2,
-        "Min": 2,
-        "Average": 2
-      },
-      "Entity Type Default Components": {
-        "minecraft:type_family": 1,
-        "minecraft:collision_box": 1,
-        "minecraft:health": 1,
-        "minecraft:movement": 1,
-        "minecraft:navigation.walk": 1,
-        "minecraft:movement.basic": 1,
-        "minecraft:jump.static": 1,
-        "minecraft:can_climb": 1,
-        "minecraft:physics": 1,
-        "minecraft:pushable": 1,
-        "minecraft:behavior.look_at_player": 1,
-        "minecraft:behavior.random_stroll": 1,
-        "minecraft:behavior.random_look_around": 1
-      },
-      "Block Type Block Default Components": {
-        "minecraft:destructible_by_mining": 1,
-        "minecraft:destructible_by_explosion": 1,
-        "minecraft:flammable": 1,
-        "minecraft:friction": 1,
-        "minecraft:light_emission": 1,
-        "minecraft:map_color": 1,
-        "minecraft:material_instances": 1
-      },
-      "Item Type Components": {
-        "minecraft:icon": 2,
-        "minecraft:display_name": 2,
-        "minecraft:hand_equipped": 2,
-        "minecraft:stacked_by_data": 1,
-        "minecraft:foil": 1,
-        "minecraft:max_stack_size": 1,
-        "minecraft:durability": 2,
-        "minecraft:enchantable": 1,
-        "minecraft:weapon": 1,
-        "minecraft:can_destroy_in_creative": 1,
-        "minecraft:digger": 1
-      },
-      "JavaScript Size": {
-        "Instance Count": 1,
-        "Total": 783,
-        "Max": 783,
-        "Min": 783,
-        "Average": 783
-      },
-      "JavaScript Lines": {
-        "Instance Count": 1,
-        "Total": 21,
-        "Max": 21,
-        "Min": 21,
-        "Average": 21
-      },
-      "Behavior pack manifest Size": {
-        "Instance Count": 1,
-        "Total": 515,
-        "Max": 515,
-        "Min": 515,
-        "Average": 515
-      },
-      "Behavior pack manifest Lines": {
-        "Instance Count": 1,
-        "Total": 22,
-        "Max": 22,
-        "Min": 22,
-        "Average": 22
-      },
-      "Function Size": {
-        "Instance Count": 2,
-        "Total": 762,
-        "Max": 658,
-        "Min": 104,
-        "Average": 381
-      },
-      "Function Lines": {
-        "Instance Count": 2,
-        "Total": 23,
-        "Max": 19,
-        "Min": 4,
-        "Average": 12
-      },
-      "Entity type Size": {
-        "Instance Count": 1,
-        "Total": 851,
-        "Max": 851,
-        "Min": 851,
-        "Average": 851
-      },
-      "Entity type Lines": {
-        "Instance Count": 1,
-        "Total": 47,
-        "Max": 47,
-        "Min": 47,
-        "Average": 47
-      },
-      "Resource pack manifest Size": {
-        "Instance Count": 1,
-        "Total": 336,
-        "Max": 336,
-        "Min": 336,
-        "Average": 336
-      },
-      "Resource pack manifest Lines": {
-        "Instance Count": 1,
-        "Total": 13,
-        "Max": 13,
-        "Min": 13,
-        "Average": 13
-      },
-      "Behavior pack animation Size": {
-        "Instance Count": 1,
-        "Total": 358,
-        "Max": 358,
-        "Min": 358,
-        "Average": 358
-      },
-      "Behavior pack animation Lines": {
-        "Instance Count": 1,
-        "Total": 24,
-        "Max": 24,
-        "Min": 24,
-        "Average": 24
-      },
-      "Behavior pack animation controller Size": {
-        "Instance Count": 1,
-        "Total": 376,
-        "Max": 376,
-        "Min": 376,
-        "Average": 376
-      },
-      "Behavior pack animation controller Lines": {
-        "Instance Count": 1,
-        "Total": 19,
-        "Max": 19,
-        "Min": 19,
-        "Average": 19
-      },
-      "Block type Size": {
-        "Instance Count": 1,
-        "Total": 552,
-        "Max": 552,
-        "Min": 552,
-        "Average": 552
-      },
-      "Block type Lines": {
-        "Instance Count": 1,
-        "Total": 27,
-        "Max": 27,
-        "Min": 27,
-        "Average": 27
-      },
-      "Item type Size": {
-        "Instance Count": 2,
-        "Total": 1124,
-        "Max": 601,
-        "Min": 523,
-        "Average": 562
-      },
-      "Item type Lines": {
-        "Instance Count": 2,
-        "Total": 63,
-        "Max": 34,
-        "Min": 29,
-        "Average": 32
-      },
-      "Loot table Size": {
-        "Instance Count": 2,
-        "Total": 600,
-        "Max": 395,
-        "Min": 205,
-        "Average": 300
-      },
-      "Loot table Lines": {
-        "Instance Count": 2,
-        "Total": 47,
-        "Max": 31,
-        "Min": 16,
-        "Average": 24
-      },
-      "Animation Size": {
-        "Instance Count": 1,
-        "Total": 403,
-        "Max": 403,
-        "Min": 403,
-        "Average": 403
-      },
-      "Animation Lines": {
-        "Instance Count": 1,
-        "Total": 30,
-        "Max": 30,
-        "Min": 30,
-        "Average": 30
-      },
-      "Animation controller Size": {
-        "Instance Count": 1,
-        "Total": 403,
-        "Max": 403,
-        "Min": 403,
-        "Average": 403
-      },
-      "Animation controller Lines": {
-        "Instance Count": 1,
-        "Total": 19,
-        "Max": 19,
-        "Min": 19,
-        "Average": 19
-      },
-      "Entity type visuals/audio Size": {
-        "Instance Count": 1,
-        "Total": 514,
-        "Max": 514,
-        "Min": 514,
-        "Average": 514
-      },
-      "Entity type visuals/audio Lines": {
-        "Instance Count": 1,
-        "Total": 21,
-        "Max": 21,
-        "Min": 21,
-        "Average": 21
-      },
-      "Model Size": {
-        "Instance Count": 1,
-        "Total": 437,
-        "Max": 437,
-        "Min": 437,
-        "Average": 437
-      },
-      "Model Lines": {
-        "Instance Count": 1,
-        "Total": 26,
-        "Max": 26,
-        "Min": 26,
-        "Average": 26
-      },
-      "Particle Size": {
-        "Instance Count": 1,
-        "Total": 661,
-        "Max": 661,
-        "Min": 661,
-        "Average": 661
-      },
-      "Particle Lines": {
-        "Instance Count": 1,
-        "Total": 30,
-        "Max": 30,
-        "Min": 30,
-        "Average": 30
-      },
-      "Render controller Size": {
-        "Instance Count": 1,
-        "Total": 187,
-        "Max": 187,
-        "Min": 187,
-        "Average": 187
-      },
-      "Render controller Lines": {
-        "Instance Count": 1,
-        "Total": 7,
-        "Max": 7,
-        "Min": 7,
-        "Average": 7
-      },
-      "Language catalog Size": {
-        "Instance Count": 1,
-        "Total": 9,
-        "Max": 9,
-        "Min": 9,
-        "Average": 9
-      },
-      "Language catalog Lines": {
-        "Instance Count": 1,
-        "Total": 2,
-        "Max": 2,
-        "Min": 2,
-        "Average": 2
-      },
-      "Entity dialogue Size": {
-        "Instance Count": 1,
-        "Total": 375,
-        "Max": 375,
-        "Min": 375,
-        "Average": 375
-      },
-      "Entity dialogue Lines": {
-        "Instance Count": 1,
-        "Total": 27,
-        "Max": 27,
-        "Min": 27,
-        "Average": 27
-      },
-      "Recipe Size": {
-        "Instance Count": 2,
-        "Total": 501,
-        "Max": 254,
-        "Min": 247,
-        "Average": 251
-      },
-      "Recipe Lines": {
-        "Instance Count": 2,
-        "Total": 34,
-        "Max": 19,
-        "Min": 15,
-        "Average": 17
-      },
-      "Spawn rule Size": {
-        "Instance Count": 1,
-        "Total": 638,
-        "Max": 638,
-        "Min": 638,
-        "Average": 638
-      },
-      "Spawn rule Lines": {
-        "Instance Count": 1,
-        "Total": 38,
-        "Max": 38,
-        "Min": 38,
-        "Average": 38
-      },
-      "Trading Size": {
-        "Instance Count": 1,
-        "Total": 296,
-        "Max": 296,
-        "Min": 296,
-        "Average": 296
-      },
-      "Trading Lines": {
-        "Instance Count": 1,
-        "Total": 22,
-        "Max": 22,
-        "Min": 22,
-        "Average": 22
-      },
-      "Attachable Size": {
-        "Instance Count": 1,
-        "Total": 421,
-        "Max": 421,
-        "Min": 421,
-        "Average": 421
-      },
-      "Attachable Lines": {
-        "Instance Count": 1,
-        "Total": 18,
-        "Max": 18,
-        "Min": 18,
-        "Average": 18
-      },
-      "Language translations Size": {
-        "Instance Count": 1,
-        "Total": 87,
-        "Max": 87,
-        "Min": 87,
-        "Average": 87
-      },
-      "Language translations Lines": {
-        "Instance Count": 1,
-        "Total": 3,
-        "Max": 3,
-        "Min": 3,
-        "Average": 3
-      },
-      "Animations Resource": {
-        "Count": 1
-      },
-      "Bones Resource Animation Bone": {
-        "Count": 4
-      },
-      "Bones Resource Animation Bone Position Continuous": {
-        "Count": 4
-      },
-      "Bones Resource Animation Bone Rotation Continuous": {
-        "Count": 4
-      },
-      "Bones Resource Animation Bone Rotation Keyframe": {
-        "Count": 36
-      },
-      "Textures Attachable Resource Count": {
-        "Count": 1
-      },
-      "Textures Entity Resource Count": {
-        "Count": 1
-      },
-      "Textures Texture References": {
-        "Count": 1
-      },
-      "Textures Entity References": {
-        "Count": 1
-      },
-      "Textures Unique Texture Handles (estimated)": {
-        "Count": 2
-      },
-      "Textures Unique Texture Paths": {
-        "Count": 2
-      },
-      "Textures Unique Particle Texture References": {
-        "Count": 1
-      },
-      "Textures Unique Entity Texture Paths": {
-        "Count": 1
-      },
-      "Texture Images Tier0 Non-Vanilla Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier0 Total Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier0 Block Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier0 Item Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier1 Non-Vanilla Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier1 Total Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier1 Block Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier1 Item Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier2 Non-Vanilla Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier2 Total Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier2 Block Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier2 Item Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier3 Non-Vanilla Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier3 Total Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier3 Block Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier3 Item Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier4 Non-Vanilla Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier4 Total Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier4 Block Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier4 Item Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier5 Non-Vanilla Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier5 Total Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier5 Block Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier5 Item Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Command #": {
-        "Count": 8
-      },
-      "Command execute": {
-        "Count": 4
-      },
-      "Command scoreboard": {
-        "Count": 2
-      },
-      "Command particle": {
-        "Count": 1
-      },
-      "Command playsound": {
-        "Count": 1
-      },
-      "Command tp": {
-        "Count": 1
-      },
-      "Command effect": {
-        "Count": 1
-      },
-      "Command setblock": {
-        "Count": 1
-      },
-      "Command fill": {
-        "Count": 1
-      },
-      "Command say": {
-        "Count": 1
-      },
-      "Command give": {
-        "Count": 1
-      },
-      "Command summon": {
-        "Count": 1
+      "runtimeIdentifier.noRuntimeIdentifier": {
+        "count": 1
+      },
+      "identifier.noOverrideIdentifier": {
+        "count": 3
+      },
+      "metadata.spawnableEntityType": {
+        "count": 1
+      },
+      "metadata.summonableEntityType": {
+        "count": 1
+      },
+      "entityGeometry.cubes": {
+        "instanceCount": 1,
+        "total": 2,
+        "max": 2,
+        "min": 2,
+        "average": 2
+      },
+      "entityType.defaultComponents": {
+        "minecraftTypeFamily": 1,
+        "minecraftCollisionBox": 1,
+        "minecraftHealth": 1,
+        "minecraftMovement": 1,
+        "minecraftNavigationWalk": 1,
+        "minecraftMovementBasic": 1,
+        "minecraftJumpStatic": 1,
+        "minecraftCanClimb": 1,
+        "minecraftPhysics": 1,
+        "minecraftPushable": 1,
+        "minecraftBehaviorLookAtPlayer": 1,
+        "minecraftBehaviorRandomStroll": 1,
+        "minecraftBehaviorRandomLookAround": 1
+      },
+      "blockType.blockDefaultComponents": {
+        "minecraftDestructibleByMining": 1,
+        "minecraftDestructibleByExplosion": 1,
+        "minecraftFlammable": 1,
+        "minecraftFriction": 1,
+        "minecraftLightEmission": 1,
+        "minecraftMapColor": 1,
+        "minecraftMaterialInstances": 1
+      },
+      "itemType.components": {
+        "minecraftIcon": 2,
+        "minecraftDisplayName": 2,
+        "minecraftHandEquipped": 2,
+        "minecraftStackedByData": 1,
+        "minecraftFoil": 1,
+        "minecraftMaxStackSize": 1,
+        "minecraftDurability": 2,
+        "minecraftEnchantable": 1,
+        "minecraftWeapon": 1,
+        "minecraftCanDestroyInCreative": 1,
+        "minecraftDigger": 1
+      },
+      "javaScript.size": {
+        "instanceCount": 1,
+        "total": 783,
+        "max": 783,
+        "min": 783,
+        "average": 783
+      },
+      "javaScript.lines": {
+        "instanceCount": 1,
+        "total": 21,
+        "max": 21,
+        "min": 21,
+        "average": 21
+      },
+      "behaviorPackManifest.size": {
+        "instanceCount": 1,
+        "total": 515,
+        "max": 515,
+        "min": 515,
+        "average": 515
+      },
+      "behaviorPackManifest.lines": {
+        "instanceCount": 1,
+        "total": 22,
+        "max": 22,
+        "min": 22,
+        "average": 22
+      },
+      "function.size": {
+        "instanceCount": 2,
+        "total": 762,
+        "max": 658,
+        "min": 104,
+        "average": 381
+      },
+      "function.lines": {
+        "instanceCount": 2,
+        "total": 23,
+        "max": 19,
+        "min": 4,
+        "average": 12
+      },
+      "entityType.size": {
+        "instanceCount": 1,
+        "total": 851,
+        "max": 851,
+        "min": 851,
+        "average": 851
+      },
+      "entityType.lines": {
+        "instanceCount": 1,
+        "total": 47,
+        "max": 47,
+        "min": 47,
+        "average": 47
+      },
+      "resourcePackManifest.size": {
+        "instanceCount": 1,
+        "total": 336,
+        "max": 336,
+        "min": 336,
+        "average": 336
+      },
+      "resourcePackManifest.lines": {
+        "instanceCount": 1,
+        "total": 13,
+        "max": 13,
+        "min": 13,
+        "average": 13
+      },
+      "behaviorPackAnimation.size": {
+        "instanceCount": 1,
+        "total": 358,
+        "max": 358,
+        "min": 358,
+        "average": 358
+      },
+      "behaviorPackAnimation.lines": {
+        "instanceCount": 1,
+        "total": 24,
+        "max": 24,
+        "min": 24,
+        "average": 24
+      },
+      "behaviorPackAnimationController.size": {
+        "instanceCount": 1,
+        "total": 376,
+        "max": 376,
+        "min": 376,
+        "average": 376
+      },
+      "behaviorPackAnimationController.lines": {
+        "instanceCount": 1,
+        "total": 19,
+        "max": 19,
+        "min": 19,
+        "average": 19
+      },
+      "blockType.size": {
+        "instanceCount": 1,
+        "total": 552,
+        "max": 552,
+        "min": 552,
+        "average": 552
+      },
+      "blockType.lines": {
+        "instanceCount": 1,
+        "total": 27,
+        "max": 27,
+        "min": 27,
+        "average": 27
+      },
+      "itemType.size": {
+        "instanceCount": 2,
+        "total": 1124,
+        "max": 601,
+        "min": 523,
+        "average": 562
+      },
+      "itemType.lines": {
+        "instanceCount": 2,
+        "total": 63,
+        "max": 34,
+        "min": 29,
+        "average": 32
+      },
+      "lootTable.size": {
+        "instanceCount": 2,
+        "total": 600,
+        "max": 395,
+        "min": 205,
+        "average": 300
+      },
+      "lootTable.lines": {
+        "instanceCount": 2,
+        "total": 47,
+        "max": 31,
+        "min": 16,
+        "average": 24
+      },
+      "animation.size": {
+        "instanceCount": 1,
+        "total": 403,
+        "max": 403,
+        "min": 403,
+        "average": 403
+      },
+      "animation.lines": {
+        "instanceCount": 1,
+        "total": 30,
+        "max": 30,
+        "min": 30,
+        "average": 30
+      },
+      "animationController.size": {
+        "instanceCount": 1,
+        "total": 403,
+        "max": 403,
+        "min": 403,
+        "average": 403
+      },
+      "animationController.lines": {
+        "instanceCount": 1,
+        "total": 19,
+        "max": 19,
+        "min": 19,
+        "average": 19
+      },
+      "entityTypeVisuals/audio.size": {
+        "instanceCount": 1,
+        "total": 514,
+        "max": 514,
+        "min": 514,
+        "average": 514
+      },
+      "entityTypeVisuals/audio.lines": {
+        "instanceCount": 1,
+        "total": 21,
+        "max": 21,
+        "min": 21,
+        "average": 21
+      },
+      "model.size": {
+        "instanceCount": 1,
+        "total": 437,
+        "max": 437,
+        "min": 437,
+        "average": 437
+      },
+      "model.lines": {
+        "instanceCount": 1,
+        "total": 26,
+        "max": 26,
+        "min": 26,
+        "average": 26
+      },
+      "particle.size": {
+        "instanceCount": 1,
+        "total": 661,
+        "max": 661,
+        "min": 661,
+        "average": 661
+      },
+      "particle.lines": {
+        "instanceCount": 1,
+        "total": 30,
+        "max": 30,
+        "min": 30,
+        "average": 30
+      },
+      "renderController.size": {
+        "instanceCount": 1,
+        "total": 187,
+        "max": 187,
+        "min": 187,
+        "average": 187
+      },
+      "renderController.lines": {
+        "instanceCount": 1,
+        "total": 7,
+        "max": 7,
+        "min": 7,
+        "average": 7
+      },
+      "languageCatalog.size": {
+        "instanceCount": 1,
+        "total": 9,
+        "max": 9,
+        "min": 9,
+        "average": 9
+      },
+      "languageCatalog.lines": {
+        "instanceCount": 1,
+        "total": 2,
+        "max": 2,
+        "min": 2,
+        "average": 2
+      },
+      "entityDialogue.size": {
+        "instanceCount": 1,
+        "total": 375,
+        "max": 375,
+        "min": 375,
+        "average": 375
+      },
+      "entityDialogue.lines": {
+        "instanceCount": 1,
+        "total": 27,
+        "max": 27,
+        "min": 27,
+        "average": 27
+      },
+      "recipe.size": {
+        "instanceCount": 2,
+        "total": 501,
+        "max": 254,
+        "min": 247,
+        "average": 251
+      },
+      "recipe.lines": {
+        "instanceCount": 2,
+        "total": 34,
+        "max": 19,
+        "min": 15,
+        "average": 17
+      },
+      "spawnRule.size": {
+        "instanceCount": 1,
+        "total": 638,
+        "max": 638,
+        "min": 638,
+        "average": 638
+      },
+      "spawnRule.lines": {
+        "instanceCount": 1,
+        "total": 38,
+        "max": 38,
+        "min": 38,
+        "average": 38
+      },
+      "trading.size": {
+        "instanceCount": 1,
+        "total": 296,
+        "max": 296,
+        "min": 296,
+        "average": 296
+      },
+      "trading.lines": {
+        "instanceCount": 1,
+        "total": 22,
+        "max": 22,
+        "min": 22,
+        "average": 22
+      },
+      "attachable.size": {
+        "instanceCount": 1,
+        "total": 421,
+        "max": 421,
+        "min": 421,
+        "average": 421
+      },
+      "attachable.lines": {
+        "instanceCount": 1,
+        "total": 18,
+        "max": 18,
+        "min": 18,
+        "average": 18
+      },
+      "languageTranslations.size": {
+        "instanceCount": 1,
+        "total": 87,
+        "max": 87,
+        "min": 87,
+        "average": 87
+      },
+      "languageTranslations.lines": {
+        "instanceCount": 1,
+        "total": 3,
+        "max": 3,
+        "min": 3,
+        "average": 3
+      },
+      "animations.resource": {
+        "count": 1
+      },
+      "bones.resourceAnimationBone": {
+        "count": 4
+      },
+      "bones.resourceAnimationBonePositionContinuous": {
+        "count": 4
+      },
+      "bones.resourceAnimationBoneRotationContinuous": {
+        "count": 4
+      },
+      "bones.resourceAnimationBoneRotationKeyframe": {
+        "count": 36
+      },
+      "textures.attachableResourceCount": {
+        "count": 1
+      },
+      "textures.entityResourceCount": {
+        "count": 1
+      },
+      "textures.textureReferences": {
+        "count": 1
+      },
+      "textures.entityReferences": {
+        "count": 1
+      },
+      "textures.uniqueTextureHandlesEstimated": {
+        "count": 2
+      },
+      "textures.uniqueTexturePaths": {
+        "count": 2
+      },
+      "textures.uniqueParticleTextureReferences": {
+        "count": 1
+      },
+      "textures.uniqueEntityTexturePaths": {
+        "count": 1
+      },
+      "textureImagesTier0.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier0.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier0.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier0.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier1.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier1.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier1.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier1.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier2.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier2.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier2.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier2.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier3.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier3.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier3.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier3.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier4.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier4.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier4.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier4.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier5.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier5.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier5.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier5.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "command.#": {
+        "count": 8
+      },
+      "command.execute": {
+        "count": 4
+      },
+      "command.scoreboard": {
+        "count": 2
+      },
+      "command.particle": {
+        "count": 1
+      },
+      "command.playsound": {
+        "count": 1
+      },
+      "command.tp": {
+        "count": 1
+      },
+      "command.effect": {
+        "count": 1
+      },
+      "command.setblock": {
+        "count": 1
+      },
+      "command.fill": {
+        "count": 1
+      },
+      "command.say": {
+        "count": 1
+      },
+      "command.give": {
+        "count": 1
+      },
+      "command.summon": {
+        "count": 1
       }
     },
     "errorCount": 3,
@@ -781,10 +781,11 @@
     "testNotApplicableCount": 10,
     "errorSummary": "ERROR: [CPACKICON101] pack_icon image file not found for comprehensive_bp. It must use the .png extension.\nERROR: [CPACKICON101] pack_icon image file not found for comprehensive_rp. It must use the .png extension.\nERROR: [SCRIPTMODULE114] (/behavior_packs/comprehensive_bp/manifest.json) For @minecraft/server, using an out of date beta version 1.8.0-beta compared to the current version: 1.8.0-beta",
     "internalProcessingErrorSummary": "UNKNOWN: [JSONF402] Could not find expected form: entity/actor_document\nUNKNOWN: [JSONF402] Could not find expected form: spawn/spawn_rules\nUNKNOWN: [JSONF402] Could not find expected form: visual/geometry.v1.21.0",
-    "warningSummary": "WARNING: [FORMATVER178] (/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json) Behavior animation version (1.20.10) has a higher minor version number compared to current version (1.10.0)\nWARNING: [FORMATVER198] (/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json) Behavior animation controller version (1.20.10) has a higher minor version number compared to current version (1.10.0)\nWARNING: [FORMATVER218] (/resource_packs/comprehensive_rp/animations/sample_entity_resource.json) Resource animation version (1.20.10) has a higher minor version number compared to current version (1.10.0)\nWARNING: [FORMATVER238] (/resource_packs/comprehensive_rp/animation_controllers/sample_entity_resource.json) Resource animation controller version (1.20.10) has a higher minor version number compared to current version (1.10.0)\nWARNING: [FORMATVER258] (/behavior_packs/comprehensive_bp/spawn_rules/sample_entity.json) Spawn rules version (1.20.10) has a higher minor version number compared to current version (1.12.0)\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/sample_loot_table.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/sample_loot_table.json to `minecraft:stick`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json to `minecraft:diamond`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json to `minecraft:emerald`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json to `minecraft:gold_ingot`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/sample_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/sample_recipe.json to `minecraft:stick`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json to `minecraft:dirt`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json to `minecraft:stick`\nWARNING: [UNLINK399] (/resource_packs/comprehensive_rp/entity/sample_entity.json) Link to texture is not found in this pack: /resource_packs/comprehensive_rp/entity/sample_entity.json to `textures/entity/sample_entity`\nWARNING: [UNLINK399] (/resource_packs/comprehensive_rp/particles/sample_particle.json) Link to texture is not found in this pack: /resource_packs/comprehensive_rp/particles/sample_particle.json to `textures/particle/sample_particle`",
+    "warningSummary": "WARNING: [FORMATVER178] (/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json) Behavior animation version (1.20.10) has a higher minor version number compared to current version\nWARNING: [FORMATVER198] (/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json) Behavior animation controller version (1.20.10) has a higher minor version number compared to current version\nWARNING: [FORMATVER218] (/resource_packs/comprehensive_rp/animations/sample_entity_resource.json) Resource animation version (1.20.10) has a higher minor version number compared to current version\nWARNING: [FORMATVER238] (/resource_packs/comprehensive_rp/animation_controllers/sample_entity_resource.json) Resource animation controller version (1.20.10) has a higher minor version number compared to current version\nWARNING: [FORMATVER258] (/behavior_packs/comprehensive_bp/spawn_rules/sample_entity.json) Spawn rules version (1.20.10) has a higher minor version number compared to current version\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/sample_loot_table.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/sample_loot_table.json to `minecraft:stick`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json to `minecraft:diamond`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json to `minecraft:emerald`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json to `minecraft:gold_ingot`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/sample_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/sample_recipe.json to `minecraft:stick`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json to `minecraft:dirt`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json to `minecraft:stick`\nWARNING: [UNLINK399] (/resource_packs/comprehensive_rp/entity/sample_entity.json) Link to texture is not found in this pack: /resource_packs/comprehensive_rp/entity/sample_entity.json to `textures/entity/sample_entity`\nWARNING: [UNLINK399] (/resource_packs/comprehensive_rp/particles/sample_particle.json) Link to texture is not found in this pack: /resource_packs/comprehensive_rp/particles/sample_particle.json to `textures/particle/sample_particle`",
     "testFailSummary": "TESTFAIL: [CPACKICON000] Found 2 errors for Check Pack Icon Generator (CPACKICON).\nTESTFAIL: [JSONF000] Found 3 internal errors for JSON Structure Validation (via Minecraft docs) (JSONF). This may be a temporary issue with the test run.\nTESTFAIL: [SCRIPTMODULE000] Found 1 errors for Script Modules (SCRIPTMODULE).",
-    "infoGenerationTime": 33,
-    "endToEndGenerationTime": 59,
+    "infoGenerationTime": 31,
+    "endToEndGenerationTime": 53,
+    "reds": 11004,
     "summary": {
       "BASEGAMEVER": {
         "2": {
@@ -871,7 +872,7 @@
         },
         "130": {
           "title": "Format Version Patch Version Lower Than Current",
-          "defaultMessage": "Behavior pack entity type format version (1.20.10) has a lower patch version number compared to current version (1.21.110.02)",
+          "defaultMessage": "Behavior pack entity type format version (1.20.10) has a lower patch version number compared to current version",
           "recommendations": 1
         }
       },
@@ -896,47 +897,47 @@
         },
         "120": {
           "title": "Block type Version Patch Version Higher than Current",
-          "defaultMessage": "Block type version (1.20.10) has a lower patch version number compared to current version (1.21.110)",
+          "defaultMessage": "Block type version (1.20.10) has a lower patch version number compared to current version",
           "recommendations": 1
         },
         "140": {
           "title": "Item type Version Patch Version Higher than Current",
-          "defaultMessage": "Item type version (1.20.10) has a lower patch version number compared to current version (1.21.110)",
+          "defaultMessage": "Item type version (1.20.10) has a lower patch version number compared to current version",
           "recommendations": 2
         },
         "160": {
           "title": "Recipe Version Patch Version Higher than Current",
-          "defaultMessage": "Recipe version (1.20.10) has a lower patch version number compared to current version (1.21.110)",
+          "defaultMessage": "Recipe version (1.20.10) has a lower patch version number compared to current version",
           "recommendations": 2
         },
         "178": {
           "title": "Behavior animation Version Patch Version Lower than Current",
-          "defaultMessage": "Behavior animation version (1.20.10) has a higher minor version number compared to current version (1.10.0)",
+          "defaultMessage": "Behavior animation version (1.20.10) has a higher minor version number compared to current version",
           "warnings": 1
         },
         "198": {
           "title": "Behavior animation controller Version Patch Version Lower than Current",
-          "defaultMessage": "Behavior animation controller version (1.20.10) has a higher minor version number compared to current version (1.10.0)",
+          "defaultMessage": "Behavior animation controller version (1.20.10) has a higher minor version number compared to current version",
           "warnings": 1
         },
         "218": {
           "title": "Resource animation Version Patch Version Lower than Current",
-          "defaultMessage": "Resource animation version (1.20.10) has a higher minor version number compared to current version (1.10.0)",
+          "defaultMessage": "Resource animation version (1.20.10) has a higher minor version number compared to current version",
           "warnings": 1
         },
         "238": {
           "title": "Resource animation controller Version Patch Version Lower than Current",
-          "defaultMessage": "Resource animation controller version (1.20.10) has a higher minor version number compared to current version (1.10.0)",
+          "defaultMessage": "Resource animation controller version (1.20.10) has a higher minor version number compared to current version",
           "warnings": 1
         },
         "258": {
           "title": "258",
-          "defaultMessage": "Spawn rules version (1.20.10) has a higher minor version number compared to current version (1.12.0)",
+          "defaultMessage": "Spawn rules version (1.20.10) has a higher minor version number compared to current version",
           "warnings": 1
         },
         "300": {
           "title": "300",
-          "defaultMessage": "Entity type resource version (1.20.10) has a lower patch version number compared to current version (1.21.110)",
+          "defaultMessage": "Entity type resource version (1.20.10) has a lower patch version number compared to current version",
           "recommendations": 1
         },
         "619": {
@@ -1135,7 +1136,7 @@
         },
         "130": {
           "title": "Format Version Patch Version Lower Than Current",
-          "defaultMessage": "Behavior pack item type format version (1.20.10) has a lower patch version number compared to current version (1.21.110.02)",
+          "defaultMessage": "Behavior pack item type format version (1.20.10) has a lower patch version number compared to current version",
           "recommendations": 2
         }
       },
@@ -1695,8 +1696,8 @@
       "gId": "ENTITYTYPE",
       "gIx": 52,
       "fs": {
-        "(no runtime identifier)": {
-          "Count": 1
+        "noRuntimeIdentifier": {
+          "count": 1
         }
       }
     },
@@ -1705,8 +1706,8 @@
       "gId": "ENTITYTYPE",
       "gIx": 53,
       "fs": {
-        "(no override identifier)": {
-          "Count": 1
+        "noOverrideIdentifier": {
+          "count": 1
         }
       }
     },
@@ -1715,11 +1716,11 @@
       "gId": "ENTITYTYPE",
       "gIx": 54,
       "fs": {
-        "Spawnable Entity Type": {
-          "Count": 1
+        "spawnableEntityType": {
+          "count": 1
         },
-        "Summonable Entity Type": {
-          "Count": 1
+        "summonableEntityType": {
+          "count": 1
         }
       }
     },
@@ -1962,12 +1963,12 @@
       "gId": "GEOMETRY",
       "gIx": 102,
       "fs": {
-        "Cubes": {
-          "Instance Count": 1,
-          "Total": 2,
-          "Max": 2,
-          "Min": 2,
-          "Average": 2
+        "cubes": {
+          "instanceCount": 1,
+          "total": 2,
+          "max": 2,
+          "min": 2,
+          "average": 2
         }
       }
     },
@@ -2153,8 +2154,8 @@
       "gId": "ITEMTYPE",
       "gIx": 53,
       "fs": {
-        "(no override identifier)": {
-          "Count": 2
+        "noOverrideIdentifier": {
+          "count": 2
         }
       }
     },
@@ -2215,20 +2216,20 @@
       "p": "/behavior_packs/comprehensive_bp/entities/sample_entity.json",
       "d": "/behavior_packs/comprehensive_bp/entities/sample_entity.json",
       "fs": {
-        "Default Components": {
-          "minecraft:type_family": 1,
-          "minecraft:collision_box": 1,
-          "minecraft:health": 1,
-          "minecraft:movement": 1,
-          "minecraft:navigation.walk": 1,
-          "minecraft:movement.basic": 1,
-          "minecraft:jump.static": 1,
-          "minecraft:can_climb": 1,
-          "minecraft:physics": 1,
-          "minecraft:pushable": 1,
-          "minecraft:behavior.look_at_player": 1,
-          "minecraft:behavior.random_stroll": 1,
-          "minecraft:behavior.random_look_around": 1
+        "defaultComponents": {
+          "minecraftTypeFamily": 1,
+          "minecraftCollisionBox": 1,
+          "minecraftHealth": 1,
+          "minecraftMovement": 1,
+          "minecraftNavigationWalk": 1,
+          "minecraftMovementBasic": 1,
+          "minecraftJumpStatic": 1,
+          "minecraftCanClimb": 1,
+          "minecraftPhysics": 1,
+          "minecraftPushable": 1,
+          "minecraftBehaviorLookAtPlayer": 1,
+          "minecraftBehaviorRandomStroll": 1,
+          "minecraftBehaviorRandomLookAround": 1
         }
       }
     },
@@ -2239,14 +2240,14 @@
       "p": "/behavior_packs/comprehensive_bp/blocks/sample_block.json",
       "d": "/behavior_packs/comprehensive_bp/blocks/sample_block.json",
       "fs": {
-        "Block Default Components": {
-          "minecraft:destructible_by_mining": 1,
-          "minecraft:destructible_by_explosion": 1,
-          "minecraft:flammable": 1,
-          "minecraft:friction": 1,
-          "minecraft:light_emission": 1,
-          "minecraft:map_color": 1,
-          "minecraft:material_instances": 1
+        "blockDefaultComponents": {
+          "minecraftDestructibleByMining": 1,
+          "minecraftDestructibleByExplosion": 1,
+          "minecraftFlammable": 1,
+          "minecraftFriction": 1,
+          "minecraftLightEmission": 1,
+          "minecraftMapColor": 1,
+          "minecraftMaterialInstances": 1
         }
       }
     },
@@ -2257,16 +2258,16 @@
       "p": "/behavior_packs/comprehensive_bp/items/sample_item.json",
       "d": "/behavior_packs/comprehensive_bp/items/sample_item.json",
       "fs": {
-        "Components": {
-          "minecraft:icon": 1,
-          "minecraft:display_name": 1,
-          "minecraft:hand_equipped": 1,
-          "minecraft:stacked_by_data": 1,
-          "minecraft:foil": 1,
-          "minecraft:max_stack_size": 1,
-          "minecraft:durability": 1,
-          "minecraft:enchantable": 1,
-          "minecraft:weapon": 1
+        "components": {
+          "minecraftIcon": 1,
+          "minecraftDisplayName": 1,
+          "minecraftHandEquipped": 1,
+          "minecraftStackedByData": 1,
+          "minecraftFoil": 1,
+          "minecraftMaxStackSize": 1,
+          "minecraftDurability": 1,
+          "minecraftEnchantable": 1,
+          "minecraftWeapon": 1
         }
       }
     },
@@ -2277,13 +2278,13 @@
       "p": "/behavior_packs/comprehensive_bp/items/simple_tool.json",
       "d": "/behavior_packs/comprehensive_bp/items/simple_tool.json",
       "fs": {
-        "Components": {
-          "minecraft:icon": 1,
-          "minecraft:display_name": 1,
-          "minecraft:durability": 1,
-          "minecraft:hand_equipped": 1,
-          "minecraft:can_destroy_in_creative": 1,
-          "minecraft:digger": 1
+        "components": {
+          "minecraftIcon": 1,
+          "minecraftDisplayName": 1,
+          "minecraftDurability": 1,
+          "minecraftHandEquipped": 1,
+          "minecraftCanDestroyInCreative": 1,
+          "minecraftDigger": 1
         }
       }
     },
@@ -2297,19 +2298,19 @@
       "gId": "LINESIZE",
       "gIx": 102,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 783,
-          "Max": 783,
-          "Min": 783,
-          "Average": 783
+        "size": {
+          "instanceCount": 1,
+          "total": 783,
+          "max": 783,
+          "min": 783,
+          "average": 783
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 21,
-          "Max": 21,
-          "Min": 21,
-          "Average": 21
+        "lines": {
+          "instanceCount": 1,
+          "total": 21,
+          "max": 21,
+          "min": 21,
+          "average": 21
         }
       }
     },
@@ -2318,19 +2319,19 @@
       "gId": "LINESIZE",
       "gIx": 105,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 515,
-          "Max": 515,
-          "Min": 515,
-          "Average": 515
+        "size": {
+          "instanceCount": 1,
+          "total": 515,
+          "max": 515,
+          "min": 515,
+          "average": 515
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 22,
-          "Max": 22,
-          "Min": 22,
-          "Average": 22
+        "lines": {
+          "instanceCount": 1,
+          "total": 22,
+          "max": 22,
+          "min": 22,
+          "average": 22
         }
       }
     },
@@ -2339,19 +2340,19 @@
       "gId": "LINESIZE",
       "gIx": 109,
       "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 762,
-          "Max": 658,
-          "Min": 104,
-          "Average": 381
+        "size": {
+          "instanceCount": 2,
+          "total": 762,
+          "max": 658,
+          "min": 104,
+          "average": 381
         },
-        "Lines": {
-          "Instance Count": 2,
-          "Total": 23,
-          "Max": 19,
-          "Min": 4,
-          "Average": 12
+        "lines": {
+          "instanceCount": 2,
+          "total": 23,
+          "max": 19,
+          "min": 4,
+          "average": 12
         }
       }
     },
@@ -2360,19 +2361,19 @@
       "gId": "LINESIZE",
       "gIx": 110,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 851,
-          "Max": 851,
-          "Min": 851,
-          "Average": 851
+        "size": {
+          "instanceCount": 1,
+          "total": 851,
+          "max": 851,
+          "min": 851,
+          "average": 851
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 47,
-          "Max": 47,
-          "Min": 47,
-          "Average": 47
+        "lines": {
+          "instanceCount": 1,
+          "total": 47,
+          "max": 47,
+          "min": 47,
+          "average": 47
         }
       }
     },
@@ -2381,19 +2382,19 @@
       "gId": "LINESIZE",
       "gIx": 114,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 336,
-          "Max": 336,
-          "Min": 336,
-          "Average": 336
+        "size": {
+          "instanceCount": 1,
+          "total": 336,
+          "max": 336,
+          "min": 336,
+          "average": 336
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 13,
-          "Max": 13,
-          "Min": 13,
-          "Average": 13
+        "lines": {
+          "instanceCount": 1,
+          "total": 13,
+          "max": 13,
+          "min": 13,
+          "average": 13
         }
       }
     },
@@ -2402,19 +2403,19 @@
       "gId": "LINESIZE",
       "gIx": 119,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 358,
-          "Max": 358,
-          "Min": 358,
-          "Average": 358
+        "size": {
+          "instanceCount": 1,
+          "total": 358,
+          "max": 358,
+          "min": 358,
+          "average": 358
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 24,
-          "Max": 24,
-          "Min": 24,
-          "Average": 24
+        "lines": {
+          "instanceCount": 1,
+          "total": 24,
+          "max": 24,
+          "min": 24,
+          "average": 24
         }
       }
     },
@@ -2423,19 +2424,19 @@
       "gId": "LINESIZE",
       "gIx": 120,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 376,
-          "Max": 376,
-          "Min": 376,
-          "Average": 376
+        "size": {
+          "instanceCount": 1,
+          "total": 376,
+          "max": 376,
+          "min": 376,
+          "average": 376
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 19,
-          "Max": 19,
-          "Min": 19,
-          "Average": 19
+        "lines": {
+          "instanceCount": 1,
+          "total": 19,
+          "max": 19,
+          "min": 19,
+          "average": 19
         }
       }
     },
@@ -2444,19 +2445,19 @@
       "gId": "LINESIZE",
       "gIx": 121,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 552,
-          "Max": 552,
-          "Min": 552,
-          "Average": 552
+        "size": {
+          "instanceCount": 1,
+          "total": 552,
+          "max": 552,
+          "min": 552,
+          "average": 552
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 27,
-          "Max": 27,
-          "Min": 27,
-          "Average": 27
+        "lines": {
+          "instanceCount": 1,
+          "total": 27,
+          "max": 27,
+          "min": 27,
+          "average": 27
         }
       }
     },
@@ -2465,19 +2466,19 @@
       "gId": "LINESIZE",
       "gIx": 123,
       "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 1124,
-          "Max": 601,
-          "Min": 523,
-          "Average": 562
+        "size": {
+          "instanceCount": 2,
+          "total": 1124,
+          "max": 601,
+          "min": 523,
+          "average": 562
         },
-        "Lines": {
-          "Instance Count": 2,
-          "Total": 63,
-          "Max": 34,
-          "Min": 29,
-          "Average": 32
+        "lines": {
+          "instanceCount": 2,
+          "total": 63,
+          "max": 34,
+          "min": 29,
+          "average": 32
         }
       }
     },
@@ -2486,19 +2487,19 @@
       "gId": "LINESIZE",
       "gIx": 124,
       "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 600,
-          "Max": 395,
-          "Min": 205,
-          "Average": 300
+        "size": {
+          "instanceCount": 2,
+          "total": 600,
+          "max": 395,
+          "min": 205,
+          "average": 300
         },
-        "Lines": {
-          "Instance Count": 2,
-          "Total": 47,
-          "Max": 31,
-          "Min": 16,
-          "Average": 24
+        "lines": {
+          "instanceCount": 2,
+          "total": 47,
+          "max": 31,
+          "min": 16,
+          "average": 24
         }
       }
     },
@@ -2507,19 +2508,19 @@
       "gId": "LINESIZE",
       "gIx": 128,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 403,
-          "Max": 403,
-          "Min": 403,
-          "Average": 403
+        "size": {
+          "instanceCount": 1,
+          "total": 403,
+          "max": 403,
+          "min": 403,
+          "average": 403
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 30,
-          "Max": 30,
-          "Min": 30,
-          "Average": 30
+        "lines": {
+          "instanceCount": 1,
+          "total": 30,
+          "max": 30,
+          "min": 30,
+          "average": 30
         }
       }
     },
@@ -2528,19 +2529,19 @@
       "gId": "LINESIZE",
       "gIx": 129,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 403,
-          "Max": 403,
-          "Min": 403,
-          "Average": 403
+        "size": {
+          "instanceCount": 1,
+          "total": 403,
+          "max": 403,
+          "min": 403,
+          "average": 403
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 19,
-          "Max": 19,
-          "Min": 19,
-          "Average": 19
+        "lines": {
+          "instanceCount": 1,
+          "total": 19,
+          "max": 19,
+          "min": 19,
+          "average": 19
         }
       }
     },
@@ -2549,19 +2550,19 @@
       "gId": "LINESIZE",
       "gIx": 130,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 514,
-          "Max": 514,
-          "Min": 514,
-          "Average": 514
+        "size": {
+          "instanceCount": 1,
+          "total": 514,
+          "max": 514,
+          "min": 514,
+          "average": 514
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 21,
-          "Max": 21,
-          "Min": 21,
-          "Average": 21
+        "lines": {
+          "instanceCount": 1,
+          "total": 21,
+          "max": 21,
+          "min": 21,
+          "average": 21
         }
       }
     },
@@ -2570,19 +2571,19 @@
       "gId": "LINESIZE",
       "gIx": 132,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 437,
-          "Max": 437,
-          "Min": 437,
-          "Average": 437
+        "size": {
+          "instanceCount": 1,
+          "total": 437,
+          "max": 437,
+          "min": 437,
+          "average": 437
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 26,
-          "Max": 26,
-          "Min": 26,
-          "Average": 26
+        "lines": {
+          "instanceCount": 1,
+          "total": 26,
+          "max": 26,
+          "min": 26,
+          "average": 26
         }
       }
     },
@@ -2591,19 +2592,19 @@
       "gId": "LINESIZE",
       "gIx": 133,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 661,
-          "Max": 661,
-          "Min": 661,
-          "Average": 661
+        "size": {
+          "instanceCount": 1,
+          "total": 661,
+          "max": 661,
+          "min": 661,
+          "average": 661
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 30,
-          "Max": 30,
-          "Min": 30,
-          "Average": 30
+        "lines": {
+          "instanceCount": 1,
+          "total": 30,
+          "max": 30,
+          "min": 30,
+          "average": 30
         }
       }
     },
@@ -2612,19 +2613,19 @@
       "gId": "LINESIZE",
       "gIx": 134,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 187,
-          "Max": 187,
-          "Min": 187,
-          "Average": 187
+        "size": {
+          "instanceCount": 1,
+          "total": 187,
+          "max": 187,
+          "min": 187,
+          "average": 187
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 7,
-          "Max": 7,
-          "Min": 7,
-          "Average": 7
+        "lines": {
+          "instanceCount": 1,
+          "total": 7,
+          "max": 7,
+          "min": 7,
+          "average": 7
         }
       }
     },
@@ -2633,19 +2634,19 @@
       "gId": "LINESIZE",
       "gIx": 137,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 9,
-          "Max": 9,
-          "Min": 9,
-          "Average": 9
+        "size": {
+          "instanceCount": 1,
+          "total": 9,
+          "max": 9,
+          "min": 9,
+          "average": 9
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 2,
-          "Max": 2,
-          "Min": 2,
-          "Average": 2
+        "lines": {
+          "instanceCount": 1,
+          "total": 2,
+          "max": 2,
+          "min": 2,
+          "average": 2
         }
       }
     },
@@ -2654,19 +2655,19 @@
       "gId": "LINESIZE",
       "gIx": 139,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 375,
-          "Max": 375,
-          "Min": 375,
-          "Average": 375
+        "size": {
+          "instanceCount": 1,
+          "total": 375,
+          "max": 375,
+          "min": 375,
+          "average": 375
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 27,
-          "Max": 27,
-          "Min": 27,
-          "Average": 27
+        "lines": {
+          "instanceCount": 1,
+          "total": 27,
+          "max": 27,
+          "min": 27,
+          "average": 27
         }
       }
     },
@@ -2675,19 +2676,19 @@
       "gId": "LINESIZE",
       "gIx": 143,
       "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 501,
-          "Max": 254,
-          "Min": 247,
-          "Average": 251
+        "size": {
+          "instanceCount": 2,
+          "total": 501,
+          "max": 254,
+          "min": 247,
+          "average": 251
         },
-        "Lines": {
-          "Instance Count": 2,
-          "Total": 34,
-          "Max": 19,
-          "Min": 15,
-          "Average": 17
+        "lines": {
+          "instanceCount": 2,
+          "total": 34,
+          "max": 19,
+          "min": 15,
+          "average": 17
         }
       }
     },
@@ -2696,19 +2697,19 @@
       "gId": "LINESIZE",
       "gIx": 144,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 638,
-          "Max": 638,
-          "Min": 638,
-          "Average": 638
+        "size": {
+          "instanceCount": 1,
+          "total": 638,
+          "max": 638,
+          "min": 638,
+          "average": 638
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 38,
-          "Max": 38,
-          "Min": 38,
-          "Average": 38
+        "lines": {
+          "instanceCount": 1,
+          "total": 38,
+          "max": 38,
+          "min": 38,
+          "average": 38
         }
       }
     },
@@ -2717,19 +2718,19 @@
       "gId": "LINESIZE",
       "gIx": 145,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 296,
-          "Max": 296,
-          "Min": 296,
-          "Average": 296
+        "size": {
+          "instanceCount": 1,
+          "total": 296,
+          "max": 296,
+          "min": 296,
+          "average": 296
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 22,
-          "Max": 22,
-          "Min": 22,
-          "Average": 22
+        "lines": {
+          "instanceCount": 1,
+          "total": 22,
+          "max": 22,
+          "min": 22,
+          "average": 22
         }
       }
     },
@@ -2738,19 +2739,19 @@
       "gId": "LINESIZE",
       "gIx": 147,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 421,
-          "Max": 421,
-          "Min": 421,
-          "Average": 421
+        "size": {
+          "instanceCount": 1,
+          "total": 421,
+          "max": 421,
+          "min": 421,
+          "average": 421
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 18,
-          "Max": 18,
-          "Min": 18,
-          "Average": 18
+        "lines": {
+          "instanceCount": 1,
+          "total": 18,
+          "max": 18,
+          "min": 18,
+          "average": 18
         }
       }
     },
@@ -2759,19 +2760,19 @@
       "gId": "LINESIZE",
       "gIx": 179,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 87,
-          "Max": 87,
-          "Min": 87,
-          "Average": 87
+        "size": {
+          "instanceCount": 1,
+          "total": 87,
+          "max": 87,
+          "min": 87,
+          "average": 87
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 3,
-          "Max": 3,
-          "Min": 3,
-          "Average": 3
+        "lines": {
+          "instanceCount": 1,
+          "total": 3,
+          "max": 3,
+          "min": 3,
+          "average": 3
         }
       }
     },
@@ -3002,8 +3003,8 @@
       "gId": "RESOURCEANIMATION",
       "gIx": 101,
       "fs": {
-        "Resource": {
-          "Count": 1
+        "resource": {
+          "count": 1
         }
       }
     },
@@ -3012,17 +3013,17 @@
       "gId": "RESOURCEANIMATION",
       "gIx": 102,
       "fs": {
-        "Resource Animation Bone": {
-          "Count": 4
+        "resourceAnimationBone": {
+          "count": 4
         },
-        "Resource Animation Bone Position Continuous": {
-          "Count": 4
+        "resourceAnimationBonePositionContinuous": {
+          "count": 4
         },
-        "Resource Animation Bone Rotation Continuous": {
-          "Count": 4
+        "resourceAnimationBoneRotationContinuous": {
+          "count": 4
         },
-        "Resource Animation Bone Rotation Keyframe": {
-          "Count": 36
+        "resourceAnimationBoneRotationKeyframe": {
+          "count": 36
         }
       }
     },
@@ -3096,29 +3097,29 @@
       "gId": "TEXTURE",
       "gIx": 101,
       "fs": {
-        "Attachable Resource Count": {
-          "Count": 1
+        "attachableResourceCount": {
+          "count": 1
         },
-        "Entity Resource Count": {
-          "Count": 1
+        "entityResourceCount": {
+          "count": 1
         },
-        "Texture References": {
-          "Count": 1
+        "textureReferences": {
+          "count": 1
         },
-        "Entity References": {
-          "Count": 1
+        "entityReferences": {
+          "count": 1
         },
-        "Unique Texture Handles (estimated)": {
-          "Count": 2
+        "uniqueTextureHandlesEstimated": {
+          "count": 2
         },
-        "Unique Texture Paths": {
-          "Count": 2
+        "uniqueTexturePaths": {
+          "count": 2
         },
-        "Unique Particle Texture References": {
-          "Count": 1
+        "uniqueParticleTextureReferences": {
+          "count": 1
         },
-        "Unique Entity Texture Paths": {
-          "Count": 1
+        "uniqueEntityTexturePaths": {
+          "count": 1
         }
       }
     },
@@ -3137,33 +3138,33 @@
       "gId": "TEXTUREIMAGE",
       "gIx": 200,
       "fs": {
-        "Non-Vanilla Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Total Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Block Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Item Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         }
       }
     },
@@ -3172,33 +3173,33 @@
       "gId": "TEXTUREIMAGE",
       "gIx": 201,
       "fs": {
-        "Non-Vanilla Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Total Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Block Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Item Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         }
       }
     },
@@ -3207,33 +3208,33 @@
       "gId": "TEXTUREIMAGE",
       "gIx": 202,
       "fs": {
-        "Non-Vanilla Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Total Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Block Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Item Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         }
       }
     },
@@ -3242,33 +3243,33 @@
       "gId": "TEXTUREIMAGE",
       "gIx": 203,
       "fs": {
-        "Non-Vanilla Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Total Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Block Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Item Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         }
       }
     },
@@ -3277,33 +3278,33 @@
       "gId": "TEXTUREIMAGE",
       "gIx": 204,
       "fs": {
-        "Non-Vanilla Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Total Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Block Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Item Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         }
       }
     },
@@ -3312,33 +3313,33 @@
       "gId": "TEXTUREIMAGE",
       "gIx": 205,
       "fs": {
-        "Non-Vanilla Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Total Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Block Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Item Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         }
       }
     },
@@ -3545,31 +3546,31 @@
       "p": "/behavior_packs/comprehensive_bp/functions/complex_function.mcfunction",
       "fs": {
         "#": {
-          "Count": 7
+          "count": 7
         },
         "execute": {
-          "Count": 4
+          "count": 4
         },
         "scoreboard": {
-          "Count": 2
+          "count": 2
         },
         "particle": {
-          "Count": 1
+          "count": 1
         },
         "playsound": {
-          "Count": 1
+          "count": 1
         },
         "tp": {
-          "Count": 1
+          "count": 1
         },
         "effect": {
-          "Count": 1
+          "count": 1
         },
         "setblock": {
-          "Count": 1
+          "count": 1
         },
         "fill": {
-          "Count": 1
+          "count": 1
         }
       }
     },
@@ -3580,16 +3581,16 @@
       "p": "/behavior_packs/comprehensive_bp/functions/sample_function.mcfunction",
       "fs": {
         "#": {
-          "Count": 1
+          "count": 1
         },
         "say": {
-          "Count": 1
+          "count": 1
         },
         "give": {
-          "Count": 1
+          "count": 1
         },
         "summon": {
-          "Count": 1
+          "count": 1
         }
       }
     },

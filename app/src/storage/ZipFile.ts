@@ -86,7 +86,7 @@ export default class ZipFile extends FileBase implements IFile {
     return this.lastLoadedOrSaved;
   }
 
-  setContent(newContent: string | Uint8Array | null, updateType?: FileUpdateType) {
+  setContent(newContent: string | Uint8Array | null, updateType?: FileUpdateType, sourceId?: string) {
     const areEqual = StorageUtilities.contentsAreEqual(this._content, newContent);
 
     if (areEqual) {
@@ -101,7 +101,7 @@ export default class ZipFile extends FileBase implements IFile {
     let oldContent = this._content;
     this._content = newContent;
 
-    this.contentWasModified(oldContent, updateType);
+    this.contentWasModified(oldContent, updateType, sourceId);
 
     this._parentFolder.storage.modified = this.modified;
 

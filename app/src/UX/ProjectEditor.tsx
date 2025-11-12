@@ -85,7 +85,7 @@ import ProjectEditorUtilities, {
 } from "./ProjectEditorUtilities";
 import { IWorldSettings } from "../minecraft/IWorldSettings";
 import WorldSettingsArea from "../UX/WorldSettingsArea";
-import IFile from "../storage/IFile";
+import IFile, { FileUpdateType } from "../storage/IFile";
 import ProjectActions from "./ProjectActions";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import { IAnnotatedValue } from "../core/AnnotatedValue";
@@ -681,7 +681,12 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private _handleItemContentChanged(project: Project, itemUpdate: IProjectItemContentUpdateEvent) {
-    this._incrementVisualSeed();
+    if (
+      itemUpdate.fileUpdate.updateType !== FileUpdateType.regularEdit &&
+      itemUpdate.fileUpdate.updateType !== FileUpdateType.versionlessEdit
+    ) {
+      this._incrementVisualSeed();
+    }
   }
 
   private _serverStateChanged() {

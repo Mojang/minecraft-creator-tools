@@ -37,69 +37,69 @@
     "defaultResourcePackDescription": "Adds a set of mobs you can use in your worlds - (pack.description)",
     "subpackCount": 0,
     "entityTypeComponents": [
-      "ageable",
-      "angry",
-      "attack",
-      "balloonable",
-      "behavior.breed",
-      "behavior.eat_block",
-      "behavior.float",
-      "behavior.follow_parent",
-      "behavior.go_home",
-      "behavior.hurt_by_target",
-      "behavior.lay_egg",
-      "behavior.look_at_player",
-      "behavior.melee_attack",
-      "behavior.mount_pathing",
-      "behavior.move_to_land",
-      "behavior.move_to_water",
-      "behavior.nearest_attackable_target",
-      "behavior.panic",
-      "behavior.random_look_around",
-      "behavior.random_stroll",
-      "behavior.random_swim",
-      "behavior.stomp_attack",
-      "behavior.tempt",
-      "breathable",
-      "breedable",
-      "can_climb",
-      "collision_box",
-      "conditional_bandwidth_optimization",
-      "damage_sensor",
-      "despawn",
-      "experience_reward",
-      "follow_range",
-      "health",
-      "home",
-      "hurt_on_condition",
-      "interact",
-      "is_baby",
-      "is_sheared",
-      "jump.static",
-      "leashable",
-      "loot",
-      "movement",
-      "movement.amphibious",
-      "movement.basic",
-      "nameable",
-      "navigation.generic",
-      "navigation.walk",
-      "on_friendly_anger",
-      "on_target_acquired",
-      "physics",
-      "pushable",
-      "rideable",
-      "scale",
-      "type_family",
-      "underwater_movement",
-      "water_movement"
+      "minecraftAgeable",
+      "minecraftAngry",
+      "minecraftAttack",
+      "minecraftBalloonable",
+      "minecraftBehaviorBreed",
+      "minecraftBehaviorEatBlock",
+      "minecraftBehaviorFloat",
+      "minecraftBehaviorFollowParent",
+      "minecraftBehaviorGoHome",
+      "minecraftBehaviorHurtByTarget",
+      "minecraftBehaviorLayEgg",
+      "minecraftBehaviorLookAtPlayer",
+      "minecraftBehaviorMeleeAttack",
+      "minecraftBehaviorMountPathing",
+      "minecraftBehaviorMoveToLand",
+      "minecraftBehaviorMoveToWater",
+      "minecraftBehaviorNearestAttackableTarget",
+      "minecraftBehaviorPanic",
+      "minecraftBehaviorRandomLookAround",
+      "minecraftBehaviorRandomStroll",
+      "minecraftBehaviorRandomSwim",
+      "minecraftBehaviorStompAttack",
+      "minecraftBehaviorTempt",
+      "minecraftBreathable",
+      "minecraftBreedable",
+      "minecraftCanClimb",
+      "minecraftCollisionBox",
+      "minecraftConditionalBandwidthOptimization",
+      "minecraftDamageSensor",
+      "minecraftDespawn",
+      "minecraftExperienceReward",
+      "minecraftFollowRange",
+      "minecraftHealth",
+      "minecraftHome",
+      "minecraftHurtOnCondition",
+      "minecraftInteract",
+      "minecraftIsBaby",
+      "minecraftIsSheared",
+      "minecraftJumpStatic",
+      "minecraftLeashable",
+      "minecraftLoot",
+      "minecraftMovement",
+      "minecraftMovementAmphibious",
+      "minecraftMovementBasic",
+      "minecraftNameable",
+      "minecraftNavigationGeneric",
+      "minecraftNavigationWalk",
+      "minecraftOnFriendlyAnger",
+      "minecraftOnTargetAcquired",
+      "minecraftPhysics",
+      "minecraftPushable",
+      "minecraftRideable",
+      "minecraftScale",
+      "minecraftTypeFamily",
+      "minecraftUnderwaterMovement",
+      "minecraftWaterMovement"
     ],
     "blockTypeComponents": [],
     "itemTypeComponents": [],
     "apisUsed": [
-      "BlockPermutation",
       "afterEvents",
       "block",
+      "blockPermutation",
       "button",
       "buttonPush",
       "getBlock",
@@ -182,735 +182,735 @@
       "summon"
     ],
     "featureSets": {
-      "Runtime Identifier (no runtime identifier)": {
-        "Count": 3
+      "runtimeIdentifier.noRuntimeIdentifier": {
+        "count": 3
       },
-      "Identifier (no override identifier)": {
-        "Count": 3
+      "identifier.noOverrideIdentifier": {
+        "count": 3
       },
-      "Metadata Spawnable Entity Type": {
-        "Count": 3
+      "metadata.spawnableEntityType": {
+        "count": 3
       },
-      "Metadata Summonable Entity Type": {
-        "Count": 3
+      "metadata.summonableEntityType": {
+        "count": 3
       },
-      "Entity Geometry Cubes": {
-        "Instance Count": 3,
-        "Total": 34,
-        "Max": 14,
-        "Min": 8,
-        "Average": 11
+      "entityGeometry.cubes": {
+        "instanceCount": 3,
+        "total": 34,
+        "max": 14,
+        "min": 8,
+        "average": 11
       },
-      "Entity Type Default Components": {
-        "minecraft:type_family": 2,
-        "minecraft:breathable": 3,
-        "minecraft:nameable": 3,
-        "minecraft:health": 3,
-        "minecraft:hurt_on_condition": 3,
-        "minecraft:collision_box": 2,
-        "minecraft:movement": 3,
-        "minecraft:water_movement": 2,
-        "minecraft:navigation.walk": 2,
-        "minecraft:movement.basic": 2,
-        "minecraft:jump.static": 3,
-        "minecraft:can_climb": 2,
-        "minecraft:follow_range": 2,
-        "minecraft:despawn": 3,
-        "minecraft:behavior.float": 2,
-        "minecraft:behavior.hurt_by_target": 2,
-        "minecraft:behavior.random_stroll": 2,
-        "minecraft:behavior.look_at_player": 3,
-        "minecraft:behavior.random_look_around": 2,
-        "minecraft:physics": 3,
-        "minecraft:pushable": 3,
-        "minecraft:behavior.panic": 3,
-        "minecraft:leashable": 2,
-        "minecraft:conditional_bandwidth_optimization": 3,
-        "minecraft:damage_sensor": 1,
-        "minecraft:navigation.generic": 1,
-        "minecraft:movement.amphibious": 1,
-        "minecraft:home": 1,
-        "minecraft:behavior.tempt": 2,
-        "minecraft:behavior.move_to_water": 1,
-        "minecraft:behavior.random_swim": 1,
-        "minecraft:interact": 1,
-        "minecraft:balloonable": 1,
-        "minecraft:behavior.mount_pathing": 1,
-        "minecraft:behavior.follow_parent": 1,
-        "minecraft:behavior.eat_block": 1
+      "entityType.defaultComponents": {
+        "minecraftTypeFamily": 2,
+        "minecraftBreathable": 3,
+        "minecraftNameable": 3,
+        "minecraftHealth": 3,
+        "minecraftHurtOnCondition": 3,
+        "minecraftCollisionBox": 2,
+        "minecraftMovement": 3,
+        "minecraftWaterMovement": 2,
+        "minecraftNavigationWalk": 2,
+        "minecraftMovementBasic": 2,
+        "minecraftJumpStatic": 3,
+        "minecraftCanClimb": 2,
+        "minecraftFollowRange": 2,
+        "minecraftDespawn": 3,
+        "minecraftBehaviorFloat": 2,
+        "minecraftBehaviorHurtByTarget": 2,
+        "minecraftBehaviorRandomStroll": 2,
+        "minecraftBehaviorLookAtPlayer": 3,
+        "minecraftBehaviorRandomLookAround": 2,
+        "minecraftPhysics": 3,
+        "minecraftPushable": 3,
+        "minecraftBehaviorPanic": 3,
+        "minecraftLeashable": 2,
+        "minecraftConditionalBandwidthOptimization": 3,
+        "minecraftDamageSensor": 1,
+        "minecraftNavigationGeneric": 1,
+        "minecraftMovementAmphibious": 1,
+        "minecraftHome": 1,
+        "minecraftBehaviorTempt": 2,
+        "minecraftBehaviorMoveToWater": 1,
+        "minecraftBehaviorRandomSwim": 1,
+        "minecraftInteract": 1,
+        "minecraftBalloonable": 1,
+        "minecraftBehaviorMountPathing": 1,
+        "minecraftBehaviorFollowParent": 1,
+        "minecraftBehaviorEatBlock": 1
       },
-      "Entity Type Components Used in Component Groups": {
-        "minecraft:is_baby": 3,
-        "minecraft:scale": 3,
-        "minecraft:ageable": 3,
-        "minecraft:behavior.follow_parent": 2,
-        "minecraft:on_target_acquired": 2,
-        "minecraft:behavior.nearest_attackable_target": 3,
-        "minecraft:angry": 2,
-        "minecraft:experience_reward": 3,
-        "minecraft:loot": 4,
-        "minecraft:on_friendly_anger": 1,
-        "minecraft:attack": 2,
-        "minecraft:behavior.stomp_attack": 1,
-        "minecraft:type_family": 2,
-        "minecraft:collision_box": 2,
-        "minecraft:underwater_movement": 2,
-        "minecraft:behavior.move_to_water": 1,
-        "minecraft:breedable": 2,
-        "minecraft:behavior.breed": 2,
-        "minecraft:behavior.move_to_land": 1,
-        "minecraft:behavior.random_stroll": 1,
-        "minecraft:behavior.go_home": 1,
-        "minecraft:behavior.lay_egg": 1,
-        "minecraft:rideable": 2,
-        "minecraft:is_sheared": 1,
-        "minecraft:behavior.melee_attack": 1
+      "entityType.componentsUsedInComponentGroups": {
+        "minecraftIsBaby": 3,
+        "minecraftScale": 3,
+        "minecraftAgeable": 3,
+        "minecraftBehaviorFollowParent": 2,
+        "minecraftOnTargetAcquired": 2,
+        "minecraftBehaviorNearestAttackableTarget": 3,
+        "minecraftAngry": 2,
+        "minecraftExperienceReward": 3,
+        "minecraftLoot": 4,
+        "minecraftOnFriendlyAnger": 1,
+        "minecraftAttack": 2,
+        "minecraftBehaviorStompAttack": 1,
+        "minecraftTypeFamily": 2,
+        "minecraftCollisionBox": 2,
+        "minecraftUnderwaterMovement": 2,
+        "minecraftBehaviorMoveToWater": 1,
+        "minecraftBreedable": 2,
+        "minecraftBehaviorBreed": 2,
+        "minecraftBehaviorMoveToLand": 1,
+        "minecraftBehaviorRandomStroll": 1,
+        "minecraftBehaviorGoHome": 1,
+        "minecraftBehaviorLayEgg": 1,
+        "minecraftRideable": 2,
+        "minecraftIsSheared": 1,
+        "minecraftBehaviorMeleeAttack": 1
       },
-      "Entity Type Entity Events": {
+      "entityType.entityEvents": {
         "randomize": 2,
         "add": 15,
         "remove": 11,
         "sequence": 2
       },
-      "JavaScript Size": {
-        "Instance Count": 2,
-        "Total": 3239,
-        "Max": 2217,
-        "Min": 1022,
-        "Average": 1620
-      },
-      "JavaScript Lines": {
-        "Instance Count": 2,
-        "Total": 85,
-        "Max": 59,
-        "Min": 26,
-        "Average": 43
-      },
-      "Behavior pack manifest Size": {
-        "Instance Count": 1,
-        "Total": 652,
-        "Max": 652,
-        "Min": 652,
-        "Average": 652
-      },
-      "Behavior pack manifest Lines": {
-        "Instance Count": 1,
-        "Total": 31,
-        "Max": 31,
-        "Min": 31,
-        "Average": 31
-      },
-      "Entity type Size": {
-        "Instance Count": 3,
-        "Total": 13546,
-        "Max": 5318,
-        "Min": 4102,
-        "Average": 4515
-      },
-      "Entity type Lines": {
-        "Instance Count": 3,
-        "Total": 734,
-        "Max": 279,
-        "Min": 224,
-        "Average": 245
-      },
-      "Resource pack manifest Size": {
-        "Instance Count": 1,
-        "Total": 310,
-        "Max": 310,
-        "Min": 310,
-        "Average": 310
-      },
-      "Resource pack manifest Lines": {
-        "Instance Count": 1,
-        "Total": 14,
-        "Max": 14,
-        "Min": 14,
-        "Average": 14
-      },
-      "Behavior pack animation Size": {
-        "Instance Count": 1,
-        "Total": 260,
-        "Max": 260,
-        "Min": 260,
-        "Average": 260
-      },
-      "Behavior pack animation Lines": {
-        "Instance Count": 1,
-        "Total": 15,
-        "Max": 15,
-        "Min": 15,
-        "Average": 15
-      },
-      "Behavior pack animation controller Size": {
-        "Instance Count": 1,
-        "Total": 277,
-        "Max": 277,
-        "Min": 277,
-        "Average": 277
-      },
-      "Behavior pack animation controller Lines": {
-        "Instance Count": 1,
-        "Total": 12,
-        "Max": 12,
-        "Min": 12,
-        "Average": 12
-      },
-      "Loot table Size": {
-        "Instance Count": 2,
-        "Total": 630,
-        "Max": 478,
-        "Min": 152,
-        "Average": 315
-      },
-      "Loot table Lines": {
-        "Instance Count": 2,
-        "Total": 47,
-        "Max": 35,
-        "Min": 12,
-        "Average": 24
-      },
-      "Sound catalog Size": {
-        "Instance Count": 1,
-        "Total": 1525,
-        "Max": 1525,
-        "Min": 1525,
-        "Average": 1525
-      },
-      "Sound catalog Lines": {
-        "Instance Count": 1,
-        "Total": 90,
-        "Max": 90,
-        "Min": 90,
-        "Average": 90
-      },
-      "Animation Size": {
-        "Instance Count": 3,
-        "Total": 2578,
-        "Max": 1073,
-        "Min": 507,
-        "Average": 859
-      },
-      "Animation Lines": {
-        "Instance Count": 3,
-        "Total": 120,
-        "Max": 54,
-        "Min": 20,
-        "Average": 40
-      },
-      "Entity type visuals/audio Size": {
-        "Instance Count": 3,
-        "Total": 1967,
-        "Max": 798,
-        "Min": 486,
-        "Average": 656
-      },
-      "Entity type visuals/audio Lines": {
-        "Instance Count": 3,
-        "Total": 91,
-        "Max": 35,
-        "Min": 24,
-        "Average": 30
-      },
-      "Model Size": {
-        "Instance Count": 3,
-        "Total": 4182,
-        "Max": 1670,
-        "Min": 1162,
-        "Average": 1394
-      },
-      "Model Lines": {
-        "Instance Count": 3,
-        "Total": 189,
-        "Max": 77,
-        "Min": 54,
-        "Average": 63
-      },
-      "Particle Size": {
-        "Instance Count": 2,
-        "Total": 2764,
-        "Max": 1459,
-        "Min": 1305,
-        "Average": 1382
-      },
-      "Particle Lines": {
-        "Instance Count": 2,
-        "Total": 122,
-        "Max": 66,
-        "Min": 56,
-        "Average": 61
-      },
-      "Language catalog Size": {
-        "Instance Count": 2,
-        "Total": 18,
-        "Max": 9,
-        "Min": 9,
-        "Average": 9
-      },
-      "Language catalog Lines": {
-        "Instance Count": 2,
-        "Total": 4,
-        "Max": 2,
-        "Min": 2,
-        "Average": 2
-      },
-      "Spawn rule Size": {
-        "Instance Count": 3,
-        "Total": 3775,
-        "Max": 2179,
-        "Min": 796,
-        "Average": 1258
-      },
-      "Spawn rule Lines": {
-        "Instance Count": 3,
-        "Total": 232,
-        "Max": 142,
-        "Min": 45,
-        "Average": 77
-      },
-      "Language translations Size": {
-        "Instance Count": 2,
-        "Total": 394,
-        "Max": 304,
-        "Min": 90,
-        "Average": 197
-      },
-      "Language translations Lines": {
-        "Instance Count": 2,
-        "Total": 9,
-        "Max": 7,
-        "Min": 2,
-        "Average": 5
-      },
-      "Texture Size": {
-        "Instance Count": 3,
-        "Total": 7271,
-        "Max": 3882,
-        "Min": 1489,
-        "Average": 2424
-      },
-      "Marketing image Size": {
-        "Instance Count": 8,
-        "Total": 5565201,
-        "Max": 809093,
-        "Min": 369231,
-        "Average": 695650
-      },
-      "Store image Size": {
-        "Instance Count": 8,
-        "Total": 1395446,
-        "Max": 508820,
-        "Min": 26393,
-        "Average": 174431
-      },
-      "Icon Size": {
-        "Instance Count": 2,
-        "Total": 7114,
-        "Max": 3557,
-        "Min": 3557,
-        "Average": 3557
-      },
-      "Animations Resource": {
-        "Count": 8
-      },
-      "Bones Resource Animation Bone": {
-        "Count": 23
-      },
-      "Bones Resource Animation Bone Position Continuous": {
-        "Count": 24
-      },
-      "Bones Resource Animation Bone Scale Continuous": {
-        "Count": 2
-      },
-      "Bones Resource Animation Bone Rotation Continuous": {
-        "Count": 77
-      },
-      "Bones Resource Animation Bone Position Keyframe": {
-        "Count": 13
-      },
-      "APIs Used world": {
-        "Count": 2
-      },
-      "APIs Used system": {
-        "Count": 1
-      },
-      "APIs Used BlockPermutation": {
-        "Count": 1
-      },
-      "APIs Used sendMessage": {
-        "Count": 1
-      },
-      "APIs Used getDefaultSpawnLocation": {
-        "Count": 1
-      },
-      "APIs Used getDimension": {
-        "Count": 2
-      },
-      "APIs Used players": {
-        "Count": 1
-      },
-      "APIs Used getPlayers": {
-        "Count": 1
-      },
-      "APIs Used location": {
-        "Count": 1
-      },
-      "APIs Used block": {
-        "Count": 1
-      },
-      "APIs Used getBlock": {
-        "Count": 2
-      },
-      "APIs Used permutation": {
-        "Count": 1
-      },
-      "APIs Used matches": {
-        "Count": 1
-      },
-      "APIs Used button": {
-        "Count": 1
-      },
-      "APIs Used setPermutation": {
-        "Count": 2
-      },
-      "APIs Used resolve": {
-        "Count": 1
-      },
-      "APIs Used afterEvents": {
-        "Count": 1
-      },
-      "APIs Used buttonPush": {
-        "Count": 1
-      },
-      "APIs Used subscribe": {
-        "Count": 1
-      },
-      "APIs Used spawnEntity": {
-        "Count": 1
-      },
-      "APIs Used static": {
-        "Count": 1
-      },
-      "Textures Entity Resource Count": {
-        "Count": 3
-      },
-      "Textures Texture References": {
-        "Count": 3
-      },
-      "Textures Entity References": {
-        "Count": 3
-      },
-      "Textures File Count": {
-        "Count": 3
-      },
-      "Textures Unique Texture Handles (estimated)": {
-        "Count": 3
-      },
-      "Textures Unique Texture Paths": {
-        "Count": 3
-      },
-      "Textures Unique Particle Texture Paths": {
-        "Count": 0
-      },
-      "Textures Unique Particle Texture Vanilla Paths": {
-        "Count": 1
-      },
-      "Textures Unique Entity Texture Paths": {
-        "Count": 3
-      },
-      "Texture Images Custom Texture": {
-        "Count": 3
-      },
-      "Texture Images PNGJPG Width": {
-        "Instance Count": 3,
-        "Total": 256,
-        "Max": 128,
-        "Min": 64,
-        "Average": 85
-      },
-      "Texture Images PNGJPG Height": {
-        "Instance Count": 3,
-        "Total": 192,
-        "Max": 64,
-        "Min": 64,
-        "Average": 64
-      },
-      "Texture Images PNGJPG Texels": {
-        "Instance Count": 3,
-        "Total": 16384,
-        "Max": 8192,
-        "Min": 4096,
-        "Average": 5461
-      },
-      "Texture Images PNGJPG Texture Memory": {
-        "Instance Count": 3,
-        "Total": 65536,
-        "Max": 32768,
-        "Min": 16384,
-        "Average": 21845
-      },
-      "Texture Images Width": {
-        "Instance Count": 3,
-        "Total": 256,
-        "Max": 128,
-        "Min": 64,
-        "Average": 85
-      },
-      "Texture Images Height": {
-        "Instance Count": 3,
-        "Total": 192,
-        "Max": 64,
-        "Min": 64,
-        "Average": 64
-      },
-      "Texture Images Texels": {
-        "Instance Count": 3,
-        "Total": 16384,
-        "Max": 8192,
-        "Min": 4096,
-        "Average": 5461
-      },
-      "Texture Images Texture Memory": {
-        "Instance Count": 3,
-        "Total": 65536,
-        "Max": 32768,
-        "Min": 16384,
-        "Average": 21845
-      },
-      "Texture Images Non-Vanilla Texels": {
-        "Instance Count": 3,
-        "Total": 16384,
-        "Max": 8192,
-        "Min": 4096,
-        "Average": 5461
-      },
-      "Texture Images Non-Vanilla Texture Memory": {
-        "Instance Count": 3,
-        "Total": 65536,
-        "Max": 32768,
-        "Min": 16384,
-        "Average": 21845
-      },
-      "Texture Images Entity Width": {
-        "Instance Count": 3,
-        "Total": 256,
-        "Max": 128,
-        "Min": 64,
-        "Average": 85
-      },
-      "Texture Images Entity Height": {
-        "Instance Count": 3,
-        "Total": 192,
-        "Max": 64,
-        "Min": 64,
-        "Average": 64
-      },
-      "Texture Images Entity Texels": {
-        "Instance Count": 3,
-        "Total": 16384,
-        "Max": 8192,
-        "Min": 4096,
-        "Average": 5461
-      },
-      "Texture Images Entity Texture Memory": {
-        "Instance Count": 3,
-        "Total": 65536,
-        "Max": 32768,
-        "Min": 16384,
-        "Average": 21845
-      },
-      "Texture Images Entity Non-Vanilla Texels": {
-        "Instance Count": 3,
-        "Total": 16384,
-        "Max": 8192,
-        "Min": 4096,
-        "Average": 5461
-      },
-      "Texture Images Entity Non-Vanilla Texture Memory": {
-        "Instance Count": 3,
-        "Total": 65536,
-        "Max": 32768,
-        "Min": 16384,
-        "Average": 21845
-      },
-      "Texture Images Vanilla Game Texture Coverage": {
-        "Override Count": 0,
-        "Vanilla Texture Count": 2266,
-        "Percent": 0
-      },
-      "Texture Images Tier0 Non-Vanilla Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 65536,
-        "Max": 65536,
-        "Min": 65536,
-        "Average": 65536
-      },
-      "Texture Images Tier0 Total Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 65536,
-        "Max": 65536,
-        "Min": 65536,
-        "Average": 65536
-      },
-      "Texture Images Tier0 Block Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier0 Item Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier1 Non-Vanilla Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 65536,
-        "Max": 65536,
-        "Min": 65536,
-        "Average": 65536
-      },
-      "Texture Images Tier1 Total Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 65536,
-        "Max": 65536,
-        "Min": 65536,
-        "Average": 65536
-      },
-      "Texture Images Tier1 Block Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier1 Item Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier2 Non-Vanilla Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 65536,
-        "Max": 65536,
-        "Min": 65536,
-        "Average": 65536
-      },
-      "Texture Images Tier2 Total Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 65536,
-        "Max": 65536,
-        "Min": 65536,
-        "Average": 65536
-      },
-      "Texture Images Tier2 Block Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier2 Item Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier3 Non-Vanilla Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 65536,
-        "Max": 65536,
-        "Min": 65536,
-        "Average": 65536
-      },
-      "Texture Images Tier3 Total Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 65536,
-        "Max": 65536,
-        "Min": 65536,
-        "Average": 65536
-      },
-      "Texture Images Tier3 Block Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier3 Item Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier4 Non-Vanilla Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 65536,
-        "Max": 65536,
-        "Min": 65536,
-        "Average": 65536
-      },
-      "Texture Images Tier4 Total Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 65536,
-        "Max": 65536,
-        "Min": 65536,
-        "Average": 65536
-      },
-      "Texture Images Tier4 Block Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier4 Item Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier5 Non-Vanilla Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 65536,
-        "Max": 65536,
-        "Min": 65536,
-        "Average": 65536
-      },
-      "Texture Images Tier5 Total Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 65536,
-        "Max": 65536,
-        "Min": 65536,
-        "Average": 65536
-      },
-      "Texture Images Tier5 Block Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Texture Images Tier5 Item Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
-      },
-      "Command say": {
-        "Count": 1
-      },
-      "Command summon": {
-        "Count": 1
+      "javaScript.size": {
+        "instanceCount": 2,
+        "total": 3239,
+        "max": 2217,
+        "min": 1022,
+        "average": 1620
+      },
+      "javaScript.lines": {
+        "instanceCount": 2,
+        "total": 85,
+        "max": 59,
+        "min": 26,
+        "average": 43
+      },
+      "behaviorPackManifest.size": {
+        "instanceCount": 1,
+        "total": 652,
+        "max": 652,
+        "min": 652,
+        "average": 652
+      },
+      "behaviorPackManifest.lines": {
+        "instanceCount": 1,
+        "total": 31,
+        "max": 31,
+        "min": 31,
+        "average": 31
+      },
+      "entityType.size": {
+        "instanceCount": 3,
+        "total": 13546,
+        "max": 5318,
+        "min": 4102,
+        "average": 4515
+      },
+      "entityType.lines": {
+        "instanceCount": 3,
+        "total": 734,
+        "max": 279,
+        "min": 224,
+        "average": 245
+      },
+      "resourcePackManifest.size": {
+        "instanceCount": 1,
+        "total": 310,
+        "max": 310,
+        "min": 310,
+        "average": 310
+      },
+      "resourcePackManifest.lines": {
+        "instanceCount": 1,
+        "total": 14,
+        "max": 14,
+        "min": 14,
+        "average": 14
+      },
+      "behaviorPackAnimation.size": {
+        "instanceCount": 1,
+        "total": 260,
+        "max": 260,
+        "min": 260,
+        "average": 260
+      },
+      "behaviorPackAnimation.lines": {
+        "instanceCount": 1,
+        "total": 15,
+        "max": 15,
+        "min": 15,
+        "average": 15
+      },
+      "behaviorPackAnimationController.size": {
+        "instanceCount": 1,
+        "total": 277,
+        "max": 277,
+        "min": 277,
+        "average": 277
+      },
+      "behaviorPackAnimationController.lines": {
+        "instanceCount": 1,
+        "total": 12,
+        "max": 12,
+        "min": 12,
+        "average": 12
+      },
+      "lootTable.size": {
+        "instanceCount": 2,
+        "total": 630,
+        "max": 478,
+        "min": 152,
+        "average": 315
+      },
+      "lootTable.lines": {
+        "instanceCount": 2,
+        "total": 47,
+        "max": 35,
+        "min": 12,
+        "average": 24
+      },
+      "soundCatalog.size": {
+        "instanceCount": 1,
+        "total": 1525,
+        "max": 1525,
+        "min": 1525,
+        "average": 1525
+      },
+      "soundCatalog.lines": {
+        "instanceCount": 1,
+        "total": 90,
+        "max": 90,
+        "min": 90,
+        "average": 90
+      },
+      "animation.size": {
+        "instanceCount": 3,
+        "total": 2578,
+        "max": 1073,
+        "min": 507,
+        "average": 859
+      },
+      "animation.lines": {
+        "instanceCount": 3,
+        "total": 120,
+        "max": 54,
+        "min": 20,
+        "average": 40
+      },
+      "entityTypeVisuals/audio.size": {
+        "instanceCount": 3,
+        "total": 1967,
+        "max": 798,
+        "min": 486,
+        "average": 656
+      },
+      "entityTypeVisuals/audio.lines": {
+        "instanceCount": 3,
+        "total": 91,
+        "max": 35,
+        "min": 24,
+        "average": 30
+      },
+      "model.size": {
+        "instanceCount": 3,
+        "total": 4182,
+        "max": 1670,
+        "min": 1162,
+        "average": 1394
+      },
+      "model.lines": {
+        "instanceCount": 3,
+        "total": 189,
+        "max": 77,
+        "min": 54,
+        "average": 63
+      },
+      "particle.size": {
+        "instanceCount": 2,
+        "total": 2764,
+        "max": 1459,
+        "min": 1305,
+        "average": 1382
+      },
+      "particle.lines": {
+        "instanceCount": 2,
+        "total": 122,
+        "max": 66,
+        "min": 56,
+        "average": 61
+      },
+      "languageCatalog.size": {
+        "instanceCount": 2,
+        "total": 18,
+        "max": 9,
+        "min": 9,
+        "average": 9
+      },
+      "languageCatalog.lines": {
+        "instanceCount": 2,
+        "total": 4,
+        "max": 2,
+        "min": 2,
+        "average": 2
+      },
+      "spawnRule.size": {
+        "instanceCount": 3,
+        "total": 3775,
+        "max": 2179,
+        "min": 796,
+        "average": 1258
+      },
+      "spawnRule.lines": {
+        "instanceCount": 3,
+        "total": 232,
+        "max": 142,
+        "min": 45,
+        "average": 77
+      },
+      "languageTranslations.size": {
+        "instanceCount": 2,
+        "total": 394,
+        "max": 304,
+        "min": 90,
+        "average": 197
+      },
+      "languageTranslations.lines": {
+        "instanceCount": 2,
+        "total": 9,
+        "max": 7,
+        "min": 2,
+        "average": 5
+      },
+      "texture.size": {
+        "instanceCount": 3,
+        "total": 7271,
+        "max": 3882,
+        "min": 1489,
+        "average": 2424
+      },
+      "marketingImage.size": {
+        "instanceCount": 8,
+        "total": 5565201,
+        "max": 809093,
+        "min": 369231,
+        "average": 695650
+      },
+      "storeImage.size": {
+        "instanceCount": 8,
+        "total": 1395446,
+        "max": 508820,
+        "min": 26393,
+        "average": 174431
+      },
+      "icon.size": {
+        "instanceCount": 2,
+        "total": 7114,
+        "max": 3557,
+        "min": 3557,
+        "average": 3557
+      },
+      "animations.resource": {
+        "count": 8
+      },
+      "bones.resourceAnimationBone": {
+        "count": 23
+      },
+      "bones.resourceAnimationBonePositionContinuous": {
+        "count": 24
+      },
+      "bones.resourceAnimationBoneScaleContinuous": {
+        "count": 2
+      },
+      "bones.resourceAnimationBoneRotationContinuous": {
+        "count": 77
+      },
+      "bones.resourceAnimationBonePositionKeyframe": {
+        "count": 13
+      },
+      "apisUsed.world": {
+        "count": 2
+      },
+      "apisUsed.system": {
+        "count": 1
+      },
+      "apisUsed.blockPermutation": {
+        "count": 1
+      },
+      "apisUsed.sendMessage": {
+        "count": 1
+      },
+      "apisUsed.getDefaultSpawnLocation": {
+        "count": 1
+      },
+      "apisUsed.getDimension": {
+        "count": 2
+      },
+      "apisUsed.players": {
+        "count": 1
+      },
+      "apisUsed.getPlayers": {
+        "count": 1
+      },
+      "apisUsed.location": {
+        "count": 1
+      },
+      "apisUsed.block": {
+        "count": 1
+      },
+      "apisUsed.getBlock": {
+        "count": 2
+      },
+      "apisUsed.permutation": {
+        "count": 1
+      },
+      "apisUsed.matches": {
+        "count": 1
+      },
+      "apisUsed.button": {
+        "count": 1
+      },
+      "apisUsed.setPermutation": {
+        "count": 2
+      },
+      "apisUsed.resolve": {
+        "count": 1
+      },
+      "apisUsed.afterEvents": {
+        "count": 1
+      },
+      "apisUsed.buttonPush": {
+        "count": 1
+      },
+      "apisUsed.subscribe": {
+        "count": 1
+      },
+      "apisUsed.spawnEntity": {
+        "count": 1
+      },
+      "apisUsed.static": {
+        "count": 1
+      },
+      "textures.entityResourceCount": {
+        "count": 3
+      },
+      "textures.textureReferences": {
+        "count": 3
+      },
+      "textures.entityReferences": {
+        "count": 3
+      },
+      "textures.fileCount": {
+        "count": 3
+      },
+      "textures.uniqueTextureHandlesEstimated": {
+        "count": 3
+      },
+      "textures.uniqueTexturePaths": {
+        "count": 3
+      },
+      "textures.uniqueParticleTexturePaths": {
+        "count": 0
+      },
+      "textures.uniqueParticleTextureVanillaPaths": {
+        "count": 1
+      },
+      "textures.uniqueEntityTexturePaths": {
+        "count": 3
+      },
+      "textureImages.customTexture": {
+        "count": 3
+      },
+      "textureImages.pngjpgWidth": {
+        "instanceCount": 3,
+        "total": 256,
+        "max": 128,
+        "min": 64,
+        "average": 85
+      },
+      "textureImages.pngjpgHeight": {
+        "instanceCount": 3,
+        "total": 192,
+        "max": 64,
+        "min": 64,
+        "average": 64
+      },
+      "textureImages.pngjpgTexels": {
+        "instanceCount": 3,
+        "total": 16384,
+        "max": 8192,
+        "min": 4096,
+        "average": 5461
+      },
+      "textureImages.pngjpgTextureMemory": {
+        "instanceCount": 3,
+        "total": 65536,
+        "max": 32768,
+        "min": 16384,
+        "average": 21845
+      },
+      "textureImages.width": {
+        "instanceCount": 3,
+        "total": 256,
+        "max": 128,
+        "min": 64,
+        "average": 85
+      },
+      "textureImages.height": {
+        "instanceCount": 3,
+        "total": 192,
+        "max": 64,
+        "min": 64,
+        "average": 64
+      },
+      "textureImages.texels": {
+        "instanceCount": 3,
+        "total": 16384,
+        "max": 8192,
+        "min": 4096,
+        "average": 5461
+      },
+      "textureImages.textureMemory": {
+        "instanceCount": 3,
+        "total": 65536,
+        "max": 32768,
+        "min": 16384,
+        "average": 21845
+      },
+      "textureImages.nonVanillaTexels": {
+        "instanceCount": 3,
+        "total": 16384,
+        "max": 8192,
+        "min": 4096,
+        "average": 5461
+      },
+      "textureImages.nonVanillaTextureMemory": {
+        "instanceCount": 3,
+        "total": 65536,
+        "max": 32768,
+        "min": 16384,
+        "average": 21845
+      },
+      "textureImages.entityWidth": {
+        "instanceCount": 3,
+        "total": 256,
+        "max": 128,
+        "min": 64,
+        "average": 85
+      },
+      "textureImages.entityHeight": {
+        "instanceCount": 3,
+        "total": 192,
+        "max": 64,
+        "min": 64,
+        "average": 64
+      },
+      "textureImages.entityTexels": {
+        "instanceCount": 3,
+        "total": 16384,
+        "max": 8192,
+        "min": 4096,
+        "average": 5461
+      },
+      "textureImages.entityTextureMemory": {
+        "instanceCount": 3,
+        "total": 65536,
+        "max": 32768,
+        "min": 16384,
+        "average": 21845
+      },
+      "textureImages.entityNonVanillaTexels": {
+        "instanceCount": 3,
+        "total": 16384,
+        "max": 8192,
+        "min": 4096,
+        "average": 5461
+      },
+      "textureImages.entityNonVanillaTextureMemory": {
+        "instanceCount": 3,
+        "total": 65536,
+        "max": 32768,
+        "min": 16384,
+        "average": 21845
+      },
+      "textureImages.vanillaGameTextureCoverage": {
+        "overrideCount": 0,
+        "vanillaTextureCount": 2348,
+        "percent": 0
+      },
+      "textureImagesTier0.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 65536,
+        "max": 65536,
+        "min": 65536,
+        "average": 65536
+      },
+      "textureImagesTier0.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 65536,
+        "max": 65536,
+        "min": 65536,
+        "average": 65536
+      },
+      "textureImagesTier0.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier0.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier1.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 65536,
+        "max": 65536,
+        "min": 65536,
+        "average": 65536
+      },
+      "textureImagesTier1.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 65536,
+        "max": 65536,
+        "min": 65536,
+        "average": 65536
+      },
+      "textureImagesTier1.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier1.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier2.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 65536,
+        "max": 65536,
+        "min": 65536,
+        "average": 65536
+      },
+      "textureImagesTier2.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 65536,
+        "max": 65536,
+        "min": 65536,
+        "average": 65536
+      },
+      "textureImagesTier2.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier2.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier3.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 65536,
+        "max": 65536,
+        "min": 65536,
+        "average": 65536
+      },
+      "textureImagesTier3.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 65536,
+        "max": 65536,
+        "min": 65536,
+        "average": 65536
+      },
+      "textureImagesTier3.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier3.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier4.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 65536,
+        "max": 65536,
+        "min": 65536,
+        "average": 65536
+      },
+      "textureImagesTier4.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 65536,
+        "max": 65536,
+        "min": 65536,
+        "average": 65536
+      },
+      "textureImagesTier4.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier4.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier5.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 65536,
+        "max": 65536,
+        "min": 65536,
+        "average": 65536
+      },
+      "textureImagesTier5.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 65536,
+        "max": 65536,
+        "min": 65536,
+        "average": 65536
+      },
+      "textureImagesTier5.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier5.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "command.say": {
+        "count": 1
+      },
+      "command.summon": {
+        "count": 1
       }
     },
     "errorCount": 0,
@@ -923,8 +923,9 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:boomfly`\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:robot`",
     "testFailSummary": "",
-    "infoGenerationTime": 911,
-    "endToEndGenerationTime": 1105,
+    "infoGenerationTime": 948,
+    "endToEndGenerationTime": 1156,
+    "reds": 40555,
     "summary": {
       "BASEGAMEVER": {
         "2": {
@@ -1006,7 +1007,7 @@
         },
         "120": {
           "title": "Format Version Minor Version Lower Than Current",
-          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.110.02)",
+          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version",
           "recommendations": 3
         }
       },
@@ -1031,17 +1032,17 @@
         },
         "216": {
           "title": "Resource animation Version Minor Version Higher than Current",
-          "defaultMessage": "Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.10.0)",
+          "defaultMessage": "Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version",
           "recommendations": 3
         },
         "256": {
           "title": "256",
-          "defaultMessage": "Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)",
+          "defaultMessage": "Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version",
           "recommendations": 3
         },
         "296": {
           "title": "296",
-          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.110)",
+          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version",
           "recommendations": 3
         },
         "619": {
@@ -1728,8 +1729,8 @@
       "gId": "ENTITYTYPE",
       "gIx": 52,
       "fs": {
-        "(no runtime identifier)": {
-          "Count": 3
+        "noRuntimeIdentifier": {
+          "count": 3
         }
       }
     },
@@ -1738,8 +1739,8 @@
       "gId": "ENTITYTYPE",
       "gIx": 53,
       "fs": {
-        "(no override identifier)": {
-          "Count": 3
+        "noOverrideIdentifier": {
+          "count": 3
         }
       }
     },
@@ -1748,11 +1749,11 @@
       "gId": "ENTITYTYPE",
       "gIx": 54,
       "fs": {
-        "Spawnable Entity Type": {
-          "Count": 3
+        "spawnableEntityType": {
+          "count": 3
         },
-        "Summonable Entity Type": {
-          "Count": 3
+        "summonableEntityType": {
+          "count": 3
         }
       }
     },
@@ -1841,7 +1842,7 @@
       "iTp": 6,
       "gId": "FORMATVER",
       "gIx": 296,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.110)",
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version",
       "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
     },
     {
@@ -1985,12 +1986,12 @@
       "gId": "GEOMETRY",
       "gIx": 102,
       "fs": {
-        "Cubes": {
-          "Instance Count": 3,
-          "Total": 34,
-          "Max": 14,
-          "Min": 8,
-          "Average": 11
+        "cubes": {
+          "instanceCount": 3,
+          "total": 34,
+          "max": 14,
+          "min": 8,
+          "average": 11
         }
       }
     },
@@ -2221,47 +2222,47 @@
       "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json",
       "d": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json",
       "fs": {
-        "Default Components": {
-          "minecraft:type_family": 1,
-          "minecraft:breathable": 1,
-          "minecraft:nameable": 1,
-          "minecraft:health": 1,
-          "minecraft:hurt_on_condition": 1,
-          "minecraft:collision_box": 1,
-          "minecraft:movement": 1,
-          "minecraft:water_movement": 1,
-          "minecraft:navigation.walk": 1,
-          "minecraft:movement.basic": 1,
-          "minecraft:jump.static": 1,
-          "minecraft:can_climb": 1,
-          "minecraft:follow_range": 1,
-          "minecraft:despawn": 1,
-          "minecraft:behavior.float": 1,
-          "minecraft:behavior.hurt_by_target": 1,
-          "minecraft:behavior.random_stroll": 1,
-          "minecraft:behavior.look_at_player": 1,
-          "minecraft:behavior.random_look_around": 1,
-          "minecraft:physics": 1,
-          "minecraft:pushable": 1,
-          "minecraft:behavior.panic": 1,
-          "minecraft:leashable": 1,
-          "minecraft:conditional_bandwidth_optimization": 1
+        "defaultComponents": {
+          "minecraftTypeFamily": 1,
+          "minecraftBreathable": 1,
+          "minecraftNameable": 1,
+          "minecraftHealth": 1,
+          "minecraftHurtOnCondition": 1,
+          "minecraftCollisionBox": 1,
+          "minecraftMovement": 1,
+          "minecraftWaterMovement": 1,
+          "minecraftNavigationWalk": 1,
+          "minecraftMovementBasic": 1,
+          "minecraftJumpStatic": 1,
+          "minecraftCanClimb": 1,
+          "minecraftFollowRange": 1,
+          "minecraftDespawn": 1,
+          "minecraftBehaviorFloat": 1,
+          "minecraftBehaviorHurtByTarget": 1,
+          "minecraftBehaviorRandomStroll": 1,
+          "minecraftBehaviorLookAtPlayer": 1,
+          "minecraftBehaviorRandomLookAround": 1,
+          "minecraftPhysics": 1,
+          "minecraftPushable": 1,
+          "minecraftBehaviorPanic": 1,
+          "minecraftLeashable": 1,
+          "minecraftConditionalBandwidthOptimization": 1
         },
-        "Components Used in Component Groups": {
-          "minecraft:is_baby": 1,
-          "minecraft:scale": 1,
-          "minecraft:ageable": 1,
-          "minecraft:behavior.follow_parent": 1,
-          "minecraft:on_target_acquired": 2,
-          "minecraft:behavior.nearest_attackable_target": 2,
-          "minecraft:angry": 2,
-          "minecraft:experience_reward": 1,
-          "minecraft:loot": 1,
-          "minecraft:on_friendly_anger": 1,
-          "minecraft:attack": 1,
-          "minecraft:behavior.stomp_attack": 1
+        "componentsUsedInComponentGroups": {
+          "minecraftIsBaby": 1,
+          "minecraftScale": 1,
+          "minecraftAgeable": 1,
+          "minecraftBehaviorFollowParent": 1,
+          "minecraftOnTargetAcquired": 2,
+          "minecraftBehaviorNearestAttackableTarget": 2,
+          "minecraftAngry": 2,
+          "minecraftExperienceReward": 1,
+          "minecraftLoot": 1,
+          "minecraftOnFriendlyAnger": 1,
+          "minecraftAttack": 1,
+          "minecraftBehaviorStompAttack": 1
         },
-        "Entity Events": {
+        "entityEvents": {
           "randomize": 1,
           "add": 6,
           "remove": 5
@@ -2275,48 +2276,48 @@
       "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json",
       "d": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json",
       "fs": {
-        "Default Components": {
-          "minecraft:breathable": 1,
-          "minecraft:nameable": 1,
-          "minecraft:health": 1,
-          "minecraft:damage_sensor": 1,
-          "minecraft:hurt_on_condition": 1,
-          "minecraft:movement": 1,
-          "minecraft:water_movement": 1,
-          "minecraft:navigation.generic": 1,
-          "minecraft:movement.amphibious": 1,
-          "minecraft:jump.static": 1,
-          "minecraft:physics": 1,
-          "minecraft:pushable": 1,
-          "minecraft:home": 1,
-          "minecraft:follow_range": 1,
-          "minecraft:despawn": 1,
-          "minecraft:behavior.panic": 1,
-          "minecraft:behavior.hurt_by_target": 1,
-          "minecraft:behavior.tempt": 1,
-          "minecraft:behavior.move_to_water": 1,
-          "minecraft:behavior.random_swim": 1,
-          "minecraft:behavior.look_at_player": 1,
-          "minecraft:conditional_bandwidth_optimization": 1
+        "defaultComponents": {
+          "minecraftBreathable": 1,
+          "minecraftNameable": 1,
+          "minecraftHealth": 1,
+          "minecraftDamageSensor": 1,
+          "minecraftHurtOnCondition": 1,
+          "minecraftMovement": 1,
+          "minecraftWaterMovement": 1,
+          "minecraftNavigationGeneric": 1,
+          "minecraftMovementAmphibious": 1,
+          "minecraftJumpStatic": 1,
+          "minecraftPhysics": 1,
+          "minecraftPushable": 1,
+          "minecraftHome": 1,
+          "minecraftFollowRange": 1,
+          "minecraftDespawn": 1,
+          "minecraftBehaviorPanic": 1,
+          "minecraftBehaviorHurtByTarget": 1,
+          "minecraftBehaviorTempt": 1,
+          "minecraftBehaviorMoveToWater": 1,
+          "minecraftBehaviorRandomSwim": 1,
+          "minecraftBehaviorLookAtPlayer": 1,
+          "minecraftConditionalBandwidthOptimization": 1
         },
-        "Components Used in Component Groups": {
-          "minecraft:type_family": 2,
-          "minecraft:collision_box": 2,
-          "minecraft:underwater_movement": 2,
-          "minecraft:is_baby": 1,
-          "minecraft:scale": 1,
-          "minecraft:behavior.move_to_water": 1,
-          "minecraft:ageable": 1,
-          "minecraft:experience_reward": 1,
-          "minecraft:loot": 1,
-          "minecraft:breedable": 1,
-          "minecraft:behavior.breed": 1,
-          "minecraft:behavior.move_to_land": 1,
-          "minecraft:behavior.random_stroll": 1,
-          "minecraft:behavior.go_home": 1,
-          "minecraft:behavior.lay_egg": 1
+        "componentsUsedInComponentGroups": {
+          "minecraftTypeFamily": 2,
+          "minecraftCollisionBox": 2,
+          "minecraftUnderwaterMovement": 2,
+          "minecraftIsBaby": 1,
+          "minecraftScale": 1,
+          "minecraftBehaviorMoveToWater": 1,
+          "minecraftAgeable": 1,
+          "minecraftExperienceReward": 1,
+          "minecraftLoot": 1,
+          "minecraftBreedable": 1,
+          "minecraftBehaviorBreed": 1,
+          "minecraftBehaviorMoveToLand": 1,
+          "minecraftBehaviorRandomStroll": 1,
+          "minecraftBehaviorGoHome": 1,
+          "minecraftBehaviorLayEgg": 1
         },
-        "Entity Events": {
+        "entityEvents": {
           "randomize": 1,
           "add": 4,
           "remove": 3
@@ -2330,51 +2331,51 @@
       "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json",
       "d": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json",
       "fs": {
-        "Default Components": {
-          "minecraft:type_family": 1,
-          "minecraft:breathable": 1,
-          "minecraft:collision_box": 1,
-          "minecraft:nameable": 1,
-          "minecraft:health": 1,
-          "minecraft:hurt_on_condition": 1,
-          "minecraft:movement": 1,
-          "minecraft:navigation.walk": 1,
-          "minecraft:movement.basic": 1,
-          "minecraft:jump.static": 1,
-          "minecraft:can_climb": 1,
-          "minecraft:interact": 1,
-          "minecraft:leashable": 1,
-          "minecraft:balloonable": 1,
-          "minecraft:despawn": 1,
-          "minecraft:behavior.float": 1,
-          "minecraft:behavior.panic": 1,
-          "minecraft:behavior.mount_pathing": 1,
-          "minecraft:behavior.tempt": 1,
-          "minecraft:behavior.follow_parent": 1,
-          "minecraft:behavior.eat_block": 1,
-          "minecraft:behavior.random_stroll": 1,
-          "minecraft:behavior.look_at_player": 1,
-          "minecraft:behavior.random_look_around": 1,
-          "minecraft:physics": 1,
-          "minecraft:pushable": 1,
-          "minecraft:conditional_bandwidth_optimization": 1
+        "defaultComponents": {
+          "minecraftTypeFamily": 1,
+          "minecraftBreathable": 1,
+          "minecraftCollisionBox": 1,
+          "minecraftNameable": 1,
+          "minecraftHealth": 1,
+          "minecraftHurtOnCondition": 1,
+          "minecraftMovement": 1,
+          "minecraftNavigationWalk": 1,
+          "minecraftMovementBasic": 1,
+          "minecraftJumpStatic": 1,
+          "minecraftCanClimb": 1,
+          "minecraftInteract": 1,
+          "minecraftLeashable": 1,
+          "minecraftBalloonable": 1,
+          "minecraftDespawn": 1,
+          "minecraftBehaviorFloat": 1,
+          "minecraftBehaviorPanic": 1,
+          "minecraftBehaviorMountPathing": 1,
+          "minecraftBehaviorTempt": 1,
+          "minecraftBehaviorFollowParent": 1,
+          "minecraftBehaviorEatBlock": 1,
+          "minecraftBehaviorRandomStroll": 1,
+          "minecraftBehaviorLookAtPlayer": 1,
+          "minecraftBehaviorRandomLookAround": 1,
+          "minecraftPhysics": 1,
+          "minecraftPushable": 1,
+          "minecraftConditionalBandwidthOptimization": 1
         },
-        "Components Used in Component Groups": {
-          "minecraft:loot": 2,
-          "minecraft:rideable": 2,
-          "minecraft:is_baby": 1,
-          "minecraft:scale": 1,
-          "minecraft:ageable": 1,
-          "minecraft:behavior.follow_parent": 1,
-          "minecraft:experience_reward": 1,
-          "minecraft:behavior.breed": 1,
-          "minecraft:breedable": 1,
-          "minecraft:is_sheared": 1,
-          "minecraft:behavior.nearest_attackable_target": 1,
-          "minecraft:behavior.melee_attack": 1,
-          "minecraft:attack": 1
+        "componentsUsedInComponentGroups": {
+          "minecraftLoot": 2,
+          "minecraftRideable": 2,
+          "minecraftIsBaby": 1,
+          "minecraftScale": 1,
+          "minecraftAgeable": 1,
+          "minecraftBehaviorFollowParent": 1,
+          "minecraftExperienceReward": 1,
+          "minecraftBehaviorBreed": 1,
+          "minecraftBreedable": 1,
+          "minecraftIsSheared": 1,
+          "minecraftBehaviorNearestAttackableTarget": 1,
+          "minecraftBehaviorMeleeAttack": 1,
+          "minecraftAttack": 1
         },
-        "Entity Events": {
+        "entityEvents": {
           "sequence": 2,
           "add": 5,
           "remove": 3
@@ -2398,19 +2399,19 @@
       "gId": "LINESIZE",
       "gIx": 102,
       "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 3239,
-          "Max": 2217,
-          "Min": 1022,
-          "Average": 1620
+        "size": {
+          "instanceCount": 2,
+          "total": 3239,
+          "max": 2217,
+          "min": 1022,
+          "average": 1620
         },
-        "Lines": {
-          "Instance Count": 2,
-          "Total": 85,
-          "Max": 59,
-          "Min": 26,
-          "Average": 43
+        "lines": {
+          "instanceCount": 2,
+          "total": 85,
+          "max": 59,
+          "min": 26,
+          "average": 43
         }
       }
     },
@@ -2419,19 +2420,19 @@
       "gId": "LINESIZE",
       "gIx": 105,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 652,
-          "Max": 652,
-          "Min": 652,
-          "Average": 652
+        "size": {
+          "instanceCount": 1,
+          "total": 652,
+          "max": 652,
+          "min": 652,
+          "average": 652
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 31,
-          "Max": 31,
-          "Min": 31,
-          "Average": 31
+        "lines": {
+          "instanceCount": 1,
+          "total": 31,
+          "max": 31,
+          "min": 31,
+          "average": 31
         }
       }
     },
@@ -2440,19 +2441,19 @@
       "gId": "LINESIZE",
       "gIx": 110,
       "fs": {
-        "Size": {
-          "Instance Count": 3,
-          "Total": 13546,
-          "Max": 5318,
-          "Min": 4102,
-          "Average": 4515
+        "size": {
+          "instanceCount": 3,
+          "total": 13546,
+          "max": 5318,
+          "min": 4102,
+          "average": 4515
         },
-        "Lines": {
-          "Instance Count": 3,
-          "Total": 734,
-          "Max": 279,
-          "Min": 224,
-          "Average": 245
+        "lines": {
+          "instanceCount": 3,
+          "total": 734,
+          "max": 279,
+          "min": 224,
+          "average": 245
         }
       }
     },
@@ -2461,19 +2462,19 @@
       "gId": "LINESIZE",
       "gIx": 114,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 310,
-          "Max": 310,
-          "Min": 310,
-          "Average": 310
+        "size": {
+          "instanceCount": 1,
+          "total": 310,
+          "max": 310,
+          "min": 310,
+          "average": 310
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 14,
-          "Max": 14,
-          "Min": 14,
-          "Average": 14
+        "lines": {
+          "instanceCount": 1,
+          "total": 14,
+          "max": 14,
+          "min": 14,
+          "average": 14
         }
       }
     },
@@ -2482,19 +2483,19 @@
       "gId": "LINESIZE",
       "gIx": 119,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 260,
-          "Max": 260,
-          "Min": 260,
-          "Average": 260
+        "size": {
+          "instanceCount": 1,
+          "total": 260,
+          "max": 260,
+          "min": 260,
+          "average": 260
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 15,
-          "Max": 15,
-          "Min": 15,
-          "Average": 15
+        "lines": {
+          "instanceCount": 1,
+          "total": 15,
+          "max": 15,
+          "min": 15,
+          "average": 15
         }
       }
     },
@@ -2503,19 +2504,19 @@
       "gId": "LINESIZE",
       "gIx": 120,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 277,
-          "Max": 277,
-          "Min": 277,
-          "Average": 277
+        "size": {
+          "instanceCount": 1,
+          "total": 277,
+          "max": 277,
+          "min": 277,
+          "average": 277
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 12,
-          "Max": 12,
-          "Min": 12,
-          "Average": 12
+        "lines": {
+          "instanceCount": 1,
+          "total": 12,
+          "max": 12,
+          "min": 12,
+          "average": 12
         }
       }
     },
@@ -2524,19 +2525,19 @@
       "gId": "LINESIZE",
       "gIx": 124,
       "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 630,
-          "Max": 478,
-          "Min": 152,
-          "Average": 315
+        "size": {
+          "instanceCount": 2,
+          "total": 630,
+          "max": 478,
+          "min": 152,
+          "average": 315
         },
-        "Lines": {
-          "Instance Count": 2,
-          "Total": 47,
-          "Max": 35,
-          "Min": 12,
-          "Average": 24
+        "lines": {
+          "instanceCount": 2,
+          "total": 47,
+          "max": 35,
+          "min": 12,
+          "average": 24
         }
       }
     },
@@ -2545,19 +2546,19 @@
       "gId": "LINESIZE",
       "gIx": 127,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 1525,
-          "Max": 1525,
-          "Min": 1525,
-          "Average": 1525
+        "size": {
+          "instanceCount": 1,
+          "total": 1525,
+          "max": 1525,
+          "min": 1525,
+          "average": 1525
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 90,
-          "Max": 90,
-          "Min": 90,
-          "Average": 90
+        "lines": {
+          "instanceCount": 1,
+          "total": 90,
+          "max": 90,
+          "min": 90,
+          "average": 90
         }
       }
     },
@@ -2566,19 +2567,19 @@
       "gId": "LINESIZE",
       "gIx": 128,
       "fs": {
-        "Size": {
-          "Instance Count": 3,
-          "Total": 2578,
-          "Max": 1073,
-          "Min": 507,
-          "Average": 859
+        "size": {
+          "instanceCount": 3,
+          "total": 2578,
+          "max": 1073,
+          "min": 507,
+          "average": 859
         },
-        "Lines": {
-          "Instance Count": 3,
-          "Total": 120,
-          "Max": 54,
-          "Min": 20,
-          "Average": 40
+        "lines": {
+          "instanceCount": 3,
+          "total": 120,
+          "max": 54,
+          "min": 20,
+          "average": 40
         }
       }
     },
@@ -2587,19 +2588,19 @@
       "gId": "LINESIZE",
       "gIx": 130,
       "fs": {
-        "Size": {
-          "Instance Count": 3,
-          "Total": 1967,
-          "Max": 798,
-          "Min": 486,
-          "Average": 656
+        "size": {
+          "instanceCount": 3,
+          "total": 1967,
+          "max": 798,
+          "min": 486,
+          "average": 656
         },
-        "Lines": {
-          "Instance Count": 3,
-          "Total": 91,
-          "Max": 35,
-          "Min": 24,
-          "Average": 30
+        "lines": {
+          "instanceCount": 3,
+          "total": 91,
+          "max": 35,
+          "min": 24,
+          "average": 30
         }
       }
     },
@@ -2608,19 +2609,19 @@
       "gId": "LINESIZE",
       "gIx": 132,
       "fs": {
-        "Size": {
-          "Instance Count": 3,
-          "Total": 4182,
-          "Max": 1670,
-          "Min": 1162,
-          "Average": 1394
+        "size": {
+          "instanceCount": 3,
+          "total": 4182,
+          "max": 1670,
+          "min": 1162,
+          "average": 1394
         },
-        "Lines": {
-          "Instance Count": 3,
-          "Total": 189,
-          "Max": 77,
-          "Min": 54,
-          "Average": 63
+        "lines": {
+          "instanceCount": 3,
+          "total": 189,
+          "max": 77,
+          "min": 54,
+          "average": 63
         }
       }
     },
@@ -2629,19 +2630,19 @@
       "gId": "LINESIZE",
       "gIx": 133,
       "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 2764,
-          "Max": 1459,
-          "Min": 1305,
-          "Average": 1382
+        "size": {
+          "instanceCount": 2,
+          "total": 2764,
+          "max": 1459,
+          "min": 1305,
+          "average": 1382
         },
-        "Lines": {
-          "Instance Count": 2,
-          "Total": 122,
-          "Max": 66,
-          "Min": 56,
-          "Average": 61
+        "lines": {
+          "instanceCount": 2,
+          "total": 122,
+          "max": 66,
+          "min": 56,
+          "average": 61
         }
       }
     },
@@ -2650,19 +2651,19 @@
       "gId": "LINESIZE",
       "gIx": 137,
       "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 18,
-          "Max": 9,
-          "Min": 9,
-          "Average": 9
+        "size": {
+          "instanceCount": 2,
+          "total": 18,
+          "max": 9,
+          "min": 9,
+          "average": 9
         },
-        "Lines": {
-          "Instance Count": 2,
-          "Total": 4,
-          "Max": 2,
-          "Min": 2,
-          "Average": 2
+        "lines": {
+          "instanceCount": 2,
+          "total": 4,
+          "max": 2,
+          "min": 2,
+          "average": 2
         }
       }
     },
@@ -2671,19 +2672,19 @@
       "gId": "LINESIZE",
       "gIx": 144,
       "fs": {
-        "Size": {
-          "Instance Count": 3,
-          "Total": 3775,
-          "Max": 2179,
-          "Min": 796,
-          "Average": 1258
+        "size": {
+          "instanceCount": 3,
+          "total": 3775,
+          "max": 2179,
+          "min": 796,
+          "average": 1258
         },
-        "Lines": {
-          "Instance Count": 3,
-          "Total": 232,
-          "Max": 142,
-          "Min": 45,
-          "Average": 77
+        "lines": {
+          "instanceCount": 3,
+          "total": 232,
+          "max": 142,
+          "min": 45,
+          "average": 77
         }
       }
     },
@@ -2692,19 +2693,19 @@
       "gId": "LINESIZE",
       "gIx": 179,
       "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 394,
-          "Max": 304,
-          "Min": 90,
-          "Average": 197
+        "size": {
+          "instanceCount": 2,
+          "total": 394,
+          "max": 304,
+          "min": 90,
+          "average": 197
         },
-        "Lines": {
-          "Instance Count": 2,
-          "Total": 9,
-          "Max": 7,
-          "Min": 2,
-          "Average": 5
+        "lines": {
+          "instanceCount": 2,
+          "total": 9,
+          "max": 7,
+          "min": 2,
+          "average": 5
         }
       }
     },
@@ -2713,12 +2714,12 @@
       "gId": "LINESIZE",
       "gIx": 199,
       "fs": {
-        "Size": {
-          "Instance Count": 3,
-          "Total": 7271,
-          "Max": 3882,
-          "Min": 1489,
-          "Average": 2424
+        "size": {
+          "instanceCount": 3,
+          "total": 7271,
+          "max": 3882,
+          "min": 1489,
+          "average": 2424
         }
       }
     },
@@ -2727,12 +2728,12 @@
       "gId": "LINESIZE",
       "gIx": 200,
       "fs": {
-        "Size": {
-          "Instance Count": 8,
-          "Total": 5565201,
-          "Max": 809093,
-          "Min": 369231,
-          "Average": 695650
+        "size": {
+          "instanceCount": 8,
+          "total": 5565201,
+          "max": 809093,
+          "min": 369231,
+          "average": 695650
         }
       }
     },
@@ -2741,12 +2742,12 @@
       "gId": "LINESIZE",
       "gIx": 201,
       "fs": {
-        "Size": {
-          "Instance Count": 8,
-          "Total": 1395446,
-          "Max": 508820,
-          "Min": 26393,
-          "Average": 174431
+        "size": {
+          "instanceCount": 8,
+          "total": 1395446,
+          "max": 508820,
+          "min": 26393,
+          "average": 174431
         }
       }
     },
@@ -2755,12 +2756,12 @@
       "gId": "LINESIZE",
       "gIx": 203,
       "fs": {
-        "Size": {
-          "Instance Count": 2,
-          "Total": 7114,
-          "Max": 3557,
-          "Min": 3557,
-          "Average": 3557
+        "size": {
+          "instanceCount": 2,
+          "total": 7114,
+          "max": 3557,
+          "min": 3557,
+          "average": 3557
         }
       }
     },
@@ -2991,8 +2992,8 @@
       "gId": "RESOURCEANIMATION",
       "gIx": 101,
       "fs": {
-        "Resource": {
-          "Count": 8
+        "resource": {
+          "count": 8
         }
       }
     },
@@ -3001,20 +3002,20 @@
       "gId": "RESOURCEANIMATION",
       "gIx": 102,
       "fs": {
-        "Resource Animation Bone": {
-          "Count": 23
+        "resourceAnimationBone": {
+          "count": 23
         },
-        "Resource Animation Bone Position Continuous": {
-          "Count": 24
+        "resourceAnimationBonePositionContinuous": {
+          "count": 24
         },
-        "Resource Animation Bone Scale Continuous": {
-          "Count": 2
+        "resourceAnimationBoneScaleContinuous": {
+          "count": 2
         },
-        "Resource Animation Bone Rotation Continuous": {
-          "Count": 77
+        "resourceAnimationBoneRotationContinuous": {
+          "count": 77
         },
-        "Resource Animation Bone Position Keyframe": {
-          "Count": 13
+        "resourceAnimationBonePositionKeyframe": {
+          "count": 13
         }
       }
     },
@@ -3034,67 +3035,67 @@
       "gIx": 101,
       "fs": {
         "world": {
-          "Count": 2
+          "count": 2
         },
         "system": {
-          "Count": 1
+          "count": 1
         },
-        "BlockPermutation": {
-          "Count": 1
+        "blockPermutation": {
+          "count": 1
         },
         "sendMessage": {
-          "Count": 1
+          "count": 1
         },
         "getDefaultSpawnLocation": {
-          "Count": 1
+          "count": 1
         },
         "getDimension": {
-          "Count": 2
+          "count": 2
         },
         "players": {
-          "Count": 1
+          "count": 1
         },
         "getPlayers": {
-          "Count": 1
+          "count": 1
         },
         "location": {
-          "Count": 1
+          "count": 1
         },
         "block": {
-          "Count": 1
+          "count": 1
         },
         "getBlock": {
-          "Count": 2
+          "count": 2
         },
         "permutation": {
-          "Count": 1
+          "count": 1
         },
         "matches": {
-          "Count": 1
+          "count": 1
         },
         "button": {
-          "Count": 1
+          "count": 1
         },
         "setPermutation": {
-          "Count": 2
+          "count": 2
         },
         "resolve": {
-          "Count": 1
+          "count": 1
         },
         "afterEvents": {
-          "Count": 1
+          "count": 1
         },
         "buttonPush": {
-          "Count": 1
+          "count": 1
         },
         "subscribe": {
-          "Count": 1
+          "count": 1
         },
         "spawnEntity": {
-          "Count": 1
+          "count": 1
         },
         "static": {
-          "Count": 1
+          "count": 1
         }
       }
     },
@@ -3155,32 +3156,32 @@
       "gId": "TEXTURE",
       "gIx": 101,
       "fs": {
-        "Entity Resource Count": {
-          "Count": 3
+        "entityResourceCount": {
+          "count": 3
         },
-        "Texture References": {
-          "Count": 3
+        "textureReferences": {
+          "count": 3
         },
-        "Entity References": {
-          "Count": 3
+        "entityReferences": {
+          "count": 3
         },
-        "File Count": {
-          "Count": 3
+        "fileCount": {
+          "count": 3
         },
-        "Unique Texture Handles (estimated)": {
-          "Count": 3
+        "uniqueTextureHandlesEstimated": {
+          "count": 3
         },
-        "Unique Texture Paths": {
-          "Count": 3
+        "uniqueTexturePaths": {
+          "count": 3
         },
-        "Unique Particle Texture Paths": {
-          "Count": 0
+        "uniqueParticleTexturePaths": {
+          "count": 0
         },
-        "Unique Particle Texture Vanilla Paths": {
-          "Count": 1
+        "uniqueParticleTextureVanillaPaths": {
+          "count": 1
         },
-        "Unique Entity Texture Paths": {
-          "Count": 3
+        "uniqueEntityTexturePaths": {
+          "count": 3
         }
       }
     },
@@ -3194,125 +3195,125 @@
       "gId": "TEXTUREIMAGE",
       "gIx": 101,
       "fs": {
-        "Custom Texture": {
-          "Count": 3
+        "customTexture": {
+          "count": 3
         },
-        "PNGJPG Width": {
-          "Instance Count": 3,
-          "Total": 256,
-          "Max": 128,
-          "Min": 64,
-          "Average": 85
+        "pngjpgWidth": {
+          "instanceCount": 3,
+          "total": 256,
+          "max": 128,
+          "min": 64,
+          "average": 85
         },
-        "PNGJPG Height": {
-          "Instance Count": 3,
-          "Total": 192,
-          "Max": 64,
-          "Min": 64,
-          "Average": 64
+        "pngjpgHeight": {
+          "instanceCount": 3,
+          "total": 192,
+          "max": 64,
+          "min": 64,
+          "average": 64
         },
-        "PNGJPG Texels": {
-          "Instance Count": 3,
-          "Total": 16384,
-          "Max": 8192,
-          "Min": 4096,
-          "Average": 5461
+        "pngjpgTexels": {
+          "instanceCount": 3,
+          "total": 16384,
+          "max": 8192,
+          "min": 4096,
+          "average": 5461
         },
-        "PNGJPG Texture Memory": {
-          "Instance Count": 3,
-          "Total": 65536,
-          "Max": 32768,
-          "Min": 16384,
-          "Average": 21845
+        "pngjpgTextureMemory": {
+          "instanceCount": 3,
+          "total": 65536,
+          "max": 32768,
+          "min": 16384,
+          "average": 21845
         },
-        "Width": {
-          "Instance Count": 3,
-          "Total": 256,
-          "Max": 128,
-          "Min": 64,
-          "Average": 85
+        "width": {
+          "instanceCount": 3,
+          "total": 256,
+          "max": 128,
+          "min": 64,
+          "average": 85
         },
-        "Height": {
-          "Instance Count": 3,
-          "Total": 192,
-          "Max": 64,
-          "Min": 64,
-          "Average": 64
+        "height": {
+          "instanceCount": 3,
+          "total": 192,
+          "max": 64,
+          "min": 64,
+          "average": 64
         },
-        "Texels": {
-          "Instance Count": 3,
-          "Total": 16384,
-          "Max": 8192,
-          "Min": 4096,
-          "Average": 5461
+        "texels": {
+          "instanceCount": 3,
+          "total": 16384,
+          "max": 8192,
+          "min": 4096,
+          "average": 5461
         },
-        "Texture Memory": {
-          "Instance Count": 3,
-          "Total": 65536,
-          "Max": 32768,
-          "Min": 16384,
-          "Average": 21845
+        "textureMemory": {
+          "instanceCount": 3,
+          "total": 65536,
+          "max": 32768,
+          "min": 16384,
+          "average": 21845
         },
-        "Non-Vanilla Texels": {
-          "Instance Count": 3,
-          "Total": 16384,
-          "Max": 8192,
-          "Min": 4096,
-          "Average": 5461
+        "nonVanillaTexels": {
+          "instanceCount": 3,
+          "total": 16384,
+          "max": 8192,
+          "min": 4096,
+          "average": 5461
         },
-        "Non-Vanilla Texture Memory": {
-          "Instance Count": 3,
-          "Total": 65536,
-          "Max": 32768,
-          "Min": 16384,
-          "Average": 21845
+        "nonVanillaTextureMemory": {
+          "instanceCount": 3,
+          "total": 65536,
+          "max": 32768,
+          "min": 16384,
+          "average": 21845
         },
-        "Entity Width": {
-          "Instance Count": 3,
-          "Total": 256,
-          "Max": 128,
-          "Min": 64,
-          "Average": 85
+        "entityWidth": {
+          "instanceCount": 3,
+          "total": 256,
+          "max": 128,
+          "min": 64,
+          "average": 85
         },
-        "Entity Height": {
-          "Instance Count": 3,
-          "Total": 192,
-          "Max": 64,
-          "Min": 64,
-          "Average": 64
+        "entityHeight": {
+          "instanceCount": 3,
+          "total": 192,
+          "max": 64,
+          "min": 64,
+          "average": 64
         },
-        "Entity Texels": {
-          "Instance Count": 3,
-          "Total": 16384,
-          "Max": 8192,
-          "Min": 4096,
-          "Average": 5461
+        "entityTexels": {
+          "instanceCount": 3,
+          "total": 16384,
+          "max": 8192,
+          "min": 4096,
+          "average": 5461
         },
-        "Entity Texture Memory": {
-          "Instance Count": 3,
-          "Total": 65536,
-          "Max": 32768,
-          "Min": 16384,
-          "Average": 21845
+        "entityTextureMemory": {
+          "instanceCount": 3,
+          "total": 65536,
+          "max": 32768,
+          "min": 16384,
+          "average": 21845
         },
-        "Entity Non-Vanilla Texels": {
-          "Instance Count": 3,
-          "Total": 16384,
-          "Max": 8192,
-          "Min": 4096,
-          "Average": 5461
+        "entityNonVanillaTexels": {
+          "instanceCount": 3,
+          "total": 16384,
+          "max": 8192,
+          "min": 4096,
+          "average": 5461
         },
-        "Entity Non-Vanilla Texture Memory": {
-          "Instance Count": 3,
-          "Total": 65536,
-          "Max": 32768,
-          "Min": 16384,
-          "Average": 21845
+        "entityNonVanillaTextureMemory": {
+          "instanceCount": 3,
+          "total": 65536,
+          "max": 32768,
+          "min": 16384,
+          "average": 21845
         },
-        "Vanilla Game Texture Coverage": {
-          "Override Count": 0,
-          "Vanilla Texture Count": 2266,
-          "Percent": 0
+        "vanillaGameTextureCoverage": {
+          "overrideCount": 0,
+          "vanillaTextureCount": 2348,
+          "percent": 0
         }
       }
     },
@@ -3321,33 +3322,33 @@
       "gId": "TEXTUREIMAGE",
       "gIx": 200,
       "fs": {
-        "Non-Vanilla Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 65536,
-          "Max": 65536,
-          "Min": 65536,
-          "Average": 65536
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 65536,
+          "max": 65536,
+          "min": 65536,
+          "average": 65536
         },
-        "Total Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 65536,
-          "Max": 65536,
-          "Min": 65536,
-          "Average": 65536
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 65536,
+          "max": 65536,
+          "min": 65536,
+          "average": 65536
         },
-        "Block Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Item Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         }
       }
     },
@@ -3356,33 +3357,33 @@
       "gId": "TEXTUREIMAGE",
       "gIx": 201,
       "fs": {
-        "Non-Vanilla Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 65536,
-          "Max": 65536,
-          "Min": 65536,
-          "Average": 65536
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 65536,
+          "max": 65536,
+          "min": 65536,
+          "average": 65536
         },
-        "Total Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 65536,
-          "Max": 65536,
-          "Min": 65536,
-          "Average": 65536
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 65536,
+          "max": 65536,
+          "min": 65536,
+          "average": 65536
         },
-        "Block Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Item Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         }
       }
     },
@@ -3391,33 +3392,33 @@
       "gId": "TEXTUREIMAGE",
       "gIx": 202,
       "fs": {
-        "Non-Vanilla Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 65536,
-          "Max": 65536,
-          "Min": 65536,
-          "Average": 65536
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 65536,
+          "max": 65536,
+          "min": 65536,
+          "average": 65536
         },
-        "Total Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 65536,
-          "Max": 65536,
-          "Min": 65536,
-          "Average": 65536
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 65536,
+          "max": 65536,
+          "min": 65536,
+          "average": 65536
         },
-        "Block Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Item Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         }
       }
     },
@@ -3426,33 +3427,33 @@
       "gId": "TEXTUREIMAGE",
       "gIx": 203,
       "fs": {
-        "Non-Vanilla Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 65536,
-          "Max": 65536,
-          "Min": 65536,
-          "Average": 65536
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 65536,
+          "max": 65536,
+          "min": 65536,
+          "average": 65536
         },
-        "Total Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 65536,
-          "Max": 65536,
-          "Min": 65536,
-          "Average": 65536
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 65536,
+          "max": 65536,
+          "min": 65536,
+          "average": 65536
         },
-        "Block Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Item Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         }
       }
     },
@@ -3461,33 +3462,33 @@
       "gId": "TEXTUREIMAGE",
       "gIx": 204,
       "fs": {
-        "Non-Vanilla Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 65536,
-          "Max": 65536,
-          "Min": 65536,
-          "Average": 65536
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 65536,
+          "max": 65536,
+          "min": 65536,
+          "average": 65536
         },
-        "Total Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 65536,
-          "Max": 65536,
-          "Min": 65536,
-          "Average": 65536
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 65536,
+          "max": 65536,
+          "min": 65536,
+          "average": 65536
         },
-        "Block Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Item Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         }
       }
     },
@@ -3496,33 +3497,33 @@
       "gId": "TEXTUREIMAGE",
       "gIx": 205,
       "fs": {
-        "Non-Vanilla Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 65536,
-          "Max": 65536,
-          "Min": 65536,
-          "Average": 65536
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 65536,
+          "max": 65536,
+          "min": 65536,
+          "average": 65536
         },
-        "Total Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 65536,
-          "Max": 65536,
-          "Min": 65536,
-          "Average": 65536
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 65536,
+          "max": 65536,
+          "min": 65536,
+          "average": 65536
         },
-        "Block Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Item Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         }
       }
     },
@@ -3901,10 +3902,10 @@
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
       "fs": {
         "say": {
-          "Count": 1
+          "count": 1
         },
         "summon": {
-          "Count": 1
+          "count": 1
         }
       }
     },

@@ -124,7 +124,7 @@ export default class BrowserFile extends FileBase implements IFile {
     // No-op for browser storage
   }
 
-  setContent(newContent: string | Uint8Array | null, updateType?: FileUpdateType) {
+  setContent(newContent: string | Uint8Array | null, updateType?: FileUpdateType, sourceId?: string) {
     const areEqual = StorageUtilities.contentsAreEqual(this._content, newContent);
 
     if (areEqual) {
@@ -148,7 +148,7 @@ export default class BrowserFile extends FileBase implements IFile {
       StorageUtilities.getJsonObject(this);
     }
 
-    this.contentWasModified(oldContent, updateType);
+    this.contentWasModified(oldContent, updateType, sourceId);
 
     return true;
   }

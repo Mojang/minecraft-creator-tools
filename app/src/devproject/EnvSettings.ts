@@ -121,7 +121,7 @@ export default class EnvSettings {
 
   static async getContent(project: Project, content?: string) {
     if (content === undefined) {
-      content = 'PROJECT_NAME=""\nMINECRAFT_PRODUCT="BedrockUWP"\nCUSTOM_DEPLOYMENT_PATH=""\n';
+      content = 'PROJECT_NAME=""\nMINECRAFT_PRODUCT="BedrockGDK"\nCUSTOM_DEPLOYMENT_PATH=""\n';
     }
 
     const folder = await project.getDefaultBehaviorPackFolder();
@@ -150,7 +150,7 @@ export default class EnvSettings {
     }
 
     let minecraftProductIndex = content.indexOf('MINECRAFT_PRODUCT="');
-    const trackStr = project.track === MinecraftTrack.preview ? "PreviewUWP" : "BedrockUWP";
+    const trackStr = project.track === MinecraftTrack.preview ? "PreviewGDK" : "BedrockGDK";
 
     if (minecraftProductIndex >= 0) {
       let minecraftProductIndexNextQuote = content.indexOf('"', minecraftProductIndex + 19);

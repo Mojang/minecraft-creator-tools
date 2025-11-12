@@ -28,12 +28,12 @@
     "minResourcePackMinEngineVersion": 0,
     "subpackCount": 0,
     "entityTypeComponents": [
-      "behavior.look_at_player",
-      "behavior.random_look_around",
-      "behavior.random_stroll",
-      "health",
-      "movement",
-      "navigation.walk"
+      "minecraftBehaviorLookAtPlayer",
+      "minecraftBehaviorRandomLookAround",
+      "minecraftBehaviorRandomStroll",
+      "minecraftHealth",
+      "minecraftMovement",
+      "minecraftNavigationWalk"
     ],
     "blockTypeComponents": [],
     "itemTypeComponents": [],
@@ -81,240 +81,240 @@
     "worldLoadErrors": 0,
     "commands": [],
     "featureSets": {
-      "Runtime Identifier (no runtime identifier)": {
-        "Count": 1
+      "runtimeIdentifier.noRuntimeIdentifier": {
+        "count": 1
       },
-      "Identifier (no override identifier)": {
-        "Count": 1
+      "identifier.noOverrideIdentifier": {
+        "count": 1
       },
-      "Metadata Spawnable Entity Type": {
-        "Count": 1
+      "metadata.spawnableEntityType": {
+        "count": 1
       },
-      "Metadata Summonable Entity Type": {
-        "Count": 1
+      "metadata.summonableEntityType": {
+        "count": 1
       },
-      "Entity Type Default Components": {
-        "minecraft:health": 1,
-        "minecraft:movement": 1,
-        "minecraft:navigation.walk": 1,
-        "minecraft:behavior.random_stroll": 1,
-        "minecraft:behavior.look_at_player": 1,
-        "minecraft:behavior.random_look_around": 1
+      "entityType.defaultComponents": {
+        "minecraftHealth": 1,
+        "minecraftMovement": 1,
+        "minecraftNavigationWalk": 1,
+        "minecraftBehaviorRandomStroll": 1,
+        "minecraftBehaviorLookAtPlayer": 1,
+        "minecraftBehaviorRandomLookAround": 1
       },
-      "Behavior pack manifest Size": {
-        "Instance Count": 1,
-        "Total": 358,
-        "Max": 358,
-        "Min": 358,
-        "Average": 358
+      "behaviorPackManifest.size": {
+        "instanceCount": 1,
+        "total": 358,
+        "max": 358,
+        "min": 358,
+        "average": 358
       },
-      "Behavior pack manifest Lines": {
-        "Instance Count": 1,
-        "Total": 16,
-        "Max": 16,
-        "Min": 16,
-        "Average": 16
+      "behaviorPackManifest.lines": {
+        "instanceCount": 1,
+        "total": 16,
+        "max": 16,
+        "min": 16,
+        "average": 16
       },
-      "Entity type Size": {
-        "Instance Count": 1,
-        "Total": 550,
-        "Max": 550,
-        "Min": 550,
-        "Average": 550
+      "entityType.size": {
+        "instanceCount": 1,
+        "total": 550,
+        "max": 550,
+        "min": 550,
+        "average": 550
       },
-      "Entity type Lines": {
-        "Instance Count": 1,
-        "Total": 32,
-        "Max": 32,
-        "Min": 32,
-        "Average": 32
+      "entityType.lines": {
+        "instanceCount": 1,
+        "total": 32,
+        "max": 32,
+        "min": 32,
+        "average": 32
       },
-      "Spawn rule Size": {
-        "Instance Count": 1,
-        "Total": 474,
-        "Max": 474,
-        "Min": 474,
-        "Average": 474
+      "spawnRule.size": {
+        "instanceCount": 1,
+        "total": 474,
+        "max": 474,
+        "min": 474,
+        "average": 474
       },
-      "Spawn rule Lines": {
-        "Instance Count": 1,
-        "Total": 26,
-        "Max": 26,
-        "Min": 26,
-        "Average": 26
+      "spawnRule.lines": {
+        "instanceCount": 1,
+        "total": 26,
+        "max": 26,
+        "min": 26,
+        "average": 26
       },
-      "Texture Images Vanilla Game Texture Coverage": {
-        "Override Count": 0,
-        "Vanilla Texture Count": 2266,
-        "Percent": 0
+      "textureImages.vanillaGameTextureCoverage": {
+        "overrideCount": 0,
+        "vanillaTextureCount": 2348,
+        "percent": 0
       },
-      "Texture Images Tier0 Non-Vanilla Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier0.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier0 Total Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier0.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier0 Block Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier0.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier0 Item Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier0.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier1 Non-Vanilla Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier1.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier1 Total Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier1.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier1 Block Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier1.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier1 Item Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier1.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier2 Non-Vanilla Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier2.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier2 Total Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier2.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier2 Block Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier2.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier2 Item Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier2.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier3 Non-Vanilla Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier3.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier3 Total Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier3.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier3 Block Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier3.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier3 Item Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier3.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier4 Non-Vanilla Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier4.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier4 Total Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier4.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier4 Block Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier4.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier4 Item Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier4.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier5 Non-Vanilla Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier5.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier5 Total Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier5.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier5 Block Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier5.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       },
-      "Texture Images Tier5 Item Atlas Texture Memory Tier": {
-        "Instance Count": 1,
-        "Total": 0,
-        "Max": 0,
-        "Min": 0,
-        "Average": 0
+      "textureImagesTier5.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
       }
     },
     "errorCount": 1,
@@ -327,8 +327,9 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CPACKICON000] Found 1 errors for Check Pack Icon Generator (CPACKICON).",
-    "infoGenerationTime": 558,
-    "endToEndGenerationTime": 570,
+    "infoGenerationTime": 284,
+    "endToEndGenerationTime": 307,
+    "reds": 1574,
     "summary": {
       "BASEGAMEVER": {
         "2": {
@@ -415,7 +416,7 @@
         },
         "130": {
           "title": "Format Version Patch Version Lower Than Current",
-          "defaultMessage": "Behavior pack entity type format version (1.20.0) has a lower patch version number compared to current version (1.21.110.02)",
+          "defaultMessage": "Behavior pack entity type format version (1.20.0) has a lower patch version number compared to current version",
           "recommendations": 1
         }
       },
@@ -440,7 +441,7 @@
         },
         "256": {
           "title": "256",
-          "defaultMessage": "Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)",
+          "defaultMessage": "Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version",
           "recommendations": 1
         },
         "644": {
@@ -899,8 +900,8 @@
       "gId": "ENTITYTYPE",
       "gIx": 52,
       "fs": {
-        "(no runtime identifier)": {
-          "Count": 1
+        "noRuntimeIdentifier": {
+          "count": 1
         }
       }
     },
@@ -909,8 +910,8 @@
       "gId": "ENTITYTYPE",
       "gIx": 53,
       "fs": {
-        "(no override identifier)": {
-          "Count": 1
+        "noOverrideIdentifier": {
+          "count": 1
         }
       }
     },
@@ -919,11 +920,11 @@
       "gId": "ENTITYTYPE",
       "gIx": 54,
       "fs": {
-        "Spawnable Entity Type": {
-          "Count": 1
+        "spawnableEntityType": {
+          "count": 1
         },
-        "Summonable Entity Type": {
-          "Count": 1
+        "summonableEntityType": {
+          "count": 1
         }
       }
     },
@@ -1062,13 +1063,13 @@
       "p": "/behavior_packs/test_bp/entities/example_entity.json",
       "d": "/behavior_packs/test_bp/entities/example_entity.json",
       "fs": {
-        "Default Components": {
-          "minecraft:health": 1,
-          "minecraft:movement": 1,
-          "minecraft:navigation.walk": 1,
-          "minecraft:behavior.random_stroll": 1,
-          "minecraft:behavior.look_at_player": 1,
-          "minecraft:behavior.random_look_around": 1
+        "defaultComponents": {
+          "minecraftHealth": 1,
+          "minecraftMovement": 1,
+          "minecraftNavigationWalk": 1,
+          "minecraftBehaviorRandomStroll": 1,
+          "minecraftBehaviorLookAtPlayer": 1,
+          "minecraftBehaviorRandomLookAround": 1
         }
       }
     },
@@ -1082,19 +1083,19 @@
       "gId": "LINESIZE",
       "gIx": 105,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 358,
-          "Max": 358,
-          "Min": 358,
-          "Average": 358
+        "size": {
+          "instanceCount": 1,
+          "total": 358,
+          "max": 358,
+          "min": 358,
+          "average": 358
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 16,
-          "Max": 16,
-          "Min": 16,
-          "Average": 16
+        "lines": {
+          "instanceCount": 1,
+          "total": 16,
+          "max": 16,
+          "min": 16,
+          "average": 16
         }
       }
     },
@@ -1103,19 +1104,19 @@
       "gId": "LINESIZE",
       "gIx": 110,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 550,
-          "Max": 550,
-          "Min": 550,
-          "Average": 550
+        "size": {
+          "instanceCount": 1,
+          "total": 550,
+          "max": 550,
+          "min": 550,
+          "average": 550
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 32,
-          "Max": 32,
-          "Min": 32,
-          "Average": 32
+        "lines": {
+          "instanceCount": 1,
+          "total": 32,
+          "max": 32,
+          "min": 32,
+          "average": 32
         }
       }
     },
@@ -1124,19 +1125,19 @@
       "gId": "LINESIZE",
       "gIx": 144,
       "fs": {
-        "Size": {
-          "Instance Count": 1,
-          "Total": 474,
-          "Max": 474,
-          "Min": 474,
-          "Average": 474
+        "size": {
+          "instanceCount": 1,
+          "total": 474,
+          "max": 474,
+          "min": 474,
+          "average": 474
         },
-        "Lines": {
-          "Instance Count": 1,
-          "Total": 26,
-          "Max": 26,
-          "Min": 26,
-          "Average": 26
+        "lines": {
+          "instanceCount": 1,
+          "total": 26,
+          "max": 26,
+          "min": 26,
+          "average": 26
         }
       }
     },
@@ -1369,10 +1370,10 @@
       "gId": "TEXTUREIMAGE",
       "gIx": 101,
       "fs": {
-        "Vanilla Game Texture Coverage": {
-          "Override Count": 0,
-          "Vanilla Texture Count": 2266,
-          "Percent": 0
+        "vanillaGameTextureCoverage": {
+          "overrideCount": 0,
+          "vanillaTextureCount": 2348,
+          "percent": 0
         }
       }
     },
@@ -1381,33 +1382,33 @@
       "gId": "TEXTUREIMAGE",
       "gIx": 200,
       "fs": {
-        "Non-Vanilla Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Total Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Block Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Item Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         }
       }
     },
@@ -1416,33 +1417,33 @@
       "gId": "TEXTUREIMAGE",
       "gIx": 201,
       "fs": {
-        "Non-Vanilla Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Total Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Block Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Item Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         }
       }
     },
@@ -1451,33 +1452,33 @@
       "gId": "TEXTUREIMAGE",
       "gIx": 202,
       "fs": {
-        "Non-Vanilla Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Total Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Block Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Item Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         }
       }
     },
@@ -1486,33 +1487,33 @@
       "gId": "TEXTUREIMAGE",
       "gIx": 203,
       "fs": {
-        "Non-Vanilla Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Total Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Block Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Item Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         }
       }
     },
@@ -1521,33 +1522,33 @@
       "gId": "TEXTUREIMAGE",
       "gIx": 204,
       "fs": {
-        "Non-Vanilla Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Total Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Block Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Item Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         }
       }
     },
@@ -1556,33 +1557,33 @@
       "gId": "TEXTUREIMAGE",
       "gIx": 205,
       "fs": {
-        "Non-Vanilla Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Total Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Block Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         },
-        "Item Atlas Texture Memory Tier": {
-          "Instance Count": 1,
-          "Total": 0,
-          "Max": 0,
-          "Min": 0,
-          "Average": 0
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
         }
       }
     },

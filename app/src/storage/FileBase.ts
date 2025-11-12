@@ -157,7 +157,7 @@ export default abstract class FileBase implements IFile {
     this._content = null;
   }
 
-  contentWasModified(oldContent: string | Uint8Array | null, updateType?: FileUpdateType) {
+  contentWasModified(oldContent: string | Uint8Array | null, updateType?: FileUpdateType, sourceId?: string) {
     if (this.isDisposed) {
       Log.throwIsDisposed();
     }
@@ -189,6 +189,7 @@ export default abstract class FileBase implements IFile {
       this.parentFolder.storage.notifyFileContentsUpdated({
         file: this,
         updateType: updateType ? updateType : FileUpdateType.regularEdit,
+        sourceId: sourceId,
         priorVersion: oldVersionContent,
       });
     }
@@ -267,10 +268,14 @@ export default abstract class FileBase implements IFile {
     return relativePath + StorageUtilities.ensureNotStartsWithDelimiter(folderRelativePath);
   }
 
-  setObjectContentIfSemanticallyDifferent(value: object | null | undefined, updateType?: FileUpdateType) {
+  setObjectContentIfSemanticallyDifferent(
+    value: object | null | undefined,
+    updateType?: FileUpdateType,
+    sourceId?: string
+  ) {
     if (value === null || value === undefined) {
       if (this._content !== null) {
-        this.setContent(null, updateType);
+        this.setContent(null, updateType, sourceId);
         return true;
       }
 
@@ -278,7 +283,7 @@ export default abstract class FileBase implements IFile {
     }
 
     if (!(typeof this._content === "string")) {
-      this.setContent(JSON.stringify(value, null, 2), updateType);
+      this.setContent(JSON.stringify(value, null, 2), updateType, sourceId);
       return true;
     }
 
@@ -286,11 +291,11 @@ export default abstract class FileBase implements IFile {
       const currentObj = JSON.parse(this._content);
 
       if (Utilities.consistentStringify(currentObj) !== Utilities.consistentStringify(value)) {
-        this.setContent(JSON.stringify(value, null, 2), updateType);
+        this.setContent(JSON.stringify(value, null, 2), updateType, sourceId);
         return true;
       }
     } catch (e) {
-      this.setContent(JSON.stringify(value, null, 2), updateType);
+      this.setContent(JSON.stringify(value, null, 2), updateType, sourceId);
       return true;
     }
 
@@ -309,10 +314,10 @@ export default abstract class FileBase implements IFile {
     }
   }
 
-  setContentIfSemanticallyDifferent(value: string | Uint8Array | null, updateType?: FileUpdateType) {
+  setContentIfSemanticallyDifferent(value: string | Uint8Array | null, updateType?: FileUpdateType, sourceId?: string) {
     if (value === null) {
       if (this._content !== null) {
-        this.setContent(null, updateType);
+        this.setContent(null, updateType, sourceId);
         return true;
       }
 
@@ -321,19 +326,19 @@ export default abstract class FileBase implements IFile {
 
     if (value instanceof Uint8Array) {
       if (!(this._content instanceof Uint8Array) || this._content.length !== value.length) {
-        this.setContent(value, updateType);
+        this.setContent(value, updateType, sourceId);
         return true;
       } else {
         for (let i = 0; i < value.length; i++) {
           if (this._content[i] !== value[i]) {
-            this.setContent(value, updateType);
+            this.setContent(value, updateType, sourceId);
             return true;
           }
         }
       }
     } else if (typeof value === "string") {
       if (!(typeof this._content === "string")) {
-        this.setContent(value, updateType);
+        this.setContent(value, updateType, sourceId);
 
         return true;
       } else {
@@ -343,19 +348,19 @@ export default abstract class FileBase implements IFile {
             const newObj = JSON.parse(value);
 
             if (Utilities.consistentStringify(currentObj) !== Utilities.consistentStringify(newObj)) {
-              return this.setContent(value, updateType);
+              return this.setContent(value, updateType, sourceId);
             }
           } catch (e) {
             return this.setContent(value);
           }
         } else {
           if (this._content.length !== value.length) {
-            return this.setContent(value, updateType);
+            return this.setContent(value, updateType, sourceId);
           }
 
           for (let i = 0; i < value.length; i++) {
             if (this._content[i] !== value[i]) {
-              return this.setContent(value, updateType);
+              return this.setContent(value, updateType, sourceId);
             }
           }
         }
@@ -369,6 +374,6 @@ export default abstract class FileBase implements IFile {
   abstract deleteThisFile(skipRemoveFromParent?: boolean): Promise<boolean>;
   abstract moveTo(newStorageRelativePath: string): Promise<boolean>;
   abstract loadContent(force?: boolean): Promise<Date>;
-  abstract setContent(value: string | Uint8Array | null, updateType?: FileUpdateType): boolean;
+  abstract setContent(value: string | Uint8Array | null, updateType?: FileUpdateType, sourceId?: string): boolean;
   abstract saveContent(): Promise<Date>;
 }
