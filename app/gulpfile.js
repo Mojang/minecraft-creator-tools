@@ -14,6 +14,7 @@ const gulpWebpack = require("webpack-stream");
 const jsncorebuildfilesigs = [
   "src/**/*.ts",
   "!src/vscode/*.ts",
+  "!src/analytics/*.ts",
   "!src/UX/*.ts",
   "!src/UXex/*.ts",
   "!src/test/**/*",
