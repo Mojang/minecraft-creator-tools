@@ -3,6 +3,7 @@ export default interface IBlockbenchModel {
   name: string;
   model_identifier: string;
   elements?: IBlockbenchElement[];
+  groups?: IBlockbenchGroupItem[]; // pre-5.0, groups were merged into outliner items
   outliner?: IBlockbenchOutlineItem[];
   textures?: IBlockbenchTexture[];
   animations?: IBlockbenchAnimation[];
@@ -61,7 +62,8 @@ export interface IBlockbenchAnimationKeyframe {
   interpolation: string;
 }
 
-export interface IBlockbenchOutlineItem {
+export interface IBlockbenchGroupItem extends IBlockbenchOutlineOrGroupItem {
+  // Blockbench 5.0+
   name: string;
   origin: number[];
   bedrock_binding?: string;
@@ -69,11 +71,34 @@ export interface IBlockbenchOutlineItem {
   uuid: string;
   rotation?: number[];
   export: boolean;
+  reset: boolean;
+  shade: boolean;
+  selected: boolean;
+  primary_selected: boolean;
   mirror_uv: boolean;
   isOpen: boolean;
   locked: boolean;
   visibility: boolean;
   autouv: number;
+  children: IBlockbenchGroupItem[];
+}
+
+export interface IBlockbenchOutlineOrGroupItem {
+  name?: string; // legacy pre-5.0
+  origin?: number[]; // legacy pre-5.0
+  bedrock_binding?: string; // legacy pre-5.0
+  color?: number; // legacy pre-5.0
+  uuid: string;
+  rotation?: number[]; // legacy pre-5.0
+  export?: boolean; // legacy pre-5.0
+  mirror_uv?: boolean; // legacy pre-5.0
+  isOpen?: boolean;
+  locked?: boolean; // legacy pre-5.0
+  visibility?: boolean; // legacy pre-5.0
+  autouv?: number; // legacy pre-5.0
+}
+
+export interface IBlockbenchOutlineItem extends IBlockbenchOutlineOrGroupItem {
   children: (string | IBlockbenchOutlineItem)[];
 }
 

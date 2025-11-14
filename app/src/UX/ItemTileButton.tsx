@@ -123,10 +123,6 @@ export default class ItemTileButton extends Component<IItemTileButtonProps, IIte
           }
         }
 
-        if (proj.gitHubFolder !== undefined) {
-          imagePath += Utilities.ensureNotStartsWithSlash(Utilities.ensureEndsWithSlash(proj.gitHubFolder));
-        }
-
         imagePath += proj.logoImage;
       }
 

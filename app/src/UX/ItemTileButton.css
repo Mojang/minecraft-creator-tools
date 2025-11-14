@@ -5,7 +5,7 @@
 
 .itbi-outer {
   width: 250px;
-  height: 96px !important;
+  height: 90px !important;
   padding: 6px !important;
   background-color: transparent !important;
   display: inline-block;
@@ -41,7 +41,7 @@
   font-weight: bold;
   text-align: left;
   text-overflow: ellipsis;
-  overflow-x: hidden;
+  overflow: hidden;
   width: 150px;
   padding-left: 3px;
   height: 36px;

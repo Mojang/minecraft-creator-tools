@@ -12,7 +12,7 @@ type GalleryOptions = {
   maxSnippets?: number | undefined;
 };
 export default function useGallery({ query, pageSize, ...options }: GalleryOptions) {
-  const [carto] = useCreatorTools();
+  const [creatorTools] = useCreatorTools();
   const [gallery, setGallery] = useState<IGallery>();
 
   //set maxes to undefined will allow unlimited results
@@ -21,18 +21,15 @@ export default function useGallery({ query, pageSize, ...options }: GalleryOptio
 
   useEffect(() => {
     async function onLoad() {
-      await carto.load();
+      await creatorTools.load();
 
-      const loadedGallery = await carto.loadGallery();
-
-      // Is this necessary? the previous code loads all these projects, but its not clear why
-      //await Promise.all(carto.projects.map((project) => project.ensurePreferencesAndFolderLoadedFromFile()));
+      const loadedGallery = await creatorTools.loadGallery();
 
       setGallery(loadedGallery);
     }
 
     onLoad();
-  }, [carto]);
+  }, [creatorTools]);
 
   const queryMinLength = options.queryMinLength ?? 3;
   const useQuery = !!query && query.length >= queryMinLength;
