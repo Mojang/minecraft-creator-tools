@@ -11,6 +11,7 @@ import useTelemetry from "../../../analytics/useTelemetry";
 interface ProjectGridProps {
   onAppGalleryAction: AppGalleryActionEvent;
 }
+
 export default function ProjectGrid({ onAppGalleryAction }: ProjectGridProps) {
   const [searchQuery, setSearchQuery] = useState<string>();
   const { trackPageView } = useTelemetry();

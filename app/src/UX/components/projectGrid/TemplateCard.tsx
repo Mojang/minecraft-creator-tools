@@ -35,14 +35,22 @@ export default function TemplateCard({ template, onNewProject }: TemplateCardPro
 
   const reader = new GalleryReader(defaultImage);
 
-  return (
-    <>
+  let npdDialog = <></>;
+
+  if (showProjectDialog) {
+    npdDialog = (
       <NewProjectDialog
         template={template}
         open={showProjectDialog}
         close={onCloseProjectDialog}
         onNewProject={onNewProject}
       />
+    );
+  }
+
+  return (
+    <>
+      {npdDialog}
       <Card
         variant="outlined"
         sx={{

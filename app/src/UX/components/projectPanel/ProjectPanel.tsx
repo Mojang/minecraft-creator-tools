@@ -18,7 +18,6 @@ import Project from "../../../app/Project";
 import IFolder from "../../../storage/IFolder";
 import { Directory, useDirectoryPicker } from "../../hooks/io/UseDirectoryPicker";
 import AppServiceProxy from "../../../core/AppServiceProxy";
-import ProjectUtilities from "../../../app/ProjectUtilities";
 
 interface ProjectPanelProps {
   projectList: Project[];

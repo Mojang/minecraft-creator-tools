@@ -3,7 +3,7 @@ import ProjectEditor, { ProjectStatusAreaMode } from "./ProjectEditor";
 import ExporterTool from "./ExporterTool";
 import Home from "./pages/home/Home";
 import "./App.css";
-import CreatorTools from "./../app/CreatorTools";
+import CreatorTools, { DefaultCreatorName } from "./../app/CreatorTools";
 import Project, { ProjectErrorState } from "./../app/Project";
 import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
 import IFolder from "../storage/IFolder";
@@ -890,6 +890,8 @@ export default class App extends Component<AppProps, AppState> {
 
     if (suggestedCreator === undefined) {
       suggestedCreator = creatorTools.creator;
+    } else if (suggestedCreator !== DefaultCreatorName) {
+      creatorTools.creator = suggestedCreator;
     }
 
     if (suggestedName === undefined) {

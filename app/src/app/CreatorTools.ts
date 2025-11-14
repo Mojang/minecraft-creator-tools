@@ -84,6 +84,8 @@ export const CartoTargetStrings = [
 export const SidePaneMaxWidth = 880;
 export const SidePaneMinWidth = 280;
 
+export const DefaultCreatorName = "Minecraft Creator";
+
 export default class CreatorTools {
   private _isLoaded: boolean;
   private _userGitHub: GitHubManager | undefined;

@@ -672,6 +672,8 @@ export default class BlockbenchModel {
                       if (texturesIndex >= 0) {
                         path = path.substring(texturesIndex);
 
+                        path = StorageUtilities.stripExtension(path);
+
                         for (const textureKey in etrd.textures) {
                           const targetPath = etrd.textures[textureKey];
 

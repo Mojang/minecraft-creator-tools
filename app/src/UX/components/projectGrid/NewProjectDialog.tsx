@@ -14,6 +14,7 @@ import useTelemetry from "../../../analytics/useTelemetry";
 import { TelemetryEvents, TelemetryProperties } from "../../../analytics/TelemetryConstants";
 import ProjectUtilities from "../../../app/ProjectUtilities";
 import { useCreatorTools } from "../../contexts/creatorToolsContext/CreatorToolsContext";
+import { DefaultCreatorName } from "../../../app/CreatorTools";
 
 interface Props {
   template: IGalleryItem;
@@ -81,14 +82,13 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
   const showDirectorySelect = projectStore === "device";
 
   const suggestedName = ProjectUtilities.getSuggestedProjectName(template);
-  const suggestedCreator = tools.creator;
-  const suggestedShortName =
-    suggestedCreator && ProjectUtilities.getSuggestedProjectShortName(suggestedCreator, suggestedName);
+  const suggestedCreator = tools.creator ? tools.creator : DefaultCreatorName;
+  const suggestedShortName = ProjectUtilities.getSuggestedProjectShortName(suggestedCreator, suggestedName);
   const suggestedDesc = suggestedName;
 
   return (
     <Dialog open={open} onClose={close} PaperProps={{ component: "form", onSubmit: onFormSubmit }}>
-      <DialogTitle variant="h4">New Minecraft Add-On Full Project</DialogTitle>
+      <DialogTitle variant="h4">New Minecraft Project</DialogTitle>
       <DialogContent>
         <FormField required defaultValue={suggestedName} id="title" label="Title" autoFocus />
         <FormField defaultValue={suggestedCreator} id="creator" label="Creator Name" />
