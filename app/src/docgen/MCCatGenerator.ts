@@ -21,7 +21,7 @@ export interface JsonTypeSummary {
 
 export default class MCCatGenerator {
   public async updateMCCat(folder: IFolder, isPreview?: boolean) {
-    await Database.load();
+    await Database.loadVanillaCatalog();
 
     const metadataFolder = isPreview
       ? await Database.loadPreviewMetadataFolder()
@@ -29,7 +29,7 @@ export default class MCCatGenerator {
 
     const newMcCatFile = folder.ensureFile("mccat.json");
 
-    const cat = Database.catalog;
+    const cat = Database.vanillaCatalog;
 
     if (!cat) {
       return;
@@ -171,7 +171,7 @@ export default class MCCatGenerator {
         for (const variant of blockBaseType.variants) {
           if (variant.n && variant.n.endsWith("_" + blockBaseType.n)) {
             variant.n = variant.n.substring(0, variant.n.length - blockBaseType.n.length);
-            variant.id = undefined;
+            variant.lid = undefined;
           }
         }
 

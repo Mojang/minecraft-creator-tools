@@ -7,6 +7,12 @@ body {
   overflow-y: hidden;
 }
 
+#cookie-banner {
+  position: absolute;
+  width: 100%;
+  z-index: 32000;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }

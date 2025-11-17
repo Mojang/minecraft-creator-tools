@@ -3023,28 +3023,23 @@
       "variants": [
         {
           "n": "basalt",
-          "id": 489,
           "ic": "_"
         },
         {
           "n": "bedrock",
-          "id": 7,
           "ic": "_"
         },
         {
           "n": "blackstone",
-          "id": 528,
           "ic": "_"
         },
         {
           "n": "cobblestone",
           "mc": "#707070",
-          "id": 4,
           "ic": "_"
         },
         {
           "n": "prismarine",
-          "id": 168,
           "ic": "_",
           "mc": "#5F9EA0"
         }
@@ -4728,52 +4723,6 @@
           "ic": "l",
           "mc": "#976D4D"
         }
-      ],
-      "properties": [
-        {
-          "n": "upside_down_bit",
-          "type": 1,
-          "title": "Upside down",
-          "values": [
-            {
-              "id": false,
-              "title": "Stairs are placed downward"
-            },
-            {
-              "id": true,
-              "title": "Stairs are upside-down"
-            }
-          ],
-          "default": false
-        },
-        {
-          "n": "weirdo_direction",
-          "title": "Direction",
-          "type": 5,
-          "values": [
-            {
-              "id": 0,
-              "title": "North facing",
-              "data": 3
-            },
-            {
-              "id": 1,
-              "title": "East facing",
-              "data": 0
-            },
-            {
-              "id": 2,
-              "title": "South facing",
-              "data": 2
-            },
-            {
-              "id": 3,
-              "title": "West facing",
-              "data": 1
-            }
-          ],
-          "default": 0
-        }
       ]
     },
     {
@@ -4813,7 +4762,6 @@
         },
         {
           "n": "glowstone",
-          "id": 89,
           "ic": "stone",
           "mc": "#F7E53D"
         },
@@ -4823,7 +4771,6 @@
         },
         {
           "n": "grindstone",
-          "id": 450,
           "ic": "stone",
           "mc": "#8B8B8B"
         },
@@ -4841,7 +4788,6 @@
         },
         {
           "n": "sandstone",
-          "id": 24,
           "ic": "stone",
           "mc": "#F7E9A3"
         },
@@ -5934,42 +5880,34 @@
       "variants": [
         {
           "n": "acacia_door",
-          "id": 196,
           "mc": "#BA5A37"
         },
         {
           "n": "birch_door",
-          "id": 194,
           "mc": "#E5D19C"
         },
         {
           "n": "crimson_door",
-          "id": 499,
           "mc": "#80314E"
         },
         {
           "n": "dark_oak_door",
-          "id": 197,
           "mc": "#4F2E1A"
         },
         {
           "n": "iron_door",
-          "id": 71,
           "mc": "#D8D8D8"
         },
         {
           "n": "jungle_door",
-          "id": 195,
           "mc": "#B5966D"
         },
         {
           "n": "spruce_door",
-          "id": 193,
           "mc": "#734E36"
         },
         {
           "n": "warped_door",
-          "id": 500,
           "mc": "#3C5A5A"
         }
       ]

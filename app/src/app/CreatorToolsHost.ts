@@ -181,7 +181,7 @@ export default class CreatorToolsHost {
 
     GitHubManager.init();
 
-    Database.load();
+    Database.loadVanillaCatalog();
 
     CreatorToolsCommands.registerCommonCommands();
 

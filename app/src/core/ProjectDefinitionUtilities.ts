@@ -2,7 +2,7 @@ import Database from "../minecraft/Database";
 
 export class ProjectDefinitionUtilities {
   static getVanillaBlockTexture(blockId: string, side: string) {
-    if (!Database.blocksCatalog || !Database.terrainTextureCatalog || !Database.catalog) {
+    if (!Database.blocksCatalog || !Database.terrainTextureCatalog || !Database.vanillaCatalog) {
       return undefined;
     }
 

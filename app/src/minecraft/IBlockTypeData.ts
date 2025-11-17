@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 export default interface IBlockTypeData {
-  id?: number;
+  lid?: number;
   n: string;
   ic?: string;
   shortId?: string;

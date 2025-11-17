@@ -39,9 +39,9 @@ import TerrainTextureCatalogDefinition from "./TerrainTextureCatalogDefinition";
 import BlocksCatalogDefinition from "./BlocksCatalogDefinition";
 
 export default class Database {
-  static isLoaded = false;
+  static isVanillaLoaded = false;
   static isScriptTypesLoaded = false;
-  static catalog: Catalog | null = null;
+  static vanillaCatalog: Catalog | null = null;
   static loadedFormCount = 0;
   static _creatorToolsIngameFile: IFile | null = null;
   static _creatorToolsIngameProject: Project | null = null;
@@ -103,8 +103,8 @@ export default class Database {
 
   static minecraftEduVersion = "1.21.0";
   static minecraftEduPreviewVersion = "1.21.0";
-  static fallbackMinecraftVersion = "1.21.80"; // used if we fail to retrieve the latest version from the network
-  static fallbackMinecraftPreviewVersion = "1.21.90.26"; // should be occasionally statically updated.
+  static fallbackMinecraftVersion = "1.21.120"; // used if we fail to retrieve the latest version from the network
+  static fallbackMinecraftPreviewVersion = "1.21.130.27"; // should be occasionally statically updated.
 
   static minecraftModuleNames = [
     "@minecraft/server-gametest",
@@ -118,7 +118,7 @@ export default class Database {
   static maxMinecraftPatchVersions = {
     "1.19": "80",
     "1.20": "80",
-    "1.21": "80",
+    "1.21": "120",
   };
 
   static moduleDescriptors: { [id: string]: NpmModule } = {};
@@ -675,7 +675,7 @@ export default class Database {
 
     const result = this._blockTypesByLegacyId[id];
 
-    // Log.assert(result !== undefined);
+    Log.assert(result !== undefined);
 
     return result;
   }
@@ -725,7 +725,7 @@ export default class Database {
 
     let blockType = Database.blockTypes[name];
 
-    if (blockType == null && Database.catalog != null) {
+    if (blockType == null && Database.vanillaCatalog != null) {
       blockType = new BlockType(name);
 
       Database.blockTypes[name] = blockType;
@@ -1711,8 +1711,8 @@ export default class Database {
     }
   }
 
-  static async load() {
-    if (Database.isLoaded) {
+  static async loadVanillaCatalog() {
+    if (Database.isVanillaLoaded) {
       return;
     }
 
@@ -1721,18 +1721,18 @@ export default class Database {
       if (typeof window !== "undefined") {
         const response = await axios.get(CreatorToolsHost.contentRoot + "data/mccat.json");
 
-        Database.catalog = response.data;
+        Database.vanillaCatalog = response.data;
       } else if (Database.local) {
         const result = await Database.local.readJsonFile("data/mccat.json");
         if (result !== null) {
-          Database.catalog = result as Catalog;
+          Database.vanillaCatalog = result as Catalog;
           // Log.debugAlert("Loaded catalog: " + Database.catalog.blockBaseTypes.length);
         }
       }
 
-      if (Database.catalog !== null) {
-        for (let i = 0; i < Database.catalog.blockBaseTypes.length; i++) {
-          const blockBaseTypeData = Database.catalog.blockBaseTypes[i];
+      if (Database.vanillaCatalog !== null) {
+        for (let i = 0; i < Database.vanillaCatalog.blockBaseTypes.length; i++) {
+          const blockBaseTypeData = Database.vanillaCatalog.blockBaseTypes[i];
 
           const baseTypeName = MinecraftUtilities.canonicalizeName(blockBaseTypeData.n);
 
@@ -1742,7 +1742,7 @@ export default class Database {
           if (blockBaseTypeData.abstract === undefined || blockBaseTypeData.abstract === false) {
             const newBlockType: IBlockTypeData = {
               n: blockBaseTypeData.n,
-              id: blockBaseTypeData.id,
+              lid: blockBaseTypeData.id,
               ic: blockBaseTypeData.ic,
               mc: blockBaseTypeData.mc,
               shortId: blockBaseTypeData.shortId,
@@ -1758,10 +1758,16 @@ export default class Database {
             for (let j = 0; j < blockBaseTypeData.variants.length; j++) {
               const variantBlockTypeData = blockBaseTypeData.variants[j];
 
-              const blockType = this.ensureBlockType(variantBlockTypeData.n);
+              let name = variantBlockTypeData.n;
 
-              if (!variantBlockTypeData.id && blockBaseTypeData.id) {
-                variantBlockTypeData.id = blockBaseTypeData.id;
+              if (name.endsWith("_")) {
+                name = name + blockBaseTypeData.n;
+              }
+
+              const blockType = this.ensureBlockType(name);
+
+              if (!variantBlockTypeData.lid && blockBaseTypeData.id) {
+                variantBlockTypeData.lid = blockBaseTypeData.id;
               }
 
               if (!variantBlockTypeData.ic && blockBaseTypeData.ic) {
@@ -1785,9 +1791,43 @@ export default class Database {
             }
           }
         }
+
+        await Database.extendCatalog();
+
+        Database.isVanillaLoaded = true;
       }
     } catch {
       Log.fail("Could not load Minecraft types catalog.");
+    }
+  }
+
+  private static async extendCatalog() {
+    const blockMetatadata = await Database.getBlocksMetadata();
+
+    if (blockMetatadata && Database.vanillaCatalog) {
+      for (const blockMetaDef of blockMetatadata.data_items) {
+        const blockType = this.ensureBlockType(blockMetaDef.name);
+
+        if (blockType && blockMetaDef) {
+          if (blockMetaDef.raw_id !== undefined && blockType.numericId === undefined) {
+            blockType.numericId = blockMetaDef.raw_id;
+          }
+
+          if (blockMetaDef.properties) {
+            for (const prop of blockMetaDef.properties) {
+              let propName = prop.name;
+              if (propName && blockMetatadata.block_properties) {
+                for (const propDef of blockMetatadata.block_properties) {
+                  if (propDef.name === propName) {
+                    blockType.ensurePropertyDefinition(propName, propDef);
+                    break;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

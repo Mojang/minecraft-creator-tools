@@ -18,6 +18,7 @@ import IManagedComponentSetItem from "./IManagedComponentSetItem";
 import IManagedComponent from "./IManagedComponent";
 import { ManagedComponent } from "./ManagedComponent";
 import StorageUtilities from "../storage/StorageUtilities";
+import { IBlocksMetadataBlockProperty } from "./IBlocksMetadata";
 
 const BLOCK_TYPE_MATERIALS = [
   "bone",
@@ -95,6 +96,7 @@ export default class BlockType implements IManagedComponentSetItem {
   private _behaviorPackFile?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
+  private _properties: { [name: string]: IBlocksMetadataBlockProperty } = {};
 
   public behaviorPackBlockTypeDef?: IBlockTypeBehaviorPack;
   private _managed: { [id: string]: IManagedComponent | undefined } = {};
@@ -105,7 +107,11 @@ export default class BlockType implements IManagedComponentSetItem {
   private _onComponentChanged = new EventDispatcher<BlockType, IManagedComponent>();
 
   public get numericId() {
-    return this.data.id;
+    return this.data.lid;
+  }
+
+  public set numericId(newId: number | undefined) {
+    this.data.lid = newId;
   }
 
   public get baseTypeId() {
@@ -435,6 +441,12 @@ export default class BlockType implements IManagedComponentSetItem {
     }
 
     return componentSet;
+  }
+
+  ensurePropertyDefinition(propertyName: string, propertyDef: IBlocksMetadataBlockProperty) {
+    if (!this._properties[propertyName]) {
+      this._properties[propertyName] = propertyDef;
+    }
   }
 
   addComponent(

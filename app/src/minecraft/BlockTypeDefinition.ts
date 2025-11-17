@@ -64,7 +64,7 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
   }
 
   public get numericId() {
-    return this._typeData.id;
+    return this._typeData.lid;
   }
 
   public get baseTypeId() {

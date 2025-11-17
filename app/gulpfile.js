@@ -266,6 +266,12 @@ function copyVscMc() {
   return gulp.src(["../mc/dist/**/*"]).pipe(gulp.dest("toolbuild/vsc/mc/"));
 }
 
+function copyJsNodeResPreviewMetadataVanillaData() {
+  return gulp
+    .src(["public/res/latest/van/preview/metadata/vanilladata_modules/**/*"])
+    .pipe(gulp.dest("toolbuild/jsn/res/latest/van/preview/metadata/vanilladata_modules/"));
+}
+
 function copyJsNodeResSchemas() {
   return gulp.src(["public/res/latest/schemas/**/*"]).pipe(gulp.dest("toolbuild/jsn/res/latest/schemas/"));
 }
@@ -346,6 +352,7 @@ gulp.task(
       copyJsNodeData,
       copyJsNodeDocs,
       copyJsNodeResSchemas,
+      copyJsNodeResPreviewMetadataVanillaData,
       copyJsNodeResImages,
       copyJsNodeMc,
       copyJsNodeDist,

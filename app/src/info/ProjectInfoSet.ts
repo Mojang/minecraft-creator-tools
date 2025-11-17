@@ -23,6 +23,7 @@ import IProjectMetaState from "./IProjectMetaState";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import SummaryInfoGenerator from "./SummaryInfoGenerator";
 import HashUtilities from "../core/HashUtilities";
+import Database from "../minecraft/Database";
 
 const ItemBatchSize = 500;
 
@@ -366,6 +367,7 @@ export default class ProjectInfoSet {
       genContentIndex.iteration = new Date().getTime();
 
       await this.project.loc.load();
+      await Database.loadVanillaCatalog();
 
       if (this.project?.errorState === ProjectErrorState.cabinetFileCouldNotBeProcessed) {
         genItems.push(
