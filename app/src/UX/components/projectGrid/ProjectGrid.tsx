@@ -44,6 +44,7 @@ export default function ProjectGrid({ onAppGalleryAction }: ProjectGridProps) {
             alt="Information Icon"
             aria-hidden="true"
             sx={{
+              maxWidth: "100%",
               mt: 3,
               mr: 0.5,
             }}
@@ -82,6 +83,7 @@ export default function ProjectGrid({ onAppGalleryAction }: ProjectGridProps) {
             alt="Information Icon"
             aria-hidden="true"
             sx={{
+              maxWidth: "100%",
               top: 3,
               position: "relative",
               mt: 3,

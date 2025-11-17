@@ -106,6 +106,8 @@ let errorLevel: number | undefined;
 let force = false;
 let executionTaskType: TaskType = TaskType.noCommand;
 
+CreatorToolsHost.contentRoot = "https://mctools.dev/";
+
 program
   .name("mct")
   .description("Minecraft Creator Tools v" + constants.version)
@@ -2395,22 +2397,18 @@ async function create(project: Project, isSingleFolder: boolean) {
     });
 
     const folderNameAnswer = await inquirer.prompt(folderNameQuestions);
+    const folderName = folderNameAnswer["folderName"];
 
-    if (folderNameAnswer["folderName"] && project.mainDeployFolderPath) {
-      const folderName = folderNameAnswer["folderName"];
+    if (folderName) {
+      const path = NodeStorage.ensureEndsWithDelimiter(process.cwd()) + NodeStorage.ensureEndsWithDelimiter(folderName);
 
-      if (folderName && project.mainDeployFolderPath) {
-        const path =
-          NodeStorage.ensureEndsWithDelimiter(process.cwd()) + NodeStorage.ensureEndsWithDelimiter(folderName);
+      const outputStorage = new NodeStorage(path, "");
+      const outFolder = outputStorage.rootFolder;
+      await outFolder.ensureExists();
 
-        const outputStorage = new NodeStorage(path, "");
-        const outFolder = outputStorage.rootFolder;
-        await outFolder.ensureExists();
+      project.localFolderPath = path;
 
-        project.localFolderPath = path;
-
-        project.autoDeploymentMode = ProjectAutoDeploymentMode.noAutoDeployment;
-      }
+      project.autoDeploymentMode = ProjectAutoDeploymentMode.noAutoDeployment;
     }
   }
 
@@ -2423,6 +2421,33 @@ async function create(project: Project, isSingleFolder: boolean) {
       if (galProjectCand && galProjectCand.id && galProjectCand.id.toLowerCase() === template.toLowerCase()) {
         galProject = galProjectCand;
       }
+    }
+  }
+
+  let suggestedShortName: string | undefined = undefined;
+
+  if (newName && creator) {
+    suggestedShortName = ProjectUtilities.getSuggestedProjectShortName(creator, newName);
+  }
+
+  const rootFolder = await project.ensureProjectFolder();
+
+  if (rootFolder) {
+    const bpFolder = await rootFolder.getFolderFromRelativePath("/behavior_packs/" + suggestedShortName + "/");
+
+    const bpAlreadyExists = bpFolder ? await bpFolder.exists() : false;
+
+    if (bpAlreadyExists) {
+      Log.error("Cannot create a project, as folder '/behavior_packs/" + suggestedShortName + "/' already exists.");
+      return;
+    }
+    const rpFolder = await rootFolder.getFolderFromRelativePath("/resource_packs/" + suggestedShortName + "/");
+
+    const rpAlreadyExists = rpFolder ? await rpFolder.exists() : false;
+
+    if (rpAlreadyExists) {
+      Log.error("Cannot create a project, as folder '/resource_packs/" + suggestedShortName + "/' already exists.");
+      return;
     }
   }
 
@@ -2488,12 +2513,6 @@ async function create(project: Project, isSingleFolder: boolean) {
     },
     true
   );
-
-  let suggestedShortName: string | undefined = undefined;
-
-  if (newName && creator) {
-    suggestedShortName = ProjectUtilities.getSuggestedProjectShortName(creator, newName);
-  }
 
   if (creator) {
     await ProjectUtilities.applyCreator(project, creator);

@@ -15,8 +15,9 @@
   font-size: small;
   color: white;
   text-align: "right";
-  padding-top: 32px;
+  vertical-align: middle;
   padding-right: 10px;
+  padding-top: 18px;
   margin-left: auto;
 }
 
@@ -27,7 +28,6 @@
 
 .hhdr-docsLink {
   color: white;
-  padding-left: 6px;
   background-color: transparent;
   border: 0px;
   text-decoration: underline;
@@ -54,7 +54,8 @@
 }
 
 .hhdr-image {
-  width: 266px;
-  height: 60px;
-  margin-top: 14px;
+  width: 192px;
+  max-width: 45vw;
+  padding-top: 18px;
+  padding-right: 10px;
 }

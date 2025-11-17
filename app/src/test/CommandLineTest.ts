@@ -175,7 +175,7 @@ describe("worldCommand", async () => {
   });
 
   it("should have no stderr lines", async () => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
   }).timeout(10000);
 
   it("exit code should be zero", async () => {
@@ -261,7 +261,7 @@ describe("serveCommandValidate", async () => {
       process.kill();
       process = null;
     }
-    assert.equal(stderrLines.length, 0, "Error: " + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
   }).timeout(10000);
 
   it("exit code should be zero", async () => {
@@ -364,7 +364,7 @@ describe("serveCommandValidateAddon", async () => {
       process.kill();
       process = null;
     }
-    assert.equal(stderrLines.length, 0, "Error: " + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
   }).timeout(10000);
 
   it("exit code should be zero", async () => {
@@ -467,7 +467,7 @@ describe("serveCommandValidateWorld", async () => {
       process.kill();
       process = null;
     }
-    assert.equal(stderrLines.length, 0, "Error: " + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
   }).timeout(10000);
 
   it("exit code should be zero", async () => {
@@ -570,7 +570,7 @@ describe("serveCommandValidateMashup", async () => {
       process.kill();
       process = null;
     }
-    assert.equal(stderrLines.length, 0, "Error: " + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
   }).timeout(10000);
 
   it("exit code should be zero", async () => {
@@ -673,7 +673,7 @@ describe("serveCommandValidateAdvanced", () => {
       process.kill();
       process = null;
     }
-    assert.equal(stderrLines.length, 0, "Error: " + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
   }).timeout(10000);
 
   it("exit code should be zero", () => {
@@ -761,7 +761,7 @@ describe("createCommandAddonStarter", async () => {
   });
 
   it("should have no stderr lines", async () => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
   }).timeout(10000);
 
   it("exit code should be zero", async () => {
@@ -845,7 +845,7 @@ describe("addLootTable", async () => {
   });
 
   it("should have no stderr lines", async () => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
   }).timeout(10000);
 
   it("exit code should be zero", async () => {
@@ -897,7 +897,7 @@ describe("validateAddons1WellFormedCommand", async () => {
   });
 
   it("should have no stderr lines", function (done) {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
     done();
   }).timeout(10000);
 
@@ -941,7 +941,7 @@ describe("validateAddons2AnimationManifestErrorsCommand", async () => {
   });
 
   it("should have no stderr lines", async (done) => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
     done();
   }).timeout(10000);
 
@@ -990,7 +990,7 @@ describe("validateAddons3ExtraneousStuffUsesMinecraftCommand", async () => {
   });
 
   it("should have no stderr lines", async (done) => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
     done();
   }).timeout(10000);
 
@@ -1039,7 +1039,7 @@ describe("validateAddons3PlatformVersions", async () => {
   });
 
   it("should have no stderr lines", async (done) => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
     done();
   }).timeout(10000);
 
@@ -1083,7 +1083,7 @@ describe("deployCommand", async () => {
   });
 
   it("should have no stderr lines", async () => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
   });
 
   it("exit code should be zero", async () => {
@@ -1125,7 +1125,7 @@ describe("validateLinkErrors", async () => {
   });
 
   it("should have no stderr lines", async (done) => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
     done();
   }).timeout(10000);
 
@@ -1169,7 +1169,7 @@ describe("validateTextureful", async () => {
   });
 
   it("should have no stderr lines", async (done) => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
     done();
   }).timeout(10000);
 
@@ -1213,7 +1213,7 @@ describe("validateTexturefulvv", async () => {
   });
 
   it("should have no stderr lines", async (done) => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
     done();
   }).timeout(10000);
 
@@ -1257,7 +1257,7 @@ describe("validateVibrantVisuals", async () => {
   });
 
   it("should have no stderr lines", (done) => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
     done();
   }).timeout(20000);
 
@@ -1301,7 +1301,7 @@ describe("validateComprehensiveContent", async () => {
   });
 
   it("should have no stderr lines", async (done) => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
     done();
   }).timeout(10000);
 
@@ -1345,7 +1345,7 @@ describe("validateBehaviorPackOnly", async () => {
   });
 
   it("should have no stderr lines", async (done) => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
     done();
   }).timeout(10000);
 
@@ -1389,7 +1389,7 @@ describe("validateResourcePackOnly", async () => {
   });
 
   it("should have no stderr lines", async (done) => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
     done();
   }).timeout(10000);
 

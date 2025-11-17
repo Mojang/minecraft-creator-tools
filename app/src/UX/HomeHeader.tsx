@@ -14,12 +14,12 @@ export default function HomeHeader({ isApp, toggleThemeMode, mode }: IHomeHeader
   const showModeButton = !isApp && toggleThemeMode && mode;
   return (
     <Box
-      component="footer"
       sx={{
         py: 0.2,
         px: 1,
         pt: 1,
         pb: 1.2,
+        height: "96px",
         display: "flex",
         borderTop: "1px solid",
         borderColor: "divider",
