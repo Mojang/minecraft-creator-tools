@@ -66,3 +66,13 @@ export default interface MinecraftOverworld {
   type: string;
 
 }
+
+
+export enum MinecraftOverworldType {
+  minecraftCapped = `minecraft:capped`,
+  minecraftFrozenOcean = `minecraft:frozen_ocean`,
+  minecraftMesa = `minecraft:mesa`,
+  minecraftOverworld = `minecraft:overworld`,
+  minecraftSwamp = `minecraft:swamp`,
+  minecraftTheEnd = `minecraft:the_end`
+}

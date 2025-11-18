@@ -11,6 +11,54 @@
  * 
  * minecraft:enchantable Samples
 
+Copper Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/copper_spear.json
+
+"minecraft:enchantable": {
+  "slot": "melee_spear",
+  "value": 13
+}
+
+
+Diamond Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/diamond_spear.json
+
+"minecraft:enchantable": {
+  "slot": "melee_spear",
+  "value": 10
+}
+
+
+Golden Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/golden_spear.json
+
+"minecraft:enchantable": {
+  "slot": "melee_spear",
+  "value": 22
+}
+
+
+Iron Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/iron_spear.json
+
+"minecraft:enchantable": {
+  "slot": "melee_spear",
+  "value": 14
+}
+
+
+Netherite Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/netherite_spear.json
+
+"minecraft:enchantable": {
+  "slot": "melee_spear",
+  "value": 15
+}
+
+
+Stone Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/stone_spear.json
+
+"minecraft:enchantable": {
+  "slot": "melee_spear",
+  "value": 5
+}
+
+
 Item Axe Turret Kit - https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/axe_turret_kit.item.json
 
 "minecraft:enchantable": {
@@ -69,12 +117,13 @@ export default interface MinecraftEnchantable {
    * were a bow.
    * 
    * Sample Values:
+   * Copper Spear: "melee_spear"
+   *
+   *
    * Item Axe Turret Kit: "pickaxe"
    *
    *
    * Chestplate: "armor_torso"
-   *
-   * My Boots: "armor_feet"
    *
    */
   slot: string;
@@ -84,11 +133,11 @@ export default interface MinecraftEnchantable {
    * Specifies the value of the enchantment (minimum of 0).
    * 
    * Sample Values:
-   * Item Axe Turret Kit: 14
+   * Copper Spear: 13
    *
+   * Diamond Spear: 10
    *
-   * Chestplate: 10
-   *
+   * Golden Spear: 22
    *
    */
   value: number;

@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import ZipFolder from "./ZipFolder";
-import IFile from "./IFile";
+import IFile, { FileUpdateType } from "./IFile";
 import FileBase from "./FileBase";
 import JSZip from "jszip";
 import StorageUtilities, { EncodingType } from "./StorageUtilities";
@@ -44,6 +44,10 @@ export default class ZipFile extends FileBase implements IFile {
     this.lastLoadedOrSaved = null;
   }
 
+  async scanForChanges(): Promise<void> {
+    // No-op for zip storage
+  }
+
   async deleteThisFile(skipRemoveFromParent?: boolean): Promise<boolean> {
     throw new Error("Not implemented.");
   }
@@ -82,23 +86,26 @@ export default class ZipFile extends FileBase implements IFile {
     return this.lastLoadedOrSaved;
   }
 
-  setContent(newContent: string | Uint8Array | null) {
+  setContent(newContent: string | Uint8Array | null, updateType?: FileUpdateType, sourceId?: string) {
     const areEqual = StorageUtilities.contentsAreEqual(this._content, newContent);
 
-    if (!areEqual) {
-      if (!this.lastLoadedOrSaved) {
-        this.lastLoadedOrSaved = new Date();
-        this.lastLoadedOrSaved = new Date(this.lastLoadedOrSaved.getTime() - 1);
-
-        // Log.debugAlert("Setting a file without loading it first.");
-      }
-
-      this._content = newContent;
-
-      this.contentWasModified();
-
-      this._parentFolder.storage.modified = this.modified;
+    if (areEqual) {
+      return false;
     }
+
+    if (!this.lastLoadedOrSaved) {
+      this.lastLoadedOrSaved = new Date();
+      this.lastLoadedOrSaved = new Date(this.lastLoadedOrSaved.getTime() - 1);
+    }
+
+    let oldContent = this._content;
+    this._content = newContent;
+
+    this.contentWasModified(oldContent, updateType, sourceId);
+
+    this._parentFolder.storage.modified = this.modified;
+
+    return true;
   }
 
   async saveContent(force?: boolean): Promise<Date> {

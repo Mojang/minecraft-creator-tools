@@ -81,6 +81,10 @@ export default class GitHubFolder extends FolderBase implements IFolder {
     throw new Error("Deletion of all folder contents at " + this.fullPath + " is not supported.");
   }
 
+  async scanForChanges(): Promise<void> {
+    // No-op for GitHub storage
+  }
+
   ensureFile(name: string): GitHubFile {
     const nameCanon = StorageUtilities.canonicalizeName(name);
 

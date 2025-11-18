@@ -6,7 +6,7 @@ import WorldTest from "./../worldtest/WorldTest";
 import StorageUtilities from "../storage/StorageUtilities";
 import Project from "./../app/Project";
 import Structure from "../minecraft/Structure";
-import BlockCube from "../minecraft/BlockCube";
+import BlockVolume from "../minecraft/BlockVolume";
 import BlockLocation from "../minecraft/BlockLocation";
 import Utilities from "../core/Utilities";
 
@@ -109,16 +109,18 @@ export default class WorldTestManager {
     this._functionFile = functionFolder.ensureFile(newFileName);
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this._jsonFile === undefined || this._worldTest === undefined) {
-      return;
+      return false;
     }
 
-    const bpString = JSON.stringify(this._worldTest.data, null, 2);
-
-    this._jsonFile.setContent(bpString);
+    if (!this._worldTest?.data) {
+      return false;
+    }
 
     this.ensureFunctionFile();
+
+    return this._jsonFile.setObjectContentIfSemanticallyDifferent(this._worldTest.data);
   }
 
   async persistSideFiles(project: Project) {
@@ -185,7 +187,7 @@ export default class WorldTestManager {
 
     if (this.worldTest && this._structureFile) {
       const structure = new Structure();
-      const cube = new BlockCube();
+      const cube = new BlockVolume();
 
       cube.setMaxDimensions(8, 8, 8);
 

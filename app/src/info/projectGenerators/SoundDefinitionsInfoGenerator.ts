@@ -72,7 +72,7 @@ export default class SoundsDefinitionInfoGenerator implements IProjectInfoGenera
       if (!pack || !pack.projectItem.projectPath) {
         items.push(
           new ProjectInfoItem(
-            InfoItemType.internalProcessingError,
+            InfoItemType.error,
             this.id,
             SoundsDefinitionInfoGeneratorTest.foundALooseSoundDefinition,
             this.getTopicData(SoundsDefinitionInfoGeneratorTest.multipleSoundsDefinitionManifests).title,

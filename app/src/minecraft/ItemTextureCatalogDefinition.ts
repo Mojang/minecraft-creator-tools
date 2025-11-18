@@ -172,14 +172,16 @@ export default class ItemTextureCatalogDefinition {
     return et;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
-    const defString = JSON.stringify(this._data, null, 2);
+    if (!this._data) {
+      return false;
+    }
 
-    this._file.setContent(defString);
+    return this._file.setObjectContentIfSemanticallyDifferent(this._data);
   }
 
   getPackRootFolder() {

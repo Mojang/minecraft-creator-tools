@@ -4,12 +4,14 @@
     {
       "id": "adjust_for_weather",
       "title": "Adjust For Weather",
-      "dataType": 1
+      "dataType": 1,
+      "defaultValue": false
     },
     {
       "id": "max",
       "title": "Max",
       "dataType": 0,
+      "defaultValue": 15,
       "validity": [
         {
           "comparison": "<=",
@@ -21,6 +23,7 @@
       "id": "min",
       "title": "Min",
       "dataType": 0,
+      "defaultValue": 0,
       "validity": [
         {
           "comparison": "<=",

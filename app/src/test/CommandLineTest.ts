@@ -1,7 +1,7 @@
 import { assert } from "chai";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import Project, { ProjectAutoDeploymentMode } from "../app/Project";
-import CartoApp, { HostType } from "../app/CartoApp";
+import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
 import NodeStorage from "../local/NodeStorage";
 import Database from "../minecraft/Database";
 import LocalEnvironment from "../local/LocalEnvironment";
@@ -19,9 +19,9 @@ import ProjectInfoSet from "../info/ProjectInfoSet";
 import { ProjectInfoSuite } from "../info/IProjectInfoData";
 import ProjectUtilities from "../app/ProjectUtilities";
 
-CartoApp.hostType = HostType.testLocal;
+CreatorToolsHost.hostType = HostType.testLocal;
 
-let carto: Carto | undefined = undefined;
+let creatorTools: CreatorTools | undefined = undefined;
 let localEnv: LocalEnvironment | undefined = undefined;
 
 let scenariosFolder: IFolder | undefined = undefined;
@@ -31,8 +31,8 @@ let sampleFolder: IFolder | undefined = undefined;
 localEnv = new LocalEnvironment(false);
 
 (async () => {
-  CartoApp.localFolderExists = _localFolderExists;
-  CartoApp.ensureLocalFolder = _ensureLocalFolder;
+  CreatorToolsHost.localFolderExists = _localFolderExists;
+  CreatorToolsHost.ensureLocalFolder = _ensureLocalFolder;
 
   const testRootPath = NodeStorage.ensureEndsWithDelimiter(__dirname) + "/../../test/";
   const sampleContentRootPath = NodeStorage.ensureEndsWithDelimiter(__dirname) + "/../../../";
@@ -55,31 +55,31 @@ localEnv = new LocalEnvironment(false);
 
   await sampleFolder.ensureExists();
 
-  CartoApp.prefsStorage = new NodeStorage(
+  CreatorToolsHost.prefsStorage = new NodeStorage(
     localEnv.utilities.testWorkingPath + "prefs" + NodeStorage.platformFolderDelimiter,
     ""
   );
 
-  CartoApp.projectsStorage = new NodeStorage(
+  CreatorToolsHost.projectsStorage = new NodeStorage(
     localEnv.utilities.testWorkingPath + "projects" + NodeStorage.platformFolderDelimiter,
     ""
   );
 
-  CartoApp.packStorage = new NodeStorage(
+  CreatorToolsHost.packStorage = new NodeStorage(
     localEnv.utilities.testWorkingPath + "packs" + NodeStorage.platformFolderDelimiter,
     ""
   );
 
-  CartoApp.worldStorage = new NodeStorage(
+  CreatorToolsHost.worldStorage = new NodeStorage(
     localEnv.utilities.testWorkingPath + "worlds" + NodeStorage.platformFolderDelimiter,
     ""
   );
 
-  CartoApp.deploymentStorage = new NodeStorage(
+  CreatorToolsHost.deploymentStorage = new NodeStorage(
     localEnv.utilities.testWorkingPath + "deployment" + NodeStorage.platformFolderDelimiter,
     ""
   );
-  CartoApp.workingStorage = new NodeStorage(
+  CreatorToolsHost.workingStorage = new NodeStorage(
     localEnv.utilities.testWorkingPath + "working" + NodeStorage.platformFolderDelimiter,
     ""
   );
@@ -87,15 +87,15 @@ localEnv = new LocalEnvironment(false);
   const coreStorage = new NodeStorage(__dirname + "/../../public/data/content/", "");
   Database.contentFolder = coreStorage.rootFolder;
 
-  await CartoApp.init(); // carto app init does something here that, if removed, causes these tests to fail. Also, await needs to be here.
+  await CreatorToolsHost.init(); // carto app init does something here that, if removed, causes these tests to fail. Also, await needs to be here.
 
-  carto = CartoApp.carto;
+  creatorTools = CreatorToolsHost.creatorTools;
 
-  if (!carto) {
+  if (!creatorTools) {
     return;
   }
 
-  await carto.load();
+  await creatorTools.load();
 })();
 
 function _ensureLocalFolder(path: string) {
@@ -175,7 +175,7 @@ describe("worldCommand", async () => {
   });
 
   it("should have no stderr lines", async () => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
   }).timeout(10000);
 
   it("exit code should be zero", async () => {
@@ -261,7 +261,7 @@ describe("serveCommandValidate", async () => {
       process.kill();
       process = null;
     }
-    assert.equal(stderrLines.length, 0, "Error: " + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
   }).timeout(10000);
 
   it("exit code should be zero", async () => {
@@ -364,7 +364,7 @@ describe("serveCommandValidateAddon", async () => {
       process.kill();
       process = null;
     }
-    assert.equal(stderrLines.length, 0, "Error: " + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
   }).timeout(10000);
 
   it("exit code should be zero", async () => {
@@ -467,7 +467,7 @@ describe("serveCommandValidateWorld", async () => {
       process.kill();
       process = null;
     }
-    assert.equal(stderrLines.length, 0, "Error: " + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
   }).timeout(10000);
 
   it("exit code should be zero", async () => {
@@ -570,7 +570,7 @@ describe("serveCommandValidateMashup", async () => {
       process.kill();
       process = null;
     }
-    assert.equal(stderrLines.length, 0, "Error: " + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
   }).timeout(10000);
 
   it("exit code should be zero", async () => {
@@ -673,7 +673,7 @@ describe("serveCommandValidateAdvanced", () => {
       process.kill();
       process = null;
     }
-    assert.equal(stderrLines.length, 0, "Error: " + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
   }).timeout(10000);
 
   it("exit code should be zero", () => {
@@ -729,9 +729,9 @@ describe("createCommandAddonStarter", async () => {
     process.on("exit", (code) => {
       exitCode = code;
 
-      assert(carto, "Carto is not properly initialized");
+      assert(creatorTools, "CreatorTools is not properly initialized");
 
-      project = new Project(carto, "createCommandAddonStarter", null);
+      project = new Project(creatorTools, "createCommandAddonStarter", null);
 
       // exclude eslint because we know the .ts comes with some warnings due to
       // the starter TS having some unused variables.
@@ -761,7 +761,7 @@ describe("createCommandAddonStarter", async () => {
   });
 
   it("should have no stderr lines", async () => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
   }).timeout(10000);
 
   it("exit code should be zero", async () => {
@@ -821,9 +821,9 @@ describe("addLootTable", async () => {
     process.on("exit", (code) => {
       exitCode = code;
 
-      assert(carto, "Carto is not properly initialized");
+      assert(creatorTools, "CreatorTools is not properly initialized");
 
-      project = new Project(carto, "addLootTable", null);
+      project = new Project(creatorTools, "addLootTable", null);
 
       // exclude eslint because we know the .ts comes with some warnings due to
       // the starter TS having some unused variables.
@@ -845,7 +845,7 @@ describe("addLootTable", async () => {
   });
 
   it("should have no stderr lines", async () => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
   }).timeout(10000);
 
   it("exit code should be zero", async () => {
@@ -897,7 +897,7 @@ describe("validateAddons1WellFormedCommand", async () => {
   });
 
   it("should have no stderr lines", function (done) {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
     done();
   }).timeout(10000);
 
@@ -941,7 +941,7 @@ describe("validateAddons2AnimationManifestErrorsCommand", async () => {
   });
 
   it("should have no stderr lines", async (done) => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
     done();
   }).timeout(10000);
 
@@ -990,7 +990,7 @@ describe("validateAddons3ExtraneousStuffUsesMinecraftCommand", async () => {
   });
 
   it("should have no stderr lines", async (done) => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
     done();
   }).timeout(10000);
 
@@ -1039,7 +1039,7 @@ describe("validateAddons3PlatformVersions", async () => {
   });
 
   it("should have no stderr lines", async (done) => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
     done();
   }).timeout(10000);
 
@@ -1083,7 +1083,7 @@ describe("deployCommand", async () => {
   });
 
   it("should have no stderr lines", async () => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
   });
 
   it("exit code should be zero", async () => {
@@ -1125,7 +1125,7 @@ describe("validateLinkErrors", async () => {
   });
 
   it("should have no stderr lines", async (done) => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
     done();
   }).timeout(10000);
 
@@ -1169,7 +1169,7 @@ describe("validateTextureful", async () => {
   });
 
   it("should have no stderr lines", async (done) => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
     done();
   }).timeout(10000);
 
@@ -1213,7 +1213,7 @@ describe("validateTexturefulvv", async () => {
   });
 
   it("should have no stderr lines", async (done) => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
     done();
   }).timeout(10000);
 
@@ -1257,7 +1257,7 @@ describe("validateVibrantVisuals", async () => {
   });
 
   it("should have no stderr lines", (done) => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
     done();
   }).timeout(20000);
 
@@ -1301,7 +1301,7 @@ describe("validateComprehensiveContent", async () => {
   });
 
   it("should have no stderr lines", async (done) => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
     done();
   }).timeout(10000);
 
@@ -1345,7 +1345,7 @@ describe("validateBehaviorPackOnly", async () => {
   });
 
   it("should have no stderr lines", async (done) => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
     done();
   }).timeout(10000);
 
@@ -1389,7 +1389,7 @@ describe("validateResourcePackOnly", async () => {
   });
 
   it("should have no stderr lines", async (done) => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    assert.equal(stderrLines.length, 0, stderrLines.join("\n"));
     done();
   }).timeout(10000);
 

@@ -87,6 +87,7 @@ export default class BlockActorFactory {
       case "SuspiciousSand":
       case "EndGateway":
       case "SuspiciousGravel":
+      case "TrialSpawner":
       case "Piston":
       case "MovingBlock":
       case "Vault":

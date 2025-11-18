@@ -29,7 +29,13 @@ Cave Spider - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
   "value": "mangrove_swamp"
 }
 
- * At /minecraft:entity/events/minecraft:entity_spawned_with_biome_specific_jockey/first_valid/2/filters/: 
+ * At /minecraft:entity/events/minecraft:entity_spawned_with_biome_specific_jockey/first_valid/2/filters/all_of/2/: 
+{
+  "test": "has_biome_tag",
+  "value": "desert"
+}
+
+ * At /minecraft:entity/events/minecraft:entity_spawned_with_biome_specific_jockey/first_valid/3/filters/: 
 {
   "test": "has_biome_tag",
   "value": "nether"
@@ -52,12 +58,6 @@ Chicken - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
 
 
 Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
-
- * At /minecraft:entity/events/minecraft:entity_spawned/sequence/2/filters/any_of/0/: 
-{
-  "test": "has_biome_tag",
-  "value": "desert"
-}
 
  * At /minecraft:entity/events/minecraft:entity_spawned/sequence/2/filters/any_of/1/: 
 {
@@ -158,7 +158,7 @@ export default interface HasBiomeTag {
    * (Required) The tag to look for
    * 
    * Sample Values:
-   * Cave Spider: "swamp", "mangrove_swamp", "nether"
+   * Cave Spider: "swamp", "mangrove_swamp", "desert", "nether"
    *
    */
   value?: string;
@@ -171,47 +171,47 @@ export enum HasBiomeTagOperator {
    * @remarks
    * Test for inequality.
    */
-  NotEquals = `!=`,
+  notEquals = `!=`,
   /**
    * @remarks
    * Test for less-than the value.
    */
-  LessThan = `<`,
+  lessThan = `<`,
   /**
    * @remarks
    * Test for less-than or equal to the value.
    */
-  LessThanEquals = `<=`,
+  lessThanEquals = `<=`,
   /**
    * @remarks
    * Test for inequality.
    */
-  LessThanGreaterThan = `<>`,
+  lessThanGreaterThan = `<>`,
   /**
    * @remarks
    * Test for equality.
    */
-  Equals = `=`,
+  equals = `=`,
   /**
    * @remarks
    * Test for equality.
    */
-  EqualsEquals = `==`,
+  equalsEquals = `==`,
   /**
    * @remarks
    * Test for greater-than the value.
    */
-  GreaterThan = `>`,
+  greaterThan = `>`,
   /**
    * @remarks
    * Test for greater-than or equal to the value.
    */
-  GreaterThanEquals = `>=`,
+  greaterThanEquals = `>=`,
   /**
    * @remarks
    * Test for inequality.
    */
-  Not = `not`
+  not = `not`
 }
 
 
@@ -220,35 +220,35 @@ export enum HasBiomeTagSubject {
    * @remarks
    * The block involved with the interaction.
    */
-  Block = `block`,
+  block = `block`,
   /**
    * @remarks
    * The damaging actor involved with the interaction.
    */
-  Damager = `damager`,
+  damager = `damager`,
   /**
    * @remarks
    * The other member of an interaction, not the caller.
    */
-  Other = `other`,
+  other = `other`,
   /**
    * @remarks
    * The caller's current parent.
    */
-  Parent = `parent`,
+  parent = `parent`,
   /**
    * @remarks
    * The player involved with the interaction.
    */
-  Player = `player`,
+  player = `player`,
   /**
    * @remarks
    * The entity or object calling the test
    */
-  Self = `self`,
+  self = `self`,
   /**
    * @remarks
    * The caller's current target.
    */
-  Target = `target`
+  target = `target`
 }

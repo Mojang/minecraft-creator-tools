@@ -23,6 +23,18 @@ Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 }
 
 
+Camel Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/camel_husk.json
+
+"minecraft:healable": {
+  "items": [
+    {
+      "item": "rabbit_foot",
+      "heal_amount": 2
+    }
+  ]
+}
+
+
 Cat - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/cat.json
 
 "minecraft:healable": {
@@ -90,6 +102,58 @@ Llama - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
     {
       "item": "hay_block",
       "heal_amount": 10
+    }
+  ]
+}
+
+
+Nautilus - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/nautilus.json
+
+"minecraft:healable": {
+  "items": [
+    {
+      "item": "pufferfish_bucket",
+      "result_item": "water_bucket:0",
+      "heal_amount": 2
+    },
+    {
+      "item": "cod_bucket",
+      "result_item": "water_bucket:0",
+      "heal_amount": 4
+    },
+    {
+      "item": "salmon_bucket",
+      "result_item": "water_bucket:0",
+      "heal_amount": 4
+    },
+    {
+      "item": "tropical_fish_bucket",
+      "result_item": "water_bucket:0",
+      "heal_amount": 2
+    },
+    {
+      "item": "fish",
+      "heal_amount": 4
+    },
+    {
+      "item": "salmon",
+      "heal_amount": 4
+    },
+    {
+      "item": "clownfish",
+      "heal_amount": 2
+    },
+    {
+      "item": "pufferfish",
+      "heal_amount": 2
+    },
+    {
+      "item": "cooked_fish",
+      "heal_amount": 10
+    },
+    {
+      "item": "cooked_salmon",
+      "heal_amount": 12
     }
   ]
 }
@@ -208,6 +272,18 @@ Wolf - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/enti
     {
       "item": "rabbit_stew",
       "heal_amount": 20
+    }
+  ]
+}
+
+
+Zombie Horse - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_horse.json
+
+"minecraft:healable": {
+  "items": [
+    {
+      "item": "red_mushroom",
+      "heal_amount": 3
     }
   ]
 }

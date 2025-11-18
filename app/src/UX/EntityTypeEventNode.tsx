@@ -3,7 +3,7 @@ import IManagedComponentSetItem from "../minecraft/IManagedComponentSetItem";
 import Project from "../app/Project";
 import { ThemeInput } from "@fluentui/react-northstar";
 import "./EntityTypeEventNode.css";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import ManagedEventActionOrActionSet from "../minecraft/ManagedEventActionOrActionSet";
 import Utilities from "../core/Utilities";
@@ -21,7 +21,7 @@ export interface EntityTypeEventNodeData {
   project: Project;
   entityType: EntityTypeDefinition;
   entityEvent: ManagedEventActionOrActionSet;
-  carto: Carto;
+  creatorTools: CreatorTools;
   isSelected: boolean;
   targetColumn: number;
   theme: ThemeInput<any>;

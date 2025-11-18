@@ -27,3 +27,13 @@ export default interface FoliageColorMap {
   color_map: string;
 
 }
+
+
+export enum FoliageColorMapColorMap {
+  birch = `birch`,
+  dryFoliage = `dry_foliage`,
+  evergreen = `evergreen`,
+  foliage = `foliage`,
+  mangroveSwampFoliage = `mangrove_swamp_foliage`,
+  swampFoliage = `swamp_foliage`
+}

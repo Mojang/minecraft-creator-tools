@@ -115,7 +115,7 @@ export default interface MinecraftCelebrateHunt {
 
 
 /**
- * Celebration_targets (celebration_targets)
+ * Celebration targets (celebration_targets)
  */
 export interface MinecraftCelebrateHuntCelebrationTargets {
 

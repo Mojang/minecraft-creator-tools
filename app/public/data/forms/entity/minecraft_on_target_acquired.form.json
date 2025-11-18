@@ -246,6 +246,15 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/entities/nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_wild_adult_calm/minecraft:on_target_acquired/",
+        "content": {
+          "event": "minecraft:become_angry",
+          "target": "self"
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/panda.json": [
       {
         "path": "/minecraft:entity/component_groups/minecraft:panda_baby/minecraft:on_target_acquired/",
@@ -383,6 +392,15 @@
         "path": "/minecraft:entity/components/minecraft:on_target_acquired/",
         "content": {
           "event": "become_angry_event",
+          "target": "self"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_wild_calm/minecraft:on_target_acquired/",
+        "content": {
+          "event": "minecraft:become_angry",
           "target": "self"
         }
       }

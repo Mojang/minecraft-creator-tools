@@ -18,6 +18,12 @@
             "path": "/minecraft:entity/component_groups/minecraft:horse_baby/minecraft:scale_by_age/",
             "content": 1
           }
+        ],
+        "/vanilla/behavior_pack/entities/zombie_horse.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:horse_baby/minecraft:scale_by_age/",
+            "content": 0.5
+          }
         ]
       }
     },
@@ -87,7 +93,7 @@
         "path": "/minecraft:entity/component_groups/minecraft:horse_baby/minecraft:scale_by_age/",
         "content": {
           "start_scale": 0.5,
-          "end_scale": 1
+          "end_scale": 0.5
         }
       }
     ]

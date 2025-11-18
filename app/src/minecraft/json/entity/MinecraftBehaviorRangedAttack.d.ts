@@ -66,6 +66,15 @@ Llama - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 }
 
 
+Parched - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/parched.json
+
+"minecraft:behavior.ranged_attack": {
+  "priority": 1,
+  "attack_interval": 3.5,
+  "attack_radius": 15
+}
+
+
 Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/piglin.json
 
 "minecraft:behavior.ranged_attack": {
@@ -130,18 +139,6 @@ Bow Turret - https://github.com/microsoft/minecraft-samples/tree/main/casual_cre
   "x_max_rotation": 360
 }
 
-
-Crossbow Turret - https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/crossbow_turret.behavior.json
-
-"minecraft:behavior.ranged_attack": {
-  "attack_interval_min": 0.4,
-  "attack_interval_max": 0.8,
-  "attack_radius": 15,
-  "ranged_fov": 360,
-  "y_max_head_rotation": 360,
-  "x_max_rotation": 360
-}
-
  */
 
 import * as jsoncommon from './../../jsoncommon';
@@ -163,6 +160,7 @@ export default interface MinecraftBehaviorRangedAttack {
    * 
    * Sample Values:
    * Bogged: 3.5
+   *
    *
    * Snow Golem: 1
    *

@@ -58,7 +58,7 @@ export default class NewItemType extends Component<INewItemTypeProps, INewItemTy
   }
 
   _handleNameChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
-    if (data === undefined || this.props.carto === null || this.state == null) {
+    if (data === undefined || this.props.creatorTools === null || this.state == null) {
       return;
     }
 
@@ -107,7 +107,7 @@ export default class NewItemType extends Component<INewItemTypeProps, INewItemTy
       this.state === null ||
       Database.releaseVanillaBehaviorPackFolder === null ||
       this.state.entitiesFolder === undefined ||
-      this.props.carto.gallery === undefined
+      this.props.creatorTools.gallery === undefined
     ) {
       return <div>Loading...</div>;
     }
@@ -146,11 +146,11 @@ export default class NewItemType extends Component<INewItemTypeProps, INewItemTy
           }}
         >
           <ItemGallery
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             theme={this.props.theme}
             view={ItemTileButtonDisplayMode.smallImage}
             isSelectable={true}
-            gallery={this.props.carto.gallery}
+            gallery={this.props.creatorTools.gallery}
             filterOn={[GalleryItemType.itemType]}
             onGalleryItemCommand={this._handleTypeGalleryCommand}
           />

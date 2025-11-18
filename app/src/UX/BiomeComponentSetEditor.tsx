@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import BiomeAddComponent from "./BiomeAddComponent";
 import Project from "../app/Project";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import BiomeBehaviorDefinition from "../minecraft/BiomeBehaviorDefinition";
 import Utilities from "../core/Utilities";
 
@@ -17,7 +17,7 @@ interface IBiomeComponentSetEditorProps {
   readOnly: boolean;
   project: Project;
   heightOffset: number;
-  carto: Carto;
+  creatorTools: CreatorTools;
   theme: ThemeInput<any>;
 }
 
@@ -145,9 +145,9 @@ export default class BiomeComponentSetEditor extends Component<
   }
 
   _onUpdatePreferredTextSize(newSize: number) {
-    if (this.props.carto.preferredTextSize !== newSize) {
-      this.props.carto.preferredTextSize = newSize;
-      this.props.carto.save();
+    if (this.props.creatorTools.preferredTextSize !== newSize) {
+      this.props.creatorTools.preferredTextSize = newSize;
+      this.props.creatorTools.save();
     }
   }
 

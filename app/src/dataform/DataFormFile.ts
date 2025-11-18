@@ -80,20 +80,18 @@ export default class DataFormFile {
     return dff;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     Log.assert(this.formDefinition !== null, "DFFP");
 
     if (this.formDefinition) {
-      const fdString = JSON.stringify(this.formDefinition, null, 2);
-
-      if (fdString) {
-        this._file.setContent(fdString);
-      }
+      return this._file.setObjectContentIfSemanticallyDifferent(this.formDefinition);
     }
+
+    return false;
   }
 
   async load() {

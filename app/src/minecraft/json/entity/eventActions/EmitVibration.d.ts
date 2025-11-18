@@ -36,7 +36,7 @@ export default interface EmitVibration {
 
 
 export enum EmitVibrationVibration {
-  EntityInteract = `entity_interact`,
-  EntityAct = `entity_act`,
-  EntityDie = `entity_die`
+  entityInteract = `entity_interact`,
+  entityAct = `entity_act`,
+  entityDie = `entity_die`
 }

@@ -2,11 +2,10 @@ import * as http from "http";
 import * as https from "https";
 import ServerManager, { ServerManagerFeatures } from "./ServerManager";
 import LocalEnvironment from "./LocalEnvironment";
-import NodeStorage from "./NodeStorage";
-import { IAuthenticationToken, ServerPermissionLevel } from "./IAuthenticationToken";
+import { ServerPermissionLevel } from "./IAuthenticationToken";
 import Log from "../core/Log";
 import ZipStorage from "../storage/ZipStorage";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import Utilities from "../core/Utilities";
 import Project from "../app/Project";
 import { ProjectInfoSuite } from "../info/IProjectInfoData";
@@ -31,7 +30,7 @@ export default class HttpServer {
   host = "localhost";
   public port = 80;
 
-  public carto: Carto | undefined;
+  public creatorTools: CreatorTools | undefined;
 
   headers = {
     "Access-Control-Allow-Origin": "*",
@@ -227,7 +226,7 @@ export default class HttpServer {
             if (body.length >= 1) {
               const bodyContent = Buffer.concat(body);
 
-              if (!this.carto) {
+              if (!this.creatorTools) {
                 this.sendErrorRequest(500, "Unexpected configuration.", req, res);
                 return;
               }
@@ -250,7 +249,7 @@ export default class HttpServer {
                   res.writeHead(200, this.headers);
                 }
 
-                const packProject = new Project(this.carto, "Test", null);
+                const packProject = new Project(this.creatorTools, "Test", null);
                 packProject.setProjectFolder(zipStorage.rootFolder);
 
                 await packProject.inferProjectItemsFromFiles();

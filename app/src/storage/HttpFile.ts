@@ -44,6 +44,10 @@ export default class HttpFile extends FileBase implements IFile {
     return this._content !== null;
   }
 
+  async scanForChanges(): Promise<void> {
+    await this.loadContent(true);
+  }
+
   async loadContent(force?: boolean): Promise<Date> {
     //        Log.assert(this.fullPath.startsWith("/"), "Expecting a full absolute path");
 
@@ -132,7 +136,7 @@ export default class HttpFile extends FileBase implements IFile {
     throw new Error("HttpFile is read-only.");
   }
 
-  setContent(newContent: string | Uint8Array | null) {
+  setContent(newContent: string | Uint8Array | null): boolean {
     throw new Error("HttpFile is read-only.");
   }
 

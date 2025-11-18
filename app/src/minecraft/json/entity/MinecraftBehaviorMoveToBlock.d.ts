@@ -246,7 +246,7 @@ export default interface MinecraftBehaviorMoveToBlock {
 
 
 /**
- * Target_block_filters (target_block_filters)
+ * Target block filters (target_block_filters)
  */
 export interface MinecraftBehaviorMoveToBlockTargetBlockFilters {
 

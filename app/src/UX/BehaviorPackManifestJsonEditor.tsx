@@ -127,16 +127,18 @@ export default class BehaviorPackManifestJsonEditor extends Component<
     }
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
       if (file.manager) {
         const et = file.manager as BehaviorManifestDefinition;
 
-        et.persist();
+        return et.persist();
       }
     }
+
+    return false;
   }
 
   _handleItemSelected(elt: any, event: ListProps | undefined) {
@@ -203,9 +205,7 @@ export default class BehaviorPackManifestJsonEditor extends Component<
     if (props.tagData && props.directObject) {
       const file = props.tagData as IFile;
 
-      const newData = JSON.stringify(props.directObject, null, 2);
-
-      file.setContent(newData);
+      file.setObjectContentIfSemanticallyDifferent(props.directObject);
     }
   }
 

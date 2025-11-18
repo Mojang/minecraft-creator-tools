@@ -247,7 +247,7 @@ export default class ComponentizedBase implements IManagedComponentSetItem {
           name.endsWith("follow_range")
         ) {
           component = new IntAttributeComponent();
-        } else if (name.endsWith("movement") || name.endsWith("jump_strength")) {
+        } else if (name.endsWith("movement") || name.endsWith("jump_strength") || name.endsWith("attack_damage")) {
           // movement, underwater_movement, lava_movement, horse.jump_strength
           component = new FloatAttributeComponent();
         } else {

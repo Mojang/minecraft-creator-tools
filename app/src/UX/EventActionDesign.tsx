@@ -5,7 +5,7 @@ import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import IEventActionSet from "../minecraft/IEventActionSet";
 import IEventAction from "../minecraft/IEventAction";
 import { Button, Dropdown, DropdownProps, Toolbar } from "@fluentui/react-northstar";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import EventActionSet from "./EventActionSet";
 import Project from "../app/Project";
 import { CustomTabLabel } from "./Labels";
@@ -28,7 +28,7 @@ interface IEventActionDesignProps {
   displayHelperText: boolean;
   displayAddRemoveGroups: boolean;
   entityType: EntityTypeDefinition;
-  carto: Carto;
+  creatorTools: CreatorTools;
   project: Project;
   event: IEventActionSet | IEventAction;
   id: string;
@@ -88,23 +88,6 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
         this.setState({ mode: EventActionDesignMode.summary });
       },
       title: "Summary",
-    });
-
-    toolbarItems.push({
-      icon: (
-        <CustomTabLabel
-          icon={<FontAwesomeIcon icon={faDiagramProject} className="fa-lg" />}
-          text={"Designer"}
-          isCompact={isButtonCompact}
-          isSelected={this.state.mode === EventActionDesignMode.designer}
-          theme={this.props.theme}
-        />
-      ),
-      key: "eadDesignerTab",
-      onClick: () => {
-        this.setState({ mode: EventActionDesignMode.designer });
-      },
-      title: "Designer",
     });
 
     toolbarItems.push({
@@ -219,7 +202,7 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
               key={"ead-actionSet"}
               eventContextId={this.props.id}
               event={this.props.event}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               theme={this.props.theme}
             />
           </div>
@@ -230,7 +213,7 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
         <JsonEditor
           theme={this.props.theme}
           project={this.props.project}
-          preferredTextSize={this.props.carto.preferredTextSize}
+          preferredTextSize={this.props.creatorTools.preferredTextSize}
           readOnly={false}
           key={"ead-jsonEditor"}
           heightOffset={this.props.heightOffset}
@@ -250,7 +233,7 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
         }}
       >
         <div className={prefix + "header"}>{this.props.id} Action</div>
-        <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
+        <Toolbar aria-label="Actions" items={toolbarItems} />
         {contentArea}
       </div>
     );

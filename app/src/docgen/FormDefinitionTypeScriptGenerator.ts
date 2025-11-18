@@ -495,7 +495,7 @@ export default class FormDefinitionTypeScriptGenerator {
           return;
         }
 
-        fieldName = Utilities.sanitizeJavascriptName(fieldName);
+        fieldName = Utilities.wrapJavascriptNameIfNeeded(fieldName);
 
         if (fieldName.length > 0 && !fieldsAdded[fieldName]) {
           fieldsAdded[fieldName] = true;
@@ -638,7 +638,7 @@ export default class FormDefinitionTypeScriptGenerator {
       } else {
         choiceName = choiceName.toString();
 
-        const choiceNameJs = Utilities.javascriptifyName(Utilities.sanitizeJavascriptName(choiceName), true);
+        const choiceNameJs = Utilities.ensureFirstCharIsLowerCase(Utilities.javascriptifyName(choiceName, true));
 
         if (!choicesAdded[choiceNameJs]) {
           choicesAdded[choiceNameJs] = true;

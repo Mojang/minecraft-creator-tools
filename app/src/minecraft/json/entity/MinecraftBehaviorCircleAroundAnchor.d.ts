@@ -20,18 +20,18 @@ Phantom - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
   "height_adjustment_chance": 0.002857,
   "goal_radius": 1,
   "angle_change": 15,
-  "radius_range": [
-    5,
-    15
-  ],
-  "height_offset_range": [
-    -4,
-    5
-  ],
-  "height_above_target_range": [
-    20,
-    40
-  ]
+  "radius_range": {
+    "min": 5,
+    "max": 15
+  },
+  "height_offset_range": {
+    "min": -4,
+    "max": 5
+  },
+  "height_above_target_range": {
+    "min": 20,
+    "max": 40
+  }
 }
 
  */
@@ -77,7 +77,7 @@ export default interface MinecraftBehaviorCircleAroundAnchor {
    * target.
    * 
    * Sample Values:
-   * Phantom: [20,40]
+   * Phantom: {"min":20,"max":40}
    *
    */
   height_above_target_range?: number[];
@@ -101,7 +101,7 @@ export default interface MinecraftBehaviorCircleAroundAnchor {
    * within, upon a successful height adjustment.
    * 
    * Sample Values:
-   * Phantom: [-4,5]
+   * Phantom: {"min":-4,"max":5}
    *
    */
   height_offset_range?: number[];
@@ -151,7 +151,7 @@ export default interface MinecraftBehaviorCircleAroundAnchor {
    * within upon a successful radius adjustment.
    * 
    * Sample Values:
-   * Phantom: [5,15]
+   * Phantom: {"min":5,"max":15}
    *
    */
   radius_range?: number[];

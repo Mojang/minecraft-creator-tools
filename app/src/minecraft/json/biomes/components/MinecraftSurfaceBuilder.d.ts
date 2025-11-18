@@ -81,3 +81,13 @@ export interface MinecraftSurfaceBuilderBuilder {
   type: string;
 
 }
+
+
+export enum MinecraftSurfaceBuilderBuilderType {
+  minecraftCapped = `minecraft:capped`,
+  minecraftFrozenOcean = `minecraft:frozen_ocean`,
+  minecraftMesa = `minecraft:mesa`,
+  minecraftOverworld = `minecraft:overworld`,
+  minecraftSwamp = `minecraft:swamp`,
+  minecraftTheEnd = `minecraft:the_end`
+}

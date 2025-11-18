@@ -23,6 +23,7 @@ import IProjectMetaState from "./IProjectMetaState";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import SummaryInfoGenerator from "./SummaryInfoGenerator";
 import HashUtilities from "../core/HashUtilities";
+import Database from "../minecraft/Database";
 
 const ItemBatchSize = 500;
 
@@ -346,9 +347,12 @@ export default class ProjectInfoSet {
         return;
       }
 
-      let baseValidationMessage = "Validating '" + this.project.name + "'";
+      let baseValidationMessage = "Validating '" + this.project.simplifiedName + "'";
 
-      const valOperId = await this.project?.carto.notifyOperationStarted(baseValidationMessage, StatusTopic.validation);
+      const valOperId = await this.project?.creatorTools.notifyOperationStarted(
+        baseValidationMessage,
+        StatusTopic.validation
+      );
 
       this.info.summary = undefined;
 
@@ -363,6 +367,7 @@ export default class ProjectInfoSet {
       genContentIndex.iteration = new Date().getTime();
 
       await this.project.loc.load();
+      await Database.loadVanillaCatalog();
 
       if (this.project?.errorState === ProjectErrorState.cabinetFileCouldNotBeProcessed) {
         genItems.push(
@@ -370,7 +375,7 @@ export default class ProjectInfoSet {
             InfoItemType.internalProcessingError,
             "PROJECTMETA",
             500,
-            this.project.name + ": " + this.project.errorMessage
+            this.project.simplifiedName + ": " + this.project.errorMessage
           )
         );
       } else {
@@ -390,7 +395,10 @@ export default class ProjectInfoSet {
           const gen = projGenerators[i];
 
           if ((!this._excludeTests || !this._excludeTests.includes(gen.id)) && gen && this.matchesSuite(gen)) {
-            await this.project?.carto.notifyOperationUpdate(valOperId, baseValidationMessage + " (" + gen.title + ")");
+            await this.project?.creatorTools.notifyOperationUpdate(
+              valOperId,
+              baseValidationMessage + " (" + gen.title + ")"
+            );
 
             GeneratorRegistrations.configureForSuite(gen, this.suite);
 
@@ -407,13 +415,13 @@ export default class ProjectInfoSet {
                   InfoItemType.internalProcessingError,
                   gen.id,
                   500,
-                  this.project.name + ": " + e.message + (e.stack ? " (" + e.stack + ")" : "")
+                  this.project.simplifiedName + ": " + e.message + (e.stack ? " (" + e.stack + ")" : "")
                 )
               );
               if (e && (!e.message || !e.message.indexOf || e.message.indexOf("etwork ") < 0)) {
                 Log.debugAlert(e);
               } else {
-                this.project?.carto.notifyStatusUpdate(
+                this.project?.creatorTools.notifyStatusUpdate(
                   "Could not connect to network to retrieve resources for validation. Details: " + e.toString()
                 );
               }
@@ -427,7 +435,7 @@ export default class ProjectInfoSet {
           const pi = itemsCopy[i];
 
           if (i % ItemBatchSize === ItemBatchSize - 1) {
-            await this.project?.carto.notifyOperationUpdate(
+            await this.project?.creatorTools.notifyOperationUpdate(
               valOperId,
               baseValidationMessage + " (items " + Math.ceil((i / itemsCopy.length) * 100) + "%)"
             );
@@ -456,7 +464,7 @@ export default class ProjectInfoSet {
                     InfoItemType.internalProcessingError,
                     gen.id,
                     501,
-                    "IP2:" + this.project.name + ": " + e.toString()
+                    "IP2:" + this.project.simplifiedName + ": " + e.toString()
                   )
                 );
               }
@@ -475,7 +483,7 @@ export default class ProjectInfoSet {
         );
       }
 
-      await this.project?.carto.notifyOperationUpdate(valOperId, baseValidationMessage + " (finishing)");
+      await this.project?.creatorTools.notifyOperationUpdate(valOperId, baseValidationMessage + " (finishing)");
 
       this.addTestSummations(genItems, genItemsByStoragePath, projGenerators, this._excludeTests);
       this.addTestSummations(genItems, genItemsByStoragePath, itemGenerators, this._excludeTests);
@@ -564,12 +572,20 @@ export default class ProjectInfoSet {
         this.info.endToEndGenerationTime = generationEndTime - this.project.creationTime;
       }
 
+      if (
+        this.suite === ProjectInfoSuite.defaultInDevelopment ||
+        this.suite === ProjectInfoSuite.sharing ||
+        this.suite === ProjectInfoSuite.sharingStrict
+      ) {
+        this.info.reds = this.getRed();
+      }
+
       this._isGenerating = false;
 
       if (valOperId !== undefined) {
-        await this.project?.carto.notifyOperationEnded(
+        await this.project?.creatorTools.notifyOperationEnded(
           valOperId,
-          "Completed validation of '" + this.project.name + "'",
+          "Completed validation of '" + this.project.simplifiedName + "'",
           StatusTopic.validation
         );
       }
@@ -998,7 +1014,7 @@ export default class ProjectInfoSet {
     projectInfo: IProjectInfo,
     allFeatures: { [setName: string]: { [measureName: string]: number | undefined } | undefined }
   ): string {
-    let csvLine = "Name,Title,Reds,Area,";
+    let csvLine = "Name,Title,Area,";
 
     let fieldNames = [];
 
@@ -1400,198 +1416,198 @@ function _addReportJson(data) {
     if (!this.info || !this.info.featureSets) {
       return 0;
     }
-    /*
-    let val = this.info.featureSets["Animation content-size total"];
+
+    let val = this.info.featureSets["animation.size"]?.total;
+
+    if (val === undefined || val === null) {
+      val = 0;
+    }
+
     if (val) {
       red += val * 0.2;
     }
 
-    val = this.info.featureSets["Animation controller content-size total"];
+    val = this.info.featureSets["animationController.size"]?.total;
     if (val) {
       red += val * 0.5;
     }
 
-    val = this.info.featureSets["Attachable content-size total"];
+    val = this.info.featureSets["attachable.size"]?.total;
     if (val) {
       red += val * 0.1;
     }
 
-    val = this.info.featureSets["Function content-size total"];
+    val = this.info.featureSets["function.size"]?.total;
     if (val) {
       red += val * 2;
     }
 
-    val = this.info.featureSets["Tick content-size total"];
+    val = this.info.featureSets["tick.size"]?.total;
     if (val) {
       red += val * 20;
     }
 
-    val = this.info.featureSets["Command execute"];
+    val = this.info.featureSets["command.execute"]?.count;
     if (val) {
       red += val * 4;
     }
 
-    val = this.info.featureSets["Behavior pack animation content-size total"];
+    val = this.info.featureSets["behaviorPackAnimation.size"]?.total;
     if (val) {
       red += val * 0.8;
     }
 
-    val = this.info.featureSets["Behavior pack animation controller content-size total"];
+    val = this.info.featureSets["behaviorPackAnimationController.size"]?.total;
     if (val) {
       red += val * 1.2;
     }
 
-    val = this.info.featureSets["Biome resources content-size total"];
+    val = this.info.featureSets["biome.size"]?.total;
     if (val) {
       red += val * 1.2;
     }
 
-    val = this.info.featureSets["Block minecraft:chain_command_block"];
+    val = this.info.featureSets["blocks.minecraftChainCommandBlock"]?.count;
     if (val) {
       red += val * 8;
     }
 
-    val = this.info.featureSets["Block minecraft:command_block"];
+    val = this.info.featureSets["blocks.minecraftCommandBlock"]?.count;
     if (val) {
       red += val * 8;
     }
 
-    val = this.info.featureSets["Block minecraft:repeating_command_block"];
+    val = this.info.featureSets["blocks.minecraftRepeatingCommandBlock"]?.count;
     if (val) {
       red += val * 8;
     }
 
-    val = this.info.featureSets["Block minecraft:structure_block"];
+    val = this.info.featureSets["blocks.minecraftStructureBlock"]?.count;
     if (val) {
       red += val * 8;
     }
 
-    val = this.info.featureSets["Block minecraft:observer"];
+    val = this.info.featureSets["blocks.minecraftObserver"]?.count;
     if (val) {
       red += val * 4;
     }
 
-    val = this.info.featureSets["Block minecraft:comparator"];
+    val = this.info.featureSets["blocks.minecraftComparator"]?.count;
     if (val) {
       red += val * 4;
     }
 
-    val = this.info.featureSets["Block minecraft:dropper"];
+    val = this.info.featureSets["blocks.minecraftDropper"]?.count;
     if (val) {
       red += val * 2;
     }
 
-    val = this.info.featureSets["Block minecraft:hopper"];
+    val = this.info.featureSets["blocks.minecraftHopper"]?.count;
     if (val) {
       red += val * 2;
     }
 
-    val = this.info.featureSets["Block minecraft:pressure_plate"];
+    val = this.info.featureSets["blocks.minecraftPressurePlate"]?.count;
     if (val) {
       red += val * 1;
     }
 
-    val = this.info.featureSets["Block minecraft:lever"];
+    val = this.info.featureSets["blocks.minecraftLever"]?.count;
     if (val) {
       red += val * 4;
     }
 
-    val = this.info.featureSets["Block minecraft:lit_redstone_lamp"];
+    val = this.info.featureSets["blocks.minecraftLitRedstoneLamp"]?.count;
     if (val) {
       red += val;
     }
 
-    val = this.info.featureSets["Block minecraft:redstone_block"];
+    val = this.info.featureSets["blocks.minecraftRedstoneBlock"]?.count;
     if (val) {
       red += val;
     }
 
-    val = this.info.featureSets["Block minecraft:redstone_torch"];
+    val = this.info.featureSets["blocks.minecraftRedstoneTorch"]?.count;
     if (val) {
       red += val;
     }
 
-    val = this.info.featureSets["Block minecraft:redstone_wire"];
+    val = this.info.featureSets["blocks.minecraftRedstoneWire"]?.count;
     if (val) {
       red += val;
     }
 
-    val = this.info.featureSets["Block type content-size total"];
+    val = this.info.featureSets["entityDialogue.size"]?.total;
     if (val) {
       red += val * 2;
     }
 
-    val = this.info.featureSets["Entity dialogue content-size total"];
+    val = this.info.featureSets["entityType.size"]?.total;
     if (val) {
       red += val * 2;
     }
 
-    val = this.info.featureSets["Entity type content-size total"];
-    if (val) {
-      red += val * 2;
-    }
-
-    val = this.info.featureSets["Entity type resources content-size total"];
+    val = this.info.featureSets["entityTypeResources.size"]?.total;
     if (val) {
       red += val * 1;
     }
 
-    val = this.info.featureSets["Item type content-size total"];
+    val = this.info.featureSets["itemType.size"]?.total;
     if (val) {
       red += val * 2;
     }
 
-    val = this.info.featureSets["Item type resources content-size total"];
+    val = this.info.featureSets["itemTypeResources.size"]?.total;
     if (val) {
       red += val * 1;
     }
 
-    val = this.info.featureSets["JavaScript content-size total"];
+    val = this.info.featureSets["javaScript.size"]?.total;
     if (val) {
       red += val * 2;
     }
 
-    val = this.info.featureSets["Loot table content-size total"];
+    val = this.info.featureSets["lootTable.size"]?.total;
     if (val) {
       red += val;
     }
 
-    val = this.info.featureSets["Model content-size total"];
+    val = this.info.featureSets["model.size"]?.total;
     if (val) {
       red += val * 0.1;
     }
 
-    val = this.info.featureSets["Particle content-size total"];
+    val = this.info.featureSets["particle.size"]?.total;
     if (val) {
       red += val * 0.4;
     }
 
-    val = this.info.featureSets["Recipe content-size total"];
+    val = this.info.featureSets["recipe.size"]?.total;
     if (val) {
       red += val * 0.4;
     }
 
-    val = this.info.featureSets["Render controller content-size total"];
+    val = this.info.featureSets["renderController.size"]?.total;
     if (val) {
       red += val * 0.5;
     }
 
-    val = this.info.featureSets["Spawn rule content-size total"];
+    val = this.info.featureSets["spawnRule.size"]?.total;
     if (val) {
       red += val * 1;
     }
 
-    val = this.info.featureSets["Trading content-size total"];
+    val = this.info.featureSets["trading.size"]?.total;
     if (val) {
       red += val * 1;
     }
 
-    val = this.info.featureSets["User interface content-size total"];
+    val = this.info.featureSets["userInterface.size"]?.total;
     if (val) {
       red += val * 2;
-    }*/
+    }
 
-    return red;
+    return Math.round(red);
   }
 
   getSummaryCsvLine(
@@ -1603,8 +1619,6 @@ function _addReportJson(data) {
       ProjectInfoSet.getDataSummary(containerName) +
       "," +
       ProjectInfoSet.getDataSummary(title) +
-      "," +
-      this.getRed() +
       "," +
       this.getArea(title) +
       ",";
@@ -2070,7 +2084,10 @@ function _addReportJson(data) {
         for (const featureSetName in item.featureSets) {
           const featureSet = item.featureSets[featureSetName];
 
-          const aggFeatureSetName = this.getItemSummary(item) + " " + featureSetName;
+          const aggFeatureSetName =
+            Utilities.convertToJsonKey(this.getItemSummary(item)) +
+            "." +
+            Utilities.ensureFirstCharIsLowerCase(featureSetName);
 
           for (const measureName in featureSet) {
             const measure = featureSet[measureName];
@@ -2087,9 +2104,9 @@ function _addReportJson(data) {
 
               if (aggVal === undefined) {
                 aggVal = measure;
-              } else if (measureName.startsWith("Max ")) {
+              } else if (measureName.startsWith("max_")) {
                 aggVal = Math.max(aggVal, measure);
-              } else if (featureSetName.startsWith("Min ")) {
+              } else if (featureSetName.startsWith("min_")) {
                 aggVal = Math.min(aggVal, measure);
               } else {
                 aggVal += measure;

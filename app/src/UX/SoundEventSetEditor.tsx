@@ -81,7 +81,9 @@ export default class SoundEventSetEditor extends Component<ISoundEventSetSoundEd
     }
   }
 
-  async persist() {}
+  async persist(): Promise<boolean> {
+    return false;
+  }
 
   _handleDataFormPropertyChange(props: IDataFormProps, property: IProperty, newValue: any) {}
 

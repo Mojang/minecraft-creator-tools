@@ -1,15 +1,7 @@
-@media only screen and (min-width: 800px) {
-  .hhdr {
-    font-size: 30pt;
-    height: 100%;
-    border-bottom: outset 2px;
-  }
-}
-
-@media only screen and (max-width: 800px) {
-  .hhdr {
-    height: 100%;
-  }
+.hhdr {
+  font-size: 30pt;
+  height: 100%;
+  border-bottom: outset 2px;
 }
 
 .hhdr-area {
@@ -22,6 +14,11 @@
   padding-bottom: 10px;
   font-size: small;
   color: white;
+  text-align: "right";
+  vertical-align: middle;
+  padding-right: 10px;
+  padding-top: 18px;
+  margin-left: auto;
 }
 
 .hhdr-sublink A {
@@ -31,7 +28,6 @@
 
 .hhdr-docsLink {
   color: white;
-  padding-left: 6px;
   background-color: transparent;
   border: 0px;
   text-decoration: underline;
@@ -45,7 +41,6 @@
 .hhdr-area {
   vertical-align: middle;
   text-align: center;
-  background-image: url(../images/bg-wool-dark.png);
   grid-row: 1;
   grid-column-start: 1;
   grid-column-end: 3;
@@ -54,11 +49,13 @@
 .hhdr-image-outer {
   display: inline-block;
   margin: 0px;
-  line-height: 0.9 !important;
+  padding-left: 10px;
   background-size: cover;
 }
 
 .hhdr-image {
-  width: 266px;
-  height: 60px;
+  width: 192px;
+  max-width: 45vw;
+  padding-top: 18px;
+  padding-right: 10px;
 }

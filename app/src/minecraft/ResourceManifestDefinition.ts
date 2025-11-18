@@ -281,19 +281,17 @@ export default class ResourceManifestDefinition {
     return rmj;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     if (!this.definition) {
       Log.unexpectedUndefined("RMDP");
-      return;
+      return false;
     }
 
-    const pjString = JSON.stringify(this.definition, null, 2);
-
-    this._file.setContent(pjString);
+    return this._file.setObjectContentIfSemanticallyDifferent(this.definition);
   }
 
   public ensureDefinition(name: string, description: string) {
@@ -393,9 +391,9 @@ export default class ResourceManifestDefinition {
       return;
     }
 
-    this.persist();
-
-    await this._file.saveContent(false);
+    if (this.persist()) {
+      await this._file.saveContent(false);
+    }
   }
 
   async load() {

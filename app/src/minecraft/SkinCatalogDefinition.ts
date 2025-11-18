@@ -133,19 +133,17 @@ export default class SkinCatalogDefinition {
     return this._data;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     if (!this._data) {
       Log.unexpectedUndefined("SKCDP");
-      return;
+      return false;
     }
 
-    const defString = JSON.stringify(this._data, null, 2);
-
-    this._file.setContent(defString);
+    return this._file.setObjectContentIfSemanticallyDifferent(this._data);
   }
 
   async load() {

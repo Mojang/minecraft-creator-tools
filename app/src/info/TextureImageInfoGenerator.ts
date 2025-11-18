@@ -90,7 +90,6 @@ const ExemptVanillaOverridePaths = [
   "/blocks/border",
   "/blocks/build_allow",
   "/blocks/build_deny",
-  "/blocks/Missing_tile",
   "/blocks/smithing_table_top",
   "/blocks/end_gateway",
   "/blocks/end_portal",
@@ -228,29 +227,29 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
     info.textureCount = infoSet.getSummedFeatureValue(
       this.id,
       TextureImageInfoGeneratorTest.textureImages,
-      "Texels",
-      "Instance Count"
+      "texels",
+      "instanceCount"
     );
 
     info.textureTexelSize = infoSet.getSummedFeatureValue(
       this.id,
       TextureImageInfoGeneratorTest.textureImages,
-      "Non-Vanilla Texels",
-      "Total"
+      "nonVanillaTexels",
+      "total"
     );
 
     info.vanillaGameTextureCoverage = infoSet.getAverageFeatureValue(
       this.id,
       TextureImageInfoGeneratorTest.textureImages,
-      "Vanilla Game Texture Coverage",
-      "Percent"
+      "vanillaGameTextureCoverage",
+      "percent"
     );
 
     info.vanillaGameTextureCount = infoSet.getAverageFeatureValue(
       this.id,
       TextureImageInfoGeneratorTest.textureImages,
-      "Vanilla Game Texture Coverage",
-      "Override Count"
+      "vanillaGameTextureCoverage",
+      "overrideCount"
     );
 
     let minimumSupportablePerformanceTier = 0;

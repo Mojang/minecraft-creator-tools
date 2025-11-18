@@ -4,18 +4,21 @@
     {
       "id": "control_flags",
       "title": "Control Flags",
-      "dataType": 17
+      "dataType": 17,
+      "defaultValue": []
     },
     {
       "id": "priority",
       "title": "Priority",
-      "dataType": 0
+      "dataType": 0,
+      "defaultValue": 0
     },
     {
       "id": "speed_multiplier",
       "title": "Speed Multiplier",
-      "description": "Movement speed multiplier applied to the mob when using this AI Goal. Default value: 1.",
-      "dataType": 3
+      "description": "Movement speed multiplier applied to the mob when using this AI Goal.",
+      "dataType": 3,
+      "defaultValue": 1
     }
   ],
   "description": "Allows this mob to breed with other mobs.",

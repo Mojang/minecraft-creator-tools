@@ -1,0 +1,105 @@
+@media only screen and (min-width: 1016px) {
+  .csp-grid {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+  }
+}
+
+@media only screen and (max-width: 1015px) {
+}
+
+.csp-grid {
+  padding: 10px;
+  padding-top: 10px;
+  padding-bottom: 30px;
+}
+
+.csp-label {
+  padding-left: 2px;
+  padding-bottom: 10px;
+  padding-top: 5px;
+  user-select: none;
+}
+
+.csp-formatbeforesavelabel {
+  grid-row: 1;
+  grid-column: 2;
+  padding-top: 2px;
+}
+
+.csp-formatbeforesave {
+  grid-row: 1;
+  grid-column: 1;
+  text-align: right;
+  padding-right: 0px;
+  padding-bottom: 20px;
+}
+
+.csp-defaultEditlabel {
+  grid-row: 3;
+  grid-column: 1;
+}
+
+.csp-defaultEditinput {
+  grid-row: 3;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  padding-bottom: 20px;
+}
+
+.csp-autostartlabel {
+  grid-row: 2;
+  grid-column: 2;
+  padding-top: 2px;
+}
+
+.csp-autostart {
+  grid-row: 2;
+  grid-column: 1;
+  text-align: right;
+  padding-right: 0px;
+  padding-bottom: 20px;
+}
+
+.csp-dspathlabel {
+  grid-row: 5;
+  grid-column: 1;
+  padding-top: 9px;
+}
+
+.csp-dspathinput {
+  grid-row: 5;
+  grid-column: 2;
+  padding-bottom: 20px;
+  margin-right: 4px;
+}
+
+.csp-dspathinput input {
+  max-width: 200px;
+  margin-top: 4px;
+}
+
+.csp-dspathinput button {
+  margin-top: 4px;
+}
+
+.csp-dspathinput input {
+  width: 300px;
+}
+
+.csp-tracklabel {
+  grid-row: 4;
+  grid-column: 1;
+  padding-top: 7px;
+}
+
+.csp-trackinput {
+  grid-row: 4;
+  grid-column: 2;
+  padding-bottom: 20px;
+  margin-right: 4px;
+}
+
+.csp-trackinput .ui-dropdown__container {
+  width: 235px;
+}

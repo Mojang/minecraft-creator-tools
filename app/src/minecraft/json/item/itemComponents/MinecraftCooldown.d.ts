@@ -16,24 +16,40 @@ import * as jsoncommon from './../../../jsoncommon';
 
 /**
  * Item Cooldown (minecraft:cooldown)
- * After you use an item, all items with a "minecraft:cooldown" component
- * with the same "category" become unusable for the amount of
- * seconds specified in "duration".
+ * Adds a cooldown to the item so that, after performing an action of
+ * the specified "type", all items with a "minecraft:cooldown" component
+ * in the same "category" become unable to perform that same type of
+ * action for the number of seconds defined in "duration".
  */
 export default interface MinecraftCooldown {
 
   /**
    * @remarks
-   * All items with the same "category" are put on cooldown when one
-   * is used.
+   * All items sharing the same "category" are put on cooldown when an
+   * action of the specified "type" is performed.
    */
   category: string;
 
   /**
    * @remarks
-   * How long the item is on cooldown before being able to be used
-   * again.
+   * Duration of the cooldown, in seconds, before the item can
+   * perform an action of the specified "type" again.
    */
   duration: number;
 
+  /**
+   * @remarks
+   * The type of action the cooldown applies to. Options are mutually
+   * exclusive, so cooldown for one type of action does not affect the
+   * others. Values: "use" (when using an item), "attack" (when attack
+   * with an item).
+   */
+  type?: string;
+
+}
+
+
+export enum MinecraftCooldownType {
+  attack = `attack`,
+  use = `use`
 }

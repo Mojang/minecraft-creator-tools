@@ -299,38 +299,38 @@ export enum MinecraftMaterialInstancesDownRenderMethod {
    * Used for a regular block texture without an alpha layer. Does not
    * allow for transparency or translucency
    */
-  Opaque = `opaque`,
+  opaque = `opaque`,
   /**
    * @remarks
    * Used for completely disabling backface culling.
    */
-  DoubleSided = `double_sided`,
+  doubleSided = `double_sided`,
   /**
    * @remarks
    * Used for a block like stained glass. Allows for transparency and
    * translucency (slightly transparent textures).
    */
-  Blend = `blend`,
+  blend = `blend`,
   /**
    * @remarks
    * Used for a block like the monster spawner. Does not allow for
    * translucency, only fully opaque or fully transparent textures. Also
    * disabled backface culling.
    */
-  AlphaTest = `alpha_test`,
+  alphaTest = `alpha_test`,
   /**
    * @remarks
    * Used for a block like the (unstained) glass. Does not allow for
    * translucency, only fully opaque or fully transparent textures. Also
    * enables backface culling.
    */
-  AlphaTestSingleSided = `alpha_test_single_sided`,
+  alphaTestSingleSided = `alpha_test_single_sided`,
   /**
    * @remarks
    * Will blend like stained glass in the near render and turn opaque on
    * the far render.
    */
-  BlendToOpaque = `blend_to_opaque`,
+  blendToOpaque = `blend_to_opaque`,
   /**
    * @remarks
    * Used for a block like the leaves. Does not allow for
@@ -338,7 +338,7 @@ export enum MinecraftMaterialInstancesDownRenderMethod {
    * the near render and turn only opaque on the far render. Also
    * disabled backface culling.
    */
-  AlphaTestToOpaque = `alpha_test_to_opaque`,
+  alphaTestToOpaque = `alpha_test_to_opaque`,
   /**
    * @remarks
    * Used for a block like the sugar cane. Does not allow for
@@ -346,7 +346,7 @@ export enum MinecraftMaterialInstancesDownRenderMethod {
    * the near render and turn only opaque on the far render. Also
    * enables backface culling.
    */
-  AlphaTestSingleSidedToOpaque = `alpha_test_single_sided_to_opaque`
+  alphaTestSingleSidedToOpaque = `alpha_test_single_sided_to_opaque`
 }
 
 
@@ -428,38 +428,38 @@ export enum MinecraftMaterialInstancesEastRenderMethod {
    * Used for a regular block texture without an alpha layer. Does not
    * allow for transparency or translucency
    */
-  Opaque = `opaque`,
+  opaque = `opaque`,
   /**
    * @remarks
    * Used for completely disabling backface culling.
    */
-  DoubleSided = `double_sided`,
+  doubleSided = `double_sided`,
   /**
    * @remarks
    * Used for a block like stained glass. Allows for transparency and
    * translucency (slightly transparent textures).
    */
-  Blend = `blend`,
+  blend = `blend`,
   /**
    * @remarks
    * Used for a block like the monster spawner. Does not allow for
    * translucency, only fully opaque or fully transparent textures. Also
    * disabled backface culling.
    */
-  AlphaTest = `alpha_test`,
+  alphaTest = `alpha_test`,
   /**
    * @remarks
    * Used for a block like the (unstained) glass. Does not allow for
    * translucency, only fully opaque or fully transparent textures. Also
    * enables backface culling.
    */
-  AlphaTestSingleSided = `alpha_test_single_sided`,
+  alphaTestSingleSided = `alpha_test_single_sided`,
   /**
    * @remarks
    * Will blend like stained glass in the near render and turn opaque on
    * the far render.
    */
-  BlendToOpaque = `blend_to_opaque`,
+  blendToOpaque = `blend_to_opaque`,
   /**
    * @remarks
    * Used for a block like the leaves. Does not allow for
@@ -467,7 +467,7 @@ export enum MinecraftMaterialInstancesEastRenderMethod {
    * the near render and turn only opaque on the far render. Also
    * disabled backface culling.
    */
-  AlphaTestToOpaque = `alpha_test_to_opaque`,
+  alphaTestToOpaque = `alpha_test_to_opaque`,
   /**
    * @remarks
    * Used for a block like the sugar cane. Does not allow for
@@ -475,7 +475,7 @@ export enum MinecraftMaterialInstancesEastRenderMethod {
    * the near render and turn only opaque on the far render. Also
    * enables backface culling.
    */
-  AlphaTestSingleSidedToOpaque = `alpha_test_single_sided_to_opaque`
+  alphaTestSingleSidedToOpaque = `alpha_test_single_sided_to_opaque`
 }
 
 
@@ -557,38 +557,38 @@ export enum MinecraftMaterialInstancesNorthRenderMethod {
    * Used for a regular block texture without an alpha layer. Does not
    * allow for transparency or translucency
    */
-  Opaque = `opaque`,
+  opaque = `opaque`,
   /**
    * @remarks
    * Used for completely disabling backface culling.
    */
-  DoubleSided = `double_sided`,
+  doubleSided = `double_sided`,
   /**
    * @remarks
    * Used for a block like stained glass. Allows for transparency and
    * translucency (slightly transparent textures).
    */
-  Blend = `blend`,
+  blend = `blend`,
   /**
    * @remarks
    * Used for a block like the monster spawner. Does not allow for
    * translucency, only fully opaque or fully transparent textures. Also
    * disabled backface culling.
    */
-  AlphaTest = `alpha_test`,
+  alphaTest = `alpha_test`,
   /**
    * @remarks
    * Used for a block like the (unstained) glass. Does not allow for
    * translucency, only fully opaque or fully transparent textures. Also
    * enables backface culling.
    */
-  AlphaTestSingleSided = `alpha_test_single_sided`,
+  alphaTestSingleSided = `alpha_test_single_sided`,
   /**
    * @remarks
    * Will blend like stained glass in the near render and turn opaque on
    * the far render.
    */
-  BlendToOpaque = `blend_to_opaque`,
+  blendToOpaque = `blend_to_opaque`,
   /**
    * @remarks
    * Used for a block like the leaves. Does not allow for
@@ -596,7 +596,7 @@ export enum MinecraftMaterialInstancesNorthRenderMethod {
    * the near render and turn only opaque on the far render. Also
    * disabled backface culling.
    */
-  AlphaTestToOpaque = `alpha_test_to_opaque`,
+  alphaTestToOpaque = `alpha_test_to_opaque`,
   /**
    * @remarks
    * Used for a block like the sugar cane. Does not allow for
@@ -604,7 +604,7 @@ export enum MinecraftMaterialInstancesNorthRenderMethod {
    * the near render and turn only opaque on the far render. Also
    * enables backface culling.
    */
-  AlphaTestSingleSidedToOpaque = `alpha_test_single_sided_to_opaque`
+  alphaTestSingleSidedToOpaque = `alpha_test_single_sided_to_opaque`
 }
 
 
@@ -686,38 +686,38 @@ export enum MinecraftMaterialInstancesSouthRenderMethod {
    * Used for a regular block texture without an alpha layer. Does not
    * allow for transparency or translucency
    */
-  Opaque = `opaque`,
+  opaque = `opaque`,
   /**
    * @remarks
    * Used for completely disabling backface culling.
    */
-  DoubleSided = `double_sided`,
+  doubleSided = `double_sided`,
   /**
    * @remarks
    * Used for a block like stained glass. Allows for transparency and
    * translucency (slightly transparent textures).
    */
-  Blend = `blend`,
+  blend = `blend`,
   /**
    * @remarks
    * Used for a block like the monster spawner. Does not allow for
    * translucency, only fully opaque or fully transparent textures. Also
    * disabled backface culling.
    */
-  AlphaTest = `alpha_test`,
+  alphaTest = `alpha_test`,
   /**
    * @remarks
    * Used for a block like the (unstained) glass. Does not allow for
    * translucency, only fully opaque or fully transparent textures. Also
    * enables backface culling.
    */
-  AlphaTestSingleSided = `alpha_test_single_sided`,
+  alphaTestSingleSided = `alpha_test_single_sided`,
   /**
    * @remarks
    * Will blend like stained glass in the near render and turn opaque on
    * the far render.
    */
-  BlendToOpaque = `blend_to_opaque`,
+  blendToOpaque = `blend_to_opaque`,
   /**
    * @remarks
    * Used for a block like the leaves. Does not allow for
@@ -725,7 +725,7 @@ export enum MinecraftMaterialInstancesSouthRenderMethod {
    * the near render and turn only opaque on the far render. Also
    * disabled backface culling.
    */
-  AlphaTestToOpaque = `alpha_test_to_opaque`,
+  alphaTestToOpaque = `alpha_test_to_opaque`,
   /**
    * @remarks
    * Used for a block like the sugar cane. Does not allow for
@@ -733,7 +733,7 @@ export enum MinecraftMaterialInstancesSouthRenderMethod {
    * the near render and turn only opaque on the far render. Also
    * enables backface culling.
    */
-  AlphaTestSingleSidedToOpaque = `alpha_test_single_sided_to_opaque`
+  alphaTestSingleSidedToOpaque = `alpha_test_single_sided_to_opaque`
 }
 
 
@@ -815,38 +815,38 @@ export enum MinecraftMaterialInstancesUpRenderMethod {
    * Used for a regular block texture without an alpha layer. Does not
    * allow for transparency or translucency
    */
-  Opaque = `opaque`,
+  opaque = `opaque`,
   /**
    * @remarks
    * Used for completely disabling backface culling.
    */
-  DoubleSided = `double_sided`,
+  doubleSided = `double_sided`,
   /**
    * @remarks
    * Used for a block like stained glass. Allows for transparency and
    * translucency (slightly transparent textures).
    */
-  Blend = `blend`,
+  blend = `blend`,
   /**
    * @remarks
    * Used for a block like the monster spawner. Does not allow for
    * translucency, only fully opaque or fully transparent textures. Also
    * disabled backface culling.
    */
-  AlphaTest = `alpha_test`,
+  alphaTest = `alpha_test`,
   /**
    * @remarks
    * Used for a block like the (unstained) glass. Does not allow for
    * translucency, only fully opaque or fully transparent textures. Also
    * enables backface culling.
    */
-  AlphaTestSingleSided = `alpha_test_single_sided`,
+  alphaTestSingleSided = `alpha_test_single_sided`,
   /**
    * @remarks
    * Will blend like stained glass in the near render and turn opaque on
    * the far render.
    */
-  BlendToOpaque = `blend_to_opaque`,
+  blendToOpaque = `blend_to_opaque`,
   /**
    * @remarks
    * Used for a block like the leaves. Does not allow for
@@ -854,7 +854,7 @@ export enum MinecraftMaterialInstancesUpRenderMethod {
    * the near render and turn only opaque on the far render. Also
    * disabled backface culling.
    */
-  AlphaTestToOpaque = `alpha_test_to_opaque`,
+  alphaTestToOpaque = `alpha_test_to_opaque`,
   /**
    * @remarks
    * Used for a block like the sugar cane. Does not allow for
@@ -862,7 +862,7 @@ export enum MinecraftMaterialInstancesUpRenderMethod {
    * the near render and turn only opaque on the far render. Also
    * enables backface culling.
    */
-  AlphaTestSingleSidedToOpaque = `alpha_test_single_sided_to_opaque`
+  alphaTestSingleSidedToOpaque = `alpha_test_single_sided_to_opaque`
 }
 
 
@@ -944,38 +944,38 @@ export enum MinecraftMaterialInstancesWestRenderMethod {
    * Used for a regular block texture without an alpha layer. Does not
    * allow for transparency or translucency
    */
-  Opaque = `opaque`,
+  opaque = `opaque`,
   /**
    * @remarks
    * Used for completely disabling backface culling.
    */
-  DoubleSided = `double_sided`,
+  doubleSided = `double_sided`,
   /**
    * @remarks
    * Used for a block like stained glass. Allows for transparency and
    * translucency (slightly transparent textures).
    */
-  Blend = `blend`,
+  blend = `blend`,
   /**
    * @remarks
    * Used for a block like the monster spawner. Does not allow for
    * translucency, only fully opaque or fully transparent textures. Also
    * disabled backface culling.
    */
-  AlphaTest = `alpha_test`,
+  alphaTest = `alpha_test`,
   /**
    * @remarks
    * Used for a block like the (unstained) glass. Does not allow for
    * translucency, only fully opaque or fully transparent textures. Also
    * enables backface culling.
    */
-  AlphaTestSingleSided = `alpha_test_single_sided`,
+  alphaTestSingleSided = `alpha_test_single_sided`,
   /**
    * @remarks
    * Will blend like stained glass in the near render and turn opaque on
    * the far render.
    */
-  BlendToOpaque = `blend_to_opaque`,
+  blendToOpaque = `blend_to_opaque`,
   /**
    * @remarks
    * Used for a block like the leaves. Does not allow for
@@ -983,7 +983,7 @@ export enum MinecraftMaterialInstancesWestRenderMethod {
    * the near render and turn only opaque on the far render. Also
    * disabled backface culling.
    */
-  AlphaTestToOpaque = `alpha_test_to_opaque`,
+  alphaTestToOpaque = `alpha_test_to_opaque`,
   /**
    * @remarks
    * Used for a block like the sugar cane. Does not allow for
@@ -991,5 +991,5 @@ export enum MinecraftMaterialInstancesWestRenderMethod {
    * the near render and turn only opaque on the far render. Also
    * enables backface culling.
    */
-  AlphaTestSingleSidedToOpaque = `alpha_test_single_sided_to_opaque`
+  alphaTestSingleSidedToOpaque = `alpha_test_single_sided_to_opaque`
 }

@@ -17,7 +17,7 @@ import { ProjectEditPreference, ProjectScriptLanguage } from "../app/IProjectDat
 import DocumentedModuleEditor from "./DocumentedModuleEditor";
 import DocumentedCommandSetEditor from "./DocumentedCommandSetEditor";
 import Utilities from "../core/Utilities";
-import CartoApp, { HostType } from "../app/CartoApp";
+import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
 import TextEditor from "./TextEditor";
 import NpmPackageEditor from "./NpmPackageEditor";
 import BehaviorPackManifestJsonEditor from "./BehaviorPackManifestJsonEditor";
@@ -151,6 +151,8 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
     if (this._activeEditorPersistable !== undefined) {
       await this._activeEditorPersistable.persist();
     }
+
+    return true;
   }
 
   componentDidMount() {
@@ -170,7 +172,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
   }
 
   _onUpdatePreferredTextSize(newTextSize: number) {
-    this.props.carto.preferredTextSize = newTextSize;
+    this.props.creatorTools.preferredTextSize = newTextSize;
   }
 
   _handleNewVariant(ev: SyntheticEvent<HTMLElement, Event>, data: any) {
@@ -270,10 +272,10 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
     if (this.props.activeReference !== null) {
       interior = (
         <GitHubReferenceEditor
-          preferredTextSize={this.props.carto.preferredTextSize}
+          preferredTextSize={this.props.creatorTools.preferredTextSize}
           project={this.props.project}
           readOnly={readOnly}
-          carto={this.props.carto}
+          creatorTools={this.props.creatorTools}
           reference={this.props.activeReference}
           heightOffset={heightOffset}
         />
@@ -296,7 +298,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
         interior = (
           <ProjectMap
             theme={this.props.theme}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             heightOffset={heightOffset}
             project={this.props.project}
             sourceItem={this.props.activeProjectItem}
@@ -331,14 +333,14 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           }
 
           // because electron doesn't work in debug electron due to odd pathing reasons, use a text editor instead
-          if (Utilities.isDebug && CartoApp.hostType === HostType.electronWeb) {
+          if (Utilities.isDebug && CreatorToolsHost.hostType === HostType.electronWeb) {
             interior = (
               <TextEditor
                 theme={this.props.theme}
                 onUpdatePreferredTextSize={this._onUpdatePreferredTextSize}
-                preferredTextSize={this.props.carto.preferredTextSize}
+                preferredTextSize={this.props.creatorTools.preferredTextSize}
                 readOnly={readOnly}
-                carto={this.props.carto}
+                creatorTools={this.props.creatorTools}
                 heightOffset={heightOffset}
                 file={file}
                 setActivePersistable={this._handleNewChildPersistable}
@@ -348,10 +350,10 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
             interior = (
               <JavaScriptEditor
                 role={role}
-                carto={this.props.carto}
+                creatorTools={this.props.creatorTools}
                 theme={this.props.theme}
                 onUpdatePreferredTextSize={this._onUpdatePreferredTextSize}
-                preferredTextSize={this.props.carto.preferredTextSize}
+                preferredTextSize={this.props.creatorTools.preferredTextSize}
                 readOnly={readOnly}
                 project={this.props.project}
                 scriptLanguage={pref}
@@ -363,14 +365,14 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           }
         } else if (file.type === "mcfunction") {
           // because electron doesn't work in debug electron due to odd pathing reasons, use a text editor instead
-          if (Utilities.isDebug && CartoApp.hostType === HostType.electronWeb) {
+          if (Utilities.isDebug && CreatorToolsHost.hostType === HostType.electronWeb) {
             interior = (
               <TextEditor
                 theme={this.props.theme}
                 onUpdatePreferredTextSize={this._onUpdatePreferredTextSize}
-                preferredTextSize={this.props.carto.preferredTextSize}
+                preferredTextSize={this.props.creatorTools.preferredTextSize}
                 readOnly={readOnly}
-                carto={this.props.carto}
+                creatorTools={this.props.creatorTools}
                 heightOffset={heightOffset}
                 file={file}
                 setActivePersistable={this._handleNewChildPersistable}
@@ -380,12 +382,12 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
             interior = (
               <FunctionEditor
                 theme={this.props.theme}
-                carto={this.props.carto}
+                creatorTools={this.props.creatorTools}
                 project={this.props.project}
                 roleId={"itemEditor"}
                 isCommandEditor={false}
                 onUpdatePreferredTextSize={this._onUpdatePreferredTextSize}
-                preferredTextSize={this.props.carto.preferredTextSize}
+                preferredTextSize={this.props.creatorTools.preferredTextSize}
                 readOnly={this.props.readOnly}
                 heightOffset={heightOffset}
                 file={file}
@@ -405,7 +407,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
               readOnly={this.props.readOnly}
               heightOffset={heightOffset}
               visualSeed={this.props.visualSeed}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               projectItem={this.props.activeProjectItem}
               theme={this.props.theme}
               file={file}
@@ -418,7 +420,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
               readOnly={this.props.readOnly}
               heightOffset={heightOffset}
               visualSeed={this.props.visualSeed}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               project={this.props.project}
               theme={this.props.theme}
               file={file}
@@ -429,7 +431,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           interior = (
             <EntityTypeEditor
               project={this.props.project}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               readOnly={this.props.readOnly}
               heightOffset={heightOffset}
               theme={this.props.theme}
@@ -442,7 +444,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           interior = (
             <BlockTypeEditor
               project={this.props.project}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               readOnly={this.props.readOnly}
               heightOffset={heightOffset}
               theme={this.props.theme}
@@ -455,7 +457,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           interior = (
             <ItemTypeEditor
               project={this.props.project}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               readOnly={this.props.readOnly}
               heightOffset={heightOffset}
               theme={this.props.theme}
@@ -467,7 +469,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
         } else if (file.type === "json" && projItem.itemType === ProjectItemType.scriptTypesJson && !showRaw) {
           interior = (
             <DocumentedModuleEditor
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               theme={this.props.theme}
               typesReadOnly={true}
               docsReadOnly={this.props.readOnly}
@@ -538,7 +540,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
             <ItemTypeAttachableEditor
               theme={this.props.theme}
               item={this.props.activeProjectItem}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               heightOffset={heightOffset}
               project={this.props.project}
               file={file}
@@ -550,7 +552,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           interior = (
             <BiomeEditor
               project={this.props.project}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               readOnly={this.props.readOnly}
               heightOffset={heightOffset}
               theme={this.props.theme}
@@ -563,7 +565,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           interior = (
             <BiomeResourceEditor
               project={this.props.project}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               readOnly={this.props.readOnly}
               heightOffset={heightOffset}
               theme={this.props.theme}
@@ -575,7 +577,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
         } else if (file.type === "json" && projItem.itemType === ProjectItemType.commandSetDefinitionJson && !showRaw) {
           interior = (
             <DocumentedCommandSetEditor
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               theme={this.props.theme}
               typesReadOnly={true}
               docsReadOnly={this.props.readOnly}
@@ -593,7 +595,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
         ) {
           interior = (
             <ProjectInfoDisplay
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               theme={this.props.theme}
               heightOffset={heightOffset}
               file={file}
@@ -605,7 +607,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
         } else if (file.type === "json" && projItem.itemType === ProjectItemType.dataForm && !showRaw) {
           interior = (
             <DataFormEditor
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               theme={this.props.theme}
               heightOffset={heightOffset}
               file={file}
@@ -638,9 +640,9 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
             <TextEditor
               theme={this.props.theme}
               onUpdatePreferredTextSize={this._onUpdatePreferredTextSize}
-              preferredTextSize={this.props.carto.preferredTextSize}
+              preferredTextSize={this.props.creatorTools.preferredTextSize}
               readOnly={readOnly}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               heightOffset={heightOffset}
               file={file}
               setActivePersistable={this._handleNewChildPersistable}
@@ -648,14 +650,14 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           );
         } else if (file.type === "json" || file.type === "material") {
           // because monaco doesn't work in debug electron due to odd pathing reasons, use a text editor instead
-          if (Utilities.isDebug && CartoApp.hostType === HostType.electronWeb) {
+          if (Utilities.isDebug && CreatorToolsHost.hostType === HostType.electronWeb) {
             interior = (
               <TextEditor
                 theme={this.props.theme}
                 onUpdatePreferredTextSize={this._onUpdatePreferredTextSize}
-                preferredTextSize={this.props.carto.preferredTextSize}
+                preferredTextSize={this.props.creatorTools.preferredTextSize}
                 readOnly={readOnly}
-                carto={this.props.carto}
+                creatorTools={this.props.creatorTools}
                 heightOffset={heightOffset}
                 file={file}
                 setActivePersistable={this._handleNewChildPersistable}
@@ -675,7 +677,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
                     theme={this.props.theme}
                     project={this.props.project}
                     onUpdatePreferredTextSize={this._onUpdatePreferredTextSize}
-                    preferredTextSize={this.props.carto.preferredTextSize}
+                    preferredTextSize={this.props.creatorTools.preferredTextSize}
                     readOnly={readOnly}
                     item={this.props.activeProjectItem}
                     heightOffset={heightOffset}
@@ -692,7 +694,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
                   theme={this.props.theme}
                   project={this.props.project}
                   onUpdatePreferredTextSize={this._onUpdatePreferredTextSize}
-                  preferredTextSize={this.props.carto.preferredTextSize}
+                  preferredTextSize={this.props.creatorTools.preferredTextSize}
                   readOnly={readOnly}
                   item={this.props.activeProjectItem}
                   heightOffset={heightOffset}

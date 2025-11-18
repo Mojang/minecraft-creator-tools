@@ -141,18 +141,18 @@ export default class DesignManifestDefinition {
     return rmj;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     Log.assert(this.definition !== null, "DMDP");
 
-    if (this.definition) {
-      const pjString = JSON.stringify(this.definition, null, 2);
-
-      this._file.setContent(pjString);
+    if (!this.definition) {
+      return false;
     }
+
+    return this._file.setObjectContentIfSemanticallyDifferent(this.definition);
   }
 
   public ensureDefinition(name: string, description: string) {
@@ -202,9 +202,9 @@ export default class DesignManifestDefinition {
       return;
     }
 
-    this.persist();
-
-    await this._file.saveContent(false);
+    if (this.persist()) {
+      await this._file.saveContent(false);
+    }
   }
 
   async load() {

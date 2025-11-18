@@ -2,10 +2,11 @@
 // Licensed under the MIT License.
 
 export default interface IBlockTypeData {
-  id?: number;
-  name: string;
-  icon?: string;
+  lid?: number;
+  n: string;
+  ic?: string;
   shortId?: string;
   altShortId?: string;
-  mapColor?: string;
+  mc?: string;
+  textureIndex?: number;
 }

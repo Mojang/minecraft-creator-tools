@@ -208,18 +208,18 @@ export default class FeatureDefinition implements IDefinition {
     return fd;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     Log.assert(this._data !== null, "FDP");
 
-    if (this._data) {
-      const bpString = JSON.stringify(this._data, null, 2);
-
-      this._file.setContent(bpString);
+    if (!this._data) {
+      return false;
     }
+
+    return this._file.setObjectContentIfSemanticallyDifferent(this._data);
   }
 
   async load() {

@@ -1,4 +1,4 @@
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
 import Project, { FolderContext } from "../app/Project";
 import ProjectExporter from "../app/ProjectExporter";
@@ -25,6 +25,8 @@ export enum ProjectEditorItemAction {
   viewAsJson,
   viewOnMap,
   download,
+  focus,
+  unfocus,
 }
 
 export enum ProjectItemEditorView {
@@ -109,7 +111,7 @@ export default class ProjectEditorUtilities {
     }
   }
 
-  static getItemMenuItems(projectItem: ProjectItem) {
+  static getItemMenuItems(projectItem: ProjectItem, focusFilterPath: string | undefined) {
     let path = "";
 
     if (projectItem.projectPath !== null && projectItem.projectPath !== undefined) {
@@ -117,6 +119,17 @@ export default class ProjectEditorUtilities {
     }
 
     const itemMenu = [
+      {
+        key: "focusMenu|" + path,
+        content: focusFilterPath === projectItem.projectPath ? "Clear focus" : "Focus",
+        tag: {
+          path: projectItem.projectPath,
+          action:
+            focusFilterPath === projectItem.projectPath
+              ? ProjectEditorItemAction.unfocus
+              : ProjectEditorItemAction.focus,
+        },
+      },
       {
         key: "download|" + path,
         content: "Download",
@@ -182,8 +195,8 @@ export default class ProjectEditorUtilities {
     return true;
   }
 
-  public static async launchFlatWorldWithPacksDownload(carto: Carto, project: Project) {
-    const operId = await carto.notifyOperationStarted("Starting export of flat world with packs.");
+  public static async launchFlatWorldWithPacksDownload(creatorTools: CreatorTools, project: Project) {
+    const operId = await creatorTools.notifyOperationStarted("Starting export of flat world with packs.");
 
     const projName = await project.loc.getTokenValue(project.name);
 
@@ -192,30 +205,30 @@ export default class ProjectEditorUtilities {
     const name = nameCore + " Flat";
     const fileName = nameCore + "-flatpack.mcworld";
 
-    await carto.notifyStatusUpdate("Packing " + fileName);
+    await creatorTools.notifyStatusUpdate("Packing " + fileName);
 
-    const newBytes = await ProjectExporter.generateFlatBetaApisWorldWithPacksZipBytes(carto, project, name);
+    const newBytes = await ProjectExporter.generateFlatBetaApisWorldWithPacksZipBytes(creatorTools, project, name);
 
     if (!newBytes) {
-      await carto.notifyOperationEnded(operId);
+      await creatorTools.notifyOperationEnded(operId);
       return;
     }
 
-    await carto.notifyStatusUpdate("Now downloading " + fileName);
+    await creatorTools.notifyStatusUpdate("Now downloading " + fileName);
 
     if (newBytes !== undefined) {
       saveAs(new Blob([newBytes as BlobPart], { type: "application/octet-stream" }), fileName);
     }
 
-    await carto.notifyOperationEnded(operId, "Done with save " + fileName);
+    await creatorTools.notifyOperationEnded(operId, "Done with save " + fileName);
   }
 
-  public static async launchWorldWithPacksDownload(carto: Carto, project: Project) {
+  public static async launchWorldWithPacksDownload(creatorTools: CreatorTools, project: Project) {
     const name = Utilities.getFileFriendlySummarySeconds(new Date()) + "-" + project.name;
 
     const fileName = name + ".mcworld";
 
-    const mcworld = await ProjectExporter.generateWorldWithPacks(carto, project, project.ensureWorldSettings());
+    const mcworld = await ProjectExporter.generateWorldWithPacks(creatorTools, project, project.ensureWorldSettings());
 
     if (mcworld === undefined) {
       return;
@@ -227,7 +240,7 @@ export default class ProjectEditorUtilities {
       saveAs(new Blob([newBytes as BlobPart], { type: "application/octet-stream" }), fileName);
     }
 
-    await carto.notifyStatusUpdate("Downloading mcworld with packs embedded '" + project.name + "'.");
+    await creatorTools.notifyStatusUpdate("Downloading mcworld with packs embedded '" + project.name + "'.");
   }
 
   static getIntegrateBrowserFileDefaultActionDescription(
@@ -381,18 +394,22 @@ export default class ProjectEditorUtilities {
 
       const contentFile = folder.ensureFile(file.name);
 
-      contentFile.setContent(new Uint8Array(buffer));
-
-      contentFile.saveContent();
+      if (contentFile.setContentIfSemanticallyDifferent(new Uint8Array(buffer))) {
+        await contentFile.saveContent();
+      }
     } else if (extension === "snbt") {
-      const operId = await project.carto.notifyOperationStarted("Saving new SNBT structure file '" + file.name + "'");
+      const operId = await project.creatorTools.notifyOperationStarted(
+        "Saving new SNBT structure file '" + file.name + "'"
+      );
 
       const text = await file.text();
 
       const folder = project.projectFolder.ensureFolder("packs");
       const contentFile = folder.ensureFile(file.name);
-      contentFile.setContent(text);
-      contentFile.saveContent();
+
+      if (contentFile.setContentIfSemanticallyDifferent(text)) {
+        await contentFile.saveContent();
+      }
 
       const relPath = contentFile.getFolderRelativePath(project.projectFolder as IFolder);
 
@@ -408,9 +425,9 @@ export default class ProjectEditorUtilities {
         );
       }
 
-      await project.carto.notifyOperationEnded(operId, "New SNBT structure file '" + file.name + "' added");
+      await project.creatorTools.notifyOperationEnded(operId, "New SNBT structure file '" + file.name + "' added");
     } else if (extension === "mcworld") {
-      const operId = await project.carto.notifyOperationStarted("Saving new MCWorld file '" + file.name + "'");
+      const operId = await project.creatorTools.notifyOperationStarted("Saving new MCWorld file '" + file.name + "'");
 
       const buffer = await file.arrayBuffer();
 
@@ -438,9 +455,9 @@ export default class ProjectEditorUtilities {
         await project.inferProjectItemsFromZipFile(relPath, contentFile, false);
       }
 
-      await project.carto.notifyOperationEnded(operId, "New MCWorld file '" + file.name + "' added");
+      await project.creatorTools.notifyOperationEnded(operId, "New MCWorld file '" + file.name + "' added");
     } else if (extension === "mcproject") {
-      const operId = await project.carto.notifyOperationStarted("Saving new MCProject file '" + file.name + "'");
+      const operId = await project.creatorTools.notifyOperationStarted("Saving new MCProject file '" + file.name + "'");
 
       const buffer = await file.arrayBuffer();
 
@@ -468,9 +485,11 @@ export default class ProjectEditorUtilities {
         await project.inferProjectItemsFromZipFile(relPath, contentFile, false);
       }
 
-      await project.carto.notifyOperationEnded(operId, "New MCProject file '" + file.name + "' added");
+      await project.creatorTools.notifyOperationEnded(operId, "New MCProject file '" + file.name + "' added");
     } else if (extension === "mctemplate") {
-      const operId = await project.carto.notifyOperationStarted("Saving new MCTemplate file '" + file.name + "'");
+      const operId = await project.creatorTools.notifyOperationStarted(
+        "Saving new MCTemplate file '" + file.name + "'"
+      );
 
       const buffer = await file.arrayBuffer();
 
@@ -498,9 +517,9 @@ export default class ProjectEditorUtilities {
         await project.inferProjectItemsFromZipFile(relPath, contentFile, false);
       }
 
-      await project.carto.notifyOperationEnded(operId, "New MCTemplate file '" + file.name + "' added");
+      await project.creatorTools.notifyOperationEnded(operId, "New MCTemplate file '" + file.name + "' added");
     } else if (extension === "mcaddon") {
-      const operId = await project.carto.notifyOperationStarted("Saving new MCAddon file '" + file.name + "'");
+      const operId = await project.creatorTools.notifyOperationStarted("Saving new MCAddon file '" + file.name + "'");
 
       const buffer = await file.arrayBuffer();
 
@@ -528,9 +547,9 @@ export default class ProjectEditorUtilities {
         await project.inferProjectItemsFromZipFile(relPath, contentFile, false);
       }
 
-      await project.carto.notifyOperationEnded(operId, "New MCAddon file '" + file.name + "' added");
+      await project.creatorTools.notifyOperationEnded(operId, "New MCAddon file '" + file.name + "' added");
     } else if (extension === "zip") {
-      const operId = await project.carto.notifyOperationStarted("Saving new zip file '" + file.name + "'");
+      const operId = await project.creatorTools.notifyOperationStarted("Saving new zip file '" + file.name + "'");
 
       const buffer = await file.arrayBuffer();
 
@@ -558,9 +577,9 @@ export default class ProjectEditorUtilities {
         await project.inferProjectItemsFromZipFile(relPath, contentFile, false);
       }
 
-      await project.carto.notifyOperationEnded(operId, "New zip file '" + file.name + "' added");
+      await project.creatorTools.notifyOperationEnded(operId, "New zip file '" + file.name + "' added");
     } else if (extension === "mcpack") {
-      const operId = await project.carto.notifyOperationStarted("Saving new MCPack file '" + file.name + "'");
+      const operId = await project.creatorTools.notifyOperationStarted("Saving new MCPack file '" + file.name + "'");
 
       const buffer = await file.arrayBuffer();
 
@@ -588,9 +607,9 @@ export default class ProjectEditorUtilities {
         await project.inferProjectItemsFromZipFile(relPath, contentFile, false);
       }
 
-      await project.carto.notifyOperationEnded(operId, "New zip file '" + file.name + "' added");
+      await project.creatorTools.notifyOperationEnded(operId, "New zip file '" + file.name + "' added");
     } else if (extension === "mcstructure") {
-      const operId = await project.carto.notifyOperationStarted("Saving new structure file '" + file.name + "'");
+      const operId = await project.creatorTools.notifyOperationStarted("Saving new structure file '" + file.name + "'");
 
       const buffer = await file.arrayBuffer();
 
@@ -616,9 +635,9 @@ export default class ProjectEditorUtilities {
         );
       }
 
-      await project.carto.notifyOperationEnded(operId, "New structure file '" + file.name + "' added");
+      await project.creatorTools.notifyOperationEnded(operId, "New structure file '" + file.name + "' added");
     } else if (extension === "mp3" || extension === "ogg" || extension === "flac" || extension === "wav") {
-      const operId = await project.carto.notifyOperationStarted("Saving new audio file '" + file.name + "'");
+      const operId = await project.creatorTools.notifyOperationStarted("Saving new audio file '" + file.name + "'");
 
       const buffer = await file.arrayBuffer();
 
@@ -646,9 +665,9 @@ export default class ProjectEditorUtilities {
         await MinecraftDefinitions.ensureFoundationalDependencies(item);
       }
 
-      await project.carto.notifyOperationEnded(operId, "New audio file '" + file.name + "' added");
+      await project.creatorTools.notifyOperationEnded(operId, "New audio file '" + file.name + "' added");
     } else if (extension === "json") {
-      const operId = await project.carto.notifyOperationStarted("Saving new JSON file '" + file.name + "'");
+      const operId = await project.creatorTools.notifyOperationStarted("Saving new JSON file '" + file.name + "'");
 
       const jsonContentStr = await file.text();
 
@@ -660,9 +679,9 @@ export default class ProjectEditorUtilities {
         description = " as " + ProjectItemUtilities.getDescriptionForType(item.itemType) + " to " + item.projectPath;
       }
 
-      await project.carto.notifyOperationEnded(operId, "New JSON file '" + file.name + "' added" + description);
+      await project.creatorTools.notifyOperationEnded(operId, "New JSON file '" + file.name + "' added" + description);
     } else if (extension === "bbmodel") {
-      const operId = await project.carto.notifyOperationStarted("Integrating bbmodel file '" + file.name + "'");
+      const operId = await project.creatorTools.notifyOperationStarted("Integrating bbmodel file '" + file.name + "'");
 
       const jsonContentStr = await file.text();
 
@@ -670,16 +689,20 @@ export default class ProjectEditorUtilities {
 
       bbm.integrateIntoProject(project);
 
-      await project.carto.notifyOperationEnded(operId, "Integrated bbmodel '" + file.name + "'.");
+      await project.creatorTools.notifyOperationEnded(operId, "Integrated bbmodel '" + file.name + "'.");
     }
   }
 
-  public static async launchEditorWorldWithPacksDownload(carto: Carto, project: Project) {
+  public static async launchEditorWorldWithPacksDownload(creatorTools: CreatorTools, project: Project) {
     const name = Utilities.getFileFriendlySummarySeconds(new Date()) + "-" + project.name;
 
     const fileName = name + ".mcproject";
 
-    const mcworld = await ProjectExporter.generateWorldWithPacks(carto, project, project.ensureEditorWorldSettings());
+    const mcworld = await ProjectExporter.generateWorldWithPacks(
+      creatorTools,
+      project,
+      project.ensureEditorWorldSettings()
+    );
 
     if (mcworld === undefined) {
       return;
@@ -688,13 +711,13 @@ export default class ProjectEditorUtilities {
     const newBytes = await mcworld.getBytes();
 
     if (newBytes !== undefined) {
-      saveAs(new Blob([newBytes], { type: "application/octet-stream" }), fileName);
+      saveAs(new Blob([newBytes as any], { type: "application/octet-stream" }), fileName);
     }
 
-    await carto.notifyStatusUpdate("Downloading mcworld with packs embedded '" + project.name + "'.");
+    await creatorTools.notifyStatusUpdate("Downloading mcworld with packs embedded '" + project.name + "'.");
   }
 
-  public static async launchLocalExport(carto: Carto, project: Project) {
+  public static async launchLocalExport(creatorTools: CreatorTools, project: Project) {
     if (project === null || project.projectFolder === null) {
       return;
     }
@@ -706,12 +729,15 @@ export default class ProjectEditorUtilities {
       if (result) {
         const storage = new FileSystemStorage(result);
 
-        const operId = await carto.notifyOperationStarted("Exporting project to  '" + result.name + "'");
+        const operId = await creatorTools.notifyOperationStarted("Exporting project to  '" + result.name + "'");
 
         const safeMessage = await (storage.rootFolder as FileSystemFolder).getFirstUnsafeError();
 
         if (safeMessage) {
-          await carto.notifyOperationEnded(operId, "Could not export to a folder on your device: " + safeMessage);
+          await creatorTools.notifyOperationEnded(
+            operId,
+            "Could not export to a folder on your device: " + safeMessage
+          );
         } else {
           await StorageUtilities.syncFolderTo(
             project.projectFolder,
@@ -722,13 +748,13 @@ export default class ProjectEditorUtilities {
             [],
             undefined,
             async (message: string) => {
-              await carto.notifyStatusUpdate(message);
+              await creatorTools.notifyStatusUpdate(message);
             },
             true
           );
 
           await storage.rootFolder.saveAll();
-          await carto.notifyOperationEnded(operId, "Export completed.");
+          await creatorTools.notifyOperationEnded(operId, "Export completed.");
         }
       }
     } catch (e) {
@@ -736,13 +762,13 @@ export default class ProjectEditorUtilities {
     }
   }
 
-  public static async launchZipExport(carto: Carto, project: Project) {
+  public static async launchZipExport(creatorTools: CreatorTools, project: Project) {
     if (project == null) {
       return;
     }
     const projName = await project.loc.getTokenValue(project.name);
 
-    const operId = await carto.notifyOperationStarted("Exporting '" + projName + "' as zip.");
+    const operId = await creatorTools.notifyOperationStarted("Exporting '" + projName + "' as zip.");
 
     const zipStorage = new ZipStorage();
 
@@ -754,7 +780,7 @@ export default class ProjectEditorUtilities {
 
     const zipBinary = await zipStorage.generateBlobAsync();
 
-    await carto.notifyOperationEnded(operId, "Export zip of '" + projName + "' created; downloading.");
+    await creatorTools.notifyOperationEnded(operId, "Export zip of '" + projName + "' created; downloading.");
 
     saveAs(zipBinary, projName + ".zip");
   }

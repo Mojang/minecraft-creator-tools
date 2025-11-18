@@ -22,7 +22,7 @@ import LootTableEditor from "./LootTableEditor";
 import EntityTypeResourceEditor from "./EntityTypeResourceEditor";
 import EntityTypePropertyEditor from "./EntityTypePropertyEditor";
 import { faSquarePlus } from "@fortawesome/free-regular-svg-icons";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import Project from "../app/Project";
 import IEventWrapper from "../minecraft/IEventWrapper";
 import EntityTypeDiagramEditor from "./EntityTypeDiagramEditor";
@@ -55,7 +55,7 @@ interface IEntityTypeEditorProps extends IFileProps {
   readOnly: boolean;
   item: ProjectItem;
   project: Project;
-  carto: Carto;
+  creatorTools: CreatorTools;
   theme: ThemeInput<any>;
 }
 
@@ -164,17 +164,20 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     });
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
       if (file.manager) {
         const et = file.manager as EntityTypeDefinition;
 
-        et.persist();
+        return et.persist();
       }
     }
+
+    return false;
   }
+
   _setDiagramMode() {
     this._setMode(EntityTypeEditorMode.diagram);
   }
@@ -500,7 +503,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
             }}
           >
             <EntityTypeDiagramEditor
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               project={this.props.project}
               heightOffset={this.props.heightOffset + DIAGRAM_MODE_INTERIOR_HEIGHT_OFFSET}
               theme={this.props.theme}
@@ -568,7 +571,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
             <EntityTypeComponentSetEditor
               componentSetItem={selItem}
               entityTypeItem={entityTypeDefinition}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               project={this.props.project}
               theme={this.props.theme}
               title={selItem.id}
@@ -639,7 +642,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
           itemInterior = (
             <div>
               <EventActionDesign
-                carto={this.props.carto}
+                creatorTools={this.props.creatorTools}
                 displayTriggers={true}
                 readOnly={this.props.readOnly}
                 displayAddRemoveGroups={true}

@@ -1,4 +1,5 @@
 export default interface IBlocksMetadata {
+  block_properties: IBlocksMetadataBlockProperty[];
   data_items: IBlocksMetadataDataItem[];
   minecraft_version: string;
   module_type: string;
@@ -6,23 +7,23 @@ export default interface IBlocksMetadata {
   vanilla_data_type: string;
 }
 
-export interface IBlocksMetadataDataItem {
-  name: string;
-  properties: IBlocksMetadataDataItemProperty[];
-  raw_id: number;
-  serialization_id: string;
-}
-
-export interface IBlocksMetadataDataItemProperty {
-  name: string;
-}
-
 export interface IBlocksMetadataBlockProperty {
   name: string;
-  type: string;
+  type: "bool" | "int" | "string";
   values: IBlocksMetadataBLockPropertyValue[];
 }
 
 export interface IBlocksMetadataBLockPropertyValue {
-  value: string;
+  value: string | number | boolean;
+}
+
+export interface IBlocksMetadataDataItem {
+  name: string;
+  properties: IBlocksMetadataDataItemPropertyPointer[];
+  raw_id: number;
+  serialization_id: string;
+}
+
+export interface IBlocksMetadataDataItemPropertyPointer {
+  name: string;
 }

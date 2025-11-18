@@ -40,6 +40,13 @@ Hoglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
 }
 
 
+Nautilus - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/nautilus.json
+
+"minecraft:knockback_resistance": {
+  "value": 0.3
+}
+
+
 Ravager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/ravager.json
 
 "minecraft:knockback_resistance": {

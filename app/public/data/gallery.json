@@ -4,6 +4,7 @@
       "title": "Add-On Starter",
       "description": "An empty starter for add-on projects.",
       "gitHubOwner": "microsoft",
+      "logoImage": "/addon_starter/misc/start.png",
       "gitHubRepoName": "minecraft-samples",
       "gitHubFolder": "/addon_starter/start",
       "id": "addonStarter",
@@ -11,55 +12,29 @@
     },
     {
       "title": "TypeScript Starter",
-      "description": "An empty starter project focused on writing code with Typescript.",
+      "description": "An empty starter project focused on writing code with TypeScript.",
       "gitHubOwner": "microsoft",
+      "logoImage": "/ts-starter-complete-cotta/misc/cotta.png",
       "gitHubRepoName": "minecraft-scripting-samples",
       "gitHubFolder": "/ts-starter",
       "id": "tsStarter",
       "type": 0
     },
     {
-      "title": "Add-On Full",
-      "description": "A more-full example add-on project with script and models for entities.",
+      "title": "Full Add-On",
+      "description": "A full example add-on project that comes with sample mobs.",
       "gitHubOwner": "microsoft",
+      "logoImage": "/addon_starter/misc/bices.png",
       "gitHubRepoName": "minecraft-samples",
       "gitHubFolder": "/addon_starter/complete",
       "id": "addonFull",
       "type": 0
     },
     {
-      "title": "Script Box",
-      "description": "A simple project for experimenting with script.",
+      "title": "Editor Add-on",
+      "description": "A starter Editor add-on that demonstrates editor techniques.",
       "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
-      "id": "scriptBox",
-      "type": 0
-    },
-    {
-      "title": "Vibrant Visuals",
-      "description": "A simple resource pack for experimenting with Vibrant Visuals.",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-samples",
-      "gitHubFolder": "/deferred_lighting_starter",
-      "tags": ["preview"],
-      "id": "dlStarter",
-      "type": 0
-    },
-    {
-      "title": "Editor Script Box",
-      "description": "A basic starter project for editing Editor add-on projects.",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/editor-script-box",
-      "tags": ["editor"],
-      "id": "editor-scriptBox",
-      "type": 0
-    },
-    {
-      "title": "Editor Basics",
-      "description": "A more extensive Editor add-on that demonstrates editor techniques.",
-      "gitHubOwner": "microsoft",
+      "logoImage": "/editor-basics/misc/basics.png",
       "gitHubRepoName": "minecraft-scripting-samples",
       "gitHubFolder": "/editor-basics",
       "id": "editor-basics",
@@ -67,9 +42,21 @@
       "type": 0
     },
     {
-      "title": "Cotta Game with TypeScript",
-      "description": "A simple sample game written with Typescript.",
+      "title": "Vibrant Visuals",
+      "description": "A simple resource pack for experimenting with Vibrant Visuals.",
       "gitHubOwner": "microsoft",
+      "logoImage": "/addon_starter/misc/start.png",
+      "gitHubRepoName": "minecraft-samples",
+      "gitHubFolder": "/deferred_lighting_starter",
+      "tags": ["preview"],
+      "id": "dlStarter",
+      "type": 0
+    },
+    {
+      "title": "Cotta Game with TypeScript",
+      "description": "A simple sample game written with TypeScript.",
+      "gitHubOwner": "microsoft",
+      "logoImage": "/ts-starter-complete-cotta/misc/cotta.png",
       "gitHubRepoName": "minecraft-scripting-samples",
       "gitHubFolder": "/ts-starter-complete-cotta",
       "id": "cottaGame",
@@ -79,9 +66,42 @@
       "title": "Custom Components",
       "description": "An example of block and item custom components.",
       "gitHubOwner": "microsoft",
+      "logoImage": "/custom-components/misc/cucomp.png",
       "gitHubRepoName": "minecraft-scripting-samples",
       "gitHubFolder": "/custom-components",
       "id": "registeringExampleCustomComponent",
+      "type": 0
+    },
+    {
+      "title": "Editor Full Add-on",
+      "description": "A more full editor add-on that demonstrates various editor techniques and integration points.",
+      "logoImage": "/editor-multi/misc/tree.png",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/editor-multi",
+      "id": "editor-multi",
+      "tags": ["editor"],
+      "type": 0
+    },
+    {
+      "title": "Script Box",
+      "description": "A simple project for experimenting with script.",
+      "gitHubOwner": "microsoft",
+      "logoImage": "/script-box/misc/scriptbox.png",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "id": "scriptBox",
+      "type": 0
+    },
+    {
+      "title": "Editor Script Box",
+      "description": "A basic starter project for editing Editor add-on projects.",
+      "gitHubOwner": "microsoft",
+      "logoImage": "/editor-basics/misc/basics.png",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/editor-script-box",
+      "tags": ["editor"],
+      "id": "editor-scriptBox",
       "type": 0
     },
     {
@@ -90,7 +110,7 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-samples",
       "gitHubFolder": "/starter_blocks",
-      "logoImage": "resource_packs/starter_blocks/textures/blocks/simple_cube.png",
+      "logoImage": "/starter_blocks/resource_packs/starter_blocks/textures/blocks/simple_cube.png",
       "id": "basicUnitCubeBlock",
       "nameReplacers": ["simple_cube"],
       "fileList": [
@@ -108,8 +128,8 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-samples",
       "gitHubFolder": "/starter_blocks",
-      "logoImage": "resource_packs/starter_blocks/textures/blocks/crate.png",
-      "logoLocation": { "x": 6, "y": 16, "width": 16, "height": 16, "imageWidth": 64 },
+      "logoImage": "/starter_blocks/resource_packs/starter_blocks/textures/blocks/crate.png",
+      "logoLocation": { "x": 6, "y": 16, "width": 16, "height": 16, "imageWidth": 64, "imageHeight": 32 },
       "id": "crateBlock",
       "nameReplacers": ["crate"],
       "fileList": [
@@ -128,7 +148,7 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-samples",
       "gitHubFolder": "/custom_blocks",
-      "logoImage": "resource_packs/custom_blocks/textures/blocks/die_1.png",
+      "logoImage": "/custom_blocks/resource_packs/custom_blocks/textures/blocks/die_1.png",
       "id": "basicDieBlock",
       "nameReplacers": ["die"],
       "creationData": {
@@ -188,8 +208,8 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-samples",
       "gitHubFolder": "/custom_blocks",
-      "logoImage": "resource_packs/custom_blocks/textures/blocks/california_roll.png",
-      "logoLocation": { "x": 6, "y": 6, "width": 12, "height": 12, "imageWidth": 36 },
+      "logoImage": "/custom_blocks/resource_packs/custom_blocks/textures/blocks/california_roll.png",
+      "logoLocation": { "x": 6, "y": 6, "width": 12, "height": 12, "imageWidth": 36, "imageHeight": 18 },
       "id": "sushiRollBlock",
       "nameReplacers": ["sushi", "salmon_roll"],
       "fileList": [
@@ -209,8 +229,8 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-samples",
       "gitHubFolder": "/custom_blocks",
-      "logoImage": "resource_packs/custom_blocks/textures/blocks/bubble_fish_orange.png",
-      "logoLocation": { "x": 0, "y": 16, "width": 16, "height": 16, "imageWidth": 64 },
+      "logoImage": "/custom_blocks/resource_packs/custom_blocks/textures/blocks/bubble_fish_orange.png",
+      "logoLocation": { "x": 0, "y": 16, "width": 16, "height": 16, "imageWidth": 64, "imageHeight": 64 },
       "fileList": [
         "/behavior_packs/custom_blocks/blocks/blue_bubble_fish.json",
         "/resource_packs/custom_blocks/blocks.json",
@@ -231,7 +251,7 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-samples",
       "gitHubFolder": "/starter_items",
-      "logoImage": "resource_packs/starter_items/textures/items/hard_biscuit.png",
+      "logoImage": "/starter_items/resource_packs/starter_items/textures/items/hard_biscuit.png",
       "id": "hardBiscuit",
       "fileList": [
         "/behavior_packs/starter_items/items/hard_biscuit.json",
@@ -249,7 +269,7 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-samples",
       "gitHubFolder": "/starter_items",
-      "logoImage": "resource_packs/starter_items/textures/items/pear.png",
+      "logoImage": "/starter_items/resource_packs/starter_items/textures/items/pear.png",
       "id": "pear",
       "fileList": [
         "/behavior_packs/starter_items/items/pear.json",
@@ -267,7 +287,7 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-samples",
       "gitHubFolder": "/starter_items",
-      "logoImage": "resource_packs/starter_items/textures/items/elixir.png",
+      "logoImage": "/starter_items/resource_packs/starter_items/textures/items/elixir.png",
       "id": "elixir",
       "fileList": [
         "/behavior_packs/starter_items/items/elixir.json",
@@ -286,7 +306,7 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-samples",
       "gitHubFolder": "/starter_items",
-      "logoImage": "resource_packs/starter_items/textures/items/rod.png",
+      "logoImage": "/starter_items/resource_packs/starter_items/textures/items/rod.png",
       "id": "rod",
       "fileList": [
         "/behavior_packs/starter_items/items/rod.json",
@@ -304,7 +324,7 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-samples",
       "gitHubFolder": "/starter_items",
-      "logoImage": "resource_packs/starter_items/textures/items/key.png",
+      "logoImage": "/starter_items/resource_packs/starter_items/textures/items/key.png",
       "id": "key",
       "fileList": [
         "/behavior_packs/starter_items/items/key.json",
@@ -322,7 +342,7 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-samples",
       "gitHubFolder": "/custom_items",
-      "logoImage": "resource_packs/custom_item/textures/items/my_sword.png",
+      "logoImage": "/custom_items/resource_packs/custom_item/textures/items/my_sword.png",
       "id": "customSword",
       "fileList": [
         "/behavior_packs/custom_item/items/my_sword.json",
@@ -334,12 +354,12 @@
       "type": 7
     },
     {
-      "title": "Custom wrench",
+      "title": "Custom Wrench",
       "description": "A custom wrench with a custom geometry.",
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-samples",
       "gitHubFolder": "/custom_items",
-      "logoImage": "resource_packs/custom_item/textures/items/wrench_ico.png",
+      "logoImage": "/custom_items/resource_packs/custom_item/textures/items/wrench_ico.png",
       "id": "wrench",
       "fileList": [
         "/behavior_packs/custom_item/items/wrench.json",
@@ -373,7 +393,7 @@
     {
       "title": "Give player equipment",
       "topics": [
-        "EntityEquippableComponent.setEquipment",
+        "EntityEquippableComponent",
         "World.getAllPlayers",
         "Dimension.spawnEntity",
         "MinecraftItemTypes",
@@ -568,7 +588,7 @@
       "topics": ["Entity.addEffect", "Dimension.spawnEntity", "MinecraftEntityTypes", "Entity.isSneaking"],
       "sampleSet": "server",
       "localLogo": "entity/wolf/wolf.png",
-      "logoLocation": { "x": 4, "y": 4, "width": 6, "height": 6 },
+      "logoLocation": { "x": 4, "y": 4, "width": 6, "height": 6, "imageWidth": 64, "imageHeight": 32 },
       "id": "quickFoxLazyDog",
       "type": 3
     },
@@ -754,7 +774,7 @@
     {
       "title": "Give player elytra",
       "topics": [
-        "EntityEquippableComponent.setEquipment",
+        "EntityEquippableComponent",
         "EquipmentSlot",
         "Entity.getComponent",
         "ItemStack",
@@ -832,7 +852,7 @@
       "topics": ["Dimensions.spawnParticle", "MolangVariableMap.setColorRGB"],
       "sampleSet": "server",
       "localLogo": "particle/particles.png",
-      "logoLocation": { "x": 56, "y": 0, "width": 8, "height": 8, "imageWidth": 128 },
+      "logoLocation": { "x": 56, "y": 0, "width": 8, "height": 8, "imageWidth": 128, "imageHeight": 128 },
       "id": "spawnParticle",
       "codeLineStart": 8,
       "type": 3
@@ -1128,7 +1148,7 @@
       "localLogo": "entity/allay/allay.png",
       "id": "allay",
       "type": 4,
-      "logoLocation": { "x": 5, "y": 5, "width": 5, "height": 5, "imageWidth": 32 },
+      "logoLocation": { "x": 5, "y": 5, "width": 5, "height": 5, "imageWidth": 32, "imageHeight": 32 },
       "fileList": [
         "<BPE>allay",
         "<RPE>allay",
@@ -1147,7 +1167,7 @@
       "localLogo": "entity/axolotl/axolotl_cyan.png",
       "id": "axolotl",
       "type": 4,
-      "logoLocation": { "x": 5, "y": 3, "width": 8, "height": 8, "imageWidth": 64 },
+      "logoLocation": { "x": 5, "y": 3, "width": 8, "height": 8, "imageWidth": 64, "imageHeight": 64 },
       "fileList": [
         "<BPE>axolotl",
         "<BPSR>axolotl",
@@ -1170,7 +1190,7 @@
       "id": "cat",
       "type": 4,
       "localLogo": "entity/cat/calico.png",
-      "logoLocation": { "x": 5, "y": 3, "width": 5, "height": 6, "imageWidth": 64 },
+      "logoLocation": { "x": 5, "y": 3, "width": 5, "height": 6, "imageWidth": 64, "imageHeight": 32 },
       "fileList": [
         "<BPE>cat",
         "<BPLE>cat",
@@ -1218,7 +1238,7 @@
       "id": "cow",
       "type": 4,
       "localLogo": "entity/cow/cow.png",
-      "logoLocation": { "x": 6, "y": 6, "width": 8, "height": 8, "imageWidth": 64 },
+      "logoLocation": { "x": 6, "y": 6, "width": 8, "height": 8, "imageWidth": 64, "imageHeight": 32 },
       "fileList": [
         "<BPE>cow",
         "<BPLE>cow",
@@ -1247,7 +1267,7 @@
       "id": "creeper",
       "type": 4,
       "localLogo": "entity/creeper/creeper.png",
-      "logoLocation": { "x": 8, "y": 8, "width": 8, "height": 8, "imageWidth": 64 },
+      "logoLocation": { "x": 8, "y": 8, "width": 8, "height": 8, "imageWidth": 64, "imageHeight": 32 },
       "fileList": [
         "<BPE>creeper",
         "<BPLE>creeper",
@@ -1289,7 +1309,7 @@
       "localLogo": "entity/rabbit/brown.png",
       "id": "rabbit",
       "type": 4,
-      "logoLocation": { "x": 37, "y": 3, "width": 5, "height": 5, "imageWidth": 64 },
+      "logoLocation": { "x": 37, "y": 3, "width": 5, "height": 5, "imageWidth": 64, "imageHeight": 32 },
       "fileList": [
         "<BPE>rabbit",
         "<BPLE>rabbit",
@@ -1317,7 +1337,7 @@
       "id": "pig",
       "type": 4,
       "nameReplacers": ["pig_v3", "pig.v3", "pig"],
-      "logoLocation": { "x": 8, "y": 8, "width": 8, "height": 8, "imageWidth": 64 },
+      "logoLocation": { "x": 8, "y": 8, "width": 8, "height": 8, "imageWidth": 64, "imageHeight": 32 },
       "fileList": [
         "<BPE>pig",
         "<BPLE>pig",
@@ -1350,7 +1370,7 @@
       "gitHubRepoName": "bedrock-samples",
       "id": "sheep",
       "type": 4,
-      "logoLocation": { "x": 28, "y": 46, "width": 8, "height": 8, "imageWidth": 64 },
+      "logoLocation": { "x": 28, "y": 46, "width": 8, "height": 8, "imageWidth": 64, "imageHeight": 32 },
       "fileList": [
         "<BPE>sheep",
         "<BPLE>sheep",
@@ -1371,7 +1391,7 @@
       "localLogo": "entity/skeleton/skeleton.png",
       "id": "skeleton",
       "type": 4,
-      "logoLocation": { "x": 8, "y": 8, "width": 8, "height": 8, "imageWidth": 64 },
+      "logoLocation": { "x": 8, "y": 8, "width": 8, "height": 8, "imageWidth": 64, "imageHeight": 32 },
       "fileList": [
         "<BPE>skeleton",
         "<BPLE>skeleton",
@@ -1395,7 +1415,7 @@
       "id": "wolf",
       "type": 4,
       "localLogo": "entity/wolf/wolf.png",
-      "logoLocation": { "x": 4, "y": 4, "width": 6, "height": 6, "imageWidth": 64 },
+      "logoLocation": { "x": 4, "y": 4, "width": 6, "height": 6, "imageWidth": 64, "imageHeight": 32 },
       "fileList": [
         "<BPE>wolf",
         "<BPLE>wolf",
@@ -1449,7 +1469,7 @@
       "localLogo": "entity/zombie/zombie.png",
       "id": "zombie",
       "type": 4,
-      "logoLocation": { "x": 8, "y": 8, "width": 8, "height": 8, "imageWidth": 64 },
+      "logoLocation": { "x": 8, "y": 8, "width": 8, "height": 8, "imageWidth": 64, "imageHeight": 32 },
       "fileList": [
         "<BPE>zombie",
         "<BPLE>zombie",
@@ -1542,7 +1562,7 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-gametests",
       "gitHubFolder": "/starterTestsTutorial",
-      "logoImage": "behavior_packs/starterTestsTutorial/pack_icon.png",
+      "logoImage": "/starterTestsTutorial/behavior_packs/starterTestsTutorial/pack_icon.png",
       "id": "helloWorldGameTest",
       "type": 0
     },
@@ -1552,7 +1572,7 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-gametests",
       "gitHubFolder": "/js-gametests",
-      "logoImage": "behavior_packs/JsGameTests/pack_icon.png",
+      "logoImage": "/js-gametests/behavior_packs/JsGameTests/pack_icon.png",
       "id": "mobGameTest",
       "type": 0
     },

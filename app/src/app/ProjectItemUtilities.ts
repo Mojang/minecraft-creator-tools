@@ -131,6 +131,7 @@ export const ProjectItemSortOrder = [
   ProjectItemType.worldFolder,
   ProjectItemType.worldTemplateManifestJson,
   ProjectItemType.levelDat,
+  ProjectItemType.levelDatOld,
   ProjectItemType.behaviorPackListJson,
   ProjectItemType.resourcePackListJson,
   ProjectItemType.behaviorPackHistoryListJson,
@@ -165,6 +166,7 @@ export const ProjectItemSortOrder = [
   ProjectItemType.vsCodeSettingsJson,
   ProjectItemType.vsCodeExtensionsJson,
   ProjectItemType.justConfigTs,
+  ProjectItemType.jsMap,
   ProjectItemType.esLintConfigMjs,
   ProjectItemType.env,
   ProjectItemType.prettierRcJson,
@@ -182,6 +184,7 @@ export const ProjectItemSortOrder = [
   ProjectItemType.jsconfigJson,
   ProjectItemType.docfxJson,
   ProjectItemType.jsdocJson,
+  ProjectItemType.markdownDocumentation,
   ProjectItemType.documentedTypeFolder,
   ProjectItemType.documentedCommandFolder,
   ProjectItemType.contentIndexJson,
@@ -488,6 +491,24 @@ export default class ProjectItemUtilities {
     return { itemType: ProjectItemType.unknown };
   }
 
+  static isDescendentOfPath(projectItem: ProjectItem, projectPath: string) {
+    if (projectItem.projectPath === projectPath) {
+      return true;
+    }
+
+    if (!projectItem.parentItems) {
+      return false;
+    }
+
+    for (const relationship of projectItem.parentItems) {
+      if (this.isDescendentOfPath(relationship.parentItem, projectPath)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   static getSortOrder(itemType: ProjectItemType): number {
     for (let i = 0; i < ProjectItemSortOrder.length; i++) {
       if (ProjectItemSortOrder[i] === itemType) {
@@ -603,6 +624,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.prettierRcJson:
       case ProjectItemType.tsconfigJson:
       case ProjectItemType.docfxJson:
+      case ProjectItemType.jsMap:
       case ProjectItemType.jsdocJson:
       case ProjectItemType.vsCodeExtensionsJson:
       case ProjectItemType.vsCodeLaunchJson:
@@ -1095,6 +1117,12 @@ export default class ProjectItemUtilities {
         return "NPM package lock definition";
       case ProjectItemType.env:
         return "Environment File";
+      case ProjectItemType.levelDatOld:
+        return "Level Data (old)";
+      case ProjectItemType.levelDat:
+        return "Level Data";
+      case ProjectItemType.jsMap:
+        return "JavaScript Map";
       case ProjectItemType.esLintConfigMjs:
         return "ESLint config";
       case ProjectItemType.justConfigTs:

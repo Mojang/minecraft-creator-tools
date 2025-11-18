@@ -11,11 +11,11 @@ export enum BlockShape {
 
 export default interface IBlockBaseTypeData {
   id?: number;
-  name: string;
+  n: string;
   shortId?: string;
   altShortId?: string;
-  mapColor?: string;
-  icon?: string;
+  mc?: string;
+  ic?: string;
   abstract?: boolean;
   isOpaque?: boolean;
   shape?: BlockShape;

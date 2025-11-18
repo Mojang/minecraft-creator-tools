@@ -3,7 +3,7 @@
 
 import FileBase from "./FileBase";
 import FileSystemFolder from "./FileSystemFolder";
-import IFile from "./IFile";
+import IFile, { FileUpdateType } from "./IFile";
 import FileSystemStorage from "./FileSystemStorage";
 import StorageUtilities, { EncodingType } from "./StorageUtilities";
 import Log from "../core/Log";
@@ -11,7 +11,7 @@ import Log from "../core/Log";
 export default class FileSystemFile extends FileBase implements IFile {
   private _name: string;
   private _parentFolder: FileSystemFolder;
-  private _lastLoadedOrSavedPath?: string;
+  private _localPersistDateTime?: Date;
 
   lastSavedSize: number;
   private _handle?: FileSystemFileHandle;
@@ -165,6 +165,20 @@ export default class FileSystemFile extends FileBase implements IFile {
     return true;
   }
 
+  async scanForChanges() {
+    if (this._localPersistDateTime) {
+      const handle = await this.getHandle();
+
+      if (handle) {
+        const file = await handle.getFile();
+
+        if (file && this._localPersistDateTime && file.lastModified > this._localPersistDateTime.getTime()) {
+          await this.reloadAfterExternalUpdate();
+        }
+      }
+    }
+  }
+
   async loadContent(force?: boolean): Promise<Date> {
     if (force || !this.lastLoadedOrSaved) {
       const handle = await this.getHandle();
@@ -221,12 +235,13 @@ export default class FileSystemFile extends FileBase implements IFile {
               offset += byteArray.length;
             }
 
-            this._lastLoadedOrSavedPath = this.fullPath;
             this._content = mergedArray;
           }
         } else if (encoding === EncodingType.Utf8String) {
           this._content = await file.text();
         }
+
+        this._localPersistDateTime = new Date(file.lastModified);
       } else {
         this._content = null;
       }
@@ -237,20 +252,25 @@ export default class FileSystemFile extends FileBase implements IFile {
     return this.lastLoadedOrSaved;
   }
 
-  setContent(newContent: string | Uint8Array | null) {
+  setContent(newContent: string | Uint8Array | null, updateType?: FileUpdateType, sourceId?: string): boolean {
     const areEqual = StorageUtilities.contentsAreEqual(this._content, newContent);
 
-    if (!areEqual) {
-      if (!this.lastLoadedOrSaved) {
-        this.lastLoadedOrSaved = new Date();
-        this.lastLoadedOrSaved = new Date(this.lastLoadedOrSaved.getTime() - 1);
-        // Log.debugAlert("Setting a file without loading it first.");
-      }
-
-      this._content = newContent;
-
-      this.contentWasModified();
+    if (areEqual) {
+      return false;
     }
+
+    if (!this.lastLoadedOrSaved) {
+      this.lastLoadedOrSaved = new Date();
+      this.lastLoadedOrSaved = new Date(this.lastLoadedOrSaved.getTime() - 1);
+      // Log.debugAlert("Setting a file without loading it first.");
+    }
+
+    let oldContent = this._content;
+    this._content = newContent;
+
+    this.contentWasModified(oldContent, updateType, sourceId);
+
+    return true;
   }
 
   async saveContent(force?: boolean): Promise<Date> {
@@ -267,10 +287,12 @@ export default class FileSystemFile extends FileBase implements IFile {
         if (handle) {
           const writable = await handle.createWritable();
 
-          this._lastLoadedOrSavedPath = this.fullPath;
           await writable.write(this.content as FileSystemWriteChunkType);
 
           await writable.close();
+
+          const readableFile = await handle.getFile();
+          this._localPersistDateTime = new Date(readableFile.lastModified);
         }
 
         await this._parentFolder.save(false);

@@ -1,5 +1,5 @@
 import { Component } from "react";
-import IFile from "./../storage/IFile";
+import IFile, { FileUpdateType } from "./../storage/IFile";
 import Editor, { DiffEditor } from "@monaco-editor/react";
 import "./JsonEditor.css";
 import * as monaco from "monaco-editor";
@@ -9,10 +9,11 @@ import { faSearchPlus, faSearchMinus } from "@fortawesome/free-solid-svg-icons";
 import ProjectItem from "../app/ProjectItem";
 import StorageUtilities from "../storage/StorageUtilities";
 import Database from "../minecraft/Database";
-import CartoApp, { CartoThemeStyle } from "../app/CartoApp";
+import CreatorToolsHost, { CreatorToolsThemeStyle } from "../app/CreatorToolsHost";
 import Project from "../app/Project";
 import { constants } from "../core/Constants";
 import IPersistable from "./IPersistable";
+import IStorage, { IFileUpdateEvent } from "../storage/IStorage";
 
 interface IJsonEditorProps {
   heightOffset: number;
@@ -40,6 +41,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
   diffEditor?: monaco.editor.IDiffEditor;
   _needsPersistence: boolean = false;
   _monaco: any;
+  _modelReloadPending: boolean = false;
 
   constructor(props: IJsonEditorProps) {
     super(props);
@@ -48,6 +50,11 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
     this._handleEditorWillMount = this._handleEditorWillMount.bind(this);
     this._handleEditorDidMount = this._handleEditorDidMount.bind(this);
     this._handleDiffEditorDidMount = this._handleDiffEditorDidMount.bind(this);
+
+    this._handleFileStateChanged = this._handleFileStateChanged.bind(this);
+    this._handleFileStateRemoved = this._handleFileStateRemoved.bind(this);
+    this._handleFileStateAdded = this._handleFileStateAdded.bind(this);
+
     this._considerFormat = this._considerFormat.bind(this);
     this._zoomIn = this._zoomIn.bind(this);
     this._zoomOut = this._zoomOut.bind(this);
@@ -77,6 +84,54 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
     }
 
     return null; // No change to state
+  }
+
+  _handleFileStateRemoved(storage: IStorage, path: string) {
+    this._updateFiles(path);
+  }
+
+  _handleFileStateAdded(storage: IStorage, file: IFile) {
+    this._updateFiles(file.storageRelativePath);
+  }
+
+  _handleFileStateChanged(storage: IStorage, fileUpdate: IFileUpdateEvent) {
+    if (fileUpdate.sourceId !== this.getEditorInstanceId()) {
+      this._updateFiles(fileUpdate.file.storageRelativePath);
+    }
+  }
+
+  _updateFiles(path: string) {
+    if (this._monaco === undefined) {
+      return;
+    }
+
+    const fileType = StorageUtilities.getTypeFromName(path);
+
+    if (fileType !== "json") {
+      return;
+    }
+
+    if (this._modelReloadPending) {
+      return;
+    }
+
+    this._modelReloadPending = true;
+
+    window.setTimeout(this._updateModels, 50);
+  }
+
+  _updateModels() {
+    if (this._monaco === undefined || !this._modelReloadPending) {
+      return;
+    }
+
+    this._modelReloadPending = false;
+
+    this._ensureModels(this._monaco);
+  }
+
+  getEditorInstanceId() {
+    return "JSONEditor|" + (this.props.file ? this.props.file.extendedPath : "noFile");
   }
 
   _handleEditorWillMount(monacoInstance: any) {
@@ -136,6 +191,12 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
         content = file.content as string;
 
         model = monacoInstance.editor.createModel(content, lang, modelUri);
+      } else {
+        let existingContent = model.getValue();
+
+        if (existingContent.trim() !== file.content.trim()) {
+          model.setValue(file.content as string);
+        }
       }
 
       if (this.props.item) {
@@ -183,7 +244,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
   }
 
   async _considerFormat() {
-    if (this.editor && this.props.project && this.props.project.carto.formatBeforeSave) {
+    if (this.editor && this.props.project && this.props.project.creatorTools.formatBeforeSave) {
       const action = this.editor.getAction("editor.action.formatDocument");
 
       if (action) {
@@ -196,11 +257,11 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
     this._needsPersistence = true;
 
     if (this.editor !== undefined && this.state.fileToEdit && !this.props.readOnly && newValue) {
-      this.state.fileToEdit.setContent(newValue);
+      this.state.fileToEdit.setContent(newValue, FileUpdateType.regularEdit, this.getEditorInstanceId());
     }
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this.editor !== undefined && this.state.fileToEdit && !this.props.readOnly && this._needsPersistence) {
       this._needsPersistence = false;
 
@@ -209,9 +270,12 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
       const value = this.editor.getValue();
 
       if (value.length > 0 || !this.state.fileToEdit.content || this.state.fileToEdit.content.length < 1) {
-        this.state.fileToEdit.setContent(value);
+        this.state.fileToEdit.setContent(value, FileUpdateType.regularEdit, this.getEditorInstanceId());
+        return true;
       }
     }
+
+    return false;
   }
 
   _zoomIn() {
@@ -278,7 +342,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
 
       let theme = "vs-dark";
 
-      if (CartoApp.theme === CartoThemeStyle.light) {
+      if (CreatorToolsHost.theme === CreatorToolsThemeStyle.light) {
         theme = "vs";
       }
 

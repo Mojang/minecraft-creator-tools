@@ -51,6 +51,7 @@ export default class LocalEnvironment {
   #configFile: IFile;
   #worldContainerStorage: NodeStorage;
 
+  logToStdError: boolean = false;
   #displayInfo: boolean = false;
   #displayVerbose: boolean = false;
 
@@ -333,13 +334,25 @@ export default class LocalEnvironment {
     }
 
     if (item.level === LogItemLevel.verbose) {
-      console.log(consoleText_fgGray + context + item.message + consoleText_reset);
+      if (this.logToStdError) {
+        console.error(consoleText_fgGray + context + item.message + consoleText_reset);
+      } else {
+        console.log(consoleText_fgGray + context + item.message + consoleText_reset);
+      }
     } else if (item.level === LogItemLevel.error) {
       console.error(consoleText_fgRed + context + "Error: " + item.message + consoleText_reset);
     } else if (item.level === LogItemLevel.important) {
-      console.warn(consoleText_fgYellow + context + "Important: " + item.message + consoleText_reset);
+      if (this.logToStdError) {
+        console.error(consoleText_fgYellow + context + "Important: " + item.message + consoleText_reset);
+      } else {
+        console.warn(consoleText_fgYellow + context + "Important: " + item.message + consoleText_reset);
+      }
     } else {
-      console.log(context + item.message);
+      if (this.logToStdError) {
+        console.error(context + item.message);
+      } else {
+        console.log(context + item.message);
+      }
     }
   }
 

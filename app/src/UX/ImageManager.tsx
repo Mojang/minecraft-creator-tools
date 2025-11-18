@@ -3,7 +3,7 @@ import IFile from "../storage/IFile";
 import "./ImageManager.css";
 import React from "react";
 import IPersistable from "./IPersistable";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import { Button, ThemeInput } from "@fluentui/react-northstar";
 import StorageUtilities from "../storage/StorageUtilities";
 import Utilities from "../core/Utilities";
@@ -22,7 +22,7 @@ interface IImageManagerProps {
   setActivePersistable?: (persistObject: IPersistable) => void;
   heightOffset?: number;
   readOnly: boolean;
-  carto: Carto;
+  creatorTools: CreatorTools;
   onUpdateContent?: (newContent: Uint8Array) => void;
   onCommit?: (newContent: Uint8Array) => void;
 }
@@ -151,7 +151,9 @@ export default class ImageManager extends Component<IImageManagerProps, IImageMa
     return null; // No change to state
   }
 
-  async persist() {}
+  async persist(): Promise<boolean> {
+    return false;
+  }
 
   _handleNewChildPersistable(newPersistable: IPersistable) {
     this._activeEditorPersistable = newPersistable;
@@ -187,7 +189,7 @@ export default class ImageManager extends Component<IImageManagerProps, IImageMa
         interior = (
           <ImageEditor
             theme={this.props.theme}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             projectItem={this.props.projectItem}
             name={this.state.fileToEdit.name}
             content={this.state.fileToEdit.content}

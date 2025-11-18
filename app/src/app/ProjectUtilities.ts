@@ -90,6 +90,17 @@ export default class ProjectUtilities {
     throw new Error();
   }
 
+  static getSimplifiedProjectName(projectName: string) {
+    // strip out a trailing -xxxxxx (dash + 6 chars) that is used in Electron file-system based project names
+    let lastDash = projectName.lastIndexOf("-");
+
+    if (lastDash >= 2 && lastDash === projectName.length - 7) {
+      return projectName.substring(0, projectName.length - 7);
+    }
+
+    return projectName;
+  }
+
   static getPackTypeName(packType: PackType) {
     switch (packType) {
       case PackType.behavior:
@@ -167,6 +178,84 @@ export default class ProjectUtilities {
     }
 
     return searchItems;
+  }
+
+  /**
+   * Attempts to infer a project item type using the top-level keys present in a JSON object.
+   * Falls back to unknown when no meaningful match is found.
+   */
+  static inferJsonProjectItemTypeFromContent(json: any): ProjectItemType {
+    if (!json || typeof json !== "object" || Array.isArray(json)) {
+      return ProjectItemType.unknownJson;
+    }
+
+    const metadataKeys = new Set(["format_version", "minecraft:format_version"]);
+    const rootKeys = Object.keys(json).filter((key) => !metadataKeys.has(key.toLowerCase()));
+
+    if (rootKeys.length === 0) {
+      return ProjectItemType.unknownJson;
+    }
+
+    const normalizedKeys = rootKeys.map((key) => key.toLowerCase());
+
+    const directMappings: { [key: string]: ProjectItemType } = {
+      "minecraft:block": ProjectItemType.blockTypeBehavior,
+      "minecraft:item": ProjectItemType.itemTypeBehavior,
+      "minecraft:entity": ProjectItemType.entityTypeBehavior,
+      "minecraft:spawn_rules": ProjectItemType.spawnRuleBehavior,
+      "minecraft:spawn_groups": ProjectItemType.spawnGroupJson,
+      "minecraft:loot_table": ProjectItemType.lootTableBehavior,
+      "minecraft:feature": ProjectItemType.featureBehavior,
+      "minecraft:feature_rules": ProjectItemType.featureRuleBehavior,
+      "minecraft:trading": ProjectItemType.tradingBehaviorJson,
+      "minecraft:dialogue": ProjectItemType.dialogueBehaviorJson,
+      "minecraft:volume": ProjectItemType.volumeBehaviorJson,
+      "minecraft:behavior_tree": ProjectItemType.behaviorTreeJson,
+      "minecraft:aim_assist_category": ProjectItemType.aimAssistCategoryJson,
+      "minecraft:aim_assist_preset": ProjectItemType.aimAssistPresetJson,
+      "minecraft:dimension": ProjectItemType.dimensionJson,
+      "minecraft:structure": ProjectItemType.jigsawStructure,
+      "minecraft:structure_set": ProjectItemType.jigsawStructureSet,
+      "minecraft:template_pool": ProjectItemType.jigsawTemplatePool,
+      "minecraft:processor_list": ProjectItemType.jigsawProcessorList,
+      "minecraft:biome": ProjectItemType.biomeBehavior,
+      "minecraft:client_entity": ProjectItemType.entityTypeResource,
+      "minecraft:attachable": ProjectItemType.attachableResourceJson,
+      "minecraft:fog_settings": ProjectItemType.fogResourceJson,
+      "minecraft:geometry": ProjectItemType.modelGeometryJson,
+      "minecraft:block_culling": ProjectItemType.blockCulling,
+      particle_effect: ProjectItemType.particleJson,
+      render_controllers: ProjectItemType.renderControllerJson,
+      "minecraft:render_controller": ProjectItemType.renderControllerJson,
+      "minecraft:atmospherics": ProjectItemType.atmosphericsJson,
+      "minecraft:pbr": ProjectItemType.pbrJson,
+      "minecraft:point_lights": ProjectItemType.pointLightsJson,
+      "minecraft:water": ProjectItemType.waterJson,
+      "minecraft:shadows": ProjectItemType.shadowsJson,
+      "minecraft:uniforms": ProjectItemType.uniformsJson,
+      uniforms: ProjectItemType.uniformsJson,
+      "minecraft:renderer": ProjectItemType.rendererJson,
+      renderer: ProjectItemType.rendererJson,
+      lods: ProjectItemType.lodJson,
+      "minecraft:lods": ProjectItemType.lodJson,
+      loading_messages: ProjectItemType.loadingMessagesJson,
+      splashes: ProjectItemType.splashesJson,
+      "minecraft:font": ProjectItemType.fontMetadataJson,
+      font_metadata: ProjectItemType.fontMetadataJson,
+      emoticons: ProjectItemType.emoticonsJson,
+      "minecraft:emoticons": ProjectItemType.emoticonsJson,
+      contents: ProjectItemType.contentsJson,
+      "minecraft:contents": ProjectItemType.contentsJson,
+    };
+
+    for (const key of normalizedKeys) {
+      const direct = directMappings[key];
+      if (direct !== undefined) {
+        return direct;
+      }
+    }
+
+    return ProjectItemType.unknownJson;
   }
 
   static getItemFromAnnotatedValue(project: Project, value: IAnnotatedValue) {
@@ -367,7 +456,7 @@ export default class ProjectUtilities {
   static async applyScriptEntryPoint(project: Project, newScriptEntryPoint: string) {
     project.scriptEntryPoint = newScriptEntryPoint;
 
-    if (project.editPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
+    if (project.effectiveEditPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
       const itemsCopy = project.getItemsCopy();
 
       for (const projectItem of itemsCopy) {
@@ -397,7 +486,7 @@ export default class ProjectUtilities {
   static async applyDescription(project: Project, newDescription: string) {
     project.description = newDescription;
 
-    if (project.editPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
+    if (project.effectiveEditPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
       const itemsCopy = project.getItemsCopy();
 
       for (const projectItem of itemsCopy) {
@@ -465,7 +554,7 @@ export default class ProjectUtilities {
   static async ensureGeneratedWith(project: Project, isToolWeb?: boolean) {
     const appName = isToolWeb ? "mctoolsweb" : "mctoolscli";
 
-    if (project.editPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
+    if (project.effectiveEditPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
       const itemsCopy = project.getItemsCopy();
 
       for (const projectItem of itemsCopy) {
@@ -491,7 +580,7 @@ export default class ProjectUtilities {
   static async applyTitle(project: Project, newTitle: string) {
     project.title = newTitle;
 
-    if (project.editPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
+    if (project.effectiveEditPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
       const itemsCopy = project.getItemsCopy();
 
       for (const projectItem of itemsCopy) {
@@ -548,7 +637,7 @@ export default class ProjectUtilities {
 
     await project.setDefaultBehaviorPackUniqueIdAndUpdateDependencies(newBehaviorPackId);
 
-    if (project.editPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
+    if (project.effectiveEditPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
       let bpackCount = 0;
 
       const itemsCopy = project.getItemsCopy();
@@ -590,7 +679,7 @@ export default class ProjectUtilities {
 
     await project.setDefaultResourcePackUniqueIdAndUpdateDependencies(newResourcePackId);
 
-    if (project.editPreference === ProjectEditPreference.summarized && project.defaultResourcePackUniqueId) {
+    if (project.effectiveEditPreference === ProjectEditPreference.summarized && project.defaultResourcePackUniqueId) {
       let rpackCount = 0;
 
       const itemsCopy = project.getItemsCopy();
@@ -633,11 +722,7 @@ export default class ProjectUtilities {
 
   static getSuggestedShortName(caption: string) {
     caption = caption.trim().replace(/-/g, "");
-    caption = caption.replace(/_/g, "");
-    caption = caption.replace(/ /g, "");
-    caption = caption.replace(/:/g, "");
-    caption = caption.replace(/;/g, "");
-    caption = caption.replace(/=/g, "");
+    caption = caption.replace(/[_ :;=]/g, "");
 
     let capitalStr = "";
 

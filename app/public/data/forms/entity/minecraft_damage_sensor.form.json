@@ -306,6 +306,30 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/entities/camel.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:damage_sensor/",
+        "content": {
+          "triggers": {
+            "cause": "fall",
+            "deals_damage": "yes",
+            "damage_modifier": -4
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/camel_husk.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:damage_sensor/",
+        "content": {
+          "triggers": {
+            "cause": "fall",
+            "deals_damage": "yes",
+            "damage_modifier": -4
+          }
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/cat.json": [
       {
         "path": "/minecraft:entity/components/minecraft:damage_sensor/",
@@ -649,7 +673,7 @@
                 "other_with_families": "lightning"
               }
             },
-            "deals_damage": false
+            "deals_damage": "no"
           }
         }
       }
@@ -839,7 +863,7 @@
                 "value": "undead"
               }
             },
-            "deals_damage": false
+            "deals_damage": "no"
           }
         }
       }

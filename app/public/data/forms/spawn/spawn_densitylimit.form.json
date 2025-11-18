@@ -5,6 +5,7 @@
       "id": "surface",
       "title": "Surface",
       "dataType": 0,
+      "defaultValue": -1,
       "validity": [
         {
           "comparison": ">=",
@@ -16,6 +17,7 @@
       "id": "underground",
       "title": "Underground",
       "dataType": 0,
+      "defaultValue": -1,
       "validity": [
         {
           "comparison": ">=",

@@ -18,6 +18,7 @@ import AnimationResourceDefinition from "./AnimationResourceDefinition";
 import IProjectItemRelationship from "../app/IProjectItemRelationship";
 import MinecraftDefinitions from "./MinecraftDefinitions";
 import TextureDefinition from "./TextureDefinition";
+import MinecraftUtilities from "./MinecraftUtilities";
 
 export default class EntityTypeResourceDefinition {
   private _dataWrapper?: IEntityTypeResourceWrapper;
@@ -244,30 +245,32 @@ export default class EntityTypeResourceDefinition {
       return;
     }
 
-    if (!this._data.scripts) {
-      this._data.scripts = {};
-    }
+    if (this.getIsVersion1100OrHigher()) {
+      if (!this._data.scripts) {
+        this._data.scripts = {};
+      }
 
-    if (!this._data.scripts["animate"]) {
-      this._data.scripts["animate"] = [];
-    }
+      if (!this._data.scripts["animate"]) {
+        this._data.scripts["animate"] = [];
+      }
 
-    const animationList = this._data.scripts["animate"];
+      const animationList = this._data.scripts["animate"];
 
-    let hasScript = false;
+      let hasScript = false;
 
-    if (animationList && Array.isArray(animationList)) {
-      for (const val of animationList) {
-        if (typeof val === "string" && val === animationShortName) {
-          hasScript = true;
-        } else if (typeof val === "object" && val[animationShortName]) {
-          hasScript = true;
+      if (animationList && Array.isArray(animationList)) {
+        for (const val of animationList) {
+          if (typeof val === "string" && val === animationShortName) {
+            hasScript = true;
+          } else if (typeof val === "object" && val[animationShortName]) {
+            hasScript = true;
+          }
         }
       }
-    }
 
-    if (!hasScript) {
-      animationList.push(animationShortName);
+      if (!hasScript) {
+        animationList.push(animationShortName);
+      }
     }
   }
 
@@ -304,31 +307,24 @@ export default class EntityTypeResourceDefinition {
     return results;
   }
 
-  public getFormatVersion(): number[] | undefined {
-    if (!this._dataWrapper) {
-      return undefined;
+  public getIsVersion180OrLower() {
+    let fv = this.getFormatVersion();
+
+    return fv[0] <= 1 && fv[1] <= 8;
+  }
+
+  public getIsVersion1100OrHigher() {
+    let fv = this.getFormatVersion();
+
+    return fv[0] >= 1 && fv[1] >= 10;
+  }
+
+  public getFormatVersion(): number[] {
+    if (!this._dataWrapper || !this._dataWrapper.format_version) {
+      return [0, 0, 0];
     }
 
-    const fv = this._dataWrapper.format_version;
-
-    if (typeof fv === "number") {
-      return [fv];
-    }
-
-    if (typeof fv === "string") {
-      let fvarr = this._dataWrapper.format_version.split(".");
-
-      let fvarrInt: number[] = [];
-      for (let i = 0; i < fvarr.length; i++) {
-        try {
-          fvarrInt.push(parseInt(fvarr[i]));
-        } catch (e) {}
-      }
-
-      return fvarrInt;
-    }
-
-    return undefined;
+    return MinecraftUtilities.getVersionArrayFrom(this._dataWrapper.format_version);
   }
 
   get formatVersion() {
@@ -404,18 +400,18 @@ export default class EntityTypeResourceDefinition {
     return this._data;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     Log.assert(this._dataWrapper !== null, "ETRDP");
 
-    if (this._dataWrapper) {
-      const defString = JSON.stringify(this._dataWrapper, null, 2);
-
-      this._file.setContent(defString);
+    if (!this._dataWrapper) {
+      return false;
     }
+
+    return this._file.setObjectContentIfSemanticallyDifferent(this._dataWrapper);
   }
 
   async load() {

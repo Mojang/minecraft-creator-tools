@@ -239,19 +239,17 @@ export default class ModelGeometryDefinition {
     return MinecraftUtilities.getVersionArrayFrom(this._data.format_version);
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     if (!this._data) {
       Log.unexpectedUndefined("MGDP");
-      return;
+      return false;
     }
 
-    const pjString = JSON.stringify(this._data, null, 2);
-
-    this._file.setContent(pjString);
+    return this._file.setObjectContentIfSemanticallyDifferent(this._data);
   }
 
   public ensureDefinition(name: string) {
@@ -280,9 +278,9 @@ export default class ModelGeometryDefinition {
       return;
     }
 
-    this.persist();
-
-    await this._file.saveContent(false);
+    if (this.persist()) {
+      await this._file.saveContent(false);
+    }
   }
 
   populateDefsAndIds() {

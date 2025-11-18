@@ -21,7 +21,7 @@ Skeleton - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/
 {
   "test": "in_block",
   "subject": "self",
-  "operator": "!=",
+  "operator": "not",
   "value": "minecraft:powder_snow"
 }
 
@@ -29,7 +29,12 @@ Skeleton - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/
 {
   "test": "in_block",
   "subject": "self",
-  "operator": "==",
+  "value": "minecraft:powder_snow"
+}
+
+ * At /minecraft:entity/component_groups/minecraft:melee_attack/minecraft:environment_sensor/triggers/1/filters/: 
+{
+  "test": "in_block",
   "value": "minecraft:powder_snow"
 }
 
@@ -51,7 +56,7 @@ export default interface InBlock {
    * (Optional) The comparison to apply with 'value'.
    * 
    * Sample Values:
-   * Skeleton: "!=", "=="
+   * Skeleton: "not"
    *
    */
   operator?: string;
@@ -93,47 +98,47 @@ export enum InBlockOperator {
    * @remarks
    * Test for inequality.
    */
-  NotEquals = `!=`,
+  notEquals = `!=`,
   /**
    * @remarks
    * Test for less-than the value.
    */
-  LessThan = `<`,
+  lessThan = `<`,
   /**
    * @remarks
    * Test for less-than or equal to the value.
    */
-  LessThanEquals = `<=`,
+  lessThanEquals = `<=`,
   /**
    * @remarks
    * Test for inequality.
    */
-  LessThanGreaterThan = `<>`,
+  lessThanGreaterThan = `<>`,
   /**
    * @remarks
    * Test for equality.
    */
-  Equals = `=`,
+  equals = `=`,
   /**
    * @remarks
    * Test for equality.
    */
-  EqualsEquals = `==`,
+  equalsEquals = `==`,
   /**
    * @remarks
    * Test for greater-than the value.
    */
-  GreaterThan = `>`,
+  greaterThan = `>`,
   /**
    * @remarks
    * Test for greater-than or equal to the value.
    */
-  GreaterThanEquals = `>=`,
+  greaterThanEquals = `>=`,
   /**
    * @remarks
    * Test for inequality.
    */
-  Not = `not`
+  not = `not`
 }
 
 
@@ -142,35 +147,35 @@ export enum InBlockSubject {
    * @remarks
    * The block involved with the interaction.
    */
-  Block = `block`,
+  block = `block`,
   /**
    * @remarks
    * The damaging actor involved with the interaction.
    */
-  Damager = `damager`,
+  damager = `damager`,
   /**
    * @remarks
    * The other member of an interaction, not the caller.
    */
-  Other = `other`,
+  other = `other`,
   /**
    * @remarks
    * The caller's current parent.
    */
-  Parent = `parent`,
+  parent = `parent`,
   /**
    * @remarks
    * The player involved with the interaction.
    */
-  Player = `player`,
+  player = `player`,
   /**
    * @remarks
    * The entity or object calling the test
    */
-  Self = `self`,
+  self = `self`,
   /**
    * @remarks
    * The caller's current target.
    */
-  Target = `target`
+  target = `target`
 }

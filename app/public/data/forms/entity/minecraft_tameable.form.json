@@ -12,9 +12,9 @@
             "content": 0.33
           }
         ],
-        "/vanilla/behavior_pack/entities/parrot.json": [
+        "/vanilla/behavior_pack/entities/nautilus.json": [
           {
-            "path": "/minecraft:entity/component_groups/minecraft:parrot_wild/minecraft:tameable/",
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_wild_adult_calm/minecraft:tameable/",
             "content": 0.33
           }
         ]
@@ -40,9 +40,9 @@
             }
           }
         ],
-        "/vanilla/behavior_pack/entities/parrot.json": [
+        "/vanilla/behavior_pack/entities/nautilus.json": [
           {
-            "path": "/minecraft:entity/component_groups/minecraft:parrot_wild/minecraft:tameable/",
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_wild_adult_calm/minecraft:tameable/",
             "content": {
               "event": "minecraft:on_tame",
               "target": "self"
@@ -68,6 +68,18 @@
             ]
           }
         ],
+        "/vanilla/behavior_pack/entities/nautilus.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_wild_adult_calm/minecraft:tameable/",
+            "content": [
+              {
+                "item": "pufferfish_bucket",
+                "result_item": "water_bucket:0"
+              },
+              "pufferfish"
+            ]
+          }
+        ],
         "/vanilla/behavior_pack/entities/parrot.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:parrot_wild/minecraft:tameable/",
@@ -85,6 +97,18 @@
           {
             "path": "/minecraft:entity/component_groups/minecraft:wolf_wild/minecraft:tameable/",
             "content": "bone"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_tameable/minecraft:tameable/",
+            "content": [
+              {
+                "item": "pufferfish_bucket",
+                "result_item": "water_bucket:0"
+              },
+              "pufferfish"
+            ]
           }
         ],
         "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
@@ -108,6 +132,25 @@
           "tame_items": [
             "fish",
             "salmon"
+          ],
+          "tame_event": {
+            "event": "minecraft:on_tame",
+            "target": "self"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_wild_adult_calm/minecraft:tameable/",
+        "content": {
+          "probability": 0.33,
+          "tame_items": [
+            {
+              "item": "pufferfish_bucket",
+              "result_item": "water_bucket:0"
+            },
+            "pufferfish"
           ],
           "tame_event": {
             "event": "minecraft:on_tame",
@@ -142,6 +185,25 @@
         "content": {
           "probability": 0.33,
           "tame_items": "bone",
+          "tame_event": {
+            "event": "minecraft:on_tame",
+            "target": "self"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_tameable/minecraft:tameable/",
+        "content": {
+          "probability": 0.33,
+          "tame_items": [
+            {
+              "item": "pufferfish_bucket",
+              "result_item": "water_bucket:0"
+            },
+            "pufferfish"
+          ],
           "tame_event": {
             "event": "minecraft:on_tame",
             "target": "self"

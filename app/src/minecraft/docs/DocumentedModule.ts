@@ -249,22 +249,30 @@ export default class DocumentedModule {
     return curFolder;
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this._file === undefined) {
-      return;
+      return false;
     }
+
+    let didPersist = false;
 
     for (const docClassName in this._docClassesAndInterfaces) {
       const docClass = this._docClassesAndInterfaces[docClassName];
 
-      await docClass.persist();
+      if (await docClass.persist()) {
+        didPersist = true;
+      }
     }
 
     for (const docEnumName in this._docEnums) {
       const docEnum = this._docEnums[docEnumName];
 
-      await docEnum.persist();
+      if (await docEnum.persist()) {
+        didPersist = true;
+      }
     }
+
+    return didPersist;
   }
 
   async load() {

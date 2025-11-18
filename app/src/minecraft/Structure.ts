@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import BlockCube from "./BlockCube";
+import BlockVolume from "./BlockVolume";
 import NbtBinary from "./NbtBinary";
 import { NbtTagType } from "./NbtBinaryTag";
 import ISnbtContent from "./ISnbtContent";
@@ -14,7 +14,7 @@ import Database from "./Database";
 import EntityInventoryComponent from "./components/EntityInventoryComponent";
 
 export default class Structure {
-  private _cube: BlockCube | undefined;
+  private _cube: BlockVolume | undefined;
   private _entities: Entity[] | undefined;
   private _blockPalette: Block[] = [];
   public nbt: NbtBinary | undefined;
@@ -29,7 +29,7 @@ export default class Structure {
     return this._cube;
   }
 
-  set cube(newCube: BlockCube | undefined) {
+  set cube(newCube: BlockVolume | undefined) {
     this._cube = newCube;
   }
 
@@ -193,7 +193,7 @@ export default class Structure {
     }
 
     if (this._cube === undefined) {
-      this._cube = new BlockCube();
+      this._cube = new BlockVolume();
     }
 
     this._cube.setMaxDimensions(content.size[0], content.size[1], content.size[2]);
@@ -272,7 +272,7 @@ export default class Structure {
   }
 
   async loadFromNbt(binary: NbtBinary) {
-    const cube = new BlockCube();
+    const cube = new BlockVolume();
 
     const root = binary.singleRoot;
 
@@ -373,7 +373,7 @@ export default class Structure {
 
             const secondaryBlock = this._blockPalette[secondaryBlockIndex];
 
-            if (secondaryBlock.shortTypeName === "water") {
+            if (secondaryBlock.shortTypeId === "water") {
               block.extraLiquidDepth = secondaryBlock.getPropertyNumber("liquid_depth", -1);
             }
           }
@@ -453,10 +453,69 @@ export default class Structure {
               }
             } else if (entityPropertyTag.name === "Pos") {
               entity.loadLocationFromNbtTag(entityPropertyTag);
+            } else if (entityPropertyTag.name === "internalComponents") {
             } else if (entityPropertyTag.value === null) {
               const prop = entity.ensureComponentProperty(entityPropertyTag.name);
               prop.load();
               prop.value = undefined;
+            } else if (
+              entityPropertyTag.name === "Air" ||
+              entityPropertyTag.name === "Chested" ||
+              entityPropertyTag.name === "Color" ||
+              entityPropertyTag.name === "Color2" ||
+              entityPropertyTag.name === "Dead" ||
+              entityPropertyTag.name === "DeathTime" ||
+              entityPropertyTag.name === "FallDistance" ||
+              entityPropertyTag.name === "HurtTime" ||
+              entityPropertyTag.name === "Invulnerable" ||
+              entityPropertyTag.name === "IsAngry" ||
+              entityPropertyTag.name === "IsAutonomous" ||
+              entityPropertyTag.name === "IsBaby" ||
+              entityPropertyTag.name === "IsEating" ||
+              entityPropertyTag.name === "IsGliding" ||
+              entityPropertyTag.name === "IsGlobal" ||
+              entityPropertyTag.name === "IsIllagerCaptain" ||
+              entityPropertyTag.name === "IsOrphaned" ||
+              entityPropertyTag.name === "IsOutOfControl" ||
+              entityPropertyTag.name === "IsPregnant" ||
+              entityPropertyTag.name === "IsRoaring" ||
+              entityPropertyTag.name === "IsScared" ||
+              entityPropertyTag.name === "IsStunned" ||
+              entityPropertyTag.name === "IsSwimming" ||
+              entityPropertyTag.name === "IsTamed" ||
+              entityPropertyTag.name === "IsTrusting" ||
+              entityPropertyTag.name === "LeasherID" ||
+              entityPropertyTag.name === "LootDropped" ||
+              entityPropertyTag.name === "MarkVariant" ||
+              entityPropertyTag.name === "NaturalSpawn" ||
+              entityPropertyTag.name === "OnGround" ||
+              entityPropertyTag.name === "OwnerNew" ||
+              entityPropertyTag.name === "PortalCooldown" ||
+              entityPropertyTag.name === "Saddled" ||
+              entityPropertyTag.name === "Sheared" ||
+              entityPropertyTag.name === "ShowBottom" ||
+              entityPropertyTag.name === "Sitting" ||
+              entityPropertyTag.name === "SkinID" ||
+              entityPropertyTag.name === "SpawnedByNight" ||
+              entityPropertyTag.name === "Strength" ||
+              entityPropertyTag.name === "StrengthMax" ||
+              entityPropertyTag.name === "Surface" ||
+              entityPropertyTag.name === "TargetID" ||
+              entityPropertyTag.name === "TradeExperience" ||
+              entityPropertyTag.name === "TradeTier" ||
+              entityPropertyTag.name === "UniqueID" ||
+              entityPropertyTag.name === "Variant" ||
+              entityPropertyTag.name === "boundX" ||
+              entityPropertyTag.name === "boundY" ||
+              entityPropertyTag.name === "boundZ" ||
+              entityPropertyTag.name === "canPickupItems" ||
+              entityPropertyTag.name === "expDropEnabled" ||
+              entityPropertyTag.name === "hasBoundOrigin" ||
+              entityPropertyTag.name === "hasSetCanPickupItems" ||
+              entityPropertyTag.name === "isOrphaned"
+            ) {
+              // placeholder for unimplemented properties
+              // entity.loadTagsFromNbtTag(entityPropertyTag);
             } else {
               const prop = entity.ensureComponentProperty(entityPropertyTag.name);
               prop.load();

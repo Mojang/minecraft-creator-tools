@@ -5,6 +5,9 @@ import NodeFolder from "./NodeFolder";
 import StorageBase from "../storage/StorageBase";
 import IStorage from "../storage/IStorage";
 import * as path from "path";
+import NodeFile from "./NodeFile";
+import ZipStorage from "../storage/ZipStorage";
+import IFolder from "../storage/IFolder";
 
 export default class NodeStorage extends StorageBase implements IStorage {
   rootPath: string;
@@ -45,6 +48,49 @@ export default class NodeStorage extends StorageBase implements IStorage {
     fullPath += pathB;
 
     return fullPath;
+  }
+
+  static async createFromPath(path: string): Promise<NodeFile | NodeFolder> {
+    const lastDot = path.lastIndexOf(".");
+    let lastSlash = path.lastIndexOf("/");
+    let lastBackslash = path.lastIndexOf("\\");
+
+    if (lastBackslash > lastSlash) {
+      lastSlash = lastBackslash;
+    }
+
+    if (lastDot > lastSlash) {
+      const ns = new NodeStorage(path.substring(0, lastSlash), "");
+
+      return (await ns.rootFolder.ensureFileFromRelativePath(path.substring(lastSlash))) as NodeFile;
+    } else {
+      const ns = new NodeStorage(path, "");
+
+      return ns.rootFolder;
+    }
+  }
+
+  static async createFromPathIncludingZip(path: string): Promise<IFolder | undefined> {
+    const content = await NodeStorage.createFromPath(path);
+
+    if (
+      content instanceof NodeFile &&
+      (path.endsWith(".mcpack") ||
+        path.endsWith(".mcaddon") ||
+        path.endsWith(".mcworld") ||
+        path.endsWith(".zip") ||
+        path.endsWith(".mcproject"))
+    ) {
+      const zs = await ZipStorage.loadFromFile(content);
+
+      return zs?.rootFolder;
+    }
+
+    if (content instanceof NodeFolder) {
+      return content;
+    }
+
+    return undefined;
   }
 
   static getParentFolderPath(parentPath: string) {

@@ -126,18 +126,16 @@ export default class JigsawProcessorListDefinition implements IDefinition {
     this._isLoaded = true;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     if (!this._data) {
-      Log.unexpectedUndefined("ITRDP");
-      return;
+      Log.unexpectedUndefined("JPLDP");
+      return false;
     }
 
-    const dataString = JSON.stringify(this._data, null, 2);
-    
-    this._file.setContent(dataString);
+    return this._file.setObjectContentIfSemanticallyDifferent(this._data);
   }
 }

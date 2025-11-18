@@ -112,19 +112,17 @@ export default class LootTableBehaviorDefinition {
     return targetLootTablePaths;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     if (!this.data) {
       Log.unexpectedUndefined("ITRDP");
-      return;
+      return false;
     }
 
-    const bpString = JSON.stringify(this.data, null, 2);
-
-    this._file.setContent(bpString);
+    return this._file.setObjectContentIfSemanticallyDifferent(this.data);
   }
 
   async load() {

@@ -142,13 +142,15 @@ export default class JigsawStructureSetDefinition implements IDefinition {
     this._isLoaded = true;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
-    const dataString = JSON.stringify(this._data, null, 2);
-    
-    this._file.setContent(dataString);
+    if (!this._data) {
+      return false;
+    }
+
+    return this._file.setObjectContentIfSemanticallyDifferent(this._data);
   }
 }

@@ -270,12 +270,15 @@ export default class WorldLevelDat implements IWorldSettings, IErrorable {
     return undefined;
   }
 
-  persist() {
+  persist(): boolean {
     this.ensureNbt();
 
     if (this.nbt !== undefined) {
       this._saveToNbt(this.nbt);
+      return true;
     }
+
+    return false;
   }
 
   ensureDefaults() {
@@ -781,6 +784,14 @@ export default class WorldLevelDat implements IWorldSettings, IErrorable {
       this.cheatsEnabled = settings.cheatsEnabled;
     }
 
+    if (settings.playerPermissionLevel !== undefined) {
+      this.playerPermissionsLevel = settings.playerPermissionLevel;
+    }
+
+    if (settings.permissionLevel !== undefined) {
+      this.permissionsLevel = settings.permissionLevel;
+    }
+
     if (settings.randomSeed !== undefined) {
       this.randomSeed = settings.randomSeed;
     }
@@ -1174,7 +1185,7 @@ export default class WorldLevelDat implements IWorldSettings, IErrorable {
     }
 
     if (this.editorWorldType !== undefined) {
-      root.ensureTag("editorWorldType", NbtTagType.byte).value = this.editorWorldType;
+      root.ensureTag("editorWorldType", NbtTagType.int).value = this.editorWorldType;
     }
 
     if (this.isExportedFromEditor !== undefined) {

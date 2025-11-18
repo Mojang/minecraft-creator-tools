@@ -50,47 +50,47 @@ export enum IsColorOperator {
    * @remarks
    * Test for inequality.
    */
-  NotEquals = `!=`,
+  notEquals = `!=`,
   /**
    * @remarks
    * Test for less-than the value.
    */
-  LessThan = `<`,
+  lessThan = `<`,
   /**
    * @remarks
    * Test for less-than or equal to the value.
    */
-  LessThanEquals = `<=`,
+  lessThanEquals = `<=`,
   /**
    * @remarks
    * Test for inequality.
    */
-  LessThanGreaterThan = `<>`,
+  lessThanGreaterThan = `<>`,
   /**
    * @remarks
    * Test for equality.
    */
-  Equals = `=`,
+  equals = `=`,
   /**
    * @remarks
    * Test for equality.
    */
-  EqualsEquals = `==`,
+  equalsEquals = `==`,
   /**
    * @remarks
    * Test for greater-than the value.
    */
-  GreaterThan = `>`,
+  greaterThan = `>`,
   /**
    * @remarks
    * Test for greater-than or equal to the value.
    */
-  GreaterThanEquals = `>=`,
+  greaterThanEquals = `>=`,
   /**
    * @remarks
    * Test for inequality.
    */
-  Not = `not`
+  not = `not`
 }
 
 
@@ -99,55 +99,55 @@ export enum IsColorSubject {
    * @remarks
    * The block involved with the interaction.
    */
-  Block = `block`,
+  block = `block`,
   /**
    * @remarks
    * The damaging actor involved with the interaction.
    */
-  Damager = `damager`,
+  damager = `damager`,
   /**
    * @remarks
    * The other member of an interaction, not the caller.
    */
-  Other = `other`,
+  other = `other`,
   /**
    * @remarks
    * The caller's current parent.
    */
-  Parent = `parent`,
+  parent = `parent`,
   /**
    * @remarks
    * The player involved with the interaction.
    */
-  Player = `player`,
+  player = `player`,
   /**
    * @remarks
    * The entity or object calling the test
    */
-  Self = `self`,
+  self = `self`,
   /**
    * @remarks
    * The caller's current target.
    */
-  Target = `target`
+  target = `target`
 }
 
 
 export enum IsColorValue {
-  Black = `black`,
-  Blue = `blue`,
-  Brown = `brown`,
-  Cyan = `cyan`,
-  Gray = `gray`,
-  Green = `green`,
-  LightBlue = `light_blue`,
-  LightGreen = `light_green`,
-  Magenta = `magenta`,
-  Orange = `orange`,
-  Pink = `pink`,
-  Purple = `purple`,
-  Red = `red`,
-  Silver = `silver`,
-  White = `white`,
-  Yellow = `yellow`
+  black = `black`,
+  blue = `blue`,
+  brown = `brown`,
+  cyan = `cyan`,
+  gray = `gray`,
+  green = `green`,
+  lightBlue = `light_blue`,
+  lightGreen = `light_green`,
+  magenta = `magenta`,
+  orange = `orange`,
+  pink = `pink`,
+  purple = `purple`,
+  red = `red`,
+  silver = `silver`,
+  white = `white`,
+  yellow = `yellow`
 }

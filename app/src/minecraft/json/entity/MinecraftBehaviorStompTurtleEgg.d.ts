@@ -23,10 +23,22 @@ Drowned - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
 }
 
 
-Zombie Pigman - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_pigman.json
+Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/husk.json
 
 "minecraft:behavior.stomp_turtle_egg": {
   "priority": 5,
+  "speed_multiplier": 1,
+  "search_range": 10,
+  "search_height": 2,
+  "goal_radius": 1.14,
+  "interval": 20
+}
+
+
+Zombie Pigman - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_pigman.json
+
+"minecraft:behavior.stomp_turtle_egg": {
+  "priority": 6,
   "speed_multiplier": 1,
   "search_range": 10,
   "search_height": 2,
@@ -79,8 +91,10 @@ export default interface MinecraftBehaviorStompTurtleEgg {
    * Sample Values:
    * Drowned: 4
    *
+   * Husk: 5
    *
-   * Zombie Pigman: 5
+   *
+   * Zombie Pigman: 6
    *
    */
   priority?: number;

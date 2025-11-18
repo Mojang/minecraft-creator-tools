@@ -235,9 +235,7 @@ export default class EntityTypeManager implements IProjectInfoGenerator, IProjec
                     110,
                     "Behavior pack entity type format version (" +
                       fv.join(".") +
-                      ") has a lower major version number compared to current version (" +
-                      ver +
-                      ")",
+                      ") has a lower major version number compared to current version",
                     pi
                   )
                 );
@@ -249,9 +247,7 @@ export default class EntityTypeManager implements IProjectInfoGenerator, IProjec
                     111,
                     "Behavior pack entity type format version (" +
                       fv.join(".") +
-                      ") has a higher major version number compared to current version (" +
-                      ver +
-                      ")",
+                      ") has a higher major version number compared to current version",
                     pi
                   )
                 );
@@ -263,9 +259,7 @@ export default class EntityTypeManager implements IProjectInfoGenerator, IProjec
                     120,
                     "Behavior pack entity type format version (" +
                       fv.join(".") +
-                      ") has a lower minor version number compared to the current version or the previous current minor version (" +
-                      ver +
-                      ")",
+                      ") has a lower minor version number compared to the current version or the previous current minor version",
                     pi
                   )
                 );
@@ -277,9 +271,7 @@ export default class EntityTypeManager implements IProjectInfoGenerator, IProjec
                     121,
                     "Behavior pack entity type format version (" +
                       fv.join(".") +
-                      ") has a higher minor version number compared to current version (" +
-                      ver +
-                      ")",
+                      ") has a higher minor version number compared to current version",
                     pi
                   )
                 );
@@ -291,9 +283,7 @@ export default class EntityTypeManager implements IProjectInfoGenerator, IProjec
                     130,
                     "Behavior pack entity type format version (" +
                       fv.join(".") +
-                      ") has a lower patch version number compared to current version (" +
-                      ver +
-                      ")",
+                      ") has a lower patch version number compared to current version",
                     pi
                   )
                 );
@@ -305,9 +295,7 @@ export default class EntityTypeManager implements IProjectInfoGenerator, IProjec
                     131,
                     "Behavior pack entity type format version (" +
                       fv.join(".") +
-                      ") has a higher patch version number compared to current version (" +
-                      ver +
-                      ")",
+                      ") has a higher patch version number compared to current version",
                     pi
                   )
                 );

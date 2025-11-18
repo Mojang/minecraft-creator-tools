@@ -47,6 +47,7 @@ const _allowedExtensions = [
   "mctemplate",
   "material",
   "vertex",
+  "md",
   "geometry",
   "fragment",
   "mcfunction",

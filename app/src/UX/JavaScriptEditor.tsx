@@ -1,7 +1,7 @@
 import React, { Component, SyntheticEvent } from "react";
 import Project from "./../app/Project";
-import IFile from "./../storage/IFile";
-import IStorage from "./../storage/IStorage";
+import IFile, { FileUpdateType } from "./../storage/IFile";
+import IStorage, { IFileUpdateEvent } from "./../storage/IStorage";
 import Editor from "@monaco-editor/react";
 import "./JavaScriptEditor.css";
 import * as monaco from "monaco-editor";
@@ -16,7 +16,7 @@ import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
 import Database from "../minecraft/Database";
 import ISnippet from "../app/ISnippet";
-import CartoApp, { CartoThemeStyle } from "../app/CartoApp";
+import CreatorToolsHost, { CreatorToolsThemeStyle } from "../app/CreatorToolsHost";
 import ITypeDefCatalog from "../minecraft/ITypeDefCatalog";
 import IAppProps from "./IAppProps";
 import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
@@ -74,6 +74,10 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
     this._doUpdate = this._doUpdate.bind(this);
     this.persist = this.persist.bind(this);
     this._considerFormat = this._considerFormat.bind(this);
+
+    this._handleFileStateChanged = this._handleFileStateChanged.bind(this);
+    this._handleFileStateRemoved = this._handleFileStateRemoved.bind(this);
+    this._handleFileStateAdded = this._handleFileStateAdded.bind(this);
 
     this._zoomIn = this._zoomIn.bind(this);
     this._zoomOut = this._zoomOut.bind(this);
@@ -246,7 +250,7 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
     if (this._scriptsFolder) {
       this._trackingUpdates = false;
 
-      this._scriptsFolder.storage.onFileAdded.unsubscribe(this._handleFileStateChanged);
+      this._scriptsFolder.storage.onFileAdded.unsubscribe(this._handleFileStateAdded);
       this._scriptsFolder.storage.onFileRemoved.unsubscribe(this._handleFileStateRemoved);
     }
   }
@@ -295,11 +299,18 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
 
       if (!this._trackingUpdates) {
         this._trackingUpdates = true;
+
         this._scriptsFolder = scriptsFolder;
 
-        scriptsFolder.storage.onFileAdded.subscribe(this._handleFileStateChanged);
-        scriptsFolder.storage.onFileContentsUpdated.subscribe(this._handleFileStateChanged);
-        scriptsFolder.storage.onFileRemoved.subscribe(this._handleFileStateRemoved);
+        if (!scriptsFolder.storage.onFileAdded.has(this._handleFileStateAdded)) {
+          scriptsFolder.storage.onFileAdded.subscribe(this._handleFileStateAdded);
+        }
+        if (!scriptsFolder.storage.onFileContentsUpdated.has(this._handleFileStateChanged)) {
+          scriptsFolder.storage.onFileContentsUpdated.subscribe(this._handleFileStateChanged);
+        }
+        if (!scriptsFolder.storage.onFileRemoved.has(this._handleFileStateRemoved)) {
+          scriptsFolder.storage.onFileRemoved.subscribe(this._handleFileStateRemoved);
+        }
       }
     }
 
@@ -319,8 +330,14 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
     this._updateFiles(path);
   }
 
-  _handleFileStateChanged(storage: IStorage, file: IFile) {
+  _handleFileStateAdded(storage: IStorage, file: IFile) {
     this._updateFiles(file.storageRelativePath);
+  }
+
+  _handleFileStateChanged(storage: IStorage, fileUpdate: IFileUpdateEvent) {
+    if (fileUpdate.sourceId !== this.getEditorInstanceId()) {
+      this._updateFiles(fileUpdate.file.storageRelativePath);
+    }
   }
 
   _updateFiles(path: string) {
@@ -401,6 +418,10 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
     return baseUri;
   }
 
+  getEditorInstanceId() {
+    return "JavaScriptEditor|" + (this.props.file ? this.props.file.extendedPath : "noFile");
+  }
+
   async _ensureModelForFile(monacoInstance: any, parentFolder: IFolder, file: IFile) {
     const baseUri = JavaScriptEditor.getUriForFile(file, this.props.scriptLanguage);
     let lang = "javascript";
@@ -427,7 +448,7 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
       ) {
         content = file.content as string;
 
-        tsFile.setContent(content);
+        tsFile.setContentIfSemanticallyDifferent(content, FileUpdateType.regularEdit, this.getEditorInstanceId());
       } else {
         content = tsFile.content as string;
       }
@@ -442,6 +463,11 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
 
       if (model === null || model === undefined) {
         model = monacoInstance.editor.createModel(content, lang, modelUri);
+      } else {
+        let existingContent = model.getValue();
+        if (existingContent.trim() !== file.content.trim()) {
+          model.setValue(file.content as string);
+        }
       }
     }
   }
@@ -456,7 +482,11 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
 
   _handleContentUpdated(newValue: string | undefined, event: any) {
     if (this.editor && this.props.file && !this.props.readOnly && newValue) {
-      this.props.file.setContent(newValue);
+      this.props.file.setContentIfSemanticallyDifferent(
+        newValue,
+        FileUpdateType.regularEdit,
+        this.getEditorInstanceId()
+      );
     }
   }
 
@@ -469,7 +499,7 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
   }
 
   async _considerFormat() {
-    if (this.editor && this.props.project && this.props.project.carto.formatBeforeSave) {
+    if (this.editor && this.props.project && this.props.project.creatorTools.formatBeforeSave) {
       const action = this.editor.getAction("editor.action.formatDocument");
 
       if (action) {
@@ -478,11 +508,13 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
     }
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
+    let didPersist = false;
+
     if (this.editor && this.props.file && !this.props.readOnly) {
       const file = this.props.file;
 
-      if (this.props.project && this.props.project.carto.formatBeforeSave) {
+      if (this.props.project && this.props.project.creatorTools.formatBeforeSave) {
         const action = this.editor.getAction("editor.action.formatDocument");
 
         if (action) {
@@ -493,7 +525,7 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
       const uri = this.editor.getModel()?.uri;
 
       if (uri === undefined) {
-        return;
+        return false;
       }
 
       const url = uri.toString();
@@ -501,19 +533,29 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
       const intendedUrl = monaco.Uri.parse(JavaScriptEditor.getUriForFile(file, this.props.scriptLanguage)).toString();
 
       if (url !== intendedUrl) {
-        return;
+        return false;
       }
 
       const value = this.editor.getValue();
 
       if (value) {
-        this.props.file.setContent(value);
+        if (
+          this.props.file.setContentIfSemanticallyDifferent(
+            value,
+            FileUpdateType.regularEdit,
+            this.getEditorInstanceId()
+          )
+        ) {
+          didPersist = true;
 
-        if (StorageUtilities.getTypeFromName(file.name) === "ts") {
-          await this.compileTsToJs(file, true);
+          if (StorageUtilities.getTypeFromName(file.name) === "ts") {
+            await this.compileTsToJs(file, true);
+          }
         }
       }
     }
+
+    return didPersist;
   }
 
   async compileTsToJs(file: IFile, doSave?: boolean) {
@@ -542,7 +584,11 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
         if (result.outputFiles.length > 0) {
           const jsContent = result.outputFiles[0].text;
 
-          jsFile.setContent(jsContent);
+          jsFile.setContentIfSemanticallyDifferent(
+            jsContent,
+            FileUpdateType.versionlessEdit,
+            this.getEditorInstanceId()
+          );
 
           if (doSave) {
             jsFile.saveContent();
@@ -659,7 +705,7 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
 
       let theme = "vs-dark";
 
-      if (CartoApp.theme === CartoThemeStyle.light) {
+      if (CreatorToolsHost.theme === CreatorToolsThemeStyle.light) {
         theme = "vs";
       }
 
@@ -732,7 +778,7 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
       );
     }
 
-    if (this.state.snippetSearch && this.state.snippetSearch.length >= 3 && this.props.carto.gallery) {
+    if (this.state.snippetSearch && this.state.snippetSearch.length >= 3 && this.props.creatorTools.gallery) {
       overlay = (
         <div
           className="jse-snippets-overlay"
@@ -744,10 +790,10 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
           }}
         >
           <ItemGallery
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             theme={this.props.theme}
             view={ItemTileButtonDisplayMode.smallImage}
-            gallery={this.props.carto.gallery}
+            gallery={this.props.creatorTools.gallery}
             search={this.state.snippetSearch}
             filterOn={[GalleryItemType.codeSample, GalleryItemType.editorCodeSample]}
             onGalleryItemCommand={this._handleSnippetGalleryCommand}

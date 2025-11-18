@@ -18,6 +18,14 @@ Donkey - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
   "end_scale": 1
 }
 
+
+Zombie Horse - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_horse.json
+
+"minecraft:scale_by_age": {
+  "start_scale": 0.5,
+  "end_scale": 0.5
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';
@@ -36,6 +44,8 @@ export default interface MinecraftScaleByAge {
    * Sample Values:
    * Donkey: 1
    *
+   *
+   * Zombie Horse: 0.5
    *
    */
   end_scale?: number;

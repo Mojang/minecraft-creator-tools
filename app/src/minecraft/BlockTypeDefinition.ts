@@ -64,7 +64,7 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
   }
 
   public get numericId() {
-    return this._typeData.id;
+    return this._typeData.lid;
   }
 
   public get baseTypeId() {
@@ -72,7 +72,7 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
   }
 
   public get mapColor() {
-    return this._typeData.mapColor;
+    return this._typeData.mc;
   }
 
   public get isCustom() {
@@ -540,7 +540,7 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
   public renderType: BlockRenderType = BlockRenderType.Custom;
 
   get icon() {
-    let val = this._typeData.icon;
+    let val = this._typeData.ic;
 
     if (val === undefined && this.baseType !== undefined) {
       val = this.baseType.icon;
@@ -575,7 +575,7 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
     this._typeId = name;
     this._handleFileUpdated = this._handleFileUpdated.bind(this);
     this._typeData = {
-      name: name,
+      n: name,
     };
 
     if (name.indexOf(":") >= 0 && !name.startsWith("minecraft:")) {
@@ -1185,20 +1185,18 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
     this.persist();
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     Log.assert(!this._isLoaded || this._wrapper !== null, "BTP");
 
     if (!this._wrapper) {
-      return;
+      return false;
     }
 
-    const bpString = JSON.stringify(this._wrapper, null, 2);
-
-    this._file.setContent(bpString);
+    return this._file.setObjectContentIfSemanticallyDifferent(this._wrapper);
   }
 
   async load() {

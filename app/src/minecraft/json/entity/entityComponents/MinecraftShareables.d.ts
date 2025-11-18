@@ -603,6 +603,48 @@ Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/enti
       "priority": 6
     },
     {
+      "item": "minecraft:netherite_spear",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 0
+    },
+    {
+      "item": "minecraft:diamond_spear",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 1
+    },
+    {
+      "item": "minecraft:iron_spear",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 2
+    },
+    {
+      "item": "minecraft:golden_spear",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 3
+    },
+    {
+      "item": "minecraft:copper_spear",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 4
+    },
+    {
+      "item": "minecraft:stone_spear",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 5
+    },
+    {
+      "item": "minecraft:wooden_spear",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 6
+    },
+    {
       "item": "minecraft:netherite_helmet",
       "want_amount": 1,
       "surplus_amount": 1,
@@ -811,6 +853,13 @@ Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       "stored_in_inventory": true
     },
     {
+      "item": "minecraft:golden_spear",
+      "priority": 2,
+      "admire": true,
+      "pickup_limit": 1,
+      "stored_in_inventory": true
+    },
+    {
       "item": "minecraft:golden_axe",
       "priority": 2,
       "admire": true,
@@ -943,6 +992,13 @@ Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
     },
     {
       "item": "minecraft:horsearmorgold",
+      "priority": 2,
+      "admire": true,
+      "pickup_limit": 1,
+      "stored_in_inventory": true
+    },
+    {
+      "item": "minecraft:golden_nautilus_armor",
       "priority": 2,
       "admire": true,
       "pickup_limit": 1,
@@ -1162,6 +1218,30 @@ Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
     },
     {
       "item": "minecraft:wooden_sword",
+      "priority": 8
+    },
+    {
+      "item": "minecraft:netherite_spear",
+      "priority": 3
+    },
+    {
+      "item": "minecraft:diamond_spear",
+      "priority": 4
+    },
+    {
+      "item": "minecraft:iron_spear",
+      "priority": 5
+    },
+    {
+      "item": "minecraft:copper_spear",
+      "priority": 6
+    },
+    {
+      "item": "minecraft:stone_spear",
+      "priority": 7
+    },
+    {
+      "item": "minecraft:wooden_spear",
       "priority": 8
     },
     {

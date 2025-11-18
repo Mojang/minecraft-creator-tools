@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import BlockCubeLine from "./BlockCubeLine";
+import BlockVolumeLine from "./BlockVolumeLine";
 import BlockProperty from "./BlockProperty";
 import IBlockData from "./IBlockData";
 import IBlockSurroundings from "./IBlockSurroundings";
@@ -34,7 +34,7 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
   public static MAX_WATER_LEVEL = 16;
 
   private _type: BlockType | undefined;
-  private _bedrockType: BlockType | undefined;
+  private _blockType: BlockType | undefined;
   private _data: number = 0;
 
   private _covered: boolean | undefined;
@@ -43,7 +43,7 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
 
   private _surroundings: IBlockSurroundings | undefined;
 
-  public line: BlockCubeLine | undefined;
+  public line: BlockVolumeLine | undefined;
   public extraLiquidDepth: number = -1;
   public persistenceVersion: number = -1;
 
@@ -80,8 +80,8 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
 
   public setType(blockType: BlockType) {
     this._type = blockType;
-    this._bedrockType = undefined;
-    this._typeId = blockType.typeId;
+    this._blockType = undefined;
+    this._typeId = blockType.id;
   }
 
   public get opaqueSideCount() {
@@ -93,13 +93,13 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
 
     let count = 0;
 
-    const blockShortTypeName = this.shortTypeName;
+    const blockShortTypeName = this.shortTypeId;
 
     let adjacent = this._surroundings.left;
     if (
       adjacent === undefined ||
       adjacent.isEmpty ||
-      (!adjacent.isOpaque && blockShortTypeName !== adjacent.shortTypeName)
+      (!adjacent.isOpaque && blockShortTypeName !== adjacent.shortTypeId)
     ) {
       count++;
     }
@@ -108,7 +108,7 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
     if (
       adjacent === undefined ||
       adjacent.isEmpty ||
-      (!adjacent.isOpaque && blockShortTypeName !== adjacent.shortTypeName)
+      (!adjacent.isOpaque && blockShortTypeName !== adjacent.shortTypeId)
     ) {
       count++;
     }
@@ -117,7 +117,7 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
     if (
       adjacent === undefined ||
       adjacent.isEmpty ||
-      (!adjacent.isOpaque && blockShortTypeName !== adjacent.shortTypeName)
+      (!adjacent.isOpaque && blockShortTypeName !== adjacent.shortTypeId)
     ) {
       count++;
     }
@@ -126,7 +126,7 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
     if (
       adjacent === undefined ||
       adjacent.isEmpty ||
-      (!adjacent.isOpaque && blockShortTypeName !== adjacent.shortTypeName)
+      (!adjacent.isOpaque && blockShortTypeName !== adjacent.shortTypeId)
     ) {
       count++;
     }
@@ -135,7 +135,7 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
     if (
       adjacent === undefined ||
       adjacent.isEmpty ||
-      (!adjacent.isOpaque && blockShortTypeName !== adjacent.shortTypeName)
+      (!adjacent.isOpaque && blockShortTypeName !== adjacent.shortTypeId)
     ) {
       count++;
     }
@@ -144,7 +144,7 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
     if (
       adjacent === undefined ||
       adjacent.isEmpty ||
-      (!adjacent.isOpaque && blockShortTypeName !== adjacent.shortTypeName)
+      (!adjacent.isOpaque && blockShortTypeName !== adjacent.shortTypeId)
     ) {
       count++;
     }
@@ -153,12 +153,12 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
   }
 
   public get isOpaque() {
-    if (this._bedrockType === undefined) {
+    if (this._blockType === undefined) {
       this._ensureTypes();
     }
 
-    if (this._bedrockType !== undefined) {
-      const baseType = this._bedrockType.baseType;
+    if (this._blockType !== undefined) {
+      const baseType = this._blockType.baseType;
 
       return baseType.isOpaque;
     }
@@ -167,7 +167,7 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
   }
 
   private _ensureTypes() {
-    if (this._bedrockType !== undefined) {
+    if (this._blockType !== undefined) {
       return;
     }
 
@@ -182,30 +182,30 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
       this._type.javaData.name !== null &&
       this._type.javaData.name !== this._typeId
     ) {
-      this._bedrockType = Database.ensureBlockType(this._type.javaData.name);
+      this._blockType = Database.ensureBlockType(this._type.javaData.name);
 
       const typeProp = this.getProperty("type");
 
       if (typeProp !== undefined) {
-        if (this._bedrockType.shortTypeName === "piston" && typeProp.asString("") === "sticky") {
-          this._bedrockType = Database.ensureBlockType("sticky_piston");
-        } else if (this._bedrockType.shortTypeName === "sticky_piston" && typeProp.asString("") === "normal") {
-          this._bedrockType = Database.ensureBlockType("piston");
+        if (this._blockType.shortId === "piston" && typeProp.asString("") === "sticky") {
+          this._blockType = Database.ensureBlockType("sticky_piston");
+        } else if (this._blockType.shortId === "sticky_piston" && typeProp.asString("") === "normal") {
+          this._blockType = Database.ensureBlockType("piston");
         }
       }
     } else {
-      this._bedrockType = this._type;
+      this._blockType = this._type;
     }
   }
 
   _updateDataFromProperties() {
     this._ensureTypes();
 
-    if (this._bedrockType === undefined) {
+    if (this._blockType === undefined) {
       return;
     }
 
-    const baseType = this._bedrockType.baseType;
+    const baseType = this._blockType.baseType;
 
     let data = 0;
 
@@ -247,24 +247,28 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
     }
   }
 
-  public get bedrockType() {
+  public get blockType() {
     this._ensureTypes();
 
-    return this._bedrockType;
+    if (this._blockType === undefined) {
+      throw new Error("Block type is undefined for block: " + this.id);
+    }
+
+    return this._blockType;
   }
 
   public get textureName() {
     this._ensureTypes();
 
-    if (this._bedrockType === undefined) {
+    if (this._blockType === undefined) {
       return undefined;
     }
 
-    if (this.shortTypeName === "water") {
+    if (this.shortTypeId === "water") {
       return undefined;
     }
 
-    return this._bedrockType.typeId;
+    return this._blockType.baseType.name;
   }
 
   public copyFrom(block: Block) {
@@ -279,7 +283,7 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
     const blockType = Database.getBlockTypeByLegacyId(byte);
 
     if (blockType) {
-      return new Block(blockType.typeId);
+      return new Block(blockType.id);
     }
 
     // Log.fail("Could not find block identifier: " + byte);
@@ -294,7 +298,7 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
       return prop.asNumber(0) * 2;
     }
 
-    const shortTypeName = this.shortTypeName;
+    const shortTypeName = this.shortTypeId;
 
     if (shortTypeName === "water") {
       return 15;
@@ -316,15 +320,15 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
   public get renderType(): BlockRenderType {
     this._ensureTypes();
 
-    if (this._bedrockType === undefined) {
+    if (this._blockType === undefined) {
       return BlockRenderType.BlockOneTexture;
     }
 
-    if (this.shortTypeName === "water") {
+    if (this.shortTypeId === "water") {
       return BlockRenderType.Water;
     }
 
-    return this._bedrockType.renderType;
+    return this._blockType.renderType;
   }
 
   public getProperty(name: string) {
@@ -422,7 +426,7 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
   public set typeName(val: string | undefined) {
     if (this._typeId !== val) {
       this._typeId = val;
-      this._bedrockType = undefined;
+      this._blockType = undefined;
       this._type = undefined;
 
       if (this.line !== undefined && this.line.cube !== undefined) {
@@ -459,7 +463,7 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
   }
 
   public get isEmpty() {
-    return this._typeId == null || this.shortTypeName === "air";
+    return this._typeId == null || this.shortTypeId === "air";
   }
 
   private _ensureSurroundingsIfCube() {
@@ -654,7 +658,7 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
     return this._surroundings.backward;
   }
 
-  public get shortTypeName() {
+  public get shortTypeId() {
     if (this._typeId !== undefined) {
       if (this._typeId.startsWith("minecraft:")) {
         return this._typeId.substring(10, this._typeId.length);

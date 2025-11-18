@@ -4,11 +4,11 @@ import Editor from "@monaco-editor/react";
 import "./MolangEditor.css";
 import * as monaco from "monaco-editor";
 import IPersistable from "./IPersistable";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import { ThemeInput, Toolbar } from "@fluentui/react-northstar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearchPlus, faSearchMinus } from "@fortawesome/free-solid-svg-icons";
-import CartoApp, { CartoThemeStyle } from "../app/CartoApp";
+import CreatorToolsHost, { CreatorToolsThemeStyle } from "../app/CreatorToolsHost";
 import Project from "../app/Project";
 
 interface IMolangEditorProps {
@@ -23,7 +23,7 @@ interface IMolangEditorProps {
   fixedHeight?: number;
   readOnly: boolean;
   preferredTextSize: number;
-  carto: Carto;
+  creatorTools: CreatorTools;
   onMolangTextChanged?: (newCommandText: string) => void;
   onUpdatePreferredTextSize?: (newSize: number) => void;
   onUpdateContent?: (newContent: string) => void;
@@ -90,7 +90,7 @@ export default class MolangEditor extends Component<IMolangEditorProps, IMolangE
 
     let theme = "vs-dark";
 
-    if (CartoApp.theme === CartoThemeStyle.light) {
+    if (CreatorToolsHost.theme === CreatorToolsThemeStyle.light) {
       theme = "vs";
     }
 
@@ -176,12 +176,13 @@ export default class MolangEditor extends Component<IMolangEditorProps, IMolangE
     }
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
+    let didPersist = false;
     if (this.editor !== undefined) {
       const value = this.editor.getValue();
 
       if (this.state.fileToEdit !== undefined) {
-        this.state.fileToEdit.setContent(value);
+        didPersist = this.state.fileToEdit.setContent(value);
       }
 
       if (this.state.content !== undefined) {
@@ -195,6 +196,8 @@ export default class MolangEditor extends Component<IMolangEditorProps, IMolangE
         this.props.onUpdateContent(value);
       }
     }
+
+    return didPersist;
   }
 
   _zoomIn() {
@@ -232,7 +235,7 @@ export default class MolangEditor extends Component<IMolangEditorProps, IMolangE
       if (this.props.onUpdatePreferredTextSize) {
         this.props.onUpdatePreferredTextSize(Math.round(val));
       } else {
-        this.props.carto.preferredTextSize = Math.round(val);
+        this.props.creatorTools.preferredTextSize = Math.round(val);
       }
     }
   }
@@ -377,7 +380,7 @@ export default class MolangEditor extends Component<IMolangEditorProps, IMolangE
               minHeight: editorHeight,
               maxHeight: editorHeight,
               backgroundColor:
-                CartoApp.theme === CartoThemeStyle.dark
+                CreatorToolsHost.theme === CreatorToolsThemeStyle.dark
                   ? "#000000"
                   : this.props.theme.siteVariables?.colorScheme.brand.background1,
             }}

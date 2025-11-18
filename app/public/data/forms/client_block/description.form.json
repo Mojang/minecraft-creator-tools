@@ -3,9 +3,10 @@
   "fields": [
     {
       "id": "identifier",
+      "description": "The namespace and identifier for this culling rule.",
       "title": "Identifier",
-      "dataType": 2,
-      "isRequired": true
+      "isRequired": true,
+      "dataType": 2
     }
   ],
   "title": "Client Block Description"

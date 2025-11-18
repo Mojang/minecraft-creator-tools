@@ -5,6 +5,7 @@ import DifferenceSet from "../storage/DifferenceSet";
 import Utilities from "../core/Utilities";
 import Log from "../core/Log";
 import VanillaProjectManager from "./VanillaProjectManager";
+import { CreatorToolsMinecraftState } from "../app/CreatorTools";
 
 export default class MinecraftUtilities {
   static isReloadableSetOfChanges(differenceSet: DifferenceSet) {
@@ -25,6 +26,37 @@ export default class MinecraftUtilities {
     }
 
     return canonId;
+  }
+
+  static getServerStatusFromState(state: CreatorToolsMinecraftState) {
+    switch (state) {
+      case CreatorToolsMinecraftState.stopped:
+        return "stopped";
+      case CreatorToolsMinecraftState.error:
+        return "error";
+      case CreatorToolsMinecraftState.starting:
+        return "starting";
+      case CreatorToolsMinecraftState.preparing:
+        return "preparing";
+      case CreatorToolsMinecraftState.started:
+        return "running";
+      case CreatorToolsMinecraftState.stopping:
+        return "stopping";
+      case CreatorToolsMinecraftState.disconnected:
+        return "disconnected";
+      case CreatorToolsMinecraftState.initializing:
+        return "initializing";
+      case CreatorToolsMinecraftState.initialized:
+        return "initialized";
+      case CreatorToolsMinecraftState.prepared:
+        return "prepared";
+      case CreatorToolsMinecraftState.newMinecraft:
+        return "new minecraft";
+      case CreatorToolsMinecraftState.none:
+        return "none";
+      default:
+        return "unknown";
+    }
   }
 
   static getIsBuiltIn(eventId: string) {

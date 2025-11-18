@@ -43,7 +43,33 @@
         ]
       },
       "isRequired": true,
-      "dataType": 2
+      "dataType": 2,
+      "choices": [
+        {
+          "id": "slot.armor.body",
+          "title": "Slot.armor.body"
+        },
+        {
+          "id": "slot.armor.chest",
+          "title": "Slot.armor.chest"
+        },
+        {
+          "id": "slot.armor.feet",
+          "title": "Slot.armor.feet"
+        },
+        {
+          "id": "slot.armor.head",
+          "title": "Slot.armor.head"
+        },
+        {
+          "id": "slot.armor.legs",
+          "title": "Slot.armor.legs"
+        },
+        {
+          "id": "slot.weapon.offhand",
+          "title": "Slot.weapon.offhand"
+        }
+      ]
     },
     {
       "id": "dispensable",
@@ -69,13 +95,15 @@
       "id": "hides_player_location",
       "title": "Hides Player Location",
       "description": "Determines whether the Player's location is hidden on Locator Maps and the Locator Bar when the wearable item is worn. Default is false.",
-      "dataType": 1
+      "dataType": 1,
+      "defaultValue": false
     },
     {
       "id": "protection",
       "title": "Protection",
       "description": "How much protection the wearable item provides. Default is set to 0.",
-      "dataType": 0
+      "dataType": 0,
+      "defaultValue": 0
     }
   ],
   "description": "Sets the wearable item component.",

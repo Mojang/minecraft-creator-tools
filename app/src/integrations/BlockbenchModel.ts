@@ -10,7 +10,9 @@ import IBlockbenchModel, {
   IBlockbenchAnimationKeyframe,
   IBlockbenchElement,
   IBlockbenchFace,
+  IBlockbenchGroupItem,
   IBlockbenchOutlineItem,
+  IBlockbenchOutlineOrGroupItem,
   IBlockbenchTexture,
 } from "./IBlockbenchModel";
 import ProjectItem from "../app/ProjectItem";
@@ -265,6 +267,7 @@ export default class BlockbenchModel {
       geo.visible_bounds_offset = [0, this.data.visible_box[2], 0];
     }
     const bonesByName: { [name: string]: IGeometryBone } = {};
+    const groupsByUuid: { [name: string]: IBlockbenchGroupItem } = {};
     const cubesById: { [uuid: string]: IGeometryBoneCube } = {};
     const locatorsById: { [uuid: string]: IBlockbenchElement } = {};
 
@@ -335,8 +338,28 @@ export default class BlockbenchModel {
       }
     }
 
+    if (this.data?.groups) {
+      for (const groupItem of this.data.groups) {
+        if (
+          groupItem &&
+          typeof groupItem !== "string" &&
+          groupItem.name &&
+          Utilities.isUsableAsObjectKey(groupItem.uuid)
+        ) {
+          groupsByUuid[groupItem.uuid] = groupItem;
+        }
+      }
+    }
+
     if (this.data?.outliner) {
-      this.processOutlineItems(this.data.outliner, bonesByName, cubesById, locatorsById, formatVersion);
+      this.processOutlineItemsIntoBonesByName(
+        this.data.outliner,
+        groupsByUuid,
+        bonesByName,
+        cubesById,
+        locatorsById,
+        formatVersion
+      );
     }
 
     for (const boneName in bonesByName) {
@@ -361,8 +384,9 @@ export default class BlockbenchModel {
     return true;
   }
 
-  processOutlineItems(
+  processOutlineItemsIntoBonesByName(
     outlineItems: (string | IBlockbenchOutlineItem)[],
+    groupsByUuid: { [name: string]: IBlockbenchOutlineOrGroupItem },
     bonesByName: { [name: string]: IGeometryBone },
     cubesById: { [name: string]: IGeometryBoneCube },
     locatorsById: { [name: string]: IBlockbenchElement },
@@ -410,30 +434,33 @@ export default class BlockbenchModel {
             parent.locators[lead.name] = lead.position;
           }
         }
-      } else if (
-        outlineItem &&
-        typeof outlineItem !== "string" &&
-        outlineItem.name &&
-        Utilities.isUsableAsObjectKey(outlineItem.name)
-      ) {
-        let bone = bonesByName[outlineItem.name];
+      } else if (outlineItem && typeof outlineItem !== "string") {
+        let groupData: IBlockbenchOutlineOrGroupItem = groupsByUuid[outlineItem.uuid];
+
+        if (!groupData) {
+          groupData = outlineItem;
+        }
+
+        let name = groupData.name ? groupData.name : String("bone" + context!.addIndex.toString());
+
+        let bone = bonesByName[name];
 
         if (!bone) {
           bone = {
-            name: outlineItem.name,
+            name: name,
             pivot: [],
             binding:
-              !BlockbenchModel.isLessThan110(formatVersion) && outlineItem.bedrock_binding
-                ? outlineItem.bedrock_binding
+              !BlockbenchModel.isLessThan110(formatVersion) && groupData.bedrock_binding
+                ? groupData.bedrock_binding
                 : undefined,
             cubes: undefined,
             locators: undefined,
           };
 
-          bonesByName[outlineItem.name] = bone;
+          bonesByName[name] = bone;
         }
 
-        let rot = outlineItem.rotation;
+        let rot = groupData.rotation;
 
         if (rot) {
           if (rot.length === 3) {
@@ -445,15 +472,18 @@ export default class BlockbenchModel {
           }
         }
 
-        bone.pivot = outlineItem.origin;
+        if (groupData.origin) {
+          bone.pivot = groupData.origin;
+        }
 
         if (parent) {
           bone.parent = parent.name;
         }
 
         if (outlineItem.children) {
-          this.processOutlineItems(
+          this.processOutlineItemsIntoBonesByName(
             outlineItem.children,
+            groupsByUuid,
             bonesByName,
             cubesById,
             locatorsById,
@@ -641,6 +671,8 @@ export default class BlockbenchModel {
 
                       if (texturesIndex >= 0) {
                         path = path.substring(texturesIndex);
+
+                        path = StorageUtilities.stripExtension(path);
 
                         for (const textureKey in etrd.textures) {
                           const targetPath = etrd.textures[textureKey];
@@ -893,18 +925,18 @@ export default class BlockbenchModel {
     return bd;
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     Log.assert(this._data !== null, "ITDP");
 
     if (this._data) {
-      const pjString = JSON.stringify(this._data, null, 2);
-
-      this._file.setContent(pjString);
+      return this._file.setObjectContentIfSemanticallyDifferent(this._data);
     }
+
+    return false;
   }
 
   async save() {
@@ -912,9 +944,9 @@ export default class BlockbenchModel {
       return;
     }
 
-    this.persist();
-
-    await this._file.saveContent(false);
+    if (await this.persist()) {
+      await this._file.saveContent(false);
+    }
   }
 
   async load() {
@@ -940,7 +972,7 @@ export default class BlockbenchModel {
   static createEmptyModel(name: string, identifier: string): IBlockbenchModel {
     return {
       meta: {
-        format_version: "4.10",
+        format_version: "5.0",
         model_format: "bedrock",
         box_uv: true,
       },
@@ -954,6 +986,7 @@ export default class BlockbenchModel {
       unhandled_root_fields: {},
       resolution: { width: 64, height: 32 },
       elements: [],
+      groups: [],
       outliner: [],
     };
   }
@@ -1149,6 +1182,7 @@ export default class BlockbenchModel {
 
     const def = model.definitions[modelIndex];
     const outlinerEltsByName: { [name: string]: IBlockbenchOutlineItem } = {};
+    const groupEltsByName: { [name: string]: IBlockbenchGroupItem } = {};
 
     let colorIndex = 0;
     let rootBone: IGeometryBone | undefined = undefined;
@@ -1165,17 +1199,29 @@ export default class BlockbenchModel {
         }
       }
 
+      let groupAndOutlineUuid = Utilities.createUuid();
+
       const outLinerElt: IBlockbenchOutlineItem = {
+        uuid: groupAndOutlineUuid,
+        isOpen: false,
+        children: [],
+      };
+
+      const groupElt: IBlockbenchGroupItem = {
         name: bone.name,
         origin: bone.pivot,
         rotation: rot,
         bedrock_binding: bone.binding,
         color: colorIndex,
-        uuid: Utilities.createUuid(),
+        uuid: groupAndOutlineUuid,
         export: true,
         mirror_uv: false,
         isOpen: false,
         locked: false,
+        reset: false,
+        selected: false,
+        primary_selected: false,
+        shade: false,
         visibility: true,
         autouv: 0,
         children: [],
@@ -1183,6 +1229,8 @@ export default class BlockbenchModel {
 
       if (Utilities.isUsableAsObjectKey(bone.name)) {
         outlinerEltsByName[bone.name] = outLinerElt;
+        groupEltsByName[bone.name] = groupElt;
+        bbmodel.groups?.push(groupElt);
       }
 
       colorIndex++;

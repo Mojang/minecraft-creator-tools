@@ -1,6 +1,5 @@
-import Carto from './../app/Carto';
+import CreatorTools from "../app/CreatorTools";
 
-export default interface IAppProps
-{
-    carto : Carto;
+export default interface IAppProps {
+  creatorTools: CreatorTools;
 }

@@ -6,7 +6,7 @@ import { ThemeInput } from "@fluentui/react-northstar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import ProjectEditorUtilities, { ProjectEditorAction, ProjectEditorMode } from "./ProjectEditorUtilities";
-import CartoApp from "../app/CartoApp";
+import CreatorToolsHost from "../app/CreatorToolsHost";
 import { faFileZipper, faFolder } from "@fortawesome/free-regular-svg-icons";
 import MinecraftButton from "./MinecraftButton";
 
@@ -40,19 +40,19 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
   }
 
   private _downloadFlatWorld() {
-    ProjectEditorUtilities.launchFlatWorldWithPacksDownload(this.props.carto, this.props.project);
+    ProjectEditorUtilities.launchFlatWorldWithPacksDownload(this.props.creatorTools, this.props.project);
   }
 
   private _downloadProjectWorld() {
-    ProjectEditorUtilities.launchWorldWithPacksDownload(this.props.carto, this.props.project);
+    ProjectEditorUtilities.launchWorldWithPacksDownload(this.props.creatorTools, this.props.project);
   }
 
   private _exportLocal() {
-    ProjectEditorUtilities.launchLocalExport(this.props.carto, this.props.project);
+    ProjectEditorUtilities.launchLocalExport(this.props.creatorTools, this.props.project);
   }
 
   private _exportZip() {
-    ProjectEditorUtilities.launchZipExport(this.props.carto, this.props.project);
+    ProjectEditorUtilities.launchZipExport(this.props.creatorTools, this.props.project);
   }
 
   render() {
@@ -133,7 +133,10 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
             <img
               className="pact-icon"
               alt=""
-              src={CartoApp.contentRoot + "res/latest/van/release/resource_pack/textures/blocks/grass_path_side.png"}
+              src={
+                CreatorToolsHost.contentRoot +
+                "res/latest/van/release/resource_pack/textures/blocks/grass_path_side.png"
+              }
             />
             <div className="pact-label">Download flat world</div>
           </div>
@@ -156,7 +159,10 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
             <img
               className="pact-icon"
               alt=""
-              src={CartoApp.contentRoot + "res/latest/van/release/resource_pack/textures/blocks/grass_side_carried.png"}
+              src={
+                CreatorToolsHost.contentRoot +
+                "res/latest/van/release/resource_pack/textures/blocks/grass_side_carried.png"
+              }
             />
             <div className="pact-label">Download project world</div>
           </div>

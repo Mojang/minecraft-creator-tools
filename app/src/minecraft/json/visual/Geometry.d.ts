@@ -20,16 +20,16 @@ export default interface Geometry {
 
   format_version: string | number[];
 
-  "geometryazAZ09_:Plus": GeometryGeometryazAZ09Plus;
+  "geometryazAZ09_:": GeometryGeometryazAZ09;
 
 }
 
 
 /**
  */
-export interface GeometryGeometryazAZ09Plus {
+export interface GeometryGeometryazAZ09 {
 
-  bones?: GeometryGeometryazAZ09PlusBones[];
+  bones?: GeometryGeometryazAZ09Bones[];
 
   cape?: string;
 
@@ -46,11 +46,11 @@ export interface GeometryGeometryazAZ09Plus {
 
 /**
  */
-export interface GeometryGeometryazAZ09PlusBones {
+export interface GeometryGeometryazAZ09Bones {
 
   bind_pose_rotation?: string[];
 
-  cubes?: GeometryGeometryazAZ09PlusBonesCubes[];
+  cubes?: GeometryGeometryazAZ09BonesCubes[];
 
   debug?: boolean;
 
@@ -74,14 +74,14 @@ export interface GeometryGeometryazAZ09PlusBones {
 
   rotation?: string[];
 
-  texture_meshes?: GeometryGeometryazAZ09PlusBonesTextureMeshes[];
+  texture_meshes?: GeometryGeometryazAZ09BonesTextureMeshes[];
 
 }
 
 
 /**
  */
-export interface GeometryGeometryazAZ09PlusBonesCubes {
+export interface GeometryGeometryazAZ09BonesCubes {
 
   mirror?: boolean;
 
@@ -96,14 +96,14 @@ export interface GeometryGeometryazAZ09PlusBonesCubes {
 
 /**
  */
-export interface GeometryGeometryazAZ09PlusBonesLocators {
+export interface GeometryGeometryazAZ09BonesLocators {
 
 }
 
 
 /**
  */
-export interface GeometryGeometryazAZ09PlusBonesPolyMesh {
+export interface GeometryGeometryazAZ09BonesPolyMesh {
 
   normalized_uvs?: boolean;
 
@@ -120,7 +120,7 @@ export interface GeometryGeometryazAZ09PlusBonesPolyMesh {
 
 /**
  */
-export interface GeometryGeometryazAZ09PlusBonesTextureMeshes {
+export interface GeometryGeometryazAZ09BonesTextureMeshes {
 
   local_pivot?: string[];
 

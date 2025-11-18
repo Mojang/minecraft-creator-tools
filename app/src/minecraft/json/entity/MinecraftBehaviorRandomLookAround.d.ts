@@ -25,17 +25,17 @@ Blaze - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 }
 
 
+Camel Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/camel_husk.json
+
+"minecraft:behavior.random_look_around": {
+  "priority": 9
+}
+
+
 Cave Spider - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/cave_spider.json
 
 "minecraft:behavior.random_look_around": {
   "priority": 7
-}
-
-
-Cow - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/cow.json
-
-"minecraft:behavior.random_look_around": {
-  "priority": 9
 }
 
 
@@ -141,7 +141,7 @@ export default interface MinecraftBehaviorRandomLookAround {
    *
    * Blaze: 5
    *
-   * Cave Spider: 7
+   * Camel Husk: 9
    *
    */
   priority?: number;

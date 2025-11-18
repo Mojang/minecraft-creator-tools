@@ -71,10 +71,12 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
     this._activeEditorPersistable = newPersistable;
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this._activeEditorPersistable !== undefined) {
-      await this._activeEditorPersistable.persist();
+      return await this._activeEditorPersistable.persist();
     }
+
+    return false;
   }
 
   _handleUseEditor(e: SyntheticEvent, data: (CheckboxProps & { checked: boolean }) | undefined) {
@@ -231,7 +233,7 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
   }
 
   _handleSeedChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
-    if (data === undefined || this.props.carto === null || this.state == null) {
+    if (data === undefined || this.props.creatorTools === null || this.state == null) {
       return;
     }
 
@@ -268,7 +270,7 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
   }
 
   _handleNameChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
-    if (data === undefined || this.props.carto === null || this.state == null) {
+    if (data === undefined || this.props.creatorTools === null || this.state == null) {
       return;
     }
 
@@ -416,7 +418,7 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
       settingsProps.push(
         <div className="wsa-packs" key="packbin">
           <PackManager
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             packReferences={packRefs}
             isWorldFocused={false}
             onPackSetChanged={this._handlePackSetChanged}
@@ -447,7 +449,7 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
       settingsProps.push(
         <div className="wsa-templates" key="templatebin">
           <TemplateManager
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             packReferences={templateRefs}
             onPackSetChanged={this._handleTemplateSetChanged}
           />

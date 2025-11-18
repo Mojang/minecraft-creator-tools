@@ -72,19 +72,17 @@ export default class JsonUIResourceDefinition {
     return et;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     if (!this.jsonUIScreen) {
       Log.unexpectedUndefined("ITRDP");
-      return;
+      return false;
     }
 
-    const defString = JSON.stringify(this.jsonUIScreen, null, 2);
-
-    this._file.setContent(defString);
+    return this._file.setObjectContentIfSemanticallyDifferent(this.jsonUIScreen);
   }
 
   getControlRefs() {

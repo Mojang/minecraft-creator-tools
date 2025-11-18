@@ -32,8 +32,12 @@ Axolotl - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
 
 "minecraft:ageable": {
   "duration": 1200,
-  "feed_items": "tropical_fish_bucket",
-  "transform_to_item": "water_bucket:0",
+  "feed_items": [
+    {
+      "item": "tropical_fish_bucket",
+      "result_item": "water_bucket:0"
+    }
+  ],
   "grow_up": {
     "event": "minecraft:ageable_grow_up",
     "target": "self"
@@ -280,13 +284,15 @@ export default interface MinecraftAgeable {
   /**
    * @remarks
    * List of items that can be fed to the entity. Includes 'item' for
-   * the item name and 'growth' to define how much time it grows up
-   * by.
+   * the item name, 'growth' to define how much time it grows up by,
+   * and 'result_item' that defines what item the feed item will
+   * transform to upon successful interaction (Format: 
+   * itemName:auxValue).
    * 
    * Sample Values:
    * Armadillo: "spider_eye"
    *
-   * Axolotl: "tropical_fish_bucket"
+   * Axolotl: [{"item":"tropical_fish_bucket","result_item":"water_bucket:0"}]
    *
    * Bee: ["minecraft:poppy","minecraft:blue_orchid","minecraft:allium","minecraft:azure_bluet","minecraft:red_tulip","minecraft:orange_tulip","minecraft:white_tulip","minecraft:pink_tulip","minecraft:oxeye_daisy","minecraft:cornflower","minecraft:lily_of_the_valley","minecraft:dandelion","minecraft:wither_rose","minecraft:sunflower","minecraft:lilac","minecraft:rose_bush","minecraft:peony","minecraft:flowering_azalea","minecraft:azalea_leaves_flowered","minecraft:mangrove_propagule","minecraft:pitcher_plant","minecraft:torchflower","minecraft:cherry_leaves","minecraft:pink_petals","minecraft:wildflowers","minecraft:cactus_flower"]
    *
@@ -323,16 +329,5 @@ export default interface MinecraftAgeable {
    *
    */
   interact_filters?: jsoncommon.MinecraftFilter;
-
-  /**
-   * @remarks
-   * The feed item used will transform to this item upon successful
-   * interaction. Format: itemName:auxValue
-   * 
-   * Sample Values:
-   * Axolotl: "water_bucket:0"
-   *
-   */
-  transform_to_item?: string[];
 
 }

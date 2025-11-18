@@ -8,7 +8,7 @@ import IProperty from "../dataform/IProperty";
 import SpawnRulesBehaviorDefinition from "../minecraft/SpawnRulesBehaviorDefinition";
 import SoundDefinitionCatalogDefinition from "../minecraft/SoundDefinitionCatalogDefinition";
 import SoundCatalogDefinition from "../minecraft/SoundCatalogDefinition";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import Project from "../app/Project";
 import { ISoundDefinition } from "../minecraft/ISoundDefinitionCatalog";
 import IPersistable from "./IPersistable";
@@ -17,7 +17,7 @@ import ProjectItemCreateManager from "../app/ProjectItemCreateManager";
 interface IAudioItemPropertiesProps {
   readOnly: boolean;
   theme: ThemeInput<any>;
-  carto: Carto;
+  creatorTools: CreatorTools;
   file?: IFile;
   project: Project;
   setActivePersistable?: (persistObject: IPersistable) => void;
@@ -159,14 +159,22 @@ export default class AudioItemProperties extends Component<IAudioItemPropertiesP
     }
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
+    let didPersist = false;
+
     if (this.state !== undefined && this.state.soundDefinitionCatalog) {
-      this.state.soundDefinitionCatalog.persist();
+      if (this.state.soundDefinitionCatalog.persist()) {
+        didPersist = true;
+      }
     }
 
     if (this.state !== undefined && this.state.soundCatalog) {
-      this.state.soundCatalog.persist();
+      if (this.state.soundCatalog.persist()) {
+        didPersist = true;
+      }
     }
+
+    return didPersist;
   }
 
   _handleDataFormPropertyChange(props: IDataFormProps, property: IProperty, newValue: any) {

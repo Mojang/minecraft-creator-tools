@@ -4,24 +4,28 @@
     {
       "id": "control_flags",
       "title": "Control Flags",
-      "dataType": 17
+      "dataType": 17,
+      "defaultValue": []
     },
     {
       "id": "jump_chance_percentage",
       "title": "Jump Chance Percentage",
-      "description": "Percent chance a slime or magma cube has to jump while in water / lava. Default value: 0.8.",
-      "dataType": 3
+      "description": "Percent chance a slime or magma cube has to jump while in water / lava.",
+      "dataType": 3,
+      "defaultValue": 0.800000011920929
     },
     {
       "id": "priority",
       "title": "Priority",
-      "dataType": 0
+      "dataType": 0,
+      "defaultValue": 0
     },
     {
       "id": "speed_multiplier",
       "title": "Speed Multiplier",
-      "description": "Determines the multiplier the entity's speed is modified by when moving through water / lava. Default value: 1.2.",
-      "dataType": 3
+      "description": "Determines the multiplier the entity's speed is modified by when moving through water / lava.",
+      "dataType": 3,
+      "defaultValue": 1.2000000476837158
     }
   ],
   "description": "Allow slimes to float in water / lava. Can only be used by Slime and Magma Cubes.",

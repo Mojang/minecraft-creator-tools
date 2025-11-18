@@ -253,6 +253,8 @@ export default class ProjectItemCreateManager {
         }
 
         await zipStorage.loadFromUint8Array(containerFile.content, containerFile.name);
+
+        zipStorage.containerFile = containerFile;
         containerFile.fileContainerStorage = zipStorage;
         containerFile.fileContainerStorage.storagePath = containerFilePath + "#";
       }
@@ -324,6 +326,8 @@ export default class ProjectItemCreateManager {
         }
 
         await zipStorage.loadFromUint8Array(containerFile.content);
+
+        zipStorage.containerFile = containerFile;
         containerFile.fileContainerStorage = zipStorage;
         containerFile.fileContainerStorage.storagePath = containerFilePath + "#";
       }

@@ -53,7 +53,12 @@
         "/vanilla/behavior_pack/entities/axolotl.json": [
           {
             "path": "/minecraft:entity/component_groups/axolotl_adult/minecraft:breedable/",
-            "content": "tropical_fish_bucket"
+            "content": [
+              {
+                "item": "tropical_fish_bucket",
+                "result_item": "water_bucket:0"
+              }
+            ]
           }
         ],
         "/vanilla/behavior_pack/entities/bee.json": [
@@ -181,6 +186,35 @@
             "path": "/minecraft:entity/component_groups/minecraft:llama_adult/minecraft:breedable/",
             "content": [
               "hay_block"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/nautilus.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_adult/minecraft:breedable/",
+            "content": [
+              {
+                "item": "pufferfish_bucket",
+                "result_item": "water_bucket:0"
+              },
+              {
+                "item": "cod_bucket",
+                "result_item": "water_bucket:0"
+              },
+              {
+                "item": "salmon_bucket",
+                "result_item": "water_bucket:0"
+              },
+              {
+                "item": "tropical_fish_bucket",
+                "result_item": "water_bucket:0"
+              },
+              "pufferfish",
+              "fish",
+              "salmon",
+              "clownfish",
+              "cooked_fish",
+              "cooked_salmon"
             ]
           }
         ],
@@ -558,12 +592,6 @@
       "dataType": 18
     },
     {
-      "id": "transform_to_item",
-      "title": "Transform To Item",
-      "description": "The breed item used will transform to this item upon successful interaction. Format: itemName:auxValue",
-      "dataType": 2
-    },
-    {
       "id": "combine_parent_colors",
       "title": "Combine Parent Colors",
       "dataType": 2
@@ -602,8 +630,12 @@
         "path": "/minecraft:entity/component_groups/axolotl_adult/minecraft:breedable/",
         "content": {
           "require_tame": false,
-          "breed_items": "tropical_fish_bucket",
-          "transform_to_item": "water_bucket:0",
+          "breed_items": [
+            {
+              "item": "tropical_fish_bucket",
+              "result_item": "water_bucket:0"
+            }
+          ],
           "breeds_with": {
             "mate_type": "minecraft:axolotl",
             "baby_type": "minecraft:axolotl",
@@ -964,6 +996,46 @@
             "min_variant": 0,
             "max_variant": 1
           }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_adult/minecraft:breedable/",
+        "content": {
+          "breed_items": [
+            {
+              "item": "pufferfish_bucket",
+              "result_item": "water_bucket:0"
+            },
+            {
+              "item": "cod_bucket",
+              "result_item": "water_bucket:0"
+            },
+            {
+              "item": "salmon_bucket",
+              "result_item": "water_bucket:0"
+            },
+            {
+              "item": "tropical_fish_bucket",
+              "result_item": "water_bucket:0"
+            },
+            "pufferfish",
+            "fish",
+            "salmon",
+            "clownfish",
+            "cooked_fish",
+            "cooked_salmon"
+          ],
+          "breeds_with": {
+            "mate_type": "minecraft:nautilus",
+            "baby_type": "minecraft:nautilus",
+            "breed_event": {
+              "event": "minecraft:entity_born",
+              "target": "baby"
+            }
+          },
+          "require_tame": true
         }
       }
     ],

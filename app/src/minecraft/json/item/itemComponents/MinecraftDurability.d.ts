@@ -11,6 +11,83 @@
  * 
  * minecraft:durability Samples
 
+Copper Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/copper_spear.json
+
+"minecraft:durability": {
+  "max_durability": 190,
+  "damage_chance": {
+    "min": 0,
+    "max": 100
+  }
+}
+
+
+Diamond Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/diamond_spear.json
+
+"minecraft:durability": {
+  "max_durability": 1560,
+  "damage_chance": {
+    "min": 0,
+    "max": 100
+  }
+}
+
+
+Golden Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/golden_spear.json
+
+"minecraft:durability": {
+  "max_durability": 30,
+  "damage_chance": {
+    "min": 0,
+    "max": 100
+  }
+}
+
+
+Iron Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/iron_spear.json
+
+"minecraft:durability": {
+  "max_durability": 250,
+  "damage_chance": {
+    "min": 0,
+    "max": 100
+  }
+}
+
+
+Netherite Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/netherite_spear.json
+
+"minecraft:durability": {
+  "max_durability": 2030,
+  "damage_chance": {
+    "min": 0,
+    "max": 100
+  }
+}
+
+
+Stone Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/stone_spear.json
+
+"minecraft:durability": {
+  "max_durability": 130,
+  "damage_chance": {
+    "min": 0,
+    "max": 100
+  }
+}
+
+
+Wooden Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/wooden_spear.json
+
+"minecraft:durability": {
+  "max_durability": 60,
+  "damage_chance": {
+    "min": 0,
+    "max": 100
+  }
+}
+
+
 Item Axe Turret Kit - https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/axe_turret_kit.item.json
 
 "minecraft:durability": {
@@ -57,17 +134,6 @@ My Sword Singing - https://github.com/microsoft/minecraft-samples/tree/main/cust
   "max_durability": 1000
 }
 
-
-My Sword Weak - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/behavior_packs/custom_item/items/my_sword_weak.json
-
-"minecraft:durability": {
-  "damage_chance": {
-    "min": 100,
-    "max": 100
-  },
-  "max_durability": 2
-}
-
  */
 
 import * as jsoncommon from './../../../jsoncommon';
@@ -87,12 +153,13 @@ export default interface MinecraftDurability {
    * value.
    * 
    * Sample Values:
+   * Copper Spear: {"min":0,"max":100}
+   *
+   *
    * My Sword: {"min":10,"max":50}
    *
    *
    * My Sword Singing: {"min":0,"max":0}
-   *
-   * My Sword Weak: {"min":100,"max":100}
    *
    */
   damage_chance?: MinecraftDurabilityDamageChance;
@@ -104,13 +171,11 @@ export default interface MinecraftDurability {
    * minimum of 0.
    * 
    * Sample Values:
-   * Item Axe Turret Kit: 251
+   * Copper Spear: 190
    *
+   * Diamond Spear: 1560
    *
-   * Chestplate: 200
-   *
-   *
-   * My Sword: 36
+   * Golden Spear: 30
    *
    */
   max_durability: number;

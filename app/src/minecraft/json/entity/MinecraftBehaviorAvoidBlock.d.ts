@@ -57,8 +57,8 @@ Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
   ],
   "avoid_block_sound": "retreat",
   "sound_interval": {
-    "range_min": 2,
-    "range_max": 5
+    "min": 2,
+    "max": 5
   }
 }
 
@@ -137,6 +137,7 @@ export default interface MinecraftBehaviorAvoidBlock {
    * Sample Values:
    * Hoglin: {"range_min":2,"range_max":5}
    *
+   * Piglin: {"min":2,"max":5}
    *
    */
   sound_interval?: number[];

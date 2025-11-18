@@ -8,6 +8,15 @@
  * Contains types for working with various Minecraft Bedrock Edition JSON schemas.
  * 
  * Items Documentation - minecraft:fire_resistant
+ * 
+ * minecraft:fire_resistant Samples
+
+Netherite Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/netherite_spear.json
+
+"minecraft:fire_resistant": {
+  "value": true
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';
@@ -22,7 +31,11 @@ export default interface MinecraftFireResistant {
   /**
    * @remarks
    * Determines whether the item is immune to burning when dropped in
-   * fire or lava. Default value: true.
+   * fire or lava.
+   * 
+   * Sample Values:
+   * Netherite Spear: true
+   *
    */
   value?: boolean;
 

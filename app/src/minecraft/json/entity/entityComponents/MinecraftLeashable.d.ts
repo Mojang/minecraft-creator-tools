@@ -84,6 +84,30 @@ Llama - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 }
 
 
+Zombie Horse - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_horse.json
+
+"minecraft:leashable": {
+  "on_unleash": {
+    "event": "minecraft:on_unleashed",
+    "target": "self"
+  },
+  "presets": [
+    {
+      "filter": {
+        "test": "is_family",
+        "subject": "other",
+        "value": "happy_ghast"
+      },
+      "spring_type": "quad_dampened"
+    },
+    {
+      "hard_distance": 10,
+      "max_distance": 14
+    }
+  ]
+}
+
+
 Sheepomelon - https://github.com/microsoft/minecraft-samples/tree/main/addon_starter/1_hello_world/behavior_packs/aop_mobs/entities/sheepomelon.behavior.json
 
 "minecraft:leashable": {
@@ -163,6 +187,7 @@ export default interface MinecraftLeashable {
    * Happy Ghast: {"event":"minecraft:on_unleashed","target":"self"}
    *
    * Llama: {"event":"minecraft:on_unleash","target":"self"}
+   *
    *
    *
    */

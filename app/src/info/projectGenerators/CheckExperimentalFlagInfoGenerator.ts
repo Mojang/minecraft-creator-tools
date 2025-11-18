@@ -53,7 +53,8 @@ export default class CheckExperimentalFlagInfoGenerator implements IProjectInfoG
         item.itemType !== ProjectItemType.MCWorld &&
         item.itemType !== ProjectItemType.MCTemplate &&
         item.itemType !== ProjectItemType.worldFolder &&
-        item.itemType !== ProjectItemType.levelDat
+        item.itemType !== ProjectItemType.levelDat &&
+        item.itemType !== ProjectItemType.levelDatOld
       ) {
         continue;
       }

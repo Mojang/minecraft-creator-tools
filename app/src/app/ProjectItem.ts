@@ -11,7 +11,7 @@ import Log from "./../core/Log";
 import { ProjectItemType } from "./IProjectItemData";
 import Project from "./Project";
 import { EventDispatcher } from "ste-events";
-import IFile from "../storage/IFile";
+import IFile, { FileUpdateType } from "../storage/IFile";
 import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
 import IGitHubInfo from "./IGitHubInfo";
@@ -20,7 +20,7 @@ import { ProjectEditPreference } from "./IProjectData";
 import MCWorld from "../minecraft/MCWorld";
 import ZipStorage from "../storage/ZipStorage";
 import Utilities from "../core/Utilities";
-import { StorageErrorStatus } from "../storage/IStorage";
+import { IFileUpdateEvent, StorageErrorStatus } from "../storage/IStorage";
 import ProjectItemUtilities from "./ProjectItemUtilities";
 import Pack from "../minecraft/Pack";
 import ProjectAutogeneration from "./ProjectAutogeneration";
@@ -33,6 +33,11 @@ import { ProjectItemVariantType } from "./IProjectItemVariant";
 import Database from "../minecraft/Database";
 import ProjectVariant from "./ProjectVariant";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
+
+export interface IProjectItemContentUpdateEvent {
+  item: ProjectItem;
+  fileUpdate: IFileUpdateEvent;
+}
 
 export default class ProjectItem {
   private _data: IProjectItemData;
@@ -703,7 +708,7 @@ export default class ProjectItem {
     const ep = this.editPreference;
 
     if (ep === ProjectItemEditPreference.projectDefault) {
-      return this._project.editPreference;
+      return this._project.effectiveEditPreference;
     } else if (ep === ProjectItemEditPreference.forceRaw) {
       return ProjectEditPreference.raw;
     } else {
@@ -1196,6 +1201,7 @@ export default class ProjectItem {
 
                   await zipStorage.loadFromUint8Array(zipFile.content, zipFile.name);
 
+                  zipStorage.containerFile = zipFile;
                   zipFile.fileContainerStorage = zipStorage;
                 }
 
@@ -1257,6 +1263,22 @@ export default class ProjectItem {
     if (this._onLoaded && this.isContentLoaded) {
       this._onLoaded.dispatch(this, this);
     }
+  }
+
+  invalidateContentProcessedState() {
+    if (this._defaultFile) {
+      this._defaultFile.manager = undefined;
+    }
+
+    for (const varLabel in this._variants) {
+      const variant = this._variants[varLabel];
+
+      if (variant.file) {
+        variant.file.manager = undefined;
+      }
+    }
+
+    this._isFileContentProcessed = false;
   }
 
   async getManager() {
@@ -1329,6 +1351,7 @@ export default class ProjectItem {
 
                 await zipStorage.loadFromUint8Array(zipFile.content, zipFile.name);
 
+                zipStorage.containerFile = zipFile;
                 zipFile.fileContainerStorage = zipStorage;
               }
 
@@ -1514,16 +1537,16 @@ export default class ProjectItem {
       const zs = this.primaryFile.fileContainerStorage as ZipStorage;
 
       if (zs.isContentUpdated && (zs.errorStatus === undefined || zs.errorStatus === StorageErrorStatus.none)) {
-        const op = await this._project.carto.notifyOperationStarted(
+        const op = await this._project.creatorTools.notifyOperationStarted(
           "Zipping file '" + this.primaryFile.storageRelativePath + "'..."
         );
         const bytes = await zs.generateUint8ArrayAsync();
-        await this._project.carto.notifyOperationEnded(
+        await this._project.creatorTools.notifyOperationEnded(
           op,
           "Done zipping file '" + this.primaryFile.storageRelativePath + "'."
         );
 
-        this.primaryFile.setContent(bytes);
+        this.primaryFile.setContent(bytes, FileUpdateType.versionlessEdit);
       }
     }
   }

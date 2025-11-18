@@ -60,6 +60,17 @@ Guardian - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/
 }
 
 
+Nautilus - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/nautilus.json
+
+"minecraft:behavior.random_swim": {
+  "priority": 6,
+  "speed_multiplier": 1.5,
+  "xz_dist": 16,
+  "y_dist": 4,
+  "interval": 0
+}
+
+
 Salmon - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/salmon.json
 
 "minecraft:behavior.random_swim": {
@@ -86,6 +97,17 @@ Turtle - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
   "interval": 0,
   "xz_dist": 30,
   "y_dist": 15
+}
+
+
+Zombie Nautilus - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_nautilus.json
+
+"minecraft:behavior.random_swim": {
+  "priority": 4,
+  "speed_multiplier": 1.5,
+  "xz_dist": 16,
+  "y_dist": 4,
+  "interval": 0
 }
 
  */
@@ -143,6 +165,8 @@ export default interface MinecraftBehaviorRandomSwim {
    *
    * Fish: 1
    *
+   *
+   * Nautilus: 1.5
    *
    */
   speed_multiplier?: number;

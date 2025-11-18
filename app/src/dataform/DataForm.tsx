@@ -33,7 +33,7 @@ import Utilities from "../core/Utilities";
 import IDataContainer from "./IDataContainer";
 import FieldUtilities from "./FieldUtilities";
 import StorageUtilities from "../storage/StorageUtilities";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import Project from "../app/Project";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
@@ -59,7 +59,7 @@ export interface IDataFormProps extends IDataContainer {
   displayNarrow?: boolean;
   tag?: any;
   parentField?: IField;
-  carto?: Carto;
+  carto?: CreatorTools;
   project?: Project;
   select?: string;
   lookupProvider?: ILookupProvider;
@@ -1333,7 +1333,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
             );
           }
 
-          if (field.defaultValue) {
+          if (field.defaultValue !== undefined && field.defaultValue !== null) {
             let defVal = Utilities.humanify(field.defaultValue, field.humanifyValues);
 
             sampleElements.push(
@@ -1686,7 +1686,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                   <MinecraftEventTriggerEditor
                     data={field.dataType === FieldDataType.minecraftEventTrigger ? val : { event: val }}
                     objectKey={objKey}
-                    carto={this.props.carto}
+                    creatorTools={this.props.carto}
                     project={this.props.project}
                     readOnly={this.props.readOnly}
                     constrainHeight={false}
@@ -3294,7 +3294,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               form={this.props.definition}
               field={field}
               entityTypeDefinition={this.props.itemDefinition as EntityTypeDefinition}
-              carto={this.props.carto}
+              creatorTools={this.props.carto}
               project={this.props.project}
               theme={this.props.theme}
               constrainHeight={true}

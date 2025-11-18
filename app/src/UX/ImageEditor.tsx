@@ -2,7 +2,7 @@ import { Component } from "react";
 import "./ImageEditor.css";
 import React from "react";
 import IPersistable from "./IPersistable";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import { Dialog, ThemeInput, Toolbar } from "@fluentui/react-northstar";
 import StorageUtilities from "../storage/StorageUtilities";
 import Utilities from "../core/Utilities";
@@ -52,7 +52,7 @@ interface IImageEditorProps {
   visualSeed?: number;
   setActivePersistable?: (persistObject: IPersistable) => void;
   heightOffset?: number;
-  carto: Carto;
+  creatorTools: CreatorTools;
   onUpdateContent?: (newContent: Uint8Array) => void;
   onCommit?: (newContent: Uint8Array) => void;
 }
@@ -639,7 +639,7 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
       const uint8 = new Uint8Array(arrayBuffer);
 
       if (this.props.projectItem && this.props.projectItem.primaryFile) {
-        this.props.projectItem.primaryFile.setContent(uint8);
+        this.props.projectItem.primaryFile.setContentIfSemanticallyDifferent(uint8);
       }
 
       if (this.props.onUpdateContent) {
@@ -705,7 +705,7 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
       const arrayBuffer = await blob.arrayBuffer();
       const uint8 = new Uint8Array(arrayBuffer);
 
-      paintingFile.setContent(uint8);
+      paintingFile.setContentIfSemanticallyDifferent(uint8);
       this.props.projectItem.project.ensureItemFromFile(
         paintingFile,
         ProjectItemType.texture,
@@ -770,7 +770,7 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
           const file = blockTextureFolder.ensureFile(targetName + ".png");
 
           if (file) {
-            file.setContent(uint8);
+            file.setContentIfSemanticallyDifferent(uint8);
 
             this.props.projectItem.project.ensureItemFromFile(
               file,
@@ -784,9 +784,11 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
     }
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     await this._persistCanvasToContent();
     await this.state.imageEdits?.updateOutputs(this.props.projectItem.project);
+
+    return true;
   }
 
   getImageString() {
@@ -1090,7 +1092,7 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
                 readOnly={false}
                 directObject={this.state.imageEdits?.data}
                 project={this.props.projectItem.project}
-                carto={this.props.carto}
+                carto={this.props.creatorTools}
               />
             }
             header={StorageUtilities.getBaseFromName(this.props.name) + " Properties"}

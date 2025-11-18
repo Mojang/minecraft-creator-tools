@@ -5,7 +5,6 @@ import "./DocumentedScriptEnumEditor.css";
 import DocumentedScriptEnum from "../minecraft/docs/DocumentedScriptEnum";
 import DataForm, { IDataFormProps } from "../dataform/DataForm";
 import Database from "../minecraft/Database";
-import CartoApp from "../app/CartoApp";
 import Project from "../app/Project";
 import { ThemeInput } from "@fluentui/react-northstar";
 import StorageUtilities from "../storage/StorageUtilities";
@@ -13,6 +12,7 @@ import { FieldDataType } from "../dataform/IField";
 import IProperty from "../dataform/IProperty";
 import Log from "../core/Log";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
+import CreatorTools from "../app/CreatorTools";
 
 interface IDocumentedScriptEnumEditorProps extends IFileProps {
   heightOffset: number;
@@ -20,7 +20,7 @@ interface IDocumentedScriptEnumEditorProps extends IFileProps {
   typesReadOnly: boolean;
   docsReadOnly: boolean;
   docScriptEnum: DocumentedScriptEnum;
-  carto: CartoApp;
+  creatorTools: CreatorTools;
   project: Project;
   onDocumentedScriptEnumUpdate?: (docEnum: DocumentedScriptEnum) => void;
 }
@@ -40,8 +40,8 @@ export default class DocumentedScriptEnumEditor extends Component<
     this._handleDataFormPropertyChange = this._handleDataFormPropertyChange.bind(this);
   }
 
-  async persist() {
-    await this.props.docScriptEnum.persist();
+  async persist(): Promise<boolean> {
+    return await this.props.docScriptEnum.persist();
   }
 
   static getDerivedStateFromProps(props: IDocumentedScriptEnumEditorProps, state: IDocumentedScriptEnumEditorState) {
@@ -85,9 +85,7 @@ export default class DocumentedScriptEnumEditor extends Component<
     if (props.tagData && props.directObject) {
       const file = props.tagData as IFile;
 
-      const newData = JSON.stringify(props.directObject, null, 2);
-
-      file.setContent(newData);
+      file.setObjectContentIfSemanticallyDifferent(props.directObject);
 
       this.props.docScriptEnum.generateUndocumentedCount();
 

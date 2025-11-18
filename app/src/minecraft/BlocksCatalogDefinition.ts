@@ -300,18 +300,18 @@ export default class BlocksCatalogDefinition {
     }
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     Log.assert(this.blocksCatalog !== null, "ITDP");
 
-    if (this.blocksCatalog) {
-      const defString = JSON.stringify(this.blocksCatalog, null, 2);
-
-      this._file.setContent(defString);
+    if (!this.blocksCatalog) {
+      return false;
     }
+
+    return this._file.setObjectContentIfSemanticallyDifferent(this.blocksCatalog);
   }
 
   async load() {

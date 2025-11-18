@@ -64,7 +64,9 @@ export default class TypeScriptDefinition implements IDefinition {
     return tsd;
   }
 
-  persist() {}
+  persist(): boolean {
+    return false;
+  }
 
   async load() {
     if (this._isLoaded) {

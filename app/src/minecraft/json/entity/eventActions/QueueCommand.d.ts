@@ -48,5 +48,5 @@ export default interface QueueCommand {
 
 
 export enum QueueCommandTarget {
-  Self = `self`
+  self = `self`
 }

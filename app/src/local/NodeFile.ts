@@ -3,7 +3,7 @@
 
 import NodeFolder from "./NodeFolder";
 import NodeStorage from "./NodeStorage";
-import IFile from "../storage/IFile";
+import IFile, { FileUpdateType } from "../storage/IFile";
 import FileBase from "../storage/FileBase";
 import StorageUtilities, { EncodingType } from "../storage/StorageUtilities";
 import * as fs from "fs";
@@ -41,11 +41,15 @@ export default class NodeFile extends FileBase implements IFile {
     this._name = folderName;
   }
 
+  async scanForChanges(): Promise<void> {
+    // No-op for node storage
+  }
+
   async exists(): Promise<boolean> {
     return fs.existsSync(this.fullPath);
   }
 
-  async loadContent(force: boolean): Promise<Date> {
+  loadContentSync(force: boolean): Date {
     if (force || this.lastLoadedOrSaved == null) {
       const encoding = StorageUtilities.getEncodingByFileName(this._name);
 
@@ -73,21 +77,30 @@ export default class NodeFile extends FileBase implements IFile {
     return this.lastLoadedOrSaved;
   }
 
-  setContent(newContent: string | Uint8Array | null) {
+  async loadContent(force: boolean): Promise<Date> {
+    return this.loadContentSync(force);
+  }
+
+  setContent(newContent: string | Uint8Array | null, updateType?: FileUpdateType) {
     const areEqual = StorageUtilities.contentsAreEqual(this._content, newContent);
 
-    if (!areEqual) {
-      if (!this.lastLoadedOrSaved) {
-        this.lastLoadedOrSaved = new Date();
-        this.lastLoadedOrSaved = new Date(this.lastLoadedOrSaved.getTime() - 1);
-
-        // Log.debugAlert("Setting a file without loading it first.");
-      }
-
-      this._content = newContent;
-
-      this.contentWasModified();
+    if (areEqual) {
+      return false;
     }
+
+    if (!this.lastLoadedOrSaved) {
+      this.lastLoadedOrSaved = new Date();
+      this.lastLoadedOrSaved = new Date(this.lastLoadedOrSaved.getTime() - 1);
+
+      // Log.debugAlert("Setting a file without loading it first.");
+    }
+
+    let oldContent = this._content;
+    this._content = newContent;
+
+    this.contentWasModified(oldContent, updateType);
+
+    return true;
   }
 
   /*  update: rely consistenly on getHash() implementation in FileBase which uses the js-md5 library

@@ -17,7 +17,7 @@ import LevelDb from "./LevelDb";
 import DataUtilities from "../core/DataUtilities";
 import WorldChunk from "./WorldChunk";
 import BlockLocation from "./BlockLocation";
-import BlockCube from "./BlockCube";
+import BlockVolume from "./BlockVolume";
 import IDimension from "./IDimension";
 import Block from "./Block";
 import Entity from "./Entity";
@@ -206,6 +206,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     if (this._file) {
       if (!this._file.fileContainerStorage) {
         this._file.fileContainerStorage = new ZipStorage();
+        this._file.fileContainerStorage.containerFile = this._file;
         this._file.fileContainerStorage.storagePath = this._file.extendedPath + "#";
       }
 
@@ -719,6 +720,8 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     if (this._file) {
       if (!this._file.fileContainerStorage) {
         this._file.fileContainerStorage = new ZipStorage();
+
+        this._file.fileContainerStorage.containerFile = this._file;
         this._file.fileContainerStorage.storagePath = this._file.extendedPath + "#";
       }
 
@@ -1208,6 +1211,8 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     if (this._file) {
       if (!this._file.fileContainerStorage) {
         this._file.fileContainerStorage = new ZipStorage();
+
+        this._file.fileContainerStorage.containerFile = this._file;
         this._file.fileContainerStorage.storagePath = this._file.extendedPath + "#";
       }
 
@@ -1380,7 +1385,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
       return;
     }
 
-    const loadOper = await this._project?.carto.notifyOperationStarted(
+    const loadOper = await this._project?.creatorTools.notifyOperationStarted(
       "Starting first-pass load of '" + this.name + "' world",
       StatusTopic.worldLoad
     );
@@ -1428,13 +1433,13 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     this.levelDb = new LevelDb(ldbFileArr, logFileArr, manifestFileArr, this.name);
 
     await this.levelDb.init(async (message: string): Promise<void> => {
-      await this._project?.carto.notifyStatusUpdate(message, StatusTopic.worldLoad);
+      await this._project?.creatorTools.notifyStatusUpdate(message, StatusTopic.worldLoad);
     });
 
     Utilities.appendErrors(this, this.levelDb);
 
     if (loadOper !== undefined) {
-      await this._project?.carto.notifyOperationEnded(
+      await this._project?.creatorTools.notifyOperationEnded(
         loadOper,
         "Completed first-pass load of '" + this.name + "' world",
         StatusTopic.worldLoad
@@ -1540,7 +1545,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     this.chunks = new Map();
     this.chunkCount = 0;
 
-    const processOper = await this._project?.carto.notifyOperationStarted(
+    const processOper = await this._project?.creatorTools.notifyOperationStarted(
       "Starting second-pass load of '" + this.name + "' world",
       StatusTopic.worldLoad
     );
@@ -1858,7 +1863,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
           wc.addKeyValue(keyValue);
 
           if (this.chunkCount % 10000 === 0 && didIncrement) {
-            await this._project?.carto.notifyStatusUpdate(
+            await this._project?.creatorTools.notifyStatusUpdate(
               "Initialized " + this.chunkCount / 1000 + "K chunks in " + MCWorld.name
             );
           }
@@ -1912,7 +1917,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
   private async notifyLoadEnded(processOper?: number) {
     if (processOper !== undefined) {
-      await this._project?.carto.notifyOperationEnded(
+      await this._project?.creatorTools.notifyOperationEnded(
         processOper,
         "Completed second-pass load of '" + this.name + "' world.",
         StatusTopic.worldLoad
@@ -1989,7 +1994,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
   }
 
   getCube(from: BlockLocation, to: BlockLocation, dim?: number) {
-    const bc = new BlockCube();
+    const bc = new BlockVolume();
 
     let fromY = from.y;
     if (fromY) {

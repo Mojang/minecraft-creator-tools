@@ -2,11 +2,11 @@
 // Licensed under the MIT License.
 
 import Block, { BlockFacingDirection } from "./Block";
-import BlockCube from "./BlockCube";
+import BlockVolume from "./BlockVolume";
 import Log from "../core/Log";
 
 export default class Converter {
-  static cubeEnsureBedrockProperties(cube: BlockCube) {
+  static cubeEnsureBedrockProperties(cube: BlockVolume) {
     for (let x = 0; x < cube.maxX; x++) {
       for (let y = 0; y < cube.maxY; y++) {
         for (let z = 0; z < cube.maxZ; z++) {
@@ -101,7 +101,7 @@ export default class Converter {
         case "axis":
           const sourceAxisVal = prop.asString("x");
 
-          if (block.shortTypeName && block.shortTypeName.indexOf("nether") >= 0) {
+          if (block.shortTypeId && block.shortTypeId.indexOf("nether") >= 0) {
             if (sourceAxisVal === "x") {
               block.ensureProperty("portal_axis").value = "x";
             } else if (sourceAxisVal === "z") {
@@ -283,9 +283,9 @@ export default class Converter {
         case "level":
           const level = prop.asNumber(0);
 
-          if (block.shortTypeName === "cauldron") {
+          if (block.shortTypeId === "cauldron") {
             block.ensureProperty("fill_level").value = level * 2;
-          } else if (block.shortTypeName === "water" || block.shortTypeName === "lava") {
+          } else if (block.shortTypeId === "water" || block.shortTypeId === "lava") {
             block.ensureProperty("liquid_depth").value = level;
           }
           break;
@@ -301,7 +301,7 @@ export default class Converter {
         case "mode":
           const modeVal = prop.asString("compare");
 
-          if (block.shortTypeName === "structure") {
+          if (block.shortTypeId === "structure") {
             block.ensureProperty("structure_block_type").value = modeVal;
           } else {
             block.ensureProperty("output_subtract_bit").value = modeVal === "subtract";
@@ -341,7 +341,7 @@ export default class Converter {
           break;
 
         case "powered":
-          if (block.shortTypeName === "rail" || block.shortTypeName === "activator_rail") {
+          if (block.shortTypeId === "rail" || block.shortTypeId === "activator_rail") {
             block.ensureProperty("rail_data_bit").value = prop.asBoolean(false);
           } else {
             block.ensureProperty("powered_bit").value = prop.asBoolean(false);

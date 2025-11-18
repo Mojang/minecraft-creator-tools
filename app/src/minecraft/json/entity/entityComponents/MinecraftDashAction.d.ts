@@ -19,6 +19,27 @@ Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
   "vertical_momentum": 0.6
 }
 
+
+Nautilus - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/nautilus.json
+
+ * At /minecraft:entity/component_groups/minecraft:nautilus_tame_saddled_in_water/minecraft:dash_action/: 
+"minecraft:dash_action": {
+  "cooldown_time": 2,
+  "horizontal_momentum": 154,
+  "vertical_momentum": 0.1,
+  "can_dash_underwater": true,
+  "direction": "passenger"
+}
+
+ * At /minecraft:entity/component_groups/minecraft:nautilus_tame_saddled_on_ground/minecraft:dash_action/: 
+"minecraft:dash_action": {
+  "cooldown_time": 2,
+  "horizontal_momentum": 42,
+  "vertical_momentum": 0.1,
+  "can_dash_underwater": false,
+  "direction": "passenger"
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';
@@ -31,10 +52,25 @@ export default interface MinecraftDashAction {
 
   /**
    * @remarks
+   * Whether the entity can dash underwater. Default value is 
+   * false.
+   * 
+   * Sample Values:
+   * Nautilus: true
+   *
+   *
+   */
+  can_dash_underwater?: boolean;
+
+  /**
+   * @remarks
    * The dash cooldown in seconds. Default value is 1.000000.
    * 
    * Sample Values:
    * Camel: 2.75
+   *
+   *
+   * Nautilus: 2
    *
    */
   cooldown_time?: number;
@@ -47,6 +83,10 @@ export default interface MinecraftDashAction {
    * only the entity's yaw. When 'passenger' is used the momentum will
    * be applied in the direction the controlling passenger is
    * looking, using the passenger's pitch and yaw.
+   * 
+   * Sample Values:
+   * Nautilus: "passenger"
+   *
    */
   direction?: string;
 
@@ -57,6 +97,9 @@ export default interface MinecraftDashAction {
    * Sample Values:
    * Camel: 20
    *
+   *
+   * Nautilus: 154, 42
+   *
    */
   horizontal_momentum?: number;
 
@@ -66,6 +109,9 @@ export default interface MinecraftDashAction {
    * 
    * Sample Values:
    * Camel: 0.6
+   *
+   *
+   * Nautilus: 0.1
    *
    */
   vertical_momentum?: number;

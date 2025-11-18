@@ -54,7 +54,7 @@
             }
           }
         ],
-        "/vanilla/behavior_pack/entities/pufferfish.json": [
+        "/vanilla/behavior_pack/entities/nautilus.json": [
           {
             "path": "/minecraft:entity/components/minecraft:despawn/",
             "content": {
@@ -284,6 +284,14 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/entities/camel_husk.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:despawn/",
+        "content": {
+          "despawn_from_distance": {}
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/cat.json": [
       {
         "path": "/minecraft:entity/components/minecraft:despawn/",
@@ -503,6 +511,17 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/entities/nautilus.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:despawn/",
+        "content": {
+          "despawn_from_distance": {
+            "min_distance": 32,
+            "max_distance": 40
+          }
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/ocelot.json": [
       {
         "path": "/minecraft:entity/components/minecraft:despawn/",
@@ -512,6 +531,14 @@
       }
     ],
     "/vanilla/behavior_pack/entities/panda.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:despawn/",
+        "content": {
+          "despawn_from_distance": {}
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/parched.json": [
       {
         "path": "/minecraft:entity/components/minecraft:despawn/",
         "content": {
@@ -888,6 +915,17 @@
         "path": "/minecraft:entity/components/minecraft:despawn/",
         "content": {
           "despawn_from_distance": {}
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:despawn/",
+        "content": {
+          "despawn_from_distance": {
+            "min_distance": 32,
+            "max_distance": 40
+          }
         }
       }
     ],

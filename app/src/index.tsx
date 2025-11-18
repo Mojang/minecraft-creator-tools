@@ -4,13 +4,13 @@ import "./index.css";
 import "@fontsource/noto-sans";
 import App from "./UX/App";
 import AppServiceProxy, { AppServiceProxyCommands } from "./core/AppServiceProxy";
-import CartoApp, { CartoThemeStyle } from "./app/CartoApp";
+import CreatorToolsHost, { CreatorToolsThemeStyle } from "./app/CreatorToolsHost";
 import { loader } from "@monaco-editor/react";
 import { minecraftToolDarkTheme, minecraftToolLightTheme } from "./core/StandardInit";
 
 import { Provider, teamsDarkTheme, mergeThemes, teamsTheme } from "@fluentui/react-northstar";
 
-CartoApp.init();
+CreatorToolsHost.init();
 
 window.addEventListener("unhandledrejection", (evt) => {
   if (evt?.reason?.stack?.includes?.("/monaco/min/vs") || evt?.reason?.stack?.includes?.("/dist/vs")) {
@@ -52,30 +52,29 @@ async function initVsLoader() {
 
 initVsLoader();
 
-let theme = undefined;
+let darkTheme = mergeThemes(teamsDarkTheme, minecraftToolDarkTheme);
+let lightTheme = mergeThemes(teamsTheme, minecraftToolLightTheme);
+
+const storedMode = localStorage.getItem("color-mode") as string;
 
 if (window.location.search.indexOf("theme=l") > 0) {
-  CartoApp.theme = CartoThemeStyle.light;
+  CreatorToolsHost.theme = CreatorToolsThemeStyle.light;
 } else if (window.location.search.indexOf("theme=d") > 0) {
-  CartoApp.theme = CartoThemeStyle.dark;
+  CreatorToolsHost.theme = CreatorToolsThemeStyle.dark;
+} else if (storedMode) {
+  CreatorToolsHost.theme = storedMode === "light" ? CreatorToolsThemeStyle.light : CreatorToolsThemeStyle.dark;
 } else {
   if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-    CartoApp.theme = CartoThemeStyle.dark;
+    CreatorToolsHost.theme = CreatorToolsThemeStyle.dark;
   } else {
-    CartoApp.theme = CartoThemeStyle.light;
+    CreatorToolsHost.theme = CreatorToolsThemeStyle.light;
   }
-}
-
-if (CartoApp.theme === CartoThemeStyle.dark) {
-  theme = mergeThemes(teamsDarkTheme, minecraftToolDarkTheme);
-} else {
-  theme = mergeThemes(teamsTheme, minecraftToolLightTheme);
 }
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider theme={theme}>
-      <App theme={theme} />
+    <Provider theme={CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? darkTheme : lightTheme}>
+      <App darkTheme={darkTheme} lightTheme={lightTheme} />
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")

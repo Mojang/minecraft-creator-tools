@@ -44,11 +44,11 @@ export default interface MinecraftDestructionParticles {
 
 
 export enum MinecraftDestructionParticlesTintMethod {
-  None = `none`,
-  DefaultFoliage = `default_foliage`,
-  BirchFoliage = `birch_foliage`,
-  EvergreenFoliage = `evergreen_foliage`,
-  DryFoliage = `dry_foliage`,
-  Grass = `grass`,
-  Water = `water`
+  none = `none`,
+  defaultFoliage = `default_foliage`,
+  birchFoliage = `birch_foliage`,
+  evergreenFoliage = `evergreen_foliage`,
+  dryFoliage = `dry_foliage`,
+  grass = `grass`,
+  water = `water`
 }

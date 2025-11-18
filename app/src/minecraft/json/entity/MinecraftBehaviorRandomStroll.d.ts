@@ -43,6 +43,14 @@ Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 }
 
 
+Camel Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/camel_husk.json
+
+"minecraft:behavior.random_stroll": {
+  "priority": 7,
+  "speed_multiplier": 2
+}
+
+
 Cat - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/cat.json
 
 "minecraft:behavior.random_stroll": {
@@ -98,14 +106,6 @@ Drowned - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
   "speed_multiplier": 1
 }
 
-
-Evocation Illager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/evocation_illager.json
-
-"minecraft:behavior.random_stroll": {
-  "priority": 8,
-  "speed_multiplier": 0.6
-}
-
  */
 
 import * as jsoncommon from './../../jsoncommon';
@@ -153,6 +153,7 @@ export default interface MinecraftBehaviorRandomStroll {
    *
    *
    * Camel: 2
+   *
    *
    * Cat: 0.8
    *

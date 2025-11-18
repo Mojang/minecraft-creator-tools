@@ -4,12 +4,14 @@
     {
       "id": "name",
       "title": "Name",
-      "dataType": 2
+      "dataType": 2,
+      "defaultValue": ""
     },
     {
       "id": "states",
       "title": "States",
       "dataType": 0,
+      "defaultValue": {},
       "alternates": [
         {
           "id": "states",
@@ -24,7 +26,8 @@
     {
       "id": "tags",
       "title": "Tags",
-      "dataType": 2
+      "dataType": 2,
+      "defaultValue": ""
     }
   ],
   "title": "Use On"

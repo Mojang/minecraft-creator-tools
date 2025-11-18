@@ -11,6 +11,7 @@
           }
         ]
       },
+      "defaultValue": false,
       "description": "Scale power by draw duration? Default is set to false.",
       "title": "Scale Power By Draw Duration",
       "dataType": 1
@@ -26,6 +27,7 @@
           }
         ]
       },
+      "defaultValue": 0,
       "description": "Draw Duration. Default is set to 0.",
       "title": "Max Draw Duration",
       "dataType": 3
@@ -33,6 +35,7 @@
     {
       "id": "charge_on_draw",
       "isRequired": true,
+      "defaultValue": false,
       "description": "Charge on draw? Default is set to false.",
       "title": "Charge On Draw",
       "dataType": 1
@@ -42,6 +45,7 @@
       "title": "Ammunition",
       "description": "Ammunition.",
       "dataType": 16,
+      "defaultValue": [],
       "subFormId": "item_components/ammunition",
       "samples": {
         "/samples/custom_items/behavior_packs/custom_item/items/my_sword_shoot.json": [

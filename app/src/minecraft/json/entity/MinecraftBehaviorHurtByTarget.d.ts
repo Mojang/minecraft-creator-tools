@@ -122,11 +122,45 @@ Evocation Illager - https://github.com/Mojang/bedrock-samples/tree/preview/behav
 }
 
 
+Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/husk.json
+
+"minecraft:behavior.hurt_by_target": {
+  "priority": 1,
+  "entity_types": [
+    {
+      "filters": {
+        "test": "is_family",
+        "subject": "other",
+        "operator": "not",
+        "value": "breeze"
+      }
+    }
+  ]
+}
+
+
 Llama - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/llama.json
 
 "minecraft:behavior.hurt_by_target": {
   "priority": 1,
   "hurt_owner": true
+}
+
+
+Parched - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/parched.json
+
+"minecraft:behavior.hurt_by_target": {
+  "priority": 2,
+  "entity_types": [
+    {
+      "filters": {
+        "test": "is_family",
+        "subject": "other",
+        "operator": "!=",
+        "value": "breeze"
+      }
+    }
+  ]
 }
 
 
@@ -166,37 +200,6 @@ Silverfish - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pac
 "minecraft:behavior.hurt_by_target": {
   "priority": 1,
   "alert_same_type": true
-}
-
-
-Trader Llama - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/trader_llama.json
-
-"minecraft:behavior.hurt_by_target": {
-  "priority": 1,
-  "hurt_owner": true,
-  "entity_types": {
-    "filters": {
-      "test": "is_family",
-      "subject": "other",
-      "operator": "!=",
-      "value": "trader_llama"
-    }
-  }
-}
-
-
-Axe Turret - https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/axe_turret.behavior.json
-
-"minecraft:behavior.hurt_by_target": {
-  "priority": 3,
-  "entity_types": {
-    "filters": {
-      "test": "is_family",
-      "subject": "other",
-      "value": "monster"
-    },
-    "max_dist": 16
-  }
 }
 
  */

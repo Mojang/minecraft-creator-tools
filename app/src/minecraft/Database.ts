@@ -14,7 +14,7 @@ import IFolder from "../storage/IFolder";
 import IFormField from "../dataform/IFormField";
 import ILocalUtilities from "../local/ILocalUtilities";
 import ITypeDefCatalog from "./ITypeDefCatalog";
-import CartoApp from "./../app/CartoApp";
+import CreatorToolsHost from "../app/CreatorToolsHost";
 import Utilities from "../core/Utilities";
 import NpmModule from "../devproject/NpmModule";
 import IMainInfoVersions from "./IMainInfoVersions";
@@ -26,7 +26,7 @@ import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from
 import StorageUtilities from "../storage/StorageUtilities";
 import ISnippet from "../app/ISnippet";
 import IGalleryItem from "../app/IGalleryItem";
-import { MinecraftTrack } from "../app/ICartoData";
+import { MinecraftTrack } from "../app/ICreatorToolsData";
 import IBiomesMetadata from "./IBiomesMetadata";
 import IBlocksMetadata from "./IBlocksMetadata";
 import ILegacyDocumentationNode from "./docs/ILegacyDocumentation";
@@ -34,12 +34,16 @@ import IEntitiesMetadata from "./IEntitiesMetadata";
 import IItemsMetadata from "./IItemsMetadata";
 import ZipStorage from "../storage/ZipStorage";
 import { HashCatalog } from "../core/HashUtilities";
+import IFile from "../storage/IFile";
+import TerrainTextureCatalogDefinition from "./TerrainTextureCatalogDefinition";
+import BlocksCatalogDefinition from "./BlocksCatalogDefinition";
 
 export default class Database {
-  static isLoaded = false;
+  static isVanillaLoaded = false;
   static isScriptTypesLoaded = false;
-  static catalog: Catalog | null = null;
+  static vanillaCatalog: Catalog | null = null;
   static loadedFormCount = 0;
+  static _creatorToolsIngameFile: IFile | null = null;
   static _creatorToolsIngameProject: Project | null = null;
   static uxCatalog: { [formName: string]: IFormDefinition } = {};
   static formsFolders: { [folderName: string]: IFolder } = {};
@@ -58,6 +62,10 @@ export default class Database {
   static local: ILocalUtilities | null = null;
   static vanillaInfoData: IProjectInfoData | null = null;
   static vanillaContentIndex: ContentIndex | null = null;
+
+  static blocksCatalog: BlocksCatalogDefinition | undefined = undefined;
+  static terrainTextureCatalog: TerrainTextureCatalogDefinition | undefined = undefined;
+
   static previewVanillaInfoData: IProjectInfoData | null = null;
   static previewVanillaContentIndex: ContentIndex | null = null;
   static releaseVanillaContentHashes: HashCatalog | null = null;
@@ -77,19 +85,26 @@ export default class Database {
 
   private static _isLoadingSnippets: boolean = false;
   private static _pendingLoadSnippetsRequests: ((value: unknown) => void)[] = [];
-  private static _isLoadingVanilla: boolean = false;
-  private static _pendingLoadVanillaRequests: ((value: unknown) => void)[] = [];
-  private static _isLoadingPreviewVanilla: boolean = false;
-  private static _pendingLoadPreviewVanillaRequests: ((value: unknown) => void)[] = [];
+  private static _isLoadingVanillaResourceDefinition: boolean = false;
+  private static _pendingLoadVanillaResourceDefinitionRequests: ((value: unknown) => void)[] = [];
+  private static _isLoadingVanillaInfoData: boolean = false;
+  private static _pendingLoadVanillaInfoDataRequests: ((value: unknown) => void)[] = [];
+  private static _isLoadingPreviewVanillaInfoData: boolean = false;
+  private static _pendingLoadPreviewVanillaInfoDataRequests: ((value: unknown) => void)[] = [];
   private static _isLoadingSamples: boolean = false;
   private static _pendingLoadSamplesRequests: ((value: unknown) => void)[] = [];
 
   static dataPath: string = "res/latest/";
 
+  static creatorToolsIngameBehaviorPackUUID = "37355e25-5c48-43be-ad24-107d6cf2ea74";
+  static creatorToolsIngameBehaviorPackVersion = [1, 0, 0];
+  static creatorToolsIngameResourcePackUUID = "a49a75c0-d3a1-47c5-adcd-70394b0fe749";
+  static creatorToolsIngameResourcePackVersion = [1, 0, 0];
+
   static minecraftEduVersion = "1.21.0";
   static minecraftEduPreviewVersion = "1.21.0";
-  static fallbackMinecraftVersion = "1.21.80"; // used if we fail to retrieve the latest version from the network
-  static fallbackMinecraftPreviewVersion = "1.21.90.26"; // should be occasionally statically updated.
+  static fallbackMinecraftVersion = "1.21.120"; // used if we fail to retrieve the latest version from the network
+  static fallbackMinecraftPreviewVersion = "1.21.130.27"; // should be occasionally statically updated.
 
   static minecraftModuleNames = [
     "@minecraft/server-gametest",
@@ -103,7 +118,7 @@ export default class Database {
   static maxMinecraftPatchVersions = {
     "1.19": "80",
     "1.20": "80",
-    "1.21": "80",
+    "1.21": "120",
   };
 
   static moduleDescriptors: { [id: string]: NpmModule } = {};
@@ -151,6 +166,51 @@ export default class Database {
     return false;
   }
 
+  static ensureFormLoadedSync(subFolder: string, name: string): IFormDefinition | undefined {
+    name = name.toLowerCase();
+
+    const extendedName = Database.getFormName(subFolder, name);
+    const expectedPath = (subFolder ? subFolder + "/" : "") + name;
+
+    if (Database.uxCatalog[extendedName] !== undefined) {
+      return Database.uxCatalog[extendedName];
+    }
+
+    let path = "data/forms/";
+
+    if (subFolder) {
+      path += subFolder + "/";
+    }
+
+    if (Database.local) {
+      const storage = Database.local.createStorage(path);
+
+      if (storage) {
+        if (!storage.rootFolder.isLoaded) {
+          if ((storage.rootFolder as any).loadSync) {
+            (storage.rootFolder as any).loadSync();
+          }
+        }
+
+        const file = storage.rootFolder.files[name + ".form.json"];
+        if (file) {
+          if (!file.isContentLoaded) {
+            if ((file as any).loadContentSync) {
+              (file as any).loadContentSync();
+            }
+          }
+
+          return StorageUtilities.getJsonObject(file) as IFormDefinition;
+        }
+
+        Log.fail("Could not load file locally for '" + expectedPath + "'.");
+        return undefined;
+      }
+    }
+
+    return undefined;
+  }
+
   static async ensureFormLoaded(subFolder: string, name: string): Promise<IFormDefinition | undefined> {
     name = name.toLowerCase();
 
@@ -168,7 +228,7 @@ export default class Database {
     }
 
     if (Database.local) {
-      const storage = await Database.local.createStorage(path);
+      const storage = Database.local.createStorage(path);
 
       if (storage) {
         if (!storage.rootFolder.isLoaded) {
@@ -188,7 +248,7 @@ export default class Database {
         return undefined;
       }
     } else {
-      path = CartoApp.contentRoot + path + name + ".form.json";
+      path = CreatorToolsHost.contentRoot + path + name + ".form.json";
 
       try {
         const response = await axios.get(path);
@@ -212,8 +272,8 @@ export default class Database {
 
     const folderPath = "data/forms/" + subFolder + "/";
 
-    if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
-      const storage = await Database.local.createStorage(folderPath);
+    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
+      const storage = Database.local.createStorage(folderPath);
 
       if (storage) {
         if (!storage.rootFolder.isLoaded) {
@@ -223,7 +283,7 @@ export default class Database {
         this.formsFolders[subFolder] = storage.rootFolder;
       }
     } else {
-      const storage = new HttpStorage(CartoApp.contentRoot + folderPath);
+      const storage = new HttpStorage(CreatorToolsHost.contentRoot + folderPath);
 
       if (!storage.rootFolder.isLoaded) {
         await storage.rootFolder.load();
@@ -290,7 +350,7 @@ export default class Database {
       if (e && (!e.message || !e.message.indexOf || e.message.indexOf("etwork ") < 0)) {
         Log.debugAlert("Could not load registry for '" + moduleId + "': " + e.toString());
       } else {
-        CartoApp.carto?.notifyStatusUpdate(
+        CreatorToolsHost.creatorTools?.notifyStatusUpdate(
           "Could not connect to network to retrieve latest script package details. Url: " + url
         );
       }
@@ -376,7 +436,7 @@ export default class Database {
   static async getContentFolderFile(fileRelativePath: string) {
     await Database.loadContent();
 
-    if (Database.contentFolder === null || !CartoApp.carto) {
+    if (Database.contentFolder === null || !CreatorToolsHost.creatorTools) {
       Log.unexpectedContentState();
       return undefined;
     }
@@ -400,14 +460,14 @@ export default class Database {
     return file.content;
   }
 
-  static async ensureCreatorToolsIngameProject() {
-    if (Database._creatorToolsIngameProject) {
-      return Database._creatorToolsIngameProject;
+  static async ensureCreatorToolsIngameFile() {
+    if (Database._creatorToolsIngameFile) {
+      return Database._creatorToolsIngameFile;
     }
 
     await Database.loadContent();
 
-    if (Database.contentFolder === null || !CartoApp.carto) {
+    if (Database.contentFolder === null || !CreatorToolsHost.creatorTools) {
       Log.unexpectedContentState();
       return undefined;
     }
@@ -418,8 +478,25 @@ export default class Database {
       await file.loadContent();
     }
 
+    Database._creatorToolsIngameFile = file;
+
+    return file;
+  }
+
+  static async ensureCreatorToolsIngameProject() {
+    if (Database._creatorToolsIngameProject) {
+      return Database._creatorToolsIngameProject;
+    }
+
+    const file = await Database.ensureCreatorToolsIngameFile();
+
+    if (Database.contentFolder === null || !file || !CreatorToolsHost.creatorTools) {
+      Log.unexpectedContentState();
+      return undefined;
+    }
+
     if (file.content instanceof Uint8Array) {
-      Database._creatorToolsIngameProject = new Project(CartoApp.carto, "Creator Tools", null);
+      Database._creatorToolsIngameProject = new Project(CreatorToolsHost.creatorTools, "Creator Tools", null);
 
       const projectFolder = await Database._creatorToolsIngameProject.ensureProjectFolder();
 
@@ -484,7 +561,7 @@ export default class Database {
       if (e && (!e.message || !e.message.indexOf || e.message.indexOf("etwork ") < 0)) {
         Log.debugAlert("Could not load version info from '" + versionUrl + "': " + e.toString());
       } else {
-        CartoApp.carto?.notifyStatusUpdate(
+        CreatorToolsHost.creatorTools?.notifyStatusUpdate(
           "Could not connect to network to retrieve latest Minecraft version details. Url: " + versionUrl
         );
       }
@@ -598,7 +675,7 @@ export default class Database {
 
     const result = this._blockTypesByLegacyId[id];
 
-    // Log.assert(result !== undefined);
+    Log.assert(result !== undefined);
 
     return result;
   }
@@ -648,13 +725,13 @@ export default class Database {
 
     let blockType = Database.blockTypes[name];
 
-    if (blockType == null && Database.catalog != null) {
+    if (blockType == null && Database.vanillaCatalog != null) {
       blockType = new BlockType(name);
 
       Database.blockTypes[name] = blockType;
 
       blockType.data = {
-        name: name,
+        n: name,
       };
     }
 
@@ -680,8 +757,8 @@ export default class Database {
       return;
     }
 
-    if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
-      const storage = await Database.local.createStorage("data/content/");
+    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
+      const storage = Database.local.createStorage("data/content/");
 
       if (storage) {
         if (!storage.rootFolder.isLoaded) {
@@ -691,7 +768,7 @@ export default class Database {
         Database.contentFolder = storage.rootFolder;
       }
     } else {
-      const storage = new HttpStorage(CartoApp.contentRoot + "data/content/");
+      const storage = new HttpStorage(CreatorToolsHost.contentRoot + "data/content/");
 
       if (!storage.rootFolder.isLoaded) {
         await storage.rootFolder.load();
@@ -721,14 +798,14 @@ export default class Database {
 
       let folder: IFolder | undefined;
 
-      if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
-        const storage = await Database.local.createStorage("data/snippets/");
+      if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
+        const storage = Database.local.createStorage("data/snippets/");
 
         if (storage) {
           folder = storage.rootFolder;
         }
       } else {
-        const storage = new HttpStorage(CartoApp.contentRoot + "data/snippets/");
+        const storage = new HttpStorage(CreatorToolsHost.contentRoot + "data/snippets/");
 
         folder = storage.rootFolder;
       }
@@ -920,14 +997,14 @@ export default class Database {
 
   static async loadPreviewMetadataFolder() {
     if (!this.previewMetadataFolder) {
-      if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
-        const storage = await Database.local.createStorage("res/latest/van/preview/metadata/");
+      if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
+        const storage = Database.local.createStorage("res/latest/van/preview/metadata/");
 
         if (storage) {
           this.previewMetadataFolder = storage.rootFolder;
         }
       } else {
-        const metadataStorage = new HttpStorage(CartoApp.contentRoot + "res/latest/van/preview/metadata/");
+        const metadataStorage = new HttpStorage(CreatorToolsHost.contentRoot + "res/latest/van/preview/metadata/");
 
         if (!metadataStorage.rootFolder.isLoaded) {
           await metadataStorage.rootFolder.load();
@@ -942,14 +1019,14 @@ export default class Database {
 
   static async loadReleaseMetadataFolder() {
     if (!this.releaseMetadataFolder) {
-      if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
-        const storage = await Database.local.createStorage("res/latest/van/release/metadata/");
+      if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
+        const storage = Database.local.createStorage("res/latest/van/release/metadata/");
 
         if (storage) {
           this.releaseMetadataFolder = storage.rootFolder;
         }
       } else {
-        const metadataStorage = new HttpStorage(CartoApp.contentRoot + "res/latest/van/release/metadata/");
+        const metadataStorage = new HttpStorage(CreatorToolsHost.contentRoot + "res/latest/van/release/metadata/");
 
         await metadataStorage.rootFolder.load();
 
@@ -965,14 +1042,14 @@ export default class Database {
       return Database.releaseVanillaFolder;
     }
 
-    if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
-      const storage = await Database.local.createStorage("res/latest/van/release/");
+    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
+      const storage = Database.local.createStorage("res/latest/van/release/");
 
       if (storage) {
         Database.releaseVanillaFolder = storage.rootFolder;
       }
     } else {
-      const storage = new HttpStorage(CartoApp.contentRoot + "res/latest/van/release/");
+      const storage = new HttpStorage(CreatorToolsHost.contentRoot + "res/latest/van/release/");
 
       Database.releaseVanillaFolder = storage.rootFolder;
     }
@@ -989,14 +1066,14 @@ export default class Database {
       return Database.previewVanillaFolder;
     }
 
-    if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
-      const storage = await Database.local.createStorage("res/latest/van/preview/");
+    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
+      const storage = Database.local.createStorage("res/latest/van/preview/");
 
       if (storage) {
         Database.previewVanillaFolder = storage.rootFolder;
       }
     } else {
-      const storage = new HttpStorage(CartoApp.contentRoot + "res/latest/van/preview/");
+      const storage = new HttpStorage(CreatorToolsHost.contentRoot + "res/latest/van/preview/");
 
       Database.previewVanillaFolder = storage.rootFolder;
     }
@@ -1013,14 +1090,14 @@ export default class Database {
       return Database.samplesFolder;
     }
 
-    if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
-      const storage = await Database.local.createStorage("res/samples/microsoft/minecraft-samples-main/");
+    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
+      const storage = Database.local.createStorage("res/samples/microsoft/minecraft-samples-main/");
 
       if (storage) {
         Database.samplesFolder = storage.rootFolder;
       }
     } else {
-      const storage = new HttpStorage(CartoApp.contentRoot + "res/samples/microsoft/minecraft-samples-main/");
+      const storage = new HttpStorage(CreatorToolsHost.contentRoot + "res/samples/microsoft/minecraft-samples-main/");
 
       Database.samplesFolder = storage.rootFolder;
     }
@@ -1037,14 +1114,14 @@ export default class Database {
       return Database.releaseVanillaBehaviorPackFolder;
     }
 
-    if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
-      const storage = await Database.local.createStorage("res/latest/van/release/behavior_pack/");
+    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
+      const storage = Database.local.createStorage("res/latest/van/release/behavior_pack/");
 
       if (storage) {
         Database.releaseVanillaBehaviorPackFolder = storage.rootFolder;
       }
     } else {
-      const storage = new HttpStorage(CartoApp.contentRoot + "res/latest/van/release/behavior_pack/");
+      const storage = new HttpStorage(CreatorToolsHost.contentRoot + "res/latest/van/release/behavior_pack/");
 
       Database.releaseVanillaBehaviorPackFolder = storage.rootFolder;
     }
@@ -1061,14 +1138,14 @@ export default class Database {
       return Database.releaseVanillaResourcePackFolder;
     }
 
-    if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
-      const storage = await Database.local.createStorage("res/latest/van/release/resource_pack/");
+    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
+      const storage = Database.local.createStorage("res/latest/van/release/resource_pack/");
 
       if (storage) {
         Database.releaseVanillaResourcePackFolder = storage.rootFolder;
       }
     } else {
-      const storage = new HttpStorage(CartoApp.contentRoot + "res/latest/van/release/resource_pack/");
+      const storage = new HttpStorage(CreatorToolsHost.contentRoot + "res/latest/van/release/resource_pack/");
 
       Database.releaseVanillaResourcePackFolder = storage.rootFolder;
     }
@@ -1088,9 +1165,7 @@ export default class Database {
 
       return undefined;
     }
-    throw new Error("Not implemented.");
-    /*
-    const componentForms = Database.uxCatalog.forms;
+    const componentForms = Database.uxCatalog;
 
     for (const formName in componentForms) {
       const form = componentForms[formName];
@@ -1110,7 +1185,8 @@ export default class Database {
         }
       }
     }
-*/
+
+    return undefined;
   }
 
   static async getSchema(path: string) {
@@ -1126,7 +1202,7 @@ export default class Database {
       // @ts-ignore
       if (typeof window !== "undefined") {
         const response = await axios.get(
-          Utilities.ensureEndsWithSlash(CartoApp.contentRoot) + Utilities.ensureNotStartsWithSlash(schemaPath)
+          Utilities.ensureEndsWithSlash(CreatorToolsHost.contentRoot) + Utilities.ensureNotStartsWithSlash(schemaPath)
         );
 
         Database.schemaContents[path] = response.data as object;
@@ -1151,7 +1227,12 @@ export default class Database {
       }
     } catch (e: any) {
       Log.fail(
-        "Could not load Minecraft schema catalog: " + CartoApp.contentRoot + " - " + schemaPath + " " + e.toString()
+        "Could not load Minecraft schema catalog: " +
+          CreatorToolsHost.contentRoot +
+          " - " +
+          schemaPath +
+          " " +
+          e.toString()
       );
       return undefined;
     }
@@ -1165,7 +1246,7 @@ export default class Database {
     try {
       // @ts-ignore
       if (typeof window !== "undefined") {
-        const response = await axios.get(CartoApp.contentRoot + "data/typedefs.stable20.json");
+        const response = await axios.get(CreatorToolsHost.contentRoot + "data/typedefs.stable20.json");
 
         Database.stable20TypeDefs = response.data;
       } else if (Database.local) {
@@ -1187,7 +1268,7 @@ export default class Database {
     try {
       // @ts-ignore
       if (typeof window !== "undefined") {
-        const response = await axios.get(CartoApp.contentRoot + "data/typedefs.stable10.json");
+        const response = await axios.get(CreatorToolsHost.contentRoot + "data/typedefs.stable10.json");
 
         Database.stable10TypeDefs = response.data;
       } else if (Database.local) {
@@ -1209,7 +1290,7 @@ export default class Database {
     try {
       // @ts-ignore
       if (typeof window !== "undefined") {
-        const response = await axios.get(CartoApp.contentRoot + "data/libs.json");
+        const response = await axios.get(CreatorToolsHost.contentRoot + "data/libs.json");
 
         Database.libs = response.data;
       } else if (Database.local) {
@@ -1392,8 +1473,8 @@ export default class Database {
       return;
     }
 
-    if (this._isLoadingVanilla) {
-      const pendingLoad = this._pendingLoadVanillaRequests;
+    if (this._isLoadingVanillaInfoData) {
+      const pendingLoad = this._pendingLoadVanillaInfoDataRequests;
 
       const prom = (resolve: (value: unknown) => void, reject: (reason?: any) => void) => {
         pendingLoad.push(resolve);
@@ -1401,12 +1482,12 @@ export default class Database {
 
       await new Promise(prom);
     } else {
-      this._isLoadingVanilla = true;
+      this._isLoadingVanillaInfoData = true;
 
       try {
         // @ts-ignore
         if (typeof window !== "undefined") {
-          const response = await axios.get(CartoApp.contentRoot + "data/mci/release.mci.json.zip", {
+          const response = await axios.get(CreatorToolsHost.contentRoot + "data/mci/release.mci.json.zip", {
             responseType: "arraybuffer",
             headers: {
               Accept: "application/octet-stream, application/json, text/plain, */*",
@@ -1431,10 +1512,45 @@ export default class Database {
         // Log.fail("Could not load vanilla metadata.");
       }
 
-      this._isLoadingVanilla = false;
+      this._isLoadingVanillaInfoData = false;
 
-      const pendingLoad = this._pendingLoadVanillaRequests;
-      this._pendingLoadVanillaRequests = [];
+      const pendingLoad = this._pendingLoadVanillaInfoDataRequests;
+      this._pendingLoadVanillaInfoDataRequests = [];
+
+      for (const prom of pendingLoad) {
+        prom(undefined);
+      }
+    }
+  }
+
+  static async loadVanillaResourceDefinitions() {
+    if (this._isLoadingVanillaResourceDefinition) {
+      const pendingLoad = this._pendingLoadVanillaResourceDefinitionRequests;
+
+      const prom = (resolve: (value: unknown) => void, reject: (reason?: any) => void) => {
+        pendingLoad.push(resolve);
+      };
+
+      await new Promise(prom);
+    } else {
+      this._isLoadingVanillaResourceDefinition = true;
+
+      const folder = await Database.getReleaseVanillaResourcePackFolder();
+
+      if (folder) {
+        const terrainTextureFile = await folder.getFileFromRelativePath("/textures/terrain_texture.json");
+        const blocksFile = await folder.getFileFromRelativePath("/blocks.json");
+
+        if (terrainTextureFile && blocksFile) {
+          this.terrainTextureCatalog = await TerrainTextureCatalogDefinition.ensureOnFile(terrainTextureFile);
+          this.blocksCatalog = await BlocksCatalogDefinition.ensureOnFile(blocksFile);
+        }
+      }
+
+      this._isLoadingVanillaResourceDefinition = false;
+
+      const pendingLoad = this._pendingLoadVanillaResourceDefinitionRequests;
+      this._pendingLoadVanillaResourceDefinitionRequests = [];
 
       for (const prom of pendingLoad) {
         prom(undefined);
@@ -1447,8 +1563,8 @@ export default class Database {
       return;
     }
 
-    if (this._isLoadingPreviewVanilla) {
-      const pendingLoad = this._pendingLoadPreviewVanillaRequests;
+    if (this._isLoadingPreviewVanillaInfoData) {
+      const pendingLoad = this._pendingLoadPreviewVanillaInfoDataRequests;
 
       const prom = (resolve: (value: unknown) => void, reject: (reason?: any) => void) => {
         pendingLoad.push(resolve);
@@ -1456,12 +1572,12 @@ export default class Database {
 
       await new Promise(prom);
     } else {
-      this._isLoadingPreviewVanilla = true;
+      this._isLoadingPreviewVanillaInfoData = true;
 
       try {
         // @ts-ignore
         if (typeof window !== "undefined") {
-          const response = await axios.get(CartoApp.contentRoot + "data/mci/preview.mci.json.zip", {
+          const response = await axios.get(CreatorToolsHost.contentRoot + "data/mci/preview.mci.json.zip", {
             responseType: "arraybuffer",
             headers: {
               Accept: "application/octet-stream, application/json, text/plain, */*",
@@ -1490,10 +1606,10 @@ export default class Database {
         // Log.fail("Could not load preview vanilla metadata.");
       }
 
-      this._isLoadingVanilla = false;
+      this._isLoadingVanillaInfoData = false;
 
-      const pendingLoad = this._pendingLoadPreviewVanillaRequests;
-      this._pendingLoadPreviewVanillaRequests = [];
+      const pendingLoad = this._pendingLoadPreviewVanillaInfoDataRequests;
+      this._pendingLoadPreviewVanillaInfoDataRequests = [];
 
       for (const prom of pendingLoad) {
         prom(undefined);
@@ -1520,7 +1636,7 @@ export default class Database {
       try {
         // @ts-ignore
         if (typeof window !== "undefined") {
-          const response = await axios.get(CartoApp.contentRoot + "data/mch/release.mch.json");
+          const response = await axios.get(CreatorToolsHost.contentRoot + "data/mch/release.mch.json");
 
           if (response) {
             Database.releaseVanillaContentHashes = response.data;
@@ -1565,7 +1681,7 @@ export default class Database {
       try {
         // @ts-ignore
         if (typeof window !== "undefined") {
-          const response = await axios.get(CartoApp.contentRoot + "data/mci/minecraft-samples-main.mci.json");
+          const response = await axios.get(CreatorToolsHost.contentRoot + "data/mci/minecraft-samples-main.mci.json");
 
           Database.samplesInfoData = response.data;
         } else if (Database.local) {
@@ -1595,40 +1711,40 @@ export default class Database {
     }
   }
 
-  static async load() {
-    if (Database.isLoaded) {
+  static async loadVanillaCatalog() {
+    if (Database.isVanillaLoaded) {
       return;
     }
 
     try {
       // @ts-ignore
       if (typeof window !== "undefined") {
-        const response = await axios.get(CartoApp.contentRoot + "data/mccat.json");
+        const response = await axios.get(CreatorToolsHost.contentRoot + "data/mccat.json");
 
-        Database.catalog = response.data;
+        Database.vanillaCatalog = response.data;
       } else if (Database.local) {
         const result = await Database.local.readJsonFile("data/mccat.json");
         if (result !== null) {
-          Database.catalog = result as Catalog;
+          Database.vanillaCatalog = result as Catalog;
           // Log.debugAlert("Loaded catalog: " + Database.catalog.blockBaseTypes.length);
         }
       }
 
-      if (Database.catalog !== null) {
-        for (let i = 0; i < Database.catalog.blockBaseTypes.length; i++) {
-          const blockBaseTypeData = Database.catalog.blockBaseTypes[i];
+      if (Database.vanillaCatalog !== null) {
+        for (let i = 0; i < Database.vanillaCatalog.blockBaseTypes.length; i++) {
+          const blockBaseTypeData = Database.vanillaCatalog.blockBaseTypes[i];
 
-          const baseTypeName = MinecraftUtilities.canonicalizeName(blockBaseTypeData.name);
+          const baseTypeName = MinecraftUtilities.canonicalizeName(blockBaseTypeData.n);
 
           const blockBaseType = new BlockBaseType(baseTypeName);
           blockBaseType.data = blockBaseTypeData;
 
           if (blockBaseTypeData.abstract === undefined || blockBaseTypeData.abstract === false) {
             const newBlockType: IBlockTypeData = {
-              name: blockBaseTypeData.name,
-              id: blockBaseTypeData.id,
-              icon: blockBaseTypeData.icon,
-              mapColor: blockBaseTypeData.mapColor,
+              n: blockBaseTypeData.n,
+              lid: blockBaseTypeData.id,
+              ic: blockBaseTypeData.ic,
+              mc: blockBaseTypeData.mc,
               shortId: blockBaseTypeData.shortId,
               altShortId: blockBaseTypeData.altShortId,
             };
@@ -1642,14 +1758,20 @@ export default class Database {
             for (let j = 0; j < blockBaseTypeData.variants.length; j++) {
               const variantBlockTypeData = blockBaseTypeData.variants[j];
 
-              const blockType = this.ensureBlockType(variantBlockTypeData.name);
+              let name = variantBlockTypeData.n;
 
-              if (!variantBlockTypeData.id && blockBaseTypeData.id) {
-                variantBlockTypeData.id = blockBaseTypeData.id;
+              if (name.endsWith("_")) {
+                name = name + blockBaseTypeData.n;
               }
 
-              if (!variantBlockTypeData.icon && blockBaseTypeData.icon) {
-                variantBlockTypeData.icon = blockBaseTypeData.icon;
+              const blockType = this.ensureBlockType(name);
+
+              if (!variantBlockTypeData.lid && blockBaseTypeData.id) {
+                variantBlockTypeData.lid = blockBaseTypeData.id;
+              }
+
+              if (!variantBlockTypeData.ic && blockBaseTypeData.ic) {
+                variantBlockTypeData.ic = blockBaseTypeData.ic;
               }
 
               if (!variantBlockTypeData.shortId && blockBaseTypeData.shortId) {
@@ -1660,8 +1782,8 @@ export default class Database {
                 variantBlockTypeData.altShortId = blockBaseTypeData.altShortId;
               }
 
-              if (!variantBlockTypeData.mapColor && blockBaseTypeData.mapColor) {
-                variantBlockTypeData.mapColor = blockBaseTypeData.mapColor;
+              if (!variantBlockTypeData.mc && blockBaseTypeData.mc) {
+                variantBlockTypeData.mc = blockBaseTypeData.mc;
               }
 
               blockType.data = variantBlockTypeData;
@@ -1669,9 +1791,43 @@ export default class Database {
             }
           }
         }
+
+        await Database.extendCatalog();
+
+        Database.isVanillaLoaded = true;
       }
     } catch {
       Log.fail("Could not load Minecraft types catalog.");
+    }
+  }
+
+  private static async extendCatalog() {
+    const blockMetatadata = await Database.getBlocksMetadata();
+
+    if (blockMetatadata && Database.vanillaCatalog) {
+      for (const blockMetaDef of blockMetatadata.data_items) {
+        const blockType = this.ensureBlockType(blockMetaDef.name);
+
+        if (blockType && blockMetaDef) {
+          if (blockMetaDef.raw_id !== undefined && blockType.numericId === undefined) {
+            blockType.numericId = blockMetaDef.raw_id;
+          }
+
+          if (blockMetaDef.properties) {
+            for (const prop of blockMetaDef.properties) {
+              let propName = prop.name;
+              if (propName && blockMetatadata.block_properties) {
+                for (const propDef of blockMetatadata.block_properties) {
+                  if (propDef.name === propName) {
+                    blockType.ensurePropertyDefinition(propName, propDef);
+                    break;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

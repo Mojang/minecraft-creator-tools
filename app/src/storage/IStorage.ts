@@ -2,8 +2,9 @@
 // Licensed under the MIT License.
 
 import IFolder from "./IFolder";
-import IFile from "./IFile";
+import IFile, { FileUpdateType } from "./IFile";
 import { IEvent } from "ste-events";
+import IVersionContent from "./IVersionContent";
 
 export enum StorageErrorStatus {
   none = 0,
@@ -17,15 +18,29 @@ export interface IFolderMove {
   folder: IFolder;
 }
 
+export interface IFileUpdateEvent {
+  file: IFile;
+  updateType: FileUpdateType;
+  sourceId?: string;
+  priorVersion?: IVersionContent;
+}
+
 export default interface IStorage {
   rootFolder: IFolder;
   storagePath: string | undefined;
 
+  containerFile?: IFile;
+
+  getUsesPollingBasedUpdating(): boolean;
+
   readonly folderDelimiter: string;
+
+  priorVersions: IVersionContent[];
+  currentVersionId?: string;
 
   onFileAdded: IEvent<IStorage, IFile>;
   onFileRemoved: IEvent<IStorage, string>;
-  onFileContentsUpdated: IEvent<IStorage, IFile>;
+  onFileContentsUpdated: IEvent<IStorage, IFileUpdateEvent>;
   onFolderMoved: IEvent<IStorage, IFolderMove>;
 
   errorStatus?: StorageErrorStatus;
@@ -41,7 +56,15 @@ export default interface IStorage {
 
   resetContentUpdated(): void;
 
-  notifyFileContentsUpdated(file: IFile): void;
+  incrementalScanForChanges(): Promise<void>;
+
+  scanForChanges(): Promise<void>;
+
+  addVersion(versionContent: IVersionContent, updateType: FileUpdateType): void;
+  trimAfterVersion(versionId: string): void;
+  setToVersion(versionId: string): void;
+
+  notifyFileContentsUpdated(fileEvent: IFileUpdateEvent): void;
 
   joinPath(pathA: string, pathB: string): string;
   ensureFolderFromStorageRelativePath(path: string): Promise<IFolder>;

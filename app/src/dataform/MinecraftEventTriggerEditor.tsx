@@ -2,7 +2,7 @@ import { Component } from "react";
 import "./MinecraftEventTriggerEditor.css";
 import IFormComponentProps from "./IFormComponentProps.js";
 import { Dialog, Dropdown, DropdownProps, ThemeInput, Toolbar } from "@fluentui/react-northstar";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import Project from "../app/Project";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import IEventAction from "../minecraft/IEventAction";
@@ -19,7 +19,7 @@ import IField from "./IField";
 export interface IMinecraftEventTriggerEditorProps extends IFormComponentProps {
   data: MinecraftEventTrigger;
   objectKey: string | undefined;
-  carto: Carto;
+  creatorTools: CreatorTools;
   readOnly: boolean;
   project: Project;
   heightOffset: number;
@@ -165,7 +165,7 @@ export default class MinecraftEventTriggerEditor extends Component<
         if (eventItem) {
           actionDesignInterior = (
             <EventActionDesign
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               readOnly={this.props.readOnly}
               displayAddRemoveGroups={true}
               displayHelperText={true}

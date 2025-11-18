@@ -2,7 +2,7 @@ import ITask from "./ITask";
 import IProjectStartInfo from "./IProjectStartInfo";
 import Log from "../core/Log";
 import ClUtils, { OutputType, TaskType } from "./ClUtils";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import NodeFile from "../local/NodeFile";
 import StorageUtilities from "../storage/StorageUtilities";
 import NodeStorage from "../local/NodeStorage";
@@ -10,14 +10,14 @@ import IProjectInfoData, { ProjectInfoSuite } from "../info/IProjectInfoData";
 import Project from "../app/Project";
 import IProjectMetaState from "../info/IProjectMetaState";
 import { parentPort, isMainThread } from "worker_threads";
-import CartoApp, { HostType } from "../app/CartoApp";
+import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import { InfoItemType } from "../info/IInfoItemData";
 import LocalEnvironment from "../local/LocalEnvironment";
 import ProjectUtilities from "../app/ProjectUtilities";
 import ZipStorage from "../storage/ZipStorage";
 
-let carto: Carto | undefined;
+let creatorTools: CreatorTools | undefined;
 let localEnv: LocalEnvironment | undefined;
 let outputStorage: NodeStorage | undefined;
 let outputStoragePath: string | undefined;
@@ -39,17 +39,17 @@ export async function executeTask(task: ITask) {
   localEnv.displayInfo = task.displayInfo;
   localEnv.displayVerbose = task.displayVerbose;
 
-  if (carto === undefined) {
-    CartoApp.hostType = HostType.toolsNodejs;
+  if (creatorTools === undefined) {
+    CreatorToolsHost.hostType = HostType.toolsNodejs;
 
-    carto = ClUtils.getCarto(localEnv);
+    creatorTools = ClUtils.getCreatorTools(localEnv);
 
-    if (carto) {
-      carto.onStatusAdded.subscribe(ClUtils.handleStatusAdded);
+    if (creatorTools) {
+      creatorTools.onStatusAdded.subscribe(ClUtils.handleStatusAdded);
     }
   }
 
-  if (!localEnv || !carto) {
+  if (!localEnv || !creatorTools) {
     Log.error("Could not instantiate a local environment for the associated task.");
     return undefined;
   }
@@ -65,7 +65,7 @@ export async function executeTask(task: ITask) {
     switch (task.task) {
       case TaskType.validate:
         return validate(
-          carto,
+          creatorTools,
           task.project,
           task.arguments["suite"] as string | undefined,
           task.arguments["exclusionList"] as string | undefined,
@@ -97,7 +97,7 @@ if (!isMainThread) {
 }
 
 async function validate(
-  carto: Carto,
+  creatorTools: CreatorTools,
   projectStart: IProjectStartInfo,
   suite?: string,
   exclusionList?: string,
@@ -106,7 +106,7 @@ async function validate(
   displayInfo?: boolean,
   force?: boolean
 ) {
-  const project = ClUtils.createProject(carto, projectStart);
+  const project = ClUtils.createProject(creatorTools, projectStart);
 
   project.readOnlySafety = true;
 

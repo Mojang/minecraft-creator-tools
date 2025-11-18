@@ -163,6 +163,9 @@ export default class ProjectInfoItem {
       this.#data.fs = {};
     }
 
+    setName = Utilities.convertToJsonKey(setName);
+    measureName = Utilities.convertToJsonKey(measureName);
+
     if (!Utilities.isUsableAsObjectKey(setName)) {
       Log.unsupportedToken(setName);
       throw new Error();
@@ -191,6 +194,9 @@ export default class ProjectInfoItem {
     if (this.#data.fs === undefined) {
       this.#data.fs = {};
     }
+
+    setName = Utilities.convertToJsonKey(setName);
+    measureName = Utilities.convertToJsonKey(measureName);
 
     if (!Utilities.isUsableAsObjectKey(setName)) {
       Log.unsupportedToken(setName);
@@ -241,6 +247,8 @@ export default class ProjectInfoItem {
       return 0;
     }
 
+    setName = Utilities.convertToJsonKey(setName);
+
     const featureSet = this.#data.fs[setName];
 
     if (featureSet) {
@@ -271,7 +279,7 @@ export default class ProjectInfoItem {
             val !== undefined &&
             typeof val === "number" &&
             val > 0 &&
-            (measureName === "Count" || measureName === "Instance Count")
+            (measureName === "count" || measureName === "instanceCount")
           ) {
             results.push(setName);
           }
@@ -287,15 +295,17 @@ export default class ProjectInfoItem {
       this.#data.fs = {};
     }
 
+    setName = Utilities.convertToJsonKey(setName);
+
     if (!Utilities.isUsableAsObjectKey(setName)) {
       Log.unsupportedToken(setName);
       throw new Error();
     }
 
-    this.incrementFeature(setName, "Instance Count", 1);
-    this.incrementFeature(setName, "Total", newValue);
-    this.maxFeature(setName, "Max", newValue);
-    this.minFeature(setName, "Min", newValue);
+    this.incrementFeature(setName, "instanceCount", 1);
+    this.incrementFeature(setName, "total", newValue);
+    this.maxFeature(setName, "max", newValue);
+    this.minFeature(setName, "min", newValue);
 
     let setVal = this.#data.fs[setName];
 
@@ -305,11 +315,11 @@ export default class ProjectInfoItem {
       this.#data.fs[setName] = setVal;
     }
 
-    const curTotal = setVal["Total"];
-    const curCount = setVal["Instance Count"];
+    const curTotal = setVal["total"];
+    const curCount = setVal["instanceCount"];
 
     if (curCount && curTotal !== undefined) {
-      setVal["Average"] = curTotal / curCount;
+      setVal["average"] = curTotal / curCount;
     }
   }
 
@@ -318,6 +328,8 @@ export default class ProjectInfoItem {
       this.#data.fs = {};
     }
 
+    setName = Utilities.convertToJsonKey(setName);
+
     let setVal = this.#data.fs[setName];
 
     if (setVal === undefined) {
@@ -326,30 +338,34 @@ export default class ProjectInfoItem {
       this.#data.fs[setName] = setVal;
     }
 
-    this.incrementFeature(setName, "Instance Count", 1);
-    this.incrementFeature(setName, "Total", newValue);
+    this.incrementFeature(setName, "instanceCount", 1);
+    this.incrementFeature(setName, "total", newValue);
 
-    this.maxFeature(setName, "Max", newValue);
-    this.minFeature(setName, "Min", newValue);
+    this.maxFeature(setName, "max", newValue);
+    this.minFeature(setName, "min", newValue);
 
-    const curTotal = setVal["Total"];
-    const curCount = setVal["Instance Count"];
+    const curTotal = setVal["total"];
+    const curCount = setVal["instanceCount"];
 
     if (curCount && curTotal !== undefined) {
-      setVal["Average"] = Math.round(curTotal / curCount);
+      setVal["average"] = Math.round(curTotal / curCount);
     }
   }
 
-  incrementFeature(setName: string, measureName: string = "Count", incrementalValue: number = 1) {
+  incrementFeature(setName: string, measureName: string = "count", incrementalValue: number = 1) {
     if (this.#data.fs === undefined) {
       this.#data.fs = {};
     }
+
+    setName = Utilities.convertToJsonKey(setName);
+    measureName = Utilities.convertToJsonKey(measureName);
 
     if (!Utilities.isUsableAsObjectKey(setName)) {
       return;
     }
 
     let setVal = this.#data.fs[setName];
+
     if (setVal === undefined) {
       setVal = this.#data.fs[setName] = {};
     }
@@ -361,6 +377,9 @@ export default class ProjectInfoItem {
     if (this.#data.fs === undefined) {
       this.#data.fs = {};
     }
+
+    setName = Utilities.convertToJsonKey(setName);
+    measureName = Utilities.convertToJsonKey(measureName);
 
     if (!Utilities.isUsableAsObjectKey(setName)) {
       return;

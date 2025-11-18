@@ -542,6 +542,25 @@ export interface BiomeDefinitionComponentsMinecraftOverworldHeight {
 }
 
 
+export enum BiomeDefinitionComponentsMinecraftOverworldHeightNoiseType {
+  beach = `beach`,
+  deepOcean = `deep_ocean`,
+  default = `default`,
+  defaultMutated = `default_mutated`,
+  extreme = `extreme`,
+  highlands = `highlands`,
+  lessExtreme = `less_extreme`,
+  lowlands = `lowlands`,
+  mountains = `mountains`,
+  mushroom = `mushroom`,
+  ocean = `ocean`,
+  river = `river`,
+  stoneBeach = `stone_beach`,
+  swamp = `swamp`,
+  taiga = `taiga`
+}
+
+
 /**
  * Biome Replace Biomes (minecraft:replace_biomes)
  * Replaces a specified portion of one or more Minecraft 
@@ -671,6 +690,16 @@ export interface BiomeDefinitionComponentsMinecraftSurfaceBuilderBuilder {
    */
   type: string;
 
+}
+
+
+export enum BiomeDefinitionComponentsMinecraftSurfaceBuilderBuilderType {
+  minecraftCapped = `minecraft:capped`,
+  minecraftFrozenOcean = `minecraft:frozen_ocean`,
+  minecraftMesa = `minecraft:mesa`,
+  minecraftOverworld = `minecraft:overworld`,
+  minecraftSwamp = `minecraft:swamp`,
+  minecraftTheEnd = `minecraft:the_end`
 }
 
 

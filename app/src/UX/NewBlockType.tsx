@@ -49,7 +49,7 @@ export default class NewBlockType extends Component<INewBlockTypeProps, INewBloc
   }
 
   _handleNameChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
-    if (data === undefined || this.props.carto === null || this.state == null) {
+    if (data === undefined || this.props.creatorTools === null || this.state == null) {
       return;
     }
 
@@ -84,7 +84,7 @@ export default class NewBlockType extends Component<INewBlockTypeProps, INewBloc
     if (
       this.state === null ||
       Database.releaseVanillaBehaviorPackFolder === null ||
-      this.props.carto.gallery === undefined
+      this.props.creatorTools.gallery === undefined
     ) {
       return <div>Loading...</div>;
     }
@@ -115,11 +115,11 @@ export default class NewBlockType extends Component<INewBlockTypeProps, INewBloc
           }}
         >
           <ItemGallery
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             theme={this.props.theme}
             view={ItemTileButtonDisplayMode.smallImage}
             isSelectable={true}
-            gallery={this.props.carto.gallery}
+            gallery={this.props.creatorTools.gallery}
             filterOn={[GalleryItemType.blockType]}
             onGalleryItemCommand={this._handleTypeGalleryCommand}
           />

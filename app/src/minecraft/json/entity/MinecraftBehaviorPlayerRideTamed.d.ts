@@ -16,10 +16,17 @@ Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 "minecraft:behavior.player_ride_tamed": {}
 
 
-Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
+Camel Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/camel_husk.json
 
 "minecraft:behavior.player_ride_tamed": {
   "priority": 1
+}
+
+
+Nautilus - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/nautilus.json
+
+"minecraft:behavior.player_ride_tamed": {
+  "priority": 0
 }
 
  */
@@ -40,7 +47,8 @@ export default interface MinecraftBehaviorPlayerRideTamed {
    * goal.
    * 
    * Sample Values:
-   * Happy Ghast: 1
+   * Camel Husk: 1
+   *
    *
    */
   priority?: number;

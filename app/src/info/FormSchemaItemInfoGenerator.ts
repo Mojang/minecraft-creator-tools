@@ -4,7 +4,7 @@
 import ProjectInfoItem from "./ProjectInfoItem";
 import ProjectItem from "../app/ProjectItem";
 import IProjectInfoItemGenerator from "./IProjectItemInfoGenerator";
-import CartoApp from "../app/CartoApp";
+import CreatorToolsHost from "../app/CreatorToolsHost";
 
 import axios from "axios";
 import ProjectInfoSet from "./ProjectInfoSet";
@@ -44,7 +44,7 @@ export default class FormSchemaItemInfoGenerator implements IProjectInfoItemGene
 
   async loadSchema(uri: string) {
     console.log("Retrieving " + uri);
-    const res = await axios.get(Utilities.ensureEndsWithSlash(CartoApp.contentRoot) + uri);
+    const res = await axios.get(Utilities.ensureEndsWithSlash(CreatorToolsHost.contentRoot) + uri);
 
     console.log("Loading error: " + JSON.stringify(res.data));
     return res.data;

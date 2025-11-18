@@ -18,7 +18,11 @@ export default interface ILocalUtilities {
 
   readonly localAppDataPath: string;
 
-  readonly localServerLogPath: string;
+  readonly roamingAppDataPath: string;
+
+  readonly localReleaseServerLogPath: string;
+
+  readonly localPreviewServerLogPath: string;
 
   readonly minecraftPath: string;
 
@@ -44,7 +48,7 @@ export default interface ILocalUtilities {
 
   readJsonFile(path: string): Promise<object | null>;
 
-  createStorage(path: string): Promise<IStorage | null>;
+  createStorage(path: string): IStorage | null;
 
   processConversion(settings: IConversionSettings): Promise<boolean>;
 }

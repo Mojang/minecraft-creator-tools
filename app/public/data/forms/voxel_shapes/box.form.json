@@ -16,17 +16,20 @@
               {
                 "id": "x",
                 "title": "X",
-                "dataType": 3
+                "dataType": 3,
+                "defaultValue": 0
               },
               {
                 "id": "y",
                 "title": "Y",
-                "dataType": 3
+                "dataType": 3,
+                "defaultValue": 0
               },
               {
                 "id": "z",
                 "title": "Z",
-                "dataType": 3
+                "dataType": 3,
+                "defaultValue": 0
               }
             ]
           }
@@ -49,17 +52,20 @@
               {
                 "id": "x",
                 "title": "X",
-                "dataType": 3
+                "dataType": 3,
+                "defaultValue": 0
               },
               {
                 "id": "y",
                 "title": "Y",
-                "dataType": 3
+                "dataType": 3,
+                "defaultValue": 0
               },
               {
                 "id": "z",
                 "title": "Z",
-                "dataType": 3
+                "dataType": 3,
+                "defaultValue": 0
               }
             ]
           }

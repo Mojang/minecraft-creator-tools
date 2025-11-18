@@ -77,7 +77,7 @@ export default interface MinecraftSearchFeature {
    * Axis that the search will sweep along through the
    * 'search_volume'
    */
-  search_axisLessThanxPlusxyPlusyzPlusz: string;
+  search_axisLessThanxxyyzz: string;
 
   /**
    * @remarks

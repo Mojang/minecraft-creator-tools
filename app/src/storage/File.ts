@@ -4,7 +4,7 @@
 import Log from "../core/Log";
 import FileBase from "./FileBase";
 import Folder from "./Folder";
-import IFile from "./IFile";
+import IFile, { FileUpdateType } from "./IFile";
 import Storage from "./Storage";
 import StorageUtilities from "./StorageUtilities";
 
@@ -33,6 +33,10 @@ export default class File extends FileBase implements IFile {
 
     this._parentFolder = parentFolder;
     this._name = folderName;
+  }
+
+  async scanForChanges(): Promise<void> {
+    // No-op for in-memory storage
   }
 
   async exists(): Promise<boolean> {
@@ -81,19 +85,25 @@ export default class File extends FileBase implements IFile {
     return true;
   }
 
-  setContent(newContent: string | Uint8Array | null) {
-    if (this._content !== newContent) {
-      if (!this.lastLoadedOrSaved) {
-        this.lastLoadedOrSaved = new Date();
-        this.lastLoadedOrSaved = new Date(this.lastLoadedOrSaved.getTime() - 1);
-
-        Log.debugAlert("Setting a file without loading it first.");
-      }
-
-      this._content = newContent;
-
-      this.contentWasModified();
+  setContent(newContent: string | Uint8Array | null, updateType?: FileUpdateType, sourceId?: string) {
+    if (this._content === newContent) {
+      return false;
     }
+
+    if (!this.lastLoadedOrSaved) {
+      this.lastLoadedOrSaved = new Date();
+      this.lastLoadedOrSaved = new Date(this.lastLoadedOrSaved.getTime() - 1);
+
+      Log.debugAlert("Setting a file without loading it first.");
+    }
+
+    let oldContent = this._content;
+
+    this._content = newContent;
+
+    this.contentWasModified(oldContent, updateType, sourceId);
+
+    return true;
   }
 
   async saveContent(): Promise<Date> {

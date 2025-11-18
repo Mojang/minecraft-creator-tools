@@ -8,7 +8,7 @@ import { ThemeInput } from "@fluentui/styles";
 import ProjectItem from "../app/ProjectItem";
 import ItemTypeComponentSetEditor from "./ItemTypeComponentSetEditor";
 import Project from "../app/Project";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import { CustomTabLabel } from "./Labels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquarePlus } from "@fortawesome/free-regular-svg-icons";
@@ -24,7 +24,7 @@ interface IItemTypeEditorProps extends IFileProps {
   readOnly: boolean;
   item: ProjectItem;
   project: Project;
-  carto: Carto;
+  creatorTools: CreatorTools;
   theme: ThemeInput<any>;
 }
 
@@ -117,16 +117,18 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
     }
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
       if (file.manager) {
         const et = file.manager as ItemTypeDefinition;
 
-        et.persist();
+        return et.persist();
       }
     }
+
+    return false;
   }
 
   _setPropertiesMode() {
@@ -233,7 +235,7 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
             theme={this.props.theme}
             isDefault={true}
             project={this.props.project}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             isVisualsMode={false}
             heightOffset={this.props.heightOffset + 99}
           />
@@ -263,7 +265,7 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
               displayHeader={false}
               item={attachableItem}
               project={this.props.project}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               file={attachableItem.primaryFile}
               heightOffset={this.props.heightOffset + 106}
             />
@@ -277,7 +279,7 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
               theme={this.props.theme}
               isDefault={true}
               project={this.props.project}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               isVisualsMode={true}
               heightOffset={this.props.heightOffset + 106}
             />
@@ -292,7 +294,7 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
             itemTypeItem={itbd}
             readOnly={this.props.readOnly}
             item={this.props.item}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             file={this.props.file}
             project={this.props.project}
             theme={this.props.theme}

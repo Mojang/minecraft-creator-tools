@@ -9,14 +9,14 @@ import Utilities from "../core/Utilities";
 import Database from "./../minecraft/Database";
 import IFolder from "./../storage/IFolder";
 import Log from "../core/Log";
-import Carto from "./Carto";
+import CreatorTools from "./CreatorTools";
 import GitHubStorage from "./../github/GitHubStorage";
 import AppServiceProxy, { AppServiceProxyCommands } from "./../core/AppServiceProxy";
 import ZipStorage from "../storage/ZipStorage";
 import { ProjectFocus } from "../app/IProjectData";
 import { IWorldSettings } from "../minecraft/IWorldSettings";
 import ProjectUpdateRunner from "../updates/ProjectUpdateRunner";
-import CartoApp from "./CartoApp";
+import CreatorToolsHost from "./CreatorToolsHost";
 import HttpStorage from "../storage/HttpStorage";
 import ProjectBuild from "./ProjectBuild";
 import { Generator } from "../minecraft/WorldLevelDat";
@@ -44,7 +44,7 @@ export const ProjectImportExclusions = [
 ];
 
 export default class ProjectExporter {
-  static async generateFlatBetaApisWorldWithPacksZipBytes(carto: Carto, project: Project, name: string) {
+  static async generateFlatBetaApisWorldWithPacksZipBytes(creatorTools: CreatorTools, project: Project, name: string) {
     await Database.loadContent();
 
     if (Database.contentFolder === null) {
@@ -68,7 +68,7 @@ export default class ProjectExporter {
 
   static async syncProjectFromGitHub(
     isNewProject: boolean,
-    carto: Carto,
+    creatorTools: CreatorTools,
     gitHubRepoName: string,
     gitHubOwner: string,
     gitHubBranch: string | undefined,
@@ -91,10 +91,10 @@ export default class ProjectExporter {
       "/" +
       gitHubFolder;
 
-    if (CartoApp.isWeb) {
-      gh = new HttpStorage(Utilities.ensureEndsWithSlash(CartoApp.contentRoot) + urlExtension);
+    if (CreatorToolsHost.isWeb) {
+      gh = new HttpStorage(Utilities.ensureEndsWithSlash(CreatorToolsHost.contentRoot) + urlExtension);
     } else {
-      gh = new GitHubStorage(carto.anonGitHub, gitHubRepoName, gitHubOwner, gitHubBranch, gitHubFolder);
+      gh = new GitHubStorage(creatorTools.anonGitHub, gitHubRepoName, gitHubOwner, gitHubBranch, gitHubFolder);
       //gh = new HttpStorage(Utilities.ensureEndsWithSlash(constants.homeUrl) + urlExtension);
     }
 
@@ -107,10 +107,10 @@ export default class ProjectExporter {
       }
     }
 
-    const newProjectName = await carto.getNewProjectName(projName);
+    const newProjectName = await creatorTools.getNewProjectName(projName);
 
     if (!project) {
-      project = await carto.createNewProject(
+      project = await creatorTools.createNewProject(
         newProjectName,
         undefined,
         undefined,
@@ -164,7 +164,7 @@ export default class ProjectExporter {
 
     await project.save(true);
 
-    await carto.save();
+    await creatorTools.save();
 
     return project;
   }
@@ -230,23 +230,23 @@ export default class ProjectExporter {
     return worldsFolder;
   }
 
-  static async ensureMinecraftWorldsFolder(carto: Carto) {
-    if (carto.deploymentStorage === null) {
+  static async ensureMinecraftWorldsFolder(creatorTools: CreatorTools) {
+    if (creatorTools.deploymentStorage === null) {
       Log.unexpectedUndefined("EMWF");
       return undefined;
     }
 
-    let isAvailable = carto.deploymentStorage.available;
+    let isAvailable = creatorTools.deploymentStorage.available;
 
     if (isAvailable === undefined) {
-      isAvailable = await carto.deploymentStorage.getAvailable();
+      isAvailable = await creatorTools.deploymentStorage.getAvailable();
     }
 
     if (!isAvailable) {
       return;
     }
 
-    return await this.ensureWorldsFolder(carto.deploymentStorage.rootFolder);
+    return await this.ensureWorldsFolder(creatorTools.deploymentStorage.rootFolder);
   }
 
   static async prepareProject(project: Project): Promise<ProjectBuild | undefined> {
@@ -266,7 +266,7 @@ export default class ProjectExporter {
     return projectBuild;
   }
 
-  static async deployProject(carto: Carto, project: Project, deployTargetFolder: IFolder) {
+  static async deployProject(creatorTools: CreatorTools, project: Project, deployTargetFolder: IFolder) {
     const ctProjectBuild = await ProjectExporter.prepareProject(project);
 
     if (!ctProjectBuild) {
@@ -404,7 +404,7 @@ export default class ProjectExporter {
   }
 
   static async deployAsWorldAndTestAssets(
-    carto: Carto,
+    creatorTools: CreatorTools,
     project: Project,
     worldProjectItem: ProjectItem,
     returnZipBytes: boolean,
@@ -412,7 +412,7 @@ export default class ProjectExporter {
   ) {
     let mcworld: MCWorld | undefined;
 
-    const operId = await carto.notifyOperationStarted(
+    const operId = await creatorTools.notifyOperationStarted(
       "Deploying world '" + worldProjectItem.name + "' and test assets."
     );
 
@@ -440,7 +440,7 @@ export default class ProjectExporter {
     const projectBuild = await ProjectExporter.prepareProject(project);
 
     if (!projectBuild) {
-      await carto.notifyOperationEnded(operId, "Packaging the world not be completed.", undefined, true);
+      await creatorTools.notifyOperationEnded(operId, "Packaging the world not be completed.", undefined, true);
     }
 
     const dateNow = new Date();
@@ -466,7 +466,7 @@ export default class ProjectExporter {
 
       targetFolder = zipStorage.rootFolder;
     } else {
-      const worldsFolder = await ProjectExporter.ensureMinecraftWorldsFolder(carto);
+      const worldsFolder = await ProjectExporter.ensureMinecraftWorldsFolder(creatorTools);
 
       if (!worldsFolder) {
         Log.unexpectedUndefined("DAWATAC");
@@ -511,7 +511,7 @@ export default class ProjectExporter {
 
     await newMcWorld.save();
 
-    await carto.notifyOperationEnded(operId, "World + local test assets deploy completed.");
+    await creatorTools.notifyOperationEnded(operId, "World + local test assets deploy completed.");
 
     if (zipStorage) {
       const zipBytes = await zipStorage.generateUint8ArrayAsync();
@@ -523,14 +523,14 @@ export default class ProjectExporter {
   }
 
   static async deployAsWorld(
-    carto: Carto,
+    creatorTools: CreatorTools,
     project: Project,
     worldProjectItem: ProjectItem,
     returnZipBytes: boolean,
     deployFolder?: IFolder
   ) {
     let mcworld: MCWorld | undefined;
-    const operId = await carto.notifyOperationStarted("Deploying world '" + worldProjectItem.name + "'");
+    const operId = await creatorTools.notifyOperationStarted("Deploying world '" + worldProjectItem.name + "'");
 
     if (!worldProjectItem.isContentLoaded) {
       await worldProjectItem.loadContent();
@@ -555,7 +555,7 @@ export default class ProjectExporter {
     const projectBuild = await ProjectExporter.prepareProject(project);
 
     if (!projectBuild) {
-      await carto.notifyOperationEnded(operId, "Packaging the world not be completed.", undefined, true);
+      await creatorTools.notifyOperationEnded(operId, "Packaging the world not be completed.", undefined, true);
     }
 
     const dateNow = new Date();
@@ -581,7 +581,7 @@ export default class ProjectExporter {
 
       targetFolder = zipStorage.rootFolder;
     } else {
-      const worldsFolder = await ProjectExporter.ensureMinecraftWorldsFolder(carto);
+      const worldsFolder = await ProjectExporter.ensureMinecraftWorldsFolder(creatorTools);
 
       if (!worldsFolder) {
         Log.unexpectedUndefined("DAWATAC");
@@ -597,7 +597,7 @@ export default class ProjectExporter {
 
     await targetFolder.saveAll();
 
-    await carto.notifyOperationEnded(operId, "World + local assets deploy completed.");
+    await creatorTools.notifyOperationEnded(operId, "World + local assets deploy completed.");
 
     if (zipStorage) {
       const zipBytes = await zipStorage.generateUint8ArrayAsync();
@@ -614,17 +614,17 @@ export default class ProjectExporter {
   }
 
   static async generateWorldWithPacks(
-    carto: Carto,
+    creatorTools: CreatorTools,
     project: Project,
     worldSettings: IWorldSettings,
     targetFolder?: IFolder
   ) {
-    const operId = await carto.notifyOperationStarted("Generating world and packs for '" + project.name + "'.");
+    const operId = await creatorTools.notifyOperationStarted("Generating world and packs for '" + project.name + "'.");
 
     const projectBuild = await ProjectExporter.prepareProject(project);
 
     if (projectBuild === undefined) {
-      await carto.notifyOperationEnded(operId);
+      await creatorTools.notifyOperationEnded(operId);
       return;
     }
 
@@ -666,7 +666,7 @@ export default class ProjectExporter {
 
     await mcworld.save();
 
-    await carto.notifyOperationEnded(
+    await creatorTools.notifyOperationEnded(
       operId,
       "World + local assets generation for '" + targetFolder.fullPath + "' completed."
     );
@@ -675,12 +675,12 @@ export default class ProjectExporter {
   }
 
   static async deployProjectAndGeneratedWorldTo(
-    carto: Carto,
+    creatorTools: CreatorTools,
     project: Project,
     worldSettings: IWorldSettings,
     deployFolder: IFolder
   ) {
-    const operId = await carto.notifyOperationStarted(
+    const operId = await creatorTools.notifyOperationStarted(
       "Deploying project '" + project.name + "' plus world and test assets."
     );
 
@@ -702,7 +702,7 @@ export default class ProjectExporter {
 
       await targetFolder.ensureExists();
     } else {
-      const worldsFolder = await ProjectExporter.ensureMinecraftWorldsFolder(carto);
+      const worldsFolder = await ProjectExporter.ensureMinecraftWorldsFolder(creatorTools);
 
       if (!worldsFolder) {
         Log.unexpectedUndefined("DPWATAE");
@@ -714,7 +714,7 @@ export default class ProjectExporter {
       await targetFolder.ensureExists();
     }
 
-    const mcworld = await ProjectExporter.generateWorldWithPacks(carto, project, worldSettings, targetFolder);
+    const mcworld = await ProjectExporter.generateWorldWithPacks(creatorTools, project, worldSettings, targetFolder);
 
     if (mcworld) {
       await targetFolder.saveAll();
@@ -722,7 +722,7 @@ export default class ProjectExporter {
       await mcworld.save();
     }
 
-    await carto.notifyOperationEnded(
+    await creatorTools.notifyOperationEnded(
       operId,
       "World + local assets deploy to '" + targetFolder.fullPath + "' completed."
     );
@@ -730,51 +730,56 @@ export default class ProjectExporter {
     return title;
   }
 
-  static async deployAsFlatPackRefWorld(carto: Carto, project: Project) {
-    await carto.notifyStatusUpdate("Saving...");
+  static async deployAsFlatPackRefWorld(creatorTools: CreatorTools, project: Project) {
+    await creatorTools.notifyStatusUpdate("Saving...");
     await ProjectExporter.updateProjects(project);
 
     await project.save();
-    await carto.notifyStatusUpdate("Saved");
+    await creatorTools.notifyStatusUpdate("Saved");
 
     // only do an explicit deploy here autodeployment is not turned on; otherwise, deployment should happen in the save() above.
     if (
       //  project.autoDeploymentMode !== ProjectAutoDeploymentMode.deployOnSave &&
-      carto.deploymentStorage !== null &&
-      carto.deployBehaviorPacksFolder !== null &&
-      carto.activeMinecraft
+      creatorTools.deploymentStorage !== null &&
+      creatorTools.deployBehaviorPacksFolder !== null &&
+      creatorTools.activeMinecraft
     ) {
-      await carto.notifyStatusUpdate("Deploying pack add-ons");
-      carto.activeMinecraft.syncWithDeployment();
-      await carto.notifyStatusUpdate("Deployed");
+      await creatorTools.notifyStatusUpdate("Deploying pack add-ons");
+      creatorTools.activeMinecraft.syncWithDeployment();
+      await creatorTools.notifyStatusUpdate("Deployed");
     }
 
     const hash = project.defaultBehaviorPackUniqueId + "|";
 
     if (
       (project.lastMapDeployedHash === undefined || project.lastMapDeployedHash !== hash) &&
-      carto.workingStorage !== null
+      creatorTools.workingStorage !== null
     ) {
-      ProjectExporter.generateAndInvokeFlatPackRefMCWorld(carto, project);
+      ProjectExporter.generateAndInvokeFlatPackRefMCWorld(creatorTools, project);
 
       project.lastMapDeployedHash = hash;
       project.lastMapDeployedDate = new Date();
     }
   }
 
-  static async convertWorld(carto: Carto, project: Project, settings: IConversionSettings, world?: MCWorld) {
+  static async convertWorld(
+    creatorTools: CreatorTools,
+    project: Project,
+    settings: IConversionSettings,
+    world?: MCWorld
+  ) {
     if (!world) {
       return;
     }
 
-    if (carto.workingStorage === null) {
+    if (creatorTools.workingStorage === null) {
       Log.fail("Did not find expected working storage.");
       return;
     }
     const dtNow = new Date();
     const tempWorkingPathName = "WorldConvert" + Utilities.getDateStr(dtNow);
 
-    const workingFolder = carto.workingStorage.rootFolder.ensureFolder(tempWorkingPathName);
+    const workingFolder = creatorTools.workingStorage.rootFolder.ensureFolder(tempWorkingPathName);
 
     await workingFolder.ensureExists();
 
@@ -807,8 +812,13 @@ export default class ProjectExporter {
     return undefined;
   }
 
-  static async syncFlatPackRefWorldTo(carto: Carto, project: Project, worldFolder: IFolder, name: string) {
-    if (carto.workingStorage === null) {
+  static async syncFlatPackRefWorldTo(
+    creatorTools: CreatorTools,
+    project: Project,
+    worldFolder: IFolder,
+    name: string
+  ) {
+    if (creatorTools.workingStorage === null) {
       Log.fail("Did not find expected working storage.");
       return;
     }
@@ -824,8 +834,8 @@ export default class ProjectExporter {
     }
   }
 
-  static async generateAndInvokeFlatPackRefMCWorld(carto: Carto, project: Project) {
-    if (carto.workingStorage === null) {
+  static async generateAndInvokeFlatPackRefMCWorld(creatorTools: CreatorTools, project: Project) {
+    if (creatorTools.workingStorage === null) {
       Log.fail("Did not find expected working storage.");
       return;
     }
@@ -839,7 +849,7 @@ export default class ProjectExporter {
       const newBytes = await mcworld.getBytes();
 
       if (newBytes !== undefined) {
-        const file = carto.workingStorage.rootFolder.ensureFile(fileName);
+        const file = creatorTools.workingStorage.rootFolder.ensureFile(fileName);
 
         file.setContent(newBytes);
 
@@ -878,11 +888,11 @@ export default class ProjectExporter {
   }
 
   static async generateMCAddonAsZip(
-    carto: Carto,
+    creatorTools: CreatorTools,
     project: Project,
     returnAsBlob: boolean
   ): Promise<Blob | Uint8Array | undefined> {
-    const operId = await carto.notifyOperationStarted("Exporting '" + project.name + "' as MCPack");
+    const operId = await creatorTools.notifyOperationStarted("Exporting '" + project.name + "' as MCPack");
 
     const zipStorage = new ZipStorage();
 
@@ -905,7 +915,10 @@ export default class ProjectExporter {
     if (returnAsBlob) {
       const zipBinary = await zipStorage.generateBlobAsync();
 
-      await carto.notifyOperationEnded(operId, "Export MCPack of '" + project.name + "' created; downloading...");
+      await creatorTools.notifyOperationEnded(
+        operId,
+        "Export MCPack of '" + project.name + "' created; downloading..."
+      );
 
       return zipBinary;
     } else {

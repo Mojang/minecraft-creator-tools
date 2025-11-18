@@ -69,7 +69,7 @@ export default class GeneralFormEditor extends Component<IGeneralFormEditorProps
     });
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
@@ -80,18 +80,18 @@ export default class GeneralFormEditor extends Component<IGeneralFormEditorProps
           jsonO = Utilities.selectJsonObject(jsonO, this.props.select, true);
         }
 
-        file.setContent(JSON.stringify(jsonO, null, 2));
+        return file.setObjectContentIfSemanticallyDifferent(jsonO);
       }
     }
+
+    return false;
   }
 
   _handleDataFormPropertyChange(props: IDataFormProps, property: IProperty, newValue: any) {
     if (props.tagData && props.directObject) {
       const file = props.tagData as IFile;
 
-      const newData = JSON.stringify(props.directObject, null, 2);
-
-      file.setContent(newData);
+      file.setObjectContentIfSemanticallyDifferent(props.directObject);
     }
   }
 

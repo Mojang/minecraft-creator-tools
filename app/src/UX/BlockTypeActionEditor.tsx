@@ -10,7 +10,7 @@ import { CustomLabel } from "./Labels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import WebUtilities from "./WebUtilities";
 import { Dialog, Dropdown, DropdownProps, Toolbar } from "@fluentui/react-northstar";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import Project from "../app/Project";
 import IManagedComponentSetItem from "../minecraft/IManagedComponentSetItem";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
@@ -29,7 +29,7 @@ interface IBlockTypeActionEditorProps extends IFileProps {
   blockTypeItem: BlockTypeDefinition;
   item: ProjectItem;
   project: Project;
-  carto: Carto;
+  creatorTools: CreatorTools;
   theme: ThemeInput<any>;
 }
 
@@ -123,16 +123,18 @@ export default class BlockTypeActionEditor extends Component<IBlockTypeActionEdi
     }
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
       if (file.manager) {
         const bt = file.manager as BlockTypeDefinition;
 
-        bt.persist();
+        return bt.persist();
       }
     }
+
+    return false;
   }
 
   _addNewAction() {
@@ -221,7 +223,7 @@ export default class BlockTypeActionEditor extends Component<IBlockTypeActionEdi
   }
 
   _onUpdatePreferredTextSize(newTextSize: number) {
-    this.props.carto.preferredTextSize = newTextSize;
+    this.props.creatorTools.preferredTextSize = newTextSize;
   }
 
   _getSuggestedName() {
@@ -309,10 +311,10 @@ export default class BlockTypeActionEditor extends Component<IBlockTypeActionEdi
               itemInterior = (
                 <JavaScriptEditor
                   role={ScriptEditorRole.script}
-                  carto={this.props.carto}
+                  creatorTools={this.props.creatorTools}
                   theme={this.props.theme}
                   onUpdatePreferredTextSize={this._onUpdatePreferredTextSize}
-                  preferredTextSize={this.props.carto.preferredTextSize}
+                  preferredTextSize={this.props.creatorTools.preferredTextSize}
                   readOnly={this.props.readOnly}
                   project={this.props.project}
                   scriptLanguage={ProjectScriptLanguage.typeScript}

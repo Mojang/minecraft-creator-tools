@@ -147,6 +147,16 @@
             ]
           }
         ],
+        "/vanilla/behavior_pack/entities/camel_husk.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:type_family/",
+            "content": [
+              "camel_husk",
+              "mob",
+              "undead"
+            ]
+          }
+        ],
         "/vanilla/behavior_pack/entities/cat.json": [
           {
             "path": "/minecraft:entity/components/minecraft:type_family/",
@@ -439,18 +449,6 @@
             ]
           }
         ],
-        "/vanilla/behavior_pack/entities/husk.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:type_family/",
-            "content": [
-              "husk",
-              "zombie",
-              "undead",
-              "monster",
-              "mob"
-            ]
-          }
-        ],
         "/vanilla/behavior_pack/entities/iron_golem.json": [
           {
             "path": "/minecraft:entity/components/minecraft:type_family/",
@@ -505,6 +503,16 @@
             ]
           }
         ],
+        "/vanilla/behavior_pack/entities/nautilus.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:type_family/",
+            "content": [
+              "aquatic",
+              "nautilus",
+              "mob"
+            ]
+          }
+        ],
         "/vanilla/behavior_pack/entities/npc.json": [
           {
             "path": "/minecraft:entity/components/minecraft:type_family/",
@@ -520,6 +528,18 @@
             "content": [
               "ocelot",
               "mob"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/parched.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:type_family/",
+            "content": [
+              "parched",
+              "skeleton",
+              "monster",
+              "mob",
+              "undead"
             ]
           }
         ],
@@ -949,22 +969,22 @@
             ]
           }
         ],
-        "/vanilla/behavior_pack/entities/zombie.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:type_family/",
-            "content": [
-              "zombie",
-              "undead",
-              "monster",
-              "mob"
-            ]
-          }
-        ],
         "/vanilla/behavior_pack/entities/zombie_horse.json": [
           {
             "path": "/minecraft:entity/components/minecraft:type_family/",
             "content": [
               "zombiehorse",
+              "undead",
+              "mob"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:type_family/",
+            "content": [
+              "aquatic",
+              "zombie_nautilus",
               "undead",
               "mob"
             ]
@@ -1581,6 +1601,18 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/entities/camel_husk.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:type_family/",
+        "content": {
+          "family": [
+            "camel_husk",
+            "mob",
+            "undead"
+          ]
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/cat.json": [
       {
         "path": "/minecraft:entity/components/minecraft:type_family/",
@@ -1944,20 +1976,6 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/husk.json": [
-      {
-        "path": "/minecraft:entity/components/minecraft:type_family/",
-        "content": {
-          "family": [
-            "husk",
-            "zombie",
-            "undead",
-            "monster",
-            "mob"
-          ]
-        }
-      }
-    ],
     "/vanilla/behavior_pack/entities/iron_golem.json": [
       {
         "path": "/minecraft:entity/components/minecraft:type_family/",
@@ -2035,6 +2053,18 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/entities/nautilus.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:type_family/",
+        "content": {
+          "family": [
+            "aquatic",
+            "nautilus",
+            "mob"
+          ]
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/npc.json": [
       {
         "path": "/minecraft:entity/components/minecraft:type_family/",
@@ -2053,6 +2083,20 @@
           "family": [
             "ocelot",
             "mob"
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/parched.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:type_family/",
+        "content": {
+          "family": [
+            "parched",
+            "skeleton",
+            "monster",
+            "mob",
+            "undead"
           ]
         }
       }
@@ -2580,25 +2624,25 @@
         }
       }
     ],
-    "/vanilla/behavior_pack/entities/zombie.json": [
-      {
-        "path": "/minecraft:entity/components/minecraft:type_family/",
-        "content": {
-          "family": [
-            "zombie",
-            "undead",
-            "monster",
-            "mob"
-          ]
-        }
-      }
-    ],
     "/vanilla/behavior_pack/entities/zombie_horse.json": [
       {
         "path": "/minecraft:entity/components/minecraft:type_family/",
         "content": {
           "family": [
             "zombiehorse",
+            "undead",
+            "mob"
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:type_family/",
+        "content": {
+          "family": [
+            "aquatic",
+            "zombie_nautilus",
             "undead",
             "mob"
           ]

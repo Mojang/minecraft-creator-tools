@@ -5,15 +5,15 @@ import "./DataFormEditor.css";
 import DataFormFile from "../dataform/DataFormFile";
 import DataForm, { IDataFormProps } from "../dataform/DataForm";
 import Database from "../minecraft/Database";
-import CartoApp from "../app/CartoApp";
 import Project from "../app/Project";
 import { ThemeInput } from "@fluentui/react-northstar";
 import IProperty from "../dataform/IProperty";
+import CreatorTools from "../app/CreatorTools";
 
 interface IDataFormEditorProps extends IFileProps {
   heightOffset: number;
   theme: ThemeInput<any>;
-  carto: CartoApp;
+  creatorTools: CreatorTools;
   project: Project;
   onDataFormUpdate?: (dataForm: DataForm) => void;
 }
@@ -30,16 +30,18 @@ export default class DataFormEditor extends Component<IDataFormEditorProps, IDat
     this._handleDataFormPropertyChange = this._handleDataFormPropertyChange.bind(this);
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
       if (file.manager) {
         const dff = file.manager as DataFormFile;
 
-        dff.persist();
+        return dff.persist();
       }
     }
+
+    return false;
   }
 
   static getDerivedStateFromProps(props: IDataFormEditorProps, state: IDataFormEditorState) {
@@ -85,9 +87,7 @@ export default class DataFormEditor extends Component<IDataFormEditorProps, IDat
     if (props.tagData && props.directObject) {
       const file = props.tagData as IFile;
 
-      const newData = JSON.stringify(props.directObject, null, 2);
-
-      file.setContent(newData);
+      file.setObjectContentIfSemanticallyDifferent(props.directObject);
     }
   }
 

@@ -4,7 +4,7 @@
 import Log from "../core/Log";
 import Utilities from "../core/Utilities";
 import IFile from "./IFile";
-import IStorage from "./IStorage";
+import IStorage, { IFileUpdateEvent } from "./IStorage";
 import StorageUtilities from "./StorageUtilities";
 
 export enum StorageProxyCommands {
@@ -91,7 +91,7 @@ export default class StorageProxy {
     }
   }
 
-  onFileContentsUpdated(storage: IStorage, file: IFile) {
+  onFileContentsUpdated(storage: IStorage, fileEvent: IFileUpdateEvent) {
     const senders = this._subscribersRetriever.getSubscribers(this._id);
 
     if (!senders) {
@@ -100,7 +100,12 @@ export default class StorageProxy {
     }
 
     for (let i = 0; i < senders.length; i++) {
-      this._sendMessage(senders, StorageProxyCommands.notifyFileContentsUpdated, this._id, file.storageRelativePath);
+      this._sendMessage(
+        senders,
+        StorageProxyCommands.notifyFileContentsUpdated,
+        this._id,
+        fileEvent.file.storageRelativePath
+      );
     }
   }
 

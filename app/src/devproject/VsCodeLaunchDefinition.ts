@@ -199,18 +199,18 @@ export default class VsCodeLaunchDefinition {
     }
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     Log.assert(this.definition !== null, "VSLP");
 
-    if (this.definition) {
-      const launchJsonString = JSON.stringify(this.definition, null, 2);
-
-      this._file.setContent(launchJsonString);
+    if (!this.definition) {
+      return false;
     }
+
+    return this._file.setObjectContentIfSemanticallyDifferent(this.definition);
   }
 
   async save() {

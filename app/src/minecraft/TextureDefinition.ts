@@ -258,7 +258,9 @@ export default class TextureDefinition implements IDefinition {
     return projectPath.substring(texturesIndex + 1);
   }
 
-  persist() {}
+  persist(): boolean {
+    return false;
+  }
 
   async load() {
     if (this._isLoaded) {

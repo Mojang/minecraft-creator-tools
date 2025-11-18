@@ -12,7 +12,7 @@ import DocumentedClassEditor from "./DocumentedClassEditor";
 import { CustomTabLabel, UnassociatedDocumentationLabel } from "./Labels";
 import WebUtilities from "./WebUtilities";
 import FileExplorer, { FileExplorerMode } from "./FileExplorer";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import ItemAnnotationCollection from "./ItemAnnotationCollection";
 import ItemAnnotation from "./ItemAnnotation";
 import { ItemAnnotationType } from "./ItemAnnotation";
@@ -27,7 +27,7 @@ interface IDocumentedModuleEditorProps extends IFileProps {
   theme: ThemeInput<any>;
   typesReadOnly: boolean;
   docsReadOnly: boolean;
-  carto: Carto;
+  creatorTools: CreatorTools;
   project: Project;
 }
 
@@ -146,16 +146,18 @@ export default class DocumentedModuleEditor extends Component<
     }
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
       if (file.manager) {
         const dm = file.manager as DocumentedModule;
 
-        await dm.persist();
+        return await dm.persist();
       }
     }
+
+    return false;
   }
 
   _handleClassSelected(elt: any, event: ListProps | undefined) {
@@ -424,7 +426,7 @@ export default class DocumentedModuleEditor extends Component<
         <FileExplorer
           rootFolder={dm.docFolder}
           theme={this.props.theme}
-          carto={this.props.carto}
+          creatorTools={this.props.creatorTools}
           selectedItem={undefined}
           mode={FileExplorerMode.explorer}
           itemAnnotations={this.state.fileAnnotations}
@@ -437,7 +439,7 @@ export default class DocumentedModuleEditor extends Component<
         docItemEditor = (
           <DocumentedClassEditor
             heightOffset={this.props.heightOffset + 190}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             theme={this.props.theme}
             onDocumentedClassUpdate={this._handleDocumentedClassUpdate}
             typesReadOnly={this.props.typesReadOnly}
@@ -451,7 +453,7 @@ export default class DocumentedModuleEditor extends Component<
         docItemEditor = (
           <DocumentedScriptEnumEditor
             heightOffset={this.props.heightOffset + 190}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             theme={this.props.theme}
             onDocumentedScriptEnumUpdate={this._handleDocumentedScriptEnumUpdate}
             typesReadOnly={this.props.typesReadOnly}

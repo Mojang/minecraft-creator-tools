@@ -92,38 +92,38 @@
       "summon"
     ],
     "featureSets": {
-      "Textures Entity Resource Count": {
-        "Count": 3
+      "textures.entityResourceCount": {
+        "count": 3
       },
-      "Textures Texture References": {
-        "Count": 3
+      "textures.textureReferences": {
+        "count": 3
       },
-      "Textures Entity References": {
-        "Count": 3
+      "textures.entityReferences": {
+        "count": 3
       },
-      "Textures File Count": {
-        "Count": 3
+      "textures.fileCount": {
+        "count": 3
       },
-      "Textures Unique Texture Handles (estimated)": {
-        "Count": 3
+      "textures.uniqueTextureHandlesEstimated": {
+        "count": 3
       },
-      "Textures Unique Texture Paths": {
-        "Count": 3
+      "textures.uniqueTexturePaths": {
+        "count": 3
       },
-      "Textures Unique Particle Texture Paths": {
-        "Count": 0
+      "textures.uniqueParticleTexturePaths": {
+        "count": 0
       },
-      "Textures Unique Particle Texture Vanilla Paths": {
-        "Count": 1
+      "textures.uniqueParticleTextureVanillaPaths": {
+        "count": 1
       },
-      "Textures Unique Entity Texture Paths": {
-        "Count": 3
+      "textures.uniqueEntityTexturePaths": {
+        "count": 3
       },
-      "Command say": {
-        "Count": 1
+      "command.say": {
+        "count": 1
       },
-      "Command summon": {
-        "Count": 1
+      "command.summon": {
+        "count": 1
       }
     },
     "errorCount": 16,
@@ -136,8 +136,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CADDONIREQ000] Found 11 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).\nTESTFAIL: [CADDONREQ000] Found 5 errors for Cooperative Add-On Requirements (CADDONREQ).",
-    "infoGenerationTime": 217,
-    "endToEndGenerationTime": 415,
+    "infoGenerationTime": 208,
+    "endToEndGenerationTime": 425,
     "summary": {
       "CADDONIREQ": {
         "0": {
@@ -477,32 +477,32 @@
       "gId": "TEXTURE",
       "gIx": 101,
       "fs": {
-        "Entity Resource Count": {
-          "Count": 3
+        "entityResourceCount": {
+          "count": 3
         },
-        "Texture References": {
-          "Count": 3
+        "textureReferences": {
+          "count": 3
         },
-        "Entity References": {
-          "Count": 3
+        "entityReferences": {
+          "count": 3
         },
-        "File Count": {
-          "Count": 3
+        "fileCount": {
+          "count": 3
         },
-        "Unique Texture Handles (estimated)": {
-          "Count": 3
+        "uniqueTextureHandlesEstimated": {
+          "count": 3
         },
-        "Unique Texture Paths": {
-          "Count": 3
+        "uniqueTexturePaths": {
+          "count": 3
         },
-        "Unique Particle Texture Paths": {
-          "Count": 0
+        "uniqueParticleTexturePaths": {
+          "count": 0
         },
-        "Unique Particle Texture Vanilla Paths": {
-          "Count": 1
+        "uniqueParticleTextureVanillaPaths": {
+          "count": 1
         },
-        "Unique Entity Texture Paths": {
-          "Count": 3
+        "uniqueEntityTexturePaths": {
+          "count": 3
         }
       }
     },
@@ -548,10 +548,10 @@
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
       "fs": {
         "say": {
-          "Count": 1
+          "count": 1
         },
         "summon": {
-          "Count": 1
+          "count": 1
         }
       }
     },

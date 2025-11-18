@@ -5,7 +5,7 @@
     {
       "id": "can_be_stolen",
       "dataType": 1,
-      "defaultValue": true,
+      "defaultValue": false,
       "samples": {
         "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/frost_moose.behavior.json": [
           {
@@ -47,6 +47,7 @@
       "dataType": 0,
       "experienceType": 3,
       "suggestedMaxValue": 20,
+      "defaultValue": 0,
       "title": "Max Distance"
     },
     {
@@ -102,6 +103,15 @@
             "path": "/minecraft:entity/components/minecraft:leashable/",
             "content": {
               "event": "minecraft:on_unleash",
+              "target": "self"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/entities/nautilus.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_leashable/minecraft:leashable/",
+            "content": {
+              "event": "minecraft:on_unleashed",
               "target": "self"
             }
           }
@@ -252,6 +262,23 @@
     "/vanilla/behavior_pack/entities/camel.json": [
       {
         "path": "/minecraft:entity/components/minecraft:leashable/",
+        "content": {
+          "presets": [
+            {
+              "filter": {
+                "test": "is_family",
+                "subject": "other",
+                "value": "happy_ghast"
+              },
+              "spring_type": "quad_dampened"
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/camel_husk.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:camel_husk_with_no_hostile_rider/minecraft:leashable/",
         "content": {
           "presets": [
             {
@@ -444,6 +471,23 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/entities/nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_leashable/minecraft:leashable/",
+        "content": {
+          "on_unleash": {
+            "event": "minecraft:on_unleashed",
+            "target": "self"
+          },
+          "presets": [
+            {
+              "hard_distance": 10,
+              "max_distance": 14
+            }
+          ]
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/ocelot.json": [
       {
         "path": "/minecraft:entity/components/minecraft:leashable/",
@@ -579,8 +623,12 @@
     ],
     "/vanilla/behavior_pack/entities/zombie_horse.json": [
       {
-        "path": "/minecraft:entity/components/minecraft:leashable/",
+        "path": "/minecraft:entity/component_groups/minecraft:horse_can_be_leashed/minecraft:leashable/",
         "content": {
+          "on_unleash": {
+            "event": "minecraft:on_unleashed",
+            "target": "self"
+          },
           "presets": [
             {
               "filter": {
@@ -589,6 +637,27 @@
                 "value": "happy_ghast"
               },
               "spring_type": "quad_dampened"
+            },
+            {
+              "hard_distance": 10,
+              "max_distance": 14
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_leashable/minecraft:leashable/",
+        "content": {
+          "on_unleash": {
+            "event": "minecraft:on_unleashed",
+            "target": "self"
+          },
+          "presets": [
+            {
+              "hard_distance": 10,
+              "max_distance": 14
             }
           ]
         }

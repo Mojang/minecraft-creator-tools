@@ -107,65 +107,65 @@
       "tp"
     ],
     "featureSets": {
-      "Textures Attachable Resource Count": {
-        "Count": 1
+      "textures.attachableResourceCount": {
+        "count": 1
       },
-      "Textures Entity Resource Count": {
-        "Count": 1
+      "textures.entityResourceCount": {
+        "count": 1
       },
-      "Textures Texture References": {
-        "Count": 1
+      "textures.textureReferences": {
+        "count": 1
       },
-      "Textures Entity References": {
-        "Count": 1
+      "textures.entityReferences": {
+        "count": 1
       },
-      "Textures Unique Texture Handles (estimated)": {
-        "Count": 2
+      "textures.uniqueTextureHandlesEstimated": {
+        "count": 2
       },
-      "Textures Unique Texture Paths": {
-        "Count": 2
+      "textures.uniqueTexturePaths": {
+        "count": 2
       },
-      "Textures Unique Particle Texture References": {
-        "Count": 1
+      "textures.uniqueParticleTextureReferences": {
+        "count": 1
       },
-      "Textures Unique Entity Texture Paths": {
-        "Count": 1
+      "textures.uniqueEntityTexturePaths": {
+        "count": 1
       },
-      "Command #": {
-        "Count": 8
+      "command.#": {
+        "count": 8
       },
-      "Command execute": {
-        "Count": 4
+      "command.execute": {
+        "count": 4
       },
-      "Command scoreboard": {
-        "Count": 2
+      "command.scoreboard": {
+        "count": 2
       },
-      "Command particle": {
-        "Count": 1
+      "command.particle": {
+        "count": 1
       },
-      "Command playsound": {
-        "Count": 1
+      "command.playsound": {
+        "count": 1
       },
-      "Command tp": {
-        "Count": 1
+      "command.tp": {
+        "count": 1
       },
-      "Command effect": {
-        "Count": 1
+      "command.effect": {
+        "count": 1
       },
-      "Command setblock": {
-        "Count": 1
+      "command.setblock": {
+        "count": 1
       },
-      "Command fill": {
-        "Count": 1
+      "command.fill": {
+        "count": 1
       },
-      "Command say": {
-        "Count": 1
+      "command.say": {
+        "count": 1
       },
-      "Command give": {
-        "Count": 1
+      "command.give": {
+        "count": 1
       },
-      "Command summon": {
-        "Count": 1
+      "command.summon": {
+        "count": 1
       }
     },
     "errorCount": 9,
@@ -178,8 +178,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CADDONIREQ000] Found 1 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).\nTESTFAIL: [CADDONREQ000] Found 8 errors for Cooperative Add-On Requirements (CADDONREQ).",
-    "infoGenerationTime": 159,
-    "endToEndGenerationTime": 301,
+    "infoGenerationTime": 123,
+    "endToEndGenerationTime": 351,
     "summary": {
       "CADDONIREQ": {
         "0": {
@@ -460,29 +460,29 @@
       "gId": "TEXTURE",
       "gIx": 101,
       "fs": {
-        "Attachable Resource Count": {
-          "Count": 1
+        "attachableResourceCount": {
+          "count": 1
         },
-        "Entity Resource Count": {
-          "Count": 1
+        "entityResourceCount": {
+          "count": 1
         },
-        "Texture References": {
-          "Count": 1
+        "textureReferences": {
+          "count": 1
         },
-        "Entity References": {
-          "Count": 1
+        "entityReferences": {
+          "count": 1
         },
-        "Unique Texture Handles (estimated)": {
-          "Count": 2
+        "uniqueTextureHandlesEstimated": {
+          "count": 2
         },
-        "Unique Texture Paths": {
-          "Count": 2
+        "uniqueTexturePaths": {
+          "count": 2
         },
-        "Unique Particle Texture References": {
-          "Count": 1
+        "uniqueParticleTextureReferences": {
+          "count": 1
         },
-        "Unique Entity Texture Paths": {
-          "Count": 1
+        "uniqueEntityTexturePaths": {
+          "count": 1
         }
       }
     },
@@ -576,31 +576,31 @@
       "p": "/behavior_packs/comprehensive_bp/functions/complex_function.mcfunction",
       "fs": {
         "#": {
-          "Count": 7
+          "count": 7
         },
         "execute": {
-          "Count": 4
+          "count": 4
         },
         "scoreboard": {
-          "Count": 2
+          "count": 2
         },
         "particle": {
-          "Count": 1
+          "count": 1
         },
         "playsound": {
-          "Count": 1
+          "count": 1
         },
         "tp": {
-          "Count": 1
+          "count": 1
         },
         "effect": {
-          "Count": 1
+          "count": 1
         },
         "setblock": {
-          "Count": 1
+          "count": 1
         },
         "fill": {
-          "Count": 1
+          "count": 1
         }
       }
     },
@@ -611,16 +611,16 @@
       "p": "/behavior_packs/comprehensive_bp/functions/sample_function.mcfunction",
       "fs": {
         "#": {
-          "Count": 1
+          "count": 1
         },
         "say": {
-          "Count": 1
+          "count": 1
         },
         "give": {
-          "Count": 1
+          "count": 1
         },
         "summon": {
-          "Count": 1
+          "count": 1
         }
       }
     },

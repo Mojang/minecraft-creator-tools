@@ -44,12 +44,47 @@ Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 }
 
 
+Camel Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/camel_husk.json
+
+"minecraft:rideable": {
+  "seat_count": 2,
+  "crouching_skip_interact": true,
+  "family_types": [
+    "player",
+    "parched",
+    "husk_rider"
+  ],
+  "interact_text": "action.interact.ride.horse",
+  "seats": [
+    {
+      "min_rider_count": 0,
+      "max_rider_count": 2,
+      "position": [
+        0,
+        1.905,
+        0.5
+      ]
+    },
+    {
+      "min_rider_count": 1,
+      "max_rider_count": 2,
+      "position": [
+        0,
+        1.905,
+        -0.5
+      ]
+    }
+  ]
+}
+
+
 Cat - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/cat.json
 
 "minecraft:rideable": {
   "seat_count": 1,
   "family_types": [
-    "zombie"
+    "baby_zombie",
+    "baby_husk"
   ],
   "seats": {
     "position": [
@@ -66,7 +101,8 @@ Chicken - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
 "minecraft:rideable": {
   "seat_count": 1,
   "family_types": [
-    "zombie"
+    "baby_zombie",
+    "baby_husk"
   ],
   "seats": {
     "position": [
@@ -84,7 +120,8 @@ Cow - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entit
 "minecraft:rideable": {
   "seat_count": 1,
   "family_types": [
-    "zombie"
+    "baby_zombie",
+    "baby_husk"
   ],
   "seats": {
     "position": [
@@ -99,7 +136,8 @@ Cow - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entit
 "minecraft:rideable": {
   "seat_count": 1,
   "family_types": [
-    "zombie"
+    "baby_zombie",
+    "baby_husk"
   ],
   "seats": {
     "position": [
@@ -118,7 +156,8 @@ Donkey - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
   "seat_count": 1,
   "family_types": [
     "player",
-    "zombie"
+    "baby_zombie",
+    "baby_husk"
   ],
   "interact_text": "action.interact.mount",
   "seats": {
@@ -251,7 +290,8 @@ Horse - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
   "seat_count": 1,
   "family_types": [
     "player",
-    "zombie"
+    "baby_zombie",
+    "baby_husk"
   ],
   "interact_text": "action.interact.mount",
   "seats": {
@@ -277,24 +317,6 @@ Horse - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
       1.1,
       -0.2
     ]
-  }
-}
-
-
-Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/husk.json
-
-"minecraft:rideable": {
-  "seat_count": 1,
-  "family_types": [
-    "zombie"
-  ],
-  "seats": {
-    "position": [
-      0,
-      1.175,
-      -0.35
-    ],
-    "lock_rider_rotation": 0
   }
 }
 
@@ -351,10 +373,9 @@ export default interface MinecraftRideable {
    * Sample Values:
    * Camel: ["player"]
    *
-   * Cat: ["zombie"]
+   * Camel Husk: ["player","parched","husk_rider"]
    *
-   *
-   * Donkey: ["player","zombie"]
+   * Cat: ["baby_zombie","baby_husk"]
    *
    */
   family_types?: string[];
@@ -366,6 +387,7 @@ export default interface MinecraftRideable {
    * 
    * Sample Values:
    * Camel: "action.interact.ride.horse"
+   *
    *
    * Donkey: "action.interact.mount"
    *
@@ -383,6 +405,10 @@ export default interface MinecraftRideable {
    * Sample Values:
    * Happy Ghast: "minecraft:on_passenger_mount"
    *
+   * Nautilus: "minecraft:on_mount"
+   *
+   * Zombie Nautilus: "minecraft:on_drowned_mount", "minecraft:on_player_mount"
+   *
    */
   on_rider_enter_event?: string;
 
@@ -393,6 +419,10 @@ export default interface MinecraftRideable {
    * 
    * Sample Values:
    * Happy Ghast: "minecraft:on_passenger_dismount"
+   *
+   * Nautilus: "minecraft:on_dismount"
+   *
+   * Zombie Nautilus: "minecraft:on_drowned_dismount", "minecraft:on_player_dismount"
    *
    */
   on_rider_exit_event?: string;
@@ -443,6 +473,7 @@ export default interface MinecraftRideable {
    * Sample Values:
    * Camel: 2
    *
+   *
    * Cat: 1
    *
    *
@@ -459,10 +490,6 @@ export default interface MinecraftRideable {
    * Sample Values:
    * Camel: [{"min_rider_count":0,"max_rider_count":2,"position":[0,1.905,0.5]},{"min_rider_count":1,"max_rider_count":2,"position":[0,1.905,-0.5]}]
    *
-   * Cat: {"position":[0,0.35,0]}
-   *
-   * Chicken: {"position":[0,0.48,0]}
-   *
    */
   seats?: MinecraftRideableSeats[];
 
@@ -470,8 +497,8 @@ export default interface MinecraftRideable {
 
 
 export enum MinecraftRideableDismountMode {
-  Default = `default`,
-  OnTopCenter = `on_top_center`
+  default = `default`,
+  onTopCenter = `on_top_center`
 }
 
 
@@ -481,7 +508,7 @@ export enum MinecraftRideableDismountMode {
  */
 export interface MinecraftRideableSeats {
 
-  camera_relax_distance_smoothing?: number;
+  camera_relax_distance_smoothing?: string;
 
   /**
    * @remarks
@@ -516,6 +543,6 @@ export interface MinecraftRideableSeats {
    */
   rotate_rider_by?: string;
 
-  third_person_camera_radius?: number;
+  third_person_camera_radius?: string;
 
 }

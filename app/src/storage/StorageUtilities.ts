@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import IFolder from "./IFolder";
-import IFile from "./IFile";
+import IFile, { FileUpdateType } from "./IFile";
 import DifferenceSet from "./DifferenceSet";
 import { FolderDifferenceType } from "./IFolderDifference";
 import { FileDifferenceType } from "./IFileDifference";
@@ -12,8 +12,42 @@ import Log from "../core/Log";
 import IStorage, { StorageErrorStatus } from "./IStorage";
 import Storage from "./Storage";
 import { BasicValidators } from "./BasicValidators";
-
+import IVersionContent from "./IVersionContent";
 export const MaxShareableContentStringLength = 65536;
+
+export const VersionCoalescingTimeThresholdMs = 10000;
+export const VersionCoalescingSizeThresholdBytes = 1024;
+export const VersionCoalescingVersionsToConsider = 100;
+
+export const PackContainerFolderHints = [
+  "bps",
+  "rps",
+  "content/resource_packs",
+  "content/behavior_packs",
+  "resource packs",
+  "behavior packs",
+  "behavior_packs",
+  "resource_packs",
+  "skin pack",
+  "skin packs",
+  "content/skin_packs",
+  "content/world_templates",
+  "world_template",
+  "worlds",
+  "world_templates",
+];
+
+export const PackFolderHints = [
+  "behavior pack",
+  "resource pack",
+  "resource_pack",
+  "behavior_pack",
+  "skin_pack",
+  "world",
+  "world_template",
+  "rp",
+  "bp",
+];
 
 // part of security/reliability and defense in depth is to only allow our file functions to work with files from an allow list
 // this list is also replicated in /public/preload.js
@@ -67,6 +101,7 @@ export const AllowedExtensionsSet = new Set([
   "mcproject",
   "material",
   "vertex",
+  "md",
   "geometry",
   "fragment",
   "map",
@@ -149,6 +184,16 @@ export default class StorageUtilities {
       (folderNameLower.startsWith(".") && folderNameLower !== ".mcp" && folderNameLower !== ".vscode") ||
       IgnoreFolders.includes(folderNameLower)
     );
+  }
+
+  public static getSerializationOfChangeList(versionContentList: IVersionContent[]) {
+    let str = "";
+
+    for (const versionContent of versionContentList) {
+      str += "|" + versionContent.file.extendedPath + "\n";
+    }
+
+    return str;
   }
 
   public static getEncodingByFileName(name: string): EncodingType {
@@ -311,6 +356,56 @@ export default class StorageUtilities {
     return path;
   }
 
+  public static getRootAndFocusPathFromInputPath(path: string) {
+    path = StorageUtilities.canonicalizePath(path);
+
+    let pathSegs = path.split("/");
+
+    let i = pathSegs.length - 1;
+    let splitPoint = i;
+
+    // subtract out the file part of the path
+    if (pathSegs[i].indexOf(".") >= 0) {
+      i--;
+      splitPoint = i;
+    }
+
+    for (; i >= 1; i--) {
+      const seg = pathSegs[i];
+
+      if (seg === "static-assets" && i > 2) {
+        splitPoint = i - 2;
+        break;
+      }
+
+      if (PackContainerFolderHints.includes(seg)) {
+        splitPoint = i;
+        break;
+      }
+    }
+
+    let basePath = pathSegs.slice(0, splitPoint).join("/").trim();
+
+    if (!basePath.endsWith("/")) {
+      basePath += "/";
+    }
+
+    let focusPath: string | undefined = pathSegs.slice(splitPoint).join("/").trim();
+
+    if (focusPath.length > 2) {
+      if (!focusPath.startsWith("/")) {
+        focusPath = "/" + focusPath;
+      }
+    } else {
+      focusPath = undefined;
+    }
+
+    return {
+      basePath: basePath,
+      focusPath: focusPath,
+    };
+  }
+
   public static joinPath(pathA: string, pathB: string) {
     let fullPath = pathA;
 
@@ -396,21 +491,163 @@ export default class StorageUtilities {
     return undefined;
   }
 
+  public static sortChangeList(changeList: IVersionContent[]) {
+    changeList.sort((a: IVersionContent, b: IVersionContent) => {
+      if (!a.versionTime && !b.versionTime) {
+        return 0;
+      }
+
+      if (!a.versionTime) {
+        return -1;
+      }
+      if (!b.versionTime) {
+        return 1;
+      }
+
+      return a.versionTime.getTime() - b.versionTime.getTime();
+    });
+  }
+
+  // We don't want a new version every time the user hits a key stroke, so, look to see if it makes sense to
+  // remove "trivial" versions compared to the latest update
+  public static coalesceVersions(versionList: IVersionContent[]) {
+    const latestUpdate = versionList[versionList.length - 1];
+    let removingVersion = false;
+
+    if (!latestUpdate.versionTime || !latestUpdate.content) {
+      return versionList;
+    }
+
+    let latestVersionTime = latestUpdate.versionTime.getTime();
+    let latestVersionSize = latestUpdate.content.length;
+
+    const contentUpdatesToRemove: { [key: string]: boolean } = {};
+    const firstInstanceOfFile: { [key: string]: string } = {};
+
+    if (versionList.length >= 2) {
+      // get to the first instance of a particular file we're going to deal with
+      for (
+        let i = versionList.length - 2;
+        i >= Math.max(0, versionList.length - VersionCoalescingVersionsToConsider);
+        i--
+      ) {
+        const current = versionList[i];
+        if (current && current.file) {
+          firstInstanceOfFile[current.file.extendedPath] = current.id;
+        }
+      }
+
+      // moving backwards over the version list - considering a max set of VersionCoalescingVersionsToConsider,
+      // coalesce versions that are semantically similar enough to the latest version by essentially removing minor
+      // from the version list
+      // note that we are only considering coalescing into the latest version (lastestUpdate)
+      for (
+        let i = versionList.length - 2;
+        i >= Math.max(0, versionList.length - VersionCoalescingVersionsToConsider);
+        i--
+      ) {
+        const current = versionList[i];
+
+        if (current.file === latestUpdate.file) {
+          // is this change "minor" compared to the latest version
+          if (
+            firstInstanceOfFile[current.file.extendedPath] !== current.id &&
+            current.versionTime &&
+            latestVersionTime - current.versionTime.getTime() < VersionCoalescingTimeThresholdMs &&
+            current.content &&
+            Math.abs(latestVersionSize - current.content.length) < VersionCoalescingSizeThresholdBytes
+          ) {
+            contentUpdatesToRemove[current.id] = true;
+            removingVersion = true;
+            if (
+              !latestUpdate.startVersionTime ||
+              current.versionTime.getTime() < latestUpdate.startVersionTime.getTime()
+            ) {
+              latestUpdate.startVersionTime = current.versionTime;
+            }
+          }
+        }
+      }
+    }
+
+    if (!removingVersion) {
+      return versionList;
+    }
+
+    const newList: IVersionContent[] = [];
+    let previousMajorUpdate: IVersionContent | undefined = undefined;
+
+    for (const version of versionList) {
+      if (!contentUpdatesToRemove[version.id]) {
+        newList.push(version);
+
+        if (version.file === latestUpdate.file) {
+          if (previousMajorUpdate !== undefined) {
+            if (previousMajorUpdate.content && version.content) {
+              const byteDiff = version.content.length - previousMajorUpdate.content.length;
+
+              if (byteDiff > 0) {
+                version.description = "+" + byteDiff;
+              } else if (byteDiff < 0) {
+                version.description = "-" + Math.abs(byteDiff);
+              }
+            }
+          }
+          previousMajorUpdate = version;
+        }
+      }
+    }
+
+    // remove trivial versions from the per-file list too
+    const newPerFileList: IVersionContent[] = [];
+
+    for (const version of latestUpdate.file.priorVersions) {
+      if (!contentUpdatesToRemove[version.id]) {
+        newPerFileList.push(version);
+      }
+    }
+
+    latestUpdate.file.priorVersions = newPerFileList;
+
+    return newList;
+  }
+
+  public static getAvailableFolderName(folder: IFolder) {
+    // if we're inside of an MCPack or zip, the folder is "/" but the name of the mcpack file potentially
+    // provides hints, so scoop out the name of the parent zip
+    let basePathName = StorageUtilities.canonicalizeName(folder.name);
+
+    if ((basePathName === "/" || basePathName === "") && folder.extendedPath.length > 1) {
+      let hashIndex = folder.extendedPath.indexOf("#");
+
+      if (hashIndex > 0) {
+        basePathName = folder.extendedPath.substring(0, hashIndex);
+
+        let lastPeriod = basePathName.lastIndexOf(".");
+
+        if (lastPeriod > 0) {
+          basePathName = basePathName.substring(0, lastPeriod);
+        }
+        let lastSlash = basePathName.lastIndexOf("/");
+
+        if (lastSlash >= 0 && lastSlash < basePathName.length - 1) {
+          basePathName = basePathName.substring(lastSlash + 1);
+        }
+      }
+    }
+
+    return basePathName;
+  }
+
   public static async getFileStorageFolder(file: IFile): Promise<IFolder | undefined | string> {
-    let zipStorage = file.fileContainerStorage as ZipStorage;
+    let zipStorage: IStorage | null | undefined = file.fileContainerStorage;
 
     if (!zipStorage) {
-      if (!file.isContentLoaded) {
-        await file.loadContent();
-      }
+      zipStorage = await ZipStorage.loadFromFile(file);
 
-      if (!file.content || !(file.content instanceof Uint8Array)) {
+      if (!zipStorage) {
         return undefined;
       }
-
-      zipStorage = new ZipStorage();
-
-      await zipStorage.loadFromUint8Array(file.content, file.name);
 
       if (zipStorage.errorStatus === StorageErrorStatus.unprocessable) {
         file.errorStateMessage = zipStorage.errorMessage;
@@ -659,11 +896,11 @@ export default class StorageUtilities {
     return nameW.substring(0, lastPeriod);
   }
 
-  public static convertFolderPlaceholdersComplete(path: string) {
-    return this.convertFolderPlaceholders(path, 0);
+  public static convertFolderPlaceholders(path: string) {
+    return this.convertFolderPlaceholdersPartial(path, 0);
   }
 
-  public static convertFolderPlaceholders(path: string, startIndex?: number) {
+  public static convertFolderPlaceholdersPartial(path: string, startIndex?: number) {
     if (startIndex === undefined) {
       startIndex = 4; // default is to ignore the <pt_ at the start.
     }
@@ -1495,7 +1732,8 @@ export default class StorageUtilities {
     include?: string[],
     messageUpdater?: (message: string) => Promise<void>,
     dontOverwriteExistingFiles?: boolean,
-    skipFilesAtRoot?: boolean
+    skipFilesAtRoot?: boolean,
+    extractContainers?: boolean
   ): Promise<number> {
     let modifiedFileCount = 0;
     // Log.debug("Syncing folder '" + source.storageRelativePath + "' to '" + target.storageRelativePath + "'");
@@ -1552,23 +1790,45 @@ export default class StorageUtilities {
           if (process) {
             targetFiles[sourceFileName] = false;
 
-            const targetFile = target.ensureFile(sourceFile.name);
+            if (extractContainers && StorageUtilities.isContainerFile(sourceFile.name)) {
+              const sourceFileContainerFolder = await StorageUtilities.getFileStorageFolder(sourceFile);
 
-            let updateFile = true;
-            if (dontOverwriteExistingFiles) {
-              if (await targetFile.exists()) {
-                updateFile = false;
-                if (messageUpdater) {
-                  messageUpdater("Not updating '" + targetFile.fullPath + "' as it already exists.");
+              if (sourceFileContainerFolder && typeof sourceFileContainerFolder !== "string") {
+                const targetExtractedFolder = target.ensureFolder(StorageUtilities.getBaseFromName(sourceFile.name));
+
+                await StorageUtilities.syncFolderTo(
+                  sourceFileContainerFolder,
+                  targetExtractedFolder,
+                  forceFolders,
+                  forceFileUpdates,
+                  removeOnTarget,
+                  exclude,
+                  include,
+                  messageUpdater,
+                  dontOverwriteExistingFiles,
+                  false,
+                  true
+                );
+              }
+            } else {
+              const targetFile = target.ensureFile(sourceFile.name);
+
+              let updateFile = true;
+              if (dontOverwriteExistingFiles) {
+                if (await targetFile.exists()) {
+                  updateFile = false;
+                  if (messageUpdater) {
+                    messageUpdater("Not updating '" + targetFile.fullPath + "' as it already exists.");
+                  }
                 }
               }
-            }
 
-            if (updateFile) {
-              const wasUpdated = await this.syncFileTo(sourceFile, targetFile, forceFileUpdates, messageUpdater);
+              if (updateFile) {
+                const wasUpdated = await this.syncFileTo(sourceFile, targetFile, forceFileUpdates, messageUpdater);
 
-              if (wasUpdated) {
-                modifiedFileCount++;
+                if (wasUpdated) {
+                  modifiedFileCount++;
+                }
               }
             }
           }
@@ -1758,7 +2018,7 @@ export default class StorageUtilities {
 
     // Log.debug("Copying file " + source.storageRelativePath + " to " + target.storageRelativePath);
 
-    target.setContent(source.content);
+    target.setContent(source.content, FileUpdateType.versionlessEdit);
     return true;
   }
 }

@@ -167,9 +167,7 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
                     ItemTypeInfo.formatVersionMajorVersionLowerThanCurrent,
                     "Behavior pack Item Type format version (" +
                       fv.join(".") +
-                      ") has a lower major version number compared to current version (" +
-                      ver +
-                      ")",
+                      ") has a lower major version number compared to current version",
                     pi
                   )
                 );
@@ -181,9 +179,7 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
                     ItemTypeInfo.formatVersionMajorVersionHigherThanCurrent,
                     "Behavior pack Item Type format version (" +
                       fv.join(".") +
-                      ") has a higher major version number compared to current version (" +
-                      ver +
-                      ")",
+                      ") has a higher major version number compared to current version",
                     pi
                   )
                 );
@@ -195,9 +191,7 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
                     ItemTypeInfo.formatVersionMinorVersionLowerThanCurrent,
                     "Behavior pack Item Type format version (" +
                       fv.join(".") +
-                      ") has a lower minor version number compared to the current version or the previous current minor version (" +
-                      ver +
-                      ")",
+                      ") has a lower minor version number compared to the current version or the previous current minor version",
                     pi
                   )
                 );
@@ -209,9 +203,7 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
                     ItemTypeInfo.formatVersionMinorVersionHigherThanCurrent,
                     "Behavior pack Item Type format version (" +
                       fv.join(".") +
-                      ") has a higher minor version number compared to current version (" +
-                      ver +
-                      ")",
+                      ") has a higher minor version number compared to current version",
                     pi
                   )
                 );
@@ -223,9 +215,7 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
                     ItemTypeInfo.formatVersionPatchVersionLowerThanCurrent,
                     "Behavior pack item type format version (" +
                       fv.join(".") +
-                      ") has a lower patch version number compared to current version (" +
-                      ver +
-                      ")",
+                      ") has a lower patch version number compared to current version",
                     pi
                   )
                 );
@@ -237,9 +227,7 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
                     ItemTypeInfo.formatVersionPatchVersionHigherThanCurrent,
                     "Behavior pack item type format version (" +
                       fv.join(".") +
-                      ") has a higher patch version number compared to current version (" +
-                      ver +
-                      ")",
+                      ") has a higher patch version number compared to current version",
                     pi
                   )
                 );

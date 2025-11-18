@@ -14,5 +14,6 @@
       "isRequired": true
     }
   ],
+  "description": "Define a range of integer value using a \"min\" and \"max\" limit and must be assigned to \"values\"",
   "title": "Block Range"
 }

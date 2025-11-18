@@ -25,10 +25,52 @@ Breeze Rod - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pac
 }
 
 
+Copper Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/copper_spear.json
+
+"minecraft:display_name": {
+  "value": "item.copper_spear.name"
+}
+
+
+Diamond Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/diamond_spear.json
+
+"minecraft:display_name": {
+  "value": "item.diamond_spear.name"
+}
+
+
+Golden Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/golden_spear.json
+
+"minecraft:display_name": {
+  "value": "item.golden_spear.name"
+}
+
+
+Iron Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/iron_spear.json
+
+"minecraft:display_name": {
+  "value": "item.iron_spear.name"
+}
+
+
+Netherite Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/netherite_spear.json
+
+"minecraft:display_name": {
+  "value": "item.netherite_spear.name"
+}
+
+
 Ominous Trial Key - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/ominous_trial_key.json
 
 "minecraft:display_name": {
   "value": "item.ominous_trial_key.name"
+}
+
+
+Stone Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/stone_spear.json
+
+"minecraft:display_name": {
+  "value": "item.stone_spear.name"
 }
 
 
@@ -46,52 +88,10 @@ Wind Charge - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
 }
 
 
-Bag o Leaves - https://github.com/microsoft/minecraft-samples/tree/main/creator_camp/behavior_packs/creator_camp/items/bag_o_leaves.json
+Wooden Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/wooden_spear.json
 
 "minecraft:display_name": {
-  "value": "Bag o' Leaves"
-}
-
-
-Chestplate - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/behavior_packs/custom_item/items/chestplate.json
-
-"minecraft:display_name": {
-  "value": "My Custom Armor"
-}
-
-
-Goo - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/behavior_packs/custom_item/items/goo.json
-
-"minecraft:display_name": {
-  "value": "Weird Goo"
-}
-
-
-My Boots - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/behavior_packs/custom_item/items/my_boots.json
-
-"minecraft:display_name": {
-  "value": "My Custom Boots"
-}
-
-
-My Helm - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/behavior_packs/custom_item/items/my_helm.json
-
-"minecraft:display_name": {
-  "value": "My Custom Helmet"
-}
-
-
-My Leggings - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/behavior_packs/custom_item/items/my_leggings.json
-
-"minecraft:display_name": {
-  "value": "My Custom Leggings"
-}
-
-
-My Sword - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/behavior_packs/custom_item/items/my_sword.json
-
-"minecraft:display_name": {
-  "value": "Secret Weapon"
+  "value": "item.wooden_spear.name"
 }
 
  */
@@ -114,7 +114,7 @@ export default interface MinecraftDisplayName {
    *
    * Breeze Rod: "item.breeze_rod.name"
    *
-   * Ominous Trial Key: "item.ominous_trial_key.name"
+   * Copper Spear: "item.copper_spear.name"
    *
    */
   value?: string;

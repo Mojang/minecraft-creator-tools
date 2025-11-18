@@ -24,6 +24,7 @@
 		"src/dataform/**/*",
 		"src/local/**/*",
 		"src/cli/**/*",
+		"src/mcp/**/*",
 		"out/**/*",		
 		"public/**/*",		
 		"debugoutput/**/*",		

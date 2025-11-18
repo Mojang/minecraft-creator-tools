@@ -6,7 +6,7 @@ import ProjectItem from "../app/ProjectItem";
 import IProjectInfoItemGenerator from "./IProjectItemInfoGenerator";
 import { InfoItemType } from "./IInfoItemData";
 import Database from "../minecraft/Database";
-import CartoApp from "../app/CartoApp";
+import CreatorToolsHost from "../app/CreatorToolsHost";
 
 import axios from "axios";
 import ProjectInfoSet from "./ProjectInfoSet";
@@ -43,7 +43,7 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
   summarize(info: any, infoSet: ProjectInfoSet) {}
 
   async loadSchema(uri: string) {
-    const res = await axios.get(Utilities.ensureEndsWithSlash(CartoApp.contentRoot) + uri);
+    const res = await axios.get(Utilities.ensureEndsWithSlash(CreatorToolsHost.contentRoot) + uri);
     return res.data;
   }
 

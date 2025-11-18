@@ -4,6 +4,11 @@
       "id": "linear_acceleration",
       "title": "Linear Acceleration",
       "dataType": 24,
+      "defaultValue": [
+        0,
+        0,
+        0
+      ],
       "minLength": 3,
       "maxLength": 3,
       "alternates": [
@@ -25,6 +30,16 @@
                 "id": "version",
                 "title": "Version",
                 "dataType": 0,
+                "validity": [
+                  {
+                    "comparison": ">=",
+                    "value": -32768
+                  },
+                  {
+                    "comparison": "<=",
+                    "value": 32767
+                  }
+                ],
                 "isRequired": true
               }
             ]
@@ -40,6 +55,7 @@
       "id": "linear_drag_coefficient",
       "title": "Linear Drag Coefficient",
       "dataType": 24,
+      "defaultValue": 0,
       "alternates": [
         {
           "id": "linear_drag_coefficient",
@@ -59,6 +75,16 @@
                 "id": "version",
                 "title": "Version",
                 "dataType": 0,
+                "validity": [
+                  {
+                    "comparison": ">=",
+                    "value": -32768
+                  },
+                  {
+                    "comparison": "<=",
+                    "value": 32767
+                  }
+                ],
                 "isRequired": true
               }
             ]
@@ -74,6 +100,7 @@
       "id": "rotation_acceleration",
       "title": "Rotation Acceleration",
       "dataType": 24,
+      "defaultValue": 0,
       "alternates": [
         {
           "id": "rotation_acceleration",
@@ -93,6 +120,16 @@
                 "id": "version",
                 "title": "Version",
                 "dataType": 0,
+                "validity": [
+                  {
+                    "comparison": ">=",
+                    "value": -32768
+                  },
+                  {
+                    "comparison": "<=",
+                    "value": 32767
+                  }
+                ],
                 "isRequired": true
               }
             ]
@@ -108,6 +145,7 @@
       "id": "rotation_drag_coefficient",
       "title": "Rotation Drag Coefficient",
       "dataType": 24,
+      "defaultValue": 0,
       "alternates": [
         {
           "id": "rotation_drag_coefficient",
@@ -127,6 +165,16 @@
                 "id": "version",
                 "title": "Version",
                 "dataType": 0,
+                "validity": [
+                  {
+                    "comparison": ">=",
+                    "value": -32768
+                  },
+                  {
+                    "comparison": "<=",
+                    "value": 32767
+                  }
+                ],
                 "isRequired": true
               }
             ]

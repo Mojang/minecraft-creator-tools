@@ -51,47 +51,47 @@ export enum HasDamageOperator {
    * @remarks
    * Test for inequality.
    */
-  NotEquals = `!=`,
+  notEquals = `!=`,
   /**
    * @remarks
    * Test for less-than the value.
    */
-  LessThan = `<`,
+  lessThan = `<`,
   /**
    * @remarks
    * Test for less-than or equal to the value.
    */
-  LessThanEquals = `<=`,
+  lessThanEquals = `<=`,
   /**
    * @remarks
    * Test for inequality.
    */
-  LessThanGreaterThan = `<>`,
+  lessThanGreaterThan = `<>`,
   /**
    * @remarks
    * Test for equality.
    */
-  Equals = `=`,
+  equals = `=`,
   /**
    * @remarks
    * Test for equality.
    */
-  EqualsEquals = `==`,
+  equalsEquals = `==`,
   /**
    * @remarks
    * Test for greater-than the value.
    */
-  GreaterThan = `>`,
+  greaterThan = `>`,
   /**
    * @remarks
    * Test for greater-than or equal to the value.
    */
-  GreaterThanEquals = `>=`,
+  greaterThanEquals = `>=`,
   /**
    * @remarks
    * Test for inequality.
    */
-  Not = `not`
+  not = `not`
 }
 
 
@@ -100,70 +100,70 @@ export enum HasDamageSubject {
    * @remarks
    * The block involved with the interaction.
    */
-  Block = `block`,
+  block = `block`,
   /**
    * @remarks
    * The damaging actor involved with the interaction.
    */
-  Damager = `damager`,
+  damager = `damager`,
   /**
    * @remarks
    * The other member of an interaction, not the caller.
    */
-  Other = `other`,
+  other = `other`,
   /**
    * @remarks
    * The caller's current parent.
    */
-  Parent = `parent`,
+  parent = `parent`,
   /**
    * @remarks
    * The player involved with the interaction.
    */
-  Player = `player`,
+  player = `player`,
   /**
    * @remarks
    * The entity or object calling the test
    */
-  Self = `self`,
+  self = `self`,
   /**
    * @remarks
    * The caller's current target.
    */
-  Target = `target`
+  target = `target`
 }
 
 
 export enum HasDamageValue {
-  Anvil = `anvil`,
-  Attack = `attack`,
-  BlockExplosion = `block_explosion`,
-  Contact = `contact`,
-  Drowning = `drowning`,
-  EntityExplosion = `entity_explosion`,
-  Fall = `fall`,
-  FallingBlock = `falling_block`,
+  anvil = `anvil`,
+  attack = `attack`,
+  blockExplosion = `block_explosion`,
+  contact = `contact`,
+  drowning = `drowning`,
+  entityExplosion = `entity_explosion`,
+  fall = `fall`,
+  fallingBlock = `falling_block`,
   /**
    * @remarks
    * Any damage which kills the subject
    */
-  Fatal = `fatal`,
-  Fire = `fire`,
-  FireTick = `fire_tick`,
-  FlyIntoWall = `fly_into_wall`,
-  Lava = `lava`,
-  Magic = `magic`,
-  None = `none`,
-  Override = `override`,
-  Piston = `piston`,
-  Projectile = `projectile`,
-  SelfDestruct = `self_destruct`,
-  SonicBoom = `sonic_boom`,
-  Stalactite = `stalactite`,
-  Stalagmite = `stalagmite`,
-  Starve = `starve`,
-  Suffocation = `suffocation`,
-  Thorns = `thorns`,
-  Void = `void`,
-  Wither = `wither`
+  fatal = `fatal`,
+  fire = `fire`,
+  fireTick = `fire_tick`,
+  flyIntoWall = `fly_into_wall`,
+  lava = `lava`,
+  magic = `magic`,
+  none = `none`,
+  override = `override`,
+  piston = `piston`,
+  projectile = `projectile`,
+  selfDestruct = `self_destruct`,
+  sonicBoom = `sonic_boom`,
+  stalactite = `stalactite`,
+  stalagmite = `stalagmite`,
+  starve = `starve`,
+  suffocation = `suffocation`,
+  thorns = `thorns`,
+  void = `void`,
+  wither = `wither`
 }

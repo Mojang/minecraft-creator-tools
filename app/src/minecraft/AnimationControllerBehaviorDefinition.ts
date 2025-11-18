@@ -150,18 +150,18 @@ export default class AnimationControllerBehaviorDefinition implements IDefinitio
     return abcd;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
     Log.assert(this.data !== null, "ITDP");
 
-    if (this.data) {
-      const bpString = JSON.stringify(this.data, null, 2);
-
-      this._file.setContent(bpString);
+    if (!this.data) {
+      return false;
     }
+
+    return this._file.setObjectContentIfSemanticallyDifferent(this.data);
   }
 
   async load() {

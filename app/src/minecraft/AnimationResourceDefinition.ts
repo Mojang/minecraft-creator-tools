@@ -164,14 +164,12 @@ export default class AnimationResourceDefinition implements IDefinition {
     return rbd;
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
 
-    const bpString = JSON.stringify(this._data, null, 2);
-
-    this._file.setContent(bpString);
+    return this._file.setObjectContentIfSemanticallyDifferent(this._data);
   }
 
   async load() {

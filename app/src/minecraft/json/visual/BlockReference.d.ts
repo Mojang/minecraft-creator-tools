@@ -27,6 +27,6 @@ export default interface BlockReference {
  */
 export interface BlockReferenceStates {
 
-  "w:wPlus"?: number;
+  "w:w"?: number;
 
 }

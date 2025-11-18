@@ -45,6 +45,17 @@
               }
             ]
           }
+        ],
+        "/vanilla/behavior_pack/entities/zombie_horse.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+            "content": [
+              "minecraft:rail",
+              "minecraft:activator_rail",
+              "minecraft:detector_rail",
+              "minecraft:golden_rail"
+            ]
+          }
         ]
       },
       "description": "Tells the pathfinder which blocks to avoid when creating a path"
@@ -182,7 +193,7 @@
             "content": true
           }
         ],
-        "/vanilla/behavior_pack/entities/skeleton.json": [
+        "/vanilla/behavior_pack/entities/parched.json": [
           {
             "path": "/minecraft:entity/components/minecraft:navigation.walk/",
             "content": true
@@ -376,6 +387,15 @@
       }
     ],
     "/vanilla/behavior_pack/entities/camel.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+        "content": {
+          "can_path_over_water": true,
+          "avoid_damage_blocks": true
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/camel_husk.json": [
       {
         "path": "/minecraft:entity/components/minecraft:navigation.walk/",
         "content": {
@@ -618,6 +638,16 @@
           "can_float": true,
           "avoid_water": true,
           "avoid_damage_blocks": true
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/parched.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+        "content": {
+          "is_amphibious": true,
+          "avoid_sun": true,
+          "avoid_water": true
         }
       }
     ],
@@ -911,7 +941,15 @@
         "path": "/minecraft:entity/components/minecraft:navigation.walk/",
         "content": {
           "is_amphibious": true,
-          "avoid_water": true
+          "avoid_water": true,
+          "avoid_damage_blocks": true,
+          "avoid_sun": true,
+          "blocks_to_avoid": [
+            "minecraft:rail",
+            "minecraft:activator_rail",
+            "minecraft:detector_rail",
+            "minecraft:golden_rail"
+          ]
         }
       }
     ],

@@ -302,7 +302,7 @@
               "filters": {
                 "test": "is_family",
                 "subject": "other",
-                "operator": "!=",
+                "operator": "not",
                 "value": "breeze"
               }
             }
@@ -319,11 +319,37 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/entities/nautilus.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.hurt_by_target/",
+        "content": {
+          "priority": 1
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/panda.json": [
       {
         "path": "/minecraft:entity/components/minecraft:behavior.hurt_by_target/",
         "content": {
           "priority": 1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/parched.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.hurt_by_target/",
+        "content": {
+          "priority": 2,
+          "entity_types": [
+            {
+              "filters": {
+                "test": "is_family",
+                "subject": "other",
+                "operator": "!=",
+                "value": "breeze"
+              }
+            }
+          ]
         }
       }
     ],
@@ -420,7 +446,7 @@
               "filters": {
                 "test": "is_family",
                 "subject": "other",
-                "operator": "!=",
+                "operator": "not",
                 "value": "breeze"
               }
             }
@@ -564,11 +590,19 @@
               "filters": {
                 "test": "is_family",
                 "subject": "other",
-                "operator": "!=",
+                "operator": "not",
                 "value": "breeze"
               }
             }
           ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.hurt_by_target/",
+        "content": {
+          "priority": 1
         }
       }
     ],

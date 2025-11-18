@@ -22,7 +22,7 @@ window.getUserConsentDetails = function () {
 if (WcpConsent) {
   WcpConsent.init("en-US", "cookie-banner", function (err, _siteConsent) {
     if (err != undefined) {
-      return error;
+      return err;
     } else {
       siteConsent = _siteConsent;
 
@@ -57,6 +57,9 @@ if (WcpConsent) {
           },
           []
         );
+
+        // Expose the 1DS instance globally for the Telemetry service
+        window.oneDSInstance = analytics;
       }
     }
   });

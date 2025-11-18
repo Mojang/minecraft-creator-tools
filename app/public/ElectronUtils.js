@@ -50,6 +50,7 @@ const allowedExtensions = [
   "mctemplate",
   "material",
   "vertex",
+  "md",
   "geometry",
   "fragment",
   "mcfunction",
@@ -93,11 +94,11 @@ class ElectronUtils {
   }
 
   ensureMappingForPath(path) {
+    path = path.replace(/\\/g, "/");
+
     let pathCanon = StorageUtilities.default.canonicalizePath(path);
 
-    if (pathCanon.indexOf("\\") >= 0 && !pathCanon.endsWith("\\")) {
-      pathCanon += "\\";
-    } else if (pathCanon.indexOf("/") >= 0 && !pathCanon.endsWith("/")) {
+    if (pathCanon.indexOf("/") >= 0 && !pathCanon.endsWith("/")) {
       pathCanon += "/";
     }
 
@@ -206,7 +207,9 @@ class ElectronUtils {
     return this._minecraftPreviewPath;
   }
 
-  canonicalizePath(untrustedPath) {
+  deTokenizePath(untrustedPath) {
+    let resultPath = undefined;
+
     if (untrustedPath.startsWith("<MCPP>")) {
       let udPath = this.getMinecraftPreviewPath();
 
@@ -220,7 +223,7 @@ class ElectronUtils {
         segment = segment.substring(1);
       }
 
-      return udPath + segment;
+      resultPath = udPath + segment;
     } else if (untrustedPath.startsWith("<MCRP>")) {
       let udPath = this.getMinecraftReleasePath();
 
@@ -234,7 +237,7 @@ class ElectronUtils {
         segment = segment.substring(1);
       }
 
-      return udPath + segment;
+      resultPath = udPath + segment;
     } else if (untrustedPath.startsWith("<DOCP>")) {
       const docPBasePath =
         app.getPath("documents") +
@@ -256,15 +259,21 @@ class ElectronUtils {
         }
       }
 
-      return docPBasePath + segment;
+      resultPath = docPBasePath + segment;
     } else if (untrustedPath.startsWith("<pt_")) {
-      return this.fixupTokenPath(untrustedPath);
+      resultPath = this.fixupTokenPath(untrustedPath);
+    }
+
+    if (resultPath) {
+      return resultPath.replace(/\//g, path.sep);
     }
 
     return undefined;
   }
 
   fixupTokenPath(path) {
+    path = path.replace(/\\/g, "/");
+
     if (path.startsWith("<pt_")) {
       let nextGreater = path.indexOf(">");
 
@@ -274,15 +283,19 @@ class ElectronUtils {
         let tokenPath = this.getTokenPath(tok);
 
         if (tokenPath) {
-          if (tokenPath.indexOf("\\") >= 0 && !tokenPath.endsWith("\\")) {
-            tokenPath += "\\";
-          } else if (tokenPath.indexOf("/") >= 0 && !tokenPath.endsWith("/")) {
+          let nextSeg = path.substring(nextGreater + 1);
+
+          if (tokenPath.indexOf("/") >= 0 && !tokenPath.endsWith("/")) {
             tokenPath += "/";
           }
 
-          return tokenPath + path.substring(nextGreater + 1);
+          if (tokenPath.endsWith("/") && nextSeg.startsWith("/")) {
+            nextSeg = nextSeg.substring(1);
+          }
+
+          return tokenPath + nextSeg;
         } else {
-          console.log("Error: Could not find token: " + tok);
+          console.log("Error: Could not find token: |" + tok + "|" + JSON.stringify(this._uniqueIdToPathMappings));
         }
       }
     }

@@ -91,6 +91,10 @@ export default class ZipFolder extends FolderBase implements IFolder {
     this.files = {};
   }
 
+  async scanForChanges(): Promise<void> {
+    // No-op for zip storage
+  }
+
   async exists() {
     return true;
   }
@@ -184,7 +188,10 @@ export default class ZipFolder extends FolderBase implements IFolder {
 
         let candFile = this.files[nameCanon];
 
-        if (candFile == null && StorageUtilities.isUsableFile(StorageUtilities.getLeafName(relativePath))) {
+        if (
+          candFile == null &&
+          (this._storage.allowAllFiles || StorageUtilities.isUsableFile(StorageUtilities.getLeafName(relativePath)))
+        ) {
           candFile = new ZipFile(this, relativePath, file);
 
           this.files[nameCanon] = candFile;
@@ -208,7 +215,7 @@ export default class ZipFolder extends FolderBase implements IFolder {
 
         if (subPath.length > 0 && file) {
           Log.assert(!file.dir, "Unexpected non directory file.");
-          if (StorageUtilities.isUsableFile(StorageUtilities.getLeafName(subPath))) {
+          if (this._storage.allowAllFiles || StorageUtilities.isUsableFile(StorageUtilities.getLeafName(subPath))) {
             const zipFile = lastFolder.ensureFile(subPath) as ZipFile;
             zipFile.updateZipNativeFile(file);
           } else {

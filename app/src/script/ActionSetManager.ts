@@ -144,11 +144,11 @@ export default class ActionSetManager {
     this._functionFile = functionFolder.ensureFile(newFileName);
   }
 
-  async persist(project: Project) {
-    if (this._jsonFile) {
-      const bpString = JSON.stringify(this._actionSetData);
+  async persist(project: Project): Promise<boolean> {
+    let didPersist = false;
 
-      this._jsonFile.setContent(bpString);
+    if (this._jsonFile) {
+      didPersist = this._jsonFile.setObjectContentIfSemanticallyDifferent(this._actionSetData);
     }
 
     await this.ensureTsFile();
@@ -175,7 +175,9 @@ export default class ActionSetManager {
       );
 
       const tsString = ActionSetScriptGenerator.generateScript(this.actionSet, { typeScript: true });
-      this._tsFile.setContent(tsString);
+      if (this._tsFile.setContent(tsString)) {
+        didPersist = true;
+      }
 
       const baseName = StorageUtilities.getBaseFromName(this._tsFile.name);
       const scriptSafeName = MinecraftUtilities.makeNameScriptSafe(baseName);
@@ -191,8 +193,12 @@ export default class ActionSetManager {
     if (this.actionSet && this._functionFile) {
       const functionContent = ActionSetCommandGenerator.generateMCFunction(this.actionSet);
 
-      this._functionFile.setContent(functionContent);
+      if (this._functionFile.setContent(functionContent)) {
+        didPersist = true;
+      }
     }
+
+    return didPersist;
   }
 
   static async ensureOnFile(

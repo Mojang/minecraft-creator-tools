@@ -157,6 +157,7 @@ export default class ProjectItemVariant {
 
                 await zipStorage.loadFromUint8Array(zipFile.content, zipFile.name);
 
+                zipStorage.containerFile = zipFile;
                 zipFile.fileContainerStorage = zipStorage;
               }
 
@@ -287,6 +288,7 @@ export default class ProjectItemVariant {
 
                   await zipStorage.loadFromUint8Array(zipFile.content, zipFile.name);
 
+                  zipStorage.containerFile = zipFile;
                   zipFile.fileContainerStorage = zipStorage;
                 }
 

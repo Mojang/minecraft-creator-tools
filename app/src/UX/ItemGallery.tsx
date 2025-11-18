@@ -1,5 +1,5 @@
 import { Component } from "react";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import "./ItemGallery.css";
 import IAppProps from "./IAppProps";
 import IStatus from "../app/Status";
@@ -61,7 +61,7 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
     };
   }
 
-  _handleStatusAdded(carto: Carto, status: IStatus) {}
+  _handleStatusAdded(creatorTools: CreatorTools, status: IStatus) {}
 
   _selectProjectStarters() {
     this.setState({
@@ -81,7 +81,7 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
   }
 
   getProjectHash() {
-    const projects = this.props.carto.projects;
+    const projects = this.props.creatorTools.projects;
     let projectHash = "";
 
     for (let i = 0; i < projects.length; i++) {
@@ -236,7 +236,7 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
               onGalleryItemCommand={this._handleCommand}
               isSelected={this.state.selectedItem === galItem}
               displayOpenButton={false}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               buttonIndex={buttonsAdded - 1}
               project={galItem}
               ref={ref}
@@ -296,7 +296,7 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
               isSelected={this.state.selectedItem === galItem}
               onGalleryItemCommand={this._handleCommand}
               displayOpenButton={displayOpen}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               project={galItem}
               ref={ref}
               buttonIndex={buttonsAdded - 1}

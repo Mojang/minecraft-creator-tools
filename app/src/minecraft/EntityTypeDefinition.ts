@@ -1004,19 +1004,17 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     return results.join("\n");
   }
 
-  persist() {
+  persist(): boolean {
     if (this._file === undefined) {
-      return;
+      return false;
     }
     Log.assert(!this._isLoaded || this._wrapper !== null, "ETDP");
 
     if (!this._wrapper) {
-      return;
+      return false;
     }
 
-    const bpString = JSON.stringify(this._wrapper, null, 2);
-
-    this._file.setContent(bpString);
+    return this._file.setObjectContentIfSemanticallyDifferent(this._wrapper);
   }
 
   async load() {

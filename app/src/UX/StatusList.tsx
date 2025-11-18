@@ -133,7 +133,7 @@ export default class StatusList extends Component<IStatusListProps, IStatusListS
             data={data}
             columns={columns}
             height={500}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             readOnly={true}
           />
         </div>

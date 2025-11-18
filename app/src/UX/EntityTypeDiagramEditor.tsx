@@ -18,7 +18,7 @@ import {
   MiniMap,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import CartoApp, { CartoThemeStyle } from "../app/CartoApp";
+import CreatorToolsHost, { CreatorToolsThemeStyle } from "../app/CreatorToolsHost";
 import EntityTypeEventEdge from "./EntityTypeEventEdge";
 import Project from "../app/Project";
 import EntityTypeComponentSetNode from "./EntityTypeComponentSetNode";
@@ -336,7 +336,7 @@ export default class EntityTypeDiagramEditor extends Component<
             isLikely: state.isLikely,
             project: this.props.project,
             theme: this.props.theme,
-            carto: this.props.carto,
+            creatorTools: this.props.creatorTools,
           },
           position: { x: xPos, y: yPos },
         };
@@ -431,7 +431,7 @@ export default class EntityTypeDiagramEditor extends Component<
           isSelected: false,
           project: this.props.project,
           theme: this.props.theme,
-          carto: this.props.carto,
+          creatorTools: this.props.creatorTools,
         },
         position: {
           x:
@@ -663,7 +663,7 @@ export default class EntityTypeDiagramEditor extends Component<
             id={this.state.selectedEntityTypeEventId}
             entityType={this.props.entityType}
             project={this.props.project}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             event={this.state.selectedEntityTypeEvent.data}
           />
         </div>
@@ -679,7 +679,7 @@ export default class EntityTypeDiagramEditor extends Component<
             entityTypeItem={this.props.entityType}
             componentSetItem={this.state.selectedComponentSet}
             project={this.props.project}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
           />
         </div>
       );
@@ -695,7 +695,7 @@ export default class EntityTypeDiagramEditor extends Component<
             entityTypeItem={this.props.entityType}
             componentSetItem={componentSet}
             project={this.props.project}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
           />
         </div>
       );
@@ -743,7 +743,7 @@ export default class EntityTypeDiagramEditor extends Component<
           nodesDraggable
           defaultEdges={this.state.statesAndConnectionsDefaultEdges}
           onNodesChange={this._statesAndConnectionsNodesUpdated}
-          colorMode={CartoApp.theme === CartoThemeStyle.dark ? "dark" : "light"}
+          colorMode={CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? "dark" : "light"}
         >
           <Controls />
           <MiniMap />
@@ -770,7 +770,7 @@ export default class EntityTypeDiagramEditor extends Component<
           nodesDraggable
           defaultEdges={this.state.groupsAndEventsContext.edges}
           onNodesChange={this._groupAndEventsNodesUpdated}
-          colorMode={CartoApp.theme === CartoThemeStyle.dark ? "dark" : "light"}
+          colorMode={CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? "dark" : "light"}
         >
           <Controls />
           <MiniMap />

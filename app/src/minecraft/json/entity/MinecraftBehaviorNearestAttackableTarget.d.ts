@@ -497,6 +497,10 @@ export default interface MinecraftBehaviorNearestAttackableTarget {
 
   /**
    * @remarks
+   * Time range (in seconds) between searching for an attack target,
+   * range is in (0, "attack_interval"]. Only used if
+   * "attack_interval" is greater than 0, otherwise "scan_interval" is
+   * used.
    * 
    * Sample Values:
    * Cave Spider: 5, 10
@@ -505,7 +509,7 @@ export default interface MinecraftBehaviorNearestAttackableTarget {
    * Llama: 16
    *
    */
-  attack_interval?: number;
+  attack_interval?: number[];
 
   /**
    * @remarks
@@ -515,6 +519,8 @@ export default interface MinecraftBehaviorNearestAttackableTarget {
    *
    */
   attack_interval_min?: number;
+
+  attack_intervalattack_interval_min?: string;
 
   /**
    * @remarks
@@ -637,6 +643,19 @@ export default interface MinecraftBehaviorNearestAttackableTarget {
    * player
    */
   set_persistent?: boolean;
+
+  /**
+   * @remarks
+   * Probability (0.0 to 1.0) that this entity will accept a found
+   * target. Checked each time a valid target is found during 
+   * scanning.
+   * 
+   * Sample Values:
+   * Nautilus: 0.5
+   *
+   *
+   */
+  target_acquisition_probability?: number;
 
   /**
    * @remarks

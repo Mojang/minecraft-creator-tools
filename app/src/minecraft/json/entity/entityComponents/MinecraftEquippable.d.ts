@@ -32,6 +32,27 @@ Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 }
 
 
+Camel Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/camel_husk.json
+
+"minecraft:equippable": {
+  "slots": [
+    {
+      "slot": 0,
+      "item": "saddle",
+      "accepted_items": [
+        "saddle"
+      ],
+      "on_equip": {
+        "event": "minecraft:camel_husk_saddled"
+      },
+      "on_unequip": {
+        "event": "minecraft:camel_husk_unsaddled"
+      }
+    }
+  ]
+}
+
+
 Donkey - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/donkey.json
 
 "minecraft:equippable": {
@@ -78,7 +99,8 @@ Horse - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
         "horsearmoriron",
         "horsearmorgold",
         "horsearmordiamond",
-        "minecraft:copper_horse_armor"
+        "minecraft:copper_horse_armor",
+        "minecraft:netherite_horse_armor"
       ]
     }
   ]
@@ -116,6 +138,38 @@ Mule - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/enti
       "on_unequip": {
         "event": "minecraft:mule_unsaddled"
       }
+    }
+  ]
+}
+
+
+Nautilus - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/nautilus.json
+
+"minecraft:equippable": {
+  "slots": [
+    {
+      "slot": 0,
+      "item": "saddle",
+      "accepted_items": [
+        "saddle"
+      ],
+      "on_equip": {
+        "event": "minecraft:on_saddled"
+      },
+      "on_unequip": {
+        "event": "minecraft:on_unsaddled"
+      }
+    },
+    {
+      "slot": 1,
+      "item": "nautilusarmor",
+      "accepted_items": [
+        "minecraft:copper_nautilus_armor",
+        "minecraft:iron_nautilus_armor",
+        "minecraft:golden_nautilus_armor",
+        "minecraft:diamond_nautilus_armor",
+        "minecraft:netherite_nautilus_armor"
+      ]
     }
   ]
 }

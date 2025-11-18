@@ -3,7 +3,7 @@ import IFile from "../storage/IFile";
 import "./GridEditor.css";
 import React from "react";
 import IPersistable from "./IPersistable";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import { ThemeInput } from "@fluentui/react-northstar";
 import TuiGrid from "tui-grid";
 import "tui-grid/dist/tui-grid.css";
@@ -20,7 +20,7 @@ interface IGridEditorProps {
   readOnly: boolean;
   columns?: OptColumn[];
   data?: any[];
-  carto: Carto;
+  creatorTools: CreatorTools;
   onCellClick?: (newRowKey: number, columnName: string) => void;
   onCellDoubleClick?: (newRowKey: number, columnName: string) => void;
   onUpdateContent?: (newContent: Uint8Array) => void;
@@ -218,7 +218,9 @@ export default class GridEditor extends Component<IGridEditorProps, IGridEditorS
     return null; // No change to state
   }
 
-  async persist() {}
+  async persist(): Promise<boolean> {
+    return false;
+  }
 
   render() {
     let height = "500px";

@@ -26,6 +26,7 @@
                 "title": "States",
                 "description": "Contains members named after each state, with boolean, integer, or string values.",
                 "dataType": 31,
+                "defaultValue": {},
                 "alternates": [
                   {
                     "id": "states",
@@ -68,6 +69,7 @@
                 "title": "States",
                 "description": "Contains members named after each state, with boolean, integer, or string values.",
                 "dataType": 31,
+                "defaultValue": {},
                 "alternates": [
                   {
                     "id": "states",
@@ -111,6 +113,7 @@
                 "title": "States",
                 "description": "Contains members named after each state, with boolean, integer, or string values.",
                 "dataType": 31,
+                "defaultValue": {},
                 "alternates": [
                   {
                     "id": "states",
@@ -153,6 +156,7 @@
                 "title": "States",
                 "description": "Contains members named after each state, with boolean, integer, or string values.",
                 "dataType": 31,
+                "defaultValue": {},
                 "alternates": [
                   {
                     "id": "states",
@@ -195,6 +199,7 @@
                 "title": "States",
                 "description": "Contains members named after each state, with boolean, integer, or string values.",
                 "dataType": 31,
+                "defaultValue": {},
                 "alternates": [
                   {
                     "id": "states",
@@ -217,6 +222,32 @@
       "title": "SurfaceBuilderType",
       "description": "Controls the type of surface builder to use",
       "dataType": 2,
+      "choices": [
+        {
+          "id": "minecraft:capped",
+          "title": "Minecraft:capped"
+        },
+        {
+          "id": "minecraft:frozen_ocean",
+          "title": "Minecraft:frozen ocean"
+        },
+        {
+          "id": "minecraft:mesa",
+          "title": "Minecraft:mesa"
+        },
+        {
+          "id": "minecraft:overworld",
+          "title": "Minecraft:overworld"
+        },
+        {
+          "id": "minecraft:swamp",
+          "title": "Minecraft:swamp"
+        },
+        {
+          "id": "minecraft:the_end",
+          "title": "Minecraft:the end"
+        }
+      ],
       "isRequired": true
     }
   ],

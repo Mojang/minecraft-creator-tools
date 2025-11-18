@@ -2,12 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./jsnwebindex.css";
 import App from "./UX/App";
-import CartoApp from "./app/CartoApp";
+import CreatorToolsHost, { CreatorToolsThemeStyle } from "./app/CreatorToolsHost";
 import { loader } from "@monaco-editor/react";
 
-import { Provider, teamsDarkTheme, mergeThemes } from "@fluentui/react-northstar";
+import { Provider, teamsDarkTheme, mergeThemes, teamsTheme } from "@fluentui/react-northstar";
 import Utilities from "./core/Utilities";
-import { minecraftToolDarkTheme } from "./core/StandardInit";
+import { minecraftToolDarkTheme, minecraftToolLightTheme } from "./core/StandardInit";
 
 //@ts-ignore
 if (typeof g_isDebug !== "undefined") {
@@ -26,14 +26,21 @@ loader.config({
 });
 
 async function initAsync() {
-  CartoApp.init();
+  CreatorToolsHost.init();
 
-  const theme = mergeThemes(teamsDarkTheme, minecraftToolDarkTheme);
+  let darkTheme = mergeThemes(teamsDarkTheme, minecraftToolDarkTheme);
+  let lightTheme = mergeThemes(teamsTheme, minecraftToolLightTheme);
+
+  if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    CreatorToolsHost.theme = CreatorToolsThemeStyle.dark;
+  } else {
+    CreatorToolsHost.theme = CreatorToolsThemeStyle.light;
+  }
 
   ReactDOM.render(
     <React.StrictMode>
-      <Provider theme={theme}>
-        <App theme={theme} />
+      <Provider theme={CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? darkTheme : lightTheme}>
+        <App darkTheme={darkTheme} lightTheme={lightTheme} />
       </Provider>
     </React.StrictMode>,
     document.getElementById("root")

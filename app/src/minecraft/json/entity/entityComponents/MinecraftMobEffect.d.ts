@@ -23,6 +23,13 @@ export default interface MinecraftMobEffect {
 
   /**
    * @remarks
+   * If the effect is considered an ambient effect (like the ones
+   * applied by Beacons or Conduits).
+   */
+  ambient?: boolean;
+
+  /**
+   * @remarks
    * Time in seconds to wait between each application of the 
    * effect.
    */

@@ -8,7 +8,7 @@ import { Button, MenuButton } from "@fluentui/react-northstar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faRemove } from "@fortawesome/free-solid-svg-icons";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import { CustomSlimLabel } from "./Labels";
 import MinecraftFilterEditor from "../dataform/MinecraftFilterEditor";
 import { faCheckSquare, faSquare } from "@fortawesome/free-regular-svg-icons";
@@ -26,7 +26,7 @@ interface IEventActionDesignProps {
   project: Project;
   event: ManagedEventActionOrActionSet;
   theme: ThemeInput<any>;
-  carto: Carto;
+  creatorTools: CreatorTools;
 }
 
 interface IEventActionDesignState {
@@ -430,7 +430,7 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
       actionElements.push(
         <div className="eat-functionsHeader">
           <FunctionEditor
-            preferredTextSize={this.props.carto.preferredTextSize}
+            preferredTextSize={this.props.creatorTools.preferredTextSize}
             theme={this.props.theme}
             content={this.props.event.command}
             title="Run commands"
@@ -438,7 +438,7 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
             isCommandEditor={false}
             fixedHeight={200}
             onCommandTextChanged={this._setCommand}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
           />
         </div>
       );

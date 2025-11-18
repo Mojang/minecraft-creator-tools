@@ -5,9 +5,9 @@
       "id": "values",
       "title": "Values",
       "dataType": 16,
-      "subFormId": "block/range",
       "isRequired": true
     }
   ],
+  "description": "Must be assigned an array or a \"range\"",
   "title": "Block Values"
 }

@@ -95,41 +95,41 @@
       "summon"
     ],
     "featureSets": {
-      "Textures Entity Resource Count": {
-        "Count": 4
+      "textures.entityResourceCount": {
+        "count": 4
       },
-      "Textures Texture References": {
-        "Count": 5
+      "textures.textureReferences": {
+        "count": 5
       },
-      "Textures Entity References": {
-        "Count": 5
+      "textures.entityReferences": {
+        "count": 5
       },
-      "Textures File Count": {
-        "Count": 4
+      "textures.fileCount": {
+        "count": 4
       },
-      "Textures Unique Texture Handles (estimated)": {
-        "Count": 4
+      "textures.uniqueTextureHandlesEstimated": {
+        "count": 4
       },
-      "Textures Unique Texture Paths": {
-        "Count": 4
+      "textures.uniqueTexturePaths": {
+        "count": 4
       },
-      "Textures Unique Particle Texture Paths": {
-        "Count": 0
+      "textures.uniqueParticleTexturePaths": {
+        "count": 0
       },
-      "Textures Unique Particle Texture Vanilla Paths": {
-        "Count": 1
+      "textures.uniqueParticleTextureVanillaPaths": {
+        "count": 1
       },
-      "Textures Unique Entity Texture Paths": {
-        "Count": 4
+      "textures.uniqueEntityTexturePaths": {
+        "count": 4
       },
-      "Textures Unique Entity Texture Vanilla Paths": {
-        "Count": 1
+      "textures.uniqueEntityTextureVanillaPaths": {
+        "count": 1
       },
-      "Command say": {
-        "Count": 1
+      "command.say": {
+        "count": 1
       },
-      "Command summon": {
-        "Count": 1
+      "command.summon": {
+        "count": 1
       }
     },
     "errorCount": 7,
@@ -142,8 +142,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CADDONIREQ000] Found 2 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).\nTESTFAIL: [CADDONREQ000] Found 3 errors for Cooperative Add-On Requirements (CADDONREQ).\nTESTFAIL: [MINENGINEVER000] Found 2 errors for Min Engine Version (MINENGINEVER).",
-    "infoGenerationTime": 289,
-    "endToEndGenerationTime": 475,
+    "infoGenerationTime": 213,
+    "endToEndGenerationTime": 413,
     "summary": {
       "CADDONIREQ": {
         "0": {
@@ -398,35 +398,35 @@
       "gId": "TEXTURE",
       "gIx": 101,
       "fs": {
-        "Entity Resource Count": {
-          "Count": 4
+        "entityResourceCount": {
+          "count": 4
         },
-        "Texture References": {
-          "Count": 5
+        "textureReferences": {
+          "count": 5
         },
-        "Entity References": {
-          "Count": 5
+        "entityReferences": {
+          "count": 5
         },
-        "File Count": {
-          "Count": 4
+        "fileCount": {
+          "count": 4
         },
-        "Unique Texture Handles (estimated)": {
-          "Count": 4
+        "uniqueTextureHandlesEstimated": {
+          "count": 4
         },
-        "Unique Texture Paths": {
-          "Count": 4
+        "uniqueTexturePaths": {
+          "count": 4
         },
-        "Unique Particle Texture Paths": {
-          "Count": 0
+        "uniqueParticleTexturePaths": {
+          "count": 0
         },
-        "Unique Particle Texture Vanilla Paths": {
-          "Count": 1
+        "uniqueParticleTextureVanillaPaths": {
+          "count": 1
         },
-        "Unique Entity Texture Paths": {
-          "Count": 4
+        "uniqueEntityTexturePaths": {
+          "count": 4
         },
-        "Unique Entity Texture Vanilla Paths": {
-          "Count": 1
+        "uniqueEntityTextureVanillaPaths": {
+          "count": 1
         }
       }
     },
@@ -472,10 +472,10 @@
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
       "fs": {
         "say": {
-          "Count": 1
+          "count": 1
         },
         "summon": {
-          "Count": 1
+          "count": 1
         }
       }
     },

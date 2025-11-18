@@ -54,6 +54,7 @@
   "tags": [
     "visual"
   ],
+  "description": "The description identifier of the geometry and material used to render the item of this block.",
   "versionIntroduced": "1.21.60",
   "samples": {
     "sample": [
@@ -101,7 +102,6 @@
       }
     ]
   },
-  "description": "The description identifier of the geometry and material used to render the item of this block.\nExperimental toggles required: Upcoming Creator Features (in format versions before 1.21.50)",
   "title": "Item Visual",
   "id": "minecraft:item_visual"
 }

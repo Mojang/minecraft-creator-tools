@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import Carto, { CartoMinecraftErrorStatus, CartoMinecraftState } from "./Carto";
+import CreatorTools, { CreatorToolsMinecraftErrorStatus, CreatorToolsMinecraftState } from "./CreatorTools";
 import IMinecraft, { IMinecraftMessage, PrepareAndStartResultType } from "./IMinecraft";
 import AppServiceProxy from "../core/AppServiceProxy";
 import { EventDispatcher } from "ste-events";
@@ -11,18 +11,19 @@ import MinecraftPush from "./MinecraftPush";
 import GameStateManager from "../minecraft/GameStateManager";
 import Log from "../core/Log";
 import IFolder from "../storage/IFolder";
-import { MinecraftGameConnectionMode } from "./ICartoData";
+import { MinecraftGameConnectionMode } from "./ICreatorToolsData";
 import ProjectExporter from "./ProjectExporter";
+import IActionSetData from "../actions/IActionSetData";
 
 export default class DeploymentStorageMinecraft implements IMinecraft {
-  private _carto: Carto;
-  state: CartoMinecraftState;
-  private _onStateChanged = new EventDispatcher<IMinecraft, CartoMinecraftState>();
-  private _onRefreshed = new EventDispatcher<IMinecraft, CartoMinecraftState>();
+  private _creatorTools: CreatorTools;
+  state: CreatorToolsMinecraftState;
+  private _onStateChanged = new EventDispatcher<IMinecraft, CreatorToolsMinecraftState>();
+  private _onRefreshed = new EventDispatcher<IMinecraft, CreatorToolsMinecraftState>();
   private _project: Project | undefined;
   private _gameStateManager: GameStateManager;
 
-  errorStatus?: CartoMinecraftErrorStatus;
+  errorStatus?: CreatorToolsMinecraftErrorStatus;
   errorMessage?: string;
 
   worldFolder: IFolder | undefined;
@@ -56,11 +57,11 @@ export default class DeploymentStorageMinecraft implements IMinecraft {
     return this._onStateChanged.asEvent();
   }
 
-  constructor(carto: Carto) {
-    this._carto = carto;
-    this._gameStateManager = new GameStateManager(this._carto);
+  constructor(creatorTools: CreatorTools) {
+    this._creatorTools = creatorTools;
+    this._gameStateManager = new GameStateManager(this._creatorTools);
 
-    this.state = CartoMinecraftState.none;
+    this.state = CreatorToolsMinecraftState.none;
   }
 
   async updateStatus() {
@@ -79,7 +80,7 @@ export default class DeploymentStorageMinecraft implements IMinecraft {
     return this._gameStateManager;
   }
 
-  public notifyStateChanged(newVal: CartoMinecraftState) {
+  public notifyStateChanged(newVal: CreatorToolsMinecraftState) {
     this.state = newVal;
 
     this._onStateChanged.dispatch(this, newVal);
@@ -97,16 +98,20 @@ export default class DeploymentStorageMinecraft implements IMinecraft {
     return undefined;
   }
 
+  async runActionSet(actionSet: IActionSetData): Promise<string | undefined> {
+    return undefined;
+  }
+
   processExternalMessage(command: string, data: string) {}
 
   async pushWorld() {
-    if (!this._carto || this._carto.deploymentStorage === null || !this._project) {
+    if (!this._creatorTools || this._creatorTools.deploymentStorage === null || !this._project) {
       return;
     }
 
     let name = this._project.name + "_mct";
 
-    const worldsFolder = await ProjectExporter.ensureMinecraftWorldsFolder(this._carto);
+    const worldsFolder = await ProjectExporter.ensureMinecraftWorldsFolder(this._creatorTools);
 
     if (!worldsFolder) {
       Log.debug("Could not find a Minecraft world.");
@@ -118,7 +123,7 @@ export default class DeploymentStorageMinecraft implements IMinecraft {
     await worldFolder.ensureExists();
 
     // Log.debugAlert("Exporting folder to '" + worldFolder.storageRelativePath + "'");
-    await ProjectExporter.syncFlatPackRefWorldTo(this._carto, this._project, worldFolder, name);
+    await ProjectExporter.syncFlatPackRefWorldTo(this._creatorTools, this._project, worldFolder, name);
 
     name = Utilities.getSimpleString(this._project.name) + "_mct";
 
@@ -129,9 +134,9 @@ export default class DeploymentStorageMinecraft implements IMinecraft {
 
   async syncWithDeployment() {
     if (
-      this._carto.deploymentStorage == null ||
-      this._carto.deployBehaviorPacksFolder == null ||
-      this._carto.minecraftGameMode === MinecraftGameConnectionMode.remoteMinecraft
+      this._creatorTools.deploymentStorage == null ||
+      this._creatorTools.deployBehaviorPacksFolder == null ||
+      this._creatorTools.minecraftGameMode === MinecraftGameConnectionMode.remoteMinecraft
     ) {
       throw new Error("This instance doesn't support deployment");
     }
@@ -140,20 +145,24 @@ export default class DeploymentStorageMinecraft implements IMinecraft {
       return;
     }
 
-    let isAvailable = this._carto.deploymentStorage.available;
+    let isAvailable = this._creatorTools.deploymentStorage.available;
 
     if (isAvailable === undefined) {
-      isAvailable = await this._carto.deploymentStorage.getAvailable();
+      isAvailable = await this._creatorTools.deploymentStorage.getAvailable();
     }
 
     if (!isAvailable) {
       return;
     }
 
-    const deployFolderExists = await this._carto.deployBehaviorPacksFolder.exists();
+    const deployFolderExists = await this._creatorTools.deployBehaviorPacksFolder.exists();
 
     if (deployFolderExists) {
-      await ProjectExporter.deployProject(this._carto, this._project, this._carto.deploymentStorage.rootFolder);
+      await ProjectExporter.deployProject(
+        this._creatorTools,
+        this._project,
+        this._creatorTools.deploymentStorage.rootFolder
+      );
     }
   }
 
@@ -186,13 +195,13 @@ export default class DeploymentStorageMinecraft implements IMinecraft {
 
   async start() {
     if (!AppServiceProxy.hasAppService && Utilities.isDebug) {
-      this.notifyStateChanged(CartoMinecraftState.stopped);
+      this.notifyStateChanged(CreatorToolsMinecraftState.stopped);
     } else if (
-      this.state === CartoMinecraftState.none ||
-      this.state === CartoMinecraftState.error ||
-      this.state === CartoMinecraftState.disconnected
+      this.state === CreatorToolsMinecraftState.none ||
+      this.state === CreatorToolsMinecraftState.error ||
+      this.state === CreatorToolsMinecraftState.disconnected
     ) {
-      this.notifyStateChanged(CartoMinecraftState.initializing);
+      this.notifyStateChanged(CreatorToolsMinecraftState.initializing);
     }
   }
 }

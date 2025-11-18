@@ -48,6 +48,12 @@
         "content": {}
       }
     ],
+    "/vanilla/behavior_pack/entities/camel_husk.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:camel_husk_with_no_hostile_rider/minecraft:leashable_to/",
+        "content": {}
+      }
+    ],
     "/vanilla/behavior_pack/entities/cat.json": [
       {
         "path": "/minecraft:entity/component_groups/minecraft:cat_adult/minecraft:leashable_to/",
@@ -156,6 +162,12 @@
         "content": {}
       }
     ],
+    "/vanilla/behavior_pack/entities/nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_adult/minecraft:leashable_to/",
+        "content": {}
+      }
+    ],
     "/vanilla/behavior_pack/entities/ocelot.json": [
       {
         "path": "/minecraft:entity/component_groups/minecraft:ocelot_adult/minecraft:leashable_to/",
@@ -243,6 +255,12 @@
     "/vanilla/behavior_pack/entities/zombie_horse.json": [
       {
         "path": "/minecraft:entity/component_groups/minecraft:horse_adult/minecraft:leashable_to/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:leashable_to/",
         "content": {}
       }
     ]

@@ -46,6 +46,14 @@ Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 }
 
 
+Camel Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/camel_husk.json
+
+"minecraft:behavior.panic": {
+  "priority": 2,
+  "speed_multiplier": 4
+}
+
+
 Cat - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/cat.json
 
 "minecraft:behavior.panic": {
@@ -102,14 +110,6 @@ Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
   "speed_multiplier": 2
 }
 
-
-Horse - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/horse.json
-
-"minecraft:behavior.panic": {
-  "priority": 3,
-  "speed_multiplier": 1.2
-}
-
  */
 
 import * as jsoncommon from './../../jsoncommon';
@@ -129,6 +129,8 @@ export default interface MinecraftBehaviorPanic {
    * 
    * Sample Values:
    * Polar Bear: ["campfire","fire","fire_tick","freezing","lightning","lava","magma","temperature","soul_campfire"]
+   *
+   * Zombie Horse: ["campfire","fire","freezing","lava","lightning","magma","soul_campfire","temperature","entity_attack","entity_explosion","fireworks","magic","projectile","ram_attack","sonic_boom","wither","mace_smash"]
    *
    */
   damage_sources?: string[];
@@ -186,7 +188,7 @@ export default interface MinecraftBehaviorPanic {
    * Allay: 1
    *
    *
-   * Copper Golem: 2
+   * Camel Husk: 2
    *
    *
    * Horse: 3
@@ -222,7 +224,7 @@ export default interface MinecraftBehaviorPanic {
 
 
 /**
- * Sound_interval (sound_interval)
+ * Sound interval (sound_interval)
  */
 export interface MinecraftBehaviorPanicSoundInterval {
 

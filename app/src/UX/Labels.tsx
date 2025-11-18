@@ -38,12 +38,13 @@ import {
   faDownload,
   faListDots,
   faCheck,
+  faUserEdit,
 } from "@fortawesome/free-solid-svg-icons";
 
 import "./Labels.css";
 import { ThemeInput } from "@fluentui/react-northstar";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import CartoApp, { CartoThemeStyle } from "../app/CartoApp";
+import CreatorToolsHost, { CreatorToolsThemeStyle } from "../app/CreatorToolsHost";
 
 export interface ICompactableLabelProps {
   isCompact: boolean;
@@ -104,7 +105,7 @@ export const RemoteMinecraftLabel: React.FC<
         ? props.theme.siteVariables?.colorScheme.brand.background1
         : props.theme.siteVariables?.colorScheme.brand.background,
       color: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background1
+        ? props.theme.siteVariables?.colorScheme.brand.foreground1
         : props.theme.siteVariables?.colorScheme.brand.foreground6,
       backgroundColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background2
@@ -129,7 +130,7 @@ export const DedicatedServerMinecraftLabel: React.FC<React.HTMLAttributes<HTMLSp
         ? props.theme.siteVariables?.colorScheme.brand.background2
         : props.theme.siteVariables?.colorScheme.brand.background1,
       color: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background
+        ? props.theme.siteVariables?.colorScheme.brand.foreground1
         : props.theme.siteVariables?.colorScheme.brand.foreground6,
       backgroundColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background2
@@ -154,7 +155,7 @@ export const WebSocketMinecraftLabel: React.FC<React.HTMLAttributes<HTMLSpanElem
         ? props.theme.siteVariables?.colorScheme.brand.background2
         : props.theme.siteVariables?.colorScheme.brand.background1,
       color: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background
+        ? props.theme.siteVariables?.colorScheme.brand.foreground1
         : props.theme.siteVariables?.colorScheme.brand.foreground6,
       backgroundColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background2
@@ -179,7 +180,7 @@ export const ConnectModeLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & 
         ? props.theme.siteVariables?.colorScheme.brand.background2
         : props.theme.siteVariables?.colorScheme.brand.background1,
       color: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background
+        ? props.theme.siteVariables?.colorScheme.brand.foreground1
         : props.theme.siteVariables?.colorScheme.brand.foreground6,
       backgroundColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background2
@@ -204,7 +205,7 @@ export const WorldSettingsLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> 
         ? props.theme.siteVariables?.colorScheme.brand.background2
         : props.theme.siteVariables?.colorScheme.brand.background1,
       color: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background
+        ? props.theme.siteVariables?.colorScheme.brand.foreground1
         : props.theme.siteVariables?.colorScheme.brand.foreground6,
       backgroundColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background2
@@ -213,6 +214,31 @@ export const WorldSettingsLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> 
   >
     <FontAwesomeIcon icon={faGlobe} className="fa-lg" />
     {!props.isCompact ? <span className="label-text">World</span> : <></>}
+  </span>
+);
+
+export const InteractLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
+  props: ISelectableLabelProps
+) => (
+  <span
+    className={props.isSelected ? "label-tab" : "label-deseltab"}
+    style={{
+      borderLeftColor: props.isSelected
+        ? props.theme.siteVariables?.colorScheme.brand.background2
+        : props.theme.siteVariables?.colorScheme.brand.background1,
+      borderRightColor: props.isSelected
+        ? props.theme.siteVariables?.colorScheme.brand.background2
+        : props.theme.siteVariables?.colorScheme.brand.background1,
+      color: props.isSelected
+        ? props.theme.siteVariables?.colorScheme.brand.foreground1
+        : props.theme.siteVariables?.colorScheme.brand.foreground6,
+      backgroundColor: props.isSelected
+        ? props.theme.siteVariables?.colorScheme.brand.background2
+        : props.theme.siteVariables?.colorScheme.brand.background1,
+    }}
+  >
+    <FontAwesomeIcon icon={faUserEdit} className="fa-lg" />
+    {!props.isCompact ? <span className="label-text">Interact</span> : <></>}
   </span>
 );
 
@@ -229,7 +255,7 @@ export const ToolEditorLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & I
         ? props.theme.siteVariables?.colorScheme.brand.background2
         : props.theme.siteVariables?.colorScheme.brand.background1,
       color: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background
+        ? props.theme.siteVariables?.colorScheme.brand.foreground1
         : props.theme.siteVariables?.colorScheme.brand.foreground6,
       backgroundColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background2
@@ -431,7 +457,7 @@ export const ServerStartLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & 
 ) => (
   <span className="label">
     <FontAwesomeIcon icon={faPowerOff} className="fa-lg" />
-    <span className="label">Start</span>
+    <span className="label-text">Start</span>
   </span>
 );
 
@@ -691,7 +717,7 @@ export const FunctionsIcon: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISe
   <span
     className={"label-icon" + (props.isSelected ? " label-selected" : "")}
     style={{
-      paddingLeft: "14px",
+      paddingLeft: "6px",
       paddingTop: "7px",
       borderLeftColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
@@ -700,8 +726,8 @@ export const FunctionsIcon: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISe
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background4,
       color:
-        (CartoApp.theme === CartoThemeStyle.light && !props.isSelected) ||
-        (CartoApp.theme === CartoThemeStyle.dark && props.isSelected)
+        (CreatorToolsHost.theme === CreatorToolsThemeStyle.light && !props.isSelected) ||
+        (CreatorToolsHost.theme === CreatorToolsThemeStyle.dark && props.isSelected)
           ? "#774444"
           : "#FFCCCC",
       backgroundColor: props.isSelected
@@ -719,7 +745,7 @@ export const AssetsIcon: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelec
   <span
     className={"label-icon" + (props.isSelected ? " label-selected" : "")}
     style={{
-      paddingLeft: "12px",
+      paddingLeft: "4px",
       borderLeftColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background4,
@@ -727,8 +753,8 @@ export const AssetsIcon: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelec
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background4,
       color:
-        (CartoApp.theme === CartoThemeStyle.light && !props.isSelected) ||
-        (CartoApp.theme === CartoThemeStyle.dark && props.isSelected)
+        (CreatorToolsHost.theme === CreatorToolsThemeStyle.light && !props.isSelected) ||
+        (CreatorToolsHost.theme === CreatorToolsThemeStyle.dark && props.isSelected)
           ? "#446D44"
           : "#C9EDC9",
       backgroundColor: props.isSelected
@@ -746,7 +772,7 @@ export const TypesIcon: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelect
   <span
     className={"label-icon" + (props.isSelected ? " label-selected" : "")}
     style={{
-      paddingLeft: "10.5px",
+      paddingLeft: "2.5px",
       borderLeftColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background4,
@@ -754,8 +780,8 @@ export const TypesIcon: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelect
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background4,
       color:
-        (CartoApp.theme === CartoThemeStyle.light && !props.isSelected) ||
-        (CartoApp.theme === CartoThemeStyle.dark && props.isSelected)
+        (CreatorToolsHost.theme === CreatorToolsThemeStyle.light && !props.isSelected) ||
+        (CreatorToolsHost.theme === CreatorToolsThemeStyle.dark && props.isSelected)
           ? "#444477"
           : "#DADAFF",
       backgroundColor: props.isSelected

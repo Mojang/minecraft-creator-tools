@@ -14,7 +14,25 @@ const gulpWebpack = require("webpack-stream");
 const jsncorebuildfilesigs = [
   "src/**/*.ts",
   "!src/vscode/*.ts",
+  "!src/analytics/*.ts",
   "!src/UX/*.ts",
+  "!src/UXex/*.ts",
+  "!src/test/**/*",
+  "!src/testweb/**/*",
+  "!src/monaco/*.ts",
+  "!src/setupTests.ts",
+  "!src/worldux/*.ts",
+  "!src/vscodeweb/*.ts",
+  "!src/babylon/*.ts",
+];
+
+const jsminbuildfilesigs = [
+  "src/**/*.ts",
+  "!src/vscode/*.ts",
+  "!src/UX/*.ts",
+  "!src/local/*.ts",
+  "!src/cli/*.ts",
+  "!src/mcp/*.ts",
   "!src/UXex/*.ts",
   "!src/test/**/*",
   "!src/testweb/**/*",
@@ -173,6 +191,15 @@ function compileJsNodeBuild() {
     .on("error", function () {});
 }
 
+function compileJsMinBuild() {
+  return gulp
+    .src(jsminbuildfilesigs, { base: "" })
+    .pipe(gulpWebpack(require("./webpack.jsmin.config.js")))
+    .pipe(gulp.dest("toolbuild/jsmin"))
+    .on("end", function () {})
+    .on("error", function () {});
+}
+
 function customizeSiteHead() {
   return gulp.src(["site/index.head.html"], { base: "" }).pipe(textReplaceStream("build/index.html", /<\/head>/gi));
 }
@@ -201,7 +228,13 @@ function copyVscData() {
 
 function copyJsNodeData() {
   return gulp
-    .src(["public/data/**/*.ogg", "public/data/**/*.png", "public/data/**/*.json", "public/data/**/*.mcworld"])
+    .src([
+      "public/data/**/*.ogg",
+      "public/data/**/*.png",
+      "public/data/**/*.json",
+      "public/data/**/*.mcworld",
+      "public/data/**/*.mcaddon",
+    ])
     .pipe(gulp.dest("toolbuild/jsn/data/"));
 }
 
@@ -233,8 +266,18 @@ function copyVscMc() {
   return gulp.src(["../mc/dist/**/*"]).pipe(gulp.dest("toolbuild/vsc/mc/"));
 }
 
+function copyJsNodeResPreviewMetadataVanillaData() {
+  return gulp
+    .src(["public/res/latest/van/preview/metadata/vanilladata_modules/**/*"])
+    .pipe(gulp.dest("toolbuild/jsn/res/latest/van/preview/metadata/vanilladata_modules/"));
+}
+
 function copyJsNodeResSchemas() {
   return gulp.src(["public/res/latest/schemas/**/*"]).pipe(gulp.dest("toolbuild/jsn/res/latest/schemas/"));
+}
+
+function copyJsNodeResImages() {
+  return gulp.src(["public/res/images/**/*"]).pipe(gulp.dest("toolbuild/jsn/res/images/"));
 }
 
 function copyJsNodeMc() {
@@ -273,6 +316,10 @@ gulp.task("clean-jsnwebbuild", function () {
   return del(["toolbuild/jsn/web"]);
 });
 
+gulp.task("clean-jsminbuild", function () {
+  return del(["toolbuild/jsmin"]);
+});
+
 gulp.task("clean-mcbuild", function () {
   return del(["toolbuild/mc"]);
 });
@@ -305,6 +352,8 @@ gulp.task(
       copyJsNodeData,
       copyJsNodeDocs,
       copyJsNodeResSchemas,
+      copyJsNodeResPreviewMetadataVanillaData,
+      copyJsNodeResImages,
       copyJsNodeMc,
       copyJsNodeDist,
       compileJsnWebBuild
@@ -312,6 +361,10 @@ gulp.task(
     "postclean-jsnwebbuild"
   )
 );
+
+gulp.task("jsminbuild", gulp.series("clean-jsminbuild", compileJsMinBuild));
+
+gulp.task("jsminbuild", gulp.series(compileJsMinBuild));
 
 gulp.task("jsncorebuild", gulp.series(compileJsNodeBuild));
 
@@ -429,12 +482,7 @@ function runUpdateVersions() {
   return gulp
     .src(versionSource, { base: "" })
     .pipe(
-      updateVersions([
-        "./package.json",
-        "./package-lock.json",
-        "./jsnode/package.json",
-        "./src/core/Constants.ts",
-      ])
+      updateVersions(["./package.json", "./package-lock.json", "./jsnode/package.json", "./src/core/Constants.ts"])
     );
 }
 
@@ -496,10 +544,9 @@ gulp.task(
   )
 );
 
-gulp.task(
-  "preparedevenv",
-  gulp.parallel("mctypes", "dlres", copyMonacoNpmDist, copyMonacoMapsNpmDist, copyEsbuildWasmDist)
-);
+gulp.task("preparedevenvlocal", gulp.parallel(copyMonacoNpmDist, copyMonacoMapsNpmDist, copyEsbuildWasmDist));
+
+gulp.task("preparedevenv", gulp.parallel("mctypes", "dlres", "preparedevenvlocal"));
 
 gulp.task("npmdepends", gulp.parallel(copyMonacoNpmDist, copyMonacoMapsNpmDist, copyEsbuildWasmDist));
 

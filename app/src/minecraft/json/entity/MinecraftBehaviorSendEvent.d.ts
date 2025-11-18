@@ -102,7 +102,7 @@ export default interface MinecraftBehaviorSendEvent {
 
 
 /**
- * Event_choices (event_choices)
+ * Event choices (event_choices)
  */
 export interface MinecraftBehaviorSendEventEventChoices {
 

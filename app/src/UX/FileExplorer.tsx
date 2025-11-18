@@ -3,7 +3,7 @@ import "./FileExplorer.css";
 import IFolder from "../storage/IFolder";
 import FileExplorerFolder from "./FileExplorerFolder";
 import { Button, Input, InputProps, ThemeInput } from "@fluentui/react-northstar";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import ItemAnnotationCollection from "./ItemAnnotationCollection";
 import IFile from "../storage/IFile";
 import StorageUtilities from "../storage/StorageUtilities";
@@ -32,7 +32,7 @@ interface IFileExplorerProps {
   onFileSelected?: (file: IFile) => void;
   onFolderSelected?: (folder: IFolder) => void;
 
-  carto: Carto;
+  creatorTools: CreatorTools;
   readOnly: boolean;
 
   onRemove?: () => void;
@@ -91,7 +91,7 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
   }
 
   _handleNewFolderChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
-    if (data === undefined || this.props.carto === null || this.state == null) {
+    if (data === undefined || this.props.creatorTools === null || this.state == null) {
       return;
     }
 

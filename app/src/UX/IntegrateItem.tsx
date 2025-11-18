@@ -44,7 +44,7 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
   }
 
   _handleNameChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
-    if (data === undefined || this.props.carto === null || this.state == null) {
+    if (data === undefined || this.props.creatorTools === null || this.state == null) {
       return;
     }
 
@@ -264,7 +264,7 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
               theme={this.props.theme}
               mode={FileExplorerMode.folderPicker}
               heightOffset={this.props.heightOffset + 340}
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               selectedItem={this.state.rootFolder}
               onFolderSelected={this._handleFolderSelected}
               readOnly={false}

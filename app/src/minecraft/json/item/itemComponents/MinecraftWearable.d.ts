@@ -105,3 +105,13 @@ export default interface MinecraftWearable {
   slot: string;
 
 }
+
+
+export enum MinecraftWearableSlot {
+  slotArmorBody = `slot.armor.body`,
+  slotArmorChest = `slot.armor.chest`,
+  slotArmorFeet = `slot.armor.feet`,
+  slotArmorHead = `slot.armor.head`,
+  slotArmorLegs = `slot.armor.legs`,
+  slotWeaponOffhand = `slot.weapon.offhand`
+}

@@ -9,6 +9,12 @@
         "content": {}
       }
     ],
+    "/vanilla/behavior_pack/entities/camel_husk.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:is_tamed/",
+        "content": {}
+      }
+    ],
     "/vanilla/behavior_pack/entities/cat.json": [
       {
         "path": "/minecraft:entity/component_groups/minecraft:cat_tame/minecraft:is_tamed/",
@@ -45,6 +51,12 @@
         "content": {}
       }
     ],
+    "/vanilla/behavior_pack/entities/nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_tame/minecraft:is_tamed/",
+        "content": {}
+      }
+    ],
     "/vanilla/behavior_pack/entities/ocelot.json": [
       {
         "path": "/minecraft:entity/component_groups/minecraft:ocelot_tame/minecraft:is_tamed/",
@@ -77,7 +89,13 @@
     ],
     "/vanilla/behavior_pack/entities/zombie_horse.json": [
       {
-        "path": "/minecraft:entity/components/minecraft:is_tamed/",
+        "path": "/minecraft:entity/component_groups/minecraft:horse_tamed/minecraft:is_tamed/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_tame/minecraft:is_tamed/",
         "content": {}
       }
     ],

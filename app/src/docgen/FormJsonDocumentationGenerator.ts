@@ -25,6 +25,7 @@ export interface JsonTypeSummary {
 const JsonFormExclusionList = ["is_a", "in_the", "_with_"];
 
 const MAX_FORM_DEPTH = 100;
+const INTERESTING_LIMIT_THRESHOLD = 2147480000;
 
 export default class FormJsonDocumentationGenerator {
   defsById: { [name: string]: JSONSchema7 } = {};
@@ -529,6 +530,17 @@ export default class FormJsonDocumentationGenerator {
     }
 
     id = Utilities.removeQuotes(id.replace(/\`/gi, ""));
+
+    let parenStart = id.indexOf(" (");
+
+    let parenEnd = id.indexOf(")");
+
+    if (parenStart > 0 && parenEnd > parenStart) {
+      id = id.substring(0, parenStart) + id.substring(parenEnd + 1);
+
+      id = id.trim();
+    }
+
     return id;
   }
 
@@ -724,9 +736,10 @@ export default class FormJsonDocumentationGenerator {
             } else {
               targetField.samples = mergeOnField.samples;
 
-              if (!targetField.defaultValue) {
+              if (targetField.defaultValue === undefined) {
                 targetField.defaultValue = mergeOnField.defaultValue;
               }
+
               if (mergeOnField.subForm && !targetField.subFormId) {
                 if (!targetField.subForm) {
                   targetField.subForm = {
@@ -895,8 +908,6 @@ export default class FormJsonDocumentationGenerator {
                     targetField.choices.push(mergeOnChoice);
                   }
                 }
-
-                targetField.choices = mergeOnField.choices;
               }
 
               if (!targetField.validity) {
@@ -2026,6 +2037,30 @@ export default class FormJsonDocumentationGenerator {
       dataType: FieldDataType.object,
     };
 
+    if (childNode.enum && Array.isArray(childNode.enum)) {
+      fieldNode.choices = [];
+
+      for (const enumVal of childNode.enum) {
+        fieldNode.choices.push({
+          id: enumVal ? enumVal.toString() : "undefined",
+          title: enumVal ? Utilities.humanifyJsName(enumVal.toString()) : "Undefined",
+        });
+      }
+
+      fieldNode.choices.sort((a, b) => {
+        if (a.id < b.id) {
+          return -1;
+        } else if (a.id > b.id) {
+          return 1;
+        }
+        return 0;
+      });
+    }
+
+    if (childNode.default !== undefined) {
+      fieldNode.defaultValue = childNode.default;
+    }
+
     if (childNode.minItems !== undefined) {
       fieldNode.minLength = childNode.minItems;
     }
@@ -2047,7 +2082,12 @@ export default class FormJsonDocumentationGenerator {
       fieldNode.readOnly = true;
     }
 
-    if (childNode.minimum) {
+    if (
+      childNode.minimum &&
+      childNode.minimum > -INTERESTING_LIMIT_THRESHOLD &&
+      !Utilities.isScientificFloat(childNode.minimum) &&
+      typeof childNode.minimum !== "bigint"
+    ) {
       if (fieldNode.validity === undefined) {
         fieldNode.validity = [];
       }
@@ -2058,7 +2098,13 @@ export default class FormJsonDocumentationGenerator {
       });
     }
 
-    if (childNode.maximum) {
+    if (
+      childNode.maximum &&
+      childNode.maximum < INTERESTING_LIMIT_THRESHOLD &&
+      !Utilities.isScientificFloat(childNode.maximum) &&
+      Number.isFinite(childNode.maximum) &&
+      typeof childNode.maximum !== "bigint"
+    ) {
       if (fieldNode.validity === undefined) {
         fieldNode.validity = [];
       }

@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import IFolder from "../storage/IFolder";
-import { MinecraftTrack } from "./ICartoData";
+import { MinecraftTrack } from "./ICreatorToolsData";
 import IGalleryItem from "./IGalleryItem";
 
 export default interface IProjectSeed {

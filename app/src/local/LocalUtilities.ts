@@ -62,7 +62,7 @@ export default class LocalUtilities implements ILocalUtilities {
     }
   }
 
-  get localServerLogPath() {
+  get roamingAppDataPath() {
     if (this.platform === Platform.windows) {
       return (
         this.userDataPath +
@@ -70,6 +70,42 @@ export default class LocalUtilities implements ILocalUtilities {
         "AppData" +
         NodeStorage.platformFolderDelimiter +
         "Roaming" +
+        NodeStorage.platformFolderDelimiter
+      );
+    } else {
+      return this.userDataPath;
+    }
+  }
+
+  get localReleaseServerLogPath() {
+    if (this.platform === Platform.windows) {
+      return (
+        this.userDataPath +
+        NodeStorage.platformFolderDelimiter +
+        "AppData" +
+        NodeStorage.platformFolderDelimiter +
+        "Roaming" +
+        NodeStorage.platformFolderDelimiter +
+        "Minecraft Bedrock" +
+        NodeStorage.platformFolderDelimiter +
+        "logs" +
+        NodeStorage.platformFolderDelimiter
+      );
+    } else {
+      return "." + NodeStorage.platformFolderDelimiter;
+    }
+  }
+
+  get localPreviewServerLogPath() {
+    if (this.platform === Platform.windows) {
+      return (
+        this.userDataPath +
+        NodeStorage.platformFolderDelimiter +
+        "AppData" +
+        NodeStorage.platformFolderDelimiter +
+        "Roaming" +
+        NodeStorage.platformFolderDelimiter +
+        "Minecraft Bedrock Preview" +
         NodeStorage.platformFolderDelimiter +
         "logs" +
         NodeStorage.platformFolderDelimiter
@@ -333,7 +369,7 @@ export default class LocalUtilities implements ILocalUtilities {
     return fullPath;
   }
 
-  async createStorage(path: string): Promise<IStorage | null> {
+  createStorage(path: string): IStorage | null {
     const fullPath = this.getFullPath(path);
 
     return new NodeStorage(fullPath, "");

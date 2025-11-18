@@ -6,17 +6,17 @@ import DocumentedCommand from "../minecraft/docs/DocumentedCommand";
 import DocumentedCommandSet from "../minecraft/docs/DocumentedCommandSet";
 import DataForm from "../dataform/DataForm";
 import Database from "../minecraft/Database";
-import CartoApp from "../app/CartoApp";
 import Project from "../app/Project";
 import { List, ListProps, ThemeInput, selectableListBehavior } from "@fluentui/react-northstar";
 import DocumentedCommandEditor from "./DocumentedCommandEditor";
+import CreatorTools from "../app/CreatorTools";
 
 interface IDocumentedCommandSetEditorProps extends IFileProps {
   heightOffset: number;
   theme: ThemeInput<any>;
   typesReadOnly: boolean;
   docsReadOnly: boolean;
-  carto: CartoApp;
+  creatorTools: CreatorTools;
   project: Project;
 }
 
@@ -88,16 +88,18 @@ export default class DocumentedCommandSetEditor extends Component<
     });
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
       if (file.manager) {
         const et = file.manager as DocumentedCommandSet;
 
-        et.persist();
+        return et.persist();
       }
     }
+
+    return false;
   }
 
   _handleCommandSelected(elt: any, event: ListProps | undefined) {
@@ -180,7 +182,7 @@ export default class DocumentedCommandSetEditor extends Component<
       docClassEditor = (
         <DocumentedCommandEditor
           heightOffset={this.props.heightOffset + 160}
-          carto={this.props.carto}
+          creatorTools={this.props.creatorTools}
           theme={this.props.theme}
           typesReadOnly={this.props.typesReadOnly}
           docsReadOnly={this.props.docsReadOnly}

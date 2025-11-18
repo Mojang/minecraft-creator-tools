@@ -11,6 +11,24 @@
  * 
  * minecraft:mob_effect_immunity Samples
 
+Nautilus - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/nautilus.json
+
+"minecraft:mob_effect_immunity": {
+  "mob_effects": [
+    "poison"
+  ]
+}
+
+
+Parched - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/parched.json
+
+"minecraft:mob_effect_immunity": {
+  "mob_effects": [
+    "weakness"
+  ]
+}
+
+
 Silverfish - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/silverfish.json
 
 "minecraft:mob_effect_immunity": {
@@ -44,9 +62,11 @@ export default interface MinecraftMobEffectImmunity {
    * List of names of effects the entity is immune to.
    * 
    * Sample Values:
-   * Silverfish: ["infested"]
+   * Nautilus: ["poison"]
    *
-   * Slime: ["oozing"]
+   * Parched: ["weakness"]
+   *
+   * Silverfish: ["infested"]
    *
    */
   mob_effects?: string[];

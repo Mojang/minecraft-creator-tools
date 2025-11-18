@@ -4,7 +4,7 @@
 import IGitHubInfo from "./IGitHubInfo";
 import IProjectItemVariant from "./IProjectItemVariant";
 
-export const MaxItemTypes = 162;
+export const MaxItemTypes = 165;
 
 export enum ProjectItemCategory {
   assets,
@@ -181,6 +181,9 @@ export enum ProjectItemType {
   skinPackTextureBackCompatJson = 159,
   uniformsJson = 160,
   biomeResource = 161, // new style per-biome JSON files
+  levelDatOld = 162,
+  jsMap = 163,
+  markdownDocumentation = 164,
 }
 
 export enum ProjectItemStorageType {

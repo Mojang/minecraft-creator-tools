@@ -115,16 +115,18 @@ export default class NpmPackageEditor extends Component<INpmPackageEditorProps, 
     }
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this.state !== undefined && this.state.fileToEdit != null) {
       const file = this.state.fileToEdit;
 
       if (file.manager) {
         const et = file.manager as NpmPackageDefinition;
 
-        et.persist();
+        return await et.persist();
       }
     }
+
+    return false;
   }
 
   _handleItemSelected(elt: any, event: ListProps | undefined) {
@@ -191,9 +193,7 @@ export default class NpmPackageEditor extends Component<INpmPackageEditorProps, 
     if (props.tagData && props.directObject) {
       const file = props.tagData as IFile;
 
-      const newData = JSON.stringify(props.directObject, null, 2);
-
-      file.setContent(newData);
+      file.setObjectContentIfSemanticallyDifferent(props.directObject);
     }
   }
 

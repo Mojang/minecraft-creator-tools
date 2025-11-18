@@ -5,7 +5,7 @@ import Log from "../core/Log";
 import LevelKeyValue from "./LevelKeyValue";
 import BlockPalette from "./BlockPalette";
 import DataUtilities from "../core/DataUtilities";
-import BlockCube from "../minecraft/BlockCube";
+import BlockVolume from "./BlockVolume";
 import Block from "./Block";
 import MCWorld from "./MCWorld";
 import NbtBinary from "./NbtBinary";
@@ -502,7 +502,7 @@ export default class WorldChunk {
   }
 
   getSubChunkCube(subChunkId: number) {
-    const bc = new BlockCube();
+    const bc = new BlockVolume();
 
     bc.maxX = CHUNK_X_SIZE;
     bc.maxY = SUBCHUNK_Y_SIZE;
@@ -514,7 +514,7 @@ export default class WorldChunk {
   }
 
   fillCubeLegacy(
-    cube: BlockCube,
+    cube: BlockVolume,
     cubeX: number,
     cubeY: number,
     cubeZ: number,
@@ -564,7 +564,7 @@ export default class WorldChunk {
   }
 
   fillCube(
-    cube: BlockCube,
+    cube: BlockVolume,
     cubeX: number,
     cubeY: number,
     cubeZ: number,
@@ -643,11 +643,11 @@ export default class WorldChunk {
               if (!blockTemplates[templateIndex]) {
                 const blockType = Database.getBlockTypeByLegacyId(blockTypeIndex);
 
-                if (!blockType || !blockType.typeId) {
+                if (!blockType || !blockType.id) {
                   throw new Error("Expected a block type for index " + blockTypeIndex);
                 }
 
-                const block = new Block("minecraft:" + blockType.typeId);
+                const block = new Block("minecraft:" + blockType.id);
 
                 block.data = blockAuxIndex;
 
@@ -843,9 +843,9 @@ export default class WorldChunk {
 
         const baseType = Database.getBlockTypeByLegacyId(blockTypeIndex);
 
-        Log.assertDefined(baseType.typeId);
+        Log.assertDefined(baseType.id);
 
-        const block = new Block("minecraft:" + baseType.typeId);
+        const block = new Block("minecraft:" + baseType.id);
         block.data = blockAuxIndex;
 
         return block;
@@ -907,11 +907,11 @@ export default class WorldChunk {
               if (!blockTemplates[templateIndex]) {
                 const blockType = Database.getBlockTypeByLegacyId(blockTypeIndex);
 
-                if (!blockType || !blockType.typeId) {
+                if (!blockType || !blockType.id) {
                   throw new Error("Expected a block type for index " + blockTypeIndex);
                 }
 
-                const block = new Block("minecraft:" + blockType.typeId);
+                const block = new Block("minecraft:" + blockType.id);
 
                 block.data = blockAuxIndex;
 
@@ -1035,9 +1035,9 @@ export default class WorldChunk {
                 const block = blockPals.blocks[iPal];
 
                 if (
-                  block.shortTypeName === "air" ||
-                  block.shortTypeName === "flower" ||
-                  block.shortTypeName === "tallgrass"
+                  block.shortTypeId === "air" ||
+                  block.shortTypeId === "flower" ||
+                  block.shortTypeId === "tallgrass"
                 ) {
                   disallowedIndices.push(iPal);
                 }

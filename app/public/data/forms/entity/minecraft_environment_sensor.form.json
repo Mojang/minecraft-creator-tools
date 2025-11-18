@@ -181,6 +181,47 @@
             ]
           }
         ],
+        "/vanilla/behavior_pack/entities/camel_husk.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:environment_sensor/",
+            "content": [
+              {
+                "filters": {
+                  "all_of": [
+                    {
+                      "test": "bool_property",
+                      "domain": "minecraft:has_rider_mounted"
+                    },
+                    {
+                      "test": "rider_count",
+                      "subject": "self",
+                      "value": 0
+                    }
+                  ]
+                },
+                "event": "minecraft:all_riders_dismounted"
+              },
+              {
+                "filters": {
+                  "all_of": [
+                    {
+                      "test": "bool_property",
+                      "domain": "minecraft:has_rider_mounted",
+                      "value": false
+                    },
+                    {
+                      "test": "rider_count",
+                      "subject": "self",
+                      "operator": ">",
+                      "value": 0
+                    }
+                  ]
+                },
+                "event": "minecraft:rider_mounted"
+              }
+            ]
+          }
+        ],
         "/vanilla/behavior_pack/entities/cave_spider.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:spider_neutral/minecraft:environment_sensor/",
@@ -481,7 +522,77 @@
             }
           }
         ],
+        "/vanilla/behavior_pack/entities/nautilus.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_tame_saddled_in_water/minecraft:environment_sensor/",
+            "content": [
+              {
+                "filters": {
+                  "test": "in_water",
+                  "operator": "==",
+                  "value": false
+                },
+                "event": "minecraft:on_saddled_out_of_water"
+              }
+            ]
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_tame_saddled_on_ground/minecraft:environment_sensor/",
+            "content": [
+              {
+                "filters": {
+                  "test": "in_water",
+                  "operator": "==",
+                  "value": true
+                },
+                "event": "minecraft:on_saddled_in_water"
+              }
+            ]
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_tame_saddled/minecraft:environment_sensor/",
+            "content": [
+              {
+                "filters": {
+                  "test": "in_water",
+                  "operator": "==",
+                  "value": true
+                },
+                "event": "minecraft:on_saddled_in_water"
+              },
+              {
+                "filters": {
+                  "test": "in_water",
+                  "operator": "==",
+                  "value": false
+                },
+                "event": "minecraft:on_saddled_out_of_water"
+              }
+            ]
+          }
+        ],
         "/vanilla/behavior_pack/entities/piglin.json": [
+          {
+            "path": "/minecraft:entity/component_groups/zombification_sensor/minecraft:environment_sensor/",
+            "content": {
+              "filters": {
+                "test": "in_nether",
+                "value": false
+              },
+              "event": "start_zombification_event"
+            }
+          },
+          {
+            "path": "/minecraft:entity/component_groups/start_zombification/minecraft:environment_sensor/",
+            "content": {
+              "filters": {
+                "test": "in_nether"
+              },
+              "event": "stop_zombification_event"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/entities/piglin_brute.json": [
           {
             "path": "/minecraft:entity/component_groups/zombification_sensor/minecraft:environment_sensor/",
             "content": {
@@ -772,6 +883,43 @@
             ]
           }
         ],
+        "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_wild_mounted/minecraft:environment_sensor/",
+            "content": {
+              "filters": {
+                "test": "rider_count",
+                "subject": "self",
+                "operator": "equals",
+                "value": 0
+              },
+              "event": "minecraft:on_drowned_dismount"
+            }
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_tame_saddled_in_water/minecraft:environment_sensor/",
+            "content": [
+              {
+                "filters": {
+                  "test": "in_water",
+                  "value": false
+                },
+                "event": "minecraft:on_saddled_out_of_water"
+              }
+            ]
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_tame_saddled_on_ground/minecraft:environment_sensor/",
+            "content": [
+              {
+                "filters": {
+                  "test": "in_water"
+                },
+                "event": "minecraft:on_saddled_in_water"
+              }
+            ]
+          }
+        ],
         "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/frost_moose.behavior.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:llama_wandering_trader/minecraft:environment_sensor/",
@@ -1010,6 +1158,49 @@
                 ]
               },
               "event": "minecraft:start_playing_idle_ground_sound"
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/camel_husk.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:environment_sensor/",
+        "content": {
+          "triggers": [
+            {
+              "filters": {
+                "all_of": [
+                  {
+                    "test": "bool_property",
+                    "domain": "minecraft:has_rider_mounted"
+                  },
+                  {
+                    "test": "rider_count",
+                    "subject": "self",
+                    "value": 0
+                  }
+                ]
+              },
+              "event": "minecraft:all_riders_dismounted"
+            },
+            {
+              "filters": {
+                "all_of": [
+                  {
+                    "test": "bool_property",
+                    "domain": "minecraft:has_rider_mounted",
+                    "value": false
+                  },
+                  {
+                    "test": "rider_count",
+                    "subject": "self",
+                    "operator": ">",
+                    "value": 0
+                  }
+                ]
+              },
+              "event": "minecraft:rider_mounted"
             }
           ]
         }
@@ -1335,6 +1526,61 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/entities/nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_tame_saddled_in_water/minecraft:environment_sensor/",
+        "content": {
+          "triggers": [
+            {
+              "filters": {
+                "test": "in_water",
+                "operator": "==",
+                "value": false
+              },
+              "event": "minecraft:on_saddled_out_of_water"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_tame_saddled_on_ground/minecraft:environment_sensor/",
+        "content": {
+          "triggers": [
+            {
+              "filters": {
+                "test": "in_water",
+                "operator": "==",
+                "value": true
+              },
+              "event": "minecraft:on_saddled_in_water"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_tame_saddled/minecraft:environment_sensor/",
+        "content": {
+          "triggers": [
+            {
+              "filters": {
+                "test": "in_water",
+                "operator": "==",
+                "value": true
+              },
+              "event": "minecraft:on_saddled_in_water"
+            },
+            {
+              "filters": {
+                "test": "in_water",
+                "operator": "==",
+                "value": false
+              },
+              "event": "minecraft:on_saddled_out_of_water"
+            }
+          ]
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/piglin.json": [
       {
         "path": "/minecraft:entity/component_groups/zombification_sensor/minecraft:environment_sensor/",
@@ -1342,8 +1588,6 @@
           "triggers": {
             "filters": {
               "test": "in_nether",
-              "subject": "self",
-              "operator": "==",
               "value": false
             },
             "event": "start_zombification_event"
@@ -1355,10 +1599,7 @@
         "content": {
           "triggers": {
             "filters": {
-              "test": "in_nether",
-              "subject": "self",
-              "operator": "==",
-              "value": true
+              "test": "in_nether"
             },
             "event": "stop_zombification_event"
           }
@@ -1673,6 +1914,49 @@
                 "domain": "minecraft:was_upgraded_to_1_21_100"
               },
               "event": "minecraft:upgrade_to_1_21_100"
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_wild_mounted/minecraft:environment_sensor/",
+        "content": {
+          "triggers": {
+            "filters": {
+              "test": "rider_count",
+              "subject": "self",
+              "operator": "equals",
+              "value": 0
+            },
+            "event": "minecraft:on_drowned_dismount"
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_tame_saddled_in_water/minecraft:environment_sensor/",
+        "content": {
+          "triggers": [
+            {
+              "filters": {
+                "test": "in_water",
+                "value": false
+              },
+              "event": "minecraft:on_saddled_out_of_water"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_tame_saddled_on_ground/minecraft:environment_sensor/",
+        "content": {
+          "triggers": [
+            {
+              "filters": {
+                "test": "in_water"
+              },
+              "event": "minecraft:on_saddled_in_water"
             }
           ]
         }

@@ -1,7 +1,7 @@
 import React, { Component, SyntheticEvent } from "react";
 import IAppProps from "./IAppProps";
 import Project, { FolderContext, ProjectErrorState } from "./../app/Project";
-import ProjectItem from "./../app/ProjectItem";
+import ProjectItem, { IProjectItemContentUpdateEvent } from "./../app/ProjectItem";
 import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "./../app/IProjectItemData";
 import ProjectItemList from "./ProjectItemList";
 import ProjectItemEditor from "./ProjectItemEditor";
@@ -22,8 +22,19 @@ import {
   faFolderTree,
   faList,
   faWandMagicSparkles,
+  faUndo,
+  faRedo,
 } from "@fortawesome/free-solid-svg-icons";
-import { Toolbar, Text, MenuItemProps, ThemeInput, Dialog, Input, InputProps } from "@fluentui/react-northstar";
+import {
+  Toolbar,
+  Text,
+  MenuItemProps,
+  ThemeInput,
+  Dialog,
+  Input,
+  InputProps,
+  ToolbarItemProps,
+} from "@fluentui/react-northstar";
 
 import {
   ViewLabel,
@@ -35,7 +46,6 @@ import {
   MCPackLabel,
   DownArrowLabel,
   CustomLabel,
-  OpenInExplorerLabel,
   ItemActionsLabel,
 } from "./Labels";
 
@@ -50,8 +60,8 @@ import IPersistable from "./IPersistable";
 import Log from "./../core/Log";
 import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProxy";
 import MinecraftToolEditor from "./MinecraftToolEditor";
-import CartoSettings from "./CartoSettings";
-import { CartoEditorViewMode, MinecraftGameConnectionMode } from "./../app/ICartoData";
+import CreatorToolsSettings from "./CreatorToolsSettings";
+import { CreatorToolsEditorViewMode, MinecraftGameConnectionMode } from "../app/ICreatorToolsData";
 import ProjectDisplay from "./ProjectDisplay";
 import IGitHubInfo from "../app/IGitHubInfo";
 import MinecraftDisplay from "../UXex/MinecraftDisplay";
@@ -59,12 +69,12 @@ import WebUtilities from "./WebUtilities";
 import ProjectInfoDisplay, { InfoItemCommand } from "./ProjectInfoDisplay";
 import ProjectInfoItem from "../info/ProjectInfoItem";
 import { MinecraftPushWorldType } from "../app/MinecraftPush";
-import CartoApp, { HostType, CartoThemeStyle } from "../app/CartoApp";
+import CreatorToolsHost, { HostType, CreatorToolsThemeStyle } from "../app/CreatorToolsHost";
 import { faEdit, faWindowMaximize } from "@fortawesome/free-regular-svg-icons";
 import FileExplorer, { FileExplorerMode } from "./FileExplorer";
 import ShareProject from "./ShareProject";
 import { IProjectUpdaterReference } from "../info/IProjectInfoGeneratorBase";
-import { SidePaneMaxWidth, SidePaneMinWidth } from "../app/Carto";
+import { SidePaneMaxWidth, SidePaneMinWidth } from "../app/CreatorTools";
 import ProjectEditorUtilities, {
   ProjectEditorMode,
   ProjectEditorAction,
@@ -74,7 +84,7 @@ import ProjectEditorUtilities, {
 } from "./ProjectEditorUtilities";
 import { IWorldSettings } from "../minecraft/IWorldSettings";
 import WorldSettingsArea from "../UX/WorldSettingsArea";
-import IFile from "../storage/IFile";
+import IFile, { FileUpdateType } from "../storage/IFile";
 import ProjectActions from "./ProjectActions";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import { IAnnotatedValue } from "../core/AnnotatedValue";
@@ -92,6 +102,9 @@ import NewVariant from "./NewVariant";
 import IProjectItemVariantSeed from "../app/IProjectItemVariantSeed";
 import ProjectItemVariantCreateManager from "../app/ProjectItemVariantCreateManager";
 import ProjectMap from "./ProjectMap";
+import IVersionContent from "../storage/IVersionContent";
+
+const EDITOR_TICK_INTERVAL = 50;
 
 // UI and layout constants
 const FULLY_COMPACT_WIDTH = 744;
@@ -127,6 +140,7 @@ interface IProjectEditorProps extends IAppProps {
   isHosted?: boolean;
   visualSeed?: number;
   theme: ThemeInput<any>;
+  initialFocusPath?: string;
   isPersisted?: boolean;
   onPersistenceUpgraded?: () => void;
   selectedItem?: string;
@@ -134,13 +148,15 @@ interface IProjectEditorProps extends IAppProps {
   mode?: ProjectEditorMode;
   statusAreaMode?: ProjectStatusAreaMode;
   hideMainToolbar?: boolean;
-  viewMode?: CartoEditorViewMode;
+  viewMode?: CreatorToolsEditorViewMode;
 }
 
 interface IProjectEditorState {
   activeProjectItem: ProjectItem | null;
   tentativeProjectItem: ProjectItem | null;
   activeReference: IGitHubInfo | null;
+  undoStackState?: string;
+  undoStackIndex?: number;
   mode: ProjectEditorMode;
   itemView: ProjectItemEditorView;
   filteredItems?: IAnnotatedValue[];
@@ -148,7 +164,7 @@ interface IProjectEditorState {
   displayFileView: boolean;
   visualSeed?: number;
   activeVariant?: string;
-  viewMode: CartoEditorViewMode;
+  viewMode: CreatorToolsEditorViewMode;
   menuState: ProjectEditorMenuState;
   effectMode?: ProjectEditorEffect;
   dragStyle?: ProjectEditorDragStyle;
@@ -173,6 +189,8 @@ export enum ProjectEditorMenuState {
   exportMenu = 2,
   deployMenu = 3,
   itemMenu = 4,
+  undoMenu = 5,
+  redoMenu = 6,
 }
 
 export enum ProjectEditorTab {
@@ -208,7 +226,6 @@ export enum ProjectStatusAreaMode {
 }
 
 export default class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> {
-  private _authWindow: Window | null = null;
   private _activeEditorPersistable?: IPersistable;
   private _isMountedInternal = false;
   private _lastHashProcessed: string | undefined;
@@ -225,6 +242,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this.getProjectTitle = this.getProjectTitle.bind(this);
 
     this.setNewProjectVariantName = this.setNewProjectVariantName.bind(this);
+
+    this._setToVersion = this._setToVersion.bind(this);
 
     this._handleNewProjectItemName = this._handleNewProjectItemName.bind(this);
     this._handleExportMCAddonClick = this._handleExportMCAddonClick.bind(this);
@@ -250,6 +269,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._handleDialogDone = this._handleDialogDone.bind(this);
     this._handleFilterTextChanged = this._handleFilterTextChanged.bind(this);
     this._incrementVisualSeed = this._incrementVisualSeed.bind(this);
+    this._handleItemContentChanged = this._handleItemContentChanged.bind(this);
 
     this._showMinecraftClick = this._showMinecraftClick.bind(this);
     this._showSettingsClick = this._showSettingsClick.bind(this);
@@ -265,6 +285,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     this._handleOuterMouseMove = this._handleOuterMouseMove.bind(this);
     this._handleOuterMouseOutOrUp = this._handleOuterMouseOutOrUp.bind(this);
+
+    this._toggleUndoMenuOpen = this._toggleUndoMenuOpen.bind(this);
+    this._toggleRedoMenuOpen = this._toggleRedoMenuOpen.bind(this);
 
     this._handleNewVariantRequested = this._handleNewVariantRequested.bind(this);
     this._handleSplitterDrag = this._handleSplitterDrag.bind(this);
@@ -282,6 +305,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._handleExportFlatWorldWithPacks = this._handleExportFlatWorldWithPacks.bind(this);
     this._handleDeployToRemoteServerClick = this._handleDeployToRemoteServerClick.bind(this);
     this._handleDeployPacksToMinecraftGameClick = this._handleDeployPacksToMinecraftGameClick.bind(this);
+    this._editorTick = this._editorTick.bind(this);
     this.handleProjectItemAction = this.handleProjectItemAction.bind(this);
     this._handleDeployPacksAndWorldsToMinecraftGameClick =
       this._handleDeployPacksAndWorldsToMinecraftGameClick.bind(this);
@@ -352,7 +376,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     let initialMode = ProjectEditorMode.actions;
     let initialItem: ProjectItem | null = null;
 
-    let viewMode = this.props.carto.editorViewMode;
+    let viewMode = this.props.creatorTools.editorViewMode;
 
     if (this.props.viewMode) {
       viewMode = this.props.viewMode;
@@ -384,12 +408,15 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       initialMode = this.props.mode;
     }
 
+    let changes = this.props.project.getChangeList();
+
     return {
       activeProjectItem: initialItem,
       tentativeProjectItem: null,
       activeReference: null,
       mode: initialMode,
       visualSeed: 0 + (this.props.visualSeed ? this.props.visualSeed : 0),
+      undoStackState: StorageUtilities.getSerializationOfChangeList(changes),
       allInfoSet: this.props.project.indevInfoSet,
       allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
       menuState: ProjectEditorMenuState.noMenu,
@@ -481,8 +508,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           if (projectItem) {
             let viewMode = state.viewMode;
 
-            if (viewMode === CartoEditorViewMode.itemsFocus) {
-              viewMode = CartoEditorViewMode.mainFocus;
+            if (viewMode === CreatorToolsEditorViewMode.itemsFocus) {
+              viewMode = CreatorToolsEditorViewMode.mainFocus;
             }
 
             return {
@@ -548,6 +575,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       tentativeProjectItem: this.state.tentativeProjectItem,
       activeReference: this.state.activeReference,
       menuState: this.state.menuState,
+      undoStackIndex: this.state.undoStackIndex,
       mode: this.state.mode,
       viewMode: this.state.viewMode,
       allInfoSet: this.props.project.indevInfoSet,
@@ -559,6 +587,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       effectMode: this.state.effectMode,
       dragStyle: this.state.dragStyle,
       visualSeed: this.state.visualSeed,
+      undoStackState: this.state.undoStackState,
       dialog: ProjectEditorDialog.newVariant,
       dialogData: this.state.dialogData,
       dialogActiveItem: this.state.dialogActiveItem,
@@ -579,9 +608,11 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       activeReference: this.state.activeReference,
       mode: this.state.mode,
       effectMode: this.state.effectMode,
+      undoStackIndex: this.state.undoStackIndex,
       dragStyle: this.state.dragStyle,
       activeVariant: name,
       visualSeed: this.state.visualSeed ? this.state.visualSeed + 1 : 1,
+      undoStackState: this.state.undoStackState,
       viewMode: this.state.viewMode,
       allInfoSet: this.props.project.indevInfoSet,
       allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
@@ -634,16 +665,35 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   componentDidUpdate(prevProps: IProjectEditorProps, prevState: IProjectEditorState) {
-    if (prevProps !== undefined && prevProps.carto !== undefined) {
-      prevProps.carto.onMinecraftStateChanged.unsubscribe(this._serverStateChanged);
+    if (prevProps !== undefined && prevProps.creatorTools !== undefined) {
+      prevProps.creatorTools.onMinecraftStateChanged.unsubscribe(this._serverStateChanged);
     }
 
     this._connectToProps();
   }
 
   _connectToProps() {
-    if (this.props.carto !== undefined) {
-      this.props.carto.onMinecraftStateChanged.subscribe(this._serverStateChanged);
+    if (!this.props.project.onItemContentChanged.has(this._handleItemContentChanged)) {
+      this.props.project.onItemContentChanged.subscribe(this._handleItemContentChanged);
+    }
+
+    if (
+      this.props.creatorTools !== undefined &&
+      !this.props.creatorTools.onMinecraftStateChanged.has(this._serverStateChanged)
+    ) {
+      this.props.creatorTools.onMinecraftStateChanged.subscribe(this._serverStateChanged);
+    }
+  }
+
+  private _handleItemContentChanged(project: Project, itemUpdate: IProjectItemContentUpdateEvent) {
+    if (itemUpdate.fileUpdate.updateType === FileUpdateType.regularEdit) {
+      let currentUndoStack = StorageUtilities.getSerializationOfChangeList(this.props.project.getChangeList());
+
+      if (currentUndoStack !== this.state.undoStackState) {
+        this._changeUndoStackState(currentUndoStack);
+      }
+    } else if (itemUpdate.fileUpdate.updateType !== FileUpdateType.versionlessEdit) {
+      this._incrementVisualSeed();
     }
   }
 
@@ -675,9 +725,11 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           tentativeProjectItem: this.state.tentativeProjectItem,
           activeReference: this.state.activeReference,
           mode: this.state.mode,
+          undoStackIndex: this.state.undoStackIndex,
           effectMode: undefined,
           dragStyle: undefined,
           visualSeed: this.state.visualSeed ? this.state.visualSeed + 1 : 1,
+          undoStackState: this.state.undoStackState,
           viewMode: this.state.viewMode,
           allInfoSet: this.props.project.indevInfoSet,
           allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
@@ -698,6 +750,37 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
   }
 
+  private _changeUndoStackState(newChanges?: string) {
+    if (this.state !== undefined) {
+      this.setState({
+        activeProjectItem: this.state.activeProjectItem,
+        tentativeProjectItem: this.state.tentativeProjectItem,
+        activeReference: this.state.activeReference,
+        mode: this.state.mode,
+        undoStackIndex: this.state.undoStackIndex,
+        effectMode: undefined,
+        dragStyle: undefined,
+        visualSeed: this.state.visualSeed ? this.state.visualSeed + 1 : 1,
+        undoStackState: newChanges,
+        viewMode: this.state.viewMode,
+        allInfoSet: this.props.project.indevInfoSet,
+        allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
+        displayFileView: this.state.displayFileView,
+        menuState: this.state.menuState,
+        itemView: this.state.itemView,
+        filteredItems: this.state.filteredItems,
+        searchFilter: this.state.searchFilter,
+        statusAreaMode: this.state.statusAreaMode,
+        lastDeployKey: this.state.lastDeployKey,
+        lastExportKey: this.state.lastExportKey,
+        lastDeployFunction: this.state.lastDeployFunction,
+        lastExportFunction: this.state.lastExportFunction,
+        lastDeployData: this.state.lastDeployData,
+        lastExportData: this.state.lastExportData,
+      });
+    }
+  }
+
   private _incrementVisualSeed() {
     if (this.state !== undefined) {
       this.setState({
@@ -705,9 +788,11 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         tentativeProjectItem: this.state.tentativeProjectItem,
         activeReference: this.state.activeReference,
         mode: this.state.mode,
+        undoStackIndex: this.state.undoStackIndex,
         effectMode: undefined,
         dragStyle: undefined,
         visualSeed: this.state.visualSeed ? this.state.visualSeed + 1 : 1,
+        undoStackState: this.state.undoStackState,
         viewMode: this.state.viewMode,
         allInfoSet: this.props.project.indevInfoSet,
         allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
@@ -738,9 +823,11 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           tentativeProjectItem: this.state.tentativeProjectItem,
           activeReference: this.state.activeReference,
           mode: this.state.mode,
+          undoStackIndex: this.state.undoStackIndex,
           effectMode: this.state.effectMode,
           dragStyle: this.state.dragStyle,
           visualSeed: this.state.visualSeed,
+          undoStackState: this.state.undoStackState,
           viewMode: this.state.viewMode,
           allInfoSet: this.props.project.indevInfoSet,
           allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
@@ -772,6 +859,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         tentativeProjectItem: this.state.tentativeProjectItem,
         activeReference: this.state.activeReference,
         mode: this.state.mode,
+        undoStackIndex: this.state.undoStackIndex,
         effectMode: undefined,
         dragStyle: undefined,
         dialog: dialog,
@@ -831,8 +919,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
               content = new Uint8Array(await fileSource.arrayBuffer());
             }
 
-            item.primaryFile.setContent(content);
+            item.primaryFile.setContentIfSemanticallyDifferent(content);
           }
+
           this._incrementVisualSeed();
         } else if ((this.state.dialogData as IProjectItemSeed).action === ProjectItemSeedAction.fileOrFolder) {
           const folder = (this.state.dialogData as IProjectItemSeed).folder;
@@ -852,7 +941,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
               content = new Uint8Array(await fileSource.arrayBuffer());
             }
 
-            file.setContent(content);
+            file.setContentIfSemanticallyDifferent(content);
 
             await this.props.project.inferProjectItemsFromFiles();
           }
@@ -871,7 +960,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
       if (mcworld) {
         await ProjectExporter.convertWorld(
-          this.props.carto,
+          this.props.creatorTools,
           this.props.project,
           this.state.dialogData as IConversionSettings,
           mcworld
@@ -916,6 +1005,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
             tentativeProjectItem: this.state.tentativeProjectItem,
             activeReference: this.state.activeReference,
             menuState: this.state.menuState,
+            undoStackIndex: this.state.undoStackIndex,
             mode: this.state.mode,
             viewMode: this.state.viewMode,
             allInfoSet: this.props.project.indevInfoSet,
@@ -927,6 +1017,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
             effectMode: ProjectEditorEffect.dragOver,
             dragStyle: dragStyle,
             visualSeed: this.state.visualSeed,
+            undoStackState: this.state.undoStackState,
             statusAreaMode: this.state.statusAreaMode,
             lastDeployKey: this.state.lastDeployKey,
             lastExportKey: this.state.lastExportKey,
@@ -962,6 +1053,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._isMountedInternal = true;
 
     window.setTimeout(this._doAsyncLoading, ASYNC_LOADING_TIMEOUT);
+    window.setInterval(this._editorTick, EDITOR_TICK_INTERVAL);
   }
 
   componentWillUnmount() {
@@ -978,6 +1070,16 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._isMountedInternal = false;
   }
 
+  private _editorTick() {
+    if (!this.props.project || !this.props.project.projectFolder) {
+      return;
+    }
+
+    if (this.props.project.projectFolder.storage.getUsesPollingBasedUpdating()) {
+      this.props.project.projectFolder.storage.incrementalScanForChanges();
+    }
+  }
+
   private _handleOuterMouseMove(ev: React.MouseEvent<HTMLDivElement>) {
     if (
       (this.state && this._splitterDrag === undefined) ||
@@ -989,7 +1091,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
 
     let width = this.getAdjustedWidth(ev);
-    this.props.carto.itemSidePaneWidth = width;
+    this.props.creatorTools.itemSidePaneWidth = width;
 
     this.gridElt.current.style.gridTemplateColumns = this.getGridColumnWidths();
   }
@@ -998,8 +1100,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     let width = ev.pageX;
 
     if (
-      this.state.viewMode === CartoEditorViewMode.itemsOnRightAndMinecraftToolbox ||
-      this.state.viewMode === CartoEditorViewMode.itemsOnRight
+      this.state.viewMode === CreatorToolsEditorViewMode.itemsOnRightAndMinecraftToolbox ||
+      this.state.viewMode === CreatorToolsEditorViewMode.itemsOnRight
     ) {
       const browserWidth = WebUtilities.getWidth();
 
@@ -1023,8 +1125,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const width = this.getAdjustedWidth(ev);
 
-    this.props.carto.itemSidePaneWidth = width;
-    this.props.carto.save();
+    this.props.creatorTools.itemSidePaneWidth = width;
+    this.props.creatorTools.save();
 
     this._splitterDrag = undefined;
   }
@@ -1083,7 +1185,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
               const height = WebUtilities.getHeight();
 
               if (top > height / 2 && this.state.activeProjectItem && this.state.activeProjectItem.primaryFile) {
-                this.state.activeProjectItem.primaryFile.setContent(content);
+                this.state.activeProjectItem.primaryFile.setContentIfSemanticallyDifferent(content);
 
                 this._stopDragEffect();
 
@@ -1095,6 +1197,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
               tentativeProjectItem: this.state.tentativeProjectItem,
               activeReference: this.state.activeReference,
               menuState: this.state.menuState,
+              undoStackIndex: this.state.undoStackIndex,
               mode: this.state.mode,
               viewMode: this.state.viewMode,
               allInfoSet: this.props.project.indevInfoSet,
@@ -1106,6 +1209,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
               effectMode: undefined,
               dragStyle: undefined,
               visualSeed: this.state.visualSeed,
+              undoStackState: this.state.undoStackState,
               dialog: ProjectEditorDialog.integrateItem,
               dialogActiveItem: this.state.activeProjectItem ? this.state.activeProjectItem : undefined,
               dialogData: {
@@ -1164,6 +1268,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       })
     );
   }
+
   private async _openInExplorerClick() {
     if (AppServiceProxy.hasAppService && this.props.project.projectFolder) {
       await AppServiceProxy.sendAsync(
@@ -1190,23 +1295,24 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const curViewMode = this.state.viewMode;
 
-    let newViewMode = CartoEditorViewMode.itemsOnLeft;
+    let newViewMode = CreatorToolsEditorViewMode.itemsOnLeft;
 
     if (
-      curViewMode === CartoEditorViewMode.itemsOnRightAndMinecraftToolbox ||
-      curViewMode === CartoEditorViewMode.itemsOnLeftAndMinecraftToolbox
+      curViewMode === CreatorToolsEditorViewMode.itemsOnRightAndMinecraftToolbox ||
+      curViewMode === CreatorToolsEditorViewMode.itemsOnLeftAndMinecraftToolbox
     ) {
-      newViewMode = CartoEditorViewMode.itemsOnLeftAndMinecraftToolbox;
+      newViewMode = CreatorToolsEditorViewMode.itemsOnLeftAndMinecraftToolbox;
     }
 
-    this.props.carto.editorViewMode = newViewMode;
-    this.props.carto.save();
+    this.props.creatorTools.editorViewMode = newViewMode;
+    this.props.creatorTools.save();
 
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
       tentativeProjectItem: this.state.tentativeProjectItem,
       mode: this.state.mode,
       viewMode: newViewMode,
+      undoStackIndex: this.state.undoStackIndex,
       menuState: ProjectEditorMenuState.noMenu,
       statusAreaMode: this.state.statusAreaMode,
       lastDeployKey: this.state.lastDeployKey,
@@ -1236,6 +1342,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       mode: this.state.mode,
       viewMode: this.state.viewMode,
       menuState: this.state.menuState,
+
+      undoStackIndex: this.state.undoStackIndex,
       statusAreaMode: this.state.statusAreaMode,
       lastDeployKey: deployKey,
       dialog: this.state.dialog,
@@ -1264,6 +1372,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       mode: this.state.mode,
       viewMode: this.state.viewMode,
       menuState: this.state.menuState,
+      undoStackIndex: this.state.undoStackIndex,
       statusAreaMode: this.state.statusAreaMode,
       lastDeployKey: this.state.lastDeployKey,
       itemView: this.state.itemView,
@@ -1292,23 +1401,24 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const curViewMode = this.state.viewMode;
 
-    let newViewMode = CartoEditorViewMode.itemsOnRight;
+    let newViewMode = CreatorToolsEditorViewMode.itemsOnRight;
 
     if (
-      curViewMode === CartoEditorViewMode.itemsOnRightAndMinecraftToolbox ||
-      curViewMode === CartoEditorViewMode.itemsOnLeftAndMinecraftToolbox
+      curViewMode === CreatorToolsEditorViewMode.itemsOnRightAndMinecraftToolbox ||
+      curViewMode === CreatorToolsEditorViewMode.itemsOnLeftAndMinecraftToolbox
     ) {
-      newViewMode = CartoEditorViewMode.itemsOnRightAndMinecraftToolbox;
+      newViewMode = CreatorToolsEditorViewMode.itemsOnRightAndMinecraftToolbox;
     }
 
-    this.props.carto.editorViewMode = newViewMode;
-    this.props.carto.save();
+    this.props.creatorTools.editorViewMode = newViewMode;
+    this.props.creatorTools.save();
 
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
       tentativeProjectItem: this.state.tentativeProjectItem,
       mode: this.state.mode,
       viewMode: newViewMode,
+      undoStackIndex: this.state.undoStackIndex,
       menuState: ProjectEditorMenuState.noMenu,
       statusAreaMode: this.state.statusAreaMode,
       lastDeployKey: this.state.lastDeployKey,
@@ -1337,6 +1447,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       tentativeProjectItem: this.state.tentativeProjectItem,
       mode: this.state.mode,
       viewMode: this.state.viewMode,
+      undoStackIndex: this.state.undoStackIndex,
       menuState: ProjectEditorMenuState.noMenu,
       statusAreaMode: this.state.statusAreaMode,
       lastDeployKey: this.state.lastDeployKey,
@@ -1365,6 +1476,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       tentativeProjectItem: this.state.tentativeProjectItem,
       mode: this.state.mode,
       viewMode: this.state.viewMode,
+      undoStackIndex: this.state.undoStackIndex,
       menuState: ProjectEditorMenuState.noMenu,
       statusAreaMode: this.state.statusAreaMode,
       lastDeployKey: this.state.lastDeployKey,
@@ -1392,7 +1504,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       return;
     }
 
-    this.applyViewMode(CartoEditorViewMode.mainFocus);
+    this.applyViewMode(CreatorToolsEditorViewMode.mainFocus);
   }
 
   private _setToolboxFocus() {
@@ -1404,11 +1516,23 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       return;
     }
 
-    this.applyViewMode(CartoEditorViewMode.toolboxFocus);
+    this.applyViewMode(CreatorToolsEditorViewMode.toolboxFocus);
   }
 
   private _setItemsFocus() {
     window.setTimeout(this._setItemsFocusImpl, SPLITTER_DRAG_TIMEOUT);
+  }
+
+  private _setToVersion(event: React.SyntheticEvent<HTMLElement>, data?: ToolbarItemProps) {
+    if (data && data.content && (data.content as any).key) {
+      const targetKey = (data.content as any).key as string;
+
+      let pipeIndex = targetKey.lastIndexOf("|");
+
+      if (pipeIndex >= 0) {
+        this.props.project.setToVersion(targetKey.substring(pipeIndex + 1));
+      }
+    }
   }
 
   private async _setItemsFocusImpl() {
@@ -1416,7 +1540,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       return;
     }
 
-    this.applyViewMode(CartoEditorViewMode.itemsFocus);
+    this.applyViewMode(CreatorToolsEditorViewMode.itemsFocus);
   }
 
   private _setToolboxLandingFocus() {
@@ -1428,12 +1552,12 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       return;
     }
 
-    this.applyViewMode(CartoEditorViewMode.codeLanding);
+    this.applyViewMode(CreatorToolsEditorViewMode.codeLanding);
   }
 
-  private applyViewMode(newViewMode: CartoEditorViewMode) {
-    this.props.carto.editorViewMode = newViewMode;
-    this.props.carto.save();
+  private applyViewMode(newViewMode: CreatorToolsEditorViewMode) {
+    this.props.creatorTools.editorViewMode = newViewMode;
+    this.props.creatorTools.save();
 
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
@@ -1468,20 +1592,20 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
 
     const curViewMode = this.state.viewMode;
-    let newViewMode = CartoEditorViewMode.itemsOnRight;
+    let newViewMode = CreatorToolsEditorViewMode.itemsOnRight;
 
-    if (curViewMode === CartoEditorViewMode.itemsOnLeftAndMinecraftToolbox) {
-      newViewMode = CartoEditorViewMode.itemsOnLeft;
-    } else if (curViewMode === CartoEditorViewMode.itemsOnLeft) {
-      newViewMode = CartoEditorViewMode.itemsOnLeftAndMinecraftToolbox;
-    } else if (curViewMode === CartoEditorViewMode.itemsOnRightAndMinecraftToolbox) {
-      newViewMode = CartoEditorViewMode.itemsOnRight;
-    } else if (curViewMode === CartoEditorViewMode.itemsOnRight) {
-      newViewMode = CartoEditorViewMode.itemsOnRightAndMinecraftToolbox;
+    if (curViewMode === CreatorToolsEditorViewMode.itemsOnLeftAndMinecraftToolbox) {
+      newViewMode = CreatorToolsEditorViewMode.itemsOnLeft;
+    } else if (curViewMode === CreatorToolsEditorViewMode.itemsOnLeft) {
+      newViewMode = CreatorToolsEditorViewMode.itemsOnLeftAndMinecraftToolbox;
+    } else if (curViewMode === CreatorToolsEditorViewMode.itemsOnRightAndMinecraftToolbox) {
+      newViewMode = CreatorToolsEditorViewMode.itemsOnRight;
+    } else if (curViewMode === CreatorToolsEditorViewMode.itemsOnRight) {
+      newViewMode = CreatorToolsEditorViewMode.itemsOnRightAndMinecraftToolbox;
     }
 
-    this.props.carto.editorViewMode = newViewMode;
-    this.props.carto.save();
+    this.props.creatorTools.editorViewMode = newViewMode;
+    this.props.creatorTools.save();
 
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
@@ -1511,15 +1635,15 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       return;
     }
 
-    const projName = await this.props.project.loc.getTokenValue(this.props.project.name);
+    const projName = await this.props.project.loc.getTokenValue(this.props.project.simplifiedName);
 
-    const operId = await this.props.carto.notifyOperationStarted("Saving project '" + projName + "'...");
+    const operId = await this.props.creatorTools.notifyOperationStarted("Saving project '" + projName + "'...");
 
     await this._ensurePersisted();
 
     await ProjectAutogeneration.updateProjectAutogeneration(this.props.project, false);
 
-    await this.props.carto.save();
+    await this.props.creatorTools.save();
 
     await this.props.project.save();
 
@@ -1527,9 +1651,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       const persistResult = await this.ensurePersistentBrowserStorage();
 
       if (persistResult && this.props.isPersisted) {
-        await this.props.carto.notifyOperationEnded(operId, "Saved '" + projName + "'.");
+        await this.props.creatorTools.notifyOperationEnded(operId, "Saved '" + projName + "'.");
       } else {
-        await this.props.carto.notifyOperationEnded(
+        await this.props.creatorTools.notifyOperationEnded(
           operId,
           "Saved '" +
             projName +
@@ -1537,12 +1661,12 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         );
       }
     } else {
-      await this.props.carto.notifyOperationEnded(operId, "Saved '" + projName + "'.");
+      await this.props.creatorTools.notifyOperationEnded(operId, "Saved '" + projName + "'.");
     }
   }
 
   private async ensurePersistentBrowserStorage() {
-    if (!AppServiceProxy.hasAppService && !this.props.carto.hasAttemptedPersistentBrowserStorageSwitch) {
+    if (!AppServiceProxy.hasAppService && !this.props.creatorTools.hasAttemptedPersistentBrowserStorageSwitch) {
       const isPersisted = await WebUtilities.getIsPersisted();
 
       if (!isPersisted) {
@@ -1551,7 +1675,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         if (!couldPersist) {
           return false;
         } else if (couldPersist && this.props.onPersistenceUpgraded) {
-          this.props.carto.hasAttemptedPersistentBrowserStorageSwitch = true;
+          this.props.creatorTools.hasAttemptedPersistentBrowserStorageSwitch = true;
           this.props.onPersistenceUpgraded();
         }
       }
@@ -1570,8 +1694,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     let nextViewMode = this.state.viewMode;
 
-    if (nextViewMode === CartoEditorViewMode.itemsFocus) {
-      nextViewMode = CartoEditorViewMode.mainFocus;
+    if (nextViewMode === CreatorToolsEditorViewMode.itemsFocus) {
+      nextViewMode = CreatorToolsEditorViewMode.mainFocus;
     }
 
     this.setState({
@@ -1600,14 +1724,14 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   private async _showSettingsClick() {
     let newViewMode = this.state.viewMode;
 
-    if (newViewMode === CartoEditorViewMode.toolboxFocus) {
+    if (newViewMode === CreatorToolsEditorViewMode.toolboxFocus) {
       if (this.props.isHosted) {
-        newViewMode = CartoEditorViewMode.mainFocus;
+        newViewMode = CreatorToolsEditorViewMode.mainFocus;
       } else {
-        newViewMode = this.props.carto.editorViewMode;
+        newViewMode = this.props.creatorTools.editorViewMode;
       }
-    } else if (newViewMode === CartoEditorViewMode.itemsFocus) {
-      newViewMode = CartoEditorViewMode.mainFocus;
+    } else if (newViewMode === CreatorToolsEditorViewMode.itemsFocus) {
+      newViewMode = CreatorToolsEditorViewMode.mainFocus;
     }
 
     this.setState({
@@ -1633,19 +1757,33 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     });
   }
 
-  private _handleExportMenuOpen() {
+  private _toggleUndoMenuOpen() {
     let menuVal = ProjectEditorMenuState.noMenu;
 
     if (this.state.menuState === ProjectEditorMenuState.noMenu) {
-      menuVal = ProjectEditorMenuState.exportMenu;
+      menuVal = ProjectEditorMenuState.undoMenu;
     }
 
+    this.setMenuState(menuVal);
+  }
+
+  private _toggleRedoMenuOpen() {
+    let menuVal = ProjectEditorMenuState.noMenu;
+
+    if (this.state.menuState === ProjectEditorMenuState.noMenu) {
+      menuVal = ProjectEditorMenuState.redoMenu;
+    }
+
+    this.setMenuState(menuVal);
+  }
+
+  private setMenuState(menuState: ProjectEditorMenuState) {
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
       tentativeProjectItem: this.state.tentativeProjectItem,
       mode: this.state.mode,
       viewMode: this.state.viewMode,
-      menuState: menuVal,
+      menuState: menuState,
       itemView: this.state.itemView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
@@ -1661,6 +1799,16 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       lastDeployData: this.state.lastDeployData,
       lastExportData: this.state.lastExportData,
     });
+  }
+
+  private _handleExportMenuOpen() {
+    let menuVal = ProjectEditorMenuState.noMenu;
+
+    if (this.state.menuState === ProjectEditorMenuState.noMenu) {
+      menuVal = ProjectEditorMenuState.exportMenu;
+    }
+
+    this.setMenuState(menuVal);
   }
 
   private _handleDeployMenuOpen() {
@@ -1670,27 +1818,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       menuVal = ProjectEditorMenuState.deployMenu;
     }
 
-    this.setState({
-      activeProjectItem: this.state.activeProjectItem,
-      tentativeProjectItem: this.state.tentativeProjectItem,
-      mode: this.state.mode,
-      viewMode: this.state.viewMode,
-      menuState: menuVal,
-      itemView: this.state.itemView,
-      filteredItems: this.state.filteredItems,
-      searchFilter: this.state.searchFilter,
-      displayFileView: this.state.displayFileView,
-      statusAreaMode: this.state.statusAreaMode,
-      lastDeployKey: this.state.lastDeployKey,
-      dialog: this.state.dialog,
-      dialogData: this.state.dialogData,
-      dialogActiveItem: this.state.dialogActiveItem,
-      lastExportKey: this.state.lastExportKey,
-      lastDeployFunction: this.state.lastDeployFunction,
-      lastExportFunction: this.state.lastExportFunction,
-      lastDeployData: this.state.lastDeployData,
-      lastExportData: this.state.lastExportData,
-    });
+    this.setMenuState(menuVal);
   }
 
   private _handleViewMenuOpen() {
@@ -1700,27 +1828,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       menuVal = ProjectEditorMenuState.viewMenu;
     }
 
-    this.setState({
-      activeProjectItem: this.state.activeProjectItem,
-      tentativeProjectItem: this.state.tentativeProjectItem,
-      mode: this.state.mode,
-      viewMode: this.state.viewMode,
-      menuState: menuVal,
-      itemView: this.state.itemView,
-      filteredItems: this.state.filteredItems,
-      searchFilter: this.state.searchFilter,
-      displayFileView: this.state.displayFileView,
-      statusAreaMode: this.state.statusAreaMode,
-      lastDeployKey: this.state.lastDeployKey,
-      dialog: this.state.dialog,
-      dialogData: this.state.dialogData,
-      dialogActiveItem: this.state.dialogActiveItem,
-      lastExportKey: this.state.lastExportKey,
-      lastDeployFunction: this.state.lastDeployFunction,
-      lastExportFunction: this.state.lastExportFunction,
-      lastDeployData: this.state.lastDeployData,
-      lastExportData: this.state.lastExportData,
-    });
+    this.setMenuState(menuVal);
   }
 
   private _handleItemMenuOpen() {
@@ -1730,27 +1838,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       menuVal = ProjectEditorMenuState.itemMenu;
     }
 
-    this.setState({
-      activeProjectItem: this.state.activeProjectItem,
-      tentativeProjectItem: this.state.tentativeProjectItem,
-      mode: this.state.mode,
-      viewMode: this.state.viewMode,
-      menuState: menuVal,
-      itemView: this.state.itemView,
-      filteredItems: this.state.filteredItems,
-      searchFilter: this.state.searchFilter,
-      displayFileView: this.state.displayFileView,
-      statusAreaMode: this.state.statusAreaMode,
-      lastDeployKey: this.state.lastDeployKey,
-      dialog: this.state.dialog,
-      dialogData: this.state.dialogData,
-      dialogActiveItem: this.state.dialogActiveItem,
-      lastExportKey: this.state.lastExportKey,
-      lastDeployFunction: this.state.lastDeployFunction,
-      lastExportFunction: this.state.lastExportFunction,
-      lastDeployData: this.state.lastDeployData,
-      lastExportData: this.state.lastExportData,
-    });
+    this.setMenuState(menuVal);
   }
 
   private async _handleGetShareableLinkClick(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
@@ -1775,6 +1863,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         effectMode: this.state.effectMode,
         dragStyle: this.state.dragStyle,
         visualSeed: this.state.visualSeed,
+        undoStackState: this.state.undoStackState,
         dialog: ProjectEditorDialog.shareableLink,
         dialogData: this.state.dialogData,
         dialogActiveItem: this.state.dialogActiveItem,
@@ -1815,6 +1904,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         effectMode: this.state.effectMode,
         dragStyle: this.state.dragStyle,
         visualSeed: this.state.visualSeed,
+        undoStackState: this.state.undoStackState,
         dialog: ProjectEditorDialog.worldSettings,
         dialogData: this.state.dialogData,
         dialogActiveItem: this.state.dialogActiveItem,
@@ -1840,11 +1930,18 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const projName = await this.props.project.loc.getTokenValue(this.props.project.name);
 
-    const operId = await this.props.carto.notifyOperationStarted("Exporting '" + projName + "' as MCAddon");
+    const operId = await this.props.creatorTools.notifyOperationStarted("Exporting '" + projName + "' as MCAddon");
 
-    const zipBinary = (await ProjectExporter.generateMCAddonAsZip(this.props.carto, this.props.project, true)) as Blob;
+    const zipBinary = (await ProjectExporter.generateMCAddonAsZip(
+      this.props.creatorTools,
+      this.props.project,
+      true
+    )) as Blob;
 
-    await this.props.carto.notifyOperationEnded(operId, "Export MCPack of '" + projName + "' created; downloading");
+    await this.props.creatorTools.notifyOperationEnded(
+      operId,
+      "Export MCPack of '" + projName + "' created; downloading"
+    );
 
     saveAs(zipBinary, projName + ".mcaddon");
 
@@ -1858,7 +1955,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     await ProjectStandard.ensureIsStandard(this.props.project);
 
-    await ProjectEditorUtilities.launchLocalExport(this.props.carto, this.props.project);
+    await ProjectEditorUtilities.launchLocalExport(this.props.creatorTools, this.props.project);
 
     if (data && data.icon && (data.icon as any).key) {
       this._setNewExportKey((data.icon as any).key, this._handleExportToLocalFolderClick, data);
@@ -1897,6 +1994,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           effectMode: this.state.effectMode,
           dragStyle: this.state.dragStyle,
           visualSeed: this.state.visualSeed,
+          undoStackState: this.state.undoStackState,
           dialog: ProjectEditorDialog.convertTo,
           dialogActiveItem: projectItem,
           dialogData: {
@@ -1923,7 +2021,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     await ProjectStandard.ensureIsStandard(this.props.project);
 
-    await ProjectEditorUtilities.launchZipExport(this.props.carto, this.props.project);
+    await ProjectEditorUtilities.launchZipExport(this.props.creatorTools, this.props.project);
 
     if (data && data.icon && (data.icon as any).key) {
       this._setNewExportKey((data.icon as any).key, this._handleExportZipClick, data);
@@ -1946,18 +2044,18 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private async _handleDeployToRemoteServerClick(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
-    if (this.props.carto.deploymentStorage == null) {
+    if (this.props.creatorTools.deploymentStorage == null) {
       return;
     }
 
-    this.props.carto.notifyStatusUpdate("Deploying to '" + this.props.carto.remoteServerUrl + "'");
+    this.props.creatorTools.notifyStatusUpdate("Deploying to '" + this.props.creatorTools.remoteServerUrl + "'");
 
     await this._ensurePersisted();
     await this.props.project.save();
 
-    this.props.carto.ensureRemoteMinecraft();
+    this.props.creatorTools.ensureRemoteMinecraft();
 
-    this.props.carto.remoteMinecraft?.prepareAndStart({
+    this.props.creatorTools.remoteMinecraft?.prepareAndStart({
       project: this.props.project,
     });
 
@@ -1967,7 +2065,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private async _handleDeployPacksToMinecraftGameClick(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
-    if (this.props.carto.deploymentStorage == null) {
+    if (this.props.creatorTools.deploymentStorage == null) {
       return;
     }
 
@@ -1982,7 +2080,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     e: SyntheticEvent | undefined,
     data: MenuItemProps | undefined
   ) {
-    if (this.props.carto.deploymentStorage == null) {
+    if (this.props.creatorTools.deploymentStorage == null) {
       return;
     }
 
@@ -1997,7 +2095,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     e: SyntheticEvent | undefined,
     data: MenuItemProps | undefined
   ) {
-    if (this.props.carto.deploymentStorage == null) {
+    if (this.props.creatorTools.deploymentStorage == null) {
       return;
     }
 
@@ -2013,40 +2111,40 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private async _deployToGame(worldType: MinecraftPushWorldType) {
-    if (this.props.carto.deploymentStorage == null) {
+    if (this.props.creatorTools.deploymentStorage == null) {
       return;
     }
 
     let productPhrase = "Minecraft";
 
-    if (this.props.carto.minecraftGameMode === MinecraftGameConnectionMode.localMinecraftPreview) {
+    if (this.props.creatorTools.minecraftGameMode === MinecraftGameConnectionMode.localMinecraftPreview) {
       productPhrase = "Minecraft Preview";
     }
 
-    const operId = await this.props.carto.notifyOperationStarted("Deploying to " + productPhrase);
+    const operId = await this.props.creatorTools.notifyOperationStarted("Deploying to " + productPhrase);
 
-    this.props.carto.ensureGameMinecraft();
+    this.props.creatorTools.ensureGameMinecraft();
 
-    if (!this.props.carto.gameMinecraft) {
-      Log.assertDefined(this.props.carto.gameMinecraft);
+    if (!this.props.creatorTools.gameMinecraft) {
+      Log.assertDefined(this.props.creatorTools.gameMinecraft);
       return;
     }
 
     await this._ensurePersisted();
     await this.props.project.save();
 
-    const result = await this.props.carto.gameMinecraft.prepareAndStart({
+    const result = await this.props.creatorTools.gameMinecraft.prepareAndStart({
       project: this.props.project,
       worldType: worldType,
     });
 
-    await this.props.carto.notifyOperationEnded(operId, "Deploying to " + productPhrase);
+    await this.props.creatorTools.notifyOperationEnded(operId, "Deploying to " + productPhrase);
 
     return result;
   }
 
   private async _handleExportDeploymentZipClick(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
-    if (this.props.carto.deploymentStorage == null) {
+    if (this.props.creatorTools.deploymentStorage == null) {
       return;
     }
 
@@ -2054,25 +2152,25 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const projName = await this.props.project.loc.getTokenValue(this.props.project.name);
 
-    const operId = await this.props.carto.notifyOperationStarted(
+    const operId = await this.props.creatorTools.notifyOperationStarted(
       "Export deployment zip of '" + projName + "' created; downloading"
     );
 
     await this._ensurePersisted();
 
-    this.props.carto.save();
+    this.props.creatorTools.save();
 
     await this.props.project.save();
 
-    if (this.props.carto.deployBehaviorPacksFolder) {
+    if (this.props.creatorTools.deployBehaviorPacksFolder) {
       const result = await ProjectExporter.deployProject(
-        this.props.carto,
+        this.props.creatorTools,
         this.props.project,
-        this.props.carto.deploymentStorage.rootFolder
+        this.props.creatorTools.deploymentStorage.rootFolder
       );
 
       if (!result) {
-        await this.props.carto.notifyOperationEnded(operId);
+        await this.props.creatorTools.notifyOperationEnded(operId);
 
         return;
       }
@@ -2082,7 +2180,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     zipStorage = new ZipStorage();
 
-    const deployFolder = this.props.carto.deploymentStorage.rootFolder;
+    const deployFolder = this.props.creatorTools.deploymentStorage.rootFolder;
 
     await StorageUtilities.syncFolderTo(deployFolder, zipStorage.rootFolder, true, true, false, [
       "/mcworlds",
@@ -2093,7 +2191,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const zipBinary = await zipStorage.generateBlobAsync();
 
-    await this.props.carto.notifyOperationEnded(
+    await this.props.creatorTools.notifyOperationEnded(
       operId,
       "Export deployment zip of '" + projName + "' created; downloading"
     );
@@ -2114,7 +2212,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private async _handleDeployAsZipClick(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
-    if (this.props.carto.deploymentStorage == null) {
+    if (this.props.creatorTools.deploymentStorage == null) {
       return;
     }
 
@@ -2122,25 +2220,25 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const projName = await this.props.project.loc.getTokenValue(this.props.project.name);
 
-    const operId = await this.props.carto.notifyOperationStarted(
+    const operId = await this.props.creatorTools.notifyOperationStarted(
       "Export deployment zip of '" + projName + "' created; downloading"
     );
 
     await this._ensurePersisted();
 
-    this.props.carto.save();
+    this.props.creatorTools.save();
 
     await this.props.project.save();
 
-    if (this.props.carto.deployBehaviorPacksFolder) {
+    if (this.props.creatorTools.deployBehaviorPacksFolder) {
       const result = await ProjectExporter.deployProject(
-        this.props.carto,
+        this.props.creatorTools,
         this.props.project,
-        this.props.carto.deploymentStorage.rootFolder
+        this.props.creatorTools.deploymentStorage.rootFolder
       );
 
       if (!result) {
-        await this.props.carto.notifyOperationEnded(operId);
+        await this.props.creatorTools.notifyOperationEnded(operId);
 
         return;
       }
@@ -2150,7 +2248,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     zipStorage = new ZipStorage();
 
-    const deployFolder = this.props.carto.deploymentStorage.rootFolder;
+    const deployFolder = this.props.creatorTools.deploymentStorage.rootFolder;
 
     await StorageUtilities.syncFolderTo(deployFolder, zipStorage.rootFolder, true, true, false, [
       "/mcworlds",
@@ -2161,7 +2259,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const zipBinary = await zipStorage.generateBlobAsync();
 
-    await this.props.carto.notifyOperationEnded(
+    await this.props.creatorTools.notifyOperationEnded(
       operId,
       "Export deployment zip of '" + projName + "' created; downloading"
     );
@@ -2195,17 +2293,17 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       return;
     }
 
-    if (this.props.carto.deploymentStorage == null) {
+    if (this.props.creatorTools.deploymentStorage == null) {
       return;
     }
 
     await this._ensurePersisted();
 
-    this.props.carto.notifyStatusUpdate("Saving...");
+    this.props.creatorTools.notifyStatusUpdate("Saving...");
     await this.props.project.save();
-    this.props.carto.notifyStatusUpdate("Saved");
+    this.props.creatorTools.notifyStatusUpdate("Saved");
 
-    await ProjectExporter.generateAndInvokeFlatPackRefMCWorld(this.props.carto, this.props.project);
+    await ProjectExporter.generateAndInvokeFlatPackRefMCWorld(this.props.creatorTools, this.props.project);
 
     Log.message("Done saving " + projectItem.name, this.props.project.name);
 
@@ -2236,18 +2334,18 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       return;
     }
 
-    if (this.props.carto.deploymentStorage == null) {
+    if (this.props.creatorTools.deploymentStorage == null) {
       return;
     }
 
     await this._ensurePersisted();
 
-    this.props.carto.notifyStatusUpdate("Saving...");
+    this.props.creatorTools.notifyStatusUpdate("Saving...");
     await this.props.project.save();
-    this.props.carto.notifyStatusUpdate("Saved");
+    this.props.creatorTools.notifyStatusUpdate("Saved");
 
     const zipBytes = await ProjectExporter.deployAsWorldAndTestAssets(
-      this.props.carto,
+      this.props.creatorTools,
       this.props.project,
       projectItem,
       true
@@ -2262,7 +2360,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     Log.message("Done saving " + projectItem.name, this.props.project.name);
 
-    this.props.carto.notifyStatusUpdate("Downloading deployment zip '" + downloadTitle + ".mcworld'.");
+    this.props.creatorTools.notifyStatusUpdate("Downloading deployment zip '" + downloadTitle + ".mcworld'.");
 
     //  this._setNewDeployKey(data.className);
 
@@ -2288,17 +2386,22 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       return;
     }
 
-    if (this.props.carto.deploymentStorage == null) {
+    if (this.props.creatorTools.deploymentStorage == null) {
       return;
     }
 
     await this._ensurePersisted();
 
-    this.props.carto.notifyStatusUpdate("Saving...");
+    this.props.creatorTools.notifyStatusUpdate("Saving...");
     await this.props.project.save();
-    this.props.carto.notifyStatusUpdate("Saved");
+    this.props.creatorTools.notifyStatusUpdate("Saved");
 
-    const zipBytes = await ProjectExporter.deployAsWorld(this.props.carto, this.props.project, projectItem, true);
+    const zipBytes = await ProjectExporter.deployAsWorld(
+      this.props.creatorTools,
+      this.props.project,
+      projectItem,
+      true
+    );
 
     const date = new Date();
     const downloadTitle = projectItem.name + " deployment - " + Utilities.getFriendlySummarySeconds(date);
@@ -2309,7 +2412,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     Log.message("Done saving " + projectItem.name, this.props.project.name);
 
-    this.props.carto.notifyStatusUpdate("Downloading deployment zip '" + downloadTitle + ".mcworld'.");
+    this.props.creatorTools.notifyStatusUpdate("Downloading deployment zip '" + downloadTitle + ".mcworld'.");
 
     if (data && data.icon && (data.icon as any).key) {
       this._setNewDeployKey((data.icon as any).key, this._handleDeployWorldAndTestAssetsPackClick, data);
@@ -2334,9 +2437,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     await this._ensurePersisted();
 
-    this.props.carto.notifyStatusUpdate("Saving...");
+    this.props.creatorTools.notifyStatusUpdate("Saving...");
     await this.props.project.save();
-    this.props.carto.notifyStatusUpdate("Saved");
+    this.props.creatorTools.notifyStatusUpdate("Saved");
 
     const date = new Date();
     let downloadTitle = projectItem.name + " - " + Utilities.getFriendlySummarySeconds(date);
@@ -2355,7 +2458,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     Log.message("Done saving " + projectItem.name, this.props.project.name);
 
-    this.props.carto.notifyStatusUpdate("Downloading " + downloadTitle + ".");
+    this.props.creatorTools.notifyStatusUpdate("Downloading " + downloadTitle + ".");
 
     if (data && data.icon && (data.icon as any).key) {
       this._setNewExportKey((data.icon as any).key, this._handleExportWorld, data);
@@ -2386,8 +2489,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._setHash(ProjectEditorUtilities.getProjectEditorModeString(newMode));
     let newStateViewMode = this.state.viewMode;
 
-    if (this.state.viewMode === CartoEditorViewMode.itemsFocus) {
-      newStateViewMode = CartoEditorViewMode.mainFocus;
+    if (this.state.viewMode === CreatorToolsEditorViewMode.itemsFocus) {
+      newStateViewMode = CreatorToolsEditorViewMode.mainFocus;
     }
 
     this.setState({
@@ -2474,7 +2577,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     Log.message("Done saving " + projectItem.primaryFile.name, this.props.project.name);
 
-    this.props.carto.notifyStatusUpdate("Downloading mcworld '" + projectItem.primaryFile.name + "'.");
+    this.props.creatorTools.notifyStatusUpdate("Downloading mcworld '" + projectItem.primaryFile.name + "'.");
 
     if (data && data.icon && (data.icon as any).key) {
       this._setNewDeployKey((data.icon as any).key, this._handleDownloadMCWorld, data);
@@ -2527,7 +2630,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       await this.saveAsWorldWithPacks(projectItem.primaryFile.name, content);
     }
 
-    this.props.carto.notifyStatusUpdate(
+    this.props.creatorTools.notifyStatusUpdate(
       "Downloading mcworld with packs embedded '" + projectItem.primaryFile.name + "'."
     );
 
@@ -2543,7 +2646,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     await this._ensurePersisted();
 
-    await ProjectEditorUtilities.launchWorldWithPacksDownload(this.props.carto, this.props.project);
+    await ProjectEditorUtilities.launchWorldWithPacksDownload(this.props.creatorTools, this.props.project);
 
     if (data && data.icon && (data.icon as any).key) {
       this._setNewDeployKey((data.icon as any).key, this._handleDeployDownloadWorldWithPacks, data);
@@ -2560,7 +2663,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     await this._ensurePersisted();
 
-    await ProjectEditorUtilities.launchEditorWorldWithPacksDownload(this.props.carto, this.props.project);
+    await ProjectEditorUtilities.launchEditorWorldWithPacksDownload(this.props.creatorTools, this.props.project);
 
     if (data && data.icon && (data.icon as any).key) {
       this._setNewDeployKey((data.icon as any).key, this._handleDeployDownloadEditorWorldWithPacks, data);
@@ -2597,7 +2700,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       await this.saveAsWorldWithPackRefs(projectItem.primaryFile.name, content);
     }
 
-    this.props.carto.notifyStatusUpdate("Downloading");
+    this.props.creatorTools.notifyStatusUpdate("Downloading");
 
     if (data && data.icon && (data.icon as any).key) {
       this._setNewExportKey((data.icon as any).key, this._handleExportWorld, data);
@@ -2643,7 +2746,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   private async _handleExportFlatWorldWithPacks(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
     await this._ensurePersisted();
 
-    await ProjectEditorUtilities.launchFlatWorldWithPacksDownload(this.props.carto, this.props.project);
+    await ProjectEditorUtilities.launchFlatWorldWithPacksDownload(this.props.creatorTools, this.props.project);
 
     if (data && data.icon && (data.icon as any).key) {
       this._setNewExportKey((data.icon as any).key, this._handleExportFlatWorldWithPacks, data);
@@ -2653,7 +2756,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   private async _handleDownloadFlatWorldWithPacks(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
     await this._ensurePersisted();
 
-    await ProjectEditorUtilities.launchFlatWorldWithPacksDownload(this.props.carto, this.props.project);
+    await ProjectEditorUtilities.launchFlatWorldWithPacksDownload(this.props.creatorTools, this.props.project);
 
     if (data && data.icon && (data.icon as any).key) {
       this._setNewDeployKey((data.icon as any).key, this._handleDownloadFlatWorldWithPacks, data);
@@ -2714,8 +2817,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
       let newStateViewMode = this.state.viewMode;
 
-      if (this.state.viewMode === CartoEditorViewMode.itemsFocus) {
-        newStateViewMode = CartoEditorViewMode.mainFocus;
+      if (this.state.viewMode === CreatorToolsEditorViewMode.itemsFocus) {
+        newStateViewMode = CreatorToolsEditorViewMode.mainFocus;
       }
 
       this.setState({
@@ -2742,7 +2845,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private launchFlatButton() {
-    ProjectEditorUtilities.launchFlatWorldWithPacksDownload(this.props.carto, this.props.project);
+    ProjectEditorUtilities.launchFlatWorldWithPacksDownload(this.props.creatorTools, this.props.project);
   }
 
   private _setProjectStatusMode(mode: ProjectStatusAreaMode) {
@@ -2850,7 +2953,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private async _handleProjectItemSelected(newProjectItem: ProjectItem, itemView: ProjectItemEditorView) {
-    if (this.state.viewMode === CartoEditorViewMode.toolboxFocus) {
+    if (this.state.viewMode === CreatorToolsEditorViewMode.toolboxFocus) {
       if (this.props.onActiveProjectItemChangeRequested) {
         this.props.onActiveProjectItemChangeRequested(newProjectItem, itemView);
       }
@@ -2863,8 +2966,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
       let newStateViewMode = this.state.viewMode;
 
-      if (this.state.viewMode === CartoEditorViewMode.itemsFocus) {
-        newStateViewMode = CartoEditorViewMode.mainFocus;
+      if (this.state.viewMode === CreatorToolsEditorViewMode.itemsFocus) {
+        newStateViewMode = CreatorToolsEditorViewMode.mainFocus;
       }
 
       await this._ensurePersisted();
@@ -2988,7 +3091,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       }
     }
 
-    await this.props.carto.notifyStatusUpdate(
+    await this.props.creatorTools.notifyStatusUpdate(
       "Could not export a Blockbench model for '" + projectItem.projectPath + "'"
     );
   }
@@ -3012,6 +3115,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       effectMode: this.state.effectMode,
       dragStyle: this.state.dragStyle,
       visualSeed: this.state.visualSeed,
+      undoStackState: this.state.undoStackState,
       viewMode: this.state.viewMode,
       allInfoSet: this.props.project.indevInfoSet,
       allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
@@ -3063,6 +3167,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           effectMode: this.state.effectMode,
           dragStyle: this.state.dragStyle,
           visualSeed: this.state.visualSeed,
+          undoStackState: this.state.undoStackState,
           viewMode: this.state.viewMode,
           allInfoSet: this.props.project.indevInfoSet,
           allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
@@ -3115,6 +3220,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       effectMode: this.state.effectMode,
       dragStyle: this.state.dragStyle,
       visualSeed: this.state.visualSeed,
+      undoStackState: this.state.undoStackState,
       viewMode: this.state.viewMode,
       allInfoSet: this.props.project.indevInfoSet,
       allInfoSetGenerated: this.props.project.indevInfoSet.completedGeneration,
@@ -3150,29 +3256,29 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       isFullyCompact = true;
     }
 
-    let gridTemplateColumns = this.props.carto.itemSidePaneWidth + "px 4px 1fr 300px";
+    let gridTemplateColumns = this.props.creatorTools.itemSidePaneWidth + "px 4px 1fr 300px";
 
     if (isFullyCompact) {
       gridTemplateColumns = GRID_COMPACT_COLUMNS;
 
-      if (viewMode === CartoEditorViewMode.mainFocus) {
+      if (viewMode === CreatorToolsEditorViewMode.mainFocus) {
         gridTemplateColumns = GRID_MAIN_FOCUS_COLUMNS;
-      } else if (viewMode === CartoEditorViewMode.itemsFocus) {
-      } else if (viewMode === CartoEditorViewMode.codeLanding) {
-      } else if (viewMode === CartoEditorViewMode.toolboxFocus) {
+      } else if (viewMode === CreatorToolsEditorViewMode.itemsFocus) {
+      } else if (viewMode === CreatorToolsEditorViewMode.codeLanding) {
+      } else if (viewMode === CreatorToolsEditorViewMode.toolboxFocus) {
         gridTemplateColumns = GRID_MAIN_FOCUS_COLUMNS;
-      } else if (viewMode === CartoEditorViewMode.itemsOnLeft) {
+      } else if (viewMode === CreatorToolsEditorViewMode.itemsOnLeft) {
         gridTemplateColumns = GRID_ITEMS_ON_LEFT_COLUMNS;
-      } else if (viewMode === CartoEditorViewMode.itemsOnRight) {
+      } else if (viewMode === CreatorToolsEditorViewMode.itemsOnRight) {
         gridTemplateColumns = GRID_ITEMS_ON_RIGHT_COLUMNS;
       } else {
         gridTemplateColumns = GRID_DEFAULT_COLUMNS;
       }
     } else {
-      if (viewMode === CartoEditorViewMode.itemsOnRightAndMinecraftToolbox) {
-        gridTemplateColumns = "300px 1fr 4px " + this.props.carto.itemSidePaneWidth + "px";
-      } else if (viewMode === CartoEditorViewMode.itemsOnRight) {
-        gridTemplateColumns = "300px 1fr 4px " + this.props.carto.itemSidePaneWidth + "px";
+      if (viewMode === CreatorToolsEditorViewMode.itemsOnRightAndMinecraftToolbox) {
+        gridTemplateColumns = "300px 1fr 4px " + this.props.creatorTools.itemSidePaneWidth + "px";
+      } else if (viewMode === CreatorToolsEditorViewMode.itemsOnRight) {
+        gridTemplateColumns = "300px 1fr 4px " + this.props.creatorTools.itemSidePaneWidth + "px";
       }
     }
 
@@ -3215,13 +3321,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     let widthOffset = DEFAULT_WIDTH_OFFSET;
 
     if (
-      this.state.viewMode === CartoEditorViewMode.itemsOnLeft ||
-      this.state.viewMode === CartoEditorViewMode.itemsOnRight
+      this.state.viewMode === CreatorToolsEditorViewMode.itemsOnLeft ||
+      this.state.viewMode === CreatorToolsEditorViewMode.itemsOnRight
     ) {
       widthOffset = SIDE_PANE_WIDTH_OFFSET;
     } else if (
-      this.state.viewMode === CartoEditorViewMode.itemsOnLeftAndMinecraftToolbox ||
-      this.state.viewMode === CartoEditorViewMode.itemsOnRightAndMinecraftToolbox
+      this.state.viewMode === CreatorToolsEditorViewMode.itemsOnLeftAndMinecraftToolbox ||
+      this.state.viewMode === CreatorToolsEditorViewMode.itemsOnRightAndMinecraftToolbox
     ) {
       widthOffset = SIDE_PANE_AND_TOOLBOX_WIDTH_OFFSET;
     }
@@ -3230,12 +3336,12 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     if (
       isFullyCompact &&
-      (viewMode === CartoEditorViewMode.itemsOnLeft ||
-        viewMode === CartoEditorViewMode.itemsOnLeftAndMinecraftToolbox ||
-        viewMode === CartoEditorViewMode.itemsOnRight ||
-        viewMode === CartoEditorViewMode.itemsOnRightAndMinecraftToolbox)
+      (viewMode === CreatorToolsEditorViewMode.itemsOnLeft ||
+        viewMode === CreatorToolsEditorViewMode.itemsOnLeftAndMinecraftToolbox ||
+        viewMode === CreatorToolsEditorViewMode.itemsOnRight ||
+        viewMode === CreatorToolsEditorViewMode.itemsOnRightAndMinecraftToolbox)
     ) {
-      viewMode = CartoEditorViewMode.mainFocus;
+      viewMode = CreatorToolsEditorViewMode.mainFocus;
     }
     if (this.props.project.errorState === ProjectErrorState.projectFolderOrFileDoesNotExist) {
       let error = "Could not find project data folder. ";
@@ -3247,8 +3353,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       return <h1>{error}</h1>;
     }
 
-    if (this.state.searchFilter && viewMode === CartoEditorViewMode.mainFocus) {
-      viewMode = CartoEditorViewMode.itemsFocus;
+    if (this.state.searchFilter && viewMode === CreatorToolsEditorViewMode.mainFocus) {
+      viewMode = CreatorToolsEditorViewMode.itemsFocus;
     }
 
     let exportKeys: { [exportOptionKey: string]: any } = {};
@@ -3444,12 +3550,12 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       });
     }
 
-    if (this.props.carto.remoteServerUrl && this.props.carto.remoteServerAuthToken && Utilities.isDebug) {
+    if (this.props.creatorTools.remoteServerUrl && this.props.creatorTools.remoteServerAuthToken && Utilities.isDebug) {
       const deployRemoteKey = "deployToRemoteServer";
       deployKeys[deployRemoteKey] = {
         key: deployRemoteKey + "A",
         icon: <FontAwesomeIcon icon={faBox} key={deployRemoteKey} className="fa-lg" />,
-        content: "Deploy to " + this.props.carto.remoteServerUrl,
+        content: "Deploy to " + this.props.creatorTools.remoteServerUrl,
         onClick: this._handleDeployToRemoteServerClick,
         title: "Deploys this to a remote Dev Tools server",
       };
@@ -3457,14 +3563,14 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
 
     if (
-      CartoApp.hostType !== HostType.web &&
-      CartoApp.hostType !== HostType.webPlusServices &&
-      this.props.carto.minecraftGameMode !== MinecraftGameConnectionMode.remoteMinecraft
+      CreatorToolsHost.hostType !== HostType.web &&
+      CreatorToolsHost.hostType !== HostType.webPlusServices &&
+      this.props.creatorTools.minecraftGameMode !== MinecraftGameConnectionMode.remoteMinecraft
     ) {
       const deployToMinecraftGame = "deployPacksToMinecraftGame";
       let productPhrase = "Minecraft";
 
-      if (this.props.carto.minecraftGameMode === MinecraftGameConnectionMode.localMinecraftPreview) {
+      if (this.props.creatorTools.minecraftGameMode === MinecraftGameConnectionMode.localMinecraftPreview) {
         productPhrase = "Minecraft Preview";
       }
 
@@ -3479,14 +3585,14 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
 
     if (
-      CartoApp.hostType !== HostType.web &&
-      CartoApp.hostType !== HostType.webPlusServices &&
-      this.props.carto.minecraftGameMode !== MinecraftGameConnectionMode.remoteMinecraft
+      CreatorToolsHost.hostType !== HostType.web &&
+      CreatorToolsHost.hostType !== HostType.webPlusServices &&
+      this.props.creatorTools.minecraftGameMode !== MinecraftGameConnectionMode.remoteMinecraft
     ) {
       const deployToMinecraftGame = "deployPacksAndWorldToMinecraftGame";
       let productPhrase = "Minecraft";
 
-      if (this.props.carto.minecraftGameMode === MinecraftGameConnectionMode.localMinecraftPreview) {
+      if (this.props.creatorTools.minecraftGameMode === MinecraftGameConnectionMode.localMinecraftPreview) {
         productPhrase = "Minecraft Preview";
       }
 
@@ -3529,7 +3635,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           className="pe-menuIcon"
           alt=""
           key={flatBp}
-          src={CartoApp.contentRoot + "res/latest/van/release/resource_pack/textures/blocks/grass_path_side.png"}
+          src={
+            CreatorToolsHost.contentRoot + "res/latest/van/release/resource_pack/textures/blocks/grass_path_side.png"
+          }
         />
       ),
       onClick: this._handleDownloadFlatWorldWithPacks,
@@ -3543,7 +3651,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           className="pe-menuIcon"
           alt=""
           key={flatBp}
-          src={CartoApp.contentRoot + "res/latest/van/release/resource_pack/textures/blocks/grass_path_side.png"}
+          src={
+            CreatorToolsHost.contentRoot + "res/latest/van/release/resource_pack/textures/blocks/grass_path_side.png"
+          }
         />
       ),
       onClick: this._handleDownloadFlatWorldWithPacks,
@@ -3559,7 +3669,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           className="pe-menuIcon"
           alt=""
           key={defaultEditorWorldWithPacks}
-          src={CartoApp.contentRoot + "res/latest/van/release/resource_pack/textures/blocks/grass_side_carried.png"}
+          src={
+            CreatorToolsHost.contentRoot + "res/latest/van/release/resource_pack/textures/blocks/grass_side_carried.png"
+          }
         />
       ),
       onClick: this._handleDeployDownloadEditorWorldWithPacks,
@@ -3581,7 +3693,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           className="pe-menuIcon"
           alt=""
           key={defaultWorldWithPacks}
-          src={CartoApp.contentRoot + "res/latest/van/release/resource_pack/textures/blocks/grass_side_carried.png"}
+          src={
+            CreatorToolsHost.contentRoot + "res/latest/van/release/resource_pack/textures/blocks/grass_side_carried.png"
+          }
         />
       ),
       onClick: this._handleDeployDownloadWorldWithPacks,
@@ -3667,7 +3781,111 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         title: "Save",
       });
 
-      if (viewMode === CartoEditorViewMode.mainFocus) {
+      if (!this.props.readOnly && this.props.project.projectFolder) {
+        const undoList = this.props.project.getChangeList();
+
+        let undoMenuItems: any[] = [];
+        let redoMenuItems: any[] = [];
+
+        let nextUndoVersionId = undefined;
+        let nextRedoVersionId = undefined;
+
+        let redoPos: number | undefined = undefined;
+        for (let i = 0; i < undoList.length; i++) {
+          const version = undoList[i];
+
+          if (!nextUndoVersionId) {
+            nextUndoVersionId = version.id;
+          }
+
+          if (version.id === this.props.project.projectFolder.storage.currentVersionId) {
+            redoPos = i + 1;
+            break;
+          }
+
+          undoMenuItems.push({
+            key: "undo|" + version.id,
+            content: (
+              <div key={"undoA|" + version.id}>
+                {StorageUtilities.getLeafName(version.file.fullPath)}&#160;@&#160;
+                {Utilities.getFriendlySummaryHoursMinutesSeconds(version.versionTime) +
+                  (version.description ? " " + version.description : "")}
+              </div>
+            ),
+            onClick: this._setToVersion,
+          });
+        }
+
+        undoMenuItems = undoMenuItems.reverse();
+
+        if (redoPos !== undefined) {
+          for (let i = redoPos; i < undoList.length; i++) {
+            const version = undoList[i];
+
+            if (!nextRedoVersionId) {
+              nextRedoVersionId = version.id;
+            }
+
+            redoMenuItems.push({
+              key: "redo|" + version.id,
+              content: (
+                <div key={"redoA|" + version.id}>
+                  {StorageUtilities.getLeafName(version.file.fullPath)}&#160;@&#160;
+                  {Utilities.getFriendlySummaryHoursMinutesSeconds(version.versionTime) +
+                    (version.description ? " " + version.description : "")}
+                </div>
+              ),
+              onClick: this._setToVersion,
+            });
+          }
+        }
+
+        toolbarItems.push({
+          key: "undo",
+          content: <div key={"undoB|" + (nextUndoVersionId ? "|" + nextUndoVersionId : "")}>Undo</div>,
+          icon: <FontAwesomeIcon icon={faUndo} className="fa-lg" />,
+          active: undoMenuItems.length > 0,
+          title: "Undo",
+          menu: undoMenuItems,
+          menuOpen: this.state.menuState === ProjectEditorMenuState.undoMenu,
+          onMenuOpenChange: this._toggleUndoMenuOpen,
+          onClick: this._setToVersion,
+        });
+
+        if (undoMenuItems.length > 0) {
+          toolbarItems.push({
+            icon: <DownArrowLabel />,
+            key: "undoMenu",
+            onClick: this._toggleUndoMenuOpen,
+            active: true,
+            title: "Export Options",
+          });
+        }
+
+        toolbarItems.push({
+          key: "redo",
+          content: <div key={"redoB|" + (nextRedoVersionId ? "|" + nextRedoVersionId : "")}>Redo</div>,
+          icon: <FontAwesomeIcon icon={faRedo} className="fa-lg" />,
+          active: redoMenuItems.length > 0,
+          title: "Redo",
+          menu: redoMenuItems,
+          menuOpen: this.state.menuState === ProjectEditorMenuState.redoMenu,
+          onMenuOpenChange: this._toggleRedoMenuOpen,
+          onClick: this._setToVersion,
+        });
+
+        if (redoMenuItems.length > 0) {
+          toolbarItems.push({
+            icon: <DownArrowLabel />,
+            key: "redoMenu",
+            onClick: this._toggleRedoMenuOpen,
+            active: true,
+            title: "Export Options",
+          });
+        }
+      }
+
+      if (viewMode === CreatorToolsEditorViewMode.mainFocus) {
         toolbarItems.push({
           key: "itemsFocusA",
           content: "View Items",
@@ -3676,15 +3894,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           onClick: this._setItemsFocus,
         });
       }
-
-      if (CartoApp.hostType === HostType.electronWeb || CartoApp.hostType === HostType.vsCodeMainWeb)
-        toolbarItems.push({
-          icon: <OpenInExplorerLabel />,
-          key: "openInExplorer",
-          content: <Text content="Open in Explorer" />,
-          onClick: this._openInExplorerClick,
-          title: "Open in Explorer",
-        });
 
       const viewMenuItems: any[] = [];
 
@@ -3718,6 +3927,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         title: "Editor",
         onClick: this._setMainFocus,
       });
+
       viewMenuItems.push({
         key: "itemsFocus",
         content: "Items",
@@ -3766,8 +3976,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         viewMenuItems.push({
           key: "minecraftToolboxFocus",
           content:
-            this.state.viewMode === CartoEditorViewMode.itemsOnLeftAndMinecraftToolbox ||
-            this.state.viewMode === CartoEditorViewMode.itemsOnRightAndMinecraftToolbox
+            this.state.viewMode === CreatorToolsEditorViewMode.itemsOnLeftAndMinecraftToolbox ||
+            this.state.viewMode === CreatorToolsEditorViewMode.itemsOnRightAndMinecraftToolbox
               ? "Hide Toolbox Pane"
               : "Show Toolbox Pane",
           icon: <FontAwesomeIcon icon={faTools} className="fa-lg" />,
@@ -3787,7 +3997,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       });
 
       if (this.state.activeProjectItem) {
-        const itemMenuItems = ProjectEditorUtilities.getItemMenuItems(this.state.activeProjectItem);
+        const itemMenuItems = ProjectEditorUtilities.getItemMenuItems(this.state.activeProjectItem, undefined);
 
         for (const item of itemMenuItems) {
           (item as any).onClick = this._itemMenuClick;
@@ -3885,7 +4095,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
 
     if (
-      this.props.carto.deploymentStorage != null &&
+      this.props.creatorTools.deploymentStorage != null &&
       this.props.project.role !== ProjectRole.documentation &&
       this.props.project.role !== ProjectRole.meta
     ) {
@@ -3929,7 +4139,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     let areaHeight = "calc(100vh - " + this.props.heightOffset + "px)";
 
-    if (CartoApp.hostType === HostType.vsCodeMainWeb || CartoApp.hostType === HostType.vsCodeWebWeb) {
+    if (CreatorToolsHost.hostType === HostType.vsCodeMainWeb || CreatorToolsHost.hostType === HostType.vsCodeWebWeb) {
       areaHeight = "calc(100vh)";
       heightOffset += HEIGHT_OFFSET_VSCODE;
     }
@@ -3955,7 +4165,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
             theme={this.props.theme}
             heightOffset={heightOffset}
             project={this.props.project}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
           />
         );
       } else {
@@ -3965,7 +4175,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
             onContentUpdated={this._doUpdate}
             heightOffset={heightOffset}
             project={this.props.project}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
           />
         );
       }
@@ -3978,7 +4188,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           theme={this.props.theme}
           heightOffset={heightOffset}
           project={this.props.project}
-          carto={this.props.carto}
+          creatorTools={this.props.creatorTools}
           onInfoItemCommand={this._handleInfoItemCommand}
         />
       );
@@ -3990,7 +4200,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           onModeChangeRequested={this._handleModeChangeRequested}
           onActionRequested={this._handleActionRequested}
           project={this.props.project}
-          carto={this.props.carto}
+          creatorTools={this.props.creatorTools}
         />
       );
     } else if (this.state.mode === ProjectEditorMode.map) {
@@ -4001,13 +4211,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           onModeChangeRequested={this._handleModeChangeRequested}
           onActionRequested={this._handleActionRequested}
           project={this.props.project}
-          carto={this.props.carto}
+          creatorTools={this.props.creatorTools}
         />
       );
     } else if (this.state.mode === ProjectEditorMode.minecraftToolSettings) {
       interior = (
         <MinecraftToolEditor
-          carto={this.props.carto}
+          creatorTools={this.props.creatorTools}
           theme={this.props.theme}
           project={this.props.project}
           heightOffset={heightOffset}
@@ -4018,9 +4228,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     } else if (this.state.mode === ProjectEditorMode.minecraft) {
       interior = (
         <MinecraftDisplay
-          forceCompact={this.props.viewMode === CartoEditorViewMode.toolboxFocus}
+          forceCompact={this.props.viewMode === CreatorToolsEditorViewMode.toolboxFocus}
           theme={this.props.theme}
-          carto={this.props.carto}
+          creatorTools={this.props.creatorTools}
           widthOffset={widthOffset}
           heightOffset={heightOffset}
           ensureMinecraftOnLogin={true}
@@ -4029,9 +4239,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       );
     } else if (this.state.mode === ProjectEditorMode.cartoSettings) {
       interior = (
-        <CartoSettings
+        <CreatorToolsSettings
           theme={this.props.theme}
-          carto={this.props.carto}
+          creatorTools={this.props.creatorTools}
           heightOffset={heightOffset}
           setActivePersistable={this._setActiveEditorPersistable}
         />
@@ -4049,7 +4259,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           onNewVariantRequested={this._handleNewVariantRequested}
           onVariantChangeRequested={this.setNewProjectVariantName}
           setActivePersistable={this._setActiveEditorPersistable}
-          carto={this.props.carto}
+          creatorTools={this.props.creatorTools}
           activeReference={this.state.activeReference}
           activeProjectItem={this.state.activeProjectItem}
         />
@@ -4160,7 +4370,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       );
     } else if (this.state.dialog === ProjectEditorDialog.shareableLink) {
       const dialogContent = (
-        <ShareProject carto={this.props.carto} project={this.props.project} theme={this.props.theme} />
+        <ShareProject creatorTools={this.props.creatorTools} project={this.props.project} theme={this.props.theme} />
       );
       effectArea = (
         <Dialog
@@ -4188,7 +4398,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           onConfirm={this._handleIntegrateItemOK}
           content={
             <IntegrateItem
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               project={this.props.project}
               theme={this.props.theme}
               heightOffset={this.props.heightOffset}
@@ -4212,7 +4422,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           onConfirm={this._handleNewVariantOK}
           content={
             <NewVariant
-              carto={this.props.carto}
+              creatorTools={this.props.creatorTools}
               project={this.props.project}
               theme={this.props.theme}
               onDialogDataChange={this._handleDialogDataUpdated}
@@ -4225,7 +4435,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     } else if (this.state.dialog === ProjectEditorDialog.worldSettings) {
       const dialogContent = (
         <WorldSettingsArea
-          carto={this.props.carto}
+          creatorTools={this.props.creatorTools}
           worldSettings={this.props.project.ensureWorldSettings()}
           displayName={false}
           isAdditive={true}
@@ -4264,7 +4474,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
             rootFolder={this.props.project.projectFolder}
             mode={FileExplorerMode.explorer}
             selectedItem={selectedFile}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             readOnly={this.props.readOnly}
             heightOffset={heightOffset}
             onFileSelected={this._handleFileSelected}
@@ -4276,7 +4486,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         <ProjectItemList
           theme={this.props.theme}
           project={this.props.project}
-          carto={this.props.carto}
+          creatorTools={this.props.creatorTools}
           editorMode={this.state.mode}
           heightOffset={heightOffset}
           visualSeed={this.state.visualSeed}
@@ -4284,6 +4494,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           searchFilter={this.state.searchFilter}
           allInfoSet={this.state.allInfoSet}
           allInfoSetGenerated={this.state.allInfoSetGenerated}
+          initialFocusPath={this.props.initialFocusPath}
           onProjectItemAction={this.handleProjectItemAction}
           onModeChangeRequested={this._handleModeChangeRequested}
           onActiveProjectItemChangeRequested={this._handleProjectItemSelected}
@@ -4298,13 +4509,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     let border = "";
 
-    if (CartoApp.theme === CartoThemeStyle.dark) {
+    if (CreatorToolsHost.theme === CreatorToolsThemeStyle.dark) {
       border = BORDER_INSET_DARK;
     } else {
       border = BORDER_INSET_LIGHT;
     }
 
-    if (viewMode === CartoEditorViewMode.mainFocus) {
+    if (viewMode === CreatorToolsEditorViewMode.mainFocus) {
       column2 = (
         <main
           className="pe-colAll"
@@ -4318,13 +4529,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           {interior}
         </main>
       );
-    } else if (viewMode === CartoEditorViewMode.itemsFocus) {
+    } else if (viewMode === CreatorToolsEditorViewMode.itemsFocus) {
       column2 = (
         <section aria-label="Item listing area" className="pe-itemlist pe-colAll">
           {itemList}
         </section>
       );
-    } else if (viewMode === CartoEditorViewMode.toolboxFocus) {
+    } else if (viewMode === CreatorToolsEditorViewMode.toolboxFocus) {
       column2 = (
         <div className="pe-colAll">
           <MinecraftDisplay
@@ -4332,13 +4543,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
             theme={this.props.theme}
             widthOffset={widthOffset}
             project={this.props.project}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             ensureMinecraftOnLogin={true}
             heightOffset={heightOffset}
           />
         </div>
       );
-    } else if (viewMode === CartoEditorViewMode.itemsOnLeft) {
+    } else if (viewMode === CreatorToolsEditorViewMode.itemsOnLeft) {
       column1 = (
         <section aria-label="Item listing area" className="pe-itemlist pe-col1">
           {itemList}
@@ -4371,7 +4582,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           {interior}
         </main>
       );
-    } else if (viewMode === CartoEditorViewMode.itemsOnLeftAndMinecraftToolbox) {
+    } else if (viewMode === CreatorToolsEditorViewMode.itemsOnLeftAndMinecraftToolbox) {
       column1 = (
         <section aria-label="Item listing area" className="pe-itemlist pe-col1">
           {itemList}
@@ -4396,20 +4607,20 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
             theme={this.props.theme}
             project={this.props.project}
             widthOffset={widthOffset}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             ensureMinecraftOnLogin={true}
             heightOffset={heightOffset}
           />
         </div>
       );
-    } else if (viewMode === CartoEditorViewMode.itemsOnRightAndMinecraftToolbox) {
+    } else if (viewMode === CreatorToolsEditorViewMode.itemsOnRightAndMinecraftToolbox) {
       column1 = (
         <div className="pe-col1">
           <MinecraftDisplay
             forceCompact={true}
             theme={this.props.theme}
             project={this.props.project}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             widthOffset={widthOffset}
             ensureMinecraftOnLogin={true}
             heightOffset={heightOffset}
@@ -4502,7 +4713,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         >
           <StatusArea
             onFilterTextChanged={this._handleFilterTextChanged}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             project={this.props.project}
             theme={this.props.theme}
             heightOffset={heightOffset}

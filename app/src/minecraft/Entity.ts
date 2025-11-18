@@ -10,6 +10,7 @@ import IPropertyObject from "../dataform/IPropertyObject";
 import IProperty from "./../dataform/IProperty";
 import { EventDispatcher } from "ste-events";
 import ComponentProperty from "./ComponentProperty";
+import ModelGeometryDefinition from "./ModelGeometryDefinition";
 
 export default class Entity extends ComponentizedBase implements IPropertyObject {
   _typeId: string = "";
@@ -18,6 +19,8 @@ export default class Entity extends ComponentizedBase implements IPropertyObject
   rotation: Rotation = new Rotation(null, null);
   tags: string[] = [];
   definitions: string[] = [];
+
+  model?: ModelGeometryDefinition | undefined;
 
   private _onPropertyChanged = new EventDispatcher<Entity, IProperty>();
 

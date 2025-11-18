@@ -40,8 +40,12 @@ Axolotl - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
 
 "minecraft:breedable": {
   "require_tame": false,
-  "breed_items": "tropical_fish_bucket",
-  "transform_to_item": "water_bucket:0",
+  "breed_items": [
+    {
+      "item": "tropical_fish_bucket",
+      "result_item": "water_bucket:0"
+    }
+  ],
   "breeds_with": {
     "mate_type": "minecraft:axolotl",
     "baby_type": "minecraft:axolotl",
@@ -345,7 +349,7 @@ export default interface MinecraftBreedable {
    * Sample Values:
    * Armadillo: ["spider_eye"]
    *
-   * Axolotl: "tropical_fish_bucket"
+   * Axolotl: [{"item":"tropical_fish_bucket","result_item":"water_bucket:0"}]
    *
    * Bee: ["minecraft:poppy","minecraft:blue_orchid","minecraft:allium","minecraft:azure_bluet","minecraft:red_tulip","minecraft:orange_tulip","minecraft:white_tulip","minecraft:pink_tulip","minecraft:oxeye_daisy","minecraft:cornflower","minecraft:lily_of_the_valley","minecraft:dandelion","minecraft:wither_rose","minecraft:sunflower","minecraft:lilac","minecraft:rose_bush","minecraft:peony","minecraft:flowering_azalea","minecraft:azalea_leaves_flowered","minecraft:mangrove_propagule","minecraft:pitcher_plant","minecraft:torchflower","minecraft:cherry_leaves","minecraft:pink_petals","minecraft:wildflowers","minecraft:cactus_flower"]
    *
@@ -465,13 +469,6 @@ export default interface MinecraftBreedable {
    * breed.
    */
   require_tame?: boolean;
-
-  /**
-   * @remarks
-   * The breed item used will transform to this item upon successful
-   * interaction. Format: itemName:auxValue
-   */
-  transform_to_item?: string;
 
 }
 

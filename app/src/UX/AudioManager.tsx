@@ -3,7 +3,7 @@ import IFile from "../storage/IFile";
 import "./AudioManager.css";
 import React from "react";
 import IPersistable from "./IPersistable";
-import Carto from "../app/Carto";
+import CreatorTools from "../app/CreatorTools";
 import { ThemeInput, Toolbar } from "@fluentui/react-northstar";
 import WaveformPlaylist, { IWaveformEventEmitter, WaveformPlaylistObj } from "waveform-playlist";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,7 +21,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import StorageUtilities from "../storage/StorageUtilities";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
-import CartoApp, { CartoThemeStyle } from "../app/CartoApp";
+import CreatorToolsHost, { CreatorToolsThemeStyle } from "../app/CreatorToolsHost";
 import Project from "../app/Project";
 import AudioItemProperties from "./AudioItemProperties";
 
@@ -40,7 +40,7 @@ interface IAudioManagerProps {
   setActivePersistable?: (persistObject: IPersistable) => void;
   heightOffset?: number;
   readOnly: boolean;
-  carto: Carto;
+  creatorTools: CreatorTools;
   project: Project;
   onUpdateContent?: (newContent: Uint8Array) => void;
   onCommit?: (newContent: Uint8Array) => void;
@@ -252,7 +252,7 @@ export default class AudioManager extends Component<IAudioManagerProps, IAudioMa
           this.props.file.content instanceof Uint8Array
         ) {
           const coreFile = audioWorkingFolder.ensureFile(this.props.file.name);
-          coreFile.setContent(this.props.file.content);
+          coreFile.setContentIfSemanticallyDifferent(this.props.file.content);
         }
       }
 
@@ -626,9 +626,9 @@ export default class AudioManager extends Component<IAudioManagerProps, IAudioMa
     }
   }
 
-  _toggleEdit() {
+  async _toggleEdit() {
     if (this.state.mode === AudioManagerMode.edit) {
-      this.persist();
+      await this.persist();
 
       this._setToViewAfterPersist = true;
     } else {
@@ -657,7 +657,7 @@ export default class AudioManager extends Component<IAudioManagerProps, IAudioMa
     return null; // No change to state
   }
 
-  async persist() {
+  async persist(): Promise<boolean> {
     if (this._activeEditorPersistable) {
       await this._activeEditorPersistable.persist();
     }
@@ -677,7 +677,11 @@ export default class AudioManager extends Component<IAudioManagerProps, IAudioMa
       if (this._isPersisting) {
         await new Promise(prom);
       }
+
+      return true;
     }
+
+    return false;
   }
 
   async persistRecord() {
@@ -814,7 +818,7 @@ export default class AudioManager extends Component<IAudioManagerProps, IAudioMa
             setActivePersistable={this._handleNewChildPersistable}
             readOnly={this.props.readOnly || this.state.mode === AudioManagerMode.view}
             theme={this.props.theme}
-            carto={this.props.carto}
+            creatorTools={this.props.creatorTools}
             file={this.props.file}
             project={this.props.project}
           />
@@ -835,11 +839,17 @@ export default class AudioManager extends Component<IAudioManagerProps, IAudioMa
           }}
         >
           <div
-            className={"aum-contents " + (CartoApp.theme === CartoThemeStyle.dark ? "playlist-dark" : "playlist-light")}
+            className={
+              "aum-contents " +
+              (CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? "playlist-dark" : "playlist-light")
+            }
             ref={this.rootElt}
           ></div>
           <div
-            className={"aum-status " + (CartoApp.theme === CartoThemeStyle.dark ? "playlist-dark" : "playlist-light")}
+            className={
+              "aum-status " +
+              (CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? "playlist-dark" : "playlist-light")
+            }
             ref={this.statusElt}
           ></div>
           {audioItemProps}

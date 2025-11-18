@@ -11,6 +11,16 @@
  * 
  * minecraft:behavior.mount_pathing Samples
 
+Camel Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/camel_husk.json
+
+"minecraft:behavior.mount_pathing": {
+  "priority": 3,
+  "speed_multiplier": 4,
+  "target_dist": 0,
+  "track_target": true
+}
+
+
 Cat - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/cat.json
 
 "minecraft:behavior.mount_pathing": {
@@ -99,11 +109,11 @@ export default interface MinecraftBehaviorMountPathing {
    * goal.
    * 
    * Sample Values:
+   * Camel Husk: 3
+   *
    * Cat: 1
    *
    * Cave Spider: 5
-   *
-   * Chicken: 2
    *
    */
   priority?: number;
@@ -113,11 +123,12 @@ export default interface MinecraftBehaviorMountPathing {
    * Movement speed multiplier of the mob when using this AI Goal
    * 
    * Sample Values:
+   * Camel Husk: 4
+   *
    * Cat: 1.25
    *
    *
    * Chicken: 1.5
-   *
    *
    */
   speed_multiplier?: number;
@@ -139,7 +150,7 @@ export default interface MinecraftBehaviorMountPathing {
    * valid target
    * 
    * Sample Values:
-   * Cat: true
+   * Camel Husk: true
    *
    *
    */

@@ -8,6 +8,50 @@
  * Contains types for working with various Minecraft Bedrock Edition JSON schemas.
  * 
  * Items Documentation - minecraft:swing_duration
+ * 
+ * minecraft:swing_duration Samples
+
+Copper Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/copper_spear.json
+
+"minecraft:swing_duration": {
+  "value": 0.85
+}
+
+
+Diamond Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/diamond_spear.json
+
+"minecraft:swing_duration": {
+  "value": 1.05
+}
+
+
+Golden Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/golden_spear.json
+
+"minecraft:swing_duration": {
+  "value": 0.95
+}
+
+
+Netherite Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/netherite_spear.json
+
+"minecraft:swing_duration": {
+  "value": 1.15
+}
+
+
+Stone Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/stone_spear.json
+
+"minecraft:swing_duration": {
+  "value": 0.75
+}
+
+
+Wooden Spear - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/wooden_spear.json
+
+"minecraft:swing_duration": {
+  "value": 0.65
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';
@@ -24,8 +68,15 @@ export default interface MinecraftSwingDuration {
    * @remarks
    * Duration, in seconds, of the item's swing animation played when
    * mining or attacking. Affects visuals only and does not impact
-   * attack frequency or other gameplay mechanics. Default value: 
-   * 0.3.
+   * attack frequency or other gameplay mechanics.
+   * 
+   * Sample Values:
+   * Copper Spear: 0.85
+   *
+   * Diamond Spear: 1.05
+   *
+   * Golden Spear: 0.95
+   *
    */
   value?: number;
 
