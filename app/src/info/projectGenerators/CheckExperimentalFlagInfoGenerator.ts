@@ -86,8 +86,7 @@ export default class CheckExperimentalFlagInfoGenerator implements IProjectInfoG
           continue;
         }
 
-        await mcworld.load();
-        await mcworld.loadData(false);
+        await mcworld.loadMetaFiles();
 
         if (!mcworld.levelData) {
           items.push(

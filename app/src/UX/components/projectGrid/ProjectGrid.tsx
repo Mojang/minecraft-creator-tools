@@ -48,6 +48,62 @@ export default function ProjectGrid({ onAppGalleryAction }: ProjectGridProps) {
           sx={{ mb: 1, color: "#FFFFFF", width: "100%" }}
           onChange={(ev) => setSearchQuery(ev.target.value || undefined)}
         />
+        <Box sx={{ mb: 2, display: "flex", gap: 1, flexWrap: "wrap", alignItems: "center" }}>
+          <Typography variant="caption" sx={{ opacity: 0.7, mr: 0.5, fontWeight: 500 }}>
+            Popular:
+          </Typography>
+          {["entity", "blocks", "items", "typescript", "spawn"].map((tag) => {
+            const isActive = searchQuery === tag;
+            return (
+              <Box
+                key={tag}
+                component="button"
+                onClick={() => setSearchQuery(isActive ? undefined : tag)}
+                sx={(theme) => {
+                  const isDark = theme.palette.mode === "dark";
+                  // Use separate border colors for 3D bevel effect
+                  const highlightColor = isActive ? mcColors.green3 : isDark ? mcColors.gray3 : mcColors.gray2;
+                  const shadowColor = isActive ? mcColors.green6 : isDark ? mcColors.gray6 : mcColors.gray4;
+                  return {
+                    // Individual borders for proper bevel effect
+                    borderTop: `2px solid ${highlightColor}`,
+                    borderLeft: `2px solid ${highlightColor}`,
+                    borderRight: `2px solid ${shadowColor}`,
+                    borderBottom: `2px solid ${shadowColor}`,
+                    borderRadius: 0,
+                    px: 1.5,
+                    py: 0.5,
+                    fontSize: "0.8rem",
+                    fontWeight: 600,
+                    bgcolor: isActive ? mcColors.green4 : isDark ? mcColors.gray5 : mcColors.gray1,
+                    color: isActive ? "#fff" : isDark ? "#fff" : mcColors.gray6,
+                    cursor: "pointer",
+                    transition: "all 0.1s ease-in-out",
+                    textTransform: "capitalize",
+                    boxShadow: isActive ? `0 2px 8px ${mcColors.green4}40` : "none",
+                    "&:hover": {
+                      bgcolor: isActive ? mcColors.green3 : isDark ? mcColors.green5 : mcColors.green4,
+                      borderColor: mcColors.green4,
+                      color: "#fff",
+                      transform: "translateY(-1px)",
+                    },
+                    "&:active": {
+                      // Invert highlight/shadow on press
+                      borderTop: `2px solid ${shadowColor}`,
+                      borderLeft: `2px solid ${shadowColor}`,
+                      borderRight: `2px solid ${highlightColor}`,
+                      borderBottom: `2px solid ${highlightColor}`,
+                      transform: "translateY(1px)",
+                    },
+                  };
+                }}
+              >
+                {tag}
+                {isActive && " ✕"}
+              </Box>
+            );
+          })}
+        </Box>
         <Typography hidden={isSearchMode} variant="h5" sx={{ position: "relative" }}>
           <Box
             component="span"

@@ -1267,7 +1267,7 @@ async function setAndDisplayWorld(item: ProjectItem, isSettable: boolean) {
     const mcworld: MCWorld | undefined = await item.getManager();
 
     if (mcworld) {
-      await mcworld.load(false);
+      await mcworld.loadMetaFiles(false);
 
       if (isSettable) {
         if (mcworld.name === "" && mcworld.storageFullPath) {

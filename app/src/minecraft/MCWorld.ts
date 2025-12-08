@@ -462,7 +462,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
         if (handler) {
           mcworld.onLoaded.subscribe(handler);
         }
-        await mcworld.load(false);
+        await mcworld.loadMetaFiles(false);
       } else if (handler) {
         handler(mcworld, mcworld, { unsub: () => {}, stopPropagation: () => {} });
       }
@@ -509,7 +509,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
         if (handler) {
           mcworld.onLoaded.subscribe(handler);
         }
-        await mcworld.load(false);
+        await mcworld.loadMetaFiles(false);
       } else if (handler) {
         handler(mcworld, mcworld, { unsub: () => {}, stopPropagation: () => {} });
       }
@@ -915,7 +915,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     }
   }
 
-  async load(force?: boolean) {
+  async loadMetaFiles(force?: boolean) {
     if ((this._isLoaded && !force) || (this._file === undefined && this._folder === undefined)) {
       return;
     }
@@ -1244,7 +1244,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
   async applyWorldSettings(worldSettings?: IWorldSettings) {
     if (!this._isLoaded) {
-      await this.load(false);
+      await this.loadMetaFiles(false);
     }
 
     this.ensureLevelData();
@@ -1393,7 +1393,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     this._onLoaded.dispatch(this, this);
   }
 
-  async loadData(
+  async loadLevelDb(
     force: boolean = false,
     options?: {
       progressCallback?: (phase: string, current: number, total: number) => void;

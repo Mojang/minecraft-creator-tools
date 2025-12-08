@@ -650,7 +650,7 @@ export default class ProjectExporter {
       return;
     }
 
-    await mcworld.load(false);
+    await mcworld.loadMetaFiles(false);
 
     await mcworld.applyWorldSettings(worldSettings);
 

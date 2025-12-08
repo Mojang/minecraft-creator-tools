@@ -358,9 +358,9 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
         return items;
       }
 
-      await mcworld.load(false);
+      await mcworld.loadMetaFiles(false);
 
-      await mcworld.loadData(false);
+      await mcworld.loadLevelDb(false);
 
       if (
         mcworld.isInErrorState &&

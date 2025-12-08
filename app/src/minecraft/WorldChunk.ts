@@ -21,6 +21,15 @@ const SUBCHUNK_Y_SIZE = 16;
 
 const MAX_LEGACY_Y = 128;
 
+// Subchunk index constants for extended height worlds (Caves & Cliffs, 1.18+)
+// Stored subchunk indices use unsigned bytes: 0-63 for positive, 224-255 for negative (-32 to -1)
+const MAX_POSITIVE_SUBCHUNK_STORED = 63; // Maximum positive subchunk index stored in LevelDB key
+const MIN_NEGATIVE_SUBCHUNK_STORED = 224; // Minimum negative subchunk index (stored as unsigned byte)
+const MAX_NEGATIVE_SUBCHUNK_STORED = 255; // Maximum negative subchunk index (stored as unsigned byte)
+const NEGATIVE_SUBCHUNK_OFFSET = 224; // Offset to convert stored negative index to array index (224 → 0)
+const POSITIVE_SUBCHUNK_OFFSET = 32; // Offset to convert stored positive index to array index (0 → 32)
+const TOTAL_SUBCHUNK_SLOTS = 96; // Total subchunk array slots: 32 negative + 64 positive
+
 export enum SubChunkFormatType {
   paletteFrom1dot2dot13 = 0,
   subChunk1dot0 = 1,
@@ -123,7 +132,7 @@ export default class WorldChunk {
     this.pendingSubChunksToProcess = [];
     this.actorDigests = [];
 
-    for (let i = 0; i < 64; i++) {
+    for (let i = 0; i < TOTAL_SUBCHUNK_SLOTS; i++) {
       this.pendingSubChunksToProcess[i] = false;
     }
 
@@ -140,7 +149,7 @@ export default class WorldChunk {
    * Use this after processing a chunk to reduce memory usage.
    */
   clearCachedData() {
-    for (let i = 0; i < 64; i++) {
+    for (let i = 0; i < TOTAL_SUBCHUNK_SLOTS; i++) {
       if (this.subChunks[i] !== undefined) {
         this.blockDataStart[i] = -1;
         this.bitsPerBlock[i] = -1;
@@ -212,16 +221,19 @@ export default class WorldChunk {
   }
 
   translateSubChunkIndex(storageSubChunk: number) {
+    // Valid range: 0-63 (positive subchunks) or 224-255 (negative subchunks stored as unsigned byte)
+    // Output range: 0-31 for negative subchunks (224-255), 32-95 for positive subchunks (0-63)
     Log.assert(
-      (storageSubChunk >= 0 && storageSubChunk <= 31) || (storageSubChunk >= 224 && storageSubChunk <= 255),
+      (storageSubChunk >= 0 && storageSubChunk <= MAX_POSITIVE_SUBCHUNK_STORED) ||
+        (storageSubChunk >= MIN_NEGATIVE_SUBCHUNK_STORED && storageSubChunk <= MAX_NEGATIVE_SUBCHUNK_STORED),
       "Unexpected subchunk index (" + storageSubChunk + ")"
     );
 
-    if (storageSubChunk >= 224) {
-      return storageSubChunk - 224;
+    if (storageSubChunk >= MIN_NEGATIVE_SUBCHUNK_STORED) {
+      return storageSubChunk - NEGATIVE_SUBCHUNK_OFFSET; // 224→0, 255→31 (represents Y subchunks -32 to -1)
     }
 
-    return storageSubChunk + 32;
+    return storageSubChunk + POSITIVE_SUBCHUNK_OFFSET; // 0→32, 63→95 (represents Y subchunks 0 to 63)
   }
 
   processSubChunk(index: number) {

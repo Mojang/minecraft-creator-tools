@@ -1315,7 +1315,22 @@ export default class ProjectItemUtilities {
     return type === ProjectItemType.uiJson || type === ProjectItemType.uiTexture;
   }
 
-  static isUIRelated(projectItem: ProjectItem, goUpwardOnly?: boolean, goDownwardOnly?: boolean) {
+  static isUIRelated(
+    projectItem: ProjectItem,
+    goUpwardOnly?: boolean,
+    goDownwardOnly?: boolean,
+    visited?: Set<ProjectItem>
+  ) {
+    // Track visited items to prevent infinite recursion from circular dependencies
+    if (visited === undefined) {
+      visited = new Set<ProjectItem>();
+    }
+
+    if (visited.has(projectItem)) {
+      return false; // Already visited, avoid infinite loop
+    }
+    visited.add(projectItem);
+
     if (projectItem.parentItems && (goUpwardOnly || goUpwardOnly === undefined)) {
       for (const parentItem of projectItem.parentItems) {
         if (parentItem.parentItem) {
@@ -1323,7 +1338,7 @@ export default class ProjectItemUtilities {
             return true;
           }
 
-          if (this.isUIRelated(parentItem.parentItem, true, false)) {
+          if (this.isUIRelated(parentItem.parentItem, true, false, visited)) {
             return true;
           }
         }
@@ -1337,7 +1352,7 @@ export default class ProjectItemUtilities {
             return true;
           }
 
-          if (this.isUIRelated(childItem.childItem, false, true)) {
+          if (this.isUIRelated(childItem.childItem, false, true, visited)) {
             return true;
           }
         }
