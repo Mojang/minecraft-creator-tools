@@ -40,10 +40,10 @@ export default class Location {
     return new BlockLocation(Math.round(this.x), Math.round(this.y), Math.round(this.z));
   }
 
-  constructor(x: number | null | undefined, y: number | null | undefined, z: number | null | undefined) {
-    this._x = x == null ? 0 : x;
-    this._y = y == null ? 0 : y;
-    this._z = z == null ? 0 : z;
+  constructor(x?: number | undefined, y?: number | undefined, z?: number | undefined) {
+    this._x = x === undefined ? 0 : x;
+    this._y = y === undefined ? 0 : y;
+    this._z = z === undefined ? 0 : z;
   }
 
   distanceTo(location: Location) {

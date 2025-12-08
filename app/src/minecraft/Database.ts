@@ -8,6 +8,7 @@ import BlockBaseType from "./BlockBaseType";
 import MinecraftUtilities from "./MinecraftUtilities";
 import IJavaBlockTypeData from "./IJavaBlockTypeData";
 import IBlockTypeData from "./IBlockTypeData";
+import { BlockShape } from "./IBlockBaseTypeData";
 import Log from "./../core/Log";
 import HttpStorage from "../storage/HttpStorage";
 import IFolder from "../storage/IFolder";
@@ -37,10 +38,13 @@ import { HashCatalog } from "../core/HashUtilities";
 import IFile from "../storage/IFile";
 import TerrainTextureCatalogDefinition from "./TerrainTextureCatalogDefinition";
 import BlocksCatalogDefinition from "./BlocksCatalogDefinition";
+import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProxy";
+import IContentSource from "../app/IContentSource";
 
 export default class Database {
   static isVanillaLoaded = false;
   static isScriptTypesLoaded = false;
+  static isContentSourcesLoaded = false;
   static vanillaCatalog: Catalog | null = null;
   static loadedFormCount = 0;
   static _creatorToolsIngameFile: IFile | null = null;
@@ -56,6 +60,7 @@ export default class Database {
   static releaseMetadataFolder: IFolder | null = null;
   static previewVanillaFolder: IFolder | null = null;
   static releaseVanillaFolder: IFolder | null = null;
+  static serveVanillaFolder: IFolder | null = null;
   static samplesFolder: IFolder | null = null;
   static releaseVanillaBehaviorPackFolder: IFolder | null = null;
   static releaseVanillaResourcePackFolder: IFolder | null = null;
@@ -101,10 +106,31 @@ export default class Database {
   static creatorToolsIngameResourcePackUUID = "a49a75c0-d3a1-47c5-adcd-70394b0fe749";
   static creatorToolsIngameResourcePackVersion = [1, 0, 0];
 
-  static minecraftEduVersion = "1.21.0";
-  static minecraftEduPreviewVersion = "1.21.0";
+  static minecraftEduVersion = "1.21.90";
+  static minecraftEduPreviewVersion = "1.21.110";
   static fallbackMinecraftVersion = "1.21.120"; // used if we fail to retrieve the latest version from the network
   static fallbackMinecraftPreviewVersion = "1.21.130.27"; // should be occasionally statically updated.
+
+  static defaultContentSources: IContentSource[] = [
+    {
+      id: "minecraftBedrockComMojang",
+      localFolderPath: "<BDRK>",
+    },
+    {
+      id: "minecraftBedrockPreviewComMojang",
+      localFolderPath: "<BDPV>",
+    },
+    {
+      id: "minecraftEducationComMojang",
+      localFolderPath: "<EDUR>",
+    },
+    {
+      id: "minecraftEducationPreviewComMojang",
+      localFolderPath: "<EDUP>",
+    },
+  ];
+
+  static contentSources: IContentSource[] = [];
 
   static minecraftModuleNames = [
     "@minecraft/server-gametest",
@@ -241,7 +267,11 @@ export default class Database {
             await file.loadContent();
           }
 
-          return StorageUtilities.getJsonObject(file) as IFormDefinition;
+          let res = StorageUtilities.getJsonObject(file) as IFormDefinition;
+          Database.uxCatalog[extendedName] = res;
+          Database.loadedFormCount++;
+
+          return res;
         }
 
         Log.fail("Could not load file locally for '" + expectedPath + "'.");
@@ -350,7 +380,7 @@ export default class Database {
       if (e && (!e.message || !e.message.indexOf || e.message.indexOf("etwork ") < 0)) {
         Log.debugAlert("Could not load registry for '" + moduleId + "': " + e.toString());
       } else {
-        CreatorToolsHost.creatorTools?.notifyStatusUpdate(
+        CreatorToolsHost.getCreatorTools()?.notifyStatusUpdate(
           "Could not connect to network to retrieve latest script package details. Url: " + url
         );
       }
@@ -436,7 +466,7 @@ export default class Database {
   static async getContentFolderFile(fileRelativePath: string) {
     await Database.loadContent();
 
-    if (Database.contentFolder === null || !CreatorToolsHost.creatorTools) {
+    if (Database.contentFolder === null || !CreatorToolsHost.getCreatorTools()) {
       Log.unexpectedContentState();
       return undefined;
     }
@@ -467,7 +497,7 @@ export default class Database {
 
     await Database.loadContent();
 
-    if (Database.contentFolder === null || !CreatorToolsHost.creatorTools) {
+    if (Database.contentFolder === null || !CreatorToolsHost.getCreatorTools()) {
       Log.unexpectedContentState();
       return undefined;
     }
@@ -489,14 +519,15 @@ export default class Database {
     }
 
     const file = await Database.ensureCreatorToolsIngameFile();
+    const ct = CreatorToolsHost.getCreatorTools();
 
-    if (Database.contentFolder === null || !file || !CreatorToolsHost.creatorTools) {
+    if (Database.contentFolder === null || !file || !ct) {
       Log.unexpectedContentState();
       return undefined;
     }
 
     if (file.content instanceof Uint8Array) {
-      Database._creatorToolsIngameProject = new Project(CreatorToolsHost.creatorTools, "Creator Tools", null);
+      Database._creatorToolsIngameProject = new Project(ct, "Creator Tools", null);
 
       const projectFolder = await Database._creatorToolsIngameProject.ensureProjectFolder();
 
@@ -561,7 +592,7 @@ export default class Database {
       if (e && (!e.message || !e.message.indexOf || e.message.indexOf("etwork ") < 0)) {
         Log.debugAlert("Could not load version info from '" + versionUrl + "': " + e.toString());
       } else {
-        CreatorToolsHost.creatorTools?.notifyStatusUpdate(
+        CreatorToolsHost.getCreatorTools()?.notifyStatusUpdate(
           "Could not connect to network to retrieve latest Minecraft version details. Url: " + versionUrl
         );
       }
@@ -674,9 +705,9 @@ export default class Database {
     }
 
     const result = this._blockTypesByLegacyId[id];
-
     Log.assert(result !== undefined);
-
+    // Return undefined for unknown legacy IDs rather than asserting,
+    // as worlds may contain blocks with IDs not in our catalog
     return result;
   }
 
@@ -729,10 +760,6 @@ export default class Database {
       blockType = new BlockType(name);
 
       Database.blockTypes[name] = blockType;
-
-      blockType.data = {
-        n: name,
-      };
     }
 
     return blockType;
@@ -750,6 +777,29 @@ export default class Database {
     }
 
     return blockBaseType;
+  }
+
+  static async loadContentSources() {
+    if (Database.isContentSourcesLoaded) {
+      return Database.contentSources;
+    }
+    Database.contentSources = [...Database.defaultContentSources];
+
+    if (AppServiceProxy.hasAppService) {
+      const contentSources = await AppServiceProxy.sendAsync(AppServiceProxyCommands.getContentSources, "");
+
+      if (contentSources) {
+        const contentSourcesO = JSON.parse(contentSources) as IContentSource[] | undefined;
+
+        if (contentSourcesO && Array.isArray(contentSourcesO)) {
+          Database.contentSources.push(...contentSourcesO);
+        }
+      }
+    }
+
+    Database.isContentSourcesLoaded = true;
+
+    return Database.contentSources;
   }
 
   static async loadContent() {
@@ -938,7 +988,7 @@ export default class Database {
     const jsonFile = await Database.previewMetadataFolder.getFileFromRelativePath(metaPath);
 
     if (!jsonFile) {
-      Log.unexpectedUndefined();
+      Log.unexpectedUndefined("GMO" + metaPath);
       return null;
     }
 
@@ -949,7 +999,7 @@ export default class Database {
     const jsonObj = StorageUtilities.getJsonObject(jsonFile);
 
     if (!jsonObj) {
-      Log.unexpectedUndefined();
+      Log.unexpectedUndefined("GMA" + metaPath);
       return null;
     }
 
@@ -966,7 +1016,7 @@ export default class Database {
     const jsonFile = await vanillaFolder.getFileFromRelativePath(filePath);
 
     if (!jsonFile) {
-      Log.unexpectedUndefined();
+      Log.unexpectedUndefined("GPVF" + filePath);
       return null;
     }
 
@@ -981,14 +1031,14 @@ export default class Database {
     const jsonFile = await Database.getPreviewVanillaFile(filePath);
 
     if (!jsonFile) {
-      Log.unexpectedUndefined();
+      Log.unexpectedUndefined("GPVO" + filePath);
       return null;
     }
 
     const jsonObj = StorageUtilities.getJsonObject(jsonFile);
 
     if (!jsonObj) {
-      Log.unexpectedUndefined();
+      Log.unexpectedUndefined("GPVA" + filePath);
       return null;
     }
 
@@ -1083,6 +1133,30 @@ export default class Database {
     }
 
     return Database.previewVanillaFolder;
+  }
+
+  static async getServeVanillaFolder() {
+    if (Database.serveVanillaFolder !== null) {
+      return Database.serveVanillaFolder;
+    }
+
+    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
+      const storage = Database.local.createStorage("res/latest/van/serve/");
+
+      if (storage) {
+        Database.serveVanillaFolder = storage.rootFolder;
+      }
+    } else {
+      const storage = new HttpStorage(CreatorToolsHost.contentRoot + "res/latest/van/serve/");
+
+      Database.serveVanillaFolder = storage.rootFolder;
+    }
+
+    if (Database.serveVanillaFolder && !Database.serveVanillaFolder.isLoaded) {
+      await Database.serveVanillaFolder.load();
+    }
+
+    return Database.serveVanillaFolder;
   }
 
   static async getSamplesFolder() {
@@ -1602,8 +1676,8 @@ export default class Database {
           Database.previewVanillaContentIndex = new ContentIndex();
           Database.previewVanillaContentIndex.loadFromData(Database.previewVanillaInfoData.index);
         }
-      } catch {
-        // Log.fail("Could not load preview vanilla metadata.");
+      } catch (e: any) {
+        Log.fail("Could not load preview vanilla metadata." + e.toString());
       }
 
       this._isLoadingVanillaInfoData = false;
@@ -1745,8 +1819,7 @@ export default class Database {
               lid: blockBaseTypeData.id,
               ic: blockBaseTypeData.ic,
               mc: blockBaseTypeData.mc,
-              shortId: blockBaseTypeData.shortId,
-              altShortId: blockBaseTypeData.altShortId,
+              m: blockBaseTypeData.m,
             };
 
             const blockType = this.ensureBlockType(baseTypeName);
@@ -1766,20 +1839,23 @@ export default class Database {
 
               const blockType = this.ensureBlockType(name);
 
+              // Check if this block type already has a proper baseType with shape data
+              // (i.e., it was created from a specific standalone entry like oak_stairs with sh:2)
+              const existingShape = blockType.baseType?.shape;
+              const hasSpecificBaseType = existingShape !== undefined && existingShape !== BlockShape.custom;
+
+              if (hasSpecificBaseType) {
+                // The block already has good shape data from a specific entry, skip this variant
+                continue;
+              }
+
+              // Apply variant data
               if (!variantBlockTypeData.lid && blockBaseTypeData.id) {
                 variantBlockTypeData.lid = blockBaseTypeData.id;
               }
 
               if (!variantBlockTypeData.ic && blockBaseTypeData.ic) {
                 variantBlockTypeData.ic = blockBaseTypeData.ic;
-              }
-
-              if (!variantBlockTypeData.shortId && blockBaseTypeData.shortId) {
-                variantBlockTypeData.shortId = blockBaseTypeData.shortId;
-              }
-
-              if (!variantBlockTypeData.altShortId && blockBaseTypeData.altShortId) {
-                variantBlockTypeData.altShortId = blockBaseTypeData.altShortId;
               }
 
               if (!variantBlockTypeData.mc && blockBaseTypeData.mc) {

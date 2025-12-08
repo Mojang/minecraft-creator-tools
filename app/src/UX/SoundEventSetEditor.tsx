@@ -2,7 +2,7 @@ import { Component } from "react";
 import "./SoundEventSetEditor.css";
 import Database from "../minecraft/Database";
 import { ThemeInput } from "@fluentui/styles";
-import DataForm, { IDataFormProps } from "../dataform/DataForm";
+import DataForm, { IDataFormProps } from "../dataformux/DataForm";
 import IProperty from "../dataform/IProperty";
 import IAppProps from "./IAppProps";
 import { ISoundEventSet } from "../minecraft/ISoundCatalog";

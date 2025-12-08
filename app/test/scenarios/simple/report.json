@@ -55,7 +55,7 @@
     "multipleSoundsManifests": 0,
     "soundsDefinitionManifestFormatIsValid": 0,
     "soundsDefinitionManifestIsNotValidJson": 0,
-    "flagIsOrWasTrue": 0,
+    "experimentalFlagIsOrWasTrue": 0,
     "levelDatNotFound": 0,
     "worldNotFound": 0,
     "deprecatedBlockOverride": 0,

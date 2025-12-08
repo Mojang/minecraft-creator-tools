@@ -9,6 +9,7 @@ export enum ProjectItemSeedAction {
   defaultAction = 0,
   overwriteFile = 1,
   fileOrFolder = 2,
+  overrwriteVanillaPath = 3,
 }
 
 export default interface IProjectItemSeed {
@@ -20,5 +21,6 @@ export default interface IProjectItemSeed {
   creationData?: object;
   fileSource?: File;
   fileContent?: Uint8Array | string | undefined;
+  replacePath?: string | undefined;
   action?: ProjectItemSeedAction;
 }

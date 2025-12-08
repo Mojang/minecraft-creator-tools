@@ -154,7 +154,7 @@ export default class LookupUtilities {
           refs.push({
             id: dataItem.name,
             title: Utilities.humanifyMinecraftName(dataItem.name),
-            iconImage: iconImage ? "/res/latest/van/preview/resource_pack/" + iconImage + ".png" : undefined,
+            iconImage: iconImage ? "/res/latest/van/serve/resource_pack/" + iconImage + ".png" : undefined,
           });
         }
       }

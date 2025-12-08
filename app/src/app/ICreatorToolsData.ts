@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 import { IWorldSettings } from "../minecraft/IWorldSettings";
+import { DeploymentTargetType } from "./DeploymentTarget";
 import ICustomTool from "./ICustomTool";
 
 export enum CreatorToolsEditorViewMode {
@@ -72,6 +73,7 @@ export default interface ICreatorToolsData {
   itemSidePaneWidth?: number;
   preferredTextSize?: number;
   preferredSuite?: number;
+  defaultDeploymentTarget?: DeploymentTargetType;
   editorViewMode?: CreatorToolsEditorViewMode;
   defaultFunction?: string;
   customTools: ICustomTool[];

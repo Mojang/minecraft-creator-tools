@@ -5,7 +5,7 @@
     min-height: calc(100vh);
     max-height: calc(100vh);
     display: grid;
-    grid-template-rows: 106px 1fr 54px;
+    grid-template-rows: 96px 1fr 54px;
     padding-bottom: 10px;
   }
 }
@@ -17,7 +17,7 @@
     min-height: calc(100vh - 80px);
     max-height: calc(100vh - 80px);
     display: grid;
-    grid-template-rows: 106px 1fr 54px;
+    grid-template-rows: 96px 1fr 54px;
     padding-bottom: 10px;
   }
 }
@@ -27,7 +27,6 @@
 }
 
 .ifu-header {
-  font-size: 30pt;
   height: 100%;
   border-bottom: outset 2px;
 }

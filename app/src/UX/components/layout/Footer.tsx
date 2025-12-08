@@ -62,25 +62,38 @@ export default function Footer({ isApp, onSaveBackups }: FooterProps) {
   return (
     <Box
       component="footer"
-      sx={{
-        py: 0.2,
-        px: 1,
-        pt: 1,
-        pb: 1.2,
-        display: "flex",
-        borderTop: "1px solid",
-        borderColor: "divider",
-        alignItems: "start",
-        flexDirection: fullSized ? "row" : "column",
-        backgroundColor: "primary.main",
-        m: "0",
+      sx={(theme) => {
+        const isDark = theme.palette.mode === "dark";
+        return {
+          py: 0.2,
+          px: 1,
+          pt: 1,
+          pb: 1.2,
+          display: "flex",
+          borderTop: `1px solid ${theme.palette.divider}`,
+          alignItems: "start",
+          flexDirection: fullSized ? "row" : "column",
+          backgroundColor: isDark ? theme.palette.background.default : theme.palette.background.default,
+          m: "0",
+        };
       }}
     >
       <Typography
         fontSize={13}
         variant="body2"
-        // there seems to be an issue where the color is overridden by the northstar theme, so we'll set it explicitly
-        sx={{ color: (theme) => theme.palette.info.main }}
+        sx={(theme) => {
+          return {
+            color: theme.palette.info.main,
+            opacity: 0.9,
+            "& a": {
+              color: theme.palette.info.main,
+              textDecoration: "underline",
+              "&:hover": {
+                color: theme.palette.text.secondary,
+              },
+            },
+          };
+        }}
       >
         <Box
           component="img"
@@ -114,9 +127,24 @@ export default function Footer({ isApp, onSaveBackups }: FooterProps) {
         </Link>
       </Typography>
       <Box sx={{ ml: "auto" }} />
-      <Typography fontSize={13} sx={{ color: (theme) => theme.palette.info.main }}>
+      <Typography
+        fontSize={13}
+        sx={(theme) => {
+          return {
+            color: theme.palette.info.main,
+            opacity: 0.9,
+            "& a": {
+              color: theme.palette.info.main,
+              textDecoration: "underline",
+              "&:hover": {
+                color: theme.palette.text.secondary,
+              },
+            },
+          };
+        }}
+      >
         © 2025 Mojang AB&nbsp;|&nbsp;version {constants.version} - early preview&nbsp;|&nbsp;
-        <Link href={terms.url} target="_blank" rel="noreferrer noopener">
+        <Link href={terms.url} target="_blank" rel="noreferrer noopener" onClick={() => trackLinkClick(terms.label)}>
           {terms.label}
         </Link>
         &nbsp;|&nbsp;

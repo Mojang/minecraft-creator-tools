@@ -1,6 +1,6 @@
 import { Component, SyntheticEvent } from "react";
 import IAppProps from "./IAppProps";
-import CreatorTools, { CartoTargetStrings } from "../app/CreatorTools";
+import { CreatorToolsTargetSettings } from "../app/CreatorTools";
 import "./CreatorToolsSettingsPanel.css";
 import {
   Input,
@@ -15,7 +15,9 @@ import {
 import IPersistable from "./IPersistable";
 import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProxy";
 import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
+import Database from "./../minecraft/Database";
 import { CreatorToolsEditPreference, MinecraftTrack } from "../app/ICreatorToolsData";
+import IContentSource from "../app/IContentSource";
 export const CreatorToolsEditorPreferenceLabels = [
   "Visual editors, plus hide advanced items",
   "Visual editors",
@@ -29,6 +31,7 @@ interface ICreatorToolsSettingsPanelProps extends IAppProps {
 
 interface ICreatorToolsSettingsPanelState {
   serverFolderPath: string | undefined;
+  contentSources: IContentSource[] | undefined;
   autoStartMinecraft: boolean | undefined;
   formatBeforeSave: boolean;
 }
@@ -50,22 +53,26 @@ export default class CreatorToolsSettingsPanel extends Component<
     this._handleSelectFolderClick = this._handleSelectFolderClick.bind(this);
     this._handleFormatBeforeSaveChanged = this._handleFormatBeforeSaveChanged.bind(this);
     this._handleTrackChange = this._handleTrackChange.bind(this);
-    this._onCartoLoaded = this._onCartoLoaded.bind(this);
 
     this.state = {
+      contentSources: undefined,
       serverFolderPath: this.props.creatorTools.dedicatedServerPath,
       autoStartMinecraft: this.props.creatorTools.autoStartMinecraft,
       formatBeforeSave: this.props.creatorTools.formatBeforeSave,
     };
-
-    this.props.creatorTools.onLoaded.subscribe(this._onCartoLoaded);
-
-    this.props.creatorTools.load();
   }
 
-  private _onCartoLoaded(source: CreatorTools, target: CreatorTools) {
+  componentDidMount(): void {
+    this.doLoad();
+  }
+
+  async doLoad() {
+    await this.props.creatorTools.load();
+    const cs = await Database.loadContentSources();
+
     this.setState({
       serverFolderPath: this.props.creatorTools.dedicatedServerPath,
+      contentSources: cs,
     });
   }
 
@@ -104,9 +111,9 @@ export default class CreatorToolsSettingsPanel extends Component<
     event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
     data: DropdownProps
   ) {
-    if (data.value === CartoTargetStrings[1]) {
+    if (data.value === CreatorToolsTargetSettings[1]) {
       this.props.creatorTools.track = MinecraftTrack.edu;
-    } else if (data.value === CartoTargetStrings[1]) {
+    } else if (data.value === CreatorToolsTargetSettings[2]) {
       this.props.creatorTools.track = MinecraftTrack.preview;
     } else {
       this.props.creatorTools.track = MinecraftTrack.main;
@@ -180,9 +187,9 @@ export default class CreatorToolsSettingsPanel extends Component<
     coreProps.push(
       <div className="csp-trackinput">
         <Dropdown
-          items={CartoTargetStrings}
+          items={CreatorToolsTargetSettings}
           placeholder="Select which version of Minecraft to target"
-          defaultValue={CartoTargetStrings[this.props.creatorTools.track as number]}
+          defaultValue={CreatorToolsTargetSettings[this.props.creatorTools.track as number]}
           onChange={this._handleTrackChange}
         />
       </div>
@@ -192,6 +199,13 @@ export default class CreatorToolsSettingsPanel extends Component<
         Default Edit Experience
       </div>
     );
+
+    let contentSourceLabels: string[] = [];
+
+    if (this.state.contentSources !== undefined) {
+      contentSourceLabels = this.state.contentSources.map((cs) => cs.id);
+    }
+
     coreProps.push(
       <div className="csp-defaultEditinput">
         <Dropdown
@@ -210,6 +224,24 @@ export default class CreatorToolsSettingsPanel extends Component<
         </div>
       </div>
     );
+
+    coreProps.push(
+      <div className="csp-label csp-defaultDeployTargetlabel" id="csp-defaultDeployTargetlabel">
+        Default Deployment Target
+      </div>
+    );
+    coreProps.push(
+      <div className="csp-defaultDeployTarget">
+        <Dropdown
+          items={contentSourceLabels}
+          aria-labelledby="csp-defaultDeployTargetlabel"
+          placeholder="Select your default deployment target"
+          defaultValue={contentSourceLabels[0]}
+          onChange={this._handleEditPreferenceChange}
+        />
+      </div>
+    );
+
     coreProps.push(
       <div className="csp-label csp-formatbeforesavelabel" key="csp-formatbeforesavelabel">
         Format JSON and script on open and save

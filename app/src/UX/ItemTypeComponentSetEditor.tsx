@@ -1,6 +1,6 @@
 import { Component, SyntheticEvent } from "react";
 import "./ItemTypeComponentSetEditor.css";
-import DataForm, { IDataFormProps } from "../dataform/DataForm";
+import DataForm, { IDataFormProps } from "../dataformux/DataForm";
 import Database from "../minecraft/Database";
 import {
   Toolbar,
@@ -16,9 +16,11 @@ import DataFormUtilities from "../dataform/DataFormUtilities";
 import Utilities from "../core/Utilities";
 import { CustomLabel } from "./Labels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import ItemTypeAddComponent from "./ItemTypeAddComponent";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
+import telemetry from "../analytics/Telemetry";
+import { TelemetryEvents, TelemetryProperties } from "../analytics/TelemetryConstants";
 import CreatorTools from "../app/CreatorTools";
 import Project from "../app/Project";
 import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
@@ -169,6 +171,13 @@ export default class ItemTypeComponentSetEditor extends Component<
     const id = componentListing[event.selectedIndex].id;
 
     if (id) {
+      telemetry.trackEvent({
+        name: TelemetryEvents.ITEM_TYPE_EDITOR_COMPONENT_CLICKED,
+        properties: {
+          [TelemetryProperties.COMPONENT_ID]: id,
+        },
+      });
+
       this.setState({
         activeComponentId: id,
       });
@@ -355,7 +364,7 @@ export default class ItemTypeComponentSetEditor extends Component<
             <CustomLabel
               isCompact={false}
               text="Add component"
-              icon={<FontAwesomeIcon icon={faAdd} className="fa-lg" />}
+              icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
             />
           ),
         },

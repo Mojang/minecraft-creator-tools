@@ -10,6 +10,8 @@ import { NewEntityTypeAddMode } from "../app/ProjectUtilities";
 import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
 import ItemGallery, { GalleryItemCommand } from "./ItemGallery";
 import { ItemTileButtonDisplayMode } from "./ItemTileButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaw, faPencil } from "@fortawesome/free-solid-svg-icons";
 
 interface INewEntityTypeProps extends IAppProps {
   project: Project;
@@ -107,7 +109,7 @@ export default class NewEntityType extends Component<INewEntityTypeProps, INewEn
       this.state.entitiesFolder === undefined ||
       this.props.creatorTools.gallery === undefined
     ) {
-      return <div>Loading...</div>;
+      return <div className="net-loading">Loading...</div>;
     }
 
     const entitiesFolder = this.state.entitiesFolder;
@@ -122,12 +124,38 @@ export default class NewEntityType extends Component<INewEntityTypeProps, INewEn
       inputText = "";
     }
 
+    const brand = this.props.theme.siteVariables?.colorScheme?.brand;
+    const isDark = brand?.background1 === "#312f2d";
+
+    const sectionHeaderStyle: React.CSSProperties = {
+      color: brand?.foreground,
+      borderBottomColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.15)",
+    };
+
+    const inputStyle: React.CSSProperties = {
+      backgroundColor: isDark ? "rgba(0,0,0,0.25)" : "rgba(255,255,255,0.9)",
+      borderColor: isDark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.2)",
+      color: brand?.foreground1,
+    };
+
+    const galleryStyle: React.CSSProperties = {
+      backgroundColor: isDark ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.85)",
+      borderColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.15)",
+      color: brand?.foreground1,
+    };
+
     return (
       <div className="net-outer">
-        <div className="net-optionsArea">
-          <div>
+        {/* Name Input Section */}
+        <div className="net-section">
+          <div className="net-sectionHeader" style={sectionHeaderStyle}>
+            <FontAwesomeIcon icon={faPencil} className="net-sectionIcon" />
+            <span>Mob Name</span>
+          </div>
+          <div className="net-inputWrapper" style={inputStyle}>
             <Input
               aria-label="Entity type name"
+              className="net-input"
               value={inputText}
               defaultValue={inputText}
               placeholder={this.state.selectedEntityType ? this.state.selectedEntityType.id : "myMobName"}
@@ -135,23 +163,25 @@ export default class NewEntityType extends Component<INewEntityTypeProps, INewEn
             />
           </div>
         </div>
-        <div className="net-galleryHeader">Based on the following mob:</div>
-        <div
-          className="net-projectGallery"
-          style={{
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
-          }}
-        >
-          <ItemGallery
-            creatorTools={this.props.creatorTools}
-            theme={this.props.theme}
-            view={ItemTileButtonDisplayMode.smallImage}
-            isSelectable={true}
-            gallery={this.props.creatorTools.gallery}
-            filterOn={[GalleryItemType.entityType]}
-            onGalleryItemCommand={this._handleTypeGalleryCommand}
-          />
+
+        {/* Base Mob Selection Section */}
+        <div className="net-section">
+          <div className="net-sectionHeader" style={sectionHeaderStyle}>
+            <FontAwesomeIcon icon={faPaw} className="net-sectionIcon" />
+            <span>Base Template</span>
+          </div>
+          <div className="net-sectionSubtitle">Select a vanilla mob to use as a starting point</div>
+          <div className="net-projectGallery" style={galleryStyle}>
+            <ItemGallery
+              creatorTools={this.props.creatorTools}
+              theme={this.props.theme}
+              view={ItemTileButtonDisplayMode.smallImage}
+              isSelectable={true}
+              gallery={this.props.creatorTools.gallery}
+              filterOn={[GalleryItemType.entityType]}
+              onGalleryItemCommand={this._handleTypeGalleryCommand}
+            />
+          </div>
         </div>
       </div>
     );

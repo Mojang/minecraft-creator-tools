@@ -44,8 +44,12 @@ Nautilus - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/
  * At /minecraft:entity/component_groups/minecraft:nautilus_tame_saddled_in_water/minecraft:environment_sensor/triggers/0/filters/: 
 {
   "test": "in_water",
-  "operator": "==",
   "value": false
+}
+
+ * At /minecraft:entity/component_groups/minecraft:nautilus_tame_saddled_on_ground/minecraft:environment_sensor/triggers/0/filters/: 
+{
+  "test": "in_water"
 }
 
 
@@ -56,20 +60,6 @@ Pillager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/
   "subject": "self",
   "operator": "==",
   "value": false
-}
-
-
-Zombie Nautilus - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_nautilus.json
-
- * At /minecraft:entity/component_groups/minecraft:zombie_nautilus_tame_saddled_in_water/minecraft:environment_sensor/triggers/0/filters/: 
-{
-  "test": "in_water",
-  "value": false
-}
-
- * At /minecraft:entity/component_groups/minecraft:zombie_nautilus_tame_saddled_on_ground/minecraft:environment_sensor/triggers/0/filters/: 
-{
-  "test": "in_water"
 }
 
  */

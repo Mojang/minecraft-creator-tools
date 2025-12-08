@@ -9,6 +9,8 @@ import ProjectInfoUtilities from "../ProjectInfoUtilities";
 import { ProjectItemType } from "../../app/IProjectItemData";
 import Project from "../../app/Project";
 import MCWorld from "../../minecraft/MCWorld";
+import { WorldLevelDat } from "../../index.lib";
+import Utilities from "../../core/Utilities";
 
 export enum CheckExperimentalFlagInfoGeneratorTest {
   flagIsOrWasTrue = 101,
@@ -35,7 +37,10 @@ export default class CheckExperimentalFlagInfoGenerator implements IProjectInfoG
   }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
-    info.flagIsOrWasTrue = infoSet.getSummedDataValue(this.id, CheckExperimentalFlagInfoGeneratorTest.flagIsOrWasTrue);
+    info.experimentalFlagIsOrWasTrue = infoSet.getSummedDataValue(
+      this.id,
+      CheckExperimentalFlagInfoGeneratorTest.flagIsOrWasTrue
+    );
     info.levelDatNotFound = infoSet.getSummedDataValue(
       this.id,
       CheckExperimentalFlagInfoGeneratorTest.levelDatNotFound
@@ -59,43 +64,63 @@ export default class CheckExperimentalFlagInfoGenerator implements IProjectInfoG
         continue;
       }
 
-      const mcworld = await MCWorld.ensureOnItem(item);
-      if (!mcworld) {
-        items.push(
-          new ProjectInfoItem(
-            InfoItemType.warning,
-            this.id,
-            CheckExperimentalFlagInfoGeneratorTest.worldNotFound,
-            "Could not load world.",
-            item
-          )
-        );
-        continue;
+      let levelDat = undefined;
+
+      if (
+        item.itemType === ProjectItemType.MCWorld ||
+        item.itemType === ProjectItemType.MCTemplate ||
+        item.itemType === ProjectItemType.worldFolder
+      ) {
+        const mcworld = await MCWorld.ensureOnItem(item);
+
+        if (!mcworld) {
+          items.push(
+            new ProjectInfoItem(
+              InfoItemType.warning,
+              this.id,
+              CheckExperimentalFlagInfoGeneratorTest.worldNotFound,
+              "Could not load world.",
+              item
+            )
+          );
+          continue;
+        }
+
+        await mcworld.load();
+        await mcworld.loadData(false);
+
+        if (!mcworld.levelData) {
+          items.push(
+            new ProjectInfoItem(
+              InfoItemType.warning,
+              this.id,
+              CheckExperimentalFlagInfoGeneratorTest.levelDatNotFound,
+              "Level.dat not found in a broader world file.",
+              item
+            )
+          );
+          continue;
+        }
+
+        levelDat = mcworld.levelData;
+      } else if (item.itemType === ProjectItemType.levelDat || item.itemType === ProjectItemType.levelDatOld) {
+        if (!item.isContentLoaded) {
+          await item.loadContent();
+        }
+
+        if (item.primaryFile && item.primaryFile.content && item.primaryFile.content instanceof Uint8Array) {
+          levelDat = new WorldLevelDat();
+          levelDat.loadFromNbtBytes(item.primaryFile.content);
+        }
       }
 
-      await mcworld.load();
-      await mcworld.loadData(false);
-
-      if (!mcworld.levelData) {
-        items.push(
-          new ProjectInfoItem(
-            InfoItemType.warning,
-            this.id,
-            CheckExperimentalFlagInfoGeneratorTest.levelDatNotFound,
-            "Could not load world file.",
-            item
-          )
-        );
-        continue;
-      }
-
-      if (mcworld.levelData.experimentalGameplay === true || mcworld.levelData.experimentsEverUsed === true) {
+      if (levelDat && (levelDat.experimentalGameplay === true || levelDat.experimentsEverUsed === true)) {
         items.push(
           new ProjectInfoItem(
             InfoItemType.warning,
             this.id,
             CheckExperimentalFlagInfoGeneratorTest.flagIsOrWasTrue,
-            "Experimental gameplay is or was enabled in this world. Marketplace submissions cannot use experimental features.",
+            "Experimental gameplay is or was enabled in this world. Shareable content should not use experimental features.",
             item
           )
         );

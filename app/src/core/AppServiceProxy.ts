@@ -10,6 +10,7 @@ import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
 export enum AppServiceProxyCommands {
   fsExists = "fsExists",
   fsFolderExists = "fsFolderExists",
+  fsRenameFolder = "fsRenameFolder",
   fsRootStorageExists = "fsRootStorageExists",
   fsMkdir = "fsMkdir",
   fsReadUtf8File = "fsReadUtf8File",
@@ -36,6 +37,7 @@ export enum AppServiceProxyCommands {
   stopDedicatedServer = "stopDedicatedServer",
   shellRecycleItem = "shellRecycleItem",
   reloadMct = "reloadMct",
+  getContentSources = "getContentSources",
   minecraftShell = "minecraftShell",
   windowClose = "windowClose",
   windowRestore = "windowRestore",
@@ -47,6 +49,7 @@ export enum AppServiceProxyCommands {
   windowLeftSide = "windowLeftSide",
   windowRightSide = "windowRightSide",
   getWindowState = "getWindowState",
+  getPlatform = "getPlatform",
   appGetPath = "appGetPath",
   updateIAgree = "updateIAgree",
   convertFile = "convertFile",
@@ -101,7 +104,7 @@ export default class AppServiceProxy {
   }
 
   static _handleLog(log: Log, item: LogItem) {
-    AppServiceProxy.logToConsole(item.message);
+    AppServiceProxy.logToConsole(item.message + " " + Log.getStack().replace("Error\n", ""));
   }
 
   static async logToConsole(message: string) {
@@ -301,7 +304,7 @@ export default class AppServiceProxy {
   private static _handleNewMessage(args: string) {
     if (args !== null && args.length > 0) {
       if (args.startsWith("async")) {
-        const argSplit = args.split("|");
+        const argSplit = Utilities.splitUntil(args, "|", 2);
 
         if (argSplit.length > 2) {
           const index = parseInt(argSplit[1]);
@@ -322,7 +325,7 @@ export default class AppServiceProxy {
           }
         }
       } else if (args.startsWith("bsync")) {
-        const argSplit = args.split("|");
+        const argSplit = Utilities.splitUntil(args, "|", 2);
 
         if (argSplit.length > 2) {
           const index = parseInt(argSplit[1]);

@@ -120,8 +120,6 @@ export default interface MinecraftExperienceReward {
    */
   on_bred?: string;
 
-  on_bred_array?: { [key: string]: string };
-
   /**
    * @remarks
    * A Molang expression defining the amount of experience rewarded when
@@ -137,7 +135,5 @@ export default interface MinecraftExperienceReward {
    *
    */
   on_death?: string;
-
-  on_death_array?: { [key: string]: string };
 
 }

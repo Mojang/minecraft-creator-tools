@@ -1,24 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
 import { MouseEvent, SyntheticEvent } from "react";
 import CreatorTools from "../../../app/CreatorTools";
-import { ProjectEditorMode } from "../../ProjectEditorUtilities";
 import IStorage from "../../../storage/IStorage";
-import StorageUtilities from "../../../storage/StorageUtilities";
-import { AppMode, NewProjectTemplateType } from "../../App";
+import { AppMode } from "../../App";
 import Log from "../../../core/Log";
 import Utilities from "../../../core/Utilities";
 import AppServiceProxy, { AppServiceProxyCommands } from "../../../core/AppServiceProxy";
 import Project from "../../../app/Project";
 import { ShorthandValue, ListItemProps, List, selectableListBehavior, ThemeInput } from "@fluentui/react-northstar";
-import { faNewspaper } from "@fortawesome/free-regular-svg-icons";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CreatorToolsHost, { HostType } from "../../../app/CreatorToolsHost";
 import { MinecraftFlavor } from "../../../app/ICreatorToolsData";
 import FileSystemFolder from "../../../storage/FileSystemFolder";
 import FileSystemStorage from "../../../storage/FileSystemStorage";
-import MinecraftBox from "../../MinecraftBox";
-import MinecraftButton from "../../MinecraftButton";
 import WebUtilities from "../../WebUtilities";
 import IAppProps from "../../IAppProps";
 import { GalleryProjectCommand } from "../../ProjectGallery";
@@ -26,6 +19,7 @@ import { LocalFolderType, LocalGalleryCommand } from "../../LocalGalleryCommand"
 import IProjectSeed from "../../../app/IProjectSeed";
 import IFolder from "../../../storage/IFolder";
 import IGallery from "../../../app/IGallery";
+import { DeploymentTargetType } from "../../../app/DeploymentTarget";
 
 export enum HomeEffect {
   none = 0,
@@ -75,14 +69,7 @@ interface IHomeProps extends IAppProps {
   onSetProject: (project: Project) => void;
   onGalleryItemCommand: (command: GalleryProjectCommand, newProjectSeed: IProjectSeed) => void;
   onLocalGalleryItemCommand: (command: LocalGalleryCommand, folderType: LocalFolderType, folder: IFolder) => void;
-  onNewProjectSelected?: (
-    newProjectSeed: IProjectSeed,
-    newProjectType: NewProjectTemplateType,
-    additionalFilePath?: string,
-    additionalFile?: File,
-    editorStartMode?: ProjectEditorMode,
-    isReadOnly?: boolean
-  ) => void;
+  onFilesSubmitted?: (additionalFilePath: string, additionalFiles: File[]) => void;
   onNewProjectFromFolderSelected?: (folder: string) => void;
   onProgressLog?: (message: string) => void;
   onNewProjectFromFolderInstanceSelected?: (folder: IFolder, name?: string, isDocumentationProject?: boolean) => void;
@@ -92,7 +79,7 @@ interface IHomeState {
   gallery: IGallery | undefined;
   dialogMode?: HomeDialogMode;
   effect?: HomeEffect;
-  isDeployingToComMojang: boolean;
+  isDeployingToMinecraft: boolean;
   selectedProject?: string;
   search?: string;
   errorMessage?: string;
@@ -111,7 +98,7 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
   const [state, setState] = useState<IHomeState>({
     gallery: undefined,
     effect: HomeEffect.none,
-    isDeployingToComMojang: creatorTools.isDeployingToComMojang,
+    isDeployingToMinecraft: creatorTools.isDeployingToMinecraft,
     dialogMode: HomeDialogMode.errorMessage,
     errorMessage: props.errorMessage,
   });
@@ -144,7 +131,7 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
     setState({
       gallery: state.gallery,
       dialogMode: state.dialogMode,
-      isDeployingToComMojang: creatorTools.isDeployingToComMojang,
+      isDeployingToMinecraft: creatorTools.isDeployingToMinecraft,
       effect: state.effect,
       search: state.search,
       errorMessage: state.errorMessage,
@@ -173,7 +160,7 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
       setState({
         gallery: creatorTools.gallery,
         dialogMode: state.dialogMode,
-        isDeployingToComMojang: creatorTools.isDeployingToComMojang,
+        isDeployingToMinecraft: creatorTools.isDeployingToMinecraft,
       });
     } else {
       creatorTools.onGalleryLoaded.subscribe(_onGalleryLoaded);
@@ -202,7 +189,7 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
         setState({
           gallery: state.gallery,
           dialogMode: state.dialogMode,
-          isDeployingToComMojang: creatorTools.isDeployingToComMojang,
+          isDeployingToMinecraft: creatorTools.isDeployingToMinecraft,
           search: state.search,
           effect: HomeEffect.none,
           newProjectSeed: state.newProjectSeed,
@@ -227,7 +214,7 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
           setState({
             gallery: state.gallery,
             dialogMode: state.dialogMode,
-            isDeployingToComMojang: creatorTools.isDeployingToComMojang,
+            isDeployingToMinecraft: creatorTools.isDeployingToMinecraft,
             effect: HomeEffect.dragOver,
             newProjectSeed: state.newProjectSeed,
           });
@@ -256,16 +243,16 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
         return false;
       }
 
-      CreatorToolsHost.deploymentStorage = fss;
+      CreatorToolsHost.deploymentStorage[DeploymentTargetType.customDedicatedServer] = fss;
+      creatorTools.defaultDeploymentTargetType = DeploymentTargetType.customDedicatedServer;
+      creatorTools.isDeployingToMinecraft = true;
 
-      creatorTools.isDeployingToComMojang = true;
-      creatorTools.updateDeploymentStorage(fss);
       creatorTools.ensureMinecraft(MinecraftFlavor.deploymentStorage);
 
       setState({
         gallery: state.gallery,
         search: state.search,
-        isDeployingToComMojang: creatorTools.isDeployingToComMojang,
+        isDeployingToMinecraft: creatorTools.isDeployingToMinecraft,
         newProjectSeed: state.newProjectSeed,
         effect: HomeEffect.none,
         dialogMode: HomeDialogMode.none,
@@ -351,7 +338,7 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
         } else if (dtitem.kind === "file") {
           const file = dtitem.getAsFile();
           if (file) {
-            _processIncomingFile("/", file);
+            _processIncomingFiles("/", [file]);
           }
         }
       }
@@ -360,27 +347,10 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
     _stopDragEffect();
   }
 
-  const _processIncomingFile = useCallback(
-    (path: string, file: File, editorStartMode?: ProjectEditorMode, isReadOnly?: boolean) => {
-      if (file != null && props.onNewProjectSelected) {
-        let fileName = "File";
-
-        if (file.name) {
-          fileName = file.name;
-
-          fileName = StorageUtilities.getBaseFromName(fileName);
-        }
-
-        props.onNewProjectSelected(
-          {
-            name: fileName,
-          },
-          NewProjectTemplateType.empty,
-          path,
-          file,
-          editorStartMode,
-          isReadOnly
-        );
+  const _processIncomingFiles = useCallback(
+    (path: string, files: File[]) => {
+      if (files != null && files.length > 0 && props.onFilesSubmitted) {
+        props.onFilesSubmitted(path, files);
       }
     },
     [props]
@@ -390,11 +360,11 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
     (path: string, entry: any) => {
       if (entry.file) {
         entry.file((file: File) => {
-          _processIncomingFile(path, file);
+          _processIncomingFiles(path, [file]);
         });
       }
     },
-    [_processIncomingFile]
+    [_processIncomingFiles]
   );
 
   function _startDelayLoadItems() {
@@ -413,7 +383,7 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
       gallery: creatorTools.gallery,
       dialogMode: state.dialogMode,
       effect: state.effect,
-      isDeployingToComMojang: creatorTools.isDeployingToComMojang,
+      isDeployingToMinecraft: creatorTools.isDeployingToMinecraft,
       newProjectSeed: state.newProjectSeed,
     });
   }
@@ -425,7 +395,7 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
       gallery: state.gallery,
       search: state.search,
       newProjectSeed: state.newProjectSeed,
-      isDeployingToComMojang: creatorTools.isDeployingToComMojang,
+      isDeployingToMinecraft: creatorTools.isDeployingToMinecraft,
       effect: HomeEffect.none,
       dialogMode: HomeDialogMode.none,
       inlineLoadingMessage: "Creating backup zip as '" + name + "'...",
@@ -446,7 +416,7 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
       gallery: state.gallery,
       search: state.search,
       newProjectSeed: state.newProjectSeed,
-      isDeployingToComMojang: creatorTools.isDeployingToComMojang,
+      isDeployingToMinecraft: creatorTools.isDeployingToMinecraft,
       effect: HomeEffect.none,
       dialogMode: HomeDialogMode.none,
       inlineLoadingMessage: undefined,
@@ -479,7 +449,7 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
           setState({
             gallery: state.gallery,
             dialogMode: state.dialogMode,
-            isDeployingToComMojang: creatorTools.isDeployingToComMojang,
+            isDeployingToMinecraft: creatorTools.isDeployingToMinecraft,
             effect: state.effect,
             search: state.search,
             errorMessage: state.errorMessage,
@@ -557,16 +527,9 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
       if (!event.target || !event.target.files || event.target.files.length <= 0 || !creatorTools.packStorage) {
         return;
       }
-
-      const file = event.target.files[0];
-
-      if (!file) {
-        return;
-      }
-
-      _processIncomingFile("/", file);
+      _processIncomingFiles("/", WebUtilities.getFileArrayFromFileList(event.target.files));
     },
-    [creatorTools, _processIncomingFile]
+    [creatorTools, _processIncomingFiles]
   );
 
   // function _recentItemContextMenuClick(e: SyntheticEvent<HTMLElement, Event>, data?: any | undefined) {
@@ -597,13 +560,7 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
       return;
     }
 
-    const file = event.target.files[0];
-
-    if (!file) {
-      return;
-    }
-
-    _processIncomingFile("/", file, ProjectEditorMode.inspector, true);
+    _processIncomingFiles("/", WebUtilities.getFileArrayFromFileList(event.target.files));
   }
 
   const projectListItems: ShorthandValue<ListItemProps>[] = [];
@@ -626,7 +583,6 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
   const sortedProjects = creatorTools.projects.sort(_compareProjects);
 
   let messageArea = [];
-  let toolBin: any[] = [];
 
   messageArea.push(
     <div className="home-areaLoading" key="loadingLabel">
@@ -664,70 +620,6 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
           <img className="home-loadingIcon" src="loading.gif" alt="Waiting spinner" />
           {state.inlineLoadingMessage}
         </div>
-      );
-    }
-
-    toolBin.push(
-      <MinecraftBox theme={props.theme} key="home-validateTool" className="home-toolTile">
-        <div className="home-toolTileInner">
-          <h3
-            className="home-toolTile-label"
-            style={{
-              color: props.theme.siteVariables?.colorScheme.brand.foreground3,
-            }}
-          >
-            <span className="home-iconAdjust">
-              <FontAwesomeIcon icon={faMagnifyingGlass} className="fa-lg home-iconAdjust" />
-            </span>
-            <span>&#160;Validate/Inspect Content</span>
-          </h3>
-          <div className="home-toolTile-instruction">
-            Upload a zip/MCAddon/MCPack/MCWorld of Minecraft files to get an Inspector report.
-          </div>
-          <input
-            type="file"
-            accept=".mcaddon, .mcpack, .mcworld, .mcproject, .mctemplate, .zip"
-            title="Upload a .mcpack, .mcaddon, or ZIP file to validate"
-            className="home-inspectFileUpload"
-            style={{
-              color: props.theme.siteVariables?.colorScheme.brand.foreground3,
-              backgroundColor: props.theme.siteVariables?.colorScheme.brand.background5,
-            }}
-            onChange={_handleInspectFileUpload}
-          />
-        </div>
-      </MinecraftBox>
-    );
-
-    if (Utilities.isPreview) {
-      toolBin.push(
-        <MinecraftButton
-          onClick={_handleOpenLocalFolderForDocumentationClick}
-          theme={props.theme}
-          key="home-documentationEditor"
-          className="home-toolTile"
-        >
-          <div className="home-toolTileInner">
-            <h3 className="home-toolTile-label">
-              <span className="home-iconAdjust">
-                <FontAwesomeIcon icon={faNewspaper} className="fa-lg home-iconAdjust" />
-              </span>
-              <span>&#160;Documentation Editor</span>
-            </h3>
-            <div className="home-toolTile-instruction">
-              Open on the GitHub minecraft-creator/content folder on your PC.
-            </div>
-            <div
-              style={{
-                color: props.theme.siteVariables?.colorScheme.brand.foreground1,
-                backgroundColor: props.theme.siteVariables?.colorScheme.brand.background5,
-              }}
-              className="home-toolTile-button"
-            >
-              Open minecraft-creator/content
-            </div>
-          </div>
-        </MinecraftButton>
       );
     }
   }

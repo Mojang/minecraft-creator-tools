@@ -209,10 +209,22 @@ export default class ProjectBuild implements IErrorable {
         }
 
         if (!ProjectBuild.isInitialized) {
+          try {
+            await esbuild.initialize({
+              wasmURL: "./dist/esbuild-wasm/esbuild.wasm",
+            });
+          } catch (e: any) {
+            this._pushError("Failed to initialize build system: " + e.toString());
+            await this.project.creatorTools?.notifyOperationEnded(
+              operId,
+              "Unable to continue script building '" + this.project.name + "'",
+              StatusTopic.scriptBuild,
+              this.isInErrorState
+            );
+            return;
+          }
+
           ProjectBuild.isInitialized = true;
-          await esbuild.initialize({
-            wasmURL: "./dist/esbuild-wasm/esbuild.wasm",
-          });
         }
 
         const me = this;

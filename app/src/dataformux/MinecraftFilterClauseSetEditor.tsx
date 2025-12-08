@@ -4,7 +4,7 @@ import { MinecraftFilterClauseSet } from "../minecraft/jsoncommon/MinecraftFilte
 import { MinecraftFilterClause } from "../minecraft/jsoncommon/MinecraftFilterClause";
 import MinecraftFilterClauseEditor, { IMinecraftFilterClauseEditorProps } from "./MinecraftFilterClauseEditor";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { Toolbar } from "@fluentui/react-northstar";
 import { faSquare, faSquareCheck } from "@fortawesome/free-regular-svg-icons";
 import { CustomLabel } from "../UX/Labels";
@@ -219,7 +219,7 @@ export default class MinecraftFilterClauseSetEditor extends Component<
     toolbarItems.push({
       icon: (
         <CustomLabel
-          icon={<FontAwesomeIcon icon={faAdd} className="fa-lg" />}
+          icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
           text={"Add condition"}
           isCompact={false}
         />

@@ -13,6 +13,7 @@ import BlockActor from "./blockActors/BlockActor";
 import GenericBlockActor from "./blockActors/GenericBlockActor";
 import BlockActorFactory from "./blockActors/BlockActorFactory";
 import Database from "./Database";
+import ChunkEntity from "./ChunkEntity";
 
 const CHUNK_X_SIZE = 16;
 const CHUNK_Z_SIZE = 16;
@@ -34,8 +35,11 @@ export default class WorldChunk {
   finalizedState: LevelKeyValue | undefined;
   entity: LevelKeyValue | undefined;
   blockActorKeys: LevelKeyValue[] = [];
+  private _hasContent?: boolean = undefined;
   private _blockActorsRelLoc: BlockActor[][][] = [];
   private _blockActors: BlockActor[] = [];
+  private _entities: ChunkEntity[] = [];
+  private _entitiesEnsured: boolean = false;
   pendingTicks: LevelKeyValue | undefined;
   biomeState: LevelKeyValue | undefined;
   blockTops: number[][] | undefined;
@@ -65,14 +69,17 @@ export default class WorldChunk {
   minSubChunkIndex: number = 512; // set it very high
 
   get absoluteMinY() {
+    this._checkNotCleared();
     return this.absoluteZeroY;
   }
 
   get minY() {
+    this._checkNotCleared();
     return this.absoluteZeroY + this.minSubChunkIndex * 16;
   }
 
   get maxY() {
+    this._checkNotCleared();
     return this.absoluteZeroY + (this.maxSubChunkIndex + 1) * 16;
   }
 
@@ -81,11 +88,26 @@ export default class WorldChunk {
   }
 
   get blockActors() {
+    this._checkNotCleared();
     if (!this.blockActorsEnsured) {
       this.ensureBlockActors();
     }
 
     return this._blockActors;
+  }
+
+  /**
+   * Gets the entities in this chunk.
+   * Entities are parsed lazily from the entity LevelKeyValue on first access.
+   */
+  get entities(): ChunkEntity[] {
+    this._checkNotCleared();
+
+    if (!this._entitiesEnsured) {
+      this.ensureEntities();
+    }
+
+    return this._entities;
   }
 
   constructor(world: MCWorld, inX: number, inZ: number) {
@@ -109,6 +131,14 @@ export default class WorldChunk {
     this.z = inZ;
   }
 
+  _checkNotCleared() {
+    Log.assert(this._hasContent !== false, "Chunk data has been cleared - cannot access data in " + this.world.name);
+  }
+
+  /**
+   * Clears cached/parsed data to free memory while preserving the ability to re-parse later.
+   * Use this after processing a chunk to reduce memory usage.
+   */
   clearCachedData() {
     for (let i = 0; i < 64; i++) {
       if (this.subChunks[i] !== undefined) {
@@ -125,6 +155,56 @@ export default class WorldChunk {
 
     this._blockActorsRelLoc = [];
     this._blockActors = [];
+    this._entities = [];
+    this._entitiesEnsured = false;
+    this._hasContent = false;
+  }
+
+  /**
+   * Aggressively clears all chunk data including raw LevelKeyValue bytes.
+   * Call this when the chunk data is no longer needed and will not be re-accessed.
+   * WARNING: After calling this, the chunk cannot be re-parsed from its data.
+   */
+  clearAllData() {
+    this.clearCachedData();
+
+    // Clear subchunk LevelKeyValue data
+    for (let i = 0; i < this.subChunks.length; i++) {
+      if (this.subChunks[i] !== undefined) {
+        this.subChunks[i].clearValueData();
+      }
+    }
+
+    // Clear block actor key data
+    for (const blockActorKey of this.blockActorKeys) {
+      blockActorKey.clearValueData();
+    }
+
+    // Clear other LevelKeyValue data
+    if (this.entity) {
+      this.entity.clearValueData();
+    }
+    if (this.biomesAndElevation) {
+      this.biomesAndElevation.clearValueData();
+    }
+    if (this.pendingTicks) {
+      this.pendingTicks.clearValueData();
+    }
+    if (this.biomeState) {
+      this.biomeState.clearValueData();
+    }
+    if (this.chunkVersion) {
+      this.chunkVersion.clearValueData();
+    }
+    if (this.finalizedState) {
+      this.finalizedState.clearValueData();
+    }
+    if (this.checksumKey) {
+      this.checksumKey.clearValueData();
+    }
+
+    // Clear legacy terrain bytes
+    this.legacyTerrainBytes = undefined;
   }
 
   addActorDigest(digest: string) {
@@ -152,7 +232,10 @@ export default class WorldChunk {
   }
 
   addKeyValue(keyValue: LevelKeyValue) {
+    this._hasContent = true;
     let keyBytes = keyValue.keyBytes;
+    let wasSuperceded = false; // Track if this update supercedes existing data
+    let isSignificantUpdate = false; // Track if this is a significant data addition (subchunk, blockTops, etc.)
 
     if (keyBytes) {
       const dimExtensionBytes = keyBytes.length >= 13 ? 4 : 0;
@@ -169,6 +252,11 @@ export default class WorldChunk {
           );
 
           if (keyValue.value && keyValue.value.length >= 512) {
+            // Check if we had existing blockTops data that will be superceded
+            if (this.blockTops !== undefined) {
+              wasSuperceded = true;
+            }
+
             this.blockTops = [];
 
             for (let i = 0; i < 16; i++) {
@@ -197,6 +285,9 @@ export default class WorldChunk {
           );
 
           if (keyValue.value && keyValue.value.length === 1) {
+            if (this.legacyVersion !== undefined) {
+              wasSuperceded = true;
+            }
             this.legacyVersion = keyValue.value[0];
           } else if (keyValue.value && keyValue.value.length === 0) {
             this.legacyVersion = undefined;
@@ -204,10 +295,16 @@ export default class WorldChunk {
           break;
 
         case 44: // version
+          if (this.chunkVersion !== undefined) {
+            wasSuperceded = true;
+          }
           this.chunkVersion = keyValue;
           break;
 
         case 45: // data2d
+          if (this.biomesAndElevation !== undefined) {
+            wasSuperceded = true;
+          }
           this.biomesAndElevation = keyValue;
           break;
 
@@ -224,8 +321,17 @@ export default class WorldChunk {
           }
 
           if (this.subChunks[subChunkIndex] !== undefined) {
-            // Log.fail("Unexpected subchunk already defined.");
+            // This subchunk is being superceded by newer data
+            wasSuperceded = true;
+            // Clear cached parsed data for this subchunk
+            this.blockDataStart[subChunkIndex] = -1;
+            this.bitsPerBlock[subChunkIndex] = -1;
+            this.blockPalettes[subChunkIndex] = undefined;
           }
+
+          // Always clear blockTops when adding/updating subchunk data
+          // so it gets recalculated with the new data
+          this.blockTops = undefined;
 
           if (!keyValue.value || keyValue.value.length <= 0) {
             Log.assert(this.subChunks[subChunkIndex] === undefined, "Empty subchunk defined.");
@@ -236,6 +342,7 @@ export default class WorldChunk {
           this.maxSubChunkIndex = Math.max(this.maxSubChunkIndex, subChunkIndex);
           this.minSubChunkIndex = Math.min(this.minSubChunkIndex, subChunkIndex);
           this.pendingSubChunksToProcess[subChunkIndex] = true;
+          isSignificantUpdate = true; // Subchunk data affects block rendering
           break;
 
         case 48: // legacy terrain
@@ -243,7 +350,11 @@ export default class WorldChunk {
 
           if (bytes && bytes.length > 0) {
             Log.assert(bytes.length === 83200, "LegacyTerrain record should be 83,200 bytes");
+            if (this.legacyTerrainBytes !== undefined) {
+              wasSuperceded = true;
+            }
             this.legacyTerrainBytes = bytes;
+            isSignificantUpdate = true; // Legacy terrain data affects block rendering
           }
           break;
 
@@ -254,6 +365,9 @@ export default class WorldChunk {
 
         case 50: // entity
           //       Log.assert(!this.entity, "Unexpected multiple entities.");
+          if (this.entity !== undefined) {
+            wasSuperceded = true;
+          }
           this.entity = keyValue;
           break;
 
@@ -268,6 +382,9 @@ export default class WorldChunk {
 
         case 53: // biome state
           //Log.assert(!this.biomeState, "Unexpected multiple biome states.");
+          if (this.biomeState !== undefined) {
+            wasSuperceded = true;
+          }
           this.biomeState = keyValue;
           break;
 
@@ -313,6 +430,14 @@ export default class WorldChunk {
         default:
           Log.debugAlert("Unsupported chunk type: " + val);
       }
+    }
+
+    // If data was superceded or significant new data was added, notify the world so map tiles can be refreshed
+    // This handles both: (1) old data being replaced by new, and (2) new data arriving for chunks that
+    // may have already been rendered as empty/air
+    // Only notify if the world has finished initial loading - otherwise we'd spam notifications
+    if (wasSuperceded || isSignificantUpdate) {
+      this.world.notifyChunkUpdated(this);
     }
   }
 
@@ -417,6 +542,7 @@ export default class WorldChunk {
     if (!this._blockActorsRelLoc || this.blockActorsEnsured) {
       return;
     }
+    this._checkNotCleared();
 
     this._blockActorsRelLoc = [];
     this._blockActors = [];
@@ -489,7 +615,55 @@ export default class WorldChunk {
     this.blockActorsEnsured = true;
   }
 
+  /**
+   * Parses entity data from the chunk's entity LevelKeyValue.
+   * This handles legacy entity storage (pre-1.18.30) where entity data
+   * is stored as concatenated NBT compound tags per chunk (type 50).
+   *
+   * Modern worlds (1.18.30+) store actors individually via actorprefix keys,
+   * which are parsed into MCWorld.actorsById instead.
+   *
+   * See: https://learn.microsoft.com/en-us/minecraft/creator/documents/actorstorage
+   */
+  ensureEntities() {
+    if (this._entitiesEnsured) {
+      return;
+    }
+    this._checkNotCleared();
+
+    this._entities = [];
+    this._entitiesEnsured = true;
+
+    if (!this.entity || !this.entity.value || this.entity.value.length === 0) {
+      return;
+    }
+
+    try {
+      const entityNbt = new NbtBinary();
+      entityNbt.context = this.world.name + " entities at chunk x:" + this.x + " z:" + this.z;
+      entityNbt.fromBinary(this.entity.value, true, false, 0, true, true);
+
+      if (entityNbt.roots) {
+        for (const root of entityNbt.roots) {
+          // Each root is an entity compound tag - parse it into a ChunkEntity
+          const entity = ChunkEntity.fromNbtTag(root);
+          if (entity) {
+            this._entities.push(entity);
+          }
+        }
+
+        if (this._entities.length > 0) {
+          Log.verbose("Parsed " + this._entities.length + " legacy entities in chunk x:" + this.x + " z:" + this.z);
+        }
+      }
+    } catch (e) {
+      Log.error("Could not parse legacy entities for chunk x:" + this.x + " z:" + this.z + " - " + e);
+    }
+  }
+
   removeBlockActorAtLoc(x: number, y: number, z: number) {
+    this._checkNotCleared();
+
     const newBlockActors = [];
 
     for (const blockActor of this._blockActors) {
@@ -502,6 +676,8 @@ export default class WorldChunk {
   }
 
   getSubChunkCube(subChunkId: number) {
+    this._checkNotCleared();
+
     const bc = new BlockVolume();
 
     bc.maxX = CHUNK_X_SIZE;
@@ -749,6 +925,7 @@ export default class WorldChunk {
     if (!this.blockTops) {
       this.determineBlockTops();
     }
+    this._checkNotCleared();
 
     if (!this.blockTops) {
       throw new Error("Unexpected block top error.");
@@ -761,6 +938,7 @@ export default class WorldChunk {
     if (!this.legacyTerrainBytes || z < 0 || x < 0 || y < 0) {
       throw new Error();
     }
+    this._checkNotCleared();
 
     const byte = this.legacyTerrainBytes[x * 128 * 16 + z * 128 + y];
 
@@ -771,6 +949,7 @@ export default class WorldChunk {
     if (!this.legacyTerrainBytes) {
       throw new Error();
     }
+    this._checkNotCleared();
 
     const blocks: Block[] = [];
 
@@ -791,6 +970,8 @@ export default class WorldChunk {
     if (this.legacyTerrainBytes) {
       return true;
     }
+    this._checkNotCleared();
+
     const subChunkId = this.getSubChunkIndexFromY(y);
 
     const blockPalettes = this.blockPalettes[subChunkId];
@@ -807,6 +988,7 @@ export default class WorldChunk {
     if (y < this.absoluteZeroY) {
       return undefined;
     }
+    this._checkNotCleared();
 
     Log.assert(x >= 0 && x < 16 && z >= 0 && z < 16, "Retrieving an out-of-range block from a chunk.");
 
@@ -842,10 +1024,10 @@ export default class WorldChunk {
         const blockAuxIndex = bytes[4097 + (inSubChunkY + z * 16 + x * 256)];
 
         const baseType = Database.getBlockTypeByLegacyId(blockTypeIndex);
-
         Log.assertDefined(baseType.id);
-
-        const block = new Block("minecraft:" + baseType.id);
+        // Use air for unknown block types to gracefully handle missing legacy IDs
+        const blockId = baseType?.id ? "minecraft:" + baseType.id : "minecraft:air";
+        const block = new Block(blockId);
         block.data = blockAuxIndex;
 
         return block;
@@ -873,13 +1055,116 @@ export default class WorldChunk {
     return blocks[index];
   }
 
+  /**
+   * Returns a count of block types in this chunk without allocating Block objects.
+   * This is much more memory-efficient than getBlockList() for statistical analysis.
+   * @returns A Map of block type names to their counts in this chunk
+   */
+  countBlockTypes(): Map<string, number> {
+    const typeCounts = new Map<string, number>();
+
+    if (this.legacyTerrainBytes) {
+      // Legacy terrain - count block type IDs directly
+      for (let i = 0; i < this.legacyTerrainBytes.length && i < 16 * 16 * MAX_LEGACY_Y; i++) {
+        const byte = this.legacyTerrainBytes[i];
+        if (byte !== 0) {
+          const blockType = Database.getBlockTypeByLegacyId(byte);
+          if (blockType && blockType.id) {
+            const typeName = "minecraft:" + blockType.id;
+            typeCounts.set(typeName, (typeCounts.get(typeName) || 0) + 1);
+          }
+        }
+      }
+      return typeCounts;
+    }
+
+    for (let subChunkId = this.minSubChunkIndex; subChunkId <= this.maxSubChunkIndex; subChunkId++) {
+      const subChunk = this.subChunks[subChunkId];
+
+      if (subChunk !== undefined) {
+        if (this.pendingSubChunksToProcess[subChunkId] === true) {
+          this.processSubChunk(subChunkId);
+        }
+
+        if (this.subChunkFormatType[subChunkId] === SubChunkFormatType.subChunk1dot0) {
+          // Legacy subchunk format - count from raw bytes
+          const bytes = subChunk.value;
+          if (bytes && bytes.length >= 4097) {
+            for (let i = 0; i < 4096; i++) {
+              const blockTypeIndex = bytes[1 + i];
+              if (blockTypeIndex !== 0) {
+                const blockType = Database.getBlockTypeByLegacyId(blockTypeIndex);
+                if (blockType && blockType.id) {
+                  const typeName = "minecraft:" + blockType.id;
+                  typeCounts.set(typeName, (typeCounts.get(typeName) || 0) + 1);
+                }
+              }
+            }
+          }
+        } else {
+          // Modern palette-based format - count palette entries efficiently
+          const blockPalette = this.blockPalettes[subChunkId];
+          if (blockPalette && blockPalette.blocks.length > 0) {
+            // Count how many times each palette index appears
+            const paletteCounts = new Map<number, number>();
+            const bytes = subChunk.value;
+
+            if (bytes) {
+              const subChunkBitsPerBlock = this.bitsPerBlock[subChunkId];
+              const bpw = Math.floor(32 / subChunkBitsPerBlock);
+              const blockDataStart = this.blockDataStart[subChunkId];
+
+              // Iterate through all 4096 blocks in this subchunk
+              for (let blockIndex = 0; blockIndex < 4096; blockIndex++) {
+                const byteStart = blockDataStart + Math.floor(blockIndex / bpw) * 4;
+                const blocksIn = blockIndex % bpw;
+
+                let word = DataUtilities.getUnsignedInteger(
+                  bytes[byteStart],
+                  bytes[byteStart + 1],
+                  bytes[byteStart + 2],
+                  bytes[byteStart + 3],
+                  true
+                );
+
+                word >>>= subChunkBitsPerBlock * blocksIn;
+
+                let paletteIndex = 0;
+                for (let i = 0; i < subChunkBitsPerBlock; i++) {
+                  let inc = word % 2;
+                  inc <<= i;
+                  paletteIndex += inc;
+                  word >>>= 1;
+                }
+
+                paletteCounts.set(paletteIndex, (paletteCounts.get(paletteIndex) || 0) + 1);
+              }
+
+              // Convert palette counts to type counts
+              for (const [paletteIndex, count] of paletteCounts) {
+                if (paletteIndex < blockPalette.blocks.length) {
+                  const block = blockPalette.blocks[paletteIndex];
+                  if (block && block.typeName) {
+                    typeCounts.set(block.typeName, (typeCounts.get(block.typeName) || 0) + count);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return typeCounts;
+  }
+
   getBlockList() {
     if (this.legacyTerrainBytes) {
       return this._getBlockLegacyList();
     }
 
     const blocks = [];
-    for (let subChunkId = this.minSubChunkIndex; subChunkId < this.maxSubChunkIndex; subChunkId++) {
+    for (let subChunkId = this.minSubChunkIndex; subChunkId <= this.maxSubChunkIndex; subChunkId++) {
       const subChunk = this.subChunks[subChunkId];
 
       if (subChunk !== undefined) {
@@ -906,12 +1191,12 @@ export default class WorldChunk {
 
               if (!blockTemplates[templateIndex]) {
                 const blockType = Database.getBlockTypeByLegacyId(blockTypeIndex);
-
                 if (!blockType || !blockType.id) {
                   throw new Error("Expected a block type for index " + blockTypeIndex);
                 }
-
-                const block = new Block("minecraft:" + blockType.id);
+                // Use air for unknown block types to gracefully handle missing legacy IDs
+                const blockId = blockType?.id ? "minecraft:" + blockType.id : "minecraft:air";
+                const block = new Block(blockId);
 
                 block.data = blockAuxIndex;
 
@@ -1037,7 +1322,10 @@ export default class WorldChunk {
                 if (
                   block.shortTypeId === "air" ||
                   block.shortTypeId === "flower" ||
-                  block.shortTypeId === "tallgrass"
+                  block.shortTypeId === "tallgrass" ||
+                  block.shortTypeId === "barrier" ||
+                  block.shortTypeId === "structure_void" ||
+                  block.shortTypeId === "light_block"
                 ) {
                   disallowedIndices.push(iPal);
                 }

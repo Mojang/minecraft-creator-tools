@@ -1,6 +1,6 @@
 import { Component, SyntheticEvent } from "react";
 import "./Range.css";
-import IFormComponentProps from "./IFormComponentProps.js";
+import IFormComponentProps from "./../dataform/IFormComponentProps.js";
 import { FormInput, InputProps } from "@fluentui/react-northstar";
 
 export interface IRangeProps extends IFormComponentProps {

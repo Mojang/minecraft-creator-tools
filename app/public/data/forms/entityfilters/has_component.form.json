@@ -211,6 +211,10 @@
           {
             "path": "/minecraft:entity/events/minecraft:ageable_grow_up/sequence/2/filters/",
             "content": "minecraft:is_tamed"
+          },
+          {
+            "path": "/minecraft:entity/events/minecraft:on_mount/filters/",
+            "content": "minecraft:is_saddled"
           }
         ],
         "/vanilla/behavior_pack/entities/rabbit.json": [
@@ -249,6 +253,12 @@
           {
             "path": "/minecraft:entity/events/minecraft:upgrade_to_1_21_130/sequence/1/filters/",
             "content": "minecraft:leashable"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+          {
+            "path": "/minecraft:entity/events/minecraft:on_player_mount/filters/",
+            "content": "minecraft:is_saddled"
           }
         ],
         "/vanilla/behavior_pack/entities/zombie_villager.json": [
@@ -414,6 +424,13 @@
           "test": "has_component",
           "operator": "!=",
           "value": "minecraft:is_baby"
+        }
+      },
+      {
+        "path": "/minecraft:entity/events/minecraft:on_mount/filters/",
+        "content": {
+          "test": "has_component",
+          "value": "minecraft:is_saddled"
         }
       }
     ],
@@ -678,6 +695,15 @@
           "test": "has_component",
           "operator": "!=",
           "value": "minecraft:leashable"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+      {
+        "path": "/minecraft:entity/events/minecraft:on_player_mount/filters/",
+        "content": {
+          "test": "has_component",
+          "value": "minecraft:is_saddled"
         }
       }
     ],

@@ -58,7 +58,7 @@
     "multipleSoundsManifests": 0,
     "soundsDefinitionManifestFormatIsValid": 0,
     "soundsDefinitionManifestIsNotValidJson": 0,
-    "flagIsOrWasTrue": 0,
+    "experimentalFlagIsOrWasTrue": 0,
     "levelDatNotFound": 0,
     "worldNotFound": 0,
     "deprecatedBlockOverride": 0,
@@ -327,8 +327,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CPACKICON000] Found 1 errors for Check Pack Icon Generator (CPACKICON).",
-    "infoGenerationTime": 284,
-    "endToEndGenerationTime": 307,
+    "infoGenerationTime": 310,
+    "endToEndGenerationTime": 341,
     "reds": 1574,
     "summary": {
       "BASEGAMEVER": {

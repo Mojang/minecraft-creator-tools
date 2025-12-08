@@ -4,7 +4,7 @@ import IFile from "../storage/IFile";
 import "./EntityTypeResourceEditor.css";
 import Database from "../minecraft/Database";
 import { ThemeInput } from "@fluentui/styles";
-import DataForm, { IDataFormProps } from "../dataform/DataForm";
+import DataForm, { IDataFormProps } from "../dataformux/DataForm";
 import IProperty from "../dataform/IProperty";
 import EntityTypeResourceDefinition from "../minecraft/EntityTypeResourceDefinition";
 import ProjectItem from "../app/ProjectItem";
@@ -17,6 +17,7 @@ import { CustomTabLabel } from "./Labels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCube,
+  faEye,
   faPaintBrush,
   faPersonWalkingArrowLoopLeft,
   faSliders,
@@ -27,13 +28,15 @@ import SoundCatalogDefinition from "../minecraft/SoundCatalogDefinition";
 import { ISoundEventSet } from "../minecraft/ISoundCatalog";
 import SoundEventSetEditor, { SoundEventSetType } from "./SoundEventSetEditor";
 import Project from "../app/Project";
+import CreatorTools from "../app/CreatorTools";
 
 export enum EntityTypeResourceEditorMode {
-  textures = 0,
-  geometry = 1,
-  animations = 2,
-  materials = 3,
-  audio = 4,
+  preview = 0,
+  textures = 1,
+  geometry = 2,
+  animations = 3,
+  materials = 4,
+  audio = 5,
 }
 
 interface IEntityTypeResourceEditorProps extends IFileProps {
@@ -41,6 +44,7 @@ interface IEntityTypeResourceEditorProps extends IFileProps {
   readOnly: boolean;
   displayHeader?: boolean;
   project: Project;
+  creatorTools?: CreatorTools;
   theme: ThemeInput<any>;
   item: ProjectItem;
 }
@@ -67,6 +71,7 @@ export default class EntityTypeResourceEditor extends Component<
     this._handleDataFormPropertyChange = this._handleDataFormPropertyChange.bind(this);
     this._handleNewChildPersistable = this._handleNewChildPersistable.bind(this);
 
+    this._setPreviewMode = this._setPreviewMode.bind(this);
     this._setGeometryMode = this._setGeometryMode.bind(this);
     this._setMaterialsMode = this._setMaterialsMode.bind(this);
     this._setAnimationsMode = this._setAnimationsMode.bind(this);
@@ -77,7 +82,7 @@ export default class EntityTypeResourceEditor extends Component<
       fileToEdit: props.file,
       isLoaded: false,
       sound: undefined,
-      mode: EntityTypeResourceEditorMode.textures,
+      mode: EntityTypeResourceEditorMode.preview,
       entityTypeResource: undefined,
     };
 
@@ -90,7 +95,7 @@ export default class EntityTypeResourceEditor extends Component<
         fileToEdit: props.file,
         isLoaded: false,
         sound: undefined,
-        mode: EntityTypeResourceEditorMode.textures,
+        mode: EntityTypeResourceEditorMode.preview,
         entityTypeResource: undefined,
       };
 
@@ -249,6 +254,10 @@ export default class EntityTypeResourceEditor extends Component<
     this._setMode(EntityTypeResourceEditorMode.textures);
   }
 
+  _setPreviewMode() {
+    this._setMode(EntityTypeResourceEditorMode.preview);
+  }
+
   _setGeometryMode() {
     this._setMode(EntityTypeResourceEditorMode.geometry);
   }
@@ -283,6 +292,21 @@ export default class EntityTypeResourceEditor extends Component<
     }
 
     let isButtonCompact = false;
+
+    toolbarItems.push({
+      icon: (
+        <CustomTabLabel
+          icon={<FontAwesomeIcon icon={faEye} className="fa-lg" />}
+          text={"Preview"}
+          isCompact={isButtonCompact}
+          isSelected={this.state.mode === EntityTypeResourceEditorMode.preview}
+          theme={this.props.theme}
+        />
+      ),
+      key: "etrePreviewTab",
+      onClick: this._setPreviewMode,
+      title: "Preview",
+    });
 
     toolbarItems.push({
       icon: (
@@ -408,7 +432,8 @@ export default class EntityTypeResourceEditor extends Component<
       this.state.renderControllerSets &&
       this.state.renderControllerSets.length > 0 &&
       this.state.mode !== EntityTypeResourceEditorMode.audio &&
-      this.state.mode !== EntityTypeResourceEditorMode.animations
+      this.state.mode !== EntityTypeResourceEditorMode.animations &&
+      this.state.mode !== EntityTypeResourceEditorMode.preview
     ) {
       let rcTitle = "Render Controllers";
       let rcDescrip =
@@ -457,7 +482,32 @@ export default class EntityTypeResourceEditor extends Component<
 
     let mainInterior = <></>;
 
-    if (this.state.mode === EntityTypeResourceEditorMode.audio) {
+    if (this.state.mode === EntityTypeResourceEditorMode.preview) {
+      // Find a geometry project item from the entity's children
+      let geometryItem: ProjectItem | undefined = undefined;
+
+      if (this.props.item && this.props.item.childItems) {
+        for (const childRef of this.props.item.childItems) {
+          if (childRef.childItem.itemType === ProjectItemType.modelGeometryJson) {
+            geometryItem = childRef.childItem;
+            break;
+          }
+        }
+      }
+
+      mainInterior = (
+        <div className="etre-empty-state">
+          <div className="etre-empty-state-icon">
+            <FontAwesomeIcon icon={faEye} className="fa-2x" />
+          </div>
+          <div className="etre-empty-state-title">No 3D Preview Available</div>
+          <div className="etre-empty-state-message">
+            This entity does not have associated geometry that can be previewed. Add geometry references to enable 3D
+            preview.
+          </div>
+        </div>
+      );
+    } else if (this.state.mode === EntityTypeResourceEditorMode.audio) {
       if (this.state.entityTypeResource && this.state.entityTypeResource.id) {
         mainInterior = (
           <SoundEventSetEditor

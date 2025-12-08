@@ -8,6 +8,8 @@ import Log from "./../core/Log";
 import ItemGallery, { GalleryItemCommand } from "./ItemGallery";
 import { ItemTileButtonDisplayMode } from "./ItemTileButton";
 import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCube, faPencil } from "@fortawesome/free-solid-svg-icons";
 
 interface INewBlockTypeProps extends IAppProps {
   project: Project;
@@ -95,34 +97,60 @@ export default class NewBlockType extends Component<INewBlockTypeProps, INewBloc
       inputText = "";
     }
 
+    const brand = this.props.theme.siteVariables?.colorScheme?.brand;
+    const isDark = brand?.background1 === "#312f2d";
+
+    const sectionHeaderStyle: React.CSSProperties = {
+      color: brand?.foreground,
+      borderBottomColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.15)",
+    };
+
+    const inputStyle: React.CSSProperties = {
+      backgroundColor: isDark ? "rgba(0,0,0,0.25)" : "rgba(255,255,255,0.9)",
+      borderColor: isDark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.2)",
+      color: brand?.foreground1,
+    };
+
+    const galleryStyle: React.CSSProperties = {
+      backgroundColor: isDark ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.85)",
+      borderColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.15)",
+      color: brand?.foreground1,
+    };
+
     return (
       <div className="nbt-outer">
-        <div className="nbt-optionsArea">
-          <div>
+        <div className="nbt-section">
+          <div className="nbt-sectionHeader" style={sectionHeaderStyle}>
+            <FontAwesomeIcon icon={faPencil} className="nbt-sectionIcon" />
+            Block Name
+          </div>
+          <div className="nbt-inputWrapper" style={inputStyle}>
             <Input
               aria-label="Block type name"
               value={inputText}
               defaultValue={inputText}
+              placeholder="myBlockName"
               onChange={this._handleNameChanged}
             />
           </div>
         </div>
-        <div
-          className="nbt-projectGallery"
-          style={{
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
-          }}
-        >
-          <ItemGallery
-            creatorTools={this.props.creatorTools}
-            theme={this.props.theme}
-            view={ItemTileButtonDisplayMode.smallImage}
-            isSelectable={true}
-            gallery={this.props.creatorTools.gallery}
-            filterOn={[GalleryItemType.blockType]}
-            onGalleryItemCommand={this._handleTypeGalleryCommand}
-          />
+        <div className="nbt-section">
+          <div className="nbt-sectionHeader" style={sectionHeaderStyle}>
+            <FontAwesomeIcon icon={faCube} className="nbt-sectionIcon" />
+            Base Template
+          </div>
+          <div className="nbt-sectionSubtitle">Select a vanilla block to use as a starting point</div>
+          <div className="nbt-projectGallery" style={galleryStyle}>
+            <ItemGallery
+              creatorTools={this.props.creatorTools}
+              theme={this.props.theme}
+              view={ItemTileButtonDisplayMode.smallImage}
+              isSelectable={true}
+              gallery={this.props.creatorTools.gallery}
+              filterOn={[GalleryItemType.blockType]}
+              onGalleryItemCommand={this._handleTypeGalleryCommand}
+            />
+          </div>
         </div>
       </div>
     );

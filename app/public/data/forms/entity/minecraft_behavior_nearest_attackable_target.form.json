@@ -1122,6 +1122,19 @@
         ],
         "/vanilla/behavior_pack/entities/polar_bear.json": [
           {
+            "path": "/minecraft:entity/component_groups/minecraft:baby_wild/minecraft:behavior.nearest_attackable_target/",
+            "content": [
+              {
+                "filters": {
+                  "test": "is_family",
+                  "subject": "other",
+                  "value": "fox"
+                },
+                "max_dist": 16
+              }
+            ]
+          },
+          {
             "path": "/minecraft:entity/component_groups/minecraft:adult_wild/minecraft:behavior.nearest_attackable_target/",
             "content": [
               {
@@ -1864,21 +1877,6 @@
             ]
           }
         ],
-        "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/biceson.behavior.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:adult_wild/minecraft:behavior.nearest_attackable_target/",
-            "content": [
-              {
-                "filters": {
-                  "test": "is_family",
-                  "subject": "other",
-                  "value": "fox"
-                },
-                "max_dist": 16
-              }
-            ]
-          }
-        ],
         "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/frost_moose.behavior.json": [
           {
             "path": "/minecraft:entity/components/minecraft:behavior.nearest_attackable_target/",
@@ -2092,8 +2090,8 @@
           {
             "path": "/minecraft:entity/component_groups/minecraft:nautilus_wild_adult_calm/minecraft:behavior.nearest_attackable_target/",
             "content": {
-              "range_min": 120,
-              "range_max": 180
+              "min": 120,
+              "max": 180
             }
           }
         ],
@@ -2113,8 +2111,8 @@
           {
             "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_wild_unmounted/minecraft:behavior.nearest_attackable_target/",
             "content": {
-              "range_min": 120,
-              "range_max": 180
+              "min": 120,
+              "max": 180
             }
           }
         ]
@@ -3403,8 +3401,8 @@
           "within_radius": 25,
           "must_see_forget_duration": 17,
           "attack_interval": {
-            "range_min": 120,
-            "range_max": 180
+            "min": 120,
+            "max": 180
           },
           "target_acquisition_probability": 0.5,
           "entity_types": [
@@ -3732,7 +3730,7 @@
               "filters": {
                 "test": "is_family",
                 "subject": "other",
-                "value": "player"
+                "value": "fox"
               },
               "max_dist": 16
             }
@@ -4500,8 +4498,8 @@
           "within_radius": 25,
           "must_see_forget_duration": 17,
           "attack_interval": {
-            "range_min": 120,
-            "range_max": 180
+            "min": 120,
+            "max": 180
           },
           "target_acquisition_probability": 0.5,
           "entity_types": [

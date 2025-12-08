@@ -4,7 +4,7 @@ import IFile from "../storage/IFile";
 import "./DocumentedCommandSetEditor.css";
 import DocumentedCommand from "../minecraft/docs/DocumentedCommand";
 import DocumentedCommandSet from "../minecraft/docs/DocumentedCommandSet";
-import DataForm from "../dataform/DataForm";
+import DataForm from "../dataformux/DataForm";
 import Database from "../minecraft/Database";
 import Project from "../app/Project";
 import { List, ListProps, ThemeInput, selectableListBehavior } from "@fluentui/react-northstar";

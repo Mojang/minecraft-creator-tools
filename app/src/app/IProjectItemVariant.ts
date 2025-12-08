@@ -5,6 +5,7 @@ export enum ProjectItemVariantType {
   subPack = 1,
   versionSlice = 2,
   versionSliceAlt = 3,
+  versionSliceAltPacks = 4,
 }
 
 export const MaxVariantCounts = 4;

@@ -11,6 +11,7 @@ import StorageUtilities from "../storage/StorageUtilities";
 import ZipStorage from "../storage/ZipStorage";
 import CreatorTools from "./CreatorTools";
 import Project from "./Project";
+import Utilities from "../core/Utilities";
 
 export enum PackageType {
   packSet = 0,
@@ -220,7 +221,7 @@ export default class Package {
   }
 
   getRefFromString(uuidPlusVersion: string) {
-    const sections = uuidPlusVersion.split("|");
+    const sections = Utilities.splitUntil(uuidPlusVersion, "|", 1);
 
     if (sections.length !== 2) {
       return undefined;

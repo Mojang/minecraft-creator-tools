@@ -120,3 +120,97 @@
 .ete-loading {
   padding: 8px;
 }
+
+/* Group list hover states and styling */
+.ete-listInterior .ui-list__item {
+  padding: 4px 8px;
+  margin: 2px 4px;
+  border-radius: 4px;
+  transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out;
+  cursor: pointer;
+}
+
+.ete-listInterior .ui-list__item:hover {
+  background-color: rgba(128, 128, 128, 0.15);
+  transform: translateX(2px);
+}
+
+.ete-listInterior .ui-list__item[aria-selected="true"] {
+  background-color: rgba(100, 149, 237, 0.2);
+  border-left: 3px solid cornflowerblue;
+  font-weight: 500;
+}
+
+.ete-listInterior .ui-list__item[aria-selected="true"]:hover {
+  background-color: rgba(100, 149, 237, 0.3);
+}
+
+/* Empty state styling */
+.ete-emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  min-height: 200px;
+}
+
+.ete-emptyStateIcon {
+  opacity: 0.4;
+  margin-bottom: 16px;
+}
+
+.ete-emptyStateTitle {
+  font-size: 16pt;
+  font-weight: 500;
+  margin-bottom: 8px;
+  opacity: 0.8;
+}
+
+.ete-emptyStateMessage {
+  font-size: 10pt;
+  opacity: 0.6;
+  max-width: 300px;
+  line-height: 1.5;
+}
+
+/* Breadcrumb styling */
+.ete-breadcrumb {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  font-size: 10pt;
+  opacity: 0.8;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+  margin-bottom: 8px;
+}
+
+.ete-breadcrumbItem {
+  padding: 2px 6px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.ete-breadcrumbItem:hover {
+  background-color: rgba(128, 128, 128, 0.15);
+}
+
+.ete-breadcrumbSeparator {
+  margin: 0 4px;
+  opacity: 0.5;
+}
+
+.ete-breadcrumbCurrent {
+  font-weight: 500;
+  opacity: 1;
+}
+
+/* Improved item bin transitions */
+.ete-itemBin {
+  grid-column: 2;
+  grid-row-start: 1;
+  grid-row-end: 3;
+  transition: background-color 0.15s ease-in-out;
+}

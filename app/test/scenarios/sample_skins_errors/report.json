@@ -48,7 +48,7 @@
     "multipleSoundsManifests": 0,
     "soundsDefinitionManifestFormatIsValid": 0,
     "soundsDefinitionManifestIsNotValidJson": 0,
-    "flagIsOrWasTrue": 0,
+    "experimentalFlagIsOrWasTrue": 0,
     "levelDatNotFound": 0,
     "worldNotFound": 0,
     "deprecatedBlockOverride": 0,
@@ -389,7 +389,7 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "",
-    "infoGenerationTime": 7,
+    "infoGenerationTime": 8,
     "endToEndGenerationTime": 12,
     "reds": 0,
     "summary": {

@@ -1,6 +1,6 @@
 import { Component } from "react";
 import "./EventEditor.css";
-import { IDataFormProps } from "../dataform/DataForm";
+import { IDataFormProps } from "../dataformux/DataForm";
 import Database from "../minecraft/Database";
 import { Toolbar, ThemeInput } from "@fluentui/react-northstar";
 import IManagedComponentSetItem from "../minecraft/IManagedComponentSetItem";

@@ -86,10 +86,11 @@ test.describe("Import From URL - gp link workflow", () => {
     await page.waitForTimeout(750);
 
     // Verify main editor interface elements are present - use flexible discovery
-    const saveButton = page.locator("button:has-text('Save')");
-    const viewButton = page.locator("button:has-text('View')");
-    const shareButton = page.locator("button:has-text('Share')");
-    const runButton = page.locator("button[title='Deploy']").or(page.locator("button:has-text('Run')").first());
+    // Use more specific selectors to avoid matching multiple buttons
+    const saveButton = page.getByRole("button", { name: "Save" }).first();
+    const viewButton = page.getByRole("button", { name: "View" }).first();
+    const shareButton = page.getByRole("button", { name: "Share" }).first();
+    const runButton = page.getByRole("button", { name: "Run" }).first();
 
     // Use conditional checks like the successful tests do
     if ((await saveButton.count()) > 0) {
@@ -109,7 +110,7 @@ test.describe("Import From URL - gp link workflow", () => {
 
     if ((await runButton.count()) > 0) {
       console.log("Found Run button in main toolbar");
-      await expect(runButton.first()).toBeVisible();
+      await expect(runButton).toBeVisible();
     }
 
     // Console validation (allow a couple benign warnings)

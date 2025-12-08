@@ -64,7 +64,7 @@ export default class TableMarkdownDocumentationGenerator {
     const blocksMetadata = await Database.getBlocksMetadata();
 
     if (!addonDocs || !blocksMetadata) {
-      Log.unexpectedUndefined();
+      Log.unexpectedUndefined("TMDGGM");
       return;
     }
 

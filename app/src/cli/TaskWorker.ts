@@ -181,9 +181,20 @@ async function validateAndDisposeProject(
 
   if (!suite && !exclusionList) {
     pis = project.indevInfoSet;
+    // CLI context: enable aggressive cleanup for memory efficiency
+    pis.performAggressiveCleanup = true;
   } else {
     suiteInst = ProjectInfoSet.getSuiteFromString(suite ? suite : "default");
-    pis = new ProjectInfoSet(project, suiteInst, exclusionList ? [exclusionList] : undefined);
+    // CLI context: enable aggressive cleanup for memory efficiency
+    pis = new ProjectInfoSet(
+      project,
+      suiteInst,
+      exclusionList ? [exclusionList] : undefined,
+      undefined,
+      undefined,
+      undefined,
+      true
+    );
   }
 
   await pis.generateForProject();
@@ -245,7 +256,16 @@ async function validateAndDisposeProject(
     const isAddon = await ProjectUtilities.getIsAddon(project);
 
     if (isAddon) {
-      pis = new ProjectInfoSet(project, ProjectInfoSuite.cooperativeAddOn);
+      // CLI context: enable aggressive cleanup for memory efficiency
+      pis = new ProjectInfoSet(
+        project,
+        ProjectInfoSuite.cooperativeAddOn,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        true
+      );
 
       await pis.generateForProject();
 
@@ -263,7 +283,8 @@ async function validateAndDisposeProject(
       await outputResults(projectSet, pis, "addon", outputStorage, undefined);
     }
 
-    pis = new ProjectInfoSet(project, ProjectInfoSuite.sharing);
+    // CLI context: enable aggressive cleanup for memory efficiency
+    pis = new ProjectInfoSet(project, ProjectInfoSuite.sharing, undefined, undefined, undefined, undefined, true);
 
     await pis.generateForProject();
 
@@ -283,7 +304,16 @@ async function validateAndDisposeProject(
     const shouldRunPlatformVersion = (pisData.info as any)["CWave"] !== undefined;
 
     if (shouldRunPlatformVersion) {
-      pis = new ProjectInfoSet(project, ProjectInfoSuite.currentPlatformVersions);
+      // CLI context: enable aggressive cleanup for memory efficiency
+      pis = new ProjectInfoSet(
+        project,
+        ProjectInfoSuite.currentPlatformVersions,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        true
+      );
 
       await pis.generateForProject();
 

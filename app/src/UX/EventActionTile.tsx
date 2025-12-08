@@ -6,14 +6,14 @@ import FunctionEditor from "./FunctionEditor";
 import Utilities from "../core/Utilities";
 import { Button, MenuButton } from "@fluentui/react-northstar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faRemove } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faMinus } from "@fortawesome/free-solid-svg-icons";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import CreatorTools from "../app/CreatorTools";
 import { CustomSlimLabel } from "./Labels";
-import MinecraftFilterEditor from "../dataform/MinecraftFilterEditor";
+import MinecraftFilterEditor from "../dataformux/MinecraftFilterEditor";
 import { faCheckSquare, faSquare } from "@fortawesome/free-regular-svg-icons";
 import Database from "../minecraft/Database";
-import DataForm from "../dataform/DataForm";
+import DataForm from "../dataformux/DataForm";
 import Project from "../app/Project";
 
 interface IEventActionDesignProps {
@@ -213,7 +213,7 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
           cssAdjust = " eat-cgRemove";
           icon = (
             <span className="eat-icon">
-              <FontAwesomeIcon icon={faRemove} className="fa-lg" />
+              <FontAwesomeIcon icon={faMinus} className="fa-lg" />
             </span>
           );
         }

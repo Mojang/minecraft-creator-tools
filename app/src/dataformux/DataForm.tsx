@@ -1,8 +1,8 @@
 import { Component, SyntheticEvent } from "react";
 import "./DataForm.css";
-import IField, { FieldDataType, FieldExperienceType, FieldVisualExperience } from "./IField";
-import IFormDefinition from "./IFormDefinition";
-import IProperty from "./IProperty";
+import IField, { FieldDataType, FieldExperienceType, FieldVisualExperience } from "./../dataform/IField";
+import IFormDefinition from "./../dataform/IFormDefinition";
+import IProperty from "./../dataform/IProperty";
 import {
   DropdownItemProps,
   DropdownProps,
@@ -28,10 +28,10 @@ import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import ScalarArray, { IScalarArrayProps } from "./ScalarArray";
 import Range, { IRangeProps } from "./Range";
 import MinecraftFilterEditor, { IMinecraftFilterEditorProps } from "./MinecraftFilterEditor";
-import ISimpleReference from "./ISimpleReference";
+import ISimpleReference from "./../dataform/ISimpleReference";
 import Utilities from "../core/Utilities";
-import IDataContainer from "./IDataContainer";
-import FieldUtilities from "./FieldUtilities";
+import IDataContainer from "./../dataform/IDataContainer";
+import FieldUtilities from "./../dataform/FieldUtilities";
 import StorageUtilities from "../storage/StorageUtilities";
 import CreatorTools from "../app/CreatorTools";
 import Project from "../app/Project";
@@ -40,8 +40,8 @@ import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
 import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
 import MinecraftEventTriggerEditor from "./MinecraftEventTriggerEditor";
 import Database from "../minecraft/Database";
-import DataFormUtilities from "./DataFormUtilities";
-import ILookupProvider from "./ILookupProvider";
+import DataFormUtilities from "./../dataform/DataFormUtilities";
+import ILookupProvider from "./../dataform/ILookupProvider";
 import { MinecraftEventTrigger } from "../minecraft/jsoncommon";
 import { CustomLabel } from "../UX/Labels";
 import VanillaProjectManager from "../minecraft/VanillaProjectManager";

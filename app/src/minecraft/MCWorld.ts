@@ -77,6 +77,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
   private _isDataLoaded = false;
   private _onLoaded = new EventDispatcher<MCWorld, MCWorld>();
   private _onDataLoaded = new EventDispatcher<MCWorld, MCWorld>();
+  private _onChunkUpdated = new EventDispatcher<MCWorld, WorldChunk>();
 
   private _hasDynamicProps = false;
   private _hasCustomProps = false;
@@ -430,6 +431,18 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
   public get onDataLoaded() {
     return this._onDataLoaded.asEvent();
+  }
+
+  public get onChunkUpdated() {
+    return this._onChunkUpdated.asEvent();
+  }
+
+  /**
+   * Called by WorldChunk when chunk data is superceded by newer LevelDB keys.
+   * This notifies subscribers (like WorldMap) that they may need to redraw affected tiles.
+   */
+  notifyChunkUpdated(chunk: WorldChunk) {
+    this._onChunkUpdated.dispatch(this, chunk);
   }
 
   static async ensureMCWorldOnFolder(folder: IFolder, project?: Project, handler?: IEventHandler<MCWorld, MCWorld>) {
@@ -1380,7 +1393,12 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     this._onLoaded.dispatch(this, this);
   }
 
-  async loadData(force: boolean = false) {
+  async loadData(
+    force: boolean = false,
+    options?: {
+      progressCallback?: (phase: string, current: number, total: number) => void;
+    }
+  ) {
     if (!force && this._isDataLoaded) {
       return;
     }
@@ -1432,9 +1450,19 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
     this.levelDb = new LevelDb(ldbFileArr, logFileArr, manifestFileArr, this.name);
 
-    await this.levelDb.init(async (message: string): Promise<void> => {
-      await this._project?.creatorTools.notifyStatusUpdate(message, StatusTopic.worldLoad);
-    });
+    const totalLdbFiles = ldbFileArr.length + logFileArr.length + manifestFileArr.length;
+    let loadedLdbFiles = 0;
+
+    await this.levelDb.init(
+      async (message: string): Promise<void> => {
+        await this._project?.creatorTools.notifyStatusUpdate(message, StatusTopic.worldLoad);
+        loadedLdbFiles++;
+        if (options?.progressCallback) {
+          options.progressCallback("Loading database files", loadedLdbFiles, totalLdbFiles);
+        }
+      },
+      { unloadFilesAfterParse: false }
+    );
 
     Utilities.appendErrors(this, this.levelDb);
 
@@ -1446,19 +1474,167 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
       );
     }
 
-    await this.loadFromLevelDb(this.levelDb);
+    await this.loadFromLevelDb(this.levelDb, options?.progressCallback);
   }
 
-  async loadFromLevelDb(levelDb: LevelDb) {
+  async loadFromLevelDb(levelDb: LevelDb, progressCallback?: (phase: string, current: number, total: number) => void) {
     this.levelDb = levelDb;
 
-    await this.processWorldData();
+    await this.processWorldData(progressCallback);
 
     this._updateMeta();
 
     this._onDataLoaded.dispatch(this, this);
 
     this._isDataLoaded = true;
+  }
+
+  /**
+   * Iterates over all chunks in a memory-efficient manner, calling the processor function
+   * for each chunk and optionally clearing chunk data after processing.
+   *
+   * @param processor - Async function to process each chunk. Receives the chunk and its coordinates.
+   * @param options - Optional configuration for iteration behavior.
+   * @param options.clearCacheAfterProcess - If true, clears parsed/cached data after processing but preserves
+   *                                          raw LevelKeyValue data, allowing chunks to be re-parsed on demand.
+   *                                          This is the recommended option for memory optimization.
+   * @param options.clearAllAfterProcess - If true, aggressively clears ALL chunk data including raw bytes.
+   *                                        WARNING: Chunks cannot be re-parsed after this. Only use when
+   *                                        the world data will never be accessed again.
+   * @param options.dimensionFilter - If specified, only iterate chunks in this dimension (0=overworld, 1=nether, 2=end).
+   * @param options.progressCallback - Optional callback for progress updates during iteration.
+   */
+  async forEachChunk(
+    processor: (chunk: WorldChunk, x: number, z: number, dimension: number) => Promise<void>,
+    options?: {
+      clearCacheAfterProcess?: boolean;
+      clearAllAfterProcess?: boolean;
+      dimensionFilter?: number;
+      progressCallback?: (processed: number, total: number) => Promise<void>;
+    }
+  ): Promise<void> {
+    // Handle legacy option name
+    const clearCacheAfterProcess = options?.clearCacheAfterProcess ?? false;
+    const clearAllAfterProcess = options?.clearAllAfterProcess ?? false;
+    const dimensionFilter = options?.dimensionFilter;
+    let processedCount = 0;
+
+    const chunkKeys = this.chunks.keys();
+
+    for (const dimIndex of chunkKeys) {
+      if (dimensionFilter !== undefined && dimIndex !== dimensionFilter) {
+        continue;
+      }
+
+      const dim = this.chunks.get(dimIndex);
+      if (!dim) {
+        continue;
+      }
+
+      const xKeys = dim.keys();
+      for (const chunkSliverIndex of xKeys) {
+        const chunkSliver = dim.get(chunkSliverIndex);
+        if (!chunkSliver) {
+          continue;
+        }
+
+        const zKeys = chunkSliver.keys();
+        for (const chunkZ of zKeys) {
+          const chunk = chunkSliver.get(chunkZ);
+          if (!chunk) {
+            continue;
+          }
+
+          await processor(chunk, chunkSliverIndex, chunkZ, dimIndex);
+          processedCount++;
+
+          // Clear data after processing based on options
+          if (clearAllAfterProcess) {
+            chunk.clearAllData();
+          } else if (clearCacheAfterProcess) {
+            chunk.clearCachedData();
+          }
+
+          if (options?.progressCallback && processedCount % 1000 === 0) {
+            await options.progressCallback(processedCount, this.chunkCount);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Clears parsed/cached data from all chunks to free memory while preserving the ability
+   * to re-parse chunks on demand. This is the recommended approach for memory optimization
+   * when you may need to access chunk data again (e.g., for map rendering).
+   */
+  clearAllChunkCaches() {
+    const chunkKeys = this.chunks.keys();
+
+    for (const dimIndex of chunkKeys) {
+      const dim = this.chunks.get(dimIndex);
+      if (!dim) {
+        continue;
+      }
+
+      const xKeys = dim.keys();
+      for (const x of xKeys) {
+        const xPlane = dim.get(x);
+        if (!xPlane) {
+          continue;
+        }
+
+        const zKeys = xPlane.keys();
+        for (const z of zKeys) {
+          const chunk = xPlane.get(z);
+          if (chunk) {
+            chunk.clearCachedData();
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Clears the raw LevelDB data to free memory after world data has been processed.
+   * This can significantly reduce memory usage for large worlds.
+   * WARNING: After calling this, the world cannot be re-loaded from the LevelDb.
+   */
+  clearLevelDbData() {
+    if (this.levelDb) {
+      this.levelDb.keys.clear();
+    }
+  }
+
+  /**
+   * Clears all chunk data to free memory.
+   * WARNING: After calling this, chunk data cannot be accessed without reloading.
+   */
+  clearAllChunkData() {
+    const chunkKeys = this.chunks.keys();
+
+    for (const dimIndex of chunkKeys) {
+      const dim = this.chunks.get(dimIndex);
+      if (!dim) {
+        continue;
+      }
+
+      const xKeys = dim.keys();
+      for (const x of xKeys) {
+        const xPlane = dim.get(x);
+        if (!xPlane) {
+          continue;
+        }
+
+        const zKeys = xPlane.keys();
+        for (const z of zKeys) {
+          const chunk = xPlane.get(z);
+          if (chunk) {
+            chunk.clearAllData();
+          }
+        }
+      }
+    }
   }
 
   getTopBlockY(x: number, z: number, dim?: number) {
@@ -1537,7 +1713,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     return block;
   }
 
-  private async processWorldData() {
+  private async processWorldData(progressCallback?: (phase: string, current: number, total: number) => void) {
     if (!this.levelDb) {
       return;
     }
@@ -1550,10 +1726,19 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
       StatusTopic.worldLoad
     );
 
-    const levelDbKeys = this.levelDb.keys.keys();
+    const levelDbKeysArray = Array.from(this.levelDb.keys.keys());
+    const totalKeys = levelDbKeysArray.length;
+    let processedKeys = 0;
 
-    for (const keyname of levelDbKeys) {
+    for (const keyname of levelDbKeysArray) {
       const keyValue = this.levelDb.keys.get(keyname);
+
+      processedKeys++;
+
+      // Report progress every 1000 keys to avoid excessive overhead
+      if (progressCallback && processedKeys % 1000 === 0) {
+        progressCallback("Processing chunks", processedKeys, totalKeys);
+      }
 
       if (keyname.startsWith("AutonomousEntities")) {
       } else if (keyname.startsWith("schedulerWT")) {

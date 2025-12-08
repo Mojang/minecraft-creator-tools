@@ -60,7 +60,7 @@ export default interface MinecraftBehaviorTimerFlag3 {
 
   /**
    * @remarks
-   * Event(s) to run when the goal end.
+   * Event(s) to run when the goal ends.
    * 
    * Sample Values:
    * Sniffer: {"event":"on_feeling_happy_end","target":"self"}

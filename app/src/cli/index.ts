@@ -1056,19 +1056,19 @@ async function setPasscode(
   }
 
   if (adminPasscode) {
-    localEnv.adminPasscode = adminPasscode;
+    localEnv.setAdminPasscodeAndRandomizeComplement(adminPasscode);
   }
 
   if (displayReadOnlyPasscode) {
-    localEnv.displayReadOnlyPasscode = displayReadOnlyPasscode;
+    localEnv.setDisplayReadOnlyPasscodeAndRandomizeComplement(displayReadOnlyPasscode);
   }
 
   if (fullReadOnlyPasscode) {
-    localEnv.fullReadOnlyPasscode = fullReadOnlyPasscode;
+    localEnv.setFullReadOnlyPasscodeAndRandomizeComplement(fullReadOnlyPasscode);
   }
 
   if (updateStatePasscode) {
-    localEnv.updateStatePasscode = updateStatePasscode;
+    localEnv.setUpdateStatePasscodeAndRandomizeComplement(updateStatePasscode);
   }
 
   await localEnv.save();

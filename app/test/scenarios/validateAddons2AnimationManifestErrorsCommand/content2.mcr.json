@@ -66,7 +66,7 @@
     "multipleSoundsManifests": 0,
     "soundsDefinitionManifestFormatIsValid": 0,
     "soundsDefinitionManifestIsNotValidJson": 0,
-    "flagIsOrWasTrue": 0,
+    "experimentalFlagIsOrWasTrue": 0,
     "levelDatNotFound": 0,
     "worldNotFound": 0,
     "deprecatedBlockOverride": 0,
@@ -136,8 +136,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CADDONIREQ000] Found 11 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).\nTESTFAIL: [CADDONREQ000] Found 5 errors for Cooperative Add-On Requirements (CADDONREQ).",
-    "infoGenerationTime": 190,
-    "endToEndGenerationTime": 381,
+    "infoGenerationTime": 227,
+    "endToEndGenerationTime": 422,
     "summary": {
       "CADDONIREQ": {
         "0": {

@@ -1,95 +1,247 @@
 .pact-outer {
-  padding-left: 20px;
+  padding: 24px 32px;
   overflow-y: auto;
 }
 
+/* Hero Section - using brighter Minecraft Green palette (Green 1/2 range) */
+.pact-hero {
+  background: linear-gradient(135deg, rgba(162, 232, 122, 0.25) 0%, rgba(134, 213, 98, 0.3) 100%);
+  border-radius: 4px;
+  padding: 32px;
+  margin-bottom: 32px;
+  border: 2px solid rgba(0, 0, 0, 0.5);
+}
+
+.pact-heroContent {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.pact-heroImage {
+  flex-shrink: 0;
+}
+
+.pact-heroImage img {
+  width: 80px;
+  height: 80px;
+  border-radius: 0;
+  background: rgba(0, 0, 0, 0.2);
+  object-fit: cover;
+  image-rendering: pixelated;
+  border: 2px solid #000;
+}
+
+.pact-heroText {
+  flex: 1;
+}
+
+.pact-titleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pact-projectTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  line-height: 1.2;
+}
+
+.pact-editButton {
+  background: transparent;
+  border: none;
+  color: inherit;
+  opacity: 0.5;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
+  margin-bottom: 8px;
+}
+
+.pact-editButton:hover {
+  opacity: 0.9;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.pact-projectCreator {
+  font-size: 1rem;
+  opacity: 0.7;
+  margin-bottom: 12px;
+}
+
+.pact-projectDescription {
+  font-size: 1rem;
+  opacity: 0.85;
+  margin: 0;
+  line-height: 1.5;
+  max-width: 600px;
+}
+
+/* Stats Bar */
+.pact-statsBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pact-stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+.pact-statIcon {
+  font-size: 1.1rem;
+  opacity: 0.8;
+}
+
+.pact-statCount {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.pact-statLabel {
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+/* Sections */
+.pact-section {
+  margin-bottom: 28px;
+}
+
+.pact-sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.pact-sectionHeader h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.pact-sectionIcon {
+  font-size: 1.1rem;
+  opacity: 0.7;
+}
+
+/* Card Grid */
+.pact-cardGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: stretch;
+}
+
+/* Action Cards - preserve full MinecraftButton styling */
+.pact-actionCard {
+  min-width: 280px;
+  max-width: 340px;
+  flex: 1;
+  height: auto !important;
+  padding: 0 !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+.pact-actionCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+}
+
+.pact-cardContent {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 16px 16px 15px;
+  text-align: left;
+  width: 340px;
+  min-height: 60px;
+}
+
+.pact-cardIcon {
+  font-size: 1.5rem;
+  opacity: 0.85;
+  width: 32px;
+  min-width: 32px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pact-cardIconLarge {
+  font-size: 1.75rem;
+  opacity: 0.9;
+  width: 32px;
+  min-width: 32px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pact-cardIconImage {
+  width: 32px;
+  min-width: 32px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pact-cardIconImage img {
+  width: 36px;
+  height: 36px;
+  image-rendering: pixelated;
+  border: 2px solid rgba(0, 0, 0, 0.4);
+  border-radius: 4px;
+}
+
+.pact-cardText {
+  flex: 1;
+}
+
+.pact-cardTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.pact-cardDesc {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  line-height: 1.4;
+}
+
+/* Primary Card (Inspect) - uses theme colors from MinecraftButton */
+.pact-cardPrimary {
+  /* Let the MinecraftButton handle its own styling */
+}
+
+/* Minecraft World Cards - uses theme colors from MinecraftButton */
+.pact-cardMinecraft {
+  /* Let the MinecraftButton handle its own styling */
+}
+
+/* Legacy classes kept for compatibility */
 .pact-binHeader {
   font-size: large;
   font-weight: bold;
   padding-top: 4px;
   line-height: 1;
-}
-
-.pact-toolTile {
-  height: 110px !important;
-  display: inline-flex !important;
-  margin-left: 10px;
-  padding: 0px !important;
-  text-align: left;
-}
-
-.pact-toolTile-button {
-  margin-top: 3px;
-  margin-left: 0px !important;
-  height: 35px !important;
-}
-
-.pact-toolTileInner {
-  height: 100%;
-  width: 320px;
-  text-align: left;
-  padding: 6px 8px 6px 8px;
-}
-
-.pact-toolTile input[type="file"] {
-  box-shadow: none;
-  margin-left: 5px;
-  font-weight: 600;
-  border-color: rgb(72, 73, 74);
-}
-
-.pact-toolTile-label {
-  font-weight: bold;
-  padding-bottom: 6px;
-  display: grid;
-  grid-template-columns: 30px 1fr;
-}
-
-.pact-toolTile-instruction {
-  font-size: small;
-  padding-bottom: 8px;
-  height: 36px;
-}
-
-.pact-toolTile-button {
-  margin-left: 4px;
-  height: 35px !important;
-  border: solid 1px rgb(72, 73, 74) !important;
-  box-shadow: none !important;
-}
-
-.pact-tileDown {
-  border: inset 3px !important;
-}
-
-.pact-faIconWrap {
-  grid-column: 1;
-  padding-top: 2px;
-}
-
-.pact-faIconWrapIn {
-  grid-column: 1;
-  padding-top: 2px;
-  padding-left: 1px;
-}
-
-.pact-icon {
-  width: 24px;
-  height: 24px;
-  min-width: 24px;
-  grid-column: 1;
-  image-rendering: pixelated;
-  max-width: 24px;
-  min-height: 24px;
-  max-height: 24px;
-  margin-left: 0px;
-  margin-top: 1px;
-  border: solid 1px black;
-}
-
-.pact-label {
-  grid-column: 2;
-  padding-top: 4px;
 }
 
 .pact-tileBin {

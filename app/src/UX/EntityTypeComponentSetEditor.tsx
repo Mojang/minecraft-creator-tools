@@ -1,6 +1,6 @@
 import { Component, SyntheticEvent } from "react";
 import "./EntityTypeComponentSetEditor.css";
-import DataForm from "../dataform/DataForm";
+import DataForm from "../dataformux/DataForm";
 import Database from "../minecraft/Database";
 import {
   Toolbar,
@@ -19,7 +19,7 @@ import Utilities from "../core/Utilities";
 import IManagedComponent from "../minecraft/IManagedComponent";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import { CustomLabel } from "./Labels";
-import { faAdd, faRemove } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faMinus, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import EntityTypeAddComponent from "./EntityTypeAddComponent";
 import CreatorTools from "../app/CreatorTools";
@@ -385,7 +385,7 @@ export default class EntityTypeComponentSetEditor extends Component<
                   text={
                     "Delete this " + EntityTypeDefinition.getComponentCategoryDescription(attribCategory).toLowerCase()
                   }
-                  icon={<FontAwesomeIcon icon={faRemove} className="fa-lg" />}
+                  icon={<FontAwesomeIcon icon={faMinus} className="fa-lg" />}
                   isCompact={false}
                 />
               ),
@@ -523,7 +523,7 @@ export default class EntityTypeComponentSetEditor extends Component<
             <CustomLabel
               isCompact={false}
               text="Add component"
-              icon={<FontAwesomeIcon icon={faAdd} className="fa-lg" />}
+              icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
             />
           ),
         },
@@ -586,6 +586,32 @@ export default class EntityTypeComponentSetEditor extends Component<
         componentBinClassName += " etcse-componentBin-narrow";
       }
 
+      // Build breadcrumb navigation
+      const entityName = Utilities.humanifyMinecraftName(this.props.entityTypeItem.id || "Entity");
+      const groupName = this.props.isDefault ? "Default" : Utilities.humanifyMinecraftName(this.props.title || "Group");
+      const componentName = this.state.activeComponentId
+        ? Utilities.humanifyMinecraftName(this.state.activeComponentId)
+        : null;
+
+      const breadcrumb = (
+        <div
+          className="etcse-breadcrumb"
+          style={{
+            borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
+          }}
+        >
+          <span className="etcse-breadcrumbItem">{entityName}</span>
+          <FontAwesomeIcon icon={faChevronRight} className="etcse-breadcrumbSeparator" />
+          <span className="etcse-breadcrumbItem">{groupName}</span>
+          {componentName && (
+            <>
+              <FontAwesomeIcon icon={faChevronRight} className="etcse-breadcrumbSeparator" />
+              <span className="etcse-breadcrumbItem etcse-breadcrumbCurrent">{componentName}</span>
+            </>
+          )}
+        </div>
+      );
+
       return (
         <div className={areaClass}>
           <div className="etcse-componentArea">
@@ -606,6 +632,7 @@ export default class EntityTypeComponentSetEditor extends Component<
               color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
             }}
           >
+            {breadcrumb}
             {componentForms}
           </div>
         </div>

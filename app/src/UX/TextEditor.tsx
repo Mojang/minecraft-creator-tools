@@ -213,13 +213,13 @@ export default class TextEditor extends Component<ITextEditorProps, ITextEditorS
         icon: <FontAwesomeIcon icon={faSearchPlus} className="fa-lg" />,
         key: "zoomIn",
         onClick: this._zoomIn,
-        title: "Toggle whether hidden items are shown",
+        title: "Zoom into the text editor",
       },
       {
         icon: <FontAwesomeIcon icon={faSearchMinus} className="fa-lg" />,
         key: "zoomOut",
         onClick: this._zoomOut,
-        title: "Toggle whether hidden items are shown",
+        title: "Zoom out of the text editor",
       },
     ];
 

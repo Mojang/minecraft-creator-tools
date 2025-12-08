@@ -21,6 +21,8 @@ import AnimationBehaviorDefinition from "../minecraft/AnimationBehaviorDefinitio
 import ProjectInfoUtilities from "./ProjectInfoUtilities";
 import { GameType } from "../minecraft/WorldLevelDat";
 
+import { IGeneratorOptions } from "./ProjectInfoSet";
+
 export enum WorldDataInfoGeneratorTest {
   unexpectedCommandInMCFunction = 101,
   unexpectedCommandInCommandBlock = 102,
@@ -192,8 +194,13 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
     }
   }
 
-  async generate(projectItem: ProjectItem, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
+  async generate(
+    projectItem: ProjectItem,
+    contentIndex: ContentIndex,
+    options?: IGeneratorOptions
+  ): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
+    const performAggressiveCleanup = options?.performAggressiveCleanup ?? false;
 
     if (
       projectItem.itemType !== ProjectItemType.MCWorld &&
@@ -455,150 +462,135 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       let chunkCount = 0;
       let subchunkLessChunkCount = 0;
 
-      const chunkKeys = mcworld.chunks.keys();
+      // Use the memory-efficient chunk iterator with aggressive data clearing
+      // This prevents heap exhaustion on large worlds by clearing chunk data after processing
+      await mcworld.forEachChunk(
+        async (chunk, x, z, dimIndex) => {
+          chunkCount++;
 
-      for (const dimIndex of chunkKeys) {
-        let dim = mcworld.chunks.get(dimIndex);
+          if (chunk.subChunks.length <= 0) {
+            subchunkLessChunkCount++;
+          }
 
-        if (!dim) {
-          continue;
-        }
+          const blockActors = chunk.blockActors;
 
-        const xKeys = dim.keys();
-        for (const chunkSliverIndex of xKeys) {
-          const chunkSliver = dim.get(chunkSliverIndex);
+          for (let i = 0; i < blockActors.length; i++) {
+            const blockActor = blockActors[i];
 
-          if (chunkSliver) {
-            const zKeys = chunkSliver.keys();
-            for (const chunkId of zKeys) {
-              const chunk = chunkSliver.get(chunkId);
+            if (blockActor.id) {
+              blockActorsPi.incrementFeature(blockActor.id);
+            }
 
-              if (chunk) {
-                chunkCount++;
+            if (blockActor instanceof CommandBlockActor) {
+              let cba = blockActor as CommandBlockActor;
+              if (cba.version) {
+                blockActorsPi.spectrumIntFeature("Command Version", cba.version);
+              }
 
-                if (chunk.subChunks.length <= 0) {
-                  subchunkLessChunkCount++;
-                }
+              if (cba.version && cba.version < this.modernCommandVersion) {
+                items.push(
+                  new ProjectInfoItem(
+                    InfoItemType.recommendation,
+                    this.id,
+                    WorldDataInfoGeneratorTest.commandIsFromOlderMinecraftVersion,
+                    "Command '" + cba.command + "' is from an older Minecraft version (" + cba.version + ") ",
+                    projectItem,
+                    "(Command at location " + cba.x + ", " + cba.y + ", " + cba.z + ")",
+                    undefined,
+                    cba.command
+                  )
+                );
+              }
 
-                if (chunkCount % 1000 === 0) {
-                  await projectItem.project.creatorTools.notifyStatusUpdate(
-                    "World data validation: scanned " +
-                      chunkCount / 1000 +
-                      "K of " +
-                      Math.floor(mcworld.chunkCount / 1000) +
-                      "K chunks in " +
-                      mcworld.name,
-                    StatusTopic.validation
+              if (cba.command && cba.command.trim().length > 2) {
+                let command = CommandStructure.parse(cba.command);
+
+                if (CommandRegistry.isMinecraftBuiltInCommand(command.fullName)) {
+                  if (this.performAddOnValidations && CommandRegistry.isAddOnBlockedCommand(command.fullName)) {
+                    items.push(
+                      new ProjectInfoItem(
+                        InfoItemType.warning,
+                        this.id,
+                        WorldDataInfoGeneratorTest.containsWorldImpactingCommand,
+                        "Contains command '" +
+                          command.fullName +
+                          "' which is impacts the state of the entire world, and generally shouldn't be used in an add-on",
+                        projectItem,
+                        command.fullName,
+                        undefined,
+                        cba.command
+                      )
+                    );
+                  }
+
+                  commandsPi.incrementFeature(command.fullName);
+
+                  if (command.fullName === "execute") {
+                    let foundRun = false;
+                    for (const arg of command.commandArguments) {
+                      if (arg === "run") {
+                        foundRun = true;
+                      } else if (foundRun && CommandRegistry.isMinecraftBuiltInCommand(arg)) {
+                        subCommandsPi.incrementFeature(arg);
+                        break;
+                      }
+                    }
+                  }
+                } else if (!this.performAddOnValidations && !this.performPlatformVersionValidations) {
+                  items.push(
+                    new ProjectInfoItem(
+                      InfoItemType.error,
+                      this.id,
+                      WorldDataInfoGeneratorTest.unexpectedCommandInCommandBlock,
+                      "Unexpected command '" + command.fullName + "'",
+                      projectItem,
+                      command.fullName,
+                      undefined,
+                      cba.command
+                    )
                   );
                 }
-
-                const blockActors = chunk.blockActors;
-
-                for (let i = 0; i < blockActors.length; i++) {
-                  const blockActor = blockActors[i];
-
-                  if (blockActor.id) {
-                    blockActorsPi.incrementFeature(blockActor.id);
-                  }
-
-                  if (blockActor instanceof CommandBlockActor) {
-                    let cba = blockActor as CommandBlockActor;
-                    if (cba.version) {
-                      blockActorsPi.spectrumIntFeature("Command Version", cba.version);
-                    }
-
-                    if (cba.version && cba.version < this.modernCommandVersion) {
-                      items.push(
-                        new ProjectInfoItem(
-                          InfoItemType.recommendation,
-                          this.id,
-                          WorldDataInfoGeneratorTest.commandIsFromOlderMinecraftVersion,
-                          "Command '" + cba.command + "' is from an older Minecraft version (" + cba.version + ") ",
-                          projectItem,
-                          "(Command at location " + cba.x + ", " + cba.y + ", " + cba.z + ")",
-                          undefined,
-                          cba.command
-                        )
-                      );
-                    }
-
-                    if (cba.command && cba.command.trim().length > 2) {
-                      let command = CommandStructure.parse(cba.command);
-
-                      if (CommandRegistry.isMinecraftBuiltInCommand(command.fullName)) {
-                        if (this.performAddOnValidations && CommandRegistry.isAddOnBlockedCommand(command.fullName)) {
-                          items.push(
-                            new ProjectInfoItem(
-                              InfoItemType.warning,
-                              this.id,
-                              WorldDataInfoGeneratorTest.containsWorldImpactingCommand,
-                              "Contains command '" +
-                                command.fullName +
-                                "' which is impacts the state of the entire world, and generally shouldn't be used in an add-on",
-                              projectItem,
-                              command.fullName,
-                              undefined,
-                              cba.command
-                            )
-                          );
-                        }
-
-                        commandsPi.incrementFeature(command.fullName);
-
-                        if (command.fullName === "execute") {
-                          let foundRun = false;
-                          for (const arg of command.commandArguments) {
-                            if (arg === "run") {
-                              foundRun = true;
-                            } else if (foundRun && CommandRegistry.isMinecraftBuiltInCommand(arg)) {
-                              subCommandsPi.incrementFeature(arg);
-                              break;
-                            }
-                          }
-                        }
-                      } else if (!this.performAddOnValidations && !this.performPlatformVersionValidations) {
-                        items.push(
-                          new ProjectInfoItem(
-                            InfoItemType.error,
-                            this.id,
-                            WorldDataInfoGeneratorTest.unexpectedCommandInCommandBlock,
-                            "Unexpected command '" + command.fullName + "'",
-                            projectItem,
-                            command.fullName,
-                            undefined,
-                            cba.command
-                          )
-                        );
-                      }
-                    }
-                  }
-                }
-
-                const blockList = chunk.getBlockList();
-
-                for (let i = 0; i < blockList.length; i++) {
-                  const block = blockList[i];
-
-                  if (block) {
-                    blockCount++;
-                    if (block.typeName) {
-                      let type = block.typeName;
-
-                      if (type.indexOf(":") >= 0 && type.indexOf("minecraft:") < 0) {
-                        type = "(custom)";
-                      }
-
-                      blocksPi.incrementFeature(type);
-                    }
-                  }
-                }
-
-                chunk.clearCachedData();
               }
             }
           }
+
+          // Use memory-efficient block type counting instead of getBlockList()
+          // This avoids allocating massive arrays of Block objects
+          const blockTypeCounts = chunk.countBlockTypes();
+
+          for (const [typeName, count] of blockTypeCounts) {
+            blockCount += count;
+
+            let type = typeName;
+            if (type.indexOf(":") >= 0 && type.indexOf("minecraft:") < 0) {
+              type = "(custom)";
+            }
+
+            blocksPi.incrementFeature(type, "count", count);
+          }
+        },
+        {
+          // Always clear parsed/cached data after processing each chunk to prevent OOM.
+          // This is non-destructive - raw LevelKeyValue bytes are preserved, so chunks
+          // can be re-parsed on demand (e.g., when the world map needs them).
+          clearCacheAfterProcess: true,
+          // Only clear raw LevelKeyValue data when in aggressive cleanup mode (CLI validation).
+          // In browser contexts, we preserve raw data so the world map can re-parse chunks.
+          clearAllAfterProcess: performAggressiveCleanup,
+          progressCallback: async (processed, total) => {
+            // Use worldName captured from outside closure to avoid TypeScript null check issue
+            const worldName = mcworld?.name ?? "unknown";
+            let mess =
+              "World data validation: scanned " +
+              Math.floor(processed / 1000) +
+              "K of " +
+              Math.floor(total / 1000) +
+              "K chunks in " +
+              worldName;
+            await projectItem.project.creatorTools.notifyStatusUpdate(mess, StatusTopic.validation);
+          },
         }
-      }
+      );
 
       blocksPi.data = blockCount;
 

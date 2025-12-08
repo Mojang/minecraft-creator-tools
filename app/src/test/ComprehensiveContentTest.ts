@@ -59,10 +59,6 @@ localEnv = new LocalEnvironment(false);
     ""
   );
 
-  CreatorToolsHost.deploymentStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "deployment" + NodeStorage.platformFolderDelimiter,
-    ""
-  );
   CreatorToolsHost.workingStorage = new NodeStorage(
     localEnv.utilities.testWorkingPath + "working" + NodeStorage.platformFolderDelimiter,
     ""
@@ -72,7 +68,7 @@ localEnv = new LocalEnvironment(false);
   Database.contentFolder = coreStorage.rootFolder;
 
   await CreatorToolsHost.init();
-  creatorTools = CreatorToolsHost.creatorTools;
+  creatorTools = CreatorToolsHost.getCreatorTools();
 
   if (!creatorTools) {
     return;

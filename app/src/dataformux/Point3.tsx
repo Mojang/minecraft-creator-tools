@@ -1,6 +1,6 @@
 import { Component, SyntheticEvent } from "react";
 import "./Point3.css";
-import IFormComponentProps from "./IFormComponentProps.js";
+import IFormComponentProps from "./../dataform/IFormComponentProps.js";
 import { FormInput, InputProps, Button } from "@fluentui/react-northstar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBullseye } from "@fortawesome/free-solid-svg-icons";

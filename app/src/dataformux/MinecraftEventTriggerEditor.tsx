@@ -1,6 +1,6 @@
 import { Component } from "react";
 import "./MinecraftEventTriggerEditor.css";
-import IFormComponentProps from "./IFormComponentProps.js";
+import IFormComponentProps from "./../dataform/IFormComponentProps.js";
 import { Dialog, Dropdown, DropdownProps, ThemeInput, Toolbar } from "@fluentui/react-northstar";
 import CreatorTools from "../app/CreatorTools";
 import Project from "../app/Project";
@@ -9,12 +9,12 @@ import IEventAction from "../minecraft/IEventAction";
 import IEventActionSet from "../minecraft/IEventActionSet";
 import EventActionDesign from "../UX/EventActionDesign";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import SetName from "../UX/SetName";
 import { CustomLabel } from "../UX/Labels";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import MinecraftEventTrigger from "../minecraft/jsoncommon/MinecraftEventTrigger";
-import IField from "./IField";
+import IField from "./../dataform/IField";
 
 export interface IMinecraftEventTriggerEditorProps extends IFormComponentProps {
   data: MinecraftEventTrigger;
@@ -186,7 +186,7 @@ export default class MinecraftEventTriggerEditor extends Component<
 
       toolbarItems.push({
         icon: (
-          <CustomLabel isCompact={false} text="Add action" icon={<FontAwesomeIcon icon={faAdd} className="fa-lg" />} />
+          <CustomLabel isCompact={false} text="Add action" icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />} />
         ),
         key: "add",
         tag: "addItem",

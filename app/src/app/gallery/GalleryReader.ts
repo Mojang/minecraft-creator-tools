@@ -17,13 +17,13 @@ export default class GalleryReader {
     let imagePath = item.logoImage;
 
     if (imagePath === undefined) {
-      imagePath = CreatorToolsHost.contentRoot + "res/latest/van/release/resource_pack/textures/" + item.localLogo;
+      imagePath = CreatorToolsHost.contentRoot + "res/latest/van/serve/resource_pack/textures/" + item.localLogo;
     }
 
     if (item.logoImage === undefined) return imagePath;
 
     if (item.gitHubRepoName === "bedrock-samples") {
-      imagePath = CreatorToolsHost.contentRoot + Utilities.ensureEndsWithSlash("res/latest/van/release/");
+      imagePath = CreatorToolsHost.contentRoot + Utilities.ensureEndsWithSlash("res/latest/van/serve/");
     } else {
       imagePath = CreatorToolsHost.contentRoot + "res/samples/" + item.gitHubOwner + "/" + item.gitHubRepoName + "-";
 

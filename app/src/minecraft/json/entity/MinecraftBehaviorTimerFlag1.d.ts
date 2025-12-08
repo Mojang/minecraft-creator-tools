@@ -157,7 +157,7 @@ export default interface MinecraftBehaviorTimerFlag1 {
 
   /**
    * @remarks
-   * Event(s) to run when the goal end.
+   * Event(s) to run when the goal ends.
    * 
    * Sample Values:
    * Armadillo: {"event":"minecraft:start_peeking"}

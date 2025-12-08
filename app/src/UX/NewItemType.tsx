@@ -10,6 +10,8 @@ import { NewItemTypeAddMode } from "../app/ProjectUtilities";
 import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
 import ItemGallery, { GalleryItemCommand } from "./ItemGallery";
 import { ItemTileButtonDisplayMode } from "./ItemTileButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGem, faPencil } from "@fortawesome/free-solid-svg-icons";
 
 interface INewItemTypeProps extends IAppProps {
   project: Project;
@@ -124,36 +126,60 @@ export default class NewItemType extends Component<INewItemTypeProps, INewItemTy
       inputText = "";
     }
 
+    const brand = this.props.theme.siteVariables?.colorScheme?.brand;
+    const isDark = brand?.background1 === "#312f2d";
+
+    const sectionHeaderStyle: React.CSSProperties = {
+      color: brand?.foreground,
+      borderBottomColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.15)",
+    };
+
+    const inputStyle: React.CSSProperties = {
+      backgroundColor: isDark ? "rgba(0,0,0,0.25)" : "rgba(255,255,255,0.9)",
+      borderColor: isDark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.2)",
+      color: brand?.foreground1,
+    };
+
+    const galleryStyle: React.CSSProperties = {
+      backgroundColor: isDark ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.85)",
+      borderColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.15)",
+      color: brand?.foreground1,
+    };
+
     return (
-      <div className="net-outer">
-        <div className="net-optionsArea">
-          <div>
+      <div className="nitem-outer">
+        <div className="nitem-section">
+          <div className="nitem-sectionHeader" style={sectionHeaderStyle}>
+            <FontAwesomeIcon icon={faPencil} className="nitem-sectionIcon" />
+            Item Name
+          </div>
+          <div className="nitem-inputWrapper" style={inputStyle}>
             <Input
               aria-label="Item type name"
               value={inputText}
               defaultValue={inputText}
-              placeholder={this.state.selectedItemType ? this.state.selectedItemType.id : "myMobName"}
+              placeholder={this.state.selectedItemType ? this.state.selectedItemType.id : "myItemName"}
               onChange={this._handleNameChanged}
             />
           </div>
         </div>
-        <div className="net-galleryHeader">Based on the following mob:</div>
-        <div
-          className="net-projectGallery"
-          style={{
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
-          }}
-        >
-          <ItemGallery
-            creatorTools={this.props.creatorTools}
-            theme={this.props.theme}
-            view={ItemTileButtonDisplayMode.smallImage}
-            isSelectable={true}
-            gallery={this.props.creatorTools.gallery}
-            filterOn={[GalleryItemType.itemType]}
-            onGalleryItemCommand={this._handleTypeGalleryCommand}
-          />
+        <div className="nitem-section">
+          <div className="nitem-sectionHeader" style={sectionHeaderStyle}>
+            <FontAwesomeIcon icon={faGem} className="nitem-sectionIcon" />
+            Base Template
+          </div>
+          <div className="nitem-sectionSubtitle">Select a vanilla item to use as a starting point</div>
+          <div className="nitem-projectGallery" style={galleryStyle}>
+            <ItemGallery
+              creatorTools={this.props.creatorTools}
+              theme={this.props.theme}
+              view={ItemTileButtonDisplayMode.smallImage}
+              isSelectable={true}
+              gallery={this.props.creatorTools.gallery}
+              filterOn={[GalleryItemType.itemType]}
+              onGalleryItemCommand={this._handleTypeGalleryCommand}
+            />
+          </div>
         </div>
       </div>
     );

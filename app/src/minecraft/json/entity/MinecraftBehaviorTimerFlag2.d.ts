@@ -72,7 +72,7 @@ export default interface MinecraftBehaviorTimerFlag2 {
 
   /**
    * @remarks
-   * Event(s) to run when the goal end.
+   * Event(s) to run when the goal ends.
    * 
    * Sample Values:
    * Sniffer: {"event":"on_rising_end","target":"self"}

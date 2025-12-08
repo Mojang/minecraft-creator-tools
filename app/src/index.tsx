@@ -9,6 +9,7 @@ import { loader } from "@monaco-editor/react";
 import { minecraftToolDarkTheme, minecraftToolLightTheme } from "./core/StandardInit";
 
 import { Provider, teamsDarkTheme, mergeThemes, teamsTheme } from "@fluentui/react-northstar";
+import Log from "./core/Log";
 
 CreatorToolsHost.init();
 
@@ -30,19 +31,25 @@ function uriFromPath(_path: string) {
 
 async function initVsLoader() {
   if (AppServiceProxy.hasAppService) {
-    let dirName = await AppServiceProxy.sendAsync(AppServiceProxyCommands.getDirname, "");
+    let basePath = window.location.href;
 
-    if (dirName === undefined) {
-      dirName = "";
+    basePath = basePath.substring(0, basePath.lastIndexOf("/"));
+
+    if (basePath.includes("?")) {
+      basePath = basePath.substring(0, basePath.indexOf("?"));
     }
-
-    const path = uriFromPath(dirName + "/../build/dist/vs");
 
     loader.config({
       paths: {
-        vs: path,
+        vs: basePath + "/dist/vs",
       },
     });
+
+    try {
+      await loader.init();
+    } catch (err) {
+      Log.fail("Monaco loader initialization failed: " + err);
+    }
   } else {
     loader.config({
       paths: { vs: "/dist/vs" },
@@ -50,32 +57,36 @@ async function initVsLoader() {
   }
 }
 
-initVsLoader();
+async function initAsync() {
+  await initVsLoader();
 
-let darkTheme = mergeThemes(teamsDarkTheme, minecraftToolDarkTheme);
-let lightTheme = mergeThemes(teamsTheme, minecraftToolLightTheme);
+  let darkTheme = mergeThemes(teamsDarkTheme, minecraftToolDarkTheme);
+  let lightTheme = mergeThemes(teamsTheme, minecraftToolLightTheme);
 
-const storedMode = localStorage.getItem("color-mode") as string;
+  const storedMode = localStorage.getItem("color-mode") as string;
 
-if (window.location.search.indexOf("theme=l") > 0) {
-  CreatorToolsHost.theme = CreatorToolsThemeStyle.light;
-} else if (window.location.search.indexOf("theme=d") > 0) {
-  CreatorToolsHost.theme = CreatorToolsThemeStyle.dark;
-} else if (storedMode) {
-  CreatorToolsHost.theme = storedMode === "light" ? CreatorToolsThemeStyle.light : CreatorToolsThemeStyle.dark;
-} else {
-  if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-    CreatorToolsHost.theme = CreatorToolsThemeStyle.dark;
-  } else {
+  if (window.location.search.indexOf("theme=l") > 0) {
     CreatorToolsHost.theme = CreatorToolsThemeStyle.light;
+  } else if (window.location.search.indexOf("theme=d") > 0) {
+    CreatorToolsHost.theme = CreatorToolsThemeStyle.dark;
+  } else if (storedMode) {
+    CreatorToolsHost.theme = storedMode === "light" ? CreatorToolsThemeStyle.light : CreatorToolsThemeStyle.dark;
+  } else {
+    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      CreatorToolsHost.theme = CreatorToolsThemeStyle.dark;
+    } else {
+      CreatorToolsHost.theme = CreatorToolsThemeStyle.light;
+    }
   }
+
+  ReactDOM.render(
+    <React.StrictMode>
+      <Provider theme={CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? darkTheme : lightTheme}>
+        <App darkTheme={darkTheme} lightTheme={lightTheme} />
+      </Provider>
+    </React.StrictMode>,
+    document.getElementById("root")
+  );
 }
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Provider theme={CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? darkTheme : lightTheme}>
-      <App darkTheme={darkTheme} lightTheme={lightTheme} />
-    </Provider>
-  </React.StrictMode>,
-  document.getElementById("root")
-);
+initAsync();

@@ -3,7 +3,7 @@ import IFile from "../storage/IFile";
 import "./RenderControllerSetEditor.css";
 import Database from "../minecraft/Database";
 import { ThemeInput } from "@fluentui/styles";
-import DataForm, { IDataFormProps } from "../dataform/DataForm";
+import DataForm, { IDataFormProps } from "../dataformux/DataForm";
 import IProperty from "../dataform/IProperty";
 import RenderControllerSetDefinition from "../minecraft/RenderControllerSetDefinition";
 import IPersistable from "./IPersistable";

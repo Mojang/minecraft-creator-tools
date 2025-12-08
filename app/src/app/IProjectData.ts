@@ -119,5 +119,12 @@ export default interface IProjectData {
   dataStorageRelativePath: string;
   messages?: IStatus[];
 
+  /**
+   * Base64-encoded PNG image for project preview thumbnail.
+   * Used in the project list to show a visual preview of the project.
+   * If not set, a default placeholder image will be shown.
+   */
+  previewImageBase64?: string;
+
   items: IProjectItemData[];
 }

@@ -377,6 +377,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
 
           listItems.push({
             key: "sli" + i,
+            "aria-label": logItem.message,
             content: (
               <div className="sa-list-item" title={logItem.message}>
                 log: {logItem.message}
@@ -397,6 +398,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
 
         listItems.push({
           key: "si" + i,
+          "aria-label": statusItem.message,
           content: (
             <div className="sa-list-item" title={statusItem.message}>
               {statusItem.message}

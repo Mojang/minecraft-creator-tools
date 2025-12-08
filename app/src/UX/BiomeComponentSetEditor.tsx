@@ -1,11 +1,11 @@
 import { Component, SyntheticEvent } from "react";
 import "./BiomeComponentSetEditor.css";
-import DataForm from "../dataform/DataForm";
+import DataForm from "../dataformux/DataForm";
 import Database from "../minecraft/Database";
 import { Toolbar, ThemeInput, List, ListProps, selectableListBehavior, Dialog } from "@fluentui/react-northstar";
 import DataFormUtilities from "../dataform/DataFormUtilities";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import BiomeAddComponent from "./BiomeAddComponent";
 import Project from "../app/Project";
 import CreatorTools from "../app/CreatorTools";
@@ -318,7 +318,7 @@ export default class BiomeComponentSetEditor extends Component<
     const toolbarItems: any[] = [];
 
     toolbarItems.push({
-      icon: <FontAwesomeIcon icon={faAdd} className="fa-lg" />,
+      icon: <FontAwesomeIcon icon={faPlus} className="fa-lg" />,
       key: "addComponent",
       onClick: this._handleAddComponentClick,
       title: "Add Component",

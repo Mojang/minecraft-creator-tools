@@ -42,6 +42,9 @@
     "src/mcp/*.ts",
     "src/test/**/*",
     "src/testweb/**/*",
+    "src/testelectron/**/*",
+    "playwright*.config.ts",
+    "playwright*.config.js",
     "src/local/**/*.ts",
     "src/local/LocalUtilities.ts",
     "src/local/*.ts"

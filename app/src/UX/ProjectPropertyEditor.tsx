@@ -16,17 +16,26 @@ import {
   ThemeInput,
 } from "@fluentui/react-northstar";
 
-import { faDice, faBinoculars } from "@fortawesome/free-solid-svg-icons";
+import {
+  faDice,
+  faBinoculars,
+  faUser,
+  faFileSignature,
+  faCode,
+  faCubes,
+  faWrench,
+  faFingerprint,
+} from "@fortawesome/free-solid-svg-icons";
 import ConnectToGitHub from "./ConnectToGitHub";
 import Utilities from "../core/Utilities";
 import GitHubManager from "../github/GitHubManager";
 import AppServiceProxy from "../core/AppServiceProxy";
 import { ProjectEditPreference, ProjectScriptLanguage, ProjectScriptVersion } from "../app/IProjectData";
-import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
+import CreatorToolsHost, { CreatorToolsThemeStyle, HostType } from "../app/CreatorToolsHost";
 import ProjectUtilities from "../app/ProjectUtilities";
 import StatusList from "./StatusList";
 import { MinecraftTrack } from "../app/ICreatorToolsData";
-import { CartoTargetStrings } from "../app/CreatorTools";
+import { CreatorToolsTargetSettings } from "../app/CreatorTools";
 
 interface IProjectPropertyEditorProps extends IAppProps {
   project: Project;
@@ -469,9 +478,9 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
 
     const index = this.props.creatorTools.track ? (this.props.creatorTools.track as number) : 0;
 
-    targetStrings.push("<default to " + CartoTargetStrings[index] + ">");
+    targetStrings.push("<default to " + CreatorToolsTargetSettings[index] + ">");
 
-    for (const targetString of CartoTargetStrings) {
+    for (const targetString of CreatorToolsTargetSettings) {
       targetStrings.push(targetString);
     }
 
@@ -672,336 +681,402 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     }
 
     const height = "calc(100vh - " + (this.props.heightOffset + 62) + "px)";
+    const isDarkMode = CreatorToolsHost.theme === CreatorToolsThemeStyle.dark;
+    const brand = this.props.theme.siteVariables?.colorScheme?.brand;
+
+    // Theme-aware styles
+    const outerStyle: React.CSSProperties = {
+      background: brand?.background1,
+    };
+
+    const contentStyle: React.CSSProperties = {
+      minHeight: height,
+      maxHeight: height,
+      background: brand?.background2,
+    };
+
+    const sectionStyle: React.CSSProperties = {
+      background: brand?.background3,
+      borderColor: brand?.background4,
+    };
+
+    const sectionHeaderStyle: React.CSSProperties = {
+      background: brand?.background2,
+      color: brand?.foreground,
+      borderBottomColor: brand?.background4,
+    };
+
+    const advancedSectionHeaderStyle: React.CSSProperties = {
+      background: brand?.background2,
+      color: brand?.foreground5, // Orange for advanced/warning
+      borderBottomColor: brand?.background4,
+    };
+
+    const labelStyle: React.CSSProperties = {
+      color: brand?.foreground6,
+    };
+
+    const uuidFieldStyle: React.CSSProperties = {
+      background: brand?.background2,
+      borderColor: brand?.background4,
+    };
 
     return (
-      <div
-        className="ppe-outer"
-        style={{
-          backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
-          color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
-        }}
-      >
-        <h2
-          className="ppe-header"
-          style={{
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-          }}
-        >
+      <div className={"ppe-outer" + (isDarkMode ? " ppe-dark" : " ppe-light")} style={outerStyle}>
+        <div className="ppe-header">
+          <FontAwesomeIcon icon={faCubes} className="ppe-headerIcon" />
           Project Properties
-        </h2>
+        </div>
 
-        <div
-          className="ppe-grid"
-          style={{
-            minHeight: height,
-            maxHeight: height,
-          }}
-        >
-          <div className="ppe-label ppe-creatorlabel" id="ppe-creatorlabel">
-            Creator
-          </div>
-          <div className="ppe-creatorinput">
-            <Input
-              aria-labelledby="ppe-creatorlabel"
-              inline
-              clearable
-              placeholder={this.props.project.effectiveCreator}
-              value={this.state.creator}
-              onChange={this._handleCreatorChanged}
-            />
-          </div>
-          <div className="ppe-label ppe-namelabel" id="ppe-namelabel">
-            Name
-          </div>
-          <div className="ppe-nameinput">
-            <Input
-              aria-labelledby="ppe-namelabel"
-              inline
-              clearable
-              placeholder="project name"
-              value={this.state.name}
-              onChange={this._handleNameChanged}
-            />
-          </div>
-          <div className="ppe-label ppe-shortNamelabel" id="ppe-shortNamelabel">
-            Short Name
-          </div>
-          <div className="ppe-shortNameinput">
-            <Input
-              aria-labelledby="ppe-shortNamelabel"
-              clearable
-              placeholder={
-                this.state.creator && this.state.creator.length > 0 && this.state.name && this.state.name.length > 0
-                  ? ProjectUtilities.getSuggestedProjectShortName(this.state.creator, this.state.name)
-                  : this.props.project.effectiveShortName
-              }
-              key="newProjectShortName"
-              value={this.state.shortName !== "" ? this.state.shortName : undefined}
-              onChange={this._handleShortNameChanged}
-            />
-          </div>
-          <div className="ppe-label ppe-namespacelabel" id="ppe-namespacelabel">
-            Namespace
-          </div>
-          <div className="ppe-namespaceinput">
-            <Input
-              inline
-              clearable
-              aria-labelledby="ppe-namespacelabel"
-              placeholder={this.props.project.effectiveShortName}
-              defaultValue={this.props.project.defaultNamespace}
-              value={this.props.project.defaultNamespace !== "" ? this.state.defaultNamespace : undefined}
-              onChange={this._handleDefaultNamespaceChanged}
-            />
-          </div>
-          <div className="ppe-label ppe-titlelabel" id="ppe-titlelabel">
-            Title
-          </div>
-          <div className="ppe-titleinput">
-            <Input
-              inline
-              aria-labelledby="ppe-titlelabel"
-              clearable
-              placeholder="project title"
-              value={this.state.title}
-              onChange={this._handleTitleChanged}
-            />
-          </div>
-          <div className="ppe-label ppe-descriptionlabel" id="ppe-descriptionlabel">
-            Description
-          </div>
-          <div className="ppe-descriptioninput">
-            <TextArea
-              aria-labelledby="ppe-descriptionlabel"
-              placeholder="description"
-              value={this.props.project.description}
-              onChange={this._handleDescriptionChanged}
-            />
-          </div>
-          <div className="ppe-label ppe-defaultEditlabel" id="ppe-defaultEditlabel">
-            Default Edit Experience
-          </div>
-          <div className="ppe-defaultEditinput">
-            <Dropdown
-              items={ProjectEditorPreferences}
-              aria-labelledby="ppe-defaultEditlabel"
-              placeholder="Select your edit experience"
-              defaultValue={ProjectEditorPreferences[this.props.project.editPreference]}
-              onChange={this._handleEditPreferenceChange}
-            />
-            <div className="ppe-propertyNote">
-              {this.props.project.effectiveEditPreference === ProjectEditPreference.summarized ||
-              this.props.project.editPreference === ProjectEditPreference.editors
-                ? "When using visual editors, some existing formatting and comments in JSON files may be removed as you edit."
-                : ""}
-              You can edit items as Raw JSON using the '...' menu on items in the list.
+        <div className="ppe-content" style={contentStyle}>
+          {/* Basic Info Section */}
+          <div className="ppe-section" style={sectionStyle}>
+            <div className="ppe-sectionHeader" style={sectionHeaderStyle}>
+              <FontAwesomeIcon icon={faUser} className="ppe-sectionIcon" />
+              Basic Information
             </div>
-          </div>
-          <div className="ppe-label ppe-scriptLanguagelabel" id="ppe-scriptLanguagelabel">
-            Script Language
-          </div>
-          <div className="ppe-scriptLanguageinput">
-            <Dropdown
-              items={["JavaScript", "TypeScript"]}
-              aria-labelledby="ppe-scriptLanguagelabel"
-              placeholder="Select your language"
-              defaultValue={
-                this.props.project.preferredScriptLanguage === ProjectScriptLanguage.javaScript
-                  ? "JavaScript"
-                  : "TypeScript"
-              }
-              onChange={this._handleLanguageChange}
-            />
-          </div>
-          <div className="ppe-label ppe-tracklabel" id="ppe-tracklabel">
-            Target Minecraft
-          </div>
-          <div className="ppe-trackinput">
-            <Dropdown
-              aria-labelledby="ppe-tracklabel"
-              items={targetStrings}
-              placeholder="Select which version of Minecraft to target"
-              defaultValue={targetStrings[this.props.project.track ? (this.props.project.track as number) + 1 : 0]}
-              onChange={this._handleTrackChange}
-            />
-          </div>
-          <div className="ppe-label ppe-focuslabel" id="ppe-focuslabel">
-            Type
-          </div>
-          <div className="ppe-focusinput">
-            <Dropdown
-              aria-labelledby="ppe-focuslabel"
-              items={ProjectFocusStrings}
-              placeholder="Select your focus"
-              defaultValue={ProjectFocusStrings[this.props.project.focus]}
-              onChange={this._handleFocusChange}
-            />
-          </div>
-          <div className="ppe-label ppe-scriptVersionlabel" id="ppe-scriptVersionlabel">
-            Script Version
-          </div>
-          <div className="ppe-scriptVersioninput">
-            <Dropdown
-              items={ScriptVersionStrings}
-              aria-labelledby="ppe-scriptVersionlabel"
-              placeholder="Select your language"
-              defaultValue={
-                this.props.project.scriptVersion === ProjectScriptVersion.latestStable ? "Latest Stable" : "Stable 1.x"
-              }
-              onChange={this._handleVersionChange}
-            />
-          </div>
-          <div className="ppe-label ppe-versionlabel" id="ppe-versionlabel">
-            Version
-          </div>
-          <div className="ppe-versioninput">
-            <div className="ppe-versioninputline">
-              <Input
-                inline
-                clearable
-                aria-label="Major version number"
-                required={false}
-                placeholder="major"
-                value={versionMajor + ""}
-                onChange={this._handleVersionMajorChanged}
-              />
-              <Input
-                inline
-                clearable
-                aria-label="Minor version number"
-                required={false}
-                placeholder="minor"
-                value={versionMinor + ""}
-                onChange={this._handleVersionMinorChanged}
-              />
-              <Input
-                inline
-                clearable
-                aria-label="Patch version number"
-                required={false}
-                placeholder="patch"
-                value={versionPatch + ""}
-                onChange={this._handleVersionPatchChanged}
-              />
-            </div>
-          </div>
-
-          <div className="ppe-label ppe-ghlabel">
-            {CreatorToolsHost.hostType === HostType.webPlusServices ? (
-              <div>
-                <FontAwesomeIcon icon={faGithub} className="fa-lg" />
-                &#160;GitHub
+            <div className="ppe-sectionContent">
+              <div className="ppe-field">
+                <label className="ppe-fieldLabel" style={labelStyle} id="ppe-creatorlabel">
+                  Creator
+                </label>
+                <Input
+                  aria-labelledby="ppe-creatorlabel"
+                  className="ppe-fieldInput"
+                  clearable
+                  placeholder={this.props.project.effectiveCreator}
+                  value={this.state.creator}
+                  onChange={this._handleCreatorChanged}
+                />
               </div>
-            ) : (
-              <div>&#160;</div>
-            )}
+              <div className="ppe-field">
+                <label className="ppe-fieldLabel" style={labelStyle} id="ppe-namelabel">
+                  Name
+                </label>
+                <Input
+                  aria-labelledby="ppe-namelabel"
+                  className="ppe-fieldInput"
+                  clearable
+                  placeholder="project name"
+                  value={this.state.name}
+                  onChange={this._handleNameChanged}
+                />
+              </div>
+              <div className="ppe-field">
+                <label className="ppe-fieldLabel" style={labelStyle} id="ppe-shortNamelabel">
+                  Short Name
+                </label>
+                <Input
+                  aria-labelledby="ppe-shortNamelabel"
+                  className="ppe-fieldInput"
+                  clearable
+                  placeholder={
+                    this.state.creator && this.state.creator.length > 0 && this.state.name && this.state.name.length > 0
+                      ? ProjectUtilities.getSuggestedProjectShortName(this.state.creator, this.state.name)
+                      : this.props.project.effectiveShortName
+                  }
+                  value={this.state.shortName !== "" ? this.state.shortName : undefined}
+                  onChange={this._handleShortNameChanged}
+                />
+              </div>
+              <div className="ppe-field">
+                <label className="ppe-fieldLabel" style={labelStyle} id="ppe-namespacelabel">
+                  Namespace
+                </label>
+                <Input
+                  className="ppe-fieldInput"
+                  clearable
+                  aria-labelledby="ppe-namespacelabel"
+                  placeholder={this.props.project.effectiveShortName}
+                  defaultValue={this.props.project.defaultNamespace}
+                  value={this.props.project.defaultNamespace !== "" ? this.state.defaultNamespace : undefined}
+                  onChange={this._handleDefaultNamespaceChanged}
+                />
+              </div>
+              <div className="ppe-field">
+                <label className="ppe-fieldLabel" style={labelStyle} id="ppe-titlelabel">
+                  Title
+                </label>
+                <Input
+                  aria-labelledby="ppe-titlelabel"
+                  className="ppe-fieldInput"
+                  clearable
+                  placeholder="project title"
+                  value={this.state.title}
+                  onChange={this._handleTitleChanged}
+                />
+              </div>
+              <div className="ppe-field ppe-field-full">
+                <label className="ppe-fieldLabel" style={labelStyle} id="ppe-descriptionlabel">
+                  Description
+                </label>
+                <TextArea
+                  aria-labelledby="ppe-descriptionlabel"
+                  className="ppe-fieldTextArea"
+                  placeholder="description"
+                  value={this.props.project.description}
+                  onChange={this._handleDescriptionChanged}
+                />
+              </div>
+              <div className="ppe-field">
+                <label className="ppe-fieldLabel" style={labelStyle} id="ppe-versionlabel">
+                  Version
+                </label>
+                <div className="ppe-versionInputs">
+                  <Input
+                    className="ppe-versionInput"
+                    clearable
+                    aria-label="Major version number"
+                    placeholder="major"
+                    value={versionMajor + ""}
+                    onChange={this._handleVersionMajorChanged}
+                  />
+                  <span className="ppe-versionDot">.</span>
+                  <Input
+                    className="ppe-versionInput"
+                    clearable
+                    aria-label="Minor version number"
+                    placeholder="minor"
+                    value={versionMinor + ""}
+                    onChange={this._handleVersionMinorChanged}
+                  />
+                  <span className="ppe-versionDot">.</span>
+                  <Input
+                    className="ppe-versionInput"
+                    clearable
+                    aria-label="Patch version number"
+                    placeholder="patch"
+                    value={versionPatch + ""}
+                    onChange={this._handleVersionPatchChanged}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="ppe-ghinput">{gitHubInner}</div>
-          <div className="ppe-ghbutton">{gitHubConnect}</div>
+
+          {/* Project Settings Section */}
+          <div className="ppe-section" style={sectionStyle}>
+            <div className="ppe-sectionHeader" style={sectionHeaderStyle}>
+              <FontAwesomeIcon icon={faFileSignature} className="ppe-sectionIcon" />
+              Project Settings
+            </div>
+            <div className="ppe-sectionContent">
+              <div className="ppe-field">
+                <label className="ppe-fieldLabel" style={labelStyle} id="ppe-focuslabel">
+                  Type
+                </label>
+                <Dropdown
+                  aria-labelledby="ppe-focuslabel"
+                  className="ppe-fieldDropdown"
+                  items={ProjectFocusStrings}
+                  placeholder="Select your focus"
+                  defaultValue={ProjectFocusStrings[this.props.project.focus]}
+                  onChange={this._handleFocusChange}
+                />
+              </div>
+              <div className="ppe-field">
+                <label className="ppe-fieldLabel" style={labelStyle} id="ppe-tracklabel">
+                  Target Minecraft
+                </label>
+                <Dropdown
+                  aria-labelledby="ppe-tracklabel"
+                  className="ppe-fieldDropdown"
+                  items={targetStrings}
+                  placeholder="Select which version of Minecraft to target"
+                  defaultValue={targetStrings[this.props.project.track ? (this.props.project.track as number) + 1 : 0]}
+                  onChange={this._handleTrackChange}
+                />
+              </div>
+              <div className="ppe-field">
+                <label className="ppe-fieldLabel" style={labelStyle} id="ppe-defaultEditlabel">
+                  Edit Experience
+                </label>
+                <Dropdown
+                  items={ProjectEditorPreferences}
+                  aria-labelledby="ppe-defaultEditlabel"
+                  className="ppe-fieldDropdown"
+                  placeholder="Select your edit experience"
+                  defaultValue={ProjectEditorPreferences[this.props.project.editPreference]}
+                  onChange={this._handleEditPreferenceChange}
+                />
+                <div className="ppe-fieldNote">
+                  {this.props.project.effectiveEditPreference === ProjectEditPreference.summarized ||
+                  this.props.project.editPreference === ProjectEditPreference.editors
+                    ? "Visual editors may remove some formatting/comments in JSON files. "
+                    : ""}
+                  Use '...' menu on items for Raw JSON editing.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Script Settings Section */}
+          <div className="ppe-section" style={sectionStyle}>
+            <div className="ppe-sectionHeader" style={sectionHeaderStyle}>
+              <FontAwesomeIcon icon={faCode} className="ppe-sectionIcon" />
+              Script Settings
+            </div>
+            <div className="ppe-sectionContent">
+              <div className="ppe-field">
+                <label className="ppe-fieldLabel" style={labelStyle} id="ppe-scriptLanguagelabel">
+                  Language
+                </label>
+                <Dropdown
+                  items={["JavaScript", "TypeScript"]}
+                  aria-labelledby="ppe-scriptLanguagelabel"
+                  className="ppe-fieldDropdown"
+                  placeholder="Select your language"
+                  defaultValue={
+                    this.props.project.preferredScriptLanguage === ProjectScriptLanguage.javaScript
+                      ? "JavaScript"
+                      : "TypeScript"
+                  }
+                  onChange={this._handleLanguageChange}
+                />
+              </div>
+              <div className="ppe-field">
+                <label className="ppe-fieldLabel" style={labelStyle} id="ppe-scriptVersionlabel">
+                  Script Version
+                </label>
+                <Dropdown
+                  items={ScriptVersionStrings}
+                  aria-labelledby="ppe-scriptVersionlabel"
+                  className="ppe-fieldDropdown"
+                  placeholder="Select your version"
+                  defaultValue={
+                    this.props.project.scriptVersion === ProjectScriptVersion.latestStable
+                      ? "Latest Stable"
+                      : "Stable 1.x"
+                  }
+                  onChange={this._handleVersionChange}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* GitHub Section */}
+          {CreatorToolsHost.hostType === HostType.webPlusServices && (
+            <div className="ppe-section" style={sectionStyle}>
+              <div className="ppe-sectionHeader" style={sectionHeaderStyle}>
+                <FontAwesomeIcon icon={faGithub} className="ppe-sectionIcon" />
+                GitHub Integration
+              </div>
+              <div className="ppe-sectionContent">
+                {gitHubInner}
+                <div className="ppe-ghActions">{gitHubConnect}</div>
+              </div>
+            </div>
+          )}
+
           {statusArea}
-          <div className="ppe-advancedArea">
-            <h3>Tools</h3>
-            <div key="toolsAcc" className="ppe-toolArea">
-              {localTools}
+
+          {/* Tools Section */}
+          <div className="ppe-section" style={sectionStyle}>
+            <div className="ppe-sectionHeader" style={sectionHeaderStyle}>
+              <FontAwesomeIcon icon={faWrench} className="ppe-sectionIcon" />
+              Tools
             </div>
-            <h3>Advanced</h3>
-            <div key="adv" className="ppe-advgrid">
-              <div className="ppe-label ppe-bpuniqueidlabel" id="ppe-bpuniqueidlabel">
-                Behavior Pack Unique Id
+            <div className="ppe-sectionContent ppe-toolsContent">{localTools}</div>
+          </div>
+
+          {/* Advanced Section */}
+          <div className="ppe-section ppe-section-advanced" style={sectionStyle}>
+            <div className="ppe-sectionHeader" style={advancedSectionHeaderStyle}>
+              <FontAwesomeIcon icon={faFingerprint} className="ppe-sectionIcon" />
+              Advanced - Unique Identifiers
+            </div>
+            <div className="ppe-sectionContent">
+              <div className="ppe-uuidField" style={uuidFieldStyle}>
+                <label className="ppe-fieldLabel" style={labelStyle} id="ppe-bpuniqueidlabel">
+                  Behavior Pack UUID
+                </label>
+                <div className="ppe-uuidRow">
+                  <Input
+                    aria-labelledby="ppe-bpuniqueidlabel"
+                    className="ppe-uuidInput"
+                    clearable
+                    error={behaviorPackUniqueIdIsError}
+                    onChange={this._handleBehaviorPackUuidChanged}
+                    value={this.props.project.defaultBehaviorPackUniqueId}
+                  />
+                  <Button
+                    content="Generate"
+                    icon={<FontAwesomeIcon icon={faDice} />}
+                    onClick={this._createNewBehaviorPackUniqueId}
+                    aria-label="Randomly generate a new Behavior Pack Unique Id"
+                    iconPosition="before"
+                    primary
+                  />
+                </div>
               </div>
-              <div className="ppe-bpuniqueidinput">
-                <Input
-                  aria-labelledby="ppe-bpuniqueidlabel"
-                  inline
-                  clearable
-                  error={behaviorPackUniqueIdIsError}
-                  onChange={this._handleBehaviorPackUuidChanged}
-                  value={this.props.project.defaultBehaviorPackUniqueId}
-                  className="ppe-bpuniqueIdInputValue"
-                />
+              <div className="ppe-uuidField" style={uuidFieldStyle}>
+                <label className="ppe-fieldLabel" style={labelStyle} id="ppe-rpuniqueidlabel">
+                  Resource Pack UUID
+                </label>
+                <div className="ppe-uuidRow">
+                  <Input
+                    className="ppe-uuidInput"
+                    clearable
+                    aria-labelledby="ppe-rpuniqueidlabel"
+                    error={resourcePackUniqueIdIsError}
+                    onChange={this._handleResourcePackUuidChanged}
+                    value={this.props.project.defaultResourcePackUniqueId}
+                  />
+                  <Button
+                    content="Generate"
+                    icon={<FontAwesomeIcon icon={faDice} />}
+                    onClick={this._createNewResourcePackUniqueId}
+                    aria-label="Randomly generate a new Resource Pack Unique Id"
+                    iconPosition="before"
+                    primary
+                  />
+                </div>
               </div>
-              <div className="ppe-bpuniqueidcreatenew">
-                <Button
-                  content="Create new"
-                  icon={<FontAwesomeIcon icon={faDice} className="fa-lg" />}
-                  onClick={this._createNewBehaviorPackUniqueId}
-                  aria-label="Randomly generate a new Behavior Pack Unique Id"
-                  iconPosition="before"
-                  primary
-                />
+              <div className="ppe-uuidField" style={uuidFieldStyle}>
+                <label className="ppe-fieldLabel" style={labelStyle} id="ppe-datauniqueidlabel">
+                  Data UUID
+                </label>
+                <div className="ppe-uuidRow">
+                  <Input
+                    className="ppe-uuidInput"
+                    clearable
+                    error={dataUniqueIdIsError}
+                    aria-labelledby="ppe-datauniqueidlabel"
+                    onChange={this._handleDataUuidChanged}
+                    value={this.props.project.defaultDataUniqueId}
+                  />
+                  <Button
+                    content="Generate"
+                    icon={<FontAwesomeIcon icon={faDice} />}
+                    onClick={this._createNewDataUniqueId}
+                    aria-label="Randomly generate a new Data Unique Id"
+                    iconPosition="before"
+                    primary
+                  />
+                </div>
               </div>
-              <div className="ppe-label ppe-rpuniqueidlabel" id="ppe-rpuniqueidlabel">
-                Resource Pack Unique Id
-              </div>
-              <div className="ppe-rpuniqueidinput">
-                <Input
-                  inline
-                  clearable
-                  aria-labelledby="ppe-rpuniqueidlabel"
-                  error={resourcePackUniqueIdIsError}
-                  onChange={this._handleResourcePackUuidChanged}
-                  value={this.props.project.defaultResourcePackUniqueId}
-                  className="ppe-rpuniqueIdInputValue"
-                />
-              </div>
-              <div className="ppe-rpuniqueidcreatenew">
-                <Button
-                  content="Create new"
-                  icon={<FontAwesomeIcon icon={faDice} className="fa-lg" />}
-                  onClick={this._createNewResourcePackUniqueId}
-                  aria-label="Randomly generate a new Resource Pack Unique Id"
-                  iconPosition="before"
-                  primary
-                />
-              </div>
-              <div className="ppe-label ppe-datauniqueidlabel" id="ppe-datauniqueidlabel">
-                Data Unique Id
-              </div>
-              <div className="ppe-datauniqueidinput">
-                <Input
-                  inline
-                  clearable
-                  error={dataUniqueIdIsError}
-                  aria-labelledby="ppe-datauniqueidlabel"
-                  onChange={this._handleBehaviorPackUuidChanged}
-                  value={this.props.project.defaultDataUniqueId}
-                  className="ppe-uniqueIdInputValue"
-                />
-              </div>
-              <div className="ppe-datauniqueidcreatenew">
-                <Button
-                  content="Create new"
-                  icon={<FontAwesomeIcon icon={faDice} className="fa-lg" />}
-                  onClick={this._createNewDataUniqueId}
-                  aria-label="Randomly generate a new Data Unique Id"
-                  iconPosition="before"
-                  primary
-                />
-              </div>
-              <div className="ppe-label ppe-scriptuniqueidlabel" id="ppe-scriptuniqueidlabel">
-                Script Unique Id
-              </div>
-              <div className="ppe-scriptuniqueidinput">
-                <Input
-                  inline
-                  clearable
-                  aria-labelledby="ppe-scriptuniqueidlabel"
-                  error={scriptUniqueIdIsError}
-                  onChange={this._handleBehaviorPackUuidChanged}
-                  value={this.props.project.defaultScriptModuleUniqueId}
-                  className="ppe-uniqueIdInputValue"
-                />
-              </div>
-              <div className="ppe-scriptuniqueidcreatenew">
-                <Button
-                  content="Create new"
-                  icon={<FontAwesomeIcon icon={faDice} className="fa-lg" />}
-                  onClick={this._createNewScriptUniqueId}
-                  aria-label="Randomly generate a new Script Unique Id"
-                  iconPosition="before"
-                  primary
-                />
+              <div className="ppe-uuidField" style={uuidFieldStyle}>
+                <label className="ppe-fieldLabel" style={labelStyle} id="ppe-scriptuniqueidlabel">
+                  Script UUID
+                </label>
+                <div className="ppe-uuidRow">
+                  <Input
+                    className="ppe-uuidInput"
+                    clearable
+                    aria-labelledby="ppe-scriptuniqueidlabel"
+                    error={scriptUniqueIdIsError}
+                    onChange={this._handleScriptUuidChanged}
+                    value={this.props.project.defaultScriptModuleUniqueId}
+                  />
+                  <Button
+                    content="Generate"
+                    icon={<FontAwesomeIcon icon={faDice} />}
+                    onClick={this._createNewScriptUniqueId}
+                    aria-label="Randomly generate a new Script Unique Id"
+                    iconPosition="before"
+                    primary
+                  />
+                </div>
               </div>
             </div>
           </div>

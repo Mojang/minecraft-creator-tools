@@ -54,8 +54,8 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
     const pageTitle = await page.title();
     console.log(`Page title after project creation: ${pageTitle}`);
 
-    // Look for various editor indicators
-    const saveButton = page.locator("button:has-text('Save')");
+    // Look for various editor indicators - use more specific selectors
+    const saveButton = page.getByRole("button", { name: "Save" }).first();
     const exportButton = page.locator("button:has-text('Export')");
     const projectItems = page.locator("text=/Actions|Project|Inspector/");
     const anyToolbar = page.locator("toolbar").or(page.locator("[role='toolbar']"));
@@ -83,9 +83,9 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
     // Look for key editor elements if we found the save button
     if ((await saveButton.count()) > 0) {
       console.log("Testing main editor toolbar buttons");
-      const viewButton = page.locator("button:has-text('View')");
-      const shareButton = page.locator("button:has-text('Share')");
-      const runButton = page.locator("button:has-text('Run')");
+      const viewButton = page.getByRole("button", { name: "View" }).first();
+      const shareButton = page.getByRole("button", { name: "Share" }).first();
+      const runButton = page.getByRole("button", { name: "Run" }).first();
 
       if ((await viewButton.count()) > 0) await expect(viewButton).toBeVisible();
       if ((await shareButton.count()) > 0) await expect(shareButton).toBeVisible();
@@ -189,12 +189,12 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
     // Take screenshot of editor interface
     await page.screenshot({ path: "debugoutput/screenshots/editor-interface.png", fullPage: true });
 
-    // Test main toolbar interactions - use flexible discovery like the working tests
-    const saveButton = page.locator("button:has-text('Save')");
-    const viewButton = page.locator("button:has-text('View')");
-    const settingsButton = page.locator("button:has-text('Settings')");
-    const shareButton = page.locator("button:has-text('Share')");
-    const runButton = page.locator("button[title='Deploy']").or(page.locator("button:has-text('Run')").first());
+    // Test main toolbar interactions - use more specific selectors
+    const saveButton = page.getByRole("button", { name: "Save" }).first();
+    const viewButton = page.getByRole("button", { name: "View" }).first();
+    const settingsButton = page.getByRole("button", { name: "Settings" }).first();
+    const shareButton = page.getByRole("button", { name: "Share" }).first();
+    const runButton = page.getByRole("button", { name: "Run" }).first();
 
     console.log("Testing main toolbar buttons");
 
@@ -324,9 +324,6 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
   });
 
   test("should test download and export functionality from editor", async ({ page }) => {
-    // Set up download monitoring
-    const downloadPromise = page.waitForEvent("download", { timeout: 95000 });
-
     // Create project and get into editor using correct workflow
     const addOnStarterNewButton = page.getByRole("button", { name: "New" }).first();
     await addOnStarterNewButton.click();
@@ -357,6 +354,8 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
       await expect(exportZipButton).toBeVisible();
 
       try {
+        // Set up download monitoring BEFORE clicking
+        const downloadPromise = page.waitForEvent("download", { timeout: 30000 });
         await exportZipButton.click();
 
         // Wait for download to start
@@ -447,11 +446,11 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
     // Step 2: Verify we're in editor and interact with editor elements
     console.log("Step 2: Interacting with editor elements");
 
-    // Verify main editor interface elements are present - use flexible discovery
-    const saveButton = page.locator("button:has-text('Save')");
-    const viewButton = page.locator("button:has-text('View')");
-    const shareButton = page.locator("button:has-text('Share')");
-    const runButton = page.locator("button[title='Deploy']").or(page.locator("button:has-text('Run')").first());
+    // Verify main editor interface elements are present - use more specific selectors
+    const saveButton = page.getByRole("button", { name: "Save" }).first();
+    const viewButton = page.getByRole("button", { name: "View" }).first();
+    const shareButton = page.getByRole("button", { name: "Share" }).first();
+    const runButton = page.getByRole("button", { name: "Run" }).first();
 
     // Use conditional checks like the successful tests do
     if ((await saveButton.count()) > 0) {
@@ -471,7 +470,7 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
 
     if ((await runButton.count()) > 0) {
       console.log("Found Run button in main toolbar");
-      await expect(runButton.first()).toBeVisible();
+      await expect(runButton).toBeVisible();
     }
 
     // Verify at least some editor elements exist to confirm we're in the editor

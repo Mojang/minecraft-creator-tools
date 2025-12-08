@@ -7,6 +7,10 @@ export enum BrowserType {
 }
 
 export default class WebUtilities {
+  static getFileArrayFromFileList(fileList: FileList | null): File[] {
+    return fileList ? Array.from(fileList) : [];
+  }
+
   static getBrowserType() {
     if (navigator.userAgent.indexOf("Edg") >= 0) {
       return BrowserType.edgeChrome;

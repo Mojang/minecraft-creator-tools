@@ -1,24 +1,36 @@
 import Database from "../minecraft/Database";
+import BlockType from "../minecraft/BlockType";
 
 export class ProjectDefinitionUtilities {
-  static getVanillaBlockTexture(blockId: string, side: string) {
-    if (!Database.blocksCatalog || !Database.terrainTextureCatalog || !Database.vanillaCatalog) {
-      return undefined;
-    }
-
+  static getVanillaBlockTextureById(blockId: string, side: string) {
     let blockType = Database.ensureBlockType(blockId);
 
     if (!blockType) {
       return undefined;
     }
 
-    const blockDef = Database.blocksCatalog.getBlockDefinition(blockType.id);
+    return ProjectDefinitionUtilities.getVanillaBlockTexture(blockType, side);
+  }
 
-    if (!blockDef || !blockDef.textures) {
+  static getVanillaBlockTexture(blockType: BlockType, side: string): string | undefined {
+    if (!Database.blocksCatalog || !Database.terrainTextureCatalog || !Database.vanillaCatalog) {
       return undefined;
     }
 
-    let textureOrId = blockDef.textures;
+    const blockDef = blockType.catalogResource;
+
+    if (!blockDef) {
+      return undefined;
+    }
+
+    // Prefer carried_textures over textures for visual rendering
+    let textureSource = (blockDef as any).carried_textures || blockDef.textures;
+
+    if (!textureSource) {
+      return undefined;
+    }
+
+    let textureOrId = textureSource;
 
     if (typeof textureOrId === "object") {
       textureOrId = (textureOrId as any)[side];
@@ -30,14 +42,35 @@ export class ProjectDefinitionUtilities {
 
     const texture = Database.terrainTextureCatalog.getTerrainTextureDefinition(textureOrId);
 
-    if (!texture) {
+    if (!texture || !texture.textures) {
       return undefined;
     }
 
+    // Handle direct string path
     if (typeof texture.textures === "string") {
       return texture.textures;
     }
 
-    return texture.textures?.[0];
+    // Handle array of textures
+    if (Array.isArray(texture.textures) && texture.textures.length > 0) {
+      let tex = texture.textures[0];
+
+      if (typeof tex === "string") {
+        return tex;
+      }
+
+      if (tex && typeof tex === "object" && tex.path) {
+        return tex.path;
+      }
+    }
+
+    // Handle object with path property (e.g., {"path": "...", "overlay_color": "..."})
+    if (typeof texture.textures === "object" && !Array.isArray(texture.textures)) {
+      if ((texture.textures as any).path) {
+        return (texture.textures as any).path;
+      }
+    }
+
+    return undefined;
   }
 }

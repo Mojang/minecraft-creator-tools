@@ -39,6 +39,38 @@ export default class Utilities {
   static defaultEncoding = "UTF-8";
   static replacementChar = 0xfffd;
 
+  // note that if the stringToSplit is well formed, it should return untilCount+1 items items in the string[]
+  static splitUntil(stringToSplit: string, splitChar: string, untilCount: number): string[] {
+    const results: string[] = [];
+
+    let lastPipe = 0;
+    let index = 0;
+    let curPipe = stringToSplit.indexOf(splitChar);
+
+    while (curPipe > 0 && index < untilCount) {
+      results.push(stringToSplit.substring(lastPipe, curPipe));
+      index++;
+      lastPipe = curPipe + 1;
+      curPipe = stringToSplit.indexOf(splitChar, lastPipe);
+    }
+
+    results.push(stringToSplit.substring(lastPipe, stringToSplit.length));
+
+    return results;
+  }
+
+  static parseJson(jsonString: string): object | undefined {
+    let obj: object | undefined;
+
+    try {
+      obj = JSON.parse(jsonString);
+    } catch (e) {
+      return undefined;
+    }
+
+    return obj;
+  }
+
   static isScientificFloat(value: number) {
     // Ensure it's a number (not NaN, not Infinity)
     if (typeof value !== "number" || !isFinite(value)) {

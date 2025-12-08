@@ -1635,6 +1635,43 @@ export default class ProjectItemUtilities {
     }
   }
 
+  static getCousinOfType(projectItem: ProjectItem, itemType: ProjectItemType): ProjectItem | undefined {
+    if (!projectItem.parentItems) {
+      return undefined;
+    }
+
+    for (const parentRel of projectItem.parentItems) {
+      const result = this.getFirstDescendentOfType(parentRel.parentItem, itemType);
+      if (result) {
+        return result;
+      }
+    }
+
+    return undefined;
+  }
+
+  static getFirstDescendentOfType(projectItem: ProjectItem, itemType: ProjectItemType): ProjectItem | undefined {
+    if (!projectItem.childItems) {
+      return undefined;
+    }
+
+    for (const rel of projectItem.childItems) {
+      if (rel.childItem.itemType === itemType) {
+        return rel.childItem;
+      }
+    }
+
+    for (const rel of projectItem.childItems) {
+      const found = this.getFirstDescendentOfType(rel.childItem, itemType);
+
+      if (found) {
+        return found;
+      }
+    }
+
+    return undefined;
+  }
+
   static async getDefaultFolderForType(project: Project, itemType: ProjectItemType) {
     const paths = ProjectItemUtilities.getFolderRootsForType(itemType);
 

@@ -49,7 +49,7 @@ export default class BlockTypeTile extends Component<IBlockTypeTileProps, IBlock
           alt=""
           src={
             CreatorToolsHost.contentRoot +
-            "res/latest/van/release/resource_pack/textures/blocks/" +
+            "res/latest/van/serve/resource_pack/textures/blocks/" +
             blockType.getIcon() +
             ".png"
           }

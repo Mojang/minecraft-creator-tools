@@ -3,7 +3,7 @@ import IFile from "../storage/IFile";
 import "./AudioItemProperties.css";
 import Database from "../minecraft/Database";
 import { ThemeInput } from "@fluentui/styles";
-import DataForm, { IDataFormProps } from "../dataform/DataForm";
+import DataForm, { IDataFormProps } from "../dataformux/DataForm";
 import IProperty from "../dataform/IProperty";
 import SpawnRulesBehaviorDefinition from "../minecraft/SpawnRulesBehaviorDefinition";
 import SoundDefinitionCatalogDefinition from "../minecraft/SoundDefinitionCatalogDefinition";

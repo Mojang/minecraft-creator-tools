@@ -36,7 +36,7 @@ Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
 
 Nautilus - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/nautilus.json
 
- * At /minecraft:entity/events/minecraft:on_unsaddled/sequence/0/filters/: 
+ * At /minecraft:entity/events/minecraft:on_saddled/sequence/0/filters/: 
 {
   "test": "rider_count",
   "subject": "self",
@@ -88,7 +88,6 @@ export default interface RiderCount {
    * Happy Ghast: "equals"
    *
    * Nautilus: ">"
-   *
    *
    * Dream Turkey: "=="
    *

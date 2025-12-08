@@ -32,6 +32,7 @@ const _allowedExtensions = [
   "bin",
   "obj",
   "pdn",
+  "zip",
   "py",
   "h",
   "fontdata",
@@ -82,7 +83,14 @@ function _canonicalizePathForValidation(path) {
     throw new Error("PLD: Unsupported canon path: " + path);
   }
 
-  if (path.startsWith("<MCRP>") || path.startsWith("<MCPP>") || path.startsWith("<DOCP>")) {
+  if (
+    path.startsWith("<EDUP>") ||
+    path.startsWith("<EDUR>") ||
+    path.startsWith("<BDRK>") ||
+    path.startsWith("<BDPV>") ||
+    path.startsWith("<MCPE>") ||
+    path.startsWith("<DOCP>")
+  ) {
     path = path.substring(6);
   } else if (path.startsWith("<pt_")) {
     const endGreater = path.indexOf(">", 4);
@@ -107,6 +115,17 @@ function _validateFolderPath(path) {
   if (path.lastIndexOf(":") >= 2) {
     throw new Error("Unsupported drive location: " + path);
   }
+}
+
+function _validateDoubleFolderPath(path) {
+  pathArr = path.split("|");
+
+  if (pathArr.length !== 2) {
+    throw new Error("Unsupported double folder path: " + path);
+  }
+
+  _validateFolderPath(pathArr[0]);
+  _validateFolderPath(pathArr[1]);
 }
 
 function _validateFilePath(path) {
@@ -213,12 +232,18 @@ contextBridge.exposeInMainWorld("api", {
         case "asyncwindowRightSide":
         case "asyncupdateIAgree":
         case "asyncgetWindowState":
+        case "asyncgetPlatform":
         case "asyncgetDirname":
+        case "asyncgetContentSources":
         case "asynccontentSourceLogin":
           return ipcRenderer.invoke(commandName, position + "|" + data);
 
         case "getIsDev":
           return ipcRenderer.invoke("getIsDev", data);
+
+        case "asyncfsRenameFolder":
+          _validateDoubleFolderPath(data);
+          return ipcRenderer.invoke(commandName, position + "|" + data);
 
         case "asyncfsExists":
         case "bsyncfsReadFile":

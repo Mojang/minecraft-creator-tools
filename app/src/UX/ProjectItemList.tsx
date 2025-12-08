@@ -49,6 +49,7 @@ import { AnnotatedValueSet, IAnnotatedValue } from "../core/AnnotatedValue";
 import ProjectAddButton from "./ProjectAddButton";
 import WebUtilities from "./WebUtilities";
 import ProjectCreateManager from "../app/ProjectCreateManager";
+import CreatorToolsHost, { CreatorToolsThemeStyle } from "../app/CreatorToolsHost";
 
 export enum EntityTypeCommand {
   select,
@@ -708,6 +709,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       accessibility: selectableListItemBehavior,
       onClick: this._handleItemTypeToggle,
       key: "type" + itemType + "|",
+      "aria-label": name,
       content: (
         <div
           className="pil-itemTypeHeader"
@@ -785,6 +787,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       accessibility: selectableListItemBehavior,
       onClick: this._handleStoragePathToggle,
       key: "eitb." + itemType + "." + keyPath,
+      "aria-label": folderDisplayPath,
       content: (
         <div
           className="pil-pathHeader"
@@ -927,6 +930,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       (projectListItems as any).push({
         accessibility: selectableListItemBehavior,
         key: "pila-ro" + projectItem.projectPath + (isFocused ? ".focus" : ""),
+        "aria-label": name,
         content: (
           <div className="pil-item" key={"pil-ro" + projectItem.projectPath + (isFocused ? ".focus" : "")}>
             <div
@@ -1101,6 +1105,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       (projectListItems as any).push({
         accessibility: selectableListItemBehavior,
         key: "pila-eoa" + projectItem.projectPath + (isFocused ? ".focus" : ""),
+        "aria-label": name,
         content: (
           <div className="pil-item" key={"pil-eoa" + projectItem.projectPath} aria-haspopup={true}>
             {itemItems}
@@ -1118,6 +1123,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       (projectListItems as any).push({
         accessibility: selectableListItemBehavior,
         key: "pil-ghitemr." + sig,
+        "aria-label": name,
         content: (
           <div className="pil-item" key={"pil-ghitem." + sig}>
             <span className="pil-name">{name}</span>
@@ -1137,6 +1143,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       (projectListItems as any).push({
         accessibility: selectableListItemBehavior,
         key: "pil-ghitemz." + sig,
+        "aria-label": name,
         content: (
           <div className="pil-item" key={"pil-ghitema." + sig} style={{ minWidth: 310 }}>
             <MenuButton
@@ -1154,7 +1161,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
             <MenuButton
               trigger={
                 <span className="pil-contextMenuButton" aria-haspopup="false">
-                  <Button content="..." aria-label="Click button" />
+                  <Button content="..." aria-label="More options" />
                 </span>
               }
               menu={itemMenu}
@@ -1503,6 +1510,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       (projectListItems as any).push({
         accessibility: selectableListItemBehavior,
         key: "pilats",
+        "aria-label": "Actions",
         content: (
           <div className="pil-fixedLine" key="pil-ats">
             Actions
@@ -1513,6 +1521,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       (projectListItems as any).push({
         accessibility: selectableListItemBehavior,
         key: "pilmap",
+        "aria-label": "Map",
         content: (
           <div className="pil-fixedLine" key="pil-map">
             Map
@@ -1546,12 +1555,14 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       (projectListItems as any).push({
         accessibility: selectableListItemBehavior,
         key: "pilb-proje",
+        "aria-label": whatIsThis,
         content: projectContent,
       });
 
       (projectListItems as any).push({
         accessibility: selectableListItemBehavior,
         key: "pilb-insp",
+        "aria-label": "Inspector",
         content: (
           <div className="pil-fixedLine" key="pil-insp">
             Inspector
@@ -1831,7 +1842,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         key: "pil-hideShowSlash",
         content: "All Single Files (Advanced)",
         onClick: this._showAllClick,
-        title: "Toggle whether hidden items are shown",
+        title: "Show all files, including single files not normally shown in summarized mode",
       });
     }
 
@@ -1909,7 +1920,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
               maxHeight: listHeight,
               minHeight: listHeight,
             }}
-            className="pil-list"
+            className={"pil-list" + (CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? " pil-list-dark" : "")}
             onScroll={this._handleListScroll}
           >
             <List

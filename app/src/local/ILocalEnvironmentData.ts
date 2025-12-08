@@ -11,4 +11,7 @@ export default interface ILocalEnvironmentData {
   serverDomainName?: string;
   serverMessageOfTheDay?: string;
   pathMappings?: { [path: string]: string };
+
+  // Security: CORS configuration
+  allowedCorsOrigins?: string[]; // List of allowed origins for CORS, e.g., ["http://localhost:3000", "https://example.com"]
 }

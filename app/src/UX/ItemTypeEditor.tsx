@@ -18,6 +18,8 @@ import { Toolbar } from "@fluentui/react-northstar";
 import ItemTypeActionEditor from "./ItemTypeActionEditor";
 import { ProjectItemType } from "../app/IProjectItemData";
 import ItemTypeAttachableEditor from "./ItemTypeAttachableEditor";
+import telemetry from "../analytics/Telemetry";
+import { TelemetryEvents, TelemetryProperties } from "../analytics/TelemetryConstants";
 
 interface IItemTypeEditorProps extends IFileProps {
   heightOffset: number;
@@ -144,6 +146,13 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
   }
 
   _setMode(mode: ItemTypeEditorMode) {
+    telemetry.trackEvent({
+      name: TelemetryEvents.ITEM_TYPE_EDITOR_VIEW_CHANGE,
+      properties: {
+        [TelemetryProperties.MODE]: ItemTypeEditorMode[mode],
+      },
+    });
+
     this.setState({
       fileToEdit: this.state.fileToEdit,
       isLoaded: this.state.isLoaded,

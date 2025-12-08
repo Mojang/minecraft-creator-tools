@@ -8,7 +8,7 @@ import { ThemeInput } from "@fluentui/styles";
 import ProjectItem from "../app/ProjectItem";
 import CreatorTools from "../app/CreatorTools";
 import Project from "../app/Project";
-import DataForm from "../dataform/DataForm";
+import DataForm from "../dataformux/DataForm";
 import BiomeResourceDefinition from "../minecraft/BiomeResourceDefinition";
 
 export enum BiomeResourceEditorMode {

@@ -4,7 +4,7 @@ import IFile from "../storage/IFile";
 import "./GeneralFormEditor.css";
 import Database from "../minecraft/Database";
 import { ThemeInput } from "@fluentui/styles";
-import DataForm, { IDataFormProps } from "../dataform/DataForm";
+import DataForm, { IDataFormProps } from "../dataformux/DataForm";
 import IProperty from "../dataform/IProperty";
 import Project from "../app/Project";
 import Utilities from "../core/Utilities";

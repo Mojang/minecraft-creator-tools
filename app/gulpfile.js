@@ -9,12 +9,12 @@ const downloadResources = require("./tools/gulp-downloadResources");
 const updateVersions = require("./tools/gulp-updateVersions");
 const textReplaceStream = require("./tools/gulp-textReplaceStream");
 const textReplace = require("./tools/gulp-textReplace");
-const gulpWebpack = require("webpack-stream");
+const tgaToPng = require("./tools/gulp-tgaToPng");
+const webpack = require("webpack");
 
 const jsncorebuildfilesigs = [
   "src/**/*.ts",
   "!src/vscode/*.ts",
-  "!src/analytics/*.ts",
   "!src/UX/*.ts",
   "!src/UXex/*.ts",
   "!src/test/**/*",
@@ -26,21 +26,30 @@ const jsncorebuildfilesigs = [
   "!src/babylon/*.ts",
 ];
 
-const jsminbuildfilesigs = [
+const libbuildfilesigs = [
   "src/**/*.ts",
-  "!src/vscode/*.ts",
-  "!src/UX/*.ts",
-  "!src/local/*.ts",
-  "!src/cli/*.ts",
-  "!src/mcp/*.ts",
-  "!src/UXex/*.ts",
+  "!src/analytics/**/*",
+  "!src/storage/**/FileSystem*",
+  "!src/vscode/**/*",
+  "!src/vscodeweb/**/*",
+  "!src/UX/**/*",
+  "!src/UXex/**/*",
+  "!src/worldux/**/*",
   "!src/test/**/*",
   "!src/testweb/**/*",
-  "!src/monaco/*.ts",
+  "!src/localserver/**/*",
+  "!src/local/**/*",
+  "!src/cli/**/*",
+  "!src/mcp/**/*",
+  "!src/electron/**/*",
+  "!src/babylon/**/*",
+  "!src/monaco/**/*",
   "!src/setupTests.ts",
-  "!src/worldux/*.ts",
-  "!src/vscodeweb/*.ts",
-  "!src/babylon/*.ts",
+  "!src/index.tsx",
+  "!src/jsnwebindex.tsx",
+  "!src/vscwebindex.tsx",
+  "!**/*.test.ts",
+  "!**/*.test.tsx",
 ];
 
 const vsccorebuildfilesigs = [
@@ -49,6 +58,9 @@ const vsccorebuildfilesigs = [
   "!src/UXex/*.ts",
   "!src/test/**/*",
   "!src/testweb/**/*",
+  "!src/testshared/**/*",
+  "!src/testelectron/**/*",
+  "!src/localserver/**/*",
   "!src/vscodeweb/*.ts",
   "!src/monaco/*.ts",
   "!src/setupTests.ts",
@@ -57,21 +69,14 @@ const vsccorebuildfilesigs = [
   "!src/babylon/*.ts",
 ];
 
-const vscwebbuildfilesigs = [
-  "src/**/*.ts",
-  "!src/monaco/*.ts",
-  "!src/vscode/*.ts",
-  "!src/test/**/*",
-  "!src/testweb/**/*",
-  "!src/setupTests.ts",
-  "!src/local/*.ts",
-];
-
 const jsnwebbuildfilesigs = [
   "src/**/*.ts",
   "!src/vscode/*.ts",
   "!src/vscodeweb/*.ts",
   "!src/test/**/*",
+  "!src/testshared/**/*",
+  "!src/testelectron/**/*",
+  "!src/localserver/**/*",
   "!src/testweb/**/*",
   "!src/setupTests.ts",
   "!src/local/*.ts",
@@ -108,40 +113,68 @@ const mcreslistsamplesigs = ["reslist/samples.resources.json"];
 const mcreslistscriptsamplesigs = ["reslist/scriptsamples.resources.json"];
 const mcreslistgametestsigs = ["reslist/gametestsamples.resources.json"];
 
-function compileVscCoreExeBuild() {
-  return gulp
-    .src(vsccorebuildfilesigs, { base: "" })
-    .pipe(gulpWebpack(require("./webpack.vsccore.config.js")))
-    .pipe(gulp.dest("toolbuild/vsc"))
-    .on("end", function () {})
-    .on("error", function () {});
+function compileVscCoreExeBuild(done) {
+  const config = require("./webpack.vsccore.config.js");
+  webpack(config, (err, stats) => {
+    if (err) {
+      console.error(err);
+      return done(err);
+    }
+    if (stats.hasErrors()) {
+      console.error(stats.toString({ colors: true }));
+      return done(new Error("Webpack compilation errors"));
+    }
+    console.log(stats.toString({ colors: true, chunks: false }));
+    done();
+  });
 }
 
-function compileVscCoreWebBuild() {
-  return gulp
-    .src(vsccorebuildfilesigs, { base: "" })
-    .pipe(gulpWebpack(require("./webpack.vsccoreweb.config.js")))
-    .pipe(gulp.dest("toolbuild/vsc"))
-    .on("end", function () {})
-    .on("error", function () {});
+function compileVscCoreWebBuild(done) {
+  const config = require("./webpack.vsccoreweb.config.js");
+  webpack(config, (err, stats) => {
+    if (err) {
+      console.error(err);
+      return done(err);
+    }
+    if (stats.hasErrors()) {
+      console.error(stats.toString({ colors: true }));
+      return done(new Error("Webpack compilation errors"));
+    }
+    console.log(stats.toString({ colors: true, chunks: false }));
+    done();
+  });
 }
 
-function compileVscWebBuild() {
-  return gulp
-    .src(vscwebbuildfilesigs, { base: "" })
-    .pipe(gulpWebpack(require("./webpack.vscweb.config.js")))
-    .pipe(gulp.dest("toolbuild/vsc/web"))
-    .on("end", function () {})
-    .on("error", function () {});
+function compileVscWebBuild(done) {
+  const config = require("./webpack.vscweb.config.js");
+  webpack(config, (err, stats) => {
+    if (err) {
+      console.error(err);
+      return done(err);
+    }
+    if (stats.hasErrors()) {
+      console.error(stats.toString({ colors: true }));
+      return done(new Error("Webpack compilation errors"));
+    }
+    console.log(stats.toString({ colors: true, chunks: false }));
+    done();
+  });
 }
 
-function compileJsnWebBuild() {
-  return gulp
-    .src(jsnwebbuildfilesigs, { base: "" })
-    .pipe(gulpWebpack(require("./webpack.jsnweb.config.js")))
-    .pipe(gulp.dest("toolbuild/jsn/web"))
-    .on("end", function () {})
-    .on("error", function () {});
+function compileJsnWebBuild(done) {
+  const config = require("./webpack.jsnweb.config.js");
+  webpack(config, (err, stats) => {
+    if (err) {
+      console.error(err);
+      return done(err);
+    }
+    if (stats.hasErrors()) {
+      console.error(stats.toString({ colors: true }));
+      return done(new Error("Webpack compilation errors"));
+    }
+    console.log(stats.toString({ colors: true, chunks: false }));
+    done();
+  });
 }
 
 function compileJsNodeBuild() {
@@ -186,30 +219,28 @@ function compileJsNodeBuild() {
     )
     .pipe(nodeifyScript())
     .pipe(sourcemaps.write("./maps/"))
-    .pipe(gulp.dest("toolbuild/jsn"))
-    .on("end", function () {})
-    .on("error", function () {});
+    .pipe(gulp.dest("toolbuild/jsn"));
 }
 
-function compileJsMinBuild() {
-  return gulp
-    .src(jsminbuildfilesigs, { base: "" })
-    .pipe(gulpWebpack(require("./webpack.jsmin.config.js")))
-    .pipe(gulp.dest("toolbuild/jsmin"))
-    .on("end", function () {})
-    .on("error", function () {});
+function compileLibBuild() {
+  const tsProject = ts.createProject("tsconfig.lib.json");
+
+  const tsResult = gulp.src(libbuildfilesigs, { base: "src" }).pipe(tsProject());
+
+  tsResult.dts.pipe(gulp.dest("toolbuild/lib"));
+  return tsResult.js.pipe(gulp.dest("toolbuild/lib"));
+}
+
+function copyLibPackage() {
+  return gulp.src(["libnode/package.json"]).pipe(gulp.dest("toolbuild/lib"));
+}
+
+function copyLibDocs() {
+  return gulp.src(["libnode/README.md"], { allowEmpty: true }).pipe(gulp.dest("toolbuild/lib/"));
 }
 
 function customizeSiteHead() {
   return gulp.src(["site/index.head.html"], { base: "" }).pipe(textReplaceStream("build/index.html", /<\/head>/gi));
-}
-
-function stripSourceMapA() {
-  return gulp
-    .src(["node_modules/blockly/blockly_compressed.js"])
-    .pipe(
-      textReplace("node_modules/blockly/blockly_compressed.js", [/sourceMappingURL=blockly_compressed.js.map/gi], [""])
-    );
 }
 
 function customizeSiteBody() {
@@ -223,23 +254,28 @@ function copyCheckedInRes() {
 }
 
 function copyVscData() {
-  return gulp.src(["public/data/**/*.json", "public/data/**/*.mcworld"]).pipe(gulp.dest("toolbuild/vsc/data/"));
+  return gulp
+    .src(["public/data/**/*.json", "public/data/**/*.mcworld"], { encoding: false })
+    .pipe(gulp.dest("toolbuild/vsc/data/"));
 }
 
 function copyJsNodeData() {
   return gulp
-    .src([
-      "public/data/**/*.ogg",
-      "public/data/**/*.png",
-      "public/data/**/*.json",
-      "public/data/**/*.mcworld",
-      "public/data/**/*.mcaddon",
-    ])
+    .src(
+      [
+        "public/data/**/*.ogg",
+        "public/data/**/*.png",
+        "public/data/**/*.json",
+        "public/data/**/*.mcworld",
+        "public/data/**/*.mcaddon",
+      ],
+      { encoding: false }
+    )
     .pipe(gulp.dest("toolbuild/jsn/data/"));
 }
 
 function copyJsNodeDist() {
-  return gulp.src(["public/dist/**/*"]).pipe(gulp.dest("toolbuild/jsn/dist/"));
+  return gulp.src(["public/dist/**/*"], { encoding: false }).pipe(gulp.dest("toolbuild/jsn/dist/"));
 }
 
 function copyMonacoNpmDist() {
@@ -251,19 +287,21 @@ function copyMonacoMapsNpmDist() {
 }
 
 function copyEsbuildWasmDist() {
-  return gulp.src(["node_modules/esbuild-wasm/esbuild.wasm"]).pipe(gulp.dest("public/dist/esbuild-wasm/"));
+  return gulp
+    .src(["node_modules/esbuild-wasm/esbuild.wasm"], { encoding: false })
+    .pipe(gulp.dest("public/dist/esbuild-wasm/"));
 }
 
 function copyJsNodeDocs() {
-  return gulp.src(["../CHANGELOG.md", "../NOTICE.md"]).pipe(gulp.dest("toolbuild/jsn/"));
+  return gulp.src(["../CHANGELOG.md", "../NOTICE.md", "../LICENSE.md"]).pipe(gulp.dest("toolbuild/jsn/"));
 }
 
 function copyVscRes() {
-  return gulp.src(["public/res/**/*"]).pipe(gulp.dest("toolbuild/vsc/res/"));
+  return gulp.src(["public/res/**/*"], { encoding: false }).pipe(gulp.dest("toolbuild/vsc/res/"));
 }
 
 function copyVscMc() {
-  return gulp.src(["../mc/dist/**/*"]).pipe(gulp.dest("toolbuild/vsc/mc/"));
+  return gulp.src(["public/data/content/**/*.mcaddon"], { encoding: false }).pipe(gulp.dest("toolbuild/vsc/mc/"));
 }
 
 function copyJsNodeResPreviewMetadataVanillaData() {
@@ -272,16 +310,22 @@ function copyJsNodeResPreviewMetadataVanillaData() {
     .pipe(gulp.dest("toolbuild/jsn/res/latest/van/preview/metadata/vanilladata_modules/"));
 }
 
+function copyResLatestPreviewToServe() {
+  return gulp
+    .src(["public/res/latest/van/preview/**/*"], { encoding: false })
+    .pipe(gulp.dest("public/res/latest/van/serve/"));
+}
+
 function copyJsNodeResSchemas() {
   return gulp.src(["public/res/latest/schemas/**/*"]).pipe(gulp.dest("toolbuild/jsn/res/latest/schemas/"));
 }
 
 function copyJsNodeResImages() {
-  return gulp.src(["public/res/images/**/*"]).pipe(gulp.dest("toolbuild/jsn/res/images/"));
+  return gulp.src(["public/res/images/**/*"], { encoding: false }).pipe(gulp.dest("toolbuild/jsn/res/images/"));
 }
 
 function copyJsNodeMc() {
-  return gulp.src(["../mc/dist/**/*"]).pipe(gulp.dest("toolbuild/jsn/mc/"));
+  return gulp.src(["public/data/content/**/*.mcaddon"], { encoding: false }).pipe(gulp.dest("toolbuild/jsn/mc/"));
 }
 
 function copyJsNodeAssets() {
@@ -316,8 +360,8 @@ gulp.task("clean-jsnwebbuild", function () {
   return del(["toolbuild/jsn/web"]);
 });
 
-gulp.task("clean-jsminbuild", function () {
-  return del(["toolbuild/jsmin"]);
+gulp.task("clean-libbuild", function () {
+  return del(["toolbuild/lib"]);
 });
 
 gulp.task("clean-mcbuild", function () {
@@ -362,21 +406,16 @@ gulp.task(
   )
 );
 
-gulp.task("jsminbuild", gulp.series("clean-jsminbuild", compileJsMinBuild));
-
-gulp.task("jsminbuild", gulp.series(compileJsMinBuild));
+gulp.task("libbuild", gulp.series("clean-libbuild", gulp.parallel(compileLibBuild, copyLibPackage, copyLibDocs)));
 
 gulp.task("jsncorebuild", gulp.series(compileJsNodeBuild));
 
 gulp.task("copyjsnodedata", gulp.series(copyJsNodeData));
 
-gulp.task(
-  "vsccorebuild",
-  gulp.series("clean-vsccorebuild", gulp.parallel(compileVscCoreExeBuild, compileVscCoreWebBuild))
-);
-
 gulp.task("vsccoreexebuild", compileVscCoreExeBuild);
-gulp.task("vsccorewebbuild", compileVscCoreExeBuild);
+gulp.task("vsccorewebbuild", compileVscCoreWebBuild);
+
+gulp.task("vsccorebuild", gulp.series("clean-vsccorebuild", gulp.parallel("vsccoreexebuild", "vsccorewebbuild")));
 
 gulp.task("postclean-vscwebbuild-node_modules", function () {
   return del(["toolbuild/vsc/app/node_modules"]);
@@ -401,8 +440,8 @@ gulp.task(
     "clean-vscbuild",
     copyCheckedInRes,
     gulp.parallel(
-      compileVscCoreExeBuild,
-      compileVscCoreWebBuild,
+      "vsccoreexebuild",
+      "vsccorewebbuild",
       gulp.series(compileVscWebBuild, "postclean-vscwebbuild"),
       copyVscAssets,
       copyVscDocs,
@@ -453,9 +492,7 @@ function compileWebJsBuild() {
       })
     )
     .pipe(sourcemaps.write("./maps/"))
-    .pipe(gulp.dest("out/web"))
-    .on("end", function () {})
-    .on("error", function () {});
+    .pipe(gulp.dest("out/web"));
 }
 
 function buildMinecraftJs() {
@@ -482,29 +519,54 @@ function runUpdateVersions() {
   return gulp
     .src(versionSource, { base: "" })
     .pipe(
-      updateVersions(["./package.json", "./package-lock.json", "./jsnode/package.json", "./src/core/Constants.ts"])
+      updateVersions([
+        "./package.json",
+        "./package-lock.json",
+        "./jsnode/package.json",
+        "./vscode/package.json",
+        "./src/core/Constants.ts",
+      ])
     );
 }
 
 function runDownloadSamples() {
-  return gulp.src(mcreslistsamplesigs, { base: "" }).pipe(downloadResources("public/res/samples/microsoft/"));
+  return gulp
+    .src(mcreslistsamplesigs, { base: "", encoding: false })
+    .pipe(downloadResources("public/res/samples/microsoft/"));
 }
 
 function runDownloadScriptSamples() {
-  return gulp.src(mcreslistscriptsamplesigs, { base: "" }).pipe(downloadResources("public/res/samples/microsoft/"));
+  return gulp
+    .src(mcreslistscriptsamplesigs, { base: "", encoding: false })
+    .pipe(downloadResources("public/res/samples/microsoft/"));
 }
 
 function runDownloadGameTests() {
-  return gulp.src(mcreslistgametestsigs, { base: "" }).pipe(downloadResources("public/res/samples/microsoft/"));
+  return gulp
+    .src(mcreslistgametestsigs, { base: "", encoding: false })
+    .pipe(downloadResources("public/res/samples/microsoft/"));
 }
 
 function runDownloadVanillaResources() {
-  return gulp.src(mcreslistvanillasigs, { base: "" }).pipe(downloadResources("public/res/latest/van/release/"));
+  return gulp
+    .src(mcreslistvanillasigs, { base: "", encoding: false })
+    .pipe(downloadResources("public/res/latest/van/release/"));
 }
 
 function runDownloadVanillaPreviewResources() {
-  return gulp.src(mcreslistpreviewvanillasigs, { base: "" }).pipe(downloadResources("public/res/latest/van/preview/"));
+  return gulp
+    .src(mcreslistpreviewvanillasigs, { base: "", encoding: false })
+    .pipe(downloadResources("public/res/latest/van/preview/"));
 }
+
+function convertVanillaTgaToPng() {
+  const vanillaDirectories = ["public/res/latest/van/serve/resource_pack/textures"];
+
+  return gulp.src("package.json").pipe(tgaToPng(vanillaDirectories));
+}
+
+gulp.task("createresserve", copyResLatestPreviewToServe);
+gulp.task("tgatopng", convertVanillaTgaToPng);
 
 gulp.task("vscwebbuild", gulp.series("clean-vscwebbuild", compileVscWebBuild, "postclean-vscwebbuild"));
 
@@ -540,7 +602,9 @@ gulp.task(
       runDownloadVanillaResources,
       runDownloadVanillaPreviewResources,
       copyCheckedInRes
-    )
+    ),
+    copyResLatestPreviewToServe,
+    convertVanillaTgaToPng
   )
 );
 

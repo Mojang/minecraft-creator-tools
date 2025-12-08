@@ -12,7 +12,7 @@ import Log from "../core/Log";
 import { ProjectFocus, ProjectScriptLanguage } from "../app/IProjectData";
 import CreatorToolsHost, { CreatorToolsThemeStyle, HostType } from "../app/CreatorToolsHost";
 import StorageUtilities from "../storage/StorageUtilities";
-import { ThemeInput } from "@fluentui/react-northstar";
+import { ThemeInput, Provider } from "@fluentui/react-northstar";
 import { CreatorToolsEditorViewMode } from "../app/ICreatorToolsData";
 import MCWorld from "../minecraft/MCWorld";
 import ProjectItem from "../app/ProjectItem";
@@ -20,12 +20,16 @@ import ProjectUtilities from "../app/ProjectUtilities";
 import { LocalFolderType, LocalGalleryCommand } from "./LocalGalleryCommand";
 import WebUtilities from "./WebUtilities";
 import ProjectEditorUtilities, { ProjectEditorMode } from "./ProjectEditorUtilities";
+import AppServiceProxy from "../core/AppServiceProxy";
 import HttpStorage from "../storage/HttpStorage";
 import { ProjectImportExclusions } from "../app/ProjectExporter";
 import Database from "../minecraft/Database";
 import IProjectSeed from "../app/IProjectSeed";
 import ImportFromUrl from "./ImportFromUrl";
 import ProjectCreateManager from "../app/ProjectCreateManager";
+import telemetryService from "../analytics/Telemetry";
+import { TelemetryProperties, TelemetrySeverity } from "../analytics/TelemetryConstants";
+import ImportFiles from "./ImportFiles";
 
 export enum NewProjectTemplateType {
   empty,
@@ -39,6 +43,7 @@ export enum AppMode {
   codeToolbox = 4,
   projectReadOnly = 5,
   importFromUrl = 17,
+  importFiles = 18,
 }
 
 interface AppProps {
@@ -53,6 +58,7 @@ interface AppState {
   isPersisted?: boolean;
   errorMessage?: string;
   activeProject: Project | null;
+  submittedFiles?: File[] | undefined;
   selectedItem?: string;
   initialFocusPath?: string;
   hasBanner?: boolean;
@@ -83,6 +89,8 @@ export default class App extends Component<AppProps, AppState> {
     this._handleNewProject = this._handleNewProject.bind(this);
     this._handleNewProjectFromFolder = this._handleNewProjectFromFolder.bind(this);
     this._handleNewProjectFromFolderInstance = this._handleNewProjectFromFolderInstance.bind(this);
+    this._handleNewProjectFromImportFiles = this._handleNewProjectFromImportFiles.bind(this);
+    this._handleUpdateExistingProject = this._handleUpdateExistingProject.bind(this);
     this._handleProjectSelected = this._handleProjectSelected.bind(this);
     this._handleCreatorToolsInit = this._handleCreatorToolsInit.bind(this);
     this.processInitialUrl = this.processInitialUrl.bind(this);
@@ -90,6 +98,7 @@ export default class App extends Component<AppProps, AppState> {
     this._newProjectFromGallery = this._newProjectFromGallery.bind(this);
     this._handleProjectGalleryCommand = this._handleProjectGalleryCommand.bind(this);
     this._handleLocalGalleryCommand = this._handleLocalGalleryCommand.bind(this);
+    this._considerSubmittedFiles = this._considerSubmittedFiles.bind(this);
     this._handleHashChange = this._handleHashChange.bind(this);
     this._incrementVisualSeed = this._incrementVisualSeed.bind(this);
     this._gitHubAddingMessageUpdater = this._gitHubAddingMessageUpdater.bind(this);
@@ -100,6 +109,7 @@ export default class App extends Component<AppProps, AppState> {
     this._doLog = this._doLog.bind(this);
     this._ensureProjectFromGalleryId = this._ensureProjectFromGalleryId.bind(this);
     this._newProjectFromGalleryId = this._newProjectFromGalleryId.bind(this);
+    this._handleThemeChanged = this._handleThemeChanged.bind(this);
 
     this._tick = this._tick.bind(this);
 
@@ -120,13 +130,15 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   public async _loadLocalStorageProject() {
-    if (!CreatorToolsHost.creatorTools || !CreatorToolsHost.creatorTools.isLoaded) {
+    const ct = CreatorToolsHost.getCreatorTools();
+
+    if (!ct || !ct.isLoaded) {
       return;
     }
 
     let newProject = undefined;
 
-    newProject = await CreatorToolsHost.creatorTools.ensureProjectFromLocalStoragePath(CreatorToolsHost.projectPath);
+    newProject = await ct.ensureProjectFromLocalStoragePath(CreatorToolsHost.projectPath);
 
     if (newProject) {
       let mode = this._getModeFromString(CreatorToolsHost.initialMode);
@@ -211,15 +223,7 @@ export default class App extends Component<AppProps, AppState> {
     }
 
     this.setState({
-      mode: this.state.mode,
-      isPersisted: this.state.isPersisted,
-      loadingMessage: this.state.loadingMessage,
-      additionalLoadingMessage: this.state.additionalLoadingMessage,
-      activeProject: this.state.activeProject,
-      initialFocusPath: this.state.initialFocusPath,
-      hasBanner: this.state.hasBanner,
-      selectedItem: this.state.selectedItem,
-      initialProjectEditorMode: this.state.initialProjectEditorMode,
+      ...this.state,
       visualSeed: newSeed,
     });
   }
@@ -229,16 +233,9 @@ export default class App extends Component<AppProps, AppState> {
 
     if (result && this._isMountedInternal) {
       this.setState({
+        ...this.state,
         mode: result.mode,
-        isPersisted: this.state.isPersisted,
-        loadingMessage: this.state.loadingMessage,
-        additionalLoadingMessage: this.state.additionalLoadingMessage,
-        activeProject: this.state.activeProject,
-        hasBanner: this.state.hasBanner,
-        initialFocusPath: this.state.initialFocusPath,
         selectedItem: result.selectedItem,
-        visualSeed: this.state.visualSeed,
-        initialProjectEditorMode: this.state.initialProjectEditorMode,
       });
     }
   }
@@ -254,6 +251,10 @@ export default class App extends Component<AppProps, AppState> {
   private async loadCreatorTools(instance: CreatorTools) {
     await instance.load();
 
+    if (instance.projects) {
+      telemetryService.setActiveProjectCount(instance.projects.length);
+    }
+
     const isPersisted = await WebUtilities.getIsPersisted();
 
     const newState = this._getStateFromUrlWithSideEffects();
@@ -268,7 +269,7 @@ export default class App extends Component<AppProps, AppState> {
     this._updateWindowTitle(nextMode, this.state.activeProject);
 
     const newComponentState = {
-      creatorTools: CreatorToolsHost.creatorTools,
+      creatorTools: CreatorToolsHost.getCreatorTools(),
       mode: nextMode,
       isPersisted: isPersisted,
       activeProject: this.state.activeProject,
@@ -357,6 +358,18 @@ export default class App extends Component<AppProps, AppState> {
       CreatorToolsHost.focusPath = rootAndFocus.focusPath;
     }
 
+    // Handle ?mode= query parameter for direct navigation
+    if (!dontProcessQueryStrings && queryVals["mode"] !== undefined) {
+      const modeFromQuery = this._getModeFromString(queryVals["mode"].toLowerCase());
+      if (modeFromQuery) {
+        return {
+          mode: modeFromQuery,
+          activeProject: null,
+          selectedItem: queryVals["block"] || queryVals["item"],
+        };
+      }
+    }
+
     if (hash === "" && !this._lastHashProcessed) {
       this._lastHashProcessed = hash;
       return;
@@ -414,14 +427,22 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   setHomeWithError(errorMessage: string) {
+    // Track error for telemetry
+    telemetryService.trackException({
+      exception: new Error(errorMessage),
+      properties: {
+        [TelemetryProperties.ERROR_MESSAGE]: errorMessage,
+        [TelemetryProperties.LOCATION]: "App.setHomeWithError",
+        [TelemetryProperties.ACTION_SOURCE]: "navigation",
+      },
+      severityLevel: TelemetrySeverity.ERROR,
+    });
+
     this.setState({
+      ...this.state,
       mode: AppMode.home,
       activeProject: null,
-      isPersisted: this.state.isPersisted,
-      hasBanner: this.state.hasBanner,
-      initialFocusPath: this.state.initialFocusPath,
       errorMessage: errorMessage,
-      visualSeed: this.state.visualSeed,
       initialProjectEditorMode: undefined,
     });
   }
@@ -436,13 +457,18 @@ export default class App extends Component<AppProps, AppState> {
         this.props.saveAllRetriever(this._saveAll);
       }
 
-      if (CreatorToolsHost.creatorTools && !CreatorToolsHost.creatorTools.isLoaded) {
+      const ct = CreatorToolsHost.getCreatorTools();
+
+      if (ct && !ct.isLoaded) {
         CreatorToolsHost.onInitialized.subscribe(this._handleCreatorToolsInit);
 
-        this.loadCreatorTools(CreatorToolsHost.creatorTools).then(this.processInitialUrl);
+        this.loadCreatorTools(ct).then(this.processInitialUrl);
       } else {
         this.processInitialUrl();
       }
+
+      // Subscribe to theme changes to re-render FluentUI components
+      CreatorToolsHost.onThemeChanged.subscribe(this._handleThemeChanged);
 
       if (typeof window !== "undefined") {
         window.addEventListener("hashchange", this._handleHashChange, false);
@@ -471,7 +497,10 @@ export default class App extends Component<AppProps, AppState> {
 
     let selectedItem = undefined;
 
-    if (CreatorToolsHost.modeParameter && CreatorToolsHost.modeParameter.startsWith("project/")) {
+    // electron open from path on the command line route
+    if (AppServiceProxy.hasAppServiceOrSim && CreatorToolsHost.projectPath) {
+      this._ensureProjectFromFolder(CreatorToolsHost.projectPath, CreatorToolsHost.focusPath);
+    } else if (CreatorToolsHost.modeParameter && CreatorToolsHost.modeParameter.startsWith("project/")) {
       const segments = CreatorToolsHost.modeParameter.split("/");
 
       if (segments.length === 2) {
@@ -488,9 +517,9 @@ export default class App extends Component<AppProps, AppState> {
     }
 
     this.setState({
+      ...this.state,
       mode: initialAppMode,
       selectedItem: selectedItem,
-      initialFocusPath: this.state.initialFocusPath,
       activeProject: null,
     });
   }
@@ -501,29 +530,82 @@ export default class App extends Component<AppProps, AppState> {
       window.removeEventListener("resize", this._incrementVisualSeed, false);
     }
 
+    // Unsubscribe from theme changes
+    CreatorToolsHost.onThemeChanged.unsubscribe(this._handleThemeChanged);
+
     this._isMountedInternal = false;
+  }
+
+  /**
+   * Handle theme changes from CreatorToolsHost.
+   * Forces a re-render so the FluentUI Provider gets the new theme.
+   */
+  private _handleThemeChanged() {
+    // Force re-render to update FluentUI Provider with new theme
+    this.forceUpdate();
   }
 
   private async _doLog(message: string) {
     this.setState({
-      isPersisted: this.state.isPersisted,
+      ...this.state,
       mode: AppMode.loading,
-      initialFocusPath: this.state.initialFocusPath,
-      hasBanner: this.state.hasBanner,
-      visualSeed: this.state.visualSeed,
       loadingMessage: message,
     });
+  }
+
+  private async _considerSubmittedFiles(path: string, files: File[]) {
+    let shouldIndividuallyIntegrateFiles = false;
+
+    for (const file of files) {
+      if (!StorageUtilities.isContainerFile(file.name)) {
+        shouldIndividuallyIntegrateFiles = true;
+      }
+    }
+
+    if (shouldIndividuallyIntegrateFiles) {
+      this.setState({
+        ...this.state,
+        mode: AppMode.importFiles,
+        submittedFiles: files,
+      });
+
+      return;
+    }
+
+    let fileName = "File";
+
+    if (files.length < 1) {
+      return;
+    }
+
+    if (files[0].name) {
+      fileName = files[0].name;
+
+      fileName = StorageUtilities.getBaseFromName(fileName);
+    }
+
+    this._handleNewProject(
+      {
+        name: fileName,
+      },
+      NewProjectTemplateType.empty,
+      path,
+      files,
+      undefined,
+      undefined
+    );
   }
 
   private async _handleNewProject(
     newProjectSeed: IProjectSeed,
     newProjectType: NewProjectTemplateType,
     additionalFilePath?: string,
-    additionalFile?: File,
+    additionalFiles?: File[],
     editorStartMode?: ProjectEditorMode,
     startInReadOnly?: boolean
   ) {
-    if (!CreatorToolsHost.creatorTools || !CreatorToolsHost.creatorTools.isLoaded) {
+    const ct = CreatorToolsHost.getCreatorTools();
+    if (!ct || !ct.isLoaded) {
       return;
     }
 
@@ -533,7 +615,7 @@ export default class App extends Component<AppProps, AppState> {
       newProjectName = "New Project";
     }
 
-    if (additionalFile && additionalFilePath && this.state && this._isMountedInternal) {
+    if (additionalFiles && additionalFilePath && this.state && this._isMountedInternal) {
       this._doLog(
         "Loading " + newProjectName + (additionalFilePath.length > 2 ? " from " + additionalFilePath : "") + "..."
       );
@@ -549,7 +631,7 @@ export default class App extends Component<AppProps, AppState> {
     }
 
     if (newProjectSeed.path === undefined) {
-      newProject = await CreatorToolsHost.creatorTools.createNewProject(
+      newProject = await ct.createNewProject(
         newProjectName,
         newProjectSeed.path,
         newProjectSeed.targetFolder,
@@ -559,11 +641,7 @@ export default class App extends Component<AppProps, AppState> {
         ProjectScriptLanguage.typeScript
       );
     } else {
-      newProject = await CreatorToolsHost.creatorTools.ensureProjectForLocalFolder(
-        newProjectSeed.path,
-        newProjectName,
-        false
-      );
+      newProject = await ct.ensureProjectForLocalFolder(newProjectSeed.path, newProjectName, false);
 
       await newProject.ensureProjectFolder();
 
@@ -572,12 +650,23 @@ export default class App extends Component<AppProps, AppState> {
       await ProjectUtilities.ensureDefaultItems(newProject);
     }
 
-    if (additionalFile && additionalFilePath) {
-      await ProjectEditorUtilities.integrateBrowserFileDefaultAction(newProject, additionalFilePath, additionalFile);
+    if (additionalFiles && additionalFilePath) {
+      for (const additionalFile of additionalFiles) {
+        if (StorageUtilities.isContainerFile(additionalFile.name)) {
+          // For container files (zip, mcworld, mcaddon, etc.), extract contents to project root
+          await ProjectEditorUtilities.extractZipContentsToProject(newProject, additionalFile);
+        } else {
+          await ProjectEditorUtilities.integrateBrowserFileDefaultAction(
+            newProject,
+            additionalFilePath,
+            additionalFile
+          );
+        }
+      }
     }
 
     await newProject.save(true);
-    await CreatorToolsHost.creatorTools.save();
+    await ct.save();
 
     this._updateWindowTitle(AppMode.project, newProject);
 
@@ -595,27 +684,24 @@ export default class App extends Component<AppProps, AppState> {
 
     if (this.state && this._isMountedInternal) {
       this.setState({
+        ...this.state,
         mode: nextMode,
-        isPersisted: this.state.isPersisted,
         activeProject: newProject,
-        initialFocusPath: this.state.initialFocusPath,
-        hasBanner: this.state.hasBanner,
-        selectedItem: this.state.selectedItem,
-        visualSeed: this.state.visualSeed,
         initialProjectEditorMode: editorStartMode,
       });
     }
   }
 
   private async _ensureProjectFromFolder(folderPath: string, focusPath?: string) {
-    if (!CreatorToolsHost.creatorTools || !CreatorToolsHost.creatorTools.isLoaded) {
+    const ct = CreatorToolsHost.getCreatorTools();
+    if (!ct || !ct.isLoaded) {
       return;
     }
 
     let folderPathCanon = StorageUtilities.ensureEndsWithDelimiter(StorageUtilities.canonicalizePath(folderPath));
 
     // this will have the effect of loading all existing projects' pref files, which might be a bit slow
-    for (const project of CreatorToolsHost.creatorTools.projects) {
+    for (const project of ct.projects) {
       if (!project.isLoaded) {
         await project.ensurePreferencesAndFolderLoadedFromFile();
       }
@@ -637,14 +723,15 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   private async _handleNewProjectFromFolder(folderPath: string, focusPath?: string) {
-    if (!CreatorToolsHost.creatorTools || !CreatorToolsHost.creatorTools.isLoaded) {
+    const ct = CreatorToolsHost.getCreatorTools();
+
+    if (!ct || !ct.isLoaded) {
       return;
     }
 
-    const newProject = await CreatorToolsHost.creatorTools.ensureProjectForLocalFolder(folderPath);
-
+    const newProject = await ct.ensureProjectForLocalFolder(folderPath);
     newProject.save();
-    CreatorToolsHost.creatorTools.save();
+    ct.save();
 
     this._setProject(newProject, focusPath);
   }
@@ -654,27 +741,23 @@ export default class App extends Component<AppProps, AppState> {
     this.initProject(project);
 
     this.setState({
+      ...this.state,
       mode: AppMode.project,
-      isPersisted: this.state.isPersisted,
-      hasBanner: this.state.hasBanner,
-      visualSeed: this.state.visualSeed,
       initialFocusPath: focusPath,
       activeProject: project,
     });
   }
 
   private async _handleNewProjectFromFolderInstance(folder: IFolder, name?: string, isDocumentationProject?: boolean) {
-    if (!CreatorToolsHost.creatorTools || !CreatorToolsHost.creatorTools.isLoaded) {
+    const ct = CreatorToolsHost.getCreatorTools();
+
+    if (!ct || !ct.isLoaded) {
       return;
     }
 
     this._doLog("Loading project from '" + name + "' folder.");
 
-    const newProject = new Project(
-      CreatorToolsHost.creatorTools,
-      StorageUtilities.convertFolderPlaceholders(name ? name : folder.name),
-      null
-    );
+    const newProject = new Project(ct, StorageUtilities.convertFolderPlaceholders(name ? name : folder.name), null);
 
     newProject.setProjectFolder(folder);
     newProject.projectFolderTitle = name;
@@ -689,17 +772,110 @@ export default class App extends Component<AppProps, AppState> {
 
     this._doLog("Opening project...");
 
-    CreatorToolsHost.creatorTools.save();
+    ct.save();
 
     this._setProject(newProject);
   }
 
-  private async _newProjectFromGalleryId(galleryId: string, updateContent?: IFolder) {
-    if (CreatorToolsHost.creatorTools === undefined) {
+  private async _handleNewProjectFromImportFiles(
+    files: { file: File; name: string; vanillaOverridePath?: string; suggestedFolder?: string }[],
+    projectName?: string
+  ) {
+    const ct = CreatorToolsHost.getCreatorTools();
+    if (!ct || !ct.isLoaded) {
       return;
     }
 
-    const gp = await CreatorToolsHost.creatorTools.getGalleryProjectById(galleryId);
+    const finalProjectName = projectName || "New Project";
+
+    this._doLog("Creating new project '" + finalProjectName + "' from imported files...");
+
+    const newProject = await ct.createNewProject(
+      finalProjectName,
+      undefined,
+      undefined,
+      undefined,
+      ProjectFocus.general,
+      true,
+      ProjectScriptLanguage.typeScript
+    );
+
+    for (const fileInfo of files) {
+      if (fileInfo.vanillaOverridePath) {
+        // Handle vanilla override - use the vanilla override path as the integration path
+        await ProjectEditorUtilities.integrateBrowserFileDefaultAction(
+          newProject,
+          fileInfo.vanillaOverridePath,
+          fileInfo.file
+        );
+      } else if (StorageUtilities.isContainerFile(fileInfo.file.name)) {
+        // For container files (zip, mcworld, mcaddon, etc.), extract contents to project root
+        await ProjectEditorUtilities.extractZipContentsToProject(newProject, fileInfo.file);
+      } else {
+        // Default integration for non-container files
+        await ProjectEditorUtilities.integrateBrowserFileDefaultAction(newProject, "", fileInfo.file);
+      }
+    }
+
+    await newProject.save(true);
+    await ct.save();
+
+    this._updateWindowTitle(AppMode.project, newProject);
+
+    this.initProject(newProject);
+
+    if (this.state && this._isMountedInternal) {
+      this.setState({
+        ...this.state,
+        mode: AppMode.project,
+        activeProject: newProject,
+      });
+    }
+  }
+
+  private async _handleUpdateExistingProject(project: Project, files: { file: File; name: string }[]) {
+    const ct = CreatorToolsHost.getCreatorTools();
+    if (!ct || !ct.isLoaded) {
+      return;
+    }
+
+    this._doLog("Updating project '" + project.name + "' with imported files...");
+
+    for (const fileInfo of files) {
+      // Find matching item in project
+      for (const item of project.items) {
+        if (item.primaryFile && item.primaryFile.name.toLowerCase() === fileInfo.name.toLowerCase()) {
+          // Update the file content
+          const arrayBuffer = await fileInfo.file.arrayBuffer();
+          const content = new Uint8Array(arrayBuffer);
+          await item.primaryFile.setContent(content);
+          await item.primaryFile.saveContent();
+          break;
+        }
+      }
+    }
+
+    await project.save(true);
+    await ct.save();
+
+    this._doLog("Project updated successfully.");
+
+    // If this project is currently active, refresh it
+    if (this.state.activeProject === project) {
+      this.forceUpdate();
+    } else {
+      // Switch to the updated project
+      this._setProject(project);
+    }
+  }
+
+  private async _newProjectFromGalleryId(galleryId: string, updateContent?: IFolder) {
+    const ct = CreatorToolsHost.getCreatorTools();
+    if (ct === undefined) {
+      return;
+    }
+
+    const gp = await ct.getGalleryProjectById(galleryId);
 
     if (gp === undefined) {
       this.setHomeWithError("We could not find a starter/sample named '" + galleryId + "' that could be opened.");
@@ -710,11 +886,12 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   private async _ensureProjectFromGalleryId(galleryId: string, updateContent?: IFolder) {
-    if (CreatorToolsHost.creatorTools === undefined) {
+    const ct = CreatorToolsHost.getCreatorTools();
+    if (ct === undefined) {
       return;
     }
 
-    const gp = await CreatorToolsHost.creatorTools.getGalleryProjectById(galleryId);
+    const gp = await ct.getGalleryProjectById(galleryId);
 
     if (gp === undefined) {
       this.setHomeWithError("We could not find a starter/sample named '" + galleryId + "' that could be opened.");
@@ -754,7 +931,7 @@ export default class App extends Component<AppProps, AppState> {
     updateContent?: IFolder,
     description?: string
   ) {
-    const creatorTools = CreatorToolsHost.creatorTools;
+    const creatorTools = CreatorToolsHost.getCreatorTools();
 
     if (this.state === null || creatorTools === undefined || this._loadingMessage !== undefined) {
       return;
@@ -771,13 +948,10 @@ export default class App extends Component<AppProps, AppState> {
     this._updateWindowTitle(AppMode.loading, null);
 
     this.setState({
+      ...this.state,
       mode: AppMode.loading,
       activeProject: null,
-      isPersisted: this.state.isPersisted,
-      hasBanner: this.state.hasBanner,
-      initialFocusPath: this.state.initialFocusPath,
       loadingMessage: this._loadingMessage,
-      visualSeed: this.state.visualSeed,
       additionalLoadingMessage: undefined,
     });
 
@@ -877,7 +1051,7 @@ export default class App extends Component<AppProps, AppState> {
     projectSeed?: IProjectSeed,
     galleryType?: GalleryItemType
   ) {
-    const creatorTools = CreatorToolsHost.creatorTools;
+    const creatorTools = CreatorToolsHost.getCreatorTools();
 
     if (this.state === null || creatorTools === undefined) {
       return;
@@ -910,6 +1084,7 @@ export default class App extends Component<AppProps, AppState> {
       mode: AppMode.loading,
       activeProject: null,
       isPersisted: this.state.isPersisted,
+      submittedFiles: this.state.submittedFiles,
       hasBanner: this.state.hasBanner,
       visualSeed: this.state.visualSeed,
       loadingMessage: this._loadingMessage,
@@ -996,16 +1171,29 @@ export default class App extends Component<AppProps, AppState> {
           this._gitHubAddingMessageUpdater
         );
       } catch (e: any) {
+        const errorMessage = "Could not create a new project. " + e.toString();
+
+        telemetryService.trackException({
+          exception: e instanceof Error ? e : new Error(errorMessage),
+          properties: {
+            [TelemetryProperties.ERROR_MESSAGE]: errorMessage,
+            [TelemetryProperties.LOCATION]: "App._handleNewProjectFromGitHub",
+            [TelemetryProperties.ACTION_TYPE]: "projectCreation",
+          },
+          severityLevel: TelemetrySeverity.ERROR,
+        });
+
         this.setState({
           mode: AppMode.home,
           activeProject: this.state.activeProject,
+          submittedFiles: this.state.submittedFiles,
           selectedItem: this.state.selectedItem,
           initialFocusPath: this.state.initialFocusPath,
           initialProjectEditorMode: this.state.initialProjectEditorMode,
           hasBanner: this.state.hasBanner,
           visualSeed: this.state.visualSeed,
           isPersisted: this.state.isPersisted,
-          errorMessage: "Could not create a new project. " + e.toString(),
+          errorMessage: errorMessage,
         });
 
         return;
@@ -1090,6 +1278,7 @@ export default class App extends Component<AppProps, AppState> {
       mode: this.state.mode,
       isPersisted: true,
       activeProject: this.state.activeProject,
+      submittedFiles: this.state.submittedFiles,
       selectedItem: this.state.selectedItem,
       initialFocusPath: this.state.initialFocusPath,
       hasBanner: this.state.hasBanner,
@@ -1110,6 +1299,7 @@ export default class App extends Component<AppProps, AppState> {
       mode: this.state.mode,
       isPersisted: this.state.isPersisted,
       activeProject: this.state.activeProject,
+      submittedFiles: this.state.submittedFiles,
       selectedItem: this.state.selectedItem,
       initialFocusPath: this.state.initialFocusPath,
       hasBanner: this.state.hasBanner,
@@ -1120,7 +1310,9 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   private async _newProjectFromMinecraftFolder(folderType: LocalFolderType, folder: IFolder) {
-    if (!CreatorToolsHost.creatorTools || !CreatorToolsHost.creatorTools.isLoaded) {
+    const ct = CreatorToolsHost.getCreatorTools();
+
+    if (!ct || !ct.isLoaded) {
       return;
     }
 
@@ -1131,13 +1323,10 @@ export default class App extends Component<AppProps, AppState> {
       proposedProjectName = mcw.name;
     }
 
-    const newProject = await CreatorToolsHost.creatorTools.ensureProjectForLocalFolder(
-      folder.fullPath,
-      proposedProjectName
-    );
+    const newProject = await ct.ensureProjectForLocalFolder(folder.fullPath, proposedProjectName);
 
     newProject.save();
-    CreatorToolsHost.creatorTools.save();
+    ct.save();
 
     this._updateWindowTitle(AppMode.project, newProject);
     this.initProject(newProject);
@@ -1153,7 +1342,7 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   private async _ensureProjectFromMinecraftFolder(folderType: LocalFolderType, folder: IFolder, isReadOnly: boolean) {
-    const creatorTools = CreatorToolsHost.creatorTools;
+    const creatorTools = CreatorToolsHost.getCreatorTools();
 
     if (this.state === null || creatorTools === undefined) {
       return;
@@ -1422,7 +1611,9 @@ export default class App extends Component<AppProps, AppState> {
       heightOffset = bannerHeight;
     }
 
-    if (CreatorToolsHost.creatorTools === undefined || !CreatorToolsHost.creatorTools.isLoaded) {
+    const ct = CreatorToolsHost.getCreatorTools();
+
+    if (ct === undefined || !ct.isLoaded) {
       interior = (
         <div className="app-loadingArea" key="app-la">
           <div className="app-loading" aria-live="polite">
@@ -1457,18 +1648,31 @@ export default class App extends Component<AppProps, AppState> {
       interior = (
         <ImportFromUrl
           theme={this.getTheme()}
-          creatorTools={CreatorToolsHost.creatorTools}
+          creatorTools={ct}
           key="app-cot"
           project={this.state.activeProject}
           onModeChangeRequested={this._handleModeChangeRequested}
           onNewProjectFromGallerySelected={this._newProjectFromGalleryId}
         />
       );
+    } else if (this.state.mode === AppMode.importFiles) {
+      interior = (
+        <ImportFiles
+          theme={this.getTheme()}
+          creatorTools={ct}
+          files={this.state.submittedFiles}
+          key="app-cot"
+          onModeChangeRequested={this._handleModeChangeRequested}
+          onNewProjectFromGallerySelected={this._newProjectFromGalleryId}
+          onNewProjectFromFilesSelected={this._handleNewProjectFromImportFiles}
+          onUpdateExistingProject={this._handleUpdateExistingProject}
+        />
+      );
     } else if (this.state.mode === AppMode.home) {
       interior = (
         <Home
-          theme={this.getTheme()}
-          creatorTools={CreatorToolsHost.creatorTools}
+          theme={{}}
+          creatorTools={ct}
           isPersisted={this.state.isPersisted}
           heightOffset={heightOffset}
           errorMessage={this.state.errorMessage}
@@ -1479,7 +1683,7 @@ export default class App extends Component<AppProps, AppState> {
           onGalleryItemCommand={this._handleProjectGalleryCommand}
           onLocalGalleryItemCommand={this._handleLocalGalleryCommand}
           onModeChangeRequested={this._handleModeChangeRequested}
-          onNewProjectSelected={this._handleNewProject}
+          onFilesSubmitted={this._considerSubmittedFiles}
           onProgressLog={this._doLog}
           onNewProjectFromFolderSelected={this._handleNewProjectFromFolder}
           onNewProjectFromFolderInstanceSelected={this._handleNewProjectFromFolderInstance}
@@ -1490,7 +1694,7 @@ export default class App extends Component<AppProps, AppState> {
     } else if (this.state.activeProject !== null && CreatorToolsHost.initialMode === "projectitem") {
       interior = (
         <ProjectEditor
-          creatorTools={CreatorToolsHost.creatorTools}
+          creatorTools={ct}
           theme={this.getTheme()}
           hideMainToolbar={true}
           key="app-pe"
@@ -1509,7 +1713,7 @@ export default class App extends Component<AppProps, AppState> {
     } else if (this.state.activeProject !== null && CreatorToolsHost.initialMode === "info") {
       interior = (
         <ProjectEditor
-          creatorTools={CreatorToolsHost.creatorTools}
+          creatorTools={ct}
           theme={this.getTheme()}
           hideMainToolbar={true}
           key="app-pea"
@@ -1537,7 +1741,7 @@ export default class App extends Component<AppProps, AppState> {
         interior = (
           <Home
             theme={{}}
-            creatorTools={CreatorToolsHost.creatorTools}
+            creatorTools={ct}
             heightOffset={heightOffset}
             errorMessage={error}
             onLog={this._doLog}
@@ -1546,7 +1750,7 @@ export default class App extends Component<AppProps, AppState> {
             onGalleryItemCommand={this._handleProjectGalleryCommand}
             onLocalGalleryItemCommand={this._handleLocalGalleryCommand}
             onModeChangeRequested={this._handleModeChangeRequested}
-            onNewProjectSelected={this._handleNewProject}
+            onFilesSubmitted={this._considerSubmittedFiles}
             onNewProjectFromFolderSelected={this._handleNewProjectFromFolder}
             onProjectSelected={this._handleProjectSelected}
           />
@@ -1556,7 +1760,7 @@ export default class App extends Component<AppProps, AppState> {
         // show main view (no sidebar) if it's a code sample.
         interior = (
           <ProjectEditor
-            creatorTools={CreatorToolsHost.creatorTools}
+            creatorTools={ct}
             key="app-pec"
             theme={this.getTheme()}
             heightOffset={heightOffset}
@@ -1573,7 +1777,7 @@ export default class App extends Component<AppProps, AppState> {
       } else {
         interior = (
           <ProjectEditor
-            creatorTools={CreatorToolsHost.creatorTools}
+            creatorTools={ct}
             theme={this.getTheme()}
             key="app-pef"
             heightOffset={heightOffset}
@@ -1591,15 +1795,9 @@ export default class App extends Component<AppProps, AppState> {
     }
 
     return (
-      <div
-        id="top-level"
-        style={{
-          backgroundColor: "#0",
-          color: this.props.darkTheme.siteVariables?.colorScheme.brand.foreground1,
-        }}
-      >
-        {top}
+      <Provider theme={this.getTheme()}>
         <div
+          id="top-level"
           style={{
             backgroundColor: this.getTheme().siteVariables?.colorScheme.brand.background1,
             color: this.getTheme().siteVariables?.colorScheme.brand.foreground1,
@@ -1619,7 +1817,7 @@ export default class App extends Component<AppProps, AppState> {
             {interior}
           </div>
         </div>
-      </div>
+      </Provider>
     );
   }
 }

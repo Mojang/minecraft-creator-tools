@@ -50,6 +50,7 @@
     "open": "^8.3.0",
     "pako": "^2.0.4",
     "permessage-deflate": "^0.1.7",
+    "pngjs": "7.0.0",
     "react": "^17.0.2",
     "react-dev-utils": "^12.0.1",
     "react-dom": "^17.0.2",
@@ -120,6 +121,7 @@
     }
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
     "@babel/core": "^7.23.7",
     "@babel/plugin-proposal-decorators": "^7.23.7",
     "@babel/plugin-proposal-numeric-separator": "^7.18.6",

@@ -12,6 +12,8 @@ import type {
   TelemetryMeasurementKey,
   TelemetrySeverityLevel,
 } from "./TelemetryConstants";
+import { TelemetryProperties, TelemetryMeasurements } from "./TelemetryConstants";
+import { constants } from "../core/Constants";
 
 /**
  * Telemetry event with strict type checking
@@ -39,17 +41,56 @@ export interface TelemetryPageView {
 class TelemetryService {
   private _isInitialized: boolean = false;
   private _oneDSInstance: OneDSApplicationInsights | null = null;
+  private _activeProjectCount: number = 0;
+  private _mctoolsVersion: string = "0.0.1";
+  private window: typeof globalThis = globalThis;
 
   constructor() {
     this._checkInitialization();
+    this._loadVersion();
+  }
+
+  /**
+   * Load the version from constants
+   */
+  private _loadVersion(): void {
+    this._mctoolsVersion = constants.version;
+  }
+
+  /**
+   * Set the active project count
+   */
+  public setActiveProjectCount(count: number): void {
+    this._activeProjectCount = count;
+  }
+
+  /**
+   * Get common properties and measurements to include with every event
+   */
+  private _getCommonPropertiesAndMeasurements(): {
+    properties: Partial<Record<TelemetryPropertyKey, any>>;
+    measurements: Partial<Record<TelemetryMeasurementKey, number>>;
+  } {
+    const properties: Partial<Record<TelemetryPropertyKey, any>> = {};
+    const measurements: Partial<Record<TelemetryMeasurementKey, number>> = {};
+
+    if (this._mctoolsVersion) {
+      properties[TelemetryProperties.MCTOOLS_VERSION] = this._mctoolsVersion;
+    }
+
+    if (this._activeProjectCount > 0) {
+      measurements[TelemetryMeasurements.ACTIVE_PROJECT_COUNT] = this._activeProjectCount;
+    }
+
+    return { properties, measurements };
   }
 
   /**
    * Check if 1DS is initialized and available on the window object
    */
   private _checkInitialization(): void {
-    if (typeof window !== "undefined" && window.oneDSInstance) {
-      this._oneDSInstance = window.oneDSInstance;
+    if (typeof this.window !== "undefined" && (this.window as any).oneDSInstance) {
+      this._oneDSInstance = (this.window as any).oneDSInstance;
       this._isInitialized = true;
     }
   }
@@ -61,6 +102,12 @@ class TelemetryService {
     if (!this._isInitialized) {
       this._checkInitialization();
     }
+
+    if (!this._isInitialized && typeof this.window !== "undefined" && (this.window as any).oneDSInstance) {
+      this._oneDSInstance = (this.window as any).oneDSInstance;
+      this._isInitialized = true;
+    }
+
     return this._oneDSInstance;
   }
 
@@ -79,21 +126,32 @@ class TelemetryService {
   public trackEvent(event: TelemetryEvent): void {
     const instance = this._getInstance();
     if (!instance) {
-      // console.debug("1DS not available, skipping event:", event.name);
       return;
     }
 
     try {
+      const commonData = this._getCommonPropertiesAndMeasurements();
+
       const eventData: any = {
         name: event.name,
       };
 
-      if (event.properties && Object.keys(event.properties).length > 0) {
-        eventData.data = event.properties;
+      const mergedProperties = {
+        ...commonData.properties,
+        ...(event.properties || {}),
+      };
+
+      if (Object.keys(mergedProperties).length > 0) {
+        eventData.data = mergedProperties;
       }
 
-      if (event.measurements && Object.keys(event.measurements).length > 0) {
-        eventData.measurements = event.measurements;
+      const mergedMeasurements = {
+        ...commonData.measurements,
+        ...(event.measurements || {}),
+      };
+
+      if (Object.keys(mergedMeasurements).length > 0) {
+        eventData.measurements = mergedMeasurements;
       }
 
       instance.trackEvent(eventData);
@@ -109,24 +167,37 @@ class TelemetryService {
   public trackPageView(pageView: TelemetryPageView): void {
     const instance = this._getInstance();
     if (!instance) {
-      // console.debug("1DS not available, skipping page view:", pageView.name);
       return;
     }
 
     try {
+      const commonData = this._getCommonPropertiesAndMeasurements();
+
       const pageViewData: any = {
         name: pageView.name,
-        uri: pageView.uri || window.location.href,
+        uri:
+          pageView.uri ||
+          (typeof this.window !== "undefined" && (this.window as any).location
+            ? (this.window as any).location.href
+            : ""),
       };
 
-      // Add properties to data object for proper 1DS formatting
-      if (pageView.properties && Object.keys(pageView.properties).length > 0) {
-        pageViewData.data = pageView.properties;
+      const mergedProperties = {
+        ...commonData.properties,
+        ...(pageView.properties || {}),
+      };
+
+      if (Object.keys(mergedProperties).length > 0) {
+        pageViewData.data = mergedProperties;
       }
 
-      // Add measurements if provided
-      if (pageView.measurements && Object.keys(pageView.measurements).length > 0) {
-        pageViewData.measurements = pageView.measurements;
+      const mergedMeasurements = {
+        ...commonData.measurements,
+        ...(pageView.measurements || {}),
+      };
+
+      if (Object.keys(mergedMeasurements).length > 0) {
+        pageViewData.measurements = mergedMeasurements;
       }
 
       instance.trackPageView(pageViewData);
@@ -142,18 +213,24 @@ class TelemetryService {
   public trackException(exception: TelemetryException): void {
     const instance = this._getInstance();
     if (!instance) {
-      // console.debug("1DS not available, skipping exception:", exception.exception);
       return;
     }
 
     try {
+      const commonData = this._getCommonPropertiesAndMeasurements();
+
       const exceptionData: any = {
         exception: exception.exception,
-        severityLevel: exception.severityLevel || 3, // Error level
+        severityLevel: exception.severityLevel || 3,
       };
 
-      if (exception.properties && Object.keys(exception.properties).length > 0) {
-        exceptionData.data = exception.properties;
+      const mergedProperties = {
+        ...commonData.properties,
+        ...(exception.properties || {}),
+      };
+
+      if (Object.keys(mergedProperties).length > 0) {
+        exceptionData.data = mergedProperties;
       }
 
       instance.trackException(exceptionData);
@@ -175,18 +252,24 @@ class TelemetryService {
   ): void {
     const instance = this._getInstance();
     if (!instance) {
-      // console.debug("1DS not available, skipping metric:", name);
       return;
     }
 
     try {
+      const commonData = this._getCommonPropertiesAndMeasurements();
+
       const metricData: any = {
         name,
         average: value,
       };
 
-      if (properties && Object.keys(properties).length > 0) {
-        metricData.data = properties;
+      const mergedProperties = {
+        ...commonData.properties,
+        ...(properties || {}),
+      };
+
+      if (Object.keys(mergedProperties).length > 0) {
+        metricData.data = mergedProperties;
       }
 
       instance.trackMetric(metricData);
@@ -208,18 +291,24 @@ class TelemetryService {
   ): void {
     const instance = this._getInstance();
     if (!instance) {
-      // console.debug("1DS not available, skipping trace:", message);
       return;
     }
 
     try {
+      const commonData = this._getCommonPropertiesAndMeasurements();
+
       const traceData: any = {
         message,
         severityLevel: severityLevel || 1,
       };
 
-      if (properties && Object.keys(properties).length > 0) {
-        traceData.data = properties;
+      const mergedProperties = {
+        ...commonData.properties,
+        ...(properties || {}),
+      };
+
+      if (Object.keys(mergedProperties).length > 0) {
+        traceData.data = mergedProperties;
       }
 
       instance.trackTrace(traceData);

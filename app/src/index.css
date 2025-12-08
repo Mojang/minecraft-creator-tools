@@ -53,13 +53,76 @@ input[type="file"]:hover {
 }
 
 .ui-dialog {
-  border-radius: 0px;
-  grid-template-rows: 24px 1fr 24px;
+  border-radius: 4px;
+  border: 2px solid #000;
+  grid-template-rows: auto 1fr auto;
   max-width: calc(100vw - 8px);
   margin: 4px;
   width: calc(100vw - 40px) !important;
-  max-width: 900px !important;
+  max-width: 700px !important;
   overflow-x: auto !important;
+}
+
+/* Dialog header */
+.ui-dialog__header {
+  padding: 16px 20px 12px 20px !important;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* Dialog content */
+.ui-dialog__content {
+  padding: 0 20px 16px 20px !important;
+}
+
+/* Dialog footer */
+.ui-dialog__footer {
+  padding: 12px 20px 16px 20px !important;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+/* All dialog buttons - base style */
+.ui-dialog__footer button {
+  padding: 8px 20px !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  border-radius: 4px !important;
+  min-width: 80px !important;
+  border: 2px solid transparent !important;
+  transition: all 0.12s ease !important;
+}
+
+/* Cancel button - now uses inherit for text color so it works in both modes */
+.ui-dialog__footer button:first-of-type {
+  background-color: rgba(128, 128, 128, 0.15) !important;
+  color: inherit !important;
+  border-color: rgba(128, 128, 128, 0.3) !important;
+}
+
+.ui-dialog__footer button:first-of-type:hover {
+  background-color: rgba(128, 128, 128, 0.25) !important;
+  border-color: rgba(128, 128, 128, 0.4) !important;
+}
+
+/* Confirm/Add button - Minecraft green */
+.ui-dialog__footer button:last-of-type:not(:first-of-type) {
+  background-color: #52a535 !important;
+  color: #fff !important;
+  border-color: #3e8828 !important;
+  border-bottom-width: 3px !important;
+}
+
+.ui-dialog__footer button:last-of-type:not(:first-of-type):hover {
+  background-color: #5cb85c !important;
+  transform: translateY(-1px);
+}
+
+.ui-dialog__footer button:last-of-type:not(:first-of-type):active {
+  transform: translateY(1px);
+  border-bottom-width: 2px !important;
 }
 
 .ui-menu__item__submenu__submenu {

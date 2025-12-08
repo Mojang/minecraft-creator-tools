@@ -1,40 +1,55 @@
 {
   "blockBaseTypes": [
     {
+      "n": "deprecated_locked_chest",
+      "mc": "#BA683D",
+      "id": 95
+    },
+    {
       "n": "acacia_button",
-      "mc": "#BA683D"
+      "mc": "#BA683D",
+      "sh": 9
     },
     {
       "n": "acacia_door",
-      "mc": "#BA683D"
+      "mc": "#BA683D",
+      "sh": 7
     },
     {
       "n": "acacia_fence_gate",
-      "mc": "#BA683D"
+      "mc": "#BA683D",
+      "sh": 5
     },
     {
-      "n": "acacia_hanging_sign"
+      "n": "acacia_hanging_sign",
+      "sh": 29
     },
     {
-      "n": "acacia_pressure_plate"
+      "n": "acacia_pressure_plate",
+      "sh": 10
     },
     {
       "n": "acacia_shelf"
     },
     {
-      "n": "acacia_stairs"
+      "n": "acacia_stairs",
+      "sh": 2
     },
     {
-      "n": "acacia_standing_sign"
+      "n": "acacia_standing_sign",
+      "sh": 28
     },
     {
-      "n": "acacia_trapdoor"
+      "n": "acacia_trapdoor",
+      "sh": 8
     },
     {
-      "n": "acacia_wall_sign"
+      "n": "acacia_wall_sign",
+      "sh": 28
     },
     {
-      "n": "activator_rail"
+      "n": "activator_rail",
+      "sh": 15
     },
     {
       "n": "air"
@@ -58,7 +73,8 @@
       "mc": "#654740"
     },
     {
-      "n": "andesite_stairs"
+      "n": "andesite_stairs",
+      "sh": 2
     },
     {
       "n": "anvil",
@@ -73,19 +89,23 @@
         {
           "n": "deprecated_"
         }
-      ]
+      ],
+      "sh": 17
     },
     {
       "n": "azalea",
-      "mc": "#00D93A"
+      "mc": "#00D93A",
+      "sh": 21
     },
     {
       "n": "azalea_leaves",
-      "mc": "#00D93A"
+      "mc": "#00D93A",
+      "sh": 24
     },
     {
       "n": "azalea_leaves_flowered",
-      "mc": "#00D93A"
+      "mc": "#00D93A",
+      "sh": 24
     },
     {
       "n": "bamboo",
@@ -97,23 +117,28 @@
     },
     {
       "n": "bamboo_button",
-      "mc": "#F7E9A3"
+      "mc": "#F7E9A3",
+      "sh": 9
     },
     {
       "n": "bamboo_door",
-      "mc": "#F7E9A3"
+      "mc": "#F7E9A3",
+      "sh": 7
     },
     {
       "n": "bamboo_double_slab"
     },
     {
-      "n": "bamboo_fence"
+      "n": "bamboo_fence",
+      "sh": 4
     },
     {
-      "n": "bamboo_fence_gate"
+      "n": "bamboo_fence_gate",
+      "sh": 5
     },
     {
-      "n": "bamboo_hanging_sign"
+      "n": "bamboo_hanging_sign",
+      "sh": 29
     },
     {
       "n": "bamboo_mosaic"
@@ -122,10 +147,12 @@
       "n": "bamboo_mosaic_double_slab"
     },
     {
-      "n": "bamboo_mosaic_slab"
+      "n": "bamboo_mosaic_slab",
+      "sh": 3
     },
     {
-      "n": "bamboo_mosaic_stairs"
+      "n": "bamboo_mosaic_stairs",
+      "sh": 2
     },
     {
       "n": "bamboo_planks",
@@ -133,29 +160,36 @@
     },
     {
       "n": "bamboo_pressure_plate",
-      "mc": "#F7E9A3"
+      "mc": "#F7E9A3",
+      "sh": 10
     },
     {
       "n": "bamboo_sapling",
-      "mc": "#F7E9A3"
+      "mc": "#F7E9A3",
+      "sh": 21
     },
     {
       "n": "bamboo_shelf"
     },
     {
-      "n": "bamboo_slab"
+      "n": "bamboo_slab",
+      "sh": 3
     },
     {
-      "n": "bamboo_stairs"
+      "n": "bamboo_stairs",
+      "sh": 2
     },
     {
-      "n": "bamboo_standing_sign"
+      "n": "bamboo_standing_sign",
+      "sh": 28
     },
     {
-      "n": "bamboo_trapdoor"
+      "n": "bamboo_trapdoor",
+      "sh": 8
     },
     {
-      "n": "bamboo_wall_sign"
+      "n": "bamboo_wall_sign",
+      "sh": 28
     },
     {
       "n": "barrel"
@@ -173,7 +207,8 @@
     },
     {
       "n": "bed",
-      "mc": "#8E3C2E"
+      "mc": "#8E3C2E",
+      "sh": 30
     },
     {
       "n": "bedrock",
@@ -188,52 +223,65 @@
       "mc": "#F7E9A3"
     },
     {
-      "n": "beetroot"
+      "n": "beetroot",
+      "sh": 23
     },
     {
-      "n": "bell"
+      "n": "bell",
+      "sh": 33
     },
     {
       "n": "big_dripleaf"
     },
     {
       "n": "birch_button",
-      "mc": "#D9CA8C"
+      "mc": "#D9CA8C",
+      "sh": 9
     },
     {
       "n": "birch_door",
-      "mc": "#D9CA8C"
+      "mc": "#D9CA8C",
+      "sh": 7
     },
     {
       "n": "birch_fence_gate",
-      "mc": "#D9CA8C"
+      "mc": "#D9CA8C",
+      "sh": 5
     },
     {
-      "n": "birch_hanging_sign"
+      "n": "birch_hanging_sign",
+      "sh": 29
     },
     {
-      "n": "birch_pressure_plate"
+      "n": "birch_pressure_plate",
+      "sh": 10
     },
     {
       "n": "birch_shelf"
     },
     {
-      "n": "birch_stairs"
+      "n": "birch_stairs",
+      "sh": 2
     },
     {
-      "n": "birch_standing_sign"
+      "n": "birch_standing_sign",
+      "sh": 28
     },
     {
-      "n": "birch_trapdoor"
+      "n": "birch_trapdoor",
+      "sh": 8
     },
     {
-      "n": "birch_wall_sign"
+      "n": "birch_wall_sign",
+      "sh": 28
     },
     {
-      "n": "black_candle"
+      "n": "black_candle",
+      "sh": 18
     },
     {
-      "n": "black_candle_cake"
+      "n": "black_candle_cake",
+      "sh": 18
     },
     {
       "n": "black_glazed_terracotta"
@@ -242,10 +290,12 @@
       "n": "blackstone_double_slab"
     },
     {
-      "n": "blackstone_slab"
+      "n": "blackstone_slab",
+      "sh": 3
     },
     {
-      "n": "blackstone_stairs"
+      "n": "blackstone_stairs",
+      "sh": 2
     },
     {
       "n": "blast_furnace"
@@ -295,15 +345,18 @@
           "n": "quartz_",
           "mc": "#00D93A"
         }
-      ]
+      ],
+      "sh": 1
     },
     {
       "n": "blue_candle",
-      "mc": "#4A80FF"
+      "mc": "#4A80FF",
+      "sh": 18
     },
     {
       "n": "blue_candle_cake",
-      "mc": "#4A80FF"
+      "mc": "#4A80FF",
+      "sh": 18
     },
     {
       "n": "blue_glazed_terracotta",
@@ -322,7 +375,8 @@
       "mc": "#707070"
     },
     {
-      "n": "brewing_stand"
+      "n": "brewing_stand",
+      "sh": 35
     },
     {
       "n": "brick_block",
@@ -330,20 +384,24 @@
     },
     {
       "n": "brick_stairs",
-      "mc": "#993333"
+      "mc": "#993333",
+      "sh": 2
     },
     {
-      "n": "brown_candle"
+      "n": "brown_candle",
+      "sh": 18
     },
     {
-      "n": "brown_candle_cake"
+      "n": "brown_candle_cake",
+      "sh": 18
     },
     {
       "n": "brown_glazed_terracotta"
     },
     {
       "n": "brown_mushroom",
-      "mc": "#8F5A42"
+      "mc": "#8F5A42",
+      "sh": 21
     },
     {
       "n": "brown_mushroom_block",
@@ -406,16 +464,19 @@
         {
           "n": "wooden_"
         }
-      ]
+      ],
+      "sh": 9
     },
     {
       "n": "cactus",
       "isOpaque": true,
       "shape": 1,
-      "mc": "#00D93A"
+      "mc": "#00D93A",
+      "sh": 1
     },
     {
-      "n": "cactus_flower"
+      "n": "cactus_flower",
+      "sh": 21
     },
     {
       "n": "cake",
@@ -437,10 +498,12 @@
     },
     {
       "n": "candle",
-      "mc": "#F7E9A3"
+      "mc": "#F7E9A3",
+      "sh": 18
     },
     {
-      "n": "candle_cake"
+      "n": "candle_cake",
+      "sh": 18
     },
     {
       "n": "carpet",
@@ -511,10 +574,12 @@
           "ic": "_",
           "mc": "#4A80FF"
         }
-      ]
+      ],
+      "sh": 22
     },
     {
-      "n": "carrots"
+      "n": "carrots",
+      "sh": 23
     },
     {
       "n": "cartography_table"
@@ -523,7 +588,8 @@
       "n": "carved_pumpkin"
     },
     {
-      "n": "cauldron"
+      "n": "cauldron",
+      "sh": 37
     },
     {
       "n": "cave_vines"
@@ -535,10 +601,12 @@
       "n": "cave_vines_head_with_berries"
     },
     {
-      "n": "chain"
+      "n": "chain",
+      "sh": 13
     },
     {
-      "n": "chain_command_block"
+      "n": "chain_command_block",
+      "sh": 13
     },
     {
       "n": "chalkboard"
@@ -565,11 +633,13 @@
     },
     {
       "n": "cherry_button",
-      "mc": "#F5C2E7"
+      "mc": "#F5C2E7",
+      "sh": 9
     },
     {
       "n": "cherry_door",
-      "mc": "#F5C2E7"
+      "mc": "#F5C2E7",
+      "sh": 7
     },
     {
       "n": "cherry_double_slab",
@@ -577,23 +647,28 @@
     },
     {
       "n": "cherry_fence",
-      "mc": "#F5C2E7"
+      "mc": "#F5C2E7",
+      "sh": 4
     },
     {
       "n": "cherry_fence_gate",
-      "mc": "#F5C2E7"
+      "mc": "#F5C2E7",
+      "sh": 5
     },
     {
       "n": "cherry_hanging_sign",
-      "mc": "#F5C2E7"
+      "mc": "#F5C2E7",
+      "sh": 29
     },
     {
       "n": "cherry_leaves",
-      "mc": "#F5C2E7"
+      "mc": "#F5C2E7",
+      "sh": 24
     },
     {
       "n": "cherry_log",
-      "mc": "#F5C2E7"
+      "mc": "#F5C2E7",
+      "sh": 25
     },
     {
       "n": "cherry_planks",
@@ -601,11 +676,13 @@
     },
     {
       "n": "cherry_pressure_plate",
-      "mc": "#F5C2E7"
+      "mc": "#F5C2E7",
+      "sh": 10
     },
     {
       "n": "cherry_sapling",
-      "mc": "#F5C2E7"
+      "mc": "#F5C2E7",
+      "sh": 21
     },
     {
       "n": "cherry_shelf",
@@ -613,23 +690,28 @@
     },
     {
       "n": "cherry_slab",
-      "mc": "#F5C2E7"
+      "mc": "#F5C2E7",
+      "sh": 3
     },
     {
       "n": "cherry_stairs",
-      "mc": "#F5C2E7"
+      "mc": "#F5C2E7",
+      "sh": 2
     },
     {
       "n": "cherry_standing_sign",
-      "mc": "#F5C2E7"
+      "mc": "#F5C2E7",
+      "sh": 28
     },
     {
       "n": "cherry_trapdoor",
-      "mc": "#F5C2E7"
+      "mc": "#F5C2E7",
+      "sh": 8
     },
     {
       "n": "cherry_wall_sign",
-      "mc": "#F5C2E7"
+      "mc": "#F5C2E7",
+      "sh": 28
     },
     {
       "n": "cherry_wood",
@@ -638,7 +720,8 @@
     {
       "n": "chest",
       "ic": "chest_front",
-      "mc": "#8F7748"
+      "mc": "#8F7748",
+      "sh": 31
     },
     {
       "n": "chiseled_bookshelf",
@@ -674,7 +757,8 @@
     },
     {
       "n": "chorus_flower",
-      "mc": "#7A4958"
+      "mc": "#7A4958",
+      "sh": 21
     },
     {
       "n": "chorus_plant",
@@ -703,15 +787,18 @@
     },
     {
       "n": "cobbled_deepslate_slab",
-      "mc": "#646464"
+      "mc": "#646464",
+      "sh": 3
     },
     {
       "n": "cobbled_deepslate_stairs",
-      "mc": "#646464"
+      "mc": "#646464",
+      "sh": 2
     },
     {
       "n": "cobbled_deepslate_wall",
-      "mc": "#646464"
+      "mc": "#646464",
+      "sh": 6
     },
     {
       "n": "cobblestone_wall",
@@ -766,7 +853,8 @@
         {
           "n": "stone_brick_wall"
         }
-      ]
+      ],
+      "sh": 6
     },
     {
       "n": "cocoa",
@@ -954,7 +1042,8 @@
     },
     {
       "n": "copper_bars",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 20
     },
     {
       "n": "copper_block",
@@ -966,7 +1055,8 @@
     },
     {
       "n": "copper_chain",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 13
     },
     {
       "n": "copper_chest",
@@ -974,7 +1064,8 @@
     },
     {
       "n": "copper_door",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 7
     },
     {
       "n": "copper_golem_statue",
@@ -986,15 +1077,18 @@
     },
     {
       "n": "copper_lantern",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 12
     },
     {
       "n": "copper_torch",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 11
     },
     {
       "n": "copper_trapdoor",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 8
     },
     {
       "n": "coral",
@@ -1212,11 +1306,13 @@
     },
     {
       "n": "crimson_button",
-      "mc": "#9A3636"
+      "mc": "#9A3636",
+      "sh": 9
     },
     {
       "n": "crimson_door",
-      "mc": "#9A3636"
+      "mc": "#9A3636",
+      "sh": 7
     },
     {
       "n": "crimson_double_slab",
@@ -1224,11 +1320,13 @@
     },
     {
       "n": "crimson_fence",
-      "mc": "#9A3636"
+      "mc": "#9A3636",
+      "sh": 4
     },
     {
       "n": "crimson_fence_gate",
-      "mc": "#9A3636"
+      "mc": "#9A3636",
+      "sh": 5
     },
     {
       "n": "crimson_fungus",
@@ -1236,7 +1334,8 @@
     },
     {
       "n": "crimson_hanging_sign",
-      "mc": "#9A3636"
+      "mc": "#9A3636",
+      "sh": 29
     },
     {
       "n": "crimson_hyphae",
@@ -1248,7 +1347,8 @@
     },
     {
       "n": "crimson_pressure_plate",
-      "mc": "#9A3636"
+      "mc": "#9A3636",
+      "sh": 10
     },
     {
       "n": "crimson_roots",
@@ -1260,15 +1360,18 @@
     },
     {
       "n": "crimson_slab",
-      "mc": "#9A3636"
+      "mc": "#9A3636",
+      "sh": 3
     },
     {
       "n": "crimson_stairs",
-      "mc": "#9A3636"
+      "mc": "#9A3636",
+      "sh": 2
     },
     {
       "n": "crimson_standing_sign",
-      "mc": "#9A3636"
+      "mc": "#9A3636",
+      "sh": 28
     },
     {
       "n": "crimson_stem",
@@ -1276,11 +1379,13 @@
     },
     {
       "n": "crimson_trapdoor",
-      "mc": "#9A3636"
+      "mc": "#9A3636",
+      "sh": 8
     },
     {
       "n": "crimson_wall_sign",
-      "mc": "#9A3636"
+      "mc": "#9A3636",
+      "sh": 28
     },
     {
       "n": "crying_obsidian",
@@ -1293,19 +1398,23 @@
     },
     {
       "n": "cut_copper_slab",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 3
     },
     {
       "n": "cut_copper_stairs",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 2
     },
     {
       "n": "cyan_candle",
-      "mc": "#4C7F99"
+      "mc": "#4C7F99",
+      "sh": 18
     },
     {
       "n": "cyan_candle_cake",
-      "mc": "#4C7F99"
+      "mc": "#4C7F99",
+      "sh": 18
     },
     {
       "n": "cyan_glazed_terracotta",
@@ -1313,27 +1422,33 @@
     },
     {
       "n": "dandelion",
-      "mc": "#FFFF00"
+      "mc": "#FFFF00",
+      "sh": 21
     },
     {
       "n": "dark_oak_button",
-      "mc": "#654321"
+      "mc": "#654321",
+      "sh": 9
     },
     {
       "n": "dark_oak_door",
-      "mc": "#654321"
+      "mc": "#654321",
+      "sh": 7
     },
     {
       "n": "dark_oak_fence_gate",
-      "mc": "#654321"
+      "mc": "#654321",
+      "sh": 5
     },
     {
       "n": "dark_oak_hanging_sign",
-      "mc": "#654321"
+      "mc": "#654321",
+      "sh": 29
     },
     {
       "n": "dark_oak_pressure_plate",
-      "mc": "#654321"
+      "mc": "#654321",
+      "sh": 10
     },
     {
       "n": "dark_oak_shelf",
@@ -1341,23 +1456,28 @@
     },
     {
       "n": "dark_oak_stairs",
-      "mc": "#654321"
+      "mc": "#654321",
+      "sh": 2
     },
     {
       "n": "dark_oak_trapdoor",
-      "mc": "#654321"
+      "mc": "#654321",
+      "sh": 8
     },
     {
       "n": "dark_prismarine_stairs",
-      "mc": "#2F4F4F"
+      "mc": "#2F4F4F",
+      "sh": 2
     },
     {
       "n": "darkoak_standing_sign",
-      "mc": "#654321"
+      "mc": "#654321",
+      "sh": 28
     },
     {
       "n": "darkoak_wall_sign",
-      "mc": "#654321"
+      "mc": "#654321",
+      "sh": 28
     },
     {
       "n": "daylight_detector",
@@ -1369,7 +1489,8 @@
     },
     {
       "n": "deadbush",
-      "mc": "#B7B09B"
+      "mc": "#B7B09B",
+      "sh": 21
     },
     {
       "n": "decorated_pot",
@@ -1386,15 +1507,18 @@
     },
     {
       "n": "deepslate_brick_slab",
-      "mc": "#646464"
+      "mc": "#646464",
+      "sh": 3
     },
     {
       "n": "deepslate_brick_stairs",
-      "mc": "#646464"
+      "mc": "#646464",
+      "sh": 2
     },
     {
       "n": "deepslate_brick_wall",
-      "mc": "#646464"
+      "mc": "#646464",
+      "sh": 6
     },
     {
       "n": "deepslate_bricks",
@@ -1406,15 +1530,18 @@
     },
     {
       "n": "deepslate_tile_slab",
-      "mc": "#646464"
+      "mc": "#646464",
+      "sh": 3
     },
     {
       "n": "deepslate_tile_stairs",
-      "mc": "#646464"
+      "mc": "#646464",
+      "sh": 2
     },
     {
       "n": "deepslate_tile_wall",
-      "mc": "#646464"
+      "mc": "#646464",
+      "sh": 6
     },
     {
       "n": "deepslate_tiles",
@@ -1426,7 +1553,8 @@
     },
     {
       "n": "detector_rail",
-      "mc": "#B7B09B"
+      "mc": "#B7B09B",
+      "sh": 15
     },
     {
       "n": "diamond_block",
@@ -1434,7 +1562,8 @@
     },
     {
       "n": "diorite_stairs",
-      "mc": "#FFFFFF"
+      "mc": "#FFFFFF",
+      "sh": 2
     },
     {
       "n": "dirt",
@@ -1448,7 +1577,8 @@
           "data": 1,
           "ic": "_"
         }
-      ]
+      ],
+      "sh": 1
     },
     {
       "n": "dirt_with_roots",
@@ -2090,11 +2220,13 @@
     },
     {
       "n": "enchanting_table",
-      "mc": "#2F1B69"
+      "mc": "#2F1B69",
+      "sh": 36
     },
     {
       "n": "end_brick_stairs",
-      "mc": "#DBDB9B"
+      "mc": "#DBDB9B",
+      "sh": 2
     },
     {
       "n": "end_bricks",
@@ -2119,7 +2251,8 @@
           "n": "light_block_14",
           "mc": "#FFFEF7"
         }
-      ]
+      ],
+      "sh": 19
     },
     {
       "n": "end_stone",
@@ -2127,7 +2260,8 @@
     },
     {
       "n": "ender_chest",
-      "mc": "#0F0F23"
+      "mc": "#0F0F23",
+      "sh": 31
     },
     {
       "n": "exposed_chiseled_copper",
@@ -2139,7 +2273,8 @@
     },
     {
       "n": "exposed_copper_bars",
-      "mc": "#9E6B39"
+      "mc": "#9E6B39",
+      "sh": 20
     },
     {
       "n": "exposed_copper_bulb",
@@ -2147,7 +2282,8 @@
     },
     {
       "n": "exposed_copper_chain",
-      "mc": "#9E6B39"
+      "mc": "#9E6B39",
+      "sh": 13
     },
     {
       "n": "exposed_copper_chest",
@@ -2155,7 +2291,8 @@
     },
     {
       "n": "exposed_copper_door",
-      "mc": "#9E6B39"
+      "mc": "#9E6B39",
+      "sh": 7
     },
     {
       "n": "exposed_copper_golem_statue",
@@ -2167,11 +2304,13 @@
     },
     {
       "n": "exposed_copper_lantern",
-      "mc": "#9E6B39"
+      "mc": "#9E6B39",
+      "sh": 12
     },
     {
       "n": "exposed_copper_trapdoor",
-      "mc": "#9E6B39"
+      "mc": "#9E6B39",
+      "sh": 8
     },
     {
       "n": "exposed_cut_copper",
@@ -2179,18 +2318,21 @@
     },
     {
       "n": "exposed_cut_copper_slab",
-      "mc": "#9E6B39"
+      "mc": "#9E6B39",
+      "sh": 3
     },
     {
       "n": "exposed_cut_copper_stairs",
-      "mc": "#9E6B39"
+      "mc": "#9E6B39",
+      "sh": 2
     },
     {
       "n": "exposed_double_cut_copper_slab",
       "mc": "#9E6B39"
     },
     {
-      "n": "exposed_lightning_rod"
+      "n": "exposed_lightning_rod",
+      "sh": 19
     },
     {
       "n": "farmland"
@@ -2217,11 +2359,13 @@
         {
           "n": "spruce_"
         }
-      ]
+      ],
+      "sh": 4
     },
     {
       "n": "fence_gate",
-      "mc": "#8F7748"
+      "mc": "#8F7748",
+      "sh": 5
     },
     {
       "n": "fire",
@@ -2249,15 +2393,18 @@
           "ic": "flower_dandelion",
           "mc": "#FFFF00"
         }
-      ]
+      ],
+      "sh": 21
     },
     {
       "n": "flower_pot",
-      "mc": "#A0522D"
+      "mc": "#A0522D",
+      "sh": 21
     },
     {
       "n": "flowering_azalea",
-      "mc": "#7CBD6B"
+      "mc": "#7CBD6B",
+      "sh": 21
     },
     {
       "n": "flowing_lava",
@@ -2267,7 +2414,8 @@
       "n": "flowing_water",
       "isOpaque": false,
       "shape": 1,
-      "mc": "#4040FF"
+      "mc": "#4040FF",
+      "sh": 26
     },
     {
       "n": "frame",
@@ -2293,11 +2441,13 @@
       "n": "glass",
       "mc": "#5CDBD5",
       "isOpaque": false,
-      "shape": 1
+      "shape": 1,
+      "sh": 1
     },
     {
       "n": "glass_pane",
-      "mc": "#5CDBD5"
+      "mc": "#5CDBD5",
+      "sh": 20
     },
     {
       "n": "glow_frame",
@@ -2319,43 +2469,51 @@
     },
     {
       "n": "golden_rail",
-      "mc": "#FAEE4D"
+      "mc": "#FAEE4D",
+      "sh": 15
     },
     {
       "n": "granite_stairs",
-      "mc": "#9F5F27"
+      "mc": "#9F5F27",
+      "sh": 2
     },
     {
       "n": "grass",
       "ic": "_car",
       "isOpaque": true,
       "shape": 1,
-      "mc": "#7FB238"
+      "mc": "#7FB238",
+      "sh": 1
     },
     {
       "n": "grass_block",
-      "mc": "#7FB238"
+      "mc": "#7FB238",
+      "m": "grass"
     },
     {
       "n": "grass_path",
       "isOpaque": true,
       "shape": 1,
-      "mc": "#7FB238"
+      "mc": "#7FB238",
+      "sh": 1
     },
     {
       "n": "gravel",
       "ic": "gravel",
       "mc": "#707070",
       "isOpaque": true,
-      "shape": 1
+      "shape": 1,
+      "sh": 1
     },
     {
       "n": "gray_candle",
-      "mc": "#474F52"
+      "mc": "#474F52",
+      "sh": 18
     },
     {
       "n": "gray_candle_cake",
-      "mc": "#474F52"
+      "mc": "#474F52",
+      "sh": 18
     },
     {
       "n": "gray_glazed_terracotta",
@@ -2363,11 +2521,13 @@
     },
     {
       "n": "green_candle",
-      "mc": "#7CBD6B"
+      "mc": "#7CBD6B",
+      "sh": 18
     },
     {
       "n": "green_candle_cake",
-      "mc": "#7CBD6B"
+      "mc": "#7CBD6B",
+      "sh": 18
     },
     {
       "n": "green_glazed_terracotta",
@@ -2387,7 +2547,8 @@
     },
     {
       "n": "hard_glass_pane",
-      "mc": "#5CDBD5"
+      "mc": "#5CDBD5",
+      "sh": 20
     },
     {
       "n": "hard_stained_glass",
@@ -2525,7 +2686,8 @@
           "n": "hard_yellow_stained_glass_pane",
           "mc": "#FED83D"
         }
-      ]
+      ],
+      "sh": 20
     },
     {
       "n": "hardened_clay",
@@ -2541,7 +2703,8 @@
     },
     {
       "n": "heavy_weighted_pressure_plate",
-      "mc": "#FAEE4D"
+      "mc": "#FAEE4D",
+      "sh": 10
     },
     {
       "n": "honey_block",
@@ -2553,7 +2716,8 @@
     },
     {
       "n": "hopper",
-      "mc": "#707070"
+      "mc": "#707070",
+      "sh": 34
     },
     {
       "n": "ice",
@@ -2567,7 +2731,8 @@
         {
           "n": "frosted_"
         }
-      ]
+      ],
+      "sh": 1
     },
     {
       "n": "infested_deepslate",
@@ -2591,19 +2756,23 @@
     },
     {
       "n": "iron_bars",
-      "mc": "#D8AF93"
+      "mc": "#D8AF93",
+      "sh": 20
     },
     {
       "n": "iron_chain",
-      "mc": "#D8AF93"
+      "mc": "#D8AF93",
+      "sh": 13
     },
     {
       "n": "iron_door",
-      "mc": "#D8AF93"
+      "mc": "#D8AF93",
+      "sh": 7
     },
     {
       "n": "iron_trapdoor",
-      "mc": "#D8AF93"
+      "mc": "#D8AF93",
+      "sh": 8
     },
     {
       "n": "jigsaw",
@@ -2615,23 +2784,28 @@
     },
     {
       "n": "jungle_button",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 9
     },
     {
       "n": "jungle_door",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 7
     },
     {
       "n": "jungle_fence_gate",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 5
     },
     {
       "n": "jungle_hanging_sign",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 29
     },
     {
       "n": "jungle_pressure_plate",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 10
     },
     {
       "n": "jungle_shelf",
@@ -2639,19 +2813,23 @@
     },
     {
       "n": "jungle_stairs",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 2
     },
     {
       "n": "jungle_standing_sign",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 28
     },
     {
       "n": "jungle_trapdoor",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 8
     },
     {
       "n": "jungle_wall_sign",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 28
     },
     {
       "n": "kelp",
@@ -2660,11 +2838,13 @@
     },
     {
       "n": "ladder",
-      "mc": "#8F7748"
+      "mc": "#8F7748",
+      "sh": 14
     },
     {
       "n": "lantern",
-      "mc": "#D8AF93"
+      "mc": "#D8AF93",
+      "sh": 12
     },
     {
       "n": "large_amethyst_bud",
@@ -2676,6 +2856,7 @@
     },
     {
       "n": "lava_cauldron",
+      "sh": 37,
       "variants": [
         {
           "n": "cauldron",
@@ -2705,7 +2886,8 @@
         {
           "n": "spruce_"
         }
-      ]
+      ],
+      "sh": 24
     },
     {
       "n": "leaves2",
@@ -2720,7 +2902,8 @@
           "n": "dark_oak_leaves",
           "mc": "#4C522A"
         }
-      ]
+      ],
+      "sh": 24
     },
     {
       "n": "lectern",
@@ -2728,7 +2911,8 @@
     },
     {
       "n": "lever",
-      "mc": "#707070"
+      "mc": "#707070",
+      "sh": 16
     },
     {
       "n": "light_block",
@@ -2786,11 +2970,13 @@
     },
     {
       "n": "light_blue_candle",
-      "mc": "#6699D3"
+      "mc": "#6699D3",
+      "sh": 18
     },
     {
       "n": "light_blue_candle_cake",
-      "mc": "#6699D3"
+      "mc": "#6699D3",
+      "sh": 18
     },
     {
       "n": "light_blue_glazed_terracotta",
@@ -2798,27 +2984,33 @@
     },
     {
       "n": "light_gray_candle",
-      "mc": "#9D9D97"
+      "mc": "#9D9D97",
+      "sh": 18
     },
     {
       "n": "light_gray_candle_cake",
-      "mc": "#9D9D97"
+      "mc": "#9D9D97",
+      "sh": 18
     },
     {
       "n": "light_weighted_pressure_plate",
-      "mc": "#FAEE4D"
+      "mc": "#FAEE4D",
+      "sh": 10
     },
     {
       "n": "lightning_rod",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 19
     },
     {
       "n": "lime_candle",
-      "mc": "#7F9A65"
+      "mc": "#7F9A65",
+      "sh": 18
     },
     {
       "n": "lime_candle_cake",
-      "mc": "#7F9A65"
+      "mc": "#7F9A65",
+      "sh": 18
     },
     {
       "n": "lime_glazed_terracotta",
@@ -2890,7 +3082,8 @@
           "n": "spruce_wood",
           "mc": "#8F5A42"
         }
-      ]
+      ],
+      "sh": 25
     },
     {
       "n": "log2",
@@ -2914,7 +3107,8 @@
           "n": "dark_oak_wood",
           "mc": "#654321"
         }
-      ]
+      ],
+      "sh": 1
     },
     {
       "n": "loom",
@@ -2922,11 +3116,13 @@
     },
     {
       "n": "magenta_candle",
-      "mc": "#B24CD8"
+      "mc": "#B24CD8",
+      "sh": 18
     },
     {
       "n": "magenta_candle_cake",
-      "mc": "#B24CD8"
+      "mc": "#B24CD8",
+      "sh": 18
     },
     {
       "n": "magenta_glazed_terracotta",
@@ -2939,11 +3135,13 @@
     },
     {
       "n": "mangrove_button",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 9
     },
     {
       "n": "mangrove_door",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 7
     },
     {
       "n": "mangrove_double_slab",
@@ -2951,23 +3149,28 @@
     },
     {
       "n": "mangrove_fence",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 4
     },
     {
       "n": "mangrove_fence_gate",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 5
     },
     {
       "n": "mangrove_hanging_sign",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 29
     },
     {
       "n": "mangrove_leaves",
-      "mc": "#7CBD6B"
+      "mc": "#7CBD6B",
+      "sh": 24
     },
     {
       "n": "mangrove_log",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 25
     },
     {
       "n": "mangrove_planks",
@@ -2975,7 +3178,8 @@
     },
     {
       "n": "mangrove_pressure_plate",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 10
     },
     {
       "n": "mangrove_propagule",
@@ -2991,23 +3195,28 @@
     },
     {
       "n": "mangrove_slab",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 3
     },
     {
       "n": "mangrove_stairs",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 2
     },
     {
       "n": "mangrove_standing_sign",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 28
     },
     {
       "n": "mangrove_trapdoor",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 8
     },
     {
       "n": "mangrove_wall_sign",
-      "mc": "#B4684D"
+      "mc": "#B4684D",
+      "sh": 28
     },
     {
       "n": "mangrove_wood",
@@ -3043,7 +3252,8 @@
           "ic": "_",
           "mc": "#5F9EA0"
         }
-      ]
+      ],
+      "sh": 1
     },
     {
       "n": "medium_amethyst_bud",
@@ -3098,7 +3308,8 @@
     },
     {
       "n": "moss_carpet",
-      "mc": "#7CBD6B"
+      "mc": "#7CBD6B",
+      "sh": 22
     },
     {
       "n": "mossy_cobblestone",
@@ -3107,11 +3318,13 @@
     },
     {
       "n": "mossy_cobblestone_stairs",
-      "mc": "#627F62"
+      "mc": "#627F62",
+      "sh": 2
     },
     {
       "n": "mossy_stone_brick_stairs",
-      "mc": "#627F62"
+      "mc": "#627F62",
+      "sh": 2
     },
     {
       "n": "moving_block",
@@ -3131,15 +3344,18 @@
     },
     {
       "n": "mud_brick_slab",
-      "mc": "#8F6449"
+      "mc": "#8F6449",
+      "sh": 3
     },
     {
       "n": "mud_brick_stairs",
-      "mc": "#8F6449"
+      "mc": "#8F6449",
+      "sh": 2
     },
     {
       "n": "mud_brick_wall",
-      "mc": "#8F6449"
+      "mc": "#8F6449",
+      "sh": 6
     },
     {
       "n": "mud_bricks",
@@ -3165,7 +3381,8 @@
           "ic": "mshblk",
           "mc": "#FF3333"
         }
-      ]
+      ],
+      "sh": 1
     },
     {
       "n": "mycelium",
@@ -3177,11 +3394,13 @@
     },
     {
       "n": "nether_brick_fence",
-      "mc": "#700200"
+      "mc": "#700200",
+      "sh": 4
     },
     {
       "n": "nether_brick_stairs",
-      "mc": "#2D1B22"
+      "mc": "#2D1B22",
+      "sh": 2
     },
     {
       "n": "nether_sprouts",
@@ -3189,7 +3408,8 @@
     },
     {
       "n": "nether_wart",
-      "mc": "#700200"
+      "mc": "#700200",
+      "sh": 23
     },
     {
       "n": "netherrack",
@@ -3201,7 +3421,8 @@
     },
     {
       "n": "normal_stone_stairs",
-      "mc": "#7F7F7F"
+      "mc": "#7F7F7F",
+      "sh": 2
     },
     {
       "n": "noteblock",
@@ -3209,7 +3430,8 @@
     },
     {
       "n": "oak_hanging_sign",
-      "mc": "#8F7748"
+      "mc": "#8F7748",
+      "sh": 29
     },
     {
       "n": "oak_shelf",
@@ -3217,7 +3439,8 @@
     },
     {
       "n": "oak_stairs",
-      "mc": "#8F7748"
+      "mc": "#8F7748",
+      "sh": 2
     },
     {
       "n": "observer",
@@ -3238,11 +3461,13 @@
     },
     {
       "n": "orange_candle",
-      "mc": "#D87F33"
+      "mc": "#D87F33",
+      "sh": 18
     },
     {
       "n": "orange_candle_cake",
-      "mc": "#D87F33"
+      "mc": "#D87F33",
+      "sh": 18
     },
     {
       "n": "orange_glazed_terracotta",
@@ -3350,7 +3575,8 @@
           "ic": "_",
           "mc": "#FF0000"
         }
-      ]
+      ],
+      "sh": 1
     },
     {
       "n": "oxidized_chiseled_copper",
@@ -3362,7 +3588,8 @@
     },
     {
       "n": "oxidized_copper_bars",
-      "mc": "#52753A"
+      "mc": "#52753A",
+      "sh": 20
     },
     {
       "n": "oxidized_copper_bulb",
@@ -3370,7 +3597,8 @@
     },
     {
       "n": "oxidized_copper_chain",
-      "mc": "#52753A"
+      "mc": "#52753A",
+      "sh": 13
     },
     {
       "n": "oxidized_copper_chest",
@@ -3378,7 +3606,8 @@
     },
     {
       "n": "oxidized_copper_door",
-      "mc": "#52753A"
+      "mc": "#52753A",
+      "sh": 7
     },
     {
       "n": "oxidized_copper_golem_statue",
@@ -3390,11 +3619,13 @@
     },
     {
       "n": "oxidized_copper_lantern",
-      "mc": "#52753A"
+      "mc": "#52753A",
+      "sh": 12
     },
     {
       "n": "oxidized_copper_trapdoor",
-      "mc": "#52753A"
+      "mc": "#52753A",
+      "sh": 8
     },
     {
       "n": "oxidized_cut_copper",
@@ -3402,11 +3633,13 @@
     },
     {
       "n": "oxidized_cut_copper_slab",
-      "mc": "#52753A"
+      "mc": "#52753A",
+      "sh": 3
     },
     {
       "n": "oxidized_cut_copper_stairs",
-      "mc": "#52753A"
+      "mc": "#52753A",
+      "sh": 2
     },
     {
       "n": "oxidized_double_cut_copper_slab",
@@ -3414,7 +3647,8 @@
     },
     {
       "n": "oxidized_lightning_rod",
-      "mc": "#52753A"
+      "mc": "#52753A",
+      "sh": 19
     },
     {
       "n": "packed_ice",
@@ -3434,15 +3668,18 @@
     },
     {
       "n": "pale_moss_carpet",
-      "mc": "#B7E1B7"
+      "mc": "#B7E1B7",
+      "sh": 22
     },
     {
       "n": "pale_oak_button",
-      "mc": "#F5E4A6"
+      "mc": "#F5E4A6",
+      "sh": 9
     },
     {
       "n": "pale_oak_door",
-      "mc": "#F5E4A6"
+      "mc": "#F5E4A6",
+      "sh": 7
     },
     {
       "n": "pale_oak_double_slab",
@@ -3450,23 +3687,28 @@
     },
     {
       "n": "pale_oak_fence",
-      "mc": "#F5E4A6"
+      "mc": "#F5E4A6",
+      "sh": 4
     },
     {
       "n": "pale_oak_fence_gate",
-      "mc": "#F5E4A6"
+      "mc": "#F5E4A6",
+      "sh": 5
     },
     {
       "n": "pale_oak_hanging_sign",
-      "mc": "#F5E4A6"
+      "mc": "#F5E4A6",
+      "sh": 29
     },
     {
       "n": "pale_oak_leaves",
-      "mc": "#B7E1B7"
+      "mc": "#B7E1B7",
+      "sh": 24
     },
     {
       "n": "pale_oak_log",
-      "mc": "#F5E4A6"
+      "mc": "#F5E4A6",
+      "sh": 25
     },
     {
       "n": "pale_oak_planks",
@@ -3474,11 +3716,13 @@
     },
     {
       "n": "pale_oak_pressure_plate",
-      "mc": "#F5E4A6"
+      "mc": "#F5E4A6",
+      "sh": 10
     },
     {
       "n": "pale_oak_sapling",
-      "mc": "#B7E1B7"
+      "mc": "#B7E1B7",
+      "sh": 21
     },
     {
       "n": "pale_oak_shelf",
@@ -3486,23 +3730,28 @@
     },
     {
       "n": "pale_oak_slab",
-      "mc": "#F5E4A6"
+      "mc": "#F5E4A6",
+      "sh": 3
     },
     {
       "n": "pale_oak_stairs",
-      "mc": "#F5E4A6"
+      "mc": "#F5E4A6",
+      "sh": 2
     },
     {
       "n": "pale_oak_standing_sign",
-      "mc": "#F5E4A6"
+      "mc": "#F5E4A6",
+      "sh": 28
     },
     {
       "n": "pale_oak_trapdoor",
-      "mc": "#F5E4A6"
+      "mc": "#F5E4A6",
+      "sh": 8
     },
     {
       "n": "pale_oak_wall_sign",
-      "mc": "#F5E4A6"
+      "mc": "#F5E4A6",
+      "sh": 28
     },
     {
       "n": "pale_oak_wood",
@@ -3518,11 +3767,13 @@
     },
     {
       "n": "pink_candle",
-      "mc": "#F27FA5"
+      "mc": "#F27FA5",
+      "sh": 18
     },
     {
       "n": "pink_candle_cake",
-      "mc": "#F27FA5"
+      "mc": "#F27FA5",
+      "sh": 18
     },
     {
       "n": "pink_glazed_terracotta",
@@ -3530,7 +3781,8 @@
     },
     {
       "n": "pink_petals",
-      "mc": "#F27FA5"
+      "mc": "#F27FA5",
+      "sh": 21
     },
     {
       "n": "piston",
@@ -3550,7 +3802,8 @@
     },
     {
       "n": "pitcher_plant",
-      "mc": "#7CBD6B"
+      "mc": "#7CBD6B",
+      "sh": 21
     },
     {
       "n": "planks",
@@ -3593,7 +3846,8 @@
           "ic": "pl_",
           "mc": "#4C7F99"
         }
-      ]
+      ],
+      "sh": 1
     },
     {
       "n": "player_head",
@@ -3610,7 +3864,8 @@
     },
     {
       "n": "polished_andesite_stairs",
-      "mc": "#8C8C8C"
+      "mc": "#8C8C8C",
+      "sh": 2
     },
     {
       "n": "polished_basalt",
@@ -3626,11 +3881,13 @@
     },
     {
       "n": "polished_blackstone_brick_slab",
-      "mc": "#25252A"
+      "mc": "#25252A",
+      "sh": 3
     },
     {
       "n": "polished_blackstone_brick_stairs",
-      "mc": "#25252A"
+      "mc": "#25252A",
+      "sh": 2
     },
     {
       "n": "polished_blackstone_bricks",
@@ -3638,7 +3895,8 @@
     },
     {
       "n": "polished_blackstone_button",
-      "mc": "#25252A"
+      "mc": "#25252A",
+      "sh": 9
     },
     {
       "n": "polished_blackstone_double_slab",
@@ -3646,15 +3904,18 @@
     },
     {
       "n": "polished_blackstone_pressure_plate",
-      "mc": "#25252A"
+      "mc": "#25252A",
+      "sh": 10
     },
     {
       "n": "polished_blackstone_slab",
-      "mc": "#25252A"
+      "mc": "#25252A",
+      "sh": 3
     },
     {
       "n": "polished_blackstone_stairs",
-      "mc": "#25252A"
+      "mc": "#25252A",
+      "sh": 2
     },
     {
       "n": "polished_deepslate",
@@ -3666,23 +3927,28 @@
     },
     {
       "n": "polished_deepslate_slab",
-      "mc": "#646464"
+      "mc": "#646464",
+      "sh": 3
     },
     {
       "n": "polished_deepslate_stairs",
-      "mc": "#646464"
+      "mc": "#646464",
+      "sh": 2
     },
     {
       "n": "polished_deepslate_wall",
-      "mc": "#646464"
+      "mc": "#646464",
+      "sh": 6
     },
     {
       "n": "polished_diorite_stairs",
-      "mc": "#FFFFFF"
+      "mc": "#FFFFFF",
+      "sh": 2
     },
     {
       "n": "polished_granite_stairs",
-      "mc": "#9F5F27"
+      "mc": "#9F5F27",
+      "sh": 2
     },
     {
       "n": "polished_tuff",
@@ -3694,15 +3960,18 @@
     },
     {
       "n": "polished_tuff_slab",
-      "mc": "#707070"
+      "mc": "#707070",
+      "sh": 3
     },
     {
       "n": "polished_tuff_stairs",
-      "mc": "#707070"
+      "mc": "#707070",
+      "sh": 2
     },
     {
       "n": "polished_tuff_wall",
-      "mc": "#707070"
+      "mc": "#707070",
+      "sh": 6
     },
     {
       "n": "portal",
@@ -3710,7 +3979,8 @@
     },
     {
       "n": "potatoes",
-      "mc": "#7CBD6B"
+      "mc": "#7CBD6B",
+      "sh": 23
     },
     {
       "n": "powder_snow",
@@ -3739,11 +4009,13 @@
     },
     {
       "n": "prismarine_bricks_stairs",
-      "mc": "#5F9EA0"
+      "mc": "#5F9EA0",
+      "sh": 2
     },
     {
       "n": "prismarine_stairs",
-      "mc": "#5F9EA0"
+      "mc": "#5F9EA0",
+      "sh": 2
     },
     {
       "n": "pumpkin",
@@ -3755,11 +4027,13 @@
     },
     {
       "n": "purple_candle",
-      "mc": "#7F3FB2"
+      "mc": "#7F3FB2",
+      "sh": 18
     },
     {
       "n": "purple_candle_cake",
-      "mc": "#7F3FB2"
+      "mc": "#7F3FB2",
+      "sh": 18
     },
     {
       "n": "purple_glazed_terracotta",
@@ -3784,7 +4058,8 @@
     },
     {
       "n": "purpur_stairs",
-      "mc": "#AB8BAB"
+      "mc": "#AB8BAB",
+      "sh": 2
     },
     {
       "n": "quartz_block",
@@ -3809,7 +4084,8 @@
     },
     {
       "n": "quartz_stairs",
-      "mc": "#FFFEF7"
+      "mc": "#FFFEF7",
+      "sh": 2
     },
     {
       "abstract": false,
@@ -3831,7 +4107,8 @@
           "ic": "rv",
           "mc": "#FAEE4D"
         }
-      ]
+      ],
+      "sh": 15
     },
     {
       "n": "raw_copper_block",
@@ -3847,11 +4124,13 @@
     },
     {
       "n": "red_candle",
-      "mc": "#B02E26"
+      "mc": "#B02E26",
+      "sh": 18
     },
     {
       "n": "red_candle_cake",
-      "mc": "#B02E26"
+      "mc": "#B02E26",
+      "sh": 18
     },
     {
       "n": "red_flower",
@@ -3900,7 +4179,8 @@
           "n": "white_tulip",
           "mc": "#F9F9F9"
         }
-      ]
+      ],
+      "sh": 21
     },
     {
       "n": "red_glazed_terracotta",
@@ -3908,7 +4188,8 @@
     },
     {
       "n": "red_mushroom",
-      "mc": "#FF3333"
+      "mc": "#FF3333",
+      "sh": 21
     },
     {
       "n": "red_mushroom_block",
@@ -3925,7 +4206,8 @@
     },
     {
       "n": "red_nether_brick_stairs",
-      "mc": "#450000"
+      "mc": "#450000",
+      "sh": 2
     },
     {
       "n": "red_sandstone",
@@ -3946,7 +4228,8 @@
     },
     {
       "n": "red_sandstone_stairs",
-      "mc": "#D68228"
+      "mc": "#D68228",
+      "sh": 2
     },
     {
       "n": "redstone_block",
@@ -3958,12 +4241,14 @@
     },
     {
       "n": "redstone_torch",
-      "mc": "#FF0000"
+      "mc": "#FF0000",
+      "sh": 11
     },
     {
       "n": "redstone_wire",
       "mc": "#FF0000",
-      "isOpaque": false
+      "isOpaque": false,
+      "sh": 27
     },
     {
       "n": "reeds",
@@ -3996,15 +4281,18 @@
     },
     {
       "n": "resin_brick_slab",
-      "mc": "#D87F33"
+      "mc": "#D87F33",
+      "sh": 3
     },
     {
       "n": "resin_brick_stairs",
-      "mc": "#D87F33"
+      "mc": "#D87F33",
+      "sh": 2
     },
     {
       "n": "resin_brick_wall",
-      "mc": "#D87F33"
+      "mc": "#D87F33",
+      "sh": 6
     },
     {
       "n": "resin_bricks",
@@ -4029,7 +4317,8 @@
           "n": "red_",
           "mc": "#D68228"
         }
-      ]
+      ],
+      "sh": 1
     },
     {
       "n": "sandstone",
@@ -4050,7 +4339,8 @@
     },
     {
       "n": "sandstone_stairs",
-      "mc": "#F7E9A3"
+      "mc": "#F7E9A3",
+      "sh": 2
     },
     {
       "n": "sapling",
@@ -4079,7 +4369,8 @@
           "n": "spruce_",
           "mc": "#7CBD6B"
         }
-      ]
+      ],
+      "sh": 21
     },
     {
       "n": "scaffolding",
@@ -4237,15 +4528,18 @@
     },
     {
       "n": "smooth_quartz_stairs",
-      "mc": "#F0F0F0"
+      "mc": "#F0F0F0",
+      "sh": 2
     },
     {
       "n": "smooth_red_sandstone_stairs",
-      "mc": "#D68228"
+      "mc": "#D68228",
+      "sh": 2
     },
     {
       "n": "smooth_sandstone_stairs",
-      "mc": "#F7E9A3"
+      "mc": "#F7E9A3",
+      "sh": 2
     },
     {
       "n": "sniffer_egg",
@@ -4261,7 +4555,8 @@
     },
     {
       "n": "soul_campfire",
-      "mc": "#4A90E2"
+      "mc": "#4A90E2",
+      "sh": 32
     },
     {
       "n": "soul_fire",
@@ -4269,7 +4564,8 @@
     },
     {
       "n": "soul_lantern",
-      "mc": "#4A90E2"
+      "mc": "#4A90E2",
+      "sh": 12
     },
     {
       "n": "soul_sand",
@@ -4281,7 +4577,8 @@
     },
     {
       "n": "soul_torch",
-      "mc": "#4A90E2"
+      "mc": "#4A90E2",
+      "sh": 11
     },
     {
       "n": "sponge",
@@ -4295,27 +4592,33 @@
     },
     {
       "n": "spore_blossom",
-      "mc": "#FF69B4"
+      "mc": "#FF69B4",
+      "sh": 21
     },
     {
       "n": "spruce_button",
-      "mc": "#8B4513"
+      "mc": "#8B4513",
+      "sh": 9
     },
     {
       "n": "spruce_door",
-      "mc": "#8B4513"
+      "mc": "#8B4513",
+      "sh": 7
     },
     {
       "n": "spruce_fence_gate",
-      "mc": "#8B4513"
+      "mc": "#8B4513",
+      "sh": 5
     },
     {
       "n": "spruce_hanging_sign",
-      "mc": "#8B4513"
+      "mc": "#8B4513",
+      "sh": 29
     },
     {
       "n": "spruce_pressure_plate",
-      "mc": "#8B4513"
+      "mc": "#8B4513",
+      "sh": 10
     },
     {
       "n": "spruce_shelf",
@@ -4323,19 +4626,23 @@
     },
     {
       "n": "spruce_stairs",
-      "mc": "#8B4513"
+      "mc": "#8B4513",
+      "sh": 2
     },
     {
       "n": "spruce_standing_sign",
-      "mc": "#8B4513"
+      "mc": "#8B4513",
+      "sh": 28
     },
     {
       "n": "spruce_trapdoor",
-      "mc": "#8B4513"
+      "mc": "#8B4513",
+      "sh": 8
     },
     {
       "n": "spruce_wall_sign",
-      "mc": "#8B4513"
+      "mc": "#8B4513",
+      "sh": 28
     },
     {
       "n": "stained_glass",
@@ -4473,7 +4780,8 @@
           "n": "yellow_",
           "mc": "#FED83D"
         }
-      ]
+      ],
+      "sh": 20
     },
     {
       "n": "stained_hardened_clay",
@@ -4731,7 +5039,8 @@
     },
     {
       "n": "standing_sign",
-      "mc": "#8B4513"
+      "mc": "#8B4513",
+      "sh": 28
     },
     {
       "n": "sticky_piston",
@@ -4796,7 +5105,8 @@
           "ic": "stone",
           "mc": "#707070"
         }
-      ]
+      ],
+      "sh": 1
     },
     {
       "n": "stone_block_slab",
@@ -4833,7 +5143,8 @@
           "n": "stone_brick_slab",
           "mc": "#707070"
         }
-      ]
+      ],
+      "sh": 3
     },
     {
       "n": "stone_block_slab2",
@@ -4870,7 +5181,8 @@
           "n": "smooth_sandstone_slab",
           "mc": "#F7E9A3"
         }
-      ]
+      ],
+      "sh": 3
     },
     {
       "n": "stone_block_slab3",
@@ -4907,7 +5219,8 @@
           "n": "smooth_red_sandstone_slab",
           "mc": "#D68228"
         }
-      ]
+      ],
+      "sh": 3
     },
     {
       "n": "stone_block_slab4",
@@ -4932,39 +5245,48 @@
           "n": "smooth_quartz_slab",
           "mc": "#F0F0F0"
         }
-      ]
+      ],
+      "sh": 3
     },
     {
       "n": "stone_brick_stairs",
-      "mc": "#707070"
+      "mc": "#707070",
+      "sh": 2
     },
     {
       "n": "stone_button",
-      "mc": "#707070"
+      "mc": "#707070",
+      "sh": 9
     },
     {
       "n": "stone_pressure_plate",
-      "mc": "#707070"
+      "mc": "#707070",
+      "sh": 10
     },
     {
       "n": "stone_slab",
-      "mc": "#707070"
+      "mc": "#707070",
+      "sh": 3
     },
     {
       "n": "stone_slab2",
-      "mc": "#707070"
+      "mc": "#707070",
+      "sh": 3
     },
     {
       "n": "stone_slab3",
-      "mc": "#707070"
+      "mc": "#707070",
+      "sh": 3
     },
     {
       "n": "stone_slab4",
-      "mc": "#707070"
+      "mc": "#707070",
+      "sh": 3
     },
     {
       "n": "stone_stairs",
-      "mc": "#707070"
+      "mc": "#707070",
+      "sh": 2
     },
     {
       "n": "stonebrick",
@@ -4998,7 +5320,8 @@
     },
     {
       "n": "stripped_acacia_log",
-      "mc": "#BA5A37"
+      "mc": "#BA5A37",
+      "sh": 25
     },
     {
       "n": "stripped_bamboo_block",
@@ -5006,11 +5329,13 @@
     },
     {
       "n": "stripped_birch_log",
-      "mc": "#E5D19C"
+      "mc": "#E5D19C",
+      "sh": 25
     },
     {
       "n": "stripped_cherry_log",
-      "mc": "#DE9C94"
+      "mc": "#DE9C94",
+      "sh": 25
     },
     {
       "n": "stripped_cherry_wood",
@@ -5026,15 +5351,18 @@
     },
     {
       "n": "stripped_dark_oak_log",
-      "mc": "#4F2E1A"
+      "mc": "#4F2E1A",
+      "sh": 25
     },
     {
       "n": "stripped_jungle_log",
-      "mc": "#B5966D"
+      "mc": "#B5966D",
+      "sh": 25
     },
     {
       "n": "stripped_mangrove_log",
-      "mc": "#8B2F22"
+      "mc": "#8B2F22",
+      "sh": 25
     },
     {
       "n": "stripped_mangrove_wood",
@@ -5042,11 +5370,13 @@
     },
     {
       "n": "stripped_oak_log",
-      "mc": "#B5966D"
+      "mc": "#B5966D",
+      "sh": 25
     },
     {
       "n": "stripped_pale_oak_log",
-      "mc": "#C7B597"
+      "mc": "#C7B597",
+      "sh": 25
     },
     {
       "n": "stripped_pale_oak_wood",
@@ -5054,7 +5384,8 @@
     },
     {
       "n": "stripped_spruce_log",
-      "mc": "#734E36"
+      "mc": "#734E36",
+      "sh": 25
     },
     {
       "n": "stripped_warped_hyphae",
@@ -5100,7 +5431,8 @@
           "n": "short_grass",
           "mc": "#7CBD6B"
         }
-      ]
+      ],
+      "sh": 21
     },
     {
       "n": "target",
@@ -5199,6 +5531,7 @@
     },
     {
       "n": "tnt",
+      "t": "TNT",
       "variants": [
         {
           "n": "underwater_",
@@ -5209,7 +5542,8 @@
     },
     {
       "n": "torch",
-      "mc": "#8B4513"
+      "mc": "#8B4513",
+      "sh": 11
     },
     {
       "n": "torchflower",
@@ -5217,11 +5551,13 @@
     },
     {
       "n": "torchflower_crop",
-      "mc": "#E1A565"
+      "mc": "#E1A565",
+      "sh": 21
     },
     {
       "n": "trapdoor",
-      "mc": "#976D4D"
+      "mc": "#976D4D",
+      "sh": 8
     },
     {
       "n": "trapped_chest"
@@ -5234,7 +5570,8 @@
     },
     {
       "n": "trapped_chest",
-      "mc": "#976D4D"
+      "mc": "#976D4D",
+      "sh": 31
     },
     {
       "n": "tripwire",
@@ -5255,15 +5592,18 @@
     },
     {
       "n": "tuff_brick_slab",
-      "mc": "#6B6D6B"
+      "mc": "#6B6D6B",
+      "sh": 3
     },
     {
       "n": "tuff_brick_stairs",
-      "mc": "#6B6D6B"
+      "mc": "#6B6D6B",
+      "sh": 2
     },
     {
       "n": "tuff_brick_wall",
-      "mc": "#6B6D6B"
+      "mc": "#6B6D6B",
+      "sh": 6
     },
     {
       "n": "tuff_bricks",
@@ -5275,15 +5615,18 @@
     },
     {
       "n": "tuff_slab",
-      "mc": "#6B6D6B"
+      "mc": "#6B6D6B",
+      "sh": 3
     },
     {
       "n": "tuff_stairs",
-      "mc": "#6B6D6B"
+      "mc": "#6B6D6B",
+      "sh": 2
     },
     {
       "n": "tuff_wall",
-      "mc": "#6B6D6B"
+      "mc": "#6B6D6B",
+      "sh": 6
     },
     {
       "n": "turtle_egg",
@@ -5295,7 +5638,8 @@
     },
     {
       "n": "underwater_torch",
-      "mc": "#4A90E2"
+      "mc": "#4A90E2",
+      "sh": 11
     },
     {
       "n": "undyed_shulker_box",
@@ -5311,7 +5655,8 @@
     },
     {
       "n": "unlit_redstone_torch",
-      "mc": "#FF0000"
+      "mc": "#FF0000",
+      "sh": 11
     },
     {
       "n": "unpowered_comparator",
@@ -5360,7 +5705,8 @@
           "ic": "|",
           "mc": "#707070"
         }
-      ]
+      ],
+      "sh": 6
     },
     {
       "n": "wall_banner",
@@ -5368,15 +5714,18 @@
     },
     {
       "n": "wall_sign",
-      "mc": "#8B4513"
+      "mc": "#8B4513",
+      "sh": 28
     },
     {
       "n": "warped_button",
-      "mc": "#3C5A5A"
+      "mc": "#3C5A5A",
+      "sh": 9
     },
     {
       "n": "warped_door",
-      "mc": "#3C5A5A"
+      "mc": "#3C5A5A",
+      "sh": 7
     },
     {
       "n": "warped_double_slab",
@@ -5384,11 +5733,13 @@
     },
     {
       "n": "warped_fence",
-      "mc": "#3C5A5A"
+      "mc": "#3C5A5A",
+      "sh": 4
     },
     {
       "n": "warped_fence_gate",
-      "mc": "#3C5A5A"
+      "mc": "#3C5A5A",
+      "sh": 5
     },
     {
       "n": "warped_fungus",
@@ -5396,7 +5747,8 @@
     },
     {
       "n": "warped_hanging_sign",
-      "mc": "#3C5A5A"
+      "mc": "#3C5A5A",
+      "sh": 29
     },
     {
       "n": "warped_hyphae",
@@ -5408,7 +5760,8 @@
     },
     {
       "n": "warped_pressure_plate",
-      "mc": "#3C5A5A"
+      "mc": "#3C5A5A",
+      "sh": 10
     },
     {
       "n": "warped_roots",
@@ -5420,15 +5773,18 @@
     },
     {
       "n": "warped_slab",
-      "mc": "#3C5A5A"
+      "mc": "#3C5A5A",
+      "sh": 3
     },
     {
       "n": "warped_stairs",
-      "mc": "#3C5A5A"
+      "mc": "#3C5A5A",
+      "sh": 2
     },
     {
       "n": "warped_standing_sign",
-      "mc": "#3C5A5A"
+      "mc": "#3C5A5A",
+      "sh": 28
     },
     {
       "n": "warped_stem",
@@ -5436,11 +5792,13 @@
     },
     {
       "n": "warped_trapdoor",
-      "mc": "#3C5A5A"
+      "mc": "#3C5A5A",
+      "sh": 8
     },
     {
       "n": "warped_wall_sign",
-      "mc": "#3C5A5A"
+      "mc": "#3C5A5A",
+      "sh": 28
     },
     {
       "n": "warped_wart_block",
@@ -5450,7 +5808,8 @@
       "n": "water",
       "mc": "#4040FF",
       "isOpaque": false,
-      "shape": 1
+      "shape": 1,
+      "sh": 26
     },
     {
       "n": "waterlily",
@@ -5467,7 +5826,8 @@
     },
     {
       "n": "waxed_copper_bars",
-      "mc": "#B05A2F"
+      "mc": "#B05A2F",
+      "sh": 20
     },
     {
       "n": "waxed_copper_bulb",
@@ -5475,7 +5835,8 @@
     },
     {
       "n": "waxed_copper_chain",
-      "mc": "#B05A2F"
+      "mc": "#B05A2F",
+      "sh": 13
     },
     {
       "n": "waxed_copper_chest",
@@ -5483,7 +5844,8 @@
     },
     {
       "n": "waxed_copper_door",
-      "mc": "#B05A2F"
+      "mc": "#B05A2F",
+      "sh": 7
     },
     {
       "n": "waxed_copper_golem_statue",
@@ -5495,11 +5857,13 @@
     },
     {
       "n": "waxed_copper_lantern",
-      "mc": "#B05A2F"
+      "mc": "#B05A2F",
+      "sh": 12
     },
     {
       "n": "waxed_copper_trapdoor",
-      "mc": "#B05A2F"
+      "mc": "#B05A2F",
+      "sh": 8
     },
     {
       "n": "waxed_cut_copper",
@@ -5507,11 +5871,13 @@
     },
     {
       "n": "waxed_cut_copper_slab",
-      "mc": "#B05A2F"
+      "mc": "#B05A2F",
+      "sh": 3
     },
     {
       "n": "waxed_cut_copper_stairs",
-      "mc": "#B05A2F"
+      "mc": "#B05A2F",
+      "sh": 2
     },
     {
       "n": "waxed_double_cut_copper_slab",
@@ -5527,7 +5893,8 @@
     },
     {
       "n": "waxed_exposed_copper_bars",
-      "mc": "#A57C4A"
+      "mc": "#A57C4A",
+      "sh": 20
     },
     {
       "n": "waxed_exposed_copper_bulb",
@@ -5535,7 +5902,8 @@
     },
     {
       "n": "waxed_exposed_copper_chain",
-      "mc": "#A57C4A"
+      "mc": "#A57C4A",
+      "sh": 13
     },
     {
       "n": "waxed_exposed_copper_chest",
@@ -5543,7 +5911,8 @@
     },
     {
       "n": "waxed_exposed_copper_door",
-      "mc": "#A57C4A"
+      "mc": "#A57C4A",
+      "sh": 7
     },
     {
       "n": "waxed_exposed_copper_golem_statue",
@@ -5555,11 +5924,13 @@
     },
     {
       "n": "waxed_exposed_copper_lantern",
-      "mc": "#A57C4A"
+      "mc": "#A57C4A",
+      "sh": 12
     },
     {
       "n": "waxed_exposed_copper_trapdoor",
-      "mc": "#A57C4A"
+      "mc": "#A57C4A",
+      "sh": 8
     },
     {
       "n": "waxed_exposed_cut_copper",
@@ -5567,11 +5938,13 @@
     },
     {
       "n": "waxed_exposed_cut_copper_slab",
-      "mc": "#A57C4A"
+      "mc": "#A57C4A",
+      "sh": 3
     },
     {
       "n": "waxed_exposed_cut_copper_stairs",
-      "mc": "#A57C4A"
+      "mc": "#A57C4A",
+      "sh": 2
     },
     {
       "n": "waxed_exposed_double_cut_copper_slab",
@@ -5579,11 +5952,13 @@
     },
     {
       "n": "waxed_exposed_lightning_rod",
-      "mc": "#A57C4A"
+      "mc": "#A57C4A",
+      "sh": 19
     },
     {
       "n": "waxed_lightning_rod",
-      "mc": "#B05A2F"
+      "mc": "#B05A2F",
+      "sh": 19
     },
     {
       "n": "waxed_oxidized_chiseled_copper",
@@ -5595,7 +5970,8 @@
     },
     {
       "n": "waxed_oxidized_copper_bars",
-      "mc": "#52A060"
+      "mc": "#52A060",
+      "sh": 20
     },
     {
       "n": "waxed_oxidized_copper_bulb",
@@ -5603,7 +5979,8 @@
     },
     {
       "n": "waxed_oxidized_copper_chain",
-      "mc": "#52A060"
+      "mc": "#52A060",
+      "sh": 13
     },
     {
       "n": "waxed_oxidized_copper_chest",
@@ -5611,7 +5988,8 @@
     },
     {
       "n": "waxed_oxidized_copper_door",
-      "mc": "#52A060"
+      "mc": "#52A060",
+      "sh": 7
     },
     {
       "n": "waxed_oxidized_copper_golem_statue",
@@ -5623,11 +6001,13 @@
     },
     {
       "n": "waxed_oxidized_copper_lantern",
-      "mc": "#52A060"
+      "mc": "#52A060",
+      "sh": 12
     },
     {
       "n": "waxed_oxidized_copper_trapdoor",
-      "mc": "#52A060"
+      "mc": "#52A060",
+      "sh": 8
     },
     {
       "n": "waxed_oxidized_cut_copper",
@@ -5635,11 +6015,13 @@
     },
     {
       "n": "waxed_oxidized_cut_copper_slab",
-      "mc": "#52A060"
+      "mc": "#52A060",
+      "sh": 3
     },
     {
       "n": "waxed_oxidized_cut_copper_stairs",
-      "mc": "#52A060"
+      "mc": "#52A060",
+      "sh": 2
     },
     {
       "n": "waxed_oxidized_double_cut_copper_slab",
@@ -5647,7 +6029,8 @@
     },
     {
       "n": "waxed_oxidized_lightning_rod",
-      "mc": "#52A060"
+      "mc": "#52A060",
+      "sh": 19
     },
     {
       "n": "waxed_weathered_chiseled_copper",
@@ -5659,7 +6042,8 @@
     },
     {
       "n": "waxed_weathered_copper_bars",
-      "mc": "#7F9C64"
+      "mc": "#7F9C64",
+      "sh": 20
     },
     {
       "n": "waxed_weathered_copper_bulb",
@@ -5667,7 +6051,8 @@
     },
     {
       "n": "waxed_weathered_copper_chain",
-      "mc": "#7F9C64"
+      "mc": "#7F9C64",
+      "sh": 13
     },
     {
       "n": "waxed_weathered_copper_chest",
@@ -5675,7 +6060,8 @@
     },
     {
       "n": "waxed_weathered_copper_door",
-      "mc": "#7F9C64"
+      "mc": "#7F9C64",
+      "sh": 7
     },
     {
       "n": "waxed_weathered_copper_golem_statue",
@@ -5687,11 +6073,13 @@
     },
     {
       "n": "waxed_weathered_copper_lantern",
-      "mc": "#7F9C64"
+      "mc": "#7F9C64",
+      "sh": 12
     },
     {
       "n": "waxed_weathered_copper_trapdoor",
-      "mc": "#7F9C64"
+      "mc": "#7F9C64",
+      "sh": 8
     },
     {
       "n": "waxed_weathered_cut_copper",
@@ -5699,11 +6087,13 @@
     },
     {
       "n": "waxed_weathered_cut_copper_slab",
-      "mc": "#7F9C64"
+      "mc": "#7F9C64",
+      "sh": 3
     },
     {
       "n": "waxed_weathered_cut_copper_stairs",
-      "mc": "#7F9C64"
+      "mc": "#7F9C64",
+      "sh": 2
     },
     {
       "n": "waxed_weathered_double_cut_copper_slab",
@@ -5711,7 +6101,8 @@
     },
     {
       "n": "waxed_weathered_lightning_rod",
-      "mc": "#7F9C64"
+      "mc": "#7F9C64",
+      "sh": 19
     },
     {
       "n": "weathered_chiseled_copper",
@@ -5723,7 +6114,8 @@
     },
     {
       "n": "weathered_copper_bars",
-      "mc": "#7F9C64"
+      "mc": "#7F9C64",
+      "sh": 20
     },
     {
       "n": "weathered_copper_bulb",
@@ -5731,7 +6123,8 @@
     },
     {
       "n": "weathered_copper_chain",
-      "mc": "#7F9C64"
+      "mc": "#7F9C64",
+      "sh": 13
     },
     {
       "n": "weathered_copper_chest",
@@ -5739,7 +6132,8 @@
     },
     {
       "n": "weathered_copper_door",
-      "mc": "#7F9C64"
+      "mc": "#7F9C64",
+      "sh": 7
     },
     {
       "n": "weathered_copper_golem_statue",
@@ -5751,11 +6145,13 @@
     },
     {
       "n": "weathered_copper_lantern",
-      "mc": "#7F9C64"
+      "mc": "#7F9C64",
+      "sh": 12
     },
     {
       "n": "weathered_copper_trapdoor",
-      "mc": "#7F9C64"
+      "mc": "#7F9C64",
+      "sh": 8
     },
     {
       "n": "weathered_cut_copper",
@@ -5763,11 +6159,13 @@
     },
     {
       "n": "weathered_cut_copper_slab",
-      "mc": "#7F9C64"
+      "mc": "#7F9C64",
+      "sh": 3
     },
     {
       "n": "weathered_cut_copper_stairs",
-      "mc": "#7F9C64"
+      "mc": "#7F9C64",
+      "sh": 2
     },
     {
       "n": "weathered_double_cut_copper_slab",
@@ -5775,7 +6173,8 @@
     },
     {
       "n": "weathered_lightning_rod",
-      "mc": "#7F9C64"
+      "mc": "#7F9C64",
+      "sh": 19
     },
     {
       "n": "web",
@@ -5788,15 +6187,18 @@
     },
     {
       "n": "wheat",
-      "mc": "#D4B25A"
+      "mc": "#D4B25A",
+      "sh": 23
     },
     {
       "n": "white_candle",
-      "mc": "#F9FFFE"
+      "mc": "#F9FFFE",
+      "sh": 18
     },
     {
       "n": "white_candle_cake",
-      "mc": "#F9FFFE"
+      "mc": "#F9FFFE",
+      "sh": 18
     },
     {
       "n": "white_glazed_terracotta",
@@ -5804,11 +6206,13 @@
     },
     {
       "n": "wildflowers",
-      "mc": "#7CBD6B"
+      "mc": "#7CBD6B",
+      "sh": 21
     },
     {
       "n": "wither_rose",
-      "mc": "#2D1B22"
+      "mc": "#2D1B22",
+      "sh": 21
     },
     {
       "n": "wither_skeleton_skull",
@@ -5867,11 +6271,13 @@
           "n": "stripped_spruce_",
           "mc": "#734E36"
         }
-      ]
+      ],
+      "sh": 1
     },
     {
       "n": "wooden_button",
-      "mc": "#976D4D"
+      "mc": "#976D4D",
+      "sh": 9
     },
     {
       "n": "wooden_door",
@@ -5910,11 +6316,13 @@
           "n": "warped_door",
           "mc": "#3C5A5A"
         }
-      ]
+      ],
+      "sh": 7
     },
     {
       "n": "wooden_pressure_plate",
-      "mc": "#976D4D"
+      "mc": "#976D4D",
+      "sh": 10
     },
     {
       "n": "wooden_slab",
@@ -5943,7 +6351,8 @@
           "n": "spruce_slab",
           "mc": "#734E36"
         }
-      ]
+      ],
+      "sh": 3
     },
     {
       "n": "wool",
@@ -6017,11 +6426,13 @@
     },
     {
       "n": "yellow_candle",
-      "mc": "#FED83D"
+      "mc": "#FED83D",
+      "sh": 18
     },
     {
       "n": "yellow_candle_cake",
-      "mc": "#FED83D"
+      "mc": "#FED83D",
+      "sh": 18
     },
     {
       "n": "yellow_glazed_terracotta",

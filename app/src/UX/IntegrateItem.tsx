@@ -10,6 +10,9 @@ import FileExplorer, { FileExplorerMode } from "./FileExplorer";
 import Log from "../core/Log";
 import ProjectItem from "../app/ProjectItem";
 import ProjectEditorUtilities from "./ProjectEditorUtilities";
+import Database from "../minecraft/Database";
+import ContentIndex from "../core/ContentIndex";
+import StorageUtilities from "../storage/StorageUtilities";
 
 interface IIntegrateItemProps extends IAppProps {
   project: Project;
@@ -23,6 +26,7 @@ interface IIntegrateItemState {
   name?: string;
   rootFolder?: IFolder;
   selectedFolder?: IFolder;
+  vanillaContentIndex?: ContentIndex;
   selectedItem?: ProjectItem;
   action?: ProjectItemSeedAction;
   fileContent?: string | Uint8Array | undefined;
@@ -107,11 +111,14 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
       folder = this.props.project.projectFolder;
     }
 
+    await Database.loadPreviewVanillaInfoData();
+
     if (folder) {
       this.setState({
         name: this.state.name,
         nameIsManuallySet: this.state.nameIsManuallySet,
         selectedItem: this.state.selectedItem,
+        vanillaContentIndex: Database.previewVanillaContentIndex || undefined,
         rootFolder: folder,
         selectedFolder: folder,
       });
@@ -133,6 +140,9 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
       case "addNewFile":
         newAction = ProjectItemSeedAction.fileOrFolder;
         break;
+      case "overwriteVanillaPath":
+        newAction = ProjectItemSeedAction.overrwriteVanillaPath;
+        break;
       default:
         newAction = ProjectItemSeedAction.overwriteFile;
     }
@@ -151,12 +161,18 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
       }
     }
 
+    let replacePath: string | undefined = undefined;
+    if (data.value && typeof data.value === "string" && data.value.startsWith("overwriteVanillaPath.")) {
+      replacePath = data.value.substring(21);
+    }
+
     if (this.props.onDialogDataChange) {
       this.props.onDialogDataChange({
         name: this.state.name,
         itemType: this.props.data.itemType,
         folder: this.state.selectedFolder,
         fileSource: this.props.data.fileSource,
+        replacePath: replacePath,
         action: newAction,
         targetedItem: newSelectedItem,
       });
@@ -191,13 +207,30 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
           }
         }
       }
+
+      if (Database.previewVanillaContentIndex) {
+        const pathMatches = Database.previewVanillaContentIndex.getPathMatches(
+          StorageUtilities.ensureStartsWithDelimiter(this.props.data.fileSource.name)
+        );
+
+        if (pathMatches) {
+          for (const pathMatch of pathMatches) {
+            items.push({
+              name: "overwriteVanillaPath." + pathMatch,
+              key: "overwriteVanillaPath." + pathMatch,
+              value: "overwriteVanillaPath." + pathMatch,
+              label: "Override vanilla file at " + pathMatch,
+            });
+          }
+        }
+      }
     }
 
     return items;
   }
 
   render() {
-    if (this.state === null) {
+    if (this.state === null || this.state.vanillaContentIndex === undefined) {
       return <div>Loading...</div>;
     }
 
@@ -250,6 +283,7 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
     if (this.state.action === ProjectItemSeedAction.fileOrFolder) {
       selectedOption = integrateOptions[integrateOptions.length - 1];
     } else if (this.state.action === ProjectItemSeedAction.overwriteFile) {
+    } else if (this.state.action === ProjectItemSeedAction.overrwriteVanillaPath) {
     }
 
     if (this.state.action === ProjectItemSeedAction.fileOrFolder) {

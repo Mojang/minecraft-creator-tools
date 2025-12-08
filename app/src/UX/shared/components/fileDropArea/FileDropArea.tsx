@@ -33,15 +33,44 @@ export default function FileDropArea({ children, onFileDrop }: FileDropAreaProps
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      sx={{
-        border: "2px dashed",
-        borderColor: isDragging ? "primary.main" : "grey.400",
-        borderRadius: 2,
-        p: 1,
-        textAlign: "center",
-        bgcolor: isDragging ? "action.hover" : "background.paper",
-        transition: "all 0.2s ease-in-out",
-        // cursor: "pointer",
+      sx={(theme) => {
+        const isDark = theme.palette.mode === "dark";
+        return {
+          border: "3px dashed",
+          borderColor: isDragging
+            ? isDark
+              ? "#5cff5c"
+              : "#2e7d32"
+            : isDark
+            ? "rgba(255,255,255,0.3)"
+            : "rgba(0,0,0,0.2)",
+          borderRadius: 1,
+          p: 2,
+          textAlign: "center",
+          bgcolor: isDragging
+            ? isDark
+              ? "rgba(92, 255, 92, 0.1)"
+              : "rgba(46, 125, 50, 0.1)"
+            : isDark
+            ? "rgba(0,0,0,0.2)"
+            : "rgba(0,0,0,0.03)",
+          transition: "all 0.15s ease-in-out",
+          cursor: "pointer",
+          imageRendering: "pixelated",
+          backgroundImage: isDragging
+            ? "none"
+            : `repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                ${isDark ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.01)"} 2px,
+                ${isDark ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.01)"} 4px
+              )`,
+          "&:hover": {
+            borderColor: isDark ? "#5cff5c" : "#2e7d32",
+            bgcolor: isDark ? "rgba(92, 255, 92, 0.05)" : "rgba(46, 125, 50, 0.05)",
+          },
+        };
       }}
     >
       {children}

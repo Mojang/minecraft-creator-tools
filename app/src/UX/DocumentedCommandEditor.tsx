@@ -3,7 +3,7 @@ import IFileProps from "./IFileProps";
 import IFile from "../storage/IFile";
 import "./DocumentedCommandEditor.css";
 import DocumentedCommand from "../minecraft/docs/DocumentedCommand";
-import DataForm, { IDataFormProps } from "../dataform/DataForm";
+import DataForm, { IDataFormProps } from "../dataformux/DataForm";
 import Database from "../minecraft/Database";
 import Project from "../app/Project";
 import { ThemeInput } from "@fluentui/react-northstar";

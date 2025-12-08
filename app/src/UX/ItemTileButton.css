@@ -1,54 +1,85 @@
 .itbi-button {
-  border: solid 1.5px #202020;
-  max-width: calc(100vw - 45px);
+  border: none;
+  width: 100%;
+  max-width: 100%;
 }
 
 .itbi-outer {
-  width: 250px;
-  height: 90px !important;
-  padding: 6px !important;
+  width: 100%;
+  height: 56px !important;
+  padding: 4px !important;
   background-color: transparent !important;
-  display: inline-block;
+  display: block;
   box-shadow: none !important;
+  box-sizing: border-box;
 }
 
 .itbi-outer-selected {
-  background-color: green !important;
+  background-color: transparent !important;
+}
+
+.itbi-outer-selected .itbi-grid {
+  border-color: #52a535 !important;
+  background: rgba(82, 165, 53, 0.25) !important;
 }
 
 .itbi-grid:active {
-  border: inset 4px #848586;
+  transform: scale(0.98);
 }
 
 .itbi-grid {
-  display: grid;
-  border: outset 4px #848586;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: 2px solid;
+  border-radius: 4px;
+  width: 100%;
   height: 100%;
   cursor: pointer;
-  grid-template-columns: 63px 1fr;
+  transition: all 0.12s ease;
+  box-sizing: border-box;
+  gap: 6px;
+  padding: 4px 8px 4px 4px;
+  overflow: hidden;
+}
+
+.itbi-grid:hover {
+  opacity: 0.85;
 }
 
 .itbi-mainArea {
-  grid-row: 1;
-  grid-column: 2;
-  padding: 4px;
-  padding-top: 7px;
-  vertical-align: middle;
-  word-wrap: break-word;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  min-width: 0;
 }
 
 .itbi-title {
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 0.8rem;
   text-align: left;
   text-overflow: ellipsis;
   overflow: hidden;
-  width: 150px;
-  padding-left: 3px;
-  height: 36px;
-  max-width: 150px;
+  white-space: nowrap;
+  width: 100%;
 }
 
 .itbi-iconArea {
-  grid-column: 1;
-  margin: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.itbi-iconArea img {
+  image-rendering: pixelated;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
 }

@@ -13,6 +13,7 @@ import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
 import IMinecraft from "./IMinecraft";
 import CreatorToolsCommands from "./CreatorToolsCommands";
+import { DeploymentTargetType } from "./DeploymentTarget";
 
 export enum CreatorToolsThemeStyle {
   dark = 0,
@@ -37,17 +38,43 @@ export enum HostType {
 export default class CreatorToolsHost {
   private static _creatorTools?: CreatorTools;
   private static _onInitialized = new EventDispatcher<CreatorTools, CreatorTools>();
+  private static _onThemeChanged = new EventDispatcher<CreatorToolsHost, CreatorToolsThemeStyle>();
   private static _initializing = false;
   private static _initialized = false;
   public static isLocalNode = false;
   public static fullLocalStorage = false;
   public static hostType = HostType.web;
   public static hostManager?: any = undefined;
-  public static theme: CreatorToolsThemeStyle = CreatorToolsThemeStyle.dark;
+  private static _theme: CreatorToolsThemeStyle = CreatorToolsThemeStyle.dark;
   public static contentRoot = "";
   public static projectPath = "";
   public static focusPath: string | undefined = undefined;
   public static baseUrl = "";
+
+  /**
+   * Gets the current theme style
+   */
+  public static get theme(): CreatorToolsThemeStyle {
+    return this._theme;
+  }
+
+  /**
+   * Sets the theme style and notifies listeners
+   */
+  public static set theme(value: CreatorToolsThemeStyle) {
+    if (this._theme !== value) {
+      this._theme = value;
+      this._onThemeChanged.dispatch(CreatorToolsHost, value);
+    }
+  }
+
+  /**
+   * Event fired when theme changes. Use this to update FluentUI components
+   * that are initialized outside of React's render cycle.
+   */
+  public static get onThemeChanged() {
+    return this._onThemeChanged.asEvent();
+  }
 
   public static initialMode: string | null = null;
   public static modeParameter: string | null = null;
@@ -56,8 +83,7 @@ export default class CreatorToolsHost {
 
   public static prefsStorage: IStorage | null = null;
   public static projectsStorage: IStorage | null = null;
-  public static deploymentStorage: IStorage | null = null;
-  public static previewDeploymentStorage: IStorage | null = null;
+  public static deploymentStorage: IStorage[] = [];
   public static worldStorage: IStorage | null = null;
   public static packStorage: IStorage | null = null;
   public static workingStorage: IStorage | null = null;
@@ -112,7 +138,11 @@ export default class CreatorToolsHost {
     return CreatorToolsHost._onInitialized.asEvent();
   }
 
-  public static get creatorTools(): CreatorTools | undefined {
+  public static getCreatorTools(): CreatorTools | undefined {
+    if (!this._initialized) {
+      this.init();
+    }
+
     return CreatorToolsHost._creatorTools;
   }
 
@@ -186,18 +216,25 @@ export default class CreatorToolsHost {
     CreatorToolsCommands.registerCommonCommands();
 
     CreatorToolsHost.generateCryptoRandomNumber = (toVal) => {
-      if (!CreatorToolsHost.creatorTools || !CreatorToolsHost.creatorTools.local) {
+      const ct = CreatorToolsHost.getCreatorTools();
+
+      if (!ct || !ct.local) {
         throw new Error("Could not generate key.");
       }
 
-      return CreatorToolsHost.creatorTools.local.generateCryptoRandomNumber(toVal);
+      return ct.local.generateCryptoRandomNumber(toVal);
     };
 
     // @ts-ignore
     if (typeof window !== "undefined") {
       CreatorToolsHost.generateCryptoRandomNumber = (toVal) => {
         // @ts-ignore
-        return window.crypto.getRandomValues(new Uint32Array(1))[0] % 16;
+        if (window && window.crypto) {
+          // @ts-ignore
+          return window.crypto.getRandomValues(new Uint32Array(1))[0] % 16;
+        }
+
+        return Math.floor(Math.random() * toVal);
       };
     }
 
@@ -207,7 +244,7 @@ export default class CreatorToolsHost {
       CreatorToolsHost.prefsStorage = new BrowserStorage("mctprefs");
       CreatorToolsHost.projectsStorage = new BrowserStorage("mctprojects");
 
-      CreatorToolsHost.deploymentStorage = new BrowserStorage("mctdeploy");
+      CreatorToolsHost.deploymentStorage[DeploymentTargetType.bedrock] = new BrowserStorage("mctdeploy");
       CreatorToolsHost.workingStorage = new BrowserStorage("mctworking");
       CreatorToolsHost.worldStorage = new BrowserStorage("mctworlds");
       CreatorToolsHost.packStorage = new BrowserStorage("mctpacks");
@@ -221,7 +258,6 @@ export default class CreatorToolsHost {
       CreatorToolsHost.prefsStorage,
       CreatorToolsHost.projectsStorage,
       CreatorToolsHost.deploymentStorage,
-      CreatorToolsHost.previewDeploymentStorage,
       CreatorToolsHost.worldStorage,
       CreatorToolsHost.packStorage,
       CreatorToolsHost.workingStorage,
