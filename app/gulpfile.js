@@ -293,7 +293,7 @@ function copyEsbuildWasmDist() {
 }
 
 function copyJsNodeDocs() {
-  return gulp.src(["../CHANGELOG.md", "../NOTICE.md", "../LICENSE.md"]).pipe(gulp.dest("toolbuild/jsn/"));
+  return gulp.src(["../CHANGELOG.md", "../NOTICE.md"]).pipe(gulp.dest("toolbuild/jsn/"));
 }
 
 function copyVscRes() {
