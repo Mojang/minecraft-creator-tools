@@ -101,6 +101,13 @@ export default interface MinecraftLiquidDetection {
    */
   stops_liquid_flowing_from_direction?: string[];
 
+  /**
+   * @remarks
+   * Whether this block uses the collider to visually clip the
+   * liquid.
+   */
+  use_liquid_clipping?: boolean;
+
 }
 
 

@@ -172,11 +172,6 @@ export default class ClUtils {
       ""
     );
 
-    CreatorToolsHost.deploymentStorage = new NodeStorage(
-      localEnv.utilities.cliWorkingPath + "deployment" + NodeStorage.platformFolderDelimiter,
-      ""
-    );
-
     CreatorToolsHost.workingStorage = new NodeStorage(
       localEnv.utilities.cliWorkingPath + "working" + NodeStorage.platformFolderDelimiter,
       ""
@@ -184,7 +179,6 @@ export default class ClUtils {
 
     if (localEnv.utilities && basePath) {
       (localEnv.utilities as LocalUtilities).basePathAdjust = basePath;
-      CreatorToolsHost.fullLocalStorage = true;
     }
 
     const coreStorage = new NodeStorage(__dirname + "/../data/content/", "");
@@ -194,10 +188,12 @@ export default class ClUtils {
 
     CreatorToolsHost.init();
 
-    if (CreatorToolsHost.creatorTools) {
-      CreatorToolsHost.creatorTools.local = localEnv.utilities;
+    const ct = CreatorToolsHost.getCreatorTools();
+
+    if (ct) {
+      ct.local = localEnv.utilities;
     }
 
-    return CreatorToolsHost.creatorTools;
+    return ct;
   }
 }

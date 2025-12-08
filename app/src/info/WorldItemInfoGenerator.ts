@@ -57,7 +57,7 @@ export default class WorldItemInfoGenerator implements IProjectInfoItemGenerator
         return items;
       }
 
-      await mcworld.load(false);
+      await mcworld.loadMetaFiles(false);
 
       items.push(
         new ProjectInfoItem(

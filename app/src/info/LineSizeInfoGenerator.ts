@@ -62,7 +62,11 @@ export default class LineSizeInfoGenerator implements IProjectInfoGenerator {
       }
 
       if (pi.storageType === ProjectItemStorageType.singleFile) {
-        let file = await pi.loadFileContent();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
+
+        const file = pi.primaryFile;
 
         if (file) {
           if (!file.isContentLoaded) {

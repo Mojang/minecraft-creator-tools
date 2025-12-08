@@ -123,6 +123,7 @@ export default class Log {
 
   static debug(message: string, context?: string) {
     this.log(message, LogItemLevel.debug, context);
+    console.warn(message);
   }
 
   static assertIsInt(number: number, message?: string) {
@@ -138,6 +139,12 @@ export default class Log {
       throw new Error();
     } catch (e: any) {
       stack = e.stack ? e.stack : "";
+    }
+
+    const startOfLog = stack.lastIndexOf("\n    at Log.");
+
+    if (startOfLog >= 0) {
+      stack = stack.substring(startOfLog);
     }
 
     return stack;

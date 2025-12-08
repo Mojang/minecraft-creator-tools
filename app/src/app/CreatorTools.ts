@@ -42,6 +42,7 @@ import IGalleryItem, { GalleryItemType } from "./IGalleryItem";
 import ProjectUtilities from "./ProjectUtilities";
 import Storage from "../storage/Storage";
 import Database from "../minecraft/Database";
+import DeploymentTarget, { DeploymentTargetType, MaxDeploymentTargets } from "./DeploymentTarget";
 
 export enum CreatorToolsMinecraftState {
   none = 0,
@@ -74,7 +75,7 @@ export enum CreatorToolsMinecraftErrorStatus {
   configuration = 6,
 }
 
-export const CartoTargetStrings = [
+export const CreatorToolsTargetSettings = [
   "Latest Minecraft Bedrock",
   "Latest Minecraft Bedrock preview",
   "Latest Minecraft Education",
@@ -101,20 +102,18 @@ export default class CreatorTools {
 
   prefsStorage: IStorage;
   projectsStorage: IStorage;
-  deploymentStorage: IStorage | null;
-  previewDeploymentStorage: IStorage | null;
+  deploymentStorage: IStorage[];
   worldStorage: IStorage | null;
   packStorage: IStorage | null;
   workingStorage: IStorage | null;
+
+  deploymentTargets: DeploymentTarget[] = [];
 
   localFolderExists: ((path: string) => Promise<boolean>) | undefined;
   localFileExists: ((path: string) => Promise<boolean>) | undefined;
   ensureLocalFolder: ((path: string) => IFolder) | undefined;
   createMinecraft: ((flavor: MinecraftFlavor, creatorTools: CreatorTools) => IMinecraft | undefined) | undefined;
   canCreateMinecraft: ((flavor: MinecraftFlavor) => boolean) | undefined;
-
-  private _deployBehaviorPacksFolder: IFolder | null;
-  private _deployResourcePacksFolder: IFolder | null;
 
   private _pendingPackLoadRequests: ((value: unknown) => void)[] = [];
   private _arePacksLoading: boolean = false;
@@ -131,7 +130,7 @@ export default class CreatorTools {
 
   _gallery?: IGallery;
   _galleryLoaded: boolean = false;
-  isDeployingToComMojang: boolean = false;
+  isDeployingToMinecraft: boolean = false;
 
   hasAttemptedPersistentBrowserStorageSwitch: boolean = false;
 
@@ -144,6 +143,24 @@ export default class CreatorTools {
   private _onOperationCompleted = new EventDispatcher<CreatorTools, number>();
   private _onStatusAddedAsync: ((creatorTools: CreatorTools, status: IStatus) => Promise<void>)[] = [];
   private _onGalleryLoaded = new EventDispatcher<CreatorTools, IGallery | undefined>();
+
+  public get defaultDeploymentTargetType() {
+    if (this.#data.defaultDeploymentTarget !== undefined) {
+      return this.#data.defaultDeploymentTarget;
+    }
+
+    for (let i = 0; i < MaxDeploymentTargets; i++) {
+      if (this.deploymentStorage[i]) {
+        return i;
+      }
+    }
+
+    return DeploymentTargetType.bedrock;
+  }
+
+  public set defaultDeploymentTargetType(newType: DeploymentTargetType) {
+    this.#data.defaultDeploymentTarget = newType;
+  }
 
   public get isLoaded() {
     return this._isLoaded;
@@ -159,6 +176,14 @@ export default class CreatorTools {
 
   public get data() {
     return this.#data;
+  }
+
+  public get defaultDeploymentStorage() {
+    return this.deploymentStorage[this.defaultDeploymentTargetType];
+  }
+
+  public get defaultDeploymentTarget() {
+    return this.getDeploymentTarget(this.defaultDeploymentTargetType);
   }
 
   public set collapsedTypes(newCollapsedTypes: number[]) {
@@ -639,19 +664,10 @@ export default class CreatorTools {
     return this.prefsStorage.rootFolder.ensureFolder("projects");
   }
 
-  get deployBehaviorPacksFolder(): IFolder | null {
-    return this._deployBehaviorPacksFolder;
-  }
-
-  get deployResourcePacksFolder(): IFolder | null {
-    return this._deployResourcePacksFolder;
-  }
-
   constructor(
     settingsStorage: IStorage,
     projectsStorage: IStorage,
-    deploymentsStorage: IStorage | null,
-    previewDeploymentsStorage: IStorage | null,
+    deploymentsStorage: IStorage[],
     worldStorage: IStorage | null,
     packStorage: IStorage | null,
     workingStorage: IStorage | null,
@@ -660,13 +676,9 @@ export default class CreatorTools {
     this.prefsStorage = settingsStorage;
     this.projectsStorage = projectsStorage;
     this.deploymentStorage = deploymentsStorage;
-    this.previewDeploymentStorage = previewDeploymentsStorage;
     this.packStorage = packStorage;
     this.worldStorage = worldStorage;
     this.workingStorage = workingStorage;
-
-    this._deployBehaviorPacksFolder = null;
-    this._deployResourcePacksFolder = null;
 
     if (contentRoot) {
       this.contentRoot = contentRoot;
@@ -697,22 +709,6 @@ export default class CreatorTools {
     this.projects = [];
     this.status = [];
     this.activeOperations = [];
-
-    this.updateDeploymentStorage(deploymentsStorage);
-  }
-
-  public updateDeploymentStorage(deploymentStorage: IStorage | null) {
-    this.deploymentStorage = deploymentStorage;
-
-    if (this.deploymentStorage != null) {
-      this._deployBehaviorPacksFolder = this.deploymentStorage.rootFolder.ensureFolder("development_behavior_packs");
-      this._deployResourcePacksFolder = this.deploymentStorage.rootFolder.ensureFolder("development_resource_packs");
-    } else {
-      this._deployBehaviorPacksFolder = null;
-      this._deployResourcePacksFolder = null;
-    }
-
-    this._onDeploymentStorageChanged.dispatch(this, deploymentStorage);
   }
 
   public initializeWorldSettings() {
@@ -729,6 +725,18 @@ export default class CreatorTools {
 
       this.ensureDefaultWorldName();
     }
+  }
+
+  public getDeploymentTarget(target: DeploymentTargetType): DeploymentTarget | undefined {
+    let dt = this.deploymentTargets[target];
+
+    if (!dt && this.deploymentStorage[target]) {
+      dt = new DeploymentTarget(this.deploymentStorage[target], target);
+
+      this.deploymentTargets[target] = dt;
+    }
+
+    return dt;
   }
 
   private ensureDefaultWorldName() {
@@ -1899,12 +1907,13 @@ export default class CreatorTools {
       ) {
         this.ensureRemoteMinecraft();
 
+        const ct = CreatorToolsHost.getCreatorTools();
         if (
           this.remoteMinecraft &&
           CreatorToolsHost.hostType === HostType.web &&
-          CreatorToolsHost.creatorTools &&
-          CreatorToolsHost.creatorTools.remoteServerUrl &&
-          CreatorToolsHost.creatorTools.remoteServerUrl.length > 4
+          ct &&
+          ct.remoteServerUrl &&
+          ct.remoteServerUrl.length > 4
         ) {
           this.remoteMinecraft.initialize();
 

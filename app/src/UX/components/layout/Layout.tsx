@@ -1,8 +1,9 @@
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { AppBar, Box, CssBaseline, ThemeProvider } from "@mui/material";
 import { useTheme } from "../../hooks/theme/UseTheme";
 import HeroBanner from "./HeroBanner";
 import Footer from "./Footer";
+import { AppMode } from "../../App";
 import HomeHeader from "../../HomeHeader";
 
 interface LayoutProps {

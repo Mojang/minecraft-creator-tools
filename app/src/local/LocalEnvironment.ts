@@ -145,6 +145,16 @@ export default class LocalEnvironment {
     }
   }
 
+  public get allowedCorsOrigins() {
+    return this.#data.allowedCorsOrigins;
+  }
+
+  public set allowedCorsOrigins(newOrigins: string[] | undefined) {
+    if (newOrigins !== this.#data.allowedCorsOrigins) {
+      this.#data.allowedCorsOrigins = newOrigins;
+    }
+  }
+
   get tokenEncryptionKey() {
     if (this._inmemTokenEncryptionPassword === undefined) {
       this._inmemTokenEncryptionPassword = this.generateRandomTokenPassword();
@@ -161,7 +171,7 @@ export default class LocalEnvironment {
     return this._inmemDisplayReadOnlyPasscodeComplement; //this.#data.displayReadOnlyPasscodeComplement;
   }
 
-  set displayReadOnlyPasscode(newPasscode: string | undefined) {
+  setDisplayReadOnlyPasscodeAndRandomizeComplement(newPasscode: string | undefined) {
     if (newPasscode === undefined) {
       throw new Error();
     }
@@ -187,7 +197,7 @@ export default class LocalEnvironment {
     return this._inmemFullReadOnlyPasscodeComplement;
   }
 
-  set fullReadOnlyPasscode(newPasscode: string | undefined) {
+  setFullReadOnlyPasscodeAndRandomizeComplement(newPasscode: string | undefined) {
     if (newPasscode === undefined) {
       throw new Error();
     }
@@ -211,7 +221,7 @@ export default class LocalEnvironment {
     return this._inmemUpdateStatePasscodeComplement;
   }
 
-  set updateStatePasscode(newPasscode: string | undefined) {
+  setUpdateStatePasscodeAndRandomizeComplement(newPasscode: string | undefined) {
     if (newPasscode === undefined) {
       throw new Error();
     }
@@ -230,11 +240,12 @@ export default class LocalEnvironment {
   get adminPasscode() {
     return this._inmemAdminPasscode;
   }
+
   get adminPasscodeComplement() {
     return this._inmemAdminPasscodeComplement;
   }
 
-  set adminPasscode(newPasscode: string | undefined) {
+  setAdminPasscodeAndRandomizeComplement(newPasscode: string | undefined) {
     if (newPasscode === undefined) {
       throw new Error();
     }
@@ -249,6 +260,7 @@ export default class LocalEnvironment {
     this._inmemAdminPasscode = newPasscode;
     this._inmemAdminPasscodeComplement = this.generateRandomPasscode();
   }
+
   get iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula() {
     return this.#data.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula;
   }
@@ -391,19 +403,19 @@ export default class LocalEnvironment {
       this._inmemDisplayReadOnlyPasscode === undefined ||
       this._inmemDisplayReadOnlyPasscodeComplement === undefined
     ) {
-      this._inmemDisplayReadOnlyPasscode = this.generateRandomPasscode();
+      this.setDisplayReadOnlyPasscodeAndRandomizeComplement(this.generateRandomPasscode());
     }
 
-    if (this._inmemAdminPasscodeComplement === undefined || this._inmemAdminPasscodeComplement === undefined) {
-      this._inmemAdminPasscode = this.generateRandomPasscode();
+    if (this._inmemAdminPasscode === undefined || this._inmemAdminPasscodeComplement === undefined) {
+      this.setAdminPasscodeAndRandomizeComplement(this.generateRandomPasscode());
     }
 
     if (this._inmemFullReadOnlyPasscode === undefined || this._inmemFullReadOnlyPasscodeComplement === undefined) {
-      this.fullReadOnlyPasscode = this.generateRandomPasscode();
+      this.setFullReadOnlyPasscodeAndRandomizeComplement(this.generateRandomPasscode());
     }
 
     if (this._inmemUpdateStatePasscode === undefined || this._inmemUpdateStatePasscodeComplement === undefined) {
-      this.updateStatePasscode = this.generateRandomPasscode();
+      this.setUpdateStatePasscodeAndRandomizeComplement(this.generateRandomPasscode());
     }
 
     await this.save();

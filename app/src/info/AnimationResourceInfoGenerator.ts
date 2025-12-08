@@ -61,7 +61,9 @@ export default class AnimationResourceInfoGenerator implements IProjectInfoGener
 
     for (const projectItem of itemsCopy) {
       if (projectItem.itemType === ProjectItemType.animationResourceJson) {
-        await projectItem.loadFileContent();
+        if (!projectItem.isContentLoaded) {
+          await projectItem.loadContent();
+        }
 
         if (projectItem.primaryFile) {
           const ra = await AnimationResourceDefinition.ensureOnFile(projectItem.primaryFile);

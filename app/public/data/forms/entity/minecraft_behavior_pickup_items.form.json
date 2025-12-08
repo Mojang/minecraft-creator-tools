@@ -34,7 +34,28 @@
       "description": "List of items this mob will not pick up",
       "dataType": 17,
       "samples": {
+        "/vanilla/behavior_pack/entities/bogged.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+            "content": [
+              {
+                "tags": "q.all_tags('minecraft:is_spear')"
+              }
+            ]
+          }
+        ],
         "/vanilla/behavior_pack/entities/drowned.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+            "content": [
+              "minecraft:glow_ink_sac",
+              {
+                "tags": "q.all_tags('minecraft:is_spear')"
+              }
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/husk.json": [
           {
             "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
             "content": [
@@ -42,7 +63,17 @@
             ]
           }
         ],
-        "/vanilla/behavior_pack/entities/husk.json": [
+        "/vanilla/behavior_pack/entities/parched.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+            "content": [
+              {
+                "tags": "q.all_tags('minecraft:is_spear')"
+              }
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/zombie.json": [
           {
             "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
             "content": [
@@ -340,7 +371,12 @@
           "goal_radius": 2,
           "speed_multiplier": 1,
           "pickup_based_on_chance": true,
-          "can_pickup_any_item": true
+          "can_pickup_any_item": true,
+          "excluded_items": [
+            {
+              "tags": "q.all_tags('minecraft:is_spear')"
+            }
+          ]
         }
       }
     ],
@@ -355,7 +391,10 @@
           "pickup_based_on_chance": true,
           "can_pickup_any_item": true,
           "excluded_items": [
-            "minecraft:glow_ink_sac"
+            "minecraft:glow_ink_sac",
+            {
+              "tags": "q.all_tags('minecraft:is_spear')"
+            }
           ]
         }
       }
@@ -407,7 +446,12 @@
           "goal_radius": 2,
           "speed_multiplier": 1,
           "pickup_based_on_chance": true,
-          "can_pickup_any_item": true
+          "can_pickup_any_item": true,
+          "excluded_items": [
+            {
+              "tags": "q.all_tags('minecraft:is_spear')"
+            }
+          ]
         }
       }
     ],
@@ -445,7 +489,12 @@
           "goal_radius": 2,
           "speed_multiplier": 1,
           "pickup_based_on_chance": true,
-          "can_pickup_any_item": true
+          "can_pickup_any_item": true,
+          "excluded_items": [
+            {
+              "tags": "q.all_tags('minecraft:is_spear')"
+            }
+          ]
         }
       }
     ],
@@ -458,7 +507,12 @@
           "goal_radius": 2,
           "speed_multiplier": 1,
           "pickup_based_on_chance": true,
-          "can_pickup_any_item": true
+          "can_pickup_any_item": true,
+          "excluded_items": [
+            {
+              "tags": "q.all_tags('minecraft:is_spear')"
+            }
+          ]
         }
       }
     ],

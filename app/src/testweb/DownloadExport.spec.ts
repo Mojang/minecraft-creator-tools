@@ -78,9 +78,6 @@ test.describe("MCTools Web Editor - Download and Export Tests", () => {
   });
 
   test("should test download functionality from within editor context", async ({ page }) => {
-    // Set up download monitoring
-    const downloadPromise = page.waitForEvent("download", { timeout: 95000 });
-
     // Create project and get into editor using correct workflow
     const addOnStarterNewButton = page.getByRole("button", { name: "New" }).first();
 
@@ -114,6 +111,8 @@ test.describe("MCTools Web Editor - Download and Export Tests", () => {
       await expect(exportZipButton).toBeVisible();
 
       try {
+        // Set up download monitoring BEFORE clicking the button
+        const downloadPromise = page.waitForEvent("download", { timeout: 30000 });
         await exportZipButton.click();
 
         // Wait for download to start

@@ -1,59 +1,72 @@
 import { useCallback } from "react";
 import StorageUtilities from "../../../storage/StorageUtilities";
-import { NewProjectTemplateType } from "../../App";
-import { ProjectEditorMode } from "../../ProjectEditorUtilities";
-import { NewProjectSelectEvent } from "../../pages/home/HomeActions";
+import { FilesSubmittedEvent, NewProjectSelectEvent } from "../../pages/home/HomeActions";
 import { useCreatorTools } from "../../contexts/creatorToolsContext/CreatorToolsContext";
+import useTelemetry from "../../../analytics/useTelemetry";
+import { TelemetryEvents, TelemetryProperties, TelemetryMeasurements } from "../../../analytics/TelemetryConstants";
+import WebUtilities from "../../WebUtilities";
 
-export default function useProjectUploads(onNewProjectSelected?: NewProjectSelectEvent) {
-  const [carto, loading] = useCreatorTools();
+export default function useProjectUploads(onFilesSubmitted?: FilesSubmittedEvent) {
+  const [creatorTools, loading] = useCreatorTools();
+  const { trackEvent } = useTelemetry();
+
+  const getFileExtension = (fileName: string): string => {
+    const parts = fileName.split(".");
+    return parts.length > 1 ? parts[parts.length - 1].toLowerCase() : "unknown";
+  };
 
   const processIncomingFile = useCallback(
-    (path: string, file: File, editorStartMode?: ProjectEditorMode, isReadOnly?: boolean) => {
-      if (!file || !onNewProjectSelected) {
+    (path: string, files: File[], uploadMethod?: string) => {
+      if (!files || !onFilesSubmitted) {
         return;
       }
       let fileName = "File";
 
-      if (file.name) {
-        fileName = file.name;
+      for (const file of files) {
+        if (file.name) {
+          fileName = file.name;
 
-        fileName = StorageUtilities.getBaseFromName(fileName);
+          fileName = StorageUtilities.getBaseFromName(fileName);
+        }
+
+        // Track file upload telemetry
+        const fileExtension = getFileExtension(file.name);
+        trackEvent({
+          name: TelemetryEvents.FILE_UPLOADED,
+          properties: {
+            [TelemetryProperties.FILE_FORMAT]: fileExtension,
+            [TelemetryProperties.FILE_UPLOAD_METHOD]: uploadMethod || "button",
+            [TelemetryProperties.FILE_TYPE]: file.type || "unknown",
+            [TelemetryProperties.ACTION_SOURCE]: "inspectPanel",
+          },
+          measurements: {
+            [TelemetryMeasurements.FILE_SIZE_BYTES]: file.size,
+          },
+        });
       }
 
-      onNewProjectSelected(
-        {
-          name: fileName,
-        },
-        NewProjectTemplateType.empty,
-        path,
-        file,
-        editorStartMode,
-        isReadOnly
-      );
+      onFilesSubmitted(path, files);
     },
-    [onNewProjectSelected]
+    [onFilesSubmitted, trackEvent]
   );
 
   const getFilesFromEvent = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (!carto.packStorage) {
+      if (!creatorTools.packStorage) {
         return;
       }
 
-      return event.target.files;
+      return WebUtilities.getFileArrayFromFileList(event.target.files);
     },
-    [carto]
+    [creatorTools]
   );
 
   const handleFileUpload = useCallback(
-    (input: File[] | React.ChangeEvent<HTMLInputElement>) => {
+    (input: File[] | React.ChangeEvent<HTMLInputElement>, uploadMethod?: string) => {
       //depending on what event called it, the input will be different, but either way, we just need to extract the files
       const files = Array.isArray(input) ? input : getFilesFromEvent(input);
 
-      const file = files?.[0];
-
-      file && processIncomingFile("/", file);
+      files && processIncomingFile("/", files, uploadMethod);
     },
     [processIncomingFile, getFilesFromEvent]
   );

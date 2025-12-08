@@ -177,7 +177,9 @@ export default class ProjectItem {
       const varType = this._data.variants[key].variantType;
       if (
         key !== "" &&
-        (varType === ProjectItemVariantType.versionSlice || varType === ProjectItemVariantType.versionSliceAlt)
+        (varType === ProjectItemVariantType.versionSliceAltPacks ||
+          varType === ProjectItemVariantType.versionSlice ||
+          varType === ProjectItemVariantType.versionSliceAlt)
       ) {
         return true;
       }
@@ -776,7 +778,9 @@ export default class ProjectItem {
       (va.variantType === ProjectItemVariantType.versionSlice &&
         vb.variantType === ProjectItemVariantType.versionSlice) ||
       (va.variantType === ProjectItemVariantType.versionSliceAlt &&
-        vb.variantType === ProjectItemVariantType.versionSliceAlt)
+        vb.variantType === ProjectItemVariantType.versionSliceAlt) ||
+      (va.variantType === ProjectItemVariantType.versionSliceAltPacks &&
+        vb.variantType === ProjectItemVariantType.versionSliceAltPacks)
     ) {
       const versionIndexA = Database.getVersionIndexFromVersionStr(va.label);
       const versionIndexB = Database.getVersionIndexFromVersionStr(vb.label);
@@ -807,7 +811,9 @@ export default class ProjectItem {
       (va.variantType === ProjectItemVariantType.versionSlice &&
         vb.variantType === ProjectItemVariantType.versionSlice) ||
       (va.variantType === ProjectItemVariantType.versionSliceAlt &&
-        vb.variantType === ProjectItemVariantType.versionSliceAlt)
+        vb.variantType === ProjectItemVariantType.versionSliceAlt) ||
+      (va.variantType === ProjectItemVariantType.versionSliceAltPacks &&
+        vb.variantType === ProjectItemVariantType.versionSliceAltPacks)
     ) {
       const versionIndexA = Database.getVersionIndexFromVersionStr(va.label);
       const versionIndexB = Database.getVersionIndexFromVersionStr(vb.label);
@@ -830,7 +836,8 @@ export default class ProjectItem {
 
         if (
           variant.variantType === ProjectItemVariantType.versionSlice ||
-          variant.variantType === ProjectItemVariantType.versionSliceAlt
+          variant.variantType === ProjectItemVariantType.versionSliceAlt ||
+          variant.variantType === ProjectItemVariantType.versionSliceAltPacks
         ) {
           if (variant.file) {
             return variant.label;
@@ -872,7 +879,8 @@ export default class ProjectItem {
 
         if (
           variant.variantType === ProjectItemVariantType.versionSlice ||
-          variant.variantType === ProjectItemVariantType.versionSliceAlt
+          variant.variantType === ProjectItemVariantType.versionSliceAlt ||
+          variant.variantType === ProjectItemVariantType.versionSliceAltPacks
         ) {
           if (variant.file) {
             this._primaryFile = variant.file;
@@ -1312,14 +1320,6 @@ export default class ProjectItem {
     return !!this.primaryFile;
   }
 
-  async loadContentDirect() {
-    if (this.storageType === ProjectItemStorageType.folder) {
-      await this.loadFolder();
-    } else if (this.storageType === ProjectItemStorageType.singleFile) {
-      await this.loadFileContent();
-    }
-  }
-
   async ensureFileStorage() {
     if (
       this.storageType === ProjectItemStorageType.singleFile &&
@@ -1504,7 +1504,11 @@ export default class ProjectItem {
     } else {
       this._isLoading = true;
 
-      await this.loadContentDirect();
+      if (this.storageType === ProjectItemStorageType.folder) {
+        await this.loadFolder();
+      } else if (this.storageType === ProjectItemStorageType.singleFile) {
+        await this.loadFileContent();
+      }
 
       this._isLoading = false;
 

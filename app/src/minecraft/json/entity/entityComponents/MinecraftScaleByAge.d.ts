@@ -11,19 +11,11 @@
  * 
  * minecraft:scale_by_age Samples
 
-Donkey - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/donkey.json
+Skeleton Horse - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/skeleton_horse.json
 
 "minecraft:scale_by_age": {
   "start_scale": 0.5,
   "end_scale": 1
-}
-
-
-Zombie Horse - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_horse.json
-
-"minecraft:scale_by_age": {
-  "start_scale": 0.5,
-  "end_scale": 0.5
 }
 
  */
@@ -42,10 +34,7 @@ export default interface MinecraftScaleByAge {
    * Ending scale of the entity when it's fully grown.
    * 
    * Sample Values:
-   * Donkey: 1
-   *
-   *
-   * Zombie Horse: 0.5
+   * Skeleton Horse: 1
    *
    */
   end_scale?: number;
@@ -55,8 +44,7 @@ export default interface MinecraftScaleByAge {
    * Initial scale of the newborn entity.
    * 
    * Sample Values:
-   * Donkey: 0.5
-   *
+   * Skeleton Horse: 0.5
    *
    */
   start_scale?: number;

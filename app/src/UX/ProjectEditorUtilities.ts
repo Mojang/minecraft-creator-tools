@@ -243,6 +243,44 @@ export default class ProjectEditorUtilities {
     await creatorTools.notifyStatusUpdate("Downloading mcworld with packs embedded '" + project.name + "'.");
   }
 
+  /**
+   * Extracts the contents of a zip-based file (mcworld, mcaddon, mcpack, mctemplate, mcproject, zip)
+   * directly to the project root folder, rather than saving the zip file as-is.
+   */
+  static async extractZipContentsToProject(project: Project, file: File) {
+    if (!project.projectFolder) {
+      return;
+    }
+
+    if (!StorageUtilities.isContainerFile(file.name)) {
+      return;
+    }
+
+    const operId = await project.creatorTools.notifyOperationStarted(
+      "Extracting '" + file.name + "' contents to project"
+    );
+
+    const buffer = await file.arrayBuffer();
+
+    // Load the zip contents
+    const zipStorage = new ZipStorage();
+    await zipStorage.loadFromUint8Array(new Uint8Array(buffer), file.name);
+
+    // Extract contents to project root folder
+    await StorageUtilities.syncFolderTo(
+      zipStorage.rootFolder,
+      project.projectFolder,
+      true, // forceFolders
+      true, // forceFileUpdates
+      false // removeOnTarget - don't remove existing files
+    );
+
+    // Re-infer project items from the extracted contents
+    await project.inferProjectItemsFromFilesRootFolder(true);
+
+    await project.creatorTools.notifyOperationEnded(operId, "'" + file.name + "' contents extracted to project");
+  }
+
   static getIntegrateBrowserFileDefaultActionDescription(
     project: Project,
     path: string,
@@ -269,17 +307,17 @@ export default class ProjectEditorUtilities {
     } else if (extension === "snbt") {
       return "Add '" + file.name + "' as new structure";
     } else if (extension === "mcworld") {
-      return "Add '" + file.name + "' as new world";
+      return "Extract '" + file.name + "' contents to project";
     } else if (extension === "mcproject") {
-      return "Add '" + file.name + "' as new project";
+      return "Extract '" + file.name + "' contents to project";
     } else if (extension === "mctemplate") {
-      return "Add '" + file.name + "' as new world template";
+      return "Extract '" + file.name + "' contents to project";
     } else if (extension === "mcaddon") {
-      return "Add '" + file.name + "' as new addon pack";
+      return "Extract '" + file.name + "' contents to project";
     } else if (extension === "zip") {
-      return "Add '" + file.name + "' as new folder";
+      return "Extract '" + file.name + "' contents to project";
     } else if (extension === "mcpack") {
-      return "Add '" + file.name + "' as new pack folder";
+      return "Extract '" + file.name + "' contents to project";
     } else if (extension === "ogg" || extension === "mp3" || extension === "wav") {
       return "Add '" + file.name + "' as new sound";
     } else if (extension === "mcstructure") {
@@ -607,7 +645,7 @@ export default class ProjectEditorUtilities {
         await project.inferProjectItemsFromZipFile(relPath, contentFile, false);
       }
 
-      await project.creatorTools.notifyOperationEnded(operId, "New zip file '" + file.name + "' added");
+      await project.creatorTools.notifyOperationEnded(operId, "New MCPack file '" + file.name + "' added");
     } else if (extension === "mcstructure") {
       const operId = await project.creatorTools.notifyOperationStarted("Saving new structure file '" + file.name + "'");
 
@@ -690,6 +728,57 @@ export default class ProjectEditorUtilities {
       bbm.integrateIntoProject(project);
 
       await project.creatorTools.notifyOperationEnded(operId, "Integrated bbmodel '" + file.name + "'.");
+    } else if (extension === "png" || extension === "jpg" || extension === "jpeg" || extension === "tga") {
+      const operId = await project.creatorTools.notifyOperationStarted("Saving new texture file '" + file.name + "'");
+
+      const buffer = await file.arrayBuffer();
+
+      const rpFolder = await project.ensureDefaultResourcePackFolder();
+
+      let folder: IFolder;
+      let targetFileName = file.name;
+
+      // Check if path contains a vanilla override path (e.g., "/resource_pack/textures/entity/skeleton.png")
+      if (path && path.length > 1 && path.includes("/textures/")) {
+        // Use the vanilla path structure within the resource pack
+        let vanillaPath = StorageUtilities.ensureStartsWithDelimiter(path);
+
+        // Strip leading pack folder prefixes (e.g., "/resource_pack/" or "/behavior_pack/")
+        // since we're already placing the file in the resource pack folder
+        vanillaPath = vanillaPath.replace(/^\/(resource_pack|behavior_pack)\//i, "/");
+
+        const folderPath = StorageUtilities.getFolderPath(vanillaPath);
+        targetFileName = StorageUtilities.getLeafName(vanillaPath);
+
+        // Ensure the folder path exists (e.g., "textures/entity")
+        folder = await rpFolder.ensureFolderFromRelativePath(folderPath);
+      } else {
+        // Default: just put in textures folder
+        folder = rpFolder.ensureFolder("textures");
+      }
+
+      const contentFile = folder.ensureFile(targetFileName);
+      contentFile.setContent(new Uint8Array(buffer));
+      await contentFile.saveContent();
+
+      const relPath = contentFile.getFolderRelativePath(project.projectFolder as IFolder);
+
+      if (relPath !== undefined) {
+        project.ensureItemByProjectPath(
+          relPath,
+          ProjectItemStorageType.singleFile,
+          targetFileName,
+          ProjectItemType.texture,
+          FolderContext.resourcePack,
+          undefined,
+          ProjectItemCreationType.normal
+        );
+      }
+
+      await project.creatorTools.notifyOperationEnded(
+        operId,
+        "New texture file '" + targetFileName + "' added" + (path && path.length > 1 ? " at " + path : "")
+      );
     }
   }
 
@@ -753,6 +842,7 @@ export default class ProjectEditorUtilities {
             true
           );
 
+          await creatorTools.notifyStatusUpdate("Saving all files to '" + result.name + "'.");
           await storage.rootFolder.saveAll();
           await creatorTools.notifyOperationEnded(operId, "Export completed.");
         }

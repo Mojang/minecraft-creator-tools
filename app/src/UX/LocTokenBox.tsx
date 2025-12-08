@@ -61,18 +61,18 @@ export default class LocTokenBox extends Component<ILocTokenBoxProps, ILocTokenB
 
     if (this.state && this.state.token) {
       return (
-        <div className="ltb-outer" onClick={this._handleClick}>
+        <span className="ltb-outer" onClick={this._handleClick}>
           <span className="ltb-title">
             {this.state.token.value} - ({this.props.value})
           </span>
-        </div>
+        </span>
       );
     }
 
     return (
-      <div className="ltb-outer" onClick={this._handleClick}>
+      <span className="ltb-outer" onClick={this._handleClick}>
         <span className="ltb-title">{this.props.value}</span>
-      </div>
+      </span>
     );
   }
 }

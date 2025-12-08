@@ -12,7 +12,7 @@ import { constants } from "../core/Constants";
 import Log from "../core/Log";
 import HttpStorage from "../storage/HttpStorage";
 import CreatorToolsHost from "../app/CreatorToolsHost";
-import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
+import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 import IStorage from "../storage/IStorage";
 import FileExplorer, { FileExplorerMode } from "./FileExplorer";
 import QRCode from "react-qr-code";
@@ -414,7 +414,7 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
         <div className="shp-contentArea">
           <div className="shp-contentWarning">
             <span className="shp-warningIcon">
-              <FontAwesomeIcon icon={faExclamationTriangle} className="fa-lg" />
+              <FontAwesomeIcon icon={faTriangleExclamation} className="fa-lg" />
             </span>
             <span className="shp-warningText">
               This changed content is <b>directly included</b> within the links above. By sharing "with Changes" links,

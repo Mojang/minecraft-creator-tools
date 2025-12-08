@@ -154,12 +154,12 @@ test.describe("MCTools Web Editor - Editor Interaction Tests", () => {
 
     await page.screenshot({ path: "debugoutput/screenshots/editor-components-search.png", fullPage: true });
 
-    // Test main editor toolbar components
-    const saveButton = page.locator("button:has-text('Save')");
-    const viewButton = page.locator("button:has-text('View')");
-    const settingsButton = page.locator("button:has-text('Settings')");
-    const shareButton = page.locator("button:has-text('Share')");
-    const runButton = page.locator("button[title='Deploy']").or(page.locator("button:has-text('Run')").first());
+    // Test main editor toolbar components - use more specific selectors
+    const saveButton = page.getByRole("button", { name: "Save" }).first();
+    const viewButton = page.getByRole("button", { name: "View" }).first();
+    const settingsButton = page.getByRole("button", { name: "Settings" }).first();
+    const shareButton = page.getByRole("button", { name: "Share" }).first();
+    const runButton = page.getByRole("button", { name: "Run" }).first();
 
     if ((await saveButton.count()) > 0) {
       console.log("Found Save button in editor toolbar");

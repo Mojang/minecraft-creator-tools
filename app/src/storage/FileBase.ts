@@ -305,8 +305,6 @@ export default abstract class FileBase implements IFile {
   async reloadAfterExternalUpdate() {
     let existingContent = this._content;
 
-    Log.message("Reloading file after external update: " + this.storageRelativePath);
-
     await this.loadContent(true);
 
     if (this._content !== existingContent) {

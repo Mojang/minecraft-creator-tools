@@ -1,6 +1,6 @@
 import { Component, SyntheticEvent } from "react";
 import "./ScalarArray.css";
-import IFormComponentProps from "./IFormComponentProps.js";
+import IFormComponentProps from "./../dataform/IFormComponentProps.js";
 import {
   FormInput,
   InputProps,
@@ -13,8 +13,8 @@ import {
 } from "@fluentui/react-northstar";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ILookupProvider from "./ILookupProvider";
-import ISimpleReference from "./ISimpleReference";
+import ILookupProvider from "./../dataform/ILookupProvider";
+import ISimpleReference from "./../dataform/ISimpleReference";
 import Utilities from "../core/Utilities";
 
 export interface IScalarArrayProps extends IFormComponentProps {

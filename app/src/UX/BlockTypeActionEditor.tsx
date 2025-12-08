@@ -13,7 +13,7 @@ import { Dialog, Dropdown, DropdownProps, Toolbar } from "@fluentui/react-norths
 import CreatorTools from "../app/CreatorTools";
 import Project from "../app/Project";
 import IManagedComponentSetItem from "../minecraft/IManagedComponentSetItem";
-import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import Utilities from "../core/Utilities";
 import { ProjectItemType } from "../app/IProjectItemData";
 import JavaScriptEditor, { ScriptEditorRole } from "./JavaScriptEditor";
@@ -358,7 +358,7 @@ export default class BlockTypeActionEditor extends Component<IBlockTypeActionEdi
           <CustomLabel
             isCompact={isButtonCompact}
             text="Add action"
-            icon={<FontAwesomeIcon icon={faAdd} className="fa-lg" />}
+            icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
           />
         ),
         key: "add",

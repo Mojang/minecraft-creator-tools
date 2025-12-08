@@ -34,7 +34,12 @@ Bogged - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
   "goal_radius": 2,
   "speed_multiplier": 1,
   "pickup_based_on_chance": true,
-  "can_pickup_any_item": true
+  "can_pickup_any_item": true,
+  "excluded_items": [
+    {
+      "tags": "q.all_tags('minecraft:is_spear')"
+    }
+  ]
 }
 
 
@@ -48,7 +53,10 @@ Drowned - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
   "pickup_based_on_chance": true,
   "can_pickup_any_item": true,
   "excluded_items": [
-    "minecraft:glow_ink_sac"
+    "minecraft:glow_ink_sac",
+    {
+      "tags": "q.all_tags('minecraft:is_spear')"
+    }
   ]
 }
 
@@ -73,6 +81,21 @@ Fox - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entit
 }
 
 
+Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/husk.json
+
+"minecraft:behavior.pickup_items": {
+  "priority": 6,
+  "max_dist": 3,
+  "goal_radius": 2,
+  "speed_multiplier": 1,
+  "pickup_based_on_chance": true,
+  "can_pickup_any_item": true,
+  "excluded_items": [
+    "minecraft:glow_ink_sac"
+  ]
+}
+
+
 Parched - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/parched.json
 
 "minecraft:behavior.pickup_items": {
@@ -81,7 +104,12 @@ Parched - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
   "goal_radius": 2,
   "speed_multiplier": 1,
   "pickup_based_on_chance": true,
-  "can_pickup_any_item": true
+  "can_pickup_any_item": true,
+  "excluded_items": [
+    {
+      "tags": "q.all_tags('minecraft:is_spear')"
+    }
+  ]
 }
 
 
@@ -142,21 +170,6 @@ Zombie Pigman - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_
   "can_pickup_any_item": true
 }
 
-
-Zombie Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_villager.json
-
-"minecraft:behavior.pickup_items": {
-  "priority": 8,
-  "max_dist": 3,
-  "goal_radius": 2,
-  "speed_multiplier": 1,
-  "pickup_based_on_chance": false,
-  "can_pickup_any_item": true,
-  "excluded_items": [
-    "minecraft:glow_ink_sac"
-  ]
-}
-
  */
 
 import * as jsoncommon from './../../jsoncommon';
@@ -198,8 +211,11 @@ export default interface MinecraftBehaviorPickupItems {
    * List of items this mob will not pick up
    * 
    * Sample Values:
-   * Drowned: ["minecraft:glow_ink_sac"]
+   * Bogged: [{"tags":"q.all_tags('minecraft:is_spear')"}]
    *
+   * Drowned: ["minecraft:glow_ink_sac",{"tags":"q.all_tags('minecraft:is_spear')"}]
+   *
+   * Husk: ["minecraft:glow_ink_sac"]
    *
    */
   excluded_items?: string[];

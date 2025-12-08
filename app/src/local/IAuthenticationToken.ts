@@ -13,4 +13,5 @@ export interface IAuthenticationToken {
   time: number;
   code: string;
   permissionLevel: ServerPermissionLevel;
+  fingerprint?: string; // Optional for backward compatibility
 }

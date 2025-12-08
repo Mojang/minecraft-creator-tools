@@ -27,6 +27,10 @@ import TypeScriptDefinition from "../minecraft/TypeScriptDefinition";
 import { constants } from "../core/Constants";
 import ProjectContent from "./ProjectContent";
 
+const behaviorPackFolderHints = ["behavior_pack", "/bp/", "/bps/"];
+
+const resourcePackFolderHints = ["resource_pack", "/rp/", "/rps/"];
+
 export enum NewEntityTypeAddMode {
   baseId,
 }
@@ -180,6 +184,182 @@ export default class ProjectUtilities {
     return searchItems;
   }
 
+  static isBehaviorPackRelated(folderName: string) {
+    for (const hint of behaviorPackFolderHints) {
+      if (folderName.toLowerCase().indexOf(hint) >= 0) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  static isResourcePackRelated(folderName: string) {
+    for (const hint of resourcePackFolderHints) {
+      if (folderName.toLowerCase().indexOf(hint) >= 0) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  static inferJsonProjectItemTypeFromExtension(path: string): ProjectItemType {
+    const extension = StorageUtilities.getTypeFromName(path).toLowerCase();
+
+    switch (extension) {
+      case "json":
+        return ProjectItemType.unknownJson;
+      case "mcaddon":
+        return ProjectItemType.MCAddon;
+      case "mcpack":
+        return ProjectItemType.MCPack;
+      case "mcworld":
+        return ProjectItemType.MCWorld;
+      case "mctemplate":
+        return ProjectItemType.MCTemplate;
+      case "mcproject":
+        return ProjectItemType.MCProject;
+      case "tga":
+      case "png":
+      case "jpg":
+        return ProjectItemType.texture;
+      case "ogg":
+      case "fsb":
+      case "mp3":
+        return ProjectItemType.audio;
+    }
+
+    return ProjectItemType.unknown;
+  }
+
+  static inferJsonProjectItemTypeFromPath(path: string): ProjectItemType {
+    const lowerPath = path.toLowerCase();
+
+    if (this.isBehaviorPackRelated(lowerPath)) {
+      if (lowerPath.indexOf("/biomes/") >= 0) {
+        return ProjectItemType.biomeBehavior;
+      }
+      if (lowerPath.indexOf("/entities/") >= 0) {
+        return ProjectItemType.entityTypeBehavior;
+      }
+      if (lowerPath.indexOf("/items/") >= 0) {
+        return ProjectItemType.itemTypeBehavior;
+      }
+      if (lowerPath.indexOf("/animation_controllers/") >= 0) {
+        return ProjectItemType.animationControllerBehaviorJson;
+      }
+      if (lowerPath.indexOf("/animations/") >= 0) {
+        return ProjectItemType.animationBehaviorJson;
+      }
+    }
+
+    if (this.isResourcePackRelated(lowerPath)) {
+      if (lowerPath.indexOf("/animation_controllers/") >= 0) {
+        return ProjectItemType.animationControllerResourceJson;
+      }
+      if (lowerPath.indexOf("/animations/") >= 0) {
+        return ProjectItemType.animationResourceJson;
+      }
+      if (lowerPath.indexOf("/attachables/") >= 0) {
+        return ProjectItemType.attachableResourceJson;
+      }
+      if (lowerPath.indexOf("/biomes/") >= 0) {
+        return ProjectItemType.biomeResource;
+      }
+      if (lowerPath.indexOf("/entity/") >= 0) {
+        return ProjectItemType.entityTypeResource;
+      }
+      if (lowerPath.indexOf("/entity/") >= 0) {
+        return ProjectItemType.entityTypeResource;
+      }
+
+      if (lowerPath.endsWith("/blocks.json")) {
+        return ProjectItemType.blocksCatalogResourceJson;
+      }
+      if (lowerPath.endsWith("/sounds.json")) {
+        return ProjectItemType.soundDefinitionCatalog;
+      }
+      if (lowerPath.endsWith("/biomes_client.json")) {
+        return ProjectItemType.biomesClientCatalogResource;
+      }
+    }
+
+    if (lowerPath.indexOf("/fogs/") >= 0) {
+      return ProjectItemType.fogResourceJson;
+    }
+
+    if (lowerPath.indexOf("/models/") >= 0) {
+      return ProjectItemType.modelGeometryJson;
+    }
+
+    if (lowerPath.indexOf("/particles/") >= 0) {
+      return ProjectItemType.particleJson;
+    }
+
+    if (lowerPath.indexOf("/render_controllers/") >= 0) {
+      return ProjectItemType.renderControllerJson;
+    }
+
+    if (lowerPath.indexOf("/sounds/") >= 0) {
+      if (lowerPath.indexOf("music_definitions.json") >= 0) {
+        return ProjectItemType.musicDefinitionJson;
+      }
+      if (lowerPath.indexOf("sound_definitions.json") >= 0) {
+        return ProjectItemType.soundDefinitionCatalog;
+      }
+
+      return this.inferJsonProjectItemTypeFromExtension(path);
+    }
+
+    if (lowerPath.indexOf("/textures/") >= 0) {
+      if (lowerPath.indexOf("flipbook_textures.json") >= 0) {
+        return ProjectItemType.flipbookTexturesJson;
+      }
+      if (lowerPath.indexOf("item_texture.json") >= 0) {
+        return ProjectItemType.itemTextureJson;
+      }
+      if (lowerPath.indexOf("terrain_texture.json") >= 0) {
+        return ProjectItemType.terrainTextureCatalogResourceJson;
+      }
+
+      if (lowerPath.indexOf("texture_list.json") >= 0) {
+        return ProjectItemType.textureListJson;
+      }
+
+      if (lowerPath.indexOf(".texture_set.json") >= 0) {
+        return ProjectItemType.textureSetJson;
+      }
+
+      if (
+        lowerPath.indexOf("/ui/") >= 0 &&
+        this.inferJsonProjectItemTypeFromExtension(path) === ProjectItemType.texture
+      ) {
+        return ProjectItemType.uiTexture;
+      }
+
+      return this.inferJsonProjectItemTypeFromExtension(path);
+    }
+
+    if (lowerPath.indexOf("/loot_tables/") >= 0) {
+      return ProjectItemType.lootTableBehavior;
+    }
+
+    if (lowerPath.indexOf("/recipes/") >= 0) {
+      return ProjectItemType.recipeBehavior;
+    }
+
+    if (lowerPath.indexOf("/spawn_rules/") >= 0) {
+      return ProjectItemType.spawnRuleBehavior;
+    }
+
+    if (lowerPath.indexOf("/trading/") >= 0) {
+      return ProjectItemType.tradingBehaviorJson;
+    }
+
+    return this.inferJsonProjectItemTypeFromExtension(path);
+  }
+
   /**
    * Attempts to infer a project item type using the top-level keys present in a JSON object.
    * Falls back to unknown when no meaningful match is found.
@@ -270,7 +450,9 @@ export default class ProjectUtilities {
 
   static async isVibrantVisualsCompatible(project: Project) {
     for (const item of project.items) {
-      await item.loadFileContent();
+      if (!item.isContentLoaded) {
+        await item.loadContent();
+      }
 
       if (item.primaryFile) {
         const manifestJson = await ResourceManifestDefinition.ensureOnFile(item.primaryFile);
@@ -788,7 +970,7 @@ export default class ProjectUtilities {
         await bpFolder.rename(newTokenName);
       } catch (e: any) {
         // perhaps folder could not be renamed because a folder exists; continue in this case.
-        Log.error(e.toString());
+        Log.error("Error renaming behavior pack folder." + e.toString());
       }
     }
 
@@ -797,7 +979,7 @@ export default class ProjectUtilities {
         await rpFolder.rename(newTokenName);
       } catch (e: any) {
         // perhaps folder could not be renamed because a folder exists; continue in this case.
-        Log.error(e.toString());
+        Log.error("Error renaming resource pack folder." + e.toString());
       }
     }
   }
@@ -891,12 +1073,25 @@ export default class ProjectUtilities {
     const itemsCopy = project.getItemsCopy();
     let rpCount = 0;
     let bpCount = 0;
+    let hasThingsThatAreNotInAddons = false;
 
     for (let i = 0; i < itemsCopy.length; i++) {
       const pi = itemsCopy[i];
 
       if (pi.primaryFile) {
-        if (pi.itemType === ProjectItemType.resourcePackManifestJson) {
+        if (
+          pi.itemType === ProjectItemType.worldFolder ||
+          pi.itemType === ProjectItemType.worldTemplateManifestJson ||
+          pi.itemType === ProjectItemType.levelDbLdb ||
+          pi.itemType === ProjectItemType.levelDbLog ||
+          pi.itemType === ProjectItemType.levelDbManifest ||
+          pi.itemType === ProjectItemType.MCWorld ||
+          pi.itemType === ProjectItemType.MCProject ||
+          pi.itemType === ProjectItemType.MCTemplate ||
+          pi.itemType === ProjectItemType.levelDat
+        ) {
+          hasThingsThatAreNotInAddons = true;
+        } else if (pi.itemType === ProjectItemType.resourcePackManifestJson) {
           rpCount++;
           const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.primaryFile);
 
@@ -918,7 +1113,7 @@ export default class ProjectUtilities {
       }
     }
 
-    return bpCount === 1 && rpCount === 1;
+    return !hasThingsThatAreNotInAddons && bpCount === 1 && rpCount === 1;
   }
 
   static async getMetaCategory(project: Project) {

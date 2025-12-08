@@ -231,22 +231,22 @@ export default class ProjectExporter {
   }
 
   static async ensureMinecraftWorldsFolder(creatorTools: CreatorTools) {
-    if (creatorTools.deploymentStorage === null) {
+    if (!creatorTools.defaultDeploymentStorage) {
       Log.unexpectedUndefined("EMWF");
       return undefined;
     }
 
-    let isAvailable = creatorTools.deploymentStorage.available;
+    let isAvailable = creatorTools.defaultDeploymentStorage.available;
 
     if (isAvailable === undefined) {
-      isAvailable = await creatorTools.deploymentStorage.getAvailable();
+      isAvailable = await creatorTools.defaultDeploymentStorage.getAvailable();
     }
 
     if (!isAvailable) {
       return;
     }
 
-    return await this.ensureWorldsFolder(creatorTools.deploymentStorage.rootFolder);
+    return await this.ensureWorldsFolder(creatorTools.defaultDeploymentStorage.rootFolder);
   }
 
   static async prepareProject(project: Project): Promise<ProjectBuild | undefined> {
@@ -650,7 +650,7 @@ export default class ProjectExporter {
       return;
     }
 
-    await mcworld.load(false);
+    await mcworld.loadMetaFiles(false);
 
     await mcworld.applyWorldSettings(worldSettings);
 
@@ -737,11 +737,13 @@ export default class ProjectExporter {
     await project.save();
     await creatorTools.notifyStatusUpdate("Saved");
 
+    let deployTarget = creatorTools.defaultDeploymentTarget;
+
     // only do an explicit deploy here autodeployment is not turned on; otherwise, deployment should happen in the save() above.
     if (
-      //  project.autoDeploymentMode !== ProjectAutoDeploymentMode.deployOnSave &&
-      creatorTools.deploymentStorage !== null &&
-      creatorTools.deployBehaviorPacksFolder !== null &&
+      //  project.autoDeploymentMode !== ProjectAutoDeploymntMode.deployOnSave &&
+      deployTarget &&
+      deployTarget.deployBehaviorPacksFolder !== null &&
       creatorTools.activeMinecraft
     ) {
       await creatorTools.notifyStatusUpdate("Deploying pack add-ons");

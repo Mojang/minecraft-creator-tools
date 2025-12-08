@@ -15,12 +15,14 @@ import ModelGeometryDefinition from "./ModelGeometryDefinition";
 export default class Entity extends ComponentizedBase implements IPropertyObject {
   _typeId: string = "";
 
-  location: Location = new Location(null, null, null);
-  rotation: Rotation = new Rotation(null, null);
+  location: Location = new Location();
+  rotation: Rotation = new Rotation();
   tags: string[] = [];
   definitions: string[] = [];
 
-  model?: ModelGeometryDefinition | undefined;
+  customModel?: ModelGeometryDefinition | undefined;
+  customTextureData?: Uint8Array | undefined;
+  customTextureUrl?: string | undefined;
 
   private _onPropertyChanged = new EventDispatcher<Entity, IProperty>();
 

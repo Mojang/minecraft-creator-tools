@@ -9,7 +9,7 @@ import { Toolbar } from "@fluentui/react-northstar";
 import CreatorTools from "../app/CreatorTools";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { CustomLabel } from "./Labels";
 import Project from "../app/Project";
 
@@ -154,7 +154,7 @@ export default class EventActionSet extends Component<IEventActionSetProps, IEve
 
     toolbarItems.push({
       icon: (
-        <CustomLabel icon={<FontAwesomeIcon icon={faAdd} className="fa-lg" />} text={"Add action"} isCompact={false} />
+        <CustomLabel icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />} text={"Add action"} isCompact={false} />
       ),
       key: "add",
       onClick: this._addAction,

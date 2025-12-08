@@ -5,7 +5,7 @@ import "./BehaviorPackManifestJsonEditor.css";
 import Database from "../minecraft/Database";
 import { ThemeInput } from "@fluentui/styles";
 import { ListProps } from "@fluentui/react-northstar";
-import DataForm, { IDataFormProps } from "../dataform/DataForm";
+import DataForm, { IDataFormProps } from "../dataformux/DataForm";
 import IProperty from "../dataform/IProperty";
 import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition";
 import StorageUtilities from "../storage/StorageUtilities";

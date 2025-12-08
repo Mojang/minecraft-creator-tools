@@ -245,7 +245,7 @@ export default class EntityTypeResourceDefinition {
       return;
     }
 
-    if (this.getIsVersion1100OrHigher()) {
+    if (this.getIsVersion1_10_0OrHigher()) {
       if (!this._data.scripts) {
         this._data.scripts = {};
       }
@@ -307,13 +307,13 @@ export default class EntityTypeResourceDefinition {
     return results;
   }
 
-  public getIsVersion180OrLower() {
+  public getIsVersion1_8_0OrLower() {
     let fv = this.getFormatVersion();
 
     return fv[0] <= 1 && fv[1] <= 8;
   }
 
-  public getIsVersion1100OrHigher() {
+  public getIsVersion1_10_0OrHigher() {
     let fv = this.getFormatVersion();
 
     return fv[0] >= 1 && fv[1] >= 10;

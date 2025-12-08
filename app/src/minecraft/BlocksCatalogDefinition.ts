@@ -69,7 +69,7 @@ export default class BlocksCatalogDefinition {
     return et;
   }
 
-  getBlockDefinition(id: string) {
+  getCatalogResource(id: string) {
     if (!this.blocksCatalog) {
       return undefined;
     }
@@ -87,7 +87,7 @@ export default class BlocksCatalogDefinition {
     return this.blocksCatalog[id];
   }
 
-  ensureBlockDefinition(id: string) {
+  ensureCatalogResource(id: string) {
     if (!this.blocksCatalog) {
       this.blocksCatalog = {};
     }
@@ -178,7 +178,7 @@ export default class BlocksCatalogDefinition {
   }
 
   getDefaultTextureId(id: string) {
-    const ref = this.getBlockDefinition(id);
+    const ref = this.getCatalogResource(id);
 
     if (ref && ref.textures) {
       if (typeof ref.textures === "string") {

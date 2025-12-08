@@ -39,6 +39,8 @@ import { faFileCsv, faFileInvoice } from "@fortawesome/free-solid-svg-icons";
 import IFile from "../storage/IFile";
 import StorageUtilities from "../storage/StorageUtilities";
 import ContentIndex from "../core/ContentIndex";
+import telemetry from "../analytics/Telemetry";
+import { TelemetryEvents, TelemetryProperties } from "../analytics/TelemetryConstants";
 
 interface IProjectInfoDisplayProps extends IAppProps {
   project?: Project;
@@ -180,6 +182,9 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
               }, 1);
             }
           );
+        } else {
+          // Component unmounted, resolve immediately to avoid hanging
+          resolve();
         }
       });
     }
@@ -313,6 +318,14 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   }
 
   private _toggleErrorFilter() {
+    telemetry.trackEvent({
+      name: TelemetryEvents.SHOW_FILTER_CLICKED,
+      properties: {
+        [TelemetryProperties.FILTER_TYPE]: "error",
+        [TelemetryProperties.NEW_VALUE]: !this.state.displayErrors,
+      },
+    });
+
     this.setState({
       selectedInfoSet: this.state.selectedInfoSet,
       menuState: this.state.menuState,
@@ -332,6 +345,14 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   }
 
   private _toggleInfoFilter() {
+    telemetry.trackEvent({
+      name: TelemetryEvents.SHOW_FILTER_CLICKED,
+      properties: {
+        [TelemetryProperties.FILTER_TYPE]: "info",
+        [TelemetryProperties.NEW_VALUE]: !this.state.displayInfo,
+      },
+    });
+
     this.setState({
       selectedInfoSet: this.state.selectedInfoSet,
       menuState: this.state.menuState,
@@ -351,6 +372,14 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   }
 
   private _toggleSuccessFilter() {
+    telemetry.trackEvent({
+      name: TelemetryEvents.SHOW_FILTER_CLICKED,
+      properties: {
+        [TelemetryProperties.FILTER_TYPE]: "success",
+        [TelemetryProperties.NEW_VALUE]: !this.state.displaySuccess,
+      },
+    });
+
     this.setState({
       selectedInfoSet: this.state.selectedInfoSet,
       menuState: this.state.menuState,
@@ -370,6 +399,14 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   }
 
   private _toggleFailureFilter() {
+    telemetry.trackEvent({
+      name: TelemetryEvents.SHOW_FILTER_CLICKED,
+      properties: {
+        [TelemetryProperties.FILTER_TYPE]: "failure",
+        [TelemetryProperties.NEW_VALUE]: !this.state.displayFailure,
+      },
+    });
+
     this.setState({
       selectedInfoSet: this.state.selectedInfoSet,
       menuState: this.state.menuState,
@@ -390,6 +427,14 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   }
 
   private _toggleWarningFilter() {
+    telemetry.trackEvent({
+      name: TelemetryEvents.SHOW_FILTER_CLICKED,
+      properties: {
+        [TelemetryProperties.FILTER_TYPE]: "warning",
+        [TelemetryProperties.NEW_VALUE]: !this.state.displayWarnings,
+      },
+    });
+
     this.setState({
       selectedInfoSet: this.state.selectedInfoSet,
       menuState: this.state.menuState,
@@ -410,6 +455,14 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   }
 
   private _toggleRecommendationFilter() {
+    telemetry.trackEvent({
+      name: TelemetryEvents.SHOW_FILTER_CLICKED,
+      properties: {
+        [TelemetryProperties.FILTER_TYPE]: "recommendation",
+        [TelemetryProperties.NEW_VALUE]: !this.state.displayRecommendation,
+      },
+    });
+
     this.setState({
       selectedInfoSet: this.state.selectedInfoSet,
       menuState: this.state.menuState,

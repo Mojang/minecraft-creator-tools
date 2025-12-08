@@ -133,9 +133,12 @@ export default class DeploymentStorageMinecraft implements IMinecraft {
   }
 
   async syncWithDeployment() {
+    const deploymentTarget = this._creatorTools.defaultDeploymentTarget;
+
     if (
-      this._creatorTools.deploymentStorage == null ||
-      this._creatorTools.deployBehaviorPacksFolder == null ||
+      deploymentTarget === undefined ||
+      deploymentTarget.storage == null ||
+      deploymentTarget.deployBehaviorPacksFolder == null ||
       this._creatorTools.minecraftGameMode === MinecraftGameConnectionMode.remoteMinecraft
     ) {
       throw new Error("This instance doesn't support deployment");
@@ -145,24 +148,20 @@ export default class DeploymentStorageMinecraft implements IMinecraft {
       return;
     }
 
-    let isAvailable = this._creatorTools.deploymentStorage.available;
+    let isAvailable = deploymentTarget.storage.available;
 
     if (isAvailable === undefined) {
-      isAvailable = await this._creatorTools.deploymentStorage.getAvailable();
+      isAvailable = await deploymentTarget.storage.getAvailable();
     }
 
     if (!isAvailable) {
       return;
     }
 
-    const deployFolderExists = await this._creatorTools.deployBehaviorPacksFolder.exists();
+    const deployFolderExists = await deploymentTarget.deployBehaviorPacksFolder.exists();
 
     if (deployFolderExists) {
-      await ProjectExporter.deployProject(
-        this._creatorTools,
-        this._project,
-        this._creatorTools.deploymentStorage.rootFolder
-      );
+      await ProjectExporter.deployProject(this._creatorTools, this._project, deploymentTarget.storage.rootFolder);
     }
   }
 

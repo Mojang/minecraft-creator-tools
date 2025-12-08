@@ -48,7 +48,7 @@
     "multipleSoundsManifests": 0,
     "soundsDefinitionManifestFormatIsValid": 0,
     "soundsDefinitionManifestIsNotValidJson": 0,
-    "flagIsOrWasTrue": 0,
+    "experimentalFlagIsOrWasTrue": 0,
     "levelDatNotFound": 0,
     "worldNotFound": 0,
     "deprecatedBlockOverride": 0,
@@ -209,6 +209,11 @@
         "max": 16384,
         "min": 16384,
         "average": 16384
+      },
+      "textureImages.vanillaGameTextureCoverage": {
+        "overrideCount": 0,
+        "vanillaTextureCount": 2348,
+        "percent": 0
       },
       "textureImagesTier0.nonVanillaTextureMemoryTier": {
         "instanceCount": 1,
@@ -389,8 +394,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "",
-    "infoGenerationTime": 7,
-    "endToEndGenerationTime": 12,
+    "infoGenerationTime": 50,
+    "endToEndGenerationTime": 56,
     "reds": 0,
     "summary": {
       "BASEGAMEVER": {
@@ -1383,6 +1388,11 @@
           "max": 16384,
           "min": 16384,
           "average": 16384
+        },
+        "vanillaGameTextureCoverage": {
+          "overrideCount": 0,
+          "vanillaTextureCount": 2348,
+          "percent": 0
         }
       }
     },

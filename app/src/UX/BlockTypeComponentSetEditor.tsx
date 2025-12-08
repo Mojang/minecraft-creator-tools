@@ -1,6 +1,6 @@
 import { Component, SyntheticEvent } from "react";
 import "./BlockTypeComponentSetEditor.css";
-import DataForm, { IDataFormProps } from "../dataform/DataForm";
+import DataForm, { IDataFormProps } from "../dataformux/DataForm";
 import Database from "../minecraft/Database";
 import {
   Toolbar,
@@ -16,7 +16,7 @@ import DataFormUtilities from "../dataform/DataFormUtilities";
 import Utilities from "../core/Utilities";
 import { CustomLabel } from "./Labels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import BlockTypeAddComponent from "./BlockTypeAddComponent";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import Project from "../app/Project";
@@ -130,7 +130,7 @@ export default class BlockTypeComponentSetEditor extends Component<
             const blocksCatalog = await BlocksCatalogDefinition.ensureOnFile(projectItem.primaryFile);
 
             if (blocksCatalog) {
-              const blockResource = blocksCatalog.getBlockDefinition(this.props.componentSet.id);
+              const blockResource = blocksCatalog.getCatalogResource(this.props.componentSet.id);
 
               if (blockResource) {
                 const blockResourceForm = await Database.ensureFormLoaded(
@@ -165,7 +165,7 @@ export default class BlockTypeComponentSetEditor extends Component<
             const blocksCatalog = await BlocksCatalogDefinition.ensureOnFile(projectItem.primaryFile);
 
             if (blocksCatalog) {
-              const blockResource = blocksCatalog.ensureBlockDefinition(this.props.componentSet.id);
+              const blockResource = blocksCatalog.ensureCatalogResource(this.props.componentSet.id);
 
               if (blockResource) {
                 const blockResourceForm = await Database.ensureFormLoaded(
@@ -546,7 +546,7 @@ export default class BlockTypeComponentSetEditor extends Component<
             <CustomLabel
               isCompact={false}
               text="Add component"
-              icon={<FontAwesomeIcon icon={faAdd} className="fa-lg" />}
+              icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
             />
           ),
         },

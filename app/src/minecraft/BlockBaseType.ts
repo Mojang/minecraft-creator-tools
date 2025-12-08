@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import IBlockBaseTypeData from "./IBlockBaseTypeData";
+import IBlockBaseTypeData, { BlockShape } from "./IBlockBaseTypeData";
 
 export default class BlockBaseType {
   private _name = "";
@@ -34,12 +34,22 @@ export default class BlockBaseType {
     return this.data.isOpaque;
   }
 
-  get shape() {
-    if (this.data.shape === undefined) {
-      return false;
+  get mapColor(): string | undefined {
+    return this.data.mc;
+  }
+
+  get shape(): BlockShape {
+    // Support both abbreviated (sh) and full (shape) property names
+    const shapeValue = this.data.sh;
+    if (shapeValue === undefined) {
+      return BlockShape.custom;
     }
 
-    return this.data.shape;
+    return shapeValue;
+  }
+
+  get friendlyName(): string | undefined {
+    return this.data.t;
   }
 
   get name() {

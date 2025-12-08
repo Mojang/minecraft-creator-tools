@@ -496,7 +496,7 @@
       "title": "Nearest Attackable Target Minecraft Behavior",
       "description": "Dynamic value",
       "dataType": 16,
-      "subFormId": "entity/minecraft_behavior_nearest_attackable_target"
+      "subFormId": "entity/nearest_attackable_target"
     },
     {
       "id": "minecraft:behavior.nearest_prioritized_attackable_target",
@@ -2165,16 +2165,25 @@
       "subFormId": "entity/minecraft_wither_target_highest_damage"
     },
     {
+      "id": "minecraft:behavior.aquatic_charge_attack",
+      "title": "Aquatic Charge Attack Minecraft Behavior",
+      "description": "Enables an aquatic mob to dash at its target with knockback; includes overshoot and cooldown settings.",
+      "dataType": 16,
+      "subFormId": "entity/aquatic_charge_attack"
+    },
+    {
       "id": "minecraft:behavior.avoid_block",
       "title": "Avoid Block Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows this entity to avoid certain blocks.",
+      "dataType": 16,
+      "subFormId": "entity/avoid_block"
     },
     {
       "id": "minecraft:behavior.avoid_mob_type",
       "title": "Avoid Mob Type Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows the entity to run away from other entities that meet the criteria specified.",
+      "dataType": 16,
+      "subFormId": "entity/avoid_mob_type"
     },
     {
       "id": "minecraft:behavior.celebrate",
@@ -2191,8 +2200,9 @@
     {
       "id": "minecraft:behavior.charge_attack",
       "title": "Charge Attack Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows this entity to damage a target by using a running attack.",
+      "dataType": 16,
+      "subFormId": "entity/charge_attack"
     },
     {
       "id": "minecraft:behavior.charge_held_item",
@@ -2203,14 +2213,16 @@
     {
       "id": "minecraft:behavior.circle_around_anchor",
       "title": "Circle Around Anchor Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Causes an entity to circle around an anchor point placed near a point or target.",
+      "dataType": 16,
+      "subFormId": "entity/circle_around_anchor"
     },
     {
       "id": "minecraft:behavior.controlled_by_player",
       "title": "Controlled By Player Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows the entity to be controlled by a player which is holding the item specified in \"minecraft:item_controllable\" component's \"control_items\" field (required). Also requires the \"minecraft:movement\" component, and the \"minecraft:rideable\" component. On every tick, the entity will attempt to rotate towards where the player is facing with the control item whilst simultaneously moving forward.",
+      "dataType": 16,
+      "subFormId": "entity/controlled_by_player"
     },
     {
       "id": "minecraft:behavior.croak",
@@ -2221,8 +2233,9 @@
     {
       "id": "minecraft:behavior.defend_village_target",
       "title": "Defend Village Target Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows the entity to stay in a village and defend the village from aggressors. If a player is in bad standing with the village this goal will cause the entity to attack the player regardless of filter conditions.",
+      "dataType": 16,
+      "subFormId": "entity/defend_village_target"
     },
     {
       "id": "minecraft:behavior.delayed_attack",
@@ -2233,8 +2246,9 @@
     {
       "id": "minecraft:behavior.dig",
       "title": "Dig Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows this entity to dig into the ground before despawning.",
+      "dataType": 16,
+      "subFormId": "entity/dig"
     },
     {
       "id": "minecraft:behavior.dragonchargeplayer",
@@ -2245,8 +2259,9 @@
     {
       "id": "minecraft:behavior.dragonflaming",
       "title": "Dragonflaming Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows this entity to use a flame-breath attack. Can only be used by the Ender Dragon.",
+      "dataType": 16,
+      "subFormId": "entity/dragonflaming"
     },
     {
       "id": "minecraft:behavior.dragonstrafeplayer",
@@ -2257,8 +2272,9 @@
     {
       "id": "minecraft:behavior.drink_milk",
       "title": "Drink Milk Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows the mob to drink milk based on specified environment conditions.",
+      "dataType": 16,
+      "subFormId": "entity/drink_milk"
     },
     {
       "id": "minecraft:behavior.drop_item_for",
@@ -2275,8 +2291,9 @@
     {
       "id": "minecraft:behavior.eat_mob",
       "title": "Eat Mob Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows the entity to eat a specified Mob.",
+      "dataType": 16,
+      "subFormId": "entity/eat_mob"
     },
     {
       "id": "minecraft:behavior.emerge",
@@ -2293,8 +2310,9 @@
     {
       "id": "minecraft:behavior.explore_outskirts",
       "title": "Explore Outskirts Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows the entity to first travel to a random point on the outskirts of the village, and then explore random points within a small distance. This goal requires \"minecraft:dweller\" and \"minecraft:navigation\" to execute.",
+      "dataType": 16,
+      "subFormId": "entity/explore_outskirts"
     },
     {
       "id": "minecraft:behavior.fertilize_farm_block",
@@ -2329,8 +2347,9 @@
     {
       "id": "minecraft:behavior.guardian_attack",
       "title": "Guardian Attack Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows this entity to use a laser beam attack. Can only be used by Guardians and Elder Guardians.",
+      "dataType": 16,
+      "subFormId": "entity/guardian_attack"
     },
     {
       "id": "minecraft:behavior.harvest_farm_block",
@@ -2341,8 +2360,9 @@
     {
       "id": "minecraft:behavior.investigate_suspicious_location",
       "title": "Investigate Suspicious Location Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows this entity to move towards a \"suspicious\" position based on data gathered in minecraft:suspect_tracking",
+      "dataType": 16,
+      "subFormId": "entity/investigate_suspicious_location"
     },
     {
       "id": "minecraft:behavior.jump_around_target",
@@ -2395,14 +2415,16 @@
     {
       "id": "minecraft:behavior.move_towards_dwelling_restriction",
       "title": "Move Towards Dwelling Restriction Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows entities with the \"minecraft:dweller\" component to move toward their village area that the entity should be restricted to.",
+      "dataType": 16,
+      "subFormId": "entity/move_towards_dwelling_restriction"
     },
     {
       "id": "minecraft:behavior.move_towards_home_restriction",
       "title": "Move Towards Home Restriction Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows entities with a \"minecraft:home\" component to move towards their home position. If \"restriction_radius\" is set, entities will be able to run this behavior only if outside of it.",
+      "dataType": 16,
+      "subFormId": "entity/move_towards_home_restriction"
     },
     {
       "id": "minecraft:behavior.ocelotattack",
@@ -2455,50 +2477,58 @@
     {
       "id": "minecraft:behavior.roar",
       "title": "Roar Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows this entity to roar at another entity based on data in minecraft:anger_level. Once the anger threshold specified in minecraft:anger_level has been reached, this entity will roar for the specified amount of time, look at the other entity, apply anger boost towards it, and finally target it.",
+      "dataType": 16,
+      "subFormId": "entity/roar"
     },
     {
       "id": "minecraft:behavior.slime_attack",
       "title": "Slime Attack Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Causes the entity to grow tired every once in a while, while attacking.",
+      "dataType": 16,
+      "subFormId": "entity/slime_attack"
     },
     {
       "id": "minecraft:behavior.slime_float",
       "title": "Slime Float Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allow slimes to float in water / lava. Can only be used by Slime and Magma Cubes.",
+      "dataType": 16,
+      "subFormId": "entity/slime_float"
     },
     {
       "id": "minecraft:behavior.slime_keep_on_jumping",
       "title": "Slime Keep On Jumping Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows the entity to continuously jump around like a slime.",
+      "dataType": 16,
+      "subFormId": "entity/slime_keep_on_jumping"
     },
     {
       "id": "minecraft:behavior.slime_random_direction",
       "title": "Slime Random Direction Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows the entity to move in random directions like a slime.",
+      "dataType": 16,
+      "subFormId": "entity/slime_random_direction"
     },
     {
       "id": "minecraft:behavior.sniff",
       "title": "Sniff Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows this entity to detect the nearest player within \"sniffing_radius\" and update its \"minecraft:suspect_tracking\" component state",
+      "dataType": 16,
+      "subFormId": "entity/sniff"
     },
     {
       "id": "minecraft:behavior.sonic_boom",
       "title": "Sonic Boom Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows this entity to perform a 'sonic boom' ranged attack",
+      "dataType": 16,
+      "subFormId": "entity/sonic_boom"
     },
     {
       "id": "minecraft:behavior.stay_near_noteblock",
       "title": "Stay Near Noteblock Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "The entity will attempt to toss the items from its inventory to a nearby recently played noteblock.",
+      "dataType": 16,
+      "subFormId": "entity/stay_near_noteblock"
     },
     {
       "id": "minecraft:behavior.stomp_attack",
@@ -2509,20 +2539,23 @@
     {
       "id": "minecraft:behavior.swim_idle",
       "title": "Swim Idle Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows the entity go idle, if swimming. Entity must be in water.",
+      "dataType": 16,
+      "subFormId": "entity/swim_idle"
     },
     {
       "id": "minecraft:behavior.swim_up_for_breath",
       "title": "Swim Up For Breath Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows the mob to try to move to air once it is close to running out of its total breathable supply. Requires \"minecraft:breathable\".",
+      "dataType": 16,
+      "subFormId": "entity/swim_up_for_breath"
     },
     {
       "id": "minecraft:behavior.swim_wander",
       "title": "Swim Wander Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows the entity to wander around while swimming, when not path-finding.",
+      "dataType": 16,
+      "subFormId": "entity/swim_wander"
     },
     {
       "id": "minecraft:behavior.swim_with_entity",
@@ -2533,8 +2566,9 @@
     {
       "id": "minecraft:behavior.swoop_attack",
       "title": "Swoop Attack Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Allows an entity to attack using swoop attack behavior; Ideal for use with flying mobs. The behavior ends if the entity has a horizontal collision or gets hit.",
+      "dataType": 16,
+      "subFormId": "entity/swoop_attack"
     },
     {
       "id": "minecraft:behavior.take_block",
@@ -2557,26 +2591,43 @@
     {
       "id": "minecraft:behavior.timer_flag_1",
       "title": "Timer Flag 1 Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Fires an event when this behavior starts, then waits for a duration before stopping. When stopping due to that timeout or due to being interrupted by another behavior, fires another event. query.timer_flag_1 will return 1.0 on both the client and server when this behavior is running, and 0.0 otherwise.",
+      "dataType": 16,
+      "subFormId": "entity/timer_flag_1"
     },
     {
       "id": "minecraft:behavior.timer_flag_2",
       "title": "Timer Flag 2 Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Fires an event when this behavior starts, then waits for a duration before stopping. When stopping due to that timeout or due to being interrupted by another behavior, fires another event. query.timer_flag_2 will return 1.0 on both the client and server when this behavior is running, and 0.0 otherwise.",
+      "dataType": 16,
+      "subFormId": "entity/timer_flag_2"
     },
     {
       "id": "minecraft:behavior.timer_flag_3",
       "title": "Timer Flag 3 Minecraft Behavior",
-      "description": "Dynamic value",
-      "dataType": 16
+      "description": "Fires an event when this behavior starts, then waits for a duration before stopping. When stopping due to that timeout or due to being interrupted by another behavior, fires another event. query.timer_flag_3 will return 1.0 on both the client and server when this behavior is running, and 0.0 otherwise.",
+      "dataType": 16,
+      "subFormId": "entity/timer_flag_3"
     },
     {
       "id": "minecraft:behavior.trade_with_player",
       "title": "Trade With Player Minecraft Behavior",
       "description": "Dynamic value",
       "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.transport_items",
+      "title": "Transport Items Minecraft Behavior",
+      "description": "A behavior that enables a mob to transport items from and to containers.",
+      "dataType": 16,
+      "subFormId": "entity/transport_items"
+    },
+    {
+      "id": "minecraft:behavior.use_kinetic_weapon",
+      "title": "Use Kinetic Weapon Minecraft Behavior",
+      "description": "Enables a mob to use kinetic weaponry by intermittently charging at its target and repositioning afterward.",
+      "dataType": 16,
+      "subFormId": "entity/use_kinetic_weapon"
     },
     {
       "id": "minecraft:behavior.work",
@@ -2605,7 +2656,6 @@
     {
       "id": "minecraft:rotation_locked_to_vehicle",
       "title": "Minecraft Rotation Locked To Vehicle",
-      "description": "Dynamic value",
       "dataType": 16
     },
     {

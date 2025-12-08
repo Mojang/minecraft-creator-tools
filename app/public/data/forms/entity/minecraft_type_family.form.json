@@ -986,6 +986,7 @@
               "aquatic",
               "zombie_nautilus",
               "undead",
+              "monster",
               "mob"
             ]
           }
@@ -2644,6 +2645,7 @@
             "aquatic",
             "zombie_nautilus",
             "undead",
+            "monster",
             "mob"
           ]
         }

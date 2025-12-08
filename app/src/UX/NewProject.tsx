@@ -18,7 +18,7 @@ import ProjectUtilities from "../app/ProjectUtilities";
 import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProxy";
 import { CustomSelectableLabel, LocalFolderLabel } from "./Labels";
 import { MinecraftTrack } from "../app/ICreatorToolsData";
-import { CartoTargetStrings } from "../app/CreatorTools";
+import { CreatorToolsTargetSettings } from "../app/CreatorTools";
 import { ProjectTargetStrings } from "../app/Project";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChrome, faEdge, faFirefoxBrowser, faSafari } from "@fortawesome/free-brands-svg-icons";
@@ -413,9 +413,9 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
 
     const index = this.props.creatorTools.track ? (this.props.creatorTools.track as number) : 0;
 
-    targetStrings.push("<default to " + CartoTargetStrings[index] + ">");
+    targetStrings.push("<default to " + CreatorToolsTargetSettings[index] + ">");
 
-    for (const targetString of CartoTargetStrings) {
+    for (const targetString of CreatorToolsTargetSettings) {
       targetStrings.push(targetString);
     }
 

@@ -1,8 +1,8 @@
 import "./HomeHeader.css";
-import { ThemeInput } from "@fluentui/react-northstar";
 import { constants } from "../core/Constants";
 import TextButton from "./shared/components/inputs/textButton/TextButton";
 import { Box } from "@mui/material";
+import { mcColors } from "./hooks/theme/mcColors";
 
 interface IHomeHeaderProps {
   isApp?: boolean;
@@ -12,6 +12,9 @@ interface IHomeHeaderProps {
 
 export default function HomeHeader({ isApp, toggleThemeMode, mode }: IHomeHeaderProps) {
   const showModeButton = !isApp && toggleThemeMode && mode;
+  const isDark = mode === "dark";
+  const textColor = isDark ? mcColors.white : mcColors.gray6;
+
   return (
     <Box
       sx={{
@@ -27,8 +30,8 @@ export default function HomeHeader({ isApp, toggleThemeMode, mode }: IHomeHeader
         flexDirection: "row",
         backgroundColor: "primary.main",
         m: "0",
-        backgroundImage: mode === "dark" ? "url(./res/images/bg-wool-dark.png)" : "url(./res/images/bg-wool-white.png)",
-        color: mode === "light" ? "#000000" : "#FFFFFF",
+        backgroundImage: isDark ? "url(./res/images/bg-wool-dark.png)" : "url(./res/images/bg-wool-white.png)",
+        color: textColor,
       }}
     >
       <h1 className="hhdr-image-outer">
@@ -37,7 +40,7 @@ export default function HomeHeader({ isApp, toggleThemeMode, mode }: IHomeHeader
       <div
         className="hhdr-sublink"
         style={{
-          color: mode === "light" ? "#000000" : "#FFFFFF",
+          color: textColor,
         }}
       >
         <a
@@ -46,7 +49,7 @@ export default function HomeHeader({ isApp, toggleThemeMode, mode }: IHomeHeader
           target="_blank"
           rel="noreferrer noopener"
           style={{
-            color: mode === "light" ? "#000000" : "#FFFFFF",
+            color: textColor,
           }}
         >
           Docs
@@ -58,7 +61,7 @@ export default function HomeHeader({ isApp, toggleThemeMode, mode }: IHomeHeader
           target="_blank"
           rel="noreferrer noopener"
           style={{
-            color: mode === "light" ? "#000000" : "#FFFFFF",
+            color: textColor,
           }}
         >
           Command Line
@@ -69,7 +72,7 @@ export default function HomeHeader({ isApp, toggleThemeMode, mode }: IHomeHeader
           target="_blank"
           rel="noreferrer noopener"
           style={{
-            color: mode === "light" ? "#000000" : "#FFFFFF",
+            color: textColor,
           }}
         >
           GitHub
@@ -81,11 +84,11 @@ export default function HomeHeader({ isApp, toggleThemeMode, mode }: IHomeHeader
               sx={{ textDecoration: "underline" }}
               key="lightLink"
               style={{
-                color: mode === "light" ? "#000000" : "#FFFFFF",
+                color: textColor,
               }}
               onClick={toggleThemeMode}
             >
-              {mode === "light" ? "Dark Mode" : "Light Mode"}
+              {isDark ? "Light Mode" : "Dark Mode"}
             </TextButton>
           </>
         )}

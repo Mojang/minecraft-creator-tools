@@ -19,69 +19,7 @@ import IManagedComponent from "./IManagedComponent";
 import { ManagedComponent } from "./ManagedComponent";
 import StorageUtilities from "../storage/StorageUtilities";
 import { IBlocksMetadataBlockProperty } from "./IBlocksMetadata";
-
-const BLOCK_TYPE_MATERIALS = [
-  "bone",
-  "cobblestone",
-  "stone",
-  "andesite",
-  "bedrock",
-  "blackstone",
-  "basalt",
-  "acacia",
-  "oak",
-  "gold",
-  "jungle",
-  "birch",
-  "big_oak",
-  "spruce",
-  "bamboo",
-  "chiseled_nether_bricks",
-  "chiseled_polished_blackstone_brick",
-  "cracked_netherbricks",
-  "cracked_polishedblackstone_bricks",
-  "end_brick",
-  "wood",
-  "purpur",
-  "brick",
-  "blue",
-  "black",
-  "brown",
-  "cyan",
-  "gray",
-  "light_blue",
-  "lime",
-  "magenta",
-  "orange",
-  "pink",
-  "purple",
-  "red",
-  "silver",
-  "white",
-  "yellow",
-  "fern",
-  "grass",
-  "paeonia",
-  "rose",
-  "rose_blue",
-  "sunflower",
-  "syringa",
-  "allium",
-  "blue_orchid",
-  "cornflower",
-  "dandelion",
-  "houstonia",
-  "lily_of_the_valley",
-  "oxeye_daisy",
-  "orange_tulip",
-  "pink_tulip",
-  "red_tulip",
-  "white_tulip",
-  "dark_oak",
-  "blue_ice",
-  "frosted_ice",
-  "ice",
-];
+import { IBlockResource } from "./IBlocksCatalog";
 
 export default class BlockType implements IManagedComponentSetItem {
   public data: IBlockTypeData;
@@ -90,11 +28,10 @@ export default class BlockType implements IManagedComponentSetItem {
   private _baseType?: BlockBaseType;
   private _baseTypeId = "";
 
-  private _material = "";
   private _isCustom = false;
   private _behaviorPackData: IBlockTypeWrapper | null = null;
   private _behaviorPackFile?: IFile;
-  private _id?: string;
+  private _blockResource?: IBlockResource;
   private _isLoaded: boolean = false;
   private _properties: { [name: string]: IBlocksMetadataBlockProperty } = {};
 
@@ -118,8 +55,24 @@ export default class BlockType implements IManagedComponentSetItem {
     return this._baseTypeId;
   }
 
-  public get mapColor() {
-    return this.data.mc;
+  public get mapColor(): string | undefined {
+    // First check if this specific block type has a map color
+    if (this.data.mc) {
+      return this.data.mc;
+    }
+
+    // Fall back to the base type's map color from mccat.json
+    if (this._baseType && this._baseType.mapColor) {
+      return this._baseType.mapColor;
+    }
+
+    // Check the default base type
+    const defaultBaseType = Database.defaultBlockBaseType;
+    if (defaultBaseType && defaultBaseType.mapColor) {
+      return defaultBaseType.mapColor;
+    }
+
+    return undefined;
   }
 
   public get isCustom() {
@@ -134,13 +87,42 @@ export default class BlockType implements IManagedComponentSetItem {
     return Database.defaultBlockBaseType;
   }
 
+  public get catalogResource(): IBlockResource | undefined {
+    if (this._blockResource) {
+      return this._blockResource;
+    }
+
+    if (Database.blocksCatalog) {
+      // First try with shortId (full block name like "acacia_button")
+      let lookupId = this.shortId;
+
+      if (lookupId) {
+        this._blockResource = Database.blocksCatalog.getCatalogResource(lookupId);
+      }
+
+      // Fall back to material if shortId lookup fails
+      if (!this._blockResource) {
+        let mat = this.material;
+        if (mat && mat !== lookupId) {
+          this._blockResource = Database.blocksCatalog.getCatalogResource(mat);
+        }
+      }
+    }
+
+    return this._blockResource;
+  }
+
   public set baseType(baseType: BlockBaseType) {
     this._baseType = baseType;
     this._baseTypeId = baseType.name;
   }
 
   public get material() {
-    return this._material;
+    if (this.data.m) {
+      return this.data.m;
+    }
+
+    return this.data.n;
   }
 
   public renderType: BlockRenderType = BlockRenderType.Custom;
@@ -156,13 +138,28 @@ export default class BlockType implements IManagedComponentSetItem {
   }
 
   get title() {
-    const id = this.shortId;
+    let id = this.shortId;
+
+    // For custom blocks, strip the namespace prefix (e.g., "ec_vv:bushy_cherry" -> "bushy_cherry")
+    const colonIndex = id.indexOf(":");
+    if (colonIndex >= 0) {
+      id = id.substring(colonIndex + 1);
+    }
 
     return Utilities.humanifyMinecraftName(id);
   }
 
+  get friendlyName(): string {
+    // First check if the base type has a friendly name from mccat.json
+    if (this._baseType && this._baseType.friendlyName) {
+      return this._baseType.friendlyName;
+    }
+
+    // Fall back to humanified shortId
+    return this.title;
+  }
+
   constructor(typeId: string) {
-    this._id = typeId;
     this.javaData = null;
 
     this.data = {
@@ -171,15 +168,6 @@ export default class BlockType implements IManagedComponentSetItem {
 
     if (typeId.indexOf(":") >= 0 && !typeId.startsWith("minecraft:")) {
       this._isCustom = true;
-    }
-
-    const baseTypeShort = MinecraftUtilities.canonicalizeName(typeId);
-
-    for (const material of BLOCK_TYPE_MATERIALS) {
-      if (baseTypeShort.indexOf(material) >= 0) {
-        this._material = material;
-        break;
-      }
     }
   }
 
@@ -336,19 +324,19 @@ export default class BlockType implements IManagedComponentSetItem {
       return this.behaviorPackBlockTypeDef.description.identifier;
     }
 
-    if (this._id === undefined) {
+    if (this.data.n === undefined) {
       return "";
     }
 
-    if (this._id.endsWith("_")) {
-      return this._id + this.baseTypeId;
+    if (this.data.n.endsWith("_")) {
+      return this.data.n + this.baseTypeId;
     }
 
-    return this._id;
+    return this.data.n;
   }
 
   public set id(newId: string) {
-    this._id = newId;
+    this.data.n = newId;
 
     if (this.behaviorPackBlockTypeDef && this.behaviorPackBlockTypeDef.description && newId) {
       this.behaviorPackBlockTypeDef.description.identifier = newId;

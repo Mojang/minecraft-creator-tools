@@ -1,414 +1,498 @@
-@media only screen and (min-width: 916px) {
-  .ppe-grid {
-    display: grid;
-    grid-template-columns: 200px 340px 140px 1fr;
-  }
+/* Project Property Editor - Structural/Layout Styles
+   
+   Theme-aware colors are applied via inline styles from the Fluent UI theme object.
+   This CSS file contains only structural, layout, and non-theme-dependent styles.
+   
+   See FormEditorUXGuidelines.md for theming approach documentation.
+*/
 
-  .ppe-advgrid {
-    display: grid;
-    grid-template-columns: 200px 340px 140px;
-  }
-}
-
-@media only screen and (max-width: 915px) {
-}
-
-.ppe-advgrid {
-  padding-top: 2px;
-  font-family: "Noto Sans", sans-serif;
-  font-size: 12pt;
-}
+/* ========================================
+   Base Layout
+   ======================================== */
 
 .ppe-outer {
   user-select: none;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
-.ppe-grid {
-  padding: 20px;
-  padding-top: 50px;
-  overflow-y: auto;
-}
-
+/* Header - Always uses brand green gradient (theme-invariant) */
 .ppe-header {
-  font-size: 16pt;
-  margin: 0px;
-  padding-top: 10px;
-  padding-left: 10px;
-  padding-bottom: 16px;
-  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+  padding: 16px 24px;
+  background: linear-gradient(90deg, #52a535 0%, #3d8a28 100%);
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
-.ppe-headerTransition {
-  background-position-x: left;
-  background-repeat: repeat-x;
-  height: 40px;
+@media only screen and (max-width: 600px) {
+  .ppe-header {
+    padding: 12px 12px;
+    font-size: 1rem;
+    gap: 8px;
+  }
+}
+
+.ppe-headerIcon {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* Content area */
+.ppe-content {
+  padding: 20px 24px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+@media only screen and (max-width: 600px) {
+  .ppe-content {
+    padding: 12px 12px;
+  }
+}
+
+/* ========================================
+   Sections
+   ======================================== */
+
+.ppe-section {
+  border: 1px solid;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.ppe-sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 14px 18px;
+  border-bottom: 1px solid;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+@media only screen and (max-width: 600px) {
+  .ppe-sectionHeader {
+    padding: 12px 12px;
+    font-size: 0.8rem;
+  }
+}
+
+.ppe-sectionIcon {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.ppe-sectionContent {
+  padding: 18px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media only screen and (max-width: 800px) {
+  .ppe-sectionContent {
+    grid-template-columns: 1fr;
+    padding: 12px;
+  }
+}
+
+/* ========================================
+   Field Layout
+   ======================================== */
+
+.ppe-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.ppe-field-full {
+  grid-column: 1 / -1;
+}
+
+.ppe-fieldLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.ppe-fieldInput {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Fluent UI Input wrapper override - removes wrapper styling */
+.ppe-fieldInput .ui-input {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.ppe-fieldInput input,
+.ppe-fieldInput .ui-input__input {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 12px 14px !important;
+  font-size: 0.95rem !important;
+  border: 2px solid var(--ppe-input-border, rgba(255, 255, 255, 0.15)) !important;
+  border-radius: 4px !important;
+  box-sizing: border-box !important;
+}
+
+.ppe-fieldInput input:hover,
+.ppe-fieldInput .ui-input__input:hover {
+  border-color: var(--ppe-input-border-hover, rgba(255, 255, 255, 0.25)) !important;
+}
+
+.ppe-fieldInput input:focus,
+.ppe-fieldInput .ui-input__input:focus {
+  border-color: #52a535 !important;
+  outline: none !important;
+}
+
+.ppe-fieldInput input::placeholder {
+  font-style: italic;
+}
+
+/* ========================================
+   Textarea
+   ======================================== */
+
+.ppe-fieldTextArea {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.ppe-fieldTextArea .ui-textarea {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.ppe-fieldTextArea textarea {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 80px !important;
+  padding: 12px 14px !important;
+  font-size: 0.95rem !important;
+  border: 2px solid var(--ppe-input-border, rgba(255, 255, 255, 0.15)) !important;
+  border-radius: 4px !important;
+  box-sizing: border-box !important;
+  resize: vertical;
+}
+
+.ppe-fieldTextArea textarea:hover {
+  border-color: var(--ppe-input-border-hover, rgba(255, 255, 255, 0.25)) !important;
+}
+
+.ppe-fieldTextArea textarea:focus {
+  border-color: #52a535 !important;
+  outline: none !important;
+}
+
+.ppe-fieldTextArea textarea::placeholder {
+  font-style: italic;
+}
+
+/* ========================================
+   Dropdowns
+   ======================================== */
+
+.ppe-fieldDropdown {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.ppe-fieldDropdown .ui-dropdown {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.ppe-fieldDropdown .ui-dropdown__container {
+  width: 100% !important;
+  max-width: 100% !important;
+  border: 2px solid var(--ppe-input-border, rgba(255, 255, 255, 0.15)) !important;
+  border-radius: 4px !important;
+  box-sizing: border-box !important;
+}
+
+.ppe-fieldDropdown .ui-dropdown__container:hover {
+  border-color: var(--ppe-input-border-hover, rgba(255, 255, 255, 0.25)) !important;
+}
+
+.ppe-fieldDropdown .ui-dropdown__selected-items {
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.ppe-fieldNote {
+  font-size: 0.75rem;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* ========================================
+   Version Inputs
+   ======================================== */
+
+.ppe-versionInputs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ppe-versionInput {
+  flex: 1;
+  max-width: 80px;
+}
+
+.ppe-versionInput .ui-input {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.ppe-versionInput input {
+  width: 100% !important;
+  padding: 12px 10px !important;
+  text-align: center !important;
+  border: 2px solid var(--ppe-input-border, rgba(255, 255, 255, 0.15)) !important;
+  border-radius: 4px !important;
+}
+
+.ppe-versionInput input:hover {
+  border-color: var(--ppe-input-border-hover, rgba(255, 255, 255, 0.25)) !important;
+}
+
+.ppe-versionInput input:focus {
+  border-color: #52a535 !important;
+}
+
+.ppe-versionDot {
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 0 2px;
+}
+
+/* ========================================
+   UUID Fields
+   ======================================== */
+
+.ppe-uuidField {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 6px;
+  border: 1px solid;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.ppe-uuidRow {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+.ppe-uuidInput {
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.ppe-uuidInput .ui-input {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.ppe-uuidInput input {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 10px 14px !important;
+  font-family: Consolas, Monaco, monospace !important;
+  font-size: 0.85rem !important;
+  border: 2px solid var(--ppe-input-border, rgba(255, 255, 255, 0.15)) !important;
+  border-radius: 4px !important;
+  box-sizing: border-box !important;
+}
+
+.ppe-uuidInput input:hover {
+  border-color: var(--ppe-input-border-hover, rgba(255, 255, 255, 0.25)) !important;
+}
+
+.ppe-uuidInput input:focus {
+  border-color: #52a535 !important;
+}
+
+.ppe-uuidRow button {
+  flex-shrink: 0;
+}
+
+/* ========================================
+   Tools Content
+   ======================================== */
+
+.ppe-toolsContent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ppe-toolsContent button {
+  margin: 0 !important;
+}
+
+/* ========================================
+   GitHub Section
+   ======================================== */
+
+.ppe-ghActions {
+  margin-top: 12px;
 }
 
 .ppe-ghshareableUrl {
-  font-weight: bold;
-  margin-top: 10px;
-  margin-bottom: 3px;
+  font-weight: 600;
+  margin-top: 12px;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+}
+
+.ppe-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.ppe-link:hover {
+  text-decoration: underline;
 }
 
 .ppe-signInButton {
   padding-bottom: 8px;
 }
 
-.ppe-link {
-  margin-top: 14px;
-  font-weight: bold;
-}
-
-.ppe-toolArea {
-  padding-top: 2px;
-  padding-bottom: 10px;
-  padding-left: 20px;
-  grid-column-start: 1;
-  grid-column-end: 4;
-}
-
-.ppe-label {
-  font-size: 11pt;
-  font-weight: bold;
-  padding-bottom: 10px;
-  padding-top: 3px;
-}
-
-.ppe-creatorlabel {
-  grid-row: 1;
-  grid-column: 1;
-}
-
-.ppe-creatorinput {
-  grid-row: 1;
-  grid-column: 2;
-  padding-bottom: 20px;
-}
-
-.ppe-namelabel {
-  grid-row: 2;
-  grid-column: 1;
-}
-
-.ppe-nameinput {
-  grid-row: 2;
-  grid-column: 2;
-  padding-bottom: 20px;
-}
-
-.ppe-shortNamelabel {
-  grid-row: 3;
-  grid-column: 1;
-}
-
-.ppe-shortNameinput {
-  grid-row: 3;
-  grid-column: 2;
-  padding-bottom: 20px;
-}
-
-.ppe-titlelabel {
-  grid-row: 4;
-  grid-column: 1;
-}
-
-.ppe-titleinput {
-  grid-row: 4;
-  grid-column: 2;
-  padding-bottom: 20px;
-}
-
-.ppe-descriptionlabel {
-  grid-row: 5;
-  grid-column: 1;
-}
-
-.ppe-descriptioninput {
-  grid-row: 5;
-  grid-column-start: 2;
-  grid-column-end: 3;
-  padding-bottom: 20px;
-}
-
-.ppe-namespacelabel {
-  grid-row: 6;
-  grid-column: 1;
-}
-
-.ppe-namespaceinput {
-  grid-row: 6;
-  grid-column-start: 2;
-  grid-column-end: 3;
-  padding-bottom: 20px;
-}
-
-.ppe-descriptioninput textarea {
-  width: 400px;
-  height: 120px;
-}
-
-.ppe-defaultEditlabel {
-  grid-row: 7;
-  grid-column: 1;
-}
-
-.ppe-defaultEditinput {
-  grid-row: 7;
-  grid-column-start: 2;
-  grid-column-end: 3;
-  padding-bottom: 20px;
-}
-
-.ppe-scriptLanguagelabel {
-  grid-row: 8;
-  grid-column: 1;
-}
-
-.ppe-scriptLanguageinput {
-  grid-row: 8;
-  grid-column-start: 2;
-  grid-column-end: 3;
-  padding-bottom: 20px;
-}
-.ppe-tracklabel {
-  grid-row: 9;
-  grid-column: 1;
-}
-
-.ppe-trackinput {
-  grid-row: 9;
-  grid-column-start: 2;
-  grid-column-end: 3;
-  padding-bottom: 20px;
-}
-
-.ppe-focuslabel {
-  grid-row: 10;
-  grid-column: 1;
-}
-
-.ppe-focusinput {
-  grid-row: 10;
-  grid-column-start: 2;
-  grid-column-end: 3;
-  padding-bottom: 20px;
-}
-
-.ppe-scriptVersionlabel {
-  grid-row: 11;
-  grid-column: 1;
-}
-
-.ppe-scriptVersioninput {
-  grid-row: 11;
-  grid-column-start: 2;
-  grid-column-end: 3;
-  padding-bottom: 20px;
-}
-
-.ppe-versionlabel {
-  grid-row: 12;
-  grid-column-start: 1;
-  grid-column-end: 3;
-}
-
-.ppe-versioninputline {
-  display: inline;
-}
-
-.ppe-versioninputline .ui-input__icon {
-  right: 15px;
-}
-
-.ppe-versioninputline input {
-  width: 90px;
-  margin-right: 10px;
-}
-
-.ppe-versioninput {
-  grid-row: 12;
-  grid-column: 2;
-  padding-bottom: 20px;
-}
-
-.ppe-ghheader {
-  font-weight: bold;
-  padding-bottom: 2px;
-}
-
-.ppe-additional {
-  padding-top: 20px;
-}
-
-.ppe-ghlabel {
-  grid-row: 13;
-  grid-column: 1;
-  padding-top: 27px;
-}
-
-.ppe-ghinput {
-  grid-row: 13;
-  grid-column: 2;
-  padding-top: 26px;
-  padding-bottom: 20px;
-}
-
-.ppe-ghbutton {
-  grid-row: 12;
-  grid-column: 3;
-  padding-top: 30px;
-  padding-bottom: 20px;
-}
+/* ========================================
+   Status Area
+   ======================================== */
 
 .ppe-statusArea {
-  font-size: 14pt;
-  grid-row: 14;
-  grid-column-start: 1;
-  grid-column-end: 5;
-  padding-top: 30px;
+  margin-bottom: 20px;
 }
 
-.ppe-advancedArea {
-  font-size: 14pt;
-  grid-row: 15;
-  grid-column-start: 1;
-  grid-column-end: 5;
-  padding-top: 10px;
+/* ========================================
+   Button Styling (theme-invariant green)
+   ======================================== */
+
+.ppe-toolsContent .ui-button {
+  background: #52a535 !important;
+  border: none !important;
+  border-radius: 4px !important;
+  padding: 10px 16px !important;
+  font-weight: 600 !important;
+  color: white !important;
 }
 
-.ppe-bedrock {
-  grid-row: 15;
-  font-size: 2;
-  line-height: 0.5;
-  min-height: 16px;
-  max-height: 16px;
+.ppe-toolsContent .ui-button:hover {
+  background: #5fb93e !important;
 }
 
-.ppe-toolArea {
-  font-family: "Noto Sans", "Segoe UI", "Helvetica Neue", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
-    "Droid Sans", sans-serif;
-  font-size: 12pt;
+.ppe-uuidRow .ui-button {
+  background: #52a535 !important;
+  border: none !important;
+  border-radius: 4px !important;
+  padding: 8px 14px !important;
+  font-size: 0.85rem !important;
+  color: white !important;
 }
 
-.ppe-toolArea svg {
-  font-size: 14pt;
-  position: relative;
-  left: -4px;
-  top: 3px;
+.ppe-uuidRow .ui-button:hover {
+  background: #5fb93e !important;
 }
 
-.ppe-bpuniqueidlabel {
-  grid-row: 1;
-  grid-column: 1;
-  padding-bottom: 10px;
-  padding-top: 26px;
+/* ========================================
+   Scrollbar Styling
+   Note: Uses CSS custom properties for theme support
+   ======================================== */
+
+.ppe-dark {
+  --ppe-scrollbar-track: #1a1a1a;
+  --ppe-scrollbar-thumb: #4a4a4a;
+  --ppe-scrollbar-thumb-hover: #5a5a5a;
+  --ppe-input-border: rgba(255, 255, 255, 0.15);
+  --ppe-input-border-hover: rgba(255, 255, 255, 0.25);
 }
 
-.ppe-bpuniqueidinput {
-  grid-row: 1;
-  grid-column: 2;
-  padding-bottom: 4px;
-  padding-top: 21px;
+.ppe-light {
+  --ppe-scrollbar-track: #e0e0e0;
+  --ppe-scrollbar-thumb: #b0b0b0;
+  --ppe-scrollbar-thumb-hover: #999999;
+  --ppe-input-border: rgba(0, 0, 0, 0.2);
+  --ppe-input-border-hover: rgba(0, 0, 0, 0.35);
 }
 
-.ppe-bpuniqueIdInputValue input {
-  min-width: 310px;
-  width: 310px;
+.ppe-content::-webkit-scrollbar {
+  width: 10px;
 }
 
-.ppe-bpuniqueidcreatenew {
-  grid-row: 1;
-  grid-column: 3;
-  padding-bottom: 20px;
-  padding-top: 20px;
+.ppe-content::-webkit-scrollbar-track {
+  background: var(--ppe-scrollbar-track, #1a1a1a);
 }
 
-.ppe-rpuniqueidlabel {
-  grid-row: 2;
-  grid-column: 1;
-  padding-bottom: 10px;
-  padding-top: 26px;
+.ppe-content::-webkit-scrollbar-thumb {
+  background: var(--ppe-scrollbar-thumb, #4a4a4a);
+  border-radius: 5px;
 }
 
-.ppe-rpuniqueidinput {
-  grid-row: 2;
-  grid-column: 2;
-  padding-bottom: 10px;
-  padding-top: 21px;
-}
-
-.ppe-rpuniqueIdInputValue input {
-  min-width: 310px;
-  width: 310px;
-}
-
-.ppe-rpuniqueidcreatenew {
-  grid-row: 2;
-  grid-column: 3;
-  padding-bottom: 20px;
-  padding-top: 20px;
-}
-
-.ppe-datauniqueidlabel {
-  grid-row: 3;
-  grid-column: 1;
-  padding-top: 9px;
-  padding-bottom: 20px;
-}
-
-.ppe-datauniqueidinput {
-  grid-row: 3;
-  grid-column: 2;
-  padding-bottom: 20px;
-  padding-top: 1px;
-}
-
-.ppe-datauniqueIdInputValue input {
-  min-width: 310px;
-  width: 310px;
-}
-
-.ppe-datauniqueidcreatenew {
-  grid-row: 3;
-  grid-column: 3;
-  padding-bottom: 20px;
-  padding-top: 0px;
-  height: 16px;
-}
-
-.ppe-scriptuniqueidlabel {
-  grid-row: 4;
-  grid-column: 1;
-  padding-bottom: 20px;
-  padding-top: 6px;
-}
-
-.ppe-toolArea button {
-  margin: 2px;
-  width: 260px;
-  display: inline-block;
-}
-
-.ppe-scriptuniqueidinput {
-  grid-row: 4;
-  grid-column: 2;
-  padding-bottom: 20px;
-  padding-top: 1px;
-}
-
-.ppe-propertyNote {
-  padding: 2px;
-  padding-top: 6px;
-}
-
-.ppe-scriptuniqueIdInputValue input {
-  min-width: 310px;
-  width: 310px;
-}
-
-.ppe-scriptuniqueidcreatenew {
-  grid-row: 4;
-  grid-column: 3;
-  padding-bottom: 20px;
-  padding-top: 0px;
+.ppe-content::-webkit-scrollbar-thumb:hover {
+  background: var(--ppe-scrollbar-thumb-hover, #5a5a5a);
 }

@@ -96,6 +96,12 @@ Nautilus - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/
   "value": "minecraft:is_tamed"
 }
 
+ * At /minecraft:entity/events/minecraft:on_mount/filters/: 
+{
+  "test": "has_component",
+  "value": "minecraft:is_saddled"
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';

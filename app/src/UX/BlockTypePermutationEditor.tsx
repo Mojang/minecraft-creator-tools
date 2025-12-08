@@ -15,7 +15,7 @@ import CreatorTools from "../app/CreatorTools";
 import Project from "../app/Project";
 import IManagedComponentSetItem from "../minecraft/IManagedComponentSetItem";
 import ManagedPermutation from "../minecraft/ManagedPermutation";
-import { faAdd, faFillDrip } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faFillDrip } from "@fortawesome/free-solid-svg-icons";
 
 interface IBlockTypePermutationEditorProps extends IFileProps {
   isVisualsMode: boolean;
@@ -240,7 +240,7 @@ export default class BlockTypePermutationEditor extends Component<
       {
         icon: (
           <CustomLabel
-            icon={<FontAwesomeIcon icon={faAdd} className="fa-lg" />}
+            icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
             text={"Add"}
             isCompact={isButtonCompact}
           />

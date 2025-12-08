@@ -529,7 +529,6 @@
               {
                 "filters": {
                   "test": "in_water",
-                  "operator": "==",
                   "value": false
                 },
                 "event": "minecraft:on_saddled_out_of_water"
@@ -541,32 +540,9 @@
             "content": [
               {
                 "filters": {
-                  "test": "in_water",
-                  "operator": "==",
-                  "value": true
+                  "test": "in_water"
                 },
                 "event": "minecraft:on_saddled_in_water"
-              }
-            ]
-          },
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:nautilus_tame_saddled/minecraft:environment_sensor/",
-            "content": [
-              {
-                "filters": {
-                  "test": "in_water",
-                  "operator": "==",
-                  "value": true
-                },
-                "event": "minecraft:on_saddled_in_water"
-              },
-              {
-                "filters": {
-                  "test": "in_water",
-                  "operator": "==",
-                  "value": false
-                },
-                "event": "minecraft:on_saddled_out_of_water"
               }
             ]
           }
@@ -1534,7 +1510,6 @@
             {
               "filters": {
                 "test": "in_water",
-                "operator": "==",
                 "value": false
               },
               "event": "minecraft:on_saddled_out_of_water"
@@ -1548,34 +1523,9 @@
           "triggers": [
             {
               "filters": {
-                "test": "in_water",
-                "operator": "==",
-                "value": true
+                "test": "in_water"
               },
               "event": "minecraft:on_saddled_in_water"
-            }
-          ]
-        }
-      },
-      {
-        "path": "/minecraft:entity/component_groups/minecraft:nautilus_tame_saddled/minecraft:environment_sensor/",
-        "content": {
-          "triggers": [
-            {
-              "filters": {
-                "test": "in_water",
-                "operator": "==",
-                "value": true
-              },
-              "event": "minecraft:on_saddled_in_water"
-            },
-            {
-              "filters": {
-                "test": "in_water",
-                "operator": "==",
-                "value": false
-              },
-              "event": "minecraft:on_saddled_out_of_water"
             }
           ]
         }

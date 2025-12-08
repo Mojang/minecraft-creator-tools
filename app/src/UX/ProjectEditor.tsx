@@ -46,6 +46,7 @@ import {
   MCPackLabel,
   DownArrowLabel,
   CustomLabel,
+  OpenInExplorerLabel,
   ItemActionsLabel,
 } from "./Labels";
 
@@ -72,6 +73,8 @@ import { MinecraftPushWorldType } from "../app/MinecraftPush";
 import CreatorToolsHost, { HostType, CreatorToolsThemeStyle } from "../app/CreatorToolsHost";
 import { faEdit, faWindowMaximize } from "@fortawesome/free-regular-svg-icons";
 import FileExplorer, { FileExplorerMode } from "./FileExplorer";
+import telemetry from "../analytics/Telemetry";
+import { TelemetryEvents, TelemetryProperties } from "../analytics/TelemetryConstants";
 import ShareProject from "./ShareProject";
 import { IProjectUpdaterReference } from "../info/IProjectInfoGeneratorBase";
 import { SidePaneMaxWidth, SidePaneMinWidth } from "../app/CreatorTools";
@@ -102,7 +105,7 @@ import NewVariant from "./NewVariant";
 import IProjectItemVariantSeed from "../app/IProjectItemVariantSeed";
 import ProjectItemVariantCreateManager from "../app/ProjectItemVariantCreateManager";
 import ProjectMap from "./ProjectMap";
-import IVersionContent from "../storage/IVersionContent";
+import ProjectWebUtilities from "./ProjectWebUtilities";
 
 const EDITOR_TICK_INTERVAL = 50;
 
@@ -156,6 +159,7 @@ interface IProjectEditorState {
   tentativeProjectItem: ProjectItem | null;
   activeReference: IGitHubInfo | null;
   undoStackState?: string;
+
   undoStackIndex?: number;
   mode: ProjectEditorMode;
   itemView: ProjectItemEditorView;
@@ -226,6 +230,7 @@ export enum ProjectStatusAreaMode {
 }
 
 export default class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> {
+  private _authWindow: Window | null = null;
   private _activeEditorPersistable?: IPersistable;
   private _isMountedInternal = false;
   private _lastHashProcessed: string | undefined;
@@ -407,7 +412,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     if (this.props.mode) {
       initialMode = this.props.mode;
     }
-
     let changes = this.props.project.getChangeList();
 
     return {
@@ -898,56 +902,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._handleDialogDone();
 
     if (this.state.dialogData) {
-      const fileSource = (this.state.dialogData as IProjectItemSeed).fileSource;
+      const result = await ProjectWebUtilities.processItemSeed(
+        this.props.project,
+        this.state.dialogData as IProjectItemSeed
+      );
 
-      if (fileSource) {
-        if ((this.state.dialogData as IProjectItemSeed).action === ProjectItemSeedAction.defaultAction) {
-          ProjectEditorUtilities.integrateBrowserFileDefaultAction(
-            this.props.project,
-            "/" + fileSource.name,
-            fileSource
-          );
-        } else if ((this.state.dialogData as IProjectItemSeed).action === ProjectItemSeedAction.overwriteFile) {
-          const item = (this.state.dialogData as IProjectItemSeed).targetedItem;
-
-          if (item && item.primaryFile) {
-            let content = undefined;
-
-            if (StorageUtilities.getEncodingByFileName(fileSource.name) === EncodingType.Utf8String) {
-              content = await fileSource.text();
-            } else {
-              content = new Uint8Array(await fileSource.arrayBuffer());
-            }
-
-            item.primaryFile.setContentIfSemanticallyDifferent(content);
-          }
-
-          this._incrementVisualSeed();
-        } else if ((this.state.dialogData as IProjectItemSeed).action === ProjectItemSeedAction.fileOrFolder) {
-          const folder = (this.state.dialogData as IProjectItemSeed).folder;
-          let name = (this.state.dialogData as IProjectItemSeed).name;
-
-          if (name === undefined) {
-            name = (this.state.dialogData as IProjectItemSeed).fileSource?.name;
-          }
-
-          if (folder && name) {
-            const file = folder.ensureFile(name);
-            let content = undefined;
-
-            if (StorageUtilities.getEncodingByFileName(fileSource.name) === EncodingType.Utf8String) {
-              content = await fileSource.text();
-            } else {
-              content = new Uint8Array(await fileSource.arrayBuffer());
-            }
-
-            file.setContentIfSemanticallyDifferent(content);
-
-            await this.props.project.inferProjectItemsFromFiles();
-          }
-
-          this._incrementVisualSeed();
-        }
+      if (result) {
+        this._incrementVisualSeed();
       }
     }
   }
@@ -1254,6 +1215,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private _handleHomeClick() {
+    telemetry.trackEvent({
+      name: TelemetryEvents.HOME_CLICKED,
+    });
+
     if (this.props.onModeChangeRequested != null) {
       this.props.onModeChangeRequested(AppMode.home);
     }
@@ -1279,6 +1244,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private async _handleSaveClick() {
+    telemetry.trackEvent({
+      name: TelemetryEvents.SAVE_CLICKED,
+    });
+
     await this.save();
   }
 
@@ -1303,6 +1272,16 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     ) {
       newViewMode = CreatorToolsEditorViewMode.itemsOnLeftAndMinecraftToolbox;
     }
+
+    telemetry.trackEvent({
+      name: TelemetryEvents.VIEW_CHANGED,
+      properties: {
+        [TelemetryProperties.VIEW_MODE]: CreatorToolsEditorViewMode[newViewMode],
+        [TelemetryProperties.PREVIOUS_VIEW]:
+          curViewMode !== undefined ? CreatorToolsEditorViewMode[curViewMode] : undefined,
+        [TelemetryProperties.VIEW_CHANGE_TYPE]: "setItemsOnLeft",
+      },
+    });
 
     this.props.creatorTools.editorViewMode = newViewMode;
     this.props.creatorTools.save();
@@ -1410,6 +1389,16 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       newViewMode = CreatorToolsEditorViewMode.itemsOnRightAndMinecraftToolbox;
     }
 
+    telemetry.trackEvent({
+      name: TelemetryEvents.VIEW_CHANGED,
+      properties: {
+        [TelemetryProperties.VIEW_MODE]: CreatorToolsEditorViewMode[newViewMode],
+        [TelemetryProperties.PREVIOUS_VIEW]:
+          curViewMode !== undefined ? CreatorToolsEditorViewMode[curViewMode] : undefined,
+        [TelemetryProperties.VIEW_CHANGE_TYPE]: "setItemsOnRight",
+      },
+    });
+
     this.props.creatorTools.editorViewMode = newViewMode;
     this.props.creatorTools.save();
 
@@ -1442,6 +1431,15 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private _viewAsItemsImpl() {
+    telemetry.trackEvent({
+      name: TelemetryEvents.VIEW_CHANGED,
+      properties: {
+        [TelemetryProperties.VIEW_MODE]: "items",
+        [TelemetryProperties.PREVIOUS_VIEW]: this.state.displayFileView ? "files" : "items",
+        [TelemetryProperties.VIEW_CHANGE_TYPE]: "viewAsItems",
+      },
+    });
+
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
       tentativeProjectItem: this.state.tentativeProjectItem,
@@ -1471,6 +1469,15 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private _viewAsFilesImpl() {
+    telemetry.trackEvent({
+      name: TelemetryEvents.VIEW_CHANGED,
+      properties: {
+        [TelemetryProperties.VIEW_MODE]: "files",
+        [TelemetryProperties.PREVIOUS_VIEW]: this.state.displayFileView ? "files" : "items",
+        [TelemetryProperties.VIEW_CHANGE_TYPE]: "viewAsFiles",
+      },
+    });
+
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
       tentativeProjectItem: this.state.tentativeProjectItem,
@@ -1556,6 +1563,16 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private applyViewMode(newViewMode: CreatorToolsEditorViewMode) {
+    telemetry.trackEvent({
+      name: TelemetryEvents.VIEW_CHANGED,
+      properties: {
+        [TelemetryProperties.VIEW_MODE]: CreatorToolsEditorViewMode[newViewMode],
+        [TelemetryProperties.PREVIOUS_VIEW]:
+          this.state?.viewMode !== undefined ? CreatorToolsEditorViewMode[this.state.viewMode] : undefined,
+        [TelemetryProperties.VIEW_CHANGE_TYPE]: "applyViewMode",
+      },
+    });
+
     this.props.creatorTools.editorViewMode = newViewMode;
     this.props.creatorTools.save();
 
@@ -1924,6 +1941,14 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       return;
     }
 
+    telemetry.trackEvent({
+      name: TelemetryEvents.SHARE_ADDON_FILE,
+      properties: {
+        [TelemetryProperties.SHARE_METHOD]: "mcaddon",
+        [TelemetryProperties.SHARE_TYPE]: "download",
+      },
+    });
+
     await ProjectStandard.ensureIsStandard(this.props.project);
 
     await this._ensurePersisted();
@@ -1951,6 +1976,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private async _handleExportToLocalFolderClick(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
+    telemetry.trackEvent({
+      name: TelemetryEvents.EXPORT_TO_FOLDER,
+      properties: {
+        [TelemetryProperties.SHARE_METHOD]: "folder",
+      },
+    });
+
     await this._ensurePersisted();
 
     await ProjectStandard.ensureIsStandard(this.props.project);
@@ -2162,11 +2194,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     await this.props.project.save();
 
-    if (this.props.creatorTools.deployBehaviorPacksFolder) {
+    const dep = this.props.creatorTools.defaultDeploymentTarget;
+
+    if (dep && dep.deployBehaviorPacksFolder) {
       const result = await ProjectExporter.deployProject(
         this.props.creatorTools,
         this.props.project,
-        this.props.creatorTools.deploymentStorage.rootFolder
+        dep.storage.rootFolder
       );
 
       if (!result) {
@@ -2174,30 +2208,29 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
         return;
       }
+
+      let zipStorage: ZipStorage | undefined;
+
+      zipStorage = new ZipStorage();
+
+      const deployFolder = dep?.storage.rootFolder;
+
+      await StorageUtilities.syncFolderTo(deployFolder, zipStorage.rootFolder, true, true, false, [
+        "/mcworlds",
+        "/minecraftWorlds",
+      ]);
+
+      await zipStorage.rootFolder.saveAll();
+
+      const zipBinary = await zipStorage.generateBlobAsync();
+
+      await this.props.creatorTools.notifyOperationEnded(
+        operId,
+        "Export deployment zip of '" + projName + "' created; downloading"
+      );
+
+      saveAs(zipBinary, projName + ".zip");
     }
-
-    let zipStorage: ZipStorage | undefined;
-
-    zipStorage = new ZipStorage();
-
-    const deployFolder = this.props.creatorTools.deploymentStorage.rootFolder;
-
-    await StorageUtilities.syncFolderTo(deployFolder, zipStorage.rootFolder, true, true, false, [
-      "/mcworlds",
-      "/minecraftWorlds",
-    ]);
-
-    await zipStorage.rootFolder.saveAll();
-
-    const zipBinary = await zipStorage.generateBlobAsync();
-
-    await this.props.creatorTools.notifyOperationEnded(
-      operId,
-      "Export deployment zip of '" + projName + "' created; downloading"
-    );
-
-    saveAs(zipBinary, projName + ".zip");
-
     if (data && data.icon && (data.icon as any).key) {
       this._setNewExportKey((data.icon as any).key, this._handleExportDeploymentZipClick, data);
     }
@@ -2230,11 +2263,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     await this.props.project.save();
 
-    if (this.props.creatorTools.deployBehaviorPacksFolder) {
+    const dep = this.props.creatorTools.defaultDeploymentTarget;
+
+    if (dep && dep.deployBehaviorPacksFolder) {
       const result = await ProjectExporter.deployProject(
         this.props.creatorTools,
         this.props.project,
-        this.props.creatorTools.deploymentStorage.rootFolder
+        dep.storage.rootFolder
       );
 
       if (!result) {
@@ -2242,30 +2277,29 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
         return;
       }
+
+      let zipStorage: ZipStorage | undefined;
+
+      zipStorage = new ZipStorage();
+
+      const deployFolder = dep.storage.rootFolder;
+
+      await StorageUtilities.syncFolderTo(deployFolder, zipStorage.rootFolder, true, true, false, [
+        "/mcworlds",
+        "/minecraftWorlds",
+      ]);
+
+      await zipStorage.rootFolder.saveAll();
+
+      const zipBinary = await zipStorage.generateBlobAsync();
+
+      await this.props.creatorTools.notifyOperationEnded(
+        operId,
+        "Export deployment zip of '" + projName + "' created; downloading"
+      );
+
+      saveAs(zipBinary, projName + ".zip");
     }
-
-    let zipStorage: ZipStorage | undefined;
-
-    zipStorage = new ZipStorage();
-
-    const deployFolder = this.props.creatorTools.deploymentStorage.rootFolder;
-
-    await StorageUtilities.syncFolderTo(deployFolder, zipStorage.rootFolder, true, true, false, [
-      "/mcworlds",
-      "/minecraftWorlds",
-    ]);
-
-    await zipStorage.rootFolder.saveAll();
-
-    const zipBinary = await zipStorage.generateBlobAsync();
-
-    await this.props.creatorTools.notifyOperationEnded(
-      operId,
-      "Export deployment zip of '" + projName + "' created; downloading"
-    );
-
-    saveAs(zipBinary, projName + ".zip");
-
     if (data && data.icon && (data.icon as any).key) {
       this._setNewDeployKey((data.icon as any).key, this._handleDeployAsZipClick, data);
     }
@@ -3020,25 +3054,43 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     const projectItem = this.props.project.getItemByProjectPath(projectPath);
 
     if (projectItem) {
+      let actionType = "";
       switch (projectAction) {
         case ProjectEditorItemAction.download:
+          actionType = "DownloadFile";
           this.downloadProjectItem(projectItem);
           break;
         case ProjectEditorItemAction.downloadBlockbenchModel:
+          actionType = "DownloadFile";
           this.downloadBbmodel(projectItem);
           break;
         case ProjectEditorItemAction.viewAsJson:
+          actionType = "ViewAsJson";
           this._handleProjectItemSelected(projectItem, ProjectItemEditorView.singleFileRaw);
           break;
         case ProjectEditorItemAction.viewOnMap:
+          actionType = "ViewOnMap";
           this._handleProjectItemSelected(projectItem, ProjectItemEditorView.map);
           break;
         case ProjectEditorItemAction.deleteItem:
+          actionType = "Delete";
           this._handleDialogDoneAndClear(false, ProjectEditorDialog.deleteItem);
           break;
         case ProjectEditorItemAction.renameItem:
+          actionType = "Rename";
           this._handleDialogDoneAndClear(false, ProjectEditorDialog.renameItem);
           break;
+      }
+
+      if (actionType) {
+        telemetry.trackEvent({
+          name: TelemetryEvents.ITEM_ACTION,
+          properties: {
+            [TelemetryProperties.ITEM_ACTION_TYPE]: actionType,
+            [TelemetryProperties.ITEM_TYPE]: projectItem.itemType,
+            [TelemetryProperties.ITEM_NAME]: projectItem.name,
+          },
+        });
       }
     }
   }
@@ -3894,6 +3946,15 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           onClick: this._setItemsFocus,
         });
       }
+
+      if (CreatorToolsHost.hostType === HostType.electronWeb || CreatorToolsHost.hostType === HostType.vsCodeMainWeb)
+        toolbarItems.push({
+          icon: <OpenInExplorerLabel />,
+          key: "openInExplorer",
+          content: <Text content="Open in Explorer" />,
+          onClick: this._openInExplorerClick,
+          title: "Open in Explorer",
+        });
 
       const viewMenuItems: any[] = [];
 

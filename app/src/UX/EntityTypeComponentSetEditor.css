@@ -166,3 +166,59 @@
   padding-left: 8px;
   padding-top: 8px;
 }
+
+/* Breadcrumb navigation styling */
+.etcse-breadcrumb {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  font-size: 10pt;
+  border-bottom: 1px solid;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.etcse-breadcrumbItem {
+  padding: 3px 8px;
+  border-radius: 4px;
+  transition: background-color 0.15s ease-in-out;
+  white-space: nowrap;
+}
+
+.etcse-breadcrumbItem:hover {
+  background-color: rgba(128, 128, 128, 0.15);
+  cursor: pointer;
+}
+
+.etcse-breadcrumbSeparator {
+  margin: 0 2px;
+  opacity: 0.4;
+  font-size: 8pt;
+}
+
+.etcse-breadcrumbCurrent {
+  font-weight: 600;
+  background-color: rgba(100, 149, 237, 0.15);
+}
+
+.etcse-breadcrumbCurrent:hover {
+  background-color: rgba(100, 149, 237, 0.25);
+}
+
+/* Improved component list item hover states */
+.etcse-componentList .ui-list__item {
+  transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out;
+  border-radius: 4px;
+  margin: 2px 4px;
+}
+
+.etcse-componentList .ui-list__item:hover {
+  background-color: rgba(128, 128, 128, 0.12);
+  transform: translateX(2px);
+}
+
+.etcse-componentList .ui-list__item[aria-selected="true"] {
+  background-color: rgba(100, 149, 237, 0.2);
+  border-left: 3px solid cornflowerblue;
+}

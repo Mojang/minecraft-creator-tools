@@ -69,10 +69,12 @@ export default class LevelDb implements IErrorable {
     return message;
   }
 
-  public async init(log?: (message: string) => Promise<void>) {
+  public async init(log?: (message: string) => Promise<void>, options?: { unloadFilesAfterParse?: boolean }) {
     this.keys = new Map<string, LevelKeyValue | false | undefined>();
     this.isInErrorState = false;
     this.errorMessages = undefined;
+
+    const unloadAfterParse = options?.unloadFilesAfterParse ?? false;
 
     for (let i = 0; i < this.manifestFiles.length; i++) {
       await this.manifestFiles[i].loadContent(false);
@@ -84,6 +86,11 @@ export default class LevelDb implements IErrorable {
         if (log) {
           await log("Loaded map manifest file '" + this.manifestFiles[i].fullPath + "'.");
         }
+      }
+
+      // Unload file content to free memory after parsing
+      if (unloadAfterParse) {
+        this.manifestFiles[i].unload();
       }
     }
 
@@ -146,6 +153,11 @@ export default class LevelDb implements IErrorable {
           await log("Loaded map record file '" + ldbFile.fullPath + "'. Records: " + kp);
         }
       }
+
+      // Unload file content to free memory after parsing
+      if (unloadAfterParse) {
+        ldbFile.unload();
+      }
     }
 
     const logFilesSorted = this.logFiles.sort((fileA: IFile, fileB: IFile) => {
@@ -162,6 +174,11 @@ export default class LevelDb implements IErrorable {
         if (log) {
           await log("Loaded map latest-updates file '" + logFilesSorted[i].fullPath + "'. Records: " + kp);
         }
+      }
+
+      // Unload file content to free memory after parsing
+      if (unloadAfterParse) {
+        logFilesSorted[i].unload();
       }
     }
   }

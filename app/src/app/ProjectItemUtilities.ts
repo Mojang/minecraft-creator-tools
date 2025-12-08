@@ -1315,7 +1315,22 @@ export default class ProjectItemUtilities {
     return type === ProjectItemType.uiJson || type === ProjectItemType.uiTexture;
   }
 
-  static isUIRelated(projectItem: ProjectItem, goUpwardOnly?: boolean, goDownwardOnly?: boolean) {
+  static isUIRelated(
+    projectItem: ProjectItem,
+    goUpwardOnly?: boolean,
+    goDownwardOnly?: boolean,
+    visited?: Set<ProjectItem>
+  ) {
+    // Track visited items to prevent infinite recursion from circular dependencies
+    if (visited === undefined) {
+      visited = new Set<ProjectItem>();
+    }
+
+    if (visited.has(projectItem)) {
+      return false; // Already visited, avoid infinite loop
+    }
+    visited.add(projectItem);
+
     if (projectItem.parentItems && (goUpwardOnly || goUpwardOnly === undefined)) {
       for (const parentItem of projectItem.parentItems) {
         if (parentItem.parentItem) {
@@ -1323,7 +1338,7 @@ export default class ProjectItemUtilities {
             return true;
           }
 
-          if (this.isUIRelated(parentItem.parentItem, true, false)) {
+          if (this.isUIRelated(parentItem.parentItem, true, false, visited)) {
             return true;
           }
         }
@@ -1337,7 +1352,7 @@ export default class ProjectItemUtilities {
             return true;
           }
 
-          if (this.isUIRelated(childItem.childItem, false, true)) {
+          if (this.isUIRelated(childItem.childItem, false, true, visited)) {
             return true;
           }
         }
@@ -1633,6 +1648,43 @@ export default class ProjectItemUtilities {
 
         return str;
     }
+  }
+
+  static getCousinOfType(projectItem: ProjectItem, itemType: ProjectItemType): ProjectItem | undefined {
+    if (!projectItem.parentItems) {
+      return undefined;
+    }
+
+    for (const parentRel of projectItem.parentItems) {
+      const result = this.getFirstDescendentOfType(parentRel.parentItem, itemType);
+      if (result) {
+        return result;
+      }
+    }
+
+    return undefined;
+  }
+
+  static getFirstDescendentOfType(projectItem: ProjectItem, itemType: ProjectItemType): ProjectItem | undefined {
+    if (!projectItem.childItems) {
+      return undefined;
+    }
+
+    for (const rel of projectItem.childItems) {
+      if (rel.childItem.itemType === itemType) {
+        return rel.childItem;
+      }
+    }
+
+    for (const rel of projectItem.childItems) {
+      const found = this.getFirstDescendentOfType(rel.childItem, itemType);
+
+      if (found) {
+        return found;
+      }
+    }
+
+    return undefined;
   }
 
   static async getDefaultFolderForType(project: Project, itemType: ProjectItemType) {

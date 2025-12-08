@@ -106,7 +106,7 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
       const blockCatalog = await BlocksCatalogDefinition.ensureBlockCatalog(project);
 
       if (blockCatalog) {
-        const blockResource = blockCatalog?.ensureBlockDefinition(this.id);
+        const blockResource = blockCatalog?.ensureCatalogResource(this.id);
 
         if (blockResource.textures && typeof blockResource.textures !== "string") {
           blockResource.textures[sideId] = textureId;
@@ -1077,7 +1077,7 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
           const blockCatalog = await BlocksCatalogDefinition.ensureOnFile(candItem.primaryFile);
 
           if (blockCatalog && this.id) {
-            const blockResource = blockCatalog.getBlockDefinition(this.id);
+            const blockResource = blockCatalog.getCatalogResource(this.id);
 
             if (blockResource) {
               item.addChildItem(candItem);

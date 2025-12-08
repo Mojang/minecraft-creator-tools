@@ -303,7 +303,7 @@ export default abstract class FolderBase implements IFolder {
         return undefined;
       }
 
-      return (folder as IFolder).getFileFromRelativePath(path.substring(nextSlash, path.length));
+      return await (folder as IFolder).getFileFromRelativePath(path.substring(nextSlash, path.length));
     }
   }
 

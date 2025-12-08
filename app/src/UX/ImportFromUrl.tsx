@@ -11,8 +11,10 @@ import StorageUtilities from "../storage/StorageUtilities";
 import FileExplorer, { FileExplorerMode } from "./FileExplorer";
 import IFolder from "../storage/IFolder";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
+import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 import Utilities from "../core/Utilities";
+import { CreatorToolsHost } from "../index.lib";
+import { CreatorToolsThemeStyle } from "../app/CreatorToolsHost";
 
 interface IImportFromUrlProps extends IAppProps {
   project: Project | null;
@@ -167,7 +169,7 @@ export default class ImportFromUrl extends Component<IImportFromUrlProps, IImpor
         <div className="ifu-contentInterior">
           <div className="ifu-warning">
             <span className="ifu-warningIcon">
-              <FontAwesomeIcon icon={faExclamationTriangle} className="fa-lg" />
+              <FontAwesomeIcon icon={faTriangleExclamation} className="fa-lg" />
             </span>
             <span className="ifu-warningText">
               This is content from the link you selected. If this looks OK, click Create to open this sample as a
@@ -196,7 +198,7 @@ export default class ImportFromUrl extends Component<IImportFromUrlProps, IImpor
             borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
           }}
         >
-          <HomeHeader />
+          <HomeHeader mode={CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? "dark" : "light"} />
         </header>
         <main className="ifu-main">
           <div className="ifu-content">{interior}</div>

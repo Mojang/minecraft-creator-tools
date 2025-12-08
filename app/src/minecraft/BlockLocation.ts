@@ -52,10 +52,10 @@ export default class BlockLocation {
     return "(" + this.x + "," + this.y + "," + this.z + ");";
   }
 
-  constructor(x: number | null | undefined, y: number | null | undefined, z: number | null | undefined) {
-    this._x = x == null ? 0 : x;
-    this._y = y == null ? 0 : y;
-    this._z = z == null ? 0 : z;
+  constructor(x?: number | undefined, y?: number | undefined, z?: number | undefined) {
+    this._x = x === undefined ? 0 : x;
+    this._y = y === undefined ? 0 : y;
+    this._z = z === undefined ? 0 : z;
 
     Log.assertIsInt(this._x, "BLCX");
     Log.assertIsInt(this._y, "BLCY");

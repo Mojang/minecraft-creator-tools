@@ -9,6 +9,7 @@ import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
 import StorageUtilities from "./StorageUtilities";
 import IFile from "./IFile";
 import Log from "../core/Log";
+import SecurityUtilities from "../core/SecurityUtilities";
 
 export default class ZipStorage extends StorageBase implements IStorage {
   private _jsz: JSZip;
@@ -142,6 +143,13 @@ export default class ZipStorage extends StorageBase implements IStorage {
   }
 
   async loadFromUint8Array(data: Uint8Array, name?: string) {
+    // Security: Validate upload size
+    if (!SecurityUtilities.validateFileSize(data.byteLength)) {
+      this.errorMessage = `ZIP file too large: ${data.byteLength} bytes (max: ${SecurityUtilities.MAX_UPLOAD_SIZE})`;
+      this.errorStatus = StorageErrorStatus.unprocessable;
+      throw new Error(this.errorMessage);
+    }
+
     try {
       await this._jsz.loadAsync(data, {
         base64: false,
@@ -149,9 +157,27 @@ export default class ZipStorage extends StorageBase implements IStorage {
     } catch (e: any) {
       this.errorMessage = e.toString();
       this.errorStatus = StorageErrorStatus.unprocessable;
+      throw e;
     }
 
-    // Log.fail("Loading zip file from data " + data.length);
+    const filePaths = Object.keys(this._jsz.files);
+
+    // Security: Validate ZIP contents
+    const fileCount = filePaths.length;
+    if (fileCount > SecurityUtilities.MAX_ZIP_FILES) {
+      this.errorMessage = `ZIP contains too many files: ${fileCount} (max: ${SecurityUtilities.MAX_ZIP_FILES})`;
+      this.errorStatus = StorageErrorStatus.unprocessable;
+      throw new Error(this.errorMessage);
+    }
+
+    // Security: Validate paths in ZIP
+    for (const filePath of filePaths) {
+      if (!SecurityUtilities.validatePath(filePath)) {
+        this.errorMessage = `ZIP contains invalid path: ${filePath}`;
+        this.errorStatus = StorageErrorStatus.unprocessable;
+        throw new Error(this.errorMessage);
+      }
+    }
 
     this.name = name;
     this.updateLastLoadedOrSaved();

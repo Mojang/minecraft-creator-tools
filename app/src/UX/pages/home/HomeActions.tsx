@@ -8,8 +8,11 @@ export type NewProjectSelectEvent = (
   newProjectSeed: IProjectSeed,
   newProjectType: NewProjectTemplateType,
   additionalFilePath?: string,
-  additionalFile?: File,
+  additionalFiles?: File[],
   editorStartMode?: ProjectEditorMode,
   isReadOnly?: boolean
 ) => void;
+
+export type FilesSubmittedEvent = (additionalFilePath: string, additionalFiles: File[]) => void;
+
 export type AppGalleryActionEvent = (command: GalleryProjectCommand, projectSeed: IProjectSeed) => void;

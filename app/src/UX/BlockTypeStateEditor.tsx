@@ -1,13 +1,13 @@
 import { Component, SyntheticEvent } from "react";
 import "./BlockTypeStateEditor.css";
-import DataForm, { IDataFormProps } from "../dataform/DataForm";
+import DataForm, { IDataFormProps } from "../dataformux/DataForm";
 import Database from "../minecraft/Database";
 import { Toolbar, ThemeInput, List, ListProps, selectableListBehavior, Menu, Dialog } from "@fluentui/react-northstar";
 import BlockTypeDefinition, { BlockStateType } from "../minecraft/BlockTypeDefinition";
 import Log from "../core/Log";
 import { CustomLabel } from "./Labels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRemove } from "@fortawesome/free-solid-svg-icons";
+import { faMinus } from "@fortawesome/free-solid-svg-icons";
 import Project from "../app/Project";
 import SetNamespacedId from "./SetNamespacedId";
 
@@ -435,7 +435,7 @@ export default class BlockTypeStateEditor extends Component<IBlockTypeStateEdito
           icon: (
             <CustomLabel
               text={"Delete this state"}
-              icon={<FontAwesomeIcon icon={faRemove} className="fa-lg" />}
+              icon={<FontAwesomeIcon icon={faMinus} className="fa-lg" />}
               isCompact={false}
             />
           ),

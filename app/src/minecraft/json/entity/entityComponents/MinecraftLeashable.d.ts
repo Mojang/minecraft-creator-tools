@@ -54,6 +54,19 @@ Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 }
 
 
+Dolphin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/dolphin.json
+
+"minecraft:leashable": {
+  "presets": [
+    {
+      "soft_distance": 4,
+      "hard_distance": 6,
+      "max_distance": 10
+    }
+  ]
+}
+
+
 Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
 
 "minecraft:leashable": {

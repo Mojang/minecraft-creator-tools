@@ -7,6 +7,7 @@ import { AppGalleryActionEvent } from "../../pages/home/HomeActions";
 import useGalleryActions from "../../hooks/gallery/UseGalleryActions";
 import TextButton from "../../shared/components/inputs/textButton/TextButton";
 import useTelemetry from "../../../analytics/useTelemetry";
+import { mcColors } from "../../hooks/theme/mcColors";
 
 interface ProjectGridProps {
   onAppGalleryAction: AppGalleryActionEvent;
@@ -28,26 +29,110 @@ export default function ProjectGrid({ onAppGalleryAction }: ProjectGridProps) {
 
   return (
     <>
-      <Paper sx={{ p: 2, height: "100%" }}>
+      <Paper
+        sx={(theme) => ({
+          p: 2,
+          height: "100%",
+          borderRadius: 1,
+          border: theme.palette.mode === "dark" ? `2px solid ${mcColors.gray5}` : `2px solid ${mcColors.gray2}`,
+          background:
+            theme.palette.mode === "dark"
+              ? `linear-gradient(180deg, ${mcColors.gray5} 0%, ${mcColors.gray6} 100%)`
+              : `linear-gradient(180deg, #ffffff 0%, ${mcColors.gray1} 100%)`,
+        })}
+      >
         <TextField
           label="Search template projects and code snippets"
           variant="outlined"
           aria-label="template search"
-          sx={{ mb: 2, color: "#FFFFFF", width: "100%" }}
-          onChange={(ev) => setSearchQuery(ev.target.value)}
+          sx={{ mb: 1, color: "#FFFFFF", width: "100%" }}
+          onChange={(ev) => setSearchQuery(ev.target.value || undefined)}
         />
-        <Typography hidden={isSearchMode} variant="h5">
+        <Box sx={{ mb: 2, display: "flex", gap: 1, flexWrap: "wrap", alignItems: "center" }}>
+          <Typography variant="caption" sx={{ opacity: 0.7, mr: 0.5, fontWeight: 500 }}>
+            Popular:
+          </Typography>
+          {["entity", "blocks", "items", "typescript", "spawn"].map((tag) => {
+            const isActive = searchQuery === tag;
+            return (
+              <Box
+                key={tag}
+                component="button"
+                onClick={() => setSearchQuery(isActive ? undefined : tag)}
+                sx={(theme) => {
+                  const isDark = theme.palette.mode === "dark";
+                  // Use separate border colors for 3D bevel effect
+                  const highlightColor = isActive ? mcColors.green3 : isDark ? mcColors.gray3 : mcColors.gray2;
+                  const shadowColor = isActive ? mcColors.green6 : isDark ? mcColors.gray6 : mcColors.gray4;
+                  return {
+                    // Individual borders for proper bevel effect
+                    borderTop: `2px solid ${highlightColor}`,
+                    borderLeft: `2px solid ${highlightColor}`,
+                    borderRight: `2px solid ${shadowColor}`,
+                    borderBottom: `2px solid ${shadowColor}`,
+                    borderRadius: 0,
+                    px: 1.5,
+                    py: 0.5,
+                    fontSize: "0.8rem",
+                    fontWeight: 600,
+                    bgcolor: isActive ? mcColors.green4 : isDark ? mcColors.gray5 : mcColors.gray1,
+                    color: isActive ? "#fff" : isDark ? "#fff" : mcColors.gray6,
+                    cursor: "pointer",
+                    transition: "all 0.1s ease-in-out",
+                    textTransform: "capitalize",
+                    boxShadow: isActive ? `0 2px 8px ${mcColors.green4}40` : "none",
+                    "&:hover": {
+                      bgcolor: isActive ? mcColors.green3 : isDark ? mcColors.green5 : mcColors.green4,
+                      borderColor: mcColors.green4,
+                      color: "#fff",
+                      transform: "translateY(-1px)",
+                    },
+                    "&:active": {
+                      // Invert highlight/shadow on press
+                      borderTop: `2px solid ${shadowColor}`,
+                      borderLeft: `2px solid ${shadowColor}`,
+                      borderRight: `2px solid ${highlightColor}`,
+                      borderBottom: `2px solid ${highlightColor}`,
+                      transform: "translateY(1px)",
+                    },
+                  };
+                }}
+              >
+                {tag}
+                {isActive && " ✕"}
+              </Box>
+            );
+          })}
+        </Box>
+        <Typography hidden={isSearchMode} variant="h5" sx={{ position: "relative" }}>
+          <Box
+            component="span"
+            sx={{
+              position: "absolute",
+              width: 1,
+              height: 1,
+              padding: 0,
+              margin: -1,
+              overflow: "hidden",
+              clip: "rect(0, 0, 0, 0)",
+              whiteSpace: "nowrap",
+              border: 0,
+            }}
+          >
+            Start from a Template
+          </Box>
           <Box
             component="img"
-            role="img"
+            role="presentation"
             src="./res/images/headers/starttemplate_w.png"
-            alt="Information Icon"
+            alt=""
             aria-hidden="true"
-            sx={{
+            sx={(theme) => ({
               maxWidth: "100%",
               mt: 3,
               mr: 0.5,
-            }}
+              filter: theme.palette.mode === "light" ? "invert(1)" : "none",
+            })}
           />
         </Typography>
         <Typography hidden={isSearchMode} variant="body1" sx={{ mb: 2 }}>
@@ -70,26 +155,69 @@ export default function ProjectGrid({ onAppGalleryAction }: ProjectGridProps) {
             ))
           )}
         </Grid>
-        <Box marginTop={1} display="flex" justifyContent="flex-end">
-          <TextButton hidden={!isMoreTemplates} onClick={fetchMoreTemplates}>
-            <Typography color="secondary">See more...</Typography>
+        <Box marginTop={2} display="flex" justifyContent="flex-end">
+          <TextButton
+            hidden={!isMoreTemplates}
+            onClick={fetchMoreTemplates}
+            sx={(theme) => {
+              const isDark = theme.palette.mode === "dark";
+              return {
+                px: 2,
+                py: 0.75,
+                borderRadius: 0,
+                border: isDark ? `2px solid ${mcColors.green4}4d` : `2px solid ${mcColors.green5}4d`,
+                bgcolor: isDark ? `${mcColors.green4}1a` : `${mcColors.green4}1a`,
+                transition: "all 0.15s ease-in-out",
+                "&:hover": {
+                  bgcolor: isDark ? `${mcColors.green4}33` : `${mcColors.green4}33`,
+                  borderColor: isDark ? mcColors.green4 : mcColors.green5,
+                  transform: "translateX(4px)",
+                },
+              };
+            }}
+          >
+            <Typography
+              sx={(theme) => ({
+                fontWeight: 600,
+                color: theme.palette.mode === "dark" ? mcColors.green2 : mcColors.green5,
+              })}
+            >
+              See more templates →
+            </Typography>
           </TextButton>
         </Box>
-        <Typography hidden={isSearchMode} variant="h5">
+        <Typography hidden={isSearchMode} variant="h5" sx={{ position: "relative" }}>
+          <Box
+            component="span"
+            sx={{
+              position: "absolute",
+              width: 1,
+              height: 1,
+              padding: 0,
+              margin: -1,
+              overflow: "hidden",
+              clip: "rect(0, 0, 0, 0)",
+              whiteSpace: "nowrap",
+              border: 0,
+            }}
+          >
+            Explore Snippets
+          </Box>
           <Box
             component="img"
-            role="img"
+            role="presentation"
             src="./res/images/headers/exploresnippets_w.png"
-            alt="Information Icon"
+            alt=""
             aria-hidden="true"
-            sx={{
+            sx={(theme) => ({
               maxWidth: "100%",
               top: 3,
               position: "relative",
               mt: 3,
               mb: 0.1,
               mr: 0.5,
-            }}
+              filter: theme.palette.mode === "light" ? "invert(1)" : "none",
+            })}
           />
         </Typography>
         <Typography hidden={isSearchMode} variant="body1" sx={{ mb: 2 }}>
@@ -113,9 +241,36 @@ export default function ProjectGrid({ onAppGalleryAction }: ProjectGridProps) {
             ))
           )}
         </Grid>
-        <Box marginTop={1} display="flex" justifyContent="flex-end">
-          <TextButton color="secondary" hidden={!isMoreSnippets} onClick={fetchMoreSnippets}>
-            <Typography color="secondary">See more...</Typography>
+        <Box marginTop={2} display="flex" justifyContent="flex-end">
+          <TextButton
+            color="secondary"
+            hidden={!isMoreSnippets}
+            onClick={fetchMoreSnippets}
+            sx={(theme) => {
+              const isDark = theme.palette.mode === "dark";
+              return {
+                px: 2,
+                py: 0.75,
+                borderRadius: 0,
+                border: isDark ? `2px solid ${mcColors.stoneLight}4d` : `2px solid ${mcColors.stone}4d`,
+                bgcolor: isDark ? `${mcColors.stone}33` : `${mcColors.stone}1a`,
+                transition: "all 0.15s ease-in-out",
+                "&:hover": {
+                  bgcolor: isDark ? `${mcColors.stone}66` : `${mcColors.stone}33`,
+                  borderColor: isDark ? mcColors.stoneLight : mcColors.stone,
+                  transform: "translateX(4px)",
+                },
+              };
+            }}
+          >
+            <Typography
+              sx={(theme) => ({
+                fontWeight: 600,
+                color: theme.palette.mode === "dark" ? mcColors.stoneLight : mcColors.stoneDark,
+              })}
+            >
+              See more snippets →
+            </Typography>
           </TextButton>
         </Box>
       </Paper>

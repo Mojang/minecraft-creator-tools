@@ -30,7 +30,7 @@ import EventComponentGroupAddEdge from "./EventComponentGroupAddEdge";
 import EventComponentGroupRemoveEdge from "./EventComponentGroupRemoveEdge";
 import { CustomLabel } from "./Labels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import EventActionDesign from "./EventActionDesign";
 import ManagedEventActionOrActionSet from "../minecraft/ManagedEventActionOrActionSet";
 import EntityTypeComponentSetEditor from "./EntityTypeComponentSetEditor";
@@ -712,7 +712,7 @@ export default class EntityTypeDiagramEditor extends Component<
           <CustomLabel
             isCompact={false}
             text="Add component group"
-            icon={<FontAwesomeIcon icon={faAdd} className="fa-lg" />}
+            icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
           />
         ),
       },
@@ -721,7 +721,7 @@ export default class EntityTypeDiagramEditor extends Component<
         onClick: this._handleEventAddAction,
         title: "Add action",
         icon: (
-          <CustomLabel isCompact={false} text="Add action" icon={<FontAwesomeIcon icon={faAdd} className="fa-lg" />} />
+          <CustomLabel isCompact={false} text="Add action" icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />} />
         ),
       },
     ];

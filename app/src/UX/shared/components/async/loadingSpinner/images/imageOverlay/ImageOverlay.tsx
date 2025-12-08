@@ -41,7 +41,6 @@ export default function ImageOverlay({ image, item, children, alt }: ImageOverla
     >
       <Box
         component="div"
-        aria-label={alt}
         width="100%"
         height="100%"
         p={0}
@@ -49,16 +48,22 @@ export default function ImageOverlay({ image, item, children, alt }: ImageOverla
           objectFit: "cover",
         }}
       />
-      <Box alignContent="center" justifyContent="center" sx={{ position: "absolute", display: "flex", inset: 0 }}>
+      <Box
+        alignContent="flex-end"
+        justifyContent="flex-start"
+        sx={{
+          position: "absolute",
+          display: "flex",
+          inset: 0,
+          background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.2) 100%)",
+        }}
+      >
         <Box
-          px={0.75}
-          pt={0.0}
+          px={1.5}
+          py={1}
           sx={{
-            bgcolor: "rgba(0,0,0,0.5)",
-            overflow: "auto",
+            overflow: "hidden",
             width: "100%",
-
-            borderRadius: 1,
           }}
         >
           {children}

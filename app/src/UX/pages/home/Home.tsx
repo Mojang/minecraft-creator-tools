@@ -26,7 +26,11 @@ export default function Home({ creatorTools, ...props }: HomeProps) {
           {errorMessageContainer}
           <Grid container spacing={3} sx={{ width: "auto" }}>
             <Grid item xs={12} lg={3}>
-              <InspectPanel onNewProjectSelected={props.onNewProjectSelected} />
+              <InspectPanel
+                onFilesSubmitted={props.onFilesSubmitted}
+                editFolder={onEditFolder}
+                openAppFolder={handleOpenLocalFolderClick}
+              />
               <Box margin={1} />
               {onEditFolder && (
                 <ProjectPanel
@@ -34,7 +38,6 @@ export default function Home({ creatorTools, ...props }: HomeProps) {
                   editFolder={onEditFolder}
                   exportBackup={onExportBackup}
                   openProject={handleProjectClicked}
-                  openAppFolder={handleOpenLocalFolderClick}
                 />
               )}
             </Grid>

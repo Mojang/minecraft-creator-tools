@@ -6,7 +6,7 @@ import { AppMode } from "../../App";
 import IAppProps from "../../IAppProps";
 import { LocalGalleryCommand, LocalFolderType } from "../../LocalGalleryCommand";
 import { GalleryProjectCommand } from "../../ProjectGallery";
-import { NewProjectSelectEvent } from "./HomeActions";
+import { FilesSubmittedEvent, NewProjectSelectEvent } from "./HomeActions";
 
 export default interface HomeProps extends IAppProps {
   theme: ThemeInput<any>;
@@ -20,7 +20,7 @@ export default interface HomeProps extends IAppProps {
   onSetProject: (project: Project) => void;
   onGalleryItemCommand: (command: GalleryProjectCommand, newProjectSeed: IProjectSeed) => void;
   onLocalGalleryItemCommand: (command: LocalGalleryCommand, folderType: LocalFolderType, folder: IFolder) => void;
-  onNewProjectSelected?: NewProjectSelectEvent;
+  onFilesSubmitted: FilesSubmittedEvent;
   onNewProjectFromFolderSelected?: (folder: string) => void;
   onProgressLog?: (message: string) => void;
   onNewProjectFromFolderInstanceSelected?: (folder: IFolder, name?: string, isDocumentationProject?: boolean) => void;

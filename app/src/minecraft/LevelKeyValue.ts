@@ -98,6 +98,27 @@ export default class LevelKeyValue {
     return this.sharedByteLength === 0;
   }
 
+  /**
+   * Clears the value data to free up memory. Call this after the value has been
+   * processed and is no longer needed. The key information is preserved.
+   */
+  public clearValueData() {
+    this.value = undefined;
+    this.fileBytes = undefined;
+  }
+
+  /**
+   * Clears all data including key bytes to maximize memory savings.
+   * Only call this when the LevelKeyValue is no longer needed.
+   */
+  public clearAllData() {
+    this.value = undefined;
+    this.fileBytes = undefined;
+    this.unsharedKeyBytes = undefined;
+    this.fullBytesCached = undefined;
+    this.previousKey = undefined;
+  }
+
   public loadFromLdb(incomingBytes: Uint8Array, startingIndex: number, prevKey: LevelKeyValue | undefined) {
     this.fileBytes = incomingBytes;
     this.startIndex = startingIndex;

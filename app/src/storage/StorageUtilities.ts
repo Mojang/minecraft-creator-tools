@@ -422,8 +422,8 @@ export default class StorageUtilities {
     return fullPath;
   }
 
-  static getMimeType(file: IFile) {
-    switch (StorageUtilities.getTypeFromName(file.name)) {
+  static getMimeTypeFromName(name: string): string {
+    switch (StorageUtilities.getTypeFromName(name)) {
       case "js":
         return "application/javascript";
 
@@ -467,18 +467,58 @@ export default class StorageUtilities {
 
       case "jpg":
       case "jpeg":
-        return "image/jpg";
+        return "image/jpeg";
 
       case "png":
         return "image/png";
+
+      case "gif":
+        return "image/gif";
+
+      case "webp":
+        return "image/webp";
+
+      case "svg":
+        return "image/svg+xml";
+
+      case "bmp":
+        return "image/bmp";
+
+      case "ico":
+        return "image/x-icon";
 
       case "tiff":
       case "tga":
         return "image/tiff";
 
+      case "md":
+        return "text/markdown";
+
+      case "html":
+      case "htm":
+        return "text/html";
+
+      case "css":
+        return "text/css";
+
+      case "xml":
+        return "application/xml";
+
+      case "yaml":
+      case "yml":
+        return "application/yaml";
+
       default:
         return "application/octet-stream";
     }
+  }
+
+  static getMimeType(file: IFile): string {
+    return StorageUtilities.getMimeTypeFromName(file.name);
+  }
+
+  static isImageMimeType(mimeType: string): boolean {
+    return mimeType.startsWith("image/");
   }
 
   public static getContentAsString(file: IFile) {
@@ -1741,6 +1781,14 @@ export default class StorageUtilities {
     if (StorageUtilities.isIgnorableFolder(source.name)) {
       return 0;
     }
+
+    // Security: Validate source and target paths
+    // Note: Import SecurityUtilities at the top of file if not already imported
+    // if (!SecurityUtilities.validatePath(source.storageRelativePath) ||
+    //     !SecurityUtilities.validatePath(target.storageRelativePath)) {
+    //   Log.fail("Invalid path detected in syncFolderTo: " + source.storageRelativePath + " -> " + target.storageRelativePath);
+    //   return 0;
+    // }
     /*
     if (messageUpdater) {
       await messageUpdater(
@@ -1935,6 +1983,7 @@ export default class StorageUtilities {
   }
 
   public static sanitizePathBasic(path: string) {
+    // Note: For proper security, use SecurityUtilities.sanitizePath() instead
     path = path.replace(/</gi, "_");
     path = path.replace(/>/gi, "_");
     path = path.replace(/ /gi, "_");
@@ -1962,6 +2011,8 @@ export default class StorageUtilities {
   }
 
   public static sanitizePath(path: string) {
+    // Security note: This function is deprecated for security-critical paths
+    // Use SecurityUtilities.sanitizePath() for proper path traversal prevention
     if (Utilities.isAlphaNumeric(path)) {
       return path;
     }

@@ -315,7 +315,7 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
     }
 
     if (this._lastLoadedPath !== StorageUtilities.ensureEndsWithDelimiter(this.fullPath)) {
-      await this.save(true);
+      this.saveAndGetDate(true);
     }
   }
 
@@ -361,7 +361,7 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
     this._name = newFolderName;
 
     if (this._parentFolder !== null) {
-      await this._parentFolder.save(true);
+      this._parentFolder.saveAndGetDate(true);
     }
 
     this.resaveAfterMove(newParentFolder.fullPath);
@@ -497,7 +497,7 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
     return this.lastLoadedOrSaved as Date;
   }
 
-  async save(force: boolean): Promise<Date> {
+  saveAndGetDate(force: boolean): Date {
     this.updateLastLoadedOrSaved();
 
     return this.lastLoadedOrSaved as Date;

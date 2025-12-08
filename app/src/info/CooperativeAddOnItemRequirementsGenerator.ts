@@ -70,7 +70,9 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
         )
       );
     } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
-      await projectItem.loadFileContent();
+      if (!projectItem.isContentLoaded) {
+        await projectItem.loadContent();
+      }
 
       if (projectItem.primaryFile) {
         const rpManifest = await ResourceManifestDefinition.ensureOnFile(projectItem.primaryFile);
@@ -93,7 +95,9 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
         }
       }
     } else if (projectItem.itemType === ProjectItemType.animationControllerBehaviorJson) {
-      await projectItem.loadFileContent();
+      if (!projectItem.isContentLoaded) {
+        await projectItem.loadContent();
+      }
 
       if (projectItem.primaryFile) {
         const bacManifest = await AnimationControllerBehaviorDefinition.ensureOnFile(projectItem.primaryFile);
@@ -131,7 +135,9 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
         }
       }
     } else if (projectItem.itemType === ProjectItemType.animationBehaviorJson) {
-      await projectItem.loadFileContent();
+      if (!projectItem.isContentLoaded) {
+        await projectItem.loadContent();
+      }
 
       if (projectItem.primaryFile) {
         const baManifest = await AnimationBehaviorDefinition.ensureOnFile(projectItem.primaryFile);
@@ -169,8 +175,9 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
         }
       }
     } else if (projectItem.itemType === ProjectItemType.animationControllerResourceJson) {
-      await projectItem.loadFileContent();
-
+      if (!projectItem.isContentLoaded) {
+        await projectItem.loadContent();
+      }
       if (projectItem.primaryFile) {
         const racManifest = await AnimationControllerResourceDefinition.ensureOnFile(projectItem.primaryFile);
 
@@ -207,8 +214,9 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
         }
       }
     } else if (projectItem.itemType === ProjectItemType.animationResourceJson) {
-      await projectItem.loadFileContent();
-
+      if (!projectItem.isContentLoaded) {
+        await projectItem.loadContent();
+      }
       if (projectItem.primaryFile) {
         const raManifest = await AnimationResourceDefinition.ensureOnFile(projectItem.primaryFile);
 
@@ -245,8 +253,9 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
         }
       }
     } else if (projectItem.itemType === ProjectItemType.renderControllerJson) {
-      await projectItem.loadFileContent();
-
+      if (!projectItem.isContentLoaded) {
+        await projectItem.loadContent();
+      }
       if (projectItem.primaryFile) {
         const racManifest = await RenderControllerSetDefinition.ensureOnFile(projectItem.primaryFile);
 
@@ -283,8 +292,9 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
         }
       }
     } else if (projectItem.itemType === ProjectItemType.modelGeometryJson) {
-      await projectItem.loadFileContent();
-
+      if (!projectItem.isContentLoaded) {
+        await projectItem.loadContent();
+      }
       if (projectItem.primaryFile) {
         const modGeo = await ModelGeometryDefinition.ensureOnFile(projectItem.primaryFile);
 
@@ -350,7 +360,9 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
         }
       }
     } else if (projectItem.itemType === ProjectItemType.material) {
-      await projectItem.loadFileContent();
+      if (!projectItem.isContentLoaded) {
+        await projectItem.loadContent();
+      }
 
       if (projectItem.primaryFile) {
         const mat = await Material.ensureOnFile(projectItem.primaryFile);

@@ -161,11 +161,11 @@ export default abstract class StorageBase implements IStorage {
     }
 
     if (path.startsWith(this.rootFolder.fullPath)) {
-      path = path.substring(this.rootFolder.fullPath.length);
+      path = StorageUtilities.ensureStartsWithDelimiter(path.substring(this.rootFolder.fullPath.length));
+
       const file = await this.rootFolder.getFileFromRelativePath(path);
 
       if (file) {
-        Log.message("Loading file at path after external update: " + path);
         await file.scanForChanges();
       }
     }

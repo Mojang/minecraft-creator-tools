@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { Utilities } from "../index.lib";
 import Command from "../minecraft/Command";
 import { ICommandResponseBody } from "../minecraft/ICommandResponse";
 import CreatorTools, { CreatorToolsMinecraftState } from "./CreatorTools";
@@ -86,9 +87,7 @@ export default class CommandRunner {
         let resultData: ICommandResponseBody | undefined;
 
         if (result !== undefined && result !== null && result.indexOf("{") >= 0) {
-          try {
-            resultData = JSON.parse(result);
-          } catch (e) {}
+          resultData = Utilities.parseJson(result) as ICommandResponseBody | undefined;
 
           if (resultData !== undefined) {
             // store a position so that we can absolutize future commands

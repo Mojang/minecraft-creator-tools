@@ -21,8 +21,8 @@ export default class Rotation {
     this._pitch = newPitch;
   }
 
-  constructor(yaw: number | null | undefined, pitch: number | null | undefined) {
-    this._yaw = yaw == null ? 0 : yaw;
-    this._pitch = pitch == null ? 0 : pitch;
+  constructor(yaw?: number | undefined, pitch?: number | undefined) {
+    this._yaw = yaw === undefined ? 0 : yaw;
+    this._pitch = pitch === undefined ? 0 : pitch;
   }
 }

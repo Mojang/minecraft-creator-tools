@@ -269,7 +269,7 @@ export default class StorageProxy {
     }
 
     if (content && typeof content !== "string" && this.encodeBinary) {
-      content = Utilities.arrayBufferToBase64(content);
+      content = Utilities.arrayBufferToBase64(content as any);
     }
     // Log.verbose("Reading bin content for '" + ensureFile.fullPath + "' " + ensureFile.content);
 

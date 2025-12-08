@@ -169,6 +169,9 @@ export default class ItemTileButton extends Component<IItemTileButtonProps, IIte
       outerClassName += " itbi-outer-selected";
     }
 
+    const brand = this.props.theme.siteVariables?.colorScheme?.brand;
+    const isDark = brand?.background1 === "#312f2d";
+
     return (
       <div
         className={outerClassName}
@@ -181,14 +184,14 @@ export default class ItemTileButton extends Component<IItemTileButtonProps, IIte
         <div
           className="itbi-button"
           style={{
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
+            color: brand?.foreground1,
           }}
         >
           <div
             className="itbi-grid"
             style={{
-              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
+              backgroundColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.05)",
+              borderColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.12)",
             }}
           >
             <div className="itbi-iconArea"> {imageElement}</div>

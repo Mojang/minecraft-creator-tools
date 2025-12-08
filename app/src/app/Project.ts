@@ -29,6 +29,18 @@ import LocManager from "../minecraft/LocManager";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ProjectUpdateRunner from "../updates/ProjectUpdateRunner";
 import ProjectUpdateResult from "../updates/ProjectUpdateResult";
+
+import TelemetryImpl from "../analytics/Telemetry";
+import TelemetryStub from "../analytics/TelemetryStub";
+
+let telemetry = TelemetryStub;
+
+// @ts-ignore - ENABLE_ANALYTICS is injected by webpack and vite configs
+if (typeof ENABLE_ANALYTICS !== "undefined" && ENABLE_ANALYTICS === true) {
+  telemetry = TelemetryImpl;
+}
+
+import { TelemetryEvents, TelemetryProperties } from "../analytics/TelemetryConstants";
 import { StatusTopic, StatusType } from "./Status";
 import { ProjectInfoSuite } from "../info/IProjectInfoData";
 import Pack, { PackType } from "../minecraft/Pack";
@@ -114,6 +126,7 @@ export const remappedMinecraftScriptModules: { [oldModuleName: string]: string }
   "@minecraft/server-editor-bindings": "@minecraft/server-editor",
 };
 
+export const vanillaSliceFolderSeeds = ["vanilla", "chemistry"];
 const ProcessItemRelationsBatchSize = 400;
 
 export default class Project {
@@ -810,8 +823,6 @@ export default class Project {
   private ensureDefaultWorldName() {
     if (this.worldSettings && this.worldSettings.name === undefined) {
       this.worldSettings.name = this.name + " " + Utilities.getDateStr(new Date());
-
-      this.save();
     }
   }
 
@@ -1026,6 +1037,14 @@ export default class Project {
 
   set lastMapDeployedDate(newValue: Date | undefined) {
     this.#data.lastMapDeployedDate = newValue;
+  }
+
+  get previewImageBase64(): string | undefined {
+    return this.#data.previewImageBase64;
+  }
+
+  set previewImageBase64(newValue: string | undefined) {
+    this.#data.previewImageBase64 = newValue;
   }
 
   get effectiveCreator(): string {
@@ -2578,6 +2597,29 @@ export default class Project {
           }
         }
       }
+
+      if (!variantName) {
+        for (const variantFolderSeed of vanillaSliceFolderSeeds) {
+          let variantSource = projectPathLower.indexOf("/" + variantFolderSeed.toLowerCase() + "_");
+          if (variantSource >= 0) {
+            let startOfSection = variantSource + variantFolderSeed.length + 2;
+            let nextSlash = projectPath.indexOf("/", startOfSection);
+
+            if (nextSlash >= startOfSection) {
+              {
+                const potentialVersionSection = projectPathLower.substring(startOfSection, nextSlash);
+
+                if (Utilities.isNumericIsh(potentialVersionSection) && potentialVersionSection.indexOf(".") > 0) {
+                  variantName = potentialVersionSection;
+                  targetVariantType = ProjectItemVariantType.versionSliceAltPacks;
+
+                  projectPath = projectPath.replace("_" + potentialVersionSection + "/", "/");
+                }
+              }
+            }
+          }
+        }
+      }
     }
 
     let pi = this.getItemByProjectPath(projectPath);
@@ -2733,6 +2775,19 @@ export default class Project {
       this.#items.push(pi);
       this.#indevInfoSetNeedsUpdating = true;
       this._onItemAdded.dispatch(this, pi);
+
+      const telemetryProperties: Record<string, any> = {
+        [TelemetryProperties.ITEM_TYPE]: initialSettings.itemType,
+      };
+
+      if (initialSettings.source) {
+        telemetryProperties[TelemetryProperties.TEMPLATE] = initialSettings.source;
+      }
+
+      telemetry.trackEvent({
+        name: TelemetryEvents.ADD_NEW_PROJECT_ITEM,
+        properties: telemetryProperties,
+      });
     }
 
     return pi;
@@ -2767,6 +2822,24 @@ export default class Project {
     this.#isLoaded = true;
 
     this._onLoaded.dispatch(this, this);
+  }
+
+  /**
+   * Loads just the project preferences file (lightweight - doesn't load project folder).
+   * Useful for displaying project metadata in lists without full project initialization.
+   */
+  async ensurePreferencesLoaded() {
+    if (this.#preferencesFile === null) {
+      return;
+    }
+
+    if (!this.#preferencesFile.isContentLoaded) {
+      await this.#preferencesFile.loadContent(false);
+    }
+
+    if (Utilities.isString(this.#preferencesFile.content) && this.#preferencesFile.content != null) {
+      this.#data = JSON.parse(this.#preferencesFile.content as string);
+    }
   }
 
   async ensureInflated() {
@@ -2837,6 +2910,113 @@ export default class Project {
     }
   }
 
+  /**
+   * Updates the project's preview image from available pack icons or textures.
+   * Priority: (1) behavior pack icon, (2) resource pack icon, (3) skin pack icon, (4) any texture
+   */
+  async updatePreviewImageIfNeeded(): Promise<boolean> {
+    // Skip if we already have a preview image
+    if (this.#data.previewImageBase64) {
+      return false;
+    }
+
+    // Ensure folder structure is loaded so we have access to all items
+    if (!this.#folderStructureLoaded) {
+      await this.loadFolderStructure();
+    }
+
+    // Try to find a suitable preview image in priority order
+    let imageFile: IFile | undefined;
+
+    // 1. Look for pack icon images (behavior pack, resource pack, skin pack icons)
+    const packIconItems = this.getItemsByType(ProjectItemType.packIconImage);
+    for (const iconItem of packIconItems) {
+      if (!iconItem.isContentLoaded) {
+        await iconItem.loadContent();
+      }
+      if (iconItem.primaryFile && iconItem.primaryFile.content) {
+        // Prefer behavior pack icons first (check if in behavior_packs folder)
+        const path = iconItem.projectPath?.toLowerCase() || "";
+        if (path.includes("behavior_pack") || path.includes("bp")) {
+          imageFile = iconItem.primaryFile;
+          break;
+        }
+      }
+    }
+
+    // 2. If no behavior pack icon, try resource pack icon
+    if (!imageFile) {
+      for (const iconItem of packIconItems) {
+        if (iconItem.primaryFile && iconItem.primaryFile.content) {
+          const path = iconItem.projectPath?.toLowerCase() || "";
+          if (path.includes("resource_pack") || path.includes("rp")) {
+            imageFile = iconItem.primaryFile;
+            break;
+          }
+        }
+      }
+    }
+
+    // 3. If no resource pack icon, try skin pack icon
+    if (!imageFile) {
+      for (const iconItem of packIconItems) {
+        if (iconItem.primaryFile && iconItem.primaryFile.content) {
+          const path = iconItem.projectPath?.toLowerCase() || "";
+          if (path.includes("skin_pack") || path.includes("skin")) {
+            imageFile = iconItem.primaryFile;
+            break;
+          }
+        }
+      }
+    }
+
+    // 4. If still no icon, use any pack icon we found
+    if (!imageFile) {
+      for (const iconItem of packIconItems) {
+        if (iconItem.primaryFile && iconItem.primaryFile.content) {
+          imageFile = iconItem.primaryFile;
+          break;
+        }
+      }
+    }
+
+    // 5. If no pack icons at all, try to find any texture image
+    if (!imageFile) {
+      const textureItems = this.getItemsByType(ProjectItemType.texture);
+      for (const textureItem of textureItems) {
+        // Skip very large textures or non-PNG files
+        if (!textureItem.primaryFile?.name.toLowerCase().endsWith(".png")) {
+          continue;
+        }
+        if (!textureItem.isContentLoaded) {
+          await textureItem.loadContent();
+        }
+        if (textureItem.primaryFile && textureItem.primaryFile.content) {
+          // Only use reasonably sized textures (under 256KB) to avoid huge base64 strings
+          if (textureItem.primaryFile.content.length < 256 * 1024) {
+            imageFile = textureItem.primaryFile;
+            break;
+          }
+        }
+      }
+    }
+
+    // Convert the image to base64 if we found one
+    if (imageFile && imageFile.content) {
+      const content = imageFile.content;
+      if (content instanceof Uint8Array) {
+        this.#data.previewImageBase64 = Utilities.uint8ArrayToBase64(content);
+        return true;
+      } else if (typeof content === "string") {
+        // If content is already a string, it might already be base64 or we skip it
+        // For PNG files, binary content should always be Uint8Array after loading
+        return false;
+      }
+    }
+
+    return false;
+  }
+
   private _handleDeployUpdated(message: string) {
     this.#creatorTools.notifyStatusUpdate(message);
   }
@@ -2849,6 +3029,9 @@ export default class Project {
     }
 
     await this.ensureProjectFolder();
+
+    // Update preview image from pack icons/textures if not already set
+    await this.updatePreviewImageIfNeeded();
 
     // save all things inside of file containers first
     for (let i = 0; i < this.#items.length; i++) {
@@ -2888,7 +3071,6 @@ export default class Project {
     if (
       this.autoDeploymentMode === ProjectAutoDeploymentMode.deployOnSave &&
       this.#creatorTools.deploymentStorage !== null &&
-      this.#creatorTools.deployBehaviorPacksFolder !== null &&
       this.#creatorTools.activeMinecraft
     ) {
       await this.#creatorTools.activeMinecraft.syncWithDeployment();
@@ -3039,7 +3221,7 @@ export default class Project {
       }
     } else if (
       this.#data.mainDeployFolderPath !== undefined &&
-      this.#creatorTools.isDeployingToComMojang &&
+      this.#creatorTools.isDeployingToMinecraft &&
       this.#creatorTools.deploymentStorage
     ) {
       const folder = this.#creatorTools.projectsStorage.rootFolder.ensureFolder(
@@ -3056,7 +3238,7 @@ export default class Project {
         this._applyToProjectFolder();
       }
 
-      const deployFolder = await this.#creatorTools.deploymentStorage.ensureFolderFromStorageRelativePath(
+      const deployFolder = await this.#creatorTools.defaultDeploymentStorage.ensureFolderFromStorageRelativePath(
         this.#data.mainDeployFolderPath
       );
 

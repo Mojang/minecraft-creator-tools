@@ -65,6 +65,34 @@
   overflow-x: hidden;
 }
 
+/* Custom scrollbar styling for better visibility */
+.pil-list::-webkit-scrollbar {
+  width: 12px;
+}
+
+.pil-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.pil-list::-webkit-scrollbar-thumb {
+  background-color: #a39895;
+  border-radius: 0px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.pil-list::-webkit-scrollbar-thumb:hover {
+  background-color: #86d562;
+}
+
+/* Dark mode - higher contrast thumb against dark background */
+.pil-list-dark::-webkit-scrollbar-thumb {
+  background-color: #8b8b8b;
+}
+
+.pil-list-dark::-webkit-scrollbar-thumb:hover {
+  background-color: #86d562;
+}
 .pil-fixedLine {
   padding-left: 17px;
   font-size: 0.875rem;

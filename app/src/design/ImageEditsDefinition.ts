@@ -295,7 +295,9 @@ export default class ImageEditsDefinition {
         }
 
         if (item) {
-          await item.loadFileContent();
+          if (!item.isContentLoaded) {
+            await item.loadContent();
+          }
 
           if (item.primaryFile) {
             const blockType = await BlockTypeDefinition.ensureOnFile(item.primaryFile);

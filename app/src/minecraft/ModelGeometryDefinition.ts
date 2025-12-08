@@ -32,6 +32,14 @@ export default class ModelGeometryDefinition {
     return this._isLoaded;
   }
 
+  public get defaultGeometry() {
+    if (this.definitions && this.definitions.length > 0) {
+      return this.definitions[0];
+    }
+
+    return undefined;
+  }
+
   public get file() {
     return this._file;
   }

@@ -71,9 +71,19 @@ export default class Pack {
     } else if (this.packType === PackType.persona) {
       this.manifest = await PersonaManifestDefinition.ensureOnFile(this.manifestFile);
     } else if (this.packType === PackType.design) {
-      this.manifest = await PersonaManifestDefinition.ensureOnFile(this.manifestFile);
+      this.manifest = await DesignManifestDefinition.ensureOnFile(this.manifestFile);
     } else {
       this.manifest = await ResourceManifestDefinition.ensureOnFile(this.manifestFile);
+    }
+
+    if (this.manifest && !this.manifest.isLoaded) {
+      this.manifest.load();
+    }
+
+    // If the manifest file was newly created or is empty, populate it with default content
+    if (this.manifest && !this.manifest.definition) {
+      this.manifest.ensureHeaderForProject(this.project);
+      this.manifest.persist();
     }
 
     return this.manifest;

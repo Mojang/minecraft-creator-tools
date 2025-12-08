@@ -44,12 +44,6 @@
       "title": "Value",
       "description": "Specifies the value of the enchantment (minimum of 0).",
       "dataType": 0,
-      "validity": [
-        {
-          "comparison": "<=",
-          "value": 32767
-        }
-      ],
       "isRequired": true,
       "samples": {
         "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [

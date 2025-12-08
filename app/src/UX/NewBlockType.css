@@ -1,28 +1,145 @@
+/* New Block Type Dialog Styles */
+
 .nbt-outer {
-  padding: 8px;
-  padding-top: 2px;
   width: 100%;
-  min-height: 450px;
-  height: 100%;
+  min-height: 420px;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
+.nbt-loading {
+  padding: 40px;
+  text-align: center;
+  opacity: 0.7;
+}
+
+/* Section container - minimal, just for grouping */
+.nbt-section {
+  margin-bottom: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Section header with icon */
+.nbt-sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid;
+}
+
+.nbt-sectionIcon {
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.nbt-sectionSubtitle {
+  font-size: 0.85rem;
+  opacity: 0.6;
+  margin-bottom: 12px;
+  margin-top: -4px;
+}
+
+/* Input styling - simple and clean, no wrapper box */
+.nbt-inputWrapper {
+  width: 100%;
+  padding: 2px;
+  border-radius: 4px;
+  border: 2px solid;
+}
+
+.nbt-inputWrapper .ui-input {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.nbt-optionsArea input,
+.nbt-inputWrapper input,
+.nbt-inputWrapper .ui-input__input {
+  width: 100% !important;
+  padding: 14px 16px !important;
+  font-size: 1rem !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 4px !important;
+  color: inherit !important;
+  box-sizing: border-box !important;
+}
+
+.nbt-optionsArea input:focus,
+.nbt-inputWrapper input:focus,
+.nbt-inputWrapper .ui-input__input:focus {
+  outline: none !important;
+}
+
+.nbt-inputWrapper input::placeholder {
+  opacity: 0.5;
+  font-style: italic;
+}
+
+/* Gallery container with proper tile layout */
+.nbt-projectGallery {
+  height: 280px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: 4px;
+  padding: 4px;
+  border: 1px solid;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Grid layout for gallery tiles - 3 columns to fit better */
+.nbt-projectGallery .ig-binWrap {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+.nbt-projectGallery .itbi-outer {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}
+
+.nbt-projectGallery .itbi-button {
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
+
+.nbt-projectGallery .itbi-grid {
+  max-width: 100% !important;
+}
+
+/* Legacy support */
 .nbt-gallery {
   overflow-y: auto;
   min-height: 280px;
-  background-color: #202020;
   max-height: calc(100vh - 280px);
 }
 
-.nbt-projectGallery {
-  height: 360px;
-  overflow-y: auto;
+.nbt-optionsArea {
+  margin-bottom: 16px;
 }
 
 .nbt-selectedProject {
   padding-top: 20px;
   padding-left: 30px;
-}
-
-.nbt-optionsArea {
-  padding-bottom: 10px;
 }

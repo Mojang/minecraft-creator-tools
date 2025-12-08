@@ -60,6 +60,26 @@ export const TelemetryEvents = {
   MENU_ITEM_SELECTED: "MenuItemSelected",
   SETTING_CHANGED: "SettingChanged",
   SEARCH_PERFORMED: "SearchPerformed",
+  ITEM_CLICKED: "ItemClicked",
+
+  // Project/File Management actions
+  SHARE_ADDON_FILE: "ShareAddOnFile",
+  PROJECT_SETTING_CHANGED: "ProjectSettingChanged",
+  CREATOR_TOOL_SETTING_CHANGED: "CreatorToolSettingChanged",
+  VIEW_CHANGED: "ViewChanged",
+  PROJECT_MAP_CLICKED: "ProjectMapClicked",
+  SHOW_FILTER_CLICKED: "ShowFilterClicked",
+  HOME_CLICKED: "HomeClicked",
+  SAVE_CLICKED: "SaveClicked",
+  EXPORT_TO_FOLDER: "ExportToFolder",
+
+  // Editor-specific events
+  ENTITY_TYPE_EDITOR_VIEW_CHANGE: "EntityTypeEditorViewChange",
+  ENTITY_TYPE_EDITOR_COMPONENT_CLICKED: "EntityTypeEditorComponentClicked",
+  ITEM_TYPE_EDITOR_VIEW_CHANGE: "ItemTypeEditorViewChange",
+  ITEM_TYPE_EDITOR_COMPONENT_CLICKED: "ItemTypeEditorComponentClicked",
+  ADD_NEW_PROJECT_ITEM: "AddNewProjectItem",
+  ITEM_ACTION: "ItemAction",
 
   // Extension (VS Code)
   EXTENSION_ACTIVATED: "ExtensionActivated",
@@ -78,6 +98,15 @@ export const TelemetryEvents = {
   // Performance metrics
   PERFORMANCE_METRIC: "PerformanceMetric",
   LOAD_TIME_RECORDED: "LoadTimeRecorded",
+
+  // File upload operations
+  FILE_UPLOADED: "FileUploaded",
+  FILE_DROPPED: "FileDropped",
+
+  // Project list operations
+  PROJECT_LIST_VIEWED: "ProjectListViewed",
+  BACKUP_EXPORTED: "BackupExported",
+  FOLDER_OPENED: "FolderOpened",
 } as const;
 
 /**
@@ -87,10 +116,33 @@ export const TelemetryProperties = {
   // Project properties
   PROJECT_TYPE: "projectType",
   PROJECT_ID: "projectId",
-  PROJECT_NAME: "projectName",
   HAS_BEHAVIOR_PACK: "hasBehaviorPack",
   HAS_RESOURCE_PACK: "hasResourcePack",
   HAS_SCRIPTS: "hasScripts",
+
+  // View properties
+  VIEW_CHANGE_TYPE: "viewChangeType",
+  VIEW_MODE: "viewMode",
+  PREVIOUS_VIEW: "previousView",
+
+  // Item properties
+  ITEM_ID: "itemId",
+  ITEM_TYPE: "itemType",
+  ITEM_NAME: "itemName",
+
+  // Share properties
+  SHARE_METHOD: "shareMethod",
+  SHARE_TYPE: "shareType",
+
+  // Filter properties
+  FILTER_TYPE: "filterType",
+  FILTER_TEXT: "filterText",
+
+  // Setting properties
+  SETTING_TYPE: "settingType",
+  SETTING_VALUE: "settingValue",
+  OLD_VALUE: "oldValue",
+  NEW_VALUE: "newValue",
 
   // File properties
   FILE_TYPE: "fileType",
@@ -106,8 +158,6 @@ export const TelemetryProperties = {
   ERROR_CODE: "errorCode",
 
   // User properties
-  USER_ID: "userId",
-  SESSION_ID: "sessionId",
   IS_AUTHENTICATED: "isAuthenticated",
 
   // Environment properties
@@ -115,6 +165,7 @@ export const TelemetryProperties = {
   BROWSER_TYPE: "browserType",
   VSCODE_VERSION: "vscodeVersion",
   HOST_TYPE: "hostType",
+  MCTOOLS_VERSION: "mctoolsVersion",
 
   // Feature flags
   FEATURE_NAME: "featureName",
@@ -150,6 +201,30 @@ export const TelemetryProperties = {
 
   // Component properties
   COMPONENT_NAME: "componentName",
+
+  // File upload properties
+  FILE_UPLOAD_METHOD: "fileUploadMethod",
+  FILE_FORMAT: "fileFormat",
+  UPLOAD_SOURCE: "uploadSource",
+
+  // Folder properties
+  FOLDER_DEPTH: "folderDepth",
+  FOLDER_TYPE: "folderType",
+
+  // Export/Backup properties
+  EXPORT_SUCCESS: "exportSuccess",
+  EXPORT_FORMAT: "exportFormat",
+
+  // Editor properties
+  EDITOR_TYPE: "editorType",
+  MODE: "mode",
+  COMPONENT_ID: "componentId",
+  ITEM_ACTION_TYPE: "itemActionType",
+  TEMPLATE: "template",
+
+  // List properties
+  PROJECT_LIST_SIZE: "projectListSize",
+  TAB_INDEX: "tabIndex",
 } as const;
 
 /**
@@ -161,6 +236,7 @@ export const TelemetryMeasurements = {
   ERROR_COUNT: "errorCount",
   WARNING_COUNT: "warningCount",
   LINE_COUNT: "lineCount",
+  ACTIVE_PROJECT_COUNT: "activeProjectCount",
 
   // Sizes
   FILE_SIZE_BYTES: "fileSizeBytes",
@@ -171,6 +247,7 @@ export const TelemetryMeasurements = {
   BUILD_TIME_MS: "buildTimeMs",
   VALIDATION_TIME_MS: "validationTimeMs",
   DEPLOYMENT_TIME_MS: "deploymentTimeMs",
+  DURATION: "duration",
 
   // Performance
   MEMORY_USAGE_MB: "memoryUsageMb",

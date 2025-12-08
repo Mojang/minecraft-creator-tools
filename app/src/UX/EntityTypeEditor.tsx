@@ -26,6 +26,8 @@ import CreatorTools from "../app/CreatorTools";
 import Project from "../app/Project";
 import IEventWrapper from "../minecraft/IEventWrapper";
 import EntityTypeDiagramEditor from "./EntityTypeDiagramEditor";
+import telemetry from "../analytics/Telemetry";
+import { TelemetryEvents, TelemetryProperties } from "../analytics/TelemetryConstants";
 
 export enum EntityTypeEditorMode {
   diagram = 0,
@@ -211,6 +213,13 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
   }
 
   _setMode(mode: EntityTypeEditorMode) {
+    telemetry.trackEvent({
+      name: TelemetryEvents.ENTITY_TYPE_EDITOR_VIEW_CHANGE,
+      properties: {
+        [TelemetryProperties.MODE]: EntityTypeEditorMode[mode],
+      },
+    });
+
     this.setState({
       fileToEdit: this.state.fileToEdit,
       isLoaded: this.state.isLoaded,
@@ -242,6 +251,12 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     const key = itemListings[event.selectedIndex].key;
 
     if (key) {
+      telemetry.trackEvent({
+        name: TelemetryEvents.ENTITY_TYPE_EDITOR_COMPONENT_CLICKED,
+        properties: {
+          [TelemetryProperties.COMPONENT_ID]: key,
+        },
+      });
       if (key === "defaultEntityType") {
         this.setState({
           fileToEdit: this.state.fileToEdit,
@@ -375,6 +390,18 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
       this.props.setActivePersistable(this);
     }
 
+    // Get entity type definition early so we can use it for tab counts
+    const et = this.state.fileToEdit.manager as EntityTypeDefinition;
+
+    if (et.data === undefined) {
+      return <div className="ete-message">Loading mob definition...</div>;
+    }
+
+    // Calculate counts for tab badges
+    const componentCount = et.getComponents().length;
+    const componentGroupCount = et.getComponentGroups().length;
+    const eventCount = et.getEvents().length;
+
     toolbarItems.push({
       icon: (
         <CustomTabLabel
@@ -405,11 +432,13 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
       title: "Edit properties",
     });
 
+    const componentsLabel = isButtonCompact ? "Components" : `Components (${componentCount})`;
+
     toolbarItems.push({
       icon: (
         <CustomTabLabel
           icon={<FontAwesomeIcon icon={faSquarePlus} className="fa-lg" />}
-          text={"Components"}
+          text={componentsLabel}
           isCompact={isButtonCompact}
           isSelected={this.state.mode === EntityTypeEditorMode.components}
           theme={this.props.theme}
@@ -417,14 +446,16 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
       ),
       key: "eteComponentsTab",
       onClick: this._setComponentsMode,
-      title: "Edit components and properties",
+      title: `Edit components and properties (${componentCount} components, ${componentGroupCount} groups)`,
     });
+
+    const actionsLabel = isButtonCompact ? "Actions" : `Actions (${eventCount})`;
 
     toolbarItems.push({
       icon: (
         <CustomTabLabel
           icon={<FontAwesomeIcon icon={faBolt} className="fa-lg" />}
-          text={"Actions"}
+          text={actionsLabel}
           isCompact={isButtonCompact}
           isSelected={this.state.mode === EntityTypeEditorMode.actions}
           theme={this.props.theme}
@@ -432,7 +463,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
       ),
       key: "eteActionsTab",
       onClick: this._setActionsMode,
-      title: "Edit documentation by types that need edits",
+      title: `Edit entity events and actions (${eventCount} events)`,
     });
 
     toolbarItems.push({
@@ -479,12 +510,6 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
       onClick: this._setLootMode,
       title: "Loot",
     });
-
-    const et = this.state.fileToEdit.manager as EntityTypeDefinition;
-
-    if (et.data === undefined) {
-      return <div className="ete-message">Loading mob definition...</div>;
-    }
 
     let modeArea = <></>;
 
@@ -580,7 +605,18 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
             />
           );
         } else {
-          itemInterior = <div className="ete-select">Select a group to edit components.</div>;
+          itemInterior = (
+            <div className="ete-emptyState">
+              <div className="ete-emptyStateIcon">
+                <FontAwesomeIcon icon={faSquarePlus} className="fa-2x" />
+              </div>
+              <div className="ete-emptyStateTitle">Select a Component Group</div>
+              <div className="ete-emptyStateMessage">
+                Choose a group from the list on the left to view and edit its components. Component groups define
+                different states of this entity (e.g., Baby, Adult).
+              </div>
+            </div>
+          );
         }
       }
 
@@ -657,7 +693,18 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
             </div>
           );
         } else {
-          itemInterior = <div className="ete-select">Select an action to edit properties.</div>;
+          itemInterior = (
+            <div className="ete-emptyState">
+              <div className="ete-emptyStateIcon">
+                <FontAwesomeIcon icon={faBolt} className="fa-2x" />
+              </div>
+              <div className="ete-emptyStateTitle">Select an Action</div>
+              <div className="ete-emptyStateMessage">
+                Choose an action from the list on the left to view and edit its triggers and effects. Actions define how
+                this entity responds to events in the game.
+              </div>
+            </div>
+          );
         }
       }
 
@@ -749,6 +796,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
               displayHeader={false}
               item={resourceItem}
               project={this.props.project}
+              creatorTools={this.props.creatorTools}
               file={resourceItem.primaryFile}
               heightOffset={this.props.heightOffset + VISUALS_MODE_HEIGHT_OFFSET}
             />

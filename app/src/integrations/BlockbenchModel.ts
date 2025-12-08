@@ -711,7 +711,7 @@ export default class BlockbenchModel {
         for (const item of entityTypeResourceProjectItem.childItems) {
           if (item.childItem.itemType === ProjectItemType.animationResourceJson && animationToUpdate === undefined) {
             if (!item.childItem.isContentLoaded) {
-              await item.childItem.loadFileContent();
+              await item.childItem.loadContent();
             }
 
             if (item.childItem.primaryFile) {
@@ -1404,7 +1404,9 @@ export default class BlockbenchModel {
 
           // Check if animation file name is related to model file name
           if (animationBaseName.includes(modelBaseName) || modelBaseName.includes(animationBaseName)) {
-            await projectItem.loadFileContent();
+            if (!projectItem.isContentLoaded) {
+              await projectItem.loadContent();
+            }
 
             if (projectItem.primaryFile) {
               const animationDef = await AnimationResourceDefinition.ensureOnFile(projectItem.primaryFile);

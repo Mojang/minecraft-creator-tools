@@ -80,7 +80,7 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
 
   public setType(blockType: BlockType) {
     this._type = blockType;
-    this._blockType = undefined;
+    this._blockType = blockType; // Keep reference to preserve baseType with shape data
     this._typeId = blockType.id;
   }
 

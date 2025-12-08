@@ -27,6 +27,20 @@ import Database from "../minecraft/Database";
 
 const ItemBatchSize = 500;
 
+/**
+ * Options passed to info generators to control their behavior.
+ */
+export interface IGeneratorOptions {
+  /**
+   * When true, generators may perform aggressive memory cleanup operations
+   * after processing (e.g., clearing LevelDB data, chunk caches).
+   * This is appropriate for fire-and-forget contexts like CLI validation,
+   * but should be false when the data may be needed by other components
+   * (e.g., world map rendering in the browser).
+   */
+  performAggressiveCleanup?: boolean;
+}
+
 export default class ProjectInfoSet {
   project?: Project;
   suite: ProjectInfoSuite;
@@ -34,6 +48,7 @@ export default class ProjectInfoSet {
   items: ProjectInfoItem[] = [];
   itemsByStoragePath: { [storagePath: string]: ProjectInfoItem[] | undefined } = {};
   contentIndex: ContentIndex;
+  performAggressiveCleanup: boolean = false;
 
   static _generatorsById: { [name: string]: IProjectInfoGenerator } = {};
   _isGenerating: boolean = false;
@@ -142,11 +157,13 @@ export default class ProjectInfoSet {
     excludeTests?: string[],
     info?: IProjectInfo,
     items?: IInfoItemData[],
-    index?: ContentIndex
+    index?: ContentIndex,
+    performAggressiveCleanup?: boolean
   ) {
     this.project = project;
     this.info = info ? info : {};
     this.contentIndex = index ? index : new ContentIndex();
+    this.performAggressiveCleanup = performAggressiveCleanup ?? false;
 
     if (items) {
       for (const item of items) {
@@ -452,7 +469,9 @@ export default class ProjectInfoSet {
               GeneratorRegistrations.configureForSuite(gen, this.suite);
 
               try {
-                const results = await gen.generate(pi, genContentIndex);
+                const results = await gen.generate(pi, genContentIndex, {
+                  performAggressiveCleanup: this.performAggressiveCleanup,
+                });
 
                 for (const item of results) {
                   this.pushItem(genItems, genItemsByStoragePath, item);

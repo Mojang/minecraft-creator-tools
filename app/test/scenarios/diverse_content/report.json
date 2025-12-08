@@ -94,7 +94,7 @@
     "multipleSoundsManifests": 0,
     "soundsDefinitionManifestFormatIsValid": 0,
     "soundsDefinitionManifestIsNotValidJson": 0,
-    "flagIsOrWasTrue": 0,
+    "experimentalFlagIsOrWasTrue": 0,
     "levelDatNotFound": 0,
     "worldNotFound": 0,
     "deprecatedBlockOverride": 0,
@@ -355,6 +355,11 @@
       "bones.resourceAnimationBoneRotationKeyframe": {
         "count": 20
       },
+      "textureImages.vanillaGameTextureCoverage": {
+        "overrideCount": 0,
+        "vanillaTextureCount": 2348,
+        "percent": 0
+      },
       "textureImagesTier0.nonVanillaTextureMemoryTier": {
         "instanceCount": 1,
         "total": 0,
@@ -531,17 +536,17 @@
       }
     },
     "errorCount": 0,
-    "internalProcessingErrorCount": 2,
-    "warningCount": 6,
-    "testSuccessCount": 36,
-    "testFailCount": 1,
+    "internalProcessingErrorCount": 0,
+    "warningCount": 7,
+    "testSuccessCount": 37,
+    "testFailCount": 0,
     "testNotApplicableCount": 11,
     "errorSummary": "",
-    "internalProcessingErrorSummary": "UNKNOWN: [JSONF402] Could not find expected form: entity/actor_document\nUNKNOWN: [JSONF402] Could not find expected form: spawn/spawn_rules",
-    "warningSummary": "WARNING: [FORMATVER218] (/resource_packs/diverse_rp/animations/sample_mob_animations.json) Resource animation version (1.21.0) has a higher minor version number compared to current version\nWARNING: [FORMATVER238] (/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json) Resource animation controller version (1.21.0) has a higher minor version number compared to current version\nWARNING: [FORMATVER258] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) Spawn rules version (1.21.0) has a higher minor version number compared to current version\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/loot_tables/sample_loot.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/loot_tables/sample_loot.json to `minecraft:stick`\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:iron_ingot`\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:stick`",
-    "testFailSummary": "TESTFAIL: [JSONF000] Found 2 internal errors for JSON Structure Validation (via Minecraft docs) (JSONF). This may be a temporary issue with the test run.",
-    "infoGenerationTime": 16,
-    "endToEndGenerationTime": 27,
+    "internalProcessingErrorSummary": "",
+    "warningSummary": "WARNING: [FORMATVER218] (/resource_packs/diverse_rp/animations/sample_mob_animations.json) Resource animation version (1.21.0) has a higher minor version number compared to current version\nWARNING: [FORMATVER238] (/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json) Resource animation controller version (1.21.0) has a higher minor version number compared to current version\nWARNING: [FORMATVER258] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) Spawn rules version (1.21.0) has a higher minor version number compared to current version\nWARNING: [JSON128] (/resource_packs/diverse_rp/animations/sample_mob_animations.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0\nWARNING: [JSON144] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0, 1.12.0\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:iron_ingot`\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:stick`",
+    "testFailSummary": "",
+    "infoGenerationTime": 68,
+    "endToEndGenerationTime": 83,
     "reds": 5248,
     "summary": {
       "BASEGAMEVER": {
@@ -825,16 +830,20 @@
         "1": {
           "defaultMessage": "JSON Structure Validation (JSON) completed successfully",
           "testCompleteSuccesses": 1
+        },
+        "128": {
+          "defaultMessage": "JSON structure error",
+          "warnings": 1
+        },
+        "144": {
+          "defaultMessage": "JSON structure error",
+          "warnings": 1
         }
       },
       "JSONF": {
-        "0": {
-          "defaultMessage": "Found 2 internal errors for JSON Structure Validation (via Minecraft docs) (JSONF). This may be a temporary issue with the test run.",
-          "testCompleteFails": 1
-        },
-        "402": {
-          "defaultMessage": "Could not find expected form",
-          "internalProcessingErrors": 2
+        "1": {
+          "defaultMessage": "JSON Structure Validation (via Minecraft docs) (JSONF) completed successfully",
+          "testCompleteSuccesses": 1
         }
       },
       "JSONTAGS": {
@@ -1202,9 +1211,13 @@
           "defaultMessage": "Unlinked item info generator (UNLINK) completed successfully",
           "testCompleteSuccesses": 1
         },
+        "205": {
+          "defaultMessage": "Link to vanilla item type item; avoid if possible",
+          "recommendations": 1
+        },
         "323": {
           "defaultMessage": "Link to item type is not found in this pack",
-          "warnings": 3
+          "warnings": 2
         }
       },
       "VALFILE": {
@@ -1658,21 +1671,23 @@
       "gIx": 1
     },
     {
-      "iTp": 0,
-      "gId": "JSONF",
-      "gIx": 0
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 128,
+      "p": "/resource_packs/diverse_rp/animations/sample_mob_animations.json",
+      "d": "(format_version) does not have a value in the enumeration 1.8.0, 1.10.0"
     },
     {
-      "iTp": 5,
-      "gId": "JSONF",
-      "gIx": 402,
-      "d": "entity/actor_document"
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 144,
+      "p": "/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json",
+      "d": "(format_version) does not have a value in the enumeration 1.8.0, 1.10.0, 1.12.0"
     },
     {
-      "iTp": 5,
+      "iTp": 1,
       "gId": "JSONF",
-      "gIx": 402,
-      "d": "spawn/spawn_rules"
+      "gIx": 1
     },
     {
       "iTp": 1,
@@ -2330,7 +2345,14 @@
     {
       "iTp": 7,
       "gId": "TEXTUREIMAGE",
-      "gIx": 101
+      "gIx": 101,
+      "fs": {
+        "vanillaGameTextureCoverage": {
+          "overrideCount": 0,
+          "vanillaTextureCount": 2348,
+          "percent": 0
+        }
+      }
     },
     {
       "iTp": 7,
@@ -2578,11 +2600,11 @@
       "gIx": 1
     },
     {
-      "iTp": 4,
+      "iTp": 6,
       "gId": "UNLINK",
-      "gIx": 323,
+      "gIx": 205,
       "p": "/behavior_packs/diverse_bp/loot_tables/sample_loot.json",
-      "d": "/behavior_packs/diverse_bp/loot_tables/sample_loot.json to `minecraft:stick`"
+      "d": "minecraft:stick"
     },
     {
       "iTp": 4,

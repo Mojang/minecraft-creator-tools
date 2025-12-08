@@ -21,6 +21,7 @@ import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType, ProjectItemStorageType } from "../app/IProjectItemData";
 import ProjectUtilities from "../app/ProjectUtilities";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
+import LocalUtilities from "../local/LocalUtilities";
 import { ensureReportJsonMatchesScenario, folderMatches } from "./TestUtilities";
 
 CreatorToolsHost.hostType = HostType.testLocal;
@@ -73,10 +74,6 @@ localEnv = new LocalEnvironment(false);
     ""
   );
 
-  CreatorToolsHost.deploymentStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "deployment" + NodeStorage.platformFolderDelimiter,
-    ""
-  );
   CreatorToolsHost.workingStorage = new NodeStorage(
     localEnv.utilities.testWorkingPath + "working" + NodeStorage.platformFolderDelimiter,
     ""
@@ -87,7 +84,7 @@ localEnv = new LocalEnvironment(false);
 
   await CreatorToolsHost.init();
 
-  creatorTools = CreatorToolsHost.creatorTools;
+  creatorTools = CreatorToolsHost.getCreatorTools();
 
   if (!creatorTools) {
     return;
@@ -95,6 +92,8 @@ localEnv = new LocalEnvironment(false);
 
   await creatorTools.load();
 
+  // Set up Database.local with proper path adjustment to find schemas in public/
+  (localEnv.utilities as LocalUtilities).basePathAdjust = "../public/";
   Database.local = localEnv.utilities;
   creatorTools.local = localEnv.utilities;
 

@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import ProjectUtilities from "../app/ProjectUtilities";
 import StorageUtilities from "../storage/StorageUtilities";
 import { IAnnotatedValue } from "./AnnotatedValue";
 import { HashCatalog } from "./HashUtilities";
@@ -272,6 +273,26 @@ export default class ContentIndex implements IContentIndex {
     pathEnd = StorageUtilities.stripExtension(pathEnd);
 
     return this._getProcessedPaths().some((path) => path.endsWith(pathEnd));
+  }
+
+  getPathMatches(pathEnd: string) {
+    pathEnd = pathEnd.toLowerCase();
+
+    let pathType = ProjectUtilities.inferJsonProjectItemTypeFromExtension(pathEnd);
+    pathEnd = StorageUtilities.stripExtension(pathEnd);
+
+    const results: string[] = [];
+
+    for (const candPath of this.data.items) {
+      const candType = ProjectUtilities.inferJsonProjectItemTypeFromExtension(candPath);
+      const candPathStripped = StorageUtilities.stripExtension(candPath.toLowerCase());
+
+      if (candPathStripped.endsWith(pathEnd) && pathType === candType) {
+        results.push(StorageUtilities.stripExtension(candPath));
+      }
+    }
+
+    return results;
   }
 
   async getMatches(searchString: string, wholeTermSearch?: boolean, withAnyAnnotation?: AnnotationCategory[]) {

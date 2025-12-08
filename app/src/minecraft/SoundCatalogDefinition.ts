@@ -222,7 +222,7 @@ export default class SoundCatalogDefinition implements IDefinition {
     for (const item of items) {
       if (item.itemType === ProjectItemType.soundCatalog) {
         if (!item.isContentLoaded) {
-          await item.loadFileContent();
+          await item.loadContent();
         }
 
         if (item.primaryFile) {

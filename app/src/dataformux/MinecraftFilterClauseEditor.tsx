@@ -4,10 +4,10 @@ import { Button, Dropdown, DropdownProps, FormInput, InputProps } from "@fluentu
 import Database from "../minecraft/Database";
 import Utilities from "../core/Utilities";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClose } from "@fortawesome/free-solid-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
-import DataFormUtilities from "./DataFormUtilities";
-import { FieldDataType } from "./IField";
+import DataFormUtilities from "./../dataform/DataFormUtilities";
+import { FieldDataType } from "./../dataform/IField";
 import { MinecraftFilterClause } from "../minecraft/jsoncommon/MinecraftFilterClause";
 
 export interface IMinecraftFilterClauseEditorProps {
@@ -241,7 +241,7 @@ export default class MinecraftFilterClauseEditor extends Component<
       closeButtonSpace = (
         <div className="mificl-cell">
           <Button className="mificl-closeButton" onClick={this._handleCloseClick}>
-            <FontAwesomeIcon icon={faClose} className="fa-md" />
+            <FontAwesomeIcon icon={faXmark} className="fa-md" />
           </Button>
         </div>
       );

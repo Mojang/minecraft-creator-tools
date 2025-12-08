@@ -47,11 +47,11 @@
         ],
         "/vanilla/behavior_pack/entities/nautilus.json": [
           {
-            "path": "/minecraft:entity/component_groups/minecraft:nautilus_mounted/minecraft:underwater_movement/",
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_player_controlled/minecraft:underwater_movement/",
             "content": 0.055
           },
           {
-            "path": "/minecraft:entity/component_groups/minecraft:nautilus_unmounted/minecraft:underwater_movement/",
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_ai_controlled/minecraft:underwater_movement/",
             "content": 0.07
           },
           {
@@ -85,7 +85,7 @@
         ],
         "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
           {
-            "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_tame_mounted/minecraft:underwater_movement/",
+            "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_player_controlled/minecraft:underwater_movement/",
             "content": 0.055
           },
           {
@@ -153,13 +153,13 @@
         }
       },
       {
-        "path": "/minecraft:entity/component_groups/minecraft:nautilus_mounted/minecraft:underwater_movement/",
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_player_controlled/minecraft:underwater_movement/",
         "content": {
           "value": 0.055
         }
       },
       {
-        "path": "/minecraft:entity/component_groups/minecraft:nautilus_unmounted/minecraft:underwater_movement/",
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_ai_controlled/minecraft:underwater_movement/",
         "content": {
           "value": 0.07
         }
@@ -233,13 +233,13 @@
         }
       },
       {
-        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_tame_mounted/minecraft:underwater_movement/",
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_player_controlled/minecraft:underwater_movement/",
         "content": {
           "value": 0.055
         }
       },
       {
-        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_tame_unmounted/minecraft:underwater_movement/",
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_ai_controlled/minecraft:underwater_movement/",
         "content": {
           "value": 0.1
         }
