@@ -46,6 +46,7 @@ export default class CreatorToolsHost {
   public static hostType = HostType.web;
   public static hostManager?: any = undefined;
   private static _theme: CreatorToolsThemeStyle = CreatorToolsThemeStyle.dark;
+  public static retrieveDataFromWebContentRoot = false;
   public static contentRoot = "";
   public static projectPath = "";
   public static focusPath: string | undefined = undefined;

@@ -302,7 +302,12 @@ export default class Database {
 
     const folderPath = "data/forms/" + subFolder + "/";
 
-    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
+    if (
+      Database.local &&
+      (CreatorToolsHost.fullLocalStorage ||
+        !CreatorToolsHost.contentRoot ||
+        !CreatorToolsHost.retrieveDataFromWebContentRoot)
+    ) {
       const storage = Database.local.createStorage(folderPath);
 
       if (storage) {
@@ -848,7 +853,12 @@ export default class Database {
 
       let folder: IFolder | undefined;
 
-      if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
+      if (
+        Database.local &&
+        (CreatorToolsHost.fullLocalStorage ||
+          !CreatorToolsHost.contentRoot ||
+          !CreatorToolsHost.retrieveDataFromWebContentRoot)
+      ) {
         const storage = Database.local.createStorage("data/snippets/");
 
         if (storage) {
@@ -1047,7 +1057,12 @@ export default class Database {
 
   static async loadPreviewMetadataFolder() {
     if (!this.previewMetadataFolder) {
-      if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
+      if (
+        Database.local &&
+        (CreatorToolsHost.fullLocalStorage ||
+          !CreatorToolsHost.contentRoot ||
+          !CreatorToolsHost.retrieveDataFromWebContentRoot)
+      ) {
         const storage = Database.local.createStorage("res/latest/van/preview/metadata/");
 
         if (storage) {
