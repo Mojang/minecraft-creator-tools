@@ -295,7 +295,7 @@ export default class FileSystemFile extends FileBase implements IFile {
           this._localPersistDateTime = new Date(readableFile.lastModified);
         }
 
-        await this._parentFolder.save(false);
+        this._parentFolder.saveAndGetDate(false);
       }
     }
 

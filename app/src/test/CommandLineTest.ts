@@ -18,6 +18,7 @@ import IFile from "../storage/IFile";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import { ProjectInfoSuite } from "../info/IProjectInfoData";
 import ProjectUtilities from "../app/ProjectUtilities";
+import LocalUtilities from "../local/LocalUtilities";
 
 CreatorToolsHost.hostType = HostType.testLocal;
 
@@ -83,6 +84,10 @@ localEnv = new LocalEnvironment(false);
   const coreStorage = new NodeStorage(__dirname + "/../../public/data/content/", "");
   Database.contentFolder = coreStorage.rootFolder;
 
+  // Set up Database.local with proper path adjustment to find schemas in public/
+  (localEnv.utilities as LocalUtilities).basePathAdjust = "../public/";
+  Database.local = localEnv.utilities;
+
   await CreatorToolsHost.init(); // carto app init does something here that, if removed, causes these tests to fail. Also, await needs to be here.
 
   creatorTools = CreatorToolsHost.getCreatorTools();
@@ -90,6 +95,8 @@ localEnv = new LocalEnvironment(false);
   if (!creatorTools) {
     return;
   }
+
+  creatorTools.local = localEnv.utilities;
 
   await creatorTools.load();
 })();

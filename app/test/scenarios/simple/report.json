@@ -32,7 +32,14 @@
     "entityTypeComponents": [],
     "blockTypeComponents": [],
     "itemTypeComponents": [],
-    "apisUsed": [],
+    "apisUsed": [
+      "assertEntityPresentInArea",
+      "maxTicks",
+      "register",
+      "spawn",
+      "structureName",
+      "succeedWhen"
+    ],
     "mctoolsVersion": 10002009,
     "itemTypes": [
       "Behavior pack",
@@ -133,6 +140,29 @@
         "max": 8092,
         "min": 8092,
         "average": 8092
+      },
+      "apisUsed.register": {
+        "count": 1
+      },
+      "apisUsed.spawn": {
+        "count": 1
+      },
+      "apisUsed.assertEntityPresentInArea": {
+        "count": 1
+      },
+      "apisUsed.succeedWhen": {
+        "count": 1
+      },
+      "apisUsed.maxTicks": {
+        "count": 1
+      },
+      "apisUsed.structureName": {
+        "count": 1
+      },
+      "textureImages.vanillaGameTextureCoverage": {
+        "overrideCount": 0,
+        "vanillaTextureCount": 2348,
+        "percent": 0
       },
       "textureImagesTier0.nonVanillaTextureMemoryTier": {
         "instanceCount": 1,
@@ -313,8 +343,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "",
-    "infoGenerationTime": 7,
-    "endToEndGenerationTime": 10,
+    "infoGenerationTime": 34,
+    "endToEndGenerationTime": 38,
     "reds": 1058,
     "summary": {
       "BASEGAMEVER": {
@@ -1273,7 +1303,27 @@
     {
       "iTp": 7,
       "gId": "SCRIPT",
-      "gIx": 101
+      "gIx": 101,
+      "fs": {
+        "register": {
+          "count": 1
+        },
+        "spawn": {
+          "count": 1
+        },
+        "assertEntityPresentInArea": {
+          "count": 1
+        },
+        "succeedWhen": {
+          "count": 1
+        },
+        "maxTicks": {
+          "count": 1
+        },
+        "structureName": {
+          "count": 1
+        }
+      }
     },
     {
       "iTp": 8,
@@ -1323,7 +1373,14 @@
     {
       "iTp": 7,
       "gId": "TEXTUREIMAGE",
-      "gIx": 101
+      "gIx": 101,
+      "fs": {
+        "vanillaGameTextureCoverage": {
+          "overrideCount": 0,
+          "vanillaTextureCount": 2348,
+          "percent": 0
+        }
+      }
     },
     {
       "iTp": 7,

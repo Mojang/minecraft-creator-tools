@@ -73,7 +73,28 @@
       "minecraftStackedByData",
       "minecraftWeapon"
     ],
-    "apisUsed": [],
+    "apisUsed": [
+      "addItem",
+      "afterEvents",
+      "container",
+      "entity",
+      "entitySpawn",
+      "getAllPlayers",
+      "getComponent",
+      "inventory",
+      "itemStack",
+      "itemUse",
+      "player",
+      "players",
+      "runCommand",
+      "runInterval",
+      "sendMessage",
+      "source",
+      "subscribe",
+      "system",
+      "typeId",
+      "world"
+    ],
     "mctoolsVersion": 10002009,
     "itemTypes": [
       "Animation",
@@ -544,6 +565,66 @@
       "bones.resourceAnimationBoneRotationKeyframe": {
         "count": 36
       },
+      "apisUsed.world": {
+        "count": 1
+      },
+      "apisUsed.system": {
+        "count": 1
+      },
+      "apisUsed.itemStack": {
+        "count": 2
+      },
+      "apisUsed.runInterval": {
+        "count": 1
+      },
+      "apisUsed.players": {
+        "count": 1
+      },
+      "apisUsed.getAllPlayers": {
+        "count": 1
+      },
+      "apisUsed.player": {
+        "count": 1
+      },
+      "apisUsed.getComponent": {
+        "count": 1
+      },
+      "apisUsed.inventory": {
+        "count": 1
+      },
+      "apisUsed.container": {
+        "count": 1
+      },
+      "apisUsed.addItem": {
+        "count": 1
+      },
+      "apisUsed.afterEvents": {
+        "count": 1
+      },
+      "apisUsed.entitySpawn": {
+        "count": 1
+      },
+      "apisUsed.subscribe": {
+        "count": 1
+      },
+      "apisUsed.entity": {
+        "count": 1
+      },
+      "apisUsed.typeId": {
+        "count": 1
+      },
+      "apisUsed.sendMessage": {
+        "count": 1
+      },
+      "apisUsed.itemUse": {
+        "count": 1
+      },
+      "apisUsed.source": {
+        "count": 1
+      },
+      "apisUsed.runCommand": {
+        "count": 1
+      },
       "textures.attachableResourceCount": {
         "count": 1
       },
@@ -567,6 +648,11 @@
       },
       "textures.uniqueEntityTexturePaths": {
         "count": 1
+      },
+      "textureImages.vanillaGameTextureCoverage": {
+        "overrideCount": 0,
+        "vanillaTextureCount": 2348,
+        "percent": 0
       },
       "textureImagesTier0.nonVanillaTextureMemoryTier": {
         "instanceCount": 1,
@@ -774,17 +860,17 @@
       }
     },
     "errorCount": 3,
-    "internalProcessingErrorCount": 3,
-    "warningCount": 14,
-    "testSuccessCount": 35,
-    "testFailCount": 3,
+    "internalProcessingErrorCount": 0,
+    "warningCount": 20,
+    "testSuccessCount": 36,
+    "testFailCount": 2,
     "testNotApplicableCount": 10,
     "errorSummary": "ERROR: [CPACKICON101] pack_icon image file not found for comprehensive_bp. It must use the .png extension.\nERROR: [CPACKICON101] pack_icon image file not found for comprehensive_rp. It must use the .png extension.\nERROR: [SCRIPTMODULE114] (/behavior_packs/comprehensive_bp/manifest.json) For @minecraft/server, using an out of date beta version 1.8.0-beta compared to the current version: 1.8.0-beta",
-    "internalProcessingErrorSummary": "UNKNOWN: [JSONF402] Could not find expected form: entity/actor_document\nUNKNOWN: [JSONF402] Could not find expected form: spawn/spawn_rules\nUNKNOWN: [JSONF402] Could not find expected form: visual/geometry.v1.21.0",
-    "warningSummary": "WARNING: [FORMATVER178] (/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json) Behavior animation version (1.20.10) has a higher minor version number compared to current version\nWARNING: [FORMATVER198] (/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json) Behavior animation controller version (1.20.10) has a higher minor version number compared to current version\nWARNING: [FORMATVER218] (/resource_packs/comprehensive_rp/animations/sample_entity_resource.json) Resource animation version (1.20.10) has a higher minor version number compared to current version\nWARNING: [FORMATVER238] (/resource_packs/comprehensive_rp/animation_controllers/sample_entity_resource.json) Resource animation controller version (1.20.10) has a higher minor version number compared to current version\nWARNING: [FORMATVER258] (/behavior_packs/comprehensive_bp/spawn_rules/sample_entity.json) Spawn rules version (1.20.10) has a higher minor version number compared to current version\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/sample_loot_table.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/sample_loot_table.json to `minecraft:stick`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json to `minecraft:diamond`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json to `minecraft:emerald`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json to `minecraft:gold_ingot`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/sample_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/sample_recipe.json to `minecraft:stick`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json to `minecraft:dirt`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json to `minecraft:stick`\nWARNING: [UNLINK399] (/resource_packs/comprehensive_rp/entity/sample_entity.json) Link to texture is not found in this pack: /resource_packs/comprehensive_rp/entity/sample_entity.json to `textures/entity/sample_entity`\nWARNING: [UNLINK399] (/resource_packs/comprehensive_rp/particles/sample_particle.json) Link to texture is not found in this pack: /resource_packs/comprehensive_rp/particles/sample_particle.json to `textures/particle/sample_particle`",
-    "testFailSummary": "TESTFAIL: [CPACKICON000] Found 2 errors for Check Pack Icon Generator (CPACKICON).\nTESTFAIL: [JSONF000] Found 3 internal errors for JSON Structure Validation (via Minecraft docs) (JSONF). This may be a temporary issue with the test run.\nTESTFAIL: [SCRIPTMODULE000] Found 1 errors for Script Modules (SCRIPTMODULE).",
-    "infoGenerationTime": 32,
-    "endToEndGenerationTime": 54,
+    "internalProcessingErrorSummary": "",
+    "warningSummary": "WARNING: [FORMATVER178] (/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json) Behavior animation version (1.20.10) has a higher minor version number compared to current version\nWARNING: [FORMATVER198] (/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json) Behavior animation controller version (1.20.10) has a higher minor version number compared to current version\nWARNING: [FORMATVER218] (/resource_packs/comprehensive_rp/animations/sample_entity_resource.json) Resource animation version (1.20.10) has a higher minor version number compared to current version\nWARNING: [FORMATVER238] (/resource_packs/comprehensive_rp/animation_controllers/sample_entity_resource.json) Resource animation controller version (1.20.10) has a higher minor version number compared to current version\nWARNING: [FORMATVER258] (/behavior_packs/comprehensive_bp/spawn_rules/sample_entity.json) Spawn rules version (1.20.10) has a higher minor version number compared to current version\nWARNING: [JSON119] (/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json) JSON structure error: (animations.animation.sample_entity.idle) The property bones is not defined in the schema and the schema does not allow additional properties\nWARNING: [JSON119] (/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json) JSON structure error: (animations.animation.sample_entity.walk) The property bones is not defined in the schema and the schema does not allow additional properties\nWARNING: [JSON119] (/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0\nWARNING: [JSON128] (/resource_packs/comprehensive_rp/animations/sample_entity_resource.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0\nWARNING: [JSON134] (/resource_packs/comprehensive_rp/render_controllers/sample_entity.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0\nWARNING: [JSON134] (/resource_packs/comprehensive_rp/render_controllers/sample_entity.json) JSON structure error: (render_controllers.controller.render.sample_entity.uv_anim) is missing and it is required\nWARNING: [JSON139] (/behavior_packs/comprehensive_bp/dialogue/sample_dialogue.json) JSON structure error: () The property minecraft:dialogue is not defined in the schema and the schema does not allow additional properties\nWARNING: [JSON144] (/behavior_packs/comprehensive_bp/spawn_rules/sample_entity.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0, 1.12.0\nWARNING: [JSON145] (/behavior_packs/comprehensive_bp/trading/sample_trading.json) JSON structure error: () The property minecraft:trading is not defined in the schema and the schema does not allow additional properties\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json to `minecraft:gold_ingot`",
+    "testFailSummary": "TESTFAIL: [CPACKICON000] Found 2 errors for Check Pack Icon Generator (CPACKICON).\nTESTFAIL: [SCRIPTMODULE000] Found 1 errors for Script Modules (SCRIPTMODULE).",
+    "infoGenerationTime": 637,
+    "endToEndGenerationTime": 681,
     "reds": 11004,
     "summary": {
       "BASEGAMEVER": {
@@ -1144,16 +1230,36 @@
         "1": {
           "defaultMessage": "JSON Structure Validation (JSON) completed successfully",
           "testCompleteSuccesses": 1
+        },
+        "119": {
+          "defaultMessage": "JSON structure error",
+          "warnings": 3
+        },
+        "128": {
+          "defaultMessage": "JSON structure error",
+          "warnings": 1
+        },
+        "134": {
+          "defaultMessage": "JSON structure error",
+          "warnings": 2
+        },
+        "139": {
+          "defaultMessage": "JSON structure error",
+          "warnings": 1
+        },
+        "144": {
+          "defaultMessage": "JSON structure error",
+          "warnings": 1
+        },
+        "145": {
+          "defaultMessage": "JSON structure error",
+          "warnings": 1
         }
       },
       "JSONF": {
-        "0": {
-          "defaultMessage": "Found 3 internal errors for JSON Structure Validation (via Minecraft docs) (JSONF). This may be a temporary issue with the test run.",
-          "testCompleteFails": 1
-        },
-        "402": {
-          "defaultMessage": "Could not find expected form",
-          "internalProcessingErrors": 3
+        "1": {
+          "defaultMessage": "JSON Structure Validation (via Minecraft docs) (JSONF) completed successfully",
+          "testCompleteSuccesses": 1
         }
       },
       "JSONTAGS": {
@@ -1571,9 +1677,13 @@
           "defaultMessage": "Unlinked item info generator (UNLINK) completed successfully",
           "testCompleteSuccesses": 1
         },
+        "205": {
+          "defaultMessage": "Link to vanilla item type item; avoid if possible",
+          "recommendations": 3
+        },
         "323": {
           "defaultMessage": "Link to item type is not found in this pack",
-          "warnings": 7
+          "warnings": 4
         },
         "399": {
           "defaultMessage": "Link to texture is not found in this pack",
@@ -2182,27 +2292,72 @@
       "gIx": 1
     },
     {
-      "iTp": 0,
-      "gId": "JSONF",
-      "gIx": 0
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 119,
+      "p": "/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json",
+      "d": "(animations.animation.sample_entity.idle) The property bones is not defined in the schema and the schema does not allow additional properties"
     },
     {
-      "iTp": 5,
-      "gId": "JSONF",
-      "gIx": 402,
-      "d": "entity/actor_document"
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 119,
+      "p": "/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json",
+      "d": "(animations.animation.sample_entity.walk) The property bones is not defined in the schema and the schema does not allow additional properties"
     },
     {
-      "iTp": 5,
-      "gId": "JSONF",
-      "gIx": 402,
-      "d": "spawn/spawn_rules"
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 119,
+      "p": "/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json",
+      "d": "(format_version) does not have a value in the enumeration 1.8.0, 1.10.0"
     },
     {
-      "iTp": 5,
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 128,
+      "p": "/resource_packs/comprehensive_rp/animations/sample_entity_resource.json",
+      "d": "(format_version) does not have a value in the enumeration 1.8.0, 1.10.0"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 134,
+      "p": "/resource_packs/comprehensive_rp/render_controllers/sample_entity.json",
+      "d": "(format_version) does not have a value in the enumeration 1.8.0, 1.10.0"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 134,
+      "p": "/resource_packs/comprehensive_rp/render_controllers/sample_entity.json",
+      "d": "(render_controllers.controller.render.sample_entity.uv_anim) is missing and it is required"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 139,
+      "p": "/behavior_packs/comprehensive_bp/dialogue/sample_dialogue.json",
+      "d": "() The property minecraft:dialogue is not defined in the schema and the schema does not allow additional properties"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 144,
+      "p": "/behavior_packs/comprehensive_bp/spawn_rules/sample_entity.json",
+      "d": "(format_version) does not have a value in the enumeration 1.8.0, 1.10.0, 1.12.0"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 145,
+      "p": "/behavior_packs/comprehensive_bp/trading/sample_trading.json",
+      "d": "() The property minecraft:trading is not defined in the schema and the schema does not allow additional properties"
+    },
+    {
+      "iTp": 1,
       "gId": "JSONF",
-      "gIx": 402,
-      "d": "visual/geometry.v1.21.0"
+      "gIx": 1
     },
     {
       "iTp": 1,
@@ -3040,7 +3195,69 @@
     {
       "iTp": 7,
       "gId": "SCRIPT",
-      "gIx": 101
+      "gIx": 101,
+      "fs": {
+        "world": {
+          "count": 1
+        },
+        "system": {
+          "count": 1
+        },
+        "itemStack": {
+          "count": 2
+        },
+        "runInterval": {
+          "count": 1
+        },
+        "players": {
+          "count": 1
+        },
+        "getAllPlayers": {
+          "count": 1
+        },
+        "player": {
+          "count": 1
+        },
+        "getComponent": {
+          "count": 1
+        },
+        "inventory": {
+          "count": 1
+        },
+        "container": {
+          "count": 1
+        },
+        "addItem": {
+          "count": 1
+        },
+        "afterEvents": {
+          "count": 1
+        },
+        "entitySpawn": {
+          "count": 1
+        },
+        "subscribe": {
+          "count": 1
+        },
+        "entity": {
+          "count": 1
+        },
+        "typeId": {
+          "count": 1
+        },
+        "sendMessage": {
+          "count": 1
+        },
+        "itemUse": {
+          "count": 1
+        },
+        "source": {
+          "count": 1
+        },
+        "runCommand": {
+          "count": 1
+        }
+      }
     },
     {
       "iTp": 0,
@@ -3131,7 +3348,14 @@
     {
       "iTp": 7,
       "gId": "TEXTUREIMAGE",
-      "gIx": 101
+      "gIx": 101,
+      "fs": {
+        "vanillaGameTextureCoverage": {
+          "overrideCount": 0,
+          "vanillaTextureCount": 2348,
+          "percent": 0
+        }
+      }
     },
     {
       "iTp": 7,
@@ -3379,25 +3603,25 @@
       "gIx": 1
     },
     {
-      "iTp": 4,
+      "iTp": 6,
       "gId": "UNLINK",
-      "gIx": 323,
+      "gIx": 205,
       "p": "/behavior_packs/comprehensive_bp/loot_tables/sample_loot_table.json",
-      "d": "/behavior_packs/comprehensive_bp/loot_tables/sample_loot_table.json to `minecraft:stick`"
+      "d": "minecraft:stick"
     },
     {
-      "iTp": 4,
+      "iTp": 6,
       "gId": "UNLINK",
-      "gIx": 323,
+      "gIx": 205,
       "p": "/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json",
-      "d": "/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json to `minecraft:diamond`"
+      "d": "minecraft:diamond"
     },
     {
-      "iTp": 4,
+      "iTp": 6,
       "gId": "UNLINK",
-      "gIx": 323,
+      "gIx": 205,
       "p": "/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json",
-      "d": "/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json to `minecraft:emerald`"
+      "d": "minecraft:emerald"
     },
     {
       "iTp": 4,

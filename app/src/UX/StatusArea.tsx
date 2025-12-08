@@ -71,8 +71,17 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
   }
 
   async _handleStatusAdded(creatorTools: CreatorTools, status: IStatus): Promise<void> {
+    if (!this._isMountedInternal) {
+      // Component unmounted, resolve immediately to avoid hanging
+      return;
+    }
+
     if (status.type === StatusType.operationStarted) {
       return new Promise((resolve: () => void, reject: () => void) => {
+        if (!this._isMountedInternal) {
+          resolve();
+          return;
+        }
         this.setState(
           {
             displayEditor: this.state.displayEditor,
@@ -89,6 +98,10 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
       // this._prepareForFadeout(); // don't fade out text if an operation is ongoing.
     } else if (status.type === StatusType.operationEndedComplete || status.type === StatusType.operationEndedErrors) {
       return new Promise((resolve: () => void, reject: () => void) => {
+        if (!this._isMountedInternal) {
+          resolve();
+          return;
+        }
         this.setState(
           {
             displayEditor: this.state.displayEditor,
@@ -104,6 +117,10 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
       });
     } else {
       return new Promise((resolve: () => void, reject: () => void) => {
+        if (!this._isMountedInternal) {
+          resolve();
+          return;
+        }
         this.forceUpdate(() => {
           this._prepareForFadeout();
           window.setTimeout(() => {

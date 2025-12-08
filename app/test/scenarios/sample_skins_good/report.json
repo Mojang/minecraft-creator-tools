@@ -210,6 +210,11 @@
         "min": 16384,
         "average": 32768
       },
+      "textureImages.vanillaGameTextureCoverage": {
+        "overrideCount": 0,
+        "vanillaTextureCount": 2348,
+        "percent": 0
+      },
       "textureImagesTier0.nonVanillaTextureMemoryTier": {
         "instanceCount": 1,
         "total": 98304,
@@ -389,8 +394,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [UNLINK191] (/pack_icon.png) Texture does not have any items in this pack that are using this.",
     "testFailSummary": "",
-    "infoGenerationTime": 6,
-    "endToEndGenerationTime": 10,
+    "infoGenerationTime": 49,
+    "endToEndGenerationTime": 55,
     "reds": 0,
     "summary": {
       "BASEGAMEVER": {
@@ -1387,6 +1392,11 @@
           "max": 65536,
           "min": 16384,
           "average": 32768
+        },
+        "vanillaGameTextureCoverage": {
+          "overrideCount": 0,
+          "vanillaTextureCount": 2348,
+          "percent": 0
         }
       }
     },

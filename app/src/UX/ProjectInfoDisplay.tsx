@@ -182,6 +182,9 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
               }, 1);
             }
           );
+        } else {
+          // Component unmounted, resolve immediately to avoid hanging
+          resolve();
         }
       });
     }

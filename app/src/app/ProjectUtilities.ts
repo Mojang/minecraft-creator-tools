@@ -450,7 +450,9 @@ export default class ProjectUtilities {
 
   static async isVibrantVisualsCompatible(project: Project) {
     for (const item of project.items) {
-      await item.loadFileContent();
+      if (!item.isContentLoaded) {
+        await item.loadContent();
+      }
 
       if (item.primaryFile) {
         const manifestJson = await ResourceManifestDefinition.ensureOnFile(item.primaryFile);

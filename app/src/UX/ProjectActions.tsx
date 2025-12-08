@@ -250,10 +250,10 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
             >
               <div className="pact-cardContent">
                 <div className="pact-cardIcon">
-                  <FontAwesomeIcon icon={faFolder} fixedWidth />
+                  <FontAwesomeIcon icon={faFileZipper} fixedWidth />
                 </div>
                 <div className="pact-cardText">
-                  <div className="pact-cardTitle">Export to Folder</div>
+                  <div className="pact-cardTitle">Export to Zip</div>
                   <div className="pact-cardDesc">Save as a compressed archive</div>
                 </div>
               </div>

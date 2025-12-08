@@ -82,7 +82,7 @@ export default class EntityTypeResourceEditor extends Component<
       fileToEdit: props.file,
       isLoaded: false,
       sound: undefined,
-      mode: EntityTypeResourceEditorMode.preview,
+      mode: EntityTypeResourceEditorMode.textures,
       entityTypeResource: undefined,
     };
 
@@ -95,7 +95,7 @@ export default class EntityTypeResourceEditor extends Component<
         fileToEdit: props.file,
         isLoaded: false,
         sound: undefined,
-        mode: EntityTypeResourceEditorMode.preview,
+        mode: EntityTypeResourceEditorMode.textures,
         entityTypeResource: undefined,
       };
 
@@ -292,21 +292,6 @@ export default class EntityTypeResourceEditor extends Component<
     }
 
     let isButtonCompact = false;
-
-    toolbarItems.push({
-      icon: (
-        <CustomTabLabel
-          icon={<FontAwesomeIcon icon={faEye} className="fa-lg" />}
-          text={"Preview"}
-          isCompact={isButtonCompact}
-          isSelected={this.state.mode === EntityTypeResourceEditorMode.preview}
-          theme={this.props.theme}
-        />
-      ),
-      key: "etrePreviewTab",
-      onClick: this._setPreviewMode,
-      title: "Preview",
-    });
 
     toolbarItems.push({
       icon: (

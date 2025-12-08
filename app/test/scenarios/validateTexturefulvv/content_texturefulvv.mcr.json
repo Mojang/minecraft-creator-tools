@@ -539,10 +539,10 @@
       },
       "texture.size": {
         "instanceCount": 168,
-        "total": 1089137,
+        "total": 1396697,
         "max": 17770,
-        "min": 0,
-        "average": 6483
+        "min": 1263,
+        "average": 8314
       },
       "marketingImage.size": {
         "instanceCount": 8,
@@ -1075,8 +1075,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [TEXTUREIMAGE440] Total texture memory exceeds budget of 157,286,400 bytes for items of type Add-On at tier 0. Total texture memory used: 221708288\nWARNING: [TEXTUREIMAGE441] Total texture memory exceeds budget of 157,286,400 bytes for items of type Add-On at tier 1. Total texture memory used: 221708288\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co3_unlinked.ogg) Audio does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/nardolphle_imageisnotlinked.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/a_biceson.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/a_biceson_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/b_nardolphle.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/b_nardolphle_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/c_sheepomelon.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/c_sheepomelon_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/1/a_biceson.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/1/a_biceson_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/1/b_nardolphle.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/1/b_nardolphle_1024hd.png) Texture does not have any items in this pack that are using this.",
     "testFailSummary": "TESTFAIL: [CHKMANIF000] Found 1 errors for Check Manifest Generator (CHKMANIF).",
-    "infoGenerationTime": 1528,
-    "endToEndGenerationTime": 1859,
+    "infoGenerationTime": 1803,
+    "endToEndGenerationTime": 2190,
     "reds": 40669,
     "summary": {
       "BASEGAMEVER": {
@@ -3129,10 +3129,10 @@
       "fs": {
         "size": {
           "instanceCount": 168,
-          "total": 1089137,
+          "total": 1396697,
           "max": 17770,
-          "min": 0,
-          "average": 6483
+          "min": 1263,
+          "average": 8314
         }
       }
     },

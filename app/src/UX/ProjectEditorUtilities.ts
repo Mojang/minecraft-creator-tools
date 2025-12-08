@@ -842,6 +842,7 @@ export default class ProjectEditorUtilities {
             true
           );
 
+          await creatorTools.notifyStatusUpdate("Saving all files to '" + result.name + "'.");
           await storage.rootFolder.saveAll();
           await creatorTools.notifyOperationEnded(operId, "Export completed.");
         }

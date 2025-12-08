@@ -113,7 +113,9 @@ export default class ScriptInfoGenerator implements IProjectInfoGenerator {
       const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.js) {
-        await pi.loadFileContent();
+        if (!pi.isContentLoaded) {
+          await pi.loadContent();
+        }
 
         if (pi.primaryFile) {
           if (!pi.primaryFile.isContentLoaded) {

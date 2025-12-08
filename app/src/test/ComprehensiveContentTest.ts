@@ -12,6 +12,7 @@ import ProjectInfoSet from "../info/ProjectInfoSet";
 import { ProjectInfoSuite } from "../info/IProjectInfoData";
 import IFolder from "../storage/IFolder";
 import { ProjectItemType } from "../app/IProjectItemData";
+import LocalUtilities from "../local/LocalUtilities";
 import { ensureReportJsonMatchesScenario } from "./TestUtilities";
 
 CreatorToolsHost.hostType = HostType.testLocal;
@@ -76,6 +77,8 @@ localEnv = new LocalEnvironment(false);
 
   await creatorTools.load();
 
+  // Set up Database.local with proper path adjustment to find schemas in public/
+  (localEnv.utilities as LocalUtilities).basePathAdjust = "../public/";
   Database.local = localEnv.utilities;
   creatorTools.local = localEnv.utilities;
 })();

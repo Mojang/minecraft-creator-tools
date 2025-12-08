@@ -1320,14 +1320,6 @@ export default class ProjectItem {
     return !!this.primaryFile;
   }
 
-  async loadContentDirect() {
-    if (this.storageType === ProjectItemStorageType.folder) {
-      await this.loadFolder();
-    } else if (this.storageType === ProjectItemStorageType.singleFile) {
-      await this.loadFileContent();
-    }
-  }
-
   async ensureFileStorage() {
     if (
       this.storageType === ProjectItemStorageType.singleFile &&
@@ -1512,7 +1504,11 @@ export default class ProjectItem {
     } else {
       this._isLoading = true;
 
-      await this.loadContentDirect();
+      if (this.storageType === ProjectItemStorageType.folder) {
+        await this.loadFolder();
+      } else if (this.storageType === ProjectItemStorageType.singleFile) {
+        await this.loadFileContent();
+      }
 
       this._isLoading = false;
 
