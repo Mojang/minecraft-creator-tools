@@ -523,7 +523,6 @@ function runUpdateVersions() {
         "./package.json",
         "./package-lock.json",
         "./jsnode/package.json",
-        "./vscode/package.json",
         "./src/core/Constants.ts",
       ])
     );
@@ -614,7 +613,7 @@ gulp.task("preparedevenv", gulp.parallel("mctypes", "dlres", "preparedevenvlocal
 
 gulp.task("npmdepends", gulp.parallel(copyMonacoNpmDist, copyMonacoMapsNpmDist, copyEsbuildWasmDist));
 
-gulp.task("default", gulp.parallel("jsnbuild", "vscbuild"));
+gulp.task("default", gulp.parallel("jsnbuild"));
 
 gulp.task("watch", function () {
   gulp.watch(jsncorebuildfilesigs, gulp.series("jsnbuild"));
