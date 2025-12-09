@@ -78,6 +78,7 @@
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
+    "completedWorldDataProcessing": true,
     "worldLoadErrors": 0,
     "commands": [],
     "featureSets": {
@@ -327,8 +328,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CPACKICON000] Found 1 errors for Check Pack Icon Generator (CPACKICON).",
-    "infoGenerationTime": 310,
-    "endToEndGenerationTime": 341,
+    "infoGenerationTime": 270,
+    "endToEndGenerationTime": 303,
     "reds": 1574,
     "summary": {
       "BASEGAMEVER": {

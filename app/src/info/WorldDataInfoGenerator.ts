@@ -23,6 +23,8 @@ import { GameType } from "../minecraft/WorldLevelDat";
 
 import { IGeneratorOptions } from "./ProjectInfoSet";
 
+export const MaxWorldRecordsToProcess = 3000000; // very crudely, this equates to about 100K chunks
+
 export enum WorldDataInfoGeneratorTest {
   unexpectedCommandInMCFunction = 101,
   unexpectedCommandInCommandBlock = 102,
@@ -40,6 +42,7 @@ export enum WorldDataInfoGeneratorTest {
   subchunklessChunks = 127,
   chunks = 128,
   commandIsFromOlderMinecraftVersion = 212,
+  couldNotProcessWorld = 216,
   errorProcessingWorld = 400,
   unexpectedError = 401,
 }
@@ -66,6 +69,9 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       "WORLDDATA",
       WorldDataInfoGeneratorTest.subchunklessChunks
     );
+
+    info.completedWorldDataProcessing =
+      infoSet.getCount("WORLDDATA", WorldDataInfoGeneratorTest.couldNotProcessWorld) === 0;
 
     info.worldLoadErrors = infoSet.getCount("WORLDDATA", WorldDataInfoGeneratorTest.errorProcessingWorld);
 
@@ -360,7 +366,9 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
 
       await mcworld.loadMetaFiles(false);
 
-      await mcworld.loadLevelDb(false);
+      let didProcessWorldData = await mcworld.loadLevelDb(false, {
+        maxNumberOfRecordsToProcess: MaxWorldRecordsToProcess,
+      });
 
       if (
         mcworld.isInErrorState &&
@@ -384,6 +392,24 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
             )
           );
         }
+
+        didProcessWorldData = false;
+      }
+
+      if (!didProcessWorldData) {
+        items.push(
+          new ProjectInfoItem(
+            InfoItemType.info,
+            this.id,
+            WorldDataInfoGeneratorTest.couldNotProcessWorld,
+            ProjectInfoUtilities.getTitleFromEnum(
+              WorldDataInfoGeneratorTest,
+              WorldDataInfoGeneratorTest.couldNotProcessWorld
+            ),
+            projectItem,
+            mcworld.name
+          )
+        );
       }
 
       if (
@@ -458,63 +484,92 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
         )
       );
 
-      let blockCount = 0;
-      let chunkCount = 0;
-      let subchunkLessChunkCount = 0;
+      if (didProcessWorldData) {
+        let blockCount = 0;
+        let chunkCount = 0;
+        let subchunkLessChunkCount = 0;
 
-      // Use the memory-efficient chunk iterator with aggressive data clearing
-      // This prevents heap exhaustion on large worlds by clearing chunk data after processing
-      await mcworld.forEachChunk(
-        async (chunk, x, z, dimIndex) => {
-          chunkCount++;
+        // Use the memory-efficient chunk iterator with aggressive data clearing
+        // This prevents heap exhaustion on large worlds by clearing chunk data after processing
+        await mcworld.forEachChunk(
+          async (chunk, x, z, dimIndex) => {
+            chunkCount++;
 
-          if (chunk.subChunks.length <= 0) {
-            subchunkLessChunkCount++;
-          }
-
-          const blockActors = chunk.blockActors;
-
-          for (let i = 0; i < blockActors.length; i++) {
-            const blockActor = blockActors[i];
-
-            if (blockActor.id) {
-              blockActorsPi.incrementFeature(blockActor.id);
+            if (chunk.subChunks.length <= 0) {
+              subchunkLessChunkCount++;
             }
 
-            if (blockActor instanceof CommandBlockActor) {
-              let cba = blockActor as CommandBlockActor;
-              if (cba.version) {
-                blockActorsPi.spectrumIntFeature("Command Version", cba.version);
+            const blockActors = chunk.blockActors;
+
+            for (let i = 0; i < blockActors.length; i++) {
+              const blockActor = blockActors[i];
+
+              if (blockActor.id) {
+                blockActorsPi.incrementFeature(blockActor.id);
               }
 
-              if (cba.version && cba.version < this.modernCommandVersion) {
-                items.push(
-                  new ProjectInfoItem(
-                    InfoItemType.recommendation,
-                    this.id,
-                    WorldDataInfoGeneratorTest.commandIsFromOlderMinecraftVersion,
-                    "Command '" + cba.command + "' is from an older Minecraft version (" + cba.version + ") ",
-                    projectItem,
-                    "(Command at location " + cba.x + ", " + cba.y + ", " + cba.z + ")",
-                    undefined,
-                    cba.command
-                  )
-                );
-              }
+              if (blockActor instanceof CommandBlockActor) {
+                let cba = blockActor as CommandBlockActor;
+                if (cba.version) {
+                  blockActorsPi.spectrumIntFeature("Command Version", cba.version);
+                }
 
-              if (cba.command && cba.command.trim().length > 2) {
-                let command = CommandStructure.parse(cba.command);
+                if (cba.version && cba.version < this.modernCommandVersion) {
+                  items.push(
+                    new ProjectInfoItem(
+                      InfoItemType.recommendation,
+                      this.id,
+                      WorldDataInfoGeneratorTest.commandIsFromOlderMinecraftVersion,
+                      "Command '" + cba.command + "' is from an older Minecraft version (" + cba.version + ") ",
+                      projectItem,
+                      "(Command at location " + cba.x + ", " + cba.y + ", " + cba.z + ")",
+                      undefined,
+                      cba.command
+                    )
+                  );
+                }
 
-                if (CommandRegistry.isMinecraftBuiltInCommand(command.fullName)) {
-                  if (this.performAddOnValidations && CommandRegistry.isAddOnBlockedCommand(command.fullName)) {
+                if (cba.command && cba.command.trim().length > 2) {
+                  let command = CommandStructure.parse(cba.command);
+
+                  if (CommandRegistry.isMinecraftBuiltInCommand(command.fullName)) {
+                    if (this.performAddOnValidations && CommandRegistry.isAddOnBlockedCommand(command.fullName)) {
+                      items.push(
+                        new ProjectInfoItem(
+                          InfoItemType.warning,
+                          this.id,
+                          WorldDataInfoGeneratorTest.containsWorldImpactingCommand,
+                          "Contains command '" +
+                            command.fullName +
+                            "' which is impacts the state of the entire world, and generally shouldn't be used in an add-on",
+                          projectItem,
+                          command.fullName,
+                          undefined,
+                          cba.command
+                        )
+                      );
+                    }
+
+                    commandsPi.incrementFeature(command.fullName);
+
+                    if (command.fullName === "execute") {
+                      let foundRun = false;
+                      for (const arg of command.commandArguments) {
+                        if (arg === "run") {
+                          foundRun = true;
+                        } else if (foundRun && CommandRegistry.isMinecraftBuiltInCommand(arg)) {
+                          subCommandsPi.incrementFeature(arg);
+                          break;
+                        }
+                      }
+                    }
+                  } else if (!this.performAddOnValidations && !this.performPlatformVersionValidations) {
                     items.push(
                       new ProjectInfoItem(
-                        InfoItemType.warning,
+                        InfoItemType.error,
                         this.id,
-                        WorldDataInfoGeneratorTest.containsWorldImpactingCommand,
-                        "Contains command '" +
-                          command.fullName +
-                          "' which is impacts the state of the entire world, and generally shouldn't be used in an add-on",
+                        WorldDataInfoGeneratorTest.unexpectedCommandInCommandBlock,
+                        "Unexpected command '" + command.fullName + "'",
                         projectItem,
                         command.fullName,
                         undefined,
@@ -522,77 +577,62 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                       )
                     );
                   }
-
-                  commandsPi.incrementFeature(command.fullName);
-
-                  if (command.fullName === "execute") {
-                    let foundRun = false;
-                    for (const arg of command.commandArguments) {
-                      if (arg === "run") {
-                        foundRun = true;
-                      } else if (foundRun && CommandRegistry.isMinecraftBuiltInCommand(arg)) {
-                        subCommandsPi.incrementFeature(arg);
-                        break;
-                      }
-                    }
-                  }
-                } else if (!this.performAddOnValidations && !this.performPlatformVersionValidations) {
-                  items.push(
-                    new ProjectInfoItem(
-                      InfoItemType.error,
-                      this.id,
-                      WorldDataInfoGeneratorTest.unexpectedCommandInCommandBlock,
-                      "Unexpected command '" + command.fullName + "'",
-                      projectItem,
-                      command.fullName,
-                      undefined,
-                      cba.command
-                    )
-                  );
                 }
               }
             }
-          }
 
-          // Use memory-efficient block type counting instead of getBlockList()
-          // This avoids allocating massive arrays of Block objects
-          const blockTypeCounts = chunk.countBlockTypes();
+            // Use memory-efficient block type counting instead of getBlockList()
+            // This avoids allocating massive arrays of Block objects
+            const blockTypeCounts = chunk.countBlockTypes();
 
-          for (const [typeName, count] of blockTypeCounts) {
-            blockCount += count;
+            for (const [typeName, count] of blockTypeCounts) {
+              blockCount += count;
 
-            let type = typeName;
-            if (type.indexOf(":") >= 0 && type.indexOf("minecraft:") < 0) {
-              type = "(custom)";
+              let type = typeName;
+              if (type.indexOf(":") >= 0 && type.indexOf("minecraft:") < 0) {
+                type = "(custom)";
+              }
+
+              blocksPi.incrementFeature(type, "count", count);
             }
-
-            blocksPi.incrementFeature(type, "count", count);
-          }
-        },
-        {
-          // Always clear parsed/cached data after processing each chunk to prevent OOM.
-          // This is non-destructive - raw LevelKeyValue bytes are preserved, so chunks
-          // can be re-parsed on demand (e.g., when the world map needs them).
-          clearCacheAfterProcess: true,
-          // Only clear raw LevelKeyValue data when in aggressive cleanup mode (CLI validation).
-          // In browser contexts, we preserve raw data so the world map can re-parse chunks.
-          clearAllAfterProcess: performAggressiveCleanup,
-          progressCallback: async (processed, total) => {
-            // Use worldName captured from outside closure to avoid TypeScript null check issue
-            const worldName = mcworld?.name ?? "unknown";
-            let mess =
-              "World data validation: scanned " +
-              Math.floor(processed / 1000) +
-              "K of " +
-              Math.floor(total / 1000) +
-              "K chunks in " +
-              worldName;
-            await projectItem.project.creatorTools.notifyStatusUpdate(mess, StatusTopic.validation);
           },
-        }
-      );
+          {
+            // Always clear parsed/cached data after processing each chunk to prevent OOM.
+            // This is non-destructive - raw LevelKeyValue bytes are preserved, so chunks
+            // can be re-parsed on demand (e.g., when the world map needs them).
+            clearCacheAfterProcess: true,
+            // Only clear raw LevelKeyValue data when in aggressive cleanup mode (CLI validation).
+            // In browser contexts, we preserve raw data so the world map can re-parse chunks.
+            clearAllAfterProcess: performAggressiveCleanup,
+            progressCallback: async (processed, total) => {
+              // Use worldName captured from outside closure to avoid TypeScript null check issue
+              const worldName = mcworld?.name ?? "unknown";
+              let mess =
+                "World data validation: scanned " +
+                Math.floor(processed / 1000) +
+                "K of " +
+                Math.floor(total / 1000) +
+                "K chunks in " +
+                worldName;
+              await projectItem.project.creatorTools.notifyStatusUpdate(mess, StatusTopic.validation);
+            },
+          }
+        );
 
-      blocksPi.data = blockCount;
+        items.push(
+          new ProjectInfoItem(
+            InfoItemType.info,
+            this.id,
+            WorldDataInfoGeneratorTest.subchunklessChunks,
+            "Subchunkless Chunks",
+            projectItem,
+            subchunkLessChunkCount,
+            mcworld.name
+          )
+        );
+
+        blocksPi.data = blockCount;
+      }
 
       items.push(
         new ProjectInfoItem(
@@ -635,17 +675,6 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
           ProjectInfoUtilities.getTitleFromEnum(WorldDataInfoGeneratorTest, WorldDataInfoGeneratorTest.maxZ),
           projectItem,
           mcworld.maxZ,
-          mcworld.name
-        )
-      );
-      items.push(
-        new ProjectInfoItem(
-          InfoItemType.info,
-          this.id,
-          WorldDataInfoGeneratorTest.subchunklessChunks,
-          "Subchunkless Chunks",
-          projectItem,
-          subchunkLessChunkCount,
           mcworld.name
         )
       );

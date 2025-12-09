@@ -82,6 +82,7 @@
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
+    "completedWorldDataProcessing": true,
     "worldLoadErrors": 0,
     "commands": [],
     "featureSets": {
@@ -343,7 +344,7 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "",
-    "infoGenerationTime": 34,
+    "infoGenerationTime": 35,
     "endToEndGenerationTime": 38,
     "reds": 1058,
     "summary": {

@@ -162,6 +162,7 @@
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
+    "completedWorldDataProcessing": true,
     "worldLoadErrors": 0,
     "commands": [
       "say",
@@ -958,8 +959,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:boomfly`\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:robot`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobsrp/textures/entity/biceson.texture_set.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobsrp/textures/entity/biceson.texture_set.json to `textures/entity/biceson_mer`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon.texture_set.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon.texture_set.json to `textures/entity/sheepomelon_mer`",
     "testFailSummary": "TESTFAIL: [CHKMANIF000] Found 1 errors for Check Manifest Generator (CHKMANIF).",
-    "infoGenerationTime": 585,
-    "endToEndGenerationTime": 825,
+    "infoGenerationTime": 384,
+    "endToEndGenerationTime": 627,
     "reds": 34077,
     "summary": {
       "BASEGAMEVER": {
@@ -11248,6 +11249,7 @@
           "minBaseGameVersion": 0,
           "chunkCount": 0,
           "subchunkLessChunkCount": 0,
+          "completedWorldDataProcessing": true,
           "worldLoadErrors": 0,
           "commands": [],
           "featureSets": {},
@@ -11261,8 +11263,8 @@
           "internalProcessingErrorSummary": "",
           "warningSummary": "",
           "testFailSummary": "",
-          "infoGenerationTime": 21,
-          "endToEndGenerationTime": 846,
+          "infoGenerationTime": 20,
+          "endToEndGenerationTime": 647,
           "reds": 0,
           "summary": {
             "SHARING": {

@@ -176,6 +176,7 @@
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
+    "completedWorldDataProcessing": true,
     "worldLoadErrors": 0,
     "commands": [
       "say",
@@ -923,8 +924,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:boomfly`\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:robot`",
     "testFailSummary": "",
-    "infoGenerationTime": 1719,
-    "endToEndGenerationTime": 1888,
+    "infoGenerationTime": 1195,
+    "endToEndGenerationTime": 1389,
     "reds": 40555,
     "summary": {
       "BASEGAMEVER": {

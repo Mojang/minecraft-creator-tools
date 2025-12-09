@@ -190,6 +190,7 @@
     "minBaseGameVersion": 11021110,
     "chunkCount": 53,
     "subchunkLessChunkCount": 1,
+    "completedWorldDataProcessing": true,
     "worldLoadErrors": 0,
     "commands": [
       "say",
@@ -1669,8 +1670,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [UNLINK191] (/Content/resource_packs/aop_mobmwrp/textures/aop/moremobs/a_biceson_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobmwrp/textures/aop/moremobs/b_nardolphle_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobmwrp/textures/aop/moremobs/c_sheepomelon_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobmwrp/textures/item_texture.json to `textures/items/elixir`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobmwrp/textures/item_texture.json to `textures/items/hard_biscuit`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobmwrp/textures/item_texture.json to `textures/items/key`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobmwrp/textures/item_texture.json to `textures/items/pear`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobmwrp/textures/item_texture.json to `textures/items/rod`",
     "testFailSummary": "TESTFAIL: [CHKMANIF000] Found 1 errors for Check Manifest Generator (CHKMANIF).\nTESTFAIL: [TEXTUREIMAGE000] Found 1 errors for Texture Image Validation (TEXTUREIMAGE).",
-    "infoGenerationTime": 882,
-    "endToEndGenerationTime": 1075,
+    "infoGenerationTime": 640,
+    "endToEndGenerationTime": 860,
     "reds": 42750,
     "summary": {
       "BASEGAMEVER": {

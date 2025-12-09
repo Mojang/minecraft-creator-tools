@@ -89,6 +89,7 @@
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
+    "completedWorldDataProcessing": true,
     "worldLoadErrors": 0,
     "commands": [
       "say",
@@ -112,8 +113,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [MINENGINEVER000] Found 2 errors for Min Engine Version (MINENGINEVER).",
-    "infoGenerationTime": 189,
-    "endToEndGenerationTime": 397,
+    "infoGenerationTime": 172,
+    "endToEndGenerationTime": 376,
     "summary": {
       "BASEGAMEVER": {
         "2": {

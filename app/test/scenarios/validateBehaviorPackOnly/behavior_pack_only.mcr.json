@@ -65,6 +65,7 @@
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
+    "completedWorldDataProcessing": true,
     "worldLoadErrors": 0,
     "commands": [],
     "featureSets": {},
@@ -78,8 +79,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CADDONREQ000] Found 1 errors for Cooperative Add-On Requirements (CADDONREQ).",
-    "infoGenerationTime": 173,
-    "endToEndGenerationTime": 204,
+    "infoGenerationTime": 64,
+    "endToEndGenerationTime": 94,
     "summary": {
       "CADDONIREQ": {
         "1": {

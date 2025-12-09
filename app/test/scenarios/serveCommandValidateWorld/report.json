@@ -187,6 +187,7 @@
     "minBaseGameVersion": 11021110,
     "chunkCount": 53,
     "subchunkLessChunkCount": 1,
+    "completedWorldDataProcessing": true,
     "worldLoadErrors": 0,
     "commands": [
       "say",
@@ -1570,8 +1571,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "",
-    "infoGenerationTime": 720,
-    "endToEndGenerationTime": 881,
+    "infoGenerationTime": 524,
+    "endToEndGenerationTime": 697,
     "reds": 40690,
     "summary": {
       "BASEGAMEVER": {

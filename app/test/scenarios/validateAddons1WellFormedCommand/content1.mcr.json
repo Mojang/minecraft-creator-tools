@@ -87,6 +87,7 @@
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
+    "completedWorldDataProcessing": true,
     "worldLoadErrors": 0,
     "commands": [
       "say",
@@ -137,8 +138,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "",
-    "infoGenerationTime": 265,
-    "endToEndGenerationTime": 454,
+    "infoGenerationTime": 203,
+    "endToEndGenerationTime": 392,
     "summary": {
       "CADDONIREQ": {
         "1": {
