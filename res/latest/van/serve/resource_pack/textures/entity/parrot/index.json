@@ -1,0 +1,20 @@
+{
+  "files": [
+    "parrot_blue.png",
+    "parrot_blue.texture_set.json",
+    "parrot_blue_mers.tga",
+    "parrot_green.png",
+    "parrot_green.texture_set.json",
+    "parrot_green_mers.tga",
+    "parrot_grey.png",
+    "parrot_grey.texture_set.json",
+    "parrot_grey_mers.tga",
+    "parrot_red_blue.png",
+    "parrot_red_blue.texture_set.json",
+    "parrot_red_blue_mers.tga",
+    "parrot_yellow_blue.png",
+    "parrot_yellow_blue.texture_set.json",
+    "parrot_yellow_blue_mers.tga"
+  ],
+  "folders": []
+}

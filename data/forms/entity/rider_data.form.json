@@ -1,0 +1,21 @@
+{
+  "id": "Rider Data",
+  "fields": [
+    {
+      "id": "entity_type",
+      "title": "Entity Type",
+      "description": "The entity type that will be riding this entity.",
+      "dataType": 2,
+      "isRequired": true
+    },
+    {
+      "id": "spawn_event",
+      "title": "Spawn Event",
+      "description": "The spawn event that will be used when the riding entity is created.",
+      "dataType": 2,
+      "defaultValue": ""
+    }
+  ],
+  "description": "List of riders to be added to the entity. Must have no more riders than \"minecraft:rideable\" has \"seat_count\".",
+  "title": "Entity Rider Data"
+}

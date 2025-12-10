@@ -1,0 +1,11 @@
+{
+  "fields": [],
+  "scalarField": {
+    "id": "string",
+    "title": "Path to loot table",
+    "dataType": 2
+  },
+  "description": "The path to the loot table, relative to the behavior pack. Path string is limited to 256 characters.",
+  "title": "Loot",
+  "id": "minecraft:loot"
+}

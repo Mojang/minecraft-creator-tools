@@ -1,0 +1,46 @@
+{
+  "id": "TagMatch",
+  "fields": [
+    {
+      "id": "predicate_type",
+      "title": "BlockType",
+      "dataType": 2,
+      "choices": [
+        {
+          "id": "minecraft:always_true",
+          "title": "Minecraft:always true"
+        },
+        {
+          "id": "minecraft:block_match",
+          "title": "Minecraft:block match"
+        },
+        {
+          "id": "minecraft:blockstate_match",
+          "title": "Minecraft:blockstate match"
+        },
+        {
+          "id": "minecraft:random_block_match",
+          "title": "Minecraft:random block match"
+        },
+        {
+          "id": "minecraft:random_blockstate_match",
+          "title": "Minecraft:random blockstate match"
+        },
+        {
+          "id": "minecraft:tag_match",
+          "title": "Minecraft:tag match"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "tag",
+      "title": "Tag",
+      "description": "The tag to be matched",
+      "dataType": 2,
+      "isRequired": true
+    }
+  ],
+  "description": "Predicate that evaluates to true if the block at the specified location constains the tag.",
+  "title": "World TagMatch"
+}

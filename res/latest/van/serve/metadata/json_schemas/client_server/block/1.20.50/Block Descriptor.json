@@ -1,0 +1,58 @@
+{
+  "$id": "2794205495",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "2770948419": {
+      "properties": {
+        "name": {
+          "default": "",
+          "type": "string"
+        },
+        "states": {
+          "additionalProperties": {
+            "$ref": "#/definitions/517105782"
+          },
+          "default": {
+          },
+          "type": "object"
+        },
+        "tags": {
+          "default": "",
+          "type": "string"
+        }
+      },
+      "title": "BlockDescriptorProxy",
+      "type": "object"
+    },
+    "517105782": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "boolean"
+        }
+      ],
+      "title": "compound_proxy"
+    }
+  },
+  "oneOf": [
+    {
+      "$ref": "#/definitions/2770948419",
+      "x-runtime-constraint-description": "Check that a valid block name or expression is provided, and in the latter case verify that there are no block states as well"
+    },
+    {
+      "minLength": 1,
+      "type": "string"
+    },
+    {
+      "$ref": "#/definitions/2770948419",
+      "x-runtime-constraint-description": "Check that a valid block name or expression is provided, and in the latter case verify that there are no block states as well"
+    }
+  ],
+  "title": "Block Descriptor",
+  "x-format-version": "1.20.50"
+}

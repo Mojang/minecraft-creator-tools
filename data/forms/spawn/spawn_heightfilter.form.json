@@ -1,0 +1,18 @@
+{
+  "id": "Spawn HeightFilter",
+  "fields": [
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": 0,
+      "defaultValue": 128
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": 0,
+      "defaultValue": 24
+    }
+  ],
+  "title": "Spawn HeightFilter"
+}

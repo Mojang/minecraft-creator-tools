@@ -1,0 +1,26 @@
+{
+  "id": "minecraft:behavior.breed",
+  "fields": [
+    {
+      "id": "control_flags",
+      "title": "Control Flags",
+      "dataType": 17,
+      "defaultValue": []
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "dataType": 0,
+      "defaultValue": 0
+    },
+    {
+      "id": "speed_multiplier",
+      "title": "Speed Multiplier",
+      "description": "Movement speed multiplier applied to the mob when using this AI Goal.",
+      "dataType": 3,
+      "defaultValue": 1
+    }
+  ],
+  "description": "Allows this mob to breed with other mobs.",
+  "title": "Entity Breed Behavior"
+}

@@ -1,0 +1,6 @@
+{
+  "id": "query.shake_time",
+  "fields": [],
+  "description": "Returns the shake time of the entity.",
+  "title": "Shake Time"
+}

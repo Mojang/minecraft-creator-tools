@@ -1,0 +1,14 @@
+{
+  "id": "minecraft:cubemap_identifier",
+  "fields": [
+    {
+      "id": "cubemap_identifier",
+      "title": "Cubemap Identifier",
+      "description": "Identifier of cubemap definition to use",
+      "dataType": 16,
+      "isRequired": true
+    }
+  ],
+  "description": "Set the identifier used for cubemap in Vibrant Visuals mode. Identifiers must resolve to identifiers in valid Cubemap JSON schemas under the \"cubemaps\" directory. Biomes without this component will have default cubemap settings.",
+  "title": "Client Biome Cubemap Identifier"
+}

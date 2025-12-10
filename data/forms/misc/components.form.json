@@ -1,0 +1,19 @@
+{
+  "id": "Components",
+  "fields": [
+    {
+      "id": "minecraft:dimension_bounds",
+      "title": "Minecraft Dimension Bounds",
+      "dataType": 16,
+      "subFormId": "misc/bounds"
+    },
+    {
+      "id": "minecraft:generation",
+      "title": "Minecraft Generation",
+      "dataType": 16,
+      "subFormId": "misc/generation",
+      "isRequired": true
+    }
+  ],
+  "title": "Components Misc"
+}

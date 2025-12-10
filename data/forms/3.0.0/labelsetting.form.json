@@ -1,0 +1,36 @@
+{
+  "id": "3.0.0.LabelSetting",
+  "fields": [
+    {
+      "id": "text",
+      "title": "Text",
+      "dataType": 2,
+      "isRequired": true
+    },
+    {
+      "id": "type",
+      "title": "SettingType",
+      "dataType": 2,
+      "choices": [
+        {
+          "id": "dropdown",
+          "title": "Dropdown"
+        },
+        {
+          "id": "label",
+          "title": "Label"
+        },
+        {
+          "id": "slider",
+          "title": "Slider"
+        },
+        {
+          "id": "toggle",
+          "title": "Toggle"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "title": "3.0.0.LabelSetting"
+}
