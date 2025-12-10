@@ -68,6 +68,7 @@
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
+    "completedWorldDataProcessing": true,
     "worldLoadErrors": 0,
     "commands": [],
     "featureSets": {
@@ -394,8 +395,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [UNLINK191] (/pack_icon.png) Texture does not have any items in this pack that are using this.",
     "testFailSummary": "",
-    "infoGenerationTime": 49,
-    "endToEndGenerationTime": 55,
+    "infoGenerationTime": 34,
+    "endToEndGenerationTime": 38,
     "reds": 0,
     "summary": {
       "BASEGAMEVER": {

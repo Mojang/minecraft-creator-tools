@@ -54,6 +54,11 @@ export default function ProjectGrid({ onAppGalleryAction }: ProjectGridProps) {
           </Typography>
           {["entity", "blocks", "items", "typescript", "spawn"].map((tag) => {
             const isActive = searchQuery === tag;
+
+            if (tag && tag.endsWith("s")) {
+              tag = tag.slice(0, -1); // Remove trailing 's'
+            }
+
             return (
               <Box
                 key={tag}

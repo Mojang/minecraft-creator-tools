@@ -184,6 +184,7 @@
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
+    "completedWorldDataProcessing": true,
     "worldLoadErrors": 0,
     "commands": [
       "say",
@@ -1046,8 +1047,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CHKMANIF000] Found 1 errors for Check Manifest Generator (CHKMANIF).",
-    "infoGenerationTime": 1311,
-    "endToEndGenerationTime": 1505,
+    "infoGenerationTime": 444,
+    "endToEndGenerationTime": 640,
     "reds": 40690,
     "summary": {
       "BASEGAMEVER": {

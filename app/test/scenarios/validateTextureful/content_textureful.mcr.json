@@ -179,6 +179,7 @@
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
+    "completedWorldDataProcessing": true,
     "worldLoadErrors": 0,
     "commands": [
       "say",
@@ -1009,8 +1010,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [TEXTUREIMAGE440] Total texture memory exceeds budget of 157,286,400 bytes for items of type Add-On at tier 0. Total texture memory used: 221659136\nWARNING: [TEXTUREIMAGE441] Total texture memory exceeds budget of 157,286,400 bytes for items of type Add-On at tier 1. Total texture memory used: 221659136\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co3_unlinked.ogg) Audio does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/nardolphle_imageisnotlinked.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/a_biceson.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/a_biceson_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/b_nardolphle.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/b_nardolphle_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/c_sheepomelon.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/c_sheepomelon_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/1/a_biceson.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/1/a_biceson_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/1/b_nardolphle.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/1/b_nardolphle_1024hd.png) Texture does not have any items in this pack that are using this.",
     "testFailSummary": "",
-    "infoGenerationTime": 1628,
-    "endToEndGenerationTime": 2009,
+    "infoGenerationTime": 1265,
+    "endToEndGenerationTime": 1593,
     "reds": 40669,
     "summary": {
       "BASEGAMEVER": {

@@ -47,6 +47,11 @@ const CHUNK_Z_SIZE = 16;
 
 const CREATOR_TOOLS_EDITOR_BPUUID = "5d2f0b91-ca29-49da-a275-e6c6262ea3de";
 
+export interface IWorldProcessingOptions {
+  maxNumberOfRecordsToProcess?: number;
+  progressCallback?: (phase: string, current: number, total: number) => void;
+}
+
 export interface IRegion {
   minX: number;
   minZ: number;
@@ -1393,14 +1398,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     this._onLoaded.dispatch(this, this);
   }
 
-  async loadLevelDb(
-    force: boolean = false,
-    options?: {
-      progressCallback?: (phase: string, current: number, total: number) => void;
-    }
-  ) {
+  async loadLevelDb(force: boolean = false, options?: IWorldProcessingOptions): Promise<boolean> {
     if (!force && this._isDataLoaded) {
-      return;
+      return true;
     }
 
     const loadOper = await this._project?.creatorTools.notifyOperationStarted(
@@ -1411,7 +1411,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     const rootFolder = this.effectiveRootFolder;
 
     if (!rootFolder) {
-      return;
+      return false;
     }
 
     if (!rootFolder.isLoaded) {
@@ -1474,19 +1474,24 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
       );
     }
 
-    await this.loadFromLevelDb(this.levelDb, options?.progressCallback);
+    return await this.loadFromLevelDb(this.levelDb, options);
   }
 
-  async loadFromLevelDb(levelDb: LevelDb, progressCallback?: (phase: string, current: number, total: number) => void) {
+  async loadFromLevelDb(levelDb: LevelDb, options?: IWorldProcessingOptions): Promise<boolean> {
     this.levelDb = levelDb;
 
-    await this.processWorldData(progressCallback);
+    const result = await this.processWorldData(options);
+
+    if (!result) {
+      return false;
+    }
 
     this._updateMeta();
 
     this._onDataLoaded.dispatch(this, this);
 
     this._isDataLoaded = true;
+    return true;
   }
 
   /**
@@ -1713,9 +1718,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     return block;
   }
 
-  private async processWorldData(progressCallback?: (phase: string, current: number, total: number) => void) {
+  private async processWorldData(options?: IWorldProcessingOptions) {
     if (!this.levelDb) {
-      return;
+      return false;
     }
 
     this.chunks = new Map();
@@ -1736,8 +1741,12 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
       processedKeys++;
 
       // Report progress every 1000 keys to avoid excessive overhead
-      if (progressCallback && processedKeys % 1000 === 0) {
-        progressCallback("Processing chunks", processedKeys, totalKeys);
+      if (options?.progressCallback && processedKeys % 1000 === 0) {
+        options.progressCallback("Processing records", processedKeys, totalKeys);
+      }
+
+      if (options?.maxNumberOfRecordsToProcess && processedKeys > options.maxNumberOfRecordsToProcess) {
+        return false;
       }
 
       if (keyname.startsWith("AutonomousEntities")) {
@@ -2098,6 +2107,8 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     }
 
     await this.notifyLoadEnded(processOper);
+
+    return true;
   }
 
   private async notifyLoadEnded(processOper?: number) {
