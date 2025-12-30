@@ -993,14 +993,35 @@ export default class ProjectInfoSet {
       const dataObj = this.items[i].dataObject;
 
       if (!isIndexOnly || this.shouldIncludeInIndex(dataObj)) {
-        items.push(dataObj);
+        const needsCapping = dataObj.fs || typeof dataObj.d === "number" || Array.isArray(dataObj.d);
+
+        if (needsCapping) {
+          const cappedDataObj: IInfoItemData = { ...dataObj };
+          if (dataObj.fs) {
+            cappedDataObj.fs = Utilities.capFeatureSetsForJson(dataObj.fs);
+          }
+          if (typeof dataObj.d === "number" || Array.isArray(dataObj.d)) {
+            cappedDataObj.d = Utilities.capDataValueForJson(dataObj.d);
+          }
+          items.push(cappedDataObj);
+        } else {
+          items.push(dataObj);
+        }
       }
     }
 
     Utilities.encodeObjectWithSequentialRunLengthEncodeUsingNegative(this.contentIndex.data.trie);
 
+    // Cap featureSets in info for .NET Int32 compatibility
+    const cappedInfo: IProjectInfo = this.info
+      ? {
+          ...this.info,
+          featureSets: Utilities.capFeatureSetsForJson(this.info.featureSets),
+        }
+      : {};
+
     return {
-      info: this.info,
+      info: cappedInfo,
       items: items,
       index: this.contentIndex.data,
       generatorName: constants.name,
