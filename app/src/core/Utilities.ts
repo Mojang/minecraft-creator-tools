@@ -2096,8 +2096,9 @@ export default class Utilities {
   }
 
   /**
-   * Deep clones a feature sets object, capping all numeric values to MAX_JSON_SAFE_INTEGER.
+   * Deep clones a feature sets object, clamping all numeric values to the safe Int32 range.
    * This ensures compatibility with .NET which has Int32 limits.
+   * Preserves undefined values for individual measures (undefined in = undefined out).
    */
   static capFeatureSetsForJson(
     featureSets: { [setName: string]: { [measureName: string]: number | undefined } | undefined } | undefined
