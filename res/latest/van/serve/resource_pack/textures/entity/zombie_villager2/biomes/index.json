@@ -1,0 +1,26 @@
+{
+  "files": [
+    "biome-desert-zombie.png",
+    "biome-desert-zombie.texture_set.json",
+    "biome-desert-zombie_mers.tga",
+    "biome-jungle-zombie.png",
+    "biome-jungle-zombie.texture_set.json",
+    "biome-jungle-zombie_mers.tga",
+    "biome-plains-zombie.png",
+    "biome-plains-zombie.texture_set.json",
+    "biome-plains-zombie_mers.tga",
+    "biome-savanna-zombie.png",
+    "biome-savanna-zombie.texture_set.json",
+    "biome-savanna-zombie_mers.tga",
+    "biome-snow-zombie.png",
+    "biome-snow-zombie.texture_set.json",
+    "biome-snow-zombie_mers.tga",
+    "biome-swamp-zombie.png",
+    "biome-swamp-zombie.texture_set.json",
+    "biome-swamp-zombie_mers.tga",
+    "biome-taiga-zombie.png",
+    "biome-taiga-zombie.texture_set.json",
+    "biome-taiga-zombie_mers.tga"
+  ],
+  "folders": []
+}

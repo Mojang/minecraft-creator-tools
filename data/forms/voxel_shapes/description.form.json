@@ -1,0 +1,12 @@
+{
+  "id": "Description",
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "Identifier",
+      "dataType": 16,
+      "isRequired": true
+    }
+  ],
+  "title": "Voxel Shapes Description"
+}

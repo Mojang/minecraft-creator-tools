@@ -1,0 +1,32 @@
+{
+  "id": "minecraft:vertical_movement_action",
+  "fields": [
+    {
+      "id": "vertical_velocity",
+      "title": "Vertical Velocity",
+      "description": "Vertical velocity to apply when jump action is issued.",
+      "defaultValue": 0.5,
+      "dataType": 3,
+      "samples": {
+        "/vanilla/behavior_pack/entities/happy_ghast.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:adult_harnessed/minecraft:vertical_movement_action/",
+            "content": 0.5
+          }
+        ]
+      }
+    }
+  ],
+  "description": "When configured as a rideable entity, the entity will move upwards or downwards when the player uses the jump action.",
+  "title": "Vertical Movement Action",
+  "samples": {
+    "/vanilla/behavior_pack/entities/happy_ghast.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:adult_harnessed/minecraft:vertical_movement_action/",
+        "content": {
+          "vertical_velocity": 0.5
+        }
+      }
+    ]
+  }
+}

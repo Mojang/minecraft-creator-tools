@@ -1,0 +1,6 @@
+{
+  "id": "query.death_ticks",
+  "fields": [],
+  "description": "Returns the elapsed ticks since the mob started dying.",
+  "title": "Death Ticks"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "minecraft:behavior.move_towards_dwelling_restriction",
+  "fields": [
+    {
+      "id": "control_flags",
+      "title": "Control Flags",
+      "dataType": 17,
+      "defaultValue": []
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "dataType": 0,
+      "defaultValue": 0
+    },
+    {
+      "id": "speed_multiplier",
+      "title": "Speed Multiplier",
+      "description": "This multiplier modifies the entity's speed when moving towards its restriction.",
+      "dataType": 3,
+      "defaultValue": 1
+    }
+  ],
+  "description": "Allows entities with the \"minecraft:dweller\" component to move toward their village area that the entity should be restricted to.",
+  "title": "Entity Move Towards Dwelling Restriction Behavior"
+}

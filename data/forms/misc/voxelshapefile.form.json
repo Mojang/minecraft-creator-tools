@@ -1,0 +1,20 @@
+{
+  "id": "VoxelShapeFile",
+  "fields": [
+    {
+      "id": "description",
+      "title": "Description",
+      "dataType": 16,
+      "subFormId": "misc/description",
+      "isRequired": true
+    },
+    {
+      "id": "shape",
+      "title": "Shape",
+      "dataType": 16,
+      "subFormId": "misc/shape",
+      "isRequired": true
+    }
+  ],
+  "title": "VoxelShapeFile Misc"
+}

@@ -1,0 +1,235 @@
+{
+  "id": "minecraft:entity_placer",
+  "fields": [
+    {
+      "id": "dispense_on",
+      "description": "List of block descriptors of the blocks that this item can be dispensed on. If left empty, all blocks will be allowed.",
+      "dataType": 15,
+      "defaultValue": [],
+      "subForm": {
+        "id": "dispense_on",
+        "title": "Dispense On",
+        "fields": [
+          {
+            "id": "name",
+            "title": "Name",
+            "dataType": 2,
+            "defaultValue": ""
+          },
+          {
+            "id": "states",
+            "title": "States",
+            "dataType": 0,
+            "defaultValue": {},
+            "alternates": [
+              {
+                "id": "states",
+                "dataType": 2
+              },
+              {
+                "id": "states",
+                "dataType": 1
+              }
+            ]
+          },
+          {
+            "id": "tags",
+            "title": "Tags",
+            "dataType": 2,
+            "defaultValue": ""
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "dispense_on",
+          "dataType": 2
+        },
+        {
+          "id": "dispense_on",
+          "dataType": 16
+        }
+      ]
+    },
+    {
+      "id": "entity",
+      "title": "Entity",
+      "description": "The entity to be placed in the world.",
+      "dataType": 16,
+      "defaultValue": "",
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
+        }
+      ],
+      "samples": {
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/axe_turret_kit.item.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:entity_placer/",
+            "content": "mikeamm_gwve:axe_turret"
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/bow_turret_kit.item.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:entity_placer/",
+            "content": "mikeamm_gwve:bow_turret"
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/crossbow_turret_kit.item.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:entity_placer/",
+            "content": "mikeamm_gwve:crossbow_turret"
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/gray_wave_generator_kit.item.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:entity_placer/",
+            "content": "mikeamm_gwve:gray_wave_generator"
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/shbullet_turret_kit.item.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:entity_placer/",
+            "content": "mikeamm_gwve:shbullet_turret"
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/smfireball_turret_kit.item.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:entity_placer/",
+            "content": "mikeamm_gwve:smfireball_turret"
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_turtle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:entity_placer/",
+            "content": "minecraft:turtle"
+          }
+        ]
+      }
+    },
+    {
+      "id": "use_on",
+      "description": "List of block descriptors of the blocks that this item can be used on. If left empty, all blocks will be allowed.",
+      "dataType": 15,
+      "defaultValue": [],
+      "subForm": {
+        "id": "use_on",
+        "title": "Use On",
+        "fields": [
+          {
+            "id": "name",
+            "title": "Name",
+            "dataType": 2,
+            "defaultValue": ""
+          },
+          {
+            "id": "states",
+            "title": "States",
+            "dataType": 0,
+            "defaultValue": {},
+            "alternates": [
+              {
+                "id": "states",
+                "dataType": 2
+              },
+              {
+                "id": "states",
+                "dataType": 1
+              }
+            ]
+          },
+          {
+            "id": "tags",
+            "title": "Tags",
+            "dataType": 2,
+            "defaultValue": ""
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "use_on",
+          "dataType": 2
+        },
+        {
+          "id": "use_on",
+          "dataType": 16
+        }
+      ],
+      "samples": {
+        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_turtle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:entity_placer/",
+            "content": [
+              "minecraft:sand"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "description": "The entity_placer item component specifies the blocks that the item can be placed on.",
+  "title": "Item Entity Placer",
+  "samples": {
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/axe_turret_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:entity_placer/",
+        "content": {
+          "entity": "mikeamm_gwve:axe_turret"
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/bow_turret_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:entity_placer/",
+        "content": {
+          "entity": "mikeamm_gwve:bow_turret"
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/crossbow_turret_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:entity_placer/",
+        "content": {
+          "entity": "mikeamm_gwve:crossbow_turret"
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/gray_wave_generator_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:entity_placer/",
+        "content": {
+          "entity": "mikeamm_gwve:gray_wave_generator"
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/shbullet_turret_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:entity_placer/",
+        "content": {
+          "entity": "mikeamm_gwve:shbullet_turret"
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/smfireball_turret_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:entity_placer/",
+        "content": {
+          "entity": "mikeamm_gwve:smfireball_turret"
+        }
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/my_sword_turtle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:entity_placer/",
+        "content": {
+          "entity": "minecraft:turtle",
+          "use_on": [
+            "minecraft:sand"
+          ]
+        }
+      }
+    ]
+  }
+}

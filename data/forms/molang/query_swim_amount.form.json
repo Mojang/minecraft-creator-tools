@@ -1,0 +1,6 @@
+{
+  "id": "query.swim_amount",
+  "fields": [],
+  "description": "Returns the amount the current entity is swimming.",
+  "title": "Swim Amount"
+}

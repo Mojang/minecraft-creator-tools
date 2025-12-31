@@ -1,0 +1,6 @@
+{
+  "id": "`math.random(low, high)`",
+  "fields": [],
+  "description": "Random value between low and high inclusive",
+  "title": "Random(low, High)"
+}

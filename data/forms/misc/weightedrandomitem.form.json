@@ -1,0 +1,21 @@
+{
+  "id": "WeightedRandomItem",
+  "fields": [
+    {
+      "id": "data",
+      "title": "Data",
+      "description": "Item's data",
+      "dataType": 17,
+      "isRequired": true
+    },
+    {
+      "id": "weight",
+      "title": "Weight",
+      "description": "Weight of item",
+      "dataType": 0,
+      "isRequired": true
+    }
+  ],
+  "description": "Weighted Random Item",
+  "title": "WeightedRandomItem Misc"
+}

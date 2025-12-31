@@ -1,0 +1,6 @@
+{
+  "id": "`math.ease_out_expo(start, end, 0_to_1)`",
+  "fields": [],
+  "description": "Output goes from start to end via 0_to_1, starting extremely fast and decelerating gradually toward the end",
+  "title": "Ease Out Expo(start, End, 0 To 1)"
+}

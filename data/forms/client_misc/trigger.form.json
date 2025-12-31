@@ -1,0 +1,24 @@
+{
+  "fields": [
+    {
+      "id": "target",
+      "title": "Filter target subject",
+      "description": "Filter target subject",
+      "dataType": 2
+    },
+    {
+      "id": "event",
+      "title": "event",
+      "description": "event",
+      "dataType": 2
+    },
+    {
+      "id": "condition",
+      "title": "condition",
+      "description": "condition",
+      "dataType": 16
+    }
+  ],
+  "description": "Trigger",
+  "title": "Trigger"
+}

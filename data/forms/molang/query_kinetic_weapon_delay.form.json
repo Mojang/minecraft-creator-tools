@@ -1,0 +1,6 @@
+{
+  "id": "query.kinetic_weapon_delay",
+  "fields": [],
+  "description": "Returns the \"delay\" value from the main-hand item's \"minecraft:kinetic_weapon\" component, or 0 if the component is not present.",
+  "title": "Kinetic Weapon Delay"
+}

@@ -1,0 +1,6 @@
+{
+  "id": "`math.cos(value)`",
+  "fields": [],
+  "description": "Cosine (in degrees) of value",
+  "title": "Cos(value)"
+}

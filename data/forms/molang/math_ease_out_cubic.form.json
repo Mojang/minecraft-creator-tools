@@ -1,0 +1,6 @@
+{
+  "id": "`math.ease_out_cubic(start, end, 0_to_1)`",
+  "fields": [],
+  "description": "Output goes from start to end via 0_to_1, starting fast and decelerating rapidly toward the end",
+  "title": "Ease Out Cubic(start, End, 0 To 1)"
+}

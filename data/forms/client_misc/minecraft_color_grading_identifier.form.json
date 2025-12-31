@@ -1,0 +1,14 @@
+{
+  "id": "minecraft:color_grading_identifier",
+  "fields": [
+    {
+      "id": "color_grading_identifier",
+      "title": "Color Grading Identifier",
+      "description": "Identifier of color_grading definition to use",
+      "dataType": 16,
+      "isRequired": true
+    }
+  ],
+  "description": "Set the identifier used for color grading in Vibrant Visuals mode. Identifiers must resolve to identifiers in valid Color Grading JSON schemas under the \"color_grading\" directory. Biomes without this component will have default color_grading settings.",
+  "title": "Minecraft Color Grading Identifier Client Misc"
+}

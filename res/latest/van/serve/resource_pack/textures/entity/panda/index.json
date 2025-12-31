@@ -1,0 +1,26 @@
+{
+  "files": [
+    "panda.png",
+    "panda.texture_set.json",
+    "panda_aggressive.png",
+    "panda_aggressive.texture_set.json",
+    "panda_aggressive_mers.tga",
+    "panda_brown.png",
+    "panda_brown.texture_set.json",
+    "panda_brown_mers.tga",
+    "panda_lazy.png",
+    "panda_lazy.texture_set.json",
+    "panda_lazy_mers.tga",
+    "panda_mers.tga",
+    "panda_playful.png",
+    "panda_playful.texture_set.json",
+    "panda_playful_mers.tga",
+    "panda_sneezy.png",
+    "panda_sneezy.texture_set.json",
+    "panda_sneezy_mers.tga",
+    "panda_worried.png",
+    "panda_worried.texture_set.json",
+    "panda_worried_mers.tga"
+  ],
+  "folders": []
+}

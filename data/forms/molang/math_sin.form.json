@@ -1,0 +1,6 @@
+{
+  "id": "`math.sin(value)`",
+  "fields": [],
+  "description": "Sine (in degrees) of value",
+  "title": "Sin(value)"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "minecraft:the_end",
+  "fields": [
+    {
+      "id": "type",
+      "title": "SurfaceBuilderType",
+      "description": "Use default Minecraft End terrain generation.",
+      "dataType": 2,
+      "isRequired": true
+    }
+  ],
+  "title": "Minecraft The End Misc"
+}
