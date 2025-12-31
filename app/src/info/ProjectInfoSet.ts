@@ -993,14 +993,39 @@ export default class ProjectInfoSet {
       const dataObj = this.items[i].dataObject;
 
       if (!isIndexOnly || this.shouldIncludeInIndex(dataObj)) {
-        items.push(dataObj);
+        // Check if we need to cap numeric values for .NET Int32 compatibility
+        const hasFeatureSetsToCap = dataObj.fs && Object.keys(dataObj.fs).length > 0;
+        const needsCapping = hasFeatureSetsToCap || typeof dataObj.d === "number" || Array.isArray(dataObj.d);
+
+        if (needsCapping) {
+          const cappedDataObj: IInfoItemData = { ...dataObj };
+          if (hasFeatureSetsToCap) {
+            cappedDataObj.fs = Utilities.capFeatureSetsForJson(dataObj.fs);
+          }
+          if (typeof dataObj.d === "number" || Array.isArray(dataObj.d)) {
+            cappedDataObj.d = Utilities.capDataValueForJson(dataObj.d);
+          }
+          items.push(cappedDataObj);
+        } else {
+          items.push(dataObj);
+        }
       }
     }
 
     Utilities.encodeObjectWithSequentialRunLengthEncodeUsingNegative(this.contentIndex.data.trie);
 
+    // Cap featureSets in info for .NET Int32 compatibility.
+    // Note: Other numeric fields in IProjectInfo (errorCount, warningCount, etc.) are per-project
+    // counts that won't exceed Int32. Only featureSets can contain very large aggregated values.
+    const cappedInfo: IProjectInfo = this.info
+      ? {
+          ...this.info,
+          featureSets: Utilities.capFeatureSetsForJson(this.info.featureSets),
+        }
+      : {};
+
     return {
-      info: this.info,
+      info: cappedInfo,
       items: items,
       index: this.contentIndex.data,
       generatorName: constants.name,

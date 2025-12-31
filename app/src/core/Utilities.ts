@@ -33,6 +33,22 @@ export const ObjectKeyAvoidTermList = new Set([
   "__lookupSetter__",
 ]);
 
+/**
+ * Maximum safe integer value for .NET Int32 compatibility.
+ * Using 2,000,000,000 as a round number that is obviously a cap,
+ * well under Int32.MaxValue (2,147,483,647) to ensure compatibility
+ * with downstream JSON consumers like .NET.
+ */
+export const MAX_JSON_SAFE_INTEGER = 2_000_000_000;
+
+/**
+ * Minimum safe integer value for .NET Int32 compatibility.
+ * Using -2,000,000,000 as a round number that is obviously a cap,
+ * well above Int32.MinValue (-2,147,483,648) to ensure compatibility
+ * with downstream JSON consumers like .NET.
+ */
+export const MIN_JSON_SAFE_INTEGER = -2_000_000_000;
+
 export default class Utilities {
   static _isDebug?: boolean;
   static _isAppSim?: boolean;
@@ -2066,5 +2082,63 @@ export default class Utilities {
 
   static isNullOrUndefined<T>(object: T | undefined | null): object is T {
     return (object as T) === undefined || (object as T) === null;
+  }
+
+  /**
+   * Clamps a number for broader compatibility (e.g., .NET).
+   * Returns undefined if the input is undefined.
+   */
+  static capNumberForJson(value: number | undefined): number | undefined {
+    if (value === undefined) {
+      return undefined;
+    }
+    return Math.max(MIN_JSON_SAFE_INTEGER, Math.min(value, MAX_JSON_SAFE_INTEGER));
+  }
+
+  /**
+   * Deep clones a feature sets object, clamping all numeric values to the safe Int32 range.
+   * This ensures compatibility with .NET which has Int32 limits.
+   * Preserves undefined values for individual measures (undefined in = undefined out).
+   */
+  static capFeatureSetsForJson(
+    featureSets: { [setName: string]: { [measureName: string]: number | undefined } | undefined } | undefined
+  ): { [setName: string]: { [measureName: string]: number | undefined } | undefined } | undefined {
+    if (!featureSets) {
+      return undefined;
+    }
+
+    const result: { [setName: string]: { [measureName: string]: number | undefined } | undefined } = {};
+
+    for (const setName in featureSets) {
+      const setVal = featureSets[setName];
+      if (setVal) {
+        const newSetVal: { [measureName: string]: number | undefined } = {};
+        for (const measureName in setVal) {
+          newSetVal[measureName] = Utilities.capNumberForJson(setVal[measureName]);
+        }
+        result[setName] = newSetVal;
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * Clamps a data value for broader compatibility (e.g., .NET).
+   * Handles the IInfoItemData.d type: string | boolean | number | number[] | undefined
+   */
+  static capDataValueForJson(
+    value: string | boolean | number | number[] | undefined
+  ): string | boolean | number | number[] | undefined {
+    if (value === undefined || typeof value === "string" || typeof value === "boolean") {
+      return value;
+    }
+
+    if (typeof value === "number") {
+      return Math.max(MIN_JSON_SAFE_INTEGER, Math.min(value, MAX_JSON_SAFE_INTEGER));
+    }
+
+    // It's a number array
+    return value.map((v) => Math.max(MIN_JSON_SAFE_INTEGER, Math.min(v, MAX_JSON_SAFE_INTEGER)));
   }
 }
