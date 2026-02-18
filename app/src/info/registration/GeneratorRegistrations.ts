@@ -145,8 +145,8 @@ export default class GeneratorRegistrations {
     if ("performAddOnValidations" in generator) {
       generator.performAddOnValidations = config.performAddOnValidations;
     }
-    if ("performPlatformVersionValidation" in generator) {
-      generator.performPlatformVersionValidation = config.performPlatformVersionValidation;
+    if ("performPlatformVersionValidations" in generator) {
+      generator.performPlatformVersionValidations = config.performPlatformVersionValidations;
     }
 
     if ("identifierOverridesAreErrors" in generator) {

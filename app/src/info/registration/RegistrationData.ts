@@ -2,34 +2,34 @@ import { ProjectInfoSuite } from "../IProjectInfoData";
 
 type SuiteConfig = {
   performAddOnValidations: boolean;
-  performPlatformVersionValidation: boolean;
+  performPlatformVersionValidations: boolean;
   identifierOverridesAreErrors: boolean;
 };
 
 export const SuiteConfigs: Record<ProjectInfoSuite, SuiteConfig> = {
   [ProjectInfoSuite.cooperativeAddOn]: {
     performAddOnValidations: true,
-    performPlatformVersionValidation: false,
+    performPlatformVersionValidations: false,
     identifierOverridesAreErrors: true,
   },
   [ProjectInfoSuite.currentPlatformVersions]: {
     performAddOnValidations: false,
-    performPlatformVersionValidation: true,
+    performPlatformVersionValidations: true,
     identifierOverridesAreErrors: false,
   },
   [ProjectInfoSuite.sharing]: {
     performAddOnValidations: false,
-    performPlatformVersionValidation: false,
+    performPlatformVersionValidations: false,
     identifierOverridesAreErrors: false,
   },
   [ProjectInfoSuite.sharingStrict]: {
     performAddOnValidations: false,
-    performPlatformVersionValidation: false,
+    performPlatformVersionValidations: false,
     identifierOverridesAreErrors: false,
   },
   [ProjectInfoSuite.defaultInDevelopment]: {
     performAddOnValidations: false,
-    performPlatformVersionValidation: false,
+    performPlatformVersionValidations: false,
     identifierOverridesAreErrors: false,
   },
 } as const;
