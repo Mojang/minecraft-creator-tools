@@ -1,0 +1,42 @@
+{
+  "format_version": 2,
+  "header": {
+    "description": "Introductory tests for Minecraft GameTest Framework.",
+    "name": "Starter Hello World Tests",
+    "uuid": "afeeb2ab-0404-4518-822f-9837117e78e1",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      0
+    ]
+  },
+  "modules": [
+    {
+      "description": "Script that implements basic starter tests.",
+      "type": "script",
+      "language": "javascript",
+      "uuid": "ead57a90-41fc-4f3b-8e1a-ccc64c99da0c",
+      "version": [
+        1,
+        0,
+        0
+      ],
+      "entry": "scripts/StarterTests.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "module_name": "@minecraft/server",
+      "version": "1.13.0-beta"
+    },
+    {
+      "module_name": "@minecraft/server-gametest",
+      "version": "1.0.0-beta"
+    }
+  ]
+}

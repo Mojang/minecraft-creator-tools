@@ -1,0 +1,10 @@
+{
+  "files": [
+    "ChallengeTests.js",
+    "CommandTests.js",
+    "MobBehaviorTests.js",
+    "Utilities.js",
+    "main.js"
+  ],
+  "folders": []
+}

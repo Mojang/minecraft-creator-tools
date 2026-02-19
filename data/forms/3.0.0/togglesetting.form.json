@@ -1,0 +1,54 @@
+{
+  "id": "3.0.0.ToggleSetting",
+  "fields": [
+    {
+      "id": "default",
+      "title": "Default",
+      "dataType": 1,
+      "isRequired": true
+    },
+    {
+      "id": "name",
+      "title": "Name",
+      "dataType": 2,
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^(?:(?!^(minecraft):).)+:(?:.)+$"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "text",
+      "title": "Text",
+      "dataType": 2,
+      "isRequired": true
+    },
+    {
+      "id": "type",
+      "title": "SettingType",
+      "dataType": 2,
+      "choices": [
+        {
+          "id": "dropdown",
+          "title": "Dropdown"
+        },
+        {
+          "id": "label",
+          "title": "Label"
+        },
+        {
+          "id": "slider",
+          "title": "Slider"
+        },
+        {
+          "id": "toggle",
+          "title": "Toggle"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "title": "3.0.0.ToggleSetting"
+}

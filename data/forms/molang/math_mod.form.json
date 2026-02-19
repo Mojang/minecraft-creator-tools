@@ -1,0 +1,6 @@
+{
+  "id": "`math.mod(value, denominator)`",
+  "fields": [],
+  "description": "Return the remainder of value / denominator",
+  "title": "Mod(value, Denominator)"
+}

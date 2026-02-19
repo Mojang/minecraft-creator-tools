@@ -1,0 +1,13 @@
+{
+  "files": [
+    "axe_turret_kit.recipe.json",
+    "bow_turret_kit.recipe.json",
+    "crossbow_turret_kit.recipe.json",
+    "emeralds.recipe.json",
+    "fabricator.recipe.json",
+    "gray_wave_generator_kit.recipe.json",
+    "shbullet_turret_kit.recipe.json",
+    "smfireball_turret_kit.recipe.json"
+  ],
+  "folders": []
+}

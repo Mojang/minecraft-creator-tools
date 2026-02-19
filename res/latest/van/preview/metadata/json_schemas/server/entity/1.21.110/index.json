@@ -1,0 +1,19 @@
+{
+  "files": [
+    "ActorDefinitions.json",
+    "ExperienceRewardDefinitionComponent.json",
+    "RoarGoalDefinition.json",
+    "SlimeAttackGoalDefinition.json",
+    "SlimeFloatGoalDefinition.json",
+    "SlimeKeepOnJumpingGoalDefinition.json",
+    "SlimeRandomDirectionGoalDefinition.json",
+    "SniffGoalDefinition.json",
+    "SonicBoomGoalDefinition.json",
+    "StayNearNoteblockGoalDefinition.json",
+    "SwimIdleGoalDefinition.json",
+    "SwimUpForBreathGoalDefinition.json",
+    "SwimWanderGoalDefinition.json",
+    "SwoopAttackGoalDefinition.json"
+  ],
+  "folders": []
+}

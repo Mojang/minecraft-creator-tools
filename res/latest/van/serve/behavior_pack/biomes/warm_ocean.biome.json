@@ -1,0 +1,45 @@
+{
+  "format_version": "1.21.110",
+  "minecraft:biome": {
+    "description": {
+      "identifier": "minecraft:warm_ocean"
+    },
+    "components": {
+      "minecraft:climate": {
+        "downfall": 0.5,
+        "snow_accumulation": [ 0.0, 0.125 ],
+        "temperature": 0.5
+      },
+      "minecraft:overworld_height": {
+        "noise_type": "ocean"
+      },
+      "minecraft:surface_builder": {
+        "builder": {
+          "type": "minecraft:overworld",
+          "sea_floor_depth": 3,
+          "sea_floor_material": "minecraft:sand",
+          "foundation_material": "minecraft:stone",
+          "mid_material": "minecraft:dirt",
+          "top_material": "minecraft:grass_block",
+          "sea_material": "minecraft:water"
+        }
+      },
+      "minecraft:overworld_generation_rules": {
+        "generate_for_climates": [
+          [ "warm", 1 ]
+        ]
+      },
+
+      "minecraft:tags": {
+        "tags": [
+          "monster",
+          "ocean",
+          "overworld",
+          "warm",
+          "spawns_warm_variant_farm_animals",
+          "spawns_warm_variant_frogs"
+        ]
+      }
+    }
+  }
+}

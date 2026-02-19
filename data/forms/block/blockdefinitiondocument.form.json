@@ -1,0 +1,27 @@
+{
+  "id": "BlockDefinitionDocument",
+  "fields": [
+    {
+      "id": "components",
+      "title": "Components",
+      "dataType": 16,
+      "subFormId": "block_components/components"
+    },
+    {
+      "id": "description",
+      "title": "Description",
+      "description": "Information about the block, must have at minimum an \"identifier\" and can have also the following optional field \"menu_category\", \"states\" and/or \"traits\"",
+      "dataType": 16,
+      "subFormId": "block/description",
+      "isRequired": true
+    },
+    {
+      "id": "permutations",
+      "title": "Permutations",
+      "dataType": 16,
+      "defaultValue": [],
+      "subFormId": "block/permutation"
+    }
+  ],
+  "title": "BlockDefinitionDocument"
+}

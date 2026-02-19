@@ -1,0 +1,6 @@
+{
+  "id": "query.client_memory_tier",
+  "fields": [],
+  "description": "Returns a number representing the client RAM memory tier, 0 = 'SuperLow', 1 = 'Low', 2 = 'Mid', 3 = 'High', or 4 = 'SuperHigh'. Available on the Client (Resource Packs) only.",
+  "title": "Client Memory Tier"
+}

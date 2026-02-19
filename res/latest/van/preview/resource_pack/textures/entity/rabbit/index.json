@@ -1,0 +1,26 @@
+{
+  "files": [
+    "blackrabbit.png",
+    "blackrabbit.texture_set.json",
+    "blackrabbit_mers.tga",
+    "brown.png",
+    "brown.texture_set.json",
+    "brown_mers.tga",
+    "gold.png",
+    "gold.texture_set.json",
+    "gold_mers.tga",
+    "salt.png",
+    "salt.texture_set.json",
+    "salt_mers.tga",
+    "toast.png",
+    "toast.texture_set.json",
+    "toast_mers.tga",
+    "white.png",
+    "white.texture_set.json",
+    "white_mers.tga",
+    "white_splotched.png",
+    "white_splotched.texture_set.json",
+    "white_splotched_mers.tga"
+  ],
+  "folders": []
+}

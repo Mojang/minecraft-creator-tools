@@ -1,0 +1,268 @@
+{
+  "id": "minecraft:dweller",
+  "title": "Dweller",
+  "description": "Compels an entity to join and migrate between villages and other dwellings.",
+  "fields": [
+    {
+      "id": "dwelling_type",
+      "title": "Dwelling Type",
+      "description": "The type of dwelling the entity wishes to join. Current Types: village.",
+      "dataType": 2,
+      "samples": {
+        "/vanilla/behavior_pack/entities/cat.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:dweller/",
+            "content": "village"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/evocation_illager.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:raid_configuration/minecraft:dweller/",
+            "content": "village"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dwelling_role",
+      "title": "Dwelling Role",
+      "description": "The role of which the entity plays in the dwelling. Current Roles: inhabitant, defender, hostile, passive.",
+      "dataType": 2
+    },
+    {
+      "id": "update_interval_base",
+      "title": "Update Interval Base",
+      "description": "How often the entity checks on their dwelling status in ticks. Positive values only.",
+      "dataType": 3,
+      "samples": {
+        "/vanilla/behavior_pack/entities/cat.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:dweller/",
+            "content": 60
+          }
+        ],
+        "/vanilla/behavior_pack/entities/evocation_illager.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:raid_configuration/minecraft:dweller/",
+            "content": 60
+          }
+        ]
+      }
+    },
+    {
+      "id": "update_interval_variant",
+      "title": "Update Interval Variant",
+      "description": "The variant value in ticks that will be added to the update_interval_base.",
+      "dataType": 3,
+      "samples": {
+        "/vanilla/behavior_pack/entities/cat.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:dweller/",
+            "content": 40
+          }
+        ],
+        "/vanilla/behavior_pack/entities/evocation_illager.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:raid_configuration/minecraft:dweller/",
+            "content": 40
+          }
+        ]
+      }
+    },
+    {
+      "id": "can_find_poi",
+      "title": "Can find POI",
+      "description": "Whether or not the entity can find and add POIs to the dwelling.",
+      "dataType": 1
+    },
+    {
+      "id": "first_founding_reward",
+      "title": "First Founding Reward",
+      "description": "Determines how much reputation players are rewarded on first founding.",
+      "dataType": 0
+    },
+    {
+      "id": "can_migrate",
+      "title": "Can Migrate",
+      "description": "Determines whether the entity can migrate between dwellings, or only have its initial dwelling.",
+      "dataType": 1,
+      "samples": {
+        "/vanilla/behavior_pack/entities/cat.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:dweller/",
+            "content": true
+          }
+        ],
+        "/vanilla/behavior_pack/entities/evocation_illager.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:raid_configuration/minecraft:dweller/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "dwelling_bounds_tolerance",
+      "title": "Dwelling Bounds Tolerance",
+      "description": "A padding distance for checking if the entity is within the dwelling.",
+      "dataType": 3
+    },
+    {
+      "id": "preferred_profession",
+      "title": "Preferred Profession",
+      "description": "Allows the user to define a starting profession for this particular Dweller, instead of letting them choose organically. (They still need to gain experience from trading before this takes effect.)",
+      "dataType": 2
+    },
+    {
+      "id": "dweller_role",
+      "title": "Dweller Role",
+      "dataType": 2,
+      "samples": {
+        "/vanilla/behavior_pack/entities/cat.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:dweller/",
+            "content": "passive"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/evocation_illager.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:raid_configuration/minecraft:dweller/",
+            "content": "hostile"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/iron_golem.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:village_created/minecraft:dweller/",
+            "content": "defender"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/pillager.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:raid_configuration/minecraft:dweller/",
+            "content": "hostile"
+          }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:dweller/",
+            "content": "passive"
+          }
+        ]
+      }
+    }
+  ],
+  "samples": {
+    "/vanilla/behavior_pack/entities/cat.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:dweller/",
+        "content": {
+          "dwelling_type": "village",
+          "dweller_role": "passive",
+          "update_interval_base": 60,
+          "update_interval_variant": 40,
+          "can_find_poi": false,
+          "can_migrate": true,
+          "first_founding_reward": 0
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/evocation_illager.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:raid_configuration/minecraft:dweller/",
+        "content": {
+          "dwelling_type": "village",
+          "dweller_role": "hostile",
+          "update_interval_base": 60,
+          "update_interval_variant": 40,
+          "can_find_poi": false,
+          "can_migrate": true,
+          "first_founding_reward": 0
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/iron_golem.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:village_created/minecraft:dweller/",
+        "content": {
+          "dwelling_type": "village",
+          "dweller_role": "defender",
+          "update_interval_base": 60,
+          "update_interval_variant": 40,
+          "can_find_poi": false,
+          "can_migrate": true,
+          "first_founding_reward": 0
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/pillager.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:raid_configuration/minecraft:dweller/",
+        "content": {
+          "dwelling_type": "village",
+          "dweller_role": "hostile",
+          "update_interval_base": 60,
+          "update_interval_variant": 40,
+          "can_find_poi": false,
+          "can_migrate": true,
+          "first_founding_reward": 0
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/ravager.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:raid_configuration/minecraft:dweller/",
+        "content": {
+          "dwelling_type": "village",
+          "dweller_role": "hostile",
+          "update_interval_base": 60,
+          "update_interval_variant": 40,
+          "can_find_poi": false,
+          "can_migrate": true,
+          "first_founding_reward": 0
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/vindicator.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:raid_configuration/minecraft:dweller/",
+        "content": {
+          "dwelling_type": "village",
+          "dweller_role": "hostile",
+          "update_interval_base": 60,
+          "update_interval_variant": 40,
+          "can_find_poi": false,
+          "can_migrate": true,
+          "first_founding_reward": 0
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/witch.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:raid_configuration/minecraft:dweller/",
+        "content": {
+          "dwelling_type": "village",
+          "dweller_role": "hostile",
+          "update_interval_base": 60,
+          "update_interval_variant": 40,
+          "can_find_poi": false,
+          "can_migrate": true,
+          "first_founding_reward": 0
+        }
+      }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:dweller/",
+        "content": {
+          "dwelling_type": "village",
+          "dweller_role": "passive",
+          "update_interval_base": 60,
+          "update_interval_variant": 40,
+          "can_find_poi": false,
+          "can_migrate": true,
+          "first_founding_reward": 0
+        }
+      }
+    ]
+  }
+}

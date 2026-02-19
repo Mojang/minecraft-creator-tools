@@ -1,0 +1,18 @@
+{
+  "id": "IntRange",
+  "fields": [
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": 0,
+      "defaultValue": 0
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": 0,
+      "defaultValue": 0
+    }
+  ],
+  "title": "Item IntRange"
+}

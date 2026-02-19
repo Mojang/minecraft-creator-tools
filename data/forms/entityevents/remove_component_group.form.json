@@ -1,0 +1,17 @@
+{
+  "fields": [],
+  "tags": [
+    "entityevent"
+  ],
+  "description": "Removes component groups from the current entity. This can be any group you have defined in the 'component_groups' section of the file.",
+  "title": "Remove Component Group",
+  "samples": {
+    "samples": [
+      {
+        "path": "Example:",
+        "content": "\t\t\"sequence\": [\n\t\t\t{\n\t\t\t\t\"remove\": { \"component_groups\": [ \"one\" ] }\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"remove\": { \"component_groups\": [ \"two\", \"five\", \"etc..\" ] }\n\t\t\t}\n\t\t]\n\t"
+      }
+    ]
+  },
+  "id": "remove_component_group"
+}

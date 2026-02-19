@@ -1,0 +1,18 @@
+{
+  "id": "Traits",
+  "fields": [
+    {
+      "id": "minecraft:placement_direction",
+      "title": "Minecraft Placement Direction",
+      "dataType": 16,
+      "subFormId": "misc/placement_direction"
+    },
+    {
+      "id": "minecraft:placement_position",
+      "title": "Minecraft Placement Position",
+      "dataType": 16,
+      "subFormId": "misc/placement_position"
+    }
+  ],
+  "title": "Traits Misc"
+}

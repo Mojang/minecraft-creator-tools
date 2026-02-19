@@ -1,0 +1,25 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shapeless": {
+    "description": {
+    "identifier": "minecraft:stonecutter_smooth_quartz_slab"
+    },
+    "tags": [ "stonecutter" ],
+    "priority": 0,
+    "ingredients": [
+      {
+        "item": "minecraft:smooth_quartz"
+      }
+    ],
+    "unlock": [
+      {
+        "item": "minecraft:smooth_quartz"
+      }
+    ],
+    "result": {
+      "item": "minecraft:smooth_quartz_slab",
+      "count": 2
+    }
+  }
+  
+}

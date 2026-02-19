@@ -1,0 +1,6 @@
+{
+  "id": "`math.ease_out_sine(start, end, 0_to_1)`",
+  "fields": [],
+  "description": "Output goes from start to end via 0_to_1, starting fast and decelerating smoothly toward the end",
+  "title": "Ease Out Sine(start, End, 0 To 1)"
+}

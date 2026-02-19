@@ -1,0 +1,30 @@
+{
+  "id": "3.0.0.Subpack",
+  "fields": [
+    {
+      "id": "folder_name",
+      "title": "Folder Name",
+      "dataType": 2,
+      "isRequired": true
+    },
+    {
+      "id": "memory_performance_tier",
+      "title": "Memory Performance Tier",
+      "dataType": 0,
+      "validity": [
+        {
+          "comparison": "<=",
+          "value": 5
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "name",
+      "title": "Name",
+      "dataType": 2,
+      "isRequired": true
+    }
+  ],
+  "title": "3.0.0.Subpack"
+}

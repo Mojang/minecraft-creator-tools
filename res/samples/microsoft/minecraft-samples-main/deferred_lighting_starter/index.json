@@ -1,0 +1,10 @@
+{
+  "files": [
+    "README.md",
+    "package.json",
+    "package-lock.json"
+  ],
+  "folders": [
+    "resource_packs"
+  ]
+}

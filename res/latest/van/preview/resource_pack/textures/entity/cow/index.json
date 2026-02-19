@@ -1,0 +1,29 @@
+{
+  "files": [
+    "brown_mooshroom.png",
+    "brown_mooshroom.texture_set.json",
+    "brown_mooshroom_mers.tga",
+    "brown_mooshroom_v2.png",
+    "brown_mooshroom_v2.texture_set.json",
+    "brown_mooshroom_v2_mers.tga",
+    "cow.png",
+    "cow.texture_set.json",
+    "cow_cold.png",
+    "cow_cold.texture_set.json",
+    "cow_cold_mers.tga",
+    "cow_mers.tga",
+    "cow_v2.png",
+    "cow_v2.texture_set.json",
+    "cow_v2_mers.tga",
+    "cow_warm.png",
+    "cow_warm.texture_set.json",
+    "cow_warm_mers.tga",
+    "mooshroom.png",
+    "mooshroom.texture_set.json",
+    "mooshroom_mers.tga",
+    "mooshroom_v2.png",
+    "mooshroom_v2.texture_set.json",
+    "mooshroom_v2_mers.tga"
+  ],
+  "folders": []
+}

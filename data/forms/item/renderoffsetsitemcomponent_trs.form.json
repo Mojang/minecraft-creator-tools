@@ -1,0 +1,24 @@
+{
+  "fields": [
+    {
+      "id": "position",
+      "title": "position",
+      "description": "Position (x, y, z) data",
+      "dataType": 16
+    },
+    {
+      "id": "rotation",
+      "title": "rotation",
+      "description": "Rotation (x, y, z) data",
+      "dataType": 16
+    },
+    {
+      "id": "scale",
+      "title": "scale",
+      "description": "Scale (x, y, z) data",
+      "dataType": 16
+    }
+  ],
+  "description": "RenderOffsetsItemComponent TRS",
+  "title": "RenderOffsetsItemComponent TRS"
+}

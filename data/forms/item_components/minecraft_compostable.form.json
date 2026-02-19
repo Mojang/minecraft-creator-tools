@@ -1,0 +1,25 @@
+{
+  "fields": [
+    {
+      "id": "composting_chance",
+      "title": "Composting Chance",
+      "description": "The chance of this item to create a layer upon composting with the composter. Valid value range is 1 - 100 inclusive",
+      "dataType": 0,
+      "validity": [
+        {
+          "comparison": ">=",
+          "value": 1
+        },
+        {
+          "comparison": "<=",
+          "value": 100
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "versionIntroduced": "1.21.60",
+  "description": "Specifies that an item is compostable and provides the chance of creating a composting layer in the composter",
+  "title": "Item Components Compostable",
+  "id": "minecraft:compostable"
+}

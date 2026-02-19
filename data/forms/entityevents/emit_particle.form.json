@@ -1,0 +1,24 @@
+{
+  "fields": [
+    {
+      "id": "particle",
+      "description": "Identifier of the particle to emit.",
+      "dataType": 2
+    }
+  ],
+  "tags": [
+    "entityevent"
+  ],
+  "description": "Emits a particle specified via the particle attribute.",
+  "id": "emit_particle",
+  "versionIntroduced": "1.21.50",
+  "title": "Emit Particle",
+  "samples": {
+    "samples": [
+      {
+        "path": "Example:",
+        "content": "{\r\n\t\"emit_particle\": {\r\n\t\t\"particle\": \"creakingcrumble\"\r\n\t}\r\n}"
+      }
+    ]
+  }
+}

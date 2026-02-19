@@ -1,0 +1,15 @@
+{
+  "fields": [
+    {
+      "id": "categories",
+      "title": "Categories",
+      "description": "The categories we are adding groups to.",
+      "dataType": 16,
+      "subFormId": "misc/crafting_catalog_category",
+      "isRequired": true
+    }
+  ],
+  "description": "The root object for defining the crafting catalog",
+  "title": "Crafting Catalog Document Misc",
+  "id": "Crafting Catalog Document"
+}

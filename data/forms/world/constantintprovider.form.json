@@ -1,0 +1,30 @@
+{
+  "id": "ConstantIntProvider",
+  "fields": [
+    {
+      "id": "type",
+      "title": "IntProviderType",
+      "dataType": 2,
+      "choices": [
+        {
+          "id": "constant",
+          "title": "Constant"
+        },
+        {
+          "id": "uniform",
+          "title": "Uniform"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "Constant value",
+      "dataType": 0,
+      "isRequired": true
+    }
+  ],
+  "description": "Specifies a constant integer",
+  "title": "World ConstantIntProvider"
+}

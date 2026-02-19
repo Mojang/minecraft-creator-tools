@@ -1,0 +1,20 @@
+{
+  "files": [
+    "axolotl_blue.png",
+    "axolotl_blue.texture_set.json",
+    "axolotl_blue_mers.tga",
+    "axolotl_cyan.png",
+    "axolotl_cyan.texture_set.json",
+    "axolotl_cyan_mers.tga",
+    "axolotl_gold.png",
+    "axolotl_gold.texture_set.json",
+    "axolotl_gold_mers.tga",
+    "axolotl_lucy.png",
+    "axolotl_lucy.texture_set.json",
+    "axolotl_lucy_mers.tga",
+    "axolotl_wild.png",
+    "axolotl_wild.texture_set.json",
+    "axolotl_wild_mers.tga"
+  ],
+  "folders": []
+}

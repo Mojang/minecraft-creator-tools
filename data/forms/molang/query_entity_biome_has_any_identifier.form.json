@@ -1,0 +1,6 @@
+{
+  "id": "query.entity_biome_has_any_identifier",
+  "fields": [],
+  "description": "Compares the biome the entity is standing in with one or more identifier names, and returns either 0 or 1 based on if any of the identifier names match. Only supported in resource packs (client-side).",
+  "title": "Entity Biome Has Any Identifier"
+}

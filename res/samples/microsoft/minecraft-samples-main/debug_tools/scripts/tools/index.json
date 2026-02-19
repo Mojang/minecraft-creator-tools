@@ -1,0 +1,13 @@
+{
+  "files": [
+    "CommandResultWatchTool.ts",
+    "CustomWatchTool.ts",
+    "DynamicPropertyWatchTool.ts",
+    "GameModeWatchTool.ts",
+    "LocationWatchTool.ts",
+    "ScoreboardWatchTool.ts",
+    "TickWatchTool.ts",
+    "TimeOfDayWatchTool.ts"
+  ],
+  "folders": []
+}

@@ -1,0 +1,28 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Culled Blocks",
+    "description": "My behavior pack description",
+    "uuid": "df70c351-cd47-4dc0-8f42-64c040e825d4",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 21, 0]
+  },
+  "modules": [
+    {
+      "description": "Demo Behavior Pack",
+      "type": "data",
+      "uuid": "185dac70-b512-4b45-8b9f-b845f456a731",
+      "version": [1, 0, 0]
+    }
+  ],
+  "dependencies": [
+    {
+      "module_name": "@minecraft/server",
+      "version": "2.0.0"
+    },
+    {
+      "uuid": "58540088-b664-4379-97cb-b630b0d89363",
+      "version": [1, 0, 0]
+    }
+  ]
+}

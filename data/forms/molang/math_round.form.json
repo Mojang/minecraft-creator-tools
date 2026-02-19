@@ -1,0 +1,6 @@
+{
+  "id": "`math.round(value)`",
+  "fields": [],
+  "description": "Round value to nearest integral number",
+  "title": "Round(value)"
+}

@@ -1,0 +1,283 @@
+{
+  "id": "minecraft:underwater_movement",
+  "title": "Underwater Movement",
+  "description": "Defines the speed with which an entity can move through water.",
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "Movement speed of the entity under water.",
+      "dataType": 3,
+      "samples": {
+        "/vanilla/behavior_pack/entities/axolotl.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+            "content": 0.2
+          }
+        ],
+        "/vanilla/behavior_pack/entities/dolphin.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+            "content": 0.15
+          }
+        ],
+        "/vanilla/behavior_pack/entities/elder_guardian.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+            "content": 0.3
+          }
+        ],
+        "/vanilla/behavior_pack/entities/fish.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+            "content": 0.1
+          }
+        ],
+        "/vanilla/behavior_pack/entities/frog.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+            "content": 0.15
+          }
+        ],
+        "/vanilla/behavior_pack/entities/guardian.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+            "content": 0.12
+          }
+        ],
+        "/vanilla/behavior_pack/entities/nautilus.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_player_controlled/minecraft:underwater_movement/",
+            "content": 0.055
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_ai_controlled/minecraft:underwater_movement/",
+            "content": 0.07
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_charging/minecraft:underwater_movement/",
+            "content": 0.12
+          }
+        ],
+        "/vanilla/behavior_pack/entities/pufferfish.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+            "content": 0.13
+          }
+        ],
+        "/vanilla/behavior_pack/entities/skeleton_horse.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+            "content": 0.08
+          }
+        ],
+        "/vanilla/behavior_pack/entities/tadpole.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+            "content": 0.1
+          }
+        ],
+        "/vanilla/behavior_pack/entities/turtle.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:baby/minecraft:underwater_movement/",
+            "content": 0.06
+          }
+        ],
+        "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_player_controlled/minecraft:underwater_movement/",
+            "content": 0.055
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_charging/minecraft:underwater_movement/",
+            "content": 0.06
+          }
+        ]
+      }
+    }
+  ],
+  "samples": {
+    "/vanilla/behavior_pack/entities/axolotl.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.2
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/dolphin.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.15
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/elder_guardian.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.3
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/fish.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/frog.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.15
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/guardian.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.12
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_baby/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.15
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_player_controlled/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.055
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_ai_controlled/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.07
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_charging/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.12
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/pufferfish.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.13
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/salmon.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.12
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/skeleton_horse.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.08
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/tadpole.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/tropicalfish.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.12
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/turtle.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:baby/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.06
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:adult/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.12
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_wild_mounted/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.15
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_player_controlled/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.055
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_ai_controlled/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.1
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_charging/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.06
+        }
+      }
+    ],
+    "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/nardolphle.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:baby/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.06
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:adult/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.12
+        }
+      }
+    ],
+    "/samples/addon_starter/complete/behavior_packs/aop_mobs/entities/nardolphle.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:baby/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.06
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:adult/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.12
+        }
+      }
+    ]
+  }
+}

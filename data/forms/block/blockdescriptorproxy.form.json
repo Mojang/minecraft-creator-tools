@@ -1,0 +1,34 @@
+{
+  "id": "BlockDescriptorProxy",
+  "fields": [
+    {
+      "id": "name",
+      "title": "Name",
+      "dataType": 2,
+      "defaultValue": ""
+    },
+    {
+      "id": "states",
+      "title": "States",
+      "dataType": 0,
+      "defaultValue": {},
+      "alternates": [
+        {
+          "id": "states",
+          "dataType": 2
+        },
+        {
+          "id": "states",
+          "dataType": 1
+        }
+      ]
+    },
+    {
+      "id": "tags",
+      "title": "Tags",
+      "dataType": 2,
+      "defaultValue": ""
+    }
+  ],
+  "title": "BlockDescriptorProxy"
+}

@@ -1,0 +1,24 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Culled Blocks Resource Pack",
+    "description": "Demo Resource Pack",
+    "uuid": "58540088-b664-4379-97cb-b630b0d89363",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 21, 0]
+  },
+  "modules": [
+    {
+      "description": "Demo Resource Pack",
+      "type": "resources",
+      "uuid": "99e467e0-26ba-49a5-9b69-8fca93ebd49c",
+      "version": [1, 0, 0]
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "df70c351-cd47-4dc0-8f42-64c040e825d4",
+      "version": [1, 0, 0]
+    }
+  ]
+}

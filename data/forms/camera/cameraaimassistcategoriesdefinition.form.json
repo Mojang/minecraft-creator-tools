@@ -1,0 +1,12 @@
+{
+  "fields": [
+    {
+      "id": "categories",
+      "title": "categories",
+      "description": "List of categories used by Camera Aim-Assist 'minecraft:aim_assist_preset'.",
+      "dataType": 15
+    }
+  ],
+  "description": "CameraAimAssistCategoriesDefinition",
+  "title": "CameraAimAssistCategoriesDefinition"
+}

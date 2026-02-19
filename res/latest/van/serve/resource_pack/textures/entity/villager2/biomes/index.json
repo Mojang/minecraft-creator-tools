@@ -1,0 +1,26 @@
+{
+  "files": [
+    "biome_desert.png",
+    "biome_desert.texture_set.json",
+    "biome_desert_mers.tga",
+    "biome_jungle.png",
+    "biome_jungle.texture_set.json",
+    "biome_jungle_mers.tga",
+    "biome_plains.png",
+    "biome_plains.texture_set.json",
+    "biome_plains_mers.tga",
+    "biome_savanna.png",
+    "biome_savanna.texture_set.json",
+    "biome_savanna_mers.tga",
+    "biome_snow.png",
+    "biome_snow.texture_set.json",
+    "biome_snow_mers.tga",
+    "biome_swamp.png",
+    "biome_swamp.texture_set.json",
+    "biome_swamp_mers.tga",
+    "biome_taiga.png",
+    "biome_taiga.texture_set.json",
+    "biome_taiga_mers.tga"
+  ],
+  "folders": []
+}

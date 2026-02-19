@@ -1,0 +1,20 @@
+{
+  "id": "TradeGroup",
+  "fields": [
+    {
+      "id": "num_to_select",
+      "title": "Num To Select",
+      "dataType": 0,
+      "defaultValue": 0
+    },
+    {
+      "id": "trades",
+      "title": "Trades",
+      "dataType": 16,
+      "minLength": 1,
+      "subFormId": "entity/trade",
+      "isRequired": true
+    }
+  ],
+  "title": "Entity TradeGroup"
+}

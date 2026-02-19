@@ -1,0 +1,30 @@
+{
+  "id": "AppendLoot",
+  "fields": [
+    {
+      "id": "loot_table",
+      "title": "Loot Table",
+      "description": "The loot table to append",
+      "dataType": 16,
+      "isRequired": true
+    },
+    {
+      "id": "type",
+      "title": "BlockEntityModifierType",
+      "dataType": 2,
+      "choices": [
+        {
+          "id": "minecraft:append_loot",
+          "title": "Minecraft:append loot"
+        },
+        {
+          "id": "minecraft:passthrough",
+          "title": "Minecraft:passthrough"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Modifier will attempt to add loot to a block entity.",
+  "title": "World AppendLoot"
+}

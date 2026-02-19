@@ -1,0 +1,21 @@
+{
+  "fields": [
+    {
+      "id": "type",
+      "title": "IntProviderType",
+      "dataType": 2,
+      "isRequired": true,
+      "description": "enum SharedTypes_v1_21_20_IntProviderType"
+    },
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "Constant value",
+      "dataType": 0,
+      "isRequired": true
+    }
+  ],
+  "description": "Specifies a constant integer",
+  "title": "ConstantIntProvider Misc",
+  "id": "ConstantIntProvider"
+}

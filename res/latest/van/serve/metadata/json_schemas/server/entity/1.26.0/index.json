@@ -1,0 +1,17 @@
+{
+  "files": [
+    "DefendVillageTargetDefinition.json",
+    "GuardianAttackGoalDefinition.json",
+    "MoveTowardsDwellingRestrictionDefinition.json",
+    "MoveTowardsHomeRestrictionDefinition.json",
+    "MoveTowardsRestrictionDefinition.json",
+    "NearestAttackableTargetDefinition.json",
+    "TargetGoalDefinition.json",
+    "TimerActorFlag1Definition.json",
+    "TimerActorFlag2Definition.json",
+    "TimerActorFlag3Definition.json",
+    "TimerActorFlagBaseDefinition.json",
+    "ActorDefinitions.json"
+  ],
+  "folders": []
+}

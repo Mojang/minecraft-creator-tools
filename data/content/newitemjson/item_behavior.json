@@ -1,0 +1,17 @@
+{
+  "format_version": "1.20.50",
+  "minecraft:item": {
+    "description": {
+      "identifier": "examplens:examplename",
+      "category": "nature"
+    },
+    "components": {
+      "minecraft:icon": {
+        "texture": "examplename"
+      },
+      "minecraft:display_name": {
+        "value": "item.examplename.name"
+      }
+    }
+  }
+}

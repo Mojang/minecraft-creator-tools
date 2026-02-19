@@ -1,0 +1,14 @@
+{
+  "files": [
+    "drowned.texture_set.json",
+    "drowned.tga",
+    "drowned_mers.tga",
+    "husk.png",
+    "husk.texture_set.json",
+    "husk_mers.tga",
+    "zombie.png",
+    "zombie.texture_set.json",
+    "zombie_mers.tga"
+  ],
+  "folders": []
+}

@@ -1,0 +1,25 @@
+{
+  "files": [
+    "llama.png",
+    "llama.texture_set.json",
+    "llama_brown.png",
+    "llama_brown.texture_set.json",
+    "llama_brown_mers.tga",
+    "llama_creamy.png",
+    "llama_creamy.texture_set.json",
+    "llama_creamy_mers.tga",
+    "llama_gray.png",
+    "llama_gray.texture_set.json",
+    "llama_gray_mers.tga",
+    "llama_mers.tga",
+    "llama_white.png",
+    "llama_white.texture_set.json",
+    "llama_white_mers.tga",
+    "spit.png",
+    "spit.texture_set.json",
+    "spit_mers.tga"
+  ],
+  "folders": [
+    "decor"
+  ]
+}

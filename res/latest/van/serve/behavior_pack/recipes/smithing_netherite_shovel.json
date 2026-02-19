@@ -1,0 +1,13 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_smithing_transform": {
+    "description": {
+      "identifier": "minecraft:smithing_netherite_shovel"
+    },
+    "tags": [ "smithing_table" ],
+    "template": "minecraft:netherite_upgrade_smithing_template",
+    "base": "minecraft:diamond_shovel",
+    "addition": "minecraft:netherite_ingot",
+    "result": "minecraft:netherite_shovel"
+  }
+}

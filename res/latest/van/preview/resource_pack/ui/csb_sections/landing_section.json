@@ -1,0 +1,452 @@
+{
+  "namespace": "csb_landing",
+
+  "landing_content_section@csb.section_base": {
+    "controls": [
+      {
+        "landing_section_vertical_padding@csb.vertical_padding_4px": {}
+      },
+      {
+        "landing_content": {
+          "type": "stack_panel",
+          "size": [ "100%", "100%c" ],
+          "controls": [
+            {
+              "title_stack@csb_landing.title_stack": {}
+            },
+            {
+              "vertical_small_spacer_0@csb_landing.vertical_small_spacer": {}
+            },
+            {
+              "vertical_small_spacer_1@csb_landing.vertical_small_spacer": {}
+            },
+            {
+              "info_stack@csb_landing.info_stack": {}
+            },
+            {
+              "vertical_small_spacer_2@csb_landing.vertical_small_spacer": {
+                "size": [ "100%", 4 ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "horizontal_small_spacer": {
+    "type": "panel",
+    "size": [ 2, 0 ]
+  },
+
+  "vertical_small_spacer": {
+    "type": "panel",
+    "size": [ 0, 2 ]
+  },
+
+  "vertical_large_spacer": {
+    "type": "panel",
+    "size": [ 0, 8 ]
+  },
+
+  "title_stack": {
+    "type": "stack_panel",
+    "size": [ "100%", "100%c" ],
+    "controls": [
+      {
+        "title_image_panel@csb_landing.title_image_panel": {}
+      },
+      {
+        "title_space@csb_landing.title_space": {}
+      },
+      {
+        "action_button@csb_buy.buy_button_panel": {
+          "ignored": "$pre_release",
+          "$pressed_button_name": "button.action_button",
+          "bindings": [
+            {
+              "binding_name": "#call_to_action_button_visible",
+              "binding_name_override": "#visible"
+            }
+          ],
+          "$buy_now_bindings": [
+            {
+              "binding_name": "#landing_buy_button_enabled",
+              "binding_name_override": "#enabled"
+            }
+          ]
+        }
+      },
+      {
+        "sign_in_button@csb_buy.buy_button_panel": {
+          "$pressed_button_name": "button.signin",
+          "bindings": [
+            {
+              "binding_name": "#sign_in_visible",
+              "binding_name_override": "#visible"
+            }
+          ],
+          "$buy_now_bindings": [
+          ]
+        }
+      },
+      {
+        "vertical_space2@csb_landing.vertical_small_spacer": {}
+      },
+      {
+        "gradient_panel": {
+          "ignored": "$pre_release",
+          "type": "panel",
+          "size": [ "100%", "100%c" ],
+          "controls": [
+            {
+              "label_with_gradient@csb.gradient_content_panel": {
+                "size": [ "100% - 6px", 20 ],
+                "$gradient_content": "csb_landing.free_trial_text"
+              }
+            },
+            {
+              "tts_hover@common.tts_activate_sibling": {
+                "size": [ "100% - 2px", "100%sm" ],
+                "offset": [ 0, -2 ]
+              }
+            }
+          ],
+          "bindings": [
+            {
+              "binding_name": "#free_trial_banner_visible",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "gradient_panel2": {
+          "type": "panel",
+          "size": [ "100%", "100%c" ],
+          "controls": [
+            {
+              "label_with_gradient2@csb.gradient_content_panel": {
+                "size": [ "100% - 6px", 20 ],
+                "$gradient_content": "csb_landing.subscription_includes_text"
+              }
+            },
+            {
+              "tts_hover@common.tts_activate_sibling": {
+                "size": [ "100% - 2px", "100%sm" ],
+                "offset": [ 0, -2 ]
+              }
+            }
+          ],
+          "bindings": [
+            {
+              "binding_name": "#subscription_banner_visible",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "subscription_includes_text": {
+    "type": "label",
+    "size": [ "100% - 6px", "default" ],
+    "text": "store.csb.landing.header",
+    "color": "$light_button_default_text_color"
+  },
+
+  "free_trial_text": {
+    "type": "label",
+    "size": [ "100% - 6px", "default" ],
+    "text": "#free_trial_header_text",
+    "color": "$light_button_default_text_color",
+    "bindings": [
+      {
+        "binding_name": "#free_trial_header_text"
+      }
+    ]
+  },
+
+  "title_space": {
+    "type": "panel",
+    "size": [ "100%", 4 ]
+  },
+
+  "title_image_panel": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "size": [ "100%", "100%c" ],
+    "controls": [
+      {
+        "vertical_small_spacer_1@csb_landing.vertical_small_spacer": {
+          "size": [ "100%", 4 ]
+        }
+      },
+      {
+        "title_image_container": {
+          "type": "panel",
+          "size": [ "100%", "100%c" ],
+          "controls": [
+            {
+              "title_image": {
+                "type": "image",
+                "size": [ "100%", "15%x" ],
+                "texture": "textures/ui/csb_title"
+              }
+            } // Do we want this to have TTS?  It is text, just in an image.
+          ]
+        }
+      },
+      {
+        "vertical_small_spacer_2@csb_landing.vertical_small_spacer": {
+          "size": [ "100%", 4 ]
+        }
+      }
+    ]
+  },
+
+  "info_stack": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "100%", "100%cm" ],
+    "controls": [
+      {
+        "info_section_image@csb_landing.info_section_image_with_border": {}
+      },
+      {
+        "info_description_stack_retail@csb_landing.info_description_stack_retail": {
+          "size": [ "fill", "100%c" ]
+        }
+      }
+    ]
+  },
+
+  "info_description_stack_retail": {
+    "type": "stack_panel",
+    "controls": [
+      {
+        "info_section_stack_1@csb_landing.info_section_stack": {
+          "controls": [
+            {
+              "horizontal_small_spacer@csb_landing.horizontal_small_spacer": {}
+            },
+            {
+              "info_section_text_1@csb_landing.info_section_text_1": {}
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "info_section_stack": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "100%", "100%cm" ]
+  },
+
+  "info_section_image_with_border": {
+    "type": "image",
+    "texture": "textures/ui/csb_welcome_3x6",
+    "size": [ 90, 116 ]
+  },
+
+  "info_section_text_1@csb_landing.info_section_text": {
+    "controls": [
+      {
+        "info_section_text@csb_landing.info_text_unbulletted": {
+          "size": [ "100% - 4px", "100%cm" ],
+          "anchor_to": "top_left",
+          "$info_text_line": "#landing_info_text",
+          "$font_scale_factor": 1.1,
+          "$text_bindings": [
+            {
+              "binding_name": "#landing_info_text"
+            }
+          ]
+        }
+
+      },
+      {
+        "vertical_small_spacer_0@csb_landing.vertical_small_spacer": {}
+      },
+      {
+        "info_text_bullet_1@csb_landing.info_text_bullet": {
+          "$info_text_line": "store.csb.landing.info.line1"
+        }
+      },
+      {
+        "vertical_small_spacer_1@csb_landing.vertical_small_spacer": {}
+      },
+      {
+        "info_text_bullet_2@csb_landing.info_text_bullet": {
+          "$info_text_line": "store.csb.landing.info.line2"
+        }
+      },
+      {
+        "vertical_small_spacer_2@csb_landing.vertical_small_spacer": {}
+      },
+      {
+        "info_text_bullet_3@csb_landing.info_text_bullet": {
+          "$info_text_line": "store.csb.landing.info.line3"
+        }
+      },
+      {
+        "vertical_small_spacer_3@csb_landing.vertical_small_spacer": {}
+      },
+      {
+        "info_text_bullet_4@csb_landing.info_text_bullet": {
+          "$info_text_line": "store.csb.landing.info.line4"
+        }
+      },
+      {
+        "vertical_small_spacer_4@csb_landing.vertical_small_spacer": {}
+      },
+      {
+        "info_text_bullet_5@csb_landing.info_text_bullet": {
+          "$info_text_line": "store.csb.landing.info.line5"
+        }
+      },
+      {
+        "vertical_small_spacer_5@csb_landing.vertical_small_spacer": {}
+      },
+      {
+        "info_text_bullet_6@csb_landing.info_text_bullet": {
+          "$info_text_line": "store.csb.landing.info.line6"
+        }
+      },
+      {
+        "vertical_large_spacer_6@csb_landing.vertical_large_spacer": {}
+      }
+    ]
+  },
+
+  "info_section_text_2@csb_landing.info_section_text": {
+    "controls": [
+      {
+        "info_text_bullet_1@csb_landing.info_text_bullet": {
+          "$info_text_line": "store.csb.landing.info2.line1"
+        }
+      },
+      {
+        "vertical_small_spacer_0@csb_landing.vertical_small_spacer": {}
+      },
+      {
+        "info_text_bullet_2@csb_landing.info_text_bullet": {
+          "$info_text_line": "store.csb.landing.info2.line2"
+        }
+      },
+      {
+        "vertical_small_spacer_1@csb_landing.vertical_small_spacer": {}
+      },
+      {
+        "info_text_bullet_4@csb_landing.info_text_bullet": {
+          "$info_text_line": "store.csb.landing.info2.line3",
+          "bindings": [
+            {
+              "binding_name": "#csb_one_month_free_trial_visible",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "vertical_small_spacer_3@csb_landing.vertical_small_spacer": {}
+      },
+      {
+        "info_text_bullet_5@csb_landing.info_text_bullet": {
+          "$info_text_line": "#landing_info_line_4",
+          "bindings": [
+            {
+              "binding_name": "(not #csb_one_month_free_trial_visible)",
+              "binding_name_override": "#visible"
+            }
+          ],
+          "$text_bindings": [
+            {
+              "binding_name": "#landing_info_line_4"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "info_section_text": {
+    "type": "stack_panel",
+    "size": [ "100%", "100%c" ]
+  },
+
+  "info_text_bullet": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "100%", "100%cm" ],
+    "$text_bindings|default": [],
+    "controls": [
+      {
+        "info_text_bullet_bullet": {
+          "type": "label",
+          "text": "•",
+          "size": [ 4, "default" ],
+          "font_type": "smooth",
+          "color": "$store_white_text_color"
+        }
+      },
+      {
+        "bullet_spacer": {
+          "type": "panel",
+          "size": [ 4, "100%c" ]
+        }
+      },
+      {
+        "info_text_bullet_body@csb_landing.info_text_body": {}
+      },
+      {
+        "bullet_spacer_end": {
+          "type": "panel",
+          "size": [ 4, "100%c" ]
+        }
+      }
+    ]
+  },
+
+  "info_text_unbulletted": {
+    "type": "panel",
+    "size": [ "100%", "100%cm" ],
+    "$text_bindings|default": [],
+    "controls": [
+      {
+        "info_text_bullet_body@csb_landing.info_text_body": {
+          "size": [ "100%", "100%cm" ]
+        }
+      }
+    ]
+  },
+
+  "info_text_body": {
+    "type": "panel",
+    "size": [ "fill", "100%cm" ],
+    "$font_scale_factor|default": 1.0,
+    "controls": [
+      {
+        "text_body": {
+          "type": "label",
+          "text": "$info_text_line",
+          "size": [ "100%", "default" ],
+          "font_type": "smooth",
+          "font_scale_factor": "$font_scale_factor",
+          "color": "$store_white_text_color",
+          "bindings": "$text_bindings"
+        }
+      },
+      {
+        "tts_border@common.tts_activate_sibling": {
+          "size": [ "100%sm + 2px", "100%sm + 2px" ],
+          "offset": [ 0, -2 ]
+        }
+      }
+    ]
+
+  }
+}

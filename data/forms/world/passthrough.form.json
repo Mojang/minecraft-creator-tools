@@ -1,0 +1,23 @@
+{
+  "id": "Passthrough",
+  "fields": [
+    {
+      "id": "type",
+      "title": "BlockEntityModifierType",
+      "dataType": 2,
+      "choices": [
+        {
+          "id": "minecraft:append_loot",
+          "title": "Minecraft:append loot"
+        },
+        {
+          "id": "minecraft:passthrough",
+          "title": "Minecraft:passthrough"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Modifier that leaves the state unchanged. This is the default block modifier if no other block modifier is specified.",
+  "title": "World Passthrough"
+}

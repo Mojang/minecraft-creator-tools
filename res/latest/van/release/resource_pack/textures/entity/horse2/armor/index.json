@@ -1,0 +1,23 @@
+{
+  "files": [
+    "horse_armor_copper.png",
+    "horse_armor_copper.texture_set.json",
+    "horse_armor_copper_mers.tga",
+    "horse_armor_diamond.png",
+    "horse_armor_diamond.texture_set.json",
+    "horse_armor_diamond_mers.tga",
+    "horse_armor_gold.png",
+    "horse_armor_gold.texture_set.json",
+    "horse_armor_gold_mers.tga",
+    "horse_armor_iron.png",
+    "horse_armor_iron.texture_set.json",
+    "horse_armor_iron_mers.tga",
+    "horse_armor_leather.texture_set.json",
+    "horse_armor_leather.tga",
+    "horse_armor_leather_mers.tga",
+    "horse_armor_none.png",
+    "horse_armor_none.texture_set.json",
+    "horse_armor_none_mers.tga"
+  ],
+  "folders": []
+}

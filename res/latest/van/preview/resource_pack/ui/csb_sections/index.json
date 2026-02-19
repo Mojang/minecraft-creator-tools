@@ -1,0 +1,17 @@
+{
+  "files": [
+    "content_section.json",
+    "csb_banner.json",
+    "csb_buy_now_screen.json",
+    "csb_common.json",
+    "csb_purchase_amazondevicewarning_screen.json",
+    "csb_purchase_warning_screen.json",
+    "csb_subscription_panel.json",
+    "csb_upsell_dialog.json",
+    "csb_view_packs_screen.json",
+    "csb_welcome_screen.json",
+    "faq_section.json",
+    "landing_section.json"
+  ],
+  "folders": []
+}

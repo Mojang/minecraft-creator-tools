@@ -1,0 +1,13 @@
+{
+  "id": "DimensionDocument",
+  "fields": [
+    {
+      "id": "minecraft:dimension",
+      "title": "Minecraft Dimension",
+      "dataType": 16,
+      "subFormId": "dimension/dimension",
+      "isRequired": true
+    }
+  ],
+  "title": "DimensionDocument"
+}

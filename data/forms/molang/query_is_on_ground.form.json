@@ -1,0 +1,6 @@
+{
+  "id": "query.is_on_ground",
+  "fields": [],
+  "description": "Returns 1.0 if the entity is on the ground, else it returns 0.0.",
+  "title": "Is On Ground"
+}

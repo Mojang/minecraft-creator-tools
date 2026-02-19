@@ -1,0 +1,6 @@
+{
+  "id": "query.bone_rotation",
+  "fields": [],
+  "description": "Returns the initial (from the .geo) rotation of a bone as a structure with members '.x', '.y', and '.z' in degrees.",
+  "title": "Bone Rotation"
+}

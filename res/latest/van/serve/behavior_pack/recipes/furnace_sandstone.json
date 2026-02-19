@@ -1,0 +1,20 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_furnace": {
+    "description": {
+      "identifier": "minecraft:furnace_sandstone"
+    },
+    "unlock": [
+      {
+        "item": "minecraft:sandstone",
+        "data": 0
+      }
+    ],
+	  "tags": [ "furnace" ],
+    "input": {
+      "item": "minecraft:sandstone",
+      "data": 0
+    },
+	  "output": "minecraft:smooth_sandstone"
+  }
+}

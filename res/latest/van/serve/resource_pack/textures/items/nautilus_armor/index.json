@@ -1,0 +1,20 @@
+{
+  "files": [
+    "copper_nautilus_armor.png",
+    "copper_nautilus_armor.texture_set.json",
+    "copper_nautilus_armor_mers.tga",
+    "diamond_nautilus_armor.png",
+    "diamond_nautilus_armor.texture_set.json",
+    "diamond_nautilus_armor_mers.tga",
+    "gold_nautilus_armor.png",
+    "gold_nautilus_armor.texture_set.json",
+    "gold_nautilus_armor_mers.tga",
+    "iron_nautilus_armor.png",
+    "iron_nautilus_armor.texture_set.json",
+    "iron_nautilus_armor_mers.tga",
+    "netherite_nautilus_armor.png",
+    "netherite_nautilus_armor.texture_set.json",
+    "netherite_nautilus_armor_mers.tga"
+  ],
+  "folders": []
+}

@@ -1,0 +1,50 @@
+{
+  "id": "Description",
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "Identifier",
+      "description": "Must have a namespace and can't use the \"minecraft\" one. Example: \"namespace:my_block\"",
+      "dataType": 2,
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^(?![^:]*\\b[mM][iI][nN][eE][cC][rR][aA][fF][tT]\\b)[^:\\s]+:[^:\\s]+$"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "menu_category",
+      "title": "Menu Category",
+      "description": "Configures the block behavior in inventory and menu category",
+      "dataType": 16,
+      "subFormId": "block/menu_category"
+    },
+    {
+      "id": "states",
+      "title": "States",
+      "description": "Define custom states for a block that can be referenced in permutation. Each state must contain an array or a \"values\" with an array or a \"min\"/\"max\" range",
+      "dataType": 16,
+      "defaultValue": {}
+    },
+    {
+      "id": "traits",
+      "title": "Traits",
+      "description": "Change the placement position and direction behavior of a block",
+      "dataType": 16,
+      "defaultValue": {
+        "minecraft:placement_direction": {
+          "enabled_states": [],
+          "y_rotation_offset": null
+        },
+        "minecraft:placement_position": {
+          "enabled_states": []
+        }
+      },
+      "subFormId": "block/traits"
+    }
+  ],
+  "description": "Information about the block, must have at minimum an \"identifier\" and can have also the following optional field \"menu_category\", \"states\" and/or \"traits\"",
+  "title": "Block Description"
+}

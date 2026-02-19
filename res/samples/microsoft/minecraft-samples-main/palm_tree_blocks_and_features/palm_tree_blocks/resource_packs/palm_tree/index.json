@@ -1,0 +1,12 @@
+{
+  "files": [
+    "blocks.json",
+    "manifest.json",
+    "pack_icon.png"
+  ],
+  "folders": [
+    "models",
+    "texts",
+    "textures"
+  ]
+}

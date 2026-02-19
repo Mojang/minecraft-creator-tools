@@ -1,0 +1,18 @@
+{
+  "fields": [
+    {
+      "id": "processor_type",
+      "title": "Processors Type",
+      "description": "Processors Type",
+      "dataType": 2
+    },
+    {
+      "id": "value",
+      "title": "value",
+      "description": "Block tag for the blocks that will be protected",
+      "dataType": 2
+    }
+  ],
+  "description": "Protect blocks from this structure's placement in the world. Ensuring that it does not replace matching blocks in the world",
+  "title": "JigsawStructure Processors ProtectedBlock"
+}

@@ -1,0 +1,6 @@
+{
+  "id": "query.bone_origin",
+  "fields": [],
+  "description": "Returns the initial (from the .geo) pivot of a bone as a structure with members '.x', '.y', and '.z'.",
+  "title": "Bone Origin"
+}

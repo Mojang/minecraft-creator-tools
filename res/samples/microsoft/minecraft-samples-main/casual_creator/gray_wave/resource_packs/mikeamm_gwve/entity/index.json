@@ -1,0 +1,13 @@
+{
+  "files": [
+    "axe_turret.entity.json",
+    "bow_turret.entity.json",
+    "crossbow_turret.entity.json",
+    "gray_wave.entity.json",
+    "gray_wave_generator.entity.json",
+    "gray_zombie_leader.entity.json",
+    "shbullet_turret.entity.json",
+    "smfireball_turret.entity.json"
+  ],
+  "folders": []
+}

@@ -1,0 +1,71 @@
+{
+  "id": "3.0.0.PackDependency",
+  "fields": [
+    {
+      "id": "uuid",
+      "title": "Uuid",
+      "dataType": 16,
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "version",
+      "dataType": 16,
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^([1-9]+)\\.([0-9]+)\\.([0-9]+)$"
+        }
+      ],
+      "subForm": {
+        "id": "version",
+        "title": "Version",
+        "fields": [
+          {
+            "id": "buildMeta",
+            "title": "BuildMeta",
+            "dataType": 2,
+            "defaultValue": ""
+          },
+          {
+            "id": "major",
+            "title": "Major",
+            "dataType": 0,
+            "defaultValue": 0
+          },
+          {
+            "id": "minor",
+            "title": "Minor",
+            "dataType": 0,
+            "defaultValue": 0
+          },
+          {
+            "id": "patch",
+            "title": "Patch",
+            "dataType": 0,
+            "defaultValue": 0
+          },
+          {
+            "id": "preRelease",
+            "title": "PreRelease",
+            "dataType": 2,
+            "defaultValue": ""
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "version",
+          "dataType": 2
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "title": "3.0.0.PackDependency"
+}

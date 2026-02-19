@@ -1,0 +1,6 @@
+{
+  "id": "query.total_particle_count",
+  "fields": [],
+  "description": "Returns the total number of active particles in the world.",
+  "title": "Total Particle Count"
+}

@@ -1,0 +1,310 @@
+{
+  "title": "Add Rider",
+  "requires": [
+    {
+      "id": "minecraft:rideable",
+      "type": "entity_component"
+    }
+  ],
+  "description": "Adds a rider to the entity.",
+  "fields": [
+    {
+      "id": "entity_type",
+      "title": "Entity type to ride",
+      "description": "Type of entity to acquire as a rider",
+      "dataType": 8,
+      "lookupId": "entityType",
+      "samples": {
+        "/vanilla/behavior_pack/entities/ravager.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:pillager_rider/minecraft:addrider/",
+            "content": "minecraft:pillager"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:pillager_rider_for_raid/minecraft:addrider/",
+            "content": "minecraft:pillager"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:evoker_rider_for_raid/minecraft:addrider/",
+            "content": "minecraft:evocation_illager"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:vindicator_rider/minecraft:addrider/",
+            "content": "minecraft:vindicator"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:vindicator_captain_rider/minecraft:addrider/",
+            "content": "minecraft:vindicator"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/strider.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:strider_piglin_jockey/minecraft:addrider/",
+            "content": "minecraft:zombie_pigman"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:strider_parent_jockey/minecraft:addrider/",
+            "content": "minecraft:strider"
+          }
+        ]
+      }
+    },
+    {
+      "id": "spawn_event",
+      "description": "Trigger event when a rider is acquired",
+      "dataType": 39,
+      "lookupId": "entityTypeEvents",
+      "samples": {
+        "/vanilla/behavior_pack/entities/ravager.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:pillager_rider_for_raid/minecraft:addrider/",
+            "content": "minecraft:spawn_for_raid"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:evoker_rider_for_raid/minecraft:addrider/",
+            "content": "minecraft:spawn_for_raid"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:pillager_captain_rider/minecraft:addrider/",
+            "content": "minecraft:spawn_as_illager_captain"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:vindicator_captain_rider/minecraft:addrider/",
+            "content": "minecraft:spawn_as_illager_captain"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/strider.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:strider_piglin_jockey/minecraft:addrider/",
+            "content": "minecraft:spawn_as_strider_jockey"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:strider_parent_jockey/minecraft:addrider/",
+            "content": "minecraft:spawn_baby_strider_jockey"
+          }
+        ]
+      },
+      "title": "Spawn Event"
+    },
+    {
+      "id": "riders",
+      "title": "Riders",
+      "description": "List of riders to be added to the entity. Can only spawn as many riders as \"minecraft:rideable\" has \"seat_count\".",
+      "dataType": 16,
+      "defaultValue": [],
+      "subFormId": "entity/rider_data",
+      "samples": {
+        "/vanilla/behavior_pack/entities/camel_husk.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:camel_husk_with_hostile_rider/minecraft:addrider/",
+            "content": [
+              {
+                "entity_type": "minecraft:husk",
+                "spawn_event": "minecraft:spawn_as_rider"
+              },
+              {
+                "entity_type": "minecraft:parched",
+                "spawn_event": "minecraft:ranged_mode"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "samples": {
+    "/vanilla/behavior_pack/entities/camel_husk.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:camel_husk_with_hostile_rider/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:husk",
+              "spawn_event": "minecraft:spawn_as_rider"
+            },
+            {
+              "entity_type": "minecraft:parched",
+              "spawn_event": "minecraft:ranged_mode"
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/cave_spider.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_jockey/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:skeleton"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_stray_jockey/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:stray"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_bogged_jockey/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:bogged"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_parched_jockey/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:parched"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_wither_jockey/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:wither_skeleton"
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/ravager.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:pillager_rider/minecraft:addrider/",
+        "content": {
+          "entity_type": "minecraft:pillager"
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:pillager_rider_for_raid/minecraft:addrider/",
+        "content": {
+          "entity_type": "minecraft:pillager",
+          "spawn_event": "minecraft:spawn_for_raid"
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:evoker_rider_for_raid/minecraft:addrider/",
+        "content": {
+          "entity_type": "minecraft:evocation_illager",
+          "spawn_event": "minecraft:spawn_for_raid"
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:pillager_captain_rider/minecraft:addrider/",
+        "content": {
+          "entity_type": "minecraft:pillager",
+          "spawn_event": "minecraft:spawn_as_illager_captain"
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:vindicator_rider/minecraft:addrider/",
+        "content": {
+          "entity_type": "minecraft:vindicator"
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:vindicator_captain_rider/minecraft:addrider/",
+        "content": {
+          "entity_type": "minecraft:vindicator",
+          "spawn_event": "minecraft:spawn_as_illager_captain"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/spider.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_jockey/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:skeleton"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_stray_jockey/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:stray"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_bogged_jockey/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:bogged"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_parched_jockey/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:parched"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_wither_jockey/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:wither_skeleton"
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/strider.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:strider_piglin_jockey/minecraft:addrider/",
+        "content": {
+          "entity_type": "minecraft:zombie_pigman",
+          "spawn_event": "minecraft:spawn_as_strider_jockey"
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:strider_parent_jockey/minecraft:addrider/",
+        "content": {
+          "entity_type": "minecraft:strider",
+          "spawn_event": "minecraft:spawn_baby_strider_jockey"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_horse.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:horse_wild_with_rider/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:zombie",
+              "spawn_event": "minecraft:spawn_as_rider"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "id": "minecraft:addrider"
+}

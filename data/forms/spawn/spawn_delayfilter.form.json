@@ -1,0 +1,30 @@
+{
+  "id": "Spawn DelayFilter",
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "Identifier",
+      "dataType": 2,
+      "defaultValue": ""
+    },
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": 0,
+      "defaultValue": 0
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": 0,
+      "defaultValue": 0
+    },
+    {
+      "id": "spawn_chance",
+      "title": "Spawn Chance",
+      "dataType": 0,
+      "defaultValue": 100
+    }
+  ],
+  "title": "Spawn DelayFilter"
+}

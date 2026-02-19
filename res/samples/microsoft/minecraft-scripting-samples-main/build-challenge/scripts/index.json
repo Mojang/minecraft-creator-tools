@@ -1,0 +1,13 @@
+{
+  "files": [
+    "Challenge.ts",
+    "ChallengePlayer.ts",
+    "Constants.ts",
+    "Log.ts",
+    "Team.ts",
+    "Track.ts",
+    "Utilities.ts",
+    "main.ts"
+  ],
+  "folders": []
+}

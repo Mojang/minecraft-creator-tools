@@ -1,0 +1,277 @@
+{
+  "id": "minecraft:movement",
+  "title": "Movement",
+  "description": "This component represents the foundational movement of an entity.",
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "The standard movement speed value.",
+      "dataType": 3,
+      "samples": {
+        "/samples/add_entity_robot/full/robot_example_full_behavior/entities/robot.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:movement/",
+            "content": 0.25
+          }
+        ],
+        "/samples/addon_starter/1_hello_world/behavior_packs/aop_mobs/entities/sheepomelon.behavior.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:movement/",
+            "content": 0.25
+          }
+        ],
+        "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/nardolphle.behavior.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:movement/",
+            "content": 0.1
+          }
+        ],
+        "/samples/addon_starter/complete/behavior_packs/aop_mobs/entities/nardolphle.behavior.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:movement/",
+            "content": 0.1
+          }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:movement/",
+            "content": 0.3
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_zombie_leader.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:zombie_adult/minecraft:movement/",
+            "content": 0.23
+          }
+        ],
+        "/samples/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/entities/beachager.behavior.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:movement/",
+            "content": 0.5
+          }
+        ],
+        "/samples/creator_camp/behavior_packs/creator_camp/entities/campghost.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:movement/",
+            "content": 0.2
+          }
+        ]
+      }
+    },
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": 7
+    }
+  ],
+  "samples": {
+    "/samples/add_entity_robot/full/robot_example_full_behavior/entities/robot.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0.25
+        }
+      }
+    ],
+    "/samples/addon_starter/1_hello_world/behavior_packs/aop_mobs/entities/sheepomelon.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0.25
+        }
+      }
+    ],
+    "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/biceson.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0.25
+        }
+      }
+    ],
+    "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/frost_moose.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0.25
+        }
+      }
+    ],
+    "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/nardolphle.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0.1
+        }
+      }
+    ],
+    "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/sheepomelon.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0.25
+        }
+      }
+    ],
+    "/samples/addon_starter/complete/behavior_packs/aop_mobs/entities/biceson.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0.25
+        }
+      }
+    ],
+    "/samples/addon_starter/complete/behavior_packs/aop_mobs/entities/frost_moose.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0.25
+        }
+      }
+    ],
+    "/samples/addon_starter/complete/behavior_packs/aop_mobs/entities/nardolphle.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0.1
+        }
+      }
+    ],
+    "/samples/addon_starter/complete/behavior_packs/aop_mobs/entities/sheepomelon.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0.25
+        }
+      }
+    ],
+    "/samples/behavior_pack_sample/entities/cow.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0.25
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0.1
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0.1
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0.1
+        }
+      }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0.3
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/axe_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0,
+          "max": 0
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/bow_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0,
+          "max": 0
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/crossbow_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0,
+          "max": 0
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0,
+          "max": 0
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave_generator.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0,
+          "max": 0
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_zombie_leader.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_adult/minecraft:movement/",
+        "content": {
+          "value": 0.23
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/shbullet_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0,
+          "max": 0
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/smfireball_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0,
+          "max": 0
+        }
+      }
+    ],
+    "/samples/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/entities/beachager.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0.5
+        }
+      }
+    ],
+    "/samples/creator_camp/behavior_packs/creator_camp/entities/campghost.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0.2
+        }
+      }
+    ]
+  }
+}

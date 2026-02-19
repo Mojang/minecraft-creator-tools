@@ -1,0 +1,24 @@
+{
+  "files": [
+    "azalea_tree_feature_rules.json",
+    "blue_vines_feature_rules.json",
+    "cave_vine_feature_rules.json",
+    "cave_vine_snapped_to_ceiling_feature_rules.json",
+    "clay_pool_with_dripleaves_feature_rules.json",
+    "diamond_geode_feature_rules.json",
+    "find_valid_apples_feature_rules.json",
+    "hot_air_balloon_feature_rules.json",
+    "malachite_ore_feature_rules.json",
+    "monument_with_flowers_feature_rules.json",
+    "oak_tree_then_apples_feature_rules.json",
+    "oil_deposit_feature_rules.json",
+    "scatter_flowers_feature_rules.json",
+    "select_flower_feature_rules.json",
+    "single_pumpkin_feature_rules.json",
+    "underground_cave_carver_feature_rules.json",
+    "underwater_cave_carver_feature_rules.json",
+    "underwater_magma_feature_rules.json",
+    "underwater_magma_underground_feature_rules.json"
+  ],
+  "folders": []
+}

@@ -1,0 +1,29 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:gray_carpet"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "group": "carpet",
+    "pattern": [
+      "##"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:gray_wool"
+      }
+    },
+	"unlock": [
+      {
+        "item": "minecraft:gray_wool"
+      }
+    ],
+    "result": {
+      "item": "minecraft:gray_carpet",
+      "count": 3
+    }
+  }
+}

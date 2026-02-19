@@ -1,0 +1,15 @@
+{
+  "fields": [
+    {
+      "id": "table",
+      "title": "Table",
+      "description": "The path to the loot table, relative to the Behavior Pack's root.",
+      "dataType": 2
+    }
+  ],
+  "note": "Requires a loot table to be used when dropping items upon death.",
+  "description": "Sets the loot table for what items this entity drops upon death.",
+  "title": "Loot",
+  "samples": {},
+  "id": "minecraft:loot"
+}

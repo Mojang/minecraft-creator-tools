@@ -1,0 +1,25 @@
+{
+  "data_items": [
+    {
+      "name": "minecraft:chorusfruit"
+    },
+    {
+      "name": "minecraft:ender_pearl"
+    },
+    {
+      "name": "minecraft:goat_horn"
+    },
+    {
+      "name": "minecraft:shield"
+    },
+    {
+      "name": "minecraft:spear"
+    },
+    {
+      "name": "minecraft:wind_charge"
+    }
+  ],
+  "module_type": "vanilla_data",
+  "name": "mojang-cooldownCategory",
+  "vanilla_data_type": "cooldownCategory"
+}

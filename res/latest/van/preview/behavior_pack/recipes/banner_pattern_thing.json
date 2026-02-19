@@ -1,0 +1,29 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shapeless": {
+    "description": {
+    "identifier": "minecraft:banner_pattern_thing"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "group": "banner_pattern",
+    "ingredients": [
+      {
+        "item": "minecraft:paper"
+      },
+      {
+        "item": "minecraft:appleenchanted"
+      }
+    ],
+	"unlock": [
+      {
+        "item": "minecraft:appleenchanted"
+      }
+    ],
+    "result": {
+      "item": "minecraft:banner_pattern",
+      "data": 3
+    }
+  }
+}

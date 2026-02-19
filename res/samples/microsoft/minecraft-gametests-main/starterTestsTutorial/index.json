@@ -1,0 +1,9 @@
+{
+  "files": [
+    "package-lock.json",
+    "package.json"
+  ],
+  "folders": [
+    "behavior_packs"
+  ]
+}

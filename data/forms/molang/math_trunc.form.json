@@ -1,0 +1,6 @@
+{
+  "id": "`math.trunc(value)`",
+  "fields": [],
+  "description": "Round value towards zero",
+  "title": "Trunc(value)"
+}

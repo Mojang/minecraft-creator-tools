@@ -1,0 +1,1733 @@
+{
+  "title": "Rideable",
+  "description": "This entity can be ridden",
+  "fields": [
+    {
+      "id": "seat_count",
+      "title": "Number of seats",
+      "dataType": 0,
+      "priority": 10,
+      "samples": {
+        "/vanilla/behavior_pack/entities/camel.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:camel_adult/minecraft:rideable/",
+            "content": 2
+          }
+        ],
+        "/vanilla/behavior_pack/entities/camel_husk.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:rideable/",
+            "content": 2
+          }
+        ],
+        "/vanilla/behavior_pack/entities/cat.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:cat_wild/minecraft:rideable/",
+            "content": 1
+          }
+        ],
+        "/vanilla/behavior_pack/entities/chicken.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:chicken_adult/minecraft:rideable/",
+            "content": 1
+          }
+        ],
+        "/vanilla/behavior_pack/entities/happy_ghast.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:adult_harnessed/minecraft:rideable/",
+            "content": 4
+          }
+        ],
+        "/vanilla/behavior_pack/entities/hoglin.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:hoglin_baby/minecraft:rideable/",
+            "content": 3
+          }
+        ]
+      },
+      "defaultValue": 1,
+      "description": "The number of entities that can ride this entity at the same time."
+    },
+    {
+      "id": "crouching_skip_interact",
+      "title": "This entity can't be interacted with while crouching.",
+      "dataType": 1,
+      "samples": {
+        "/vanilla/behavior_pack/entities/camel.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:camel_adult/minecraft:rideable/",
+            "content": true
+          }
+        ],
+        "/vanilla/behavior_pack/entities/camel_husk.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:rideable/",
+            "content": true
+          }
+        ]
+      },
+      "defaultValue": true,
+      "description": "If true, this entity can't be interacted with if the entity interacting with it is crouching."
+    },
+    {
+      "id": "controlling_seat",
+      "title": "The seat that controls how this entity moves",
+      "dataType": 0,
+      "priority": 12,
+      "defaultValue": 0,
+      "description": "The seat that designates the driver of the entity. Entities with the \"minecraft:behavior.controlled_by_player\" goal ignore this field and give control to any player in any seat."
+    },
+    {
+      "id": "pulls_in_entities",
+      "title": "This entity will pull in nearby entities.",
+      "dataType": 1,
+      "isDeprecated": true
+    },
+    {
+      "id": "rider_can_interact",
+      "title": "Whether a rider can interact with this item.",
+      "dataType": 1,
+      "defaultValue": false,
+      "description": "If true, this entity will be picked when looked at by the rider."
+    },
+    {
+      "id": "on_rider_enter_event",
+      "dataType": 39,
+      "versionIntroduced": "1.21.80",
+      "samples": {
+        "/vanilla/behavior_pack/entities/happy_ghast.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:adult_harnessed/minecraft:rideable/",
+            "content": "minecraft:on_passenger_mount"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/nautilus.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_tame_adult/minecraft:rideable/",
+            "content": "minecraft:on_mount"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_wild/minecraft:rideable/",
+            "content": "minecraft:on_drowned_mount"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_tame/minecraft:rideable/",
+            "content": "minecraft:on_player_mount"
+          }
+        ]
+      },
+      "description": "Event to execute on the owner entity when an entity starts riding it.",
+      "title": "Rider Enter Event"
+    },
+    {
+      "id": "on_rider_exit_event",
+      "dataType": 39,
+      "versionIntroduced": "1.21.80",
+      "samples": {
+        "/vanilla/behavior_pack/entities/happy_ghast.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:adult_harnessed/minecraft:rideable/",
+            "content": "minecraft:on_passenger_dismount"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/nautilus.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:nautilus_tame_adult/minecraft:rideable/",
+            "content": "minecraft:on_dismount"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_wild/minecraft:rideable/",
+            "content": "minecraft:on_drowned_dismount"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_tame/minecraft:rideable/",
+            "content": "minecraft:on_player_dismount"
+          }
+        ]
+      },
+      "description": "Event to execute on the owner entity when an entity stops riding it.",
+      "title": "Rider Exit Event"
+    },
+    {
+      "id": "dismount_mode",
+      "choices": [
+        {
+          "id": "default",
+          "title": "Default"
+        },
+        {
+          "id": "on_top_center",
+          "title": "On Top Center"
+        }
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/happy_ghast.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:adult_harnessed/minecraft:rideable/",
+            "content": "on_top_center"
+          }
+        ]
+      },
+      "defaultValue": "default",
+      "description": "Defines where riders are placed when dismounting this entity:\n- \"default\", riders are placed on a valid ground position around the entity, or at the center of the entity's collision box if none is found.\n- \"on_top_center\", riders are placed at the center of the top of the entity's collision box.",
+      "title": "Dismount Mode",
+      "dataType": 2
+    },
+    {
+      "id": "seats",
+      "priority": 11,
+      "subForm": {
+        "fields": [
+          {
+            "id": "third_person_camera_radius",
+            "versionIntroduced": "1.21.80"
+          },
+          {
+            "id": "camera_relax_distance_smoothing",
+            "versionIntroduced": "1.21.80"
+          },
+          {
+            "id": "lock_rider_rotation",
+            "title": "Lock Rider Rotation",
+            "description": "Angle in degrees that a rider is allowed to rotate while riding this entity. Omit this property for no limit.",
+            "defaultValue": 181,
+            "dataType": 3
+          },
+          {
+            "id": "max_rider_count",
+            "title": "Max Rider Count",
+            "description": "Defines the maximum number of riders that can be riding this entity for this seat to be valid.",
+            "defaultValue": 0,
+            "dataType": 0
+          },
+          {
+            "id": "min_rider_count",
+            "title": "Min Rider Count",
+            "description": "Defines the minimum number of riders that need to be riding this entity before this seat can be used.",
+            "defaultValue": 0,
+            "dataType": 0
+          },
+          {
+            "id": "position",
+            "title": "Position",
+            "description": "Position of this seat relative to this entity's position.",
+            "defaultValue": [
+              0,
+              0,
+              0
+            ],
+            "dataType": 11
+          },
+          {
+            "id": "rotate_rider_by",
+            "title": "Rotate Rider By",
+            "description": "Offset to rotate riders by.",
+            "defaultValue": "0",
+            "dataType": 2
+          }
+        ],
+        "description": "The list of positions and number of riders for each position for entities riding this entity.",
+        "id": ""
+      },
+      "samples": {
+        "/vanilla/behavior_pack/entities/camel.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:camel_adult/minecraft:rideable/",
+            "content": [
+              {
+                "min_rider_count": 0,
+                "max_rider_count": 2,
+                "position": [
+                  0,
+                  1.905,
+                  0.5
+                ]
+              },
+              {
+                "min_rider_count": 1,
+                "max_rider_count": 2,
+                "position": [
+                  0,
+                  1.905,
+                  -0.5
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "description": "The list of positions and number of riders for each position for entities riding this entity.",
+      "title": "Seats",
+      "dataType": 15
+    },
+    {
+      "id": "family_types",
+      "title": "Family Types",
+      "description": "List of entities that can ride this entity.",
+      "dataType": 17,
+      "samples": {
+        "/vanilla/behavior_pack/entities/camel.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:camel_adult/minecraft:rideable/",
+            "content": [
+              "player"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/camel_husk.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:rideable/",
+            "content": [
+              "player",
+              "parched",
+              "husk_rider"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/cat.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:cat_wild/minecraft:rideable/",
+            "content": [
+              "baby_zombie",
+              "baby_husk"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/chicken.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:chicken_adult/minecraft:rideable/",
+            "content": [
+              "baby_zombie",
+              "baby_husk"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/donkey.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:donkey_wild/minecraft:rideable/",
+            "content": [
+              "player",
+              "baby_zombie",
+              "baby_husk"
+            ]
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:donkey_tamed/minecraft:rideable/",
+            "content": [
+              "player"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/hoglin.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:hoglin_baby/minecraft:rideable/",
+            "content": [
+              "piglin"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/horse.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:horse_wild/minecraft:rideable/",
+            "content": [
+              "player",
+              "baby_zombie",
+              "baby_husk"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/mooshroom.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:cow_baby/minecraft:rideable/",
+            "content": [
+              "baby_zombie"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/player.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:rideable/",
+            "content": [
+              "parrot_tame"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/ravager.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:rideable/",
+            "content": [
+              "pillager",
+              "vindicator",
+              "evocation_illager"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/strider.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:strider_piglin_jockey/minecraft:rideable/",
+            "content": [
+              "player",
+              "zombie_pigman"
+            ]
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:strider_parent_jockey/minecraft:rideable/",
+            "content": [
+              "strider"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/zombie_horse.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:horse_wild/minecraft:rideable/",
+            "content": [
+              "player",
+              "zombie_rider",
+              "baby_zombie",
+              "baby_husk"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_wild/minecraft:rideable/",
+            "content": [
+              "drowned"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/zombie_villager.json": [
+          {
+            "path": "/minecraft:entity/component_groups/adult/minecraft:rideable/",
+            "content": [
+              "zombie"
+            ]
+          }
+        ],
+        "/samples/addon_starter/1_hello_world/behavior_packs/aop_mobs/entities/sheepomelon.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:rideable_sheared/minecraft:rideable/",
+            "content": [
+              "zombie"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "interact_text",
+      "title": "Interact Text",
+      "description": "The text to display when the player can interact with the entity when playing with touch-screen controls.",
+      "dataType": 2,
+      "samples": {
+        "/vanilla/behavior_pack/entities/camel.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:camel_adult/minecraft:rideable/",
+            "content": "action.interact.ride.horse"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/camel_husk.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:rideable/",
+            "content": "action.interact.ride.horse"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/donkey.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:donkey_wild/minecraft:rideable/",
+            "content": "action.interact.mount"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/horse.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:horse_wild/minecraft:rideable/",
+            "content": "action.interact.mount"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/minecart.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:rideable/",
+            "content": "action.interact.ride.minecart"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/strider.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:strider_saddled/minecraft:rideable/",
+            "content": "action.interact.ride.strider"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:strider_piglin_jockey/minecraft:rideable/",
+            "content": "action.interact.ride.strider"
+          }
+        ]
+      }
+    },
+    {
+      "id": "passenger_max_width",
+      "title": "Passenger Max Width",
+      "description": "The max width a mob can have to be a rider. A value of 0 ignores this parameter.",
+      "defaultValue": 0,
+      "dataType": 3
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "description": "This field may exist in old data but isn't used by \"minecraft:rideable\".",
+      "dataType": 0
+    },
+    {
+      "id": "pull_in_entities",
+      "title": "Pull In Entities",
+      "description": "If true, this entity will pull entities matching the specified \"family_types\" into any available seats. Entities that are leashed will only be pulled in if their distance to their leash holder is less than the \"hard_distance\" defined in their own \"minecraft:leashable\" component.",
+      "defaultValue": false,
+      "dataType": 1,
+      "samples": {
+        "/vanilla/behavior_pack/entities/camel.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:camel_adult/minecraft:rideable/",
+            "content": true
+          }
+        ],
+        "/vanilla/behavior_pack/entities/minecart.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:rideable/",
+            "content": true
+          }
+        ]
+      }
+    }
+  ],
+  "samples": {
+    "/vanilla/behavior_pack/entities/camel.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:camel_adult/minecraft:rideable/",
+        "content": {
+          "seat_count": 2,
+          "crouching_skip_interact": true,
+          "pull_in_entities": true,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "seats": [
+            {
+              "min_rider_count": 0,
+              "max_rider_count": 2,
+              "position": [
+                0,
+                1.905,
+                0.5
+              ]
+            },
+            {
+              "min_rider_count": 1,
+              "max_rider_count": 2,
+              "position": [
+                0,
+                1.905,
+                -0.5
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/camel_husk.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:rideable/",
+        "content": {
+          "seat_count": 2,
+          "crouching_skip_interact": true,
+          "family_types": [
+            "player",
+            "parched",
+            "husk_rider"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "seats": [
+            {
+              "min_rider_count": 0,
+              "max_rider_count": 2,
+              "position": [
+                0,
+                1.905,
+                0.5
+              ]
+            },
+            {
+              "min_rider_count": 1,
+              "max_rider_count": 2,
+              "position": [
+                0,
+                1.905,
+                -0.5
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/cat.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:cat_wild/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "baby_zombie",
+            "baby_husk"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.35,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/chicken.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:chicken_adult/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "baby_zombie",
+            "baby_husk"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.48,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/cow.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:cow_baby/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "baby_zombie",
+            "baby_husk"
+          ],
+          "seats": {
+            "position": [
+              0,
+              1,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:cow_adult/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "baby_zombie",
+            "baby_husk"
+          ],
+          "seats": {
+            "position": [
+              0,
+              1.15,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/donkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:donkey_wild/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "player",
+            "baby_zombie",
+            "baby_husk"
+          ],
+          "interact_text": "action.interact.mount",
+          "seats": {
+            "position": [
+              0,
+              0.925,
+              -0.2
+            ]
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:donkey_tamed/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "crouching_skip_interact": true,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "seats": {
+            "position": [
+              0,
+              0.925,
+              -0.2
+            ]
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/happy_ghast.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:adult_harnessed/minecraft:rideable/",
+        "content": {
+          "seat_count": 4,
+          "family_types": [
+            "player"
+          ],
+          "dismount_mode": "on_top_center",
+          "on_rider_enter_event": "minecraft:on_passenger_mount",
+          "on_rider_exit_event": "minecraft:on_passenger_dismount",
+          "interact_text": "action.interact.ride.horse",
+          "seats": [
+            {
+              "min_rider_count": 0,
+              "max_rider_count": 4,
+              "position": [
+                0,
+                3.8,
+                1.7
+              ],
+              "third_person_camera_radius": 8,
+              "camera_relax_distance_smoothing": 6
+            },
+            {
+              "min_rider_count": 1,
+              "max_rider_count": 4,
+              "position": [
+                -1.7,
+                3.8,
+                0
+              ],
+              "third_person_camera_radius": 8,
+              "camera_relax_distance_smoothing": 6
+            },
+            {
+              "min_rider_count": 2,
+              "max_rider_count": 4,
+              "position": [
+                0,
+                3.8,
+                -1.7
+              ],
+              "third_person_camera_radius": 8,
+              "camera_relax_distance_smoothing": 6
+            },
+            {
+              "min_rider_count": 3,
+              "max_rider_count": 4,
+              "position": [
+                1.7,
+                3.8,
+                0
+              ],
+              "third_person_camera_radius": 8,
+              "camera_relax_distance_smoothing": 6
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/hoglin.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:hoglin_baby/minecraft:rideable/",
+        "content": {
+          "seat_count": 3,
+          "family_types": [
+            "piglin"
+          ],
+          "seats": [
+            {
+              "position": [
+                0,
+                1.125,
+                -0.3
+              ],
+              "lock_rider_rotation": 0
+            },
+            {
+              "position": [
+                0,
+                2.625,
+                -0.3
+              ],
+              "lock_rider_rotation": 0
+            },
+            {
+              "position": [
+                0,
+                4.125,
+                -0.3
+              ],
+              "lock_rider_rotation": 0
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/horse.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:horse_wild/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "player",
+            "baby_zombie",
+            "baby_husk"
+          ],
+          "interact_text": "action.interact.mount",
+          "seats": {
+            "position": [
+              0,
+              1.1,
+              -0.2
+            ]
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:horse_tamed/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "crouching_skip_interact": true,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "seats": {
+            "position": [
+              0,
+              1.1,
+              -0.2
+            ]
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/husk.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_husk_adult/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "baby_zombie",
+            "baby_husk"
+          ],
+          "seats": {
+            "position": [
+              0,
+              1.175,
+              -0.35
+            ],
+            "lock_rider_rotation": 0
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/llama.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_wild/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.mount",
+          "seats": {
+            "position": [
+              0,
+              1.17,
+              -0.3
+            ]
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_tamed/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "crouching_skip_interact": true,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "seats": {
+            "position": [
+              0,
+              1.17,
+              -0.3
+            ]
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/minecart.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "interact_text": "action.interact.ride.minecart",
+          "pull_in_entities": true,
+          "seats": {
+            "position": [
+              0,
+              -0.2,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/mooshroom.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:cow_baby/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "baby_zombie"
+          ],
+          "seats": {
+            "position": [
+              0,
+              1,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:cow_adult/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "baby_zombie",
+            "baby_husk"
+          ],
+          "seats": {
+            "position": [
+              0,
+              1.15,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/mule.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:mule_wild/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "player",
+            "baby_zombie",
+            "baby_husk"
+          ],
+          "interact_text": "action.interact.mount",
+          "seats": {
+            "position": [
+              0,
+              0.975,
+              -0.2
+            ]
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:mule_tamed/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "crouching_skip_interact": true,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "seats": {
+            "position": [
+              0,
+              0.975,
+              -0.2
+            ]
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:nautilus_tame_adult/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "crouching_skip_interact": true,
+          "interact_text": "action.interact.ride.horse",
+          "family_types": [
+            "player"
+          ],
+          "on_rider_enter_event": "minecraft:on_mount",
+          "on_rider_exit_event": "minecraft:on_dismount",
+          "seats": {
+            "position": [
+              0,
+              0.925,
+              0
+            ],
+            "third_person_camera_radius": 7
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/ocelot.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:ocelot_wild/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "baby_zombie",
+            "baby_husk"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.35,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/panda.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "baby_zombie",
+            "baby_husk"
+          ],
+          "seats": {
+            "position": [
+              0,
+              1.085,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/pig.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:pig_unsaddled/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "baby_zombie",
+            "baby_husk"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.7,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:pig_saddled/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "interact_text": "action.interact.ride.horse",
+          "family_types": [
+            "player"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.63,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/player.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:rideable/",
+        "content": {
+          "seat_count": 2,
+          "family_types": [
+            "parrot_tame"
+          ],
+          "pull_in_entities": true,
+          "seats": [
+            {
+              "position": [
+                0.4,
+                -0.2,
+                -0.1
+              ],
+              "min_rider_count": 0,
+              "max_rider_count": 0,
+              "lock_rider_rotation": 0
+            },
+            {
+              "position": [
+                -0.4,
+                -0.2,
+                -0.1
+              ],
+              "min_rider_count": 1,
+              "max_rider_count": 2,
+              "lock_rider_rotation": 0
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/ravager.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "pillager",
+            "vindicator",
+            "evocation_illager"
+          ],
+          "seats": {
+            "position": [
+              0,
+              2.025,
+              -0.3
+            ]
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/sheep.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:rideable_sheared/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "baby_zombie",
+            "baby_husk"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.9,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:rideable_wooly/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "baby_zombie",
+            "baby_husk"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.975,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/strider.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:strider_saddled/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "crouching_skip_interact": true,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.strider",
+          "seats": {
+            "position": [
+              0,
+              1.7,
+              -0.2
+            ]
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:strider_piglin_jockey/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "crouching_skip_interact": true,
+          "family_types": [
+            "player",
+            "zombie_pigman"
+          ],
+          "interact_text": "action.interact.ride.strider",
+          "seats": {
+            "position": [
+              0,
+              1.7,
+              -0.2
+            ]
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:strider_parent_jockey/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "strider"
+          ],
+          "seats": {
+            "position": [
+              0,
+              1.7,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/trader_llama.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_wild/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.mount",
+          "seats": {
+            "position": [
+              0,
+              1.17,
+              -0.3
+            ]
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_tamed/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "crouching_skip_interact": true,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "seats": {
+            "position": [
+              0,
+              1.17,
+              -0.3
+            ]
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/wolf.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:wolf_angry/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "baby_zombie",
+            "baby_husk"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.625,
+              -0.1
+            ]
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:wolf_wild/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "baby_zombie",
+            "baby_husk"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.625,
+              -0.1
+            ]
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_adult/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "baby_zombie",
+            "baby_husk"
+          ],
+          "seats": {
+            "position": [
+              0,
+              1.175,
+              -0.35
+            ],
+            "lock_rider_rotation": 0
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_horse.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:horse_wild/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "player",
+            "zombie_rider",
+            "baby_zombie",
+            "baby_husk"
+          ],
+          "interact_text": "action.interact.mount",
+          "seats": {
+            "position": [
+              0,
+              1.1,
+              -0.2
+            ]
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:horse_tamed/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "crouching_skip_interact": true,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "seats": {
+            "position": [
+              0,
+              1.1,
+              -0.2
+            ]
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_nautilus.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_wild/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "pull_in_entities": true,
+          "on_rider_enter_event": "minecraft:on_drowned_mount",
+          "on_rider_exit_event": "minecraft:on_drowned_dismount",
+          "family_types": [
+            "drowned"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.925,
+              -0.2
+            ]
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_nautilus_tame/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "crouching_skip_interact": true,
+          "interact_text": "action.interact.ride.horse",
+          "family_types": [
+            "player"
+          ],
+          "on_rider_enter_event": "minecraft:on_player_mount",
+          "on_rider_exit_event": "minecraft:on_player_dismount",
+          "seats": {
+            "position": [
+              0,
+              0.925,
+              0
+            ],
+            "third_person_camera_radius": 7
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_pigman.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:pig_zombie_adult/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "baby_zombie",
+            "baby_husk"
+          ],
+          "seats": {
+            "position": [
+              0,
+              1.175,
+              -0.35
+            ],
+            "lock_rider_rotation": 0
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_villager.json": [
+      {
+        "path": "/minecraft:entity/component_groups/adult/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "zombie"
+          ],
+          "seats": {
+            "position": [
+              0,
+              1.1,
+              -0.35
+            ]
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zombie_villager_v2.json": [
+      {
+        "path": "/minecraft:entity/component_groups/adult/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "baby_zombie",
+            "baby_husk"
+          ],
+          "seats": {
+            "position": [
+              0,
+              1.175,
+              -0.35
+            ]
+          }
+        }
+      }
+    ],
+    "/samples/addon_starter/1_hello_world/behavior_packs/aop_mobs/entities/sheepomelon.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:rideable_sheared/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "zombie"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.9,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:rideable_wooly/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "zombie"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.975,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/frost_moose.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_wild/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.mount",
+          "seats": {
+            "position": [
+              0,
+              1.25,
+              -0.3
+            ]
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_tamed/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "crouching_skip_interact": true,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "seats": {
+            "position": [
+              0,
+              1.1,
+              -0.2
+            ]
+          }
+        }
+      }
+    ],
+    "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/sheepomelon.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:rideable_sheared/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "zombie"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.9,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:rideable_wooly/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "zombie"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.975,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "/samples/addon_starter/complete/behavior_packs/aop_mobs/entities/frost_moose.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_wild/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.mount",
+          "seats": {
+            "position": [
+              0,
+              1.25,
+              -0.3
+            ]
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_tamed/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "crouching_skip_interact": true,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "seats": {
+            "position": [
+              0,
+              1.1,
+              -0.2
+            ]
+          }
+        }
+      }
+    ],
+    "/samples/addon_starter/complete/behavior_packs/aop_mobs/entities/sheepomelon.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:rideable_sheared/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "zombie"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.9,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:rideable_wooly/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "zombie"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.975,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "/samples/behavior_pack_sample/entities/cow.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "zombie"
+          ],
+          "seats": {
+            "position": [
+              0,
+              1.105,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "zombie"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.4,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "zombie"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.4,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "zombie"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.4,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_wild/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "zombie"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.35,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_zombie_leader.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_adult/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "zombie"
+          ],
+          "seats": {
+            "position": [
+              0,
+              1.1,
+              -0.35
+            ],
+            "lock_rider_rotation": 0
+          }
+        }
+      }
+    ]
+  },
+  "id": "minecraft:rideable"
+}

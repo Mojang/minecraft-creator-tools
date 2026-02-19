@@ -1,0 +1,14 @@
+{
+  "description": "Determines the color of the item name when hovering over it.",
+  "scalarFieldUpgradeName": "value",
+  "fields": [
+    {
+      "id": "value",
+      "title": "value",
+      "description": "The color of the item hover text.",
+      "dataType": 2
+    }
+  ],
+  "title": "Hover Text Color",
+  "id": "minecraft:hover_text_color"
+}

@@ -1,0 +1,28 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shapeless": {
+    "description": {
+    "identifier": "minecraft:stonecutter_granite_stairs"
+    },
+
+    
+    "tags": [ "stonecutter" ],
+    "priority": 1,
+    "ingredients": [
+      {
+        "item": "minecraft:granite"
+      }
+    ],
+    "unlock": [
+      {
+        "item": "minecraft:granite"
+      }
+    ],
+    "result": {
+      "item": "minecraft:granite_stairs",
+      "data": 0,
+      "count": 1
+    }
+  }
+  
+}

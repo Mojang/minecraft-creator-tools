@@ -1,0 +1,13 @@
+{
+  "id": "AlwaysTruePos",
+  "fields": [
+    {
+      "id": "predicate_type",
+      "title": "PosType",
+      "dataType": 2,
+      "isRequired": true
+    }
+  ],
+  "description": "Predicate that always evaluates to true. This is the default predicate if no other predicate is specified.",
+  "title": "AlwaysTruePos Misc"
+}

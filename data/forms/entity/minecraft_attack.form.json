@@ -1,0 +1,126 @@
+{
+  "description": "Allows an entity to define an entity's melee attack and any additional effects on it's attack.",
+  "fields": [
+    {
+      "id": "damage",
+      "description": "Range of the random amount of damage the melee attack deals. A negative value can heal the entity instead of hurting it.",
+      "dataType": 19,
+      "minValue": -50,
+      "maxValue": 50,
+      "samples": {
+        "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/biceson.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:adult_hostile/minecraft:attack/",
+            "content": 6
+          }
+        ],
+        "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/sheepomelon.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:sheep_sheared/minecraft:attack/",
+            "content": 3
+          }
+        ],
+        "/samples/addon_starter/complete/behavior_packs/aop_mobs/entities/biceson.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:adult_hostile/minecraft:attack/",
+            "content": 6
+          }
+        ],
+        "/samples/addon_starter/complete/behavior_packs/aop_mobs/entities/sheepomelon.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:sheep_sheared/minecraft:attack/",
+            "content": 3
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/axe_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:attack/",
+            "content": 400
+          }
+        ]
+      },
+      "title": "Damage"
+    },
+    {
+      "id": "effect_duration",
+      "description": "Duration in seconds of the status ailment applied to the damaged entity.",
+      "dataType": 3,
+      "defaultValue": 0,
+      "title": "Effect Duration"
+    },
+    {
+      "id": "effect_name",
+      "description": "Identifier of the status ailment to apply to an entity attacked by this entity's melee attack.",
+      "dataType": 2,
+      "title": "Effect Name"
+    }
+  ],
+  "title": "Attack",
+  "samples": {
+    "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/biceson.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:adult_hostile/minecraft:attack/",
+        "content": {
+          "damage": 6
+        }
+      }
+    ],
+    "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/sheepomelon.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:sheep_sheared/minecraft:attack/",
+        "content": {
+          "damage": 3
+        }
+      }
+    ],
+    "/samples/addon_starter/complete/behavior_packs/aop_mobs/entities/biceson.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:adult_hostile/minecraft:attack/",
+        "content": {
+          "damage": 6
+        }
+      }
+    ],
+    "/samples/addon_starter/complete/behavior_packs/aop_mobs/entities/sheepomelon.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:sheep_sheared/minecraft:attack/",
+        "content": {
+          "damage": 3
+        }
+      }
+    ],
+    "/samples/behavior_pack_sample/entities/cow.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:attack/",
+        "content": {
+          "damage": 3
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/axe_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:attack/",
+        "content": {
+          "damage": 400
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_zombie_leader.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:attack/",
+        "content": {
+          "damage": 6
+        }
+      }
+    ],
+    "/samples/creator_camp/behavior_packs/creator_camp/entities/campghost.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:attack/",
+        "content": {
+          "damage": 3
+        }
+      }
+    ]
+  },
+  "id": "minecraft:attack"
+}

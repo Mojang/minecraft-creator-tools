@@ -1,0 +1,11 @@
+{
+  "files": [
+    "glyph_atlas.png",
+    "glyph_color_atlas.png",
+    "radio_checked.png",
+    "radio_checked_hover.png",
+    "radio_off.png",
+    "radio_off_hover.png"
+  ],
+  "folders": []
+}

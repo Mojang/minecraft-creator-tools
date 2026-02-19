@@ -1,0 +1,48 @@
+{
+  "id": "Rule Geometry Part",
+  "fields": [
+    {
+      "id": "bone",
+      "title": "Bone",
+      "dataType": 2,
+      "isRequired": true
+    },
+    {
+      "id": "cube",
+      "title": "Cube",
+      "dataType": 0
+    },
+    {
+      "id": "face",
+      "title": "Facing",
+      "dataType": 2,
+      "choices": [
+        {
+          "id": "down",
+          "title": "Down"
+        },
+        {
+          "id": "east",
+          "title": "East"
+        },
+        {
+          "id": "north",
+          "title": "North"
+        },
+        {
+          "id": "south",
+          "title": "South"
+        },
+        {
+          "id": "up",
+          "title": "Up"
+        },
+        {
+          "id": "west",
+          "title": "West"
+        }
+      ]
+    }
+  ],
+  "title": "Client Block Rule Geometry Part"
+}

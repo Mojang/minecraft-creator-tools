@@ -1,0 +1,87 @@
+{
+  "id": "minecraft:shooter",
+  "fields": [
+    {
+      "id": "ammunition",
+      "title": "Ammunition",
+      "description": "Ammunition.",
+      "dataType": 16,
+      "defaultValue": [],
+      "subFormId": "item_components/ammunition",
+      "samples": {
+        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_shoot.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:shooter/",
+            "content": [
+              {
+                "item": "minecraft:snowball",
+                "use_offhand": true,
+                "search_inventory": true,
+                "use_in_creative": true
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "charge_on_draw",
+      "title": "Charge On Draw",
+      "description": "Charge on draw? Default is set to false.",
+      "dataType": 1,
+      "defaultValue": false
+    },
+    {
+      "id": "max_draw_duration",
+      "title": "Max Draw Duration",
+      "description": "Draw Duration. Default is set to 0.",
+      "dataType": 3,
+      "defaultValue": 0,
+      "samples": {
+        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_shoot.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:shooter/",
+            "content": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "scale_power_by_draw_duration",
+      "title": "Scale Power By Draw Duration",
+      "description": "Scale power by draw duration? Default is set to false.",
+      "dataType": 1,
+      "defaultValue": false,
+      "samples": {
+        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_shoot.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:shooter/",
+            "content": true
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Shooter Item Component.",
+  "title": "Item Shooter",
+  "samples": {
+    "/samples/custom_items/behavior_packs/custom_item/items/my_sword_shoot.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:shooter/",
+        "content": {
+          "ammunition": [
+            {
+              "item": "minecraft:snowball",
+              "use_offhand": true,
+              "search_inventory": true,
+              "use_in_creative": true
+            }
+          ],
+          "max_draw_duration": 1,
+          "scale_power_by_draw_duration": true,
+          "charge_on_draw": false
+        }
+      }
+    ]
+  }
+}

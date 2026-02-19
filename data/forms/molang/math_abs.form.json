@@ -1,0 +1,6 @@
+{
+  "id": "`math.abs(value)`",
+  "fields": [],
+  "description": "Absolute value of value",
+  "title": "Abs(value)"
+}

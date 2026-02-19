@@ -1,0 +1,38 @@
+{
+  "id": "Protected Block",
+  "fields": [
+    {
+      "id": "processor_type",
+      "title": "Jigsaw Processor Type",
+      "isRequired": true,
+      "dataType": 2,
+      "choices": [
+        {
+          "id": "minecraft:block_ignore",
+          "title": "Minecraft:block ignore"
+        },
+        {
+          "id": "minecraft:capped",
+          "title": "Minecraft:capped"
+        },
+        {
+          "id": "minecraft:protected_blocks",
+          "title": "Minecraft:protected blocks"
+        },
+        {
+          "id": "minecraft:rule",
+          "title": "Minecraft:rule"
+        }
+      ]
+    },
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "Block tag for the blocks that will be protected",
+      "dataType": 2,
+      "isRequired": true
+    }
+  ],
+  "description": "Protect blocks from this structure's placement in the world. Ensuring that it does not replace matching blocks in the world",
+  "title": "World Protected Block"
+}

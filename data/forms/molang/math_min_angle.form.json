@@ -1,0 +1,6 @@
+{
+  "id": "`math.min_angle(value)`",
+  "fields": [],
+  "description": "Minimize angle magnitude (in degrees) into the range [-180, 180)",
+  "title": "Min Angle(value)"
+}

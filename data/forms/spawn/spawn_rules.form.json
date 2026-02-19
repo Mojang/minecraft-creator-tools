@@ -1,0 +1,20 @@
+{
+  "id": "Spawn Rules",
+  "fields": [
+    {
+      "id": "conditions",
+      "title": "Conditions",
+      "dataType": 16,
+      "defaultValue": [],
+      "subFormId": "spawn/spawn_biomeconditions"
+    },
+    {
+      "id": "description",
+      "title": "Description",
+      "dataType": 16,
+      "subFormId": "spawn/spawn_description",
+      "isRequired": true
+    }
+  ],
+  "title": "Spawn Rules"
+}

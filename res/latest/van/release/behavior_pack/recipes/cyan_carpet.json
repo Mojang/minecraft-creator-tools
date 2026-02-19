@@ -1,0 +1,29 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:cyan_carpet"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "group": "carpet",
+    "pattern": [
+      "##"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:cyan_wool"
+      }
+    },
+	"unlock": [
+      {
+        "item": "minecraft:cyan_wool"
+      }
+    ],
+    "result": {
+      "item": "minecraft:cyan_carpet",
+      "count": 3
+    }
+  }
+}
