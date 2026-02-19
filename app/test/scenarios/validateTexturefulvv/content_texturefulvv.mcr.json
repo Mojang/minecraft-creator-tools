@@ -1076,8 +1076,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [TEXTUREIMAGE440] Total texture memory exceeds budget of 157,286,400 bytes for items of type Add-On at tier 0. Total texture memory used: 221708288\nWARNING: [TEXTUREIMAGE441] Total texture memory exceeds budget of 157,286,400 bytes for items of type Add-On at tier 1. Total texture memory used: 221708288\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co3_unlinked.ogg) Audio does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/nardolphle_imageisnotlinked.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/a_biceson.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/a_biceson_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/b_nardolphle.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/b_nardolphle_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/c_sheepomelon.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/c_sheepomelon_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/1/a_biceson.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/1/a_biceson_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/1/b_nardolphle.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/1/b_nardolphle_1024hd.png) Texture does not have any items in this pack that are using this.",
     "testFailSummary": "TESTFAIL: [CHKMANIF000] Found 1 errors for Check Manifest Generator (CHKMANIF).",
-    "infoGenerationTime": 1399,
-    "endToEndGenerationTime": 1763,
+    "infoGenerationTime": 1489,
+    "endToEndGenerationTime": 1840,
     "reds": 40669,
     "summary": {
       "BASEGAMEVER": {
@@ -1190,17 +1190,17 @@
         },
         "216": {
           "title": "Resource animation Version Minor Version Higher than Current",
-          "defaultMessage": "Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version",
+          "defaultMessage": "Resource animation version (1.8.0) has a lower minor version number compared to the expected version (1.10.0) or its previous minor version",
           "recommendations": 3
         },
         "256": {
           "title": "256",
-          "defaultMessage": "Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version",
+          "defaultMessage": "Spawn rules version (1.8.0) has a lower minor version number compared to the expected version (1.12.0) or its previous minor version",
           "recommendations": 3
         },
         "296": {
           "title": "296",
-          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version",
+          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
           "recommendations": 3
         },
         "619": {
@@ -1575,12 +1575,7 @@
         },
         "120": {
           "title": "Behavior Pack Min Engine Version Minor Version Lower than Current",
-          "defaultMessage": "Behavior pack manifest (1.20.0) has a lower minor version number compared to the current version or the previous current minor version)",
-          "recommendations": 1
-        },
-        "220": {
-          "title": "Resource Pack Min Engine Version Minor Version Lower than Current",
-          "defaultMessage": "Resource pack manifest (1.21.100) has a lower minor version number compared to current version or the previous current minor version",
+          "defaultMessage": "Behavior pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
           "recommendations": 1
         },
         "605": {
@@ -2115,7 +2110,7 @@
       "iTp": 6,
       "gId": "FORMATVER",
       "gIx": 296,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version",
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
       "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
     },
     {
@@ -3291,12 +3286,6 @@
       "gId": "MINENGINEVER",
       "gIx": 120,
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
-    },
-    {
-      "iTp": 6,
-      "gId": "MINENGINEVER",
-      "gIx": 220,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
     },
     {
       "iTp": 2,

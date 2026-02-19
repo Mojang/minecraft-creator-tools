@@ -79,8 +79,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CADDONREQ000] Found 1 errors for Cooperative Add-On Requirements (CADDONREQ).",
-    "infoGenerationTime": 69,
-    "endToEndGenerationTime": 99,
+    "infoGenerationTime": 132,
+    "endToEndGenerationTime": 163,
     "summary": {
       "CADDONIREQ": {
         "1": {
@@ -112,7 +112,7 @@
         },
         "120": {
           "title": "Behavior Pack Min Engine Version Minor Version Lower than Current",
-          "defaultMessage": "Behavior pack manifest (1.20.10) has a lower minor version number compared to the current version or the previous current minor version)",
+          "defaultMessage": "Behavior pack manifest (1.20.10) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
           "recommendations": 1
         },
         "605": {

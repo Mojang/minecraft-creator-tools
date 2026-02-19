@@ -4,7 +4,7 @@ CADDONREQ,0,Test fail,,"Found 1 errors for Cooperative Add-On Requirements (CADD
 CADDONREQ,164,Error,,"Did not find a valid resource pack manifest.",,,
 CADDONREQ,200,Info,,"Behavior pack manifest found.",,/manifest.json,
 MINENGINEVER,1,Test success,,"Min Engine Version (MINENGINEVER) completed successfully",,,
-MINENGINEVER,120,Recommendation,,"Behavior pack manifest (1.20.10) has a lower minor version number compared to the current version or the previous current minor version)",,/manifest.json,
+MINENGINEVER,120,Recommendation,,"Behavior pack manifest (1.20.10) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",,/manifest.json,
 MINENGINEVER,605,Info,,"Behavior pack manifest min_engine_version",1,20,10,/manifest.json,
 PACKSIZE,1,Test success,,"Pack Size Information (PACKSIZE) completed successfully",,,
 STRICT,1,Test success,,"Strict Platform Info Generator (STRICT) completed successfully",,,

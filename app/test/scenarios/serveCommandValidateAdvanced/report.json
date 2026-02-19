@@ -959,8 +959,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:boomfly`\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:robot`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobsrp/textures/entity/biceson.texture_set.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobsrp/textures/entity/biceson.texture_set.json to `textures/entity/biceson_mer`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon.texture_set.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon.texture_set.json to `textures/entity/sheepomelon_mer`",
     "testFailSummary": "TESTFAIL: [CHKMANIF000] Found 1 errors for Check Manifest Generator (CHKMANIF).",
-    "infoGenerationTime": 577,
-    "endToEndGenerationTime": 926,
+    "infoGenerationTime": 1025,
+    "endToEndGenerationTime": 1380,
     "reds": 34077,
     "summary": {
       "BASEGAMEVER": {
@@ -1073,17 +1073,17 @@
         },
         "216": {
           "title": "Resource animation Version Minor Version Higher than Current",
-          "defaultMessage": "Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version",
+          "defaultMessage": "Resource animation version (1.8.0) has a lower minor version number compared to the expected version (1.10.0) or its previous minor version",
           "recommendations": 3
         },
         "256": {
           "title": "256",
-          "defaultMessage": "Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version",
+          "defaultMessage": "Spawn rules version (1.8.0) has a lower minor version number compared to the expected version (1.12.0) or its previous minor version",
           "recommendations": 3
         },
         "296": {
           "title": "296",
-          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version",
+          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
           "recommendations": 3
         },
         "619": {
@@ -1450,12 +1450,12 @@
         },
         "120": {
           "title": "Behavior Pack Min Engine Version Minor Version Lower than Current",
-          "defaultMessage": "Behavior pack manifest (1.20.0) has a lower minor version number compared to the current version or the previous current minor version)",
+          "defaultMessage": "Behavior pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
           "recommendations": 1
         },
         "220": {
           "title": "Resource Pack Min Engine Version Minor Version Lower than Current",
-          "defaultMessage": "Resource pack manifest (1.20.0) has a lower minor version number compared to current version or the previous current minor version",
+          "defaultMessage": "Resource pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
           "recommendations": 1
         },
         "605": {
@@ -1967,7 +1967,7 @@
       "iTp": 6,
       "gId": "FORMATVER",
       "gIx": 296,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version",
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
       "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
     },
     {
@@ -11285,8 +11285,8 @@
           "internalProcessingErrorSummary": "",
           "warningSummary": "",
           "testFailSummary": "",
-          "infoGenerationTime": 28,
-          "endToEndGenerationTime": 954,
+          "infoGenerationTime": 20,
+          "endToEndGenerationTime": 1400,
           "reds": 0,
           "summary": {
             "SHARING": {

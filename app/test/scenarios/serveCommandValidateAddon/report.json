@@ -137,8 +137,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CADDONIREQ000] Found 11 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).\nTESTFAIL: [CADDONREQ000] Found 5 errors for Cooperative Add-On Requirements (CADDONREQ).",
-    "infoGenerationTime": 268,
-    "endToEndGenerationTime": 543,
+    "infoGenerationTime": 373,
+    "endToEndGenerationTime": 541,
     "summary": {
       "CADDONIREQ": {
         "0": {
@@ -192,12 +192,12 @@
         },
         "120": {
           "title": "Behavior Pack Min Engine Version Minor Version Lower than Current",
-          "defaultMessage": "Behavior pack manifest (1.20.0) has a lower minor version number compared to the current version or the previous current minor version)",
+          "defaultMessage": "Behavior pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
           "recommendations": 1
         },
         "220": {
           "title": "Resource Pack Min Engine Version Minor Version Lower than Current",
-          "defaultMessage": "Resource pack manifest (1.20.0) has a lower minor version number compared to current version or the previous current minor version",
+          "defaultMessage": "Resource pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
           "recommendations": 1
         },
         "605": {

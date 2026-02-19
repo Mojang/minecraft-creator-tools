@@ -544,7 +544,7 @@
     "testNotApplicableCount": 11,
     "errorSummary": "",
     "internalProcessingErrorSummary": "",
-    "warningSummary": "WARNING: [FORMATVER218] (/resource_packs/diverse_rp/animations/sample_mob_animations.json) Resource animation version (1.21.0) has a higher minor version number compared to current version\nWARNING: [FORMATVER238] (/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json) Resource animation controller version (1.21.0) has a higher minor version number compared to current version\nWARNING: [FORMATVER258] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) Spawn rules version (1.21.0) has a higher minor version number compared to current version\nWARNING: [JSON144] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0, 1.12.0\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:iron_ingot`\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:stick`",
+    "warningSummary": "WARNING: [FORMATVER218] (/resource_packs/diverse_rp/animations/sample_mob_animations.json) Resource animation version (1.21.0) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER238] (/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json) Resource animation controller version (1.21.0) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER258] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) Spawn rules version (1.21.0) has a higher minor version number compared to the expected version (1.12.0)\nWARNING: [JSON144] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0, 1.12.0\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:iron_ingot`\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:stick`",
     "testFailSummary": "",
     "infoGenerationTime": 56,
     "endToEndGenerationTime": 69,
@@ -653,34 +653,19 @@
           "defaultMessage": "Format Version (FORMATVER) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "116": {
-          "title": "Block type Version Minor Version Higher than Current",
-          "defaultMessage": "Block type version (1.21.0) has a lower minor version number compared to the current version or the previous current minor version",
-          "recommendations": 1
-        },
-        "136": {
-          "title": "Item type Version Minor Version Higher than Current",
-          "defaultMessage": "Item type version (1.21.0) has a lower minor version number compared to the current version or the previous current minor version",
-          "recommendations": 2
-        },
-        "156": {
-          "title": "Recipe Version Minor Version Higher than Current",
-          "defaultMessage": "Recipe version (1.21.0) has a lower minor version number compared to the current version or the previous current minor version",
-          "recommendations": 1
-        },
         "218": {
           "title": "Resource animation Version Patch Version Lower than Current",
-          "defaultMessage": "Resource animation version (1.21.0) has a higher minor version number compared to current version",
+          "defaultMessage": "Resource animation version (1.21.0) has a higher minor version number compared to the expected version (1.10.0)",
           "warnings": 1
         },
         "238": {
           "title": "Resource animation controller Version Patch Version Lower than Current",
-          "defaultMessage": "Resource animation controller version (1.21.0) has a higher minor version number compared to current version",
+          "defaultMessage": "Resource animation controller version (1.21.0) has a higher minor version number compared to the expected version (1.10.0)",
           "warnings": 1
         },
         "258": {
           "title": "258",
-          "defaultMessage": "Spawn rules version (1.21.0) has a higher minor version number compared to current version",
+          "defaultMessage": "Spawn rules version (1.21.0) has a higher minor version number compared to the expected version (1.12.0)",
           "warnings": 1
         },
         "621": {
@@ -955,16 +940,6 @@
           "title": "1",
           "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully",
           "testCompleteSuccesses": 1
-        },
-        "120": {
-          "title": "Behavior Pack Min Engine Version Minor Version Lower than Current",
-          "defaultMessage": "Behavior pack manifest (1.21.0) has a lower minor version number compared to the current version or the previous current minor version)",
-          "recommendations": 1
-        },
-        "220": {
-          "title": "Resource Pack Min Engine Version Minor Version Lower than Current",
-          "defaultMessage": "Resource pack manifest (1.21.0) has a lower minor version number compared to current version or the previous current minor version",
-          "recommendations": 1
         },
         "605": {
           "title": "605",
@@ -1395,30 +1370,6 @@
       "iTp": 1,
       "gId": "FORMATVER",
       "gIx": 1
-    },
-    {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 116,
-      "p": "/behavior_packs/diverse_bp/blocks/sample_block.json"
-    },
-    {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 136,
-      "p": "/behavior_packs/diverse_bp/items/sample_food.json"
-    },
-    {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 136,
-      "p": "/behavior_packs/diverse_bp/items/sample_sword.json"
-    },
-    {
-      "iTp": 6,
-      "gId": "FORMATVER",
-      "gIx": 156,
-      "p": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json"
     },
     {
       "iTp": 4,
@@ -2107,18 +2058,6 @@
       "iTp": 1,
       "gId": "MINENGINEVER",
       "gIx": 1
-    },
-    {
-      "iTp": 6,
-      "gId": "MINENGINEVER",
-      "gIx": 120,
-      "p": "/behavior_packs/diverse_bp/manifest.json"
-    },
-    {
-      "iTp": 6,
-      "gId": "MINENGINEVER",
-      "gIx": 220,
-      "p": "/resource_packs/diverse_rp/manifest.json"
     },
     {
       "iTp": 2,
