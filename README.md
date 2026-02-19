@@ -14,7 +14,7 @@ Please note that, at this time, we are not able to accept pull request contribut
 
 ## Using Creator Tools
 
-Visit this web app via <https://mctools.dev>.
+Visit this web app via <https://mctools.dev>. Or, see the published CLI package on [NPM](https://www.npmjs.com/package/@minecraft/creator-tools).
 
 Enjoy!
 
