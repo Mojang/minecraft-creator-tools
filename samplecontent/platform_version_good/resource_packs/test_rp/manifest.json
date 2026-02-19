@@ -1,0 +1,17 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Platform Version Good RP",
+    "description": "RP with current versions for testing platform version validation passes",
+    "uuid": "a7b8c9d0-e1f2-3456-abcd-789012345678",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 26, 0]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "b8c9d0e1-f2a3-4567-bcde-890123456789",
+      "version": [1, 0, 0]
+    }
+  ]
+}

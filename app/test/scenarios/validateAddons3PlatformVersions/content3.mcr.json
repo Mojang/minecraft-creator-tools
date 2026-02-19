@@ -103,18 +103,18 @@
         "count": 1
       }
     },
-    "errorCount": 2,
+    "errorCount": 15,
     "internalProcessingErrorCount": 0,
     "warningCount": 0,
     "testSuccessCount": 2,
-    "testFailCount": 1,
+    "testFailCount": 2,
     "testNotApplicableCount": 1,
-    "errorSummary": "ERROR: [MINENGINEVER100] (/Content/behavior_packs/aop_mobsbp/manifest.json) Behavior pack manifest does not define a header/min_engine_version.\nERROR: [MINENGINEVER100] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Behavior pack manifest does not define a header/min_engine_version.",
+    "errorSummary": "ERROR: [FORMATVER216] (/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json) Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version\nERROR: [FORMATVER216] (/Content/resource_packs/aop_mobsrp/animations/ghost.animation.json) Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version\nERROR: [FORMATVER216] (/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json) Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version\nERROR: [FORMATVER216] (/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json) Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version\nERROR: [FORMATVER256] (/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json) Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version\nERROR: [FORMATVER256] (/Content/behavior_packs/aop_mobsbp/spawn_rules/ghost.json) Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version\nERROR: [FORMATVER256] (/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json) Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version\nERROR: [FORMATVER256] (/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json) Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version\nERROR: [FORMATVER296] (/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json) Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version\nERROR: [FORMATVER296] (/Content/resource_packs/aop_mobsrp/entity/ghost.entity.json) Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version\nERROR: [FORMATVER296] (/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json) Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version\nERROR: [FORMATVER296] (/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json) Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version\nERROR: [MINENGINEVER100] (/Content/behavior_packs/aop_mobsbp/manifest.json) Behavior pack manifest does not define a header/min_engine_version.\nERROR: [MINENGINEVER100] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Behavior pack manifest does not define a header/min_engine_version.\nERROR: [MINENGINEVER220] (/Content/resource_packs/aop_mobsrp/manifest.json) Resource pack manifest (1.20.0) has a lower minor version number compared to current version or the previous current minor version",
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
-    "testFailSummary": "TESTFAIL: [MINENGINEVER000] Found 2 errors for Min Engine Version (MINENGINEVER).",
-    "infoGenerationTime": 172,
-    "endToEndGenerationTime": 376,
+    "testFailSummary": "TESTFAIL: [FORMATVER000] Found 12 errors for Format Version (FORMATVER).\nTESTFAIL: [MINENGINEVER000] Found 3 errors for Min Engine Version (MINENGINEVER).",
+    "infoGenerationTime": 207,
+    "endToEndGenerationTime": 421,
     "summary": {
       "BASEGAMEVER": {
         "2": {
@@ -122,26 +122,33 @@
           "defaultMessage": "No applicable items found for test Base Game Version (BASEGAMEVER)"
         }
       },
-      "FORMATVER": {
+      "CHKMANIF": {
         "1": {
-          "title": "1",
-          "defaultMessage": "Format Version (FORMATVER) completed successfully",
+          "title": "Test Success",
+          "defaultMessage": "Check Manifest Generator (CHKMANIF) completed successfully",
           "testCompleteSuccesses": 1
+        }
+      },
+      "FORMATVER": {
+        "0": {
+          "title": "0",
+          "defaultMessage": "Found 12 errors for Format Version (FORMATVER).",
+          "testCompleteFails": 1
         },
         "216": {
           "title": "Resource animation Version Minor Version Higher than Current",
           "defaultMessage": "Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version",
-          "recommendations": 4
+          "errors": 4
         },
         "256": {
           "title": "256",
           "defaultMessage": "Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version",
-          "recommendations": 4
+          "errors": 4
         },
         "296": {
           "title": "296",
           "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version",
-          "recommendations": 4
+          "errors": 4
         },
         "619": {
           "title": "619",
@@ -167,13 +174,18 @@
       "MINENGINEVER": {
         "0": {
           "title": "0",
-          "defaultMessage": "Found 2 errors for Min Engine Version (MINENGINEVER).",
+          "defaultMessage": "Found 3 errors for Min Engine Version (MINENGINEVER).",
           "testCompleteFails": 1
         },
         "100": {
           "title": "Behavior Pack Min Engine Version Defined",
           "defaultMessage": "Behavior pack manifest does not define a header/min_engine_version.",
           "errors": 2
+        },
+        "220": {
+          "title": "Resource Pack Min Engine Version Minor Version Lower than Current",
+          "defaultMessage": "Resource pack manifest (1.20.0) has a lower minor version number compared to current version or the previous current minor version",
+          "errors": 1
         },
         "614": {
           "title": "614",
@@ -214,77 +226,82 @@
     },
     {
       "iTp": 1,
-      "gId": "FORMATVER",
+      "gId": "CHKMANIF",
       "gIx": 1
     },
     {
-      "iTp": 6,
+      "iTp": 0,
+      "gId": "FORMATVER",
+      "gIx": 0
+    },
+    {
+      "iTp": 3,
       "gId": "FORMATVER",
       "gIx": 216,
       "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
     },
     {
-      "iTp": 6,
+      "iTp": 3,
       "gId": "FORMATVER",
       "gIx": 216,
       "p": "/Content/resource_packs/aop_mobsrp/animations/ghost.animation.json"
     },
     {
-      "iTp": 6,
+      "iTp": 3,
       "gId": "FORMATVER",
       "gIx": 216,
       "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
     },
     {
-      "iTp": 6,
+      "iTp": 3,
       "gId": "FORMATVER",
       "gIx": 216,
       "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
     },
     {
-      "iTp": 6,
+      "iTp": 3,
       "gId": "FORMATVER",
       "gIx": 256,
       "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"
     },
     {
-      "iTp": 6,
+      "iTp": 3,
       "gId": "FORMATVER",
       "gIx": 256,
       "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/ghost.json"
     },
     {
-      "iTp": 6,
+      "iTp": 3,
       "gId": "FORMATVER",
       "gIx": 256,
       "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
     },
     {
-      "iTp": 6,
+      "iTp": 3,
       "gId": "FORMATVER",
       "gIx": 256,
       "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
     },
     {
-      "iTp": 6,
+      "iTp": 3,
       "gId": "FORMATVER",
       "gIx": 296,
       "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
     },
     {
-      "iTp": 6,
+      "iTp": 3,
       "gId": "FORMATVER",
       "gIx": 296,
       "p": "/Content/resource_packs/aop_mobsrp/entity/ghost.entity.json"
     },
     {
-      "iTp": 6,
+      "iTp": 3,
       "gId": "FORMATVER",
       "gIx": 296,
       "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
     },
     {
-      "iTp": 6,
+      "iTp": 3,
       "gId": "FORMATVER",
       "gIx": 296,
       "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version",
@@ -460,6 +477,12 @@
       "gId": "MINENGINEVER",
       "gIx": 100,
       "p": "/Content/behavior_packs/aop_mobsbp_2/manifest.json"
+    },
+    {
+      "iTp": 3,
+      "gId": "MINENGINEVER",
+      "gIx": 220,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
     },
     {
       "iTp": 2,

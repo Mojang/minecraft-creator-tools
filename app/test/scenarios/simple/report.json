@@ -344,8 +344,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "",
-    "infoGenerationTime": 35,
-    "endToEndGenerationTime": 38,
+    "infoGenerationTime": 339,
+    "endToEndGenerationTime": 347,
     "reds": 1058,
     "summary": {
       "BASEGAMEVER": {
@@ -581,6 +581,11 @@
           "title": "1",
           "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully",
           "testCompleteSuccesses": 1
+        },
+        "120": {
+          "title": "Behavior Pack Min Engine Version Minor Version Lower than Current",
+          "defaultMessage": "Behavior pack manifest (1.20.10) has a lower minor version number compared to the current version or the previous current minor version)",
+          "recommendations": 1
         },
         "605": {
           "title": "605",
@@ -1141,6 +1146,12 @@
       "iTp": 1,
       "gId": "MINENGINEVER",
       "gIx": 1
+    },
+    {
+      "iTp": 6,
+      "gId": "MINENGINEVER",
+      "gIx": 120,
+      "p": "/behavior_packs/StarterTestsTutorial/manifest.json"
     },
     {
       "iTp": 2,
