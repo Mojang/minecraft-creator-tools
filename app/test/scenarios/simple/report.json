@@ -344,8 +344,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "",
-    "infoGenerationTime": 339,
-    "endToEndGenerationTime": 347,
+    "infoGenerationTime": 31,
+    "endToEndGenerationTime": 34,
     "reds": 1058,
     "summary": {
       "BASEGAMEVER": {
@@ -584,7 +584,7 @@
         },
         "120": {
           "title": "Behavior Pack Min Engine Version Minor Version Lower than Current",
-          "defaultMessage": "Behavior pack manifest (1.20.10) has a lower minor version number compared to the current version or the previous current minor version)",
+          "defaultMessage": "Behavior pack manifest (1.20.10) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
           "recommendations": 1
         },
         "605": {
