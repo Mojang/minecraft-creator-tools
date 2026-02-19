@@ -1007,8 +1007,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co3_unlinked.ogg) Audio does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/nardolphle_imageisnotlinked.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/randomvanillacopy.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:mob_that_does_not_exist`\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `ambientsounds.co2_extranotexists`\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `ambientsounds.co2_notexists`\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `individual_event_sound_that_does_not_exist`\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds/music_definitions.json to `ambientsounds.cofoo_doesnotexist`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobsrp/entity/biceson.entity.json to `textures/aop/moremobs/biceson_filethatdoesnotexist`\nWARNING: [UNLINK408] (/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json) Link to audio is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json to `sounds/ambientsounds/co_doesnotexist`",
     "testFailSummary": "",
-    "infoGenerationTime": 460,
-    "endToEndGenerationTime": 648,
+    "infoGenerationTime": 646,
+    "endToEndGenerationTime": 849,
     "reds": 40669,
     "summary": {
       "BASEGAMEVER": {
@@ -1116,17 +1116,17 @@
         },
         "216": {
           "title": "Resource animation Version Minor Version Higher than Current",
-          "defaultMessage": "Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version",
+          "defaultMessage": "Resource animation version (1.8.0) has a lower minor version number compared to the expected version (1.10.0) or its previous minor version",
           "recommendations": 3
         },
         "256": {
           "title": "256",
-          "defaultMessage": "Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version",
+          "defaultMessage": "Spawn rules version (1.8.0) has a lower minor version number compared to the expected version (1.12.0) or its previous minor version",
           "recommendations": 3
         },
         "296": {
           "title": "296",
-          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version",
+          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
           "recommendations": 3
         },
         "619": {
@@ -1466,6 +1466,16 @@
           "title": "1",
           "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully",
           "testCompleteSuccesses": 1
+        },
+        "120": {
+          "title": "Behavior Pack Min Engine Version Minor Version Lower than Current",
+          "defaultMessage": "Behavior pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
+          "recommendations": 1
+        },
+        "220": {
+          "title": "Resource Pack Min Engine Version Minor Version Lower than Current",
+          "defaultMessage": "Resource pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
+          "recommendations": 1
         },
         "605": {
           "title": "605",
@@ -1982,7 +1992,7 @@
       "iTp": 6,
       "gId": "FORMATVER",
       "gIx": 296,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version",
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
       "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
     },
     {
@@ -3044,6 +3054,18 @@
       "iTp": 1,
       "gId": "MINENGINEVER",
       "gIx": 1
+    },
+    {
+      "iTp": 6,
+      "gId": "MINENGINEVER",
+      "gIx": 120,
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "MINENGINEVER",
+      "gIx": 220,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
     },
     {
       "iTp": 2,

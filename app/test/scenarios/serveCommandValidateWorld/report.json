@@ -1564,27 +1564,21 @@
     "errorCount": 0,
     "internalProcessingErrorCount": 0,
     "warningCount": 0,
-    "testSuccessCount": 40,
+    "testSuccessCount": 39,
     "testFailCount": 0,
-    "testNotApplicableCount": 8,
+    "testNotApplicableCount": 9,
     "errorSummary": "",
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "",
-    "infoGenerationTime": 524,
-    "endToEndGenerationTime": 697,
+    "infoGenerationTime": 987,
+    "endToEndGenerationTime": 1156,
     "reds": 40690,
     "summary": {
       "BASEGAMEVER": {
-        "1": {
-          "title": "1",
-          "defaultMessage": "Base Game Version (BASEGAMEVER) completed successfully",
-          "testCompleteSuccesses": 1
-        },
-        "130": {
-          "title": "World Template Base Game Version Patch Version Lower than Current",
-          "defaultMessage": "World template manifest base game version (1.21.110) has a lower patch version number compared to current version",
-          "recommendations": 1
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test Base Game Version (BASEGAMEVER)"
         }
       },
       "BLOCKSCAT": {
@@ -1686,17 +1680,17 @@
         },
         "216": {
           "title": "Resource animation Version Minor Version Higher than Current",
-          "defaultMessage": "Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version",
+          "defaultMessage": "Resource animation version (1.8.0) has a lower minor version number compared to the expected version (1.10.0) or its previous minor version",
           "recommendations": 3
         },
         "256": {
           "title": "256",
-          "defaultMessage": "Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version",
+          "defaultMessage": "Spawn rules version (1.8.0) has a lower minor version number compared to the expected version (1.12.0) or its previous minor version",
           "recommendations": 3
         },
         "296": {
           "title": "296",
-          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version",
+          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
           "recommendations": 3
         },
         "619": {
@@ -2069,6 +2063,16 @@
           "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully",
           "testCompleteSuccesses": 1
         },
+        "120": {
+          "title": "Behavior Pack Min Engine Version Minor Version Lower than Current",
+          "defaultMessage": "Behavior pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
+          "recommendations": 1
+        },
+        "220": {
+          "title": "Resource Pack Min Engine Version Minor Version Lower than Current",
+          "defaultMessage": "Resource pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
+          "recommendations": 1
+        },
         "605": {
           "title": "605",
           "defaultMessage": "Behavior pack manifest min_engine_version"
@@ -2438,15 +2442,9 @@
   },
   "items": [
     {
-      "iTp": 1,
+      "iTp": 8,
       "gId": "BASEGAMEVER",
-      "gIx": 1
-    },
-    {
-      "iTp": 6,
-      "gId": "BASEGAMEVER",
-      "gIx": 130,
-      "p": "/Content/world_templates/aop_mobwt/manifest.json"
+      "gIx": 2
     },
     {
       "iTp": 8,
@@ -2611,7 +2609,7 @@
       "iTp": 6,
       "gId": "FORMATVER",
       "gIx": 296,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version",
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
       "p": "/Content/world_templates/aop_mobwt/resource_packs/aop_mobwrp/entity/sheepomelon.entity.json"
     },
     {
@@ -3773,6 +3771,18 @@
       "iTp": 1,
       "gId": "MINENGINEVER",
       "gIx": 1
+    },
+    {
+      "iTp": 6,
+      "gId": "MINENGINEVER",
+      "gIx": 120,
+      "p": "/Content/world_templates/aop_mobwt/behavior_packs/aop_mobwbp/manifest.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "MINENGINEVER",
+      "gIx": 220,
+      "p": "/Content/world_templates/aop_mobwt/resource_packs/aop_mobwrp/manifest.json"
     },
     {
       "iTp": 2,

@@ -143,8 +143,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CADDONIREQ000] Found 2 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).\nTESTFAIL: [CADDONREQ000] Found 3 errors for Cooperative Add-On Requirements (CADDONREQ).\nTESTFAIL: [MINENGINEVER000] Found 2 errors for Min Engine Version (MINENGINEVER).",
-    "infoGenerationTime": 184,
-    "endToEndGenerationTime": 398,
+    "infoGenerationTime": 268,
+    "endToEndGenerationTime": 484,
     "summary": {
       "CADDONIREQ": {
         "0": {
@@ -192,6 +192,11 @@
           "title": "Behavior Pack Min Engine Version Defined",
           "defaultMessage": "Behavior pack manifest does not define a header/min_engine_version.",
           "errors": 2
+        },
+        "220": {
+          "title": "Resource Pack Min Engine Version Minor Version Lower than Current",
+          "defaultMessage": "Resource pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
+          "recommendations": 1
         },
         "614": {
           "title": "614",
@@ -331,6 +336,12 @@
       "gId": "MINENGINEVER",
       "gIx": 100,
       "p": "/Content/behavior_packs/aop_mobsbp_2/manifest.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "MINENGINEVER",
+      "gIx": 220,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
     },
     {
       "iTp": 2,

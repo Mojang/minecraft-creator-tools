@@ -1,0 +1,18 @@
+{
+  "format_version": 1,
+  "header": {
+    "name": "Platform Version Errors World Template",
+    "description": "World template with outdated base_game_version",
+    "uuid": "11223344-5566-7788-99aa-bbccddeeff00",
+    "base_game_version": [1, 19, 0],
+    "lock_template_options": false,
+    "version": [1, 0, 0]
+  },
+  "modules": [
+    {
+      "type": "world_template",
+      "uuid": "22334455-6677-8899-aabb-ccddeeff0011",
+      "version": [1, 0, 0]
+    }
+  ]
+}

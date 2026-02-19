@@ -14,6 +14,7 @@ import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import WorldTemplateManifestDefinition from "../minecraft/WorldTemplateManifestDefinition";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
+import { isMinorVersionTooOld } from "../core/versioning/MinecraftVersionRules";
 
 export default class BaseGameVersionManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "BASEGAMEVER";
@@ -160,7 +161,9 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
                     110,
                     "World template manifest base game version (" +
                       bpVer.join(".") +
-                      ") has a lower major version number compared to current version",
+                      ") has a lower major version number compared to the expected version (" +
+                      verShort +
+                      ")",
                     pi
                   )
                 );
@@ -172,11 +175,13 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
                     111,
                     "World template manifest base game version (" +
                       bpVer.join(".") +
-                      ") has a higher major version number compared to current version",
+                      ") has a higher major version number compared to the expected version (" +
+                      verShort +
+                      ")",
                     pi
                   )
                 );
-              } else if (bpVer[1] < parseInt(verSplit[1]) - 1) {
+              } else if (isMinorVersionTooOld(parseInt(verSplit[0]), parseInt(verSplit[1]), bpVer[1])) {
                 infoItems.push(
                   new ProjectInfoItem(
                     this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
@@ -184,7 +189,9 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
                     120,
                     "World template manifest base game version (" +
                       bpVer.join(".") +
-                      ") has a lower minor version number compared to the current version or the previous current minor version",
+                      ") has a lower minor version number compared to the expected version (" +
+                      verShort +
+                      ") or its previous minor version",
                     pi
                   )
                 );
@@ -196,7 +203,9 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
                     121,
                     "World template manifest base game version (" +
                       bpVer.join(".") +
-                      ") has a higher minor version number compared to current version",
+                      ") has a higher minor version number compared to the expected version (" +
+                      verShort +
+                      ")",
                     pi
                   )
                 );
@@ -208,7 +217,9 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
                     130,
                     "World template manifest base game version (" +
                       bpVer.join(".") +
-                      ") has a lower patch version number compared to current version",
+                      ") has a lower patch version number compared to the expected version (" +
+                      verShort +
+                      ")",
                     pi
                   )
                 );
@@ -220,7 +231,9 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
                     131,
                     "World template manifest base game version (" +
                       bpVer.join(".") +
-                      ") has a higher patch version number compared to current version",
+                      ") has a higher patch version number compared to the expected version (" +
+                      verShort +
+                      ")",
                     pi
                   )
                 );

@@ -1,0 +1,17 @@
+{
+  "format_version": 1,
+  "header": {
+    "name": "Platform Version Errors BP",
+    "description": "BP with outdated versions for testing platform version validation",
+    "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 19, 0]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+      "version": [1, 0, 0]
+    }
+  ]
+}

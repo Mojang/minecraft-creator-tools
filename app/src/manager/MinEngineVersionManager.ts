@@ -20,6 +20,7 @@ import WorldTemplateManifestDefinition from "../minecraft/WorldTemplateManifestD
 import PersonaManifestDefinition from "../minecraft/PersonaManifestDefinition";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import SemanticVersion from "../core/versioning/SemanticVersion";
+import { isMinorVersionTooOld } from "../core/versioning/MinecraftVersionRules";
 
 export enum MinEngineVersionManagerTest {
   behaviorPackMinEngineVersion = 100,
@@ -254,7 +255,9 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                       MinEngineVersionManagerTest.behaviorPackMinEngineVersionMajorLowerThanCurrent,
                       "Behavior pack manifest (" +
                         bpVer.join(".") +
-                        ") has a lower major version number compared to current version",
+                        ") has a lower major version number compared to the expected version (" +
+                        verShort +
+                        ")",
                       pi
                     )
                   );
@@ -266,11 +269,13 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                       MinEngineVersionManagerTest.behaviorPackMinEngineVersionMajorHigherThanCurrent,
                       "Behavior pack manifest (" +
                         bpVer.join(".") +
-                        ") has a higher major version number compared to current version",
+                        ") has a higher major version number compared to the expected version (" +
+                        verShort +
+                        ")",
                       pi
                     )
                   );
-                } else if (bpVer[1] < parseInt(verSplit[1]) - 1) {
+                } else if (isMinorVersionTooOld(parseInt(verSplit[0]), parseInt(verSplit[1]), bpVer[1])) {
                   infoItems.push(
                     new ProjectInfoItem(
                       this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
@@ -278,7 +283,9 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                       MinEngineVersionManagerTest.behaviorPackMinEngineVersionMinorLowerThanCurrent,
                       "Behavior pack manifest (" +
                         bpVer.join(".") +
-                        ") has a lower minor version number compared to the current version or the previous current minor version)",
+                        ") has a lower minor version number compared to the expected version (" +
+                        verShort +
+                        ") or its previous minor version",
                       pi
                     )
                   );
@@ -290,7 +297,9 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                       MinEngineVersionManagerTest.behaviorPackMinEngineVersionMinorHigherThanCurrent,
                       "Behavior pack manifest (" +
                         bpVer.join(".") +
-                        ") has a higher minor version number compared to current version",
+                        ") has a higher minor version number compared to the expected version (" +
+                        verShort +
+                        ")",
                       pi
                     )
                   );
@@ -347,7 +356,9 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                       MinEngineVersionManagerTest.resourcePackMinEngineVersionMajorLowerThanCurrent,
                       "Resource pack manifest (" +
                         rpVer.join(".") +
-                        ") has a lower major version number compared to current version",
+                        ") has a lower major version number compared to the expected version (" +
+                        verShort +
+                        ")",
                       pi
                     )
                   );
@@ -359,11 +370,13 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                       MinEngineVersionManagerTest.resourcePackMinEngineVersionMajorHigherThanCurrent,
                       "Resource pack manifest (" +
                         rpVer.join(".") +
-                        ") has a higher major version number compared to current version",
+                        ") has a higher major version number compared to the expected version (" +
+                        verShort +
+                        ")",
                       pi
                     )
                   );
-                } else if (rpVer[1] < parseInt(verSplit[1]) - 1) {
+                } else if (isMinorVersionTooOld(parseInt(verSplit[0]), parseInt(verSplit[1]), rpVer[1])) {
                   infoItems.push(
                     new ProjectInfoItem(
                       this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
@@ -371,7 +384,9 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                       MinEngineVersionManagerTest.resourcePackMinEngineVersionMinorLowerThanCurrent,
                       "Resource pack manifest (" +
                         rpVer.join(".") +
-                        ") has a lower minor version number compared to current version or the previous current minor version",
+                        ") has a lower minor version number compared to the expected version (" +
+                        verShort +
+                        ") or its previous minor version",
                       pi
                     )
                   );
@@ -383,7 +398,9 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                       MinEngineVersionManagerTest.resourcePackMinEngineVersionMinorHigherThanCurrent,
                       "Resource pack manifest (" +
                         rpVer.join(".") +
-                        ") has a higher minor version number compared to current version",
+                        ") has a higher minor version number compared to the expected version (" +
+                        verShort +
+                        ")",
                       pi
                     )
                   );

@@ -1,0 +1,27 @@
+{
+  "format_version": "1.26.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "test:current_entity",
+      "spawn_category": "creature",
+      "is_spawnable": true,
+      "is_summonable": true
+    },
+    "components": {
+      "minecraft:type_family": {
+        "family": ["mob"]
+      },
+      "minecraft:health": {
+        "value": 10,
+        "max": 10
+      },
+      "minecraft:movement": {
+        "value": 0.25
+      },
+      "minecraft:collision_box": {
+        "width": 0.6,
+        "height": 1.8
+      }
+    }
+  }
+}

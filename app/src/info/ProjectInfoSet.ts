@@ -313,7 +313,8 @@ export default class ProjectInfoSet {
         generator.id === "MINENGINEVER" ||
         generator.id === "BASEGAMEVER" ||
         generator.id === "FORMATVER" ||
-        generator.id === "WORLDDATA"
+        generator.id === "WORLDDATA" ||
+        generator.id === "CHKMANIF"
       ) {
         return true;
       }

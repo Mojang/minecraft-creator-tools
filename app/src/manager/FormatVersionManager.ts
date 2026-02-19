@@ -26,6 +26,7 @@ import EntityTypeResourceDefinition from "../minecraft/EntityTypeResourceDefinit
 import FogResourceDefinition from "../minecraft/FogResourceDefinition";
 import WorldTemplateManifestDefinition from "../minecraft/WorldTemplateManifestDefinition";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
+import { isMinorVersionTooOld } from "../core/versioning/MinecraftVersionRules";
 
 export default class FormatVersionManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "FORMATVER";
@@ -510,7 +511,9 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
             typeString +
               " version (" +
               ver.join(".") +
-              ") has a lower major version number compared to current version",
+              ") has a lower major version number compared to the expected version (" +
+              verShort +
+              ")",
             pi
           )
         );
@@ -523,12 +526,14 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
             typeString +
               " version (" +
               ver.join(".") +
-              ") has a higher major version number compared to current version",
+              ") has a higher major version number compared to the expected version (" +
+              verShort +
+              ")",
             pi
           )
         );
         return true;
-      } else if (ver[1] < parseInt(currentVersion[1]) - 1) {
+      } else if (isMinorVersionTooOld(parseInt(currentVersion[0]), parseInt(currentVersion[1]), ver[1])) {
         infoItems.push(
           new ProjectInfoItem(
             this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
@@ -537,7 +542,9 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
             typeString +
               " version (" +
               ver.join(".") +
-              ") has a lower minor version number compared to the current version or the previous current minor version",
+              ") has a lower minor version number compared to the expected version (" +
+              verShort +
+              ") or its previous minor version",
             pi
           )
         );
@@ -554,7 +561,9 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
             typeString +
               " version (" +
               ver.join(".") +
-              ") has a higher minor version number compared to current version",
+              ") has a higher minor version number compared to the expected version (" +
+              verShort +
+              ")",
             pi
           )
         );
@@ -568,7 +577,9 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
             typeString +
               " version (" +
               ver.join(".") +
-              ") has a lower patch version number compared to current version",
+              ") has a lower patch version number compared to the expected version (" +
+              verShort +
+              ")",
             pi
           )
         );
@@ -586,7 +597,9 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
             typeString +
               " version (" +
               ver.join(".") +
-              ") has a higher patch version number compared to current version",
+              ") has a higher patch version number compared to the expected version (" +
+              verShort +
+              ")",
             pi
           )
         );

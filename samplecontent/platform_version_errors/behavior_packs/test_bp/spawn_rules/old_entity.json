@@ -1,0 +1,19 @@
+{
+  "format_version": "1.16.0",
+  "minecraft:spawn_rules": {
+    "description": {
+      "identifier": "test:old_entity",
+      "population_control": "animal"
+    },
+    "conditions": [
+      {
+        "minecraft:spawns_on_surface": {},
+        "minecraft:brightness_filter": {
+          "min": 7,
+          "max": 15,
+          "adjust_for_weather": false
+        }
+      }
+    ]
+  }
+}

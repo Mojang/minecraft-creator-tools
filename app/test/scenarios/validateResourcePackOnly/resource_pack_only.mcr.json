@@ -78,8 +78,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CADDONIREQ000] Found 1 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).\nTESTFAIL: [CADDONREQ000] Found 1 errors for Cooperative Add-On Requirements (CADDONREQ).",
-    "infoGenerationTime": 61,
-    "endToEndGenerationTime": 91,
+    "infoGenerationTime": 118,
+    "endToEndGenerationTime": 145,
     "summary": {
       "CADDONIREQ": {
         "0": {
@@ -108,6 +108,11 @@
           "title": "1",
           "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully",
           "testCompleteSuccesses": 1
+        },
+        "220": {
+          "title": "Resource Pack Min Engine Version Minor Version Lower than Current",
+          "defaultMessage": "Resource pack manifest (1.20.10) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
+          "recommendations": 1
         },
         "614": {
           "title": "614",
@@ -189,6 +194,12 @@
       "iTp": 1,
       "gId": "MINENGINEVER",
       "gIx": 1
+    },
+    {
+      "iTp": 6,
+      "gId": "MINENGINEVER",
+      "gIx": 220,
+      "p": "/manifest.json"
     },
     {
       "iTp": 2,
