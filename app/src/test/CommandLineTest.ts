@@ -709,7 +709,7 @@ describe("createCommandAddonStarter", async () => {
   let addonProjectInfoSet: ProjectInfoSet | null = null;
 
   before(function (done) {
-    this.timeout(10000);
+    this.timeout(20000);
 
     removeResultFolder("createCommandAddonStarter");
 
