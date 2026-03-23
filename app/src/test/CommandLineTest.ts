@@ -944,14 +944,12 @@ describe("validateAddons2AnimationManifestErrorsCommand", async () => {
     });
   });
 
-  it("should have no stderr lines", async (done) => {
+  it("should have no stderr lines", function () {
     assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
-    done();
   }).timeout(10000);
 
-  it("exit code should be zero", async (done) => {
+  it("exit code should be zero", function () {
     assert.equal(exitCode, 0);
-    done();
   }).timeout(10000);
 
   it("output matches", async function () {
@@ -993,14 +991,12 @@ describe("validateAddons3ExtraneousStuffUsesMinecraftCommand", async () => {
     });
   });
 
-  it("should have no stderr lines", async (done) => {
+  it("should have no stderr lines", function () {
     assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
-    done();
   }).timeout(10000);
 
-  it("exit code should be zero", async (done) => {
+  it("exit code should be zero", function () {
     assert.equal(exitCode, 0);
-    done();
   }).timeout(10000);
 
   it("output matches", async function () {
@@ -1042,14 +1038,12 @@ describe("validateAddons3PlatformVersions", async () => {
     });
   });
 
-  it("should have no stderr lines", async (done) => {
+  it("should have no stderr lines", function () {
     assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
-    done();
   }).timeout(10000);
 
-  it("exit code should be zero", async (done) => {
+  it("exit code should be zero", function () {
     assert.equal(exitCode, 0);
-    done();
   }).timeout(10000);
 
   it("output matches", async function () {
@@ -1128,14 +1122,12 @@ describe("validateLinkErrors", async () => {
     });
   });
 
-  it("should have no stderr lines", async (done) => {
+  it("should have no stderr lines", function () {
     assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
-    done();
   }).timeout(10000);
 
-  it("exit code should be zero", async (done) => {
+  it("exit code should be zero", function () {
     assert.equal(exitCode, 0);
-    done();
   }).timeout(10000);
 
   it("output matches", async function () {
@@ -1172,14 +1164,12 @@ describe("validateTextureful", async () => {
     });
   });
 
-  it("should have no stderr lines", async (done) => {
+  it("should have no stderr lines", function () {
     assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
-    done();
   }).timeout(10000);
 
-  it("exit code should be zero", async (done) => {
+  it("exit code should be zero", function () {
     assert.equal(exitCode, 0);
-    done();
   }).timeout(10000);
 
   it("output matches", async function () {
@@ -1216,14 +1206,12 @@ describe("validateTexturefulvv", async () => {
     });
   });
 
-  it("should have no stderr lines", async (done) => {
+  it("should have no stderr lines", function () {
     assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
-    done();
   }).timeout(10000);
 
-  it("exit code should be zero", async (done) => {
+  it("exit code should be zero", function () {
     assert.equal(exitCode, 0);
-    done();
   }).timeout(10000);
 
   it("output matches", async function () {
@@ -1304,14 +1292,12 @@ describe("validateComprehensiveContent", async () => {
     });
   });
 
-  it("should have no stderr lines", async (done) => {
+  it("should have no stderr lines", function () {
     assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
-    done();
   }).timeout(10000);
 
-  it("exit code should be zero", async (done) => {
+  it("exit code should be zero", function () {
     assert.equal(exitCode, 0);
-    done();
   }).timeout(10000);
 
   it("output matches", async function () {
@@ -1348,14 +1334,12 @@ describe("validateBehaviorPackOnly", async () => {
     });
   });
 
-  it("should have no stderr lines", async (done) => {
+  it("should have no stderr lines", function () {
     assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
-    done();
   }).timeout(10000);
 
-  it("exit code should be zero", async (done) => {
+  it("exit code should be zero", function () {
     assert.equal(exitCode, 0);
-    done();
   }).timeout(10000);
 
   it("output matches", async function () {
@@ -1392,14 +1376,12 @@ describe("validateResourcePackOnly", async () => {
     });
   });
 
-  it("should have no stderr lines", async (done) => {
+  it("should have no stderr lines", function () {
     assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
-    done();
   }).timeout(10000);
 
-  it("exit code should be zero", async (done) => {
+  it("exit code should be zero", function () {
     assert.equal(exitCode, 0);
-    done();
   }).timeout(10000);
 
   it("output matches", async function () {
@@ -1413,13 +1395,17 @@ async function collectLines(readable: Readable, data: string[]) {
       let lineUp = line.replace(/\\n/g, "");
       lineUp = lineUp.replace(/\\r/g, "");
 
-      if (lineUp.indexOf("ebugger") <= 0) {
-        // ignore any lines about the debugger.
+      if (lineUp.indexOf("ebugger") <= 0 && !isNodeDeprecationWarning(lineUp)) {
+        // ignore any lines about the debugger or Node.js deprecation warnings.
         // console.log(lineUp);
         data.push(lineUp);
       }
     }
   }
+}
+
+function isNodeDeprecationWarning(line: string): boolean {
+  return /\[DEP\d+\] DeprecationWarning/.test(line) || /node --trace-deprecation/.test(line);
 }
 
 describe("spawnRulesDependencyValidate", async () => {
