@@ -546,7 +546,7 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [FORMATVER218] (/resource_packs/diverse_rp/animations/sample_mob_animations.json) Resource animation version (1.21.0) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER238] (/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json) Resource animation controller version (1.21.0) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER258] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) Spawn rules version (1.21.0) has a higher minor version number compared to the expected version (1.12.0)\nWARNING: [JSON144] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0, 1.12.0\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:iron_ingot`\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:stick`",
     "testFailSummary": "",
-    "infoGenerationTime": 56,
+    "infoGenerationTime": 54,
     "endToEndGenerationTime": 69,
     "reds": 5248,
     "summary": {
@@ -652,6 +652,21 @@
           "title": "1",
           "defaultMessage": "Format Version (FORMATVER) completed successfully",
           "testCompleteSuccesses": 1
+        },
+        "120": {
+          "title": "Block type Version Patch Version Higher than Current",
+          "defaultMessage": "Block type version (1.21.0) has a lower patch version number compared to the expected version (1.26.10)",
+          "recommendations": 1
+        },
+        "140": {
+          "title": "Item type Version Patch Version Higher than Current",
+          "defaultMessage": "Item type version (1.21.0) has a lower patch version number compared to the expected version (1.26.10)",
+          "recommendations": 2
+        },
+        "160": {
+          "title": "Recipe Version Patch Version Higher than Current",
+          "defaultMessage": "Recipe version (1.21.0) has a lower patch version number compared to the expected version (1.26.10)",
+          "recommendations": 1
         },
         "218": {
           "title": "Resource animation Version Patch Version Lower than Current",
@@ -1370,6 +1385,30 @@
       "iTp": 1,
       "gId": "FORMATVER",
       "gIx": 1
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 120,
+      "p": "/behavior_packs/diverse_bp/blocks/sample_block.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 140,
+      "p": "/behavior_packs/diverse_bp/items/sample_food.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 140,
+      "p": "/behavior_packs/diverse_bp/items/sample_sword.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 160,
+      "p": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json"
     },
     {
       "iTp": 4,
