@@ -1670,8 +1670,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [UNLINK191] (/Content/resource_packs/aop_mobmwrp/textures/aop/moremobs/a_biceson_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobmwrp/textures/aop/moremobs/b_nardolphle_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobmwrp/textures/aop/moremobs/c_sheepomelon_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobmwrp/textures/item_texture.json to `textures/items/elixir`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobmwrp/textures/item_texture.json to `textures/items/hard_biscuit`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobmwrp/textures/item_texture.json to `textures/items/key`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobmwrp/textures/item_texture.json to `textures/items/pear`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobmwrp/textures/item_texture.json to `textures/items/rod`",
     "testFailSummary": "TESTFAIL: [CHKMANIF000] Found 1 errors for Check Manifest Generator (CHKMANIF).\nTESTFAIL: [TEXTUREIMAGE000] Found 1 errors for Texture Image Validation (TEXTUREIMAGE).",
-    "infoGenerationTime": 800,
-    "endToEndGenerationTime": 994,
+    "infoGenerationTime": 730,
+    "endToEndGenerationTime": 1016,
     "reds": 42750,
     "summary": {
       "BASEGAMEVER": {
@@ -1794,7 +1794,7 @@
         },
         "296": {
           "title": "296",
-          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
+          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the expected version (1.26.10) or its previous minor version",
           "recommendations": 6
         },
         "619": {
@@ -2181,12 +2181,12 @@
         },
         "120": {
           "title": "Behavior Pack Min Engine Version Minor Version Lower than Current",
-          "defaultMessage": "Behavior pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
+          "defaultMessage": "Behavior pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.10) or its previous minor version",
           "recommendations": 1
         },
         "220": {
           "title": "Resource Pack Min Engine Version Minor Version Lower than Current",
-          "defaultMessage": "Resource pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
+          "defaultMessage": "Resource pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.10) or its previous minor version",
           "recommendations": 1
         },
         "605": {
@@ -2763,7 +2763,7 @@
       "iTp": 6,
       "gId": "FORMATVER",
       "gIx": 296,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the expected version (1.26.10) or its previous minor version",
       "p": "/Content/resource_packs/aop_mobmwrp/entity/sheepomelon.entity.json"
     },
     {
@@ -2782,7 +2782,7 @@
       "iTp": 6,
       "gId": "FORMATVER",
       "gIx": 296,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the expected version (1.26.10) or its previous minor version",
       "p": "/Content/world_templates/aop_mobwt/resource_packs/aop_mobwrp/entity/sheepomelon.entity.json"
     },
     {
