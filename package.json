@@ -30,7 +30,8 @@
         "@semantic-release/npm",
         {
           "pkgRoot": "./app/toolbuild/jsn",
-          "tarballDir": "dist"
+          "tarballDir": "dist",
+          "provenance": true
         }
       ],
       [
