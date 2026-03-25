@@ -1,0 +1,17 @@
+{
+  "files": [
+    "boots_trim.png",
+    "boots_trim.texture_set.json",
+    "boots_trim_mers.tga",
+    "chestplate_trim.png",
+    "chestplate_trim.texture_set.json",
+    "chestplate_trim_mers.tga",
+    "helmet_trim.png",
+    "helmet_trim.texture_set.json",
+    "helmet_trim_mers.tga",
+    "leggings_trim.png",
+    "leggings_trim.texture_set.json",
+    "leggings_trim_mers.tga"
+  ],
+  "folders": []
+}

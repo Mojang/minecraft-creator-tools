@@ -1,0 +1,18 @@
+{
+  "fields": [
+    {
+      "id": "expression",
+      "title": "expression",
+      "description": "expression",
+      "dataType": 2
+    },
+    {
+      "id": "version",
+      "title": "version",
+      "description": "version",
+      "dataType": 0
+    }
+  ],
+  "description": "ExpressionNode",
+  "title": "ExpressionNode"
+}

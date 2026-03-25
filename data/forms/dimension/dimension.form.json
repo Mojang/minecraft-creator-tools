@@ -1,0 +1,20 @@
+{
+  "id": "Dimension",
+  "fields": [
+    {
+      "id": "components",
+      "title": "Components",
+      "dataType": 16,
+      "subFormId": "dimension/components",
+      "isRequired": true
+    },
+    {
+      "id": "description",
+      "title": "Description",
+      "dataType": 16,
+      "subFormId": "dimension/description",
+      "isRequired": true
+    }
+  ],
+  "title": "Dimension"
+}

@@ -1,0 +1,63 @@
+{
+  "id": "BlockInfo",
+  "fields": [
+    {
+      "id": "block",
+      "description": "Block to be dug.",
+      "dataType": 16,
+      "subForm": {
+        "id": "block",
+        "title": "Block",
+        "fields": [
+          {
+            "id": "name",
+            "title": "Name",
+            "dataType": 2,
+            "defaultValue": ""
+          },
+          {
+            "id": "states",
+            "title": "States",
+            "dataType": 0,
+            "defaultValue": {},
+            "alternates": [
+              {
+                "id": "states",
+                "dataType": 2
+              },
+              {
+                "id": "states",
+                "dataType": 1
+              }
+            ]
+          },
+          {
+            "id": "tags",
+            "title": "Tags",
+            "dataType": 2,
+            "defaultValue": ""
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "block",
+          "dataType": 2
+        },
+        {
+          "id": "block",
+          "dataType": 16
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "speed",
+      "title": "Speed",
+      "description": "Digging speed for the correlating block(s).",
+      "dataType": 0,
+      "isRequired": true
+    }
+  ],
+  "title": "Item BlockInfo"
+}

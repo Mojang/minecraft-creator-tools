@@ -1,0 +1,14 @@
+{
+  "id": "Shape",
+  "fields": [
+    {
+      "id": "boxes",
+      "title": "Boxes",
+      "dataType": 16,
+      "minLength": 1,
+      "subFormId": "misc/box",
+      "isRequired": true
+    }
+  ],
+  "title": "Shape Misc"
+}

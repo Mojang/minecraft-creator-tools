@@ -1,0 +1,19 @@
+{
+  "id": "Range",
+  "fields": [
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": 0,
+      "isRequired": true
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": 0,
+      "isRequired": true
+    }
+  ],
+  "description": "Define a range of integer value using a \"min\" and \"max\" limit and must be assigned to \"values\"",
+  "title": "Block Range"
+}

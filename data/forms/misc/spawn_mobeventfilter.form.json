@@ -1,0 +1,11 @@
+{
+  "id": "Spawn MobEventFilter",
+  "fields": [
+    {
+      "id": "event",
+      "title": "Event",
+      "dataType": 2
+    }
+  ],
+  "title": "Spawn MobEventFilter Misc"
+}

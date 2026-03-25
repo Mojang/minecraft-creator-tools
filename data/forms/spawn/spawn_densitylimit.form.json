@@ -1,0 +1,30 @@
+{
+  "id": "Spawn DensityLimit",
+  "fields": [
+    {
+      "id": "surface",
+      "title": "Surface",
+      "dataType": 0,
+      "defaultValue": -1,
+      "validity": [
+        {
+          "comparison": ">=",
+          "value": -1
+        }
+      ]
+    },
+    {
+      "id": "underground",
+      "title": "Underground",
+      "dataType": 0,
+      "defaultValue": -1,
+      "validity": [
+        {
+          "comparison": ">=",
+          "value": -1
+        }
+      ]
+    }
+  ],
+  "title": "Spawn DensityLimit"
+}

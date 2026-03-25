@@ -1,0 +1,6 @@
+{
+  "id": "`math.ease_in_circ(start, end, 0_to_1)`",
+  "fields": [],
+  "description": "Output goes from start to end via 0_to_1, starting slow and accelerating along a circular curve toward the end",
+  "title": "Ease In Circ(start, End, 0 To 1)"
+}

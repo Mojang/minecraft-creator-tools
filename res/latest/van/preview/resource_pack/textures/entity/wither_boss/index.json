@@ -1,0 +1,17 @@
+{
+  "files": [
+    "wither.png",
+    "wither.texture_set.json",
+    "wither_armor_blue.png",
+    "wither_armor_blue.texture_set.json",
+    "wither_armor_blue_mers.tga",
+    "wither_armor_white.png",
+    "wither_armor_white.texture_set.json",
+    "wither_armor_white_mers.tga",
+    "wither_invulnerable.png",
+    "wither_invulnerable.texture_set.json",
+    "wither_invulnerable_mers.tga",
+    "wither_mers.tga"
+  ],
+  "folders": []
+}

@@ -1,0 +1,37 @@
+{
+  "fields": [
+    {
+      "id": "default_color",
+      "title": "Default Color",
+      "dataType": 2,
+      "defaultValue": [
+        255,
+        255,
+        255
+      ],
+      "alternates": [
+        {
+          "id": "default_color",
+          "dataType": 32,
+          "minLength": 3,
+          "maxLength": 3
+        }
+      ],
+      "description": "default_color"
+    }
+  ],
+  "versionIntroduced": "1.21.30",
+  "description": "enables custom items to be dyed in cauldrons. To use the dyeable component, the format version on the item and the attachable needs to have a format_version of 1.21.30 or greater.",
+  "samples": {
+    "sample": [
+      {
+        "path": "sample",
+        "content": {
+          "default_color": "#175882"
+        }
+      }
+    ]
+  },
+  "title": "Item Components Dyeable",
+  "id": "minecraft:dyeable"
+}

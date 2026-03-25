@@ -1,0 +1,106 @@
+{
+  "fields": [
+    {
+      "id": "slot",
+      "title": "Slot",
+      "description": "Specifies which types of enchantments can be applied. For example, `bow` would allow this item to be enchanted as if it were a bow.",
+      "dataType": 2,
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "none|all|g_armor|armor_head|armor_torso|armor_feet|armor_legs|sword|bow|spear|crossbow|melee_spear|g_tool|hoe|shears|flintsteel|shield|g_digging|axe|pickaxe|shovel|fishing_rod|carrot_stick|elytra|cosmetic_head"
+        }
+      ],
+      "isRequired": true,
+      "samples": {
+        "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:enchantable/",
+            "content": "armor_torso"
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/my_boots.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:enchantable/",
+            "content": "armor_feet"
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/my_helm.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:enchantable/",
+            "content": "armor_head"
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/my_leggings.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:enchantable/",
+            "content": "armor_legs"
+          }
+        ]
+      }
+    },
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "Specifies the value of the enchantment (minimum of 0).",
+      "dataType": 0,
+      "isRequired": true,
+      "samples": {
+        "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:enchantable/",
+            "content": 10
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/my_boots.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:enchantable/",
+            "content": 10
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Determines what enchantments can be applied to the item. Not all enchantments will have an effect on all item components.",
+  "note": "The following enchantment slot types that can be set for the value of `slot`: sword, bow, pickaxe, armor_head, armor_torso, armor_legs, armor_feet",
+  "title": "Item Components Enchantable",
+  "samples": {
+    "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:enchantable/",
+        "content": {
+          "value": 10,
+          "slot": "armor_torso"
+        }
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/my_boots.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:enchantable/",
+        "content": {
+          "value": 10,
+          "slot": "armor_feet"
+        }
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/my_helm.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:enchantable/",
+        "content": {
+          "value": 10,
+          "slot": "armor_head"
+        }
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/my_leggings.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:enchantable/",
+        "content": {
+          "value": 10,
+          "slot": "armor_legs"
+        }
+      }
+    ]
+  },
+  "id": "minecraft:enchantable"
+}

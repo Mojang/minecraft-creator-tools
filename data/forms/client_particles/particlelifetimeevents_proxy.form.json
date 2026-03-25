@@ -1,0 +1,41 @@
+{
+  "id": "ParticleLifetimeEvents Proxy",
+  "fields": [
+    {
+      "id": "creation_event",
+      "title": "Creation Event",
+      "dataType": 15,
+      "defaultValue": [],
+      "alternates": [
+        {
+          "id": "creation_event",
+          "dataType": 2
+        }
+      ]
+    },
+    {
+      "id": "expiration_event",
+      "title": "Expiration Event",
+      "dataType": 15,
+      "defaultValue": [],
+      "alternates": [
+        {
+          "id": "expiration_event",
+          "dataType": 2
+        }
+      ]
+    },
+    {
+      "id": "timeline",
+      "title": "Timeline",
+      "dataType": 15,
+      "alternates": [
+        {
+          "id": "timeline",
+          "dataType": 2
+        }
+      ]
+    }
+  ],
+  "title": "Client Particles ParticleLifetimeEvents Proxy"
+}

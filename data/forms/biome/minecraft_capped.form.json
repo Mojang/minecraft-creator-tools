@@ -1,0 +1,256 @@
+{
+  "id": "minecraft:capped",
+  "fields": [
+    {
+      "id": "beach_material",
+      "description": "Material used to decorate surface near sea level.",
+      "dataType": 2,
+      "alternates": [
+        {
+          "id": "beach_material",
+          "dataType": 16,
+          "readOnly": true,
+          "subForm": {
+            "id": "beach_material",
+            "title": "Beach Material",
+            "fields": [
+              {
+                "id": "name",
+                "title": "Name",
+                "description": "Name of the block",
+                "dataType": 16,
+                "isRequired": true
+              },
+              {
+                "id": "states",
+                "title": "States",
+                "description": "Contains members named after each state, with boolean, integer, or string values.",
+                "dataType": 31,
+                "defaultValue": {},
+                "alternates": [
+                  {
+                    "id": "states",
+                    "dataType": 27
+                  },
+                  {
+                    "id": "states",
+                    "dataType": 24
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "ceiling_materials",
+      "description": "Materials used for the surface ceiling.",
+      "dataType": 2,
+      "minLength": 1,
+      "alternates": [
+        {
+          "id": "ceiling_materials",
+          "dataType": 16,
+          "readOnly": true,
+          "subForm": {
+            "id": "ceiling_materials",
+            "title": "Ceiling Materials",
+            "fields": [
+              {
+                "id": "name",
+                "title": "Name",
+                "description": "Name of the block",
+                "dataType": 16,
+                "isRequired": true
+              },
+              {
+                "id": "states",
+                "title": "States",
+                "description": "Contains members named after each state, with boolean, integer, or string values.",
+                "dataType": 31,
+                "defaultValue": {},
+                "alternates": [
+                  {
+                    "id": "states",
+                    "dataType": 27
+                  },
+                  {
+                    "id": "states",
+                    "dataType": 24
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "floor_materials",
+      "description": "Materials used for the surface floor.",
+      "dataType": 2,
+      "minLength": 1,
+      "alternates": [
+        {
+          "id": "floor_materials",
+          "dataType": 16,
+          "readOnly": true,
+          "subForm": {
+            "id": "floor_materials",
+            "title": "Floor Materials",
+            "fields": [
+              {
+                "id": "name",
+                "title": "Name",
+                "description": "Name of the block",
+                "dataType": 16,
+                "isRequired": true
+              },
+              {
+                "id": "states",
+                "title": "States",
+                "description": "Contains members named after each state, with boolean, integer, or string values.",
+                "dataType": 31,
+                "defaultValue": {},
+                "alternates": [
+                  {
+                    "id": "states",
+                    "dataType": 27
+                  },
+                  {
+                    "id": "states",
+                    "dataType": 24
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "foundation_material",
+      "description": "Material used to replace solid blocks that are not surface blocks.",
+      "dataType": 2,
+      "alternates": [
+        {
+          "id": "foundation_material",
+          "dataType": 16,
+          "readOnly": true,
+          "subForm": {
+            "id": "foundation_material",
+            "title": "Foundation Material",
+            "fields": [
+              {
+                "id": "name",
+                "title": "Name",
+                "description": "Name of the block",
+                "dataType": 16,
+                "isRequired": true
+              },
+              {
+                "id": "states",
+                "title": "States",
+                "description": "Contains members named after each state, with boolean, integer, or string values.",
+                "dataType": 31,
+                "defaultValue": {},
+                "alternates": [
+                  {
+                    "id": "states",
+                    "dataType": 27
+                  },
+                  {
+                    "id": "states",
+                    "dataType": 24
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "sea_material",
+      "description": "Material used to replace air blocks below sea level.",
+      "dataType": 2,
+      "alternates": [
+        {
+          "id": "sea_material",
+          "dataType": 16,
+          "readOnly": true,
+          "subForm": {
+            "id": "sea_material",
+            "title": "Sea Material",
+            "fields": [
+              {
+                "id": "name",
+                "title": "Name",
+                "description": "Name of the block",
+                "dataType": 16,
+                "isRequired": true
+              },
+              {
+                "id": "states",
+                "title": "States",
+                "description": "Contains members named after each state, with boolean, integer, or string values.",
+                "dataType": 31,
+                "defaultValue": {},
+                "alternates": [
+                  {
+                    "id": "states",
+                    "dataType": 27
+                  },
+                  {
+                    "id": "states",
+                    "dataType": 24
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "type",
+      "title": "SurfaceBuilderType",
+      "description": "Controls the type of surface builder to use",
+      "dataType": 2,
+      "choices": [
+        {
+          "id": "minecraft:capped",
+          "title": "Minecraft:capped"
+        },
+        {
+          "id": "minecraft:frozen_ocean",
+          "title": "Minecraft:frozen ocean"
+        },
+        {
+          "id": "minecraft:mesa",
+          "title": "Minecraft:mesa"
+        },
+        {
+          "id": "minecraft:overworld",
+          "title": "Minecraft:overworld"
+        },
+        {
+          "id": "minecraft:swamp",
+          "title": "Minecraft:swamp"
+        },
+        {
+          "id": "minecraft:the_end",
+          "title": "Minecraft:the end"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Generates surface on blocks with non-solid blocks above or below.",
+  "title": "Biome Capped"
+}

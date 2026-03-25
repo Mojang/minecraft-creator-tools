@@ -1,0 +1,24 @@
+{
+  "id": "3.0.0.NativeModuleDependency",
+  "fields": [
+    {
+      "id": "module_name",
+      "title": "Module Name",
+      "dataType": 2,
+      "isRequired": true
+    },
+    {
+      "id": "optional",
+      "title": "Optional",
+      "dataType": 1,
+      "defaultValue": false
+    },
+    {
+      "id": "version",
+      "title": "Version",
+      "dataType": 16,
+      "isRequired": true
+    }
+  ],
+  "title": "3.0.0.NativeModuleDependency"
+}

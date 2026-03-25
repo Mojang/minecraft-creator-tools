@@ -1,0 +1,17 @@
+{
+  "files": [
+    "bee.png",
+    "bee.texture_set.json",
+    "bee_angry.png",
+    "bee_angry.texture_set.json",
+    "bee_angry_mers.tga",
+    "bee_angry_nectar.png",
+    "bee_angry_nectar.texture_set.json",
+    "bee_angry_nectar_mers.tga",
+    "bee_mers.tga",
+    "bee_nectar.png",
+    "bee_nectar.texture_set.json",
+    "bee_nectar_mers.tga"
+  ],
+  "folders": []
+}

@@ -1,0 +1,13 @@
+{
+  "id": "minecraft:attack_time",
+  "fields": [
+    {
+      "id": "AttackTime",
+      "title": "Attack Time",
+      "dataType": 3,
+      "defaultValue": []
+    }
+  ],
+  "description": "Specifies the attack time for this mob.",
+  "title": "Entity Attack Time"
+}

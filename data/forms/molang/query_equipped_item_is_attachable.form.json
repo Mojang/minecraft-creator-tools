@@ -1,0 +1,6 @@
+{
+  "id": "query.equipped_item_is_attachable",
+  "fields": [],
+  "description": "Takes the desired hand slot as a parameter (0 or 'main_hand' for main hand, 1 or 'off_hand' for off hand), and returns whether the item is an attachable or not.",
+  "title": "Equipped Item Is Attachable"
+}
