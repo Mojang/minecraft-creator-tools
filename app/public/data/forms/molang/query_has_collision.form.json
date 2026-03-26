@@ -1,6 +1,0 @@
-{
-  "id": "query.has_collision",
-  "fields": [],
-  "description": "Returns 1.0 if the entity has collisions enabled, else it returns 0.0.",
-  "title": "Has Collision"
-}

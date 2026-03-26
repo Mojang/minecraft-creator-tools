@@ -1,13 +1,11 @@
 import Project from "../../app/Project";
 import IProjectInfoGenerator from "../IProjectInfoGenerator";
-import { IProjectInfoTopicData } from "../IProjectInfoGeneratorBase";
 import ProjectInfoItem from "../ProjectInfoItem";
 import { tryEnsureFiles } from "../../app/ProjectItemUtilities";
 import { ProjectItemType } from "../../app/IProjectItemData";
 import StorageUtilities from "../../storage/StorageUtilities";
-import { getTestTitleById, resultFromTest, TestDefinition } from "../tests/TestDefinition";
+import { resultFromTest, TestDefinition } from "../tests/TestDefinition";
 import { filterAndSeparate } from "../../core/ArrayUtilities";
-import ProjectInfoUtilities from "../ProjectInfoUtilities";
 
 enum CheckBetaTest {
   UsingBetaFeatures = "UsingBetaFeatures",
@@ -28,9 +26,14 @@ const JsonTypesToRead = new Set([
   ProjectItemType.itemTypeBehavior,
 ]);
 
+/**
+ * Validates that beta features flags are not used in custom definitions.
+ *
+ * @see {@link ../../../public/data/forms/mctoolsval/cbfg.form.json} for topic definitions
+ */
 export default class CheckBetaFeaturesGenerator implements IProjectInfoGenerator {
   id: string = "CBFG";
-  title: string = "Check Beta Features Generator";
+  title: string = "Beta Features";
   canAlwaysProcess = true;
 
   async generate(project: Project): Promise<ProjectInfoItem[]> {
@@ -59,12 +62,6 @@ export default class CheckBetaFeaturesGenerator implements IProjectInfoGenerator
       .map(([item]) => resultFromTest(CheckBetaTests.UsingBetaFeatures, { id: this.id, item }));
 
     return [...failedReadResults, ...jsonParseResults, ...useBetaResults];
-  }
-
-  getTopicData(topicId: number): IProjectInfoTopicData | undefined {
-    const title = ProjectInfoUtilities.getGeneralTopicTitle(topicId) || getTestTitleById(CheckBetaTests, topicId);
-
-    return { title };
   }
 
   summarize(): void {}

@@ -1,49 +1,23 @@
-import { Argument, Command } from "commander";
+﻿import { Command } from "commander";
 import CreatorTools from "./../app/CreatorTools.js";
-import Project, { FolderContext, ProjectAutoDeploymentMode } from "./../app/Project.js";
-import CreatorToolsHost, { HostType } from "./../app/CreatorToolsHost.js";
+import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost.js";
 import Utilities from "./../core/Utilities.js";
-import ServerManager, { ServerManagerFeatures } from "../local/ServerManager.js";
-
-import LocalUtilities from "./../local/LocalUtilities.js";
-import LocalTools from "../local/LocalTools.js";
-import * as process from "process";
-import * as inquirer from "inquirer";
-import NodeStorage from "../local/NodeStorage.js";
-import ProjectExporter from "../app/ProjectExporter.js";
+import ServerManager from "../local/ServerManager.js";
+import ISslConfig from "../local/ISslConfig.js";
 import StorageUtilities from "../storage/StorageUtilities.js";
 import { constants } from "../core/Constants.js";
-import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem.js";
-import ProjectInfoSet from "../info/ProjectInfoSet.js";
-import { InfoItemType } from "../info/IInfoItemData.js";
 import LocalEnvironment from "../local/LocalEnvironment.js";
-import { IPackageReference, IWorldSettings } from "../minecraft/IWorldSettings.js";
-import { GameType, Generator } from "../minecraft/WorldLevelDat.js";
-import ProjectUtilities from "../app/ProjectUtilities.js";
-import { ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData.js";
-import MCWorld from "../minecraft/MCWorld.js";
-import ProjectItem from "../app/ProjectItem.js";
+import { IPackageReference } from "../minecraft/IWorldSettings.js";
 import Log from "../core/Log.js";
-import IProjectMetaState from "../info/IProjectMetaState.js";
 import IProjectStartInfo from "./IProjectStartInfo.js";
-import ClUtils, { OutputType, TaskType } from "./ClUtils.js";
-import { Worker as NodeWorker } from "worker_threads";
-import * as path from "path";
-import NodeFolder from "../local/NodeFolder.js";
-import ContentIndex from "../core/ContentIndex.js";
-import IIndexJson from "../storage/IIndexJson.js";
-import { ProjectInfoSuite } from "../info/IProjectInfoData.js";
+import ClUtils, { TaskType } from "./ClUtils.js";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities.js";
-import IFolder from "../storage/IFolder.js";
-import FormJsonDocumentationGenerator from "../docgen/FormJsonDocumentationGenerator.js";
-import FormMarkdownDocumentationGenerator from "../docgen/FormMarkdownDocumentationGenerator.js";
-import TableMarkdownDocumentationGenerator from "../docgen/TableMarkdownDocumentationGenerator.js";
-import DocJsonMarkdownDocumentationGenerator from "../docgen/DocJsonMarkdownDocumentationGenerator.js";
-import FormDefinitionTypeScriptGenerator from "../docgen/FormDefinitionTypeScriptGenerator.js";
-import NodeFile from "../local/NodeFile.js";
-import ProjectItemCreateManager from "../app/ProjectItemCreateManager.js";
-import { executeTask } from "./TaskWorker.js";
-import ProfilerWrapper from "./ProfilerWrapper.js";
+import * as path from "path";
+import { commandRegistry } from "./core/CommandRegistry.js";
+import { registerAllCommands } from "./commands/index.js";
+import { CommandContextFactory } from "./core/CommandContextFactory.js";
+import { ErrorCodes } from "./core/ICommandContext.js";
+import ImageCodecNode from "../local/ImageCodecNode.js";
 
 if (typeof btoa === "undefined") {
   // @ts-ignore
@@ -61,62 +35,201 @@ if (typeof atob === "undefined") {
 
 CreatorToolsHost.hostType = HostType.toolsNodejs;
 
+// Set up Node.js-specific image codec functions
+CreatorToolsHost.decodePng = ImageCodecNode.decodePng;
+CreatorToolsHost.encodeToPng = ImageCodecNode.encodeToPng;
+
 const MAX_LINES_PER_CSV_FILE = 500000;
 
-// const ERROR_INSUFFICIENT_ARGUMENTS = 42;
-// const ERROR_BAD_ARGUMENTS = 43;
-const ERROR_INIT_ERROR = 44;
-const ERROR_VALIDATION_INTERNALPROCESSINGERROR = 53;
-const ERROR_VALIDATION_TESTFAIL = 56;
-const ERROR_VALIDATION_ERROR = 57;
+// ANSI color codes for CLI styling
+const CLR = {
+  reset: "\x1b[0m",
+  bold: "\x1b[1m",
+  dim: "\x1b[2m",
+  green: "\x1b[32m",
+  cyan: "\x1b[36m",
+  yellow: "\x1b[33m",
+  magenta: "\x1b[35m",
+  gray: "\x1b[90m",
+};
+
+/**
+ * Execute a command via the CommandRegistry.
+ * This routes commands to their modular implementations instead of the legacy switch statement.
+ * @param options The parsed Commander.js options (global options from program.opts())
+ */
+async function executeViaRegistry(options: any): Promise<void> {
+  // Get the captured state from the registry (set by the command's action handler)
+  const capturedState = commandRegistry.getCapturedState();
+  const taskType = capturedState.taskType;
+
+  const command = commandRegistry.getByTaskType(taskType);
+  if (!command) {
+    // All commands should be in the registry - if not found, it's an error
+    if (taskType === TaskType.noCommand) {
+      // No command specified - this is handled by commander showing help
+      return;
+    }
+    throw new Error(`Command for TaskType ${taskType} not found in registry. Make sure all commands are registered.`);
+  }
+
+  if (!creatorTools || !localEnv) {
+    throw new Error("CreatorTools not initialized");
+  }
+
+  // Build the raw options object from current options and captured command options
+  const rawOptions = {
+    inputFolder: options.inputFolder,
+    outputFolder: options.outputFolder,
+    inputFile: options.inputFile,
+    additionalFiles: options.additionalFiles,
+    basePath: options.basePath,
+    threads: options.threads,
+    force: options.force,
+    verbose: options.verbose,
+    quiet: options.quiet,
+    json: options.json,
+    debug: options.debug,
+    outputType: options.outputType,
+    dryRun: options.dryRun,
+    isolated: options.isolated,
+    unsafeSkipSignatureValidation: options.unsafeSkipSignatureValidation,
+    // Server options from command-specific options
+    port: capturedState.args.port || capturedState.commandOptions.port || options.port,
+    slot: capturedState.commandOptions.slot || options.slot,
+    runOnce: options.once,
+    timeout: capturedState.commandOptions.timeout,
+    forceInk: capturedState.commandOptions.forceInk,
+    mcpRequireAuth: capturedState.commandOptions.mcpRequireAuth,
+    logFile: capturedState.commandOptions.logFile,
+    // Server passcodes
+    updatepc: options.updatePasscode,
+    adminpc: options.adminPasscode,
+    displaypc: options.displayPasscode,
+    fullpc: options.fullReadOnlyPasscode,
+    // Server features from captured args
+    features: capturedState.args.features,
+    title: capturedState.args.title,
+    domain: capturedState.args.domain,
+    motd: capturedState.args.motd,
+    // World options
+    betaApis: options.betaApis,
+    editor: options.editor,
+    testWorld: capturedState.commandOptions.testWorld,
+    launch: capturedState.commandOptions.launch,
+    // Validation options from captured args
+    suite: capturedState.args.suite,
+    exclusions: capturedState.args.exclusions,
+    aggregateReports:
+      capturedState.args.aggregateReports === "aggregate" ||
+      capturedState.args.aggregateReports === "aggregatenoindex" ||
+      capturedState.args.aggregateReports === "true" ||
+      capturedState.args.aggregateReports === "1",
+    warnOnly: options.warnOnly,
+    // Documentation options from command-specific options
+    referenceFolder: capturedState.commandOptions.referenceFolder,
+  };
+
+  // Build command args from captured state
+  const args = {
+    subCommand: capturedState.args.subCommand,
+    propertyValue: capturedState.args.propertyValue,
+    searchTerm: capturedState.args.searchTerm,
+    annotationCategory: capturedState.args.annotationCategory,
+    mode: capturedState.args.mode,
+    type: capturedState.args.type,
+    newName: capturedState.args.newName,
+    description: capturedState.args.newDescription || capturedState.args.description,
+    template: capturedState.args.template,
+    creator: capturedState.args.creator,
+  };
+
+  try {
+    const context = await CommandContextFactory.create(creatorTools, localEnv, taskType, rawOptions, args);
+    await command.execute(context);
+    if (context.exitCode !== undefined && context.exitCode !== 0) {
+      errorLevel = context.exitCode;
+    }
+  } catch (e: any) {
+    Log.error(`Error executing ${command.metadata.name}: ${e.message || e}`);
+    errorLevel = ErrorCodes.INIT_ERROR;
+  }
+}
+
+/**
+ * Displays a compact styled header with version and paths.
+ * Format: [##] mct v0.0.1  in (-i): <path>  out (-o): <path>
+ * For edit-in-place commands, only shows the input path.
+ * Uses a Minecraft-block-inspired ASCII art.
+ */
+function displayMctHeader(inputPath: string, outputPath: string, editInPlace: boolean = false) {
+  const ver = `v${constants.version}`;
+  // Compact block-style icon: [##] looks like a Minecraft grass block top
+  const icon = `${CLR.green}[##]${CLR.reset}`;
+  const name = `${CLR.bold}mct${CLR.reset}`;
+  const version = `${CLR.dim}${ver}${CLR.reset}`;
+
+  // Canonicalize paths for display
+  const inPath = path.resolve(inputPath);
+  const outPath = path.resolve(outputPath);
+
+  // Compact format with colored labels (include CLI flag hints)
+  const inLabel = `${CLR.cyan}in (-i):${CLR.reset}`;
+  const outLabel = `${CLR.yellow}out (-o):${CLR.reset}`;
+
+  if (editInPlace) {
+    // For edit-in-place commands, only show input path
+    Log.message(`${icon} ${name} ${version}  ${inLabel} ${CLR.dim}${inPath}${CLR.reset}`);
+  } else {
+    Log.message(
+      `${icon} ${name} ${version}  ${inLabel} ${CLR.dim}${inPath}${CLR.reset}  ${outLabel} ${CLR.green}${outPath}${CLR.reset}`
+    );
+  }
+}
+
+// Exit codes unified to ErrorCodes enum (imported from ICommandContext).
+// Legacy constants (44, 53, 56, 57) removed — all commands now use ErrorCodes.
 
 const program = new Command();
 
 let creatorTools: CreatorTools | undefined;
 const projectStarts: (IProjectStartInfo | undefined)[] = [];
 let localEnv: LocalEnvironment | undefined;
-let mode: string | undefined;
-let type: string | undefined;
-let newName: string | undefined;
-let newDescription: string | undefined;
-let propertyValue: string | undefined;
-let subCommand: string | undefined;
-let template: string | undefined;
-let creator: string | undefined;
-let serverHostPort: number | undefined;
-let suite: string | undefined;
-let exclusionList: string | undefined;
-let outputType: OutputType | undefined;
-let serverFeatures: ServerManagerFeatures | undefined;
-let serverTitle: string | undefined;
-let serverDomainName: string | undefined;
-let serverMessageOfTheDay: string | undefined;
-
-let serverCandidateAdminPasscode: string | undefined;
-let serverCandidateDisplayReadOnlyPasscode: string | undefined;
-let serverCandidateFullReadOnlyPasscode: string | undefined;
-let serverCandidateUpdateStatePasscode: string | undefined;
-let serverRunOnce: boolean | undefined;
-
-let aggregateReportsAfterValidation: boolean | undefined = false;
-let buildAggregatedIndex: boolean | undefined = true;
-let threads: number = 8;
 let errorLevel: number | undefined;
 
-let force = false;
-let executionTaskType: TaskType = TaskType.noCommand;
+// Experimental SSL configuration variables - passed via command line only, not persisted
+let experimentalSslCertPath: string | undefined;
+let experimentalSslKeyPath: string | undefined;
+let experimentalSslPfxPath: string | undefined;
+let experimentalSslPfxPassphrase: string | undefined;
+let experimentalSslCaPath: string | undefined;
+let experimentalSslPort: number | undefined;
+let experimentalSslOnly: boolean = false;
 
-CreatorToolsHost.contentRoot = "https://mctools.dev/";
+let sm: ServerManager | undefined;
+
+const packageReferenceSets: IPackageReference[] = [];
+const templateReferenceSets: IPackageReference[] = [];
+
+for (let i = 0; i < process.argv.length; i++) {
+  const str = process.argv[i]?.toLowerCase();
+
+  if (str === "-debug" || str === "--debug") {
+    Log.debug("Using debug mode.");
+    Utilities.setIsDebug(true);
+  }
+}
 
 program
   .name("mct")
   .description("Minecraft Creator Tools v" + constants.version)
+  .version(constants.version, "-v, --version", "Output the current version")
   .option(
     "-i, --input-folder [path to folder]",
     "Path to the input folder. If not specified, the current working directory is used."
   )
   .option(
-    "-if, --input-file [path to file]",
+    "--if, --input-file [path to file]",
     "Path to the input MCWorld, MCTemplate, MCPack, MCAddon or other zip file."
   )
   .option(
@@ -125,45 +238,128 @@ program
     "out"
   )
   .option(
-    "-psw, --project-starts-with <starter term>",
+    "--psw, --project-starts-with <starter term>",
     "Only process a project if it starts with the starter term; this can be used to subdivide processing."
   )
   .option(
-    "-bp, --base-path <path to folder>",
+    "--bp, --base-path <path to folder>",
     "Path, relative to the current working folder, where common data files and folders are found."
   )
-  .option("-afs, --additional-files [path to file]", "Comma-separated list of additional files to add to projects.")
-  .option("-of, --output-file [path to file]", "Path to the export file, if applicable for the command you are using.")
-  .option("-ot, --output-type [output type]", "Type of output, if applicable for the command you are using.")
-  .option("-updatepc, --update-passcode [update passcode]", "Sets update passcode.")
+  .option("--afs, --additional-files [path to file]", "Comma-separated list of additional files to add to projects.")
+  .option("--of, --output-file [path to file]", "Path to the export file, if applicable for the command you are using.")
+  .option("--ot, --output-type [output type]", "Type of output, if applicable for the command you are using.")
+  .option("--updatepc, --update-passcode [update passcode]", "Sets update passcode.")
+  .option("--adminpc, --admin-passcode [admin passcode]", "Sets admin passcode.")
+  .option("--displaypc, --display-passcode [display passcode]", "Sets display passcode.")
+  .option("--fullropc, --full-readonly-passcode [full read only passcode]", "Sets full read only passcode.")
+  .option("-l, --launch", "Launches the final product in Minecraft when done.", false)
+  .option("--ew, --ensure-world", "Ensures that a flat GameTest world is synchronized with the project.")
+  .option("--isolated", "Do not load vanilla Minecraft resources (e.g., textures, ground blocks) from the web")
   .option(
-    "-bp, --behavior-pack <behavior pack uuid>",
+    "--bpu, --behavior-pack <behavior pack uuid>",
     "Adds a set of behavior pack UUIDs as references for any worlds that are updated."
   )
   .option(
-    "-rp, --resource-pack <resource pack uuid>",
+    "--rpu, --resource-pack <resource pack uuid>",
     "Adds a set of resources pack UUIDs as references for any worlds that are updated."
   )
-  .option("-betaapis, --beta-apis", "Ensures that the Beta APIs experiment is set for any worlds that are updated.")
-  .option("-no-betaapis, --no-beta-apis", "Removes the Beta APIs experiment if set.")
+  .option("--betaapis, --beta-apis", "Ensures that the Beta APIs experiment is set for any worlds that are updated.")
+  .option("--no-betaapis, --no-beta-apis", "Removes the Beta APIs experiment if set.")
   .option("-f, --force", "Force any updates.")
+  .option("--single", "When pointed at a folder via -i, force that folder to be processed as a single project.")
+  .option("--editor", "Ensures that the world is an Editor world.")
+  .option("--once", "When running as a server, only process one request and then shutdown.", false)
+  .option("--no-editor", "Removes the editor setting from the world.")
+  .option("--threads [thread count]", "Targeted number of threads to use.")
+  .option("-n, --dry-run", "Show what would be done without making changes or writing files.")
+  .option("-d, --debug", "Add debug logging, options, and even more experimental commands.")
   .option(
-    "-single, --single",
-    "When pointed at at a folder via -i, force that folder to be processed as a single project."
+    "--mct, --mctemplate <path to a .mctemplate or a .zip world template>",
+    "When using a world, uses a .mctemplate file for that world"
   )
-  .option("-editor", "Ensures that the world is an Editor world.")
-  .option("-once", "When running as a server, only process one request and then shutdown.", false)
-  .option("-no-editor", "Removes that the world is an editor.")
+  .option("--preview-server", "Specifies whether to use a preview server.")
   .option(
-    "--threads [thread count]",
-    "Targeted number of threads to use. Use 1 for sequential processing, >1 for parallel processing with worker threads."
+    "--pack, --mcpack <path to .mcpack, .mcaddon, or .zip pack>",
+    "When using a world, uses and adds pack references for that world"
   )
-  .option("-show, --display-only", "Whether to only show messages, vs. output report files.")
-  .option("-lv, --log-verbose", "Whether to show verbose log messages.")
+  .option("--verbose", "Show verbose log messages.")
+  .option("-q, --quiet", "Suppress non-essential output. Only show errors and final results.")
+  .option("--warn-only", "Report validation errors as warnings without setting a failure exit code.")
+  .option("--json", "Output results in JSON format for machine parsing.")
   .option(
-    "-internalOnlyRunningInTheContextOfTestCommandLines",
+    "--experimental-ssl-cert <path>",
+    "(Experimental) Path to SSL certificate file in PEM format. Use with --experimental-ssl-key. " +
+      "This enables HTTPS. Use EITHER cert+key OR --experimental-ssl-pfx, not both."
+  )
+  .option(
+    "--experimental-ssl-key <path>",
+    "(Experimental) Path to SSL private key file in PEM format. Required when using --experimental-ssl-cert. " +
+      "Keep this file secure and never share it."
+  )
+  .option(
+    "--experimental-ssl-pfx <path>",
+    "(Experimental) Path to PKCS12/PFX certificate bundle containing both cert and key. " +
+      "Common on Windows. Use EITHER pfx OR --experimental-ssl-cert + --experimental-ssl-key, not both."
+  )
+  .option(
+    "--experimental-ssl-pfx-passphrase <passphrase>",
+    "(Experimental) Passphrase to decrypt the PFX file. Required only if your PFX is password-protected."
+  )
+  .option(
+    "--experimental-ssl-ca <path>",
+    "(Experimental) Path to CA certificate chain file (PEM format). Needed when using certificates from " +
+      "a Certificate Authority (e.g., Let's Encrypt, DigiCert) to provide the full trust chain. " +
+      "Not needed for self-signed certificates."
+  )
+  .option(
+    "--experimental-ssl-port <port>",
+    "(Experimental) Port for HTTPS server. Defaults to 443. Use a port > 1024 to avoid requiring admin privileges."
+  )
+  .option(
+    "--experimental-ssl-only",
+    "(Experimental) Only start HTTPS server, do not start HTTP. Use this for production to ensure all traffic is encrypted."
+  )
+  .option(
+    "--unsafe-skip-signature-validation",
+    "UNSAFE: Skip digital signature verification of Bedrock Dedicated Server executable. " +
+      "Only use this if you trust the server binary and understand the security implications."
+  )
+  .option(
+    "--internalOnlyRunningInTheContextOfTestCommandLines",
     "Do not use. For internal self-testing use only functionality."
   );
+
+if (Utilities.isDebug) {
+  program
+    .option(
+      "--ssp, --source-server-path [path to folder]",
+      "Source path to use for instances Bedrock Dedicated Server. You can download this from https://www.minecraft.net/download/server/bedrock.  If not specified, this tool will manage downloads of Minecraft Dedicated Server itself."
+    )
+    .option(
+      "--dsp, --direct-server-path [path to folder]",
+      "If specified, dedicated servers are run directly from a particular folder."
+    )
+    .option(
+      "--difficulty [difficulty]",
+      "For the world, a difficulty level. Options include peaceful, easy, normal, and hard",
+      "peaceful"
+    )
+    .option(
+      "--gametype [gametype]",
+      "For the world, a game type. Options include survival, creative, and adventure.",
+      "survival"
+    )
+    .option(
+      "--generator [generator]",
+      "For the world, a world generator type. Options old, infinite, and flat.",
+      "infinite"
+    )
+    .option("--seed [seed]", "For the world, a random seed to use.")
+    .option("--create", "For the world, will force the creation of a new world.")
+    .option("--op, --operator <player ID>", "A list of player IDs to make operator when the server starts")
+    .option("--cmd, --commands <command line>", "Commands to run, if running a dedicated server.", "out")
+    .option("--gt, --gametest <gametest name>", "Game Test to run on the command line.");
+}
 
 program.addHelpText("before", "\x1b[32m┌─────┐\x1b[0m");
 program.addHelpText("before", "\x1b[32m│ ▄ ▄ │\x1b[0m Minecraft Creator Tools (preview) command line");
@@ -171,283 +367,65 @@ program.addHelpText("before", "\x1b[32m│ ┏▀┓ │\x1b[0m See " + constant
 program.addHelpText("before", "\x1b[32m└─────┘\x1b[0m");
 program.addHelpText("before", " ");
 
-program
-  .command("set")
-  .description("Sets a project property.")
-  .addArgument(
-    new Argument("[property name]", "Property name to set. Valid values include: " + getProjectPropertyList())
-  )
-  .addArgument(new Argument("[property value]", "Property value to set."))
-  .action((nameIn, valueIn) => {
-    subCommand = nameIn;
-    propertyValue = valueIn;
-    executionTaskType = TaskType.setProjectProperty;
-  });
+// --all-commands: display full command list including content-production tools
+program.option("--all-commands", "Show all commands including content-production tools");
 
-program
-  .command("docsupdateformsource")
-  .description("Updates sources for documentation.")
-  .action(() => {
-    executionTaskType = TaskType.docsUpdateFormSource;
-  });
+// Register all commands with the registry before configuring Commander
+// This must be done before parsing so all commands are available
+registerAllCommands();
 
-program
-  .command("docsgenerateformjson")
-  .description("Generates finalized form json for consumption.")
-  .action(() => {
-    executionTaskType = TaskType.docsGenerateFormJson;
-  });
+// Handle --all-commands before configureCommander so we can show the full list
+if (process.argv.includes("--all-commands")) {
+  Log.message("\nAll commands (including content-production tools):");
+  Log.message(commandRegistry.generateCategoryHelp(true));
+  process.exit(0);
+}
 
-program
-  .command("docsgeneratemarkdown")
-  .description("Generates markdown documentation from form json for consumption.")
-  .action(() => {
-    executionTaskType = TaskType.docsGenerateMarkdown;
-  });
+// Configure Commander.js with all registered commands from the CommandRegistry
+// This replaces the legacy per-command registration that was previously here
+// Each command's metadata.arguments and configure() method are used to set up
+// the Commander command, and action handlers capture args to the registry
+commandRegistry.configureCommander(program);
 
-program
-  .command("docsgeneratetypes")
-  .description("Generates types from form json.")
-  .action(() => {
-    executionTaskType = TaskType.docsGenerateTypes;
-  });
+// Guard against running CLI initialization when imported during tests
+// This checks if we're being run via mocha or other test runners
+const isTestEnvironment =
+  process.env.NODE_ENV === "test" ||
+  process.argv.some((arg) => arg.includes("mocha") || arg.includes("jest") || arg.includes("vitest"));
 
-program
-  .command("deploy")
-  .alias("dp")
-  .description("Copies Minecraft files to a destination folder.")
-  .addArgument(
-    new Argument(
-      "<mode>",
-      "Determines where to copy Minecraft files to. Use 'mcuwp' for Minecraft Bedrock UWP, 'mcpreview' for Minecraft Bedrock Preview, 'server' for the server path , or use a custom path."
-    )
-  )
-  .action((modeIn) => {
-    mode = modeIn;
-    executionTaskType = TaskType.deploy;
-  });
+if (isTestEnvironment) {
+  // Don't run CLI when imported during tests - export for testing instead
+  module.exports = { program, TaskType };
+} else {
+  program.parse(process.argv);
+}
 
-program
-  .command("world")
-  .alias("w")
-  .description("Displays/sets world settings within a folder.")
-  .addArgument(
-    new Argument("[mode]", "If set to 'set', will update the world with a set of properties that are specified.")
-  )
-  .action((modeIn) => {
-    mode = modeIn;
-    executionTaskType = TaskType.world;
-  });
+const options = isTestEnvironment ? {} : program.opts();
 
-program
-  .command("add")
-  .alias("a")
-  .description("Adds new content into this Minecraft project")
-  .addArgument(new Argument("[type]", "Type of item to add"))
-  .addArgument(new Argument("[name]", "Desired item namespace/name"))
-  .action((typeIn, nameIn) => {
-    type = typeIn;
-    newName = nameIn;
-    executionTaskType = TaskType.add;
-  });
-
-program
-  .command("create")
-  .alias("c")
-  .description("Creates a new Minecraft project")
-  .addArgument(new Argument("[name]", "Desired project name"))
-  .addArgument(new Argument("[template]", "Template name"))
-  .addArgument(new Argument("[creator]", "Creator name"))
-  .addArgument(new Argument("[description]", "Project description"))
-  .action((nameIn, templateIn, creatorIn, descriptionIn) => {
-    newName = nameIn;
-    template = templateIn;
-    creator = creatorIn;
-    newDescription = descriptionIn;
-    executionTaskType = TaskType.create;
-  });
-
-program
-  .command("fix")
-  .description("Fixes or updates the project with a set of desired fixes")
-  .addArgument(
-    new Argument("[fix]", "Desired fix name. Options include: " + getSubFunctionCommaSeparatedList().join(", "))
-  )
-  .action((fixIn) => {
-    subCommand = fixIn;
-    executionTaskType = TaskType.fix;
-  });
-
-program
-  .command("minecrafteulaandprivacystatement")
-  .alias("eula")
-  .description("See the Minecraft End User License Agreement.")
-  .action(() => {
-    executionTaskType = TaskType.minecraftEulaAndPrivacyStatement;
-  });
-
-program
-  .command("serve")
-  .alias("srv")
-  .description("Hosts a web service and site that can manage a dedicated server and/or validation.")
-  .addArgument(
-    new Argument("[features]", "Specifies a title the Minecraft Http Server on.").choices([
-      "all",
-      "allwebservices",
-      "basicwebservices",
-      "dedicatedserver",
-    ])
-  )
-  .addArgument(new Argument("[domain]", "Specifies which URL domain this server is hosted on."))
-  .addArgument(new Argument("[host-port]", "Specifies which core port to host the Minecraft Http Server on."))
-  .addArgument(new Argument("[title]", "Specifies a title the Minecraft Http Server on."))
-  .addArgument(new Argument("[motd]", "Specifies a message of the day for the server."))
-  .action(async (features?: string, domain?: string, hostPort?: number, title?: string, motd?: string) => {
-    if (features) {
-      switch (features.toLowerCase()) {
-        case "all":
-          serverFeatures = ServerManagerFeatures.all;
-          break;
-        case "allwebservices":
-          serverFeatures = ServerManagerFeatures.allWebServices;
-          break;
-        case "basicwebservices":
-          serverFeatures = ServerManagerFeatures.basicWebServices;
-          break;
-      }
-    }
-
-    serverHostPort = hostPort;
-    serverTitle = title;
-    serverDomainName = domain;
-    serverMessageOfTheDay = motd;
-
-    executionTaskType = TaskType.serve;
-  });
-
-program
-  .command("setserverprops")
-  .alias("setsrv")
-  .description("Updates default properties for the Minecraft Http Server.")
-  .addArgument(new Argument("[domain]", "Specifies which URL domain this server is hosted on."))
-  .addArgument(new Argument("[host-port]", "Specifies which core port to host the Minecraft Http Server on."))
-  .addArgument(new Argument("[title]", "Specifies a title the Minecraft Http Server on."))
-  .addArgument(new Argument("[motd]", "Specifies a message of the day for the server."))
-  .action(async (domain?: string, hostPort?: number, title?: string, motd?: string) => {
-    serverHostPort = hostPort;
-    serverTitle = title;
-    serverDomainName = domain;
-    serverMessageOfTheDay = motd;
-    executionTaskType = TaskType.setServerProperties;
-  });
-
-program
-  .command("info")
-  .alias("i")
-  .description("Displays information about the current project.")
-  .action(() => {
-    executionTaskType = TaskType.info;
-  });
-
-program
-  .command("validate")
-  .alias("val")
-  .description("Validate the current project.")
-  .addArgument(
-    new Argument("[suite]", "Specifies the type of validation suite to run.")
-      .choices(["all", "default", "addon", "currentplatform", "main"])
-      .default("main", "main - runs most available validation tests.")
-  )
-  .addArgument(
-    new Argument("[exclusions]", "Specifies a comma-separated list of tests to exclude, e.g., PATHLENGTH,PACKSIZE")
-  )
-  .addArgument(
-    new Argument(
-      "[aggregateReports]",
-      "Specify 'aggregate' to aggregate reports across projects at the end of the run."
-    ).choices(["aggregatenoindex", "aggregate", "true", "false", "1", "0"])
-  )
-  .action((suiteIn?: string, exclusionListIn?: string, aggregateReportsIn?: string) => {
-    suite = suiteIn;
-    exclusionList = exclusionListIn;
-    executionTaskType = TaskType.validate;
-
-    if (
-      aggregateReportsIn === "aggregatenoindex" ||
-      aggregateReportsIn === "aggregate" ||
-      aggregateReportsIn === "true" ||
-      aggregateReportsIn === "1" ||
-      aggregateReportsIn === "t"
-    ) {
-      aggregateReportsAfterValidation = true;
-
-      if (aggregateReportsIn === "aggregatenoindex") {
-        buildAggregatedIndex = false;
-      }
-    } else {
-      aggregateReportsAfterValidation = false;
-    }
-  });
-
-program
-  .command("profileValidation")
-  .description("Profile validating a single project with default settings")
-  .action(() => {
-    executionTaskType = TaskType.profileValidation;
-  });
-
-program
-  .command("aggregatereports")
-  .alias("aggr")
-  .description("Aggregates exported metadata about projects.")
-  .addArgument(new Argument("[buildContentIndex]").choices(["index", "noindex", "true", "false", "1", "0"]))
-  .action((buildContentIndexIn?: string) => {
-    executionTaskType = TaskType.aggregateReports;
-    if (
-      buildContentIndexIn === "noindex" ||
-      buildContentIndexIn === "false" ||
-      buildContentIndexIn === "0" ||
-      buildContentIndexIn === "f"
-    ) {
-      buildAggregatedIndex = false;
-    } else {
-      buildAggregatedIndex = true;
-    }
-  });
-
-program
-  .command("version")
-  .alias("ver")
-  .description("Shows version and general application information")
-  .action(() => {
-    executionTaskType = TaskType.version;
-  });
-
-program.parse(process.argv);
-
-const options = program.opts();
+// Get the captured task type from the registry (set by command action handlers)
+const capturedTaskType = commandRegistry.getCapturedState().taskType;
 
 localEnv = new LocalEnvironment(true);
 
-let sm: ServerManager | undefined;
+if (capturedTaskType === TaskType.mcp) {
+  localEnv.logToStdError = true;
+}
 
-const packageReferenceSets: IPackageReference[] = [];
-const templateReferenceSets: IPackageReference[] = [];
-
-if (options.force) {
-  force = true;
+if (options.isolated) {
+  CreatorToolsHost.contentWebRoot = "";
+} else {
+  CreatorToolsHost.contentWebRoot = "https://mctools.dev/";
 }
 
 if (options.threads) {
   try {
-    let tc = parseInt(options.threads);
-
-    if (tc > 0) {
-      threads = tc;
-      if (threads === 1) {
-        console.log("Using sequential processing (threads=1).");
+    const tc = parseInt(options.threads);
+    if (!isNaN(tc) && tc > 0) {
+      const cappedTc = Math.min(tc, 16);
+      if (cappedTc === 1) {
+        Log.message("Using sequential processing (threads=1).");
       } else {
-        console.log("Using " + threads + " worker threads.");
+        Log.message("Using " + cappedTc + " worker threads.");
       }
     }
   } catch (e) {
@@ -455,245 +433,137 @@ if (options.threads) {
   }
 }
 
-if (options.outputType && typeof options.outputType === "string") {
-  switch (options.outputType.toLowerCase().trim()) {
-    case "noreports":
-      outputType = OutputType.noReports;
-  }
-}
-
-if (options.displayOnly) {
+if (options.dryRun) {
   localEnv.displayInfo = true;
 
   if (options.outputFolder === "out") {
     options.outputFolder = undefined;
   }
 } else if (options.outputFolder === "out") {
-  if ((executionTaskType as TaskType) !== TaskType.serve) {
-    Log.message(
-      "Outputting results to the \x1b[32mout\x1b[0m folder. Use the `-o <foldername>` parameter to select a different path.\r\n"
-    );
+  if (
+    capturedTaskType !== TaskType.serve &&
+    capturedTaskType !== TaskType.runDedicatedServer &&
+    capturedTaskType !== TaskType.mcp &&
+    capturedTaskType !== TaskType.renderVanilla
+  ) {
+    const isEditInPlace = ClUtils.getIsEditInPlaceCommand(capturedTaskType);
+    displayMctHeader(options.inputFolder || process.cwd(), options.outputFolder, isEditInPlace);
   }
 
   localEnv.displayInfo = true;
 }
 
-if (options.adminPasscode) {
-  serverCandidateAdminPasscode = options.adminPasscode;
-}
-
-if (options.updatePasscode) {
-  serverCandidateUpdateStatePasscode = options.updatePasscode;
-}
-
-if (options.displayPasscode) {
-  serverCandidateDisplayReadOnlyPasscode = options.displayPasscode;
-}
-
-if (options.once || options.Once) {
-  serverRunOnce = true;
-}
-
-if (options.fullReadOnlyPasscode) {
-  serverCandidateFullReadOnlyPasscode = options.fullReadOnlyPasscode;
-}
-
-if (options.logVerbose) {
+if (options.verbose) {
   localEnv.displayVerbose = true;
 }
 
-(async () => {
-  creatorTools = ClUtils.getCreatorTools(localEnv, options.basePath);
+// Parse experimental SSL options - these are passed via command line only, not persisted
+experimentalSslCertPath = options.experimentalSslCert;
+experimentalSslKeyPath = options.experimentalSslKey;
+experimentalSslPfxPath = options.experimentalSslPfx;
+experimentalSslPfxPassphrase = options.experimentalSslPfxPassphrase;
+experimentalSslCaPath = options.experimentalSslCa;
+experimentalSslOnly = options.experimentalSslOnly === true;
 
-  if (!creatorTools) {
-    return;
+if (options.experimentalSslPort) {
+  const parsedPort = parseInt(options.experimentalSslPort, 10);
+  if (!isNaN(parsedPort) && parsedPort > 0 && parsedPort <= 65535) {
+    experimentalSslPort = parsedPort;
+  } else {
+    Log.error(`Invalid --experimental-ssl-port value: ${options.experimentalSslPort}. Must be a valid port number.`);
+    errorLevel = 1;
+  }
+}
+
+// Build experimental SSL config if any SSL options are provided
+if (!errorLevel && (experimentalSslCertPath || experimentalSslPfxPath)) {
+  // Validate required combinations
+  if (experimentalSslCertPath && !experimentalSslKeyPath) {
+    Log.error("--experimental-ssl-cert requires --experimental-ssl-key to be specified.");
+    errorLevel = 1;
+  }
+  if (!errorLevel && experimentalSslKeyPath && !experimentalSslCertPath) {
+    Log.error("--experimental-ssl-key requires --experimental-ssl-cert to be specified.");
+    errorLevel = 1;
   }
 
-  sm = new ServerManager(localEnv, creatorTools);
-  sm.runOnce = serverRunOnce;
+  if (!errorLevel) {
+    const sslConfig: ISslConfig = {
+      certPath: experimentalSslCertPath,
+      keyPath: experimentalSslKeyPath,
+      pfxPath: experimentalSslPfxPath,
+      pfxPassphrase: experimentalSslPfxPassphrase,
+      caPath: experimentalSslCaPath,
+      port: experimentalSslPort ?? 443,
+      httpsOnly: experimentalSslOnly,
+    };
 
-  await creatorTools.load();
-
-  creatorTools.onStatusAdded.subscribe(ClUtils.handleStatusAdded);
-
-  await loadProjects();
-
-  if (
-    serverCandidateDisplayReadOnlyPasscode ||
-    serverCandidateUpdateStatePasscode ||
-    serverCandidateAdminPasscode ||
-    serverCandidateFullReadOnlyPasscode
-  ) {
-    await setPasscode(
-      serverCandidateDisplayReadOnlyPasscode,
-      serverCandidateFullReadOnlyPasscode,
-      serverCandidateUpdateStatePasscode,
-      serverCandidateAdminPasscode
-    );
+    localEnv.sslConfig = sslConfig;
+    Log.message("(EXPERIMENTAL) SSL/HTTPS support enabled. This feature is experimental.");
   }
+}
 
-  switch (executionTaskType as TaskType) {
-    case TaskType.info:
-      await displayInfo();
-      break;
+// Only run the CLI main function if not in a test environment
+if (!isTestEnvironment && !errorLevel) {
+  (async () => {
+    // Note: registerAllCommands() was already called before configureCommander()
+    // to ensure all commands are available for registration with Commander.js
 
-    case TaskType.version:
-      await displayVersion();
-      break;
+    creatorTools = ClUtils.getCreatorTools(localEnv, options.basePath);
 
-    case TaskType.validate:
-      await validate();
-      break;
-
-    case TaskType.aggregateReports:
-      await aggregateReports();
-      break;
-
-    case TaskType.docsUpdateFormSource:
-      await docsUpdateFormSource();
-      break;
-
-    case TaskType.docsGenerateFormJson:
-      await docsGenerateFormJson();
-      break;
-
-    case TaskType.docsGenerateMarkdown:
-      await docsGenerateMarkdown();
-      break;
-
-    case TaskType.docsGenerateTypes:
-      await docsGenerateTypes();
-      break;
-
-    case TaskType.serve:
-      hookInput();
-      await applyServerProps();
-      await serve();
-      break;
-
-    case TaskType.profileValidation:
-      await profileValidation();
-      break;
-
-    case TaskType.fix:
-      await fix();
-      break;
-
-    case TaskType.setProjectProperty:
-      if (subCommand && propertyValue) {
-        try {
-          for (const projectStart of projectStarts) {
-            if (projectStart) {
-              await setProjectProperty(ClUtils.createProject(creatorTools, projectStart), subCommand, propertyValue);
-            }
-          }
-        } catch (e: any) {
-          errorLevel = ERROR_INIT_ERROR;
-          console.error("Error adding to a project. " + e.toString());
-        }
-      }
-      break;
-
-    case TaskType.add:
-      try {
-        for (const projectStart of projectStarts) {
-          if (projectStart) {
-            await add(ClUtils.createProject(creatorTools, projectStart));
-          }
-        }
-      } catch (e: any) {
-        errorLevel = ERROR_INIT_ERROR;
-        console.error("Error adding to a project. " + e.toString());
-      }
-      break;
-
-    case TaskType.create:
-      try {
-        for (const projectStart of projectStarts) {
-          if (projectStart) {
-            await create(ClUtils.createProject(creatorTools, projectStart), projectStarts.length <= 1);
-          }
-        }
-      } catch (e: any) {
-        errorLevel = ERROR_INIT_ERROR;
-        console.error("Error creating a project. " + e.toString());
-      }
-      break;
-
-    case TaskType.deploy:
-      await deploy();
-
-      if (options.ensureWorld) {
-        await ensureRefWorld();
-      }
-      break;
-
-    case TaskType.minecraftEulaAndPrivacyStatement:
-      await minecraftEulaAndPrivacyStatement();
-      break;
-
-    case TaskType.world:
-      await setAndDisplayAllWorlds();
-      break;
-  }
-
-  if ((executionTaskType as TaskType) !== TaskType.serve) {
-    await doExit();
-  }
-})();
-
-async function fix() {
-  if (!creatorTools) {
-    throw new Error("Not properly configured.");
-  }
-
-  if (!subCommand) {
-    throw new Error(
-      "No sub-fix was specified. Use the [fix] subcommand to specify a fix. Available commands: " +
-        getSubFunctionCommaSeparatedList().join(", ")
-    );
-  }
-
-  const subCommandCanon = subCommand.toLowerCase().trim();
-
-  for (const projectStart of projectStarts) {
-    if (projectStart) {
-      const project = ClUtils.createProject(creatorTools, projectStart);
-      await project.inferProjectItemsFromFiles();
-
-      switch (subCommandCanon) {
-        case "latestbetascriptversion":
-          break;
-        case "usepackageversionscript":
-          break;
-        case "usemanifestversionscript":
-          break;
-        case "randomizealluids":
-          await ProjectUtilities.randomizeAllUids(project);
-          break;
-        case "setnewestformatversions":
-          break;
-        case "setnewestminengineversion":
-          break;
-      }
+    if (!creatorTools) {
+      Log.fail("Failed to initialize Creator Tools");
+      errorLevel = 1;
+      return;
     }
-  }
-}
 
-function getProjectPropertyList(): string[] {
-  return ["name", "title", "description", "bpscriptentrypoint", "bpuuid", "rpuuid"];
-}
+    sm = new ServerManager(localEnv, creatorTools);
+    sm.runOnce = options.once;
 
-function getSubFunctionCommaSeparatedList(): string[] {
-  return [
-    "latestbetascriptversion",
-    "usepackageversionscript",
-    "usemanifestversionscript",
-    "randomizealluids",
-    "setnewestformatversions",
-    "setnewestminengineversion",
-  ];
-}
+    await creatorTools.load();
+
+    creatorTools.onStatusAdded.subscribe(ClUtils.handleStatusAdded);
+
+    await loadPacks();
+    await loadProjects();
+
+    // Set passcodes if provided via command line
+    if (options.displayPasscode || options.updatePasscode || options.adminPasscode || options.fullReadOnlyPasscode) {
+      await setPasscode(
+        options.displayPasscode,
+        options.fullReadOnlyPasscode,
+        options.updatePasscode,
+        options.adminPasscode
+      );
+    }
+
+    // For long-running server commands, set up stdin handling for interactive control
+    // But NOT when in runOnce mode (used for automated testing) since there's no interactive input
+    const isLongRunningCommand =
+      capturedTaskType === TaskType.runDedicatedServer ||
+      capturedTaskType === TaskType.serve ||
+      capturedTaskType === TaskType.view ||
+      capturedTaskType === TaskType.edit;
+
+    if (isLongRunningCommand && !options.once) {
+      hookInput();
+    }
+
+    // Execute via the modular command registry
+    await executeViaRegistry(options);
+
+    // Exit unless this is a long-running server command (those handle their own lifecycle)
+    if (!isLongRunningCommand) {
+      await doExit();
+    }
+  })();
+} // end if (!isTestEnvironment)
+
+// ============================================================================
+// UTILITY FUNCTIONS
+// Functions below are used by the main IIFE or by modular command implementations
+// Legacy command implementations have been moved to src/cli/commands/
+// ============================================================================
 
 async function loadProjects() {
   if (!creatorTools || !creatorTools.ensureLocalFolder) {
@@ -749,7 +619,7 @@ async function loadProjects() {
     return;
   }
 
-  const workFolder = await ClUtils.getMainWorkFolder(executionTaskType, options.inputFolder, options.outputFolder);
+  const workFolder = await ClUtils.getMainWorkFolder(capturedTaskType, options.inputFolder, options.outputFolder);
 
   const name = StorageUtilities.getLeafName(workFolder.fullPath);
   let isMultiLevelMultiProject = true;
@@ -817,7 +687,7 @@ async function loadProjects() {
     }
 
     if (isMultiLevelMultiProject) {
-      console.log("Working across subfolders with projects at '" + workFolder.fullPath + "'");
+      Log.message("Working across subfolders with projects at '" + workFolder.fullPath + "'");
 
       for (const subFolderName in workFolder.folders) {
         const subFolder = workFolder.folders[subFolderName];
@@ -923,7 +793,7 @@ async function loadProjects() {
       }
 
       if (isChildrenOfFolderMultiProject) {
-        console.log("Working across subfolders/packages at '" + workFolder.fullPath + "'");
+        Log.message("Working across subfolders/packages at '" + workFolder.fullPath + "'");
 
         for (const fileName in workFolder.files) {
           const file = workFolder.files[fileName];
@@ -980,60 +850,28 @@ async function loadProjects() {
   projectStarts.push(mainProject);
 }
 
-async function applyServerProps() {
-  if (localEnv) {
-    await localEnv.load();
-
-    if (serverHostPort) {
-      localEnv.serverHostPort = serverHostPort;
-    }
-
-    if (serverTitle) {
-      localEnv.serverTitle = serverTitle;
-    }
-
-    if (serverDomainName) {
-      localEnv.serverDomainName = serverDomainName;
-    }
-
-    if (serverMessageOfTheDay) {
-      localEnv.serverMessageOfTheDay = serverMessageOfTheDay;
-    }
-
-    await localEnv.save();
-  }
-}
-
 function hookInput() {
   process.stdin.setEncoding("utf-8");
 
   process.stdin.on("data", async function (data: string) {
-    if (data.startsWith("exit") || data.startsWith("stop")) {
-      await doExit();
+    try {
+      if (data.startsWith("exit") || data.startsWith("stop")) {
+        await doExit();
+      } else if (sm && sm.primaryActiveServer) {
+        const command = data.trim();
+
+        if (command.length > 4) {
+          sm.primaryActiveServer.writeToServer(command);
+        }
+      }
+    } catch (err) {
+      Log.debug("Error during exit: " + err);
+      process.exit(1);
     }
   });
 }
 
-async function displayVersion() {
-  console.log("\n" + constants.name + " Tools");
-  console.log("Version: " + constants.version);
-
-  if (creatorTools && creatorTools.local) {
-    const local = creatorTools.local as LocalUtilities;
-    console.log("\n");
-    console.log("Machine user data path: " + local.userDataPath);
-    console.log("Machine app data path: " + local.localAppDataPath);
-    console.log("Minecraft path: " + local.minecraftPath);
-    console.log("Server working path: " + local.serversPath);
-    console.log("Environment prefs path: " + local.envPrefsPath);
-    console.log("Pack cache path: " + local.packCachePath);
-  }
-  console.log("\n");
-  console.log(constants.copyright);
-  console.log(constants.disclaimer);
-  console.log("\n");
-}
-
+// setPasscode is called from main IIFE - keep this utility
 async function setPasscode(
   displayReadOnlyPasscode: string | undefined,
   fullReadOnlyPasscode: string | undefined,
@@ -1074,1822 +912,45 @@ async function setPasscode(
   await localEnv.save();
 }
 
-function getFriendlyPasscode(str: string) {
-  if (str.length >= 4) {
-    str = str.toUpperCase();
-    return str.substring(0, 4) + "-" + str.substring(4);
-  }
-
-  return str;
-}
-
-async function minecraftEulaAndPrivacyStatement() {
-  if (!localEnv) {
-    throw new Error();
-  }
-
-  await localEnv.load();
-
-  const questions: inquirer.DistinctQuestion<any>[] = [];
-
-  console.log(
-    "This feature uses Minecraft assets and/or the Minecraft Bedrock Dedicated Server. To use it, you must agree to the Minecraft End User License Agreement and Privacy Statement.\n"
-  );
-  console.log("    Minecraft End User License Agreement: https://minecraft.net/eula");
-  console.log("    Minecraft Privacy Statement: https://go.microsoft.com/fwlink/?LinkId=521839\n");
-
-  questions.push({
-    type: "confirm",
-    default: false,
-    name: "minecraftEulaAndPrivacyStatement",
-    message: "I agree to the Minecraft End User License Agreement and Privacy Statement",
-  });
-
-  const answers = await inquirer.prompt(questions);
-
-  const iaccept = answers["minecraftEulaAndPrivacyStatement"];
-
-  if (iaccept === true || iaccept === false) {
-    localEnv.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula = iaccept;
-
-    await localEnv.save();
-  }
-
-  return iaccept;
-}
-
-async function displayInfo() {
-  for (const projectStart of projectStarts) {
-    if (projectStart && creatorTools) {
-      const project = ClUtils.createProject(creatorTools, projectStart);
-      await project.inferProjectItemsFromFiles();
-
-      console.log("Project name: " + project.name);
-      console.log("Project description: " + project.description);
-
-      const bpFolder = await project.getDefaultBehaviorPackFolder();
-
-      if (bpFolder === null) {
-        console.log("No default behavior pack.");
-      } else {
-        console.log("Default behavior pack folder: " + bpFolder.storageRelativePath);
-      }
-
-      const rpFolder = await project.getDefaultResourcePackFolder();
-
-      if (rpFolder === null) {
-        console.log("No default resource pack.");
-      } else {
-        console.log("Default resource pack folder: " + rpFolder.storageRelativePath);
-      }
-
-      const itemsCopy = project.getItemsCopy();
-
-      for (let i = 0; i < itemsCopy.length; i++) {
-        const item = itemsCopy[i];
-
-        console.log("=== " + item.typeTitle + ": " + item.projectPath);
-
-        if (item.isWorld) {
-          await setAndDisplayWorld(item, false);
-        }
-      }
-
-      const pis = project.indevInfoSet;
-
-      await pis.generateForProject();
-
-      for (let i = 0; i < pis.items.length; i++) {
-        const item = pis.items[i];
-
-        if (item.itemType !== InfoItemType.testCompleteFail && item.itemType !== InfoItemType.testCompleteSuccess) {
-          console.log(pis.itemToString(item));
-        }
-      }
-    }
-  }
-}
-
-async function setAndDisplayAllWorlds() {
-  const isEnsure = mode === "set";
-  let ofName: string | undefined;
-
-  if (options.outputFolder) {
-    ofName = StorageUtilities.getLeafName(options.outputFolder);
-
-    if (ofName) {
-      ofName = StorageUtilities.canonicalizeName(ofName);
-    }
-  }
-
-  for (const projectStart of projectStarts) {
-    if (projectStart && creatorTools) {
-      const project = ClUtils.createProject(creatorTools, projectStart);
-      await project.inferProjectItemsFromFiles();
-
-      let setWorld = false;
-
-      const itemsCopy = project.getItemsCopy();
-
-      for (const item of itemsCopy) {
-        if (item.isWorld) {
-          let shouldProcess = true;
-
-          if (item.projectPath && ofName) {
-            const name = StorageUtilities.canonicalizeName(
-              StorageUtilities.getBaseFromName(StorageUtilities.getLeafName(item.projectPath))
-            );
-
-            shouldProcess = ofName === name;
-          }
-
-          if (shouldProcess) {
-            await setAndDisplayWorld(item, isEnsure);
-            setWorld = true;
-          } else {
-            await setAndDisplayWorld(item, false);
-          }
-        }
-      }
-
-      // create a new world
-      if (isEnsure && !setWorld && options.outputFolder) {
-        const wcf = await project.ensureWorldContainer();
-
-        if (wcf && project.projectFolder) {
-          // create a new folder for the world.
-          let destF = project.projectFolder;
-          const targetName = destF.name;
-
-          // if only an output folder is specified, put the world there
-          // if an input and an output folder is specified, put the world at a subfolder of the input folder.
-          if (options.outputFolder) {
-            let targetFolder = options.outputFolder;
-
-            if (options.inputFolder && targetFolder.startsWith(options.inputFolder)) {
-              targetFolder = targetFolder.substring(options.inputFolder.length);
-            }
-
-            if (targetFolder.length > 2) {
-              destF = await wcf.ensureFolderFromRelativePath(StorageUtilities.ensureEndsDelimited(targetFolder));
-            }
-          }
-
-          if (destF) {
-            let path = destF.getFolderRelativePath(project.projectFolder);
-
-            if (path) {
-              path = StorageUtilities.ensureEndsWithDelimiter(StorageUtilities.absolutize(path));
-
-              const pi = project.ensureItemByProjectPath(
-                path,
-                ProjectItemStorageType.folder,
-                targetName,
-                ProjectItemType.worldFolder,
-                FolderContext.unknown
-              );
-
-              if (!pi.isContentLoaded) {
-                await pi.loadContent();
-              }
-
-              await setAndDisplayWorld(pi, true);
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-async function setAndDisplayWorld(item: ProjectItem, isSettable: boolean) {
-  if (item.isWorld) {
-    const mcworld: MCWorld | undefined = await item.getManager();
-
-    if (mcworld) {
-      await mcworld.loadMetaFiles(false);
-
-      if (isSettable) {
-        if (mcworld.name === "" && mcworld.storageFullPath) {
-          mcworld.name = StorageUtilities.getBaseFromName(StorageUtilities.getLeafName(mcworld.storageFullPath));
-        }
-
-        console.log("Updating mcworld at '" + mcworld.storageFullPath + "'");
-        const levelDat = mcworld.ensureLevelData();
-        let hasSet = false;
-
-        if (options.betaApis !== undefined && options.betaApis !== levelDat.betaApisExperiment) {
-          levelDat.betaApisExperiment = options.betaApis;
-          console.log("Set beta APIs to " + options.betaApis);
-          hasSet = true;
-        }
-
-        if (options.editor !== undefined && options.editor !== levelDat.isCreatedInEditor) {
-          levelDat.isCreatedInEditor = options.editor;
-          console.log("Set is editor to " + options.editor);
-          hasSet = true;
-        }
-
-        if (options.dataDrivenItems !== undefined && options.dataDrivenItems !== levelDat.dataDrivenItemsExperiment) {
-          levelDat.dataDrivenItemsExperiment = options.dataDrivenItems;
-          console.log("Set data driven items to " + options.dataDrivenItems);
-          hasSet = true;
-        }
-
-        if (options.behaviorPack !== undefined) {
-          mcworld.ensureBehaviorPacksFromString(options.behaviorPack);
-        }
-
-        if (options.resourcePack !== undefined) {
-          mcworld.ensureBehaviorPacksFromString(options.resourcePack);
-        }
-
-        if (hasSet) {
-          await mcworld.save();
-        }
-      }
-
-      console.log("World name: " + mcworld.name);
-      console.log("World path: " + item.projectPath);
-
-      if (mcworld.betaApisExperiment !== undefined) {
-        console.log("Beta APIs: " + mcworld.betaApisExperiment);
-      }
-
-      if (mcworld.levelData) {
-        if (mcworld.levelData.dataDrivenItemsExperiment !== undefined) {
-          console.log("Data Driven items (holiday experimental): " + mcworld.levelData.dataDrivenItemsExperiment);
-        }
-      }
-    }
-  }
-}
-
-async function validate() {
-  if (!creatorTools || !localEnv) {
-    return;
-  }
-
-  const projectList: IProjectMetaState[] = [];
-
-  // Use sequential processing if threads=1, otherwise use native Node.js workers
-  if (threads === 1) {
-    await processProjectsSequentially(projectList);
-  } else {
-    await processProjectsWithWorkers(projectList);
-  }
-
-  if (aggregateReportsAfterValidation) {
-    Log.message("Aggregating reports across " + projectList.length + " projects.");
-    await saveAggregatedReports(projectList);
-  }
-}
-
-async function processProjectsSequentially(projectList: IProjectMetaState[]) {
-  for (let i = 0; i < projectStarts.length; i++) {
-    const ps = projectStarts[i];
-    if (!ps) continue;
-
-    console.log(`Processing project ${i + 1}/${projectStarts.length}: ${ps.ctorProjectName}`);
-
-    try {
-      const result = await executeTask({
-        task: TaskType.validate,
-        project: ps,
-        arguments: {
-          suite: suite,
-          exclusionList: exclusionList,
-          outputMci: aggregateReportsAfterValidation || outputType === OutputType.noReports,
-          outputType: outputType,
-        },
-        outputFolder: options.outputFolder,
-        inputFolder: options.inputFolder,
-        displayInfo: localEnv!.displayInfo,
-        displayVerbose: localEnv!.displayVerbose,
-        force: force,
-      });
-
-      if (result !== undefined) {
-        await processValidationResult(result, ps, projectList);
-      }
-
-      // Force garbage collection after each project if available
-      if (global.gc) {
-        global.gc();
-      }
-    } catch (e: any) {
-      console.error(
-        "Processing Error for " + ps.ctorProjectName + ": " + e.toString() + (e.stack ? "\n" + e.stack : "")
-      );
-      setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
-    }
-  }
-}
-
-async function processProjectsWithWorkers(projectList: IProjectMetaState[]) {
-  const maxConcurrency = Math.min(8, threads);
-  let currentIndex = 0;
-
-  const processProject = async (ps: IProjectStartInfo): Promise<any> => {
-    return new Promise((resolve, reject) => {
-      // Use the compiled TaskWorker.js path
-      const workerPath = path.resolve(__dirname, "TaskWorker.js");
-      const worker = new NodeWorker(workerPath, {
-        resourceLimits: {
-          maxOldGenerationSizeMb: 16384, // 16GB memory limit per worker
-        },
-      });
-
-      const taskData = {
-        task: TaskType.validate,
-        project: ps,
-        arguments: {
-          suite: suite,
-          exclusionList: exclusionList,
-          outputMci: aggregateReportsAfterValidation || outputType === OutputType.noReports,
-          outputType: outputType,
-        },
-        outputFolder: options.outputFolder,
-        inputFolder: options.inputFolder,
-        displayInfo: localEnv!.displayInfo,
-        displayVerbose: localEnv!.displayVerbose,
-        force: force,
-      };
-
-      // Define cleanup function to remove all event listeners
-      const cleanup = () => {
-        worker.removeAllListeners("message");
-        worker.removeAllListeners("error");
-        worker.removeAllListeners("exit");
-      };
-
-      const onMessage = (result: any) => {
-        cleanup();
-        worker.terminate();
-        resolve(result);
-      };
-
-      const onError = (error: Error) => {
-        console.error(`Worker error for ${ps.ctorProjectName}:`, error);
-        cleanup();
-        worker.terminate();
-        reject(error);
-      };
-
-      const onExit = (code: number) => {
-        cleanup();
-        if (code !== 0) {
-          reject(new Error(`Worker for ${ps.ctorProjectName} stopped with exit code ${code}`));
-        }
-      };
-
-      worker.on("message", onMessage);
-      worker.on("error", onError);
-      worker.on("exit", onExit);
-
-      worker.postMessage(taskData);
-    });
-  };
-
-  // Process projects with limited concurrency
-  const processNextBatch = async () => {
-    const promises: Promise<any>[] = [];
-    const batchProjects: IProjectStartInfo[] = [];
-
-    for (let i = 0; i < maxConcurrency && currentIndex < projectStarts.length; i++) {
-      const ps = projectStarts[currentIndex++];
-      if (ps) {
-        batchProjects.push(ps);
-        promises.push(processProject(ps));
-      }
-    }
-
-    const results = await Promise.allSettled(promises);
-
-    for (let i = 0; i < results.length; i++) {
-      const result = results[i];
-      const ps = batchProjects[i];
-
-      if (result.status === "fulfilled" && result.value !== undefined) {
-        await processValidationResult(result.value, ps, projectList);
-      } else if (result.status === "rejected") {
-        console.error("Worker processing error for " + ps.ctorProjectName + ": " + result.reason);
-        setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
-      }
-    }
-  };
-
-  while (currentIndex < projectStarts.length) {
-    await processNextBatch();
-  }
-}
-
-async function processValidationResult(result: any, ps: IProjectStartInfo, projectList: IProjectMetaState[]) {
-  if (typeof result === "string") {
-    Log.error(ps.ctorProjectName + " error: " + result);
-  } else if (Array.isArray(result)) {
-    for (const metaState of result) {
-      // clear out icons since the aggregation won't need them, and it should save memory.
-      if (metaState.infoSetData && metaState.infoSetData.info && metaState.infoSetData.info["defaultIcon"]) {
-        metaState.infoSetData.info["defaultIcon"] = undefined;
-      }
-
-      projectList.push(metaState as IProjectMetaState);
-
-      const infoSet = (metaState as IProjectMetaState).infoSetData;
-
-      if (infoSet) {
-        const items = infoSet.items;
-
-        if (items) {
-          for (const item of items) {
-            if (item.iTp === InfoItemType.internalProcessingError) {
-              const errorMessage =
-                "Internal Processing Error: " + ProjectInfoSet.getExtendedMessageFromData(infoSet, item);
-              console.error(errorMessage);
-              setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
-            } else if (item.iTp === InfoItemType.testCompleteFail && !options.outputFolder) {
-              console.error("Test Fail: " + ProjectInfoSet.getExtendedMessageFromData(infoSet, item));
-              setErrorLevel(ERROR_VALIDATION_TESTFAIL);
-            } else if (item.iTp === InfoItemType.error && !options.outputFolder) {
-              console.error("Error: " + ProjectInfoSet.getExtendedMessageFromData(infoSet, item));
-              setErrorLevel(ERROR_VALIDATION_ERROR);
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-async function profileValidation() {
-  if (!creatorTools || !localEnv) {
-    return;
-  }
-
-  await ProfilerWrapper.generateCpuTrace("validate", async () => {
-    const suiteConst = suite;
-    const exclusionListConst = exclusionList;
-    const aggregateReportsAfterValidationConst = aggregateReportsAfterValidation;
-    const localEnvConst = localEnv;
-
-    for (let i = 0; i < projectStarts.length; i++) {
-      const ps = projectStarts[i];
-
-      if (ps) {
-        try {
-          await executeTask({
-            task: TaskType.validate,
-            project: ps,
-            arguments: {
-              suite: suiteConst,
-              exclusionList: exclusionListConst,
-              outputMci: aggregateReportsAfterValidationConst || outputType === OutputType.noReports,
-              outputType: outputType,
-            },
-            outputFolder: options.outputFolder,
-            inputFolder: options.inputFolder,
-            displayInfo: localEnvConst.displayInfo,
-            displayVerbose: localEnvConst.displayVerbose,
-            force: force,
-          });
-        } catch (e: any) {
-          console.error("Internal Processing Error 3: " + e.toString());
-          setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
-        }
-      }
-    }
-  });
-}
-
-function setErrorLevel(newErrorLevel: number) {
-  if (errorLevel === undefined || newErrorLevel < errorLevel) {
-    errorLevel = newErrorLevel;
-    (process as any).exitCode = newErrorLevel;
-  }
-}
-
-async function aggregateReports() {
-  let inpFolder = await ClUtils.getMainWorkFolder(executionTaskType, options.inputFolder, options.outputFolder);
-
-  const allFeatureSets: { [setName: string]: { [measureName: string]: number | undefined } | undefined } = {};
-  const allFields: { [featureName: string]: boolean | undefined } = {};
-
-  const projectList: IProjectMetaState[] = [];
-
-  if (!inpFolder) {
-    Log.message("No main input folder was specified.");
-  }
-
-  await inpFolder.load();
-
-  let projectsLoaded = 0;
-
-  for (const fileName in inpFolder.files) {
-    let file = inpFolder.files[fileName];
-
-    if (file && StorageUtilities.getTypeFromName(fileName) === "json") {
-      await file.loadContent(true);
-
-      let jsonO = await StorageUtilities.getJsonObject(file);
-
-      if (jsonO.info && jsonO.items && jsonO.generatorName !== undefined && jsonO.generatorVersion !== undefined) {
-        const pis = new ProjectInfoSet(undefined, undefined, undefined, jsonO.info, jsonO.items);
-
-        let suite: ProjectInfoSuite | undefined = undefined;
-
-        let baseName = StorageUtilities.getBaseFromName(fileName);
-
-        if (baseName.endsWith(".mcr")) {
-          baseName = baseName.substring(0, baseName.length - 4);
-        }
-
-        if (baseName.endsWith("addon")) {
-          suite = ProjectInfoSuite.cooperativeAddOn;
-          baseName = baseName.substring(0, baseName.length - 5);
-        }
-
-        if (baseName.endsWith("currentplatform")) {
-          suite = ProjectInfoSuite.currentPlatformVersions;
-          baseName = baseName.substring(0, baseName.length - 15);
-        }
-
-        if (baseName.endsWith("sharing")) {
-          suite = ProjectInfoSuite.sharing;
-          baseName = baseName.substring(0, baseName.length - 7);
-        }
-
-        let title = StorageUtilities.getBaseFromName(fileName);
-
-        let firstDash = title.indexOf("-");
-        let lastDash = title.lastIndexOf("-");
-
-        if (firstDash > 0 && lastDash > firstDash + 1) {
-          title = title.substring(firstDash + 1, lastDash);
-        }
-
-        if (projectsLoaded > 0 && projectsLoaded % 500 === 0) {
-          console.warn("Loaded " + projectsLoaded + " reports, @ " + title);
-        }
-
-        pis.mergeFeatureSetsAndFieldsTo(allFeatureSets, allFields);
-
-        // clear out icons since the aggregation won't need them, and it should save memory.
-        if (jsonO.info && jsonO.info["defaultIcon"]) {
-          jsonO.info["defaultIcon"] = undefined;
-        }
-
-        projectList.push({
-          projectContainerName: baseName,
-          projectPath: file.parentFolder.storageRelativePath,
-          projectName: baseName,
-          projectTitle: title,
-          infoSetData: jsonO,
-          suite: suite,
-        });
-
-        projectsLoaded++;
-      }
-    }
-  }
-
-  if (projectList.length > 0) {
-    await saveAggregatedReports(projectList, inpFolder);
-  } else {
-    Log.message("Did not find any report JSON files.");
-  }
-}
-
-async function saveAggregatedReports(projectList: IProjectMetaState[], inputFolder?: IFolder) {
-  let outputStorage: NodeStorage | undefined;
-  let measureFolder: NodeFolder | undefined;
-  let indexFolder: NodeFolder | undefined;
-  let mciFolder: NodeFolder | undefined;
-  const csvHeader = ProjectInfoSet.CommonCsvHeader;
-
-  let sampleProjectInfoSets: {
-    [suiteName: string]: ProjectInfoSet | undefined;
-  } = {};
-
-  const featureSetsByName: {
-    [suiteName: string]: { [setName: string]: { [measureName: string]: number | undefined } | undefined };
-  } = {};
-
-  const fieldsByName: { [suiteName: string]: { [featureName: string]: boolean | undefined } } = {};
-
-  const issueLines: { [name: string]: string[] } = {};
-  const summaryLines: { [name: string]: string[] } = {};
-  const mciFileList: IIndexJson = { files: [], folders: [] };
-  const measureFileList: IIndexJson = { files: [], folders: [] };
-  const megaContentIndex: ContentIndex = new ContentIndex();
-  const measures: { [featureSetName: string]: { name: string; items: { [featureName: string]: any } } } = {};
-  const dataMeasures: { [featureSetName: string]: { name: string; items: { [featureName: string]: any } } } = {};
-
-  if (options.outputFolder) {
-    outputStorage = new NodeStorage(options.outputFolder, "");
-    indexFolder = outputStorage.rootFolder.ensureFolder("index");
-    mciFolder = outputStorage.rootFolder.ensureFolder("mci");
-  }
-
-  let projectsProcessedOne = 0;
-
-  for (const projectSet of projectList) {
-    let suiteName = "all";
-
-    if (projectSet.suite !== undefined) {
-      suiteName = ProjectInfoSet.getSuiteString(projectSet.suite);
-    }
-
-    const pisData = projectSet.infoSetData;
-
-    const contentIndex = new ContentIndex();
-    const projectBaseName = StorageUtilities.removeContainerExtension(projectSet.projectContainerName);
-
-    if (pisData.index) {
-      contentIndex.loadFromData(pisData.index);
-    } else if (inputFolder) {
-      await inputFolder.load();
-      const childFile = await inputFolder.getFileFromRelativePath(
-        "/mci/" + projectBaseName.toLowerCase() + ".mci.json"
-      );
-
-      if (childFile) {
-        await childFile.loadContent();
-        const indexContent = StorageUtilities.getJsonObject(childFile);
-
-        if (indexContent) {
-          pisData.index = indexContent.index;
-          contentIndex.loadFromData(indexContent.index);
-        }
-      }
-    }
-
-    const pis = new ProjectInfoSet(undefined, undefined, undefined, pisData.info, pisData.items, contentIndex);
-
-    if (pis.contentIndex && buildAggregatedIndex) {
-      megaContentIndex.mergeFrom(pis.contentIndex, projectBaseName);
-    }
-
-    if (projectSet.projectName) {
-      mciFileList.files.push(projectBaseName.toLowerCase() + ".mci.json");
-    }
-
-    if (projectsProcessedOne > 0 && projectsProcessedOne % 500 === 0) {
-      let fsCount = countFeatureSets(featureSetsByName);
-      let fsMeasureCount = countFeatureSetMeasures(featureSetsByName);
-      let fieldCount = countFeatures(fieldsByName);
-
-      console.warn(
-        "Processed " +
-          projectsProcessedOne +
-          " reports in phase 1, @ " +
-          projectBaseName +
-          " ( Feature Sets " +
-          fsCount +
-          " Measures: " +
-          fsMeasureCount +
-          ", Fields: " +
-          fieldCount +
-          ")"
-      );
-    }
-
-    if (!Utilities.isUsableAsObjectKey(suiteName)) {
-      Log.unsupportedToken(suiteName);
-      return;
-    }
-
-    if (featureSetsByName[suiteName] === undefined) {
-      featureSetsByName[suiteName] = {};
-    }
-
-    const featureSets = featureSetsByName[suiteName];
-
-    if (fieldsByName[suiteName] === undefined) {
-      fieldsByName[suiteName] = {};
-    }
-
-    const fields = fieldsByName[suiteName];
-
-    pis.mergeFeatureSetsAndFieldsTo(featureSets, fields);
-    projectsProcessedOne++;
-  }
-
-  for (const setName in featureSetsByName) {
-    const featureSets = featureSetsByName[setName];
-
-    if (featureSets) {
-      for (const featureSetName in featureSets) {
-        const featureSet = featureSets[featureSetName];
-
-        if (featureSet) {
-          measures[featureSetName] = {
-            name: featureSetName,
-            items: {},
-          };
-        }
-      }
-    }
-  }
-
-  let projectsProcessedTwo = 0;
-
-  for (const projectSet of projectList) {
-    let suiteName = "all";
-
-    if (projectSet.suite !== undefined) {
-      suiteName = ProjectInfoSet.getSuiteString(projectSet.suite);
-    }
-
-    const pisData = projectSet.infoSetData;
-    const projectBaseName = StorageUtilities.removeContainerExtension(projectSet.projectContainerName);
-    const pis = new ProjectInfoSet(undefined, undefined, undefined, pisData.info, pisData.items);
-
-    if (featureSetsByName[suiteName] === undefined) {
-      featureSetsByName[suiteName] = {};
-    }
-
-    const featureSets = featureSetsByName[suiteName];
-
-    if (fieldsByName[suiteName] === undefined) {
-      fieldsByName[suiteName] = {};
-    }
-
-    const fields = fieldsByName[suiteName];
-
-    pis.mergeFeatureSetsAndFieldsTo(featureSets, fields);
-
-    if (projectsProcessedTwo > 0 && projectsProcessedTwo % 500 === 0) {
-      let fsCount = countFeatureSets(featureSetsByName);
-      let fsMeasureCount = countFeatureSetMeasures(featureSetsByName);
-      let fieldCount = countFeatures(fieldsByName);
-
-      console.warn(
-        "Processed " +
-          projectsProcessedOne +
-          " reports in phase 2, @ " +
-          projectBaseName +
-          " ( Feature Sets " +
-          fsCount +
-          " Measures: " +
-          fsMeasureCount +
-          ", Fields: " +
-          fieldCount +
-          ")"
-      );
-    }
-
-    sampleProjectInfoSets[suiteName] = pis;
-
-    if (projectSet.suite === undefined || projectSet.suite === ProjectInfoSuite.defaultInDevelopment) {
-      if (projectSet.infoSetData.info) {
-        for (const memberName in projectSet.infoSetData.info) {
-          if (ProjectInfoSet.isAggregableFieldName(memberName)) {
-            let data: { name: string; items: { [featureName: string]: any } } = dataMeasures[memberName];
-
-            if (data === undefined) {
-              data = { name: memberName, items: {} };
-              dataMeasures[memberName] = data;
-            }
-
-            if ((projectSet.infoSetData.info as any)[memberName] !== undefined) {
-              if (!Utilities.isUsableAsObjectKey(projectBaseName)) {
-                Log.unsupportedToken(projectBaseName);
-                throw new Error();
-              }
-
-              data.items[projectBaseName] = (projectSet.infoSetData.info as any)[memberName];
-            }
-          }
-        }
-      }
-
-      if (projectSet.infoSetData.info && projectSet.infoSetData.info.featureSets) {
-        for (const featureSetName in featureSets) {
-          const featureSet = projectSet.infoSetData.info.featureSets[featureSetName];
-
-          if (featureSet) {
-            measures[featureSetName].items[projectBaseName] = featureSet;
-          }
-        }
-      }
-    }
-
-    if (issueLines[suiteName] === undefined) {
-      issueLines[suiteName] = [];
-    }
-
-    if (issueLines[suiteName].length <= MAX_LINES_PER_CSV_FILE) {
-      const pisLines = pis.getItemCsvLines();
-
-      for (let j = 0; j < pisLines.length; j++) {
-        issueLines[suiteName].push('"' + projectBaseName + '",' + pisLines[j]);
-      }
-    }
-
-    if (summaryLines[suiteName] === undefined) {
-      summaryLines[suiteName] = [];
-    }
-
-    if (outputStorage) {
-      summaryLines[suiteName].push(pis.getSummaryCsvLine(projectBaseName, projectSet.projectTitle, featureSets));
-    }
-
-    projectsProcessedTwo++;
-  }
-  let fsCount = countFeatureSets(featureSetsByName);
-  let fsMeasureCount = countFeatureSetMeasures(featureSetsByName);
-  let fieldCount = countFeatures(fieldsByName);
-
-  console.warn("Saving out content. Feature Set " + fsCount + " Measures:" + fsMeasureCount + " Fields:" + fieldCount);
-
-  if (outputStorage) {
-    for (const issueLinesName in issueLines) {
-      if (sampleProjectInfoSets[issueLinesName]) {
-        const issueLinesSet = issueLines[issueLinesName];
-
-        if (issueLinesSet.length < MAX_LINES_PER_CSV_FILE) {
-          let allCsvFile = outputStorage.rootFolder.ensureFile(issueLinesName + ".csv");
-
-          let allCsvContent = "Project," + csvHeader + "\r\n" + issueLinesSet.join("\n");
-
-          allCsvFile.setContent(allCsvContent);
-
-          await allCsvFile.saveContent();
-        }
-      }
-    }
-
-    console.warn("Saving out index json.");
-    if (mciFolder) {
-      const mciFile = mciFolder.ensureFile("index.json");
-      mciFile.setContent(JSON.stringify(mciFileList));
-      await mciFile.saveContent();
-    }
-
-    console.warn("Saving out summary lines.");
-
-    for (const summaryLinesName in summaryLines) {
-      if (!Utilities.isUsableAsObjectKey(summaryLinesName)) {
-        Log.unsupportedToken(summaryLinesName);
-        throw new Error();
-      }
-
-      if (featureSetsByName[summaryLinesName] === undefined) {
-        featureSetsByName[summaryLinesName] = {};
-      }
-
-      if (sampleProjectInfoSets[summaryLinesName]) {
-        const featureSets = featureSetsByName[summaryLinesName];
-
-        const summaryLinesSet = summaryLines[summaryLinesName];
-
-        const projectsCsvFile = outputStorage.rootFolder.ensureFile(summaryLinesName + "projects.csv");
-
-        let projectsCsvContent = ProjectInfoSet.getSummaryCsvHeaderLine(
-          sampleProjectInfoSets[summaryLinesName].info,
-          featureSets
-        );
-
-        const allLines: string[] = [];
-
-        allLines.push(projectsCsvContent);
-
-        for (const projectsCsvContentLine of summaryLinesSet) {
-          allLines.push(projectsCsvContentLine);
-        }
-
-        (projectsCsvFile as NodeFile).writeContent(allLines);
-      }
-    }
-  }
-}
-
-function countFeatures(features: { [suiteName: string]: { [featureName: string]: boolean | undefined } }) {
-  let count = 0;
-
-  for (const suiteName in features) {
-    const featureSet = features[suiteName];
-
-    if (featureSet) {
-      for (const featureName in featureSet) {
-        if (featureName) {
-          count++;
-        }
-      }
-    }
-  }
-
-  return count;
-}
-
-function countFeatureSets(featureSets: {
-  [suiteName: string]: { [setName: string]: { [measureName: string]: number | undefined } | undefined };
-}) {
-  let count = 0;
-
-  for (const suiteName in featureSets) {
-    const featureSet = featureSets[suiteName];
-
-    if (featureSet) {
-      for (const setName in featureSet) {
-        if (setName) {
-          count++;
-        }
-      }
-    }
-  }
-
-  return count;
-}
-
-function countFeatureSetMeasures(featureSets: {
-  [suiteName: string]: { [setName: string]: { [measureName: string]: number | undefined } | undefined };
-}) {
-  let count = 0;
-
-  for (const suiteName in featureSets) {
-    const featureSet = featureSets[suiteName];
-
-    if (featureSet) {
-      for (const setName in featureSet) {
-        const measureSet = featureSet[setName];
-
-        if (measureSet) {
-          for (const measureName in measureSet) {
-            if (measureName) {
-              count++;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  return count;
-}
-
-async function docsUpdateFormSource() {
-  if (!creatorTools) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Not configured correctly to generate documents.");
-    return;
-  }
-
-  let outFolder: IFolder | undefined = undefined;
-
-  if (options.outputFolder) {
-    const ns = new NodeStorage(options.outputFolder, "");
-    outFolder = ns.rootFolder;
-  } else {
-    const outputStorage = new NodeStorage(process.cwd(), "");
-    outFolder = outputStorage.rootFolder;
-  }
-
-  if (!outFolder) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Could not find an output folder for generate documents.");
-    return;
-  }
-
-  await outFolder.ensureExists();
-
-  const formJsonDocGen = new FormJsonDocumentationGenerator();
-
-  await formJsonDocGen.updateFormSource(outFolder, true);
-}
-
-async function docsGenerateFormJson() {
-  if (!creatorTools) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Not configured correctly to generate documents.");
-    return;
-  }
-
-  let outFolder: IFolder | undefined = undefined;
-
-  if (options.outputFolder) {
-    const ns = new NodeStorage(options.outputFolder, "");
-    outFolder = ns.rootFolder;
-  } else {
-    const outputStorage = new NodeStorage(process.cwd(), "");
-    outFolder = outputStorage.rootFolder;
-  }
-
-  if (!outFolder) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Could not find an output folder for generate documents.");
-    return;
-  }
-
-  await outFolder.ensureExists();
-
-  const inputFolder = await ClUtils.getMainWorkFolder(executionTaskType, options.inputFolder, options.outputFolder);
-
-  const docGen = new FormJsonDocumentationGenerator();
-
-  await docGen.generateFormJson(inputFolder, outFolder);
-}
-
-async function docsGenerateMarkdown() {
-  if (!creatorTools) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Not configured correctly to generate documents.");
-    return;
-  }
-
-  let outFolder: IFolder | undefined = undefined;
-
-  if (options.outputFolder) {
-    const ns = new NodeStorage(options.outputFolder, "");
-    outFolder = ns.rootFolder;
-  } else {
-    const outputStorage = new NodeStorage(process.cwd(), "");
-    outFolder = outputStorage.rootFolder;
-  }
-
-  if (!outFolder) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Could not find an output folder for generate documents.");
-    return;
-  }
-
-  await outFolder.ensureExists();
-
-  const inputFolder = await ClUtils.getMainWorkFolder(executionTaskType, options.inputFolder, options.outputFolder);
-
-  await outFolder.deleteAllFolderContents();
-
-  const formDocGen = new FormMarkdownDocumentationGenerator();
-
-  await formDocGen.generateMarkdown(inputFolder, outFolder);
-
-  const tableDocGen = new TableMarkdownDocumentationGenerator();
-
-  await tableDocGen.generateMarkdown(outFolder);
-
-  const markdownFromDocDocGen = new DocJsonMarkdownDocumentationGenerator();
-
-  await markdownFromDocDocGen.generateMarkdown(inputFolder, outFolder);
-}
-
-async function docsGenerateTypes() {
-  if (!creatorTools) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Not configured correctly to generate types and schemas.");
-    return;
-  }
-
-  let outFolder: IFolder | undefined = undefined;
-
-  if (options.outputFolder) {
-    const ns = new NodeStorage(options.outputFolder, "");
-    outFolder = ns.rootFolder;
-  } else {
-    const outputStorage = new NodeStorage(process.cwd(), "");
-    outFolder = outputStorage.rootFolder;
-  }
-
-  if (!outFolder) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Could not find an output folder for generate documents.");
-    return;
-  }
-
-  await outFolder.ensureExists();
-
-  const inputFolder = await ClUtils.getMainWorkFolder(executionTaskType, options.inputFolder, options.outputFolder);
-
-  await outFolder.deleteAllFolderContents();
-
-  const formDocGen = new FormDefinitionTypeScriptGenerator();
-
-  await formDocGen.generateTypes(inputFolder, outFolder);
-}
-
-async function exportWorld() {
-  if (!creatorTools || projectStarts.length === 0) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Not configured correctly to export a project.");
-    return;
-  }
-
-  for (const projectStart of projectStarts) {
-    if (projectStart) {
-      const project = ClUtils.createProject(creatorTools, projectStart);
-
-      await project.inferProjectItemsFromFiles();
-
-      const path = getFilePath(project.name + ".mcworld");
-
-      console.log("Exporting flat pack world to '" + path + "'");
-
-      await LocalTools.exportWorld(creatorTools, project, path);
-    }
-  }
-}
-
+// doExit is called from main IIFE - keep this utility
 async function stop() {
-  process.exit();
+  await sm?.stopAllDedicatedServers();
 }
 
 async function doExit() {
-  if (sm) {
-    sm.stopWebServer();
-  }
+  await stop();
 
-  if (!errorLevel) {
-    (process as any).exitCode = errorLevel;
+  if (errorLevel !== undefined) {
+    process.exit(errorLevel);
   }
 }
 
-async function ensureRefWorld() {
-  const ns: NodeStorage | undefined = getTargetFolderFromMode();
-  if (!creatorTools || !creatorTools.local || projectStarts.length === 0) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Not configured correctly to export a project.");
-    return;
-  }
-
-  for (const projectStart of projectStarts) {
-    if (projectStart) {
-      if (!ns) {
-        return;
-      }
-
-      const project = ClUtils.createProject(creatorTools, projectStart);
-
-      await ns.rootFolder.ensureExists();
-
-      await LocalTools.ensureFlatPackRefWorldTo(creatorTools, project, ns.rootFolder, project.name);
-
-      if (options.launch) {
-        await LocalTools.launchWorld(creatorTools, project.name);
-      }
-    }
-  }
-}
-
-async function setProjectProperty(project: Project, propertyName: string, propertyValue: string) {
-  outputLogo("Minecraft Creator Tools (preview)");
-
-  if (!creatorTools) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Not configured correctly to create a project (no mctools core).");
-    return;
-  }
-
-  if (!propertyValue || !propertyValue.length || propertyValue.length < 3) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Please specify a valid property value");
-    return;
-  }
-
-  switch (propertyName.trim().toLowerCase()) {
-    case "name":
-      ProjectUtilities.applyTitle(project, propertyValue);
-      break;
-
-    case "title":
-      ProjectUtilities.applyTitle(project, propertyValue);
-      break;
-
-    case "description":
-      ProjectUtilities.applyDescription(project, propertyValue);
-      break;
-
-    case "bpscriptentrypoint":
-      ProjectUtilities.applyScriptEntryPoint(project, propertyValue);
-      break;
-
-    case "bpuuid":
-      ProjectUtilities.applyBehaviorPackUniqueId(project, propertyValue);
-      break;
-
-    case "rpuuid":
-      ProjectUtilities.applyResourcePackUniqueId(project, propertyValue);
-      break;
-
-    default:
-      errorLevel = ERROR_INIT_ERROR;
-      console.error("Please specify a valid property value");
-      break;
-  }
-
-  await project.save();
-}
-
-async function create(project: Project, isSingleFolder: boolean) {
-  outputLogo("Minecraft Creator Tools (preview)");
-
-  if (!localEnv || !creatorTools) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Not configured correctly to create a project (no mctools core).");
-    return;
-  }
-
-  await localEnv.load();
-
-  if (
-    !localEnv.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula &&
-    (!options.InternalOnlyRunningInTheContextOfTestCommandLines ||
-      newName !== "testerName" ||
-      creator !== "testerCreatorName")
-  ) {
-    const result = await minecraftEulaAndPrivacyStatement();
-
-    if (!result) {
-      console.log("The Minecraft End User License Agreement and Privacy Statement was not agreed to.");
-      return;
-    }
-  }
-
-  await creatorTools.loadGallery();
-
-  if (!creatorTools.gallery) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Not configured correctly to create a project (no gallery).");
-    return;
-  }
-
-  let title = newName;
-
-  if (!title) {
-    const titleQuestions: inquirer.DistinctQuestion<any>[] = [];
-    titleQuestions.push({
-      type: "input",
-      name: "title",
-      default: "My Project",
-      message: "What's your preferred project title?",
-    });
-    const titleAnswer = await inquirer.prompt(titleQuestions);
-
-    if (titleAnswer["title"]) {
-      title = titleAnswer["title"];
-    }
-  }
-
-  if (!title) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("No title for your project was selected.");
-    return;
-  }
-
-  let applyDescription = newDescription;
-
-  if (applyDescription === undefined) {
-    applyDescription = title;
-
-    const descriptionQuestions: inquirer.DistinctQuestion<any>[] = [];
-    descriptionQuestions.push({
-      type: "input",
-      name: "description",
-      default: applyDescription,
-      message: "What's your preferred project description?",
-    });
-
-    const descriptionAnswer = await inquirer.prompt(descriptionQuestions);
-
-    if (descriptionAnswer["description"]) {
-      applyDescription = descriptionAnswer["description"];
-    }
-
-    if (applyDescription === undefined) {
-      applyDescription = title;
-    }
-  }
-
-  if (!creator) {
-    const creatorQuestions: inquirer.DistinctQuestion<any>[] = [];
-    creatorQuestions.push({
-      type: "input",
-      name: "creator",
-      default: "Creator",
-      message: "What's your creator name?",
-    });
-    const creatorAnswer = await inquirer.prompt(creatorQuestions);
-
-    if (creatorAnswer["creator"]) {
-      creator = creatorAnswer["creator"];
-    }
-  }
-
-  const questions: inquirer.DistinctQuestion<any>[] = [];
-  if (!newName) {
-    newName = title?.replace(/ /gi, "-").toLowerCase();
-
-    questions.push({
-      type: "input",
-      name: "name",
-      default: newName,
-      message: "What's your preferred project short name? (<20 chars, no spaces)",
-    });
-  }
-
-  if (!options.inputFolder && (!options.outputFolder || options.outputFolder === "out") && isSingleFolder) {
-    const folderNameQuestions: inquirer.DistinctQuestion<any>[] = [];
-
-    folderNameQuestions.push({
-      type: "input",
-      name: "folderName",
-      default: newName,
-      message: "What's your preferred folder name?",
-    });
-
-    const folderNameAnswer = await inquirer.prompt(folderNameQuestions);
-    const folderName = folderNameAnswer["folderName"];
-
-    if (folderName) {
-      const path = NodeStorage.ensureEndsWithDelimiter(process.cwd()) + NodeStorage.ensureEndsWithDelimiter(folderName);
-
-      const outputStorage = new NodeStorage(path, "");
-      const outFolder = outputStorage.rootFolder;
-      await outFolder.ensureExists();
-
-      project.localFolderPath = path;
-
-      project.autoDeploymentMode = ProjectAutoDeploymentMode.noAutoDeployment;
-    }
-  }
-
-  const galProjects = creatorTools.gallery.items;
-  let galProject: IGalleryItem | undefined;
-
-  if (template) {
-    for (let i = 0; i < galProjects.length; i++) {
-      const galProjectCand = galProjects[i];
-      if (galProjectCand && galProjectCand.id && galProjectCand.id.toLowerCase() === template.toLowerCase()) {
-        galProject = galProjectCand;
-      }
-    }
-  }
-
-  let suggestedShortName: string | undefined = undefined;
-
-  if (newName && creator) {
-    suggestedShortName = ProjectUtilities.getSuggestedProjectShortName(creator, newName);
-  }
-
-  const rootFolder = await project.ensureProjectFolder();
-
-  if (rootFolder) {
-    const bpFolder = await rootFolder.getFolderFromRelativePath("/behavior_packs/" + suggestedShortName + "/");
-
-    const bpAlreadyExists = bpFolder ? await bpFolder.exists() : false;
-
-    if (bpAlreadyExists) {
-      Log.error("Cannot create a project, as folder '/behavior_packs/" + suggestedShortName + "/' already exists.");
-      return;
-    }
-    const rpFolder = await rootFolder.getFolderFromRelativePath("/resource_packs/" + suggestedShortName + "/");
-
-    const rpAlreadyExists = rpFolder ? await rpFolder.exists() : false;
-
-    if (rpAlreadyExists) {
-      Log.error("Cannot create a project, as folder '/resource_packs/" + suggestedShortName + "/' already exists.");
-      return;
-    }
-  }
-
-  if (!galProject) {
-    const projectTypeChoices: inquirer.DistinctChoice[] = [];
-
-    for (let i = 0; i < galProjects.length; i++) {
-      const galProjectCand = galProjects[i];
-
-      if (galProjectCand.type === GalleryItemType.project)
-        projectTypeChoices.push({
-          name: galProjectCand.id + ": " + galProjectCand.title,
-          value: i,
-        });
-    }
-
-    questions.push({
-      type: "list",
-      name: "projectSource",
-      message: "What template should we use?",
-      choices: projectTypeChoices,
-    });
-  }
-
-  if (!galProject || !newName) {
-    const answers = await inquirer.prompt(questions);
-
-    if (answers) {
-      if (answers["name"]) {
-        newName = answers["name"];
-      }
-
-      if (!galProject) {
-        galProject = galProjects[answers["projectSource"]];
-      }
-    }
-  }
-
-  if (!newName) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Not configured correctly to create a project.");
-    return;
-  }
-
-  if (!galProject) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("No project was selected.");
-    return;
-  }
-
-  project = await ProjectExporter.syncProjectFromGitHub(
-    true,
-    creatorTools,
-    galProject.gitHubRepoName,
-    galProject.gitHubOwner,
-    galProject.gitHubBranch,
-    galProject.gitHubFolder,
-    newName,
-    project,
-    galProject.fileList,
-    async (message: string) => {
-      Log.message(message);
-    },
-    true
-  );
-
-  if (creator) {
-    await ProjectUtilities.applyCreator(project, creator);
-  }
-
-  await ProjectUtilities.processNewProject(project, title, applyDescription, suggestedShortName, false);
-
-  console.log(
-    "\nAll done! Now run \x1b[47m\x1b[30mnpm i\x1b[37m\x1b[40m in the \x1b[47m\x1b[30m" +
-      project.projectFolder?.fullPath +
-      "\x1b[37m\x1b[40m folder to install dependencies, if any, from npm."
-  );
-}
-
-async function add(project: Project) {
-  if (!localEnv || !creatorTools) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Not configured correctly to create a project (no mctools core).");
-    return;
-  }
-
-  await localEnv.load();
-
-  if (
-    !localEnv.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula &&
-    (!options.InternalOnlyRunningInTheContextOfTestCommandLines || newName !== "testerName")
-  ) {
-    const result = await minecraftEulaAndPrivacyStatement();
-
-    if (!result) {
-      console.log("The Minecraft End User License Agreement and Privacy Statement was not agreed to.");
-      return;
-    }
-  }
-
-  let typeDesc = "Item";
-
-  if (type) {
-    switch (type) {
-      case "entity":
-        typeDesc = "Entity";
-        break;
-      case "item":
-        typeDesc = "Item";
-        break;
-      case "block":
-        typeDesc = "Block";
-        break;
-      default:
-        typeDesc = "Definition File";
-        break;
-    }
-  }
-
-  await project.ensureProjectFolder();
-
-  outputLogo("Minecraft Add " + typeDesc);
-
-  if (!creatorTools) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Not configured correctly to add an item (no mctools core).");
-    return;
-  }
-
-  await creatorTools.loadGallery();
-
-  if (!creatorTools.gallery) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Not configured correctly to add an item (no gallery).");
-    return;
-  }
-
-  const typeQuestions: inquirer.DistinctQuestion<any>[] = [];
-
-  if (type) {
-    const galleryItem = await creatorTools.getGalleryProjectById(type);
-
-    if (galleryItem) {
-      if (!newName) {
-        const newNameQuestions: inquirer.DistinctQuestion<any>[] = [];
-        newNameQuestions.push({
-          type: "input",
-          name: "name",
-          message: "What's your preferred new name? (<20 chars, no spaces)",
-        });
-        const answers = await inquirer.prompt(newNameQuestions);
-
-        newName = answers["name"];
-      }
-      if (newName) {
-        console.log("Adding item " + newName + " from " + galleryItem.title + " (" + galleryItem.id + ")");
-        await ProjectItemCreateManager.addFromGallery(project, newName, galleryItem);
-        await project.save();
-      } else {
-        errorLevel = ERROR_INIT_ERROR;
-        console.error("No item name was specified.");
-      }
-    } else {
-      errorLevel = ERROR_INIT_ERROR;
-      console.error("Could not find a template for " + type + ".");
-    }
-
-    return;
-  }
-
-  if (type === undefined) {
-    typeQuestions.push({
-      type: "list",
-      name: "type",
-      message: "What type of item should we add?",
-      choices: [
-        { name: "Entity Type (entity)", value: "entity" },
-        { name: "Block Type (block)", value: "block" },
-        { name: "Item Type (item)", value: "item" },
-        { name: "Spawn/Loot/Recipes", value: "spawnLootRecipes" },
-        { name: "World Gen", value: "worldGen" },
-        { name: "Visuals", value: "visuals" },
-        { name: "Single files (advanced)", value: "singleFiles" },
-      ],
-    });
-
-    const typeAnswers = await inquirer.prompt(typeQuestions);
-
-    type = typeAnswers["type"];
-  }
-
-  let subType: string | undefined = undefined;
-
-  if (type) {
-    type = type?.toLowerCase();
-  }
-
-  if (type === "entity") {
-    chooseAddItem(project, GalleryItemType.entityType, "entity type");
-  } else if (type === "block") {
-    chooseAddItem(project, GalleryItemType.blockType, "block type");
-  } else if (type === "item") {
-    chooseAddItem(project, GalleryItemType.itemType, "item type");
-  } else if (type === "spawnlootrecipes") {
-    chooseAddItem(project, GalleryItemType.spawnLootRecipes, "spawn/loot/recipe");
-  } else if (type === "worldgen") {
-    chooseAddItem(project, GalleryItemType.worldGen, "world gen");
-  } else if (type === "visuals") {
-    chooseAddItem(project, GalleryItemType.visuals, "visuals");
-  } else if (type === "singlefiles" || subType) {
-    if (!subType) {
-      const subTypeQuestions: inquirer.DistinctQuestion<any>[] = [
-        {
-          type: "list",
-          name: "subType",
-          message: "What type of single file should we add?",
-          choices: [
-            { name: "Entity/Item/Blocks", value: "entityItemBlocks_sf" },
-            { name: "World Gen", value: "worldGen_sf" },
-            { name: "Visuals", value: "visuals_sf" },
-            { name: "Catalogs", value: "catalogs_sf" },
-          ],
-        },
-      ];
-
-      const subTypeAnswers = await inquirer.prompt(subTypeQuestions);
-
-      subType = subTypeAnswers["subType"];
-    }
-
-    if (subType) {
-      subType = subType?.toLowerCase();
-
-      if (subType === "worldgen_sf") {
-        await chooseAddItem(project, GalleryItemType.worldGenSingleFiles, "world gen file");
-      } else if (subType === "entityitemblocks_sf") {
-        await chooseAddItem(project, GalleryItemType.entityItemBlockSingleFiles, "file");
-      } else if (subType === "visuals_sf") {
-        await chooseAddItem(project, GalleryItemType.visualSingleFiles, "visuals file");
-      } else if (subType === "catalogs_sf") {
-        await chooseAddItem(project, GalleryItemType.catalogSingleFiles, "catalog file");
-      }
-    }
-  }
-
-  await project.save();
-}
-
-async function chooseAddItem(project: Project, itemType: GalleryItemType, typeDescriptor: string) {
+// ============================================================================
+// LOADPACKS - needed by main IIFE
+// ============================================================================
+
+async function loadPacks() {
   if (!creatorTools) {
     return;
   }
-  const questions: inquirer.DistinctQuestion<any>[] = [];
+  /*
+  if (options.mctemplate) {
+    const file = await getFileFromRelaPath(options.mctemplate);
 
-  const gallery = await creatorTools.loadGallery();
+    const pack = await carto.ensurePackForFile(file);
 
-  if (gallery) {
-    const templateTypeChoices: inquirer.DistinctChoice[] = [];
-
-    for (const proj of gallery.items) {
-      if (proj.type === itemType) {
-        templateTypeChoices.push({
-          name: proj.title + " (" + proj.id + ")",
-          value: proj.id,
-        });
-      }
-    }
-
-    questions.push({
-      type: "list",
-      name: "templateType",
-      message: "Based on which " + typeDescriptor + " template?",
-      choices: templateTypeChoices,
-    });
-
-    if (!newName) {
-      questions.push({
-        type: "input",
-        name: "name",
-        message: "What's your preferred new " + typeDescriptor + " name? (<20 chars, no spaces)",
-      });
-    }
-
-    const answers = await inquirer.prompt(questions);
-
-    if (!newName) {
-      newName = answers["name"];
-    }
-
-    const templateType = answers["templateType"];
-
-    if (templateType && newName) {
-      for (const galItem of gallery.items) {
-        if (galItem.id === templateType && galItem.type === itemType) {
-          await ProjectItemCreateManager.addFromGallery(project, newName, galItem);
-        }
-      }
-    }
-  } else {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Could not find a template for " + typeDescriptor + ".");
+    templateReferenceSets.push(pack.createReference());
   }
+
+  if (options.mcpack) {
+    const file = await getFileFromPath(options.mcpack);
+
+    const pack = await carto.ensurePackForFile(file);
+
+    packageReferenceSets.push(pack.createReference());
+  }*/
 }
 
-function outputLogo(message: string) {
-  console.log("\x1b[32m┌─────┐\x1b[0m");
-  console.log("\x1b[32m│ ▄ ▄ │\x1b[0m " + message);
-  console.log("\x1b[32m│ ┏▀┓ │\x1b[0m");
-  console.log("\x1b[32m└─────┘\x1b[0m");
-  console.log("");
-}
-
-async function deploy() {
-  const ns: NodeStorage | undefined = getTargetFolderFromMode();
-
-  if (!creatorTools || !creatorTools.local || projectStarts.length === 0) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Not configured correctly to deploy a project.");
-    return;
-  }
-  for (const projectStart of projectStarts) {
-    if (projectStart) {
-      const project = ClUtils.createProject(creatorTools, projectStart);
-
-      await project.inferProjectItemsFromFiles();
-
-      if (!ns) {
-        console.log("Could not determine storage for this project.");
-        return;
-      }
-
-      await ns.rootFolder.ensureExists();
-
-      await LocalTools.deploy(creatorTools, project, ns, ns.rootFolder, project.name);
-    }
-  }
-}
-
-function getTargetFolderFromMode() {
-  let ns: NodeStorage | undefined;
-
-  if (!creatorTools || !creatorTools.local || projectStarts.length === 0) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Not configured correctly to sync a project.");
-    return;
-  }
-
-  switch (mode) {
-    case "mcuwp":
-    case undefined:
-    case "":
-      ns = new NodeStorage(creatorTools.local.minecraftPath, "");
-      break;
-    case "mcpreview":
-      ns = new NodeStorage(creatorTools.local.minecraftPreviewPath, "");
-      break;
-    case "server":
-      ns = new NodeStorage(options.serverPath, "");
-      break;
-
-    case "output":
-    case "folder":
-      ns = new NodeStorage(options.outputFolder, "");
-      break;
-
-    default:
-      ns = new NodeStorage(mode, "");
-      break;
-  }
-
-  return ns;
-}
-
-async function deployTestWorld() {
-  const ns: NodeStorage | undefined = getTargetFolderFromMode();
-
-  if (!creatorTools || !creatorTools.local || projectStarts.length === 0) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Not configured correctly to sync a project.");
-    return;
-  }
-  for (const projectStart of projectStarts) {
-    if (projectStart) {
-      if (!ns) {
-        console.log("Could not determine storage for this project.");
-        return;
-      }
-
-      const project = ClUtils.createProject(creatorTools, projectStart);
-
-      await ns.rootFolder.ensureExists();
-
-      const worldSettings: IWorldSettings = {
-        generator: Generator.infinite,
-        gameType: GameType.creative,
-        commandsEnabled: true,
-      };
-
-      const worldName = await ProjectExporter.deployProjectAndGeneratedWorldTo(
-        creatorTools,
-        project,
-        worldSettings,
-        ns.rootFolder
-      );
-
-      if (options.launch && worldName && typeof worldName === "string") {
-        await LocalTools.launchWorld(creatorTools, worldName);
-      }
-    }
-  }
-}
-
-async function serve() {
-  if (!creatorTools || !creatorTools.local || projectStarts.length === 0 || !localEnv || !sm) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Not configured correctly to run a server.");
-    return;
-  }
-
-  if (serverFeatures !== undefined) {
-    sm.features = serverFeatures;
-  }
-
-  sm.onShutdown.subscribe((serverManager: ServerManager, reason: string) => {
-    stop();
-  });
-
-  sm.ensureHttpServer();
-
-  await sm.prepare();
-}
-
-function getFilePath(defaultFileName: string) {
-  let path = options.outputFolder;
-
-  if (!path) {
-    path = "out";
-  }
-
-  const ns = new NodeStorage(path, "");
-
-  ns.rootFolder.ensureExists();
-
-  return path + "/" + defaultFileName;
-}
+// ============================================================================
+// END OF FILE - Legacy functions have been moved to modular command files
+// ============================================================================

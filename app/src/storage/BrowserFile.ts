@@ -81,11 +81,17 @@ export default class BrowserFile extends FileBase implements IFile {
     await this.loadContent();
 
     const originalPath = this.fullPath;
+    const oldParentFolder = this._parentFolder;
+    const oldName = this._name;
 
     this._name = newFileName;
     this._parentFolder = newParentFolder as BrowserFolder;
 
     this.modified = new Date();
+
+    // Remove from old parent folder's files collection
+    const oldNameCanon = StorageUtilities.canonicalizeName(oldName);
+    delete oldParentFolder.files[oldNameCanon];
 
     (newParentFolder as BrowserFolder)._addExistingFile(this);
 
@@ -97,7 +103,18 @@ export default class BrowserFile extends FileBase implements IFile {
   async loadContent(force?: boolean): Promise<Date> {
     if (force || !this.lastLoadedOrSaved) {
       this._lastLoadedPath = this.fullPath;
-      this._content = await localforage.getItem(this.fullPath);
+      let content = await localforage.getItem(this.fullPath);
+
+      // LocalForage may return ArrayBuffer for binary content instead of Uint8Array
+      // Convert ArrayBuffer to Uint8Array for consistent handling
+      if (content instanceof ArrayBuffer) {
+        content = new Uint8Array(content);
+      } else if (content !== null && typeof content !== "string" && !(content instanceof Uint8Array)) {
+        Log.debug("BrowserFile: Unexpected content type for " + this.fullPath);
+        content = null;
+      }
+
+      this._content = content as string | Uint8Array | null;
 
       this.lastLoadedOrSaved = new Date();
     }
@@ -172,7 +189,11 @@ export default class BrowserFile extends FileBase implements IFile {
       // Log.debug("Saving file " + contentDescript + " to '" + this.fullPath + "'");
 
       this._lastLoadedPath = this.fullPath;
-      await localforage.setItem(this.fullPath, this.content);
+      try {
+        await localforage.setItem(this.fullPath, this.content);
+      } catch (err) {
+        Log.debug("BrowserFile: Failed to save " + this.fullPath + ": " + err);
+      }
 
       this.lastLoadedOrSaved = new Date();
 

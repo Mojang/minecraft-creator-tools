@@ -1,0 +1,264 @@
+.eat-area {
+  width: 100%;
+  padding: 12px 12px;
+  border: 1px solid rgba(128, 128, 128, 0.25);
+  border-radius: 4px;
+  margin-top: 8px;
+  box-sizing: border-box;
+}
+
+.eat-areaNoScroll {
+  width: 100%;
+  max-width: 100%;
+  padding: 12px 20px;
+  border: 1px solid rgba(128, 128, 128, 0.25);
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.eat-headerTransition {
+  background-position-x: left;
+  background-repeat: repeat-x;
+  height: 40px;
+}
+
+.eat-header {
+  padding-top: 16px;
+  padding-bottom: 8px;
+  font-weight: 600;
+  font-size: large;
+}
+
+.eat-codeSnippet {
+  background-color: rgba(0, 0, 0, 0.45);
+  font-family: "Consolas", "Courier New", Courier, monospace;
+  padding: 3px 6px;
+  border-radius: 3px;
+  text-wrap: nowrap;
+}
+
+.eat-conditionLabel {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  opacity: 0.7;
+  padding-bottom: 6px;
+}
+
+.eat-conditionsBin {
+  padding: 6px 10px 8px 10px;
+  border: 1px solid rgba(128, 128, 128, 0.2);
+  border-radius: 4px;
+  margin-bottom: 2px;
+  overflow: hidden;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.eat-toolbarArea {
+  padding-top: 8px;
+  border-top: 2px solid rgba(255, 255, 255, 0.15);
+  margin-top: 10px;
+}
+
+.eat-toolbarArea .ui-toolbar__item {
+  height: 50px;
+}
+
+.eat-toolbarLabel {
+  grid-column: 1;
+  padding-top: 4px;
+}
+
+.eat-toolbar {
+  grid-column: 2;
+}
+
+.eat-mcBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 16px;
+  border: none;
+  cursor: pointer;
+  font-family: "Noto Sans", "Segoe UI", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: none;
+  color: #fff;
+  background-color: #4a4a4a;
+  box-shadow:
+    inset -2px -3px 0 #2a2a2a,
+    inset 2px 2px 0 #6a6a6a;
+  margin-right: 4px;
+  min-width: 140px;
+}
+
+.eat-mcBtn:hover {
+  background-color: #5a5a5a;
+  box-shadow:
+    inset -2px -3px 0 #3a3a3a,
+    inset 2px 2px 0 #7a7a7a;
+}
+
+.eat-mcBtn:active {
+  background-color: #3a3a3a;
+  box-shadow:
+    inset 2px 3px 0 #2a2a2a,
+    inset -2px -2px 0 #4a4a4a;
+}
+
+.eat-mcBtn svg {
+  margin-right: 5px;
+}
+
+.eat-mcBtn-active {
+  background-color: #3a6a2a;
+  box-shadow:
+    inset -2px -3px 0 #1e4d14,
+    inset 2px 2px 0 #52a535;
+}
+
+.eat-mcBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.mifics-toolbarInner .eat-mcBtn {
+  min-width: auto;
+}
+
+.eat-cgToggle {
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  margin-right: 4px;
+  margin-bottom: 4px;
+  text-wrap: wrap;
+  padding: 3px 10px 3px 6px;
+  font-size: 12px;
+  text-transform: none;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+  min-height: 30px;
+}
+
+.eat-cgToggle:hover {
+  border-color: rgba(128, 128, 128, 0.55);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.eat-addTriggerArea {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 100px 230px 1fr;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.eat-addTriggerInstruction {
+  grid-column: 1;
+  padding-top: 6px;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.eat-addTriggerArea .ui-dropdown__container {
+  width: 220px;
+}
+
+.eat-addTriggerDropdown {
+  grid-column: 2;
+}
+
+.eat-addTriggerButton {
+  grid-column: 3;
+}
+
+.eat-cgAdd {
+  background-color: rgba(82, 165, 53, 0.25);
+  border-color: rgba(82, 165, 53, 0.5);
+}
+
+.eat-cgAdd:hover {
+  background-color: rgba(82, 165, 53, 0.35);
+}
+
+.eat-cgRemove {
+  background-color: rgba(200, 60, 60, 0.25);
+  border-color: rgba(200, 60, 60, 0.5);
+}
+
+.eat-cgRemove:hover {
+  background-color: rgba(200, 60, 60, 0.35);
+}
+
+.eat-icon {
+  min-width: 18px;
+  display: inline-block;
+}
+
+.eat-componentGroupsHeaderInfo {
+  padding-bottom: 6px;
+  padding-top: 8px;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.eat-componentGroupsBin {
+  padding: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.25);
+  border-radius: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0px;
+}
+
+.eat-triggerTitle {
+  padding-bottom: 8px;
+  padding-top: 16px;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  opacity: 0.7;
+}
+
+.eat-actionsTitle {
+  padding-bottom: 8px;
+  padding-top: 16px;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  opacity: 0.7;
+}
+
+.eat-functionsHeader {
+  padding-top: 4px;
+}
+
+/* Override MUI outlined input background inside action tiles
+   so the text field blends with the tile's mid-gray background
+   instead of using the global offBlack (#1a1918). */
+.eat-area .MuiOutlinedInput-root,
+.eat-areaNoScroll .MuiOutlinedInput-root {
+  background-color: rgba(0, 0, 0, 0.18);
+}
+
+/* Match the floating label pill background to the tile surface
+   so it doesn't show a dark rectangle behind the label text. */
+.eat-area .MuiInputLabel-shrink,
+.eat-areaNoScroll .MuiInputLabel-shrink {
+  background-color: transparent;
+}
+
+.eat-instruction {
+  padding-bottom: 4px;
+}

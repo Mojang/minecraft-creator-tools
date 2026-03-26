@@ -1,0 +1,35 @@
+/**
+ * JsonEditorWithValidation - Styles for the split view editor with validation panel
+ */
+
+.jewv-container {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.jewv-editor {
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* Highlight decoration for navigating to lines */
+.jewv-highlight-line {
+  background-color: rgba(255, 213, 0, 0.2) !important;
+  animation: jewv-fade-highlight 2s ease-out;
+}
+
+.jewv-highlight-glyph {
+  background-color: #ffd500;
+  width: 4px !important;
+  margin-left: 3px;
+}
+
+@keyframes jewv-fade-highlight {
+  0% {
+    background-color: rgba(255, 213, 0, 0.4);
+  }
+  100% {
+    background-color: rgba(255, 213, 0, 0);
+  }
+}

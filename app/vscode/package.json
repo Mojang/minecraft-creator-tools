@@ -1,0 +1,425 @@
+{
+  "name": "mctools-vsc",
+  "displayName": "Minecraft Creator Tools",
+  "description": "Tools for creating Minecraft add-ons",
+  "publisher": "mojang",
+  "version": "0.0.1",
+  "icon": "res/images/logo512.png",
+  "engines": {
+    "vscode": "^1.93.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mojang/minecraft-creator-tools"
+  },
+  "categories": [
+    "Other",
+    "Chat"
+  ],
+  "extensionKind": [
+    "ui",
+    "workspace"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onView:mctools.mainView"
+  ],
+  "browser": "./core/webextension.js",
+  "main": "./core/extension.js",
+  "contributes": {
+    "chatParticipants": [
+      {
+        "id": "mctools.minecraft",
+        "fullName": "Minecraft Creator Tools",
+        "name": "minecraft",
+        "description": "AI assistant for Minecraft Bedrock add-on development. Validate content, create entities/blocks/items, and get help with your Minecraft projects.",
+        "isSticky": true,
+        "commands": [
+          {
+            "name": "validate",
+            "description": "Validate your Minecraft project for errors and warnings"
+          },
+          {
+            "name": "create",
+            "description": "Create new Minecraft content (entities, blocks, items, etc.)"
+          },
+          {
+            "name": "explain",
+            "description": "Explain the current Minecraft file"
+          },
+          {
+            "name": "fix",
+            "description": "Find and fix issues in your Minecraft content"
+          }
+        ]
+      }
+    ],
+    "languageModelTools": [
+      {
+        "name": "mctools-validateProject",
+        "displayName": "Validate Minecraft Project",
+        "modelDescription": "Validates a Minecraft Bedrock add-on project and returns errors, warnings, and recommendations. Use this to check if the user's Minecraft content is valid.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "folderPath": {
+              "type": "string",
+              "description": "Optional path to the project folder. If not provided, uses the current workspace."
+            }
+          }
+        },
+        "tags": [
+          "minecraft",
+          "validation",
+          "bedrock"
+        ]
+      },
+      {
+        "name": "mctools-getProjectInfo",
+        "displayName": "Get Minecraft Project Info",
+        "modelDescription": "Gets information about a Minecraft Bedrock add-on project including item counts, pack types, and structure. Use this to understand what the user's project contains.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "folderPath": {
+              "type": "string",
+              "description": "Optional path to the project folder. If not provided, uses the current workspace."
+            }
+          }
+        },
+        "tags": [
+          "minecraft",
+          "project",
+          "bedrock"
+        ]
+      },
+      {
+        "name": "mctools-listEntities",
+        "displayName": "List Minecraft Entities",
+        "modelDescription": "Lists all entity definitions in a Minecraft Bedrock add-on project. Use this to see what entities/mobs are defined in the project.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "folderPath": {
+              "type": "string",
+              "description": "Optional path to the project folder. If not provided, uses the current workspace."
+            }
+          }
+        },
+        "tags": [
+          "minecraft",
+          "entities",
+          "bedrock"
+        ]
+      },
+      {
+        "name": "mctools-getEntityInfo",
+        "displayName": "Get Minecraft Entity Info",
+        "modelDescription": "Gets detailed information about a specific entity in a Minecraft Bedrock add-on project, including components, component groups, and events.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "identifier": {
+              "type": "string",
+              "description": "The entity identifier (e.g., 'zombie', 'minecraft:pig', or a custom entity name)"
+            },
+            "folderPath": {
+              "type": "string",
+              "description": "Optional path to the project folder. If not provided, uses the current workspace."
+            }
+          },
+          "required": [
+            "identifier"
+          ]
+        },
+        "tags": [
+          "minecraft",
+          "entities",
+          "bedrock"
+        ]
+      }
+    ],
+    "terminal": {
+      "profiles": [
+        {
+          "title": "Minecraft",
+          "id": "mctools.minecraft"
+        }
+      ]
+    },
+    "taskDefinitions": [
+      {
+        "type": "minecraft",
+        "required": [
+          "task"
+        ],
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "Task for deploy to Minecraft. Available values are 'deployToRemote', 'deploy' (to deploy to the best-available version of dedicated server, typically a local hosted version), 'deployToLocal' (an internally hosted local dedicated server), or 'deployToClient' (to publish to a local UWP client.)."
+          }
+        }
+      }
+    ],
+    "walkthroughs": [
+      {
+        "id": "minecraftHelloWorld",
+        "title": "Minecraft Hello World",
+        "description": "A sample walkthrough for Minecraft",
+        "steps": [
+          {
+            "id": "runcommand",
+            "title": "Run Command",
+            "description": "This step will run a command and check off once it has been run.\n[Run Command](command:getting-started-sample.runCommand)",
+            "media": {
+              "image": "media/image.png",
+              "altText": "Empty image"
+            },
+            "completionEvents": [
+              "onCommand:getting-started-sample.runCommand"
+            ]
+          },
+          {
+            "id": "changesetting",
+            "title": "Change Setting",
+            "description": "This step will change a setting and check off when the setting has changed\n[Change Setting](command:getting-started-sample.changeSetting)",
+            "media": {
+              "markdown": "media/markdown.md"
+            },
+            "completionEvents": [
+              "onSettingChanged:getting-started-sample.sampleSetting"
+            ]
+          }
+        ]
+      }
+    ],
+    "customEditors": [
+      {
+        "viewType": "mctools.mcstructure",
+        "displayName": "Minecraft Structure",
+        "selector": [
+          {
+            "filenamePattern": "*.mcstructure"
+          }
+        ]
+      },
+      {
+        "viewType": "mctools.json",
+        "displayName": "Minecraft Json File",
+        "selector": [
+          {
+            "filenamePattern": "manifest.json"
+          },
+          {
+            "filenamePattern": "**/entities/**/*.json"
+          },
+          {
+            "filenamePattern": "**/behavior_pack/**/*.json"
+          },
+          {
+            "filenamePattern": "**/resource_pack/**/*.json"
+          },
+          {
+            "filenamePattern": "**/bp/**/*.json"
+          },
+          {
+            "filenamePattern": "**/rp/**/*.json"
+          }
+        ]
+      }
+    ],
+    "viewsWelcome": [
+      {
+        "view": "workbench.explorer.emptyView",
+        "contents": "Minecraft Tools.\n[Package packageWorld](command:mctools.packageWorld)."
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "mctools-explorer",
+          "title": "Minecraft",
+          "icon": "res/images/logolight.svg"
+        }
+      ]
+    },
+    "views": {
+      "mctools-explorer": [
+        {
+          "type": "webview",
+          "id": "mctools.mainView",
+          "name": "Minecraft",
+          "icon": "res/images/logo.svg",
+          "contextualTitle": "Minecraft"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "mctools.packageWorld",
+        "title": "Minecraft: Package Minecraft World",
+        "icon": {
+          "light": "res/images/logolight.svg",
+          "dark": "res/images/logodark.svg"
+        }
+      },
+      {
+        "command": "mctools.developUsingDedicatedServer",
+        "title": "Minecraft: Develop using Dedicated Server",
+        "enablement": "!isWeb",
+        "icon": {
+          "light": "res/images/logolight.svg",
+          "dark": "res/images/logodark.svg"
+        }
+      },
+      {
+        "command": "mctools.developUsingMinecraftGame",
+        "title": "Minecraft: Develop using Minecraft on this PC",
+        "enablement": "!isWeb",
+        "icon": {
+          "light": "res/images/logolight.svg",
+          "dark": "res/images/logodark.svg"
+        }
+      },
+      {
+        "command": "mctools.developUsingRemoteMinecraft",
+        "title": "Minecraft: Develop using remotely-hosted Minecraft",
+        "icon": {
+          "light": "res/images/logolight.svg",
+          "dark": "res/images/logodark.svg"
+        }
+      },
+      {
+        "command": "mctools.deployToRemote",
+        "title": "Minecraft: Deploy to remote Minecraft",
+        "icon": {
+          "light": "res/images/logolight.svg",
+          "dark": "res/images/logodark.svg"
+        }
+      },
+      {
+        "command": "mctools.quickNewStart",
+        "title": "Minecraft: Quick start a new project",
+        "icon": {
+          "light": "res/images/logolight.svg",
+          "dark": "res/images/logodark.svg"
+        }
+      },
+      {
+        "command": "mctools.addItem",
+        "title": "Minecraft: Add item to project",
+        "icon": {
+          "light": "res/images/logolight.svg",
+          "dark": "res/images/logodark.svg"
+        }
+      },
+      {
+        "command": "mctools.showStartPage",
+        "title": "Minecraft: Show all new projects page",
+        "icon": {
+          "light": "res/images/logolight.svg",
+          "dark": "res/images/logodark.svg"
+        }
+      },
+      {
+        "command": "mctools.showInfoPage",
+        "title": "Minecraft: Show Minecraft project information and validation page",
+        "icon": {
+          "light": "res/images/logolight.svg",
+          "dark": "res/images/logodark.svg"
+        }
+      },
+      {
+        "command": "mctools.showTerminal",
+        "title": "Minecraft: Show the Minecraft terminal",
+        "icon": {
+          "light": "res/images/logolight.svg",
+          "dark": "res/images/logodark.svg"
+        }
+      },
+      {
+        "command": "mctools.showMinecraftPane",
+        "title": "Minecraft: Show Minecraft View",
+        "icon": {
+          "light": "res/images/logolight.svg",
+          "dark": "res/images/logodark.svg"
+        }
+      },
+      {
+        "command": "mctools.showPreview",
+        "title": "Minecraft: Open Preview",
+        "icon": {
+          "light": "res/images/logolight.svg",
+          "dark": "res/images/logodark.svg"
+        }
+      },
+      {
+        "command": "mctools.showPreviewToSide",
+        "title": "Minecraft: Open Preview to the Side",
+        "icon": {
+          "light": "res/images/logolight.svg",
+          "dark": "res/images/logodark.svg"
+        }
+      },
+      {
+        "command": "mctools.openWithMCToolsEditor",
+        "title": "Minecraft: Open Editor",
+        "icon": {
+          "light": "res/images/logolight.svg",
+          "dark": "res/images/logodark.svg"
+        }
+      },
+      {
+        "command": "mctools.openWithTextEditor",
+        "title": "Minecraft: Open with Text Editor",
+        "icon": {
+          "light": "res/images/logolight.svg",
+          "dark": "res/images/logodark.svg"
+        }
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "mctools.showPreviewToSide",
+        "key": "ctrl+k v",
+        "mac": "cmd+k v",
+        "when": "editorLangId == json && resourcePath =~ /(entity|entities|blocks?|items?)[/\\\\][^/\\\\]+\\.json$/"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "mctools.showPreviewToSide",
+          "when": "editorLangId == json && resourcePath =~ /(entity|entities|blocks?|items?)[/\\\\][^/\\\\]+\\.json$/",
+          "group": "navigation"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "mctools.openWithMCToolsEditor",
+          "when": "resourceLangId == json && resourceExtname == .json",
+          "group": "navigation@1"
+        },
+        {
+          "command": "mctools.showPreview",
+          "when": "resourceLangId == json && resourceExtname == .json",
+          "group": "navigation@2"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Minecraft Creator Tools",
+      "properties": {
+        "mctools.jsonEditor.defaultToRawEditor": {
+          "type": "boolean",
+          "default": false,
+          "description": "When enabled, clicking Minecraft JSON files in the MCTools sidebar opens them in VS Code's built-in text editor instead of the visual MCTools editor. You can also use 'Open with MCTools Editor' or 'Open with Text Editor' commands to switch. For files opened from VS Code's file explorer, use the 'Open With...' context menu."
+        }
+      }
+    }
+  },
+  "devDependencies": {
+    "vscode": "*"
+  }
+}

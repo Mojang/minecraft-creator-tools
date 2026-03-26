@@ -22,9 +22,15 @@ export default class ProfilerWrapper {
                 if (err) return reject(err);
 
                 const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-                const filename = `${traceName}-profile-${timestamp}.cpuprofile`;
+                const fs = require("fs");
+                const path = require("path");
+                const debugOutputDir = path.join(process.cwd(), "debugoutput");
+                if (!fs.existsSync(debugOutputDir)) {
+                  fs.mkdirSync(debugOutputDir, { recursive: true });
+                }
+                const filename = path.join(debugOutputDir, `${traceName}-profile-${timestamp}.cpuprofile`);
 
-                require("fs").writeFileSync(filename, JSON.stringify(result.profile));
+                fs.writeFileSync(filename, JSON.stringify(result.profile));
                 console.log(`Profile saved to ${filename}`);
                 resolve(filename);
               });

@@ -6,6 +6,8 @@ import Utilities from "../core/Utilities";
 import CommandStructure from "./CommandStructure";
 import { CommandStatus, ICommandResult } from "./ICommand";
 import IContext from "./IContext";
+import { ToolCommandRegistry, initializeToolCommands } from "./toolcommands";
+import type { IToolCommandContext, IToolCommandOutput } from "./toolcommands";
 
 export enum CommandScope {
   any = 1,
@@ -226,6 +228,42 @@ export default class CommandRegistry {
     return MinecraftAddOnBlockedCommands.includes(name);
   }
 
+  /**
+   * Create an IToolCommandOutput from IContext for ToolCommand execution.
+   */
+  private createToolCommandOutput(context: IContext): IToolCommandOutput {
+    return {
+      info: (msg) => {
+        Log.message(msg);
+        context.creatorTools.notifyStatusUpdate(msg);
+      },
+      success: (msg) => {
+        Log.message("✓ " + msg);
+        context.creatorTools.notifyStatusUpdate(msg);
+      },
+      warn: (msg) => Log.debug(msg),
+      error: (msg) => Log.error(msg),
+      debug: (msg) => Log.verbose(msg),
+      progress: (current, total, msg) => {
+        const pct = Math.round((current / total) * 100);
+        context.creatorTools.notifyStatusUpdate(`[${pct}%] ${msg || ""}`);
+      },
+    };
+  }
+
+  /**
+   * Create an IToolCommandContext from the app's IContext.
+   */
+  private createToolCommandContext(context: IContext): IToolCommandContext {
+    return {
+      creatorTools: context.creatorTools,
+      project: context.project,
+      minecraft: context.minecraft,
+      output: this.createToolCommandOutput(context),
+      scope: "ui",
+    };
+  }
+
   async runCommand(context: IContext, commandText: string): Promise<ICommandResult | undefined> {
     const command = CommandStructure.parse(commandText);
 
@@ -233,13 +271,38 @@ export default class CommandRegistry {
       return undefined;
     }
 
+    // Initialize ToolCommands if not already done
+    initializeToolCommands();
+
+    // Check ToolCommandRegistry first (except for Minecraft built-in commands other than "help")
+    // The "help" command is special - we want our unified help to handle it
+    const toolRegistry = ToolCommandRegistry.instance;
+
+    if (command.fullName === "help" || !CommandRegistry.isMinecraftBuiltInCommand(command.fullName)) {
+      if (toolRegistry.has(command.fullName)) {
+        const toolContext = this.createToolCommandContext(context);
+        const result = await toolRegistry.execute(commandText, toolContext);
+
+        if (result) {
+          if (result.success) {
+            return { status: CommandStatus.completed, data: result.data };
+          } else {
+            Log.error(result.error?.message || "Command failed");
+            return { status: CommandStatus.invalidArguments };
+          }
+        }
+      }
+    }
+
     const scope = this._commandsByScope[command.fullName];
     const commandName = this._commandsByName[command.fullName];
 
-    if (command.fullName === "help") {
-      this.logHelp();
-      return { status: CommandStatus.completed };
-    } else if (CommandRegistry.isMinecraftBuiltInCommand(command.fullName) && context.minecraft) {
+    // Pass through Minecraft built-in commands (except "help" which is handled above)
+    if (
+      CommandRegistry.isMinecraftBuiltInCommand(command.fullName) &&
+      command.fullName !== "help" &&
+      context.minecraft
+    ) {
       Log.debug("Sending '" + commandText + "' to Minecraft.");
 
       let result = await context.minecraft.runCommand(commandText);

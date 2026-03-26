@@ -6,11 +6,22 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "./src/testweb",
 
+  // Warm up Vite dev server before running tests — prevents cold-start timeouts
+  globalSetup: "./src/testweb/globalSetup.ts",
+
+  // Default test timeout — 60s accommodates enterEditor() waits and UI interactions.
+  // Individual tests that need more time can override with test.setTimeout().
+  timeout: 60000,
+
+  // Exclude ServerUI tests - they require a running MCT server and have their own config
+  // Run ServerUI tests separately with: npm run test-server-ui
+  testIgnore: ["**/ServerUI.spec.ts"],
+
   outputDir: "./debugoutput/playwright-test-results",
 
-  /* Snapshot configuration - platform agnostic */
-  snapshotDir: "./test/snapshots",
-  snapshotPathTemplate: "{snapshotDir}/{testFileDir}/{arg}{ext}",
+  /* Snapshot configuration — output to debugoutput so generated images don't pollute public/ */
+  snapshotDir: "./debugoutput/res/snapshots",
+  snapshotPathTemplate: "{snapshotDir}/{arg}{ext}",
 
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -18,8 +29,8 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  /* Limit parallel workers to avoid resource contention with WebGL-heavy tests */
+  workers: process.env.CI ? 1 : 4,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [["html", { open: "never", outputFolder: "debugoutput/playwright-test-results-html" }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -33,11 +44,33 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
+    // Default project: runs all tests (no tag filtering)
     {
       name: "chromium",
       use: {
         ...devices["Desktop Chrome"],
-        // Use system chromium browser if available
+        channel: "chromium",
+      },
+    },
+
+    // Focused mode suite: runs only tests tagged @focused
+    // These validate the default creator experience with simplified UI
+    {
+      name: "focused",
+      grep: /@focused/,
+      use: {
+        ...devices["Desktop Chrome"],
+        channel: "chromium",
+      },
+    },
+
+    // Full mode suite: runs only tests tagged @full
+    // These validate advanced editor features requiring full item visibility
+    {
+      name: "full",
+      grep: /@full/,
+      use: {
+        ...devices["Desktop Chrome"],
         channel: "chromium",
       },
     },

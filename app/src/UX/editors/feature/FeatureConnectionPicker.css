@@ -1,0 +1,70 @@
+/**
+ * ========================================================================
+ * FEATURE CONNECTION PICKER STYLES
+ * ========================================================================
+ */
+
+.fcp-content {
+  min-width: 400px;
+  max-width: 500px;
+}
+
+.fcp-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 12px;
+}
+
+.fcp-tab {
+  flex: 1;
+  justify-content: center;
+}
+
+.fcp-tab-active {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.fcp-select-mode {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fcp-search {
+  margin-bottom: 8px;
+}
+
+.fcp-feature-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 4px;
+}
+
+.fcp-loading,
+.fcp-empty {
+  padding: 24px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.fcp-create-mode {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.fcp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fcp-field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+}

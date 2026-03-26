@@ -14,6 +14,7 @@ export default class AnimationBehaviorDefinition implements IDefinition {
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
+  private _loadedWithComments: boolean = false;
 
   public data?: IAnimationBehaviorWrapper;
 
@@ -158,8 +159,24 @@ export default class AnimationBehaviorDefinition implements IDefinition {
     return this._file.setObjectContentIfSemanticallyDifferent(this.data);
   }
 
-  async load() {
-    if (this._file === undefined || this._isLoaded) {
+  /**
+   * Loads the definition from the file.
+   * @param preserveComments If true, uses comment-preserving JSON parsing for edit/save cycles.
+   *                         If false (default), uses efficient standard JSON parsing.
+   *                         Can be called again with true to "upgrade" a read-only load to read/write.
+   */
+  async load(preserveComments: boolean = false) {
+    // If already loaded with comments, we have the "best" version - nothing more to do
+    if (this._isLoaded && this._loadedWithComments) {
+      return;
+    }
+
+    // If already loaded without comments and caller doesn't need comments, we're done
+    if (this._isLoaded && !preserveComments) {
+      return;
+    }
+
+    if (this._file === undefined) {
       return;
     }
 
@@ -168,11 +185,18 @@ export default class AnimationBehaviorDefinition implements IDefinition {
     }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
+      this._isLoaded = true;
+      this._onLoaded.dispatch(this, this);
       return;
     }
 
-    this.data = StorageUtilities.getJsonObject(this._file);
+    // Use comment-preserving parser only when needed for editing
+    this.data = preserveComments
+      ? StorageUtilities.getJsonObjectWithComments(this._file)
+      : StorageUtilities.getJsonObject(this._file);
 
     this._isLoaded = true;
+    this._loadedWithComments = preserveComments;
+    this._onLoaded.dispatch(this, this);
   }
 }

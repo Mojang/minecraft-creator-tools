@@ -155,13 +155,20 @@ export default class NodeFile extends FileBase implements IFile {
   async writeContent(content: String[]) {
     this.lastLoadedOrSaved = new Date();
 
-    let writer = fs.createWriteStream(this.fullPath);
+    await this._parentFolder.ensureExists();
 
-    for (const str of content) {
-      writer.write(str + "\n");
-    }
+    return new Promise<void>((resolve, reject) => {
+      const writer = fs.createWriteStream(this.fullPath);
 
-    writer.end();
+      writer.on("finish", resolve);
+      writer.on("error", reject);
+
+      for (const str of content) {
+        writer.write(str + "\n");
+      }
+
+      writer.end();
+    });
   }
 
   async deleteThisFile(skipRemoveFromParent?: boolean): Promise<boolean> {

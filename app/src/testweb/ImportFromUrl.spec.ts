@@ -1,7 +1,7 @@
 import { test, expect, ConsoleMessage } from "@playwright/test";
-import { processMessage } from "./WebTestUtilities";
+import { getExportToolbarButton, getTestToolbarButton, processMessage } from "./WebTestUtilities";
 
-test.describe("Import From URL - gp link workflow", () => {
+test.describe("Import From URL - gp link workflow @focused", () => {
   const consoleErrors: { url: string; error: string }[] = [];
   const consoleWarnings: { url: string; error: string }[] = [];
 
@@ -18,15 +18,16 @@ test.describe("Import From URL - gp link workflow", () => {
     );
     await page.waitForLoadState("domcontentloaded");
 
-    // Allow app routing to settle
-    await page.waitForTimeout(750);
+    // Allow app routing to settle and content to load
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(2000);
 
     // Heuristics for the import UX
     const loading = page.locator(".ifu-loading:has-text('Loading content from URL')");
     const importCreate = page.locator("button:has-text('Create')");
     const cancelHome = page.locator("button:has-text('Cancel/Home Page')");
     const fileExplorer = page.locator(".ifu-contentInterior .ifu-warning");
-    const dialog = page.locator("dialog, [role='dialog']");
+    const dialog = page.locator("dialog, [role='dialog'], .MuiDialog-root");
     const errorBlock = page.locator(".ifu-error");
 
     // Re-evaluate after possible fallback
@@ -89,8 +90,8 @@ test.describe("Import From URL - gp link workflow", () => {
     // Use more specific selectors to avoid matching multiple buttons
     const saveButton = page.getByRole("button", { name: "Save" }).first();
     const viewButton = page.getByRole("button", { name: "View" }).first();
-    const shareButton = page.getByRole("button", { name: "Share" }).first();
-    const runButton = page.getByRole("button", { name: "Run" }).first();
+    const exportButton = getExportToolbarButton(page);
+    const testButton = getTestToolbarButton(page);
 
     // Use conditional checks like the successful tests do
     if ((await saveButton.count()) > 0) {
@@ -103,14 +104,14 @@ test.describe("Import From URL - gp link workflow", () => {
       await expect(viewButton).toBeVisible();
     }
 
-    if ((await shareButton.count()) > 0) {
-      console.log("Found Share button in main toolbar");
-      await expect(shareButton).toBeVisible();
+    if ((await exportButton.count()) > 0) {
+      console.log("Found Export button in main toolbar");
+      await expect(exportButton).toBeVisible();
     }
 
-    if ((await runButton.count()) > 0) {
-      console.log("Found Run button in main toolbar");
-      await expect(runButton).toBeVisible();
+    if ((await testButton.count()) > 0) {
+      console.log("Found Test button in main toolbar");
+      await expect(testButton).toBeVisible();
     }
 
     // Console validation (allow a couple benign warnings)

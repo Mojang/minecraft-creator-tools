@@ -1,0 +1,82 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PROJECT ITEM TYPE ICON STYLES
+   
+   Styles for ProjectItemTypeIcon.tsx component.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.piti-icon {
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+/* Ensure SVG renders crisply */
+.piti-icon svg {
+  shape-rendering: crispEdges;
+}
+
+/* Hover effect for interactive contexts */
+.piti-icon-interactive:hover svg path {
+  filter: brightness(1.2);
+}
+
+/* ═══ Group-specific styling (if needed for special cases) ═══ */
+
+.piti-icon-scriptsLogic {
+  /* Emerald green icons */
+}
+
+.piti-icon-entityTypes {
+  /* Purple icons */
+}
+
+.piti-icon-itemTypes {
+  /* Gold icons */
+}
+
+.piti-icon-blockTypes {
+  /* Stone gray icons */
+}
+
+.piti-icon-worldWorldgen {
+  /* Lime green icons */
+}
+
+.piti-icon-modelsAnimations {
+  /* Cyan icons */
+}
+
+.piti-icon-texturesAudio {
+  /* Pink icons */
+}
+
+.piti-icon-vibrantVisuals {
+  /* Amethyst purple icons */
+}
+
+.piti-icon-uiUx {
+  /* Orange icons */
+}
+
+.piti-icon-configDev {
+  /* Slate gray icons */
+}
+
+.piti-icon-design {
+  /* Blue icons */
+}
+
+.piti-icon-packaging {
+  /* Red icons */
+}
+
+.piti-icon-skinPersona {
+  /* Brown icons */
+}
+
+.piti-icon-meta {
+  /* Book brown icons */
+}
+
+.piti-icon-unknown {
+  /* Gray icons */
+}

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import EslintConfig from "../devproject/EslintConfig";
 import JustConfig from "../devproject/JustConfig";
 import NpmPackageDefinition from "../devproject/NpmPackageDefinition";

@@ -3,10 +3,8 @@ import SemanticVersion from "../../core/versioning/SemanticVersion";
 import IFile from "../../storage/IFile";
 import StorageUtilities from "../../storage/StorageUtilities";
 import IProjectInfoGenerator from "../IProjectInfoGenerator";
-import { IProjectInfoTopicData } from "../IProjectInfoGeneratorBase";
 import ProjectInfoItem from "../ProjectInfoItem";
 import { InfoItemType } from "../IInfoItemData";
-import ProjectInfoUtilities from "../ProjectInfoUtilities";
 import { ProjectItemType } from "../../app/IProjectItemData";
 import ProjectItem from "../../app/ProjectItem";
 
@@ -25,10 +23,12 @@ enum CheckParticleIdentifier {
  * Generator for validating Particle Identifier
  *
  * Will ensure particle json files have a particle identifier with a namespace if above version 1.2.6.
+ *
+ * @see {@link ../../../public/data/forms/mctoolsval/cparti.form.json} for topic definitions
  */
 export default class CheckParticleIdentifierGenerator implements IProjectInfoGenerator {
   id: string = "CPARTI";
-  title: string = "Check Particle Identifier Generator";
+  title: string = "Particle Identifiers";
   canAlwaysProcess = true;
 
   private severity = InfoItemType.error;
@@ -87,11 +87,6 @@ export default class CheckParticleIdentifierGenerator implements IProjectInfoGen
     return new ProjectInfoItem(this.severity, this.id, test, message, particleItem);
   }
 
-  getTopicData(topicId: number): IProjectInfoTopicData | undefined {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(CheckParticleIdentifier, topicId),
-    };
-  }
   summarize(): void {}
 }
 

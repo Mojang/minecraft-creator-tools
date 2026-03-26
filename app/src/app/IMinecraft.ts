@@ -8,6 +8,8 @@ import MinecraftPush from "./MinecraftPush";
 import GameStateManager from "../minecraft/GameStateManager";
 import IFolder from "../storage/IFolder";
 import IActionSetData from "../actions/IActionSetData";
+import IStorage from "../storage/IStorage";
+import { ISlotConfig } from "./CreatorToolsAuthentication";
 
 export interface IMinecraftMessage {
   message: string;
@@ -22,6 +24,7 @@ export enum PrepareAndStartResultType {
 export interface IPrepareAndStartResult {
   worldName?: string;
   type: PrepareAndStartResultType;
+  errorMessage?: string;
 }
 
 export default interface IMinecraft {
@@ -33,6 +36,13 @@ export default interface IMinecraft {
   errorStatus?: CreatorToolsMinecraftErrorStatus;
   errorMessage?: string;
 
+  /**
+   * Configuration metadata for the slot, received once at connection time.
+   * Contains flags like debuggerEnabled and debuggerStreamingEnabled that
+   * inform the UI about what features are available.
+   */
+  slotConfig?: ISlotConfig;
+
   gameStateManager: GameStateManager | undefined;
 
   runCommand(command: string): Promise<string | undefined>;
@@ -40,6 +50,20 @@ export default interface IMinecraft {
 
   worldFolder: IFolder | undefined;
   projectFolder: IFolder | undefined;
+
+  /**
+   * Storage representing the world content of the active Minecraft server.
+   * This includes the world folder, behavior packs, and resource packs.
+   * For remote connections, this is backed by HttpStorage pointing to /api/worldContent/{slot}/.
+   */
+  worldContentStorage: IStorage | undefined;
+
+  /**
+   * A Project wrapper around the worldContentStorage.
+   * Created lazily when first accessed. Provides structured access to the
+   * world content including behavior packs, resource packs, and world data.
+   */
+  worldProject: Project | undefined;
 
   onRefreshed: IEvent<IMinecraft, CreatorToolsMinecraftState>;
   onStateChanged: IEvent<IMinecraft, CreatorToolsMinecraftState>;

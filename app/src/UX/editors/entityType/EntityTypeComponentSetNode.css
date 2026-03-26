@@ -1,0 +1,120 @@
+.ecsn-box {
+  width: 280px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.ecsn-inner {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.ecsn-header {
+  height: 34px;
+  padding-left: 10px;
+  padding-top: 8px;
+  padding-bottom: 6px;
+  vertical-align: middle;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 4px;
+}
+
+.ecsn-headerIcon {
+  opacity: 0.7;
+}
+
+.ecsn-unselected {
+  border: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.ecsn-unselected:hover {
+  border: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+.ecsn-selected {
+  border: 3px solid #4caf50;
+  box-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+}
+
+/* Connection row - integrates handles with content */
+.ecsn-connectionRow {
+  display: flex;
+  align-items: center;
+  height: 38px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  position: relative;
+}
+
+/* Handle areas on left and right sides */
+.ecsn-handleArea {
+  width: 16px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.ecsn-handleLeft {
+  /* Left handle area - connects to strip */
+}
+
+.ecsn-handleRight {
+  /* Right handle area - connects to strip */
+}
+
+/* The content strip between handles */
+.ecsn-connectionContent {
+  flex: 1;
+  height: 30px;
+  border-top: solid 1px;
+  border-bottom: solid 1px;
+  border-left: solid 4px;
+  border-right: solid 1px;
+  border-radius: 3px;
+  white-space: nowrap;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  padding-top: 8px;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.ecsn-connectionContent:hover {
+  filter: brightness(1.1);
+}
+
+.ecsn-connectionPointText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+/* Override ReactFlow handle positioning within our row structure */
+.ecsn-handleArea .react-flow__handle {
+  position: relative !important;
+  transform: none !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+}
+
+.ecsn-connectBin {
+  padding-top: 6px;
+  padding-bottom: 4px;
+}

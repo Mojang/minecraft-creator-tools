@@ -11,7 +11,6 @@ import IFile from "../storage/IFile";
 import ZipStorage from "../storage/ZipStorage";
 import ProjectInfoSet from "./ProjectInfoSet";
 import ContentIndex, { AnnotationCategory } from "../core/ContentIndex";
-import ProjectInfoUtilities from "./ProjectInfoUtilities";
 
 const tagAllowList = ["render_method", "min_difficulty", "cause", "effect_name", "entity_type", "event_name"];
 const numericAllowList: string[] = ["max_stack_size"];
@@ -32,18 +31,20 @@ export enum JsonFileTagsInfoGeneratorTest {
   soundDefinition = 106,
   musicDefinition = 107,
   sound = 108,
+  biomeBehaviorType = 109,
+  biomeClientType = 110,
+  particleType = 111,
 }
 
+/**
+ * Extracts and aggregates content tags from JSON definition files.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/jsontags.form.json} for topic definitions
+ */
 export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator {
   id = "JSONTAGS";
   title = "JSON Tags";
   canAlwaysProcess = true;
-
-  getTopicData(topicId: number) {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(JsonFileTagsInfoGeneratorTest, topicId),
-    };
-  }
 
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
@@ -59,10 +60,17 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
     const entityTypeComponents = infoSet.getItems(this.id, JsonFileTagsInfoGeneratorTest.entityType);
     const blockTypeComponents = infoSet.getItems(this.id, JsonFileTagsInfoGeneratorTest.blockType);
     const itemTypeComponents = infoSet.getItems(this.id, JsonFileTagsInfoGeneratorTest.itemType);
+    const biomeBehaviorTypeComponents = infoSet.getItems(this.id, JsonFileTagsInfoGeneratorTest.biomeBehaviorType);
+    const biomeClientTypeComponents = infoSet.getItems(this.id, JsonFileTagsInfoGeneratorTest.biomeClientType);
+    const particleTypeComponents = infoSet.getItems(this.id, JsonFileTagsInfoGeneratorTest.particleType);
 
     info.entityTypeComponents = [];
     info.blockTypeComponents = [];
     info.itemTypeComponents = [];
+    info.biomeBehaviorTypeComponents = [];
+    info.biomeClientTypeComponents = [];
+    info.particleEmitterTypeComponents = [];
+    info.particleTypeComponents = [];
 
     for (const entityTypeComponent of entityTypeComponents) {
       let entityComponentSets = entityTypeComponent.featureSets;
@@ -151,9 +159,87 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       }
     }
 
+    for (const biomeBehaviorTypeComponent of biomeBehaviorTypeComponents) {
+      let biomeComponentSets = biomeBehaviorTypeComponent.featureSets;
+
+      if (biomeComponentSets) {
+        const biomeComponents = biomeComponentSets["biomeComponents"];
+
+        if (biomeComponents) {
+          for (let cgId in biomeComponents) {
+            if (cgId.startsWith("minecraft:")) {
+              cgId = cgId.substring(10);
+            }
+
+            if (!info.biomeBehaviorTypeComponents.includes(cgId)) {
+              info.biomeBehaviorTypeComponents.push(cgId);
+            }
+          }
+        }
+      }
+    }
+
+    for (const biomeClientTypeComponent of biomeClientTypeComponents) {
+      let biomeClientComponentSets = biomeClientTypeComponent.featureSets;
+
+      if (biomeClientComponentSets) {
+        const biomeClientComponents = biomeClientComponentSets["biomeClientComponents"];
+
+        if (biomeClientComponents) {
+          for (let cgId in biomeClientComponents) {
+            if (cgId.startsWith("minecraft:")) {
+              cgId = cgId.substring(10);
+            }
+
+            if (!info.biomeClientTypeComponents.includes(cgId)) {
+              info.biomeClientTypeComponents.push(cgId);
+            }
+          }
+        }
+      }
+    }
+
+    for (const particleTypeComponent of particleTypeComponents) {
+      let particleComponentSets = particleTypeComponent.featureSets;
+
+      if (particleComponentSets) {
+        const emitterComponents = particleComponentSets["particleEmitterComponents"];
+
+        if (emitterComponents) {
+          for (let cgId in emitterComponents) {
+            if (cgId.startsWith("minecraft:")) {
+              cgId = cgId.substring(10);
+            }
+
+            if (!info.particleEmitterTypeComponents.includes(cgId)) {
+              info.particleEmitterTypeComponents.push(cgId);
+            }
+          }
+        }
+
+        const particleComponents = particleComponentSets["particleComponents"];
+
+        if (particleComponents) {
+          for (let cgId in particleComponents) {
+            if (cgId.startsWith("minecraft:")) {
+              cgId = cgId.substring(10);
+            }
+
+            if (!info.particleTypeComponents.includes(cgId)) {
+              info.particleTypeComponents.push(cgId);
+            }
+          }
+        }
+      }
+    }
+
     info.entityTypeComponents.sort();
     info.itemTypeComponents.sort();
     info.blockTypeComponents.sort();
+    info.biomeBehaviorTypeComponents.sort();
+    info.biomeClientTypeComponents.sort();
+    info.particleEmitterTypeComponents.sort();
+    info.particleTypeComponents.sort();
   }
 
   async generateFromFolder(project: Project, folder: IFolder, items: ProjectInfoItem[], index: ContentIndex) {
@@ -417,6 +503,118 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       items.push(pi);
     }
 
+    if (srPath.indexOf("/biomes/") >= 0) {
+      if (!file.isContentLoaded) {
+        await file.loadContent(false);
+      }
+
+      const jsonO = StorageUtilities.getJsonObject(file);
+
+      if (jsonO) {
+        const biomeNode = jsonO["minecraft:biome"];
+
+        if (biomeNode) {
+          const pi = new ProjectInfoItem(
+            InfoItemType.info,
+            this.id,
+            JsonFileTagsInfoGeneratorTest.biomeBehaviorType,
+            "Biome behavior file",
+            project.getItemByExtendedOrProjectPath(file.storageRelativePath),
+            file.storageRelativePath
+          );
+
+          await this.addSubTags(
+            pi,
+            "biomeComponents",
+            index,
+            AnnotationCategory.biomeBehaviorComponentDependent,
+            biomeNode["components"]
+          );
+
+          items.push(pi);
+        }
+
+        const clientBiomeNode = jsonO["minecraft:client_biome"];
+
+        if (clientBiomeNode) {
+          const pi = new ProjectInfoItem(
+            InfoItemType.info,
+            this.id,
+            JsonFileTagsInfoGeneratorTest.biomeClientType,
+            "Biome client file",
+            project.getItemByExtendedOrProjectPath(file.storageRelativePath),
+            file.storageRelativePath
+          );
+
+          await this.addSubTags(
+            pi,
+            "biomeClientComponents",
+            index,
+            AnnotationCategory.biomeClientComponentDependent,
+            clientBiomeNode["components"]
+          );
+
+          items.push(pi);
+        }
+      }
+    }
+
+    if (srPath.indexOf("/particles/") >= 0) {
+      const pi = new ProjectInfoItem(
+        InfoItemType.info,
+        this.id,
+        JsonFileTagsInfoGeneratorTest.particleType,
+        "Particle file",
+        project.getItemByExtendedOrProjectPath(file.storageRelativePath),
+        file.storageRelativePath
+      );
+
+      if (!file.isContentLoaded) {
+        await file.loadContent(false);
+      }
+
+      const jsonO = StorageUtilities.getJsonObject(file);
+
+      if (jsonO !== undefined) {
+        const particleEffectNode = jsonO["particle_effect"];
+
+        if (particleEffectNode) {
+          const componentsNode = particleEffectNode["components"];
+
+          if (componentsNode) {
+            const emitterComponents: { [key: string]: any } = {};
+            const particleComponents: { [key: string]: any } = {};
+
+            for (const compName in componentsNode) {
+              if (compName.startsWith("minecraft:particle_") || compName.startsWith("particle_")) {
+                particleComponents[compName] = componentsNode[compName];
+              } else {
+                emitterComponents[compName] = componentsNode[compName];
+              }
+            }
+
+            await this.addSubTags(
+              pi,
+              "particleEmitterComponents",
+              index,
+              AnnotationCategory.particleEmitterComponentDependent,
+              emitterComponents
+            );
+
+            await this.addSubTags(
+              pi,
+              "particleComponents",
+              index,
+              AnnotationCategory.particleComponentDependent,
+              particleComponents
+            );
+          }
+        }
+      }
+
+      items.push(pi);
+    }
+
     if (srPath.indexOf("/textures/terrain_texture.json") >= 0) {
       const pi = new ProjectInfoItem(
         InfoItemType.info,
@@ -644,7 +842,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
                 index.insert(childObj, pi.projectItem.projectPath, annotation);
               }
             } else {
-              if (childObj && childObj.constructor !== Array) {
+              if (childObj && !Array.isArray(childObj)) {
                 this.addDescendentSubTags(pi, bareTag, index, annotation, childObj, childEltName);
               }
             }
@@ -666,12 +864,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
           index.insert(childObj, pi.projectItem.projectPath, annotation);
         }
       } else {
-        if (
-          childObj &&
-          typeof childObj !== "number" &&
-          typeof childObj !== "boolean" &&
-          childObj.constructor !== Array
-        ) {
+        if (childObj && typeof childObj !== "number" && typeof childObj !== "boolean" && !Array.isArray(childObj)) {
           this.addDescendentSubTags(pi, prefix, index, annotation, childObj);
         }
       }
@@ -725,7 +918,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
             } else if (Array.isArray(obj)) {
               this.addSubTagsForArray(pi, prefix + "." + bareTag, index, annotation, obj);
             } else {
-              if (obj && obj.constructor !== Array) {
+              if (obj && !Array.isArray(obj)) {
                 this.addDescendentSubTags(pi, prefix + "." + bareTag, index, annotation, obj, childEltName);
               }
             }

@@ -1,0 +1,131 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   FEATURE TYPE PICKER - Dialog for selecting feature types
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ftp-content {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.ftp-nameSection {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(107, 101, 98, 0.3);
+}
+
+.ftp-nameLabel {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.ftp-nameInput {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid rgba(107, 101, 98, 0.5);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  color: inherit;
+  font-family: "Noto Sans", sans-serif;
+}
+
+.ftp-nameInput:focus {
+  outline: none;
+  border-color: #0078d4;
+}
+
+.ftp-nameHint {
+  font-size: 11px;
+  opacity: 0.6;
+  margin-top: 4px;
+}
+
+.ftp-description {
+  margin-bottom: 16px;
+  opacity: 0.8;
+}
+
+.ftp-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ftp-category {
+  border: 1px solid rgba(107, 101, 98, 0.3);
+  border-radius: 4px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.ftp-categoryHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.ftp-categoryIcon {
+  font-size: 20px;
+  opacity: 0.7;
+  margin-top: 2px;
+}
+
+.ftp-categoryInfo {
+  flex: 1;
+}
+
+.ftp-categoryName {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.ftp-categoryDescription {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.ftp-categoryTypes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ftp-typeButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  border: 1px solid rgba(107, 101, 98, 0.4);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.2);
+  color: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ftp-typeButtonText {
+  white-space: nowrap;
+}
+
+.ftp-typeButton:hover {
+  background: rgba(82, 165, 53, 0.3);
+  border-color: #52a535;
+}
+
+.ftp-typeButton:active {
+  background: rgba(82, 165, 53, 0.5);
+}
+
+.ftp-typeButtonSelected {
+  border-width: 2px;
+  box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.3);
+}
+
+.ftp-typeButtonSelected:hover {
+  opacity: 0.9;
+}

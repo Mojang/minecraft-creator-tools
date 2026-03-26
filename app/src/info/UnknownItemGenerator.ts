@@ -5,22 +5,20 @@ import { ProjectItemType } from "../app/IProjectItemData";
 import { InfoItemType } from "./IInfoItemData";
 import ProjectInfoSet from "./ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
-import ProjectInfoUtilities from "./ProjectInfoUtilities";
 
 export enum UnknownItemGeneratorTest {
   unknownItemTypeFound = 101,
 }
 
+/**
+ * Detects JSON files with unknown or unrecognized structure.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/unkjson.form.json} for topic definitions
+ */
 export default class UnknownItemGenerator implements IProjectInfoItemGenerator {
   id = "UNKJSON";
   title = "Unknown JSON";
   canAlwaysProcess = true;
-
-  getTopicData(topicId: number) {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(UnknownItemGeneratorTest, topicId),
-    };
-  }
 
   summarize(info: any, infoSet: ProjectInfoSet) {}
 

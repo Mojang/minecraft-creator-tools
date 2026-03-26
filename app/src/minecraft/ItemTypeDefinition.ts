@@ -17,6 +17,7 @@ import IDefinition from "./IDefinition";
 import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
+import RelationsIndex from "../app/RelationsIndex";
 import AttachableResourceDefinition from "./AttachableResourceDefinition";
 import TypeScriptDefinition from "./TypeScriptDefinition";
 import Utilities from "../core/Utilities";
@@ -27,6 +28,7 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
+  private _loadedWithComments: boolean = false;
   private _managed: { [id: string]: IManagedComponent | undefined } = {};
 
   private _data?: IItemTypeBehaviorPack;
@@ -231,12 +233,13 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
     return componentSet;
   }
 
-  async addChildItems(project: Project, item: ProjectItem) {
-    const itemsCopy = project.getItemsCopy();
-
+  async addChildItems(project: Project, item: ProjectItem, index?: RelationsIndex) {
     let customComponentIds: string[] = this.getCustomComponentIds();
-    for (const candItem of itemsCopy) {
-      if (candItem.itemType === ProjectItemType.ts) {
+
+    // Check TypeScript files for custom components (only if we have custom component IDs)
+    if (customComponentIds && customComponentIds.length > 0) {
+      const tsItems = project.getItemsByType(ProjectItemType.ts);
+      for (const candItem of tsItems) {
         if (!candItem.isContentLoaded) {
           await candItem.loadContent();
         }
@@ -248,7 +251,7 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
 
           const tsd = await TypeScriptDefinition.ensureOnFile(candItem.primaryFile);
 
-          if (tsd && tsd.data && customComponentIds) {
+          if (tsd && tsd.data) {
             let doAddTs = false;
 
             for (const customCompId of customComponentIds) {
@@ -263,7 +266,19 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
             }
           }
         }
-      } else if (candItem.itemType === ProjectItemType.attachableResourceJson) {
+      }
+    }
+
+    // Check attachable resources
+    if (index && this.id) {
+      // Use pre-built index for O(1) lookup
+      const matchingAttachables = index.getItemsById(index.attachablesById, this.id);
+      for (const candItem of matchingAttachables) {
+        item.addChildItem(candItem);
+      }
+    } else {
+      const attachableItems = project.getItemsByType(ProjectItemType.attachableResourceJson);
+      for (const candItem of attachableItems) {
         if (!candItem.isContentLoaded) {
           await candItem.loadContent();
         }
@@ -396,7 +411,11 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
     this.persist();
   }
 
-  static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<ItemTypeDefinition, ItemTypeDefinition>) {
+  static async ensureOnFile(
+    file: IFile,
+    loadHandler?: IEventHandler<ItemTypeDefinition, ItemTypeDefinition>,
+    preserveComments?: boolean
+  ) {
     let itt: ItemTypeDefinition | undefined;
 
     if (file.manager === undefined) {
@@ -410,12 +429,12 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
     if (file.manager !== undefined && file.manager instanceof ItemTypeDefinition) {
       itt = file.manager as ItemTypeDefinition;
 
-      if (!itt.isLoaded) {
+      if (!itt.isLoaded || (preserveComments && !itt._loadedWithComments)) {
         if (loadHandler) {
           itt.onLoaded.subscribe(loadHandler);
         }
 
-        await itt.load();
+        await itt.load(preserveComments);
       }
     }
 
@@ -449,8 +468,24 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
     return this._file.setObjectContentIfSemanticallyDifferent(this._wrapper);
   }
 
-  async load() {
-    if (this._file === undefined || this._isLoaded) {
+  /**
+   * Loads the definition from the file.
+   * @param preserveComments If true, uses comment-preserving JSON parsing for edit/save cycles.
+   *                         If false (default), uses efficient standard JSON parsing.
+   *                         Can be called again with true to "upgrade" a read-only load to read/write.
+   */
+  async load(preserveComments: boolean = false) {
+    // If already loaded with comments, we have the "best" version - nothing more to do
+    if (this._isLoaded && this._loadedWithComments) {
+      return;
+    }
+
+    // If already loaded without comments and caller doesn't need comments, we're done
+    if (this._isLoaded && !preserveComments) {
+      return;
+    }
+
+    if (this._file === undefined) {
       return;
     }
 
@@ -459,10 +494,15 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
     }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
+      this._isLoaded = true;
+      this._onLoaded.dispatch(this, this);
       return;
     }
 
-    this._wrapper = StorageUtilities.getJsonObject(this._file);
+    // Use comment-preserving parser only when needed for editing
+    this._wrapper = preserveComments
+      ? StorageUtilities.getJsonObjectWithComments(this._file)
+      : StorageUtilities.getJsonObject(this._file);
 
     if (this._wrapper) {
       const item = (this._wrapper as any)["minecraft:item"];
@@ -475,5 +515,7 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
     }
 
     this._isLoaded = true;
+    this._loadedWithComments = preserveComments;
+    this._onLoaded.dispatch(this, this);
   }
 }

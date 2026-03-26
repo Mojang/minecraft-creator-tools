@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import { IErrorMessage, IErrorable } from "../core/IErrorable";
 import Log from "../core/Log";
 import Utilities from "../core/Utilities";

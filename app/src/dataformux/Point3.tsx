@@ -1,9 +1,10 @@
-import { Component, SyntheticEvent } from "react";
+import { Component, SyntheticEvent, ChangeEvent } from "react";
 import "./Point3.css";
 import IFormComponentProps from "./../dataform/IFormComponentProps.js";
-import { FormInput, InputProps, Button } from "@fluentui/react-northstar";
+import { TextField, Button } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBullseye } from "@fortawesome/free-solid-svg-icons";
+import Log from "./../core/Log";
 
 export interface IPoint3Props extends IFormComponentProps {
   data: number[] | undefined;
@@ -81,19 +82,18 @@ export default class Point3 extends Component<IPoint3Props, IPoint3State> {
     return null;
   }
 
-  _handleXChange(
-    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
-    data: (InputProps & { value: string }) | undefined
-  ) {
-    if (event === null || data === null || data === undefined || !this.state) {
+  _handleXChange(event: ChangeEvent<HTMLInputElement>) {
+    if (!this.state) {
       return;
     }
 
     let newX = this.state.x;
 
     try {
-      newX = parseInt(data.value);
-    } catch (e) {}
+      newX = parseInt(event.target.value);
+    } catch (e) {
+      Log.debug("Point3 X parse error: " + e);
+    }
 
     this._updateProp(event, newX, this.state.y, this.state.z);
 
@@ -105,19 +105,18 @@ export default class Point3 extends Component<IPoint3Props, IPoint3State> {
     });
   }
 
-  _handleYChange(
-    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
-    data: (InputProps & { value: string }) | undefined
-  ) {
-    if (event === null || data === null || data === undefined || !this.state) {
+  _handleYChange(event: ChangeEvent<HTMLInputElement>) {
+    if (!this.state) {
       return;
     }
 
     let newY = this.state.y;
 
     try {
-      newY = parseInt(data.value);
-    } catch (e) {}
+      newY = parseInt(event.target.value);
+    } catch (e) {
+      Log.debug("Point3 Y parse error: " + e);
+    }
 
     this._updateProp(event, this.state.x, newY, this.state.z);
 
@@ -128,19 +127,18 @@ export default class Point3 extends Component<IPoint3Props, IPoint3State> {
       objectKey: this.state.objectKey,
     });
   }
-  _handleZChange(
-    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
-    data: (InputProps & { value: string }) | undefined
-  ) {
-    if (event === null || data === null || data === undefined || !this.state) {
+  _handleZChange(event: ChangeEvent<HTMLInputElement>) {
+    if (!this.state) {
       return;
     }
 
     let newZ = this.state.z;
 
     try {
-      newZ = parseInt(data.value);
-    } catch (e) {}
+      newZ = parseInt(event.target.value);
+    } catch (e) {
+      Log.debug("Point3 Z parse error: " + e);
+    }
 
     this._updateProp(event, this.state.x, this.state.y, newZ);
 
@@ -224,29 +222,32 @@ export default class Point3 extends Component<IPoint3Props, IPoint3State> {
         <div className="p3-data">
           <div className="p3-inner">
             <div className="p3-cell">
-              <FormInput
+              <TextField
                 id="x"
                 className="p3-input"
-                defaultValue={curX ? curX.toString() : undefined}
-                value={curX ? curX.toString() : undefined}
+                size="small"
+                variant="outlined"
+                value={curX ? curX.toString() : ""}
                 onChange={this._handleXChange}
               />
             </div>
             <div className="p3-cell">
-              <FormInput
+              <TextField
                 id="y"
                 className="p3-input"
-                defaultValue={curY ? curY.toString() : undefined}
-                value={curY ? curY.toString() : undefined}
+                size="small"
+                variant="outlined"
+                value={curY ? curY.toString() : ""}
                 onChange={this._handleYChange}
               />
             </div>
             <div className="p3-cell">
-              <FormInput
+              <TextField
                 id="z"
                 className="p3-input"
-                defaultValue={curZ ? curZ.toString() : undefined}
-                value={curZ ? curZ.toString() : undefined}
+                size="small"
+                variant="outlined"
+                value={curZ ? curZ.toString() : ""}
                 onChange={this._handleZChange}
               />
             </div>

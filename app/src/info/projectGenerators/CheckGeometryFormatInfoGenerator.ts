@@ -5,7 +5,6 @@ import ProjectInfoItem from "../ProjectInfoItem";
 import IProjectInfoGenerator from "../IProjectInfoGenerator";
 import { InfoItemType } from "../IInfoItemData";
 import ProjectInfoSet from "../ProjectInfoSet";
-import ProjectInfoUtilities from "../ProjectInfoUtilities";
 import Project from "../../app/Project";
 import { ProjectItemType } from "../../app/IProjectItemData";
 import { IGeometry } from "../../minecraft/IModelGeometry";
@@ -22,18 +21,13 @@ export enum CheckGeometryFormatInfoGeneratorTest {
  * Will check:
  *  * models folder JSON files for restricted "poly_mesh" string if project is not first party
  *
+ * @see {@link ../../../public/data/forms/mctoolsval/geofmt.form.json} for topic definitions
  */
 
 export default class CheckGeometryFormatInfoGenerator implements IProjectInfoGenerator {
   id = "GEOFMT";
   title = "Geometry Format";
   canAlwaysProcess = true;
-
-  getTopicData(topicId: number) {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(CheckGeometryFormatInfoGeneratorTest, topicId),
-    };
-  }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
     info.restrictedPolyMeshFound = infoSet.getSummedDataValue(

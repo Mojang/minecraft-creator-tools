@@ -1,0 +1,568 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   EDITOR HEADER STYLES - Minecraft "Chip" Style
+   
+   A chunky Minecraft-style outset header with pixelated beveled edges.
+   Uses a 3x3 grid to create authentic Minecraft button corners.
+   
+   STRUCTURE:
+   ┌─────────────────────────────────────────────────────────────────────┐
+   │ .editor-header-chip                                                 │
+   │   └── .chip-grid (3x3 grid for pixelated corners)                   │
+   │         ├── corners (tl, tr, bl, br) - corner pixels                │
+   │         ├── edges (top, right, bottom, left) - highlight/shadow     │
+   │         └── .chip-content                                           │
+   │               ├── .editor-header-bar (icon + title + badge)         │
+   │               └── .editor-header-tabs-container (tab bar)           │
+   └─────────────────────────────────────────────────────────────────────┘
+   
+   COLOR VARIABLES (set by EditorHeaderChip component):
+   --chip-border: Outer border (darkest)
+   --chip-highlight: Top/left edges (lightest) 
+   --chip-main: Face background
+   --chip-shadow: Bottom/right edges (darker)
+   --chip-corner: Corner blend color
+   --chip-text: Text color
+   --type-color: Accent color for selected states
+   
+   See: docs/EditorHeaderStyleGuide.md
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Pixel size - matches McButton for consistency */
+:root {
+  --chip-px: 2px;
+}
+
+/* =============================================================================
+   CHIP CONTAINER - The outer wrapper
+   ============================================================================= */
+
+.editor-header-chip {
+  /* Add outer border */
+  border: var(--chip-px) solid var(--chip-border, #3a3a3a);
+  border-radius: 0; /* Minecraft = no rounded corners */
+  margin: 0; /* Fits flush against container edges */
+}
+
+/* =============================================================================
+   CHIP GRID - 3x3 grid for pixelated Minecraft corners
+   ============================================================================= */
+
+.chip-grid {
+  display: grid;
+  grid-template-columns: var(--chip-px) 1fr var(--chip-px);
+  grid-template-rows: var(--chip-px) auto var(--chip-px);
+  background-color: var(--chip-main, #6b6b6b);
+}
+
+/* -----------------------------------------------------------------------------
+   Corner pixels - The iconic Minecraft corner style
+   ----------------------------------------------------------------------------- */
+
+/* Top-left corner: highlight blend */
+.chip-corner-tl {
+  background-color: var(--chip-highlight, #8b8b8b);
+  width: var(--chip-px);
+  height: var(--chip-px);
+}
+
+/* Top-right corner: dark pixel (classic Minecraft corner) */
+.chip-corner-tr {
+  background-color: var(--chip-corner, #5a5a5a);
+  width: var(--chip-px);
+  height: var(--chip-px);
+}
+
+/* Bottom-left corner: dark pixel (classic Minecraft corner) */
+.chip-corner-bl {
+  background-color: var(--chip-corner, #5a5a5a);
+  width: var(--chip-px);
+  height: var(--chip-px);
+}
+
+/* Bottom-right corner: shadow blend */
+.chip-corner-br {
+  background-color: var(--chip-shadow, #4a4a4a);
+  width: var(--chip-px);
+  height: var(--chip-px);
+}
+
+/* -----------------------------------------------------------------------------
+   Edge pixels - Highlight on top/left, shadow on bottom/right
+   ----------------------------------------------------------------------------- */
+
+/* Top edge: highlight (light comes from top-left) */
+.chip-edge-top {
+  background-color: var(--chip-highlight, #8b8b8b);
+  height: var(--chip-px);
+}
+
+/* Left edge: highlight */
+.chip-edge-left {
+  background-color: var(--chip-highlight, #8b8b8b);
+  width: var(--chip-px);
+}
+
+/* Right edge: shadow */
+.chip-edge-right {
+  background-color: var(--chip-shadow, #4a4a4a);
+  width: var(--chip-px);
+}
+
+/* Bottom edge: shadow */
+.chip-edge-bottom {
+  background-color: var(--chip-shadow, #4a4a4a);
+  height: var(--chip-px);
+}
+
+/* -----------------------------------------------------------------------------
+   Content area - The main face of the chip
+   ----------------------------------------------------------------------------- */
+
+.chip-content {
+  background-color: var(--chip-main, #6b6b6b);
+  color: var(--chip-text, #ffffff);
+}
+
+/* =============================================================================
+   HEADER BAR - Title row inside the chip
+   ============================================================================= */
+
+.editor-header-bar {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  height: 42px;
+  padding: 0 14px 0 10px;
+  gap: 10px;
+  overflow: visible;
+}
+
+.editor-header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  opacity: 0.95;
+}
+
+.editor-header-thumbnail {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  image-rendering: auto;
+  flex-shrink: 0;
+  background-color: rgba(0, 0, 0, 0.25);
+  border: 2px solid rgba(0, 0, 0, 0.35);
+  border-radius: 0;
+  padding: 2px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  position: relative;
+  top: 2px;
+}
+
+.editor-header-title-group {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+  overflow: hidden;
+  margin-left: -2px;
+}
+
+.editor-header-title {
+  font-size: 14pt;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.02em;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+  min-width: 0;
+}
+
+.editor-header-badge {
+  font-size: 9pt;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  border-radius: 0;
+  background-color: rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.editor-header-format-version {
+  font-size: 9pt;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  padding: 3px 6px;
+  white-space: nowrap;
+  opacity: 0.7;
+}
+
+/* =============================================================================
+   TABS CONTAINER - Tab bar inside the chip
+   ============================================================================= */
+
+.editor-header-tabs-container {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 0 6px;
+  min-height: 34px;
+  /* Add spacing above tabs (between header text and tabs) */
+  margin-top: 6px;
+  /* Subtle top separator */
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  background: transparent;
+  /* Use relative positioning to push tabs down past the chip border */
+  position: relative;
+  top: 3px;
+  z-index: 1;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+}
+
+/* Reduce MUI Button padding for compact tab appearance */
+.editor-header-tabs-container .MuiButton-root {
+  padding: 2px 4px;
+  min-width: unset;
+  flex-shrink: 0;
+}
+
+.editor-header-tabs-container .MuiStack-root {
+  gap: 2px;
+}
+
+/* =============================================================================
+   AGGRESSIVE DOT/BULLET REMOVAL
+   FluentUI Toolbar renders items as <li> elements which can show list markers.
+   These rules aggressively hide any list styling or pseudo-element dots.
+   ============================================================================= */
+
+/* Remove list styling from ALL elements in the toolbar container */
+.editor-header-tabs-container,
+.editor-header-tabs-container *,
+.editor-header-tabs-container *::before,
+.editor-header-tabs-container *::after {
+  list-style: none !important;
+  list-style-type: none !important;
+}
+
+/* Hide any ::marker pseudo-elements (modern list bullet styling) */
+.editor-header-tabs-container li::marker,
+.editor-header-tabs-container button::marker,
+.editor-header-tabs-container *::marker {
+  content: none !important;
+  display: none !important;
+  font-size: 0 !important;
+  color: transparent !important;
+}
+
+/* Override Fluent Toolbar styling for tabs inside chip */
+.editor-header-tabs-container .ui-toolbar {
+  gap: 4px;
+  list-style: none !important;
+  list-style-type: none !important;
+}
+
+.editor-header-tabs-container .ui-toolbar__item {
+  margin: 0;
+  padding: 0;
+  list-style: none !important;
+  list-style-type: none !important;
+}
+
+/* 
+ * HIDE STRAY BULLET/DOT TEXT
+ * FluentUI may insert text nodes (like bullet characters) as siblings of the itemicon.
+ * Set font-size: 0 on the button to hide any stray text, then restore on the itemicon.
+ */
+.editor-header-tabs-container .ui-toolbar__item > button,
+.editor-header-tabs-container button.ui-toolbar__item {
+  font-size: 0 !important;
+  line-height: 0 !important;
+}
+
+.editor-header-tabs-container .ui-toolbar__itemicon {
+  font-size: 14px !important;
+  line-height: normal !important;
+}
+
+/* Hide any dot/bullet that FluentUI might add to toolbar item icon wrapper */
+.editor-header-tabs-container .ui-toolbar__itemicon {
+  display: flex !important;
+  align-items: center;
+}
+
+.editor-header-tabs-container .ui-toolbar__itemicon::before,
+.editor-header-tabs-container .ui-toolbar__itemicon::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Hide list bullets/markers from toolbar items (li elements) */
+.editor-header-tabs-container ul,
+.editor-header-tabs-container li,
+.editor-header-tabs-container .ui-toolbar,
+.editor-header-tabs-container .ui-toolbar > * {
+  list-style: none !important;
+  list-style-type: none !important;
+}
+
+/* =============================================================================
+   TAB STYLING - Minecraft inventory slot inspired
+   
+   Targets both .editor-tab classes AND the actual label-tab/label-deseltab
+   classes used by CustomTabLabel component. Uses !important to override
+   inline styles set by the component.
+   
+   IMPORTANT: Font weight is kept consistent (500) to prevent width shifts
+   when switching tabs. Active state is indicated via underline instead.
+   ============================================================================= */
+
+/* Hide any FluentUI menu/toolbar indicators (dots) that appear on items */
+.editor-header-tabs-container .ui-menu__itemIndicator,
+.editor-header-tabs-container .ui-toolbar__itemIndicator,
+.editor-header-tabs-container [class*="itemIndicator"],
+.editor-header-tabs-container [class*="Indicator"],
+.editor-header-tabs-container .ui-menu__itemIcon,
+.editor-header-tabs-container .ui-toolbar__itemIcon {
+  display: none !important;
+}
+
+/* Hide any bullet/list markers that might appear */
+.editor-header-tabs-container .ui-toolbar__item,
+.editor-header-tabs-container .ui-menu__item {
+  list-style: none !important;
+}
+
+.editor-header-tabs-container .ui-toolbar__item::marker,
+.editor-header-tabs-container .ui-menu__item::marker {
+  content: none !important;
+  display: none !important;
+}
+
+/* Also hide any ::before pseudo-elements that FluentUI might add */
+.editor-header-tabs-container .ui-toolbar__item::before,
+.editor-header-tabs-container .ui-menu__item::before {
+  content: none !important;
+  display: none !important;
+}
+
+/* Inactive tab - uses type color tint for theming harmony */
+.editor-header-tabs-container .label-deseltab,
+.editor-tab {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 5px 10px 6px 8px !important;
+  cursor: pointer;
+  transition: all 0.1s ease-out;
+  gap: 6px;
+  position: relative;
+  /* Tinted background that picks up type color */
+  background-color: var(--chip-shadow, rgba(60, 60, 60, 0.9)) !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  border-radius: 0 !important;
+  /* Beveled edges matching chip style: dark top/left (inset), light bottom/right (outset) */
+  border: none !important;
+  box-shadow:
+    inset 1px 1px 0 rgba(0, 0, 0, 0.4),
+    inset -1px 0 0 var(--chip-highlight, rgba(255, 255, 255, 0.15)),
+    0 1px 0 var(--chip-shadow, rgba(0, 0, 0, 0.3)) !important;
+  margin-bottom: 0;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+}
+
+/* Ensure inactive tabs have no pseudo-element indicators */
+.editor-header-tabs-container .label-deseltab::before,
+.editor-header-tabs-container .label-deseltab::after,
+.editor-tab::before,
+.editor-tab::after {
+  content: none !important;
+  display: none !important;
+}
+
+.editor-header-tabs-container .label-deseltab:hover,
+.editor-tab:hover {
+  background-color: var(--chip-main, rgba(80, 80, 80, 0.9)) !important;
+  color: #ffffff !important;
+  box-shadow:
+    inset 1px 1px 0 rgba(0, 0, 0, 0.35),
+    inset -1px 0 0 var(--chip-highlight, rgba(255, 255, 255, 0.2)),
+    0 1px 0 var(--chip-shadow, rgba(0, 0, 0, 0.25)) !important;
+}
+
+/* Selected/active tab - pushed IN with type color accent and underline */
+.editor-header-tabs-container .label-tab,
+.editor-tab-selected {
+  /* Match inactive tab layout exactly to prevent width shifts */
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px 6px 8px !important;
+  gap: 6px;
+  position: relative;
+  /* Darker inset using chip border color */
+  background-color: var(--chip-border, rgba(40, 40, 40, 0.95)) !important;
+  color: #ffffff !important;
+  /* Keep font weight same as inactive to prevent width shifts */
+  font-weight: 500 !important;
+  text-decoration: none !important;
+  border-radius: 0 !important;
+  border: none !important;
+  /* Inset shadow on top and sides only, open bottom */
+  box-shadow:
+    inset 2px 2px 0 rgba(0, 0, 0, 0.55),
+    inset -2px 0 0 rgba(0, 0, 0, 0.35),
+    inset 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Add underline indicator for active tab via pseudo-element */
+.editor-header-tabs-container .label-tab::after,
+.editor-tab-selected::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute;
+  bottom: 2px;
+  left: 8px;
+  right: 8px;
+  height: 2px;
+  background-color: #52a535;
+  border-radius: 1px;
+}
+
+/* IMPORTANT: Inactive tabs must NOT have the underline - this rule comes AFTER the active rule */
+.editor-header-tabs-container .label-deseltab::after,
+.editor-tab:not(.editor-tab-selected)::after {
+  content: none !important;
+  display: none !important;
+}
+
+.editor-tab-icon {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.editor-tab-selected .editor-tab-icon {
+  opacity: 1;
+}
+
+.editor-tab-label {
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.editor-tab-selected .editor-tab-label {
+  font-weight: 600;
+}
+
+.editor-tab-count {
+  font-size: 10px;
+  opacity: 0.6;
+  padding-left: 2px;
+  font-weight: 600;
+}
+
+/* =============================================================================
+   LEGACY SUPPORT - Old header classes (backwards compatibility)
+   ============================================================================= */
+
+/* Old .editor-header class - basic styling */
+.editor-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  height: 38px;
+  padding: 0 14px 0 10px;
+  gap: 10px;
+  background-color: var(--chip-main, #6b6b6b);
+  color: var(--chip-text, #ffffff);
+}
+
+/* Old divider - now just a small spacer */
+.editor-header-divider-spacer {
+  height: 2px;
+}
+
+/* Legacy divider classes - kept for backwards compat but minimized */
+.editor-header-divider,
+.editor-header-divider-block-edge,
+.editor-header-divider-ore-scatter,
+.editor-header-divider-inventory,
+.editor-header-divider-pixel-dots,
+.editor-header-divider-simple,
+.editor-header-divider-brick {
+  height: 2px;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* =============================================================================
+   COMPACT MODE (narrow screens)
+   ============================================================================= */
+
+@media (max-width: 800px) {
+  .editor-header-bar {
+    padding: 0 10px 0 8px;
+    height: 34px;
+    gap: 8px;
+  }
+
+  .editor-header-title {
+    font-size: 12pt;
+  }
+
+  .editor-header-badge {
+    display: none;
+  }
+
+  .editor-header-format-version {
+    display: none;
+  }
+
+  .editor-header-tabs-container {
+    padding: 0 6px 4px 6px;
+    min-height: 32px;
+  }
+
+  .editor-tab {
+    padding: 4px 8px 4px 6px;
+  }
+
+  .editor-tab-label {
+    font-size: 10px;
+  }
+}
+
+/* =============================================================================
+   OLD EDITOR TABS CLASS (for backwards compatibility)
+   ============================================================================= */
+
+.editor-tabs {
+  padding: 4px 12px 0 20px;
+  min-height: 38px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.editor-tabs .ui-toolbar {
+  gap: 4px;
+}
+
+.editor-tabs .ui-toolbar__item {
+  margin: 0;
+  padding: 0;
+  list-style: none !important;
+}
+
+/* Hide indicators in legacy editor-tabs too */
+.editor-tabs .ui-toolbar__item::before,
+.editor-tabs .ui-toolbar__item::marker,
+.editor-tabs [class*="Indicator"] {
+  content: none !important;
+  display: none !important;
+}

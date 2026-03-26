@@ -4,9 +4,10 @@
 		"target": "es2022",
 		"outDir": "dist",
 		"lib": [
-			"es2022","WebWorker"
+			"es2022","WebWorker","DOM"
 		],
-		"types": [ "@types/wicg-file-system-access", "mocha"],
+		"types": [ "wicg-file-system-access", "mocha"],
+		"typeRoots": ["./node_modules/@types", "./src/types"],
 		"sourceMap": true,
 		"rootDir": "src",
 		"esModuleInterop": true,
@@ -15,15 +16,22 @@
 		"noFallthroughCasesInSwitch": true,
 		"noUnusedParameters": false, 
 	},
+	"include": [
+		"src/test/**/*",
+		"src/types/**/*",
+		"src/cli/ui/commands/**/*.ts"
+	],
 	"exclude": [
 		"src/UX/**/*",
-		"src/UXex/**/*",
-		"src/worldux/**/*",
+		"src/UXex/**/*",		
+    "src/workers/**/*",
+		"src/UX/world/**/*",
 		"src/monaco/**/*",
 		"src/babylon/**/*",
 		"src/dataform/**/*",
 		"src/local/**/*",
-		"src/cli/**/*",
+		"src/cli/ui/components/**/*",
+		"src/cli/ui/screens/**/*",
 		"src/mcp/**/*",
 		"out/**/*",		
 		"public/**/*",		

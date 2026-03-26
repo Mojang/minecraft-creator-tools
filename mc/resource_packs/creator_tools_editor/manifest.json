@@ -1,0 +1,25 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Creator Tools in Editor",
+    "description": "A gallery of editor code snippets",
+    "uuid": "e247b4b9-b4a5-4a3e-83af-a64847132af1",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 20, 0]
+  },
+  "capabilities": ["editorExtension"],
+  "modules": [
+    {
+      "description": "Editor How-to Gallery Resource",
+      "type": "resources",
+      "uuid": "bff4d5c8-a600-4656-89db-9560a47b6f91",
+      "version": [1, 0, 0]
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "f54c1b6d-722c-456b-b9c2-2c277465007e",
+      "version": [1, 0, 0]
+    }
+  ]
+}

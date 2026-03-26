@@ -21,7 +21,9 @@ import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from
 import EntityTypeResourceDefinition from "../minecraft/EntityTypeResourceDefinition";
 import Utilities from "../core/Utilities";
 import { IGeometry, IGeometryBone, IGeometryBoneCube, IGeometryUVFaces } from "../minecraft/IModelGeometry";
-import { Exifr } from "exifr";
+import * as exifrModule from "exifr";
+// Handle CJS/ESM interop: esbuild wraps CJS default export, while ts-node uses named exports directly
+const Exifr = (exifrModule as any).Exifr || (exifrModule as any).default?.Exifr;
 import Project, { FolderContext } from "../app/Project";
 import Log from "../core/Log";
 import AttachableResourceDefinition from "../minecraft/AttachableResourceDefinition";
@@ -93,7 +95,12 @@ export default class BlockbenchModel {
   static ensureFromContent(content: string) {
     const bd = new BlockbenchModel();
 
-    const obj = JSON.parse(content);
+    let obj;
+    try {
+      obj = JSON.parse(content);
+    } catch (e) {
+      throw new Error("Failed to parse Blockbench model JSON: " + (e instanceof Error ? e.message : String(e)));
+    }
 
     bd.data = obj;
 
@@ -380,7 +387,7 @@ export default class BlockbenchModel {
       return formatVersion[1] < 10;
     }
 
-    // if the format version doesn't match any known format, presume it's a pre-format versoin file?
+    // if the format version doesn't match any known format, presume it's a pre-format version file?
     return true;
   }
 
@@ -1490,6 +1497,211 @@ export default class BlockbenchModel {
               }
             } catch (e) {}
           }
+        }
+      }
+    }
+
+    return bbmodel;
+  }
+
+  /**
+   * Creates a Blockbench model (.bbmodel) directly from a ModelGeometryDefinition,
+   * without needing a full ProjectItem or project relations.
+   * Useful for the ModelViewer "Open in Blockbench" action.
+   */
+  static exportFromDefinition(modelDef: ModelGeometryDefinition, modelIndex?: number): IBlockbenchModel | undefined {
+    if (modelIndex === undefined) {
+      modelIndex = 0;
+    }
+
+    if (!modelDef.definitions || modelDef.definitions.length === 0) {
+      return undefined;
+    }
+
+    const identifier = modelDef.identifiers.length > modelIndex ? modelDef.identifiers[modelIndex] : "geometry.unknown";
+    const name = identifier.replace("geometry.", "");
+
+    const bbmodel = this.createEmptyModel(name, identifier);
+
+    const textureWidth = modelDef.getTextureWidth(modelIndex);
+    const textureHeight = modelDef.getTextureHeight(modelIndex);
+
+    if (textureWidth !== undefined && textureHeight !== undefined) {
+      bbmodel.resolution = {
+        width: textureWidth,
+        height: textureHeight,
+      };
+    }
+
+    const visibleBoundsWidth = modelDef.getVisibleBoundsWidth(modelIndex);
+    const visibleBoundsHeight = modelDef.getVisibleBoundsHeight(modelIndex);
+    const visibleBoundsOffset = modelDef.getVisibleBoundsOffset(modelIndex);
+
+    if (visibleBoundsWidth && visibleBoundsHeight && visibleBoundsOffset && visibleBoundsOffset.length > 1) {
+      bbmodel.visible_box = [visibleBoundsWidth, visibleBoundsHeight, visibleBoundsOffset[1]];
+    }
+
+    const def = modelDef.definitions[modelIndex];
+    const outlinerEltsByName: { [name: string]: IBlockbenchOutlineItem } = {};
+    const groupEltsByName: { [name: string]: IBlockbenchGroupItem } = {};
+
+    let colorIndex = 0;
+
+    for (const bone of def.bones) {
+      let rot = bone.rotation ? [...bone.rotation] : undefined;
+
+      if (rot && rot.length === 3) {
+        rot[0] = -rot[0];
+        rot[1] = -rot[1];
+        rot[2] = -rot[2];
+      }
+
+      const groupAndOutlineUuid = Utilities.createUuid();
+
+      const outLinerElt: IBlockbenchOutlineItem = {
+        uuid: groupAndOutlineUuid,
+        isOpen: false,
+        children: [],
+      };
+
+      const groupElt: IBlockbenchGroupItem = {
+        name: bone.name,
+        origin: bone.pivot,
+        rotation: rot,
+        bedrock_binding: bone.binding,
+        color: colorIndex,
+        uuid: groupAndOutlineUuid,
+        export: true,
+        mirror_uv: false,
+        isOpen: false,
+        locked: false,
+        reset: false,
+        selected: false,
+        primary_selected: false,
+        shade: false,
+        visibility: true,
+        autouv: 0,
+        children: [],
+      };
+
+      if (Utilities.isUsableAsObjectKey(bone.name)) {
+        outlinerEltsByName[bone.name] = outLinerElt;
+        groupEltsByName[bone.name] = groupElt;
+        bbmodel.groups?.push(groupElt);
+      }
+
+      colorIndex++;
+      if (colorIndex > 7) {
+        colorIndex = 0;
+      }
+
+      if (bone.parent === undefined) {
+        bbmodel.outliner?.push(outLinerElt);
+      }
+    }
+
+    for (const bone of def.bones) {
+      const thisOutlinerElt = outlinerEltsByName[bone.name];
+
+      if (bone.cubes && bone.cubes.length >= 0) {
+        for (const cube of bone.cubes) {
+          const id = Utilities.createUuid();
+
+          if (cube.origin && cube.origin.length === 3 && cube.size && cube.size.length === 3) {
+            const cubeFrom = cube.origin;
+            const cubeTo = [
+              cube.origin[0] + cube.size[0],
+              cube.origin[1] + cube.size[1],
+              cube.origin[2] + cube.size[2],
+            ];
+
+            let rot = cube.rotation ? [...cube.rotation] : undefined;
+
+            if (rot && rot.length === 3) {
+              rot[0] = -rot[0];
+              rot[1] = -rot[1];
+              rot[2] = -rot[2];
+            } else if (bone.bind_pose_rotation) {
+              if (bone.bind_pose_rotation.length === 3) {
+                rot = [-bone.bind_pose_rotation[0], -bone.bind_pose_rotation[1], -bone.bind_pose_rotation[2]];
+              } else {
+                rot = bone.bind_pose_rotation;
+              }
+            } else {
+              rot = [0, 0, 0];
+            }
+
+            let pivot = cube.pivot;
+            if (!pivot && bone.pivot) {
+              pivot = bone.pivot;
+            } else if (!pivot) {
+              pivot = [0, 0, 0];
+            }
+
+            let uvOffset = undefined;
+            if (Array.isArray(cube.uv)) {
+              uvOffset = cube.uv;
+            }
+
+            bbmodel.elements?.push({
+              name: bone.name,
+              box_uv: Array.isArray(cube.uv),
+              rescale: false,
+              locked: false,
+              light_emission: 0,
+              render_order: "default",
+              allow_mirror_modeling: true,
+              from: cubeFrom,
+              to: cubeTo,
+              inflate: cube.inflate,
+              autouv: 0,
+              color: 0,
+              rotation: rot,
+              origin: pivot,
+              uv_offset: uvOffset,
+              type: "cube",
+              faces: {
+                north: { uv: BlockbenchModel.getNorthBoxUvCoordinates(cube), texture: 0 },
+                east: { uv: BlockbenchModel.getEastBoxUvCoordinates(cube), texture: 0 },
+                south: { uv: BlockbenchModel.getSouthBoxUvCoordinates(cube), texture: 0 },
+                west: { uv: BlockbenchModel.getWestBoxUvCoordinates(cube), texture: 0 },
+                up: { uv: BlockbenchModel.getUpBoxUvCoordinates(cube), texture: 0 },
+                down: { uv: BlockbenchModel.getDownBoxUvCoordinates(cube), texture: 0 },
+              },
+              uuid: id,
+            });
+
+            thisOutlinerElt.children.push(id);
+          }
+        }
+      }
+
+      if (bone.locators) {
+        for (const locatorName in bone.locators) {
+          const locator = bone.locators[locatorName];
+
+          if (Array.isArray(locator) && locator.length === 3) {
+            const id = Utilities.createUuid();
+
+            bbmodel.elements?.push({
+              name: locatorName,
+              locked: false,
+              position: locator,
+              rotation: [0, 0, 0],
+              type: "locator",
+              uuid: id,
+            });
+
+            thisOutlinerElt.children.push(id);
+          }
+        }
+      }
+
+      if (bone.parent !== undefined) {
+        const parentOutlinerElt = outlinerEltsByName[bone.parent];
+
+        if (parentOutlinerElt) {
+          parentOutlinerElt.children.push(thisOutlinerElt);
         }
       }
     }

@@ -41,18 +41,17 @@ export enum ScriptInfoGeneratorTest {
 
 export interface IScriptTokenInfo {}
 
+/**
+ * Analyzes and aggregates information about script API usage.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/script.form.json} for topic definitions
+ */
 export default class ScriptInfoGenerator implements IProjectInfoGenerator {
   id = "SCRIPT";
   title = "Script";
   canAlwaysProcess = true;
   minecraftTokens: { [name: string]: IScriptTokenInfo } = {};
   generatedTokens = false;
-
-  getTopicData(topicId: number) {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(ScriptInfoGeneratorTest, topicId),
-    };
-  }
 
   async _generateTokens() {
     await Database.loadStable20ScriptTypes();

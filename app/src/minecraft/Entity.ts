@@ -23,6 +23,8 @@ export default class Entity extends ComponentizedBase implements IPropertyObject
   customModel?: ModelGeometryDefinition | undefined;
   customTextureData?: Uint8Array | undefined;
   customTextureUrl?: string | undefined;
+  customTintColor?: { r: number; g: number; b: number; a: number } | undefined;
+  customIgnoreAlpha?: boolean | undefined;
 
   private _onPropertyChanged = new EventDispatcher<Entity, IProperty>();
 

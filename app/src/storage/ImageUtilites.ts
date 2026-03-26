@@ -1,6 +1,9 @@
-import { Exifr } from "exifr";
+import * as exifrModule from "exifr";
+// Handle CJS/ESM interop: esbuild wraps CJS default export, while ts-node uses named exports directly
+const Exifr = (exifrModule as any).Exifr || (exifrModule as any).default?.Exifr;
 import IFile from "./IFile";
 import StorageUtilities from "./StorageUtilities";
+import Log from "../core/Log";
 
 /*
   Parses an image file, returning an any object with various metadata such as width and height
@@ -21,7 +24,7 @@ export async function parseImageMetadata(file: IFile): Promise<any | null> {
 
     return await imageReader.read(fileData).then(() => imageReader.parse());
   } catch (error) {
-    console.error(error);
+    Log.verbose("Error parsing image metadata: " + error);
     return null;
   }
 }

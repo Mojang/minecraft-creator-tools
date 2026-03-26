@@ -2,8 +2,7 @@
   "format_version": "1.21.70",
   "minecraft:feature_rules": {
     "description": {
-      "identifier": "examplens:examplename",
-      "places_feature": "examplens:targetname"
+      "identifier": "examplens:examplename"
     },
     "conditions": {},
     "distribution": {

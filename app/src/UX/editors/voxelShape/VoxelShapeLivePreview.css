@@ -1,0 +1,210 @@
+/* VoxelShapeLivePreview.css - Styles for the Voxel Shape Live Preview component */
+
+/* Container */
+.vslp-container {
+  display: flex;
+  flex-direction: column;
+  font-family:
+    "Segoe UI",
+    -apple-system,
+    sans-serif;
+  font-size: 12px;
+  overflow-y: auto;
+  height: 100%;
+}
+
+/* Dark/Light theme variants */
+.vslp-dark {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+}
+
+.vslp-light {
+  background-color: #ffffff;
+  color: #333333;
+}
+
+/* Loading state */
+.vslp-loading {
+  padding: 20px;
+  text-align: center;
+  opacity: 0.7;
+  font-style: italic;
+}
+
+/* Error state */
+.vslp-error {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #f44336;
+}
+
+.vslp-errorIcon {
+  font-size: 16px;
+}
+
+/* Header */
+.vslp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.3);
+}
+
+.vslp-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vslp-icon {
+  font-size: 16px;
+}
+
+.vslp-identifier {
+  font-weight: 600;
+  font-size: 13px;
+  word-break: break-all;
+}
+
+.vslp-version {
+  font-size: 11px;
+  opacity: 0.6;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.vslp-dark .vslp-version {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.vslp-light .vslp-version {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* 3D Preview area */
+.vslp-preview {
+  height: 200px;
+  min-height: 150px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.vslp-previewLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  opacity: 0.6;
+  font-style: italic;
+}
+
+/* Section styling */
+.vslp-section {
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+.vslp-sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-weight: 500;
+  cursor: default;
+}
+
+.vslp-dark .vslp-sectionHeader {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.vslp-light .vslp-sectionHeader {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.vslp-sectionIcon {
+  font-size: 12px;
+}
+
+.vslp-sectionTitle {
+  flex: 1;
+}
+
+/* Box list */
+.vslp-boxList {
+  padding: 4px 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.vslp-boxItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.vslp-dark .vslp-boxItem:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.vslp-light .vslp-boxItem:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.vslp-boxNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+/* Box number colors matching the texture atlas */
+.vslp-boxItem:nth-child(8n + 1) .vslp-boxNumber {
+  background-color: #5588dd;
+  color: white;
+}
+.vslp-boxItem:nth-child(8n + 2) .vslp-boxNumber {
+  background-color: #dd5555;
+  color: white;
+}
+.vslp-boxItem:nth-child(8n + 3) .vslp-boxNumber {
+  background-color: #55bb55;
+  color: white;
+}
+.vslp-boxItem:nth-child(8n + 4) .vslp-boxNumber {
+  background-color: #ddaa33;
+  color: white;
+}
+.vslp-boxItem:nth-child(8n + 5) .vslp-boxNumber {
+  background-color: #aa55cc;
+  color: white;
+}
+.vslp-boxItem:nth-child(8n + 6) .vslp-boxNumber {
+  background-color: #33bbbb;
+  color: white;
+}
+.vslp-boxItem:nth-child(8n + 7) .vslp-boxNumber {
+  background-color: #dd77aa;
+  color: white;
+}
+.vslp-boxItem:nth-child(8n + 0) .vslp-boxNumber {
+  background-color: #888855;
+  color: white;
+}
+
+.vslp-boxCoords {
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 11px;
+  opacity: 0.9;
+}

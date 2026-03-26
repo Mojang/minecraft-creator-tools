@@ -1,0 +1,508 @@
+.pil-outer {
+  border-top: inset 2px;
+  border-bottom: inset 2px;
+}
+
+.pil-wrap {
+  border-top: outset 2px;
+  border-bottom: outset 2px;
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  grid-template-rows: 46px 1fr;
+}
+
+.pil-expandButton {
+  margin-top: 3px;
+  padding-left: 6px;
+  margin-left: 3px;
+  width: 24px;
+  height: 25px;
+}
+
+.pil-showMenu .ui-menu__itemicon {
+  padding: 6px;
+  padding-left: 1px;
+  width: 30px;
+}
+
+.pil-newarea {
+  grid-column: 1;
+  grid-row: 1;
+  padding-top: 7px;
+  padding-bottom: 6px;
+  padding-left: 10px;
+}
+
+.pil-previewImage {
+  height: 40px;
+  grid-column: 1;
+}
+
+.pil-deleteWarning {
+  max-height: 200px;
+  overflow-y: auto;
+  padding-top: 20px;
+}
+
+.pil-inlineSource {
+  display: inline-block;
+}
+
+.pil-showMenu {
+  grid-column: 2;
+  grid-row: 1;
+  text-align: left;
+  max-width: 140px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: 8px;
+}
+
+.pil-list {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  overflow: hidden; /* react-window manages scrolling internally */
+}
+
+/* Scrollbar styling removed — uses global Minecraft-themed scrollbars from index.css */
+.pil-fixedLine {
+  padding-left: 17px;
+  font-size: 0.875rem;
+  height: 32px;
+  padding-top: 6px;
+  width: 100%;
+}
+
+.pil-fixedLineFocus {
+  padding-left: 17px;
+  font-size: 0.875rem;
+  height: 32px;
+  padding-top: 6px;
+  text-overflow: ellipsis;
+  background-color: #d88800;
+  text-wrap: nowrap;
+}
+
+.pil-projectResults {
+  padding-left: 17px;
+}
+
+.pil-fixedLineRow {
+  height: 32px;
+  display: grid;
+  grid-template-columns: 1fr 32px;
+  padding-top: 0px;
+  width: 100%;
+}
+
+.pil-list LI * {
+  margin-right: 0px;
+}
+
+.pil-list UL LI {
+  padding-left: 0px;
+  min-height: auto;
+  padding-right: 0px;
+}
+
+.pil-item {
+  display: grid;
+  height: 36px;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+  grid-template-columns: 10px 1fr 30px 30px;
+  font-size: 0.875rem;
+  width: 100%;
+  overflow: hidden;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 36px;
+}
+
+.pil-itemTypeHeader {
+  display: grid;
+  height: 36px;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+  grid-template-columns: 16px 24px 1fr 38px;
+  font-size: 0.875rem;
+  width: 100%;
+}
+
+/* The MenuButton wrapper span needs to span columns 3-5 so pil-headerLabel fills the space */
+.pil-itemTypeHeader > span:not(.pil-headerIcon):not(.pil-itemTypeCollapsedToggle) {
+  grid-column-start: 3;
+  grid-column-end: 5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pil-headerIcon {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 2px;
+  padding-right: 4px;
+}
+
+.pil-pathHeader {
+  display: grid;
+  height: 36px;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+  grid-template-columns: 10px 20px 25px 1fr;
+  font-size: 0.875rem;
+  width: 100%;
+}
+
+.pil-itemTypeCollapsedToggle {
+  grid-column: 1;
+  padding: 8px;
+  padding-left: 6px;
+}
+
+.pil-headerLabel {
+  grid-template-columns: 1fr 92px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: grid;
+  width: 100%;
+}
+
+.pil-storagePathCollapsedToggle {
+  grid-column: 2;
+  padding: 8px;
+}
+
+.pil-storagePathIcon {
+  grid-column: 3;
+  padding-top: 8px;
+  padding-left: 6px;
+}
+
+.pil-storagePathLabel {
+  grid-column: 4;
+  text-overflow: ellipsis;
+}
+
+.pil-itemTypeTag {
+  grid-column: 1;
+  min-width: 6px;
+  width: 6px;
+}
+
+.pil-itemLabelFocused {
+  text-overflow: ellipsis;
+  padding-left: 6px;
+  display: block;
+  height: 36px;
+  padding-top: 1px;
+  background-color: #d88800;
+}
+
+.pil-itemLabel {
+  text-overflow: ellipsis;
+  padding-left: 6px;
+  display: block;
+  height: 36px;
+  padding-top: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.pil-itemIcon {
+  background-size: cover;
+  width: 30px;
+  margin-top: 3px;
+  height: 30px;
+}
+
+.pil-itemIndicator {
+  border: solid 0px;
+  grid-column: 4;
+  line-height: 1;
+  padding: 4px 5px 4px 4px;
+  margin: 0px 0px 0px 1px;
+  align-self: center;
+  box-shadow: none;
+  width: 24px;
+  background-color: #d88800;
+  height: auto;
+  flex-shrink: 0;
+}
+
+.pil-itemIndicatorInterior {
+  text-align: center;
+}
+
+.pil-itemIndicatorRO {
+  border: solid 0px;
+  grid-column: 4;
+  line-height: 1;
+  padding: 4px 5px 4px 4px;
+  margin: 0px 0px 0px 1px;
+  align-self: center;
+  box-shadow: none;
+  width: 24px;
+  height: auto;
+  background-color: #d88800;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.pil-cmbUnfocused button {
+  opacity: 0;
+}
+
+.pil-stats {
+  grid-column: 2;
+  text-align: right;
+  padding-right: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  text-wrap: nowrap;
+}
+
+.pil-projectName {
+  overflow-x: hidden;
+  width: 100%;
+  margin-right: 2px;
+  text-overflow: clip;
+  grid-column: 1;
+  z-index: 90;
+  padding-top: 6px;
+  display: block;
+  white-space: nowrap;
+}
+
+.pil-projectIcon {
+  min-height: 32px;
+  max-height: 32px;
+  min-width: 32px;
+  max-width: 32px;
+  grid-column: 2;
+  background-size: cover;
+}
+
+.pil-name {
+  overflow-x: hidden;
+  width: 100%;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-right: 2px;
+  text-overflow: ellipsis;
+  grid-column: 1;
+  z-index: 90;
+  display: block;
+  white-space: nowrap;
+}
+
+.pil-name-gh {
+  padding-left: 20px;
+}
+
+.pil-typetag {
+  font-size: x-small;
+  text-transform: uppercase;
+  border: solid 1px gray;
+  border-radius: 2px;
+  white-space: nowrap;
+  float: right;
+  top: 9px;
+  left: 186px;
+  background-color: rgba(120, 120, 120);
+  position: absolute;
+  text-align: center;
+  min-width: 66px;
+  margin-right: 4px;
+  padding: 3px 1px 3px 1px;
+  z-index: 100;
+  line-height: 1;
+}
+
+.pil-dialog {
+  min-height: 90px;
+  margin-top: 20px;
+  vertical-align: top;
+}
+
+.pil-extension {
+  padding-left: 8px;
+}
+
+/* Sticky header that shows current item type when scrolling */
+.pil-stickyHeader {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: 5px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: var(--surface-shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 6px;
+}
+
+.pil-stickyIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+}
+
+.pil-stickyTypeName {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.pil-stickyFolder {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  padding-left: 8px;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  opacity: 0.9;
+  font-weight: 400;
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pil-stickyFolderName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* MRU (Most Recently Used) mini-pane styles */
+.pil-mruSection {
+  position: sticky;
+  top: 0;
+  z-index: 150;
+  background: linear-gradient(180deg, rgba(50, 50, 65, 0.98) 0%, rgba(40, 40, 55, 0.98) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 4px 0;
+  margin-bottom: 2px;
+  box-shadow: var(--surface-shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.pil-mruSection-light {
+  background: linear-gradient(180deg, rgba(240, 240, 250, 0.98) 0%, rgba(230, 230, 245, 0.98) 100%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pil-mruHeader {
+  display: flex;
+  align-items: center;
+  padding: 2px 8px 4px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.7;
+  gap: 4px;
+}
+
+.pil-mruItem {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px 0 4px;
+  cursor: pointer;
+  gap: 4px;
+  font-size: 12px;
+  overflow: hidden;
+  transition: background-color 0.1s ease;
+  border-left: 3px solid transparent;
+}
+
+.pil-mruItem:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.pil-mruSection-light .pil-mruItem:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.pil-mruItemIcon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pil-mruItemName {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pil-mruItemActive {
+  cursor: default;
+  opacity: 0.85;
+  font-weight: 500;
+}
+
+.pil-mruItemActive:hover {
+  background-color: transparent;
+}
+
+.pil-mruSection-light .pil-mruItemActive:hover {
+  background-color: transparent;
+}
+
+.pil-mruItemGutter {
+  width: 10px;
+  min-width: 10px;
+  height: 16px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pil-mruItemDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.pil-mruItemRemove {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 3px;
+  opacity: 0;
+  font-size: 12px;
+  transition: opacity 0.15s ease;
+}
+
+.pil-mruItem:hover .pil-mruItemRemove {
+  opacity: 0.6;
+}
+
+.pil-mruItemRemove:hover {
+  opacity: 1 !important;
+  color: #e06060;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.pil-mruSection-light .pil-mruItemRemove:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}

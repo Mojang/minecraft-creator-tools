@@ -48,7 +48,8 @@ import SummaryInfoGenerator from "../SummaryInfoGenerator";
 import ScriptInfoGenerator from "../ScriptInfoGenerator";
 import CheckParticleIdentifierGenerator from "../projectGenerators/CheckParticleIdentifierGenerator";
 import CheckSkinPackJsonGenerator from "../projectGenerators/CheckSkinPackJsonGenerator";
-import SchemaItemInfoGenerator from "../SchemaItemInfoGenerator";
+import CommunitySchemaItemInfoGenerator from "../CommunitySchemaItemInfoGenerator";
+import JsonSchemaItemInfoGenerator from "../JsonSchemaItemInfoGenerator";
 import CheckForbiddenFilesGenerator from "../projectGenerators/CheckForbiddenFiles";
 import CheckProjectIntegrityGenerator from "../projectGenerators/CheckProjectIntegrityGenerator";
 import CheckBetaFeaturesGenerator from "../projectGenerators/CheckBetaFeaturesGenerator";
@@ -60,6 +61,7 @@ import { SuiteConfigs } from "./RegistrationData";
 import CheckManifestGenerator from "../projectGenerators/checkManifest/CheckManifestGenerator";
 import CheckResourcePackDependenciesGenerator from "../projectGenerators/CheckResourcePackDependenciesGenerator";
 import CheckWorldPackReferencesGenerator from "../projectGenerators/CheckWorldPackReferencesGenerator";
+import CrossReferenceIndexGenerator from "../CrossReferenceIndexGenerator";
 
 export const TestsToExcludeFromDefaultSuite = ["CADDONREQ", "CADDONIREQ", "LANGFILES", "SHARING", "VANDUPES"];
 
@@ -110,6 +112,7 @@ export default class GeneratorRegistrations {
     new CheckLangFilesGenerator(),
     new CheckResourcePackDependenciesGenerator(),
     new CheckWorldPackReferencesGenerator(),
+    new CrossReferenceIndexGenerator(),
     ...this.managers,
   ];
 
@@ -118,7 +121,8 @@ export default class GeneratorRegistrations {
   static itemGenerators = [
     new UnknownItemGenerator(),
     new FormSchemaItemInfoGenerator(),
-    new SchemaItemInfoGenerator(),
+    new JsonSchemaItemInfoGenerator(),
+    new CommunitySchemaItemInfoGenerator(),
     new WorldItemInfoGenerator(),
     new WorldDataInfoGenerator(),
     new CooperativeAddOnItemRequirementsGenerator(),

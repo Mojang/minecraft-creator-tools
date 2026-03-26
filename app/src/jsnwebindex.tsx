@@ -1,13 +1,22 @@
+// =============================================================================
+// WEBPACK PUBLIC PATH - Must be set before any other imports
+// This enables webpack to dynamically load async chunks from the correct location
+// For the CLI web server, content is served from /app/
+// =============================================================================
+// @ts-ignore - __webpack_public_path__ is a webpack magic variable
+__webpack_public_path__ = "/app/";
+
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import "./jsnwebindex.css";
-import App from "./UX/App";
+import App from "./UX/appShell/App";
 import CreatorToolsHost, { CreatorToolsThemeStyle } from "./app/CreatorToolsHost";
 import { loader } from "@monaco-editor/react";
 
-import { Provider, teamsDarkTheme, mergeThemes, teamsTheme } from "@fluentui/react-northstar";
 import Utilities from "./core/Utilities";
 import { minecraftToolDarkTheme, minecraftToolLightTheme } from "./core/StandardInit";
+import { ThemeProvider } from "@mui/material";
+import { createMcTheme } from "./UX/hooks/theme/UseTheme";
 
 //@ts-ignore
 if (typeof g_isDebug !== "undefined") {
@@ -28,8 +37,12 @@ loader.config({
 async function initAsync() {
   CreatorToolsHost.init();
 
-  let darkTheme = mergeThemes(teamsDarkTheme, minecraftToolDarkTheme);
-  let lightTheme = mergeThemes(teamsTheme, minecraftToolLightTheme);
+  const darkTheme = minecraftToolDarkTheme;
+  const lightTheme = minecraftToolLightTheme;
+
+  // Detect forced-colors (Windows High Contrast) mode
+  const isForcedColors = window.matchMedia?.("(forced-colors: active)").matches ?? false;
+  CreatorToolsHost.isHighContrast = isForcedColors;
 
   if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
     CreatorToolsHost.theme = CreatorToolsThemeStyle.dark;
@@ -37,13 +50,22 @@ async function initAsync() {
     CreatorToolsHost.theme = CreatorToolsThemeStyle.light;
   }
 
-  ReactDOM.render(
+  document.body.classList.toggle("ct-dark", CreatorToolsHost.theme === CreatorToolsThemeStyle.dark);
+  document.body.classList.toggle("ct-light", CreatorToolsHost.theme === CreatorToolsThemeStyle.light);
+  document.body.classList.toggle("ct-hc", isForcedColors);
+
+  const container = document.getElementById("root");
+  if (!container) {
+    throw new Error("Root element not found");
+  }
+  const root = createRoot(container);
+  const initialMode = CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? "dark" : "light";
+  root.render(
     <React.StrictMode>
-      <Provider theme={CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? darkTheme : lightTheme}>
+      <ThemeProvider theme={createMcTheme(initialMode as "light" | "dark")}>
         <App darkTheme={darkTheme} lightTheme={lightTheme} />
-      </Provider>
-    </React.StrictMode>,
-    document.getElementById("root")
+      </ThemeProvider>
+    </React.StrictMode>
   );
 }
 

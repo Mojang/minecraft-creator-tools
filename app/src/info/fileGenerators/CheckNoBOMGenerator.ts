@@ -3,9 +3,7 @@ import IFile from "../../storage/IFile";
 import StorageUtilities from "../../storage/StorageUtilities";
 import { InfoItemType } from "../IInfoItemData";
 import IProjectFileInfoGenerator from "../IProjectFileInfoGenerator";
-import { IProjectInfoTopicData } from "../IProjectInfoGeneratorBase";
 import ProjectInfoItem from "../ProjectInfoItem";
-import ProjectInfoUtilities from "../ProjectInfoUtilities";
 
 enum CheckNoBOMGeneratorTest {
   NoByteOrderMarkAllowedInJsonFile = 101,
@@ -14,6 +12,7 @@ enum CheckNoBOMGeneratorTest {
 /**********
  * Generator that generates error results if Byte Order Marks are found within .json files
  *
+ * @see {@link ../../../public/data/forms/mctoolsval/nobom.form.json} for topic definitions
  *********/
 export default class CheckNoBOMGenerator implements IProjectFileInfoGenerator {
   id: string = "NOBOM";
@@ -30,12 +29,6 @@ export default class CheckNoBOMGenerator implements IProjectFileInfoGenerator {
     }
 
     return Promise.resolve(results);
-  }
-
-  getTopicData(topicId: number): IProjectInfoTopicData | undefined {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(CheckNoBOMGeneratorTest, topicId),
-    };
   }
 
   summarize(): void {}

@@ -1,0 +1,569 @@
+/* Project Property Editor - Structural/Layout Styles
+   
+   Theme-aware colors are applied via inline styles from the Fluent UI theme object.
+   This CSS file contains only structural, layout, and non-theme-dependent styles.
+   
+   See FormEditorUXGuidelines.md for theming approach documentation.
+*/
+
+/* ========================================
+   Base Layout
+   ======================================== */
+
+.ppe-outer {
+  user-select: none;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  font-family: "Noto Sans", sans-serif;
+}
+
+/* Header - Consistent page header style with subtle gradient */
+.ppe-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 16pt;
+  font-weight: 600;
+  margin: 0;
+  padding: 16px 24px;
+  letter-spacing: 0.3px;
+  /* Subtle gradient background - works in both light and dark modes */
+  background: linear-gradient(135deg, rgba(82, 165, 53, 0.12) 0%, rgba(82, 165, 53, 0.06) 50%, transparent 100%);
+  border-bottom: 2px solid rgba(82, 165, 53, 0.5);
+  position: relative;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Accent line effect */
+.ppe-header::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 150px;
+  height: 2px;
+  background: linear-gradient(90deg, #52a535 0%, transparent 100%);
+}
+
+@media only screen and (max-width: 600px) {
+  .ppe-header {
+    padding: 12px 12px;
+    font-size: 1rem;
+    gap: 8px;
+  }
+}
+
+.ppe-headerIcon {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* Content area */
+.ppe-content {
+  padding: 20px 24px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+.ppe-content > .ppe-section,
+.ppe-content > .ppe-statusArea {
+  max-width: 900px;
+}
+
+@media only screen and (max-width: 600px) {
+  .ppe-content {
+    padding: 12px 12px;
+  }
+}
+
+/* ========================================
+   Sections
+   ======================================== */
+
+.ppe-section {
+  border: 1px solid;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.ppe-sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 14px 18px;
+  border-bottom: 1px solid;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+@media only screen and (max-width: 600px) {
+  .ppe-sectionHeader {
+    padding: 12px 12px;
+    font-size: 0.8rem;
+  }
+}
+
+.ppe-sectionIcon {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.ppe-sectionContent {
+  padding: 18px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media only screen and (max-width: 800px) {
+  .ppe-sectionContent {
+    grid-template-columns: 1fr;
+    padding: 12px;
+  }
+}
+
+/* ========================================
+   Field Layout
+   ======================================== */
+
+.ppe-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.ppe-field-full {
+  grid-column: 1 / -1;
+}
+
+.ppe-fieldLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.ppe-fieldInput {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Fluent UI Input wrapper override - removes wrapper styling */
+.ppe-fieldInput .ui-input {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+input.ppe-fieldInput,
+.ppe-fieldInput input,
+.ppe-fieldInput .ui-input__input {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 12px 14px !important;
+  font-size: 0.9rem !important;
+  font-family: inherit !important;
+  border: 1px solid var(--ppe-input-border, rgba(255, 255, 255, 0.15)) !important;
+  border-radius: 4px !important;
+  box-sizing: border-box !important;
+  background: var(--ppe-input-bg, rgba(0, 0, 0, 0.25)) !important;
+  color: inherit !important;
+}
+
+input.ppe-fieldInput:hover,
+.ppe-fieldInput input:hover,
+.ppe-fieldInput .ui-input__input:hover {
+  border-color: var(--ppe-input-border-hover, rgba(255, 255, 255, 0.25)) !important;
+}
+
+input.ppe-fieldInput:focus,
+.ppe-fieldInput input:focus,
+.ppe-fieldInput .ui-input__input:focus {
+  border-color: #52a535 !important;
+}
+
+input.ppe-fieldInput:focus-visible,
+.ppe-fieldInput input:focus-visible,
+.ppe-fieldInput .ui-input__input:focus-visible {
+  outline: 2px solid #52a535 !important;
+  outline-offset: 2px !important;
+}
+input.ppe-fieldInput::placeholder,
+.ppe-fieldInput input::placeholder {
+  font-style: italic;
+  opacity: 0.5;
+}
+
+/* ========================================
+   Textarea
+   ======================================== */
+
+.ppe-fieldTextArea {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.ppe-fieldTextArea .ui-textarea {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+textarea.ppe-fieldTextArea,
+.ppe-fieldTextArea textarea {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 60px !important;
+  padding: 12px 14px !important;
+  font-size: 0.9rem !important;
+  font-family: inherit !important;
+  border: 1px solid var(--ppe-input-border, rgba(255, 255, 255, 0.15)) !important;
+  border-radius: 4px !important;
+  box-sizing: border-box !important;
+  resize: vertical;
+  background: var(--ppe-input-bg, rgba(0, 0, 0, 0.25)) !important;
+  color: inherit !important;
+}
+
+textarea.ppe-fieldTextArea:hover,
+.ppe-fieldTextArea textarea:hover {
+  border-color: var(--ppe-input-border-hover, rgba(255, 255, 255, 0.25)) !important;
+}
+
+textarea.ppe-fieldTextArea:focus,
+.ppe-fieldTextArea textarea:focus {
+  border-color: #52a535 !important;
+}
+
+textarea.ppe-fieldTextArea:focus-visible,
+.ppe-fieldTextArea textarea:focus-visible {
+  outline: 2px solid #52a535 !important;
+  outline-offset: 2px !important;
+}
+textarea.ppe-fieldTextArea::placeholder,
+.ppe-fieldTextArea textarea::placeholder {
+  font-style: italic;
+  opacity: 0.5;
+}
+
+/* ========================================
+   Dropdowns
+   ======================================== */
+
+.ppe-fieldDropdown {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Native select element styling */
+select.ppe-fieldDropdown {
+  padding: 10px 12px !important;
+  font-size: 0.9rem !important;
+  font-family: inherit !important;
+  border: 1px solid var(--ppe-input-border, rgba(255, 255, 255, 0.15)) !important;
+  border-radius: 4px !important;
+  background: var(--ppe-input-bg, rgba(0, 0, 0, 0.25)) !important;
+  color: inherit !important;
+  cursor: pointer;
+}
+
+select.ppe-fieldDropdown:hover {
+  border-color: var(--ppe-input-border-hover, rgba(255, 255, 255, 0.25)) !important;
+}
+
+select.ppe-fieldDropdown:focus {
+  border-color: #52a535 !important;
+  outline: none;
+}
+
+select.ppe-fieldDropdown option {
+  background: inherit;
+  color: inherit;
+}
+
+.ppe-dark select.ppe-fieldDropdown option {
+  background: #3a3a3a;
+}
+
+.ppe-light select.ppe-fieldDropdown option {
+  background: #f5f5f5;
+}
+
+.ppe-fieldDropdown .ui-dropdown {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.ppe-fieldDropdown .ui-dropdown__container {
+  width: 100% !important;
+  max-width: 100% !important;
+  border: 1px solid var(--ppe-input-border, rgba(255, 255, 255, 0.15)) !important;
+  border-radius: 4px !important;
+  box-sizing: border-box !important;
+}
+
+.ppe-fieldDropdown .ui-dropdown__container:hover {
+  border-color: var(--ppe-input-border-hover, rgba(255, 255, 255, 0.25)) !important;
+}
+
+.ppe-fieldDropdown .ui-dropdown__selected-items {
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.ppe-fieldNote {
+  font-size: 0.75rem;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* ========================================
+   Version Inputs
+   ======================================== */
+
+.ppe-versionInputs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ppe-versionInput {
+  flex: 1;
+  max-width: 80px;
+}
+
+.ppe-versionInput .ui-input {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+input.ppe-versionInput,
+.ppe-versionInput input {
+  width: 100% !important;
+  padding: 12px 10px !important;
+  text-align: center !important;
+  border: 1px solid var(--ppe-input-border, rgba(255, 255, 255, 0.15)) !important;
+  border-radius: 4px !important;
+  background: var(--ppe-input-bg, rgba(0, 0, 0, 0.25)) !important;
+  color: inherit !important;
+  font-family: inherit !important;
+  font-size: 0.9rem !important;
+  box-sizing: border-box !important;
+}
+
+input.ppe-versionInput:hover,
+.ppe-versionInput input:hover {
+  border-color: var(--ppe-input-border-hover, rgba(255, 255, 255, 0.25)) !important;
+}
+
+input.ppe-versionInput:focus,
+.ppe-versionInput input:focus {
+  border-color: #52a535 !important;
+}
+
+.ppe-versionDot {
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 0 2px;
+}
+
+/* ========================================
+   UUID Fields
+   ======================================== */
+
+.ppe-uuidField {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 4px;
+  border: 1px solid;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.ppe-uuidRow {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+.ppe-uuidInput {
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.ppe-uuidInput .ui-input {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+input.ppe-uuidInput,
+.ppe-uuidInput input {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 10px 14px !important;
+  font-family: Consolas, Monaco, monospace !important;
+  font-size: 0.85rem !important;
+  border: 1px solid var(--ppe-input-border, rgba(255, 255, 255, 0.15)) !important;
+  border-radius: 4px !important;
+  box-sizing: border-box !important;
+  background: var(--ppe-input-bg, rgba(0, 0, 0, 0.25)) !important;
+  color: inherit !important;
+}
+
+input.ppe-uuidInput:hover,
+.ppe-uuidInput input:hover {
+  border-color: var(--ppe-input-border-hover, rgba(255, 255, 255, 0.25)) !important;
+}
+
+input.ppe-uuidInput:focus,
+.ppe-uuidInput input:focus {
+  border-color: #52a535 !important;
+}
+
+.ppe-uuidRow button {
+  flex-shrink: 0;
+}
+
+/* ========================================
+   Tools Content
+   ======================================== */
+
+.ppe-toolsContent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ppe-toolsContent button {
+  margin: 0 !important;
+}
+
+/* ========================================
+   GitHub Section
+   ======================================== */
+
+.ppe-ghActions {
+  margin-top: 12px;
+}
+
+.ppe-ghshareableUrl {
+  font-weight: 600;
+  margin-top: 12px;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+}
+
+.ppe-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.ppe-link:hover {
+  text-decoration: underline;
+}
+
+.ppe-signInButton {
+  padding-bottom: 8px;
+}
+
+/* ========================================
+   Status Area
+   ======================================== */
+
+.ppe-statusArea {
+  margin-bottom: 20px;
+}
+
+/* ========================================
+   Button Styling (theme-invariant green)
+   ======================================== */
+
+.ppe-toolsContent .ui-button {
+  background: #52a535 !important;
+  border: none !important;
+  border-radius: 4px !important;
+  padding: 10px 16px !important;
+  font-weight: 600 !important;
+  color: white !important;
+}
+
+.ppe-toolsContent .ui-button:hover {
+  background: #5fb93e !important;
+}
+
+.ppe-uuidRow .ui-button {
+  background: #52a535 !important;
+  border: none !important;
+  border-radius: 4px !important;
+  padding: 8px 14px !important;
+  font-size: 0.85rem !important;
+  color: white !important;
+}
+
+.ppe-uuidRow .ui-button:hover {
+  background: #5fb93e !important;
+}
+
+/* ========================================
+   Theme variables
+   ======================================== */
+
+.ppe-dark {
+  --ppe-input-border: rgba(255, 255, 255, 0.15);
+  --ppe-input-border-hover: rgba(255, 255, 255, 0.25);
+  --ppe-input-bg: rgba(0, 0, 0, 0.25);
+}
+
+.ppe-light {
+  --ppe-input-border: rgba(0, 0, 0, 0.2);
+  --ppe-input-border-hover: rgba(0, 0, 0, 0.35);
+  --ppe-input-bg: rgba(255, 255, 255, 0.7);
+}
+
+/* Scrollbar styling removed — uses global Minecraft-themed scrollbars from index.css */

@@ -1,0 +1,188 @@
+.fex-area {
+  width: 100%;
+  height: 100%;
+  min-height: 128px;
+  border: solid 1px;
+  padding: 2px;
+}
+
+.fex-areaWithPreview {
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  border: solid 1px;
+  padding: 2px;
+  display: grid;
+  grid-template-columns: 290px 1fr;
+}
+
+.fex-areaWithPreviewCompact {
+  width: 100%;
+  height: 100%;
+  border: solid 0px;
+  padding: 2px;
+  display: grid;
+  grid-template-rows: 186px 186px;
+}
+
+.fex-previewAreaCompact {
+  grid-row: 2;
+}
+
+.fex-folderArea {
+  padding: 4px;
+  min-height: 120px;
+  overflow-y: auto;
+}
+
+.fex-newFolderIcon {
+  padding: 6px 6px 8px 2px;
+  grid-column: 1;
+  vertical-align: middle;
+}
+
+.fex-newFolderArea {
+  display: grid;
+  margin-left: 2px;
+  padding: 8px 4px 8px 4px;
+  grid-template-columns: 26px 1fr 194px 100px;
+}
+
+.fex-newFolderLabel {
+  grid-column: 2;
+  overflow-x: hidden;
+  padding-top: 6px;
+}
+
+.fex-newFolderName {
+  grid-column: 3;
+}
+
+.fex-newFolderGo {
+  grid-column: 4;
+}
+
+/* MRU (Most Recently Used) mini-pane styles */
+.fex-mruSection {
+  position: sticky;
+  top: 0;
+  z-index: 150;
+  background: linear-gradient(180deg, rgba(50, 50, 65, 0.98) 0%, rgba(40, 40, 55, 0.98) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 4px 0;
+  margin-bottom: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.fex-mruSection-light {
+  background: linear-gradient(180deg, rgba(240, 240, 250, 0.98) 0%, rgba(230, 230, 245, 0.98) 100%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.fex-mruHeader {
+  display: flex;
+  align-items: center;
+  padding: 2px 8px 4px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.7;
+  gap: 4px;
+}
+
+.fex-mruItem {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px 0 4px;
+  cursor: pointer;
+  gap: 4px;
+  font-size: 12px;
+  overflow: hidden;
+  transition: background-color 0.1s ease;
+  border-left: 3px solid transparent;
+}
+
+.fex-mruItem:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.fex-mruSection-light .fex-mruItem:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.fex-mruItemIcon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fex-mruItemName {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fex-mruItemActive {
+  cursor: default;
+  opacity: 0.85;
+  font-weight: 500;
+}
+
+.fex-mruItemActive:hover {
+  background-color: transparent;
+}
+
+.fex-mruSection-light .fex-mruItemActive:hover {
+  background-color: transparent;
+}
+
+.fex-mruItemGutter {
+  width: 10px;
+  min-width: 10px;
+  height: 16px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fex-mruItemDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.fex-mruItemRemove {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 3px;
+  opacity: 0;
+  font-size: 12px;
+  transition: opacity 0.15s ease;
+}
+
+.fex-mruItem:hover .fex-mruItemRemove {
+  opacity: 0.6;
+}
+
+.fex-mruItemRemove:hover {
+  opacity: 1 !important;
+  color: #e06060;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.fex-mruSection-light .fex-mruItemRemove:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}

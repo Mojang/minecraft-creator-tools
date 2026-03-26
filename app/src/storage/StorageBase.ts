@@ -1,13 +1,50 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+/**
+ * StorageBase.ts
+ *
+ * ARCHITECTURE DOCUMENTATION
+ * ==========================
+ *
+ * This is the base implementation for all storage types in MCTools.
+ * It provides the event dispatching infrastructure for file/folder change notifications.
+ *
+ * EVENTS (for real-time synchronization):
+ * ---------------------------------------
+ * - onFileAdded: Dispatched by notifyFileAdded() when a new file is detected
+ * - onFileRemoved: Dispatched by notifyFileRemoved() when a file is deleted
+ * - onFileContentsUpdated: Dispatched by notifyFileContentsUpdated() when content changes
+ * - onFolderAdded: Dispatched by notifyFolderAdded() when a folder is created
+ * - onFolderRemoved: Dispatched by notifyFolderRemoved() when a folder is deleted
+ * - onFolderMoved: Dispatched by notifyFolderMoved() when a folder is renamed/moved
+ *
+ * These events power the sync pipeline:
+ *   NodeStorage (watcher) -> HttpServer -> WebSocket -> HttpStorage -> MCWorld -> WorldView
+ *
+ * SUBCLASSES:
+ * -----------
+ * - NodeStorage: Local file system (server-side, adds fs.watch() support)
+ * - HttpStorage: HTTP-based storage (client-side, receives WebSocket notifications)
+ * - ZipStorage: ZIP file storage (in-memory)
+ * - BrowserStorage: Browser local storage
+ * - VirtualFolderStorage: Aggregates multiple folders
+ *
+ * HOW TO ADD A NEW STORAGE TYPE:
+ * ------------------------------
+ * 1. Extend StorageBase
+ * 2. Implement abstract rootFolder and getAvailable()
+ * 3. Create corresponding FolderBase and FileBase subclasses
+ * 4. If supporting watching, implement IWatchableStorage from IStorageWatcher.ts
+ * 5. Call notify*() methods when changes are detected
+ */
+
 import IStorage, { IFileUpdateEvent, IFolderMove, StorageErrorStatus } from "./IStorage";
 import IFolder from "./IFolder";
 import IFile, { FileUpdateType } from "./IFile";
 import { EventDispatcher } from "ste-events";
 import IVersionContent from "./IVersionContent";
 import StorageUtilities from "./StorageUtilities";
-import Log from "../core/Log";
 
 export const MaxRecentVersionsToConsider = 100;
 export const WeRecentlyChangedItThresholdMs = 50;
@@ -73,6 +110,14 @@ export default abstract class StorageBase implements IStorage {
     return this.#onFolderMoved.asEvent();
   }
 
+  public get onFolderAdded() {
+    return this.#onFolderAdded.asEvent();
+  }
+
+  public get onFolderRemoved() {
+    return this.#onFolderRemoved.asEvent();
+  }
+
   async ensureFolderFromStorageRelativePath(path: string) {
     if (path.startsWith("/" + this.rootFolder.name + "/")) {
       path = path.substring(this.rootFolder.name.length + 1);
@@ -95,6 +140,7 @@ export default abstract class StorageBase implements IStorage {
 
   notifyFileContentsUpdated(fileEvent: IFileUpdateEvent) {
     this.isContentUpdated = true;
+
     this.#onFileContentsUpdated.dispatch(this, fileEvent);
   }
 
@@ -167,6 +213,105 @@ export default abstract class StorageBase implements IStorage {
 
       if (file) {
         await file.scanForChanges();
+      }
+    }
+  }
+
+  /**
+   * Called when a new file is detected externally (e.g., by fs.watch in Electron).
+   * Creates the file object in the folder tree and fires the onFileAdded event.
+   *
+   * @param path The full path to the newly added file
+   */
+  async notifyPathWasAddedExternal(path: string) {
+    path = StorageUtilities.canonicalizePath(path);
+
+    if (path.startsWith(this.rootFolder.fullPath)) {
+      const relativePath = StorageUtilities.ensureStartsWithDelimiter(path.substring(this.rootFolder.fullPath.length));
+
+      // Get the parent folder path and filename
+      const lastDelim = relativePath.lastIndexOf("/");
+      if (lastDelim < 0) {
+        return; // No valid path structure
+      }
+
+      const folderPath = relativePath.substring(0, lastDelim);
+      const fileName = relativePath.substring(lastDelim + 1);
+
+      if (!fileName) {
+        // This is a folder being added, not a file
+        const folder = await this.rootFolder.ensureFolderFromRelativePath(relativePath);
+        if (folder) {
+          this.notifyFolderAdded(folder);
+        }
+        return;
+      }
+
+      // Ensure the parent folder exists in our tree
+      const parentFolder = await this.rootFolder.ensureFolderFromRelativePath(folderPath || "/");
+
+      if (parentFolder) {
+        // Create the file in the folder tree
+        const file = parentFolder.ensureFile(fileName);
+
+        // Fire the event so subscribers (like Project) can react
+        this.notifyFileAdded(file);
+      }
+    }
+  }
+
+  /**
+   * Called when a file is deleted externally (e.g., by fs.watch in Electron).
+   * Removes the file from the folder tree and fires the onFileRemoved event.
+   *
+   * @param path The full path to the removed file
+   */
+  async notifyPathWasRemovedExternal(path: string) {
+    path = StorageUtilities.canonicalizePath(path);
+
+    if (path.startsWith(this.rootFolder.fullPath)) {
+      const relativePath = StorageUtilities.ensureStartsWithDelimiter(path.substring(this.rootFolder.fullPath.length));
+
+      // Get the parent folder path and filename
+      const lastDelim = relativePath.lastIndexOf("/");
+      if (lastDelim < 0) {
+        return;
+      }
+
+      const folderPath = relativePath.substring(0, lastDelim);
+      const fileName = relativePath.substring(lastDelim + 1);
+
+      if (!fileName) {
+        // This might be a folder being removed
+        // Try to find and remove it from the parent
+        const parentPath = folderPath.substring(0, folderPath.lastIndexOf("/")) || "/";
+        const parentFolder = await this.rootFolder.getFolderFromRelativePath(parentPath);
+        const removedFolderName = folderPath.substring(folderPath.lastIndexOf("/") + 1);
+
+        if (parentFolder && removedFolderName && parentFolder.folders[removedFolderName]) {
+          const removedFolder = parentFolder.folders[removedFolderName];
+          if (removedFolder) {
+            this.notifyFolderRemoved(removedFolder);
+          }
+          delete parentFolder.folders[removedFolderName];
+        }
+        return;
+      }
+
+      // Try to find the parent folder
+      const parentFolder = await this.rootFolder.getFolderFromRelativePath(folderPath || "/");
+
+      if (parentFolder) {
+        // Check if the file exists in our tree
+        const file = parentFolder.files[fileName];
+
+        if (file) {
+          // Fire the event so subscribers can react
+          this.notifyFileRemoved(file.fullPath);
+
+          // Remove from the folder's files collection
+          delete parentFolder.files[fileName];
+        }
       }
     }
   }

@@ -13,6 +13,7 @@ import ICreatorToolsData, {
   MinecraftTrack,
   WindowState,
   CreatorToolsEditPreference,
+  ThemePreference,
 } from "./ICreatorToolsData";
 import Project from "./Project";
 import { EventDispatcher } from "ste-events";
@@ -26,10 +27,13 @@ import axios from "axios";
 import Log from "../core/Log";
 import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProxy";
 import CommandRunner from "./CommandRunner";
-import ILocalUtilities from "../local/ILocalUtilities";
+import ILocalUtilities from "../core/ILocalUtilities";
 import IMinecraft from "./IMinecraft";
+import RemoteMinecraft from "./RemoteMinecraft";
 import CreatorToolsHost, { HostType } from "./CreatorToolsHost";
 import MinecraftPush from "./MinecraftPush";
+import ProcessHostedMinecraft from "../clientapp/ProcessHostedProxyMinecraft";
+import MinecraftGameProxyMinecraft from "../clientapp/MinecraftGameProxyMinecraft";
 import { GameType, Generator } from "../minecraft/WorldLevelDat";
 import { BackupType } from "../minecraft/IWorldSettings";
 import Package from "./Package";
@@ -40,6 +44,7 @@ import DeploymentStorageMinecraft from "./DeploymentStorageMinecraft";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import IGalleryItem, { GalleryItemType } from "./IGalleryItem";
 import ProjectUtilities from "./ProjectUtilities";
+import ElectronStorage from "../electronclient/ElectronStorage";
 import Storage from "../storage/Storage";
 import Database from "../minecraft/Database";
 import DeploymentTarget, { DeploymentTargetType, MaxDeploymentTargets } from "./DeploymentTarget";
@@ -97,7 +102,7 @@ export default class CreatorTools {
   processHostedMinecraft: IMinecraft | undefined;
   deploymentStorageMinecraft: IMinecraft | undefined;
   gameMinecraft: IMinecraft | undefined;
-  remoteMinecraft: IMinecraft | undefined;
+  remoteMinecraft: RemoteMinecraft | undefined;
   activeMinecraft: IMinecraft | undefined;
 
   prefsStorage: IStorage;
@@ -117,6 +122,15 @@ export default class CreatorTools {
 
   private _pendingPackLoadRequests: ((value: unknown) => void)[] = [];
   private _arePacksLoading: boolean = false;
+
+  // Private instance variable for auth token - not persisted in #data
+  // This is used for in-memory session tokens (e.g., from mct view command)
+  private _remoteServerAuthToken?: string;
+
+  // Runtime property for remote server EULA acceptance status
+  // This is set from the server's auth response and indicates whether the
+  // server has accepted the Minecraft EULA. Not persisted locally.
+  private _remoteServerEulaAccepted?: boolean;
 
   local: ILocalUtilities | undefined;
   #data: ICreatorToolsData;
@@ -190,12 +204,97 @@ export default class CreatorTools {
     this.#data.collapsedTypes = newCollapsedTypes;
   }
 
+  public get showMruPane(): boolean {
+    if (this.#data.showMruPane === undefined) {
+      return true; // Default to showing MRU pane
+    }
+    return this.#data.showMruPane;
+  }
+
+  public set showMruPane(newValue: boolean) {
+    this.#data.showMruPane = newValue;
+  }
+
+  public get mruItemPaths(): string[] {
+    if (!this.#data.mruItemPaths) {
+      this.#data.mruItemPaths = [];
+    }
+    return this.#data.mruItemPaths;
+  }
+
+  public set mruItemPaths(newPaths: string[]) {
+    this.#data.mruItemPaths = newPaths;
+  }
+
+  public get viewAsFiles(): boolean {
+    if (this.#data.viewAsFiles === undefined) {
+      return false; // Default to items view
+    }
+    return this.#data.viewAsFiles;
+  }
+
+  public set viewAsFiles(newValue: boolean) {
+    this.#data.viewAsFiles = newValue;
+  }
+
+  /**
+   * Adds a project item path to the MRU list.
+   * Moves existing entries to front and maintains max 10 items.
+   */
+  public addToMru(projectPath: string): void {
+    if (!projectPath) return;
+
+    const paths = this.mruItemPaths;
+    // Remove if already exists (to move to front)
+    const existingIndex = paths.indexOf(projectPath);
+    if (existingIndex !== -1) {
+      paths.splice(existingIndex, 1);
+    }
+    // Add to front
+    paths.unshift(projectPath);
+    // Keep max 10 items
+    if (paths.length > 10) {
+      paths.pop();
+    }
+    this.#data.mruItemPaths = paths;
+  }
+
+  /**
+   * Removes a project item path from the MRU list.
+   */
+  public removeFromMru(projectPath: string): void {
+    if (!projectPath) return;
+
+    const paths = this.mruItemPaths;
+    const index = paths.indexOf(projectPath);
+    if (index !== -1) {
+      paths.splice(index, 1);
+      this.#data.mruItemPaths = paths;
+    }
+  }
+
   public get editPreference() {
     return this.#data.editPreference;
   }
 
   public set editPreference(newValue: CreatorToolsEditPreference | undefined) {
     this.#data.editPreference = newValue;
+  }
+
+  public get disableFirstRun() {
+    return this.#data.disableFirstRun === true;
+  }
+
+  public set disableFirstRun(newValue: boolean) {
+    this.#data.disableFirstRun = newValue;
+  }
+
+  public get themePreference() {
+    return this.#data.themePreference;
+  }
+
+  public set themePreference(newValue: ThemePreference | undefined) {
+    this.#data.themePreference = newValue;
   }
 
   public get worldSettings() {
@@ -234,6 +333,18 @@ export default class CreatorTools {
     this.#data.formatBeforeSave = newValue;
   }
 
+  public get showLivePreview() {
+    if (this.#data.showLivePreview === undefined) {
+      return true; // Default to on
+    }
+
+    return this.#data.showLivePreview;
+  }
+
+  public set showLivePreview(newValue: boolean) {
+    this.#data.showLivePreview = newValue;
+  }
+
   public get conversionJarPath() {
     return this.#data.conversionJarPath;
   }
@@ -254,6 +365,31 @@ export default class CreatorTools {
     this.#data.preferredTextSize = newValue;
   }
 
+  public get livePreviewWidth() {
+    // Default to 260px, min 200px, max 600px
+    if (this.#data.livePreviewWidth === undefined) {
+      return 260;
+    }
+    if (this.#data.livePreviewWidth < 200) {
+      return 200;
+    }
+    if (this.#data.livePreviewWidth > 600) {
+      return 600;
+    }
+    return this.#data.livePreviewWidth;
+  }
+
+  public set livePreviewWidth(newValue: number) {
+    // Clamp to min 200px, max 600px
+    if (newValue < 200) {
+      newValue = 200;
+    }
+    if (newValue > 600) {
+      newValue = 600;
+    }
+    this.#data.livePreviewWidth = newValue;
+  }
+
   public get itemSidePaneWidth() {
     if (this.#data.itemSidePaneWidth === undefined) {
       return 300;
@@ -272,6 +408,26 @@ export default class CreatorTools {
 
   public set itemSidePaneWidth(newValue: number) {
     this.#data.itemSidePaneWidth = newValue;
+  }
+
+  public get toolPaneWidth() {
+    if (this.#data.toolPaneWidth === undefined) {
+      return 380;
+    }
+
+    if (this.#data.toolPaneWidth < SidePaneMinWidth) {
+      return SidePaneMinWidth;
+    }
+
+    if (this.#data.toolPaneWidth > SidePaneMaxWidth) {
+      return SidePaneMaxWidth;
+    }
+
+    return this.#data.toolPaneWidth;
+  }
+
+  public set toolPaneWidth(newValue: number) {
+    this.#data.toolPaneWidth = newValue;
   }
 
   public get preferredSuite() {
@@ -513,11 +669,19 @@ export default class CreatorTools {
   }
 
   public get remoteServerAuthToken() {
-    return this.#data.remoteServerAuthToken;
+    return this._remoteServerAuthToken;
   }
 
-  public set remoteServerAuthToken(newPath: string | undefined) {
-    this.#data.remoteServerAuthToken = newPath;
+  public set remoteServerAuthToken(newToken: string | undefined) {
+    this._remoteServerAuthToken = newToken;
+  }
+
+  public get remoteServerEulaAccepted() {
+    return this._remoteServerEulaAccepted;
+  }
+
+  public set remoteServerEulaAccepted(newValue: boolean | undefined) {
+    this._remoteServerEulaAccepted = newValue;
   }
 
   public get editorViewMode() {
@@ -699,8 +863,9 @@ export default class CreatorTools {
       customTools: [],
     };
 
-    // in the case of a Minecraft Http Server self-hosted web page, assume all we want to do is connect back to our server
-    if (CreatorToolsHost.baseUrl) {
+    // in the case of a Minecraft Http Server self-hosted web page, assume all we want to do is connect back to our server.
+    // But NOT in the Electron app — there we default to hosting BDS locally.
+    if (CreatorToolsHost.baseUrl && !CreatorToolsHost.isAppServiceWeb) {
       this.setMinecraftFlavor(MinecraftFlavor.remote);
       this.successfullyConnectedWebSocketToMinecraft = true;
     }
@@ -720,6 +885,9 @@ export default class CreatorTools {
         backupType: BackupType.every5Minutes,
         useCustomSettings: false,
         isEditor: false,
+        deployCreatorToolsInfrastructure: true,
+        enableDebugger: true,
+        enableDebuggerStreaming: true,
         packageReferences: [],
       };
 
@@ -971,6 +1139,18 @@ export default class CreatorTools {
         }
         break;
 
+      case "localFileUpdate":
+        ElectronStorage.processLocalFileUpdate(data);
+        break;
+
+      case "localFileAdded":
+        ElectronStorage.processLocalFileAdded(data);
+        break;
+
+      case "localFileRemoved":
+        ElectronStorage.processLocalFileRemoved(data);
+        break;
+
       case "statusMessage":
         const firstPipe = data.indexOf("|");
         const content = data.substring(firstPipe + 1, data.length);
@@ -1096,6 +1276,12 @@ export default class CreatorTools {
   }
 
   notifyExternalStatus(status: IStatus) {
+    // When status arrives via IPC (JSON serialization), time becomes a string.
+    // Ensure it's a Date object for downstream consumers that call .getTime().
+    if (status.time && !(status.time instanceof Date)) {
+      status.time = new Date(status.time as unknown as string);
+    }
+
     this.status.push(status);
 
     if (status.type === StatusType.operationStarted) {
@@ -1455,9 +1641,7 @@ export default class CreatorTools {
 
       tempFile.setContent(jsonStringOrBase64ZipContent);
 
-      this.createProjectFromFolder(tempStorage.rootFolder);
-
-      return;
+      return await this.createProjectFromFolder(tempStorage.rootFolder);
     }
 
     let zs = new ZipStorage();
@@ -1675,7 +1859,7 @@ export default class CreatorTools {
     const canonPath = StorageUtilities.canonicalizePath(messageProjectPath);
 
     if (project !== undefined) {
-      await project.ensurePreferencesAndFolderLoadedFromFile();
+      await project.loadPreferencesAndFolder();
 
       if (project.localFolderPath !== undefined) {
         if (canonPath === StorageUtilities.canonicalizePath(project.localFolderPath)) {
@@ -1753,7 +1937,7 @@ export default class CreatorTools {
     }
 
     if (project !== undefined && !openDirect) {
-      await project.ensurePreferencesAndFolderLoadedFromFile();
+      await project.loadPreferencesAndFolder();
 
       if (project.localFolderPath !== undefined) {
         if (canonPath === StorageUtilities.canonicalizePath(project.localFolderPath)) {
@@ -1786,7 +1970,7 @@ export default class CreatorTools {
     for (let i = 0; i < this.projects.length; i++) {
       project = this.projects[i];
 
-      await project.ensurePreferencesAndFolderLoadedFromFile();
+      await project.loadPreferencesAndFolder();
 
       if (project.localFolderPath !== undefined) {
         if (canonPath === StorageUtilities.canonicalizePath(project.localFolderPath)) {
@@ -1837,7 +2021,7 @@ export default class CreatorTools {
     for (let i = 0; i < this.projects.length; i++) {
       const project = this.projects[i];
 
-      await project.ensurePreferencesAndFolderLoadedFromFile();
+      await project.loadPreferencesAndFolder();
 
       await project.ensureProjectFolder();
 
@@ -1866,6 +2050,17 @@ export default class CreatorTools {
 
     if (configFile.content !== null && configFile.content !== undefined && typeof configFile.content === "string") {
       this.#data = JSON.parse(configFile.content as string);
+    }
+
+    // In the Electron app, the "remote" flavor requires a remote server URL and auth token
+    // which are not persisted across sessions. Reset to processHostedProxy (host BDS locally)
+    // to avoid showing a non-functional remote connection UI on startup.
+    if (
+      CreatorToolsHost.isAppServiceWeb &&
+      this.#data.lastActiveMinecraftFlavor === MinecraftFlavor.remote &&
+      !this._remoteServerAuthToken
+    ) {
+      this.#data.lastActiveMinecraftFlavor = MinecraftFlavor.processHostedProxy;
     }
 
     const projectsFolder = this.prefsProjectsFolder;
@@ -2027,10 +2222,18 @@ export default class CreatorTools {
   }
 
   public ensureRemoteMinecraft() {
+    if (this.remoteMinecraft === undefined) {
+      this.remoteMinecraft = new RemoteMinecraft(this);
+    }
+
     return this.remoteMinecraft;
   }
 
   public ensureProcessHostedMinecraft() {
+    if (this.processHostedMinecraft === undefined) {
+      this.processHostedMinecraft = new ProcessHostedMinecraft(this);
+    }
+
     return this.processHostedMinecraft;
   }
 
@@ -2043,6 +2246,14 @@ export default class CreatorTools {
   }
 
   public ensureGameMinecraft() {
+    if (this.gameMinecraft === undefined) {
+      this.gameMinecraft = new MinecraftGameProxyMinecraft(this);
+    }
+
+    if (this.autoStartMinecraft && this.successfullyConnectedWebSocketToMinecraft) {
+      (this.gameMinecraft as MinecraftGameProxyMinecraft).start();
+    }
+
     return this.gameMinecraft;
   }
 

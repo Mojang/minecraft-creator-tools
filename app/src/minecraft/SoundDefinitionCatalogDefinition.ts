@@ -18,6 +18,7 @@ export default class SoundDefinitionCatalogDefinition {
   public _data?: ISoundDefinitionCatalog;
   private _file?: IFile;
   private _isLoaded: boolean = false;
+  private _loadedWithComments: boolean = false;
 
   public id: string | undefined;
 
@@ -216,8 +217,20 @@ export default class SoundDefinitionCatalogDefinition {
     return this._file.setObjectContentIfSemanticallyDifferent(this._data);
   }
 
-  async load() {
-    if (this._isLoaded) {
+  /**
+   * Loads the definition from the file.
+   * @param preserveComments If true, uses comment-preserving JSON parsing for edit/save cycles.
+   *                         If false (default), uses efficient standard JSON parsing.
+   *                         Can be called again with true to "upgrade" a read-only load to read/write.
+   */
+  async load(preserveComments: boolean = false) {
+    // If already loaded with comments, we have the "best" version - nothing more to do
+    if (this._isLoaded && this._loadedWithComments) {
+      return;
+    }
+
+    // If already loaded without comments and caller doesn't need comments, we're done
+    if (this._isLoaded && !preserveComments) {
       return;
     }
 
@@ -231,12 +244,18 @@ export default class SoundDefinitionCatalogDefinition {
     }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
+      this._isLoaded = true;
+      this._loadedWithComments = preserveComments;
+      this._onLoaded.dispatch(this, this);
       return;
     }
 
     let data: any = {};
 
-    let result = StorageUtilities.getJsonObject(this._file);
+    // Use comment-preserving parser only when needed for editing
+    let result = preserveComments
+      ? StorageUtilities.getJsonObjectWithComments(this._file)
+      : StorageUtilities.getJsonObject(this._file);
 
     if (result) {
       data = result;
@@ -245,6 +264,7 @@ export default class SoundDefinitionCatalogDefinition {
     this._data = data;
 
     this._isLoaded = true;
+    this._loadedWithComments = preserveComments;
 
     this._onLoaded.dispatch(this, this);
   }
@@ -435,14 +455,14 @@ export default class SoundDefinitionCatalogDefinition {
   }
 
   async addChildItems(project: Project, item: ProjectItem) {
-    const itemsCopy = project.getItemsCopy();
+    const audioItems = project.getItemsByType(ProjectItemType.audio);
 
     let packRootFolder = this.getPackRootFolder();
 
     let soundPathList = this.getCanonincalizedSoundPathList();
 
-    for (const candItem of itemsCopy) {
-      if (candItem.itemType === ProjectItemType.audio && packRootFolder && soundPathList) {
+    for (const candItem of audioItems) {
+      if (packRootFolder && soundPathList) {
         if (!candItem.isContentLoaded) {
           await candItem.loadContent();
         }

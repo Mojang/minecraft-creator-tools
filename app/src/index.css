@@ -1,10 +1,259 @@
+/*
+ * ═══════════════════════════════════════════════════════════════
+ * MCTools CSS Custom Properties — Theme Color Bridge
+ *
+ * These CSS variables mirror the ThemeColors / mcColors palette defined
+ * in useThemeColors.ts / mcColors.ts.  They let pure-CSS components use
+ * theme-aware colors without inline styles or JavaScript.
+ *
+ * Naming convention:
+ *   --mc-bg-N        → background1–6 (N=1 outermost, 6 subtle)
+ *   --mc-fg-N        → foreground1–6 (N=1 primary text, 6 muted)
+ *   --mc-green-N     → green1–7 accent scale
+ *   --mc-<semantic>  → semantic aliases (content-bg, section-border, etc.)
+ *
+ * Usage in CSS files:
+ *   color: var(--mc-fg-1);
+ *   background-color: var(--mc-bg-1);
+ *   border-color: var(--mc-section-border);
+ *
+ * Values MUST stay in sync with mcColors.ts and useThemeColors.ts.
+ * ═══════════════════════════════════════════════════════════════
+ */
+
+/* ── Default (dark theme) ─────────────────────────────────────── */
+:root {
+  /* Gray scale — matches mcColors.gray1–gray6 */
+  --mc-gray-1: #e5e3e1;
+  --mc-gray-2: #cecccb;
+  --mc-gray-3: #9a9896;
+  --mc-gray-4: #686462;
+  --mc-gray-5: #484543;
+  --mc-gray-6: #262423;
+
+  /* Neutrals */
+  --mc-black: #000000;
+  --mc-off-black: #1a1918;
+  --mc-white: #ffffff;
+  --mc-off-white: #f2efec;
+
+  /* Green accent scale — matches mcColors.green1–green7 */
+  --mc-green-1: #a2e87a;
+  --mc-green-2: #86d562;
+  --mc-green-3: #6fc24a;
+  --mc-green-4: #52a535;
+  --mc-green-5: #3e8828;
+  --mc-green-6: #2a641c;
+  --mc-green-7: #1e4d14;
+
+  /* ── Dark-theme background/foreground (default) ─── */
+  --mc-bg-1: var(--mc-gray-6); /* #262423 — outermost */
+  --mc-bg-2: var(--mc-gray-5); /* #484543 */
+  --mc-bg-3: var(--mc-gray-4); /* #686462 */
+  --mc-bg-4: var(--mc-gray-3); /* #9a9896 */
+  --mc-bg-5: var(--mc-green-6); /* #2a641c */
+  --mc-bg-6: var(--mc-off-black); /* #1a1918 */
+
+  --mc-fg-1: var(--mc-off-white); /* #f2efec — primary text */
+  --mc-fg-2: var(--mc-white);
+  --mc-fg-3: var(--mc-white);
+  --mc-fg-4: var(--mc-white); /* button text */
+  --mc-fg-5: var(--mc-gray-3); /* muted */
+  --mc-fg-6: var(--mc-gray-3); /* subtle */
+
+  /* ── Semantic tokens (dark-theme defaults) ────── */
+  --mc-section-border: var(--mc-gray-3);
+  --mc-content-bg: var(--mc-gray-5);
+  --mc-content-fg: var(--mc-off-white);
+  --mc-surface-bg: var(--mc-gray-5);
+  --mc-surface-fg: var(--mc-off-white);
+  --mc-muted-fg: var(--mc-gray-3);
+  --mc-card-bg: var(--mc-gray-5);
+  --mc-card-border: var(--mc-gray-4);
+  --mc-input-border: var(--mc-gray-5);
+  --mc-code-bg: var(--mc-gray-5);
+  --mc-code-fg: var(--mc-off-white);
+  --mc-accent-label: var(--mc-green-2); /* Label/accent text that must contrast on dark bg */
+
+  /* Legacy --surface-* aliases (kept for existing consumers) */
+  --surface-bg: var(--mc-bg-1);
+  --surface-elevated: var(--mc-bg-2);
+  --surface-text: var(--mc-fg-1);
+  --surface-text-secondary: var(--mc-fg-6);
+  --surface-border: var(--mc-section-border);
+  --surface-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --surface-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --surface-shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Light-theme overrides ────────────────────────────────────── */
+body.ct-light {
+  --mc-bg-1: var(--mc-gray-1); /* #e5e3e1 — outermost */
+  --mc-bg-2: var(--mc-gray-2); /* #cecccb */
+  --mc-bg-3: var(--mc-gray-3); /* #9a9896 */
+  --mc-bg-4: var(--mc-gray-4); /* #686462 */
+  --mc-bg-5: var(--mc-green-4); /* #52a535 */
+  --mc-bg-6: var(--mc-gray-2); /* #cecccb */
+
+  --mc-fg-1: var(--mc-off-black); /* #1a1918 — primary text */
+  --mc-fg-2: var(--mc-off-black);
+  --mc-fg-3: var(--mc-off-black);
+  --mc-fg-4: var(--mc-black); /* button text */
+  --mc-fg-5: var(--mc-gray-5); /* muted */
+  --mc-fg-6: var(--mc-gray-5); /* subtle */
+
+  --mc-section-border: var(--mc-gray-5);
+  --mc-content-bg: var(--mc-white);
+  --mc-content-fg: var(--mc-gray-1);
+  --mc-surface-bg: var(--mc-gray-2);
+  --mc-surface-fg: var(--mc-gray-6);
+  --mc-muted-fg: var(--mc-gray-4);
+  --mc-card-bg: var(--mc-white);
+  --mc-card-border: var(--mc-gray-3);
+  --mc-input-border: var(--mc-gray-3);
+  --mc-code-bg: var(--mc-gray-6);
+  --mc-code-fg: var(--mc-off-white);
+  --mc-accent-label: var(--mc-green-6); /* Label/accent text that must contrast on light bg */
+
+  --surface-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --surface-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --surface-shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  background-color: var(--mc-bg-1) !important;
+  color: var(--mc-fg-1);
+}
+
+body.ct-dark {
+  background-color: var(--mc-bg-1) !important;
+  color: var(--mc-fg-1);
+}
+
+/* ── High-contrast mode ──────────────────────────────────────── */
+@media (forced-colors: active) {
+  :root,
+  body.ct-light,
+  body.ct-dark {
+    --mc-fg-1: CanvasText;
+    --mc-fg-2: CanvasText;
+    --mc-fg-3: CanvasText;
+    --mc-bg-1: Canvas;
+    --mc-content-bg: Canvas;
+    --mc-content-fg: CanvasText;
+    --mc-surface-bg: Canvas;
+    --mc-surface-fg: CanvasText;
+    --mc-code-bg: Canvas;
+    --mc-code-fg: CanvasText;
+    --mc-muted-fg: GrayText;
+    --mc-section-border: CanvasText;
+  }
+}
+
 body {
-  font-family: "Noto Sans", "Segoe UI", "Helvetica Neue", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
-    "Droid Sans", sans-serif;
+  font-family:
+    "Noto Sans", "Segoe UI", "Helvetica Neue", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   overflow-y: hidden;
+  margin: 0;
+  padding: 0;
+  background-color: var(--mc-bg-1) !important;
+  color: var(--mc-fg-1);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Global Minecraft-themed scrollbars
+   Applies consistently across the entire app.
+   Uses dark stone colors that match the Minecraft UI palette.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Webkit/Blink (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1918;
+  border: 2px solid #131211;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2d6b1e;
+  border-top: 3px solid #4a9636;
+  border-left: 3px solid #4a9636;
+  border-right: 3px solid #163a0e;
+  border-bottom: 3px solid #163a0e;
+  min-height: 32px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3e8828;
+  border-top-color: #5fb93e;
+  border-left-color: #5fb93e;
+  border-right-color: #1e4d14;
+  border-bottom-color: #1e4d14;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #1e4d14;
+  border-top: 3px solid #163a0e;
+  border-left: 3px solid #163a0e;
+  border-right: 3px solid #4a9636;
+  border-bottom: 3px solid #4a9636;
+}
+
+::-webkit-scrollbar-corner {
+  background: #1a1918;
+}
+
+/* Firefox-only scrollbar styling (Chromium uses ::-webkit-scrollbar above) */
+@-moz-document url-prefix() {
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: #3e8828 #1a1918;
+  }
+}
+
+/* Light theme overrides */
+body.ct-light ::-webkit-scrollbar-track {
+  background: #d8d5d3;
+  border: 2px solid #c0bbb8;
+}
+
+body.ct-light ::-webkit-scrollbar-thumb {
+  background: #52a535;
+  border-top: 3px solid #86d562;
+  border-left: 3px solid #86d562;
+  border-right: 3px solid #2a641c;
+  border-bottom: 3px solid #2a641c;
+}
+
+body.ct-light ::-webkit-scrollbar-thumb:hover {
+  background: #6bc24a;
+  border-top-color: #9ee87a;
+  border-left-color: #9ee87a;
+  border-right-color: #3e8828;
+  border-bottom-color: #3e8828;
+}
+
+body.ct-light ::-webkit-scrollbar-thumb:active {
+  background: #3e8828;
+  border-top: 3px solid #2a641c;
+  border-left: 3px solid #2a641c;
+  border-right: 3px solid #86d562;
+  border-bottom: 3px solid #86d562;
+}
+
+body.ct-light ::-webkit-scrollbar-corner {
+  background: #d8d5d3;
+}
+
+@-moz-document url-prefix() {
+  body.ct-light * {
+    scrollbar-color: #52a535 #d8d5d3;
+  }
 }
 
 #cookie-banner {
@@ -145,6 +394,37 @@ BUTTON {
   border-radius: 0px !important;
 }
 
+/* Prevent unstyled flash on MUI ButtonBase before CSS-in-JS injects styles */
+.MuiButtonBase-root {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Prevent unstyled flash on McButton in card actions.
+   The McButton component builds its green appearance with runtime sx props
+   that may load late. This provides a green fallback so the button
+   never appears as plain unstyled text during CSS-in-JS hydration. */
+.MuiCardActions-root .MuiButtonBase-root {
+  background-color: #3e8828;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+  width: 100%;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .ui-dropdown__item {
   padding-left: 4px !important;
   padding-top: 2px !important;
@@ -185,6 +465,10 @@ BUTTON {
 
 .blocklyToolboxCategoryLabel {
   font: inherit !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 12px !important;
+  font-weight: 600 !important;
 }
 
 @media screen and (prefers-contrast: more) {
@@ -192,3 +476,325 @@ BUTTON {
     border: solid 1px !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MINECRAFT-STYLE TOGGLE SWITCHES
+   
+   Overrides FluentUI Northstar toggle switches to look like Minecraft toggles:
+   - Rectangular shape (no rounded corners)
+   - Gray track when off, green when on
+   - White/light sliding indicator
+   
+   FluentUI Northstar structure:
+   - .ui-checkbox (root, has role="checkbox" and aria-checked)
+   - .ui-checkbox__indicator (the toggle track, uses :before for knob)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Toggle track (the background pill shape) - when used as toggle */
+.ui-checkbox[aria-checked] .ui-checkbox__indicator {
+  width: 40px !important;
+  height: 16px !important;
+  border-radius: 0 !important;
+  background-color: #3a3a3a !important;
+  background-image: none !important;
+  border: 2px solid #1a1a1a !important;
+  position: relative !important;
+  top: 3px !important;
+  transition: background-color 0.1s ease !important;
+  box-shadow:
+    inset 2px 2px 0 rgba(0, 0, 0, 0.3),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Toggle track when checked - darker green background */
+.ui-checkbox[aria-checked="true"] .ui-checkbox__indicator {
+  background-color: #2d5a1d !important;
+  border-color: #1a3a10 !important;
+  box-shadow:
+    inset 2px 2px 0 rgba(0, 0, 0, 0.3),
+    inset -1px -1px 0 rgba(100, 180, 60, 0.2) !important;
+}
+
+/* Toggle track when unchecked - push down 1 extra pixel for centering */
+.ui-checkbox[aria-checked="false"] .ui-checkbox__indicator {
+  top: 4px !important;
+}
+
+/* Toggle knob (the :before pseudo-element) - Minecraft style with outset bevel */
+.ui-checkbox[aria-checked] .ui-checkbox__indicator::before {
+  content: "" !important;
+  display: block !important;
+  width: 14px !important;
+  height: 22px !important;
+  border-radius: 0 !important;
+  /* Gray thumb with outset bevel - lighter top/left, darker bottom/right */
+  background-color: #6b6b6b !important;
+  border: 2px solid #8a8a8a !important;
+  border-right-color: #3a3a3a !important;
+  border-bottom-color: #3a3a3a !important;
+  box-shadow:
+    inset 1px 1px 0 #9a9a9a,
+    inset -1px -1px 0 #2a2a2a,
+    0 0 0 1px #1a1a1a !important;
+  position: absolute !important;
+  top: -5px !important;
+  left: -2px !important;
+  transition:
+    left 0.1s ease,
+    background-color 0.1s ease !important;
+  margin: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Toggle knob when checked - bright green with outset bevel and white outline */
+.ui-checkbox[aria-checked="true"] .ui-checkbox__indicator::before {
+  left: 22px !important;
+  /* Bright Minecraft green with outset bevel */
+  background-color: #5ac035 !important;
+  border: 2px solid #7de858 !important;
+  border-right-color: #2d6a1a !important;
+  border-bottom-color: #2d6a1a !important;
+  box-shadow:
+    inset 1px 1px 0 #8ef068,
+    inset -1px -1px 0 #1a4a10,
+    0 0 0 2px #ffffff,
+    0 0 0 3px #1a1a1a !important;
+  pointer-events: none !important;
+}
+
+/* Hover states */
+.ui-checkbox[aria-checked]:hover .ui-checkbox__indicator {
+  background-color: #4a4a4a !important;
+}
+
+.ui-checkbox[aria-checked="true"]:hover .ui-checkbox__indicator {
+  background-color: #3a6a25 !important;
+}
+
+/* Focus states - subtle highlight */
+.ui-checkbox[aria-checked]:focus .ui-checkbox__indicator,
+.ui-checkbox[aria-checked]:focus-visible .ui-checkbox__indicator {
+  outline: 2px solid #ffffff !important;
+  outline-offset: 1px !important;
+  box-shadow:
+    inset 2px 2px 0 rgba(0, 0, 0, 0.3),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MINECRAFT-STYLE SLIDERS
+   
+   Overrides FluentUI Northstar sliders to look like Minecraft:
+   - Narrow rectangular track
+   - Wide thumb that extends beyond track
+   - Green beveled thumb with white outline when active
+   
+   FluentUI Northstar structure:
+   - .ui-slider (root)
+   - .ui-slider__rail (background track)
+   - .ui-slider__track (filled portion)
+   - .ui-slider__thumb (draggable handle)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Slider container */
+.ui-slider {
+  height: 24px !important;
+  padding: 0 8px !important;
+  position: relative !important;
+}
+
+/* Rail - the background track (narrow, like checkbox track) */
+.ui-slider .ui-slider__rail {
+  height: 8px !important;
+  border-radius: 0 !important;
+  background-color: #3a3a3a !important;
+  border: 2px solid #1a1a1a !important;
+  box-shadow:
+    inset 2px 2px 0 rgba(0, 0, 0, 0.3),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.1) !important;
+  top: calc(50% - 5px) !important;
+  transform: translateY(-50%) !important;
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+}
+
+/* Track - the filled portion (inset green, matches checkbox) */
+.ui-slider .ui-slider__track {
+  height: 8px !important;
+  border-radius: 0 !important;
+  background-color: #2d5a1d !important;
+  border: 2px solid #1a3a10 !important;
+  box-shadow:
+    inset 2px 2px 0 rgba(0, 0, 0, 0.3),
+    inset -1px -1px 0 rgba(100, 180, 60, 0.2) !important;
+  top: calc(50% - 5px) !important;
+  transform: translateY(-50%) !important;
+  position: absolute !important;
+  left: 0 !important;
+}
+
+/* Thumb - Minecraft style with outset bevel */
+.ui-slider .ui-slider__thumb {
+  width: 12px !important;
+  height: 20px !important;
+  border-radius: 0 !important;
+  /* Gray thumb with outset bevel - lighter top/left, darker bottom/right */
+  background-color: #6b6b6b !important;
+  border: 2px solid #8a8a8a !important;
+  border-right-color: #3a3a3a !important;
+  border-bottom-color: #3a3a3a !important;
+  box-shadow:
+    inset 1px 1px 0 #9a9a9a,
+    inset -1px -1px 0 #2a2a2a,
+    0 0 0 1px #1a1a1a !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  cursor: pointer !important;
+  transition: background-color 0.1s ease !important;
+  z-index: 2 !important;
+}
+
+/* Thumb hover state */
+.ui-slider .ui-slider__thumb:hover {
+  background-color: #7a7a7a !important;
+  border-color: #9a9a9a !important;
+  border-right-color: #4a4a4a !important;
+  border-bottom-color: #4a4a4a !important;
+}
+
+/* Thumb active/dragging state - bright green with white outline */
+.ui-slider .ui-slider__thumb:active,
+.ui-slider:focus-within .ui-slider__thumb {
+  /* Bright Minecraft green with outset bevel */
+  background-color: #5ac035 !important;
+  border: 2px solid #7de858 !important;
+  border-right-color: #2d6a1a !important;
+  border-bottom-color: #2d6a1a !important;
+  box-shadow:
+    inset 1px 1px 0 #8ef068,
+    inset -1px -1px 0 #1a4a10,
+    0 0 0 2px #ffffff,
+    0 0 0 3px #1a1a1a !important;
+}
+
+/* Show keyboard focus for sliders */
+.ui-slider:focus-visible {
+  outline: 2px solid #52a535 !important;
+  outline-offset: 2px !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MINECRAFT-STYLE NATIVE RANGE INPUTS
+   
+   Applies the same blocky Minecraft look to native <input type="range">
+   elements in dark mode contexts.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ct-dark input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  height: 20px;
+  cursor: pointer;
+}
+
+.ct-dark input[type="range"]::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 0;
+  background-color: #3a3a3a;
+  border: 2px solid #1a1a1a;
+  box-shadow:
+    inset 2px 2px 0 rgba(0, 0, 0, 0.3),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.ct-dark input[type="range"]::-moz-range-track {
+  height: 8px;
+  border-radius: 0;
+  background-color: #3a3a3a;
+  border: 2px solid #1a1a1a;
+  box-shadow:
+    inset 2px 2px 0 rgba(0, 0, 0, 0.3),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.ct-dark input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 20px;
+  margin-top: -8px;
+  border-radius: 0;
+  background-color: #6b6b6b;
+  border: 2px solid #8a8a8a;
+  border-right-color: #3a3a3a;
+  border-bottom-color: #3a3a3a;
+  box-shadow:
+    inset 1px 1px 0 #9a9a9a,
+    inset -1px -1px 0 #2a2a2a,
+    0 0 0 1px #1a1a1a;
+  cursor: pointer;
+}
+
+.ct-dark input[type="range"]::-moz-range-thumb {
+  width: 12px;
+  height: 20px;
+  border-radius: 0;
+  background-color: #6b6b6b;
+  border: 2px solid #8a8a8a;
+  border-right-color: #3a3a3a;
+  border-bottom-color: #3a3a3a;
+  box-shadow:
+    inset 1px 1px 0 #9a9a9a,
+    inset -1px -1px 0 #2a2a2a,
+    0 0 0 1px #1a1a1a;
+  cursor: pointer;
+}
+
+.ct-dark input[type="range"]::-webkit-slider-thumb:hover {
+  background-color: #7a7a7a;
+  border-color: #9a9a9a;
+  border-right-color: #4a4a4a;
+  border-bottom-color: #4a4a4a;
+}
+
+.ct-dark input[type="range"]::-moz-range-thumb:hover {
+  background-color: #7a7a7a;
+  border-color: #9a9a9a;
+  border-right-color: #4a4a4a;
+  border-bottom-color: #4a4a4a;
+}
+
+.ct-dark input[type="range"]::-webkit-slider-thumb:active {
+  background-color: #5ac035;
+  border: 2px solid #7de858;
+  border-right-color: #2d6a1a;
+  border-bottom-color: #2d6a1a;
+  box-shadow:
+    inset 1px 1px 0 #8ef068,
+    inset -1px -1px 0 #1a4a10,
+    0 0 0 2px #ffffff,
+    0 0 0 3px #1a1a1a;
+}
+
+.ct-dark input[type="range"]::-moz-range-thumb:active {
+  background-color: #5ac035;
+  border: 2px solid #7de858;
+  border-right-color: #2d6a1a;
+  border-bottom-color: #2d6a1a;
+  box-shadow:
+    inset 1px 1px 0 #8ef068,
+    inset -1px -1px 0 #1a4a10,
+    0 0 0 2px #ffffff,
+    0 0 0 3px #1a1a1a;
+}
+
+/* Global focus-visible ring for keyboard navigation */
+:focus-visible,
+.MuiButtonBase-root.Mui-focusVisible,
+.MuiMenuItem-root.Mui-focusVisible {
+  outline: 2px solid #52a535 !important;
+  outline-offset: 2px !important;
+}
+
+/* Minecraft switch styling is handled by MUI theme in UseTheme.tsx */

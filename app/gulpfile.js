@@ -1,9 +1,8 @@
 const gulp = require("gulp");
-const sourcemaps = require("gulp-sourcemaps");
-const ts = require("gulp-typescript");
 const del = require("del");
+const { execSync } = require("child_process");
+const newer = require("gulp-newer");
 const importTransform = require("./tools/gulp-importTransform");
-const nodeifyScript = require("./tools/gulp-nodeifyScript");
 const jsonifyTypes = require("./tools/gulp-jsonifyTypes");
 const downloadResources = require("./tools/gulp-downloadResources");
 const updateVersions = require("./tools/gulp-updateVersions");
@@ -15,13 +14,16 @@ const webpack = require("webpack");
 const jsncorebuildfilesigs = [
   "src/**/*.ts",
   "!src/vscode/*.ts",
-  "!src/UX/*.ts",
-  "!src/UXex/*.ts",
+  "!src/UX/**/*",
+  "!src/workers/**/*",
+  "!src/UXex/**/*",
   "!src/test/**/*",
+  "!src/test-ex/**/*",
+  "!src/test-extra/**/*",
   "!src/testweb/**/*",
   "!src/monaco/*.ts",
   "!src/setupTests.ts",
-  "!src/worldux/*.ts",
+  "!src/UX/world/*.ts",
   "!src/vscodeweb/*.ts",
   "!src/babylon/*.ts",
 ];
@@ -34,8 +36,11 @@ const libbuildfilesigs = [
   "!src/vscodeweb/**/*",
   "!src/UX/**/*",
   "!src/UXex/**/*",
-  "!src/worldux/**/*",
+  "!src/workers/**/*",
+  "!src/UX/world/**/*",
   "!src/test/**/*",
+  "!src/test-ex/**/*",
+  "!src/test-extra/**/*",
   "!src/testweb/**/*",
   "!src/localserver/**/*",
   "!src/local/**/*",
@@ -56,15 +61,18 @@ const vsccorebuildfilesigs = [
   "src/**/*.ts",
   "!src/UX/*.ts",
   "!src/UXex/*.ts",
+  "!src/workers/*.ts",
   "!src/test/**/*",
   "!src/testweb/**/*",
+  "!src/test-ex/**/*",
+  "!src/test-extra/**/*",
   "!src/testshared/**/*",
   "!src/testelectron/**/*",
   "!src/localserver/**/*",
   "!src/vscodeweb/*.ts",
   "!src/monaco/*.ts",
   "!src/setupTests.ts",
-  "!src/worldux/*.ts",
+  "!src/UX/world/*.ts",
   "!src/local/*.ts",
   "!src/babylon/*.ts",
 ];
@@ -74,6 +82,8 @@ const jsnwebbuildfilesigs = [
   "!src/vscode/*.ts",
   "!src/vscodeweb/*.ts",
   "!src/test/**/*",
+  "!src/test-ex/**/*",
+  "!src/test-extra/**/*",
   "!src/testshared/**/*",
   "!src/testelectron/**/*",
   "!src/localserver/**/*",
@@ -177,58 +187,34 @@ function compileJsnWebBuild(done) {
   });
 }
 
-function compileJsNodeBuild() {
-  const tsProject = ts.createProject({
-    module: "commonjs",
-    target: "es2022",
-    outDir: "jsn",
-    moduleResolution: "node",
-    sourceMap: true,
-    skipLibCheck: true,
-    allowSyntheticDefaultImports: true,
-    noImplicitAny: true,
-  });
-
-  return gulp
-    .src(jsncorebuildfilesigs, { base: "" })
-    .pipe(sourcemaps.init())
-    .pipe(tsProject())
-    .pipe(
-      sourcemaps.mapSources(function (sourcePath, file) {
-        // source paths are prefixed with '../src/'
-
-        let countOfSlashes = 0;
-
-        let slashPath = sourcePath.indexOf("/");
-
-        while (slashPath !== -1) {
-          countOfSlashes++;
-          slashPath = sourcePath.indexOf("/", slashPath + 1);
-        }
-
-        let str = sourcePath;
-
-        if (countOfSlashes >= 1) {
-          for (let i = 0; i < countOfSlashes - 1; i++) {
-            str = "../" + str;
-          }
-        }
-
-        return str;
-      })
-    )
-    .pipe(nodeifyScript())
-    .pipe(sourcemaps.write("./maps/"))
-    .pipe(gulp.dest("toolbuild/jsn"));
+function compileJsNodeBuild(done) {
+  // Use esbuild for fast ESM bundling (~300ms vs ~35s with webpack)
+  try {
+    execSync("node esbuild.jsn.config.mjs", { stdio: "inherit" });
+    done();
+  } catch (err) {
+    done(err);
+  }
 }
 
-function compileLibBuild() {
-  const tsProject = ts.createProject("tsconfig.lib.json");
+function compileElectronBuild(done) {
+  // Build bundled Electron main process and preload script
+  try {
+    execSync("node esbuild.electron.config.mjs", { stdio: "inherit" });
+    done();
+  } catch (err) {
+    done(err);
+  }
+}
 
-  const tsResult = gulp.src(libbuildfilesigs, { base: "src" }).pipe(tsProject());
-
-  tsResult.dts.pipe(gulp.dest("toolbuild/lib"));
-  return tsResult.js.pipe(gulp.dest("toolbuild/lib"));
+function compileLibBuild(done) {
+  // Use direct tsc invocation instead of gulp-typescript for TypeScript 5.x compatibility
+  try {
+    execSync("npx tsc -p tsconfig.lib.json", { stdio: "inherit" });
+    done();
+  } catch (err) {
+    done(err);
+  }
 }
 
 function copyLibPackage() {
@@ -243,6 +229,14 @@ function customizeSiteHead() {
   return gulp.src(["site/index.head.html"], { base: "" }).pipe(textReplaceStream("build/index.html", /<\/head>/gi));
 }
 
+function stripSourceMapA() {
+  return gulp
+    .src(["node_modules/blockly/blockly_compressed.js"])
+    .pipe(
+      textReplace("node_modules/blockly/blockly_compressed.js", [/sourceMappingURL=blockly_compressed.js.map/gi], [""])
+    );
+}
+
 function customizeSiteBody() {
   return gulp
     .src(["site/index.body.html"], { base: "" })
@@ -253,9 +247,23 @@ function copyCheckedInRes() {
   return gulp.src(["public_supplemental/**/*"]).pipe(gulp.dest("public/"));
 }
 
+// Copy forms from @minecraft/bedrock-schemas package directly to VSC toolbuild
+// (VSC extension is self-contained, so it needs its own copy)
+function copyVscBedrockSchemasForms() {
+  return gulp.src(["node_modules/@minecraft/bedrock-schemas/forms/**/*"]).pipe(gulp.dest("toolbuild/vsc/data/forms/"));
+}
+
+// Copy forms from @minecraft/bedrock-schemas into public/data/forms/ so they are
+// available to both the Vite dev server (web app) and unit tests.
+function copyBedrockSchemaFormsToPublic() {
+  return gulp.src(["node_modules/@minecraft/bedrock-schemas/forms/**/*"]).pipe(gulp.dest("public/data/forms/"));
+}
+
 function copyVscData() {
   return gulp
-    .src(["public/data/**/*.json", "public/data/**/*.mcworld"], { encoding: false })
+    .src(["public/data/**/*.json", "public/data/**/*.zip", "public/data/**/*.mcworld", "!public/data/forms/**"], {
+      encoding: false,
+    })
     .pipe(gulp.dest("toolbuild/vsc/data/"));
 }
 
@@ -266,24 +274,33 @@ function copyJsNodeData() {
         "public/data/**/*.ogg",
         "public/data/**/*.png",
         "public/data/**/*.json",
+        "public/data/**/*.zip",
         "public/data/**/*.mcworld",
         "public/data/**/*.mcaddon",
+        "!public/data/forms/**",
       ],
       { encoding: false }
     )
+    .pipe(newer("toolbuild/jsn/data/"))
     .pipe(gulp.dest("toolbuild/jsn/data/"));
 }
 
 function copyJsNodeDist() {
-  return gulp.src(["public/dist/**/*"], { encoding: false }).pipe(gulp.dest("toolbuild/jsn/dist/"));
+  return gulp
+    .src(["public/dist/**/*"], { encoding: false })
+    .pipe(newer("toolbuild/jsn/dist/"))
+    .pipe(gulp.dest("toolbuild/jsn/dist/"));
 }
 
 function copyMonacoNpmDist() {
-  return gulp.src(["node_modules/monaco-editor/min/vs/**/*"]).pipe(gulp.dest("public/dist/vs/"));
+  // encoding: false is required for binary files (TTF fonts, etc.) to prevent UTF-8 corruption
+  return gulp.src(["node_modules/monaco-editor/min/vs/**/*"], { encoding: false }).pipe(gulp.dest("public/dist/vs/"));
 }
 
 function copyMonacoMapsNpmDist() {
-  return gulp.src(["node_modules/monaco-editor/min-maps/**/*"]).pipe(gulp.dest("public/min-maps/"));
+  return gulp
+    .src(["node_modules/monaco-editor/min-maps/**/*"], { encoding: false })
+    .pipe(gulp.dest("public/min-maps/"));
 }
 
 function copyEsbuildWasmDist() {
@@ -293,11 +310,55 @@ function copyEsbuildWasmDist() {
 }
 
 function copyJsNodeDocs() {
-  return gulp.src(["../CHANGELOG.md", "../NOTICE.md"]).pipe(gulp.dest("toolbuild/jsn/"));
+  return gulp.src(["../CHANGELOG.md", "../NOTICE.md", "../LICENSE.md"]).pipe(gulp.dest("toolbuild/jsn/"));
 }
 
-function copyVscRes() {
-  return gulp.src(["public/res/**/*"], { encoding: false }).pipe(gulp.dest("toolbuild/vsc/res/"));
+// VSC builds retrieve vanilla resources and samples from mctools.dev, so we only copy
+// metadata and schema files needed for offline validation/autocomplete.
+// This mirrors the JSN build approach to keep the extension package size manageable.
+
+function copyVscResPreviewMetadataVanillaData() {
+  return gulp
+    .src(["public/res/latest/van/preview/metadata/vanilladata_modules/**/*"])
+    .pipe(gulp.dest("toolbuild/vsc/res/latest/van/preview/metadata/vanilladata_modules/"));
+}
+
+function copyVscResPreviewMetadataCommandModules() {
+  return gulp
+    .src(["public/res/latest/van/preview/metadata/command_modules/**/*"])
+    .pipe(gulp.dest("toolbuild/vsc/res/latest/van/preview/metadata/command_modules/"));
+}
+
+function copyVscResPreviewMetadataIndex() {
+  return gulp
+    .src(["public/res/latest/van/preview/metadata/index.json", "public/res/latest/van/preview/metadata/README.md"])
+    .pipe(gulp.dest("toolbuild/vsc/res/latest/van/preview/metadata/"));
+}
+
+function copyVscResSchemas() {
+  return gulp.src(["public/res/latest/schemas/**/*"]).pipe(gulp.dest("toolbuild/vsc/res/latest/schemas/"));
+}
+
+// Copy official schemas from @minecraft/bedrock-schemas to toolbuild/vsc/schemas/
+// These are used by Database.getOfficialSchema() for JSON validation
+function copyVscSchemas() {
+  return gulp.src(["node_modules/@minecraft/bedrock-schemas/schemas/**/*"]).pipe(gulp.dest("toolbuild/vsc/schemas/"));
+}
+
+function copyVscResImages() {
+  return gulp.src(["public/res/images/**/*"], { encoding: false }).pipe(gulp.dest("toolbuild/vsc/res/images/"));
+}
+
+function copyVscResIcons() {
+  return gulp.src(["public/res/icons/**/*"], { encoding: false }).pipe(gulp.dest("toolbuild/vsc/res/icons/"));
+}
+
+function copyVscResSnapshots() {
+  return gulp.src(["public/res/snapshots/**/*"], { encoding: false }).pipe(gulp.dest("toolbuild/vsc/res/snapshots/"));
+}
+
+function copyVscResSamples() {
+  return gulp.src(["public/res/samples/**/*"], { encoding: false }).pipe(gulp.dest("toolbuild/vsc/res/samples/"));
 }
 
 function copyVscMc() {
@@ -307,7 +368,23 @@ function copyVscMc() {
 function copyJsNodeResPreviewMetadataVanillaData() {
   return gulp
     .src(["public/res/latest/van/preview/metadata/vanilladata_modules/**/*"])
+    .pipe(newer("toolbuild/jsn/res/latest/van/preview/metadata/vanilladata_modules/"))
     .pipe(gulp.dest("toolbuild/jsn/res/latest/van/preview/metadata/vanilladata_modules/"));
+}
+
+// Copy the command_modules folder needed for command autocomplete
+function copyJsNodeResPreviewMetadataCommandModules() {
+  return gulp
+    .src(["public/res/latest/van/preview/metadata/command_modules/**/*"])
+    .pipe(newer("toolbuild/jsn/res/latest/van/preview/metadata/command_modules/"))
+    .pipe(gulp.dest("toolbuild/jsn/res/latest/van/preview/metadata/command_modules/"));
+}
+
+// Copy the metadata index.json file needed for headless rendering
+function copyJsNodeResPreviewMetadataIndex() {
+  return gulp
+    .src(["public/res/latest/van/preview/metadata/index.json", "public/res/latest/van/preview/metadata/README.md"])
+    .pipe(gulp.dest("toolbuild/jsn/res/latest/van/preview/metadata/"));
 }
 
 function copyResLatestPreviewToServe() {
@@ -317,19 +394,56 @@ function copyResLatestPreviewToServe() {
 }
 
 function copyJsNodeResSchemas() {
-  return gulp.src(["public/res/latest/schemas/**/*"]).pipe(gulp.dest("toolbuild/jsn/res/latest/schemas/"));
+  return gulp
+    .src(["public/res/latest/schemas/**/*"])
+    .pipe(newer("toolbuild/jsn/res/latest/schemas/"))
+    .pipe(gulp.dest("toolbuild/jsn/res/latest/schemas/"));
+}
+
+// Copy official schemas from @minecraft/bedrock-schemas to toolbuild/jsn/schemas/
+// These are used by Database.getOfficialSchema() for JSON validation
+function copyJsNodeSchemas() {
+  return gulp
+    .src(["node_modules/@minecraft/bedrock-schemas/schemas/**/*"])
+    .pipe(newer("toolbuild/jsn/schemas/"))
+    .pipe(gulp.dest("toolbuild/jsn/schemas/"));
 }
 
 function copyJsNodeResImages() {
-  return gulp.src(["public/res/images/**/*"], { encoding: false }).pipe(gulp.dest("toolbuild/jsn/res/images/"));
+  return gulp
+    .src(["public/res/images/**/*"], { encoding: false })
+    .pipe(newer("toolbuild/jsn/res/images/"))
+    .pipe(gulp.dest("toolbuild/jsn/res/images/"));
+}
+
+function copyJsNodeResIcons() {
+  return gulp
+    .src(["public/res/icons/**/*"], { encoding: false })
+    .pipe(newer("toolbuild/jsn/res/icons/"))
+    .pipe(gulp.dest("toolbuild/jsn/res/icons/"));
+}
+
+function copyJsNodeResSnapshots() {
+  return gulp
+    .src(["public/res/snapshots/**/*"], { encoding: false })
+    .pipe(newer("toolbuild/jsn/res/snapshots/"))
+    .pipe(gulp.dest("toolbuild/jsn/res/snapshots/"));
 }
 
 function copyJsNodeMc() {
-  return gulp.src(["public/data/content/**/*.mcaddon"], { encoding: false }).pipe(gulp.dest("toolbuild/jsn/mc/"));
+  return gulp
+    .src(["public/data/content/**/*.mcaddon"], { encoding: false })
+    .pipe(newer("toolbuild/jsn/mc/"))
+    .pipe(gulp.dest("toolbuild/jsn/mc/"));
 }
 
 function copyJsNodeAssets() {
   return gulp.src(["jsnode/**/*"]).pipe(gulp.dest("toolbuild/jsn/"));
+}
+
+// Copy docker-package folder to docker/ in the output (for TGZ distribution)
+function copyJsNodeDocker() {
+  return gulp.src(["docker-package/**/*"]).pipe(gulp.dest("toolbuild/jsn/docker/"));
 }
 
 function copyVscAssets() {
@@ -385,19 +499,26 @@ gulp.task(
   gulp.parallel("postclean-jsnwebbuild-node_modules", "postclean-jsnwebbuild-toolbuild", "postclean-jsnwebbuild-build")
 );
 
+// jsnbuild: Incremental build - skips clean, uses gulp-newer to only copy changed files,
+// and uses webpack filesystem cache for fast recompilation.
+// Use jsnfullbuild when you need a guaranteed clean-slate build.
 gulp.task(
   "jsnbuild",
   gulp.series(
-    "clean-jsnbuild",
     copyCheckedInRes,
     gulp.parallel(
       compileJsNodeBuild,
+      compileElectronBuild, // Build bundled Electron main process
       copyJsNodeAssets,
       copyJsNodeData,
       copyJsNodeDocs,
       copyJsNodeResSchemas,
       copyJsNodeResPreviewMetadataVanillaData,
+      copyJsNodeResPreviewMetadataCommandModules,
+      copyJsNodeResPreviewMetadataIndex,
       copyJsNodeResImages,
+      copyJsNodeResIcons,
+      copyJsNodeResSnapshots,
       copyJsNodeMc,
       copyJsNodeDist,
       compileJsnWebBuild
@@ -406,11 +527,31 @@ gulp.task(
   )
 );
 
+// jsnfullbuild: Clean build - deletes toolbuild/jsn and rebuilds everything from scratch.
+// Use this when you suspect stale files or need a guaranteed clean output.
+gulp.task("jsnfullbuild", gulp.series("clean-jsnbuild", "jsnbuild"));
+
 gulp.task("libbuild", gulp.series("clean-libbuild", gulp.parallel(compileLibBuild, copyLibPackage, copyLibDocs)));
 
-gulp.task("jsncorebuild", gulp.series(compileJsNodeBuild));
+// Copy the compiled lib output into the JSN package so npm pack includes it.
+// The jsnode/package.json main field is "./lib/index.lib.js", so lib/ must
+// exist inside toolbuild/jsn/ for the packaged .tgz to be complete.
+function copyLibToJsn() {
+  return gulp.src(["toolbuild/lib/**/*"]).pipe(gulp.dest("toolbuild/jsn/lib/"));
+}
+
+gulp.task("jsnlibbuild", gulp.series("libbuild", copyLibToJsn));
+
+gulp.task("jsncorebuild", gulp.series(compileJsNodeBuild, compileElectronBuild));
+
+gulp.task("electronbuild", gulp.series(compileElectronBuild));
 
 gulp.task("copyjsnodedata", gulp.series(copyJsNodeData));
+
+gulp.task(
+  "copybedrockschemas",
+  gulp.parallel(copyVscBedrockSchemasForms, copyVscSchemas, copyBedrockSchemaFormsToPublic)
+);
 
 gulp.task("vsccoreexebuild", compileVscCoreExeBuild);
 gulp.task("vsccorewebbuild", compileVscCoreWebBuild);
@@ -446,53 +587,29 @@ gulp.task(
       copyVscAssets,
       copyVscDocs,
       copyVscData,
-      copyVscRes,
+      copyVscBedrockSchemasForms,
+      copyVscResPreviewMetadataVanillaData,
+      copyVscResPreviewMetadataCommandModules,
+      copyVscResPreviewMetadataIndex,
+      copyVscResSchemas,
+      copyVscSchemas,
+      copyVscResImages,
+      copyVscResIcons,
+      copyVscResSnapshots,
+      copyVscResSamples,
       copyVscMc
     )
   )
 );
 
-function compileWebJsBuild() {
-  const tsProject = ts.createProject({
-    module: "esnext",
-    target: "es2022",
-    outDir: "web",
-    moduleResolution: "node",
-    sourceMap: true,
-    allowSyntheticDefaultImports: true,
-    noImplicitAny: true,
-  });
-
-  return gulp
-    .src(jsnwebbuildfilesigs, { base: "" })
-    .pipe(sourcemaps.init())
-    .pipe(tsProject())
-    .pipe(
-      sourcemaps.mapSources(function (sourcePath, file) {
-        // source paths are prefixed with '../src/'
-
-        let countOfSlashes = 0;
-
-        let slashPath = sourcePath.indexOf("/");
-
-        while (slashPath !== -1) {
-          countOfSlashes++;
-          slashPath = sourcePath.indexOf("/", slashPath + 1);
-        }
-
-        let str = sourcePath;
-
-        if (countOfSlashes >= 1) {
-          for (let i = 0; i < countOfSlashes - 1; i++) {
-            str = "../" + str;
-          }
-        }
-
-        return str;
-      })
-    )
-    .pipe(sourcemaps.write("./maps/"))
-    .pipe(gulp.dest("out/web"));
+function compileWebJsBuild(done) {
+  // Use direct tsc invocation instead of gulp-typescript for TypeScript 5.x compatibility
+  try {
+    execSync("npx tsc -p tsconfig.webbuild.json", { stdio: "inherit" });
+    done();
+  } catch (err) {
+    done(err);
+  }
 }
 
 function buildMinecraftJs() {
@@ -523,6 +640,7 @@ function runUpdateVersions() {
         "./package.json",
         "./package-lock.json",
         "./jsnode/package.json",
+        "./vscode/package.json",
         "./src/core/Constants.ts",
       ])
     );
@@ -607,13 +725,29 @@ gulp.task(
   )
 );
 
-gulp.task("preparedevenvlocal", gulp.parallel(copyMonacoNpmDist, copyMonacoMapsNpmDist, copyEsbuildWasmDist));
+gulp.task(
+  "preparedevenvlocal",
+  gulp.parallel(stripSourceMapA, copyMonacoNpmDist, copyMonacoMapsNpmDist, copyEsbuildWasmDist)
+);
 
 gulp.task("preparedevenv", gulp.parallel("mctypes", "dlres", "preparedevenvlocal"));
 
 gulp.task("npmdepends", gulp.parallel(copyMonacoNpmDist, copyMonacoMapsNpmDist, copyEsbuildWasmDist));
 
-gulp.task("default", gulp.parallel("jsnbuild"));
+// Generate JSON schemas from TypeScript types
+function generateJsonSchemas(done) {
+  const { execSync } = require("child_process");
+  try {
+    execSync("node scripts/generateJsonSchemas.js", { stdio: "inherit" });
+    done();
+  } catch (err) {
+    done(err);
+  }
+}
+
+gulp.task("generate-schemas", generateJsonSchemas);
+
+gulp.task("default", gulp.parallel("jsnbuild", "vscbuild"));
 
 gulp.task("watch", function () {
   gulp.watch(jsncorebuildfilesigs, gulp.series("jsnbuild"));

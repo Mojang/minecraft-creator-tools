@@ -1,0 +1,1159 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   ENTITY TYPE COMPONENT SET EDITOR - Minecraft Creator Tools
+   
+   Design Philosophy:
+   - Blocky, Minecraft-authentic aesthetic (max 4px border-radius)
+   - Green accent (#52a535) for selected states and focus
+   - Theme-aware: adapts to light/dark mode
+   - Clear visual hierarchy between list and editor panes
+   - Smooth transitions for polish without being distracting
+   - Uses EditorContentPanel for consistent panel styling
+   
+   See: docs/ux/Components.md, docs/ux/ColorSystem.md
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   THEME VARIABLES - Component Slot Colors
+   Default to dark mode, override for light mode
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Dark mode defaults */
+.etcse-area-dark {
+  --slot-grid-bg: #8b8b8b;
+  --slot-grid-border-dark: #373737;
+  --slot-grid-border-light: #b0b0b0;
+  --slot-bg: #8b8b8b;
+  --slot-chip-bg: #505050;
+  --slot-chip-highlight: #707070;
+  --slot-chip-shadow: #303030;
+  --slot-chip-hover-bg: #5a5a5a;
+  --slot-chip-hover-shadow: #252525;
+  --slot-chip-hover-highlight: #808080;
+  --slot-text-color: #ffffff;
+  --slot-text-shadow: rgba(0, 0, 0, 0.6);
+  --slot-summary-color: #d0d0d0;
+  --slot-add-bg: #6b6b6b;
+  --slot-add-color: #52a535;
+  --slot-add-hover-bg: #7a7a7a;
+  --slot-add-hover-color: #d0d0d0;
+  --slot-selected-chip-bg: #424242;
+  --slot-selected-glow: rgba(82, 165, 53, 0.5);
+  --help-hint-bg: rgba(82, 165, 53, 0.14);
+  --help-hint-border: rgba(82, 165, 53, 0.55);
+  --help-hint-title: #f0f8ed;
+  --help-hint-text: #d5e4cf;
+  --help-hint-next: #b6c9ad;
+}
+
+/* Light mode overrides */
+.etcse-area-light {
+  --slot-grid-bg: #d8d8d8;
+  --slot-grid-border-dark: #b0b0b0;
+  --slot-grid-border-light: #f0f0f0;
+  --slot-bg: #d8d8d8;
+  --slot-chip-bg: #e8e8e8;
+  --slot-chip-highlight: #f5f5f5;
+  --slot-chip-shadow: #c0c0c0;
+  --slot-chip-hover-bg: #f0f0f0;
+  --slot-chip-hover-shadow: #b0b0b0;
+  --slot-chip-hover-highlight: #ffffff;
+  --slot-text-color: #333333;
+  --slot-text-shadow: rgba(255, 255, 255, 0.5);
+  --slot-summary-color: #555555;
+  --slot-add-bg: #c8c8c8;
+  --slot-add-color: #3e8828;
+  --slot-add-hover-bg: #d0d0d0;
+  --slot-add-hover-color: #333333;
+  --slot-selected-chip-bg: #f0f0f0;
+  --slot-selected-glow: rgba(82, 165, 53, 0.3);
+  --help-hint-bg: rgba(82, 165, 53, 0.11);
+  --help-hint-border: rgba(62, 136, 40, 0.55);
+  --help-hint-title: #23451a;
+  --help-hint-text: #2e5323;
+  --help-hint-next: #3a6230;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MAIN LAYOUT
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.etcse-area {
+  width: calc(100% - 2px);
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-right: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.etcse-area-narrow {
+  width: 100%;
+  padding-top: 12px;
+  padding-bottom: 0;
+  padding-right: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* In narrow mode, override inline-grid to prevent horizontal overflow */
+.etcse-area-narrow .etcse-componentForm {
+  display: grid;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.etcse-area-narrow .editor-panel-content {
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.etcse-area-narrow .df-outer {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Panel grid inside the area */
+.etcse-panelGrid {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Component list panel */
+.etcse-componentListPanel {
+  overflow: hidden;
+}
+
+.etcse-componentListPanel .editor-panel-content {
+  overflow-y: auto;
+  overflow-x: hidden !important;
+}
+
+/* Component bin panel */
+.etcse-componentBinPanel {
+  overflow: hidden;
+}
+
+.etcse-componentBinPanel .editor-panel-content {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   HEADER STYLES
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.etcse-header {
+  font-size: 16pt;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.etcse-note {
+  padding: 10px 14px;
+  margin: 8px 0;
+  font-size: 11px;
+  font-style: italic;
+  background: rgba(82, 165, 53, 0.08);
+  border-left: 3px solid rgba(82, 165, 53, 0.4);
+  border-radius: 0 4px 4px 0;
+  line-height: 1.5;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   COMPONENT FORM AREA
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.etcse-componentForm {
+  margin-bottom: 12px;
+  padding: 0 16px 16px 16px;
+  width: 100%;
+  display: inline-grid;
+  min-height: 220px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   COMPONENT SLOTS - Minecraft Inventory/Container Style
+   
+   Design: Components appear as items in inventory slots, inspired by
+   Minecraft's brewing stand and crafting UI. Each slot has:
+   - Dark inset background with beveled 3D edges
+   - Item icon centered in the slot
+   - Pop-out effect on hover
+   - Glowing selection state
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Slot grid container */
+.etcse-slotGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 3px;
+  background: var(--slot-grid-bg);
+  border: 2px solid;
+  border-color: var(--slot-grid-border-dark) var(--slot-grid-border-light) var(--slot-grid-border-light)
+    var(--slot-grid-border-dark);
+  border-radius: 0;
+  margin: 4px 6px;
+}
+
+/* Individual slot - Minecraft inventory slot style, full width with room for summary */
+/* Touch targets: min-height ensures 36px+ for compact density */
+.etcse-componentSlot {
+  position: relative;
+  width: 100%;
+  min-height: 36px;
+  height: auto;
+  background: var(--slot-bg);
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  /* Asymmetric padding: more on top-left (groove shadow side),
+     less on bottom-right so chip sits into the groove */
+  padding: 3px 1px 1px 3px;
+  box-sizing: border-box;
+  /* Inset bevel - dark top-left, light bottom-right */
+  box-shadow:
+    inset 2px 2px 0 0 var(--slot-grid-border-dark),
+    inset -2px -2px 0 0 var(--slot-grid-border-light);
+  overflow: hidden;
+  /* Vertical spacing between component slots */
+  margin-bottom: 8px;
+}
+
+/* Inner chip - outset appearance inside the inset slot */
+.etcse-slotChip {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  height: 100%;
+  background: var(--slot-chip-bg);
+  /* Outset bevel - light top-left, dark bottom-right */
+  box-shadow:
+    inset -2px -2px 0 0 var(--slot-chip-shadow),
+    inset 2px 2px 0 0 var(--slot-chip-highlight);
+  overflow: hidden;
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.1s ease;
+}
+
+/* Top row with icon and title - top aligned */
+.etcse-slotChipHeader {
+  display: flex;
+  align-items: flex-start;
+  padding-top: 6px;
+  padding-bottom: 2px;
+}
+
+/* Icon container on the left - top aligned */
+.etcse-slotIcon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 18px;
+  margin: 1px 3px 0 3px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 0;
+}
+
+/* Icon container with no additional bevel - chip has the bevel */
+.etcse-slotIcon .component-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.etcse-slotIcon .component-icon img {
+  image-rendering: pixelated;
+  filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.5));
+}
+
+/* Text label container */
+.etcse-slotLabel {
+  flex: 1;
+  min-width: 0;
+  padding: 2px 4px 0 0;
+  display: flex;
+  align-items: flex-start;
+  overflow: hidden;
+}
+
+.etcse-slotText {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--slot-text-color);
+  text-shadow: 1px 1px 1px var(--slot-text-shadow);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+}
+
+/* Summarizer text area below the header */
+.etcse-slotSummary {
+  padding: 0 6px 8px 30px;
+  margin-top: -3px;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--slot-summary-color);
+  text-shadow: 1px 1px 1px var(--slot-text-shadow);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+  /* Hard max-height fallback: 2 lines × 1.3 line-height = 2.6em */
+  max-height: 2.6em;
+  flex-shrink: 1;
+  flex-grow: 0;
+}
+
+.etcse-slotSummary:empty {
+  display: none;
+}
+
+/* Hover state - chip pops out, slot stays in place */
+.etcse-componentSlot:hover .etcse-slotChip {
+  transform: translateY(-1px);
+  box-shadow:
+    inset -2px -2px 0 0 var(--slot-chip-hover-shadow),
+    inset 2px 2px 0 0 var(--slot-chip-hover-highlight),
+    0 2px 4px rgba(0, 0, 0, 0.2);
+  background: var(--slot-chip-hover-bg);
+}
+
+/* Add component slot - empty inset slot with + sign, full width */
+.etcse-addSlot {
+  position: relative;
+  width: 100%;
+  height: 28px;
+  min-height: 28px;
+  background: var(--slot-add-bg);
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  /* Inset bevel - dark top-left, light bottom-right */
+  box-shadow:
+    inset 2px 2px 0 0 var(--slot-grid-border-dark),
+    inset -2px -2px 0 0 var(--slot-grid-border-light);
+  /* Reset button defaults */
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: background 0.1s ease;
+  box-sizing: border-box;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--slot-add-color);
+  text-shadow: none;
+}
+
+/* Add slot wrapper - same dimensions as .etcse-componentSlot */
+.etcse-addSlotWrapper {
+  position: relative;
+  width: 100%;
+  height: 28px;
+  display: block;
+  box-sizing: border-box;
+}
+
+/* Add slot button - empty inset slot style, matching .etcse-componentSlot exactly */
+.etcse-addSlot {
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  top: 0;
+  bottom: 0;
+  width: calc(100% + 4px);
+  height: 28px;
+  background: var(--slot-add-bg);
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  /* Inset bevel - dark top-left, light bottom-right */
+  box-shadow:
+    inset 2px 2px 0 0 var(--slot-grid-border-dark),
+    inset -2px -2px 0 0 var(--slot-grid-border-light);
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: background 0.1s ease;
+  box-sizing: border-box;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--slot-add-color);
+  text-shadow: none;
+}
+
+/* Plus icon inside add slot */
+.etcse-addSlotIcon {
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--slot-add-color);
+  transition: color 0.15s ease;
+}
+
+.etcse-addSlot:hover {
+  background: var(--slot-add-hover-bg);
+  color: var(--slot-add-hover-color);
+}
+
+.etcse-addSlot:hover .etcse-addSlotIcon {
+  color: #52a535;
+  text-shadow: 0 0 4px var(--slot-selected-glow);
+}
+
+/* Selected state - glowing border */
+.etcse-componentSlot.etcse-slotSelected {
+  box-shadow:
+    0 0 10px var(--slot-selected-glow),
+    inset -2px -2px 0 0 #6fc74a,
+    inset 2px 2px 0 0 #3a7525;
+}
+
+.etcse-componentSlot.etcse-slotSelected .etcse-slotChip {
+  background: var(--slot-selected-chip-bg);
+  box-shadow:
+    inset 2px 2px 0 0 var(--slot-chip-shadow),
+    inset -1px -1px 0 0 var(--slot-chip-highlight),
+    inset 0 0 6px var(--slot-selected-glow);
+}
+
+/* Selection border using outline */
+.etcse-componentSlot.etcse-slotSelected {
+  outline: 2px solid var(--slot-color, #52a535);
+  outline-offset: -2px;
+}
+
+/* Category section header for slot view */
+.etcse-slotCategoryHeader {
+  width: 100%;
+  padding: 18px 0 2px 0;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  /* Color is set via inline style from theme */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  border-bottom: 2px solid currentColor;
+  border-bottom-color: rgba(128, 128, 128, 0.3);
+  margin-bottom: 4px;
+  opacity: 0.9;
+  /* Left align with first slot */
+  margin-left: 0;
+  text-align: left;
+}
+
+.etcse-slotCategoryHeaderClickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.etcse-slotCategoryHeaderClickable:hover {
+  opacity: 1;
+}
+
+.etcse-categoryChevron {
+  margin-right: 4px;
+  font-size: 8px;
+  opacity: 0.7;
+}
+
+.etcse-slotCategoryHeader:first-child {
+  padding-top: 4px;
+}
+
+/* Legacy chip styles - kept for backwards compatibility */
+.etcse-componentChip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  margin: 1px 0;
+  min-height: 28px;
+  font-size: 12px;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(107, 101, 98, 0.25);
+  border-left: 3px solid var(--chip-color, #52a535);
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.etcse-componentChip::before {
+  content: "";
+  position: absolute;
+  left: -3px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--chip-color, #52a535);
+  border-radius: 3px 0 0 3px;
+  opacity: 1;
+  transition:
+    width 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.etcse-componentChip:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(107, 101, 98, 0.4);
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.etcse-componentChip:hover::before {
+  width: 4px;
+}
+
+/* Icon container within chip */
+.etcse-componentChip .component-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+/* Label text */
+.etcse-componentChipLabel {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+}
+
+/* Selected state for component chips */
+.etcse-componentList .ui-list__item[aria-selected="true"] .etcse-componentChip {
+  background: linear-gradient(90deg, rgba(var(--chip-color-rgb, 82, 165, 53), 0.15) 0%, rgba(255, 255, 255, 0.06) 100%);
+  border-color: var(--chip-color, #52a535);
+  box-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transform: translateX(2px);
+}
+
+.etcse-componentList .ui-list__item[aria-selected="true"] .etcse-componentChip::before {
+  width: 4px;
+  box-shadow: 0 0 8px var(--chip-color, #52a535);
+}
+
+/* Legacy wrapper styles (kept for compatibility) */
+.etcse-componentWrapper {
+  margin: 2px 0;
+  font-size: 12px;
+  border-radius: 3px;
+  transition: all 0.12s ease;
+}
+
+.etcse-componentWrapper:hover {
+  transform: translateX(3px);
+}
+
+.etcse-componentWrapperInner {
+  padding: 4px 8px;
+  font-weight: 500;
+}
+
+.etcse-componentForm .ui-form__input {
+  padding-top: 4px;
+  margin-bottom: 6px;
+  border-radius: 3px;
+}
+
+.etcse-componentForm .ui-form__checkbox {
+  padding-top: 4px;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
+
+.etcse-componentForm .pu > :last-child {
+  margin-top: 0px;
+}
+
+.etcse-componentForm .pt > :not(:last-child) {
+  margin-bottom: 0px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   COMPONENT HEADER - Hero-style with large icon and green accent
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.etcse-componentHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px 8px 16px;
+  font-size: 14pt;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  background: linear-gradient(135deg, rgba(82, 165, 53, 0.12) 0%, rgba(82, 165, 53, 0.04) 60%, transparent 100%);
+  border-bottom: 2px solid rgba(82, 165, 53, 0.3);
+  position: relative;
+}
+
+/* Large icon slot in header */
+.etcse-componentHeaderIcon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
+  border: 2px solid;
+  border-color: var(--header-icon-color, #52a535);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 0 8px rgba(var(--header-icon-color-rgb, 82, 165, 53), 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.etcse-componentHeaderIcon .component-icon {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.etcse-componentHeaderIcon .component-icon img {
+  image-rendering: pixelated;
+}
+
+/* Header text content */
+.etcse-componentHeaderText {
+  flex: 1;
+  min-width: 0;
+}
+
+.etcse-componentHeaderTitle {
+  font-size: 14pt;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  margin-bottom: 2px;
+}
+
+.etcse-componentHeaderSubtitle {
+  font-size: 10px;
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.etcse-componentHeaderDescription {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 4px;
+  line-height: 1.4;
+  font-style: italic;
+}
+
+.etcse-helpHint {
+  position: relative;
+  margin: 8px 12px 10px;
+  padding: 10px 32px 10px 12px;
+  line-height: 1.45;
+  border: 2px solid var(--help-hint-border);
+  background: var(--help-hint-bg);
+  border-radius: 2px;
+}
+
+.etcse-helpHintDismiss {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--help-hint-next);
+  opacity: 0.6;
+  font-size: 14px;
+  padding: 2px 4px;
+  line-height: 1;
+  border-radius: 2px;
+  transition: opacity 0.15s ease;
+}
+
+.etcse-helpHintDismiss:hover {
+  opacity: 1;
+}
+
+.etcse-helpHintTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--help-hint-title);
+  margin-bottom: 6px;
+}
+
+.etcse-helpHintBody {
+  font-size: 12px;
+  color: var(--help-hint-text);
+  margin-bottom: 4px;
+}
+
+.etcse-helpHintNext {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--help-hint-next);
+  font-weight: 600;
+}
+
+/* Delete button inline in header */
+.etcse-componentHeaderDelete {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* Green accent line effect */
+.etcse-componentHeader::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100px;
+  height: 2px;
+  background: linear-gradient(90deg, #52a535 0%, transparent 100%);
+}
+
+.etcse-noeditor {
+  padding: 24px 20px;
+  text-align: center;
+  opacity: 0.7;
+  font-size: 13px;
+}
+
+.etcse-title {
+  width: 200px;
+  font-weight: 600;
+}
+
+.etcse-extraArea {
+  margin-bottom: 5px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   COMPONENT DROPDOWN (Narrow mode)
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.etcse-componentDropdown .ui-dropdown__container {
+  width: 205px;
+  margin: 4px;
+  border-radius: 3px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   COMPONENT LIST PANEL - Left sidebar with slot grid
+   
+   Now uses EditorContentPanel, but list styling remains the same.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Styles apply to both old .etcse-componentList and new .etcse-componentListPanel */
+.etcse-componentList,
+.etcse-componentListPanel .editor-panel-content {
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 4px 10px 4px 6px;
+  min-width: 270px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Search filter wrapper with clear button */
+.etcse-searchFilterWrapper {
+  position: relative;
+  flex: 1;
+  min-width: 120px;
+  max-width: 240px;
+}
+
+.etcse-searchFilter {
+  width: 100%;
+  height: 28px;
+  padding: 4px 28px 4px 8px;
+  border: 1px solid var(--slot-grid-border-light, #b0b0b0);
+  border-radius: 3px;
+  background: var(--slot-chip-bg, #505050);
+  color: var(--slot-text-color, #ffffff);
+  font-size: 12px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.etcse-searchFilterClear {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--slot-summary-color, #d0d0d0);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 4px;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.1s ease;
+}
+
+.etcse-searchFilterClear:hover {
+  opacity: 1;
+}
+
+.etcse-searchFilter:focus {
+  border-color: #52a535;
+}
+
+.etcse-searchFilter::placeholder {
+  color: var(--slot-summary-color, #d0d0d0);
+  opacity: 0.7;
+}
+
+.etcse-componentListPanel .ui-dropdown__container,
+.etcse-componentList .ui-dropdown__container {
+  width: 200px;
+  border-radius: 3px;
+}
+
+/* Make the list items display as a vertical column */
+.etcse-componentListPanel .ui-list,
+.etcse-componentList .ui-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0;
+  align-content: flex-start;
+  width: 100%;
+}
+
+.etcse-componentListPanel li,
+.etcse-componentList li {
+  padding: 0;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+/* Component and add slot list items - full width for summary display */
+.etcse-componentListPanel li:has(.etcse-componentSlot),
+.etcse-componentList li:has(.etcse-componentSlot) {
+  width: 100%;
+  min-height: 40px;
+  height: auto;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.etcse-componentListPanel li:has(.etcse-addSlot),
+.etcse-componentList li:has(.etcse-addSlot) {
+  width: 100%;
+  min-height: 28px;
+  height: auto;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Ensure all content wrappers in slots have no extra padding */
+.etcse-componentListPanel li:has(.etcse-componentSlot) .ui-list__itemcontent,
+.etcse-componentList li:has(.etcse-componentSlot) .ui-list__itemcontent {
+  width: 100% !important;
+  min-height: 40px !important;
+  height: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.etcse-componentListPanel li:has(.etcse-addSlot) .ui-list__itemcontent,
+.etcse-componentList li:has(.etcse-addSlot) .ui-list__itemcontent {
+  width: 100% !important;
+  min-height: 28px !important;
+  height: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+/* Category headers span full width */
+.etcse-componentListPanel li:has(.etcse-slotCategoryHeader),
+.etcse-componentList li:has(.etcse-slotCategoryHeader) {
+  width: 100%;
+  flex-basis: 100%;
+}
+
+.etcse-componentListPanel .ui-list__itemcontent,
+.etcse-componentList .ui-list__itemcontent {
+  margin-right: 0;
+}
+
+/* Ensure add slots can receive clicks - button element needs explicit sizing */
+.etcse-componentListPanel li:has(.etcse-addSlotWrapper),
+.etcse-componentList li:has(.etcse-addSlotWrapper) {
+  width: 100%;
+  min-height: 28px;
+  height: auto;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+  pointer-events: auto;
+}
+
+.etcse-componentListPanel li:has(.etcse-addSlotWrapper) .ui-list__itemcontent,
+.etcse-componentList li:has(.etcse-addSlotWrapper) .ui-list__itemcontent {
+  pointer-events: auto;
+  width: 100% !important;
+  min-height: 28px !important;
+  height: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   COMPONENT BIN - Right editor panel
+   
+   Now uses EditorContentPanel for consistent Minecraft styling.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.etcse-componentBin,
+.etcse-componentBinPanel .editor-panel-content {
+  padding: 0 12px 0 0;
+  height: 100%;
+  min-height: 200px;
+  vertical-align: top;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.etcse-componentBin-narrow,
+.etcse-componentBinPanel.etcse-componentBin-narrow .editor-panel-content {
+  padding: 0;
+  padding-top: 8px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TOOLBAR AND TITLE AREA
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.etcse-componentArea {
+  display: grid;
+  padding: 8px 12px;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0%, transparent 100%);
+  border-bottom: 1px solid rgba(107, 101, 98, 0.2);
+}
+
+.etcse-titleArea {
+  grid-column: 1;
+  grid-row: 1;
+  padding-top: 0;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.etcse-toolBarArea {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.etcse-componentToolBarArea {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.etcse-extraArea {
+  grid-column: 1;
+  grid-row: 1;
+  padding-left: 0;
+}
+
+.etcse-loading {
+  padding: 20px;
+  text-align: center;
+  opacity: 0.7;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   BREADCRUMB NAVIGATION - Minecraft style
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.etcse-breadcrumb {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  font-size: 11px;
+  border-bottom: 1px solid rgba(107, 101, 98, 0.2);
+  margin-bottom: 0;
+  flex-wrap: wrap;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.etcse-breadcrumbItem {
+  padding: 4px 10px;
+  border-radius: 3px;
+  transition: all 0.12s ease;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.etcse-breadcrumbItem:hover {
+  background-color: rgba(107, 101, 98, 0.15);
+  cursor: pointer;
+}
+
+.etcse-breadcrumbSeparator {
+  margin: 0 2px;
+  opacity: 0.35;
+  font-size: 9px;
+}
+
+.etcse-breadcrumbCurrent {
+  font-weight: 600;
+  background-color: rgba(82, 165, 53, 0.15);
+  color: #52a535;
+}
+
+.etcse-breadcrumbCurrent:hover {
+  background-color: rgba(82, 165, 53, 0.25);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   COMPONENT LIST ITEMS - Slot grid styling
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.etcse-componentList .ui-list__item {
+  transition: none;
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+  border-left: none;
+  background: transparent;
+}
+
+.etcse-componentList .ui-list__item:hover {
+  background-color: transparent;
+  transform: none;
+  border-left-color: transparent;
+}
+
+.etcse-componentList .ui-list__item[aria-selected="true"] {
+  background-color: transparent;
+  border-left: none;
+  transform: none;
+}
+
+.etcse-componentList .ui-list__item[aria-selected="true"]:hover {
+  background-color: transparent;
+}
+
+/* Remove focus outline on list items - the slot handles its own styling */
+.etcse-componentList .ui-list__item:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.etcse-componentList .ui-list__item:focus-visible {
+  outline: none;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CATEGORY HEADERS IN LIST - Stone gray styling
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.etcse-componentList .ui-list__item[data-is-header="true"],
+.etcse-componentList li:not([aria-selected]) > div:first-child:not(.etcse-componentChip) {
+  font-weight: 600;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  opacity: 0.7;
+  padding: 12px 8px 6px 8px;
+  pointer-events: none;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MUI LIST OVERRIDES - Compact slot layout for McSelectableList
+   
+   The MUI ListItemButton adds default padding that pushes the component
+   slot chips away from their inset groove edges. These overrides strip
+   that padding so the slot chips sit flush in their beveled grooves.
+   Also reduces vertical spacing between items for a tighter layout.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Remove all MUI padding from list items within the component panel */
+.etcse-componentListPanel .MuiList-root {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.etcse-componentListPanel .MuiListItem-root {
+  padding: 0;
+  margin-bottom: 7px;
+}
+
+/* Strip MUI ListItemButton padding so component slot fills the full area */
+.etcse-componentListPanel .MuiListItemButton-root {
+  padding: 1px 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Remove MUI selection/hover backgrounds — the slot chip handles its own styling */
+.etcse-componentListPanel .MuiListItemButton-root:hover,
+.etcse-componentListPanel .MuiListItemButton-root.Mui-selected,
+.etcse-componentListPanel .MuiListItemButton-root.Mui-selected:hover {
+  background-color: transparent;
+}
+
+/* Remove MUI ListItemText padding/margins so slot chip content isn't offset */
+.etcse-componentListPanel .MuiListItemText-root {
+  margin: 0;
+  padding: 0;
+}
+
+.etcse-componentListPanel .MuiListItemText-secondary {
+  margin: 0;
+  padding: 0;
+}

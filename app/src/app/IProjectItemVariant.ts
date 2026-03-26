@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import { ProjectItemCreationType, ProjectItemErrorStatus } from "./IProjectItemData";
 
 export enum ProjectItemVariantType {

@@ -1,0 +1,455 @@
+/* Copyright (c) Microsoft Corporation. */
+/* Licensed under the MIT License. */
+
+/* 
+ * FEATURE EDITOR STYLES
+ * =====================
+ * 
+ * Styles for the Feature/Feature Rule editor component.
+ * Uses a similar layout pattern to EntityTypeEditor.
+ */
+
+/* Main container */
+.fe-area {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Header with feature/rule identifier */
+.fe-header {
+  padding: 8px 12px;
+  font-weight: 600;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Main content area below header */
+.fe-mainArea {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Toolbar area with mode buttons */
+.fe-toolBarArea {
+  padding: 4px 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Content area for mode-specific views */
+.fe-contentArea {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Loading state */
+.fe-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-style: italic;
+  opacity: 0.7;
+}
+
+/* Settings mode - full width editor */
+.fe-settingsMode {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+/* ============================== */
+/* TREE EDITOR STYLES             */
+/* ============================== */
+
+.fte-area {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Left panel - tree list */
+.fte-treePanel {
+  width: 300px;
+  min-width: 250px;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.fte-treePanelHeader {
+  padding: 8px 12px;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.8;
+}
+
+.fte-treeList {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Tree node item */
+.fte-treeNode {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: background-color 0.15s ease;
+}
+
+.fte-treeNode:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.fte-treeNode.fte-selected {
+  background-color: rgba(0, 120, 212, 0.1);
+  border-left-color: #0078d4;
+}
+
+.fte-treeNode.fte-unfulfilled {
+  opacity: 0.6;
+}
+
+.fte-treeNode.fte-unfulfilled.fte-vanilla {
+  opacity: 0.8;
+}
+
+/* Indentation for tree depth */
+.fte-treeNodeIndent {
+  display: inline-block;
+  width: 16px;
+  flex-shrink: 0;
+}
+
+/* Icon for node type */
+.fte-treeNodeIcon {
+  width: 20px;
+  margin-right: 8px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.fte-treeNodeIcon.fte-featureRule {
+  color: #0078d4;
+}
+
+.fte-treeNodeIcon.fte-compositeFeature {
+  color: #107c10;
+}
+
+.fte-treeNodeIcon.fte-terminalFeature {
+  color: #8764b8;
+}
+
+.fte-treeNodeIcon.fte-unfulfilled {
+  color: #d83b01;
+}
+
+/* Node content */
+.fte-treeNodeContent {
+  flex: 1;
+  overflow: hidden;
+}
+
+.fte-treeNodeName {
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fte-treeNodeType {
+  font-size: 11px;
+  opacity: 0.7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Warning icon for unfulfilled */
+.fte-treeNodeWarning {
+  margin-left: 8px;
+  color: #d83b01;
+  flex-shrink: 0;
+}
+
+/* Vanilla badge */
+.fte-vanillaBadge {
+  font-size: 10px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background-color: rgba(0, 0, 0, 0.1);
+  margin-left: 6px;
+  flex-shrink: 0;
+}
+
+/* Right panel - detail editor */
+.fte-detailPanel {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.fte-detailHeader {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.fte-detailHeaderTitle {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.fte-detailHeaderSubtitle {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.fte-detailContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+/* Empty state */
+.fte-emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  padding: 24px;
+}
+
+.fte-emptyStateIcon {
+  font-size: 48px;
+  opacity: 0.3;
+  margin-bottom: 16px;
+}
+
+.fte-emptyStateTitle {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.fte-emptyStateMessage {
+  font-size: 13px;
+  opacity: 0.7;
+  max-width: 300px;
+}
+
+/* ============================== */
+/* DIAGRAM EDITOR STYLES (xyflow) */
+/* ================================ */
+
+.fde-container {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+}
+
+.fde-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #666;
+  font-style: italic;
+}
+
+/* ============================== */
+/* COMPONENT EDITOR STYLES        */
+/* ============================== */
+
+.fce-area {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.fce-toolbar {
+  padding: 4px 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+.fce-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.fce-section {
+  margin-bottom: 24px;
+}
+
+.fce-sectionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.fce-field {
+  margin-bottom: 16px;
+}
+
+.fce-fieldLabel {
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.fce-fieldDescription {
+  font-size: 11px;
+  opacity: 0.7;
+  margin-bottom: 6px;
+}
+
+.fce-fieldInput {
+  width: 100%;
+}
+
+.fce-linkedFeature {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fce-linkedFeatureId {
+  flex: 1;
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.fce-linkedFeatureButton {
+  flex-shrink: 0;
+}
+
+.fce-emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 32px;
+}
+
+.fce-emptyStateMessage {
+  color: #888;
+  font-style: italic;
+  text-align: center;
+}
+
+.fce-loading {
+  padding: 16px;
+  color: #888;
+  font-style: italic;
+}
+
+.fce-form {
+  padding: 0;
+}
+
+.fce-noForm {
+  padding: 16px;
+  text-align: center;
+}
+
+.fce-noFormMessage {
+  color: #888;
+  font-style: italic;
+  margin-bottom: 16px;
+}
+
+.fce-goToFileButton {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background: #0078d4;
+  color: white;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.fce-goToFileButton:hover {
+  background: #006cbd;
+}
+
+.fce-unfulfilled {
+  padding: 24px;
+  text-align: center;
+}
+
+.fce-unfulfilledIcon {
+  font-size: 32px;
+  color: #d4a800;
+  margin-bottom: 12px;
+}
+
+.fce-unfulfilledTitle {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.fce-unfulfilledId {
+  font-family: monospace;
+  font-size: 13px;
+  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+.fce-unfulfilledMessage {
+  color: #666;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.fce-unfulfilledActions {
+  margin-top: 16px;
+}
+
+.fce-createButton {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background: #0078d4;
+  color: white;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.fce-createButton:hover:not(:disabled) {
+  background: #006cbd;
+}
+
+.fce-createButton:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}

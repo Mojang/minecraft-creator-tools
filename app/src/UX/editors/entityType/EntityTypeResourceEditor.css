@@ -1,0 +1,225 @@
+.etre-area {
+  width: calc(100% - 2px);
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.etre-mainArea {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.etre-toolBarArea {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 2px 6px 0 6px;
+  min-height: 34px;
+  background: transparent;
+}
+
+/* Reduce MUI Button padding for compact tab appearance - matches editor-header-tabs-container */
+.etre-toolBarArea .MuiButton-root {
+  padding: 2px 4px;
+  min-width: unset;
+}
+
+.etre-toolBarArea .MuiStack-root {
+  gap: 2px;
+}
+
+/* Inactive tab styling matching chip tabs */
+.etre-toolBarArea .label-deseltab {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px 6px 8px !important;
+  cursor: pointer;
+  transition: all 0.1s ease-out;
+  gap: 6px;
+  position: relative;
+  background-color: var(--chip-shadow, rgba(60, 60, 60, 0.9)) !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow:
+    inset 1px 1px 0 rgba(0, 0, 0, 0.4),
+    inset -1px 0 0 var(--chip-highlight, rgba(255, 255, 255, 0.15)),
+    0 1px 0 var(--chip-shadow, rgba(0, 0, 0, 0.3)) !important;
+  margin-bottom: 0;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+}
+
+.etre-toolBarArea .label-deseltab::before,
+.etre-toolBarArea .label-deseltab::after {
+  content: none !important;
+  display: none !important;
+}
+
+.etre-toolBarArea .label-deseltab:hover {
+  background-color: var(--chip-main, rgba(80, 80, 80, 0.9)) !important;
+  color: #ffffff !important;
+  box-shadow:
+    inset 1px 1px 0 rgba(0, 0, 0, 0.35),
+    inset -1px 0 0 var(--chip-highlight, rgba(255, 255, 255, 0.2)),
+    0 1px 0 var(--chip-shadow, rgba(0, 0, 0, 0.25)) !important;
+}
+
+/* Selected/active tab - pushed IN with accent underline */
+.etre-toolBarArea .label-tab {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px 6px 8px !important;
+  gap: 6px;
+  position: relative;
+  background-color: var(--chip-border, rgba(40, 40, 40, 0.95)) !important;
+  color: #ffffff !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow:
+    inset 2px 2px 0 rgba(0, 0, 0, 0.55),
+    inset -2px 0 0 rgba(0, 0, 0, 0.35),
+    inset 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Add underline indicator for active tab */
+.etre-toolBarArea .label-tab::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute;
+  bottom: 2px;
+  left: 8px;
+  right: 8px;
+  height: 2px;
+  background-color: #52a535;
+  border-radius: 1px;
+}
+
+.etre-headerTransition {
+  background-position-x: left;
+  background-repeat: repeat-x;
+  height: 40px;
+}
+
+.etre-header {
+  font-size: 16pt;
+  padding-top: 10px;
+  padding-left: 30px;
+  padding-bottom: 13px;
+}
+
+.etre-form {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.etre-rc-header {
+  padding-left: 20px;
+  padding-top: 10px;
+}
+
+.etre-header-interior {
+  font-size: large;
+}
+
+.etre-loading {
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.etre-retry-button {
+  padding: 6px 16px;
+  background-color: #52a535;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: background-color 0.15s ease;
+}
+
+.etre-retry-button:hover {
+  background-color: #63c244;
+}
+
+.etre-preview-container {
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 300px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Make the model viewer and its canvas fill the preview container completely */
+.etre-preview-container .mov-area {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  max-height: none !important;
+  height: 100% !important;
+  grid-template-rows: 40px 1fr;
+  grid-template-columns: 1fr;
+}
+
+.etre-preview-container .mov-threedarea-lg {
+  min-height: 0;
+  grid-column: 1;
+}
+
+.etre-preview-container .mov-toolbar {
+  grid-column: 1;
+}
+
+.etre-preview-container .ve-container,
+.etre-preview-container .ve-main-area,
+.etre-preview-container .ve-canvas-wrapper {
+  height: 100%;
+  min-height: 0;
+}
+
+.etre-preview-container .ve-canvas-wrapper canvas {
+  min-height: 0 !important;
+  max-height: 100% !important;
+  height: 100% !important;
+}
+
+.etre-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  text-align: center;
+  opacity: 0.7;
+}
+
+.etre-empty-state-icon {
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.etre-empty-state-title {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.etre-empty-state-message {
+  font-size: 14px;
+  max-width: 400px;
+  line-height: 1.5;
+}

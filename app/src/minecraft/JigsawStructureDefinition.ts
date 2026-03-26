@@ -28,6 +28,7 @@ export default class JigsawStructureDefinition implements IDefinition {
   private _file?: IFile;
   private _data?: IJigsawStructureDefinition;
   private _isLoaded: boolean = false;
+  private _loadedWithComments: boolean = false;
 
   public get data() {
     return this._data;
@@ -69,21 +70,19 @@ export default class JigsawStructureDefinition implements IDefinition {
       return;
     }
 
-    const itemsCopy = project.getItemsCopy();
+    const templatePoolItems = project.getItemsByType(ProjectItemType.jigsawTemplatePool);
 
     // Find template pool referenced by start_pool
-    for (const candItem of itemsCopy) {
-      if (candItem.itemType === ProjectItemType.jigsawTemplatePool) {
-        if (!candItem.isContentLoaded) {
-          await candItem.loadContent();
-        }
+    for (const candItem of templatePoolItems) {
+      if (!candItem.isContentLoaded) {
+        await candItem.loadContent();
+      }
 
-        if (candItem.primaryFile) {
-          const templatePool = await JigsawTemplatePoolDefinition.ensureOnFile(candItem.primaryFile);
+      if (candItem.primaryFile) {
+        const templatePool = await JigsawTemplatePoolDefinition.ensureOnFile(candItem.primaryFile);
 
-          if (templatePool && templatePool.id === this.startPool) {
-            item.addChildItem(candItem);
-          }
+        if (templatePool && templatePool.id === this.startPool) {
+          item.addChildItem(candItem);
         }
       }
     }
@@ -108,8 +107,20 @@ export default class JigsawStructureDefinition implements IDefinition {
     return jigsawStructure;
   }
 
-  async load() {
-    if (this._isLoaded) {
+  /**
+   * Loads the definition from the file.
+   * @param preserveComments If true, uses comment-preserving JSON parsing for edit/save cycles.
+   *                         If false (default), uses efficient standard JSON parsing.
+   *                         Can be called again with true to "upgrade" a read-only load to read/write.
+   */
+  async load(preserveComments: boolean = false) {
+    // If already loaded with comments, we have the "best" version - nothing more to do
+    if (this._isLoaded && this._loadedWithComments) {
+      return;
+    }
+
+    // If already loaded without comments and caller doesn't need comments, we're done
+    if (this._isLoaded && !preserveComments) {
       return;
     }
 
@@ -122,16 +133,22 @@ export default class JigsawStructureDefinition implements IDefinition {
     }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
+      this._isLoaded = true;
+      this._loadedWithComments = preserveComments;
       return;
     }
 
-    const result = StorageUtilities.getJsonObject(this._file);
+    // Use comment-preserving parser only when needed for editing
+    const result = preserveComments
+      ? StorageUtilities.getJsonObjectWithComments(this._file)
+      : StorageUtilities.getJsonObject(this._file);
 
     if (result) {
       this._data = result;
     }
 
     this._isLoaded = true;
+    this._loadedWithComments = preserveComments;
   }
 
   persist(): boolean {

@@ -78,6 +78,14 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
     return this._surroundings;
   }
 
+  /**
+   * Clears the cached surroundings so they will be recalculated on next access.
+   * This should be called when a neighboring block changes.
+   */
+  public clearSurroundings() {
+    this._surroundings = undefined;
+  }
+
   public setType(blockType: BlockType) {
     this._type = blockType;
     this._blockType = blockType; // Keep reference to preserve baseType with shape data

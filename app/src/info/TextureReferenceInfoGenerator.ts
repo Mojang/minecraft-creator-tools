@@ -11,23 +11,21 @@ import BlocksCatalogDefinition from "../minecraft/BlocksCatalogDefinition";
 import TerrainTextureCatalogDefinition from "../minecraft/TerrainTextureCatalogDefinition";
 import ItemTextureCatalogDefinition from "../minecraft/ItemTextureCatalogDefinition";
 import ContentIndex, { AnnotationCategory } from "../core/ContentIndex";
-import ProjectInfoUtilities from "./ProjectInfoUtilities";
 
 export enum TextureReferenceInfoGeneratorTest {
   textureReferences = 101,
 }
 
+/**
+ * Aggregates texture reference information from various catalog definitions.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/textureref.form.json} for topic definitions
+ */
 export default class TextureReferenceInfoGenerator implements IProjectInfoGenerator {
   id = "TEXTUREREF";
-  title = "Texture Reference Info Aggregation";
+  title = "Texture References";
 
   performAddOnValidations = false;
-
-  getTopicData(topicId: number) {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(TextureReferenceInfoGeneratorTest, topicId),
-    };
-  }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
     info.textureCount = infoSet.getSummedDataValue(this.id, TextureReferenceInfoGeneratorTest.textureReferences);

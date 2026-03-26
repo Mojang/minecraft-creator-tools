@@ -1,0 +1,39 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Creator Tools for Editor",
+    "description": "Tools for debugging projects",
+    "uuid": "f54c1b6d-722c-456b-b9c2-2c277465007e",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 20, 0]
+  },
+  "modules": [
+    {
+      "description": "Script resources",
+      "type": "script",
+      "language": "javascript",
+      "uuid": "db38c6c9-d5f0-41dd-98c8-68498ddcbd8a",
+      "version": [1, 0, 0],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "capabilities": ["editorExtension"],
+  "dependencies": [
+    {
+      "uuid": "e247b4b9-b4a5-4a3e-83af-a64847132af1",
+      "version": [1, 0, 0]
+    },
+    {
+      "module_name": "@minecraft/server-editor",
+      "version": "0.1.0-beta"
+    },
+    {
+      "module_name": "@minecraft/server",
+      "version": "2.2.0"
+    },
+    {
+      "module_name": "@minecraft/server-ui",
+      "version": "2.0.0"
+    }
+  ]
+}

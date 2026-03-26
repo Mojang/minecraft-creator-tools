@@ -17,14 +17,14 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 /**
- * Color palette for green variant (matching McButton)
+ * Color palette for stone variant (secondary action, matching McButton)
  */
 const colors = {
-  border: "#1e4d14",
-  highlight: mcColors.green3,
-  main: mcColors.green4,
-  shadow: mcColors.green6,
-  corner: mcColors.green5,
+  border: mcColors.stoneBorder,
+  highlight: mcColors.stoneLight,
+  main: mcColors.stone,
+  shadow: mcColors.stoneDark,
+  corner: mcColors.stoneMid,
   text: mcColors.white,
 };
 

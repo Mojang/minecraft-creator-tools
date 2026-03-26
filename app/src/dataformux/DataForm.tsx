@@ -1,33 +1,149 @@
+/**
+ * ========================================================================
+ * ARCHITECTURE: DataForm.tsx
+ * ========================================================================
+ *
+ * DataForm is the core form-based editor for Minecraft data structures.
+ * It renders form fields based on IFormDefinition schemas and manages
+ * property values across multiple backing stores.
+ *
+ * KEY CONCEPTS:
+ *
+ * 1. FORM DEFINITION:
+ *    IFormDefinition describes the structure of the data being edited.
+ *    It contains an array of IField definitions, each specifying:
+ *    - id: The property name in the data object
+ *    - dataType: FieldDataType enum (string, int, boolean, point3, etc.)
+ *    - title: Human-readable label
+ *    - defaultValue, choices, subForm, etc.
+ *
+ * 2. BACKING STORES:
+ *    DataForm supports three ways to provide data:
+ *    - dataPropertyObject: Uses getProperty()/ensureProperty() pattern
+ *    - getsetPropertyObject: Uses getProperty()/setProperty() pattern
+ *    - directObject: Plain JavaScript object (most common)
+ *
+ *    Property management is delegated to FormPropertyManager.
+ *
+ * 3. FIELD RENDERING:
+ *    The render() method iterates through fields and renders appropriate
+ *    controls based on FieldDataType. Each field type has its own
+ *    rendering logic (textbox, checkbox, dropdown, subform, etc.)
+ *
+ * 4. SCALAR VS OBJECT:
+ *    Some forms can represent data as either a scalar or object.
+ *    E.g., damage could be "5" or { amount: 5, type: "fire" }.
+ *    FormPropertyManager handles upscaling/downscaling between these.
+ *
+ * ========================================================================
+ * UPSCALE/DOWNSCALE PATTERN
+ * ========================================================================
+ *
+ * Minecraft JSON often supports multiple representations of the same data.
+ * For example, `repair_items` in `minecraft:repairable` can be:
+ *
+ *   - Simple string: "minecraft:iron_ingot"
+ *   - Array of strings: ["minecraft:iron_ingot", "minecraft:gold_ingot"]
+ *   - Array of objects: [{ items: [...], repair_amount: 50 }]
+ *
+ * THE PATTERN: Upscale → Edit → Downscale
+ *
+ *   ┌────────────────┐     upscale()      ┌────────────────┐
+ *   │  File/Stored   │  ───────────────▶  │  Edit Form     │
+ *   │  (simplest)    │                    │  (canonical)   │
+ *   └────────────────┘                    └────────────────┘
+ *           ▲                                      │
+ *           │            downscale()               │
+ *           └──────────────────────────────────────┘
+ *
+ * UPSCALING (on read):
+ *   Convert to the MOST COMPLEX/CANONICAL representation so the editor
+ *   can always use the same UI regardless of how data was stored.
+ *
+ * DOWNSCALING (on persist):
+ *   Convert back to the SIMPLEST representation that preserves all info.
+ *   This keeps files clean and follows Minecraft conventions.
+ *
+ * TWO LAYERS OF IMPLEMENTATION:
+ *
+ * 1. DATA LAYER: FormPropertyManager (src/dataform/FormPropertyManager.ts)
+ *    - upscaleDirectObject(): Converts scalar to object representation
+ *    - downscaleDirectObject(): Converts object back to scalar if possible
+ *    - setPropertyValue(): Automatically applies the pattern
+ *    - Uses form definition's `scalarFieldUpgradeName` to determine
+ *      which field name to use when upgrading a scalar to object
+ *
+ * 2. UI LAYER: DataFormUtilities.selectFieldForValue()
+ *    Field definitions can have ALTERNATES - multiple representations
+ *    with different data types. selectFieldForValue() examines the actual
+ *    data and selects the field variant that best matches.
+ *
+ *    Example field definition with alternates:
+ *      {
+ *        id: "repair_items",
+ *        dataType: FieldDataType.stringArray,  // Primary: simple array
+ *        alternates: [
+ *          {
+ *            dataType: FieldDataType.objectArray,  // Alternate: objects
+ *            subForm: repairItemsSubForm
+ *          }
+ *        ]
+ *      }
+ *
+ *    Usage in render():
+ *      const effectiveField = DataFormUtilities.selectFieldForValue(field, curVal);
+ *      // effectiveField is now the variant that best represents curVal
+ *
+ *    Scoring rules:
+ *    - Array values → prefer stringArray, numberArray, objectArray
+ *    - Object values → prefer object types, especially with subForms (+15)
+ *    - Scalar values → prefer matching primitive types
+ *
+ * WHEN TO APPLY:
+ *   - Field can be scalar OR object: use `scalarFieldUpgradeName`
+ *   - Field can be multiple types: use `alternates` in field definition
+ *   - Editing should be uniform regardless of underlying format
+ *
+ * RELATED FILES:
+ *   - src/dataform/FormPropertyManager.ts - Data-layer upscale/downscale
+ *   - src/dataform/DataFormUtilities.ts - UI-layer field selection
+ *   - src/dataform/IField.ts - Field definitions with alternates
+ *   - src/test/FormPropertyManagerTest.ts - Unit tests for selectFieldForValue
+ *
+ * ========================================================================
+ *
+ * RELATED FILES:
+ *    - src/dataform/FormPropertyManager.ts - Property get/set logic
+ *    - src/dataform/IField.ts - Field definitions
+ *    - src/dataform/IFormDefinition.ts - Form structure
+ *    - src/dataform/DataFormUtilities.ts - Static utilities
+ *
+ * FUTURE REFACTORING:
+ *    This file is being incrementally refactored to:
+ *    - Extract field renderers into separate components
+ *    - Use a registry pattern for field type → renderer mapping
+ *    - Convert to functional component with hooks
+ *
+ * ========================================================================
+ */
+
 import { Component, SyntheticEvent } from "react";
 import "./DataForm.css";
 import IField, { FieldDataType, FieldExperienceType, FieldVisualExperience } from "./../dataform/IField";
-import IFormDefinition from "./../dataform/IFormDefinition";
+import IFormDefinition, { FieldGroupLayout, IFieldGroup } from "./../dataform/IFormDefinition";
 import IProperty from "./../dataform/IProperty";
-import {
-  DropdownItemProps,
-  DropdownProps,
-  FormDropdown,
-  FormInput,
-  FormCheckbox,
-  InputProps,
-  TextArea,
-  TextAreaProps,
-  ButtonProps,
-  Toolbar,
-  Slider,
-  SliderProps,
-  ThemeInput,
-  CheckboxProps,
-  Button,
-} from "@fluentui/react-northstar";
+import FormPropertyManager from "./../dataform/FormPropertyManager";
+import { Button, IconButton, Stack, TextField, Checkbox, FormControlLabel } from "@mui/material";
+import { getThemeColors } from "../UX/hooks/theme/useThemeColors";
 import Log from "./../core/Log";
-import Point3, { IPoint3Props } from "./Point3";
-import Version, { IVersionProps } from "./Version";
+import { IPoint3Props } from "./Point3";
+import { IVersionProps } from "./Version";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
-import ScalarArray, { IScalarArrayProps } from "./ScalarArray";
-import Range, { IRangeProps } from "./Range";
+import { faPlus, faXmark, faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
+import { IScalarArrayProps } from "./ScalarArray";
+import { IRangeProps } from "./Range";
 import MinecraftFilterEditor, { IMinecraftFilterEditorProps } from "./MinecraftFilterEditor";
+import SimplifiedBiomeFilterEditor from "./SimplifiedBiomeFilterEditor";
 import ISimpleReference from "./../dataform/ISimpleReference";
 import Utilities from "../core/Utilities";
 import IDataContainer from "./../dataform/IDataContainer";
@@ -43,8 +159,20 @@ import Database from "../minecraft/Database";
 import DataFormUtilities from "./../dataform/DataFormUtilities";
 import ILookupProvider from "./../dataform/ILookupProvider";
 import { MinecraftEventTrigger } from "../minecraft/jsoncommon";
-import { CustomLabel } from "../UX/Labels";
 import VanillaProjectManager from "../minecraft/VanillaProjectManager";
+import TextboxField from "./fields/TextboxField";
+import CheckboxField from "./fields/CheckboxField";
+import LongFormStringField from "./fields/LongFormStringField";
+import SliderField from "./fields/SliderField";
+import DropdownField, { getDropdownItems } from "./fields/DropdownField";
+import Point3Field from "./fields/Point3Field";
+import VersionField from "./fields/VersionField";
+import RangeField from "./fields/RangeField";
+import ScalarArrayField from "./fields/ScalarArrayField";
+import { ICssClassConfig } from "./fields/IFieldRendererProps";
+import Summarizer from "./Summarizer";
+import ISummarizer from "../dataform/ISummarizer";
+import IProjectTheme from "../UX/types/IProjectTheme";
 
 export interface IDataFormProps extends IDataContainer {
   definition: IFormDefinition;
@@ -65,7 +193,17 @@ export interface IDataFormProps extends IDataContainer {
   lookupProvider?: ILookupProvider;
   itemDefinition?: EntityTypeDefinition | BlockTypeDefinition | ItemTypeDefinition | undefined;
   formId?: string;
-  theme: ThemeInput<any>;
+  /**
+   * Category subfolder for the form definition (e.g., "entity", "block", "item").
+   * Used to resolve relative paths like summarizerPath.
+   */
+  formCategory?: string;
+  /**
+   * Noun for summarizer prefix (e.g., "entity", "block", "item").
+   * If provided, summarizer displays "This <noun> ..." prefix.
+   */
+  summarizerNoun?: string;
+  theme: IProjectTheme;
   closeButton?: boolean;
   constrainHeight?: boolean;
   defaultVisualExperience?: FieldVisualExperience;
@@ -75,6 +213,8 @@ export interface IDataFormProps extends IDataContainer {
   readOnly: boolean;
   onClose?: (props: IDataFormProps) => void;
   onPropertyChanged?: (props: IDataFormProps, property: IProperty, newValue: any, updatingObject?: any) => void;
+  onAddItem?: (lookupId: string) => Promise<string | undefined>;
+  onValueAction?: (action: string, field: IField, value: string) => void;
 }
 
 interface IDataFormState {
@@ -83,11 +223,12 @@ interface IDataFormState {
   subFormLoadState: string | undefined;
   keyAliases: { [name: string]: string };
   lookups: { [name: string]: ISimpleReference[] | undefined };
+  summarizer?: ISummarizer;
 }
 
 export default class DataForm extends Component<IDataFormProps, IDataFormState> {
   private dropdownNames: string[] = [];
-  private dropdownItems: DropdownItemProps[][] = [];
+  private dropdownItems: { content: string }[][] = [];
   private checkboxNames: string[] = [];
   private checkboxItems: any[] = [];
   private formComponentNames: string[] = [];
@@ -95,12 +236,35 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
   private _workingValues: { [name: string]: string } = {};
 
+  private static _defaultFieldDescriptions: { [fieldId: string]: string } = {
+    format_version:
+      "The data format version. Determines which features and components are available. Use the latest version unless targeting older Minecraft versions.",
+    min_engine_version:
+      "The minimum Minecraft engine version required to load this content. Players on older versions won't be able to use this pack.",
+    identifier: "A unique name for this item, in the format 'namespace:name' (e.g., 'mypack:custom_mob').",
+    is_spawnable: "Whether this entity can be spawned using a spawn egg in creative mode.",
+    is_summonable: "Whether this entity can be summoned using the /summon command.",
+    is_experimental: "Whether this entity requires experimental gameplay to be enabled.",
+  };
+
+  static _getDefaultFieldDescription(fieldId: string): string | undefined {
+    return DataForm._defaultFieldDescriptions[fieldId];
+  }
+
+  /**
+   * FormPropertyManager handles all property get/set operations.
+   * This abstracts the complexity of multiple backing stores and
+   * scalar/object conversions.
+   */
+  private _propertyManager: FormPropertyManager;
+
   constructor(props: IDataFormProps) {
     super(props);
 
     this._addObjectArrayItem = this._addObjectArrayItem.bind(this);
     this._handleCheckboxChange = this._handleCheckboxChange.bind(this);
     this._handleDropdownChange = this._handleDropdownChange.bind(this);
+    this._handleSimpleDropdownChange = this._handleSimpleDropdownChange.bind(this);
     this._handleBlockChanged = this._handleBlockChanged.bind(this);
     this._handleTextboxChange = this._handleTextboxChange.bind(this);
     this._handleSliderChange = this._handleSliderChange.bind(this);
@@ -128,11 +292,18 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     this._load = this._load.bind(this);
     this._handleDropdownTextChange = this._handleDropdownTextChange.bind(this);
 
+    // Initialize the property manager with the form definition and backing stores
+    this._propertyManager = new FormPropertyManager(props.definition, {
+      dataPropertyObject: props.dataPropertyObject,
+      getsetPropertyObject: props.getsetPropertyObject,
+    });
+
     this.state = {
       objectIncrement: 0,
       subFormLoadState: undefined,
       keyAliases: {},
       lookups: {},
+      summarizer: undefined,
     };
   }
 
@@ -155,12 +326,36 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       prevProps.definition &&
       this.props.definition !== prevProps.definition
     ) {
+      // Update the property manager when definition changes
+      this._propertyManager.definition = this.props.definition;
       this._load();
+    }
+
+    // Keep property manager backing stores in sync with props
+    if (
+      prevProps.dataPropertyObject !== this.props.dataPropertyObject ||
+      prevProps.getsetPropertyObject !== this.props.getsetPropertyObject
+    ) {
+      this._propertyManager.updateBackingStores({
+        dataPropertyObject: this.props.dataPropertyObject,
+        getsetPropertyObject: this.props.getsetPropertyObject,
+      });
     }
   }
 
   async _load() {
     const subFormLoadState = await DataFormUtilities.loadSubForms(this.props.definition);
+
+    // Load summarizer from definition if available
+    let summarizer: ISummarizer | undefined = this.props.definition?.summarizer;
+
+    // If no inline summarizer, try to load from path
+    if (!summarizer && this.props.definition?.summarizerId) {
+      summarizer = await DataFormUtilities.loadSummarizerById(
+        this.props.definition.summarizerId,
+        this.props.formCategory
+      );
+    }
 
     this.setState({
       updatedDirectObject: undefined,
@@ -168,6 +363,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       keyAliases: this.state.keyAliases,
       subFormLoadState: subFormLoadState,
       lookups: this.state.lookups,
+      summarizer: summarizer,
     });
 
     if (this.props.lookupProvider && this.props.definition && this.props.definition.fields) {
@@ -196,6 +392,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         keyAliases: this.state.keyAliases,
         subFormLoadState: subFormLoadState,
         lookups: lookUps,
+        summarizer: summarizer,
       });
     }
   }
@@ -226,334 +423,127 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     return this.state.objectIncrement.toString();
   }
 
-  _getProperty(name: string, defaultValue?: any) {
-    let value = undefined;
-
-    if (defaultValue === undefined) {
-      const field = this._getFieldById(name);
-
-      if (field) {
-        defaultValue = field.defaultValue;
-      }
-    }
-
-    if (this.props.dataPropertyObject !== undefined) {
-      const prop = this.props.dataPropertyObject.getProperty(name);
-
-      if (prop !== undefined) {
-        value = prop.value;
-      }
-    }
-
-    if (this.props.getsetPropertyObject !== undefined) {
-      if (name === "__scalar") {
-      }
-      value = this.props.getsetPropertyObject.getProperty(name);
-    }
-
-    let directObject: { [name: string]: any } | undefined = undefined;
-
+  /**
+   * Gets the current direct object, preferring state over props.
+   */
+  _getCurrentDirectObject(): any {
     if (this.state.updatedDirectObject !== undefined) {
-      directObject = this.state.updatedDirectObject;
-    } else if (this.props.directObject !== undefined) {
-      directObject = this.props.directObject;
+      return this.state.updatedDirectObject;
     }
-
-    if (directObject) {
-      directObject = this._upscaleDirectObject(directObject);
-
-      value = directObject[name];
-    }
-
-    if (value === undefined) {
-      if (defaultValue !== undefined && typeof defaultValue === "object") {
-        /*if (directObject && directObject[name] === undefined && Utilities.isUsableAsObjectKey(name)) {
-          directObject[name] = defaultValue;
-        }
-
-        if (this.props.getsetPropertyObject !== undefined) {
-          this.props.getsetPropertyObject.setProperty(name, defaultValue);
-        }*/
-      }
-
-      return defaultValue;
-    }
-
-    return value;
+    return this.props.directObject;
   }
 
+  /**
+   * Gets a property value.
+   * Delegates to FormPropertyManager, passing the current direct object.
+   */
+  _getProperty(name: string, defaultValue?: any) {
+    return this._propertyManager.getProperty(name, defaultValue, this._getCurrentDirectObject());
+  }
+
+  /**
+   * Gets a property value as an integer.
+   * Delegates to FormPropertyManager.
+   */
   _getPropertyAsInt(name: string, defaultValue?: number) {
-    let value = this._getProperty(name, defaultValue);
-
-    if (typeof value === "boolean") {
-      if (value) {
-        return 1;
-      }
-
-      return 0;
-    } else if (typeof value === "number") {
-      return value;
-    } else if (typeof value === "string") {
-      return parseInt(value);
-    }
-
-    return defaultValue;
+    return this._propertyManager.getPropertyAsInt(name, defaultValue, this._getCurrentDirectObject());
   }
 
+  /**
+   * Gets a property value as a boolean.
+   * Delegates to FormPropertyManager.
+   */
   _getPropertyAsBoolean(name: string, defaultValue?: boolean) {
-    let value = this._getProperty(name, defaultValue);
-
-    if (typeof value === "boolean") {
-      return value;
-    } else if (typeof value === "number") {
-      return value !== 0;
-    } else if (typeof value === "string") {
-      if (value !== undefined && value !== "" && value !== "false" && value !== "0") {
-        return true;
-      }
-
-      return false;
-    }
-
-    return defaultValue === true;
+    return this._propertyManager.getPropertyAsBoolean(name, defaultValue, this._getCurrentDirectObject());
   }
 
+  /**
+   * Gets a field definition by ID.
+   * Delegates to FormPropertyManager.
+   */
   _getFieldById(id: string) {
-    const fields = this.props.definition.fields;
-
-    if (id === "__scalar" && this.props.definition.scalarField && !this.props.definition.scalarFieldUpgradeName) {
-      return this.props.definition.scalarField;
-    }
-
-    for (let i = 0; i < fields.length; i++) {
-      const field = fields[i];
-
-      if (field.id === id) {
-        return field;
-      }
-    }
-
-    return undefined;
+    return this._propertyManager.getFieldById(id);
   }
 
+  /**
+   * Processes an input update from a form control.
+   * Delegates to FormPropertyManager and updates component state.
+   */
   processInputUpdate(id: string | undefined, data: string | undefined) {
     if (!id || data === undefined) {
       return;
     }
 
-    let updatedObject: object | any = undefined;
-    const protoObj = this.props.dataPropertyObject;
-
-    if (!Utilities.isUsableAsObjectKey(id)) {
-      Log.unsupportedToken(id);
-      return;
-    }
-
-    const field = this._getFieldById(id);
-
+    // Store working value for floating point input handling
     this._workingValues[id] = data;
 
-    if (field === undefined) {
-      Log.fail("Could not re-find field " + id);
+    const result = this._propertyManager.processInputUpdate(id, data, this._getCurrentDirectObject());
 
+    if (!result) {
       return;
     }
 
-    const val = this._getTypedData(field, data);
-
-    if (protoObj !== undefined) {
-      const property = protoObj.ensureProperty(id);
-
-      if (property !== undefined && property.id !== undefined) {
-        property.value = val;
-      }
-    }
-
-    const protogsObj = this.props.getsetPropertyObject;
-
-    if (protogsObj !== undefined) {
-      if (id === "__scalar") {
-        protogsObj.setBaseValue(val);
-      } else {
-        protogsObj.setProperty(id, val);
-      }
-    }
-
-    let dirObj = this.state.updatedDirectObject;
-
-    if (dirObj === undefined) {
-      dirObj = this.props.directObject;
-    }
-
-    dirObj = this._upscaleDirectObject(dirObj);
-
-    dirObj[id] = val;
-
-    dirObj = this._downscaleDirectObject(dirObj);
-
-    updatedObject = dirObj;
-
-    Log.assert(
-      dirObj !== undefined || protogsObj !== undefined || protoObj !== undefined,
-      "Could not find a backing object to edit."
-    );
-
     if (this.props.onPropertyChanged !== undefined) {
-      this.props.onPropertyChanged(this.props, { id: id, value: val }, val, updatedObject);
+      this.props.onPropertyChanged(this.props, result.property, result.newValue, result.updatedDirectObject);
     }
 
     this.setState({
-      updatedDirectObject: updatedObject,
+      updatedDirectObject: result.updatedDirectObject,
       objectIncrement: this.state.objectIncrement + 1,
       subFormLoadState: this.state.subFormLoadState,
       keyAliases: this.state.keyAliases,
     });
   }
 
+  /**
+   * Checks if the object has values besides scalar and default values.
+   * Delegates to FormPropertyManager.
+   */
   _directObjectHasUniqueValuesBesidesScalar(directObject: { [propName: string]: any }) {
-    const fields = this.props.definition.fields;
-
-    for (let i = 0; i < fields.length; i++) {
-      const field = fields[i];
-
-      if (
-        field.id !== "__scalar" &&
-        (this.props.definition.scalarFieldUpgradeName === undefined ||
-          field.id !== this.props.definition.scalarFieldUpgradeName)
-      ) {
-        if (directObject[field.id] !== undefined && directObject[field.id] !== field.defaultValue) {
-          return true;
-        }
-      }
-    }
-
-    return false;
+    return this._propertyManager.directObjectHasUniqueValuesBesidesScalar(directObject);
   }
 
+  /**
+   * Converts a scalar value to an object representation.
+   * Delegates to FormPropertyManager.
+   */
   _upscaleDirectObject(directObject: { [propName: string]: any } | string | number | boolean): { [name: string]: any } {
-    if (typeof directObject === "string" || typeof directObject === "number" || typeof directObject === "boolean") {
-      if (this.props.definition.scalarField && !this.props.definition.scalarFieldUpgradeName) {
-        return {
-          __scalar: directObject,
-        };
-      }
-
-      if (this.props.definition.scalarFieldUpgradeName) {
-        const fi = DataFormUtilities.getFieldById(this.props.definition, this.props.definition.scalarFieldUpgradeName);
-
-        if (fi) {
-          const retObj: { [name: string]: string | number | boolean } = {};
-
-          if (Utilities.isUsableAsObjectKey(fi.id)) {
-            retObj[fi.id] = directObject;
-          } else {
-            Log.unsupportedToken(fi.id);
-          }
-          return retObj;
-        }
-      }
-
-      return { value: directObject };
-    }
-
-    if (directObject === undefined) {
-      return {};
-    }
-
-    return directObject;
+    return this._propertyManager.upscaleDirectObject(directObject);
   }
 
+  /**
+   * Converts an object back to a scalar if possible.
+   * Delegates to FormPropertyManager.
+   */
   _downscaleDirectObject(directObject: { [propName: string]: any }) {
-    const fields = this.props.definition.fields;
-
-    // collapse empty objects and default values
-    for (let i = 0; i < fields.length; i++) {
-      const field = fields[i];
-
-      if (!field.retainIfEmptyOrDefault) {
-        let hasContent = false;
-
-        if (directObject[field.id] !== undefined) {
-          const fieldData = directObject[field.id];
-
-          if (typeof fieldData === "object") {
-            for (const propVal in directObject[field.id]) {
-              if (propVal.length !== undefined && propVal.length > 0) {
-                hasContent = true;
-              }
-            }
-          } else {
-            if (field.defaultValue === undefined || fieldData !== field.defaultValue) {
-              hasContent = true;
-            }
-          }
-        }
-
-        if (!hasContent) {
-          if (Utilities.isUsableAsObjectKey(field.id)) {
-            directObject[field.id] = undefined;
-          }
-        }
-      }
-    }
-
-    const hasUniqueValuesBesidesScalar = this._directObjectHasUniqueValuesBesidesScalar(directObject);
-
-    if (!hasUniqueValuesBesidesScalar) {
-      // convert down to a scalar value if possible
-      if (this.props.definition.scalarFieldUpgradeName) {
-        if (directObject[this.props.definition.scalarFieldUpgradeName] !== undefined) {
-          directObject = directObject[this.props.definition.scalarFieldUpgradeName];
-        }
-      } else {
-        if (directObject["__scalar"] !== undefined) {
-          directObject = directObject["__scalar"];
-        }
-      }
-    }
-
-    return directObject;
+    return this._propertyManager.downscaleDirectObject(directObject);
   }
 
-  _handleSliderChange(
-    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
-    data: (SliderProps & { value: string }) | undefined
-  ) {
-    this.processInputUpdate(event?.currentTarget?.id, data?.value);
+  _handleSliderChange(event: Event, value: number | number[]) {
+    const target = event?.target as HTMLInputElement | null;
+    this.processInputUpdate(target?.id, String(value));
   }
 
-  _handleTextboxChange(
-    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
-    data: (InputProps & { value: string }) | undefined
-  ) {
-    this.processInputUpdate(event?.currentTarget?.id, data?.value);
+  _handleTextboxChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+    this.processInputUpdate(event?.target?.id, event?.target?.value);
   }
 
-  _handleDropdownTextChange(
-    event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
-    data: DropdownProps | undefined
-  ) {
-    if (data && data.value !== undefined && (data.value as any).id && (data as any).id) {
-      this.processInputUpdate((data as any).id, (data.value as any).id);
+  _handleDropdownTextChange(event: React.ChangeEvent<HTMLInputElement>) {
+    if (event?.target?.id && event?.target?.value) {
+      this.processInputUpdate(event.target.id, event.target.value);
     }
   }
 
-  _handleTextAreaChange(
-    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
-    data: TextAreaProps | undefined
-  ) {
-    this.processInputUpdate(event?.currentTarget?.id, data?.value);
+  _handleTextAreaChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
+    this.processInputUpdate(event?.target?.id, event?.target?.value);
   }
 
-  _handleKeyedBooleanTextChange(
-    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
-    data: (InputProps & { value: string }) | undefined
-  ) {
-    if (!data || !data.id) {
+  _handleKeyedBooleanTextChange(event: React.ChangeEvent<HTMLInputElement>) {
+    if (!event?.target?.id) {
       return;
     }
 
-    const keySplit = data.id.split(".");
+    const keySplit = event.target.id.split(".");
 
     if (keySplit.length !== 3) {
       Log.unexpectedState("DFKBTFC1");
@@ -574,9 +564,11 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     if (Utilities.isUsableAsObjectKey(keySplit[1])) {
       arrayOfDataVal[keySplit[1]] = undefined;
 
-      if (Utilities.isUsableAsObjectKey(data.value)) {
-        arrayOfDataVal[data.value] = val;
-        keyAliases[data.value] = this.state.keyAliases[keySplit[1]] ? this.state.keyAliases[keySplit[1]] : keySplit[1];
+      if (Utilities.isUsableAsObjectKey(event.target.value)) {
+        arrayOfDataVal[event.target.value] = val;
+        keyAliases[event.target.value] = this.state.keyAliases[keySplit[1]]
+          ? this.state.keyAliases[keySplit[1]]
+          : keySplit[1];
       }
     }
     this._setPropertyValue(keySplit[0], arrayOfDataVal);
@@ -588,15 +580,12 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     });
   }
 
-  _handleKeyedBooleanValueChange(
-    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
-    data?: CheckboxProps & { checked: boolean; id?: string }
-  ) {
-    if (!data || !data.id) {
+  _handleKeyedBooleanValueChange(event: React.ChangeEvent<HTMLInputElement>) {
+    if (!event?.target?.id) {
       return;
     }
 
-    const keySplit = data.id.split(".");
+    const keySplit = event.target.id.split(".");
 
     if (keySplit.length !== 3) {
       Log.unexpectedState("DFKBVFC1");
@@ -611,13 +600,14 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       return;
     }
     if (Utilities.isUsableAsObjectKey(keySplit[1])) {
-      arrayOfDataVal[keySplit[1]] = data.checked;
+      arrayOfDataVal[keySplit[1]] = event.target.checked;
     }
-    this.forceUpdate();
+    this._setPropertyValue(keySplit[0], arrayOfDataVal);
   }
 
-  _handleKeyedBooleanValueClose(event: React.SyntheticEvent<HTMLElement>, data?: ButtonProps & { id?: string }) {
-    if (!data || !data.id) {
+  _handleKeyedBooleanValueClose(event: React.MouseEvent<HTMLButtonElement>) {
+    const id = event.currentTarget?.id;
+    if (!id) {
       return;
     }
 
@@ -625,7 +615,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       this.props.onClose(this.props);
     }
 
-    const keySplit = data.id.split(".");
+    const keySplit = id.split(".");
 
     if (keySplit.length !== 3) {
       Log.unexpectedState("DFKBVFC1");
@@ -641,21 +631,23 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     }
 
     if (Utilities.isUsableAsObjectKey(keySplit[1])) {
-      arrayOfDataVal[keySplit[1]] = undefined;
+      const index = parseInt(keySplit[1], 10);
+      if (!isNaN(index) && index >= 0 && index < arrayOfDataVal.length) {
+        arrayOfDataVal.splice(index, 1);
+      } else {
+        Log.debug("Array splice index out of bounds: " + keySplit[1]);
+      }
     }
 
-    this.forceUpdate();
+    this._setPropertyValue(keySplit[0], arrayOfDataVal);
   }
 
-  _handleKeyedStringTextChange(
-    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
-    data: (InputProps & { value: string }) | undefined
-  ) {
-    if (!data || !data.id) {
+  _handleKeyedStringTextChange(event: React.ChangeEvent<HTMLInputElement>) {
+    if (!event?.target?.id) {
       return;
     }
 
-    const keySplit = data.id.split(".");
+    const keySplit = event.target.id.split(".");
 
     if (keySplit.length !== 3) {
       Log.unexpectedState("DFKBTFC1");
@@ -674,12 +666,19 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
     const keyAliases = this.state.keyAliases;
 
-    if (Utilities.isUsableAsObjectKey(keySplit[1]) && Utilities.isUsableAsObjectKey(data.value)) {
-      arrayOfDataVal[keySplit[1]] = undefined;
+    if (Utilities.isUsableAsObjectKey(keySplit[1]) && Utilities.isUsableAsObjectKey(event.target.value)) {
+      const index = parseInt(keySplit[1], 10);
+      if (!isNaN(index) && index >= 0 && index < arrayOfDataVal.length) {
+        arrayOfDataVal.splice(index, 1);
+      } else {
+        Log.debug("Array splice index out of bounds: " + keySplit[1]);
+      }
 
-      arrayOfDataVal[data.value] = val;
+      arrayOfDataVal[event.target.value] = val;
 
-      keyAliases[data.value] = this.state.keyAliases[keySplit[1]] ? this.state.keyAliases[keySplit[1]] : keySplit[1];
+      keyAliases[event.target.value] = this.state.keyAliases[keySplit[1]]
+        ? this.state.keyAliases[keySplit[1]]
+        : keySplit[1];
     }
 
     this.setState({
@@ -691,15 +690,12 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     this.forceUpdate();
   }
 
-  _handleKeyedStringValueChange(
-    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
-    data?: (InputProps & { value: string }) | undefined
-  ) {
-    if (!data || !data.id) {
+  _handleKeyedStringValueChange(event: React.ChangeEvent<HTMLInputElement>) {
+    if (!event?.target?.id) {
       return;
     }
 
-    const keySplit = data.id.split(".");
+    const keySplit = event.target.id.split(".");
 
     if (keySplit.length !== 3) {
       Log.unexpectedState("DFKBVFC1");
@@ -715,14 +711,15 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     }
 
     if (Utilities.isUsableAsObjectKey(keySplit[1])) {
-      arrayOfDataVal[keySplit[1]] = data.value;
+      arrayOfDataVal[keySplit[1]] = event.target.value;
     }
 
     this.forceUpdate();
   }
 
-  _handleKeyedStringValueClose(event: React.SyntheticEvent<HTMLElement>, data?: ButtonProps & { id?: string }) {
-    if (!data || !data.id) {
+  _handleKeyedStringValueClose(event: React.MouseEvent<HTMLButtonElement>) {
+    const id = event.currentTarget?.id;
+    if (!id) {
       return;
     }
 
@@ -730,7 +727,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       this.props.onClose(this.props);
     }
 
-    const keySplit = data.id.split(".");
+    const keySplit = id.split(".");
 
     if (keySplit.length !== 3) {
       Log.unexpectedState("DFKBVFC1");
@@ -750,116 +747,35 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     this.forceUpdate();
   }
 
+  /**
+   * Converts a value to the appropriate type based on field data type.
+   * Delegates to FormPropertyManager.
+   */
   _getTypedData(field: IField, value: any) {
-    if (
-      field.dataType === FieldDataType.int ||
-      field.dataType === FieldDataType.intBoolean ||
-      field.dataType === FieldDataType.intEnum ||
-      field.dataType === FieldDataType.intValueLookup
-    ) {
-      if (typeof value === "number") {
-        return value;
-      } else if (typeof value === "string") {
-        if (value.length === 0) {
-          return undefined;
-        }
-
-        return parseInt(value);
-      } else if (typeof value === "boolean") {
-        if (value) {
-          return 1;
-        }
-
-        return 0;
-      }
-    } else if (field.dataType === FieldDataType.number || field.dataType === FieldDataType.float) {
-      if (typeof value === "number") {
-        return value;
-      } else if (typeof value === "string") {
-        if (value.length === 0) {
-          return undefined;
-        }
-
-        return parseFloat(value);
-      } else if (typeof value === "boolean") {
-        if (value) {
-          return 1;
-        }
-
-        return 0;
-      }
-    } else if (DataFormUtilities.isString(field.dataType)) {
-      if (typeof value === "string") {
-        return value;
-      } else {
-        return value.toString();
-      }
-    }
-
-    return value;
+    return this._propertyManager.getTypedData(field, value);
   }
 
-  _handleCheckboxChange(event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null) {
+  /**
+   * Handles checkbox toggle.
+   * Uses FormPropertyManager.toggleBooleanProperty for the toggle logic.
+   */
+  _handleCheckboxChange(event: React.SyntheticEvent<HTMLElement> | null) {
     if (event === null) {
       return;
     }
 
-    let updatedObject: object | any = undefined;
-    const protoObj = this.props.dataPropertyObject;
     const id = event.currentTarget.id;
-
-    const val = this._getPropertyAsBoolean(id);
-
-    if (protoObj !== undefined) {
-      const property = protoObj.ensureProperty(id);
-
-      if (property !== undefined && property.id !== undefined) {
-        let newBoolVal: boolean | number = val;
-
-        newBoolVal = !newBoolVal;
-
-        property.value = newBoolVal;
-      }
-    }
-
-    const protogsObj = this.props.getsetPropertyObject;
-
-    if (protogsObj !== undefined) {
-      let newBoolVal: boolean | number = val;
-
-      newBoolVal = !newBoolVal;
-
-      if (id === "__scalar") {
-        protogsObj.setBaseValue(newBoolVal);
-      } else {
-        protogsObj.setProperty(id, newBoolVal);
-      }
-    }
-
-    let dirObj = this.state.updatedDirectObject;
-
-    if (!dirObj) {
-      dirObj = this.props.directObject;
-    }
-
-    if (dirObj !== undefined) {
-      let newBoolVal: boolean | number = val;
-
-      newBoolVal = !newBoolVal;
-
-      dirObj = this._upscaleDirectObject(dirObj);
-
-      dirObj[id] = newBoolVal;
-
-      updatedObject = this._downscaleDirectObject(dirObj);
-    }
+    // Get the field to determine the correct default value
+    const field = this._getFieldById(id);
+    const fieldDefaultValue = field?.defaultValue === true || field?.defaultValue === 1;
+    const result = this._propertyManager.toggleBooleanProperty(id, fieldDefaultValue, this._getCurrentDirectObject());
 
     if (this.props.onPropertyChanged !== undefined) {
-      this.props.onPropertyChanged(this.props, { id: id, value: val }, val, updatedObject);
+      this.props.onPropertyChanged(this.props, result.property, result.newValue, result.updatedDirectObject);
     }
 
     this.setState({
-      updatedDirectObject: updatedObject,
+      updatedDirectObject: result.updatedDirectObject,
       objectIncrement: this.state.objectIncrement + 1,
       subFormLoadState: this.state.subFormLoadState,
       keyAliases: this.state.keyAliases,
@@ -867,14 +783,14 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
   }
 
   _handleDropdownChange(
-    event: React.KeyboardEvent<Element> | React.MouseEvent<Element, MouseEvent> | null,
-    data: DropdownProps
+    event: React.ChangeEvent<HTMLSelectElement> | null,
+    data: { value: string | null | undefined }
   ) {
     if (data.value !== null && data.value !== undefined) {
-      const val = data.value as DropdownItemProps;
+      const val = data.value as string;
 
       if (val !== undefined) {
-        const content = val.content;
+        const content = val;
 
         for (let i = 0; i < this.dropdownNames.length; i++) {
           const items = this.dropdownItems[i];
@@ -893,6 +809,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           }
 
           if (lookupSet) {
+            let matched = false;
             for (let j = 0; j < items.length; j++) {
               if (items[j].content === content) {
                 // OK, we've found which dropdown item is now selected, now re-unify that with
@@ -908,10 +825,17 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                     const val = lookupSet[k].id;
 
                     this._setPropertyValue(propDef.id, val);
+                    matched = true;
                   }
                 }
               }
             }
+
+            if (!matched) {
+              this._setPropertyValue(propDef.id, content);
+            }
+          } else {
+            this._setPropertyValue(propDef.id, content);
           }
         }
       }
@@ -920,47 +844,29 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     }
   }
 
+  /**
+   * Simplified dropdown change handler for DropdownField component.
+   * Receives field ID and selected value directly (no event object).
+   */
+  _handleSimpleDropdownChange(fieldId: string, value: string) {
+    this._setPropertyValue(fieldId, value);
+    this._incrementObjectState();
+  }
+
+  /**
+   * Sets a property value.
+   * Delegates to FormPropertyManager and updates component state.
+   */
   _setPropertyValue(id: string, val: any) {
-    const protoBlock = this.props.dataPropertyObject;
+    const result = this._propertyManager.setPropertyValue(id, val, this._getCurrentDirectObject());
 
-    if (protoBlock !== undefined) {
-      const prop = protoBlock.ensureProperty(id);
-      prop.value = val;
-
-      if (this.props.onPropertyChanged !== undefined) {
-        this.props.onPropertyChanged(this.props, prop, val);
-      }
+    if (this.props.onPropertyChanged !== undefined) {
+      this.props.onPropertyChanged(this.props, result.property, result.newValue, result.updatedDirectObject);
     }
 
-    const directPropO = this.props.getsetPropertyObject;
-
-    if (directPropO !== undefined) {
-      if (id === "__scalar") {
-        directPropO.setBaseValue(val);
-      } else {
-        directPropO.setProperty(id, val);
-      }
-    }
-
-    let directO = this.state.updatedDirectObject;
-
-    if (!directO) {
-      directO = this.props.directObject;
-    }
-
-    if (directO !== undefined) {
-      directO = this._upscaleDirectObject(directO);
-
-      directO[id] = val;
-
-      directO = this._downscaleDirectObject(directO);
-
-      if (this.props.onPropertyChanged !== undefined) {
-        this.props.onPropertyChanged(this.props, { id: id, value: val }, val, directO);
-      }
-
+    if (result.updatedDirectObject !== undefined) {
       this.setState({
-        updatedDirectObject: directO,
+        updatedDirectObject: result.updatedDirectObject,
         objectIncrement: this.state.objectIncrement + 1,
         subFormLoadState: this.state.subFormLoadState,
         keyAliases: this.state.keyAliases,
@@ -1132,7 +1038,9 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
     try {
       propertyIndexNum = parseInt(propertyIndex);
-    } catch (e) {}
+    } catch (e) {
+      Log.debug("DataForm property index parse error: " + e);
+    }
 
     if (propertyIndexNum !== undefined && !isNaN(propertyIndexNum)) {
       propertyIndex = propertyIndexNum;
@@ -1231,11 +1139,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     }
   }
 
-  _handleCloseClick(event: React.SyntheticEvent<HTMLElement>, data?: ButtonProps) {
-    if (!data) {
-      return;
-    }
-
+  _handleCloseClick(event: React.MouseEvent<HTMLButtonElement>) {
     if (this.props.onClose) {
       this.props.onClose(this.props);
     }
@@ -1286,8 +1190,49 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         allFields.push(formDef.scalarField);
       }
 
+      // Build a map of groupId -> fields for field grouping
+      const fieldGroupMap = new Map<string, IField[]>();
+      const renderedGroups = new Set<string>();
+
+      if (formDef.fieldGroups) {
+        for (const field of allFields) {
+          if (field.groupId) {
+            const group = fieldGroupMap.get(field.groupId);
+            if (group) {
+              group.push(field);
+            } else {
+              fieldGroupMap.set(field.groupId, [field]);
+            }
+          }
+        }
+      }
+
       for (let propIndex = 0; propIndex < allFields.length; propIndex++) {
         const field = allFields[propIndex];
+
+        // Handle grouped fields: render the entire group when we encounter the first field
+        if (field.groupId && formDef.fieldGroups && !this.props.readOnly) {
+          if (renderedGroups.has(field.groupId)) {
+            // Already rendered this group, skip this field
+            continue;
+          }
+
+          // Find the group definition
+          const groupDef = formDef.fieldGroups.find((g) => g.id === field.groupId);
+          const groupFields = fieldGroupMap.get(field.groupId);
+
+          if (groupDef && groupFields && groupFields.length > 0) {
+            // Mark group as rendered
+            renderedGroups.add(field.groupId);
+
+            // Render the entire group
+            const groupElement = this.renderFieldGroup(groupDef, groupFields, formDef);
+            if (groupElement) {
+              formInterior.push(groupElement);
+            }
+            continue;
+          }
+        }
 
         if (
           (!field.visibility || FieldUtilities.evaluate(formDef, field.visibility, this.props)) &&
@@ -1295,7 +1240,11 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           !field.isInternal
         ) {
           let curVal = this._getProperty(field.id, field.defaultValue);
-          const defaultVal = curVal ? curVal : field.defaultValue;
+
+          // Select the most appropriate field variant (primary or alternate) based on actual value type
+          const effectiveField = DataFormUtilities.selectFieldForValue(field, curVal);
+
+          const defaultVal = curVal ? curVal : effectiveField.defaultValue;
 
           let baseKey = this._getObjectId() + "." + field.id;
 
@@ -1308,11 +1257,14 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           let descriptionElements = [];
           let sampleElements = [];
 
-          if (field.description) {
-            let descrip = field.description.replace(/\\\\/gi, "\\");
+          // Use field description, or fall back to well-known field defaults
+          const fieldDescription = field.description || DataForm._getDefaultFieldDescription(field.id);
+
+          if (fieldDescription) {
+            let descrip = fieldDescription.replace(/\\\\/gi, "\\");
             descrip = descrip.replace(/\r/gi, "");
 
-            const fieldDescripElts = field.description.split("\n");
+            const fieldDescripElts = fieldDescription.split("\n");
 
             const divDescrips = [];
             for (let descrip of fieldDescripElts) {
@@ -1368,34 +1320,55 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                   StorageUtilities.getBaseFromName(StorageUtilities.getLeafName(path))
                 );
 
-                let sampleVals = "";
+                const sampleChips: React.ReactNode[] = [];
 
                 for (const sample of sampeList) {
-                  let sampVal = Utilities.humanify(sample.content, field.humanifyValues);
+                  const content = sample.content;
 
-                  if (sampleVals.length > 0) {
-                    sampleVals += ", ";
+                  if (Array.isArray(content)) {
+                    for (let ci = 0; ci < content.length; ci++) {
+                      const item = content[ci];
+                      if (item !== undefined && typeof item !== "object") {
+                        sampleChips.push(
+                          <span
+                            key={baseKey + name + path + "chip" + ci}
+                            className={this.getCssClassName("sampleChip")}
+                          >
+                            {String(item)}
+                          </span>
+                        );
+                      }
+                    }
+                  } else {
+                    const sampVal = Utilities.humanify(content, field.humanifyValues);
+                    sampleChips.push(
+                      <span key={baseKey + name + path + "chip-single"} className={this.getCssClassName("sampleChip")}>
+                        {String(sampVal)}
+                      </span>
+                    );
                   }
-
-                  sampleVals += sampVal;
                 }
 
                 sampleRows.push(
                   <div className={this.getCssClassName("sampleRow")} key={baseKey + "descHeaderA" + name + path}>
                     <div className={this.getCssClassName("ro-value")}>{name}</div>
-                    <div className={this.getCssClassName("ro-sampleValue")}>{sampleVals}</div>
+                    <div className={this.getCssClassName("ro-sampleValue")}>{sampleChips}</div>
                   </div>
                 );
               }
             }
 
-            sampleElements.push(<div className={this.getCssClassName("sampleTable")}>{sampleRows}</div>);
+            sampleElements.push(
+              <div key={baseKey + "sampleTable"} className={this.getCssClassName("sampleTable")}>
+                {sampleRows}
+              </div>
+            );
           }
 
-          const title = FieldUtilities.getFieldTitle(field);
+          const title = FieldUtilities.getFieldTitle(effectiveField);
 
-          if (this.props.readOnly || field.readOnly) {
-            if (field.defaultValue === undefined || field.defaultValue !== curVal) {
+          if (this.props.readOnly || effectiveField.readOnly) {
+            if (effectiveField.defaultValue === undefined || effectiveField.defaultValue !== curVal) {
               if (typeof curVal === "object") {
                 curVal = JSON.stringify(curVal, null, 2);
               }
@@ -1408,274 +1381,93 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
             }
           } else {
             if (
-              (field.dataType === FieldDataType.stringEnum ||
-                field.dataType === FieldDataType.intEnum ||
-                field.dataType === FieldDataType.boolean) &&
-              field.choices !== undefined
+              (effectiveField.dataType === FieldDataType.stringEnum ||
+                effectiveField.dataType === FieldDataType.intEnum ||
+                effectiveField.dataType === FieldDataType.boolean) &&
+              effectiveField.choices !== undefined
             ) {
-              const items: DropdownItemProps[] = [];
+              this.addDropdownComponent(
+                effectiveField,
+                formInterior,
+                descriptionElements,
+                sampleElements,
+                curVal,
+                propIndex
+              );
+            } else if (
+              effectiveField.dataType === FieldDataType.point3 ||
+              effectiveField.dataType === FieldDataType.intPoint3 ||
+              effectiveField.dataType === FieldDataType.location ||
+              effectiveField.dataType === FieldDataType.locationOffset
+            ) {
+              this.addPoint3Component(effectiveField, formInterior, descriptionElements, sampleElements);
+            } else if (effectiveField.dataType === FieldDataType.version) {
+              this.addVersionComponent(effectiveField, formInterior, descriptionElements, sampleElements);
+            } else if (
+              effectiveField.dataType === FieldDataType.stringArray ||
+              effectiveField.dataType === FieldDataType.longFormStringArray ||
+              effectiveField.dataType === FieldDataType.numberArray ||
+              effectiveField.dataType === FieldDataType.checkboxListAsStringArray
+            ) {
+              this.addScalarArrayComponent(effectiveField, formInterior, descriptionElements, sampleElements, isValid);
+            } else if (
+              effectiveField.dataType === FieldDataType.intRange ||
+              effectiveField.dataType === FieldDataType.floatRange
+            ) {
+              this.addRangeComponent(effectiveField, formInterior, descriptionElements, sampleElements);
+            } else if (effectiveField.dataType === FieldDataType.minecraftFilter) {
+              const val = this._getProperty(effectiveField.id, {});
 
-              let dropdownValue = curVal;
-              let lookupSet: ISimpleReference[] | undefined;
-
-              if (field.choices) {
-                lookupSet = field.choices;
-              } else if (field.lookupId && this.props.lookupSets) {
-                lookupSet = this.props.lookupSets[field.lookupId];
-              }
-
-              if (lookupSet) {
-                for (let i = 0; i < lookupSet.length; i++) {
-                  items.push({
-                    content: lookupSet[i].title,
-                    selected: lookupSet[i].id === curVal,
-                  });
-
-                  if (curVal === lookupSet[i].id) {
-                    let title = lookupSet[i].title;
-
-                    if (!title) {
-                      title = Utilities.humanify(lookupSet[i].id, field.humanifyValues);
+              // Use simplified biome filter editor if uxVariant is "biome"
+              const filterEditor =
+                effectiveField.uxVariant === "biome" ? (
+                  <SimplifiedBiomeFilterEditor
+                    data={val}
+                    key={"sbfe" + baseKey}
+                    filterContextId={
+                      (this.props.definition.id ? this.props.definition.id : "") + "." + effectiveField.id
                     }
+                    onChange={this._handleMinecraftFilterPropertyChange}
+                  />
+                ) : (
+                  <MinecraftFilterEditor
+                    data={val}
+                    key={"mifi" + baseKey}
+                    filterContextId={
+                      (this.props.definition.id ? this.props.definition.id : "") + "." + effectiveField.id
+                    }
+                    onChange={this._handleMinecraftFilterPropertyChange}
+                  />
+                );
 
-                    dropdownValue = title;
-                  }
-                }
-              }
-
-              const dropdown = (
-                <FormDropdown
-                  label={title}
-                  id={propIndex.toString()}
-                  items={items}
-                  key={"frs" + baseKey + title + propIndex}
-                  fluid={true}
-                  onChange={this._handleDropdownChange}
-                  value={[dropdownValue]}
-                />
-              );
-
-              this.dropdownNames.push(field.id);
-              this.dropdownItems.push(items);
-              formInterior.push(
-                <div
-                  className={this.getCssClassName("fieldWrap")}
-                  key={"fwg" + baseKey}
-                  style={{
-                    borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-                    borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-                  }}
-                >
-                  {descriptionElements}
-                  {dropdown}
-                  {sampleElements}
-                </div>
-              );
-            } else if (
-              field.dataType === FieldDataType.point3 ||
-              field.dataType === FieldDataType.intPoint3 ||
-              field.dataType === FieldDataType.location ||
-              field.dataType === FieldDataType.locationOffset
-            ) {
-              const val = this._getProperty(field.id, [0, 0, 0]);
-              let objKey = field.id;
-
-              if (this.props.objectKey) {
-                objKey += this.props.objectKey;
-              }
-
-              const point3 = (
-                <Point3
-                  data={val}
-                  objectKey={objKey}
-                  key={"p3" + baseKey}
-                  label={title}
-                  ambientPoint={this.props.ambientSelectedPoint}
-                  onChange={this._handlePoint3PropertyChange}
-                  form={formDef}
-                  field={field}
-                />
-              );
-
-              this.formComponentNames.push(field.id);
-              this.formComponents.push(point3);
-              formInterior.push(
-                <div
-                  className={this.getCssClassName("fieldWrap")}
-                  key={"fwh" + baseKey}
-                  style={{
-                    borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-                    borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-                  }}
-                >
-                  {point3}
-                  {descriptionElements}
-                  {sampleElements}
-                </div>
-              );
-            } else if (field.dataType === FieldDataType.version) {
-              const val = this._getProperty(field.id, [0, 0, 1]);
-              let objKey = field.id;
-              if (this.props.objectKey) {
-                objKey += this.props.objectKey;
-              }
-
-              const version = (
-                <Version
-                  data={val}
-                  objectKey={objKey}
-                  key={"ver" + baseKey}
-                  label={title}
-                  onChange={this._handleVersionPropertyChange}
-                  form={formDef}
-                  field={field}
-                />
-              );
-
-              this.formComponentNames.push(field.id);
-              this.formComponents.push(version);
-
-              formInterior.push(
-                <div
-                  className={this.getCssClassName("fieldWrap")}
-                  key={"fwj" + baseKey}
-                  style={{
-                    borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-                    borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-                  }}
-                >
-                  {descriptionElements}
-                  {version}
-                  {sampleElements}
-                </div>
-              );
-            } else if (
-              field.dataType === FieldDataType.stringArray ||
-              field.dataType === FieldDataType.longFormStringArray ||
-              field.dataType === FieldDataType.numberArray ||
-              field.dataType === FieldDataType.checkboxListAsStringArray
-            ) {
-              const val = this._getProperty(field.id, []);
-
-              let objKey = field.id;
-
-              if (this.props.objectKey) {
-                objKey += this.props.objectKey;
-              }
-
-              const sarrt = (
-                <ScalarArray
-                  data={val}
-                  objectKey={objKey}
-                  key={"sarr" + baseKey}
-                  lookups={this.state.lookups}
-                  longForm={field.dataType === FieldDataType.longFormStringArray}
-                  isNumber={field.dataType === FieldDataType.numberArray}
-                  label={title}
-                  allowCreateDelete={field.allowCreateDelete}
-                  onChange={this._handleStringArrayPropertyChange}
-                  form={this.props.definition}
-                  field={field}
-                />
-              );
-
-              this.formComponentNames.push(field.id);
-              this.formComponents.push(sarrt);
-
-              formInterior.push(
-                <div
-                  className={this.getCssClassName("fieldWrap")}
-                  key={"fwk" + baseKey}
-                  style={{
-                    borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-                    borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-                  }}
-                >
-                  <div className={this.getCssClassName(isValid ? "elementTitle" : "elementTitleInvalid")}>{title}</div>
-                  {descriptionElements}
-                  {sarrt}
-                  {sampleElements}
-                </div>
-              );
-            } else if (field.dataType === FieldDataType.intRange || field.dataType === FieldDataType.floatRange) {
-              const val = this._getProperty(field.id, [0, 100]);
-
-              let objKey = field.id;
-
-              if (this.props.objectKey) {
-                objKey += this.props.objectKey;
-              }
-
-              const range = (
-                <Range
-                  data={val}
-                  objectKey={objKey}
-                  key={"ra" + baseKey}
-                  label={title}
-                  isInt={field.dataType === FieldDataType.intRange}
-                  onChange={this._handleRangePropertyChange}
-                  form={this.props.definition}
-                  field={field}
-                />
-              );
-
-              this.formComponentNames.push(field.id);
-              this.formComponents.push(range);
-
-              formInterior.push(
-                <div
-                  className={this.getCssClassName("fieldWrap")}
-                  key={"fwl" + baseKey}
-                  style={{
-                    borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-                    borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-                  }}
-                >
-                  {descriptionElements}
-                  {range}
-                  {sampleElements}
-                </div>
-              );
-            } else if (field.dataType === FieldDataType.minecraftFilter) {
-              const val = this._getProperty(field.id, {});
-
-              const sarr = (
-                <MinecraftFilterEditor
-                  data={val}
-                  key={"mifi" + baseKey}
-                  filterContextId={(this.props.definition.id ? this.props.definition.id : "") + "." + field.id}
-                  onChange={this._handleMinecraftFilterPropertyChange}
-                />
-              );
-
-              this.formComponentNames.push(field.id);
-              this.formComponents.push(sarr);
+              this.formComponentNames.push(effectiveField.id);
+              this.formComponents.push(filterEditor);
 
               formInterior.push(
                 <div
                   className={this.getCssClassName("fieldWrap")}
                   key={"fwm" + baseKey}
                   style={{
-                    borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-                    borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+                    borderTopColor: getThemeColors().background3,
+                    borderBottomColor: getThemeColors().background1,
                   }}
                 >
                   <div className={this.getCssClassName("elementTitle")}>{title}</div>
                   {descriptionElements}
-                  {sarr}
+                  {filterEditor}
                   {sampleElements}
                 </div>
               );
             } else if (
-              field.dataType === FieldDataType.minecraftEventTrigger ||
-              field.dataType === FieldDataType.minecraftEventReference
+              effectiveField.dataType === FieldDataType.minecraftEventTrigger ||
+              effectiveField.dataType === FieldDataType.minecraftEventReference
             ) {
               const val = this._getProperty(
-                field.id,
-                field.dataType === FieldDataType.minecraftEventTrigger ? {} : undefined
+                effectiveField.id,
+                effectiveField.dataType === FieldDataType.minecraftEventTrigger ? {} : undefined
               );
 
-              let objKey = field.id;
+              let objKey = effectiveField.id;
 
               if (this.props.objectKey) {
                 objKey += this.props.objectKey;
@@ -1684,7 +1476,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               if (this.props.carto && this.props.project) {
                 const sarr = (
                   <MinecraftEventTriggerEditor
-                    data={field.dataType === FieldDataType.minecraftEventTrigger ? val : { event: val }}
+                    data={effectiveField.dataType === FieldDataType.minecraftEventTrigger ? val : { event: val }}
                     objectKey={objKey}
                     creatorTools={this.props.carto}
                     project={this.props.project}
@@ -1696,11 +1488,11 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                     heightOffset={300}
                     onChange={this._handleMinecraftEventTriggerPropertyChange}
                     form={this.props.definition}
-                    field={field}
+                    field={effectiveField}
                   />
                 );
 
-                this.formComponentNames.push(field.id);
+                this.formComponentNames.push(effectiveField.id);
                 this.formComponents.push(sarr);
 
                 formInterior.push(
@@ -1708,8 +1500,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                     className={this.getCssClassName("fieldWrap")}
                     key={"fwm" + baseKey}
                     style={{
-                      borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-                      borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+                      borderTopColor: getThemeColors().background3,
+                      borderBottomColor: getThemeColors().background1,
                     }}
                   >
                     <div className={this.getCssClassName("elementTitle")}>{title}</div>
@@ -1719,102 +1511,76 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                   </div>
                 );
               }
-            } else if (field.dataType === FieldDataType.keyedObjectCollection) {
-              this.addKeyedObjectComponent(field, formInterior, descriptionElements, sampleElements);
-            } else if (field.dataType === FieldDataType.keyedStringArrayCollection) {
-              this.addKeyedStringArrayCollectionComponent(field, formInterior, descriptionElements, sampleElements);
-            } else if (field.dataType === FieldDataType.arrayOfKeyedStringCollection) {
-              this.addArrayOfKeyedStringCollectionComponent(field, formInterior, descriptionElements, sampleElements);
-            } else if (field.dataType === FieldDataType.keyedStringCollection) {
-              this.addKeyedStringComponent(field, formInterior, descriptionElements, sampleElements);
-            } else if (field.dataType === FieldDataType.keyedBooleanCollection) {
-              this.addKeyedBooleanComponent(field, formInterior, descriptionElements, sampleElements);
-            } else if (field.dataType === FieldDataType.objectArray) {
-              this.addObjectArrayComponent(field, formInterior, descriptionElements, sampleElements);
-            } else if (field.dataType === FieldDataType.object) {
-              this.addObjectComponent(field, formInterior, descriptionElements, sampleElements);
-            } else if (field.dataType === FieldDataType.intBoolean || field.dataType === FieldDataType.boolean) {
-              this.addCheckboxComponent(field, formInterior, descriptionElements, sampleElements);
-            } else if (field.dataType === FieldDataType.longFormString) {
-              const fieldInput = (
-                <TextArea
-                  fluid={true}
-                  key={"txa" + baseKey}
-                  id={field.id}
-                  value={curVal as string}
-                  defaultValue={defaultVal as string}
-                  spellCheck={true}
-                  onChange={this._handleTextAreaChange}
-                />
+            } else if (effectiveField.dataType === FieldDataType.keyedObjectCollection) {
+              this.addKeyedObjectComponent(effectiveField, formInterior, descriptionElements, sampleElements);
+            } else if (effectiveField.dataType === FieldDataType.keyedStringArrayCollection) {
+              this.addKeyedStringArrayCollectionComponent(
+                effectiveField,
+                formInterior,
+                descriptionElements,
+                sampleElements
               );
-
-              formInterior.push(
-                <div
-                  className={this.getCssClassName("fieldWrap")}
-                  key={"fwn" + baseKey}
-                  style={{
-                    borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-                    borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-                  }}
-                >
-                  {descriptionElements}
-                  <div key={baseKey + "titleA"} className={this.getCssClassName("fieldTitle")}>
-                    <div className={this.getCssClassName(isValid ? "elementTitle" : "elementTitleInvalid")}>
-                      {title}
-                    </div>
-                    {fieldInput}
-                  </div>
-                  {sampleElements}
-                </div>
+            } else if (effectiveField.dataType === FieldDataType.arrayOfKeyedStringCollection) {
+              this.addArrayOfKeyedStringCollectionComponent(
+                effectiveField,
+                formInterior,
+                descriptionElements,
+                sampleElements
+              );
+            } else if (effectiveField.dataType === FieldDataType.keyedStringCollection) {
+              this.addKeyedStringComponent(effectiveField, formInterior, descriptionElements, sampleElements);
+            } else if (effectiveField.dataType === FieldDataType.keyedBooleanCollection) {
+              this.addKeyedBooleanComponent(effectiveField, formInterior, descriptionElements, sampleElements);
+            } else if (effectiveField.dataType === FieldDataType.objectArray) {
+              this.addObjectArrayComponent(effectiveField, formInterior, descriptionElements, sampleElements);
+            } else if (effectiveField.dataType === FieldDataType.object) {
+              this.addObjectComponent(effectiveField, formInterior, descriptionElements, sampleElements);
+            } else if (
+              effectiveField.dataType === FieldDataType.intBoolean ||
+              effectiveField.dataType === FieldDataType.boolean
+            ) {
+              this.addCheckboxComponent(effectiveField, formInterior, descriptionElements, sampleElements);
+            } else if (effectiveField.dataType === FieldDataType.longFormString) {
+              this.addLongFormStringComponent(
+                effectiveField,
+                formInterior,
+                descriptionElements,
+                sampleElements,
+                curVal,
+                defaultVal,
+                isValid
               );
             } else if (
-              (field.dataType === FieldDataType.int || field.dataType === FieldDataType.float) &&
-              field.experienceType === FieldExperienceType.slider &&
+              (effectiveField.dataType === FieldDataType.int || effectiveField.dataType === FieldDataType.float) &&
+              effectiveField.experienceType === FieldExperienceType.slider &&
               !this.props.readOnly &&
-              (field.minValue !== undefined || field.suggestedMinValue !== undefined) &&
-              (field.maxValue !== undefined || field.suggestedMaxValue !== undefined)
+              (effectiveField.minValue !== undefined || effectiveField.suggestedMinValue !== undefined) &&
+              (effectiveField.maxValue !== undefined || effectiveField.suggestedMaxValue !== undefined)
             ) {
-              formInterior.push(
-                <div
-                  className={this.getCssClassName("fieldWrap")}
-                  key={"fwa" + baseKey}
-                  style={{
-                    borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-                    borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-                  }}
-                >
-                  <div className={this.getCssClassName("sliderTitle")}>{title}</div>
-                  {descriptionElements}
-                  <div className="df-sliderSet" key={baseKey + "W"}>
-                    <Slider
-                      key={"sli" + baseKey}
-                      id={field.id}
-                      fluid={true}
-                      className={this.getCssClassName("slider")}
-                      step={field.step ? field.step : 1}
-                      min={field.minValue ? field.minValue : field.suggestedMinValue}
-                      max={field.maxValue ? field.maxValue : field.suggestedMaxValue}
-                      value={curVal as string}
-                      defaultValue={defaultVal as string}
-                      onChange={this._handleSliderChange}
-                    />
-                    <FormInput
-                      className={this.getCssClassName("sliderInput")}
-                      key={baseKey + "TSL"}
-                      id={field.id}
-                      fluid={true}
-                      value={curVal as string}
-                      defaultValue={defaultVal as string}
-                      onChange={this._handleTextboxChange}
-                    />
-                  </div>
-                  {sampleElements}
-                </div>
+              this.addSliderComponent(
+                effectiveField,
+                formInterior,
+                descriptionElements,
+                sampleElements,
+                curVal,
+                defaultVal
               );
-            } else if (field.dataType === FieldDataType.minecraftEventTriggerArray) {
-              this.addMinecraftEventTriggerArrayComponent(field, formInterior, descriptionElements, sampleElements);
+            } else if (effectiveField.dataType === FieldDataType.minecraftEventTriggerArray) {
+              this.addMinecraftEventTriggerArrayComponent(
+                effectiveField,
+                formInterior,
+                descriptionElements,
+                sampleElements
+              );
             } else {
-              this.addTextboxComponent(field, formInterior, descriptionElements, sampleElements, curVal, defaultVal);
+              this.addTextboxComponent(
+                effectiveField,
+                formInterior,
+                descriptionElements,
+                sampleElements,
+                curVal,
+                defaultVal
+              );
             }
           }
         }
@@ -1882,18 +1648,13 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     }
 
     if (this.props.closeButton) {
-      const accessoryToolbar = [];
-
-      accessoryToolbar.push({
-        icon: <FontAwesomeIcon key="closeClick" icon={faXmark} className="fa-lg" />,
-        key: "dfClose",
-        onClick: this._handleCloseClick,
-        title: "Close",
-      });
-
       header.push(
         <div className={this.getCssClassName("closeArea")} key="closeArea">
-          <Toolbar aria-label="Form accesory" items={accessoryToolbar} />
+          <Stack direction="row" spacing={1} aria-label="Form accessory">
+            <IconButton key="dfClose" onClick={this._handleCloseClick} title="Close" size="small">
+              <FontAwesomeIcon key="closeClick" icon={faXmark} className="fa-lg" />
+            </IconButton>
+          </Stack>
         </div>
       );
     }
@@ -1912,8 +1673,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         <div
           className={this.getCssClassName("form")}
           style={{
-            borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-            borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+            borderTopColor: getThemeColors().background1,
+            borderBottomColor: getThemeColors().background3,
           }}
         >
           {formInterior}
@@ -1938,14 +1699,25 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           style={
             this.props.indentLevel || this.props.defaultVisualExperience === FieldVisualExperience.deemphasized
               ? {
-                  backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
-                  color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
+                  backgroundColor: getThemeColors().background2,
+                  color: getThemeColors().foreground2,
                 }
               : {}
           }
         >
           {headerOuter}
           {subheader}
+          {this.state.summarizer && (
+            <Summarizer
+              summarizer={this.state.summarizer}
+              data={this._getCurrentDirectObject()}
+              dataVersion={this.state.objectIncrement}
+              formDefinition={this.props.definition}
+              noun={this.props.summarizerNoun || this.props.definition?.summarizerNoun}
+              variant="card"
+              theme={this.props.theme}
+            />
+          )}
           <div className={this.getCssClassName("formArea")}>{contents}</div>
         </div>
       </div>
@@ -1960,107 +1732,72 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     curVal: any,
     defaultVal: any
   ) {
-    const title = FieldUtilities.getFieldTitle(field);
+    const baseKey = this._getObjectId() + "." + field.id;
 
-    let baseKey = this._getObjectId() + "." + field.id;
-
-    let strVal = curVal ? String(curVal) : "";
-    let cssClass = this.getCssClassName("fieldWrap");
-
-    // if the user is dealing with floating point numbers and has typed in "3." on their way to
-    // typing in "3.5", using _workingValues to "remember" that and substitute it back in.
-    // otherwise we'd always replace "3." with "3" and you wouldn't be able to add decimal vals
-    if (field.dataType === FieldDataType.float || field.dataType === FieldDataType.number) {
-      cssClass += " " + this.getCssClassName("fieldWrapNumber");
-      if (this._workingValues[field.id]) {
-        const val = this._getTypedData(field, this._workingValues[field.id]);
-
-        if (val === curVal) {
-          strVal = this._workingValues[field.id];
-        }
-      }
-    }
-
-    let interior = <></>;
-    let choiceDescriptionArea = <></>;
-
+    // Resolve choices from field or lookups
     let choices = field.choices;
-
     if (!choices && field.lookupId) {
       if (this.state && this.state.lookups) {
         choices = this.state.lookups[field.lookupId];
       }
     }
 
-    if (choices && choices.length > 0) {
-      const items: (DropdownItemProps & { id: string | number | boolean })[] = [];
-      let selectedIndex = 0;
-      let dropdownValue = strVal;
-
-      for (let i = 0; i < choices.length; i++) {
-        const title = choices[i].title;
-        const id = choices[i].id;
-
-        if (strVal.toString() === id.toString()) {
-          selectedIndex = i;
-
-          if (title || id) {
-            dropdownValue = title ? title : id.toString();
-          }
-        }
-
-        items.push({
-          header: title ? title : id,
-          content: choices[i].description,
-          id: choices[i].id,
-          selected: choices[i].id === curVal,
-        });
-
-        if (id === curVal && choices[i].description) {
-          choiceDescriptionArea = <div>{choices[i].description}</div>;
+    // Prepare working value for float/number fields
+    let workingValue: string | undefined;
+    if (field.dataType === FieldDataType.float || field.dataType === FieldDataType.number) {
+      if (this._workingValues[field.id]) {
+        const val = this._getTypedData(field, this._workingValues[field.id]);
+        if (val === curVal) {
+          workingValue = this._workingValues[field.id];
         }
       }
-
-      interior = (
-        <FormDropdown
-          search={!field.mustMatchChoices}
-          activeSelectedIndex={selectedIndex}
-          label={title}
-          id={field.id}
-          items={items}
-          key={"frs" + baseKey + title + field.id}
-          fluid={true}
-          onChange={this._handleDropdownTextChange}
-          value={dropdownValue}
-        />
-      );
-    } else {
-      interior = (
-        <FormInput
-          label={title}
-          key={"fri" + baseKey}
-          id={field.id}
-          value={strVal}
-          defaultValue={defaultVal as string}
-          onChange={this._handleTextboxChange}
-        />
-      );
     }
 
+    const cssConfig: ICssClassConfig = { displayNarrow: !!this.props.displayNarrow };
+
+    // Check if we can add items for this lookup
+    const canAddItem =
+      field.lookupId && this.props.lookupProvider && this.props.lookupProvider.canAddItem
+        ? this.props.lookupProvider.canAddItem(field.lookupId)
+        : false;
+
     formInterior.push(
-      <div
-        className={cssClass}
-        key={"fz" + baseKey}
-        style={{
-          borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-          borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+      <TextboxField
+        key={"tbf" + baseKey}
+        field={field}
+        value={curVal}
+        defaultValue={defaultVal}
+        baseKey={baseKey}
+        theme={this.props.theme}
+        readOnly={this.props.readOnly}
+        cssConfig={cssConfig}
+        choices={choices}
+        workingValue={workingValue}
+        descriptionElements={descriptionElements}
+        sampleElements={sampleElements}
+        showAddButton={canAddItem}
+        onAddClick={
+          canAddItem
+            ? async (fieldId: string, lookupId: string) => {
+                if (this.props.onAddItem) {
+                  const newValue = await this.props.onAddItem(lookupId);
+                  if (newValue) {
+                    this._setPropertyValue(fieldId, newValue);
+                  }
+                }
+              }
+            : undefined
+        }
+        onChange={(newValue, f) => {
+          this._setPropertyValue(f.id, newValue);
         }}
-      >
-        {interior}
-        {choiceDescriptionArea}
-        {descriptionElements}
-        {sampleElements}
-      </div>
+        onTextChange={(fieldId, newText) => {
+          this.processInputUpdate(fieldId, newText);
+        }}
+        onDropdownChange={(fieldId, selectedId) => {
+          this.processInputUpdate(fieldId, String(selectedId));
+        }}
+      />
     );
   }
 
@@ -2071,39 +1808,475 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     sampleElements: JSX.Element[]
   ) {
     const bool = this._getPropertyAsBoolean(field.id, field.defaultValue === true || field.defaultValue === 1);
+    const baseKey = this._getObjectId() + "." + field.id;
+    const cssConfig: ICssClassConfig = { displayNarrow: !!this.props.displayNarrow };
 
-    const title = FieldUtilities.getFieldTitle(field);
+    // Track checkbox for legacy compatibility
+    this.checkboxNames.push(field.id);
 
-    const seedId = this._getObjectId();
+    const checkboxElement = (
+      <CheckboxField
+        key={"cbf" + baseKey}
+        field={field}
+        value={bool}
+        defaultValue={field.defaultValue === true || field.defaultValue === 1}
+        baseKey={baseKey}
+        theme={this.props.theme}
+        readOnly={this.props.readOnly}
+        cssConfig={cssConfig}
+        descriptionElements={descriptionElements}
+        sampleElements={sampleElements}
+        onChange={(newValue, f) => {
+          this._setPropertyValue(f.id, newValue);
+        }}
+        onToggle={(fieldId) => {
+          // Reuse the existing toggle handler logic via FormPropertyManager
+          // Pass the field's default value so toggle works correctly when property is not set
+          const fieldDefaultValue = field.defaultValue === true || field.defaultValue === 1;
+          const result = this._propertyManager.toggleBooleanProperty(
+            fieldId,
+            fieldDefaultValue,
+            this._getCurrentDirectObject()
+          );
 
-    const checkbox = (
-      <FormCheckbox
-        key={seedId + field.id}
-        label={title}
-        id={field.id}
-        checked={bool}
-        toggle={true}
-        onChange={this._handleCheckboxChange}
+          if (this.props.onPropertyChanged !== undefined) {
+            this.props.onPropertyChanged(this.props, result.property, result.newValue, result.updatedDirectObject);
+          }
+
+          this.setState({
+            updatedDirectObject: result.updatedDirectObject,
+            objectIncrement: this.state.objectIncrement + 1,
+            subFormLoadState: this.state.subFormLoadState,
+            keyAliases: this.state.keyAliases,
+          });
+        }}
       />
     );
 
-    this.checkboxNames.push(field.id);
-    this.checkboxItems.push(checkbox);
+    this.checkboxItems.push(checkboxElement);
+    formInterior.push(checkboxElement);
+  }
 
-    formInterior.push(
+  addLongFormStringComponent(
+    field: IField,
+    formInterior: any[],
+    descriptionElements: JSX.Element[],
+    sampleElements: JSX.Element[],
+    curVal: unknown,
+    defaultVal: unknown,
+    isValid: boolean
+  ) {
+    const baseKey = this._getObjectId() + "." + field.id;
+    const cssConfig: ICssClassConfig = { displayNarrow: !!this.props.displayNarrow };
+
+    const element = (
+      <LongFormStringField
+        key={"lfsr" + baseKey}
+        field={field}
+        value={curVal as string}
+        defaultValue={defaultVal as string}
+        baseKey={baseKey}
+        theme={this.props.theme}
+        readOnly={this.props.readOnly}
+        cssConfig={cssConfig}
+        descriptionElements={descriptionElements}
+        sampleElements={sampleElements}
+        isValid={isValid}
+        onChange={(newValue, f) => {
+          this._setPropertyValue(f.id, newValue);
+        }}
+        onTextAreaChange={(fieldId, newText) => {
+          this.processInputUpdate(fieldId, newText);
+        }}
+      />
+    );
+
+    formInterior.push(element);
+  }
+
+  addSliderComponent(
+    field: IField,
+    formInterior: any[],
+    descriptionElements: JSX.Element[],
+    sampleElements: JSX.Element[],
+    curVal: unknown,
+    defaultVal: unknown
+  ) {
+    const baseKey = this._getObjectId() + "." + field.id;
+    const cssConfig: ICssClassConfig = { displayNarrow: !!this.props.displayNarrow };
+
+    // Resolve dynamic max/min from sibling field values
+    let dynamicMax: number | undefined;
+    let dynamicMin: number | undefined;
+
+    if (field.maxValueField) {
+      const refVal = this._getProperty(field.maxValueField);
+      if (refVal !== undefined && refVal !== null) {
+        dynamicMax = typeof refVal === "string" ? parseFloat(refVal) : Number(refVal);
+        if (isNaN(dynamicMax)) dynamicMax = undefined;
+      }
+    }
+
+    if (field.minValueField) {
+      const refVal = this._getProperty(field.minValueField);
+      if (refVal !== undefined && refVal !== null) {
+        dynamicMin = typeof refVal === "string" ? parseFloat(refVal) : Number(refVal);
+        if (isNaN(dynamicMin)) dynamicMin = undefined;
+      }
+    }
+
+    const element = (
+      <SliderField
+        key={"sff" + baseKey}
+        field={field}
+        value={curVal as string}
+        defaultValue={defaultVal as string}
+        baseKey={baseKey}
+        theme={this.props.theme}
+        readOnly={this.props.readOnly}
+        cssConfig={cssConfig}
+        descriptionElements={descriptionElements}
+        sampleElements={sampleElements}
+        dynamicMax={dynamicMax}
+        dynamicMin={dynamicMin}
+        onChange={(newValue, f) => {
+          this._setPropertyValue(f.id, newValue);
+        }}
+        onSliderChange={(fieldId, newValue) => {
+          this.processInputUpdate(fieldId, newValue);
+        }}
+        onSliderTextChange={(fieldId, newValue) => {
+          this.processInputUpdate(fieldId, newValue);
+        }}
+      />
+    );
+
+    formInterior.push(element);
+  }
+
+  /**
+   * Renders a group of fields in a compact layout.
+   * Fields in the group are rendered horizontally with wrapping (flow layout).
+   */
+  renderFieldGroup(group: IFieldGroup, fields: IField[], formDef: IFormDefinition): JSX.Element {
+    const groupKey = "fg-" + group.id;
+    const layoutClass =
+      group.layout === FieldGroupLayout.grid
+        ? "df-fieldGroupGrid"
+        : group.layout === FieldGroupLayout.compact
+          ? "df-fieldGroupCompact"
+          : "df-fieldGroupFlow";
+
+    const fieldElements: JSX.Element[] = [];
+
+    for (const field of fields) {
+      const fieldKey = groupKey + "-" + field.id;
+      const curVal = this._getProperty(field.id, field.defaultValue);
+      const title = FieldUtilities.getFieldTitle(field);
+
+      // For numeric types, render a compact input
+      if (
+        field.dataType === FieldDataType.int ||
+        field.dataType === FieldDataType.float ||
+        field.dataType === FieldDataType.number ||
+        field.dataType === FieldDataType.long
+      ) {
+        fieldElements.push(
+          <div className="df-groupedField" key={fieldKey}>
+            <div className="df-groupedFieldInput">
+              <input
+                type="number"
+                value={curVal !== undefined ? curVal : ""}
+                placeholder={group.hideFieldTitles ? title : undefined}
+                title={field.description}
+                onChange={(e) => {
+                  const strVal = e.target.value;
+                  // Pass empty string as undefined, otherwise pass the string value
+                  // (processInputUpdate handles the conversion)
+                  this.processInputUpdate(field.id, strVal === "" ? undefined : strVal);
+                }}
+              />
+            </div>
+            {!group.hideFieldTitles && (
+              <label className="df-groupedFieldLabel" title={field.description}>
+                {title}
+              </label>
+            )}
+          </div>
+        );
+      } else if (field.dataType === FieldDataType.string) {
+        // String field in compact mode
+        fieldElements.push(
+          <div className="df-groupedField" key={fieldKey}>
+            <div className="df-groupedFieldInput">
+              <input
+                type="text"
+                value={curVal !== undefined ? String(curVal) : ""}
+                placeholder={group.hideFieldTitles ? title : undefined}
+                title={field.description}
+                onChange={(e) => {
+                  this.processInputUpdate(field.id, e.target.value);
+                }}
+              />
+            </div>
+            {!group.hideFieldTitles && (
+              <label className="df-groupedFieldLabel" title={field.description}>
+                {title}
+              </label>
+            )}
+          </div>
+        );
+      } else {
+        // Fallback: render value as text
+        fieldElements.push(
+          <div className="df-groupedField" key={fieldKey}>
+            <div className="df-groupedFieldValue">{curVal !== undefined ? String(curVal) : "-"}</div>
+            {!group.hideFieldTitles && (
+              <label className="df-groupedFieldLabel" title={field.description}>
+                {title}
+              </label>
+            )}
+          </div>
+        );
+      }
+    }
+
+    return (
       <div
-        className={this.getCssClassName("fieldWrap")}
-        key={"fwc" + field.id}
+        className="df-fieldGroup"
+        key={groupKey}
         style={{
-          borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-          borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+          borderTopColor: getThemeColors().background3,
+          borderBottomColor: getThemeColors().background1,
         }}
       >
-        {checkbox}
-        {descriptionElements}
-        {sampleElements}
+        {group.title && <div className="df-fieldGroupTitle">{group.title}</div>}
+        {group.description && <div className="df-fieldGroupDescription">{group.description}</div>}
+        <div className={layoutClass}>{fieldElements}</div>
       </div>
     );
+  }
+
+  addDropdownComponent(
+    field: IField,
+    formInterior: any[],
+    descriptionElements: JSX.Element[],
+    sampleElements: JSX.Element[],
+    curVal: unknown,
+    propIndex: number
+  ) {
+    const baseKey = this._getObjectId() + "." + field.id;
+    const cssConfig: ICssClassConfig = { displayNarrow: !!this.props.displayNarrow };
+
+    // Get lookup set (choices or from lookupSets)
+    let lookupSet: ISimpleReference[] | undefined;
+    if (field.choices) {
+      lookupSet = field.choices;
+    } else if (field.lookupId && this.props.lookupSets) {
+      lookupSet = this.props.lookupSets[field.lookupId];
+    }
+
+    if (!lookupSet) {
+      return;
+    }
+
+    // Track dropdown for the _handleDropdownChange method
+    this.dropdownNames.push(field.id);
+    this.dropdownItems.push(getDropdownItems(lookupSet, curVal));
+
+    const element = (
+      <DropdownField
+        key={"ddf" + baseKey}
+        field={field}
+        value={curVal as string | number | boolean | undefined}
+        defaultValue={field.defaultValue as string | number | boolean | undefined}
+        baseKey={baseKey}
+        theme={this.props.theme}
+        readOnly={this.props.readOnly}
+        cssConfig={cssConfig}
+        descriptionElements={descriptionElements}
+        sampleElements={sampleElements}
+        choices={lookupSet}
+        propIndex={propIndex}
+        onChange={(newValue, f) => {
+          this._setPropertyValue(f.id, newValue);
+        }}
+        onDropdownChange={this._handleSimpleDropdownChange}
+      />
+    );
+
+    formInterior.push(element);
+  }
+
+  addPoint3Component(
+    field: IField,
+    formInterior: any[],
+    descriptionElements: JSX.Element[],
+    sampleElements: JSX.Element[]
+  ) {
+    const val = this._getProperty(field.id, [0, 0, 0]);
+    const baseKey = this._getObjectId() + "." + field.id;
+    const cssConfig: ICssClassConfig = { displayNarrow: !!this.props.displayNarrow };
+
+    let objKey = field.id;
+    if (this.props.objectKey) {
+      objKey += this.props.objectKey;
+    }
+
+    const element = (
+      <Point3Field
+        key={"p3f" + baseKey}
+        field={field}
+        value={val}
+        defaultValue={[0, 0, 0]}
+        baseKey={baseKey}
+        theme={this.props.theme}
+        readOnly={this.props.readOnly}
+        cssConfig={cssConfig}
+        descriptionElements={descriptionElements}
+        sampleElements={sampleElements}
+        form={this.props.definition}
+        objectKey={objKey}
+        ambientPoint={this.props.ambientSelectedPoint}
+        onChange={(newValue, f) => {
+          this._setPropertyValue(f.id, newValue);
+        }}
+        onPoint3Change={this._handlePoint3PropertyChange}
+      />
+    );
+
+    this.formComponentNames.push(field.id);
+    this.formComponents.push(element);
+    formInterior.push(element);
+  }
+
+  addVersionComponent(
+    field: IField,
+    formInterior: any[],
+    descriptionElements: JSX.Element[],
+    sampleElements: JSX.Element[]
+  ) {
+    const val = this._getProperty(field.id, [0, 0, 1]);
+    const baseKey = this._getObjectId() + "." + field.id;
+    const cssConfig: ICssClassConfig = { displayNarrow: !!this.props.displayNarrow };
+
+    let objKey = field.id;
+    if (this.props.objectKey) {
+      objKey += this.props.objectKey;
+    }
+
+    const element = (
+      <VersionField
+        key={"vf" + baseKey}
+        field={field}
+        value={val}
+        defaultValue={[0, 0, 1]}
+        baseKey={baseKey}
+        theme={this.props.theme}
+        readOnly={this.props.readOnly}
+        cssConfig={cssConfig}
+        descriptionElements={descriptionElements}
+        sampleElements={sampleElements}
+        form={this.props.definition}
+        objectKey={objKey}
+        onChange={(newValue, f) => {
+          this._setPropertyValue(f.id, newValue);
+        }}
+        onVersionChange={this._handleVersionPropertyChange}
+      />
+    );
+
+    this.formComponentNames.push(field.id);
+    this.formComponents.push(element);
+    formInterior.push(element);
+  }
+
+  addRangeComponent(
+    field: IField,
+    formInterior: any[],
+    descriptionElements: JSX.Element[],
+    sampleElements: JSX.Element[]
+  ) {
+    const val = this._getProperty(field.id, [0, 100]);
+    const baseKey = this._getObjectId() + "." + field.id;
+    const cssConfig: ICssClassConfig = { displayNarrow: !!this.props.displayNarrow };
+
+    let objKey = field.id;
+    if (this.props.objectKey) {
+      objKey += this.props.objectKey;
+    }
+
+    const element = (
+      <RangeField
+        key={"rf" + baseKey}
+        field={field}
+        value={val}
+        defaultValue={[0, 100]}
+        baseKey={baseKey}
+        theme={this.props.theme}
+        readOnly={this.props.readOnly}
+        cssConfig={cssConfig}
+        descriptionElements={descriptionElements}
+        sampleElements={sampleElements}
+        form={this.props.definition}
+        objectKey={objKey}
+        isInt={field.dataType === FieldDataType.intRange}
+        onChange={(newValue, f) => {
+          this._setPropertyValue(f.id, newValue);
+        }}
+        onRangeChange={this._handleRangePropertyChange}
+      />
+    );
+
+    this.formComponentNames.push(field.id);
+    this.formComponents.push(element);
+    formInterior.push(element);
+  }
+
+  addScalarArrayComponent(
+    field: IField,
+    formInterior: any[],
+    descriptionElements: JSX.Element[],
+    sampleElements: JSX.Element[],
+    isValid: boolean
+  ) {
+    const val = this._getProperty(field.id, []);
+    const baseKey = this._getObjectId() + "." + field.id;
+    const cssConfig: ICssClassConfig = { displayNarrow: !!this.props.displayNarrow };
+
+    let objKey = field.id;
+    if (this.props.objectKey) {
+      objKey += this.props.objectKey;
+    }
+
+    const element = (
+      <ScalarArrayField
+        key={"saf" + baseKey}
+        field={field}
+        value={val}
+        defaultValue={[]}
+        baseKey={baseKey}
+        theme={this.props.theme}
+        readOnly={this.props.readOnly}
+        cssConfig={cssConfig}
+        descriptionElements={descriptionElements}
+        sampleElements={sampleElements}
+        form={this.props.definition}
+        objectKey={objKey}
+        lookups={this.state.lookups}
+        isValid={isValid}
+        onChange={(newValue, f) => {
+          this._setPropertyValue(f.id, newValue);
+        }}
+        onScalarArrayChange={this._handleStringArrayPropertyChange}
+        canAddItem={this.props.lookupProvider?.canAddItem}
+        onAddItem={this.props.onAddItem}
+      />
+    );
+
+    this.formComponentNames.push(field.id);
+    this.formComponents.push(element);
+    formInterior.push(element);
   }
 
   getFieldSubForm(field: IField) {
@@ -2138,7 +2311,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         fieldList[key] = {
           id: key,
           title: key,
-          dataType: 2,
+          dataType: FieldDataType.string,
         };
       }
     }
@@ -2201,6 +2374,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
             title={title}
             project={this.props.project}
             lookupProvider={this.props.lookupProvider}
+            onAddItem={this.props.onAddItem}
             carto={this.props.carto}
             itemDefinition={this.props.itemDefinition}
             defaultVisualExperience={field.visualExperience}
@@ -2230,8 +2404,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           className={binClassName}
           key="dfeltbin"
           style={{
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
+            backgroundColor: getThemeColors().background1,
+            borderColor: getThemeColors().background4,
           }}
         >
           {childElements}
@@ -2244,8 +2418,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         className={this.getCssClassName("fieldWrap")}
         key={"fwd" + field.id}
         style={{
-          borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-          borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+          borderTopColor: getThemeColors().background3,
+          borderBottomColor: getThemeColors().background1,
         }}
       >
         {descriptionElements}
@@ -2305,11 +2479,13 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           const objStr = keyValuePairs[key];
 
           const subForm = (
-            <FormInput
+            <TextField
               className="df-keyedSarrText"
               key={objKey + "TKS"}
               id={objKey}
-              fluid={true}
+              fullWidth
+              size="small"
+              variant="outlined"
               value={objStr as string}
               onChange={this._handleTextboxChange}
             />
@@ -2345,8 +2521,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         className={binClassName}
         key={baseKey + "dfelb2"}
         style={{
-          backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-          borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
+          backgroundColor: getThemeColors().background1,
+          borderColor: getThemeColors().background4,
         }}
       >
         {childElements}
@@ -2358,8 +2534,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         className={this.getCssClassName("fieldWrap")}
         key={"fwe" + baseKey}
         style={{
-          borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-          borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+          borderTopColor: getThemeColors().background3,
+          borderBottomColor: getThemeColors().background1,
         }}
       >
         {fieldInterior}
@@ -2419,11 +2595,13 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           let index = 0;
           for (const stringArrStr of stringArr) {
             textElts.push(
-              <FormInput
+              <TextField
                 className="df-keyedSarrText"
                 key={objKey + "TKSA" + index}
                 id={objKey}
-                fluid={true}
+                fullWidth
+                size="small"
+                variant="outlined"
                 value={stringArrStr as string}
                 onChange={this._handleTextboxChange}
               />
@@ -2455,8 +2633,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         className={binClassName}
         key={baseKey + "dfelb2"}
         style={{
-          backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-          borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
+          backgroundColor: getThemeColors().background1,
+          borderColor: getThemeColors().background4,
         }}
       >
         {childElements}
@@ -2468,8 +2646,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         className={this.getCssClassName("fieldWrap")}
         key={baseKey + "fwf"}
         style={{
-          borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-          borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+          borderTopColor: getThemeColors().background3,
+          borderBottomColor: getThemeColors().background1,
         }}
       >
         {fieldInterior}
@@ -2511,21 +2689,21 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       fieldBottom.push(sampleElements);
 
       if (!this.props.readOnly) {
-        const toolbarItems = [];
-
-        if (field.allowCreateDelete !== false) {
-          toolbarItems.push({
-            icon: <FontAwesomeIcon icon={faPlus} className="fa-lg" />,
-            key: "add",
-            tag: field.id,
-            onClick: this._addKeyedStringItem,
-            title: "Add item",
-          });
-        }
+        const showAddButton = field.allowCreateDelete !== false;
 
         const toolBarElement = (
           <div key={baseKey + "tb"}>
-            <Toolbar aria-label="Keyed strings actions" items={toolbarItems} />
+            <Stack direction="row" spacing={1} aria-label="Keyed strings actions">
+              {showAddButton && (
+                <IconButton
+                  size="small"
+                  title="Add item"
+                  onClick={(e) => this._addKeyedStringItem(e, { tag: field.id })}
+                >
+                  <FontAwesomeIcon icon={faPlus} className="fa-lg" />
+                </IconButton>
+              )}
+            </Stack>
           </div>
         );
         this.formComponentNames.push(field.id + "toolbar");
@@ -2565,11 +2743,13 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
           if (!this.props.readOnly) {
             title = (
-              <FormInput
+              <TextField
                 key={objKey + ".title.text"}
                 id={field.id + "." + key + ".text"}
                 value={key as string}
                 defaultValue={key as string}
+                size="small"
+                variant="outlined"
                 onChange={this._handleKeyedStringTextChange}
               />
             );
@@ -2580,10 +2760,12 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           propertyId += "." + key;
 
           const inputControl = (
-            <FormInput
+            <TextField
               key={baseKey + ".input"}
               id={field.id + "." + key + ".input"}
               value={strVal}
+              size="small"
+              variant="outlined"
               onChange={this._handleKeyedStringValueChange}
             />
           );
@@ -2592,19 +2774,45 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           this.formComponents.push(inputControl);
 
           const closeRow = (
-            <Button
-              icon={<FontAwesomeIcon key="closeClick" icon={faXmark} className="fa-lg" />}
+            <IconButton
               key={field.id + propertyId + objKey + ".close"}
               id={field.id + "." + key + ".close"}
               onClick={this._handleKeyedStringValueClose}
               title="Close"
-            />
+              size="small"
+            >
+              <FontAwesomeIcon key="closeClick" icon={faXmark} className="fa-lg" />
+            </IconButton>
           );
+
+          let actionButton: JSX.Element | undefined;
+
+          if (field.valueAction && this.props.onValueAction) {
+            const actionField = field;
+            const actionValue = strVal;
+
+            actionButton = (
+              <div className="df-keyedStringCollectionAction" key={objKey + ".action"}>
+                <IconButton
+                  size="small"
+                  title="Open in editor"
+                  onClick={() => {
+                    if (this.props.onValueAction && actionValue) {
+                      this.props.onValueAction(actionField.valueAction!, actionField, actionValue);
+                    }
+                  }}
+                >
+                  <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="fa-lg" />
+                </IconButton>
+              </div>
+            );
+          }
 
           childElements.push(
             <div className="df-keyedStringCollection" key={objKey}>
               <div className="df-keyedStringCollectionTitle">{title}</div>
               <div className="df-keyedStringCollectionData">{inputControl}</div>
+              {actionButton}
               <div className="df-keyedStringCollectionClose">{closeRow}</div>
             </div>
           );
@@ -2625,8 +2833,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         className={binClassName}
         key={baseKey + "dfelf3"}
         style={{
-          backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-          borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
+          backgroundColor: getThemeColors().background1,
+          borderColor: getThemeColors().background4,
         }}
       >
         {childElements}
@@ -2638,8 +2846,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         className={this.getCssClassName("fieldWrap")}
         key={"fwg" + baseKey}
         style={{
-          borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-          borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+          borderTopColor: getThemeColors().background3,
+          borderBottomColor: getThemeColors().background1,
         }}
       >
         {fieldTopper}
@@ -2679,21 +2887,21 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     fieldTopper.push(sampleElements);
 
     if (!this.props.readOnly) {
-      const toolbarItems = [];
-
-      if (field.allowCreateDelete !== false) {
-        toolbarItems.push({
-          icon: <FontAwesomeIcon icon={faPlus} className="fa-lg" />,
-          key: "add",
-          tag: field.id,
-          onClick: this._addKeyedBooleanItem,
-          title: "Add item",
-        });
-      }
+      const showAddButton = field.allowCreateDelete !== false;
 
       const toolBarElement = (
         <div>
-          <Toolbar aria-label="Keyed true/false actions" items={toolbarItems} />
+          <Stack direction="row" spacing={1} aria-label="Keyed true/false actions">
+            {showAddButton && (
+              <IconButton
+                size="small"
+                title="Add item"
+                onClick={(e) => this._addKeyedBooleanItem(e, { tag: field.id })}
+              >
+                <FontAwesomeIcon icon={faPlus} className="fa-lg" />
+              </IconButton>
+            )}
+          </Stack>
         </div>
       );
       this.formComponentNames.push(field.id + "toolbar");
@@ -2741,11 +2949,13 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
         if (!this.props.readOnly) {
           title = (
-            <FormInput
+            <TextField
               key={objKey + ".title.text"}
               id={field.id + "." + key + ".text"}
               value={key as string}
               defaultValue={key as string}
+              size="small"
+              variant="outlined"
               onChange={this._handleKeyedBooleanTextChange}
             />
           );
@@ -2756,13 +2966,17 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         propertyId += "." + key;
 
         const checkboxControl = (
-          <FormCheckbox
+          <FormControlLabel
             key={objKey + ".check"}
             label="On/off"
-            id={field.id + "." + key + ".check"}
-            checked={boolVal}
-            toggle={true}
-            onChange={this._handleKeyedBooleanValueChange}
+            control={
+              <Checkbox
+                id={field.id + "." + key + ".check"}
+                checked={boolVal}
+                onChange={this._handleKeyedBooleanValueChange}
+                size="small"
+              />
+            }
           />
         );
 
@@ -2770,13 +2984,15 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         this.formComponents.push(checkboxControl);
 
         const closeRow = (
-          <Button
-            icon={<FontAwesomeIcon key="closeClick" icon={faXmark} className="fa-lg" />}
+          <IconButton
             key={objKey + ".close"}
             id={field.id + "." + key + ".close"}
             onClick={this._handleKeyedBooleanValueClose}
             title="Close"
-          />
+            size="small"
+          >
+            <FontAwesomeIcon key="closeClick" icon={faXmark} className="fa-lg" />
+          </IconButton>
         );
 
         childElements.push(
@@ -2802,8 +3018,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         className={binClassName}
         key="dfelfb4"
         style={{
-          backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-          borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
+          backgroundColor: getThemeColors().background1,
+          borderColor: getThemeColors().background4,
         }}
       >
         {childElements}
@@ -2815,8 +3031,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         className={this.getCssClassName("fieldWrap")}
         key={"fwo" + field.id}
         style={{
-          borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-          borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+          borderTopColor: getThemeColors().background3,
+          borderBottomColor: getThemeColors().background1,
         }}
       >
         {fieldTopper}
@@ -2946,7 +3162,11 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
     if (arrayOfDataVal !== undefined && fieldSubForm && arrayOfDataVal instanceof Array) {
       if (field.displayTitle !== false) {
-        const headerElement = <div className="df-elementBinTitle">{FieldUtilities.getFieldTitle(field)}</div>;
+        const headerElement = (
+          <div key={baseKey + "header"} className="df-elementBinTitle">
+            {FieldUtilities.getFieldTitle(field)}
+          </div>
+        );
         this.formComponentNames.push(field.id);
         this.formComponents.push(headerElement);
         fieldTopper.push(headerElement);
@@ -2956,27 +3176,22 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       fieldTopper.push(sampleElements);
 
       if (!this.props.readOnly) {
-        const toolbarItems = [];
-
-        if (field.allowCreateDelete !== false) {
-          toolbarItems.push({
-            icon: (
-              <CustomLabel
-                isCompact={false}
-                icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
-                text={field.noun ? "Add " + field.noun.toLowerCase() : "Add"}
-              />
-            ),
-            key: "add",
-            tag: field.id,
-            onClick: this._addObjectArrayItem,
-            title: "Add item",
-          });
-        }
+        const showAddButton = field.allowCreateDelete !== false;
 
         const toolBarElement = (
           <div>
-            <Toolbar aria-label="List of items actions" items={toolbarItems} />
+            <Stack direction="row" spacing={1} aria-label="List of items actions">
+              {showAddButton && (
+                <Button
+                  size="small"
+                  title="Add item"
+                  onClick={(e) => this._addObjectArrayItem(e, { tag: field.id })}
+                  startIcon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
+                >
+                  {field.noun ? "Add " + field.noun.toLowerCase() : "Add"}
+                </Button>
+              )}
+            </Stack>
           </div>
         );
         this.formComponentNames.push(field.id + "toolbar");
@@ -3032,6 +3247,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               theme={this.props.theme}
               project={this.props.project}
               lookupProvider={this.props.lookupProvider}
+              onAddItem={this.props.onAddItem}
               carto={this.props.carto}
               itemDefinition={this.props.itemDefinition}
               title={field.subFields[fieldName]?.title}
@@ -3059,7 +3275,9 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
           try {
             visualIndex = parseInt(index);
-          } catch (e) {}
+          } catch (e) {
+            Log.debug("DataForm visual index parse error: " + e);
+          }
 
           if (!isNaN(visualIndex)) {
             title = String(visualIndex + 1);
@@ -3108,6 +3326,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
             }
           } else if (field.noun) {
             title = field.noun + " " + title;
+          } else if (fieldSubForm && fieldSubForm.title) {
+            title = fieldSubForm.title + " " + title;
           }
 
           const subForm = (
@@ -3119,6 +3339,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               title={title}
               project={this.props.project}
               lookupProvider={this.props.lookupProvider}
+              onAddItem={this.props.onAddItem}
               carto={this.props.carto}
               itemDefinition={this.props.itemDefinition}
               titleFieldBinding={field.objectArrayTitleFieldKey}
@@ -3150,8 +3371,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         className={binClassName}
         key="dfelfb5"
         style={{
-          backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-          borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
+          backgroundColor: getThemeColors().background1,
+          borderColor: getThemeColors().background4,
         }}
       >
         {childElements}
@@ -3163,8 +3384,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         className={this.getCssClassName("fieldWrap")}
         key={"fwp" + field.id}
         style={{
-          borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-          borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+          borderTopColor: getThemeColors().background3,
+          borderBottomColor: getThemeColors().background1,
         }}
       >
         {fieldTopper}
@@ -3189,13 +3410,19 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     const fieldInterior = [];
     const childElements = [];
 
+    const baseKey = this._getObjectId() + "." + field.id;
+
     Log.assert(arrayOfDataVal, "DFAOAC");
 
     const fieldSubForm = this.getFieldSubForm(field);
 
     if (arrayOfDataVal !== undefined && fieldSubForm && arrayOfDataVal instanceof Array) {
       if (field.displayTitle !== false) {
-        const headerElement = <div className="df-elementBinTitle">{FieldUtilities.getFieldTitle(field)}</div>;
+        const headerElement = (
+          <div key={baseKey + "header"} className="df-elementBinTitle">
+            {FieldUtilities.getFieldTitle(field)}
+          </div>
+        );
         this.formComponentNames.push(field.id);
         this.formComponents.push(headerElement);
         fieldTopper.push(headerElement);
@@ -3205,27 +3432,22 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       fieldTopper.push(sampleElements);
 
       if (!this.props.readOnly) {
-        const toolbarItems = [];
-
-        if (field.allowCreateDelete !== false) {
-          toolbarItems.push({
-            icon: (
-              <CustomLabel
-                isCompact={false}
-                icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
-                text={field.noun ? "Add " + field.noun.toLowerCase() : "Add"}
-              />
-            ),
-            key: "add",
-            tag: field.id,
-            onClick: this._addObjectArrayItem,
-            title: "Add item",
-          });
-        }
+        const showAddButton = field.allowCreateDelete !== false;
 
         const toolBarElement = (
           <div>
-            <Toolbar aria-label="Minecraft event trigger list actions" items={toolbarItems} />
+            <Stack direction="row" spacing={1} aria-label="Minecraft event trigger list actions">
+              {showAddButton && (
+                <Button
+                  size="small"
+                  title="Add item"
+                  onClick={(e) => this._addObjectArrayItem(e, { tag: field.id })}
+                  startIcon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
+                >
+                  {field.noun ? "Add " + field.noun.toLowerCase() : "Add"}
+                </Button>
+              )}
+            </Stack>
           </div>
         );
         this.formComponentNames.push(field.id + "toolbar");
@@ -3239,7 +3461,9 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
         try {
           visualIndex = parseInt(index);
-        } catch (e) {}
+        } catch (e) {
+          Log.debug("DataForm visual index parse error: " + e);
+        }
 
         if (!isNaN(visualIndex)) {
           title = String(visualIndex + 1);
@@ -3282,6 +3506,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           }
         } else if (field.noun) {
           title = field.noun + " " + title;
+        } else if (fieldSubForm && fieldSubForm.title) {
+          title = fieldSubForm.title + " " + title;
         }
 
         if (this.props.carto && this.props.project) {
@@ -3317,8 +3543,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         className={binClassName}
         key="dfelfb5"
         style={{
-          backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-          borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
+          backgroundColor: getThemeColors().background1,
+          borderColor: getThemeColors().background4,
         }}
       >
         {childElements}
@@ -3330,8 +3556,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         className={this.getCssClassName("fieldWrap")}
         key={"fwp" + field.id}
         style={{
-          borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-          borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+          borderTopColor: getThemeColors().background3,
+          borderBottomColor: getThemeColors().background1,
         }}
       >
         {fieldTopper}
@@ -3433,8 +3659,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         className={this.getCssClassName("fieldWrap")}
         key={"fwq" + field.id}
         style={{
-          borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-          borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+          borderTopColor: getThemeColors().background3,
+          borderBottomColor: getThemeColors().background1,
         }}
       >
         {fieldInterior}
@@ -3482,6 +3708,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           theme={this.props.theme}
           project={this.props.project}
           lookupProvider={this.props.lookupProvider}
+          onAddItem={this.props.onAddItem}
           carto={this.props.carto}
           itemDefinition={this.props.itemDefinition}
           defaultVisualExperience={FieldVisualExperience.normal}
@@ -3505,8 +3732,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         className={this.getCssClassName("fieldWrap")}
         key={baseKey + "fwr"}
         style={{
-          borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-          borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+          borderTopColor: getThemeColors().background3,
+          borderBottomColor: getThemeColors().background1,
         }}
       >
         {fieldInterior}

@@ -1,0 +1,248 @@
+/* Copyright (c) Microsoft Corporation. */
+/* Licensed under the MIT License. */
+
+/* EntityTypeResourceLivePreview - Entity resource preview styling */
+
+.etrlp-container {
+  font-family: var(--font-family-sans, "Segoe UI", sans-serif);
+  font-size: 12px;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.etrlp-light {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.etrlp-dark {
+  background: #2d2d2d;
+  color: #e0e0e0;
+}
+
+/* Loading/Error States */
+.etrlp-loading,
+.etrlp-error {
+  padding: 16px;
+  text-align: center;
+  font-style: italic;
+  opacity: 0.7;
+}
+
+.etrlp-error {
+  color: #d9534f;
+}
+
+/* Header */
+.etrlp-header {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.etrlp-light .etrlp-header {
+  background: #e0e0e0;
+}
+
+.etrlp-dark .etrlp-header {
+  background: #3a3a3a;
+}
+
+.etrlp-icon {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.etrlp-title {
+  flex: 1;
+}
+
+.etrlp-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.etrlp-id {
+  font-size: 10px;
+  opacity: 0.6;
+  font-family: monospace;
+}
+
+.etrlp-spawn-egg {
+  font-size: 18px;
+  margin-left: 8px;
+}
+
+/* Sections */
+.etrlp-section {
+  margin-bottom: 8px;
+}
+
+.etrlp-section-header {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  gap: 6px;
+}
+
+.etrlp-light .etrlp-section-header {
+  background: #e8e8e8;
+}
+
+.etrlp-light .etrlp-section-header:hover {
+  background: #ddd;
+}
+
+.etrlp-dark .etrlp-section-header {
+  background: #383838;
+}
+
+.etrlp-dark .etrlp-section-header:hover {
+  background: #444;
+}
+
+.etrlp-expand-icon {
+  font-size: 10px;
+  width: 12px;
+  text-align: center;
+}
+
+.etrlp-badge {
+  margin-left: auto;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.etrlp-light .etrlp-badge {
+  background: #ccc;
+  color: #333;
+}
+
+.etrlp-dark .etrlp-badge {
+  background: #555;
+  color: #e0e0e0;
+}
+
+/* Items */
+.etrlp-items {
+  padding-left: 12px;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.etrlp-item {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 3px;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.etrlp-light .etrlp-item {
+  background: #fafafa;
+}
+
+.etrlp-light .etrlp-item:hover {
+  background: #eee;
+}
+
+.etrlp-dark .etrlp-item {
+  background: #2a2a2a;
+}
+
+.etrlp-dark .etrlp-item:hover {
+  background: #3a3a3a;
+}
+
+.etrlp-item-key {
+  font-weight: 500;
+  min-width: 60px;
+}
+
+.etrlp-item-arrow {
+  opacity: 0.5;
+}
+
+.etrlp-item-value {
+  font-family: monospace;
+  font-size: 10px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Scripts */
+.etrlp-scripts-content {
+  padding-left: 12px;
+  margin-top: 4px;
+}
+
+.etrlp-script-group {
+  margin-bottom: 6px;
+}
+
+.etrlp-script-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: 2px;
+}
+
+.etrlp-script-item {
+  font-family: monospace;
+  font-size: 10px;
+  padding: 3px 6px;
+  border-radius: 3px;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.etrlp-light .etrlp-script-item {
+  background: #fafafa;
+}
+
+.etrlp-dark .etrlp-script-item {
+  background: #2a2a2a;
+}
+
+.etrlp-var-name {
+  font-weight: 500;
+  min-width: 80px;
+}
+
+.etrlp-var-value {
+  opacity: 0.8;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Clickable Items */
+.etrlp-clickable {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.etrlp-light .etrlp-clickable:hover {
+  background-color: #d8d8d8;
+}
+
+.etrlp-dark .etrlp-clickable:hover {
+  background-color: #404040;
+}

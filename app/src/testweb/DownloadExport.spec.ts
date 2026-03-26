@@ -1,11 +1,27 @@
 import { test, expect, ConsoleMessage } from "@playwright/test";
 import { promises as fs } from "fs";
 import path from "path";
-import { processMessage } from "./WebTestUtilities";
+import { preferBrowserStorageInProjectDialog, processMessage, selectEditMode } from "./WebTestUtilities";
 
-test.describe("MCTools Web Editor - Download and Export Tests", () => {
+test.describe("MCTools Web Editor - Download and Export Tests @focused", () => {
   const consoleErrors: { url: string; error: string }[] = [];
   const consoleWarnings: { url: string; error: string }[] = [];
+
+  function getDashboardAddonExportButton(page: Parameters<typeof selectEditMode>[0]) {
+    return page.locator("button").filter({ hasText: /Install in Minecraft \(\.mcaddon\)/i }).first();
+  }
+
+  function getDashboardFolderExportButton(page: Parameters<typeof selectEditMode>[0]) {
+    return page.locator("button").filter({ hasText: /Save project files to a folder/i }).first();
+  }
+
+  function getDashboardFlatWorldButton(page: Parameters<typeof selectEditMode>[0]) {
+    return page.locator("button").filter({ hasText: /flat test world/i }).first();
+  }
+
+  function getDashboardProjectWorldButton(page: Parameters<typeof selectEditMode>[0]) {
+    return page.locator("button").filter({ hasText: /regular project world/i }).first();
+  }
 
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
@@ -35,12 +51,16 @@ test.describe("MCTools Web Editor - Download and Export Tests", () => {
     }
 
     expect(consoleErrors.length).toBeLessThanOrEqual(0);
-    expect(consoleWarnings.length).toBeLessThanOrEqual(0);
+    // Allow MUI focus trap warnings ("Body element does not contain trap zone element")
+    const nonMuiWarnings = consoleWarnings.filter(
+      (w) => !w.error.includes("Body element does not contain trap zone element")
+    );
+    expect(nonMuiWarnings.length).toBeLessThanOrEqual(0);
   });
 
   test("should test project creation and editor access", async ({ page }) => {
     // Use the correct workflow to create project and access editor
-    const addOnStarterNewButton = page.getByRole("button", { name: "New" }).first();
+    const addOnStarterNewButton = page.getByRole("button", { name: "Create New" }).first();
 
     if ((await addOnStarterNewButton.count()) > 0) {
       await expect(addOnStarterNewButton).toBeVisible();
@@ -53,10 +73,14 @@ test.describe("MCTools Web Editor - Download and Export Tests", () => {
       // Handle project creation dialog
       const okButton = await page.getByTestId("submit-button").first();
       if ((await okButton.count()) > 0) {
+        await preferBrowserStorageInProjectDialog(page);
         await okButton.click();
         await page.waitForTimeout(9000);
         await page.waitForLoadState("networkidle");
         await page.waitForTimeout(1000);
+
+        // Select Focused mode to dismiss welcome panel and hide Inspector
+        await selectEditMode(page);
 
         // Verify we're in the editor
         const editorToolbar = page.locator("button:has-text('Save')").or(page.locator("button:has-text('View')"));
@@ -74,12 +98,16 @@ test.describe("MCTools Web Editor - Download and Export Tests", () => {
     }
 
     expect(consoleErrors.length).toBeLessThanOrEqual(0);
-    expect(consoleWarnings.length).toBeLessThanOrEqual(0);
+    // Allow MUI focus trap warnings ("Body element does not contain trap zone element")
+    const nonMuiWarnings2 = consoleWarnings.filter(
+      (w) => !w.error.includes("Body element does not contain trap zone element")
+    );
+    expect(nonMuiWarnings2.length).toBeLessThanOrEqual(0);
   });
 
   test("should test download functionality from within editor context", async ({ page }) => {
     // Create project and get into editor using correct workflow
-    const addOnStarterNewButton = page.getByRole("button", { name: "New" }).first();
+    const addOnStarterNewButton = page.getByRole("button", { name: "Create New" }).first();
 
     if ((await addOnStarterNewButton.count()) > 0) {
       console.log("Creating project to test download functionality");
@@ -87,27 +115,39 @@ test.describe("MCTools Web Editor - Download and Export Tests", () => {
 
       await page.getByLabel("Title").fill("automated_test_proj");
       await page.getByLabel("Creator Name").fill("automated_test_creator");
-      await page.getByLabel("Short Name").fill("automated_test_sn");
+
+      // Expand Advanced Options to access Folder Name and Description fields
+      const advancedToggle = page.getByText("Advanced Options");
+      if (await advancedToggle.isVisible({ timeout: 2000 })) {
+        await advancedToggle.click();
+        await page.waitForTimeout(300);
+      }
+
+      await page.getByLabel("Folder Name").fill("automated_test_sn");
       await page.getByLabel("Description").fill("automated_test_desc");
 
       const okButton = await page.getByTestId("submit-button").first();
+      await preferBrowserStorageInProjectDialog(page);
       await okButton.click();
       await page.waitForTimeout(2000);
       await page.waitForLoadState("networkidle");
+
+      // Select Focused mode to dismiss welcome panel and hide Inspector
+      await selectEditMode(page);
 
       await page.screenshot({ path: "debugoutput/screenshots/editor-download-context.png", fullPage: true });
     }
 
     // Look for actual export/download buttons in the editor
-    const exportZipButton = page.locator("button:has-text('Export as a zip file')");
-    const exportFolderButton = page.locator("button:has-text('Export to folder on your device')");
-    const downloadFlatWorldButton = page.locator("button:has-text('Download flat world')");
-    const downloadProjectWorldButton = page.locator("button:has-text('Download project world')");
+    const exportZipButton = getDashboardAddonExportButton(page);
+    const exportFolderButton = getDashboardFolderExportButton(page);
+    const downloadFlatWorldButton = getDashboardFlatWorldButton(page);
+    const downloadProjectWorldButton = getDashboardProjectWorldButton(page);
 
     await page.screenshot({ path: "debugoutput/screenshots/editor-export-buttons.png", fullPage: true });
 
     if ((await exportZipButton.count()) > 0) {
-      console.log("Found 'Export as a zip file' button, testing download");
+      console.log("Found 'Download & Install in Minecraft (.mcaddon)' button, testing download");
       await expect(exportZipButton).toBeVisible();
 
       try {
@@ -142,17 +182,17 @@ test.describe("MCTools Web Editor - Download and Export Tests", () => {
 
     // Verify other download options are available
     if ((await exportFolderButton.count()) > 0) {
-      console.log("Found 'Export to folder on your device' button");
+      console.log("Found 'Save project files to a folder' button");
       await expect(exportFolderButton).toBeVisible();
     }
 
     if ((await downloadFlatWorldButton.count()) > 0) {
-      console.log("Found 'Download flat world' button");
+      console.log("Found 'Download a flat test world' button");
       await expect(downloadFlatWorldButton).toBeVisible();
     }
 
     if ((await downloadProjectWorldButton.count()) > 0) {
-      console.log("Found 'Download project world' button");
+      console.log("Found 'Download a regular project world' button");
       await expect(downloadProjectWorldButton).toBeVisible();
     }
 
@@ -163,18 +203,26 @@ test.describe("MCTools Web Editor - Download and Export Tests", () => {
     }
 
     expect(consoleErrors.length).toBeLessThanOrEqual(0);
-    expect(consoleWarnings.length).toBeLessThanOrEqual(0);
+    // Allow MUI focus trap warnings ("Body element does not contain trap zone element")
+    const nonMuiWarnings3 = consoleWarnings.filter(
+      (w) => !w.error.includes("Body element does not contain trap zone element")
+    );
+    expect(nonMuiWarnings3.length).toBeLessThanOrEqual(0);
   });
 
   test("should test navigation to different sections", async ({ page }) => {
     // Test navigation to different parts of the application
-    const toolsButton = page.locator("text=/Tools/i");
+    const toolsHeading = page.getByRole("heading", { name: /Advanced tools and examples/i }).first();
+    const toolsToggle = page.getByRole("button", { name: /advanced tools/i }).first();
     const docsLink = page.locator("text=/Docs/i");
 
     // Test Tools section - just verify it exists
-    if ((await toolsButton.count()) > 0) {
-      await expect(toolsButton).toBeVisible();
-      console.log("Tools section found");
+    if ((await toolsHeading.count()) > 0) {
+      await expect(toolsHeading).toBeVisible();
+      console.log("Advanced tools heading found");
+    } else if ((await toolsToggle.count()) > 0) {
+      await expect(toolsToggle).toBeVisible();
+      console.log("Advanced tools toggle found");
     }
 
     // Test documentation link (external) - just verify it exists
@@ -188,6 +236,10 @@ test.describe("MCTools Web Editor - Download and Export Tests", () => {
     }
 
     expect(consoleErrors.length).toBeLessThanOrEqual(0);
-    expect(consoleWarnings.length).toBeLessThanOrEqual(0);
+    // Allow MUI focus trap warnings ("Body element does not contain trap zone element")
+    const nonMuiWarnings4 = consoleWarnings.filter(
+      (w) => !w.error.includes("Body element does not contain trap zone element")
+    );
+    expect(nonMuiWarnings4.length).toBeLessThanOrEqual(0);
   });
 });

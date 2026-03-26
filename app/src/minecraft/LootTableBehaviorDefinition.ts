@@ -8,6 +8,7 @@ import ILootTableBehavior from "./ILootTableBehavior";
 import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
+import RelationsIndex from "../app/RelationsIndex";
 import ItemTypeDefinition from "./ItemTypeDefinition";
 import Utilities from "../core/Utilities";
 import Database from "./Database";
@@ -16,6 +17,7 @@ import Log from "../core/Log";
 export default class LootTableBehaviorDefinition {
   private _file?: IFile;
   private _isLoaded: boolean = false;
+  private _loadedWithComments: boolean = false;
 
   public data?: ILootTableBehavior;
 
@@ -125,8 +127,24 @@ export default class LootTableBehaviorDefinition {
     return this._file.setObjectContentIfSemanticallyDifferent(this.data);
   }
 
-  async load() {
-    if (this._file === undefined || this._isLoaded) {
+  /**
+   * Loads the definition from the file.
+   * @param preserveComments If true, uses comment-preserving JSON parsing for edit/save cycles.
+   *                         If false (default), uses efficient standard JSON parsing.
+   *                         Can be called again with true to "upgrade" a read-only load to read/write.
+   */
+  async load(preserveComments: boolean = false) {
+    // If already loaded with comments, we have the "best" version - nothing more to do
+    if (this._isLoaded && this._loadedWithComments) {
+      return;
+    }
+
+    // If already loaded without comments and caller doesn't need comments, we're done
+    if (this._isLoaded && !preserveComments) {
+      return;
+    }
+
+    if (this._file === undefined) {
       return;
     }
 
@@ -135,12 +153,20 @@ export default class LootTableBehaviorDefinition {
     }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
+      this._isLoaded = true;
+      this._loadedWithComments = preserveComments;
+      this._onLoaded.dispatch(this, this);
       return;
     }
 
-    this.data = StorageUtilities.getJsonObject(this._file);
+    // Use comment-preserving parser only when needed for editing
+    this.data = preserveComments
+      ? StorageUtilities.getJsonObjectWithComments(this._file)
+      : StorageUtilities.getJsonObject(this._file);
 
     this._isLoaded = true;
+    this._loadedWithComments = preserveComments;
+    this._onLoaded.dispatch(this, this);
   }
 
   canonicalizeLootTablePath(lootTablePath: string) {
@@ -155,43 +181,80 @@ export default class LootTableBehaviorDefinition {
     return lootTablePath.toLowerCase();
   }
 
-  async addChildItems(project: Project, item: ProjectItem) {
-    const itemsCopy = project.getItemsCopy();
-
+  async addChildItems(project: Project, item: ProjectItem, index?: RelationsIndex) {
     let itemList = this.getTargetItemTypeIdList();
     let lootTableList = this.getTargetLootTablePathList();
 
-    for (const candItem of itemsCopy) {
-      if (candItem.itemType === ProjectItemType.itemTypeBehavior && itemList) {
-        if (!candItem.isContentLoaded) {
-          await candItem.loadContent();
-        }
-
-        if (candItem.primaryFile) {
-          const itemType = await ItemTypeDefinition.ensureOnFile(candItem.primaryFile);
-
-          if (itemType) {
-            if (itemList.includes(itemType.id)) {
-              item.addChildItem(candItem);
-              itemList = Utilities.removeItemInArray(itemType.id, itemList);
-              continue;
+    if (index) {
+      // Use pre-built index for O(1) lookups
+      if (itemList) {
+        for (const itemTypeId of itemList) {
+          if (typeof itemTypeId === "string") {
+            const matchingItems = index.getItemsById(index.itemTypesById, itemTypeId);
+            if (matchingItems.length > 0) {
+              for (const candItem of matchingItems) {
+                item.addChildItem(candItem);
+              }
+              itemList = Utilities.removeItemInArray(itemTypeId, itemList);
             }
           }
         }
-      } else if (candItem.itemType === ProjectItemType.lootTableBehavior && lootTableList) {
-        if (!candItem.isContentLoaded) {
-          await candItem.loadContent();
+      }
+
+      // TODO: lootTablesByPath index stores by exact projectPath, but lookup needs
+      // endsWith() matching. Fall back to scanning for now until a suffix-based index is added.
+      if (lootTableList) {
+        const lootTableItems = project.getItemsByType(ProjectItemType.lootTableBehavior);
+        for (const candItem of lootTableItems) {
+          if (candItem.primaryFile) {
+            let lootTablePath = await candItem.getPackRelativePath();
+
+            if (lootTablePath) {
+              lootTablePath = this.canonicalizeLootTablePath(lootTablePath);
+              if (lootTableList.includes(lootTablePath)) {
+                item.addChildItem(candItem);
+                lootTableList = Utilities.removeItemInArray(lootTablePath, lootTableList);
+              }
+            }
+          }
         }
+      }
+    } else {
+      // Fallback: scan all items
+      const itemsCopy = project.getItemsCopy();
 
-        if (candItem.primaryFile) {
-          let lootTablePath = await candItem.getPackRelativePath();
+      for (const candItem of itemsCopy) {
+        if (candItem.itemType === ProjectItemType.itemTypeBehavior && itemList) {
+          if (!candItem.isContentLoaded) {
+            await candItem.loadContent();
+          }
 
-          if (lootTablePath) {
-            lootTablePath = this.canonicalizeLootTablePath(lootTablePath);
-            if (lootTableList.includes(lootTablePath)) {
-              item.addChildItem(candItem);
-              lootTableList = Utilities.removeItemInArray(lootTablePath, lootTableList);
-              continue;
+          if (candItem.primaryFile) {
+            const itemType = await ItemTypeDefinition.ensureOnFile(candItem.primaryFile);
+
+            if (itemType) {
+              if (itemList.includes(itemType.id)) {
+                item.addChildItem(candItem);
+                itemList = Utilities.removeItemInArray(itemType.id, itemList);
+                continue;
+              }
+            }
+          }
+        } else if (candItem.itemType === ProjectItemType.lootTableBehavior && lootTableList) {
+          if (!candItem.isContentLoaded) {
+            await candItem.loadContent();
+          }
+
+          if (candItem.primaryFile) {
+            let lootTablePath = await candItem.getPackRelativePath();
+
+            if (lootTablePath) {
+              lootTablePath = this.canonicalizeLootTablePath(lootTablePath);
+              if (lootTableList.includes(lootTablePath)) {
+                item.addChildItem(candItem);
+                lootTableList = Utilities.removeItemInArray(lootTablePath, lootTableList);
+                continue;
+              }
             }
           }
         }

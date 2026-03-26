@@ -20,6 +20,7 @@ import MinecraftUtilities from "./MinecraftUtilities";
 import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
+import RelationsIndex from "../app/RelationsIndex";
 import EntityTypeResourceDefinition from "./EntityTypeResourceDefinition";
 import SpawnRulesBehaviorDefinition from "./SpawnRulesBehaviorDefinition";
 import IDefinition from "./IDefinition";
@@ -100,6 +101,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
+  private _loadedWithComments: boolean = false;
 
   private _managedComponents: { [id: string]: IManagedComponent | undefined } = {};
 
@@ -304,6 +306,10 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
 
   public set id(newId: string) {
     this._id = newId;
+
+    if (this._data && this._data.description) {
+      this._data.description.identifier = newId;
+    }
   }
 
   public get runtimeIdentifier() {
@@ -568,7 +574,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
         return this._events[eventName];
       }
     } catch (e) {
-      console.log(e);
+      Log.verbose("Error getting event " + eventName + ": " + e);
     }
 
     return undefined;
@@ -832,7 +838,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     this._data.events[eventName] = {};
   }
 
-  async addChildItems(project: Project, item: ProjectItem) {
+  async addChildItems(project: Project, item: ProjectItem, index?: RelationsIndex) {
     let lootTablePaths: string[] = [];
 
     const comps = this.getComponentsInBaseAndGroups("minecraft:loot");
@@ -845,10 +851,35 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
       }
     }
 
-    const itemsCopy = project.getItemsCopy();
+    // Use pre-built index for O(1) lookups when available
+    if (index && this.id) {
+      // Entity resources matching this entity's ID
+      const matchingResources = index.getItemsById(index.entityResourcesById, this.id);
+      for (const candItem of matchingResources) {
+        item.addChildItem(candItem);
+      }
 
-    for (const candItem of itemsCopy) {
-      if (candItem.itemType === ProjectItemType.entityTypeResource) {
+      // Spawn rules matching this entity's ID
+      const matchingSpawnRules = index.getItemsById(index.spawnRulesById, this.id);
+      for (const candItem of matchingSpawnRules) {
+        item.addChildItem(candItem);
+      }
+
+      // Loot tables by path suffix match
+      if (lootTablePaths.length > 0) {
+        const lootTableItems = project.getItemsByType(ProjectItemType.lootTableBehavior);
+        for (const candItem of lootTableItems) {
+          for (const lootTablePath of lootTablePaths) {
+            if (candItem.projectPath?.endsWith(lootTablePath)) {
+              item.addChildItem(candItem);
+            }
+          }
+        }
+      }
+    } else {
+      // Fallback: scan items when index is not available
+      const entityResourceItems = project.getItemsByType(ProjectItemType.entityTypeResource);
+      for (const candItem of entityResourceItems) {
         if (!candItem.isContentLoaded) {
           await candItem.loadContent();
         }
@@ -864,7 +895,10 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
             }
           }
         }
-      } else if (candItem.itemType === ProjectItemType.spawnRuleBehavior) {
+      }
+
+      const spawnRuleItems = project.getItemsByType(ProjectItemType.spawnRuleBehavior);
+      for (const candItem of spawnRuleItems) {
         if (!candItem.isContentLoaded) {
           await candItem.loadContent();
         }
@@ -880,10 +914,15 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
             }
           }
         }
-      } else if (candItem.itemType === ProjectItemType.lootTableBehavior) {
-        for (const lootTablePath of lootTablePaths) {
-          if (candItem.projectPath?.endsWith(lootTablePath)) {
-            item.addChildItem(candItem);
+      }
+
+      if (lootTablePaths.length > 0) {
+        const lootTableItems = project.getItemsByType(ProjectItemType.lootTableBehavior);
+        for (const candItem of lootTableItems) {
+          for (const lootTablePath of lootTablePaths) {
+            if (candItem.projectPath?.endsWith(lootTablePath)) {
+              item.addChildItem(candItem);
+            }
           }
         }
       }
@@ -892,7 +931,8 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
 
   static async ensureOnFile(
     behaviorPackFile: IFile,
-    loadHandler?: IEventHandler<EntityTypeDefinition, EntityTypeDefinition>
+    loadHandler?: IEventHandler<EntityTypeDefinition, EntityTypeDefinition>,
+    preserveComments?: boolean
   ) {
     let et: EntityTypeDefinition | undefined;
 
@@ -907,12 +947,12 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     if (behaviorPackFile.manager !== undefined && behaviorPackFile.manager instanceof EntityTypeDefinition) {
       et = behaviorPackFile.manager as EntityTypeDefinition;
 
-      if (!et.isLoaded) {
+      if (!et.isLoaded || (preserveComments && !et._loadedWithComments)) {
         if (loadHandler) {
           et.onLoaded.subscribe(loadHandler);
         }
 
-        await et.load();
+        await et.load(preserveComments);
       }
     }
 
@@ -1017,10 +1057,25 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     return this._file.setObjectContentIfSemanticallyDifferent(this._wrapper);
   }
 
-  async load() {
-    if (this._isLoaded) {
+  /**
+   * Loads the entity type definition from the file.
+   * @param preserveComments If true, uses comment-preserving JSON parsing for edit/save cycles.
+   *                         If false (default), uses efficient standard JSON parsing.
+   *                         Can be called again with true to "upgrade" a read-only load to read/write.
+   */
+  async load(preserveComments: boolean = false) {
+    // If already loaded with comments, we have the "best" version - nothing more to do
+    if (this._isLoaded && this._loadedWithComments) {
       return;
     }
+
+    // If already loaded without comments and caller doesn't need comments, we're done
+    if (this._isLoaded && !preserveComments) {
+      return;
+    }
+
+    // If we get here and _isLoaded is true, we need to "upgrade" from read-only to read/write
+    // by re-parsing with comment preservation
 
     if (this._file === undefined) {
       Log.unexpectedUndefined("ETBPF");
@@ -1032,12 +1087,17 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
+      this._isLoaded = true;
+      this._onLoaded.dispatch(this, this);
       return;
     }
 
     let data: any = {};
 
-    let result = StorageUtilities.getJsonObject(this._file);
+    // Use comment-preserving parser only when needed for editing
+    let result = preserveComments
+      ? StorageUtilities.getJsonObjectWithComments(this._file)
+      : StorageUtilities.getJsonObject(this._file);
 
     if (result) {
       data = result;
@@ -1075,6 +1135,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     }
 
     this._isLoaded = true;
+    this._loadedWithComments = preserveComments;
 
     this._onLoaded.dispatch(this, this);
   }

@@ -13,12 +13,16 @@ import ProjectItem from "../app/ProjectItem";
 import IProjectUpdater from "../updates/IProjectUpdater";
 import ProjectUpdateResult from "../updates/ProjectUpdateResult";
 import { UpdateResultType } from "../updates/IUpdateResult";
-import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
 import EnvSettings from "../devproject/EnvSettings";
 import Utilities from "../core/Utilities";
 
+/**
+ * Validates and updates script module dependencies in behavior pack manifests and npm packages.
+ *
+ * @see {@link ../../../public/data/forms/mctoolsval/scriptmodule.form.json} for topic definitions
+ */
 export default class ScriptModuleManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "SCRIPTMODULE";
   title = "Script Modules";
@@ -26,12 +30,6 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
   modulesInUse: { [name: string]: { version: string; manifest: BehaviorManifestDefinition; item: ProjectItem }[] } = {};
   packRegsInUse: { [name: string]: { package: NpmPackageDefinition; isDevDependency: boolean; version: string }[] } =
     {};
-
-  getTopicData(topicId: number): IProjectInfoTopicData | undefined {
-    return {
-      title: topicId.toString(),
-    };
-  }
 
   getUpdaterData(topicId: number) {
     return {

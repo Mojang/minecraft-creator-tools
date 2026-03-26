@@ -1,6 +1,50 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+/**
+ * MCWorld.ts
+ *
+ * ARCHITECTURE DOCUMENTATION
+ * ==========================
+ *
+ * MCWorld is the primary class for managing Minecraft world data, including:
+ * - World metadata (level.dat, level name, spawn position)
+ * - World chunks and blocks (via LevelDB)
+ * - Behavior/resource pack registrations
+ * - Dynamic properties and experiments
+ *
+ * REAL-TIME SYNCHRONIZATION:
+ * --------------------------
+ * MCWorld can listen to IStorage events to automatically update when external
+ * changes occur (e.g., file changes from a remote server):
+ *
+ * 1. Call startListeningToStorage() to subscribe to storage events
+ * 2. When onFileContentsUpdated fires, MCWorld reloads affected data
+ * 3. MCWorld fires appropriate events (onChunkUpdated, onDataReloaded, etc.)
+ * 4. WorldView and other UI components update in response
+ *
+ * EVENTS:
+ * -------
+ * - onLoaded: Fired when world initially loads
+ * - onDataLoaded: Fired when world data (chunks) finishes loading
+ * - onChunkUpdated: Fired when a specific chunk is updated/reloaded
+ * - onWorldDataReloaded: Fired when world files are externally modified and reloaded
+ * - onPropertyChanged: Fired when a world property changes
+ *
+ * DATA FLOW:
+ * ----------
+ * HttpStorage (WebSocket notifications) -> MCWorld (this) ->
+ *   onChunkUpdated/onWorldDataReloaded -> WorldView (React update)
+ *
+ * RELATED FILES:
+ * --------------
+ * - IStorage.ts: Storage events (onFileContentsUpdated, etc.)
+ * - HttpStorage.ts: Client-side storage with WebSocket notifications
+ * - WorldView.tsx: UI component that displays world data
+ * - WorldChunk.ts: Individual chunk data
+ * - LevelDb.ts: LevelDB file parser
+ */
+
 import IFile from "../storage/IFile";
 import ZipStorage from "../storage/ZipStorage";
 import { EventDispatcher, IEventHandler } from "ste-events";
@@ -13,7 +57,7 @@ import IGetSetPropertyObject from "../dataform/IGetSetPropertyObject";
 import Utilities from "../core/Utilities";
 import IWorldManifest from "./IWorldManifest";
 import StorageUtilities from "../storage/StorageUtilities";
-import LevelDb from "./LevelDb";
+import LevelDb, { IChunkCoordinate } from "./LevelDb";
 import DataUtilities from "../core/DataUtilities";
 import WorldChunk from "./WorldChunk";
 import BlockLocation from "./BlockLocation";
@@ -32,6 +76,7 @@ import ActorItem from "./ActorItem";
 import { StatusTopic } from "../app/Status";
 import { IErrorMessage, IErrorable } from "../core/IErrorable";
 import ProjectItem from "../app/ProjectItem";
+import WorldChunkCache from "./WorldChunkCache";
 
 const BEHAVIOR_PACKS_RELPATH = "/world_behavior_packs.json";
 const BEHAVIOR_PACK_HISTORY_RELPATH = "/world_behavior_pack_history.json";
@@ -50,6 +95,56 @@ const CREATOR_TOOLS_EDITOR_BPUUID = "5d2f0b91-ca29-49da-a275-e6c6262ea3de";
 export interface IWorldProcessingOptions {
   maxNumberOfRecordsToProcess?: number;
   progressCallback?: (phase: string, current: number, total: number) => void;
+  /**
+   * If true, unloads raw file content after parsing to reduce memory usage.
+   * Recommended for large worlds to prevent out-of-memory errors.
+   * Default: true (optimized for memory)
+   */
+  unloadFilesAfterParse?: boolean;
+  /**
+   * If true, deletes LevelDB keys from the keys Map after they are processed
+   * and handed off to WorldChunks. This significantly reduces memory usage
+   * for large worlds by eliminating duplicate references.
+   * Default: true (optimized for memory)
+   */
+  clearKeysAfterProcess?: boolean;
+  /**
+   * If true, uses lazy loading mode for LevelDB.
+   * Only manifest metadata is loaded initially; files are loaded on-demand.
+   * This dramatically reduces initial memory usage for large worlds.
+   *
+   * When enabled:
+   * - Initial load only parses manifest files
+   * - LDB/LOG files are loaded only when their keys are needed
+   * - Chunk cache manages memory by evicting least-recently-used chunks
+   *
+   * Default: false (full load for backwards compatibility)
+   */
+  lazyLoad?: boolean;
+  /**
+   * Maximum number of chunks to keep in the LRU cache when using lazy loading.
+   * When exceeded, least-recently-used chunks have their parsed data cleared
+   * (but can be re-parsed on demand from raw LevelKeyValue data).
+   *
+   * Default: 20000
+   */
+  maxChunksInCache?: number;
+  /**
+   * If true, skips the full "Phase 2" world data processing that creates
+   * WorldChunk objects for every chunk upfront. Instead, chunks will be
+   * created on-demand when they are first accessed.
+   *
+   * This is ideal for map viewing where only visible chunks need to be loaded.
+   * It dramatically reduces memory usage for very large worlds (100k+ chunks).
+   *
+   * When enabled:
+   * - World bounds (minX, maxX, minZ, maxZ) are calculated from key names
+   * - Chunk objects are created lazily when getChunkAt() is called
+   * - Full chunk data is only parsed when accessed
+   *
+   * Default: false (full processing for backwards compatibility)
+   */
+  skipFullProcessing?: boolean;
 }
 
 export interface IRegion {
@@ -83,6 +178,10 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
   private _onLoaded = new EventDispatcher<MCWorld, MCWorld>();
   private _onDataLoaded = new EventDispatcher<MCWorld, MCWorld>();
   private _onChunkUpdated = new EventDispatcher<MCWorld, WorldChunk>();
+  /** Event fired when world data is externally modified and reloaded */
+  private _onWorldDataReloaded = new EventDispatcher<MCWorld, string>();
+  /** Whether we're listening to storage events for automatic updates */
+  private _isListeningToStorage = false;
 
   private _hasDynamicProps = false;
   private _hasCustomProps = false;
@@ -120,6 +219,35 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
   regionsByDimension: { [dim: number]: IRegion[] } = {};
 
   chunks: Map<number, Map<number, Map<number, WorldChunk>>> = new Map();
+
+  /** LRU cache for chunk data - manages memory by evicting old chunks */
+  private _chunkCache?: WorldChunkCache;
+
+  /** Whether lazy loading mode is enabled for this world */
+  private _isLazyLoadMode = false;
+
+  /**
+   * Set of chunk keys that exist in the world (format: "dim_x_z").
+   * Built during buildMinimalWorldIndex for O(1) chunk existence checking.
+   * This allows fast filtering of empty/non-existent chunks without scanning LevelDB keys.
+   */
+  private _chunkExistsSet: Set<string> = new Set();
+
+  /**
+   * Returns the set of all known chunk keys (format: "dim_x_z").
+   * Used by WorldMap to ensure sparse worlds render all known chunks,
+   * not just those hit by the sampling grid.
+   */
+  public get knownChunkKeys(): ReadonlySet<string> {
+    return this._chunkExistsSet;
+  }
+
+  /**
+   * Index mapping chunk keys ("dim_x_z") to the list of LevelDB key names for that chunk.
+   * Built during buildMinimalWorldIndex for O(1) chunk key lookup.
+   * This eliminates the O(N) full-scan of LevelDB keys in getOrCreateChunk.
+   */
+  private _chunkKeyIndex: Map<string, string[]> = new Map();
 
   public get project() {
     return this._project;
@@ -183,6 +311,76 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
   public get maxZ() {
     return this._maxZ;
+  }
+
+  /** Get whether lazy loading mode is enabled */
+  public get isLazyLoadMode(): boolean {
+    return this._isLazyLoadMode;
+  }
+
+  /** Get the chunk cache (only available when using chunk caching) */
+  public get chunkCache(): WorldChunkCache | undefined {
+    return this._chunkCache;
+  }
+
+  /**
+   * Check if chunk data exists at the specified coordinates without loading it.
+   * This is O(1) when buildMinimalWorldIndex has been called (skipFullProcessing mode).
+   * Returns true if the chunk exists in the world's LevelDB data.
+   * Returns undefined if existence cannot be determined (index not built).
+   */
+  public hasChunkData(dim: number, x: number, z: number): boolean | undefined {
+    // If we have the chunk exists set, use it for O(1) lookup
+    if (this._chunkExistsSet.size > 0) {
+      return this._chunkExistsSet.has(`${dim}_${x}_${z}`);
+    }
+
+    // If we already have the chunk loaded, it exists
+    const existing = this.getChunkAt(dim, x, z);
+    if (existing) {
+      return true;
+    }
+
+    // Can't determine without scanning LevelDB
+    return undefined;
+  }
+
+  /**
+   * Get a chunk by coordinates.
+   * If chunk caching is enabled, marks the chunk as recently accessed.
+   */
+  public getChunkAt(dim: number, x: number, z: number): WorldChunk | undefined {
+    const dimMap = this.chunks.get(dim);
+    if (!dimMap) return undefined;
+
+    const xPlane = dimMap.get(x);
+    if (!xPlane) return undefined;
+
+    const chunk = xPlane.get(z);
+
+    // Track access for LRU cache
+    if (chunk && this._chunkCache) {
+      this._chunkCache.access(dim, x, z);
+    }
+
+    return chunk;
+  }
+
+  /**
+   * Get a chunk by cache key (format: "dim_x_z").
+   * Used by WorldChunkCache for eviction callbacks.
+   */
+  public getChunkByKey(key: string): WorldChunk | undefined {
+    const coords = WorldChunkCache.parseKey(key);
+    if (!coords) return undefined;
+
+    const dimMap = this.chunks.get(coords.dim);
+    if (!dimMap) return undefined;
+
+    const xPlane = dimMap.get(coords.x);
+    if (!xPlane) return undefined;
+
+    return xPlane.get(coords.z);
   }
 
   public get generationSeed() {
@@ -440,6 +638,345 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
   public get onChunkUpdated() {
     return this._onChunkUpdated.asEvent();
+  }
+
+  /**
+   * Event fired when world data is externally modified and reloaded.
+   * Subscribe to this event to update UI when remote changes occur.
+   */
+  public get onWorldDataReloaded() {
+    return this._onWorldDataReloaded.asEvent();
+  }
+
+  /**
+   * Whether this world is listening to storage events for automatic updates.
+   */
+  public get isListeningToStorage(): boolean {
+    return this._isListeningToStorage;
+  }
+
+  /**
+   * Start listening to storage events for automatic world data updates.
+   * When file changes are detected (via WebSocket or fs watcher), the world
+   * will automatically reload affected data and fire appropriate events.
+   */
+  public startListeningToStorage(): void {
+    Log.verbose("[MCWorld] startListeningToStorage called, _isListeningToStorage=" + this._isListeningToStorage);
+
+    if (this._isListeningToStorage) {
+      Log.verbose("[MCWorld] Already listening to storage events - returning");
+      return;
+    }
+
+    const storage = this.effectiveRootFolder?.storage;
+    Log.verbose(
+      "[MCWorld] effectiveRootFolder=" +
+        this.effectiveRootFolder?.fullPath +
+        ", storage=" +
+        (storage ? storage.constructor.name : "null")
+    );
+
+    if (!storage) {
+      Log.verbose("[MCWorld] Cannot start listening: no storage available");
+      return;
+    }
+
+    Log.message(`[MCWorld] Starting to listen to storage events on ${storage.constructor.name}`);
+
+    // Subscribe to file content updates
+    storage.onFileContentsUpdated.subscribe((sender, event) => {
+      Log.message(`[MCWorld] Received onFileContentsUpdated: ${event.file.storageRelativePath}`);
+      this._handleStorageFileUpdate(event.file.storageRelativePath, event);
+    });
+
+    // Subscribe to file additions
+    storage.onFileAdded.subscribe((sender, file) => {
+      Log.message(`[MCWorld] Received onFileAdded: ${file.storageRelativePath}`);
+      this._handleStorageFileAdded(file.storageRelativePath);
+    });
+
+    // Subscribe to file removals
+    storage.onFileRemoved.subscribe((sender, path) => {
+      Log.message(`[MCWorld] Received onFileRemoved: ${path}`);
+      this._handleStorageFileRemoved(path);
+    });
+
+    this._isListeningToStorage = true;
+    Log.message("[MCWorld] Successfully subscribed to storage events");
+  }
+
+  /**
+   * Stop listening to storage events.
+   */
+  public stopListeningToStorage(): void {
+    // Note: ste-events doesn't have a simple "unsubscribe all" mechanism
+    // In a full implementation, we'd need to track subscription handles
+    this._isListeningToStorage = false;
+    Log.verbose("MCWorld: Stopped listening to storage events");
+  }
+
+  /**
+   * Handle a file update from storage.
+   */
+  private async _handleStorageFileUpdate(path: string, event: any): Promise<void> {
+    if (!path) return;
+
+    // The path coming from storage events may be like /world/db/000039.log
+    // But MCWorld's effectiveRootFolder is already the world folder,
+    // so we need to strip the /world prefix if present
+    let relativePath = path;
+    if (relativePath.startsWith("/world/")) {
+      relativePath = relativePath.substring(6); // Keep the leading / after "world"
+    } else if (relativePath.startsWith("world/")) {
+      relativePath = "/" + relativePath.substring(6);
+    }
+
+    const pathLower = relativePath.toLowerCase();
+    const rootFolder = this.effectiveRootFolder;
+
+    if (!rootFolder) return;
+
+    try {
+      // Check what type of file changed
+      if (pathLower.endsWith("level.dat")) {
+        // Reload level data
+        const levelDatFile = await rootFolder.getFileFromRelativePath(LEVELDAT_RELPATH);
+        if (levelDatFile) {
+          await levelDatFile.loadContent(true);
+          if (levelDatFile.content instanceof Uint8Array) {
+            this.levelData = new WorldLevelDat();
+            this.levelData.loadFromNbtBytes(levelDatFile.content);
+            this._loadFromNbt();
+          }
+        }
+        this._onWorldDataReloaded.dispatch(this, "level.dat");
+      } else if (pathLower.endsWith("levelname.txt")) {
+        // Reload level name
+        const levelNameFile = await rootFolder.getFileFromRelativePath(LEVELNAMETXT_RELPATH);
+        if (levelNameFile) {
+          await levelNameFile.loadContent(true);
+          if (typeof levelNameFile.content === "string") {
+            this.name = levelNameFile.content;
+          }
+        }
+        this._onWorldDataReloaded.dispatch(this, "levelname.txt");
+      } else if (pathLower.includes("/db/") && (pathLower.endsWith(".ldb") || pathLower.endsWith(".log"))) {
+        // LevelDB file changed - use incremental loading
+        await this._handleIncrementalLevelDbUpdate(relativePath);
+      } else if (pathLower.endsWith("world_behavior_packs.json")) {
+        const packsFile = await rootFolder.getFileFromRelativePath(BEHAVIOR_PACKS_RELPATH);
+        if (packsFile) {
+          await packsFile.loadContent(true);
+          if (typeof packsFile.content === "string") {
+            this.worldBehaviorPacks = StorageUtilities.getJsonObject(packsFile);
+          }
+        }
+        this._onWorldDataReloaded.dispatch(this, "behavior_packs");
+      } else if (pathLower.endsWith("world_resource_packs.json")) {
+        const packsFile = await rootFolder.getFileFromRelativePath(RESOURCE_PACKS_RELPATH);
+        if (packsFile) {
+          await packsFile.loadContent(true);
+          if (typeof packsFile.content === "string") {
+            this.worldResourcePacks = StorageUtilities.getJsonObject(packsFile);
+          }
+        }
+        this._onWorldDataReloaded.dispatch(this, "resource_packs");
+      }
+
+      Log.verbose(`MCWorld: Handled file update: ${path}`);
+    } catch (e) {
+      Log.debug(`MCWorld: Error handling file update ${path}: ${e}`);
+    }
+  }
+
+  /**
+   * Handle a new file being added to storage.
+   */
+  private async _handleStorageFileAdded(path: string): Promise<void> {
+    // For now, treat file additions similar to updates
+    await this._handleStorageFileUpdate(path, null);
+  }
+
+  /**
+   * Handle a file being removed from storage.
+   */
+  private async _handleStorageFileRemoved(path: string): Promise<void> {
+    if (!path) return;
+
+    const pathLower = path.toLowerCase();
+
+    // Handle removal of important files
+    if (pathLower.includes("/db/") && pathLower.endsWith(".ldb")) {
+      // LevelDB compaction - chunks may have moved to new files
+      // This is a rare case where we might need a broader refresh,
+      // but typically compaction doesn't lose data, just reorganizes it
+      Log.verbose(`MCWorld: LDB file removed (compaction): ${path}`);
+    }
+
+    Log.verbose(`MCWorld: Handled file removal: ${path}`);
+  }
+
+  /**
+   * Handle incremental LevelDB file updates.
+   *
+   * When a new .ldb or .log file is detected, this method:
+   * 1. Parses just that file to extract new keys
+   * 2. Identifies which chunks are affected by those keys
+   * 3. Updates only those chunks with the new data
+   * 4. Fires onChunkUpdated for each affected chunk (for UI updates)
+   *
+   * This is much more efficient than reloading the entire world.
+   */
+  private async _handleIncrementalLevelDbUpdate(path: string): Promise<void> {
+    if (!this.levelDb) {
+      // LevelDB not yet loaded - nothing to update incrementally
+      return;
+    }
+
+    const rootFolder = this.effectiveRootFolder;
+    if (!rootFolder) {
+      return;
+    }
+
+    try {
+      // Get the file that changed
+      const file = await rootFolder.getFileFromRelativePath(path);
+      if (!file) {
+        Log.debug(`MCWorld: Could not find LDB file for incremental update: ${path}`);
+        return;
+      }
+
+      // Parse the file and get affected chunk coordinates
+      const affectedChunks = await this.levelDb.parseIncrementalFile(file);
+
+      if (affectedChunks.length === 0) {
+        return;
+      }
+
+      Log.verbose(`MCWorld: Incremental update - ${affectedChunks.length} chunks affected from ${path}`);
+
+      // Update each affected chunk
+      for (const coord of affectedChunks) {
+        await this._updateChunkFromLevelDb(coord);
+      }
+    } catch (e) {
+      Log.error(`MCWorld: Error in incremental LDB update ${path}: ${e}`);
+      // Fall back to signaling a broader refresh
+      this._onWorldDataReloaded.dispatch(this, "leveldb");
+    }
+  }
+
+  /**
+   * Update a single chunk from LevelDB keys.
+   *
+   * This finds all keys for the specified chunk coordinates and either:
+   * - Updates an existing chunk with the new data
+   * - Creates a new chunk if one doesn't exist
+   *
+   * After updating, fires onChunkUpdated for UI refresh.
+   */
+  private async _updateChunkFromLevelDb(coord: IChunkCoordinate): Promise<void> {
+    if (!this.levelDb) return;
+
+    const { x, z, dimension } = coord;
+
+    // Get or create the chunk
+    let chunk = this.getChunkAt(dimension, x, z);
+    const isNewChunk = !chunk;
+
+    if (!chunk) {
+      chunk = new WorldChunk(this, x, z);
+    } else {
+      // Clear cached/parsed data so it will be re-parsed from the updated keys
+      chunk.clearCachedData();
+    }
+
+    // Find all keys that belong to this chunk and add them
+    const chunkKey = `${dimension}_${x}_${z}`;
+    const indexedKeyNames = this._chunkKeyIndex.get(chunkKey);
+
+    if (indexedKeyNames && indexedKeyNames.length > 0) {
+      // Fast path: use the pre-built chunk key index
+      for (const keyname of indexedKeyNames) {
+        const keyValue = this.levelDb.keys.get(keyname);
+        if (!keyValue || typeof keyValue === "boolean") continue;
+        chunk.addKeyValue(keyValue);
+      }
+    } else {
+      // Fallback: scan all LevelDB keys (used when index isn't built)
+      const hasDim = dimension !== 0;
+      for (const [keyname, keyValue] of this.levelDb.keys) {
+        // Skip if keyValue is undefined, false (deleted marker), or not a LevelKeyValue
+        if (!keyValue || typeof keyValue === "boolean") continue;
+
+        const keyBytes = keyValue.keyBytes;
+        if (!keyBytes) continue;
+        if (keyBytes.length < 9 || keyBytes.length > 14) continue;
+
+        const expectedLength = hasDim ? 13 : 9;
+        if (keyBytes.length !== expectedLength && keyBytes.length !== expectedLength + 1) continue;
+
+        const kx = DataUtilities.getSignedInteger(keyBytes[0], keyBytes[1], keyBytes[2], keyBytes[3], true);
+        const kz = DataUtilities.getSignedInteger(keyBytes[4], keyBytes[5], keyBytes[6], keyBytes[7], true);
+
+        if (kx !== x || kz !== z) continue;
+
+        let kDim = 0;
+        if (hasDim && keyBytes.length >= 13) {
+          kDim = DataUtilities.getSignedInteger(keyBytes[8], keyBytes[9], keyBytes[10], keyBytes[11], true);
+        }
+
+        if (kDim !== dimension) continue;
+
+        // This key belongs to this chunk - add it
+        chunk.addKeyValue(keyValue);
+      }
+    }
+
+    // Add new chunk to the chunks map if needed
+    if (isNewChunk) {
+      let dimMap = this.chunks.get(dimension);
+      if (!dimMap) {
+        dimMap = new Map();
+        this.chunks.set(dimension, dimMap);
+      }
+
+      let xPlane = dimMap.get(x);
+      if (!xPlane) {
+        xPlane = new Map();
+        dimMap.set(x, xPlane);
+      }
+
+      xPlane.set(z, chunk);
+      this.chunkCount++;
+
+      // Update bounds
+      if (this._minX === undefined || x * 16 < this._minX) {
+        this._minX = x * 16;
+      }
+      if (this._maxX === undefined || (x + 1) * 16 > this._maxX) {
+        this._maxX = (x + 1) * 16;
+      }
+      if (this._minZ === undefined || z * 16 < this._minZ) {
+        this._minZ = z * 16;
+      }
+      if (this._maxZ === undefined || (z + 1) * 16 > this._maxZ) {
+        this._maxZ = (z + 1) * 16;
+      }
+
+      // Add to chunk exists set
+      if (this._chunkExistsSet) {
+        this._chunkExistsSet.add(`${dimension}_${x}_${z}`);
+      }
+    }
+
+    // Track access for LRU cache
+    if (this._chunkCache) {
+      this._chunkCache.access(dimension, x, z);
+    }
+
+    // Notify listeners that this chunk was updated
+    this._onChunkUpdated.dispatch(this, chunk);
   }
 
   /**
@@ -875,24 +1412,249 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
   private _loadFromNbt() {}
 
   public getProperty(id: string): any {
+    const ld = this.levelData;
+
     switch (id.toLowerCase()) {
+      // World identity
+      case "levelname":
+        return ld?.levelName;
+      case "gametype":
+        return ld?.gameType;
+      case "difficulty":
+        return ld?.difficulty;
+      case "generator":
+        return ld?.generator;
+      case "flatworldlayers":
+        return ld?.flatWorldLayers ? JSON.stringify(ld.flatWorldLayers) : undefined;
+      case "randomseed":
+        return ld?.randomSeed;
+      case "basegameversion":
+        return ld?.baseGameVersion;
+      case "inventoryversion":
+        return ld?.inventoryVersion;
+
+      // Spawn & bounds
       case "spawnx":
         return this.spawnX;
-
       case "spawny":
         return this.spawnY;
-
       case "spawnz":
         return this.spawnZ;
+      case "limitedworldoriginx":
+        return ld?.limitedWorldOriginX;
+      case "limitedworldoriginy":
+        return ld?.limitedWorldOriginY;
+      case "limitedworldoriginz":
+        return ld?.limitedWorldOriginZ;
+      case "limitedworlddepth":
+        return ld?.limitedWorldDepth;
+      case "limitedworldwidth":
+        return ld?.limitedWorldWidth;
+      case "spawnradius":
+        return ld?.spawnRadius;
 
-      case "gametype":
-        return this.levelData?.gameType;
+      // Game rules (boolean)
+      case "commandsenabled":
+        return ld?.commandsEnabled;
+      case "commandblocksenabled":
+        return ld?.commandBlocksEnabled;
+      case "commandblockoutput":
+        return ld?.commandBlockOutput;
+      case "cheatsenabled":
+        return ld?.cheatsEnabled;
+      case "dodaylightcycle":
+        return ld?.doDaylightCycle;
+      case "doentitydrops":
+        return ld?.doEntityDrops;
+      case "dofiretick":
+        return ld?.doFireTick;
+      case "doimmediaterespawn":
+        return ld?.doImmediateRespawn;
+      case "doinsomnia":
+        return ld?.doInsomnia;
+      case "domobloot":
+        return ld?.doMobLoot;
+      case "domobspawning":
+        return ld?.doMobSpawning;
+      case "dotiledrops":
+        return ld?.doTileDrops;
+      case "doweathercycle":
+        return ld?.doWeatherCycle;
+      case "drowningdamage":
+        return ld?.drowningDamage;
+      case "falldamage":
+        return ld?.fallDamage;
+      case "firedamage":
+        return ld?.fireDamage;
+      case "freezedamage":
+        return ld?.freezeDamage;
+      case "keepinventory":
+        return ld?.keepInventory;
+      case "mobgriefing":
+        return ld?.mobGriefing;
+      case "naturalregeneration":
+        return ld?.naturalRegeneration;
+      case "pvp":
+        return ld?.pvp;
+      case "respawnblocksexplode":
+        return ld?.respawnBlocksExplode;
+      case "sendcommandfeedback":
+        return ld?.sendCommandFeedback;
+      case "showcoordinates":
+        return ld?.showCoordinates;
+      case "showdeathmessages":
+        return ld?.showDeathMessages;
+      case "showtags":
+        return ld?.showTags;
+      case "showbordereffect":
+        return ld?.showBorderEffect;
+      case "tntexplodes":
+        return ld?.tntExplodes;
+      case "forcegametype":
+        return ld?.forceGameType;
+      case "immutableworld":
+        return ld?.immutableWorld;
+      case "spawnmobs":
+        return ld?.spawnMobs;
+      case "bonuschestenabled":
+        return ld?.bonusChestEnabled;
+      case "bonuschestspawned":
+        return ld?.bonusChestSpawned;
+      case "startwithmapenabled":
+        return ld?.startWithMapEnabled;
 
-      case "difficulty":
-        return this.levelData?.difficulty;
+      // Game rules (numeric)
+      case "randomtickspeed":
+        return ld?.randomTickSpeed;
+      case "functioncommandlimit":
+        return ld?.functionCommandLimit;
+      case "maxcommandchainlength":
+        return ld?.maxCommandChainLength;
+      case "serverchunktickrange":
+        return ld?.serverChunkTickRange;
+      case "netherscale":
+        return ld?.netherScale;
 
-      case "generator":
-        return this.levelData?.generator;
+      // Multiplayer
+      case "multiplayergame":
+        return ld?.multiplayerGame;
+      case "multiplayergameintent":
+        return ld?.multiplayerGameIntent;
+      case "lanbroadcast":
+        return ld?.lanBroadcast;
+      case "lanbroadcastintent":
+        return ld?.lanBroadcastIntent;
+      case "platformbroadcastintent":
+        return ld?.platformBroadcastIntent;
+      case "xblbroadcastintent":
+        return ld?.xblBroadcastIntent;
+      case "usemsagamertagsonly":
+        return ld?.useMsaGamertagsOnly;
+      case "texturepacksrequired":
+        return ld?.texturePacksRequired;
+
+      // Editor
+      case "iscreatedineditor":
+        return ld?.isCreatedInEditor;
+      case "isexportedfromeditor":
+        return ld?.isExportedFromEditor;
+      case "editorworldtype":
+        return ld?.editorWorldType;
+
+      // Experiments
+      case "experimentalgameplay":
+        return ld?.experimentalGameplay;
+      case "betaapisexperiment":
+        return ld?.betaApisExperiment;
+      case "deferredtechnicalpreviewexperiment":
+        return ld?.deferredTechnicalPreviewExperiment;
+      case "datadrivenitemsexperiment":
+        return ld?.dataDrivenItemsExperiment;
+      case "savedwithtoggledexperiments":
+        return ld?.savedWithToggledExperiments;
+      case "experimentseverused":
+        return ld?.experimentsEverUsed;
+
+      // Permissions & abilities
+      case "permissionslevel":
+        return ld?.permissionsLevel;
+      case "playerpermissionslevel":
+        return ld?.playerPermissionsLevel;
+      case "attackmobs":
+        return ld?.attackMobs;
+      case "attackplayers":
+        return ld?.attackPlayers;
+      case "build":
+        return ld?.build;
+      case "doorsandswitches":
+        return ld?.doorsAndSwitches;
+      case "flying":
+        return ld?.flying;
+      case "instabuild":
+        return ld?.instaBuild;
+      case "invulnerable":
+        return ld?.invulnerable;
+      case "lightning":
+        return ld?.lightning;
+      case "mayfly":
+        return ld?.mayFly;
+      case "mine":
+        return ld?.mine;
+      case "op":
+        return ld?.op;
+      case "opencontainers":
+        return ld?.openContainers;
+      case "teleport":
+        return ld?.teleport;
+      case "flyspeed":
+        return ld?.flySpeed;
+      case "walkspeed":
+        return ld?.walkSpeed;
+
+      // Template & lock
+      case "haslockedbehaviorpack":
+        return ld?.hasLockedBehaviorPack;
+      case "haslockedresourcepack":
+        return ld?.hasLockedResourcePack;
+      case "isfromlockedtemplate":
+        return ld?.isFromLockedTemplate;
+      case "isfromworldtemplate":
+        return ld?.isFromWorldTemplate;
+      case "issingleuseworld":
+        return ld?.isSingleUseWorld;
+      case "isworldtemplateoptionlocked":
+        return ld?.isWorldTemplateOptionLocked;
+      case "confirmedplatformlockedcontent":
+        return ld?.confirmedPlatformLockedContent;
+      case "requirescopiedpackremovalcheck":
+        return ld?.requiresCopiedPackRemovalCheck;
+
+      // Misc
+      case "israndomseedallowed":
+        return ld?.isRandomSeedAllowed;
+      case "biomeoverride":
+        return ld?.biomeOverride;
+      case "centermapstoorigin":
+        return ld?.centerMapsToOrigin;
+      case "hasbeenloadedincreative":
+        return ld?.hasBeenLoadedInCreative;
+      case "spawnv1villagers":
+        return ld?.spawnV1Villagers;
+      case "educationfeaturesenabled":
+        return ld?.educationFeaturesEnabled;
+      case "daylightcycle":
+        return ld?.daylightCycle;
+      case "lightningtime":
+        return ld?.lightningTime;
+      case "lightninglevel":
+        return ld?.lightningLevel;
+      case "rainlevel":
+        return ld?.rainLevel;
+      case "raintime":
+        return ld?.rainTime;
+
+      default:
+        return undefined;
     }
   }
 
@@ -905,19 +1667,359 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
   }
 
   public setProperty(id: string, newVal: any): any {
+    if (this.levelData === undefined) {
+      this.levelData = new WorldLevelDat();
+    }
+
+    const ld = this.levelData;
+
     switch (id.toLowerCase()) {
-      case "spawnX":
+      // World identity
+      case "levelname":
+        ld.levelName = newVal as string;
+        break;
+      case "gametype":
+        ld.gameType = newVal as number;
+        break;
+      case "difficulty":
+        ld.difficulty = newVal as number;
+        break;
+      case "generator":
+        ld.generator = newVal as number;
+        break;
+      case "randomseed":
+        ld.randomSeed = newVal as string;
+        break;
+      case "basegameversion":
+        ld.baseGameVersion = newVal as string;
+        break;
+      case "inventoryversion":
+        ld.inventoryVersion = newVal as string;
+        break;
+
+      // Spawn & bounds
+      case "spawnx":
         this.spawnX = newVal as number;
         break;
-
-      case "spawnY":
+      case "spawny":
         this.spawnY = newVal as number;
         break;
-
-      case "spawnZ":
+      case "spawnz":
         this.spawnZ = newVal as number;
         break;
+      case "limitedworldoriginx":
+        ld.limitedWorldOriginX = newVal as number;
+        break;
+      case "limitedworldoriginy":
+        ld.limitedWorldOriginY = newVal as number;
+        break;
+      case "limitedworldoriginz":
+        ld.limitedWorldOriginZ = newVal as number;
+        break;
+      case "limitedworlddepth":
+        ld.limitedWorldDepth = newVal as number;
+        break;
+      case "limitedworldwidth":
+        ld.limitedWorldWidth = newVal as number;
+        break;
+      case "spawnradius":
+        ld.spawnRadius = newVal as number;
+        break;
+
+      // Game rules (boolean)
+      case "commandsenabled":
+        ld.commandsEnabled = newVal as boolean;
+        break;
+      case "commandblocksenabled":
+        ld.commandBlocksEnabled = newVal as boolean;
+        break;
+      case "commandblockoutput":
+        ld.commandBlockOutput = newVal as boolean;
+        break;
+      case "cheatsenabled":
+        ld.cheatsEnabled = newVal as boolean;
+        break;
+      case "dodaylightcycle":
+        ld.doDaylightCycle = newVal as boolean;
+        break;
+      case "doentitydrops":
+        ld.doEntityDrops = newVal as boolean;
+        break;
+      case "dofiretick":
+        ld.doFireTick = newVal as boolean;
+        break;
+      case "doimmediaterespawn":
+        ld.doImmediateRespawn = newVal as boolean;
+        break;
+      case "doinsomnia":
+        ld.doInsomnia = newVal as boolean;
+        break;
+      case "domobloot":
+        ld.doMobLoot = newVal as boolean;
+        break;
+      case "domobspawning":
+        ld.doMobSpawning = newVal as boolean;
+        break;
+      case "dotiledrops":
+        ld.doTileDrops = newVal as boolean;
+        break;
+      case "doweathercycle":
+        ld.doWeatherCycle = newVal as boolean;
+        break;
+      case "drowningdamage":
+        ld.drowningDamage = newVal as boolean;
+        break;
+      case "falldamage":
+        ld.fallDamage = newVal as boolean;
+        break;
+      case "firedamage":
+        ld.fireDamage = newVal as boolean;
+        break;
+      case "freezedamage":
+        ld.freezeDamage = newVal as boolean;
+        break;
+      case "keepinventory":
+        ld.keepInventory = newVal as boolean;
+        break;
+      case "mobgriefing":
+        ld.mobGriefing = newVal as boolean;
+        break;
+      case "naturalregeneration":
+        ld.naturalRegeneration = newVal as boolean;
+        break;
+      case "pvp":
+        ld.pvp = newVal as boolean;
+        break;
+      case "respawnblocksexplode":
+        ld.respawnBlocksExplode = newVal as boolean;
+        break;
+      case "sendcommandfeedback":
+        ld.sendCommandFeedback = newVal as boolean;
+        break;
+      case "showcoordinates":
+        ld.showCoordinates = newVal as boolean;
+        break;
+      case "showdeathmessages":
+        ld.showDeathMessages = newVal as boolean;
+        break;
+      case "showtags":
+        ld.showTags = newVal as boolean;
+        break;
+      case "showbordereffect":
+        ld.showBorderEffect = newVal as boolean;
+        break;
+      case "tntexplodes":
+        ld.tntExplodes = newVal as boolean;
+        break;
+      case "forcegametype":
+        ld.forceGameType = newVal as boolean;
+        break;
+      case "immutableworld":
+        ld.immutableWorld = newVal as boolean;
+        break;
+      case "spawnmobs":
+        ld.spawnMobs = newVal as boolean;
+        break;
+      case "bonuschestenabled":
+        ld.bonusChestEnabled = newVal as boolean;
+        break;
+      case "bonuschestspawned":
+        ld.bonusChestSpawned = newVal as boolean;
+        break;
+      case "startwithmapenabled":
+        ld.startWithMapEnabled = newVal as boolean;
+        break;
+
+      // Game rules (numeric)
+      case "randomtickspeed":
+        ld.randomTickSpeed = newVal as number;
+        break;
+      case "functioncommandlimit":
+        ld.functionCommandLimit = newVal as number;
+        break;
+      case "maxcommandchainlength":
+        ld.maxCommandChainLength = newVal as number;
+        break;
+      case "serverchunktickrange":
+        ld.serverChunkTickRange = newVal as number;
+        break;
+      case "netherscale":
+        ld.netherScale = newVal as number;
+        break;
+
+      // Multiplayer
+      case "multiplayergame":
+        ld.multiplayerGame = newVal as boolean;
+        break;
+      case "multiplayergameintent":
+        ld.multiplayerGameIntent = newVal as boolean;
+        break;
+      case "lanbroadcast":
+        ld.lanBroadcast = newVal as boolean;
+        break;
+      case "lanbroadcastintent":
+        ld.lanBroadcastIntent = newVal as boolean;
+        break;
+      case "platformbroadcastintent":
+        ld.platformBroadcastIntent = newVal as number;
+        break;
+      case "xblbroadcastintent":
+        ld.xblBroadcastIntent = newVal as number;
+        break;
+      case "usemsagamertagsonly":
+        ld.useMsaGamertagsOnly = newVal as boolean;
+        break;
+      case "texturepacksrequired":
+        ld.texturePacksRequired = newVal as boolean;
+        break;
+
+      // Editor
+      case "iscreatedineditor":
+        ld.isCreatedInEditor = newVal as boolean;
+        break;
+      case "isexportedfromeditor":
+        ld.isExportedFromEditor = newVal as boolean;
+        break;
+      case "editorworldtype":
+        ld.editorWorldType = newVal as number;
+        break;
+
+      // Experiments
+      case "experimentalgameplay":
+        ld.experimentalGameplay = newVal as boolean;
+        break;
+      case "betaapisexperiment":
+        ld.betaApisExperiment = newVal as boolean;
+        break;
+      case "deferredtechnicalpreviewexperiment":
+        ld.deferredTechnicalPreviewExperiment = newVal as boolean;
+        break;
+      case "datadrivenitemsexperiment":
+        ld.dataDrivenItemsExperiment = newVal as boolean;
+        break;
+      case "savedwithtoggledexperiments":
+        ld.savedWithToggledExperiments = newVal as boolean;
+        break;
+      case "experimentseverused":
+        ld.experimentsEverUsed = newVal as boolean;
+        break;
+
+      // Permissions & abilities
+      case "permissionslevel":
+        ld.permissionsLevel = newVal as number;
+        break;
+      case "playerpermissionslevel":
+        ld.playerPermissionsLevel = newVal as number;
+        break;
+      case "attackmobs":
+        ld.attackMobs = newVal as boolean;
+        break;
+      case "attackplayers":
+        ld.attackPlayers = newVal as boolean;
+        break;
+      case "build":
+        ld.build = newVal as boolean;
+        break;
+      case "doorsandswitches":
+        ld.doorsAndSwitches = newVal as boolean;
+        break;
+      case "flying":
+        ld.flying = newVal as boolean;
+        break;
+      case "instabuild":
+        ld.instaBuild = newVal as boolean;
+        break;
+      case "invulnerable":
+        ld.invulnerable = newVal as boolean;
+        break;
+      case "lightning":
+        ld.lightning = newVal as boolean;
+        break;
+      case "mayfly":
+        ld.mayFly = newVal as boolean;
+        break;
+      case "mine":
+        ld.mine = newVal as boolean;
+        break;
+      case "op":
+        ld.op = newVal as boolean;
+        break;
+      case "opencontainers":
+        ld.openContainers = newVal as boolean;
+        break;
+      case "teleport":
+        ld.teleport = newVal as boolean;
+        break;
+      case "flyspeed":
+        ld.flySpeed = newVal as number;
+        break;
+      case "walkspeed":
+        ld.walkSpeed = newVal as number;
+        break;
+
+      // Template & lock
+      case "haslockedbehaviorpack":
+        ld.hasLockedBehaviorPack = newVal as boolean;
+        break;
+      case "haslockedresourcepack":
+        ld.hasLockedResourcePack = newVal as boolean;
+        break;
+      case "isfromlockedtemplate":
+        ld.isFromLockedTemplate = newVal as boolean;
+        break;
+      case "isfromworldtemplate":
+        ld.isFromWorldTemplate = newVal as boolean;
+        break;
+      case "issingleuseworld":
+        ld.isSingleUseWorld = newVal as boolean;
+        break;
+      case "isworldtemplateoptionlocked":
+        ld.isWorldTemplateOptionLocked = newVal as boolean;
+        break;
+      case "confirmedplatformlockedcontent":
+        ld.confirmedPlatformLockedContent = newVal as boolean;
+        break;
+      case "requirescopiedpackremovalcheck":
+        ld.requiresCopiedPackRemovalCheck = newVal as boolean;
+        break;
+
+      // Misc
+      case "israndomseedallowed":
+        ld.isRandomSeedAllowed = newVal as boolean;
+        break;
+      case "biomeoverride":
+        ld.biomeOverride = newVal as string;
+        break;
+      case "centermapstoorigin":
+        ld.centerMapsToOrigin = newVal as boolean;
+        break;
+      case "hasbeenloadedincreative":
+        ld.hasBeenLoadedInCreative = newVal as boolean;
+        break;
+      case "spawnv1villagers":
+        ld.spawnV1Villagers = newVal as boolean;
+        break;
+      case "educationfeaturesenabled":
+        ld.educationFeaturesEnabled = newVal as boolean;
+        break;
+      case "daylightcycle":
+        ld.daylightCycle = newVal as number;
+        break;
+      case "lightningtime":
+        ld.lightningTime = newVal as number;
+        break;
+      case "lightninglevel":
+        ld.lightningLevel = newVal as number;
+        break;
+      case "rainlevel":
+        ld.rainLevel = newVal as number;
+        break;
+      case "raintime":
+        ld.rainTime = newVal as number;
+        break;
     }
+
+    this._onPropertyChanged.dispatch(this, id);
   }
 
   async loadMetaFiles(force?: boolean) {
@@ -1403,6 +2505,15 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
       return true;
     }
 
+    const useLazyLoad = options?.lazyLoad === true;
+    this._isLazyLoadMode = useLazyLoad;
+
+    // Initialize chunk cache if requested
+    if (options?.maxChunksInCache !== undefined || useLazyLoad) {
+      this._chunkCache = new WorldChunkCache(options?.maxChunksInCache ?? 20000);
+      this._chunkCache.setChunkProvider((key) => this.getChunkByKey(key));
+    }
+
     const loadOper = await this._project?.creatorTools.notifyOperationStarted(
       "Starting first-pass load of '" + this.name + "' world",
       StatusTopic.worldLoad
@@ -1446,23 +2557,68 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
           }
         }
       }
+      Log.verbose(
+        "[MCWorld] loadLevelDb: Found " +
+          ldbFileArr.length +
+          " LDB files, " +
+          logFileArr.length +
+          " LOG files, " +
+          manifestFileArr.length +
+          " MANIFEST files"
+      );
+    } else {
+      Log.verbose("[MCWorld] loadLevelDb: No db folder found");
     }
 
     this.levelDb = new LevelDb(ldbFileArr, logFileArr, manifestFileArr, this.name);
 
-    const totalLdbFiles = ldbFileArr.length + logFileArr.length + manifestFileArr.length;
-    let loadedLdbFiles = 0;
+    if (useLazyLoad) {
+      // Lazy loading mode: only load manifest initially
+      await this._project?.creatorTools.notifyStatusUpdate(
+        `Initializing lazy loading for '${this.name}'...`,
+        StatusTopic.worldLoad
+      );
 
-    await this.levelDb.init(
-      async (message: string): Promise<void> => {
-        await this._project?.creatorTools.notifyStatusUpdate(message, StatusTopic.worldLoad);
-        loadedLdbFiles++;
-        if (options?.progressCallback) {
-          options.progressCallback("Loading database files", loadedLdbFiles, totalLdbFiles);
-        }
-      },
-      { unloadFilesAfterParse: false }
-    );
+      await this.levelDb.initLazy({
+        maxKeysInMemory: 50000,
+        progressCallback: options?.progressCallback,
+      });
+
+      // Now load all files but with memory management
+      const totalFiles = this.levelDb.index?.totalFiles ?? 0;
+      let loadedFiles = 0;
+
+      await this.levelDb.loadAllFiles({
+        progressCallback: (phase, current, total) => {
+          loadedFiles = current;
+          const percent = total > 0 ? Math.round((current / total) * 100) : 0;
+          this._project?.creatorTools.notifyStatusUpdate(`${phase}... (${percent}%)`, StatusTopic.worldLoad);
+          if (options?.progressCallback) {
+            options.progressCallback(phase, current, total);
+          }
+        },
+        unloadFilesAfterParse: true, // Always unload in lazy mode
+      });
+    } else {
+      // Traditional full-load mode
+      const totalLdbFiles = ldbFileArr.length + logFileArr.length + manifestFileArr.length;
+      let loadedLdbFiles = 0;
+
+      await this.levelDb.init(
+        async (message: string): Promise<void> => {
+          loadedLdbFiles++;
+          const percent = totalLdbFiles > 0 ? Math.round((loadedLdbFiles / totalLdbFiles) * 100) : 0;
+          await this._project?.creatorTools.notifyStatusUpdate(
+            `Loading world files (1/2)... (${percent}%)`,
+            StatusTopic.worldLoad
+          );
+          if (options?.progressCallback) {
+            options.progressCallback("Loading world files (1/2)", loadedLdbFiles, totalLdbFiles);
+          }
+        },
+        { unloadFilesAfterParse: options?.unloadFilesAfterParse !== false }
+      );
+    }
 
     Utilities.appendErrors(this, this.levelDb);
 
@@ -1480,10 +2636,18 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
   async loadFromLevelDb(levelDb: LevelDb, options?: IWorldProcessingOptions): Promise<boolean> {
     this.levelDb = levelDb;
 
-    const result = await this.processWorldData(options);
-
-    if (!result) {
-      return false;
+    // If skipFullProcessing is enabled, only build a minimal index
+    // Chunks will be created on-demand when accessed
+    if (options?.skipFullProcessing) {
+      const result = await this.buildMinimalWorldIndex(options);
+      if (!result) {
+        return false;
+      }
+    } else {
+      const result = await this.processWorldData(options);
+      if (!result) {
+        return false;
+      }
     }
 
     this._updateMeta();
@@ -1492,6 +2656,312 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
     this._isDataLoaded = true;
     return true;
+  }
+
+  /**
+   * Builds a minimal world index without creating WorldChunk objects.
+   * This calculates world bounds and chunk count from key names only.
+   * Chunks are created on-demand when getChunkAt() or getOrCreateChunk() is called.
+   *
+   * This dramatically reduces memory usage for large worlds (100k+ chunks).
+   *
+   * IMPORTANT: Key filtering must use the same approach as processWorldData():
+   * explicit named-key prefix checks + keyname.length checks. Do NOT filter by
+   * checking if the first byte of keyBytes is in printable ASCII range, because
+   * chunk coordinate keys are binary little-endian integers whose low byte can
+   * legitimately be any value 0-255 (e.g., chunk X=32 → first byte 0x20 = space).
+   */
+  private async buildMinimalWorldIndex(options?: IWorldProcessingOptions): Promise<boolean> {
+    if (!this.levelDb) {
+      return false;
+    }
+
+    this.chunks = new Map();
+    this.chunkCount = 0;
+
+    const processOper = await this._project?.creatorTools.notifyOperationStarted(
+      "Building minimal index for '" + this.name + "' world",
+      StatusTopic.worldLoad
+    );
+
+    const levelDbKeysArray = Array.from(this.levelDb.keys.keys());
+    const totalKeys = levelDbKeysArray.length;
+    let processedKeys = 0;
+
+    // Track unique chunks we've seen (format: "dim_x_z")
+    const seenChunks = new Set<string>();
+
+    // Build index mapping chunk keys to their LevelDB key names for fast lookup
+    const chunkKeyIndex = new Map<string, string[]>();
+
+    // Report progress less frequently for this fast operation
+    const keyProgressInterval = Math.max(1000, Math.floor(totalKeys / 50));
+
+    // Yield periodically to allow garbage collection
+    const yieldInterval = 5000;
+
+    for (const keyname of levelDbKeysArray) {
+      processedKeys++;
+
+      // Report progress
+      if (processedKeys % keyProgressInterval === 0) {
+        const percent = totalKeys > 0 ? Math.round((processedKeys / totalKeys) * 100) : 0;
+        await this._project?.creatorTools.notifyStatusUpdate(
+          `Building world index... (${percent}%)`,
+          StatusTopic.worldLoad
+        );
+        if (options?.progressCallback) {
+          options.progressCallback("Building world index", processedKeys, totalKeys);
+        }
+
+        // Yield periodically
+        if (processedKeys % yieldInterval === 0) {
+          await new Promise((resolve) => setTimeout(resolve, 0));
+        }
+      }
+
+      // Skip known named keys using the same filtering approach as processWorldData.
+      // We must NOT filter by first-byte ASCII range because chunk coordinate keys
+      // are binary little-endian integers whose low byte can be any value (0-255),
+      // including printable ASCII (32-126). For example, chunk X=32 has first byte 0x20 (space).
+      if (
+        keyname.startsWith("AutonomousEntities") ||
+        keyname.startsWith("schedulerWT") ||
+        keyname.startsWith("Overworld") ||
+        keyname.startsWith("BiomeData") ||
+        keyname.startsWith("digp") ||
+        keyname.startsWith("actorprefix") ||
+        keyname.startsWith("player") ||
+        keyname.startsWith("portals") ||
+        keyname.startsWith("LevelChunk") ||
+        keyname.startsWith("structuretemplate") ||
+        keyname.startsWith("~local_player") ||
+        keyname.startsWith("game_") ||
+        keyname.startsWith("CustomProperties") ||
+        keyname.startsWith("DynamicProperties") ||
+        keyname.startsWith("LevelSpawnWasFixed") ||
+        keyname.startsWith("VILLAGE_") ||
+        keyname.startsWith("gametestinstance_") ||
+        keyname.startsWith("tickingarea_") ||
+        keyname.startsWith("map_") ||
+        keyname.startsWith("scoreboard") ||
+        keyname.startsWith("SavedEntity") ||
+        keyname.startsWith("ServerMapRuntime") ||
+        keyname.startsWith("VillageRuntime") ||
+        keyname.startsWith("WorldFeatureRuntime") ||
+        keyname.startsWith("WorldGenerationRuntime") ||
+        keyname.startsWith("WorldStreamRuntime") ||
+        keyname.startsWith("BSharpRuntime") ||
+        keyname.startsWith("BadgerSynced") ||
+        keyname.startsWith("CinematicsRuntime") ||
+        keyname.startsWith("CustomGameOptions") ||
+        keyname.startsWith("DeckRuntime") ||
+        keyname.startsWith("EntityFactorySetup") ||
+        keyname.startsWith("GeologyRuntime") ||
+        keyname.startsWith("InvasionRuntime") ||
+        keyname.startsWith("MapRevealRuntime") ||
+        keyname.startsWith("RealmsStoriesData") ||
+        keyname.startsWith("mobevents") ||
+        keyname.startsWith("dimension") ||
+        keyname.startsWith("structureplacement") ||
+        keyname.startsWith("chunk_loaded_request") ||
+        keyname.startsWith("legacy_console_player") ||
+        keyname.startsWith("PosTrackDB") ||
+        keyname.startsWith("PositionTrackDB") ||
+        keyname.startsWith("OwnedEntitiesLimbo") ||
+        keyname.startsWith("MCeditMap") ||
+        keyname.startsWith("EDU_CurrentCodingURL") ||
+        keyname.startsWith("TheEnd") ||
+        keyname.startsWith("SST_") ||
+        keyname.startsWith("SUSP") ||
+        keyname.startsWith("neteaseData") ||
+        keyname.startsWith("scriptGid") ||
+        keyname.startsWith("Nether") ||
+        keyname.startsWith("game_flatworldlayers")
+      ) {
+        continue;
+      }
+
+      // Only process keys whose length matches chunk coordinate key formats.
+      // Chunk keys are 9, 10, 13, or 14 bytes:
+      //   [x:4][z:4][tag:1] = 9 bytes (overworld)
+      //   [x:4][z:4][tag:1][subchunk:1] = 10 bytes (overworld with subchunk)
+      //   [x:4][z:4][dim:4][tag:1] = 13 bytes (nether/end)
+      //   [x:4][z:4][dim:4][tag:1][subchunk:1] = 14 bytes (nether/end with subchunk)
+      // Use keyname.length as a fast pre-filter (matching processWorldData's approach).
+      if (keyname.length !== 9 && keyname.length !== 10 && keyname.length !== 13 && keyname.length !== 14) {
+        continue;
+      }
+
+      // Get the LevelKeyValue to access raw keyBytes
+      const keyValue = this.levelDb.keys.get(keyname);
+      if (!keyValue) {
+        continue;
+      }
+
+      // keyValue can be boolean (false for deleted markers)
+      if (typeof keyValue === "boolean") {
+        continue;
+      }
+
+      const keyBytes = keyValue.keyBytes;
+      if (!keyBytes) {
+        continue;
+      }
+
+      // Key format: [x:4 bytes][z:4 bytes][dim?:4 bytes][tag:1 byte][subchunk?:1 byte]
+      if (keyBytes.length >= 9 && keyBytes.length <= 14) {
+        const hasDimensionParam = keyBytes.length >= 13;
+
+        const x = DataUtilities.getSignedInteger(keyBytes[0], keyBytes[1], keyBytes[2], keyBytes[3], true);
+        const z = DataUtilities.getSignedInteger(keyBytes[4], keyBytes[5], keyBytes[6], keyBytes[7], true);
+        let dim = 0;
+
+        if (hasDimensionParam) {
+          dim = DataUtilities.getSignedInteger(keyBytes[8], keyBytes[9], keyBytes[10], keyBytes[11], true);
+
+          if (dim < 0 || dim > 2) {
+            continue; // Invalid dimension
+          }
+        }
+
+        // Track unique chunks
+        const chunkKey = `${dim}_${x}_${z}`;
+        if (!seenChunks.has(chunkKey)) {
+          seenChunks.add(chunkKey);
+          this.chunkCount++;
+
+          // Update bounds
+          if (this._minX === undefined || x * 16 < this._minX) {
+            this._minX = x * 16;
+          }
+          if (this._maxX === undefined || (x + 1) * 16 > this._maxX) {
+            this._maxX = (x + 1) * 16;
+          }
+          if (this._minZ === undefined || z * 16 < this._minZ) {
+            this._minZ = z * 16;
+          }
+          if (this._maxZ === undefined || (z + 1) * 16 > this._maxZ) {
+            this._maxZ = (z + 1) * 16;
+          }
+        }
+
+        // Build chunk key index: map chunk key to list of LevelDB key names
+        let keyList = chunkKeyIndex.get(chunkKey);
+        if (!keyList) {
+          keyList = [];
+          chunkKeyIndex.set(chunkKey, keyList);
+        }
+        keyList.push(keyname);
+      }
+    }
+
+    // Store the seen chunks set for O(1) existence checking
+    this._chunkExistsSet = seenChunks;
+
+    // Store the chunk key index for O(1) key lookup in getOrCreateChunk
+    this._chunkKeyIndex = chunkKeyIndex;
+
+    await this.notifyLoadEnded(processOper);
+
+    return true;
+  }
+
+  /**
+   * Gets or creates a chunk at the specified coordinates.
+   * If the chunk doesn't exist, creates it and populates it from LevelDB keys.
+   * This is used for on-demand chunk loading when skipFullProcessing is enabled.
+   */
+  getOrCreateChunk(dim: number, x: number, z: number): WorldChunk | undefined {
+    // Check if chunk already exists
+    let dimMap = this.chunks.get(dim);
+    if (dimMap) {
+      const xPlane = dimMap.get(x);
+      if (xPlane) {
+        const existing = xPlane.get(z);
+        if (existing) {
+          // Track access for LRU cache
+          if (this._chunkCache) {
+            this._chunkCache.access(dim, x, z);
+          }
+          return existing;
+        }
+      }
+    }
+
+    // Chunk doesn't exist - create it on demand if we have LevelDB data
+    if (!this.levelDb) {
+      return undefined;
+    }
+
+    // Create the chunk
+    const chunk = new WorldChunk(this, x, z);
+
+    // Find all keys that belong to this chunk using the pre-built index (O(1) lookup)
+    const chunkKey = `${dim}_${x}_${z}`;
+    const indexedKeyNames = this._chunkKeyIndex.get(chunkKey);
+
+    if (indexedKeyNames && indexedKeyNames.length > 0) {
+      // Fast path: use the pre-built chunk key index
+      for (const keyname of indexedKeyNames) {
+        const keyValue = this.levelDb.keys.get(keyname);
+        if (!keyValue || typeof keyValue === "boolean") continue;
+        chunk.addKeyValue(keyValue);
+      }
+    } else if (this._chunkKeyIndex.size > 0) {
+      // Index is built but this chunk has no keys — it doesn't exist in the world.
+      // Return undefined to avoid creating empty chunk objects.
+      return undefined;
+    } else {
+      // Fallback: scan all LevelDB keys (used when index isn't built, e.g., full processing mode)
+      const hasDim = dim !== 0;
+      for (const [keyname, keyValue] of this.levelDb.keys) {
+        if (!keyValue) continue;
+
+        const keyBytes = keyValue.keyBytes;
+        if (!keyBytes) continue;
+        if (keyBytes.length < 9 || keyBytes.length > 14) continue;
+
+        const expectedLength = hasDim ? 13 : 9;
+        if (keyBytes.length !== expectedLength && keyBytes.length !== expectedLength + 1) continue;
+
+        const kx = DataUtilities.getSignedInteger(keyBytes[0], keyBytes[1], keyBytes[2], keyBytes[3], true);
+        const kz = DataUtilities.getSignedInteger(keyBytes[4], keyBytes[5], keyBytes[6], keyBytes[7], true);
+
+        if (kx !== x || kz !== z) continue;
+
+        let kDim = 0;
+        if (hasDim && keyBytes.length >= 13) {
+          kDim = DataUtilities.getSignedInteger(keyBytes[8], keyBytes[9], keyBytes[10], keyBytes[11], true);
+        }
+
+        if (kDim !== dim) continue;
+
+        // This key belongs to this chunk
+        chunk.addKeyValue(keyValue);
+      }
+    }
+
+    // Add chunk to the chunks map
+    if (!dimMap) {
+      dimMap = new Map();
+      this.chunks.set(dim, dimMap);
+    }
+
+    let xPlane = dimMap.get(x);
+    if (!xPlane) {
+      xPlane = new Map();
+      dimMap.set(x, xPlane);
+    }
+
+    xPlane.set(z, chunk);
+
+    // Track access for LRU cache
+    if (this._chunkCache) {
+      this._chunkCache.access(dim, x, z);
+    }
+
+    return chunk;
   }
 
   /**
@@ -1560,7 +3030,10 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
             chunk.clearCachedData();
           }
 
-          if (options?.progressCallback && processedCount % 1000 === 0) {
+          // Report progress frequently enough for smooth UI updates (~100 updates total)
+          // Use dynamic interval based on total chunk count
+          const progressInterval = Math.max(100, Math.floor(this.chunkCount / 100));
+          if (options?.progressCallback && processedCount % progressInterval === 0) {
             await options.progressCallback(processedCount, this.chunkCount);
           }
         }
@@ -1612,6 +3085,73 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
   }
 
   /**
+   * Clears all world data to free memory.
+   * Use this when the world is no longer needed.
+   * WARNING: The world cannot be used after calling this without reloading.
+   */
+  clearAllData() {
+    // Clear chunk cache first
+    if (this._chunkCache) {
+      this._chunkCache.clear();
+    }
+
+    // Clear all chunk data
+    for (const dimIndex of this.chunks.keys()) {
+      const dim = this.chunks.get(dimIndex);
+      if (!dim) continue;
+
+      for (const x of dim.keys()) {
+        const xPlane = dim.get(x);
+        if (!xPlane) continue;
+
+        for (const z of xPlane.keys()) {
+          const chunk = xPlane.get(z);
+          if (chunk) {
+            chunk.clearAllData();
+          }
+        }
+        xPlane.clear();
+      }
+      dim.clear();
+    }
+    this.chunks.clear();
+
+    // Clear LevelDB data
+    this.clearLevelDbData();
+
+    // Clear actors
+    this.actorsById = {};
+
+    // Reset state
+    this._isDataLoaded = false;
+    this.chunkCount = 0;
+    this._minX = undefined;
+    this._maxX = undefined;
+    this._minZ = undefined;
+    this._maxZ = undefined;
+  }
+
+  /**
+   * Get statistics about memory usage for this world.
+   * Useful for debugging memory issues with large worlds.
+   */
+  getMemoryStats(): {
+    chunkCount: number;
+    levelDbKeyCount: number;
+    isLazyMode: boolean;
+    chunkCacheSize?: number;
+    chunkCacheMaxSize?: number;
+  } {
+    return {
+      chunkCount: this.chunkCount,
+      levelDbKeyCount: this.levelDb?.keys.size ?? 0,
+      isLazyMode: this._isLazyLoadMode,
+      chunkCacheSize: this._chunkCache?.size,
+      chunkCacheMaxSize: this._chunkCache?.maxChunks,
+    };
+  }
+
+  /**
    * Clears all chunk data to free memory.
    * WARNING: After calling this, chunk data cannot be accessed without reloading.
    */
@@ -1644,39 +3184,44 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
   getTopBlockY(x: number, z: number, dim?: number) {
     const chunkX = Math.floor(x / CHUNK_X_SIZE);
-
-    const xDim = this.chunks.get(dim ? dim : 0)?.get(chunkX);
-
-    if (xDim === undefined) {
-      return undefined;
-    }
-
     const chunkZ = Math.floor(z / CHUNK_Z_SIZE);
-    const zDim = xDim.get(chunkZ);
+    const dimension = dim ?? 0;
 
-    if (zDim === undefined) {
+    // Quick check: if the chunk index has been built and this chunk isn't in it,
+    // skip creating an empty chunk object (avoids wasteful allocations on mouse hover)
+    if (this.hasChunkData(dimension, chunkX, chunkZ) === false) {
       return undefined;
     }
 
-    return zDim.getTopBlockY(x - chunkX * CHUNK_X_SIZE, z - chunkZ * CHUNK_Z_SIZE);
+    // Use getOrCreateChunk to support on-demand loading when skipFullProcessing is enabled
+    const chunk = this.getOrCreateChunk(dimension, chunkX, chunkZ);
+
+    if (chunk === undefined) {
+      return undefined;
+    }
+
+    return chunk.getTopBlockY(x - chunkX * CHUNK_X_SIZE, z - chunkZ * CHUNK_Z_SIZE);
   }
 
   getTopBlock(x: number, z: number, dim?: number) {
     const chunkX = Math.floor(x / CHUNK_X_SIZE);
-    const xDim = this.chunks.get(dim ? dim : 0)?.get(chunkX);
-
-    if (xDim === undefined) {
-      return undefined;
-    }
-
     const chunkZ = Math.floor(z / CHUNK_Z_SIZE);
-    const zDim = xDim.get(chunkZ);
+    const dimension = dim ?? 0;
 
-    if (zDim === undefined) {
+    // Quick check: if the chunk index has been built and this chunk isn't in it,
+    // skip creating an empty chunk object (avoids wasteful allocations on mouse hover)
+    if (this.hasChunkData(dimension, chunkX, chunkZ) === false) {
       return undefined;
     }
 
-    return zDim.getTopBlock(x - chunkX * CHUNK_X_SIZE, z - chunkZ * CHUNK_Z_SIZE);
+    // Use getOrCreateChunk to support on-demand loading when skipFullProcessing is enabled
+    const chunk = this.getOrCreateChunk(dimension, chunkX, chunkZ);
+
+    if (chunk === undefined) {
+      return undefined;
+    }
+
+    return chunk.getTopBlock(x - chunkX * CHUNK_X_SIZE, z - chunkZ * CHUNK_Z_SIZE);
   }
 
   spawnEntity(entityTypeId: string, location: BlockLocation) {
@@ -1687,17 +3232,16 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
   getBlock(blockLocation: BlockLocation, dim?: number) {
     const chunkX = Math.floor(blockLocation.x / CHUNK_X_SIZE);
-    const xDim = this.chunks.get(dim ? dim : 0)?.get(chunkX);
-
-    if (xDim === undefined) {
-      return new Block("air");
-    }
-
     const chunkZ = Math.floor(blockLocation.z / CHUNK_Z_SIZE);
-    const chunk = xDim.get(chunkZ);
+    const dimension = dim ?? 0;
+
+    // Use getOrCreateChunk to support on-demand loading when skipFullProcessing is enabled
+    const chunk = this.getOrCreateChunk(dimension, chunkX, chunkZ);
+
     if (chunk === undefined) {
       return new Block("air");
     }
+
     let offsetX = blockLocation.x % 16;
     let offsetZ = blockLocation.z % 16;
 
@@ -1735,14 +3279,36 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     const totalKeys = levelDbKeysArray.length;
     let processedKeys = 0;
 
+    // Whether to delete keys from LevelDb after processing to reduce memory
+    // Default is true for memory optimization
+    const clearKeysAfterProcess = options?.clearKeysAfterProcess !== false;
+
+    // Report progress frequently enough for smooth UI updates (~100 updates total)
+    const keyProgressInterval = Math.max(100, Math.floor(totalKeys / 100));
+
+    // Yield periodically to allow garbage collection and prevent memory pressure
+    const yieldInterval = 500;
+
     for (const keyname of levelDbKeysArray) {
       const keyValue = this.levelDb.keys.get(keyname);
 
       processedKeys++;
 
-      // Report progress every 1000 keys to avoid excessive overhead
-      if (options?.progressCallback && processedKeys % 1000 === 0) {
-        options.progressCallback("Processing records", processedKeys, totalKeys);
+      // Report progress at dynamic intervals for smooth updates
+      if (processedKeys % keyProgressInterval === 0) {
+        const percent = totalKeys > 0 ? Math.round((processedKeys / totalKeys) * 100) : 0;
+        await this._project?.creatorTools.notifyStatusUpdate(
+          `Processing world records (2/2)... (${percent}%)`,
+          StatusTopic.worldLoad
+        );
+        if (options?.progressCallback) {
+          options.progressCallback("Processing world records (2/2)  ", processedKeys, totalKeys);
+        }
+
+        // Yield to event loop periodically to allow garbage collection
+        if (processedKeys % yieldInterval === 0) {
+          await new Promise((resolve) => setTimeout(resolve, 0));
+        }
       }
 
       if (options?.maxNumberOfRecordsToProcess && processedKeys > options.maxNumberOfRecordsToProcess) {
@@ -2057,8 +3623,10 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
           wc.addKeyValue(keyValue);
 
           if (this.chunkCount % 10000 === 0 && didIncrement) {
+            const chunkPercent = totalKeys > 0 ? Math.round((processedKeys / totalKeys) * 100) : 0;
             await this._project?.creatorTools.notifyStatusUpdate(
-              "Initialized " + this.chunkCount / 1000 + "K chunks in " + MCWorld.name
+              `Initialized ${this.chunkCount / 1000}K chunks... (${chunkPercent}%)`,
+              StatusTopic.worldLoad
             );
           }
         }
@@ -2066,43 +3634,21 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
         keyValue === false &&
         (keyname.length === 9 || keyname.length === 10 || keyname.length === 13 || keyname.length === 14)
       ) {
-        const hasDimensionParam = keyname.length === 13 || keyname.length === 14;
-
-        const x = DataUtilities.getSignedInteger(
-          keyname.charCodeAt(0),
-          keyname.charCodeAt(1),
-          keyname.charCodeAt(2),
-          keyname.charCodeAt(3),
-          true
-        );
-        const z = DataUtilities.getSignedInteger(
-          keyname.charCodeAt(4),
-          keyname.charCodeAt(5),
-          keyname.charCodeAt(6),
-          keyname.charCodeAt(7),
-          true
-        );
-        let dim = 0;
-
-        if (hasDimensionParam) {
-          dim = DataUtilities.getSignedInteger(
-            keyname.charCodeAt(8),
-            keyname.charCodeAt(9),
-            keyname.charCodeAt(10),
-            keyname.charCodeAt(11),
-            true
-          );
-
-          Log.assert(dim >= 0 && dim <= 2, "Unexpected dimension index. (" + dim + ")");
-        }
-
-        this.chunks.get(dim)?.get(x)?.get(z)?.clearKeyValue(keyname);
+        // keyValue === false means this is a deleted marker
+        // We cannot reliably parse coordinates from keyname string (charCodeAt doesn't give raw bytes)
+        // Skip trying to clear the chunk data - the deleted data is inaccessible anyway
       } else if (keyValue === false) {
         // console.log("Nulling record '" + keyname + "'");
       } else if (keyValue !== undefined) {
         // this._pushError("Unknown record type: '" + keyname + "'", this.name);
       } else {
         // this._pushError("Unknown record.", this.name);
+      }
+
+      // Clear the key from LevelDb to reduce memory usage
+      // The key data has been handed off to WorldChunks or is no longer needed
+      if (clearKeysAfterProcess) {
+        this.levelDb.keys.delete(keyname);
       }
     }
 

@@ -1,10 +1,8 @@
 import Project from "../../app/Project";
 import IProjectInfoGenerator from "../IProjectInfoGenerator";
-import { IProjectInfoTopicData } from "../IProjectInfoGeneratorBase";
 import ProjectInfoItem from "../ProjectInfoItem";
 import Pack, { PackType } from "../../minecraft/Pack";
 import { InfoItemType } from "../IInfoItemData";
-import ProjectInfoUtilities from "../ProjectInfoUtilities";
 import { isPackIcon, parseImageMetadata } from "../../storage/ImageUtilites";
 
 enum CheckPacksIconsGeneratorTest {
@@ -26,10 +24,11 @@ const IconMinWidth = 2;
  *  * icon is square
  *  * icon is within size limits
  *
+ * @see {@link ../../../public/data/forms/mctoolsval/cpackicon.form.json} for topic definitions
  */
 export default class CheckPackIconsGenerator implements IProjectInfoGenerator {
   id: string = "CPACKICON";
-  title: string = "Check Pack Icon Generator";
+  title: string = "Pack Icon";
   canAlwaysProcess = true;
 
   private severity = InfoItemType.error;
@@ -49,11 +48,6 @@ export default class CheckPackIconsGenerator implements IProjectInfoGenerator {
     return results;
   }
 
-  getTopicData(topicId: number): IProjectInfoTopicData | undefined {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(CheckPacksIconsGeneratorTest, topicId),
-    };
-  }
   summarize(): void {}
 
   private async getResultForPack(pack: Pack): Promise<ProjectInfoItem | null> {

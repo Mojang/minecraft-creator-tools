@@ -35,6 +35,11 @@ export enum ItemTypeInfo {
   failedToParseLatestMinecraftVersion = 501,
 }
 
+/**
+ * Validates and updates item type definitions, including format version management.
+ *
+ * @see {@link ../../../public/data/forms/mctoolsval/itemtype.form.json} for topic definitions
+ */
 export default class ItemTypeManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "ITEMTYPE";
   title = "Item Type";

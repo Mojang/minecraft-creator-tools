@@ -1,0 +1,45 @@
+{
+  "status": "pass",
+  "comparedFiles": [
+    {
+      "phase": "folder-export",
+      "label": "behavior entity JSON",
+      "relativePath": "/entities/sample_entity.json"
+    },
+    {
+      "phase": "folder-export",
+      "label": "behavior block JSON",
+      "relativePath": "/blocks/sample_block.json"
+    },
+    {
+      "phase": "folder-export",
+      "label": "behavior item JSON",
+      "relativePath": "/items/sample_item.json"
+    },
+    {
+      "phase": "folder-export",
+      "label": "resource asset",
+      "relativePath": "/models/entity/sample_entity.json"
+    },
+    {
+      "phase": "mcpack-export",
+      "label": "behavior entity JSON",
+      "relativePath": "/entities/sample_entity.json"
+    },
+    {
+      "phase": "mcpack-export",
+      "label": "behavior block JSON",
+      "relativePath": "/blocks/sample_block.json"
+    },
+    {
+      "phase": "mcpack-export",
+      "label": "behavior item JSON",
+      "relativePath": "/items/sample_item.json"
+    },
+    {
+      "phase": "mcpack-export",
+      "label": "resource asset",
+      "relativePath": "/models/entity/sample_entity.json"
+    }
+  ]
+}

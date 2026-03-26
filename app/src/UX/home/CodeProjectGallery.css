@@ -1,0 +1,127 @@
+@media only screen and (min-width: 800px) {
+  .pg-binWrap {
+    margin: 10px;
+    margin-top: 0px;
+    padding: 8px;
+    border-left: solid 1px;
+    border-right: solid 1px;
+    border-bottom: solid 1px;
+    border-top: solid 0px;
+    border-radius: 0 0 2px 2px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(216px, 1fr));
+    gap: 0;
+    justify-items: start;
+  }
+
+  .pg-tabArea {
+    display: block;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 0px;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .pg-binWrap {
+    margin-top: 0px;
+    padding: 8px;
+    border-left: solid 0px;
+    border-right: solid 0px;
+    border-bottom: solid 1px;
+    border-top: solid 0px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(216px, 1fr));
+    gap: 0;
+    justify-items: center;
+  }
+
+  .pg-binWrap-small {
+    border-top: solid 1px;
+  }
+
+  .pg-tabArea {
+    display: block;
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    margin-top: 10px;
+    margin-left: 4px;
+  }
+}
+
+.pg-binWrap-empty {
+  padding: 16px;
+  display: block;
+}
+
+.pg-outer {
+  padding-bottom: 10px;
+}
+
+.pg-notFound {
+  padding: 16px;
+  opacity: 0.7;
+  grid-column: 1 / -1;
+}
+
+.pg-tabButton-selected {
+  border-top-left-radius: 2px !important;
+  border-top-right-radius: 2px !important;
+  display: inline-block;
+  height: 42px;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+  margin: 0px;
+  font-weight: 600;
+  position: relative;
+}
+
+.pg-tabButton-selected::after {
+  content: "";
+  position: absolute;
+  bottom: 10px;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: #52a535;
+  border-radius: 1px;
+}
+
+.pg-tabButton {
+  border-top-left-radius: 2px !important;
+  border-top-right-radius: 2px !important;
+  display: inline-block;
+  height: 42px;
+  padding: 10px 20px 10px 20px;
+  margin: 0px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.pg-tabButton:hover {
+  background-color: rgba(82, 165, 53, 0.1) !important;
+}
+
+.pg-tabsTop {
+  width: 100%;
+  display: grid;
+  margin-right: 28px;
+  grid-template-columns: auto 1fr;
+}
+
+.pg-underline {
+  display: inline-block;
+  height: 32.5px;
+  width: 6px;
+  grid-column: 1;
+  border-bottom: solid 1px;
+}
+
+.pg-tabsFiller {
+  display: inline-block;
+  height: 51px;
+  margin-right: 10px;
+  grid-column: 2;
+  border-bottom: solid 1px;
+}

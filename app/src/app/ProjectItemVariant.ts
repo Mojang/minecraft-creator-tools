@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import { EventDispatcher } from "ste-events";
 import IFile from "../storage/IFile";
 import IFolder from "../storage/IFolder";

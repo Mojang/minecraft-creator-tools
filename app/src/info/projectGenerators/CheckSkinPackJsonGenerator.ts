@@ -3,7 +3,6 @@ import Project from "../../app/Project";
 import ProjectItem from "../../app/ProjectItem";
 import { InfoItemType } from "../IInfoItemData";
 import IProjectInfoGenerator from "../IProjectInfoGenerator";
-import { IProjectInfoTopicData } from "../IProjectInfoGeneratorBase";
 import ProjectInfoItem from "../ProjectInfoItem";
 import {
   getModelTargetGeometry,
@@ -66,9 +65,14 @@ const Tests = {
   },
 } as const;
 
+/**
+ * Validates skin pack JSON files including skins.json structure and texture references.
+ *
+ * @see {@link ../../../public/data/forms/mctoolsval/cspj.form.json} for topic definitions
+ */
 export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator {
   id: string = "CSPJ";
-  title: string = "Check Skin Pack Json Generator";
+  title: string = "Skin Pack Validation";
   canAlwaysProcess = true;
 
   async generate(project: Project): Promise<ProjectInfoItem[]> {
@@ -130,12 +134,6 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
     }
 
     return allResults;
-  }
-
-  getTopicData(topicId: number): IProjectInfoTopicData | undefined {
-    const title = Object.values(Tests).find((value) => value.id === topicId)?.title || `Unknown Test: ${topicId}`;
-
-    return { title };
   }
 
   summarize(): void {}

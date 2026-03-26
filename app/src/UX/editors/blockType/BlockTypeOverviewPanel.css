@@ -1,0 +1,287 @@
+/**
+ * BlockTypeOverviewPanel.css
+ *
+ * Styles for the block type overview panel, which displays:
+ * - A block viewer on the left
+ * - Block configuration (states, components, permutations) on the right
+ */
+
+/* CSS Custom Properties for theming */
+.btop-outer-dark {
+  --btop-bg: #1e1e1e;
+  --btop-panel-bg: #2a2a2a;
+  --btop-text: #e0e0e0;
+  --btop-text-muted: #a0a0a0;
+  --btop-border: #3a3a3a;
+  --btop-link: #6eb3f7;
+  --btop-chip-bg: #333333;
+  --btop-row-hover: rgba(255, 255, 255, 0.05);
+  --btop-icon-bg: #1a1a1a;
+}
+
+.btop-outer-light {
+  --btop-bg: #f5f5f5;
+  --btop-panel-bg: #ffffff;
+  --btop-text: #333333;
+  --btop-text-muted: #666666;
+  --btop-border: #dcdcdc;
+  --btop-link: #0078d4;
+  --btop-chip-bg: #f0f0f0;
+  --btop-row-hover: rgba(0, 0, 0, 0.03);
+  --btop-icon-bg: #2a2a2a;
+}
+
+.btop-outer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  gap: 12px;
+  padding: 8px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.btop-previewSection {
+  flex: 1;
+  min-width: 300px;
+  max-width: 50%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.btop-blockViewer {
+  width: 100%;
+  height: calc(100% - 40px);
+  min-height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btop-modelHint {
+  text-align: center;
+  font-size: 11px;
+  opacity: 0.5;
+  padding: 2px 0;
+  letter-spacing: 0.3px;
+}
+
+/* Block preview info (placeholder for custom blocks) */
+.btop-blockPreviewInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+  text-align: center;
+}
+
+.btop-blockIcon {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%);
+  border-radius: 4px;
+  box-shadow: var(--surface-shadow-md, 0 4px 12px rgba(0, 0, 0, 0.15));
+}
+
+.btop-blockIconEmoji {
+  font-size: 40px;
+}
+
+.btop-blockDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btop-blockId {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--btop-text);
+  font-family: monospace;
+}
+
+.btop-blockGeometry {
+  font-size: 12px;
+  color: var(--btop-text-muted);
+}
+
+.btop-detailLabel {
+  color: var(--btop-text);
+  font-weight: 500;
+}
+
+.btop-blockStats {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--btop-text-muted);
+}
+
+.btop-stat {
+  color: var(--btop-link);
+}
+
+.btop-statSep {
+  color: var(--btop-border);
+}
+
+/* Details section - right side scrollable list */
+.btop-detailsSection {
+  flex: 1;
+  min-width: 300px;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.btop-detailsScroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 8px;
+}
+
+/* Section group styling */
+.btop-sectionGroup {
+  margin-bottom: 16px;
+}
+
+.btop-sectionGroup:last-child {
+  margin-bottom: 0;
+}
+
+.btop-groupHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 4px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--btop-border);
+  cursor: pointer;
+}
+
+.btop-groupHeader:hover .btop-groupLink {
+  text-decoration: underline;
+}
+
+.btop-groupName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--btop-text);
+}
+
+.btop-groupLink {
+  font-size: 11px;
+  color: var(--btop-link);
+  font-weight: 500;
+}
+
+/* State info */
+.btop-stateInfo {
+  padding: 8px;
+  font-size: 12px;
+  color: var(--btop-text-muted);
+  font-style: italic;
+}
+
+/* Empty message */
+.btop-emptyMessage {
+  padding: 8px;
+  font-size: 12px;
+  color: var(--btop-text-muted);
+  font-style: italic;
+}
+
+/* Component list */
+.btop-componentList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.btop-componentRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: background 0.1s ease;
+}
+
+.btop-componentRow:hover {
+  background: var(--btop-row-hover);
+}
+
+.btop-componentIcon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--btop-icon-bg);
+  border-radius: 4px;
+  border: 2px solid var(--slot-color, var(--btop-chip-bg));
+  box-sizing: border-box;
+}
+
+.btop-componentText {
+  flex: 1;
+  font-size: 12px;
+  color: var(--btop-text);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* Permutation section */
+.btop-permutationSection {
+  margin-top: 8px;
+  padding-left: 8px;
+  border-left: 2px solid var(--btop-border);
+}
+
+.btop-permutationHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 0;
+  margin-bottom: 4px;
+}
+
+.btop-permutationName {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--btop-text);
+}
+
+.btop-permutationCondition {
+  font-size: 11px;
+  color: var(--btop-text-muted);
+  font-family: monospace;
+}
+
+/* Responsive layout for smaller screens */
+@media (max-width: 800px) {
+  .btop-outer {
+    flex-direction: column;
+  }
+
+  .btop-previewSection {
+    max-width: 100%;
+    max-height: 300px;
+  }
+
+  .btop-detailsSection {
+    max-height: 400px;
+  }
+}

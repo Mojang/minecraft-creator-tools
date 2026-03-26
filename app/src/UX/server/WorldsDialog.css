@@ -1,0 +1,234 @@
+/* WorldsDialog.css - Styles for the Worlds Management Dialog */
+
+/* Override FluentUI Dialog's max-width constraint for WorldsDialog */
+.ui-dialog:has(.wdl-content) {
+  max-width: 950px !important;
+  width: 950px !important;
+}
+
+/* Fallback for browsers that don't support :has() */
+.wdl-dialog-wrapper {
+  max-width: 950px !important;
+  width: 950px !important;
+}
+
+.wdl-content {
+  min-width: 700px;
+  width: 900px;
+  max-width: 95vw;
+  min-height: 500px;
+  height: 600px;
+  max-height: 80vh;
+  overflow: hidden;
+}
+
+.wdl-loading,
+.wdl-error,
+.wdl-noSelection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  color: #888;
+}
+
+.wdl-error {
+  color: #ff6b6b;
+}
+
+.wdl-mainContent {
+  display: flex;
+  gap: 20px;
+  height: 100%;
+  min-height: 450px;
+}
+
+/* Left panel - World list */
+.wdl-worldListPanel {
+  width: 280px;
+  min-width: 220px;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.wdl-worldList {
+  flex: 1;
+  min-height: 200px;
+  max-height: none;
+  overflow-y: auto;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 4px;
+}
+
+.wdl-worldList .ui-list__item {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+.wdl-worldList .ui-list__item:hover {
+  background-color: rgba(128, 128, 128, 0.1);
+}
+
+.wdl-worldSelected {
+  background-color: rgba(100, 149, 237, 0.2) !important;
+}
+
+.wdl-worldHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wdl-worldName {
+  font-weight: 500;
+}
+
+.wdl-currentSlotIndicator {
+  font-size: 11px;
+  color: #4caf50;
+  background-color: rgba(76, 175, 80, 0.15);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.wdl-worldInfo {
+  font-size: 12px;
+  color: #888;
+}
+
+.wdl-noWorlds {
+  padding: 20px;
+  text-align: center;
+  color: #888;
+}
+
+/* Right panel - Details */
+.wdl-detailPanel {
+  flex: 1;
+  min-width: 350px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow: hidden;
+}
+
+.wdl-worldDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wdl-description {
+  color: #888;
+  font-style: italic;
+  word-wrap: break-word;
+}
+
+.wdl-metadata {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 8px;
+  background-color: rgba(128, 128, 128, 0.1);
+  border-radius: 4px;
+}
+
+.wdl-metaRow {
+  display: flex;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.wdl-metaLabel {
+  font-weight: 500;
+  min-width: 100px;
+  color: #888;
+}
+
+.wdl-worldId {
+  font-family: monospace;
+  font-size: 12px;
+  color: #888;
+}
+
+/* Backups section */
+.wdl-backupsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  overflow: hidden;
+  min-height: 150px;
+}
+
+.wdl-backupList {
+  flex: 1;
+  min-height: 100px;
+  max-height: none;
+  overflow-y: auto;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 4px;
+}
+
+.wdl-backupList .ui-list__item {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+.wdl-backupHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wdl-backupDate {
+  font-weight: 500;
+}
+
+.wdl-backupType {
+  font-size: 11px;
+  color: #666;
+  background-color: rgba(128, 128, 128, 0.15);
+  padding: 2px 6px;
+  border-radius: 3px;
+  text-transform: capitalize;
+}
+
+.wdl-backupInfo {
+  font-size: 12px;
+  color: #888;
+}
+
+.wdl-backupActions {
+  display: flex;
+  gap: 4px;
+}
+
+.wdl-noBackups {
+  padding: 20px;
+  text-align: center;
+  color: #888;
+}
+
+/* Confirmation dialog */
+.wdl-confirmContent {
+  text-align: center;
+  padding: 16px;
+}
+
+.wdl-warningIcon {
+  font-size: 48px;
+  color: #ff9800;
+  margin-bottom: 16px;
+}
+
+.wdl-confirmFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

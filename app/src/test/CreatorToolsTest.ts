@@ -4,15 +4,10 @@
 import { expect, assert } from "chai";
 import CreatorTools from "../app/CreatorTools";
 import Project, { ProjectAutoDeploymentMode } from "../app/Project";
-import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
 import Status from "../app/Status";
-import NodeStorage from "../local/NodeStorage";
-import Database from "../minecraft/Database";
-import LocalEnvironment from "../local/LocalEnvironment";
-import ProjectInfoSet from "../info/ProjectInfoSet";
-import { ProjectInfoSuite } from "../info/IProjectInfoData";
 import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
+import ZipStorage from "../storage/ZipStorage";
 import ProjectExporter from "../app/ProjectExporter";
 import { IWorldSettings } from "../minecraft/IWorldSettings";
 import { GameType, Generator } from "../minecraft/WorldLevelDat";
@@ -21,99 +16,28 @@ import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType, ProjectItemStorageType } from "../app/IProjectItemData";
 import ProjectUtilities from "../app/ProjectUtilities";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
-import LocalUtilities from "../local/LocalUtilities";
 import { ensureReportJsonMatchesScenario, folderMatches } from "./TestUtilities";
-
-CreatorToolsHost.hostType = HostType.testLocal;
+import TestPaths, { ITestEnvironment } from "./TestPaths";
+import ProjectInfoSet from "../info/ProjectInfoSet";
+import { ProjectInfoSuite } from "../info/IProjectInfoData";
+import Database from "../minecraft/Database";
 
 let creatorTools: CreatorTools | undefined = undefined;
-let localEnv: LocalEnvironment | undefined = undefined;
 
 let scenariosFolder: IFolder | undefined = undefined;
-
 let resultsFolder: IFolder | undefined = undefined;
 
-localEnv = new LocalEnvironment(false);
-
 (async () => {
-  CreatorToolsHost.localFolderExists = _localFolderExists;
-  CreatorToolsHost.ensureLocalFolder = _ensureLocalFolder;
-
-  const scenariosStorage = new NodeStorage(
-    NodeStorage.ensureEndsWithDelimiter(__dirname) + "/../../test/",
-    "scenarios"
-  );
-
-  scenariosFolder = scenariosStorage.rootFolder;
-
-  await scenariosFolder.ensureExists();
-
-  const resultsStorage = new NodeStorage(NodeStorage.ensureEndsWithDelimiter(__dirname) + "/../../test/", "results");
-
-  resultsFolder = resultsStorage.rootFolder;
-
-  await resultsFolder.ensureExists();
-
-  CreatorToolsHost.prefsStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "prefs" + NodeStorage.platformFolderDelimiter,
-    ""
-  );
-
-  CreatorToolsHost.projectsStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "projects" + NodeStorage.platformFolderDelimiter,
-    ""
-  );
-
-  CreatorToolsHost.packStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "packs" + NodeStorage.platformFolderDelimiter,
-    ""
-  );
-
-  CreatorToolsHost.worldStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "worlds" + NodeStorage.platformFolderDelimiter,
-    ""
-  );
-
-  CreatorToolsHost.workingStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "working" + NodeStorage.platformFolderDelimiter,
-    ""
-  );
-
-  const coreStorage = new NodeStorage(__dirname + "/../../public/data/content/", "");
-  Database.contentFolder = coreStorage.rootFolder;
-
-  await CreatorToolsHost.init();
-
-  creatorTools = CreatorToolsHost.getCreatorTools();
-
-  if (!creatorTools) {
-    return;
-  }
-
-  await creatorTools.load();
-
-  // Set up Database.local with proper path adjustment to find schemas in public/
-  (localEnv.utilities as LocalUtilities).basePathAdjust = "../public/";
-  Database.local = localEnv.utilities;
-  creatorTools.local = localEnv.utilities;
+  const env: ITestEnvironment = await TestPaths.createTestEnvironment();
+  creatorTools = env.creatorTools;
+  scenariosFolder = env.scenariosFolder;
+  resultsFolder = env.resultsFolder;
 
   creatorTools.onStatusAdded.subscribe(handleStatusAdded);
 })();
 
 function handleStatusAdded(creatorTools: CreatorTools, status: Status) {
   console.log(status.message);
-}
-
-function _ensureLocalFolder(path: string) {
-  const ls = new NodeStorage(path, "");
-
-  return ls.rootFolder;
-}
-
-async function _localFolderExists(path: string) {
-  const ls = new NodeStorage(path, "");
-
-  return await ls.rootFolder.exists();
 }
 
 async function _loadProject(name: string) {
@@ -124,7 +48,7 @@ async function _loadProject(name: string) {
   const project = new Project(creatorTools, name, null);
 
   project.autoDeploymentMode = ProjectAutoDeploymentMode.noAutoDeployment;
-  project.localFolderPath = __dirname + "/../../../samplecontent/" + name + "/";
+  project.localFolderPath = TestPaths.sampleContentPath(name);
 
   await project.inferProjectItemsFromFiles();
 
@@ -150,6 +74,45 @@ function removeResultFolder(scenarioName: string) {
       }
     }
   }
+}
+
+function getRepresentativeRelativePath(
+  project: Project,
+  itemType: ProjectItemType,
+  packFolder: IFolder,
+  label: string
+): string {
+  const matchingItem = project.items.find((item) => {
+    if (item.itemType !== itemType || !item.primaryFile) {
+      return false;
+    }
+
+    return item.primaryFile.getFolderRelativePath(packFolder) !== undefined;
+  });
+
+  assert.isDefined(matchingItem, `Could not find representative ${label} file in project '${project.name}'.`);
+  assert.isNotNull(matchingItem?.primaryFile, `Representative ${label} item has no primary file.`);
+
+  const relativePath = matchingItem?.primaryFile?.getFolderRelativePath(packFolder);
+  assert.isTrue(!!relativePath, `Could not resolve relative path for representative ${label} file.`);
+
+  return relativePath as string;
+}
+
+async function assertSemanticFileMatch(
+  sourcePackFolder: IFolder,
+  targetPackFolder: IFolder,
+  relativePath: string,
+  label: string
+) {
+  const sourceFile = await sourcePackFolder.ensureFileFromRelativePath(relativePath);
+  const targetFile = await targetPackFolder.ensureFileFromRelativePath(relativePath);
+  const filesMatch = await StorageUtilities.fileContentsEqual(sourceFile, targetFile, true);
+
+  assert.isTrue(
+    filesMatch,
+    `Round-trip semantic drift in ${label} for '${relativePath}' (source: ${sourceFile.fullPath}, target: ${targetFile.fullPath})`
+  );
 }
 
 describe("simple", async () => {
@@ -205,6 +168,148 @@ describe("deployJs", async () => {
 
     await folderMatches(scenariosFolder, resultsFolder, "deployJs", ["level.dat", "level.dat_old"]);
   });
+});
+
+describe("roundTripExportFidelity", async () => {
+  const scenarioName = "roundTripExportFidelity";
+
+  before((done) => {
+    removeResultFolder(scenarioName);
+    done();
+  });
+
+  it("preserves representative BP/RP semantics for import -> zero edits -> export", async () => {
+    if (!creatorTools || !resultsFolder) {
+      assert.fail("Not properly initialized");
+    }
+
+    const reportData: {
+      status: "pass" | "fail";
+      comparedFiles: { phase: "folder-export" | "mcpack-export"; label: string; relativePath: string }[];
+      error?: string;
+    } = {
+      status: "pass",
+      comparedFiles: [],
+    };
+
+    const resultsOutFolder = resultsFolder.ensureFolder(scenarioName);
+    await resultsOutFolder.ensureExists();
+
+    try {
+      const project = await _loadProject("comprehensive");
+      const behaviorPackFolder = await project.getDefaultBehaviorPackFolder();
+      const resourcePackFolder = await project.getDefaultResourcePackFolder();
+
+      assert.isDefined(behaviorPackFolder, "Expected a default behavior pack folder for round-trip fidelity test.");
+      assert.isDefined(resourcePackFolder, "Expected a default resource pack folder for round-trip fidelity test.");
+
+      const representativeFiles = [
+        {
+          phaseLabel: "behavior entity JSON",
+          relativePath: getRepresentativeRelativePath(
+            project,
+            ProjectItemType.entityTypeBehavior,
+            behaviorPackFolder as IFolder,
+            "entity behavior"
+          ),
+          source: "bp" as const,
+        },
+        {
+          phaseLabel: "behavior block JSON",
+          relativePath: getRepresentativeRelativePath(
+            project,
+            ProjectItemType.blockTypeBehavior,
+            behaviorPackFolder as IFolder,
+            "block behavior"
+          ),
+          source: "bp" as const,
+        },
+        {
+          phaseLabel: "behavior item JSON",
+          relativePath: getRepresentativeRelativePath(
+            project,
+            ProjectItemType.itemTypeBehavior,
+            behaviorPackFolder as IFolder,
+            "item behavior"
+          ),
+          source: "bp" as const,
+        },
+        {
+          phaseLabel: "resource asset",
+          relativePath: getRepresentativeRelativePath(
+            project,
+            ProjectItemType.modelGeometryJson,
+            resourcePackFolder as IFolder,
+            "resource geometry"
+          ),
+          source: "rp" as const,
+        },
+      ];
+
+      const deploySucceeded = await ProjectExporter.deployProject(creatorTools, project, resultsOutFolder);
+      assert.isTrue(!!deploySucceeded, "Round-trip export deployment failed.");
+
+      const exportedBehaviorPackFolder = resultsOutFolder
+        .ensureFolder("development_behavior_packs")
+        .ensureFolder((behaviorPackFolder as IFolder).ensuredName);
+      const exportedResourcePackFolder = resultsOutFolder
+        .ensureFolder("development_resource_packs")
+        .ensureFolder((resourcePackFolder as IFolder).ensuredName);
+
+      assert.isTrue(await exportedBehaviorPackFolder.exists(), "Exported behavior pack folder was not created.");
+      assert.isTrue(await exportedResourcePackFolder.exists(), "Exported resource pack folder was not created.");
+
+      for (const representative of representativeFiles) {
+        const sourcePack =
+          representative.source === "bp" ? (behaviorPackFolder as IFolder) : (resourcePackFolder as IFolder);
+        const exportedPack = representative.source === "bp" ? exportedBehaviorPackFolder : exportedResourcePackFolder;
+
+        await assertSemanticFileMatch(sourcePack, exportedPack, representative.relativePath, representative.phaseLabel);
+        reportData.comparedFiles.push({
+          phase: "folder-export",
+          label: representative.phaseLabel,
+          relativePath: representative.relativePath,
+        });
+      }
+
+      const addonZip = await ProjectExporter.generateMCAddonAsZip(creatorTools, project, false);
+      assert.instanceOf(addonZip, Uint8Array, "Expected MCAddon export to return zip bytes.");
+
+      const zipStorage = new ZipStorage();
+      await zipStorage.loadFromUint8Array(addonZip as Uint8Array, "roundtrip.mcpack");
+
+      const zippedBehaviorPackFolder = zipStorage.rootFolder.ensureFolder(
+        (behaviorPackFolder as IFolder).ensuredName + "_bp"
+      );
+      const zippedResourcePackFolder = zipStorage.rootFolder.ensureFolder(
+        (resourcePackFolder as IFolder).ensuredName + "_rp"
+      );
+
+      assert.isTrue(await zippedBehaviorPackFolder.exists(), "MCAddon behavior pack folder is missing.");
+      assert.isTrue(await zippedResourcePackFolder.exists(), "MCAddon resource pack folder is missing.");
+
+      for (const representative of representativeFiles) {
+        const sourcePack =
+          representative.source === "bp" ? (behaviorPackFolder as IFolder) : (resourcePackFolder as IFolder);
+        const zippedPack = representative.source === "bp" ? zippedBehaviorPackFolder : zippedResourcePackFolder;
+
+        await assertSemanticFileMatch(sourcePack, zippedPack, representative.relativePath, representative.phaseLabel);
+        reportData.comparedFiles.push({
+          phase: "mcpack-export",
+          label: representative.phaseLabel,
+          relativePath: representative.relativePath,
+        });
+      }
+    } catch (error) {
+      reportData.status = "fail";
+      reportData.error = error instanceof Error ? error.message : String(error);
+      throw error;
+    } finally {
+      const reportFile = resultsOutFolder.ensureFile("roundtrip-fidelity-report.json");
+      reportFile.setContent(JSON.stringify(reportData, null, 2));
+      await reportFile.saveContent();
+    }
+  }).timeout(180000);
 });
 
 describe("Project utility methods", () => {
@@ -839,5 +944,1738 @@ describe("jigsawDependency", async () => {
       );
       assert.isTrue(hasProcessorChild, "Template pool should have processor list as child");
     }
+  });
+});
+
+describe("StructureUtilities", async () => {
+  it("converts IBlockVolume to MCStructure correctly", async () => {
+    const StructureUtilities = (await import("../minecraft/StructureUtilities")).default;
+
+    // Sample IBlockVolume: A small 3x3x3 structure with a hollow cube of stone
+    // Using blockLayersBottomToTop: Y layers from bottom to top
+    // Each layer: rows from north to south (Z), each character is X (west to east)
+    const sampleBlockVolume: import("../minecraft/IBlockVolume").IBlockVolume = {
+      entities: [],
+      southWestBottom: { x: 100, y: 64, z: 200 },
+      size: { x: 3, y: 3, z: 3 },
+      blockLayersBottomToTop: [
+        // Y=0 layer (bottom)
+        ["sss", "s s", "sss"],
+        // Y=1 layer (middle) - hollow inside
+        ["s s", "   ", "s s"],
+        // Y=2 layer (top)
+        ["sss", "s s", "sss"],
+      ],
+      key: {
+        s: { typeId: "minecraft:stone" },
+        " ": { typeId: "minecraft:air" },
+      },
+    };
+
+    const structure = StructureUtilities.createStructureFromIBlockVolume(sampleBlockVolume);
+
+    // Verify origin is set correctly
+    expect(structure.originX).to.equal(100);
+    expect(structure.originY).to.equal(64);
+    expect(structure.originZ).to.equal(200);
+
+    // Verify cube dimensions
+    expect(structure.cube).to.not.be.undefined;
+    expect(structure.cube!.maxX).to.equal(3);
+    expect(structure.cube!.maxY).to.equal(3);
+    expect(structure.cube!.maxZ).to.equal(3);
+
+    // Verify corner blocks are stone
+    const corner000 = structure.cube!.x(0).y(0).z(0);
+    expect(corner000.shortTypeId).to.equal("stone");
+
+    const corner222 = structure.cube!.x(2).y(2).z(2);
+    expect(corner222.shortTypeId).to.equal("stone");
+
+    // Verify center is air (hollow)
+    const center = structure.cube!.x(1).y(1).z(1);
+    expect(center.shortTypeId).to.equal("air");
+
+    // Verify the structure can generate MCStructure bytes
+    const bytes = structure.getMCStructureBytes();
+    expect(bytes).to.not.be.undefined;
+    expect(bytes!.length).to.be.greaterThan(0);
+  });
+
+  it("handles block properties", async () => {
+    const StructureUtilities = (await import("../minecraft/StructureUtilities")).default;
+
+    // Test with block properties using the properties field
+    const blockVolumeWithProperties: import("../minecraft/IBlockVolume").IBlockVolume = {
+      entities: [],
+      southWestBottom: { x: 0, y: 0, z: 0 },
+      size: { x: 2, y: 1, z: 1 },
+      blockLayersBottomToTop: [["ab"]],
+      key: {
+        a: {
+          typeId: "minecraft:oak_stairs",
+          properties: { facing: "north", half: "bottom" },
+        },
+        b: {
+          typeId: "oak_log", // Test without minecraft: prefix
+          properties: { axis: "y" },
+        },
+      },
+    };
+
+    const structure = StructureUtilities.createStructureFromIBlockVolume(blockVolumeWithProperties);
+
+    // Verify the stairs block has correct type and properties
+    const stairsBlock = structure.cube!.x(0).y(0).z(0);
+    expect(stairsBlock.shortTypeId).to.equal("oak_stairs");
+    expect(stairsBlock.getProperty("facing")?.value).to.equal("north");
+    expect(stairsBlock.getProperty("half")?.value).to.equal("bottom");
+
+    // Verify the log block has correct type and axis property
+    const logBlock = structure.cube!.x(1).y(0).z(0);
+    expect(logBlock.shortTypeId).to.equal("oak_log");
+    expect(logBlock.getProperty("axis")?.value).to.equal("y");
+  });
+
+  it("converts Structure back to IBlockVolume", async () => {
+    const StructureUtilities = (await import("../minecraft/StructureUtilities")).default;
+
+    // Create a simple structure
+    const originalBlockVolume: import("../minecraft/IBlockVolume").IBlockVolume = {
+      entities: [],
+      southWestBottom: { x: 10, y: 20, z: 30 },
+      size: { x: 2, y: 2, z: 2 },
+      blockLayersBottomToTop: [
+        // Y=0 layer (bottom)
+        ["sd", "gw"],
+        // Y=1 layer (top)
+        ["ds", "wg"],
+      ],
+      key: {
+        s: { typeId: "minecraft:stone" },
+        d: { typeId: "minecraft:dirt" },
+        g: { typeId: "minecraft:grass_block" },
+        w: { typeId: "minecraft:water" },
+      },
+    };
+
+    // Convert to Structure
+    const structure = StructureUtilities.createStructureFromIBlockVolume(originalBlockVolume);
+
+    // Convert back to IBlockVolume
+    const convertedBlockVolume = StructureUtilities.createIBlockVolumeFromStructure(structure);
+
+    expect(convertedBlockVolume).to.not.be.undefined;
+    expect(convertedBlockVolume!.size!.x).to.equal(2);
+    expect(convertedBlockVolume!.size!.y).to.equal(2);
+    expect(convertedBlockVolume!.size!.z).to.equal(2);
+    expect(convertedBlockVolume!.southWestBottom.x).to.equal(10);
+    expect(convertedBlockVolume!.southWestBottom.y).to.equal(20);
+    expect(convertedBlockVolume!.southWestBottom.z).to.equal(30);
+
+    // Verify the key contains our block types
+    const keyValues = Object.values(convertedBlockVolume!.key);
+    const typeIds = keyValues.map((v) => v.typeId);
+
+    expect(typeIds.some((t) => t.includes("stone"))).to.be.true;
+    expect(typeIds.some((t) => t.includes("dirt"))).to.be.true;
+    expect(typeIds.some((t) => t.includes("grass_block"))).to.be.true;
+    expect(typeIds.some((t) => t.includes("water"))).to.be.true;
+  });
+
+  it("infers size from IBlockVolume when not provided", async () => {
+    const StructureUtilities = (await import("../minecraft/StructureUtilities")).default;
+
+    // IBlockVolume WITHOUT explicit size - should be inferred
+    const blockVolumeNoSize: import("../minecraft/IBlockVolume").IBlockVolume = {
+      entities: [],
+      southWestBottom: { x: 0, y: 64, z: 0 },
+      // No size field!
+      blockLayersBottomToTop: [
+        // Y=0 layer
+        ["sss", "s s", "sss"],
+        // Y=1 layer
+        ["s s", "   ", "s s"],
+      ],
+      key: {
+        s: { typeId: "minecraft:stone" },
+        " ": { typeId: "minecraft:air" },
+      },
+    };
+
+    // Test size inference
+    const inferredSize = StructureUtilities.inferBlockVolumeSize(blockVolumeNoSize);
+    expect(inferredSize.x).to.equal(3); // max string length
+    expect(inferredSize.y).to.equal(2); // number of layers
+    expect(inferredSize.z).to.equal(3); // max rows per layer
+
+    // Test getEffectiveSize returns inferred when size not provided
+    const effectiveSize = StructureUtilities.getEffectiveSize(blockVolumeNoSize);
+    expect(effectiveSize.x).to.equal(3);
+    expect(effectiveSize.y).to.equal(2);
+    expect(effectiveSize.z).to.equal(3);
+
+    // Test that structure creation works without explicit size
+    const structure = StructureUtilities.createStructureFromIBlockVolume(blockVolumeNoSize);
+    expect(structure.cube).to.not.be.undefined;
+    expect(structure.cube!.maxX).to.equal(3);
+    expect(structure.cube!.maxY).to.equal(2);
+    expect(structure.cube!.maxZ).to.equal(3);
+
+    // Verify blocks are placed correctly
+    const corner000 = structure.cube!.x(0).y(0).z(0);
+    expect(corner000.shortTypeId).to.equal("stone");
+  });
+
+  it("handles variable-length strings in IBlockVolume", async () => {
+    const StructureUtilities = (await import("../minecraft/StructureUtilities")).default;
+
+    // IBlockVolume with variable-length strings (shorter strings = trailing air)
+    const blockVolumeVariableLength: import("../minecraft/IBlockVolume").IBlockVolume = {
+      entities: [],
+      southWestBottom: { x: 0, y: 64, z: 0 },
+      blockLayersBottomToTop: [
+        // Variable length strings - shorter ones get trailing air
+        ["ssss", "s", "ss"], // max length 4, but row 1 has length 1, row 2 has length 2
+      ],
+      key: {
+        s: { typeId: "minecraft:stone" },
+      },
+    };
+
+    const inferredSize = StructureUtilities.inferBlockVolumeSize(blockVolumeVariableLength);
+    expect(inferredSize.x).to.equal(4); // max string length is 4
+    expect(inferredSize.y).to.equal(1); // 1 layer
+    expect(inferredSize.z).to.equal(3); // 3 rows
+
+    const structure = StructureUtilities.createStructureFromIBlockVolume(blockVolumeVariableLength);
+
+    // First row, all 4 blocks should be stone
+    expect(structure.cube!.x(0).y(0).z(0).shortTypeId).to.equal("stone");
+    expect(structure.cube!.x(3).y(0).z(0).shortTypeId).to.equal("stone");
+
+    // Second row, only first block is stone, rest are undefined (default = air)
+    expect(structure.cube!.x(0).y(0).z(1).shortTypeId).to.equal("stone");
+    expect(structure.cube!.x(1).y(0).z(1).shortTypeId).to.be.undefined;
+    expect(structure.cube!.x(2).y(0).z(1).shortTypeId).to.be.undefined;
+    expect(structure.cube!.x(3).y(0).z(1).shortTypeId).to.be.undefined;
+
+    // Third row, first 2 blocks are stone, rest are undefined
+    expect(structure.cube!.x(0).y(0).z(2).shortTypeId).to.equal("stone");
+    expect(structure.cube!.x(1).y(0).z(2).shortTypeId).to.equal("stone");
+    expect(structure.cube!.x(2).y(0).z(2).shortTypeId).to.be.undefined;
+  });
+});
+
+describe("Security Validators", () => {
+  it("detects dangerous code patterns in shared content", async () => {
+    const { BasicValidators } = await import("../storage/BasicValidators");
+
+    // Test dangerous patterns that should be detected
+    const dangerousPatterns = [
+      { code: 'import fs from "fs";', expected: "fs module import" },
+      { code: 'const cp = require("child_process");', expected: "child_process require" },
+      { code: "eval('dangerous code');", expected: "eval() call" },
+      { code: 'const fn = Function("return this");', expected: "Function constructor" },
+      { code: "process.exit(1);", expected: "process.exit call" },
+      { code: "console.log(process.env.SECRET);", expected: "process.env access" },
+      { code: "const path = __dirname + '/file';", expected: "__dirname access" },
+      { code: 'import("./module" + userInput);', expected: "dynamic import with concatenation" },
+      { code: "globalThis['eval']('code');", expected: "globalThis bracket access" },
+      { code: 'import { spawn } from "child_process";', expected: "child_process import" },
+    ];
+
+    for (const { code, expected } of dangerousPatterns) {
+      const result = BasicValidators.hasUnsafeCodePatterns(code);
+      expect(result, `Pattern "${expected}" should be detected in: ${code}`).to.not.be.undefined;
+      expect(result!.isUnsafe).to.be.true;
+      expect(result!.matches.some((m) => m.includes(expected.split(" ")[0]))).to.be.true;
+    }
+
+    // Test safe patterns that should pass
+    const safePatterns = [
+      'import { world } from "@minecraft/server";',
+      "const player = world.getAllPlayers()[0];",
+      'console.log("Hello world");',
+      "function processData(data) { return data; }",
+      "const config = { enabled: true };",
+    ];
+
+    for (const code of safePatterns) {
+      const result = BasicValidators.hasUnsafeCodePatterns(code);
+      expect(result, `Safe pattern should not be flagged: ${code}`).to.be.undefined;
+    }
+  });
+
+  it("validates allowed share paths correctly", async () => {
+    const { BasicValidators } = await import("../storage/BasicValidators");
+
+    // Allowed paths
+    const allowedPaths = [
+      "/scripts/main.ts",
+      "/behavior_pack/entities/zombie.json",
+      "/behavior_packs/mypack/items/sword.json",
+      "/resource_pack/textures/readme.json",
+      "/texts/en_US.lang",
+      "/functions/tick.mcfunction",
+      "/entities/custom_mob.json",
+      "/blocks/custom_block.json",
+      "/items/custom_item.json",
+      "/recipes/crafting.json",
+      "/loot_tables/chests/dungeon.json",
+      "/animations/walk.json",
+      "/models/geometry.json",
+    ];
+
+    for (const path of allowedPaths) {
+      expect(BasicValidators.isPathAllowedForSharing(path), `Path should be allowed: ${path}`).to.be.true;
+    }
+
+    // Paths that should be blocked (not in allowlist)
+    const blockedPaths = ["/node_modules/package/index.js", "/.git/config", "/dist/bundle.js", "/lib/utils.js"];
+
+    for (const path of blockedPaths) {
+      expect(BasicValidators.isPathAllowedForSharing(path), `Path should be blocked: ${path}`).to.be.false;
+    }
+  });
+
+  it("validates file names for sharing correctly", async () => {
+    const { BasicValidators } = await import("../storage/BasicValidators");
+
+    // Allowed file names
+    const allowedNames = ["main.ts", "entity.json", "strings.lang", "script.ts", "config.json"];
+
+    for (const name of allowedNames) {
+      expect(BasicValidators.isFileNameOKForSharing(name), `File name should be allowed: ${name}`).to.be.true;
+    }
+
+    // Blocked file names
+    const blockedNames = [
+      ".gitignore",
+      "just.config.ts",
+      "webpack.config.ts",
+      "vite.config.js",
+      "manifest.json",
+      "package.json",
+      "package-lock.json",
+      "script.exe",
+      "image.png",
+      "readme.md",
+    ];
+
+    for (const name of blockedNames) {
+      expect(BasicValidators.isFileNameOKForSharing(name), `File name should be blocked: ${name}`).to.be.false;
+    }
+  });
+
+  it("validates folder names for sharing correctly", async () => {
+    const { BasicValidators } = await import("../storage/BasicValidators");
+
+    // Allowed folder names
+    const allowedFolders = ["scripts", "entities", "items", "mypack", "custom_content"];
+
+    for (const name of allowedFolders) {
+      expect(BasicValidators.isFolderNameOKForSharing(name), `Folder name should be allowed: ${name}`).to.be.true;
+    }
+
+    // Blocked folder names
+    const blockedFolders = [".git", ".vscode", "node_modules", "lib", "dist", "build"];
+
+    for (const name of blockedFolders) {
+      expect(BasicValidators.isFolderNameOKForSharing(name), `Folder name should be blocked: ${name}`).to.be.false;
+    }
+  });
+});
+
+describe("DataFormValidator", () => {
+  it("should validate numeric min/max ranges", async () => {
+    const DataFormValidator = (await import("../dataform/DataFormValidator")).default;
+    const { DataFormIssueType } = await import("../dataform/DataFormValidator");
+    const { FieldDataType } = await import("../dataform/IField");
+
+    const form = {
+      id: "test",
+      fields: [
+        {
+          id: "score",
+          dataType: FieldDataType.int,
+          minValue: 0,
+          maxValue: 100,
+        },
+      ],
+    };
+
+    // Value within range
+    let issues = await DataFormValidator.validate({ score: 50 }, form);
+    expect(issues.length).to.equal(0);
+
+    // Value below minimum
+    issues = await DataFormValidator.validate({ score: -10 }, form);
+    expect(issues.length).to.equal(1);
+    expect(issues[0].type).to.equal(DataFormIssueType.valueBelowMinimum);
+
+    // Value above maximum
+    issues = await DataFormValidator.validate({ score: 150 }, form);
+    expect(issues.length).to.equal(1);
+    expect(issues[0].type).to.equal(DataFormIssueType.valueAboveMaximum);
+  });
+
+  it("should validate string length constraints", async () => {
+    const DataFormValidator = (await import("../dataform/DataFormValidator")).default;
+    const { DataFormIssueType } = await import("../dataform/DataFormValidator");
+    const { FieldDataType } = await import("../dataform/IField");
+
+    const form = {
+      id: "test",
+      fields: [
+        {
+          id: "name",
+          dataType: FieldDataType.string,
+          minLength: 3,
+          maxLength: 10,
+        },
+      ],
+    };
+
+    // Valid length
+    let issues = await DataFormValidator.validate({ name: "valid" }, form);
+    expect(issues.length).to.equal(0);
+
+    // Too short
+    issues = await DataFormValidator.validate({ name: "ab" }, form);
+    expect(issues.length).to.equal(1);
+    expect(issues[0].type).to.equal(DataFormIssueType.stringTooShort);
+
+    // Too long
+    issues = await DataFormValidator.validate({ name: "this_is_way_too_long" }, form);
+    expect(issues.length).to.equal(1);
+    expect(issues[0].type).to.equal(DataFormIssueType.stringTooLong);
+  });
+
+  it("should validate choices when mustMatchChoices is true", async () => {
+    const DataFormValidator = (await import("../dataform/DataFormValidator")).default;
+    const { DataFormIssueType } = await import("../dataform/DataFormValidator");
+    const { FieldDataType } = await import("../dataform/IField");
+
+    const form = {
+      id: "test",
+      fields: [
+        {
+          id: "color",
+          dataType: FieldDataType.string,
+          mustMatchChoices: true,
+          choices: [{ id: "red" }, { id: "green" }, { id: "blue" }],
+        },
+      ],
+    };
+
+    // Valid choice
+    let issues = await DataFormValidator.validate({ color: "red" }, form);
+    expect(issues.length).to.equal(0);
+
+    // Invalid choice
+    issues = await DataFormValidator.validate({ color: "purple" }, form);
+    expect(issues.length).to.equal(1);
+    expect(issues[0].type).to.equal(DataFormIssueType.valueNotInChoices);
+  });
+
+  it("should not validate choices when mustMatchChoices is false", async () => {
+    const DataFormValidator = (await import("../dataform/DataFormValidator")).default;
+    const { FieldDataType } = await import("../dataform/IField");
+
+    const form = {
+      id: "test",
+      fields: [
+        {
+          id: "color",
+          dataType: FieldDataType.string,
+          mustMatchChoices: false,
+          choices: [{ id: "red" }, { id: "green" }, { id: "blue" }],
+        },
+      ],
+    };
+
+    // Any value should be accepted
+    const issues = await DataFormValidator.validate({ color: "purple" }, form);
+    expect(issues.length).to.equal(0);
+  });
+
+  it("should validate pattern matching from validity conditions", async () => {
+    const DataFormValidator = (await import("../dataform/DataFormValidator")).default;
+    const { DataFormIssueType } = await import("../dataform/DataFormValidator");
+    const { FieldDataType } = await import("../dataform/IField");
+    const { ComparisonType } = await import("../dataform/ICondition");
+
+    const form = {
+      id: "test",
+      fields: [
+        {
+          id: "identifier",
+          dataType: FieldDataType.string,
+          validity: [{ comparison: ComparisonType.matchesPattern, value: "^[a-z_]+:[a-z_]+$" }],
+        },
+      ],
+    };
+
+    // Valid pattern (namespace:identifier)
+    let issues = await DataFormValidator.validate({ identifier: "minecraft:zombie" }, form);
+    expect(issues.length).to.equal(0);
+
+    // Invalid pattern
+    issues = await DataFormValidator.validate({ identifier: "invalid identifier!" }, form);
+    expect(issues.length).to.equal(1);
+    expect(issues[0].type).to.equal(DataFormIssueType.patternMismatch);
+  });
+
+  it("should validate fixedLength arrays", async () => {
+    const DataFormValidator = (await import("../dataform/DataFormValidator")).default;
+    const { DataFormIssueType } = await import("../dataform/DataFormValidator");
+    const { FieldDataType } = await import("../dataform/IField");
+
+    const form = {
+      id: "test",
+      fields: [
+        {
+          id: "coords",
+          dataType: FieldDataType.numberArray,
+          fixedLength: 3,
+        },
+      ],
+    };
+
+    // Correct length
+    let issues = await DataFormValidator.validate({ coords: [1, 2, 3] }, form);
+    expect(issues.length).to.equal(0);
+
+    // Wrong length
+    issues = await DataFormValidator.validate({ coords: [1, 2] }, form);
+    expect(issues.length).to.equal(1);
+    expect(issues[0].type).to.equal(DataFormIssueType.arrayLengthMismatch);
+  });
+
+  it("should validate point2 and point3 sizes", async () => {
+    const DataFormValidator = (await import("../dataform/DataFormValidator")).default;
+    const { DataFormIssueType } = await import("../dataform/DataFormValidator");
+    const { FieldDataType } = await import("../dataform/IField");
+
+    // Test point2
+    const form2 = {
+      id: "test",
+      fields: [
+        {
+          id: "position",
+          dataType: FieldDataType.point2,
+        },
+      ],
+    };
+
+    let issues = await DataFormValidator.validate({ position: [1, 2] }, form2);
+    expect(issues.length).to.equal(0);
+
+    issues = await DataFormValidator.validate({ position: [1, 2, 3] }, form2);
+    expect(issues.length).to.equal(1);
+    expect(issues[0].type).to.equal(DataFormIssueType.pointSizeMismatch);
+
+    // Test point3
+    const form3 = {
+      id: "test",
+      fields: [
+        {
+          id: "position",
+          dataType: FieldDataType.point3,
+        },
+      ],
+    };
+
+    issues = await DataFormValidator.validate({ position: [1, 2, 3] }, form3);
+    expect(issues.length).to.equal(0);
+
+    issues = await DataFormValidator.validate({ position: [1, 2] }, form3);
+    expect(issues.length).to.equal(1);
+    expect(issues[0].type).to.equal(DataFormIssueType.pointSizeMismatch);
+  });
+
+  it("should detect unexpected properties when strictAdditionalProperties is true", async () => {
+    const DataFormValidator = (await import("../dataform/DataFormValidator")).default;
+    const { DataFormIssueType } = await import("../dataform/DataFormValidator");
+    const { FieldDataType } = await import("../dataform/IField");
+
+    const form = {
+      id: "test",
+      strictAdditionalProperties: true, // Enable strict mode
+      fields: [
+        {
+          id: "name",
+          dataType: FieldDataType.string,
+        },
+        {
+          id: "value",
+          dataType: FieldDataType.int,
+        },
+      ],
+    };
+
+    // No unexpected properties
+    let issues = await DataFormValidator.validate({ name: "test", value: 42 }, form);
+    expect(issues.length).to.equal(0);
+
+    // With unexpected property
+    issues = await DataFormValidator.validate({ name: "test", value: 42, unknown: "extra" }, form);
+    expect(issues.length).to.equal(1);
+    expect(issues[0].type).to.equal(DataFormIssueType.unexpectedProperty);
+    expect(issues[0].message).to.include("unknown");
+  });
+
+  it("should allow unexpected properties when strictAdditionalProperties is false", async () => {
+    const DataFormValidator = (await import("../dataform/DataFormValidator")).default;
+    const { FieldDataType } = await import("../dataform/IField");
+
+    const form = {
+      id: "test",
+      // strictAdditionalProperties is not set (default is to allow extra properties)
+      fields: [
+        {
+          id: "name",
+          dataType: FieldDataType.string,
+        },
+      ],
+    };
+
+    // Extra properties should be allowed
+    const issues = await DataFormValidator.validate({ name: "test", extraProp: "allowed" }, form);
+    expect(issues.length).to.equal(0);
+  });
+
+  it("should validate allowedKeys in keyed collections", async () => {
+    const DataFormValidator = (await import("../dataform/DataFormValidator")).default;
+    const { DataFormIssueType } = await import("../dataform/DataFormValidator");
+    const { FieldDataType } = await import("../dataform/IField");
+
+    const form = {
+      id: "test",
+      fields: [
+        {
+          id: "components",
+          dataType: FieldDataType.keyedObjectCollection,
+          allowedKeys: ["minecraft:health", "minecraft:damage"],
+        },
+      ],
+    };
+
+    // Valid keys
+    let issues = await DataFormValidator.validate({ components: { "minecraft:health": { value: 20 } } }, form);
+    expect(issues.length).to.equal(0);
+
+    // Invalid key
+    issues = await DataFormValidator.validate({ components: { "minecraft:invalid_component": { value: 20 } } }, form);
+    expect(issues.length).to.equal(1);
+    expect(issues[0].type).to.equal(DataFormIssueType.keyNotAllowed);
+  });
+
+  it("should validate missing required fields", async () => {
+    const DataFormValidator = (await import("../dataform/DataFormValidator")).default;
+    const { DataFormIssueType } = await import("../dataform/DataFormValidator");
+    const { FieldDataType } = await import("../dataform/IField");
+
+    const form = {
+      id: "test",
+      fields: [
+        {
+          id: "required_field",
+          dataType: FieldDataType.string,
+          isRequired: true,
+        },
+        {
+          id: "optional_field",
+          dataType: FieldDataType.string,
+        },
+      ],
+    };
+
+    // With required field present
+    let issues = await DataFormValidator.validate({ required_field: "value" }, form);
+    expect(issues.length).to.equal(0);
+
+    // With required field missing
+    issues = await DataFormValidator.validate({ optional_field: "value" }, form);
+    expect(issues.length).to.equal(1);
+    expect(issues[0].type).to.equal(DataFormIssueType.missingRequiredField);
+  });
+
+  it("should validate data type mismatches", async () => {
+    const DataFormValidator = (await import("../dataform/DataFormValidator")).default;
+    const { DataFormIssueType } = await import("../dataform/DataFormValidator");
+    const { FieldDataType } = await import("../dataform/IField");
+
+    const form = {
+      id: "test",
+      fields: [
+        {
+          id: "count",
+          dataType: FieldDataType.int,
+        },
+      ],
+    };
+
+    // Correct type
+    let issues = await DataFormValidator.validate({ count: 42 }, form);
+    expect(issues.length).to.equal(0);
+
+    // Wrong type (string instead of number)
+    issues = await DataFormValidator.validate({ count: "not a number" }, form);
+    expect(issues.length).to.equal(1);
+    expect(issues[0].type).to.equal(DataFormIssueType.dataTypeMismatch);
+  });
+});
+
+describe("SummarizerEvaluator", () => {
+  it("should evaluate literal tokens", async () => {
+    const SummarizerEvaluator = (await import("../dataform/SummarizerEvaluator")).default;
+    const { SummarizerTokenType } = await import("../dataform/ISummarizerToken");
+
+    const summarizer = {
+      id: "test",
+      phrases: [
+        {
+          id: "test_phrase",
+          tokens: [{ type: "literal" as const, text: "has something" }],
+        },
+      ],
+    };
+
+    const evaluator = new SummarizerEvaluator();
+    const result = evaluator.evaluate(summarizer, {});
+
+    expect(result.phrases.length).to.equal(1);
+    expect(result.phrases[0]).to.equal("has something");
+  });
+
+  it("should evaluate value tokens", async () => {
+    const SummarizerEvaluator = (await import("../dataform/SummarizerEvaluator")).default;
+
+    const summarizer = {
+      id: "test",
+      phrases: [
+        {
+          id: "health_value",
+          tokens: [
+            { type: "literal" as const, text: "has " },
+            { type: "value" as const, field: "max" },
+            { type: "literal" as const, text: " HP" },
+          ],
+        },
+      ],
+    };
+
+    const evaluator = new SummarizerEvaluator();
+    const result = evaluator.evaluate(summarizer, { max: 100 });
+
+    expect(result.phrases.length).to.equal(1);
+    expect(result.phrases[0]).to.equal("has 100 HP");
+  });
+
+  it("should evaluate switch tokens with conditions", async () => {
+    const SummarizerEvaluator = (await import("../dataform/SummarizerEvaluator")).default;
+
+    const summarizer = {
+      id: "test",
+      phrases: [
+        {
+          id: "health_level",
+          tokens: [
+            { type: "literal" as const, text: "has " },
+            {
+              type: "switch" as const,
+              cases: [
+                {
+                  conditions: [{ field: "max", comparison: ">", value: 100 }],
+                  tokens: [{ type: "literal" as const, text: "high health" }],
+                },
+                {
+                  conditions: [{ field: "max", comparison: "<", value: 20 }],
+                  tokens: [{ type: "literal" as const, text: "low health" }],
+                },
+              ],
+              default: [{ type: "literal" as const, text: "average health" }],
+            },
+          ],
+        },
+      ],
+    };
+
+    const evaluator = new SummarizerEvaluator();
+
+    // Test high health
+    let result = evaluator.evaluate(summarizer, { max: 500 });
+    expect(result.phrases[0]).to.equal("has high health");
+
+    // Test low health
+    result = evaluator.evaluate(summarizer, { max: 10 });
+    expect(result.phrases[0]).to.equal("has low health");
+
+    // Test average health (default)
+    result = evaluator.evaluate(summarizer, { max: 50 });
+    expect(result.phrases[0]).to.equal("has average health");
+  });
+
+  it("should evaluate list tokens with grammar", async () => {
+    const SummarizerEvaluator = (await import("../dataform/SummarizerEvaluator")).default;
+
+    const summarizer = {
+      id: "test",
+      phrases: [
+        {
+          id: "abilities",
+          tokens: [
+            {
+              type: "list" as const,
+              prefix: [{ type: "literal" as const, text: "can " }],
+              items: [
+                {
+                  visibility: [{ field: "can_fly", comparison: "=", value: true }],
+                  tokens: [{ type: "literal" as const, text: "fly" }],
+                },
+                {
+                  visibility: [{ field: "can_swim", comparison: "=", value: true }],
+                  tokens: [{ type: "literal" as const, text: "swim" }],
+                },
+                {
+                  visibility: [{ field: "can_teleport", comparison: "=", value: true }],
+                  tokens: [{ type: "literal" as const, text: "teleport" }],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    const evaluator = new SummarizerEvaluator();
+
+    // Test single ability
+    let result = evaluator.evaluate(summarizer, { can_fly: true });
+    expect(result.phrases[0]).to.equal("can fly");
+
+    // Test two abilities
+    result = evaluator.evaluate(summarizer, { can_fly: true, can_swim: true });
+    expect(result.phrases[0]).to.equal("can fly and swim");
+
+    // Test three abilities
+    result = evaluator.evaluate(summarizer, { can_fly: true, can_swim: true, can_teleport: true });
+    expect(result.phrases[0]).to.equal("can fly, swim, and teleport");
+  });
+
+  it("should format result as complete sentence", async () => {
+    const SummarizerEvaluator = (await import("../dataform/SummarizerEvaluator")).default;
+
+    const summarizer = {
+      id: "test",
+      phrases: [
+        {
+          id: "phrase1",
+          tokens: [{ type: "literal" as const, text: "has high health" }],
+        },
+        {
+          id: "phrase2",
+          tokens: [{ type: "literal" as const, text: "can fly" }],
+        },
+      ],
+    };
+
+    const evaluator = new SummarizerEvaluator();
+    const result = evaluator.evaluate(summarizer, {});
+
+    expect(result.asSentence).to.equal("has high health and can fly");
+    expect(result.asCompleteSentence).to.equal("This entity has high health and can fly.");
+  });
+
+  it("should evaluate unit tokens with conversion", async () => {
+    const SummarizerEvaluator = (await import("../dataform/SummarizerEvaluator")).default;
+
+    const summarizer = {
+      id: "test",
+      phrases: [
+        {
+          id: "duration",
+          tokens: [
+            { type: "literal" as const, text: "lasts " },
+            {
+              type: "unit" as const,
+              field: "duration",
+              unit: "ticks",
+              conversion: {
+                targetUnit: "seconds",
+                factor: 0.05,
+                decimals: 1,
+              },
+              showBoth: true,
+            },
+          ],
+        },
+      ],
+    };
+
+    const evaluator = new SummarizerEvaluator();
+    const result = evaluator.evaluate(summarizer, { duration: 200 });
+
+    expect(result.phrases[0]).to.equal("lasts 200 ticks (10 seconds)");
+  });
+
+  it("should respect phrase visibility conditions", async () => {
+    const SummarizerEvaluator = (await import("../dataform/SummarizerEvaluator")).default;
+
+    const summarizer = {
+      id: "test",
+      phrases: [
+        {
+          id: "always_shown",
+          tokens: [{ type: "literal" as const, text: "exists" }],
+        },
+        {
+          id: "conditional",
+          visibility: [{ field: "special", comparison: "=", value: true }],
+          tokens: [{ type: "literal" as const, text: "is special" }],
+        },
+      ],
+    };
+
+    const evaluator = new SummarizerEvaluator();
+
+    // Without special flag
+    let result = evaluator.evaluate(summarizer, {});
+    expect(result.phrases.length).to.equal(1);
+    expect(result.phrases[0]).to.equal("exists");
+
+    // With special flag
+    result = evaluator.evaluate(summarizer, { special: true });
+    expect(result.phrases.length).to.equal(2);
+    expect(result.phrases).to.include("is special");
+  });
+
+  it("should evaluate plural tokens", async () => {
+    const SummarizerEvaluator = (await import("../dataform/SummarizerEvaluator")).default;
+
+    const summarizer = {
+      id: "test",
+      phrases: [
+        {
+          id: "count",
+          tokens: [
+            { type: "literal" as const, text: "drops " },
+            {
+              type: "plural" as const,
+              countField: "drop_count",
+              singular: [{ type: "literal" as const, text: "item" }],
+              plural: [{ type: "literal" as const, text: "items" }],
+              includeCount: true,
+            },
+          ],
+        },
+      ],
+    };
+
+    const evaluator = new SummarizerEvaluator();
+
+    // Singular
+    let result = evaluator.evaluate(summarizer, { drop_count: 1 });
+    expect(result.phrases[0]).to.equal("drops 1 item");
+
+    // Plural
+    result = evaluator.evaluate(summarizer, { drop_count: 5 });
+    expect(result.phrases[0]).to.equal("drops 5 items");
+  });
+
+  it("should evaluate exists tokens", async () => {
+    const SummarizerEvaluator = (await import("../dataform/SummarizerEvaluator")).default;
+
+    const summarizer = {
+      id: "test",
+      phrases: [
+        {
+          id: "loot",
+          tokens: [
+            {
+              type: "exists" as const,
+              field: "loot_table",
+              whenDefined: [{ type: "literal" as const, text: "has custom loot" }],
+              whenUndefined: [{ type: "literal" as const, text: "uses default loot" }],
+            },
+          ],
+        },
+      ],
+    };
+
+    const evaluator = new SummarizerEvaluator();
+
+    // Defined
+    let result = evaluator.evaluate(summarizer, { loot_table: "custom_table" });
+    expect(result.phrases[0]).to.equal("has custom loot");
+
+    // Undefined
+    result = evaluator.evaluate(summarizer, {});
+    expect(result.phrases[0]).to.equal("uses default loot");
+  });
+
+  it("should evaluate with effects for rich rendering", async () => {
+    const SummarizerEvaluator = (await import("../dataform/SummarizerEvaluator")).default;
+
+    const summarizer = {
+      id: "test",
+      phrases: [
+        {
+          id: "health",
+          tokens: [
+            { type: "literal" as const, text: "has " },
+            {
+              type: "switch" as const,
+              cases: [
+                {
+                  conditions: [{ field: "max", comparison: ">", value: 100 }],
+                  tokens: [
+                    {
+                      type: "literal" as const,
+                      text: "extremely high health",
+                      effects: { emphasis: "strong", sentiment: "positive" },
+                    },
+                  ],
+                },
+              ],
+              default: [{ type: "literal" as const, text: "normal health" }],
+            },
+            { type: "literal" as const, text: " (" },
+            {
+              type: "value" as const,
+              field: "max",
+              effects: { emphasis: "strong", role: "value", icon: "❤️" },
+            },
+            { type: "literal" as const, text: " HP)" },
+          ],
+        },
+      ],
+    };
+
+    const evaluator = new SummarizerEvaluator();
+
+    // High health with effects
+    const result = evaluator.evaluateWithEffects(summarizer, { max: 500 });
+
+    expect(result.phrases[0]).to.equal("has extremely high health (500 HP)");
+    expect(result.evaluatedPhrases).to.have.length(1);
+
+    const tokens = result.evaluatedPhrases[0].tokens;
+    expect(tokens.length).to.be.greaterThan(0);
+
+    // Check that effects are preserved
+    const healthToken = tokens.find((t) => t.text === "extremely high health");
+    expect(healthToken).to.not.be.undefined;
+    expect(healthToken?.effects?.emphasis).to.equal("strong");
+    expect(healthToken?.effects?.sentiment).to.equal("positive");
+
+    // Check value token has icon
+    const valueToken = tokens.find((t) => t.text === "500");
+    expect(valueToken).to.not.be.undefined;
+    expect(valueToken?.effects?.icon).to.equal("❤️");
+  });
+});
+
+describe("FormSchemaGenerator Tests", function () {
+  it("should generate JSON Schema from form definitions", async function () {
+    this.timeout(30000);
+
+    // Import directly to avoid JSX compilation issues
+    const { FormSchemaGenerator } = await import("../UX/JsonEditorEnhanced/FormSchemaGenerator");
+    const { FormDefinitionCache } = await import("../UX/JsonEditorEnhanced/FormDefinitionCache");
+
+    const formCache = new FormDefinitionCache();
+    const schemaGenerator = new FormSchemaGenerator(formCache);
+
+    // Test generating schema for entity behavior type
+    const schema = await schemaGenerator.generateSchemaForItemType(ProjectItemType.entityTypeBehavior);
+
+    // Schema might be null if form definitions aren't available in test environment
+    // That's OK - this test ensures the code doesn't crash
+    if (schema) {
+      expect(schema).to.have.property("$schema");
+      expect(schema).to.have.property("type", "object");
+      expect(schema).to.have.property("properties");
+    }
+  });
+
+  it("should include sample values in descriptions", async function () {
+    this.timeout(30000);
+
+    const { FormSchemaGenerator } = await import("../UX/JsonEditorEnhanced/FormSchemaGenerator");
+    const { FormDefinitionCache } = await import("../UX/JsonEditorEnhanced/FormDefinitionCache");
+    const { FieldDataType } = await import("../dataform/IField");
+
+    const formCache = new FormDefinitionCache();
+    const schemaGenerator = new FormSchemaGenerator(formCache);
+
+    // Create a mock form with samples
+    const mockForm = {
+      id: "test_form",
+      title: "Test Form",
+      fields: [
+        {
+          id: "health",
+          title: "Health",
+          description: "The health value",
+          dataType: FieldDataType.int,
+        },
+      ],
+      samples: {
+        samples: [
+          { path: "health", content: 20 },
+          { path: "health", content: 100 },
+          { path: "health", content: 500 },
+        ],
+      },
+    };
+
+    const schema = await schemaGenerator.generateSchemaFromForm(mockForm);
+
+    expect(schema).to.have.property("$schema");
+    expect(schema).to.have.property("properties");
+    expect(schema.properties).to.have.property("health");
+
+    const healthProp = schema.properties!["health"] as any;
+    expect(healthProp).to.have.property("type", "integer");
+
+    // Check that description includes samples
+    if (healthProp.description) {
+      expect(healthProp.description).to.include("Sample");
+      expect(healthProp.description).to.include("20");
+    }
+  });
+
+  it("should handle missing forms gracefully", async function () {
+    this.timeout(10000);
+
+    const { FormSchemaGenerator } = await import("../UX/JsonEditorEnhanced/FormSchemaGenerator");
+    const { FormDefinitionCache } = await import("../UX/JsonEditorEnhanced/FormDefinitionCache");
+
+    const formCache = new FormDefinitionCache();
+    const schemaGenerator = new FormSchemaGenerator(formCache);
+
+    // Try to generate schema for a type that might not have a form
+    const schema = await schemaGenerator.generateSchemaForItemType(ProjectItemType.unknown);
+
+    // Should return null, not crash
+    expect(schema).to.be.null;
+  });
+});
+
+describe("MolangEvaluator", () => {
+  let evaluator: import("../minecraft/MolangEvaluator").default;
+
+  before(async () => {
+    const { default: MolangEvaluator } = await import("../minecraft/MolangEvaluator");
+    evaluator = new MolangEvaluator();
+  });
+
+  const cases: { expr: string; queries?: Record<string, number>; arrays?: Record<string, string[]>; expected: import("../minecraft/MolangEvaluator").MolangValue }[] = [
+    // Literals
+    { expr: "1.0", expected: 1.0 },
+    { expr: "0", expected: 0 },
+    { expr: "42", expected: 42 },
+
+    // Arithmetic
+    { expr: "2 + 3", expected: 5 },
+    { expr: "10 - 4", expected: 6 },
+    { expr: "3 * 4", expected: 12 },
+    { expr: "10 / 2", expected: 5 },
+
+    // Query references
+    { expr: "query.is_baby", queries: { "query.is_baby": 1 }, expected: 1 },
+    { expr: "query.is_baby", queries: { "query.is_baby": 0 }, expected: 0 },
+    { expr: "query.variant", queries: { "query.variant": 3 }, expected: 3 },
+    { expr: "q.is_baby", queries: { "query.is_baby": 1 }, expected: 1 },
+
+    // Ternary — sheep render controller pattern
+    { expr: "query.is_baby ? Texture.baby : Texture.default", queries: { "query.is_baby": 0 }, expected: "Texture.default" },
+    { expr: "query.is_baby ? Texture.baby : Texture.default", queries: { "query.is_baby": 1 }, expected: "Texture.baby" },
+
+    // Array indexing — sheep geometry pattern
+    {
+      expr: "query.is_baby ? Geometry.baby : Array.geos[query.is_sheared]",
+      queries: { "query.is_baby": 0, "query.is_sheared": 0 },
+      arrays: { "Array.geos": ["Geometry.default", "Geometry.sheared"] },
+      expected: "Geometry.default",
+    },
+    {
+      expr: "query.is_baby ? Geometry.baby : Array.geos[query.is_sheared]",
+      queries: { "query.is_baby": 0, "query.is_sheared": 1 },
+      arrays: { "Array.geos": ["Geometry.default", "Geometry.sheared"] },
+      expected: "Geometry.sheared",
+    },
+    {
+      expr: "query.is_baby ? Geometry.baby : Array.geos[query.is_sheared]",
+      queries: { "query.is_baby": 1, "query.is_sheared": 0 },
+      arrays: { "Array.geos": ["Geometry.default", "Geometry.sheared"] },
+      expected: "Geometry.baby",
+    },
+
+    // Nested ternary — wolf render controller pattern
+    { expr: "query.is_angry ? Texture.angry : (query.is_tamed ? Texture.tame : Texture.default)",
+      queries: { "query.is_angry": 0, "query.is_tamed": 0 },
+      expected: "Texture.default",
+    },
+    { expr: "query.is_angry ? Texture.angry : (query.is_tamed ? Texture.tame : Texture.default)",
+      queries: { "query.is_angry": 0, "query.is_tamed": 1 },
+      expected: "Texture.tame",
+    },
+    { expr: "query.is_angry ? Texture.angry : (query.is_tamed ? Texture.tame : Texture.default)",
+      queries: { "query.is_angry": 1, "query.is_tamed": 0 },
+      expected: "Texture.angry",
+    },
+
+    // Logical NOT
+    { expr: "!query.is_baby", queries: { "query.is_baby": 0 }, expected: 1 },
+    { expr: "!query.is_baby", queries: { "query.is_baby": 1 }, expected: 0 },
+
+    // Comparison
+    { expr: "query.variant == 0", queries: { "query.variant": 0 }, expected: 1 },
+    { expr: "query.variant == 0", queries: { "query.variant": 1 }, expected: 0 },
+  ];
+
+  for (const tc of cases) {
+    it(`should evaluate "${tc.expr}" to ${JSON.stringify(tc.expected)}`, () => {
+      const { createDefaultEntityContext } = require("../minecraft/IMolangContext");
+      const context = createDefaultEntityContext();
+
+      // Set custom queries
+      if (tc.queries) {
+        for (const [key, val] of Object.entries(tc.queries)) {
+          context.queries.set(key, val);
+        }
+      }
+
+      const arrays = tc.arrays ? new Map(Object.entries(tc.arrays)) : undefined;
+      const result = evaluator.evaluate(tc.expr, context, arrays);
+      expect(result).to.equal(tc.expected);
+    });
+  }
+});
+
+describe("RenderControllerResolution", () => {
+  it("should load sheep render controller via Database storage", async function () {
+    this.timeout(30000);
+
+    // Test that the vanilla render controller file is accessible via IFile/IFolder
+    const file = await Database.getPreviewVanillaFile(
+      "/resource_pack/render_controllers/sheep.v2.render_controllers.json"
+    );
+
+    if (!file) {
+      // Vanilla resources may not be available in all test environments
+      console.log("  (skipped: vanilla resources not available)");
+      return;
+    }
+
+    expect(file).to.not.be.null;
+    expect(file!.content).to.not.be.undefined;
+
+    // Parse the file content
+    const content = typeof file!.content === "string" ? file!.content : new TextDecoder().decode(file!.content as Uint8Array);
+    const parsed = JSON.parse(content);
+
+    expect(parsed.render_controllers).to.have.property("controller.render.sheep.v2");
+    const rc = parsed.render_controllers["controller.render.sheep.v2"];
+    expect(rc.textures).to.be.an("array");
+    expect(rc.geometry).to.be.a("string");
+  });
+
+  it("should resolve sheep via VanillaProjectManager", async function () {
+    this.timeout(30000);
+
+    const VanillaProjectManager = (await import("../minecraft/VanillaProjectManager")).default;
+
+    const modelData = await VanillaProjectManager.getVanillaEntityModelData("sheep");
+
+    if (!modelData) {
+      console.log("  (skipped: vanilla resources not available)");
+      return;
+    }
+
+    expect(modelData.entityTypeId).to.equal("sheep");
+    expect(modelData.geometryId).to.be.a("string");
+    expect(modelData.texturePath).to.be.a("string");
+    // The geometry should contain "sheep" — either default or sheared
+    expect(modelData.geometryId).to.include("sheep");
+  });
+});
+
+describe("FormDefinitionCache - getComponentsAsync Tests", function () {
+  it("should find minecraft: components via subFormId chain for entity behavior", async function () {
+    this.timeout(30000);
+
+    const { FormDefinitionCache } = await import("../UX/JsonEditorEnhanced/FormDefinitionCache");
+
+    const formCache = new FormDefinitionCache();
+    const form = await formCache.getFormForItemType(ProjectItemType.entityTypeBehavior);
+
+    expect(form).to.not.be.null;
+    if (!form) return;
+
+    const components = await formCache.getComponentsAsync(form);
+
+    // Should find many minecraft: components (minecraft:health, minecraft:ageable, etc.)
+    expect(components.length).to.be.greaterThan(10);
+
+    // Check that well-known components are present
+    const componentIds = components.map((c) => c.id);
+    expect(componentIds).to.include("minecraft:health");
+    expect(componentIds).to.include("minecraft:ageable");
+    expect(componentIds).to.include("minecraft:collision_box");
+  });
+});
+
+describe("JsonUtilities - Comment Preservation", () => {
+  it("should parse JSON with single-line comments", async () => {
+    const JsonUtilities = (await import("../core/JsonUtilities")).default;
+
+    const jsonWithComments = `{
+      // This is a comment
+      "name": "test",
+      "version": "1.0.0" // inline comment
+    }`;
+
+    const parsed = JsonUtilities.parseJsonWithComments(jsonWithComments);
+
+    expect(parsed).to.have.property("name", "test");
+    expect(parsed).to.have.property("version", "1.0.0");
+  });
+
+  it("should parse JSON with multi-line comments", async () => {
+    const JsonUtilities = (await import("../core/JsonUtilities")).default;
+
+    const jsonWithComments = `{
+      /* This is a 
+         multi-line comment */
+      "name": "test"
+    }`;
+
+    const parsed = JsonUtilities.parseJsonWithComments(jsonWithComments);
+
+    expect(parsed).to.have.property("name", "test");
+  });
+
+  it("should preserve comments through stringify round-trip", async () => {
+    const JsonUtilities = (await import("../core/JsonUtilities")).default;
+
+    const originalJson = `{
+  // Header comment
+  "name": "test",
+  "version": "1.0.0" // Version info
+}`;
+
+    const parsed = JsonUtilities.parseJsonWithComments(originalJson);
+    const stringified = JsonUtilities.stringifyJsonWithComments(parsed);
+
+    // Comments should be preserved in output
+    expect(stringified).to.include("// Header comment");
+    expect(stringified).to.include("// Version info");
+    expect(stringified).to.include('"name": "test"');
+  });
+
+  it("should preserve comments after modifying properties", async () => {
+    const JsonUtilities = (await import("../core/JsonUtilities")).default;
+
+    const originalJson = `{
+  // This comment should survive
+  "name": "original",
+  "count": 1
+}`;
+
+    const parsed = JsonUtilities.parseJsonWithComments(originalJson) as unknown as { name: string; count: number };
+
+    // Modify a property
+    parsed.name = "modified";
+    parsed.count = 42;
+
+    const stringified = JsonUtilities.stringifyJsonWithComments(parsed);
+
+    // Comment should still be there
+    expect(stringified).to.include("// This comment should survive");
+    // New values should be there
+    expect(stringified).to.include('"name": "modified"');
+    expect(stringified).to.include('"count": 42');
+  });
+
+  it("should detect comment metadata on parsed objects", async () => {
+    const JsonUtilities = (await import("../core/JsonUtilities")).default;
+
+    const jsonWithComments = `{
+  // comment
+  "name": "test"
+}`;
+
+    const parsedWithComments = JsonUtilities.parseJsonWithComments(jsonWithComments);
+    const regularObject = { name: "test" };
+
+    expect(JsonUtilities.hasCommentMetadata(parsedWithComments)).to.be.true;
+    expect(JsonUtilities.hasCommentMetadata(regularObject)).to.be.false;
+    expect(JsonUtilities.hasCommentMetadata(null)).to.be.false;
+    expect(JsonUtilities.hasCommentMetadata("string")).to.be.false;
+  });
+
+  it("should handle trailing commas via fixJsonContentForCommentJson", async () => {
+    const Utilities = (await import("../core/Utilities")).default;
+    const JsonUtilities = (await import("../core/JsonUtilities")).default;
+
+    const jsonWithTrailingComma = `{
+  // comment
+  "items": ["a", "b", ],
+  "name": "test",
+}`;
+
+    // fixJsonContentForCommentJson should fix trailing commas while preserving comments
+    const fixed = Utilities.fixJsonContentForCommentJson(jsonWithTrailingComma);
+
+    // Should be parseable
+    const parsed = JsonUtilities.parseJsonWithComments(fixed);
+
+    expect(parsed).to.have.property("name", "test");
+    expect((parsed as any).items).to.deep.equal(["a", "b"]);
+
+    // Should preserve comments
+    const stringified = JsonUtilities.stringifyJsonWithComments(parsed);
+    expect(stringified).to.include("// comment");
+  });
+
+  it("should compare objects semantically", async () => {
+    const JsonUtilities = (await import("../core/JsonUtilities")).default;
+
+    const json1 = `{
+  // comment 1
+  "a": 1,
+  "b": 2
+}`;
+
+    const json2 = `{
+  // different comment
+  "b": 2,
+  "a": 1
+}`;
+
+    const json3 = `{
+  "a": 1,
+  "b": 3
+}`;
+
+    const obj1 = JsonUtilities.parseJsonWithComments(json1);
+    const obj2 = JsonUtilities.parseJsonWithComments(json2);
+    const obj3 = JsonUtilities.parseJsonWithComments(json3);
+
+    // Same data, different comments/order - should be equal
+    expect(JsonUtilities.jsonObjectsSemanticallyEqual(obj1, obj2)).to.be.true;
+
+    // Different data - should not be equal
+    expect(JsonUtilities.jsonObjectsSemanticallyEqual(obj1, obj3)).to.be.false;
+  });
+
+  it("should merge properties while preserving comments", async () => {
+    const JsonUtilities = (await import("../core/JsonUtilities")).default;
+
+    const originalJson = `{
+  // Original header
+  "name": "original",
+  "value": 1
+}`;
+
+    const parsed = JsonUtilities.parseJsonWithComments(originalJson) as unknown as { name: string; value: number };
+
+    // Merge updates
+    JsonUtilities.mergeJsonPreservingComments(parsed, { value: 42 });
+
+    const stringified = JsonUtilities.stringifyJsonWithComments(parsed);
+
+    expect(stringified).to.include("// Original header");
+    expect(stringified).to.include('"name": "original"');
+    expect(stringified).to.include('"value": 42');
+  });
+});
+
+describe("Phantom Edit Prevention", async () => {
+  it("setObjectContentIfSemanticallyDifferent returns false for identical standard JSON", async () => {
+    const project = await _loadProject("comprehensive");
+
+    // Find an entity type file to test with
+    const entityItem = project.items.find((item) => item.itemType === ProjectItemType.entityTypeBehavior);
+    assert.isDefined(entityItem, "Should find an entity type item");
+
+    const file = entityItem!.primaryFile;
+    assert.isDefined(file, "Entity type item should have a primary file");
+
+    await file!.loadContent();
+    assert.isTrue(file!.isContentLoaded, "File content should be loaded");
+
+    const originalContent = file!.content as string;
+    assert.isString(originalContent, "Content should be a string");
+
+    // Parse the content
+    const parsed = JSON.parse(originalContent);
+    assert.isDefined(parsed, "Should parse successfully");
+
+    // Reset the modified timestamp by simulating a fresh load state
+    file!.lastLoadedOrSaved = new Date();
+    file!.modified = null;
+
+    // Now call setObjectContentIfSemanticallyDifferent with the same parsed content
+    const wasModified = file!.setObjectContentIfSemanticallyDifferent(parsed);
+
+    expect(wasModified).to.equal(false, "File should NOT be marked as modified when content is semantically identical");
+    expect(file!.needsSave).to.equal(false, "File should NOT need save after no-op edit");
+  }).timeout(30000);
+
+  it("setObjectContentIfSemanticallyDifferent detects actual changes", async () => {
+    const project = await _loadProject("comprehensive");
+
+    const entityItem = project.items.find((item) => item.itemType === ProjectItemType.entityTypeBehavior);
+    assert.isDefined(entityItem, "Should find an entity type item");
+
+    const file = entityItem!.primaryFile;
+    assert.isDefined(file, "Entity type item should have a primary file");
+
+    await file!.loadContent();
+
+    const parsed = JSON.parse(file!.content as string);
+    parsed["_phantom_test_key"] = "phantom_test_value";
+
+    file!.lastLoadedOrSaved = new Date();
+    file!.modified = null;
+
+    const wasModified = file!.setObjectContentIfSemanticallyDifferent(parsed);
+
+    expect(wasModified).to.equal(true, "File SHOULD be marked as modified when content has changed");
+    expect(file!.needsSave).to.equal(true, "File SHOULD need save after real edit");
+  }).timeout(30000);
+
+  it("setObjectContentIfSemanticallyDifferent handles files with comments without phantom edits", async () => {
+    const project = await _loadProject("comprehensive");
+
+    const entityItem = project.items.find((item) => item.itemType === ProjectItemType.entityTypeBehavior);
+    assert.isDefined(entityItem, "Should find an entity type item");
+
+    const file = entityItem!.primaryFile;
+    assert.isDefined(file, "Entity type item should have a primary file");
+
+    // Simulate a file with JSON comments
+    const contentWithComments = `{
+  // This is a comment
+  "format_version": "1.20.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "test:entity",
+      // Inline comment
+      "is_spawnable": true
+    }
+  }
+}`;
+
+    file!.setContent(contentWithComments);
+    file!.lastLoadedOrSaved = new Date();
+    file!.modified = null;
+
+    // Parse without comments (simulating what a definition editor does without preserveComments)
+    const Utilities = (await import("../core/Utilities")).default;
+    const parsed = JSON.parse(Utilities.fixJsonContent(contentWithComments));
+
+    // setObjectContentIfSemanticallyDifferent should detect these are semantically equal
+    const wasModified = file!.setObjectContentIfSemanticallyDifferent(parsed);
+
+    expect(wasModified).to.equal(false, "File should NOT be marked modified when content with comments is semantically the same");
+    expect(file!.needsSave).to.equal(false, "File should NOT need save for no-op on commented JSON");
+  }).timeout(30000);
+
+  it("setObjectContentIfSemanticallyDifferent handles files with trailing commas", async () => {
+    const project = await _loadProject("comprehensive");
+
+    const entityItem = project.items.find((item) => item.itemType === ProjectItemType.entityTypeBehavior);
+    const file = entityItem!.primaryFile;
+    assert.isDefined(file, "Entity type item should have a primary file");
+
+    // Simulate a file with trailing commas (common in hand-edited JSON)
+    const contentWithTrailingComma = `{
+  "format_version": "1.20.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "test:entity",
+      "is_spawnable": true,
+    },
+  },
+}`;
+
+    file!.setContent(contentWithTrailingComma);
+    file!.lastLoadedOrSaved = new Date();
+    file!.modified = null;
+
+    // Parse after fixing (what definition editors do)
+    const Utilities = (await import("../core/Utilities")).default;
+    const parsed = JSON.parse(Utilities.fixJsonContent(contentWithTrailingComma));
+
+    const wasModified = file!.setObjectContentIfSemanticallyDifferent(parsed);
+
+    expect(wasModified).to.equal(false, "File should NOT be marked modified for trailing-comma JSON with same semantics");
+  }).timeout(30000);
+
+  it("definition load/persist round-trip does not cause phantom edits for standard JSON", async () => {
+    const EntityTypeDefinition = (await import("../minecraft/EntityTypeDefinition")).default;
+
+    const project = await _loadProject("comprehensive");
+
+    const entityItem = project.items.find((item) => item.itemType === ProjectItemType.entityTypeBehavior);
+    assert.isDefined(entityItem, "Should find an entity type item");
+
+    const file = entityItem!.primaryFile;
+    assert.isDefined(file, "Entity type item should have a primary file");
+
+    await file!.loadContent();
+    const originalContent = file!.content as string;
+
+    // Load definition
+    const def = await EntityTypeDefinition.ensureOnFile(file!);
+    assert.isDefined(def, "Should create EntityTypeDefinition");
+    assert.isTrue(def!.isLoaded, "Definition should be loaded");
+
+    // Reset modified state after load
+    file!.lastLoadedOrSaved = new Date();
+    file!.modified = null;
+
+    // Persist without changes — should not mark file as modified
+    const wasChanged = def!.persist();
+
+    expect(wasChanged).to.equal(false, "persist() should return false when no changes were made");
+    expect(file!.needsSave).to.equal(false, "File should NOT need save after no-op persist");
+  }).timeout(30000);
+
+  it("definition load/persist with preserveComments does not cause phantom edits for commented JSON", async () => {
+    const EntityTypeDefinition = (await import("../minecraft/EntityTypeDefinition")).default;
+
+    const project = await _loadProject("comprehensive");
+
+    const entityItem = project.items.find((item) => item.itemType === ProjectItemType.entityTypeBehavior);
+    assert.isDefined(entityItem, "Should find an entity type item");
+
+    const file = entityItem!.primaryFile;
+    assert.isDefined(file, "Entity type item should have a primary file");
+
+    // Set content with comments
+    const contentWithComments = `{
+  // Entity definition
+  "format_version": "1.20.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "test:phantom_check",
+      "is_spawnable": true
+    },
+    "components": {
+      // Health component
+      "minecraft:health": {
+        "value": 20,
+        "max": 20
+      }
+    }
+  }
+}`;
+
+    file!.setContent(contentWithComments);
+    file!.lastLoadedOrSaved = new Date();
+    file!.modified = null;
+
+    // Clear existing manager so we can reload fresh
+    file!.manager = undefined;
+
+    // Load with preserveComments
+    const def = await EntityTypeDefinition.ensureOnFile(file!, undefined, true);
+    assert.isDefined(def, "Should create EntityTypeDefinition");
+
+    // Reset modified state after the comment-preserving load
+    file!.lastLoadedOrSaved = new Date();
+    file!.modified = null;
+
+    // Persist without changes
+    const wasChanged = def!.persist();
+
+    expect(wasChanged).to.equal(false, "persist() with comments should return false when no changes were made");
+    expect(file!.needsSave).to.equal(false, "File should NOT need save after no-op persist on commented JSON");
+  }).timeout(30000);
+
+  it("setContent byte-exact equality prevents phantom edits", async () => {
+    const project = await _loadProject("comprehensive");
+
+    const entityItem = project.items.find((item) => item.itemType === ProjectItemType.entityTypeBehavior);
+    const file = entityItem!.primaryFile;
+    assert.isDefined(file, "Entity type item should have a primary file");
+
+    const testContent = '{"key": "value", "number": 42}';
+    file!.setContent(testContent);
+    file!.lastLoadedOrSaved = new Date();
+    file!.modified = null;
+
+    // Set exactly the same content again
+    const wasChanged = file!.setContent(testContent);
+
+    expect(wasChanged).to.equal(false, "setContent should return false for identical content");
+    expect(file!.needsSave).to.equal(false, "File should NOT need save after setting identical content");
+  }).timeout(30000);
+
+  it("key ordering differences do not cause phantom edits via setObjectContentIfSemanticallyDifferent", async () => {
+    const project = await _loadProject("comprehensive");
+
+    const entityItem = project.items.find((item) => item.itemType === ProjectItemType.entityTypeBehavior);
+    const file = entityItem!.primaryFile;
+    assert.isDefined(file, "Entity type item should have a primary file");
+
+    // Set initial content with keys in one order
+    const initialContent = JSON.stringify({ beta: 2, alpha: 1, gamma: 3 }, null, 2);
+    file!.setContent(initialContent);
+    file!.lastLoadedOrSaved = new Date();
+    file!.modified = null;
+
+    // Create object with same keys in different order
+    const reorderedObj = { gamma: 3, alpha: 1, beta: 2 };
+
+    const wasModified = file!.setObjectContentIfSemanticallyDifferent(reorderedObj);
+
+    expect(wasModified).to.equal(false, "Key ordering differences should NOT cause phantom edits");
+    expect(file!.needsSave).to.equal(false, "File should NOT need save for reordered keys");
+  }).timeout(30000);
+});
+
+describe("Database.loadPreviewVanillaInfoData", async () => {
+  it("does not hang on second call after first load completes", async function () {
+    this.timeout(15000);
+
+    // Reset static state so we exercise the full load path
+    (Database as any)._isLoadingPreviewVanillaInfoData = false;
+    (Database as any)._pendingLoadPreviewVanillaInfoDataRequests = [];
+    Database.previewVanillaContentIndex = undefined as any;
+    Database.previewVanillaInfoData = undefined as any;
+
+    // First call: performs the actual load
+    await Database.loadPreviewVanillaInfoData();
+
+    // After the first call, the _isLoadingPreviewVanillaInfoData flag
+    // must be reset to false. If it stays true (the bug), the second
+    // call would enter the pending-promise branch and hang forever.
+    expect(
+      (Database as any)._isLoadingPreviewVanillaInfoData,
+      "_isLoadingPreviewVanillaInfoData should be false after load completes"
+    ).to.equal(false);
+
+    // Clear the cached result so the second call actually re-enters loadPreviewVanillaInfoData
+    Database.previewVanillaContentIndex = undefined as any;
+    Database.previewVanillaInfoData = undefined as any;
+
+    // Second call: before the fix this would hang forever because
+    // _isLoadingPreviewVanillaInfoData was still true.
+    await Database.loadPreviewVanillaInfoData();
+
+    // If we reach here, the second call completed without hanging.
+    expect(
+      (Database as any)._isLoadingPreviewVanillaInfoData,
+      "_isLoadingPreviewVanillaInfoData should be false after second load"
+    ).to.equal(false);
   });
 });

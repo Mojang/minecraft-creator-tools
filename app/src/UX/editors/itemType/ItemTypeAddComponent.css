@@ -1,0 +1,87 @@
+.itac-area {
+  padding-top: 8px;
+  width: 100%;
+}
+
+.itac-mainArea {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.itac-list {
+  max-height: calc(100vh - 280px);
+  min-width: 550px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: solid 1px;
+  border-radius: 4px;
+}
+
+.itac-description {
+  padding: 8px 0;
+  font-style: italic;
+  opacity: 0.85;
+}
+
+/* Component chip styling */
+.itac-chip {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px;
+  margin: 4px 8px;
+  border-radius: 4px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--chip-color) 15%, transparent) 0%,
+    color-mix(in srgb, var(--chip-color) 8%, transparent) 100%
+  );
+  border-left: 3px solid var(--chip-color);
+  transition: background 0.15s ease;
+}
+
+.itac-chip:hover {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--chip-color) 25%, transparent) 0%,
+    color-mix(in srgb, var(--chip-color) 15%, transparent) 100%
+  );
+}
+
+.itac-chipHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.itac-chipName {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.itac-chipDesc {
+  font-size: 11px;
+  opacity: 0.75;
+  margin-top: 4px;
+  margin-left: 30px;
+  line-height: 1.3;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+/* Make sure icons don't shrink */
+.itac-chip svg,
+.itac-chip img {
+  flex-shrink: 0;
+}
+
+/* Remove default list item padding since we have chip padding */
+.itac-list .ui-list__item {
+  padding: 0 !important;
+}
+
+.itac-form {
+  padding: 10px;
+  font-style: italic;
+  opacity: 0.85;
+}

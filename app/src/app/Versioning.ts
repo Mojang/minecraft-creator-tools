@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import SemanticVersion from "../core/versioning/SemanticVersion";
 
 const Versioning = {

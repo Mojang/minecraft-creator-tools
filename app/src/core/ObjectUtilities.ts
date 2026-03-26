@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 /*
   search in given object for property names, returns first property name not found, or undefined if nothing found
 */

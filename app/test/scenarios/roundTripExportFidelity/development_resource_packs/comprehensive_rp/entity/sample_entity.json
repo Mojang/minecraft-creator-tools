@@ -1,0 +1,26 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "test:sample_entity",
+      "materials": { "default": "entity_alphatest" },
+      "textures": {
+        "default": "textures/entity/sample_entity"
+      },
+      "geometry": {
+        "default": "geometry.sample_entity"
+      },
+      "render_controllers": [ "controller.render.sample_entity" ],
+      "animations": {
+        "walk": "animation.sample_entity.walk",
+        "idle": "animation.sample_entity.idle",
+        "controller.movement": "controller.animation.sample_entity.movement"
+      },
+      "scripts": {
+        "animate": [
+          "controller.movement"
+        ]
+      }
+    }
+  }
+}

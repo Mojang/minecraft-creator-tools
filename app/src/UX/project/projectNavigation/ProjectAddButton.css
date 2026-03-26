@@ -1,0 +1,145 @@
+.pab-outer {
+  padding: 7px;
+  padding-top: 6px;
+}
+
+.pab-commands {
+  grid-column: 2;
+  grid-row: 1;
+  text-align: right;
+  max-width: 140px;
+  padding-top: 7px;
+  padding-bottom: 6px;
+  padding-left: 8px;
+}
+
+.pab-loading {
+  padding: 8px;
+}
+
+.pab-dialog {
+  min-height: 90px;
+  margin-top: 20px;
+  vertical-align: top;
+}
+
+.pab-extension {
+  padding-left: 8px;
+}
+
+.pab-newarea .ui-button {
+  padding-left: 10px;
+  padding-right: 14px;
+  min-width: inherit;
+}
+
+/* Content Wizard Dialog - larger size */
+.pab-content-wizard-dialog.ui-dialog {
+  width: calc(100vw - 40px) !important;
+  max-width: 900px !important;
+  max-height: calc(100vh - 60px) !important;
+  margin: 30px auto !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+/* MUI Dialog overrides — let the wizard handle its own scrolling */
+.pab-content-wizard-dialog .MuiDialogContent-root {
+  overflow: hidden !important;
+  padding: 0 !important;
+}
+
+.pab-content-wizard-dialog .MuiDialog-paper {
+  max-height: calc(100vh - 60px);
+  overflow: hidden;
+}
+
+/* Hide the footer since wizard has its own buttons */
+.pab-content-wizard-dialog .ui-dialog__footer {
+  display: none !important;
+}
+
+.pab-content-wizard-dialog .ui-dialog__content {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: calc(100vh - 140px);
+  padding: 16px !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+/* Make DialogTitle a positioning context for the close button */
+.pab-content-wizard-dialog .MuiDialogTitle-root {
+  position: relative;
+}
+
+/* Dialog close button — accessible size (44×44 target), visible background */
+.pab-dialog-close-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #666;
+  background: rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s,
+    box-shadow 0.15s;
+  padding: 0;
+  line-height: 1;
+  z-index: 1;
+}
+
+.pab-dialog-close-btn:hover {
+  background: rgba(255, 80, 80, 0.18);
+  color: #ff6b6b;
+  border-color: rgba(255, 80, 80, 0.35);
+  box-shadow: 0 0 6px rgba(255, 80, 80, 0.15);
+}
+
+.pab-dialog-close-btn:active {
+  background: rgba(255, 80, 80, 0.28);
+  color: #ff5252;
+  transform: translateY(-50%) scale(0.95);
+}
+
+.pab-dialog-close-btn:focus-visible {
+  outline: 2px solid #52a535;
+  outline-offset: 2px;
+}
+
+/* Ensure content starts at top when dialog opens */
+.pab-content-wizard-dialog .cwiz-launcher-full {
+  margin-top: 0;
+  padding-right: 0; /* scrollbar flush with the right edge of the dialog */
+}
+
+/* Responsive dialog sizing */
+@media (max-width: 600px) {
+  .pab-content-wizard-dialog.ui-dialog {
+    width: calc(100vw - 16px) !important;
+    margin: 8px auto !important;
+    max-height: calc(100vh - 40px) !important;
+  }
+
+  .pab-content-wizard-dialog .ui-dialog__content {
+    padding: 12px !important;
+    max-height: calc(100vh - 160px);
+  }
+
+  .pab-content-wizard-dialog .ui-dialog__header {
+    padding: 12px 16px 8px 16px !important;
+    font-size: 1rem;
+  }
+}

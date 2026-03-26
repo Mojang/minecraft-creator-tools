@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 32" width="64" height="32">
+  <g transform="translate(0, 0)"><rect width="16" height="16" fill="rgb(255,204,153)"/></g>
+  <g transform="translate(16, 0)"><rect width="16" height="24" fill="rgb(0,0,255)"/></g>
+  <g transform="translate(32, 0)"><rect width="8" height="24" fill="rgb(0,0,255)"/></g>
+  <g transform="translate(40, 0)"><rect width="16" height="8" fill="rgb(0,0,255)"/></g>
+  <g transform="translate(56, 0)"><rect width="8" height="8" fill="rgb(0,0,255)"/></g>
+  <g transform="translate(0, 24)"><rect width="8" height="8" fill="rgb(51,51,51)"/></g>
+</svg>

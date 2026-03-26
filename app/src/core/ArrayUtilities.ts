@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 /****
  *
  * separates an single array into an array of successes and an array of fails

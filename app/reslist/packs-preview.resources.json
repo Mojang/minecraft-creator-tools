@@ -1,5 +1,6 @@
 {
-  "url": "https://github.com/Mojang/bedrock-samples/archive/4977f3398f74ea3a49f1a238c7883fa51ca9f69c.zip",
+  "url": "https://github.com/Mojang/bedrock-samples/archive/973406a308437932975585ba56a2a461cae70823.zip",
+  "localOverrideZip": "bedrock-samples-preview.zip",
   "ignoreFirstFolder": true,
   "exclude": ["documentation/", "scripts/", "mc_store_realms_", "persona_thumbnails/", "pack_icon.png", ".github"]
 }

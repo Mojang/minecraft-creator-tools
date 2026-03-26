@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "noEmit": false,
+    "outDir": "./out/web",
+    "rootDir": "./src",
+    "sourceMap": true,
+    "noImplicitAny": true
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "src/vscode/**/*",
+    "src/vscodeweb/**/*",
+    "src/test/**/*",
+    "src/test-ex/**/*",
+    "src/test-extra/**/*",
+    "src/testshared/**/*",
+    "src/testelectron/**/*",
+    "src/localserver/**/*",
+    "src/testweb/**/*",
+    "src/testmobile/**/*",
+    "src/testa11y/**/*",
+    "src/setupTests.ts",
+    "src/local/**/*",
+    "node_modules"
+  ]
+}

@@ -1,81 +1,20 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { expect, assert } from "chai";
+import { assert } from "chai";
 import CreatorTools from "../app/CreatorTools";
 import Project, { ProjectAutoDeploymentMode } from "../app/Project";
-import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
-import NodeStorage from "../local/NodeStorage";
-import Database from "../minecraft/Database";
-import LocalEnvironment from "../local/LocalEnvironment";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import { ProjectInfoSuite } from "../info/IProjectInfoData";
 import { InfoItemType } from "../info/IInfoItemData";
-import LocalUtilities from "../local/LocalUtilities";
-
-CreatorToolsHost.hostType = HostType.testLocal;
+import TestPaths, { ITestEnvironment } from "./TestPaths";
 
 let creatorTools: CreatorTools | undefined = undefined;
-let localEnv: LocalEnvironment | undefined = undefined;
-
-localEnv = new LocalEnvironment(false);
 
 (async () => {
-  CreatorToolsHost.localFolderExists = _localFolderExists;
-  CreatorToolsHost.ensureLocalFolder = _ensureLocalFolder;
-
-  CreatorToolsHost.prefsStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "prefs" + NodeStorage.platformFolderDelimiter,
-    ""
-  );
-
-  CreatorToolsHost.projectsStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "projects" + NodeStorage.platformFolderDelimiter,
-    ""
-  );
-
-  CreatorToolsHost.packStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "packs" + NodeStorage.platformFolderDelimiter,
-    ""
-  );
-
-  CreatorToolsHost.worldStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "worlds" + NodeStorage.platformFolderDelimiter,
-    ""
-  );
-
-  CreatorToolsHost.workingStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "working" + NodeStorage.platformFolderDelimiter,
-    ""
-  );
-
-  const coreStorage = new NodeStorage(__dirname + "/../../public/data/content/", "");
-  Database.contentFolder = coreStorage.rootFolder;
-
-  await CreatorToolsHost.init();
-  creatorTools = CreatorToolsHost.getCreatorTools();
-
-  if (!creatorTools) {
-    return;
-  }
-
-  await creatorTools.load();
-
-  // Set up Database.local with proper path adjustment to find schemas in public/
-  (localEnv.utilities as LocalUtilities).basePathAdjust = "../public/";
-  Database.local = localEnv.utilities;
-  creatorTools.local = localEnv.utilities;
+  const env: ITestEnvironment = await TestPaths.createTestEnvironment();
+  creatorTools = env.creatorTools;
 })();
-
-function _ensureLocalFolder(path: string) {
-  const ls = new NodeStorage(path, "");
-  return ls.rootFolder;
-}
-
-async function _localFolderExists(path: string) {
-  const ls = new NodeStorage(path, "");
-  return await ls.rootFolder.exists();
-}
 
 async function _loadProject(name: string) {
   if (!creatorTools) {
@@ -84,7 +23,7 @@ async function _loadProject(name: string) {
 
   const project = new Project(creatorTools, name, null);
   project.autoDeploymentMode = ProjectAutoDeploymentMode.noAutoDeployment;
-  project.localFolderPath = __dirname + "/../../../samplecontent/" + name + "/";
+  project.localFolderPath = TestPaths.sampleContentPath(name);
 
   await project.inferProjectItemsFromFiles();
   return project;

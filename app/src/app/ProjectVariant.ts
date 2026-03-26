@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IProjectVariant from "./IProjectVariant";
 import Project from "./Project";
 

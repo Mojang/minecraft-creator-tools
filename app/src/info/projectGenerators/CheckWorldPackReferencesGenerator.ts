@@ -3,7 +3,6 @@ import Project from "../../app/Project";
 import ProjectInfoSet from "../ProjectInfoSet";
 import IProjectInfoGenerator from "../IProjectInfoGenerator";
 import { InfoItemType } from "../IInfoItemData";
-import ProjectInfoUtilities from "../ProjectInfoUtilities";
 import { ProjectItemType } from "../../app/IProjectItemData";
 import StorageUtilities from "../../storage/StorageUtilities";
 import Utilities from "../../core/Utilities";
@@ -21,16 +20,15 @@ export enum CheckWorldPackReferencesGeneratorTest {
   internalProcessingError = 207,
 }
 
+/**
+ * Validates world pack references including world_behavior_packs.json and world_resource_packs.json.
+ *
+ * @see {@link ../../../public/data/forms/mctoolsval/wpackrefs.form.json} for topic definitions
+ */
 export default class CheckWorldPackReferencesGenerator implements IProjectInfoGenerator {
   id = "WPACKREFS";
   title = "World Pack References";
   canAlwaysProcess = true;
-
-  getTopicData(topicId: number) {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(CheckWorldPackReferencesGeneratorTest, topicId),
-    };
-  }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
     info.invalidWorldPackReferencesJson = infoSet.getSummedDataValue(

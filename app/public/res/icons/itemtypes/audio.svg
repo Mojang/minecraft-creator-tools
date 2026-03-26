@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Audio: Speaker with sound waves -->
+  <path d="M2 5H4L8 2V14L4 11H2V5Z" fill-opacity="0.3"/>
+  <path d="M3 6H4L7 4V12L4 10H3V6Z"/>
+  <path d="M10 5C11.5 6 11.5 10 10 11" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+  <path d="M12 3C14.5 5 14.5 11 12 13" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+</svg>

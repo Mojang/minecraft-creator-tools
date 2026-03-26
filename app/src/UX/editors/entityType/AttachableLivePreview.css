@@ -1,0 +1,229 @@
+/* Copyright (c) Microsoft Corporation. */
+/* Licensed under the MIT License. */
+
+/* AttachableLivePreview - Attachable preview styling */
+
+.atlp-container {
+  font-family: var(--font-family-sans, "Segoe UI", sans-serif);
+  font-size: 12px;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.atlp-light {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.atlp-dark {
+  background: #2d2d2d;
+  color: #e0e0e0;
+}
+
+/* Loading/Error States */
+.atlp-loading,
+.atlp-error {
+  padding: 16px;
+  text-align: center;
+  font-style: italic;
+  opacity: 0.7;
+}
+
+.atlp-error {
+  color: #d9534f;
+}
+
+/* Header */
+.atlp-header {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.atlp-light .atlp-header {
+  background: #e0e0e0;
+}
+
+.atlp-dark .atlp-header {
+  background: #3a3a3a;
+}
+
+.atlp-icon {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.atlp-title {
+  flex: 1;
+}
+
+.atlp-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.atlp-id {
+  font-size: 10px;
+  opacity: 0.6;
+  font-family: monospace;
+}
+
+/* Sections */
+.atlp-section {
+  margin-bottom: 8px;
+}
+
+.atlp-section-header {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  gap: 6px;
+}
+
+.atlp-light .atlp-section-header {
+  background: #e8e8e8;
+}
+
+.atlp-light .atlp-section-header:hover {
+  background: #ddd;
+}
+
+.atlp-dark .atlp-section-header {
+  background: #383838;
+}
+
+.atlp-dark .atlp-section-header:hover {
+  background: #444;
+}
+
+.atlp-expand-icon {
+  font-size: 10px;
+  width: 12px;
+  text-align: center;
+}
+
+.atlp-badge {
+  margin-left: auto;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.atlp-light .atlp-badge {
+  background: #ccc;
+  color: #333;
+}
+
+.atlp-dark .atlp-badge {
+  background: #555;
+  color: #e0e0e0;
+}
+
+/* Items */
+.atlp-items {
+  padding-left: 12px;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.atlp-item {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 3px;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.atlp-light .atlp-item {
+  background: #fafafa;
+}
+
+.atlp-light .atlp-item:hover {
+  background: #eee;
+}
+
+.atlp-dark .atlp-item {
+  background: #2a2a2a;
+}
+
+.atlp-dark .atlp-item:hover {
+  background: #3a3a3a;
+}
+
+.atlp-item-key {
+  font-weight: 500;
+  min-width: 60px;
+}
+
+.atlp-item-arrow {
+  opacity: 0.5;
+}
+
+.atlp-item-value {
+  font-family: monospace;
+  font-size: 10px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Scripts */
+.atlp-scripts-content {
+  padding-left: 12px;
+  margin-top: 4px;
+}
+
+.atlp-script-group {
+  margin-bottom: 6px;
+}
+
+.atlp-script-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: 2px;
+}
+
+.atlp-script-item {
+  font-family: monospace;
+  font-size: 10px;
+  padding: 3px 6px;
+  border-radius: 3px;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.atlp-light .atlp-script-item {
+  background: #fafafa;
+}
+
+.atlp-dark .atlp-script-item {
+  background: #2a2a2a;
+}
+
+/* Clickable Items */
+.atlp-clickable {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.atlp-light .atlp-clickable:hover {
+  background-color: #d8d8d8;
+}
+
+.atlp-dark .atlp-clickable:hover {
+  background-color: #404040;
+}

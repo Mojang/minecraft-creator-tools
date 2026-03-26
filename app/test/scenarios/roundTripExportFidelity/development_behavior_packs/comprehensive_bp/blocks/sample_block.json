@@ -1,0 +1,33 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:block": {
+    "description": {
+      "identifier": "test:sample_block",
+      "menu_category": {
+        "category": "construction",
+        "group": "itemGroup.name.planks"
+      }
+    },
+    "components": {
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 2.0
+      },
+      "minecraft:destructible_by_explosion": {
+        "explosion_resistance": 6.0
+      },
+      "minecraft:flammable": {
+        "burn_chance": 5,
+        "destroy_chance": 20
+      },
+      "minecraft:friction": 0.6,
+      "minecraft:light_emission": 0,
+      "minecraft:map_color": "#8f7748",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "sample_block",
+          "render_method": "opaque"
+        }
+      }
+    }
+  }
+}

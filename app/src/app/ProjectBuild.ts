@@ -135,8 +135,10 @@ export default class ProjectBuild implements IErrorable {
 
     let file = await this.mainScriptsFolder.ensureFileFromRelativePath(path);
 
+    // Use existing in-memory content if already loaded (it may have been modified by the editor)
+    // Only load from storage if not yet loaded
     if (!file.isContentLoaded) {
-      await file.loadContent();
+      await file.loadContent(true);
     }
 
     let content = file.content;
@@ -147,8 +149,9 @@ export default class ProjectBuild implements IErrorable {
 
         file = await this.mainScriptsFolder.ensureFileFromRelativePath(path);
 
+        // Use existing in-memory content if available
         if (!file.isContentLoaded) {
-          await file.loadContent();
+          await file.loadContent(true);
         }
         content = file.content;
 
@@ -210,9 +213,17 @@ export default class ProjectBuild implements IErrorable {
 
         if (!ProjectBuild.isInitialized) {
           try {
-            await esbuild.initialize({
-              wasmURL: "./dist/esbuild-wasm/esbuild.wasm",
-            });
+            // In Node.js, esbuild-wasm auto-locates its .wasm file from the
+            // package directory — no wasmURL needed. In browsers, wasmURL must
+            // point to the .wasm file served by the web server.
+            const isNodeJs = typeof process !== "undefined" && process.versions?.node;
+            if (isNodeJs) {
+              await esbuild.initialize({});
+            } else {
+              await esbuild.initialize({
+                wasmURL: "./dist/esbuild-wasm/esbuild.wasm",
+              });
+            }
           } catch (e: any) {
             this._pushError("Failed to initialize build system: " + e.toString());
             await this.project.creatorTools?.notifyOperationEnded(

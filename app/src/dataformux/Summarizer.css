@@ -1,0 +1,291 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SUMMARIZER STYLES - Minecraft Creator Tools
+   
+   Design Philosophy:
+   - Semantic styling that adapts to light/dark themes
+   - Blocky aesthetic consistent with Minecraft
+   - Green accent (#52a535) for positive sentiment
+   - Clear visual hierarchy with emphasis levels
+   
+   See: docs/ux/Components.md, docs/ux/ShapeBorderGuidelines.md
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CONTAINER VARIANTS
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.sum-container {
+  line-height: 1.5;
+  font-size: 13px;
+}
+
+/* Card variant - prominent display with background */
+.sum-card {
+  padding: 12px 16px;
+  margin: 8px 0 16px 0;
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.04);
+  border-left: 3px solid rgba(180, 180, 180, 0.5);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+/* Inline variant - no container styling */
+.sum-inline {
+  display: inline;
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: none;
+}
+
+/* Compact variant - smaller text, minimal spacing */
+.sum-compact {
+  padding: 6px 10px;
+  margin: 4px 0;
+  font-size: 12px;
+  background: rgba(82, 165, 53, 0.04);
+  border-radius: 3px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TOKEN BASE STYLES
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.sum-token {
+  /* Default: inherit all styles */
+}
+
+.sum-phrase {
+  /* Phrases are inline containers */
+}
+
+.sum-separator {
+  color: inherit;
+  opacity: 0.7;
+}
+
+.sum-prefix {
+  color: inherit;
+  opacity: 0.8;
+}
+
+.sum-period {
+  color: inherit;
+}
+
+.sum-plain {
+  font-style: normal;
+}
+
+/* Capitalize the first letter when no prefix is provided */
+.sum-capitalize-first::first-letter {
+  text-transform: uppercase;
+}
+
+.sum-icon {
+  margin-right: 4px;
+}
+
+/* Icon after text */
+.sum-token .sum-icon:last-child {
+  margin-right: 0;
+  margin-left: 4px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   EMPHASIS LEVELS
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.sum-emphasis-strong {
+  font-weight: 600;
+}
+
+.sum-emphasis-subtle {
+  opacity: 0.7;
+  font-size: 0.92em;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SENTIMENT COLORS (adapt to theme)
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Positive - Green (good values, buffs, strengths) */
+.sum-sentiment-positive {
+  color: #2e7d32;
+}
+
+/* Negative - Red (bad values, debuffs, weaknesses) */
+.sum-sentiment-negative {
+  color: #c62828;
+}
+
+/* Warning - Orange (dangerous, caution) */
+.sum-sentiment-warning {
+  color: #ef6c00;
+}
+
+/* Info - Blue (informational highlights) */
+.sum-sentiment-info {
+  color: #1565c0;
+}
+
+/* Dark theme overrides - lighter colors for readability */
+.sum-dark .sum-sentiment-positive,
+.sum-dark.sum-sentiment-positive {
+  color: #66bb6a;
+}
+
+.sum-dark .sum-sentiment-negative,
+.sum-dark.sum-sentiment-negative {
+  color: #ef5350;
+}
+
+.sum-dark .sum-sentiment-warning,
+.sum-dark.sum-sentiment-warning {
+  color: #ffa726;
+}
+
+.sum-dark .sum-sentiment-info,
+.sum-dark.sum-sentiment-info {
+  color: #42a5f5;
+}
+
+.sum-dark .sum-card,
+.sum-dark.sum-card {
+  background: rgba(255, 255, 255, 0.06);
+  border-left-color: rgba(200, 200, 200, 0.4);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SEMANTIC ROLES
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Value role - data values (numbers, identifiers) */
+.sum-role-value {
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.95em;
+  background: rgba(82, 165, 53, 0.12);
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+
+/* Unit role - unit labels (HP, blocks, seconds) */
+.sum-role-unit {
+  opacity: 0.85;
+  font-size: 0.9em;
+}
+
+/* Label role - category names, labels */
+.sum-role-label {
+  font-weight: 500;
+}
+
+/* Comparison role - reference comparisons */
+.sum-role-comparison {
+  font-style: italic;
+  opacity: 0.9;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   BADGE STYLING
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.sum-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  margin: 0 2px;
+  border-radius: 3px;
+  font-size: 0.85em;
+  font-weight: 500;
+  background: rgba(107, 101, 98, 0.15);
+  border: 1px solid rgba(107, 101, 98, 0.25);
+}
+
+/* Sentiment-colored badges */
+.sum-badge.sum-sentiment-positive {
+  background: rgba(46, 125, 50, 0.12);
+  border-color: rgba(46, 125, 50, 0.3);
+}
+
+.sum-badge.sum-sentiment-negative {
+  background: rgba(198, 40, 40, 0.12);
+  border-color: rgba(198, 40, 40, 0.3);
+}
+
+.sum-badge.sum-sentiment-warning {
+  background: rgba(239, 108, 0, 0.12);
+  border-color: rgba(239, 108, 0, 0.3);
+}
+
+.sum-badge.sum-sentiment-info {
+  background: rgba(21, 101, 192, 0.12);
+  border-color: rgba(21, 101, 192, 0.3);
+}
+
+/* Dark theme badge overrides */
+.sum-dark .sum-badge {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.sum-dark .sum-badge.sum-sentiment-positive {
+  background: rgba(102, 187, 106, 0.15);
+  border-color: rgba(102, 187, 106, 0.3);
+}
+
+.sum-dark .sum-badge.sum-sentiment-negative {
+  background: rgba(239, 83, 80, 0.15);
+  border-color: rgba(239, 83, 80, 0.3);
+}
+
+.sum-dark .sum-badge.sum-sentiment-warning {
+  background: rgba(255, 167, 38, 0.15);
+  border-color: rgba(255, 167, 38, 0.3);
+}
+
+.sum-dark .sum-badge.sum-sentiment-info {
+  background: rgba(66, 165, 245, 0.15);
+  border-color: rgba(66, 165, 245, 0.3);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   COMBINED EFFECTS
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Strong + Positive (e.g., high health value) */
+.sum-emphasis-strong.sum-sentiment-positive {
+  font-weight: 700;
+}
+
+/* Strong + Negative (e.g., critical warning) */
+.sum-emphasis-strong.sum-sentiment-negative {
+  font-weight: 700;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ANIMATIONS (optional, can be enabled via class)
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.sum-animate .sum-token {
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+/* Sparkle animation for special effects */
+@keyframes sum-sparkle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.sum-sparkle {
+  animation: sum-sparkle 1.5s ease-in-out infinite;
+}

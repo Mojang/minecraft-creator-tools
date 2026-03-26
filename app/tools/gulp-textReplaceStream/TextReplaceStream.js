@@ -19,7 +19,6 @@ class TextReplaceStream {
 
   resolve(filePath, content) {
     let targetContent = this.readFile(this._targetFilePath);
-    console.log("PTH" + filePath + "EWF" + targetContent + "TGT" + this._targetFilePath);
 
     if (targetContent) {
       targetContent = targetContent.replace(this._fromRegEx, content);

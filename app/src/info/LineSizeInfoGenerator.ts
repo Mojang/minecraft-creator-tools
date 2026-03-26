@@ -14,6 +14,11 @@ import ContentIndex from "../core/ContentIndex";
 
 const TopicTestIdBase = 100;
 
+/**
+ * Aggregates file line counts and size information by content type.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/linesize.form.json} for topic definitions
+ */
 export default class LineSizeInfoGenerator implements IProjectInfoGenerator {
   id = "LINESIZE";
   title = "File Line/Size Information";

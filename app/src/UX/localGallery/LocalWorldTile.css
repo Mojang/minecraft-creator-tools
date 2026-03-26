@@ -1,0 +1,129 @@
+@media only screen and (min-width: 800px) {
+  .lwt-outer {
+    margin-left: 10px;
+    margin-top: 12px;
+    width: 340px;
+    min-height: 108px;
+    max-width: calc(100vw - 60px);
+    display: inline-block;
+    border: solid 2px #202020;
+    text-align: left;
+    vertical-align: top;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .lwt-outer {
+    margin-top: 12px;
+    width: 340px;
+    margin-left: 6px;
+    margin-right: 6px;
+    min-height: 108px;
+    max-width: calc(100vw - 60px);
+    display: inline-block;
+    border: solid 2px #202020;
+    text-align: left;
+    vertical-align: top;
+  }
+}
+
+.lwt-grid {
+  display: grid;
+  height: 100%;
+  grid-template-columns: 106px 1fr;
+  grid-template-rows: 1fr 45px;
+}
+
+.lwt-mainArea {
+  grid-row: 1;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  padding-top: 7px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  padding-right: 6px;
+}
+
+.lwt-iconArea {
+  grid-row-start: 1;
+  grid-row-end: 3;
+  grid-column-start: 1;
+  grid-column-end: 2;
+  padding: 6px;
+  height: 108px;
+  border-right: solid 1px;
+}
+
+.lwt-iconBorder {
+  border: inset 1px #848586;
+  min-height: 96px;
+  max-height: 96px;
+  min-width: 96px;
+  max-width: 96px;
+  overflow: hidden;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.lwt-worldPreviewImage {
+  width: 96px;
+  height: 96px;
+  opacity: 0.6;
+  line-height: 1px;
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
+  image-rendering: optimizeSpeed;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -o-crisp-edges;
+  image-rendering: crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: pixelated;
+  image-rendering: optimize-contrast;
+}
+
+.lwt-mini-toolbar {
+  grid-row: 2;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  vertical-align: middle;
+  text-align: right;
+  border-top: inset 1px #848586;
+  vertical-align: top;
+  padding: 0px;
+}
+
+.lwt-mini-toolbar button {
+  border: 0px;
+  background-color: transparent;
+  border-left: inset 1.5px #848586;
+  box-shadow: none;
+  width: 60px;
+  height: 42px;
+  padding: 0px;
+  margin: 0px;
+}
+
+.lwt-mini-toolbar button span {
+  display: block;
+  border-left: outset 2px #848586;
+  width: 95px;
+  height: 40px;
+  padding-top: 11px;
+}
+
+.lwt-mini-toolbar-interior {
+  width: 100%;
+  height: 100%;
+  border-top: outset 2px #848586;
+}
+
+.lwt-title {
+  font-weight: bold;
+  padding-top: 1px;
+  text-overflow: ellipsis;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  min-height: 22px;
+  font-size: medium;
+}

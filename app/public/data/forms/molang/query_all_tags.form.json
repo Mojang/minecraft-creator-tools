@@ -1,6 +1,0 @@
-{
-  "id": "query.all_tags",
-  "fields": [],
-  "description": "Returns if the item or block has all of the tags specified.",
-  "title": "All Tags"
-}

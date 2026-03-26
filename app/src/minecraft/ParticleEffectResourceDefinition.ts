@@ -10,6 +10,7 @@ import MinecraftUtilities from "./MinecraftUtilities";
 import { ProjectItemType } from "../app/IProjectItemData";
 import ProjectItem from "../app/ProjectItem";
 import Project from "../app/Project";
+import RelationsIndex from "../app/RelationsIndex";
 import Database from "./Database";
 import Utilities from "../core/Utilities";
 import IProjectItemRelationship from "../app/IProjectItemRelationship";
@@ -19,6 +20,7 @@ export default class ParticleEffectResourceDefinition {
   private _data?: IParticleEffectWrapper;
   private _file?: IFile;
   private _isLoaded: boolean = false;
+  private _loadedWithComments: boolean = false;
 
   private _onLoaded = new EventDispatcher<ParticleEffectResourceDefinition, ParticleEffectResourceDefinition>();
 
@@ -138,8 +140,20 @@ export default class ParticleEffectResourceDefinition {
     return this._file.setObjectContentIfSemanticallyDifferent(this._data);
   }
 
-  async load() {
-    if (this._isLoaded) {
+  /**
+   * Loads the definition from the file.
+   * @param preserveComments If true, uses comment-preserving JSON parsing for edit/save cycles.
+   *                         If false (default), uses efficient standard JSON parsing.
+   *                         Can be called again with true to "upgrade" a read-only load to read/write.
+   */
+  async load(preserveComments: boolean = false) {
+    // If already loaded with comments, we have the "best" version - nothing more to do
+    if (this._isLoaded && this._loadedWithComments) {
+      return;
+    }
+
+    // If already loaded without comments and caller doesn't need comments, we're done
+    if (this._isLoaded && !preserveComments) {
       return;
     }
 
@@ -153,12 +167,18 @@ export default class ParticleEffectResourceDefinition {
     }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
+      this._isLoaded = true;
+      this._loadedWithComments = preserveComments;
+      this._onLoaded.dispatch(this, this);
       return;
     }
 
     let data: any = {};
 
-    let result = StorageUtilities.getJsonObject(this._file);
+    // Use comment-preserving parser only when needed for editing
+    let result = preserveComments
+      ? StorageUtilities.getJsonObjectWithComments(this._file)
+      : StorageUtilities.getJsonObject(this._file);
 
     if (result) {
       data = result;
@@ -167,6 +187,7 @@ export default class ParticleEffectResourceDefinition {
     this._data = data;
 
     this._isLoaded = true;
+    this._loadedWithComments = preserveComments;
 
     this._onLoaded.dispatch(this, this);
   }
@@ -218,26 +239,20 @@ export default class ParticleEffectResourceDefinition {
     return packRootFolder;
   }
 
-  async addChildItems(project: Project, item: ProjectItem) {
-    const itemsCopy = project.getItemsCopy();
-
+  async addChildItems(project: Project, item: ProjectItem, index?: RelationsIndex) {
     let packRootFolder = this.getPackRootFolder();
-
     let textureList = this.getCanonicalizedTexturesList();
 
-    for (const candItem of itemsCopy) {
-      if (candItem.itemType === ProjectItemType.texture && packRootFolder && textureList) {
-        if (!candItem.isContentLoaded) {
-          await candItem.loadContent();
-        }
-
+    // Textures still need path-based matching (no ID-based index possible)
+    if (packRootFolder && textureList && textureList.length > 0) {
+      const textureItems = project.getItemsByType(ProjectItemType.texture);
+      for (const candItem of textureItems) {
         if (candItem.primaryFile) {
           let relativePath = StorageUtilities.getBaseRelativePath(candItem.primaryFile, packRootFolder);
 
           if (relativePath) {
             if (textureList && textureList.includes(relativePath)) {
               item.addChildItem(candItem);
-
               textureList = Utilities.removeItemInArray(relativePath, textureList);
             }
           }
@@ -248,7 +263,6 @@ export default class ParticleEffectResourceDefinition {
     if (textureList) {
       for (const texturePath of textureList) {
         const isVanillaToken = await Database.isVanillaToken(texturePath);
-
         item.addUnfulfilledRelationship(texturePath, ProjectItemType.texture, isVanillaToken);
       }
     }

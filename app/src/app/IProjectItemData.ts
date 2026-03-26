@@ -4,7 +4,7 @@
 import IGitHubInfo from "./IGitHubInfo";
 import IProjectItemVariant from "./IProjectItemVariant";
 
-export const MaxItemTypes = 165;
+export const MaxItemTypes = 166;
 
 export enum ProjectItemCategory {
   assets,
@@ -184,6 +184,7 @@ export enum ProjectItemType {
   levelDatOld = 162,
   jsMap = 163,
   markdownDocumentation = 164,
+  voxelShapeBehavior = 165,
 }
 
 export enum ProjectItemStorageType {
@@ -225,4 +226,24 @@ export default interface IProjectItemData {
   errorMessage?: string;
   errorStatus?: ProjectItemErrorStatus;
   items?: IProjectItemData[];
+
+  /**
+   * Cached thumbnail as data URL (e.g., "data:image/svg+xml;base64,..." or "data:image/png;base64,...").
+   * Used for geometry models and other items that can have visual previews.
+   * Generated in background worker and displayed in ProjectItemList.
+   */
+  cachedThumbnail?: string;
+
+  /**
+   * Timestamp when the thumbnail was last generated.
+   * Used to invalidate cache when file content changes.
+   */
+  thumbnailGeneratedAt?: number;
+
+  /**
+   * Path to another project item whose thumbnail should be used for this item.
+   * For example, entity behavior/resource files link to their geometry model's thumbnail.
+   * This is set during relations processing based on item relationships.
+   */
+  thumbnailLink?: string;
 }

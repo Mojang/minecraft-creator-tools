@@ -1,0 +1,189 @@
+.etde-outer {
+  margin-left: 17px;
+  margin-top: 20px;
+  width: 200px;
+  height: 46px;
+  border: solid 3px black;
+  background: rgb(37, 111, 177);
+  background: linear-gradient(180deg, rgba(37, 111, 177, 1) 0%, rgba(48, 127, 193, 1) 37%, rgba(73, 150, 217, 1) 100%);
+  display: inline-block;
+}
+
+.etde-outer-selected {
+  margin-left: 17px;
+  margin-top: 20px;
+  width: 200px;
+  height: 46px;
+  border: solid 3px green;
+  background: rgb(37, 111, 177);
+  background: linear-gradient(180deg, rgba(37, 111, 177, 1) 0%, rgba(48, 127, 193, 1) 37%, rgba(73, 150, 217, 1) 100%);
+  display: inline-block;
+}
+
+.etde-grid {
+  display: grid;
+  flex: 1;
+  min-height: 0;
+  grid-template-rows: 52px 1fr;
+  grid-template-columns: 1fr 420px;
+}
+
+.etde-mainArea {
+  grid-row: 1;
+  padding: 10px;
+}
+
+.etde-loading {
+  padding: 4px;
+}
+
+.etde-title {
+  font-weight: bold;
+  padding-bottom: 10px;
+  white-space: nowrap;
+  overflow-x: hidden;
+}
+
+.etde-toolBarArea {
+  display: grid;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-template-columns: 220px auto 1fr;
+  align-items: center;
+  padding: 6px 0;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.etde-dropdownArea {
+  grid-column: 1;
+  padding: 0 2px 0 6px;
+}
+
+.etde-dropdownArea .ui-dropdown__container {
+  width: 210px;
+}
+
+.etde-toolBar {
+  grid-column: 2;
+  padding: 0 6px;
+  display: flex;
+  align-items: center;
+}
+
+/* Minecraft-style buttons for the diagram toolbar */
+.etde-toolBar .MuiButton-root {
+  background-color: #4a4a4a;
+  border: 2px solid #2a2a2a;
+  border-bottom-color: #1a1a1a;
+  border-right-color: #1a1a1a;
+  border-top-color: #5a5a5a;
+  border-left-color: #5a5a5a;
+  border-radius: 0;
+  color: #e0e0e0;
+  text-transform: none;
+  padding: 4px 14px;
+  min-height: 30px;
+  font-size: 13px;
+}
+
+.etde-toolBar .MuiButton-root:hover {
+  background-color: #585858;
+  border-top-color: #6a6a6a;
+  border-left-color: #6a6a6a;
+  border-bottom-color: #1a1a1a;
+  border-right-color: #1a1a1a;
+  color: #ffffff;
+}
+
+.etde-toolBar .MuiButton-root:active {
+  background-color: #383838;
+  border-top-color: #1a1a1a;
+  border-left-color: #1a1a1a;
+  border-bottom-color: #5a5a5a;
+  border-right-color: #5a5a5a;
+}
+
+.etde-container {
+  grid-row: 2;
+  grid-column: 1;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.etde-container-wide {
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+.etde-pane {
+  grid-row: 2;
+  grid-column: 2;
+  width: 420px;
+  max-width: 420px;
+  min-height: 0;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Force all pane children to respect the 420px constraint */
+.etde-pane * {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Let form text wrap naturally in the narrow pane */
+.etde-pane .rng-data {
+  display: block;
+  max-width: 100%;
+}
+
+.etde-pane .rng-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.etde-pane .rng-intro {
+  display: inline;
+  font-size: 13px;
+  white-space: normal;
+  text-wrap: wrap;
+}
+
+.etde-pane .rng-label {
+  font-size: 15px;
+}
+
+.etde-pane .rng-cell {
+  display: inline-block;
+}
+
+.etde-pane .rng-joiner {
+  display: inline;
+  font-size: 13px;
+}
+
+/* Prevent double scrollbars: the pane handles scrolling, not inner areas */
+.etde-pane .ead-area,
+.etde-pane .ead-n-area {
+  overflow-y: visible !important;
+  overflow-x: hidden !important;
+}
+
+/* Let filter clause dropdowns shrink to fit the narrow pane */
+.etde-pane .mificln-inner .MuiOutlinedInput-root,
+.etde-pane .mificln-inner .MuiSelect-select {
+  max-width: 100%;
+}
+
+.etde-pane .mificln-inner .ui-dropdown__container,
+.etde-pane .mificln-test .ui-dropdown__container {
+  width: 100%;
+  max-width: 100%;
+}

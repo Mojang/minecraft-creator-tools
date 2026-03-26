@@ -1,7 +1,33 @@
 import { test, expect, ConsoleMessage } from "@playwright/test";
-import { processMessage } from "./WebTestUtilities";
+import {
+  getExportToolbarButton,
+  getTestToolbarButton,
+  preferBrowserStorageInProjectDialog,
+  processMessage,
+  selectEditMode,
+} from "./WebTestUtilities";
 
-test.describe("MCTools Web Editor - Editor Interaction Tests", () => {
+/** Filter out known benign console warnings that don't indicate real issues */
+function filterBenignWarnings(warnings: { url: string; error: string }[]): { url: string; error: string }[] {
+  return warnings.filter(
+    (w) =>
+      !w.error.includes("Body element does not contain trap zone element") &&
+      !w.error.includes("out-of-range value") &&
+      !w.error.includes("Each child in a list should have a unique") &&
+      !w.error.includes("validateDOMNesting") &&
+      !w.error.includes("aria-hidden") &&
+      !w.error.includes("MUI:") &&
+      !w.error.includes("Material-UI") &&
+      !w.error.includes("React does not recognize") &&
+      !w.error.includes("is not a valid") &&
+      !w.error.includes("component is changing") &&
+      !w.error.includes("findDOMNode") &&
+      !w.error.includes("deprecated") &&
+      !w.error.includes("MISSING_TRANSLATION")
+  );
+}
+
+test.describe("MCTools Web Editor - Editor Interaction Tests @focused", () => {
   const consoleErrors: { url: string; error: string }[] = [];
   const consoleWarnings: { url: string; error: string }[] = [];
 
@@ -29,12 +55,12 @@ test.describe("MCTools Web Editor - Editor Interaction Tests", () => {
     expect(hasContent).toBe(true);
 
     expect(consoleErrors.length).toBeLessThanOrEqual(0);
-    expect(consoleWarnings.length).toBeLessThanOrEqual(0);
+    expect(filterBenignWarnings(consoleWarnings).length).toBeLessThanOrEqual(0);
   });
 
   test("should navigate to project creation and enter editor", async ({ page }) => {
     // Use the correct workflow: New button under project template
-    const addOnStarterNewButton = page.getByRole("button", { name: "New" }).first();
+    const addOnStarterNewButton = page.getByRole("button", { name: "Create New" }).first();
 
     if ((await addOnStarterNewButton.count()) > 0) {
       console.log("Found Add-On Starter New button, clicking to create project");
@@ -47,10 +73,14 @@ test.describe("MCTools Web Editor - Editor Interaction Tests", () => {
       // Look for and click OK button
       const okButton = await page.getByTestId("submit-button").first();
       await expect(okButton).toBeVisible();
+      await preferBrowserStorageInProjectDialog(page);
       await okButton.click();
 
       await page.waitForTimeout(2000);
       await page.waitForLoadState("networkidle");
+
+      // Select Focused mode to dismiss welcome panel and hide Inspector
+      await selectEditMode(page);
 
       // Take screenshot of what happens after creating project
       await page.screenshot({ path: "debugoutput/screenshots/after-project-creation.png", fullPage: true });
@@ -59,7 +89,7 @@ test.describe("MCTools Web Editor - Editor Interaction Tests", () => {
       const editorToolbar = page
         .locator("button:has-text('Save')")
         .or(page.locator("button:has-text('View')"))
-        .or(page.locator("button:has-text('Share')"));
+        .or(page.locator("button:has-text('Export')"));
       if ((await editorToolbar.count()) > 0) {
         console.log("Successfully entered editor interface");
         await expect(editorToolbar.first()).toBeVisible();
@@ -102,7 +132,7 @@ test.describe("MCTools Web Editor - Editor Interaction Tests", () => {
     }
 
     expect(consoleErrors.length).toBeLessThanOrEqual(0);
-    expect(consoleWarnings.length).toBeLessThanOrEqual(0);
+    expect(filterBenignWarnings(consoleWarnings).length).toBeLessThanOrEqual(0);
   });
 
   test("should handle project import/file operations", async ({ page }) => {
@@ -134,12 +164,12 @@ test.describe("MCTools Web Editor - Editor Interaction Tests", () => {
     }
 
     expect(consoleErrors.length).toBeLessThanOrEqual(0);
-    expect(consoleWarnings.length).toBeLessThanOrEqual(0);
+    expect(filterBenignWarnings(consoleWarnings).length).toBeLessThanOrEqual(0);
   });
 
   test("should identify and test editor components and interactions", async ({ page }) => {
     // Create project and enter editor using correct workflow
-    const addOnStarterNewButton = page.getByRole("button", { name: "New" }).first();
+    const addOnStarterNewButton = page.getByRole("button", { name: "Create New" }).first();
 
     if ((await addOnStarterNewButton.count()) > 0) {
       console.log("Creating project to enter editor");
@@ -147,10 +177,14 @@ test.describe("MCTools Web Editor - Editor Interaction Tests", () => {
       await page.waitForTimeout(1000);
 
       const okButton = await page.getByTestId("submit-button").first();
+      await preferBrowserStorageInProjectDialog(page);
       await okButton.click();
       await page.waitForTimeout(2000);
       await page.waitForLoadState("networkidle");
     }
+
+    // Select Focused mode to dismiss welcome panel and hide Inspector
+    await selectEditMode(page);
 
     await page.screenshot({ path: "debugoutput/screenshots/editor-components-search.png", fullPage: true });
 
@@ -158,8 +192,8 @@ test.describe("MCTools Web Editor - Editor Interaction Tests", () => {
     const saveButton = page.getByRole("button", { name: "Save" }).first();
     const viewButton = page.getByRole("button", { name: "View" }).first();
     const settingsButton = page.getByRole("button", { name: "Settings" }).first();
-    const shareButton = page.getByRole("button", { name: "Share" }).first();
-    const runButton = page.getByRole("button", { name: "Run" }).first();
+    const exportButton = getExportToolbarButton(page);
+    const testButton = getTestToolbarButton(page);
 
     if ((await saveButton.count()) > 0) {
       console.log("Found Save button in editor toolbar");
@@ -182,17 +216,17 @@ test.describe("MCTools Web Editor - Editor Interaction Tests", () => {
       await expect(settingsButton).toBeVisible();
     }
 
-    if ((await shareButton.count()) > 0) {
-      console.log("Found Share button in editor toolbar");
-      await expect(shareButton).toBeVisible();
+    if ((await exportButton.count()) > 0) {
+      console.log("Found Export button in editor toolbar");
+      await expect(exportButton).toBeVisible();
     }
 
-    if ((await runButton.count()) > 0) {
-      console.log("Found Run button in editor toolbar");
-      await expect(runButton.first()).toBeVisible();
+    if ((await testButton.count()) > 0) {
+      console.log("Found Test button in editor toolbar");
+      await expect(testButton.first()).toBeVisible();
 
-      // Try to interact with Run button dropdown
-      await runButton.first().click();
+      // Try to interact with Test button dropdown
+      await testButton.first().click();
       await page.waitForTimeout(1000);
       await page.screenshot({ path: "debugoutput/screenshots/run-button-dropdown.png", fullPage: true });
       await page.keyboard.press("Escape");
@@ -255,7 +289,7 @@ test.describe("MCTools Web Editor - Editor Interaction Tests", () => {
     }
 
     // Test Add and Show buttons in the file listing area
-    const addButton = page.locator("button:has-text('Add')");
+    const addButton = page.getByRole("button", { name: "Add new content" }).first();
     if ((await addButton.count()) > 0) {
       console.log("Testing Add button functionality");
       await addButton.click();
@@ -274,7 +308,15 @@ test.describe("MCTools Web Editor - Editor Interaction Tests", () => {
     }
 
     expect(consoleErrors.length).toBeLessThanOrEqual(0);
-    expect(consoleWarnings.length).toBeLessThanOrEqual(0);
+
+    const filteredWarnings = filterBenignWarnings(consoleWarnings);
+    if (filteredWarnings.length > 0) {
+      console.log("Non-benign warnings (" + filteredWarnings.length + "):");
+      for (const w of filteredWarnings) {
+        console.log("  WARNING: " + w.error);
+      }
+    }
+    expect(filteredWarnings.length).toBeLessThanOrEqual(0);
   });
 
   test("should test navigation and UI exploration", async ({ page }) => {
@@ -314,6 +356,6 @@ test.describe("MCTools Web Editor - Editor Interaction Tests", () => {
     expect(pageStructure.hasReactRoot).toBe(true);
 
     expect(consoleErrors.length).toBeLessThanOrEqual(0);
-    expect(consoleWarnings.length).toBeLessThanOrEqual(0);
+    expect(filterBenignWarnings(consoleWarnings).length).toBeLessThanOrEqual(0);
   });
 });

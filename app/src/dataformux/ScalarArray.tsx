@@ -1,21 +1,18 @@
-import { Component, SyntheticEvent } from "react";
+import { Component, ChangeEvent } from "react";
 import "./ScalarArray.css";
 import IFormComponentProps from "./../dataform/IFormComponentProps.js";
-import {
-  FormInput,
-  InputProps,
-  Button,
-  TextArea,
-  TextAreaProps,
-  DropdownItemProps,
-  DropdownProps,
-  Dropdown,
-} from "@fluentui/react-northstar";
+import { TextField, Button, Autocomplete, Box } from "@mui/material";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ILookupProvider from "./../dataform/ILookupProvider";
 import ISimpleReference from "./../dataform/ISimpleReference";
 import Utilities from "../core/Utilities";
+
+interface IScalarArrayItem {
+  key?: string;
+  header: string;
+  image?: string;
+}
 
 export interface IScalarArrayProps extends IFormComponentProps {
   data: string[] | undefined;
@@ -28,6 +25,8 @@ export interface IScalarArrayProps extends IFormComponentProps {
   isNumber: boolean;
   longForm: boolean;
   onChange?: (data: IScalarArrayProps) => void;
+  canAddItem?: (lookupId: string) => boolean;
+  onAddItem?: (lookupId: string) => Promise<string | undefined>;
 }
 
 interface IScalarArrayState {
@@ -45,6 +44,7 @@ export default class ScalarArray extends Component<IScalarArrayProps, IScalarArr
     this._handleDrodownSearchQueryChange = this._handleDrodownSearchQueryChange.bind(this);
     this._handleTextAreaChange = this._handleTextAreaChange.bind(this);
     this._handleAddItemButton = this._handleAddItemButton.bind(this);
+    this._handleAddLookupItemButton = this._handleAddLookupItemButton.bind(this);
 
     if (props.data) {
       this.state = {
@@ -59,11 +59,8 @@ export default class ScalarArray extends Component<IScalarArrayProps, IScalarArr
     }
   }
 
-  _handleTextAreaChange(
-    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
-    data: TextAreaProps | undefined
-  ) {
-    const className = data?.className;
+  _handleTextAreaChange(event: ChangeEvent<HTMLTextAreaElement>) {
+    const className = event.target.className;
 
     if (className) {
       const index = className.indexOf("tatmpdata-");
@@ -73,17 +70,18 @@ export default class ScalarArray extends Component<IScalarArrayProps, IScalarArr
           end = className.length;
         }
 
-        this.processInputUpdate(className.substring(index + 10, end), data?.value);
+        this.processInputUpdate(className.substring(index + 10, end), event.target.value);
       }
     }
   }
 
-  _handleDrodownValChange(event: React.MouseEvent<Element> | React.KeyboardEvent<Element> | null, data: DropdownProps) {
-    if (data.value && Array.isArray(data.value)) {
-      const strResults = [];
+  _handleDrodownValChange(event: React.SyntheticEvent, value: IScalarArrayItem[]) {
+    if (value && Array.isArray(value)) {
+      const strResults: string[] = [];
 
-      for (const di of (data as any).value) {
-        strResults.push(di.key ? di.key : Utilities.dehumanify(di.header, this.props.field.humanifyValues));
+      for (const di of value) {
+        const val = di.key ? di.key : Utilities.dehumanify(di.header, this.props.field.humanifyValues);
+        strResults.push(String(val));
       }
 
       if (this.props.onChange) {
@@ -110,24 +108,18 @@ export default class ScalarArray extends Component<IScalarArrayProps, IScalarArr
     }
   }
 
-  _handleDrodownSearchQueryChange(
-    event: React.MouseEvent<Element> | React.KeyboardEvent<Element> | null,
-    data: DropdownProps
-  ) {
-    if (data.searchQuery) {
+  _handleDrodownSearchQueryChange(event: React.SyntheticEvent, value: string) {
+    if (value) {
       this.setState({
         data: this.state.data,
         objectKey: this.state.objectKey,
-        searchQuery: data.searchQuery,
+        searchQuery: value,
       });
     }
   }
 
-  _handleValChange(
-    event: SyntheticEvent<Element, Event> | React.MouseEvent<Element> | React.KeyboardEvent<Element> | null,
-    data: (InputProps & { value: string }) | undefined
-  ) {
-    this.processInputUpdate(data?.id, data?.value);
+  _handleValChange(event: ChangeEvent<HTMLInputElement>) {
+    this.processInputUpdate(event.target.id, event.target.value);
   }
 
   processInputUpdate(id: string | undefined, data: string | undefined) {
@@ -138,12 +130,12 @@ export default class ScalarArray extends Component<IScalarArrayProps, IScalarArr
     let index = -1;
 
     try {
-      index = parseInt(id);
+      index = parseInt(id, 10);
     } catch (e) {
       return;
     }
 
-    if (index < 0) {
+    if (isNaN(index) || index < 0) {
       return;
     }
 
@@ -179,6 +171,33 @@ export default class ScalarArray extends Component<IScalarArrayProps, IScalarArr
     this.forceUpdate();
   }
 
+  async _handleAddLookupItemButton() {
+    if (!this.props.field.lookupId || !this.props.onAddItem) {
+      return;
+    }
+
+    const newItemId = await this.props.onAddItem(this.props.field.lookupId);
+    if (newItemId) {
+      // Add the new item to the array
+      this.state.data.push(newItemId);
+
+      if (this.props.onChange) {
+        this.props.onChange({
+          data: this.state.data,
+          objectKey: this.props.objectKey,
+          lookups: this.props.lookups,
+          form: this.props.form,
+          field: this.props.field,
+          isNumber: this.props.isNumber,
+          longForm: this.props.longForm,
+          label: this.props.label,
+        });
+      }
+
+      this.forceUpdate();
+    }
+  }
+
   render() {
     const inputAreas: any[] = [];
 
@@ -189,9 +208,9 @@ export default class ScalarArray extends Component<IScalarArrayProps, IScalarArr
     }
 
     if (choices && !this.props.displayAsList) {
-      const items: (DropdownItemProps & { key?: string })[] = [];
+      const items: IScalarArrayItem[] = [];
 
-      const vals: (DropdownItemProps & { key?: string })[] = [];
+      const vals: IScalarArrayItem[] = [];
 
       let hasImages = false;
 
@@ -258,17 +277,25 @@ export default class ScalarArray extends Component<IScalarArrayProps, IScalarArr
       }
 
       inputAreas.push(
-        <div>
-          <Dropdown
-            search={true}
-            multiple={true}
-            id={"inptDrop"}
-            key={"inptDrop"}
+        <div key="sarr-dropdown-wrap">
+          <Autocomplete
+            multiple
+            freeSolo
+            id="inptDrop"
             value={vals}
-            items={items}
-            fluid={true}
-            onChange={this._handleDrodownValChange}
-            onSearchQueryChange={this._handleDrodownSearchQueryChange}
+            options={items}
+            getOptionLabel={(option) => (typeof option === "string" ? option : option.header)}
+            isOptionEqualToValue={(option, value) => option.key === value.key || option.header === value.header}
+            onChange={(event, newValue) => this._handleDrodownValChange(event, newValue as IScalarArrayItem[])}
+            onInputChange={this._handleDrodownSearchQueryChange}
+            renderOption={(props, option) => (
+              <Box component="li" {...props} key={option.key || option.header}>
+                {option.image && <img src={option.image} alt="" style={{ width: 20, height: 20, marginRight: 8 }} />}
+                {option.header}
+              </Box>
+            )}
+            renderInput={(params) => <TextField {...params} size="small" variant="outlined" />}
+            fullWidth
           />
         </div>
       );
@@ -279,13 +306,13 @@ export default class ScalarArray extends Component<IScalarArrayProps, IScalarArr
         if (this.props.longForm) {
           const ta = (
             <div className="sarr-input" key={"si" + i}>
-              <TextArea
-                fluid={true}
+              <TextField
+                fullWidth
+                multiline
+                minRows={2}
                 key={"inpt" + i.toString()}
                 className={"sarr-textArea tatmpdata-" + i.toString()}
                 value={val as string}
-                defaultValue={val as string}
-                spellCheck={true}
                 onChange={this._handleTextAreaChange}
               />
             </div>
@@ -295,11 +322,12 @@ export default class ScalarArray extends Component<IScalarArrayProps, IScalarArr
         } else {
           inputAreas.push(
             <div className="sarr-input" key={"sj" + i}>
-              <FormInput
+              <TextField
                 id={i.toString()}
                 key={"inpt" + i.toString()}
                 className="sarr-input"
-                defaultValue={val}
+                size="small"
+                variant="outlined"
                 value={val}
                 onChange={this._handleValChange}
               />
@@ -319,14 +347,36 @@ export default class ScalarArray extends Component<IScalarArrayProps, IScalarArr
 
     let addArea = <></>;
 
+    // Show add button for free-form text input (no lookup choices)
     if (this.props.allowCreateDelete !== false && !choices) {
       addArea = (
         <div className="sarr-add" key={"sjn-add"}>
+          <Button onClick={this._handleAddItemButton} key="addString" size="small" variant="text">
+            <FontAwesomeIcon icon={faPlus} className="fa-lg" />
+          </Button>
+        </div>
+      );
+    }
+
+    // Show add button for lookup fields that support adding new items
+    if (
+      choices &&
+      this.props.field.lookupId &&
+      this.props.canAddItem &&
+      this.props.canAddItem(this.props.field.lookupId) &&
+      this.props.onAddItem
+    ) {
+      addArea = (
+        <div className="sarr-add" key={"sjn-add-lookup"}>
           <Button
-            content={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
-            onClick={this._handleAddItemButton}
-            key="addString"
-          />
+            onClick={this._handleAddLookupItemButton}
+            key="addLookupItem"
+            title="Add new feature"
+            size="small"
+            variant="text"
+          >
+            <FontAwesomeIcon icon={faPlus} className="fa-lg" />
+          </Button>
         </div>
       );
     }

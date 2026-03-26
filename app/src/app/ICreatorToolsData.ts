@@ -57,12 +57,19 @@ export enum WindowState {
   docked = 3,
 }
 
+export enum ThemePreference {
+  deviceDefault = 0,
+  dark = 1,
+  light = 2,
+}
+
 export default interface ICreatorToolsData {
   successfullyConnectedWebSocketToMinecraft: boolean;
   successfullyConnectedToRemoteMinecraft: boolean;
   successfullyStartedMinecraftServer: boolean;
   worldSettings?: IWorldSettings;
   editPreference?: CreatorToolsEditPreference;
+  disableFirstRun?: boolean;
   editorWorldSettings?: IWorldSettings;
   autoStartMinecraft: boolean;
   showScreenOnConnect: boolean;
@@ -70,7 +77,10 @@ export default interface ICreatorToolsData {
   creator?: string;
   track?: MinecraftTrack;
   formatBeforeSave?: boolean;
+  showLivePreview?: boolean;
   itemSidePaneWidth?: number;
+  livePreviewWidth?: number;
+  toolPaneWidth?: number;
   preferredTextSize?: number;
   preferredSuite?: number;
   defaultDeploymentTarget?: DeploymentTargetType;
@@ -88,15 +98,18 @@ export default interface ICreatorToolsData {
   remoteServerUrl?: string;
   remoteServerPort?: number;
   remoteServerPasscode?: string;
-  remoteServerAuthToken?: string;
   remoteServerAccessLevel?: RemoteServerAccessLevel;
   windowX?: number;
   windowY?: number;
   collapsedTypes?: number[];
+  showMruPane?: boolean;
+  mruItemPaths?: string[];
+  viewAsFiles?: boolean;
   windowHeight?: number;
   windowWidth?: number;
   windowSlot?: number;
   windowState?: WindowState;
+  themePreference?: ThemePreference;
 }
 
 export enum RemoteServerAccessLevel {

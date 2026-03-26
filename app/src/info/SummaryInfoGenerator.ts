@@ -28,18 +28,17 @@ export enum SummaryInfoGeneratorTest {
   behaviorManifest = 102,
 }
 
+/**
+ * Aggregates summary information about the project including manifests and content types.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/summary.form.json} for topic definitions
+ */
 export default class SummaryInfoGenerator implements IProjectInfoGenerator {
   id = "SUMMARY";
   title = "Summary Information";
   canAlwaysProcess = true;
 
   performAddOnValidations = false;
-
-  getTopicData(topicId: number) {
-    return {
-      title: "",
-    };
-  }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
     info.mctoolsVersion = MinecraftUtilities.getVersionNumber(constants.version);

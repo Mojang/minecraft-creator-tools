@@ -18,6 +18,11 @@ export enum ItemCountsInfoGeneratorTest {
   resourcePackManifest = 103,
 }
 
+/**
+ * Aggregates counts of various content types in a project.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/items.form.json} for topic definitions
+ */
 export default class ItemCountsInfoGenerator implements IProjectInfoGenerator {
   id = "ITEMS";
   title = "Minimum Definition of a Pack";

@@ -1,13 +1,11 @@
 import Project from "../../app/Project";
 import IProjectInfoGenerator from "../IProjectInfoGenerator";
-import { IProjectInfoTopicData } from "../IProjectInfoGeneratorBase";
 import ProjectInfoItem from "../ProjectInfoItem";
 import ProjectItem from "../../app/ProjectItem";
-import { getTestTitleById, resultFromTest, TestDefinition } from "../tests/TestDefinition";
+import { resultFromTest, TestDefinition } from "../tests/TestDefinition";
 import { getWorldTemplates } from "../../app/ProjectItemUtilities";
 import { AllowedExtensionsByType, BlockedFilesByType, PackageType } from "./data/ForbiddenFiles";
 import StorageUtilities from "../../storage/StorageUtilities";
-import ProjectInfoUtilities from "../ProjectInfoUtilities";
 
 enum ForbiddenTest {
   FailedToReadFile = "FailedToReadFile",
@@ -23,9 +21,14 @@ const ForbiddenTests: Record<ForbiddenTest, TestDefinition> = {
   ContainsInvalidCharacter: { id: 104, title: "File Name Contains Invalid Character" },
 } as const;
 
+/**
+ * Validates files against forbidden file lists and allowed extensions.
+ *
+ * @see {@link ../../../public/data/forms/mctoolsval/forbfile.form.json} for topic definitions
+ */
 export default class CheckForbiddenFilesGenerator implements IProjectInfoGenerator {
   id: string = "FORBFILE";
-  title: string = "Check Forbidden Files Generator";
+  title: string = "Forbidden Files";
   canAlwaysProcess = true;
 
   async generate(project: Project): Promise<ProjectInfoItem[]> {
@@ -67,9 +70,5 @@ export default class CheckForbiddenFilesGenerator implements IProjectInfoGenerat
     return results;
   }
 
-  getTopicData(topicId: number): IProjectInfoTopicData | undefined {
-    const title = ProjectInfoUtilities.getGeneralTopicTitle(topicId) || getTestTitleById(ForbiddenTests, topicId);
-    return { title };
-  }
   summarize() {}
 }

@@ -1,0 +1,192 @@
+/* SimplifiedBiomeFilterEditor styles */
+
+.sbfe-outer {
+  margin-top: 4px;
+}
+
+.sbfe-simplified {
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 8px;
+  background: #2a2a2a;
+}
+
+.sbfe-advanced {
+  /* No extra styling needed, wraps MinecraftFilterEditor */
+}
+
+.sbfe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #444;
+}
+
+.sbfe-matchMode {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sbfe-matchLabel {
+  font-size: 12px;
+  color: #aaa;
+  margin-right: 4px;
+}
+
+.sbfe-matchButton {
+  padding: 4px 12px;
+  font-size: 12px;
+  border: 1px solid #555;
+  background: #333;
+  color: #ccc;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+}
+
+.sbfe-matchButton:hover {
+  background: #444;
+  border-color: #666;
+}
+
+.sbfe-matchActive {
+  background: #4a6a9a;
+  border-color: #5a7aaa;
+  color: #fff;
+}
+
+.sbfe-advancedButton,
+.sbfe-simpleButton {
+  padding: 4px 10px;
+  font-size: 11px;
+  border: 1px solid #555;
+  background: #333;
+  color: #aaa;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+}
+
+.sbfe-advancedButton:hover,
+.sbfe-simpleButton:hover {
+  background: #444;
+  color: #fff;
+}
+
+.sbfe-simpleButton.sbfe-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sbfe-search {
+  display: flex;
+  margin-bottom: 12px;
+}
+
+.sbfe-search input {
+  flex: 1;
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid #555;
+  background: #222;
+  color: #fff;
+  border-radius: 3px;
+}
+
+.sbfe-search input:focus {
+  outline: none;
+  border-color: #5a7aaa;
+}
+
+.sbfe-addCustom {
+  margin-left: 4px;
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid #555;
+  background: #4a6a4a;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.sbfe-addCustom:hover {
+  background: #5a7a5a;
+}
+
+.sbfe-category {
+  margin-bottom: 12px;
+}
+
+.sbfe-categoryName {
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: bold;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid #333;
+}
+
+.sbfe-tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.sbfe-tag {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 8px;
+  font-size: 12px;
+  border: 1px solid #444;
+  background: #333;
+  color: #ccc;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.sbfe-tag svg:first-of-type {
+  margin-right: 4px;
+}
+
+.sbfe-tag:hover {
+  background: #3a3a3a;
+  border-color: #555;
+}
+
+.sbfe-tagSelected {
+  background: #3a5a3a;
+  border-color: #4a7a4a;
+  color: #8f8;
+}
+
+.sbfe-tagSelected:hover {
+  background: #4a6a4a;
+}
+
+.sbfe-tagLabel {
+  user-select: none;
+}
+
+.sbfe-summary {
+  margin-top: 12px;
+  padding: 8px;
+  font-size: 12px;
+  background: #333;
+  border-radius: 3px;
+  border: 1px solid #444;
+  color: #ccc;
+}
+
+.sbfe-summaryNote {
+  color: #888;
+  font-style: italic;
+}
