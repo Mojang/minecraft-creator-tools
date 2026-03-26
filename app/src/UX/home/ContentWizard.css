@@ -1,0 +1,1011 @@
+/* ContentWizard.css - Styles for Content Creation Wizards */
+
+/* ============================================================================
+ * LAUNCHER STYLES
+ * ============================================================================ */
+
+.cwiz-launcher-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 70vh;
+  max-height: 70vh;
+  position: relative;
+}
+
+/* Green accent border at the top of the wizard */
+.cwiz-launcher-wrapper {
+  border-top: 3px solid #52a535;
+}
+
+.cwiz-launcher {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  padding-right: 0; /* scrollbar flush with the right edge of the dialog */
+  padding-bottom: 8px;
+  overflow-y: scroll !important; /* force scrollbar always visible */
+  flex: 1;
+  min-height: 0;
+}
+
+/* Bottom fade overlay to visually hint at scrollable content */
+.cwiz-launcher-wrapper::after {
+  content: "";
+  position: absolute;
+  bottom: 56px; /* must match .cwiz-footer min-height */
+  left: 0;
+  right: 0;
+  height: 32px;
+  background: linear-gradient(to bottom, transparent, var(--cwiz-fade-color, rgba(40, 40, 40, 0.85)));
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Subtle bottom fade hint that more content is scrollable */
+.cwiz-launcher-full::after {
+  content: "";
+  display: block;
+  height: 0;
+  flex-shrink: 0;
+}
+
+.cwiz-launcher-hero {
+  margin-bottom: 20px;
+  padding: 18px 20px;
+  border: 1px solid rgba(82, 165, 53, 0.25);
+  border-radius: 4px;
+  background: linear-gradient(135deg, rgba(82, 165, 53, 0.14) 0%, rgba(82, 165, 53, 0.05) 100%);
+}
+
+.cwiz-launcher-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #52a535;
+  margin-bottom: 6px;
+}
+
+.cwiz-launcher-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: inherit;
+}
+
+.cwiz-launcher-subtitle {
+  font-size: 14px;
+  opacity: 0.78;
+  line-height: 1.55;
+}
+
+.cwiz-launcher-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 4px;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: stretch;
+}
+
+.cwiz-launcher-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 22px 18px;
+  border: 2px solid rgba(128, 128, 128, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 148px;
+  text-align: left;
+  background: rgba(128, 128, 128, 0.04);
+}
+
+.cwiz-launcher-option:hover {
+  border-color: #52a535;
+  background: rgba(82, 165, 53, 0.1);
+  transform: translateY(-2px);
+}
+
+.cwiz-launcher-option-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cwiz-launcher-option-disabled:hover {
+  border-color: rgba(128, 128, 128, 0.3);
+  background: transparent;
+  transform: none;
+}
+
+.cwiz-launcher-option-icon {
+  font-size: 30px;
+  margin-bottom: 14px;
+  color: #52a535;
+}
+
+.cwiz-launcher-option-label {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  text-align: left;
+  word-wrap: break-word;
+}
+
+.cwiz-launcher-option-desc {
+  font-size: 11px;
+  line-height: 1.45;
+  opacity: 0.78;
+  text-align: left;
+  word-wrap: break-word;
+}
+
+/* ============================================================================
+ * WIZARD FRAME STYLES
+ * ============================================================================ */
+
+.cwiz-wizard {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 70vh;
+  max-height: 70vh;
+}
+
+/* Green accent border at the top of the wizard step frame */
+.cwiz-wizard {
+  border-top: 3px solid #52a535;
+}
+
+.cwiz-wizard-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+  flex-shrink: 0;
+}
+
+.cwiz-wizard-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.cwiz-wizard-step-indicator {
+  font-size: 13px;
+  opacity: 0.7;
+  margin-bottom: 12px;
+}
+
+.cwiz-wizard-progress {
+  display: flex;
+  gap: 8px;
+}
+
+.cwiz-progress-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(128, 128, 128, 0.3);
+  transition: background 0.2s ease;
+}
+
+.cwiz-progress-dot-active {
+  background: #52a535;
+}
+
+.cwiz-wizard-body {
+  padding: 24px;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 300px;
+}
+
+.cwiz-wizard-footer {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 16px 24px;
+  border-top: 1px solid rgba(128, 128, 128, 0.2);
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.cwiz-wizard-footer > *:last-child {
+  margin-left: auto;
+}
+
+/* Minecraft-styled wizard buttons */
+.cwiz-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 18px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  border: 2px solid #131313;
+  image-rendering: pixelated;
+  transition: filter 0.05s;
+  text-transform: none;
+  line-height: 1.4;
+}
+
+.cwiz-btn:active {
+  filter: brightness(0.85);
+}
+
+/* Stone/secondary variant — gray Minecraft stone look */
+.cwiz-btn-stone {
+  background-color: #3a3a3a;
+  color: #ffffff;
+  border-color: #131313;
+  box-shadow:
+    inset -2px -2px 0 #212121,
+    inset 2px 2px 0 #4e4e4e;
+}
+
+.cwiz-btn-stone:hover {
+  background-color: #454545;
+  box-shadow:
+    inset -2px -2px 0 #2a2a2a,
+    inset 2px 2px 0 #585858;
+}
+
+/* Primary/green variant — Minecraft green action button */
+.cwiz-btn-primary {
+  background-color: #52a535;
+  color: #ffffff;
+  border-color: #1e4d14;
+  box-shadow:
+    inset -2px -2px 0 #3e8828,
+    inset 2px 2px 0 #6fc24a;
+}
+
+.cwiz-btn-primary:hover {
+  background-color: #5cb33e;
+  box-shadow:
+    inset -2px -2px 0 #4a9430,
+    inset 2px 2px 0 #7dd056;
+}
+
+/* ============================================================================
+ * STEP CONTENT STYLES
+ * ============================================================================ */
+
+.cwiz-step-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cwiz-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cwiz-field label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.cwiz-field-hint {
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+.cwiz-traits-hint {
+  margin-bottom: 8px;
+}
+
+/* ============================================================================
+ * TRAIT SELECTION GRID
+ * Minecraft-style beveled cards with category-colored icons, selection
+ * checkmarks, and press-in click feedback.
+ * ============================================================================ */
+
+.cwiz-trait-section {
+  margin-bottom: 20px;
+}
+
+.cwiz-trait-group-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  opacity: 0.55;
+  margin-bottom: 8px;
+  padding-left: 2px;
+  white-space: nowrap;
+}
+
+.cwiz-trait-group-icon {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+/* Decorative horizontal line after group label */
+.cwiz-trait-group-line {
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.2;
+  margin-left: 8px;
+}
+
+.cwiz-traits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+}
+
+/* ---- Card base: Minecraft beveled stone button ---- */
+.cwiz-trait {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 2px solid #131313;
+  border-radius: 0;
+  cursor: pointer;
+  transition:
+    filter 0.05s,
+    background-color 0.1s;
+  background-color: #3a3a3a;
+  color: #ffffff;
+  box-shadow:
+    inset -2px -2px 0 #212121,
+    inset 2px 2px 0 #4e4e4e;
+  user-select: none;
+  image-rendering: pixelated;
+}
+
+.cwiz-trait:hover {
+  background-color: #454545;
+  box-shadow:
+    inset -2px -2px 0 #2a2a2a,
+    inset 2px 2px 0 #585858;
+  border-color: #52a535;
+}
+
+.cwiz-trait:active {
+  filter: brightness(0.85);
+  box-shadow:
+    inset 2px 2px 0 #212121,
+    inset -2px -2px 0 #4e4e4e;
+}
+
+/* ---- Selected state: green Minecraft button ---- */
+.cwiz-trait-selected {
+  background-color: #3e6e2f;
+  border-color: #1e4d14;
+  box-shadow:
+    inset -2px -2px 0 #2e5522,
+    inset 2px 2px 0 #52a535;
+}
+
+.cwiz-trait-selected:hover {
+  background-color: #478534;
+  box-shadow:
+    inset -2px -2px 0 #3a6b2a,
+    inset 2px 2px 0 #5cb33e;
+}
+
+.cwiz-trait-selected:active {
+  filter: brightness(0.85);
+  box-shadow:
+    inset 2px 2px 0 #2e5522,
+    inset -2px -2px 0 #52a535;
+}
+
+/* ---- Icon ---- */
+.cwiz-trait-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.75;
+  /* Color is set via inline style from getTraitIconColor() */
+}
+
+.cwiz-trait:hover .cwiz-trait-icon {
+  opacity: 0.9;
+}
+
+.cwiz-trait-selected .cwiz-trait-icon {
+  opacity: 1;
+}
+
+.cwiz-trait-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ---- Text ---- */
+.cwiz-trait-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.cwiz-trait-label {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 1px;
+}
+
+.cwiz-trait-desc {
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+/* ---- Selection checkmark badge (top-right corner) ---- */
+.cwiz-trait-check {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #52a535;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  border-left: 2px solid #1e4d14;
+  border-bottom: 2px solid #1e4d14;
+}
+
+/* ============================================================================
+ * BODY TYPE DROPDOWN
+ * ============================================================================ */
+
+.cwiz-bodytype-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 4px;
+}
+
+.cwiz-bodytype-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cwiz-bodytype-icon svg {
+  width: 28px;
+  height: 28px;
+  fill: currentColor;
+  opacity: 0.85;
+}
+
+.cwiz-bodytype-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cwiz-bodytype-label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.cwiz-bodytype-desc {
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+.cwiz-bodytype-selected {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cwiz-bodytype-selected .cwiz-bodytype-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.cwiz-bodytype-selected .cwiz-bodytype-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.cwiz-bodytype-selected .cwiz-bodytype-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* ============================================================================
+ * COLOR PICKER
+ * ============================================================================ */
+
+.cwiz-field input[type="color"] {
+  width: 60px;
+  height: 32px;
+  padding: 2px;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* ============================================================================
+ * DARK THEME ADJUSTMENTS
+ * ============================================================================ */
+
+.cwiz-dark .cwiz-launcher-option:hover {
+  background: rgba(82, 165, 53, 0.2);
+}
+
+.cwiz-dark .cwiz-launcher-hero {
+  background: linear-gradient(135deg, rgba(82, 165, 53, 0.18) 0%, rgba(82, 165, 53, 0.08) 100%);
+}
+
+.cwiz-dark .cwiz-trait:hover {
+  background-color: #454545;
+}
+
+.cwiz-dark .cwiz-trait-selected {
+  background-color: #3e6e2f;
+}
+
+/* Scrollbar styling removed — uses global Minecraft-themed scrollbars from index.css */
+/* Explicitly target the launcher scroll container to ensure MUI portal inherits correctly */
+.cwiz-launcher::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+.cwiz-launcher::-webkit-scrollbar-track {
+  background: #1a1918;
+  border: 2px solid #131211;
+}
+
+.cwiz-launcher::-webkit-scrollbar-thumb {
+  background: #2d6b1e;
+  border-top: 3px solid #4a9636;
+  border-left: 3px solid #4a9636;
+  border-right: 3px solid #163a0e;
+  border-bottom: 3px solid #163a0e;
+  min-height: 32px;
+}
+
+.cwiz-launcher::-webkit-scrollbar-thumb:hover {
+  background: #3e8828;
+  border-top-color: #5fb93e;
+  border-left-color: #5fb93e;
+  border-right-color: #1e4d14;
+  border-bottom-color: #1e4d14;
+}
+
+.cwiz-launcher::-webkit-scrollbar-thumb:active {
+  background: #1e4d14;
+  border-top: 3px solid #163a0e;
+  border-left: 3px solid #163a0e;
+  border-right: 3px solid #4a9636;
+  border-bottom: 3px solid #4a9636;
+}
+
+.cwiz-launcher::-webkit-scrollbar-corner {
+  background: #1a1918;
+}
+
+@-moz-document url-prefix() {
+  .cwiz-launcher {
+    scrollbar-width: auto;
+    scrollbar-color: #3e8828 #1a1918;
+  }
+}
+
+/* Light theme: lighter fade color for scroll hint */
+.cwiz-launcher-wrapper {
+  --cwiz-fade-color: rgba(255, 255, 255, 0.9);
+}
+
+.cwiz-dark.cwiz-launcher-wrapper {
+  --cwiz-fade-color: rgba(40, 40, 40, 0.9);
+}
+
+/* ============================================================================
+ * FULL LAUNCHER STYLES (New Add Content Panel)
+ * ============================================================================ */
+
+.cwiz-launcher-full {
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Quick Actions - Top level buttons - ALWAYS stack vertically for reliability */
+.cwiz-quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cwiz-quick-action {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 2px solid rgba(128, 128, 128, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.cwiz-quick-action:hover {
+  border-color: #52a535;
+  background: rgba(82, 165, 53, 0.1);
+}
+
+.cwiz-quick-icon {
+  font-size: 20px;
+  color: #52a535;
+  width: 28px;
+  flex-shrink: 0;
+}
+
+.cwiz-quick-label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.cwiz-quick-desc {
+  font-size: 12px;
+  opacity: 0.6;
+  margin-left: 8px;
+}
+
+/* Main Options - Entity/Block/Item from vanilla */
+.cwiz-main-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cwiz-main-option {
+  display: flex;
+  align-items: flex-start;
+  padding: 16px;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  min-height: 96px;
+  background: rgba(128, 128, 128, 0.03);
+}
+
+.cwiz-main-option:hover {
+  border-color: #52a535;
+  background: rgba(82, 165, 53, 0.08);
+}
+
+.cwiz-main-icon {
+  font-size: 24px;
+  margin-right: 16px;
+  color: #52a535;
+  width: 32px;
+  text-align: center;
+  margin-top: 2px;
+}
+
+/* When .cwiz-main-icon wraps an inline SVG via <span> */
+span.cwiz-main-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cwiz-main-content {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.cwiz-main-label {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cwiz-main-desc {
+  font-size: 12px;
+  opacity: 0.72;
+  line-height: 1.45;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Wizard Section - Entity/Block/Item wizards */
+.cwiz-wizard-section {
+  margin-bottom: 18px;
+  width: 100%;
+  max-width: calc(100vw - 120px);
+  box-sizing: border-box;
+  border: 1px solid rgba(128, 128, 128, 0.2);
+  border-radius: 4px;
+  padding: 16px;
+  background: rgba(128, 128, 128, 0.03);
+}
+
+.cwiz-wizard-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.cwiz-section-headingRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.cwiz-wizard-section-copy {
+  font-size: 13px;
+  line-height: 1.5;
+  opacity: 0.72;
+}
+
+.cwiz-section-emphasis {
+  flex-shrink: 0;
+  align-self: flex-start;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(82, 165, 53, 0.16);
+  color: #52a535;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.cwiz-guided-section {
+  border-color: rgba(82, 165, 53, 0.32);
+  background: linear-gradient(180deg, rgba(82, 165, 53, 0.08) 0%, rgba(82, 165, 53, 0.03) 100%);
+}
+
+.cwiz-example-section {
+  background: rgba(128, 128, 128, 0.04);
+}
+
+/* Advanced Section - Collapsible single files */
+.cwiz-advanced-section {
+  margin-bottom: 20px;
+  border: 1px solid rgba(128, 128, 128, 0.2);
+  border-radius: 4px;
+  width: 100%;
+  max-width: calc(100vw - 120px);
+  box-sizing: border-box;
+}
+
+.cwiz-advanced-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  gap: 8px;
+  user-select: none;
+}
+
+.cwiz-advanced-header:hover {
+  background: rgba(128, 128, 128, 0.05);
+}
+
+.cwiz-advanced-content {
+  padding: 0 16px 16px;
+}
+
+/* Collapsible sections inside advanced */
+.cwiz-section {
+  margin-bottom: 8px;
+}
+
+.cwiz-section-header {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  gap: 8px;
+  border-radius: 4px;
+  user-select: none;
+  background: rgba(128, 128, 128, 0.04);
+}
+
+.cwiz-section-header:hover {
+  background: rgba(128, 128, 128, 0.1);
+}
+
+.cwiz-section-count {
+  opacity: 0.5;
+  font-weight: 400;
+  font-size: 12px;
+}
+
+/* Count badge shown on collapsed sections to hint at hidden content */
+.cwiz-section-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(82, 165, 53, 0.18);
+  color: #52a535;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: 10px;
+  margin-left: auto;
+  min-width: 18px;
+  text-align: center;
+}
+
+.cwiz-dark .cwiz-wizard-section,
+.cwiz-dark .cwiz-advanced-section {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.cwiz-dark .cwiz-guided-section {
+  background: linear-gradient(180deg, rgba(82, 165, 53, 0.18) 0%, rgba(82, 165, 53, 0.07) 100%);
+}
+
+.cwiz-section-items {
+  padding-left: 24px;
+  margin-top: 4px;
+}
+
+.cwiz-section-item {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  gap: 8px;
+  border-radius: 4px;
+}
+
+.cwiz-section-item:hover {
+  background: rgba(82, 165, 53, 0.1);
+}
+
+.cwiz-section-item-icon {
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+/* ============================================================================
+ * RESPONSIVE STYLES FOR NARROW VIEWPORTS
+ * ============================================================================ */
+
+/* Medium-narrow screens - wizard cards go to 2 columns */
+@media (max-width: 700px) {
+  .cwiz-launcher-options {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .cwiz-launcher-option {
+    padding: 12px 8px;
+  }
+
+  .cwiz-launcher-option-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+
+  .cwiz-launcher-option-label {
+    font-size: 12px;
+  }
+
+  .cwiz-launcher-option-desc {
+    font-size: 9px;
+  }
+
+  .cwiz-main-option {
+    padding: 12px;
+  }
+
+  .cwiz-main-icon {
+    font-size: 20px;
+    margin-right: 12px;
+    width: 24px;
+  }
+}
+
+@media (max-width: 500px) {
+  /* Single column for wizard cards on very narrow screens */
+  .cwiz-launcher-options {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .cwiz-launcher-option {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+  }
+
+  .cwiz-launcher-option-icon {
+    margin-bottom: 0;
+    font-size: 20px;
+  }
+
+  .cwiz-launcher-option-label {
+    text-align: left;
+  }
+
+  .cwiz-launcher-option-desc {
+    text-align: left;
+    display: none; /* Hide desc on very narrow to save space */
+  }
+
+  .cwiz-advanced-content {
+    padding: 0 8px 12px;
+  }
+
+  .cwiz-section-items {
+    padding-left: 12px;
+  }
+
+  .cwiz-wizard-section-title {
+    font-size: 11px;
+  }
+}
+
+/* ============================================================================
+ * FOOTER STYLES
+ * ============================================================================ */
+
+.cwiz-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 56px;
+  padding: 8px 24px;
+  border-top: 1px solid rgba(128, 128, 128, 0.2);
+  background: inherit;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}

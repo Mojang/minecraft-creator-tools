@@ -168,6 +168,480 @@ export default class FormDefinitionTypeScriptGenerator {
     );
   }
 
+  /**
+   * Generates TypeScript type files into a package layout using bp_/rp_ folder conventions.
+   *
+   * Output structure:
+   *   types/common/          - Shared types (MinecraftFilter, EventTrigger, etc.)
+   *   types/bp_entities/     - Entity behavior types
+   *   types/bp_blocks/       - Block behavior component types
+   *   types/rp_fogs/         - Fog types
+   *   ...etc
+   *
+   * Each folder gets an index.d.ts barrel export.
+   */
+  public async generatePackageTypes(formJsonInputFolder: IFolder, outputFolder: IFolder) {
+    const formsByPath: { [name: string]: IFormDefinition } = {};
+
+    await this.loadFormJsonFromFolder(formsByPath, formJsonInputFolder, outputFolder);
+
+    // Define the mapping from ExportMode categories → bp_/rp_ package folders
+    const packageExports: Array<{
+      exportMode: ExportMode;
+      packageFolder: string;
+      formsPath: string;
+      categoryPlural: string;
+    }> = [
+      // BP types — entities
+      {
+        exportMode: ExportMode.entityComponents,
+        packageFolder: "bp/entities/components",
+        formsPath: "/entity/minecraft_",
+        categoryPlural: "Entity Components",
+      },
+      {
+        exportMode: ExportMode.AIGoals,
+        packageFolder: "bp/entities/behaviors",
+        formsPath: "/entity/minecraft_behavior",
+        categoryPlural: "Entity Behaviors",
+      },
+      {
+        exportMode: ExportMode.triggers,
+        packageFolder: "bp/entities/triggers",
+        formsPath: "/entity/minecraft_on",
+        categoryPlural: "Entity Triggers",
+      },
+      {
+        exportMode: ExportMode.filters,
+        packageFolder: "bp/entities/filters",
+        formsPath: "/entityfilters/",
+        categoryPlural: "Entity Filters",
+      },
+      {
+        exportMode: ExportMode.eventResponses,
+        packageFolder: "bp/entities/event_actions",
+        formsPath: "/entityevents/",
+        categoryPlural: "Entity Event Actions",
+      },
+      // BP types — blocks, items
+      {
+        exportMode: ExportMode.blockComponents,
+        packageFolder: "bp/blocks/components",
+        formsPath: "/block/minecraft_",
+        categoryPlural: "Block Components",
+      },
+      {
+        exportMode: ExportMode.itemComponents,
+        packageFolder: "bp/items/components",
+        formsPath: "/item/minecraft_",
+        categoryPlural: "Item Components",
+      },
+      // BP types — biomes, features
+      {
+        exportMode: ExportMode.biomes,
+        packageFolder: "bp/biomes/components",
+        formsPath: "/biome/",
+        categoryPlural: "Biome Components",
+      },
+      {
+        exportMode: ExportMode.features,
+        packageFolder: "bp/features",
+        formsPath: "/features/minecraft_",
+        categoryPlural: "Features",
+      },
+      {
+        exportMode: ExportMode.featureCore,
+        packageFolder: "bp/feature_rules",
+        formsPath: "/feature/feature",
+        categoryPlural: "Feature Rules",
+      },
+      // BP types — animations
+      {
+        exportMode: ExportMode.other,
+        packageFolder: "bp/animations",
+        formsPath: "/animation/animation_",
+        categoryPlural: "Animations",
+      },
+      {
+        exportMode: ExportMode.other,
+        packageFolder: "bp/animation_controllers",
+        formsPath: "/animation/animation_controller",
+        categoryPlural: "Animation Controllers",
+      },
+      // BP types — loot, recipes, spawn, trading, dialogue, voxel shapes
+      {
+        exportMode: ExportMode.other,
+        packageFolder: "bp/loot_tables",
+        formsPath: "/loot/",
+        categoryPlural: "Loot Tables",
+      },
+      { exportMode: ExportMode.other, packageFolder: "bp/recipes", formsPath: "/recipe/", categoryPlural: "Recipes" },
+      {
+        exportMode: ExportMode.other,
+        packageFolder: "bp/spawn_rules",
+        formsPath: "/spawn/",
+        categoryPlural: "Spawn Rules",
+      },
+      { exportMode: ExportMode.other, packageFolder: "bp/trading", formsPath: "/trade/", categoryPlural: "Trading" },
+      {
+        exportMode: ExportMode.other,
+        packageFolder: "bp/dialogue",
+        formsPath: "/dialogue/",
+        categoryPlural: "Dialogue",
+      },
+      {
+        exportMode: ExportMode.other,
+        packageFolder: "bp/voxel_shapes",
+        formsPath: "/voxel_shapes/",
+        categoryPlural: "Voxel Shapes",
+      },
+      // BP types — manifests
+      {
+        exportMode: ExportMode.other,
+        packageFolder: "bp/manifest",
+        formsPath: "/pack/behavior_pack",
+        categoryPlural: "Behavior Pack Manifest",
+      },
+      // RP types — visuals, fogs, models, particles
+      {
+        exportMode: ExportMode.visuals,
+        packageFolder: "rp/entity",
+        formsPath: "/visual/actor_resource",
+        categoryPlural: "Entity Resource",
+      },
+      {
+        exportMode: ExportMode.visuals,
+        packageFolder: "rp/models",
+        formsPath: "/visual/geometry",
+        categoryPlural: "Model Geometry",
+      },
+      { exportMode: ExportMode.visuals, packageFolder: "rp/visuals", formsPath: "/visual/", categoryPlural: "Visuals" },
+      { exportMode: ExportMode.fogs, packageFolder: "rp/fogs", formsPath: "/fogs/", categoryPlural: "Fogs" },
+      {
+        exportMode: ExportMode.other,
+        packageFolder: "rp/particles",
+        formsPath: "/client_particles/",
+        categoryPlural: "Particles",
+      },
+      // RP types — render controllers, sounds, textures
+      {
+        exportMode: ExportMode.other,
+        packageFolder: "rp/render_controllers",
+        formsPath: "/resource/render_controller",
+        categoryPlural: "Render Controllers",
+      },
+      {
+        exportMode: ExportMode.other,
+        packageFolder: "rp/sounds",
+        formsPath: "/resource/sound",
+        categoryPlural: "Sounds",
+      },
+      {
+        exportMode: ExportMode.other,
+        packageFolder: "rp/textures",
+        formsPath: "/resource/terrain_texture",
+        categoryPlural: "Textures",
+      },
+      {
+        exportMode: ExportMode.other,
+        packageFolder: "rp/textures",
+        formsPath: "/resource/item_texture",
+        categoryPlural: "Textures",
+      },
+      {
+        exportMode: ExportMode.other,
+        packageFolder: "rp/textures",
+        formsPath: "/resource/flipbook_texture",
+        categoryPlural: "Textures",
+      },
+      {
+        exportMode: ExportMode.other,
+        packageFolder: "rp/textures",
+        formsPath: "/resource/blocks_resource",
+        categoryPlural: "Textures",
+      },
+      // RP types — attachables, block culling, biomes_client, UI
+      {
+        exportMode: ExportMode.other,
+        packageFolder: "rp/attachables",
+        formsPath: "/attachable/",
+        categoryPlural: "Attachables",
+      },
+      {
+        exportMode: ExportMode.other,
+        packageFolder: "rp/block_culling",
+        formsPath: "/block_culling/",
+        categoryPlural: "Block Culling",
+      },
+      {
+        exportMode: ExportMode.other,
+        packageFolder: "rp/biomes_client",
+        formsPath: "/biomes_client/",
+        categoryPlural: "Biomes Client",
+      },
+      { exportMode: ExportMode.other, packageFolder: "rp/ui", formsPath: "/ui/", categoryPlural: "UI" },
+      // RP types — client biomes, deferred rendering
+      {
+        exportMode: ExportMode.clientBiomes,
+        packageFolder: "rp/client_biomes",
+        formsPath: "/client_biome/",
+        categoryPlural: "Client Biomes",
+      },
+      {
+        exportMode: ExportMode.clientDeferredRendering,
+        packageFolder: "rp/deferred_rendering",
+        formsPath: "/client_deferred_rendering/",
+        categoryPlural: "Deferred Rendering",
+      },
+      // RP types — manifest
+      {
+        exportMode: ExportMode.other,
+        packageFolder: "rp/manifest",
+        formsPath: "/pack/resource_pack",
+        categoryPlural: "Resource Pack Manifest",
+      },
+    ];
+
+    // First, copy the common types (jsoncommon) to common/
+    await this._writeCommonTypes(outputFolder);
+
+    // Write simple hand-crafted types for trivial documents
+    await this._writeTickType(outputFolder);
+
+    // Track all generated files per folder for barrel exports
+    const filesByFolder = new Map<string, string[]>();
+
+    for (const exp of packageExports) {
+      const subfolder = "/" + exp.packageFolder + "/";
+      const folderDepth = Utilities.countChar(subfolder, "/");
+
+      const targetFolder = await outputFolder.ensureFolderFromRelativePath(subfolder);
+      if (!targetFolder) continue;
+
+      const filteredForms = this.getFormsFromFilter(formsByPath, exp.formsPath, exp.exportMode);
+
+      const generatedTypeNames: string[] = [];
+
+      for (const formPath in filteredForms) {
+        const formO = filteredForms[formPath];
+        if (!formO) continue;
+
+        let baseName = StorageUtilities.getBaseFromName(StorageUtilities.getLeafName(formPath));
+        if (baseName.endsWith(".form")) {
+          baseName = baseName.substring(0, baseName.length - 5);
+        }
+
+        await targetFolder.ensureExists();
+
+        let typeName = formO.id ? formO.id : formO.title;
+        if (!typeName) continue;
+
+        try {
+          typeName = Utilities.javascriptifyName(typeName, true);
+        } catch {
+          Log.verbose("Skipping form with unsupported name: " + formPath);
+          continue;
+        }
+
+        const fileName = this.getFileNameFromBaseName(typeName, exp.exportMode);
+        const typeScriptFile = targetFolder.ensureFile(fileName + ".d.ts");
+
+        try {
+          await this.saveFormDefinitionTypeScriptDocForm(
+            typeScriptFile,
+            formO,
+            baseName,
+            exp.exportMode,
+            exp.categoryPlural,
+            folderDepth,
+            "common"
+          );
+
+          generatedTypeNames.push(typeName);
+        } catch (e: unknown) {
+          Log.verbose("Error generating type for " + formPath + ": " + String(e));
+        }
+      }
+
+      if (generatedTypeNames.length > 0) {
+        const folderKey = exp.packageFolder;
+        if (!filesByFolder.has(folderKey)) {
+          filesByFolder.set(folderKey, []);
+        }
+        filesByFolder.get(folderKey)!.push(...generatedTypeNames);
+      }
+    }
+
+    // Write barrel index.d.ts files for each folder level
+    const allFolders = new Set<string>();
+    for (const [folder] of filesByFolder) {
+      // Add the folder itself and all parent segments
+      // e.g., "bp/entities/components" → adds "bp", "bp/entities", "bp/entities/components"
+      const parts = folder.split("/");
+      for (let i = 1; i <= parts.length; i++) {
+        allFolders.add(parts.slice(0, i).join("/"));
+      }
+    }
+
+    for (const folderPath of allFolders) {
+      await this._writeBarrelExport(outputFolder, folderPath, filesByFolder);
+    }
+
+    Log.message(`Package types generation complete: ${allFolders.size} type folders`);
+  }
+
+  /**
+   * Writes the common/ folder with shared types like MinecraftFilter and EventTrigger.
+   */
+  private async _writeCommonTypes(outputFolder: IFolder) {
+    const commonFolder = await outputFolder.ensureFolderFromRelativePath("/common/");
+    await commonFolder.ensureExists();
+
+    const indexContent = [
+      "// Copyright (c) Microsoft Corporation.",
+      "// Licensed under the MIT License.",
+      "// Common types shared across Minecraft Bedrock document schemas.",
+      "",
+      "/**",
+      " * A Minecraft entity/block filter. Can be a single filter test object,",
+      " * an AND/OR group, or an array of filter tests.",
+      " */",
+      "export type MinecraftFilter = IFilterTest | IFilterGroup | IFilterTest[];",
+      "",
+      "export interface IFilterTest {",
+      "  test?: string;",
+      "  subject?: string;",
+      "  operator?: string;",
+      "  domain?: string;",
+      "  value?: string | number | boolean;",
+      "}",
+      "",
+      "export interface IFilterGroup {",
+      "  all_of?: MinecraftFilter[];",
+      "  any_of?: MinecraftFilter[];",
+      "  none_of?: MinecraftFilter[];",
+      "}",
+      "",
+      "/**",
+      " * A Minecraft event trigger — either a simple event name string",
+      " * or an object with event, target, and optional filters.",
+      " */",
+      "export type MinecraftEventTrigger = string | IEventTriggerObject;",
+      "",
+      "export interface IEventTriggerObject {",
+      "  event?: string;",
+      "  target?: string;",
+      "  filters?: MinecraftFilter;",
+      "}",
+      "",
+      "/**",
+      " * A Minecraft feature object, used in worldgen feature definitions.",
+      " */",
+      "export interface MinecraftFeatureBase {",
+      "  description?: { identifier?: string };",
+      "}",
+      "",
+    ];
+
+    const indexFile = commonFolder.ensureFile("index.d.ts");
+    indexFile.setContent(indexContent.join("\n"));
+    await indexFile.saveContent();
+  }
+
+  /**
+   * Writes a simple tick.json type definition for bp/functions/.
+   * tick.json is a trivial schema (just an array of function names) that doesn't
+   * warrant generated types from form definitions.
+   */
+  private async _writeTickType(outputFolder: IFolder) {
+    const tickFolder = await outputFolder.ensureFolderFromRelativePath("/bp/functions/");
+    await tickFolder.ensureExists();
+
+    const content = [
+      "// Copyright (c) Microsoft Corporation.",
+      "// Licensed under the MIT License.",
+      "// Type definition for tick.json — the list of functions that run every tick.",
+      "",
+      "/**",
+      " * tick.json defines which .mcfunction files run every game tick (20 times per second).",
+      " * Place this file at `<behavior_pack>/functions/tick.json`.",
+      " */",
+      "export default interface TickJson {",
+      '  /** Array of function paths to execute every tick (e.g., ["functions/my_function"]). */',
+      "  values: string[];",
+      "}",
+      "",
+    ];
+
+    const tickFile = tickFolder.ensureFile("index.d.ts");
+    tickFile.setContent(content.join("\n"));
+    await tickFile.saveContent();
+  }
+
+  /**
+   * Writes a barrel index.d.ts that re-exports all types in a package folder.
+   */
+  private async _writeBarrelExport(outputFolder: IFolder, topFolder: string, filesByFolder: Map<string, string[]>) {
+    const folder = await outputFolder.ensureFolderFromRelativePath("/" + topFolder + "/");
+    const lines: string[] = [
+      "// Copyright (c) Microsoft Corporation.",
+      "// Licensed under the MIT License.",
+      "// Barrel export for " + topFolder,
+      "",
+    ];
+
+    // Collect all exports first to detect name collisions
+    const allExports: Array<{ typeName: string; relativeSub: string; subFolder: string }> = [];
+
+    for (const [subFolder, typeNames] of filesByFolder) {
+      if (subFolder === topFolder || subFolder.startsWith(topFolder + "/")) {
+        const relativeSub = subFolder === topFolder ? "." : "./" + subFolder.substring(topFolder.length + 1);
+
+        for (const typeName of typeNames) {
+          allExports.push({ typeName, relativeSub, subFolder });
+        }
+      }
+    }
+
+    // Find duplicate names
+    const nameCount = new Map<string, number>();
+    for (const exp of allExports) {
+      nameCount.set(exp.typeName, (nameCount.get(exp.typeName) || 0) + 1);
+    }
+
+    // Emit exports, disambiguating duplicates with subfolder prefix
+    const emittedNames = new Set<string>();
+
+    for (const exp of allExports) {
+      let exportName = exp.typeName;
+
+      if (nameCount.get(exp.typeName)! > 1) {
+        // Disambiguate: use the last subfolder segment as prefix
+        // e.g., "spawn_rules/Description" → "SpawnRulesDescription"
+        const subParts = exp.subFolder.split("/");
+        const lastPart = subParts[subParts.length - 1];
+        const prefix = Utilities.javascriptifyName(lastPart, true);
+        exportName = prefix + exp.typeName;
+      }
+
+      // Skip if we've already emitted this exact export name
+      if (emittedNames.has(exportName)) continue;
+      emittedNames.add(exportName);
+
+      if (exp.relativeSub === ".") {
+        lines.push(`export { default as ${exportName} } from './${exp.typeName}';`);
+      } else {
+        lines.push(`export { default as ${exportName} } from '${exp.relativeSub}/${exp.typeName}';`);
+      }
+    }
+
+    lines.push("");
+
+    const indexFile = folder.ensureFile("index.d.ts");
+    indexFile.setContent(lines.join("\n"));
+    await indexFile.saveContent();
+  }
+
   private getFileNameFromBaseName(baseName: string, exportMode: ExportMode) {
     let fileName = baseName;
 
@@ -238,7 +712,8 @@ export default class FormDefinitionTypeScriptGenerator {
     baseName: string,
     exportMode: ExportMode,
     category: string,
-    folderDepth: number
+    folderDepth: number,
+    commonModuleName?: string
   ) {
     const content: string[] = [];
 
@@ -337,7 +812,11 @@ export default class FormDefinitionTypeScriptGenerator {
       }
     }
     content.push(" */");
-    content.push("\nimport * as jsoncommon from './" + "../".repeat(folderDepth) + "jsoncommon';\n");
+    const moduleName = commonModuleName || "jsoncommon";
+    // For package mode (commonModuleName set), folderDepth counts slashes in "/bp/entities/components/"
+    // which is 4, but we need 3 levels of "../" to reach the root. Subtract 1 for the leading "/".
+    const importDepth = commonModuleName ? folderDepth - 1 : folderDepth;
+    content.push("\nimport * as jsoncommon from '" + "../".repeat(importDepth) + moduleName + "';\n");
 
     await this.appendType(form, content, 0);
 
@@ -374,7 +853,7 @@ export default class FormDefinitionTypeScriptGenerator {
     depth: number,
     altTitle?: string,
     typeStack?: string[]
-  ) {
+  ): Promise<boolean> {
     if (!typeStack) {
       typeStack = [];
     } else {
@@ -385,7 +864,7 @@ export default class FormDefinitionTypeScriptGenerator {
 
     if (!typeName) {
       Log.unexpectedUndefined("Type: " + JSON.stringify(form));
-      return;
+      return false;
     }
 
     typeName = Utilities.javascriptifyName(typeName, true);
@@ -393,7 +872,7 @@ export default class FormDefinitionTypeScriptGenerator {
     const formId = form.id ? form.id : form.title ? form.title : JSON.stringify(form.fields);
     if (typeStack.includes(formId)) {
       Log.message("Dependency loop in the stack with " + typeName + " in " + typeStack.join(" -> ") + " detected.");
-      return;
+      return false;
     }
 
     content.push("/**");
@@ -492,7 +971,7 @@ export default class FormDefinitionTypeScriptGenerator {
 
         if (!fieldName) {
           Log.unexpectedUndefined("Field: " + JSON.stringify(field));
-          return;
+          return false;
         }
 
         fieldName = Utilities.wrapJavascriptNameIfNeeded(fieldName);
@@ -572,7 +1051,12 @@ export default class FormDefinitionTypeScriptGenerator {
           if (subForm) {
             subContent.push("\n");
 
-            await this.appendType(subForm, subContent, depth + 1, fieldTypeName, typeStack);
+            const typeEmitted = await this.appendType(subForm, subContent, depth + 1, fieldTypeName, typeStack);
+
+            // If a cycle was detected, the type wasn't emitted — fall back to 'object'
+            if (!typeEmitted) {
+              fieldTypeName = "object";
+            }
           } else if (field.choices) {
             const choices = field.choices;
             subContent.push("\n");
@@ -616,6 +1100,8 @@ export default class FormDefinitionTypeScriptGenerator {
 
     content.push("}");
     content.push(...subContent);
+
+    return true;
   }
 
   public async appendEnum(
@@ -630,8 +1116,23 @@ export default class FormDefinitionTypeScriptGenerator {
     const choicesAdded: { [name: string]: boolean } = {};
 
     for (let i = 0; i < choices.length; i++) {
-      const choice = choices[i];
-      let choiceName = choice.id ? choice.id : choice.title;
+      const choice = choices[i] as unknown;
+
+      // Handle both string choices (e.g., ["xyz", "xzy"]) and object choices (e.g., [{id: "xyz", title: "XYZ"}])
+      let choiceName: string | undefined;
+      let choiceDescription: string | undefined;
+
+      if (typeof choice === "string") {
+        // Plain string choice
+        choiceName = choice;
+      } else if (typeof choice === "object" && choice !== null) {
+        // Object choice with id/title
+        const choiceObj = choice as ISimpleReference;
+        const rawName = choiceObj.id ? choiceObj.id : choiceObj.title;
+        choiceName = rawName !== undefined ? rawName.toString() : undefined;
+        choiceDescription = choiceObj.description;
+      }
+
       if (!choiceName) {
         Log.unexpectedUndefined("Choice: " + JSON.stringify(form));
         return;
@@ -643,10 +1144,10 @@ export default class FormDefinitionTypeScriptGenerator {
         if (!choicesAdded[choiceNameJs]) {
           choicesAdded[choiceNameJs] = true;
 
-          if (choice.description) {
+          if (choiceDescription) {
             content.push("  /**");
             content.push("   * @remarks");
-            FormDefinitionTypeScriptGenerator.appendLongTextWithAsterisks(content, choice.description, 60, 3);
+            FormDefinitionTypeScriptGenerator.appendLongTextWithAsterisks(content, choiceDescription, 60, 3);
             content.push("   */");
           }
 
@@ -773,7 +1274,7 @@ export default class FormDefinitionTypeScriptGenerator {
       case FieldDataType.longFormString:
         return strDescription;
       case FieldDataType.keyedObjectCollection:
-        return "{ [key: string]: any }";
+        return "{ [key: string]: " + (objectTypeName || "Record<string, unknown>") + " }";
       case FieldDataType.objectArray:
         return (objectTypeName ? objectTypeName : "object") + "[]";
       case FieldDataType.object:
@@ -897,6 +1398,9 @@ export default class FormDefinitionTypeScriptGenerator {
         if (jsonO) {
           formsByPath[file.storageRelativePath] = jsonO;
         }
+
+        // Unload file content after extracting JSON to save memory during bulk processing
+        file.unload();
       }
     }
   }

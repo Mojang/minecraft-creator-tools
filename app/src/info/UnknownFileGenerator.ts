@@ -14,16 +14,15 @@ export enum UnknownFileGeneratorTest {
   unknownTypeFileFound = 102,
 }
 
+/**
+ * Detects files with unknown or unrecognized extensions.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/unkfile.form.json} for topic definitions
+ */
 export default class UnknownFileGenerator implements IProjectFileInfoGenerator {
   id = "UNKFILE";
   title = "Unknown files";
   canAlwaysProcess = true;
-
-  getTopicData(topicId: number) {
-    return {
-      title: topicId.toString(),
-    };
-  }
 
   summarize(info: any, infoSet: ProjectInfoSet) {}
 

@@ -4,9 +4,10 @@ import { ReactNode, useState } from "react";
 interface FileDropAreaProps {
   children: ReactNode;
   onFileDrop: (files: File[], e: React.DragEvent<HTMLDivElement>) => void;
+  ariaLabel?: string;
 }
 
-export default function FileDropArea({ children, onFileDrop }: FileDropAreaProps) {
+export default function FileDropArea({ children, onFileDrop, ariaLabel }: FileDropAreaProps) {
   const [isDragging, setIsDragging] = useState(false);
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -30,21 +31,24 @@ export default function FileDropArea({ children, onFileDrop }: FileDropAreaProps
 
   return (
     <Box
+      role={ariaLabel ? "region" : undefined}
+      aria-label={ariaLabel}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       sx={(theme) => {
         const isDark = theme.palette.mode === "dark";
         return {
-          border: "3px dashed",
+          position: "relative",
+          border: "2px dashed",
           borderColor: isDragging
             ? isDark
               ? "#5cff5c"
               : "#2e7d32"
             : isDark
-            ? "rgba(255,255,255,0.3)"
-            : "rgba(0,0,0,0.2)",
-          borderRadius: 1,
+            ? "rgba(82, 165, 53, 0.3)"
+            : "rgba(62, 136, 40, 0.3)",
+          borderRadius: "2px",
           p: 2,
           textAlign: "center",
           bgcolor: isDragging
@@ -73,6 +77,27 @@ export default function FileDropArea({ children, onFileDrop }: FileDropAreaProps
         };
       }}
     >
+      {isDragging && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 10,
+            pointerEvents: "none",
+            fontSize: "1.1rem",
+            fontWeight: 600,
+            color: (theme) => (theme.palette.mode === "dark" ? "#5cff5c" : "#2e7d32"),
+          }}
+        >
+          Drop files here
+        </Box>
+      )}
       {children}
     </Box>
   );

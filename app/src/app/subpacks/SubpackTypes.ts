@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 const SubpackTypes: Record<string, { name: string; minTier: number }> = {
   Subpack16x: {
     name: "16x",

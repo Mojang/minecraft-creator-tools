@@ -1,6 +1,83 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+/*
+ * ==========================================================================================
+ * PROJECTINFOSET - VALIDATION SYSTEM NOTES
+ * ==========================================================================================
+ *
+ * OVERVIEW:
+ * ---------
+ * ProjectInfoSet is the central hub for project validation. It aggregates results from
+ * multiple "info generators" that check different aspects of a project for errors,
+ * warnings, recommendations, and informational items. It also coordinates "updaters"
+ * that can automatically fix certain issues.
+ *
+ * VALIDATION ARCHITECTURE:
+ * ------------------------
+ *
+ *   ProjectInfoSet
+ *        │
+ *        ├── IProjectInfoGenerator[] ─── Checks whole project (e.g., script versions)
+ *        ├── IProjectItemInfoGenerator[] ─── Checks individual items (e.g., entity format)
+ *        └── IProjectFileInfoGenerator[] ─── Checks specific files
+ *
+ *   Each generator produces ProjectInfoItem[] with:
+ *   - itemType: error, warning, recommendation, info, testPass, testFail
+ *   - generatorId: Which generator produced it (e.g., "SCRIPTMOD", "FORMATVER")
+ *   - generatorIndex: Specific test within generator
+ *   - message: Human-readable description
+ *   - projectItem: Optional link to affected ProjectItem
+ *   - data: Optional structured data for tooling
+ *
+ * See registered info generators in GeneratorRegistrations.ts.
+ *
+ * VALIDATION SUITES (ProjectInfoSuite):
+ * -------------------------------------
+ * Suites determine which generators run:
+ * - defaultInDevelopment: Most generators except sharing-specific
+ * - cooperativeAddOn: Marketplace add-on specific checks
+ * - sharing: Checks for content to be shared
+ * - sharingStrict: Sharing + additional strictness
+ * - currentPlatformVersions: Version compatibility checks
+ *
+ * KEY METHODS:
+ * ------------
+ * - generateForProject(): Run all matching generators, populate items[]
+ * - matchesSuite(): Check if generator applies to current suite
+ * - getCountByType() / getSummaryByType(): Query results
+ * - errorFailWarnCount: Quick error/warning count
+ *
+ * UPDATERS:
+ * ---------
+ * Some generators provide IProjectUpdater implementations:
+ * - Can automatically fix issues (e.g., update script module versions)
+ * - Accessed via generator.getUpdaters() method
+ * - Applied via ProjectUpdateRunner, the implementation of which shadows ProjectInfoSet.
+ *
+ * AGGREGATION:
+ * ------------
+ * - info: IProjectInfo object with aggregated statistics
+ * - itemsByStoragePath: Quick lookup by file path
+ * - contentIndex: ContentIndex for text search across results
+ *
+ * GENERATOR OPTIONS:
+ * ------------------
+ * IGeneratorOptions controls generator behavior:
+ * - performAggressiveCleanup: Release memory after processing (CLI mode)
+ *   Set false when data needed later (e.g., world map rendering)
+ *
+ * RELATED FILES:
+ * --------------
+ * - IProjectInfoGenerator.ts: Generator interface
+ * - ProjectInfoItem.ts: Individual validation result
+ * - GeneratorRegistrations.ts: Generator registry
+ * - ProjectUpdateRunner.ts: Applies updaters
+ * - IInfoItemData.ts: Serialized info item format
+ *
+ * ==========================================================================================
+ */
+
 import ProjectItem from "../app/ProjectItem";
 import Project, { ProjectErrorState } from "./../app/Project";
 import IProjectInfoGenerator from "./IProjectInfoGenerator";
@@ -24,8 +101,24 @@ import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import SummaryInfoGenerator from "./SummaryInfoGenerator";
 import HashUtilities from "../core/HashUtilities";
 import Database from "../minecraft/Database";
+import telemetryService from "../analytics/Telemetry";
+import { TelemetryEvents, TelemetryProperties } from "../analytics/TelemetryConstants";
+import InfoGeneratorTopicUtilities from "./InfoGeneratorTopicUtilities";
+import CrossReferenceIndexGenerator from "./CrossReferenceIndexGenerator";
+import TypesInfoGenerator from "./TypesInfoGenerator";
 
 const ItemBatchSize = 500;
+
+/**
+ * Controls how aggressively generators should constrain resource consumption.
+ * Use this to balance between thoroughness and performance/memory usage.
+ */
+export enum ResourceConsumptionConstraint {
+  /** No constraints - process all data regardless of resource usage */
+  none = 0,
+  /** Medium constraints - apply reasonable limits to prevent excessive resource usage */
+  medium = 5,
+}
 
 /**
  * Options passed to info generators to control their behavior.
@@ -39,6 +132,24 @@ export interface IGeneratorOptions {
    * (e.g., world map rendering in the browser).
    */
   performAggressiveCleanup?: boolean;
+
+  /**
+   * Controls how aggressively generators should limit resource consumption.
+   * When set to .medium, generators may apply limits like MaxWorldRecordsToProcess
+   * to prevent excessive memory or time usage on large datasets.
+   * When set to .none, no such limits are applied.
+   * Defaults to .medium if not specified.
+   */
+  constrainResourceConsumption?: ResourceConsumptionConstraint;
+
+  /**
+   * Optional callback for reporting progress during generation.
+   * Generators can call this to provide granular progress updates,
+   * especially for long-running operations like world data validation.
+   * @param message - A descriptive message about the current operation
+   * @param percentComplete - Optional percentage (0-100) of completion
+   */
+  onProgress?: (message: string, percentComplete?: number) => void;
 }
 
 export default class ProjectInfoSet {
@@ -49,6 +160,7 @@ export default class ProjectInfoSet {
   itemsByStoragePath: { [storagePath: string]: ProjectInfoItem[] | undefined } = {};
   contentIndex: ContentIndex;
   performAggressiveCleanup: boolean = false;
+  constrainResourceConsumption: ResourceConsumptionConstraint = ResourceConsumptionConstraint.medium;
 
   static _generatorsById: { [name: string]: IProjectInfoGenerator } = {};
   _isGenerating: boolean = false;
@@ -99,6 +211,124 @@ export default class ProjectInfoSet {
 
   get completedGeneration() {
     return this._completedGeneration;
+  }
+
+  /**
+   * Mark generation as complete. Used when results are provided externally
+   * (e.g., from a web worker).
+   */
+  async markGenerationCompleteAsync() {
+    this._completedGeneration = true;
+    this._isGenerating = false;
+
+    // Build the itemsByStoragePath index from items array
+    this._rebuildItemsByStoragePath();
+
+    // Aggregate features from info items (needed for summary display)
+    this.aggregateFeatures();
+
+    // Build contentIndex from project files.
+    // The web worker path doesn't populate the contentIndex (it only streams
+    // validation items), so we must build it on the main thread.
+    this._buildContentIndexFromProject();
+
+    // Populate cross-reference and type annotations in the contentIndex.
+    // These are normally populated by generators running in the worker,
+    // but the worker's ContentIndex is not transferred back.
+    await this._populateContentIndexAnnotationsAsync();
+  }
+
+  /**
+   * Runs lightweight annotation-producing generators against the contentIndex.
+   * This populates cross-reference annotations (geometry IDs, animation names,
+   * entity/block/item types, etc.) that power autocomplete suggestions.
+   *
+   * Called after _buildContentIndexFromProject() in the web worker path,
+   * since the worker's ContentIndex (with all annotations) is not transferred back.
+   * The project files are already loaded in memory, so this runs quickly.
+   */
+  private async _populateContentIndexAnnotationsAsync() {
+    if (!this.project || !this.contentIndex) {
+      return;
+    }
+
+    // CrossReferenceIndexGenerator: geometry, animation, animation controller,
+    // render controller, particle, fog, sound, loot table, recipe, biome,
+    // spawn rule, dialogue, function, structure annotations
+    const crossRefGen = new CrossReferenceIndexGenerator();
+    await crossRefGen.generate(this.project, this.contentIndex);
+
+    // TypesInfoGenerator: entity, block, item, feature type annotations
+    const typesGen = new TypesInfoGenerator();
+    await typesGen.generate(this.project, this.contentIndex);
+    // Note: generate() returns info items which we discard here —
+    // we already have the info items from the worker stream.
+  }
+
+  /**
+   * Populates the contentIndex by scanning all project items and their files.
+   * This is needed when the info set was generated via a web worker, which
+   * doesn't build or transfer the content index.
+   */
+  private _buildContentIndexFromProject() {
+    if (!this.project) {
+      return;
+    }
+
+    const ci = new ContentIndex();
+    ci.iteration = new Date().getTime();
+
+    for (const projectItem of this.project.items) {
+      if (!projectItem.projectPath) {
+        continue;
+      }
+
+      const file = projectItem.defaultFile;
+
+      if (file) {
+        const fileName = file.name;
+
+        ci.insert(StorageUtilities.getBaseFromName(fileName), projectItem.projectPath);
+        ci.insert(file.storageRelativePath, projectItem.projectPath);
+
+        if (file.content && typeof file.content === "string") {
+          const fileExtension = StorageUtilities.getTypeFromName(fileName);
+
+          switch (fileExtension) {
+            case "json":
+              ci.parseJsonContent(projectItem.projectPath, file.content);
+              break;
+            case "ts":
+            case "js":
+            case "mjs":
+              ci.parseJsContent(projectItem.projectPath, file.content);
+              break;
+          }
+        }
+      }
+    }
+
+    this.contentIndex = ci;
+  }
+
+  /**
+   * Rebuilds the itemsByStoragePath index from the items array.
+   * This is needed when items are set externally (e.g., from a web worker).
+   */
+  private _rebuildItemsByStoragePath() {
+    this.itemsByStoragePath = {};
+
+    for (const item of this.items) {
+      if (item.projectItem) {
+        const path = item.projectItem.projectPath;
+        if (path && typeof path === "string") {
+          if (!this.itemsByStoragePath[path]) {
+            this.itemsByStoragePath[path] = [];
+          }
+          this.itemsByStoragePath[path]?.push(item);
+        }
+      }
+    }
   }
 
   get errorAndFailCount() {
@@ -240,22 +470,130 @@ export default class ProjectInfoSet {
   }
 
   static getTopicData(id: string, index: number): IProjectInfoTopicData | undefined {
-    const gen = ProjectInfoSet._generatorsById[id];
-
     if (!Utilities.isUsableAsObjectKey(id)) {
       Log.unsupportedToken(id);
       throw new Error();
     }
 
-    if (gen) {
-      return gen.getTopicData(index);
+    // First, try to get topic data from form.json file (synchronously if already loaded)
+    const formTopicData = InfoGeneratorTopicUtilities.getTopicDataSync(id, index);
+    if (formTopicData) {
+      return formTopicData;
+    }
+
+    // Fall back to generator's getTopicData method if available
+    const gen = ProjectInfoSet._generatorsById[id];
+
+    if (gen && typeof (gen as IProjectInfoGeneratorBase).getTopicData === "function") {
+      return (gen as IProjectInfoGeneratorBase).getTopicData!(index);
     }
 
     for (const gen of GeneratorRegistrations.projectGenerators) {
       if (gen.id === id) {
         this._generatorsById[id] = gen;
 
-        return gen.getTopicData(index);
+        if (typeof (gen as IProjectInfoGeneratorBase).getTopicData === "function") {
+          return (gen as IProjectInfoGeneratorBase).getTopicData!(index);
+        }
+        return undefined;
+      }
+    }
+
+    return undefined;
+  }
+
+  private static _getLineLocationFromIndex(content: string, index: number) {
+    const lineNumber = content.substring(0, index).split("\n").length;
+    const lastLineBreak = content.lastIndexOf("\n", index - 1);
+    const column = index - (lastLineBreak + 1) + 1;
+    return { lineNumber, column };
+  }
+
+  static async findLineLocationForItem(
+    content: string,
+    item: ProjectInfoItem
+  ): Promise<{ lineNumber: number; column: number } | undefined> {
+    if (!content) {
+      return undefined;
+    }
+
+    const directMatch = (matchText: string | undefined) => {
+      if (!matchText) {
+        return undefined;
+      }
+
+      const index = content.indexOf(matchText);
+      if (index >= 0) {
+        return ProjectInfoSet._getLineLocationFromIndex(content, index);
+      }
+
+      return undefined;
+    };
+
+    const contentLocation = directMatch(item.content);
+    if (contentLocation) {
+      return contentLocation;
+    }
+
+    if (typeof item.data === "string") {
+      const normalizedData = item.data.startsWith("Relevant line: ")
+        ? item.data.substring("Relevant line: ".length)
+        : item.data;
+      const dataLocation = directMatch(normalizedData);
+      if (dataLocation) {
+        return dataLocation;
+      }
+    }
+
+    if (item.generatorId) {
+      try {
+        const topicData = await InfoGeneratorTopicUtilities.getTopicData(item.generatorId, item.generatorIndex);
+        if (topicData?.suggestedLineToken) {
+          const token = topicData.suggestedLineToken;
+          const escapedToken = token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+          if (topicData.suggestedLineShouldHaveData && item.data) {
+            const dataStr = String(item.data);
+            const escapedData = dataStr.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            const combinedPattern = new RegExp(
+              `"${escapedToken}"[^\\n]*${escapedData}|${escapedData}[^\\n]*"${escapedToken}"`,
+              "i"
+            );
+            const combinedMatch = content.match(combinedPattern);
+            if (combinedMatch && combinedMatch.index !== undefined) {
+              return ProjectInfoSet._getLineLocationFromIndex(content, combinedMatch.index);
+            }
+          }
+
+          const tokenPattern = new RegExp(`"${escapedToken}"\\s*:\\s*[^,}\\]]+`, "i");
+          const match = content.match(tokenPattern);
+          if (match && match.index !== undefined) {
+            return ProjectInfoSet._getLineLocationFromIndex(content, match.index);
+          }
+
+          const simpleIndex = content.indexOf(`"${token}"`);
+          if (simpleIndex >= 0) {
+            return ProjectInfoSet._getLineLocationFromIndex(content, simpleIndex);
+          }
+        }
+      } catch {
+        // Ignore errors loading topic data
+      }
+    }
+
+    if (item.generatorId === "FORMATVER" || item.generatorId?.includes("FORMAT")) {
+      const versionPattern = /"format_version"\s*:\s*"[^"]+"/i;
+      const match = content.match(versionPattern);
+      if (match && match.index !== undefined) {
+        return ProjectInfoSet._getLineLocationFromIndex(content, match.index);
+      }
+    }
+
+    if (item.generatorId === "ENTITYTYPE" || item.generatorId === "BLOCKTYPE" || item.generatorId === "ITEMTYPE") {
+      const identifierPattern = /"identifier"\s*:\s*"[^"]+"/;
+      const match = content.match(identifierPattern);
+      if (match && match.index !== undefined) {
+        return ProjectInfoSet._getLineLocationFromIndex(content, match.index);
       }
     }
 
@@ -336,7 +674,18 @@ export default class ProjectInfoSet {
     return false;
   }
 
-  async generateForProject(force?: boolean) {
+  /**
+   * Generate info items for the project.
+   * @param force If true, regenerate even if already completed.
+   * @param skipRelationsProcessing If true, skip the processRelations call (useful when relations
+   *        have already been processed, e.g., in a combined worker operation).
+   * @param onProgress Optional callback for progress updates (useful for worker thread communication).
+   */
+  async generateForProject(
+    force?: boolean,
+    skipRelationsProcessing?: boolean,
+    onProgress?: (message: string, percentComplete?: number) => void
+  ) {
     if (force === true && this._completedGeneration) {
       this._completedGeneration = false;
       this._isGenerating = false;
@@ -346,7 +695,9 @@ export default class ProjectInfoSet {
       return;
     }
 
-    await this.project?.processRelations();
+    if (!skipRelationsProcessing) {
+      await this.project?.processRelations();
+    }
 
     if (this._isGenerating) {
       const pendingGenerate = this._pendingGenerateRequests;
@@ -368,7 +719,7 @@ export default class ProjectInfoSet {
       let baseValidationMessage = "Validating '" + this.project.simplifiedName + "'";
 
       const valOperId = await this.project?.creatorTools.notifyOperationStarted(
-        baseValidationMessage,
+        baseValidationMessage + " (0%)",
         StatusTopic.validation
       );
 
@@ -387,6 +738,14 @@ export default class ProjectInfoSet {
       await this.project.loc.load();
       await Database.loadVanillaCatalog();
 
+      // Preload all topic forms for generators so sync lookups work
+      const allGeneratorIds = [
+        ...projGenerators.map((g) => g.id),
+        ...itemGenerators.map((g) => g.id),
+        ...fileGenerators.map((g) => g.id),
+      ];
+      await InfoGeneratorTopicUtilities.preloadAllForms(allGeneratorIds);
+
       if (this.project?.errorState === ProjectErrorState.cabinetFileCouldNotBeProcessed) {
         genItems.push(
           new ProjectInfoItem(
@@ -399,6 +758,9 @@ export default class ProjectInfoSet {
       } else {
         const projectFolder = await this.project.ensureProjectFolder();
 
+        const generatorTimings: { phase: string; id: string; durationMs: number }[] = [];
+
+        const preProcessStart = Date.now();
         await this.preProcessFolder(
           this.project,
           projectFolder,
@@ -408,20 +770,35 @@ export default class ProjectInfoSet {
           fileGenerators,
           0
         );
+        generatorTimings.push({
+          phase: "preprocess",
+          id: "preProcessFolder",
+          durationMs: Date.now() - preProcessStart,
+        });
 
         for (let i = 0; i < projGenerators.length; i++) {
           const gen = projGenerators[i];
 
           if ((!this._excludeTests || !this._excludeTests.includes(gen.id)) && gen && this.matchesSuite(gen)) {
+            const projGenPercent = Math.floor(10 + (i / projGenerators.length) * 20); // 10-30%
             await this.project?.creatorTools.notifyOperationUpdate(
               valOperId,
-              baseValidationMessage + " (" + gen.title + ")"
+              baseValidationMessage + " - " + gen.title + " (" + projGenPercent + "%)",
+              StatusTopic.validation
             );
+
+            // Send progress to worker callback if provided
+            if (onProgress) {
+              const percent = Math.floor(10 + (i / projGenerators.length) * 20); // 10-30%
+              onProgress(`Validating: ${gen.title}`, percent);
+            }
 
             GeneratorRegistrations.configureForSuite(gen, this.suite);
 
             try {
+              const genStart = Date.now();
               const results = await gen.generate(this.project, genContentIndex);
+              generatorTimings.push({ phase: "project", id: gen.id, durationMs: Date.now() - genStart });
 
               for (const item of results) {
                 this.pushItem(genItems, genItemsByStoragePath, item);
@@ -448,15 +825,27 @@ export default class ProjectInfoSet {
         }
 
         const itemsCopy = this.project.getItemsCopy();
+        const itemGenTimings: { [id: string]: number } = {};
+        for (const gen of itemGenerators) {
+          itemGenTimings[gen.id] = 0;
+        }
+        const itemLoopStart = Date.now();
 
         for (let i = 0; i < itemsCopy.length; i++) {
           const pi = itemsCopy[i];
 
           if (i % ItemBatchSize === ItemBatchSize - 1) {
+            const itemPercent = Math.floor(30 + (i / itemsCopy.length) * 50); // 30-80%
             await this.project?.creatorTools.notifyOperationUpdate(
               valOperId,
-              baseValidationMessage + " (items " + Math.ceil((i / itemsCopy.length) * 100) + "%)"
+              baseValidationMessage + " - items (" + itemPercent + "%)",
+              StatusTopic.validation
             );
+
+            // Send progress to worker callback if provided
+            if (onProgress) {
+              onProgress(`Validating items`, itemPercent);
+            }
           }
 
           if (!pi.isContentLoaded) {
@@ -470,9 +859,13 @@ export default class ProjectInfoSet {
               GeneratorRegistrations.configureForSuite(gen, this.suite);
 
               try {
+                const itemGenStart = Date.now();
                 const results = await gen.generate(pi, genContentIndex, {
                   performAggressiveCleanup: this.performAggressiveCleanup,
+                  constrainResourceConsumption: this.constrainResourceConsumption,
+                  onProgress: onProgress,
                 });
+                itemGenTimings[gen.id] += Date.now() - itemGenStart;
 
                 for (const item of results) {
                   this.pushItem(genItems, genItemsByStoragePath, item);
@@ -492,6 +885,14 @@ export default class ProjectInfoSet {
           }
         }
 
+        generatorTimings.push({ phase: "items-loop", id: "allItemGenerators", durationMs: Date.now() - itemLoopStart });
+        for (const gen of itemGenerators) {
+          if (itemGenTimings[gen.id] > 0) {
+            generatorTimings.push({ phase: "item", id: gen.id, durationMs: itemGenTimings[gen.id] });
+          }
+        }
+
+        const processFolderStart = Date.now();
         await this.processFolder(
           this.project,
           projectFolder,
@@ -501,9 +902,27 @@ export default class ProjectInfoSet {
           fileGenerators,
           0
         );
+        generatorTimings.push({
+          phase: "postprocess",
+          id: "processFolder",
+          durationMs: Date.now() - processFolderStart,
+        });
+
+        // Log timing breakdown
+        generatorTimings.sort((a, b) => b.durationMs - a.durationMs);
+        const totalValidationMs = Date.now() - generationStartTime;
+        Log.verbose(`[Validation] Total validation time: ${totalValidationMs}ms`);
+        Log.verbose(`[Validation] Top generators by time:`);
+        for (const t of generatorTimings.slice(0, 20)) {
+          Log.verbose(`[Validation]   ${t.phase.padEnd(12)} ${t.id.padEnd(45)} ${t.durationMs}ms`);
+        }
       }
 
-      await this.project?.creatorTools.notifyOperationUpdate(valOperId, baseValidationMessage + " (finishing)");
+      await this.project?.creatorTools.notifyOperationUpdate(
+        valOperId,
+        baseValidationMessage + " - finishing (95%)",
+        StatusTopic.validation
+      );
 
       this.addTestSummations(genItems, genItemsByStoragePath, projGenerators, this._excludeTests);
       this.addTestSummations(genItems, genItemsByStoragePath, itemGenerators, this._excludeTests);
@@ -603,11 +1022,35 @@ export default class ProjectInfoSet {
       this._isGenerating = false;
 
       if (valOperId !== undefined) {
-        await this.project?.creatorTools.notifyOperationEnded(
-          valOperId,
-          "Completed validation of '" + this.project.simplifiedName + "'",
-          StatusTopic.validation
-        );
+        // End the operation - progress bar disappears immediately
+        await this.project?.creatorTools.notifyOperationEnded(valOperId, "", StatusTopic.validation);
+      }
+
+      if (this.project) {
+        const errorTypes: { [type: string]: number } = {};
+        for (const item of genItems) {
+          if (item.itemType === InfoItemType.internalProcessingError) {
+            const errorType = item.generatorId || "unknown";
+            errorTypes[errorType] = (errorTypes[errorType] || 0) + 1;
+          }
+        }
+
+        const properties: { [key: string]: string | number } = {
+          [TelemetryProperties.PROJECT_ITEM_COUNT]: this.project.items.length,
+          [TelemetryProperties.INTERNAL_PROCESSING_ERROR_COUNT]: this.info.internalProcessingErrorCount || 0,
+          [TelemetryProperties.SUITE_TYPE]: this.suite,
+        };
+
+        const errorTypeKeys = Object.keys(errorTypes);
+
+        if (errorTypeKeys.length > 0) {
+          properties[TelemetryProperties.ERROR_TYPES] = errorTypeKeys.join(",");
+        }
+
+        telemetryService.trackEvent({
+          name: TelemetryEvents.VALIDATION_COMPLETED,
+          properties,
+        });
       }
 
       for (const prom of pendingLoad) {
@@ -673,7 +1116,7 @@ export default class ProjectInfoSet {
                   InfoItemType.testCompleteFail,
                   gen.id,
                   0,
-                  `Found ${errorCount} errors for ${gen.title} (${gen.id}).`
+                  `Found ${errorCount} error${errorCount !== 1 ? "s" : ""} in ${gen.title} check`
                 )
               );
             } else if (internalErrorCount > 0 && errorCount <= 0) {
@@ -684,7 +1127,7 @@ export default class ProjectInfoSet {
                   InfoItemType.testCompleteFail,
                   gen.id,
                   0,
-                  `Found ${internalErrorCount} internal errors for ${gen.title} (${gen.id}). This may be a temporary issue with the test run.`
+                  `Found ${internalErrorCount} internal error${internalErrorCount !== 1 ? "s" : ""} in ${gen.title} check. This may be a temporary issue with the test run.`
                 )
               );
             } else if (errorCount + internalErrorCount > 0) {
@@ -695,19 +1138,14 @@ export default class ProjectInfoSet {
                   InfoItemType.testCompleteFail,
                   gen.id,
                   0,
-                  `Found ${errorCount} errors and ${internalErrorCount} internal errors for ${gen.title} (${gen.id})`
+                  `Found ${errorCount} error${errorCount !== 1 ? "s" : ""} and ${internalErrorCount} internal error${internalErrorCount !== 1 ? "s" : ""} in ${gen.title} check`
                 )
               );
             } else {
               this.pushItem(
                 genItems,
                 genItemsByStoragePath,
-                new ProjectInfoItem(
-                  InfoItemType.testCompleteSuccess,
-                  gen.id,
-                  1,
-                  `${gen.title} (${gen.id}) completed successfully`
-                )
+                new ProjectInfoItem(InfoItemType.testCompleteSuccess, gen.id, 1, `${gen.title} completed successfully`)
               );
             }
           }
@@ -994,39 +1432,14 @@ export default class ProjectInfoSet {
       const dataObj = this.items[i].dataObject;
 
       if (!isIndexOnly || this.shouldIncludeInIndex(dataObj)) {
-        // Check if we need to cap numeric values for .NET Int32 compatibility
-        const hasFeatureSetsToCap = dataObj.fs && Object.keys(dataObj.fs).length > 0;
-        const needsCapping = hasFeatureSetsToCap || typeof dataObj.d === "number" || Array.isArray(dataObj.d);
-
-        if (needsCapping) {
-          const cappedDataObj: IInfoItemData = { ...dataObj };
-          if (hasFeatureSetsToCap) {
-            cappedDataObj.fs = Utilities.capFeatureSetsForJson(dataObj.fs);
-          }
-          if (typeof dataObj.d === "number" || Array.isArray(dataObj.d)) {
-            cappedDataObj.d = Utilities.capDataValueForJson(dataObj.d);
-          }
-          items.push(cappedDataObj);
-        } else {
-          items.push(dataObj);
-        }
+        items.push(dataObj);
       }
     }
 
     Utilities.encodeObjectWithSequentialRunLengthEncodeUsingNegative(this.contentIndex.data.trie);
 
-    // Cap featureSets in info for .NET Int32 compatibility.
-    // Note: Other numeric fields in IProjectInfo (errorCount, warningCount, etc.) are per-project
-    // counts that won't exceed Int32. Only featureSets can contain very large aggregated values.
-    const cappedInfo: IProjectInfo = this.info
-      ? {
-          ...this.info,
-          featureSets: Utilities.capFeatureSetsForJson(this.info.featureSets),
-        }
-      : {};
-
     return {
-      info: cappedInfo,
+      info: this.info,
       items: items,
       index: this.contentIndex.data,
       generatorName: constants.name,
@@ -1344,7 +1757,7 @@ function _addReportJson(data) {
       const repData = data.slice();
 
       for (let i = 0; i < repData.length; i++) {
-        repData[i] = "'" + repData[i].toString().replace(/'/gi, "") + "'";
+        repData[i] = "'" + repData[i].toString().replace(/'/gi, "").replace(/[\r\n]+/g, " ") + "'";
       }
       let arrStr = repData.join(", ");
 
@@ -1352,10 +1765,19 @@ function _addReportJson(data) {
 
       return '"[' + arrStr + ']"';
     } else if (data) {
-      return '"' + data.replace(/"/gi, "'") + '"';
+      return '"' + ProjectInfoSet.csvSanitize(data) + '"';
     }
 
     return "(not defined)";
+  }
+
+  /**
+   * Sanitizes a string value for safe inclusion inside a quoted CSV field.
+   * Replaces double quotes with single quotes, and strips newlines/carriage returns
+   * so that the value doesn't create phantom rows in the CSV output.
+   */
+  static csvSanitize(value: string): string {
+    return value.replace(/"/gi, "'").replace(/[\r\n]+/g, " ");
   }
 
   static sortMinecraftFeatures(a: string, b: string) {
@@ -1730,22 +2152,26 @@ function _addReportJson(data) {
           "," +
           item.generatorIndex +
           "," +
-          item.typeSummary +
+          '"' +
+          ProjectInfoSet.csvSanitize(item.typeSummary || "") +
+          '"' +
           "," +
-          (item.projectItem ? item.projectItem.name : "") +
+          '"' +
+          ProjectInfoSet.csvSanitize(item.projectItem ? item.projectItem.name : "") +
+          '"' +
           ',"' +
-          this.getEffectiveMessage(item) +
+          ProjectInfoSet.csvSanitize(this.getEffectiveMessage(item)) +
           '",';
 
         if (item.data) {
           if (typeof item.data === "string") {
-            line += '"' + item.data + '"';
+            line += '"' + ProjectInfoSet.csvSanitize(item.data) + '"';
           } else {
             line += item.data.toString();
           }
         }
 
-        line += "," + sp + ",";
+        line += ',"' + ProjectInfoSet.csvSanitize(sp) + '",';
 
         if (item.featureSets) {
           for (const featName in item.featureSets) {
@@ -1760,7 +2186,7 @@ function _addReportJson(data) {
                     if (typeof measure === "number") {
                       line += featName + " " + measureName + "," + measure + ",";
                     } else if (typeof measure === "string") {
-                      line += featName + " " + measureName + ',"' + measure + '",';
+                      line += featName + " " + measureName + ',"' + ProjectInfoSet.csvSanitize(measure) + '",';
                     }
                   }
                 }
@@ -1920,17 +2346,20 @@ function _addReportJson(data) {
             genContentIndex.insert(StorageUtilities.getBaseFromName(fileName), projectItem.projectPath);
             genContentIndex.insert(file.storageRelativePath, projectItem.projectPath);
 
-            if (!file.isContentLoaded) {
-              await file.loadContent();
-            }
-
             if (file.content && typeof file.content === "string") {
               const fileExtension = StorageUtilities.getTypeFromName(fileName);
 
               if (projectItem && projectItem.projectPath) {
                 switch (fileExtension) {
                   case "json":
-                    genContentIndex.parseJsonContent(projectItem.projectPath, file.content);
+                    // Try to use already-parsed JSON object for faster indexing
+                    // instead of character-by-character text tokenization
+                    const jsonObj = StorageUtilities.getJsonObject(file);
+                    if (jsonObj) {
+                      genContentIndex.indexJsonObject(projectItem.projectPath, jsonObj);
+                    } else {
+                      genContentIndex.parseJsonContent(projectItem.projectPath, file.content);
+                    }
                     break;
                   case "ts":
                   case "js":
@@ -2104,10 +2533,17 @@ function _addReportJson(data) {
   }
 
   getItemSummary(item: ProjectInfoItem) {
+    // First, try to get topic data from form.json file
+    const formTopicData = InfoGeneratorTopicUtilities.getTopicDataSync(item.generatorId, item.generatorIndex);
+    if (formTopicData) {
+      return formTopicData.title;
+    }
+
+    // Fall back to generator's getTopicData method if available
     const gen = this.getGeneratorForItem(item);
 
-    if (gen) {
-      const topic = gen.getTopicData(item.generatorIndex);
+    if (gen && typeof (gen as IProjectInfoGeneratorBase).getTopicData === "function") {
+      const topic = (gen as IProjectInfoGeneratorBase).getTopicData!(item.generatorIndex);
 
       if (topic) {
         return topic.title;
@@ -2115,6 +2551,17 @@ function _addReportJson(data) {
     }
 
     return item.generatorId + "-" + item.generatorIndex;
+  }
+
+  /**
+   * Gets a stable key for aggregation purposes based on the form.json field title.
+   * Uses getItemSummary() which returns the form.json title (e.g., "Texture Images"),
+   * then convertToJsonKey() transforms it to camelCase (e.g., "textureImages").
+   * This produces consistent JSON keys in validation reports.
+   */
+  getItemAggregationKey(item: ProjectInfoItem) {
+    // Use getItemSummary which returns the form.json title or falls back to generator data
+    return this.getItemSummary(item);
   }
 
   aggregateFeatures() {
@@ -2130,7 +2577,7 @@ function _addReportJson(data) {
           const featureSet = item.featureSets[featureSetName];
 
           const aggFeatureSetName =
-            Utilities.convertToJsonKey(this.getItemSummary(item)) +
+            Utilities.convertToJsonKey(this.getItemAggregationKey(item)) +
             "." +
             Utilities.ensureFirstCharIsLowerCase(featureSetName);
 

@@ -1,9 +1,10 @@
-import { Component, SyntheticEvent } from "react";
+import { Component, SyntheticEvent, ChangeEvent } from "react";
 import "./Version.css";
 import IFormComponentProps from "./../dataform/IFormComponentProps";
-import { FormInput, InputProps, Button } from "@fluentui/react-northstar";
+import { TextField, Button } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBullseye } from "@fortawesome/free-solid-svg-icons";
+import Log from "./../core/Log";
 
 export interface IVersionProps extends IFormComponentProps {
   data: number[] | string | undefined;
@@ -85,19 +86,18 @@ export default class Version extends Component<IVersionProps, IVersionState> {
     return null;
   }
 
-  _handleMajorChange(
-    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
-    data: (InputProps & { value: string }) | undefined
-  ) {
-    if (event === null || data === null || data === undefined || !this.state) {
+  _handleMajorChange(event: ChangeEvent<HTMLInputElement>) {
+    if (!this.state) {
       return;
     }
 
     let newMajor = this.state.major;
 
     try {
-      newMajor = parseInt(data.value);
-    } catch (e) {}
+      newMajor = parseInt(event.target.value);
+    } catch (e) {
+      Log.debug("Version major parse error: " + e);
+    }
 
     this._updateProp(event, newMajor, this.state.minor, this.state.patch);
 
@@ -109,19 +109,18 @@ export default class Version extends Component<IVersionProps, IVersionState> {
     });
   }
 
-  _handleMinorChange(
-    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
-    data: (InputProps & { value: string }) | undefined
-  ) {
-    if (event === null || data === null || data === undefined || !this.state) {
+  _handleMinorChange(event: ChangeEvent<HTMLInputElement>) {
+    if (!this.state) {
       return;
     }
 
     let newMinor = this.state.minor;
 
     try {
-      newMinor = parseInt(data.value);
-    } catch (e) {}
+      newMinor = parseInt(event.target.value);
+    } catch (e) {
+      Log.debug("Version minor parse error: " + e);
+    }
 
     this._updateProp(event, this.state.major, newMinor, this.state.patch);
 
@@ -133,19 +132,18 @@ export default class Version extends Component<IVersionProps, IVersionState> {
     });
   }
 
-  _handlePatchChange(
-    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
-    data: (InputProps & { value: string }) | undefined
-  ) {
-    if (event === null || data === null || data === undefined || !this.state) {
+  _handlePatchChange(event: ChangeEvent<HTMLInputElement>) {
+    if (!this.state) {
       return;
     }
 
     let newPatch = this.state.patch;
 
     try {
-      newPatch = parseInt(data.value);
-    } catch (e) {}
+      newPatch = parseInt(event.target.value);
+    } catch (e) {
+      Log.debug("Version patch parse error: " + e);
+    }
 
     this._updateProp(event, this.state.major, this.state.minor, newPatch);
 
@@ -215,7 +213,9 @@ export default class Version extends Component<IVersionProps, IVersionState> {
         curMajor = intArr.length > 0 ? parseInt(intArr[0]) : 0;
         curMinor = intArr.length > 1 ? parseInt(intArr[1]) : 0;
         curPatch = intArr.length > 2 ? parseInt(intArr[2]) : 1;
-      } catch (e) {}
+      } catch (e) {
+        Log.debug("Version string parse error: " + e);
+      }
     } else {
       curMajor = data.length > 0 ? data[0] : 0;
       curMinor = data.length > 1 ? data[1] : 0;
@@ -265,28 +265,31 @@ export default class Version extends Component<IVersionProps, IVersionState> {
         <div className="ver-data">
           <div className="ver-inner">
             <div className="ver-cell">
-              <FormInput
+              <TextField
                 id="major"
                 className="ver-input"
-                defaultValue={curMajor.toString()}
+                size="small"
+                variant="outlined"
                 value={curMajor.toString()}
                 onChange={this._handleMajorChange}
               />
             </div>
             <div className="ver-cell">
-              <FormInput
+              <TextField
                 id="minor"
                 className="ver-input"
-                defaultValue={curMinor.toString()}
+                size="small"
+                variant="outlined"
                 value={curMinor.toString()}
                 onChange={this._handleMinorChange}
               />
             </div>
             <div className="ver-cell">
-              <FormInput
+              <TextField
                 id="patch"
                 className="ver-input"
-                defaultValue={curPatch.toString()}
+                size="small"
+                variant="outlined"
                 value={curPatch.toString()}
                 onChange={this._handlePatchChange}
               />

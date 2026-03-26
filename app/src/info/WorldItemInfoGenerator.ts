@@ -21,15 +21,14 @@ export enum WorldItemInfoGeneratorTest {
   worldDescription = 109,
 }
 
+/**
+ * Validates world items including experiments and base game version settings.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/world.form.json} for topic definitions
+ */
 export default class WorldItemInfoGenerator implements IProjectInfoItemGenerator {
   id = "WORLD";
   title = "World Validation";
-
-  getTopicData(topicId: number) {
-    return {
-      title: topicId.toString(),
-    };
-  }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
     info.baseGameVersion = infoSet.getFirstStringValue(this.id, WorldItemInfoGeneratorTest.baseGameVersion);

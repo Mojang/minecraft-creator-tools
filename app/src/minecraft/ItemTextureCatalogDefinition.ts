@@ -17,6 +17,7 @@ export default class ItemTextureCatalogDefinition {
   private _data?: IItemTexture;
   private _file?: IFile;
   private _isLoaded: boolean = false;
+  private _loadedWithComments: boolean = false;
 
   private _onLoaded = new EventDispatcher<ItemTextureCatalogDefinition, ItemTextureCatalogDefinition>();
 
@@ -213,14 +214,14 @@ export default class ItemTextureCatalogDefinition {
   }
 
   async addChildItems(project: Project, item: ProjectItem) {
-    const itemsCopy = project.getItemsCopy();
+    const textureItems = project.getItemsByType(ProjectItemType.texture);
 
     let packRootFolder = this.getPackRootFolder();
 
     let texturePathList = this.getCanonicalizedTexturePathList();
 
-    for (const candItem of itemsCopy) {
-      if (candItem.itemType === ProjectItemType.texture && packRootFolder && texturePathList) {
+    for (const candItem of textureItems) {
+      if (packRootFolder && texturePathList) {
         if (!candItem.isContentLoaded) {
           await candItem.loadContent();
         }
@@ -252,8 +253,20 @@ export default class ItemTextureCatalogDefinition {
     }
   }
 
-  async load() {
-    if (this._isLoaded) {
+  /**
+   * Loads the definition from the file.
+   * @param preserveComments If true, uses comment-preserving JSON parsing for edit/save cycles.
+   *                         If false (default), uses efficient standard JSON parsing.
+   *                         Can be called again with true to "upgrade" a read-only load to read/write.
+   */
+  async load(preserveComments: boolean = false) {
+    // If already loaded with comments, we have the "best" version - nothing more to do
+    if (this._isLoaded && this._loadedWithComments) {
+      return;
+    }
+
+    // If already loaded without comments and caller doesn't need comments, we're done
+    if (this._isLoaded && !preserveComments) {
       return;
     }
 
@@ -267,12 +280,18 @@ export default class ItemTextureCatalogDefinition {
     }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
+      this._isLoaded = true;
+      this._loadedWithComments = preserveComments;
+      this._onLoaded.dispatch(this, this);
       return;
     }
 
     let data: any = {};
 
-    let result = StorageUtilities.getJsonObject(this._file);
+    // Use comment-preserving parser only when needed for editing
+    let result = preserveComments
+      ? StorageUtilities.getJsonObjectWithComments(this._file)
+      : StorageUtilities.getJsonObject(this._file);
 
     if (result) {
       data = result;
@@ -281,6 +300,7 @@ export default class ItemTextureCatalogDefinition {
     this._data = data;
 
     this._isLoaded = true;
+    this._loadedWithComments = preserveComments;
 
     this._onLoaded.dispatch(this, this);
   }

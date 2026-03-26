@@ -9,6 +9,7 @@ import MinecraftUtilities from "./MinecraftUtilities";
 import ISpawnRulesBehavior, { ISpawnRulesInner } from "./ISpawnRulesBehavior";
 import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
+import RelationsIndex from "../app/RelationsIndex";
 import { ProjectItemType } from "../app/IProjectItemData";
 import EntityTypeDefinition from "./EntityTypeDefinition";
 
@@ -16,6 +17,7 @@ export default class SpawnRulesBehaviorDefinition {
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
+  private _loadedWithComments: boolean = false;
 
   public data?: ISpawnRulesBehavior;
   public dataInner?: ISpawnRulesInner;
@@ -135,17 +137,22 @@ export default class SpawnRulesBehaviorDefinition {
     return this._file.setObjectContentIfSemanticallyDifferent(this.data);
   }
 
-  async addChildItems(project: Project, item: ProjectItem) {
+  async addChildItems(project: Project, item: ProjectItem, index?: RelationsIndex) {
     if (!this.id) {
       return;
     }
 
-    const itemsCopy = project.getItemsCopy();
     let foundMatch = false;
 
-    // Check if there's a matching entity type behavior
-    for (const candItem of itemsCopy) {
-      if (candItem.itemType === ProjectItemType.entityTypeBehavior) {
+    if (index) {
+      // Use pre-built index for O(1) lookup
+      const matchingEntities = index.getItemsById(index.entityBehaviorsById, this.id);
+      foundMatch = matchingEntities.length > 0;
+    } else {
+      // Fallback: scan entity behaviors
+      const entityBehaviorItems = project.getItemsByType(ProjectItemType.entityTypeBehavior);
+
+      for (const candItem of entityBehaviorItems) {
         if (!candItem.isContentLoaded) {
           await candItem.loadContent();
         }
@@ -172,8 +179,24 @@ export default class SpawnRulesBehaviorDefinition {
     }
   }
 
-  async load() {
-    if (this._file === undefined || this._isLoaded) {
+  /**
+   * Loads the definition from the file.
+   * @param preserveComments If true, uses comment-preserving JSON parsing for edit/save cycles.
+   *                         If false (default), uses efficient standard JSON parsing.
+   *                         Can be called again with true to "upgrade" a read-only load to read/write.
+   */
+  async load(preserveComments: boolean = false) {
+    // If already loaded with comments, we have the "best" version - nothing more to do
+    if (this._isLoaded && this._loadedWithComments) {
+      return;
+    }
+
+    // If already loaded without comments and caller doesn't need comments, we're done
+    if (this._isLoaded && !preserveComments) {
+      return;
+    }
+
+    if (this._file === undefined) {
       return;
     }
 
@@ -182,10 +205,16 @@ export default class SpawnRulesBehaviorDefinition {
     }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
+      this._isLoaded = true;
+      this._loadedWithComments = preserveComments;
+      this._onLoaded.dispatch(this, this);
       return;
     }
 
-    this.data = StorageUtilities.getJsonObject(this._file);
+    // Use comment-preserving parser only when needed for editing
+    this.data = preserveComments
+      ? StorageUtilities.getJsonObjectWithComments(this._file)
+      : StorageUtilities.getJsonObject(this._file);
 
     this.dataInner = this.data?.["minecraft:spawn_rules"];
 
@@ -194,5 +223,7 @@ export default class SpawnRulesBehaviorDefinition {
     }
 
     this._isLoaded = true;
+    this._loadedWithComments = preserveComments;
+    this._onLoaded.dispatch(this, this);
   }
 }

@@ -1,0 +1,20 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "addLootTable",
+    "description": "addLootTable description",
+    "version": [
+      0,
+      0,
+      1
+    ],
+    "min_engine_version": [
+      1,
+      20,
+      10
+    ],
+    "uuid": "da425ac9-20bd-4938-ba36-d29c34d7b96d"
+  },
+  "modules": [],
+  "dependencies": []
+}

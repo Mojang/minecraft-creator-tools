@@ -1,4 +1,16 @@
 /// <reference types="vite-plugin-svgr/client" />
+/// <reference types="vite/client" />
+
+/**
+ * Vite worker import declarations.
+ * When importing with ?worker suffix, Vite bundles the worker and returns a constructor.
+ */
+declare module "*?worker" {
+  const workerConstructor: {
+    new (): Worker;
+  };
+  export default workerConstructor;
+}
 
 /**
  * Global constants injected by Vite at build time.

@@ -209,11 +209,14 @@ export default class DocumentedCommandSet {
     }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
+      this._isLoaded = true;
+      this._onLoaded.dispatch(this, this);
       return;
     }
 
     this.id = this._file.name;
 
+    // Use getJsonObject (not getJsonObjectWithComments) since this is read-only metadata
     this.commandSetDefinition = StorageUtilities.getJsonObject(this._file);
 
     this._docCommands = {};

@@ -8,7 +8,7 @@
     ],
     "types": [
       "vite/client",
-      "@types/wicg-file-system-access",
+      "wicg-file-system-access",
       "mocha"
     ],
     "allowJs": true,
@@ -36,17 +36,18 @@
     "build",
     "toolbuild",
     "public/**/*",
-    "src/cli/**/*.ts",
-    "src/cli/*.ts",
-    "src/mcp/**/*.ts",
-    "src/mcp/*.ts",
+    "src/cli/**/*",
+    "src/mcp/**/*",
     "src/test/**/*",
+    "src/test-ex/**/*",
+    "src/test-extra/**/*",
+    "src/test-longhaul/**/*",
     "src/testweb/**/*",
+    "src/testmobile/**/*",
+    "src/testa11y/**/*",
     "src/testelectron/**/*",
     "playwright*.config.ts",
     "playwright*.config.js",
-    "src/local/**/*.ts",
-    "src/local/LocalUtilities.ts",
-    "src/local/*.ts"
+    "src/local/**/*"
   ]
 }

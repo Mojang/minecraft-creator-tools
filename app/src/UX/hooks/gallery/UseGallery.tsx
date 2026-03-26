@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import IGallery from "../../../app/IGallery";
 import IGalleryItem, { GalleryItemType } from "../../../app/IGalleryItem";
 import { useCreatorTools } from "../../contexts/creatorToolsContext/CreatorToolsContext";
@@ -19,17 +19,21 @@ export default function useGallery({ query, pageSize, ...options }: GalleryOptio
   const [maxTemplates, setMaxTemplates] = useState<number | undefined>(options.initialSize);
   const [maxSnippets, setMaxSnippets] = useState<number | undefined>(options.initialSize);
 
-  useEffect(() => {
-    async function onLoad() {
-      await creatorTools.load();
+  const refreshGallery = useCallback(async () => {
+    await creatorTools.load();
 
-      const loadedGallery = await creatorTools.loadGallery();
+    const loadedGallery = await creatorTools.loadGallery();
 
-      setGallery(loadedGallery);
-    }
-
-    onLoad();
+    setGallery(loadedGallery);
   }, [creatorTools]);
+
+  const hasLoaded = useRef(false);
+  useEffect(() => {
+    if (!hasLoaded.current) {
+      hasLoaded.current = true;
+      refreshGallery();
+    }
+  }, [refreshGallery]);
 
   const queryMinLength = options.queryMinLength ?? 3;
   const useQuery = !!query && query.length >= queryMinLength;
@@ -48,7 +52,7 @@ export default function useGallery({ query, pageSize, ...options }: GalleryOptio
   const isMoreTemplates = maxTemplates && templates.length < allTemplates.length;
   const isMoreSnippets = maxSnippets && snippets.length < allSnippets.length;
 
-  return [templates, snippets, fetchTemplates, fetchSnippets, isMoreTemplates, isMoreSnippets, gallery] as const;
+  return [templates, snippets, fetchTemplates, fetchSnippets, isMoreTemplates, isMoreSnippets, refreshGallery, gallery] as const;
 }
 
 function isTemplate(item: IGalleryItem) {

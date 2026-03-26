@@ -1,6 +1,52 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+/**
+ * ARCHITECTURE: ContentIndex — Trie-Based Search Index
+ *
+ * ContentIndex provides a compressed trie data structure for fast term lookup
+ * across project content. It is the shared search engine used by:
+ *
+ * 1. **Omni Search (Ctrl+E)** — Bottom status bar in the editor. Uses
+ *    `getDescendentStrings()` for autocomplete term suggestions and
+ *    `getMatches()` for finding matched project item paths.
+ *
+ * 2. **Search in Files (Ctrl+Shift+F)** — ProjectSearchDialog uses the
+ *    index to prioritize candidate files before doing brute-force text scan.
+ *
+ * 3. **Quick Open (Ctrl+P)** — QuickOpenDialog uses simple path includes()
+ *    but could be enhanced to use this index in the future.
+ *
+ * **Data Structure:**
+ * - `items[]` — Array of indexed values (file paths like `/bp/entities/pig.json`)
+ * - `trie{}` — Compressed trie mapping search terms → arrays of item indices
+ *   - Terminal nodes use `±` or `$` markers
+ *   - Annotated entries use `IAnnotatedIndexData { n: number, a: string }`
+ *
+ * **Index Population (ProjectInfoSet.ts):**
+ * - File base names (e.g., "pig" from "pig.json")
+ * - Storage relative paths (e.g., "entities/pig.json")
+ * - Parsed JSON content tokens (words > 2 chars)
+ * - Parsed JS/TS tokens via esprima
+ * - Entity/block/item type IDs from info generators (with annotation categories)
+ *
+ * **Key Methods:**
+ * - `getMatches(searchString)` — Multi-term AND search. Splits on spaces,
+ *   intersects results across terms. Each term is matched via both trie
+ *   traversal and linear substring scan of items[].
+ * - `getDescendentStrings(term)` — Returns all trie entries starting with
+ *   the given prefix (for autocomplete dropdown).
+ * - `getTermMatch(term)` — Single-term lookup: trie traversal + linear
+ *   substring scan of items[] for path matching.
+ * - `insert(key, item, annotation?)` — Inserts a term into the trie.
+ *
+ * **Configuration:**
+ * - `startLength` — Minimum input length before autocomplete triggers (currently 3).
+ * - JSON token threshold — Tokens > 2 chars are indexed from parsed content.
+ *
+ * Last updated: February 2026
+ */
+
 import ProjectUtilities from "../app/ProjectUtilities";
 import StorageUtilities from "../storage/StorageUtilities";
 import { IAnnotatedValue } from "./AnnotatedValue";
@@ -43,6 +89,28 @@ export enum AnnotationCategory {
   individualEventSoundsSource = "V",
   worldProperty = "W",
   experiment = "X",
+
+  // Cross-reference completion annotation categories
+  geometrySource = "G",
+  animationSource = "A",
+  animationControllerSource = "C",
+  renderControllerSource = "D",
+  particleSource = "P",
+  fogSource = "F",
+  lootTableSource = "O",
+  recipeSource = "Q",
+  biomeSource = "Y",
+  spawnRuleSource = "Z",
+  structureSource = "r",
+  dialogueSource = "q",
+  functionSource = "u",
+  soundEventSource = "w",
+
+  // Component-level annotation categories for biomes and particles
+  biomeBehaviorComponentDependent = "x",
+  biomeClientComponentDependent = "y",
+  particleEmitterComponentDependent = "z",
+  particleComponentDependent = "pc",
 }
 
 export interface IAnnotatedIndexData {
@@ -63,6 +131,10 @@ export interface IContentIndex {
 export default class ContentIndex implements IContentIndex {
   private _processedPathsCache?: string[];
   private _hashCatalog: HashCatalog = {};
+
+  // O(1) lookup map: item string → index in items[]. Replaces O(n) linear scans
+  // in insert() and getTermMatch(). Rebuilt on setItems().
+  private _itemIndexMap: Map<string, number> = new Map();
 
   #data: IContextIndexData = {
     items: [],
@@ -110,7 +182,7 @@ export default class ContentIndex implements IContentIndex {
   }
 
   get startLength() {
-    return 4;
+    return 3;
   }
 
   get items() {
@@ -120,6 +192,12 @@ export default class ContentIndex implements IContentIndex {
   setItems(items: string[]) {
     this.#data.items = items;
     this._processedPathsCache = undefined; // reset processed paths cache
+
+    // Rebuild the O(1) lookup map from the new items array
+    this._itemIndexMap.clear();
+    for (let i = 0; i < items.length; i++) {
+      this._itemIndexMap.set(items[i], i);
+    }
   }
 
   setTrie(trie: {}) {
@@ -147,7 +225,7 @@ export default class ContentIndex implements IContentIndex {
         if (token === "±" || token === "$") {
           const arr = subNode;
 
-          if (arr.constructor === Array) {
+          if (Array.isArray(arr)) {
             if (Utilities.isUsableAsObjectKey(prefix)) {
               let res = this.getValuesFromIndexArray(arr, withAnnotation);
 
@@ -156,7 +234,7 @@ export default class ContentIndex implements IContentIndex {
               }
             }
           }
-        } else if (subNode.constructor === Array) {
+        } else if (Array.isArray(subNode)) {
           if (Utilities.isUsableAsObjectKey(prefix + token)) {
             let res = this.getValuesFromIndexArray(subNode, withAnnotation);
 
@@ -329,6 +407,8 @@ export default class ContentIndex implements IContentIndex {
                 newArr.push(num);
               }
             }
+
+            andResults = newArr;
           }
         }
       }
@@ -397,7 +477,7 @@ export default class ContentIndex implements IContentIndex {
 
     while (termIndex < term.length && hasAdvanced) {
       hasAdvanced = false;
-      if (curNode.constructor === Array) {
+      if (Array.isArray(curNode)) {
         return undefined;
       }
 
@@ -440,7 +520,7 @@ export default class ContentIndex implements IContentIndex {
         }
       }
     } else {
-      if (curNode.constructor === Array) {
+      if (Array.isArray(curNode)) {
         results[termSubstr] = this.getValuesFromIndexArray(curNode);
       } else if (curNode["±"] !== undefined) {
         this._appendToResults(termSubstr, curNode, results);
@@ -472,7 +552,7 @@ export default class ContentIndex implements IContentIndex {
 
     while (termIndex < term.length && hasAdvanced) {
       hasAdvanced = false;
-      if (curNode.constructor === Array) {
+      if (Array.isArray(curNode)) {
         return undefined;
       }
 
@@ -509,7 +589,7 @@ export default class ContentIndex implements IContentIndex {
       return undefined;
     }
 
-    if (curNode.constructor === Array) {
+    if (Array.isArray(curNode)) {
       if (pathMatches) {
         return ContentIndex.mergeResults(curNode, pathMatches);
       }
@@ -534,57 +614,69 @@ export default class ContentIndex implements IContentIndex {
 
   static mergeResults(resultsArrA: (IAnnotatedValue | number)[], resultsArrB: (IAnnotatedValue | number)[]) {
     const results: (IAnnotatedValue | number)[] = [];
+    const seenNumbers = new Set<number>();
+    const seenObjects = new Set<string>(); // "value|annotation" composite key
 
     for (const item of resultsArrA) {
       if (typeof item === "object") {
-        if (
-          !results.some(
-            (res) => typeof res === "object" && res.value === item.value && res.annotation === item.annotation
-          )
-        ) {
+        const key = `${item.value}|${item.annotation}`;
+        if (!seenObjects.has(key)) {
+          seenObjects.add(key);
           results.push(item);
         }
-      } else if (!results.includes(item)) {
-        results.push(item);
+      } else {
+        if (!seenNumbers.has(item)) {
+          seenNumbers.add(item);
+          results.push(item);
+        }
       }
     }
 
     for (const item of resultsArrB) {
       if (typeof item === "object") {
-        if (
-          !results.some(
-            (res) => typeof res === "object" && res.value === item.value && res.annotation === item.annotation
-          )
-        ) {
+        const key = `${item.value}|${item.annotation}`;
+        if (!seenObjects.has(key)) {
+          seenObjects.add(key);
           results.push(item);
         }
-      } else if (!results.includes(item)) {
-        results.push(item);
+      } else {
+        if (!seenNumbers.has(item)) {
+          seenNumbers.add(item);
+          results.push(item);
+        }
       }
     }
 
     return results;
   }
 
-  aggregateIndices(curNode: any, arr: number[]) {
+  aggregateIndices(curNode: any, arr: number[], seen?: Set<number>) {
+    if (!seen) {
+      seen = new Set<number>(arr);
+    }
+
     for (const childNodeName in curNode) {
       const childNode = curNode[childNodeName];
 
       if (childNode) {
-        if (childNode.constructor === Array) {
+        if (Array.isArray(childNode)) {
           for (const num of childNode) {
-            if (!arr.includes(num)) {
+            const n = typeof num === "object" ? num.n : num;
+            if (!seen.has(n)) {
+              seen.add(n);
               arr.push(num);
             }
           }
         } else if (childNode["±"] !== undefined) {
           for (const num of childNode["±"]) {
-            if (!arr.includes(num)) {
+            const n = typeof num === "object" ? num.n : num;
+            if (!seen.has(n)) {
+              seen.add(n);
               arr.push(num);
             }
           }
         } else {
-          this.aggregateIndices(childNode, arr);
+          this.aggregateIndices(childNode, arr, seen);
         }
       }
     }
@@ -609,27 +701,24 @@ export default class ContentIndex implements IContentIndex {
     let parentNode: any = curNode;
     let curNodeIndex: string | undefined;
     let dataIndex = -1;
-    let curIndex = 0;
 
-    for (const itemCand of this.#data.items) {
-      if (itemCand === item) {
-        dataIndex = curIndex;
-        break;
-      }
-
-      curIndex++;
+    // O(1) item lookup via Map (replaces O(n) linear scan)
+    const existingIndex = this._itemIndexMap.get(item);
+    if (existingIndex !== undefined) {
+      dataIndex = existingIndex;
     }
 
     if (dataIndex < 0) {
       dataIndex = this.#data.items.length;
       this.#data.items.push(item);
+      this._itemIndexMap.set(item, dataIndex);
       this._processedPathsCache = undefined;
     }
 
     let hasAdvanced = true;
     while (keyIndex < key.length && hasAdvanced) {
       hasAdvanced = false;
-      if (curNode.constructor !== Array) {
+      if (!Array.isArray(curNode)) {
         for (const item in curNode) {
           // we've found part of our string in this node
           if (item.startsWith(key[keyIndex]) && curNode[item] !== undefined) {
@@ -674,7 +763,7 @@ export default class ContentIndex implements IContentIndex {
     // we've reached the end of the trie; we need to add a new node
     if (keyIndex < key.length) {
       // if parent node was a leaf array, switch to an object
-      if (curNode.constructor === Array && curNodeIndex) {
+      if (Array.isArray(curNode) && curNodeIndex) {
         parentNode[curNodeIndex] = {};
         parentNode[curNodeIndex]["±"] = curNode;
 
@@ -690,7 +779,7 @@ export default class ContentIndex implements IContentIndex {
         }
       }
     } else {
-      if (curNode.constructor === Array && curNodeIndex) {
+      if (Array.isArray(curNode) && curNodeIndex) {
         if (Utilities.isUsableAsObjectKey(curNodeIndex)) {
           parentNode[curNodeIndex] = this.ensureAnnotatedContentInArray(curNode, dataIndex, annotationChar);
         }
@@ -747,7 +836,7 @@ export default class ContentIndex implements IContentIndex {
         arr.push(dataIndex);
       }
     } catch (e) {
-      console.warn("Error ensuring annotated content: " + e + "|" + arr + "|" + JSON.stringify(arr));
+      Log.verbose("Error ensuring annotated content: " + e + "|" + arr + "|" + JSON.stringify(arr));
     }
 
     return arr;
@@ -850,6 +939,127 @@ export default class ContentIndex implements IContentIndex {
 
     for (const term in dictionaryOfTerms) {
       this.insert(term, sourcePath);
+    }
+  }
+
+  /**
+   * Extracts indexable tokens from a parsed JSON object by recursively walking keys and string values.
+   * Much faster than parseJsonContent which does character-by-character text tokenization.
+   * Only processes keys and string values (the same tokens that parseJsonContent would find).
+   */
+  indexJsonObject(sourcePath: string, data: object) {
+    const terms = new Set<string>();
+
+    const depthExceeded = ContentIndex._collectJsonTerms(data, terms, 0);
+
+    if (depthExceeded) {
+      Log.debug(
+        "ContentIndex: JSON nesting depth exceeded " +
+          ContentIndex.MAX_JSON_DEPTH +
+          " in '" +
+          sourcePath +
+          "'; skipping deeper levels."
+      );
+    }
+
+    for (const term of terms) {
+      this.insert(term, sourcePath);
+    }
+  }
+
+  /**
+   * Recursively collects indexable terms (keys and string values) from a parsed JSON object.
+   */
+  /** Max nesting depth for JSON term collection. Most Minecraft JSON stays under 10 levels, but features can reach ~25. */
+  private static readonly MAX_JSON_DEPTH = 30;
+
+  private static _collectJsonTerms(obj: any, terms: Set<string>, depth: number): boolean {
+    if (obj === null || obj === undefined) {
+      return false;
+    }
+
+    if (depth > ContentIndex.MAX_JSON_DEPTH) {
+      return true;
+    }
+
+    if (typeof obj === "string") {
+      ContentIndex._addStringTerms(obj, terms);
+      return false;
+    }
+
+    // Numbers, booleans, and other primitives are not indexable terms — skip them.
+    if (typeof obj !== "object") {
+      return false;
+    }
+
+    let exceeded = false;
+
+    if (Array.isArray(obj)) {
+      for (const item of obj) {
+        if (ContentIndex._collectJsonTerms(item, terms, depth + 1)) {
+          exceeded = true;
+        }
+      }
+      return exceeded;
+    }
+
+    for (const key in obj) {
+      // Index the key itself
+      const lowerKey = key.toLowerCase();
+      if (lowerKey.length > 3 && !Utilities.isNumericIsh(lowerKey) && Utilities.isUsableAsObjectKey(lowerKey)) {
+        terms.add(lowerKey);
+      }
+
+      // Recurse into values
+      const val = obj[key];
+      if (val !== null && val !== undefined) {
+        if (ContentIndex._collectJsonTerms(val, terms, depth + 1)) {
+          exceeded = true;
+        }
+      }
+    }
+
+    return exceeded;
+  }
+
+  /**
+   * Splits a string on common delimiters and adds qualifying terms.
+   * Matches the same tokenization logic as parseJsonContent's character loop.
+   */
+  /** Characters that act as word boundaries when tokenizing strings for indexing. */
+  private static readonly TERM_DELIMITERS = new Set([
+    "{",
+    "}",
+    " ",
+    "\r",
+    "\n",
+    "\t",
+    "(",
+    ")",
+    "[",
+    "]",
+    ":",
+    '"',
+    "'",
+  ]);
+
+  private static _addStringTerms(str: string, terms: Set<string>) {
+    const lower = str.toLowerCase();
+    let curWord = "";
+
+    for (let i = 0; i < lower.length; i++) {
+      const c = lower[i];
+      if (ContentIndex.TERM_DELIMITERS.has(c)) {
+        if (curWord.length > 3 && !Utilities.isNumericIsh(curWord) && Utilities.isUsableAsObjectKey(curWord)) {
+          terms.add(curWord);
+        }
+        curWord = "";
+      } else {
+        curWord += c;
+      }
+    }
+    if (curWord.length > 3 && !Utilities.isNumericIsh(curWord) && Utilities.isUsableAsObjectKey(curWord)) {
+      terms.add(curWord);
     }
   }
 }

@@ -5,7 +5,7 @@ import IFile from "../storage/IFile";
 import StorageUtilities from "../storage/StorageUtilities";
 import Log from "./Log";
 import * as md5 from "js-md5";
-import * as JSONC from "jsonc-parser";
+import Utilities from "./Utilities";
 
 export interface IHashCatalogEntry {
   fileName: string;
@@ -55,8 +55,9 @@ export default class HashUtilities {
               cleanContent = new TextDecoder("utf-8").decode(withoutBOM);
             }
 
-            // Parse as JSONC (handles both JSON and JSON with comments)
-            const jsonContent = JSONC.parse(cleanContent);
+            // Strip comments from JSON content and parse
+            const fixedContent = Utilities.fixJsonContent(cleanContent);
+            const jsonContent = JSON.parse(fixedContent);
 
             // Process each top-level property
             for (const key in jsonContent) {

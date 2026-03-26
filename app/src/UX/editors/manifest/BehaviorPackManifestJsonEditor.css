@@ -1,0 +1,56 @@
+.bpme-area {
+  width: calc(100% - 2px);
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  overflow-y: auto;
+}
+
+.bpme-headerTransition {
+  background-position-x: left;
+  background-repeat: repeat-x;
+  height: 40px;
+}
+
+.bpme-header {
+  padding-top: 10px;
+  padding-left: 30px;
+  padding-bottom: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bpme-header-title {
+  font-size: 16pt;
+  font-weight: 600;
+}
+
+.bpme-header-subtitle {
+  font-size: 10pt;
+  letter-spacing: 1px;
+  opacity: 0.7;
+  text-transform: uppercase;
+}
+
+.bpme-header-uuid {
+  font-size: 9pt;
+  opacity: 0.65;
+}
+
+.bpme-header-uuid-label {
+  margin-right: 6px;
+  font-weight: 600;
+}
+
+.bpme-header-uuid-value {
+  font-family: "Consolas", "Courier New", monospace;
+}
+
+.bpme-form {
+  padding-top: 20px;
+  padding-left: 20px;
+}
+
+.bpme-loading {
+  padding: 4px;
+}

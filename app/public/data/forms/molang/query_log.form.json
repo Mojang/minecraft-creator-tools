@@ -1,6 +1,0 @@
-{
-  "id": "query.log",
-  "fields": [],
-  "description": "Debug log a value to the content file.",
-  "title": "Log"
-}

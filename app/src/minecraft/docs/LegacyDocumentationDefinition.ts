@@ -157,11 +157,14 @@ export default class LegacyDocumentationDefinition {
     }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
+      this._isLoaded = true;
+      this._onLoaded.dispatch(this, this);
       return;
     }
 
     let data: any = {};
 
+    // Use getJsonObject (not getJsonObjectWithComments) since this is read-only metadata
     let result = StorageUtilities.getJsonObject(this._file);
 
     if (result) {

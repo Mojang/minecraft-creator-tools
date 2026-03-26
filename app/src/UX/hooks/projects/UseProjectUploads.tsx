@@ -1,10 +1,10 @@
 import { useCallback } from "react";
 import StorageUtilities from "../../../storage/StorageUtilities";
-import { FilesSubmittedEvent, NewProjectSelectEvent } from "../../pages/home/HomeActions";
+import { FilesSubmittedEvent } from "../../home/HomeActions";
 import { useCreatorTools } from "../../contexts/creatorToolsContext/CreatorToolsContext";
 import useTelemetry from "../../../analytics/useTelemetry";
 import { TelemetryEvents, TelemetryProperties, TelemetryMeasurements } from "../../../analytics/TelemetryConstants";
-import WebUtilities from "../../WebUtilities";
+import WebUtilities from "../../utils/WebUtilities";
 
 export default function useProjectUploads(onFilesSubmitted?: FilesSubmittedEvent) {
   const [creatorTools, loading] = useCreatorTools();

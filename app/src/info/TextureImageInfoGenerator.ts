@@ -10,7 +10,6 @@ import Project from "../app/Project";
 import Database from "../minecraft/Database";
 import StorageUtilities from "../storage/StorageUtilities";
 import ContentIndex from "../core/ContentIndex";
-import ProjectInfoUtilities from "./ProjectInfoUtilities";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import TextureDefinition from "../minecraft/TextureDefinition";
 import ProjectUtilities, { ProjectMetaCategory } from "../app/ProjectUtilities";
@@ -211,16 +210,27 @@ const TextureMemoryLimitsByTier: { [category: number]: { [tier: number]: number 
   5 /*persona*/: { 0: 150, 1: 150, 2: 225, 3: 300, 4: 600, 5: 800 },
 };
 
+/**
+ * Validates texture images for size, format, and memory budget compliance.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/textureimage.form.json} for topic definitions
+ */
 export default class TextureImageInfoGenerator implements IProjectInfoGenerator {
   id = "TEXTUREIMAGE";
   title = "Texture Image Validation";
 
   performAddOnValidations = false;
 
-  getTopicData(topicId: number) {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(TextureImageInfoGeneratorTest, topicId),
-    };
+  private _vanillaPathCache: Map<string, boolean> = new Map();
+
+  private async _matchesVanillaPathCached(path: string): Promise<boolean> {
+    const cached = this._vanillaPathCache.get(path);
+    if (cached !== undefined) {
+      return cached;
+    }
+    const result = await Database.matchesVanillaPath(path);
+    this._vanillaPathCache.set(path, result);
+    return result;
   }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
@@ -263,6 +273,20 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
       if (overBudgetTierErrors > 0) {
         minimumSupportablePerformanceTier = i + 1;
       }
+    }
+
+    // If the project uses subpacks, the minimum tier is at least the lowest tier
+    // any subpack targets — Minecraft never loads a resource pack with subpacks
+    // without one of them applied.
+    const minSubpackTier = infoSet.getSummedFeatureValue(
+      this.id,
+      TextureImageInfoGeneratorTest.textureImages,
+      "subpackTiering",
+      "minimumEffectiveTier"
+    );
+
+    if (minSubpackTier > 0) {
+      minimumSupportablePerformanceTier = Math.max(minimumSupportablePerformanceTier, minSubpackTier);
     }
 
     info.minimumSupportablePerformanceTier = minimumSupportablePerformanceTier;
@@ -359,11 +383,31 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
       }
     }
 
-    const itemsCopy = project.getItemsCopy();
+    // When a resource pack uses subpacks, Minecraft never loads the pack without
+    // one of the subpacks applied.  The lowest tier among all subpacks is therefore
+    // the de-facto minimum device tier the creator supports, regardless of texture
+    // budgets.  Record it so that summarize() can incorporate it into
+    // minimumSupportablePerformanceTier.
+    if (isExplicitlyTargetingTiers) {
+      let minSubpackTier = TexturePerformanceTierCount; // start above max, will be reduced
 
-    for (const projectItem of itemsCopy) {
+      for (const projectVariant in project.variants) {
+        const variant = project.variants[projectVariant];
+
+        if (!variant.isDefault && variant.effectiveUnifiedTier !== undefined) {
+          minSubpackTier = Math.min(minSubpackTier, variant.effectiveUnifiedTier);
+        }
+      }
+
+      if (minSubpackTier < TexturePerformanceTierCount) {
+        textureImagePi.setFeature("Subpack Tiering", "Minimum Effective Tier", minSubpackTier);
+      }
+    }
+
+    const textureItems = project.getItemsByType(ProjectItemType.texture);
+
+    for (const projectItem of textureItems) {
       if (
-        projectItem.itemType === ProjectItemType.texture &&
         projectItem.projectPath &&
         !projectItem.projectPath.endsWith(".hdr") // ignore HDR files
       ) {
@@ -428,7 +472,7 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
                 vanillaTexturePathNonMers[vanillaRpPath] = true;
               }
 
-              if (await Database.matchesVanillaPath(pathInRp)) {
+              if (await this._matchesVanillaPathCached(pathInRp)) {
                 textureImagePi.incrementFeature("Vanilla Override Texture");
 
                 if (textureTierItem) {
@@ -471,10 +515,10 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
                   } else {
                     items.push(
                       new ProjectInfoItem(
-                        InfoItemType.internalProcessingError,
+                        InfoItemType.warning,
                         this.id,
                         TextureImageInfoGeneratorTest.pngJpgImageProcessingNoResults,
-                        `Error processing PNG/JPG/TIF/HEIC image`,
+                        `Could not extract metadata from PNG/JPG/TIF/HEIC image`,
                         projectItem,
                         textureDefinition.errorMessage
                       )
@@ -618,7 +662,7 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
                 const texturePath = TextureDefinition.getTexturePath(projectItem.projectPath);
 
                 if (texturePath) {
-                  const isVanillaEx = await Database.matchesVanillaPath(texturePath);
+                  const isVanillaEx = await this._matchesVanillaPathCached(texturePath);
 
                   if (isVanillaEx) {
                     textureImagePi.spectrumIntFeature("Vanilla Override Width", imageWidth);
@@ -966,7 +1010,7 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
               InfoItemType.error,
               this.id,
               TextureImageInfoGeneratorTest.mashupPackDoesntOverrideMostTextures,
-              `Content seems like a mashup pack, but the resource pack does not override >60% of a textures of vanilla textures.`,
+              `Content seems like a mashup pack, but the resource pack does not override >60% of vanilla textures.`,
               undefined,
               actualOverridePercent
             )
@@ -986,7 +1030,7 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
                 InfoItemType.error,
                 this.id,
                 TextureImageInfoGeneratorTest.texturePackDoesntOverrideMostTextures,
-                `Content seems like a texture pack (overrides >70% of a textures), but does not override the vast majority of textures. This pack should override at least 95% of vanilla textures.`,
+                `Content seems like a texture pack (overrides >70% of textures), but does not override the vast majority of textures. This pack should override at least 95% of vanilla textures.`,
                 undefined,
                 actualOverridePercent
               )

@@ -1,0 +1,15 @@
+{
+  "resource_pack_name": "mct_rp",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "debug_tools:pliers": {
+      "textures": "textures/items/pliers_ico"
+    },
+    "debug_tools:pliers_next": {
+      "textures": "textures/items/pliers_next_ico"
+    },
+    "debug_tools:pliers_prev": {
+      "textures": "textures/items/pliers_prev_ico"
+    }
+  }
+}

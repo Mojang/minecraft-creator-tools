@@ -94,7 +94,8 @@ export default class File extends FileBase implements IFile {
       this.lastLoadedOrSaved = new Date();
       this.lastLoadedOrSaved = new Date(this.lastLoadedOrSaved.getTime() - 1);
 
-      Log.debugAlert("Setting a file without loading it first.");
+      // This is expected in serialized storage mode where files are created with initial content
+      // Log.debugAlert("Setting a file without loading it first.");
     }
 
     let oldContent = this._content;

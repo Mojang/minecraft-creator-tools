@@ -1,0 +1,1298 @@
+/**
+ * VolumeEditor CSS - Structure Editor Styling
+ * 
+ * Styled to match WorldMap.css and the Minecraft Creator Tools UX Guidelines.
+ * Uses dark semi-transparent overlays with the Minecraft color palette.
+ * 
+ * @see docs/ux/UXGuidelines.md
+ * @see docs/ux/ColorSystem.md
+ */
+
+/* ═══════════════════════════════════════════════════════════════════
+ * CONTAINER & LAYOUT
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.ve-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 100%;
+  min-height: 0; /* Allow flex children to shrink and scroll */
+  max-height: 100%;
+  background-color: #1a1a1a;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+
+.ve-main-area {
+  position: relative;
+  flex: 1;
+  height: 100%;
+  min-height: 100%;
+}
+
+.ve-main-area.ve-with-panel {
+  /* Reduce width when right panel is visible */
+  width: calc(100% - 280px);
+}
+
+.ve-main-area.ve-with-panels {
+  /* Main area adjusts automatically via flex layout */
+  min-width: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * LEFT TOOL BAR - Vertical Tool Selection
+ * Far-left vertical toolbar for switching between tools (Selection, Brush, etc.)
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.ve-left-toolbar {
+  width: 48px;
+  height: 100%;
+  background-color: rgba(28, 28, 30, 0.98);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.ve-tool-btn {
+  width: 40px;
+  height: 48px;
+  background-color: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  transition: all 0.15s;
+  padding: 4px;
+}
+
+.ve-tool-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.ve-tool-btn-active {
+  background-color: rgba(82, 165, 53, 0.3);
+  border-left: 2px solid #52a535;
+  border-radius: 0 6px 6px 0;
+  margin-left: -2px;
+}
+
+.ve-tool-btn-active:hover {
+  background-color: rgba(82, 165, 53, 0.4);
+}
+
+.ve-tool-icon {
+  font-size: 16px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.ve-tool-btn-active .ve-tool-icon {
+  color: #86d562;
+}
+
+.ve-tool-label {
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 40px;
+}
+
+.ve-tool-btn-active .ve-tool-label {
+  color: #86d562;
+}
+
+/* Separator between tool groups in left toolbar */
+.ve-toolbar-separator {
+  width: 32px;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.15);
+  margin: 4px 0;
+}
+
+/* Compact toolbar at small viewports */
+@media (max-width: 900px) {
+  .ve-left-toolbar {
+    width: 36px;
+    padding: 4px 0;
+  }
+
+  .ve-tool-btn {
+    width: 32px;
+    height: 36px;
+  }
+
+  .ve-tool-label {
+    display: none;
+  }
+
+  .ve-toolbar-separator {
+    width: 24px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * TOP TOOLBAR - Global Actions
+ * Horizontal toolbar at top for undo/redo, help, and other global actions
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.ve-top-toolbar {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  background-color: rgba(28, 28, 30, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 4px 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  max-width: calc(100% - 16px);
+}
+
+.ve-top-toolbar-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2px;
+}
+
+.ve-top-toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background-color: rgba(255, 255, 255, 0.15);
+  margin: 0 6px;
+}
+
+/* Hide dividers when toolbar wraps to multiple rows */
+@media (max-width: 700px) {
+  .ve-top-toolbar-divider {
+    display: none;
+  }
+}
+
+.ve-top-btn {
+  width: 32px;
+  height: 32px;
+  background-color: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+}
+
+.ve-top-btn:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.ve-top-btn:active:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.ve-top-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.ve-top-btn-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.ve-top-btn-active {
+  background-color: rgba(82, 165, 53, 0.3);
+  color: #86d562;
+}
+
+.ve-top-btn-active:hover {
+  background-color: rgba(82, 165, 53, 0.4);
+}
+
+/* Top Toolbar - Labels */
+.ve-top-toolbar-label {
+  color: rgba(255, 255, 255, 0.6);
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-right: 6px;
+}
+
+/* Top Toolbar - Inline Buttons (for tool-specific actions) */
+.ve-top-toolbar-btn {
+  background-color: rgba(50, 50, 50, 0.9);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.ve-top-toolbar-btn:hover:not(:disabled) {
+  background-color: rgba(70, 70, 70, 0.95);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.ve-top-toolbar-btn:active:not(:disabled) {
+  background-color: rgba(90, 90, 90, 0.95);
+}
+
+.ve-top-toolbar-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ve-top-toolbar-btn-active {
+  background-color: rgba(82, 165, 53, 0.85);
+  border-color: rgba(134, 213, 98, 0.6);
+  color: #fff;
+}
+
+.ve-top-toolbar-btn-active:hover:not(:disabled) {
+  background-color: rgba(92, 185, 63, 0.9);
+  border-color: rgba(134, 213, 98, 0.8);
+}
+
+.ve-top-toolbar-btn-primary {
+  background-color: rgba(82, 165, 53, 0.85);
+  border-color: rgba(134, 213, 98, 0.5);
+}
+
+.ve-top-toolbar-btn-primary:hover:not(:disabled) {
+  background-color: rgba(92, 185, 63, 0.9);
+}
+
+.ve-top-toolbar-btn-danger {
+  background-color: rgba(180, 50, 50, 0.85);
+  border-color: rgba(220, 80, 80, 0.5);
+}
+
+.ve-top-toolbar-btn-danger:hover:not(:disabled) {
+  background-color: rgba(200, 60, 60, 0.9);
+}
+
+/* Top Toolbar - Select Dropdown */
+.ve-top-toolbar-select {
+  background-color: rgba(50, 50, 50, 0.9);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 5px 8px;
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 11px;
+  cursor: pointer;
+  min-width: 80px;
+}
+
+.ve-top-toolbar-select:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.ve-top-toolbar-select:focus {
+  outline: none;
+  border-color: rgba(82, 165, 53, 0.6);
+}
+
+/* Top Toolbar - Number Input */
+.ve-top-toolbar-input {
+  background-color: rgba(50, 50, 50, 0.9);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 5px 8px;
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 11px;
+  width: 50px;
+  text-align: center;
+}
+
+.ve-top-toolbar-input:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.ve-top-toolbar-input:focus {
+  outline: none;
+  border-color: rgba(82, 165, 53, 0.6);
+}
+
+.ve-undo-count {
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-left: 4px;
+  min-width: 16px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * LEFT PANEL - Tool-Specific Settings
+ * Panel that shows settings for the currently selected tool
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.ve-left-panel {
+  width: 240px;
+  height: 100%;
+  max-height: 100%;
+  background-color: rgba(35, 35, 38, 0.98);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-shrink: 0;
+  min-height: 0; /* Critical for flex container scrolling */
+}
+
+.ve-canvas-wrapper {
+  width: 100%;
+  height: 100%;
+  min-width: 100%;
+  min-height: 100%;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * COORDINATES DISPLAY - Bottom Left
+ * Shows current cursor/selection coordinates
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.ve-coords-container {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.ve-coords-display {
+  background-color: rgba(30, 30, 30, 0.9);
+  color: #aaffaa;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-family: "Consolas", "Monaco", "Fira Code", monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * BLOCK INFO DISPLAY - Bottom Right
+ * Shows information about hovered/selected block
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.ve-block-info-container {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.ve-block-info {
+  background-color: rgba(30, 30, 30, 0.9);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 13px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  min-width: 160px;
+  max-width: 280px;
+}
+
+.ve-block-info-name {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: #fff;
+}
+
+.ve-block-info-type {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  font-family: "Consolas", "Monaco", monospace;
+}
+
+.ve-block-info-coords {
+  color: #aaffaa;
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * KEYBOARD SHORTCUTS HELP - Top Left
+ * Quick reference for keyboard controls
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.ve-help-container {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 100;
+  pointer-events: auto;
+}
+
+.ve-help-toggle {
+  background-color: rgba(40, 40, 40, 0.85);
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ve-help-toggle:hover {
+  background-color: rgba(60, 60, 60, 0.9);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #fff;
+}
+
+.ve-help-panel {
+  background-color: rgba(30, 30, 30, 0.95);
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  min-width: 220px;
+  max-width: 280px;
+  margin-top: 8px;
+}
+
+.ve-help-title {
+  font-family: "Minecrafter", "Minecraft", monospace;
+  font-size: 14px;
+  color: #86d562;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+.ve-help-section {
+  margin-bottom: 12px;
+}
+
+.ve-help-section:last-child {
+  margin-bottom: 0;
+}
+
+.ve-help-section-title {
+  font-weight: 600;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.ve-help-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 0;
+}
+
+.ve-help-key {
+  background-color: rgba(60, 60, 60, 0.8);
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.ve-help-action {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * CAMERA CONTROLS - Top Right
+ * Visual indicators for camera mode/speed
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.ve-camera-controls {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.ve-camera-btn {
+  background-color: rgba(40, 40, 40, 0.85);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ve-camera-btn:hover {
+  background-color: rgba(80, 80, 80, 0.9);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.ve-camera-btn:active {
+  background-color: rgba(100, 100, 100, 0.9);
+}
+
+.ve-camera-btn-active {
+  background-color: rgba(82, 165, 53, 0.3);
+  border-color: rgba(82, 165, 53, 0.6);
+}
+
+.ve-camera-btn-active:hover {
+  background-color: rgba(82, 165, 53, 0.5);
+  border-color: rgba(82, 165, 53, 0.8);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * SELECTION INDICATOR
+ * Shows when blocks are selected
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.ve-selection-info {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  background-color: rgba(82, 165, 53, 0.9);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * LOADING OVERLAY
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.ve-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(20, 20, 25, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  pointer-events: none;
+}
+
+.ve-loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 36px;
+  background-color: rgba(40, 40, 45, 0.95);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  min-width: 200px;
+}
+
+.ve-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #52a535;
+  border-radius: 50%;
+  animation: ve-spin 1s linear infinite;
+}
+
+@keyframes ve-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ve-loading-message {
+  color: #e0e0e0;
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.ve-loading-retry-button {
+  margin-top: 8px;
+  padding: 8px 20px;
+  background-color: #52a535;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background-color 0.15s ease;
+}
+
+.ve-loading-retry-button:hover {
+  background-color: #63c244;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * RIGHT PANEL - Selection Properties
+ * Matching Minecraft Editor selection tool panel
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.ve-right-panel {
+  width: 280px;
+  height: 100%;
+  background-color: rgba(35, 35, 38, 0.98);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.ve-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background-color: rgba(45, 45, 48, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ve-panel-icon {
+  font-size: 18px;
+}
+
+.ve-panel-title {
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.3px;
+}
+
+.ve-panel-section {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ve-panel-section-title {
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.ve-panel-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ve-panel-radio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.ve-panel-radio input[type="radio"] {
+  accent-color: #52a535;
+  width: 14px;
+  height: 14px;
+}
+
+.ve-panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ve-panel-hint {
+  margin-top: 8px;
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+}
+
+.ve-panel-hint kbd {
+  background-color: rgba(60, 60, 63, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.ve-panel-btn {
+  flex: 1;
+  min-width: 70px;
+  background-color: rgba(60, 60, 63, 0.9);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.ve-panel-btn:hover:not(:disabled) {
+  background-color: rgba(80, 80, 83, 0.95);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.ve-panel-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ve-panel-btn-primary {
+  background-color: rgba(82, 165, 53, 0.8);
+  border-color: rgba(134, 213, 98, 0.4);
+}
+
+.ve-panel-btn-primary:hover:not(:disabled) {
+  background-color: rgba(92, 185, 63, 0.9);
+}
+
+.ve-panel-btn-danger {
+  background-color: rgba(165, 53, 53, 0.8);
+  border-color: rgba(213, 98, 98, 0.4);
+}
+
+.ve-panel-btn-danger:hover:not(:disabled) {
+  background-color: rgba(185, 63, 63, 0.9);
+}
+
+/* Warning text for destructive operations (e.g., resize shrink) */
+.ve-props-warning {
+  background-color: rgba(165, 53, 53, 0.2);
+  border: 1px solid rgba(165, 53, 53, 0.4);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 11px;
+  color: rgba(255, 200, 200, 0.9);
+  line-height: 1.5;
+}
+
+.ve-panel-field {
+  margin-bottom: 12px;
+}
+
+.ve-panel-field:last-child {
+  margin-bottom: 0;
+}
+
+.ve-panel-field-label {
+  display: block;
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 6px;
+}
+
+.ve-panel-select {
+  width: 100%;
+  background-color: rgba(50, 50, 53, 0.95);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  padding: 8px 28px 8px 10px;
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='rgba(255,255,255,0.5)' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px 6px;
+}
+
+.ve-panel-select:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.ve-panel-select:focus {
+  outline: none;
+  border-color: rgba(82, 165, 53, 0.6);
+}
+
+.ve-panel-coords {
+  display: flex;
+  gap: 8px;
+}
+
+.ve-panel-coord {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(50, 50, 53, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 6px 8px;
+}
+
+.ve-panel-coord-label {
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+}
+
+.ve-panel-coord-value {
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 14px;
+  color: #aaffaa;
+  font-weight: 600;
+}
+
+.ve-panel-value {
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.ve-panel-block-info {
+  background-color: rgba(50, 50, 53, 0.6);
+  border-radius: 4px;
+  padding: 10px 12px;
+}
+
+.ve-panel-block-name {
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.ve-panel-block-type {
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 6px;
+}
+
+.ve-panel-block-coords {
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 12px;
+  color: #aaffaa;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * MARQUEE STEP HINT
+ * Shows current step in marquee selection
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.ve-marquee-hint {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  background-color: rgba(30, 30, 30, 0.9);
+  color: rgba(255, 255, 255, 0.85);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * TOOLBAR INPUT CONTROLS
+ * Input fields for the top toolbar
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.ve-toolbar-select {
+  background-color: rgba(50, 50, 53, 0.95);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.ve-toolbar-select:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.ve-toolbar-select:focus {
+  outline: none;
+  border-color: rgba(82, 165, 53, 0.6);
+}
+
+.ve-toolbar-input {
+  background-color: rgba(50, 50, 53, 0.95);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 12px;
+  width: 50px;
+  text-align: center;
+}
+
+.ve-toolbar-input:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.ve-toolbar-input:focus {
+  outline: none;
+  border-color: rgba(82, 165, 53, 0.6);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * PANEL INPUT CONTROLS
+ * Additional input styles for the panel
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.ve-panel-input {
+  width: 100%;
+  background-color: rgba(50, 50, 53, 0.95);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 12px;
+}
+
+.ve-panel-input:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.ve-panel-input:focus {
+  outline: none;
+  border-color: rgba(82, 165, 53, 0.6);
+}
+
+.ve-panel-slider {
+  flex: 1;
+  height: 20px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+}
+
+/* Track - narrow recessed bar */
+.ve-panel-slider::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 0;
+  background-color: #3a3a3a;
+  border: 2px solid #1a1a1a;
+  box-shadow:
+    inset 2px 2px 0 rgba(0, 0, 0, 0.3),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.ve-panel-slider::-moz-range-track {
+  height: 8px;
+  border-radius: 0;
+  background-color: #3a3a3a;
+  border: 2px solid #1a1a1a;
+  box-shadow:
+    inset 2px 2px 0 rgba(0, 0, 0, 0.3),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Thumb - blocky Minecraft button style with outset bevel */
+.ve-panel-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 20px;
+  margin-top: -8px;
+  border-radius: 0;
+  background-color: #6b6b6b;
+  border: 2px solid #8a8a8a;
+  border-right-color: #3a3a3a;
+  border-bottom-color: #3a3a3a;
+  box-shadow:
+    inset 1px 1px 0 #9a9a9a,
+    inset -1px -1px 0 #2a2a2a,
+    0 0 0 1px #1a1a1a;
+  cursor: pointer;
+}
+
+.ve-panel-slider::-moz-range-thumb {
+  width: 12px;
+  height: 20px;
+  border-radius: 0;
+  background-color: #6b6b6b;
+  border: 2px solid #8a8a8a;
+  border-right-color: #3a3a3a;
+  border-bottom-color: #3a3a3a;
+  box-shadow:
+    inset 1px 1px 0 #9a9a9a,
+    inset -1px -1px 0 #2a2a2a,
+    0 0 0 1px #1a1a1a;
+  cursor: pointer;
+}
+
+/* Thumb hover - lighter */
+.ve-panel-slider::-webkit-slider-thumb:hover {
+  background-color: #7a7a7a;
+  border-color: #9a9a9a;
+  border-right-color: #4a4a4a;
+  border-bottom-color: #4a4a4a;
+}
+
+.ve-panel-slider::-moz-range-thumb:hover {
+  background-color: #7a7a7a;
+  border-color: #9a9a9a;
+  border-right-color: #4a4a4a;
+  border-bottom-color: #4a4a4a;
+}
+
+/* Thumb active - green Minecraft accent */
+.ve-panel-slider::-webkit-slider-thumb:active {
+  background-color: #5ac035;
+  border: 2px solid #7de858;
+  border-right-color: #2d6a1a;
+  border-bottom-color: #2d6a1a;
+  box-shadow:
+    inset 1px 1px 0 #8ef068,
+    inset -1px -1px 0 #1a4a10,
+    0 0 0 2px #ffffff,
+    0 0 0 3px #1a1a1a;
+}
+
+.ve-panel-slider::-moz-range-thumb:active {
+  background-color: #5ac035;
+  border: 2px solid #7de858;
+  border-right-color: #2d6a1a;
+  border-bottom-color: #2d6a1a;
+  box-shadow:
+    inset 1px 1px 0 #8ef068,
+    inset -1px -1px 0 #1a4a10,
+    0 0 0 2px #ffffff,
+    0 0 0 3px #1a1a1a;
+}
+
+.ve-panel-slider-value {
+  min-width: 24px;
+  text-align: right;
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Number input for showing slider values */
+.ve-panel-number-input {
+  width: 48px;
+  padding: 4px 6px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 12px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.ve-panel-number-input:focus {
+  outline: none;
+  border-color: #52a535;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.ve-panel-number-input::-webkit-inner-spin-button,
+.ve-panel-number-input::-webkit-outer-spin-button {
+  opacity: 0.5;
+}
+
+/* Slider row layout: label + slider + number input in a row */
+.ve-panel-field:has(.ve-panel-slider) {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.ve-panel-field:has(.ve-panel-slider) .ve-panel-field-label {
+  min-width: 16px;
+  margin-bottom: 0;
+}
+
+.ve-panel-field:has(.ve-panel-slider) .ve-panel-slider {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * BLOCK INSPECTOR PROPERTIES LIST
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.ve-panel-properties-list {
+  background-color: rgba(40, 40, 43, 0.6);
+  border-radius: 4px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ve-panel-property-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  background-color: rgba(50, 50, 53, 0.5);
+  border-radius: 3px;
+  gap: 12px;
+}
+
+.ve-panel-property-row:hover {
+  background-color: rgba(60, 60, 63, 0.7);
+}
+
+.ve-panel-property-name {
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  word-break: break-word;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.ve-panel-property-value {
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 12px;
+  color: #aaffaa;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Statistic value (for selection volume, etc.) */
+.ve-panel-stat-value {
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 13px;
+  color: #aaffaa;
+  font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * LEGACY TOOLBAR (kept for compatibility)
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.ve-toolbar {
+  position: absolute;
+  bottom: 60px;
+  left: 16px;
+  z-index: 100;
+  display: flex;
+  gap: 6px;
+  pointer-events: auto;
+}
+
+/* High-contrast mode: ensure tool labels and icons are readable */
+@media (forced-colors: active) {
+  .ve-tool-label,
+  .ve-tool-icon,
+  .ve-tool-btn-active .ve-tool-label,
+  .ve-tool-btn-active .ve-tool-icon {
+    color: CanvasText;
+  }
+
+  .ve-tool-btn-active {
+    border: 1px solid Highlight;
+  }
+
+  .ve-left-toolbar,
+  .ve-top-toolbar {
+    background-color: Canvas;
+    color: CanvasText;
+  }
+}

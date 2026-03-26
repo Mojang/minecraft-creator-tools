@@ -1,0 +1,40 @@
+﻿{
+  "format_version": 2,
+  "header": {
+    "name": "Creator Tools",
+    "description": "A gallery of editor code snippets",
+    "uuid": "37355e25-5c48-43be-ad24-107d6cf2ea74",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 20, 0]
+  },
+  "_comment_capabilities": "SECURITY NOTE: 'script_eval' is required for the mct:eval developer debug command, which enables runtime code evaluation in-game. This is an intentional developer/debug tool — it is NOT intended for production use. The command is restricted to GameDirectors permission level. The Minecraft engine requires this manifest capability to allow new Function() in scripts.",
+  "capabilities": ["script_eval"],
+  "modules": [
+    {
+      "description": "Script resources",
+      "type": "script",
+      "language": "javascript",
+      "uuid": "c8902ce3-00cf-486d-96bc-8052825f5352",
+      "version": [1, 0, 0],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "a49a75c0-d3a1-47c5-adcd-70394b0fe749",
+      "version": [1, 0, 0]
+    },
+    {
+      "module_name": "@minecraft/server",
+      "version": "2.2.0"
+    },
+    {
+      "module_name": "@minecraft/server-ui",
+      "version": "2.0.0"
+    },
+    {
+      "module_name": "@minecraft/server-gametest",
+      "version": "beta"
+    }
+  ]
+}

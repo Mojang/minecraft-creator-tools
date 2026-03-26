@@ -32,9 +32,14 @@ const UnsupportedForSharingTypes = [
 
 const UnsupportedForSharingTypesSet = new Set(UnsupportedForSharingTypes);
 
+/**
+ * Validates content for sharing best practices and platform compatibility.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/sharing.form.json} for topic definitions
+ */
 export default class SharingInfoGenerator implements IProjectInfoGenerator {
   id = "SHARING";
-  title = "Sharing Best Practices Information";
+  title = "Sharing Best Practices";
   canAlwaysProcess = true;
 
   getTopicData(topicId: number) {

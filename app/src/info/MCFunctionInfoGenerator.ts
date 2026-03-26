@@ -24,17 +24,12 @@ export enum MCFunctionInfoGeneratorTest {
  *  * command syntax is correct
  *  * no slashes are present before commands
  *
+ * @see {@link ../../public/data/forms/mctoolsval/mcfunction.form.json} for topic definitions
  */
 
 export default class MCFunctionInfoGenerator implements IProjectInfoGenerator {
   id = "MCFUNCTION";
   title = "MC Function Validation";
-
-  getTopicData(topicId: number) {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(MCFunctionInfoGeneratorTest, topicId),
-    };
-  }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
     info.invalidCommandSyntaxCount = infoSet.getSummedDataValue(
@@ -95,7 +90,10 @@ export default class MCFunctionInfoGenerator implements IProjectInfoGenerator {
             InfoItemType.warning,
             this.id,
             MCFunctionInfoGeneratorTest.lineBeginsWithSlash,
-            this.getTopicData(MCFunctionInfoGeneratorTest.lineBeginsWithSlash).title,
+            ProjectInfoUtilities.getTitleFromEnum(
+              MCFunctionInfoGeneratorTest,
+              MCFunctionInfoGeneratorTest.lineBeginsWithSlash
+            ),
             item,
             `Relevant line: ${line}`
           )
@@ -120,7 +118,10 @@ export default class MCFunctionInfoGenerator implements IProjectInfoGenerator {
             InfoItemType.error,
             this.id,
             MCFunctionInfoGeneratorTest.invalidCommandSyntax,
-            this.getTopicData(MCFunctionInfoGeneratorTest.invalidCommandSyntax).title,
+            ProjectInfoUtilities.getTitleFromEnum(
+              MCFunctionInfoGeneratorTest,
+              MCFunctionInfoGeneratorTest.invalidCommandSyntax
+            ),
             item,
             `${command.fullName} ${command.commandArguments.join(" ")}`
           )

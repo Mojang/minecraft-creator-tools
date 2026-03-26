@@ -1,0 +1,36 @@
+.ie-outer {
+  image-rendering: pixelated;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 150px);
+}
+
+.ie-toolBar {
+  padding-left: 80px;
+  flex-shrink: 0;
+}
+
+.ie-contents {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+}
+
+.ie-image {
+  padding: 6px;
+  image-rendering: pixelated;
+  display: block;
+}
+
+.ie-float {
+  position: absolute;
+  margin: 8px;
+  z-index: 100;
+}
+
+.ie-float BUTTON {
+  padding-left: 0px;
+  padding-right: 0px;
+  width: 36px;
+  min-width: inherit;
+}

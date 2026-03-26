@@ -5,7 +5,6 @@ import ProjectInfoItem from "../ProjectInfoItem";
 import IProjectInfoGenerator from "../IProjectInfoGenerator";
 import { InfoItemType } from "../IInfoItemData";
 import ProjectInfoSet from "../ProjectInfoSet";
-import ProjectInfoUtilities from "../ProjectInfoUtilities";
 import Project from "../../app/Project";
 import StorageUtilities from "../../storage/StorageUtilities";
 
@@ -44,17 +43,12 @@ const DEPRECATED_TEXTURE_ENTRIES = [
  *  * terrain_texture.json for deprecated texture entries
  *  * textures/blocks/ folder for deprecated textures
  *
+ * @see {@link ../../../public/data/forms/mctoolsval/checkfeaturedeprecation.form.json} for topic definitions
  */
 
 export default class CheckFeatureDeprecationInfoGenerator implements IProjectInfoGenerator {
   id = "CHECKFEATUREDEPRECATION";
-  title = "Check Feature Deprecation";
-
-  getTopicData(topicId: number) {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(CheckFeatureDeprecationInfoGeneratorTest, topicId),
-    };
-  }
+  title = "Feature Deprecation";
 
   summarize(info: any, infoSet: ProjectInfoSet) {
     info.deprecatedBlockOverride = infoSet.getSummedDataValue(

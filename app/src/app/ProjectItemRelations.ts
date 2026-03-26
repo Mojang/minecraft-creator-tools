@@ -1,8 +1,13 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import AttachableResourceDefinition from "../minecraft/AttachableResourceDefinition";
 import BiomeBehaviorDefinition from "../minecraft/BiomeBehaviorDefinition";
 import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import EntityTypeResourceDefinition from "../minecraft/EntityTypeResourceDefinition";
+import FeatureDefinition from "../minecraft/FeatureDefinition";
+import FeatureRuleDefinition from "../minecraft/FeatureRuleDefinition";
 import FlipbookTextureCatalogDefinition from "../minecraft/FlipbookTextureCatalogDefinition";
 import ItemTextureCatalogDefinition from "../minecraft/ItemTextureCatalogDefinition";
 import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
@@ -25,9 +30,11 @@ import TextureSetDefinition from "../minecraft/TextureSetDefinition";
 import { ProjectItemType } from "./IProjectItemData";
 import Project from "./Project";
 import ProjectItem from "./ProjectItem";
+import RelationsIndex from "./RelationsIndex";
+import Log from "../core/Log";
 
 interface IDefinitionHandler {
-  addChildItems(project: Project, item: ProjectItem): Promise<void>;
+  addChildItems(project: Project, item: ProjectItem, index?: RelationsIndex): Promise<void>;
 }
 
 type EnsureOnFileMethod<T> = (file: any) => Promise<T | undefined>;
@@ -57,7 +64,11 @@ const ITEM_TYPE_CONFIG = new Map<ProjectItemType, { ensureOnFile: EnsureOnFileMe
   [ProjectItemType.textureSetJson, TextureSetDefinition],
   [ProjectItemType.texture, TextureDefinition],
   [ProjectItemType.biomeBehavior, BiomeBehaviorDefinition],
+  [ProjectItemType.featureBehavior, FeatureDefinition],
+  [ProjectItemType.featureRuleBehavior, FeatureRuleDefinition],
 ]);
+
+export type RelationsProgressCallback = (message: string, percent?: number) => void;
 
 export default class ProjectItemRelations {
   static clearDependencies(project: Project) {
@@ -72,7 +83,7 @@ export default class ProjectItemRelations {
     }
   }
 
-  static async calculate(project: Project) {
+  static async calculate(project: Project, onProgress?: RelationsProgressCallback) {
     const items = project.getItemsCopy();
 
     // clear all existing relations
@@ -81,18 +92,85 @@ export default class ProjectItemRelations {
       item.parentItems = undefined;
     }
 
-    for (const item of items) {
-      await this.calculateForItem(item);
+    // Only process items that have relation handlers - skip the rest
+    const itemsToProcess = items.filter((item) => ITEM_TYPE_CONFIG.has(item.itemType));
+    const totalItems = itemsToProcess.length;
+
+    if (totalItems === 0) {
+      return;
+    }
+
+    // Pre-build the relations index for O(1) lookups instead of O(n²) scanning
+    const index = new RelationsIndex();
+    if (onProgress) {
+      onProgress("Building relations index...", 0);
+    }
+    const indexStartTime = Date.now();
+    await index.build(project);
+    const indexBuildTime = Date.now() - indexStartTime;
+    Log.verbose(`[RelationsIndex] Index built in ${indexBuildTime}ms, isBuilt=${index.isBuilt}, entityResources=${index.entityResourcesById.size}, animations=${index.animationsById.size}, models=${index.modelsById.size}`);
+
+    // Report progress at most ~20 times total (every 5% of progress)
+    const progressInterval = Math.max(100, Math.floor(totalItems / 20));
+    let lastReportedPercent = -1;
+
+    const processStartTime = Date.now();
+    for (let i = 0; i < itemsToProcess.length; i++) {
+      const item = itemsToProcess[i];
+      await this.calculateForItem(item, index);
+
+      // Report progress only when percent changes by at least 5%
+      if (onProgress && (i % progressInterval === 0 || i === totalItems - 1)) {
+        const percent = Math.floor((i / totalItems) * 100);
+        if (percent !== lastReportedPercent) {
+          lastReportedPercent = percent;
+          onProgress(`Calculating relations... (${percent}%)`, percent);
+        }
+      }
+    }
+    const processTime = Date.now() - processStartTime;
+    Log.verbose(`[RelationsIndex] Relations processing completed in ${processTime}ms for ${itemsToProcess.length} items`);
+  }
+
+  static async calculateForItems(items: ProjectItem[], onProgress?: RelationsProgressCallback) {
+    // Only process items that have relation handlers
+    const itemsToProcess = items.filter((item) => ITEM_TYPE_CONFIG.has(item.itemType));
+    const totalItems = itemsToProcess.length;
+
+    if (totalItems === 0) {
+      return;
+    }
+
+    // Pre-build the relations index if we have enough items to justify the overhead
+    let index: RelationsIndex | undefined;
+    if (itemsToProcess.length > 0 && itemsToProcess[0].project) {
+      index = new RelationsIndex();
+      if (onProgress) {
+        onProgress("Building relations index...", 0);
+      }
+      await index.build(itemsToProcess[0].project);
+    }
+
+    // Report progress at most ~20 times total
+    const progressInterval = Math.max(100, Math.floor(totalItems / 20));
+    let lastReportedPercent = -1;
+
+    for (let i = 0; i < itemsToProcess.length; i++) {
+      const item = itemsToProcess[i];
+      await this.calculateForItem(item, index);
+
+      // Report progress only when percent changes
+      if (onProgress && (i % progressInterval === 0 || i === totalItems - 1)) {
+        const percent = Math.floor((i / totalItems) * 100);
+        if (percent !== lastReportedPercent) {
+          lastReportedPercent = percent;
+          onProgress(`Calculating relations... (${percent}%)`, percent);
+        }
+      }
     }
   }
 
-  static async calculateForItems(items: ProjectItem[]) {
-    for (const item of items) {
-      await this.calculateForItem(item);
-    }
-  }
-
-  static async calculateForItem(item: ProjectItem) {
+  static async calculateForItem(item: ProjectItem, index?: RelationsIndex) {
     const project = item.project;
 
     const handlerClass = ITEM_TYPE_CONFIG.get(item.itemType);
@@ -104,7 +182,7 @@ export default class ProjectItemRelations {
         const handler = await handlerClass.ensureOnFile(item.primaryFile);
 
         if (handler) {
-          await handler.addChildItems(project, item);
+          await handler.addChildItems(project, item, index);
         }
       }
     }

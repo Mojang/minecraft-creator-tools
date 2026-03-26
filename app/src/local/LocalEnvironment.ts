@@ -3,6 +3,7 @@
 
 import IFile from "../storage/IFile";
 import ILocalEnvironmentData from "./ILocalEnvironmentData";
+import ISslConfig from "./ISslConfig";
 import LocalUtilities from "./LocalUtilities";
 import NodeStorage from "./NodeStorage";
 import IFolder from "./../storage/IFolder";
@@ -58,16 +59,27 @@ export default class LocalEnvironment {
   _inmemTokenEncryptionPassword?: string;
 
   _inmemDisplayReadOnlyPasscode?: string;
-  _inmemDisplayReadOnlyPasscodeComplement?: string;
+  _inmemDisplayReadOnlySessionId?: string;
 
   _inmemFullReadOnlyPasscode?: string;
-  _inmemFullReadOnlyPasscodeComplement?: string;
+  _inmemFullReadOnlySessionId?: string;
 
   _inmemUpdateStatePasscode?: string;
-  _inmemUpdateStatePasscodeComplement?: string;
+  _inmemUpdateStateSessionId?: string;
 
   _inmemAdminPasscode?: string;
-  _inmemAdminPasscodeComplement?: string;
+  _inmemAdminSessionId?: string;
+
+  // Experimental SSL config - intentionally not persisted to disk
+  private _sslConfig?: ISslConfig;
+
+  public get sslConfig(): ISslConfig | undefined {
+    return this._sslConfig;
+  }
+
+  public set sslConfig(config: ISslConfig | undefined) {
+    this._sslConfig = config;
+  }
 
   public get pathMappings() {
     if (this.#data.pathMappings === undefined) {
@@ -167,8 +179,8 @@ export default class LocalEnvironment {
     return this._inmemDisplayReadOnlyPasscode; //this.#data.displayReadOnlyPasscode;
   }
 
-  get displayReadOnlyPasscodeComplement() {
-    return this._inmemDisplayReadOnlyPasscodeComplement; //this.#data.displayReadOnlyPasscodeComplement;
+  get displayReadOnlySessionId() {
+    return this._inmemDisplayReadOnlySessionId; //this.#data.displayReadOnlySessionId;
   }
 
   setDisplayReadOnlyPasscodeAndRandomizeComplement(newPasscode: string | undefined) {
@@ -186,15 +198,15 @@ export default class LocalEnvironment {
     }
 
     this._inmemDisplayReadOnlyPasscode = newPasscode;
-    this._inmemDisplayReadOnlyPasscodeComplement = this.generateRandomPasscode();
+    this._inmemDisplayReadOnlySessionId = this.generateRandomPasscode();
   }
 
   get fullReadOnlyPasscode() {
     return this._inmemFullReadOnlyPasscode;
   }
 
-  get fullReadOnlyPasscodeComplement() {
-    return this._inmemFullReadOnlyPasscodeComplement;
+  get fullReadOnlySessionId() {
+    return this._inmemFullReadOnlySessionId;
   }
 
   setFullReadOnlyPasscodeAndRandomizeComplement(newPasscode: string | undefined) {
@@ -210,15 +222,15 @@ export default class LocalEnvironment {
     }
 
     this._inmemFullReadOnlyPasscode = newPasscode;
-    this._inmemFullReadOnlyPasscodeComplement = this.generateRandomPasscode();
+    this._inmemFullReadOnlySessionId = this.generateRandomPasscode();
   }
 
   get updateStatePasscode() {
     return this._inmemUpdateStatePasscode;
   }
 
-  get updateStatePasscodeComplement() {
-    return this._inmemUpdateStatePasscodeComplement;
+  get updateStateSessionId() {
+    return this._inmemUpdateStateSessionId;
   }
 
   setUpdateStatePasscodeAndRandomizeComplement(newPasscode: string | undefined) {
@@ -234,15 +246,15 @@ export default class LocalEnvironment {
     }
 
     this._inmemUpdateStatePasscode = newPasscode;
-    this._inmemUpdateStatePasscodeComplement = this.generateRandomPasscode();
+    this._inmemUpdateStateSessionId = this.generateRandomPasscode();
   }
 
   get adminPasscode() {
     return this._inmemAdminPasscode;
   }
 
-  get adminPasscodeComplement() {
-    return this._inmemAdminPasscodeComplement;
+  get adminSessionId() {
+    return this._inmemAdminSessionId;
   }
 
   setAdminPasscodeAndRandomizeComplement(newPasscode: string | undefined) {
@@ -258,7 +270,7 @@ export default class LocalEnvironment {
     }
 
     this._inmemAdminPasscode = newPasscode;
-    this._inmemAdminPasscodeComplement = this.generateRandomPasscode();
+    this._inmemAdminSessionId = this.generateRandomPasscode();
   }
 
   get iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula() {
@@ -399,22 +411,19 @@ export default class LocalEnvironment {
       this.#data.serverHostPort = 6126;
     }
 
-    if (
-      this._inmemDisplayReadOnlyPasscode === undefined ||
-      this._inmemDisplayReadOnlyPasscodeComplement === undefined
-    ) {
+    if (this._inmemDisplayReadOnlyPasscode === undefined || this._inmemDisplayReadOnlySessionId === undefined) {
       this.setDisplayReadOnlyPasscodeAndRandomizeComplement(this.generateRandomPasscode());
     }
 
-    if (this._inmemAdminPasscode === undefined || this._inmemAdminPasscodeComplement === undefined) {
+    if (this._inmemAdminPasscode === undefined || this._inmemAdminSessionId === undefined) {
       this.setAdminPasscodeAndRandomizeComplement(this.generateRandomPasscode());
     }
 
-    if (this._inmemFullReadOnlyPasscode === undefined || this._inmemFullReadOnlyPasscodeComplement === undefined) {
+    if (this._inmemFullReadOnlyPasscode === undefined || this._inmemFullReadOnlySessionId === undefined) {
       this.setFullReadOnlyPasscodeAndRandomizeComplement(this.generateRandomPasscode());
     }
 
-    if (this._inmemUpdateStatePasscode === undefined || this._inmemUpdateStatePasscodeComplement === undefined) {
+    if (this._inmemUpdateStatePasscode === undefined || this._inmemUpdateStateSessionId === undefined) {
       this.setUpdateStatePasscodeAndRandomizeComplement(this.generateRandomPasscode());
     }
 

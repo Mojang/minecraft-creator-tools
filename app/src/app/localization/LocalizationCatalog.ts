@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import { validateJsonAndAssert, ValidationError } from "../../jsonschema/SchemaValidation";
 import StorageUtilities from "../../storage/StorageUtilities";
 import ProjectItem from "../ProjectItem";

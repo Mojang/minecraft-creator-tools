@@ -1,0 +1,254 @@
+/* Copyright (c) Microsoft Corporation. */
+/* Licensed under the MIT License. */
+
+/* SoundDefinitionLivePreview - Sound definition preview styling */
+
+.sdlp-container {
+  font-family: var(--font-family-sans, "Segoe UI", sans-serif);
+  font-size: 12px;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.sdlp-light {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.sdlp-dark {
+  background: #2d2d2d;
+  color: #e0e0e0;
+}
+
+/* Loading/Error States */
+.sdlp-loading,
+.sdlp-error {
+  padding: 16px;
+  text-align: center;
+  font-style: italic;
+  opacity: 0.7;
+}
+
+.sdlp-error {
+  color: #d9534f;
+}
+
+/* Header */
+.sdlp-header {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.sdlp-light .sdlp-header {
+  background: #e0e0e0;
+}
+
+.sdlp-dark .sdlp-header {
+  background: #3a3a3a;
+}
+
+.sdlp-icon {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.sdlp-title {
+  flex: 1;
+}
+
+.sdlp-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.sdlp-id {
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+/* Definitions */
+.sdlp-definitions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Categories */
+.sdlp-category {
+  margin-bottom: 4px;
+}
+
+.sdlp-category-header {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  gap: 6px;
+}
+
+.sdlp-light .sdlp-category-header {
+  background: #e8e8e8;
+}
+
+.sdlp-light .sdlp-category-header:hover {
+  background: #ddd;
+}
+
+.sdlp-dark .sdlp-category-header {
+  background: #383838;
+}
+
+.sdlp-dark .sdlp-category-header:hover {
+  background: #444;
+}
+
+.sdlp-expand-icon {
+  font-size: 10px;
+  width: 12px;
+  text-align: center;
+}
+
+.sdlp-category-icon {
+  font-size: 14px;
+}
+
+.sdlp-category-name {
+  flex: 1;
+  text-transform: capitalize;
+}
+
+.sdlp-badge {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.sdlp-light .sdlp-badge {
+  background: #ccc;
+  color: #333;
+}
+
+.sdlp-dark .sdlp-badge {
+  background: #555;
+  color: #e0e0e0;
+}
+
+.sdlp-category-items {
+  padding-left: 12px;
+  margin-top: 4px;
+}
+
+/* Definitions */
+.sdlp-definition {
+  margin-bottom: 2px;
+}
+
+.sdlp-def-header {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 3px;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.sdlp-light .sdlp-def-header {
+  background: #f0f0f0;
+}
+
+.sdlp-dark .sdlp-def-header {
+  background: #333;
+}
+
+.sdlp-def-id {
+  font-family: monospace;
+  font-size: 11px;
+  flex: 1;
+}
+
+.sdlp-def-count {
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+/* Sounds */
+.sdlp-sounds {
+  padding-left: 16px;
+  margin-top: 2px;
+}
+
+.sdlp-sound {
+  display: flex;
+  align-items: center;
+  padding: 3px 6px;
+  border-radius: 3px;
+  gap: 6px;
+  font-size: 10px;
+  margin-bottom: 1px;
+}
+
+.sdlp-light .sdlp-sound {
+  background: #fafafa;
+}
+
+.sdlp-light .sdlp-sound:hover {
+  background: #eee;
+}
+
+.sdlp-dark .sdlp-sound {
+  background: #2a2a2a;
+}
+
+.sdlp-dark .sdlp-sound:hover {
+  background: #3a3a3a;
+}
+
+.sdlp-sound-icon {
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+.sdlp-sound-name {
+  flex: 1;
+  font-family: monospace;
+  font-size: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sdlp-sound-prop {
+  font-size: 9px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  opacity: 0.8;
+  white-space: nowrap;
+}
+
+.sdlp-light .sdlp-sound-prop {
+  background: #e0e0e0;
+}
+
+.sdlp-dark .sdlp-sound-prop {
+  background: #444;
+}
+
+/* Clickable Items */
+.sdlp-clickable {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.sdlp-light .sdlp-clickable:hover {
+  background-color: #d8d8d8;
+}
+
+.sdlp-dark .sdlp-clickable:hover {
+  background-color: #404040;
+}

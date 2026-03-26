@@ -1,6 +1,0 @@
-{
-  "id": "query.remaining_durability",
-  "fields": [],
-  "description": "Returns how much durability an item has remaining.",
-  "title": "Remaining Durability"
-}

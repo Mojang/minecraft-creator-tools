@@ -1,8 +1,7 @@
 import Project from "../../app/Project";
 import IProjectInfoGenerator from "../IProjectInfoGenerator";
 import ProjectInfoItem from "../ProjectInfoItem";
-import ProjectInfoUtilities from "../ProjectInfoUtilities";
-import { getTestTitleById, resultFromTest, TestDefinition } from "../tests/TestDefinition";
+import { resultFromTest, TestDefinition } from "../tests/TestDefinition";
 
 const MaxOrphanFileResults = 5;
 
@@ -24,9 +23,14 @@ const CheckIntegrityTests: Record<CheckIntegrityTest, TestDefinition> = {
   },
 };
 
+/**
+ * Validates project structure integrity including orphaned files and nested manifests.
+ *
+ * @see {@link ../../../public/data/forms/mctoolsval/prjint.form.json} for topic definitions
+ */
 export default class CheckProjectIntegrityGenerator implements IProjectInfoGenerator {
   id: string = "PRJINT";
-  title: string = "Check Project Integrity Generator";
+  title: string = "Project Integrity";
   canAlwaysProcess = true;
 
   generate(project: Project): Promise<ProjectInfoItem[]> {
@@ -56,11 +60,6 @@ export default class CheckProjectIntegrityGenerator implements IProjectInfoGener
       .map(([pack]) => resultFromTest(CheckIntegrityTests.UnexpectedManifest, { id: this.id, data: pack.name }));
 
     return results;
-  }
-
-  getTopicData(topicId: number) {
-    const title = ProjectInfoUtilities.getGeneralTopicTitle(topicId) || getTestTitleById(CheckIntegrityTests, topicId);
-    return { title };
   }
 
   summarize() {}

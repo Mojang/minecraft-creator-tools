@@ -112,6 +112,8 @@ export default interface IProjectData {
   defaultDataUniqueId: string;
   defaultScriptModuleUniqueId: string;
   contentsModified: Date | null;
+  created?: Date | null;
+  lastOpened?: Date | null;
 
   localFolderPath?: string;
   mainDeployFolderPath?: string;
@@ -125,6 +127,8 @@ export default interface IProjectData {
    * If not set, a default placeholder image will be shown.
    */
   previewImageBase64?: string;
+
+  chatSession?: any;
 
   items: IProjectItemData[];
 }

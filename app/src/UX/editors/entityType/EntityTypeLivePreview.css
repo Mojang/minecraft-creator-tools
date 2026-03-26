@@ -1,0 +1,258 @@
+/* EntityTypeLivePreview.css - Compact live preview styles */
+
+/* Container */
+.etlp-container {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 8px;
+  min-width: 200px;
+}
+
+.etlp-dark {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+}
+
+.etlp-light {
+  background-color: #ffffff;
+  color: #333333;
+}
+
+/* Loading and error states */
+.etlp-loading,
+.etlp-error {
+  padding: 16px;
+  text-align: center;
+  opacity: 0.7;
+}
+
+.etlp-error {
+  color: #e74c3c;
+}
+
+/* Header */
+.etlp-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.3);
+}
+
+.etlp-icon {
+  font-size: 20px;
+}
+
+.etlp-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.etlp-name {
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.etlp-id {
+  font-size: 10px;
+  opacity: 0.6;
+  font-family: monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Sections */
+.etlp-section {
+  margin-bottom: 8px;
+}
+
+.etlp-section-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  cursor: pointer;
+  font-weight: 500;
+  user-select: none;
+}
+
+.etlp-section-header:hover {
+  opacity: 0.8;
+}
+
+.etlp-expand-icon {
+  font-size: 8px;
+  width: 12px;
+  text-align: center;
+}
+
+.etlp-badge {
+  margin-left: auto;
+  background: rgba(128, 128, 128, 0.2);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+}
+
+/* Stats grid */
+.etlp-stats-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px 0;
+}
+
+.etlp-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 10px;
+  background: rgba(128, 128, 128, 0.1);
+  border-radius: 4px;
+  border-left: 3px solid;
+  min-width: 50px;
+}
+
+.etlp-stat-icon {
+  font-size: 14px;
+}
+
+.etlp-stat-value {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.etlp-stat-label {
+  font-size: 9px;
+  opacity: 0.7;
+  text-transform: uppercase;
+}
+
+/* Component list */
+.etlp-component-list {
+  padding: 4px 0;
+}
+
+.etlp-component-group {
+  margin-bottom: 6px;
+}
+
+.etlp-group-label {
+  font-size: 10px;
+  opacity: 0.7;
+  margin-bottom: 4px;
+  padding-left: 4px;
+}
+
+/* Tags (components, events, groups) */
+.etlp-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 2px 0;
+}
+
+.etlp-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background: rgba(128, 128, 128, 0.15);
+}
+
+/* Clickable items - cursor and hover indication */
+.etlp-clickable {
+  cursor: pointer;
+}
+
+.etlp-clickable:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.etlp-dark .etlp-clickable:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.etlp-light .etlp-clickable:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.etlp-dark .etlp-tag {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.etlp-tag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.etlp-tag-behavior {
+  background: rgba(155, 89, 182, 0.2);
+  color: #9b59b6;
+}
+
+.etlp-dark .etlp-tag-behavior {
+  background: rgba(155, 89, 182, 0.3);
+  color: #bb77d6;
+}
+
+.etlp-tag-physical {
+  background: rgba(52, 152, 219, 0.2);
+  color: #2980b9;
+}
+
+.etlp-dark .etlp-tag-physical {
+  background: rgba(52, 152, 219, 0.3);
+  color: #5dade2;
+}
+
+.etlp-tag-event {
+  background: rgba(241, 196, 15, 0.2);
+  color: #d68910;
+}
+
+.etlp-dark .etlp-tag-event {
+  background: rgba(241, 196, 15, 0.3);
+  color: #f1c40f;
+}
+
+.etlp-tag-group {
+  background: rgba(46, 204, 113, 0.2);
+  color: #27ae60;
+}
+
+.etlp-dark .etlp-tag-group {
+  background: rgba(46, 204, 113, 0.3);
+  color: #2ecc71;
+}
+
+.etlp-tag-more {
+  background: transparent;
+  opacity: 0.6;
+  font-style: italic;
+  cursor: default;
+}
+
+.etlp-tag-more:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Event list specific styling */
+.etlp-event-list {
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+/* Scrollbar styling removed — uses global Minecraft-themed scrollbars from index.css */

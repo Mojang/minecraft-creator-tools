@@ -5,20 +5,16 @@
   width: 100%;
 }
 
-.miet-actionList {
-  display: grid;
-  grid-template-columns: 70px 1fr;
-  padding-top: 5px;
-  padding-bottom: 5px;
-}
-
-.miet-actionListLabel {
-  grid-column: 1;
-  padding-top: 7px;
+.miet-toolBarRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 4px 8px;
 }
 
 .miet-actionListDropdown {
-  grid-column: 2;
+  flex: 1;
+  min-width: 0;
 }
 
 .miet-inner {
@@ -39,13 +35,6 @@
   width: 52px;
   padding-left: 6px !important;
   padding-right: 6px !important;
-}
-
-.miet-toolBarArea {
-  margin-top: 8px;
-  padding-top: 4px;
-  padding-left: 4px;
-  padding-bottom: 3px;
 }
 
 .miet-ambient {

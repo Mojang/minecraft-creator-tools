@@ -1,6 +1,0 @@
-{
-  "id": "query.delta_time",
-  "fields": [],
-  "description": "Returns the time in seconds since the previous frame.",
-  "title": "Delta Time"
-}

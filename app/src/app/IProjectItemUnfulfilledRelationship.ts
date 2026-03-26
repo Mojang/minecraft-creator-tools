@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import { ProjectItemType } from "./IProjectItemData";
 import ProjectItem from "./ProjectItem";
 

@@ -1,0 +1,52 @@
+.wvr-container {
+  background-color: #1a1a2e;
+  position: relative;
+}
+
+.wvr-canvas {
+  display: block;
+}
+
+.wvr-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #ccc;
+  gap: 16px;
+  font-family: "Noto Sans", "Segoe UI", sans-serif;
+}
+
+.wvr-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #444;
+  border-top: 3px solid #87ceeb;
+  border-radius: 50%;
+  animation: wvr-spin 1s linear infinite;
+}
+
+@keyframes wvr-spin {
+  to { transform: rotate(360deg); }
+}
+
+.wvr-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #ff6b6b;
+  font-family: "Noto Sans", "Segoe UI", sans-serif;
+  padding: 20px;
+}
+
+.wvr-info {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  font-family: "Noto Sans", "Segoe UI", sans-serif;
+  pointer-events: none;
+}

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Database from "../minecraft/Database";
 import BlockType from "../minecraft/BlockType";
 
@@ -12,7 +15,10 @@ export class ProjectDefinitionUtilities {
     return ProjectDefinitionUtilities.getVanillaBlockTexture(blockType, side);
   }
 
-  static getVanillaBlockTexture(blockType: BlockType, side: string): string | undefined {
+  static getVanillaBlockTexture(blockType: BlockType, side: string, useCarried: boolean = true): string | undefined {
+    // All three catalogs must be loaded to resolve textures.
+    // When skipVanillaResources is true (isolated rendering), these won't be loaded
+    // and we return undefined, triggering the magenta/fuchsia fallback material.
     if (!Database.blocksCatalog || !Database.terrainTextureCatalog || !Database.vanillaCatalog) {
       return undefined;
     }
@@ -23,8 +29,17 @@ export class ProjectDefinitionUtilities {
       return undefined;
     }
 
-    // Prefer carried_textures over textures for visual rendering
-    let textureSource = (blockDef as any).carried_textures || blockDef.textures;
+    // carried_textures are for inventory/hand display — pre-tinted, often without alpha.
+    // For in-world rendering (useCarried=false), use standard textures which have alpha
+    // cutout holes for leaves/vines and are designed for biome tinting.
+    // Leaf carried_textures (e.g., leaves_oak_carried) are solid grayscale without alpha
+    // holes, causing leaves to render as opaque cubes instead of cutout foliage.
+    let textureSource: any;
+    if (useCarried && (blockDef as any).carried_textures) {
+      textureSource = (blockDef as any).carried_textures;
+    } else {
+      textureSource = blockDef.textures;
+    }
 
     if (!textureSource) {
       return undefined;

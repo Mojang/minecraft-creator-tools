@@ -1,0 +1,330 @@
+/* VscProjectLanding.css - VS Code Extension Project Landing Page */
+
+.vspl-outer {
+  padding: 16px 20px;
+  overflow-y: auto;
+}
+
+/* Back bar for navigation in narrow views */
+.vspl-backBar {
+  margin-bottom: 12px;
+}
+
+.vspl-backButton {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: inherit;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.vspl-backButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Hero Section - subtle gradient with bottom accent */
+.vspl-hero {
+  background: linear-gradient(135deg, rgba(82, 165, 53, 0.12) 0%, rgba(82, 165, 53, 0.06) 50%, transparent 100%);
+  border-radius: 2px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid rgba(82, 165, 53, 0.5);
+  position: relative;
+}
+
+/* Accent line effect */
+.vspl-hero::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100px;
+  height: 2px;
+  background: linear-gradient(90deg, #52a535 0%, transparent 100%);
+}
+
+.vspl-heroContent {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.vspl-heroImage {
+  flex-shrink: 0;
+}
+
+.vspl-heroImage img {
+  width: 64px;
+  height: 64px;
+  border-radius: 0;
+  background: rgba(0, 0, 0, 0.2);
+  object-fit: cover;
+  image-rendering: pixelated;
+  border: 2px solid #000;
+}
+
+.vspl-heroText {
+  flex: 1;
+  min-width: 0;
+}
+
+.vspl-titleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.vspl-projectTitle {
+  font-family: "Noto Sans", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  line-height: 1.3;
+  letter-spacing: 0.3px;
+  word-break: break-word;
+}
+
+.vspl-editButton {
+  background: transparent;
+  border: none;
+  color: inherit;
+  opacity: 0.5;
+  cursor: pointer;
+  padding: 4px 6px;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
+  margin-bottom: 6px;
+}
+
+.vspl-editButton:hover {
+  opacity: 0.9;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.vspl-projectCreator {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  margin-bottom: 8px;
+}
+
+.vspl-projectDescription {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Stats Bar - compact for narrow panes */
+.vspl-statsBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.vspl-stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.vspl-statIcon {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.vspl-statCount {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.vspl-statLabel {
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+
+/* Status message */
+.vspl-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(82, 165, 53, 0.2);
+  border-radius: 4px;
+  margin-bottom: 16px;
+  font-size: 0.85rem;
+}
+
+.vspl-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #52a535;
+  border-radius: 50%;
+  animation: vspl-spin 0.8s linear infinite;
+}
+
+@keyframes vspl-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Sections */
+.vspl-section {
+  margin-bottom: 20px;
+}
+
+.vspl-sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.vspl-sectionHeader h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.vspl-sectionIcon {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+/* Card Grid - vertical layout for narrow panes */
+.vspl-cardGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Action Cards - full width for narrow panes */
+.vspl-actionCard {
+  width: 100%;
+  height: auto !important;
+  padding: 0 !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+.vspl-actionCard:hover:not(.vspl-disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+.vspl-actionCard.vspl-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.vspl-cardContent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  text-align: left;
+  width: 100%;
+  min-height: 48px;
+}
+
+.vspl-cardContentCompact {
+  gap: 8px;
+}
+
+.vspl-cardIcon {
+  font-size: 1.2rem;
+  opacity: 0.85;
+  width: 24px;
+  min-width: 24px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vspl-cardIconLarge {
+  font-size: 1.4rem;
+  opacity: 0.9;
+  width: 24px;
+  min-width: 24px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vspl-cardIconImage {
+  width: 24px;
+  min-width: 24px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vspl-cardIconImage img {
+  width: 28px;
+  height: 28px;
+  image-rendering: pixelated;
+  border: 2px solid rgba(0, 0, 0, 0.4);
+  border-radius: 2px;
+}
+
+.vspl-cardText {
+  flex: 1;
+  min-width: 0;
+}
+
+.vspl-cardTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.vspl-cardDesc {
+  font-size: 0.75rem;
+  opacity: 0.85;
+  line-height: 1.3;
+}
+
+/* Primary Card (Inspect) */
+.vspl-cardPrimary {
+  /* MinecraftButton handles its own styling */
+}
+
+/* Minecraft World Cards */
+.vspl-cardMinecraft {
+  /* MinecraftButton handles its own styling */
+}
+
+/* Responsive: wider panes can show cards side-by-side */
+@media (min-width: 400px) {
+  .vspl-cardGrid {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .vspl-actionCard {
+    min-width: 180px;
+    flex: 1;
+    max-width: 300px;
+  }
+}

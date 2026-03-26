@@ -62,8 +62,24 @@ export default class HttpFolder extends FolderBase implements IFolder {
     return true;
   }
 
-  async ensureExists() {
-    return true;
+  async ensureExists(): Promise<boolean> {
+    if (this._storage.readOnly) {
+      return true;
+    }
+
+    try {
+      const headers: Record<string, string> = {};
+      if (this._storage.authToken) {
+        headers["Authorization"] = `Bearer mctauth=${this._storage.authToken}`;
+      }
+
+      // POST with action=mkdir to create the folder
+      await axios.post(this.fullPath + "?action=mkdir", null, { headers });
+      return true;
+    } catch (e) {
+      Log.debug("Failed to create folder: " + e);
+      return false;
+    }
   }
 
   ensureFile(name: string): HttpFile {
@@ -118,11 +134,31 @@ export default class HttpFolder extends FolderBase implements IFolder {
   }
 
   async deleteFile(name: string): Promise<boolean> {
-    throw new Error("Deletion of file not supported");
+    if (this._storage.readOnly) {
+      throw new Error("Deletion of file not supported in read-only mode");
+    }
+
+    const nameCanon = StorageUtilities.canonicalizeName(name);
+    const file = this.files[nameCanon];
+
+    if (file) {
+      return await file.deleteThisFile();
+    }
+
+    return false;
   }
 
   async createFile(name: string): Promise<IFile> {
-    throw new Error("Deletion of file not supported");
+    const file = this.ensureFile(name);
+    return file;
+  }
+
+  /**
+   * Remove a file from the folder's file list (used after deletion).
+   */
+  removeFile(name: string): void {
+    const nameCanon = StorageUtilities.canonicalizeName(name);
+    this.files[nameCanon] = undefined;
   }
 
   async deleteThisFolder(): Promise<boolean> {
@@ -153,12 +189,21 @@ export default class HttpFolder extends FolderBase implements IFolder {
 
       return this.lastLoadedOrSaved;
     } else {
+      this._isLoading = true;
       let response = undefined;
 
       try {
-        response = await axios.get(this.fullPath + "index.json");
+        // Include Authorization header if the storage has an auth token
+        const headers: Record<string, string> = {};
+        if (this._storage.authToken) {
+          headers["Authorization"] = `Bearer mctauth=${this._storage.authToken}`;
+        }
+        const requestUrl = this.fullPath + "index.json";
+        response = await axios.get(requestUrl, {
+          headers,
+        });
       } catch (e: any) {
-        Log.debug(e.message + " at " + this.fullPath + "index.json");
+        Log.debug("HttpFolder: Could not load index for " + this.fullPath + " - " + (e?.message || e));
       }
 
       if (response) {

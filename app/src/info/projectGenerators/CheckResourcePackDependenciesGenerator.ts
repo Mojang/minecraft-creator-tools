@@ -16,16 +16,15 @@ export enum CheckResourcePackDependenciesGeneratorTest {
   internalProcessingError = 103,
 }
 
+/**
+ * Validates resource pack dependencies in behavior pack manifests.
+ *
+ * @see {@link ../../../public/data/forms/mctoolsval/rpdepends.form.json} for topic definitions
+ */
 export default class CheckResourcePackDependenciesGenerator implements IProjectInfoGenerator {
   id = "RPDEPENDS";
   title = "Resource Pack Dependencies";
   canAlwaysProcess = true;
-
-  getTopicData(topicId: number) {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(CheckResourcePackDependenciesGeneratorTest, topicId),
-    };
-  }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
     info.invalidManifestJson = infoSet.getSummedDataValue(
@@ -81,7 +80,10 @@ export default class CheckResourcePackDependenciesGenerator implements IProjectI
                 InfoItemType.error,
                 this.id,
                 CheckResourcePackDependenciesGeneratorTest.invalidManifestJson,
-                this.getTopicData(CheckResourcePackDependenciesGeneratorTest.invalidManifestJson).title,
+                ProjectInfoUtilities.getTitleFromEnum(
+                  CheckResourcePackDependenciesGeneratorTest,
+                  CheckResourcePackDependenciesGeneratorTest.invalidManifestJson
+                ),
                 item
               )
             );
@@ -114,7 +116,10 @@ export default class CheckResourcePackDependenciesGenerator implements IProjectI
                 InfoItemType.error,
                 this.id,
                 CheckResourcePackDependenciesGeneratorTest.invalidManifestJson,
-                this.getTopicData(CheckResourcePackDependenciesGeneratorTest.invalidManifestJson).title,
+                ProjectInfoUtilities.getTitleFromEnum(
+                  CheckResourcePackDependenciesGeneratorTest,
+                  CheckResourcePackDependenciesGeneratorTest.invalidManifestJson
+                ),
                 item
               )
             );

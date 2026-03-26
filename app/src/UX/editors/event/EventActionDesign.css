@@ -1,0 +1,248 @@
+.ead-area {
+  width: 100%;
+  max-width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 4px 20px 4px 20px;
+  box-sizing: border-box;
+}
+
+.ead-n-area {
+  width: 100%;
+  max-width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 8px 10px 8px 10px;
+  box-sizing: border-box;
+}
+
+.ead-areaNoScroll {
+  width: 100%;
+  max-width: 100%;
+  padding: 4px 20px 4px 20px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.ead-areaDesigner {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  padding: 4px 20px 4px 20px;
+  box-sizing: border-box;
+}
+
+.ead-headerTransition {
+  background-position-x: left;
+  background-repeat: repeat-x;
+  height: 40px;
+}
+
+.ead-header {
+  padding-top: 16px;
+  padding-bottom: 8px;
+  font-weight: 600;
+  font-size: large;
+}
+
+.ead-tabRow {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-bottom: 2px solid rgba(82, 165, 53, 0.4);
+  padding: 8px 8px 0 8px;
+  margin-bottom: 8px;
+  border-radius: 3px 3px 0 0;
+}
+
+.ead-tabRow .MuiButton-root {
+  padding-bottom: 0;
+  margin-bottom: -2px;
+  border-radius: 4px 4px 0 0;
+  min-width: auto;
+}
+
+.ead-tabRow .MuiStack-root {
+  gap: 2px !important;
+}
+
+.ead-tabRow .label-tab {
+  border-bottom: 2px solid rgba(74, 69, 67, 1);
+  position: relative;
+  z-index: 1;
+}
+
+.ead-tabRow .label-deseltab {
+  border-bottom: 2px solid rgba(82, 165, 53, 0.4);
+}
+
+.ead-n-header {
+  padding: 6px 8px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-left: 3px solid #52a535;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ead-openFullBtn {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+  color: inherit;
+  cursor: pointer;
+  padding: 2px 6px;
+  font-size: 12px;
+  opacity: 0.7;
+  transition:
+    opacity 0.15s,
+    background-color 0.15s;
+}
+
+.ead-openFullBtn:hover {
+  opacity: 1;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.ead-codeSnippet {
+  background-color: rgba(0, 0, 0, 0.45);
+  font-family: "Consolas", "Courier New", Courier, monospace;
+  padding: 3px 6px;
+  border-radius: 3px;
+  text-wrap: nowrap;
+}
+
+.ead-cgToggle {
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 4px;
+  display: inline-block;
+  margin-right: 3px;
+  margin-bottom: 3px;
+  text-wrap: wrap;
+  padding: 0px 8px 0px 2px;
+}
+
+.ead-addTriggerArea {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 100px 230px 1fr;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.ead-n-addTriggerArea {
+  margin-top: 8px;
+  margin-bottom: 10px;
+}
+
+.ead-addTriggerInstruction {
+  grid-column: 1;
+  padding-top: 6px;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.ead-n-addTriggerInstruction {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.ead-addTriggerArea .ui-dropdown__container {
+  width: 220px;
+}
+
+.ead-n-addTriggerArea .ui-dropdown__container {
+  width: 220px;
+}
+
+.ead-addTriggerDropdown {
+  grid-column: 2;
+}
+
+.ead-n-addTriggerDropdown {
+  padding-bottom: 4px;
+}
+
+.ead-addTriggerButton {
+  grid-column: 3;
+}
+
+.ead-n-addTriggerButton {
+  padding-bottom: 4px;
+}
+
+.ead-cgAdd {
+  background-color: rgba(82, 165, 53, 0.4);
+}
+
+.ead-cgRemove {
+  background-color: rgba(200, 60, 60, 0.4);
+}
+
+.ead-icon {
+  min-width: 18px;
+  display: inline-block;
+}
+
+.ead-componentGroupsHeaderInfo {
+  padding-bottom: 4px;
+}
+
+.ead-componentGroupsBin {
+  padding: 4px;
+  border: 1px solid rgba(128, 128, 128, 0.25);
+  border-radius: 4px;
+}
+
+.ead-triggerTitle {
+  padding-bottom: 8px;
+  padding-top: 16px;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  opacity: 0.7;
+}
+
+.ead-n-triggerTitle {
+  padding-bottom: 6px;
+  padding-top: 8px;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  opacity: 0.7;
+}
+
+.ead-actionsTitle {
+  padding-bottom: 8px;
+  padding-top: 16px;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  opacity: 0.7;
+}
+
+.ead-info {
+  padding: 4px 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.ead-actionSetBin {
+  padding: 8px;
+  border-radius: 4px;
+  margin-top: 8px;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.ead-instruction {
+  padding-bottom: 4px;
+}

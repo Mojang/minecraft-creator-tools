@@ -130,7 +130,7 @@ export default class VsCodeSettingsDefinition {
     }
 
     for (const settingName in VsCodeDefaultSettings) {
-      if (!this.definition[settingName]) {
+      if (this.definition[settingName] === undefined) {
         return false;
       }
     }
@@ -150,7 +150,7 @@ export default class VsCodeSettingsDefinition {
     }
 
     for (const settingName in VsCodeDefaultSettings) {
-      if (!this.definition[settingName]) {
+      if (this.definition[settingName] === undefined) {
         this.definition[settingName] = VsCodeDefaultSettings[settingName];
       }
     }

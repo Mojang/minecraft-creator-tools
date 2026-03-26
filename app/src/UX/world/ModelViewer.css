@@ -1,0 +1,200 @@
+.mov-area {
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  width: calc(100% - 2px);
+  height: 100%;
+  display: grid;
+  grid-template-columns: 200px 1fr 260px;
+  grid-template-rows: 40px 1fr 120px;
+}
+
+.mov-toolbar {
+  grid-row-start: 1;
+  grid-row-end: 2;
+  grid-column-start: 1;
+  grid-column-end: 4;
+  padding: 1px 3px;
+  display: flex;
+  align-items: center;
+}
+
+.mov-loading-area {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 100px;
+  background-color: #1e1e2e; /* Viewer-local: always-dark background */
+  color: #cccccc; /* Viewer-local: light text on dark background */
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 13px;
+}
+
+.mov-loading-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #52a535;
+  border-radius: 50%;
+  animation: mov-spin 1s linear infinite;
+}
+
+@keyframes mov-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.mov-error-message {
+  color: #ccc;
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 13px;
+  text-align: center;
+}
+
+.mov-retry-button {
+  padding: 6px 16px;
+  background-color: #52a535;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.mov-retry-button:hover {
+  background-color: #63c244;
+}
+
+/* High-contrast mode: use system colors for visibility */
+@media (forced-colors: active) {
+  .mov-loading-area {
+    background-color: Canvas;
+    color: CanvasText;
+    border: 1px solid CanvasText;
+  }
+
+  .mov-loading-spinner {
+    border-color: CanvasText;
+    border-top-color: Highlight;
+    forced-color-adjust: none;
+  }
+
+  .mov-error-message {
+    color: CanvasText;
+  }
+
+  .mov-retry-button {
+    background-color: Highlight;
+    color: HighlightText;
+    border: 1px solid ButtonText;
+    forced-color-adjust: none;
+  }
+
+  .mov-retry-button:hover {
+    background-color: HighlightText;
+    color: Highlight;
+  }
+}
+
+.mov-toolbar-area {
+  display: grid;
+  grid-template-columns: 1fr 370px 1px;
+}
+
+.mov-toolbar-inner {
+  grid-column: 1;
+  padding-top: 2px;
+}
+
+.mov-entityselector-area {
+  grid-column: 2;
+  text-align: right;
+}
+
+.mov-entityadder-area {
+  grid-column: 3;
+}
+
+.mov-threedarea-lg {
+  grid-row-start: 2;
+  grid-row-end: 3;
+  grid-column-start: 1;
+  grid-column-end: 4;
+}
+
+.mov-threedarea {
+  grid-row-start: 2;
+  grid-row-end: 3;
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+.mov-selectionarea {
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row-start: 2;
+  grid-row-end: 3;
+  transition: all 0.3s ease-in-out;
+  padding: 0px;
+  margin: 0px;
+  height: 120px;
+}
+
+.mov-editorbin {
+  grid-row-start: 3;
+  grid-row-end: 4;
+  grid-column-start: 1;
+  grid-column-end: 4;
+  padding: 4px;
+}
+
+.mov-editorgrid {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: 290px 1fr;
+}
+
+.mov-editorsearchinput {
+  grid-column-start: 1;
+  grid-row: 1;
+  grid-column-end: 2;
+  margin-top: 4px;
+  margin-left: 20px;
+}
+
+.mov-searchview {
+  grid-column-end: 2;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 3;
+  text-align: left;
+  margin-top: 4px;
+  width: 120px;
+  height: 80px;
+}
+
+.mov-searchviewcontainer {
+  width: 80px;
+  height: 80px;
+}
+
+/* Readonly mode - no toolbar, no grid layout */
+.mov-area-readonly {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.mov-threedarea-readonly {
+  width: 100%;
+  height: 100%;
+}

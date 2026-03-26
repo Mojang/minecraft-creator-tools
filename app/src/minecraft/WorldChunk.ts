@@ -52,6 +52,7 @@ export default class WorldChunk {
   pendingTicks: LevelKeyValue | undefined;
   biomeState: LevelKeyValue | undefined;
   blockTops: number[][] | undefined;
+  data3dRecord: LevelKeyValue | undefined;
 
   blockActorsEnsured = false;
   absoluteZeroY = -512;
@@ -147,6 +148,7 @@ export default class WorldChunk {
   /**
    * Clears cached/parsed data to free memory while preserving the ability to re-parse later.
    * Use this after processing a chunk to reduce memory usage.
+   * The raw LevelKeyValue data is preserved, allowing getBlock() to re-parse on demand.
    */
   clearCachedData() {
     for (let i = 0; i < TOTAL_SUBCHUNK_SLOTS; i++) {
@@ -160,13 +162,15 @@ export default class WorldChunk {
     }
 
     this.blockTops = undefined;
-    this.blockActorsEnsured = false;
 
+    this.blockActorsEnsured = false;
     this._blockActorsRelLoc = [];
     this._blockActors = [];
-    this._entities = [];
+
     this._entitiesEnsured = false;
-    this._hasContent = false;
+    this._entities = [];
+    // Note: _hasContent remains true since raw LevelKeyValue data is preserved
+    // and can be re-parsed on demand via pendingSubChunksToProcess
   }
 
   /**
@@ -176,6 +180,9 @@ export default class WorldChunk {
    */
   clearAllData() {
     this.clearCachedData();
+
+    // Mark as having no content since raw data is being cleared
+    this._hasContent = false;
 
     // Clear subchunk LevelKeyValue data
     for (let i = 0; i < this.subChunks.length; i++) {
@@ -263,25 +270,19 @@ export default class WorldChunk {
             "Unexpected length for a type 43 record."
           );
 
+          // Data3D contains a heightmap with 256 int16 values encoding block top heights.
+          // Previously this code set blockTops from these values using an offset (val - 65),
+          // but the offset was not verified and described as "arbitrary". In practice, when
+          // data3d arrives AFTER subchunk data (tag 47) in the LevelDB log — which is the
+          // typical write order — it would overwrite the cleared blockTops, preventing
+          // determineBlockTops() from computing heights from actual parsed subchunk data.
+          // This caused incorrect heights and missing blocks in the world map.
+          //
+          // We now store the raw data3d record for reference but do NOT set blockTops,
+          // so getTopBlockY() always calls determineBlockTops() which computes correct
+          // heights from the actual subchunk block palette data.
           if (keyValue.value && keyValue.value.length >= 512) {
-            // Check if we had existing blockTops data that will be superceded
-            if (this.blockTops !== undefined) {
-              wasSuperceded = true;
-            }
-
-            this.blockTops = [];
-
-            for (let i = 0; i < 16; i++) {
-              const arr = [];
-
-              for (let j = 0; j < 16; j++) {
-                let val = keyValue.value[j * 32 + i * 2] + keyValue.value[j * 32 + (i * 2 + 1)] * 256;
-
-                arr.push(val - 65); // subtracting - 65 is arbitrary here
-              }
-
-              this.blockTops.push(arr);
-            }
+            this.data3dRecord = keyValue;
           }
 
           break;
@@ -1424,7 +1425,10 @@ export default class WorldChunk {
 
     //y z x
 
-    const subChunkY = Math.abs(y % 16);
+    // Compute the block's Y position within its subchunk (0-15).
+    // Math.abs(y % 16) is incorrect for negative Y: e.g., y=-2 gives 2 instead of 14.
+    // The correct formula uses modular arithmetic that always produces 0-15.
+    const subChunkY = ((y % 16) + 16) % 16;
 
     const blockIndex = x * 256 + z * CHUNK_Z_SIZE + subChunkY;
 
@@ -1593,7 +1597,7 @@ export default class WorldChunk {
         );
 
         if (numPaletteEntries >= 4096) {
-          // this is an odd workaround; but it seeems like some worlds have their num palette entries listed as big endian
+          // this is an odd workaround; but it seems like some worlds have their num palette entries listed as big endian
           numPaletteEntries = DataUtilities.getUnsignedInteger(
             bytes[blockBytes + index],
             bytes[blockBytes + index + 1],

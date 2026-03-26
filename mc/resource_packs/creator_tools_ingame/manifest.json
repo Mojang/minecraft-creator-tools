@@ -1,0 +1,23 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Creator Tools",
+    "description": "A set of in-game debug and manipulation tools",
+    "uuid": "a49a75c0-d3a1-47c5-adcd-70394b0fe749",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 20, 0]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "2285312a-312d-45bc-8bdb-a71868c2c944",
+      "version": [1, 0, 0]
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "37355e25-5c48-43be-ad24-107d6cf2ea74",
+      "version": [1, 0, 0]
+    }
+  ]
+}

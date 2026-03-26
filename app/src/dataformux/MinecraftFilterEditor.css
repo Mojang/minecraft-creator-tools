@@ -3,6 +3,14 @@
   margin-top: 2px !important;
 }
 
+/* In narrow containers (diagram pane), override table layout to block so width is constrained */
+.ead-n-area .mifi-outer,
+.etde-pane .mifi-outer {
+  display: block;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
 .mifi-inner {
   display: table-row;
 }

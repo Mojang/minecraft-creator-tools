@@ -1,0 +1,467 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "custom_vehicle",
+  "description": "A wheeled vehicle/cart template. ~48 units long (~3 blocks). All coordinates in Minecraft units (16 = 1 block).",
+  "textureSize": [
+    64,
+    64
+  ],
+  "textures": {
+    "wood": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#8B4513",
+          "#A0522D",
+          "#7A3A0E"
+        ],
+        "seed": 4003
+      }
+    },
+    "wheel": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#3B3B3B",
+          "#2B2B2B",
+          "#4B4B4B"
+        ],
+        "seed": 4001
+      }
+    },
+    "metal": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#6B6B6B",
+          "#5B5B5B",
+          "#7B7B7B"
+        ],
+        "seed": 4002
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "base",
+      "pivot": [
+        0,
+        8,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -13,
+            6,
+            -24
+          ],
+          "size": [
+            26,
+            5,
+            48
+          ],
+          "faces": {
+            "north": {
+              "textureId": "wood"
+            },
+            "south": {
+              "textureId": "wood"
+            },
+            "east": {
+              "textureId": "wood"
+            },
+            "west": {
+              "textureId": "wood"
+            },
+            "up": {
+              "textureId": "wood"
+            },
+            "down": {
+              "textureId": "wood"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "left_wall",
+      "pivot": [
+        -13,
+        11,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -14,
+            11,
+            -22
+          ],
+          "size": [
+            2,
+            8,
+            44
+          ],
+          "faces": {
+            "north": {
+              "textureId": "wood"
+            },
+            "south": {
+              "textureId": "wood"
+            },
+            "east": {
+              "textureId": "wood"
+            },
+            "west": {
+              "textureId": "wood"
+            },
+            "up": {
+              "textureId": "wood"
+            },
+            "down": {
+              "textureId": "wood"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "right_wall",
+      "pivot": [
+        13,
+        11,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            12,
+            11,
+            -22
+          ],
+          "size": [
+            2,
+            8,
+            44
+          ],
+          "faces": {
+            "north": {
+              "textureId": "wood"
+            },
+            "south": {
+              "textureId": "wood"
+            },
+            "east": {
+              "textureId": "wood"
+            },
+            "west": {
+              "textureId": "wood"
+            },
+            "up": {
+              "textureId": "wood"
+            },
+            "down": {
+              "textureId": "wood"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "front_wall",
+      "pivot": [
+        0,
+        11,
+        -24
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -12,
+            11,
+            -25
+          ],
+          "size": [
+            24,
+            8,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "wood"
+            },
+            "south": {
+              "textureId": "wood"
+            },
+            "east": {
+              "textureId": "wood"
+            },
+            "west": {
+              "textureId": "wood"
+            },
+            "up": {
+              "textureId": "wood"
+            },
+            "down": {
+              "textureId": "wood"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "front_left_wheel",
+      "pivot": [
+        -14,
+        5,
+        -16
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -17,
+            1,
+            -20
+          ],
+          "size": [
+            3,
+            8,
+            8
+          ],
+          "faces": {
+            "north": {
+              "textureId": "wheel"
+            },
+            "south": {
+              "textureId": "wheel"
+            },
+            "east": {
+              "textureId": "wheel"
+            },
+            "west": {
+              "textureId": "wheel"
+            },
+            "up": {
+              "textureId": "wheel"
+            },
+            "down": {
+              "textureId": "wheel"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "front_right_wheel",
+      "pivot": [
+        14,
+        5,
+        -16
+      ],
+      "cubes": [
+        {
+          "origin": [
+            14,
+            1,
+            -20
+          ],
+          "size": [
+            3,
+            8,
+            8
+          ],
+          "faces": {
+            "north": {
+              "textureId": "wheel"
+            },
+            "south": {
+              "textureId": "wheel"
+            },
+            "east": {
+              "textureId": "wheel"
+            },
+            "west": {
+              "textureId": "wheel"
+            },
+            "up": {
+              "textureId": "wheel"
+            },
+            "down": {
+              "textureId": "wheel"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "back_left_wheel",
+      "pivot": [
+        -14,
+        5,
+        16
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -17,
+            1,
+            12
+          ],
+          "size": [
+            3,
+            8,
+            8
+          ],
+          "faces": {
+            "north": {
+              "textureId": "wheel"
+            },
+            "south": {
+              "textureId": "wheel"
+            },
+            "east": {
+              "textureId": "wheel"
+            },
+            "west": {
+              "textureId": "wheel"
+            },
+            "up": {
+              "textureId": "wheel"
+            },
+            "down": {
+              "textureId": "wheel"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "back_right_wheel",
+      "pivot": [
+        14,
+        5,
+        16
+      ],
+      "cubes": [
+        {
+          "origin": [
+            14,
+            1,
+            12
+          ],
+          "size": [
+            3,
+            8,
+            8
+          ],
+          "faces": {
+            "north": {
+              "textureId": "wheel"
+            },
+            "south": {
+              "textureId": "wheel"
+            },
+            "east": {
+              "textureId": "wheel"
+            },
+            "west": {
+              "textureId": "wheel"
+            },
+            "up": {
+              "textureId": "wheel"
+            },
+            "down": {
+              "textureId": "wheel"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "axle_front",
+      "pivot": [
+        0,
+        4,
+        -16
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -16,
+            3,
+            -17
+          ],
+          "size": [
+            32,
+            3,
+            3
+          ],
+          "faces": {
+            "north": {
+              "textureId": "metal"
+            },
+            "south": {
+              "textureId": "metal"
+            },
+            "east": {
+              "textureId": "metal"
+            },
+            "west": {
+              "textureId": "metal"
+            },
+            "up": {
+              "textureId": "metal"
+            },
+            "down": {
+              "textureId": "metal"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "axle_back",
+      "pivot": [
+        0,
+        4,
+        16
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -16,
+            3,
+            15
+          ],
+          "size": [
+            32,
+            3,
+            3
+          ],
+          "faces": {
+            "north": {
+              "textureId": "metal"
+            },
+            "south": {
+              "textureId": "metal"
+            },
+            "east": {
+              "textureId": "metal"
+            },
+            "west": {
+              "textureId": "metal"
+            },
+            "up": {
+              "textureId": "metal"
+            },
+            "down": {
+              "textureId": "metal"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "entity"
+}

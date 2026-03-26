@@ -27,17 +27,12 @@ export enum SoundsDefinitionInfoGeneratorTest {
  *  * Sounds Definition Manifest is valid JSON
  *  * Sounds Definition Manifest is formatted correctly
  *
+ * @see {@link ../../../public/data/forms/mctoolsval/sndsdef.form.json} for topic definitions
  */
 
 export default class SoundsDefinitionInfoGenerator implements IProjectInfoGenerator {
   id = "SNDSDEF";
-  title = "Sounds Definition Manifest Validation";
-
-  getTopicData(topicId: number) {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(SoundsDefinitionInfoGeneratorTest, topicId),
-    };
-  }
+  title = "Sound Definitions";
 
   summarize(info: any, infoSet: ProjectInfoSet) {
     info.multipleSoundsManifests = infoSet.getSummedDataValue(
@@ -75,7 +70,10 @@ export default class SoundsDefinitionInfoGenerator implements IProjectInfoGenera
             InfoItemType.error,
             this.id,
             SoundsDefinitionInfoGeneratorTest.foundALooseSoundDefinition,
-            this.getTopicData(SoundsDefinitionInfoGeneratorTest.multipleSoundsDefinitionManifests).title,
+            ProjectInfoUtilities.getTitleFromEnum(
+              SoundsDefinitionInfoGeneratorTest,
+              SoundsDefinitionInfoGeneratorTest.foundALooseSoundDefinition
+            ),
             item
           )
         );
@@ -88,7 +86,10 @@ export default class SoundsDefinitionInfoGenerator implements IProjectInfoGenera
             InfoItemType.error,
             this.id,
             SoundsDefinitionInfoGeneratorTest.multipleSoundsDefinitionManifests,
-            this.getTopicData(SoundsDefinitionInfoGeneratorTest.multipleSoundsDefinitionManifests).title,
+            ProjectInfoUtilities.getTitleFromEnum(
+              SoundsDefinitionInfoGeneratorTest,
+              SoundsDefinitionInfoGeneratorTest.multipleSoundsDefinitionManifests
+            ),
             item
           )
         );
@@ -123,7 +124,10 @@ export default class SoundsDefinitionInfoGenerator implements IProjectInfoGenera
             InfoItemType.error,
             this.id,
             SoundsDefinitionInfoGeneratorTest.soundsDefinitionManifestInvalidJson,
-            this.getTopicData(SoundsDefinitionInfoGeneratorTest.soundsDefinitionManifestInvalidJson).title,
+            ProjectInfoUtilities.getTitleFromEnum(
+              SoundsDefinitionInfoGeneratorTest,
+              SoundsDefinitionInfoGeneratorTest.soundsDefinitionManifestInvalidJson
+            ),
             item
           )
         );
@@ -158,9 +162,10 @@ export default class SoundsDefinitionInfoGenerator implements IProjectInfoGenera
           InfoItemType.error,
           this.id,
           SoundsDefinitionInfoGeneratorTest.invalidSoundsDefinitionManifest,
-          `${
-            this.getTopicData(SoundsDefinitionInfoGeneratorTest.invalidSoundsDefinitionManifest).title
-          }: ${parsedErrors.join(", ")}`
+          `${ProjectInfoUtilities.getTitleFromEnum(
+            SoundsDefinitionInfoGeneratorTest,
+            SoundsDefinitionInfoGeneratorTest.invalidSoundsDefinitionManifest
+          )}: ${parsedErrors.join(", ")}`
         )
       );
     }

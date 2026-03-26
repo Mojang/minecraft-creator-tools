@@ -274,9 +274,19 @@ export default class BiomeBehaviorDefinition implements IManagedComponentSetItem
       return;
     }
 
+    if (this._isLoaded) {
+      return;
+    }
+
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
+
     const fileContent = this._file.content;
 
     if (fileContent === null || fileContent instanceof Uint8Array) {
+      this._isLoaded = true;
+      this._onLoaded.dispatch(this, this);
       return;
     }
 
@@ -287,24 +297,22 @@ export default class BiomeBehaviorDefinition implements IManagedComponentSetItem
         this._typeId = this._data["minecraft:biome"].description.identifier;
         this._id = this._typeId;
       }
-
-      this._isLoaded = true;
-      this._onLoaded.dispatch(this, this);
     } catch (e) {
       Log.error("Could not load biome definition: " + e);
     }
+
+    this._isLoaded = true;
+    this._onLoaded.dispatch(this, this);
   }
 
   async addChildItems(project: Project, item: ProjectItem) {
-    const itemsCopy = project.getItemsCopy();
+    const biomeResourceItems = project.getItemsByType(ProjectItemType.biomeResource);
 
-    for (const candItem of itemsCopy) {
-      if (candItem.itemType === ProjectItemType.biomeResource) {
-        const biomeResourceDef = (await MinecraftDefinitions.get(candItem)) as undefined | BiomeResourceDefinition;
+    for (const candItem of biomeResourceItems) {
+      const biomeResourceDef = (await MinecraftDefinitions.get(candItem)) as undefined | BiomeResourceDefinition;
 
-        if (biomeResourceDef && biomeResourceDef.id === this.id) {
-          item.addChildItem(candItem);
-        }
+      if (biomeResourceDef && biomeResourceDef.id === this.id) {
+        item.addChildItem(candItem);
       }
     }
   }

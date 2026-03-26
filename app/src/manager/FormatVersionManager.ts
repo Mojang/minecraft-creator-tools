@@ -10,7 +10,6 @@ import Database from "../minecraft/Database";
 import IProjectUpdater from "../updates/IProjectUpdater";
 import ProjectUpdateResult from "../updates/ProjectUpdateResult";
 import { UpdateResultType } from "../updates/IUpdateResult";
-import { IProjectInfoTopicData, IProjectUpdaterReference } from "../info/IProjectInfoGeneratorBase";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
 import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
@@ -28,140 +27,16 @@ import WorldTemplateManifestDefinition from "../minecraft/WorldTemplateManifestD
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import { isMinorVersionTooOld } from "../core/versioning/MinecraftVersionRules";
 
+/**
+ * Validates and updates format versions across various Minecraft definition types.
+ *
+ * @see {@link ../../../public/data/forms/mctoolsval/formatver.form.json} for topic definitions
+ */
 export default class FormatVersionManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "FORMATVER";
   title = "Format Version";
 
   performPlatformVersionValidations: boolean = false;
-
-  getTopicData(topicId: number): IProjectInfoTopicData | undefined {
-    const formatVersion = {
-      updaterId: this.id,
-      updaterIndex: 1,
-      action: "Set format_versions to latest version.",
-    };
-
-    const blockTypeCheck = this.getTypeFormatVersionDescriptor(topicId, 110, "Block type", formatVersion);
-    if (blockTypeCheck) {
-      return blockTypeCheck;
-    }
-
-    const itemTypeCheck = this.getTypeFormatVersionDescriptor(topicId, 130, "Item type", formatVersion);
-    if (itemTypeCheck) {
-      return itemTypeCheck;
-    }
-
-    const recipeCheck = this.getTypeFormatVersionDescriptor(topicId, 150, "Recipe", formatVersion);
-    if (recipeCheck) {
-      return recipeCheck;
-    }
-
-    const behaviorAnimationCheck = this.getTypeFormatVersionDescriptor(
-      topicId,
-      170,
-      "Behavior animation",
-      formatVersion
-    );
-    if (behaviorAnimationCheck) {
-      return behaviorAnimationCheck;
-    }
-
-    const behaviorAnimationControllerCheck = this.getTypeFormatVersionDescriptor(
-      topicId,
-      190,
-      "Behavior animation controller",
-      formatVersion
-    );
-    if (behaviorAnimationControllerCheck) {
-      return behaviorAnimationControllerCheck;
-    }
-
-    const resourceAnimationCheck = this.getTypeFormatVersionDescriptor(
-      topicId,
-      210,
-      "Resource animation",
-      formatVersion
-    );
-    if (resourceAnimationCheck) {
-      return resourceAnimationCheck;
-    }
-
-    const resourceAnimationControllerCheck = this.getTypeFormatVersionDescriptor(
-      topicId,
-      230,
-      "Resource animation controller",
-      formatVersion
-    );
-    if (resourceAnimationControllerCheck) {
-      return resourceAnimationControllerCheck;
-    }
-
-    switch (topicId) {
-      case 100:
-        return {
-          title: "Format Version Defined",
-        };
-
-      case 500:
-        return {
-          title: "Retrieve Latest Minecraft Version",
-        };
-      case 501:
-        return {
-          title: "Parse Latest Minecraft Version",
-        };
-    }
-    return {
-      title: topicId.toString(),
-    };
-  }
-
-  getTypeFormatVersionDescriptor(
-    requestedIdentifier: number,
-    startIndex: number,
-    typeName: string,
-    formatVersion: IProjectUpdaterReference
-  ) {
-    switch (requestedIdentifier) {
-      case startIndex:
-        return {
-          title: typeName + " Version Major Version Lower than Current",
-          updaters: [formatVersion],
-        };
-
-      case startIndex + 2:
-        return {
-          title: typeName + " Version Major Version Higher than Current",
-          updaters: [formatVersion],
-        };
-
-      case startIndex + 4:
-        return {
-          title: typeName + " Version Minor Version Lower than Current",
-          updaters: [formatVersion],
-        };
-
-      case startIndex + 6:
-        return {
-          title: typeName + " Version Minor Version Higher than Current",
-          updaters: [formatVersion],
-        };
-
-      case startIndex + 8:
-        return {
-          title: typeName + " Version Patch Version Lower than Current",
-          updaters: [formatVersion],
-        };
-
-      case startIndex + 10:
-        return {
-          title: typeName + " Version Patch Version Higher than Current",
-          updaters: [formatVersion],
-        };
-    }
-
-    return undefined;
-  }
 
   getUpdaterData(updaterId: number) {
     return {

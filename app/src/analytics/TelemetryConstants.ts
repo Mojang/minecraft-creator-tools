@@ -81,6 +81,16 @@ export const TelemetryEvents = {
   ADD_NEW_PROJECT_ITEM: "AddNewProjectItem",
   ITEM_ACTION: "ItemAction",
 
+  // Inspector events
+  INSPECTOR_OPENED: "InspectorOpened",
+  INSPECTOR_SUMMARY_OPENED: "InspectorSummaryOpened",
+  INSPECTOR_ITEMS_OPENED: "InspectorItemsOpened",
+  INSPECTOR_VIEW_CHANGED: "InspectorViewChanged",
+  INSPECTOR_SUITE_CHANGED: "InspectorSuiteChanged",
+
+  // Share events
+  PROJECT_SHARED: "ProjectShared",
+
   // Extension (VS Code)
   EXTENSION_ACTIVATED: "ExtensionActivated",
   EXTENSION_COMMAND_EXECUTED: "ExtensionCommandExecuted",
@@ -107,6 +117,14 @@ export const TelemetryEvents = {
   PROJECT_LIST_VIEWED: "ProjectListViewed",
   BACKUP_EXPORTED: "BackupExported",
   FOLDER_OPENED: "FolderOpened",
+
+  // Download operations
+  FLAT_WORLD_DOWNLOADED: "FlatWorldDownloaded",
+  EDITOR_PROJECT_DOWNLOADED: "EditorProjectDownloaded",
+  CUSTOM_WORLD_DOWNLOADED: "CustomWorldDownloaded",
+
+  // Project lifecycle
+  PROJECT_LOADED: "ProjectLoaded",
 } as const;
 
 /**
@@ -130,7 +148,8 @@ export const TelemetryProperties = {
   ITEM_TYPE: "itemType",
   ITEM_NAME: "itemName",
 
-  // Share properties
+  // Export and share properties
+  EXPORT_TYPE: "exportType",
   SHARE_METHOD: "shareMethod",
   SHARE_TYPE: "shareType",
 
@@ -146,7 +165,6 @@ export const TelemetryProperties = {
 
   // File properties
   FILE_TYPE: "fileType",
-  FILE_PATH: "filePath",
   FILE_SIZE: "fileSize",
   FILE_EXTENSION: "fileExtension",
 
@@ -225,6 +243,34 @@ export const TelemetryProperties = {
   // List properties
   PROJECT_LIST_SIZE: "projectListSize",
   TAB_INDEX: "tabIndex",
+
+  // Project date properties
+  CREATION_DATE: "creationDate",
+  LAST_OPENED_DATE: "lastOpenedDate",
+
+  // Project customization properties
+  IS_TITLE_CUSTOMIZED: "isTitleCustomized",
+  IS_CREATOR_CUSTOMIZED: "isCreatorCustomized",
+  IS_SHORT_NAME_CUSTOMIZED: "isShortNameCustomized",
+
+  // File open method properties
+  OPEN_METHOD: "openMethod",
+
+  // World download properties
+  ADDITIONAL_PACKS_ADDED: "additionalPacksAdded",
+  BEHAVIOR_PACKS: "behaviorPacks",
+  RESOURCE_PACKS: "resourcePacks",
+  GAME_TYPE: "gameType",
+  DIFFICULTY: "difficulty",
+  WORLD_TEMPLATE_USED: "worldTemplateUsed",
+  MAP_STYLE: "mapStyle",
+  SEED: "seed",
+
+  // Project and validation properties
+  PROJECT_ITEM_COUNT: "projectItemCount",
+  INTERNAL_PROCESSING_ERROR_COUNT: "internalProcessingErrorCount",
+  ERROR_TYPES: "errorTypes",
+  SUITE_TYPE: "suiteType",
 } as const;
 
 /**
@@ -266,3 +312,60 @@ export type TelemetryEventName = (typeof TelemetryEvents)[keyof typeof Telemetry
 export type TelemetryPropertyKey = (typeof TelemetryProperties)[keyof typeof TelemetryProperties];
 export type TelemetryMeasurementKey = (typeof TelemetryMeasurements)[keyof typeof TelemetryMeasurements];
 export type TelemetrySeverityLevel = (typeof TelemetrySeverity)[keyof typeof TelemetrySeverity];
+
+/**
+ * Type-safe interfaces for telemetry event properties
+ */
+
+export interface WorldDownloadProperties {
+  [TelemetryProperties.ADDITIONAL_PACKS_ADDED]?: number;
+  [TelemetryProperties.BEHAVIOR_PACKS]?: string;
+  [TelemetryProperties.RESOURCE_PACKS]?: string;
+  [TelemetryProperties.GAME_TYPE]?: number;
+  [TelemetryProperties.DIFFICULTY]?: number;
+  [TelemetryProperties.WORLD_TEMPLATE_USED]?: boolean;
+  [TelemetryProperties.MAP_STYLE]?: string | number;
+  [TelemetryProperties.SEED]?: string;
+}
+
+export interface ProjectExportProperties {
+  [TelemetryProperties.EXPORT_FORMAT]?: string;
+  [TelemetryProperties.EXPORT_SUCCESS]?: boolean;
+}
+
+export interface ProjectProperties {
+  [TelemetryProperties.PROJECT_TYPE]?: string;
+  [TelemetryProperties.PROJECT_ID]?: string;
+  [TelemetryProperties.HAS_BEHAVIOR_PACK]?: boolean;
+  [TelemetryProperties.HAS_RESOURCE_PACK]?: boolean;
+  [TelemetryProperties.HAS_SCRIPTS]?: boolean;
+  [TelemetryProperties.PROJECT_ITEM_COUNT]?: number;
+}
+
+export interface FileProperties {
+  [TelemetryProperties.FILE_TYPE]?: string;
+  [TelemetryProperties.FILE_SIZE]?: number;
+  [TelemetryProperties.FILE_EXTENSION]?: string;
+  [TelemetryProperties.FILE_FORMAT]?: string;
+}
+
+export interface EditorProperties {
+  [TelemetryProperties.EDITOR_TYPE]?: string;
+  [TelemetryProperties.MODE]?: string;
+  [TelemetryProperties.COMPONENT_ID]?: string;
+  [TelemetryProperties.COMPONENT_NAME]?: string;
+}
+
+export interface ViewProperties {
+  [TelemetryProperties.VIEW_CHANGE_TYPE]?: string;
+  [TelemetryProperties.VIEW_MODE]?: string;
+  [TelemetryProperties.PREVIOUS_VIEW]?: string;
+}
+
+export interface ActionProperties {
+  [TelemetryProperties.ACTION_SOURCE]?: string;
+  [TelemetryProperties.ACTION_TYPE]?: string;
+  [TelemetryProperties.SUCCESS]?: boolean;
+  [TelemetryProperties.ERROR_MESSAGE]?: string;
+  [TelemetryProperties.ERROR_CODE]?: string;
+}

@@ -1,0 +1,77 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "test:fancy_sheep",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "is_experimental": false
+    },
+    "components": {
+      "minecraft:type_family": {
+        "family": [
+          "fancy_sheep"
+        ]
+      },
+      "minecraft:collision_box": {
+        "width": 0.6,
+        "height": 1.8
+      },
+      "minecraft:physics": {},
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:movement": {
+        "value": 0.25
+      },
+      "minecraft:movement.basic": {},
+      "minecraft:navigation.walk": {
+        "can_path_over_water": true,
+        "avoid_damage_blocks": true
+      },
+      "minecraft:can_climb": {},
+      "minecraft:jump.static": {},
+      "minecraft:behavior.panic": {
+        "priority": 1,
+        "speed_multiplier": 1.25
+      },
+      "minecraft:behavior.random_stroll": {
+        "priority": 6,
+        "speed_multiplier": 1
+      },
+      "minecraft:behavior.random_look_around": {
+        "priority": 7
+      },
+      "minecraft:behavior.look_at_player": {
+        "priority": 8,
+        "look_distance": 6
+      },
+      "minecraft:breedable": {
+        "require_tame": false,
+        "breeds_with": {
+          "mate_type": "self",
+          "baby_type": "self"
+        },
+        "breed_items": [
+          "wheat"
+        ]
+      },
+      "minecraft:behavior.follow_parent": {
+        "priority": 5,
+        "speed_multiplier": 1
+      },
+      "minecraft:behavior.tempt": {
+        "priority": 4,
+        "speed_multiplier": 1,
+        "items": [
+          "wheat"
+        ]
+      },
+      "minecraft:health": {
+        "value": 10,
+        "max": 10
+      }
+    }
+  }
+}

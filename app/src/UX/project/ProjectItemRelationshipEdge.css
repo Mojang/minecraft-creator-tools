@@ -1,0 +1,16 @@
+.pire-label {
+  font-size: x-small;
+}
+/* Disable edge interaction - edges should be display-only */
+.react-flow__edge {
+  pointer-events: none !important;
+}
+
+.react-flow__edge-path {
+  pointer-events: none !important;
+}
+
+/* Hide edge interaction handles */
+.react-flow__edgeupdater {
+  display: none !important;
+}

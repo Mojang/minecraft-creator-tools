@@ -16,11 +16,13 @@ import Utilities from "../core/Utilities";
 import MinecraftDefinitions from "./MinecraftDefinitions";
 import EntityTypeDefinition from "./EntityTypeDefinition";
 import IDefinition from "./IDefinition";
+import RelationsIndex from "../app/RelationsIndex";
 
 export default class SoundCatalogDefinition implements IDefinition {
   private _data?: ISoundCatalog;
   private _file?: IFile;
   private _isLoaded: boolean = false;
+  private _loadedWithComments: boolean = false;
 
   private _onLoaded = new EventDispatcher<SoundCatalogDefinition, SoundCatalogDefinition>();
 
@@ -293,8 +295,20 @@ export default class SoundCatalogDefinition implements IDefinition {
     return this._file.setObjectContentIfSemanticallyDifferent(this._data);
   }
 
-  async load() {
-    if (this._isLoaded) {
+  /**
+   * Loads the definition from the file.
+   * @param preserveComments If true, uses comment-preserving JSON parsing for edit/save cycles.
+   *                         If false (default), uses efficient standard JSON parsing.
+   *                         Can be called again with true to "upgrade" a read-only load to read/write.
+   */
+  async load(preserveComments: boolean = false) {
+    // If already loaded with comments, we have the "best" version - nothing more to do
+    if (this._isLoaded && this._loadedWithComments) {
+      return;
+    }
+
+    // If already loaded without comments and caller doesn't need comments, we're done
+    if (this._isLoaded && !preserveComments) {
       return;
     }
 
@@ -308,12 +322,18 @@ export default class SoundCatalogDefinition implements IDefinition {
     }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
+      this._isLoaded = true;
+      this._loadedWithComments = preserveComments;
+      this._onLoaded.dispatch(this, this);
       return;
     }
 
     let data: any = {};
 
-    let result = StorageUtilities.getJsonObject(this._file);
+    // Use comment-preserving parser only when needed for editing
+    let result = preserveComments
+      ? StorageUtilities.getJsonObjectWithComments(this._file)
+      : StorageUtilities.getJsonObject(this._file);
 
     if (result) {
       data = result;
@@ -322,33 +342,56 @@ export default class SoundCatalogDefinition implements IDefinition {
     this._data = data;
 
     this._isLoaded = true;
+    this._loadedWithComments = preserveComments;
 
     this._onLoaded.dispatch(this, this);
   }
 
-  async addChildItems(project: Project, item: ProjectItem) {
-    const itemsCopy = project.getItemsCopy();
-
+  async addChildItems(project: Project, item: ProjectItem, index?: RelationsIndex) {
     let soundEventList = this.getSoundEventNameList();
     let entityIdList = this.entityIdList;
 
-    for (const candItem of itemsCopy) {
-      if (
-        (candItem.itemType === ProjectItemType.entityTypeResource ||
-          candItem.itemType === ProjectItemType.entityTypeBehavior) &&
-        entityIdList
-      ) {
-        const entityDef = (await MinecraftDefinitions.get(candItem)) as
-          | undefined
-          | EntityTypeResourceDefinition
-          | EntityTypeDefinition;
+    // Process entity type items using index for O(1) lookups
+    if (entityIdList) {
+      if (index) {
+        for (const entityId of entityIdList) {
+          const resourceItems = index.getItemsById(index.entityResourcesById, entityId);
+          const behaviorItems = index.getItemsById(index.entityBehaviorsById, entityId);
+          const allMatches = [...resourceItems, ...behaviorItems];
 
-        if (entityDef && entityDef.id && entityIdList?.includes(entityDef?.id)) {
-          item.addParentItem(candItem);
+          for (const matchItem of allMatches) {
+            item.addParentItem(matchItem);
+          }
 
-          entityIdList = Utilities.removeItemInArray(entityDef.id, entityIdList);
+          if (allMatches.length > 0) {
+            entityIdList = Utilities.removeItemInArray(entityId, entityIdList);
+          }
         }
-      } else if (candItem.itemType === ProjectItemType.soundDefinitionCatalog && soundEventList) {
+      } else {
+        const entityResourceItems = project.getItemsByType(ProjectItemType.entityTypeResource);
+        const entityBehaviorItems = project.getItemsByType(ProjectItemType.entityTypeBehavior);
+        const entityItems = [...entityResourceItems, ...entityBehaviorItems];
+
+        for (const candItem of entityItems) {
+          const entityDef = (await MinecraftDefinitions.get(candItem)) as
+            | undefined
+            | EntityTypeResourceDefinition
+            | EntityTypeDefinition;
+
+          if (entityDef && entityDef.id && entityIdList?.includes(entityDef?.id)) {
+            item.addParentItem(candItem);
+
+            entityIdList = Utilities.removeItemInArray(entityDef.id, entityIdList);
+          }
+        }
+      }
+    }
+
+    // Process sound definition catalog items
+    if (soundEventList) {
+      const soundDefItems = project.getItemsByType(ProjectItemType.soundDefinitionCatalog);
+
+      for (const candItem of soundDefItems) {
         if (!candItem.isContentLoaded) {
           await candItem.loadContent();
         }

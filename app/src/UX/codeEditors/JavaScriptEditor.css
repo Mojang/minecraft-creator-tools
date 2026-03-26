@@ -1,0 +1,78 @@
+.jse-area {
+  min-width: 100%;
+  max-width: 100%;
+  width: 100%;
+  height: 100%;
+}
+
+.jse-commands {
+  display: grid;
+  padding: 3px;
+  grid-template-columns: 76px 1fr;
+}
+
+.jse-toolBarArea {
+  grid-column: 1;
+}
+
+.jse-toolBarLabel {
+  padding: 5px;
+}
+
+.jse-extraArea {
+  grid-column: 2;
+}
+
+.jse-snippets-overlay {
+  position: absolute;
+  overflow-y: auto;
+  left: 380px;
+  width: 298px;
+  height: 400px;
+  z-index: 200;
+  border-left: solid 2px black;
+  border-bottom: solid 2px black;
+  border-right: solid 2px black;
+}
+
+.jse-editor {
+  z-index: 100;
+}
+
+/* Loading placeholder - shown while file content is loading */
+.jse-loading-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background-color: #1e1e1e;
+}
+
+.jse-loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(82, 165, 53, 0.3);
+  border-top: 3px solid #52a535;
+  border-radius: 50%;
+  animation: jse-spin 1s linear infinite;
+}
+
+.jse-loading-message {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #888;
+}
+
+@keyframes jse-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.jse-extraArea .ui-dropdown__container {
+  width: 260px !important;
+}

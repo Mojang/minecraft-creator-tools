@@ -1,0 +1,360 @@
+.wv-main {
+  width: 100%;
+  min-width: 300px;
+  min-height: 300px;
+  text-align: left;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Floating block info overlay - bottom left */
+.wv-detailsArea {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  min-width: 180px;
+  max-width: 280px;
+  padding: 8px 12px;
+  background-color: rgba(30, 30, 30, 0.88);
+  color: #fff;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 13px;
+  overflow: hidden;
+  box-sizing: border-box;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+/* Enhanced block info display */
+.wv-blockInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wv-blockPreview {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.wv-blockColorSwatch {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.wv-blockTexture {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  border-radius: 4px;
+}
+
+.wv-blockDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.wv-blockName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wv-blockId {
+  font-size: 11px;
+  color: #8f8;
+  font-family: "Consolas", "Monaco", monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wv-blockCoords {
+  font-size: 11px;
+  color: #aaa;
+  font-family: "Consolas", "Monaco", monospace;
+}
+
+.wv-rangeInfo {
+  color: #aaa;
+  font-family: "Consolas", "Monaco", monospace;
+}
+
+.wv-toolBar {
+  display: grid;
+  grid-template-columns: 490px 1fr;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.wv-tools {
+  grid-column: 1;
+  padding-top: 3px;
+  padding-bottom: 0px;
+}
+
+.wv-anchors {
+  grid-column: 2;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+/* Layout containers - now single row since details float */
+.wv-mapOnly {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.wv-mapOnlyMap {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.wv-viewOnRight {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 450px;
+  grid-template-rows: 1fr;
+  position: relative;
+  overflow: hidden;
+}
+
+.wv-viewOnRightMap {
+  grid-column: 1;
+  grid-row: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.wv-viewOnRightView {
+  grid-column: 2;
+  grid-row: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.wv-viewOnLeft {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 450px 1fr;
+  grid-template-rows: 1fr;
+  position: relative;
+  overflow: hidden;
+}
+
+.wv-viewOnLeftMap {
+  grid-column: 2;
+  grid-row: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.wv-viewOnLeftView {
+  grid-column: 1;
+  grid-row: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.wv-worldViewer3D {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  grid-template-rows: 1fr;
+  position: relative;
+  overflow: hidden;
+}
+
+.wv-worldViewer3DView {
+  grid-column: 1;
+  grid-row: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.wv-worldViewer3DMap {
+  grid-column: 2;
+  grid-row: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.wv-worldViewerMapOnLeft {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  grid-template-rows: 1fr;
+  position: relative;
+  overflow: hidden;
+}
+
+.wv-worldViewerMapOnLeftMap {
+  grid-column: 1;
+  grid-row: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.wv-worldViewerMapOnLeftView {
+  grid-column: 2;
+  grid-row: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.wv-viewOnBottom {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: 1fr 400px;
+  position: relative;
+  overflow: hidden;
+}
+
+.wv-viewOnBottomMap {
+  grid-column: 1;
+  grid-row: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.wv-viewOnBottomView {
+  grid-column: 1;
+  grid-row: 2;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Entity info display - side by side layout */
+.wv-entityInfo {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 280px;
+  max-width: 400px;
+  padding: 10px;
+  pointer-events: auto; /* Allow interaction with model viewer */
+}
+
+.wv-entityPreviewContainer {
+  width: 120px;
+  min-width: 120px;
+  height: 120px;
+  min-height: 120px;
+  max-height: 120px;
+  background-color: rgba(20, 20, 20, 0.9);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.wv-entityPreview {
+  width: 100%;
+  height: 100%;
+}
+
+.wv-entityDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.wv-entityHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wv-entityEmoji {
+  font-size: 18px;
+}
+
+.wv-entityName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.wv-entityId {
+  font-size: 11px;
+  color: #8f8;
+  font-family: "Consolas", "Monaco", monospace;
+  word-break: break-all;
+}
+
+.wv-entityCoords {
+  font-size: 11px;
+  color: #aaa;
+  font-family: "Consolas", "Monaco", monospace;
+}
+
+.wv-entityCustomName {
+  font-size: 11px;
+  color: #ff8;
+  font-style: italic;
+}
+
+.wv-entityTags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.wv-entityTag {
+  font-size: 10px;
+  color: #fff;
+  background-color: rgba(100, 100, 255, 0.4);
+  padding: 2px 6px;
+  border-radius: 3px;
+}

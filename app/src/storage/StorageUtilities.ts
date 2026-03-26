@@ -13,6 +13,7 @@ import IStorage, { StorageErrorStatus } from "./IStorage";
 import Storage from "./Storage";
 import { BasicValidators } from "./BasicValidators";
 import IVersionContent from "./IVersionContent";
+import JsonUtilities from "../core/JsonUtilities";
 export const MaxShareableContentStringLength = 65536;
 
 export const VersionCoalescingTimeThresholdMs = 10000;
@@ -116,13 +117,25 @@ export const AllowedExtensionsSet = new Set([
   "txt",
   "ldb",
   "log",
+  "in",
+  "cmake",
 ]);
 
 const IgnoreExtensionsSet = new Set(["ds_store", "brarchive"]);
 
 const IgnoreFileNames = new Set(["thumbs.db", "desktop.ini"]);
 
-const IgnoreFolders = ["__MACOSX", "credits", "shaders", "hbui", "ray_tracing", "node_modules", "test", "__brarchive"];
+const IgnoreFolders = [
+  "__MACOSX",
+  "credits",
+  "shaders",
+  "hbui",
+  "ray_tracing",
+  "node_modules",
+  "test",
+  "__brarchive",
+  "metadata",
+];
 
 const _minecraftProjectFolderNames = [
   "behavior_packs",
@@ -163,6 +176,25 @@ export enum EncodingType {
 export default class StorageUtilities {
   public static standardFolderDelimiter = "/";
   private static textEncoder = new TextEncoder();
+
+  /**
+   * Debug flag: When true, getJsonObjectWithComments will use regular JSON.parse
+   * instead of comment-json to help isolate memory issues. Set via environment
+   * variable MCT_BYPASS_COMMENT_JSON=1 or programmatically.
+   */
+  public static bypassCommentJson =
+    typeof process !== "undefined" && process.env && process.env.MCT_BYPASS_COMMENT_JSON === "1";
+
+  /**
+   * Counter for tracking how many times comment-json parsing is invoked.
+   * Useful for debugging memory issues.
+   */
+  public static commentJsonParseCount = 0;
+
+  /**
+   * Log every Nth comment-json parse call (0 = disabled)
+   */
+  public static commentJsonLogFrequency = 0;
 
   public static isUsableFile(path: string) {
     const extension = StorageUtilities.getTypeFromName(path);
@@ -237,7 +269,28 @@ export default class StorageUtilities {
       return EncodingType.ByteBuffer;
     }
 
-    if (nameLow.startsWith("0") && fileType === "log") {
+    // LevelDB CURRENT file (no extension)
+    if (fileType === "" && nameLow === "current") {
+      return EncodingType.ByteBuffer;
+    }
+
+    // LevelDB LOG file (no extension, write-ahead log)
+    if (fileType === "" && (nameLow === "log" || nameLow === "lock")) {
+      return EncodingType.ByteBuffer;
+    }
+
+    // Linux executables (no extension)
+    if (fileType === "" && nameLow === "bedrock_server") {
+      return EncodingType.ByteBuffer;
+    }
+
+    // LevelDB LOG.old file
+    if (nameLow === "log.old") {
+      return EncodingType.ByteBuffer;
+    }
+
+    // LevelDB LOG files (e.g., 000003.log) - all .log files in LevelDB are binary
+    if (fileType === "log") {
       return EncodingType.ByteBuffer;
     }
 
@@ -965,6 +1018,74 @@ export default class StorageUtilities {
     return path;
   }
 
+  /**
+   * Well-known path token prefixes used in Electron for folder abstraction.
+   * Maps the token prefix (e.g., "DOCP") to a user-friendly display name.
+   */
+  private static readonly _friendlyTokenNames: { [token: string]: string } = {
+    DOCP: "documents",
+    BDRK: "Minecraft",
+    BDPV: "Minecraft Preview",
+    EDUR: "Minecraft Education",
+    EDUP: "Minecraft Education Preview",
+    MCPE: "Minecraft PE",
+  };
+
+  /**
+   * Strips the trailing random suffix (dash + 6 lowercase chars) that is appended
+   * to Electron path tokens for uniqueness. For example, "base-packs-4kp0sp" becomes "base-packs".
+   */
+  private static _stripTokenSuffix(tokenContent: string): string {
+    const lastDash = tokenContent.lastIndexOf("-");
+
+    if (lastDash >= 1 && lastDash === tokenContent.length - 7) {
+      // Verify the suffix is all lowercase alphanumeric (the random ID format)
+      const suffix = tokenContent.substring(lastDash + 1);
+      if (/^[a-z0-9]{6}$/.test(suffix)) {
+        return tokenContent.substring(0, lastDash);
+      }
+    }
+
+    return tokenContent;
+  }
+
+  /**
+   * Converts a path or name containing Electron folder tokens into a user-friendly
+   * display string. Handles both `<pt_name-random>` project tokens (stripping the
+   * `<pt_>` wrapper and random suffix) and well-known tokens like `<DOCP>`, `<BDRK>`, etc.
+   *
+   * Examples:
+   *   "<pt_base-packs-4kp0sp>" -> "base-packs"
+   *   "<DOCP>" -> "documents"
+   *   "<DOCP>/my-project/" -> "documents/my-project/"
+   *   "Opening <pt_my-addon-ab12cd>..." -> "Opening my-addon..."
+   */
+  public static getFriendlyDisplayName(path: string): string {
+    // First, replace well-known tokens like <DOCP>, <BDRK>, etc.
+    for (const token in this._friendlyTokenNames) {
+      const tokenTag = "<" + token + ">";
+      while (path.indexOf(tokenTag) >= 0) {
+        path = path.replace(tokenTag, this._friendlyTokenNames[token]);
+      }
+    }
+
+    // Then, replace <pt_...> tokens, stripping the random suffix
+    let ptStart = path.indexOf("<pt_");
+    while (ptStart >= 0) {
+      const ptEnd = path.indexOf(">", ptStart + 4);
+      if (ptEnd > ptStart) {
+        const tokenContent = path.substring(ptStart + 4, ptEnd);
+        const friendlyName = this._stripTokenSuffix(tokenContent);
+        path = path.substring(0, ptStart) + friendlyName + path.substring(ptEnd + 1);
+        ptStart = path.indexOf("<pt_", ptStart);
+      } else {
+        ptStart = path.indexOf("<pt_", ptStart + 1);
+      }
+    }
+
+    return path;
+  }
+
   public static getCoreBaseFromName(name: string): string {
     const nameW = name.trim();
 
@@ -992,9 +1113,10 @@ export default class StorageUtilities {
   public static async folderContentsEqual(
     folderA: IFolder | undefined,
     folderB: IFolder | undefined,
-    excludingFiles?: string[],
+    excludingFilesOrFolders?: string[],
     whitespaceAgnostic?: boolean,
-    ignoreAttributes?: string[]
+    ignoreAttributes?: string[],
+    volatilePatterns?: Array<{ pattern: RegExp; replacement: string }>
   ): Promise<{ result: boolean; reason: string }> {
     if (folderA === undefined && folderB === undefined) {
       return { result: true, reason: "Both folders are undefined." };
@@ -1041,12 +1163,12 @@ export default class StorageUtilities {
 
       let processFile = true;
 
-      if (excludingFiles) {
-        if (excludingFiles.includes(fileA.name)) {
+      if (excludingFilesOrFolders) {
+        if (excludingFilesOrFolders.includes(fileA.name)) {
           processFile = false;
         }
 
-        for (const excludeExt of excludingFiles) {
+        for (const excludeExt of excludingFilesOrFolders) {
           if (fileA.name.toLowerCase().endsWith(excludeExt.toLowerCase())) {
             processFile = false;
             break;
@@ -1055,7 +1177,13 @@ export default class StorageUtilities {
       }
 
       if (processFile) {
-        const result = await StorageUtilities.fileContentsEqual(fileA, fileB, whitespaceAgnostic, ignoreAttributes);
+        const result = await StorageUtilities.fileContentsEqual(
+          fileA,
+          fileB,
+          whitespaceAgnostic,
+          ignoreAttributes,
+          volatilePatterns
+        );
 
         if (!result) {
           return {
@@ -1085,6 +1213,18 @@ export default class StorageUtilities {
         return { result: false, reason: "Unexpected folder undefined. " };
       }
 
+      // Check if this folder should be excluded
+      let excludeFolder = false;
+      if (excludingFilesOrFolders) {
+        if (excludingFilesOrFolders.includes(folderName)) {
+          excludeFolder = true;
+        }
+      }
+
+      if (excludeFolder) {
+        continue;
+      }
+
       if (childFolderB === undefined) {
         return { result: false, reason: "Folder '" + folderName + "' does not exist in '" + folderB.fullPath + "'" };
       }
@@ -1092,9 +1232,10 @@ export default class StorageUtilities {
       const result = await StorageUtilities.folderContentsEqual(
         childFolderA,
         childFolderB,
-        excludingFiles,
+        excludingFilesOrFolders,
         whitespaceAgnostic,
-        ignoreAttributes
+        ignoreAttributes,
+        volatilePatterns
       );
 
       if (!result.result) {
@@ -1109,7 +1250,8 @@ export default class StorageUtilities {
     fileA: IFile | undefined,
     fileB: IFile | undefined,
     whitespaceAgnostic?: boolean,
-    ignoreAttributes?: string[]
+    ignoreAttributes?: string[],
+    volatilePatterns?: Array<{ pattern: RegExp; replacement: string }>
   ) {
     if (fileA === undefined && fileB === undefined) {
       return true;
@@ -1157,15 +1299,20 @@ export default class StorageUtilities {
     }
 
     if (extA === "json" && extB === "json" && typeof contentA === "string" && typeof contentB === "string") {
-      return this.jsonContentsAreEqualIgnoreWhitespace(contentA, contentB, ignoreAttributes);
+      return this.jsonContentsAreEqualIgnoreWhitespace(contentA, contentB, ignoreAttributes, volatilePatterns);
     } else if (whitespaceAgnostic) {
-      return StorageUtilities.contentsAreEqualIgnoreWhitespace(contentA, contentB);
+      return StorageUtilities.contentsAreEqualIgnoreWhitespace(contentA, contentB, volatilePatterns);
     }
 
     return StorageUtilities.contentsAreEqual(contentA, contentB);
   }
 
-  public static jsonContentsAreEqualIgnoreWhitespace(contentA: string, contentB: string, ignoreAttributes?: string[]) {
+  public static jsonContentsAreEqualIgnoreWhitespace(
+    contentA: string,
+    contentB: string,
+    ignoreAttributes?: string[],
+    volatilePatterns?: Array<{ pattern: RegExp; replacement: string }>
+  ) {
     try {
       let objA = JSON.parse(contentA);
       let objB = JSON.parse(contentB);
@@ -1178,9 +1325,15 @@ export default class StorageUtilities {
         objB = StorageUtilities.removeAttributesFromObject(objB, ignoreAttributes);
       }
 
+      // Apply volatile patterns to normalize dynamic content in strings
+      if (volatilePatterns) {
+        objA = StorageUtilities.applyVolatilePatternsToObject(objA, volatilePatterns);
+        objB = StorageUtilities.applyVolatilePatternsToObject(objB, volatilePatterns);
+      }
+
       return Utilities.consistentStringifyTrimmed(objA) === Utilities.consistentStringifyTrimmed(objB);
     } catch (e) {
-      console.error("Error parsing JSON for comparison:", e);
+      Log.debug("Error parsing JSON for comparison: " + e);
     }
 
     if (ignoreAttributes && typeof contentA === "string" && typeof contentB === "string") {
@@ -1189,10 +1342,62 @@ export default class StorageUtilities {
         contentB = Utilities.stripLinesContaining(contentB, "'" + ignoreLine + "':");
       }
     }
+
+    // Apply volatile patterns to raw content as fallback
+    if (volatilePatterns && typeof contentA === "string" && typeof contentB === "string") {
+      for (const { pattern, replacement } of volatilePatterns) {
+        contentA = contentA.replace(pattern, replacement);
+        contentB = contentB.replace(pattern, replacement);
+      }
+    }
+
     contentA = this.stripWhitespace(contentA);
     contentB = this.stripWhitespace(contentB);
 
     return contentA === contentB;
+  }
+
+  /**
+   * Recursively applies volatile patterns to normalize dynamic content within string values
+   * @param obj The object to process
+   * @param patterns Array of regex patterns and their replacements
+   * @returns A new object with patterns applied to string values
+   */
+  public static applyVolatilePatternsToObject(
+    obj: any,
+    patterns: Array<{ pattern: RegExp; replacement: string }>
+  ): any {
+    if (obj === null || obj === undefined) {
+      return obj;
+    }
+
+    // Handle strings - apply all patterns
+    if (typeof obj === "string") {
+      let result = obj;
+      for (const { pattern, replacement } of patterns) {
+        result = result.replace(pattern, replacement);
+      }
+      return result;
+    }
+
+    // Handle arrays
+    if (Array.isArray(obj)) {
+      return obj.map((item) => this.applyVolatilePatternsToObject(item, patterns));
+    }
+
+    // Handle objects
+    if (typeof obj === "object") {
+      const result: any = {};
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          result[key] = this.applyVolatilePatternsToObject(obj[key], patterns);
+        }
+      }
+      return result;
+    }
+
+    // Handle other primitives
+    return obj;
   }
 
   /**
@@ -1218,7 +1423,8 @@ export default class StorageUtilities {
       for (const key in obj) {
         if (obj.hasOwnProperty(key)) {
           if (attributeNames.includes(key)) {
-            result[key] = undefined;
+            // Skip this key entirely (don't add to result)
+            continue;
           } else {
             result[key] = this.removeAttributesFromObject(obj[key], attributeNames);
           }
@@ -1260,14 +1466,26 @@ export default class StorageUtilities {
   }
   public static contentsAreEqualIgnoreWhitespace(
     contentA: string | Uint8Array | null,
-    contentB: string | Uint8Array | null
+    contentB: string | Uint8Array | null,
+    volatilePatterns?: Array<{ pattern: RegExp; replacement: string }>
   ) {
     if (contentA === null && contentB === null) {
       return true;
     }
 
     if (typeof contentA === "string" && typeof contentB === "string") {
-      return this.stripWhitespace(contentA) === this.stripWhitespace(contentB);
+      let strA = contentA;
+      let strB = contentB;
+
+      // Apply volatile patterns to normalize dynamic content
+      if (volatilePatterns) {
+        for (const { pattern, replacement } of volatilePatterns) {
+          strA = strA.replace(pattern, replacement);
+          strB = strB.replace(pattern, replacement);
+        }
+      }
+
+      return this.stripWhitespace(strA) === this.stripWhitespace(strB);
     }
 
     if (contentA instanceof Uint8Array && contentB instanceof Uint8Array) {
@@ -1612,6 +1830,83 @@ export default class StorageUtilities {
       file.errorStateMessage = e.message;
       didFailToParse = true;
       // Log.fail("Could not parse JSON from '" + file.fullPath + "': " + e.message);
+    }
+
+    if (file.isInErrorState && !didFailToParse && contents.length > 0) {
+      file.isInErrorState = false;
+      file.errorStateMessage = undefined;
+    }
+
+    return jsonObject;
+  }
+
+  /**
+   * Gets the JSON object from a file, preserving any C-style comments (// and /* *\/).
+   * The returned object contains comment metadata as Symbol properties that will be
+   * preserved when serializing back with JsonUtilities.stringifyJsonWithComments().
+   *
+   * Use this instead of getJsonObject() when you want to preserve comments through
+   * read/edit/save cycles.
+   *
+   * @param file The file to parse
+   * @returns The parsed JSON object with comment metadata, or undefined if parsing failed
+   */
+  public static getJsonObjectWithComments(file: IFile): any | undefined {
+    if (!file.content) {
+      return undefined;
+    }
+
+    if (!(typeof file.content === "string")) {
+      return undefined;
+    }
+
+    // Return cached version if available
+    if (file.commentJsonCache !== undefined) {
+      return file.commentJsonCache;
+    }
+
+    // Track parse count for debugging
+    StorageUtilities.commentJsonParseCount++;
+    if (
+      StorageUtilities.commentJsonLogFrequency > 0 &&
+      StorageUtilities.commentJsonParseCount % StorageUtilities.commentJsonLogFrequency === 0
+    ) {
+      Log.debug(
+        `[comment-json] Parse #${StorageUtilities.commentJsonParseCount}: ${file.fullPath} (${file.content.length} bytes)`
+      );
+    }
+
+    let jsonObject = undefined;
+    let didFailToParse = false;
+    let contents = file.content;
+
+    // Debug mode: bypass comment-json entirely to isolate memory issues
+    if (StorageUtilities.bypassCommentJson) {
+      try {
+        // Use regular JSON.parse with basic content fixing
+        contents = Utilities.fixJsonContent(contents);
+        jsonObject = JSON.parse(contents);
+        file.commentJsonCache = jsonObject;
+      } catch (e: any) {
+        file.isInErrorState = true;
+        file.errorStateMessage = e.message;
+        didFailToParse = true;
+      }
+    } else {
+      // Fix trailing commas and control characters but preserve comments
+      contents = Utilities.fixJsonContentForCommentJson(contents);
+
+      try {
+        // Pass fixContent=false since we already fixed the content above
+        jsonObject = JsonUtilities.parseJsonWithComments(contents, false);
+        // Cache the parsed object on the file for reuse
+        file.commentJsonCache = jsonObject;
+      } catch (e: any) {
+        file.isInErrorState = true;
+        file.errorStateMessage = e.message;
+        didFailToParse = true;
+        // Log.fail("Could not parse JSON from '" + file.fullPath + "': " + e.message);
+      }
     }
 
     if (file.isInErrorState && !didFailToParse && contents.length > 0) {

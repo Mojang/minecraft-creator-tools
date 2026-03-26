@@ -1,0 +1,286 @@
+/* Copyright (c) Microsoft Corporation. */
+/* Licensed under the MIT License. */
+
+/* RenderControllerLivePreview - Render controller preview styling */
+
+.rclp-container {
+  font-family: var(--font-family-sans, "Segoe UI", sans-serif);
+  font-size: 12px;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.rclp-light {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.rclp-dark {
+  background: #2d2d2d;
+  color: #e0e0e0;
+}
+
+/* Loading/Error States */
+.rclp-loading,
+.rclp-error {
+  padding: 16px;
+  text-align: center;
+  font-style: italic;
+  opacity: 0.7;
+}
+
+.rclp-error {
+  color: #d9534f;
+}
+
+/* Header */
+.rclp-header {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.rclp-light .rclp-header {
+  background: #e0e0e0;
+}
+
+.rclp-dark .rclp-header {
+  background: #3a3a3a;
+}
+
+.rclp-icon {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.rclp-title {
+  flex: 1;
+}
+
+.rclp-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.rclp-id {
+  font-size: 10px;
+  opacity: 0.6;
+  font-family: monospace;
+}
+
+/* Controllers */
+.rclp-controllers {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rclp-controller {
+  border-radius: 4px;
+}
+
+.rclp-light .rclp-controller {
+  background: #e8e8e8;
+}
+
+.rclp-dark .rclp-controller {
+  background: #383838;
+}
+
+.rclp-controller-header {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  gap: 6px;
+}
+
+.rclp-light .rclp-controller-header:hover {
+  background: #ddd;
+}
+
+.rclp-dark .rclp-controller-header:hover {
+  background: #444;
+}
+
+.rclp-expand-icon {
+  font-size: 10px;
+  width: 12px;
+  text-align: center;
+}
+
+.rclp-controller-id {
+  font-family: monospace;
+  font-size: 11px;
+}
+
+.rclp-controller-content {
+  padding: 4px 8px 8px 20px;
+}
+
+/* Subsections */
+.rclp-subsection {
+  margin-bottom: 8px;
+}
+
+.rclp-subsection-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Items */
+.rclp-items {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rclp-item {
+  display: flex;
+  align-items: center;
+  padding: 3px 6px;
+  border-radius: 3px;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.rclp-light .rclp-item {
+  background: #f5f5f5;
+}
+
+.rclp-dark .rclp-item {
+  background: #2a2a2a;
+}
+
+.rclp-item-index {
+  font-family: monospace;
+  font-size: 9px;
+  opacity: 0.6;
+}
+
+.rclp-item-name {
+  font-weight: 500;
+}
+
+.rclp-item-arrow {
+  opacity: 0.5;
+}
+
+.rclp-item-value {
+  font-family: monospace;
+  font-size: 10px;
+}
+
+.rclp-item-condition {
+  font-family: monospace;
+  font-size: 10px;
+  opacity: 0.8;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Arrays */
+.rclp-array {
+  padding: 4px 6px;
+  border-radius: 3px;
+  margin-bottom: 4px;
+}
+
+.rclp-light .rclp-array {
+  background: #f5f5f5;
+}
+
+.rclp-dark .rclp-array {
+  background: #2a2a2a;
+}
+
+.rclp-array-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.rclp-array-name {
+  font-family: monospace;
+  font-weight: 500;
+  font-size: 11px;
+}
+
+.rclp-array-type {
+  font-size: 9px;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.rclp-badge {
+  margin-left: auto;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.rclp-light .rclp-badge {
+  background: #ccc;
+  color: #333;
+}
+
+.rclp-dark .rclp-badge {
+  background: #555;
+  color: #e0e0e0;
+}
+
+.rclp-array-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.rclp-array-value {
+  font-family: monospace;
+  font-size: 9px;
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+
+.rclp-light .rclp-array-value {
+  background: #e0e0e0;
+}
+
+.rclp-dark .rclp-array-value {
+  background: #3a3a3a;
+}
+
+.rclp-array-more {
+  font-size: 9px;
+  font-style: italic;
+  opacity: 0.6;
+  padding: 2px 5px;
+}
+
+/* Clickable Items */
+.rclp-clickable {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.rclp-light .rclp-clickable:hover {
+  background-color: #d8d8d8;
+}
+
+.rclp-dark .rclp-clickable:hover {
+  background-color: #404040;
+}

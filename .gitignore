@@ -6,14 +6,17 @@ bin/
 obj/
 dist/
 lib/
+_prs/
 PublishProfiles/
 wwwroot/
+docs/usability
 .pnp.js
-.tgz
+*.tgz
 .cpuprofile
 profile.arm.json
 appsettings.json
 *.csproj.user
+docker-
 /temp
 /out
 /app/out
@@ -21,11 +24,12 @@ appsettings.json
 /data/~$MinecraftData.xlsm
 debugoutput
 /app/public/data/content/creator_tools_ingame.mcaddon
-
+/app/public/data/content/creator_tools_ingame_rp.mcpack
+/app/public/data/content/creator_tools_ingame_bp.mcpack
 # testing
 /coverage
 /test-results/
-/playwright-report/
+playwright-report/
 /playwright/.cache/
 
 # production
@@ -43,16 +47,22 @@ results/
 dist/
 mci/
 mch/
+_reports/
 /app/forge.config.js
 .vscode-test-web/
 node_modules/
 app/public/data/typedefs.*.json
 app/public/data/libs.json
+app/public/data/forms/
+app/public/schemas/
+app/src/minecraft/json/
 app/public/res/latest/
 app/public/min-maps/
 app/public/res/samples/
+app/override-libs/
 /~$
 app/nod
+stderr.txt
 # misc
 .DS_Store
 .env.local

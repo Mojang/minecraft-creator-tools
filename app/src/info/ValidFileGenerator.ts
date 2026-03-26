@@ -16,15 +16,14 @@ export enum ValidGeneratorTest {
   jsonNotString = 104,
 }
 
+/**
+ * Validates file contents for JSON compliance and format correctness.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/valfile.form.json} for topic definitions
+ */
 export default class ValidFileGenerator implements IProjectFileInfoGenerator {
   id = "VALFILE";
   title = "Valid files";
-
-  getTopicData(topicId: number) {
-    return {
-      title: topicId.toString(),
-    };
-  }
 
   summarize(info: any, infoSet: ProjectInfoSet) {}
 

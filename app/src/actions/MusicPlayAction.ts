@@ -4,7 +4,6 @@ import IScriptRequirements from "./IScriptRequirements";
 import ICommandRequirements from "./ICommandRequirements";
 import ICommandOptions from "./ICommandOptions";
 import { ScriptGenerationPlacement } from "./IScriptGenerationContext";
-import Location from "../minecraft/Location";
 import { IScriptGenerationOptions } from "../script/ActionSetScriptGenerator";
 import IScriptGenerationContext from "./IScriptGenerationContext";
 

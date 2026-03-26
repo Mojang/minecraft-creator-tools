@@ -9,6 +9,7 @@ import { IEntityTypeResource, IEntityTypeResourceDescription, IEntityTypeResourc
 import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
+import RelationsIndex from "../app/RelationsIndex";
 import ModelGeometryDefinition from "./ModelGeometryDefinition";
 import Database from "./Database";
 import Utilities from "../core/Utilities";
@@ -24,6 +25,7 @@ export default class EntityTypeResourceDefinition {
   private _dataWrapper?: IEntityTypeResourceWrapper;
   private _file?: IFile;
   private _isLoaded: boolean = false;
+  private _loadedWithComments: boolean = false;
   private _data?: IEntityTypeResourceDescription;
 
   private _onLoaded = new EventDispatcher<EntityTypeResourceDefinition, EntityTypeResourceDefinition>();
@@ -58,6 +60,12 @@ export default class EntityTypeResourceDefinition {
     }
 
     return this._data.identifier;
+  }
+
+  public set id(newId: string | undefined) {
+    if (this._data && newId !== undefined) {
+      this._data.identifier = newId;
+    }
   }
 
   public get textures() {
@@ -200,6 +208,94 @@ export default class EntityTypeResourceDefinition {
     }
 
     return geometryList;
+  }
+
+  /**
+   * Get a list of all geometry/texture variant keys (e.g., "default", "warm", "cold")
+   */
+  public get variantKeys(): string[] {
+    const keys = new Set<string>();
+
+    if (this._data?.geometry) {
+      for (const key in this._data.geometry) {
+        keys.add(key);
+      }
+    }
+
+    if (this._data?.textures) {
+      for (const key in this._data.textures) {
+        keys.add(key);
+      }
+    }
+
+    return Array.from(keys);
+  }
+
+  /**
+   * Get the geometry ID for a specific variant key (e.g., "default")
+   * Falls back to first available geometry if key not found
+   */
+  public getGeometryByKey(key: string): string | undefined {
+    if (!this._data?.geometry) {
+      return undefined;
+    }
+
+    // Try exact key first
+    if (this._data.geometry[key]) {
+      return this._data.geometry[key];
+    }
+
+    // Fall back to "default" if available
+    if (key !== "default" && this._data.geometry["default"]) {
+      return this._data.geometry["default"];
+    }
+
+    // Fall back to first available
+    const keys = Object.keys(this._data.geometry);
+    if (keys.length > 0) {
+      return this._data.geometry[keys[0]];
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Get the texture path for a specific variant key (e.g., "default")
+   * Falls back to first available texture if key not found
+   */
+  public getTextureByKey(key: string): string | undefined {
+    if (!this._data?.textures) {
+      return undefined;
+    }
+
+    // Try exact key first
+    if (this._data.textures[key]) {
+      return this._data.textures[key];
+    }
+
+    // Fall back to "default" if available
+    if (key !== "default" && this._data.textures["default"]) {
+      return this._data.textures["default"];
+    }
+
+    // Fall back to first available
+    const keys = Object.keys(this._data.textures);
+    if (keys.length > 0) {
+      return this._data.textures[keys[0]];
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Get matched geometry and texture for a specific variant key
+   * This ensures the geometry and texture are paired correctly
+   */
+  public getMatchedGeometryAndTexture(key: string = "default"): { geometryId?: string; texturePath?: string } {
+    return {
+      geometryId: this.getGeometryByKey(key),
+      texturePath: this.getTextureByKey(key),
+    };
   }
 
   public ensureAnimationAndGetShortName(animationFullName: string): string | undefined {
@@ -414,8 +510,20 @@ export default class EntityTypeResourceDefinition {
     return this._file.setObjectContentIfSemanticallyDifferent(this._dataWrapper);
   }
 
-  async load() {
-    if (this._isLoaded) {
+  /**
+   * Loads the definition from the file.
+   * @param preserveComments If true, uses comment-preserving JSON parsing for edit/save cycles.
+   *                         If false (default), uses efficient standard JSON parsing.
+   *                         Can be called again with true to "upgrade" a read-only load to read/write.
+   */
+  async load(preserveComments: boolean = false) {
+    // If already loaded with comments, we have the "best" version - nothing more to do
+    if (this._isLoaded && this._loadedWithComments) {
+      return;
+    }
+
+    // If already loaded without comments and caller doesn't need comments, we're done
+    if (this._isLoaded && !preserveComments) {
       return;
     }
 
@@ -429,12 +537,18 @@ export default class EntityTypeResourceDefinition {
     }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
+      this._isLoaded = true;
+      this._loadedWithComments = preserveComments;
+      this._onLoaded.dispatch(this, this);
       return;
     }
 
     let data: any = {};
 
-    let result = StorageUtilities.getJsonObject(this._file);
+    // Use comment-preserving parser only when needed for editing
+    let result = preserveComments
+      ? StorageUtilities.getJsonObjectWithComments(this._file)
+      : StorageUtilities.getJsonObject(this._file);
 
     if (result) {
       data = result;
@@ -447,6 +561,7 @@ export default class EntityTypeResourceDefinition {
     }
 
     this._isLoaded = true;
+    this._loadedWithComments = preserveComments;
 
     this._onLoaded.dispatch(this, this);
   }
@@ -506,9 +621,7 @@ export default class EntityTypeResourceDefinition {
     return packRootFolder;
   }
 
-  async addChildItems(project: Project, item: ProjectItem) {
-    const itemsCopy = project.getItemsCopy();
-
+  async addChildItems(project: Project, item: ProjectItem, index?: RelationsIndex) {
     let packRootFolder = this.getPackRootFolder();
 
     let textureList = this.getCanonicalizedTexturesList();
@@ -517,102 +630,171 @@ export default class EntityTypeResourceDefinition {
     let animationControllerIdList = this.animationControllerIdList;
     let animationValList = this.animationList;
 
-    for (const candItem of itemsCopy) {
-      if (candItem.itemType === ProjectItemType.animationResourceJson && animationValList) {
-        if (!candItem.isContentLoaded) {
-          await candItem.loadContent();
-        }
+    if (index) {
+      // Use pre-built index for O(1) lookups
 
-        if (candItem.primaryFile) {
-          const animationDef = await AnimationResourceDefinition.ensureOnFile(candItem.primaryFile);
+      // Animations: look up each animation ID in the index
+      if (animationValList && animationValList.length > 0) {
+        index.addUniqueChildItems(item, index.animationsById, animationValList);
+      }
 
-          const animIds = animationDef?.idList;
+      // Animation controllers
+      if (animationControllerIdList && animationControllerIdList.length > 0) {
+        index.addUniqueChildItems(item, index.animationControllersById, animationControllerIdList);
+      }
 
-          if (animIds) {
-            for (const animId of animationValList) {
-              if (animIds.has(animId)) {
+      // Render controllers
+      if (renderControllerIdList && renderControllerIdList.length > 0) {
+        index.addUniqueChildItems(item, index.renderControllersById, renderControllerIdList);
+      }
+
+      // Models / geometry
+      if (geometryList && geometryList.length > 0) {
+        const matchedGeoIds = index.addUniqueChildItems(item, index.modelsById, geometryList);
+        geometryList = geometryList.filter((id) => !matchedGeoIds.has(id));
+      }
+
+      // Textures — still need path-based matching since paths depend on pack root
+      if (packRootFolder && textureList && textureList.length > 0) {
+        const textureItems = project.getItemsByType(ProjectItemType.texture);
+        for (const candItem of textureItems) {
+          if (candItem.primaryFile) {
+            let relativePath = TextureDefinition.canonicalizeTexturePath(
+              StorageUtilities.getBaseRelativePath(candItem.primaryFile, packRootFolder)
+            );
+
+            if (relativePath) {
+              if (textureList && textureList.includes(relativePath)) {
                 item.addChildItem(candItem);
-                continue;
+                textureList = Utilities.removeItemInArray(relativePath, textureList);
               }
             }
           }
         }
-      } else if (candItem.itemType === ProjectItemType.animationControllerResourceJson && animationControllerIdList) {
-        if (!candItem.isContentLoaded) {
-          await candItem.loadContent();
+      }
+    } else {
+      // Fallback: original scanning behavior when index is not available
+
+      // Check animation resources
+      if (animationValList && animationValList.length > 0) {
+        const animItems = project.getItemsByType(ProjectItemType.animationResourceJson);
+        for (const candItem of animItems) {
+          if (!candItem.isContentLoaded) {
+            await candItem.loadContent();
+          }
+
+          if (candItem.primaryFile) {
+            const animationDef = await AnimationResourceDefinition.ensureOnFile(candItem.primaryFile);
+            const animIds = animationDef?.idList;
+
+            if (animIds) {
+              for (const animId of animationValList) {
+                if (animIds.has(animId)) {
+                  item.addChildItem(candItem);
+                  continue;
+                }
+              }
+            }
+          }
         }
+      }
 
-        if (candItem.primaryFile) {
-          const animationControllerDef = await AnimationControllerResourceDefinition.ensureOnFile(candItem.primaryFile);
+      // Check animation controller resources
+      if (animationControllerIdList && animationControllerIdList.length > 0) {
+        const acItems = project.getItemsByType(ProjectItemType.animationControllerResourceJson);
+        for (const candItem of acItems) {
+          if (!candItem.isContentLoaded) {
+            await candItem.loadContent();
+          }
 
-          const acIds = animationControllerDef?.idList;
+          if (candItem.primaryFile) {
+            const animationControllerDef = await AnimationControllerResourceDefinition.ensureOnFile(
+              candItem.primaryFile
+            );
+            const acIds = animationControllerDef?.idList;
 
-          if (acIds) {
-            for (const acId of animationControllerIdList) {
-              if (acIds.has(acId)) {
+            if (acIds) {
+              for (const acId of animationControllerIdList) {
+                if (acIds.has(acId)) {
+                  item.addChildItem(candItem);
+                  continue;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      // Check render controllers
+      if (renderControllerIdList && renderControllerIdList.length > 0) {
+        const rcItems = project.getItemsByType(ProjectItemType.renderControllerJson);
+        for (const candItem of rcItems) {
+          if (!candItem.isContentLoaded) {
+            await candItem.loadContent();
+          }
+
+          if (candItem.primaryFile) {
+            const renderControllerDef = await RenderControllerSetDefinition.ensureOnFile(candItem.primaryFile);
+            const renderIds = renderControllerDef?.idList;
+
+            if (renderIds) {
+              for (const rcId of renderControllerIdList) {
+                if (renderIds.has(rcId)) {
+                  item.addChildItem(candItem);
+                  continue;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      // Check textures
+      if (packRootFolder && textureList && textureList.length > 0) {
+        const textureItems = project.getItemsByType(ProjectItemType.texture);
+        for (const candItem of textureItems) {
+          if (!candItem.isContentLoaded) {
+            await candItem.loadContent();
+          }
+
+          if (candItem.primaryFile) {
+            let relativePath = TextureDefinition.canonicalizeTexturePath(
+              StorageUtilities.getBaseRelativePath(candItem.primaryFile, packRootFolder)
+            );
+
+            if (relativePath) {
+              if (textureList && textureList.includes(relativePath)) {
                 item.addChildItem(candItem);
-                continue;
+                textureList = Utilities.removeItemInArray(relativePath, textureList);
               }
             }
           }
         }
-      } else if (candItem.itemType === ProjectItemType.renderControllerJson && renderControllerIdList) {
-        if (!candItem.isContentLoaded) {
-          await candItem.loadContent();
-        }
+      }
 
-        if (candItem.primaryFile) {
-          const renderControllerDef = await RenderControllerSetDefinition.ensureOnFile(candItem.primaryFile);
+      // Check model geometries
+      if (geometryList && geometryList.length > 0) {
+        const modelItems = project.getItemsByType(ProjectItemType.modelGeometryJson);
+        for (const candItem of modelItems) {
+          if (!candItem.isContentLoaded) {
+            await candItem.loadContent();
+          }
 
-          const renderIds = renderControllerDef?.idList;
+          if (candItem.primaryFile) {
+            const model = await ModelGeometryDefinition.ensureOnFile(candItem.primaryFile);
 
-          if (renderIds) {
-            for (const rcId of renderControllerIdList) {
-              if (renderIds.has(rcId)) {
+            if (model) {
+              let doAddModel = false;
+              for (const modelId of model.identifiers) {
+                if (geometryList && geometryList.includes(modelId)) {
+                  doAddModel = true;
+                  geometryList = Utilities.removeItemInArray(modelId, geometryList);
+                }
+              }
+
+              if (doAddModel) {
                 item.addChildItem(candItem);
-                continue;
               }
-            }
-          }
-        }
-      } else if (candItem.itemType === ProjectItemType.texture && packRootFolder && textureList) {
-        if (!candItem.isContentLoaded) {
-          await candItem.loadContent();
-        }
-
-        if (candItem.primaryFile) {
-          let relativePath = TextureDefinition.canonicalizeTexturePath(
-            StorageUtilities.getBaseRelativePath(candItem.primaryFile, packRootFolder)
-          );
-
-          if (relativePath) {
-            if (textureList && textureList.includes(relativePath)) {
-              item.addChildItem(candItem);
-
-              textureList = Utilities.removeItemInArray(relativePath, textureList);
-            }
-          }
-        }
-      } else if (candItem.itemType === ProjectItemType.modelGeometryJson && geometryList) {
-        if (!candItem.isContentLoaded) {
-          await candItem.loadContent();
-        }
-
-        if (candItem.primaryFile) {
-          const model = await ModelGeometryDefinition.ensureOnFile(candItem.primaryFile);
-
-          if (model) {
-            let doAddModel = false;
-            for (const modelId of model.identifiers) {
-              if (geometryList && geometryList.includes(modelId)) {
-                doAddModel = true;
-
-                geometryList = Utilities.removeItemInArray(modelId, geometryList);
-              }
-            }
-
-            if (doAddModel) {
-              item.addChildItem(candItem);
             }
           }
         }

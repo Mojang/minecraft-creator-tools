@@ -1,0 +1,323 @@
+/* BlockTypeLivePreview.css - Compact live preview styles for blocks */
+
+/* Container */
+.btlp-container {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 8px;
+  min-width: 200px;
+}
+
+.btlp-dark {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+}
+
+.btlp-light {
+  background-color: var(--surface-bg);
+  color: var(--surface-text);
+}
+
+/* Loading and error states */
+.btlp-loading,
+.btlp-error {
+  padding: 16px;
+  text-align: center;
+  opacity: 0.7;
+}
+
+.btlp-error {
+  color: #e74c3c;
+}
+
+/* Header */
+.btlp-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.3);
+}
+
+.btlp-icon {
+  font-size: 20px;
+}
+
+.btlp-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.btlp-name {
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btlp-id {
+  font-size: 10px;
+  opacity: 0.6;
+  font-family: monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Sections */
+.btlp-section {
+  margin-bottom: 8px;
+}
+
+.btlp-section-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  cursor: pointer;
+  font-weight: 500;
+  user-select: none;
+}
+
+.btlp-section-header:hover {
+  opacity: 0.8;
+}
+
+.btlp-expand-icon {
+  font-size: 8px;
+  width: 12px;
+  text-align: center;
+}
+
+.btlp-badge {
+  margin-left: auto;
+  background: rgba(128, 128, 128, 0.2);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+}
+
+/* Properties grid */
+.btlp-props-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px 0;
+}
+
+.btlp-prop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 10px;
+  background: rgba(128, 128, 128, 0.1);
+  border-radius: 4px;
+  border-left: 3px solid;
+  min-width: 50px;
+}
+
+.btlp-prop-icon {
+  font-size: 14px;
+}
+
+.btlp-prop-value {
+  font-weight: 700;
+  font-size: 13px;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btlp-prop-label {
+  font-size: 9px;
+  opacity: 0.7;
+  text-transform: uppercase;
+}
+
+/* State list */
+.btlp-state-list {
+  padding: 4px 0;
+}
+
+.btlp-state-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 8px;
+  margin: 2px 0;
+  background: rgba(128, 128, 128, 0.08);
+  border-radius: 4px;
+}
+
+.btlp-state-name {
+  font-family: monospace;
+  font-size: 11px;
+  cursor: pointer;
+  color: #3498db;
+}
+
+.btlp-dark .btlp-state-name {
+  color: #5dade2;
+}
+
+.btlp-state-name:hover {
+  text-decoration: underline;
+}
+
+.btlp-state-values {
+  font-size: 10px;
+  opacity: 0.6;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Permutation list */
+.btlp-perm-list {
+  padding: 4px 0;
+}
+
+.btlp-perm-item {
+  padding: 4px 8px;
+  margin: 2px 0;
+  background: rgba(128, 128, 128, 0.08);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btlp-perm-item:hover {
+  background: rgba(128, 128, 128, 0.15);
+}
+
+.btlp-perm-condition {
+  font-family: monospace;
+  font-size: 10px;
+  word-break: break-all;
+}
+
+.btlp-perm-more {
+  font-size: 10px;
+  opacity: 0.6;
+  font-style: italic;
+  padding: 4px 8px;
+}
+
+/* Component list */
+.btlp-component-list {
+  padding: 4px 0;
+}
+
+.btlp-component-group {
+  margin-bottom: 6px;
+}
+
+.btlp-group-label {
+  font-size: 10px;
+  opacity: 0.7;
+  margin-bottom: 4px;
+  padding-left: 4px;
+}
+
+/* Tags (components, states, etc.) */
+.btlp-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 2px 0;
+}
+
+.btlp-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background: rgba(128, 128, 128, 0.15);
+}
+
+/* Clickable items - cursor and hover indication */
+.btlp-clickable {
+  cursor: pointer;
+}
+
+.btlp-clickable:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--surface-shadow-sm);
+}
+
+.btlp-dark .btlp-clickable:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.btlp-light .btlp-clickable:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.btlp-dark .btlp-tag {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.btlp-tag:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--surface-shadow-sm);
+}
+
+.btlp-tag-visual {
+  background: rgba(52, 152, 219, 0.2);
+  color: #2980b9;
+}
+
+.btlp-dark .btlp-tag-visual {
+  background: rgba(52, 152, 219, 0.3);
+  color: #5dade2;
+}
+
+.btlp-tag-physics {
+  background: rgba(155, 89, 182, 0.2);
+  color: #8e44ad;
+}
+
+.btlp-dark .btlp-tag-physics {
+  background: rgba(155, 89, 182, 0.3);
+  color: #bb77d6;
+}
+
+.btlp-tag-behavior {
+  background: rgba(230, 126, 34, 0.2);
+  color: #d35400;
+}
+
+.btlp-dark .btlp-tag-behavior {
+  background: rgba(230, 126, 34, 0.3);
+  color: #e67e22;
+}
+
+.btlp-tag-script {
+  background: rgba(46, 204, 113, 0.2);
+  color: #27ae60;
+}
+
+.btlp-dark .btlp-tag-script {
+  background: rgba(46, 204, 113, 0.3);
+  color: #2ecc71;
+}
+
+.btlp-tag-more {
+  background: transparent;
+  opacity: 0.6;
+  font-style: italic;
+  cursor: default;
+}
+
+.btlp-tag-more:hover {
+  transform: none;
+  box-shadow: none;
+}

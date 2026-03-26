@@ -1,20 +1,30 @@
 import { Component } from "react";
 import "./MinecraftEventTriggerEditor.css";
 import IFormComponentProps from "./../dataform/IFormComponentProps.js";
-import { Dialog, Dropdown, DropdownProps, ThemeInput, Toolbar } from "@fluentui/react-northstar";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+} from "@mui/material";
 import CreatorTools from "../app/CreatorTools";
 import Project from "../app/Project";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import IEventAction from "../minecraft/IEventAction";
 import IEventActionSet from "../minecraft/IEventActionSet";
-import EventActionDesign from "../UX/EventActionDesign";
+import EventActionDesign from "../UX/editors/event/EventActionDesign";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import SetName from "../UX/SetName";
-import { CustomLabel } from "../UX/Labels";
+import SetName from "../UX/project/naming/SetName";
+import { CustomLabel } from "../UX/shared/components/feedback/labels/Labels";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import MinecraftEventTrigger from "../minecraft/jsoncommon/MinecraftEventTrigger";
 import IField from "./../dataform/IField";
+import IProjectTheme from "../UX/types/IProjectTheme";
 
 export interface IMinecraftEventTriggerEditorProps extends IFormComponentProps {
   data: MinecraftEventTrigger;
@@ -23,7 +33,7 @@ export interface IMinecraftEventTriggerEditorProps extends IFormComponentProps {
   readOnly: boolean;
   project: Project;
   heightOffset: number;
-  theme: ThemeInput<any>;
+  theme: IProjectTheme;
   constrainHeight?: boolean;
   entityTypeDefinition: EntityTypeDefinition;
   onChange?: (field: IField, data: MinecraftEventTrigger) => void;
@@ -77,22 +87,19 @@ export default class MinecraftEventTriggerEditor extends Component<
     return eventNames;
   }
 
-  _handleEventChanged(
-    event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
-    data: DropdownProps
-  ) {
-    if (!data.value || typeof data.value !== "string") {
+  _handleEventChanged(event: SelectChangeEvent<string>) {
+    if (!event.target.value || typeof event.target.value !== "string") {
       return;
     }
 
-    this.props.data.event = data.value;
+    this.props.data.event = event.target.value;
 
     if (this.props.onChange) {
       this.props.onChange(this.props.field, this.props.data);
     }
 
     this.setState({
-      eventName: data.value,
+      eventName: event.target.value,
       target: this.state.target,
       dialogMode: this.state.dialogMode,
     });
@@ -143,21 +150,22 @@ export default class MinecraftEventTriggerEditor extends Component<
   render() {
     if (this.state.dialogMode === MinecraftEventTriggerEditorDialog.addEvent) {
       return (
-        <Dialog
-          open={true}
-          cancelButton="Cancel"
-          confirmButton="Add"
-          key="miet-addEventOuter"
-          onCancel={this._handleDialogCancel}
-          onConfirm={this._handleSetNameOK}
-          content={<SetName onNameChanged={this.setNewName} defaultName="new property" theme={this.props.theme} />}
-          header={"Add new action"}
-        />
+        <Dialog open={true} key="miet-addEventOuter" onClose={this._handleDialogCancel}>
+          <DialogTitle>Add new action</DialogTitle>
+          <DialogContent>
+            <SetName onNameChanged={this.setNewName} defaultName="new property" theme={this.props.theme} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this._handleDialogCancel}>Cancel</Button>
+            <Button onClick={this._handleSetNameOK} variant="contained">
+              Add
+            </Button>
+          </DialogActions>
+        </Dialog>
       );
     } else {
       let eventItem: IEventActionSet | IEventAction | undefined = undefined;
       let actionDesignInterior = <></>;
-      const toolbarItems = [];
 
       if (this.props.data.event) {
         eventItem = this.props.entityTypeDefinition.getEvent(this.props.data.event);
@@ -184,36 +192,37 @@ export default class MinecraftEventTriggerEditor extends Component<
 
       const availableEvents = this._getAvailableEvents();
 
-      toolbarItems.push({
-        icon: (
-          <CustomLabel isCompact={false} text="Add action" icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />} />
-        ),
-        key: "add",
-        tag: "addItem",
-        onClick: this._addEvent,
-        title: "Add action",
-      });
-
       return (
         <div className="miet-outer">
-          <div
-            className="miet-toolBarArea"
-            style={{
-              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-              color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-            }}
-          >
-            <Toolbar aria-label="Event trigger actions" items={toolbarItems} />
-          </div>
-          <div className="miet-actionList">
+          <div className="miet-toolBarRow">
             <div className="miet-actionListDropdown">
-              <Dropdown
-                items={availableEvents}
-                key="modeinput"
-                defaultValue={this.props.data.event}
+              <Select
+                size="small"
+                value={this.props.data.event || ""}
                 onChange={this._handleEventChanged}
-              />
+                displayEmpty
+                fullWidth
+                renderValue={(selected) => {
+                  if (!selected) {
+                    return <em style={{ opacity: 0.5, fontStyle: "normal" }}>No action selected</em>;
+                  }
+                  return selected as string;
+                }}
+              >
+                {availableEvents.map((evt) => (
+                  <MenuItem key={evt} value={evt}>
+                    {evt}
+                  </MenuItem>
+                ))}
+              </Select>
             </div>
+            <Button key="add" onClick={this._addEvent} title="Add action" variant="text" size="small">
+              <CustomLabel
+                isCompact={false}
+                text="Add action"
+                icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
+              />
+            </Button>
           </div>
           <div className="miet-actionDesign">{actionDesignInterior}</div>
         </div>

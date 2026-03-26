@@ -1,0 +1,27 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "test:flame_sword",
+      "menu_category": {
+        "category": "equipment"
+      }
+    },
+    "components": {
+      "minecraft:damage": 10,
+      "minecraft:durability": {
+        "max_durability": 500
+      },
+      "minecraft:hand_equipped": true,
+      "minecraft:enchantable": {
+        "value": 10,
+        "slot": "sword"
+      },
+      "minecraft:can_destroy_in_creative": false,
+      "minecraft:glint": true,
+      "minecraft:icon": {
+        "texture": "test_flame_sword"
+      }
+    }
+  }
+}

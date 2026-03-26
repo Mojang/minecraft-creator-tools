@@ -11,20 +11,18 @@ import ProjectUpdateResult from "../updates/ProjectUpdateResult";
 import VsCodeTasksDefinition from "../devproject/VsCodeTasksDefinition";
 import { UpdateResultType } from "../updates/IUpdateResult";
 import VsCodeLaunchDefinition from "../devproject/VsCodeLaunchDefinition";
-import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
 import IDebugSettings from "../devproject/IDebugSettings";
 
+/**
+ * Validates and updates VS Code configuration files (tasks.json, launch.json).
+ *
+ * @see {@link ../../../public/data/forms/mctoolsval/vscodefile.form.json} for topic definitions
+ */
 export default class VsCodeFileManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "VSCODEFILE";
   title = "VSCode Files";
-
-  getTopicData(topicId: number): IProjectInfoTopicData | undefined {
-    return {
-      title: topicId.toString(),
-    };
-  }
 
   getUpdaterData(updateId: number) {
     return {

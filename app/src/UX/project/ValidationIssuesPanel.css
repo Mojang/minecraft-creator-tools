@@ -1,0 +1,146 @@
+/**
+ * ValidationIssuesPanel - Styles for the compact validation issues panel
+ */
+
+.vip-container {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-top: 1px solid #444;
+}
+
+.vip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 12px;
+  border-bottom: 1px solid #333;
+  flex-shrink: 0;
+}
+
+.vip-title {
+  font-weight: 600;
+  font-size: 12px;
+  color: #ccc;
+}
+
+.vip-counts {
+  display: flex;
+  gap: 12px;
+  font-size: 11px;
+}
+
+.vip-count {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.vip-count-error {
+  color: #ef5350;
+}
+
+.vip-count-warning {
+  color: #ffc107;
+}
+
+.vip-count-recommendation {
+  color: #42a5f5;
+}
+
+.vip-count-info {
+  color: #90a4ae;
+}
+
+.vip-issues-list {
+  overflow-y: auto;
+  flex: 1;
+  padding: 4px 0;
+}
+
+.vip-issue {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.4;
+  border-left: 3px solid transparent;
+  transition: background-color 0.1s ease;
+}
+
+.vip-issue:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.vip-issue-error {
+  border-left-color: #ef5350;
+}
+
+.vip-issue-warning {
+  border-left-color: #ffc107;
+}
+
+.vip-issue-recommendation {
+  border-left-color: #42a5f5;
+}
+
+.vip-issue-info {
+  border-left-color: #90a4ae;
+}
+
+.vip-issue-icon {
+  flex-shrink: 0;
+  width: 14px;
+  text-align: center;
+}
+
+.vip-icon {
+  font-size: 12px;
+}
+
+.vip-icon-error {
+  color: #ef5350;
+}
+
+.vip-icon-warning {
+  color: #ffc107;
+}
+
+.vip-icon-recommendation {
+  color: #42a5f5;
+}
+
+.vip-icon-info {
+  color: #90a4ae;
+}
+
+.vip-issue-code {
+  flex-shrink: 0;
+  font-family: monospace;
+  font-size: 10px;
+  color: #888;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+
+.vip-issue-message {
+  flex: 1;
+  color: #ddd;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vip-issue-content {
+  flex-shrink: 0;
+  max-width: 200px;
+  font-family: monospace;
+  font-size: 10px;
+  color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

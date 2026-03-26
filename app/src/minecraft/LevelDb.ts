@@ -10,6 +10,44 @@ import DataUtilities from "../core/DataUtilities";
 import Utilities from "../core/Utilities";
 import { IErrorMessage, IErrorable } from "../core/IErrorable";
 import ILevelDbFileInfo from "./ILevelDbFileInfo";
+import LevelDbIndex, { ILevelDbFileIndex, ILevelDbLogIndex } from "./LevelDbIndex";
+
+/**
+ * Options for initializing LevelDb.
+ */
+export interface ILevelDbInitOptions {
+  /** Whether to unload file content after parsing (default: true for lazy mode) */
+  unloadFilesAfterParse?: boolean;
+
+  /**
+   * Use lazy loading mode - only load manifest initially, load files on-demand.
+   * This dramatically reduces initial memory usage for large worlds.
+   * Default: false (full load for backwards compatibility)
+   */
+  lazyLoad?: boolean;
+
+  /**
+   * Maximum number of keys to keep in memory when using lazy mode.
+   * Older keys will be evicted when this limit is reached.
+   * Default: 50000
+   */
+  maxKeysInMemory?: number;
+
+  /**
+   * Progress callback for loading operations.
+   */
+  progressCallback?: (phase: string, current: number, total: number) => void;
+}
+
+/**
+ * Represents chunk coordinates extracted from LevelDB keys.
+ * Used for incremental chunk updates when new LDB files are detected.
+ */
+export interface IChunkCoordinate {
+  x: number;
+  z: number;
+  dimension: number;
+}
 
 export default class LevelDb implements IErrorable {
   ldbFiles: IFile[];
@@ -36,6 +74,39 @@ export default class LevelDb implements IErrorable {
   newFileLargest?: string[];
 
   context?: string;
+
+  /** Index for lazy loading - tracks file metadata without loading content */
+  private _index?: LevelDbIndex;
+
+  /** Whether lazy loading mode is enabled */
+  private _isLazyMode = false;
+
+  /** Maximum keys to keep in memory during lazy mode */
+  private _maxKeysInMemory = 50000;
+
+  /** LRU tracking for key eviction in lazy mode */
+  private _keyAccessOrder: string[] = [];
+
+  /** Set of keys that have been loaded but may be evicted */
+  private _loadedKeys: Set<string> = new Set();
+
+  /** Whether initial metadata has been loaded */
+  private _isInitialized = false;
+
+  /** Get whether lazy loading mode is enabled */
+  get isLazyMode(): boolean {
+    return this._isLazyMode;
+  }
+
+  /** Get the file index for lazy loading */
+  get index(): LevelDbIndex | undefined {
+    return this._index;
+  }
+
+  /** Get the number of keys currently in memory */
+  get keysInMemoryCount(): number {
+    return this.keys.size;
+  }
 
   public constructor(ldbFileArr: IFile[], logFileArr: IFile[], manifestFilesArr: IFile[], context?: string) {
     this.ldbFiles = ldbFileArr;
@@ -138,6 +209,9 @@ export default class LevelDb implements IErrorable {
       return fileB.level - fileA.level;
     });
 
+    // Yield every N files to allow garbage collection and prevent memory pressure
+    const yieldInterval = 10;
+
     for (let i = 0; i < ldbFileInfoSorted.length; i++) {
       const ldbFile = ldbFileInfoSorted[i].file;
 
@@ -157,6 +231,12 @@ export default class LevelDb implements IErrorable {
       // Unload file content to free memory after parsing
       if (unloadAfterParse) {
         ldbFile.unload();
+      }
+
+      // Periodically yield to the event loop to allow garbage collection
+      // This helps prevent out-of-memory errors when loading large worlds
+      if (i % yieldInterval === 0 && i > 0) {
+        await new Promise((resolve) => setTimeout(resolve, 0));
       }
     }
 
@@ -179,6 +259,443 @@ export default class LevelDb implements IErrorable {
       // Unload file content to free memory after parsing
       if (unloadAfterParse) {
         logFilesSorted[i].unload();
+      }
+
+      // Periodically yield to allow garbage collection
+      if (i % yieldInterval === 0 && i > 0) {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      }
+    }
+  }
+
+  /**
+   * Initialize in lazy loading mode - only loads manifest metadata.
+   * Files are loaded on-demand when keys are requested.
+   *
+   * This dramatically reduces initial memory usage for large worlds.
+   * Call loadAllFiles() to fully load everything, or use getKey() for on-demand loading.
+   */
+  public async initLazy(options?: ILevelDbInitOptions): Promise<void> {
+    this.keys = new Map<string, LevelKeyValue | false | undefined>();
+    this.isInErrorState = false;
+    this.errorMessages = undefined;
+    this._isLazyMode = true;
+    this._maxKeysInMemory = options?.maxKeysInMemory ?? 50000;
+    this._keyAccessOrder = [];
+    this._loadedKeys = new Set();
+
+    // Load manifest to get file metadata
+    for (let i = 0; i < this.manifestFiles.length; i++) {
+      await this.manifestFiles[i].loadContent(false);
+
+      const content = this.manifestFiles[i].content;
+
+      if (content instanceof Uint8Array && content.length > 0) {
+        this.parseManifestContent(content, this.manifestFiles[i].storageRelativePath);
+      }
+
+      // Unload manifest content - we've extracted the metadata
+      this.manifestFiles[i].unload();
+    }
+
+    // Build the index from manifest metadata
+    this._index = new LevelDbIndex();
+    this._index.initFromManifest(
+      this.ldbFiles,
+      this.logFiles,
+      this.newFileLevel,
+      this.newFileNumber,
+      this.newFileSmallest,
+      this.newFileLargest,
+      this.deletedFileNumber
+    );
+
+    this._isInitialized = true;
+  }
+
+  /**
+   * Load all files in lazy mode. This is useful after initLazy() when you want
+   * to fully populate all keys (e.g., for world enumeration).
+   *
+   * @param options Options for loading
+   * @returns The number of keys loaded
+   */
+  public async loadAllFiles(options?: {
+    progressCallback?: (phase: string, current: number, total: number) => void;
+    unloadFilesAfterParse?: boolean;
+  }): Promise<number> {
+    if (!this._isInitialized || !this._index) {
+      throw new Error("LevelDb must be initialized before loading files");
+    }
+
+    const unloadAfterParse = options?.unloadFilesAfterParse ?? true;
+    const yieldInterval = 10;
+    let filesProcessed = 0;
+    const totalFiles = this._index.totalFiles;
+
+    // Load LDB files in order (sorted by level for correct supercession)
+    for (let i = 0; i < this._index.ldbFileIndexes.length; i++) {
+      const fileIdx = this._index.ldbFileIndexes[i];
+      const file = fileIdx.fileInfo.file;
+
+      if (!file.isContentLoaded) {
+        await file.loadContent(false);
+      }
+
+      const content = file.content;
+      if (content instanceof Uint8Array && content.length > 0) {
+        this.parseLdbContent(content, file.storageRelativePath);
+      }
+
+      fileIdx.isLoaded = true;
+
+      if (unloadAfterParse) {
+        file.unload();
+      }
+
+      filesProcessed++;
+      if (options?.progressCallback && filesProcessed % 5 === 0) {
+        options.progressCallback("Summarizing all world files", filesProcessed, totalFiles);
+      }
+
+      // Yield periodically for GC
+      if (i % yieldInterval === 0 && i > 0) {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      }
+    }
+
+    // Load LOG files in order (sorted by name for correct supercession)
+    for (let i = 0; i < this._index.logFileIndexes.length; i++) {
+      const fileIdx = this._index.logFileIndexes[i];
+      const file = fileIdx.file;
+
+      if (!file.isContentLoaded) {
+        await file.loadContent(false);
+      }
+
+      const content = file.content;
+      if (content instanceof Uint8Array && content.length > 0) {
+        this.parseLogContent(content, file.storageRelativePath);
+      }
+
+      fileIdx.isLoaded = true;
+
+      if (unloadAfterParse) {
+        file.unload();
+      }
+
+      filesProcessed++;
+      if (options?.progressCallback) {
+        options.progressCallback("Loading LOG files", filesProcessed, totalFiles);
+      }
+
+      // Yield periodically for GC
+      if (i % yieldInterval === 0 && i > 0) {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      }
+    }
+
+    return this.keys.size;
+  }
+
+  /**
+   * Load a specific file's keys into memory.
+   * Used for on-demand loading in lazy mode.
+   */
+  public async loadFile(fileIndex: ILevelDbFileIndex | ILevelDbLogIndex): Promise<number> {
+    const isLogFile = "name" in fileIndex; // ILevelDbLogIndex has 'name', ILevelDbFileIndex doesn't
+    const file = isLogFile ? (fileIndex as ILevelDbLogIndex).file : (fileIndex as ILevelDbFileIndex).fileInfo.file;
+
+    if (!file.isContentLoaded) {
+      await file.loadContent(false);
+    }
+
+    const content = file.content;
+    let keysParsed = 0;
+
+    if (content instanceof Uint8Array && content.length > 0) {
+      if (isLogFile) {
+        keysParsed = this.parseLogContent(content, file.storageRelativePath) || 0;
+      } else {
+        keysParsed = this.parseLdbContent(content, file.storageRelativePath) || 0;
+      }
+    }
+
+    fileIndex.isLoaded = true;
+    file.unload(); // Always unload in lazy mode
+
+    return keysParsed;
+  }
+
+  // Track the last parsed size for each log file to enable incremental parsing
+  private _logFileParsedSizes: Map<string, number> = new Map();
+
+  /**
+   * Parse a new or modified LDB/LOG file and return the chunk coordinates affected.
+   * This is used for incremental updates when the file system detects new files.
+   *
+   * @param file The LDB or LOG file to parse
+   * @returns Array of unique chunk coordinates affected by keys in this file
+   */
+  public async parseIncrementalFile(file: IFile): Promise<IChunkCoordinate[]> {
+    const affectedChunks: IChunkCoordinate[] = [];
+    const seenChunks = new Set<string>();
+
+    // For incremental updates, always force reload the file content
+    // The file may have been updated (especially .log files which are append-only)
+    if (file.isContentLoaded) {
+      file.unload();
+    }
+    await file.loadContent(false);
+
+    const content = file.content;
+    if (!(content instanceof Uint8Array) || content.length === 0) {
+      return affectedChunks;
+    }
+
+    const isLogFile = file.name.toLowerCase().endsWith(".log");
+    const filePath = file.storageRelativePath || file.fullPath;
+
+    // For log files, check if the file has grown since last parse
+    const previousSize = this._logFileParsedSizes.get(filePath) || 0;
+    const currentSize = content.length;
+
+    if (isLogFile && currentSize <= previousSize) {
+      // File hasn't grown, no new data
+      file.unload();
+      return affectedChunks;
+    }
+
+    // Track keys before parsing
+    const keysBefore = new Map<string, LevelKeyValue | false | undefined>();
+    for (const [key, val] of this.keys) {
+      keysBefore.set(key, val);
+    }
+
+    // Parse the file
+    if (isLogFile) {
+      // For log files, parse and extract chunks from ALL keys in the file that are chunk-related
+      // This is because log files are append-only and we need to catch any chunk updates
+      this.parseLogContent(content, file.storageRelativePath);
+      this._logFileParsedSizes.set(filePath, currentSize);
+
+      // For log files that have grown, find all keys that now have different values
+      // (parseLogContent creates new LevelKeyValue objects, so any updated key will have a different reference)
+      for (const [keyname, keyValue] of this.keys) {
+        if (!keyValue || typeof keyValue === "boolean") continue;
+
+        const prevValue = keysBefore.get(keyname);
+
+        // Skip if key existed with same object reference (wasn't updated)
+        if (prevValue === keyValue) {
+          continue;
+        }
+
+        // This is either a new key or an updated key (different object reference)
+        // Extract chunk coordinates
+        this._extractChunkFromKey(keyname, seenChunks, affectedChunks);
+      }
+    } else {
+      // For LDB files, use the original approach of tracking new/updated keys
+      this.parseLdbContent(content, file.storageRelativePath);
+
+      // Find new/updated keys and extract chunk coordinates
+      for (const [keyname, keyValue] of this.keys) {
+        if (!keyValue) continue;
+
+        const prevValue = keysBefore.get(keyname);
+        if (prevValue === keyValue) continue; // Same object reference = no change
+
+        this._extractChunkFromKey(keyname, seenChunks, affectedChunks);
+      }
+    }
+
+    // Unload file content to free memory
+    file.unload();
+
+    // Add file to our tracking arrays if not already present
+    if (isLogFile && !this.logFiles.includes(file)) {
+      this.logFiles.push(file);
+    } else if (!isLogFile && !this.ldbFiles.includes(file)) {
+      this.ldbFiles.push(file);
+    }
+
+    return affectedChunks;
+  }
+
+  /**
+   * Extract chunk coordinates from a key name if it represents chunk data.
+   */
+  private _extractChunkFromKey(keyname: string, seenChunks: Set<string>, affectedChunks: IChunkCoordinate[]): boolean {
+    // Extract chunk coordinates from key (9-14 byte keys encode chunk data)
+    if (keyname.length < 9 || keyname.length > 14) {
+      return false;
+    }
+
+    // Skip named keys
+    if (
+      keyname.startsWith("AutonomousEntities") ||
+      keyname.startsWith("schedulerWT") ||
+      keyname.startsWith("Overworld") ||
+      keyname.startsWith("BiomeData") ||
+      keyname.startsWith("digp") ||
+      keyname.startsWith("actorprefix") ||
+      keyname.startsWith("player") ||
+      keyname.startsWith("portals")
+    ) {
+      return false;
+    }
+
+    const hasDimensionParam = keyname.length >= 13;
+
+    const x = DataUtilities.getSignedInteger(
+      keyname.charCodeAt(0),
+      keyname.charCodeAt(1),
+      keyname.charCodeAt(2),
+      keyname.charCodeAt(3),
+      true
+    );
+    const z = DataUtilities.getSignedInteger(
+      keyname.charCodeAt(4),
+      keyname.charCodeAt(5),
+      keyname.charCodeAt(6),
+      keyname.charCodeAt(7),
+      true
+    );
+    let dim = 0;
+
+    if (hasDimensionParam) {
+      dim = DataUtilities.getSignedInteger(
+        keyname.charCodeAt(8),
+        keyname.charCodeAt(9),
+        keyname.charCodeAt(10),
+        keyname.charCodeAt(11),
+        true
+      );
+
+      if (dim < 0 || dim > 2) {
+        return false; // Invalid dimension
+      }
+    }
+
+    // Track unique chunks
+    const chunkKey = `${dim}_${x}_${z}`;
+    if (!seenChunks.has(chunkKey)) {
+      seenChunks.add(chunkKey);
+      affectedChunks.push({ x, z, dimension: dim });
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Evict old keys to stay under the memory limit.
+   * Uses LRU (least recently used) eviction.
+   */
+  private _evictKeysIfNeeded(): void {
+    if (!this._isLazyMode || this.keys.size <= this._maxKeysInMemory) {
+      return;
+    }
+
+    // Evict oldest keys until we're under the limit
+    const keysToEvict = this.keys.size - Math.floor(this._maxKeysInMemory * 0.8); // Evict to 80%
+
+    for (let i = 0; i < keysToEvict && this._keyAccessOrder.length > 0; i++) {
+      const oldestKey = this._keyAccessOrder.shift();
+      if (oldestKey && this._loadedKeys.has(oldestKey)) {
+        const keyValue = this.keys.get(oldestKey);
+        // keyValue can be LevelKeyValue, false, or undefined
+        if (keyValue && typeof keyValue !== "boolean") {
+          keyValue.clearAllData();
+        }
+        this.keys.delete(oldestKey);
+        this._loadedKeys.delete(oldestKey);
+      }
+    }
+  }
+
+  /**
+   * Track key access for LRU eviction.
+   */
+  private _trackKeyAccess(key: string): void {
+    if (!this._isLazyMode) return;
+
+    // Remove from old position if it exists
+    const existingIndex = this._keyAccessOrder.indexOf(key);
+    if (existingIndex >= 0) {
+      this._keyAccessOrder.splice(existingIndex, 1);
+    }
+
+    // Add to end (most recently used)
+    this._keyAccessOrder.push(key);
+    this._loadedKeys.add(key);
+
+    // Periodically evict old keys
+    if (this.keys.size > this._maxKeysInMemory) {
+      this._evictKeysIfNeeded();
+    }
+  }
+
+  /**
+   * Get a key's value, loading the containing file if necessary (lazy mode).
+   * In non-lazy mode, this is a simple map lookup.
+   *
+   * @param key The key to retrieve
+   * @returns The LevelKeyValue, false (if deleted), or undefined (if not found)
+   */
+  public async getKey(key: string): Promise<LevelKeyValue | false | undefined> {
+    // Check if already in memory
+    if (this.keys.has(key)) {
+      this._trackKeyAccess(key);
+      return this.keys.get(key);
+    }
+
+    // In non-lazy mode, if not in keys, it doesn't exist
+    if (!this._isLazyMode || !this._index) {
+      return undefined;
+    }
+
+    // Lazy mode: find and load files that might contain this key
+    const potentialFiles = this._index.findPotentialFilesForKey(key);
+
+    for (const fileIdx of potentialFiles) {
+      if (!fileIdx.isLoaded) {
+        await this.loadFile(fileIdx);
+
+        // Check if key is now available
+        if (this.keys.has(key)) {
+          this._trackKeyAccess(key);
+          return this.keys.get(key);
+        }
+      }
+    }
+
+    // Key not found in any file
+    return undefined;
+  }
+
+  /**
+   * Clear all loaded keys and reset to just the index metadata.
+   * Useful for freeing memory after processing a world.
+   */
+  public clearLoadedKeys(): void {
+    for (const [key, value] of this.keys) {
+      // value can be LevelKeyValue, false, or undefined
+      if (value && typeof value !== "boolean") {
+        value.clearAllData();
+      }
+    }
+    this.keys.clear();
+    this._keyAccessOrder = [];
+    this._loadedKeys.clear();
+
+    // Reset file loaded flags so they can be reloaded on demand
+    if (this._index) {
+      for (const fileIdx of this._index.ldbFileIndexes) {
+        fileIdx.isLoaded = false;
+      }
+      for (const fileIdx of this._index.logFileIndexes) {
+        fileIdx.isLoaded = false;
       }
     }
   }

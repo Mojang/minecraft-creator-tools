@@ -8,27 +8,26 @@ import ProjectInfoSet from "./ProjectInfoSet";
 import IProjectInfoGenerator from "./IProjectInfoGenerator";
 import Project from "../app/Project";
 import ContentIndex, { AnnotationCategory } from "../core/ContentIndex";
-import ProjectInfoUtilities from "./ProjectInfoUtilities";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
 import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
 import BlocksCatalogDefinition from "../minecraft/BlocksCatalogDefinition";
+import FeatureDefinition from "../minecraft/FeatureDefinition";
 
 export enum TypesInfoGeneratorTest {
   types = 101,
 }
 
+/**
+ * Aggregates content type information (entities, blocks, items) from the project.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/types.form.json} for topic definitions
+ */
 export default class TypesInfoGenerator implements IProjectInfoGenerator {
   id = "TYPES";
   title = "Types Info Aggregation";
 
   performAddOnValidations = false;
-
-  getTopicData(topicId: number) {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(TypesInfoGeneratorTest, topicId),
-    };
-  }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
     info.textureCount = infoSet.getSummedDataValue(this.id, TypesInfoGeneratorTest.types);
@@ -116,6 +115,28 @@ export default class TypesInfoGenerator implements IProjectInfoGenerator {
 
           if (itemTypeDef && itemTypeDef.id && projectItem.projectPath) {
             contentIndex.insert(itemTypeDef.id, projectItem.projectPath, AnnotationCategory.itemTypeSource);
+          }
+        }
+      } else if (projectItem.itemType === ProjectItemType.featureBehavior) {
+        if (!projectItem.isContentLoaded) {
+          await projectItem.loadContent();
+        }
+
+        if (projectItem.primaryFile) {
+          const featureDef = await FeatureDefinition.ensureOnFile(projectItem.primaryFile);
+
+          if (featureDef && featureDef.id && projectItem.projectPath) {
+            contentIndex.insert(featureDef.id, projectItem.projectPath, AnnotationCategory.featureSource);
+
+            // Also index without namespace prefix for easier lookup
+            let colon = featureDef.id.indexOf(":");
+            if (colon >= 0) {
+              contentIndex.insert(
+                featureDef.id.substring(colon + 1),
+                projectItem.projectPath,
+                AnnotationCategory.featureSource
+              );
+            }
           }
         }
       }

@@ -12,6 +12,7 @@ import Log from "../core/Log";
 export default class ModelGeometryDefinition {
   private _file?: IFile;
   private _isLoaded: boolean = false;
+  private _loadedWithComments: boolean = false;
 
   private _data?: IModelGeometry;
   public definitions: IGeometry[] = [];
@@ -84,6 +85,14 @@ export default class ModelGeometryDefinition {
 
     if (model) {
       return model as IGeometry;
+    }
+
+    // Check for v1 format keys with inheritance syntax (e.g., "geometry.sheep.v1.8:geometry.sheep.sheared.v1.8")
+    // When looking for "geometry.sheep.v1.8", check if any key starts with that ID followed by ":"
+    for (const key of Object.keys(this._data || {})) {
+      if (key.startsWith(id + ":")) {
+        return (this._data as any)[key] as IGeometry;
+      }
     }
 
     for (const def of this.definitions) {
@@ -319,8 +328,51 @@ export default class ModelGeometryDefinition {
       }
     }
   }
-  async load() {
-    if (this._file === undefined || this._isLoaded) {
+
+  /**
+   * Load geometry data from a raw JavaScript object (parsed JSON).
+   * Useful for loading geometry data without a file reference.
+   * @param data The geometry JSON data object
+   * @param geometryId Optional specific geometry identifier to select from multi-geometry files
+   */
+  loadFromData(data: object, geometryId?: string) {
+    this._data = data as IModelGeometry;
+    this.populateDefsAndIds();
+    this._isLoaded = true;
+
+    // If a specific geometry ID is requested and there are multiple, reorder to make it default
+    if (geometryId && this.definitions.length > 1) {
+      const index = this._identifiers.indexOf(geometryId);
+      if (index > 0) {
+        // Move the requested geometry to the front
+        const [geo] = this.definitions.splice(index, 1);
+        const [id] = this._identifiers.splice(index, 1);
+        this.definitions.unshift(geo);
+        this._identifiers.unshift(id);
+      }
+    }
+
+    this._onLoaded.dispatch(this, this);
+  }
+
+  /**
+   * Loads the definition from the file.
+   * @param preserveComments If true, uses comment-preserving JSON parsing for edit/save cycles.
+   *                         If false (default), uses efficient standard JSON parsing.
+   *                         Can be called again with true to "upgrade" a read-only load to read/write.
+   */
+  async load(preserveComments: boolean = false) {
+    // If already loaded with comments, we have the "best" version - nothing more to do
+    if (this._isLoaded && this._loadedWithComments) {
+      return;
+    }
+
+    // If already loaded without comments and caller doesn't need comments, we're done
+    if (this._isLoaded && !preserveComments) {
+      return;
+    }
+
+    if (this._file === undefined) {
       return;
     }
 
@@ -329,13 +381,20 @@ export default class ModelGeometryDefinition {
     }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
+      this._isLoaded = true;
+      this._loadedWithComments = preserveComments;
+      this._onLoaded.dispatch(this, this);
       return;
     }
 
-    this._data = StorageUtilities.getJsonObject(this._file);
+    // Use comment-preserving parser only when needed for editing
+    this._data = preserveComments
+      ? StorageUtilities.getJsonObjectWithComments(this._file)
+      : StorageUtilities.getJsonObject(this._file);
 
     this.populateDefsAndIds();
 
     this._isLoaded = true;
+    this._loadedWithComments = preserveComments;
   }
 }

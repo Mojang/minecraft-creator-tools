@@ -6,12 +6,12 @@ import creatorTools from "../app/CreatorTools";
 import Project from "../app/Project";
 import IFolder from "../storage/IFolder";
 import * as fs from "fs";
-import * as open from "open";
+import open from "open";
 import IStorage from "../storage/IStorage";
 import IFile from "../storage/IFile";
 
 export default class LocalTools {
-  static async exportWorld(creatorTools: creatorTools, project: Project, path: string) {
+  static async exportWorld(creatorTools: creatorTools, project: Project, path: string): Promise<boolean> {
     creatorTools.notifyStatusUpdate("Starting export");
 
     const name = project.name + " World";
@@ -24,7 +24,10 @@ export default class LocalTools {
 
     if (newBytes !== undefined) {
       fs.writeFileSync(path, newBytes);
+      return true;
     }
+
+    return false;
   }
 
   static async convertFromJavaWorld(creatorTools: creatorTools, javaWorldFile: IFile) {}

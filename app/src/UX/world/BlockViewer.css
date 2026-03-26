@@ -1,0 +1,200 @@
+/* BlockViewer.css - Styles for the block rendering test viewer */
+
+.bv-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #1a1a2e;
+  color: #ffffff;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+/* Canvas wrapper - transparent background for screenshot captures */
+.bv-canvas-wrapper {
+  background-color: transparent;
+}
+
+.bv-canvas {
+  background-color: transparent;
+}
+
+.bv-toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  background-color: #2a2a4e;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.bv-button {
+  padding: 8px 16px;
+  background-color: #4a4a6e;
+  border: none;
+  border-radius: 4px;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.bv-button:hover:not(:disabled) {
+  background-color: #6a6a8e;
+}
+
+.bv-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.bv-select {
+  flex: 1;
+  max-width: 300px;
+  padding: 8px 12px;
+  background-color: #3a3a5e;
+  border: 1px solid #5a5a7e;
+  border-radius: 4px;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.bv-info {
+  margin-left: auto;
+  color: #aaaacc;
+  font-size: 14px;
+}
+
+.bv-block-info {
+  padding: 12px;
+  background-color: #252545;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.bv-block-info h2 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  font-family: monospace;
+}
+
+.bv-block-details {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  color: #aaaacc;
+  font-size: 14px;
+}
+
+.bv-color-swatch {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  border: 2px solid #ffffff;
+}
+
+.bv-error {
+  padding: 12px;
+  background-color: #4a2a2a;
+  border: 1px solid #8a4a4a;
+  border-radius: 8px;
+  color: #ffaaaa;
+  margin-bottom: 12px;
+}
+
+.bv-canvas {
+  flex: 1;
+  width: 100%;
+  min-height: 400px;
+  border-radius: 8px;
+  background-color: #78a6d9; /* Sky blue matching mob viewer */
+}
+
+.bv-footer {
+  padding: 8px;
+  text-align: center;
+  color: #a0a0cc; /* Viewer-local: light text on viewer's #1a1a2e background */
+  font-size: 12px;
+}
+
+.bv-footer p {
+  margin: 0;
+}
+
+/* Grid view for showing all blocks */
+.bv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.bv-grid-item {
+  aspect-ratio: 1;
+  background-color: #2a2a4e;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    background-color 0.2s;
+}
+
+.bv-grid-item:hover {
+  transform: scale(1.05);
+  background-color: #3a3a5e;
+}
+
+.bv-grid-item canvas {
+  width: 80px;
+  height: 80px;
+}
+
+.bv-grid-item-label {
+  font-size: 10px;
+  text-align: center;
+  margin-top: 4px;
+  word-break: break-all;
+  color: #aaaacc;
+}
+
+/* Headless mode - full viewport canvas for CLI rendering */
+.bv-headless {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+.bv-canvas-headless {
+  width: 100vw !important;
+  height: 100vh !important;
+  min-height: unset;
+  border-radius: 0;
+}
+
+/* High-contrast mode: ensure text is readable against system background */
+@media (forced-colors: active) {
+  .bv-info,
+  .bv-block-details,
+  .bv-footer,
+  .bv-grid-item-label {
+    color: CanvasText;
+  }
+
+  .bv-toolbar,
+  .bv-block-info {
+    background-color: Canvas;
+    color: CanvasText;
+    border: 1px solid ButtonText;
+  }
+
+  .bv-color-swatch {
+    forced-color-adjust: none;
+  }
+}

@@ -368,6 +368,9 @@ export default class DocJsonMarkdownDocumentationGenerator {
             formsByPath[file.storageRelativePath] = jsonO;
           }
         }
+
+        // Unload file content after extracting JSON to save memory during bulk processing
+        file.unload();
       }
     }
   }

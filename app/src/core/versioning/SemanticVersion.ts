@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 const VersionParts = 3;
 /*
   immutable structure defining semantic versioning with 3 parts: major, minor, and patch

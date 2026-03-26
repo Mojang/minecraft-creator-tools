@@ -1,0 +1,141 @@
+/* StructureViewer CSS */
+
+.sv-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #1e1e1e;
+  color: #ffffff;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.sv-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  background-color: #2d2d2d;
+  border-bottom: 1px solid #3d3d3d;
+  min-height: 40px;
+}
+
+.sv-info {
+  font-size: 14px;
+  color: #cccccc;
+}
+
+.sv-viewport {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.sv-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 16px;
+}
+
+.sv-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #3d3d3d;
+  border-top-color: #3eaf53;
+  border-radius: 50%;
+  animation: sv-spin 1s linear infinite;
+}
+
+@keyframes sv-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.sv-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 20px;
+}
+
+.sv-error-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  max-width: 400px;
+  text-align: center;
+}
+
+.sv-error-icon {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.sv-error-message {
+  color: #cccccc;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.sv-error-button {
+  padding: 8px 24px;
+  background-color: var(--mc-green-6);
+  color: var(--mc-white);
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: inherit;
+  border-radius: 2px;
+}
+
+.sv-error-button:hover {
+  background-color: var(--mc-green-5);
+}
+
+.sv-error-button:focus-visible {
+  outline: 2px solid var(--mc-green-4);
+  outline-offset: 2px;
+}
+
+/* Hidden canvas for screenshot capture */
+.sv-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+/* No-chrome mode - for headless rendering without any UI overlays */
+.sv-no-chrome {
+  background-color: transparent;
+}
+
+.sv-no-chrome .sv-viewport-full {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+/* High-contrast mode: ensure text is readable against system background */
+@media (forced-colors: active) {
+  .sv-info,
+  .sv-error-message {
+    color: CanvasText;
+  }
+
+  .sv-toolbar {
+    background-color: Canvas;
+    color: CanvasText;
+    border-color: ButtonText;
+  }
+
+  .sv-spinner {
+    forced-color-adjust: none;
+  }
+}

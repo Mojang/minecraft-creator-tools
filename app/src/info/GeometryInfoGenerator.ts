@@ -8,7 +8,6 @@ import ProjectInfoSet from "./ProjectInfoSet";
 import IProjectInfoGenerator from "./IProjectInfoGenerator";
 import Project from "../app/Project";
 import ContentIndex from "../core/ContentIndex";
-import ProjectInfoUtilities from "./ProjectInfoUtilities";
 import ModelGeometryDefinition from "../minecraft/ModelGeometryDefinition";
 import { ItemDisplayTransforms } from "../minecraft/IModelGeometry";
 
@@ -19,15 +18,14 @@ export enum GeometryInfoGeneratorTest {
   overlyComplexBlockGeometry = 501,
 }
 
+/**
+ * Validates and aggregates model geometry information from resource packs.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/geometry.form.json} for topic definitions
+ */
 export default class GeometryInfoGenerator implements IProjectInfoGenerator {
   id = "GEOMETRY";
   title = "Model Geometry Validation";
-
-  getTopicData(topicId: number) {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(GeometryInfoGeneratorTest, topicId),
-    };
-  }
 
   summarize(info: any, infoSet: ProjectInfoSet) {}
 

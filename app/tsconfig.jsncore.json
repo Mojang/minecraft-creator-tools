@@ -1,0 +1,49 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "noEmit": false,
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "declaration": false,
+    "jsx": "react-jsx"
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/cli/ui/ink.d.ts"
+  ],
+  "exclude": [
+    "src/vscode/**/*",
+    "src/UX/**/*",
+    "src/UXex/**/*",
+    "src/workers/**/*",
+    "src/test/**/*",
+    "src/test-ex/**/*",
+    "src/test-extra/**/*",
+    "src/test-longhaul/**/*",
+    "src/testweb/**/*",
+    "src/testmobile/**/*",
+    "src/testa11y/**/*",
+    "src/testviewers/**/*",
+    "src/testelectron/**/*",
+    "src/testshared/**/*",
+    "src/monaco/**/*",
+    "src/setupTests.ts",
+    "src/UX/world/**/*",
+    "src/vscodeweb/**/*",
+    "src/babylon/**/*",
+    "src/dataformux/**/*",
+    "node_modules"
+  ]
+}

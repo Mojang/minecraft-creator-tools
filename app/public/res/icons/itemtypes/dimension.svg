@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Dimension: Portal frame -->
+  <rect x="2" y="2" width="12" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <rect x="4" y="4" width="8" height="8" fill-opacity="0.3"/>
+  <rect x="5" y="5" width="6" height="6" fill-opacity="0.5"/>
+  <path d="M6 7L8 9L10 7" fill="none" stroke="currentColor" stroke-width="0.8"/>
+  <path d="M8 6V10" fill="none" stroke="currentColor" stroke-width="0.8"/>
+</svg>

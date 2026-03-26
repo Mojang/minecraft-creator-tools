@@ -1,6 +1,0 @@
-{
-  "id": "query.texture_frame_index",
-  "fields": [],
-  "description": "Returns the icon index of the experience orb.",
-  "title": "Texture Frame Index"
-}

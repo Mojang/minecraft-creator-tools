@@ -37,16 +37,15 @@ export enum PackInfoGeneratorTest {
   subpackTiers = 245,
 }
 
+/**
+ * Aggregates general pack information from manifests (names, descriptions, UUIDs, etc.).
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/pack.form.json} for topic definitions
+ */
 export default class PackInfoGenerator implements IProjectInfoGenerator {
   id = "PACK";
   title = "General info";
   canAlwaysProcess = true;
-
-  getTopicData(topicId: number) {
-    return {
-      title: topicId.toString(),
-    };
-  }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
     info.defaultBehaviorPackUuid = infoSet.getFirstStringValue(this.id, PackInfoGeneratorTest.behaviorPackUuid);

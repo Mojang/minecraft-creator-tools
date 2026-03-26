@@ -1,6 +1,6 @@
 {
   "camera-grapple.ts": {
-    "description": "camera-grapple.ts ",
+    "description": "An editor extension that smoothly flies the camera to a target location using grapple-style movement",
     "prefix": ["mc"],
     "body": [
       "// Copyright (c) Mojang AB.  All rights reserved.",
@@ -142,7 +142,7 @@
     ]
   },
   "dye-brush.ts": {
-    "description": "dye-brush.ts ",
+    "description": "An editor extension that provides a brush tool for painting blocks with different dye colors",
     "prefix": ["mc"],
     "body": [
       "// Copyright (c) Mojang AB.  All rights reserved.",
@@ -469,7 +469,7 @@
     ]
   },
   "farm-generator.ts": {
-    "description": "farm-generator.ts ",
+    "description": "An editor extension that generates customizable farms with crops, irrigation, and fencing options",
     "prefix": ["mc"],
     "body": [
       "// Copyright (c) Mojang AB.  All rights reserved.",
@@ -876,7 +876,7 @@
     ]
   },
   "goto-mark.ts": {
-    "description": "goto-mark.ts ",
+    "description": "An editor extension that lets you save, name, and teleport to marked locations in the world",
     "prefix": ["mc"],
     "body": [
       "// Copyright (c) Mojang AB.  All rights reserved.",
@@ -1288,7 +1288,7 @@
     ]
   },
   "portal-generator.ts": {
-    "description": "portal-generator.ts ",
+    "description": "An editor extension that generates portal structures at a target location in the world",
     "prefix": ["mc"],
     "body": [
       "// Copyright (c) Mojang AB.  All rights reserved.",
@@ -1774,7 +1774,7 @@
     ]
   },
   "simple-locate-biome.ts": {
-    "description": "simple-locate-biome.ts ",
+    "description": "An editor extension that locates and teleports to a selected biome or structure type",
     "prefix": ["mc"],
     "body": [
       "// Copyright (c) Mojang AB.  All rights reserved.",
@@ -2065,7 +2065,7 @@
     ]
   },
   "star-brush-shape.ts": {
-    "description": "star-brush-shape.ts ",
+    "description": "An editor extension that adds a star-shaped brush for painting blocks in a star pattern",
     "prefix": ["mc"],
     "body": [
       "// Copyright (c) Mojang AB.  All rights reserved.",
@@ -2194,7 +2194,7 @@
     ]
   },
   "tree-generator.ts": {
-    "description": "tree-generator.ts ",
+    "description": "An editor extension that generates different types of trees at a target location",
     "prefix": ["mc"],
     "body": [
       "// Copyright (c) Mojang AB.  All rights reserved.",

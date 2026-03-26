@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 import { ProjectItemType } from "./IProjectItemData";
+import ILocalizable from "../core/ILocalizable";
 
 export enum GalleryItemType {
   project = 0,
@@ -13,6 +14,7 @@ export enum GalleryItemType {
   editorProject = 6,
   itemType = 7,
   actionSet = 8,
+  modelDesign = 9, // Model design template (IMcpModelDesign JSON)
   spawnLootRecipes = 21,
   worldGen = 22,
   visuals = 23,
@@ -31,7 +33,7 @@ export interface LogoLocation {
   imageWidth: number;
 }
 
-export default interface IGalleryItem {
+export default interface IGalleryItem extends ILocalizable {
   gitHubOwner: string;
   gitHubRepoName: string;
   gitHubFolder?: string;
@@ -39,6 +41,7 @@ export default interface IGalleryItem {
   thumbnailImage: string;
   logoImage?: string;
   localLogo?: string;
+  snapshotImage?: string;
   sampleSet?: string;
   topics?: string[];
   logoLocation?: LogoLocation;
@@ -56,4 +59,8 @@ export default interface IGalleryItem {
   type: GalleryItemType;
   nameReplacers?: string[];
   id: string;
+  /** Difficulty level shown as a badge on template cards. */
+  difficulty?: "beginner" | "intermediate" | "advanced";
+  /** When true, this gallery item was synthesized from an existing ProjectItem, not from a gallery catalog. */
+  isProjectItem?: boolean;
 }

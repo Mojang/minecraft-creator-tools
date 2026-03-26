@@ -10,80 +10,21 @@ import Database from "../minecraft/Database";
 import IProjectUpdater from "../updates/IProjectUpdater";
 import ProjectUpdateResult from "../updates/ProjectUpdateResult";
 import { UpdateResultType } from "../updates/IUpdateResult";
-import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import WorldTemplateManifestDefinition from "../minecraft/WorldTemplateManifestDefinition";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
 import { isMinorVersionTooOld } from "../core/versioning/MinecraftVersionRules";
 
+/**
+ * Validates and updates base game version settings in world template manifests.
+ *
+ * @see {@link ../../../public/data/forms/mctoolsval/basegamever.form.json} for topic definitions
+ */
 export default class BaseGameVersionManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "BASEGAMEVER";
   title = "Base Game Version";
 
   performPlatformVersionValidations: boolean = false;
-
-  getTopicData(topicId: number): IProjectInfoTopicData | undefined {
-    const baseGameVersion = {
-      updaterId: this.id,
-      updaterIndex: 51,
-      action: "Set base_game_version to latest version.",
-    };
-
-    switch (topicId) {
-      case 100:
-        return {
-          title: "World Template Base Game Version Defined",
-        };
-
-      case 110:
-        return {
-          title: "World Template Base Game Version Major Version Lower than Current",
-          updaters: [baseGameVersion],
-        };
-
-      case 111:
-        return {
-          title: "World Template Base Game Version Major Version Higher than Current",
-          updaters: [baseGameVersion],
-        };
-
-      case 120:
-        return {
-          title: "World Template Base Game Version Minor Version Lower than Current",
-          updaters: [baseGameVersion],
-        };
-
-      case 121:
-        return {
-          title: "World Template Base Game Version Minor Version Higher than Current",
-          updaters: [baseGameVersion],
-        };
-
-      case 130:
-        return {
-          title: "World Template Base Game Version Patch Version Lower than Current",
-          updaters: [baseGameVersion],
-        };
-
-      case 131:
-        return {
-          title: "World Template Base Game Version Patch Version Higher than Current",
-          updaters: [baseGameVersion],
-        };
-
-      case 500:
-        return {
-          title: "Retrieve Latest Minecraft Version",
-        };
-      case 501:
-        return {
-          title: "Parse Latest Minecraft Version",
-        };
-    }
-    return {
-      title: topicId.toString(),
-    };
-  }
 
   getUpdaterData(updaterId: number) {
     return {

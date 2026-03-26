@@ -1,0 +1,266 @@
+.dsp-outer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 8px;
+  font-family: var(--default-font-family);
+}
+
+.dsp-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dsp-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dsp-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.dsp-status-dot.connected {
+  background-color: #22c55e;
+}
+
+.dsp-status-dot.disconnected {
+  background-color: #ef4444;
+}
+
+.dsp-status-dot.connecting {
+  background-color: #f59e0b;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.dsp-tick {
+  font-size: 0.85em;
+  color: var(--color-text-secondary);
+}
+
+.dsp-controls {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.dsp-control-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-surface-alt);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  font-size: 0.85em;
+  transition: all 0.15s ease;
+}
+
+.dsp-control-btn:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+  border-color: var(--color-border-hover);
+}
+
+.dsp-control-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dsp-control-btn.running {
+  color: var(--color-text-primary);
+}
+
+.dsp-control-btn.paused {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: #f59e0b;
+  color: #22c55e;
+}
+
+.dsp-control-btn.profiler {
+  color: var(--color-text-primary);
+}
+
+.dsp-control-btn.profiler.active {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.dsp-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.dsp-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.dsp-stat-card {
+  background: var(--color-surface-alt);
+  border-radius: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+}
+
+.dsp-stat-name {
+  font-size: 0.8em;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+  text-transform: capitalize;
+}
+
+.dsp-stat-value {
+  font-size: 1.4em;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.dsp-stat-value.warning {
+  color: #f59e0b;
+}
+
+.dsp-stat-value.critical {
+  color: #ef4444;
+}
+
+.dsp-stat-unit {
+  font-size: 0.7em;
+  font-weight: normal;
+  color: var(--color-text-secondary);
+  margin-left: 4px;
+}
+
+.dsp-category {
+  margin-bottom: 16px;
+}
+
+.dsp-category-title {
+  font-size: 0.9em;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--color-text-primary);
+  text-transform: capitalize;
+}
+
+.dsp-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: var(--color-text-secondary);
+}
+
+.dsp-empty-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+.dsp-empty-hint {
+  margin-top: 12px;
+  font-size: 0.8em;
+  opacity: 0.6;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.dsp-chart-container {
+  height: 120px;
+  margin-top: 8px;
+}
+
+/* Profiler Results Styles */
+.dsp-profiler-results {
+  margin-bottom: 20px;
+  background: var(--color-surface-alt);
+  border-radius: 4px;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+}
+
+.dsp-profiler-table {
+  font-size: 0.85em;
+  overflow-x: auto;
+}
+
+.dsp-profiler-header {
+  display: flex;
+  font-weight: 600;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 8px;
+  margin-bottom: 4px;
+  color: var(--color-text-secondary);
+}
+
+.dsp-profiler-row {
+  display: flex;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--color-border-subtle, rgba(128, 128, 128, 0.2));
+}
+
+.dsp-profiler-row:hover {
+  background: var(--color-surface-hover, rgba(128, 128, 128, 0.1));
+}
+
+.dsp-profiler-col {
+  padding: 2px 8px;
+}
+
+.dsp-profiler-col.name {
+  flex: 1;
+  min-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: monospace;
+}
+
+.dsp-profiler-col.time {
+  width: 100px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.dsp-profiler-col.time.warning {
+  color: #f59e0b;
+}
+
+.dsp-profiler-col.time.critical {
+  color: #ef4444;
+}
+
+.dsp-profiler-col.count {
+  width: 70px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.dsp-profiler-more {
+  padding: 8px;
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-style: italic;
+}

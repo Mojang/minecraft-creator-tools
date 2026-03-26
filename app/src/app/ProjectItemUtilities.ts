@@ -11,125 +11,81 @@ import IProjectItemRelationship from "./IProjectItemRelationship";
 import Project from "./Project";
 import ProjectItem from "./ProjectItem";
 import ProjectUtilities from "./ProjectUtilities";
+import { getColorForProjectItemType, getProjectItemTypeGroup, ProjectItemTypeGroup } from "./ProjectItemTypeInfo";
 
-// an attempt to group related things together via sort order. Used in the UI item list
-// general order is design stuff, then script & logic, then behavior stuff, then resource stuff, then skin stuff, then world stuff, then misc stuff (e.g., dev things)
+// an attempt to group related things together via sort order. Used in the UI item list.
+// Order: Design → Scripts/Logic → Entity Types → Item Types → Block Types → World/Worldgen →
+//        Models/Animations → Textures/Audio → Vibrant Visuals → UI/UX → Skins → Config/Dev → Packaging → Meta
+// This order keeps logical groupings together to make projects easier to navigate.
 export const ProjectItemSortOrder = [
-  // VVV--- design stuff area
+  // ═══════════════════════════════════════════════════════════════════════════
+  // DESIGN - Design pack content for planning/iteration
+  // ═══════════════════════════════════════════════════════════════════════════
   ProjectItemType.designTexture,
   ProjectItemType.designPackManifestJson,
   ProjectItemType.designPackFolder,
+  ProjectItemType.actionSet,
 
-  // VVV--- script & logic area
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SCRIPTS & LOGIC - Code and command logic (Emerald Green)
+  // ═══════════════════════════════════════════════════════════════════════════
   ProjectItemType.ts,
   ProjectItemType.js,
   ProjectItemType.MCFunction,
-  ProjectItemType.actionSet,
+  ProjectItemType.tickJson,
+  ProjectItemType.functionEventJson,
+  ProjectItemType.testJs,
   ProjectItemType.entityTypeBaseJs,
   ProjectItemType.entityTypeBaseTs,
   ProjectItemType.blockTypeBaseJs,
   ProjectItemType.blockTypeBaseTs,
   ProjectItemType.catalogIndexJs,
-  ProjectItemType.animationBehaviorJson,
+  ProjectItemType.buildProcessedJs,
+  ProjectItemType.animationBehaviorJson, // Behavior-side animations are logic
   ProjectItemType.animationControllerBehaviorJson,
-  ProjectItemType.testJs,
 
-  // VVV--- behavior stuff area
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ENTITY TYPES - Mobs, creatures, NPCs (Enderman Purple)
+  // ═══════════════════════════════════════════════════════════════════════════
   ProjectItemType.entityTypeBehavior,
+  ProjectItemType.entityTypeResource,
   ProjectItemType.spawnRuleBehavior,
   ProjectItemType.spawnGroupJson,
-  ProjectItemType.functionEventJson,
-  ProjectItemType.itemTypeBehavior,
-  ProjectItemType.craftingItemCatalog,
-  ProjectItemType.recipeBehavior,
-  ProjectItemType.blockTypeBehavior,
-  ProjectItemType.blockMaterialsBehaviorJson,
-  ProjectItemType.tradingBehaviorJson,
-  ProjectItemType.volumeBehaviorJson,
-  ProjectItemType.lootTableBehavior,
   ProjectItemType.dialogueBehaviorJson,
-  //      VV-- Worldgen subarea
-  ProjectItemType.featureRuleBehavior,
-  ProjectItemType.featureBehavior,
-  ProjectItemType.jigsawStructureSet,
-  ProjectItemType.jigsawStructure,
-  ProjectItemType.jigsawTemplatePool,
-  ProjectItemType.jigsawProcessorList,
-  ProjectItemType.biomeBehavior,
-  ProjectItemType.dimensionJson,
-  //      VV-- Misc uncommon subarea
-  ProjectItemType.tickJson,
-  ProjectItemType.cameraBehaviorJson,
-  ProjectItemType.aimAssistPresetJson,
-  ProjectItemType.aimAssistCategoryJson,
   ProjectItemType.behaviorTreeJson,
-  ProjectItemType.behaviorPackFolder,
-  ProjectItemType.behaviorPackManifestJson,
 
-  // VVV--- resource stuff area
-  ProjectItemType.entityTypeResource,
-  ProjectItemType.attachableResourceJson,
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ITEM TYPES - Items, loot, recipes, trading (Gold/Amber)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ProjectItemType.itemTypeBehavior,
   ProjectItemType.itemTypeLegacyResource,
+  ProjectItemType.attachableResourceJson,
+  ProjectItemType.itemTextureJson,
+  ProjectItemType.lootTableBehavior,
+  ProjectItemType.recipeBehavior,
+  ProjectItemType.tradingBehaviorJson,
+  ProjectItemType.craftingItemCatalog,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // BLOCK TYPES - Blocks and terrain (Stone Gray)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ProjectItemType.blockTypeBehavior,
   ProjectItemType.blocksCatalogResourceJson,
   ProjectItemType.blockTypeResourceJsonDoNotUse,
   ProjectItemType.blockCulling,
+  ProjectItemType.blockMaterialsBehaviorJson,
   ProjectItemType.terrainTextureCatalogResourceJson,
-  ProjectItemType.particleJson,
-  ProjectItemType.modelGeometryJson,
-  ProjectItemType.itemTextureJson,
-  ProjectItemType.texture,
-  ProjectItemType.textureSetJson,
-  ProjectItemType.animationResourceJson,
-  ProjectItemType.animationControllerResourceJson,
-  ProjectItemType.renderControllerJson,
-  ProjectItemType.flipbookTexturesJson,
-  //      VV-- Vibrant visuals subarea
-  ProjectItemType.lightingJson,
-  ProjectItemType.colorGradingJson,
-  ProjectItemType.atmosphericsJson,
-  ProjectItemType.pbrJson,
-  ProjectItemType.pointLightsJson,
-  ProjectItemType.waterJson,
-  ProjectItemType.shadowsJson,
-  //      VV-- JSON UI subarea
-  ProjectItemType.uiJson,
-  ProjectItemType.ninesliceJson,
-  ProjectItemType.uiTexture,
-  //      VV-- Misc uncommon visual stuff subarea
-  ProjectItemType.cameraResourceJson,
-  ProjectItemType.fogResourceJson,
-  ProjectItemType.biomeResource,
-  ProjectItemType.biomesClientCatalogResource,
-  ProjectItemType.globalVariablesJson,
-  ProjectItemType.sdlLayout,
-  ProjectItemType.lodJson,
-  ProjectItemType.rendererJson,
-  ProjectItemType.loadingMessagesJson,
-  ProjectItemType.fontMetadataJson,
-  ProjectItemType.emoticonsJson,
-  ProjectItemType.splashesJson,
-  //      VV-- Sound/audio subarea
-  ProjectItemType.soundCatalog,
-  ProjectItemType.soundDefinitionCatalog,
-  ProjectItemType.musicDefinitionJson,
-  ProjectItemType.audio,
-  //      VV-- (legacy) Materials subarea
-  ProjectItemType.materialsResourceJson,
-  ProjectItemType.material,
-  ProjectItemType.materialSetJson,
-  ProjectItemType.materialVertex,
-  ProjectItemType.materialFragment,
-  ProjectItemType.materialGeometry,
-  ProjectItemType.languagesCatalogJson,
-  ProjectItemType.lang,
-  ProjectItemType.resourcePackManifestJson,
-  ProjectItemType.textureListJson,
-  ProjectItemType.fileListArrayJson,
-  ProjectItemType.resourcePackFolder,
+  ProjectItemType.voxelShapeBehavior,
 
-  // VVV--- world stuff area
+  // ═══════════════════════════════════════════════════════════════════════════
+  // WORLD & WORLDGEN - Worlds, biomes, features, dimensions (Grass Lime)
+  // ═══════════════════════════════════════════════════════════════════════════
   ProjectItemType.worldFolder,
   ProjectItemType.worldTemplateManifestJson,
+  ProjectItemType.MCWorld,
+  ProjectItemType.MCProject,
+  ProjectItemType.MCTemplate,
+  ProjectItemType.worldTest,
   ProjectItemType.levelDat,
   ProjectItemType.levelDatOld,
   ProjectItemType.behaviorPackListJson,
@@ -140,24 +96,92 @@ export const ProjectItemSortOrder = [
   ProjectItemType.levelDbLog,
   ProjectItemType.levelDbCurrent,
   ProjectItemType.levelDbManifest,
-  ProjectItemType.worldTest,
-  ProjectItemType.MCWorld,
-  ProjectItemType.MCProject,
-  ProjectItemType.MCTemplate,
+  ProjectItemType.structure,
+  ProjectItemType.volumeBehaviorJson,
+  // Biomes
+  ProjectItemType.biomeBehavior,
+  ProjectItemType.biomeResource,
+  ProjectItemType.biomesClientCatalogResource,
+  // Features and jigsaw structures
+  ProjectItemType.featureRuleBehavior,
+  ProjectItemType.featureBehavior,
+  ProjectItemType.jigsawStructureSet,
+  ProjectItemType.jigsawStructure,
+  ProjectItemType.jigsawTemplatePool,
+  ProjectItemType.jigsawProcessorList,
+  ProjectItemType.dimensionJson,
 
-  // VVV--- skin stuff area
+  // ═══════════════════════════════════════════════════════════════════════════
+  // MODELS & ANIMATIONS - Geometry, animations, render controllers (Diamond Cyan)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ProjectItemType.modelGeometryJson,
+  ProjectItemType.animationResourceJson,
+  ProjectItemType.animationControllerResourceJson,
+  ProjectItemType.renderControllerJson,
+  ProjectItemType.particleJson,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // TEXTURES & AUDIO - Visual and audio assets (Pink Dye)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ProjectItemType.texture,
+  ProjectItemType.image,
+  ProjectItemType.packIconImage,
+  ProjectItemType.marketingAssetImage,
+  ProjectItemType.storeAssetImage,
+  ProjectItemType.textureListJson,
+  ProjectItemType.flipbookTexturesJson,
+  ProjectItemType.fogResourceJson,
+  // Audio
+  ProjectItemType.soundCatalog,
+  ProjectItemType.soundDefinitionCatalog,
+  ProjectItemType.musicDefinitionJson,
+  ProjectItemType.audio,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // VIBRANT VISUALS - Deferred rendering, PBR, lighting (Amethyst)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ProjectItemType.lightingJson,
+  ProjectItemType.colorGradingJson,
+  ProjectItemType.atmosphericsJson,
+  ProjectItemType.pbrJson,
+  ProjectItemType.pointLightsJson,
+  ProjectItemType.waterJson,
+  ProjectItemType.shadowsJson,
+  ProjectItemType.textureSetJson,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // UI & LOCALIZATION - JSON UI, languages, dialogs (Pumpkin Orange)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ProjectItemType.uiJson,
+  ProjectItemType.uiTexture,
+  ProjectItemType.ninesliceJson,
+  ProjectItemType.globalVariablesJson,
+  ProjectItemType.languagesCatalogJson,
+  ProjectItemType.lang,
+  ProjectItemType.loadingMessagesJson,
+  ProjectItemType.splashesJson,
+  ProjectItemType.emoticonsJson,
+  ProjectItemType.fontMetadataJson,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SKINS & PERSONAS - Player customization (Leather Brown)
+  // ═══════════════════════════════════════════════════════════════════════════
   ProjectItemType.skinCatalogJson,
   ProjectItemType.skinPackGeometryJson,
   ProjectItemType.skinPackTextureBackCompatJson,
   ProjectItemType.skinPackManifestJson,
   ProjectItemType.skinPackFolder,
-
-  // VVV--- persona area
   ProjectItemType.personaJson,
   ProjectItemType.personaManifestJson,
   ProjectItemType.personaPackFolder,
 
-  // VVV--- dev stuff area
+  // ═══════════════════════════════════════════════════════════════════════════
+  // CONFIG & DEV - Build tools, manifests, VS Code (Iron Slate)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ProjectItemType.behaviorPackManifestJson,
+  ProjectItemType.resourcePackManifestJson,
+  ProjectItemType.behaviorPackFolder,
+  ProjectItemType.resourcePackFolder,
   ProjectItemType.tsconfigJson,
   ProjectItemType.packageJson,
   ProjectItemType.packageLockJson,
@@ -170,18 +194,39 @@ export const ProjectItemSortOrder = [
   ProjectItemType.esLintConfigMjs,
   ProjectItemType.env,
   ProjectItemType.prettierRcJson,
-  ProjectItemType.buildProcessedJs,
+  ProjectItemType.jsconfigJson,
+  ProjectItemType.cameraBehaviorJson,
+  ProjectItemType.cameraResourceJson,
+  ProjectItemType.aimAssistPresetJson,
+  ProjectItemType.aimAssistCategoryJson,
+  ProjectItemType.sdlLayout,
+  ProjectItemType.lodJson,
+  ProjectItemType.rendererJson,
+  ProjectItemType.uniformsJson,
+  ProjectItemType.materialsResourceJson,
+  ProjectItemType.material,
+  ProjectItemType.materialSetJson,
+  ProjectItemType.materialVertex,
+  ProjectItemType.materialFragment,
+  ProjectItemType.materialGeometry,
+  ProjectItemType.fileListArrayJson,
+  ProjectItemType.educationJson,
 
-  // VVV--- marketing area
-  ProjectItemType.marketingAssetImage,
-  ProjectItemType.storeAssetImage,
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PACKAGING - Archives and packages (Redstone Red)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ProjectItemType.MCAddon,
+  ProjectItemType.MCPack,
+  ProjectItemType.zip,
+  ProjectItemType.contentsJson,
 
-  // VVV--- metaproject
+  // ═══════════════════════════════════════════════════════════════════════════
+  // META & DOCUMENTATION - Docs, forms, metadata (Book Brown)
+  // ═══════════════════════════════════════════════════════════════════════════
   ProjectItemType.dataForm,
   ProjectItemType.docInfoJson,
   ProjectItemType.scriptTypesJson,
   ProjectItemType.commandSetDefinitionJson,
-  ProjectItemType.jsconfigJson,
   ProjectItemType.docfxJson,
   ProjectItemType.jsdocJson,
   ProjectItemType.markdownDocumentation,
@@ -195,18 +240,10 @@ export const ProjectItemSortOrder = [
   ProjectItemType.vanillaDataJson,
   ProjectItemType.tagsMetadata,
 
-  // VVV--- uncategorized artifacts
-  ProjectItemType.image,
-  ProjectItemType.uniformsJson,
+  // ═══════════════════════════════════════════════════════════════════════════
+  // UNKNOWN - Fallback for unrecognized types
+  // ═══════════════════════════════════════════════════════════════════════════
   ProjectItemType.unknownJson,
-
-  // VVV--- packaging artifacts
-  ProjectItemType.packIconImage,
-  ProjectItemType.educationJson,
-  ProjectItemType.contentsJson,
-  ProjectItemType.MCAddon,
-  ProjectItemType.MCPack,
-  ProjectItemType.zip,
   ProjectItemType.unknown,
 ];
 
@@ -279,13 +316,15 @@ export default class ProjectItemUtilities {
   static getFormPathForType(itemType: ProjectItemType) {
     switch (itemType) {
       case ProjectItemType.entityTypeBehavior:
-        return "entity/actor_document";
+        return "entity/entity_behavior_document";
       case ProjectItemType.biomeBehavior:
         return "biome/biome_json_file";
       case ProjectItemType.blockCulling:
         return "block_culling/blockculling";
       case ProjectItemType.biomesClientCatalogResource:
-        return "client_biome/client_biome_json_file";
+        // Note: This is the legacy biomes_client.json format, NOT the newer client_biome format
+        // which has format_version and minecraft:client_biome structure
+        return "biomes_client/biomes_client";
       case ProjectItemType.atmosphericsJson:
         return "client_deferred_rendering/atmosphericscattering_atmosphericscatteringconfigsettings";
       case ProjectItemType.colorGradingJson:
@@ -311,15 +350,23 @@ export default class ProjectItemUtilities {
       case ProjectItemType.jigsawStructure:
         return "jigsaw/minecraft_jigsaw_structure_metadata";
       case ProjectItemType.spawnRuleBehavior:
-        return "spawn/spawn_rules";
+        return "spawn/spawn_rules_document";
       case ProjectItemType.modelGeometryJson:
         return "visual/geometry.v1.21.0";
+      case ProjectItemType.textureSetJson:
+        return "visual/texture_set.v1.21.30";
+      case ProjectItemType.voxelShapeBehavior:
+        return "voxel_shapes/voxel_shape_document";
       default:
         return undefined;
     }
   }
 
-  static getSchemaPathForType(itemType: ProjectItemType) {
+  /**
+   * Returns the path to a community/Blockception JSON schema for the given item type.
+   * These schemas are located in public/res/latest/schemas/ and are loaded via Database.getCommunitySchema().
+   */
+  static getCommunitySchemaPathForType(itemType: ProjectItemType) {
     switch (itemType) {
       case ProjectItemType.behaviorPackManifestJson:
         return "general/manifest.json";
@@ -407,6 +454,114 @@ export default class ProjectItemUtilities {
         return "resource/textures/terrain_texture.json";
       case ProjectItemType.globalVariablesJson:
         return "resource/ui/_global_variables.json";
+
+      default:
+        return undefined;
+    }
+  }
+
+  /**
+   * Returns the path to an official JSON schema for the given item type.
+   * These schemas are located in public/schemas/ and are loaded via Database.getOfficialSchema().
+   * The official schemas have different naming conventions than community schemas.
+   */
+  static getOfficialSchemaPathForType(itemType: ProjectItemType): string | undefined {
+    switch (itemType) {
+      // Behavior pack types
+      case ProjectItemType.entityTypeBehavior:
+        return "entity/entity_behavior_document.schema.json";
+      case ProjectItemType.blockTypeBehavior:
+        return "block/block_behavior_document.schema.json";
+      case ProjectItemType.itemTypeBehavior:
+        return "item/item_behavior_document.schema.json";
+      case ProjectItemType.recipeBehavior:
+        // Unified recipe schema with oneOf for all recipe types
+        return "recipe/recipe.schema.json";
+      case ProjectItemType.lootTableBehavior:
+        return "loot/loot_table.schema.json";
+      case ProjectItemType.spawnRuleBehavior:
+        return "spawn_rules/spawn_rules_document.schema.json";
+      case ProjectItemType.dialogueBehaviorJson:
+        return "dialogue/dialogue_document.schema.json";
+      case ProjectItemType.featureBehavior:
+        return "features/features.schema.json";
+      case ProjectItemType.featureRuleBehavior:
+        return "feature_rules/feature_rules_document.schema.json";
+      case ProjectItemType.tradingBehaviorJson:
+        return "trade/tradetabledata.schema.json";
+      case ProjectItemType.biomeBehavior:
+        return "biome/biome_json_file.schema.json";
+
+      // Animation types
+      case ProjectItemType.animationBehaviorJson:
+        return "animation/animation_document.schema.json";
+      case ProjectItemType.animationControllerBehaviorJson:
+        return "animation/animation_controller_document.schema.json";
+      case ProjectItemType.animationResourceJson:
+        return "animation/animation_document.schema.json";
+      case ProjectItemType.animationControllerResourceJson:
+        return "animation/animation_controller_document.schema.json";
+
+      // Resource pack types
+      case ProjectItemType.attachableResourceJson:
+        return "attachable/attachable.schema.json";
+      case ProjectItemType.fogResourceJson:
+        return "fog/fog_document.schema.json";
+      case ProjectItemType.particleJson:
+        return "client_particles/particle_document.schema.json";
+      case ProjectItemType.renderControllerJson:
+        return "resource/render_controller_set.schema.json";
+      case ProjectItemType.blocksCatalogResourceJson:
+        return "resource/blocks_resource.schema.json";
+      case ProjectItemType.soundDefinitionCatalog:
+        return "resource/sound_definitions.schema.json";
+      case ProjectItemType.terrainTextureCatalogResourceJson:
+        return "resource/terrain_texture.schema.json";
+      case ProjectItemType.itemTextureJson:
+        return "resource/item_texture.schema.json";
+      case ProjectItemType.flipbookTexturesJson:
+        return "resource/flipbook_textures.schema.json";
+      case ProjectItemType.biomesClientCatalogResource:
+        return "biomes_client/biomes_client.schema.json";
+      case ProjectItemType.entityTypeResource:
+        return "visual/actor_resource_definition.v1.10.0.schema.json";
+      case ProjectItemType.modelGeometryJson:
+        return "visual/geometry.v1.21.0.schema.json";
+      case ProjectItemType.textureSetJson:
+        return "visual/texture_set.v1.21.30.schema.json";
+      case ProjectItemType.itemTypeLegacyResource:
+        return "client_item/resource.schema.json";
+
+      // UI types
+      case ProjectItemType.uiJson:
+        return "ui/ui_screen.schema.json";
+      case ProjectItemType.globalVariablesJson:
+        return "ui/ui_global_variables.schema.json";
+
+      // Manifest types
+      case ProjectItemType.behaviorPackManifestJson:
+        return "pack/behavior_pack_header_json.schema.json";
+      case ProjectItemType.resourcePackManifestJson:
+        return "pack/resource_pack_manifest.schema.json";
+
+      // Block culling
+      case ProjectItemType.blockCulling:
+        return "block_culling/blockculling.schema.json";
+
+      // Resource pack catalog types
+      case ProjectItemType.languagesCatalogJson:
+        return "resource/languages.schema.json";
+      case ProjectItemType.musicDefinitionJson:
+        return "resource/music_definitions.schema.json";
+
+      // Behavior pack types
+      case ProjectItemType.tickJson:
+        return "behavior/tick.schema.json";
+
+      // World types
+      case ProjectItemType.behaviorPackListJson:
+      case ProjectItemType.resourcePackListJson:
+        return "world/world_packs.schema.json";
 
       default:
         return undefined;
@@ -614,6 +769,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.itemTypeLegacyResource:
       case ProjectItemType.featureBehavior:
       case ProjectItemType.featureRuleBehavior:
+      case ProjectItemType.voxelShapeBehavior:
         return ProjectItemCategory.types;
 
       case ProjectItemType.esLintConfigMjs:
@@ -863,6 +1019,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.jigsawTemplatePool:
       case ProjectItemType.jigsawStructureSet:
       case ProjectItemType.educationJson:
+      case ProjectItemType.voxelShapeBehavior:
         return ["application/json"];
 
       case ProjectItemType.MCWorld:
@@ -1012,9 +1169,9 @@ export default class ProjectItemUtilities {
       case ProjectItemType.designPackFolder:
         return "Design pack";
       case ProjectItemType.behaviorPackFolder:
-        return "Behavior pack";
+        return "Behavior pack folder";
       case ProjectItemType.resourcePackFolder:
-        return "Resource pack";
+        return "Resource pack folder";
       case ProjectItemType.skinPackFolder:
         return "Skin pack";
       case ProjectItemType.actionSet:
@@ -1118,7 +1275,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.env:
         return "Environment File";
       case ProjectItemType.levelDatOld:
-        return "Level Data (old)";
+        return "Legacy Level Data";
       case ProjectItemType.levelDat:
         return "Level Data";
       case ProjectItemType.jsMap:
@@ -1199,8 +1356,47 @@ export default class ProjectItemUtilities {
         return "Resource pack history";
       case ProjectItemType.educationJson:
         return "Education manifest";
+      case ProjectItemType.voxelShapeBehavior:
+        return "Voxel shape";
       default:
         return "Unknown";
+    }
+  }
+
+  static getTooltipForType(type: ProjectItemType): string {
+    const group = getProjectItemTypeGroup(type);
+
+    switch (group) {
+      case ProjectItemTypeGroup.design:
+        return "Planning assets and placeholders used to prototype ideas.";
+      case ProjectItemTypeGroup.scriptsLogic:
+        return "Scripts and command logic that drive gameplay behavior.";
+      case ProjectItemTypeGroup.entityTypes:
+        return "Definitions for mobs and NPCs, including behavior and spawn rules.";
+      case ProjectItemTypeGroup.itemTypes:
+        return "Definitions for custom items, loot, recipes, and trading.";
+      case ProjectItemTypeGroup.blockTypes:
+        return "Definitions for blocks, materials, and terrain behavior.";
+      case ProjectItemTypeGroup.worldWorldgen:
+        return "World data, biomes, features, and structure generation settings.";
+      case ProjectItemTypeGroup.modelsAnimations:
+        return "3D models, animations, and render controllers for visuals.";
+      case ProjectItemTypeGroup.texturesAudio:
+        return "Textures, images, particles, and audio used by the pack.";
+      case ProjectItemTypeGroup.vibrantVisuals:
+        return "Lighting, PBR, and Vibrant Visuals rendering settings.";
+      case ProjectItemTypeGroup.uiUx:
+        return "UI layouts, localization strings, and UI textures.";
+      case ProjectItemTypeGroup.configDev:
+        return "Configuration and metadata files used by tools and Minecraft to load the pack.";
+      case ProjectItemTypeGroup.packaging:
+        return "Packaged outputs for exporting or sharing.";
+      case ProjectItemTypeGroup.skinPersona:
+        return "Player skins and persona customization data.";
+      case ProjectItemTypeGroup.meta:
+        return "Documentation, reports, and tool metadata.";
+      default:
+        return "Other files used by this project.";
     }
   }
 
@@ -1253,6 +1449,39 @@ export default class ProjectItemUtilities {
       }
     }
     return false;
+  }
+
+  /**
+   * Recursively collects all descendant items reachable via childItems relationships.
+   * Includes the starting item itself. Uses cycle detection to prevent infinite loops.
+   * This is used to discover the full "tree" of files that make up an entity/block/item
+   * (e.g., BP entity → RP entity → model, textures, animations, spawn rules, loot tables).
+   */
+  static collectAllDescendantItems(item: ProjectItem): ProjectItem[] {
+    const visited = new Set<string>();
+    const result: ProjectItem[] = [];
+
+    ProjectItemUtilities._collectDescendantsRecursive(item, visited, result);
+
+    return result;
+  }
+
+  private static _collectDescendantsRecursive(item: ProjectItem, visited: Set<string>, result: ProjectItem[]) {
+    const path = item.projectPath;
+    if (!path || visited.has(path)) {
+      return;
+    }
+
+    visited.add(path);
+    result.push(item);
+
+    if (item.childItems) {
+      for (const rel of item.childItems) {
+        if (rel.childItem) {
+          ProjectItemUtilities._collectDescendantsRecursive(rel.childItem, visited, result);
+        }
+      }
+    }
   }
 
   static isTextureSetTexture(projectItem: ProjectItem) {
@@ -1373,7 +1602,8 @@ export default class ProjectItemUtilities {
       itemType === ProjectItemType.jigsawProcessorList ||
       itemType === ProjectItemType.jigsawStructure ||
       itemType === ProjectItemType.jigsawStructureSet ||
-      itemType === ProjectItemType.jigsawTemplatePool
+      itemType === ProjectItemType.jigsawTemplatePool ||
+      itemType === ProjectItemType.voxelShapeBehavior
     ) {
       return true;
     }
@@ -1575,38 +1805,19 @@ export default class ProjectItemUtilities {
     return ProjectItemUtilities.getDescriptionForType(type).toLowerCase();
   }
 
+  /**
+   * Gets the semantic color for a project item type based on its category group.
+   * Uses the Minecraft-themed color palette from ProjectItemTypeInfo.
+   */
   static getColorForType(type: ProjectItemType): IColor {
-    const cat = ProjectItemUtilities.getCategory(type);
+    return getColorForProjectItemType(type);
+  }
 
-    switch (cat) {
-      case ProjectItemCategory.logic:
-        return {
-          red: (type % 4) * 24 + 160,
-          green: (Math.floor(type / 4) % 4) * 12 + 104,
-          blue: (Math.floor(type / 16) % 4) * 12 + 104,
-        };
-
-      case ProjectItemCategory.assets:
-        return {
-          red: (Math.floor(type / 4) % 4) * 12 + 104,
-          green: (type % 4) * 24 + 160,
-          blue: (Math.floor(type / 16) % 4) * 12 + 104,
-        };
-
-      case ProjectItemCategory.types:
-        return {
-          red: (Math.floor(type / 16) % 4) * 12 + 104,
-          green: (Math.floor(type / 4) % 4) * 12 + 104,
-          blue: (type % 4) * 24 + 160,
-        };
-
-      default:
-        return {
-          red: (Math.floor(type / 4) % 4) * 24 + 128,
-          green: (Math.floor(type / 4) % 4) * 24 + 128,
-          blue: (Math.floor(type / 4) % 4) * 24 + 128,
-        };
-    }
+  /**
+   * Gets the type group (semantic category) for a project item type.
+   */
+  static getTypeGroup(type: ProjectItemType): ProjectItemTypeGroup {
+    return getProjectItemTypeGroup(type);
   }
 
   static getPluralDescriptionForType(type: ProjectItemType) {
@@ -1615,7 +1826,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.audio:
         return "Audio";
       case ProjectItemType.ts:
-        return "TypeScript files";
+        return "Scripts";
       case ProjectItemType.js:
         return "JavaScript files";
       case ProjectItemType.itemTypeLegacyResource:
@@ -1638,6 +1849,8 @@ export default class ProjectItemUtilities {
       case ProjectItemType.mcToolsProjectPreferences:
       case ProjectItemType.materialsResourceJson:
       case ProjectItemType.lang:
+      case ProjectItemType.levelDat:
+      case ProjectItemType.levelDatOld:
         return this.getDescriptionForType(type);
       default:
         const str = this.getDescriptionForType(type);
@@ -1920,6 +2133,8 @@ export default class ProjectItemUtilities {
         return ["store art"];
       case ProjectItemType.audio:
         return ["sounds"];
+      case ProjectItemType.voxelShapeBehavior:
+        return ["voxel_shapes"];
       case ProjectItemType.materialSetJson:
       case ProjectItemType.materialsResourceJson:
       case ProjectItemType.material:

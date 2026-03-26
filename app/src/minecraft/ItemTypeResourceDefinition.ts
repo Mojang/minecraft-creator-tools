@@ -14,7 +14,6 @@ import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
 import IDefinition from "./IDefinition";
 import IItemTypeResourcePack from "./IItemTypeResourcePack";
-import { Util } from "leaflet";
 import Utilities from "../core/Utilities";
 
 // this is a type that is "legacy" version 1.10 definitions of item types
@@ -23,6 +22,7 @@ export default class ItemTypeResourceDefinition implements IManagedComponentSetI
   private _behaviorPackFile?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
+  private _loadedWithComments: boolean = false;
   private _managed: { [id: string]: IManagedComponent | undefined } = {};
 
   private _data?: IItemTypeResourcePack;
@@ -261,8 +261,24 @@ export default class ItemTypeResourceDefinition implements IManagedComponentSetI
     return this._behaviorPackFile.setObjectContentIfSemanticallyDifferent(this.wrapper);
   }
 
-  async load() {
-    if (this._behaviorPackFile === undefined || this._isLoaded) {
+  /**
+   * Loads the definition from the file.
+   * @param preserveComments If true, uses comment-preserving JSON parsing for edit/save cycles.
+   *                         If false (default), uses efficient standard JSON parsing.
+   *                         Can be called again with true to "upgrade" a read-only load to read/write.
+   */
+  async load(preserveComments: boolean = false) {
+    // If already loaded with comments, we have the "best" version - nothing more to do
+    if (this._isLoaded && this._loadedWithComments) {
+      return;
+    }
+
+    // If already loaded without comments and caller doesn't need comments, we're done
+    if (this._isLoaded && !preserveComments) {
+      return;
+    }
+
+    if (this._behaviorPackFile === undefined) {
       return;
     }
 
@@ -271,10 +287,16 @@ export default class ItemTypeResourceDefinition implements IManagedComponentSetI
     }
 
     if (this._behaviorPackFile.content === null || this._behaviorPackFile.content instanceof Uint8Array) {
+      this._isLoaded = true;
+      this._loadedWithComments = preserveComments;
+      this._onLoaded.dispatch(this, this);
       return;
     }
 
-    this.wrapper = StorageUtilities.getJsonObject(this._behaviorPackFile);
+    // Use comment-preserving parser only when needed for editing
+    this.wrapper = preserveComments
+      ? StorageUtilities.getJsonObjectWithComments(this._behaviorPackFile)
+      : StorageUtilities.getJsonObject(this._behaviorPackFile);
 
     if (this.wrapper) {
       const item = (this.wrapper as any)["minecraft:item"];
@@ -287,5 +309,7 @@ export default class ItemTypeResourceDefinition implements IManagedComponentSetI
     }
 
     this._isLoaded = true;
+    this._loadedWithComments = preserveComments;
+    this._onLoaded.dispatch(this, this);
   }
 }

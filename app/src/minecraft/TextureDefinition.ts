@@ -8,9 +8,10 @@ import IDefinition from "./IDefinition";
 import StorageUtilities, { AllowedExtensionsSet } from "../storage/StorageUtilities";
 import ProjectItem from "../app/ProjectItem";
 import Project from "../app/Project";
-import { ProjectItemType } from "../app/IProjectItemData";
-import { Exifr } from "exifr";
-import { decodeTga } from "@lunapaint/tga-codec";
+import * as exifrModule from "exifr";
+// Handle CJS/ESM interop: esbuild wraps CJS default export, while ts-node uses named exports directly
+const Exifr = (exifrModule as any).Exifr || (exifrModule as any).default?.Exifr;
+import ImageCodec from "../core/ImageCodec";
 
 export type ImageCoords = {
   x1: number;
@@ -149,10 +150,16 @@ export default class TextureDefinition implements IDefinition {
       }
     } else {
       try {
-        const tga = await decodeTga(this._file.content);
+        const decoded = await ImageCodec.decodeTga(this._file.content);
 
-        this._width = tga.image.width;
-        this._height = tga.image.height;
+        if (decoded) {
+          this._width = decoded.width;
+          this._height = decoded.height;
+          this._imageData = decoded.pixels;
+        } else {
+          this._errorProcessing = true;
+          this._errorMessage = "Failed to decode TGA image.";
+        }
       } catch (e: any) {
         this._errorProcessing = true;
         this._errorMessage = e.message ? e.message : e.toString();
@@ -172,7 +179,7 @@ export default class TextureDefinition implements IDefinition {
 
         this._imageData = new Uint8Array(pngm.data);
       } catch (e: any) {
-        console.log("Could not get PNG data for " + this._file.extendedPath);
+        Log.verbose("Could not get PNG data for " + this._file.extendedPath);
       }
     }*/
 
@@ -182,6 +189,27 @@ export default class TextureDefinition implements IDefinition {
   unloadContent() {
     this._isContentProcessed = false;
     this._imageData = undefined;
+  }
+
+  /**
+   * Decode image data (PNG or TGA) to raw RGBA pixels.
+   * This is a shared utility method for use by Model2DRenderer, ModelMeshFactory, etc.
+   *
+   * @param data Raw image file bytes
+   * @param fileType File extension ('png' or 'tga')
+   * @returns Decoded pixels with width, height, and RGBA data, or undefined if decoding fails
+   */
+  static async decodeToPixels(
+    data: Uint8Array,
+    fileType: string
+  ): Promise<{ width: number; height: number; pixels: Uint8Array } | undefined> {
+    if (fileType === "tga") {
+      return ImageCodec.decodeTga(data);
+    } else if (fileType === "png") {
+      return ImageCodec.decodePng(data);
+    }
+
+    return undefined;
   }
 
   static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<TextureDefinition, TextureDefinition>) {
@@ -284,38 +312,35 @@ export default class TextureDefinition implements IDefinition {
   }
 
   async addChildItems(project: Project, item: ProjectItem) {
-    const itemsCopy = project.getItemsByType(ProjectItemType.texture);
+    // Only process VV sidecar files for this specific texture item
+    let pf = item.primaryFile;
 
-    for (const candItem of itemsCopy) {
-      let pf = candItem.primaryFile;
+    if (!pf) {
+      await item.ensureStorage();
+      pf = item.primaryFile;
+    }
 
-      if (!pf) {
-        await candItem.ensureStorage();
-        pf = candItem.primaryFile;
+    if (pf) {
+      const parentFolder = pf.parentFolder;
+
+      if (!parentFolder) {
+        return;
       }
 
-      if (pf) {
-        const parentFolder = pf.parentFolder;
+      if (!parentFolder.isLoaded) {
+        await parentFolder.load();
+      }
 
-        if (!parentFolder) {
-          continue;
-        }
+      let baseName = StorageUtilities.getBaseFromName(pf.name);
+      const parentFiles = parentFolder.files;
 
-        if (!parentFolder.isLoaded) {
-          await parentFolder.load();
-        }
+      for (const ext of VibrantVisualsFileExtensionVariants) {
+        const vvSidecarFile = parentFiles[baseName + ext];
+        if (vvSidecarFile !== undefined && vvSidecarFile.extendedPath) {
+          const sidecarItem = project.getItemByExtendedOrProjectPath(vvSidecarFile.extendedPath);
 
-        let baseName = StorageUtilities.getBaseFromName(pf.name);
-        const parentFiles = parentFolder.files;
-
-        for (const ext of VibrantVisualsFileExtensionVariants) {
-          const vvSidecarFile = parentFiles[baseName + ext];
-          if (vvSidecarFile !== undefined && vvSidecarFile.extendedPath) {
-            const sidecarItem = project.getItemByExtendedOrProjectPath(vvSidecarFile.extendedPath);
-
-            if (sidecarItem && sidecarItem !== candItem) {
-              candItem.addChildItem(sidecarItem);
-            }
+          if (sidecarItem && sidecarItem !== item) {
+            item.addChildItem(sidecarItem);
           }
         }
       }

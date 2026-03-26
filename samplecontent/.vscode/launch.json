@@ -35,17 +35,6 @@
       ]
     },
     {
-      "type": "node",
-      "request": "launch",
-      "name": "Launch Companion App",
-      "cwd": "${workspaceRoot}",
-      "preLaunchTask": "gulp: jsncorebuild",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": [
-          "run", "companionapp"
-      ]
-    },
-    {
       "name": "cli (scratch)",
       "cwd": "${workspaceRoot}/",
       "args": ["world", "set", "-no-betaapis", "-o", "./debugcontent/results/worldCommand/"],
@@ -106,8 +95,8 @@
       "outFiles": ["${workspaceFolder}/toolbuild/jsn/**/*.js"]
     },
     {
-      "name": "cli (autotest carctest)",
-      "cwd": "${workspaceRoot}/../../../carctest/",
+      "name": "cli (autotest alpha)",
+      "cwd": "${workspaceFolder}/alpha/",
       "args": ["--preview-server", "autotest", "--output-folder", "/../temp/out/"],
       "type": "node",
       "request": "launch",
@@ -225,8 +214,8 @@
       "outFiles": ["${workspaceFolder}/toolbuild/jsn/**/*.js"]
     },   
     {
-      "name": "cli (val carctest)",
-      "cwd": "${workspaceRoot}/../../../carctest/",
+      "name": "cli (val alpha)",
+      "cwd": "${workspaceFolder}/alpha/",
       "args": ["val", "--force", "--log-verbose",  "all", "none", "aggregate"],
       "type": "node",
       "request": "launch",
@@ -240,8 +229,8 @@
       "outFiles": ["${workspaceFolder}/toolbuild/jsn/**/*.js"]
     },  
     {
-      "name": "cli (val contentarchive)",
-      "cwd": "${workspaceRoot}/../../../contentarchive/",
+      "name": "cli (val bravo)",
+      "cwd": "${workspaceFolder}/bravo/",
       "args": ["val", "--force", "--log-verbose", "all", "none", "aggregate"],
       "type": "node",
       "request": "launch",
@@ -255,9 +244,9 @@
       "outFiles": ["${workspaceFolder}/toolbuild/jsn/**/*.js"]
     }, 
     {
-      "name": "cli (val content)",
-      "cwd": "${workspaceRoot}/../../../content/",
-      "args": ["val", "--force", "--log-verbose", "--threads", "16", "all", "none", "aggregate", "-afs", "c:\\temp\\content.tags.json"],
+      "name": "cli (val charlie)",
+      "cwd": "${workspaceFolder}/charlie/",
+      "args": ["val", "--force", "--log-verbose", "--threads", "16", "all", "none", "aggregate", "-afs", "${workspaceFolder}/charlie/out/content.tags.json"],
       "type": "node",
       "request": "launch",
       "program": "${workspaceRoot}/src/cli/index.ts",
@@ -285,8 +274,8 @@
       "outFiles": ["${workspaceFolder}/toolbuild/jsn/**/*.js"]
     },
     {
-      "name": "cli (val carcv1)",
-      "cwd": "${workspaceRoot}/../../../carcv1/",
+      "name": "cli (val delta)",
+      "cwd": "${workspaceFolder}/delta/",
       "args": ["val", "--force", "--log-verbose", "--threads", "16", "currentplatform", "none", "aggregate"],
       "type": "node",
       "request": "launch",
@@ -301,7 +290,7 @@
     }, 
     {
       "name": "cli (aggr)",
-      "cwd": "${workspaceRoot}/../../../content/out",
+      "cwd": "${workspaceFolder}/charlie/out",
       "args": ["aggr", "false", "--log-verbose"],
       "type": "node",
       "request": "launch",
@@ -316,7 +305,7 @@
     }, 
     {
       "name": "cli (search)",
-      "cwd": "${workspaceRoot}/../../../carctest/out/out/index",
+      "cwd": "${workspaceFolder}/alpha/out/out/index",
       "args": ["search", "behavior.float_wander", "-o", "res", "--log-verbose"],
       "type": "node",
       "request": "launch",

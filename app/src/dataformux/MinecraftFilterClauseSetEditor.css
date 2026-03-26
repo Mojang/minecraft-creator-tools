@@ -6,6 +6,29 @@
 .mifics-outer-narrow {
   display: block;
   margin-top: 2px !important;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.mifics-toolbar {
+  margin-bottom: 4px;
+  max-width: 100%;
+}
+
+.mifics-toolbarInner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.mifics-outer-narrow .mifics-inner {
+  display: block;
+}
+
+.mifics-outer-narrow .mifics-cell {
+  display: block;
 }
 
 .mifics-inner {

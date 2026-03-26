@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IFolder from "../storage/IFolder";
 import IStorage from "../storage/IStorage";
 

@@ -1,0 +1,185 @@
+import { Component } from "react";
+import "./EventActionSet.css";
+import IEventActionSet from "../../../minecraft/IEventActionSet";
+import IEventAction from "../../../minecraft/IEventAction";
+import EventActionTile from "./EventActionTile";
+import ManagedEventActionOrActionSet from "../../../minecraft/ManagedEventActionOrActionSet";
+import { Stack, Button } from "@mui/material";
+import CreatorTools from "../../../app/CreatorTools";
+import EntityTypeDefinition from "../../../minecraft/EntityTypeDefinition";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { CustomLabel } from "../../shared/components/feedback/labels/Labels";
+import Project from "../../../app/Project";
+import { getThemeColors } from "../../hooks/theme/useThemeColors";
+import IProjectTheme from "../../types/IProjectTheme";
+
+interface IEventActionSetProps {
+  readOnly: boolean;
+  event: IEventActionSet | IEventAction;
+  displayAddRemoveGroups: boolean;
+  displayNarrow?: boolean;
+  entityType: EntityTypeDefinition;
+  isRandomize: boolean;
+  eventContextId: string;
+  project: Project;
+  creatorTools: CreatorTools;
+  theme: IProjectTheme;
+}
+
+interface IEventActionSetState {
+  eventState: string;
+}
+
+export default class EventActionSet extends Component<IEventActionSetProps, IEventActionSetState> {
+  constructor(props: IEventActionSetProps) {
+    super(props);
+
+    this._addAction = this._addAction.bind(this);
+
+    this.state = {
+      eventState: this.props.event.toString(),
+    };
+  }
+
+  _getIsSingle() {
+    return !((this.props.event as any).sequence || (this.props.event as any).randomize);
+  }
+
+  _addAction() {
+    if (this._getIsSingle()) {
+      (this.props.event as IEventActionSet).sequence = [
+        {
+          filters: (this.props.event as any).filters,
+          weight: (this.props.event as any).weight,
+          add: (this.props.event as any).add,
+          remove: (this.props.event as any).remove,
+          set_property: (this.props.event as any).set_property,
+          queue_command: (this.props.event as any).queue_command,
+          play_sound: (this.props.event as any).play_sound,
+        },
+      ];
+
+      (this.props.event as IEventAction).filters = undefined;
+      (this.props.event as IEventAction).weight = undefined;
+      (this.props.event as IEventAction).add = undefined;
+      (this.props.event as IEventAction).remove = undefined;
+      (this.props.event as IEventAction).set_property = undefined;
+      (this.props.event as IEventAction).queue_command = undefined;
+      (this.props.event as IEventAction).play_sound = undefined;
+    }
+
+    let coll = (this.props.event as IEventActionSet).sequence || (this.props.event as IEventActionSet).randomize;
+
+    if (coll) {
+      coll.push({});
+    }
+
+    this._updateState();
+  }
+
+  _updateState() {
+    this.setState({
+      eventState: this.props.event.toString(),
+    });
+  }
+
+  render() {
+    if (this.state === null) {
+      return <div>Loading...</div>;
+    }
+
+    let interior = [];
+
+    if (this._getIsSingle()) {
+      interior.push(
+        <EventActionTile
+          readOnly={this.props.readOnly}
+          entityType={this.props.entityType}
+          displayNarrow={this.props.displayNarrow}
+          displayAddRemoveGroups={this.props.displayAddRemoveGroups}
+          eventContextId={this.props.eventContextId}
+          creatorTools={this.props.creatorTools}
+          key={"eata"}
+          project={this.props.project}
+          event={new ManagedEventActionOrActionSet(this.props.event)}
+          theme={this.props.theme}
+        />
+      );
+    } else {
+      let elements = (this.props.event as IEventActionSet).randomize
+        ? (this.props.event as IEventActionSet).randomize
+        : (this.props.event as IEventActionSet).sequence;
+
+      if (elements) {
+        let i = 0;
+        for (const elt of elements) {
+          if ((elt as IEventActionSet).sequence || (elt as IEventActionSet).randomize) {
+            interior.push(
+              <EventActionSet
+                readOnly={this.props.readOnly}
+                entityType={this.props.entityType}
+                displayNarrow={this.props.displayNarrow}
+                displayAddRemoveGroups={this.props.displayAddRemoveGroups}
+                key={"easeas-" + i}
+                project={this.props.project}
+                eventContextId={this.props.eventContextId}
+                isRandomize={(elt as IEventActionSet).randomize !== undefined}
+                event={elt as IEventActionSet}
+                creatorTools={this.props.creatorTools}
+                theme={this.props.theme}
+              />
+            );
+          } else {
+            interior.push(
+              <EventActionTile
+                readOnly={this.props.readOnly}
+                entityType={this.props.entityType}
+                key={"easeat-" + i}
+                project={this.props.project}
+                displayAddRemoveGroups={this.props.displayAddRemoveGroups}
+                displayWeight={this.props.isRandomize}
+                eventContextId={this.props.eventContextId}
+                event={new ManagedEventActionOrActionSet(elt as IEventAction)}
+                creatorTools={this.props.creatorTools}
+                theme={this.props.theme}
+              />
+            );
+          }
+          i++;
+        }
+      }
+    }
+
+    const colors = getThemeColors();
+
+    return (
+      <div
+        className={"eas-area"}
+        style={{
+          backgroundColor: colors.surfaceBackground,
+          color: colors.surfaceForeground,
+          borderColor: colors.cardBorder,
+        }}
+      >
+        <div
+          style={{
+            backgroundColor: colors.background1,
+            color: colors.surfaceForeground,
+          }}
+        >
+          <Stack direction="row" spacing={0.5} aria-label="Minecraft event action management">
+            <Button onClick={this._addAction} title="Add new query">
+              <CustomLabel
+                icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
+                text={"Add action"}
+                isCompact={false}
+              />
+            </Button>
+          </Stack>
+        </div>
+        <div>{interior}</div>
+      </div>
+    );
+  }
+}

@@ -12,11 +12,13 @@ import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
 import ItemTypeDefinition from "./ItemTypeDefinition";
+import RelationsIndex from "../app/RelationsIndex";
 
 export default class RecipeBehaviorDefinition implements IDefinition {
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
+  private _loadedWithComments: boolean = false;
 
   private _data?: IRecipeBehavior;
   private _interior?: IRecipeShaped | IRecipeShapeless;
@@ -115,8 +117,7 @@ export default class RecipeBehaviorDefinition implements IDefinition {
     }
   }
 
-  async addChildItems(project: Project, recipeItem: ProjectItem) {
-    const itemsCopy = project.getItemsCopy();
+  async addChildItems(project: Project, recipeItem: ProjectItem, index?: RelationsIndex) {
     const dependentItemIds: string[] = [];
 
     // Collect all item IDs that this recipe depends on
@@ -146,8 +147,18 @@ export default class RecipeBehaviorDefinition implements IDefinition {
     for (const dependentItemId of dependentItemIds) {
       let foundMatch = false;
 
-      for (const candItem of itemsCopy) {
-        if (candItem.itemType === ProjectItemType.itemTypeBehavior) {
+      // Use index for O(1) lookup when available
+      if (index) {
+        const matchingItems = index.getItemsById(index.itemTypesById, dependentItemId);
+        if (matchingItems.length > 0) {
+          for (const matchItem of matchingItems) {
+            recipeItem.addChildItem(matchItem);
+          }
+          foundMatch = true;
+        }
+      } else {
+        const itemTypeItems = project.getItemsByType(ProjectItemType.itemTypeBehavior);
+        for (const candItem of itemTypeItems) {
           if (!candItem.isContentLoaded) {
             await candItem.loadContent();
           }
@@ -212,8 +223,24 @@ export default class RecipeBehaviorDefinition implements IDefinition {
     return this._file.setObjectContentIfSemanticallyDifferent(this._data);
   }
 
-  async load() {
-    if (this._file === undefined || this._isLoaded) {
+  /**
+   * Loads the definition from the file.
+   * @param preserveComments If true, uses comment-preserving JSON parsing for edit/save cycles.
+   *                         If false (default), uses efficient standard JSON parsing.
+   *                         Can be called again with true to "upgrade" a read-only load to read/write.
+   */
+  async load(preserveComments: boolean = false) {
+    // If already loaded with comments, we have the "best" version - nothing more to do
+    if (this._isLoaded && this._loadedWithComments) {
+      return;
+    }
+
+    // If already loaded without comments and caller doesn't need comments, we're done
+    if (this._isLoaded && !preserveComments) {
+      return;
+    }
+
+    if (this._file === undefined) {
       return;
     }
 
@@ -222,11 +249,19 @@ export default class RecipeBehaviorDefinition implements IDefinition {
     }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
+      this._isLoaded = true;
+      this._loadedWithComments = preserveComments;
+      this._onLoaded.dispatch(this, this);
       return;
     }
 
-    this.data = StorageUtilities.getJsonObject(this._file);
+    // Use comment-preserving parser only when needed for editing
+    this.data = preserveComments
+      ? StorageUtilities.getJsonObjectWithComments(this._file)
+      : StorageUtilities.getJsonObject(this._file);
 
     this._isLoaded = true;
+    this._loadedWithComments = preserveComments;
+    this._onLoaded.dispatch(this, this);
   }
 }

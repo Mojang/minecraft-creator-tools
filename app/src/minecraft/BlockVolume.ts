@@ -243,4 +243,65 @@ export default class BlockVolume implements IDimension {
       }
     }
   }
+
+  /**
+   * Resizes the volume to new dimensions, preserving existing block data
+   * within the overlapping region. Growth fills with air; blocks outside
+   * shrunken bounds are discarded. Corner-anchored (origin stays at 0,0,0).
+   */
+  resize(newMaxX: number, newMaxY: number, newMaxZ: number) {
+    const oldMaxX = this._maxX;
+    const oldMaxY = this._maxY;
+    const oldMaxZ = this._maxZ;
+    const oldPlanes = this.planes;
+
+    // Create fresh planes array
+    this.planes = [];
+    this._maxX = newMaxX;
+    this._maxY = newMaxY;
+    this._maxZ = newMaxZ;
+
+    // Copy blocks from old data where coordinates exist in both old and new bounds
+    const copyX = Math.min(oldMaxX, newMaxX);
+    const copyY = Math.min(oldMaxY, newMaxY);
+    const copyZ = Math.min(oldMaxZ, newMaxZ);
+
+    for (let xI = 0; xI < copyX; xI++) {
+      if (xI >= oldPlanes.length) {
+        break;
+      }
+      const oldPlane = oldPlanes[xI];
+
+      for (let yI = 0; yI < copyY; yI++) {
+        if (yI >= oldPlane.lines.length) {
+          break;
+        }
+        const oldLine = oldPlane.lines[yI];
+
+        for (let zI = 0; zI < copyZ; zI++) {
+          if (zI >= oldLine.blocks.length) {
+            break;
+          }
+          const oldBlock = oldLine.blocks[zI];
+
+          if (oldBlock && !oldBlock.isEmpty) {
+            const newBlock = this.x(xI).y(yI).z(zI);
+            newBlock.typeName = oldBlock.typeName;
+
+            if (oldBlock.properties) {
+              for (const key in oldBlock.properties) {
+                const prop = oldBlock.properties[key];
+                if (prop && prop.value !== undefined) {
+                  newBlock.ensureProperty(key).value = prop.value;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    this._columns = undefined;
+    this._onMaxDimensionsChanged.dispatch(this, "xyz");
+  }
 }

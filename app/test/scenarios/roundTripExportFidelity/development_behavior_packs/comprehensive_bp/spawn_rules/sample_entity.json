@@ -1,0 +1,46 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:spawn_rules": {
+    "description": {
+      "identifier": "test:sample_entity",
+      "population_control": "animal"
+    },
+    "conditions": [
+      {
+        "minecraft:spawns_on_surface": {},
+        "minecraft:spawns_above_block_filter": {
+          "test": "has_block_property",
+          "subject": "block",
+          "operator": "==",
+          "value": "grass"
+        },
+        "minecraft:brightness_filter": {
+          "min": 7,
+          "max": 15,
+          "adjust_for_weather": true
+        },
+        "minecraft:difficulty_filter": {
+          "min": "easy",
+          "max": "hard"
+        },
+        "minecraft:weight": {
+          "default": 10
+        },
+        "minecraft:herd": {
+          "min_size": 2,
+          "max_size": 4
+        },
+        "minecraft:permute_type": [
+          {
+            "weight": 95
+          }
+        ],
+        "minecraft:biome_filter": {
+          "test": "has_biome_tag",
+          "operator": "==",
+          "value": "plains"
+        }
+      }
+    ]
+  }
+}

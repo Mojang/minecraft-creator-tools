@@ -1,0 +1,265 @@
+/* Copyright (c) Microsoft Corporation. */
+/* Licensed under the MIT License. */
+
+/* SpawnRuleLivePreview - Spawn rule preview styling */
+
+.srlp-container {
+  font-family: var(--font-family-sans, "Segoe UI", sans-serif);
+  font-size: 12px;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.srlp-light {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.srlp-dark {
+  background: #2d2d2d;
+  color: #e0e0e0;
+}
+
+/* Loading/Error States */
+.srlp-loading,
+.srlp-error {
+  padding: 16px;
+  text-align: center;
+  font-style: italic;
+  opacity: 0.7;
+}
+
+.srlp-error {
+  color: #d9534f;
+}
+
+/* Header */
+.srlp-header {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.srlp-light .srlp-header {
+  background: #e0e0e0;
+}
+
+.srlp-dark .srlp-header {
+  background: #3a3a3a;
+}
+
+.srlp-icon {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.srlp-title {
+  flex: 1;
+}
+
+.srlp-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.srlp-id {
+  font-size: 10px;
+  opacity: 0.6;
+  font-family: monospace;
+}
+
+/* Sections */
+.srlp-section {
+  margin-bottom: 8px;
+}
+
+.srlp-section-header {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  gap: 6px;
+}
+
+.srlp-light .srlp-section-header {
+  background: #e8e8e8;
+}
+
+.srlp-light .srlp-section-header:hover {
+  background: #ddd;
+}
+
+.srlp-dark .srlp-section-header {
+  background: #383838;
+}
+
+.srlp-dark .srlp-section-header:hover {
+  background: #444;
+}
+
+.srlp-expand-icon {
+  font-size: 10px;
+  width: 12px;
+  text-align: center;
+}
+
+.srlp-badge {
+  margin-left: auto;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.srlp-light .srlp-badge {
+  background: #ccc;
+  color: #333;
+}
+
+.srlp-dark .srlp-badge {
+  background: #555;
+  color: #e0e0e0;
+}
+
+/* Conditions */
+.srlp-conditions {
+  padding-left: 12px;
+  margin-top: 4px;
+}
+
+.srlp-condition {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 3px;
+  gap: 6px;
+  font-size: 11px;
+  margin-bottom: 2px;
+  cursor: pointer;
+}
+
+.srlp-light .srlp-condition {
+  background: #fafafa;
+}
+
+.srlp-light .srlp-condition:hover {
+  background: #eee;
+}
+
+.srlp-dark .srlp-condition {
+  background: #2a2a2a;
+}
+
+.srlp-dark .srlp-condition:hover {
+  background: #3a3a3a;
+}
+
+.srlp-condition-icon {
+  font-size: 12px;
+}
+
+.srlp-condition-name {
+  flex: 1;
+}
+
+.srlp-condition-range,
+.srlp-condition-value {
+  font-size: 10px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  opacity: 0.8;
+}
+
+.srlp-light .srlp-condition-range,
+.srlp-light .srlp-condition-value {
+  background: #e0e0e0;
+}
+
+.srlp-dark .srlp-condition-range,
+.srlp-dark .srlp-condition-value {
+  background: #444;
+}
+
+/* Population */
+.srlp-population {
+  padding-left: 12px;
+  margin-top: 4px;
+}
+
+.srlp-pop-item {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 3px;
+  gap: 8px;
+  font-size: 11px;
+  margin-bottom: 2px;
+}
+
+.srlp-light .srlp-pop-item {
+  background: #fafafa;
+}
+
+.srlp-dark .srlp-pop-item {
+  background: #2a2a2a;
+}
+
+.srlp-pop-icon {
+  font-size: 12px;
+}
+
+.srlp-pop-label {
+  flex: 1;
+}
+
+.srlp-pop-value {
+  font-weight: 500;
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+.srlp-light .srlp-pop-value {
+  background: #e0e0e0;
+}
+
+.srlp-dark .srlp-pop-value {
+  background: #444;
+}
+
+/* Biomes */
+.srlp-biomes {
+  padding-left: 12px;
+  margin-top: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.srlp-biome {
+  display: flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 4px;
+  gap: 4px;
+  font-size: 10px;
+}
+
+.srlp-light .srlp-biome {
+  background: #e8e8e8;
+}
+
+.srlp-dark .srlp-biome {
+  background: #3a3a3a;
+}
+
+.srlp-biome-icon {
+  font-size: 10px;
+}
+
+.srlp-biome-name {
+  text-transform: capitalize;
+}

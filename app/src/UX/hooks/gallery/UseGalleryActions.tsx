@@ -1,7 +1,7 @@
 import { useCallback } from "react";
-import { AppGalleryActionEvent } from "../../pages/home/HomeActions";
+import { AppGalleryActionEvent } from "../../home/HomeActions";
 import IGalleryItem from "../../../app/IGalleryItem";
-import { GalleryProjectCommand } from "../../ProjectGallery";
+import { GalleryProjectCommand } from "../../home/CodeProjectGallery";
 import IProjectSeed from "../../../app/IProjectSeed";
 
 export default function useGalleryActions(onAppGalleryAction: AppGalleryActionEvent) {

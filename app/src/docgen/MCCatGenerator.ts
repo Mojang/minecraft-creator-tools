@@ -260,6 +260,9 @@ export default class MCCatGenerator {
 
             await this.finalizeJsonForm(jsonO, outputFile);
           }
+
+          // Unload file content after extracting JSON to save memory during bulk processing
+          file.unload();
         }
       } catch (e) {
         console.log("Error processing " + fileName + ": " + e);
@@ -743,7 +746,7 @@ export default class MCCatGenerator {
             hideSamples: true,
             description:
               "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
-            dataType: 0,
+            dataType: FieldDataType.int,
           });
         }
       }
@@ -979,6 +982,9 @@ export default class MCCatGenerator {
               }
               this.appendNodesByName(formDefNode.samples["/vanilla" + match.value], "minecraft:" + name, jsonO, "/");
             }
+
+            // Unload file content after extracting JSON to save memory during bulk processing
+            file.unload();
           }
         }
       }
@@ -1015,6 +1021,9 @@ export default class MCCatGenerator {
               }
               this.appendNodesByName(formDefNode.samples["/samples" + match.value], "minecraft:" + name, jsonO, "/");
             }
+
+            // Unload file content after extracting JSON to save memory during bulk processing
+            file.unload();
           }
         }
       }

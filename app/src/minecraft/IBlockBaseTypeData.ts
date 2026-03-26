@@ -47,6 +47,7 @@ export enum BlockShape {
   brewingStand = 35,
   enchantingTable = 36,
   cauldron = 37,
+  dripleaf = 38, // Big dripleaf with tilted leaf head and stem
 }
 
 export default interface IBlockBaseTypeData {

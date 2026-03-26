@@ -1,3 +1,20 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   DATAFORM STYLES - Minecraft Creator Tools
+   
+   Design Philosophy:
+   - Blocky, pixelated aesthetic (max 4px border-radius)
+   - Green accent (#52a535) for focus states and highlights
+   - Stone gray for secondary elements
+   - Subtle shadows for depth without heaviness
+   - Clear visual hierarchy with field cards
+   
+   See: docs/ux/Components.md, docs/ux/ShapeBorderGuidelines.md
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   BASE FORM STRUCTURE
+   ───────────────────────────────────────────────────────────────────────────── */
+
 .df-formArea .ms {
   margin-bottom: 0px !important;
 }
@@ -12,8 +29,18 @@
   max-width: calc(100vw - 30px);
   min-height: 100px;
   line-height: normal;
-  padding: 5px;
-  padding-left: 8px;
+  padding: 8px 12px;
+  border-radius: 3px;
+  border: 2px solid rgba(107, 101, 98, 0.4);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.df-form TEXTAREA:focus {
+  border-color: #52a535;
+  box-shadow: 0 0 0 2px rgba(82, 165, 53, 0.2);
+  outline: none;
 }
 
 .df-outer {
@@ -23,12 +50,17 @@
 }
 
 .df-wrapper {
-  margin: 6px 8px 0px 8px;
+  margin: 8px 12px 4px 12px;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   HEADER STYLES
+   ───────────────────────────────────────────────────────────────────────────── */
 
 .df-headerOuter {
   display: grid;
   grid-template-columns: 1fr 30px;
+  padding-bottom: 8px;
 }
 
 .df-closeArea {
@@ -36,57 +68,109 @@
 }
 
 .df-headerTitle {
-  font-size: 14pt;
+  font-size: 15pt;
+  font-weight: 600;
   grid-column: 1;
+  letter-spacing: 0.3px;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+/* Green accent underline for header */
+.df-headerTitle::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 80px;
+  height: 2px;
+  background: linear-gradient(90deg, #52a535 0%, transparent 100%);
 }
 
 .df-headerSubTitle {
   font-size: 12pt;
   grid-column: 1;
+  opacity: 0.8;
 }
 
 .df-subHeaderTitle {
   font-size: 12pt;
-  font-weight: bold;
-  padding-top: 2px;
-  padding-bottom: 2px;
+  font-weight: 600;
+  padding-top: 4px;
+  padding-bottom: 4px;
   grid-column: 1;
+  letter-spacing: 0.2px;
 }
 
 .df-subHeaderSubTitle {
   font-size: 10pt;
   grid-column: 1;
+  opacity: 0.7;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   FIELD DESCRIPTION - Info callout style
+   ───────────────────────────────────────────────────────────────────────────── */
 
 .df-fieldDescription {
-  font-size: small;
-  padding-bottom: 3px;
-  padding-left: 14px;
-  margin-left: 1px;
-  margin-top: 9px;
-  margin-bottom: 2px;
+  font-size: 11px;
+  padding: 4px 0;
+  margin: 4px 0;
+  line-height: 1.4;
+  opacity: 0.7;
 }
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   FIELD WRAPPER - Card-style field containers
+   ───────────────────────────────────────────────────────────────────────────── */
+
 .df-fieldWrap .ui-checkbox__label {
-  font-size: small;
-  font-weight: bold;
+  font-size: 12px;
+  font-weight: 600;
   position: relative;
   color: inherit !important;
   top: -2px;
   left: -2px;
 }
 
+/* Checkbox toggle row layout */
+.df-checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.df-checkboxLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: inherit;
+}
+
 .df-fieldTitle {
   padding-bottom: 0px !important;
-  margin-bottom: 3px !important;
+  margin-bottom: 4px !important;
 }
 
 .df-fieldWrap {
-  padding-bottom: 24px;
-  padding-top: 18px;
-  padding-left: 10px;
-  border-top: solid 1px;
-  border-bottom: solid 1px;
+  padding: 16px 14px 20px 14px;
+  margin: 4px 0;
+  border-radius: 4px;
+  border: 1px solid rgba(107, 101, 98, 0.2);
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.df-fieldWrap:hover {
+  border-color: rgba(107, 101, 98, 0.35);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.df-fieldWrap:focus-within {
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .dfw-fieldWrap .ui-form__label {
@@ -102,68 +186,127 @@
 
 .df-fieldWrap .ui-dropdown__container {
   width: 235px;
-}
-
-.df-elementBinTitle {
-  font-size: small;
-  font-weight: bold;
+  border-radius: 3px;
 }
 
 .df-fieldWrap label {
-  font-size: small;
-  font-weight: bold;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
 }
 
+/* MUI shrunk label (floated above input) — keep readable at a larger size */
+.df-fieldWrap .MuiInputLabel-shrink {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* Input focus states — remove default outlines; MUI handles its own focus ring */
+.df-fieldWrap input:focus,
+.df-fieldWrap select:focus {
+  outline: none;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ELEMENT TITLES AND BINS
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.df-elementBinTitle {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.8;
+  margin-bottom: 6px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CARD WRAPPERS - Minecraft-style blocky cards
+   ───────────────────────────────────────────────────────────────────────────── */
+
 .df-cardWrapper {
-  padding: 5px 10px 10px 10px;
-  border: outset 1px black;
-  margin-bottom: 4px;
-  margin-top: 4px;
-  box-shadow: rgba(0, 0, 0, 0.25) 0px 0.2rem 0.4rem -0.075rem;
+  padding: 12px 14px 14px 14px;
+  border: 2px solid rgba(107, 101, 98, 0.3);
+  border-radius: 4px;
+  margin-bottom: 8px;
+  margin-top: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: border-color 0.15s ease;
+}
+
+.df-cardWrapper:hover {
+  border-color: rgba(107, 101, 98, 0.5);
 }
 
 .df-arrayOfKeyedStringSet {
-  padding: 5px 10px 5px 10px;
-  border: outset 1px black;
-  margin-bottom: 4px;
-  margin-top: 4px;
-  box-shadow: rgba(0, 0, 0, 0.25) 0px 0.2rem 0.4rem -0.075rem;
+  padding: 10px 14px;
+  border: 2px solid rgba(107, 101, 98, 0.3);
+  border-radius: 4px;
+  margin-bottom: 8px;
+  margin-top: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
 .df-description {
-  font-size: 10pt;
-  padding-top: 2px;
-  padding-bottom: 18px;
+  font-size: 11px;
+  padding: 8px 0 16px 0;
+  line-height: 1.5;
+  opacity: 0.85;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SLIDER COMPONENT
+   ───────────────────────────────────────────────────────────────────────────── */
 
 .df-sliderSet {
   display: grid;
-  margin-top: 6px;
-  grid-template-columns: 180px 80px;
+  margin-top: 8px;
+  grid-template-columns: 1fr 80px;
+  gap: 12px;
+  align-items: center;
 }
 
 .df-sliderSet .ui-form__input {
-  margin-left: 10px;
+  margin-left: 0;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ELEMENT TITLES
+   ───────────────────────────────────────────────────────────────────────────── */
 
 .df-elementTitle {
-  padding-bottom: 3px;
-  font-size: small;
-  font-weight: bold;
+  padding-bottom: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
 }
 
+.df-elementTitleInvalid {
+  color: #d32f2f;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ELEMENT BINS - Container for nested elements
+   ───────────────────────────────────────────────────────────────────────────── */
+
 .df-elementBinNoScroll {
-  padding: 6px 8px 6px 8px;
-  margin-left: 10px;
-  min-height: 121px;
-  border: inset 1px;
+  padding: 10px 12px;
+  margin-left: 0;
+  min-height: 100px;
+  border: 1px solid rgba(107, 101, 98, 0.25);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .df-elementBin {
-  padding: 6px 8px 6px 8px;
-  margin-left: 10px;
-  min-height: 121px;
-  border: inset 1px;
+  padding: 10px 12px;
+  margin-left: 0;
+  min-height: 100px;
+  border: 1px solid rgba(107, 101, 98, 0.25);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.05);
   max-height: calc(100vh - 300px);
   overflow-y: auto;
 }
@@ -171,11 +314,14 @@
 .df-stringArray {
   display: grid;
   grid-template-columns: 115px 1fr;
+  gap: 8px;
 }
 
 .df-stringArrayTitle {
   grid-column: 1;
-  padding-top: 6px;
+  padding-top: 8px;
+  font-weight: 600;
+  font-size: 12px;
 }
 
 .df-stringArrayData {
@@ -185,36 +331,56 @@
 .df-stringArrayData .ui-form__input {
   width: 300px;
   max-width: 300px;
-  margin-bottom: 1px;
+  margin-bottom: 4px;
+  border-radius: 3px;
 }
 
-.df-elementTitleInvalid {
-  color: red;
-}
+/* ─────────────────────────────────────────────────────────────────────────────
+   SLIDER DETAILS
+   ───────────────────────────────────────────────────────────────────────────── */
 
 .df-sliderTitle {
   grid-column-start: 1;
   grid-column-end: 3;
   grid-row: 1;
-  font-size: medium;
-  padding-top: 3px;
-  padding-bottom: 3px;
+  font-size: 14px;
+  font-weight: 700;
+  padding-top: 4px;
+  padding-bottom: 8px;
+  color: inherit;
 }
 
 .df-sliderInput {
   grid-column: 2;
   grid-row: 2;
-  padding-top: 3px;
-  padding-bottom: 3px;
+  padding: 4px 0;
+}
+
+.df-sliderInput input {
+  text-align: center;
+  border-radius: 3px;
 }
 
 .df-slider {
   grid-column: 1;
   grid-row: 2;
-  padding: 3px;
-  padding-left: 10px;
-  padding-top: 11px;
+  padding: 4px 0;
+  padding-left: 0;
+  padding-top: 12px;
 }
+
+/* Green slider track */
+.df-slider input[type="range"]::-webkit-slider-thumb {
+  background: #52a535;
+}
+
+.df-slider input[type="range"]::-moz-range-thumb {
+  background: #52a535;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   READ-ONLY DISPLAY
+   ───────────────────────────────────────────────────────────────────────────── */
 
 .dfw-ro-row {
   display: table-row;
@@ -223,35 +389,50 @@
 .dfw-ro-title {
   display: table-cell;
   padding-left: 1px;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-right: 8px;
-  font-weight: bold;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-right: 12px;
+  font-weight: 600;
+  font-size: 12px;
 }
 
 .dfw-ro-value {
   display: table-cell;
-  padding: 4px;
+  padding: 6px;
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 12px;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SAMPLE AND DEFAULT VALUE DISPLAY
+   ───────────────────────────────────────────────────────────────────────────── */
 
 .df-sampleTable {
   display: table;
-  padding-left: 14px;
-  font-size: small;
+  padding-left: 0;
+  font-size: 11px;
+  margin-top: 0;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 3px;
+  padding: 8px;
 }
 
 .df-defaultValueDescription {
-  padding-top: 10px;
-  padding-left: 14px;
-  font-size: small;
+  padding: 8px 12px;
+  margin-top: 8px;
+  font-size: 11px;
   font-style: italic;
+  background: rgba(107, 101, 98, 0.08);
+  border-radius: 3px;
+  border-left: 2px solid rgba(107, 101, 98, 0.3);
 }
 
 .df-sampleDescription {
   font-style: italic;
-  padding-top: 10px;
-  padding-left: 14px;
-  font-size: small;
+  padding: 6px 0 0 0;
+  margin-top: 10px;
+  font-size: 11px;
+  opacity: 0.8;
 }
 
 .df-sampleRow {
@@ -260,20 +441,40 @@
 
 .df-ro-sampleValue {
   display: table-cell;
-  padding: 4px;
-  font-style: italic;
+  padding: 4px 8px;
+  font-size: 11px;
+  vertical-align: middle;
+}
+
+.df-sampleChip {
+  display: inline-block;
+  padding: 1px 8px;
+  margin: 2px 4px 2px 0;
+  font-size: 11px;
+  font-family: "Consolas", "Monaco", monospace;
+  border-radius: 3px;
+  background: rgba(128, 128, 128, 0.18);
+  opacity: 0.7;
 }
 
 .df-ro-table {
   display: table;
 }
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   KEYED COLLECTIONS
+   ───────────────────────────────────────────────────────────────────────────── */
+
 .df-keyedBooleanCollection {
   display: grid;
+  gap: 4px;
+  align-items: center;
 }
 
 .df-keyedBooleanCollectionTitle {
   grid-column: 1;
+  font-weight: 600;
+  font-size: 12px;
 }
 
 .df-keyedBooleanCollectionData {
@@ -286,12 +487,20 @@
 
 .df-keyedStringCollection {
   display: grid;
-  grid-template-columns: 205px 1fr 100px;
+  grid-template-columns: 205px 1fr auto 100px;
   max-width: 830px;
+  gap: 8px;
+  align-items: center;
+}
+
+.df-keyedStringCollectionAction {
+  grid-column: 3;
 }
 
 .df-keyedStringCollectionTitle {
   grid-column: 1;
+  font-weight: 600;
+  font-size: 12px;
 }
 
 .df-keyedStringCollectionData {
@@ -301,17 +510,230 @@
 .df-keyedStringCollectionData input {
   width: 500px;
   max-width: calc(100vw - 550px);
-  margin-bottom: 1px;
+  margin-bottom: 4px;
+  border-radius: 3px;
 }
 
 .df-keyedStringCollectionClose {
-  grid-column: 3;
+  grid-column: 4;
 }
 
 .df-keyedStringCollectionClose button {
-  height: 30px;
+  height: 32px;
+  border-radius: 3px;
 }
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   NUMBER INPUTS
+   ───────────────────────────────────────────────────────────────────────────── */
+
 .df-fieldWrapNumber input {
-  max-width: 72px;
+  text-align: left;
+}
+
+/* Prevent double borders: MUI OutlinedInput uses fieldset for the border,
+   so strip any border/outline from the input element itself */
+.df-fieldWrap .MuiOutlinedInput-input {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   FIELD WITH ADD BUTTON
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.df-fieldWithAddButtonWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.df-fieldAddButtonLabel {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.df-fieldWithAddButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 350px;
+}
+
+.df-fieldWithAddButton > div:first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.df-fieldAddButton {
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #52a535;
+  border-radius: 3px;
+  background: #3d7a2a;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  height: 32px;
+  line-height: 1;
+}
+
+.df-fieldAddButton:hover {
+  background: #4a9432;
+  border-color: #6bc74a;
+}
+
+.df-fieldAddButton:active {
+  background: #52a535;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   READ-ONLY ROW STYLING
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.df-ro-row {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  margin: 2px 0;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 3px;
+  gap: 12px;
+}
+
+.df-ro-title {
+  font-weight: 600;
+  font-size: 12px;
+  min-width: 120px;
+}
+
+.df-ro-value {
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   COMPACT NUMERIC INPUTS
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.df-numericInput input {
+  max-width: 100px !important;
+  min-width: 60px !important;
+  text-align: right;
+  border-radius: 3px;
+  padding: 6px 8px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   FIELD GROUPS - Compact grouped field rendering
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Required but empty field highlighting */
+.df-fieldWrapRequiredEmpty {
+  border-left: 3px solid #e8a033 !important;
+  background: rgba(232, 160, 51, 0.08) !important;
+}
+
+.df-fieldWrapRequiredEmpty::before {
+  content: "Required";
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #e8a033;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.df-fieldWrap {
+  position: relative;
+}
+
+.df-fieldGroup {
+  padding: 12px 14px 16px 14px;
+  margin: 4px 0;
+  border-radius: 4px;
+  border: 1px solid rgba(107, 101, 98, 0.2);
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.df-fieldGroupTitle {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  letter-spacing: 0.2px;
+}
+
+.df-fieldGroupDescription {
+  font-size: 11px;
+  opacity: 0.75;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+/* Flow layout - fields arranged horizontally with wrapping */
+.df-fieldGroupFlow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.df-fieldGroupFlow .df-groupedField {
+  display: flex;
+  flex-direction: column;
+  min-width: 80px;
+}
+
+.df-fieldGroupFlow .df-groupedFieldLabel {
+  font-size: 11px;
+  font-weight: 500;
+  opacity: 0.8;
+  margin-top: 4px;
+  padding-left: 4px;
+  text-align: center;
+}
+
+.df-fieldGroupFlow .df-groupedFieldInput input {
+  max-width: 90px;
+  min-width: 70px;
+  text-align: right;
+  padding: 6px 8px;
+  border-radius: 3px;
+  border: 2px solid rgba(107, 101, 98, 0.3);
+  background: rgba(0, 0, 0, 0.2);
+  color: inherit;
+  font-size: 13px;
+}
+
+.df-fieldGroupFlow .df-groupedFieldInput input:focus {
+  border-color: #52a535;
+  box-shadow: 0 0 0 2px rgba(82, 165, 53, 0.2);
+  outline: none;
+}
+
+/* Grid layout - fields in a structured grid */
+.df-fieldGroupGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 8px 16px;
+}
+
+/* Compact layout - vertical with reduced spacing */
+.df-fieldGroupCompact .df-groupedField {
+  margin-bottom: 6px;
+}
+
+.df-fieldGroupCompact .df-groupedFieldLabel {
+  font-size: 11px;
+  opacity: 0.75;
+  margin-bottom: 2px;
 }

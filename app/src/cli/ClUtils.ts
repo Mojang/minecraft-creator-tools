@@ -10,10 +10,16 @@ import Database from "../minecraft/Database";
 import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
 import IProjectStartInfo from "./IProjectStartInfo";
+import * as path from "path";
 
 export enum TaskType {
   noCommand = 0,
+  runTests = 1,
+  exportAddon = 2,
+  exportWorld = 3,
+  ensureRefWorld = 4,
   deploy = 5,
+  runDedicatedServer = 6,
   info = 7,
   add = 8,
   create = 9,
@@ -28,17 +34,31 @@ export enum TaskType {
   world = 18,
   fix = 19,
   setProjectProperty = 20,
+  autoTest = 21,
   aggregateReports = 22,
   docsUpdateFormSource = 23,
   docsGenerateFormJson = 24,
   docsGenerateMarkdown = 25,
+  search = 26,
   docsGenerateTypes = 27,
   profileValidation = 28,
+  mcp = 29,
+  docsUpdateMCCat = 30,
+  renderModel = 31,
+  renderVanilla = 32,
+  renderStructure = 33,
+  buildStructure = 34,
+  view = 35,
+  edit = 36,
+  docsGenerateJsonSchema = 37,
+  setup = 38,
+  generateSchemaPackage = 39,
 }
 
 export enum OutputType {
   normal = 0,
   noReports = 1,
+  json = 2,
 }
 
 export default class ClUtils {
@@ -118,7 +138,26 @@ export default class ClUtils {
   }
 
   static getIsWriteCommand(taskType: TaskType) {
-    return taskType === TaskType.world || taskType === TaskType.create || taskType === TaskType.add;
+    return (
+      taskType === TaskType.world ||
+      taskType === TaskType.create ||
+      taskType === TaskType.add ||
+      taskType === TaskType.fix
+    );
+  }
+
+  /**
+   * Returns true for commands that edit content in place (no separate output folder).
+   * These commands: edit, view, add, create, fix
+   */
+  static getIsEditInPlaceCommand(taskType: TaskType) {
+    return (
+      taskType === TaskType.edit ||
+      taskType === TaskType.view ||
+      taskType === TaskType.add ||
+      taskType === TaskType.create ||
+      taskType === TaskType.fix
+    );
   }
 
   static async getMainWorkFolder(taskType: TaskType, inputFolder?: string, outputFolder?: string) {
@@ -126,7 +165,9 @@ export default class ClUtils {
     let workFolder: IFolder | undefined;
 
     if (!inputFolder && outputFolder && ClUtils.getIsWriteCommand(taskType)) {
-      const outputStorage = new NodeStorage(outputFolder, "");
+      // Resolve relative output paths against current working directory
+      const resolvedOutput = path.isAbsolute(outputFolder) ? outputFolder : path.resolve(process.cwd(), outputFolder);
+      const outputStorage = new NodeStorage(resolvedOutput, "");
       workFolder = outputStorage.rootFolder;
       await workFolder.ensureExists();
     }
@@ -134,6 +175,9 @@ export default class ClUtils {
     if (!workFolder) {
       if (!inputFolder) {
         inputFolder = process.cwd();
+      } else {
+        // Resolve relative input paths against current working directory
+        inputFolder = path.isAbsolute(inputFolder) ? inputFolder : path.resolve(process.cwd(), inputFolder);
       }
 
       const inputStorage = new NodeStorage(inputFolder, "");
@@ -158,22 +202,22 @@ export default class ClUtils {
     CreatorToolsHost.ensureLocalFolder = ClUtils.ensureLocalFolder;
 
     CreatorToolsHost.prefsStorage = new NodeStorage(
-      localEnv.utilities.cliWorkingPath + "prefs" + NodeStorage.platformFolderDelimiter,
+      path.join(localEnv.utilities.cliWorkingPath, "prefs") + NodeStorage.platformFolderDelimiter,
       ""
     );
 
     CreatorToolsHost.projectsStorage = new NodeStorage(
-      localEnv.utilities.cliWorkingPath + "projects" + NodeStorage.platformFolderDelimiter,
+      path.join(localEnv.utilities.cliWorkingPath, "projects") + NodeStorage.platformFolderDelimiter,
       ""
     );
 
     CreatorToolsHost.packStorage = new NodeStorage(
-      localEnv.utilities.cliWorkingPath + "packs" + NodeStorage.platformFolderDelimiter,
+      path.join(localEnv.utilities.cliWorkingPath, "packs") + NodeStorage.platformFolderDelimiter,
       ""
     );
 
     CreatorToolsHost.workingStorage = new NodeStorage(
-      localEnv.utilities.cliWorkingPath + "working" + NodeStorage.platformFolderDelimiter,
+      path.join(localEnv.utilities.cliWorkingPath, "working") + NodeStorage.platformFolderDelimiter,
       ""
     );
 

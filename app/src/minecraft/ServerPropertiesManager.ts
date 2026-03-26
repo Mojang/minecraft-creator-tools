@@ -46,7 +46,8 @@ export default class ServerPropertiesManager {
   difficulty: ServerDifficulty = ServerDifficulty.easy;
   allowCheats: boolean = true;
   maxPlayers: number = 10;
-  onlineMode: boolean = true;
+  onlineMode: boolean = false;
+  emitServerTelemetry: boolean = false;
   whiteList: boolean = false;
   serverPort: number = 19132;
   serverPortV6: number = 19133;
@@ -68,7 +69,7 @@ export default class ServerPropertiesManager {
   playerMovementScoreThreshold: number = 20;
   playerMovementDistanceThreshold: number = 0.3;
   playerMovementDurationThresholdInMs: number = 500;
-  correctPlayerMovement: boolean = false;
+  correctPlayerMovement: boolean = true;
   serverAuthoritativeBlockBreaking: boolean = false;
 
   public get serverFolder() {
@@ -122,6 +123,14 @@ export default class ServerPropertiesManager {
           break;
       }
     }
+
+    if (worldSettings.onlineMode !== undefined) {
+      this.onlineMode = worldSettings.onlineMode;
+    }
+
+    if (worldSettings.emitServerTelemetry !== undefined) {
+      this.emitServerTelemetry = worldSettings.emitServerTelemetry;
+    }
   }
 
   public async writeFile() {
@@ -167,6 +176,7 @@ export default class ServerPropertiesManager {
     content.push("allow-cheats=" + this.allowCheats);
     content.push("max-players=" + this.maxPlayers);
     content.push("online-mode=" + this.onlineMode);
+    content.push("emit-server-telemetry=" + this.emitServerTelemetry);
     content.push("white-list=" + this.whiteList);
     content.push("server-port=" + this.serverPort);
     content.push("server-portv6=" + this.serverPortV6);

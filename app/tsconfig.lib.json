@@ -21,6 +21,7 @@
     "types": ["node"]
   },
   "include": [
+    "src/index.lib.ts",
     "src/core/**/*",
     "src/minecraft/**/*",
     "src/storage/**/*",
@@ -44,15 +45,18 @@
     "src/images/**/*",
     "src/tools/**/*",
     "src/docgen/**/*",
-    "src/local/ILocalUtilities.ts"
+    "src/core/ILocalUtilities.ts"
   ],
   "exclude": [
     "node_modules",
     "src/test/**/*",
+    "src/test-ex/**/*",
     "src/testweb/**/*",
+    "src/testmobile/**/*",
+    "src/testa11y/**/*",
     "src/UX/**/*",
     "src/UXex/**/*",
-    "src/worldux/**/*",
+    "src/UX/world/**/*",
     "src/vscode/**/*",
     "src/vscodeweb/**/*",
     "src/cli/**/*",

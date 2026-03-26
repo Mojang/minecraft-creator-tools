@@ -5,7 +5,6 @@ import ProjectInfoItem from "../ProjectInfoItem";
 import IProjectInfoGenerator from "../IProjectInfoGenerator";
 import { InfoItemType } from "../IInfoItemData";
 import ProjectInfoSet from "../ProjectInfoSet";
-import ProjectInfoUtilities from "../ProjectInfoUtilities";
 import Project from "../../app/Project";
 import ProjectItem from "../../app/ProjectItem";
 import Database from "../../minecraft/Database";
@@ -43,17 +42,12 @@ const RESOURCE_PACK_SUFFIX = "Vanilla files can be seen at https://aka.ms/resour
  *  * Complete copies of vanilla files
  *  * Partial copies of vanilla files (for restricted files)
  *
+ * @see {@link ../../../public/data/forms/mctoolsval/vandupes.form.json} for topic definitions
  */
 
 export default class CheckVanillaDuplicatesInfoGenerator implements IProjectInfoGenerator {
   id = "VANDUPES";
-  title = "Check Vanilla Duplicates";
-
-  getTopicData(topicId: number) {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(CheckVanillaDuplicatesInfoGeneratorTest, topicId),
-    };
-  }
+  title = "Vanilla Duplicates";
 
   summarize(info: any, infoSet: ProjectInfoSet) {
     info.completeVanillaCopy = infoSet.getSummedDataValue(

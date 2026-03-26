@@ -1,0 +1,220 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "custom_slime",
+  "description": "A simple slime/cube creature template. 6x6x6 units (~0.4 blocks). Very simple design, great for beginners. All coordinates in Minecraft units (16 = 1 block).",
+  "textureSize": [
+    64,
+    32
+  ],
+  "textures": {
+    "body": {
+      "background": {
+        "type": "perlin_noise",
+        "colors": [
+          "#2E8B2E",
+          "#4ACD4A",
+          "#90EE90"
+        ],
+        "seed": 11001,
+        "scale": 6,
+        "factor": 1
+      }
+    },
+    "eyes": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#1F1F1F",
+          "#3F3F3F"
+        ],
+        "seed": 11002,
+        "factor": 0.4
+      }
+    },
+    "mouth": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#2B2B2B",
+          "#4B4B4B"
+        ],
+        "seed": 11003,
+        "factor": 0.4
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "cube",
+      "pivot": [
+        0,
+        3,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -3,
+            0,
+            -3
+          ],
+          "size": [
+            6,
+            6,
+            6
+          ],
+          "faces": {
+            "north": {
+              "textureId": "body"
+            },
+            "south": {
+              "textureId": "body"
+            },
+            "east": {
+              "textureId": "body"
+            },
+            "west": {
+              "textureId": "body"
+            },
+            "up": {
+              "textureId": "body"
+            },
+            "down": {
+              "textureId": "body"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "left_eye",
+      "parent": "cube",
+      "pivot": [
+        -1.5,
+        4,
+        -3
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -2.5,
+            3,
+            -3.5
+          ],
+          "size": [
+            2,
+            2,
+            0.5
+          ],
+          "faces": {
+            "north": {
+              "textureId": "eyes"
+            },
+            "south": {
+              "textureId": "eyes"
+            },
+            "east": {
+              "textureId": "eyes"
+            },
+            "west": {
+              "textureId": "eyes"
+            },
+            "up": {
+              "textureId": "eyes"
+            },
+            "down": {
+              "textureId": "eyes"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "right_eye",
+      "parent": "cube",
+      "pivot": [
+        1.5,
+        4,
+        -3
+      ],
+      "cubes": [
+        {
+          "origin": [
+            0.5,
+            3,
+            -3.5
+          ],
+          "size": [
+            2,
+            2,
+            0.5
+          ],
+          "faces": {
+            "north": {
+              "textureId": "eyes"
+            },
+            "south": {
+              "textureId": "eyes"
+            },
+            "east": {
+              "textureId": "eyes"
+            },
+            "west": {
+              "textureId": "eyes"
+            },
+            "up": {
+              "textureId": "eyes"
+            },
+            "down": {
+              "textureId": "eyes"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "mouth",
+      "parent": "cube",
+      "pivot": [
+        0,
+        2,
+        -3
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -0.5,
+            1,
+            -3.5
+          ],
+          "size": [
+            1,
+            1,
+            0.5
+          ],
+          "faces": {
+            "north": {
+              "textureId": "mouth"
+            },
+            "south": {
+              "textureId": "mouth"
+            },
+            "east": {
+              "textureId": "mouth"
+            },
+            "west": {
+              "textureId": "mouth"
+            },
+            "up": {
+              "textureId": "mouth"
+            },
+            "down": {
+              "textureId": "mouth"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "entity"
+}

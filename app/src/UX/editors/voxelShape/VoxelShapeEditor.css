@@ -1,0 +1,127 @@
+/* VoxelShapeEditor.css - Styles for the Voxel Shape Editor */
+
+.vse-loading {
+  padding: 20px;
+  text-align: center;
+}
+
+.vse-areaOuter {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.vse-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.3);
+}
+
+.vse-identifier {
+  font-size: 14px;
+  padding-right: 16px;
+}
+
+.vse-area {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  padding: 0;
+}
+
+/* Left panel - box list and editor */
+.vse-leftPanel {
+  width: 320px;
+  min-width: 280px;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(128, 128, 128, 0.3);
+  overflow: hidden;
+}
+
+/* Right panel - 3D preview */
+.vse-rightPanel {
+  flex: 1;
+  min-width: 300px;
+  overflow: hidden;
+  position: relative;
+}
+
+.vse-listArea {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.vse-listToolbar {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+.vse-listContainer {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.vse-boxEditor {
+  padding: 16px;
+  border-top: 1px solid rgba(128, 128, 128, 0.3);
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.vse-boxEditor h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+}
+
+.vse-coordRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.vse-coordLabel {
+  width: 40px;
+  font-weight: 500;
+}
+
+.vse-coordInput {
+  width: 80px !important;
+}
+
+.vse-coordInput input {
+  width: 100%;
+  text-align: center;
+}
+
+.vse-previewArea {
+  width: 100%;
+  height: 100%;
+}
+
+.vse-noPreview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: rgba(128, 128, 128, 0.7);
+  font-style: italic;
+}
+
+.vse-previewLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: rgba(128, 128, 128, 0.7);
+}

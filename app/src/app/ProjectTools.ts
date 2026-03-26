@@ -8,7 +8,7 @@ import CreatorTools from "./CreatorTools";
 import CommandRunner from "./CommandRunner";
 
 export default class ProjectTools {
-  static async addGlobalTools(tools: ITool[]) {
+  static addGlobalTools(tools: ITool[]) {
     tools.push({
       title: "Reload",
       type: ToolType.reload,

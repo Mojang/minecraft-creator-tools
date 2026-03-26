@@ -33,6 +33,7 @@ export default class BlockType implements IManagedComponentSetItem {
   private _behaviorPackFile?: IFile;
   private _blockResource?: IBlockResource;
   private _isLoaded: boolean = false;
+  private _loadedWithComments: boolean = false;
   private _properties: { [name: string]: IBlocksMetadataBlockProperty } = {};
 
   public behaviorPackBlockTypeDef?: IBlockTypeBehaviorPack;
@@ -512,8 +513,24 @@ export default class BlockType implements IManagedComponentSetItem {
     return this._behaviorPackFile.setObjectContentIfSemanticallyDifferent(this._behaviorPackData);
   }
 
-  async load() {
-    if (this._behaviorPackFile === undefined || this._isLoaded) {
+  /**
+   * Loads the definition from the file.
+   * @param preserveComments If true, uses comment-preserving JSON parsing for edit/save cycles.
+   *                         If false (default), uses efficient standard JSON parsing.
+   *                         Can be called again with true to "upgrade" a read-only load to read/write.
+   */
+  async load(preserveComments: boolean = false) {
+    // If already loaded with comments, we have the "best" version - nothing more to do
+    if (this._isLoaded && this._loadedWithComments) {
+      return;
+    }
+
+    // If already loaded without comments and caller doesn't need comments, we're done
+    if (this._isLoaded && !preserveComments) {
+      return;
+    }
+
+    if (this._behaviorPackFile === undefined) {
       return;
     }
 
@@ -522,12 +539,18 @@ export default class BlockType implements IManagedComponentSetItem {
     }
 
     if (!this._behaviorPackFile.content || this._behaviorPackFile.content instanceof Uint8Array) {
+      this._isLoaded = true;
+      this._loadedWithComments = preserveComments;
+      this._onLoaded.dispatch(this, this);
       return;
     }
 
     let data: any = {};
 
-    let result = StorageUtilities.getJsonObject(this._behaviorPackFile);
+    // Use comment-preserving parser only when needed for editing
+    let result = preserveComments
+      ? StorageUtilities.getJsonObjectWithComments(this._behaviorPackFile)
+      : StorageUtilities.getJsonObject(this._behaviorPackFile);
 
     if (result) {
       data = result;
@@ -543,8 +566,9 @@ export default class BlockType implements IManagedComponentSetItem {
 
     this.behaviorPackBlockTypeDef = block;
 
-    this._onLoaded.dispatch(this, this);
-
     this._isLoaded = true;
+    this._loadedWithComments = preserveComments;
+
+    this._onLoaded.dispatch(this, this);
   }
 }

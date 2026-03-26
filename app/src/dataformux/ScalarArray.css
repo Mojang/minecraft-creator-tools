@@ -1,6 +1,7 @@
 .sarr-outer {
   max-width: 570px;
-  margin-top: 2px !important;
+  margin-top: 6px !important;
+  margin-bottom: 4px;
 }
 
 .sarr-add BUTTON {
@@ -41,4 +42,87 @@
 
 .sarr-none {
   padding-bottom: 30px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MINECRAFT-STYLED AUTOCOMPLETE TAGS
+   Replaces rounded MUI chips with blocky beveled Minecraft inventory style.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.sarr-inner .MuiChip-root {
+  border-radius: 0;
+  background: #505050;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 11px;
+  height: 26px;
+  margin: 3px 4px 3px 0;
+  box-shadow:
+    inset -1px -1px 0 0 #303030,
+    inset 1px 1px 0 0 #707070;
+  transition:
+    background 0.1s ease,
+    box-shadow 0.1s ease;
+}
+
+.sarr-inner .MuiChip-root:hover {
+  background: #5a5a5a;
+  box-shadow:
+    inset -1px -1px 0 0 #252525,
+    inset 1px 1px 0 0 #808080;
+}
+
+.sarr-inner .MuiChip-label {
+  font-family: "Noto Sans", "Segoe UI", sans-serif;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+  padding: 0 4px 0 6px;
+}
+
+/* Replace round cancel icon with a square x button */
+.sarr-inner .MuiChip-deleteIcon {
+  color: transparent !important;
+  font-size: 14px;
+  margin-right: 3px !important;
+  margin-left: 3px !important;
+  width: 16px;
+  height: 16px;
+  border-radius: 0;
+  background: #3a3a3a;
+  box-shadow:
+    inset -1px -1px 0 0 #252525,
+    inset 1px 1px 0 0 #505050;
+  /* Crosshair x via inline SVG background */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cline x1='4' y1='4' x2='12' y2='12' stroke='%23999' stroke-width='2'/%3E%3Cline x1='12' y1='4' x2='4' y2='12' stroke='%23999' stroke-width='2'/%3E%3C/svg%3E");
+  background-size: 10px 10px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.sarr-inner .MuiChip-deleteIcon:hover {
+  color: transparent;
+  background-color: #4a2020;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cline x1='4' y1='4' x2='12' y2='12' stroke='%23ff6b6b' stroke-width='2'/%3E%3Cline x1='12' y1='4' x2='4' y2='12' stroke='%23ff6b6b' stroke-width='2'/%3E%3C/svg%3E");
+}
+
+/* Hide the SVG path inside the delete icon */
+.sarr-inner .MuiChip-deleteIcon path {
+  display: none;
+}
+
+/* Square off the autocomplete input to match */
+.sarr-inner .MuiOutlinedInput-root {
+  border-radius: 0;
+}
+
+.sarr-inner .MuiOutlinedInput-notchedOutline {
+  border-radius: 0;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.sarr-inner .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.sarr-inner .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #52a535;
 }

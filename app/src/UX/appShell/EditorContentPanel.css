@@ -1,0 +1,143 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   EDITOR CONTENT PANEL CSS - Minecraft Creator Tools
+   
+   DESIGN PHILOSOPHY:
+   - Subtle, tasteful backgrounds that adapt to light/dark mode
+   - Hierarchy through background color differences and borders, NOT beveling
+   - The EditorHeader chip has the Minecraft beveling - panels are simpler
+   - Clean, organized appearance without visual clutter
+   
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   PANEL GRID CONTAINER
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.editor-panel-grid {
+  display: grid;
+  grid-template-columns: var(--grid-columns, 220px 1fr);
+  gap: 1px;
+  width: 100%;
+  min-height: 100%;
+  background: var(--panel-divider, rgba(128, 128, 128, 0.2));
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   BASE PANEL STYLES
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.editor-content-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--panel-bg);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Panel header - simple, clean text */
+.editor-panel-header {
+  padding: 10px 14px 8px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--panel-header-text, #888);
+  border-bottom: 1px solid var(--panel-border, rgba(128, 128, 128, 0.15));
+}
+
+.editor-panel-header-compact {
+  padding: 8px 12px 6px 12px;
+  font-size: 10px;
+}
+
+/* Panel content area */
+.editor-panel-content {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SIDEBAR PANEL (Left sidebar for lists/navigation)
+   Uses slightly darker/lighter background to differentiate from main
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.editor-panel-sidebar {
+  /* Sidebar gets a subtle background differentiation */
+  border-right: 1px solid var(--panel-border, rgba(128, 128, 128, 0.15));
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   LEGACY VARIANT SUPPORT
+   Keep inset/raised/flat class names for backward compatibility
+   but apply simpler, non-beveled styling
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.editor-panel-inset {
+  /* Sidebar-style: background set via CSS variables in JS */
+  border-right: 1px solid var(--panel-border, rgba(128, 128, 128, 0.15));
+}
+
+.editor-panel-raised {
+  /* Main-style: background set via CSS variables in JS */
+  border-left: 1px solid var(--panel-border, rgba(128, 128, 128, 0.1));
+}
+
+.editor-panel-flat {
+  /* Simple bordered panel */
+  border: 1px solid var(--panel-border, rgba(128, 128, 128, 0.15));
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SECTION HEADERS (inside panels)
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.editor-panel-section-header {
+  padding: 10px 12px 6px 12px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--panel-header-text, #888);
+  border-bottom: 1px solid var(--panel-border, rgba(128, 128, 128, 0.1));
+  margin-bottom: 4px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   LIST ITEMS INSIDE PANELS
+   
+   Simple, clean list item styling without heavy beveling.
+   Selected items use a subtle green highlight.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Base list item inside panels - clean and simple */
+.editor-content-panel .ui-list__item,
+.editor-content-panel .panel-list-item {
+  padding: 6px 12px;
+  margin: 2px 4px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+  border: 1px solid transparent;
+  background: transparent;
+}
+
+/* Hover state */
+.editor-content-panel .ui-list__item:hover,
+.editor-content-panel .panel-list-item:hover {
+  background: rgba(128, 128, 128, 0.1);
+}
+
+/* Selected state - subtle green highlight */
+.editor-content-panel .ui-list__item[aria-selected="true"],
+.editor-content-panel .panel-list-item.selected {
+  background: rgba(82, 165, 53, 0.12);
+  border-color: rgba(82, 165, 53, 0.4);
+}
+
+.editor-content-panel .ui-list__item[aria-selected="true"]:hover,
+.editor-content-panel .panel-list-item.selected:hover {
+  background: rgba(82, 165, 53, 0.18);
+}
+
+/* Scrollbar styling removed — uses global Minecraft-themed scrollbars from index.css */

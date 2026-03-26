@@ -39,7 +39,7 @@ export default class ActionSetScriptGenerator {
   ) {
     const lines: string[] = [];
 
-    let name = actionSet.name;
+    let name = actionSet.name ?? "action_set";
 
     if (nameSuffix) {
       name += nameSuffix;
@@ -183,7 +183,7 @@ export default class ActionSetScriptGenerator {
       for (const childAction of actionSet.actions) {
         if (childAction instanceof ActionGroup) {
           if (!childAction.name) {
-            childAction.name = actionSet.name + "_" + String(actionGroupCount + 1);
+            childAction.name = (actionSet.name ?? "action") + "_" + String(actionGroupCount + 1);
           }
 
           this.addScriptGroupLinesForFunction(lines, childAction, options, { indent: 2 });

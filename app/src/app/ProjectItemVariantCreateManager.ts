@@ -1,3 +1,7 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+import Log from "../core/Log";
 import Database from "../minecraft/Database";
 import { MaxVariantCounts, ProjectItemVariantType } from "./IProjectItemVariant";
 import IProjectItemVariantSeed from "./IProjectItemVariantSeed";
@@ -36,6 +40,9 @@ export default class ProjectItemVariantCreateManager {
     let variantStyle = this.getPredominatingVariantType(projectItem.project);
 
     if (!projectItem.primaryFile || !projectItem.projectPath) {
+      Log.debug(
+        `[VariantCreate] Aborting: primaryFile=${!!projectItem.primaryFile}, projectPath=${projectItem.projectPath}`
+      );
       return;
     }
 
@@ -46,12 +53,20 @@ export default class ProjectItemVariantCreateManager {
     }
 
     if (!label) {
+      Log.debug("[VariantCreate] Aborting: no label");
       return;
     }
+
+    Log.debug(
+      `[VariantCreate] Creating variant '${label}' for '${projectItem.projectPath}', style=${variantStyle}, basedOn='${itemSeed.basedOn}'`
+    );
 
     const path = await ProjectItemVariantCreateManager.getTargetFolderPath(projectItem, variantStyle, label);
 
     if (!path) {
+      Log.debug(
+        `[VariantCreate] Aborting: getTargetFolderPath returned undefined for style=${variantStyle}, label='${label}', projectPath='${projectItem.projectPath}'`
+      );
       return;
     }
 
@@ -69,20 +84,110 @@ export default class ProjectItemVariantCreateManager {
       }
     }
 
+    // If no content found from basedOn variant, fall back to the primary file
+    if (content === undefined && projectItem.primaryFile) {
+      if (!projectItem.primaryFile.isContentLoaded) {
+        await projectItem.primaryFile.loadContent();
+      }
+
+      if (projectItem.primaryFile.content) {
+        content = projectItem.primaryFile.content;
+      }
+    }
+
     if (projectItem.project.projectFolder) {
       const variantFile = await projectItem.project.projectFolder.ensureFileFromRelativePath(path);
 
       if (content !== undefined) {
         variantFile.setContent(content);
+        await variantFile.saveContent();
 
         const newVariant = projectItem.ensureVariant(label);
 
         newVariant.variantType = variantStyle;
-        newVariant.projectPath = projectItem.projectPath;
+        newVariant.projectPath = path;
 
         newVariant.setFile(variantFile);
+
+        Log.debug(
+          `[VariantCreate] Created variant '${label}' at '${path}', ` +
+            `file=${variantFile ? "yes" : "no"}, content=${content ? typeof content : "none"}, ` +
+            `variant.file=${newVariant.file ? "yes" : "no"}, ` +
+            `variant.projectPath=${newVariant.projectPath}`
+        );
+
+        // Ensure the file content is marked as loaded so the editor can display it immediately
+        if (!variantFile.isContentLoaded) {
+          await variantFile.loadContent();
+        }
+      } else {
+        Log.debug(`[VariantCreate] No content available to create variant '${label}'`);
       }
     }
+  }
+
+  /**
+   * Tries to build a variant path from a base-packs layout.
+   * E.g., /base-packs/vanilla/behavior/entities/donkey.json
+   *     → /base-packs/vanilla_1.26.20/behavior/entities/donkey.json
+   */
+  private static _tryBasePacksPath(
+    projectPath: string,
+    projectPathLower: string,
+    variantLabel: string
+  ): string | undefined {
+    const basePacks = projectPathLower.indexOf("/base-packs/");
+    if (basePacks >= 0) {
+      const basePackNameStart = basePacks + 12; // after "/base-packs/"
+      const basePackNameEnd = projectPathLower.indexOf("/", basePackNameStart);
+
+      if (basePackNameEnd > 0) {
+        const basePackName = projectPath.substring(basePackNameStart, basePackNameEnd);
+
+        return (
+          projectPath.substring(0, basePackNameStart) +
+          basePackName +
+          "_" +
+          variantLabel +
+          projectPath.substring(basePackNameEnd)
+        );
+      }
+    }
+    return undefined;
+  }
+
+  /**
+   * Tries to build a variant path from a standard _packs/ layout.
+   * E.g., /behavior_packs/mypack_bp/entities/donkey.json
+   *     → /behavior_packs/_bp_1.26.20/entities/donkey.json
+   */
+  private static _tryPacksRootPath(
+    projectPath: string,
+    projectPathLower: string,
+    variantLabel: string
+  ): string | undefined {
+    const packsRoot = projectPathLower.indexOf("_packs/");
+    if (packsRoot >= 0) {
+      const packFolderNameEnd = projectPathLower.indexOf("/", packsRoot + 7);
+
+      if (packFolderNameEnd > 0) {
+        let packFolderName = projectPath.substring(packsRoot + 7, packFolderNameEnd);
+
+        const lastUnderscore = packFolderName.lastIndexOf("_");
+        if (lastUnderscore > 0) {
+          packFolderName = packFolderName.substring(lastUnderscore);
+        }
+
+        return (
+          projectPath.substring(0, packsRoot + 7) +
+          packFolderName +
+          "_" +
+          variantLabel +
+          projectPath.substring(packFolderNameEnd)
+        );
+      }
+    }
+    return undefined;
   }
 
   static async getTargetFolderPath(
@@ -99,27 +204,15 @@ export default class ProjectItemVariantCreateManager {
     const projectPathLower = projectPath.toLowerCase();
 
     if (variantStyle === ProjectItemVariantType.versionSlice) {
-      const packsRoot = projectPathLower.indexOf("_packs/");
-      if (packsRoot >= 0) {
-        const packFolderNameEnd = projectPathLower.indexOf("/", packsRoot + 7);
+      const packsResult = ProjectItemVariantCreateManager._tryPacksRootPath(
+        projectPath,
+        projectPathLower,
+        variantLabel
+      );
+      if (packsResult) return packsResult;
 
-        if (packFolderNameEnd > 0) {
-          let packFolderName = projectPath.substring(packsRoot + 7, packFolderNameEnd);
-
-          const lastUnderscore = packFolderName.lastIndexOf("_");
-          if (lastUnderscore > 0) {
-            packFolderName = packFolderName.substring(lastUnderscore);
-          }
-
-          return (
-            projectPath.substring(0, packsRoot + 7) +
-            packFolderName +
-            "_" +
-            variantLabel +
-            projectPath.substring(packFolderNameEnd)
-          );
-        }
-      }
+      const baseResult = ProjectItemVariantCreateManager._tryBasePacksPath(projectPath, projectPathLower, variantLabel);
+      if (baseResult) return baseResult;
     } else if (variantStyle === ProjectItemVariantType.versionSliceAlt) {
       const staticAssets = projectPathLower.indexOf("/static-assets/");
 
@@ -134,6 +227,14 @@ export default class ProjectItemVariantCreateManager {
         return "/" + packFolderName + "_" + variantLabel + projectPath.substring(staticAssets);
       }
     }
+
+    // Fallback for 'general' style or when style-specific logic didn't match
+    const baseResult = ProjectItemVariantCreateManager._tryBasePacksPath(projectPath, projectPathLower, variantLabel);
+    if (baseResult) return baseResult;
+
+    const packsResult = ProjectItemVariantCreateManager._tryPacksRootPath(projectPath, projectPathLower, variantLabel);
+    if (packsResult) return packsResult;
+
     return undefined;
   }
 }

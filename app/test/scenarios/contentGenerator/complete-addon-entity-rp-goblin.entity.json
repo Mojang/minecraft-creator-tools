@@ -1,0 +1,24 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "mymod:goblin",
+      "materials": {
+        "default": "entity_alphatest"
+      },
+      "textures": {
+        "default": "textures/entity/goblin"
+      },
+      "geometry": {
+        "default": "geometry.mymod.goblin"
+      },
+      "render_controllers": [
+        "controller.render.mymod.goblin"
+      ],
+      "spawn_egg": {
+        "base_color": "#5B8C3E",
+        "overlay_color": "#3D6B2E"
+      }
+    }
+  }
+}

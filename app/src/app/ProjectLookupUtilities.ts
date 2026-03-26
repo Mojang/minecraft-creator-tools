@@ -1,5 +1,10 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import { AnnotationCategory } from "../core/ContentIndex";
 import ISimpleReference from "../dataform/ISimpleReference";
+import FeatureDefinition from "../minecraft/FeatureDefinition";
+import { ProjectItemType } from "./IProjectItemData";
 import LookupUtilities from "./LookupUtilities";
 import Project from "./Project";
 
@@ -39,6 +44,9 @@ export default class ProjectLookupUtilities {
       case "terraintexture":
         return await this.getTerrainTextureReferences(project);
 
+      case "feature":
+        return await this.getFeatureReferences(project);
+
       case "entitytypeplusvariants":
         break;
     }
@@ -56,7 +64,7 @@ export default class ProjectLookupUtilities {
       return ProjectLookupUtilities.referenceCache["blockType"];
     }
 
-    await project.ensureInfoSetGenerated();
+    await project.ensureIndevInfoSetGenerated();
 
     let simpleRefs: ISimpleReference[] = [];
 
@@ -89,7 +97,7 @@ export default class ProjectLookupUtilities {
       return ProjectLookupUtilities.referenceCache["entityType"];
     }
 
-    await project.ensureInfoSetGenerated();
+    await project.ensureIndevInfoSetGenerated();
 
     let simpleRefs: ISimpleReference[] = [];
 
@@ -122,7 +130,7 @@ export default class ProjectLookupUtilities {
       return ProjectLookupUtilities.referenceCache["itemType"];
     }
 
-    await project.ensureInfoSetGenerated();
+    await project.ensureIndevInfoSetGenerated();
 
     let simpleRefs: ISimpleReference[] = [];
 
@@ -155,7 +163,7 @@ export default class ProjectLookupUtilities {
       return ProjectLookupUtilities.referenceCache["soundDefinition"];
     }
 
-    await project.ensureInfoSetGenerated();
+    await project.ensureIndevInfoSetGenerated();
 
     let simpleRefs: ISimpleReference[] = [];
 
@@ -188,7 +196,7 @@ export default class ProjectLookupUtilities {
       return ProjectLookupUtilities.referenceCache["terrainTexture"];
     }
 
-    await project.ensureInfoSetGenerated();
+    await project.ensureIndevInfoSetGenerated();
 
     let simpleRefs: ISimpleReference[] = [];
 
@@ -221,7 +229,7 @@ export default class ProjectLookupUtilities {
       return ProjectLookupUtilities.referenceCache["itemTexture"];
     }
 
-    await project.ensureInfoSetGenerated();
+    await project.ensureIndevInfoSetGenerated();
 
     let simpleRefs: ISimpleReference[] = [];
 
@@ -240,6 +248,45 @@ export default class ProjectLookupUtilities {
     LookupUtilities.appendReferences(simpleRefs, await LookupUtilities.getLookup("itemTexture"));
 
     ProjectLookupUtilities.referenceCache["itemTexture"] = simpleRefs;
+
+    return simpleRefs;
+  }
+
+  static async getFeatureReferences(project: Project): Promise<ISimpleReference[] | undefined> {
+    if (ProjectLookupUtilities.referenceCache["feature"]) {
+      return ProjectLookupUtilities.referenceCache["feature"];
+    }
+
+    let simpleRefs: ISimpleReference[] = [];
+
+    // Get features directly from project items
+    const itemsCopy = project.getItemsCopy();
+
+    for (const item of itemsCopy) {
+      if (item.itemType === ProjectItemType.featureBehavior) {
+        if (!item.isContentLoaded) {
+          await item.loadContent();
+        }
+
+        if (item.primaryFile) {
+          const featureDef = await FeatureDefinition.ensureOnFile(item.primaryFile);
+
+          if (featureDef && featureDef.id) {
+            simpleRefs.push({
+              id: featureDef.id,
+              description: featureDef.id + " feature from " + project.name,
+            });
+          }
+        }
+      }
+    }
+
+    LookupUtilities.sortReferences(simpleRefs);
+
+    // Also append vanilla feature references
+    LookupUtilities.appendReferences(simpleRefs, await LookupUtilities.getLookup("feature"));
+
+    ProjectLookupUtilities.referenceCache["feature"] = simpleRefs;
 
     return simpleRefs;
   }

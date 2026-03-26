@@ -10,7 +10,6 @@ import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import ProjectInfoSet from "./ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
 import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
-import ProjectInfoUtilities from "./ProjectInfoUtilities";
 
 export enum StrictPlatformInfoGeneratorTest {
   entityTypeUsesAMinecraftIdentifier = 100,
@@ -18,18 +17,17 @@ export enum StrictPlatformInfoGeneratorTest {
   itemTypeUsesAMinecraftIdentifier = 104,
 }
 
+/**
+ * Validates strict platform requirements for identifiers and runtime identifiers.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/strict.form.json} for topic definitions
+ */
 export default class StrictPlatformInfoGenerator implements IProjectInfoGenerator {
   id = "STRICT";
-  title = "Strict Platform Info Generator";
+  title = "Strict Platform";
   canAlwaysProcess = true;
 
   identifierOverridesAreErrors = false;
-
-  getTopicData(topicId: number) {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(StrictPlatformInfoGeneratorTest, topicId),
-    };
-  }
 
   summarize(info: any, infoSet: ProjectInfoSet) {}
 

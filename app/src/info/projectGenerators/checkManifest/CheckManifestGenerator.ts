@@ -8,10 +8,8 @@ import Utilities from "../../../core/Utilities";
 import SemanticVersion from "../../../core/versioning/SemanticVersion";
 import { PackType } from "../../../minecraft/Pack";
 import IProjectInfoGenerator from "../../IProjectInfoGenerator";
-import { IProjectInfoTopicData } from "../../IProjectInfoGeneratorBase";
 import ProjectInfoItem from "../../ProjectInfoItem";
-import ProjectInfoUtilities from "../../ProjectInfoUtilities";
-import { getTestTitleById, resultFromTest } from "../../tests/TestDefinition";
+import { resultFromTest } from "../../tests/TestDefinition";
 import Manifest, { parseManifest } from "../../../minecraft/manifests/Manifest";
 import { Tests } from "./CheckManifestData";
 import * as ValidationData from "./CheckManifestData";
@@ -24,9 +22,14 @@ type PackDesc = {
   isEDUOffer?: boolean;
 };
 
+/**
+ * Validates pack manifest files for structure, required fields, and format compliance.
+ *
+ * @see {@link ../../../../public/data/forms/mctoolsval/chkmanif.form.json} for topic definitions
+ */
 export default class CheckManifestGenerator implements IProjectInfoGenerator {
   id: string = "CHKMANIF";
-  title: string = "Check Manifest Generator";
+  title: string = "Manifest Validation";
   canAlwaysProcess = true;
 
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
@@ -457,9 +460,5 @@ export default class CheckManifestGenerator implements IProjectInfoGenerator {
     return [];
   }
 
-  getTopicData(topicId: number): IProjectInfoTopicData | undefined {
-    const title = ProjectInfoUtilities.getGeneralTopicTitle(topicId) || getTestTitleById(Tests, topicId);
-    return { title };
-  }
   summarize() {}
 }

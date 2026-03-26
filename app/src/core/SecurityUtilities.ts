@@ -54,6 +54,60 @@ export default class SecurityUtilities {
   }
 
   /**
+   * Validates that a path doesn't contain directory traversal sequences.
+   * Unlike validatePath, this allows leading slashes for storage-relative paths.
+   */
+  public static validatePathTraversal(path: string): boolean {
+    if (!path) {
+      return false;
+    }
+
+    // Normalize the path
+    const normalized = path.replace(/\\/g, "/");
+
+    // Check for directory traversal patterns
+    if (
+      normalized.includes("../") ||
+      normalized.includes("/..") ||
+      normalized.startsWith("..") ||
+      normalized.includes("/../") ||
+      normalized.match(/[/\\]\.\./) ||
+      normalized.includes("\0") // null byte
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Sanitizes a storage path by removing dangerous characters while preserving leading slash.
+   * For use with internal storage system that expects paths like "/images/file.png".
+   */
+  public static sanitizeStoragePath(path: string): string {
+    if (!path) {
+      return "";
+    }
+
+    // Remove null bytes
+    path = path.replace(/\0/g, "");
+
+    // Normalize slashes
+    path = path.replace(/\\/g, "/");
+
+    // Remove drive letters
+    path = path.replace(/^[a-zA-Z]:/, "");
+
+    // Split into segments and validate each (filter out . and ..)
+    const hasLeadingSlash = path.startsWith("/");
+    const segments = path.split("/").filter((segment) => {
+      return segment && segment !== "." && segment !== "..";
+    });
+
+    return (hasLeadingSlash ? "/" : "") + segments.join("/");
+  }
+
+  /**
    * Sanitizes a path by removing dangerous characters and sequences
    */
   public static sanitizePath(path: string): string {
@@ -190,21 +244,6 @@ export default class SecurityUtilities {
   }
 
   /**
-   * Generates a secure fingerprint for token binding
-   */
-  public static generateFingerprint(userAgent?: string, ipAddress?: string): string {
-    const parts = [userAgent || "unknown", ipAddress || "unknown"];
-    return parts.join("|");
-  }
-
-  /**
-   * Validates that a token fingerprint matches current request
-   */
-  public static validateFingerprint(storedFingerprint: string, currentFingerprint: string): boolean {
-    return storedFingerprint === currentFingerprint;
-  }
-
-  /**
    * Validates that a string contains only safe characters for player names
    */
   public static sanitizePlayerName(name: string): string {
@@ -215,4 +254,20 @@ export default class SecurityUtilities {
     // Only allow alphanumeric, spaces, underscores, and hyphens
     return name.replace(/[^a-zA-Z0-9 _-]/g, "");
   }
+}
+
+/**
+ * Result of Authenticode signature verification
+ */
+export interface ISignatureVerificationResult {
+  /** Whether the signature is valid */
+  isValid: boolean;
+  /** Status string from signature verification */
+  status: string;
+  /** Subject (signer) of the certificate, if available */
+  signer?: string;
+  /** Error message if verification failed */
+  error?: string;
+  /** Whether the signer is Microsoft/Mojang */
+  isMicrosoftSigned?: boolean;
 }

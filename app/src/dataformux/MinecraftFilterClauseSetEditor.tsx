@@ -5,9 +5,9 @@ import { MinecraftFilterClause } from "../minecraft/jsoncommon/MinecraftFilterCl
 import MinecraftFilterClauseEditor, { IMinecraftFilterClauseEditorProps } from "./MinecraftFilterClauseEditor";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { Toolbar } from "@fluentui/react-northstar";
+import { Button } from "@mui/material";
 import { faSquare, faSquareCheck } from "@fortawesome/free-regular-svg-icons";
-import { CustomLabel } from "../UX/Labels";
+import { getThemeColors } from "../UX/hooks/theme/useThemeColors";
 import Log from "../core/Log";
 
 export enum FilterClauseSetType {
@@ -20,6 +20,10 @@ export interface IMinecraftFilterClauseSetEditorProps {
   displayCloseButton: boolean;
   displayNarrow?: boolean;
   filterContextId: string;
+  /** When true, wraps clauses in a styled bin with a label, hidden when empty. */
+  renderClausesInBin?: boolean;
+  /** Whether there are currently any clauses (used with renderClausesInBin). */
+  hasClauses?: boolean;
   onChange?: (
     event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
     data: IMinecraftFilterClauseSetEditorProps
@@ -135,7 +139,7 @@ export default class MinecraftFilterClauseSetEditor extends Component<
 
         for (const collItem of coll) {
           if (collItem !== data.data) {
-            newColl.push(data.data);
+            newColl.push(collItem);
           }
         }
 
@@ -147,11 +151,13 @@ export default class MinecraftFilterClauseSetEditor extends Component<
           (this.props.data as MinecraftFilterClauseSet).any_of = undefined;
           (this.props.data as MinecraftFilterClauseSet).all_of = undefined;
 
-          if (newColl[0].test || newColl[0].operator || newColl[0].subject || newColl[0].value) {
-            (this.props.data as MinecraftFilterClause).test = newColl[0].test;
-            (this.props.data as MinecraftFilterClause).operator = newColl[0].operator;
-            (this.props.data as MinecraftFilterClause).subject = newColl[0].subject;
-            (this.props.data as MinecraftFilterClause).value = newColl[0].value;
+          const remaining = newColl[0] as MinecraftFilterClause;
+
+          if (remaining.test || remaining.operator || remaining.subject || remaining.value) {
+            (this.props.data as MinecraftFilterClause).test = remaining.test;
+            (this.props.data as MinecraftFilterClause).operator = remaining.operator;
+            (this.props.data as MinecraftFilterClause).subject = remaining.subject;
+            (this.props.data as MinecraftFilterClause).value = remaining.value;
           } else if ((newColl[0] as MinecraftFilterClauseSet).any_of) {
             (this.props.data as MinecraftFilterClauseSet).any_of = (newColl[0] as MinecraftFilterClauseSet).any_of;
           } else if ((newColl[0] as MinecraftFilterClauseSet).all_of) {
@@ -214,71 +220,107 @@ export default class MinecraftFilterClauseSetEditor extends Component<
       );
     }
 
-    const toolbarItems = [];
-
-    toolbarItems.push({
-      icon: (
-        <CustomLabel
-          icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
-          text={"Add condition"}
-          isCompact={false}
-        />
-      ),
-      key: "add",
-      onClick: this._addClause,
-      title: "Add new query",
-    });
-
-    if (clauseElements.length > 1) {
-      toolbarItems.push({
-        icon: (
-          <div
-            className={
-              (this.props.data as MinecraftFilterClauseSet as any).all_of
-                ? "mifics-toggledExtendedButton"
-                : "mifics-extendedButton"
-            }
-          >
-            <FontAwesomeIcon icon={faSquareCheck} className="fa-lg" />
-            <FontAwesomeIcon icon={faSquareCheck} className="fa-lg" />
-            <span className="mifics-buttonLabel">All</span>
-          </div>
-        ),
-        key: "All",
-        disabled: (this.props.data as MinecraftFilterClauseSet as any).all_of !== undefined,
-        onClick: this._setClauseAll,
-        title: "All",
-      });
-
-      toolbarItems.push({
-        icon: (
-          <div
-            className={
-              (this.props.data as MinecraftFilterClauseSet as any).any_of
-                ? "mifics-toggledExtendedButton"
-                : "mifics-extendedButton"
-            }
-          >
-            <FontAwesomeIcon icon={faSquare} className="fa-lg" />
-            <FontAwesomeIcon icon={faSquareCheck} className="fa-lg" />
-            <span className="mifics-buttonLabel">Any</span>
-          </div>
-        ),
-        key: "Any",
-        disabled: (this.props.data as MinecraftFilterClauseSet as any).any_of !== undefined,
-        onClick: this._setClauseAny,
-        title: "Any",
-      });
-    }
-
-    let outerClass = this.props.displayNarrow ? "mifics-outer" : "mifics-outer-narrow";
+    let outerClass = this.props.displayNarrow ? "mifics-outer-narrow" : "mifics-outer";
 
     return (
       <div className={outerClass}>
-        <Toolbar aria-label="Minecraft filter management" items={toolbarItems} />
-        <div className="mifics-inner">
-          <div className="mifics-cell">{clauseElements}</div>
+        <div className="mifics-toolbar">
+          <div className="mifics-toolbarInner" role="toolbar" aria-label="Minecraft filter management">
+            <button className="eat-mcBtn" onClick={this._addClause} title="Add new query">
+              <FontAwesomeIcon icon={faPlus} />
+              Add condition
+            </button>
+            {clauseElements.length > 1 && (
+              <>
+                {this.props.displayNarrow ? (
+                  <>
+                    <button
+                      className={
+                        "eat-mcBtn" + ((this.props.data as MinecraftFilterClauseSet).all_of ? " eat-mcBtn-active" : "")
+                      }
+                      disabled={(this.props.data as MinecraftFilterClauseSet).all_of !== undefined}
+                      onClick={this._setClauseAll}
+                      title="All conditions must match"
+                    >
+                      All
+                    </button>
+                    <button
+                      className={
+                        "eat-mcBtn" + ((this.props.data as MinecraftFilterClauseSet).any_of ? " eat-mcBtn-active" : "")
+                      }
+                      disabled={(this.props.data as MinecraftFilterClauseSet).any_of !== undefined}
+                      onClick={this._setClauseAny}
+                      title="Any condition can match"
+                    >
+                      Any
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      key="All"
+                      disabled={(this.props.data as MinecraftFilterClauseSet).all_of !== undefined}
+                      onClick={this._setClauseAll}
+                      title="All"
+                      variant="text"
+                      size="small"
+                    >
+                      <div
+                        className={
+                          (this.props.data as MinecraftFilterClauseSet).all_of
+                            ? "mifics-toggledExtendedButton"
+                            : "mifics-extendedButton"
+                        }
+                      >
+                        <FontAwesomeIcon icon={faSquareCheck} className="fa-lg" />
+                        <FontAwesomeIcon icon={faSquareCheck} className="fa-lg" />
+                        <span className="mifics-buttonLabel">All</span>
+                      </div>
+                    </Button>
+                    <Button
+                      key="Any"
+                      disabled={(this.props.data as MinecraftFilterClauseSet).any_of !== undefined}
+                      onClick={this._setClauseAny}
+                      title="Any"
+                      variant="text"
+                      size="small"
+                    >
+                      <div
+                        className={
+                          (this.props.data as MinecraftFilterClauseSet).any_of
+                            ? "mifics-toggledExtendedButton"
+                            : "mifics-extendedButton"
+                        }
+                      >
+                        <FontAwesomeIcon icon={faSquare} className="fa-lg" />
+                        <FontAwesomeIcon icon={faSquareCheck} className="fa-lg" />
+                        <span className="mifics-buttonLabel">Any</span>
+                      </div>
+                    </Button>
+                  </>
+                )}
+              </>
+            )}
+          </div>
         </div>
+        {clauseElements.length > 0 && this.props.renderClausesInBin && (
+          <div className="eat-conditionLabel">Run this action when:</div>
+        )}
+        {clauseElements.length > 0 && (
+          <div
+            className={this.props.renderClausesInBin ? "mifics-inner eat-conditionsBin" : "mifics-inner"}
+            style={
+              this.props.renderClausesInBin
+                ? {
+                    backgroundColor: getThemeColors().background2,
+                    borderColor: getThemeColors().background4,
+                  }
+                : undefined
+            }
+          >
+            <div className="mifics-cell">{clauseElements}</div>
+          </div>
+        )}
       </div>
     );
   }

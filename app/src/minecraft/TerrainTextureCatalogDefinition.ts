@@ -17,6 +17,7 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
   private _data?: ITerrainTextureCatalog;
   private _file?: IFile;
   private _isLoaded: boolean = false;
+  private _loadedWithComments: boolean = false;
 
   public id: string | undefined;
 
@@ -304,14 +305,14 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
   }
 
   async addChildItems(project: Project, item: ProjectItem) {
-    const itemsCopy = project.getItemsCopy();
+    const textureItems = project.getItemsByType(ProjectItemType.texture);
 
     let packRootFolder = this.getPackRootFolder();
 
     let texturePathList = this.getTexturePathList();
 
-    for (const candItem of itemsCopy) {
-      if (candItem.itemType === ProjectItemType.texture && packRootFolder && texturePathList) {
+    for (const candItem of textureItems) {
+      if (packRootFolder && texturePathList) {
         if (!candItem.isContentLoaded) {
           await candItem.loadContent();
         }
@@ -320,10 +321,12 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
           let relativePath = StorageUtilities.getBaseRelativePath(candItem.primaryFile, packRootFolder);
 
           if (relativePath) {
-            if (texturePathList && texturePathList.includes(relativePath)) {
+            // texturePathList is lowercased, so we need to compare case-insensitively
+            const relativePathLower = relativePath.toLowerCase();
+            if (texturePathList && texturePathList.includes(relativePathLower)) {
               item.addChildItem(candItem);
 
-              texturePathList = Utilities.removeItemInArray(relativePath, texturePathList);
+              texturePathList = Utilities.removeItemInArray(relativePathLower, texturePathList);
             }
           }
         }
@@ -341,8 +344,20 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
     }
   }
 
-  async load() {
-    if (this._isLoaded) {
+  /**
+   * Loads the definition from the file.
+   * @param preserveComments If true, uses comment-preserving JSON parsing for edit/save cycles.
+   *                         If false (default), uses efficient standard JSON parsing.
+   *                         Can be called again with true to "upgrade" a read-only load to read/write.
+   */
+  async load(preserveComments: boolean = false) {
+    // If already loaded with comments, we have the "best" version - nothing more to do
+    if (this._isLoaded && this._loadedWithComments) {
+      return;
+    }
+
+    // If already loaded without comments and caller doesn't need comments, we're done
+    if (this._isLoaded && !preserveComments) {
       return;
     }
 
@@ -356,12 +371,18 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
     }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
+      this._isLoaded = true;
+      this._loadedWithComments = preserveComments;
+      this._onLoaded.dispatch(this, this);
       return;
     }
 
     let data: any = {};
 
-    let result = StorageUtilities.getJsonObject(this._file);
+    // Use comment-preserving parser only when needed for editing
+    let result = preserveComments
+      ? StorageUtilities.getJsonObjectWithComments(this._file)
+      : StorageUtilities.getJsonObject(this._file);
 
     if (result) {
       data = result;
@@ -370,6 +391,7 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
     this._data = data;
 
     this._isLoaded = true;
+    this._loadedWithComments = preserveComments;
 
     this._onLoaded.dispatch(this, this);
   }
