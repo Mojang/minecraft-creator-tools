@@ -71,7 +71,7 @@ export default class PackFile extends FileBase implements IFile {
   }
 
   async deleteFile(): Promise<boolean> {
-    throw new Error("HttpFile is read-only.");
+    throw new Error("PackFile is read-only.");
   }
 
   async moveTo(newStorageRelativePath: string): Promise<boolean> {

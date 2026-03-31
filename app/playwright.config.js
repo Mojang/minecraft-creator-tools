@@ -44,9 +44,12 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    // Default project: runs all tests (no tag filtering)
+    // Default project: runs tests NOT tagged @focused or @full.
+    // Tagged tests have their own dedicated projects below, so excluding
+    // them here avoids running each tagged test twice per suite.
     {
       name: "chromium",
+      grepInvert: /@focused|@full/,
       use: {
         ...devices["Desktop Chrome"],
         channel: "chromium",

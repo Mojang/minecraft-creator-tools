@@ -26,6 +26,8 @@ export type UIDefinition = {
   items?: UIDefinition;
   //regex pattern for validation
   pattern?: string;
+  // overrides the default value specified in the schema
+  default?: any;
   //specifices which OneOf option to use.
   //"uichoice" can also be specifed to defer the choice to the ui
   oneOf?: OneOfType;
@@ -53,7 +55,12 @@ export function getUIDefinition(
   leaf?: HierarchyEntry
 ): UIDefinition | null {
   let definition: UIDefinition | null = uischema;
-  const newHierarchy = !leaf ? hierarchy : [...hierarchy, leaf];
+
+  const newHierarchy = !leaf ? [...hierarchy] : [...hierarchy, leaf];
+
+  //skip root element, its not used in the UIDefinition hierarchy
+  newHierarchy.splice(0, 1);
+
   for (const entry of newHierarchy) {
     if (entry.isArrayItem) {
       definition = definition?.items ?? null;

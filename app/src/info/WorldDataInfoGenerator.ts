@@ -151,6 +151,10 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       if (commandList[i].trim().length > 0 && (!checkForSlash || commandList[i].startsWith("/"))) {
         const command = CommandStructure.parse(commandList[i]);
 
+        if (command.fullName.length === 0) {
+          continue;
+        }
+
         if (CommandRegistry.isMinecraftBuiltInCommand(command.fullName)) {
           if (this.performAddOnValidations && CommandRegistry.isAddOnBlockedCommand(command.fullName)) {
             items.push(
@@ -554,7 +558,9 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                 if (cba.command && cba.command.trim().length > 0) {
                   let command = CommandStructure.parse(cba.command);
 
-                  if (CommandRegistry.isMinecraftBuiltInCommand(command.fullName)) {
+                  if (command.fullName.length === 0) {
+                    // Skip empty command names (e.g., command block containing just "/")
+                  } else if (CommandRegistry.isMinecraftBuiltInCommand(command.fullName)) {
                     if (this.performAddOnValidations && CommandRegistry.isAddOnBlockedCommand(command.fullName)) {
                       items.push(
                         new ProjectInfoItem(

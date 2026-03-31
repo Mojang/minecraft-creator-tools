@@ -541,6 +541,9 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
           case ContentWizardAction.newLootTable:
             this.launchNewNamedGeneric(ProjectItemType.lootTableBehavior);
             break;
+          case ContentWizardAction.newTradeTable:
+            this.launchNewNamedGeneric(ProjectItemType.tradingBehaviorJson);
+            break;
 
           case ContentWizardAction.newStructure:
             this._handleNewStructureClick();
@@ -551,6 +554,8 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
               this.launchNewNamespacedDefinition(galleryItem.targetType, galleryItem.id);
             }
             break;
+          default:
+            Log.error("Unhandled Content Wizard quick action: " + action);
         }
       }
     );

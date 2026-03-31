@@ -121,7 +121,7 @@ export default class FeatureTypePicker extends Component<IFeatureTypePickerProps
     // Auto-update the name if the user hasn't manually edited it
     if (!this.state.userEditedName) {
       // Convert feature type to a nice default name (e.g., "tree_feature" -> "tree")
-      const baseName = featureType.replace(/_feature$/, "").replace(/_/g, "_");
+      const baseName = featureType.replace(/_feature$/, "");
       newState.featureName = baseName;
     }
 

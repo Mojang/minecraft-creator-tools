@@ -33,7 +33,7 @@ JSONTAGS,101,"Info","","Entity file","/entities/minimal_entity.json","/entities/
 LINESIZE,1,"Test success","","File Line/Size Information completed successfully",,"",
 MCFUNCTION,2,"Unknown","","No applicable items found for test MC Function Validation (MCFUNCTION)",,"",
 MINENGINEVER,1,"Test success","","Min Engine Version completed successfully",,"",
-MINENGINEVER,120,"Recommendation","","Behavior pack manifest (1.20.10) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",,"/manifest.json",
+MINENGINEVER,120,"Recommendation","","Behavior pack manifest (1.20.10) has a lower minor version number compared to the expected version (1.26.10) or its previous minor version",,"/manifest.json",
 MINENGINEVER,605,"Info","","Behavior pack manifest min_engine_version",1,20,10,"/manifest.json",
 NOBOM,1,"Test success","","No Byte Order Mark allowed in json file. completed successfully",,"",
 PACK,1,"Test success","","General info completed successfully",,"",

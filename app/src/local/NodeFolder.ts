@@ -188,6 +188,20 @@ export default class NodeFolder extends FolderBase implements IFolder {
         throw new Error("Could not move folder; folder exists at specified path: " + newStorageRelativePath);
       }
 
+      // Compute new full path from current _path before any in-memory changes.
+      // _path holds the parent directory, so _path + newFolderName = target location.
+      let parentPath = this._path;
+      if (!parentPath.endsWith(NodeStorage.platformFolderDelimiter)) {
+        parentPath += NodeStorage.platformFolderDelimiter;
+      }
+      const newFullPath = parentPath + newFolderName;
+
+      // Perform disk rename FIRST. If this throws (e.g., EPERM from OneDrive/antivirus),
+      // in-memory state is still clean and callers can fall back to copy+delete.
+      Log.verbose("Renaming folder from: " + oldFullPath + " to " + newFullPath);
+      fs.renameSync(oldFullPath, newFullPath);
+
+      // Disk rename succeeded — now update in-memory state to match.
       this._parentFolder._removeExistingFolderFromParent(this);
 
       this._parentFolder = newParentFolder as NodeFolder;
@@ -198,9 +212,6 @@ export default class NodeFolder extends FolderBase implements IFolder {
 
     this._name = newFolderName;
 
-    const newFullPath = this.fullPath;
-    Log.verbose("Renaming folder from: " + oldFullPath + " to " + newFullPath);
-    fs.renameSync(oldFullPath, newFullPath);
     return true;
   }
 

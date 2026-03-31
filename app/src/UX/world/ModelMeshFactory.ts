@@ -275,10 +275,12 @@ export class ModelMeshFactory {
       // Use a single bone hierarchy with one TransformNode per bone that has rotation
       // This properly applies rotation to all cubes belonging to a bone and its children
 
-      // First, compute accumulated transforms for each bone (walking up the hierarchy)
-      // For bones with bind_pose_rotation, we need to rotate all child geometry around the bone's pivot
+      // Walk up the bone hierarchy to find the nearest ancestor with bind_pose_rotation.
+      // Child bone cubes are positioned relative to the rotated parent, so they need
+      // the parent's rotation applied. Entities where child bones should NOT inherit
+      // parent rotation (e.g., sheep legs are in world space) use VanillaGeometryTransforms
+      // to detach those bones (removeParent) before this code runs.
       const getAccumulatedRotation = (boneName: string): { pivot: number[]; rotation: number[] } | null => {
-        // Walk up the hierarchy to find the first bone with rotation
         let current = boneTransforms.get(boneName);
         while (current) {
           if (current.rotation[0] !== 0 || current.rotation[1] !== 0 || current.rotation[2] !== 0) {
@@ -1467,7 +1469,14 @@ export class ModelMeshFactory {
       texture.wrapV = BABYLON.Texture.CLAMP_ADDRESSMODE;
 
       mat.diffuseTexture = texture;
-      mat.backFaceCulling = true;
+      // Disable back-face culling for entity models. In Minecraft, entity rendering
+      // shows back faces — important for entities with alpha-tested textures
+      // (like the skeleton's rib cage) where back faces must be visible through
+      // transparent gaps in the front face.
+      mat.backFaceCulling = false;
+      // Enable two-sided lighting so back faces receive proper illumination
+      // instead of appearing dark (which happens when normals point away from camera).
+      mat.twoSidedLighting = true;
 
       this._materials.set(materialKey, mat);
       mat.freeze();

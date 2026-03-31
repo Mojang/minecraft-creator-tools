@@ -186,8 +186,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CADDONIREQ000] Found 1 error in Cooperative Add-On Item Requirements Generator check\nTESTFAIL: [CADDONREQ000] Found 8 errors in Cooperative Add-On Requirements check",
-    "infoGenerationTime": 275,
-    "endToEndGenerationTime": 502,
+    "infoGenerationTime": 778,
+    "endToEndGenerationTime": 909,
     "summary": {
       "CADDONIREQ": {
         "0": {
@@ -234,12 +234,12 @@
         },
         "120": {
           "title": "BP Minor Low",
-          "defaultMessage": "Behavior pack manifest (1.20.10) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
+          "defaultMessage": "Behavior pack manifest (1.20.10) has a lower minor version number compared to the expected version (1.26.10) or its previous minor version",
           "recommendations": 1
         },
         "220": {
           "title": "RP Minor Low",
-          "defaultMessage": "Resource pack manifest (1.20.10) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
+          "defaultMessage": "Resource pack manifest (1.20.10) has a lower minor version number compared to the expected version (1.26.10) or its previous minor version",
           "recommendations": 1
         },
         "605": {

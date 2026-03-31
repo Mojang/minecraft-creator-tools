@@ -917,7 +917,7 @@
       },
       "textureImages.vanillaGameTextureCoverage": {
         "overrideCount": 0,
-        "vanillaTextureCount": 2526,
+        "vanillaTextureCount": 2381,
         "percent": 0
       },
       "textureImagesTier0.nonVanillaTextureMemoryTier": {
@@ -1098,18 +1098,18 @@
         "count": 1
       }
     },
-    "errorCount": 1,
+    "errorCount": 2,
     "internalProcessingErrorCount": 0,
-    "warningCount": 175,
-    "testSuccessCount": 39,
-    "testFailCount": 1,
+    "warningCount": 176,
+    "testSuccessCount": 38,
+    "testFailCount": 2,
     "testNotApplicableCount": 10,
-    "errorSummary": "ERROR: [CHKMANIF134] (/Content/resource_packs/aop_mobsrp/manifest.json) Packs that support PBR must have a minimum min_engine_version of at least 1.21.120: 1.21.100",
+    "errorSummary": "ERROR: [CHKMANIF134] (/Content/resource_packs/aop_mobsrp/manifest.json) Packs that support PBR must have a minimum min_engine_version of at least 1.21.120: 1.21.100\nERROR: [JSON001] (/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json) This file has a syntax error and can't be read as JSON. Check for missing commas, brackets, or quotes. Details: Cannot create property 'volume' on string 'sounds/ambientsounds/co_doesnotexist'",
     "internalProcessingErrorSummary": "",
-    "warningSummary": "WARNING: [JSONF110] (/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json) At geometry.aop_mobs.nardolphle.visible_bounds_offset, data does not match expected type. Data '0,0.75,0' is of type number array, which does not match type 'Array of strings'.\nWARNING: [TEXTUREIMAGE440] Total texture memory exceeds budget of 157,286,400 bytes for items of type Add-On at tier 0. Total texture memory used: 221708288\nWARNING: [TEXTUREIMAGE441] Total texture memory exceeds budget of 157,286,400 bytes for items of type Add-On at tier 1. Total texture memory used: 221708288\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co3_unlinked.ogg) Audio does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/nardolphle_imageisnotlinked.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/a_biceson.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/a_biceson_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/b_nardolphle.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/b_nardolphle_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/c_sheepomelon.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/c_sheepomelon_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/1/a_biceson.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/1/a_biceson_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/1/b_nardolphle.png) Texture does not have any items in this pack that are using this.",
-    "testFailSummary": "TESTFAIL: [CHKMANIF000] Found 1 error in Manifest Validation check",
-    "infoGenerationTime": 3072,
-    "endToEndGenerationTime": 3582,
+    "warningSummary": "WARNING: [JSON114] (/Content/resource_packs/aop_mobsrp/manifest.json) Structure issue: In \"subpacks[0]\": {\"folder_name\":\"d\",\"name\":\"Sub... - object value found, but a string is required\nWARNING: [JSONF110] (/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json) At geometry.aop_mobs.nardolphle.visible_bounds_offset, data does not match expected type. Data '0,0.75,0' is of type number array, which does not match type 'Array of strings'.\nWARNING: [TEXTUREIMAGE440] Total texture memory exceeds budget of 157,286,400 bytes for items of type Add-On at tier 0. Total texture memory used: 221708288\nWARNING: [TEXTUREIMAGE441] Total texture memory exceeds budget of 157,286,400 bytes for items of type Add-On at tier 1. Total texture memory used: 221708288\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co3_unlinked.ogg) Audio does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/nardolphle_imageisnotlinked.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/a_biceson.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/a_biceson_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/b_nardolphle.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/b_nardolphle_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/c_sheepomelon.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/0/c_sheepomelon_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/1/a_biceson.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/ballast/1/a_biceson_1024hd.png) Texture does not have any items in this pack that are using this.",
+    "testFailSummary": "TESTFAIL: [CHKMANIF000] Found 1 error in Manifest Validation check\nTESTFAIL: [JSON000] Found 1 error in JSON Schema Validation check",
+    "infoGenerationTime": 5578,
+    "endToEndGenerationTime": 5919,
     "reds": 40669,
     "summary": {
       "BASEGAMEVER": {
@@ -1437,10 +1437,19 @@
         }
       },
       "JSON": {
+        "0": {
+          "title": "JSON Schema Validation",
+          "defaultMessage": "Found 1 error in JSON Schema Validation check",
+          "testCompleteFails": 1
+        },
         "1": {
           "title": "JSON Parse Error (Schema Validation)",
-          "defaultMessage": "JSON Schema Validation completed successfully",
-          "testCompleteSuccesses": 1
+          "defaultMessage": "This file has a syntax error and can't be read as JSON. Check for missing commas, brackets, or quotes. Details: Cannot create property 'volume' on string 'sounds/ambientsounds/co_doesnotexist'",
+          "errors": 1
+        },
+        "114": {
+          "defaultMessage": "Structure issue",
+          "warnings": 1
         },
         "1110": {
           "defaultMessage": "Entity type is not at a current format version"
@@ -2579,9 +2588,22 @@
       "gIx": 55
     },
     {
-      "iTp": 1,
+      "iTp": 0,
       "gId": "JSON",
-      "gIx": 1
+      "gIx": 0
+    },
+    {
+      "iTp": 3,
+      "gId": "JSON",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 114,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
+      "d": "In \"subpacks[0]\": {\"folder_name\":\"d\",\"name\":\"Sub... - object value found, but a string is required"
     },
     {
       "iTp": 2,
@@ -4009,7 +4031,7 @@
         },
         "vanillaGameTextureCoverage": {
           "overrideCount": 0,
-          "vanillaTextureCount": 2526,
+          "vanillaTextureCount": 2381,
           "percent": 0
         }
       }

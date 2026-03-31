@@ -888,7 +888,7 @@
       },
       "textureImages.vanillaGameTextureCoverage": {
         "overrideCount": 0,
-        "vanillaTextureCount": 2526,
+        "vanillaTextureCount": 2381,
         "percent": 0
       },
       "textureImagesTier0.nonVanillaTextureMemoryTier": {
@@ -1076,8 +1076,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [JSONF110] (/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json) At geometry.aop_mobs.nardolphle.visible_bounds_offset, data does not match expected type. Data '0,0.75,0' is of type number array, which does not match type 'Array of strings'.",
     "testFailSummary": "TESTFAIL: [CHKMANIF000] Found 1 error in Manifest Validation check",
-    "infoGenerationTime": 2693,
-    "endToEndGenerationTime": 3013,
+    "infoGenerationTime": 4967,
+    "endToEndGenerationTime": 5125,
     "reds": 40690,
     "summary": {
       "BASEGAMEVER": {
@@ -3810,7 +3810,7 @@
         },
         "vanillaGameTextureCoverage": {
           "overrideCount": 0,
-          "vanillaTextureCount": 2526,
+          "vanillaTextureCount": 2381,
           "percent": 0
         }
       }

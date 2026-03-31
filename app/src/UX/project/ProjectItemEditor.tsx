@@ -146,6 +146,7 @@ import BiomeResourceEditor from "../editors/biome/BiomeResourceEditor";
 import IProjectTheme from "../types/IProjectTheme";
 import SpawnRulesEditor from "../components/fileEditors/SpawnRulesEditor/SpawnRulesEditor";
 import LootTableEditor from "../components/fileEditors/lootTableEditor/LootTableEditor";
+import TradeTableEditor from "../components/fileEditors/tradeTableEditor/TradeTableEditor";
 
 enum ProjectItemEditorDirtyState {
   clean = 0,
@@ -819,6 +820,21 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
         ) {
           interior = (
             <SpawnRulesEditor
+              project={this.props.project}
+              file={file}
+              readOnly={this.props.readOnly}
+              setActivePersistable={this._handleNewChildPersistable}
+              heightOffset={heightOffset}
+            />
+          );
+        } else if (
+          file.type === "json" &&
+          projItem.itemType === ProjectItemType.tradingBehaviorJson &&
+          !showRaw &&
+          !showValidation
+        ) {
+          interior = (
+            <TradeTableEditor
               project={this.props.project}
               file={file}
               readOnly={this.props.readOnly}

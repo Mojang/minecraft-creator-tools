@@ -29,6 +29,7 @@ import VanillaProjectManager from "../../minecraft/VanillaProjectManager";
 import EntityTypeResourceDefinition from "../../minecraft/EntityTypeResourceDefinition";
 import CreatorToolsHost from "../../app/CreatorToolsHost";
 import IProjectTheme from "../../UX/types/IProjectTheme";
+import { IGeometry } from "../../minecraft/IModelGeometry";
 
 interface IModelViewerProps {
   creatorTools?: CreatorTools;
@@ -80,6 +81,8 @@ interface IModelViewerState {
   tintColor?: { r: number; g: number; b: number; a: number };
   /** When true, render texture as fully opaque (ignore alpha channel). */
   ignoreAlpha?: boolean;
+  /** Pre-transformed geometry from VanillaProjectManager (has VanillaGeometryTransforms applied). */
+  transformedGeometry?: IGeometry;
 }
 
 export default class ModelViewer extends Component<IModelViewerProps, IModelViewerState> {
@@ -89,6 +92,7 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
   _lastAttachableTypeId: string | undefined;
   /** Generation counter to prevent stale async _update() calls from overwriting current state. */
   private _updateGeneration = 0;
+  private _loadingTimeoutId: ReturnType<typeof setTimeout> | undefined;
 
   constructor(props: IModelViewerProps) {
     super(props);
@@ -112,6 +116,7 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
 
   componentDidMount(): void {
     this._update();
+    this._startLoadingTimeout();
   }
 
   componentDidUpdate(prevProps: IModelViewerProps): void {
@@ -124,7 +129,31 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
       prevProps.textureData !== this.props.textureData ||
       prevProps.projectItem !== this.props.projectItem
     ) {
+      this._startLoadingTimeout();
       this._update();
+    }
+  }
+
+  componentWillUnmount(): void {
+    this._clearLoadingTimeout();
+  }
+
+  private _startLoadingTimeout() {
+    this._clearLoadingTimeout();
+    this._loadingTimeoutId = setTimeout(() => {
+      // If we're still showing the loading spinner after 15s, show an error
+      if (!this.state.transformedGeometry && !this.state.model && !this.state.loadError) {
+        this.setState({
+          loadError: "Model took too long to load. The model data may be missing or unavailable.",
+        });
+      }
+    }, 15000);
+  }
+
+  private _clearLoadingTimeout() {
+    if (this._loadingTimeoutId) {
+      clearTimeout(this._loadingTimeoutId);
+      this._loadingTimeoutId = undefined;
     }
   }
 
@@ -153,7 +182,7 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
         this._lastEntityTypeId = this.props.entityTypeId;
         // Check if a newer _update() has been triggered while we were deciding
         if (this._updateGeneration !== generation) return;
-        await this.loadFromEntityTypeId(this.props.entityTypeId);
+        await this.loadFromEntityTypeId(this.props.entityTypeId, generation);
         return;
       }
 
@@ -161,7 +190,7 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
       if (this.props.attachableTypeId && this.props.attachableTypeId !== this._lastAttachableTypeId) {
         this._lastAttachableTypeId = this.props.attachableTypeId;
         if (this._updateGeneration !== generation) return;
-        await this.loadFromAttachableTypeId(this.props.attachableTypeId);
+        await this.loadFromAttachableTypeId(this.props.attachableTypeId, generation);
         return;
       }
 
@@ -201,6 +230,7 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
     const modelDef = new ModelGeometryDefinition();
     modelDef.loadFromData(geometryData, this.props.geometryId);
 
+    this._clearLoadingTimeout();
     this.setState({
       blockVolume: blockVolume,
       model: modelDef,
@@ -258,6 +288,7 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
         }
       }
 
+      this._clearLoadingTimeout();
       this.setState({
         blockVolume: blockVolume,
         model: modelDef,
@@ -489,6 +520,7 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
       }, textureUrl=${!!fallbackTextureUrl}`
     );
 
+    this._clearLoadingTimeout();
     this.setState({
       blockVolume: blockVolume,
       model: modelDef,
@@ -502,7 +534,7 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
     });
   }
 
-  async loadFromEntityTypeId(typeId: string) {
+  async loadFromEntityTypeId(typeId: string, generation?: number) {
     // Normalize the entity type ID
     const fullId = typeId.includes(":") ? typeId : `minecraft:${typeId}`;
 
@@ -514,12 +546,18 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
       }
     }
 
+    // Check if a newer load has been triggered while we were loading from project
+    if (generation !== undefined && this._updateGeneration !== generation) return;
+
     // Empty block volume — the isolated ModelPreview platform handles visual ground.
     const blockVolume = new BlockVolume();
     blockVolume.setMaxDimensions(8, 8, 8);
 
     // Fall back to vanilla entity data
     const modelData = await VanillaProjectManager.getVanillaEntityModelData(typeId);
+
+    // Check if a newer load has been triggered while we were fetching vanilla data
+    if (generation !== undefined && this._updateGeneration !== generation) return;
 
     if (!modelData) {
       // Custom entity with no vanilla equivalent - show ground only
@@ -543,9 +581,11 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
       return;
     }
 
+    this._clearLoadingTimeout();
     this.setState((prevState) => ({
       blockVolume: blockVolume,
       model: modelData.modelDefinition,
+      transformedGeometry: modelData.geometry,
       textureData: modelData.textureData,
       textureUrl: modelData.textureUrl,
       tintColor: modelData.tintColor,
@@ -560,11 +600,14 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
    * Load a vanilla attachable (item with 3D model) by its type ID.
    * Resolves geometry and texture via VanillaProjectManager.
    */
-  async loadFromAttachableTypeId(typeId: string) {
+  async loadFromAttachableTypeId(typeId: string, generation?: number) {
     const blockVolume = new BlockVolume();
     blockVolume.setMaxDimensions(8, 8, 8);
 
     const modelData = await VanillaProjectManager.getVanillaAttachableModelData(typeId);
+
+    // Check if a newer load has been triggered while we were fetching
+    if (generation !== undefined && this._updateGeneration !== generation) return;
 
     if (!modelData || !modelData.geometry || !modelData.modelDefinition) {
       this.setState({
@@ -579,6 +622,7 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
       return;
     }
 
+    this._clearLoadingTimeout();
     this.setState((prevState) => ({
       blockVolume: blockVolume,
       model: modelData.modelDefinition,
@@ -937,7 +981,7 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
     }
 
     let interior = (
-      <div className="mov-loading-area">
+      <div className="mov-loading-area" role="status" aria-live="polite">
         <div className="mov-loading-spinner" />
         <span>Loading model...</span>
       </div>
@@ -971,6 +1015,7 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
         ? new Location(3.5, 0.0, 3.5) // No ground blocks, position at origin
         : new Location(3.5, 2.0, 3.5); // Position above the grass blocks (y=1 surface + 1 block)
       entity.customModel = this.state.model;
+      entity.customGeometry = this.state.transformedGeometry;
       entity.customTextureData = this.state.textureData;
       entity.customTextureUrl = this.state.textureUrl;
       entity.customTintColor = this.state.tintColor;

@@ -604,7 +604,7 @@ export default defineConfig(({ command }) => {
       // Use globalThis instead of window for workers compatibility
       // globalThis works in both browser main thread and workers
       global: "globalThis",
-      ENABLE_ANALYTICS: true,
+      ENABLE_ANALYTICS: process.env.ENABLE_ANALYTICS === "true",
       BUILD_TARGET: JSON.stringify("web"),
       BUILD_VERSION: JSON.stringify(process.env.npm_package_version || "0.0.1"),
       BUILD_DATE: JSON.stringify(new Date().toISOString()),

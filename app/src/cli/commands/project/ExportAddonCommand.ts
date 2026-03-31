@@ -21,6 +21,7 @@ import { TaskType } from "../../ClUtils";
 import ProjectExporter from "../../../app/ProjectExporter";
 import StorageUtilities from "../../../storage/StorageUtilities";
 import NodeStorage from "../../../local/NodeStorage";
+import * as path from "path";
 
 export class ExportAddonCommand extends CommandBase {
   readonly metadata: ICommandMetadata = {
@@ -71,10 +72,20 @@ export class ExportAddonCommand extends CommandBase {
           continue;
         }
 
-        // Always treat -o as a folder and auto-generate the filename.
-        // CommandContextFactory ensures -o exists as a directory, so we can't use it as a filepath.
-        const folderPath = context.outputFolder || ".";
-        const filePath = project.name + ".mcpack";
+        // Determine output path: use --of if specified, otherwise auto-generate in output folder
+        let folderPath: string;
+        let filePath: string;
+
+        if (context.outputFile) {
+          const resolvedOutputFile = path.isAbsolute(context.outputFile)
+            ? context.outputFile
+            : path.resolve(process.cwd(), context.outputFile);
+          folderPath = path.dirname(resolvedOutputFile);
+          filePath = path.basename(resolvedOutputFile);
+        } else {
+          folderPath = context.outputFolder || ".";
+          filePath = project.name + ".mcpack";
+        }
 
         const ns = new NodeStorage(folderPath, "");
         await ns.rootFolder.ensureExists();
@@ -84,7 +95,9 @@ export class ExportAddonCommand extends CommandBase {
         await ns.rootFolder.saveAll();
 
         if (context.json) {
-          context.log.info(JSON.stringify({ success: true, outputPath: StorageUtilities.joinPath(folderPath, filePath) }));
+          context.log.info(
+            JSON.stringify({ success: true, outputPath: StorageUtilities.joinPath(folderPath, filePath) })
+          );
         }
 
         context.log.success(`Exported: ${filePath}`);

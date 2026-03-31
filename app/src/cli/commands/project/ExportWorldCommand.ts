@@ -51,7 +51,11 @@ export class ExportWorldCommand extends CommandBase {
       try {
         await project.inferProjectItemsFromFiles();
 
-        const outputPath = this.getFilePath(context, project.name + ".mcworld");
+        const outputPath = context.outputFile
+          ? path.isAbsolute(context.outputFile)
+            ? context.outputFile
+            : path.resolve(process.cwd(), context.outputFile)
+          : this.getFilePath(context, project.name + ".mcworld");
 
         context.log.info(`Exporting flat pack world to '${outputPath}'`);
 

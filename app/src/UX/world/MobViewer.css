@@ -101,7 +101,7 @@
 .mv-footer p {
   margin: 0;
   font-size: 12px;
-  color: #6b7280;
+  color: #9ca3af;
 }
 
 /* Headless mode - full viewport for CLI rendering */
@@ -109,4 +109,130 @@
   padding: 0;
   margin: 0;
   overflow: hidden;
+}
+
+/* High-contrast mode: use system colors for visibility */
+@media (forced-colors: active) {
+  .mv-container {
+    background-color: Canvas;
+    color: CanvasText;
+  }
+
+  .mv-toolbar {
+    background-color: Canvas;
+    border-bottom: 1px solid CanvasText;
+  }
+
+  .mv-button {
+    background-color: ButtonFace;
+    color: ButtonText;
+    border: 1px solid ButtonText;
+    forced-color-adjust: none;
+  }
+
+  .mv-button:hover:not(:disabled) {
+    background-color: Highlight;
+    color: HighlightText;
+  }
+
+  .mv-button:disabled {
+    opacity: 1;
+    color: GrayText;
+    border-color: GrayText;
+  }
+
+  .mv-select {
+    background-color: Field;
+    color: FieldText;
+    border: 1px solid CanvasText;
+  }
+
+  .mv-info {
+    color: CanvasText;
+  }
+
+  .mv-mob-info {
+    background-color: Canvas;
+    border-bottom: 1px solid CanvasText;
+  }
+
+  .mv-mob-info h2 {
+    color: CanvasText;
+  }
+
+  .mv-mob-details {
+    color: CanvasText;
+  }
+
+  .mv-error {
+    background-color: Canvas;
+    color: CanvasText;
+    border: 1px solid CanvasText;
+  }
+
+  .mv-footer {
+    background-color: Canvas;
+    border-top: 1px solid CanvasText;
+  }
+
+  .mv-footer p {
+    color: CanvasText;
+  }
+}
+
+/* Light theme: CSS custom-property overrides applied by body.ct-light */
+body.ct-light .mv-container {
+  background-color: #f5f0ed;
+  color: #262423;
+}
+
+body.ct-light .mv-toolbar {
+  background-color: #ede5e2;
+  border-bottom: 1px solid #d5ccc8;
+}
+
+body.ct-light .mv-button {
+  background-color: #d5ccc8;
+  color: #262423;
+}
+
+body.ct-light .mv-button:hover:not(:disabled) {
+  background-color: #c5bbb6;
+}
+
+body.ct-light .mv-select {
+  background-color: #ffffff;
+  color: #262423;
+  border: 1px solid #d5ccc8;
+}
+
+body.ct-light .mv-info {
+  color: #6b6360;
+}
+
+body.ct-light .mv-mob-info {
+  background-color: #f5f0ed;
+  border-bottom: 1px solid #d5ccc8;
+}
+
+body.ct-light .mv-mob-info h2 {
+  color: #2d6a14;
+}
+
+body.ct-light .mv-mob-details {
+  color: #6b6360;
+}
+
+body.ct-light .mv-error {
+  background-color: #fef2f2;
+  color: #991b1b;
+}
+
+body.ct-light .mv-footer {
+  background-color: #ede5e2;
+  border-top: 1px solid #d5ccc8;
+}
+
+body.ct-light .mv-footer p {
+  color: #6b6360;
 }

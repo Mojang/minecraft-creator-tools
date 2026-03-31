@@ -14,6 +14,7 @@ export const volatileAttributes = [
   "endToEndGenerationTime",
   "index",
   "Vanilla Texture Count",
+  "vanillaTextureCount",
 ];
 export const volatileFileExtensions = [".report.html", "deleted"];
 

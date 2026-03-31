@@ -499,6 +499,10 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
   }
 
   async function openLocalFolder(isDocumentationProject?: boolean) {
+    if (typeof window.showDirectoryPicker !== "function") {
+      return;
+    }
+
     try {
       const result = (await window.showDirectoryPicker({
         mode: "readwrite",

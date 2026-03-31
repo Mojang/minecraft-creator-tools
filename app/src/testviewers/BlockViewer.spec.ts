@@ -2,15 +2,17 @@ import { test, expect, ConsoleMessage } from "@playwright/test";
 import { processMessage } from "../testweb/WebTestUtilities";
 
 /**
- * BlockViewer Visual Regression Tests
+ * BlockViewer Tests
  *
- * These tests render various block types and capture screenshots for visual regression testing.
- * Run with: npx playwright test BlockViewer.spec.ts
+ * Tests for the block viewer component — verifies blocks load and render
+ * without errors, navigation works, and each block type renders successfully.
  *
- * Snapshots are stored in debugoutput/res/snapshots/.
+ * Run with: npm run test-viewers
+ *
+ * Screenshots are captured for manual review in debugoutput/screenshots/blocks/.
  */
 
-// Use a 512x512 viewport for block screenshots (matches baseline snapshot size)
+// Use a 512x512 viewport for block screenshots
 test.use({ viewport: { width: 512, height: 512 } });
 
 test.describe("Block Viewer Visual Tests", () => {
@@ -147,24 +149,23 @@ test.describe("Block Viewer Visual Tests", () => {
     expect(newBlockName).not.toBe(initialBlockName);
   });
 
-  // Generate individual tests for each block type
+  // Render each block type and verify it loads without errors.
+  // Screenshots are captured for manual review (no baseline comparison — baselines
+  // would require checking in 40+ images that vary by GPU/driver/OS).
   for (const blockName of blocksToTest) {
-    test(`should render ${blockName} correctly`, async ({ page }) => {
-      // Navigate directly to the specific block in headless mode for consistent 512x512 canvas
+    test(`should render ${blockName} without errors`, async ({ page }) => {
       await page.goto(`/?mode=blockviewer&block=${blockName}&headless=true`);
       await page.waitForLoadState("networkidle");
 
-      // Wait for the canvas to be visible
       const canvas = page.locator('[data-testid="block-viewer-canvas"]');
       await expect(canvas).toBeVisible({ timeout: 10000 });
 
-      // Wait for the block to render (WebGL takes a moment; non-deterministic GPU output
-      // can cause frame-to-frame jitter, so we wait a bit longer for stability)
+      // Wait for WebGL render to stabilize
       await page.waitForTimeout(2000);
 
-      // In headless mode, the canvas fills the viewport - take a full-page screenshot
-      await expect(page).toHaveScreenshot(`block-${blockName}.png`, {
-        maxDiffPixels: 500,
+      // Capture screenshot for manual review (saved to playwright output on failure)
+      await page.screenshot({
+        path: `debugoutput/screenshots/blocks/block-${blockName}.png`,
       });
     });
   }

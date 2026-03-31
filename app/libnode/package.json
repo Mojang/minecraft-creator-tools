@@ -12,9 +12,9 @@
   "dependencies": {
     "@octokit/rest": "19.0.13",
     "@lunapaint/tga-codec": "0.1.0",
-    "@modelcontextprotocol/sdk": "1.20.2",
+    "@modelcontextprotocol/sdk": "1.28.0",
     "@rauschma/stringio": "1.4.0",
-    "axios": "1.13.2",
+    "axios": "1.13.6",
     "esbuild-wasm": "0.21.3",
     "esprima-next": "6.0.2",
     "exifr": "7.1.3",

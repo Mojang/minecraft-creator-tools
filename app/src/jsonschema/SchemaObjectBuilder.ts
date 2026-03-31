@@ -8,22 +8,32 @@ import {
 import { UIDefinition } from "../UX/shared/components/SchemaForm/UISchema";
 
 type JsonSchema = JSONSchema7 | JSONSchema6;
-type DynamicObject = Record<string, unknown>;
+type DynamicObject = Record<string, unknown> | [];
 
 export const buildObjectFromSchema = (schema: JsonSchema, initialValues?: DynamicObject) => {
   const definitions = Object.entries(schema.definitions || []);
-  const obj: DynamicObject = buildObject(schema, definitions, initialValues);
+  const root: DynamicObject = buildRoot(schema, definitions, initialValues);
 
-  return obj;
+  return root;
 };
-
-function buildObject(schema: JsonSchema, references: Reference[], initialValues?: DynamicObject): DynamicObject {
-  if (schema.type !== "object") {
-    throw new Error("Only objects supported at this time.");
+function buildRoot(schema: JsonSchema, references: Reference[], initialValues?: DynamicObject): DynamicObject {
+  if (schema.type === "array") {
+    if (initialValues && Array.isArray(initialValues)) {
+      return initialValues;
+    }
+    return [];
   }
 
-  const obj: DynamicObject = {};
+  if (schema.type !== "object") {
+    throw new Error(
+      `Unsupported root schema type. Only 'object' and 'array' root types are supported, but received type: '${schema.type}'.`
+    );
+  }
 
+  return buildObject(schema, references, initialValues);
+}
+function buildObject(schema: JsonSchema, references: Reference[], initialValues?: DynamicObject): DynamicObject {
+  const obj: DynamicObject = {};
   const properties = Object.entries(schema.properties || []);
 
   for (const [name, prop] of properties) {

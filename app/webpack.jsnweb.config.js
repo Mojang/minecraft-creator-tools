@@ -116,7 +116,7 @@ const webExtensionConfig = {
   plugins: [
     new MiniCssExtractPlugin({ filename: "web.css" }),
     new webpack.DefinePlugin({
-      ENABLE_ANALYTICS: JSON.stringify(process.env.NODE_ENV === "production"),
+      ENABLE_ANALYTICS: JSON.stringify(false),
       BUILD_TARGET: JSON.stringify("cli-web"),
       BUILD_VERSION: JSON.stringify(packageJson.version),
       BUILD_DATE: JSON.stringify(new Date().toISOString()),

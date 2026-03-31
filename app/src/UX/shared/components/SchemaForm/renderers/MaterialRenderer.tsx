@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   FormControlLabel,
   FormGroup,
   FormHelperText,
@@ -80,6 +81,7 @@ export type ElementDef = {
   min?: number;
   max?: number;
   default?: unknown;
+  value?: unknown;
 };
 
 export type Renderer = typeof materialRenderer;
@@ -118,7 +120,7 @@ export const materialRenderer = {
           type={type}
           required={element.isRequired}
           name={element.title}
-          defaultValue={element.default}
+          value={element.value ?? element.default}
           inputProps={{ min: element.min, max: element.max }}
           onChange={(e) => handleValidation(e.target.value, element.key)}
           error={!!element.validationErrorMessage}
@@ -225,6 +227,16 @@ export const materialRenderer = {
       <>
         <Box>
           <Paper sx={{ p: 1.5, display: "flex", flexDirection: "column" }}>
+            <FlexBox justifyContent="space-between" py={2}>
+              <Box>
+                <Typography variant="h1">{formatter.normalizeTitle(title)} Editor</Typography>
+              </Box>
+              <Box>
+                <Button variant="outlined" onClick={exportToJsonFile} disabled={isExporting}>
+                  {isExporting ? <CircularProgress size="1.25rem" /> : "Export to file"}
+                </Button>
+              </Box>
+            </FlexBox>
             <FlexBox column gap={2}>
               {properties.map((prop, index) => (
                 <Box key={index}>{generateProperty(prop, context)}</Box>

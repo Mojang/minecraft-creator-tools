@@ -31,12 +31,16 @@ import AppServiceProxy, { AppServiceProxyCommands } from "../../../core/AppServi
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 
-// Custom transition component for macOS-like pop-out effect
+// Custom transition component for macOS-like pop-out effect.
+// Respects prefers-reduced-motion by using instant transitions.
+const prefersReducedMotion =
+  typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
 const PopOutTransition = forwardRef(function PopOutTransition(
   props: TransitionProps & { children: React.ReactElement },
   ref: React.Ref<unknown>
 ) {
-  return <Zoom ref={ref} {...props} timeout={{ enter: 450, exit: 150 }} />;
+  return <Zoom ref={ref} {...props} timeout={prefersReducedMotion ? 0 : { enter: 450, exit: 150 }} />;
 });
 
 interface Props {
@@ -58,7 +62,7 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isElectron = AppServiceProxy.hasAppService;
-  const [projectStore, setProjectStore] = useState(isElectron ? "documents" : "device");
+  const [projectStore, setProjectStore] = useState(isElectron ? "documents" : "browser");
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [dirErrorMessage, setDirErrorMessage] = useState<string | null>(null);
   const [electronFolderPath, setElectronFolderPath] = useState<string | null>(null);
@@ -402,7 +406,7 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
             color="secondary"
             aria-labelledby="store-project-location"
             name="storeProjectLocation"
-            defaultValue={isElectron ? "documents" : "device"}
+            defaultValue={isElectron ? "documents" : "browser"}
             onChange={(_, value) => setProjectStore(value)}
             sx={{ mb: 1, alignItems: "flex-start" }}
           >
@@ -423,15 +427,15 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
                 ]
               : [
                   {
-                    value: "device",
-                    title: intl.formatMessage({ id: "home.new_project.storage_device_title" }),
-                    description: intl.formatMessage({ id: "home.new_project.storage_device_desc" }),
-                    isFirst: true,
-                  },
-                  {
                     value: "browser",
                     title: intl.formatMessage({ id: "home.new_project.storage_browser_title" }),
                     description: intl.formatMessage({ id: "home.new_project.storage_browser_desc" }),
+                    isFirst: true,
+                  },
+                  {
+                    value: "device",
+                    title: intl.formatMessage({ id: "home.new_project.storage_device_title" }),
+                    description: intl.formatMessage({ id: "home.new_project.storage_device_desc" }),
                     isFirst: false,
                   },
                 ]

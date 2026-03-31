@@ -1017,11 +1017,39 @@ export default class ChunkMeshBuilder {
         // Same texture on all faces (leaves, uniform blocks): draw once to preserve alpha
         ctx.drawImage(sideImg, cellSize, 0, cellSize, cellSize);
       } else {
-        // Different textures (grass_block): draw dirt as opaque background, then composite
-        // grass_side on top. This fixes the alpha transparency issue where the green
-        // overlay strip in grass_side.png blends against transparent black instead of dirt.
+        // Different textures (grass_block): grass_side.png has a semi-transparent grayscale
+        // overlay strip. In Minecraft, this overlay is tinted with the biome color BEFORE
+        // compositing onto dirt. We replicate that by tinting the overlay on a temp canvas
+        // first, then compositing onto the dirt background. Without this, the grayscale
+        // overlay blends into brownish-gray and never receives biome tinting.
         ctx.drawImage(bottomImg, cellSize, 0, cellSize, cellSize); // dirt background
-        ctx.drawImage(sideImg, cellSize, 0, cellSize, cellSize); // grass_side overlay
+
+        if (topBiomeTint) {
+          // Tint the side overlay before compositing: draw grass_side.png to a temp canvas,
+          // multiply its RGB by the biome tint (preserving alpha), then composite onto dirt.
+          const tmpCanvas = document.createElement("canvas");
+          tmpCanvas.width = cellSize;
+          tmpCanvas.height = cellSize;
+          const tmpCtx = tmpCanvas.getContext("2d")!;
+          tmpCtx.drawImage(sideImg, 0, 0, cellSize, cellSize);
+
+          const overlayData = tmpCtx.getImageData(0, 0, cellSize, cellSize);
+          const od = overlayData.data;
+          for (let i = 0; i < od.length; i += 4) {
+            if (od[i + 3] > 0) {
+              // Only tint pixels that have some alpha (the grass overlay portion).
+              // Fully transparent pixels are the dirt-show-through areas.
+              od[i] = Math.min(255, Math.round(od[i] * topBiomeTint.r));
+              od[i + 1] = Math.min(255, Math.round(od[i + 1] * topBiomeTint.g));
+              od[i + 2] = Math.min(255, Math.round(od[i + 2] * topBiomeTint.b));
+            }
+          }
+          tmpCtx.putImageData(overlayData, 0, 0);
+
+          ctx.drawImage(tmpCanvas, cellSize, 0, cellSize, cellSize); // tinted overlay
+        } else {
+          ctx.drawImage(sideImg, cellSize, 0, cellSize, cellSize); // untinted overlay
+        }
       }
 
       // Column 2: Bottom face
@@ -1030,7 +1058,7 @@ export default class ChunkMeshBuilder {
       // Apply biome tint
       if (topBiomeTint) {
         // When all faces are the same grayscale texture (leaves), we tint ALL columns uniformly.
-        // When faces differ (grass_block), we tint selectively: full on top, green-only on sides.
+        // When faces differ (grass_block), sides are already tinted above during compositing.
 
         // Tint top face (column 0): always apply full biome tint
         const topData = ctx.getImageData(0, 0, cellSize, cellSize);
@@ -1061,23 +1089,8 @@ export default class ChunkMeshBuilder {
             bd[i + 2] = Math.min(255, Math.round(bd[i + 2] * topBiomeTint.b));
           }
           ctx.putImageData(bottomData, cellSize * 2, 0);
-        } else {
-          // Grass block style: tint only green-dominant pixels in the side face
-          const sideData = ctx.getImageData(cellSize, 0, cellSize, cellSize);
-          const sd = sideData.data;
-          for (let i = 0; i < sd.length; i += 4) {
-            const r = sd[i],
-              g = sd[i + 1],
-              b = sd[i + 2];
-            // Detect green-dominant pixels (the grass overlay area)
-            if (g > r && g > b && g > 80) {
-              sd[i] = Math.min(255, Math.round(r * topBiomeTint.r * 1.1));
-              sd[i + 1] = Math.min(255, Math.round(g * topBiomeTint.g * 1.1));
-              sd[i + 2] = Math.min(255, Math.round(b * topBiomeTint.b * 1.1));
-            }
-          }
-          ctx.putImageData(sideData, cellSize, 0);
         }
+        // Note: grass_block sides are already tinted above during the compositing step.
       }
 
       // NOTE: Edge darkening removed — it created visible dark grid lines between

@@ -324,16 +324,16 @@
     },
     "errorCount": 1,
     "internalProcessingErrorCount": 0,
-    "warningCount": 3,
+    "warningCount": 0,
     "testSuccessCount": 37,
     "testFailCount": 1,
     "testNotApplicableCount": 12,
     "errorSummary": "ERROR: [CPACKICON101] pack_icon image file not found for test_bp. It must use the .png extension.",
     "internalProcessingErrorSummary": "",
-    "warningSummary": "WARNING: [JSON144] (/behavior_packs/test_bp/spawn_rules/example_entity.json) Structure issue: In \"minecraft:spawn_rules.conditions[0]\": {\"minecraft:spawns_on_surface\"... - object value found, but a string is required\nWARNING: [JSON144] (/behavior_packs/test_bp/spawn_rules/example_entity.json) Structure issue: In \"minecraft:spawn_rules.description.identifier\": test:example_entity - string value found, but a boolean is required\nWARNING: [JSON144] (/behavior_packs/test_bp/spawn_rules/example_entity.json) Structure issue: In \"minecraft:spawn_rules.description.population_control\": animal - string value found, but a boolean is required",
+    "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CPACKICON000] Found 1 error in Pack Icon check",
-    "infoGenerationTime": 985,
-    "endToEndGenerationTime": 1017,
+    "infoGenerationTime": 1530,
+    "endToEndGenerationTime": 1559,
     "reds": 1574,
     "summary": {
       "BASEGAMEVER": {
@@ -535,10 +535,6 @@
           "defaultMessage": "JSON Schema Validation completed successfully",
           "testCompleteSuccesses": 1
         },
-        "144": {
-          "defaultMessage": "Structure issue",
-          "warnings": 3
-        },
         "1110": {
           "defaultMessage": "Entity type is not at a current format version"
         }
@@ -597,7 +593,7 @@
         },
         "120": {
           "title": "BP Minor Low",
-          "defaultMessage": "Behavior pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.0) or its previous minor version",
+          "defaultMessage": "Behavior pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.10) or its previous minor version",
           "recommendations": 1
         },
         "605": {
@@ -1098,27 +1094,6 @@
       "iTp": 1,
       "gId": "JSON",
       "gIx": 1
-    },
-    {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 144,
-      "p": "/behavior_packs/test_bp/spawn_rules/example_entity.json",
-      "d": "In \"minecraft:spawn_rules.conditions[0]\": {\"minecraft:spawns_on_surface\"... - object value found, but a string is required"
-    },
-    {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 144,
-      "p": "/behavior_packs/test_bp/spawn_rules/example_entity.json",
-      "d": "In \"minecraft:spawn_rules.description.identifier\": test:example_entity - string value found, but a boolean is required"
-    },
-    {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 144,
-      "p": "/behavior_packs/test_bp/spawn_rules/example_entity.json",
-      "d": "In \"minecraft:spawn_rules.description.population_control\": animal - string value found, but a boolean is required"
     },
     {
       "iTp": 2,

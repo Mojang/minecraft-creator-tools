@@ -143,7 +143,7 @@ export default function InspectPanel({ onFilesSubmitted, editFolder, openAppFold
                 </McButton>
               </Box>
             )}
-            {!isApp && editFolder && (
+            {!isApp && editFolder && typeof window.showDirectoryPicker === "function" && (
               <Box sx={{ display: "flex" }}>
                 <McButton variant="green" fullWidth onClick={pickDirectory}>
                   {intl.formatMessage({ id: "home.inspect_panel.open_project_folder_device" })}

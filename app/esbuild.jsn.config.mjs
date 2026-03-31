@@ -18,7 +18,7 @@
  * The CLI bundle produced here serves TWO contexts:
  *   1. Standalone CLI: `npx mct <command>` — has full node_modules nearby
  *
- * The Forge config (creatortools.forge.config.js) unpacks toolbuild/jsn/**
+ * The Forge config (forge.config.js) unpacks toolbuild/jsn/**
  * from asar, but node_modules stays inside asar. So packages like commander,
  * js-md5, uuid, ws, inquirer, exifr, and open are bundled here to ensure
  * the MCP server works from the packaged Electron app.
@@ -27,7 +27,7 @@
  * lazily imported (ink/react for TUI) should remain external.
  *
  * Related files:
- * - app/creatortools.forge.config.js — Electron Forge packaging config
+ * - app/forge.config.js — Electron Forge packaging config
  * - app/src/cli/commands/server/McpCommand.ts — MCP command entry point
  */
 

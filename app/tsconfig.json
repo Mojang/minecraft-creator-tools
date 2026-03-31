@@ -7,6 +7,7 @@
       "esnext"
     ],
     "types": [
+      "node",
       "vite/client",
       "wicg-file-system-access",
       "mocha"
@@ -36,16 +37,6 @@
     "build",
     "toolbuild",
     "public/**/*",
-    "src/cli/**/*",
-    "src/mcp/**/*",
-    "src/test/**/*",
-    "src/test-ex/**/*",
-    "src/test-extra/**/*",
-    "src/test-longhaul/**/*",
-    "src/testweb/**/*",
-    "src/testmobile/**/*",
-    "src/testa11y/**/*",
-    "src/testelectron/**/*",
     "playwright*.config.ts",
     "playwright*.config.js",
     "src/local/**/*"

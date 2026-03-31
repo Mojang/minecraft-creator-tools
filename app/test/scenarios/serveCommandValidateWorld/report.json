@@ -1917,6 +1917,10 @@
           "testCompleteSuccesses": 1,
           "title": "JSON Parse Error (Schema Validation)"
         },
+        "114": {
+          "defaultMessage": "Version format needs updating",
+          "warnings": 2
+        },
         "1110": {
           "defaultMessage": "Entity type is not at a current format version"
         },
@@ -2507,8 +2511,8 @@
     "unknownJsonCount": 0,
     "vanillaGameTextureCount": 0,
     "vanillaGameTextureCoverage": 0,
-    "warningCount": 1,
-    "warningSummary": "WARNING: [JSONF110] (/Content/world_templates/aop_mobwt/resource_packs/aop_mobwrp/models/entity/nardolphle.geometry.json) At geometry.aop_mobw.nardolphle.visible_bounds_offset, data does not match expected type. Data '0,0.75,0' is of type number array, which does not match type 'Array of strings'.",
+    "warningCount": 3,
+    "warningSummary": "WARNING: [JSON114] (/Content/world_templates/aop_mobwt/resource_packs/aop_mobwrp/manifest.json) Version format needs updating: The version is written as numbers [1,0,0] but should be text like \"1.0.0\". This is easy to fix — just change it to a quoted string.\nWARNING: [JSON114] (/Content/world_templates/aop_mobwt/resource_packs/aop_mobwrp/manifest.json) Version format needs updating: The version is written as numbers [1,0,0] but should be text like \"1.0.0\". This is easy to fix — just change it to a quoted string.\nWARNING: [JSONF110] (/Content/world_templates/aop_mobwt/resource_packs/aop_mobwrp/models/entity/nardolphle.geometry.json) At geometry.aop_mobw.nardolphle.visible_bounds_offset, data does not match expected type. Data '0,0.75,0' is of type number array, which does not match type 'Array of strings'.",
     "worldCount": 1,
     "worldLoadErrors": 0,
     "worldNotFound": 0
@@ -3108,6 +3112,20 @@
       "gId": "JSON",
       "gIx": 1,
       "iTp": 1
+    },
+    {
+      "d": "The version is written as numbers [1,0,0] but should be text like \"1.0.0\". This is easy to fix — just change it to a quoted string.",
+      "gId": "JSON",
+      "gIx": 114,
+      "iTp": 4,
+      "p": "/Content/world_templates/aop_mobwt/resource_packs/aop_mobwrp/manifest.json"
+    },
+    {
+      "d": "The version is written as numbers [1,0,0] but should be text like \"1.0.0\". This is easy to fix — just change it to a quoted string.",
+      "gId": "JSON",
+      "gIx": 114,
+      "iTp": 4,
+      "p": "/Content/world_templates/aop_mobwt/resource_packs/aop_mobwrp/manifest.json"
     },
     {
       "gId": "JSON",

@@ -1757,7 +1757,13 @@ function _addReportJson(data) {
       const repData = data.slice();
 
       for (let i = 0; i < repData.length; i++) {
-        repData[i] = "'" + repData[i].toString().replace(/'/gi, "").replace(/[\r\n]+/g, " ") + "'";
+        repData[i] =
+          "'" +
+          repData[i]
+            .toString()
+            .replace(/'/gi, "")
+            .replace(/[\r\n]+/g, " ") +
+          "'";
       }
       let arrStr = repData.join(", ");
 

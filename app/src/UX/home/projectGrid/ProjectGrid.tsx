@@ -33,7 +33,7 @@ export default function ProjectGrid({ onAppGalleryAction, onSetProject, onProjec
 
   const gallery = useGallery({ query: searchQuery, initialSize: 8, pageSize: 20 });
   const [onOpenSnippet, onNewProject] = useGalleryActions(onAppGalleryAction);
-  const [creatorTools] = useCreatorTools();
+  const [creatorTools, creatorToolsLoading] = useCreatorTools();
   const [isRefreshingTemplates, setIsRefreshingTemplates] = useState(false);
   const [showGettingStarted, setShowGettingStarted] = useState(!creatorTools.disableFirstRun);
   const [goalDialogOpen, setGoalDialogOpen] = useState(false);
@@ -52,6 +52,14 @@ export default function ProjectGrid({ onAppGalleryAction, onSetProject, onProjec
   ] = gallery;
   const isSearchMode = !!searchQuery;
   const isAdvancedExpanded = isSearchMode || showAdvancedTools;
+
+  // Re-evaluate the banner once creatorTools finishes loading persisted settings.
+  // The initial useState may read disableFirstRun before data is available.
+  useEffect(() => {
+    if (!creatorToolsLoading && creatorTools.disableFirstRun) {
+      setShowGettingStarted(false);
+    }
+  }, [creatorToolsLoading, creatorTools.disableFirstRun]);
 
   useEffect(() => {
     trackPageView({ name: "ProjectGrid" });
@@ -230,7 +238,10 @@ export default function ProjectGrid({ onAppGalleryAction, onSetProject, onProjec
                 borderRadius: 0,
                 border: isDark ? `2px solid ${mcColors.green4}4d` : `2px solid ${mcColors.green5}4d`,
                 bgcolor: isDark ? `${mcColors.green4}1a` : `${mcColors.green4}1a`,
-                transition: "all 0.15s ease-in-out",
+                transition: "none",
+                "@media (prefers-reduced-motion: no-preference)": {
+                  transition: "all 0.15s ease-in-out",
+                },
                 "&:hover": {
                   bgcolor: isDark ? `${mcColors.green4}33` : `${mcColors.green4}33`,
                   borderColor: isDark ? mcColors.green4 : mcColors.green5,
@@ -342,7 +353,10 @@ export default function ProjectGrid({ onAppGalleryAction, onSetProject, onProjec
                     borderRadius: 0,
                     border: isDark ? `2px solid ${mcColors.stoneLight}4d` : `2px solid ${mcColors.stone}4d`,
                     bgcolor: isDark ? `${mcColors.stone}33` : `${mcColors.stone}1a`,
-                    transition: "all 0.15s ease-in-out",
+                    transition: "none",
+                    "@media (prefers-reduced-motion: no-preference)": {
+                      transition: "all 0.15s ease-in-out",
+                    },
                     "&:hover": {
                       bgcolor: isDark ? `${mcColors.stone}66` : `${mcColors.stone}33`,
                       borderColor: isDark ? mcColors.stoneLight : mcColors.stone,

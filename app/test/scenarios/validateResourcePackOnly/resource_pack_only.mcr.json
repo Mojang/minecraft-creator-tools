@@ -93,7 +93,7 @@
       },
       "textureImages.vanillaGameTextureCoverage": {
         "overrideCount": 0,
-        "vanillaTextureCount": 2526,
+        "vanillaTextureCount": 2381,
         "percent": 0
       },
       "textureImagesTier0.nonVanillaTextureMemoryTier": {
@@ -267,16 +267,16 @@
     },
     "errorCount": 1,
     "internalProcessingErrorCount": 0,
-    "warningCount": 0,
+    "warningCount": 1,
     "testSuccessCount": 36,
     "testFailCount": 1,
     "testNotApplicableCount": 13,
     "errorSummary": "ERROR: [CPACKICON101] pack_icon image file not found for Unnamed pack. It must use the .png extension.",
     "internalProcessingErrorSummary": "",
-    "warningSummary": "",
+    "warningSummary": "WARNING: [JSON114] (/manifest.json) Version format needs updating: The version is written as numbers [1,0,0] but should be text like \"1.0.0\". This is easy to fix — just change it to a quoted string.",
     "testFailSummary": "TESTFAIL: [CPACKICON000] Found 1 error in Pack Icon check",
-    "infoGenerationTime": 545,
-    "endToEndGenerationTime": 579,
+    "infoGenerationTime": 1005,
+    "endToEndGenerationTime": 1028,
     "reds": 0,
     "summary": {
       "BASEGAMEVER": {
@@ -452,6 +452,10 @@
           "title": "JSON Parse Error (Schema Validation)",
           "defaultMessage": "JSON Schema Validation completed successfully",
           "testCompleteSuccesses": 1
+        },
+        "114": {
+          "defaultMessage": "Version format needs updating",
+          "warnings": 1
         }
       },
       "JSONF": {
@@ -944,6 +948,13 @@
       "gIx": 1
     },
     {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 114,
+      "p": "/manifest.json",
+      "d": "The version is written as numbers [1,0,0] but should be text like \"1.0.0\". This is easy to fix — just change it to a quoted string."
+    },
+    {
       "iTp": 1,
       "gId": "JSONF",
       "gIx": 1
@@ -1216,7 +1227,7 @@
       "fs": {
         "vanillaGameTextureCoverage": {
           "overrideCount": 0,
-          "vanillaTextureCount": 2526,
+          "vanillaTextureCount": 2381,
           "percent": 0
         }
       }

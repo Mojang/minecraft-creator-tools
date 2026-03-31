@@ -283,6 +283,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     this._handleIndexedArraySubFormClose = this._handleIndexedArraySubFormClose.bind(this);
     this._addKeyedBooleanItem = this._addKeyedBooleanItem.bind(this);
     this._addKeyedStringItem = this._addKeyedStringItem.bind(this);
+    this._addKeyedObjectItem = this._addKeyedObjectItem.bind(this);
+    this._handleKeyedObjectCollectionSubFormClose = this._handleKeyedObjectCollectionSubFormClose.bind(this);
     this._handleKeyedBooleanTextChange = this._handleKeyedBooleanTextChange.bind(this);
     this._handleKeyedBooleanValueChange = this._handleKeyedBooleanValueChange.bind(this);
     this._handleKeyedBooleanValueClose = this._handleKeyedBooleanValueClose.bind(this);
@@ -961,6 +963,61 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
     if (this.props.onPropertyChanged !== undefined) {
       this.props.onPropertyChanged(this.props, { id: fieldId, value: newValue }, newValue);
+    }
+  }
+
+  _addKeyedObjectItem(event: React.SyntheticEvent<HTMLElement>, data?: any) {
+    if (data && data.tag) {
+      const field = this._getFieldById(data.tag);
+
+      if (field) {
+        const val = this._getProperty(field.id, {});
+
+        let newName = "new_event";
+        let iter = 0;
+
+        while (val[newName] !== undefined) {
+          iter++;
+          newName = "new_event_" + String(iter);
+        }
+
+        val[newName] = {};
+
+        this._setPropertyValue(field.id, val);
+        this._incrementObjectState();
+      }
+    }
+  }
+
+  _handleKeyedObjectCollectionSubFormClose(props: IDataFormProps) {
+    const formId = props.formId;
+
+    if (formId === undefined) {
+      Log.unexpectedState("DFKOCFC1");
+      return;
+    }
+
+    const lastPeriod = formId.lastIndexOf(".");
+
+    if (lastPeriod < 0) {
+      Log.unexpectedState("DFKOCFC2");
+      return;
+    }
+
+    const objectKey: string = formId.substring(lastPeriod + 1);
+    const fieldId = formId.substring(0, lastPeriod);
+
+    if (fieldId === undefined || objectKey === undefined) {
+      Log.unexpectedUndefined("DFKOCFC3");
+      return;
+    }
+
+    const val = this._getProperty(fieldId, {});
+
+    if (val && Utilities.isUsableAsObjectKey(objectKey)) {
+      delete val[objectKey];
+      this._setPropertyValue(fieldId, val);
+      this._incrementObjectState();
     }
   }
 
@@ -2299,8 +2356,11 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
   ) {
     const val = this._getProperty(field.id, {});
     const fieldInterior = [];
+    const fieldTopper = [];
     const childElements = [];
     Log.assert(val !== undefined, "Keyed object is not available in DataForm.");
+
+    const hasDynamicKeys = !field.subFields;
 
     let fieldList = field.subFields;
 
@@ -2331,10 +2391,35 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         );
         this.formComponentNames.push(field.id);
         this.formComponents.push(headerElement);
-        fieldInterior.push(headerElement);
+        fieldTopper.push(headerElement);
       }
 
-      for (const key in fieldList) {
+      if (hasDynamicKeys && !this.props.readOnly) {
+        const showAddButton = field.allowCreateDelete !== false;
+
+        const toolBarElement = (
+          <div key={baseKey + "tb"}>
+            <Stack direction="row" spacing={1} aria-label="Keyed objects actions">
+              {showAddButton && (
+                <IconButton
+                  size="small"
+                  title="Add item"
+                  onClick={(e) => this._addKeyedObjectItem(e, { tag: field.id })}
+                >
+                  <FontAwesomeIcon icon={faPlus} className="fa-lg" />
+                </IconButton>
+              )}
+            </Stack>
+          </div>
+        );
+        this.formComponentNames.push(field.id + "toolbar");
+        this.formComponents.push(toolBarElement);
+        fieldTopper.push(toolBarElement);
+      }
+
+      const sortedKeys = Object.keys(fieldList).sort();
+
+      for (const key of sortedKeys) {
         keys.push(key);
 
         let title = key;
@@ -2369,7 +2454,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
             directObject={obj}
             objectKey={propertyId}
             key={propertyId}
-            formId={propertyId}
+            formId={field.id + "." + key}
             theme={this.props.theme}
             title={title}
             project={this.props.project}
@@ -2381,7 +2466,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
             displayTitle={true}
             indentLevel={indentLevel}
             constrainHeight={this.props.constrainHeight}
-            onClose={this._handleIndexedArraySubFormClose}
+            onClose={hasDynamicKeys ? this._handleKeyedObjectCollectionSubFormClose : this._handleIndexedArraySubFormClose}
+            closeButton={hasDynamicKeys && !this.props.readOnly && field.allowCreateDelete !== false}
             definition={fieldSubForm}
             readOnly={this.props.readOnly}
           />
@@ -2422,6 +2508,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           borderBottomColor: getThemeColors().background1,
         }}
       >
+        {fieldTopper}
         {descriptionElements}
         {fieldInterior}
         {sampleElements}

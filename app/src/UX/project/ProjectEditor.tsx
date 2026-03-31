@@ -4339,11 +4339,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       exportMenu.push(exportKeys[nextExportKey]);
 
       if (!isFocusedMode && !AppServiceProxy.hasAppService && window.showDirectoryPicker !== undefined) {
-        exportMenu.push({
-          key: "dividerEXP",
-          kind: "divider",
-        });
-
         nextExportKey = "exportFolder";
         exportKeys[nextExportKey] = {
           key: nextExportKey,
@@ -4354,11 +4349,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         };
         exportMenu.push(exportKeys[nextExportKey]);
       }
-
-      exportMenu.push({
-        key: "divider",
-        kind: "divider",
-      });
 
       nextExportKey = "flatBP|";
 
@@ -4419,16 +4409,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       exportMenu.push(exportKeys[nextExportKey]);
     }
 
-    if (exportMenu.length > 0) {
-      exportMenu.push({
-        key: "dividerPerWorld",
-        kind: "divider",
-      });
-    }
+    const perWorldDividerNeeded = exportMenu.length > 0;
 
     const deployKeys: { [deployOptionKey: string]: any } = {};
 
     const deployMenu: any = [];
+
+    let addedPerWorldDivider = false;
 
     for (let i = 0; i < this.props.project.items.length; i++) {
       const pi = this.props.project.items[i];
@@ -4450,6 +4437,14 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
         if (world) {
           title = world.name;
+        }
+
+        if (perWorldDividerNeeded && !addedPerWorldDivider) {
+          exportMenu.push({
+            key: "dividerPerWorld",
+            kind: "divider",
+          });
+          addedPerWorldDivider = true;
         }
 
         nextExportKey = "exportWorld|" + pi.name;

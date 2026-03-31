@@ -178,19 +178,26 @@ export default class VanillaProjectManager {
       if (!texturePath) texturePath = matched.texturePath;
     }
 
-    // For sheep, override to use "sheared" body geometry. The default woolly geometry
-    // is a transparent overlay that requires multi-layer rendering (body + wool).
-    // Until multi-layer is implemented, the sheared body is more recognizable.
-    // Also disable alpha so the near-transparent body pixels become visible.
+    // Per-material rendering adjustments.
+    // Most vanilla entity materials use alpha TEST (binary: alpha > 0.5 = opaque,
+    // alpha ≤ 0.5 = invisible). This is set in ModelMeshFactory via MATERIAL_ALPHATEST.
+    // A few specific materials render fully OPAQUE (ignoring alpha entirely):
     const materials = entityResource.data?.materials;
-    if (materials && materials["default"] === "sheep") {
-      const shearedGeo = entityResource.data?.geometry?.["sheared"];
-      if (shearedGeo) {
-        geometryId = shearedGeo;
-      }
-      // The sheep texture has body colors at near-zero alpha (designed for multi-layer
-      // overlay rendering). Setting ignoreAlpha makes those barely-visible pixels opaque.
+    const defaultMaterial = materials?.["default"];
+
+    const opaqueMaterials = new Set([
+      "enderman",  // Head texture has alpha=0 pixels that should render as opaque black
+      "sheep",     // Wool overlay texture has near-zero alpha body pixels
+    ]);
+
+    if (defaultMaterial && opaqueMaterials.has(defaultMaterial)) {
       modelData.ignoreAlpha = true;
+    }
+
+    // Sheep-specific: apply wool tint color
+    if (defaultMaterial === "sheep") {
+      // White sheep wool color from Minecraft's color palette (#E7E7E7 / 0.906 per channel)
+      modelData.tintColor = { r: 0.906, g: 0.906, b: 0.906, a: 1.0 };
     }
 
     // Load geometry
@@ -260,24 +267,11 @@ export default class VanillaProjectManager {
 
       const result = resolver.resolve(rcDef, textureMap, geometryMap, context);
 
-      // Apply default tint for entities whose material assumes runtime color tinting.
-      // Sheep's "sheep" material tints the white wool overlay to show wool color;
-      // without a tint the wool is invisible (pure white).
-      // Minecraft's white sheep wool color is #E7E7E7 (0.906), but the texture
-      // itself is near-white, so we use a more visible warm gray for the preview.
-      const materials = entityResource.data?.materials;
-      if (materials) {
-        const defaultMaterial = materials["default"];
-        if (defaultMaterial === "sheep") {
-          // For sheep, use the "sheared" (body) geometry instead of the woolly overlay.
-          // The woolly geometry renders as a white overlay that requires multi-layer
-          // rendering (body underneath + wool on top) which we don't yet support.
-          // The sheared geometry maps to the visible body regions of the texture.
-          if (geometryMap["sheared"]) {
-            result.geometryId = geometryMap["sheared"];
-          }
-        }
-      }
+      // For sheep, the render controller resolves to the woolly default geometry
+      // (geometry.sheep.v1.8). The geometry transform system now handles the
+      // body bind_pose_rotation → per-cube rotation conversion, so we no longer
+      // need to force the "sheared" geometry. Let the render controller resolution
+      // stand as-is.
 
       return result;
     } catch (err) {
@@ -660,8 +654,22 @@ export default class VanillaProjectManager {
           parentBone.cubes = undefined;
           parentBone.poly_mesh = undefined;
           parentBone.texture_meshes = undefined;
+        } else if (childBone.cubes && childBone.cubes.length > 0) {
+          // Child provides complete cube definitions — replace parent cubes.
+          // This is used by sheep wool overlay: child bones have different UVs
+          // and inflate values that map to the wool section of the texture.
+          parentBone.cubes = JSON.parse(JSON.stringify(childBone.cubes));
+
+          // Preserve parent's bind_pose_rotation if child overrides it
+          if (childBone.bind_pose_rotation) {
+            parentBone.bind_pose_rotation = [...childBone.bind_pose_rotation];
+          }
+          // Preserve parent's pivot if child overrides it
+          if (childBone.pivot) {
+            parentBone.pivot = [...childBone.pivot];
+          }
         } else {
-          // Merge properties: inflate applies to all existing cubes
+          // No cubes in child — apply property overrides to existing parent cubes
           if (childBone.inflate !== undefined && parentBone.cubes) {
             for (const cube of parentBone.cubes) {
               cube.inflate = childBone.inflate;

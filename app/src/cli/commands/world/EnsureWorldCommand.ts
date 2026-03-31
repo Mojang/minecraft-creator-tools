@@ -66,11 +66,15 @@ export class EnsureWorldCommand extends CommandBase implements ICommand {
 
             if (context.inputFolder && targetFolder.startsWith(context.inputFolder)) {
               targetFolder = targetFolder.substring(context.inputFolder.length);
-            }
 
-            if (targetFolder.length > 2) {
-              destF = await wcf.ensureFolderFromRelativePath(StorageUtilities.ensureEndsDelimited(targetFolder));
+              if (targetFolder.length > 2) {
+                destF = await wcf.ensureFolderFromRelativePath(StorageUtilities.ensureEndsDelimited(targetFolder));
+              }
             }
+            // If the output folder is NOT under the input folder (e.g., default -o value
+            // pointing to CWD/out), skip the relative path logic and use the default
+            // project folder. Passing an absolute path to ensureFolderFromRelativePath
+            // would create a garbled path like "<project>\C:\...".
           }
 
           if (!destF) {

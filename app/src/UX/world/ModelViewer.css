@@ -198,3 +198,22 @@
   width: 100%;
   height: 100%;
 }
+
+/* Light theme overrides for ModelViewer */
+body.ct-light .mov-loading-area {
+  background-color: #f5f0ed;
+  color: #262423;
+}
+
+body.ct-light .mov-error-message {
+  color: #262423;
+}
+
+body.ct-light .mov-retry-button {
+  background-color: #2d6a14;
+  color: #fff;
+}
+
+body.ct-light .mov-retry-button:hover {
+  background-color: #3a7d20;
+}

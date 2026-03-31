@@ -229,6 +229,20 @@ function customizeSiteHead() {
   return gulp.src(["site/index.head.html"], { base: "" }).pipe(textReplaceStream("build/index.html", /<\/head>/gi));
 }
 
+// Replace the local-dev CSP with a production CSP that allows telemetry endpoints.
+// The local-dev index.html intentionally omits telemetry domains; this step adds them
+// back for the mctools.dev production deployment.
+function customizeSiteCsp() {
+  const localCsp =
+    /default-src 'self'; manifest-src 'self' https:\/\/github\.com; worker-src 'self' blob: ; script-src 'self' 'wasm-unsafe-eval'; connect-src 'self' ws:\/\/localhost:\* wss:\/\/localhost:\* https:\/\/raw\.githubusercontent\.com\/ https:\/\/registry\.npmjs\.org\/ http:\/\/localhost:6126\/api\/; font-src 'self' https:\/\/res-1\.cdn\.office\.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:/gi;
+  const productionCsp =
+    "default-src 'self'; manifest-src 'self' https://github.com; worker-src 'self' blob: ; script-src 'self' https://wcpstatic.microsoft.com/ https://js.monitor.azure.com/ 'wasm-unsafe-eval'; connect-src 'self' https://browser.events.data.microsoft.com/ https://js.monitor.azure.com/ https://raw.githubusercontent.com/ https://registry.npmjs.org/; form-action https://browser.events.data.microsoft.com/; font-src 'self' https://res-1.cdn.office.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:";
+
+  return gulp
+    .src(["build/index.html"])
+    .pipe(textReplace("build/index.html", [localCsp], [productionCsp]));
+}
+
 function stripSourceMapA() {
   return gulp
     .src(["node_modules/blockly/blockly_compressed.js"])
@@ -286,8 +300,9 @@ function copyJsNodeData() {
 }
 
 function copyJsNodeDist() {
+  // Exclude esbuild-wasm — it's served from its npm package at runtime by HttpServer.
   return gulp
-    .src(["public/dist/**/*"], { encoding: false })
+    .src(["public/dist/**/*", "!public/dist/esbuild-wasm/**"], { encoding: false })
     .pipe(newer("toolbuild/jsn/dist/"))
     .pipe(gulp.dest("toolbuild/jsn/dist/"));
 }
@@ -319,19 +334,21 @@ function copyJsNodeDocs() {
 
 function copyVscResPreviewMetadataVanillaData() {
   return gulp
-    .src(["public/res/latest/van/preview/metadata/vanilladata_modules/**/*"])
+    .src(["public/res/latest/van/preview/metadata/vanilladata_modules/**/*"], { allowEmpty: true })
     .pipe(gulp.dest("toolbuild/vsc/res/latest/van/preview/metadata/vanilladata_modules/"));
 }
 
 function copyVscResPreviewMetadataCommandModules() {
   return gulp
-    .src(["public/res/latest/van/preview/metadata/command_modules/**/*"])
+    .src(["public/res/latest/van/preview/metadata/command_modules/**/*"], { allowEmpty: true })
     .pipe(gulp.dest("toolbuild/vsc/res/latest/van/preview/metadata/command_modules/"));
 }
 
 function copyVscResPreviewMetadataIndex() {
   return gulp
-    .src(["public/res/latest/van/preview/metadata/index.json", "public/res/latest/van/preview/metadata/README.md"])
+    .src(["public/res/latest/van/preview/metadata/index.json", "public/res/latest/van/preview/metadata/README.md"], {
+      allowEmpty: true,
+    })
     .pipe(gulp.dest("toolbuild/vsc/res/latest/van/preview/metadata/"));
 }
 
@@ -361,13 +378,20 @@ function copyVscResSamples() {
   return gulp.src(["public/res/samples/**/*"], { encoding: false }).pipe(gulp.dest("toolbuild/vsc/res/samples/"));
 }
 
+function copyJsNodeResSamples() {
+  return gulp
+    .src(["public/res/samples/**/*"], { encoding: false })
+    .pipe(newer("toolbuild/jsn/res/samples/"))
+    .pipe(gulp.dest("toolbuild/jsn/res/samples/"));
+}
+
 function copyVscMc() {
   return gulp.src(["public/data/content/**/*.mcaddon"], { encoding: false }).pipe(gulp.dest("toolbuild/vsc/mc/"));
 }
 
 function copyJsNodeResPreviewMetadataVanillaData() {
   return gulp
-    .src(["public/res/latest/van/preview/metadata/vanilladata_modules/**/*"])
+    .src(["public/res/latest/van/preview/metadata/vanilladata_modules/**/*"], { allowEmpty: true })
     .pipe(newer("toolbuild/jsn/res/latest/van/preview/metadata/vanilladata_modules/"))
     .pipe(gulp.dest("toolbuild/jsn/res/latest/van/preview/metadata/vanilladata_modules/"));
 }
@@ -375,7 +399,7 @@ function copyJsNodeResPreviewMetadataVanillaData() {
 // Copy the command_modules folder needed for command autocomplete
 function copyJsNodeResPreviewMetadataCommandModules() {
   return gulp
-    .src(["public/res/latest/van/preview/metadata/command_modules/**/*"])
+    .src(["public/res/latest/van/preview/metadata/command_modules/**/*"], { allowEmpty: true })
     .pipe(newer("toolbuild/jsn/res/latest/van/preview/metadata/command_modules/"))
     .pipe(gulp.dest("toolbuild/jsn/res/latest/van/preview/metadata/command_modules/"));
 }
@@ -383,7 +407,9 @@ function copyJsNodeResPreviewMetadataCommandModules() {
 // Copy the metadata index.json file needed for headless rendering
 function copyJsNodeResPreviewMetadataIndex() {
   return gulp
-    .src(["public/res/latest/van/preview/metadata/index.json", "public/res/latest/van/preview/metadata/README.md"])
+    .src(["public/res/latest/van/preview/metadata/index.json", "public/res/latest/van/preview/metadata/README.md"], {
+      allowEmpty: true,
+    })
     .pipe(gulp.dest("toolbuild/jsn/res/latest/van/preview/metadata/"));
 }
 
@@ -400,14 +426,7 @@ function copyJsNodeResSchemas() {
     .pipe(gulp.dest("toolbuild/jsn/res/latest/schemas/"));
 }
 
-// Copy official schemas from @minecraft/bedrock-schemas to toolbuild/jsn/schemas/
-// These are used by Database.getOfficialSchema() for JSON validation
-function copyJsNodeSchemas() {
-  return gulp
-    .src(["node_modules/@minecraft/bedrock-schemas/schemas/**/*"])
-    .pipe(newer("toolbuild/jsn/schemas/"))
-    .pipe(gulp.dest("toolbuild/jsn/schemas/"));
-}
+// copyJsNodeSchemas removed — schemas are now served from @minecraft/bedrock-schemas at runtime.
 
 function copyJsNodeResImages() {
   return gulp
@@ -502,6 +521,8 @@ gulp.task(
 // jsnbuild: Incremental build - skips clean, uses gulp-newer to only copy changed files,
 // and uses webpack filesystem cache for fast recompilation.
 // Use jsnfullbuild when you need a guaranteed clean-slate build.
+// Includes libbuild + copyLibToJsn so the package is always complete
+// (toolbuild/jsn/lib/index.lib.js is the declared "main" entry point).
 gulp.task(
   "jsnbuild",
   gulp.series(
@@ -509,6 +530,7 @@ gulp.task(
     gulp.parallel(
       compileJsNodeBuild,
       compileElectronBuild, // Build bundled Electron main process
+      compileLibBuild, // Library build (tsc with declarations for npm consumers)
       copyJsNodeAssets,
       copyJsNodeData,
       copyJsNodeDocs,
@@ -519,17 +541,21 @@ gulp.task(
       copyJsNodeResImages,
       copyJsNodeResIcons,
       copyJsNodeResSnapshots,
+      copyJsNodeResSamples,
       copyJsNodeMc,
       copyJsNodeDist,
-      compileJsnWebBuild
+      compileJsnWebBuild,
+      copyLibPackage,
+      copyLibDocs
     ),
+    copyLibToJsn, // Copy compiled lib into jsn package after parallel tasks complete
     "postclean-jsnwebbuild"
   )
 );
 
-// jsnfullbuild: Clean build - deletes toolbuild/jsn and rebuilds everything from scratch.
+// jsnfullbuild: Clean build - deletes toolbuild/jsn and toolbuild/lib, then rebuilds everything from scratch.
 // Use this when you suspect stale files or need a guaranteed clean output.
-gulp.task("jsnfullbuild", gulp.series("clean-jsnbuild", "jsnbuild"));
+gulp.task("jsnfullbuild", gulp.series(gulp.parallel("clean-jsnbuild", "clean-libbuild"), "jsnbuild"));
 
 gulp.task("libbuild", gulp.series("clean-libbuild", gulp.parallel(compileLibBuild, copyLibPackage, copyLibDocs)));
 
@@ -697,7 +723,7 @@ gulp.task("clean-res", function () {
   return del(["public/res/latest", "public/res/samples"]);
 });
 
-gulp.task("customizesite", gulp.series(customizeSiteHead, customizeSiteBody));
+gulp.task("customizesite", gulp.series(customizeSiteCsp, customizeSiteHead, customizeSiteBody));
 
 gulp.task("webbuild", gulp.series("clean-webbuild", compileWebJsBuild));
 

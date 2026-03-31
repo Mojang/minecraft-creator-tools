@@ -1094,6 +1094,35 @@ describe("ValidateCommand Execution", () => {
       expect(context.exitCode).to.equal(0);
     }
   });
+
+  it("should output valid JSON when json mode is enabled and no projects exist", async () => {
+    const mockLogger = new MockLogger();
+    const context = createMockContext({
+      log: mockLogger,
+      projects: [],
+      projectCount: 0,
+      json: true,
+    });
+    const commands = getAllCommands();
+    const validateCmd = commands.find((c) => c.metadata.name === "validate");
+    expect(validateCmd).to.exist;
+    if (validateCmd) {
+      await validateCmd.execute(context);
+      const jsonMsg = mockLogger.messages.find((m) => m.level === "info" && m.message.startsWith("{"));
+      expect(jsonMsg, "Should output JSON").to.exist;
+      if (jsonMsg) {
+        const parsed = JSON.parse(jsonMsg.message);
+        expect(parsed).to.have.property("projects");
+        expect(parsed).to.have.property("errors");
+        expect(parsed).to.have.property("warnings");
+        expect(parsed.projects).to.be.an("array").that.is.empty;
+        expect(parsed.errors).to.equal(0);
+        expect(parsed.warnings).to.equal(0);
+      }
+      // Should not output human-readable warning text
+      expect(mockLogger.hasMessage("warn", "No projects found")).to.be.false;
+    }
+  });
 });
 
 // ============================================================================
@@ -1853,5 +1882,111 @@ describe("ValidateCommand exit code severity ordering", () => {
     // Internal error should override
     context.setExitCode(5);
     expect(context.exitCode).to.equal(5);
+  });
+});
+
+describe("Telemetry build configuration", () => {
+  const fs = require("fs");
+  const path = require("path");
+  const appRoot = path.resolve(__dirname, "../..");
+
+  // These build configs must NEVER enable analytics — they are for CLI, VS Code, Electron, etc.
+  const configsThatMustDisableAnalytics = [
+    { file: "webpack.jsnweb.config.js", description: "CLI-served web (jsnweb)" },
+    { file: "webpack.jsnweb.debug.config.js", description: "CLI-served web debug" },
+    { file: "webpack.jsn.config.js", description: "CLI Node.js bundle" },
+    { file: "webpack.vsccore.config.js", description: "VS Code core extension" },
+    { file: "webpack.vsccoreweb.config.js", description: "VS Code core web extension" },
+    { file: "webpack.vscweb.config.js", description: "VS Code webview" },
+    { file: "esbuild.jsn.config.mjs", description: "CLI esbuild bundle" },
+    { file: "esbuild.cjs.config.mjs", description: "CJS esbuild bundle" },
+    { file: "esbuild.electron.config.mjs", description: "Electron esbuild bundle" },
+  ];
+
+  for (const { file, description } of configsThatMustDisableAnalytics) {
+    it(`${description} (${file}) should have ENABLE_ANALYTICS set to false`, () => {
+      const configPath = path.join(appRoot, file);
+      if (!fs.existsSync(configPath)) {
+        return; // Skip if config doesn't exist (e.g., optional debug configs)
+      }
+      const content = fs.readFileSync(configPath, "utf-8");
+
+      // Must NOT contain patterns that enable analytics
+      expect(content).to.not.match(
+        /ENABLE_ANALYTICS.*true/i,
+        `${file} must not enable analytics — telemetry is only allowed on mctools.dev production`
+      );
+
+      // Must contain an explicit false setting
+      expect(content).to.match(
+        /ENABLE_ANALYTICS.*false/i,
+        `${file} should explicitly set ENABLE_ANALYTICS to false`
+      );
+    });
+  }
+
+  it("Vite config should only enable analytics via explicit env var", () => {
+    const configPath = path.join(appRoot, "vite.config.js");
+    const content = fs.readFileSync(configPath, "utf-8");
+
+    // Vite should gate on env var, not default to true
+    expect(content).to.include('process.env.ENABLE_ANALYTICS === "true"');
+    expect(content).to.not.match(
+      /ENABLE_ANALYTICS:\s*true/,
+      "Vite config must not hardcode ENABLE_ANALYTICS to true"
+    );
+  });
+
+  it("CLI-served web HTML should not include telemetry scripts", () => {
+    const httpServerPath = path.join(appRoot, "src", "local", "HttpServer.ts");
+    const content = fs.readFileSync(httpServerPath, "utf-8");
+
+    expect(content).to.not.include("ms.analytics-web");
+    expect(content).to.not.include("wcp-consent.js");
+    expect(content).to.not.include("site.js");
+  });
+
+  it("local dev index.html should not include telemetry endpoints in CSP", () => {
+    const indexPath = path.join(appRoot, "index.html");
+    const content = fs.readFileSync(indexPath, "utf-8");
+
+    expect(content).to.not.include("browser.events.data.microsoft.com");
+    expect(content).to.not.include("js.monitor.azure.com");
+  });
+
+  it("Telemetry.ts should gate on ENABLE_ANALYTICS", () => {
+    const telemetryPath = path.join(appRoot, "src", "analytics", "Telemetry.ts");
+    const content = fs.readFileSync(telemetryPath, "utf-8");
+
+    expect(content).to.include("ENABLE_ANALYTICS");
+    expect(content).to.include("_analyticsAllowed");
+  });
+
+  it("gulpfile customizeSiteCsp should match the CSP in index.html", () => {
+    const indexPath = path.join(appRoot, "index.html");
+    const gulpfilePath = path.join(appRoot, "gulpfile.js");
+    const indexContent = fs.readFileSync(indexPath, "utf-8");
+    const gulpfileContent = fs.readFileSync(gulpfilePath, "utf-8");
+
+    // The gulpfile's customizeSiteCsp regex must be able to find the CSP in index.html.
+    // Extract the literal CSP string from index.html.
+    const cspMatch = indexContent.match(/content="(default-src[^"]+)"/);
+    expect(cspMatch, "index.html should contain a CSP meta tag").to.not.be.null;
+
+    // The gulpfile must contain a customizeSiteCsp function
+    expect(gulpfileContent).to.include("customizeSiteCsp");
+
+    // The production CSP in the gulpfile must include telemetry endpoints
+    expect(gulpfileContent).to.include("browser.events.data.microsoft.com");
+    expect(gulpfileContent).to.include("js.monitor.azure.com");
+    expect(gulpfileContent).to.include("wcpstatic.microsoft.com");
+  });
+
+  it("site/index.head.html should include 1DS and WcpConsent scripts", () => {
+    const headPath = path.join(appRoot, "site", "index.head.html");
+    const content = fs.readFileSync(headPath, "utf-8");
+
+    expect(content).to.include("js.monitor.azure.com");
+    expect(content).to.include("wcpstatic.microsoft.com");
   });
 });

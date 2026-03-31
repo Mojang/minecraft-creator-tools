@@ -11,6 +11,7 @@ import MessageProxyStorage from "../../vscodeweb/MessageProxyStorage";
 import Utilities from "../../core/Utilities";
 import { ProjectItemEditorView } from "../project/ProjectEditorUtilities";
 import IProjectTheme from "../types/IProjectTheme";
+import CodeToolboxNoProjectLanding from "./CodeToolboxNoProjectLanding";
 
 interface ICodeToolboxProps extends IAppProps {
   project: Project | null;
@@ -79,6 +80,16 @@ export default class CodeToolbox extends Component<ICodeToolboxProps, ICodeToolb
           hideMainToolbar={false}
           project={this.props.project}
           readOnly={false}
+        />
+      );
+    } else {
+      interior = (
+        <CodeToolboxNoProjectLanding
+          creatorTools={this.props.creatorTools}
+          project={null}
+          theme={this.props.theme}
+          forceNewProject={false}
+          onModeChangeRequested={this.props.onModeChangeRequested}
         />
       );
     }

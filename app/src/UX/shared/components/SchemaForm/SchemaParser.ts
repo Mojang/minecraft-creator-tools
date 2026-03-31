@@ -7,6 +7,8 @@ import {
   JSONSchema7TypeName,
 } from "json-schema";
 import Log from "../../../../core/Log";
+import DynamicObject from "./DynamicObject";
+
 // This supports the most crucial (for our purposes) feature of the 2020 schema (https://json-schema.org/draft/2020-12)
 // TODO: consider importing a package with a more complete definition, for now this is sufficient
 type JsonSchema2020Draft = { $defs: Definition[] };
@@ -47,8 +49,6 @@ function descend(object: any, entry: HierarchyEntry): unknown {
 
   return object[entry.key];
 }
-
-export type DynamicObject = Record<string, unknown>;
 
 export const updateObjectByHierarchy = (object: DynamicObject, value: unknown, hierarchy: Hierarchy) => {
   const ref = hierarchy.slice(0, hierarchy.length - 1).reduce<any>((obj, entry) => obj[entry.key], object);

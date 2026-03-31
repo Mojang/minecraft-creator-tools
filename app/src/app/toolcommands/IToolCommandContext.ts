@@ -103,7 +103,11 @@ export interface IToolCommandContext {
    */
   verbose?: boolean;
 
-  _messages?: string[];
+  /**
+   * Intermediate output messages collected during command execution.
+   * Used by command providers to capture output for the response.
+   */
+  messages?: string[];
 }
 
 /**

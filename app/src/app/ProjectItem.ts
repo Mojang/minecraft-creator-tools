@@ -630,7 +630,7 @@ export default class ProjectItem {
     folderStoragePath = MinecraftUtilities.clearCommonTerms(folderStoragePath);
     let folderStoragePathLower = folderStoragePath.toLowerCase();
 
-    const folderTypeRoots = ProjectItemUtilities.getFolderRootsForType(this.itemType);
+    const folderTypeRoots = [...ProjectItemUtilities.getFolderRootsForType(this.itemType)];
 
     folderTypeRoots.push("zip");
 

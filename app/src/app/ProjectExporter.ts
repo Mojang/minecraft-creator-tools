@@ -25,6 +25,7 @@ import { ProjectItemType } from "./IProjectItemData";
 import ProjectUtilities from "./ProjectUtilities";
 import telemetryService from "../analytics/Telemetry";
 import { TelemetryEvents, TelemetryProperties, WorldDownloadProperties } from "../analytics/TelemetryConstants";
+import GalleryReader from "./gallery/GalleryReader";
 
 export const enum FolderDeploy {
   retailFolders = 0,
@@ -101,22 +102,30 @@ export default class ProjectExporter {
   ) {
     let gh = undefined;
 
-    const urlExtension =
-      "res/samples/" +
-      gitHubOwner +
-      "/" +
-      gitHubRepoName +
-      "-" +
-      (gitHubBranch ? gitHubBranch : "main") +
-      "/" +
-      gitHubFolder;
+    // Use GalleryReader to map repo names to local folder names (e.g.,
+    // "minecraft-scripting-samples" → "script-samples") for bundled content.
+    const localRepoFolder = GalleryReader.getLocalRepoFolder(gitHubRepoName, gitHubBranch);
+    const localUrlExtension = "res/samples/" + gitHubOwner + "/" + localRepoFolder + "/" + gitHubFolder;
 
     if (CreatorToolsHost.isWeb) {
-      gh = HttpStorage.get(Utilities.ensureEndsWithSlash(CreatorToolsHost.contentWebRoot) + urlExtension);
-    } else if (CreatorToolsHost.isVsCode && creatorTools.local) {
-      // In VS Code extension context, use bundled samples from the extension package
-      // instead of downloading from GitHub. This is faster and works offline.
-      gh = creatorTools.local.createStorage(urlExtension);
+      gh = HttpStorage.get(Utilities.ensureEndsWithSlash(CreatorToolsHost.contentWebRoot) + localUrlExtension);
+    } else if (creatorTools.local) {
+      // In Node.js contexts (CLI, VS Code, Electron), use bundled samples from the
+      // local package instead of downloading from GitHub. This is faster, works offline,
+      // and avoids GitHub API rate limits for unauthenticated requests.
+      const localGh = creatorTools.local.createStorage(localUrlExtension);
+
+      if (localGh) {
+        try {
+          // Verify the local folder actually exists before committing to it
+          const exists = await localGh.rootFolder.exists();
+          if (exists) {
+            gh = localGh;
+          }
+        } catch {
+          // Local storage not available, will fall back to GitHub
+        }
+      }
     }
 
     // Fall back to GitHub if bundled samples aren't available

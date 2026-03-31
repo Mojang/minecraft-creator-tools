@@ -279,23 +279,36 @@ export default class BlockMeshFactory {
     // Get textures for each side from blocks.json via ProjectDefinitionUtilities
     // When useWorldTextures=true, skip carried_textures (which lack alpha cutout for leaves)
     const useCarried = !this.useWorldTextures;
-    let upTex = ProjectDefinitionUtilities.getVanillaBlockTexture(blockType, "up", useCarried);
-    let downTex = ProjectDefinitionUtilities.getVanillaBlockTexture(blockType, "down", useCarried);
-    let sideTex = ProjectDefinitionUtilities.getVanillaBlockTexture(blockType, "side", useCarried);
-
-    // NOTE: grass_side already has the correct dirt-with-grass-strip appearance.
+    const upTexInfo = ProjectDefinitionUtilities.getVanillaBlockTextureWithOverlay(blockType, "up", useCarried);
+    const downTexInfo = ProjectDefinitionUtilities.getVanillaBlockTextureWithOverlay(blockType, "down", useCarried);
+    const sideTexInfo = ProjectDefinitionUtilities.getVanillaBlockTextureWithOverlay(blockType, "side", useCarried);
+    let upTex = upTexInfo?.path;
+    let downTex = downTexInfo?.path;
+    let sideTex = sideTexInfo?.path;
 
     // Check if we have different textures for different sides
     const hasDistinctSides = upTex !== sideTex || downTex !== sideTex || upTex !== downTex;
 
     if (hasDistinctSides && sideTex && upTex && downTex) {
       // Create materials for each distinct texture
-      const sideMaterial = this._ensureMaterialFromPath(sideTex);
+      let sideMaterial = this._ensureMaterialFromPath(sideTex);
       const topMaterial = this._ensureMaterialFromPath(upTex);
       const bottomMaterial = this._ensureMaterialFromPath(downTex);
 
+      // If the side texture has an overlay_color (e.g., grass_carried uses grass_side.png
+      // with overlay_color "#79c05a"), apply it as a biome tint. The overlay is composited
+      // onto the bottom texture (dirt) as the opaque background.
+      if (sideTexInfo?.overlayColor) {
+        sideMaterial = this._ensureTintedMaterial(sideTex, sideMaterial, sideTexInfo.overlayColor, downTex);
+      }
+      // Same for top texture if it has an overlay_color
+      let tintedTopMaterial = topMaterial;
+      if (upTexInfo?.overlayColor) {
+        tintedTopMaterial = this._ensureTintedMaterial(upTex, topMaterial, upTexInfo.overlayColor, downTex);
+      }
+
       bmau = new BoxMaterialAndUv();
-      bmau.setSideTopBottom(sideMaterial, topMaterial, bottomMaterial);
+      bmau.setSideTopBottom(sideMaterial, tintedTopMaterial, bottomMaterial);
     } else {
       // Use uniform material
       const tex = upTex || sideTex || downTex;
@@ -2909,6 +2922,129 @@ export default class BlockMeshFactory {
       mat.freeze();
     }
 
+    return mat;
+  }
+
+  /**
+   * Creates a tinted composite material for blocks like grass_block.
+   * In Minecraft, grass_side.png is a semi-transparent overlay that gets tinted with
+   * the biome/overlay color and composited onto dirt. This method replicates that:
+   * 1. Draws dirt as the opaque background
+   * 2. Tints the grass_side overlay pixels by the overlay color
+   * 3. Composites the tinted overlay onto dirt
+   * 4. Creates a new Babylon.js texture from the result
+   */
+  private _ensureTintedMaterial(
+    basePath: string,
+    _baseMaterial: BABYLON.StandardMaterial,
+    overlayColorHex: string,
+    backgroundPath: string
+  ): BABYLON.StandardMaterial {
+    const tintedKey = basePath + "_tint_" + overlayColorHex;
+    const existing = this._materials.get(tintedKey);
+    if (existing) return existing;
+
+    if (this._scene === null) {
+      throw new Error("Scene is null in _ensureTintedMaterial");
+    }
+
+    // Parse hex color (e.g., "#79c05a" → r, g, b in 0–1)
+    const hex = overlayColorHex.replace("#", "");
+    const tR = parseInt(hex.substring(0, 2), 16) / 255;
+    const tG = parseInt(hex.substring(2, 4), 16) / 255;
+    const tB = parseInt(hex.substring(4, 6), 16) / 255;
+
+    const baseUrl = CreatorToolsHost.getVanillaContentRoot() + "res/latest/van/serve/resource_pack/";
+    const overlayUrl = baseUrl + basePath + ".png";
+    const bgUrl = baseUrl + backgroundPath + ".png";
+
+    // Create the material starting with the base (untinted) texture as placeholder.
+    // The tinted composite will replace it once images load asynchronously.
+    const mat = new BABYLON.StandardMaterial("mat." + tintedKey, this._scene);
+    mat.alpha = 1.0;
+    mat.backFaceCulling = true;
+    mat.specularColor = new BABYLON.Color3(0.04, 0.04, 0.04);
+    mat.zOffset = -2;
+    mat.transparencyMode = BABYLON.Material.MATERIAL_OPAQUE;
+    mat.diffuseTexture = _baseMaterial.diffuseTexture;
+
+    // Load both images and composite
+    if (typeof Image !== "undefined") {
+      const overlayImg = new Image();
+      const bgImg = new Image();
+      overlayImg.crossOrigin = "anonymous";
+      bgImg.crossOrigin = "anonymous";
+
+      let loadedCount = 0;
+      const onBothLoaded = () => {
+        loadedCount++;
+        if (loadedCount < 2) return;
+
+        const size = Math.max(overlayImg.width, bgImg.width) || 16;
+        const canvas = document.createElement("canvas");
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext("2d")!;
+
+        // Step 1: Draw background as opaque base (e.g., dirt)
+        ctx.drawImage(bgImg, 0, 0, size, size);
+
+        // Step 2: Tint the overlay before compositing — draw overlay to temp canvas,
+        // multiply RGB of non-transparent pixels by overlay color, then composite
+        const tmpCanvas = document.createElement("canvas");
+        tmpCanvas.width = size;
+        tmpCanvas.height = size;
+        const tmpCtx = tmpCanvas.getContext("2d")!;
+        tmpCtx.drawImage(overlayImg, 0, 0, size, size);
+
+        const overlayData = tmpCtx.getImageData(0, 0, size, size);
+        const d = overlayData.data;
+        for (let i = 0; i < d.length; i += 4) {
+          if (d[i + 3] > 0) {
+            d[i] = Math.min(255, Math.round(d[i] * tR));
+            d[i + 1] = Math.min(255, Math.round(d[i + 1] * tG));
+            d[i + 2] = Math.min(255, Math.round(d[i + 2] * tB));
+          }
+        }
+        tmpCtx.putImageData(overlayData, 0, 0);
+
+        // Step 3: Composite tinted overlay onto dirt
+        ctx.drawImage(tmpCanvas, 0, 0, size, size);
+
+        // Step 4: Create Babylon texture from the composited canvas
+        const dataUrl = canvas.toDataURL("image/png");
+        const texture = new BABYLON.Texture(dataUrl, this._scene, true, false, BABYLON.Texture.NEAREST_SAMPLINGMODE);
+        texture.anisotropicFilteringLevel = 1;
+        texture.hasAlpha = false;
+        texture.uScale = 1;
+        texture.vScale = -1;
+
+        mat.unfreeze();
+        mat.diffuseTexture = texture;
+        mat.freeze();
+      };
+
+      overlayImg.onload = onBothLoaded;
+      bgImg.onload = onBothLoaded;
+
+      // Handle load errors gracefully — fall back to untinted
+      overlayImg.onerror = () => {
+        mat.unfreeze();
+        mat.diffuseTexture = _baseMaterial.diffuseTexture;
+        mat.freeze();
+      };
+      bgImg.onerror = () => {
+        mat.unfreeze();
+        mat.diffuseTexture = _baseMaterial.diffuseTexture;
+        mat.freeze();
+      };
+
+      overlayImg.src = overlayUrl;
+      bgImg.src = bgUrl;
+    }
+
+    this._materials.set(tintedKey, mat);
+    mat.freeze();
     return mat;
   }
 

@@ -3476,7 +3476,9 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
     // Check if we have a custom model with either texture data or texture URL
     const hasTexture = entity.customTextureData || entity.customTextureUrl;
     if (entity.customModel && hasTexture && this._modelMeshFactory !== undefined) {
-      let geo = entity.customModel.defaultGeometry;
+      // Prefer pre-transformed geometry (has VanillaGeometryTransforms applied)
+      // over the raw definition's defaultGeometry (which hasn't been transformed).
+      let geo = entity.customGeometry || entity.customModel.defaultGeometry;
 
       if (geo) {
         const name = "e" + entityId;

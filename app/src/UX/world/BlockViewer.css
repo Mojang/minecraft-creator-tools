@@ -180,6 +180,11 @@
 
 /* High-contrast mode: ensure text is readable against system background */
 @media (forced-colors: active) {
+  .bv-container {
+    background-color: Canvas;
+    color: CanvasText;
+  }
+
   .bv-info,
   .bv-block-details,
   .bv-footer,
@@ -194,7 +199,99 @@
     border: 1px solid ButtonText;
   }
 
+  .bv-button {
+    background-color: ButtonFace;
+    color: ButtonText;
+    border: 1px solid ButtonText;
+    forced-color-adjust: none;
+  }
+
+  .bv-button:hover:not(:disabled) {
+    background-color: Highlight;
+    color: HighlightText;
+  }
+
+  .bv-button:disabled {
+    color: GrayText;
+    border-color: GrayText;
+  }
+
+  .bv-select {
+    background-color: Field;
+    color: FieldText;
+    border: 1px solid CanvasText;
+  }
+
   .bv-color-swatch {
     forced-color-adjust: none;
   }
+
+  .bv-error {
+    background-color: Canvas;
+    color: CanvasText;
+    border: 1px solid CanvasText;
+  }
+}
+
+/* Light theme overrides */
+body.ct-light .bv-container {
+  background-color: #f5f0ed;
+  color: #262423;
+}
+
+body.ct-light .bv-toolbar {
+  background-color: #ede5e2;
+}
+
+body.ct-light .bv-button {
+  background-color: #d5ccc8;
+  color: #262423;
+}
+
+body.ct-light .bv-button:hover:not(:disabled) {
+  background-color: #c5bbb6;
+}
+
+body.ct-light .bv-select {
+  background-color: #ffffff;
+  color: #262423;
+  border: 1px solid #d5ccc8;
+}
+
+body.ct-light .bv-info {
+  color: #6b6360;
+}
+
+body.ct-light .bv-block-info {
+  background-color: #ede5e2;
+}
+
+body.ct-light .bv-block-info h2 {
+  color: #262423;
+}
+
+body.ct-light .bv-block-details {
+  color: #6b6360;
+}
+
+body.ct-light .bv-error {
+  background-color: #fef2f2;
+  color: #991b1b;
+  border-color: #991b1b;
+}
+
+body.ct-light .bv-footer {
+  color: #6b6360;
+}
+
+body.ct-light .bv-grid-item {
+  background-color: #ede5e2;
+}
+
+body.ct-light .bv-grid-item:hover {
+  background-color: #d5ccc8;
+}
+
+body.ct-light .bv-grid-item-label {
+  color: #6b6360;
 }

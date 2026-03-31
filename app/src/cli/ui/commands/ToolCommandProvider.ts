@@ -196,7 +196,7 @@ export class ToolCommandProvider implements ICommandProvider {
     }
 
     // Include any intermediate output messages collected during execution
-    const messages = (toolContext as any)._messages as string[] | undefined;
+    const messages = toolContext.messages;
     const intermediateOutput = messages && messages.length > 0 ? messages.join("\n") + "\n" : "";
 
     return {
@@ -235,7 +235,7 @@ export class ToolCommandProvider implements ICommandProvider {
       minecraft: undefined,
       output,
       scope: "serveTerminal",
-      _messages: messages,
+      messages: messages,
     };
   }
 }

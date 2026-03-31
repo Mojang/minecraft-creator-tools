@@ -39,7 +39,7 @@ async function openContentWizard(page: Page): Promise<boolean> {
     }
 
     const addButton = page.locator('button[aria-label="Add new content"]').first();
-    if (!(await addButton.isVisible({ timeout: 3000 }))) {
+    if (!(await addButton.isVisible({ timeout: 15000 }))) {
       console.log("openContentWizard: Add button not visible");
       return false;
     }

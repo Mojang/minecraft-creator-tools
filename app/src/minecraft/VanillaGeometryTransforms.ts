@@ -140,6 +140,87 @@ const VANILLA_GEOMETRY_TRANSFORMS: IVanillaGeometryTransform[] = [
       { boneName: "body", setCubeRotation: [90, 0, 0] },
     ],
   },
+
+  // ── Sheep ─────────────────────────────────────────────────────────────
+  // Sheep geometry has bind_pose_rotation [90,0,0] on the body bone, with
+  // legs as children. The sheep's leg cube positions are in WORLD coordinates
+  // (Y=0 to Y=12, ground to hip). Applying the body's 90° rotation to these
+  // world-space legs scatters them.
+  //
+  // Fix: detach the legs from the body so they render at their world-space
+  // positions. The body's bind_pose_rotation correctly rotates its own cubes;
+  // the head is already a root bone (no parent).
+  {
+    geometryPatterns: ["geometry.sheep.sheared.v1.8", "geometry.sheep.v1.8*"],
+    reason: "Sheep legs are in world coordinates — detach from rotated body bone",
+    boneTransforms: [
+      { boneName: "leg0", removeParent: true },
+      { boneName: "leg1", removeParent: true },
+      { boneName: "leg2", removeParent: true },
+      { boneName: "leg3", removeParent: true },
+    ],
+  },
+
+  // ── Turtle ────────────────────────────────────────────────────────────
+  // The turtle body has bind_pose_rotation [90,0,0] but ALL child bone cubes
+  // (head, flippers) are in world coordinates, not the body's rotated local
+  // space. The body rotation correctly orients the shell, but applying it to
+  // children pushes the head up through the shell and scatters the flippers.
+  //
+  // Fix: detach head and flippers so they render at world coordinates.
+  // The head at Y=1-6, Z=-13 to -7 naturally sits in front of the shell.
+  // Back flippers need Z-correction because the shell is rendered through
+  // the rotation node while detached bones use Babylon's Z-negation.
+  {
+    geometryPatterns: ["geometry.turtle", "geometry.turtle.*"],
+    reason: "Turtle head/flippers are in world coordinates — detach from rotated body",
+    boneTransforms: [
+      { boneName: "head", removeParent: true },
+      { boneName: "leg0", removeParent: true, addCubeOriginOffset: [0, 0, -27] },
+      { boneName: "leg1", removeParent: true, addCubeOriginOffset: [0, 0, -27] },
+      { boneName: "leg2", removeParent: true, addCubeOriginOffset: [0, 0, -23] },
+      { boneName: "leg3", removeParent: true, addCubeOriginOffset: [0, 0, -23] },
+    ],
+  },
+
+  // ── Enderman ──────────────────────────────────────────────────────────
+  // The enderman geometry defines bones at "animation-ready" positions that
+  // Minecraft corrects via `animation.enderman.base_pose` (always-on loop).
+  // Without the base_pose offsets, the head is inside the body, the hat
+  // floats detached above, arms overlap the body, and legs clip underground.
+  //
+  // base_pose offsets (from animation.enderman.base_pose):
+  //   body:     position [0, +11, 0]     — raises entire model
+  //   head:     position [0,   0, 0]     — moves with body (+11) via bone hierarchy
+  //   hat:      position [0,   0, 0]     — moves with body via head (+11) via hierarchy
+  //   rightArm: position [-4,  0, 0]     — spread outward, moves with body (+11)
+  //   leftArm:  position [+4,  0, 0]     — spread outward, moves with body (+11)
+  //   rightLeg: position [0,  -5, 0]     — moves with body (+11), then -5 = net +6
+  //   leftLeg:  position [0,  -5, 0]     — moves with body (+11), then -5 = net +6
+  //
+  // Our renderer positions cubes at world coordinates (not through bone hierarchy),
+  // so the head doesn't automatically follow the body's offset. Additionally, the
+  // head pivot (Y=24) is 14 units below the body pivot (Y=38). In Minecraft's bone
+  // hierarchy rendering, the head ends up inside the body — it's the look_at_target
+  // animation that tilts the head up to sit on the shoulders. For our static render,
+  // we move the head to sit on top of the body (body top = Y=38 +11 = Y=49).
+  //
+  // Head total offset: +11 (body base_pose) +14 (lift to body top) = +25
+  // Hat stays at +11 because its geometry origin (Y=37.5) is already designed to
+  // surround the head at the body-top position (Y=49→57, hat Y=48.5→56.5).
+  {
+    geometryPatterns: ["geometry.enderman*"],
+    reason: "Replicates animation.enderman.base_pose offsets + head-to-top lift",
+    boneTransforms: [
+      { boneName: "body", addCubeOriginOffset: [0, 11, 0] },
+      { boneName: "head", addCubeOriginOffset: [0, 25, 0] },
+      { boneName: "hat", addCubeOriginOffset: [0, 11, 0] },
+      { boneName: "rightArm", addCubeOriginOffset: [-4, 11, 0] },
+      { boneName: "leftArm", addCubeOriginOffset: [4, 11, 0] },
+      { boneName: "rightLeg", addCubeOriginOffset: [0, 6, 0] },
+      { boneName: "leftLeg", addCubeOriginOffset: [0, 6, 0] },
+    ],
+  },
 ];
 
 /**

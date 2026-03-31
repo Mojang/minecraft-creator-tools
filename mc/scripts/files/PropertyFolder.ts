@@ -17,8 +17,8 @@ export default class PropertyFolder extends FolderBase implements IFolder {
   private _storage: PropertyStorage;
   private _parentFolder: PropertyFolder | null;
 
-  private _onFolderMoved = new EventDispatcher<IFolder, IFolderMove>();
-  private _onChildFolderMoved = new EventDispatcher<IFolder, IFolderMove>();
+  private _onFolderMoved = new EventDispatcher<FolderBase, IFolderMove>();
+  private _onChildFolderMoved = new EventDispatcher<FolderBase, IFolderMove>();
 
   get onFolderMoved() {
     return this._onFolderMoved.asEvent();

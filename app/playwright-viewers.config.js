@@ -20,10 +20,6 @@ export default defineConfig({
 
   outputDir: "./debugoutput/playwright-viewer-results",
 
-  /* Snapshot configuration — output to debugoutput so generated images don't pollute public/ */
-  snapshotDir: "./debugoutput/res/snapshots",
-  snapshotPathTemplate: "{snapshotDir}/{arg}{ext}",
-
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */

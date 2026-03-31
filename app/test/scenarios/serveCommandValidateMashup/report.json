@@ -2025,6 +2025,14 @@
           "testCompleteSuccesses": 1,
           "title": "JSON Parse Error (Schema Validation)"
         },
+        "114": {
+          "defaultMessage": "Version format needs updating",
+          "warnings": 2
+        },
+        "192": {
+          "defaultMessage": "Structure issue",
+          "warnings": 5
+        },
         "1110": {
           "defaultMessage": "Entity type is not at a current format version"
         },
@@ -2637,8 +2645,8 @@
     "unknownJsonCount": 0,
     "vanillaGameTextureCount": 5,
     "vanillaGameTextureCoverage": 0.001979414093428345,
-    "warningCount": 10,
-    "warningSummary": "WARNING: [JSONF110] (/Content/resource_packs/aop_mobmwrp/models/entity/nardolphle.geometry.json) At geometry.aop_mobs.nardolphle.visible_bounds_offset, data does not match expected type. Data '0,0.75,0' is of type number array, which does not match type 'Array of strings'.\nWARNING: [JSONF110] (/Content/world_templates/aop_mobwt/resource_packs/aop_mobwrp/models/entity/nardolphle.geometry.json) At geometry.aop_mobw.nardolphle.visible_bounds_offset, data does not match expected type. Data '0,0.75,0' is of type number array, which does not match type 'Array of strings'.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobmwrp/textures/aop/moremobs/a_biceson_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobmwrp/textures/aop/moremobs/b_nardolphle_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobmwrp/textures/aop/moremobs/c_sheepomelon_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobmwrp/textures/item_texture.json to `textures/items/elixir`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobmwrp/textures/item_texture.json to `textures/items/hard_biscuit`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobmwrp/textures/item_texture.json to `textures/items/key`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobmwrp/textures/item_texture.json to `textures/items/pear`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobmwrp/textures/item_texture.json to `textures/items/rod`",
+    "warningCount": 17,
+    "warningSummary": "WARNING: [JSON114] (/Content/world_templates/aop_mobwt/resource_packs/aop_mobwrp/manifest.json) Version format needs updating: The version is written as numbers [1,0,0] but should be text like \"1.0.0\". This is easy to fix — just change it to a quoted string.\nWARNING: [JSON114] (/Content/world_templates/aop_mobwt/resource_packs/aop_mobwrp/manifest.json) Version format needs updating: The version is written as numbers [1,0,0] but should be text like \"1.0.0\". This is easy to fix — just change it to a quoted string.\nWARNING: [JSON192] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Structure issue: In \"texture_data.elixir.textures\": textures/items/elixir - string value found, but a array is required\nWARNING: [JSON192] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Structure issue: In \"texture_data.hard_biscuit.textures\": textures/items/hard_biscuit - string value found, but a array is required\nWARNING: [JSON192] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Structure issue: In \"texture_data.key.textures\": textures/items/key - string value found, but a array is required\nWARNING: [JSON192] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Structure issue: In \"texture_data.pear.textures\": textures/items/pear - string value found, but a array is required\nWARNING: [JSON192] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Structure issue: In \"texture_data.rod.textures\": textures/items/rod - string value found, but a array is required\nWARNING: [JSONF110] (/Content/resource_packs/aop_mobmwrp/models/entity/nardolphle.geometry.json) At geometry.aop_mobs.nardolphle.visible_bounds_offset, data does not match expected type. Data '0,0.75,0' is of type number array, which does not match type 'Array of strings'.\nWARNING: [JSONF110] (/Content/world_templates/aop_mobwt/resource_packs/aop_mobwrp/models/entity/nardolphle.geometry.json) At geometry.aop_mobw.nardolphle.visible_bounds_offset, data does not match expected type. Data '0,0.75,0' is of type number array, which does not match type 'Array of strings'.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobmwrp/textures/aop/moremobs/a_biceson_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobmwrp/textures/aop/moremobs/b_nardolphle_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobmwrp/textures/aop/moremobs/c_sheepomelon_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobmwrp/textures/item_texture.json to `textures/items/elixir`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobmwrp/textures/item_texture.json to `textures/items/hard_biscuit`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobmwrp/textures/item_texture.json to `textures/items/key`",
     "worldCount": 1,
     "worldLoadErrors": 0,
     "worldNotFound": 0
@@ -3378,6 +3386,55 @@
       "gId": "JSON",
       "gIx": 1,
       "iTp": 1
+    },
+    {
+      "d": "The version is written as numbers [1,0,0] but should be text like \"1.0.0\". This is easy to fix — just change it to a quoted string.",
+      "gId": "JSON",
+      "gIx": 114,
+      "iTp": 4,
+      "p": "/Content/world_templates/aop_mobwt/resource_packs/aop_mobwrp/manifest.json"
+    },
+    {
+      "d": "The version is written as numbers [1,0,0] but should be text like \"1.0.0\". This is easy to fix — just change it to a quoted string.",
+      "gId": "JSON",
+      "gIx": 114,
+      "iTp": 4,
+      "p": "/Content/world_templates/aop_mobwt/resource_packs/aop_mobwrp/manifest.json"
+    },
+    {
+      "d": "In \"texture_data.elixir.textures\": textures/items/elixir - string value found, but a array is required",
+      "gId": "JSON",
+      "gIx": 192,
+      "iTp": 4,
+      "p": "/Content/resource_packs/aop_mobmwrp/textures/item_texture.json"
+    },
+    {
+      "d": "In \"texture_data.hard_biscuit.textures\": textures/items/hard_biscuit - string value found, but a array is required",
+      "gId": "JSON",
+      "gIx": 192,
+      "iTp": 4,
+      "p": "/Content/resource_packs/aop_mobmwrp/textures/item_texture.json"
+    },
+    {
+      "d": "In \"texture_data.key.textures\": textures/items/key - string value found, but a array is required",
+      "gId": "JSON",
+      "gIx": 192,
+      "iTp": 4,
+      "p": "/Content/resource_packs/aop_mobmwrp/textures/item_texture.json"
+    },
+    {
+      "d": "In \"texture_data.pear.textures\": textures/items/pear - string value found, but a array is required",
+      "gId": "JSON",
+      "gIx": 192,
+      "iTp": 4,
+      "p": "/Content/resource_packs/aop_mobmwrp/textures/item_texture.json"
+    },
+    {
+      "d": "In \"texture_data.rod.textures\": textures/items/rod - string value found, but a array is required",
+      "gId": "JSON",
+      "gIx": 192,
+      "iTp": 4,
+      "p": "/Content/resource_packs/aop_mobmwrp/textures/item_texture.json"
     },
     {
       "gId": "JSON",

@@ -2,7 +2,14 @@
 // Licensed under the MIT License.
 
 /**
- * Telemetry service that wraps 1DS ApplicationInsights instance
+ * Telemetry service that wraps 1DS ApplicationInsights instance.
+ *
+ * Telemetry is ONLY enabled when both conditions are met:
+ *   1. ENABLE_ANALYTICS is set to true at compile time (only for mctools.dev production builds)
+ *   2. The 1DS SDK has been initialized and exposed as window.oneDSInstance (by site.js)
+ *
+ * All other environments (local dev, CLI, Electron, VS Code extension, CLI-served web)
+ * will never send telemetry because ENABLE_ANALYTICS is false at compile time.
  */
 
 import type { OneDSApplicationInsights } from "../types/oneds";
@@ -45,8 +52,17 @@ class TelemetryService {
   private _mctoolsVersion: string = "0.0.1";
   private window: typeof globalThis = globalThis;
 
+  /**
+   * Whether telemetry is allowed by the compile-time ENABLE_ANALYTICS flag.
+   * This is the primary gate — if false, no telemetry methods will do anything.
+   */
+  // @ts-ignore - ENABLE_ANALYTICS is injected by webpack and vite configs
+  private _analyticsAllowed: boolean = typeof ENABLE_ANALYTICS !== "undefined" && ENABLE_ANALYTICS === true;
+
   constructor() {
-    this._checkInitialization();
+    if (this._analyticsAllowed) {
+      this._checkInitialization();
+    }
     this._loadVersion();
   }
 
@@ -96,9 +112,14 @@ class TelemetryService {
   }
 
   /**
-   * Get the 1DS instance, checking initialization if not already done
+   * Get the 1DS instance, checking initialization if not already done.
+   * Returns null immediately if ENABLE_ANALYTICS is false at compile time.
    */
   private _getInstance(): OneDSApplicationInsights | null {
+    if (!this._analyticsAllowed) {
+      return null;
+    }
+
     if (!this._isInitialized) {
       this._checkInitialization();
     }

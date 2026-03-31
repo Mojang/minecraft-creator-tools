@@ -236,8 +236,8 @@ test.describe("MCTools View Command Tests @focused", () => {
       // The URL already has the passcode in the hash, so auto-login should work
       console.log(`Navigating to: ${serverInfo.url}`);
       await page.goto(serverInfo.url);
-      await page.waitForLoadState("networkidle");
-      await page.waitForTimeout(2000); // Give extra time for project to load
+      await page.waitForLoadState("domcontentloaded");
+      await page.waitForTimeout(5000); // Give extra time for SPA to initialize and project to load
 
       // Take initial screenshot
       await page.screenshot({ path: "debugoutput/screenshots/view-simple-initial.png", fullPage: true });
@@ -333,8 +333,8 @@ test.describe("MCTools View Command Tests @focused", () => {
       // Navigate to the view URL
       console.log(`Navigating to: ${serverInfo.url}`);
       await page.goto(serverInfo.url);
-      await page.waitForLoadState("networkidle");
-      await page.waitForTimeout(3000); // Give extra time for larger project to load
+      await page.waitForLoadState("domcontentloaded");
+      await page.waitForTimeout(5000); // Give extra time for SPA to initialize and project to load
 
       // Take initial screenshot
       await page.screenshot({ path: "debugoutput/screenshots/view-addon-initial.png", fullPage: true });
@@ -422,8 +422,8 @@ test.describe("MCTools View Command Tests @focused", () => {
 
       console.log(`Navigating to: ${serverInfo.url}`);
       await page.goto(serverInfo.url);
-      await page.waitForLoadState("networkidle");
-      await page.waitForTimeout(3000);
+      await page.waitForLoadState("domcontentloaded");
+      await page.waitForTimeout(5000); // Give extra time for SPA to initialize
 
       await page.screenshot({ path: "debugoutput/screenshots/view-diverse-initial.png", fullPage: true });
 
@@ -490,13 +490,13 @@ test.describe("MCTools View Command Tests @focused", () => {
       });
 
       await page.goto(serverInfo.url);
-      await page.waitForLoadState("networkidle");
+      await page.waitForLoadState("domcontentloaded");
 
       // Take screenshot to see what the page looks like after initial load
       await page.screenshot({ path: "debugoutput/screenshots/view-readonly-initial.png", fullPage: true });
 
       // Wait for the app to initialize (authentication and project loading)
-      await page.waitForTimeout(3000);
+      await page.waitForTimeout(5000);
 
       // Wait for the Close button to appear, which indicates auth and project loading completed
       const closeButton = page

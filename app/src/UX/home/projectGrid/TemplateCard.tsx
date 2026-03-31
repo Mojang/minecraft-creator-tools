@@ -96,7 +96,10 @@ export default function TemplateCard({ template, onNewProject }: TemplateCardPro
             height: "100%",
             display: "flex",
             flexDirection: "column",
-            transition: "all 0.2s ease-in-out",
+            transition: "none",
+            "@media (prefers-reduced-motion: no-preference)": {
+              transition: "all 0.2s ease-in-out",
+            },
             borderRadius: 1,
             border: isDark ? `2px solid ${mcColors.gray5}` : "1px solid rgba(0,0,0,0.12)",
             backgroundColor: isDark ? mcColors.gray5 : mcColors.white,

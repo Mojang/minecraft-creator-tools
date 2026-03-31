@@ -316,6 +316,9 @@ export interface ICommandContext {
   /** Output folder path (resolved to absolute), may equal inputFolder */
   outputFolder: string;
 
+  /** Output file path specified via --of / --output-file */
+  outputFile?: string;
+
   /** Storage for reading input content */
   inputStorage: IStorage;
 

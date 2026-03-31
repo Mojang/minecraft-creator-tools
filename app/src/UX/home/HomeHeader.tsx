@@ -42,6 +42,15 @@ export default function HomeHeader({ isApp, toggleThemeMode, mode }: IHomeHeader
           src={CreatorToolsHost.contentWebRoot + "res/images/mctoolsbanner.png"}
           alt={intl.formatMessage({ id: "home.header.logo_alt" })}
           className="hhdr-image"
+          onError={(e) => {
+            const target = e.currentTarget;
+            target.style.display = "none";
+            if (target.parentElement) {
+              target.parentElement.textContent = "Minecraft Creator Tools";
+              target.parentElement.style.fontSize = "20px";
+              target.parentElement.style.fontWeight = "700";
+            }
+          }}
         ></img>
       </h1>
       <div

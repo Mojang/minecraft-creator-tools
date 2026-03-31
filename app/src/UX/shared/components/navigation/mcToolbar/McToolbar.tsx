@@ -1,5 +1,5 @@
 /**
- * McToolbar - Material UI Toolbar wrapper for Northstar migration
+ * McToolbar - Material UI Toolbar wrapper for Northstar migration.
  *
  * This component provides a similar API to Northstar's Toolbar component
  * while using Material UI under the hood.
@@ -241,7 +241,7 @@ function McToolbarItemRenderer({ item, variant }: { item: McToolbarItem; variant
                 }}
                 size="small"
               >
-                <FontAwesomeIcon icon={faSortDown} style={{ fontSize: "10px", position: "relative", top: "-2px" }} />
+                <FontAwesomeIcon icon={faSortDown} className="fa-lg" style={{ position: "relative", top: "-3px" }} />
               </IconButton>
             </span>
           </Tooltip>
@@ -386,6 +386,9 @@ export default function McToolbar({
   const containerRef = useRef<HTMLDivElement>(null);
   const [visibleCount, setVisibleCount] = useState(items.length);
   const [overflowAnchorEl, setOverflowAnchorEl] = useState<null | HTMLElement>(null);
+  // Track whether we've completed the initial overflow measurement.
+  // Items are rendered with visibility:hidden until first measurement to prevent clipping flash.
+  const [measured, setMeasured] = useState(false);
 
   // Cache of measured item widths (indexed by position).
   const itemWidthsRef = useRef<number[]>([]);
@@ -405,6 +408,7 @@ export default function McToolbar({
   useEffect(() => {
     if (showOverflow) {
       itemWidthsRef.current = [];
+      setMeasured(false);
       setVisibleCount(items.length);
     }
   }, [itemsSignature, showOverflow, items.length]);
@@ -448,6 +452,7 @@ export default function McToolbar({
     const reserveForExplicit = hasExplicitOverflow ? overflowButtonWidth : 0;
     if (totalAllWidth + reserveForExplicit <= containerWidth) {
       setVisibleCount(items.length);
+      setMeasured(true);
       return;
     }
 
@@ -466,6 +471,7 @@ export default function McToolbar({
     fitCount = Math.max(fitCount, 1);
 
     setVisibleCount(fitCount);
+    setMeasured(true);
   }, [items.length, itemsSignature, explicitOverflowItems]);
 
   useEffect(() => {
@@ -515,6 +521,8 @@ export default function McToolbar({
         minHeight: variant === "primary" ? 36 : 28,
         fontFamily: '"Noto Sans", sans-serif',
         overflow: "hidden",
+        // Hide items during initial measurement to prevent clipping flash on narrow viewports
+        visibility: showOverflow && !measured ? "hidden" : "visible",
         ...sx,
       }}
     >

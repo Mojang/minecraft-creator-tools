@@ -282,6 +282,50 @@ export default class SoundCatalogDefinition implements IDefinition {
     return et;
   }
 
+  /**
+   * Converts ISoundEvent objects that only have {sound: "..."} back
+   * to plain strings, keeping the file compact and canonical.
+   */
+  private _downscaleEvents() {
+    if (!this._data) {
+      return;
+    }
+
+    const catalogs: (ISoundEventCatalog | undefined)[] = [
+      this._data.entity_sounds?.entities,
+      this._data.block_sounds,
+      this._data.interactive_sounds?.block_sounds,
+      this._data.interactive_sounds?.entity_sounds?.entities,
+    ];
+
+    const eventSets: (ISoundEventSet | undefined)[] = [
+      this._data.entity_sounds?.defaults,
+      this._data.interactive_sounds?.entity_sounds?.defaults,
+    ];
+
+    for (const catalog of catalogs) {
+      if (catalog) {
+        for (const entityKey in catalog) {
+          eventSets.push(catalog[entityKey]);
+        }
+      }
+    }
+
+    for (const eventSet of eventSets) {
+      if (eventSet && eventSet.events) {
+        for (const key in eventSet.events) {
+          const val = eventSet.events[key];
+          if (typeof val === "object" && val.sound) {
+            const objKeys = Object.keys(val);
+            if (objKeys.length === 1 && objKeys[0] === "sound") {
+              eventSet.events[key] = val.sound;
+            }
+          }
+        }
+      }
+    }
+  }
+
   persist(): boolean {
     if (this._file === undefined) {
       return false;
@@ -291,6 +335,8 @@ export default class SoundCatalogDefinition implements IDefinition {
       Log.unexpectedUndefined("SCDP");
       return false;
     }
+
+    this._downscaleEvents();
 
     return this._file.setObjectContentIfSemanticallyDifferent(this._data);
   }

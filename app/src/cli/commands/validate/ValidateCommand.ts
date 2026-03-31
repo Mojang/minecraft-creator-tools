@@ -105,8 +105,8 @@ export class ValidateCommand extends CommandBase {
         name: "aggregateReports",
         description: "Specify 'aggregate' to aggregate reports across projects at the end of the run.",
         required: false,
-        choices: ["aggregatenoindex", "aggregate", "true", "false", "1", "0"],
         contextField: "aggregateReports",
+        choices: ["aggregatenoindex", "aggregate", "true", "false", "1", "0"],
       },
     ],
   };
@@ -121,7 +121,11 @@ export class ValidateCommand extends CommandBase {
     const projectList: IProjectMetaState[] = [];
 
     if (context.projects.length === 0) {
-      context.log.warn("No projects found to validate. Use -i to specify a project folder.");
+      if (context.json) {
+        context.log.info(JSON.stringify({ projects: [], errors: 0, warnings: 0 }));
+      } else {
+        context.log.warn("No projects found to validate. Use -i to specify a project folder.");
+      }
       return;
     }
 
@@ -134,8 +138,14 @@ export class ValidateCommand extends CommandBase {
 
     // Aggregate reports if requested
     if (context.validation.aggregateReports) {
-      context.log.info(`Aggregating reports across ${projectList.length} projects.`);
+      if (!context.json) {
+        context.log.info(`Aggregating reports across ${projectList.length} projects.`);
+      }
       await this.saveAggregatedReports(context, projectList);
+    }
+
+    if (context.json) {
+      this.outputJson(context, projectList);
     }
 
     this.logComplete(context);
@@ -149,7 +159,9 @@ export class ValidateCommand extends CommandBase {
       const project = context.projects[i];
       const projectStart = this.getProjectStartInfo(project);
 
-      context.log.info(`Processing project ${i + 1}/${context.projectCount}: ${project.name}`);
+      if (!context.json) {
+        context.log.info(`Processing project ${i + 1}/${context.projectCount}: ${project.name}`);
+      }
 
       try {
         const taskArgs = this.buildTaskArgs(context, projectStart);
@@ -163,7 +175,9 @@ export class ValidateCommand extends CommandBase {
         if (result.success && result.result) {
           await this.processValidationResult(context, result.result, projectStart, projectList);
         } else if (!result.success) {
-          context.log.error(`Validation failed for ${project.name}: ${result.error}`);
+          if (!context.json) {
+            context.log.error(`Validation failed for ${project.name}: ${result.error}`);
+          }
           context.setExitCode(ErrorCodes.VALIDATION_INTERNALPROCESSINGERROR);
         }
 
@@ -174,7 +188,9 @@ export class ValidateCommand extends CommandBase {
       } catch (e: unknown) {
         const message = e instanceof Error ? e.message : String(e);
         const stack = e instanceof Error ? e.stack : undefined;
-        context.log.error(`Processing Error for ${project.name}: ${message}${stack ? "\n" + stack : ""}`);
+        if (!context.json) {
+          context.log.error(`Processing Error for ${project.name}: ${message}${stack ? "\n" + stack : ""}`);
+        }
         context.setExitCode(ErrorCodes.VALIDATION_INTERNALPROCESSINGERROR);
       }
     }
@@ -211,7 +227,9 @@ export class ValidateCommand extends CommandBase {
       if (result.success && result.result) {
         await this.processValidationResult(context, result.result, projectStart, projectList);
       } else if (!result.success) {
-        context.log.error(`Worker process error for ${projectStart.ctorProjectName}: ${result.error}`);
+        if (!context.json) {
+          context.log.error(`Worker process error for ${projectStart.ctorProjectName}: ${result.error}`);
+        }
         context.setExitCode(ErrorCodes.VALIDATION_INTERNALPROCESSINGERROR);
       }
     }
@@ -262,7 +280,9 @@ export class ValidateCommand extends CommandBase {
     projectList: IProjectMetaState[]
   ): Promise<void> {
     if (typeof result === "string") {
-      context.log.error(`${projectStart.ctorProjectName} error: ${result}`);
+      if (!context.json) {
+        context.log.error(`${projectStart.ctorProjectName} error: ${result}`);
+      }
       context.setExitCode(ErrorCodes.VALIDATION_INTERNALPROCESSINGERROR);
       return;
     }
@@ -280,32 +300,121 @@ export class ValidateCommand extends CommandBase {
 
       for (const item of infoSet.items) {
         if (item.iTp === InfoItemType.internalProcessingError) {
-          const errorMessage = "Internal Processing Error: " + ProjectInfoSet.getExtendedMessageFromData(infoSet, item);
-          if (context.validation.warnOnly) {
-            context.log.warn(errorMessage);
-          } else {
-            context.log.error(errorMessage);
+          if (!context.json) {
+            const errorMessage =
+              "Internal Processing Error: " + ProjectInfoSet.getExtendedMessageFromData(infoSet, item);
+            if (context.validation.warnOnly) {
+              context.log.warn(errorMessage);
+            } else {
+              context.log.error(errorMessage);
+            }
+          }
+          if (!context.validation.warnOnly) {
             context.setExitCode(ErrorCodes.VALIDATION_INTERNALPROCESSINGERROR);
           }
         } else if (item.iTp === InfoItemType.testCompleteFail) {
-          const failMessage = "Test Fail: " + ProjectInfoSet.getExtendedMessageFromData(infoSet, item);
-          if (context.validation.warnOnly) {
-            context.log.warn(failMessage);
-          } else {
-            context.log.error(failMessage);
+          if (!context.json) {
+            const failMessage = "Test Fail: " + ProjectInfoSet.getExtendedMessageFromData(infoSet, item);
+            if (context.validation.warnOnly) {
+              context.log.warn(failMessage);
+            } else {
+              context.log.error(failMessage);
+            }
+          }
+          if (!context.validation.warnOnly) {
             context.setExitCode(ErrorCodes.VALIDATION_TESTFAIL);
           }
         } else if (item.iTp === InfoItemType.error) {
-          const itemMessage = ProjectInfoSet.getExtendedMessageFromData(infoSet, item);
-          if (context.validation.warnOnly) {
-            context.log.warn(itemMessage);
-          } else {
-            context.log.error(itemMessage);
+          if (!context.json) {
+            const itemMessage = ProjectInfoSet.getExtendedMessageFromData(infoSet, item);
+            if (context.validation.warnOnly) {
+              context.log.warn(itemMessage);
+            } else {
+              context.log.error(itemMessage);
+            }
+          }
+          if (!context.validation.warnOnly) {
             context.setExitCode(ErrorCodes.VALIDATION_ERROR);
           }
         }
       }
     }
+  }
+
+  private static infoItemTypeToString(type: InfoItemType): string {
+    switch (type) {
+      case InfoItemType.error:
+        return "error";
+      case InfoItemType.warning:
+        return "warning";
+      case InfoItemType.info:
+        return "info";
+      case InfoItemType.recommendation:
+        return "recommendation";
+      case InfoItemType.internalProcessingError:
+        return "internalProcessingError";
+      case InfoItemType.testCompleteFail:
+        return "testFail";
+      case InfoItemType.testCompleteSuccess:
+        return "testPass";
+      case InfoItemType.featureAggregate:
+        return "featureAggregate";
+      default:
+        return "unknown";
+    }
+  }
+
+  /**
+   * Output structured JSON for all validation results.
+   */
+  private outputJson(context: ICommandContext, projectList: IProjectMetaState[]): void {
+    const projects = projectList.map((meta) => {
+      const infoSet = meta.infoSetData;
+      const items = (infoSet?.items ?? []).map((item) => ({
+        type: ValidateCommand.infoItemTypeToString(item.iTp),
+        message: ProjectInfoSet.getEffectiveMessageFromData(infoSet, item) ?? "",
+        data: item.d,
+        path: item.p ?? undefined,
+        generatorId: item.gId,
+      }));
+
+      return {
+        name: meta.projectName ?? meta.projectContainerName,
+        path: meta.projectPath ?? undefined,
+        items,
+      };
+    });
+
+    let totalErrors = 0;
+    let totalWarnings = 0;
+    let totalRecommendations = 0;
+
+    for (const meta of projectList) {
+      if (meta.infoSetData?.items) {
+        for (const item of meta.infoSetData.items) {
+          if (
+            item.iTp === InfoItemType.error ||
+            item.iTp === InfoItemType.testCompleteFail ||
+            item.iTp === InfoItemType.internalProcessingError
+          ) {
+            totalErrors++;
+          } else if (item.iTp === InfoItemType.warning) {
+            totalWarnings++;
+          } else if (item.iTp === InfoItemType.recommendation) {
+            totalRecommendations++;
+          }
+        }
+      }
+    }
+
+    context.log.info(
+      JSON.stringify({
+        projects,
+        errors: totalErrors,
+        warnings: totalWarnings,
+        recommendations: totalRecommendations,
+      })
+    );
   }
 
   /**

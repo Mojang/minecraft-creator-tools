@@ -81,6 +81,7 @@ async function executeViaRegistry(options: any): Promise<void> {
   const rawOptions = {
     inputFolder: options.inputFolder,
     outputFolder: options.outputFolder,
+    outputFile: options.outputFile,
     inputFile: options.inputFile,
     additionalFiles: options.additionalFiles,
     basePath: options.basePath,
@@ -120,11 +121,7 @@ async function executeViaRegistry(options: any): Promise<void> {
     // Validation options from captured args
     suite: capturedState.args.suite,
     exclusions: capturedState.args.exclusions,
-    aggregateReports:
-      capturedState.args.aggregateReports === "aggregate" ||
-      capturedState.args.aggregateReports === "aggregatenoindex" ||
-      capturedState.args.aggregateReports === "true" ||
-      capturedState.args.aggregateReports === "1",
+    aggregateReports: capturedState.args.aggregateReports,
     warnOnly: options.warnOnly,
     // Documentation options from command-specific options
     referenceFolder: capturedState.commandOptions.referenceFolder,
@@ -434,13 +431,16 @@ if (options.threads) {
 }
 
 if (options.dryRun) {
-  localEnv.displayInfo = true;
+  if (!options.quiet) {
+    localEnv.displayInfo = true;
+  }
 
   if (options.outputFolder === "out") {
     options.outputFolder = undefined;
   }
 } else if (options.outputFolder === "out") {
   if (
+    !options.quiet &&
     capturedTaskType !== TaskType.serve &&
     capturedTaskType !== TaskType.runDedicatedServer &&
     capturedTaskType !== TaskType.mcp &&
@@ -450,7 +450,9 @@ if (options.dryRun) {
     displayMctHeader(options.inputFolder || process.cwd(), options.outputFolder, isEditInPlace);
   }
 
-  localEnv.displayInfo = true;
+  if (!options.quiet) {
+    localEnv.displayInfo = true;
+  }
 }
 
 if (options.verbose) {

@@ -54,7 +54,10 @@ export class InfoCommand extends CommandBase {
       await pis.generateForProject();
 
       const errorCount = pis.items.filter(
-        (item) => item.itemType !== InfoItemType.testCompleteFail && item.itemType !== InfoItemType.testCompleteSuccess
+        (item) =>
+          item.itemType === InfoItemType.error ||
+          item.itemType === InfoItemType.warning ||
+          item.itemType === InfoItemType.internalProcessingError
       ).length;
 
       if (errorCount > 0) {

@@ -43,6 +43,8 @@ const webExtensionConfig = {
     new MiniCssExtractPlugin({ filename: "web.css" }),
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify("development"), // Ensure React runs in development mode
+      ENABLE_ANALYTICS: JSON.stringify(false),
+      BUILD_TARGET: JSON.stringify("cli-web"),
     }),
   ],
   module: {

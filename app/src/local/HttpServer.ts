@@ -161,6 +161,7 @@ import HttpStorage from "../storage/HttpStorage";
 import IStorage from "../storage/IStorage";
 import IFolder from "../storage/IFolder";
 import ISslConfig from "./ISslConfig";
+import LocalUtilities from "./LocalUtilities";
 import { IStorageChangeEvent } from "../storage/IStorageWatcher";
 import {
   initializeToolCommands,
@@ -213,6 +214,8 @@ export default class HttpServer {
   private _dataStorage: NodeStorage;
   private _distStorage: NodeStorage;
   private _schemasStorage: NodeStorage;
+  private _formsStorage: NodeStorage | undefined;
+  private _esbuildWasmStorage: NodeStorage | undefined;
 
   private _serverManager: ServerManager;
   private _localEnvironment: LocalEnvironment;
@@ -404,13 +407,44 @@ export default class HttpServer {
     "log",
   ]);
 
+  /** Whether local res/ storage includes the vanilla serve folder with PNG textures */
+  private _hasLocalVanillaServe: boolean;
+
   constructor(localEnv: LocalEnvironment, serverManager: ServerManager) {
     this._serverManager = serverManager;
     this._webStorage = new NodeStorage(this.getRootPath() + "web/", "");
     this._resStorage = new NodeStorage(this.getResRootPath(), "");
     this._dataStorage = serverManager.dataStorage;
     this._distStorage = new NodeStorage(this.getRootPath() + "dist/", "");
-    this._schemasStorage = new NodeStorage(this.getRootPath() + "schemas/", "");
+
+    // Serve schemas and forms from @minecraft/bedrock-schemas package at runtime
+    // instead of shipping copies in the build output.
+    const bsRoot = LocalUtilities.bedrockSchemasRoot;
+    if (bsRoot) {
+      this._schemasStorage = new NodeStorage(bsRoot + "/schemas/", "");
+      this._formsStorage = new NodeStorage(bsRoot + "/forms/", "");
+    } else {
+      this._schemasStorage = new NodeStorage(this.getRootPath() + "schemas/", "");
+    }
+
+    // Serve esbuild-wasm from its npm package at runtime instead of shipping
+    // a copy in the build output (~13 MB savings). esbuild-wasm is a declared
+    // dependency of the jsn package so it's always available.
+    try {
+      const esbuildWasmDir = require.resolve("esbuild-wasm/esbuild.wasm").replace(/[\\/]esbuild\.wasm$/, "/");
+      this._esbuildWasmStorage = new NodeStorage(esbuildWasmDir, "");
+    } catch {
+      // esbuild-wasm not installed — fall back to dist/
+    }
+
+    // Check at init time if we have local vanilla serve textures.
+    // When running from the app/ folder, public/res/ has a serve/ directory with
+    // PNG-converted textures. The remote CDN (mctools.dev) may be missing some.
+    const fs = require("fs");
+    const resRoot = this.getResRootPath();
+    this._hasLocalVanillaServe = fs.existsSync(
+      resRoot + "latest/van/serve/resource_pack/textures/terrain_texture.json"
+    );
 
     this._localEnvironment = localEnv;
 
@@ -436,7 +470,13 @@ export default class HttpServer {
     // Initialize HTTP server (unless experimental SSL-only mode is enabled)
     if (!this._sslConfig?.httpsOnly) {
       this._httpServer = http.createServer(requestListener);
-      this._httpServer.listen(this.port, this.host, () => {
+
+      // Bind to 127.0.0.1 when host is "localhost" to ensure IPv4 connectivity.
+      // Node.js resolves "localhost" via the OS, which may return only ::1 (IPv6),
+      // causing ECONNREFUSED for IPv4-only clients.
+      const listenHost = this.host === "localhost" ? "127.0.0.1" : this.host;
+
+      this._httpServer.listen(this.port, listenHost, () => {
         // Server started - mark as listening to unblock waiters
         this._markAsListening();
       });
@@ -460,7 +500,8 @@ export default class HttpServer {
       const httpsPort = this._sslConfig.port ?? 443;
 
       this._httpsServer = https.createServer(httpsOptions, requestListener);
-      this._httpsServer.listen(httpsPort, this.host, () => {
+      const httpsListenHost = this.host === "localhost" ? "127.0.0.1" : this.host;
+      this._httpsServer.listen(httpsPort, httpsListenHost, () => {
         Log.message(`(EXPERIMENTAL) Minecraft HTTPS server is running on https://${this.host}:${httpsPort}`);
         this._markAsListening();
       });
@@ -1240,9 +1281,9 @@ export default class HttpServer {
       "X-Frame-Options": "DENY", // Prevent clickjacking
       "X-XSS-Protection": "1; mode=block", // Legacy XSS protection for older browsers
       "Referrer-Policy": "strict-origin-when-cross-origin", // Control referrer information
-      // CSP aligned with index.html - allows Monaco workers, WASM, telemetry, and GitHub raw content
+      // CSP for CLI-served web — no telemetry endpoints allowed (telemetry is only for mctools.dev)
       "Content-Security-Policy":
-        "default-src 'self'; manifest-src 'self'; worker-src 'self' blob:; script-src 'self' https://wcpstatic.microsoft.com/ https://js.monitor.azure.com/ 'wasm-unsafe-eval' 'unsafe-inline'; connect-src 'self' https://browser.events.data.microsoft.com/ https://js.monitor.azure.com/ https://raw.githubusercontent.com/ https://registry.npmjs.org/ https://mctools.dev wss:; form-action https://browser.events.data.microsoft.com/; font-src 'self' https://res-1.cdn.office.net https://res.cdn.office.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; frame-ancestors 'none';",
+        "default-src 'self'; manifest-src 'self'; worker-src 'self' blob:; script-src 'self' 'wasm-unsafe-eval' 'unsafe-inline'; connect-src 'self' https://raw.githubusercontent.com/ https://registry.npmjs.org/ https://mctools.dev wss:; font-src 'self' https://res-1.cdn.office.net https://res.cdn.office.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; frame-ancestors 'none';",
     };
   }
 
@@ -1450,32 +1491,38 @@ export default class HttpServer {
   /**
    * Get the path to the res/ folder, checking both the default location
    * and the public/ folder for development environments.
+   *
+   * The serve vanilla folder (with PNG-converted textures) is often only
+   * available under public/res/ — not under toolbuild/jsn/res/. This method
+   * checks multiple candidate paths to find the one that actually contains
+   * vanilla resource data.
    */
   getResRootPath(): string {
     const defaultResPath = this.getRootPath() + "res/";
-    /*
-    This is debug logic that might be useful later, but is disabled for now.
-    const publicResPath = this.getRootPath() + "public/res/";
-
-    // Check if the release vanilla resources exist in either location
     const fs = require("fs");
-    const releaseCheck = "latest/van/release/resource_pack/textures/terrain_texture.json";
+    const serveCheck = "latest/van/serve/resource_pack/textures/terrain_texture.json";
 
-    if (fs.existsSync(defaultResPath + releaseCheck)) {
+    if (fs.existsSync(defaultResPath + serveCheck)) {
       return defaultResPath;
     }
 
-    if (fs.existsSync(publicResPath + releaseCheck)) {
+    const publicResPath = this.getRootPath() + "public/res/";
+    if (fs.existsSync(publicResPath + serveCheck)) {
       return publicResPath;
     }
 
-    // Also check one level up (for toolbuild/jsn/cli running from app/)
+    // Check one level up (for toolbuild/jsn/cli running from app/)
     const parentResPath = this.getRootPath().replace(/[\\/]toolbuild[\\/]jsn[\\/]?$/, "/") + "public/res/";
-    if (fs.existsSync(parentResPath + releaseCheck)) {
+    if (fs.existsSync(parentResPath + serveCheck)) {
       return parentResPath;
-    }*/
+    }
 
-    // Fall back to default
+    // Check cwd-based path (for npm run scripts running from app/)
+    const cwdResPath = process.cwd().replace(/[\\/]$/, "") + "/public/res/";
+    if (fs.existsSync(cwdResPath + serveCheck)) {
+      return cwdResPath;
+    }
+
     return defaultResPath;
   }
 
@@ -1602,114 +1649,120 @@ export default class HttpServer {
           passcode = req.headers["mctpc"] as string;
         }
 
-        if (passcode) {
-          let sessionId: string | undefined;
+        if (!passcode) {
+          this.sendErrorRequest(
+            401,
+            "No passcode provided. Send passcode in body as 'passcode=<value>' or in the 'mctpc' header.",
+            req,
+            res
+          );
+          return;
+        }
 
-          if (passcode === this._localEnvironment.displayReadOnlyPasscode) {
-            authorizedPermissionLevel = ServerPermissionLevel.displayReadOnly;
-            sessionId = this._localEnvironment.displayReadOnlySessionId;
-          } else if (passcode === this._localEnvironment.fullReadOnlyPasscode) {
-            authorizedPermissionLevel = ServerPermissionLevel.fullReadOnly;
-            sessionId = this._localEnvironment.fullReadOnlySessionId;
-          } else if (passcode === this._localEnvironment.updateStatePasscode) {
-            authorizedPermissionLevel = ServerPermissionLevel.updateState;
-            sessionId = this._localEnvironment.updateStateSessionId;
-          } else if (passcode === this._localEnvironment.adminPasscode) {
-            authorizedPermissionLevel = ServerPermissionLevel.admin;
-            sessionId = this._localEnvironment.adminSessionId;
-          }
+        let sessionId: string | undefined;
 
-          if (!authorizedPermissionLevel || !sessionId) {
-            this.sendErrorRequest(401, "Login request failed.", req, res);
-            return;
-          }
+        if (passcode === this._localEnvironment.displayReadOnlyPasscode) {
+          authorizedPermissionLevel = ServerPermissionLevel.displayReadOnly;
+          sessionId = this._localEnvironment.displayReadOnlySessionId;
+        } else if (passcode === this._localEnvironment.fullReadOnlyPasscode) {
+          authorizedPermissionLevel = ServerPermissionLevel.fullReadOnly;
+          sessionId = this._localEnvironment.fullReadOnlySessionId;
+        } else if (passcode === this._localEnvironment.updateStatePasscode) {
+          authorizedPermissionLevel = ServerPermissionLevel.updateState;
+          sessionId = this._localEnvironment.updateStateSessionId;
+        } else if (passcode === this._localEnvironment.adminPasscode) {
+          authorizedPermissionLevel = ServerPermissionLevel.admin;
+          sessionId = this._localEnvironment.adminSessionId;
+        }
 
-          // Security: Reset rate limit on successful auth
-          SecurityUtilities.resetAuthRateLimit(clientIp);
+        if (!authorizedPermissionLevel || !sessionId) {
+          this.sendErrorRequest(401, "Login request failed.", req, res);
+          return;
+        }
 
-          // Security: Add fingerprint binding
-          const userAgent = req.headers["user-agent"] || "";
-          const fingerprint = this.generateFingerprint(userAgent, clientIp);
+        // Security: Reset rate limit on successful auth
+        SecurityUtilities.resetAuthRateLimit(clientIp);
 
-          const token: IAuthenticationToken = {
-            code: sessionId,
-            permissionLevel: authorizedPermissionLevel,
-            time: new Date().getTime(),
-            fingerprint: fingerprint,
-          };
+        // Security: Add fingerprint binding
+        const userAgent = req.headers["user-agent"] || "";
+        const fingerprint = this.generateFingerprint(userAgent, clientIp);
 
-          const val = this.encrypt(JSON.stringify(token));
+        const token: IAuthenticationToken = {
+          code: sessionId,
+          permissionLevel: authorizedPermissionLevel,
+          time: new Date().getTime(),
+          fingerprint: fingerprint,
+        };
 
-          const response: CartoServerAuthenticationResponse = {
-            iv: val.iv,
-            token: val.content,
-            authTag: val.authTag, // Include auth tag for GCM
-            permissionLevel: authorizedPermissionLevel,
-            serverStatus: [],
-            eulaAccepted:
-              this._localEnvironment
-                .iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula === true,
-          };
+        const val = this.encrypt(JSON.stringify(token));
 
-          // Include status for slots 0-3 (for backwards compatibility) plus all active slots
-          const activeSlots = this._serverManager.getActiveSlots();
-          const slotsToInclude = new Set([0, 1, 2, 3, ...activeSlots]);
-          const sortedSlots = Array.from(slotsToInclude).sort((a, b) => a - b);
+        const response: CartoServerAuthenticationResponse = {
+          iv: val.iv,
+          token: val.content,
+          authTag: val.authTag, // Include auth tag for GCM
+          permissionLevel: authorizedPermissionLevel,
+          serverStatus: [],
+          eulaAccepted:
+            this._localEnvironment
+              .iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula === true,
+        };
 
-          for (const slot of sortedSlots) {
-            response.serverStatus[slot] = this.getStatus(slot);
-          }
+        // Include status for slots 0-3 (for backwards compatibility) plus all active slots
+        const activeSlots = this._serverManager.getActiveSlots();
+        const slotsToInclude = new Set([0, 1, 2, 3, ...activeSlots]);
+        const sortedSlots = Array.from(slotsToInclude).sort((a, b) => a - b);
 
-          // Build secure cookie with appropriate flags for all auth methods
-          // - HttpOnly: Prevents JavaScript access (XSS protection)
-          // - SameSite=Strict: Prevents CSRF attacks
-          // - Secure: Only sent over HTTPS (omitted for localhost development)
-          // - Max-Age: 24 hours (matches token expiry)
-          const isLocalhost = this.host === "localhost" || this.host === "127.0.0.1";
-          const cookieValue = `mctauth=${val.content}|${val.iv}|${
-            val.authTag
-          }; HttpOnly; SameSite=Strict; Max-Age=86400; Path=/${isLocalhost ? "" : "; Secure"}`;
+        for (const slot of sortedSlots) {
+          response.serverStatus[slot] = this.getStatus(slot);
+        }
 
-          if (req.url && req.url.startsWith("/api/auth")) {
-            const permName = HttpUtilities.getPermissionLevelName(authorizedPermissionLevel);
-            const tokenThumb = HttpUtilities.getTokenThumbprint(sessionId);
-            Log.message(
-              HttpUtilities.getShortReqDescription(req, clientIp, tokenThumb) + `Auth successful: ${permName}`
-            );
-            res.writeHead(
-              200,
-              Object.assign(
-                {
-                  "Set-Cookie": cookieValue,
-                  "Content-Type": `application/json`,
-                },
-                corsHeaders
-              )
-            );
+        // Build secure cookie with appropriate flags for all auth methods
+        // - HttpOnly: Prevents JavaScript access (XSS protection)
+        // - SameSite=Strict: Prevents CSRF attacks
+        // - Secure: Only sent over HTTPS (omitted for localhost development)
+        // - Max-Age: 24 hours (matches token expiry)
+        const isLocalhost = this.host === "localhost" || this.host === "127.0.0.1";
+        const cookieValue = `mctauth=${val.content}|${val.iv}|${
+          val.authTag
+        }; HttpOnly; SameSite=Strict; Max-Age=86400; Path=/${isLocalhost ? "" : "; Secure"}`;
 
-            res.end(JSON.stringify(response));
-            return;
-          } else {
-            const permName = HttpUtilities.getPermissionLevelName(authorizedPermissionLevel);
-            const tokenThumb = HttpUtilities.getTokenThumbprint(sessionId);
-            Log.message(
-              HttpUtilities.getShortReqDescription(req, clientIp, tokenThumb) + `Page auth successful: ${permName}`
-            );
+        if (req.url && req.url.startsWith("/api/auth")) {
+          const permName = HttpUtilities.getPermissionLevelName(authorizedPermissionLevel);
+          const tokenThumb = HttpUtilities.getTokenThumbprint(sessionId);
+          Log.message(HttpUtilities.getShortReqDescription(req, clientIp, tokenThumb) + `Auth successful: ${permName}`);
+          res.writeHead(
+            200,
+            Object.assign(
+              {
+                "Set-Cookie": cookieValue,
+                "Content-Type": `application/json`,
+              },
+              corsHeaders
+            )
+          );
 
-            res.writeHead(
-              200,
-              Object.assign(
-                {
-                  "Set-Cookie": cookieValue,
-                  "Content-Type": "text/html",
-                },
-                corsHeaders
-              )
-            );
+          res.end(JSON.stringify(response));
+          return;
+        } else {
+          const permName = HttpUtilities.getPermissionLevelName(authorizedPermissionLevel);
+          const tokenThumb = HttpUtilities.getTokenThumbprint(sessionId);
+          Log.message(
+            HttpUtilities.getShortReqDescription(req, clientIp, tokenThumb) + `Page auth successful: ${permName}`
+          );
 
-            res.end(JSON.stringify("<head><meta http-equiv='Refresh' content='0; URL=/'></head>"));
-            return;
-          }
+          res.writeHead(
+            200,
+            Object.assign(
+              {
+                "Set-Cookie": cookieValue,
+                "Content-Type": "text/html",
+              },
+              corsHeaders
+            )
+          );
+
+          res.end(JSON.stringify("<head><meta http-equiv='Refresh' content='0; URL=/'></head>"));
+          return;
         }
       });
 
@@ -1738,17 +1791,21 @@ export default class HttpServer {
       }
 
       if (req.url.startsWith("/res/")) {
-        // For vanilla resources under /res/latest/van/, proxy from vanillaContentRoot (e.g., mctools.dev)
+        // For vanilla resources under /res/latest/van/, prefer local storage when
+        // the serve folder is available locally (has PNG-converted textures).
+        // Fall back to proxying from vanillaContentRoot (e.g., mctools.dev) otherwise.
         if (this.isVanillaResourcePath(req.url)) {
+          if (this._hasLocalVanillaServe) {
+            // Local serve folder available — serve directly from _resStorage
+            this.serveContent("res", req.url, this._resStorage, res);
+            return;
+          }
+
           const vanillaRoot = CreatorToolsHost.getVanillaContentRoot();
           if (vanillaRoot && vanillaRoot.length > 0 && vanillaRoot !== "/") {
-            // TEMPORARY WORKAROUND: mctools.dev's /res/latest/van/index.json doesn't list /serve/ folder
-            // So we use HttpStorage rooted at /res/latest/van/serve/ directly
             const servePrefix = "/res/latest/van/serve/";
             if (req.url.startsWith(servePrefix)) {
               const vanillaServeStorage = HttpStorage.get(vanillaRoot + "res/latest/van/serve/");
-              // serveContent strips baseSegment.length+1 chars, so pass the full req.url
-              // and use "res/latest/van/serve" (without leading /) as baseSegment
               this.serveContent("res/latest/van/serve", req.url, vanillaServeStorage, res);
               return;
             }
@@ -1767,9 +1824,19 @@ export default class HttpServer {
       }
 
       if (req.url.startsWith("/dist/")) {
+        if (req.url.startsWith("/dist/esbuild-wasm/") && this._esbuildWasmStorage) {
+          this.serveContent("dist/esbuild-wasm", req.url, this._esbuildWasmStorage, res);
+          return;
+        }
+
         this.serveContent("dist", req.url, this._distStorage, res);
         return;
       }
+    }
+
+    if (req.url.startsWith("/data/forms/") && this._formsStorage) {
+      this.serveContent("data/forms", req.url, this._formsStorage, res);
+      return;
     }
 
     if (req.url.startsWith("/data/")) {

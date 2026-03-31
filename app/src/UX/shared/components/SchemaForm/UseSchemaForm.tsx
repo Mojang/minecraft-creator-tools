@@ -6,7 +6,6 @@ import {
   Context,
   Definition,
   pickBestOneOf,
-  DynamicObject,
   expandContext,
   FullDefinition,
   getFullKey,
@@ -24,6 +23,7 @@ import {
 import { Renderer } from "./renderers/MaterialRenderer";
 import { getUIDefinition, UIDefinition, UISchema } from "./UISchema";
 import OneOfModal from "./OneOfModal";
+import DynamicObject from "./DynamicObject";
 
 type InputType = "text" | "number" | "object" | "array" | "boolean" | "enum";
 
@@ -67,9 +67,10 @@ export default function useSchemaForm(
   // backing field for output
   // allows us to build up changes without triggering re-renders on every change
   // and batch transforms before applying updates to output
-  const value = useRef<DynamicObject>(initialStateRef.current || (schema ? buildObjectFromSchema(schema) : {}));
+  const value = useRef<DynamicObject>(initialStateRef.current || {});
   // output is the object we're building with user input
-  const [output, setOutput] = useState(value.current);
+  const [output, setOutput] = useState<DynamicObject>(value.current);
+  const [error, setError] = useState<Error | null>(null);
 
   const [isReady, setIsReady] = useState<boolean>(!!schema);
   //used to save choices made. e.g. when the user selects a OneOf options
@@ -94,9 +95,14 @@ export default function useSchemaForm(
   // I wouldn't neccessarily recommend swapping out the schema mid-stream in most other cases
   useEffect(() => {
     if (!!schema) {
-      value.current = buildObjectFromSchema(schema, initialStateRef.current);
-      setOutput(value.current);
-      setIsReady(true);
+      try {
+        value.current = { root: buildObjectFromSchema(schema, initialStateRef.current) };
+        setOutput(value.current);
+      } catch (error) {
+        setError(new Error("Error building form from schema", { cause: error as Error }));
+      } finally {
+        setIsReady(true);
+      }
     }
   }, [schema, initialStateRef]);
 
@@ -175,7 +181,8 @@ export default function useSchemaForm(
         hidden: uiDef?.hideFromUI,
         min: definition.minimum,
         max: definition.maximum,
-        default: getValueByHierarchy(value.current, context.hierarchy) ?? definition.default ?? definition.minimum,
+        value: getValueByHierarchy(value.current, context.hierarchy),
+        default: uiDef?.default ?? definition.default ?? definition.minimum,
       };
       const validationCallback = (val: string, key: string) => {
         handleValidation(val, key, definition, uiDef);
@@ -195,7 +202,7 @@ export default function useSchemaForm(
 
       const parentRef = (getValueByHierarchy(value.current, context.hierarchy) ?? {}) as DynamicObject;
       const boolValue = parentRef?.[key];
-      const element = { key, title, default: definition.default };
+      const element = { key, title, default: uiDef?.default ?? definition.default };
 
       return renderer.renderCheckBox({
         element,
@@ -440,15 +447,15 @@ export default function useSchemaForm(
   const generateSchema = useCallback(
     (schema: JsonSchema): JSX.Element => {
       const required = arrayToLookup<string>(schema.required || []);
-      const properties = Object.entries(schema.properties || []);
-      const definitions: KeyedDefinition[] = Object.entries(schema.definitions || schema.$defs || []);
+      const references: KeyedDefinition[] = Object.entries(schema.definitions || schema.$defs || []);
       const title = schema.title || "UNNAMED_OBJECT";
       documentTitle.current = title;
 
-      const context: Context = {
+      const properties: Property[] = [["root", schema]];
+      let context: Context = {
         hierarchy: [],
         required,
-        references: definitions,
+        references,
       };
 
       if (!isReady) {
@@ -498,6 +505,9 @@ export default function useSchemaForm(
   }, [oneOfOptions]);
 
   const render = useCallback(() => {
+    if (error) {
+      return renderer.renderError(error);
+    }
     if (!schema) return <></>;
 
     return (
@@ -506,8 +516,9 @@ export default function useSchemaForm(
         {generateSchema(schema)}
       </>
     );
-  }, [schema, renderModal, generateSchema]);
+  }, [schema, renderModal, generateSchema, error, renderer]);
 
+  // final output
   return [output, render] as const;
 }
 

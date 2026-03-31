@@ -77,18 +77,18 @@ export default class PropertyFile extends FileBase implements IFile {
   }
 
   async deleteFile(): Promise<boolean> {
-    throw new Error("HttpFile is read-only.");
+    throw new Error("PropertyFile is read-only.");
   }
 
   async moveTo(newStorageRelativePath: string): Promise<boolean> {
-    throw new Error("HttpFile is read-only.");
+    throw new Error("PropertyFile is read-only.");
   }
 
   setContent(newContent: string | Uint8Array | null): boolean {
-    throw new Error("HttpFile is read-only.");
+    throw new Error("PropertyFile is read-only.");
   }
 
   async saveContent(): Promise<Date> {
-    throw new Error("HttpFile is read-only.");
+    throw new Error("PropertyFile is read-only.");
   }
 }

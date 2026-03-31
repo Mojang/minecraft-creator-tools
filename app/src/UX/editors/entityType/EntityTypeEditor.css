@@ -91,6 +91,16 @@
   flex-direction: column;
 }
 
+/* Override viewport-based inline min/max height on child editors so they fill
+   the remaining flex space rather than overflowing the container when the
+   header chip is taller than the hardcoded height offset. */
+.ete-componentEditorInteriorFull > .etre-area {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  max-height: none !important;
+  height: 100%;
+}
+
 .ete-select {
   padding: 8px;
 }

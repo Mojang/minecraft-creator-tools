@@ -19,9 +19,11 @@ export const DevDependenciesDefault: Record<string, string> = {
 export const ScriptsDefault: Record<string, string> = {
   lint: "just-scripts lint",
   build: "just-scripts build",
+  "build:production": "just-scripts build --production",
   clean: "just-scripts clean",
   "local-deploy": "just-scripts local-deploy",
   mcaddon: "just-scripts mcaddon",
+  "mcaddon:production": "just-scripts mcaddon --production",
   enablemcloopback:
     "CheckNetIsolation.exe LoopbackExempt -a -p=S-1-15-2-1958404141-86561845-1752920682-3514627264-368642714-62675701-733520436",
   enablemcpreviewloopback:

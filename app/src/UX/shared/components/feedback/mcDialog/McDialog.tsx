@@ -140,7 +140,13 @@ export default function McDialog({
       aria-describedby={ariaDescribedBy}
       slotProps={{
         backdrop: {
-          sx: { backgroundColor: "rgba(0, 0, 0, 0.85)" },
+          sx: {
+            backgroundColor: "rgba(0, 0, 0, 0.85)",
+            "@media (forced-colors: active)": {
+              backgroundColor: "Canvas",
+              border: "1px solid CanvasText",
+            },
+          },
         },
       }}
       PaperProps={{

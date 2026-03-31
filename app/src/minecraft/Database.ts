@@ -1517,7 +1517,6 @@ export default class Database {
       return Database.officialSchemaContents[path];
     }
 
-    // Use schemas/ directly instead of res/latest/schemas/
     const schemaPath = "/schemas/" + path;
 
     try {

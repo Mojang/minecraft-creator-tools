@@ -994,13 +994,23 @@ export default class ProjectUtilities {
    */
   private static async _renameOrCopyFolder(folder: IFolder, newName: string, label: string) {
     try {
-      const renamed = await folder.rename(newName);
+      // First attempt: direct rename. This is fast but can fail on systems with
+      // file locks (OneDrive, antivirus, indexers) throwing EPERM/EACCES.
+      let renamed = false;
+      try {
+        renamed = await folder.rename(newName);
+      } catch (renameErr: any) {
+        // Rename threw (e.g., EPERM). In-memory state is still clean because
+        // NodeFolder.moveTo() performs the disk op before updating state.
+        // Fall through to copy+delete below.
+        Log.debug("Rename threw for " + label + " folder (" + renameErr.message + "); falling back to copy + delete.");
+      }
 
       if (renamed) {
         return; // rename succeeded on disk and in-memory
       }
 
-      // Disk rename failed (e.g., OneDrive lock). Fall back to copy + delete.
+      // Disk rename failed or threw. Fall back to copy + delete.
       Log.debug("Disk rename failed for " + label + " folder; falling back to copy + delete.");
 
       const parentFolder = folder.parentFolder;

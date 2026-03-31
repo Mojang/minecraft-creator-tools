@@ -88,4 +88,61 @@ export class ProjectDefinitionUtilities {
 
     return undefined;
   }
+
+  /**
+   * Returns both the texture path and the overlay_color (if present) from terrain_texture.json.
+   * Blocks like grass use overlay_color to tint the grayscale side texture with a biome color.
+   */
+  static getVanillaBlockTextureWithOverlay(
+    blockType: BlockType,
+    side: string,
+    useCarried: boolean = true
+  ): { path: string; overlayColor?: string } | undefined {
+    if (!Database.blocksCatalog || !Database.terrainTextureCatalog || !Database.vanillaCatalog) {
+      return undefined;
+    }
+
+    const blockDef = blockType.catalogResource;
+    if (!blockDef) return undefined;
+
+    let textureSource: any;
+    if (useCarried && (blockDef as any).carried_textures) {
+      textureSource = (blockDef as any).carried_textures;
+    } else {
+      textureSource = blockDef.textures;
+    }
+
+    if (!textureSource) return undefined;
+
+    let textureOrId = textureSource;
+    if (typeof textureOrId === "object") {
+      textureOrId = (textureOrId as any)[side];
+    }
+
+    if (!textureOrId || typeof textureOrId !== "string") return undefined;
+
+    const texture = Database.terrainTextureCatalog.getTerrainTextureDefinition(textureOrId);
+    if (!texture || !texture.textures) return undefined;
+
+    if (typeof texture.textures === "string") {
+      return { path: texture.textures };
+    }
+
+    if (Array.isArray(texture.textures) && texture.textures.length > 0) {
+      const tex = texture.textures[0];
+      if (typeof tex === "string") return { path: tex };
+      if (tex && typeof tex === "object" && tex.path) {
+        return { path: tex.path, overlayColor: tex.overlay_color };
+      }
+    }
+
+    if (typeof texture.textures === "object" && !Array.isArray(texture.textures)) {
+      const texObj = texture.textures as any;
+      if (texObj.path) {
+        return { path: texObj.path, overlayColor: texObj.overlay_color };
+      }
+    }
+
+    return undefined;
+  }
 }

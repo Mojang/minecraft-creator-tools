@@ -527,13 +527,28 @@ export default class ProjectCreateManager {
       sourceBpFolder = await Database.getReleaseVanillaBehaviorPackFolder();
       sourceRpFolder = await Database.getReleaseVanillaResourcePackFolder();
     } else {
+      // Map GitHub repo names to local folder names. When samples are downloaded
+      // during preparedevenv, the zip's root folder is renamed via the
+      // "replaceFirstFolderWith" field in reslist/*.resources.json. The local
+      // folder name doesn't match the "{repoName}-{branch}" pattern that GitHub
+      // uses, so we need an explicit mapping here.
+      const repoFolderMap: Record<string, string> = {
+        "minecraft-samples": "samples",
+        "minecraft-gametests": "gametests",
+        "minecraft-scripting-samples": "script-samples",
+      };
+
+      const repoFolder =
+        repoFolderMap[galleryProject.gitHubRepoName] ||
+        galleryProject.gitHubRepoName +
+          "-" +
+          (galleryProject.gitHubBranch ? galleryProject.gitHubBranch : "main");
+
       const url =
         Utilities.ensureEndsWithSlash(CreatorToolsHost.getVanillaContentRoot()) +
         "res/samples/" +
         Utilities.ensureEndsWithSlash(galleryProject.gitHubOwner) +
-        galleryProject.gitHubRepoName +
-        "-" +
-        Utilities.ensureEndsWithSlash(galleryProject.gitHubBranch ? galleryProject.gitHubBranch : "main") +
+        Utilities.ensureEndsWithSlash(repoFolder) +
         (galleryProject.gitHubFolder ? Utilities.ensureNotStartsWithSlash(galleryProject.gitHubFolder) : "");
 
       const gh = HttpStorage.get(url); //new GitHubStorage(carto.anonGitHub, gitHubRepoName, gitHubOwner, gitHubBranch, gitHubFolder);

@@ -30,7 +30,12 @@ import IAppProps from "../appShell/IAppProps";
 import Project from "../../app/Project";
 import "./ContentWizard.css";
 import { Select, MenuItem, TextField, Slider } from "@mui/material";
-import { IMinecraftContentDefinition, EntityTraitId, BlockTraitId, ItemTraitId } from "../../minecraft/IContentMetaSchema";
+import {
+  IMinecraftContentDefinition,
+  EntityTraitId,
+  BlockTraitId,
+  ItemTraitId,
+} from "../../minecraft/IContentMetaSchema";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCow,
@@ -46,6 +51,7 @@ import {
   faFile,
   faEgg,
   faBone,
+  faShop,
 } from "@fortawesome/free-solid-svg-icons";
 import IGalleryItem, { GalleryItemType } from "../../app/IGalleryItem";
 import { ProjectItemType } from "../../app/IProjectItemData";
@@ -56,6 +62,7 @@ import EntityTraitPicker from "../editors/entityType/EntityTraitPicker";
 import { BLOCK_TRAITS, ITEM_TRAITS, getTraitIconColor } from "../types/TraitData";
 import IProjectTheme from "../types/IProjectTheme";
 import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../app/CreatorToolsHost";
+import ContentWizardButton from "../components/contentWizard/ContentWizardButton";
 
 // ============================================================================
 // WIZARD TYPE ENUM
@@ -84,6 +91,7 @@ export enum ContentWizardAction {
   newSpawnRule = 6,
   newLootTable = 7,
   newStructure = 8,
+  newTradeTable = 9,
   galleryItem = 10, // A specific gallery item was selected
 }
 
@@ -361,6 +369,9 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
     const lootTableItem = spawnLootRecipes.find(
       (item) => item.targetType === ProjectItemType.lootTableBehavior || item.id === "loot_table"
     );
+    const tradeTableItem = spawnLootRecipes.find(
+      (item) => item.targetType === ProjectItemType.tradingBehaviorJson || item.id === "trade_table"
+    );
     const worldGen = getGalleryItems(GalleryItemType.worldGen);
     const featureRuleItem =
       worldGen.find((item) => item.targetType === ProjectItemType.featureRuleBehavior || item.id === "feature_rule") ||
@@ -545,6 +556,18 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                   </div>
                 </div>
               )}
+
+              <ContentWizardButton
+                onNewItem={() => this._handleQuickAction(ContentWizardAction.newTradeTable)}
+                onExistingItem={this._handleGalleryItemClick}
+                item={tradeTableItem}
+              >
+                <FontAwesomeIcon icon={faShop} className="cwiz-main-icon" />
+                <div className="cwiz-main-content">
+                  <div className="cwiz-main-label">Trade Table</div>
+                  <div className="cwiz-main-desc">Define what items can be traded with villagers</div>
+                </div>
+              </ContentWizardButton>
             </div>
           </div>
 

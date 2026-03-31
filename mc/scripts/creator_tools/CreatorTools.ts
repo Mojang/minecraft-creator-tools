@@ -444,7 +444,9 @@ export class CreatorTools {
       }
 
       system.run(() => {
-        ActionExecutive.run(originLoc, originDim, actionGroup);
+        if (originLoc && originDim) {
+          ActionExecutive.run(originLoc, originDim, actionGroup);
+        }
       });
 
       return {

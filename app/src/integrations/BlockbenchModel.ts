@@ -411,34 +411,63 @@ export default class BlockbenchModel {
     }
 
     for (const outlineItem of outlineItems) {
-      if (outlineItem && typeof outlineItem === "string" && parent) {
+      if (outlineItem && typeof outlineItem === "string") {
         const elt = cubesById[outlineItem];
 
         if (elt) {
-          if (!parent.cubes) {
-            parent.cubes = [];
-          }
+          if (parent) {
+            if (!parent.cubes) {
+              parent.cubes = [];
+            }
 
-          if (
-            elt.pivot &&
-            parent.pivot &&
-            elt.pivot[0] === parent.pivot[0] &&
-            elt.pivot[1] === parent.pivot[1] &&
-            elt.pivot[2] === parent.pivot[2]
-          ) {
+            if (
+              elt.pivot &&
+              parent.pivot &&
+              elt.pivot[0] === parent.pivot[0] &&
+              elt.pivot[1] === parent.pivot[1] &&
+              elt.pivot[2] === parent.pivot[2]
+            ) {
+              elt.pivot = undefined;
+            }
+
+            parent.cubes.push(elt);
+          } else {
+            // Top-level cube not inside any group — create a bone for it,
+            // since Minecraft geometry requires every cube to belong to a bone.
+            const cubeName = (elt as any).name || "bone" + context!.addIndex.toString();
+            let boneName = cubeName;
+
+            // Ensure unique bone name
+            if (bonesByName[boneName]) {
+              let suffix = 1;
+              while (bonesByName[boneName + suffix]) {
+                suffix++;
+              }
+              boneName = boneName + suffix;
+            }
+
+            context!.addIndex++;
+
+            const orphanBone: IGeometryBone = {
+              name: boneName,
+              pivot: elt.pivot || [0, 0, 0],
+              cubes: [elt],
+            };
+
             elt.pivot = undefined;
+            bonesByName[boneName] = orphanBone;
           }
-
-          parent.cubes.push(elt);
         } else {
           const lead = locatorsById[outlineItem];
 
           if (lead && lead.name && lead.position && Utilities.isUsableAsObjectKey(lead.name)) {
-            if (!parent.locators) {
-              parent.locators = {};
-            }
+            if (parent) {
+              if (!parent.locators) {
+                parent.locators = {};
+              }
 
-            parent.locators[lead.name] = lead.position;
+              parent.locators[lead.name] = lead.position;
+            }
           }
         }
       } else if (outlineItem && typeof outlineItem !== "string") {

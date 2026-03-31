@@ -1026,18 +1026,18 @@
         "count": 1
       }
     },
-    "errorCount": 0,
+    "errorCount": 1,
     "internalProcessingErrorCount": 0,
-    "warningCount": 12,
-    "testSuccessCount": 40,
-    "testFailCount": 0,
+    "warningCount": 14,
+    "testSuccessCount": 39,
+    "testFailCount": 1,
     "testNotApplicableCount": 10,
-    "errorSummary": "",
+    "errorSummary": "ERROR: [JSON001] (/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json) This file has a syntax error and can't be read as JSON. Check for missing commas, brackets, or quotes. Details: Cannot create property 'volume' on string 'sounds/ambientsounds/co_doesnotexist'",
     "internalProcessingErrorSummary": "",
-    "warningSummary": "WARNING: [JSONF110] (/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json) At geometry.aop_mobs.nardolphle.visible_bounds_offset, data does not match expected type. Data '0,0.75,0' is of type number array, which does not match type 'Array of strings'.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co3_unlinked.ogg) Audio does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/nardolphle_imageisnotlinked.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/randomvanillacopy.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:mob_that_does_not_exist`\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `ambientsounds.co2_extranotexists`\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `ambientsounds.co2_notexists`\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `individual_event_sound_that_does_not_exist`\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds/music_definitions.json to `ambientsounds.cofoo_doesnotexist`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobsrp/entity/biceson.entity.json to `textures/aop/moremobs/biceson_filethatdoesnotexist`\nWARNING: [UNLINK408] (/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json) Link to audio is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json to `sounds/ambientsounds/co_doesnotexist`",
-    "testFailSummary": "",
-    "infoGenerationTime": 2680,
-    "endToEndGenerationTime": 2973,
+    "warningSummary": "WARNING: [JSON114] (/Content/resource_packs/aop_mobsrp/manifest.json) Version format needs updating: The version is written as numbers [1,0,0] but should be text like \"1.0.0\". This is easy to fix — just change it to a quoted string.\nWARNING: [JSON114] (/Content/resource_packs/aop_mobsrp/manifest.json) Version format needs updating: The version is written as numbers [1,0,0] but should be text like \"1.0.0\". This is easy to fix — just change it to a quoted string.\nWARNING: [JSONF110] (/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json) At geometry.aop_mobs.nardolphle.visible_bounds_offset, data does not match expected type. Data '0,0.75,0' is of type number array, which does not match type 'Array of strings'.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co3_unlinked.ogg) Audio does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/nardolphle_imageisnotlinked.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/randomvanillacopy.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:mob_that_does_not_exist`\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `ambientsounds.co2_extranotexists`\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `ambientsounds.co2_notexists`\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `individual_event_sound_that_does_not_exist`\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds/music_definitions.json to `ambientsounds.cofoo_doesnotexist`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobsrp/entity/biceson.entity.json to `textures/aop/moremobs/biceson_filethatdoesnotexist`\nWARNING: [UNLINK408] (/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json) Link to audio is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json to `sounds/ambientsounds/co_doesnotexist`",
+    "testFailSummary": "TESTFAIL: [JSON000] Found 1 error in JSON Schema Validation check",
+    "infoGenerationTime": 2400,
+    "endToEndGenerationTime": 2588,
     "reds": 40669,
     "summary": {
       "BASEGAMEVER": {
@@ -1344,10 +1344,19 @@
         }
       },
       "JSON": {
+        "0": {
+          "title": "JSON Schema Validation",
+          "defaultMessage": "Found 1 error in JSON Schema Validation check",
+          "testCompleteFails": 1
+        },
         "1": {
           "title": "JSON Parse Error (Schema Validation)",
-          "defaultMessage": "JSON Schema Validation completed successfully",
-          "testCompleteSuccesses": 1
+          "defaultMessage": "This file has a syntax error and can't be read as JSON. Check for missing commas, brackets, or quotes. Details: Cannot create property 'volume' on string 'sounds/ambientsounds/co_doesnotexist'",
+          "errors": 1
+        },
+        "114": {
+          "defaultMessage": "Version format needs updating",
+          "warnings": 2
         },
         "1110": {
           "defaultMessage": "Entity type is not at a current format version"
@@ -2437,9 +2446,29 @@
       "gIx": 55
     },
     {
-      "iTp": 1,
+      "iTp": 0,
       "gId": "JSON",
-      "gIx": 1
+      "gIx": 0
+    },
+    {
+      "iTp": 3,
+      "gId": "JSON",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 114,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
+      "d": "The version is written as numbers [1,0,0] but should be text like \"1.0.0\". This is easy to fix — just change it to a quoted string."
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 114,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
+      "d": "The version is written as numbers [1,0,0] but should be text like \"1.0.0\". This is easy to fix — just change it to a quoted string."
     },
     {
       "iTp": 2,

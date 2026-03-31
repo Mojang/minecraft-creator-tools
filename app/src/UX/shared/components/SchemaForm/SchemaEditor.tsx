@@ -4,9 +4,10 @@ import FormAccordian from "../../../components/formEditor/FormAccordion";
 import useSchemaForm from "./UseSchemaForm";
 import Box from "@mui/material/Box";
 import LoadingSpinner from "../async/loadingSpinner/LoadingSpinner";
-import { DynamicObject, JsonSchema } from "./SchemaParser";
+import { JsonSchema } from "./SchemaParser";
 import { UISchema } from "./UISchema";
 import { useState, forwardRef, useImperativeHandle } from "react";
+import DynamicObject from "./DynamicObject";
 
 //force either schema or schemaPath but not both
 type SchemaEditorProps =
@@ -50,7 +51,7 @@ const SchemaEditor = forwardRef<SchemaEditorHandle, SchemaEditorProps>(
     useImperativeHandle(
       ref,
       () => ({
-        getJson: () => json,
+        getJson: () => json.root,
       }),
       [json]
     );

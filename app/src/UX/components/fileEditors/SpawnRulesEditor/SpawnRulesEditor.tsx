@@ -6,7 +6,7 @@ import { materialRenderer } from "../../../shared/components/SchemaForm/renderer
 import SchemaEditor, { SchemaEditorHandle } from "../../../shared/components/SchemaForm/SchemaEditor";
 import IFile from "../../../../storage/IFile";
 import FlexBox from "../../../shared/components/layout/FlexBox";
-import { DynamicObject } from "../../../shared/components/SchemaForm/SchemaParser";
+import DynamicObject from "../../../shared/components/SchemaForm/DynamicObject";
 
 type SpawnRulesEditorProps = {
   project: Project;

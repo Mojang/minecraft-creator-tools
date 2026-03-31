@@ -45,7 +45,10 @@ export default function GoalPicker({ onGoalSelected }: GoalPickerProps) {
                 const isDark = theme.palette.mode === "dark";
                 return {
                   height: "100%",
+                  transition: "none",
+                "@media (prefers-reduced-motion: no-preference)": {
                   transition: "all 0.2s ease-in-out",
+                },
                   borderRadius: 1,
                   border: `2px solid ${isDark ? mcColors.green5 + "60" : mcColors.green4 + "40"}`,
                   backgroundColor: isDark ? mcColors.gray5 : mcColors.white,
@@ -73,7 +76,7 @@ export default function GoalPicker({ onGoalSelected }: GoalPickerProps) {
                   >
                     <FontAwesomeIcon icon={goal.icon} />
                   </Box>
-                  <Typography variant="h6" sx={{ fontWeight: 700, mb: 0.5 }}>
+                  <Typography variant="h6" component="h3" sx={{ fontWeight: 700, mb: 0.5 }}>
                     {intl.formatMessage({ id: goal.titleKey })}
                   </Typography>
                   <Typography variant="body2" sx={(theme) => ({ color: theme.palette.text.secondary })}>

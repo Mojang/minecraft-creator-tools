@@ -11,6 +11,7 @@ import IProperty from "./../dataform/IProperty";
 import { EventDispatcher } from "ste-events";
 import ComponentProperty from "./ComponentProperty";
 import ModelGeometryDefinition from "./ModelGeometryDefinition";
+import { IGeometry } from "./IModelGeometry";
 
 export default class Entity extends ComponentizedBase implements IPropertyObject {
   _typeId: string = "";
@@ -21,6 +22,9 @@ export default class Entity extends ComponentizedBase implements IPropertyObject
   definitions: string[] = [];
 
   customModel?: ModelGeometryDefinition | undefined;
+  /** Pre-transformed geometry that takes precedence over customModel.defaultGeometry.
+   *  Set by VanillaProjectManager after applying VanillaGeometryTransforms. */
+  customGeometry?: IGeometry | undefined;
   customTextureData?: Uint8Array | undefined;
   customTextureUrl?: string | undefined;
   customTintColor?: { r: number; g: number; b: number; a: number } | undefined;

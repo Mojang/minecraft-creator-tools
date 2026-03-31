@@ -4,10 +4,12 @@ import Database from "../../../minecraft/Database";
 import DataForm, { IDataFormProps } from "../../../dataformux/DataForm";
 import IProperty from "../../../dataform/IProperty";
 import IAppProps from "../../appShell/IAppProps";
-import { ISoundEventSet } from "../../../minecraft/ISoundCatalog";
+import { ISoundEvent, ISoundEventSet } from "../../../minecraft/ISoundCatalog";
 import Project from "../../../app/Project";
 import SoundCatalogDefinition from "../../../minecraft/SoundCatalogDefinition";
 import IProjectTheme from "../../types/IProjectTheme";
+import { FieldDataType } from "../../../dataform/IField";
+import IFormDefinition from "../../../dataform/IFormDefinition";
 
 export enum SoundEventSetType {
   entity,
@@ -66,6 +68,10 @@ export default class SoundEventSetEditor extends Component<ISoundEventSetSoundEd
       }
     }
 
+    if (soundEventSet) {
+      SoundEventSetEditor.upscaleEvents(soundEventSet);
+    }
+
     if (setState) {
       this.setState({
         isLoaded: true,
@@ -81,11 +87,79 @@ export default class SoundEventSetEditor extends Component<ISoundEventSetSoundEd
     }
   }
 
+  /**
+   * Converts string event values to {sound: string} objects so the
+   * keyedObjectCollection form can render sub-forms for every entry.
+   */
+  static upscaleEvents(soundEventSet: ISoundEventSet) {
+    if (!soundEventSet.events) {
+      return;
+    }
+
+    for (const key in soundEventSet.events) {
+      const val = soundEventSet.events[key];
+      if (typeof val === "string") {
+        soundEventSet.events[key] = { sound: val } as ISoundEvent;
+      }
+    }
+  }
+
   async persist(): Promise<boolean> {
     return false;
   }
 
   _handleDataFormPropertyChange(props: IDataFormProps, property: IProperty, newValue: any) {}
+
+  /**
+   * Creates a patched form definition that changes the events field from
+   * keyedStringCollection to keyedObjectCollection with an inline sub-form,
+   * so mixed string/object sound event values render as editable sub-forms.
+   */
+  static getSoundEventForm(): IFormDefinition | undefined {
+    const baseForm = Database.getForm("entity", "sound_event");
+    if (!baseForm || !baseForm.fields) {
+      return baseForm;
+    }
+
+    const patchedFields = baseForm.fields.map((field) => {
+      if (field.id === "events") {
+        return {
+          ...field,
+          dataType: FieldDataType.keyedObjectCollection,
+          subForm: {
+            id: "sound_event_item",
+            fields: [
+              {
+                id: "sound",
+                title: "Sound",
+                dataType: FieldDataType.string,
+                description: "The sound identifier to play for this event.",
+              },
+              {
+                id: "volume",
+                title: "Volume",
+                dataType: FieldDataType.float,
+                minValue: 0,
+                maxValue: 1,
+                step: 0.05,
+                experienceType: "slider",
+                description: "Volume level for this specific event.",
+              },
+              {
+                id: "pitch",
+                title: "Pitch",
+                dataType: FieldDataType.float,
+                description: "Pitch adjustment for this specific event.",
+              },
+            ],
+          } as IFormDefinition,
+        };
+      }
+      return field;
+    });
+
+    return { ...baseForm, fields: patchedFields };
+  }
 
   render() {
     const def = this.state.soundEventSet;
@@ -94,7 +168,7 @@ export default class SoundEventSetEditor extends Component<ISoundEventSetSoundEd
       return <div className="ltb-loading">Loading definition...</div>;
     }
 
-    const form = Database.getForm("entity", "sound_event");
+    const form = SoundEventSetEditor.getSoundEventForm();
 
     let header = <></>;
     if (this.props.displayHeader === undefined || this.props.displayHeader) {

@@ -94,6 +94,7 @@ export interface IRawOptions {
   // Input/Output
   inputFolder?: string;
   outputFolder?: string;
+  outputFile?: string;
   inputFile?: string;
   additionalFiles?: string;
   basePath?: string;
@@ -154,7 +155,7 @@ export interface IRawOptions {
   // Validation
   suite?: string;
   exclusions?: string;
-  aggregateReports?: boolean;
+  aggregateReports?: string;
   warnOnly?: boolean;
 
   // Filtering
@@ -311,6 +312,7 @@ export class CommandContextFactory {
       inputFolder,
       inputFolderSpecified: options.inputFolder !== undefined,
       outputFolder,
+      outputFile: options.outputFile,
       inputStorage,
       outputStorage,
       inputWorkFolder,
@@ -860,11 +862,30 @@ export class CommandContextFactory {
         "Unknown validation suite '" + rawSuite + "'. Valid suites: " + validSuites.join(", ") + ". Using 'main'."
       );
     }
+
+    // Handle shell comma-splitting: PowerShell treats "A,B" as two separate args,
+    // so "PATHLENGTH,PACKSIZE" becomes exclusions="PATHLENGTH", aggregateReports="PACKSIZE".
+    // Detect non-aggregate values in aggregateReports and merge them back into exclusions.
+    const validAggregateValues = ["aggregatenoindex", "aggregate", "true", "false", "1", "0"];
+    let exclusions = options.exclusions;
+    let rawAggregate = options.aggregateReports;
+
+    if (rawAggregate && !validAggregateValues.includes(rawAggregate)) {
+      exclusions = exclusions ? exclusions + "," + rawAggregate : rawAggregate;
+      rawAggregate = undefined;
+    }
+
+    const isAggregate =
+      rawAggregate === "aggregate" ||
+      rawAggregate === "aggregatenoindex" ||
+      rawAggregate === "true" ||
+      rawAggregate === "1";
+
     return {
       suite: validSuites.includes(rawSuite) ? rawSuite : "main",
-      exclusionList: options.exclusions,
+      exclusionList: exclusions,
       outputMci: false,
-      aggregateReports: options.aggregateReports ?? false,
+      aggregateReports: isAggregate,
       warnOnly: options.warnOnly ?? false,
     };
   }

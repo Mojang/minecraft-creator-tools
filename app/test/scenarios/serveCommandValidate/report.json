@@ -1234,6 +1234,10 @@
           "testCompleteSuccesses": 1,
           "title": "JSON Parse Error (Schema Validation)"
         },
+        "114": {
+          "defaultMessage": "Version format needs updating",
+          "warnings": 1
+        },
         "1110": {
           "defaultMessage": "Entity type is not at a current format version"
         },
@@ -1727,8 +1731,8 @@
     "unknownJsonCount": 0,
     "vanillaGameTextureCount": 0,
     "vanillaGameTextureCoverage": 0,
-    "warningCount": 3,
-    "warningSummary": "WARNING: [JSONF110] (/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json) At geometry.aop_mobs.nardolphle.visible_bounds_offset, data does not match expected type. Data '0,0.75,0' is of type number array, which does not match type 'Array of strings'.\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:boomfly`\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:robot`",
+    "warningCount": 4,
+    "warningSummary": "WARNING: [JSON114] (/Content/resource_packs/aop_mobsrp/manifest.json) Version format needs updating: The version is written as numbers [1,0,0] but should be text like \"1.0.0\". This is easy to fix — just change it to a quoted string.\nWARNING: [JSONF110] (/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json) At geometry.aop_mobs.nardolphle.visible_bounds_offset, data does not match expected type. Data '0,0.75,0' is of type number array, which does not match type 'Array of strings'.\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:boomfly`\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:robot`",
     "worldCount": 0,
     "worldLoadErrors": 0,
     "worldNotFound": 0
@@ -2274,6 +2278,13 @@
       "gId": "JSON",
       "gIx": 1,
       "iTp": 1
+    },
+    {
+      "d": "The version is written as numbers [1,0,0] but should be text like \"1.0.0\". This is easy to fix — just change it to a quoted string.",
+      "gId": "JSON",
+      "gIx": 114,
+      "iTp": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
     },
     {
       "gId": "JSON",

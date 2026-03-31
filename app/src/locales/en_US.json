@@ -101,7 +101,7 @@
   "_home.new_project.storage_custom_title.comment": "Title for the custom-folder storage option in the Electron app",
   "home.new_project.storage_device_desc": "Saved in a folder you choose. Your project stays safe after you close the browser — the best choice for almost every beginner project.",
   "_home.new_project.storage_device_desc.comment": "Description for the save-to-device storage option in the web version",
-  "home.new_project.storage_device_title": "Save to My Computer (Recommended)",
+  "home.new_project.storage_device_title": "Save to My Computer",
   "_home.new_project.storage_device_title.comment": "Title for the save-to-device storage option in the web version",
   "home.new_project.storage_documents_desc": "Automatically saved in Documents/Minecraft Creator Tools. A good default for most projects.",
   "_home.new_project.storage_documents_desc.comment": "{Locked=\"Minecraft Creator Tools\"} Description for the Documents-folder storage option in the Electron app",

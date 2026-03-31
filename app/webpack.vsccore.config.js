@@ -138,6 +138,9 @@ const webExtensionConfig = {
       BUILD_VERSION: JSON.stringify(packageJson.version),
       BUILD_DATE: JSON.stringify(new Date().toISOString()),
     }),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /esbuild\.wasm$/,
+    }),
   ],
   externals: {
     vscode: "commonjs vscode",
