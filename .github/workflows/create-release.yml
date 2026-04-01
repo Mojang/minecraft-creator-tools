@@ -19,7 +19,7 @@ jobs:
       pull-requests: write
       security-events: none
       checks: none
-      id-token: none
+      id-token: write
       issues: write
       repository-projects: none
       statuses: none
