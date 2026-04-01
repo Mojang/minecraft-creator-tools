@@ -23,7 +23,7 @@ export interface RenderOptions {
   height?: number;
   /** Time to wait for scene to render (ms) */
   renderWaitTime?: number;
-  /** Time to wait for canvas element to appear (ms). Default: 5000 for small content, scale up for large structures */
+  /** Time to wait for canvas element to appear and stabilize (ms). Default: 30000 for CI reliability with SwiftShader */
   canvasTimeout?: number;
   /** Use fast mode - reduces wait times and reuses page (default: false) */
   fastMode?: boolean;
@@ -319,8 +319,11 @@ export default class PlaywrightPageRenderer {
       // Wait for the scene to render
       await page.waitForTimeout(renderWaitTime);
 
-      // Debug: Log the page content if verbose
-      const bodyText = await page.locator("body").textContent();
+      // Debug: Log the page content if verbose (use short timeout to avoid blocking on CI)
+      const bodyText = await page
+        .locator("body")
+        .textContent({ timeout: 5000 })
+        .catch((): null => null);
       if (bodyText) {
         Log.verbose(`Page body text: ${bodyText.substring(0, 500)}`);
       }
@@ -334,10 +337,10 @@ export default class PlaywrightPageRenderer {
       Log.verbose(`Canvas element count: ${canvasCount}`);
 
       if (canvasCount === 0) {
-        // Check for error messages in the page
+        // Check for error messages in the page (use short timeout to avoid blocking)
         const errorText = await page
           .locator(".error, .Error, [class*='error']")
-          .textContent()
+          .textContent({ timeout: 5000 })
           .catch((): null => null);
         if (errorText) {
           Log.debugAlert(`Page error text: ${errorText}`);
@@ -354,7 +357,15 @@ export default class PlaywrightPageRenderer {
       // The canvas has data-testid="block-viewer-canvas" in BlockViewer
       const canvas = page.locator("canvas").first();
       const format = options.imageFormat || "png";
-      const canvasTimeout = options.canvasTimeout ?? 10000;
+      const canvasTimeout = options.canvasTimeout ?? 30000;
+
+      // Wait for canvas to be visible and stable before taking screenshot
+      try {
+        await canvas.waitFor({ state: "visible", timeout: canvasTimeout });
+      } catch {
+        Log.debugAlert("Canvas element not visible within timeout, attempting screenshot anyway.");
+      }
+
       const screenshotBuffer = await canvas.screenshot({
         type: format,
         quality: format === "jpeg" ? options.jpegQuality || 80 : undefined,

@@ -227,7 +227,7 @@ export class RenderStructureCommand extends CommandBase implements ICommand {
       width: 800,
       height: 600,
       renderWaitTime: isIsolated ? 15000 : 20000, // Longer wait for vanilla resource loading
-      canvasTimeout: 15000, // Longer timeout for canvas screenshot on slower systems
+      canvasTimeout: 30000, // Generous timeout for canvas screenshot on CI with SwiftShader
     });
 
     await renderer.close();
