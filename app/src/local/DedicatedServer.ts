@@ -237,7 +237,7 @@
 import { onExit, chunksToLinesAsync, streamWrite } from "@rauschma/stringio";
 import LocalEnvironment from "./LocalEnvironment";
 import { Readable, Writable } from "stream";
-import { spawn, execSync, ChildProcess } from "child_process";
+import { spawn, ChildProcess } from "child_process";
 import { EventDispatcher } from "ste-events";
 import Player from "./../minecraft/Player";
 import ServerManager, { IServerVersion } from "./ServerManager";
@@ -1164,6 +1164,11 @@ export default class DedicatedServer {
     this.#activeStdIn = childProcess.stdin;
     this.#activeProcess = childProcess;
 
+    // Write PID file so we can find stale processes after a crash
+    if (childProcess.pid) {
+      this._writePidFile(rootPath, childProcess.pid);
+    }
+
     this.directOutput(childProcess.stdout);
     this.directErrors(childProcess.stderr);
 
@@ -1392,88 +1397,89 @@ export default class DedicatedServer {
     }
   }
 
+  private static readonly PID_FILE_NAME = "bedrock_server.pid";
+
   /**
-   * Kill stale bedrock_server processes whose working directory matches this slot.
-   * This prevents EBUSY errors when restarting after a crash that left orphan processes.
+   * Kill stale bedrock_server processes left over from a previous crash.
+   * Uses a PID file in the slot directory instead of platform-specific process
+   * enumeration tools (wmic, PowerShell, pgrep), keeping this pure Node.js.
    */
   private _killStaleProcesses(slotPath: string): void {
-    const normalizedSlot = slotPath.replace(/\\/g, "/").toLowerCase();
+    const pidFilePath = slotPath + DedicatedServer.PID_FILE_NAME;
 
-    if (os.platform() === "win32") {
-      this._killStaleProcessesWindows(normalizedSlot, slotPath);
-    } else {
-      this._killStaleProcessesLinux(normalizedSlot, slotPath);
-    }
-  }
-
-  private _killStaleProcessesWindows(normalizedSlot: string, slotPath: string): void {
     try {
-      // Use WMIC to find bedrock_server.exe processes and their working directories
-      const output = execSync(
-        "wmic process where \"name='bedrock_server.exe'\" get ProcessId,ExecutablePath /format:csv",
-        { encoding: "utf8", timeout: 5000 }
-      );
-
-      for (const line of output.split("\n")) {
-        const parts = line.trim().split(",");
-        if (parts.length < 3) continue;
-
-        const exePath = (parts[1] || "").replace(/\\/g, "/").toLowerCase();
-        const pid = parseInt(parts[2], 10);
-
-        if (!pid || isNaN(pid)) continue;
-
-        // Check if this BDS process is running from our slot folder
-        if (exePath.includes(normalizedSlot.replace(/\/$/, ""))) {
-          // Don't kill our own active process
-          if (this.#activeProcess && this.#activeProcess.pid === pid) continue;
-
-          Log.debug(`Killing stale bedrock_server process (PID ${pid}) in slot ${slotPath}`);
-          try {
-            process.kill(pid, "SIGKILL");
-          } catch {
-            // Process may have already exited
-          }
-        }
+      if (!fs.existsSync(pidFilePath)) {
+        return;
       }
-    } catch {
-      // WMIC may not be available or no stale processes found — not critical
-    }
-  }
 
-  private _killStaleProcessesLinux(normalizedSlot: string, slotPath: string): void {
-    try {
-      // Use pgrep + /proc to find bedrock_server processes whose cwd or exe path matches our slot
-      const output = execSync("pgrep -f bedrock_server", { encoding: "utf8", timeout: 5000 });
+      const pidStr = fs.readFileSync(pidFilePath, "utf8").trim();
+      const pid = parseInt(pidStr, 10);
 
-      for (const pidStr of output.trim().split("\n")) {
-        const pid = parseInt(pidStr.trim(), 10);
-        if (!pid || isNaN(pid)) continue;
+      if (!pid || isNaN(pid)) {
+        this._removePidFile(slotPath);
+        return;
+      }
 
-        // Don't kill our own active process
-        if (this.#activeProcess && this.#activeProcess.pid === pid) continue;
+      // Don't kill our own active process
+      if (this.#activeProcess && this.#activeProcess.pid === pid) {
+        return;
+      }
 
+      // Check if the process is still running (signal 0 = existence check)
+      try {
+        process.kill(pid, 0);
+      } catch {
+        // Process is not running — just clean up the stale PID file
+        this._removePidFile(slotPath);
+        return;
+      }
+
+      // On Linux, verify the PID is actually bedrock_server to guard against
+      // PID reuse — /proc/<pid>/comm contains the process name.
+      if (os.platform() !== "win32") {
         try {
-          // Read the process's cwd from /proc to verify it belongs to our slot
-          const cwd = execSync(`readlink /proc/${pid}/cwd`, { encoding: "utf8", timeout: 2000 })
-            .trim()
-            .replace(/\\/g, "/")
-            .toLowerCase();
-
-          if (cwd.includes(normalizedSlot.replace(/\/$/, ""))) {
-            Log.debug(`Killing stale bedrock_server process (PID ${pid}) in slot ${slotPath}`);
-            try {
-              process.kill(pid, "SIGKILL");
-            } catch {
-              // Process may have already exited
-            }
+          const comm = fs.readFileSync(`/proc/${pid}/comm`, "utf8").trim();
+          if (comm !== "bedrock_server") {
+            Log.debug(`PID ${pid} is now '${comm}', not bedrock_server — cleaning up stale PID file`);
+            this._removePidFile(slotPath);
+            return;
           }
         } catch {
-          // Could not read /proc entry — process may have exited
+          // /proc entry unreadable — process may have exited between checks
+          this._removePidFile(slotPath);
+          return;
         }
       }
+
+      Log.debug(`Killing stale bedrock_server process (PID ${pid}) in slot ${slotPath}`);
+      try {
+        process.kill(pid, "SIGKILL");
+      } catch {
+        // Process may have already exited
+      }
+
+      this._removePidFile(slotPath);
     } catch {
-      // pgrep found no matches or is unavailable — not critical
+      // PID file read/cleanup failed — not critical
+    }
+  }
+
+  private _writePidFile(slotPath: string, pid: number): void {
+    try {
+      fs.writeFileSync(slotPath + DedicatedServer.PID_FILE_NAME, pid.toString(), "utf8");
+    } catch {
+      // Non-critical — stale process detection will just be unavailable next restart
+    }
+  }
+
+  private _removePidFile(slotPath: string): void {
+    try {
+      const pidFilePath = slotPath + DedicatedServer.PID_FILE_NAME;
+      if (fs.existsSync(pidFilePath)) {
+        fs.unlinkSync(pidFilePath);
+      }
+    } catch {
+      // Non-critical
     }
   }
 
@@ -1557,6 +1563,9 @@ export default class DedicatedServer {
 
     // Disconnect the debug client
     this.disconnectDebugClient();
+
+    // Remove PID file since the server is no longer running
+    this._removePidFile(NodeStorage.ensureEndsWithDelimiter(this.serverPath));
 
     await this.doBackup();
 

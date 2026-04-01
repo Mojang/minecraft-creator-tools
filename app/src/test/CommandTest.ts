@@ -1974,6 +1974,20 @@ describe("Telemetry build configuration", () => {
     expect(gulpfileContent).to.include("browser.events.data.microsoft.com");
     expect(gulpfileContent).to.include("js.monitor.azure.com");
     expect(gulpfileContent).to.include("wcpstatic.microsoft.com");
+
+    // Extract the regex pattern from the gulpfile and verify it actually matches
+    // the CSP in index.html. This catches silent breakage when someone edits
+    // the CSP in index.html but forgets to update the gulpfile regex.
+    const regexMatch = gulpfileContent.match(/const localCsp\s*=\s*\/(.*?)\/gi;/s);
+    expect(regexMatch, "gulpfile should contain a localCsp regex").to.not.be.null;
+
+    const localCspRegex = new RegExp(regexMatch![1], "gi");
+    const actualCsp = cspMatch![1];
+    expect(
+      localCspRegex.test(actualCsp),
+      "gulpfile localCsp regex must match the CSP string in index.html. " +
+        "If you changed the CSP in index.html, update the regex in customizeSiteCsp() too."
+    ).to.be.true;
   });
 
   it("site/index.head.html should include 1DS and WcpConsent scripts", () => {

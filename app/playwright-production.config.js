@@ -22,6 +22,11 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "./src/testweb",
 
+  // Exclude ServerUI tests - they require a running MCT server started via globalSetup/globalTeardown
+  // and have their own dedicated config (playwright-serverui.config.ts).
+  // Run ServerUI tests separately with: npm run test-server-ui
+  testIgnore: ["**/ServerUI.spec.ts"],
+
   outputDir: "./debugoutput/playwright-production-results",
 
   /* Snapshot configuration — output to debugoutput so generated images don't pollute public/ */

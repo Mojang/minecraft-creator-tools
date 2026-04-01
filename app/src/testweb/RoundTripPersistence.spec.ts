@@ -1148,26 +1148,10 @@ test.describe("Round-Trip Persistence Tests @full", () => {
 
     console.log(`Script content after round-trip length: ${contentAfter.length}`);
 
-    if (contentAfter.length > 0) {
-      // We got content — verify it contains our edit
-      if (contentAfter.includes(commentMarker)) {
-        console.log("Round-trip verified: content contains the edit marker");
-      } else {
-        // The full project template may have multiple "main" files; re-navigation
-        // landed on a different one. The save was verified before navigation (screenshot-02).
-        console.log(
-          "Re-opened file does not contain marker — likely a different 'main' file. " +
-            "Save was verified in screenshot-02 before navigation."
-        );
-      }
-    } else {
-      // Monaco API returned empty — editor may have been recreated without re-registering.
-      // Save was verified before navigation (status bar showed "Saved").
-      console.log(
-        "Monaco API returned empty content after re-navigation. " +
-          "Save was verified before navigation (see screenshot-02)."
-      );
-    }
+    // Use soft assertion so flaky re-navigation doesn't block CI, but still reports a failure.
+    // The save itself was verified before navigation (screenshot-02 + Ctrl+S).
+    expect.soft(contentAfter.length, "Monaco should have returned non-empty content after re-navigation").toBeGreaterThan(0);
+    expect.soft(contentAfter, "Round-trip content should contain the edit marker").toContain(commentMarker);
 
     await takeScreenshot(page, "debugoutput/screenshots/roundtrip-script-03-verified");
   });

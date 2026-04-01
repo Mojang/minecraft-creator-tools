@@ -42,7 +42,14 @@ import ImportFiles from "../io/ImportFiles";
 
 // Lazy-loaded heavy components (Babylon.js ~8MB)
 // These are only loaded when the user navigates to 3D viewer modes
-import { LazyBlockViewer, LazyMobViewer, LazyItemViewer, LazyModelViewer, LazyStructureViewer, LazyWorldViewer } from "./LazyComponents";
+import {
+  LazyBlockViewer,
+  LazyMobViewer,
+  LazyItemViewer,
+  LazyModelViewer,
+  LazyStructureViewer,
+  LazyWorldViewer,
+} from "./LazyComponents";
 
 export enum NewProjectTemplateType {
   empty,
@@ -722,7 +729,7 @@ export default class App extends Component<AppProps, AppState> {
 
     let selectedItem: string | undefined = undefined;
 
-    // Handle auto-login via tempPasscode in hash (from view command)
+    // Handle auto-login via tempPasscode in hash (from view/edit/serve commands)
     if (typeof window !== "undefined") {
       const hash = window.location.hash;
       if (hash.includes("tempPasscode=")) {

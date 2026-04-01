@@ -236,8 +236,12 @@ export class ServeCommand extends CommandBase implements ICommand {
         httpServer.setMcpRequireAuth(true);
       }
 
-      log.info("\nWeb UI available at: http://localhost:" + (localEnv.serverHostPort || 6126));
-      log.info("MCP endpoint available at: http://localhost:" + (localEnv.serverHostPort || 6126) + "/mcp");
+      const port = localEnv.serverHostPort || 6126;
+      const adminPc = localEnv.adminPasscode;
+      const webUiUrl = adminPc ? `http://localhost:${port}/#tempPasscode=${adminPc}` : `http://localhost:${port}`;
+
+      log.info("\nWeb UI available at: " + webUiUrl);
+      log.info("MCP endpoint available at: http://localhost:" + port + "/mcp");
     }
 
     // Only start BDS if features require it (not basicWebServices)
@@ -295,7 +299,10 @@ export class ServeCommand extends CommandBase implements ICommand {
     } else if (supportsInkUI() || context.server.forceInk) {
       // Use rich Ink UI for interactive terminal
       const httpPort = localEnv.serverHostPort || 6126;
-      const welcomeMsg = `Web UI: http://localhost:${httpPort}`;
+      const adminPcInk = localEnv.adminPasscode;
+      const welcomeMsg = adminPcInk
+        ? `Web UI: http://localhost:${httpPort}/#tempPasscode=${adminPcInk}`
+        : `Web UI: http://localhost:${httpPort}`;
       await renderInkUI(sm, {
         httpPort: httpPort,
         bdsPort: 19132, // Default BDS port

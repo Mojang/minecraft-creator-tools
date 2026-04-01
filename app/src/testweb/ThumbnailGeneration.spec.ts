@@ -173,7 +173,7 @@ test.describe("Thumbnail Generation @thumbnails", () => {
 
       // Make sure we're still on the editor page
       const currentUrl = page.url();
-      if (!currentUrl.includes("#actions") && !currentUrl.includes("localhost:3000")) {
+      if (!currentUrl.includes("#actions") && !currentUrl.includes("localhost")) {
         console.log(`WARNING: Page navigated away to ${currentUrl}`);
         await page.screenshot({
           path: "debugoutput/screenshots/thumb-error-navigated-away.png",

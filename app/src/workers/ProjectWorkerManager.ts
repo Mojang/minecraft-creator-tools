@@ -43,10 +43,6 @@ import IFile from "../storage/IFile";
 import StorageUtilities from "../storage/StorageUtilities";
 import BrowserFolder from "../storage/BrowserFolder";
 
-// Import the worker using Vite's ?worker suffix - this bundles the worker properly
-// @ts-ignore - Vite-specific import syntax
-import ProjectWorkerConstructor from "./project.worker.ts?worker";
-
 // Maximum size for binary files to include (skip larger ones for performance)
 const MAX_BINARY_SIZE = 100 * 1024; // 100KB
 
@@ -151,12 +147,11 @@ export default class ProjectWorkerManager implements IProjectWorkerManager {
 
     if (!this._worker) {
       try {
-        // Use the Vite-bundled worker constructor (imported with ?worker suffix)
-        // This properly bundles the worker for both dev and production builds
-        Log.verbose("Creating project worker using Vite bundled constructor");
+        // Use new Worker(new URL(..., import.meta.url)) syntax which is supported
+        // by both Vite and webpack 5 for bundling web workers
+        Log.verbose("Creating project worker");
 
-        // @ts-ignore - ProjectWorkerConstructor is a Worker constructor from Vite's ?worker import
-        this._worker = new ProjectWorkerConstructor();
+        this._worker = new Worker(new URL("./project.worker.ts", import.meta.url), { type: "module" });
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const worker = this._worker!;

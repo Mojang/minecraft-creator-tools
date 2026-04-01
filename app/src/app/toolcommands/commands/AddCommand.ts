@@ -25,6 +25,19 @@ import {
 } from "../AutocompleteProviders";
 import ProjectItemCreateManager from "../../ProjectItemCreateManager";
 import { ProjectFocus } from "../../IProjectData";
+import { ProjectItemType } from "../../IProjectItemData";
+
+/**
+ * Maps content type names to their preferred ProjectItemType for template matching.
+ * When multiple gallery items share the same GalleryItemType (e.g., spawn_rule,
+ * loot_table, and trade_table all map to spawnLootRecipes), this lets us pick
+ * the right one by matching its targetType.
+ */
+const CONTENT_TYPE_TO_ITEM_TYPE: Record<string, ProjectItemType> = {
+  spawn_rule: ProjectItemType.spawnRuleBehavior,
+  loot_table: ProjectItemType.lootTableBehavior,
+  trade_table: ProjectItemType.tradingBehaviorJson,
+};
 
 export class AddCommand extends ToolCommandBase {
   readonly metadata: IToolCommandMetadata = {
@@ -162,9 +175,23 @@ export class AddCommand extends ToolCommandBase {
         const items = creatorTools.getGalleryProjectByType(galleryType);
 
         if (items && items.length > 0) {
-          // Use first item as default template
-          galleryItem = items[0];
-          context.output.debug(`Using template '${galleryItem.id}' for type '${typeOrTemplate}'`);
+          // If we have a preferred targetType for this content type, try to match it
+          const preferredItemType = CONTENT_TYPE_TO_ITEM_TYPE[typeOrTemplate.toLowerCase()];
+          if (preferredItemType) {
+            const match = items.find(
+              (item) => item.targetType === preferredItemType || item.id === typeOrTemplate.toLowerCase()
+            );
+            if (match) {
+              galleryItem = match;
+              context.output.debug(`Using matched template '${match.id}' for type '${typeOrTemplate}'`);
+            }
+          }
+
+          // Fall back to first item if no specific match
+          if (!galleryItem) {
+            galleryItem = items[0];
+            context.output.debug(`Using template '${galleryItem.id}' for type '${typeOrTemplate}'`);
+          }
         }
       }
     }
