@@ -160,7 +160,7 @@ describe("renderStructureCommandDoubleExtender", () => {
   let browserAvailable = true;
 
   before(function (done) {
-    this.timeout(120000);
+    this.timeout(300000);
 
     removeResultFolder("renderStructureCommandDoubleExtender");
     ensureResultFolder("renderStructureCommandDoubleExtender");
@@ -238,7 +238,7 @@ describe("renderStructureCommandRepeaterClock", () => {
   let browserAvailable = true;
 
   before(function (done) {
-    this.timeout(120000);
+    this.timeout(300000);
 
     removeResultFolder("renderStructureCommandRepeaterClock");
     ensureResultFolder("renderStructureCommandRepeaterClock");

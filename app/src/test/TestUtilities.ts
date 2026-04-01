@@ -121,6 +121,31 @@ export function removeExcludedTestItems(obj: any, excludeTestIds: string[]): any
   return result;
 }
 
+function getDiffDetail(scenarioStr: string, resultStr: string): string {
+  const scenarioLines = scenarioStr.split("\n");
+  const resultLines = resultStr.split("\n");
+  const diffs: string[] = [];
+  const maxLines = Math.max(scenarioLines.length, resultLines.length);
+
+  for (let i = 0; i < maxLines && diffs.length < 5; i++) {
+    if (scenarioLines[i] !== resultLines[i]) {
+      diffs.push(
+        `Line ${i + 1}: scenario=${JSON.stringify(scenarioLines[i] ?? "<missing>")} result=${JSON.stringify(resultLines[i] ?? "<missing>")}`
+      );
+    }
+  }
+
+  if (diffs.length === 0) {
+    return "";
+  }
+
+  return (
+    "\nFirst differences (after volatile stripping):\n" +
+    diffs.join("\n") +
+    `\nScenario lines: ${scenarioLines.length}, Result lines: ${resultLines.length}`
+  );
+}
+
 export async function ensureReportJsonMatchesScenario(
   scenariosFolder: IFolder | undefined,
   resultsFolder: IFolder | undefined,
@@ -150,6 +175,7 @@ export async function ensureReportJsonMatchesScenario(
   assert(exists, "report.json file for scenario '" + scenarioName + "' does not exist.");
 
   let isEqual: boolean;
+  let diffDetail = "";
 
   if (excludeTestIds && excludeTestIds.length > 0) {
     // When excluding test IDs, we need to parse both sides, filter items,
@@ -178,6 +204,10 @@ export async function ensureReportJsonMatchesScenario(
     const resultStr = Utilities.consistentStringifyTrimmed(resultObj);
 
     isEqual = scenarioStr === resultStr;
+
+    if (!isEqual) {
+      diffDetail = getDiffDetail(scenarioStr, resultStr);
+    }
   } else {
     isEqual = await StorageUtilities.fileContentsEqual(
       scenarioFile,
@@ -186,11 +216,35 @@ export async function ensureReportJsonMatchesScenario(
       volatileAttributes,
       volatilePatterns
     );
+
+    if (!isEqual) {
+      // Generate diff detail for non-excludeTestIds path
+      await scenarioFile.loadContent(false);
+      const scenarioContent = scenarioFile.content;
+      if (typeof scenarioContent === "string") {
+        let scenarioObj = JSON.parse(scenarioContent);
+        let resultObj = JSON.parse(dataObjectStr);
+        scenarioObj = StorageUtilities.removeAttributesFromObject(scenarioObj, volatileAttributes);
+        resultObj = StorageUtilities.removeAttributesFromObject(resultObj, volatileAttributes);
+        if (volatilePatterns) {
+          scenarioObj = StorageUtilities.applyVolatilePatternsToObject(scenarioObj, volatilePatterns);
+          resultObj = StorageUtilities.applyVolatilePatternsToObject(resultObj, volatilePatterns);
+        }
+        const scenarioStr = Utilities.consistentStringifyTrimmed(scenarioObj);
+        const resultStr = Utilities.consistentStringifyTrimmed(resultObj);
+        diffDetail = getDiffDetail(scenarioStr, resultStr);
+      }
+    }
   }
 
   assert(
     isEqual,
-    "report.json file '" + scenarioFile.fullPath + "' does not match for scenario '" + scenarioName + "'"
+    "report.json file '" +
+      scenarioFile.fullPath +
+      "' does not match for scenario '" +
+      scenarioName +
+      "'" +
+      diffDetail
   );
 }
 

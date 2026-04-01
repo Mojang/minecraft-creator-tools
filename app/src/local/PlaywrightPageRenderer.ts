@@ -353,24 +353,26 @@ export default class PlaywrightPageRenderer {
         };
       }
 
-      // Capture screenshot of just the canvas element to avoid UI chrome
-      // The canvas has data-testid="block-viewer-canvas" in BlockViewer
-      const canvas = page.locator("canvas").first();
+      // Use page-level screenshot instead of canvas element screenshot.
+      // locator.screenshot() waits for element "stability" (no bounding box changes between
+      // animation frames), which can fail unpredictably with WebGL/Babylon.js canvases that
+      // resize during initialization. page.screenshot() captures the viewport directly.
       const format = options.imageFormat || "png";
       const canvasTimeout = options.canvasTimeout ?? 30000;
 
-      // Wait for canvas to be visible and stable before taking screenshot
+      // Wait for canvas to be visible before capturing
       try {
-        await canvas.waitFor({ state: "visible", timeout: canvasTimeout });
+        await page.locator("canvas").first().waitFor({ state: "visible", timeout: canvasTimeout });
       } catch {
         Log.debugAlert("Canvas element not visible within timeout, attempting screenshot anyway.");
       }
 
-      const screenshotBuffer = await canvas.screenshot({
+      const screenshotBuffer = await page.screenshot({
         type: format,
         quality: format === "jpeg" ? options.jpegQuality || 80 : undefined,
         omitBackground: false,
-        timeout: canvasTimeout, // Use configurable timeout
+        fullPage: false,
+        timeout: canvasTimeout,
       });
 
       await context.close();
@@ -382,6 +384,15 @@ export default class PlaywrightPageRenderer {
       };
     } catch (e: any) {
       Log.debugAlert(`renderModel error: ${e.message}`);
+      // Ensure context is closed even on error to prevent resource leaks
+      try {
+        const contexts = this._browser?.contexts?.() ?? [];
+        for (const ctx of contexts) {
+          await ctx.close().catch(() => {});
+        }
+      } catch {
+        // Ignore cleanup errors
+      }
       return {
         imageData: undefined,
         error: `Rendering failed: ${e.message}`,
@@ -759,7 +770,15 @@ export default class PlaywrightPageRenderer {
    */
   async close(): Promise<void> {
     if (this._browser) {
-      await this._browser.close();
+      try {
+        // Use a timeout to prevent hanging if the browser process is unresponsive
+        await Promise.race([
+          this._browser.close(),
+          new Promise<void>((_, reject) => setTimeout(() => reject(new Error("Browser close timeout")), 15000)),
+        ]);
+      } catch (e: any) {
+        Log.debugAlert(`Browser close issue: ${e.message}`);
+      }
       this._browser = null;
     }
   }
