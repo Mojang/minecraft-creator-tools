@@ -72,7 +72,7 @@
         "@semantic-release/exec",
         {
           "execCwd": "app",
-          "prepareCmd": "npm run updateversionsandbuild"
+          "prepareCmd": "npm run updateversionsandreleasebuild"
         }
       ],
       [
