@@ -1,0 +1,452 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "/loot/loot_table.form.json",
+  "title": "Loot Table",
+  "description": "Defines the loot that can be generated when an entity is killed, a chest is opened, fishing is performed, or other gameplay events occur. Loot tables consist of one or more pools, each containing entries with items or references to other loot tables.",
+  "type": "object",
+  "properties": {
+    "pools": {
+      "title": "Pools",
+      "description": "A list of loot pools. Each pool is rolled independently to select entries.\n\nProperties:\nΓÇó rolls (int) = 1\nΓÇó bonus_rolls (int) = 0\nΓÇó entries\nΓÇó conditions\nΓÇó tiers ({ initial_range, bonus_rolls, bonus_chance })",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/loot_loot_pool"
+      }
+    }
+  },
+  "$defs": {
+    "loot_loot_condition": {
+      "type": "object",
+      "title": "Loot Condition",
+      "description": "Defines a condition that must be met for a loot table entry or function to apply.",
+      "properties": {
+        "condition": {
+          "title": "Condition",
+          "description": "The condition type. Common values: 'killed_by_player', 'killed_by_player_or_pets', 'random_chance', 'random_chance_with_looting', 'has_mark_variant', 'has_variant', 'entity_properties', 'match_tool', 'random_difficulty_chance'.",
+          "type": "string"
+        },
+        "chance": {
+          "title": "Chance",
+          "description": "For 'random_chance' and 'random_chance_with_looting': the base probability (0.0-1.0).",
+          "type": "number"
+        },
+        "looting_multiplier": {
+          "title": "Looting Multiplier",
+          "description": "For 'random_chance_with_looting': additional chance per looting level.",
+          "type": "number"
+        },
+        "value": {
+          "title": "Value",
+          "description": "For 'has_mark_variant' or 'has_variant': the variant value to match.",
+          "type": "integer"
+        },
+        "default_chance": {
+          "title": "Default Chance",
+          "description": "For 'random_difficulty_chance': default probability if difficulty not matched.",
+          "type": "number"
+        },
+        "peaceful": {
+          "title": "Peaceful Chance",
+          "description": "For 'random_difficulty_chance': probability on peaceful difficulty.",
+          "type": "number"
+        },
+        "easy": {
+          "title": "Easy Chance",
+          "description": "For 'random_difficulty_chance': probability on easy difficulty.",
+          "type": "number"
+        },
+        "normal": {
+          "title": "Normal Chance",
+          "description": "For 'random_difficulty_chance': probability on normal difficulty.",
+          "type": "number"
+        },
+        "hard": {
+          "title": "Hard Chance",
+          "description": "For 'random_difficulty_chance': probability on hard difficulty.",
+          "type": "number"
+        },
+        "entity": {
+          "title": "Entity Type",
+          "description": "For 'entity_properties': which entity to check ('this', 'attacker', or 'attacking_player').",
+          "type": "string"
+        },
+        "properties": {
+          "title": "Properties",
+          "description": "For 'entity_properties': the entity properties to match.\n\nProperties:\nΓÇó on_fire (boolean)\nΓÇó on_ground (boolean)",
+          "type": "object",
+          "properties": {
+            "on_fire": {
+              "title": "On Fire",
+              "type": "boolean"
+            },
+            "on_ground": {
+              "title": "On Ground",
+              "type": "boolean"
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Properties",
+              "description": "For 'entity_properties': the entity properties to match.",
+              "body": {
+                "on_fire": true,
+                "on_ground": true
+              }
+            }
+          ]
+        },
+        "match_tool": {
+          "title": "Match Tool",
+          "description": "For 'match_tool': the tool item properties to match.\n\nProperties:\nΓÇó item (string)\nΓÇó enchantments",
+          "type": "object",
+          "properties": {
+            "item": {
+              "title": "Item",
+              "type": "string"
+            },
+            "enchantments": {
+              "title": "Enchantments",
+              "description": "\n\nProperties:\nΓÇó enchantment (string)\nΓÇó levels ({ min })",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "enchantment": {
+                    "title": "Enchantment",
+                    "type": "string"
+                  },
+                  "levels": {
+                    "title": "Levels",
+                    "description": "\n\nProperties:\nΓÇó min (int)",
+                    "type": "object",
+                    "properties": {
+                      "min": {
+                        "title": "Minimum",
+                        "type": "integer"
+                      }
+                    },
+                    "defaultSnippets": [
+                      {
+                        "label": "Levels",
+                        "description": "Create a Levels",
+                        "body": {
+                          "min": 0
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Match Tool",
+              "description": "For 'match_tool': the tool item properties to match.",
+              "body": {
+                "item": ""
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "condition"
+      ]
+    },
+    "loot_loot_function": {
+      "type": "object",
+      "title": "Loot Function",
+      "description": "Defines a function that modifies a loot table entry when selected.",
+      "properties": {
+        "function": {
+          "title": "Function",
+          "description": "The function type. Common values: 'set_count', 'set_data', 'set_damage', 'set_nbt', 'enchant_randomly', 'enchant_with_levels', 'looting_enchant', 'furnace_smelt', 'set_actor_id', 'set_book_contents', 'fill_container', 'exploration_map', 'set_banner_details', 'set_armor_trim'.",
+          "type": "string"
+        },
+        "count": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "min": {
+                  "title": "Minimum",
+                  "type": "integer"
+                },
+                "max": {
+                  "title": "Maximum",
+                  "type": "integer"
+                }
+              }
+            },
+            {
+              "type": "integer"
+            }
+          ],
+          "title": "Count",
+          "description": "For 'set_count' and 'looting_enchant': the count value or range.\n\nProperties:\nΓÇó min (int)\nΓÇó max (int)"
+        },
+        "data": {
+          "title": "Data",
+          "description": "For 'set_data': the data value or range to set.\n\nProperties:\nΓÇó min (int)\nΓÇó max (int)",
+          "type": "object",
+          "properties": {
+            "min": {
+              "title": "Minimum",
+              "type": "integer"
+            },
+            "max": {
+              "title": "Maximum",
+              "type": "integer"
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Data",
+              "description": "For 'set_data': the data value or range to set.",
+              "body": {
+                "min": 0,
+                "max": 0
+              }
+            }
+          ]
+        },
+        "damage": {
+          "title": "Damage",
+          "description": "For 'set_damage': the damage percentage or range (0.0-1.0).\n\nProperties:\nΓÇó min (float)\nΓÇó max (float)",
+          "type": "object",
+          "properties": {
+            "min": {
+              "title": "Minimum",
+              "type": "number"
+            },
+            "max": {
+              "title": "Maximum",
+              "type": "number"
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Damage",
+              "description": "For 'set_damage': the damage percentage or range (0.0-1.0).",
+              "body": {
+                "min": 0,
+                "max": 0
+              }
+            }
+          ]
+        },
+        "treasure": {
+          "title": "Treasure",
+          "description": "For 'enchant_randomly': whether to include treasure enchantments.",
+          "type": "boolean"
+        },
+        "levels": {
+          "title": "Levels",
+          "description": "For 'enchant_with_levels': the enchantment level or range.\n\nProperties:\nΓÇó min (int)\nΓÇó max (int)",
+          "type": "object",
+          "properties": {
+            "min": {
+              "title": "Minimum",
+              "type": "integer"
+            },
+            "max": {
+              "title": "Maximum",
+              "type": "integer"
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Levels",
+              "description": "For 'enchant_with_levels': the enchantment level or range.",
+              "body": {
+                "min": 0,
+                "max": 0
+              }
+            }
+          ]
+        },
+        "id": {
+          "title": "Entity ID",
+          "description": "For 'set_actor_id': the entity identifier.",
+          "type": "string"
+        },
+        "destination": {
+          "title": "Destination",
+          "description": "For 'exploration_map': the structure destination type.",
+          "type": "string"
+        },
+        "conditions": {
+          "title": "Conditions",
+          "description": "Conditions that must be met for this function to apply.\n\nProperties:\nΓÇó condition (string)\nΓÇó chance (float)\nΓÇó looting_multiplier (float)\nΓÇó value (int)\nΓÇó default_chance (float)\nΓÇó peaceful (float)\nΓÇó easy (float)\nΓÇó normal (float)\nΓÇó ... and 4 more properties",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/loot_loot_condition"
+          }
+        }
+      },
+      "required": [
+        "function"
+      ]
+    },
+    "loot_loot_pool": {
+      "type": "object",
+      "title": "Loot Pool",
+      "description": "Defines a pool of loot entries that can be rolled one or more times.",
+      "properties": {
+        "rolls": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "description": "\n\nProperties:\nΓÇó min (int) = 1\nΓÇó max (int) = 1",
+              "type": "object",
+              "properties": {
+                "min": {
+                  "title": "Minimum",
+                  "type": "integer",
+                  "default": 1
+                },
+                "max": {
+                  "title": "Maximum",
+                  "type": "integer",
+                  "default": 1
+                }
+              },
+              "defaultSnippets": [
+                {
+                  "label": "Rolls (object)",
+                  "description": "Use Rolls as an object",
+                  "body": {
+                    "min": 1,
+                    "max": 1
+                  }
+                }
+              ]
+            }
+          ],
+          "title": "Rolls",
+          "description": "Number of times to roll this pool. Can be a fixed number or a range object with min/max.",
+          "defaultSnippets": [
+            {
+              "label": "Rolls (object)",
+              "description": "Use Rolls as an object",
+              "body": {
+                "min": 1,
+                "max": 1
+              }
+            }
+          ]
+        },
+        "bonus_rolls": {
+          "title": "Bonus Rolls",
+          "description": "Additional rolls added based on luck attribute. Can be fixed or range.",
+          "type": "integer",
+          "default": 0
+        },
+        "entries": {
+          "title": "Entries",
+          "description": "Array of possible entries to select from when rolling this pool.\n\nProperties:\nΓÇó type (string)\nΓÇó name (string)\nΓÇó weight (int) = 1\nΓÇó functions\nΓÇó conditions\nΓÇó pools",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/loot_loot_entry"
+          }
+        },
+        "conditions": {
+          "title": "Conditions",
+          "description": "Array of conditions that must be met for this pool to be rolled.\n\nProperties:\nΓÇó condition (string)\nΓÇó chance (float)\nΓÇó looting_multiplier (float)\nΓÇó value (int)\nΓÇó default_chance (float)\nΓÇó peaceful (float)\nΓÇó easy (float)\nΓÇó normal (float)\nΓÇó ... and 4 more properties",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/loot_loot_condition"
+          }
+        },
+        "tiers": {
+          "title": "Tiers",
+          "description": "Tiered entry selection configuration.\n\nProperties:\nΓÇó initial_range (int)\nΓÇó bonus_rolls (int)\nΓÇó bonus_chance (float)",
+          "type": "object",
+          "properties": {
+            "initial_range": {
+              "title": "Initial Range",
+              "type": "integer"
+            },
+            "bonus_rolls": {
+              "title": "Bonus Rolls",
+              "type": "integer"
+            },
+            "bonus_chance": {
+              "title": "Bonus Chance",
+              "type": "number"
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Tiers",
+              "description": "Tiered entry selection configuration.",
+              "body": {
+                "initial_range": 0,
+                "bonus_rolls": 0,
+                "bonus_chance": 0
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "entries"
+      ]
+    },
+    "loot_loot_entry": {
+      "type": "object",
+      "title": "Loot Table Entry",
+      "description": "Defines an entry in a loot table pool that can be selected when the pool rolls.",
+      "properties": {
+        "type": {
+          "title": "Type",
+          "description": "The type of entry. Valid values: 'item' (drops an item), 'loot_table' (references another loot table), 'empty' (drops nothing).",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "description": "The item identifier (for type 'item') or loot table path (for type 'loot_table').",
+          "type": "string"
+        },
+        "weight": {
+          "title": "Weight",
+          "description": "The relative weight of this entry being selected. Higher weights are more likely. Default is 1.",
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        },
+        "functions": {
+          "title": "Functions",
+          "description": "Array of functions to apply to the item when selected.\n\nProperties:\nΓÇó function (string)\nΓÇó count ({ min, max })\nΓÇó data ({ min, max })\nΓÇó damage ({ min, max })\nΓÇó treasure (boolean)\nΓÇó levels ({ min, max })\nΓÇó id (string)\nΓÇó destination (string)\nΓÇó ... and 1 more properties",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/loot_loot_function"
+          }
+        },
+        "conditions": {
+          "title": "Conditions",
+          "description": "Array of conditions that must be met for this entry to be considered.\n\nProperties:\nΓÇó condition (string)\nΓÇó chance (float)\nΓÇó looting_multiplier (float)\nΓÇó value (int)\nΓÇó default_chance (float)\nΓÇó peaceful (float)\nΓÇó easy (float)\nΓÇó normal (float)\nΓÇó ... and 4 more properties",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/loot_loot_condition"
+          }
+        },
+        "pools": {
+          "title": "Pools",
+          "description": "Nested pools for type 'loot_table'. Allows inline loot table definition.\n\nProperties:\nΓÇó rolls (int) = 1\nΓÇó bonus_rolls (int) = 0\nΓÇó entries\nΓÇó conditions\nΓÇó tiers ({ initial_range, bonus_rolls, bonus_chance })",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/loot_loot_pool"
+          }
+        }
+      },
+      "required": [
+        "type"
+      ]
+    }
+  }
+}

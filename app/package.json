@@ -195,6 +195,7 @@
     "test-vscweb-headed": "playwright test --config playwright-vscweb.config.js --headed",
     "test-vscweb-debug": "playwright test --config playwright-vscweb.config.js --debug",
     "test-production": "playwright test --config playwright-production.config.js",
+    "test-production-full": "npm run webbuild && playwright test --config playwright-production.config.js",
     "test-production-headed": "playwright test --config playwright-production.config.js --headed",
     "test-production-debug": "playwright test --config playwright-production.config.js --debug",
     "serve-production": "npx serve build -s -l 3001",

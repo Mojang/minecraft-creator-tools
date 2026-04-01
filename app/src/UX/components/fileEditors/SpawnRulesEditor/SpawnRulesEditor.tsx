@@ -17,7 +17,7 @@ type SpawnRulesEditorProps = {
 };
 
 const spawnUiSchema = SpawnRulesUISchema;
-const spawnSchemaPath = "schemas/spawn/spawn_rules.schema.json";
+const spawnSchemaPath = "data/editor-schemas/spawn/spawn_rules.schema.json";
 
 export default function SpawnRulesEditor({ project, file, setActivePersistable, heightOffset }: SpawnRulesEditorProps) {
   const schemaEditorRef = useRef<SchemaEditorHandle>(null);

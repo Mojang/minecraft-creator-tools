@@ -1,0 +1,29 @@
+{
+  "children": {
+    "pools": {
+      "title": "Pools",
+      "items": {
+        "children": {
+          "entries": {
+            "title": "Entries",
+            "items": {
+              "oneOf": "object",
+              "children": {
+                "functions": {
+                  "items": {
+                    "children": {
+                      "count": {
+                        "title": "Count",
+                        "oneOf": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

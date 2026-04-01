@@ -15,7 +15,8 @@ type LootTableEditorProps = {
   readOnly?: boolean;
 };
 
-const lootSchemaPath = "schemas/loot/loot_table.schema.json";
+const lootSchemaPath = "data/editor-schemas/loot/loot_table.schema.json";
+const lootUISchemaPath = "data/editor-schemas/loot/loot_table.uischema.json";
 
 export default function LootTableEditor({ file, setActivePersistable, heightOffset }: LootTableEditorProps) {
   const schemaEditorRef = useRef<SchemaEditorHandle>(null);
@@ -61,6 +62,7 @@ export default function LootTableEditor({ file, setActivePersistable, heightOffs
           key={contentKey}
           ref={schemaEditorRef}
           schemaPath={lootSchemaPath}
+          uiSchemaPath={lootUISchemaPath}
           renderer={materialRenderer}
           initialState={parsedData}
         />

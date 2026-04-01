@@ -1,5 +1,6 @@
 const gulp = require("gulp");
 const del = require("del");
+const fs = require("fs");
 const { execSync } = require("child_process");
 const newer = require("gulp-newer");
 const importTransform = require("./tools/gulp-importTransform");
@@ -418,6 +419,11 @@ function copyResLatestPreviewToServe() {
 }
 
 function copyJsNodeResSchemas() {
+  const srcDir = "public/res/latest/schemas";
+  if (!fs.existsSync(srcDir)) {
+    console.log("copyJsNodeResSchemas: skipping — " + srcDir + " not found (run preparedevenv first)");
+    return Promise.resolve();
+  }
   return gulp
     .src(["public/res/latest/schemas/**/*"])
     .pipe(newer("toolbuild/jsn/res/latest/schemas/"))

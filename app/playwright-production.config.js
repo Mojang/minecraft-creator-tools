@@ -34,8 +34,8 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Single worker for production tests to avoid port conflicts */
-  workers: 1,
+  /* Use multiple workers locally, single worker on CI */
+  workers: process.env.CI ? 1 : 4,
   /* Reporter to use */
   reporter: [["html", { open: "never", outputFolder: "debugoutput/playwright-production-results-html" }]],
   /* Shared settings for all the projects below */

@@ -16,8 +16,8 @@ type TradeTableEditorProps = {
   heightOffset?: number;
 };
 
-const tradeTableSchemaPath = "schemas/generated/json_schemas/client_server/entity/1.21.30/Trade Table.json";
-const tradeTableUISchemaPath = "schemas/trade/trade_table.uischema.json";
+const tradeTableSchemaPath = "data/editor-schemas/trade/trade_table.schema.json";
+const tradeTableUISchemaPath = "data/editor-schemas/trade/trade_table.uischema.json";
 
 export default function TradeTableEditor({ project, file, setActivePersistable, heightOffset }: TradeTableEditorProps) {
   const schemaEditorRef = useRef<SchemaEditorHandle>(null);
