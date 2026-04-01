@@ -34,7 +34,7 @@
       "  }",
       "",
       "  onUse(e: ItemComponentUseEvent): void {",
-      "    world.sendMessage('Item ' + e.itemStack.typeId + ' is being used.');",
+      "    world.sendMessage('Item ' + e.itemStack?.typeId + ' is being used.');",
       "  }",
       "}",
       "",

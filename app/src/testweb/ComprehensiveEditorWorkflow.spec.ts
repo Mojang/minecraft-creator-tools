@@ -1,11 +1,38 @@
 import { test, expect, ConsoleMessage } from "@playwright/test";
 import { promises as fs } from "fs";
 import path from "path";
-import { processMessage } from "./WebTestUtilities";
+import {
+  getExportToolbarButton,
+  getTestToolbarButton,
+  preferBrowserStorageInProjectDialog,
+  processMessage,
+  selectEditMode,
+  waitForEditorReady,
+} from "./WebTestUtilities";
 
-test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
+test.describe("MCTools Web Editor - Comprehensive Editor Workflow @focused", () => {
   const consoleErrors: { url: string; error: string }[] = [];
   const consoleWarnings: { url: string; error: string }[] = [];
+
+  async function expectFocusedDashboard(page: Parameters<typeof preferBrowserStorageInProjectDialog>[0]) {
+    expect(await waitForEditorReady(page, 15000)).toBe(true);
+  }
+
+  function getDashboardAddonExportButton(page: Parameters<typeof preferBrowserStorageInProjectDialog>[0]) {
+    return page.locator("button").filter({ hasText: /Install in Minecraft \(\.mcaddon\)/i }).first();
+  }
+
+  function getDashboardFolderExportButton(page: Parameters<typeof preferBrowserStorageInProjectDialog>[0]) {
+    return page.locator("button").filter({ hasText: /Save project files to a folder/i }).first();
+  }
+
+  function getDashboardFlatWorldButton(page: Parameters<typeof preferBrowserStorageInProjectDialog>[0]) {
+    return page.locator("button").filter({ hasText: /flat test world/i }).first();
+  }
+
+  function getDashboardProjectWorldButton(page: Parameters<typeof preferBrowserStorageInProjectDialog>[0]) {
+    return page.locator("button").filter({ hasText: /regular project world/i }).first();
+  }
 
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
@@ -22,7 +49,7 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
 
     // Find and click the New button under Add-On Starter
     // Use a direct approach to find the first New button (which is under Add-On Starter)
-    const addOnStarterNewButton = page.getByRole("button", { name: "New" }).first();
+    const addOnStarterNewButton = page.getByRole("button", { name: "Create New" }).first();
     await expect(addOnStarterNewButton).toBeVisible();
 
     console.log("Clicking New button under Add-On Starter");
@@ -38,6 +65,7 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
 
     const okButton = await page.getByTestId("submit-button").first();
     await expect(okButton).toBeVisible();
+    await preferBrowserStorageInProjectDialog(page);
 
     console.log("Clicking OK to create project and enter editor");
     await okButton.click();
@@ -46,6 +74,11 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
     await page.waitForTimeout(9000);
     await page.waitForLoadState("networkidle");
     await page.waitForTimeout(1000);
+
+    // Select Focused mode to dismiss welcome panel and hide Inspector
+    await selectEditMode(page);
+    await page.waitForTimeout(1000);
+    await expectFocusedDashboard(page);
 
     // Take screenshot after entering editor
     await page.screenshot({ path: "debugoutput/screenshots/after-entering-editor.png", fullPage: true });
@@ -84,12 +117,12 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
     if ((await saveButton.count()) > 0) {
       console.log("Testing main editor toolbar buttons");
       const viewButton = page.getByRole("button", { name: "View" }).first();
-      const shareButton = page.getByRole("button", { name: "Share" }).first();
-      const runButton = page.getByRole("button", { name: "Run" }).first();
+      const exportToolbarButton = getExportToolbarButton(page);
+      const testButton = getTestToolbarButton(page);
 
       if ((await viewButton.count()) > 0) await expect(viewButton).toBeVisible();
-      if ((await shareButton.count()) > 0) await expect(shareButton).toBeVisible();
-      if ((await runButton.count()) > 0) await expect(runButton).toBeVisible();
+      if ((await exportToolbarButton.count()) > 0) await expect(exportToolbarButton).toBeVisible();
+      if ((await testButton.count()) > 0) await expect(testButton).toBeVisible();
 
       console.log("All main editor toolbar buttons are visible");
     }
@@ -117,7 +150,11 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
     }
 
     expect(consoleErrors.length).toBeLessThanOrEqual(0);
-    expect(consoleWarnings.length).toBeLessThanOrEqual(0);
+    // Allow MUI focus trap warnings ("Body element does not contain trap zone element")
+    const nonMuiWarnings3 = consoleWarnings.filter(
+      (w) => !w.error.includes("Body element does not contain trap zone element")
+    );
+    expect(nonMuiWarnings3.length).toBeLessThanOrEqual(0);
   });
 
   test("should create project via file upload and enter editor", async ({ page }) => {
@@ -172,19 +209,29 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
     }
 
     expect(consoleErrors.length).toBeLessThanOrEqual(0);
-    expect(consoleWarnings.length).toBeLessThanOrEqual(0);
+    // Allow MUI focus trap warnings ("Body element does not contain trap zone element")
+    const nonMuiWarnings = consoleWarnings.filter(
+      (w) => !w.error.includes("Body element does not contain trap zone element")
+    );
+    expect(nonMuiWarnings.length).toBeLessThanOrEqual(0);
   });
 
   test("should navigate editor interface and test functionality", async ({ page }) => {
     // Start by creating a project using the correct workflow
-    const addOnStarterNewButton = page.getByRole("button", { name: "New" }).first();
+    const addOnStarterNewButton = page.getByRole("button", { name: "Create New" }).first();
     await addOnStarterNewButton.click();
     await page.waitForTimeout(1000);
 
     const okButton = await page.getByTestId("submit-button").first();
+    await preferBrowserStorageInProjectDialog(page);
     await okButton.click();
     await page.waitForTimeout(9000);
     await page.waitForLoadState("networkidle");
+
+    // Select Focused mode to dismiss welcome panel and hide Inspector
+    await selectEditMode(page);
+    await page.waitForTimeout(1000);
+    await expectFocusedDashboard(page);
 
     // Take screenshot of editor interface
     await page.screenshot({ path: "debugoutput/screenshots/editor-interface.png", fullPage: true });
@@ -193,8 +240,8 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
     const saveButton = page.getByRole("button", { name: "Save" }).first();
     const viewButton = page.getByRole("button", { name: "View" }).first();
     const settingsButton = page.getByRole("button", { name: "Settings" }).first();
-    const shareButton = page.getByRole("button", { name: "Share" }).first();
-    const runButton = page.getByRole("button", { name: "Run" }).first();
+    const exportToolbarButton = getExportToolbarButton(page);
+    const testButton = getTestToolbarButton(page);
 
     console.log("Testing main toolbar buttons");
 
@@ -216,18 +263,18 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
       await expect(settingsButton).toBeVisible();
     }
 
-    if ((await shareButton.count()) > 0) {
-      console.log("Found Share button in toolbar");
-      await expect(shareButton).toBeVisible();
+    if ((await exportToolbarButton.count()) > 0) {
+      console.log("Found Export button in toolbar");
+      await expect(exportToolbarButton).toBeVisible();
     }
 
-    if ((await runButton.count()) > 0) {
-      console.log("Found Run button in toolbar");
-      await expect(runButton.first()).toBeVisible();
+    if ((await testButton.count()) > 0) {
+      console.log("Found Test button in toolbar");
+      await expect(testButton.first()).toBeVisible();
     }
 
     // Verify at least some toolbar elements exist to confirm we're in the editor
-    const anyToolbarButton = saveButton.or(viewButton).or(settingsButton).or(shareButton).or(runButton);
+    const anyToolbarButton = saveButton.or(viewButton).or(settingsButton).or(exportToolbarButton).or(testButton);
     if ((await anyToolbarButton.count()) > 0) {
       console.log("Editor toolbar verification successful");
     } else {
@@ -250,17 +297,17 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
       await page.keyboard.press("Escape");
     }
 
-    if ((await shareButton.count()) > 0) {
-      console.log("Testing Share button dropdown");
-      await shareButton.click();
+    if ((await exportToolbarButton.count()) > 0) {
+      console.log("Testing Export button dropdown");
+      await exportToolbarButton.click();
       await page.waitForTimeout(1000);
       await page.screenshot({ path: "debugoutput/screenshots/share-dropdown.png", fullPage: true });
       await page.keyboard.press("Escape");
     }
 
-    if ((await runButton.count()) > 0) {
-      console.log("Testing Run button dropdown");
-      await runButton.click();
+    if ((await testButton.count()) > 0) {
+      console.log("Testing Test button dropdown");
+      await testButton.click();
       await page.waitForTimeout(1000);
       await page.screenshot({ path: "debugoutput/screenshots/run-dropdown.png", fullPage: true });
       await page.keyboard.press("Escape");
@@ -300,7 +347,7 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
     }
 
     // Test Add button in the file listing area
-    const addButton = page.locator("button:has-text('Add')");
+    const addButton = page.getByRole("button", { name: "Add new content" }).first();
     if ((await addButton.count()) > 0) {
       console.log("Testing Add button");
       await addButton.click();
@@ -320,37 +367,55 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
     }
 
     expect(consoleErrors.length).toBeLessThanOrEqual(0);
-    expect(consoleWarnings.length).toBeLessThanOrEqual(0);
+    // Allow MUI focus trap warnings ("Body element does not contain trap zone element")
+    const nonMuiWarnings2 = consoleWarnings.filter(
+      (w) => !w.error.includes("Body element does not contain trap zone element")
+    );
+    expect(nonMuiWarnings2.length).toBeLessThanOrEqual(0);
   });
 
   test("should test download and export functionality from editor", async ({ page }) => {
     // Create project and get into editor using correct workflow
-    const addOnStarterNewButton = page.getByRole("button", { name: "New" }).first();
+    const addOnStarterNewButton = page.getByRole("button", { name: "Create New" }).first();
     await addOnStarterNewButton.click();
     await page.waitForTimeout(1000);
 
     await page.getByLabel("Title").fill("automated_test_proj");
     await page.getByLabel("Creator Name").fill("automated_test_creator");
-    await page.getByLabel("Short Name").fill("automated_test_sn");
+
+    // Expand Advanced Options to access Folder Name and Description fields
+    const advancedToggle = page.getByText("Advanced Options");
+    if (await advancedToggle.isVisible({ timeout: 2000 })) {
+      await advancedToggle.click();
+      await page.waitForTimeout(300);
+    }
+
+    await page.getByLabel("Folder Name").fill("automated_test_sn");
     await page.getByLabel("Description").fill("automated_test_desc");
 
     const okButton = await page.getByTestId("submit-button").first();
+    await preferBrowserStorageInProjectDialog(page);
     await okButton.click();
     await page.waitForTimeout(9000);
     await page.waitForLoadState("networkidle");
 
+    // Select Focused mode to dismiss welcome panel and hide Inspector
+    await selectEditMode(page);
+    await page.waitForTimeout(1000);
+    await expectFocusedDashboard(page);
+
     await page.screenshot({ path: "debugoutput/screenshots/editor-export-options.png", fullPage: true });
 
     // Look for the actual export buttons in the editor main content area
-    const exportZipButton = page.locator("button:has-text('Export as a zip file')");
-    const exportFolderButton = page.locator("button:has-text('Export to folder on your device')");
-    const downloadFlatWorldButton = page.locator("button:has-text('Download flat world')");
-    const downloadProjectWorldButton = page.locator("button:has-text('Download project world')");
+    const exportZipButton = getDashboardAddonExportButton(page);
+    const exportFolderButton = getDashboardFolderExportButton(page);
+    const downloadFlatWorldButton = getDashboardFlatWorldButton(page);
+    const downloadProjectWorldButton = getDashboardProjectWorldButton(page);
 
     console.log("Testing actual editor export functionality");
 
     if ((await exportZipButton.count()) > 0) {
-      console.log("Testing 'Export as a zip file' button");
+      console.log("Testing 'Download & Install in Minecraft (.mcaddon)' button");
       await expect(exportZipButton).toBeVisible();
 
       try {
@@ -387,32 +452,32 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
 
     // Test other export options (without downloads since we already tested one)
     if ((await exportFolderButton.count()) > 0) {
-      console.log("Found 'Export to folder on your device' button");
+      console.log("Found 'Save project files to a folder' button");
       await expect(exportFolderButton).toBeVisible();
     }
 
     if ((await downloadFlatWorldButton.count()) > 0) {
-      console.log("Found 'Download flat world' button");
+      console.log("Found 'Download a flat test world' button");
       await expect(downloadFlatWorldButton).toBeVisible();
     }
 
     if ((await downloadProjectWorldButton.count()) > 0) {
-      console.log("Found 'Download project world' button");
+      console.log("Found 'Download a regular project world' button");
       await expect(downloadProjectWorldButton).toBeVisible();
     }
 
-    // Test the Share button dropdown which might have additional export options
-    const shareButton = page.locator("button:has-text('Share')");
-    if ((await shareButton.count()) > 0) {
-      console.log("Testing Share button for additional export options");
+    // Test the Export button dropdown which might have additional export options
+    const exportToolbarButton = getExportToolbarButton(page);
+    if ((await exportToolbarButton.count()) > 0) {
+      console.log("Testing export toolbar button for additional export options");
       await page.waitForTimeout(1000);
-      await shareButton.click();
+      await exportToolbarButton.click();
       await page.waitForTimeout(1000);
 
       // Look for any dropdown export options
       const shareDropdownOptions = page.locator("[role='menu'], [role='menuitem'], .menu-item");
       if ((await shareDropdownOptions.count()) > 0) {
-        console.log(`Found ${await shareDropdownOptions.count()} share dropdown options`);
+        console.log(`Found ${await shareDropdownOptions.count()} export dropdown options`);
         await page.screenshot({ path: "debugoutput/screenshots/share-dropdown-export-options.png", fullPage: true });
       }
 
@@ -420,14 +485,18 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
     }
 
     expect(consoleErrors.length).toBeLessThanOrEqual(0);
-    expect(consoleWarnings.length).toBeLessThanOrEqual(0);
+    // Allow MUI focus trap warnings ("Body element does not contain trap zone element")
+    const nonMuiWarnings4 = consoleWarnings.filter(
+      (w) => !w.error.includes("Body element does not contain trap zone element")
+    );
+    expect(nonMuiWarnings4.length).toBeLessThanOrEqual(0);
   });
 
   test("should test complete workflow: create → edit → export", async ({ page }) => {
     console.log("Testing complete workflow from project creation to export");
 
     // Step 1: Create project using correct workflow
-    const addOnStarterNewButton = page.getByRole("button", { name: "New" }).first();
+    const addOnStarterNewButton = page.getByRole("button", { name: "Create New" }).first();
     await expect(addOnStarterNewButton).toBeVisible();
     await addOnStarterNewButton.click();
 
@@ -435,10 +504,15 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
     await page.screenshot({ path: "debugoutput/screenshots/workflow-step1-project-dialog.png", fullPage: true });
 
     const okButton = await page.getByTestId("submit-button").first();
+    await preferBrowserStorageInProjectDialog(page);
     await okButton.click();
 
     await page.waitForTimeout(9000);
     await page.waitForLoadState("networkidle");
+
+    // Select Focused mode to dismiss welcome panel and hide Inspector
+    await selectEditMode(page);
+    await page.waitForTimeout(1000);
 
     // Take screenshot of editor state
     await page.screenshot({ path: "debugoutput/screenshots/workflow-step1-project-created.png", fullPage: true });
@@ -449,8 +523,8 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
     // Verify main editor interface elements are present - use more specific selectors
     const saveButton = page.getByRole("button", { name: "Save" }).first();
     const viewButton = page.getByRole("button", { name: "View" }).first();
-    const shareButton = page.getByRole("button", { name: "Share" }).first();
-    const runButton = page.getByRole("button", { name: "Run" }).first();
+    const exportToolbarButton = getExportToolbarButton(page);
+    const testButton = getTestToolbarButton(page);
 
     // Use conditional checks like the successful tests do
     if ((await saveButton.count()) > 0) {
@@ -463,18 +537,18 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
       await expect(viewButton).toBeVisible();
     }
 
-    if ((await shareButton.count()) > 0) {
-      console.log("Found Share button in main toolbar");
-      await expect(shareButton).toBeVisible();
+    if ((await exportToolbarButton.count()) > 0) {
+      console.log("Found Export button in main toolbar");
+      await expect(exportToolbarButton).toBeVisible();
     }
 
-    if ((await runButton.count()) > 0) {
-      console.log("Found Run button in main toolbar");
-      await expect(runButton).toBeVisible();
+    if ((await testButton.count()) > 0) {
+      console.log("Found Test button in main toolbar");
+      await expect(testButton).toBeVisible();
     }
 
     // Verify at least some editor elements exist to confirm we're in the editor
-    const anyToolbarButton = saveButton.or(viewButton).or(shareButton).or(runButton);
+    const anyToolbarButton = saveButton.or(viewButton).or(exportToolbarButton).or(testButton);
     if ((await anyToolbarButton.count()) > 0) {
       console.log("Main editor toolbar verified");
     } else {
@@ -524,9 +598,9 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
     }
 
     // Look for actual export buttons
-    const exportZipButton = page.locator("button:has-text('Export as a zip file')");
-    const downloadFlatWorldButton = page.locator("button:has-text('Download flat world')");
-    const downloadProjectWorldButton = page.locator("button:has-text('Download project world')");
+    const exportZipButton = getDashboardAddonExportButton(page);
+    const downloadFlatWorldButton = getDashboardFlatWorldButton(page);
+    const downloadProjectWorldButton = getDashboardProjectWorldButton(page);
 
     if ((await exportZipButton.count()) > 0) {
       console.log("Found export options, testing zip export");
@@ -579,7 +653,11 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow", () => {
     await page.screenshot({ path: "debugoutput/screenshots/workflow-final-state.png", fullPage: true });
 
     expect(consoleErrors.length).toBeLessThanOrEqual(0);
-    expect(consoleWarnings.length).toBeLessThanOrEqual(0);
+    // Allow MUI focus trap warnings ("Body element does not contain trap zone element")
+    const nonMuiWarnings5 = consoleWarnings.filter(
+      (w) => !w.error.includes("Body element does not contain trap zone element")
+    );
+    expect(nonMuiWarnings5.length).toBeLessThanOrEqual(0);
     console.log("Complete workflow test finished successfully");
   });
 });

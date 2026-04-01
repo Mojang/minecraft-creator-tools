@@ -3,8 +3,9 @@ import { AppBar, Box, CssBaseline, ThemeProvider } from "@mui/material";
 import { useTheme } from "../../hooks/theme/UseTheme";
 import HeroBanner from "./HeroBanner";
 import Footer from "./Footer";
-import { AppMode } from "../../App";
-import HomeHeader from "../../HomeHeader";
+import ElectronTitleBar from "../../appShell/ElectronTitleBar";
+import { AppMode } from "../../appShell/App";
+import HomeHeader from "../../home/HomeHeader";
 
 interface LayoutProps {
   children?: ReactNode;
@@ -25,19 +26,17 @@ export default function Layout({ children, isApp, onSaveBackups }: LayoutProps) 
       <CssBaseline />
       <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
         <AppBar position="fixed">
+          {isApp && <ElectronTitleBar mode={AppMode.home} />}
           <HomeHeader isApp={isApp} toggleThemeMode={toggleMode} mode={mode} />
         </AppBar>
         <Box
-          overflow="scroll"
           component="main"
           sx={{
             mt: contentVerticalSpacing,
             backgroundColor: "background.default",
             flexGrow: 1,
+            overflow: "auto",
             overflowX: "hidden",
-            //there's something weird happening with the northstar styling, set the scroll bar explicitly so its always visible
-            scrollbarColor: (theme) =>
-              theme.palette.mode === "light" ? `#48494A ${theme.palette.common.white}` : null,
           }}
         >
           {!isApp && <HeroBanner />}

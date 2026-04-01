@@ -28,13 +28,17 @@
     "entityTypeComponents": [],
     "blockTypeComponents": [],
     "itemTypeComponents": [],
+    "biomeBehaviorTypeComponents": [],
+    "biomeClientTypeComponents": [],
+    "particleEmitterTypeComponents": [],
+    "particleTypeComponents": [],
     "apisUsed": [],
-    "mctoolsVersion": 10002009,
+    "mctoolsVersion": 10000001,
     "itemTypes": [
       "Animation",
-      "Behavior pack",
       "Behavior pack animation",
       "Behavior pack animation controller",
+      "Behavior pack folder",
       "Behavior pack manifest",
       "Entity type",
       "Entity type visuals/audio",
@@ -49,7 +53,7 @@
       "Material",
       "Model",
       "Particle",
-      "Resource pack",
+      "Resource pack folder",
       "Resource pack manifest",
       "Sound catalog",
       "Spawn rule",
@@ -114,9 +118,6 @@
       "textures.uniqueTexturePaths": {
         "count": 4
       },
-      "textures.uniqueParticleTexturePaths": {
-        "count": 0
-      },
       "textures.uniqueParticleTextureVanillaPaths": {
         "count": 1
       },
@@ -142,59 +143,60 @@
     "errorSummary": "ERROR: [CADDONIREQ161] (/Content/resource_packs/aop_mobsrp/materials/entity.material) First segment of a Materials section identifier is not in the expected form of creatorshortname_projectshortname_materialname or creatorshortname_projectshortname_materialname:baseitem: aopthisisnotagoodname:entity_flat_color_line\nERROR: [CADDONIREQ161] (/Content/resource_packs/aop_mobsrp/materials/entity.material) First segment of a Materials section identifier is not in the expected form of creatorshortname_projectshortname_materialname or creatorshortname_projectshortname_materialname:baseitem: entity_static\nERROR: [CADDONREQ101] Found a loose file in the font folder. Should only see files in the folder font\\creatorshortname\\gamename\\: glyph_E0.png\nERROR: [CADDONREQ160] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Found more than one behavior pack manifest in a cooperative add-on, which is not a best practice\nERROR: [CADDONREQ169] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Resource pack manifest does not have a proper dependency on the behavior pack identifier.\nERROR: [MINENGINEVER100] (/Content/behavior_packs/aop_mobsbp/manifest.json) Behavior pack manifest does not define a header/min_engine_version.\nERROR: [MINENGINEVER100] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Behavior pack manifest does not define a header/min_engine_version.",
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
-    "testFailSummary": "TESTFAIL: [CADDONIREQ000] Found 2 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).\nTESTFAIL: [CADDONREQ000] Found 3 errors for Cooperative Add-On Requirements (CADDONREQ).\nTESTFAIL: [MINENGINEVER000] Found 2 errors for Min Engine Version (MINENGINEVER).",
-    "infoGenerationTime": 199,
-    "endToEndGenerationTime": 412,
+    "testFailSummary": "TESTFAIL: [CADDONIREQ000] Found 2 errors in Cooperative Add-On Item Requirements Generator check\nTESTFAIL: [CADDONREQ000] Found 3 errors in Cooperative Add-On Requirements check\nTESTFAIL: [MINENGINEVER000] Found 2 errors in Min Engine Version check",
+    "infoGenerationTime": 804,
+    "endToEndGenerationTime": 981,
     "summary": {
       "CADDONIREQ": {
         "0": {
-          "defaultMessage": "Found 2 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).",
+          "title": "Coop Item Naming",
+          "defaultMessage": "Found 2 errors in Cooperative Add-On Item Requirements Generator check",
           "testCompleteFails": 1
         },
         "161": {
+          "title": "Material Namespace",
           "defaultMessage": "First segment of a Materials section identifier is not in the expected form of creatorshortname_projectshortname_materialname or creatorshortname_projectshortname_materialname:baseitem",
           "errors": 2
         }
       },
       "CADDONREQ": {
         "0": {
-          "title": "Test Failure",
-          "defaultMessage": "Found 3 errors for Cooperative Add-On Requirements (CADDONREQ).",
+          "title": "Coop Add-On Requirements",
+          "defaultMessage": "Found 3 errors in Cooperative Add-On Requirements check",
           "testCompleteFails": 1
         },
         "101": {
-          "title": "No Loose File In Type Folder",
+          "title": "No Loose Files",
           "defaultMessage": "Found a loose file in the font folder. Should only see files in the folder font\\creatorshortname\\gamename\\",
           "errors": 1
         },
         "160": {
-          "title": "Not One Behavior Pack Manifest",
+          "title": "BP Manifest Missing",
           "defaultMessage": "Found more than one behavior pack manifest in a cooperative add-on, which is not a best practice",
           "errors": 1
         },
         "169": {
-          "title": "Dependency From Resource Pack To Behavior Pack Not Valid",
+          "title": "RP-BP Dependency Invalid",
           "defaultMessage": "Resource pack manifest does not have a proper dependency on the behavior pack identifier.",
           "errors": 1
         },
         "200": {
-          "title": "Found Behavior Pack",
           "defaultMessage": "Behavior pack manifest found."
         }
       },
       "MINENGINEVER": {
         "0": {
-          "title": "0",
-          "defaultMessage": "Found 2 errors for Min Engine Version (MINENGINEVER).",
+          "title": "Min Engine Version",
+          "defaultMessage": "Found 2 errors in Min Engine Version check",
           "testCompleteFails": 1
         },
         "100": {
-          "title": "Behavior Pack Min Engine Version Defined",
+          "title": "BP Version Defined",
           "defaultMessage": "Behavior pack manifest does not define a header/min_engine_version.",
           "errors": 2
         },
         "220": {
-          "title": "Resource Pack Min Engine Version Minor Version Lower than Current",
+          "title": "RP Minor Low",
           "defaultMessage": "Resource pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.10) or its previous minor version",
           "recommendations": 1
         },
@@ -205,12 +207,13 @@
       },
       "PACKSIZE": {
         "1": {
-          "title": "Test Success",
-          "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully",
+          "title": "Pack Size",
+          "defaultMessage": "Pack Size Information completed successfully",
           "testCompleteSuccesses": 1
         },
         "101": {
-          "title": "Overall Size"
+          "title": "Total Size",
+          "defaultMessage": "Overall Size"
         },
         "102": {
           "title": "File Count"
@@ -222,23 +225,25 @@
           "title": "Content Size"
         },
         "105": {
-          "title": "Content File Count"
+          "title": "Content Files",
+          "defaultMessage": "Content File Count"
         },
         "106": {
-          "title": "Content Folder Count"
+          "title": "Content Folders",
+          "defaultMessage": "Content Folder Count"
         }
       },
       "STRICT": {
         "1": {
-          "title": "Test Success",
-          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully",
+          "title": "Platform Validation",
+          "defaultMessage": "Strict Platform completed successfully",
           "testCompleteSuccesses": 1
         }
       },
       "TEXTURE": {
         "1": {
-          "title": "Test Success",
-          "defaultMessage": "Texture Validation (TEXTURE) completed successfully",
+          "title": "Texture Validation",
+          "defaultMessage": "Texture Validation completed successfully",
           "testCompleteSuccesses": 1
         },
         "101": {
@@ -247,26 +252,16 @@
       },
       "WORLDDATA": {
         "1": {
-          "defaultMessage": "World Data Validation (WORLDDATA) completed successfully",
+          "title": "World Data",
+          "defaultMessage": "World Data Validation completed successfully",
           "testCompleteSuccesses": 1
         },
-        "121": {
-          "defaultMessage": "Blocks"
-        },
-        "122": {
-          "defaultMessage": "Block Data"
-        },
         "123": {
-          "defaultMessage": "Command"
+          "title": "Command"
         },
         "124": {
+          "title": "Execute Subcommand",
           "defaultMessage": "Execute Sub Command"
-        },
-        "125": {
-          "defaultMessage": "Level Dat"
-        },
-        "126": {
-          "defaultMessage": "Level Dat Experiments"
         }
       }
     }
@@ -428,9 +423,6 @@
         "uniqueTexturePaths": {
           "count": 4
         },
-        "uniqueParticleTexturePaths": {
-          "count": 0
-        },
         "uniqueParticleTextureVanillaPaths": {
           "count": 1
         },
@@ -446,30 +438,6 @@
       "iTp": 1,
       "gId": "WORLDDATA",
       "gIx": 1
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 121,
-      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 121,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 122,
-      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 122,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     },
     {
       "iTp": 7,
@@ -502,33 +470,9 @@
       "gId": "WORLDDATA",
       "gIx": 124,
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 125,
-      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 125,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 126,
-      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 126,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     }
   ],
   "generatorName": "Minecraft Creator Tools",
   "suite": 2,
-  "generatorVersion": "0.2.9"
+  "generatorVersion": "0.0.1"
 }

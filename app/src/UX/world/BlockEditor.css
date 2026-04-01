@@ -1,0 +1,19 @@
+.be-outer {
+}
+
+.be-pe {
+  max-height: calc(100vh - 200px);
+  padding: 4px;
+  overflow-y: auto;
+}
+
+.be-header {
+  background-color: #404040;
+  padding: 10px;
+  margin-left: 2px;
+}
+
+.be-title {
+  font-weight: bold;
+  margin-bottom: 4px;
+}

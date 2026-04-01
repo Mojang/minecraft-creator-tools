@@ -35,6 +35,18 @@ export interface IWorldSettings {
   lastPlayed?: bigint;
   deferredTechnicalPreviewExperiment?: boolean;
   isEditor?: boolean;
+  deployCreatorToolsInfrastructure?: boolean;
   worldTemplateReferences?: IPackageReference[];
   packageReferences?: IPackageReference[];
+  onlineMode?: boolean;
+  emitServerTelemetry?: boolean;
+  enableDebugger?: boolean;
+  enableDebuggerStreaming?: boolean;
+  /**
+   * When true, the world is treated as transient/ephemeral:
+   * - World data is not backed up on reprovisioning
+   * - Each deployment starts with a fresh world (no leveldb copied)
+   * - Useful for development scenarios where you always want a clean slate
+   */
+  transientWorld?: boolean;
 }

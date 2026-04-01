@@ -1,0 +1,258 @@
+/* Copyright (c) Microsoft Corporation. */
+/* Licensed under the MIT License. */
+
+/* LootTableLivePreview - Loot table preview styling */
+
+.ltlp-container {
+  font-family: var(--font-family-sans, "Segoe UI", sans-serif);
+  font-size: 12px;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.ltlp-light {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.ltlp-dark {
+  background: #2d2d2d;
+  color: #e0e0e0;
+}
+
+/* Loading/Error States */
+.ltlp-loading,
+.ltlp-error {
+  padding: 16px;
+  text-align: center;
+  font-style: italic;
+  opacity: 0.7;
+}
+
+.ltlp-error {
+  color: #d9534f;
+}
+
+/* Header */
+.ltlp-header {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.ltlp-light .ltlp-header {
+  background: #e0e0e0;
+}
+
+.ltlp-dark .ltlp-header {
+  background: #3a3a3a;
+}
+
+.ltlp-icon {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.ltlp-title {
+  flex: 1;
+}
+
+.ltlp-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.ltlp-id {
+  font-size: 10px;
+  opacity: 0.6;
+  font-family: monospace;
+}
+
+/* Sections */
+.ltlp-section {
+  margin-bottom: 8px;
+}
+
+.ltlp-section-header {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  gap: 6px;
+}
+
+.ltlp-light .ltlp-section-header {
+  background: #e8e8e8;
+}
+
+.ltlp-light .ltlp-section-header:hover {
+  background: #ddd;
+}
+
+.ltlp-dark .ltlp-section-header {
+  background: #383838;
+}
+
+.ltlp-dark .ltlp-section-header:hover {
+  background: #444;
+}
+
+.ltlp-expand-icon {
+  font-size: 10px;
+  width: 12px;
+  text-align: center;
+}
+
+.ltlp-badge {
+  margin-left: auto;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.ltlp-light .ltlp-badge {
+  background: #ccc;
+  color: #333;
+}
+
+.ltlp-dark .ltlp-badge {
+  background: #555;
+  color: #e0e0e0;
+}
+
+/* Pools */
+.ltlp-pools {
+  padding-left: 12px;
+  margin-top: 4px;
+}
+
+.ltlp-pool {
+  margin-bottom: 6px;
+}
+
+.ltlp-pool-header {
+  display: flex;
+  align-items: center;
+  padding: 5px 8px;
+  border-radius: 3px;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.ltlp-light .ltlp-pool-header {
+  background: #f0f0f0;
+}
+
+.ltlp-dark .ltlp-pool-header {
+  background: #333;
+}
+
+.ltlp-pool-name {
+  font-weight: 500;
+}
+
+.ltlp-pool-rolls {
+  opacity: 0.7;
+  font-size: 10px;
+}
+
+.ltlp-pool-entries {
+  margin-left: auto;
+  opacity: 0.6;
+  font-size: 10px;
+}
+
+/* Entries */
+.ltlp-entries {
+  padding-left: 16px;
+  margin-top: 4px;
+}
+
+.ltlp-entry {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 3px;
+  gap: 6px;
+  font-size: 11px;
+  margin-bottom: 2px;
+}
+
+.ltlp-light .ltlp-entry {
+  background: #fafafa;
+}
+
+.ltlp-light .ltlp-entry:hover {
+  background: #eee;
+}
+
+.ltlp-dark .ltlp-entry {
+  background: #2a2a2a;
+}
+
+.ltlp-dark .ltlp-entry:hover {
+  background: #3a3a3a;
+}
+
+.ltlp-entry-icon {
+  font-size: 12px;
+}
+
+.ltlp-entry-name {
+  flex: 1;
+  text-transform: capitalize;
+}
+
+.ltlp-entry-weight {
+  font-size: 10px;
+  opacity: 0.6;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.ltlp-light .ltlp-entry-weight {
+  background: #e0e0e0;
+}
+
+.ltlp-dark .ltlp-entry-weight {
+  background: #444;
+}
+
+.ltlp-entry-details {
+  display: flex;
+  gap: 4px;
+}
+
+.ltlp-detail-badge {
+  font-size: 9px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  opacity: 0.7;
+}
+
+.ltlp-light .ltlp-detail-badge {
+  background: #d0d0d0;
+}
+
+.ltlp-dark .ltlp-detail-badge {
+  background: #444;
+}
+
+/* Clickable Items */
+.ltlp-clickable {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.ltlp-light .ltlp-clickable:hover {
+  background-color: #d8d8d8;
+}
+
+.ltlp-dark .ltlp-clickable:hover {
+  background-color: #404040;
+}

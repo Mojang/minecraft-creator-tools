@@ -1,1 +1,0 @@
-This folder is used for the outputs of debug command line options, such as those defined in launch.json. Besides this README file, no content in this folder is intended to be retained or checked in.

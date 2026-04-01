@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; manifest-src 'self'; worker-src 'self' blob: ; script-src 'self' https://wcpstatic.microsoft.com/ https://js.monitor.azure.com/ 'wasm-unsafe-eval'; connect-src 'self' https://browser.events.data.microsoft.com/ https://js.monitor.azure.com/ https://raw.githubusercontent.com/ https://registry.npmjs.org/ http://localhost:6126/api/; form-action https://browser.events.data.microsoft.com/; font-src 'self' https://res-1.cdn.office.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
+      content="default-src 'self'; manifest-src 'self' https://github.com; worker-src 'self' blob: ; script-src 'self' 'wasm-unsafe-eval'; connect-src 'self' ws://localhost:* wss://localhost:* https://raw.githubusercontent.com/ https://registry.npmjs.org/ http://localhost:6126/api/; font-src 'self' https://res-1.cdn.office.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
     />
     <meta name="theme-color" content="#000000" />
     <meta name="description" content="Minecraft Creator Tools" />
@@ -14,7 +14,16 @@
     <script type="module" src="src/index.tsx"></script>
     <link rel="apple-touch-icon" href="logo192.png" />
 
-    <link rel="manifest" href="manifest.json" />
+    <link rel="manifest" href="manifest.json" crossorigin="use-credentials" />
+
+    <meta property="og:title" content="Minecraft Creator Tools" />
+    <meta property="og:description" content="Tools for building, editing, and validating Minecraft Bedrock Edition add-ons" />
+    <meta property="og:image" content="/logo512.png" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Minecraft Creator Tools" />
+    <meta name="twitter:description" content="Tools for building, editing, and validating Minecraft Bedrock Edition add-ons" />
+    <meta name="twitter:image" content="/logo512.png" />
 
     <title>Minecraft Creator Tools</title>
   </head>

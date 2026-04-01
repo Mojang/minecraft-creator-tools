@@ -1,0 +1,251 @@
+/* ItemTypeLivePreview.css - Styles for item type live preview */
+
+.itlp-container {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-y: auto;
+  padding: 8px;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.itlp-light {
+  background-color: var(--surface-bg);
+  color: var(--surface-text);
+}
+
+.itlp-dark {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+}
+
+/* Header */
+.itlp-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+}
+
+.itlp-light .itlp-header {
+  background: linear-gradient(135deg, #f0e8f4 0%, #e0d4e8 100%);
+  border: 1px solid #c8b8d4;
+}
+
+.itlp-dark .itlp-header {
+  background: linear-gradient(135deg, #3a2a40 0%, #2a1e30 100%);
+  border: 1px solid #4a3a50;
+}
+
+.itlp-icon {
+  width: 24px;
+  height: 24px;
+  image-rendering: pixelated;
+}
+
+.itlp-title {
+  flex: 1;
+}
+
+.itlp-name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.itlp-light .itlp-name {
+  color: #5a3070;
+}
+
+.itlp-dark .itlp-name {
+  color: #c88fd4;
+}
+
+.itlp-id {
+  font-size: 10px;
+  font-family: "Consolas", "Monaco", monospace;
+  opacity: 0.7;
+  margin-top: 2px;
+}
+
+/* Metadata */
+.itlp-meta {
+  padding: 6px 10px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+}
+
+.itlp-light .itlp-meta {
+  background-color: var(--surface-elevated);
+  border: 1px solid var(--surface-border);
+}
+
+.itlp-dark .itlp-meta {
+  background-color: #252526;
+  border: 1px solid #3c3c3c;
+}
+
+.itlp-meta-row {
+  display: flex;
+  gap: 8px;
+  padding: 2px 0;
+  font-size: 11px;
+}
+
+.itlp-meta-label {
+  font-weight: 500;
+  min-width: 60px;
+  opacity: 0.7;
+}
+
+.itlp-meta-value {
+  flex: 1;
+}
+
+/* Sections */
+.itlp-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.itlp-section {
+  border-radius: 4px;
+}
+
+.itlp-light .itlp-section {
+  background-color: var(--surface-bg);
+  border: 1px solid var(--surface-border);
+}
+
+.itlp-dark .itlp-section {
+  background-color: #252526;
+  border: 1px solid #3c3c3c;
+}
+
+.itlp-section-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.itlp-section-header:hover {
+  background-color: rgba(128, 128, 128, 0.1);
+}
+
+.itlp-toggle {
+  font-size: 8px;
+  width: 12px;
+  opacity: 0.6;
+}
+
+.itlp-section-icon {
+  width: 14px;
+  height: 14px;
+  image-rendering: pixelated;
+}
+
+.itlp-section-title {
+  font-weight: 500;
+  flex: 1;
+}
+
+.itlp-count {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  opacity: 0.8;
+}
+
+.itlp-light .itlp-count {
+  background-color: #e8e8e8;
+  color: #666;
+}
+
+.itlp-dark .itlp-count {
+  background-color: #3c3c3c;
+  color: #aaa;
+}
+
+.itlp-section-content {
+  padding: 4px 8px 8px 8px;
+}
+
+/* Component Items */
+.itlp-component-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  margin: 2px 0;
+}
+
+.itlp-component-item:hover {
+  background-color: rgba(128, 128, 128, 0.15);
+}
+
+.itlp-component-icon {
+  width: 16px;
+  height: 16px;
+  image-rendering: pixelated;
+}
+
+.itlp-component-name {
+  font-weight: 500;
+  flex: 1;
+}
+
+.itlp-component-summary {
+  font-size: 10px;
+  opacity: 0.6;
+  font-family: "Consolas", "Monaco", monospace;
+}
+
+/* Event Items */
+.itlp-event-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  margin: 2px 0;
+}
+
+.itlp-event-item:hover {
+  background-color: rgba(128, 128, 128, 0.15);
+}
+
+.itlp-event-icon {
+  width: 14px;
+  height: 14px;
+  image-rendering: pixelated;
+}
+
+.itlp-event-name {
+  font-size: 11px;
+  font-family: "Consolas", "Monaco", monospace;
+}
+
+/* Loading and Error States */
+.itlp-loading,
+.itlp-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+.itlp-error-icon {
+  font-size: 16px;
+}

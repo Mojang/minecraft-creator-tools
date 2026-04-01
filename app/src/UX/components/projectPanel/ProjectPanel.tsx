@@ -1,6 +1,18 @@
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
-import { CircularProgress, Tooltip, Typography } from "@mui/material";
+import {
+  CircularProgress,
+  Tooltip,
+  Typography,
+  Menu,
+  MenuItem,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from "@mui/material";
 import { useState, useEffect } from "react";
 import Project from "../../../app/Project";
 import IFolder from "../../../storage/IFolder";
@@ -11,11 +23,15 @@ import McButton from "../../shared/components/inputs/mcButton/McButton";
 import McListItem from "../../shared/components/inputs/mcListItem/McListItem";
 import { mcColors } from "../../hooks/theme/mcColors";
 import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../../app/CreatorToolsHost";
+import AppServiceProxy from "../../../core/AppServiceProxy";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDownload } from "@fortawesome/free-solid-svg-icons";
+import { useIntl } from "react-intl";
 /**
  * Default placeholder image for projects without a preview.
  * Shows a stylized grass block pattern.
  */
-const DEFAULT_PROJECT_IMAGE = "./res/images/templates/sushi_roll.png";
+const DEFAULT_PROJECT_IMAGE = CreatorToolsHost.contentWebRoot + "res/images/templates/sushi_roll.png";
 
 /**
  * Formats a date in a friendly, compact format
@@ -44,12 +60,15 @@ interface ProjectPanelProps {
   editFolder: (folder: IFolder, name?: string, isDocumentationProject?: boolean) => void;
   exportBackup: () => Promise<void>;
   openProject: (event: React.SyntheticEvent, project: Project) => void;
+  onRemoveProject?: (project: Project) => void;
+  onDeleteProject?: (project: Project) => void;
   maxItemsToShow?: number;
 }
 
 export default function ProjectPanel(props: ProjectPanelProps) {
   const { projectList, maxItemsToShow, editFolder, exportBackup, openProject } = props;
   const { trackEvent } = useTelemetry();
+  const intl = useIntl();
 
   const onDirectoryPicked = (directory?: Directory) => {
     if (dirError || !directory) {
@@ -95,12 +114,22 @@ export default function ProjectPanel(props: ProjectPanelProps) {
   };
 
   const handleProjectOpen = (event: React.SyntheticEvent, project: Project) => {
+    const properties: Record<string, string> = {
+      [TelemetryProperties.STORAGE_TYPE]: "browser",
+      [TelemetryProperties.ACTION_SOURCE]: "projectList",
+    };
+
+    if (project.created) {
+      properties[TelemetryProperties.CREATION_DATE] = project.created.toISOString();
+    }
+
+    if (project.lastOpened) {
+      properties[TelemetryProperties.LAST_OPENED_DATE] = project.lastOpened.toISOString();
+    }
+
     trackEvent({
       name: TelemetryEvents.PROJECT_OPENED,
-      properties: {
-        [TelemetryProperties.STORAGE_TYPE]: "browser",
-        [TelemetryProperties.ACTION_SOURCE]: "projectList",
-      },
+      properties,
     });
 
     openProject(event, project);
@@ -110,6 +139,102 @@ export default function ProjectPanel(props: ProjectPanelProps) {
 
   const [isExporting, setIsExporting] = useState(false);
   const [, setProjectsLoaded] = useState(0);
+
+  // Context menu state
+  const [contextMenuAnchor, setContextMenuAnchor] = useState<null | HTMLElement>(null);
+  const [contextMenuProject, setContextMenuProject] = useState<Project | null>(null);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [pendingAction, setPendingAction] = useState<"remove" | "delete">("remove");
+  const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timeout | null>(null);
+
+  // Handle context menu open (right-click or "..." button)
+  const handleContextMenuOpen = (event: React.MouseEvent<HTMLElement>, project: Project) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setContextMenuAnchor(event.currentTarget);
+    setContextMenuProject(project);
+  };
+
+  // Handle context menu close
+  const handleContextMenuClose = () => {
+    setContextMenuAnchor(null);
+  };
+
+  // Handle open action from context menu
+  const handleOpenClick = () => {
+    handleContextMenuClose();
+    if (contextMenuProject) {
+      // Create a synthetic event for the openProject callback
+      const syntheticEvent = { preventDefault: () => {}, stopPropagation: () => {} } as React.SyntheticEvent;
+      openProject(syntheticEvent, contextMenuProject);
+    }
+  };
+
+  // Handle remove action from context menu
+  const handleRemoveClick = () => {
+    handleContextMenuClose();
+    setPendingAction("remove");
+    setConfirmDialogOpen(true);
+  };
+
+  // Handle delete action from context menu (web only)
+  const handleDeleteClick = () => {
+    handleContextMenuClose();
+    setPendingAction("delete");
+    setConfirmDialogOpen(true);
+  };
+
+  // Handle confirm remove/delete
+  const handleConfirmAction = () => {
+    if (contextMenuProject) {
+      if (pendingAction === "delete" && props.onDeleteProject) {
+        props.onDeleteProject(contextMenuProject);
+      } else if (props.onRemoveProject) {
+        props.onRemoveProject(contextMenuProject);
+      }
+
+      trackEvent({
+        name: TelemetryEvents.PROJECT_DELETED,
+        properties: {
+          [TelemetryProperties.ACTION_SOURCE]: "projectList",
+          [TelemetryProperties.ACTION_TYPE]: pendingAction,
+        },
+      });
+    }
+    setConfirmDialogOpen(false);
+    setContextMenuProject(null);
+  };
+
+  // Handle cancel remove/delete
+  const handleCancelAction = () => {
+    setConfirmDialogOpen(false);
+    setContextMenuProject(null);
+  };
+
+  // Long press handlers for touch devices
+  const handleTouchStart = (event: React.TouchEvent<HTMLElement>, project: Project) => {
+    const timer = setTimeout(() => {
+      // Use the touch target for positioning
+      const target = event.currentTarget;
+      setContextMenuAnchor(target);
+      setContextMenuProject(project);
+    }, 600); // 600ms long press
+    setLongPressTimer(timer);
+  };
+
+  const handleTouchEnd = () => {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      setLongPressTimer(null);
+    }
+  };
+
+  const handleTouchMove = () => {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      setLongPressTimer(null);
+    }
+  };
 
   // Load project preferences to get preview images
   useEffect(() => {
@@ -151,12 +276,14 @@ export default function ProjectPanel(props: ProjectPanelProps) {
           theme.palette.mode === "dark"
             ? `linear-gradient(180deg, ${mcColors.gray5} 0%, ${mcColors.gray6} 100%)`
             : `linear-gradient(180deg, #ffffff 0%, ${mcColors.gray1} 100%)`,
+        display: "flex",
+        flexDirection: "column",
       })}
     >
       <Box sx={{ display: "flex", alignItems: "center", mb: expandedMode ? 0 : 2 }}>
         <Box
           component="img"
-          src="./res/images/icons/chest.png"
+          src={CreatorToolsHost.contentWebRoot + "res/images/icons/chest.png"}
           alt="Projects"
           aria-hidden="true"
           sx={(theme) => ({
@@ -169,19 +296,21 @@ export default function ProjectPanel(props: ProjectPanelProps) {
         />
         <Typography
           variant="h6"
+          component="h2"
           sx={(theme) => ({
             fontWeight: 600,
             textShadow: theme.palette.mode === "dark" ? "1px 1px 0px rgba(0,0,0,0.5)" : "none",
           })}
         >
-          Your Projects
+          {intl.formatMessage({ id: "home.project_panel.title" })}
         </Typography>
       </Box>
       {expandedMode ? (
         <>
           <Box
             sx={{
-              maxHeight: "20em",
+              flex: 1,
+              minHeight: 0,
               overflowY: "auto",
               overflowX: "hidden",
               display: "flex",
@@ -196,101 +325,224 @@ export default function ProjectPanel(props: ProjectPanelProps) {
               const imageSource = project.previewImageBase64
                 ? `data:image/png;base64,${project.previewImageBase64}`
                 : CreatorToolsHost.theme === CreatorToolsThemeStyle.dark
-                ? "./res/images/templates/redflower_lightbg.png"
-                : "./res/images/templates/redflower_darkbg.png";
+                  ? CreatorToolsHost.contentWebRoot + "res/images/templates/redflower_lightbg.png"
+                  : CreatorToolsHost.contentWebRoot + "res/images/templates/redflower_darkbg.png";
 
               return (
-                <McListItem
+                <Box
                   key={index}
-                  onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleProjectOpen(e, project)}
+                  onContextMenu={(e) => handleContextMenuOpen(e, project)}
+                  onTouchStart={(e) => handleTouchStart(e, project)}
+                  onTouchEnd={handleTouchEnd}
+                  onTouchMove={handleTouchMove}
+                  sx={{ display: "flex", alignItems: "center", gap: 1 }}
                 >
-                  {/* Project thumbnail */}
-                  <Box
-                    sx={(theme) => ({
-                      width: 48,
-                      height: 48,
-                      flexShrink: 0,
-                      border: `1px solid ${theme.palette.mode === "dark" ? mcColors.gray4 : mcColors.gray3}`,
-                      borderRadius: 0,
-                      overflow: "hidden",
-                      bgcolor: mcColors.gray6,
-                      boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.2)",
-                    })}
+                  <McListItem
+                    onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleProjectOpen(e, project)}
+                    sx={{ flex: 1 }}
                   >
+                    {/* Project thumbnail */}
                     <Box
-                      component="img"
-                      src={imageSource}
-                      alt=""
-                      sx={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        imageRendering: "pixelated",
-                      }}
-                    />
-                  </Box>
-                  {/* Project info */}
-                  <Box sx={{ flex: 1, minWidth: 0 }}>
-                    <Tooltip title={project.simplifiedName} placement="top" arrow enterDelay={500}>
-                      <Typography
-                        variant="body1"
-                        sx={(theme) => ({
-                          fontWeight: 600,
-                          fontSize: "0.95rem",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                          color: theme.palette.mode === "dark" ? mcColors.gray1 : mcColors.gray6,
-                        })}
-                      >
-                        {project.simplifiedName}
-                      </Typography>
-                    </Tooltip>
-                    <Tooltip
-                      title={project.modified ? project.modified.toLocaleString() : ""}
-                      placement="bottom"
-                      arrow
-                      enterDelay={300}
+                      sx={(theme) => ({
+                        width: 48,
+                        height: 48,
+                        flexShrink: 0,
+                        border: `1px solid ${theme.palette.mode === "dark" ? mcColors.gray4 : mcColors.gray3}`,
+                        borderRadius: 0,
+                        overflow: "hidden",
+                        bgcolor: mcColors.gray6,
+                        boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.2)",
+                      })}
                     >
-                      <Typography
-                        variant="caption"
+                      <Box
+                        component="img"
+                        src={imageSource}
+                        alt="Project thumbnail"
+                        sx={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          imageRendering: "pixelated",
+                        }}
+                      />
+                    </Box>
+                    {/* Project info */}
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                      <Tooltip title={project.simplifiedName} placement="top" arrow enterDelay={500}>
+                        <Typography
+                          variant="body1"
+                          sx={(theme) => ({
+                            fontWeight: 600,
+                            fontSize: "0.95rem",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            color: theme.palette.mode === "dark" ? mcColors.gray1 : mcColors.gray6,
+                          })}
+                        >
+                          {project.simplifiedName}
+                        </Typography>
+                      </Tooltip>
+                      <Tooltip
+                        title={project.modified ? project.modified.toLocaleString() : ""}
+                        placement="bottom"
+                        arrow
+                        enterDelay={300}
+                      >
+                        <Typography
+                          variant="caption"
+                          sx={(theme) => ({
+                            color: theme.palette.mode === "dark" ? mcColors.gray2 : mcColors.gray5,
+                            fontSize: "0.75rem",
+                            cursor: "default",
+                          })}
+                        >
+                          {formatDate(project.modified)}
+                        </Typography>
+                      </Tooltip>
+                    </Box>
+                  </McListItem>
+                  {/* More options button */}
+                  {props.onRemoveProject && (
+                    <Tooltip title={intl.formatMessage({ id: "home.project_panel.more_options" })} arrow>
+                      <IconButton
+                        size="small"
+                        onClick={(e) => handleContextMenuOpen(e, project)}
+                        aria-label={intl.formatMessage({ id: "home.project_panel.more_options_for" }, { projectName: project.simplifiedName })}
                         sx={(theme) => ({
-                          color: theme.palette.mode === "dark" ? mcColors.gray2 : mcColors.gray5,
-                          fontSize: "0.75rem",
-                          cursor: "default",
+                          ml: 0.5,
+                          color: theme.palette.mode === "dark" ? mcColors.gray3 : mcColors.gray4,
+                          "&:hover": {
+                            color: theme.palette.mode === "dark" ? mcColors.gray1 : mcColors.gray6,
+                            bgcolor: theme.palette.mode === "dark" ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)",
+                          },
                         })}
                       >
-                        {formatDate(project.modified)}
-                      </Typography>
+                        <Box component="span" sx={{ fontSize: "1.2rem", lineHeight: 1 }}>
+                          ⋮
+                        </Box>
+                      </IconButton>
                     </Tooltip>
-                  </Box>
-                  {/* Arrow indicator */}
-                  <Box
-                    sx={(theme) => ({
-                      color: theme.palette.mode === "dark" ? mcColors.gray3 : mcColors.gray4,
-                      fontSize: "0.7rem",
-                      opacity: 0.6,
-                      ml: 0.5,
-                    })}
-                  >
-                    ▶
-                  </Box>
-                </McListItem>
+                  )}
+                </Box>
               );
             })}
           </Box>
           <Box marginBottom={1} />
         </>
       ) : (
-        <Box sx={{ py: 2, px: 1, textAlign: "center", opacity: 0.7 }}>
-          <Typography variant="body2">No projects yet. Start with a template above or drop files to begin!</Typography>
+        <Box sx={{ py: 2, px: 1, textAlign: "left" }}>
+          <Typography variant="body2" sx={{ mb: 1, opacity: 0.85 }}>
+            {intl.formatMessage({ id: "home.project_panel.no_projects" })}
+          </Typography>
         </Box>
       )}
       {expandedMode && (
-        <McButton variant="wood" fullWidth onClick={onExportBackup} disabled={isExporting}>
-          {isExporting ? <CircularProgress size="1.5em" color="inherit" /> : "Export Backup"}
-        </McButton>
+        <Box sx={{ display: "flex", justifyContent: "center", pt: 1 }}>
+          <Typography
+            component="button"
+            onClick={onExportBackup}
+            disabled={isExporting}
+            sx={(theme) => ({
+              background: "none",
+              border: "none",
+              cursor: isExporting ? "wait" : "pointer",
+              fontSize: "0.85rem",
+              fontWeight: 500,
+              color: theme.palette.mode === "dark" ? mcColors.brownLight : mcColors.brown,
+              opacity: isExporting ? 0.6 : 0.8,
+              textDecoration: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 0.5,
+              transition: "all 0.15s ease-in-out",
+              "&:hover": {
+                opacity: 1,
+                textDecoration: "underline",
+              },
+            })}
+          >
+            {isExporting ? (
+              <>
+                <CircularProgress size={12} color="inherit" /> {intl.formatMessage({ id: "home.project_panel.download_backup_progress" })}…
+              </>
+            ) : (
+              <>
+                <FontAwesomeIcon icon={faDownload} style={{ fontSize: "0.75rem" }} /> {intl.formatMessage({ id: "home.project_panel.download_backup" })}
+              </>
+            )}
+          </Typography>
+        </Box>
       )}
+
+      {/* Context menu for project actions */}
+      <Menu
+        anchorEl={contextMenuAnchor}
+        open={Boolean(contextMenuAnchor)}
+        onClose={handleContextMenuClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        slotProps={{
+          paper: {
+            sx: {
+              "& .MuiMenuItem-root": { fontSize: "13px", padding: "4px 14px", minHeight: "28px" },
+              "& .MuiList-root": { py: 0.5 },
+            },
+          },
+        }}
+      >
+        <MenuItem onClick={handleOpenClick}>{intl.formatMessage({ id: "home.project_panel.open_project" })}</MenuItem>
+        <MenuItem onClick={handleRemoveClick}>{intl.formatMessage({ id: "home.project_panel.remove_from_list" })}</MenuItem>
+        {/* Delete option only available on web (not Electron/app) */}
+        {!AppServiceProxy.hasAppServiceOrSim && props.onDeleteProject && (
+          <MenuItem onClick={handleDeleteClick} sx={{ color: "error.main" }}>
+            {intl.formatMessage({ id: "home.project_panel.delete_project" })}
+          </MenuItem>
+        )}
+      </Menu>
+
+      {/* Confirmation dialog for project removal/deletion */}
+      <Dialog
+        open={confirmDialogOpen}
+        onClose={handleCancelAction}
+        aria-labelledby="remove-project-dialog-title"
+        aria-describedby="remove-project-dialog-description"
+      >
+        <DialogTitle id="remove-project-dialog-title">
+          {pendingAction === "delete" 
+            ? intl.formatMessage({ id: "home.project_panel.delete_dialog_title" })
+            : intl.formatMessage({ id: "home.project_panel.remove_dialog_title" })}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="remove-project-dialog-description">
+            {pendingAction === "delete"
+              ? intl.formatMessage(
+                  { id: "home.project_panel.delete_dialog_message" },
+                  { projectName: contextMenuProject?.simplifiedName }
+                )
+              : intl.formatMessage(
+                  { id: "home.project_panel.remove_dialog_message" },
+                  { projectName: contextMenuProject?.simplifiedName }
+                )}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <McButton variant="stone" onClick={handleCancelAction}>
+            {intl.formatMessage({ id: "home.project_panel.cancel" })}
+          </McButton>
+          <McButton variant="green" onClick={handleConfirmAction}>
+            {pendingAction === "delete" 
+              ? intl.formatMessage({ id: "home.project_panel.delete" })
+              : intl.formatMessage({ id: "home.project_panel.remove" })}
+          </McButton>
+        </DialogActions>
+      </Dialog>
     </Paper>
   );
 }

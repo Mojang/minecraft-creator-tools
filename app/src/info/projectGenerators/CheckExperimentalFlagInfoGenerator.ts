@@ -5,12 +5,10 @@ import ProjectInfoItem from "../ProjectInfoItem";
 import IProjectInfoGenerator from "../IProjectInfoGenerator";
 import { InfoItemType } from "../IInfoItemData";
 import ProjectInfoSet from "../ProjectInfoSet";
-import ProjectInfoUtilities from "../ProjectInfoUtilities";
 import { ProjectItemType } from "../../app/IProjectItemData";
 import Project from "../../app/Project";
 import MCWorld from "../../minecraft/MCWorld";
-import { WorldLevelDat } from "../../index.lib";
-import Utilities from "../../core/Utilities";
+import WorldLevelDat from "../../minecraft/WorldLevelDat";
 
 export enum CheckExperimentalFlagInfoGeneratorTest {
   flagIsOrWasTrue = 101,
@@ -24,17 +22,12 @@ export enum CheckExperimentalFlagInfoGeneratorTest {
  * Will ensure:
  *  * experimental flag is false and has always been false or null
  *
+ * @see {@link ../../../public/data/forms/mctoolsval/expflag.form.json} for topic definitions
  */
 
 export default class CheckExperimentalFlagInfoGenerator implements IProjectInfoGenerator {
   id = "EXPFLAG";
-  title = "Check Experimental Flag";
-
-  getTopicData(topicId: number) {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(CheckExperimentalFlagInfoGeneratorTest, topicId),
-    };
-  }
+  title = "Experimental Flags";
 
   summarize(info: any, infoSet: ProjectInfoSet) {
     info.experimentalFlagIsOrWasTrue = infoSet.getSummedDataValue(

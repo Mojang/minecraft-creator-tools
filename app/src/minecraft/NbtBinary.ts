@@ -14,6 +14,9 @@ export default class NbtBinary implements IErrorable {
   isInErrorState?: boolean;
   errorMessages?: IErrorMessage[];
 
+  static readonly MAX_ARRAY_LENGTH = 10_000_000;
+  static readonly MAX_STRING_LENGTH = 1_000_000;
+
   get singleRoot() {
     if (this.roots === null) {
       return null;
@@ -181,7 +184,16 @@ export default class NbtBinary implements IErrorable {
             nameLength += data[i++] * 256;
           }
 
+          if (nameLength < 0 || nameLength > NbtBinary.MAX_STRING_LENGTH) {
+            this._pushError("Invalid NBT name length: " + nameLength);
+            return 0;
+          }
+
           for (let j = 0; j < nameLength; j++) {
+            if (i >= data.length) {
+              this._pushError("Unexpected end of data while reading NBT name");
+              return 0;
+            }
             name += String.fromCharCode(data[i++]);
           }
         } else if (tagStack.length === 0) {
@@ -231,6 +243,11 @@ export default class NbtBinary implements IErrorable {
       } else if (activeTag.type === NbtTagType.byteArray) {
         const arrayLength = DataUtilities.getSignedInteger(data[i++], data[i++], data[i++], data[i++], littleEndian);
 
+        if (arrayLength < 0 || arrayLength > NbtBinary.MAX_ARRAY_LENGTH || i + arrayLength > data.length) {
+          this._pushError("Invalid NBT byteArray length: " + arrayLength);
+          return 0;
+        }
+
         const numberArray: number[] = [];
 
         for (let j = 0; j < arrayLength; j++) {
@@ -253,6 +270,11 @@ export default class NbtBinary implements IErrorable {
       } else if (activeTag.type === NbtTagType.intArray) {
         const arrayLength = DataUtilities.getSignedInteger(data[i++], data[i++], data[i++], data[i++], littleEndian);
 
+        if (arrayLength < 0 || arrayLength > NbtBinary.MAX_ARRAY_LENGTH || i + arrayLength * 4 > data.length) {
+          this._pushError("Invalid NBT intArray length: " + arrayLength);
+          return 0;
+        }
+
         const numberArray: number[] = [];
 
         for (let j = 0; j < arrayLength; j++) {
@@ -262,6 +284,11 @@ export default class NbtBinary implements IErrorable {
         activeTag.value = numberArray;
       } else if (activeTag.type === NbtTagType.longArray) {
         const arrayLength = DataUtilities.getSignedInteger(data[i++], data[i++], data[i++], data[i++], littleEndian);
+
+        if (arrayLength < 0 || arrayLength > NbtBinary.MAX_ARRAY_LENGTH || i + arrayLength * 8 > data.length) {
+          this._pushError("Invalid NBT longArray length: " + arrayLength);
+          return 0;
+        }
 
         const numberArray: bigint[] = [];
 

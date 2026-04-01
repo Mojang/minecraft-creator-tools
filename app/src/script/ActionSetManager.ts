@@ -84,10 +84,10 @@ export default class ActionSetManager {
 
       this._actionSet.ensureLoaded();
       this._actionSet.name = StorageUtilities.getBaseFromName(this._jsonFile.name);
-    }
 
-    this._isLoaded = true;
-    this._onLoaded.dispatch(this, this);
+      this._isLoaded = true;
+      this._onLoaded.dispatch(this, this);
+    }
   }
 
   private ensureJsFile() {

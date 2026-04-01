@@ -45,6 +45,14 @@ export function useDirectoryPicker(window: typeof globalThis, config: PickerConf
   );
 
   const pickDirectory = useCallback(async () => {
+    if (typeof window.showDirectoryPicker !== "function") {
+      setError({
+        message:
+          "Your browser does not support folder selection. Please use a Chromium-based browser (Chrome, Edge) on desktop.",
+      });
+      return;
+    }
+
     let handle;
     try {
       //show file dialog

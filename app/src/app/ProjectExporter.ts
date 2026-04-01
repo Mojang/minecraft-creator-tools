@@ -23,6 +23,9 @@ import { Generator } from "../minecraft/WorldLevelDat";
 import IConversionSettings from "../core/IConversionSettings";
 import { ProjectItemType } from "./IProjectItemData";
 import ProjectUtilities from "./ProjectUtilities";
+import telemetryService from "../analytics/Telemetry";
+import { TelemetryEvents, TelemetryProperties, WorldDownloadProperties } from "../analytics/TelemetryConstants";
+import GalleryReader from "./gallery/GalleryReader";
 
 export const enum FolderDeploy {
   retailFolders = 0,
@@ -41,6 +44,7 @@ export const ProjectImportExclusions = [
   "*just.config*",
   "*package-lock*",
   "*.mjs*",
+  "index.json",
 ];
 
 export default class ProjectExporter {
@@ -63,6 +67,23 @@ export default class ProjectExporter {
 
     const newBytes = await mcworld.getBytes();
 
+    // Track pack info for flat world
+    const properties: WorldDownloadProperties = {};
+
+    const additionalPackCount = (mcworld.worldBehaviorPacks?.length || 0) + (mcworld.worldResourcePacks?.length || 0);
+    properties[TelemetryProperties.ADDITIONAL_PACKS_ADDED] = additionalPackCount > 0 ? additionalPackCount : undefined;
+
+    const behaviorPackUuids = mcworld.worldBehaviorPacks?.map((pack) => pack.pack_id)?.join(";");
+    properties[TelemetryProperties.BEHAVIOR_PACKS] = behaviorPackUuids || "";
+
+    const resourcePackUuids = mcworld.worldResourcePacks?.map((pack) => pack.pack_id)?.join(";");
+    properties[TelemetryProperties.RESOURCE_PACKS] = resourcePackUuids || "";
+
+    telemetryService.trackEvent({
+      name: TelemetryEvents.FLAT_WORLD_DOWNLOADED,
+      properties,
+    });
+
     return newBytes;
   }
 
@@ -81,21 +102,35 @@ export default class ProjectExporter {
   ) {
     let gh = undefined;
 
-    const urlExtension =
-      "res/samples/" +
-      gitHubOwner +
-      "/" +
-      gitHubRepoName +
-      "-" +
-      (gitHubBranch ? gitHubBranch : "main") +
-      "/" +
-      gitHubFolder;
+    // Use GalleryReader to map repo names to local folder names (e.g.,
+    // "minecraft-scripting-samples" → "script-samples") for bundled content.
+    const localRepoFolder = GalleryReader.getLocalRepoFolder(gitHubRepoName, gitHubBranch);
+    const localUrlExtension = "res/samples/" + gitHubOwner + "/" + localRepoFolder + "/" + gitHubFolder;
 
     if (CreatorToolsHost.isWeb) {
-      gh = new HttpStorage(Utilities.ensureEndsWithSlash(CreatorToolsHost.contentRoot) + urlExtension);
-    } else {
+      gh = HttpStorage.get(Utilities.ensureEndsWithSlash(CreatorToolsHost.contentWebRoot) + localUrlExtension);
+    } else if (creatorTools.local) {
+      // In Node.js contexts (CLI, VS Code, Electron), use bundled samples from the
+      // local package instead of downloading from GitHub. This is faster, works offline,
+      // and avoids GitHub API rate limits for unauthenticated requests.
+      const localGh = creatorTools.local.createStorage(localUrlExtension);
+
+      if (localGh) {
+        try {
+          // Verify the local folder actually exists before committing to it
+          const exists = await localGh.rootFolder.exists();
+          if (exists) {
+            gh = localGh;
+          }
+        } catch {
+          // Local storage not available, will fall back to GitHub
+        }
+      }
+    }
+
+    // Fall back to GitHub if bundled samples aren't available
+    if (!gh) {
       gh = new GitHubStorage(creatorTools.anonGitHub, gitHubRepoName, gitHubOwner, gitHubBranch, gitHubFolder);
-      //gh = new HttpStorage(Utilities.ensureEndsWithSlash(constants.homeUrl) + urlExtension);
     }
 
     if (!projName) {
@@ -441,6 +476,7 @@ export default class ProjectExporter {
 
     if (!projectBuild) {
       await creatorTools.notifyOperationEnded(operId, "Packaging the world not be completed.", undefined, true);
+      return;
     }
 
     const dateNow = new Date();
@@ -556,6 +592,7 @@ export default class ProjectExporter {
 
     if (!projectBuild) {
       await creatorTools.notifyOperationEnded(operId, "Packaging the world not be completed.", undefined, true);
+      return;
     }
 
     const dateNow = new Date();
@@ -666,6 +703,34 @@ export default class ProjectExporter {
 
     await mcworld.save();
 
+    const properties: WorldDownloadProperties = {};
+
+    const additionalPackCount = (mcworld.worldBehaviorPacks?.length || 0) + (mcworld.worldResourcePacks?.length || 0);
+    properties[TelemetryProperties.ADDITIONAL_PACKS_ADDED] = additionalPackCount > 0 ? additionalPackCount : undefined;
+
+    const behaviorPackUuids = mcworld.worldBehaviorPacks?.map((pack) => pack.pack_id)?.join(";");
+    properties[TelemetryProperties.BEHAVIOR_PACKS] = behaviorPackUuids || "";
+
+    const resourcePackUuids = mcworld.worldResourcePacks?.map((pack) => pack.pack_id)?.join(";");
+    properties[TelemetryProperties.RESOURCE_PACKS] = resourcePackUuids || "";
+
+    const levelDat = mcworld.levelData;
+    if (levelDat) {
+      properties[TelemetryProperties.GAME_TYPE] = levelDat.gameType;
+      properties[TelemetryProperties.DIFFICULTY] = levelDat.difficulty;
+      properties[TelemetryProperties.MAP_STYLE] = levelDat.generator ?? (levelDat.flatWorldLayers ? "flat" : undefined);
+      properties[TelemetryProperties.SEED] = levelDat.randomSeed;
+    }
+
+    properties[TelemetryProperties.WORLD_TEMPLATE_USED] = worldSettings?.worldTemplateReferences?.length
+      ? true
+      : undefined;
+
+    telemetryService.trackEvent({
+      name: TelemetryEvents.CUSTOM_WORLD_DOWNLOADED,
+      properties,
+    });
+
     await creatorTools.notifyOperationEnded(
       operId,
       "World + local assets generation for '" + targetFolder.fullPath + "' completed."
@@ -757,7 +822,7 @@ export default class ProjectExporter {
       (project.lastMapDeployedHash === undefined || project.lastMapDeployedHash !== hash) &&
       creatorTools.workingStorage !== null
     ) {
-      ProjectExporter.generateAndInvokeFlatPackRefMCWorld(creatorTools, project);
+      await ProjectExporter.generateAndInvokeFlatPackRefMCWorld(creatorTools, project);
 
       project.lastMapDeployedHash = hash;
       project.lastMapDeployedDate = new Date();
@@ -806,7 +871,7 @@ export default class ProjectExporter {
 
       await StorageUtilities.syncFolderTo(outputFolder, zs.rootFolder, false, false, false);
 
-      const resultBytes = zs.generateCompressedUint8ArrayAsync();
+      const resultBytes = await zs.generateCompressedUint8ArrayAsync();
 
       return resultBytes;
     }

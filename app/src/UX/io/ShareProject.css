@@ -1,0 +1,77 @@
+.shp-outer {
+  max-height: calc(100vh - 240px);
+  min-height: calc(100vh - 240px);
+}
+.shp-url .ui-box INPUT {
+  max-width: calc(100vw - 30px);
+  width: 500px;
+  padding-right: 6px;
+  padding-left: 6px;
+  padding-bottom: 3px;
+}
+
+.shp-contentDisplay {
+  height: 270px;
+  max-height: calc(100vh - 450px);
+}
+
+.shp-contentAreaHeader {
+  grid-column-start: 1;
+  grid-column-end: 4;
+  padding-top: 40px;
+  padding-bottom: 10px;
+}
+
+.shp-contentArea {
+  grid-column-start: 1;
+  grid-column-end: 4;
+  padding-top: 5px;
+}
+
+.shp-contentWarning {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.shp-warningIcon {
+  grid-column: 1;
+}
+
+.shp-warningText {
+  grid-column: 2;
+}
+
+.shp-contentHeader {
+  width: 100%;
+  padding-bottom: 4px;
+  font-size: medium;
+}
+
+.shp-optionsArea {
+  padding-top: 20px;
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  max-width: 1100px;
+}
+
+.shp-summaryCell {
+  grid-column: 1;
+  padding-top: 4px;
+}
+
+.shp-contentCell {
+  grid-column: 2;
+  padding: 5px;
+  cursor: pointer;
+  padding-bottom: 2px;
+  background-color: var(--surface-bg);
+  color: var(--surface-text);
+  overflow-x: hidden;
+  white-space: nowrap;
+}
+
+.shp-copyButton {
+  grid-column: 3;
+}

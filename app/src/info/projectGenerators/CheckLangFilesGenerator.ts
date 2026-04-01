@@ -1,13 +1,11 @@
 import Project from "../../app/Project";
 import IProjectInfoGenerator from "../IProjectInfoGenerator";
-import { IProjectInfoTopicData } from "../IProjectInfoGeneratorBase";
 import ProjectInfoItem from "../ProjectInfoItem";
 import { ProjectItemType } from "../../app/IProjectItemData";
 import StorageUtilities from "../../storage/StorageUtilities";
-import { getTestTitleById, resultFromTest, TestDefinition } from "../tests/TestDefinition";
+import { resultFromTest, TestDefinition } from "../tests/TestDefinition";
 import { parseLocalizationCatalogFromItem } from "../../app/localization/LocalizationCatalog";
 import Pack from "../../minecraft/Pack";
-import ProjectInfoUtilities from "../ProjectInfoUtilities";
 
 const Tests: Record<string, TestDefinition> = {
   MissingLanguagesJson: { id: 101, title: "languages.json Not Found" },
@@ -32,10 +30,12 @@ const Tests: Record<string, TestDefinition> = {
   and each .lang file should have a corresponding entry in languages.json
 
   There should always be en_US
+
+  @see {@link ../../../public/data/forms/mctoolsval/langfiles.form.json} for topic definitions
 */
 export default class CheckLangFilesGenerator implements IProjectInfoGenerator {
   id: string = "LANGFILES";
-  title: string = "Check Lang File Generator";
+  title: string = "Language Files";
   canAlwaysProcess = true;
 
   async generate(project: Project): Promise<ProjectInfoItem[]> {
@@ -77,12 +77,6 @@ export default class CheckLangFilesGenerator implements IProjectInfoGenerator {
       .map((lang: string) => resultFromTest(Tests.LangFileMissing, { id: this.id, data: lang, item: catalogItem }));
 
     return [...langFileNotInCatalogResults, ...catalogLangNotInFile];
-  }
-
-  getTopicData(topicId: number): IProjectInfoTopicData | undefined {
-    const title = ProjectInfoUtilities.getGeneralTopicTitle(topicId) || getTestTitleById(Tests, topicId);
-
-    return { title };
   }
 
   summarize() {}

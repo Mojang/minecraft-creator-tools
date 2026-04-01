@@ -16,17 +16,16 @@ export enum AnimationResourceInfoGeneratorTest {
   bones = 102,
 }
 
+/**
+ * Aggregates animation resource information from resource packs.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/resourceanimation.form.json} for topic definitions
+ */
 export default class AnimationResourceInfoGenerator implements IProjectInfoGenerator {
   id = "RESOURCEANIMATION";
   title = "Resource Animation";
 
   performAddOnValidations = false;
-
-  getTopicData(topicId: number) {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(AnimationResourceInfoGeneratorTest, topicId),
-    };
-  }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
     info.animationCount = infoSet.getSummedDataValue("RESOURCEANIMATION", 1);
@@ -115,7 +114,7 @@ export default class AnimationResourceInfoGenerator implements IProjectInfoGener
     for (const key in value) {
       const val = value[key];
 
-      if ((val as any).constructor === Array) {
+      if (Array.isArray(val)) {
         isKeyframedBoneAnimation = true;
         break;
       }
@@ -127,7 +126,7 @@ export default class AnimationResourceInfoGenerator implements IProjectInfoGener
       for (const key in value) {
         const val = value[key];
 
-        if ((val as any).constructor === Array) {
+        if (Array.isArray(val)) {
           for (const valAtom of val) {
             if (typeof valAtom === "string") {
               boneCountPi.incrementFeature("Resource Animation Bone " + type + " Keyframe with Molang", "Count", 1);
@@ -140,7 +139,7 @@ export default class AnimationResourceInfoGenerator implements IProjectInfoGener
     } else {
       boneCountPi.incrementFeature("Resource Animation Bone " + type + " Continuous", "Count", 1);
 
-      if ((value as any).constructor === Array) {
+      if (Array.isArray(value)) {
         for (const val of value) {
           if (typeof val.position === "string") {
             boneCountPi.incrementFeature("Resource Animation Bone " + type + " Continuous with Molang", "Count", 1);

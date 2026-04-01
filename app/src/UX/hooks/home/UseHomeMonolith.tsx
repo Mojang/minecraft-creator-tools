@@ -2,24 +2,26 @@ import { useCallback, useEffect, useState } from "react";
 import { MouseEvent, SyntheticEvent } from "react";
 import CreatorTools from "../../../app/CreatorTools";
 import IStorage from "../../../storage/IStorage";
-import { AppMode } from "../../App";
+import { AppMode } from "../../appShell/App";
 import Log from "../../../core/Log";
 import Utilities from "../../../core/Utilities";
 import AppServiceProxy, { AppServiceProxyCommands } from "../../../core/AppServiceProxy";
 import Project from "../../../app/Project";
-import { ShorthandValue, ListItemProps, List, selectableListBehavior, ThemeInput } from "@fluentui/react-northstar";
+import { Alert, Button, List as MuiList, ListItemButton } from "@mui/material";
+import { getThemeColors } from "../theme/useThemeColors";
 import CreatorToolsHost, { HostType } from "../../../app/CreatorToolsHost";
 import { MinecraftFlavor } from "../../../app/ICreatorToolsData";
 import FileSystemFolder from "../../../storage/FileSystemFolder";
 import FileSystemStorage from "../../../storage/FileSystemStorage";
-import WebUtilities from "../../WebUtilities";
-import IAppProps from "../../IAppProps";
-import { GalleryProjectCommand } from "../../ProjectGallery";
-import { LocalFolderType, LocalGalleryCommand } from "../../LocalGalleryCommand";
+import WebUtilities from "../../utils/WebUtilities";
+import IAppProps from "../../appShell/IAppProps";
+import { GalleryProjectCommand } from "../../home/CodeProjectGallery";
+import { LocalFolderType, LocalGalleryCommand } from "../../utils/LocalGalleryCommand";
 import IProjectSeed from "../../../app/IProjectSeed";
 import IFolder from "../../../storage/IFolder";
 import IGallery from "../../../app/IGallery";
 import { DeploymentTargetType } from "../../../app/DeploymentTarget";
+import IProjectTheme from "../../types/IProjectTheme";
 
 export enum HomeEffect {
   none = 0,
@@ -54,11 +56,13 @@ type HomeMonolithValues = {
   handleFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleOpenLocalFolderClick: () => void;
   handleProjectClicked: (event: SyntheticEvent, project: Project) => void;
+  handleRemoveProject: (project: Project) => Promise<void>;
+  handleDeleteProject: (project: Project) => Promise<void>;
   onNewProjectFromFolderInstanceSelected?: (folder: IFolder, name?: string, isDocumentationProject?: boolean) => void;
 };
 
 interface IHomeProps extends IAppProps {
-  theme: ThemeInput<any>;
+  theme: IProjectTheme;
   errorMessage: string | undefined;
   heightOffset: number;
   visualSeed?: number;
@@ -495,6 +499,10 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
   }
 
   async function openLocalFolder(isDocumentationProject?: boolean) {
+    if (typeof window.showDirectoryPicker !== "function") {
+      return;
+    }
+
     try {
       const result = (await window.showDirectoryPicker({
         mode: "readwrite",
@@ -555,6 +563,51 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
   //   e.stopPropagation();
   // }
 
+  async function _handleRemoveProject(project: Project) {
+    if (!creatorTools) {
+      return;
+    }
+
+    try {
+      // Remove project from CreatorTools (deletes preferences file and removes from list)
+      await creatorTools.removeProjectByName(project.name);
+
+      // Save to persist the change
+      await creatorTools.save();
+
+      // Force re-render by updating state
+      setState({
+        ...state,
+        gallery: state.gallery,
+      });
+    } catch (error) {
+      Log.fail("Failed to remove project: " + error);
+    }
+  }
+
+  async function _handleDeleteProject(project: Project) {
+    if (!creatorTools) {
+      return;
+    }
+
+    try {
+      // Fully delete project (deletes project files AND removes from list)
+      // This is only used on web where we can delete from browser storage
+      await creatorTools.deleteProjectByName(project.name);
+
+      // Save to persist the change
+      await creatorTools.save();
+
+      // Force re-render by updating state
+      setState({
+        ...state,
+        gallery: state.gallery,
+      });
+    } catch (error) {
+      Log.fail("Failed to delete project: " + error);
+    }
+  }
+
   function _handleInspectFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
     if (!event.target || !event.target.files || event.target.files.length <= 0 || !creatorTools.packStorage) {
       return;
@@ -563,7 +616,7 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
     _processIncomingFiles("/", WebUtilities.getFileArrayFromFileList(event.target.files));
   }
 
-  const projectListItems: ShorthandValue<ListItemProps>[] = [];
+  const projectListItems: any[] = [];
 
   const browserWidth = WebUtilities.getWidth();
 
@@ -573,6 +626,8 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
     handleFileUpload: _handleFileUpload,
     handleOpenLocalFolderClick: _handleOpenLocalFolderClick,
     handleProjectClicked: _handleProjectClicked,
+    handleRemoveProject: _handleRemoveProject,
+    handleDeleteProject: _handleDeleteProject,
     onNewProjectFromFolderInstanceSelected: props.onNewProjectFromFolderInstanceSelected,
   };
 
@@ -592,6 +647,7 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
 
   if (state !== null && state.gallery !== undefined) {
     messageArea = [];
+    const colors = getThemeColors();
 
     if (state !== null && state.inlineUpdateMessage) {
       messageArea.push(
@@ -599,8 +655,8 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
           className="home-inlineMessage"
           key="loadingLabel"
           style={{
-            backgroundColor: props.theme.siteVariables?.colorScheme.brand.background3,
-            color: props.theme.siteVariables?.colorScheme.brand.foreground3,
+            backgroundColor: colors.background3,
+            color: colors.foreground3,
           }}
         >
           {state.inlineUpdateMessage}
@@ -613,8 +669,8 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
           className="home-inlineMessage"
           key="loadingLabel"
           style={{
-            backgroundColor: props.theme.siteVariables?.colorScheme.brand.background3,
-            color: props.theme.siteVariables?.colorScheme.brand.foreground3,
+            backgroundColor: colors.background3,
+            color: colors.foreground3,
           }}
         >
           <img className="home-loadingIcon" src="loading.gif" alt="Waiting spinner" />
@@ -649,7 +705,7 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
       } else {
         introArea.push(
           <div key="recentlyNoteA" className="home-projects-note">
-            (stored in this device browser's temporary storage.)
+            💾 Saved only in this browser for now. Use Export to keep a permanent copy.
           </div>
         );
       }
@@ -662,14 +718,19 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
           height: browserWidth >= 800 ? "calc(100vh - " + (332 + props.heightOffset) + "px)" : "",
         }}
       >
-        <List
-          selectable
-          accessibility={selectableListBehavior}
-          defaultSelectedIndex={-1}
-          onContextMenu={_handleContextMenu}
-          items={projectListItems}
-          aria-label="List of edited projects"
-        />
+        <MuiList aria-label="List of edited projects" onContextMenu={_handleContextMenu as any} role="listbox">
+          {projectListItems.map((item: any, index: number) => (
+            <ListItemButton
+              key={item.key || index}
+              onClick={item.onClick}
+              aria-label={item["aria-label"]}
+              disableGutters
+              sx={{ padding: 0 }}
+            >
+              {item.content}
+            </ListItemButton>
+          ))}
+        </MuiList>
       </div>
     );
   }
@@ -677,7 +738,27 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
   let errorMessageContainer = <></>;
 
   if (props.errorMessage) {
-    errorMessageContainer = <div className="home-error">{props.errorMessage}</div>;
+    const handleRetry = () => {
+      if (props.onModeChangeRequested) {
+        props.onModeChangeRequested(AppMode.home);
+      }
+    };
+
+    errorMessageContainer = (
+      <Alert
+        severity="error"
+        sx={{ mb: 2 }}
+        action={
+          props.onModeChangeRequested ? (
+            <Button color="inherit" size="small" onClick={handleRetry}>
+              Try Again
+            </Button>
+          ) : undefined
+        }
+      >
+        {props.errorMessage}
+      </Alert>
+    );
   }
 
   return {

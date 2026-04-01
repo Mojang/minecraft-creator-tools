@@ -1,0 +1,306 @@
+/* Copyright (c) Microsoft Corporation. */
+/* Licensed under the MIT License. */
+
+/* FeatureLivePreview - Feature preview styling */
+
+.flp-container {
+  font-family: var(--font-family-sans, "Segoe UI", sans-serif);
+  font-size: 12px;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.flp-light {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.flp-dark {
+  background: #2d2d2d;
+  color: #e0e0e0;
+}
+
+/* Loading/Error States */
+.flp-loading,
+.flp-error {
+  padding: 16px;
+  text-align: center;
+  font-style: italic;
+  opacity: 0.7;
+}
+
+.flp-error {
+  color: #d9534f;
+}
+
+/* Header */
+.flp-header {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.flp-light .flp-header {
+  background: #e0e0e0;
+}
+
+.flp-dark .flp-header {
+  background: #3a3a3a;
+}
+
+.flp-icon {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.flp-title {
+  flex: 1;
+}
+
+.flp-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.flp-id {
+  font-size: 10px;
+  opacity: 0.6;
+  font-family: monospace;
+}
+
+.flp-type-badge {
+  font-size: 9px;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.flp-light .flp-type-badge {
+  background: #ccc;
+  color: #333;
+}
+
+.flp-dark .flp-type-badge {
+  background: #555;
+  color: #e0e0e0;
+}
+
+/* Places */
+.flp-places {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  gap: 8px;
+}
+
+.flp-light .flp-places {
+  background: #dce8dc;
+}
+
+.flp-dark .flp-places {
+  background: #2d3d2d;
+}
+
+.flp-places-label {
+  font-weight: 500;
+}
+
+.flp-places-value {
+  font-family: monospace;
+  font-size: 11px;
+}
+
+/* Sections */
+.flp-section {
+  margin-bottom: 8px;
+}
+
+.flp-section-header {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  gap: 6px;
+}
+
+.flp-light .flp-section-header {
+  background: #e8e8e8;
+}
+
+.flp-light .flp-section-header:hover {
+  background: #ddd;
+}
+
+.flp-dark .flp-section-header {
+  background: #383838;
+}
+
+.flp-dark .flp-section-header:hover {
+  background: #444;
+}
+
+.flp-expand-icon {
+  font-size: 10px;
+  width: 12px;
+  text-align: center;
+}
+
+.flp-badge {
+  margin-left: auto;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.flp-light .flp-badge {
+  background: #ccc;
+  color: #333;
+}
+
+.flp-dark .flp-badge {
+  background: #555;
+  color: #e0e0e0;
+}
+
+/* Conditions */
+.flp-conditions {
+  padding-left: 12px;
+  margin-top: 4px;
+}
+
+.flp-condition-item {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 3px;
+  gap: 6px;
+  font-size: 11px;
+  margin-bottom: 2px;
+}
+
+.flp-light .flp-condition-item {
+  background: #fafafa;
+}
+
+.flp-dark .flp-condition-item {
+  background: #2a2a2a;
+}
+
+.flp-cond-icon {
+  font-size: 12px;
+}
+
+.flp-cond-label {
+  font-weight: 500;
+  min-width: 100px;
+}
+
+.flp-cond-value {
+  font-family: monospace;
+  font-size: 10px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Distribution */
+.flp-distribution {
+  padding-left: 12px;
+  margin-top: 4px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 4px;
+}
+
+.flp-dist-item {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 3px;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.flp-light .flp-dist-item {
+  background: #fafafa;
+}
+
+.flp-dark .flp-dist-item {
+  background: #2a2a2a;
+}
+
+.flp-dist-label {
+  font-weight: 500;
+  min-width: 50px;
+}
+
+.flp-dist-value {
+  font-family: monospace;
+  font-size: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Configs */
+.flp-configs {
+  padding-left: 12px;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.flp-config-item {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 3px;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.flp-light .flp-config-item {
+  background: #fafafa;
+}
+
+.flp-dark .flp-config-item {
+  background: #2a2a2a;
+}
+
+.flp-config-name {
+  font-weight: 500;
+  min-width: 120px;
+}
+
+.flp-config-value {
+  font-family: monospace;
+  font-size: 10px;
+  opacity: 0.8;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Clickable Items */
+.flp-clickable {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.flp-light .flp-clickable:hover {
+  background-color: #d8d8d8;
+}
+
+.flp-dark .flp-clickable:hover {
+  background-color: #404040;
+}

@@ -22,6 +22,11 @@ import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import SemanticVersion from "../core/versioning/SemanticVersion";
 import { isMinorVersionTooOld } from "../core/versioning/MinecraftVersionRules";
 
+/**
+ * Validates and updates min_engine_version settings in pack manifests.
+ *
+ * @see {@link ../../../public/data/forms/mctoolsval/minenginever.form.json} for topic definitions
+ */
 export enum MinEngineVersionManagerTest {
   behaviorPackMinEngineVersion = 100,
   behaviorPackMinEngineVersionMajorLowerThanCurrent = 110,

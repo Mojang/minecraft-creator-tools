@@ -27,11 +27,52 @@ export default class BlockBaseType {
   }
 
   get isOpaque() {
-    if (this.data.isOpaque === undefined) {
+    if (this.data.isOpaque !== undefined) {
+      return this.data.isOpaque;
+    }
+
+    // Shapes that are inherently non-opaque (transparent, partial, or see-through)
+    const nonOpaqueShapes = [
+      BlockShape.fence,
+      BlockShape.fenceGate,
+      BlockShape.door,
+      BlockShape.trapdoor,
+      BlockShape.button,
+      BlockShape.pressurePlate,
+      BlockShape.torch,
+      BlockShape.lantern,
+      BlockShape.chain,
+      BlockShape.ladder,
+      BlockShape.rail,
+      BlockShape.lever,
+      BlockShape.candle,
+      BlockShape.endRod,
+      BlockShape.glassPaneOrBars,
+      BlockShape.billboard,
+      BlockShape.carpet,
+      BlockShape.crop,
+      BlockShape.leaves,
+      BlockShape.water,
+      BlockShape.redstoneWire,
+      BlockShape.sign,
+      BlockShape.hangingSign,
+      BlockShape.campfire,
+      BlockShape.bell,
+      BlockShape.hopper,
+      BlockShape.brewingStand,
+      BlockShape.enchantingTable,
+      BlockShape.cauldron,
+      BlockShape.dripleaf,
+    ];
+
+    // Non-opaque shapes should not hide adjacent faces
+    if (nonOpaqueShapes.includes(this.shape)) {
       return false;
     }
 
-    return this.data.isOpaque;
+    // Default: solid blocks (custom, unitCube, stairs, slab, wall, anvil, bed, chest, etc.)
+    // are opaque and correctly cull hidden faces between adjacent blocks
+    return true;
   }
 
   get mapColor(): string | undefined {

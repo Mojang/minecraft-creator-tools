@@ -1,0 +1,434 @@
+.wm-spawnIcon {
+  vertical-align: top;
+  text-align: middle;
+  padding-top: 2px;
+  padding-bottom: 8px;
+  padding-left: 2px;
+  padding-right: 2px;
+  background-color: #f0f0f030;
+  border: solid 1px black;
+  border-radius: 10px;
+}
+.wm-playerIcon {
+  vertical-align: top;
+  text-align: middle;
+  padding-top: 1px;
+  padding-bottom: 2px;
+  padding-left: 1px;
+  padding-right: 2px;
+  background-color: blue;
+  border: solid 1px black;
+  border-radius: 10px;
+}
+
+/* Level/dimension display control */
+.wm-level-control {
+  background-color: rgba(40, 40, 40, 0.85);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Coordinate display control */
+.wm-coords-control {
+  background-color: rgba(40, 40, 40, 0.85);
+  color: #aaffaa;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  min-width: 120px;
+}
+
+/* Navigation buttons control */
+.wm-nav-control {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wm-nav-btn {
+  background-color: rgba(40, 40, 40, 0.85);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.wm-nav-btn:hover {
+  background-color: rgba(80, 80, 80, 0.9);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.wm-nav-btn:active {
+  background-color: rgba(100, 100, 100, 0.9);
+}
+
+/* Override Leaflet scale control styling */
+.leaflet-control-scale-line {
+  background-color: rgba(40, 40, 40, 0.85) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 3px;
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 11px;
+  padding: 2px 6px !important;
+}
+
+/* Style the zoom control */
+.leaflet-control-zoom a {
+  background-color: rgba(40, 40, 40, 0.85) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background-color: rgba(80, 80, 80, 0.9) !important;
+}
+
+/* Dark background for the map */
+.leaflet-container {
+  background-color: #1a1a1a;
+}
+
+/* Y-Level Slider */
+.wm-y-slider-container {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background-color: rgba(30, 30, 30, 0.9);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  user-select: none;
+}
+
+.wm-tops-btn {
+  background-color: rgba(60, 60, 60, 0.9);
+  color: #8f8;
+  border: 1px solid rgba(100, 255, 100, 0.3);
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.wm-tops-btn:hover {
+  background-color: rgba(80, 100, 80, 0.95);
+  border-color: rgba(100, 255, 100, 0.6);
+}
+
+.wm-bottoms-btn {
+  background-color: rgba(60, 60, 60, 0.9);
+  color: #f88;
+  border: 1px solid rgba(255, 100, 100, 0.3);
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.wm-bottoms-btn:hover {
+  background-color: rgba(100, 80, 80, 0.95);
+  border-color: rgba(255, 100, 100, 0.6);
+}
+
+.wm-y-slider-track {
+  position: relative;
+  width: 60px;
+  height: 320px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.wm-y-slider-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  cursor: ns-resize;
+}
+
+.wm-y-slider-label {
+  background-color: rgba(50, 50, 50, 0.9);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 13px;
+  font-weight: 600;
+  min-width: 55px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.wm-y-slider-coords {
+  background-color: rgba(40, 40, 60, 0.9);
+  color: #aaf;
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 11px;
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 9px;
+  text-align: center;
+  border: 1px solid rgba(150, 150, 255, 0.2);
+  white-space: nowrap;
+}
+
+/* Entity Markers */
+.wm-entityIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wm-entityIconInner {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.wm-entityIconInner:hover {
+  transform: scale(1.2);
+  z-index: 1000;
+}
+
+.wm-entityIcon-hostile .wm-entityIconInner {
+  border-color: #ff6666;
+}
+
+.wm-entityIcon-passive .wm-entityIconInner {
+  border-color: #66ff66;
+}
+
+.wm-entityIcon-player .wm-entityIconInner {
+  border-color: #6666ff;
+}
+
+.wm-entityIcon-item .wm-entityIconInner {
+  border-color: #ffff66;
+}
+
+.wm-entityIcon-other .wm-entityIconInner {
+  border-color: #aaaaaa;
+}
+
+/* Entity Popup */
+.wm-entityPopup {
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 12px;
+  min-width: 150px;
+}
+
+.wm-entityPopup strong {
+  font-size: 14px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.wm-entityId {
+  color: #888;
+  font-size: 10px;
+  margin-bottom: 4px;
+}
+
+.wm-entityCoords {
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 11px;
+  color: #aaffaa;
+}
+
+.wm-entityCustomName {
+  margin-top: 4px;
+  font-style: italic;
+  color: #aaa;
+}
+
+/* Entity toggle button */
+.wm-entity-toggle {
+  background-color: rgba(60, 80, 60, 0.9) !important;
+}
+
+.wm-entity-toggle:hover {
+  background-color: rgba(80, 120, 80, 0.95) !important;
+}
+
+.wm-entity-toggle-off {
+  background-color: rgba(60, 60, 60, 0.9) !important;
+  color: #888 !important;
+}
+
+.wm-entity-toggle-off:hover {
+  background-color: rgba(80, 80, 80, 0.9) !important;
+}
+
+/* Camera marker on the map */
+.wm-camera-icon {
+  background: none !important;
+  border: none !important;
+  z-index: 1000 !important;
+}
+
+.wm-camera-arrow {
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  text-align: center;
+  font-size: 24px;
+  color: #ff4444;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.9), 0 0 12px rgba(255, 68, 68, 0.6);
+  background: radial-gradient(circle, rgba(255,68,68,0.25) 0%, transparent 70%);
+  border-radius: 50%;
+  transition: transform 0.15s ease-out;
+}
+
+/* Track camera toggle button */
+.wm-track-camera {
+  background-color: rgba(60, 60, 80, 0.9) !important;
+}
+
+.wm-track-camera:hover {
+  background-color: rgba(80, 80, 120, 0.95) !important;
+}
+
+.wm-track-camera-on {
+  background-color: rgba(60, 100, 180, 0.9) !important;
+  border-color: rgba(100, 160, 255, 0.6) !important;
+}
+
+.wm-track-camera-on:hover {
+  background-color: rgba(80, 120, 200, 0.95) !important;
+}
+
+/* Loading overlay */
+.wm-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(20, 20, 25, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  pointer-events: none;
+}
+
+.wm-loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 36px;
+  background-color: rgba(40, 40, 45, 0.95);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  min-width: 200px;
+}
+
+.wm-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #4da6ff;
+  border-radius: 50%;
+  animation: wm-spin 1s linear infinite;
+}
+
+@keyframes wm-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.wm-loading-message {
+  color: #e0e0e0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Chunk loading progress indicator */
+.wm-chunk-progress {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  background-color: rgba(30, 30, 35, 0.9);
+  border-radius: 8px;
+  padding: 8px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  min-width: 180px;
+  pointer-events: none;
+}
+
+.wm-chunk-progress-bar {
+  width: 100%;
+  height: 6px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.wm-chunk-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4da6ff, #7bc7ff);
+  border-radius: 3px;
+  transition: width 0.1s ease-out;
+}
+
+.wm-chunk-progress-text {
+  color: #c0c0c0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 11px;
+  text-align: center;
+}

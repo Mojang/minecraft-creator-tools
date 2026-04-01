@@ -289,6 +289,12 @@ export default class ProjectUtilities {
       return ProjectItemType.fogResourceJson;
     }
 
+    // Check for texture_set.json BEFORE /models/ check - texture_set files can exist in /models/ folders
+    // (e.g., /textures/models/armor/chain_1.texture_set.json)
+    if (lowerPath.indexOf(".texture_set.json") >= 0) {
+      return ProjectItemType.textureSetJson;
+    }
+
     if (lowerPath.indexOf("/models/") >= 0) {
       return ProjectItemType.modelGeometryJson;
     }
@@ -407,6 +413,7 @@ export default class ProjectUtilities {
       particle_effect: ProjectItemType.particleJson,
       render_controllers: ProjectItemType.renderControllerJson,
       "minecraft:render_controller": ProjectItemType.renderControllerJson,
+      "minecraft:texture_set": ProjectItemType.textureSetJson,
       "minecraft:atmospherics": ProjectItemType.atmosphericsJson,
       "minecraft:pbr": ProjectItemType.pbrJson,
       "minecraft:point_lights": ProjectItemType.pointLightsJson,
@@ -432,6 +439,13 @@ export default class ProjectUtilities {
       const direct = directMappings[key];
       if (direct !== undefined) {
         return direct;
+      }
+    }
+
+    // Check for legacy geometry format (format_version 1.8.0) where keys are like "geometry.bat", "geometry.pig"
+    for (const key of normalizedKeys) {
+      if (key.startsWith("geometry.")) {
+        return ProjectItemType.modelGeometryJson;
       }
     }
 
@@ -918,11 +932,11 @@ export default class ProjectUtilities {
       return capitalStr;
     }
 
-    if (caption.length <= 4) {
+    if (caption.length <= 8) {
       return caption.toLowerCase();
     }
 
-    return caption.substring(0, 4).toLowerCase();
+    return caption.substring(0, 8).toLowerCase();
   }
 
   static getSuggestedProjectName(project: IGalleryItem) {
@@ -966,21 +980,60 @@ export default class ProjectUtilities {
     newTokenName = MinecraftUtilities.makeNameFolderSafe(newTokenName);
 
     if (bpFolder) {
-      try {
-        await bpFolder.rename(newTokenName);
-      } catch (e: any) {
-        // perhaps folder could not be renamed because a folder exists; continue in this case.
-        Log.error("Error renaming behavior pack folder." + e.toString());
-      }
+      await this._renameOrCopyFolder(bpFolder, newTokenName, "behavior pack");
     }
 
     if (rpFolder) {
+      await this._renameOrCopyFolder(rpFolder, newTokenName, "resource pack");
+    }
+  }
+
+  /**
+   * Attempts to rename a pack folder. If the rename fails (e.g., OneDrive file locks),
+   * falls back to copying contents to a new folder and deleting the original.
+   */
+  private static async _renameOrCopyFolder(folder: IFolder, newName: string, label: string) {
+    try {
+      // First attempt: direct rename. This is fast but can fail on systems with
+      // file locks (OneDrive, antivirus, indexers) throwing EPERM/EACCES.
+      let renamed = false;
       try {
-        await rpFolder.rename(newTokenName);
-      } catch (e: any) {
-        // perhaps folder could not be renamed because a folder exists; continue in this case.
-        Log.error("Error renaming resource pack folder." + e.toString());
+        renamed = await folder.rename(newName);
+      } catch (renameErr: any) {
+        // Rename threw (e.g., EPERM). In-memory state is still clean because
+        // NodeFolder.moveTo() performs the disk op before updating state.
+        // Fall through to copy+delete below.
+        Log.debug("Rename threw for " + label + " folder (" + renameErr.message + "); falling back to copy + delete.");
       }
+
+      if (renamed) {
+        return; // rename succeeded on disk and in-memory
+      }
+
+      // Disk rename failed or threw. Fall back to copy + delete.
+      Log.debug("Disk rename failed for " + label + " folder; falling back to copy + delete.");
+
+      const parentFolder = folder.parentFolder;
+      if (!parentFolder) {
+        Log.error("Cannot copy " + label + " folder: no parent folder.");
+        return;
+      }
+
+      const targetFolder = parentFolder.ensureFolder(newName);
+      await targetFolder.ensureExists();
+
+      await StorageUtilities.syncFolderTo(folder, targetFolder, true, true, false);
+
+      try {
+        await folder.deleteThisFolder();
+      } catch (deleteErr: any) {
+        // If delete fails, we still have the new folder with the correct content.
+        // The old template folder will remain but is not harmful — the project will use the new one.
+        Log.debug("Could not delete old " + label + " template folder: " + deleteErr.toString());
+      }
+    } catch (e: any) {
+      // perhaps folder could not be renamed because a folder exists; continue in this case.
+      Log.error("Error renaming " + label + " folder: " + e.toString());
     }
   }
 

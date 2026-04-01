@@ -1,6 +1,123 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+/*
+ * ==========================================================================================
+ * PROJECT - CORE PROJECT MANAGEMENT NOTES
+ * ==========================================================================================
+ *
+ * OVERVIEW:
+ * ---------
+ * Project is the central class for managing a Minecraft content project. It handles:
+ * - Project structure (behavior packs, resource packs, worlds, scripts)
+ * - Item discovery and inference from folder structure
+ * - Pack management (BehaviorManifest, ResourceManifest)
+ * - Validation integration via ProjectInfoSet
+ * - Export/deployment coordination
+ *
+ * PROJECT STRUCTURE:
+ * ------------------
+ * A project typically contains:
+ * - behaviorPacksContainer/ - Behavior pack folders
+ * - resourcePacksContainer/ - Resource pack folders
+ * - worldContainer/ - World folders
+ * - docsContainer/ - Documentation
+ * - defaultBehaviorPackFolder, defaultResourcePackFolder - Primary packs
+ *
+ * KEY METHOD: _inferProjectItemsFromFolder():
+ * -------------------------------------------
+ * This is the monster recursive function that scans a folder tree and creates
+ * ProjectItem objects based on file type and location. Logic includes:
+ * - Path-based type inference (items/ folder → itemTypeBehaviorJson)
+ * - Extension-based inference (.mcfunction, .json, .ts)
+ * - Manifest detection for pack identification
+ * - World detection from level.dat
+ *
+ * PROJECTITEM RELATIONSHIP:
+ * -------------------------
+ * - Project contains ProjectItem[] in #items
+ * - Items indexed by #itemsByProjectPath (canonicalized storage path)
+ * - Items grouped by #itemsByType for quick type lookups
+ * - Each ProjectItem has storagePath relative to project root
+ * - Items link to IFile via file property, with .manager for type-specific logic
+ *
+ * PACK MANAGEMENT:
+ * ----------------
+ * - #packs: Pack[] - All discovered packs (behavior, resource, skin, world)
+ * - Pack objects wrap manifest files and provide pack-level operations
+ * - hasMultiplePacksOfSameType affects folder structure assumptions
+ *
+ * VARIANTS:
+ * ---------
+ * - variants: { [label]: ProjectVariant } - Alternative configurations
+ * - Used for multi-target builds (different Minecraft versions, platforms)
+ * - ProjectItemVariantCreateManager handles variant-specific item creation
+ *
+ * LOADING SEQUENCE FOR EXTERNAL USERS:
+ * ------------------------------------
+ * 1. new Project(creatorTools, folder, prefsFile) - Basic setup
+ * 2. loadPreferencesAndFolder() - Basic loading from prefsFile JSON (isLoaded)
+ * 3. inferProjectItemsFromFolder() - Create ProjectItems from files.
+ *     This is a somewhat expensive operation, and only needs to be done on
+ *     first instantiation on a folder, or if the folder/file set structure
+ *     changes
+ * 4. ensureInflate() - Load file contents and initialize managers (isInflated)
+ *
+ * OPTIONAL ADDITION THINGS YOU SHOULD DO:
+ * ---------------------------------------
+ *
+ * The web app, for example, does these asynchronously after first load.
+ * These operations can take minutes to run, depending on project size.
+ *
+ * processRelations() - Build cross-item dependency graph (best done async)
+ *
+ *
+ * INTERNAL FUNCTIONS
+ * ------------------
+ * loadFolderStructure() - Discover folder hierarchy and rough mapping
+ *
+ * EVENTS:
+ * -------
+ * - onPropertyChanged: Project metadata changed
+ * - onLoaded: Folder structure loaded
+ * - onInflated: All items loaded
+ * - onItemChanged/Added/Removed: Item list modifications
+ * - onItemContentChanged: Item file content changed
+ * - onNeedsSaveChanged: Dirty state changed
+ *
+ * WORLD SETTINGS:
+ * ---------------
+ * - worldSettings: IWorldSettings - Default world configuration
+ * - editorWorldSettings: Settings for Editor API worlds
+ * - ensureWorldSettings() / ensureEditorWorldSettings() - Lazy initialization
+ *
+ * RELATED FILES:
+ * --------------
+ * - ProjectItem.ts: Individual item management
+ * - ProjectUtilities.ts: Static helper methods (moved from Project)
+ * - ProjectExporter.ts: Export/packaging logic
+ * - ProjectInfoSet.ts: Validation integration
+ * - Pack.ts: Pack-level operations
+ * - ProjectItemInference.ts: Item type inference logic
+ *
+ * FOLDER CONTEXTS (FolderContext enum):
+ * -------------------------------------
+ * Used to identify folder purpose during inference:
+ * - behaviorPack (1), resourcePack (2), skinPack (3)
+ * - world (5), docs (4), typeDefs (6)
+ * - distBuildFolder (7), vscodeFolder (8)
+ * - mctoolsWorkingFolder (13), designPack (14)
+ *
+ * COMMON PATTERNS:
+ * ----------------
+ * - Get item: project.getItemByProjectPath(storagePath)
+ * - Get items by type: project.getItemsByType(ProjectItemType.entityTypeBehaviorJson)
+ * - Ensure folder: project.ensureDefaultBehaviorPackFolder()
+ * - Save project: project.save()
+ *
+ * ==========================================================================================
+ */
+
 import IFile, { FileUpdateType } from "../storage/IFile";
 import IFolder from "../storage/IFolder";
 import CreatorTools from "./CreatorTools";
@@ -27,8 +144,11 @@ import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition"
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import LocManager from "../minecraft/LocManager";
 import ProjectInfoSet from "../info/ProjectInfoSet";
+import ProjectInfoItem from "../info/ProjectInfoItem";
 import ProjectUpdateRunner from "../updates/ProjectUpdateRunner";
 import ProjectUpdateResult from "../updates/ProjectUpdateResult";
+import InfoGeneratorTopicUtilities from "../info/InfoGeneratorTopicUtilities";
+import GeneratorRegistrations from "../info/registration/GeneratorRegistrations";
 
 import TelemetryImpl from "../analytics/Telemetry";
 import TelemetryStub from "../analytics/TelemetryStub";
@@ -55,6 +175,8 @@ import ProjectVariant from "./ProjectVariant";
 import { ProjectItemVariantType } from "./IProjectItemVariant";
 import ProjectItemInference from "./ProjectItemInference";
 import IVersionContent from "../storage/IVersionContent";
+import { getProjectWorkerManager } from "./IProjectWorkerManager";
+import { ScriptModuleInfoProvider } from "../langcore/javascript/ScriptModuleInfo";
 
 export enum ProjectAutoDeploymentMode {
   deployOnSave = 0,
@@ -109,12 +231,36 @@ export const minecraftScriptModules: {
   uuid?: string;
   preferredVersion: string | number[];
 }[] = [
-  { id: "@minecraft/server", module_name: "@minecraft/server", preferredVersion: "1.12.0-beta" },
-  { id: "@minecraft/server-gametest", module_name: "@minecraft/server-gametest", preferredVersion: "1.0.0-beta" },
-  { id: "@minecraft/server-ui", module_name: "@minecraft/server-ui", preferredVersion: "1.2.0-beta" },
-  { id: "@minecraft/server-admin", module_name: "@minecraft/server-admin", preferredVersion: "1.0.0-beta" },
-  { id: "@minecraft/server-net", module_name: "@minecraft/server-net", preferredVersion: "1.0.0-beta" },
-  { id: "@minecraft/server-editor", module_name: "@minecraft/server-editor", preferredVersion: "0.1.0-beta" },
+  {
+    id: "@minecraft/server",
+    module_name: "@minecraft/server",
+    preferredVersion: ScriptModuleInfoProvider.getLatestVersion("server", true) || "1.17.0-beta",
+  },
+  {
+    id: "@minecraft/server-gametest",
+    module_name: "@minecraft/server-gametest",
+    preferredVersion: ScriptModuleInfoProvider.getLatestVersion("server-gametest", true) || "1.0.0-beta",
+  },
+  {
+    id: "@minecraft/server-ui",
+    module_name: "@minecraft/server-ui",
+    preferredVersion: ScriptModuleInfoProvider.getLatestVersion("server-ui", true) || "1.5.0-beta",
+  },
+  {
+    id: "@minecraft/server-admin",
+    module_name: "@minecraft/server-admin",
+    preferredVersion: ScriptModuleInfoProvider.getLatestVersion("server-admin", true) || "1.0.0-beta",
+  },
+  {
+    id: "@minecraft/server-net",
+    module_name: "@minecraft/server-net",
+    preferredVersion: ScriptModuleInfoProvider.getLatestVersion("server-net", true) || "1.0.0-beta",
+  },
+  {
+    id: "@minecraft/server-editor",
+    module_name: "@minecraft/server-editor",
+    preferredVersion: ScriptModuleInfoProvider.getLatestVersion("server-editor", true) || "0.1.0-beta",
+  },
 ];
 
 export const remappedMinecraftScriptModules: { [oldModuleName: string]: string } = {
@@ -140,11 +286,36 @@ export default class Project {
 
   public differencesFromGitHub?: DifferenceSet;
 
+  /** Transient action to perform after this project first opens in the editor (not persisted). */
+  public pendingPostCreateAction?: string;
+
+  /** Transient content definition to generate after this project first opens in the editor (not persisted). */
+  public pendingContentDefinition?: any;
+
   #hasMultiplePacksOfSameType: boolean | undefined;
   #relationsProcessed: boolean = false;
 
   #folderStructureLoaded: boolean = false;
   #indevInfoSetNeedsUpdating: boolean = false;
+
+  // Promise to track in-progress info set generation (allows callers to wait for existing operation)
+  #infoSetGenerationPromise: Promise<ProjectInfoSet> | null = null;
+
+  /**
+   * Debounce timer for batching external file changes.
+   * When files are added/removed externally (e.g., by MCP),
+   * we batch them into a single re-inference pass.
+   */
+  #externalChangeDebounceTimer: NodeJS.Timeout | ReturnType<typeof setTimeout> | null = null;
+
+  /** Pending external file additions, keyed by storage path */
+  #pendingExternalAdds: Set<string> = new Set();
+
+  /** Pending external file removals, keyed by storage path */
+  #pendingExternalRemoves: Set<string> = new Set();
+
+  /** Debounce time for external file changes in milliseconds */
+  static readonly EXTERNAL_CHANGE_DEBOUNCE_MS = 500;
 
   #mainDeployFolder: IFolder | null = null;
   #projectFolder: IFolder | null;
@@ -274,6 +445,14 @@ export default class Project {
     return this.#creatorTools;
   }
 
+  /**
+   * Get the project data for persistence.
+   * This includes chat session and other project metadata.
+   */
+  public get projectData(): IProjectData {
+    return this.#data;
+  }
+
   public get role() {
     if (this.#data.role === undefined) {
       return ProjectRole.general;
@@ -314,6 +493,10 @@ export default class Project {
     this.#accessoryFilePaths = files;
   }
 
+  // This property is a maintained and updated "in development" info set
+  // that contains errors and validation information useful while a project is
+  // in develpoment. For other validator suites, instantiate a ProjectInfoSet
+  // with this project in its constructor
   public get indevInfoSet() {
     if (!this.#indevInfoSet) {
       this.#indevInfoSet = new ProjectInfoSet(this, ProjectInfoSuite.defaultInDevelopment);
@@ -522,6 +705,10 @@ export default class Project {
 
   public get isInflated() {
     return this.#isInflated;
+  }
+
+  public get isRelationsProcessed() {
+    return this.#relationsProcessed;
   }
 
   public get distBuildFolder() {
@@ -781,6 +968,42 @@ export default class Project {
     return val;
   }
 
+  get created() {
+    let val = this.#data.created;
+
+    if (!val) {
+      return null;
+    }
+
+    if (!(val instanceof Date)) {
+      val = new Date(val);
+    }
+
+    return val;
+  }
+
+  set created(value: Date | null) {
+    this.#data.created = value;
+  }
+
+  get lastOpened() {
+    let val = this.#data.lastOpened;
+
+    if (!val) {
+      return null;
+    }
+
+    if (!(val instanceof Date)) {
+      val = new Date(val);
+    }
+
+    return val;
+  }
+
+  set lastOpened(value: Date | null) {
+    this.#data.lastOpened = value;
+  }
+
   getItemsCopy(): ProjectItem[] {
     return this.#items.slice();
   }
@@ -900,8 +1123,8 @@ export default class Project {
       return;
     }
 
-    this.#itemsByProjectPath.set(path, undefined);
-    this.#itemsByType.set(item.itemType, undefined);
+    this.#itemsByProjectPath.delete(path);
+    this.#itemsByType.delete(item.itemType);
 
     this.#items = newArr;
 
@@ -1304,7 +1527,7 @@ export default class Project {
 
             header.name = newTitle;
 
-            manifestJson.save();
+            await manifestJson.save();
           }
         }
       }
@@ -1504,13 +1727,174 @@ export default class Project {
     }
   }
 
-  public async ensureInfoSetGenerated() {
+  /**
+   * Returns true if an info set generation is currently in progress.
+   * Can be used by UI to show waiting state.
+   */
+  public get isInfoSetGenerationInProgress(): boolean {
+    return this.#infoSetGenerationPromise !== null;
+  }
+
+  public async ensureIndevInfoSetGenerated() {
     const infoSet = this.indevInfoSet;
 
     if (infoSet.completedGeneration) {
       return infoSet;
     }
 
+    // If a generation is already in progress, wait for it instead of starting a new one
+    // This allows the Inspector view to wait for an existing worker operation
+    if (this.#infoSetGenerationPromise) {
+      Log.verbose("Info set generation already in progress, waiting for existing operation...");
+      return this.#infoSetGenerationPromise;
+    }
+
+    // Create a promise that will be resolved when generation completes
+    // This allows other callers to wait for the same operation
+    this.#infoSetGenerationPromise = this._performInfoSetGeneration(infoSet);
+
+    try {
+      return await this.#infoSetGenerationPromise;
+    } finally {
+      // Clear the promise when done (success or failure)
+      this.#infoSetGenerationPromise = null;
+    }
+  }
+
+  /**
+   * Internal method that performs the actual info set generation.
+   * Separated from ensureInfoSetGenerated to allow tracking via promise.
+   */
+  private async _performInfoSetGeneration(infoSet: ProjectInfoSet): Promise<ProjectInfoSet> {
+    // Try to use combined worker operation in browser environments
+    // @ts-ignore
+    if (typeof window !== "undefined" && !this.#relationsProcessed) {
+      try {
+        const workerManager = getProjectWorkerManager();
+        if (workerManager && workerManager.isSupported) {
+          // Start an operation on the main thread to track progress
+          const operationId = await this.#creatorTools.notifyOperationStarted(
+            `Validating '${this.simplifiedName}' (0%)`,
+            StatusTopic.validation
+          );
+
+          // Create progress callback that forwards to CreatorTools status updates
+          const onProgress = (message: string, percent?: number) => {
+            // Floor the percent to ensure integer values for status bar regex matching
+            const statusMessage = percent !== undefined ? `${message} (${Math.floor(percent)}%)` : message;
+            this.#creatorTools.notifyOperationUpdate(operationId, statusMessage, StatusTopic.validation);
+          };
+
+          // Track if we received streamed results
+          let relationsComplete = false;
+          let validationComplete = false;
+
+          // Streaming callbacks for receiving results as they complete
+          const streamingCallbacks = {
+            onRelationsComplete: () => {
+              // Relations are applied automatically by the worker manager
+              this.#relationsProcessed = true;
+              relationsComplete = true;
+              Log.verbose("[Project] Relations streamed from worker");
+              // Notify UI so data-relations-complete attribute updates immediately
+              this._onPropertyChanged.dispatch(this, "relationsProcessed");
+            },
+            onValidationComplete: async (
+              serializedInfoItems: import("../workers/IProjectWorkerMessage").ISerializableInfoItem[]
+            ) => {
+              // Preload topic forms in main thread so aggregateFeatures can look up proper titles
+              const allGeneratorIds = [
+                ...GeneratorRegistrations.projectGenerators.map((g) => g.id),
+                ...GeneratorRegistrations.itemGenerators.map((g) => g.id),
+                ...GeneratorRegistrations.fileGenerators.map((g) => g.id),
+              ];
+              await InfoGeneratorTopicUtilities.preloadAllForms(allGeneratorIds);
+
+              // Deserialize info items and apply to infoSet
+              const items = this.getItemsCopy();
+              const itemsByPath = new Map<string, ProjectItem>();
+              for (const item of items) {
+                if (item.projectPath) {
+                  itemsByPath.set(item.projectPath, item);
+                }
+              }
+
+              infoSet.items = serializedInfoItems.map((s) => {
+                const infoItem = new ProjectInfoItem(
+                  s.itemType,
+                  s.generatorId,
+                  s.generatorIndex,
+                  s.message,
+                  s.projectItemStoragePath ? itemsByPath.get(s.projectItemStoragePath) : undefined,
+                  s.data,
+                  s.content
+                );
+                if (s.featureSets) {
+                  infoItem.featureSets = s.featureSets;
+                }
+                return infoItem;
+              });
+
+              await infoSet.markGenerationCompleteAsync();
+              validationComplete = true;
+              Log.verbose(`[Project] Validation streamed from worker: ${infoSet.items.length} items`);
+            },
+            onThumbnailBatch: (
+              thumbnails: { [projectPath: string]: string },
+              thumbnailLinks?: { [projectPath: string]: string }
+            ) => {
+              // Thumbnails are applied automatically by the worker manager.
+              // Notify the UI to re-render so thumbnails appear in the sidebar.
+              const thumbnailCount = Object.keys(thumbnails).length;
+              const linkCount = thumbnailLinks ? Object.keys(thumbnailLinks).length : 0;
+              Log.debug(`[Project] Thumbnail batch received: ${thumbnailCount} thumbnails, ${linkCount} links`);
+              if (thumbnailCount > 0 || linkCount > 0) {
+                // Fire a property change to trigger sidebar re-render
+                this._onPropertyChanged.dispatch(this, "thumbnails");
+              }
+            },
+            onThumbnailsFinished: (cancelled: boolean, totalGenerated: number) => {
+              Log.debug(`[Project] Thumbnails finished: ${totalGenerated} generated, cancelled=${cancelled}`);
+            },
+          };
+
+          try {
+            const result = await workerManager.processRelationsAndGenerateInfoSetInWorker(
+              this,
+              infoSet.suite,
+              streamingCallbacks,
+              onProgress
+            );
+            if (result && relationsComplete && validationComplete) {
+              // Worker successfully processed relations and validation via streaming
+              this.#indevInfoSetNeedsUpdating = false;
+
+              // End the operation - progress bar disappears immediately
+              await this.#creatorTools.notifyOperationEnded(operationId, "", StatusTopic.validation);
+
+              return infoSet;
+            } else if (!result) {
+              // Worker didn't support the operation - fall through to main thread
+              await this.#creatorTools.notifyOperationEnded(operationId, "", StatusTopic.validation);
+            }
+          } catch (e) {
+            // End the operation with error
+            await this.#creatorTools.notifyOperationEnded(
+              operationId,
+              `Validation failed: ${e}`,
+              StatusTopic.validation,
+              true
+            );
+            throw e;
+          }
+        }
+      } catch (e) {
+        // Fall back to main thread processing if worker fails
+        Log.verbose("Combined worker operation not available, falling back to main thread: " + e);
+      }
+    }
+
+    // Fallback: use the standard main-thread approach
     await infoSet.generateForProject(this.#indevInfoSetNeedsUpdating);
 
     this.#indevInfoSetNeedsUpdating = false;
@@ -1627,8 +2011,11 @@ export default class Project {
 
     this._handleDeployUpdated = this._handleDeployUpdated.bind(this);
     this._handleProjectFileContentsUpdated = this._handleProjectFileContentsUpdated.bind(this);
+    this._handleProjectFileAdded = this._handleProjectFileAdded.bind(this);
+    this._handleProjectFileRemoved = this._handleProjectFileRemoved.bind(this);
+    this._flushExternalChanges = this._flushExternalChanges.bind(this);
     this.applyUpdate = this.applyUpdate.bind(this);
-    this.ensurePreferencesAndFolderLoadedFromFile = this.ensurePreferencesAndFolderLoadedFromFile.bind(this);
+    this.loadPreferencesAndFolder = this.loadPreferencesAndFolder.bind(this);
     this.ensureProjectFolder = this.ensureProjectFolder.bind(this);
     this._handleProjectFolderMoved = this._handleProjectFolderMoved.bind(this);
 
@@ -1645,6 +2032,8 @@ export default class Project {
       variants: {},
       storageBasePath: "",
       contentsModified: null,
+      created: new Date(),
+      lastOpened: new Date(),
       dataStorageRelativePath: "/" + name + "/",
       editPreference: ProjectEditPreference.default,
       name: sanName,
@@ -1811,7 +2200,7 @@ export default class Project {
     const rootFolder = await this.ensureProjectFolder();
 
     const operId = await this.creatorTools.notifyOperationStarted(
-      "Loading project files for '" + this.name + "' from folder '" + rootFolder.fullPath + "'",
+      "Loading project files for '" + this.name + "'",
       StatusTopic.projectLoad
     );
 
@@ -1837,7 +2226,7 @@ export default class Project {
 
     await this.creatorTools.notifyOperationEnded(
       operId,
-      "Done loading project files for '" + this.name + "' from folder '" + rootFolder.fullPath + "'",
+      "Done loading project files for '" + this.title + "'",
       StatusTopic.projectLoad
     );
 
@@ -2007,7 +2396,7 @@ export default class Project {
 
         await this.creatorTools.notifyOperationEnded(
           operId,
-          "Done loading project files for '" + this.name + "' from file '" + this.projectCabinetFile.fullPath + "'",
+          "Done loading project files for '" + this.title + "' from file '" + this.projectCabinetFile.fullPath + "'",
           StatusTopic.projectLoad
         );
 
@@ -2124,6 +2513,11 @@ export default class Project {
       this.#itemsToBeProcessed = items.length;
       this.#itemsProcessed = 0;
 
+      // Note: Relation processing in worker is now handled by the combined
+      // processRelationsAndGenerateInfoSetInWorker method when validation is requested.
+      // For standalone relation processing, we use the main thread to avoid complexity.
+
+      // Process on main thread
       // @ts-ignore
       if (items.length < ProcessItemRelationsBatchSize || typeof window === "undefined") {
         await ProjectItemRelations.calculateForItems(items);
@@ -2161,6 +2555,11 @@ export default class Project {
   }
 
   async completeProcessItemRelationsBatchProcessing() {
+    Log.verbose(
+      `[Thumbnails] completeProcessItemRelationsBatchProcessing called: ${this.#itemsProcessed}/${
+        this.#itemsToBeProcessed
+      }`
+    );
     if (this.#itemsToBeProcessed > ProcessItemRelationsBatchSize * 2) {
       await this.creatorTools.notifyOperationUpdate(
         this.#relationsBatchOperId,
@@ -2192,6 +2591,9 @@ export default class Project {
       for (const prom of pendingProcessing) {
         prom(undefined);
       }
+
+      // Note: Thumbnail generation is now handled in the combined relations+validation worker task
+      // (processRelationsAndGenerateInfoSet) as a low-priority background queue for efficiency.
     }
   }
 
@@ -2793,7 +3195,7 @@ export default class Project {
     return pi;
   }
 
-  async ensurePreferencesAndFolderLoadedFromFile() {
+  async loadPreferencesAndFolder() {
     Log.assert(!this.#isDisposed, "PLF");
 
     if (this.#isLoaded) {
@@ -2814,7 +3216,11 @@ export default class Project {
     this.#data.items = [];
 
     if (Utilities.isString(this.#preferencesFile.content) && this.#preferencesFile.content != null) {
-      this.#data = JSON.parse(this.#preferencesFile.content as string);
+      try {
+        this.#data = JSON.parse(this.#preferencesFile.content as string);
+      } catch (e) {
+        Log.debug("Failed to parse project preferences JSON: " + e);
+      }
     }
 
     await this.ensureProjectFolder();
@@ -2838,7 +3244,11 @@ export default class Project {
     }
 
     if (Utilities.isString(this.#preferencesFile.content) && this.#preferencesFile.content != null) {
-      this.#data = JSON.parse(this.#preferencesFile.content as string);
+      try {
+        this.#data = JSON.parse(this.#preferencesFile.content as string);
+      } catch (e) {
+        Log.debug("Failed to parse project preferences JSON: " + e);
+      }
     }
   }
 
@@ -2849,7 +3259,7 @@ export default class Project {
       return;
     }
 
-    await this.ensurePreferencesAndFolderLoadedFromFile();
+    await this.loadPreferencesAndFolder();
 
     this.#items = [];
     this.#itemsByProjectPath = new Map();
@@ -3077,6 +3487,10 @@ export default class Project {
     }
 
     this._onSaved.dispatch(this, this);
+
+    if (this.#creatorTools.activeOperations.length === 0) {
+      await this.#creatorTools.notifyStatusUpdate("Save complete");
+    }
   }
 
   async autoCompleteProject() {
@@ -3116,7 +3530,7 @@ export default class Project {
       if (file && (await file.exists())) {
         this.#preferencesFile = file;
 
-        await this.ensurePreferencesAndFolderLoadedFromFile();
+        await this.loadPreferencesAndFolder();
       }
     }
   }
@@ -3124,8 +3538,18 @@ export default class Project {
   _unapplyFromProjectFolder() {
     if (this.#projectFolder) {
       this.#projectFolder.storage.onFileContentsUpdated.unsubscribe(this._handleProjectFileContentsUpdated);
+      this.#projectFolder.storage.onFileAdded.unsubscribe(this._handleProjectFileAdded);
+      this.#projectFolder.storage.onFileRemoved.unsubscribe(this._handleProjectFileRemoved);
       this.#projectFolder.onChildFolderMoved.unsubscribe(this._handleProjectFolderMoved);
     }
+
+    // Clear any pending debounce timer
+    if (this.#externalChangeDebounceTimer) {
+      clearTimeout(this.#externalChangeDebounceTimer);
+      this.#externalChangeDebounceTimer = null;
+    }
+    this.#pendingExternalAdds.clear();
+    this.#pendingExternalRemoves.clear();
   }
 
   _applyToProjectFolder() {
@@ -3133,6 +3557,8 @@ export default class Project {
       this.#projectFolder.storage.readOnly = this.#readOnlySafety;
 
       this.#projectFolder.storage.onFileContentsUpdated.subscribe(this._handleProjectFileContentsUpdated);
+      this.#projectFolder.storage.onFileAdded.subscribe(this._handleProjectFileAdded);
+      this.#projectFolder.storage.onFileRemoved.subscribe(this._handleProjectFileRemoved);
       this.#projectFolder.onChildFolderMoved.subscribe(this._handleProjectFolderMoved);
     }
   }
@@ -3497,6 +3923,138 @@ export default class Project {
         this.notifyProjectItemContentChanged(item, fileUpdate);
       }
     }
+  }
+
+  /**
+   * Handles a file being added externally (e.g., by MCP saving a new model).
+   * Uses debouncing to batch multiple rapid additions into a single re-inference pass.
+   */
+  async _handleProjectFileAdded(storage: IStorage, file: IFile) {
+    if (!this.#projectFolder || this.#isDisposed) {
+      return;
+    }
+
+    const storagePath = ProjectUtilities.canonicalizeStoragePath(file.storageRelativePath);
+
+    // Add to pending set
+    this.#pendingExternalAdds.add(storagePath);
+
+    // If this path was pending removal, cancel the removal (quick delete+recreate)
+    this.#pendingExternalRemoves.delete(storagePath);
+
+    // Reset the debounce timer
+    this._scheduleExternalChangeFlush();
+  }
+
+  /**
+   * Handles a file being removed externally.
+   * Uses debouncing to batch multiple rapid removals into a single cleanup pass.
+   */
+  async _handleProjectFileRemoved(storage: IStorage, filePath: string) {
+    if (!this.#projectFolder || this.#isDisposed) {
+      return;
+    }
+
+    // Convert the full path to a storage-relative path
+    let relativePath = filePath;
+    if (this.#projectFolder.storage.rootFolder.fullPath) {
+      const rootPath = this.#projectFolder.storage.rootFolder.fullPath;
+      if (filePath.startsWith(rootPath)) {
+        relativePath = filePath.substring(rootPath.length);
+      }
+    }
+
+    const storagePath = ProjectUtilities.canonicalizeStoragePath(relativePath);
+
+    // If this path was pending addition, just remove from pending adds (never existed in project)
+    if (this.#pendingExternalAdds.has(storagePath)) {
+      this.#pendingExternalAdds.delete(storagePath);
+      return;
+    }
+
+    // Add to pending removals
+    this.#pendingExternalRemoves.add(storagePath);
+
+    // Reset the debounce timer
+    this._scheduleExternalChangeFlush();
+  }
+
+  /**
+   * Schedules the debounced flush of external file changes.
+   */
+  private _scheduleExternalChangeFlush() {
+    if (this.#externalChangeDebounceTimer) {
+      clearTimeout(this.#externalChangeDebounceTimer);
+    }
+
+    this.#externalChangeDebounceTimer = setTimeout(() => {
+      this._flushExternalChanges();
+    }, Project.EXTERNAL_CHANGE_DEBOUNCE_MS);
+  }
+
+  /**
+   * Processes all pending external file additions and removals.
+   * Called after the debounce timer expires.
+   */
+  async _flushExternalChanges() {
+    if (this.#isDisposed || !this.#projectFolder) {
+      return;
+    }
+
+    this.#externalChangeDebounceTimer = null;
+
+    const addedPaths = Array.from(this.#pendingExternalAdds);
+    const removedPaths = Array.from(this.#pendingExternalRemoves);
+
+    this.#pendingExternalAdds.clear();
+    this.#pendingExternalRemoves.clear();
+
+    // Handle removals first - find and remove corresponding ProjectItems
+    for (const removedPath of removedPaths) {
+      const item = this.#itemsByProjectPath.get(removedPath);
+      if (item) {
+        // Remove the item from the project
+        const index = this.#items.indexOf(item);
+        if (index >= 0) {
+          this.#items.splice(index, 1);
+        }
+        this.#itemsByProjectPath.delete(removedPath);
+
+        // Notify listeners
+        this._onItemRemoved.dispatch(this, item);
+      }
+    }
+
+    // Handle additions - re-infer project items from files
+    // Only if there were additions (don't re-scan if only removals)
+    if (addedPaths.length > 0) {
+      const itemCountBefore = this.#items.length;
+
+      // Re-infer project items from the root folder.
+      // Use force=true so that already-loaded folders are re-scanned from disk,
+      // picking up files created externally (e.g., by MCP tools or other processes).
+      await this.inferProjectItemsFromFilesRootFolder(true);
+
+      // Find the newly created items and notify listeners
+      let matchedCount = 0;
+      for (const addedPath of addedPaths) {
+        const item = this.#itemsByProjectPath.get(addedPath);
+        if (item) {
+          this._onItemAdded.dispatch(this, item);
+          matchedCount++;
+        }
+      }
+
+      // If inference added items but path-based lookup didn't find them
+      // (e.g., due to path format differences), dispatch a generic property
+      // change to ensure the UI still refreshes.
+      if (matchedCount === 0 && this.#items.length > itemCountBefore) {
+        this._onPropertyChanged.dispatch(this, "items");
+      }
+    }
+
+    // Mark info set as needing update
+    this.#indevInfoSetNeedsUpdating = true;
   }
 
   async ensureDistFolder(): Promise<IFolder> {

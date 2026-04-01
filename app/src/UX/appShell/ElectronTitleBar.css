@@ -1,0 +1,102 @@
+.etb-outer {
+  display: block;
+  border-left: solid 1px black;
+  border-top: solid 1px black;
+  border-right: solid 1px black;
+}
+
+/* macOS-specific outer style - no borders, let macOS window frame handle it */
+.etb-outer-mac {
+  border: none;
+}
+
+.etb-grid {
+  display: grid;
+  grid-template-columns: 1fr 36px 36px 36px 36px 36px;
+}
+
+/* macOS grid: traffic light spacer on left, title on right */
+.etb-grid-mac {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+}
+
+/* Space for macOS traffic light buttons (close, minimize, maximize) */
+.etb-trafficLightSpacer {
+  -webkit-app-region: drag;
+  height: 25px;
+}
+
+.etb-title {
+  vertical-align: middle;
+  padding: 3px 9px;
+  height: 25px;
+}
+
+/* macOS title style - positioned for right side */
+.etb-title-mac {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 16px;
+}
+
+.etb-titleInner {
+  height: 12px;
+  margin-top: 6px;
+  margin-bottom: 0px;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+/* macOS title inner - logo on right */
+.etb-titleInner-mac {
+  height: 12px;
+  width: 180px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: right center;
+}
+
+.etb-logo-d {
+  background-image: url(../../images/mctoolstext_g.png);
+}
+
+.etb-logo-l {
+  background-image: url(../../images/mctoolstext_l.png);
+}
+
+.etb-moveDraggable {
+  -webkit-app-region: drag;
+}
+
+.etb-mmrCell {
+  width: 36px;
+  -webkit-app-region: no-drag;
+  height: 25px;
+  min-width: 36px;
+  max-width: 36px;
+  min-height: 25px;
+  max-height: 25px;
+  padding: 4px;
+}
+
+.etb-windowSide1 {
+  grid-column: 2;
+}
+
+.etb-windowSide2 {
+  grid-column: 3;
+}
+
+.etb-windowMode1 {
+  grid-column: 4;
+}
+
+.etb-windowMode2 {
+  grid-column: 5;
+}
+
+.etb-close {
+  grid-column: 6;
+}

@@ -9,7 +9,6 @@ import GitCreateTreeParamsTree from "./GitCreateTreeParamsTree";
 import IFile from "./../storage/IFile";
 import { Endpoints } from "@octokit/types";
 import IGitHubClient from "./IGitHubClient";
-import { EventDispatcher } from "ste-events";
 import DifferenceSet from "../storage/DifferenceSet";
 import { FileDifferenceType } from "../storage/IFileDifference";
 import Utilities from "../core/Utilities";
@@ -19,8 +18,6 @@ type GitHubReposResponse = Endpoints["GET /user/repos"]["response"];
 type GitHubUserResponse = Endpoints["GET /user"]["response"];
 
 export default class GitHubManager {
-  private static _tokenFromLogin: string | undefined = "";
-  private static _tokenFromPrefs: string | undefined = "";
   private _octokit: Octokit;
   private _prefsFile?: IFile;
   private _isUserStateLoaded: boolean = false;
@@ -29,50 +26,6 @@ export default class GitHubManager {
 
   private _reposResponse?: GitHubReposResponse;
   private _userResponse?: GitHubUserResponse;
-
-  static _onAuthenticated: EventDispatcher<string, string> = new EventDispatcher<string, string>();
-
-  static githubAuthenticationCompleted(newToken: string) {
-    GitHubManager._tokenFromLogin = newToken;
-
-    GitHubManager._onAuthenticated.dispatch("", "");
-  }
-
-  static get isSignedIn() {
-    return (
-      (this._tokenFromLogin !== undefined && this._tokenFromLogin !== "") ||
-      (this._tokenFromPrefs !== undefined && this._tokenFromPrefs !== "")
-    );
-  }
-
-  public static signIn() {
-    // @ts-ignore
-    if (typeof window !== "undefined") {
-      // @ts-ignore
-      const result = window.prompt(
-        "This is really really preview. You should not use any work or meaningful GitHub accounts with this - yet. Type yes to go ahead anyways."
-      );
-
-      if (result !== "yes") {
-        return;
-      }
-
-      // @ts-ignore
-      window.open("/Auth/Login", "login", "width=600,height=700,resizable=off");
-    }
-  }
-
-  public static get onAuthenticated() {
-    return GitHubManager._onAuthenticated.asEvent();
-  }
-
-  public static init() {
-    // @ts-ignore
-    if (typeof window !== "undefined") {
-      // @ts-ignore
-      (window as any).githubAuthenticationCompleted = GitHubManager.githubAuthenticationCompleted;
-    }
-  }
 
   public get repos() {
     if (this._reposResponse === undefined) {
@@ -95,20 +48,11 @@ export default class GitHubManager {
   }
 
   constructor(prefsStorageFile?: IFile) {
-    this._onAuthenticated = this._onAuthenticated.bind(this);
-
     this._octokit = new Octokit({
-      auth: "", // GitHubManager._tokenFromLogin,
       userAgent: constants.name + " " + constants.version,
     });
 
     this._prefsFile = prefsStorageFile;
-
-    // GitHubManager.onAuthenticated.subscribe(this._onAuthenticated);
-  }
-
-  private _onAuthenticated(dummy: string, dummy2: string) {
-    this._savePrefs();
   }
 
   async _loadPrefs() {
@@ -124,18 +68,9 @@ export default class GitHubManager {
       this._data = JSON.parse(this._prefsFile.content);
     }
 
-    if (
-      (this._data === undefined || this._data.authToken === undefined) &&
-      GitHubManager._tokenFromLogin !== undefined
-    ) {
-      this._savePrefs();
-    } else if (this._data !== undefined && this._data.authToken !== undefined) {
-      if (GitHubManager._tokenFromPrefs === undefined) {
-        GitHubManager._tokenFromPrefs = this._data.authToken;
-      }
-
+    if (this._data !== undefined && this._data.authToken !== undefined) {
       this._octokit = new Octokit({
-        // auth: this._data.authToken,
+        auth: this._data.authToken,
         userAgent: constants.name + " " + constants.version,
       });
     }
@@ -148,10 +83,6 @@ export default class GitHubManager {
 
     if (this._data === undefined) {
       this._data = {};
-    }
-
-    if (GitHubManager._tokenFromLogin !== undefined) {
-      this._data.authToken = GitHubManager._tokenFromLogin;
     }
 
     if (this.authenticatedUser !== undefined && this.authenticatedUser.name !== null) {

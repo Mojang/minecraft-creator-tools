@@ -3,7 +3,7 @@
   "header": {
     "name": "testerName",
     "description": "testerDescription",
-    "uuid": "ab5682fe-11af-4297-8f3e-1deed2144a88",
+    "uuid": "07f5fe1b-b794-4bc0-9dd4-0f99f961bb62",
     "version": [
       1,
       0,
@@ -12,7 +12,7 @@
     "min_engine_version": [
       1,
       21,
-      100
+      120
     ],
     "pack_scope": "world"
   },
@@ -20,7 +20,7 @@
     {
       "description": "Add-on Pack Resources",
       "type": "resources",
-      "uuid": "7bf5d9ea-eee0-416d-8112-954bb6eb90d0",
+      "uuid": "66b3490f-3221-42b7-89ee-98c14b893fb2",
       "version": [
         1,
         0,
@@ -30,7 +30,7 @@
   ],
   "dependencies": [
     {
-      "uuid": "6f08f389-b176-4e66-ab36-0aeccc678937",
+      "uuid": "141ca0b6-fd3d-49c8-bc6c-34feb083b194",
       "version": [
         1,
         0,
@@ -41,7 +41,7 @@
   "metadata": {
     "generated_with": {
       "mctoolscli": [
-        "0.2.9"
+        "0.0.1"
       ]
     },
     "product_type": "addon"

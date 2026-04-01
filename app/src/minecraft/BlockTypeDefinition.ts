@@ -22,8 +22,10 @@ import ManagedPermutation from "./ManagedPermutation";
 import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
+import RelationsIndex from "../app/RelationsIndex";
 import ModelGeometryDefinition from "./ModelGeometryDefinition";
 import BlocksCatalogDefinition from "./BlocksCatalogDefinition";
+import { IBlockResource } from "./IBlocksCatalog";
 import TerrainTextureCatalogDefinition from "./TerrainTextureCatalogDefinition";
 import TypeScriptDefinition from "./TypeScriptDefinition";
 import { IBlockTypeCreationData } from "./IBlockTypeCreationData";
@@ -50,6 +52,7 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
+  private _loadedWithComments: boolean = false;
 
   public _data?: IBlockTypeBehaviorPack;
   private _managed: { [id: string]: IManagedComponent | undefined } = {};
@@ -87,14 +90,75 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
     return Database.defaultBlockBaseType;
   }
 
-  public get geometryIdentifier() {
-    const geoComponent = this.getComponent("minecraft:geometry");
-
-    if (!geoComponent) {
-      return undefined;
+  /**
+   * Returns true if this block uses a unit cube geometry.
+   * Unit cube blocks can be rendered with textures from blocks.json or material_instances.
+   *
+   * A block is considered a unit cube if:
+   * 1. It has minecraft:unit_cube component (legacy)
+   * 2. It has geometry = "minecraft:geometry.full_block" or "geometry.full_block"
+   * 3. It has no geometry component at all (defaults to unit cube)
+   */
+  public get isUnitCube(): boolean {
+    // Check for explicit minecraft:unit_cube component (legacy)
+    const unitCubeComponent = this.getComponent("minecraft:unit_cube");
+    if (unitCubeComponent) {
+      return true;
     }
 
-    return geoComponent.getProperty("identifier");
+    const geoId = this.geometryIdentifier;
+
+    // No geometry = unit cube
+    if (!geoId) {
+      return true;
+    }
+
+    // Explicit full_block geometry
+    if (geoId === "minecraft:geometry.full_block" || geoId === "geometry.full_block") {
+      return true;
+    }
+
+    return false;
+  }
+
+  public get geometryIdentifier() {
+    // First check base components
+    const geoComponent = this.getComponent("minecraft:geometry");
+
+    if (geoComponent) {
+      // Handle both legacy and modern formats:
+      // Legacy (1.16.x): "minecraft:geometry": "geometry.barrier_slab" (string directly)
+      // Modern (1.19.40+): "minecraft:geometry": { "identifier": "geometry.my_block", ... }
+      const data = geoComponent.getData();
+      if (typeof data === "string") {
+        return data;
+      }
+      const id = geoComponent.getProperty("identifier");
+      if (id) {
+        return id;
+      }
+    }
+
+    // If no geometry in base components, check permutations
+    // This handles blocks where geometry is only defined in permutations (e.g., arc:flask)
+    const geometryList = this.getGeometryList();
+    if (geometryList && geometryList.length > 0) {
+      return geometryList[0];
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Gets the blocks.json catalog resource for this block, if it exists.
+   * Returns the IBlockResource which contains texture references for unit cube blocks.
+   */
+  public async getBlockCatalogResource(project: Project): Promise<IBlockResource | undefined> {
+    const blockCatalog = await BlocksCatalogDefinition.getBlockCatalog(project);
+    if (blockCatalog && this.id) {
+      return blockCatalog.getCatalogResource(this.id);
+    }
+    return undefined;
   }
 
   public async setBlockCatalogTexture(
@@ -423,6 +487,10 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
     if (this._data?.description?.properties) {
       this._data.description.properties[stateName] = undefined;
     }
+  }
+
+  public get formatVersion(): string | undefined {
+    return this._wrapper?.format_version;
   }
 
   public getFormatVersion(): number[] | undefined {
@@ -821,13 +889,22 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
   }
 
   public async getTextureItems(
-    blockTypeProjectItem: ProjectItem
+    blockTypeProjectItem: ProjectItem,
+    project?: Project
   ): Promise<{ [name: string]: ProjectItem } | undefined> {
     if (!this._data || !blockTypeProjectItem.childItems) {
       return undefined;
     }
 
-    const textureList = this.getTextureList();
+    let textureList = this.getTextureList();
+
+    // For unit cube blocks, also include textures from blocks.json
+    if (this.isUnitCube && project) {
+      const catalogTextures = await this.getTextureListFromBlocksCatalog(project);
+      if (catalogTextures && catalogTextures.length > 0) {
+        textureList = textureList ? [...textureList, ...catalogTextures] : catalogTextures;
+      }
+    }
 
     const results: { [name: string]: ProjectItem } = {};
 
@@ -839,6 +916,9 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
           await candItem.loadContent();
         }
 
+        // Ensure the terrain texture catalog's dependencies are loaded (links to texture files)
+        await candItem.ensureDependencies();
+
         if (candItem.primaryFile && candItem.childItems) {
           const blockTextureCatalog = await TerrainTextureCatalogDefinition.ensureOnFile(candItem.primaryFile);
 
@@ -848,6 +928,8 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
 
               if (texPaths) {
                 for (const texPath of texPaths) {
+                  const texPathLower = texPath.toLowerCase();
+
                   for (const catalogChildItem of candItem.childItems) {
                     let path = catalogChildItem.childItem.projectPath;
 
@@ -858,7 +940,9 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
                         path = path.substring(0, lastPeriod);
                       }
 
-                      if (path.endsWith(texPath)) {
+                      // Case-insensitive matching since terrain_texture paths may have different casing
+                      const pathLower = path.toLowerCase();
+                      if (pathLower.endsWith(texPathLower)) {
                         results[texPath] = catalogChildItem.childItem;
                       }
                     }
@@ -904,34 +988,70 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
     return geometryList;
   }
 
+  /**
+   * Gets the list of texture IDs used by this block.
+   * Checks both material_instances component and blocks.json catalog.
+   */
   public getTextureList() {
     if (!this._data) {
       return undefined;
     }
 
-    const comps = this.getComponentsInBaseAndPermutations("minecraft:material_instances");
-
-    if (!comps) {
-      return undefined;
-    }
-
     const textureList: string[] = [];
 
-    for (const comp of comps) {
-      const compData = comp.getData();
+    // Check material_instances component
+    const comps = this.getComponentsInBaseAndPermutations("minecraft:material_instances");
 
-      if (typeof compData === "object") {
-        for (const materialName in compData) {
-          const material = (compData as any)[materialName];
+    if (comps) {
+      for (const comp of comps) {
+        const compData = comp.getData();
 
-          if (material && material.texture) {
-            textureList.push(material.texture);
+        if (typeof compData === "object") {
+          for (const materialName in compData) {
+            const material = (compData as any)[materialName];
+
+            if (material && material.texture) {
+              textureList.push(material.texture);
+            }
           }
         }
       }
     }
 
     return textureList;
+  }
+
+  /**
+   * Gets texture IDs from blocks.json catalog for this block.
+   * Used for unit cube blocks that define textures via blocks.json.
+   */
+  public async getTextureListFromBlocksCatalog(project: Project): Promise<string[]> {
+    const textureList: string[] = [];
+
+    const blockResource = await this.getBlockCatalogResource(project);
+    if (blockResource && blockResource.textures) {
+      if (typeof blockResource.textures === "string") {
+        textureList.push(blockResource.textures);
+      } else {
+        // IBlockTextures object with per-face textures
+        const textures = blockResource.textures;
+        if (textures.north) textureList.push(textures.north);
+        if (textures.south) textureList.push(textures.south);
+        if (textures.east) textureList.push(textures.east);
+        if (textures.west) textureList.push(textures.west);
+        if (textures.up) textureList.push(textures.up);
+        if (textures.down) textureList.push(textures.down);
+        if (textures.side) textureList.push(textures.side);
+      }
+
+      // Also check carried_textures
+      if (blockResource.carried_textures) {
+        textureList.push(blockResource.carried_textures);
+      }
+    }
+
+    // Deduplicate
+    return [...new Set(textureList)];
   }
 
   _ensureBehaviorPackDataInitialized() {
@@ -1006,17 +1126,27 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
     return lootTablePaths;
   }
 
-  async addChildItems(project: Project, item: ProjectItem) {
+  async addChildItems(project: Project, item: ProjectItem, index?: RelationsIndex) {
     let lootTablePaths = this.getLootTablePaths();
 
     let customComponentIds: string[] = this.getCustomComponentIds();
 
     let textureList = this.getTextureList();
-    let geometryList = this.getGeometryList();
-    const itemsCopy = project.getItemsCopy();
 
-    for (const candItem of itemsCopy) {
-      if (candItem.itemType === ProjectItemType.ts) {
+    // For unit cube blocks, also get textures from blocks.json
+    if (this.isUnitCube) {
+      const catalogTextures = await this.getTextureListFromBlocksCatalog(project);
+      if (catalogTextures && catalogTextures.length > 0) {
+        textureList = textureList ? [...textureList, ...catalogTextures] : catalogTextures;
+      }
+    }
+
+    let geometryList = this.getGeometryList();
+
+    // Check TypeScript files for custom components (only if we have custom component IDs)
+    if (customComponentIds && customComponentIds.length > 0) {
+      const tsItems = project.getItemsByType(ProjectItemType.ts);
+      for (const candItem of tsItems) {
         if (!candItem.isContentLoaded) {
           await candItem.loadContent();
         }
@@ -1028,7 +1158,7 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
 
           const tsd = await TypeScriptDefinition.ensureOnFile(candItem.primaryFile);
 
-          if (tsd && tsd.data && customComponentIds) {
+          if (tsd && tsd.data) {
             let doAddTs = false;
 
             for (const customCompId of customComponentIds) {
@@ -1043,7 +1173,13 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
             }
           }
         }
-      } else if (candItem.itemType === ProjectItemType.terrainTextureCatalogResourceJson) {
+      }
+    }
+
+    // Check terrain texture catalog (only if we have textures to match)
+    if (textureList && textureList.length > 0) {
+      const terrainTexItems = project.getItemsByType(ProjectItemType.terrainTextureCatalogResourceJson);
+      for (const candItem of terrainTexItems) {
         if (!candItem.isContentLoaded) {
           await candItem.loadContent();
         }
@@ -1051,7 +1187,7 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
         if (candItem.primaryFile) {
           const blockTextureCatalog = await TerrainTextureCatalogDefinition.ensureOnFile(candItem.primaryFile);
 
-          if (blockTextureCatalog && textureList) {
+          if (blockTextureCatalog) {
             let doAddTextureCatalog = false;
 
             for (const textureId of textureList) {
@@ -1068,46 +1204,77 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
             }
           }
         }
-      } else if (candItem.itemType === ProjectItemType.blocksCatalogResourceJson) {
-        if (!candItem.isContentLoaded) {
-          await candItem.loadContent();
+      }
+    }
+
+    // Check blocks catalog
+    const blocksCatalogItems = project.getItemsByType(ProjectItemType.blocksCatalogResourceJson);
+    for (const candItem of blocksCatalogItems) {
+      if (!candItem.isContentLoaded) {
+        await candItem.loadContent();
+      }
+
+      if (candItem.primaryFile) {
+        const blockCatalog = await BlocksCatalogDefinition.ensureOnFile(candItem.primaryFile);
+
+        if (blockCatalog && this.id) {
+          const blockResource = blockCatalog.getCatalogResource(this.id);
+
+          if (blockResource) {
+            item.addChildItem(candItem);
+          }
         }
+      }
+    }
 
-        if (candItem.primaryFile) {
-          const blockCatalog = await BlocksCatalogDefinition.ensureOnFile(candItem.primaryFile);
-
-          if (blockCatalog && this.id) {
-            const blockResource = blockCatalog.getCatalogResource(this.id);
-
-            if (blockResource) {
+    // Check model geometry (only if we have geometries to match)
+    if (geometryList && geometryList.length > 0) {
+      if (index) {
+        // Use pre-built index for O(1) model lookups
+        const addedItems = new Set<ProjectItem>();
+        for (const geoId of geometryList) {
+          const matchingItems = index.getItemsById(index.modelsById, geoId);
+          for (const candItem of matchingItems) {
+            if (!addedItems.has(candItem)) {
+              addedItems.add(candItem);
               item.addChildItem(candItem);
+              geometryList = Utilities.removeItemInArray(geoId, geometryList);
             }
           }
         }
-      } else if (candItem.itemType === ProjectItemType.modelGeometryJson && geometryList) {
-        if (!candItem.isContentLoaded) {
-          await candItem.loadContent();
-        }
+      } else {
+        const modelItems = project.getItemsByType(ProjectItemType.modelGeometryJson);
+        for (const candItem of modelItems) {
+          if (!candItem.isContentLoaded) {
+            await candItem.loadContent();
+          }
 
-        if (candItem.primaryFile) {
-          const model = await ModelGeometryDefinition.ensureOnFile(candItem.primaryFile);
+          if (candItem.primaryFile) {
+            const model = await ModelGeometryDefinition.ensureOnFile(candItem.primaryFile);
 
-          if (model) {
-            let doAddModel = false;
-            for (const modelId of model.identifiers) {
-              if (geometryList && geometryList.includes(modelId)) {
-                doAddModel = true;
+            if (model) {
+              let doAddModel = false;
+              for (const modelId of model.identifiers) {
+                if (geometryList && geometryList.includes(modelId)) {
+                  doAddModel = true;
 
-                geometryList = Utilities.removeItemInArray(modelId, geometryList);
+                  geometryList = Utilities.removeItemInArray(modelId, geometryList);
+                }
+              }
+
+              if (doAddModel) {
+                item.addChildItem(candItem);
               }
             }
-
-            if (doAddModel) {
-              item.addChildItem(candItem);
-            }
           }
         }
-      } else if (candItem.itemType === ProjectItemType.lootTableBehavior) {
+      }
+    }
+
+    // Check loot tables (only if we have loot references)
+    if (lootTablePaths.length > 0) {
+      const lootTableItems = project.getItemsByType(ProjectItemType.lootTableBehavior);
+      for (const candItem of lootTableItems) {
         for (const lootTablePath of lootTablePaths) {
           if (candItem.projectPath?.endsWith(lootTablePath)) {
             item.addChildItem(candItem);
@@ -1117,7 +1284,11 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
     }
   }
 
-  static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<BlockTypeDefinition, BlockTypeDefinition>) {
+  static async ensureOnFile(
+    file: IFile,
+    loadHandler?: IEventHandler<BlockTypeDefinition, BlockTypeDefinition>,
+    preserveComments?: boolean
+  ) {
     let bt: BlockTypeDefinition | undefined;
 
     if (file.manager === undefined) {
@@ -1131,12 +1302,12 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
     if (file.manager !== undefined && file.manager instanceof BlockTypeDefinition) {
       bt = file.manager as BlockTypeDefinition;
 
-      if (!bt.isLoaded) {
+      if (!bt.isLoaded || (preserveComments && !bt._loadedWithComments)) {
         if (loadHandler) {
           bt.onLoaded.subscribe(loadHandler);
         }
 
-        await bt.load();
+        await bt.load(preserveComments);
       }
     }
 
@@ -1199,8 +1370,24 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
     return this._file.setObjectContentIfSemanticallyDifferent(this._wrapper);
   }
 
-  async load() {
-    if (this._file === undefined || this._isLoaded) {
+  /**
+   * Loads the definition from the file.
+   * @param preserveComments If true, uses comment-preserving JSON parsing for edit/save cycles.
+   *                         If false (default), uses efficient standard JSON parsing.
+   *                         Can be called again with true to "upgrade" a read-only load to read/write.
+   */
+  async load(preserveComments: boolean = false) {
+    // If already loaded with comments, we have the "best" version - nothing more to do
+    if (this._isLoaded && this._loadedWithComments) {
+      return;
+    }
+
+    // If already loaded without comments and caller doesn't need comments, we're done
+    if (this._isLoaded && !preserveComments) {
+      return;
+    }
+
+    if (this._file === undefined) {
       return;
     }
 
@@ -1209,12 +1396,17 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
     }
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
+      this._isLoaded = true;
+      this._onLoaded.dispatch(this, this);
       return;
     }
 
     let data: any = {};
 
-    let result = StorageUtilities.getJsonObject(this._file);
+    // Use comment-preserving parser only when needed for editing
+    let result = preserveComments
+      ? StorageUtilities.getJsonObjectWithComments(this._file)
+      : StorageUtilities.getJsonObject(this._file);
 
     if (result) {
       data = result;
@@ -1233,5 +1425,6 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
     this._onLoaded.dispatch(this, this);
 
     this._isLoaded = true;
+    this._loadedWithComments = preserveComments;
   }
 }

@@ -1,6 +1,9 @@
 import { Box, Paper } from "@mui/material";
+import CreatorToolsHost from "../../../app/CreatorToolsHost";
+import { useIntl } from "react-intl";
 
 export default function HeroBanner() {
+  const intl = useIntl();
   return (
     <Box sx={{ position: "relative" }}>
       <Paper
@@ -24,11 +27,11 @@ export default function HeroBanner() {
           <Box
             component="div"
             aria-hidden="true"
-            maxHeight="16em"
+            maxHeight="10em"
             sx={{
               width: "100%",
               borderRadius: 0,
-              backgroundImage: `url("./res/images/home/HeroBanner_380bg.jpg")`,
+              backgroundImage: `url("${CreatorToolsHost.contentWebRoot}res/images/home/HeroBanner_380bg.jpg")`,
               backgroundSize: "contain",
               backgroundRepeat: "repeat-x",
             }}
@@ -36,10 +39,10 @@ export default function HeroBanner() {
             <Box
               component="img"
               role="img"
-              src="./res/images/home/HeroBanner.jpg"
-              alt="Create and Edit Your Own Minecraft Add-Ons Banner"
+              src={CreatorToolsHost.contentWebRoot + "res/images/home/HeroBanner.jpg"}
+              alt={intl.formatMessage({ id: "home.hero.banner_alt" })}
               aria-hidden="true"
-              maxHeight="16em"
+              maxHeight="10em"
               sx={{
                 maxWidth: "100%",
               }}

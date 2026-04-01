@@ -10,6 +10,7 @@ import Log from "../core/Log";
 import { EventDispatcher } from "ste-events";
 import Utilities from "../core/Utilities";
 import IVersionContent from "./IVersionContent";
+import JsonUtilities from "../core/JsonUtilities";
 
 export default abstract class FileBase implements IFile {
   abstract get name(): string;
@@ -22,6 +23,12 @@ export default abstract class FileBase implements IFile {
 
   isInErrorState?: boolean;
   errorStateMessage?: string;
+
+  /**
+   * Cache for comment-json parsed object.
+   * When set, contains the parsed JSON with comment metadata preserved as Symbol properties.
+   */
+  commentJsonCache?: unknown;
 
   protected _content: string | Uint8Array | null;
 
@@ -214,12 +221,17 @@ export default abstract class FileBase implements IFile {
   unload() {
     this._content = null;
     this.lastLoadedOrSaved = null;
+    // Also clear the manager (typically a Definition object with parsed JSON) to fully release memory
+    this.manager = undefined;
+    // Clear cached parsed JSON to release memory
+    this.commentJsonCache = undefined;
   }
 
   dispose() {
     this.manager = undefined;
     this._content = null;
     this.lastLoadedOrSaved = null;
+    this.commentJsonCache = undefined;
 
     this.isDisposed = true;
   }
@@ -276,6 +288,7 @@ export default abstract class FileBase implements IFile {
     if (value === null || value === undefined) {
       if (this._content !== null) {
         this.setContent(null, updateType, sourceId);
+        this.commentJsonCache = undefined;
         return true;
       }
 
@@ -283,11 +296,30 @@ export default abstract class FileBase implements IFile {
     }
 
     if (!(typeof this._content === "string")) {
-      this.setContent(JSON.stringify(value, null, 2), updateType, sourceId);
+      // No existing content - check if the new value has comment metadata
+      if (JsonUtilities.hasCommentMetadata(value)) {
+        this.setContent(JsonUtilities.stringifyJsonWithComments(value), updateType, sourceId);
+        this.commentJsonCache = value;
+      } else {
+        this.setContent(JSON.stringify(value, null, 2), updateType, sourceId);
+      }
       return true;
     }
 
     try {
+      // If the value has comment metadata, use comment-preserving comparison and stringify
+      if (JsonUtilities.hasCommentMetadata(value)) {
+        const currentObj = this.commentJsonCache ?? JsonUtilities.parseJsonWithComments(this._content as string);
+
+        if (!JsonUtilities.jsonObjectsSemanticallyEqual(currentObj, value)) {
+          this.setContent(JsonUtilities.stringifyJsonWithComments(value), updateType, sourceId);
+          this.commentJsonCache = value;
+          return true;
+        }
+        return false;
+      }
+
+      // Standard path for objects without comment metadata
       const currentObj = JSON.parse(this._content);
 
       if (Utilities.consistentStringify(currentObj) !== Utilities.consistentStringify(value)) {
@@ -295,7 +327,23 @@ export default abstract class FileBase implements IFile {
         return true;
       }
     } catch (e) {
-      this.setContent(JSON.stringify(value, null, 2), updateType, sourceId);
+      // JSON.parse failed — current content may have comments or trailing commas.
+      // Try comment-aware parsing before unconditionally overwriting (prevents phantom edits).
+      try {
+        const currentObj = JSON.parse(Utilities.fixJsonContent(this._content as string));
+        if (Utilities.consistentStringify(currentObj) === Utilities.consistentStringify(value)) {
+          return false;
+        }
+      } catch {
+        // Both parses failed — content is truly unparseable, proceed with overwrite
+      }
+
+      if (JsonUtilities.hasCommentMetadata(value)) {
+        this.setContent(JsonUtilities.stringifyJsonWithComments(value), updateType, sourceId);
+        this.commentJsonCache = value;
+      } else {
+        this.setContent(JSON.stringify(value, null, 2), updateType, sourceId);
+      }
       return true;
     }
 

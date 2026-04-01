@@ -8,7 +8,6 @@ import StorageBase from "./StorageBase";
 import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
 import StorageUtilities from "./StorageUtilities";
 import IFile from "./IFile";
-import Log from "../core/Log";
 import SecurityUtilities from "../core/SecurityUtilities";
 
 export default class ZipStorage extends StorageBase implements IStorage {
@@ -43,8 +42,21 @@ export default class ZipStorage extends StorageBase implements IStorage {
 
   static zipFixup() {
     if (CreatorToolsHost.hostType === HostType.electronNodeJs || CreatorToolsHost.hostType === HostType.toolsNodejs) {
-      // eslint-disable-next-line
-      eval("jszip_1.default = jszip_1");
+      // Fix CommonJS/ESM interop for JSZip without using eval
+      // The issue is that in some Node.js contexts, jszip_1.default is undefined
+      // but jszip_1 itself is the constructor we need
+      try {
+        // Access the module through the global require cache if available
+        // This is safer than eval and achieves the same result
+        const jszip_1 = require("jszip");
+        if (jszip_1 && !jszip_1.default && typeof jszip_1 === "function") {
+          // If jszip_1 is the constructor but default is missing, add it
+          (jszip_1 as any).default = jszip_1;
+        }
+      } catch {
+        // If require fails (e.g., in bundled contexts), the import should work
+        // No action needed
+      }
     }
   }
 
@@ -177,6 +189,24 @@ export default class ZipStorage extends StorageBase implements IStorage {
         this.errorStatus = StorageErrorStatus.unprocessable;
         throw new Error(this.errorMessage);
       }
+    }
+
+    // Security: Validate total decompressed size against bomb threshold
+    let totalDecompressedSize = 0;
+    for (const filePath of filePaths) {
+      const file = this._jsz.files[filePath];
+      if (file && !file.dir) {
+        const fileData = (file as any)._data;
+        if (fileData && typeof fileData.uncompressedSize === "number") {
+          totalDecompressedSize += fileData.uncompressedSize;
+        }
+      }
+    }
+
+    if (totalDecompressedSize > SecurityUtilities.MAX_DECOMPRESSED_SIZE) {
+      this.errorMessage = `This file is too large to import: decompressed size ${totalDecompressedSize} bytes exceeds limit of ${SecurityUtilities.MAX_DECOMPRESSED_SIZE} bytes`;
+      this.errorStatus = StorageErrorStatus.unprocessable;
+      throw new Error(this.errorMessage);
     }
 
     this.name = name;

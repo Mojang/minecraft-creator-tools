@@ -1,0 +1,331 @@
+/**
+ * FirstRunPanel.css
+ *
+ * Styles for the first-run welcome panel that appears embedded at the
+ * top of the Project Actions screen. Uses Minecraft-inspired styling
+ * with the characteristic dark panel look of Minecraft's UI.
+ */
+
+/* CSS Custom Properties for theming */
+:root {
+  --frp-bg: #3a3a3a;
+  --frp-border-outer: #1a1a1a;
+  --frp-border-inner1: #4a4a4a;
+  --frp-border-inner2: #8b8b8b;
+  --frp-text: #ffffff;
+  --frp-text-muted: #b0b0b0;
+  --frp-text-dim: #808080;
+  --frp-accent: #52a535;
+  --frp-accent-light: #6bc74c;
+  --frp-btn-bg-top: #5a5a5a;
+  --frp-btn-bg-mid: #404040;
+  --frp-btn-bg-bot: #353535;
+  --frp-btn-hover-top: #6a6a6a;
+  --frp-btn-hover-mid: #505050;
+  --frp-btn-hover-bot: #454545;
+  --frp-icon-bg: rgba(0, 0, 0, 0.25);
+  --frp-footer-bg: rgba(0, 0, 0, 0.15);
+  --frp-shadow: rgba(0, 0, 0, 0.4);
+}
+
+/* Light theme class override - Minecraft inventory style */
+.frp-light {
+  --frp-bg: #f0ede8;
+  --frp-border-outer: #6b6560;
+  --frp-border-inner1: #b8b4ae;
+  --frp-border-inner2: #faf9f7;
+  --frp-text: #3a3835;
+  --frp-text-muted: #5a5855;
+  --frp-text-dim: #7a7875;
+  --frp-accent: #3d8a28;
+  --frp-accent-light: #52a535;
+  --frp-btn-bg-top: #faf9f7;
+  --frp-btn-bg-mid: #f0ede8;
+  --frp-btn-bg-bot: #e5e2dc;
+  --frp-btn-hover-top: #ffffff;
+  --frp-btn-hover-mid: #faf9f7;
+  --frp-btn-hover-bot: #f0ede8;
+  --frp-icon-bg: rgba(60, 58, 55, 0.08);
+  --frp-footer-bg: rgba(60, 58, 55, 0.05);
+  --frp-shadow: rgba(60, 58, 55, 0.15);
+}
+
+/* Main panel container - Minecraft inventory-style panel */
+.frp-panel {
+  position: relative;
+  width: 100%;
+  border-radius: 0;
+  border: 3px solid var(--frp-border-outer);
+  box-shadow:
+    inset 0 0 0 2px var(--frp-border-inner1),
+    inset 0 0 0 3px var(--frp-border-inner2),
+    0 4px 12px var(--frp-shadow);
+  background: var(--frp-bg);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+/* Decorative top accent bar - Minecraft green */
+.frp-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--frp-accent);
+}
+
+/* Dismiss button (X) in top-right corner - Minecraft button style */
+.frp-dismissButton {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--frp-btn-bg-mid);
+  border: 2px solid var(--frp-border-outer);
+  box-shadow: none;
+  border-radius: 0;
+  color: var(--frp-text-muted);
+  cursor: pointer;
+  transition: all 0.1s ease;
+  font-size: 0.85rem;
+  z-index: 1;
+}
+
+.frp-dismissButton:hover {
+  background: var(--frp-btn-hover-mid);
+  color: var(--frp-text);
+}
+
+.frp-dismissButton:active {
+  background: var(--frp-btn-bg-bot);
+  box-shadow: var(--surface-shadow-inset, inset 0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.frp-dismissButton:focus {
+  outline: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 0 0 2px rgba(82, 165, 53, 0.6);
+}
+
+/* Header section */
+.frp-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 48px 16px 20px;
+  background: transparent;
+}
+
+.frp-logo {
+  flex-shrink: 0;
+}
+
+.frp-logoImage {
+  width: 48px;
+  height: 48px;
+  image-rendering: pixelated;
+}
+
+.frp-headerText {
+  flex: 1;
+}
+
+.frp-title {
+  font-family: "Noto Sans", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0 0 6px 0;
+  letter-spacing: 0.5px;
+  color: var(--frp-text);
+  text-shadow: 1px 1px 0 var(--frp-shadow);
+}
+
+.frp-subtitle {
+  font-size: 0.9rem;
+  color: var(--frp-text-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Options grid - horizontal layout */
+.frp-optionsGrid {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  padding: 12px 20px 16px 20px;
+}
+
+/* Individual option button - Minecraft button style */
+.frp-option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--frp-btn-bg-mid);
+  border: 2px solid var(--frp-border-outer);
+  box-shadow: none;
+  border-radius: 0;
+  cursor: pointer;
+  text-align: left;
+  color: var(--frp-text);
+  transition: all 0.1s ease;
+  position: relative;
+}
+
+.frp-option:hover {
+  background: var(--frp-btn-hover-mid);
+  color: var(--frp-text);
+}
+
+.frp-option:active {
+  background: var(--frp-btn-bg-bot);
+  box-shadow: var(--surface-shadow-inset, inset 0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.frp-option:focus {
+  outline: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    0 0 0 2px rgba(82, 165, 53, 0.6);
+}
+
+.frp-optionSelected {
+  background: var(--frp-btn-hover-mid);
+  border-color: var(--frp-accent);
+  color: #ffffff;
+  box-shadow: 0 0 0 1px var(--frp-accent);
+}
+
+.frp-optionSelected:hover {
+  background: var(--frp-btn-hover-top);
+  border-color: var(--frp-accent-light);
+}
+
+.frp-optionSelected:active {
+  background: var(--frp-btn-bg-bot);
+}
+
+.frp-optionIcon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--frp-icon-bg);
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  border-radius: 0;
+  font-size: 1.1rem;
+  color: inherit;
+}
+
+.frp-optionSelected .frp-optionIcon {
+  background: var(--frp-icon-bg);
+  border-color: var(--frp-accent);
+}
+
+.frp-optionContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.frp-optionTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+  text-shadow: 1px 1px 0 var(--frp-shadow);
+}
+
+.frp-optionDesc {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  line-height: 1.3;
+  min-height: 2.6em;
+}
+
+/* Recommended badge on Focused option */
+.frp-recommendedBadge {
+  display: inline-block;
+  background: var(--frp-accent);
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 2px;
+  letter-spacing: 0.3px;
+  text-shadow: none;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+
+.frp-optionSelected .frp-recommendedBadge {
+  background: var(--frp-accent);
+}
+
+.frp-optionCheck {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  color: #ffffff;
+  font-size: 1rem;
+  filter: drop-shadow(1px 1px 0 var(--frp-shadow));
+}
+
+/* Footer section */
+.frp-footer {
+  padding: 12px 20px 14px 20px;
+  background: var(--frp-footer-bg);
+  border-top: 2px solid rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.frp-footer .ui-checkbox__label {
+  font-size: 0.85rem;
+  color: var(--frp-text-muted);
+}
+
+/* Responsive adjustments */
+@media (max-width: 700px) {
+  .frp-optionsGrid {
+    flex-direction: column;
+  }
+
+  .frp-optionDesc {
+    display: none;
+  }
+
+  .frp-header {
+    padding: 16px 40px 12px 16px;
+    gap: 12px;
+  }
+
+  .frp-logoImage {
+    width: 40px;
+    height: 40px;
+  }
+
+  .frp-title {
+    font-size: 1rem;
+  }
+
+  .frp-subtitle {
+    font-size: 0.8rem;
+  }
+
+  .frp-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}

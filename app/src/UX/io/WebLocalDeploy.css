@@ -1,0 +1,61 @@
+.wld-optionsArea {
+  padding-top: 12px;
+  display: grid;
+  width: 100%;
+  margin-left: 20px;
+  max-width: 900px;
+  grid-template-columns: 1fr 100px;
+}
+
+.wld-instructionArea {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.wld-successArea {
+  margin-left: 16px;
+}
+
+.wld-successCheck {
+  color: green;
+}
+
+.wld-caution {
+  font-weight: bold;
+}
+
+.wld-stepArea {
+  padding-top: 22px;
+  padding-bottom: 6px;
+}
+
+.wld-outer {
+  border: 4px dashed gray;
+  padding: 20px;
+}
+
+.wld-outer-over {
+  border: 4px dashed green;
+}
+
+.wld-summaryCell {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.wld-pathCell {
+  grid-column: 1;
+  grid-row: 2;
+  padding: 5px;
+  cursor: pointer;
+  padding-bottom: 2px;
+  background-color: white;
+  color: black;
+  overflow-x: hidden;
+  white-space: nowrap;
+}
+
+.wld-copyButton {
+  grid-column: 2;
+  grid-row: 2;
+}

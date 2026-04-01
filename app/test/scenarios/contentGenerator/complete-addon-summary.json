@@ -1,0 +1,14 @@
+{
+  "namespace": "mymod",
+  "entityCount": 1,
+  "blockCount": 1,
+  "itemCount": 2,
+  "structureCount": 0,
+  "featureCount": 0,
+  "lootTableCount": 0,
+  "recipeCount": 1,
+  "spawnRuleCount": 1,
+  "textureCount": 4,
+  "warnings": [],
+  "errors": []
+}

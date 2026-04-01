@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import { IAnnotatedValue } from "../core/AnnotatedValue";
 import { AnnotationCategory } from "../core/ContentIndex";
 import ISimpleReference from "../dataform/ISimpleReference";

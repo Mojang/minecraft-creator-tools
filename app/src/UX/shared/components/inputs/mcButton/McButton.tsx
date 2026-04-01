@@ -17,6 +17,8 @@ interface McButtonProps {
   disabled?: boolean;
   className?: string;
   sx?: object;
+  type?: "button" | "submit" | "reset";
+  dataTestId?: string;
 }
 
 /**
@@ -30,27 +32,27 @@ interface McButtonProps {
  */
 const colorPalettes = {
   green: {
-    border: "#1e4d14", // Dark green border (derived from green6)
-    highlight: mcColors.green3, // Light green highlight (top-left)
-    main: mcColors.green4, // Main green face
-    shadow: mcColors.green6, // Dark green shadow (bottom-right)
-    corner: mcColors.green5, // Corner blend
+    border: mcColors.green7,
+    highlight: mcColors.green3,
+    main: mcColors.green4,
+    shadow: mcColors.green6,
+    corner: mcColors.green5,
     text: mcColors.white,
   },
   stone: {
-    border: "#3a3a3a", // Dark gray border
-    highlight: mcColors.stoneLight, // Light gray highlight (top-left)
-    main: mcColors.stone, // Main gray face
-    shadow: mcColors.stoneDark, // Dark gray shadow (bottom-right)
-    corner: "#5a5a5a", // Corner blend
+    border: mcColors.stoneBorder,
+    highlight: mcColors.stoneLight,
+    main: mcColors.stone,
+    shadow: mcColors.stoneDark,
+    corner: mcColors.stoneMid,
     text: mcColors.white,
   },
   wood: {
-    border: "#3d2510", // Dark brown border
-    highlight: mcColors.brownLight, // Light brown highlight (top-left)
-    main: mcColors.brown, // Main brown face
-    shadow: mcColors.brownDark, // Dark brown shadow (bottom-right)
-    corner: "#6d4520", // Corner blend
+    border: mcColors.brownBorder,
+    highlight: mcColors.brownLight,
+    main: mcColors.brown,
+    shadow: mcColors.brownDark,
+    corner: mcColors.brownMid,
     text: mcColors.white,
   },
 };
@@ -76,6 +78,8 @@ export default function McButton({
   disabled = false,
   className,
   sx,
+  type,
+  dataTestId,
 }: McButtonProps) {
   const [isPressed, setIsPressed] = useState(false);
   const colors = colorPalettes[variant];
@@ -103,6 +107,8 @@ export default function McButton({
       onMouseLeave={handleMouseLeave}
       disabled={disabled}
       className={className}
+      type={type}
+      data-testid={dataTestId}
       sx={{
         width: fullWidth ? "100%" : "auto",
         height: fullWidth ? "100%" : "auto",

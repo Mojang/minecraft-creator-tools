@@ -56,11 +56,18 @@ export default class ProjectInfoItem {
     return this.#data.fs;
   }
 
+  set featureSets(value: { [setName: string]: { [measureName: string]: number | undefined } | undefined } | undefined) {
+    this.#data.fs = value;
+  }
+
   get contentSummary() {
     let errorContent = this.#data.c;
     if (errorContent) {
       errorContent = errorContent.replace(/\n/gi, " ");
       errorContent = errorContent.replace(/\r/gi, " ");
+
+      // Strip JSON object/array values, keep only the path portion (e.g., 'In "dependencies[0]"')
+      errorContent = errorContent.replace(/:\s*[\{\[].*$/g, "");
 
       if (errorContent.length > 80) {
         errorContent = errorContent.substring(0, 77) + "...";

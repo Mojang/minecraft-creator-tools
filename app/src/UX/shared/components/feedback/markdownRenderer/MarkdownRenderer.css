@@ -1,0 +1,270 @@
+/* MarkdownRenderer.css - Styles for markdown content rendering */
+
+.markdown-renderer {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--mct-text-primary, #e0e0e0);
+  word-wrap: break-word;
+  /* Override parent's pre-wrap since we render HTML, not preformatted text */
+  white-space: normal;
+}
+
+/* Headings */
+.markdown-renderer h1,
+.markdown-renderer h2,
+.markdown-renderer h3,
+.markdown-renderer h4,
+.markdown-renderer h5,
+.markdown-renderer h6 {
+  margin-top: 0.75em;
+  margin-bottom: 0.25em;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--mct-text-primary, #ffffff);
+}
+
+.markdown-renderer h1 {
+  font-size: 1.4em;
+  border-bottom: 1px solid var(--mct-border, #404040);
+  padding-bottom: 0.2em;
+}
+
+.markdown-renderer h2 {
+  font-size: 1.25em;
+  border-bottom: 1px solid var(--mct-border, #404040);
+  padding-bottom: 0.15em;
+}
+
+.markdown-renderer h3 {
+  font-size: 1.1em;
+}
+
+.markdown-renderer h4 {
+  font-size: 1em;
+}
+
+/* Paragraphs - tighter spacing for chat context */
+.markdown-renderer p {
+  margin: 0.25em 0;
+}
+
+.markdown-renderer p:first-child {
+  margin-top: 0;
+}
+
+.markdown-renderer p:last-child {
+  margin-bottom: 0;
+}
+
+/* Links */
+.markdown-renderer a {
+  color: var(--mct-accent, #4fc3f7);
+  text-decoration: none;
+}
+
+.markdown-renderer a:hover {
+  text-decoration: underline;
+}
+
+/* Inline code */
+.markdown-renderer .inline-code {
+  background-color: var(--mct-bg-tertiary, #2d2d2d);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-family: "Consolas", "Monaco", "Courier New", monospace;
+  font-size: 0.9em;
+  color: var(--mct-text-secondary, #ce9178);
+}
+
+/* Code block wrapper */
+.markdown-renderer .code-block-wrapper {
+  margin: 0.75em 0;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: var(--mct-bg-tertiary, #1e1e1e);
+  border: 1px solid var(--mct-border, #404040);
+}
+
+/* Code block header with language and copy button */
+.markdown-renderer .code-block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 12px;
+  background-color: var(--mct-bg-secondary, #2d2d2d);
+  border-bottom: 1px solid var(--mct-border, #404040);
+  min-height: 28px;
+}
+
+.markdown-renderer .code-language {
+  font-size: 11px;
+  color: var(--mct-text-secondary, #888888);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.markdown-renderer .copy-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: var(--mct-text-secondary, #888888);
+  font-size: 14px;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+}
+
+.markdown-renderer .copy-button:hover {
+  background-color: var(--mct-bg-hover, #3d3d3d);
+  color: var(--mct-text-primary, #e0e0e0);
+}
+
+.markdown-renderer .copy-button.copied {
+  color: var(--mct-success, #4caf50);
+}
+
+.markdown-renderer .copy-button .copy-icon {
+  font-size: 14px;
+}
+
+/* Code block content */
+.markdown-renderer .code-block {
+  margin: 0 !important;
+  padding: 12px !important;
+  background-color: var(--mct-bg-tertiary, #1e1e1e) !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  overflow-x: auto;
+}
+
+.markdown-renderer .code-block code {
+  font-family: "Consolas", "Monaco", "Courier New", monospace !important;
+}
+
+/* Lists - compact for chat */
+.markdown-renderer ul,
+.markdown-renderer ol {
+  margin: 0.25em 0;
+  padding-left: 1.5em;
+}
+
+.markdown-renderer li {
+  margin: 0.1em 0;
+}
+
+.markdown-renderer li > p {
+  margin: 0;
+}
+
+/* Nested lists */
+.markdown-renderer ul ul,
+.markdown-renderer ol ol,
+.markdown-renderer ul ol,
+.markdown-renderer ol ul {
+  margin: 0.1em 0;
+}
+
+/* Task lists */
+.markdown-renderer .task-list-item {
+  list-style-type: none;
+  margin-left: -1.5em;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5em;
+}
+
+.markdown-renderer .task-list-item input[type="checkbox"] {
+  margin-top: 0.3em;
+  pointer-events: none;
+}
+
+/* Blockquotes */
+.markdown-renderer blockquote {
+  margin: 0.75em 0;
+  padding: 0.5em 1em;
+  border-left: 4px solid var(--mct-accent, #4fc3f7);
+  background-color: var(--mct-bg-secondary, #2d2d2d);
+  color: var(--mct-text-secondary, #b0b0b0);
+}
+
+.markdown-renderer blockquote p {
+  margin: 0;
+}
+
+/* Horizontal rule */
+.markdown-renderer hr {
+  border: none;
+  border-top: 1px solid var(--mct-border, #404040);
+  margin: 1em 0;
+}
+
+/* Tables */
+.markdown-renderer .table-wrapper {
+  overflow-x: auto;
+  margin: 0.75em 0;
+}
+
+.markdown-renderer table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
+}
+
+.markdown-renderer th,
+.markdown-renderer td {
+  border: 1px solid var(--mct-border, #404040);
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.markdown-renderer th {
+  background-color: var(--mct-bg-secondary, #2d2d2d);
+  font-weight: 600;
+}
+
+.markdown-renderer tr:nth-child(even) {
+  background-color: var(--mct-bg-secondary, #252525);
+}
+
+/* Images */
+.markdown-renderer img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+/* Strong and emphasis */
+.markdown-renderer strong {
+  font-weight: 600;
+  color: var(--mct-text-primary, #ffffff);
+}
+
+.markdown-renderer em {
+  font-style: italic;
+}
+
+/* Strikethrough */
+.markdown-renderer del {
+  text-decoration: line-through;
+  color: var(--mct-text-secondary, #888888);
+}
+
+/* Definition lists (if supported) */
+.markdown-renderer dl {
+  margin: 0.5em 0;
+}
+
+.markdown-renderer dt {
+  font-weight: 600;
+  margin-top: 0.5em;
+}
+
+.markdown-renderer dd {
+  margin-left: 1.5em;
+  color: var(--mct-text-secondary, #b0b0b0);
+}

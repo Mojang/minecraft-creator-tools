@@ -1,0 +1,120 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   ENTITY TYPE DIAGRAM - Minecraft-Style Connections
+   
+   Custom styling for ReactFlow handles and edges to look more like
+   Minecraft redstone circuits with plugs, sockets, and glowing wires.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* === HANDLE BASE STYLES === */
+
+/* Inbound handles (target) - Socket/Receptacle style */
+.react-flow__handle.react-flow__handle-top,
+.react-flow__handle.react-flow__handle-bottom[id="target"] {
+  width: 12px !important;
+  height: 12px !important;
+  background: #1a1a1a !important;
+  border: 2px solid #555 !important;
+  border-radius: 2px !important;
+  box-shadow: var(--surface-shadow-inset, inset 0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/* Outbound handles (source) - Plug style */
+.react-flow__handle.react-flow__handle-left,
+.react-flow__handle.react-flow__handle-right {
+  width: 10px !important;
+  height: 10px !important;
+  background: linear-gradient(135deg, #e8a855 0%, #c08030 100%) !important;
+  border: 2px solid #8b5a00 !important;
+  border-radius: 2px !important;
+  box-shadow: 0 0 6px rgba(232, 168, 85, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+.react-flow__handle.react-flow__handle-left:hover,
+.react-flow__handle.react-flow__handle-right:hover {
+  background: linear-gradient(135deg, #ffc060 0%, #e8a040 100%) !important;
+  box-shadow: 0 0 12px rgba(232, 168, 85, 0.8), inset 0 1px 2px rgba(255, 255, 255, 0.4);
+  transform: scale(1.2);
+}
+
+/* Add handle - Green socket */
+.react-flow__handle[id="add"] {
+  background: #1a3a1a !important;
+  border-color: #2d5a2d !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 4px rgba(76, 175, 80, 0.3);
+}
+
+.react-flow__handle[id="add"]:hover {
+  border-color: #4caf50 !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 10px rgba(76, 175, 80, 0.6);
+}
+
+/* Remove handle - Red socket */
+.react-flow__handle[id="remove"] {
+  background: #3a1a1a !important;
+  border-color: #5a2d2d !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 4px rgba(244, 67, 54, 0.3);
+}
+
+.react-flow__handle[id="remove"]:hover {
+  border-color: #f44336 !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 10px rgba(244, 67, 54, 0.6);
+}
+
+/* === EDGE STYLES - Redstone Wire Look === */
+
+/* Base edge glow effect */
+.react-flow__edge-path {
+  stroke-linecap: square !important;
+  stroke-linejoin: miter !important;
+}
+
+/* Green edges (add component group) */
+.react-flow__edge.react-flow__edge-event-component-group-add-edge path {
+  stroke: #4caf50 !important;
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 0 4px rgba(76, 175, 80, 0.6));
+}
+
+/* Red edges (remove component group) */
+.react-flow__edge.react-flow__edge-event-component-group-remove-edge path {
+  stroke: #d63030 !important;
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 0 4px rgba(214, 48, 48, 0.6));
+}
+
+/* Orange edges (event to event) */
+.react-flow__edge.react-flow__edge-entity-type-event-edge path {
+  stroke: #ff8c00 !important;
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 0 4px rgba(255, 140, 0, 0.6));
+}
+
+/* Arrow markers - Redstone torch style */
+.react-flow__arrowhead polyline {
+  stroke-width: 2px;
+}
+
+/* Connection line while dragging */
+.react-flow__connection-path {
+  stroke: #ff4444 !important;
+  stroke-width: 3px !important;
+  stroke-dasharray: 8, 4 !important;
+  animation: redstone-pulse 1s ease-in-out infinite;
+}
+
+@keyframes redstone-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 6px rgba(255, 68, 68, 0.8));
+    opacity: 1;
+  }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(255, 68, 68, 1));
+    opacity: 0.8;
+  }
+}
+
+/* Edge labels */
+.react-flow__edge-textwrapper {
+  font-family: "Minecraft", "Courier New", monospace;
+}

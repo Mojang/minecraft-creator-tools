@@ -33,22 +33,6 @@ export const ObjectKeyAvoidTermList = new Set([
   "__lookupSetter__",
 ]);
 
-/**
- * Maximum safe integer value for .NET Int32 compatibility.
- * Using 2,000,000,000 as a round number that is obviously a cap,
- * well under Int32.MaxValue (2,147,483,647) to ensure compatibility
- * with downstream JSON consumers like .NET.
- */
-export const MAX_JSON_SAFE_INTEGER = 2_000_000_000;
-
-/**
- * Minimum safe integer value for .NET Int32 compatibility.
- * Using -2,000,000,000 as a round number that is obviously a cap,
- * well above Int32.MinValue (-2,147,483,648) to ensure compatibility
- * with downstream JSON consumers like .NET.
- */
-export const MIN_JSON_SAFE_INTEGER = -2_000_000_000;
-
 export default class Utilities {
   static _isDebug?: boolean;
   static _isAppSim?: boolean;
@@ -106,6 +90,22 @@ export default class Utilities {
     }
 
     return !ObjectKeyAvoidTermList.has(term);
+  }
+
+  /**
+   * Returns true if the string looks like a Minecraft localization key
+   * (e.g., "pack.name", "pack.description", "skinpack.mypack.name").
+   * These are dotted identifiers with no spaces, used as lookup keys
+   * in .lang files rather than as user-visible display names.
+   */
+  static isLikelyLocalizationKey(name: string): boolean {
+    if (!name || name.indexOf(" ") >= 0) {
+      return false;
+    }
+
+    // Must contain at least one dot (e.g., "pack.name")
+    // and consist only of word-like characters and dots
+    return /^[\w][\w.]*\.[\w][\w.]*$/.test(name);
   }
 
   static async sleep(ms: number) {
@@ -571,7 +571,7 @@ export default class Utilities {
       start = strLower.indexOf(find, start + replace.length);
     }
 
-    return strLower;
+    return str;
   }
 
   static addCommasToNumber(num: number): string {
@@ -608,7 +608,7 @@ export default class Utilities {
     name = name.replace(/=/gi, "Equals");
     name = name.replace(/!/gi, "Not");
     name = name.replace(/\+/gi, "Plus");
-    name = name.replace(/[,\-\.' \[\]\(\)\{\}<>\*\"\?\\\|]/gi, "");
+    name = name.replace(/[,\-\.' \[\]\(\)\{\}<>\*\"\?\\\|#]/gi, "");
 
     if (name.length > 0 && name[0] >= "0" && name[0] <= "9") {
       name = "_" + name;
@@ -642,6 +642,7 @@ export default class Utilities {
         trimName[i] === '"' ||
         trimName[i] === "'" ||
         trimName[i] === "-" ||
+        trimName[i] === "#" ||
         trimName[i] === "[" ||
         trimName[i] === "]"
       ) {
@@ -659,6 +660,11 @@ export default class Utilities {
   static javascriptifyName(name: string, capitalizeFirst?: boolean) {
     let trimName = name.trim();
 
+    // Preserve single-character names if they are valid identifiers or special tokens like "#" (mcfunction comments)
+    if (trimName.length === 1 && /[a-zA-Z0-9_$#]/.test(trimName)) {
+      return trimName;
+    }
+
     let retVal = "";
     let capitalizeNext = capitalizeFirst === true;
 
@@ -675,6 +681,7 @@ export default class Utilities {
         trimName[i] === "'" ||
         trimName[i] === "+" ||
         trimName[i] === "-" ||
+        trimName[i] === "#" ||
         trimName[i] === "[" ||
         trimName[i] === "]"
       ) {
@@ -734,7 +741,11 @@ export default class Utilities {
     return retVal;
   }
 
-  static humanifyMinecraftName(name: string | boolean | number, doNotReverse?: boolean) {
+  static humanifyMinecraftName(name: string | boolean | number | undefined | null, doNotReverse?: boolean) {
+    if (name === undefined || name === null) {
+      return "";
+    }
+
     if (typeof name === "boolean" || typeof name === "number") {
       return name.toString();
     }
@@ -1137,6 +1148,88 @@ export default class Utilities {
     return results;
   }
 
+  /**
+   * Fixes JSON content for use with comment-json parser.
+   * Unlike fixJsonContent(), this function:
+   * - PRESERVES comments (// and /* *\/)
+   * - Fixes trailing commas
+   * - Fixes control characters inside strings
+   *
+   * Use this when you want to parse JSON with comment-json while still
+   * handling common JSON issues like trailing commas.
+   *
+   * @param jsonString The JSON string to fix
+   * @returns Fixed JSON string with comments preserved
+   */
+  static fixJsonContentForCommentJson(jsonString: string): string {
+    if (typeof jsonString !== "string") {
+      throw new TypeError(`Expected argument \`jsonString\` to be a \`string\`, got \`${typeof jsonString}\``);
+    }
+
+    jsonString = jsonString.trim();
+
+    let isInsideString = false;
+    let isInsideComment: boolean | symbol = false;
+
+    // First pass: fix control characters inside strings
+    for (let index = 0; index < jsonString.length; index++) {
+      const currentCharacter = jsonString[index];
+      const nextCharacter = jsonString[index + 1];
+
+      if (!isInsideComment && currentCharacter === '"') {
+        const escaped = Utilities.isEscaped(jsonString, index);
+        if (!escaped) {
+          isInsideString = !isInsideString;
+        }
+      }
+
+      if (isInsideString) {
+        // fix control characters inside of strings, if they exist
+        if (currentCharacter === "\r" || currentCharacter === "\n" || currentCharacter === "\t") {
+          jsonString = jsonString.substring(0, index) + " " + jsonString.substring(index + 1);
+        }
+        continue;
+      }
+
+      // Track comment state so we don't break comment content
+      if (!isInsideComment && currentCharacter + nextCharacter === "//") {
+        isInsideComment = singleComment;
+        index++;
+      } else if (
+        isInsideComment === singleComment &&
+        (currentCharacter === "\n" || currentCharacter + nextCharacter === "\r\n")
+      ) {
+        isInsideComment = false;
+      } else if (!isInsideComment && currentCharacter + nextCharacter === "/*") {
+        isInsideComment = multiComment;
+        index++;
+      } else if (isInsideComment === multiComment && currentCharacter + nextCharacter === "*/") {
+        isInsideComment = false;
+        index++;
+      }
+    }
+
+    // Second pass: remove trailing commas (comment-json handles comments, but not trailing commas)
+    // Use simple patterns without nested quantifiers to avoid exponential backtracking
+    // First handle simple cases without comments between comma and bracket
+    jsonString = jsonString.replace(/,(\s*)]/g, "$1]");
+    jsonString = jsonString.replace(/,(\s*)}/g, "$1}");
+
+    // Handle cases with single-line comments between comma and bracket
+    // Use a non-capturing group with a single quantifier to avoid nested quantifier backtracking
+    // Match: comma, then any mix of whitespace/comments, then closing bracket
+    jsonString = jsonString.replace(/,(?=[\t\n ]*(?:\/\/[^\n]*\n[\t\n ]*)*])/g, "");
+    jsonString = jsonString.replace(/,(?=[\t\n ]*(?:\/\/[^\n]*\n[\t\n ]*)*})/g, "");
+
+    // Handle cases with block comments between comma and bracket
+    // Use lookahead with a block comment pattern that does not allow `*/` inside the body
+    // Pattern `(?:[^*]|\*(?!\/))*` matches any char except `*`, or `*` not followed by `/`
+    jsonString = jsonString.replace(/,(?=[\t\n ]*(?:\/\*(?:[^*]|\*(?!\/))*\*\/[\t\n ]*)*])/g, "");
+    jsonString = jsonString.replace(/,(?=[\t\n ]*(?:\/\*(?:[^*]|\*(?!\/))*\*\/[\t\n ]*)*})/g, "");
+
+    return jsonString;
+  }
+
   static setIsDebug(boolVal: boolean) {
     Utilities._isDebug = boolVal;
   }
@@ -1512,7 +1605,9 @@ export default class Utilities {
 
         //0xC0 should isolate the continuation flag which should be 0x80
         if ((aByte & 0xc0) !== 0x80) {
-          console.error(
+          // Use Log.verbose instead of console.error - this is expected when parsing binary
+          // data that contains non-UTF8 byte sequences (common in NBT files, LevelDB, etc.)
+          Log.verbose(
             "UTF-8 read - attempted to read " + numBytes + " byte character, found non-continuation at byte " + i
           );
           charStruct.charVal = Utilities.replacementChar;
@@ -1536,7 +1631,8 @@ export default class Utilities {
       }
 
       if (charStruct.charVal > 0x10ffff) {
-        console.error("UTF-8 read - found illegally high code point " + charStruct.charVal);
+        // Use Log.verbose instead of console.error - recoverable issue
+        Log.verbose("UTF-8 read - found illegally high code point " + charStruct.charVal);
         charStruct.charVal = Utilities.replacementChar;
         charStruct.bytesRead = 1;
         return;
@@ -2082,63 +2178,5 @@ export default class Utilities {
 
   static isNullOrUndefined<T>(object: T | undefined | null): object is T {
     return (object as T) === undefined || (object as T) === null;
-  }
-
-  /**
-   * Clamps a number for broader compatibility (e.g., .NET).
-   * Returns undefined if the input is undefined.
-   */
-  static capNumberForJson(value: number | undefined): number | undefined {
-    if (value === undefined) {
-      return undefined;
-    }
-    return Math.max(MIN_JSON_SAFE_INTEGER, Math.min(value, MAX_JSON_SAFE_INTEGER));
-  }
-
-  /**
-   * Deep clones a feature sets object, clamping all numeric values to the safe Int32 range.
-   * This ensures compatibility with .NET which has Int32 limits.
-   * Preserves undefined values for individual measures (undefined in = undefined out).
-   */
-  static capFeatureSetsForJson(
-    featureSets: { [setName: string]: { [measureName: string]: number | undefined } | undefined } | undefined
-  ): { [setName: string]: { [measureName: string]: number | undefined } | undefined } | undefined {
-    if (!featureSets) {
-      return undefined;
-    }
-
-    const result: { [setName: string]: { [measureName: string]: number | undefined } | undefined } = {};
-
-    for (const setName in featureSets) {
-      const setVal = featureSets[setName];
-      if (setVal) {
-        const newSetVal: { [measureName: string]: number | undefined } = {};
-        for (const measureName in setVal) {
-          newSetVal[measureName] = Utilities.capNumberForJson(setVal[measureName]);
-        }
-        result[setName] = newSetVal;
-      }
-    }
-
-    return result;
-  }
-
-  /**
-   * Clamps a data value for broader compatibility (e.g., .NET).
-   * Handles the IInfoItemData.d type: string | boolean | number | number[] | undefined
-   */
-  static capDataValueForJson(
-    value: string | boolean | number | number[] | undefined
-  ): string | boolean | number | number[] | undefined {
-    if (value === undefined || typeof value === "string" || typeof value === "boolean") {
-      return value;
-    }
-
-    if (typeof value === "number") {
-      return Math.max(MIN_JSON_SAFE_INTEGER, Math.min(value, MAX_JSON_SAFE_INTEGER));
-    }
-
-    // It's a number array
-    return value.map((v) => Math.max(MIN_JSON_SAFE_INTEGER, Math.min(v, MAX_JSON_SAFE_INTEGER)));
   }
 }

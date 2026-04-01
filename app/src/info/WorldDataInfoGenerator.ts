@@ -21,10 +21,15 @@ import AnimationBehaviorDefinition from "../minecraft/AnimationBehaviorDefinitio
 import ProjectInfoUtilities from "./ProjectInfoUtilities";
 import { GameType } from "../minecraft/WorldLevelDat";
 
-import { IGeneratorOptions } from "./ProjectInfoSet";
+import { IGeneratorOptions, ResourceConsumptionConstraint } from "./ProjectInfoSet";
 
 export const MaxWorldRecordsToProcess = 3000000; // very crudely, this equates to about 100K chunks
 
+/**
+ * Validates and aggregates world data including command blocks and level.dat information.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/worlddata.form.json} for topic definitions
+ */
 export enum WorldDataInfoGeneratorTest {
   unexpectedCommandInMCFunction = 101,
   unexpectedCommandInCommandBlock = 102,
@@ -55,12 +60,6 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
 
   performAddOnValidations = false;
   performPlatformVersionValidations: boolean = false;
-
-  getTopicData(topicId: number) {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(WorldDataInfoGeneratorTest, topicId),
-    };
-  }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
     info.chunkCount = infoSet.getSummedDataValue("WORLDDATA", WorldDataInfoGeneratorTest.chunks);
@@ -149,8 +148,12 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
     checkForSlash: boolean
   ) {
     for (let i = 0; i < commandList.length; i++) {
-      if (commandList[i].trim().length > 2 && (!checkForSlash || commandList[i].startsWith("/"))) {
+      if (commandList[i].trim().length > 0 && (!checkForSlash || commandList[i].startsWith("/"))) {
         const command = CommandStructure.parse(commandList[i]);
+
+        if (command.fullName.length === 0) {
+          continue;
+        }
 
         if (CommandRegistry.isMinecraftBuiltInCommand(command.fullName)) {
           if (this.performAddOnValidations && CommandRegistry.isAddOnBlockedCommand(command.fullName)) {
@@ -207,6 +210,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
   ): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
     const performAggressiveCleanup = options?.performAggressiveCleanup ?? false;
+    const onProgress = options?.onProgress;
 
     if (
       projectItem.itemType !== ProjectItemType.MCWorld &&
@@ -220,24 +224,60 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       return items;
     }
 
-    const blocksPi = new ProjectInfoItem(
-      InfoItemType.featureAggregate,
-      this.id,
-      WorldDataInfoGeneratorTest.blocks,
-      ProjectInfoUtilities.getTitleFromEnum(WorldDataInfoGeneratorTest, WorldDataInfoGeneratorTest.blocks),
-      projectItem
-    );
-    items.push(blocksPi);
+    // Determine if this is a world-type item (needs all aggregates) or just command-related
+    const isWorldType =
+      projectItem.itemType === ProjectItemType.MCWorld ||
+      projectItem.itemType === ProjectItemType.MCTemplate ||
+      projectItem.itemType === ProjectItemType.worldFolder;
 
-    const blockActorsPi = new ProjectInfoItem(
-      InfoItemType.featureAggregate,
-      this.id,
-      WorldDataInfoGeneratorTest.blockData,
-      ProjectInfoUtilities.getTitleFromEnum(WorldDataInfoGeneratorTest, WorldDataInfoGeneratorTest.blockData),
-      projectItem
-    );
-    items.push(blockActorsPi);
+    // World-specific aggregates - only create for world items
+    let blocksPi: ProjectInfoItem | undefined;
+    let blockActorsPi: ProjectInfoItem | undefined;
+    let nbtPi: ProjectInfoItem | undefined;
+    let nbtExperimentsPi: ProjectInfoItem | undefined;
 
+    if (isWorldType) {
+      blocksPi = new ProjectInfoItem(
+        InfoItemType.featureAggregate,
+        this.id,
+        WorldDataInfoGeneratorTest.blocks,
+        ProjectInfoUtilities.getTitleFromEnum(WorldDataInfoGeneratorTest, WorldDataInfoGeneratorTest.blocks),
+        projectItem
+      );
+      items.push(blocksPi);
+
+      blockActorsPi = new ProjectInfoItem(
+        InfoItemType.featureAggregate,
+        this.id,
+        WorldDataInfoGeneratorTest.blockData,
+        ProjectInfoUtilities.getTitleFromEnum(WorldDataInfoGeneratorTest, WorldDataInfoGeneratorTest.blockData),
+        projectItem
+      );
+      items.push(blockActorsPi);
+
+      nbtPi = new ProjectInfoItem(
+        InfoItemType.featureAggregate,
+        this.id,
+        WorldDataInfoGeneratorTest.levelDat,
+        ProjectInfoUtilities.getTitleFromEnum(WorldDataInfoGeneratorTest, WorldDataInfoGeneratorTest.levelDat),
+        projectItem
+      );
+      items.push(nbtPi);
+
+      nbtExperimentsPi = new ProjectInfoItem(
+        InfoItemType.featureAggregate,
+        this.id,
+        WorldDataInfoGeneratorTest.levelDatExperiments,
+        ProjectInfoUtilities.getTitleFromEnum(
+          WorldDataInfoGeneratorTest,
+          WorldDataInfoGeneratorTest.levelDatExperiments
+        ),
+        projectItem
+      );
+      items.push(nbtExperimentsPi);
+    }
+
+    // Command aggregates - used by all supported item types
     const commandsPi = new ProjectInfoItem(
       InfoItemType.featureAggregate,
       this.id,
@@ -255,24 +295,6 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       projectItem
     );
     items.push(subCommandsPi);
-
-    const nbtPi = new ProjectInfoItem(
-      InfoItemType.featureAggregate,
-      this.id,
-      WorldDataInfoGeneratorTest.levelDat,
-      ProjectInfoUtilities.getTitleFromEnum(WorldDataInfoGeneratorTest, WorldDataInfoGeneratorTest.levelDat),
-      projectItem
-    );
-    items.push(nbtPi);
-
-    const nbtExperimentsPi = new ProjectInfoItem(
-      InfoItemType.featureAggregate,
-      this.id,
-      WorldDataInfoGeneratorTest.levelDatExperiments,
-      ProjectInfoUtilities.getTitleFromEnum(WorldDataInfoGeneratorTest, WorldDataInfoGeneratorTest.levelDatExperiments),
-      projectItem
-    );
-    items.push(nbtExperimentsPi);
 
     if (projectItem.itemType === ProjectItemType.dialogueBehaviorJson) {
       if (!projectItem.isContentLoaded) {
@@ -366,8 +388,12 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
 
       await mcworld.loadMetaFiles(false);
 
+      // Determine whether to apply record processing limits based on resource consumption constraint
+      const constrainResources = options?.constrainResourceConsumption !== ResourceConsumptionConstraint.none;
+      const maxRecordsToProcess = constrainResources ? MaxWorldRecordsToProcess : undefined;
+
       let didProcessWorldData = await mcworld.loadLevelDb(false, {
-        maxNumberOfRecordsToProcess: MaxWorldRecordsToProcess,
+        maxNumberOfRecordsToProcess: maxRecordsToProcess,
       });
 
       if (
@@ -429,7 +455,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                 experimentChild.type === NbtTagType.byte ||
                 experimentChild.type === NbtTagType.string
               ) {
-                nbtExperimentsPi.incrementFeature(experimentChild.name, experimentChild.valueAsString);
+                nbtExperimentsPi?.incrementFeature(experimentChild.name, experimentChild.valueAsString);
 
                 contentIndex.insert(
                   experimentChild.name + "==" + experimentChild.valueAsString,
@@ -457,9 +483,9 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
               !child.name.startsWith("SpawnZ")
             ) {
               if (child.name.indexOf("ersion") >= 0 && !child.valueAsString.startsWith("1.")) {
-                nbtPi.incrementFeature(child.name, "(unknown version)");
+                nbtPi?.incrementFeature(child.name, "(unknown version)");
               } else {
-                nbtPi.incrementFeature(child.name, child.valueAsString);
+                nbtPi?.incrementFeature(child.name, child.valueAsString);
               }
 
               contentIndex.insert(
@@ -505,13 +531,13 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
               const blockActor = blockActors[i];
 
               if (blockActor.id) {
-                blockActorsPi.incrementFeature(blockActor.id);
+                blockActorsPi?.incrementFeature(blockActor.id);
               }
 
               if (blockActor instanceof CommandBlockActor) {
                 let cba = blockActor as CommandBlockActor;
                 if (cba.version) {
-                  blockActorsPi.spectrumIntFeature("Command Version", cba.version);
+                  blockActorsPi?.spectrumIntFeature("Command Version", cba.version);
                 }
 
                 if (cba.version && cba.version < this.modernCommandVersion) {
@@ -529,10 +555,12 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                   );
                 }
 
-                if (cba.command && cba.command.trim().length > 2) {
+                if (cba.command && cba.command.trim().length > 0) {
                   let command = CommandStructure.parse(cba.command);
 
-                  if (CommandRegistry.isMinecraftBuiltInCommand(command.fullName)) {
+                  if (command.fullName.length === 0) {
+                    // Skip empty command names (e.g., command block containing just "/")
+                  } else if (CommandRegistry.isMinecraftBuiltInCommand(command.fullName)) {
                     if (this.performAddOnValidations && CommandRegistry.isAddOnBlockedCommand(command.fullName)) {
                       items.push(
                         new ProjectInfoItem(
@@ -593,7 +621,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                 type = "(custom)";
               }
 
-              blocksPi.incrementFeature(type, "count", count);
+              blocksPi?.incrementFeature(type, "count", count);
             }
           },
           {
@@ -607,13 +635,22 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
             progressCallback: async (processed, total) => {
               // Use worldName captured from outside closure to avoid TypeScript null check issue
               const worldName = mcworld?.name ?? "unknown";
+              const chunkPercent = total > 0 ? Math.floor((processed / total) * 100) : 0;
               let mess =
-                "World data validation: scanned " +
+                "World validation: scanned " +
                 Math.floor(processed / 1000) +
                 "K of " +
                 Math.floor(total / 1000) +
                 "K chunks in " +
                 worldName;
+
+              // Report granular progress via onProgress callback if available
+              // Map chunk progress (0-100%) to the 30-80% range of overall validation
+              if (onProgress) {
+                const overallPercent = Math.floor(30 + chunkPercent * 0.5); // 30-80%
+                onProgress(mess, overallPercent);
+              }
+
               await projectItem.project.creatorTools.notifyStatusUpdate(mess, StatusTopic.validation);
             },
           }
@@ -631,7 +668,9 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
           )
         );
 
-        blocksPi.data = blockCount;
+        if (blocksPi) {
+          blocksPi.data = blockCount;
+        }
       }
 
       items.push(

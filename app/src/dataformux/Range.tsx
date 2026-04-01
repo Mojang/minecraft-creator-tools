@@ -1,7 +1,7 @@
-import { Component, SyntheticEvent } from "react";
+import { Component, SyntheticEvent, ChangeEvent } from "react";
 import "./Range.css";
 import IFormComponentProps from "./../dataform/IFormComponentProps.js";
-import { FormInput, InputProps } from "@fluentui/react-northstar";
+import { TextField } from "@mui/material";
 
 export interface IRangeProps extends IFormComponentProps {
   data: number[] | undefined;
@@ -72,18 +72,15 @@ export default class Range extends Component<IRangeProps, IRangeState> {
     return null;
   }
 
-  _handleMinChange(
-    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
-    data: (InputProps & { value: string }) | undefined
-  ) {
-    if (event === null || data === null || data === undefined || !this.state) {
+  _handleMinChange(event: ChangeEvent<HTMLInputElement>) {
+    if (!this.state) {
       return;
     }
 
     let newMin = this.state.min;
 
     try {
-      newMin = parseInt(data.value);
+      newMin = parseInt(event.target.value);
     } catch (e) {}
 
     this._updateProp(event, newMin, this.state.max);
@@ -95,18 +92,15 @@ export default class Range extends Component<IRangeProps, IRangeState> {
     });
   }
 
-  _handleMaxChange(
-    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
-    data: (InputProps & { value: string }) | undefined
-  ) {
-    if (event === null || data === null || data === undefined || !this.state) {
+  _handleMaxChange(event: ChangeEvent<HTMLInputElement>) {
+    if (!this.state) {
       return;
     }
 
     let newMax = this.state.max;
 
     try {
-      newMax = parseInt(data.value);
+      newMax = parseInt(event.target.value);
     } catch (e) {}
 
     this._updateProp(event, this.state.min, newMax);
@@ -170,20 +164,22 @@ export default class Range extends Component<IRangeProps, IRangeState> {
           <div className="rng-inner">
             <span className="rng-intro">Random number between </span>
             <div className="rng-cell">
-              <FormInput
+              <TextField
                 id="min"
                 className="rng-input"
-                defaultValue={curMin.toString()}
+                size="small"
+                variant="outlined"
                 value={curMin.toString()}
                 onChange={this._handleMinChange}
               />
             </div>
             <span className="rng-joiner">and</span>
             <div className="rng-cell">
-              <FormInput
+              <TextField
                 id="max"
                 className="rng-input"
-                defaultValue={curMax.toString()}
+                size="small"
+                variant="outlined"
                 value={curMax.toString()}
                 onChange={this._handleMaxChange}
               />

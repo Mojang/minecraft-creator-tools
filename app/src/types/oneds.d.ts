@@ -14,6 +14,15 @@
 declare global {
   interface Window {
     oneDSInstance?: OneDSApplicationInsights;
+    creatorToolsSite?: {
+      termsOfUseUrl?: string;
+      privacyUrl?: string;
+      trademarksUrl?: string;
+    };
+    manageConsent?: () => void;
+    siteConsent?: {
+      isConsentRequired?: boolean;
+    };
   }
 }
 

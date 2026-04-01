@@ -1,7 +1,7 @@
 import { test, expect, ConsoleMessage } from "@playwright/test";
 import { processMessage } from "./WebTestUtilities";
 
-test.describe("MCTools Web Application - Advanced Features", () => {
+test.describe("MCTools Web Application - Advanced Features @focused", () => {
   const consoleErrors: { url: string; error: string }[] = [];
   const consoleWarnings: { url: string; error: string }[] = [];
 

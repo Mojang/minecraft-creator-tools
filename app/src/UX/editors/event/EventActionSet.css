@@ -1,0 +1,8 @@
+.eas-area {
+  padding: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.2);
+  border-radius: 4px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  max-width: 100%;
+}

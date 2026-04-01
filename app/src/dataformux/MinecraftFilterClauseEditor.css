@@ -7,13 +7,68 @@
 .mificln-outer {
   display: block;
   width: 100%;
-  margin-top: 2px !important;
+  margin-top: 4px !important;
+  background-color: rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 8px 10px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.mificln-inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  padding-right: 28px;
 }
 
 .mificln-cell {
   display: block;
   padding-top: 2px;
-  padding-right: 4px;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.mificln-cell .MuiOutlinedInput-root {
+  max-width: 100%;
+}
+
+.mificln-test {
+  flex: 1 1 100%;
+}
+
+.mificln-test .MuiOutlinedInput-root {
+  width: 100%;
+}
+
+.mificln-descript {
+  font-size: 11px;
+  opacity: 0.7;
+  padding-top: 2px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.mificln-closeCell {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+}
+
+.mificln-closeCell .mificl-closeButton {
+  min-width: 24px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border-radius: 50%;
+  opacity: 0.6;
+}
+
+.mificln-closeCell .mificl-closeButton:hover {
+  opacity: 1;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .mificln-inner .ui-dropdown__container {

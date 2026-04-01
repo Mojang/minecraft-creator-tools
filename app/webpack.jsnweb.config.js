@@ -25,27 +25,90 @@ const webExtensionConfig = {
   },
   output: {
     filename: "web.js",
+    chunkFilename: "chunks/[name].[contenthash:8].js",
     path: path.join(__dirname, "toolbuild", "jsn", "web"),
     devtoolModuleFilenameTemplate: "../[resource-path]",
   },
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".css"],
     alias: {
-      "react/jsx-dev-runtime": "react/jsx-dev-runtime.js",
-      "react/jsx-runtime": "react/jsx-runtime.js",
+      // Map jsx-runtime imports to the actual file paths in node_modules
+      // This is needed because webpack can have issues with React's package.json exports field
+      "react/jsx-dev-runtime.js": path.resolve(__dirname, "node_modules/react/jsx-dev-runtime.js"),
+      "react/jsx-dev-runtime": path.resolve(__dirname, "node_modules/react/jsx-dev-runtime.js"),
+      "react/jsx-runtime.js": path.resolve(__dirname, "node_modules/react/jsx-runtime.js"),
+      "react/jsx-runtime": path.resolve(__dirname, "node_modules/react/jsx-runtime.js"),
+    },
+    // Fallbacks for Node.js core modules - set to false to exclude from browser bundle
+    // These are used by pngjs and ImageCodecNode which are Node.js-only
+    fallback: {
+      stream: false,
+      zlib: false,
+      buffer: false,
+      fs: false,
+      path: false,
+      crypto: false,
     },
   },
   optimization: {
     runtimeChunk: false,
     splitChunks: {
       chunks: "async",
-      minSize: 2000000,
+      minSize: 20000,
       minRemainingSize: 0,
       minChunks: 1,
       maxAsyncRequests: 30,
       maxInitialRequests: 30,
       enforceSizeThreshold: 50000,
       cacheGroups: {
+        // Babylon.js - 3D rendering engine (~8MB)
+        babylon: {
+          test: /[\\/]node_modules[\\/](babylonjs|@babylonjs)[\\/]/,
+          name: "vendor-babylon",
+          chunks: "async",
+          priority: 30,
+          reuseExistingChunk: true,
+        },
+        // Blockly - visual programming (~1MB)
+        blockly: {
+          test: /[\\/]node_modules[\\/](blockly|react-blockly)[\\/]/,
+          name: "vendor-blockly",
+          chunks: "async",
+          priority: 25,
+          reuseExistingChunk: true,
+        },
+        // FluentUI - UI components
+        fluentui: {
+          test: /[\\/]node_modules[\\/]@fluentui[\\/]/,
+          name: "vendor-fluentui",
+          chunks: "async",
+          priority: 20,
+          reuseExistingChunk: true,
+        },
+        // MUI/Emotion - Material UI
+        mui: {
+          test: /[\\/]node_modules[\\/](@mui|@emotion)[\\/]/,
+          name: "vendor-mui",
+          chunks: "async",
+          priority: 20,
+          reuseExistingChunk: true,
+        },
+        // React ecosystem
+        react: {
+          test: /[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/,
+          name: "vendor-react",
+          chunks: "async",
+          priority: 15,
+          reuseExistingChunk: true,
+        },
+        // Other vendor modules
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendor-misc",
+          chunks: "async",
+          priority: 10,
+          reuseExistingChunk: true,
+        },
         default: false,
       },
     },
@@ -53,7 +116,7 @@ const webExtensionConfig = {
   plugins: [
     new MiniCssExtractPlugin({ filename: "web.css" }),
     new webpack.DefinePlugin({
-      ENABLE_ANALYTICS: JSON.stringify(process.env.NODE_ENV === "production"),
+      ENABLE_ANALYTICS: JSON.stringify(false),
       BUILD_TARGET: JSON.stringify("cli-web"),
       BUILD_VERSION: JSON.stringify(packageJson.version),
       BUILD_DATE: JSON.stringify(new Date().toISOString()),
@@ -69,6 +132,7 @@ const webExtensionConfig = {
           /\/debugoutput\//,
           /\/out\//,
           /\/build\//,
+          /\/local\//,
           /\/localserver\//,
           /\/scriptlibs\//,
           /\/results\//,
@@ -76,7 +140,7 @@ const webExtensionConfig = {
           /\/res\//,
           /\/ux\//,
           /\/uxex\//,
-          /\/worldux\//,
+          /\/UX\/world\//,
           /CHANGELOG/,
         ],
       },
@@ -88,19 +152,33 @@ const webExtensionConfig = {
           /\/debugoutput\//,
           /\/out\//,
           /\/build\//,
+          /\/local\//,
           /\/localserver\//,
           /\/scriptlibs\//,
           /\/results\//,
           /\/scenarios\//,
           /\/ux\//,
           /\/uxex\//,
-          /\/worldux\//,
+          /\/UX\/world\//,
           /\/testshared\//,
           /\/testweb\//,
+          /\/testmobile\//,
+          /\/testviewers\//,
           /\/testelectron\//,
           /\/test\//,
+          /\/test-ex\//,
+          /\/test-extra\//,
+          /\/test-longhaul\//,
           /CHANGELOG/,
         ],
+      },
+      {
+        test: /\.(png|jpg|gif|svg)$/,
+        type: "asset/resource",
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        type: "asset/resource",
       },
       {
         test: /\.css$/,
@@ -126,6 +204,7 @@ const webExtensionConfig = {
           /\/out\//,
           /\/toolbuild\//,
           /\/debugoutput\//,
+          /\/local\//,
           /\/localserver\//,
           /\/build\//,
           /\/scriptlibs\//,
@@ -135,8 +214,13 @@ const webExtensionConfig = {
           /\/config-overrides\//,
           /\/testshared\//,
           /\/testweb\//,
+          /\/testmobile\//,
+          /\/testviewers\//,
           /\/testelectron\//,
           /\/test\//,
+          /\/test-ex\//,
+          /\/test-extra\//,
+          /\/test-longhaul\//,
           /CHANGELOG/,
         ],
         use: [
@@ -149,6 +233,13 @@ const webExtensionConfig = {
         ],
       },
     ],
+  },
+  cache: {
+    type: "filesystem",
+    cacheDirectory: path.join(__dirname, "node_modules", ".cache", "webpack-jsnweb"),
+    buildDependencies: {
+      config: [__filename],
+    },
   },
   performance: {
     hints: false,

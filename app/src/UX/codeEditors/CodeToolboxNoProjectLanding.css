@@ -1,0 +1,193 @@
+/**
+ * CodeToolboxNoProjectLanding.css
+ *
+ * Styles for the welcome landing page shown in VS Code when no folder is open.
+ * Uses Minecraft-inspired styling consistent with the rest of the app.
+ */
+
+/* CSS Custom Properties for theming */
+.ctl-outer {
+  --ctl-bg: #2d2d2d;
+  --ctl-panel-bg: #3a3a3a;
+  --ctl-border-outer: #1a1a1a;
+  --ctl-border-inner: #4a4a4a;
+  --ctl-text: #ffffff;
+  --ctl-text-muted: #b0b0b0;
+  --ctl-text-dim: #aaaaaa;
+  --ctl-accent: #52a535;
+  --ctl-accent-light: #6bc74c;
+  --ctl-feature-bg: rgba(255, 255, 255, 0.03);
+  --ctl-feature-hover: rgba(255, 255, 255, 0.08);
+  --ctl-icon-bg: rgba(82, 165, 53, 0.15);
+  --ctl-shadow: rgba(0, 0, 0, 0.3);
+}
+
+/* Light theme overrides */
+.ctl-light {
+  --ctl-bg: #f5f5f5;
+  --ctl-panel-bg: #ffffff;
+  --ctl-border-outer: #d0d0d0;
+  --ctl-border-inner: #e8e8e8;
+  --ctl-text: #1a1a1a;
+  --ctl-text-muted: #555555;
+  --ctl-text-dim: #888888;
+  --ctl-accent: #3d8a28;
+  --ctl-accent-light: #52a535;
+  --ctl-feature-bg: rgba(0, 0, 0, 0.02);
+  --ctl-feature-hover: rgba(0, 0, 0, 0.05);
+  --ctl-icon-bg: rgba(61, 138, 40, 0.12);
+  --ctl-shadow: rgba(0, 0, 0, 0.1);
+}
+
+.ctl-outer {
+  min-width: 100%;
+  max-width: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+/* Main panel container */
+.ctl-panel {
+  background: var(--ctl-panel-bg);
+  border: 2px solid var(--ctl-border-outer);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px var(--ctl-shadow);
+  overflow: hidden;
+}
+
+/* Decorative accent bar at top */
+.ctl-panel::before {
+  content: "";
+  display: block;
+  height: 3px;
+  background: linear-gradient(90deg, var(--ctl-accent) 0%, var(--ctl-accent-light) 50%, var(--ctl-accent) 100%);
+}
+
+/* Header section with logo and title */
+.ctl-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 20px 16px 20px;
+  text-align: center;
+}
+
+.ctl-logoArea {
+  margin-bottom: 12px;
+}
+
+.ctl-logo {
+  width: 64px;
+  height: 64px;
+  image-rendering: auto;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px var(--ctl-shadow);
+}
+
+.ctl-headerText {
+  text-align: center;
+}
+
+.ctl-title {
+  font-family: "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 6px 0;
+  color: var(--ctl-text);
+  letter-spacing: 0.3px;
+}
+
+.ctl-subtitle {
+  font-size: 0.85rem;
+  color: var(--ctl-text-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Getting Started section */
+.ctl-gettingStarted {
+  padding: 12px 20px 8px 20px;
+  text-align: center;
+  border-top: 1px solid var(--ctl-border-inner);
+}
+
+.ctl-sectionTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ctl-text);
+  margin: 0 0 6px 0;
+}
+
+.ctl-sectionDesc {
+  font-size: 0.8rem;
+  color: var(--ctl-text-dim);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Primary action button area */
+.ctl-actionArea {
+  padding: 12px 20px 16px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.ctl-newProjectButton {
+  min-width: 140px;
+  font-weight: 600;
+}
+
+/* Feature highlights grid */
+.ctl-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--ctl-border-inner);
+  border-top: 1px solid var(--ctl-border-inner);
+}
+
+.ctl-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--ctl-feature-bg);
+  transition: background-color 0.15s ease;
+}
+
+.ctl-feature:hover {
+  background: var(--ctl-feature-hover);
+}
+
+.ctl-featureIcon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ctl-icon-bg);
+  border-radius: 4px;
+  color: var(--ctl-accent);
+  font-size: 0.85rem;
+}
+
+.ctl-featureText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ctl-featureTitle {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ctl-text);
+  line-height: 1.2;
+}
+
+.ctl-featureDesc {
+  font-size: 0.7rem;
+  color: var(--ctl-text-dim);
+  line-height: 1.3;
+}

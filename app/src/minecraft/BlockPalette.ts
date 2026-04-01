@@ -12,7 +12,13 @@ export default class BlockPalette {
     for (let i = 0; i < paletteCount; i++) {
       const nbt = new NbtBinary();
 
-      index += nbt.fromBinary(bytes, true, false, index, true);
+      const bytesRead = nbt.fromBinary(bytes, true, false, index, true);
+
+      if (bytesRead <= 0) {
+        return index;
+      }
+
+      index += bytesRead;
 
       Log.assert(index <= bytes.length, "Unexpected expansion of bytes processed.");
 

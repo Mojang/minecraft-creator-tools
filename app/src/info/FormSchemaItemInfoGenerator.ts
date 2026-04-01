@@ -12,20 +12,46 @@ import Utilities from "../core/Utilities";
 import ContentIndex from "../core/ContentIndex";
 import Database from "../minecraft/Database";
 import { InfoItemType } from "./IInfoItemData";
-import DataFormValidator from "../dataform/DataFormValidator";
+import DataFormValidator, { IValidationContext } from "../dataform/DataFormValidator";
 import StorageUtilities from "../storage/StorageUtilities";
+import ProjectItemUtilities from "../app/ProjectItemUtilities";
+import { ProjectItemType } from "../app/IProjectItemData";
+import IFormDefinition from "../dataform/IFormDefinition";
 
 export enum FormSchemaItemInfoGeneratorTest {
   couldNotParseJson = 401,
   couldNotFindForm = 402,
 }
 
+/**
+ * Validates JSON files against Minecraft documentation-based form schemas.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/jsonf.form.json} for topic definitions
+ */
 export default class FormSchemaItemInfoGenerator implements IProjectInfoItemGenerator {
   id = "JSONF";
-  title = "JSON Structure Validation (via Minecraft docs)";
+  title = "JSON Structure";
   canAlwaysProcess = true;
 
   _schemaContentByPath: { [id: string]: object } = {};
+
+  /**
+   * Cache of loaded form definitions keyed by formPath.
+   * Avoids redundant Database.ensureFormLoadedByPath() calls for items sharing the same form.
+   *
+   * Lifecycle: This generator is instantiated once per validation run by GeneratorRegistrations.
+   * Caches are valid for the duration of a single ProjectInfoSet.generate() call and are
+   * naturally discarded when the generator instance is garbage-collected after the run.
+   */
+  _formCache: Map<string, IFormDefinition | null> = new Map();
+
+  /**
+   * Cache of validation contexts keyed by formPath.
+   * Items with the same form share a subForm cache, avoiding repeated async subForm lookups.
+   *
+   * Lifecycle: Same as _formCache — scoped to a single validation run.
+   */
+  _contextCache: Map<string, IValidationContext> = new Map();
 
   uuidRegex = new RegExp("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
 
@@ -34,24 +60,26 @@ export default class FormSchemaItemInfoGenerator implements IProjectInfoItemGene
     this.testUri = this.testUri.bind(this);
   }
 
-  getTopicData(topicId: number) {
-    return {
-      title: topicId.toString(),
-    };
-  }
-
   summarize(info: any, infoSet: ProjectInfoSet) {}
 
   async loadSchema(uri: string) {
-    console.log("Retrieving " + uri);
-    const res = await axios.get(Utilities.ensureEndsWithSlash(CreatorToolsHost.contentRoot) + uri);
+    const res = await axios.get(Utilities.ensureEndsWithSlash(CreatorToolsHost.contentWebRoot) + uri);
 
-    console.log("Loading error: " + JSON.stringify(res.data));
     return res.data;
   }
 
   async generate(projectItem: ProjectItem, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
+
+    // Fast path: skip items that can never have a form.
+    // getFormPathForType returns undefined for most item types (textures, audio, etc.).
+    // Only geometry items need special logic via getFormPath().
+    if (
+      projectItem.itemType !== ProjectItemType.modelGeometryJson &&
+      ProjectItemUtilities.getFormPathForType(projectItem.itemType) === undefined
+    ) {
+      return items;
+    }
 
     if (
       projectItem.primaryFile &&
@@ -61,7 +89,13 @@ export default class FormSchemaItemInfoGenerator implements IProjectInfoItemGene
       const formPath = projectItem.getFormPath();
 
       if (formPath) {
-        const form = await Database.ensureFormLoadedByPath(formPath);
+        // Use cached form definition to avoid repeated Database lookups
+        let form: IFormDefinition | null | undefined = this._formCache.get(formPath);
+        if (form === undefined) {
+          const loaded = await Database.ensureFormLoadedByPath(formPath);
+          form = loaded || null;
+          this._formCache.set(formPath, form);
+        }
 
         if (form) {
           const data = StorageUtilities.getJsonObject(projectItem.primaryFile);
@@ -79,7 +113,24 @@ export default class FormSchemaItemInfoGenerator implements IProjectInfoItemGene
               )
             );
           } else {
-            const results = await DataFormValidator.validate(data, form);
+            // Share validation context (and its subForm cache) across items
+            // with the same formPath for massive speedup on repeated forms.
+            let context = this._contextCache.get(formPath);
+            if (!context) {
+              context = {
+                depth: 0,
+                subFormCache: new Map<string, IFormDefinition | null>(),
+              };
+              this._contextCache.set(formPath, context);
+            }
+
+            // Reset depth for each new item (subFormCache is intentionally preserved)
+            const itemContext: IValidationContext = {
+              depth: 0,
+              subFormCache: context.subFormCache,
+            };
+
+            const results = await DataFormValidator.validate(data, form, undefined, undefined, itemContext);
 
             if (results) {
               for (const result of results) {

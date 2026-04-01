@@ -1,0 +1,24 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "test:orc_warrior",
+      "materials": {
+        "default": "entity_alphatest"
+      },
+      "textures": {
+        "default": "textures/entity/orc_warrior"
+      },
+      "geometry": {
+        "default": "geometry.test.orc_warrior"
+      },
+      "render_controllers": [
+        "controller.render.test.orc_warrior"
+      ],
+      "spawn_egg": {
+        "base_color": "#5B8C3E",
+        "overlay_color": "#3D6B2E"
+      }
+    }
+  }
+}

@@ -29,6 +29,9 @@
     "recipe_shaped.json",
     "recipe_shapeless.json",
     "feature_rule.json",
-    "geode_feature.json"
+    "voxel_shape.json",
+    "water.json",
+    "geode_feature.json",
+    "trading.json"
   ]
 }

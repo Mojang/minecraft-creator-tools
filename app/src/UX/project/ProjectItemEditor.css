@@ -1,0 +1,59 @@
+.pie-outer {
+  min-width: 100%;
+  min-height: 100%;
+  max-width: 100%;
+}
+
+.pie-loadingLabel {
+  padding: 10px;
+}
+
+.pie-highlight-line {
+  background-color: rgba(255, 213, 0, 0.2) !important;
+  animation: pie-fade-highlight 2s ease-out;
+}
+
+@keyframes pie-fade-highlight {
+  0% {
+    background-color: rgba(255, 213, 0, 0.4);
+  }
+  100% {
+    background-color: rgba(255, 213, 0, 0);
+  }
+}
+
+.pie-grid {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  grid-template-rows: 52px 1fr;
+}
+
+.pie-variantView {
+  grid-row: 1;
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.pie-viewTabs {
+  grid-row: 1;
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+}
+.pie-viewTabs button {
+  min-width: inherit;
+}
+
+.pie-interior {
+  grid-row: 2;
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+.pie-variantView .ui-dropdown__container {
+  width: 220px !important;
+}

@@ -13,7 +13,7 @@ import Log from "./../core/Log";
 import HttpStorage from "../storage/HttpStorage";
 import IFolder from "../storage/IFolder";
 import IFormField from "../dataform/IFormField";
-import ILocalUtilities from "../local/ILocalUtilities";
+import ILocalUtilities from "../core/ILocalUtilities";
 import ITypeDefCatalog from "./ITypeDefCatalog";
 import CreatorToolsHost from "../app/CreatorToolsHost";
 import Utilities from "../core/Utilities";
@@ -33,6 +33,7 @@ import IBlocksMetadata from "./IBlocksMetadata";
 import ILegacyDocumentationNode from "./docs/ILegacyDocumentation";
 import IEntitiesMetadata from "./IEntitiesMetadata";
 import IItemsMetadata from "./IItemsMetadata";
+import IDocCommandSet from "./docs/IDocCommandSet";
 import ZipStorage from "../storage/ZipStorage";
 import { HashCatalog } from "../core/HashUtilities";
 import IFile from "../storage/IFile";
@@ -40,6 +41,7 @@ import TerrainTextureCatalogDefinition from "./TerrainTextureCatalogDefinition";
 import BlocksCatalogDefinition from "./BlocksCatalogDefinition";
 import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProxy";
 import IContentSource from "../app/IContentSource";
+import { ScriptModuleInfoProvider } from "../langcore/javascript/ScriptModuleInfo";
 
 export default class Database {
   static isVanillaLoaded = false;
@@ -51,6 +53,8 @@ export default class Database {
   static _creatorToolsIngameProject: Project | null = null;
   static uxCatalog: { [formName: string]: IFormDefinition } = {};
   static formsFolders: { [folderName: string]: IFolder } = {};
+  static modelTemplateCatalog: { [templateName: string]: object } = {};
+  static loadedModelTemplateCount = 0;
   static stable20TypeDefs: ITypeDefCatalog | null = null;
   static libs: ITypeDefCatalog | null = null;
   static stable10TypeDefs: ITypeDefCatalog | null = null;
@@ -84,6 +88,7 @@ export default class Database {
   static blocksMetadata: IBlocksMetadata | null = null;
   static entitiesMetadata: IEntitiesMetadata | null = null;
   static itemsMetadata: IItemsMetadata | null = null;
+  static commandsMetadata: IDocCommandSet | null = null;
 
   static latestVersion: string | undefined;
   static latestPreviewVersion: string | undefined;
@@ -108,8 +113,8 @@ export default class Database {
 
   static minecraftEduVersion = "1.21.90";
   static minecraftEduPreviewVersion = "1.21.110";
-  static fallbackMinecraftVersion = "1.21.120"; // used if we fail to retrieve the latest version from the network
-  static fallbackMinecraftPreviewVersion = "1.21.130.27"; // should be occasionally statically updated.
+  static fallbackMinecraftVersion = "1.26.0"; // used if we fail to retrieve the latest version from the network
+  static fallbackMinecraftPreviewVersion = "1.26.10.27"; // should be occasionally statically updated.
 
   static defaultContentSources: IContentSource[] = [
     {
@@ -132,14 +137,13 @@ export default class Database {
 
   static contentSources: IContentSource[] = [];
 
-  static minecraftModuleNames = [
-    "@minecraft/server-gametest",
-    "@minecraft/server",
-    "@minecraft/server-ui",
-    "@minecraft/server-net",
-    "@minecraft/server-admin",
-    "@minecraft/server-editor",
-  ];
+  /**
+   * Gets all known Minecraft script module names.
+   * Delegates to ScriptModuleInfoProvider which is the single source of truth.
+   */
+  static get minecraftModuleNames(): string[] {
+    return ScriptModuleInfoProvider.getAllModuleNames();
+  }
 
   static maxMinecraftPatchVersions = {
     "1.19": "80",
@@ -151,6 +155,7 @@ export default class Database {
 
   static blockTypes: { [id: string]: BlockType } = {};
   static schemaContents: { [id: string]: object } = {};
+  static officialSchemaContents: { [id: string]: object } = {};
   static blockBaseTypes: { [id: string]: BlockBaseType } = {};
   static _blockTypesByLegacyId: BlockType[] | undefined;
 
@@ -174,6 +179,61 @@ export default class Database {
     }
 
     return undefined;
+  }
+
+  /**
+   * Clears cached folder references for bulk content (vanilla, samples) to free memory.
+   * This should be called after bulk operations like documentation generation are complete.
+   */
+  static clearBulkContentCaches() {
+    Database.previewVanillaFolder = null;
+    Database.releaseVanillaFolder = null;
+    Database.serveVanillaFolder = null;
+    Database.samplesFolder = null;
+    Database.previewVanillaContentIndex = null;
+    Database.samplesContentIndex = null;
+    Database.previewVanillaInfoData = null;
+    Database.samplesInfoData = null;
+  }
+
+  /**
+   * Reads a JSON file directly from the preview vanilla content without using the folder abstraction.
+   * This avoids caching File/Folder objects in memory, which is important for batch processing.
+   * @param relativePath Path relative to the vanilla preview root (e.g., "/behavior_pack/entities/pig.json")
+   * @returns The parsed JSON object, or null if the file doesn't exist or can't be parsed
+   */
+  static async readPreviewVanillaJsonFile(relativePath: string): Promise<object | null> {
+    if (!Database.local) {
+      return null;
+    }
+
+    // Normalize the path - remove leading slash if present
+    if (relativePath.startsWith("/")) {
+      relativePath = relativePath.substring(1);
+    }
+
+    const fullPath = "res/latest/van/preview/" + relativePath;
+    return await Database.local.readJsonFile(fullPath);
+  }
+
+  /**
+   * Reads a JSON file directly from the samples content without using the folder abstraction.
+   * This avoids caching File/Folder objects in memory, which is important for batch processing.
+   * @param relativePath Path relative to the samples root (e.g., "/behavior_packs/example/entities/pig.json")
+   * @returns The parsed JSON object, or null if the file doesn't exist or can't be parsed
+   */
+  static async readSamplesJsonFile(relativePath: string): Promise<object | null> {
+    if (!Database.local) {
+      return null;
+    }
+
+    // Normalize the path - remove leading slash if present
+    if (relativePath.startsWith("/")) {
+      relativePath = relativePath.substring(1);
+    }
+
+    const fullPath = "res/samples/" + relativePath;
+    return await Database.local.readJsonFile(fullPath);
   }
 
   static getFormName(subFolder: string, name: string) {
@@ -229,7 +289,8 @@ export default class Database {
           return StorageUtilities.getJsonObject(file) as IFormDefinition;
         }
 
-        Log.fail("Could not load file locally for '" + expectedPath + "'.");
+        // Form file not found - this is expected for generators without associated forms
+        // Don't log as failure since forms are optional
         return undefined;
       }
     }
@@ -262,6 +323,7 @@ export default class Database {
         }
 
         const file = storage.rootFolder.files[name + ".form.json"];
+
         if (file) {
           if (!file.isContentLoaded) {
             await file.loadContent();
@@ -274,11 +336,12 @@ export default class Database {
           return res;
         }
 
-        Log.fail("Could not load file locally for '" + expectedPath + "'.");
+        // Form file not found - this is expected for generators without associated forms
+        // Don't log as failure since forms are optional
         return undefined;
       }
     } else {
-      path = CreatorToolsHost.contentRoot + path + name + ".form.json";
+      path = CreatorToolsHost.contentWebRoot + path + name + ".form.json";
 
       try {
         const response = await axios.get(path);
@@ -288,11 +351,109 @@ export default class Database {
 
         return response.data as IFormDefinition;
       } catch {
-        Log.fail("Could not load UX file for '" + path + "'.");
+        // Form file not found via HTTP - this is expected for generators without associated forms
+        // Don't log as failure since forms are optional
       }
     }
 
     return undefined;
+  }
+
+  static isModelTemplateLoaded(name: string): boolean {
+    const normalizedName = name.toLowerCase();
+    return Database.modelTemplateCatalog[normalizedName] !== undefined;
+  }
+
+  static getModelTemplate(name: string): object | undefined {
+    const normalizedName = name.toLowerCase();
+    return Database.modelTemplateCatalog[normalizedName];
+  }
+
+  static async ensureModelTemplateLoaded(name: string): Promise<object | undefined> {
+    const normalizedName = name.toLowerCase();
+
+    if (Database.modelTemplateCatalog[normalizedName] !== undefined) {
+      return Database.modelTemplateCatalog[normalizedName];
+    }
+
+    let path = "data/model_templates/";
+
+    if (Database.local) {
+      const storage = Database.local.createStorage(path);
+
+      if (storage) {
+        if (!storage.rootFolder.isLoaded) {
+          await storage.rootFolder.load();
+        }
+
+        const file = storage.rootFolder.files[normalizedName + ".model.json"];
+        if (file) {
+          if (!file.isContentLoaded) {
+            await file.loadContent();
+          }
+
+          const res = StorageUtilities.getJsonObject(file);
+          if (res) {
+            Database.modelTemplateCatalog[normalizedName] = res;
+            Database.loadedModelTemplateCount++;
+            return res;
+          }
+        }
+
+        Log.fail("Could not load model template locally for '" + normalizedName + "'.");
+        return undefined;
+      }
+    } else {
+      path = CreatorToolsHost.contentWebRoot + path + normalizedName + ".model.json";
+
+      try {
+        const response = await axios.get(path);
+
+        Database.modelTemplateCatalog[normalizedName] = response.data;
+        Database.loadedModelTemplateCount++;
+
+        return response.data;
+      } catch {
+        Log.fail("Could not load model template for '" + path + "'.");
+      }
+    }
+
+    return undefined;
+  }
+
+  static async getModelTemplateNames(): Promise<string[]> {
+    const templateNames: string[] = [];
+    const path = "data/model_templates/";
+
+    if (Database.local) {
+      const storage = Database.local.createStorage(path);
+
+      if (storage) {
+        if (!storage.rootFolder.isLoaded) {
+          await storage.rootFolder.load();
+        }
+
+        for (const fileName of Object.keys(storage.rootFolder.files)) {
+          if (fileName.endsWith(".model.json")) {
+            templateNames.push(fileName.replace(".model.json", ""));
+          }
+        }
+      }
+    } else {
+      const storage = HttpStorage.get(CreatorToolsHost.contentWebRoot + path);
+
+      if (!storage.rootFolder.isLoaded) {
+        await storage.rootFolder.load();
+      }
+
+      for (const fileName of Object.keys(storage.rootFolder.files)) {
+        if (fileName.endsWith(".model.json")) {
+          templateNames.push(fileName.replace(".model.json", ""));
+        }
+      }
+    }
+
+    return templateNames;
   }
 
   static async getFormsFolder(subFolder: string) {
@@ -305,7 +466,7 @@ export default class Database {
     if (
       Database.local &&
       (CreatorToolsHost.fullLocalStorage ||
-        !CreatorToolsHost.contentRoot ||
+        !CreatorToolsHost.contentWebRoot ||
         !CreatorToolsHost.retrieveDataFromWebContentRoot)
     ) {
       const storage = Database.local.createStorage(folderPath);
@@ -318,7 +479,7 @@ export default class Database {
         this.formsFolders[subFolder] = storage.rootFolder;
       }
     } else {
-      const storage = new HttpStorage(CreatorToolsHost.contentRoot + folderPath);
+      const storage = HttpStorage.get(CreatorToolsHost.contentWebRoot + folderPath);
 
       if (!storage.rootFolder.isLoaded) {
         await storage.rootFolder.load();
@@ -812,7 +973,7 @@ export default class Database {
       return;
     }
 
-    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
+    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentWebRoot)) {
       const storage = Database.local.createStorage("data/content/");
 
       if (storage) {
@@ -823,7 +984,7 @@ export default class Database {
         Database.contentFolder = storage.rootFolder;
       }
     } else {
-      const storage = new HttpStorage(CreatorToolsHost.contentRoot + "data/content/");
+      const storage = HttpStorage.get(CreatorToolsHost.contentWebRoot + "data/content/");
 
       if (!storage.rootFolder.isLoaded) {
         await storage.rootFolder.load();
@@ -856,7 +1017,7 @@ export default class Database {
       if (
         Database.local &&
         (CreatorToolsHost.fullLocalStorage ||
-          !CreatorToolsHost.contentRoot ||
+          !CreatorToolsHost.contentWebRoot ||
           !CreatorToolsHost.retrieveDataFromWebContentRoot)
       ) {
         const storage = Database.local.createStorage("data/snippets/");
@@ -865,7 +1026,7 @@ export default class Database {
           folder = storage.rootFolder;
         }
       } else {
-        const storage = new HttpStorage(CreatorToolsHost.contentRoot + "data/snippets/");
+        const storage = HttpStorage.get(CreatorToolsHost.contentWebRoot + "data/snippets/");
 
         folder = storage.rootFolder;
       }
@@ -988,6 +1149,14 @@ export default class Database {
     return Database.itemsMetadata;
   }
 
+  static async getCommandsMetadata(): Promise<IDocCommandSet | null> {
+    if (!Database.commandsMetadata) {
+      Database.commandsMetadata = await Database.getMetadataObject("/command_modules/mojang-commands.json");
+    }
+
+    return Database.commandsMetadata;
+  }
+
   static async getMetadataObject(metaPath: string) {
     await Database.loadPreviewMetadataFolder();
 
@@ -998,7 +1167,7 @@ export default class Database {
     const jsonFile = await Database.previewMetadataFolder.getFileFromRelativePath(metaPath);
 
     if (!jsonFile) {
-      Log.unexpectedUndefined("GMO" + metaPath);
+      Log.debug("Could not find metadata file: " + metaPath);
       return null;
     }
 
@@ -1009,7 +1178,7 @@ export default class Database {
     const jsonObj = StorageUtilities.getJsonObject(jsonFile);
 
     if (!jsonObj) {
-      Log.unexpectedUndefined("GMA" + metaPath);
+      Log.debug("Could not parse metadata file: " + metaPath);
       return null;
     }
 
@@ -1026,7 +1195,8 @@ export default class Database {
     const jsonFile = await vanillaFolder.getFileFromRelativePath(filePath);
 
     if (!jsonFile) {
-      Log.unexpectedUndefined("GPVF" + filePath);
+      // File not found is expected for custom (non-vanilla) entities
+      // Callers should handle null gracefully
       return null;
     }
 
@@ -1060,7 +1230,7 @@ export default class Database {
       if (
         Database.local &&
         (CreatorToolsHost.fullLocalStorage ||
-          !CreatorToolsHost.contentRoot ||
+          !CreatorToolsHost.getVanillaContentRoot() ||
           !CreatorToolsHost.retrieveDataFromWebContentRoot)
       ) {
         const storage = Database.local.createStorage("res/latest/van/preview/metadata/");
@@ -1069,7 +1239,9 @@ export default class Database {
           this.previewMetadataFolder = storage.rootFolder;
         }
       } else {
-        const metadataStorage = new HttpStorage(CreatorToolsHost.contentRoot + "res/latest/van/preview/metadata/");
+        const metadataStorage = HttpStorage.get(
+          CreatorToolsHost.getVanillaContentRoot() + "res/latest/van/preview/metadata/"
+        );
 
         if (!metadataStorage.rootFolder.isLoaded) {
           await metadataStorage.rootFolder.load();
@@ -1084,14 +1256,16 @@ export default class Database {
 
   static async loadReleaseMetadataFolder() {
     if (!this.releaseMetadataFolder) {
-      if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
+      if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.getVanillaContentRoot())) {
         const storage = Database.local.createStorage("res/latest/van/release/metadata/");
 
         if (storage) {
           this.releaseMetadataFolder = storage.rootFolder;
         }
       } else {
-        const metadataStorage = new HttpStorage(CreatorToolsHost.contentRoot + "res/latest/van/release/metadata/");
+        const metadataStorage = HttpStorage.get(
+          CreatorToolsHost.getVanillaContentRoot() + "res/latest/van/release/metadata/"
+        );
 
         await metadataStorage.rootFolder.load();
 
@@ -1107,14 +1281,14 @@ export default class Database {
       return Database.releaseVanillaFolder;
     }
 
-    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
+    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.getVanillaContentRoot())) {
       const storage = Database.local.createStorage("res/latest/van/release/");
 
       if (storage) {
         Database.releaseVanillaFolder = storage.rootFolder;
       }
     } else {
-      const storage = new HttpStorage(CreatorToolsHost.contentRoot + "res/latest/van/release/");
+      const storage = HttpStorage.get(CreatorToolsHost.getVanillaContentRoot() + "res/latest/van/release/");
 
       Database.releaseVanillaFolder = storage.rootFolder;
     }
@@ -1131,14 +1305,14 @@ export default class Database {
       return Database.previewVanillaFolder;
     }
 
-    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
+    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.getVanillaContentRoot())) {
       const storage = Database.local.createStorage("res/latest/van/preview/");
 
       if (storage) {
         Database.previewVanillaFolder = storage.rootFolder;
       }
     } else {
-      const storage = new HttpStorage(CreatorToolsHost.contentRoot + "res/latest/van/preview/");
+      const storage = HttpStorage.get(CreatorToolsHost.getVanillaContentRoot() + "res/latest/van/preview/");
 
       Database.previewVanillaFolder = storage.rootFolder;
     }
@@ -1155,14 +1329,14 @@ export default class Database {
       return Database.serveVanillaFolder;
     }
 
-    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
+    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.getVanillaContentRoot())) {
       const storage = Database.local.createStorage("res/latest/van/serve/");
 
       if (storage) {
         Database.serveVanillaFolder = storage.rootFolder;
       }
     } else {
-      const storage = new HttpStorage(CreatorToolsHost.contentRoot + "res/latest/van/serve/");
+      const storage = HttpStorage.get(CreatorToolsHost.getVanillaContentRoot() + "res/latest/van/serve/");
 
       Database.serveVanillaFolder = storage.rootFolder;
     }
@@ -1179,14 +1353,14 @@ export default class Database {
       return Database.samplesFolder;
     }
 
-    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
-      const storage = Database.local.createStorage("res/samples/microsoft/minecraft-samples-main/");
+    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.getVanillaContentRoot())) {
+      const storage = Database.local.createStorage("res/samples/microsoft/samples/");
 
       if (storage) {
         Database.samplesFolder = storage.rootFolder;
       }
     } else {
-      const storage = new HttpStorage(CreatorToolsHost.contentRoot + "res/samples/microsoft/minecraft-samples-main/");
+      const storage = HttpStorage.get(CreatorToolsHost.getVanillaContentRoot() + "res/samples/microsoft/samples/");
 
       Database.samplesFolder = storage.rootFolder;
     }
@@ -1203,14 +1377,16 @@ export default class Database {
       return Database.releaseVanillaBehaviorPackFolder;
     }
 
-    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
+    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.getVanillaContentRoot())) {
       const storage = Database.local.createStorage("res/latest/van/release/behavior_pack/");
 
       if (storage) {
         Database.releaseVanillaBehaviorPackFolder = storage.rootFolder;
       }
     } else {
-      const storage = new HttpStorage(CreatorToolsHost.contentRoot + "res/latest/van/release/behavior_pack/");
+      const storage = HttpStorage.get(
+        CreatorToolsHost.getVanillaContentRoot() + "res/latest/van/release/behavior_pack/"
+      );
 
       Database.releaseVanillaBehaviorPackFolder = storage.rootFolder;
     }
@@ -1227,14 +1403,16 @@ export default class Database {
       return Database.releaseVanillaResourcePackFolder;
     }
 
-    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.contentRoot)) {
+    if (Database.local && (CreatorToolsHost.fullLocalStorage || !CreatorToolsHost.getVanillaContentRoot())) {
       const storage = Database.local.createStorage("res/latest/van/release/resource_pack/");
 
       if (storage) {
         Database.releaseVanillaResourcePackFolder = storage.rootFolder;
       }
     } else {
-      const storage = new HttpStorage(CreatorToolsHost.contentRoot + "res/latest/van/release/resource_pack/");
+      const storage = HttpStorage.get(
+        CreatorToolsHost.getVanillaContentRoot() + "res/latest/van/release/resource_pack/"
+      );
 
       Database.releaseVanillaResourcePackFolder = storage.rootFolder;
     }
@@ -1278,7 +1456,7 @@ export default class Database {
     return undefined;
   }
 
-  static async getSchema(path: string) {
+  static async getCommunitySchema(path: string) {
     path = path.toLowerCase();
 
     if (Database.schemaContents[path]) {
@@ -1291,7 +1469,8 @@ export default class Database {
       // @ts-ignore
       if (typeof window !== "undefined") {
         const response = await axios.get(
-          Utilities.ensureEndsWithSlash(CreatorToolsHost.contentRoot) + Utilities.ensureNotStartsWithSlash(schemaPath)
+          Utilities.ensureEndsWithSlash(CreatorToolsHost.contentWebRoot) +
+            Utilities.ensureNotStartsWithSlash(schemaPath)
         );
 
         Database.schemaContents[path] = response.data as object;
@@ -1317,12 +1496,60 @@ export default class Database {
     } catch (e: any) {
       Log.fail(
         "Could not load Minecraft schema catalog: " +
-          CreatorToolsHost.contentRoot +
+          CreatorToolsHost.contentWebRoot +
           " - " +
           schemaPath +
           " " +
           e.toString()
       );
+      return undefined;
+    }
+  }
+
+  /**
+   * Get a schema from the official schemas folder (public/schemas) rather than
+   * the community schemas folder (public/res/latest/schemas).
+   */
+  static async getOfficialSchema(path: string): Promise<object | undefined> {
+    path = path.toLowerCase();
+
+    if (Database.officialSchemaContents[path]) {
+      return Database.officialSchemaContents[path];
+    }
+
+    const schemaPath = "/schemas/" + path;
+
+    try {
+      // @ts-ignore
+      if (typeof window !== "undefined") {
+        const response = await axios.get(
+          Utilities.ensureEndsWithSlash(CreatorToolsHost.contentWebRoot) +
+            Utilities.ensureNotStartsWithSlash(schemaPath)
+        );
+
+        Database.officialSchemaContents[path] = response.data as object;
+
+        if (!Database.officialSchemaContents[path]) {
+          Log.verbose("Could not load official schema '" + schemaPath + "'");
+        }
+        return Database.officialSchemaContents[path];
+      } else if (Database.local) {
+        const result = await Database.local.readJsonFile(schemaPath);
+
+        if (result !== null) {
+          Database.officialSchemaContents[path] = result as object;
+          return Database.officialSchemaContents[path];
+        } else {
+          Log.verbose("Could not load official schema '" + schemaPath + "'");
+          return undefined;
+        }
+      } else {
+        Log.verbose("Unexpected database config (no database available) when trying to load schema for:" + path);
+        return undefined;
+      }
+    } catch (e: any) {
+      // Schema not found is expected for many file types - don't log as error
+      Log.verbose("Could not load official schema: " + schemaPath);
       return undefined;
     }
   }
@@ -1333,9 +1560,18 @@ export default class Database {
     }
 
     try {
+      // Check for browser-like environment (works in both main thread and web workers)
+
       // @ts-ignore
       if (typeof window !== "undefined") {
-        const response = await axios.get(CreatorToolsHost.contentRoot + "data/typedefs.stable20.json");
+        const url = CreatorToolsHost.contentWebRoot + "data/typedefs.stable20.json";
+
+        const response = await axios.get(url);
+
+        // Check if we got HTML instead of JSON (can happen if contentRoot is wrong)
+        if (typeof response.data === "string" && response.data.includes("<!DOCTYPE")) {
+          throw new Error("Received HTML instead of JSON - check contentRoot: " + CreatorToolsHost.contentWebRoot);
+        }
 
         Database.stable20TypeDefs = response.data;
       } else if (Database.local) {
@@ -1344,8 +1580,8 @@ export default class Database {
           Database.stable20TypeDefs = result as ITypeDefCatalog;
         }
       }
-    } catch {
-      Log.fail("Could not load stable 2.0 Minecraft types catalog.");
+    } catch (e) {
+      Log.fail("Could not load stable 2.0 Minecraft types catalog: " + e);
     }
   }
 
@@ -1357,7 +1593,7 @@ export default class Database {
     try {
       // @ts-ignore
       if (typeof window !== "undefined") {
-        const response = await axios.get(CreatorToolsHost.contentRoot + "data/typedefs.stable10.json");
+        const response = await axios.get(CreatorToolsHost.contentWebRoot + "data/typedefs.stable10.json");
 
         Database.stable10TypeDefs = response.data;
       } else if (Database.local) {
@@ -1379,7 +1615,7 @@ export default class Database {
     try {
       // @ts-ignore
       if (typeof window !== "undefined") {
-        const response = await axios.get(CreatorToolsHost.contentRoot + "data/libs.json");
+        const response = await axios.get(CreatorToolsHost.contentWebRoot + "data/libs.json");
 
         Database.libs = response.data;
       } else if (Database.local) {
@@ -1576,7 +1812,7 @@ export default class Database {
       try {
         // @ts-ignore
         if (typeof window !== "undefined") {
-          const response = await axios.get(CreatorToolsHost.contentRoot + "data/mci/release.mci.json.zip", {
+          const response = await axios.get(CreatorToolsHost.contentWebRoot + "data/mci/release.mci.json.zip", {
             responseType: "arraybuffer",
             headers: {
               Accept: "application/octet-stream, application/json, text/plain, */*",
@@ -1597,8 +1833,8 @@ export default class Database {
           Database.vanillaContentIndex = new ContentIndex();
           Database.vanillaContentIndex.loadFromData(Database.vanillaInfoData.index);
         }
-      } catch {
-        // Log.fail("Could not load vanilla metadata.");
+      } catch (e) {
+        Log.debug("Could not load vanilla metadata: " + e);
       }
 
       this._isLoadingVanillaInfoData = false;
@@ -1666,7 +1902,7 @@ export default class Database {
       try {
         // @ts-ignore
         if (typeof window !== "undefined") {
-          const response = await axios.get(CreatorToolsHost.contentRoot + "data/mci/preview.mci.json.zip", {
+          const response = await axios.get(CreatorToolsHost.contentWebRoot + "data/mci/preview.mci.json.zip", {
             responseType: "arraybuffer",
             headers: {
               Accept: "application/octet-stream, application/json, text/plain, */*",
@@ -1695,7 +1931,7 @@ export default class Database {
         Log.fail("Could not load preview vanilla metadata." + e.toString());
       }
 
-      this._isLoadingVanillaInfoData = false;
+      this._isLoadingPreviewVanillaInfoData = false;
 
       const pendingLoad = this._pendingLoadPreviewVanillaInfoDataRequests;
       this._pendingLoadPreviewVanillaInfoDataRequests = [];
@@ -1725,7 +1961,7 @@ export default class Database {
       try {
         // @ts-ignore
         if (typeof window !== "undefined") {
-          const response = await axios.get(CreatorToolsHost.contentRoot + "data/mch/release.mch.json");
+          const response = await axios.get(CreatorToolsHost.contentWebRoot + "data/mch/release.mch.json");
 
           if (response) {
             Database.releaseVanillaContentHashes = response.data;
@@ -1770,11 +2006,11 @@ export default class Database {
       try {
         // @ts-ignore
         if (typeof window !== "undefined") {
-          const response = await axios.get(CreatorToolsHost.contentRoot + "data/mci/minecraft-samples-main.mci.json");
+          const response = await axios.get(CreatorToolsHost.contentWebRoot + "data/mci/samples.mci.json");
 
           Database.samplesInfoData = response.data;
         } else if (Database.local) {
-          const result = await Database.local.readJsonFile("data/mci/minecraft-samples-main.mci.json");
+          const result = await Database.local.readJsonFile("data/mci/samples.mci.json");
 
           if (result !== null) {
             Database.samplesInfoData = result as IProjectInfoData;
@@ -1806,9 +2042,18 @@ export default class Database {
     }
 
     try {
+      // Check for browser-like environment (works in both main thread and web workers)
+
       // @ts-ignore
       if (typeof window !== "undefined") {
-        const response = await axios.get(CreatorToolsHost.contentRoot + "data/mccat.json");
+        const url = CreatorToolsHost.contentWebRoot + "data/mccat.json";
+
+        const response = await axios.get(url);
+
+        // Check if we got HTML instead of JSON (can happen if contentRoot is wrong)
+        if (typeof response.data === "string" && response.data.includes("<!DOCTYPE")) {
+          throw new Error("Received HTML instead of JSON - check contentRoot: " + CreatorToolsHost.contentWebRoot);
+        }
 
         Database.vanillaCatalog = response.data;
       } else if (Database.local) {
@@ -1820,8 +2065,20 @@ export default class Database {
       }
 
       if (Database.vanillaCatalog !== null) {
+        Database.normalizeCatalog(Database.vanillaCatalog);
+
         for (let i = 0; i < Database.vanillaCatalog.blockBaseTypes.length; i++) {
           const blockBaseTypeData = Database.vanillaCatalog.blockBaseTypes[i];
+
+          if (!blockBaseTypeData.n) {
+            Log.debug(
+              "Skipping blockBaseType at index " +
+                i +
+                " with missing name. Data: " +
+                JSON.stringify(blockBaseTypeData).substring(0, 200)
+            );
+            continue; // Skip entries without a name
+          }
 
           const baseTypeName = MinecraftUtilities.canonicalizeName(blockBaseTypeData.n);
 
@@ -1848,8 +2105,20 @@ export default class Database {
 
               let name = variantBlockTypeData.n;
 
+              if (!name) {
+                Log.debug(
+                  "Skipping variant at index " +
+                    j +
+                    " of blockBaseType '" +
+                    blockBaseTypeData.n +
+                    "' with missing name. Data: " +
+                    JSON.stringify(variantBlockTypeData).substring(0, 200)
+                );
+                continue; // Skip variants without a name
+              }
+
               if (name.endsWith("_")) {
-                name = name + blockBaseTypeData.n;
+                name = name + (blockBaseTypeData.n || "");
               }
 
               const blockType = this.ensureBlockType(name);
@@ -1887,8 +2156,54 @@ export default class Database {
 
         Database.isVanillaLoaded = true;
       }
-    } catch {
-      Log.fail("Could not load Minecraft types catalog.");
+    } catch (e) {
+      Log.fail("Could not load Minecraft types catalog. " + e);
+    }
+  }
+
+  /**
+   * Normalizes a catalog from the old unabbreviated format (name, icon, mapColor, shape)
+   * to the current abbreviated format (n, ic, mc, sh). This allows loading catalogs
+   * produced by older tooling or external repos that haven't migrated yet.
+   */
+  private static normalizeCatalog(catalog: Catalog) {
+    for (const entry of catalog.blockBaseTypes) {
+      const e = entry as any;
+
+      if (!entry.n && e.name) {
+        entry.n = e.name;
+      }
+      if (!entry.ic && e.icon) {
+        entry.ic = e.icon;
+      }
+      if (!entry.mc && e.mapColor) {
+        entry.mc = e.mapColor;
+      }
+      if (entry.sh === undefined && e.shape !== undefined) {
+        entry.sh = e.shape;
+      }
+      if (!entry.t && e.title) {
+        entry.t = e.title;
+      }
+
+      if (entry.variants) {
+        for (const variant of entry.variants) {
+          const v = variant as any;
+
+          if (!variant.n && v.name) {
+            variant.n = v.name;
+          }
+          if (!variant.ic && v.icon) {
+            variant.ic = v.icon;
+          }
+          if (!variant.mc && v.mapColor) {
+            variant.mc = v.mapColor;
+          }
+          if (variant.lid === undefined && v.id !== undefined) {
+            variant.lid = v.id;
+          }
+        }
+      }
     }
   }
 

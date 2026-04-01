@@ -9,7 +9,6 @@ import { InfoItemType } from "../info/IInfoItemData";
 import IProjectUpdater from "../updates/IProjectUpdater";
 import ProjectUpdateResult from "../updates/ProjectUpdateResult";
 import { UpdateResultType } from "../updates/IUpdateResult";
-import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
 import BlocksCatalogDefinition from "../minecraft/BlocksCatalogDefinition";
@@ -25,21 +24,14 @@ export enum BlocksCatalogInfo {
   blockResourceIdentifier = 53,
 }
 
+/**
+ * Validates and manages blocks catalog (blocks.json) resources in resource packs.
+ *
+ * @see {@link ../../../public/data/forms/mctoolsval/blockscat.form.json} for topic definitions
+ */
 export default class BlocksCatalogManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "BLOCKSCAT";
   title = "Blocks Catalog";
-
-  getTopicData(topicId: number): IProjectInfoTopicData | undefined {
-    switch (topicId) {
-      case BlocksCatalogInfo.unusedBlockCatalogResource:
-        return {
-          title: "Block Resource Identifier",
-        };
-    }
-    return {
-      title: topicId.toString(),
-    };
-  }
 
   getUpdaterData(updaterId: number) {
     return {

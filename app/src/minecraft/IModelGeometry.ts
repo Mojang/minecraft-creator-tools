@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { Item } from "./Items";
 
 export default interface IModelGeometry {
   format_version: string;
@@ -67,7 +66,21 @@ export interface IGeometryBone {
   bind_pose_rotation?: number[];
   cubes?: IGeometryBoneCube[];
   locators?: { [name: string]: number[] };
-  poly_mesh?: IGeometryPolyMesh; // Add this property
+  poly_mesh?: IGeometryPolyMesh;
+  texture_meshes?: IGeometryBoneTextureMesh[];
+}
+
+/**
+ * A texture_mesh creates a flat billboard/sprite from a texture image.
+ * Each pixel becomes a 1×1 unit (1/16 block) on a plane.
+ * Used by attachables like bow, crossbow to render 2D item sprites in 3D.
+ */
+export interface IGeometryBoneTextureMesh {
+  texture: string; // Texture shortname reference (e.g., "bow_standby")
+  local_pivot?: number[]; // Pivot point for positioning [x, y, z]
+  position?: number[]; // Offset position [x, y, z]
+  rotation?: number[]; // Rotation in degrees [x, y, z]
+  scale?: number[]; // Scale factor [x, y, z]
 }
 
 export interface IGeometryBoneCube {

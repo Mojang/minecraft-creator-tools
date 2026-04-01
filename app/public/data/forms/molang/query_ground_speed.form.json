@@ -1,6 +1,0 @@
-{
-  "id": "query.ground_speed",
-  "fields": [],
-  "description": "Returns the ground speed of the entity in meters/second.",
-  "title": "Ground Speed"
-}

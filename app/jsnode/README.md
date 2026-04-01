@@ -1,6 +1,6 @@
 # Minecraft Creator Tools
 
-### Copyright (c) 2024 Mojang AB. All rights reserved.
+### Copyright (c) 2026 Mojang AB. All rights reserved.
 
 - [License](https://aka.ms/mctlicense)
 - [GitHub](https://aka.ms/mcthomepage)

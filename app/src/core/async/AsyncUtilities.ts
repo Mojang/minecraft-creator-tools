@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 /*
   Collects a AsyncIterable into an array with an optional filter predicate
 */

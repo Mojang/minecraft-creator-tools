@@ -1,6 +1,6 @@
-import { Component, SyntheticEvent } from "react";
+import { Component, ChangeEvent } from "react";
 import "./MinecraftFilterClauseEditor.css";
-import { Button, Dropdown, DropdownProps, FormInput, InputProps } from "@fluentui/react-northstar";
+import { Button, TextField, Select, MenuItem, SelectChangeEvent } from "@mui/material";
 import Database from "../minecraft/Database";
 import Utilities from "../core/Utilities";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -50,7 +50,7 @@ export default class MinecraftFilterClauseEditor extends Component<
       };
     } else {
       this.state = {
-        operator: "==",
+        operator: "=",
         test: "",
         subject: "",
         value: "",
@@ -85,48 +85,36 @@ export default class MinecraftFilterClauseEditor extends Component<
     });
   }
 
-  async _handleOperatorChange(
-    event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
-    data: DropdownProps
-  ) {
-    if (data === null || data === undefined || !this.state || data.value === null || !(data.value as any).key) {
+  async _handleOperatorChange(event: SelectChangeEvent<string>) {
+    if (!this.state || !event.target.value) {
       return;
     }
 
-    this._updateProp(this.state.test, this.state.subject, this.state.value, (data.value as any).key);
+    this._updateProp(this.state.test, this.state.subject, this.state.value, event.target.value);
   }
 
-  async _handleSubjectChange(
-    event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
-    data: DropdownProps
-  ) {
-    if (data === null || data === undefined || !this.state || !data.value || !(data.value as any).key) {
+  async _handleSubjectChange(event: SelectChangeEvent<string>) {
+    if (!this.state || !event.target.value) {
       return;
     }
 
-    this._updateProp(this.state.test, (data.value as any).key, this.state.value, this.state.operator);
+    this._updateProp(this.state.test, event.target.value, this.state.value, this.state.operator);
   }
 
-  async _handleTestChange(
-    event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
-    data: DropdownProps
-  ) {
-    if (data === null || data === undefined || !this.state || data.value === null || !(data.value as any).key) {
+  async _handleTestChange(event: SelectChangeEvent<string>) {
+    if (!this.state || !event.target.value) {
       return;
     }
 
-    this._updateProp((data.value as any).key, this.state.subject, this.state.value, this.state.operator);
+    this._updateProp(event.target.value, this.state.subject, this.state.value, this.state.operator);
   }
 
-  _handleValueChange(
-    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
-    data: (InputProps & { value: string }) | undefined
-  ) {
-    if (event === null || data === null || data === undefined || !this.state) {
+  _handleValueChange(event: ChangeEvent<HTMLInputElement>) {
+    if (!this.state) {
       return;
     }
 
-    let newMin: string | number = data.value;
+    let newMin: string | number = event.target.value;
 
     if (this.state.test) {
       let test = this.state.test;
@@ -143,16 +131,16 @@ export default class MinecraftFilterClauseEditor extends Component<
         if (valueField) {
           if (valueField.dataType === FieldDataType.float) {
             try {
-              newMin = parseFloat(data.value);
+              newMin = parseFloat(event.target.value);
             } catch (e) {}
           } else if (valueField.dataType === FieldDataType.int) {
             try {
-              newMin = parseInt(data.value);
+              newMin = parseInt(event.target.value);
             } catch (e) {}
           }
 
           if (newMin !== undefined && typeof newMin === "number" && isNaN(newMin)) {
-            newMin = data.value;
+            newMin = event.target.value;
           }
         }
       }
@@ -237,9 +225,16 @@ export default class MinecraftFilterClauseEditor extends Component<
     }
     let closeButtonSpace = <></>;
 
+    let prefix = "mificl-";
+
+    if (this.props.displayNarrow) {
+      prefix = "mificln-";
+    }
+
     if (this.props.displayCloseButton) {
+      const closeCellClass = this.props.displayNarrow ? "mificln-closeCell" : prefix + "cell";
       closeButtonSpace = (
-        <div className="mificl-cell">
+        <div className={closeCellClass}>
           <Button className="mificl-closeButton" onClick={this._handleCloseClick}>
             <FontAwesomeIcon icon={faXmark} className="fa-md" />
           </Button>
@@ -253,39 +248,19 @@ export default class MinecraftFilterClauseEditor extends Component<
 
     if (!form || !form.tags || !form.tags.includes("standalone")) {
       eq = (
-        <div className="mificl-cell">
-          <Dropdown
-            items={[
-              {
-                key: "!=",
-                content: "!= (not equals)",
-              },
-              {
-                key: "<",
-                content: "<  (less than)",
-              },
-              {
-                key: "<=",
-                content: "<= (less than or equals)",
-              },
-              {
-                key: "=",
-                content: "= (equals)",
-              },
-              {
-                key: ">",
-                content: "> (greater than)",
-              },
-              {
-                key: ">=",
-                content: ">= (greater than or equals)",
-              },
-            ]}
-            defaultValue="=="
-            value={this.state.operator}
-            placeholder="=="
+        <div className={prefix + "cell"}>
+          <Select
+            size="small"
+            value={this.state.operator === "==" ? "=" : this.state.operator || "="}
             onChange={this._handleOperatorChange}
-          />
+          >
+            <MenuItem value="!=">!= (not equals)</MenuItem>
+            <MenuItem value="<">&lt; (less than)</MenuItem>
+            <MenuItem value="<=">&lt;= (less than or equals)</MenuItem>
+            <MenuItem value="=">= (equals)</MenuItem>
+            <MenuItem value=">">&gt; (greater than)</MenuItem>
+            <MenuItem value=">=">&gt;= (greater than or equals)</MenuItem>
+          </Select>
         </div>
       );
     }
@@ -293,11 +268,12 @@ export default class MinecraftFilterClauseEditor extends Component<
 
     if (!form || !form.tags || !form.tags.includes("standalone")) {
       val = (
-        <div className="mificl-cell">
-          <FormInput
+        <div className={prefix + "cell"}>
+          <TextField
             id="value"
             className="mificl-input"
-            defaultValue={curValue}
+            size="small"
+            variant="outlined"
             value={curValue}
             onChange={this._handleValueChange}
           />
@@ -311,45 +287,32 @@ export default class MinecraftFilterClauseEditor extends Component<
       descript = MinecraftUtilities.shortenFilterDescription(form.description);
     }
 
-    let prefix = "mificl-";
-
-    if (this.props.displayNarrow) {
-      prefix = "mificln-";
-    }
+    const narrowClose = this.props.displayNarrow ? closeButtonSpace : <></>;
+    const inlineClose = this.props.displayNarrow ? <></> : closeButtonSpace;
 
     return (
       <div className={prefix + "outer"}>
+        {narrowClose}
         <div className={prefix + "inner"}>
           <div className={prefix + "cell"}>
-            <Dropdown
-              items={[
-                {
-                  key: "self",
-                  content: "Self",
-                },
-                {
-                  key: "other",
-                  content: "Other",
-                },
-              ]}
-              value={this.state.subject}
-              defaultValue={this.state.subject}
-              placeholder="Self"
-              onChange={this._handleSubjectChange}
-            />
+            <Select size="small" value={this.state.subject || "self"} onChange={this._handleSubjectChange}>
+              <MenuItem value="self">Self</MenuItem>
+              <MenuItem value="other">Other</MenuItem>
+            </Select>
           </div>
           <div className={prefix + "cell " + prefix + "test"}>
-            <Dropdown
-              items={filterItems}
-              defaultValue={this.state.test}
-              value={this.state.test}
-              onChange={this._handleTestChange}
-            />
+            <Select size="small" value={this.state.test || ""} onChange={this._handleTestChange}>
+              {filterItems.map((item) => (
+                <MenuItem key={item.key} value={item.key}>
+                  {item.content}
+                </MenuItem>
+              ))}
+            </Select>
             <div className={prefix + "descript"}>{descript}</div>
           </div>
           {eq}
           {val}
-          {closeButtonSpace}
+          {inlineClose}
         </div>
       </div>
     );

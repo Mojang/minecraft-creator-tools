@@ -201,6 +201,10 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
   ensureFolder(name: string, handle?: FileSystemDirectoryHandle): FileSystemFolder {
     const nameCanon = StorageUtilities.canonicalizeName(name);
 
+    if (!Utilities.isUsableAsObjectKey(nameCanon)) {
+      throw new Error();
+    }
+
     let candFolder = this.folders[nameCanon];
 
     if (!candFolder) {

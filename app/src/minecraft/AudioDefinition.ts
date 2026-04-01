@@ -135,9 +135,12 @@ export default class AudioDefinition implements IDefinition {
     }
 
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
+      this._isLoaded = true;
+      this._onLoaded.dispatch(this, this);
       return;
     }
 
     this._isLoaded = true;
+    this._onLoaded.dispatch(this, this);
   }
 }

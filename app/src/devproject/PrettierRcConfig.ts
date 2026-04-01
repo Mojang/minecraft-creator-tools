@@ -107,7 +107,7 @@ export default class PrettierRcConfig {
     }
 
     for (const settingName in PrettierRcDefaultSettings) {
-      if (!this.definition[settingName]) {
+      if (this.definition[settingName] === undefined) {
         return false;
       }
     }
@@ -127,7 +127,7 @@ export default class PrettierRcConfig {
     }
 
     for (const settingName in PrettierRcDefaultSettings) {
-      if (!this.definition[settingName]) {
+      if (this.definition[settingName] === undefined) {
         this.definition[settingName] = PrettierRcDefaultSettings[settingName];
       }
     }

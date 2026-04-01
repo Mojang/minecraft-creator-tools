@@ -1,0 +1,295 @@
+/* ManifestLivePreview.css - Styles for manifest pack live preview */
+
+.mnlp-container {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-y: auto;
+  padding: 8px;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.mnlp-light {
+  background-color: #fafafa;
+  color: #333;
+}
+
+.mnlp-dark {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+}
+
+/* Header */
+.mnlp-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+}
+
+.mnlp-light .mnlp-header {
+  background: linear-gradient(135deg, #e8f4f8 0%, #d4e8f0 100%);
+  border: 1px solid #b8d4e0;
+}
+
+.mnlp-dark .mnlp-header {
+  background: linear-gradient(135deg, #2a3a40 0%, #1e2a30 100%);
+  border: 1px solid #3a4a50;
+}
+
+.mnlp-icon {
+  font-size: 24px;
+}
+
+.mnlp-title {
+  flex: 1;
+}
+
+.mnlp-name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.mnlp-light .mnlp-name {
+  color: #1a5070;
+}
+
+.mnlp-dark .mnlp-name {
+  color: #7cb8d4;
+}
+
+.mnlp-type {
+  font-size: 11px;
+  opacity: 0.7;
+  margin-top: 2px;
+}
+
+/* Sections */
+.mnlp-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mnlp-section {
+  border-radius: 4px;
+}
+
+.mnlp-light .mnlp-section {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+}
+
+.mnlp-dark .mnlp-section {
+  background-color: #252526;
+  border: 1px solid #3c3c3c;
+}
+
+.mnlp-section-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.mnlp-section-header:hover {
+  background-color: rgba(128, 128, 128, 0.1);
+}
+
+.mnlp-toggle {
+  font-size: 8px;
+  width: 12px;
+  opacity: 0.6;
+}
+
+.mnlp-section-icon {
+  font-size: 12px;
+}
+
+.mnlp-section-title {
+  font-weight: 500;
+  flex: 1;
+}
+
+.mnlp-count {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  opacity: 0.8;
+}
+
+.mnlp-light .mnlp-count {
+  background-color: #e8e8e8;
+  color: #666;
+}
+
+.mnlp-dark .mnlp-count {
+  background-color: #3c3c3c;
+  color: #aaa;
+}
+
+.mnlp-section-content {
+  padding: 4px 8px 8px 26px;
+}
+
+/* Metadata Items */
+.mnlp-meta-item {
+  display: flex;
+  gap: 8px;
+  padding: 3px 0;
+  font-size: 11px;
+}
+
+.mnlp-meta-label {
+  font-weight: 500;
+  min-width: 80px;
+  opacity: 0.7;
+}
+
+.mnlp-meta-value {
+  flex: 1;
+  word-break: break-word;
+}
+
+.mnlp-mono {
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 10px;
+}
+
+.mnlp-url {
+  color: #0078d4;
+}
+
+.mnlp-dark .mnlp-url {
+  color: #4da6ff;
+}
+
+.mnlp-description {
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mnlp-uuid {
+  opacity: 0.7;
+}
+
+/* Module Items */
+.mnlp-module-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.15);
+}
+
+.mnlp-module-item:last-child {
+  border-bottom: none;
+}
+
+.mnlp-module-icon {
+  font-size: 14px;
+  padding-top: 2px;
+}
+
+.mnlp-module-info {
+  flex: 1;
+}
+
+.mnlp-module-type {
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.mnlp-module-version {
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+.mnlp-module-lang,
+.mnlp-module-entry {
+  font-size: 10px;
+  font-family: "Consolas", "Monaco", monospace;
+  opacity: 0.6;
+  margin-top: 2px;
+}
+
+/* Dependency Items */
+.mnlp-dep-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.15);
+}
+
+.mnlp-dep-item:last-child {
+  border-bottom: none;
+}
+
+.mnlp-dep-icon {
+  font-size: 12px;
+}
+
+.mnlp-dep-info {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mnlp-dep-name {
+  font-weight: 500;
+  font-size: 11px;
+}
+
+.mnlp-dep-version {
+  font-size: 10px;
+  opacity: 0.7;
+  font-family: "Consolas", "Monaco", monospace;
+}
+
+/* Capabilities */
+.mnlp-capabilities-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.mnlp-capability-tag {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.mnlp-light .mnlp-capability-tag {
+  background-color: #e8f0e8;
+  color: #2a6030;
+  border: 1px solid #c0d8c0;
+}
+
+.mnlp-dark .mnlp-capability-tag {
+  background-color: #2a3a2a;
+  color: #80c080;
+  border: 1px solid #3a5a3a;
+}
+
+/* Loading and Error States */
+.mnlp-loading,
+.mnlp-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+.mnlp-error-icon {
+  font-size: 16px;
+}

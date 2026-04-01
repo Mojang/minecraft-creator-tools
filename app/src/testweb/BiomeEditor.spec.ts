@@ -1,7 +1,7 @@
 import { test, expect, ConsoleMessage } from "@playwright/test";
-import { processMessage } from "./WebTestUtilities";
+import { processMessage, selectEditMode } from "./WebTestUtilities";
 
-test.describe("MCTools Web Editor - Biome Editor Tests", () => {
+test.describe("MCTools Web Editor - Biome Editor Tests @focused", () => {
   const consoleErrors: { url: string; error: string }[] = [];
   const consoleWarnings: { url: string; error: string }[] = [];
 
@@ -16,7 +16,7 @@ test.describe("MCTools Web Editor - Biome Editor Tests", () => {
 
   test("should display biome editor when biome file is selected", async ({ page }) => {
     // Create project and enter editor using correct workflow
-    const addOnStarterNewButton = page.getByRole("button", { name: "New" }).first();
+    const addOnStarterNewButton = page.getByRole("button", { name: "Create New" }).first();
 
     if ((await addOnStarterNewButton.count()) > 0) {
       console.log("Creating project to enter editor for biome testing");
@@ -28,6 +28,9 @@ test.describe("MCTools Web Editor - Biome Editor Tests", () => {
       await okButton.click();
       await page.waitForTimeout(3000);
       await page.waitForLoadState("networkidle");
+
+      // Select Focused mode to dismiss welcome panel and hide Inspector
+      await selectEditMode(page);
 
       // Take screenshot of editor after project creation
       await page.screenshot({ path: "debugoutput/screenshots/biome-editor-project-created.png", fullPage: true });
@@ -155,12 +158,16 @@ test.describe("MCTools Web Editor - Biome Editor Tests", () => {
     }
 
     expect(consoleErrors.length).toBeLessThanOrEqual(0);
-    expect(consoleWarnings.length).toBeLessThanOrEqual(0);
+    // Allow MUI focus trap warnings ("Body element does not contain trap zone element")
+    const nonMuiWarnings = consoleWarnings.filter(
+      (w) => !w.error.includes("Body element does not contain trap zone element")
+    );
+    expect(nonMuiWarnings.length).toBeLessThanOrEqual(0);
   });
 
   test("should test importing existing biome file", async ({ page }) => {
     // Create project first
-    const addOnStarterNewButton = page.getByRole("button", { name: "New" }).first();
+    const addOnStarterNewButton = page.getByRole("button", { name: "Create New" }).first();
 
     if ((await addOnStarterNewButton.count()) > 0) {
       await addOnStarterNewButton.click();
@@ -168,13 +175,24 @@ test.describe("MCTools Web Editor - Biome Editor Tests", () => {
 
       await page.getByLabel("Title").fill("automated_test_proj");
       await page.getByLabel("Creator Name").fill("automated_test_creator");
-      await page.getByLabel("Short Name").fill("automated_test_sn");
+
+      // Expand Advanced Options to access Folder Name and Description fields
+      const advancedToggle = page.getByText("Advanced Options");
+      if (await advancedToggle.isVisible({ timeout: 2000 })) {
+        await advancedToggle.click();
+        await page.waitForTimeout(300);
+      }
+
+      await page.getByLabel("Folder Name").fill("automated_test_sn");
       await page.getByLabel("Description").fill("automated_test_desc");
 
       const okButton = await page.getByTestId("submit-button").first();
       await okButton.click();
       await page.waitForTimeout(3000);
       await page.waitForLoadState("networkidle");
+
+      // Select Focused mode to dismiss welcome panel and hide Inspector
+      await selectEditMode(page);
 
       // Look for import or file upload functionality
       const importButton = page
@@ -204,12 +222,16 @@ test.describe("MCTools Web Editor - Biome Editor Tests", () => {
     }
 
     expect(consoleErrors.length).toBeLessThanOrEqual(0);
-    expect(consoleWarnings.length).toBeLessThanOrEqual(0);
+    // Allow MUI focus trap warnings ("Body element does not contain trap zone element")
+    const nonMuiWarnings2 = consoleWarnings.filter(
+      (w) => !w.error.includes("Body element does not contain trap zone element")
+    );
+    expect(nonMuiWarnings2.length).toBeLessThanOrEqual(0);
   });
 
   test("should create and edit biome file with BiomeEditor interface", async ({ page }) => {
     // Create project and enter editor using correct workflow
-    const addOnStarterNewButton = page.getByRole("button", { name: "New" }).first();
+    const addOnStarterNewButton = page.getByRole("button", { name: "Create New" }).first();
 
     if ((await addOnStarterNewButton.count()) > 0) {
       console.log("Creating project to test BiomeEditor creation");
@@ -220,6 +242,9 @@ test.describe("MCTools Web Editor - Biome Editor Tests", () => {
       await okButton.click();
       await page.waitForTimeout(3000);
       await page.waitForLoadState("networkidle");
+
+      // Select Focused mode to dismiss welcome panel and hide Inspector
+      await selectEditMode(page);
 
       // Take screenshot of initial project state
       await page.screenshot({ path: "debugoutput/screenshots/biome-creation-project-ready.png", fullPage: true });
@@ -353,7 +378,7 @@ test.describe("MCTools Web Editor - Biome Editor Tests", () => {
     await page.screenshot({ path: "debugoutput/screenshots/biome-demo-start.png", fullPage: true });
 
     // Create project using the correct workflow
-    const addOnStarterNewButton = page.getByRole("button", { name: "New" }).first();
+    const addOnStarterNewButton = page.getByRole("button", { name: "Create New" }).first();
 
     if ((await addOnStarterNewButton.count()) > 0) {
       console.log("Creating demo project for biome editor");
@@ -364,6 +389,9 @@ test.describe("MCTools Web Editor - Biome Editor Tests", () => {
       await okButton.click();
       await page.waitForTimeout(3000);
       await page.waitForLoadState("networkidle");
+
+      // Select Focused mode to dismiss welcome panel and hide Inspector
+      await selectEditMode(page);
 
       await page.screenshot({ path: "debugoutput/screenshots/biome-demo-project-created.png", fullPage: true });
 

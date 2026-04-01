@@ -146,6 +146,7 @@ export default class ProjectItemCreateManager {
       return await ProjectItemCreateManager.createDesignPackJsonItem(project, itemSeed);
     }
 
+    Log.error("No creation handler for item type: " + itemSeed.itemType);
     return undefined;
   }
 
@@ -735,6 +736,8 @@ export default class ProjectItemCreateManager {
       await ProjectCreateManager.addItemTypeFromGallery(project, galleryItem, newName);
     } else if (galleryItem.type === GalleryItemType.blockType) {
       await ProjectCreateManager.addBlockTypeFromGallery(project, galleryItem, newName);
+    } else if (galleryItem.type === GalleryItemType.modelDesign) {
+      await ProjectCreateManager.addModelDesignFromGallery(project, galleryItem, newName);
     } else if (galleryItem.type >= GalleryItemType.spawnLootRecipes && galleryItem.targetType) {
       await ProjectItemCreateManager.createNewItem(project, {
         itemType: galleryItem.targetType,
@@ -975,9 +978,8 @@ export default class ProjectItemCreateManager {
           ? itemSeed.contentTemplateName
           : ProjectItemUtilities.getNewItemTechnicalName(itemSeed.itemType);
 
-        const sourceFile = await Database.contentFolder.getFileFromRelativePath(
-          "/newitemjson/" + contentTemplate + ".json"
-        );
+        const path = "/newitemjson/" + contentTemplate + ".json";
+        const sourceFile = await Database.contentFolder.getFileFromRelativePath(path);
 
         if (sourceFile) {
           if (!sourceFile.isContentLoaded) {

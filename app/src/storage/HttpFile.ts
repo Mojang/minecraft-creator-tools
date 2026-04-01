@@ -73,9 +73,13 @@ export default class HttpFile extends FileBase implements IFile {
 
         if (StorageUtilities.getEncodingByFileName(this.name) === EncodingType.ByteBuffer) {
           try {
+            const headers: Record<string, string> = {};
+            if (this._parentFolder.storage.authToken) {
+              headers["Authorization"] = `Bearer mctauth=${this._parentFolder.storage.authToken}`;
+            }
             const response = await axios.get(path, {
               responseType: "arraybuffer",
-              headers: {},
+              headers,
             });
 
             this._content = new Uint8Array(response.data);
@@ -84,8 +88,12 @@ export default class HttpFile extends FileBase implements IFile {
           let result = null;
 
           try {
+            const headers: Record<string, string> = {};
+            if (this._parentFolder.storage.authToken) {
+              headers["Authorization"] = `Bearer mctauth=${this._parentFolder.storage.authToken}`;
+            }
             const response = await axios.get(path, {
-              headers: {},
+              headers,
             });
 
             result = response.data;
@@ -129,18 +137,77 @@ export default class HttpFile extends FileBase implements IFile {
   }
 
   async deleteThisFile(skipRemoveFromParent?: boolean): Promise<boolean> {
-    throw new Error("HttpFile is read-only.");
+    if (this._parentFolder.storage.readOnly) {
+      throw new Error("HttpFile is read-only.");
+    }
+
+    try {
+      const path = this.fullPath;
+      const headers: Record<string, string> = {};
+      if (this._parentFolder.storage.authToken) {
+        headers["Authorization"] = `Bearer mctauth=${this._parentFolder.storage.authToken}`;
+      }
+
+      await axios.delete(path, { headers });
+
+      if (!skipRemoveFromParent) {
+        this._parentFolder.removeFile(this.name);
+      }
+
+      return true;
+    } catch (e) {
+      Log.debug("Failed to delete file: " + e);
+      return false;
+    }
   }
 
   async moveTo(newStorageRelativePath: string): Promise<boolean> {
-    throw new Error("HttpFile is read-only.");
+    throw new Error("HttpFile does not support move operations.");
   }
 
   setContent(newContent: string | Uint8Array | null): boolean {
-    throw new Error("HttpFile is read-only.");
+    if (this._parentFolder.storage.readOnly) {
+      throw new Error("HttpFile is read-only.");
+    }
+
+    this._content = newContent;
+    this.modified = new Date();
+    return true;
   }
 
   async saveContent(): Promise<Date> {
-    throw new Error("HttpFile is read-only.");
+    if (this._parentFolder.storage.readOnly) {
+      throw new Error("HttpFile is read-only.");
+    }
+
+    if (this._content === null) {
+      throw new Error("Cannot save file with null content");
+    }
+
+    try {
+      const path = this.fullPath;
+      const headers: Record<string, string> = {};
+      if (this._parentFolder.storage.authToken) {
+        headers["Authorization"] = `Bearer mctauth=${this._parentFolder.storage.authToken}`;
+      }
+
+      // Determine content type based on file type
+      const encoding = StorageUtilities.getEncodingByFileName(this.name);
+      if (encoding === EncodingType.ByteBuffer) {
+        headers["Content-Type"] = "application/octet-stream";
+      } else {
+        headers["Content-Type"] = "text/plain; charset=utf-8";
+      }
+
+      await axios.put(path, this._content, { headers });
+
+      this.lastLoadedOrSaved = new Date();
+      this.modified = null;
+
+      return this.lastLoadedOrSaved;
+    } catch (e) {
+      Log.debug("Failed to save file: " + e);
+      throw new Error("Failed to save file: " + e);
+    }
   }
 }

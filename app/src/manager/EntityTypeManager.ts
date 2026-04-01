@@ -10,11 +10,9 @@ import Database from "../minecraft/Database";
 import IProjectUpdater from "../updates/IProjectUpdater";
 import ProjectUpdateResult from "../updates/ProjectUpdateResult";
 import { UpdateResultType } from "../updates/IUpdateResult";
-import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
-import ProjectInfoUtilities from "../info/ProjectInfoUtilities";
 import Log from "../core/Log";
 
 export enum EntityTypeUpdate {
@@ -36,39 +34,17 @@ export enum EntityTypeInfo {
   FailedToParseLatestMinecraftVersion = 501,
 }
 
+/**
+ * Validates and updates entity type definitions, including format version management.
+ *
+ * @see {@link ../../../public/data/forms/mctoolsval/entitytype.form.json} for topic definitions
+ */
 export default class EntityTypeManager implements IProjectInfoGenerator, IProjectUpdater {
   id;
   title = "Entity Type";
 
   constructor() {
     this.id = "ENTITYTYPE";
-  }
-
-  getTopicData(topicId: number): IProjectInfoTopicData | undefined {
-    const formatVersion = {
-      updaterId: this.id,
-      updaterIndex: EntityTypeUpdate.UpdateFormatVersionToLatest,
-      action: "Set behavior pack entity type format to latest version.",
-    };
-
-    const title = ProjectInfoUtilities.getTitleFromEnum(EntityTypeInfo, topicId);
-
-    switch (topicId) {
-      case EntityTypeInfo.FormatVersionMajorVersionLowerThanCurrent:
-      case EntityTypeInfo.FormatVersionMajorVersionHigherThanCurrent:
-      case EntityTypeInfo.FormatVersionMinorVersionLowerThanCurrent:
-      case EntityTypeInfo.FormatVersionMinorVersionHigherThanCurrent:
-      case EntityTypeInfo.FormatVersionPatchVersionLowerThanCurrent:
-      case EntityTypeInfo.FormatVersionPatchVersionHigherThanCurrent:
-        return {
-          title: title,
-          updaters: [formatVersion],
-        };
-    }
-
-    return {
-      title: title,
-    };
   }
 
   getUpdaterData(updaterId: number) {

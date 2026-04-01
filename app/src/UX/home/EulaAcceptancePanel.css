@@ -1,0 +1,116 @@
+.eap-outer {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.eap-header {
+  font-size: 1.4em;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: inherit;
+}
+
+.eap-content {
+  background-color: rgba(128, 128, 128, 0.1);
+  border-radius: 4px;
+  padding: 20px;
+}
+
+.eap-intro {
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.eap-links {
+  margin-bottom: 24px;
+  padding: 12px;
+  background-color: rgba(128, 128, 128, 0.1);
+  border-radius: 4px;
+}
+
+.eap-link-item {
+  margin-bottom: 8px;
+}
+
+.eap-link-item:last-child {
+  margin-bottom: 0;
+}
+
+.eap-link-label {
+  display: block;
+  font-size: 0.9em;
+  margin-bottom: 2px;
+}
+
+.eap-link {
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.eap-link:hover {
+  text-decoration: underline;
+}
+
+.eap-admin-notice {
+  padding: 16px;
+  background-color: rgba(255, 165, 0, 0.15);
+  border-left: 4px solid orange;
+  border-radius: 4px;
+}
+
+.eap-admin-notice p {
+  margin: 0;
+}
+
+.eap-acceptance {
+  margin-top: 16px;
+}
+
+.eap-checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.eap-checkbox-label {
+  line-height: 1.4;
+  padding-top: 2px;
+}
+
+.eap-error {
+  color: #ff6b6b;
+  background-color: rgba(255, 107, 107, 0.1);
+  padding: 10px 14px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  border-left: 4px solid #ff6b6b;
+}
+
+.eap-button-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.eap-success {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background-color: rgba(0, 200, 83, 0.1);
+  border-radius: 4px;
+  border-left: 4px solid #00c853;
+}
+
+.eap-success-icon {
+  font-size: 2em;
+  color: #00c853;
+  font-weight: bold;
+}
+
+.eap-success-message {
+  font-size: 1.1em;
+  line-height: 1.4;
+}

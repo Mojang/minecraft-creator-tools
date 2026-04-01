@@ -7,7 +7,46 @@ import Log from "../core/Log";
 import VanillaProjectManager from "./VanillaProjectManager";
 import { CreatorToolsMinecraftState } from "../app/CreatorTools";
 
+/**
+ * Minecraft server port constants for multi-slot architecture.
+ * Slot 0 = 19132, Slot 1 = 19164, Slot 2 = 19196, etc. (32-port spacing)
+ * Debug ports follow the same pattern starting at 19144 (19132 + 12)
+ */
+export const MINECRAFT_BASE_PORT = 19132;
+export const MINECRAFT_PORT_INCREMENT = 32;
+export const MINECRAFT_DEBUG_PORT_OFFSET = 12; // Debug port is base port + 12
+
 export default class MinecraftUtilities {
+  /**
+   * Get the Minecraft UDP port for a given slot number.
+   * Slot 0 = 19132, Slot 1 = 19164, Slot 2 = 19196, etc.
+   * @param slotNumber The slot number (0-based)
+   * @returns The UDP port for Minecraft connections
+   */
+  static getPortForSlot(slotNumber: number): number {
+    return MINECRAFT_BASE_PORT + slotNumber * MINECRAFT_PORT_INCREMENT;
+  }
+
+  /**
+   * Get the slot number from a Minecraft UDP port.
+   * @param port The UDP port
+   * @returns The slot number (0-based)
+   */
+  static getSlotFromPort(port: number): number {
+    return Math.floor((port - MINECRAFT_BASE_PORT) / MINECRAFT_PORT_INCREMENT);
+  }
+
+  /**
+   * Get the script debugger port for a given slot number.
+   * The debug port is the base port + 12 for each slot.
+   * Slot 0 = 19144, Slot 1 = 19176, Slot 2 = 19208, etc.
+   * @param slotNumber The slot number (0-based)
+   * @returns The debug port for the script debugger
+   */
+  static getDebugPortForSlot(slotNumber: number): number {
+    return MinecraftUtilities.getPortForSlot(slotNumber) + MINECRAFT_DEBUG_PORT_OFFSET;
+  }
+
   static isReloadableSetOfChanges(differenceSet: DifferenceSet) {
     return differenceSet.hasFileOnlyOfExtension("js", "ts", "map") && !differenceSet.getHasDeletions();
   }
@@ -627,6 +666,11 @@ export default class MinecraftUtilities {
   }
 
   static canonicalizeName(id: string) {
+    if (id === undefined || id === null) {
+      Log.debug("canonicalizeName called with undefined/null id");
+      return "";
+    }
+
     let canonId = id.toLowerCase().trim();
 
     if (canonId.startsWith("minecraft:")) {
@@ -637,6 +681,11 @@ export default class MinecraftUtilities {
   }
 
   static canonicalizeFullName(id: string) {
+    if (id === undefined || id === null) {
+      Log.debug("canonicalizeFullName called with undefined/null id");
+      return "";
+    }
+
     let canonId = id.toLowerCase().trim();
 
     if (canonId.indexOf(":") < 0) {

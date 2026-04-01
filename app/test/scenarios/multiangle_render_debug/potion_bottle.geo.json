@@ -1,0 +1,273 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.test_potion_bottle",
+        "texture_width": 64,
+        "texture_height": 24,
+        "visible_bounds_width": 1,
+        "visible_bounds_height": 1,
+        "visible_bounds_offset": [
+          0,
+          0.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "cork",
+          "pivot": [
+            0,
+            15,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -1,
+                14,
+                -1
+              ],
+              "size": [
+                2,
+                2,
+                2
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    0,
+                    0
+                  ],
+                  "uv_size": [
+                    4,
+                    4
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    0,
+                    0
+                  ],
+                  "uv_size": [
+                    4,
+                    4
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    0,
+                    0
+                  ],
+                  "uv_size": [
+                    4,
+                    4
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    0,
+                    0
+                  ],
+                  "uv_size": [
+                    4,
+                    4
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    0,
+                    0
+                  ],
+                  "uv_size": [
+                    4,
+                    4
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    0,
+                    0
+                  ],
+                  "uv_size": [
+                    4,
+                    4
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "neck",
+          "pivot": [
+            0,
+            13,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -1.5,
+                12,
+                -1.5
+              ],
+              "size": [
+                3,
+                3,
+                3
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    4,
+                    0
+                  ],
+                  "uv_size": [
+                    6,
+                    6
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    4,
+                    0
+                  ],
+                  "uv_size": [
+                    6,
+                    6
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    4,
+                    0
+                  ],
+                  "uv_size": [
+                    6,
+                    6
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    4,
+                    0
+                  ],
+                  "uv_size": [
+                    6,
+                    6
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    4,
+                    0
+                  ],
+                  "uv_size": [
+                    6,
+                    6
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    4,
+                    0
+                  ],
+                  "uv_size": [
+                    6,
+                    6
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "body",
+          "pivot": [
+            0,
+            6,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -3,
+                0,
+                -3
+              ],
+              "size": [
+                6,
+                12,
+                6
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    10,
+                    0
+                  ],
+                  "uv_size": [
+                    12,
+                    24
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    10,
+                    0
+                  ],
+                  "uv_size": [
+                    12,
+                    24
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    10,
+                    0
+                  ],
+                  "uv_size": [
+                    12,
+                    24
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    10,
+                    0
+                  ],
+                  "uv_size": [
+                    12,
+                    24
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    22,
+                    0
+                  ],
+                  "uv_size": [
+                    12,
+                    12
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    22,
+                    0
+                  ],
+                  "uv_size": [
+                    12,
+                    12
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   FEATURE RULE NODE STYLES - Minecraft-Inspired Design
+   
+   Feature rules are the entry point for feature placement - styled like
+   emerald/command blocks to indicate their special "controller" nature.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.frn-outer {
+  min-width: 220px;
+  max-width: 300px;
+  border-radius: 2px; /* Blocky Minecraft feel */
+  border: 3px solid;
+  border-top-color: rgba(255, 255, 255, 0.35);
+  border-left-color: rgba(255, 255, 255, 0.25);
+  border-bottom-color: rgba(0, 0, 0, 0.45);
+  border-right-color: rgba(0, 0, 0, 0.35);
+  /* Emerald block inspired gradient */
+  background: linear-gradient(180deg, #3a7a4a 0%, #2a6a3a 50%, #1a5a2a 100%);
+  box-shadow: 
+    0 4px 0 rgba(0, 0, 0, 0.35),
+    0 6px 12px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  transition: all 0.15s ease;
+  image-rendering: pixelated;
+}
+
+.frn-outer:hover {
+  filter: brightness(1.2);
+}
+
+.frn-selected {
+  border-color: #5cff5c !important;
+  box-shadow: 
+    0 0 0 2px #5cff5c,
+    0 0 24px rgba(92, 255, 92, 0.6),
+    0 4px 0 rgba(0, 0, 0, 0.35) !important;
+}
+
+.frn-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 14px;
+  gap: 10px;
+  color: white;
+  font-weight: 700;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5), 2px 2px 0 rgba(0, 0, 0, 0.25);
+  background: linear-gradient(180deg, 
+    rgba(255, 255, 255, 0.12) 0%, 
+    rgba(255, 255, 255, 0) 30%,
+    rgba(0, 0, 0, 0.1) 100%
+  );
+}
+
+.frn-icon {
+  font-size: 1.3em;
+  opacity: 0.95;
+  filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.4));
+}
+
+.frn-title {
+  flex: 1;
+  font-size: 1em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.frn-type {
+  padding: 6px 14px;
+  font-size: 0.72em;
+  color: rgba(255, 255, 255, 0.95);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  border-top: 2px solid rgba(0, 0, 0, 0.2);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.15);
+  background: rgba(0, 0, 0, 0.1);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.35);
+}
+
+.frn-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  font-size: 0.72em;
+  color: rgba(255, 255, 255, 0.85);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+}
+
+.frn-info:last-child {
+  padding-bottom: 10px;
+}
+
+.frn-info-icon {
+  opacity: 0.75;
+  width: 14px;
+  filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.3));
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   HANDLES - Styled as pipe connectors
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.frn-handle {
+  width: 14px !important;
+  height: 14px !important;
+  border-radius: 2px !important; /* Blocky */
+  border: 2px solid #5cff5c !important;
+  background-color: #2a5a2a !important;
+  transition: all 0.15s ease;
+  cursor: crosshair;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+.frn-handle:hover {
+  transform: scale(1.25);
+  background-color: #5cff5c !important;
+}
+
+.frn-handle-places {
+  bottom: -7px !important;
+}
+
+/* Handle label */
+.frn-handle-label {
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6em;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  pointer-events: none;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}

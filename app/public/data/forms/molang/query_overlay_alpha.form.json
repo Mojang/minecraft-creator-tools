@@ -1,7 +1,0 @@
-{
-  "id": "query.overlay_alpha",
-  "fields": [],
-  "isDeprecated": true,
-  "description": "Deprecated; this function is deprecated and will be removed.",
-  "title": "Overlay Alpha"
-}

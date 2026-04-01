@@ -43,6 +43,8 @@ const webExtensionConfig = {
     new MiniCssExtractPlugin({ filename: "web.css" }),
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify("development"), // Ensure React runs in development mode
+      ENABLE_ANALYTICS: JSON.stringify(false),
+      BUILD_TARGET: JSON.stringify("cli-web"),
     }),
   ],
   module: {
@@ -62,7 +64,7 @@ const webExtensionConfig = {
           /\/res\//,
           /\/ux\//,
           /\/uxex\//,
-          /\/worldux\//,
+          /\/UX\/world\//,
           /CHANGELOG/,
         ],
       },
@@ -80,13 +82,24 @@ const webExtensionConfig = {
           /\/scenarios\//,
           /\/ux\//,
           /\/uxex\//,
-          /\/worldux\//,
+          /\/UX\/world\//,
           /\/testshared\//,
           /\/testweb\//,
+          /\/testmobile\//,
           /\/testelectron\//,
           /\/test\//,
+          /\/test-ex\//,
+          /\/test-extra\//,
           /CHANGELOG/,
         ],
+      },
+      {
+        test: /\.(png|jpg|gif|svg)$/,
+        type: "asset/resource",
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        type: "asset/resource",
       },
       {
         test: /\.css$/,
@@ -121,8 +134,11 @@ const webExtensionConfig = {
           /\/config-overrides\//,
           /\/testshared\//,
           /\/testweb\//,
+          /\/testmobile\//,
           /\/testelectron\//,
           /\/test\//,
+          /\/test-ex\//,
+          /\/test-extra\//,
           /CHANGELOG/,
         ],
         use: [

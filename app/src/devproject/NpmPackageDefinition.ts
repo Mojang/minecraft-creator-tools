@@ -19,9 +19,11 @@ export const DevDependenciesDefault: Record<string, string> = {
 export const ScriptsDefault: Record<string, string> = {
   lint: "just-scripts lint",
   build: "just-scripts build",
+  "build:production": "just-scripts build --production",
   clean: "just-scripts clean",
   "local-deploy": "just-scripts local-deploy",
   mcaddon: "just-scripts mcaddon",
+  "mcaddon:production": "just-scripts mcaddon --production",
   enablemcloopback:
     "CheckNetIsolation.exe LoopbackExempt -a -p=S-1-15-2-1958404141-86561845-1752920682-3514627264-368642714-62675701-733520436",
   enablemcpreviewloopback:
@@ -57,6 +59,19 @@ export const PackageJsonDefault: PackageJSON = {
   devDependencies: DevDependenciesDefault,
   scripts: ScriptsDefault,
   dependencies: DependenciesDefault,
+};
+
+export const SetupRequiredScripts: Record<string, string> = {
+  lint: "just-scripts lint",
+  build: "just-scripts build",
+  clean: "just-scripts clean",
+  "local-deploy": "just-scripts local-deploy",
+  mcaddon: "just-scripts mcaddon",
+};
+
+export const SetupRequiredDependencies: Record<string, string> = {
+  "@minecraft/server": DependenciesDefault["@minecraft/server"],
+  "@minecraft/server-ui": DependenciesDefault["@minecraft/server-ui"],
 };
 
 export const NpmPackageSettingAllowList = [
@@ -282,6 +297,59 @@ export default class NpmPackageDefinition {
         Log.debugAlert("Unexpected setting '" + key + "' found in package.json.");
       }
     }
+  }
+
+  async ensureSetupContent(bpTitle?: string): Promise<boolean> {
+    await this.load();
+
+    let changed = false;
+
+    if (!this.definition) {
+      this.definition = {
+        name: "my-project",
+        version: "0.1.0",
+        description: "My Minecraft Addon Project",
+        private: true,
+      };
+      changed = true;
+    }
+
+    if (bpTitle && (!this.definition.name || this.definition.name === "my-project")) {
+      const slugified = bpTitle
+        .toLowerCase()
+        .replace(/[^a-z0-9-]/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "");
+
+      if (slugified && slugified !== this.definition.name) {
+        this.definition.name = slugified;
+        changed = true;
+      }
+    }
+
+    if (!this.definition.scripts) {
+      this.definition.scripts = {};
+    }
+
+    for (const scriptName in SetupRequiredScripts) {
+      if (!this.definition.scripts[scriptName]) {
+        this.definition.scripts[scriptName] = SetupRequiredScripts[scriptName];
+        changed = true;
+      }
+    }
+
+    if (!this.definition.dependencies) {
+      this.definition.dependencies = {};
+    }
+
+    for (const depName in SetupRequiredDependencies) {
+      if (!this.definition.dependencies[depName]) {
+        this.definition.dependencies[depName] = SetupRequiredDependencies[depName];
+        changed = true;
+      }
+    }
+
+    return changed;
   }
 
   async load() {

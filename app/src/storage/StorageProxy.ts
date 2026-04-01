@@ -57,6 +57,34 @@ export default class StorageProxy {
     this._sendMessage = sendMessage;
   }
 
+  /**
+   * Converts an absolute path (which may include the storage root URI) to a relative path.
+   * The MessageProxyStorage on the webview side sends full paths like "vscode-test-web://mount/subfolder/"
+   * but getFolderFromRelativePath expects paths like "/subfolder/".
+   */
+  private toRelativePath(absolutePath: string): string {
+    // Get the storage root path (e.g., "vscode-test-web://mount/" or "file:///c:/workspace/")
+    const storageRoot = this._storage.rootFolder.fullPath;
+
+    // If the absolute path starts with the storage root, strip it
+    if (absolutePath.toLowerCase().startsWith(storageRoot.toLowerCase())) {
+      let relativePath = absolutePath.substring(storageRoot.length);
+      // Ensure it starts with /
+      if (!relativePath.startsWith("/")) {
+        relativePath = "/" + relativePath;
+      }
+      return relativePath;
+    }
+
+    // If it's already a relative path starting with /, return as-is
+    if (absolutePath.startsWith("/")) {
+      return absolutePath;
+    }
+
+    // Otherwise, treat as relative and prepend /
+    return "/" + absolutePath;
+  }
+
   registerAlternateContents(storageRelativePath: string, contents: string | Uint8Array) {
     this._alternateContents[StorageUtilities.canonicalizePath(storageRelativePath)] = contents;
   }
@@ -109,10 +137,47 @@ export default class StorageProxy {
     }
   }
 
+  /**
+   * Normalizes a path/ID by removing trailing slashes for comparison purposes.
+   */
+  private normalizeId(id: string): string {
+    // Remove trailing slashes for consistent comparison
+    while (id.endsWith("/") || id.endsWith("\\")) {
+      id = id.substring(0, id.length - 1);
+    }
+    return id.toLowerCase();
+  }
+
+  /**
+   * Checks if an incoming message ID matches this storage proxy.
+   * Returns true if the ID matches exactly or if the ID is a child path of this storage's root.
+   */
+  private matchesId(incomingId: string): boolean {
+    const normalizedIncoming = this.normalizeId(incomingId);
+    const normalizedSelf = this.normalizeId(this._id);
+
+    // Exact match
+    if (normalizedIncoming === normalizedSelf) {
+      Log.verbose(`StorageProxy matchesId: exact match for ${incomingId}`);
+      return true;
+    }
+
+    // Check if incoming ID is a child path of this storage's root
+    // e.g., "vscode-test-web://mount/project/subfolder" matches storage "vscode-test-web://mount/project"
+    if (normalizedIncoming.startsWith(normalizedSelf + "/") || normalizedIncoming.startsWith(normalizedSelf + "\\")) {
+      Log.verbose(`StorageProxy matchesId: child path match for ${incomingId} under ${this._id}`);
+      return true;
+    }
+
+    Log.verbose(`StorageProxy matchesId: NO match - incoming=${incomingId}, self=${this._id}`);
+    return false;
+  }
+
   async processMessage(sender: any, command: string, id: string, data: any) {
     let baseCommandName = command;
 
-    if (id.toLowerCase() !== this._id.toLowerCase()) {
+    // Check if this message is for this storage proxy (exact match or child path)
+    if (!this.matchesId(id)) {
       return;
     }
 
@@ -128,43 +193,43 @@ export default class StorageProxy {
 
     switch (baseCommandName) {
       case StorageProxyCommands.fsExists:
-        await this.fileExists(sender, command, data);
+        await this.fileExists(sender, command, id, data);
         break;
 
       case StorageProxyCommands.fsFolderExists:
-        await this.folderExists(sender, command, data);
+        await this.folderExists(sender, command, id, data);
         break;
 
       case StorageProxyCommands.fsMkdir:
         this.readOnlyCheck();
 
-        await this.createDirectory(sender, command, data);
+        await this.createDirectory(sender, command, id, data);
         break;
 
       case StorageProxyCommands.fsReadUtf8File:
-        await this.readUtf8File(sender, command, data);
+        await this.readUtf8File(sender, command, id, data);
         break;
 
       case StorageProxyCommands.fsReadFile:
-        await this.readFile(sender, command, data);
+        await this.readFile(sender, command, id, data);
         break;
 
       case StorageProxyCommands.fsWriteFile:
         this.readOnlyCheck();
-        await this.writeFile(sender, command, data);
+        await this.writeFile(sender, command, id, data);
         break;
 
       case StorageProxyCommands.fsWriteUtf8File:
         this.readOnlyCheck();
 
-        await this.writeUtf8File(sender, command, data);
+        await this.writeUtf8File(sender, command, id, data);
         break;
 
       case StorageProxyCommands.fsReaddir:
-        await this.readDir(sender, command, data);
+        await this.readDir(sender, command, id, data);
         break;
       case StorageProxyCommands.fsStat:
-        await this.stat(sender, command, data);
+        await this.stat(sender, command, id, data);
         break;
     }
   }
@@ -178,13 +243,14 @@ export default class StorageProxy {
 
   fileIsContainer() {}
 
-  async writeUtf8File(sender: any, command: string, data: any) {
+  async writeUtf8File(sender: any, command: string, requestId: string, data: any) {
     Log.assert(typeof data.path === "string", "StorageProxy writeUtf8File not expected type.");
 
-    const ensureFile = await this._storage.rootFolder.ensureFileFromRelativePath(data.path as string);
+    const relativePath = this.toRelativePath(data.path as string);
+    const ensureFile = await this._storage.rootFolder.ensureFileFromRelativePath(relativePath);
 
     if (!ensureFile) {
-      this._sendMessage(sender, command, this._id, undefined);
+      this._sendMessage(sender, command, requestId, undefined);
       return;
     }
 
@@ -193,16 +259,17 @@ export default class StorageProxy {
 
     await ensureFile.saveContent();
 
-    this._sendMessage(sender, command, this._id, undefined);
+    this._sendMessage(sender, command, requestId, undefined);
   }
 
-  async writeFile(sender: any, command: string, data: any) {
+  async writeFile(sender: any, command: string, requestId: string, data: any) {
     Log.assert(typeof data.path === "string", "Data path not expected string type.");
 
-    const ensureFile = await this._storage.rootFolder.ensureFileFromRelativePath(data.path as string);
+    const relativePath = this.toRelativePath(data.path as string);
+    const ensureFile = await this._storage.rootFolder.ensureFileFromRelativePath(relativePath);
 
     if (!ensureFile) {
-      this._sendMessage(sender, command, this._id, undefined);
+      this._sendMessage(sender, command, requestId, undefined);
       return;
     }
 
@@ -214,16 +281,17 @@ export default class StorageProxy {
     ensureFile.setContent(data.content);
     await ensureFile.saveContent();
 
-    this._sendMessage(sender, command, this._id, undefined);
+    this._sendMessage(sender, command, requestId, undefined);
   }
 
-  async readUtf8File(sender: any, command: string, data: any) {
+  async readUtf8File(sender: any, command: string, requestId: string, data: any) {
     Log.assert(typeof data === "string", "SPRUF");
 
-    const ensureFile = await this._storage.rootFolder.getFileFromRelativePath(data as string);
+    const relativePath = this.toRelativePath(data as string);
+    const ensureFile = await this._storage.rootFolder.getFileFromRelativePath(relativePath);
 
     if (!ensureFile) {
-      this._sendMessage(sender, command, this._id, undefined);
+      this._sendMessage(sender, command, requestId, undefined);
       return;
     }
 
@@ -235,21 +303,22 @@ export default class StorageProxy {
     if (this._alternateContents[canonPath] !== undefined) {
       Log.verbose("Loading alternate text content for '" + canonPath + "'");
 
-      this._sendMessage(sender, command, this._id, this._alternateContents[canonPath]);
+      this._sendMessage(sender, command, requestId, this._alternateContents[canonPath]);
       return;
     }
 
     // Log.verbose("Reading UTF8 content for '" + ensureFile.fullPath + "' " + ensureFile.content);
-    this._sendMessage(sender, command, this._id, ensureFile.content);
+    this._sendMessage(sender, command, requestId, ensureFile.content);
   }
 
-  async readFile(sender: any, command: string, data: any) {
+  async readFile(sender: any, command: string, requestId: string, data: any) {
     Log.assert(typeof data === "string", "SPXRF");
 
-    const ensureFile = await this._storage.rootFolder.getFileFromRelativePath(data as string);
+    const relativePath = this.toRelativePath(data as string);
+    const ensureFile = await this._storage.rootFolder.getFileFromRelativePath(relativePath);
 
     if (!ensureFile) {
-      this._sendMessage(sender, command, this._id, undefined);
+      this._sendMessage(sender, command, requestId, undefined);
       return;
     }
 
@@ -277,46 +346,49 @@ export default class StorageProxy {
       content = "|null|";
     }
 
-    this._sendMessage(sender, command, this._id, content);
+    this._sendMessage(sender, command, requestId, content);
   }
 
-  async createDirectory(sender: any, command: string, data: any) {
+  async createDirectory(sender: any, command: string, requestId: string, data: any) {
     Log.assert(typeof data === "string", "SPXCD");
 
-    const ensureFolder = await this._storage.rootFolder.ensureFolderFromRelativePath(data as string);
+    const relativePath = this.toRelativePath(data as string);
+    const ensureFolder = await this._storage.rootFolder.ensureFolderFromRelativePath(relativePath);
 
     if (!ensureFolder) {
-      this._sendMessage(sender, command, this._id, false);
+      this._sendMessage(sender, command, requestId, false);
       return;
     }
 
     const ensureExistsResult = await ensureFolder.ensureExists();
 
-    this._sendMessage(sender, command, this._id, ensureExistsResult);
+    this._sendMessage(sender, command, requestId, ensureExistsResult);
   }
 
-  async folderExists(sender: any, command: string, data: any) {
+  async folderExists(sender: any, command: string, requestId: string, data: any) {
     Log.assert(typeof data === "string", "SPXFOE");
 
-    const folder = await this._storage.rootFolder.getFolderFromRelativePath(data as string);
+    const relativePath = this.toRelativePath(data as string);
+    const folder = await this._storage.rootFolder.getFolderFromRelativePath(relativePath);
 
     if (!folder) {
-      this._sendMessage(sender, command, this._id, false);
+      this._sendMessage(sender, command, requestId, false);
       return;
     }
 
     const resultFolder = await folder.exists();
 
-    this._sendMessage(sender, command, this._id, resultFolder);
+    this._sendMessage(sender, command, requestId, resultFolder);
   }
 
-  async readDir(sender: any, command: string, data: any) {
+  async readDir(sender: any, command: string, requestId: string, data: any) {
     Log.assert(typeof data === "string", "SPXRD");
 
-    const folder = await this._storage.rootFolder.getFolderFromRelativePath(data as string);
+    const relativePath = this.toRelativePath(data as string);
+    const folder = await this._storage.rootFolder.getFolderFromRelativePath(relativePath);
 
     if (!folder) {
-      this._sendMessage(sender, command, this._id, []);
+      this._sendMessage(sender, command, requestId, []);
       return;
     }
 
@@ -333,21 +405,22 @@ export default class StorageProxy {
       fileNames.push(folderName);
     }
 
-    this._sendMessage(sender, command, this._id, fileNames);
+    this._sendMessage(sender, command, requestId, fileNames);
   }
 
-  async stat(sender: any, command: string, data: any) {
+  async stat(sender: any, command: string, requestId: string, data: any) {
     Log.assert(typeof data === "string", "SPXST");
 
-    const folder = await this._storage.rootFolder.getFolderFromRelativePath(data as string);
+    const relativePath = this.toRelativePath(data as string);
+    const folder = await this._storage.rootFolder.getFolderFromRelativePath(relativePath);
 
     if (!folder) {
-      const file = await this._storage.rootFolder.getFileFromRelativePath(data as string);
+      const file = await this._storage.rootFolder.getFileFromRelativePath(relativePath);
 
       if (file) {
-        this._sendMessage(sender, command, this._id, { isDirectory: false, isFile: true, mtime: file.modified });
+        this._sendMessage(sender, command, requestId, { isDirectory: false, isFile: true, mtime: file.modified });
       } else {
-        this._sendMessage(sender, command, this._id, undefined);
+        this._sendMessage(sender, command, requestId, undefined);
       }
 
       return;
@@ -357,21 +430,22 @@ export default class StorageProxy {
       await folder.load();
     }
 
-    this._sendMessage(sender, command, this._id, { isDirectory: true, isFile: false });
+    this._sendMessage(sender, command, requestId, { isDirectory: true, isFile: false });
   }
 
-  async fileExists(sender: any, command: string, data: any) {
+  async fileExists(sender: any, command: string, requestId: string, data: any) {
     Log.assert(typeof data === "string", "SPXFE");
 
-    const file = await this._storage.rootFolder.getFileFromRelativePath(data as string);
+    const relativePath = this.toRelativePath(data as string);
+    const file = await this._storage.rootFolder.getFileFromRelativePath(relativePath);
 
     if (!file) {
-      this._sendMessage(sender, command, this._id, false);
+      this._sendMessage(sender, command, requestId, false);
       return;
     }
 
     const result = await file.exists;
 
-    this._sendMessage(sender, command, this._id, result);
+    this._sendMessage(sender, command, requestId, result);
   }
 }

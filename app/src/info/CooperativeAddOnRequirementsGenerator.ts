@@ -14,7 +14,6 @@ import ProjectItem from "../app/ProjectItem";
 import Utilities from "../core/Utilities";
 import ResourceManifestDefinition from "../minecraft/ResourceManifestDefinition";
 import ContentIndex from "../core/ContentIndex";
-import ProjectInfoUtilities from "./ProjectInfoUtilities";
 
 const UniqueRegEx = new RegExp(/[a-zA-Z0-9]{2,}_[a-zA-Z0-9]{2,}:[\w]+/);
 
@@ -210,15 +209,14 @@ export enum CooperativeAddOnRequirementsGeneratorTest {
   noVibrantVisualsForNow = 210,
 }
 
+/**
+ * Validates cooperative add-on requirements for marketplace submissions.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/caddonreq.form.json} for topic definitions
+ */
 export default class CooperativeAddOnRequirementsGenerator implements IProjectInfoGenerator {
   id = "CADDONREQ";
   title = "Cooperative Add-On Requirements";
-
-  getTopicData(topicId: number) {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(CooperativeAddOnRequirementsGeneratorTest, topicId),
-    };
-  }
 
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];

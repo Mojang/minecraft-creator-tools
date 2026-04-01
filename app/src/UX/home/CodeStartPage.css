@@ -1,0 +1,148 @@
+.csp-outer {
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, rgba(82, 165, 53, 0.08) 0%, transparent 200px);
+}
+
+.csp-header {
+  padding: 16px 20px 8px 20px;
+  border-bottom: 1px solid rgba(82, 165, 53, 0.2);
+  background: linear-gradient(90deg, rgba(82, 165, 53, 0.12) 0%, transparent 50%);
+}
+
+.csp-header-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.csp-title {
+  font-family: "Minecrafter", "Noto Sans", sans-serif;
+  font-size: 24px;
+  font-weight: normal;
+  margin: 0;
+  color: #52a535;
+  text-shadow: 2px 2px 0 rgba(42, 100, 28, 0.3);
+  letter-spacing: 1px;
+}
+
+.csp-loading {
+  flex-shrink: 0;
+}
+
+.csp-loading-main {
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.csp-loading-additional {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.csp-projectDetails {
+  display: grid;
+  grid-template-columns: 280px auto 1fr;
+  gap: 12px;
+  align-items: end;
+  padding: 16px 20px;
+  background: rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.csp-newProjectName {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.csp-npnLabel {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.8;
+  color: #86d562;
+}
+
+.csp-input {
+  width: 100%;
+}
+
+.csp-input .MuiInputLabel-root {
+  color: var(--mc-fg-1);
+}
+
+.csp-input input {
+  border-radius: 2px !important;
+  border: 1px solid rgba(82, 165, 53, 0.4) !important;
+  padding: 8px 12px !important;
+  font-size: 14px !important;
+}
+
+.csp-input input:focus {
+  border-color: #52a535 !important;
+  box-shadow: 0 0 0 1px rgba(82, 165, 53, 0.3) !important;
+}
+
+.csp-goButtonArea {
+  align-self: end;
+}
+
+.csp-createButton {
+  background: linear-gradient(180deg, #6fc24a 0%, #52a535 50%, #3e8828 100%) !important;
+  border: none !important;
+  border-radius: 2px !important;
+  padding: 8px 24px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -2px 0 rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+  transition: transform 0.1s ease, box-shadow 0.1s ease !important;
+}
+
+.csp-createButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -2px 0 rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+.csp-createButton:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.csp-createButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: linear-gradient(180deg, #6b6b6b 0%, #4a4a4a 100%) !important;
+}
+
+.csp-searchArea {
+  justify-self: end;
+  width: 240px;
+}
+
+.csp-search {
+  width: 100%;
+}
+
+.csp-search input {
+  border-radius: 2px !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  background: rgba(0, 0, 0, 0.2) !important;
+  padding: 8px 12px !important;
+}
+
+.csp-search input:focus {
+  border-color: rgba(82, 165, 53, 0.5) !important;
+}
+
+.csp-gallery {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}

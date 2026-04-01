@@ -1,0 +1,238 @@
+/* MobViewer.css - Styles for the mob/entity model rendering viewer */
+
+.mv-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #1a1a2e;
+  color: #ffffff;
+  overflow: hidden;
+}
+
+.mv-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  background-color: #16213e;
+  border-bottom: 1px solid #0f3460;
+}
+
+.mv-button {
+  padding: 8px 16px;
+  background-color: #0f3460;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.mv-button:hover:not(:disabled) {
+  background-color: #1a5f7a;
+}
+
+.mv-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mv-select {
+  padding: 8px 12px;
+  background-color: #0f3460;
+  color: #ffffff;
+  border: 1px solid #1a5f7a;
+  border-radius: 4px;
+  font-size: 14px;
+  min-width: 200px;
+}
+
+.mv-info {
+  margin-left: auto;
+  font-size: 14px;
+  color: #a0a0a0;
+}
+
+.mv-mob-info {
+  padding: 10px 20px;
+  background-color: #1a1a2e;
+  border-bottom: 1px solid #0f3460;
+}
+
+.mv-mob-info h2 {
+  margin: 0 0 5px 0;
+  font-size: 18px;
+  color: #4ade80;
+}
+
+.mv-mob-details {
+  display: flex;
+  gap: 20px;
+  font-size: 13px;
+  color: #a0a0a0;
+}
+
+.mv-mob-details span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.mv-error {
+  padding: 10px 20px;
+  background-color: #7f1d1d;
+  color: #fca5a5;
+  font-size: 14px;
+}
+
+.mv-canvas {
+  flex: 1;
+  width: 100%;
+  outline: none;
+}
+
+.mv-footer {
+  padding: 8px 20px;
+  background-color: #16213e;
+  border-top: 1px solid #0f3460;
+  text-align: center;
+}
+
+.mv-footer p {
+  margin: 0;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* Headless mode - full viewport for CLI rendering */
+.mv-headless {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* High-contrast mode: use system colors for visibility */
+@media (forced-colors: active) {
+  .mv-container {
+    background-color: Canvas;
+    color: CanvasText;
+  }
+
+  .mv-toolbar {
+    background-color: Canvas;
+    border-bottom: 1px solid CanvasText;
+  }
+
+  .mv-button {
+    background-color: ButtonFace;
+    color: ButtonText;
+    border: 1px solid ButtonText;
+    forced-color-adjust: none;
+  }
+
+  .mv-button:hover:not(:disabled) {
+    background-color: Highlight;
+    color: HighlightText;
+  }
+
+  .mv-button:disabled {
+    opacity: 1;
+    color: GrayText;
+    border-color: GrayText;
+  }
+
+  .mv-select {
+    background-color: Field;
+    color: FieldText;
+    border: 1px solid CanvasText;
+  }
+
+  .mv-info {
+    color: CanvasText;
+  }
+
+  .mv-mob-info {
+    background-color: Canvas;
+    border-bottom: 1px solid CanvasText;
+  }
+
+  .mv-mob-info h2 {
+    color: CanvasText;
+  }
+
+  .mv-mob-details {
+    color: CanvasText;
+  }
+
+  .mv-error {
+    background-color: Canvas;
+    color: CanvasText;
+    border: 1px solid CanvasText;
+  }
+
+  .mv-footer {
+    background-color: Canvas;
+    border-top: 1px solid CanvasText;
+  }
+
+  .mv-footer p {
+    color: CanvasText;
+  }
+}
+
+/* Light theme: CSS custom-property overrides applied by body.ct-light */
+body.ct-light .mv-container {
+  background-color: #f5f0ed;
+  color: #262423;
+}
+
+body.ct-light .mv-toolbar {
+  background-color: #ede5e2;
+  border-bottom: 1px solid #d5ccc8;
+}
+
+body.ct-light .mv-button {
+  background-color: #d5ccc8;
+  color: #262423;
+}
+
+body.ct-light .mv-button:hover:not(:disabled) {
+  background-color: #c5bbb6;
+}
+
+body.ct-light .mv-select {
+  background-color: #ffffff;
+  color: #262423;
+  border: 1px solid #d5ccc8;
+}
+
+body.ct-light .mv-info {
+  color: #6b6360;
+}
+
+body.ct-light .mv-mob-info {
+  background-color: #f5f0ed;
+  border-bottom: 1px solid #d5ccc8;
+}
+
+body.ct-light .mv-mob-info h2 {
+  color: #2d6a14;
+}
+
+body.ct-light .mv-mob-details {
+  color: #6b6360;
+}
+
+body.ct-light .mv-error {
+  background-color: #fef2f2;
+  color: #991b1b;
+}
+
+body.ct-light .mv-footer {
+  background-color: #ede5e2;
+  border-top: 1px solid #d5ccc8;
+}
+
+body.ct-light .mv-footer p {
+  color: #6b6360;
+}

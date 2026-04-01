@@ -1,0 +1,220 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   FEATURE NODE STYLES - Minecraft-Inspired Design
+   
+   Design Philosophy:
+   - Blocky, pixelated aesthetic (no rounded corners - max 2px for anti-aliasing)
+   - Minecraft block-inspired textures and gradients
+   - Stone, dirt, and ore color palettes
+   - Subtle "pixel" borders for that 8-bit feel
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.fn-outer {
+  min-width: 200px;
+  max-width: 260px;
+  border-radius: 2px; /* Minimal rounding for blocky feel */
+  border: 3px solid;
+  border-top-color: rgba(255, 255, 255, 0.3);
+  border-left-color: rgba(255, 255, 255, 0.2);
+  border-bottom-color: rgba(0, 0, 0, 0.4);
+  border-right-color: rgba(0, 0, 0, 0.3);
+  box-shadow: 
+    0 4px 0 rgba(0, 0, 0, 0.3),
+    0 6px 12px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  transition: all 0.15s ease;
+  image-rendering: pixelated;
+}
+
+.fn-outer:hover {
+  filter: brightness(1.2);
+}
+
+.fn-selected {
+  border-color: #5cff5c !important;
+  box-shadow: 
+    0 0 0 2px #5cff5c,
+    0 0 20px rgba(92, 255, 92, 0.5),
+    0 4px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+.fn-unfulfilled {
+  border-style: dashed;
+  opacity: 0.8;
+  border-color: #aa6644 !important;
+}
+
+/* Header with block-style texture */
+.fn-header {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  gap: 10px;
+  color: white;
+  font-weight: 700;
+  font-family: 'Segoe UI', sans-serif;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5), 2px 2px 0 rgba(0, 0, 0, 0.2);
+  background: linear-gradient(180deg, 
+    rgba(255, 255, 255, 0.1) 0%, 
+    rgba(255, 255, 255, 0) 30%,
+    rgba(0, 0, 0, 0.1) 100%
+  );
+}
+
+.fn-icon {
+  font-size: 1.3em;
+  opacity: 0.95;
+  filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.4));
+}
+
+.fn-title {
+  flex: 1;
+  font-size: 0.95em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Type label with stone-like appearance */
+.fn-type {
+  padding: 5px 12px;
+  font-size: 0.7em;
+  color: rgba(255, 255, 255, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  border-top: 2px solid rgba(0, 0, 0, 0.2);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Summary text area - the key content description */
+.fn-summary {
+  padding: 8px 10px;
+  font-size: 0.72em;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(0, 0, 0, 0.15);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  max-height: 55px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fn-weight {
+  padding: 4px 12px 8px;
+  font-size: 0.7em;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  background: rgba(138, 106, 138, 0.2);
+  border-top: 1px solid rgba(138, 106, 138, 0.3);
+}
+
+.fn-weight-icon {
+  margin-right: 6px;
+  opacity: 0.7;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   HANDLES - Styled as pipe connectors
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Handle label showing connection type */
+.fn-handle-label {
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6em;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  pointer-events: none;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   FEATURE TYPE COLOR SCHEMES - Minecraft Block Inspired
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Aggregate - Cobblestone gray */
+.fn-aggregate {
+  background: linear-gradient(180deg, #6a6a70 0%, #5a5a60 50%, #4a4a50 100%);
+}
+
+/* Sequence - Oak wood brown */
+.fn-sequence {
+  background: linear-gradient(180deg, #8a7050 0%, #7a6040 50%, #6a5030 100%);
+}
+
+/* Weighted Random - Purple ore */
+.fn-weighted {
+  background: linear-gradient(180deg, #7a5a8a 0%, #6a4a7a 50%, #5a3a6a 100%);
+}
+
+/* Scatter - Grass green */
+.fn-scatter {
+  background: linear-gradient(180deg, #6a9a50 0%, #5a8a40 50%, #4a7a30 100%);
+}
+
+/* Search - Lapis blue */
+.fn-search {
+  background: linear-gradient(180deg, #4a6a9a 0%, #3a5a8a 50%, #2a4a7a 100%);
+}
+
+/* Tree - Dark oak */
+.fn-tree {
+  background: linear-gradient(180deg, #4a6a3a 0%, #3a5a2a 50%, #2a4a1a 100%);
+}
+
+/* Ore - Gold tint */
+.fn-ore {
+  background: linear-gradient(180deg, #9a8a4a 0%, #8a7a3a 50%, #7a6a2a 100%);
+}
+
+/* Single Block - Stone */
+.fn-block {
+  background: linear-gradient(180deg, #7a7a80 0%, #6a6a70 50%, #5a5a60 100%);
+}
+
+/* Geode - Amethyst */
+.fn-geode {
+  background: linear-gradient(180deg, #8a6a9a 0%, #7a5a8a 50%, #6a4a7a 100%);
+}
+
+/* Structure - Brick red */
+.fn-structure {
+  background: linear-gradient(180deg, #9a6a5a 0%, #8a5a4a 50%, #7a4a3a 100%);
+}
+
+/* Cave carver - Deepslate */
+.fn-cave {
+  background: linear-gradient(180deg, #4a4a50 0%, #3a3a40 50%, #2a2a30 100%);
+}
+
+/* Snap to surface - Gravel */
+.fn-snap {
+  background: linear-gradient(180deg, #6a6a6a 0%, #5a5a5a 50%, #4a4a4a 100%);
+}
+
+/* Vegetation - Moss */
+.fn-vegetation {
+  background: linear-gradient(180deg, #5a7a4a 0%, #4a6a3a 50%, #3a5a2a 100%);
+}
+
+/* Default - Andesite */
+.fn-default {
+  background: linear-gradient(180deg, #6a6a70 0%, #5a5a60 50%, #4a4a50 100%);
+}
+
+/* Unfulfilled - Terracotta warning */
+.fn-unfulfilled-style {
+  background: linear-gradient(180deg, #8a5a4a 0%, #7a4a3a 50%, #6a3a2a 100%);
+}
+
+/* Vanilla reference - End stone */
+.fn-vanilla-style {
+  background: linear-gradient(180deg, #8a8a6a 0%, #7a7a5a 50%, #6a6a4a 100%);
+}

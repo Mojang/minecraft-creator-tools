@@ -1,0 +1,421 @@
+/* ProjectInfoItemDisplay - Items View Row Styling */
+
+/* Main row styling */
+.piid-row {
+  display: table-row;
+  font-size: 13px;
+  transition: background-color 0.15s ease;
+}
+
+.piid-row:hover {
+  background-color: rgba(82, 165, 53, 0.08) !important;
+}
+
+.piid-rowClickable {
+  cursor: pointer;
+}
+
+.piid-rowClickable:focus {
+  outline: 2px solid rgba(82, 165, 53, 0.8);
+  outline-offset: -2px;
+}
+
+/* Cell base styling */
+.piid-cell {
+  display: table-cell;
+  padding: 5px 8px;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Type indicator cell */
+.piid-typeCell {
+  width: 120px;
+  min-width: 120px;
+  padding-left: 8px;
+}
+
+.piid-typeContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.piid-typeIcon {
+  font-size: 14px;
+}
+
+/* Type indicator background colors */
+.piid-indicator-error {
+  border-left: 3px solid #e74c3c;
+}
+
+.piid-indicator-warning {
+  border-left: 3px solid #f39c12;
+}
+
+.piid-indicator-recommendation {
+  border-left: 3px solid #3498db;
+}
+
+.piid-indicator-info {
+  border-left: 3px solid #7f8c8d;
+}
+
+.piid-indicator-success {
+  border-left: 3px solid #27ae60;
+}
+
+.piid-indicator-fail {
+  border-left: 3px solid #c0392b;
+}
+
+/* Type badges - blocky Minecraft style with high contrast */
+.piid-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 2px; /* Blocky Minecraft style - not pill-shaped */
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+/* High contrast badges - solid backgrounds with white text */
+.piid-badge-error {
+  background-color: #c0392b;
+  color: #ffffff;
+  border-color: #922b21;
+}
+
+.piid-badge-warning {
+  background-color: #d68910;
+  color: #ffffff;
+  border-color: #b9770e;
+}
+
+.piid-badge-recommendation {
+  background-color: #2980b9;
+  color: #ffffff;
+  border-color: #1a5276;
+}
+
+.piid-badge-info {
+  background-color: #6c757d;
+  color: #ffffff;
+  border-color: #545b62;
+}
+
+.piid-badge-success {
+  background-color: #27ae60;
+  color: #ffffff;
+  border-color: #1e8449;
+}
+
+.piid-badge-fail {
+  background-color: #922b21;
+  color: #ffffff;
+  border-color: #7b241c;
+}
+
+/* Rule info cell */
+.piid-ruleCell {
+  width: 200px;
+  min-width: 180px;
+  max-width: 250px;
+}
+
+.piid-ruleContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  cursor: help;
+}
+
+.piid-ruleTitle {
+  font-weight: 500;
+  font-size: 13px;
+  color: inherit;
+  line-height: 1.3;
+}
+
+.piid-ruleArea {
+  font-size: 11px;
+  opacity: 0.6;
+  font-family: "Consolas", "Monaco", monospace;
+}
+
+/* Message cell */
+.piid-messageCell {
+  min-width: 200px;
+  max-width: 400px;
+  word-wrap: break-word;
+  line-height: 1.4;
+}
+
+/* Location/file cell */
+.piid-locationCell {
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.piid-locationLink {
+  cursor: pointer;
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 12px;
+  opacity: 0.8;
+  transition: opacity 0.15s ease;
+}
+
+.piid-locationLink:hover {
+  opacity: 1;
+  text-decoration: underline;
+  color: #52a535;
+}
+
+/* Actions cell */
+.piid-actionsCell {
+  width: 80px;
+  min-width: 80px;
+  text-align: center;
+}
+
+.piid-actionsContainer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: center;
+}
+
+.piid-infoButton {
+  border: none !important;
+  min-width: 28px !important;
+  max-width: 28px !important;
+  min-height: 28px !important;
+  max-height: 28px !important;
+  padding: 0 !important;
+  background-color: rgba(93, 173, 226, 0.15) !important;
+  color: #5dade2 !important;
+  border-radius: 4px !important;
+  transition: background-color 0.15s ease !important;
+}
+
+.piid-infoButton:hover {
+  background-color: rgba(93, 173, 226, 0.3) !important;
+}
+
+.piid-infoButton:focus {
+  outline: 2px solid #5dade2 !important;
+  outline-offset: 2px !important;
+}
+
+.piid-fixButton {
+  border: none !important;
+  min-width: 28px !important;
+  max-width: 28px !important;
+  min-height: 28px !important;
+  max-height: 28px !important;
+  padding: 0 !important;
+  background-color: rgba(82, 165, 53, 0.15) !important;
+  color: #52a535 !important;
+  border-radius: 4px !important;
+  transition: background-color 0.15s ease !important;
+}
+
+.piid-fixButton:hover {
+  background-color: rgba(82, 165, 53, 0.3) !important;
+}
+
+/* Tooltip styling */
+.piid-tooltip {
+  max-width: 350px;
+  padding: 4px;
+}
+
+.piid-tooltip-errorCode {
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.08);
+  padding: 3px 6px;
+  border-radius: 4px;
+  margin-top: 8px;
+  display: inline-block;
+  letter-spacing: 0.5px;
+}
+
+.piid-tooltip-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #52a535;
+}
+
+.piid-tooltip-description {
+  font-size: 13px;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.piid-tooltip-howToUse {
+  font-size: 12px;
+  line-height: 1.4;
+  margin-bottom: 8px;
+  padding: 6px 8px;
+  background-color: rgba(82, 165, 53, 0.15);
+  border-left: 3px solid #52a535;
+  border-radius: 0 4px 4px 0;
+}
+
+.piid-tooltip-howToUse strong {
+  color: #52a535;
+}
+
+.piid-tooltip-technical {
+  font-size: 11px;
+  opacity: 0.7;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 6px;
+  margin-top: 4px;
+}
+
+/* Accessible dialog content (alternative to hover tooltip) */
+.piid-dialog-content {
+  padding: 8px 4px;
+  max-width: 500px;
+}
+
+.piid-dialog-errorCode {
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.08);
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-top: 12px;
+  display: inline-block;
+  letter-spacing: 0.5px;
+}
+
+.piid-dialog-title {
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0 0 12px 0;
+  color: #52a535;
+}
+
+.piid-dialog-description {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 12px 0;
+}
+
+.piid-dialog-howToUse {
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 12px 0;
+  padding: 10px 12px;
+  background-color: rgba(82, 165, 53, 0.15);
+  border-left: 4px solid #52a535;
+  border-radius: 0 4px 4px 0;
+}
+
+.piid-dialog-howToUse strong {
+  color: #52a535;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.piid-dialog-technical {
+  font-size: 13px;
+  opacity: 0.8;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 12px;
+  margin: 12px 0;
+}
+
+.piid-dialog-message {
+  font-size: 13px;
+  margin: 8px 0;
+}
+
+.piid-dialog-location {
+  font-size: 13px;
+  margin: 8px 0;
+}
+
+.piid-dialog-location code {
+  font-family: "Consolas", "Monaco", monospace;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+/* Legacy styles for backwards compatibility */
+.piid-outer {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  display: table-row;
+  word-wrap: break-word;
+  font-size: small;
+  vertical-align: top;
+}
+
+.piid-indicator {
+  min-height: 20px;
+  vertical-align: middle;
+  max-width: 30px;
+}
+
+.piid-icon {
+  padding-left: 8px;
+  padding-top: 4px;
+  padding-bottom: 8px;
+  height: 100%;
+  vertical-align: middle;
+}
+
+.piid-successIconCell {
+  background-color: green;
+}
+
+.piid-failIconCell {
+  background-color: red;
+}
+
+.piid-infoIconCell {
+  background-color: gray;
+}
+
+.piid-errorIconCell {
+  background-color: #d88800;
+}
+
+.piid-link {
+  cursor: pointer;
+}
+
+.piid-link:hover {
+  text-decoration: underline;
+}
+
+.piid-contextMenuButton button {
+  border: solid 0px;
+  max-width: 24px;
+  min-width: 24px;
+  grid-column: 2;
+  line-height: 1;
+  text-align: center;
+  padding: 0px;
+  min-height: 22px;
+  margin-left: 14px;
+  max-height: 22px;
+  padding-bottom: 8px;
+  box-shadow: none;
+}

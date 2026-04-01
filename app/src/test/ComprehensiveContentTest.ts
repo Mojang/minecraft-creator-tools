@@ -4,94 +4,23 @@
 import { expect, assert } from "chai";
 import CreatorTools from "../app/CreatorTools";
 import Project, { ProjectAutoDeploymentMode } from "../app/Project";
-import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
-import NodeStorage from "../local/NodeStorage";
-import Database from "../minecraft/Database";
-import LocalEnvironment from "../local/LocalEnvironment";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import { ProjectInfoSuite } from "../info/IProjectInfoData";
 import IFolder from "../storage/IFolder";
 import { ProjectItemType } from "../app/IProjectItemData";
-import LocalUtilities from "../local/LocalUtilities";
 import { ensureReportJsonMatchesScenario } from "./TestUtilities";
-
-CreatorToolsHost.hostType = HostType.testLocal;
+import TestPaths, { ITestEnvironment } from "./TestPaths";
 
 let creatorTools: CreatorTools | undefined = undefined;
-let localEnv: LocalEnvironment | undefined = undefined;
 let scenariosFolder: IFolder | undefined = undefined;
 let resultsFolder: IFolder | undefined = undefined;
 
-localEnv = new LocalEnvironment(false);
-
 (async () => {
-  CreatorToolsHost.localFolderExists = _localFolderExists;
-  CreatorToolsHost.ensureLocalFolder = _ensureLocalFolder;
-
-  const scenariosStorage = new NodeStorage(
-    NodeStorage.ensureEndsWithDelimiter(__dirname) + "/../../test/",
-    "scenarios"
-  );
-
-  scenariosFolder = scenariosStorage.rootFolder;
-  await scenariosFolder.ensureExists();
-
-  const resultsStorage = new NodeStorage(NodeStorage.ensureEndsWithDelimiter(__dirname) + "/../../test/", "results");
-  resultsFolder = resultsStorage.rootFolder;
-  await resultsFolder.ensureExists();
-
-  CreatorToolsHost.prefsStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "prefs" + NodeStorage.platformFolderDelimiter,
-    ""
-  );
-
-  CreatorToolsHost.projectsStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "projects" + NodeStorage.platformFolderDelimiter,
-    ""
-  );
-
-  CreatorToolsHost.packStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "packs" + NodeStorage.platformFolderDelimiter,
-    ""
-  );
-
-  CreatorToolsHost.worldStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "worlds" + NodeStorage.platformFolderDelimiter,
-    ""
-  );
-
-  CreatorToolsHost.workingStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "working" + NodeStorage.platformFolderDelimiter,
-    ""
-  );
-
-  const coreStorage = new NodeStorage(__dirname + "/../../public/data/content/", "");
-  Database.contentFolder = coreStorage.rootFolder;
-
-  await CreatorToolsHost.init();
-  creatorTools = CreatorToolsHost.getCreatorTools();
-
-  if (!creatorTools) {
-    return;
-  }
-
-  await creatorTools.load();
-
-  // Set up Database.local with proper path adjustment to find schemas in public/
-  (localEnv.utilities as LocalUtilities).basePathAdjust = "../public/";
-  Database.local = localEnv.utilities;
-  creatorTools.local = localEnv.utilities;
+  const env: ITestEnvironment = await TestPaths.createTestEnvironment();
+  creatorTools = env.creatorTools;
+  scenariosFolder = env.scenariosFolder;
+  resultsFolder = env.resultsFolder;
 })();
-
-function _ensureLocalFolder(path: string) {
-  const ls = new NodeStorage(path, "");
-  return ls.rootFolder;
-}
-
-async function _localFolderExists(path: string) {
-  const ls = new NodeStorage(path, "");
-  return await ls.rootFolder.exists();
-}
 
 async function _loadProject(name: string) {
   if (!creatorTools || !scenariosFolder || !resultsFolder) {
@@ -100,7 +29,7 @@ async function _loadProject(name: string) {
 
   const project = new Project(creatorTools, name, null);
   project.autoDeploymentMode = ProjectAutoDeploymentMode.noAutoDeployment;
-  project.localFolderPath = __dirname + "/../../../samplecontent/" + name + "/";
+  project.localFolderPath = TestPaths.sampleContentPath(name);
 
   await project.inferProjectItemsFromFiles();
   return project;
@@ -292,14 +221,26 @@ describe("Comprehensive Content Types", async () => {
     expect(langItem.projectPath).to.contain("texts");
   });
 
-  it("comprehensive project validation report matches", async () => {
+  it("comprehensive project validation report matches", async function () {
+    this.timeout(30000);
     const project = await _loadProject("comprehensive");
 
     const pis = new ProjectInfoSet(project, ProjectInfoSuite.defaultInDevelopment);
     await pis.generateForProject();
 
     const dataObject = pis.getDataObject();
-    await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "comprehensive");
+
+    // Exclude SCRIPTMODULE items that are volatile due to @minecraft/server beta version changes:
+    // - SCRIPTMODULE0: test pass/fail result (changes when 114 fires or not)
+    // - SCRIPTMODULE1: error count (changes when 114 fires or not)
+    // - SCRIPTMODULE100: BP module dependency info (contains beta version string)
+    // - SCRIPTMODULE114: beta version outdated error (fires only when version is stale)
+    await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "comprehensive", [
+      "SCRIPTMODULE0",
+      "SCRIPTMODULE1",
+      "SCRIPTMODULE100",
+      "SCRIPTMODULE114",
+    ]);
   });
 });
 

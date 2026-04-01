@@ -1,0 +1,230 @@
+.label {
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  display: grid;
+  align-items: center;
+  grid-auto-flow: column;
+  grid-auto-columns: auto;
+  justify-content: start;
+}
+
+.label-slim {
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-bottom: 6px;
+  display: grid;
+}
+
+.label-toolbar-slim {
+  padding-top: 0px !important;
+  display: grid !important;
+}
+
+.label-iconGrid {
+  grid-column: 1;
+}
+
+.label-text {
+  padding-left: 6px;
+  padding-right: 6px;
+  grid-column: 2;
+  min-width: 40px;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.label-toolbar3 {
+  padding-top: 3px !important;
+  padding-bottom: 3px !important;
+  display: grid !important;
+}
+
+.label-toolbar {
+  padding-top: 3px !important;
+  padding-bottom: 3px !important;
+  display: inline-block;
+}
+
+.label-dropdown {
+  padding-top: 3px !important;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
+
+.label-rpad {
+  padding-right: 4px;
+}
+
+.label-piece {
+  padding-left: 7px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  vertical-align: top;
+  border-radius: 3px 3px 0px 0px;
+  border-left: solid 1px transparent;
+  border-bottom: solid 1px transparent;
+  border-right: solid 1px transparent;
+}
+
+.label-arrowouter {
+  padding-top: 12px;
+  padding-bottom: 6px;
+  vertical-align: top;
+  border-radius: 3px 3px 0px 0px;
+  border-left: solid 1px transparent;
+  border-bottom: solid 1px transparent;
+  border-right: solid 1px transparent;
+}
+
+/* Minecraft-styled tab — selected (pressed/inset stone button) */
+.label-tab {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  vertical-align: top;
+  white-space: nowrap;
+  color: #ffffff;
+  background-color: #52a535;
+  border: 2px solid #1e4d14;
+  box-shadow:
+    inset -2px -2px 0 #3e8828,
+    inset 2px 2px 0 #6fc24a;
+  border-radius: 0;
+  font-size: 12px;
+  font-weight: 600;
+  image-rendering: pixelated;
+}
+
+/* Minecraft-styled tab — unselected (raised stone button) */
+.label-deseltab {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  vertical-align: top;
+  white-space: nowrap;
+  color: #d0d0d0;
+  background-color: #3a3a3a;
+  border: 2px solid #131313;
+  box-shadow:
+    inset -2px -2px 0 #212121,
+    inset 2px 2px 0 #4e4e4e;
+  border-radius: 0;
+  font-size: 12px;
+  font-weight: 600;
+  image-rendering: pixelated;
+  transition: filter 0.05s;
+}
+
+.label-deseltab:hover {
+  background-color: #454545;
+  box-shadow:
+    inset -2px -2px 0 #2a2a2a,
+    inset 2px 2px 0 #585858;
+  color: #ffffff;
+}
+
+.icons-caption {
+  padding-left: 11px;
+  font-size: 12pt;
+}
+
+.label-arrow {
+  padding-left: 2px;
+  padding-right: 2px;
+  position: relative;
+  grid-column: 3;
+
+  top: -4px;
+}
+
+.label-light {
+  font-size: 1pt;
+  width: 12px;
+  height: 12px;
+  margin-left: 12px;
+  border-radius: 4px;
+  border: solid 1px #303030;
+  position: fixed;
+}
+
+.label-yellow {
+  background-color: yellow;
+}
+
+.label-green {
+  background-color: green;
+}
+
+.label-button {
+  padding-left: 1px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  vertical-align: top;
+  min-width: 31px;
+  display: inline-block;
+  background-color: #000000;
+  color: #c0c0c0;
+}
+
+.label-selected {
+  background-color: #202020;
+  color: green;
+}
+
+/* Filter chip styling for Inspector Items view */
+.filter-chip {
+  user-select: none;
+}
+
+.filter-chip:hover {
+  filter: brightness(1.15);
+}
+
+.filter-chip:active {
+  transform: scale(0.97);
+}
+
+.filter-chip:focus-visible {
+  outline: 2px solid #52a535;
+  outline-offset: 2px;
+}
+
+.label-icon {
+  padding: 5px;
+  vertical-align: middle;
+  min-width: 35px;
+  min-height: 33px;
+  text-align: center;
+  display: inline-block;
+  background-color: #000000;
+  color: #c0c0c0;
+}
+
+/* Toggle icon for show/hide menu items - consistent sizing and alignment */
+.label-toggle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 3px;
+  border: 2px solid;
+  font-size: 13px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.label-toggle-on {
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.label-toggle-off {
+  opacity: 0.7;
+}

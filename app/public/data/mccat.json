@@ -66,7 +66,8 @@
     },
     {
       "n": "amethyst_cluster",
-      "mc": "#9A5CC6"
+      "mc": "#9A5CC6",
+      "sh": 21
     },
     {
       "n": "ancient_debris",
@@ -93,6 +94,10 @@
       "sh": 17
     },
     {
+      "n": "armor_stand",
+      "mc": "#976D4D"
+    },
+    {
       "n": "azalea",
       "mc": "#00D93A",
       "sh": 21
@@ -104,6 +109,12 @@
     },
     {
       "n": "azalea_leaves_flowered",
+      "mc": "#00D93A",
+      "sh": 24
+    },
+    {
+      "n": "flowering_azalea_leaves",
+      "m": "azalea_leaves_flowered",
       "mc": "#00D93A",
       "sh": 24
     },
@@ -211,6 +222,12 @@
       "sh": 30
     },
     {
+      "n": "white_bed",
+      "m": "bed",
+      "mc": "#FFFFFF",
+      "sh": 30
+    },
+    {
       "n": "bedrock",
       "mc": "#545454"
     },
@@ -231,7 +248,9 @@
       "sh": 33
     },
     {
-      "n": "big_dripleaf"
+      "n": "big_dripleaf",
+      "mc": "#7CBD6B",
+      "sh": 38
     },
     {
       "n": "birch_button",
@@ -386,6 +405,11 @@
       "n": "brick_stairs",
       "mc": "#993333",
       "sh": 2
+    },
+    {
+      "n": "bricks",
+      "m": "brick_block",
+      "mc": "#993333"
     },
     {
       "n": "brown_candle",
@@ -1093,6 +1117,7 @@
     {
       "n": "coral",
       "mc": "#707070",
+      "sh": 21,
       "variants": [
         {
           "n": "brain_",
@@ -1174,6 +1199,7 @@
     },
     {
       "n": "coral_fan",
+      "sh": 21,
       "variants": [
         {
           "n": "brain_",
@@ -1200,6 +1226,7 @@
     {
       "n": "coral_fan_dead",
       "mc": "#707070",
+      "sh": 21,
       "variants": [
         {
           "n": "dead_brain_coral_fan"
@@ -1220,6 +1247,7 @@
     },
     {
       "n": "coral_fan_hang",
+      "sh": 21,
       "variants": [
         {
           "n": "brain_coral_wall_fan",
@@ -1242,6 +1270,7 @@
     {
       "n": "coral_fan_hang2",
       "mc": "#707070",
+      "sh": 21,
       "variants": [
         {
           "n": "bubble_coral_wall_fan",
@@ -1261,6 +1290,7 @@
     },
     {
       "n": "coral_fan_hang3",
+      "sh": 21,
       "variants": [
         {
           "n": "dead_horn_coral_wall_fan",
@@ -1493,6 +1523,12 @@
       "sh": 21
     },
     {
+      "n": "dead_bush",
+      "m": "deadbush",
+      "mc": "#B7B09B",
+      "sh": 21
+    },
+    {
       "n": "decorated_pot",
       "mc": "#A0522D"
     },
@@ -1582,6 +1618,11 @@
     },
     {
       "n": "dirt_with_roots",
+      "mc": "#976D4D"
+    },
+    {
+      "n": "rooted_dirt",
+      "m": "dirt_with_roots",
       "mc": "#976D4D"
     },
     {
@@ -2233,6 +2274,17 @@
       "mc": "#DBDB9B"
     },
     {
+      "n": "end_stone_bricks",
+      "m": "end_bricks",
+      "mc": "#DBDB9B"
+    },
+    {
+      "n": "end_stone_brick_stairs",
+      "m": "end_brick_stairs",
+      "mc": "#DBDB9B",
+      "sh": 2
+    },
+    {
       "n": "end_gateway",
       "mc": "#0F0F23"
     },
@@ -2368,6 +2420,12 @@
       "sh": 5
     },
     {
+      "n": "oak_fence_gate",
+      "m": "fence_gate",
+      "mc": "#8F7748",
+      "sh": 5
+    },
+    {
       "n": "fire",
       "mc": "#FF0000"
     },
@@ -2426,6 +2484,11 @@
       "mc": "#7CBD6B"
     },
     {
+      "n": "frogspawn",
+      "m": "frog_spawn",
+      "mc": "#7CBD6B"
+    },
+    {
       "n": "frosted_ice",
       "mc": "#9090FF"
     },
@@ -2469,6 +2532,12 @@
     },
     {
       "n": "golden_rail",
+      "mc": "#FAEE4D",
+      "sh": 15
+    },
+    {
+      "n": "powered_rail",
+      "m": "golden_rail",
       "mc": "#FAEE4D",
       "sh": 15
     },
@@ -2848,7 +2917,8 @@
     },
     {
       "n": "large_amethyst_bud",
-      "mc": "#7F3FB2"
+      "mc": "#7F3FB2",
+      "sh": 21
     },
     {
       "n": "lava",
@@ -3033,6 +3103,11 @@
       "mc": "#D87F33"
     },
     {
+      "n": "jack_o_lantern",
+      "m": "lit_pumpkin",
+      "mc": "#D87F33"
+    },
+    {
       "n": "lit_redstone_lamp",
       "mc": "#FF0000"
     },
@@ -3130,6 +3205,12 @@
     },
     {
       "n": "magma",
+      "ic": "_",
+      "mc": "#FF0000"
+    },
+    {
+      "n": "magma_block",
+      "m": "magma",
       "ic": "_",
       "mc": "#FF0000"
     },
@@ -3257,11 +3338,17 @@
     },
     {
       "n": "medium_amethyst_bud",
-      "mc": "#7F3FB2"
+      "mc": "#7F3FB2",
+      "sh": 21
     },
     {
       "n": "melon_stem",
       "mc": "#7CBD6B"
+    },
+    {
+      "n": "melon",
+      "m": "melon_block",
+      "mc": "#4C522A"
     },
     {
       "n": "mob_spawner",
@@ -3393,6 +3480,11 @@
       "mc": "#700200"
     },
     {
+      "n": "nether_bricks",
+      "m": "nether_brick",
+      "mc": "#700200"
+    },
+    {
       "n": "nether_brick_fence",
       "mc": "#700200",
       "sh": 4
@@ -3426,6 +3518,11 @@
     },
     {
       "n": "noteblock",
+      "mc": "#8F7748"
+    },
+    {
+      "n": "note_block",
+      "m": "noteblock",
       "mc": "#8F7748"
     },
     {
@@ -3568,6 +3665,12 @@
         {
           "n": "quartz_",
           "ic": "_",
+          "mc": "#D8AF93"
+        },
+        {
+          "n": "nether_quartz_",
+          "ic": "quartz_ore",
+          "m": "quartz_ore",
           "mc": "#D8AF93"
         },
         {
@@ -4013,6 +4116,12 @@
       "sh": 2
     },
     {
+      "n": "prismarine_brick_stairs",
+      "m": "prismarine_bricks_stairs",
+      "mc": "#5F9EA0",
+      "sh": 2
+    },
+    {
       "n": "prismarine_stairs",
       "mc": "#5F9EA0",
       "sh": 2
@@ -4205,6 +4314,11 @@
       "mc": "#700200"
     },
     {
+      "n": "red_nether_bricks",
+      "m": "red_nether_brick",
+      "mc": "#700200"
+    },
+    {
       "n": "red_nether_brick_stairs",
       "mc": "#450000",
       "sh": 2
@@ -4252,6 +4366,12 @@
     },
     {
       "n": "reeds",
+      "ic": "reeds",
+      "mc": "#7CBD6B"
+    },
+    {
+      "n": "sugar_cane",
+      "m": "reeds",
       "ic": "reeds",
       "mc": "#7CBD6B"
     },
@@ -4507,11 +4627,22 @@
       "mc": "#7BD952"
     },
     {
+      "n": "slime_block",
+      "m": "slime",
+      "mc": "#7BD952"
+    },
+    {
       "n": "small_amethyst_bud",
-      "mc": "#9966CC"
+      "mc": "#9966CC",
+      "sh": 21
     },
     {
       "n": "small_dripleaf_block",
+      "mc": "#7CBD6B"
+    },
+    {
+      "n": "small_dripleaf",
+      "m": "small_dripleaf_block",
       "mc": "#7CBD6B"
     },
     {
@@ -5289,6 +5420,12 @@
       "sh": 2
     },
     {
+      "n": "cobblestone_stairs",
+      "m": "cobblestone",
+      "mc": "#7F7F7F",
+      "sh": 2
+    },
+    {
       "n": "stonebrick",
       "ic": "_",
       "variants": [
@@ -5560,6 +5697,12 @@
       "sh": 8
     },
     {
+      "n": "oak_trapdoor",
+      "m": "trapdoor",
+      "mc": "#976D4D",
+      "sh": 8
+    },
+    {
       "n": "trapped_chest"
     },
     {
@@ -5664,6 +5807,16 @@
     },
     {
       "n": "unpowered_repeater",
+      "mc": "#707070"
+    },
+    {
+      "n": "comparator",
+      "m": "unpowered_comparator",
+      "mc": "#707070"
+    },
+    {
+      "n": "repeater",
+      "m": "unpowered_repeater",
       "mc": "#707070"
     },
     {
@@ -5813,6 +5966,12 @@
     },
     {
       "n": "waterlily",
+      "ic": "carried_waterlily",
+      "mc": "#7CBD6B"
+    },
+    {
+      "n": "lily_pad",
+      "m": "waterlily",
       "ic": "carried_waterlily",
       "mc": "#7CBD6B"
     },
@@ -6280,6 +6439,12 @@
       "sh": 9
     },
     {
+      "n": "oak_button",
+      "m": "wooden_button",
+      "mc": "#976D4D",
+      "sh": 9
+    },
+    {
       "n": "wooden_door",
       "abstract": false,
       "mc": "#976D4D",
@@ -6320,7 +6485,19 @@
       "sh": 7
     },
     {
+      "n": "oak_door",
+      "m": "wooden_door",
+      "mc": "#976D4D",
+      "sh": 7
+    },
+    {
       "n": "wooden_pressure_plate",
+      "mc": "#976D4D",
+      "sh": 10
+    },
+    {
+      "n": "oak_pressure_plate",
+      "m": "wooden_pressure_plate",
       "mc": "#976D4D",
       "sh": 10
     },

@@ -33,18 +33,17 @@ export interface IPackSizeInfoGeneratorResults {
   contentFolderCounts: number;
 }
 
+/**
+ * Calculates and validates pack size information including file and folder counts.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/packsize.form.json} for topic definitions
+ */
 export default class PackSizeInfoGenerator implements IProjectInfoGenerator {
   id = "PACKSIZE";
   title = "Pack Size Information";
   canAlwaysProcess = true;
 
   performAddOnValidations = false;
-
-  getTopicData(topicId: number) {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(PackSizeInfoGeneratorTest, topicId),
-    };
-  }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
     info.overallSize = infoSet.getFirstNumberDataValue(this.id, PackSizeInfoGeneratorTest.overallSize);

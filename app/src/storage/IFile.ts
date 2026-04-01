@@ -33,6 +33,13 @@ export default interface IFile extends IStorageObject {
   isInErrorState?: boolean;
   errorStateMessage?: string;
 
+  /**
+   * Cache for comment-json parsed object.
+   * When set, this contains the parsed JSON with comment metadata preserved as Symbol properties.
+   * Use JsonUtilities to work with this cache to ensure comments are preserved through edits.
+   */
+  commentJsonCache?: unknown;
+
   isBinary: boolean;
   isString: boolean;
   canIgnore: boolean;

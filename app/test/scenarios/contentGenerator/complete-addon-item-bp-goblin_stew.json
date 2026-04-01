@@ -1,0 +1,21 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "mymod:goblin_stew",
+      "menu_category": {
+        "category": "nature"
+      }
+    },
+    "components": {
+      "minecraft:food": {
+        "nutrition": 8,
+        "saturation_modifier": "custom",
+        "can_always_eat": false
+      },
+      "minecraft:icon": {
+        "texture": "mymod_goblin_stew"
+      }
+    }
+  }
+}

@@ -1,7 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { Utilities } from "../index.lib";
+import Log from "../core/Log";
+import Utilities from "../core/Utilities";
 import Command from "../minecraft/Command";
 import { ICommandResponseBody } from "../minecraft/ICommandResponse";
 import CreatorTools, { CreatorToolsMinecraftState } from "./CreatorTools";
@@ -10,7 +11,8 @@ import { ICustomToolResultItem } from "./ICustomTool";
 export default class CommandRunner {
   static async runCustomTool(creatorTools: CreatorTools, commandNumber: number) {
     if (creatorTools.activeMinecraftState !== CreatorToolsMinecraftState.started) {
-      // alert("Cannot run command " + commandNumber + "; not connected to Minecraft.");
+      Log.debug("Cannot run command " + commandNumber + "; not connected to Minecraft.");
+      return;
     }
 
     const cartoCommand = creatorTools.getCustomTool(commandNumber - 1);
@@ -87,7 +89,11 @@ export default class CommandRunner {
         let resultData: ICommandResponseBody | undefined;
 
         if (result !== undefined && result !== null && result.indexOf("{") >= 0) {
-          resultData = Utilities.parseJson(result) as ICommandResponseBody | undefined;
+          try {
+            resultData = Utilities.parseJson(result) as ICommandResponseBody | undefined;
+          } catch (e) {
+            Log.debug("Failed to parse command result: " + e);
+          }
 
           if (resultData !== undefined) {
             // store a position so that we can absolutize future commands

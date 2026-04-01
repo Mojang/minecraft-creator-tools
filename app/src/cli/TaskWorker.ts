@@ -11,26 +11,23 @@ import Project from "../app/Project";
 import IProjectMetaState from "../info/IProjectMetaState";
 import { parentPort, isMainThread } from "worker_threads";
 import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
-import ProjectInfoSet from "../info/ProjectInfoSet";
+import ProjectInfoSet, { ResourceConsumptionConstraint } from "../info/ProjectInfoSet";
 import { InfoItemType } from "../info/IInfoItemData";
 import LocalEnvironment from "../local/LocalEnvironment";
 import ProjectUtilities from "../app/ProjectUtilities";
 import ZipStorage from "../storage/ZipStorage";
+import ImageCodecNode from "../local/ImageCodecNode";
 
 let creatorTools: CreatorTools | undefined;
 let localEnv: LocalEnvironment | undefined;
 let outputStorage: NodeStorage | undefined;
 let outputStoragePath: string | undefined;
 
-let activeContext: string | undefined;
-
 export async function executeTask(task: ITask) {
   if (!task.project) {
     Log.error("Could not find an associated project for the associated task.");
     return undefined;
   }
-
-  activeContext = task.project?.ctorProjectName;
 
   if (localEnv === undefined) {
     localEnv = new LocalEnvironment(true);
@@ -41,6 +38,10 @@ export async function executeTask(task: ITask) {
 
   if (creatorTools === undefined) {
     CreatorToolsHost.hostType = HostType.toolsNodejs;
+
+    // Set up Node.js-specific image codec functions
+    CreatorToolsHost.decodePng = ImageCodecNode.decodePng;
+    CreatorToolsHost.encodeToPng = ImageCodecNode.encodeToPng;
 
     creatorTools = ClUtils.getCreatorTools(localEnv);
 
@@ -183,6 +184,7 @@ async function validateAndDisposeProject(
     pis = project.indevInfoSet;
     // CLI context: enable aggressive cleanup for memory efficiency
     pis.performAggressiveCleanup = true;
+    pis.constrainResourceConsumption = ResourceConsumptionConstraint.medium;
   } else {
     suiteInst = ProjectInfoSet.getSuiteFromString(suite ? suite : "default");
     // CLI context: enable aggressive cleanup for memory efficiency
@@ -358,7 +360,7 @@ async function outputResults(
 
       reportHtmlFile.setContent(reportContent);
 
-      reportHtmlFile.saveContent();
+      await reportHtmlFile.saveContent();
     }
 
     if (outputMci) {
@@ -385,13 +387,13 @@ async function outputResults(
         mciContentFile.setContent(pis.getIndexJson(projectSet.projectName, projectSet.projectPath, undefined));
       }
 
-      mciContentFile.saveContent();
+      await mciContentFile.saveContent();
 
       const hashCatalogContent = pis.getHashCatalogJson();
 
       mchContentFile.setContent(hashCatalogContent);
 
-      mchContentFile.saveContent();
+      await mchContentFile.saveContent();
 
       const mciContentFileZip = indexFolder.ensureFile(
         StorageUtilities.ensureFileNameIsSafe(StorageUtilities.getBaseFromName(projectSet.projectContainerName)) +
@@ -408,7 +410,7 @@ async function outputResults(
       }
       mciContentFile.setContent(contentStr);
 
-      mciContentFile.saveContent();
+      await mciContentFile.saveContent();
 
       const zs = ZipStorage.fromJsonString(contentStr);
 
@@ -416,7 +418,7 @@ async function outputResults(
 
       mciContentFileZip.setContent(contentBytes);
 
-      mciContentFileZip.saveContent();
+      await mciContentFileZip.saveContent();
     }
 
     if (outputType !== OutputType.noReports) {
@@ -432,7 +434,7 @@ async function outputResults(
 
       csvFile.setContent(csvContent);
 
-      csvFile.saveContent();
+      await csvFile.saveContent();
     }
 
     if (mcrJsonFile) {
@@ -444,7 +446,7 @@ async function outputResults(
 
       mcrJsonFile.setContent(mcrContent);
 
-      mcrJsonFile.saveContent();
+      await mcrJsonFile.saveContent();
     }
   }
 }

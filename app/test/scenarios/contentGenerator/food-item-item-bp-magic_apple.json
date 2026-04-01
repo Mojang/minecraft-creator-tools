@@ -1,0 +1,35 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "test:magic_apple",
+      "menu_category": {
+        "category": "nature"
+      }
+    },
+    "components": {
+      "minecraft:food": {
+        "nutrition": 6,
+        "saturation_modifier": "custom",
+        "can_always_eat": true,
+        "effects": [
+          {
+            "name": "regeneration",
+            "duration": 10,
+            "amplifier": 1,
+            "chance": 1
+          },
+          {
+            "name": "speed",
+            "duration": 30,
+            "amplifier": 0,
+            "chance": 0.5
+          }
+        ]
+      },
+      "minecraft:icon": {
+        "texture": "test_magic_apple"
+      }
+    }
+  }
+}

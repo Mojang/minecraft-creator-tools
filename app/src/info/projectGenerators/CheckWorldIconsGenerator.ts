@@ -4,9 +4,7 @@ import IFolder from "../../storage/IFolder";
 import { isWorldIcon, parseImageMetadata } from "../../storage/ImageUtilites";
 import { InfoItemType } from "../IInfoItemData";
 import IProjectInfoGenerator from "../IProjectInfoGenerator";
-import { IProjectInfoTopicData } from "../IProjectInfoGeneratorBase";
 import ProjectInfoItem from "../ProjectInfoItem";
-import ProjectInfoUtilities from "../ProjectInfoUtilities";
 import { filterAsync } from "../../core/async/AsyncUtilities";
 import Log from "../../core/Log";
 
@@ -29,10 +27,12 @@ enum CheckWorldIconsGeneratorTest {
  *  * exactly 1 icon per world folder (folders with a world manifest)
  *  * icon is a valid .jpeg
  *  * icon is the correct size
+ *
+ * @see {@link ../../../public/data/forms/mctoolsval/cwi.form.json} for topic definitions
  */
 export default class CheckWorldIconsGenerator implements IProjectInfoGenerator {
   id: string = "CWI";
-  title: string = "Check World Icon Generator";
+  title: string = "World Icons";
   canAlwaysProcess = true;
 
   private severity = InfoItemType.error;
@@ -98,12 +98,6 @@ export default class CheckWorldIconsGenerator implements IProjectInfoGenerator {
 
   private createResult(test: CheckWorldIconsGeneratorTest, message: string) {
     return new ProjectInfoItem(this.severity, this.id, test, message);
-  }
-
-  getTopicData(topicId: number): IProjectInfoTopicData | undefined {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(CheckWorldIconsGeneratorTest, topicId),
-    };
   }
 
   summarize(): void {}

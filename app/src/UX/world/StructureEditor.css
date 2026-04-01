@@ -1,0 +1,197 @@
+.ste-area {
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  width: calc(100% - 2px);
+  height: 100%;
+  display: grid;
+  grid-template-columns: 200px 1fr 260px;
+  grid-template-rows: minmax(46px, auto) 1fr 120px;
+}
+
+.ste-toolbar {
+  grid-row-start: 1;
+  grid-row-end: 2;
+  grid-column-start: 1;
+  grid-column-end: 4;
+  padding: 3px;
+  min-height: 40px;
+}
+
+.ste-toolbar .fa-lg {
+  font-size: 1em;
+}
+
+.ste-loading-area {
+  padding: 8px;
+}
+
+.ste-toolbar-area {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+}
+
+.ste-toolbar-inner {
+  flex: 1;
+  padding-top: 0px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.ste-ve-toolbar-portal {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+
+/* Icon buttons (undo, redo, help) - borderless, match MUI icon buttons */
+.ste-ve-toolbar-portal .ve-top-btn {
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  padding: 0;
+}
+
+.ste-ve-toolbar-portal .ve-top-btn:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.ste-ve-toolbar-portal .ve-top-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+/* Text buttons (Marquee, Block, Deselect) - minimal, no border unless active */
+.ste-ve-toolbar-portal .ve-top-toolbar-btn {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 3px 8px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ste-ve-toolbar-portal .ve-top-toolbar-btn:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.ste-ve-toolbar-portal .ve-top-toolbar-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.ste-ve-toolbar-portal .ve-top-toolbar-btn-active {
+  background-color: rgba(82, 165, 53, 0.35);
+  border-color: rgba(82, 165, 53, 0.6);
+  color: #fff;
+}
+
+.ste-ve-toolbar-portal .ve-top-toolbar-btn-active:hover:not(:disabled) {
+  background-color: rgba(82, 165, 53, 0.45);
+}
+
+.ste-ve-toolbar-portal .ve-top-toolbar-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-right: 4px;
+}
+
+.ste-ve-toolbar-portal .ve-top-toolbar-divider {
+  width: 1px;
+  height: 20px;
+  background-color: rgba(255, 255, 255, 0.15);
+  margin: 0 4px;
+}
+
+.ste-entityselector-area {
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.ste-entityadder-area {
+  flex-shrink: 0;
+}
+
+.ste-threedarea-lg {
+  grid-row-start: 2;
+  grid-row-end: 3;
+  grid-column-start: 1;
+  grid-column-end: 4;
+}
+
+.ste-threedarea {
+  grid-row-start: 2;
+  grid-row-end: 3;
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+.ste-selectionarea {
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row-start: 2;
+  grid-row-end: 3;
+  transition: all 0.3s ease-in-out;
+  padding: 0px;
+  margin: 0px;
+  height: 120px;
+}
+
+.ste-editorbin {
+  grid-row-start: 3;
+  grid-row-end: 4;
+  grid-column-start: 1;
+  grid-column-end: 4;
+  padding: 4px;
+}
+
+.ste-editorgrid {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: 290px 1fr;
+}
+
+.ste-editorsearchinput {
+  grid-column-start: 1;
+  grid-row: 1;
+  grid-column-end: 2;
+  margin-top: 4px;
+  margin-left: 20px;
+}
+
+.ste-searchview {
+  grid-column-end: 2;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 3;
+  text-align: left;
+  margin-top: 4px;
+  width: 120px;
+  height: 80px;
+}
+
+.ste-searchviewcontainer {
+  width: 80px;
+  height: 80px;
+}

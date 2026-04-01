@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { get } from "http";
 import CreatorToolsHost from "../app/CreatorToolsHost";
 import AppServiceProxy from "./AppServiceProxy";
 import Utilities from "./Utilities";
@@ -118,12 +117,48 @@ export default class Log {
 
     Log._onItemAdded.dispatch(this, logItem);
 
+    // Output to browser console for visibility during debugging
+    // In browser context, this helps developers see logs in DevTools
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (typeof (globalThis as any).window !== "undefined") {
+      const prefix = context ? `[${context}] ` : "";
+      const fullMessage = prefix + message;
+
+      switch (level) {
+        case LogItemLevel.error:
+          console.error(fullMessage);
+          break;
+        case LogItemLevel.important:
+          console.warn(fullMessage);
+          break;
+        case LogItemLevel.message:
+          // Only message level goes to console.log by default
+          console.log(fullMessage);
+          break;
+        // verbose and debug are only shown in console when ?debug=true
+        case LogItemLevel.verbose:
+        case LogItemLevel.debug:
+          if (Utilities.isDebug) {
+            console.log(fullMessage);
+          }
+          break;
+        // operation started/ended don't need console output
+      }
+    }
+
     return logItem.operId;
   }
 
   static debug(message: string, context?: string) {
     this.log(message, LogItemLevel.debug, context);
-    console.warn(message);
+    // Console output is now handled in the log() method for browser contexts.
+    // In Node.js contexts (window undefined), only print directly if there are
+    // no event subscribers — otherwise the subscriber (e.g. LocalEnvironment)
+    // already handles console output and we'd get duplicate lines.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (typeof (globalThis as any).window === "undefined" && this._onItemAdded.count === 0) {
+      console.log(message);
+    }
   }
 
   static assertIsInt(number: number, message?: string) {

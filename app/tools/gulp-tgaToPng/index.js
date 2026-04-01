@@ -7,6 +7,73 @@ const { decodeTga } = require("@lunapaint/tga-codec");
 const { PNG } = require("pngjs");
 
 /**
+ * Updates index.json files to include PNG files that were converted from TGA.
+ * @param {string} targetPath - The directory path to search for index.json files
+ * @param {boolean} verbose - Whether to log updates
+ * @returns {Promise<number>} - Count of index.json files updated
+ */
+async function updateIndexJsonFiles(targetPath, verbose = false) {
+  let updated = 0;
+
+  if (!fs.existsSync(targetPath)) {
+    return updated;
+  }
+
+  const entries = fs.readdirSync(targetPath, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const fullPath = path.join(targetPath, entry.name);
+
+    if (entry.isDirectory()) {
+      updated += await updateIndexJsonFiles(fullPath, verbose);
+    } else if (entry.isFile() && entry.name === "index.json") {
+      try {
+        const content = fs.readFileSync(fullPath, "utf8");
+        const indexData = JSON.parse(content);
+
+        if (indexData.files && Array.isArray(indexData.files)) {
+          // Get actual files in directory
+          const dirPath = path.dirname(fullPath);
+          const actualFiles = fs.readdirSync(dirPath).filter((f) => {
+            const filePath = path.join(dirPath, f);
+            return fs.statSync(filePath).isFile() && f !== "index.json";
+          });
+
+          // Check if there are PNG files not in the index
+          const pngsNotInIndex = actualFiles.filter(
+            (f) => f.toLowerCase().endsWith(".png") && !indexData.files.includes(f)
+          );
+
+          if (pngsNotInIndex.length > 0) {
+            // Add missing PNG files to the index
+            for (const pngFile of pngsNotInIndex) {
+              indexData.files.push(pngFile);
+            }
+
+            // Sort files alphabetically
+            indexData.files.sort();
+
+            // Write updated index.json
+            fs.writeFileSync(fullPath, JSON.stringify(indexData, null, 2));
+            updated++;
+
+            if (verbose) {
+              console.log(`Updated ${fullPath} with ${pngsNotInIndex.length} new PNG files`);
+            }
+          }
+        }
+      } catch (err) {
+        if (verbose) {
+          console.warn(`Failed to update ${fullPath}: ${err.message}`);
+        }
+      }
+    }
+  }
+
+  return updated;
+}
+
+/**
  * Recursively finds all TGA files in a directory and converts them to PNG.
  * @param {string} targetPath - The directory path to search for TGA files
  * @param {boolean} verbose - Whether to log individual file failures
@@ -108,6 +175,17 @@ function tgaToPng(directories) {
         console.log(`Note: ${totalFailed} TGA files could not be converted (unsupported format)`);
       }
 
+      // Update index.json files to include the new PNG files
+      let totalIndexUpdated = 0;
+      for (const dir of directories) {
+        const indexUpdated = await updateIndexJsonFiles(dir, false);
+        totalIndexUpdated += indexUpdated;
+      }
+
+      if (totalIndexUpdated > 0) {
+        console.log(`Updated ${totalIndexUpdated} index.json files with new PNG entries`);
+      }
+
       callback(null, chunk);
     } catch (err) {
       callback(err);
@@ -117,3 +195,4 @@ function tgaToPng(directories) {
 
 module.exports = tgaToPng;
 module.exports.convertTgaFilesInDirectory = convertTgaFilesInDirectory;
+module.exports.updateIndexJsonFiles = updateIndexJsonFiles;

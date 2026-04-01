@@ -11,6 +11,7 @@ import MinecraftPush from "./MinecraftPush";
 import GameStateManager from "../minecraft/GameStateManager";
 import Log from "../core/Log";
 import IFolder from "../storage/IFolder";
+import IStorage from "../storage/IStorage";
 import { MinecraftGameConnectionMode } from "./ICreatorToolsData";
 import ProjectExporter from "./ProjectExporter";
 import IActionSetData from "../actions/IActionSetData";
@@ -28,6 +29,8 @@ export default class DeploymentStorageMinecraft implements IMinecraft {
 
   worldFolder: IFolder | undefined;
   projectFolder: IFolder | undefined;
+  worldContentStorage: IStorage | undefined;
+  worldProject: Project | undefined;
 
   private _onWorldFolderReady = new EventDispatcher<IMinecraft, IFolder>();
   private _onProjectFolderReady = new EventDispatcher<IMinecraft, IFolder>();

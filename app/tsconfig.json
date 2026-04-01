@@ -7,8 +7,9 @@
       "esnext"
     ],
     "types": [
+      "node",
       "vite/client",
-      "@types/wicg-file-system-access",
+      "wicg-file-system-access",
       "mocha"
     ],
     "allowJs": true,
@@ -36,17 +37,8 @@
     "build",
     "toolbuild",
     "public/**/*",
-    "src/cli/**/*.ts",
-    "src/cli/*.ts",
-    "src/mcp/**/*.ts",
-    "src/mcp/*.ts",
-    "src/test/**/*",
-    "src/testweb/**/*",
-    "src/testelectron/**/*",
     "playwright*.config.ts",
     "playwright*.config.js",
-    "src/local/**/*.ts",
-    "src/local/LocalUtilities.ts",
-    "src/local/*.ts"
+    "src/local/**/*"
   ]
 }

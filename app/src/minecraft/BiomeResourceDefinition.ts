@@ -10,7 +10,9 @@ import IManagedComponentSetItem from "./IManagedComponentSetItem";
 import IManagedComponent from "./IManagedComponent";
 import { ManagedComponent } from "./ManagedComponent";
 import IDefinition from "./IDefinition";
-import ClientBiomeJSONFile, { ClientBiomeJSONFileMinecraftClientBiome } from "./json/client_biome/ClientBiomeJSONFile";
+import ClientBiomeJSONFile, {
+  ClientBiomeJSONFileMinecraftClientBiome,
+} from "@minecraft/bedrock-schemas/types/rp/client_biomes/ClientBiomeJSONFile";
 import { IComponentContainer } from "./IComponentDataItem";
 
 export default class BiomeResourceDefinition implements IManagedComponentSetItem, IDefinition {
@@ -279,9 +281,15 @@ export default class BiomeResourceDefinition implements IManagedComponentSetItem
       return;
     }
 
+    if (!this._file.isContentLoaded) {
+      await this._file.loadContent();
+    }
+
     const fileContent = this._file.content;
 
     if (fileContent === null || fileContent instanceof Uint8Array) {
+      this._isLoaded = true;
+      this._onLoaded.dispatch(this, this);
       return;
     }
 

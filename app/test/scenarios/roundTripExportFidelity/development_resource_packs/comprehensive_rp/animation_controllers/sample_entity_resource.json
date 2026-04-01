@@ -1,0 +1,30 @@
+{
+  "format_version": "1.20.10",
+  "animation_controllers": {
+    "controller.animation.sample_entity.resource.movement": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "animations": [
+            "animation.sample_entity.resource.idle"
+          ],
+          "transitions": [
+            {
+              "walking": "query.modified_move_speed > 0.1"
+            }
+          ]
+        },
+        "walking": {
+          "animations": [
+            "animation.sample_entity.resource.walk"
+          ],
+          "transitions": [
+            {
+              "default": "query.modified_move_speed <= 0.1"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

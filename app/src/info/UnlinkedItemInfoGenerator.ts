@@ -19,16 +19,15 @@ export enum UnlinkedItemInfoGeneratorTest {
 
 export const UnlinkedItemNotFoundByType = 300;
 
+/**
+ * Detects unlinked items and validates item relationships.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/unlink.form.json} for topic definitions
+ */
 export default class UnlinkedItemInfoGenerator implements IProjectInfoItemGenerator {
   id = "UNLINK";
-  title = "Unlinked item info generator";
+  title = "Unlinked Items";
   canAlwaysProcess = true;
-
-  getTopicData(topicId: number) {
-    return {
-      title: topicId.toString(),
-    };
-  }
 
   summarize(info: any, infoSet: ProjectInfoSet) {}
 

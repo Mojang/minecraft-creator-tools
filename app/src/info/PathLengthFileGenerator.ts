@@ -8,7 +8,7 @@ import IFile from "../storage/IFile";
 import ProjectInfoSet from "./ProjectInfoSet";
 import Project from "../app/Project";
 import ContentIndex from "../core/ContentIndex";
-import StorageUtilities, { PackContainerFolderHints, PackFolderHints } from "../storage/StorageUtilities";
+import { PackContainerFolderHints, PackFolderHints } from "../storage/StorageUtilities";
 
 export enum PathLengthFileGeneratorTest {
   filePathExceeds8DirectorySegments = 102,
@@ -16,16 +16,15 @@ export enum PathLengthFileGeneratorTest {
   filePathContainsNonLowercaseLetters = 104,
 }
 
+/**
+ * Validates file path lengths and naming conventions.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/pathlength.form.json} for topic definitions
+ */
 export default class PathLengthFileGenerator implements IProjectFileInfoGenerator {
   id = "PATHLENGTH";
   title = "Path Length";
   canAlwaysProcess = true;
-
-  getTopicData(topicId: number) {
-    return {
-      title: topicId.toString(),
-    };
-  }
 
   summarize(info: any, infoSet: ProjectInfoSet) {}
 

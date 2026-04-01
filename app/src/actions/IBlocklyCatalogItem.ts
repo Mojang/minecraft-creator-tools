@@ -1,3 +1,4 @@
+import { BlockDefinition } from "blockly/core/blocks";
 import { ActionSetTarget } from "./IActionSetData";
 
 export default interface IBlocklyCatalog {
@@ -7,7 +8,7 @@ export default interface IBlocklyCatalog {
 export interface IBlocklyCatalogItem {
   type: BlocklyCatalogItemType;
   title?: string;
-  definition: any; // right now this is 'any', though.
+  definition: BlockDefinition; // right now this is 'any', though.
   target?: ActionSetTarget;
   category?: BlocklyCategory;
 }

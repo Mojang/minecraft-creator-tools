@@ -1,0 +1,34 @@
+@media only screen and (min-width: 916px) {
+  .intp-projectUses {
+    display: grid;
+    grid-template-columns: 188px 1fr;
+  }
+}
+
+@media only screen and (max-width: 915px) {
+  .intp-projectUses {
+    display: grid;
+    grid-template-columns: 34px 1fr;
+  }
+}
+
+.intp-outer .ui-checkbox__label {
+  padding-top: 0px;
+}
+
+.intp-settingsAreaInner {
+  margin-top: 10px;
+  padding-top: 10px;
+  margin-left: 10px;
+  padding-left: 10px;
+}
+
+.intp-outer {
+  padding: 10px;
+}
+
+.intp-header {
+  font-weight: bold;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}

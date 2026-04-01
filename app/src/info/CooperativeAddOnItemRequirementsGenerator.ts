@@ -19,8 +19,12 @@ import AnimationBehaviorDefinition from "../minecraft/AnimationBehaviorDefinitio
 import AnimationControllerBehaviorDefinition from "../minecraft/AnimationControllerBehaviorDefinition";
 import AnimationControllerResourceDefinition from "../minecraft/AnimationControllerResourceDefinition";
 import MinecraftDefinitions from "../minecraft/MinecraftDefinitions";
-import ProjectInfoUtilities from "./ProjectInfoUtilities";
 
+/**
+ * Validates cooperative add-on item requirements for naming conventions and identifiers.
+ *
+ * @see {@link ../../public/data/forms/mctoolsval/caddonireq.form.json} for topic definitions
+ */
 // rule name/check. For validation errors, name should be a terse description of "your problem"
 export enum CooperativeAddOnItemRequirementsGeneratorTest {
   behaviorAnimationControllerIdNotInExpectedForm = 100,
@@ -46,12 +50,6 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
   id = "CADDONIREQ";
   title = "Cooperative Add-On Item Requirements Generator";
   canAlwaysProcess = true;
-
-  getTopicData(topicId: number) {
-    return {
-      title: ProjectInfoUtilities.getTitleFromEnum(CooperativeAddOnItemRequirementsGeneratorTest, topicId),
-    };
-  }
 
   summarize(info: any, infoSet: ProjectInfoSet) {}
 

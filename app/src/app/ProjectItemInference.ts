@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Log from "../core/Log";
 import Utilities from "../core/Utilities";
 import SemanticVersion from "../core/versioning/SemanticVersion";
@@ -316,11 +319,11 @@ export default class ProjectItemInference {
                   if (bpManifest && bpManifest.id) {
                     project.defaultBehaviorPackUniqueId = bpManifest.id;
 
-                    if (bpManifest.name) {
+                    if (bpManifest.name && !Utilities.isLikelyLocalizationKey(bpManifest.name)) {
                       project.title = bpManifest.name;
                     }
 
-                    if (bpManifest.description) {
+                    if (bpManifest.description && !Utilities.isLikelyLocalizationKey(bpManifest.description)) {
                       project.description = bpManifest.description;
                     }
 
@@ -355,11 +358,11 @@ export default class ProjectItemInference {
                   if (rpManifest && rpManifest.id) {
                     project.defaultResourcePackUniqueId = rpManifest.id;
 
-                    if (rpManifest.name) {
+                    if (rpManifest.name && !Utilities.isLikelyLocalizationKey(rpManifest.name)) {
                       project.title = rpManifest.name;
                     }
 
-                    if (rpManifest.description) {
+                    if (rpManifest.description && !Utilities.isLikelyLocalizationKey(rpManifest.description)) {
                       project.description = rpManifest.description;
                     }
 
@@ -409,11 +412,11 @@ export default class ProjectItemInference {
                 } else if (newPiType === ProjectItemType.skinPackManifestJson) {
                   const spManifest = await SkinManifestDefinition.ensureOnFile(candidateFile);
                   if (spManifest) {
-                    if (spManifest.name) {
+                    if (spManifest.name && !Utilities.isLikelyLocalizationKey(spManifest.name)) {
                       project.title = spManifest.name;
                     }
 
-                    if (spManifest.description) {
+                    if (spManifest.description && !Utilities.isLikelyLocalizationKey(spManifest.description)) {
                       project.description = spManifest.description;
                     }
 
@@ -425,11 +428,11 @@ export default class ProjectItemInference {
                 } else if (newPiType === ProjectItemType.designPackManifestJson) {
                   const dpManifest = await DesignManifestDefinition.ensureOnFile(candidateFile);
                   if (dpManifest) {
-                    if (dpManifest.name) {
+                    if (dpManifest.name && !Utilities.isLikelyLocalizationKey(dpManifest.name)) {
                       project.title = dpManifest.name;
                     }
 
-                    if (dpManifest.description) {
+                    if (dpManifest.description && !Utilities.isLikelyLocalizationKey(dpManifest.description)) {
                       project.description = dpManifest.description;
                     }
 
@@ -1003,8 +1006,13 @@ export default class ProjectItemInference {
                 newJsonType = ProjectItemType.animationControllerBehaviorJson;
               } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/animations/") >= 0) {
                 newJsonType = ProjectItemType.animationBehaviorJson;
+              } else if (isResourcePack && projectPathLower.endsWith(".texture_set.json")) {
+                // Check for texture_set.json BEFORE /models/ check - texture_set files can exist in /models/ folders
+                // (e.g., /textures/models/armor/chain_1.texture_set.json)
+                newJsonType = ProjectItemType.textureSetJson;
               } else if (
                 isResourcePack &&
+                !baseName.endsWith("index") && // Skip index.json files - they're directory indices, not geometry
                 (folderPathLower.indexOf("/models/") >= 0 ||
                   baseName.endsWith(".geo") ||
                   baseName.endsWith(".geometry"))
@@ -1026,6 +1034,8 @@ export default class ProjectItemInference {
                 folderPathLower.indexOf("/feature_rules/") >= 0
               ) {
                 newJsonType = ProjectItemType.featureRuleBehavior;
+              } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/shapes/") >= 0) {
+                newJsonType = ProjectItemType.voxelShapeBehavior;
               } else if (isResourcePack && folderPathLower.indexOf("/animation_controllers/") >= 0) {
                 newJsonType = ProjectItemType.animationControllerResourceJson;
               } else if (isResourcePack && folderPathLower.indexOf("/animations/") >= 0) {

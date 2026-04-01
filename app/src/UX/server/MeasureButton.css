@@ -1,0 +1,63 @@
+.mbut-outer {
+  min-width: 40px;
+  background: #6b6562;
+  display: inline-block;
+  border: solid 1px black;
+  margin: 2px;
+  padding: 1px 6px 1px 6px;
+  height: 24px;
+  font-size: small;
+}
+
+.mbut-grid {
+  display: grid;
+  height: 100%;
+  grid-template-columns: 1fr 24px;
+  grid-template-rows: 1fr;
+}
+
+.mbut-mainArea {
+  grid-row: 1;
+  grid-column: 1;
+}
+
+.mbut-toolArea {
+  grid-row: 1;
+  grid-column: 2;
+}
+
+.mbut-toolArea DIV BUTTON {
+  height: 20px;
+}
+
+.mbut-mini-toolbar {
+  vertical-align: middle;
+  text-align: right;
+  padding-top: 8px;
+  background-color: #aba09c;
+  padding-bottom: 8px;
+}
+
+.mbut-mini-toolbar button {
+  width: 30px;
+  margin-left: 4px;
+  margin-right: 10px;
+}
+
+.mbut-title {
+  font-weight: bold;
+  padding-bottom: 4px;
+  padding-top: 1px;
+  max-width: 120px;
+  font-size: small;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+  line-break: strict;
+  word-break: keep-all;
+  white-space: nowrap;
+  overflow-y: hidden;
+}
+
+.mbut-outer-selected {
+  border: solid 3px #242425;
+}

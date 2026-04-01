@@ -1,0 +1,303 @@
+.jse-area {
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  width: calc(100% - 2px);
+  height: 100%;
+}
+
+.jse-toolBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+}
+
+.jse-dffEditorHeader {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 28px;
+}
+
+.jse-coreLabel {
+  grid-column: 1;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 10px;
+}
+
+.jse-diffLabel {
+  grid-column: 2;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 10px;
+}
+
+/* JSON Path Breadcrumb Styles */
+.jpb-container {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.jpb-segments {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  overflow-x: auto;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.jpb-segment {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #c0c0c0;
+  transition: background-color 0.15s ease;
+}
+
+.jpb-segment:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.jpb-segment.current {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.jpb-segment.component {
+  color: #4ec9b0;
+}
+
+.jpb-segment.array {
+  color: #dcdcaa;
+}
+
+.jpb-icon {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.jpb-separator {
+  color: #606060;
+  margin: 0 2px;
+  font-size: 10px;
+}
+
+.jpb-copy-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  margin-left: 8px;
+  color: #808080;
+  font-size: 12px;
+  opacity: 0.7;
+  transition: opacity 0.15s ease;
+}
+
+.jpb-copy-btn:hover {
+  opacity: 1;
+  color: #c0c0c0;
+}
+
+.jpb-empty {
+  color: #606060;
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* Live Preview Split Layout */
+.jse-with-preview {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.jse-content {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  align-items: stretch;
+}
+
+.jse-editor-pane {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.jse-editor-with-preview {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.jse-preview-pane {
+  width: 260px;
+  min-width: 200px;
+  max-width: 600px;
+  height: 100%;
+  background-color: #1e1e1e;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* Resizable divider between editor and preview */
+.jse-resize-divider {
+  width: 12px;
+  min-width: 12px;
+  cursor: col-resize;
+  background: linear-gradient(to right, #1e1e1e, #3a3a3a, #3a3a3a, #1e1e1e);
+  border-left: 1px solid #007acc;
+  border-right: 1px solid #007acc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  align-self: stretch;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+  z-index: 100;
+  position: relative;
+}
+
+.jse-resize-divider:hover {
+  background: #007acc;
+  border-color: #52a535;
+}
+
+.jse-resize-handle {
+  width: 4px;
+  height: 40px;
+  background-color: #888;
+  border-radius: 2px;
+}
+
+.jse-resize-divider:hover .jse-resize-handle {
+  background-color: var(--surface-bg);
+}
+
+/* Active resizing state */
+.jse-resizing {
+  cursor: col-resize !important;
+  user-select: none;
+}
+
+/* Disable pointer events on panes during resize to prevent
+   3D canvas (BabylonJS) or Monaco editor from capturing mouse events */
+.jse-resizing .jse-preview-pane,
+.jse-resizing .jse-editor-pane {
+  pointer-events: none;
+}
+
+.jse-resizing .jse-resize-divider {
+  background-color: #52a535;
+}
+
+.jse-resizing .jse-resize-handle {
+  background-color: var(--surface-bg);
+}
+
+.jse-preview-header {
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #c0c0c0;
+  border-bottom: 1px solid #404040;
+  background-color: #252526;
+}
+
+.jse-preview-content {
+  flex: 1;
+  overflow: auto;
+  padding: 8px;
+}
+
+.jse-preview-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #606060;
+  font-size: 12px;
+  font-style: italic;
+  text-align: center;
+  padding: 16px;
+}
+
+/* Preview error display - shown when JSON parsing fails */
+.jse-preview-error {
+  padding: 12px;
+  background-color: rgba(200, 60, 60, 0.1);
+  border: 1px solid rgba(200, 60, 60, 0.3);
+  border-radius: 4px;
+  margin: 8px;
+}
+
+.jse-preview-error-title {
+  font-weight: bold;
+  font-size: 13px;
+  color: #d97f7f;
+  margin-bottom: 8px;
+}
+
+.jse-preview-error-message {
+  font-family: monospace;
+  font-size: 11px;
+  color: #c88;
+  word-break: break-word;
+  white-space: pre-wrap;
+  line-height: 1.4;
+}
+
+/* Loading placeholder - shown while file content is loading */
+.jse-loading-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background-color: #1e1e1e;
+}
+
+.jse-loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(82, 165, 53, 0.3);
+  border-top: 3px solid #52a535;
+  border-radius: 50%;
+  animation: jse-spin 1s linear infinite;
+}
+
+.jse-loading-message {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #888;
+}
+
+@keyframes jse-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

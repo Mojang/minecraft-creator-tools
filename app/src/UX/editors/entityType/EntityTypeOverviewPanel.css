@@ -1,0 +1,220 @@
+/**
+ * EntityTypeOverviewPanel.css
+ *
+ * Styles for the entity type overview panel, which displays:
+ * - A model viewer on the left
+ * - Behaviors (component summaries) on the right in a scrollable vertical list
+ */
+
+/* CSS Custom Properties for theming */
+.etop-outer-dark {
+  --etop-bg: #262423;
+  --etop-panel-bg: #2a2a2a;
+  --etop-text: #e0e0e0;
+  --etop-text-muted: #a39895;
+  --etop-border: #4a4543;
+  --etop-link: #86d562;
+  --etop-chip-bg: #4a4543;
+  --etop-row-hover: rgba(255, 255, 255, 0.05);
+  --etop-icon-bg: #262423;
+}
+
+.etop-outer-light {
+  --etop-bg: #f5f0ed;
+  --etop-panel-bg: #ffffff;
+  --etop-text: #333333;
+  --etop-text-muted: #6b6562;
+  --etop-border: #d4ccc9;
+  --etop-link: #3e8828;
+  --etop-chip-bg: #ede5e2;
+  --etop-row-hover: rgba(0, 0, 0, 0.03);
+  --etop-icon-bg: #d4ccc9;
+}
+
+.etop-outer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  gap: 12px;
+  padding: 8px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.etop-modelSection {
+  flex: 0 0 auto;
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+}
+
+.etop-modelViewer {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Ensure the canvas fills the container without letterboxing */
+.etop-modelViewer canvas {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+}
+
+.etop-modelHint {
+  text-align: center;
+  font-size: 11px;
+  opacity: 0.5;
+  padding: 2px 0;
+  letter-spacing: 0.3px;
+}
+
+/* Behaviors section - below model, scrollable */
+.etop-behaviorsSection {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 200px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Wide screen layout: side-by-side with model on left, behaviors on right */
+@media (min-width: 1200px) {
+  .etop-outer {
+    flex-direction: row;
+    overflow: hidden;
+  }
+
+  .etop-modelSection {
+    flex: 1 1 0;
+    min-width: 300px;
+    height: 100%;
+  }
+
+  .etop-behaviorsSection {
+    flex: 0 0 400px !important;
+    width: 400px !important;
+    min-width: 400px !important;
+    height: 100%;
+    min-height: unset;
+    overflow-y: auto;
+  }
+}
+
+.etop-behaviorsScroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 8px;
+}
+
+/* Component group sections */
+.etop-componentGroupSection {
+  margin-bottom: 16px;
+}
+
+.etop-componentGroupSection:last-child {
+  margin-bottom: 0;
+}
+
+.etop-groupHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 4px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--etop-border);
+  cursor: pointer;
+}
+
+.etop-groupName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--etop-text);
+}
+
+.etop-groupLink {
+  font-size: 11px;
+  color: var(--etop-link);
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid var(--etop-link);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.etop-groupHeader:hover .etop-groupLink {
+  background: var(--etop-link);
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Vertical component list */
+.etop-componentList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.etop-componentRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: background 0.1s ease;
+}
+
+.etop-componentRowClickable {
+  cursor: pointer;
+}
+
+.etop-componentRow:hover {
+  background: var(--etop-row-hover);
+}
+
+.etop-componentIcon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--etop-icon-bg);
+  border-radius: 4px;
+  border: 2px solid var(--slot-color, var(--etop-chip-bg));
+  box-sizing: border-box;
+}
+
+.etop-componentText {
+  flex: 1;
+  font-size: 12px;
+  color: var(--etop-text);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* Small screens - reduce model height */
+@media (max-width: 600px) {
+  .etop-modelSection {
+    height: 200px;
+  }
+}
+
+/* Empty state for behaviors panel */
+.etop-emptyState {
+  padding: 16px 12px;
+  text-align: center;
+}
+
+.etop-emptyText {
+  color: var(--etop-text-muted, #888);
+  font-size: 13px;
+  font-style: italic;
+}
