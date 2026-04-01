@@ -24,7 +24,6 @@
  */
 
 import * as path from "path";
-import open from "open";
 import {
   app,
   BrowserWindow,
@@ -733,7 +732,7 @@ async function minecraftShell(_event: Electron.IpcMainInvokeEvent, data: string)
 
   Log.debug("Running command: minecraft://" + command);
 
-  open("minecraft://" + command);
+  shell.openExternal("minecraft://" + command);
 
   _mainWindow?.webContents.send("appsvc", "asyncminecraftShellComplete|" + slargs[0] + "|");
 }

@@ -94,6 +94,14 @@ const webExtensionConfig = {
         ],
       },
       {
+        test: /\.(png|jpg|gif|svg)$/,
+        type: "asset/resource",
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        type: "asset/resource",
+      },
+      {
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, "css-loader"],
         exclude: [

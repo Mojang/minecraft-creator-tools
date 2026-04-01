@@ -82,6 +82,7 @@ const ProjectItemValues = new Map<ProjectItemType, IProjectItemDefaults>([
   [ProjectItemType.materialsResourceJson, { folderRoots: ["materials"] }],
   [ProjectItemType.material, { folderRoots: ["materials"] }],
   [ProjectItemType.tradingBehaviorJson, { folderRoots: ["trading"] }],
+  [ProjectItemType.blockCulling, { folderRoots: ["block_culling"] }],
 ]);
 
 export const getProjectItemDefaults = (itemType: ProjectItemType): IProjectItemDefaults => {

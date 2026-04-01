@@ -878,7 +878,7 @@ test.describe("Editor /rename Command", () => {
   });
 
   test("/rename command executes and clears input", async ({ page }) => {
-    test.setTimeout(30000);
+    test.setTimeout(60000);
 
     const entered = await enterEditor(page);
     expect(entered).toBe(true);

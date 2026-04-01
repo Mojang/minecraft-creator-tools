@@ -43,33 +43,20 @@ const isWatch = process.argv.includes("--watch");
 const electronExternals = [
   // Electron core - MUST be external
   "electron",
-  "electron-squirrel-startup",
   "electron-devtools-installer",
 
-  // Native modules - can't be bundled
+  // Native modules - can't be bundled (contain .node binaries)
   "bufferutil",
   "utf-8-validate",
   "@resvg/resvg-js",
 
-  // Optional/dev dependencies
+  // Optional/dev dependencies - not needed at runtime
   "playwright",
   "playwright-core",
-  "esbuild-wasm",
   "react-devtools-core",
 
-  // WebSocket library (has native bindings)
-  "ws",
-
-  // Packages with dynamic require patterns
-  "exifr",
-
-  // CJS packages that use require('crypto') or other Node builtins
-  "js-md5",
-  "uuid",
-
-  // Open package uses __dirname in ways that don't bundle well
-  "open",
-
+  // Minecraft stub - never actually loaded in Electron
+  "@minecraft/server",
 ];
 
 /**

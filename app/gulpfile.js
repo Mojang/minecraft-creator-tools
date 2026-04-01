@@ -238,9 +238,7 @@ function customizeSiteCsp() {
   const productionCsp =
     "default-src 'self'; manifest-src 'self' https://github.com; worker-src 'self' blob: ; script-src 'self' https://wcpstatic.microsoft.com/ https://js.monitor.azure.com/ 'wasm-unsafe-eval'; connect-src 'self' https://browser.events.data.microsoft.com/ https://js.monitor.azure.com/ https://raw.githubusercontent.com/ https://registry.npmjs.org/; form-action https://browser.events.data.microsoft.com/; font-src 'self' https://res-1.cdn.office.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:";
 
-  return gulp
-    .src(["build/index.html"])
-    .pipe(textReplace("build/index.html", [localCsp], [productionCsp]));
+  return gulp.src(["build/index.html"]).pipe(textReplace("build/index.html", [localCsp], [productionCsp]));
 }
 
 function stripSourceMapA() {

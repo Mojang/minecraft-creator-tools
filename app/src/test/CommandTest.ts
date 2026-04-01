@@ -1918,10 +1918,7 @@ describe("Telemetry build configuration", () => {
       );
 
       // Must contain an explicit false setting
-      expect(content).to.match(
-        /ENABLE_ANALYTICS.*false/i,
-        `${file} should explicitly set ENABLE_ANALYTICS to false`
-      );
+      expect(content).to.match(/ENABLE_ANALYTICS.*false/i, `${file} should explicitly set ENABLE_ANALYTICS to false`);
     });
   }
 
@@ -1931,10 +1928,7 @@ describe("Telemetry build configuration", () => {
 
     // Vite should gate on env var, not default to true
     expect(content).to.include('process.env.ENABLE_ANALYTICS === "true"');
-    expect(content).to.not.match(
-      /ENABLE_ANALYTICS:\s*true/,
-      "Vite config must not hardcode ENABLE_ANALYTICS to true"
-    );
+    expect(content).to.not.match(/ENABLE_ANALYTICS:\s*true/, "Vite config must not hardcode ENABLE_ANALYTICS to true");
   });
 
   it("CLI-served web HTML should not include telemetry scripts", () => {

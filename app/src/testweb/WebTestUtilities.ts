@@ -17,6 +17,8 @@ const ignorableTokens = [
   "getDerivedStateFromProps", // React class component lifecycle warning
   "Invalid prop `value` supplied to", // MUI TextareaAutosize prop type warning
   "not yet mounted", // React setState on unmounted component warning
+  "willReadFrequently", // Canvas2D performance hint from headless Chromium (Babylon.js getImageData calls)
+  "Vertex buffer is not big enough", // ANGLE D3D backend limitation in headless Chromium WebGL
 ];
 
 // URL patterns that are expected to 404 and can be safely ignored

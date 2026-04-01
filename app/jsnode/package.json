@@ -63,7 +63,7 @@
   "optionalDependencies": {
     "@resvg/resvg-js": "2.6.2",
     "bufferutil": "4.0.8",
-    "playwright": "1.54.1",
+    "playwright": "1.58.2",
     "utf-8-validate": "6.0.3"
   }
 }

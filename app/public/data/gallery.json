@@ -2237,7 +2237,7 @@
       "title": "Render Controller",
       "id": "render_controller",
       "type": 43,
-      "targetType": 434,
+      "targetType": 34,
       "titleKey": "gallery.render_controller.title",
       "descriptionKey": "gallery.render_controller.description"
     },

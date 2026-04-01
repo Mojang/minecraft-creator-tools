@@ -28,6 +28,7 @@ import inquirer, { DistinctQuestion, DistinctChoice } from "inquirer";
 import { GalleryItemType } from "../../../app/IGalleryItem";
 import Project from "../../../app/Project";
 import ProjectItemCreateManager from "../../../app/ProjectItemCreateManager";
+import LocalUtilities from "../../../local/LocalUtilities";
 
 export class AddCommand extends CommandBase {
   readonly metadata: ICommandMetadata = {
@@ -79,11 +80,16 @@ export class AddCommand extends CommandBase {
       !context.localEnv.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula &&
       !isTestMode
     ) {
-      context.log.error(
-        "EULA not accepted. Run 'npx mct eula' first, or set MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA=true"
-      );
-      context.setExitCode(ErrorCodes.INIT_ERROR);
-      return;
+      if (!LocalUtilities.eulaAcceptedViaEnvironment) {
+        context.log.error(
+          "EULA not accepted. Run 'npx mct eula' first, or set MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA=true"
+        );
+        context.setExitCode(ErrorCodes.INIT_ERROR);
+        return;
+      }
+
+      context.localEnv.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula = true;
+      await context.localEnv.save();
     }
 
     // Load gallery
@@ -127,7 +133,9 @@ export class AddCommand extends CommandBase {
 
         if (this.newName) {
           if (!this.isValidItemName(this.newName)) {
-            context.log.warn(`Item name '${this.newName}' contains invalid characters. Minecraft identifiers should use lowercase letters, numbers, and underscores only.`);
+            context.log.warn(
+              `Item name '${this.newName}' contains invalid characters. Minecraft identifiers should use lowercase letters, numbers, and underscores only.`
+            );
           }
           if (context.dryRun) {
             context.log.info("Dry run: would add '" + this.newName + "' to project");
@@ -180,9 +188,7 @@ export class AddCommand extends CommandBase {
 
     // Validate that the type is recognized before proceeding
     if (type && !VALID_TYPES.includes(type)) {
-      context.log.error(
-        `Unknown item type '${type}'. Valid types: ${choices.map((c) => c.value).join(", ")}`
-      );
+      context.log.error(`Unknown item type '${type}'. Valid types: ${choices.map((c) => c.value).join(", ")}`);
       context.setExitCode(ErrorCodes.INIT_ERROR);
       return;
     }

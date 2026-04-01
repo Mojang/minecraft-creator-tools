@@ -31,6 +31,7 @@ import Project, { ProjectAutoDeploymentMode } from "../../../app/Project";
 import ProjectExporter from "../../../app/ProjectExporter";
 import ProjectUtilities from "../../../app/ProjectUtilities";
 import NodeStorage from "../../../local/NodeStorage";
+import LocalUtilities from "../../../local/LocalUtilities";
 
 export class CreateCommand extends CommandBase {
   readonly metadata: ICommandMetadata = {
@@ -115,11 +116,16 @@ export class CreateCommand extends CommandBase {
       !context.localEnv.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula &&
       !isTestMode
     ) {
-      context.log.error(
-        "EULA not accepted. Run 'npx mct eula' first, or set MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA=true"
-      );
-      context.setExitCode(ErrorCodes.INIT_ERROR);
-      return;
+      if (!LocalUtilities.eulaAcceptedViaEnvironment) {
+        context.log.error(
+          "EULA not accepted. Run 'npx mct eula' first, or set MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA=true"
+        );
+        context.setExitCode(ErrorCodes.INIT_ERROR);
+        return;
+      }
+
+      context.localEnv.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula = true;
+      await context.localEnv.save();
     }
 
     // Load gallery
