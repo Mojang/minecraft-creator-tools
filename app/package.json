@@ -1,6 +1,6 @@
 {
   "name": "mctools-app",
-  "version": "0.0.1",
+  "version": "0.0.0-semantically-released",
   "productName": "Minecraft Creator Tools",
   "description": "Minecraft Creator Tools for building Bedrock Edition add-ons.",
   "author": "Mojang AB",
