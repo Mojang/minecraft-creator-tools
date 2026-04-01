@@ -1,6 +1,6 @@
 {
   "name": "mctools-app",
-  "version": "0.0.1",
+  "version": "0.0.0-semantically-released",
   "productName": "Minecraft Creator Tools",
   "description": "Minecraft Creator Tools for building Bedrock Edition add-ons.",
   "author": "Mojang AB",
@@ -132,6 +132,7 @@
     "corebuild": "npm run-script jsnbuild && npm run-script webbuild",
     "webvscappbuild": "npm run-script webbuild && npm run-script vscbuild && npm run-script appbuildandsetup",
     "updateversionsandbuild": "npx gulp updateversions && npm run-script webbuild && npm run-script jsnbuild && npm run-script process && npm run-script vscbuild && npm run-script appbuildandsetup && npx gulp customizesite",
+    "updateversionsandreleasebuild": "npx gulp updateversions && npm run-script webbuild && npm run-script jsnbuild && npm run-script process && npx gulp customizesite",
     "appbuild": "npm run-script webbuild && npm run-script jsncorebuild && npm run-script appcorebuild",
     "appdebugbuild": "npm run-script webbuild && npm run-script jsncorebuild && cross-env FORGE_DEBUG=1 electron-forge package",
     "appcorebuild": "electron-forge package",
