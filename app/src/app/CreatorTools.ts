@@ -706,7 +706,7 @@ export default class CreatorTools {
 
   public get userGitHub(): GitHubManager {
     if (this._userGitHub === undefined) {
-      this._userGitHub = new GitHubManager(this.prefsStorage.rootFolder.ensureFile("github.json"));
+      this._userGitHub = new GitHubManager();
     }
 
     return this._userGitHub;

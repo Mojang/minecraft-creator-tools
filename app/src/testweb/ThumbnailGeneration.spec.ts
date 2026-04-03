@@ -144,18 +144,18 @@ test.describe("Thumbnail Generation @thumbnails", () => {
 
     await page.screenshot({ path: "debugoutput/screenshots/thumb-01-project-created.png", fullPage: true });
 
-    // Verify we're in the editor by looking for known sidebar items
-    const mobsSection = page.locator("text=Mobs").first();
-    const hasMobs = await mobsSection.isVisible({ timeout: 5000 });
-    console.log(`In editor with Mobs section visible: ${hasMobs}`);
-    expect(hasMobs).toBeTruthy();
-
     // Step 2: Wait for the welcome dialog and select focused mode
     console.log("=== STEP 2: Setting edit mode ===");
     await selectEditMode(page, "focused");
     await page.waitForTimeout(2000);
 
     await page.screenshot({ path: "debugoutput/screenshots/thumb-02-edit-mode-set.png", fullPage: true });
+
+    // Verify we're in the editor by looking for known sidebar items
+    const mobsSection = page.locator("text=Mobs").first();
+    const hasMobs = await mobsSection.isVisible({ timeout: 5000 });
+    console.log(`In editor with Mobs section visible: ${hasMobs}`);
+    expect(hasMobs).toBeTruthy();
 
     // Step 3: Wait for thumbnail generation to complete
     // Thumbnails are generated asynchronously by a web worker after relations are calculated.
@@ -185,8 +185,7 @@ test.describe("Thumbnail Generation @thumbnails", () => {
       const result = await countSidebarThumbnails(page);
       const elapsed = Math.round((Date.now() - startTime) / 1000);
       console.log(
-        `  Poll (${elapsed}s): ${result.thumbnailCount} thumbnails, ` +
-          `${result.totalSidebarIcons} total icons`
+        `  Poll (${elapsed}s): ${result.thumbnailCount} thumbnails, ` + `${result.totalSidebarIcons} total icons`
       );
 
       if (result.thumbnailCount > 0) {
@@ -221,7 +220,8 @@ test.describe("Thumbnail Generation @thumbnails", () => {
           const row = icon.closest('[class*="pil-gridItem"]') || icon.parentElement;
           let label = "unknown";
           if (row) {
-            const labelEl = row.querySelector('[class*="pil-itemLabel"]') || row.querySelector('[class*="pil-nameLabel"]');
+            const labelEl =
+              row.querySelector('[class*="pil-itemLabel"]') || row.querySelector('[class*="pil-nameLabel"]');
             if (labelEl) label = labelEl.textContent?.trim() || "unknown";
           }
           // Extract the data URL from url('...')
@@ -246,7 +246,9 @@ test.describe("Thumbnail Generation @thumbnails", () => {
     }
     galleryHtml += `</body></html>`;
     fs.writeFileSync("debugoutput/screenshots/thumbnail-gallery.html", galleryHtml);
-    console.log(`Saved thumbnail gallery with ${thumbnailData.length} thumbnails to debugoutput/screenshots/thumbnail-gallery.html`);
+    console.log(
+      `Saved thumbnail gallery with ${thumbnailData.length} thumbnails to debugoutput/screenshots/thumbnail-gallery.html`
+    );
 
     // Scroll down to show Models section (if visible)
     const modelsHeader = page.locator("text=Models").first();
@@ -279,8 +281,7 @@ test.describe("Thumbnail Generation @thumbnails", () => {
         const row = icon.closest('[class*="pil-gridItem"]') || icon.parentElement;
         if (row) {
           const labelEl =
-            row.querySelector('[class*="pil-itemLabel"]') ||
-            row.querySelector('[class*="pil-nameLabel"]');
+            row.querySelector('[class*="pil-itemLabel"]') || row.querySelector('[class*="pil-nameLabel"]');
           if (labelEl) {
             label = labelEl.textContent?.trim() || "unknown";
           } else {

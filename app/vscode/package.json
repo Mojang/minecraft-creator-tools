@@ -3,7 +3,7 @@
   "displayName": "Minecraft Creator Tools",
   "description": "Tools for creating Minecraft add-ons",
   "publisher": "mojang",
-  "version": "0.0.0-semantically-released",
+  "version": "0.0.1-dev",
   "icon": "res/images/logo512.png",
   "engines": {
     "vscode": "^1.93.0"

@@ -65,6 +65,10 @@ class MockLogger implements ILogger {
     this.messages.push({ level: "success", message });
   }
 
+  data(message: string): void {
+    this.messages.push({ level: "data", message });
+  }
+
   progress(_current: number, _total: number, _message?: string): void {
     // No-op for tests
   }
@@ -688,7 +692,7 @@ describe("VersionCommand Extended", () => {
     expect(versionCmd).to.exist;
     if (versionCmd) {
       await versionCmd.execute(context);
-      const jsonMessage = mockLogger.messages.find((m) => m.level === "info" && m.message.startsWith("{"));
+      const jsonMessage = mockLogger.messages.find((m) => m.level === "data" && m.message.startsWith("{"));
       expect(jsonMessage, "Should output JSON").to.exist;
       if (jsonMessage) {
         const parsed = JSON.parse(jsonMessage.message);
@@ -1108,7 +1112,7 @@ describe("ValidateCommand Execution", () => {
     expect(validateCmd).to.exist;
     if (validateCmd) {
       await validateCmd.execute(context);
-      const jsonMsg = mockLogger.messages.find((m) => m.level === "info" && m.message.startsWith("{"));
+      const jsonMsg = mockLogger.messages.find((m) => m.level === "data" && m.message.startsWith("{"));
       expect(jsonMsg, "Should output JSON").to.exist;
       if (jsonMsg) {
         const parsed = JSON.parse(jsonMsg.message);
@@ -1517,7 +1521,7 @@ describe("Command Output Formats", () => {
     const fixCmd = commands.find((c) => c.metadata.name === "fix");
     if (fixCmd) {
       await fixCmd.execute(context);
-      const jsonMsg = mockLogger.messages.find((m) => m.level === "info" && m.message.startsWith("{"));
+      const jsonMsg = mockLogger.messages.find((m) => m.level === "data" && m.message.startsWith("{"));
       expect(jsonMsg, "Fix command should output JSON summary").to.exist;
       if (jsonMsg) {
         const parsed = JSON.parse(jsonMsg.message);

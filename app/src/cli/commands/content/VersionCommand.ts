@@ -46,7 +46,7 @@ export class VersionCommand extends CommandBase {
         jsonOutput.envPrefsPath = local.envPrefsPath;
         jsonOutput.packCachePath = local.packCachePath;
       }
-      context.log.info(JSON.stringify(jsonOutput));
+      context.log.data(JSON.stringify(jsonOutput));
       return;
     }
 

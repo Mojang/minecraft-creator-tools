@@ -404,7 +404,7 @@ const capturedTaskType = commandRegistry.getCapturedState().taskType;
 
 localEnv = new LocalEnvironment(true);
 
-if (capturedTaskType === TaskType.mcp) {
+if (capturedTaskType === TaskType.mcp || options.json) {
   localEnv.logToStdError = true;
 }
 
@@ -419,10 +419,12 @@ if (options.threads) {
     const tc = parseInt(options.threads);
     if (!isNaN(tc) && tc > 0) {
       const cappedTc = Math.min(tc, 16);
-      if (cappedTc === 1) {
-        Log.message("Using sequential processing (threads=1).");
-      } else {
-        Log.message("Using " + cappedTc + " worker threads.");
+      if (!options.json) {
+        if (cappedTc === 1) {
+          Log.message("Using sequential processing (threads=1).");
+        } else {
+          Log.message("Using " + cappedTc + " worker threads.");
+        }
       }
     }
   } catch (e) {
@@ -431,7 +433,7 @@ if (options.threads) {
 }
 
 if (options.dryRun) {
-  if (!options.quiet) {
+  if (!options.quiet && !options.json) {
     localEnv.displayInfo = true;
   }
 
@@ -441,6 +443,7 @@ if (options.dryRun) {
 } else if (options.outputFolder === "out") {
   if (
     !options.quiet &&
+    !options.json &&
     capturedTaskType !== TaskType.serve &&
     capturedTaskType !== TaskType.runDedicatedServer &&
     capturedTaskType !== TaskType.mcp &&
@@ -450,7 +453,7 @@ if (options.dryRun) {
     displayMctHeader(options.inputFolder || process.cwd(), options.outputFolder, isEditInPlace);
   }
 
-  if (!options.quiet) {
+  if (!options.quiet && !options.json) {
     localEnv.displayInfo = true;
   }
 }

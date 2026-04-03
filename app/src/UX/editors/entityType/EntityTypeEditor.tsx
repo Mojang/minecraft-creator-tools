@@ -1435,11 +1435,11 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
                 slotProps={{
                   paper: {
                     sx: {
-                      backgroundColor: "#3a3a3a",
-                      color: "#ffffff",
-                      border: "2px solid #131313",
+                      backgroundColor: this.props.theme.mc4,
+                      color: this.props.theme.mcc1,
+                      border: `2px solid ${this.props.theme.mc0}`,
                       borderRadius: 0,
-                      boxShadow: "inset -2px -2px 0 #212121, inset 2px 2px 0 #4e4e4e, 4px 4px 0 rgba(0,0,0,0.4)",
+                      boxShadow: `inset -2px -2px 0 ${this.props.theme.mc1}, inset 2px 2px 0 ${this.props.theme.mc5}, 4px 4px 0 rgba(0,0,0,0.4)`,
                       minWidth: 180,
                     },
                   },

@@ -186,6 +186,33 @@ function serveBedrockSchemas() {
         next();
       });
     },
+    // Production build: copy forms and schemas into the build output directory
+    // so they are available at runtime via HTTP fetch.
+    writeBundle(options) {
+      const outDir = options.dir || path.resolve("build");
+
+      function copyDirSync(src, dest) {
+        if (!fs.existsSync(src)) return;
+        fs.mkdirSync(dest, { recursive: true });
+        for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+          const srcPath = path.join(src, entry.name);
+          const destPath = path.join(dest, entry.name);
+          if (entry.isDirectory()) {
+            copyDirSync(srcPath, destPath);
+          } else {
+            fs.copyFileSync(srcPath, destPath);
+          }
+        }
+      }
+
+      const formsSource = path.join(pkgRoot, "forms");
+      const formsDest = path.join(outDir, "data", "forms");
+      copyDirSync(formsSource, formsDest);
+
+      const schemasSource = path.join(pkgRoot, "schemas");
+      const schemasDest = path.join(outDir, "schemas");
+      copyDirSync(schemasSource, schemasDest);
+    },
   };
 }
 
@@ -606,7 +633,7 @@ export default defineConfig(({ command }) => {
       global: "globalThis",
       ENABLE_ANALYTICS: process.env.ENABLE_ANALYTICS === "true",
       BUILD_TARGET: JSON.stringify("web"),
-      BUILD_VERSION: JSON.stringify(process.env.npm_package_version || "0.0.1"),
+      BUILD_VERSION: JSON.stringify(process.env.npm_package_version || "0.0.1-dev"),
       BUILD_DATE: JSON.stringify(new Date().toISOString()),
     },
     ...(command === "serve" && {

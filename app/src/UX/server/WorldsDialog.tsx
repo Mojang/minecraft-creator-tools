@@ -289,8 +289,14 @@ export default class WorldsDialog extends Component<IWorldsDialogProps, IWorldsD
     return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
   }
 
-  private _formatDate(dateStr: string | number): string {
+  private _formatDate(dateStr: string | number | undefined): string {
+    if (dateStr === undefined || dateStr === null || dateStr === "") {
+      return "—";
+    }
     const date = typeof dateStr === "number" ? new Date(dateStr) : new Date(dateStr);
+    if (isNaN(date.getTime())) {
+      return "—";
+    }
     return date.toLocaleDateString() + " " + date.toLocaleTimeString();
   }
 

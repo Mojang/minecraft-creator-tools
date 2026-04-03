@@ -1795,7 +1795,11 @@ export default class HttpServer {
         // the serve folder is available locally (has PNG-converted textures).
         // Fall back to proxying from vanillaContentRoot (e.g., mctools.dev) otherwise.
         if (this.isVanillaResourcePath(req.url)) {
-          if (this._hasLocalVanillaServe) {
+          // index.json files are generated locally by the download resources tool
+          // and won't exist on the CDN. Always serve them from local storage.
+          const isIndexJson = req.url.endsWith("/index.json");
+
+          if (this._hasLocalVanillaServe || isIndexJson) {
             // Local serve folder available — serve directly from _resStorage
             this.serveContent("res", req.url, this._resStorage, res);
             return;
@@ -2600,7 +2604,10 @@ export default class HttpServer {
       while (lastIndex >= 1 && recentMessages.length < 10) {
         lastIndex--;
 
-        recentMessages.push(ds.outputLines[lastIndex]);
+        // Skip internal system messages (e.g., querytarget polling output)
+        if (!ds.outputLines[lastIndex].isInternal) {
+          recentMessages.push(ds.outputLines[lastIndex]);
+        }
       }
 
       const result: CartoServerStatusResponse = {

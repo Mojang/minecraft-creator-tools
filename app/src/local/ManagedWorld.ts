@@ -333,6 +333,10 @@ export default class ManagedWorld {
       createdAt: this._data.createdAt,
       lastBackupAt: this._backups.length > 0 ? this._backups[0].createdAt.toISOString() : undefined,
       backupCount: this._backups.length,
+      worldId: this._data.id,
+      lastModified: this._backups.length > 0
+        ? this._backups[0].createdAt.toISOString()
+        : this._data.lastModified || this._data.createdAt,
     };
   }
 

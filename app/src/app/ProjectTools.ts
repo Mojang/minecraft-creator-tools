@@ -14,13 +14,6 @@ export default class ProjectTools {
       type: ToolType.reload,
       scope: ToolScope.global,
     });
-
-    tools.push({
-      title: "Hello World",
-      type: ToolType.say,
-      parameter1: "Hello from Minecraft Creator Tools.",
-      scope: ToolScope.global,
-    });
   }
 
   static generateTools(creatorTools: CreatorTools, project?: Project) {

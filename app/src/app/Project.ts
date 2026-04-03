@@ -934,9 +934,11 @@ export default class Project {
         return ProjectEditPreference.raw;
       } else if (this.creatorTools.editPreference === CreatorToolsEditPreference.editors) {
         return ProjectEditPreference.editors;
+      } else if (this.creatorTools.editPreference === CreatorToolsEditPreference.summarized) {
+        return ProjectEditPreference.summarized;
       }
 
-      return ProjectEditPreference.summarized;
+      return ProjectEditPreference.editors;
     }
 
     return this.editPreference;

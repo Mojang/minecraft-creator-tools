@@ -6,6 +6,10 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "./src/testweb",
 
+  // Exclude ServerUI tests — they require a running MCT server started via globalSetup/globalTeardown
+  // and have their own dedicated config (playwright-serverui.config.ts).
+  testIgnore: ["**/ServerUI.spec.ts"],
+
   outputDir: "./debugoutput/playwright-test-mctoolsdev-results",
 
   timeout: 120000, // 120 seconds timeout for each test
@@ -15,8 +19,9 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  /* Limit parallelism to avoid overwhelming the production server with concurrent requests.
+     Too many simultaneous browser instances all hitting mctools.dev causes net::ERR_TIMED_OUT. */
+  workers: process.env.CI ? 1 : 3,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [["html", { open: "never", outputFolder: "debugoutput/playwright-test-results-html" }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */

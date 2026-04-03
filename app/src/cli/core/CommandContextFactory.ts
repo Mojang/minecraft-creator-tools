@@ -214,8 +214,8 @@ export class CommandContextFactory {
     // Parse output type - if --json flag is set, use json output type
     const outputType = json ? OutputType.json : CommandContextFactory.parseOutputType(options.outputType);
 
-    // Create logger (quiet mode suppresses non-essential output)
-    const log = createLogger(verbose, quiet, debug);
+    // Create logger (quiet mode suppresses non-essential output, json mode routes non-data to stderr)
+    const log = createLogger(verbose, quiet, debug, false, json);
 
     // Resolve input/output folders to absolute paths
     // Relative paths should be resolved against process.cwd()

@@ -7,7 +7,7 @@
   "properties": {
     "conditions": {
       "title": "Conditions",
-      "description": "Array of spawn condition objects that define when and how this entity spawns.\n\nProperties:\nΓÇó minecraft:spawns_lava (object)\nΓÇó minecraft:disallow_spawns_in_bubble (object)\nΓÇó minecraft:biome_filter = {\"AND\":null,\"NOT\":nu\nΓÇó minecraft:spawns_on_block_filter = []\nΓÇó minecraft:spawns_on_block_prevented_filter (string[]) = []\nΓÇó minecraft:herd (object) = []\nΓÇó minecraft:permute_type (object) = []\nΓÇó minecraft:brightness_filter (object)\nΓÇó ... and 16 more properties",
+      "description": "Array of spawn condition objects that define when and how this entity spawns.\n\nProperties:\n• minecraft:spawns_lava (object)\n• minecraft:disallow_spawns_in_bubble (object)\n• minecraft:biome_filter = {\"AND\":null,\"NOT\":nu\n• minecraft:spawns_on_block_filter = []\n• minecraft:spawns_on_block_prevented_filter (string[]) = []\n• minecraft:herd (object) = []\n• minecraft:permute_type (object) = []\n• minecraft:brightness_filter (object)\n• ... and 16 more properties",
       "type": "array",
       "items": {
         "$ref": "#/$defs/spawn_spawn_biomeconditions"
@@ -15,7 +15,7 @@
     },
     "description": {
       "title": "Description",
-      "description": "\n\nProperties:\nΓÇó identifier (string)\nΓÇó population_control (string) = ",
+      "description": "\n\nProperties:\n• identifier (string)\n• population_control (string) = ",
       "$ref": "#/$defs/spawn_spawn_description",
       "defaultSnippets": [
         {
@@ -561,7 +561,7 @@
               }
             }
           ],
-          "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects.\n\nProperties:\nΓÇó domain (string)\nΓÇó operator (string)\nΓÇó subject (string)\nΓÇó test (string)\nΓÇó value (int)\nΓÇó all_of\nΓÇó any_of\nΓÇó none_of"
+          "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects.\n\nProperties:\n• domain (string)\n• operator (string)\n• subject (string)\n• test (string)\n• value (int)\n• all_of\n• any_of\n• none_of"
         },
         "minecraft:spawns_on_block_filter": {
           "anyOf": [
@@ -628,7 +628,7 @@
         },
         "minecraft:brightness_filter": {
           "title": "Minecraft Brightness Filter",
-          "description": "\n\nProperties:\nΓÇó adjust_for_weather (boolean) = false\nΓÇó max (int) = 15\nΓÇó min (int) = 0",
+          "description": "\n\nProperties:\n• adjust_for_weather (boolean) = false\n• max (int) = 15\n• min (int) = 0",
           "$ref": "#/$defs/spawn_spawn_brightnessfilter",
           "defaultSnippets": [
             {
@@ -644,7 +644,7 @@
         },
         "minecraft:delay_filter": {
           "title": "Minecraft Delay Filter",
-          "description": "\n\nProperties:\nΓÇó identifier (string) = \nΓÇó max (int) = 0\nΓÇó min (int) = 0\nΓÇó spawn_chance (int) = 100",
+          "description": "\n\nProperties:\n• identifier (string) = \n• max (int) = 0\n• min (int) = 0\n• spawn_chance (int) = 100",
           "$ref": "#/$defs/spawn_spawn_delayfilter",
           "defaultSnippets": [
             {
@@ -661,7 +661,7 @@
         },
         "minecraft:density_limit": {
           "title": "Minecraft Density Limit",
-          "description": "\n\nProperties:\nΓÇó surface (int) = -1\nΓÇó underground (int) = -1",
+          "description": "\n\nProperties:\n• surface (int) = -1\n• underground (int) = -1",
           "$ref": "#/$defs/spawn_spawn_densitylimit",
           "defaultSnippets": [
             {
@@ -676,7 +676,7 @@
         },
         "minecraft:difficulty_filter": {
           "title": "Minecraft Difficulty Filter",
-          "description": "\n\nProperties:\nΓÇó max (string) = hard\nΓÇó min (string) = peaceful",
+          "description": "\n\nProperties:\n• max (string) = hard\n• min (string) = peaceful",
           "$ref": "#/$defs/spawn_spawn_difficultyfilter",
           "defaultSnippets": [
             {
@@ -691,7 +691,7 @@
         },
         "minecraft:distance_filter": {
           "title": "Minecraft Distance Filter",
-          "description": "\n\nProperties:\nΓÇó max (int) = 128\nΓÇó min (int) = 24",
+          "description": "\n\nProperties:\n• max (int) = 128\n• min (int) = 24",
           "$ref": "#/$defs/spawn_spawn_distancefilter",
           "defaultSnippets": [
             {
@@ -706,7 +706,7 @@
         },
         "minecraft:height_filter": {
           "title": "Minecraft Height Filter",
-          "description": "\n\nProperties:\nΓÇó max (int) = 128\nΓÇó min (int) = 24",
+          "description": "\n\nProperties:\n• max (int) = 128\n• min (int) = 24",
           "$ref": "#/$defs/spawn_spawn_heightfilter",
           "defaultSnippets": [
             {
@@ -729,7 +729,7 @@
         },
         "minecraft:mob_event_filter": {
           "title": "Minecraft Mob Event Filter",
-          "description": "\n\nProperties:\nΓÇó event (string) = ",
+          "description": "\n\nProperties:\n• event (string) = ",
           "$ref": "#/$defs/spawn_spawn_mobeventfilter",
           "defaultSnippets": [
             {
@@ -743,7 +743,7 @@
         },
         "minecraft:player_in_village_filter": {
           "title": "Minecraft Player In Village Filter",
-          "description": "\n\nProperties:\nΓÇó distance (int)\nΓÇó village_border_tolerance (int) = 10",
+          "description": "\n\nProperties:\n• distance (int)\n• village_border_tolerance (int) = 10",
           "$ref": "#/$defs/spawn_spawn_playerinvillagefilter",
           "defaultSnippets": [
             {
@@ -758,7 +758,7 @@
         },
         "minecraft:spawn_event": {
           "title": "Minecraft Spawn Event",
-          "description": "\n\nProperties:\nΓÇó event (string) = ",
+          "description": "\n\nProperties:\n• event (string) = ",
           "$ref": "#/$defs/spawn_spawn_mobeventfilter",
           "defaultSnippets": [
             {
@@ -772,7 +772,7 @@
         },
         "minecraft:spawns_above_block_filter": {
           "title": "Minecraft Spawns Above Block Filter",
-          "description": "\n\nProperties:\nΓÇó blocks (object) = []\nΓÇó distance (int) = 1",
+          "description": "\n\nProperties:\n• blocks (object) = []\n• distance (int) = 1",
           "$ref": "#/$defs/spawn_spawn_spawnaboveblockfilter",
           "defaultSnippets": [
             {
@@ -799,7 +799,7 @@
         },
         "minecraft:weight": {
           "title": "Minecraft Weight",
-          "description": "\n\nProperties:\nΓÇó default (int)\nΓÇó rarity (int) = 0",
+          "description": "\n\nProperties:\n• default (int)\n• rarity (int) = 0",
           "$ref": "#/$defs/spawn_spawn_weight",
           "defaultSnippets": [
             {
@@ -814,7 +814,7 @@
         },
         "minecraft:world_age_filter": {
           "title": "Minecraft World Age Filter",
-          "description": "\n\nProperties:\nΓÇó max (int) = -1\nΓÇó min (int) = 0",
+          "description": "\n\nProperties:\n• max (int) = -1\n• min (int) = 0",
           "$ref": "#/$defs/spawn_spawn_worldagefilter",
           "defaultSnippets": [
             {

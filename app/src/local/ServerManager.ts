@@ -226,7 +226,7 @@ import IFolder from "../storage/IFolder";
 import { IPackageReference, IWorldSettings } from "../minecraft/IWorldSettings";
 import Package from "../app/Package";
 import Database from "../minecraft/Database";
-import ServerMessage from "./ServerMessage";
+import ServerMessage, { ServerMessageCategory } from "./ServerMessage";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import { IMinecraftNetVersionService } from "./MinecraftNetVersionService";
 import { constants } from "../core/Constants";
@@ -842,6 +842,11 @@ export default class ServerManager {
   }
 
   private bubbleServerOutput(dedicatedServer: DedicatedServer, message: ServerMessage) {
+    // Don't forward internal system messages (e.g., querytarget polling output) to the web UI
+    if (message.category === ServerMessageCategory.internalSystemMessage) {
+      return;
+    }
+
     this.#onServerOutput.dispatch(dedicatedServer, message);
     // Push status update for new messages
     this.pushStatusNotification(dedicatedServer);
@@ -971,15 +976,17 @@ export default class ServerManager {
     const slot = this.getSlotForServer(dedicatedServer);
     const recentMessages: Array<{ message: string; received: number; type?: number }> = [];
 
-    // Get recent messages
+    // Get recent messages, excluding internal system messages (e.g., querytarget polling)
     let lastIndex = dedicatedServer.outputLines.length;
     while (lastIndex >= 1 && recentMessages.length < 10) {
       lastIndex--;
       const line = dedicatedServer.outputLines[lastIndex];
-      recentMessages.push({
-        message: line.message,
-        received: line.received,
-      });
+      if (!line.isInternal) {
+        recentMessages.push({
+          message: line.message,
+          received: line.received,
+        });
+      }
     }
 
     this.#httpServer.notifyStatusUpdate(slot, dedicatedServer.status, recentMessages);

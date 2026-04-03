@@ -153,6 +153,12 @@ async function assertSchemaEditorRendered(page: Page): Promise<void> {
   expect(hasSchemaError, "SchemaEditor should not show a JSON schema error").toBe(false);
   expect(hasUiSchemaError, "SchemaEditor should not show a JSON UI schema error").toBe(false);
 
+  // Ensure the editor did not fall back to the "Form not found" placeholder,
+  // which indicates the .form.json file failed to load (e.g. missing from build output).
+  const formNotFound = page.locator('text="Form not found"').first();
+  const hasFormNotFound = await formNotFound.isVisible({ timeout: 1000 }).catch(() => false);
+  expect(hasFormNotFound, "Editor should not show 'Form not found' — .form.json files may be missing from the build").toBe(false);
+
   // Should see at least one MUI form element indicating the schema form rendered
   const formIndicators = [
     page.locator(".MuiInput-root, .MuiInputBase-root").first(),
@@ -223,6 +229,9 @@ test.describe("Schema-Based Editors @full", () => {
 
     const schemaFailures = failedRequests.filter((r) => r.url.includes("editor-schemas"));
     expect(schemaFailures, "No 404s for editor-schema files").toHaveLength(0);
+
+    const formFailures = failedRequests.filter((r) => r.url.includes("/data/forms/"));
+    expect(formFailures, "No 404s for .form.json files").toHaveLength(0);
     console.log("Spawn rules editor rendered successfully");
 
     cleanup();
@@ -261,6 +270,9 @@ test.describe("Schema-Based Editors @full", () => {
 
     const schemaFailures = failedRequests.filter((r) => r.url.includes("editor-schemas"));
     expect(schemaFailures, "No 404s for editor-schema files").toHaveLength(0);
+
+    const formFailures = failedRequests.filter((r) => r.url.includes("/data/forms/"));
+    expect(formFailures, "No 404s for .form.json files").toHaveLength(0);
     console.log("Loot table editor rendered successfully");
 
     cleanup();
@@ -299,6 +311,9 @@ test.describe("Schema-Based Editors @full", () => {
 
     const schemaFailures = failedRequests.filter((r) => r.url.includes("editor-schemas"));
     expect(schemaFailures, "No 404s for editor-schema files").toHaveLength(0);
+
+    const formFailures = failedRequests.filter((r) => r.url.includes("/data/forms/"));
+    expect(formFailures, "No 404s for .form.json files").toHaveLength(0);
     console.log("Trade table editor rendered successfully");
 
     cleanup();

@@ -90,7 +90,7 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
       props.creatorTools.editPreference !== undefined && props.creatorTools.editPreference !== null;
 
     if (!hasExplicitEditPreference) {
-      props.creatorTools.editPreference = CreatorToolsEditPreference.summarized;
+      props.creatorTools.editPreference = CreatorToolsEditPreference.editors;
       props.creatorTools.save();
     }
 
@@ -505,8 +505,8 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
         }}
         src={
           CreatorToolsHost.theme === CreatorToolsThemeStyle.dark
-            ? `${CreatorToolsHost.contentWebRoot}res/images/templates/redflower_lightbg.png`
-            : `${CreatorToolsHost.contentWebRoot}res/images/templates/redflower_darkbg.png`
+            ? `${CreatorToolsHost.contentWebRoot}res/images/templates/redflower_darkbg.png`
+            : `${CreatorToolsHost.contentWebRoot}res/images/templates/redflower_lightbg.png`
         }
       />
     );

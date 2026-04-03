@@ -6,9 +6,7 @@
 import { Octokit } from "@octokit/rest";
 import GitCreateBlobResponse from "./GitCreateBlobResponse";
 import GitCreateTreeParamsTree from "./GitCreateTreeParamsTree";
-import IFile from "./../storage/IFile";
 import { Endpoints } from "@octokit/types";
-import IGitHubClient from "./IGitHubClient";
 import DifferenceSet from "../storage/DifferenceSet";
 import { FileDifferenceType } from "../storage/IFileDifference";
 import Utilities from "../core/Utilities";
@@ -19,10 +17,7 @@ type GitHubUserResponse = Endpoints["GET /user"]["response"];
 
 export default class GitHubManager {
   private _octokit: Octokit;
-  private _prefsFile?: IFile;
   private _isUserStateLoaded: boolean = false;
-
-  private _data: IGitHubClient | undefined;
 
   private _reposResponse?: GitHubReposResponse;
   private _userResponse?: GitHubUserResponse;
@@ -47,59 +42,16 @@ export default class GitHubManager {
     return this._octokit;
   }
 
-  constructor(prefsStorageFile?: IFile) {
+  constructor() {
     this._octokit = new Octokit({
       userAgent: constants.name + " " + constants.version,
     });
-
-    this._prefsFile = prefsStorageFile;
-  }
-
-  async _loadPrefs() {
-    if (this._prefsFile === undefined) {
-      return;
-    }
-
-    if (!this._prefsFile.isContentLoaded) {
-      await this._prefsFile.loadContent();
-    }
-
-    if (this._prefsFile.content !== undefined && typeof this._prefsFile.content === "string") {
-      this._data = JSON.parse(this._prefsFile.content);
-    }
-
-    if (this._data !== undefined && this._data.authToken !== undefined) {
-      this._octokit = new Octokit({
-        auth: this._data.authToken,
-        userAgent: constants.name + " " + constants.version,
-      });
-    }
-  }
-
-  async _savePrefs() {
-    if (this._prefsFile === undefined) {
-      return;
-    }
-
-    if (this._data === undefined) {
-      this._data = {};
-    }
-
-    if (this.authenticatedUser !== undefined && this.authenticatedUser.name !== null) {
-      this._data.userName = this.authenticatedUser.name;
-    }
-
-    this._prefsFile.setContent(JSON.stringify(this._data));
-
-    await this._prefsFile.saveContent();
   }
 
   async ensureUserStateLoaded() {
     if (this._isUserStateLoaded) {
       return;
     }
-
-    await this._loadPrefs();
 
     const userResponse = await this._octokit.rest.users.getAuthenticated();
     this._userResponse = userResponse;

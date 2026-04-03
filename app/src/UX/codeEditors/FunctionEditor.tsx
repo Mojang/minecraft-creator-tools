@@ -124,9 +124,9 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
       inherit: true,
       colors: {
         "editor.foreground": colors.foreground4,
-        "editor.background": this.props.singleCommandMode ? "#000000" : colors.background1,
+        "editor.background": this.props.singleCommandMode ? "#1a1a1a" : colors.background1,
         "editorCursor.foreground": "#8B0000",
-        "editor.lineHighlightBackground": "#0000FF20",
+        "editor.lineHighlightBackground": this.props.singleCommandMode ? "#1a1a1a" : "#0000FF20",
         "editorLineNumber.foreground": "#008800",
         "editor.selectionBackground": "#88000030",
         "editor.inactiveSelectionBackground": "#88000015",
@@ -241,6 +241,10 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
       if (!newValue.startsWith("/")) {
         this.props.onCommandTextChanged(newValue);
       }
+    }
+
+    if (this.props.onUpdateContent !== undefined) {
+      this.props.onUpdateContent(newValue);
     }
   }
 
@@ -565,7 +569,12 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
                 </IconButton>
               )}
               {isConnected && (
-                <IconButton size="small" onClick={this._sendFunction} title="Send commands to Minecraft" aria-label="Send commands to Minecraft">
+                <IconButton
+                  size="small"
+                  onClick={this._sendFunction}
+                  title="Send commands to Minecraft"
+                  aria-label="Send commands to Minecraft"
+                >
                   <FontAwesomeIcon icon={faPlay} className="fa-sm" />
                 </IconButton>
               )}
@@ -583,7 +592,12 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
           <div className="mcfe-accessoryToolBar">
             <Stack direction="row" spacing={0.5} aria-label="Function editor additional tools">
               {this.props.creatorTools.activeMinecraftState !== CreatorToolsMinecraftState.none && (
-                <IconButton size="small" onClick={this._sendFunction} title="Send command to Minecraft" aria-label="Send command to Minecraft">
+                <IconButton
+                  size="small"
+                  onClick={this._sendFunction}
+                  title="Send command to Minecraft"
+                  aria-label="Send command to Minecraft"
+                >
                   <FontAwesomeIcon icon={faPlay} className="fa-sm" />
                 </IconButton>
               )}

@@ -7,7 +7,7 @@
   "properties": {
     "pools": {
       "title": "Pools",
-      "description": "A list of loot pools. Each pool is rolled independently to select entries.\n\nProperties:\nΓÇó rolls (int) = 1\nΓÇó bonus_rolls (int) = 0\nΓÇó entries\nΓÇó conditions\nΓÇó tiers ({ initial_range, bonus_rolls, bonus_chance })",
+      "description": "A list of loot pools. Each pool is rolled independently to select entries.\n\nProperties:\n• rolls (int) = 1\n• bonus_rolls (int) = 0\n• entries\n• conditions\n• tiers ({ initial_range, bonus_rolls, bonus_chance })",
       "type": "array",
       "items": {
         "$ref": "#/$defs/loot_loot_pool"
@@ -72,7 +72,7 @@
         },
         "properties": {
           "title": "Properties",
-          "description": "For 'entity_properties': the entity properties to match.\n\nProperties:\nΓÇó on_fire (boolean)\nΓÇó on_ground (boolean)",
+          "description": "For 'entity_properties': the entity properties to match.\n\nProperties:\n• on_fire (boolean)\n• on_ground (boolean)",
           "type": "object",
           "properties": {
             "on_fire": {
@@ -97,7 +97,7 @@
         },
         "match_tool": {
           "title": "Match Tool",
-          "description": "For 'match_tool': the tool item properties to match.\n\nProperties:\nΓÇó item (string)\nΓÇó enchantments",
+          "description": "For 'match_tool': the tool item properties to match.\n\nProperties:\n• item (string)\n• enchantments",
           "type": "object",
           "properties": {
             "item": {
@@ -106,7 +106,7 @@
             },
             "enchantments": {
               "title": "Enchantments",
-              "description": "\n\nProperties:\nΓÇó enchantment (string)\nΓÇó levels ({ min })",
+              "description": "\n\nProperties:\n• enchantment (string)\n• levels ({ min })",
               "type": "array",
               "items": {
                 "type": "object",
@@ -117,7 +117,7 @@
                   },
                   "levels": {
                     "title": "Levels",
-                    "description": "\n\nProperties:\nΓÇó min (int)",
+                    "description": "\n\nProperties:\n• min (int)",
                     "type": "object",
                     "properties": {
                       "min": {
@@ -184,11 +184,11 @@
             }
           ],
           "title": "Count",
-          "description": "For 'set_count' and 'looting_enchant': the count value or range.\n\nProperties:\nΓÇó min (int)\nΓÇó max (int)"
+          "description": "For 'set_count' and 'looting_enchant': the count value or range.\n\nProperties:\n• min (int)\n• max (int)"
         },
         "data": {
           "title": "Data",
-          "description": "For 'set_data': the data value or range to set.\n\nProperties:\nΓÇó min (int)\nΓÇó max (int)",
+          "description": "For 'set_data': the data value or range to set.\n\nProperties:\n• min (int)\n• max (int)",
           "type": "object",
           "properties": {
             "min": {
@@ -213,7 +213,7 @@
         },
         "damage": {
           "title": "Damage",
-          "description": "For 'set_damage': the damage percentage or range (0.0-1.0).\n\nProperties:\nΓÇó min (float)\nΓÇó max (float)",
+          "description": "For 'set_damage': the damage percentage or range (0.0-1.0).\n\nProperties:\n• min (float)\n• max (float)",
           "type": "object",
           "properties": {
             "min": {
@@ -243,7 +243,7 @@
         },
         "levels": {
           "title": "Levels",
-          "description": "For 'enchant_with_levels': the enchantment level or range.\n\nProperties:\nΓÇó min (int)\nΓÇó max (int)",
+          "description": "For 'enchant_with_levels': the enchantment level or range.\n\nProperties:\n• min (int)\n• max (int)",
           "type": "object",
           "properties": {
             "min": {
@@ -278,7 +278,7 @@
         },
         "conditions": {
           "title": "Conditions",
-          "description": "Conditions that must be met for this function to apply.\n\nProperties:\nΓÇó condition (string)\nΓÇó chance (float)\nΓÇó looting_multiplier (float)\nΓÇó value (int)\nΓÇó default_chance (float)\nΓÇó peaceful (float)\nΓÇó easy (float)\nΓÇó normal (float)\nΓÇó ... and 4 more properties",
+          "description": "Conditions that must be met for this function to apply.\n\nProperties:\n• condition (string)\n• chance (float)\n• looting_multiplier (float)\n• value (int)\n• default_chance (float)\n• peaceful (float)\n• easy (float)\n• normal (float)\n• ... and 4 more properties",
           "type": "array",
           "items": {
             "$ref": "#/$defs/loot_loot_condition"
@@ -301,7 +301,7 @@
               "minimum": 1
             },
             {
-              "description": "\n\nProperties:\nΓÇó min (int) = 1\nΓÇó max (int) = 1",
+              "description": "\n\nProperties:\n• min (int) = 1\n• max (int) = 1",
               "type": "object",
               "properties": {
                 "min": {
@@ -348,7 +348,7 @@
         },
         "entries": {
           "title": "Entries",
-          "description": "Array of possible entries to select from when rolling this pool.\n\nProperties:\nΓÇó type (string)\nΓÇó name (string)\nΓÇó weight (int) = 1\nΓÇó functions\nΓÇó conditions\nΓÇó pools",
+          "description": "Array of possible entries to select from when rolling this pool.\n\nProperties:\n• type (string)\n• name (string)\n• weight (int) = 1\n• functions\n• conditions\n• pools",
           "type": "array",
           "items": {
             "$ref": "#/$defs/loot_loot_entry"
@@ -356,7 +356,7 @@
         },
         "conditions": {
           "title": "Conditions",
-          "description": "Array of conditions that must be met for this pool to be rolled.\n\nProperties:\nΓÇó condition (string)\nΓÇó chance (float)\nΓÇó looting_multiplier (float)\nΓÇó value (int)\nΓÇó default_chance (float)\nΓÇó peaceful (float)\nΓÇó easy (float)\nΓÇó normal (float)\nΓÇó ... and 4 more properties",
+          "description": "Array of conditions that must be met for this pool to be rolled.\n\nProperties:\n• condition (string)\n• chance (float)\n• looting_multiplier (float)\n• value (int)\n• default_chance (float)\n• peaceful (float)\n• easy (float)\n• normal (float)\n• ... and 4 more properties",
           "type": "array",
           "items": {
             "$ref": "#/$defs/loot_loot_condition"
@@ -364,7 +364,7 @@
         },
         "tiers": {
           "title": "Tiers",
-          "description": "Tiered entry selection configuration.\n\nProperties:\nΓÇó initial_range (int)\nΓÇó bonus_rolls (int)\nΓÇó bonus_chance (float)",
+          "description": "Tiered entry selection configuration.\n\nProperties:\n• initial_range (int)\n• bonus_rolls (int)\n• bonus_chance (float)",
           "type": "object",
           "properties": {
             "initial_range": {
@@ -421,7 +421,7 @@
         },
         "functions": {
           "title": "Functions",
-          "description": "Array of functions to apply to the item when selected.\n\nProperties:\nΓÇó function (string)\nΓÇó count ({ min, max })\nΓÇó data ({ min, max })\nΓÇó damage ({ min, max })\nΓÇó treasure (boolean)\nΓÇó levels ({ min, max })\nΓÇó id (string)\nΓÇó destination (string)\nΓÇó ... and 1 more properties",
+          "description": "Array of functions to apply to the item when selected.\n\nProperties:\n• function (string)\n• count ({ min, max })\n• data ({ min, max })\n• damage ({ min, max })\n• treasure (boolean)\n• levels ({ min, max })\n• id (string)\n• destination (string)\n• ... and 1 more properties",
           "type": "array",
           "items": {
             "$ref": "#/$defs/loot_loot_function"
@@ -429,7 +429,7 @@
         },
         "conditions": {
           "title": "Conditions",
-          "description": "Array of conditions that must be met for this entry to be considered.\n\nProperties:\nΓÇó condition (string)\nΓÇó chance (float)\nΓÇó looting_multiplier (float)\nΓÇó value (int)\nΓÇó default_chance (float)\nΓÇó peaceful (float)\nΓÇó easy (float)\nΓÇó normal (float)\nΓÇó ... and 4 more properties",
+          "description": "Array of conditions that must be met for this entry to be considered.\n\nProperties:\n• condition (string)\n• chance (float)\n• looting_multiplier (float)\n• value (int)\n• default_chance (float)\n• peaceful (float)\n• easy (float)\n• normal (float)\n• ... and 4 more properties",
           "type": "array",
           "items": {
             "$ref": "#/$defs/loot_loot_condition"
@@ -437,7 +437,7 @@
         },
         "pools": {
           "title": "Pools",
-          "description": "Nested pools for type 'loot_table'. Allows inline loot table definition.\n\nProperties:\nΓÇó rolls (int) = 1\nΓÇó bonus_rolls (int) = 0\nΓÇó entries\nΓÇó conditions\nΓÇó tiers ({ initial_range, bonus_rolls, bonus_chance })",
+          "description": "Nested pools for type 'loot_table'. Allows inline loot table definition.\n\nProperties:\n• rolls (int) = 1\n• bonus_rolls (int) = 0\n• entries\n• conditions\n• tiers ({ initial_range, bonus_rolls, bonus_chance })",
           "type": "array",
           "items": {
             "$ref": "#/$defs/loot_loot_pool"

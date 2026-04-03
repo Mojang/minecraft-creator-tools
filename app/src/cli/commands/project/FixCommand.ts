@@ -111,7 +111,7 @@ export class FixCommand extends CommandBase {
         continue;
       }
 
-      if (!context.quiet) {
+      if (!context.quiet && !context.json) {
         context.log.info(`Applying fix '${fixCanon}' to project: ${project.name}`);
       }
 
@@ -121,14 +121,14 @@ export class FixCommand extends CommandBase {
           const results = await scriptManager.updateModulesToLatestVersion(project);
           fixResults.push({ project: project.name, fix: fixCanon, updatedCount: results.length });
           if (results.length > 0) {
-            if (!context.quiet) {
+            if (!context.quiet && !context.json) {
               for (const result of results) {
                 context.log.info(`  ${result.message}: ${result.data || ""}`);
               }
               context.log.success(`Updated ${results.length} script module(s) in project: ${project.name}`);
             }
           } else {
-            if (!context.quiet) {
+            if (!context.quiet && !context.json) {
               context.log.info(`No script modules to update in project: ${project.name}`);
             }
           }
@@ -138,7 +138,7 @@ export class FixCommand extends CommandBase {
         case "randomizealluids":
           await ProjectUtilities.randomizeAllUids(project);
           fixResults.push({ project: project.name, fix: fixCanon, updatedCount: 1 });
-          if (!context.quiet) {
+          if (!context.quiet && !context.json) {
             context.log.success(`Randomized all UUIDs in project: ${project.name}`);
           }
           break;
@@ -148,14 +148,14 @@ export class FixCommand extends CommandBase {
           const results = await formatManager.update(project, 1);
           fixResults.push({ project: project.name, fix: fixCanon, updatedCount: results.length });
           if (results.length > 0) {
-            if (!context.quiet) {
+            if (!context.quiet && !context.json) {
               for (const result of results) {
                 context.log.info(`  ${result.message}: ${result.data || ""}`);
               }
               context.log.success(`Updated ${results.length} format_version(s) in project: ${project.name}`);
             }
           } else {
-            if (!context.quiet) {
+            if (!context.quiet && !context.json) {
               context.log.info(`No format versions to update in project: ${project.name}`);
             }
           }
@@ -167,14 +167,14 @@ export class FixCommand extends CommandBase {
           const results = await engineManager.update(project, 1);
           fixResults.push({ project: project.name, fix: fixCanon, updatedCount: results.length });
           if (results.length > 0) {
-            if (!context.quiet) {
+            if (!context.quiet && !context.json) {
               for (const result of results) {
                 context.log.info(`  ${result.message}: ${result.data || ""}`);
               }
               context.log.success(`Updated ${results.length} min_engine_version(s) in project: ${project.name}`);
             }
           } else {
-            if (!context.quiet) {
+            if (!context.quiet && !context.json) {
               context.log.info(`No min engine versions to update in project: ${project.name}`);
             }
           }
@@ -184,7 +184,7 @@ export class FixCommand extends CommandBase {
     }
 
     if (context.json) {
-      context.log.info(JSON.stringify({ fixes: fixResults, projectCount: context.projects.length }));
+      context.log.data(JSON.stringify({ fixes: fixResults, projectCount: context.projects.length }));
     }
 
     this.logComplete(context);

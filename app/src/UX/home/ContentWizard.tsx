@@ -38,9 +38,6 @@ import {
 } from "../../minecraft/IContentMetaSchema";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faCow,
-  faCube,
-  faWrench,
   faArrowLeft,
   faArrowRight,
   faCheck,
@@ -49,9 +46,6 @@ import {
   faChevronDown,
   faChevronRight,
   faFile,
-  faEgg,
-  faBone,
-  faShop,
 } from "@fortawesome/free-solid-svg-icons";
 import IGalleryItem, { GalleryItemType } from "../../app/IGalleryItem";
 import { ProjectItemType } from "../../app/IProjectItemData";
@@ -59,10 +53,9 @@ import { ProjectScriptLanguage } from "../../app/IProjectData";
 import { BODY_TYPES, renderBodyTypeIcon } from "../shared/components/icons/BodyTypeIcons";
 import { renderBlockTraitIcon, renderItemTraitIcon } from "../shared/components/icons/TraitIcons";
 import EntityTraitPicker from "../editors/entityType/EntityTraitPicker";
-import { BLOCK_TRAITS, ITEM_TRAITS, getTraitIconColor } from "../types/TraitData";
+import { BLOCK_TRAITS, ITEM_TRAITS, getTraitIconColor, getTraitCardThemeStyle } from "../types/TraitData";
 import IProjectTheme from "../types/IProjectTheme";
 import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../app/CreatorToolsHost";
-import ContentWizardButton from "../components/contentWizard/ContentWizardButton";
 
 // ============================================================================
 // WIZARD TYPE ENUM
@@ -91,7 +84,6 @@ export enum ContentWizardAction {
   newSpawnRule = 6,
   newLootTable = 7,
   newStructure = 8,
-  newTradeTable = 9,
   galleryItem = 10, // A specific gallery item was selected
 }
 
@@ -369,9 +361,6 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
     const lootTableItem = spawnLootRecipes.find(
       (item) => item.targetType === ProjectItemType.lootTableBehavior || item.id === "loot_table"
     );
-    const tradeTableItem = spawnLootRecipes.find(
-      (item) => item.targetType === ProjectItemType.tradingBehaviorJson || item.id === "trade_table"
-    );
     const worldGen = getGalleryItems(GalleryItemType.worldGen);
     const featureRuleItem =
       worldGen.find((item) => item.targetType === ProjectItemType.featureRuleBehavior || item.id === "feature_rule") ||
@@ -438,10 +427,16 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                 onClick={() => this._handleWizardTypeSelect(ContentWizardType.entity)}
               >
                 <div className="cwiz-launcher-option-icon">
-                  <FontAwesomeIcon icon={faCow} />
+                  <img
+                    src={CreatorToolsHost.contentWebRoot + "res/images/icons/new_mob_240.png"}
+                    alt="New Mob"
+                    className="cwiz-launcher-option-img"
+                  />
                 </div>
-                <div className="cwiz-launcher-option-label">New Mob</div>
-                <div className="cwiz-launcher-option-desc">Step-by-step — traits, stats & appearance</div>
+                <div className="cwiz-launcher-option-content">
+                  <div className="cwiz-launcher-option-label">New Mob</div>
+                  <div className="cwiz-launcher-option-desc">Step-by-step — traits, stats & appearance</div>
+                </div>
               </div>
               <div
                 className="cwiz-launcher-option"
@@ -449,10 +444,16 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                 onClick={() => this._handleWizardTypeSelect(ContentWizardType.block)}
               >
                 <div className="cwiz-launcher-option-icon">
-                  <FontAwesomeIcon icon={faCube} />
+                  <img
+                    src={CreatorToolsHost.contentWebRoot + "res/images/icons/new_block_240.png"}
+                    alt="New Block"
+                    className="cwiz-launcher-option-img"
+                  />
                 </div>
-                <div className="cwiz-launcher-option-label">New Block</div>
-                <div className="cwiz-launcher-option-desc">Step-by-step — shape, hardness & texture</div>
+                <div className="cwiz-launcher-option-content">
+                  <div className="cwiz-launcher-option-label">New Block</div>
+                  <div className="cwiz-launcher-option-desc">Step-by-step — shape, hardness & texture</div>
+                </div>
               </div>
               <div
                 className="cwiz-launcher-option"
@@ -460,10 +461,16 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                 onClick={() => this._handleWizardTypeSelect(ContentWizardType.item)}
               >
                 <div className="cwiz-launcher-option-icon">
-                  <FontAwesomeIcon icon={faWrench} />
+                  <img
+                    src={CreatorToolsHost.contentWebRoot + "res/images/icons/new_item_240.png"}
+                    alt="New Item"
+                    className="cwiz-launcher-option-img"
+                  />
                 </div>
-                <div className="cwiz-launcher-option-label">New Item</div>
-                <div className="cwiz-launcher-option-desc">Step-by-step — tool, food, weapon & more</div>
+                <div className="cwiz-launcher-option-content">
+                  <div className="cwiz-launcher-option-label">New Item</div>
+                  <div className="cwiz-launcher-option-desc">Step-by-step — tool, food, weapon & more</div>
+                </div>
               </div>
             </div>
           </div>
@@ -484,7 +491,11 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                 data-testid="wizard-mob-from-mc"
                 onClick={() => this._handleQuickAction(ContentWizardAction.entityFromVanilla)}
               >
-                <FontAwesomeIcon icon={faCow} className="cwiz-main-icon" />
+                <img
+                  src={CreatorToolsHost.contentWebRoot + "res/images/icons/copy_mob_240.png"}
+                  alt=""
+                  className="cwiz-main-icon cwiz-main-img"
+                />
                 <div className="cwiz-main-content">
                   <div className="cwiz-main-label">New Mob Based on Existing</div>
                   <div className="cwiz-main-desc">Customize a mob from your project or any vanilla Minecraft mob</div>
@@ -495,7 +506,11 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                 data-testid="wizard-block-from-mc"
                 onClick={() => this._handleQuickAction(ContentWizardAction.basicBlockType)}
               >
-                <FontAwesomeIcon icon={faCube} className="cwiz-main-icon" />
+                <img
+                  src={CreatorToolsHost.contentWebRoot + "res/images/icons/copy_block_240.png"}
+                  alt=""
+                  className="cwiz-main-icon cwiz-main-img"
+                />
                 <div className="cwiz-main-content">
                   <div className="cwiz-main-label">New Block Based on Existing</div>
                   <div className="cwiz-main-desc">
@@ -508,7 +523,11 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                 data-testid="wizard-item-from-mc"
                 onClick={() => this._handleQuickAction(ContentWizardAction.basicItemType)}
               >
-                <FontAwesomeIcon icon={faWrench} className="cwiz-main-icon" />
+                <img
+                  src={CreatorToolsHost.contentWebRoot + "res/images/icons/copy_item_240.png"}
+                  alt=""
+                  className="cwiz-main-icon cwiz-main-img"
+                />
                 <div className="cwiz-main-content">
                   <div className="cwiz-main-label">New Item Based on Existing</div>
                   <div className="cwiz-main-desc">
@@ -518,7 +537,11 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
               </div>
               {spawnRuleItem ? (
                 <div className="cwiz-main-option" onClick={() => this._handleGalleryItemClick(spawnRuleItem)}>
-                  <FontAwesomeIcon icon={faEgg} className="cwiz-main-icon" />
+                  <img
+                    src={CreatorToolsHost.contentWebRoot + "res/images/icons/spawn_240.png"}
+                    alt=""
+                    className="cwiz-main-icon cwiz-main-img"
+                  />
                   <div className="cwiz-main-content">
                     <div className="cwiz-main-label">Spawn Rules</div>
                     <div className="cwiz-main-desc">Control where and when mobs appear in the world</div>
@@ -529,7 +552,11 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                   className="cwiz-main-option"
                   onClick={() => this._handleQuickAction(ContentWizardAction.newSpawnRule)}
                 >
-                  <FontAwesomeIcon icon={faEgg} className="cwiz-main-icon" />
+                  <img
+                    src={CreatorToolsHost.contentWebRoot + "res/images/icons/spawn_240.png"}
+                    alt=""
+                    className="cwiz-main-icon cwiz-main-img"
+                  />
                   <div className="cwiz-main-content">
                     <div className="cwiz-main-label">Spawn Rules</div>
                     <div className="cwiz-main-desc">Control where and when mobs appear in the world</div>
@@ -538,7 +565,11 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
               )}
               {lootTableItem ? (
                 <div className="cwiz-main-option" onClick={() => this._handleGalleryItemClick(lootTableItem)}>
-                  <FontAwesomeIcon icon={faBone} className="cwiz-main-icon" />
+                  <img
+                    src={CreatorToolsHost.contentWebRoot + "res/images/icons/drops_240.png"}
+                    alt=""
+                    className="cwiz-main-icon cwiz-main-img"
+                  />
                   <div className="cwiz-main-content">
                     <div className="cwiz-main-label">Loot Table</div>
                     <div className="cwiz-main-desc">Define what items drop from mobs or chests</div>
@@ -549,25 +580,17 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                   className="cwiz-main-option"
                   onClick={() => this._handleQuickAction(ContentWizardAction.newLootTable)}
                 >
-                  <FontAwesomeIcon icon={faBone} className="cwiz-main-icon" />
+                  <img
+                    src={CreatorToolsHost.contentWebRoot + "res/images/icons/drops_240.png"}
+                    alt=""
+                    className="cwiz-main-icon cwiz-main-img"
+                  />
                   <div className="cwiz-main-content">
                     <div className="cwiz-main-label">Loot Table</div>
                     <div className="cwiz-main-desc">Define what items drop from mobs or chests</div>
                   </div>
                 </div>
               )}
-
-              <ContentWizardButton
-                onNewItem={() => this._handleQuickAction(ContentWizardAction.newTradeTable)}
-                onExistingItem={this._handleGalleryItemClick}
-                item={tradeTableItem}
-              >
-                <FontAwesomeIcon icon={faShop} className="cwiz-main-icon" />
-                <div className="cwiz-main-content">
-                  <div className="cwiz-main-label">Trade Table</div>
-                  <div className="cwiz-main-desc">Define what items can be traded with villagers</div>
-                </div>
-              </ContentWizardButton>
             </div>
           </div>
 
@@ -896,7 +919,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
       case 1: // Traits
         stepTitle = "Select Traits";
         stepContent = (
-          <div className="cwiz-step-content">
+          <div className="cwiz-step-content" style={getTraitCardThemeStyle(this.props.theme)}>
             <div className="cwiz-traits-grid">
               {BLOCK_TRAITS.map((trait) => (
                 <div
@@ -1032,7 +1055,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
       case 1: // Traits
         stepTitle = "Select Traits";
         stepContent = (
-          <div className="cwiz-step-content">
+          <div className="cwiz-step-content" style={getTraitCardThemeStyle(this.props.theme)}>
             <div className="cwiz-traits-grid">
               {ITEM_TRAITS.map((trait) => (
                 <div

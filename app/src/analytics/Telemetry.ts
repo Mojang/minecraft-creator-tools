@@ -49,7 +49,7 @@ class TelemetryService {
   private _isInitialized: boolean = false;
   private _oneDSInstance: OneDSApplicationInsights | null = null;
   private _activeProjectCount: number = 0;
-  private _mctoolsVersion: string = "0.0.1";
+  private _mctoolsVersion: string = "0.0.1-dev";
   private window: typeof globalThis = globalThis;
 
   /**

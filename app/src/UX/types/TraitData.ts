@@ -9,7 +9,9 @@
  * same data drives both the wizard creation flow and the editor trait picker.
  */
 
+import React from "react";
 import { EntityTraitId } from "../../minecraft/IContentMetaSchema";
+import IProjectTheme from "./IProjectTheme";
 
 // ============================================================================
 // TRAIT INFO INTERFACE
@@ -233,4 +235,34 @@ export function toggleEntityTrait(currentTraits: EntityTraitId[], traitId: Entit
   }
 
   return traits;
+}
+
+// ============================================================================
+// TRAIT CARD THEME STYLES
+// ============================================================================
+
+/** Brighten or darken a hex color by a signed offset per channel. */
+function adjustHex(hex: string, offset: number): string {
+  const r = Math.max(0, Math.min(255, parseInt(hex.slice(1, 3), 16) + offset));
+  const g = Math.max(0, Math.min(255, parseInt(hex.slice(3, 5), 16) + offset));
+  const b = Math.max(0, Math.min(255, parseInt(hex.slice(5, 7), 16) + offset));
+  return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+}
+
+/**
+ * Build CSS custom-property style object for the trait card grid container.
+ * Sets --trait-bg, --trait-border, --trait-shadow, --trait-highlight, --trait-fg
+ * and hover variants derived from the theme's Minecraft button bevel palette.
+ */
+export function getTraitCardThemeStyle(theme: IProjectTheme): React.CSSProperties {
+  return {
+    "--trait-bg": theme.mc4,
+    "--trait-border": theme.mc0,
+    "--trait-shadow": theme.mc1,
+    "--trait-highlight": theme.mc5,
+    "--trait-fg": theme.mcc1,
+    "--trait-hover-bg": adjustHex(theme.mc4, 11),
+    "--trait-hover-shadow": adjustHex(theme.mc1, 9),
+    "--trait-hover-highlight": adjustHex(theme.mc5, 10),
+  } as React.CSSProperties;
 }

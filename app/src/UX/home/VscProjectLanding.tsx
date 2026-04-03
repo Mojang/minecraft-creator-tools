@@ -335,8 +335,8 @@ export default class VscProjectLanding extends Component<IVscProjectLandingProps
         }}
         src={
           CreatorToolsHost.theme === CreatorToolsThemeStyle.dark
-            ? `${CreatorToolsHost.contentWebRoot}res/images/templates/redflower_lightbg.png`
-            : `${CreatorToolsHost.contentWebRoot}res/images/templates/redflower_darkbg.png`
+            ? `${CreatorToolsHost.contentWebRoot}res/images/templates/redflower_darkbg.png`
+            : `${CreatorToolsHost.contentWebRoot}res/images/templates/redflower_lightbg.png`
         }
       />
     );

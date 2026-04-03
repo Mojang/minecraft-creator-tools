@@ -7,20 +7,20 @@
     position: relative;
     top: 1px;
     user-select: none;
-    padding-right: 12px;
+    padding-right: 8px;
   }
 
-  .mts-toolArea {
-    display: grid;
-    grid-template-columns: 240px 180px 55px 1fr;
+  .mts-toolBar {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
   }
 
   .mts-typeLabel {
-    grid-column: 3;
-    padding-left: 8px;
-    padding-top: 4px;
+    padding-left: 4px;
     user-select: none;
-    grid-row: 1;
+    white-space: nowrap;
   }
 }
 
@@ -29,9 +29,11 @@
     width: 130px;
   }
 
-  .mts-toolArea {
-    display: grid;
-    grid-template-columns: 140px 180px 55px 1fr;
+  .mts-toolBar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
   }
 
   .mts-label {
@@ -43,6 +45,12 @@
   }
 }
 
+.mts-outer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .mts-spacer {
   margin-top: 20px;
 }
@@ -52,13 +60,13 @@
 }
 
 .mts-toolPicker {
-  grid-column: 1;
-  grid-row: 1;
+  flex-shrink: 0;
 }
 
 .mts-toolName {
-  grid-column: 2;
-  grid-row: 1;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .mts-toolName input {
@@ -66,19 +74,28 @@
 }
 
 .mts-toolType {
-  grid-column: 4;
-  grid-row: 1;
+  flex-shrink: 0;
+}
+
+.mts-typeIcon {
+  font-family: monospace;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+  text-transform: none;
 }
 
 .mts-interior {
-  grid-column-start: 1;
-  grid-column-end: 5;
-  grid-row: 2;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .mts-logArea {
-  grid-column-start: 1;
-  grid-column-end: 5;
-  grid-row: 3;
-  padding-top: 100px;
+  flex-shrink: 0;
+  border-top: 1px solid rgba(128, 128, 128, 0.3);
+}
+
+.mts-logArea .lia-outer {
+  height: auto;
 }

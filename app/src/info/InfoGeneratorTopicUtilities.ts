@@ -12,8 +12,8 @@ import Utilities from "../core/Utilities";
  * in the public/data/forms/mctoolsval/ folder, with each generator having its own form file.
  */
 export default class InfoGeneratorTopicUtilities {
-  private static _topicFormsByGeneratorId: { [generatorId: string]: IFormDefinition | undefined } = {};
-  private static _loadingPromises: { [generatorId: string]: Promise<IFormDefinition | undefined> } = {};
+  private static _topicFormsByGeneratorId: { [generatorId: string]: IFormDefinition | null | undefined } = {};
+  private static _loadingPromises: { [generatorId: string]: Promise<IFormDefinition | null> } = {};
 
   /**
    * Gets topic data for a specific generator and topic ID from form.json files.
@@ -43,7 +43,7 @@ export default class InfoGeneratorTopicUtilities {
     const normalizedId = generatorId.toLowerCase();
     const form = this._topicFormsByGeneratorId[normalizedId];
 
-    if (!form) {
+    if (!form || form === null) {
       return undefined;
     }
 
@@ -129,39 +129,40 @@ export default class InfoGeneratorTopicUtilities {
   static async ensureFormLoaded(generatorId: string): Promise<IFormDefinition | undefined> {
     const normalizedId = generatorId.toLowerCase();
 
-    // Check if already loaded
-    const existingForm = this._topicFormsByGeneratorId[normalizedId];
-    if (existingForm !== undefined) {
-      return existingForm;
+    // Check if already loaded (null means "checked and not found")
+    if (normalizedId in this._topicFormsByGeneratorId) {
+      return this._topicFormsByGeneratorId[normalizedId] ?? undefined;
     }
 
     // Check if currently loading
     const loadingPromise = this._loadingPromises[normalizedId];
     if (loadingPromise) {
-      return loadingPromise;
+      const result = await loadingPromise;
+      return result ?? undefined;
     }
 
     // Start loading
     this._loadingPromises[normalizedId] = this.loadForm(normalizedId);
 
     const form = await this._loadingPromises[normalizedId];
-    this._topicFormsByGeneratorId[normalizedId] = form;
+    // Cache result: store null for missing forms to avoid re-fetching
+    this._topicFormsByGeneratorId[normalizedId] = form ?? null;
 
     delete this._loadingPromises[normalizedId];
 
-    return form;
+    return form ?? undefined;
   }
 
   /**
    * Loads a form.json file for a generator.
    */
-  private static async loadForm(generatorId: string): Promise<IFormDefinition | undefined> {
+  private static async loadForm(generatorId: string): Promise<IFormDefinition | null> {
     try {
       const form = await Database.ensureFormLoaded("mctoolsval", generatorId);
-      return form;
+      return form ?? null;
     } catch {
       // Form file doesn't exist for this generator - that's OK
-      return undefined;
+      return null;
     }
   }
 

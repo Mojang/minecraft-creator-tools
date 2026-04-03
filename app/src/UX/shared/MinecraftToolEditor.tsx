@@ -2,7 +2,15 @@ import { Component } from "react";
 import IAppProps from "../appShell/IAppProps";
 import "./MinecraftToolEditor.css";
 import { CreatorToolsMinecraftState } from "../../app/CreatorTools";
-import { Stack, TextField, FormControl, Select, MenuItem, SelectChangeEvent } from "@mui/material";
+import {
+  TextField,
+  FormControl,
+  Select,
+  MenuItem,
+  ToggleButton,
+  ToggleButtonGroup,
+  SelectChangeEvent,
+} from "@mui/material";
 import { LazyFunctionEditor } from "../appShell/LazyComponents";
 import IPersistable from "../types/IPersistable";
 import IMinecraft from "../../app/IMinecraft";
@@ -103,6 +111,8 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
     const command = this.props.creatorTools.getCustomTool(this.state.activeCommandIndex);
 
     command.text = newFunction;
+
+    this.props.creatorTools.save();
   }
 
   _updatePreferredTextSize(newTextSize: number) {
@@ -125,10 +135,14 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
     }
   }
 
-  async _handleCommandTypeChange(event: SelectChangeEvent<string>) {
+  async _handleCommandTypeChange(_event: React.MouseEvent<HTMLElement>, newValue: string | null) {
+    if (newValue === null) {
+      return; // Don't allow deselecting both
+    }
+
     const customTool = this.props.creatorTools.getCustomTool(this.state.activeCommandIndex);
 
-    if (event.target.value === "Script") {
+    if (newValue === "Script") {
       customTool.type = CustomToolType.script;
     } else {
       customTool.type = CustomToolType.function;
@@ -220,6 +234,7 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
           onUpdateContent={this._updateToolContent}
           creatorTools={this.props.creatorTools}
           initialContent={content}
+          content={content}
         />
       );
     } else if (customTool.type === CustomToolType.script) {
@@ -228,6 +243,7 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
           theme={this.props.theme}
           creatorTools={this.props.creatorTools}
           initialContent={content}
+          content={content}
           onUpdateContent={this._updateToolContent}
           readOnly={false}
           scriptLanguage={ProjectScriptLanguage.typeScript}
@@ -243,6 +259,7 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
         <LazyFunctionEditor
           theme={this.props.theme}
           initialContent={content}
+          content={content}
           project={this.props.project}
           isCommandEditor={true}
           roleId={"toolEditor"}
@@ -259,10 +276,7 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
     const toolType = customTool.type === CustomToolType.function ? "Commands" : "Script";
     return (
       <div className="mts-outer">
-        <div className="mts-toolArea">
-          <div className="cose-componentToolBarArea">
-            <Stack direction="row" spacing={1} aria-label="Minecraft tool actions" />
-          </div>
+        <div className="mts-toolBar">
           <div className="mts-toolPicker">
             <FormControl size="small" fullWidth>
               <Select
@@ -295,25 +309,32 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
               onChange={this._handleToolNameUpdate}
             />
           </div>
-          <div className="mts-typeLabel">Type:</div>
           <div className="mts-toolType">
-            <FormControl size="small">
-              <Select value={toolType} onChange={this._handleCommandTypeChange}>
-                <MenuItem value="Commands">Commands</MenuItem>
-                <MenuItem value="Script">Script</MenuItem>
-              </Select>
-            </FormControl>
+            <ToggleButtonGroup
+              value={toolType}
+              exclusive
+              onChange={this._handleCommandTypeChange}
+              size="small"
+              aria-label="Tool type"
+            >
+              <ToggleButton value="Commands" title="Commands" aria-label="Commands">
+                <span className="mts-typeIcon">/say</span>
+              </ToggleButton>
+              <ToggleButton value="Script" title="Script" aria-label="Script">
+                <span className="mts-typeIcon">&#123; &#125;</span>
+              </ToggleButton>
+            </ToggleButtonGroup>
           </div>
-          <div className="mts-interior">{interior}</div>
-          <div className="mts-logArea">
-            <LogItemArea
-              creatorTools={this.props.creatorTools}
-              onSetExpandedSize={this._statusExpandedSizeChanged}
-              filterTopics={[StatusTopic.minecraft]}
-              mode={this.state.minecraftStatus}
-              widthOffset={this.props.widthOffset}
-            />
-          </div>
+        </div>
+        <div className="mts-interior">{interior}</div>
+        <div className="mts-logArea">
+          <LogItemArea
+            creatorTools={this.props.creatorTools}
+            onSetExpandedSize={this._statusExpandedSizeChanged}
+            filterTopics={[StatusTopic.minecraft]}
+            mode={this.state.minecraftStatus}
+            widthOffset={this.props.widthOffset}
+          />
         </div>
       </div>
     );

@@ -78,6 +78,10 @@ export interface IWorldSummary {
   lastBackupAt?: string;
   /** Number of backups available */
   backupCount: number;
+  /** World ID for UI consumption (same as id) */
+  worldId?: string;
+  /** Last modified date for UI consumption */
+  lastModified?: string;
 }
 
 /**

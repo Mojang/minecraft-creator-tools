@@ -9,6 +9,7 @@ import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import MinecraftDefinitions from "../minecraft/MinecraftDefinitions";
 import ModelDesignUtilities from "../minecraft/ModelDesignUtilities";
 import HttpStorage from "../storage/HttpStorage";
+import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
 import CreatorToolsHost from "./CreatorToolsHost";
 import IGalleryItem, { GalleryItemType } from "./IGalleryItem";
@@ -540,25 +541,44 @@ export default class ProjectCreateManager {
 
       const repoFolder =
         repoFolderMap[galleryProject.gitHubRepoName] ||
-        galleryProject.gitHubRepoName +
-          "-" +
-          (galleryProject.gitHubBranch ? galleryProject.gitHubBranch : "main");
+        galleryProject.gitHubRepoName + "-" + (galleryProject.gitHubBranch ? galleryProject.gitHubBranch : "main");
 
-      const url =
-        Utilities.ensureEndsWithSlash(CreatorToolsHost.getVanillaContentRoot()) +
+      const relativePath =
         "res/samples/" +
         Utilities.ensureEndsWithSlash(galleryProject.gitHubOwner) +
         Utilities.ensureEndsWithSlash(repoFolder) +
         (galleryProject.gitHubFolder ? Utilities.ensureNotStartsWithSlash(galleryProject.gitHubFolder) : "");
 
-      const gh = HttpStorage.get(url); //new GitHubStorage(carto.anonGitHub, gitHubRepoName, gitHubOwner, gitHubBranch, gitHubFolder);
+      let rootFolder: IFolder | undefined;
 
-      if (!gh.rootFolder.isLoaded) {
-        await gh.rootFolder.load();
+      // Prefer local storage (CLI/Electron) over HTTP to avoid 404s on static hosts
+      // that don't serve directory indexes.
+      if (Database.local) {
+        const storage = Database.local.createStorage(relativePath);
+        if (storage) {
+          const candidateFolder = storage.rootFolder;
+          await candidateFolder.load();
+
+          // Only use local storage if it actually contains the expected content;
+          // otherwise fall back to HTTP.
+          if (candidateFolder.folders["behavior_packs"] && candidateFolder.folders["resource_packs"]) {
+            rootFolder = candidateFolder;
+          }
+        }
       }
 
-      const bps = gh.rootFolder.folders["behavior_packs"];
-      const rps = gh.rootFolder.folders["resource_packs"];
+      if (!rootFolder) {
+        const url = Utilities.ensureEndsWithSlash(CreatorToolsHost.getVanillaContentRoot()) + relativePath;
+        const gh = HttpStorage.get(url);
+        rootFolder = gh.rootFolder;
+      }
+
+      if (!rootFolder.isLoaded) {
+        await rootFolder.load();
+      }
+
+      const bps = rootFolder.folders["behavior_packs"];
+      const rps = rootFolder.folders["resource_packs"];
 
       if (!bps || !rps) {
         Log.unexpectedUndefined("AETFLT");

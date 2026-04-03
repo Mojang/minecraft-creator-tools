@@ -325,8 +325,8 @@ export default function ProjectPanel(props: ProjectPanelProps) {
               const imageSource = project.previewImageBase64
                 ? `data:image/png;base64,${project.previewImageBase64}`
                 : CreatorToolsHost.theme === CreatorToolsThemeStyle.dark
-                  ? CreatorToolsHost.contentWebRoot + "res/images/templates/redflower_lightbg.png"
-                  : CreatorToolsHost.contentWebRoot + "res/images/templates/redflower_darkbg.png";
+                  ? CreatorToolsHost.contentWebRoot + "res/images/templates/redflower_darkbg.png"
+                  : CreatorToolsHost.contentWebRoot + "res/images/templates/redflower_lightbg.png";
 
               return (
                 <Box

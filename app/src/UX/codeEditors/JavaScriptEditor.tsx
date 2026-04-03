@@ -516,6 +516,10 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
         this.getEditorInstanceId()
       );
     }
+
+    if (!this.props.file && this.props.onUpdateContent && newValue !== undefined) {
+      this.props.onUpdateContent(newValue);
+    }
   }
 
   componentDidMount(): void {
@@ -528,6 +532,19 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
     // When file changes, ensure the new file's content is loaded
     if (prevProps.file !== this.props.file) {
       this._ensureContentLoaded();
+    }
+
+    // When initialContent changes without a file (e.g., tool editor switching tools),
+    // update the Monaco model directly
+    if (
+      !this.props.file &&
+      this.editor &&
+      this.props.initialContent !== undefined &&
+      prevProps.initialContent !== this.props.initialContent
+    ) {
+      this._suppressOnChange = true;
+      this.editor.setValue(this.props.initialContent);
+      this._suppressOnChange = false;
     }
 
     if (prevProps.navigationTarget !== this.props.navigationTarget) {
@@ -873,7 +890,7 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
 
       let coreUri = undefined;
 
-      if (this.state.isLoaded && this.props.file) {
+      if (this.props.file) {
         coreUri = JavaScriptEditor.getUriForFile(this.props.file, this.props.scriptLanguage);
       }
 
@@ -891,6 +908,8 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
             key="editor"
             defaultLanguage="typescript"
             path={coreUri}
+            defaultValue={!this.props.file ? this.props.initialContent ?? "" : undefined}
+            keepCurrentModel={!this.props.file ? false : true}
             options={{
               fontSize: this.props.preferredTextSize,
               readOnly: this.props.readOnly,

@@ -139,6 +139,7 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
   _cameraMarker: L.Marker | undefined;
   _trackCamera = false;
   _trackCameraBtn: HTMLButtonElement | undefined;
+  _hasCenteredOnPlayer = false;
   _cameraX: number | undefined;
   _cameraY: number | undefined;
   _cameraZ: number | undefined;
@@ -2527,6 +2528,19 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
 
   _handlePlayerTravelled(gsm: GameStateManager, message: IPlayerTravelledEvent) {
     this._ensureDefaultMarkers();
+
+    // Center the map on the player the first time we receive their position.
+    // This handles the common case where the map initially centers on spawn (0,0)
+    // but the player is actually far away from spawn.
+    if (!this._hasCenteredOnPlayer && this._map && gsm.playerLocation) {
+      this._hasCenteredOnPlayer = true;
+      const loc = gsm.playerLocation;
+      this._map.setView(
+        [-(loc.z - 1) / this._posToCoordDivisor, (loc.x - 1) / this._posToCoordDivisor],
+        this._map.getZoom(),
+        { animate: true }
+      );
+    }
   }
 
   /**
@@ -2687,6 +2701,12 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
 
   componentDidUpdate(prevProps: IWorldMapProps, prevState: IWorldMapState) {
     this._applyNewWorld();
+
+    // Retry GameStateManager subscription if it wasn't available during initial load.
+    // activeMinecraft and its gameStateManager may initialize after the map first renders.
+    if (!this._gsm) {
+      this._ensureGameStateManager();
+    }
   }
 
   _renderTile(coords: { x: number; y: number; z: number }) {
