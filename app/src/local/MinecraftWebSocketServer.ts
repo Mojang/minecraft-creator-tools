@@ -162,15 +162,24 @@ export default class MinecraftWebSocketServer {
     }
   }
 
-  public openServer(){
+  public openServer() {
     if (this.server) {
       return;
     }
 
-    console.log("Starting Minecraft websocket server on port " + this._port);
+    const listenHost = "127.0.0.1";
+
+    console.log("Starting Minecraft websocket server on " + listenHost + ":" + this._port);
 
     this.server = http.createServer();
-    this._wss = new WebSocketServer({ server: this.server });
+    this._wss = new WebSocketServer({
+      server: this.server,
+      verifyClient: (info: { origin: string; req: http.IncomingMessage }) => {
+        const remoteAddress = info.req.socket.remoteAddress;
+
+        return remoteAddress === "127.0.0.1" || remoteAddress === "::1" || remoteAddress === "::ffff:127.0.0.1";
+      },
+    });
 
     this.server.on("error", (e) => {
       Log.message("Error on server." + e);
@@ -183,8 +192,8 @@ export default class MinecraftWebSocketServer {
     });
 
     try {
-      this.server.listen(this._port, () => {
-        Log.message("Minecraft websocket server started on port " + this._port + ".");
+      this.server.listen(this._port, listenHost, () => {
+        Log.message("Minecraft websocket server started on " + listenHost + ":" + this._port + ".");
       });
     } catch (e) {
       Log.message("Error opening port " + this._port + ".");

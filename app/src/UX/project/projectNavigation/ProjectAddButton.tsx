@@ -541,9 +541,6 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
           case ContentWizardAction.newLootTable:
             this.launchNewNamedGeneric(ProjectItemType.lootTableBehavior);
             break;
-          case ContentWizardAction.newTradeTable:
-            this.launchNewNamedGeneric(ProjectItemType.tradingBehaviorJson);
-            break;
 
           case ContentWizardAction.newStructure:
             this._handleNewStructureClick();

@@ -2,7 +2,7 @@ import { Component } from "react";
 import IAppProps from "../appShell/IAppProps";
 import CreatorTools, { CreatorToolsMinecraftErrorStatus, CreatorToolsMinecraftState } from "../../app/CreatorTools";
 import "./RemoteServerSettingsPanel.css";
-import { TextField, Button, Select, MenuItem, SelectChangeEvent, FormControl, InputLabel } from "@mui/material";
+import { TextField, Button, Select, MenuItem, SelectChangeEvent, FormControl } from "@mui/material";
 import IPersistable from "../types/IPersistable";
 import CreatorToolsAuthentication from "../../app/CreatorToolsAuthentication";
 import CreatorToolsHost from "../../app/CreatorToolsHost";
@@ -160,6 +160,10 @@ export default class RemoteServerSettingsPanel extends Component<
       if (slot === value && this.props.creatorTools.remoteServerPort !== i) {
         this.props.creatorTools.remoteServerPort = i;
         this.props.creatorTools.save();
+
+        this.setState({
+          remoteServerPort: i,
+        });
       }
     }
   }
@@ -304,11 +308,10 @@ export default class RemoteServerSettingsPanel extends Component<
         <div className="rssp-pcinput" key="pcinput">
           <TextField
             type="password"
-            label="Server Passcode"
             value={this.state.remoteServerPasscode}
             onChange={this._handleRemoteServerPasscodeChanged}
             size="small"
-            fullWidth
+            sx={{ maxWidth: 200 }}
           />
           {passwordMessage}
         </div>
@@ -337,10 +340,7 @@ export default class RemoteServerSettingsPanel extends Component<
       serverProps.push(
         <div className="rssp-portinput" key="portinput">
           <FormControl size="small" fullWidth>
-            <InputLabel id="rssp-slot-label">Remote Server Slot</InputLabel>
             <Select
-              labelId="rssp-slot-label"
-              label="Remote Server Slot"
               value={
                 this.props.creatorTools.remoteServerPort !== undefined &&
                 this.props.creatorTools.remoteServerPort >= 0 &&

@@ -59,6 +59,10 @@ export default class WebServer extends Component<IWebServerProps, IWebServerStat
       interior.push(<div className="wbsrv-motd">{motd}</div>);
     }
 
+    if (typeof document !== "undefined") {
+      document.title = serverTitle + " - Minecraft Creator Tools";
+    }
+
     return (
       <div
         className="wbsrv-outer"
@@ -67,9 +71,6 @@ export default class WebServer extends Component<IWebServerProps, IWebServerStat
           maxHeight: "calc(100vh - " + this.props.heightOffset + "px)",
         }}
       >
-        <div className="wbsrv-actionsHeader">
-          <div className="wbsrv-title">{serverTitle}</div>
-        </div>
         <div className="wbsrv-settingsArea">
           {interior}
           <MinecraftDisplay
@@ -78,7 +79,7 @@ export default class WebServer extends Component<IWebServerProps, IWebServerStat
             isWebServer={true}
             theme={this.props.theme}
             creatorTools={this.props.creatorTools}
-            heightOffset={this.props.heightOffset + (this.props.hideTitlebar ? 0 : 48)}
+            heightOffset={this.props.heightOffset + (this.props.hideTitlebar ? 0 : 0)}
             ensureMinecraftOnLogin={true}
           />
         </div>

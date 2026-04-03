@@ -92,17 +92,16 @@
 
 .cwiz-launcher-option {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-direction: row;
+  align-items: center;
   justify-content: flex-start;
-  padding: 22px 18px;
+  padding: 16px 18px;
   border: 2px solid rgba(128, 128, 128, 0.3);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
   box-sizing: border-box;
   min-width: 0;
-  min-height: 148px;
   text-align: left;
   background: rgba(128, 128, 128, 0.04);
 }
@@ -126,8 +125,20 @@
 
 .cwiz-launcher-option-icon {
   font-size: 30px;
-  margin-bottom: 14px;
+  margin-right: 16px;
   color: #52a535;
+  flex-shrink: 0;
+}
+
+.cwiz-launcher-option-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.cwiz-launcher-option-img {
+  width: 60px;
+  height: 60px;
+  image-rendering: pixelated;
 }
 
 .cwiz-launcher-option-label {
@@ -350,6 +361,9 @@
 }
 
 /* ---- Card base: Minecraft beveled stone button ---- */
+/* Colors use CSS custom properties for light/dark theme support.
+   Set --trait-bg, --trait-border, --trait-shadow, --trait-highlight,
+   --trait-fg on a parent element via theme.mc0–mc5/mcc1. */
 .cwiz-trait {
   position: relative;
   display: flex;
@@ -357,26 +371,26 @@
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
-  border: 2px solid #131313;
+  border: 2px solid var(--trait-border, #131313);
   border-radius: 0;
   cursor: pointer;
   transition:
     filter 0.05s,
     background-color 0.1s;
-  background-color: #3a3a3a;
-  color: #ffffff;
+  background-color: var(--trait-bg, #3a3a3a);
+  color: var(--trait-fg, #ffffff);
   box-shadow:
-    inset -2px -2px 0 #212121,
-    inset 2px 2px 0 #4e4e4e;
+    inset -2px -2px 0 var(--trait-shadow, #212121),
+    inset 2px 2px 0 var(--trait-highlight, #4e4e4e);
   user-select: none;
   image-rendering: pixelated;
 }
 
 .cwiz-trait:hover {
-  background-color: #454545;
+  background-color: var(--trait-hover-bg, #454545);
   box-shadow:
-    inset -2px -2px 0 #2a2a2a,
-    inset 2px 2px 0 #585858;
+    inset -2px -2px 0 var(--trait-hover-shadow, #2a2a2a),
+    inset 2px 2px 0 var(--trait-hover-highlight, #585858);
   border-color: #52a535;
 }
 
@@ -717,7 +731,7 @@
   font-size: 24px;
   margin-right: 16px;
   color: #52a535;
-  width: 32px;
+  width: 40px;
   text-align: center;
   margin-top: 2px;
 }
@@ -727,6 +741,12 @@ span.cwiz-main-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+img.cwiz-main-img {
+  width: 40px;
+  height: 40px;
+  image-rendering: pixelated;
 }
 
 .cwiz-main-content {
@@ -934,6 +954,11 @@ span.cwiz-main-icon {
     margin-bottom: 8px;
   }
 
+  .cwiz-launcher-option-img {
+    width: 32px;
+    height: 32px;
+  }
+
   .cwiz-launcher-option-label {
     font-size: 12px;
   }
@@ -949,7 +974,12 @@ span.cwiz-main-icon {
   .cwiz-main-icon {
     font-size: 20px;
     margin-right: 12px;
-    width: 24px;
+    width: 40px;
+  }
+
+  img.cwiz-main-img {
+    width: 28px;
+    height: 28px;
   }
 }
 
@@ -970,6 +1000,11 @@ span.cwiz-main-icon {
   .cwiz-launcher-option-icon {
     margin-bottom: 0;
     font-size: 20px;
+  }
+
+  .cwiz-launcher-option-img {
+    width: 24px;
+    height: 24px;
   }
 
   .cwiz-launcher-option-label {

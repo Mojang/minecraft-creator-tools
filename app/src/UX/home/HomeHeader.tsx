@@ -6,6 +6,10 @@ import { Box } from "@mui/material";
 import { mcColors } from "../hooks/theme/mcColors";
 import { useIntl } from "react-intl";
 
+/** Placeholder background matching the dominant color of the banner image (bg-wool-*.png),
+ *  so the header doesn't flash a different color before the image loads. */
+const BANNER_PLACEHOLDER_COLOR = "#6C748B";
+
 interface IHomeHeaderProps {
   isApp?: boolean;
   toggleThemeMode?: () => void;
@@ -31,7 +35,7 @@ export default function HomeHeader({ isApp, toggleThemeMode, mode }: IHomeHeader
         borderColor: "divider",
         alignItems: "start",
         flexDirection: "row",
-        backgroundColor: "primary.main",
+        backgroundColor: BANNER_PLACEHOLDER_COLOR,
         m: "0",
         backgroundImage: isDark ? "url(./res/images/bg-wool-dark.png)" : "url(./res/images/bg-wool-white.png)",
         color: textColor,

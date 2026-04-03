@@ -281,6 +281,7 @@ export enum DedicatedServerStatus {
 export interface OutputLine {
   message: string;
   received: number;
+  isInternal?: boolean;
 }
 
 export enum DedicatedServerBackupStatus {
@@ -2181,7 +2182,11 @@ export default class DedicatedServer {
         if (this.outputLines.length > 10000) {
           this.outputLines.splice(0, 5000);
         }
-        this.outputLines.push({ message: lineUp, received: time });
+        this.outputLines.push({
+          message: lineUp,
+          received: time,
+          isInternal: sm.category === ServerMessageCategory.internalSystemMessage,
+        });
         time++;
 
         this.#onServerOutput.dispatch(this, sm);

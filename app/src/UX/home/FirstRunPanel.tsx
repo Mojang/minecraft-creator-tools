@@ -41,8 +41,8 @@ export default class FirstRunPanel extends Component<IFirstRunPanelProps, IFirst
     this._handleDontShowAgainChange = this._handleDontShowAgainChange.bind(this);
     this._handleDismiss = this._handleDismiss.bind(this);
 
-    // Default to summarized (easy) if not set
-    const currentPreference = props.creatorTools.editPreference ?? CreatorToolsEditPreference.summarized;
+    // Default to editors (full) if not set
+    const currentPreference = props.creatorTools.editPreference ?? CreatorToolsEditPreference.editors;
 
     // Ensure editPreference is actually set on the creatorTools object.
     // Without this, editPreference remains undefined even though the UI shows "Focused" as selected,

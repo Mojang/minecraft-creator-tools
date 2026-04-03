@@ -125,28 +125,17 @@ test.describe("MCTools Web Editor - Biome Editor Tests @focused", () => {
             }
           }
         } else {
-          console.log("Biome option not found in add menu, checking available options");
+          console.log("Biome option not found in add menu (ContentWizard does not include biomes yet)");
 
           // Take screenshot of available options
           await page.screenshot({ path: "debugoutput/screenshots/add-menu-options.png", fullPage: true });
 
-          // Look for other ways to add biome files
-          const allOptions = page.locator("text=/behavior|json|file/i");
-          const optionCount = await allOptions.count();
-          console.log(`Found ${optionCount} potential options in add menu`);
-
-          if (optionCount > 0) {
-            // Try clicking first behavior-related option
-            const behaviorOption = page.locator("text=/behavior/i").first();
-            if ((await behaviorOption.count()) > 0) {
-              await behaviorOption.click();
-              await page.waitForTimeout(1000);
-              await page.screenshot({ path: "debugoutput/screenshots/behavior-option-selected.png", fullPage: true });
-            }
-          }
+          // Close the ContentWizard dialog before interacting with sidebar elements
+          await page.keyboard.press("Escape");
+          await page.waitForTimeout(500);
         }
 
-        // Close the add menu if it's still open
+        // Close any remaining dialogs or menus
         await page.keyboard.press("Escape");
       } else {
         console.log("Add button not found, taking screenshot for debugging");

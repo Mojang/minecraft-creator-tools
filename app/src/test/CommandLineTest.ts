@@ -165,7 +165,7 @@ describe("validateAddons3PlatformVersions", async () => {
   const stderrLines: string[] = [];
 
   before(function (done) {
-    this.timeout(30000);
+    this.timeout(10000);
 
     removeResultFolder("validateAddons3PlatformVersions");
 

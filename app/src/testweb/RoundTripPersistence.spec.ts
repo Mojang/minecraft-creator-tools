@@ -1095,10 +1095,15 @@ test.describe("Round-Trip Persistence Tests @full", () => {
     await page.waitForTimeout(2000);
     await takeScreenshot(page, "debugoutput/screenshots/roundtrip-script-02-edited");
 
-    // Navigate away — click "Dashboard" to leave the script editor
-    const dashboard = page.locator('text="Dashboard"').first();
-    if (await dashboard.isVisible({ timeout: 2000 }).catch(() => false)) {
-      await dashboard.click();
+    // Navigate away — click a different sidebar item to fully deselect the script file.
+    // Using "Project Settings" (or "Dashboard") ensures the sidebar selection changes,
+    // so re-clicking "main" later triggers a proper file reload.
+    const settingsItem = page.locator('text="Project Settings"').first();
+    const dashboardItem = page.locator('text="Dashboard"').first();
+    if (await settingsItem.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await settingsItem.click();
+    } else if (await dashboardItem.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await dashboardItem.click();
     }
     await page.waitForTimeout(2000);
 
@@ -1127,12 +1132,28 @@ test.describe("Round-Trip Persistence Tests @full", () => {
       return;
     }
 
-    // Wait for Monaco to load file content.
-    // Try the Monaco API first; fall back to reading visible text content from the DOM.
-    await page.waitForTimeout(3000);
+    // Poll for Monaco to load file content (it may take several seconds after navigation).
+    await expect
+      .poll(
+        async () => {
+          return await page.evaluate(() => {
+            const editors = (window as any).monaco?.editor?.getEditors?.();
+            if (!editors || editors.length === 0) return 0;
+            for (const editor of editors) {
+              const model = editor.getModel();
+              if (model) {
+                const val = model.getValue();
+                if (val && val.length > 0) return val.length;
+              }
+            }
+            return 0;
+          });
+        },
+        { timeout: 20000, intervals: [500, 1000, 1000, 2000, 2000] }
+      )
+      .toBeGreaterThan(0);
 
     const contentAfter = await page.evaluate(() => {
-      // Try Monaco API
       const editors = (window as any).monaco?.editor?.getEditors?.();
       if (editors && editors.length > 0) {
         for (const editor of editors) {

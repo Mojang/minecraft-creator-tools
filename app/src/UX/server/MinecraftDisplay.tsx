@@ -43,7 +43,6 @@ import {
   ToolEditorLabel,
   WebSocketMinecraftLabel,
   WorldSettingsLabel,
-  InteractLabel,
 } from "../shared/components/feedback/labels/Labels";
 import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../app/CreatorToolsHost";
 import { mcColors } from "../hooks/theme/mcColors";
@@ -175,6 +174,7 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
     this._handleCommandSubmit = this._handleCommandSubmit.bind(this);
     this._handleToolClick = this._handleToolClick.bind(this);
     this._handlePlayersChanged = this._handlePlayersChanged.bind(this);
+    this._handleKeyDown = this._handleKeyDown.bind(this);
 
     this._connectToProps();
 
@@ -470,6 +470,35 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
     }
   }
 
+  _handleKeyDown(event: KeyboardEvent) {
+    if (!event.ctrlKey && !event.metaKey) {
+      return;
+    }
+
+    // Map Ctrl+1 through Ctrl+9 to tool indices 0-8, Ctrl+0 to tool index 9
+    let toolIndex = -1;
+    if (event.key >= "1" && event.key <= "9") {
+      toolIndex = parseInt(event.key) - 1;
+    } else if (event.key === "0") {
+      toolIndex = 9;
+    }
+
+    if (toolIndex < 0) {
+      return;
+    }
+
+    // Don't intercept if focus is in a text input
+    const target = event.target as HTMLElement | null;
+    if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    this._handleToolClick(toolIndex);
+  }
+
   async _handleToolClick(toolIndex: number) {
     const allTools = ProjectTools.generateTools(this.props.creatorTools, this.props.project);
     if (allTools && toolIndex < allTools.length) {
@@ -492,11 +521,19 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
   componentDidMount() {
     this._isMountedInternal = true;
 
+    if (typeof window !== "undefined") {
+      window.addEventListener("keydown", this._handleKeyDown);
+    }
+
     this._load();
   }
 
   componentWillUnmount(): void {
     this._isMountedInternal = false;
+
+    if (typeof window !== "undefined") {
+      window.removeEventListener("keydown", this._handleKeyDown);
+    }
   }
 
   async _load() {
@@ -646,7 +683,6 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
       isButtonCompact = true;
     }
 
-    const interiorHeight = "calc(100vh - " + String(this.props.heightOffset + 110) + "px)";
     const toolbarItems: JSX.Element[] = [];
     const hostToolbarItems: JSX.Element[] = [];
     const interiorElements = [];
@@ -768,15 +804,16 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
       );
     }
 
-    toolbarItems.push(
-      <Button key="interact" onClick={this._setInteractMode} title="Interact with the active world" size="small">
-        <InteractLabel
-          isCompact={isButtonCompact}
-          isSelected={this.state.mode === MinecraftDisplayMode.interact}
-          theme={this.props.theme}
-        />
-      </Button>
-    );
+    // TODO: Re-enable Interact tab when ready
+    // toolbarItems.push(
+    //   <Button key="interact" onClick={this._setInteractMode} title="Interact with the active world" size="small">
+    //     <InteractLabel
+    //       isCompact={isButtonCompact}
+    //       isSelected={this.state.mode === MinecraftDisplayMode.interact}
+    //       theme={this.props.theme}
+    //     />
+    //   </Button>
+    // );
 
     toolbarItems.push(
       <Button key="toolEditor" onClick={this._setToolEditor} title="Configure tool settings" size="small">
@@ -965,15 +1002,23 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
           cs === CreatorToolsMinecraftState.initializing ||
           cs === CreatorToolsMinecraftState.initialized)
       ) {
-        interiorElements.push(
-          <RemoteServerSettingsPanel
-            forceCompact={this.props.forceCompact}
-            creatorTools={this.props.creatorTools}
-            isWebServer={this.props.isWebServer}
-            key="rssp"
-            ensureMinecraftOnLogin={this.props.ensureMinecraftOnLogin}
-          />
-        );
+        // In web server mode, skip the settings panel when connected (it renders empty with just padding)
+        const isRemoteConnected =
+          cs === CreatorToolsMinecraftState.initialized ||
+          cs === CreatorToolsMinecraftState.prepared ||
+          cs === CreatorToolsMinecraftState.started;
+
+        if (!this.props.isWebServer || !isRemoteConnected) {
+          interiorElements.push(
+            <RemoteServerSettingsPanel
+              forceCompact={this.props.forceCompact}
+              creatorTools={this.props.creatorTools}
+              isWebServer={this.props.isWebServer}
+              key="rssp"
+              ensureMinecraftOnLogin={this.props.ensureMinecraftOnLogin}
+            />
+          );
+        }
 
         // Show EULA acceptance panel if user is logged in but EULA is not accepted
         // This allows admins to accept the EULA through the web UI
@@ -1482,17 +1527,8 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
             {hostToolbarItems}
           </Stack>
         </div>
-        <div
-          className="mid-main"
-          style={{
-            minHeight: interiorHeight,
-            maxHeight: interiorHeight,
-          }}
-        >
-          {interiorElements}
-        </div>
-        <div className="mid-actionsToolBarArea" key="actionsToolBar"
-        >
+        <div className="mid-main">{interiorElements}</div>
+        <div className="mid-actionsToolBarArea" key="actionsToolBar">
           <Stack direction="row" spacing={1} aria-label="Minecraft actions">
             {toolbarItems}
           </Stack>

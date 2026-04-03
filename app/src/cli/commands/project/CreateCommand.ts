@@ -25,7 +25,7 @@ import { Command } from "commander";
 import { ICommandMetadata, CommandBase } from "../../core/ICommand";
 import { ICommandContext, ErrorCodes } from "../../core/ICommandContext";
 import { TaskType } from "../../ClUtils";
-import inquirer, { DistinctQuestion, DistinctChoice } from "inquirer";
+import inquirer, { DistinctQuestion } from "inquirer";
 import IGalleryItem, { GalleryItemType } from "../../../app/IGalleryItem";
 import Project, { ProjectAutoDeploymentMode } from "../../../app/Project";
 import ProjectExporter from "../../../app/ProjectExporter";
@@ -290,7 +290,7 @@ export class CreateCommand extends CommandBase {
 
     // Prompt for template if not specified
     if (!galProject) {
-      const projectTypeChoices: DistinctChoice[] = [];
+      const projectTypeChoices: { name: string; value: number }[] = [];
 
       for (let i = 0; i < galProjects.length; i++) {
         const galProjectCand = galProjects[i];

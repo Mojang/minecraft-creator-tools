@@ -57,7 +57,9 @@ export class ExportWorldCommand extends CommandBase {
             : path.resolve(process.cwd(), context.outputFile)
           : this.getFilePath(context, project.name + ".mcworld");
 
-        context.log.info(`Exporting flat pack world to '${outputPath}'`);
+        if (!context.json) {
+          context.log.info(`Exporting flat pack world to '${outputPath}'`);
+        }
 
         const success = await LocalTools.exportWorld(context.creatorTools, project, outputPath);
 
@@ -71,10 +73,10 @@ export class ExportWorldCommand extends CommandBase {
           continue;
         }
 
-        context.log.success(`Exported: ${outputPath}`);
-
         if (context.json) {
-          context.log.info(JSON.stringify({ success: true, outputPath: outputPath }));
+          context.log.data(JSON.stringify({ success: true, outputPath: outputPath }));
+        } else {
+          context.log.success(`Exported: ${outputPath}`);
         }
       } catch (err) {
         context.log.error("Failed to export world: " + (err instanceof Error ? err.message : String(err)));

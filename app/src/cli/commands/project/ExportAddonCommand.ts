@@ -95,7 +95,7 @@ export class ExportAddonCommand extends CommandBase {
         await ns.rootFolder.saveAll();
 
         if (context.json) {
-          context.log.info(
+          context.log.data(
             JSON.stringify({ success: true, outputPath: StorageUtilities.joinPath(folderPath, filePath) })
           );
         }

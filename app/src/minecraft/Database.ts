@@ -52,6 +52,7 @@ export default class Database {
   static _creatorToolsIngameFile: IFile | null = null;
   static _creatorToolsIngameProject: Project | null = null;
   static uxCatalog: { [formName: string]: IFormDefinition } = {};
+  private static _missingForms: Set<string> = new Set();
   static formsFolders: { [folderName: string]: IFolder } = {};
   static modelTemplateCatalog: { [templateName: string]: object } = {};
   static loadedModelTemplateCount = 0;
@@ -308,6 +309,11 @@ export default class Database {
       return Database.uxCatalog[extendedName];
     }
 
+    // Skip re-fetching forms that were previously not found
+    if (Database._missingForms.has(extendedName)) {
+      return undefined;
+    }
+
     let path = "data/forms/";
 
     if (subFolder) {
@@ -337,7 +343,8 @@ export default class Database {
         }
 
         // Form file not found - this is expected for generators without associated forms
-        // Don't log as failure since forms are optional
+        // Cache the miss to avoid re-fetching
+        Database._missingForms.add(extendedName);
         return undefined;
       }
     } else {
@@ -352,7 +359,8 @@ export default class Database {
         return response.data as IFormDefinition;
       } catch {
         // Form file not found via HTTP - this is expected for generators without associated forms
-        // Don't log as failure since forms are optional
+        // Cache the miss to avoid repeated 404 requests
+        Database._missingForms.add(extendedName);
       }
     }
 

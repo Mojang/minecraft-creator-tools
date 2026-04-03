@@ -24,7 +24,7 @@ import { Command } from "commander";
 import { ICommandMetadata, CommandBase } from "../../core/ICommand";
 import { ICommandContext, ErrorCodes } from "../../core/ICommandContext";
 import { TaskType } from "../../ClUtils";
-import inquirer, { DistinctQuestion, DistinctChoice } from "inquirer";
+import inquirer, { DistinctQuestion } from "inquirer";
 import { GalleryItemType } from "../../../app/IGalleryItem";
 import Project from "../../../app/Project";
 import ProjectItemCreateManager from "../../../app/ProjectItemCreateManager";
@@ -145,7 +145,7 @@ export class AddCommand extends CommandBase {
           await ProjectItemCreateManager.addFromGallery(project, this.newName, galleryItem);
           await project.save();
           if (context.json) {
-            context.log.info(JSON.stringify({ success: true, added: this.newName, type: type }));
+            context.log.data(JSON.stringify({ success: true, added: this.newName, type: type }));
           } else {
             context.log.success(`Added ${this.newName} to project.`);
           }
@@ -257,7 +257,7 @@ export class AddCommand extends CommandBase {
     }
 
     const questions: DistinctQuestion<any>[] = [];
-    const templateTypeChoices: DistinctChoice[] = [];
+    const templateTypeChoices: { name: string; value: string }[] = [];
 
     for (const proj of gallery.items) {
       if (proj.type === itemType) {

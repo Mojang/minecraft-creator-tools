@@ -55,7 +55,9 @@ export class PasscodesCommand extends CommandBase {
       linePrefix = "    ";
     }
 
-    context.log.info("\n" + linePrefix + constants.name + " Server Passcodes");
+    if (!context.json) {
+      context.log.info("\n" + linePrefix + constants.name + " Server Passcodes");
+    }
 
     if (!context.localEnv) {
       context.log.error("Local environment not available.");
@@ -91,7 +93,7 @@ export class PasscodesCommand extends CommandBase {
         updateState: this.getFriendlyPasscode(context.localEnv.updateStatePasscode),
         admin: this.getFriendlyPasscode(context.localEnv.adminPasscode),
       };
-      context.log.info(JSON.stringify({ passcodes }));
+      context.log.data(JSON.stringify({ passcodes }));
       return;
     }
 

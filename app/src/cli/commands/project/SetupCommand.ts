@@ -79,7 +79,7 @@ export class SetupCommand extends CommandBase {
       }
 
       if (context.json) {
-        context.log.info(JSON.stringify({ results, projectPath: project.localFolderPath || project.name }));
+        context.log.data(JSON.stringify({ results, projectPath: project.localFolderPath || project.name }));
       }
 
       if (!context.quiet && !packageJsonUpdated) {

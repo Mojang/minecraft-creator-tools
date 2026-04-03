@@ -105,6 +105,8 @@
   grid-template-columns: 490px 1fr;
   height: 36px;
   flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.15);
+  border-bottom: 1px solid rgba(128, 128, 128, 0.3);
 }
 
 .wv-tools {

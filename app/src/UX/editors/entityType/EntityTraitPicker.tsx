@@ -37,6 +37,7 @@ import {
   getTraitIconColor,
   groupEntityTraits,
   toggleEntityTrait,
+  getTraitCardThemeStyle,
 } from "../../types/TraitData";
 import IProjectTheme from "../../types/IProjectTheme";
 
@@ -157,7 +158,7 @@ export default class EntityTraitPicker extends Component<IEntityTraitPickerProps
     const isFromEntity = !!this.props.entityType;
 
     return (
-      <div className="cwiz-step-content" style={{ padding: "16px 20px" }}>
+      <div className="cwiz-step-content" style={{ padding: "16px 20px", ...getTraitCardThemeStyle(this.props.theme) }}>
         <div className="cwiz-field-hint cwiz-traits-hint">
           {isFromEntity
             ? "Traits detected from this mob's components. Toggle traits to change behaviors."

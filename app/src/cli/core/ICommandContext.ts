@@ -50,6 +50,9 @@ export interface ILogger {
   /** Success message - indicates a positive outcome */
   success(message: string): void;
 
+  /** Machine-readable data output (e.g., JSON). Always writes to stdout, even in quiet mode. */
+  data(message: string): void;
+
   /** Progress update for long-running operations */
   progress(current: number, total: number, message?: string): void;
 }

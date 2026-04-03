@@ -4,7 +4,7 @@
   min-height: calc(100vh - 36px);
   max-height: calc(100vh - 36px);
   display: grid;
-  grid-template-rows: 48px 1fr;
+  grid-template-rows: 1fr;
 }
 
 .wbsrv-actionsHeader {
@@ -14,6 +14,13 @@
   font-size: 12pt;
   padding: 8px;
   text-align: left;
+}
+
+.wbsrv-settingsArea {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
 }
 
 .wbsrv-area {

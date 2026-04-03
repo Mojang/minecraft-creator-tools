@@ -10,7 +10,7 @@
 
 import { Command } from "commander";
 import { ICommandMetadata, CommandBase } from "../../core/ICommand";
-import { ICommandContext, ErrorCodes } from "../../core/ICommandContext";
+import { ICommandContext } from "../../core/ICommandContext";
 import { TaskType } from "../../ClUtils";
 import { InfoItemType } from "../../../info/IInfoItemData";
 
@@ -60,10 +60,6 @@ export class InfoCommand extends CommandBase {
           item.itemType === InfoItemType.internalProcessingError
       ).length;
 
-      if (errorCount > 0) {
-        context.setExitCode(ErrorCodes.VALIDATION_WARNING);
-      }
-
       if (context.json) {
         const jsonOutput = {
           name: project.name,
@@ -74,7 +70,7 @@ export class InfoCommand extends CommandBase {
           items: items.map((item) => ({ type: item.typeTitle, path: item.projectPath })),
           errorCount: errorCount,
         };
-        context.log.info(JSON.stringify(jsonOutput));
+        context.log.data(JSON.stringify(jsonOutput));
         return;
       }
 
