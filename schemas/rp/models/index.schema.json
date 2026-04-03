@@ -1,0 +1,422 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "visual/geometry.v1.12.0",
+  "title": "Geometry (v1.12.0+)",
+  "description": "Modern geometry format using the 'minecraft:geometry' array pattern. Supports per-face UV mapping, cube rotation, and improved locator definitions. This is the recommended format for new content.",
+  "type": "object",
+  "properties": {
+    "debug": {
+      "title": "Debug",
+      "type": "boolean"
+    },
+    "format_version": {
+      "title": "Format Version",
+      "type": "string"
+    },
+    "minecraft:geometry": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "$ref": "./description.schema.json",
+                "title": "Description",
+                "description": "\n\nProperties:\n• identifier (string)\n• visible_bounds_offset (string[])\n• texture_width (int)\n• texture_height (int)",
+                "defaultSnippets": [
+                  {
+                    "label": "Description",
+                    "description": "Create a Description",
+                    "body": {
+                      "identifier": "",
+                      "texture_width": 0,
+                      "texture_height": 0
+                    }
+                  }
+                ]
+              },
+              "cape": {
+                "title": "Cape",
+                "type": "string"
+              },
+              "bones": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "title": "Name",
+                          "description": "Animation files refer to this bone via this identifier.",
+                          "type": "string"
+                        },
+                        "parent": {
+                          "title": "Parent",
+                          "description": "Bone that this bone is relative to. If the parent bone moves, this bone will move along with it.",
+                          "type": "string"
+                        },
+                        "pivot": {
+                          "title": "Pivot",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "rotation": {
+                          "title": "Rotation",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "mirror": {
+                          "title": "Mirror",
+                          "description": "Mirrors the UV's of the unrotated cubes along the x axis, also causes the east/west faces to get flipped.",
+                          "type": "boolean"
+                        },
+                        "debug": {
+                          "title": "Debug",
+                          "type": "boolean"
+                        },
+                        "render_group_id": {
+                          "title": "Render Group Id",
+                          "type": "integer"
+                        },
+                        "cubes": {
+                          "anyOf": [
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "origin": {
+                                    "title": "Origin",
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "size": {
+                                    "title": "Size",
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "rotation": {
+                                    "title": "Rotation",
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "pivot": {
+                                    "title": "Pivot",
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "mirror": {
+                                    "title": "Mirror",
+                                    "description": "Mirrors this cube about the unrotated x axis (effectively flipping the east / west faces), overriding the bone's 'mirror' setting for this cube.",
+                                    "type": "boolean"
+                                  },
+                                  "uv": {
+                                    "anyOf": [
+                                      {
+                                        "type": "object",
+                                        "properties": {
+                                          "north": {
+                                            "$ref": "./north.schema.json",
+                                            "title": "North",
+                                            "description": "Specifies the UV's for the face that stretches along the x and y axes, and faces the -z axis.\n\nProperties:\n• uv (string[])\n• uv_size (string[])\n• material_instance (string)",
+                                            "defaultSnippets": [
+                                              {
+                                                "label": "North",
+                                                "description": "Specifies the UV's for the face that stretches along the x and y axes, and faces the -z axis.",
+                                                "body": {
+                                                  "uv": "",
+                                                  "material_instance": ""
+                                                }
+                                              }
+                                            ]
+                                          },
+                                          "south": {
+                                            "$ref": "./south.schema.json",
+                                            "title": "South",
+                                            "description": "Specifies the UV's for the face that stretches along the x and y axes, and faces the z axis\n\nProperties:\n• uv (string[])\n• uv_size (string[])\n• material_instance (string)",
+                                            "defaultSnippets": [
+                                              {
+                                                "label": "South",
+                                                "description": "Specifies the UV's for the face that stretches along the x and y axes, and faces the z axis",
+                                                "body": {
+                                                  "uv": "",
+                                                  "material_instance": ""
+                                                }
+                                              }
+                                            ]
+                                          },
+                                          "east": {
+                                            "$ref": "./east.schema.json",
+                                            "title": "East",
+                                            "description": "Specifies the UV's for the face that stretches along the z and y axes, and faces the x axis\n\nProperties:\n• uv (string[])\n• uv_size (string[])\n• material_instance (string)",
+                                            "defaultSnippets": [
+                                              {
+                                                "label": "East",
+                                                "description": "Specifies the UV's for the face that stretches along the z and y axes, and faces the x axis",
+                                                "body": {
+                                                  "uv": "",
+                                                  "material_instance": ""
+                                                }
+                                              }
+                                            ]
+                                          },
+                                          "west": {
+                                            "$ref": "./west.schema.json",
+                                            "title": "West",
+                                            "description": "Specifies the UV's for the face that stretches along the z and y axes, and faces the -x axis\n\nProperties:\n• uv (string[])\n• uv_size (string[])\n• material_instance (string)",
+                                            "defaultSnippets": [
+                                              {
+                                                "label": "West",
+                                                "description": "Specifies the UV's for the face that stretches along the z and y axes, and faces the -x axis",
+                                                "body": {
+                                                  "uv": "",
+                                                  "material_instance": ""
+                                                }
+                                              }
+                                            ]
+                                          },
+                                          "up": {
+                                            "$ref": "./up.schema.json",
+                                            "title": "Up",
+                                            "description": "Specifies the UV's for the face that stretches along the x and z axes, and faces the y axis\n\nProperties:\n• uv (string[])\n• uv_size (string[])\n• material_instance (string)",
+                                            "defaultSnippets": [
+                                              {
+                                                "label": "Up",
+                                                "description": "Specifies the UV's for the face that stretches along the x and z axes, and faces the y axis",
+                                                "body": {
+                                                  "uv": "",
+                                                  "material_instance": ""
+                                                }
+                                              }
+                                            ]
+                                          },
+                                          "down": {
+                                            "$ref": "./down.schema.json",
+                                            "title": "Down",
+                                            "description": "Specifies the UV's for the face that stretches along the x and z axes, and faces the -y axis\n\nProperties:\n• uv (string[])\n• uv_size (string[])\n• material_instance (string)",
+                                            "defaultSnippets": [
+                                              {
+                                                "label": "Down",
+                                                "description": "Specifies the UV's for the face that stretches along the x and z axes, and faces the -y axis",
+                                                "body": {
+                                                  "uv": "",
+                                                  "material_instance": ""
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      },
+                                      {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    ],
+                                    "title": "Uv",
+                                    "description": "This is an alternate per-face uv mapping which specifies each face of the cube. Omitting a face will cause that face to not get drawn.\n\nProperties:\n• north ({ uv, uv_size, material_instance })\n• south ({ uv, uv_size, material_instance })\n• east ({ uv, uv_size, material_instance })\n• west ({ uv, uv_size, material_instance })\n• up ({ uv, uv_size, material_instance })\n• down ({ uv, uv_size, material_instance })"
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "title": "Cubes",
+                              "description": "This is the list of cubes associated with this bone.",
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          ],
+                          "description": "\n\nProperties:\n• origin (string[])\n• size (string[])\n• rotation (string[])\n• pivot (string[])\n• mirror (boolean)\n• uv ({ north, south, east, ... })"
+                        },
+                        "locators": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "additionalProperties": {
+                                "type": "object",
+                                "properties": {
+                                  "offset": {
+                                    "title": "Offset",
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "rotation": {
+                                    "title": "Rotation",
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "ignore_inherited_scale": {
+                                    "title": "Ignore Inherited Scale",
+                                    "description": "Discard scale inherited from parent bone.",
+                                    "type": "boolean"
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "title": "<identifier>",
+                              "description": "This is a list of locators associated with this bone. A locator is a point in model space that tracks a particular bone as the bone animates (by maintaining it's relationship to the bone through the animation).",
+                              "type": "object",
+                              "additionalProperties": {
+                                "type": "string"
+                              }
+                            }
+                          ],
+                          "title": "Locators",
+                          "description": "\n\nProperties:\n• offset (string[])\n• rotation (string[])\n• ignore_inherited_scale (boolean)"
+                        },
+                        "poly_mesh": {
+                          "title": "Poly Mesh",
+                          "description": "[Deprecated] A triangle or quad mesh object. Can be used in conjunction with cubes and texture geometry. This feature is deprecated, and using it in new content will result in content errors.\n\nProperties:\n• normalized_uvs (boolean)\n• positions (string[])\n• normals (string[])\n• uvs (string[])\n• polys (string[])",
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "normalized_uvs": {
+                                "title": "Normalized Uvs",
+                                "description": "If true, UVs are assumed to be [0-1]. If false, UVs are assumed to be [0-texture_width] and [0-texture_height] respectively.",
+                                "type": "boolean"
+                              },
+                              "positions": {
+                                "title": "Positions",
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "normals": {
+                                "title": "Normals",
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "uvs": {
+                                "title": "Uvs",
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "polys": {
+                                "title": "Polys",
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "texture_meshes": {
+                          "anyOf": [
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "texture": {
+                                    "title": "Texture",
+                                    "description": "The friendly-named texture to use.",
+                                    "type": "string"
+                                  },
+                                  "position": {
+                                    "title": "Position",
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "local_pivot": {
+                                    "title": "Local Pivot",
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "rotation": {
+                                    "title": "Rotation",
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "scale": {
+                                    "title": "Scale",
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "use_pixel_depth": {
+                                    "title": "Use Pixel Depth",
+                                    "description": "If set to \"true\", the geometry will have a depth of one pixel (in entity space, not texture space). This causes geometries with a texture resolution different from 16x16 to appear stretched. If set to \"false\", the geometry will be built from perfectly cubic voxels, no matter the texture's aspect ratio. The default value is \"true\".",
+                                    "type": "boolean"
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "title": "Texture Meshes",
+                              "description": "Adds a mesh to the bone's geometry by converting texels in a texture into voxels.",
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          ],
+                          "description": "\n\nProperties:\n• texture (string)\n• position (string[])\n• local_pivot (string[])\n• rotation (string[])\n• scale (string[])\n• use_pixel_depth (boolean)"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "title": "Bones",
+                    "description": "Bones define the 'skeleton' of the mob: the parts that can be animated, and to which geometry and other bones are attached.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ],
+                "description": "\n\nProperties:\n• name (string)\n• parent (string)\n• pivot (string[])\n• rotation (string[])\n• mirror (boolean)\n• debug (boolean)\n• render_group_id (int)\n• cubes\n• ... and 3 more properties"
+              }
+            }
+          }
+        },
+        {
+          "title": "Geometry",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
+      "description": "\n\nProperties:\n• description ({ identifier, visible_bounds_offset, texture_width, ... })\n• cape (string)\n• bones"
+    }
+  },
+  "required": [
+    "format_version"
+  ]
+}

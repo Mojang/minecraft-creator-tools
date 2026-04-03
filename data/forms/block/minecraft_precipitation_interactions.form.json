@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has custom rain and snow interactions"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:precipitation_interactions",
+  "fields": [
+    {
+      "id": "precipitation_behavior",
+      "title": "Precipitation Behavior",
+      "description": "What behavior should the block have. Three possible values: obrain, obstruct_rain_accumulate_snow and none",
+      "defaultValue": "accumulate snow",
+      "dataType": "string"
+    }
+  ],
+  "description": "Component that determines how the block will interact with rain and snow\nExperimental toggles required: Upcoming Creator Features (in format versions before 1.21.120)",
+  "title": "Precipitation Interactions"
+}

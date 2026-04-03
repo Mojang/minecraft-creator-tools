@@ -1,0 +1,128 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "controls particle motion via parametric equations"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "relative_position",
+      "title": "Relative Position",
+      "description": "Position offset relative to the particle emitter, as [x, y, z] Molang expressions.",
+      "dataType": "molangArray",
+      "minLength": 3,
+      "maxLength": 3,
+      "alternates": [
+        {
+          "id": "relative_position",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "relative_position",
+            "title": "Relative Position",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "relative_position",
+          "dataType": "float"
+        }
+      ]
+    },
+    {
+      "id": "direction",
+      "title": "Direction",
+      "description": "Direction of particle motion, as [x, y, z] Molang expressions.",
+      "dataType": "molangArray",
+      "minLength": 3,
+      "maxLength": 3,
+      "alternates": [
+        {
+          "id": "direction",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "direction",
+            "title": "Direction",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "direction",
+          "dataType": "float"
+        }
+      ]
+    },
+    {
+      "id": "rotation",
+      "title": "Rotation",
+      "dataType": "keyedStringCollection",
+      "alternates": [
+        {
+          "id": "rotation",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "rotation",
+            "title": "Rotation",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "rotation",
+          "dataType": "float"
+        }
+      ]
+    }
+  ],
+  "description": "Controls particle position and rotation using Molang expressions evaluated each frame, overriding physics simulation. Position is relative to emitter origin, allowing mathematical motion patterns like orbits, waves, spirals, or any path describable through equations. Ideal for magical effects, precise choreographed motion, or synchronized particle formations.",
+  "title": "Client Particles Particle Motion Parametric",
+  "id": "particle_motion_parametric"
+}

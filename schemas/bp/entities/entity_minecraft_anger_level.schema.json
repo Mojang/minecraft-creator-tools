@@ -1,0 +1,248 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Anger Level",
+  "description": "Compels the entity to track anger towards a set of nuisances.",
+  "properties": {
+    "anger_decrement_interval": {
+      "title": "Anger Decrement Interval",
+      "description": "Anger level will decay over time. Defines how often anger towards all nuisances will decrease by one.\n\nSample values:\n• warden: 1",
+      "type": "number",
+      "default": 1
+    },
+    "default_annoyingness": {
+      "title": "Default Annoyingness",
+      "description": "The default amount of annoyingness for any given nuisance. Specifies how much to raise anger level on each provocation.\n\nSample values:\n• warden: 35",
+      "type": "integer",
+      "default": "0"
+    },
+    "sound_interval": {
+      "description": "Anger boost applied to angry threshold when the entity gets angry.",
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "type": "object",
+          "properties": {
+            "min": {
+              "type": "integer",
+              "description": "Minimum value of the range"
+            },
+            "max": {
+              "type": "integer",
+              "description": "Maximum value of the range"
+            }
+          }
+        }
+      ]
+    },
+    "duration": {
+      "description": "The amount of time in seconds that the entity will be angry.",
+      "type": "integer"
+    },
+    "duration_delta": {
+      "description": "Variance in seconds added to the duration [-delta, delta].",
+      "type": "integer"
+    },
+    "filters": {
+      "title": "Anger exemption filters",
+      "description": "Filter out mob types that it should not attack while angry (other Piglins)",
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "broadcast_anger": {
+      "description": "If set, other entities of the same entity definition within the broadcastRange will also become angry",
+      "type": "boolean",
+      "default": false
+    },
+    "broadcast_anger_on_attack": {
+      "description": "If set, other entities of the same entity definition within the broadcastRange will also become angry whenever this mob attacks",
+      "type": "boolean",
+      "default": false
+    },
+    "broadcast_range": {
+      "description": "Distance in blocks within which other entities of the same entity type will become angry",
+      "type": "integer",
+      "default": 20
+    },
+    "broadcast_targets": {
+      "description": "A list of entity families to broadcast anger to",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "broadcast_filters": {
+      "description": "Conditions that make this entry in the list valid",
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "calm_event": {
+      "description": "Event to fire when this entity is calmed down",
+      "type": "string"
+    },
+    "on_increase_sounds": {
+      "title": "On Increase Sounds",
+      "description": "Sounds to play when the entity is getting provoked. Evaluated in order. First matching condition wins\n\nProperties:\n• condition (string)\n• sound (string)\n\nSample values:\n• warden: [{\"condition\":\"query.anger_level(this) >= 40\",\"...",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "condition": {
+            "title": "Condition",
+            "description": "A Molang expression describing under which conditions to play this sound, given that the entity was provoked",
+            "type": "string"
+          },
+          "sound": {
+            "title": "Sound",
+            "description": "The sound to play",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "angry_boost": {
+      "title": "Angry Boost",
+      "description": "Anger boost applied to angry threshold when mob gets angry\n\nSample values:\n• warden: 20",
+      "type": "integer",
+      "minimum": 0,
+      "default": 20
+    },
+    "angry_threshold": {
+      "title": "Angry Threshold",
+      "description": "Threshold that define when the mob is considered angry at a nuisance\n\nSample values:\n• warden: 80",
+      "type": "integer",
+      "minimum": 0,
+      "default": 80
+    },
+    "max_anger": {
+      "title": "Max Anger",
+      "description": "The maximum anger level that can be reached. Applies to any nuisance\n\nSample values:\n• warden: 150",
+      "type": "integer",
+      "minimum": 0,
+      "default": 100
+    },
+    "nuisance_filter": {
+      "title": "Nuisance Filter",
+      "description": "Filter that is applied to determine if a mob can be a nuisance\n\nSample values:\n• warden: {\"all_of\":[{\"operator\":\"not\",\"test\":\"is_family\"...",
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "remove_targets_below_angry_threshold": {
+      "title": "Remove Targets Below Angry Threshold",
+      "description": "Defines if the mob should remove target if it falls below 'angry' threshold\n\nSample values:\n• warden: true",
+      "type": "boolean",
+      "default": true
+    },
+    "default_projectile_annoyingness": {
+      "title": "Default Projectile Annoyingness",
+      "description": "\n\nSample values:\n• warden: 10",
+      "type": "number"
+    }
+  }
+}

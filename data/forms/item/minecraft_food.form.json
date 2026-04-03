@@ -1,0 +1,257 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:food",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "nutrition",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "is a "
+          },
+          {
+            "type": "switch",
+            "cases": [
+              {
+                "conditions": [
+                  {
+                    "field": "nutrition",
+                    "comparison": ">=",
+                    "value": 8
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "hearty meal"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "nutrition",
+                    "comparison": ">=",
+                    "value": 5
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "filling food"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "nutrition",
+                    "comparison": ">=",
+                    "value": 3
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "light snack"
+                  }
+                ]
+              }
+            ],
+            "default": [
+              {
+                "type": "literal",
+                "text": "small nibble"
+              }
+            ]
+          },
+          {
+            "type": "literal",
+            "text": " ("
+          },
+          {
+            "type": "value",
+            "field": "nutrition"
+          },
+          {
+            "type": "literal",
+            "text": " hunger)"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "can_always_eat",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can be eaten even when full"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "can_always_eat",
+      "title": "Can Always Eat",
+      "description": "If true you can always eat this item (even when not hungry). Default is set to false.",
+      "dataType": "boolean",
+      "defaultValue": false
+    },
+    {
+      "id": "nutrition",
+      "title": "Nutrition",
+      "description": "Value that is added to the entity's nutrition when the item is used. Default is set to 0.",
+      "dataType": "int",
+      "defaultValue": 0,
+      "samples": {
+        "/vanilla/behavior_pack/items/apple.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": 4
+          }
+        ],
+        "/vanilla/behavior_pack/items/baked_potato.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": 5
+          }
+        ],
+        "/vanilla/behavior_pack/items/beef.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": 3
+          }
+        ],
+        "/vanilla/behavior_pack/items/beetroot.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": 1
+          }
+        ],
+        "/vanilla/behavior_pack/items/beetroot_soup.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": 6
+          }
+        ]
+      }
+    },
+    {
+      "id": "saturation_modifier",
+      "title": "Saturation Modifier",
+      "description": "saturation_modifier is used in this formula: (nutrition * saturation_modifier * 2) when applying the saturation buff. Default is set to 0.6.",
+      "dataType": "float",
+      "defaultValue": 0.6000000238418579,
+      "samples": {
+        "/vanilla/behavior_pack/items/apple.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": 0.3
+          }
+        ],
+        "/vanilla/behavior_pack/items/baked_potato.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": "normal"
+          }
+        ],
+        "/vanilla/behavior_pack/items/beef.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": "low"
+          }
+        ],
+        "/vanilla/behavior_pack/items/beetroot.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": "normal"
+          }
+        ]
+      }
+    },
+    {
+      "id": "using_converts_to",
+      "title": "Using Converts To",
+      "description": "When used, converts to the item specified by the string in this field. Default does not convert item.",
+      "dataType": "string",
+      "defaultValue": {},
+      "alternates": [
+        {
+          "id": "using_converts_to",
+          "dataType": "keyedStringCollection"
+        }
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/items/beetroot_soup.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": "bowl"
+          }
+        ]
+      }
+    }
+  ],
+  "description": "When an item has a food component, it becomes edible to the player. Must have the 'minecraft:use_duration' component in order to function properly.",
+  "title": "Item Food",
+  "samples": {
+    "/vanilla/behavior_pack/items/apple.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:food/",
+        "content": {
+          "nutrition": 4,
+          "saturation_modifier": 0.3
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/baked_potato.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:food/",
+        "content": {
+          "nutrition": 5,
+          "saturation_modifier": "normal"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/beef.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:food/",
+        "content": {
+          "nutrition": 3,
+          "saturation_modifier": "low"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/beetroot.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:food/",
+        "content": {
+          "nutrition": 1,
+          "saturation_modifier": "normal"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/beetroot_soup.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:food/",
+        "content": {
+          "nutrition": 6,
+          "saturation_modifier": "normal",
+          "using_converts_to": "bowl"
+        }
+      }
+    ]
+  }
+}

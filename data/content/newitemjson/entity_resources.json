@@ -1,0 +1,27 @@
+{
+  "format_version": "1.8.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "examplens:examplename",
+      "min_engine_version": "1.8.0",
+      "materials": {
+        "body": "blaze_body",
+        "head": "blaze_head"
+      },
+      "textures": {
+        "default": "textures/entity/examplename"
+      },
+      "geometry": {
+        "default": "geometry.examplename"
+      },
+      "animations": {
+        "look_at_target": "animation.common.look_at_target"
+      },
+      "animation_controllers": [],
+      "render_controllers": ["controller.render.blaze"],
+      "spawn_egg": {
+        "texture": "spawn_egg"
+      }
+    }
+  }
+}

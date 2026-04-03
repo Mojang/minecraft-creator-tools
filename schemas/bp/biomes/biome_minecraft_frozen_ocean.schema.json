@@ -1,0 +1,351 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Biome Frozen Ocean",
+  "description": "Similar to overworld_surface. Adds icebergs.",
+  "properties": {
+    "foundation_material": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "description": "\n\nProperties:\n• name (object)\n• states = {}",
+          "type": "object",
+          "properties": {
+            "name": {
+              "title": "Name",
+              "description": "Name of the block",
+              "type": "object"
+            },
+            "states": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number"
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "boolean"
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              ],
+              "title": "States",
+              "description": "Contains members named after each state, with boolean, integer, or string values."
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Foundation Material (object)",
+              "description": "Use Foundation Material as an object",
+              "body": {
+                "name": "",
+                "states": {}
+              }
+            }
+          ]
+        }
+      ],
+      "description": "Controls the block type used deep underground in this biome",
+      "defaultSnippets": [
+        {
+          "label": "Foundation Material (object)",
+          "description": "Use Foundation Material as an object",
+          "body": {
+            "name": "",
+            "states": {}
+          }
+        }
+      ]
+    },
+    "mid_material": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "description": "\n\nProperties:\n• name (object)\n• states = {}",
+          "type": "object",
+          "properties": {
+            "name": {
+              "title": "Name",
+              "description": "Name of the block",
+              "type": "object"
+            },
+            "states": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number"
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "boolean"
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              ],
+              "title": "States",
+              "description": "Contains members named after each state, with boolean, integer, or string values."
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Mid Material (object)",
+              "description": "Use Mid Material as an object",
+              "body": {
+                "name": "",
+                "states": {}
+              }
+            }
+          ]
+        }
+      ],
+      "description": "Controls the block type used in a layer below the surface of this biome",
+      "defaultSnippets": [
+        {
+          "label": "Mid Material (object)",
+          "description": "Use Mid Material as an object",
+          "body": {
+            "name": "",
+            "states": {}
+          }
+        }
+      ]
+    },
+    "sea_floor_depth": {
+      "title": "Sea Floor Depth",
+      "description": "Controls how deep below the world water level the floor should occur",
+      "type": "integer",
+      "maximum": 127
+    },
+    "sea_floor_material": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "description": "\n\nProperties:\n• name (object)\n• states = {}",
+          "type": "object",
+          "properties": {
+            "name": {
+              "title": "Name",
+              "description": "Name of the block",
+              "type": "object"
+            },
+            "states": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number"
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "boolean"
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              ],
+              "title": "States",
+              "description": "Contains members named after each state, with boolean, integer, or string values."
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Sea Floor Material (object)",
+              "description": "Use Sea Floor Material as an object",
+              "body": {
+                "name": "",
+                "states": {}
+              }
+            }
+          ]
+        }
+      ],
+      "description": "Controls the block type used as a floor for bodies of water in this biome",
+      "defaultSnippets": [
+        {
+          "label": "Sea Floor Material (object)",
+          "description": "Use Sea Floor Material as an object",
+          "body": {
+            "name": "",
+            "states": {}
+          }
+        }
+      ]
+    },
+    "sea_material": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "description": "\n\nProperties:\n• name (object)\n• states = {}",
+          "type": "object",
+          "properties": {
+            "name": {
+              "title": "Name",
+              "description": "Name of the block",
+              "type": "object"
+            },
+            "states": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number"
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "boolean"
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              ],
+              "title": "States",
+              "description": "Contains members named after each state, with boolean, integer, or string values."
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Sea Material (object)",
+              "description": "Use Sea Material as an object",
+              "body": {
+                "name": "",
+                "states": {}
+              }
+            }
+          ]
+        }
+      ],
+      "description": "Controls the block type used for the bodies of water in this biome",
+      "defaultSnippets": [
+        {
+          "label": "Sea Material (object)",
+          "description": "Use Sea Material as an object",
+          "body": {
+            "name": "",
+            "states": {}
+          }
+        }
+      ]
+    },
+    "top_material": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "description": "\n\nProperties:\n• name (object)\n• states = {}",
+          "type": "object",
+          "properties": {
+            "name": {
+              "title": "Name",
+              "description": "Name of the block",
+              "type": "object"
+            },
+            "states": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number"
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "boolean"
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              ],
+              "title": "States",
+              "description": "Contains members named after each state, with boolean, integer, or string values."
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Top Material (object)",
+              "description": "Use Top Material as an object",
+              "body": {
+                "name": "",
+                "states": {}
+              }
+            }
+          ]
+        }
+      ],
+      "description": "Controls the block type used for the surface of this biome",
+      "defaultSnippets": [
+        {
+          "label": "Top Material (object)",
+          "description": "Use Top Material as an object",
+          "body": {
+            "name": "",
+            "states": {}
+          }
+        }
+      ]
+    },
+    "type": {
+      "title": "SurfaceBuilderType",
+      "description": "Controls the type of surface builder to use",
+      "type": "string",
+      "enum": [
+        "minecraft:capped",
+        "minecraft:frozen_ocean",
+        "minecraft:mesa",
+        "minecraft:overworld",
+        "minecraft:swamp",
+        "minecraft:the_end"
+      ]
+    }
+  },
+  "required": [
+    "foundation_material",
+    "mid_material",
+    "sea_floor_depth",
+    "sea_floor_material",
+    "sea_material",
+    "top_material",
+    "type"
+  ]
+}

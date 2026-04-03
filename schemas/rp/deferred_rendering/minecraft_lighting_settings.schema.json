@@ -1,0 +1,128 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "minecraft:lighting_settings",
+  "description": "minecraft:lighting_settings\n\nProperties:\n• description ({ identifier })\n• directional_lights ({ sun, moon, orbital_offset_degrees })\n• emissive ({ desaturation })\n• sky ({ intensity })\n• ambient ({ color, illuminance })",
+  "type": "object",
+  "properties": {
+    "description": {
+      "title": "description",
+      "description": "description\n\nProperties:\n• identifier (string)",
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "title": "identifier",
+          "description": "identifier",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "LightingGroup LightingDescription",
+          "description": "LightingGroup LightingDescription",
+          "body": {
+            "identifier": ""
+          }
+        }
+      ]
+    },
+    "directional_lights": {
+      "$ref": "./directional_lights.schema.json",
+      "title": "directional_lights",
+      "description": "directional_lights\n\nProperties:\n• sun ({ illuminance, color })\n• moon ({ illuminance, color })\n• orbital_offset_degrees (float)",
+      "defaultSnippets": [
+        {
+          "label": "LightingGroup LightingImpl<1,21,70> LightingSettings DirectionalLights",
+          "description": "LightingGroup LightingImpl<1,21,70> LightingSettings DirectionalLights",
+          "body": {
+            "orbital_offset_degrees": 0
+          }
+        }
+      ]
+    },
+    "emissive": {
+      "title": "emissive",
+      "description": "emissive\n\nProperties:\n• desaturation (float)",
+      "type": "object",
+      "properties": {
+        "desaturation": {
+          "title": "desaturation",
+          "description": "desaturation",
+          "type": "number",
+          "maximum": 1
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "LightingGroup Emissive",
+          "description": "LightingGroup Emissive",
+          "body": {
+            "desaturation": 0
+          }
+        }
+      ]
+    },
+    "sky": {
+      "title": "sky",
+      "description": "sky\n\nProperties:\n• intensity (float)",
+      "type": "object",
+      "properties": {
+        "intensity": {
+          "title": "intensity",
+          "description": "intensity",
+          "type": "number",
+          "minimum": 0.10000000149011612,
+          "maximum": 1
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "LightingGroup SkyIntensity<1,21,70>",
+          "description": "LightingGroup SkyIntensity<1,21,70>",
+          "body": {
+            "intensity": 0
+          }
+        }
+      ]
+    },
+    "ambient": {
+      "title": "ambient",
+      "description": "ambient\n\nProperties:\n• color (string)\n• illuminance (float)",
+      "type": "object",
+      "properties": {
+        "color": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minLength": 3,
+              "maxLength": 3
+            }
+          ],
+          "title": "color",
+          "description": "color"
+        },
+        "illuminance": {
+          "title": "illuminance",
+          "description": "illuminance",
+          "type": "number",
+          "maximum": 5
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "LightingGroup AmbientLight",
+          "description": "LightingGroup AmbientLight",
+          "body": {
+            "color": "",
+            "illuminance": 0
+          }
+        }
+      ]
+    }
+  }
+}

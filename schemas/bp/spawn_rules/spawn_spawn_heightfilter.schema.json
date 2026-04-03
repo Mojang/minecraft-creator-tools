@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Spawn HeightFilter",
+  "description": "Restricts entity spawning to specific Y-coordinate ranges. Useful for creating depth-based mob distribution like slimes in swamps (below Y=40), or limiting surface mobs from spawning underground.",
+  "properties": {
+    "max": {
+      "title": "Max",
+      "type": "integer",
+      "default": 128
+    },
+    "min": {
+      "title": "Min",
+      "type": "integer",
+      "default": 24
+    }
+  }
+}

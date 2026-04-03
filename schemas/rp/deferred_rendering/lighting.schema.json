@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "client_deferred_rendering/lightinggroup_lightingimpl_1_21_70",
+  "title": "Lighting Settings",
+  "description": "Lighting Settings",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "title": "format_version",
+      "description": "format_version",
+      "type": "string"
+    },
+    "minecraft:lighting_settings": {
+      "$ref": "./minecraft_lighting_settings.schema.json",
+      "title": "minecraft:lighting_settings",
+      "description": "minecraft:lighting_settings\n\nProperties:\n• description ({ identifier })\n• directional_lights ({ sun, moon, orbital_offset_degrees })\n• emissive ({ desaturation })\n• sky ({ intensity })\n• ambient ({ color, illuminance })"
+    }
+  }
+}

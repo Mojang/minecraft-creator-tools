@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Movement",
+  "description": "Defines the base movement speed of an entity. Typical values: creeper (0.2), cow (0.25), zombie baby (0.35).",
+  "properties": {
+    "value": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "description": "\n\nProperties:\n• range_min (float)\n• range_max (float)",
+          "type": "object",
+          "properties": {
+            "range_min": {
+              "description": "Minimum movement speed",
+              "type": "number"
+            },
+            "range_max": {
+              "description": "Maximum movement speed",
+              "type": "number"
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Value (object)",
+              "description": "Use Value as an object",
+              "body": {
+                "range_min": 0,
+                "range_max": 0
+              }
+            }
+          ]
+        }
+      ],
+      "title": "Value",
+      "description": "The base movement speed value. Higher values result in faster movement. Can be a single number or a range object with range_min and range_max properties.",
+      "defaultSnippets": [
+        {
+          "label": "Value (object)",
+          "description": "Use Value as an object",
+          "body": {
+            "range_min": 0,
+            "range_max": 0
+          }
+        }
+      ]
+    },
+    "max": {
+      "title": "Max",
+      "description": "Maximum movement speed this entity can have.",
+      "type": "number"
+    }
+  }
+}

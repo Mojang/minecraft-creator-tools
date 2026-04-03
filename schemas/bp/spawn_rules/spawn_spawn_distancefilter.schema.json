@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Spawn DistanceFilter",
+  "description": "Controls spawning based on distance from the nearest player. Mobs typically spawn within a certain radius around players (24-128 blocks) and despawn when players move too far away.",
+  "properties": {
+    "max": {
+      "title": "Max",
+      "type": "integer",
+      "default": 128
+    },
+    "min": {
+      "title": "Min",
+      "type": "integer",
+      "default": 24
+    }
+  }
+}

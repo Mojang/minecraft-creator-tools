@@ -1,0 +1,81 @@
+{
+  "format_version": "1.26.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:ender_pearl",
+      "is_experimental": false,
+      "is_summonable": false,
+      "is_spawnable": false,
+      "spawn_category": "misc"
+    },
+    "components": {
+      "minecraft:collision_box": {
+        "height": 0.25,
+        "width": 0.25
+      },
+      "minecraft:conditional_bandwidth_optimization": {
+        "default_values": {
+          "max_dropped_ticks": 7,
+          "max_optimized_distance": 80.0,
+          "use_motion_prediction_hints": true
+        }
+      },
+      "minecraft:physics": {},
+      "minecraft:projectile": {
+        "angle_offset": 0.0,
+        "on_hit": {
+          "impact_damage": null,
+          "spawn_chance": {
+            "first_spawn_count": 1,
+            "first_spawn_percent_chance": 5.0,
+            "spawn_definition": "minecraft:endermite"
+          },
+          "remove_on_hit": {},
+          "teleport_owner": {}
+        },
+        "gravity": 0.025,
+        "inertia": 1,
+        "liquid_inertia": 1,
+        "power": 1.5
+      },
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      }
+    },
+    "component_groups": {
+      "minecraft:no_spawn": {
+        "minecraft:projectile": {
+          "angle_offset": 0.0,
+          "on_hit": {
+            "impact_damage": null,
+            "remove_on_hit": {},
+            "teleport_owner": {}
+          },
+          "gravity": 0.025,
+          "inertia": 1,
+          "liquid_inertia": 1,
+          "power": 1.5
+        }
+      }
+    },
+    "events": {
+      "minecraft:entity_spawned": {
+        "sequence": [
+          {
+            "filters": {
+              "domain": "domobspawning",
+              "test": "is_game_rule",
+              "value": false
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:no_spawn"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

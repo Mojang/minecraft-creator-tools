@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Sway Movement",
+  "description": "This move control causes the mob to sway side to side giving the impression it is swimming.",
+  "properties": {
+    "max_turn": {
+      "title": "Max Turn",
+      "description": "The maximum number in degrees the mob can turn per tick.",
+      "type": "number",
+      "default": 30
+    },
+    "sway_amplitude": {
+      "title": "Sway Amplitude",
+      "description": "Strength of the sway movement.",
+      "type": "number",
+      "default": 0.05
+    },
+    "sway_frequency": {
+      "title": "Sway Frequency",
+      "description": "Multiplier for the frequency of the sway movement.",
+      "type": "number",
+      "default": 0.5
+    }
+  }
+}

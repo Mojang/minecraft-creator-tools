@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Inside Block Notifier",
+  "description": "Verifies whether the entity is inside any of the listed blocks.",
+  "properties": {
+    "block_list": {
+      "title": "Block List",
+      "description": "List of blocks, with certain block states, that we are monitoring to see if the entity is inside.\n\nProperties:\n• block ({ name, states })\n• entered_block_event\n• exited_block_event\n\nSample values:\n• boat: [{\"block\":{\"name\":\"minecraft:bubble_column\",\"st...",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "block": {
+            "title": "Block",
+            "description": "The block to monitor, including name and optional states.\n\nProperties:\n• name (string)\n• states",
+            "type": "object",
+            "properties": {
+              "name": {
+                "title": "Name",
+                "description": "The block identifier.",
+                "type": "string"
+              },
+              "states": {
+                "title": "States",
+                "description": "Block states to match.",
+                "type": "object",
+                "additionalProperties": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "defaultSnippets": [
+              {
+                "label": "Block",
+                "description": "The block to monitor, including name and optional states.",
+                "body": {
+                  "name": ""
+                }
+              }
+            ]
+          },
+          "entered_block_event": {
+            "title": "Entered Block Event",
+            "description": "Event to fire when the entity enters the block.",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "event": {
+                    "type": "string"
+                  },
+                  "target": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          },
+          "exited_block_event": {
+            "title": "Exited Block Event",
+            "description": "Event to fire when the entity exits the block.",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "event": {
+                    "type": "string"
+                  },
+                  "target": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "attachable/attachable",
+  "title": "Attachable",
+  "description": "An attachable definition for Minecraft Bedrock Edition. Attachables define how items render when equipped or held by entities, including armor, weapons, tools, and other wearable/holdable items.",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "title": "Format Version",
+      "description": "The format version of this attachable file. Common versions include '1.8.0' and '1.10.0'.",
+      "type": "string"
+    },
+    "minecraft:attachable": {
+      "title": "Attachable Definition",
+      "description": "The attachable definition container.\n\nProperties:\n• description ({ identifier, min_engine_version, item, ... })",
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "./description.schema.json",
+          "title": "Description",
+          "description": "The attachable description containing all configuration.\n\nProperties:\n• identifier (string)\n• min_engine_version (int)\n• item (string)\n• materials\n• textures\n• geometry\n• animations\n• scripts ({ parent_setup, pre_animation, scale, ... })\n• ... and 5 more properties",
+          "defaultSnippets": [
+            {
+              "label": "Description",
+              "description": "The attachable description containing all configuration.",
+              "body": {
+                "identifier": "",
+                "min_engine_version": 0,
+                "item": "",
+                "enable_attachables": true
+              }
+            }
+          ]
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Attachable Definition",
+          "description": "The attachable definition container.",
+          "body": {
+            "description": ""
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "format_version",
+    "minecraft:attachable"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Client Particles Particle Effect Description",
+  "description": "The description MUST contain an identifier and basic_render_parameters.",
+  "properties": {
+    "basic_render_parameters": {
+      "title": "Basic Render Parameters",
+      "description": "The parameters MUST contain a material and texture.\n\nProperties:\n• material (string)\n• texture (string)",
+      "$ref": "./client_particles_particle_effect_basic_render_parameters.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Particle Effect Basic Render Parameters",
+          "description": "The parameters MUST contain a material and texture.",
+          "body": {
+            "material": "",
+            "texture": ""
+          }
+        }
+      ]
+    },
+    "identifier": {
+      "title": "Identifier",
+      "type": "string"
+    }
+  },
+  "required": [
+    "basic_render_parameters",
+    "identifier"
+  ]
+}

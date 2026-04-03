@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can be distracted by admiring items"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "duration",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "admires for "
+          },
+          {
+            "type": "value",
+            "field": "duration"
+          },
+          {
+            "type": "literal",
+            "text": " seconds"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "Allows an entity to ignore attackable targets for a given duration",
+  "fields": [
+    {
+      "id": "cooldown_after_being_attacked",
+      "title": "Cooldown After Being Attacked",
+      "description": "Duration, in seconds, for which mob won't admire items if it was hurt",
+      "defaultValue": 0,
+      "dataType": "int"
+    },
+    {
+      "id": "duration",
+      "title": "Duration",
+      "description": "Duration, in seconds, that the mob is pacified.",
+      "defaultValue": 10,
+      "dataType": "int"
+    }
+  ],
+  "title": "Admire Item",
+  "samples": {},
+  "id": "minecraft:admire_item"
+}

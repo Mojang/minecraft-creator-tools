@@ -1,0 +1,433 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "picks up items from the ground"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "max_dist",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "searches within "
+          },
+          {
+            "type": "value",
+            "field": "max_dist"
+          },
+          {
+            "type": "literal",
+            "text": " blocks"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "can_pickup_any_item",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can pick up any item type"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "pickup_based_on_chance",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "pickup chance varies by difficulty"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "excluded_items",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "excludes certain items"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "track_target",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "tracks items as targets"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "pickup_same_items_as_in_hand",
+      "title": "Pickup Same Items As In Hand",
+      "description": "If true, the mob will only pick up items that match what it is already holding.",
+      "dataType": "boolean",
+      "samples": {
+        "/vanilla/behavior_pack/entities/allay.json": [
+          {
+            "path": "/minecraft:entity/component_groups/pickup_item/minecraft:behavior.pickup_items/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "can_pickup_any_item",
+      "title": "Can Pickup Any Item",
+      "description": "If true, the mob can pickup any item",
+      "defaultValue": false,
+      "dataType": "boolean",
+      "samples": {
+        "/vanilla/behavior_pack/entities/bogged.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+            "content": true
+          }
+        ],
+        "/vanilla/behavior_pack/entities/drowned.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "can_pickup_to_hand_or_equipment",
+      "title": "Can Pickup To Hand Or Equipment",
+      "description": "If true, the mob can pickup items to its hand or armor slots",
+      "defaultValue": true,
+      "dataType": "boolean"
+    },
+    {
+      "id": "excluded_items",
+      "title": "Excluded Items",
+      "description": "List of items this mob will not pick up",
+      "dataType": "stringArray",
+      "samples": {
+        "/vanilla/behavior_pack/entities/bogged.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+            "content": [
+              {
+                "tags": "q.all_tags('minecraft:is_spear')"
+              }
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/drowned.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+            "content": [
+              "minecraft:glow_ink_sac",
+              {
+                "tags": "q.all_tags('minecraft:is_spear')"
+              }
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/parched.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+            "content": [
+              {
+                "tags": "q.all_tags('minecraft:is_spear')"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "goal_radius",
+      "title": "Goal Radius",
+      "description": "Distance in blocks within the mob considers it has reached the goal. This is the \"wiggle room\" to stop the AI from bouncing back and forth trying to reach a specific spot",
+      "defaultValue": 0.5,
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/allay.json": [
+          {
+            "path": "/minecraft:entity/component_groups/pickup_item/minecraft:behavior.pickup_items/",
+            "content": 2.2
+          }
+        ],
+        "/vanilla/behavior_pack/entities/bogged.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+            "content": 2
+          }
+        ],
+        "/vanilla/behavior_pack/entities/drowned.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+            "content": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "max_dist",
+      "title": "Max Dist",
+      "description": "Maximum distance this mob will look for items to pick up",
+      "defaultValue": 0,
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/allay.json": [
+          {
+            "path": "/minecraft:entity/component_groups/pickup_item/minecraft:behavior.pickup_items/",
+            "content": 32
+          }
+        ],
+        "/vanilla/behavior_pack/entities/bogged.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+            "content": 3
+          }
+        ],
+        "/vanilla/behavior_pack/entities/drowned.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+            "content": 3
+          }
+        ]
+      }
+    },
+    {
+      "id": "pickup_based_on_chance",
+      "title": "Pickup Based On Chance",
+      "description": "If true, depending on the difficulty, there is a random chance that the mob may not be able to pickup items",
+      "defaultValue": false,
+      "dataType": "boolean",
+      "samples": {
+        "/vanilla/behavior_pack/entities/bogged.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+            "content": true
+          }
+        ],
+        "/vanilla/behavior_pack/entities/drowned.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "speed_multiplier",
+      "title": "Speed Multiplier",
+      "description": "Movement speed multiplier of the mob when using this AI Goal",
+      "defaultValue": 1,
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/allay.json": [
+          {
+            "path": "/minecraft:entity/component_groups/pickup_item/minecraft:behavior.pickup_items/",
+            "content": 6
+          }
+        ],
+        "/vanilla/behavior_pack/entities/bogged.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+            "content": 1
+          }
+        ],
+        "/vanilla/behavior_pack/entities/drowned.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+            "content": 1
+          }
+        ],
+        "/vanilla/behavior_pack/entities/fox.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+            "content": 0.5
+          }
+        ]
+      }
+    },
+    {
+      "id": "track_target",
+      "title": "Track Target",
+      "description": "If true, this mob will chase after the target as long as it's a valid target",
+      "defaultValue": false,
+      "dataType": "boolean"
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "hideSamples": true,
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "dataType": "int",
+      "samples": {
+        "/vanilla/behavior_pack/entities/allay.json": [
+          {
+            "path": "/minecraft:entity/component_groups/pickup_item/minecraft:behavior.pickup_items/",
+            "content": 2
+          }
+        ],
+        "/vanilla/behavior_pack/entities/bogged.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+            "content": 5
+          }
+        ],
+        "/vanilla/behavior_pack/entities/drowned.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+            "content": 6
+          }
+        ],
+        "/vanilla/behavior_pack/entities/fox.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+            "content": 11
+          }
+        ],
+        "/vanilla/behavior_pack/entities/parched.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+            "content": 6
+          }
+        ]
+      }
+    },
+    {
+      "id": "search_height",
+      "title": "Search Height",
+      "dataType": "number",
+      "samples": {
+        "/vanilla/behavior_pack/entities/allay.json": [
+          {
+            "path": "/minecraft:entity/component_groups/pickup_item/minecraft:behavior.pickup_items/",
+            "content": 32
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Allows the mob to pick up items on the ground.",
+  "title": "Pickup Items Behavior",
+  "samples": {
+    "/vanilla/behavior_pack/entities/allay.json": [
+      {
+        "path": "/minecraft:entity/component_groups/pickup_item/minecraft:behavior.pickup_items/",
+        "content": {
+          "can_pickup_any_item": false,
+          "search_height": 32,
+          "priority": 2,
+          "goal_radius": 2.2,
+          "can_pickup_to_hand_or_equipment": false,
+          "max_dist": 32,
+          "pickup_based_on_chance": false,
+          "pickup_same_items_as_in_hand": true,
+          "speed_multiplier": 6
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/bogged.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+        "content": {
+          "can_pickup_any_item": true,
+          "excluded_items": [
+            {
+              "tags": "q.all_tags('minecraft:is_spear')"
+            }
+          ],
+          "pickup_based_on_chance": true,
+          "goal_radius": 2,
+          "priority": 5,
+          "max_dist": 3,
+          "speed_multiplier": 1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/drowned.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+        "content": {
+          "can_pickup_any_item": true,
+          "excluded_items": [
+            "minecraft:glow_ink_sac",
+            {
+              "tags": "q.all_tags('minecraft:is_spear')"
+            }
+          ],
+          "pickup_based_on_chance": true,
+          "goal_radius": 2,
+          "priority": 6,
+          "max_dist": 3,
+          "speed_multiplier": 1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/fox.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+        "content": {
+          "priority": 11,
+          "max_dist": 3,
+          "goal_radius": 2,
+          "speed_multiplier": 0.5
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/parched.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+        "content": {
+          "can_pickup_any_item": true,
+          "excluded_items": [
+            {
+              "tags": "q.all_tags('minecraft:is_spear')"
+            }
+          ],
+          "pickup_based_on_chance": true,
+          "goal_radius": 2,
+          "priority": 6,
+          "max_dist": 3,
+          "speed_multiplier": 1
+        }
+      }
+    ]
+  },
+  "id": "minecraft:behavior.pickup_items"
+}

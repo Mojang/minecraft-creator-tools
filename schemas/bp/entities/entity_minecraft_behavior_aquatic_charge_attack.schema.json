@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Aquatic Charge Attack Behavior",
+  "description": "Enables an aquatic mob to dash at its target with knockback; includes overshoot and cooldown settings.",
+  "properties": {
+    "attack_reach": {
+      "title": "Attack Reach",
+      "description": "Horizontal reach grown around the mob's AABB to register a hit.",
+      "type": "number",
+      "default": 0.05000000074505806
+    },
+    "charge_cooldown_time": {
+      "title": "Charge Cooldown Time",
+      "description": "Range of time in seconds to wait before starting another charge.\n\nProperties:\n• max (float) = 0\n• min (float) = 0",
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "$ref": "../../common/floatrange.schema.json"
+        }
+      ],
+      "x-runtime-constraint-description": "Check that the limits imposed on the range (minimum, maximum and maximum distance between values) are respected"
+    },
+    "charge_overshoot_distance": {
+      "title": "Charge Overshoot Distance",
+      "description": "Distance beyond the target the mob aims during a charge.",
+      "type": "number",
+      "default": 1.5
+    },
+    "charge_speed": {
+      "title": "Charge Speed",
+      "description": "Absolute speed used during the charge attack.",
+      "type": "number",
+      "minimum": 0.05000000074505806,
+      "default": 0.05999999865889549
+    },
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "knockback_force": {
+      "title": "Knockback Force",
+      "description": "Knockback force applied to the target on hit.",
+      "type": "number",
+      "default": 2
+    },
+    "max_charge_distance": {
+      "title": "Max Charge Distance",
+      "description": "Maximum distance at which the mob attempts a charge.",
+      "type": "number",
+      "default": 16
+    },
+    "priority": {
+      "title": "Priority",
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

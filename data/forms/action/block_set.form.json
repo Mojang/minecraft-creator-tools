@@ -1,0 +1,38 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "block_set",
+  "title": "Set Block",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "places a block at a location"
+          }
+        ]
+      }
+    ]
+  },
+  "tags": [
+    "script",
+    "action"
+  ],
+  "fields": [
+    {
+      "id": "location",
+      "title": "Location Offset",
+      "dataType": "locationOffset",
+      "priority": 10
+    },
+    {
+      "id": "blockType",
+      "title": "Block to place",
+      "dataType": "string",
+      "isRequired": true,
+      "lookupId": "blockType",
+      "priority": 1
+    }
+  ],
+  "description": "Places or replaces a block at a specified world location with a new block type. This action can set any valid block identifier and optionally include block states (such as facing direction or open/closed state). Useful for building structures or modifying terrain programmatically."
+}

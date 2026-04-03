@@ -1,0 +1,152 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Admire Item Behavior",
+  "description": "Enables the mob to admire items that have been configured as admirable.",
+  "properties": {
+    "sound_interval": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "description": "\n\nProperties:\n• 0 (int)\n• 1 (int)",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "0": {
+                "type": "integer"
+              },
+              "1": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        {
+          "description": "\n\nProperties:\n• range_min (int)\n• range_max (int)\n• min (int)\n• max (int)",
+          "type": "object",
+          "properties": {
+            "range_min": {
+              "description": "Minimum interval",
+              "type": "integer"
+            },
+            "range_max": {
+              "description": "Maximum interval",
+              "type": "integer"
+            },
+            "min": {
+              "description": "Minimum interval",
+              "type": "integer"
+            },
+            "max": {
+              "description": "Maximum interval",
+              "type": "integer"
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Sound Interval (object)",
+              "description": "Use Sound Interval as an object",
+              "body": {
+                "range_min": 0,
+                "range_max": 0,
+                "min": 0,
+                "max": 0
+              }
+            }
+          ]
+        }
+      ],
+      "title": "Sound Interval",
+      "description": "The range of time in seconds to randomly wait before playing the sound again. Can be a number, an array [min, max], or an object with range_min and range_max.\n\nProperties:\n• max (float) = 0\n• min (float) = 0",
+      "defaultSnippets": [
+        {
+          "label": "Sound Interval (object)",
+          "description": "Use Sound Interval as an object",
+          "body": {
+            "range_min": 0,
+            "range_max": 0,
+            "min": 0,
+            "max": 0
+          }
+        }
+      ]
+    },
+    "admire_item_sound": {
+      "title": "Admire Item Sound",
+      "description": "The sound event to play when admiring the item",
+      "type": "string",
+      "default": ""
+    },
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "on_admire_item_start": {
+      "title": "Admire Item Start",
+      "description": "Event to run when the mob starts admiring an item.\n\nProperties:\n• event (string) = \n• filters ({ domain, operator, subject, ... }) = {\"AND\":null,\"NOT\":nu\n• target (string) = self",
+      "$ref": "./entity_actordefinitiontrigger.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Entity ActorDefinitionTrigger",
+          "description": "Triggers an entity event when specified conditions are met. Events activate component groups that change entity behavior—transforming villagers into zombie villagers, switching mobs to aggressive mode, or triggering growth stages. Combine with filters to create conditional state machines that respond to gameplay.",
+          "body": {
+            "event": "",
+            "filters": {
+              "AND": null,
+              "NOT": null,
+              "OR": null,
+              "all": null,
+              "all_of": null,
+              "any": null,
+              "any_of": null,
+              "none_of": null
+            },
+            "target": "self"
+          }
+        }
+      ]
+    },
+    "on_admire_item_stop": {
+      "title": "Admire Item Stop",
+      "description": "Event to run when the mob stops admiring an item.\n\nProperties:\n• event (string) = \n• filters ({ domain, operator, subject, ... }) = {\"AND\":null,\"NOT\":nu\n• target (string) = self",
+      "$ref": "./entity_actordefinitiontrigger.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Entity ActorDefinitionTrigger",
+          "description": "Triggers an entity event when specified conditions are met. Events activate component groups that change entity behavior—transforming villagers into zombie villagers, switching mobs to aggressive mode, or triggering growth stages. Combine with filters to create conditional state machines that respond to gameplay.",
+          "body": {
+            "event": "",
+            "filters": {
+              "AND": null,
+              "NOT": null,
+              "OR": null,
+              "all": null,
+              "all_of": null,
+              "any": null,
+              "any_of": null,
+              "none_of": null
+            },
+            "target": "self"
+          }
+        }
+      ]
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

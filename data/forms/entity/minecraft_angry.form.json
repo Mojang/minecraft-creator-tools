@@ -1,0 +1,230 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "duration",
+            "comparison": ">=",
+            "value": 60
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can become angry and stays hostile for a long time ("
+          },
+          {
+            "type": "value",
+            "field": "duration"
+          },
+          {
+            "type": "literal",
+            "text": " seconds)"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "duration",
+            "comparison": "<",
+            "value": 60
+          },
+          {
+            "field": "duration",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can become angry for "
+          },
+          {
+            "type": "value",
+            "field": "duration"
+          },
+          {
+            "type": "literal",
+            "text": " seconds"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "duration",
+            "comparison": "undefined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can become angry when provoked"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "broadcast_anger",
+            "comparison": "==",
+            "value": true
+          },
+          {
+            "field": "broadcast_range",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "alerts allies within "
+          },
+          {
+            "type": "value",
+            "field": "broadcast_range"
+          },
+          {
+            "type": "literal",
+            "text": " blocks when angered"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "broadcast_anger",
+            "comparison": "==",
+            "value": true
+          },
+          {
+            "field": "broadcast_range",
+            "comparison": "undefined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "alerts nearby allies when angered"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "angry_sound",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "makes an angry sound when provoked"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "Defines an entity's 'angry' state using a timer.",
+  "fields": [
+    {
+      "id": "angry_sound",
+      "description": "The sound event to play when the mob is angry",
+      "dataType": "string",
+      "title": "Angry Sound"
+    },
+    {
+      "id": "sound_interval",
+      "description": "The range of time in seconds to randomly wait before playing the sound again.",
+      "dataType": "intRange",
+      "defaultValue": 0,
+      "title": "Sound Interval"
+    },
+    {
+      "id": "duration",
+      "description": "The amount of time in seconds that the entity will be angry.",
+      "dataType": "int",
+      "defaultValue": 25,
+      "title": "Duration"
+    },
+    {
+      "id": "duration_delta",
+      "description": "Variance in seconds added to the duration [-delta, delta].",
+      "dataType": "int",
+      "defaultValue": 0,
+      "title": "Duration Delta"
+    },
+    {
+      "id": "filters",
+      "title": "Anger exemption filters",
+      "description": "Filter out mob types that it should not attack while angry (other Piglins)",
+      "dataType": "minecraftFilter"
+    },
+    {
+      "id": "broadcast_anger",
+      "description": "If set, other entities of the same entity definition within the broadcastRange will also become angry",
+      "dataType": "boolean",
+      "defaultValue": false,
+      "title": "Broadcast Anger"
+    },
+    {
+      "id": "broadcast_anger_on_attack",
+      "description": "If set, other entities of the same entity definition within the broadcastRange will also become angry whenever this mob attacks",
+      "dataType": "boolean",
+      "defaultValue": false,
+      "title": "Broadcast Anger On Attack"
+    },
+    {
+      "id": "broadcast_range",
+      "description": "Distance in blocks within which other entities of the same entity type will become angry",
+      "dataType": "int",
+      "defaultValue": 20,
+      "title": "Broadcast Range"
+    },
+    {
+      "id": "broadcast_targets",
+      "description": "A list of entity families to broadcast anger to",
+      "dataType": "stringArray",
+      "title": "Broadcast Targets"
+    },
+    {
+      "id": "broadcast_filters",
+      "description": "Conditions that make this entry in the list valid",
+      "dataType": "minecraftFilter",
+      "title": "Broadcast Filters"
+    },
+    {
+      "id": "calm_event",
+      "description": "Event to fire when this entity is calmed down. Can be a simple event name string or an object with event and target properties.",
+      "dataType": "object",
+      "subFormId": "ActorDefinitionTrigger",
+      "alternates": [
+        {
+          "id": "calm_event",
+          "dataType": "string"
+        }
+      ],
+      "title": "Calm Event"
+    },
+    {
+      "id": "broadcast_anger_on_being_attacked",
+      "title": "Broadcast Anger On Being Attacked",
+      "description": "If true, other entities of the same entity definition within the broadcastRange will also become angry whenever this mob is attacked",
+      "defaultValue": false,
+      "dataType": "boolean"
+    },
+    {
+      "id": "broadcast_anger_when_dying",
+      "title": "Broadcast Anger When Dying",
+      "description": "If false, when this mob is killed it does not spread its anger to other entities of the same entity definition within the broadcastRange",
+      "defaultValue": true,
+      "dataType": "boolean"
+    }
+  ],
+  "title": "Angry",
+  "samples": {},
+  "id": "minecraft:angry"
+}

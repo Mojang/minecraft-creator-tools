@@ -1,0 +1,304 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "checks if the entity's biome has the '"
+          },
+          {
+            "type": "value",
+            "field": "value"
+          },
+          {
+            "type": "literal",
+            "text": "' tag"
+          }
+        ]
+      }
+    ]
+  },
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
+  "fields": [
+    {
+      "id": "operator",
+      "title": "Operator",
+      "description": "(Optional) The comparison to apply with 'value'.",
+      "defaultValue": "equals",
+      "dataType": "string",
+      "choices": [
+        {
+          "id": "!=",
+          "title": "!=",
+          "description": "Test for inequality."
+        },
+        {
+          "id": "<",
+          "title": "<",
+          "description": "Test for less-than the value."
+        },
+        {
+          "id": "<=",
+          "title": "<=",
+          "description": "Test for less-than or equal to the value."
+        },
+        {
+          "id": "<>",
+          "title": "<>",
+          "description": "Test for inequality."
+        },
+        {
+          "id": "=",
+          "title": "=",
+          "description": "Test for equality."
+        },
+        {
+          "id": "==",
+          "title": "==",
+          "description": "Test for equality."
+        },
+        {
+          "id": ">",
+          "title": ">",
+          "description": "Test for greater-than the value."
+        },
+        {
+          "id": ">=",
+          "title": ">=",
+          "description": "Test for greater-than or equal to the value."
+        },
+        {
+          "id": "equals",
+          "title": "Equals",
+          "description": "Test for equality."
+        },
+        {
+          "id": "not",
+          "title": "Not",
+          "description": "Test for inequality."
+        }
+      ]
+    },
+    {
+      "id": "subject",
+      "title": "Subject",
+      "description": "(Optional) The subject of this filter test.",
+      "defaultValue": "self",
+      "dataType": "string",
+      "choices": [
+        {
+          "id": "block",
+          "title": "Block",
+          "description": "The block involved with the interaction."
+        },
+        {
+          "id": "damager",
+          "title": "Damager",
+          "description": "The damaging actor involved with the interaction."
+        },
+        {
+          "id": "other",
+          "title": "Other",
+          "description": "The other member of an interaction, not the caller."
+        },
+        {
+          "id": "parent",
+          "title": "Parent",
+          "description": "The caller's current parent."
+        },
+        {
+          "id": "player",
+          "title": "Player",
+          "description": "The player involved with the interaction."
+        },
+        {
+          "id": "self",
+          "title": "Self",
+          "description": "The entity or object calling the test"
+        },
+        {
+          "id": "target",
+          "title": "Target",
+          "description": "The caller's current target."
+        }
+      ]
+    },
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "(Required) The tag to look for",
+      "dataType": "string",
+      "samples": {
+        "/vanilla/behavior_pack/entities/cave_spider.json": [
+          {
+            "path": "/minecraft:entity/events/minecraft:entity_spawned_with_biome_specific_jockey/first_valid[1]/filters/all_of[2]/any_of[0]/",
+            "content": "swamp"
+          },
+          {
+            "path": "/minecraft:entity/events/minecraft:entity_spawned_with_biome_specific_jockey/first_valid[1]/filters/all_of[2]/any_of[1]/",
+            "content": "mangrove_swamp"
+          },
+          {
+            "path": "/minecraft:entity/events/minecraft:entity_spawned_with_biome_specific_jockey/first_valid[2]/filters/all_of[2]/",
+            "content": "desert"
+          },
+          {
+            "path": "/minecraft:entity/events/minecraft:entity_spawned_with_biome_specific_jockey/first_valid[3]/filters/",
+            "content": "nether"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/chicken.json": [
+          {
+            "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence[1]/first_valid[0]/filters/",
+            "content": "spawns_warm_variant_farm_animals"
+          },
+          {
+            "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence[1]/first_valid[1]/filters/",
+            "content": "spawns_cold_variant_farm_animals"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/cow.json": [
+          {
+            "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence[1]/first_valid[0]/filters/",
+            "content": "spawns_warm_variant_farm_animals"
+          },
+          {
+            "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence[1]/first_valid[1]/filters/",
+            "content": "spawns_cold_variant_farm_animals"
+          }
+        ]
+      }
+    },
+    {
+      "id": "test",
+      "title": "Test",
+      "dataType": "string",
+      "samples": {
+        "/vanilla/behavior_pack/entities/cave_spider.json": [
+          {
+            "path": "/minecraft:entity/events/minecraft:entity_spawned_with_biome_specific_jockey/first_valid[1]/filters/all_of[2]/any_of[0]/",
+            "content": "has_biome_tag"
+          },
+          {
+            "path": "/minecraft:entity/events/minecraft:entity_spawned_with_biome_specific_jockey/first_valid[1]/filters/all_of[2]/any_of[1]/",
+            "content": "has_biome_tag"
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Tests whether the biome the subject is in has the specified tag.",
+  "title": "Has Biome Tag",
+  "samples": {
+    "samples": [
+      {
+        "path": "Full..",
+        "content": "{ \"test\": \"has_biome_tag\", \"subject\": \"self\", \"operator\": \"equals\", \"value\": \" \" }"
+      },
+      {
+        "path": "Short (using Defaults)..",
+        "content": "{ \"test\": \"has_biome_tag\", \"value\": \" \" }"
+      }
+    ],
+    "/vanilla/behavior_pack/entities/cave_spider.json": [
+      {
+        "path": "/minecraft:entity/events/minecraft:entity_spawned_with_biome_specific_jockey/first_valid[1]/filters/all_of[2]/any_of[0]/",
+        "content": {
+          "test": "has_biome_tag",
+          "value": "swamp"
+        }
+      },
+      {
+        "path": "/minecraft:entity/events/minecraft:entity_spawned_with_biome_specific_jockey/first_valid[1]/filters/all_of[2]/any_of[1]/",
+        "content": {
+          "test": "has_biome_tag",
+          "value": "mangrove_swamp"
+        }
+      },
+      {
+        "path": "/minecraft:entity/events/minecraft:entity_spawned_with_biome_specific_jockey/first_valid[2]/filters/all_of[2]/",
+        "content": {
+          "test": "has_biome_tag",
+          "value": "desert"
+        }
+      },
+      {
+        "path": "/minecraft:entity/events/minecraft:entity_spawned_with_biome_specific_jockey/first_valid[3]/filters/",
+        "content": {
+          "test": "has_biome_tag",
+          "value": "nether"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/chicken.json": [
+      {
+        "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence[1]/first_valid[0]/filters/",
+        "content": {
+          "test": "has_biome_tag",
+          "value": "spawns_warm_variant_farm_animals"
+        }
+      },
+      {
+        "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence[1]/first_valid[1]/filters/",
+        "content": {
+          "test": "has_biome_tag",
+          "value": "spawns_cold_variant_farm_animals"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/cow.json": [
+      {
+        "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence[1]/first_valid[0]/filters/",
+        "content": {
+          "test": "has_biome_tag",
+          "value": "spawns_warm_variant_farm_animals"
+        }
+      },
+      {
+        "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence[1]/first_valid[1]/filters/",
+        "content": {
+          "test": "has_biome_tag",
+          "value": "spawns_cold_variant_farm_animals"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/pig.json": [
+      {
+        "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence[1]/first_valid[0]/filters/",
+        "content": {
+          "test": "has_biome_tag",
+          "value": "spawns_warm_variant_farm_animals"
+        }
+      },
+      {
+        "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence[1]/first_valid[1]/filters/",
+        "content": {
+          "test": "has_biome_tag",
+          "value": "spawns_cold_variant_farm_animals"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/sheep.json": [
+      {
+        "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence[1]/first_valid[0]/filters/",
+        "content": {
+          "test": "has_biome_tag",
+          "value": "spawns_cold_variant_farm_animals"
+        }
+      },
+      {
+        "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence[1]/first_valid[1]/filters/",
+        "content": {
+          "test": "has_biome_tag",
+          "value": "spawns_warm_variant_farm_animals"
+        }
+      }
+    ]
+  },
+  "id": "has_biome_tag"
+}

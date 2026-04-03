@@ -1,0 +1,183 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "resource/sound_definitions",
+  "title": "Sound Definitions",
+  "description": "Defines sound events and their associated audio files. This file maps sound event identifiers to one or more sound files that can play when that event is triggered. Located at sounds/sound_definitions.json in resource packs.",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "title": "Format Version",
+      "description": "The format version of the sound definitions file. Should be '1.14.0' or higher.",
+      "type": "string",
+      "default": "1.14.0"
+    },
+    "sound_definitions": {
+      "title": "Sound Definitions",
+      "description": "A collection of sound event definitions, where each key is a sound event identifier (e.g., 'mob.zombie.say') and the value defines which sounds can play for that event.\n\nProperties:\n• category (enum)\n• sounds\n• min_distance (float) = 0\n• max_distance (float)",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "title": "Category",
+            "description": "The audio category this sound belongs to. Controls which volume slider affects this sound in settings.",
+            "type": "string",
+            "enum": [
+              "ambient",
+              "block",
+              "bottle",
+              "bucket",
+              "hostile",
+              "music",
+              "neutral",
+              "player",
+              "record",
+              "ui",
+              "weather"
+            ]
+          },
+          "sounds": {
+            "title": "Sounds",
+            "description": "Array of sound files or sound objects that can play for this event. When multiple sounds are defined, one is chosen randomly.\n\nProperties:\n• name (string)\n• volume = 1\n• pitch = 1\n• load_on_low_memory (boolean) = false\n• stream (boolean) = false\n• weight (int) = 1\n• is3D (boolean)",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "title": "Name",
+                  "description": "Path to the sound file relative to the sounds folder, without the file extension (e.g., 'sounds/mob/zombie/say1').",
+                  "type": "string"
+                },
+                "volume": {
+                  "title": "Volume",
+                  "description": "Volume multiplier for this sound. Can be a single value or a range [min, max]. Default is 1.0.",
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 2,
+                      "maxItems": 2
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "min": {
+                          "type": "number",
+                          "description": "Minimum value of the range"
+                        },
+                        "max": {
+                          "type": "number",
+                          "description": "Maximum value of the range"
+                        }
+                      }
+                    }
+                  ],
+                  "default": 1
+                },
+                "pitch": {
+                  "title": "Pitch",
+                  "description": "Pitch multiplier for this sound. Can be a single value or a range [min, max]. Default is 1.0.",
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 2,
+                      "maxItems": 2
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "min": {
+                          "type": "number",
+                          "description": "Minimum value of the range"
+                        },
+                        "max": {
+                          "type": "number",
+                          "description": "Maximum value of the range"
+                        }
+                      }
+                    }
+                  ],
+                  "default": 1
+                },
+                "load_on_low_memory": {
+                  "title": "Load on Low Memory",
+                  "description": "If true, this sound will be loaded even on devices with low memory. Use sparingly for critical sounds.",
+                  "type": "boolean",
+                  "default": false
+                },
+                "stream": {
+                  "title": "Stream",
+                  "description": "If true, the sound will be streamed from disk rather than loaded into memory. Recommended for long sounds like music.",
+                  "type": "boolean",
+                  "default": false
+                },
+                "weight": {
+                  "title": "Weight",
+                  "description": "Relative probability weight for this sound when multiple sounds are defined. Higher values make this sound more likely to be chosen.",
+                  "type": "integer",
+                  "default": 1
+                },
+                "is3D": {
+                  "title": "Is 3D",
+                  "description": "If true, this sound is positional and will have 3D audio properties.",
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "min_distance": {
+            "title": "Minimum Distance",
+            "description": "The minimum distance in blocks at which the sound starts to attenuate.",
+            "type": "number",
+            "default": 0
+          },
+          "max_distance": {
+            "title": "Maximum Distance",
+            "description": "The maximum distance in blocks at which the sound can be heard.",
+            "type": "number"
+          }
+        }
+      }
+    },
+    "category": {
+      "title": "Category",
+      "description": "\n\nSample values:\n• sound_definitions: neutral",
+      "type": "string"
+    },
+    "sounds": {
+      "title": "Sounds",
+      "description": "\n\nProperties:\n• name (string)\n• volume (number)\n\nSample values:\n• sound_definitions: [{\"name\":\"sounds/mob/blaze/breathe1\",\"volume\":0...\n• sound_definitions: [\"sounds/mob/bogged/ambient1\",\"sounds/mob/bogge...",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "description": "\n\nSample values:\n• sound_definitions: sounds/mob/blaze/breathe1",
+            "type": "string"
+          },
+          "volume": {
+            "title": "Volume",
+            "description": "\n\nSample values:\n• sound_definitions: 0.2",
+            "type": "number"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "format_version",
+    "sound_definitions"
+  ]
+}

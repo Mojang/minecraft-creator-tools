@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Follow Range",
+  "description": "Defines the maximum range, in blocks, that a mob will pursue a target. This affects AI behaviors like chasing players or attacking.",
+  "properties": {
+    "value": {
+      "title": "Value",
+      "description": "The default follow range in blocks. Entities will attempt to stay within this radius of their target.\n\nSample values:\n• allay: 1024\n• blaze: 48\n• breeze: 32",
+      "type": "integer"
+    },
+    "max": {
+      "title": "Max",
+      "description": "Maximum follow distance in blocks. The entity will not pursue targets beyond this range.\n\nSample values:\n• blaze: 48\n• elder_guardian: 16",
+      "type": "integer"
+    }
+  }
+}

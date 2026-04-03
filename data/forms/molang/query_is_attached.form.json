@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "checks if entity is attached to another entity ..."
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.is_attached",
+  "fields": [],
+  "description": "Returns 1.0 if the entity is attached to another entity (such as being held or worn), else it will return 0.0. Available only with resource packs.",
+  "title": "Is Attached"
+}

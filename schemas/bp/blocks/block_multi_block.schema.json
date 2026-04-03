@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Block Multi Block",
+  "description": "Adds the \"minecraft:multi_block_part\" state and multi block functionality to the block.",
+  "properties": {
+    "direction": {
+      "title": "Facing",
+      "description": "The direction the block parts are placed starting from 'minecraft:multi_block_part' permutation '0' to permutation 'parts'. Default value is 'up'.",
+      "type": "string",
+      "enum": [
+        "down",
+        "up"
+      ]
+    },
+    "enabled_states": {
+      "title": "Enabled States",
+      "description": "Which state to enable. Must specify at least one. Options: [\"minecraft:multi_block_part\"].",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "minecraft:multi_block_part"
+        ]
+      },
+      "minLength": 1
+    },
+    "parts": {
+      "title": "Parts",
+      "description": "The number of block parts, this sets the value for state 'minecraft:multi_block_part'. Default value is '2'.",
+      "type": "integer",
+      "minimum": 2,
+      "maximum": 4,
+      "default": 2
+    }
+  },
+  "required": [
+    "direction",
+    "enabled_states"
+  ]
+}

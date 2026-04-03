@@ -1,0 +1,692 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "features/features",
+  "title": "Features",
+  "description": "Defines a world generation feature document and its feature-specific properties.",
+  "type": "object",
+  "properties": {
+    "minecraft:tree_feature": {
+      "$ref": "./tree_feature.schema.json",
+      "title": "Tree Feature",
+      "description": "\n\nProperties:\n• acacia_trunk ({ branches, trunk_decoration, trunk_width, ... })\n• cherry_trunk ({ branches, trunk_height })\n• fallen_trunk ({ trunk_decoration })\n• mangrove_trunk ({ trunk_decoration, trunk_width, trunk_height, ... })\n• mega_trunk ({ branches, trunk_decoration, trunk_width, ... })\n• trunk ({ trunk_decoration, can_be_submerged })\n• canopy ({ canopy_decoration, canopy_offset, min_width, ... })\n• mangrove_canopy\n• ... and 17 more properties",
+      "defaultSnippets": [
+        {
+          "label": "Tree Feature",
+          "description": "Create a Tree Feature",
+          "body": {
+            "description": ""
+          }
+        }
+      ]
+    },
+    "format_version": {
+      "title": "Format Version",
+      "type": "string"
+    },
+    "minecraft:aggregate_feature": {
+      "title": "Aggregate Feature",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• features (string[])",
+      "type": "object",
+      "properties": {
+        "description": {
+          "title": "Description",
+          "description": "\n\nProperties:\n• identifier (string)",
+          "type": "object",
+          "properties": {
+            "identifier": {
+              "title": "Identifier",
+              "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+              "type": "string"
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Description",
+              "description": "Create a Description",
+              "body": {
+                "identifier": ""
+              }
+            }
+          ]
+        },
+        "features": {
+          "title": "Features",
+          "description": "Collection of features to be placed one by one. No guarantee of order. All features use the same input position.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Aggregate Feature",
+          "description": "Create a Aggregate Feature",
+          "body": {
+            "description": "",
+            "features": ""
+          }
+        }
+      ]
+    },
+    "minecraft:sequence_feature": {
+      "title": "Sequence Feature",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• features (string[])",
+      "type": "object",
+      "properties": {
+        "description": {
+          "title": "Description",
+          "description": "\n\nProperties:\n• identifier (string)",
+          "type": "object",
+          "properties": {
+            "identifier": {
+              "title": "Identifier",
+              "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+              "type": "string"
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Description",
+              "description": "Create a Description",
+              "body": {
+                "identifier": ""
+              }
+            }
+          ]
+        },
+        "features": {
+          "title": "Features",
+          "description": "List of features to be placed in sequence. The output position of the previous feature is used as the input position to the next.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Sequence Feature",
+          "description": "Create a Sequence Feature",
+          "body": {
+            "description": "",
+            "features": ""
+          }
+        }
+      ]
+    },
+    "minecraft:beards_and_shavers": {
+      "$ref": "./beards_and_shavers.schema.json",
+      "title": "Beards And Shavers",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• bounding_box_min (string[])\n• bounding_box_max (string[])",
+      "defaultSnippets": [
+        {
+          "label": "Beards And Shavers",
+          "description": "Create a Beards And Shavers",
+          "body": {
+            "description": "",
+            "bounding_box_min": "",
+            "bounding_box_max": ""
+          }
+        }
+      ]
+    },
+    "minecraft:cave_carver_feature": {
+      "$ref": "./cave_carver_feature.schema.json",
+      "title": "Cave Carver Feature",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• width_modifier\n• skip_carve_chance (int)\n• height_limit (int)",
+      "defaultSnippets": [
+        {
+          "label": "Cave Carver Feature",
+          "description": "Create a Cave Carver Feature",
+          "body": {
+            "description": "",
+            "skip_carve_chance": 0,
+            "height_limit": 0
+          }
+        }
+      ]
+    },
+    "minecraft:conditional_list": {
+      "$ref": "./conditional_list.schema.json",
+      "title": "Conditional List",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• conditional_features\n• early_out_scheme (string)",
+      "defaultSnippets": [
+        {
+          "label": "Conditional List",
+          "description": "Create a Conditional List",
+          "body": {
+            "description": "",
+            "early_out_scheme\"<\"condition_success\", \"placement_success\"": ""
+          }
+        }
+      ]
+    },
+    "minecraft:fossil_feature": {
+      "title": "Fossil Feature",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• max_empty_corners (int)",
+      "type": "object",
+      "properties": {
+        "description": {
+          "title": "Description",
+          "description": "\n\nProperties:\n• identifier (string)",
+          "type": "object",
+          "properties": {
+            "identifier": {
+              "title": "Identifier",
+              "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+              "type": "string"
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Description",
+              "description": "Create a Description",
+              "body": {
+                "identifier": ""
+              }
+            }
+          ]
+        },
+        "max_empty_corners": {
+          "title": "Max Empty Corners",
+          "type": "integer"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Fossil Feature",
+          "description": "Create a Fossil Feature",
+          "body": {
+            "description": "",
+            "max_empty_corners": 0
+          }
+        }
+      ]
+    },
+    "minecraft:geode_feature": {
+      "$ref": "./geode_feature.schema.json",
+      "title": "Geode Feature",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• inner_placements (string[])\n• min_outer_wall_distance (int)\n• max_outer_wall_distance (int)\n• min_distribution_points (int)\n• max_distribution_points (int)\n• min_point_offset (int)\n• max_point_offset (int)\n• ... and 4 more properties",
+      "defaultSnippets": [
+        {
+          "label": "Geode Feature",
+          "description": "Create a Geode Feature",
+          "body": {
+            "description": "",
+            "min_outer_wall_distance": 0,
+            "max_outer_wall_distance": 0,
+            "min_distribution_points": 0,
+            "max_distribution_points": 0,
+            "min_point_offset": 0,
+            "max_point_offset": 0,
+            "max_radius": 0,
+            "crack_point_offset": 0,
+            "placements_require_layer0_alternate": true,
+            "invalid_blocks_threshold": 0
+          }
+        }
+      ]
+    },
+    "minecraft:growing_plant_feature": {
+      "title": "Growing Plant Feature",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• height_distribution (string[])\n• growth_direction (string)\n• body_blocks (string[])\n• head_blocks (string[])\n• allow_water (boolean)",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "title": "Description",
+            "description": "\n\nProperties:\n• identifier (string)",
+            "type": "object",
+            "properties": {
+              "identifier": {
+                "title": "Identifier",
+                "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+                "type": "string"
+              }
+            },
+            "defaultSnippets": [
+              {
+                "label": "Description",
+                "description": "Create a Description",
+                "body": {
+                  "identifier": ""
+                }
+              }
+            ]
+          },
+          "height_distribution": {
+            "title": "Height Distribution",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "growth_direction": {
+            "title": "Growth Direction",
+            "description": "Direction that the plant grows towards. Valid values: UP and DOWN",
+            "type": "string"
+          },
+          "body_blocks": {
+            "title": "Body Blocks",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "head_blocks": {
+            "title": "Head Blocks",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "allow_water": {
+            "title": "Allow Water",
+            "description": "Plant blocks can be placed in water.",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "minecraft:nether_cave_carver_feature": {
+      "$ref": "./nether_cave_carver_feature.schema.json",
+      "title": "Nether Cave Carver Feature",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• width_modifier\n• skip_carve_chance (int)\n• height_limit (int)",
+      "defaultSnippets": [
+        {
+          "label": "Nether Cave Carver Feature",
+          "description": "Create a Nether Cave Carver Feature",
+          "body": {
+            "description": "",
+            "skip_carve_chance": 0,
+            "height_limit": 0
+          }
+        }
+      ]
+    },
+    "minecraft:multiface_feature": {
+      "$ref": "./multiface_feature.schema.json",
+      "title": "Multiface Feature",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• search_range (int)\n• can_place_on_floor (boolean)\n• can_place_on_ceiling (boolean)\n• can_place_on_wall (boolean)\n• can_place_on (string[])",
+      "defaultSnippets": [
+        {
+          "label": "Multiface Feature",
+          "description": "Create a Multiface Feature",
+          "body": {
+            "description": "",
+            "search_range": 0,
+            "can_place_on_floor": true,
+            "can_place_on_ceiling": true,
+            "can_place_on_wall": true
+          }
+        }
+      ]
+    },
+    "minecraft:ore_feature": {
+      "$ref": "./ore_feature.schema.json",
+      "title": "Ore Feature",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• count (int)\n• replace_rules",
+      "defaultSnippets": [
+        {
+          "label": "Ore Feature",
+          "description": "Create a Ore Feature",
+          "body": {
+            "description": "",
+            "count": 0
+          }
+        }
+      ]
+    },
+    "minecraft:partially_exposed_blob_feature": {
+      "$ref": "./partially_exposed_blob_feature.schema.json",
+      "title": "Partially Exposed Blob Feature",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• placement_radius_around_floor (int)\n• exposed_face (string)",
+      "defaultSnippets": [
+        {
+          "label": "Partially Exposed Blob Feature",
+          "description": "Create a Partially Exposed Blob Feature",
+          "body": {
+            "description": "",
+            "placement_radius_around_floor": 0,
+            "exposed_face": ""
+          }
+        }
+      ]
+    },
+    "minecraft:rect_layout": {
+      "title": "Rect Layout",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• feature_areas",
+      "type": "object",
+      "properties": {
+        "description": {
+          "title": "Description",
+          "description": "\n\nProperties:\n• identifier (string)",
+          "type": "object",
+          "properties": {
+            "identifier": {
+              "title": "Identifier",
+              "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+              "type": "string"
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Description",
+              "description": "Create a Description",
+              "body": {
+                "identifier": ""
+              }
+            }
+          ]
+        },
+        "feature_areas": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "area_dimensions": {
+                    "title": "Area Dimensions",
+                    "description": "Dimensions (size) of the associated Feature.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "[0..0]": {
+                    "type": "integer"
+                  },
+                  "[1..1]": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            {
+              "title": "Feature Areas",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ],
+          "description": "\n\nProperties:\n• area_dimensions (string[])\n• [0..0] (int)\n• [1..1] (int)"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Rect Layout",
+          "description": "Create a Rect Layout",
+          "body": {
+            "description": ""
+          }
+        }
+      ]
+    },
+    "minecraft:scan_surface": {
+      "title": "Scan Surface",
+      "description": "\n\nProperties:\n• description ({ identifier })",
+      "type": "object",
+      "properties": {
+        "description": {
+          "title": "Description",
+          "description": "\n\nProperties:\n• identifier (string)",
+          "type": "object",
+          "properties": {
+            "identifier": {
+              "title": "Identifier",
+              "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+              "type": "string"
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Description",
+              "description": "Create a Description",
+              "body": {
+                "identifier": ""
+              }
+            }
+          ]
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Scan Surface",
+          "description": "Create a Scan Surface",
+          "body": {
+            "description": ""
+          }
+        }
+      ]
+    },
+    "minecraft:scatter_feature": {
+      "$ref": "./scatter_feature.schema.json",
+      "title": "Scatter Feature",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• project_input_to_floor (boolean)\n• distribution (object)",
+      "defaultSnippets": [
+        {
+          "label": "Scatter Feature",
+          "description": "Create a Scatter Feature",
+          "body": {
+            "description": "",
+            "project_input_to_floor": true,
+            "distribution": ""
+          }
+        }
+      ]
+    },
+    "minecraft:sculk_patch_feature": {
+      "$ref": "./sculk_patch_feature.schema.json",
+      "title": "Sculk Patch Feature",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• can_place_sculk_patch_on (string[])\n• cursor_count (int)\n• charge_amount (int)\n• spread_attempts (int)\n• growth_rounds (int)\n• spread_rounds (int)",
+      "defaultSnippets": [
+        {
+          "label": "Sculk Patch Feature",
+          "description": "Create a Sculk Patch Feature",
+          "body": {
+            "description": "",
+            "can_place_sculk_patch_on": "",
+            "cursor_count": 0,
+            "charge_amount": 0,
+            "spread_attempts": 0,
+            "growth_rounds": 0,
+            "spread_rounds": 0
+          }
+        }
+      ]
+    },
+    "minecraft:search_feature": {
+      "$ref": "./search_feature.schema.json",
+      "title": "Search Feature",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• search_volume ({ min, [0..0], [1..1], ... })\n• search_axis (string)\n• required_successes (int)",
+      "defaultSnippets": [
+        {
+          "label": "Search Feature",
+          "description": "Create a Search Feature",
+          "body": {
+            "description": "",
+            "search_volume": "",
+            "search_axis\"<\"-x\", \"+x\", \"-y\", \"+y\", \"-z\", \"+z\"": "",
+            "required_successes": 0
+          }
+        }
+      ]
+    },
+    "minecraft:single_block_feature": {
+      "$ref": "./single_block_feature.schema.json",
+      "title": "Single Block Feature",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• places_block\n• enforce_placement_rules (boolean)\n• enforce_survivability_rules (boolean)\n• randomize_rotation (boolean)\n• may_attach_to ({ min_sides_must_attach, auto_rotate, top, ... })\n• may_not_attach_to ({ top, bottom, north, ... })\n• may_replace (string[])",
+      "defaultSnippets": [
+        {
+          "label": "Single Block Feature",
+          "description": "Create a Single Block Feature",
+          "body": {
+            "description": "",
+            "enforce_placement_rules": true,
+            "enforce_survivability_rules": true,
+            "randomize_rotation": true
+          }
+        }
+      ]
+    },
+    "minecraft:snap_to_surface_feature": {
+      "$ref": "./snap_to_surface_feature.schema.json",
+      "title": "Snap To Surface Feature",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• vertical_search_range (int)\n• surface (string)\n• allow_air_placement (boolean)\n• allow_underwater_placement (boolean)\n• allowed_surface_blocks (string[])\n• embed_in_surface (boolean)",
+      "defaultSnippets": [
+        {
+          "label": "Snap To Surface Feature",
+          "description": "Create a Snap To Surface Feature",
+          "body": {
+            "description": "",
+            "vertical_search_range": 0,
+            "surface": "",
+            "allow_air_placement": true,
+            "allow_underwater_placement": true,
+            "embed_in_surface": true
+          }
+        }
+      ]
+    },
+    "minecraft:structure_template_feature": {
+      "$ref": "./structure_template_feature.schema.json",
+      "title": "Structure Template Feature",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• adjustment_radius (int)\n• facing_direction (string)\n• rotate_around_center (boolean)\n• constraints ({ grounded, unburied, block_intersection })",
+      "defaultSnippets": [
+        {
+          "label": "Structure Template Feature",
+          "description": "Create a Structure Template Feature",
+          "body": {
+            "description": "",
+            "adjustment_radius": 0,
+            "facing_direction\"<\"north\", \"south\", \"east\", \"west\", \"random\"": "",
+            "rotate_around_center": true,
+            "constraints": ""
+          }
+        }
+      ]
+    },
+    "minecraft:surface_relative_threshold_feature": {
+      "title": "Surface Relative Threshold Feature",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• minimum_distance_below_surface (int)",
+      "type": "object",
+      "properties": {
+        "description": {
+          "title": "Description",
+          "description": "\n\nProperties:\n• identifier (string)",
+          "type": "object",
+          "properties": {
+            "identifier": {
+              "title": "Identifier",
+              "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+              "type": "string"
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Description",
+              "description": "Create a Description",
+              "body": {
+                "identifier": ""
+              }
+            }
+          ]
+        },
+        "minimum_distance_below_surface": {
+          "title": "Minimum Distance Below Surface",
+          "description": "The minimum number of blocks required to be between the estimated surface level and a valid place for this feature. Defaults to zero.",
+          "type": "integer"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Surface Relative Threshold Feature",
+          "description": "Create a Surface Relative Threshold Feature",
+          "body": {
+            "description": "",
+            "minimum_distance_below_surface": 0
+          }
+        }
+      ]
+    },
+    "minecraft:underwater_cave_carver_feature": {
+      "$ref": "./underwater_cave_carver_feature.schema.json",
+      "title": "Underwater Cave Carver Feature",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• width_modifier\n• skip_carve_chance (int)\n• height_limit (int)",
+      "defaultSnippets": [
+        {
+          "label": "Underwater Cave Carver Feature",
+          "description": "Create a Underwater Cave Carver Feature",
+          "body": {
+            "description": "",
+            "skip_carve_chance": 0,
+            "height_limit": 0
+          }
+        }
+      ]
+    },
+    "minecraft:vegetation_patch_feature": {
+      "$ref": "./vegetation_patch_feature.schema.json",
+      "title": "Vegetation Patch Feature",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• replaceable_blocks (string[])\n• surface (string)\n• vertical_range (int)\n• waterlogged (boolean)",
+      "defaultSnippets": [
+        {
+          "label": "Vegetation Patch Feature",
+          "description": "Create a Vegetation Patch Feature",
+          "body": {
+            "description": "",
+            "replaceable_blocks": "",
+            "surface": "",
+            "vertical_range": 0,
+            "waterlogged": true
+          }
+        }
+      ]
+    },
+    "minecraft:weighted_random_feature": {
+      "title": "Weighted Random Feature",
+      "description": "\n\nProperties:\n• description ({ identifier })\n• features (string[])",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "title": "Description",
+            "description": "\n\nProperties:\n• identifier (string)",
+            "type": "object",
+            "properties": {
+              "identifier": {
+                "title": "Identifier",
+                "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+                "type": "string"
+              }
+            },
+            "defaultSnippets": [
+              {
+                "label": "Description",
+                "description": "Create a Description",
+                "body": {
+                  "identifier": ""
+                }
+              }
+            ]
+          },
+          "features": {
+            "title": "Features",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "format_version"
+  ]
+}

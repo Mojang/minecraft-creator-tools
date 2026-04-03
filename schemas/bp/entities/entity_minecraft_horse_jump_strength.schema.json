@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Horse Jump Strength",
+  "description": "Determines the jump height for a horse or similar entity, like a donkey.",
+  "properties": {
+    "value": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "range_min": {
+              "title": "Range Minimum",
+              "description": "Defines the minimum strength level.",
+              "type": "number"
+            },
+            "range_max": {
+              "title": "Range Maximum",
+              "description": "Defines the maximum strength level.",
+              "type": "number"
+            }
+          }
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "title": "Value",
+      "description": "Value of jump strength the entity has when spawned.\n\nProperties:\n• range_min (float)\n• range_max (float)"
+    }
+  }
+}

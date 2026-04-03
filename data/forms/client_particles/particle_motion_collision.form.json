@@ -1,0 +1,127 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "controls particle collision behavior and events"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "events",
+      "dataType": "objectArray",
+      "subForm": {
+        "id": "collision_event",
+        "fields": [
+          {
+            "id": "event",
+            "dataType": "string"
+          },
+          {
+            "id": "min_speed",
+            "dataType": "float"
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "events",
+          "dataType": "object",
+          "subForm": {
+            "id": "events",
+            "title": "Events",
+            "fields": [
+              {
+                "id": "event",
+                "title": "Event",
+                "dataType": "object",
+                "isRequired": true
+              },
+              {
+                "id": "min_speed",
+                "title": "Min Speed",
+                "dataType": "float",
+                "defaultValue": 2
+              }
+            ]
+          }
+        }
+      ],
+      "title": "Events"
+    },
+    {
+      "id": "coefficient_of_restitution",
+      "title": "Coefficient Of Restitution",
+      "dataType": "float",
+      "defaultValue": 0
+    },
+    {
+      "id": "collision_drag",
+      "title": "Collision Drag",
+      "dataType": "float",
+      "defaultValue": 0
+    },
+    {
+      "id": "collision_radius",
+      "title": "Collision Radius",
+      "dataType": "float",
+      "validity": [
+        {
+          "comparison": "<=",
+          "value": 0.5
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "enabled",
+      "title": "Enabled",
+      "dataType": "keyedStringCollection",
+      "defaultValue": 1,
+      "alternates": [
+        {
+          "id": "enabled",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "enabled",
+            "title": "Enabled",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "enabled",
+          "dataType": "float"
+        }
+      ]
+    },
+    {
+      "id": "expire_on_contact",
+      "title": "Expire On Contact",
+      "dataType": "boolean",
+      "defaultValue": false
+    }
+  ],
+  "description": "Enables particle collision with world geometry. Configure collision radius, bounce coefficient (how much velocity is retained), friction to slow sliding, and whether to expire on impact. Essential for physical particles like rain hitting ground, debris bouncing off surfaces, or arrows embedding in blocks.",
+  "title": "Client Particles Particle Motion Collision",
+  "id": "particle_motion_collision"
+}

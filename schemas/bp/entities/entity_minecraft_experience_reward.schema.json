@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Experience Reward",
+  "description": ".",
+  "properties": {
+    "on_bred": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "description": "\n\nProperties:\n• expression (string)\n• version (int)",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "expression": {
+                "title": "Expression",
+                "type": "string"
+              },
+              "version": {
+                "title": "Version",
+                "type": "integer"
+              }
+            }
+          }
+        }
+      ],
+      "title": "Bred",
+      "description": "A Molang expression defining the amount of experience rewarded when this entity is successfully bred.\n\nSample values:\n• breeze: {\"expression\":\"Math.Random(1,7)\",\"version\":12}\n• chicken: Math.Random(1,7)"
+    },
+    "on_death": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "description": "\n\nProperties:\n• expression (string)\n• version (int)",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "expression": {
+                "title": "Expression",
+                "type": "string"
+              },
+              "version": {
+                "title": "Version",
+                "type": "integer"
+              }
+            }
+          }
+        }
+      ],
+      "title": "Death",
+      "description": "A Molang expression defining the amount of experience rewarded when this entity dies.\n\nSample values:\n• blaze: {\"expression\":\"query.last_hit_by_player ? 10 : ...\n• bogged: {\"expression\":\"query.last_hit_by_player ? 5 + (...\n• cave_spider: {\"expression\":\"query.last_hit_by_player ? 5 : 0..."
+    }
+  }
+}

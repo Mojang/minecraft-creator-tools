@@ -1,0 +1,99 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Canopy Decoration",
+  "description": "Configuration object for the canopy decoration.\n\nProperties:\n• decoration_block (string)\n• decoration_blocks_sequence\n• decoration_chance ({ numerator, denominator })\n• num_steps (int)\n• step_direction (string)",
+  "type": "object",
+  "properties": {
+    "decoration_block": {
+      "title": "Decoration Block",
+      "description": "The block used for decorating. This is the legacy property; use decoration_blocks_sequence instead for placing multiple blocks. If both are present, decoration_blocks_sequence takes priority.",
+      "type": "string"
+    },
+    "decoration_blocks_sequence": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "block": {
+                "title": "Block",
+                "description": "The block identifier to place (e.g., minecraft:moss_carpet).",
+                "type": "string"
+              },
+              "count": {
+                "title": "Count",
+                "description": "The number of this block to place. Can be a fixed integer, an array of two integers for a random range (e.g., [1, 2]), or an object with range_min and range_max fields.",
+                "type": "integer"
+              }
+            }
+          }
+        },
+        {
+          "title": "Decoration Blocks Sequence",
+          "description": "Simplified form where each entry is a block identifier string without a count.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
+      "title": "Decoration Blocks Sequence",
+      "description": "A list of blocks and counts to place in sequence as decoration. Each entry specifies a block identifier and a count for how many to place. This replaces the legacy decoration_block and num_steps properties. If both formats are present, this property takes priority.\n\nProperties:\n• block (string)\n• count (int)"
+    },
+    "decoration_chance": {
+      "title": "Decoration Chance",
+      "description": "Probability of decorating on each step, specified as a fraction with numerator and denominator fields.\n\nProperties:\n• numerator (int)\n• denominator (int)",
+      "type": "object",
+      "properties": {
+        "numerator": {
+          "title": "Numerator",
+          "description": "The numerator of the probability fraction.",
+          "type": "integer"
+        },
+        "denominator": {
+          "title": "Denominator",
+          "description": "The denominator of the probability fraction.",
+          "type": "integer"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Decoration Chance",
+          "description": "Probability of decorating on each step, specified as a fraction with numerator and denominator fields.",
+          "body": {
+            "numerator": 0,
+            "denominator": 0
+          }
+        }
+      ]
+    },
+    "num_steps": {
+      "title": "Num Steps",
+      "description": "Number of decoration blocks to place. This is the legacy property used with decoration_block. Not used if decoration_blocks_sequence is provided.",
+      "type": "integer"
+    },
+    "step_direction": {
+      "title": "Step Direction",
+      "description": "Direction to spread decoration blocks.",
+      "type": "string",
+      "enum": [
+        "down",
+        "up",
+        "out",
+        "away"
+      ]
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Canopy Decoration",
+      "description": "Configuration object for the canopy decoration.",
+      "body": {
+        "decoration_block": "",
+        "num_steps": 0,
+        "step_direction": ""
+      }
+    }
+  ]
+}

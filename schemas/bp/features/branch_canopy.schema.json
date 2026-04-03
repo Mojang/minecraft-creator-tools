@@ -1,0 +1,222 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Branch Canopy",
+  "description": "Configuration object for the canopy.\n\nProperties:\n• canopy ({ canopy_decoration, canopy_offset, min_width, ... })\n• mangrove_canopy\n• acacia_canopy ({ canopy_size, simplify_canopy })\n• cherry_canopy ({ trunk_width })\n• fancy_canopy ({ height, radius })\n• mega_canopy ({ base_radius, core_width, simplify_canopy })\n• mega_pine_canopy ({ base_radius, core_width })\n• pine_canopy ({ base_radius })\n• ... and 2 more properties",
+  "type": "object",
+  "properties": {
+    "canopy": {
+      "$ref": "./canopy.schema.json",
+      "title": "Canopy",
+      "description": "\n\nProperties:\n• canopy_decoration ({ decoration_block, decoration_blocks_sequence, decoration_chance, ... })\n• canopy_offset ({ min, max })\n• min_width (int)\n• canopy_slope ({ rise, run })\n• variation_chance (string[])",
+      "defaultSnippets": [
+        {
+          "label": "Canopy",
+          "description": "Create a Canopy",
+          "body": {
+            "canopy_offset": "",
+            "min_width": 0
+          }
+        }
+      ]
+    },
+    "mangrove_canopy": {
+      "title": "Mangrove Canopy",
+      "description": "\n\nProperties:\n• canopy_decoration ({ decoration_block, decoration_blocks_sequence, decoration_chance, ... })\n• leaf_placement_attempts (int)\n• leaf_blocks (string[])",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "canopy_decoration": {
+            "$ref": "./canopy_decoration_2.schema.json",
+            "title": "Canopy Decoration",
+            "description": "Configuration object for the canopy decoration.\n\nProperties:\n• decoration_block (string)\n• decoration_blocks_sequence\n• decoration_chance ({ numerator, denominator })\n• num_steps (int)\n• step_direction (string)",
+            "defaultSnippets": [
+              {
+                "label": "Canopy Decoration",
+                "description": "Configuration object for the canopy decoration.",
+                "body": {
+                  "decoration_block": "",
+                  "num_steps": 0,
+                  "step_direction": ""
+                }
+              }
+            ]
+          },
+          "leaf_placement_attempts": {
+            "title": "Leaf Placement Attempts",
+            "description": "Max number of attempts to create leaf blocks.",
+            "type": "integer"
+          },
+          "leaf_blocks": {
+            "title": "Leaf Blocks",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "acacia_canopy": {
+      "title": "Acacia Canopy",
+      "description": "\n\nProperties:\n• canopy_size (int)\n• simplify_canopy (boolean)",
+      "type": "object",
+      "properties": {
+        "canopy_size": {
+          "title": "Canopy Size",
+          "description": "The size of the canopy.",
+          "type": "integer"
+        },
+        "simplify_canopy": {
+          "title": "Simplify Canopy",
+          "description": "If true the canopy uses a simple pattern.",
+          "type": "boolean"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Acacia Canopy",
+          "description": "Create a Acacia Canopy",
+          "body": {
+            "canopy_size": 0,
+            "simplify_canopy": true
+          }
+        }
+      ]
+    },
+    "cherry_canopy": {
+      "title": "Cherry Canopy",
+      "description": "\n\nProperties:\n• trunk_width (int)",
+      "type": "object",
+      "properties": {
+        "trunk_width": {
+          "title": "Trunk Width",
+          "description": "The width of the tree trunk.",
+          "type": "integer"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Cherry Canopy",
+          "description": "Create a Cherry Canopy",
+          "body": {
+            "trunk_width": 0
+          }
+        }
+      ]
+    },
+    "fancy_canopy": {
+      "title": "Fancy Canopy",
+      "description": "\n\nProperties:\n• height (int)\n• radius (int)",
+      "type": "object",
+      "properties": {
+        "height": {
+          "title": "Height",
+          "description": "Number of layers for the canopy.",
+          "type": "integer"
+        },
+        "radius": {
+          "title": "Radius",
+          "description": "The radius of the canopy.",
+          "type": "integer"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Fancy Canopy",
+          "description": "Create a Fancy Canopy",
+          "body": {
+            "height": 0,
+            "radius": 0
+          }
+        }
+      ]
+    },
+    "mega_canopy": {
+      "$ref": "./mega_canopy.schema.json",
+      "title": "Mega Canopy",
+      "description": "\n\nProperties:\n• base_radius (int)\n• core_width (int)\n• simplify_canopy (boolean)",
+      "defaultSnippets": [
+        {
+          "label": "Mega Canopy",
+          "description": "Create a Mega Canopy",
+          "body": {
+            "base_radius": 0,
+            "core_width": 0,
+            "simplify_canopy": true
+          }
+        }
+      ]
+    },
+    "mega_pine_canopy": {
+      "title": "Mega Pine Canopy",
+      "description": "\n\nProperties:\n• base_radius (int)\n• core_width (int)",
+      "type": "object",
+      "properties": {
+        "base_radius": {
+          "title": "Base Radius",
+          "description": "Radius of the canopy.",
+          "type": "integer"
+        },
+        "core_width": {
+          "title": "Core Width",
+          "description": "Width of the tree trunk.",
+          "type": "integer"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Mega Pine Canopy",
+          "description": "Create a Mega Pine Canopy",
+          "body": {
+            "base_radius": 0,
+            "core_width": 0
+          }
+        }
+      ]
+    },
+    "pine_canopy": {
+      "title": "Pine Canopy",
+      "description": "\n\nProperties:\n• base_radius (int)",
+      "type": "object",
+      "properties": {
+        "base_radius": {
+          "title": "Base Radius",
+          "description": "Radius of the canopy.",
+          "type": "integer"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Pine Canopy",
+          "description": "Create a Pine Canopy",
+          "body": {
+            "base_radius": 0
+          }
+        }
+      ]
+    },
+    "roofed_canopy": {
+      "$ref": "./roofed_canopy.schema.json",
+      "title": "Roofed Canopy",
+      "description": "\n\nProperties:\n• canopy_height (int)\n• core_width (int)\n• outer_radius (int)\n• inner_radius (int)",
+      "defaultSnippets": [
+        {
+          "label": "Roofed Canopy",
+          "description": "Create a Roofed Canopy",
+          "body": {
+            "canopy_height": 0,
+            "core_width": 0,
+            "outer_radius": 0,
+            "inner_radius": 0
+          }
+        }
+      ]
+    },
+    "spruce_canopy": {
+      "title": "Spruce Canopy",
+      "type": "object",
+      "properties": {}
+    }
+  }
+}

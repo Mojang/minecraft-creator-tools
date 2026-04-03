@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Vex Copy Owner Target Behavior",
+  "description": "Allows the mob to target the same entity its owner is targeting.",
+  "properties": {
+    "entity_types": {
+      "title": "Entity Types",
+      "description": "List of entities this mob can copy the owner from\n\nProperties:\n• cooldown (float) = 0\n• filters\n• max_dist (float) = 16\n• must_see (boolean) = false\n• must_see_forget_duration (float) = 3\n• reevaluate_description (boolean) = false\n• sprint_speed_multiplier (float) = 1\n• walk_speed_multiplier (float) = 1",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "cooldown": {
+            "title": "Cooldown",
+            "description": "The amount of time in seconds that the mob has to wait before selecting a target of the same type again",
+            "type": "number",
+            "default": 0
+          },
+          "filters": {
+            "title": "Filters",
+            "description": "Conditions that make this entry in the list valid",
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "all_of": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "any_of": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "none_of": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "max_dist": {
+            "title": "Max Dist",
+            "description": "Maximum distance this mob can be away to be a valid choice",
+            "type": "number",
+            "default": 16
+          },
+          "must_see": {
+            "title": "Must See",
+            "description": "If true, the mob has to be visible to be a valid choice",
+            "type": "boolean",
+            "default": false
+          },
+          "must_see_forget_duration": {
+            "title": "Must See Forget Duration",
+            "description": "Determines the amount of time in seconds that this mob will look for a target before forgetting about it and looking for a new one when the target isn't visible any more",
+            "type": "number",
+            "default": 3
+          },
+          "reevaluate_description": {
+            "title": "Reevaluate Description",
+            "description": "If true, the mob will stop being targeted if it stops meeting any conditions.",
+            "type": "boolean",
+            "default": false
+          },
+          "sprint_speed_multiplier": {
+            "title": "Sprint Speed Multiplier",
+            "description": "Multiplier for the running speed. A value of 1.0 means the speed is unchanged",
+            "type": "number",
+            "default": 1
+          },
+          "walk_speed_multiplier": {
+            "title": "Walk Speed Multiplier",
+            "description": "Multiplier for the walking speed. A value of 1.0 means the speed is unchanged",
+            "type": "number",
+            "default": 1
+          }
+        }
+      }
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer"
+    }
+  }
+}

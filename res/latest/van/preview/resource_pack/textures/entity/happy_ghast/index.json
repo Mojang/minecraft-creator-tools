@@ -1,0 +1,14 @@
+{
+  "files": [
+    "ghastling.png",
+    "ghastling.texture_set.json",
+    "ghastling_mers.tga",
+    "happy_ghast.png",
+    "happy_ghast.texture_set.json",
+    "happy_ghast_mers.tga",
+    "happy_ghast_ropes.png",
+    "happy_ghast_ropes.texture_set.json",
+    "happy_ghast_ropes_mers.tga"
+  ],
+  "folders": []
+}

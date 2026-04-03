@@ -1,0 +1,158 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Biome Mountain Parameters",
+  "description": "Noise parameters used to drive mountain terrain generation in Overworld.",
+  "properties": {
+    "steep_material_adjustment": {
+      "title": "Steep Material Adjustment",
+      "description": "Defines surface material for steep slopes\n\nProperties:\n• east_slopes (boolean)\n• material (string)\n• north_slopes (boolean)\n• south_slopes (boolean)\n• west_slopes (boolean)",
+      "type": "object",
+      "properties": {
+        "east_slopes": {
+          "title": "East Slopes",
+          "description": "Enable for east-facing slopes",
+          "type": "boolean"
+        },
+        "material": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "description": "\n\nProperties:\n• name (object)\n• states = {}",
+              "type": "object",
+              "properties": {
+                "name": {
+                  "title": "Name",
+                  "description": "Name of the block",
+                  "type": "object"
+                },
+                "states": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "number"
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "boolean"
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  ],
+                  "title": "States",
+                  "description": "Contains members named after each state, with boolean, integer, or string values."
+                }
+              },
+              "defaultSnippets": [
+                {
+                  "label": "Material (object)",
+                  "description": "Use Material as an object",
+                  "body": {
+                    "name": "",
+                    "states": {}
+                  }
+                }
+              ]
+            }
+          ],
+          "description": "Block type use as steep material",
+          "defaultSnippets": [
+            {
+              "label": "Material (object)",
+              "description": "Use Material as an object",
+              "body": {
+                "name": "",
+                "states": {}
+              }
+            }
+          ]
+        },
+        "north_slopes": {
+          "title": "North Slopes",
+          "description": "Enable for north-facing slopes",
+          "type": "boolean"
+        },
+        "south_slopes": {
+          "title": "South Slopes",
+          "description": "Enable for south-facing slopes",
+          "type": "boolean"
+        },
+        "west_slopes": {
+          "title": "West Slopes",
+          "description": "Enable for west-facing slopes",
+          "type": "boolean"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Mountain Parameters - Steep Material Adjustment Settings",
+          "description": "Defines surface material for steep slopes",
+          "body": {
+            "east_slopes": true,
+            "material": "",
+            "north_slopes": true,
+            "south_slopes": true,
+            "west_slopes": true
+          }
+        }
+      ]
+    },
+    "top_slide": {
+      "title": "Top Slide",
+      "description": "Controls the density tapering that happens at the top of the world to prevent terrain from reaching too high\n\nProperties:\n• enabled (boolean)",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "title": "Enabled",
+          "description": "If false, top slide will be disabled. If true, other parameters will be taken into account.",
+          "type": "boolean"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Mountain Parameters - Top Slide Settings",
+          "description": "Controls the density tapering that happens at the top of the world to prevent terrain from reaching too high.",
+          "body": {
+            "enabled": true
+          }
+        }
+      ]
+    },
+    "material": {
+      "title": "material",
+      "description": "Block type use as steep material",
+      "type": "object",
+      "properties": {}
+    },
+    "east_slopes": {
+      "title": "east_slopes",
+      "description": "Enable for east-facing slopes",
+      "type": "boolean"
+    },
+    "north_slopes": {
+      "title": "north_slopes",
+      "description": "Enable for north-facing slopes",
+      "type": "boolean"
+    },
+    "south_slopes": {
+      "title": "south_slopes",
+      "description": "Enable for south-facing slopes",
+      "type": "boolean"
+    },
+    "west_slopes": {
+      "title": "west_slopes",
+      "description": "Enable for west-facing slopes",
+      "type": "boolean"
+    }
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Conditional Bandwidth Optimization",
+  "description": "Defines the Conditional Spatial Update Bandwidth Optimizations of this entity.",
+  "properties": {
+    "default_values": {
+      "title": "Default Values",
+      "description": "The object containing the default bandwidth optimization values.\n\nProperties:\n• max_optimized_distance (float) = 80\n• max_dropped_ticks (int) = 10\n• use_motion_prediction_hints (boolean) = false\n\nSample values:\n• arrow: {\"max_dropped_ticks\":7,\"max_optimized_distance\"...",
+      "type": "object",
+      "properties": {
+        "max_optimized_distance": {
+          "title": "Max Optimized Distance",
+          "description": "The maximum distance considered during bandwidth optimizations.",
+          "type": "number",
+          "default": 80
+        },
+        "max_dropped_ticks": {
+          "title": "Max Dropped Ticks",
+          "description": "Determines the maximum ticks spatial update packets can be not sent.",
+          "type": "integer",
+          "default": 10
+        },
+        "use_motion_prediction_hints": {
+          "title": "Use Motion Prediction Hints",
+          "description": "When true, smaller motion packets will be sent during drop packet intervals.",
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Default Values",
+          "description": "The object containing the default bandwidth optimization values.",
+          "body": {
+            "max_optimized_distance": 80,
+            "max_dropped_ticks": 10,
+            "use_motion_prediction_hints": false
+          }
+        }
+      ]
+    },
+    "conditional_values": {
+      "title": "Conditional Values",
+      "description": "The object containing the conditional bandwidth optimization values.\n\nProperties:\n• conditional_values\n• max_dropped_ticks (int) = 10\n• max_optimized_distance (float) = 80\n• use_motion_prediction_hints (boolean) = false",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "conditional_values": {
+            "title": "Conditional Values",
+            "description": "Conditions that must be met for these optimization values to be used.",
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "all_of": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "any_of": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "none_of": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "max_dropped_ticks": {
+            "title": "Max Dropped Ticks",
+            "description": "In relation to the optimization value, determines the maximum ticks spatial update packets can be not sent.",
+            "type": "integer",
+            "minimum": 0,
+            "default": 10
+          },
+          "max_optimized_distance": {
+            "title": "Max Optimized Distance",
+            "description": "The maximum distance considered during bandwidth optimizations. Any value below the max is interpolated to find optimization, and any value greater than or equal to this max results in max optimization.",
+            "type": "number",
+            "default": 80
+          },
+          "use_motion_prediction_hints": {
+            "title": "Use Motion Prediction Hints",
+            "description": "When set to true, smaller motion packets will be sent during drop packet intervals, resulting in the same amount of packets being sent as without optimizations but with much less data being sent. This should be used when actors are travelling very quickly or teleporting to prevent visual oddities.",
+            "type": "boolean",
+            "default": false
+          }
+        }
+      }
+    }
+  }
+}

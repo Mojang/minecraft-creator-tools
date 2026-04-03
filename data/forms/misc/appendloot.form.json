@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines appendloot configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "AppendLoot",
+  "fields": [
+    {
+      "id": "loot_table",
+      "title": "Loot Table",
+      "description": "The loot table to append",
+      "dataType": "object",
+      "isRequired": true
+    },
+    {
+      "id": "type",
+      "title": "BlockEntityModifierType",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "description": "Modifier will attempt to add loot to a block entity.",
+  "title": "AppendLoot Misc"
+}

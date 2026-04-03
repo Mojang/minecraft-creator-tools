@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Client Particles Particle Visual Effect Event",
+  "description": "Spawns another particle effect when triggered by particle events, enabling cascading visual sequences. Reference other particle effects by identifier to create chains like explosions spawning embers, impacts creating dust clouds, or magical projectiles trailing sparkles. Builds complex layered effects from simpler reusable components.",
+  "properties": {
+    "effect": {
+      "title": "Effect",
+      "type": "object"
+    },
+    "pre_effect_expression": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "string"
+        },
+        {
+          "description": "\n\nProperties:\n• expression (string)\n• version (int)",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "expression": {
+                "title": "Expression",
+                "type": "string"
+              },
+              "version": {
+                "title": "Version",
+                "type": "integer"
+              }
+            }
+          }
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "title": "Pre Effect Expression"
+    },
+    "type": {
+      "title": "Particle Visual Effect Event Effect Type",
+      "type": "string",
+      "enum": [
+        "emitter",
+        "emitter_bound",
+        "particle",
+        "particle_with_velocity"
+      ]
+    }
+  },
+  "required": [
+    "effect",
+    "type"
+  ]
+}

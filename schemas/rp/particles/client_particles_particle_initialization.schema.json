@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Client Particles Particle Initialization",
+  "description": "Runs Molang expressions when each individual particle spawns to initialize per-particle variables. Unlike emitter_initialization which runs once per emitter, this executes for every particle—enabling randomized properties, unique trajectories, or per-particle state that persists through the particle's lifetime.",
+  "properties": {
+    "per_render_expression": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "string"
+        },
+        {
+          "description": "\n\nProperties:\n• expression (string)\n• version (int)",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "expression": {
+                "title": "Expression",
+                "type": "string"
+              },
+              "version": {
+                "title": "Version",
+                "type": "integer"
+              }
+            }
+          }
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "title": "Per Render Expression"
+    },
+    "per_update_expression": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "string"
+        },
+        {
+          "description": "\n\nProperties:\n• expression (string)\n• version (int)",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "expression": {
+                "title": "Expression",
+                "type": "string"
+              },
+              "version": {
+                "title": "Version",
+                "type": "integer"
+              }
+            }
+          }
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "title": "Per Update Expression"
+    }
+  }
+}

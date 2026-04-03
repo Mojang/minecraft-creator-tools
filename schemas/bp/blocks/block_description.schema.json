@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Block Description",
+  "description": "Information about the block, must have at minimum an \"identifier\" and can have also the following optional field \"menu_category\", \"states\" and/or \"traits\"",
+  "properties": {
+    "identifier": {
+      "title": "Identifier",
+      "description": "Must have a namespace and can't use the \"minecraft\" one. Example: \"namespace:my_block\"",
+      "type": "string",
+      "pattern": "^\\S+$"
+    },
+    "menu_category": {
+      "title": "Menu Category",
+      "description": "Configures the block behavior in inventory and menu category\n\nProperties:\n• category (string)\n• group (string)\n• is_hidden_in_commands (boolean)",
+      "$ref": "./block_menu_category.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Block Menu Category",
+          "description": "Configures the block behavior in inventory and menu category",
+          "body": {
+            "category": "",
+            "group": "",
+            "is_hidden_in_commands": true
+          }
+        }
+      ]
+    },
+    "states": {
+      "title": "States",
+      "description": "Define custom states for a block that can be referenced in permutation. Each state must contain an array or a \"values\" with an array or a \"min\"/\"max\" range",
+      "type": "object"
+    },
+    "traits": {
+      "title": "Traits",
+      "description": "Change the connection, multiblock state, placement position and/or direction behaviors of a block\n\nProperties:\n• minecraft:connection (object) = {\"enabled_states\":[]\n• minecraft:multi_block (object) = {\"direction\":\"up\",\"e\n• minecraft:placement_direction (object) = {\"blocks_to_corner_w\n• minecraft:placement_position (object) = {\"enabled_states\":[]",
+      "$ref": "./block_traits.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Block Traits",
+          "description": "Change the connection, multiblock state, placement position and/or direction behaviors of a block",
+          "body": {
+            "minecraft:connection": {
+              "enabled_states": []
+            },
+            "minecraft:multi_block": {
+              "direction": "up",
+              "enabled_states": [],
+              "parts": 2
+            },
+            "minecraft:placement_direction": {
+              "blocks_to_corner_with": [],
+              "enabled_states": [],
+              "y_rotation_offset": null
+            },
+            "minecraft:placement_position": {
+              "enabled_states": []
+            }
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "identifier"
+  ]
+}

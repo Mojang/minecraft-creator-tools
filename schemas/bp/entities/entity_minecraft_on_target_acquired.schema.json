@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "On Target Acquired",
+  "description": "Adds a trigger to call when this entity finds a target.",
+  "properties": {
+    "event": {
+      "title": "Event",
+      "description": "The event to run when the conditions for this trigger are met.\n\nSample values:\n• cave_spider: minecraft:become_angry\n• drowned: minecraft:has_target\n• hoglin: become_angry_event",
+      "type": "string"
+    },
+    "filters": {
+      "title": "Filters",
+      "description": "The list of conditions for this trigger to execute.\n\nSample values:\n• llama: {\"all_of\":[{\"test\":\"is_family\",\"subject\":\"targe...",
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "target": {
+      "title": "Target",
+      "description": "The target of the event.\n\nSample values:\n• drowned: self",
+      "type": "string",
+      "default": "self"
+    }
+  }
+}

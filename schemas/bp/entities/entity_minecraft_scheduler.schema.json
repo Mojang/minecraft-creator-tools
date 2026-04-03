@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Scheduler",
+  "description": "Fires off scheduled mob events at time of day events.",
+  "properties": {
+    "min_delay_secs": {
+      "title": "The minimum the scheduler will be delayed.",
+      "type": "number"
+    },
+    "max_delay_secs": {
+      "title": "The maximum the scheduler will be delayed.",
+      "type": "number"
+    },
+    "scheduled_events": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "title": "Scheduled Events",
+      "description": "The list of triggers that fire when the conditions match the given filter criteria. Can be an array of event objects or a single event object.\n\nSample values:\n• fox: [{\"filters\":[{\"test\":\"is_sleeping\",\"value\":true..."
+    }
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Acacia Trunk",
+  "description": "\n\nProperties:\n• branches ({ branch_canopy })\n• trunk_decoration ({ decoration_block, decoration_blocks_sequence, decoration_chance, ... })\n• trunk_width (int)\n• trunk_height ({ base, intervals, min_height_for_canopy })\n• trunk_lean ({ allow_diagonal_growth })",
+  "type": "object",
+  "properties": {
+    "branches": {
+      "title": "Branches",
+      "description": "Configuration object for branches.\n\nProperties:\n• branch_canopy ({ canopy, mangrove_canopy, acacia_canopy, ... })",
+      "type": "object",
+      "properties": {
+        "branch_canopy": {
+          "$ref": "./branch_canopy.schema.json",
+          "title": "Branch Canopy",
+          "description": "Configuration object for the canopy.\n\nProperties:\n• canopy ({ canopy_decoration, canopy_offset, min_width, ... })\n• mangrove_canopy\n• acacia_canopy ({ canopy_size, simplify_canopy })\n• cherry_canopy ({ trunk_width })\n• fancy_canopy ({ height, radius })\n• mega_canopy ({ base_radius, core_width, simplify_canopy })\n• mega_pine_canopy ({ base_radius, core_width })\n• pine_canopy ({ base_radius })\n• ... and 2 more properties"
+        }
+      }
+    },
+    "trunk_decoration": {
+      "$ref": "./trunk_decoration.schema.json",
+      "title": "Trunk Decoration",
+      "description": "Configuration object for the trunk decoration.\n\nProperties:\n• decoration_block (string)\n• decoration_blocks_sequence\n• decoration_chance ({ numerator, denominator })\n• num_steps (int)\n• step_direction (string)",
+      "defaultSnippets": [
+        {
+          "label": "Trunk Decoration",
+          "description": "Configuration object for the trunk decoration.",
+          "body": {
+            "decoration_block": "",
+            "num_steps": 0,
+            "step_direction": ""
+          }
+        }
+      ]
+    },
+    "trunk_width": {
+      "title": "Trunk Width",
+      "description": "The width of the tree trunk.",
+      "type": "integer"
+    },
+    "trunk_height": {
+      "$ref": "./trunk_height.schema.json",
+      "title": "Trunk Height",
+      "description": "Configuration object for the trunk height.\n\nProperties:\n• base (int)\n• intervals (string[])\n• min_height_for_canopy (int)",
+      "defaultSnippets": [
+        {
+          "label": "Trunk Height",
+          "description": "Configuration object for the trunk height.",
+          "body": {
+            "base": 0,
+            "min_height_for_canopy": 0
+          }
+        }
+      ]
+    },
+    "trunk_lean": {
+      "title": "Trunk Lean",
+      "description": "Configuration object for diagonal branches.\n\nProperties:\n• allow_diagonal_growth (boolean)",
+      "type": "object",
+      "properties": {
+        "allow_diagonal_growth": {
+          "title": "Allow Diagonal Growth",
+          "description": "If true, diagonal branches will be created.",
+          "type": "boolean"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Trunk Lean",
+          "description": "Configuration object for diagonal branches.",
+          "body": {
+            "allow_diagonal_growth": true
+          }
+        }
+      ]
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Acacia Trunk",
+      "description": "Create a Acacia Trunk",
+      "body": {
+        "trunk_width": 0,
+        "trunk_height": "",
+        "trunk_lean": ""
+      }
+    }
+  ]
+}

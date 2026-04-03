@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "rounds a value up to the nearest integer"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "`math.ceil(value)`",
+  "fields": [],
+  "description": "Round value up to nearest integral number",
+  "title": "Ceil(value)"
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "returns get default bone pivot information"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.get_default_bone_pivot",
+  "fields": [],
+  "description": "Gets specified axis of the specified bone orientation pivot.",
+  "title": "Get Default Bone Pivot"
+}

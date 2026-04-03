@@ -1,0 +1,16 @@
+{
+  "files": [],
+  "folders": [
+    "block",
+    "block_components",
+    "common",
+    "dimension",
+    "entity",
+    "packaging",
+    "spawn",
+    "structure",
+    "world",
+    "world_common",
+    "world_components"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "swells up before exploding"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "start_distance",
+      "title": "Start Distance",
+      "description": "This mob starts swelling when a target is at least this many blocks away",
+      "defaultValue": 10,
+      "dataType": "float"
+    },
+    {
+      "id": "stop_distance",
+      "title": "Stop Distance",
+      "description": "This mob stops swelling when a target has moved away at least this many blocks",
+      "defaultValue": 2,
+      "dataType": "float"
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "hideSamples": true,
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "dataType": "int"
+    }
+  ],
+  "description": "Allows the creeper to swell up when a player is nearby. It can only be used by Creepers.",
+  "title": "Swell Behavior",
+  "samples": {},
+  "id": "minecraft:behavior.swell"
+}

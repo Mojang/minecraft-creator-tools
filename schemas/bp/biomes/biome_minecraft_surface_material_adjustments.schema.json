@@ -1,0 +1,383 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Biome Surface Material Adjustments",
+  "description": "Specify fine-detail changes to blocks used in terrain generation (based on a noise function).",
+  "properties": {
+    "adjustments": {
+      "title": "Adjustments",
+      "description": "All adjustments that match the column's noise values will be applied in the order listed.\n\nProperties:\n• height_range (float) [maxLen: 2]\n• materials ({ foundation_material, mid_material, sea_floor_material, ... })\n• noise_frequency_scale (float)\n• noise_range [maxLen: 2]",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "height_range": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Height Range",
+            "description": "Defines a range of noise values [min, max] for which this adjustment should be applied."
+          },
+          "materials": {
+            "title": "Materials",
+            "description": "The specific blocks used for this surface adjustment\n\nProperties:\n• foundation_material (string)\n• mid_material (string)\n• sea_floor_material (string)\n• sea_material (string)\n• top_material (string)",
+            "type": "object",
+            "properties": {
+              "foundation_material": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "description": "\n\nProperties:\n• name (object)\n• states = {}",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "title": "Name",
+                        "description": "Name of the block",
+                        "type": "object"
+                      },
+                      "states": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "number"
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "boolean"
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            }
+                          }
+                        ],
+                        "title": "States",
+                        "description": "Contains members named after each state, with boolean, integer, or string values."
+                      }
+                    },
+                    "defaultSnippets": [
+                      {
+                        "label": "Foundation Material (object)",
+                        "description": "Use Foundation Material as an object",
+                        "body": {
+                          "name": "",
+                          "states": {}
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "description": "Controls the block type used deep underground in this biome when this adjustment is active.",
+                "defaultSnippets": [
+                  {
+                    "label": "Foundation Material (object)",
+                    "description": "Use Foundation Material as an object",
+                    "body": {
+                      "name": "",
+                      "states": {}
+                    }
+                  }
+                ]
+              },
+              "mid_material": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "description": "\n\nProperties:\n• name (object)\n• states = {}",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "title": "Name",
+                        "description": "Name of the block",
+                        "type": "object"
+                      },
+                      "states": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "number"
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "boolean"
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            }
+                          }
+                        ],
+                        "title": "States",
+                        "description": "Contains members named after each state, with boolean, integer, or string values."
+                      }
+                    },
+                    "defaultSnippets": [
+                      {
+                        "label": "Mid Material (object)",
+                        "description": "Use Mid Material as an object",
+                        "body": {
+                          "name": "",
+                          "states": {}
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "description": "Controls the block type used in a layer below the surface of this biome when this adjustment is active.",
+                "defaultSnippets": [
+                  {
+                    "label": "Mid Material (object)",
+                    "description": "Use Mid Material as an object",
+                    "body": {
+                      "name": "",
+                      "states": {}
+                    }
+                  }
+                ]
+              },
+              "sea_floor_material": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "description": "\n\nProperties:\n• name (object)\n• states = {}",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "title": "Name",
+                        "description": "Name of the block",
+                        "type": "object"
+                      },
+                      "states": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "number"
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "boolean"
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            }
+                          }
+                        ],
+                        "title": "States",
+                        "description": "Contains members named after each state, with boolean, integer, or string values."
+                      }
+                    },
+                    "defaultSnippets": [
+                      {
+                        "label": "Sea Floor Material (object)",
+                        "description": "Use Sea Floor Material as an object",
+                        "body": {
+                          "name": "",
+                          "states": {}
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "description": "Controls the block type used as a floor for bodies of water in this biome when this adjustment is active.",
+                "defaultSnippets": [
+                  {
+                    "label": "Sea Floor Material (object)",
+                    "description": "Use Sea Floor Material as an object",
+                    "body": {
+                      "name": "",
+                      "states": {}
+                    }
+                  }
+                ]
+              },
+              "sea_material": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "description": "\n\nProperties:\n• name (object)\n• states = {}",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "title": "Name",
+                        "description": "Name of the block",
+                        "type": "object"
+                      },
+                      "states": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "number"
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "boolean"
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            }
+                          }
+                        ],
+                        "title": "States",
+                        "description": "Contains members named after each state, with boolean, integer, or string values."
+                      }
+                    },
+                    "defaultSnippets": [
+                      {
+                        "label": "Sea Material (object)",
+                        "description": "Use Sea Material as an object",
+                        "body": {
+                          "name": "",
+                          "states": {}
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "description": "Controls the block type used in the bodies of water in this biome when this adjustment is active.",
+                "defaultSnippets": [
+                  {
+                    "label": "Sea Material (object)",
+                    "description": "Use Sea Material as an object",
+                    "body": {
+                      "name": "",
+                      "states": {}
+                    }
+                  }
+                ]
+              },
+              "top_material": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "description": "\n\nProperties:\n• name (object)\n• states = {}",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "title": "Name",
+                        "description": "Name of the block",
+                        "type": "object"
+                      },
+                      "states": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "number"
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "boolean"
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            }
+                          }
+                        ],
+                        "title": "States",
+                        "description": "Contains members named after each state, with boolean, integer, or string values."
+                      }
+                    },
+                    "defaultSnippets": [
+                      {
+                        "label": "Top Material (object)",
+                        "description": "Use Top Material as an object",
+                        "body": {
+                          "name": "",
+                          "states": {}
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "description": "Controls the block type used for the surface of this biome when this adjustment is active.",
+                "defaultSnippets": [
+                  {
+                    "label": "Top Material (object)",
+                    "description": "Use Top Material as an object",
+                    "body": {
+                      "name": "",
+                      "states": {}
+                    }
+                  }
+                ]
+              }
+            },
+            "defaultSnippets": [
+              {
+                "label": "Surface Material Adjustments - Surface Adjustment Materials Settings",
+                "description": "The specific blocks used for this surface adjustment",
+                "body": {
+                  "foundation_material": "",
+                  "mid_material": "",
+                  "sea_floor_material": "",
+                  "sea_material": "",
+                  "top_material": ""
+                }
+              }
+            ]
+          },
+          "noise_frequency_scale": {
+            "title": "Noise Frequency Scale",
+            "description": "The scale to multiply by the position when accessing the noise value for the material adjustments.",
+            "type": "number"
+          },
+          "noise_range": {
+            "title": "Noise Range",
+            "description": "Defines a range of noise values [min, max] for which this adjustment should be applied.",
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minLength": 2,
+            "maxLength": 2
+          }
+        }
+      }
+    }
+  }
+}

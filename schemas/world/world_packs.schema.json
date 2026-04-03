@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "world/world_packs",
+  "title": "World Pack List",
+  "description": "The world_behavior_packs.json and world_resource_packs.json files define which add-on packs are active for a world. Located in the root of a world folder.",
+  "type": "object",
+  "properties": {
+    "0": {
+      "title": "0",
+      "description": "\n\nProperties:\n• pack_id (string)\n• version (string)\n\nSample values:\n• world_behavior_packs: {\"pack_id\":\"12345678-1234-1234-1234-123456789ab...",
+      "type": "object",
+      "properties": {
+        "pack_id": {
+          "title": "Pack id",
+          "description": "\n\nSample values:\n• world_behavior_packs: 12345678-1234-1234-1234-123456789abc",
+          "type": "string"
+        },
+        "version": {
+          "title": "Version",
+          "description": "\n\nSample values:\n• world_behavior_packs: [1,0,0]",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "0",
+          "description": "Create a 0",
+          "body": {
+            "pack_id": "",
+            "version": ""
+          }
+        }
+      ]
+    },
+    "packs": {
+      "title": "Packs",
+      "description": "An array of pack registrations defining which packs are active.\n\nProperties:\n• pack_id (string)\n• version (string[])\n• priority (int)",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

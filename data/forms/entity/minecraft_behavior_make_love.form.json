@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "breeds with other villagers"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "priority",
+      "title": "Priority",
+      "hideSamples": true,
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "dataType": "int"
+    }
+  ],
+  "restrictions": [
+    {
+      "id": "minecraft:villager",
+      "type": "entity_type"
+    }
+  ],
+  "description": "Allows the villager to look for a mate to spawn other villagers with.",
+  "title": "Make Love Behavior",
+  "samples": {},
+  "id": "minecraft:behavior.make_love"
+}

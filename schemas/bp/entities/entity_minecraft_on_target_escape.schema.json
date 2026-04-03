@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "On Target Escape",
+  "description": "Adds a trigger to call when this entity loses the target it currently has.",
+  "properties": {
+    "event": {
+      "title": "Event",
+      "description": "The event to run when the conditions for this trigger are met.\n\nSample values:\n• drowned: minecraft:lost_target\n• llama: minecraft:on_calm\n• magma_cube: minecraft:become_calm",
+      "type": "string"
+    },
+    "filters": {
+      "title": "Filters",
+      "description": "The list of conditions for this trigger to execute.\n\nSample values:\n• llama: {\"all_of\":[{\"test\":\"is_family\",\"subject\":\"targe...",
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "target": {
+      "title": "Target",
+      "description": "The target of the event.\n\nSample values:\n• dolphin: self",
+      "type": "string",
+      "default": "self"
+    }
+  }
+}

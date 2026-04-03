@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "returns duration of the mob's swing/attack animation"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.modified_swing_duration",
+  "fields": [],
+  "description": "Returns the duration of the mob's swing/attack animation, determined by the carried item and modified by effects applied on the mob. To access the swing/attack animation progress, use \"variable.attack_time\" instead.",
+  "title": "Modified Swing Duration"
+}

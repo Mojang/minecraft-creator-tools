@@ -1,0 +1,140 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Loot Condition",
+  "description": "Defines a condition that must be met for a loot table entry or function to apply.",
+  "properties": {
+    "condition": {
+      "title": "Condition",
+      "description": "The condition type. Common values: 'killed_by_player', 'killed_by_player_or_pets', 'random_chance', 'random_chance_with_looting', 'has_mark_variant', 'has_variant', 'entity_properties', 'match_tool', 'random_difficulty_chance'.",
+      "type": "string"
+    },
+    "chance": {
+      "title": "Chance",
+      "description": "For 'random_chance' and 'random_chance_with_looting': the base probability (0.0-1.0).",
+      "type": "number"
+    },
+    "looting_multiplier": {
+      "title": "Looting Multiplier",
+      "description": "For 'random_chance_with_looting': additional chance per looting level.",
+      "type": "number"
+    },
+    "value": {
+      "title": "Value",
+      "description": "For 'has_mark_variant' or 'has_variant': the variant value to match.",
+      "type": "integer"
+    },
+    "default_chance": {
+      "title": "Default Chance",
+      "description": "For 'random_difficulty_chance': default probability if difficulty not matched.",
+      "type": "number"
+    },
+    "peaceful": {
+      "title": "Peaceful Chance",
+      "description": "For 'random_difficulty_chance': probability on peaceful difficulty.",
+      "type": "number"
+    },
+    "easy": {
+      "title": "Easy Chance",
+      "description": "For 'random_difficulty_chance': probability on easy difficulty.",
+      "type": "number"
+    },
+    "normal": {
+      "title": "Normal Chance",
+      "description": "For 'random_difficulty_chance': probability on normal difficulty.",
+      "type": "number"
+    },
+    "hard": {
+      "title": "Hard Chance",
+      "description": "For 'random_difficulty_chance': probability on hard difficulty.",
+      "type": "number"
+    },
+    "entity": {
+      "title": "Entity Type",
+      "description": "For 'entity_properties': which entity to check ('this', 'attacker', or 'attacking_player').",
+      "type": "string"
+    },
+    "properties": {
+      "title": "Properties",
+      "description": "For 'entity_properties': the entity properties to match.\n\nProperties:\n• on_fire (boolean)\n• on_ground (boolean)",
+      "type": "object",
+      "properties": {
+        "on_fire": {
+          "title": "On Fire",
+          "type": "boolean"
+        },
+        "on_ground": {
+          "title": "On Ground",
+          "type": "boolean"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Properties",
+          "description": "For 'entity_properties': the entity properties to match.",
+          "body": {
+            "on_fire": true,
+            "on_ground": true
+          }
+        }
+      ]
+    },
+    "match_tool": {
+      "title": "Match Tool",
+      "description": "For 'match_tool': the tool item properties to match.\n\nProperties:\n• item (string)\n• enchantments",
+      "type": "object",
+      "properties": {
+        "item": {
+          "title": "Item",
+          "type": "string"
+        },
+        "enchantments": {
+          "title": "Enchantments",
+          "description": "\n\nProperties:\n• enchantment (string)\n• levels ({ min })",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "enchantment": {
+                "title": "Enchantment",
+                "type": "string"
+              },
+              "levels": {
+                "title": "Levels",
+                "description": "\n\nProperties:\n• min (int)",
+                "type": "object",
+                "properties": {
+                  "min": {
+                    "title": "Minimum",
+                    "type": "integer"
+                  }
+                },
+                "defaultSnippets": [
+                  {
+                    "label": "Levels",
+                    "description": "Create a Levels",
+                    "body": {
+                      "min": 0
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Match Tool",
+          "description": "For 'match_tool': the tool item properties to match.",
+          "body": {
+            "item": ""
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "condition"
+  ]
+}

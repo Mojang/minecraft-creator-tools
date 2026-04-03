@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines constantheightprovidertype configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "ConstantHeightProviderType",
+  "fields": [
+    {
+      "id": "type",
+      "title": "HeightProviderType",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "Constant anchor point",
+      "dataType": "object",
+      "isRequired": true
+    }
+  ],
+  "description": "Constant anchor point",
+  "title": "ConstantHeightProviderType Misc"
+}

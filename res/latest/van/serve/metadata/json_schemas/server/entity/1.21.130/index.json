@@ -1,0 +1,10 @@
+{
+  "files": [
+    "AddRiderComponentDefinition.json",
+    "BurnsInDaylightComponentDefinition.json",
+    "ExploreOutskirtsGoalDefinition.json",
+    "InvestigateSuspiciousLocationGoalDefinition.json",
+    "ActorDefinitions.json"
+  ],
+  "folders": []
+}

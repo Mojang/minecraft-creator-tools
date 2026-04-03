@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "voxel_shapes/voxel_shape_document",
+  "title": "Voxel Shape Document",
+  "description": "A behavior pack voxel shape document for Minecraft Bedrock Edition. This describes the complete JSON file structure including format_version and the minecraft:voxel_shape wrapper.",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "title": "Format Version",
+      "description": "The format version of this voxel shape file. Currently 1.21.110.",
+      "type": "string"
+    },
+    "minecraft:voxel_shape": {
+      "title": "Voxel Shape Definition",
+      "description": "The voxel shape definition container with description and shape data.\n\nProperties:\n• description (object)\n• shape (object)",
+      "$ref": "./voxel_shapes_voxelshapefile.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Voxel Shapes VoxelShapeFile",
+          "description": "Defines a complete voxel shape file.",
+          "body": {
+            "description": "",
+            "shape": ""
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "format_version",
+    "minecraft:voxel_shape"
+  ]
+}

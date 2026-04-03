@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Spawn MobEventFilter",
+  "description": "Controls spawning based on whether a specific mob event is active. Mob events are world-level toggles (like raids or wandering traders) that can enable or disable certain spawn behaviors.",
+  "properties": {
+    "event": {
+      "title": "Event",
+      "type": "string",
+      "default": ""
+    }
+  }
+}

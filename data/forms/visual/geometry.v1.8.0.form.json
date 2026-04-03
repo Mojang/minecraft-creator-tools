@@ -1,0 +1,326 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "geometry",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a 3D model using the legacy format with bones, cubes, and box UV mappings"
+          }
+        ]
+      }
+    ]
+  },
+  "title": "Geometry (v1.8.0)",
+  "description": "Legacy geometry format using box-mapped UVs. This format uses the 'geometry.<name>' pattern for model definitions. For newer projects, consider using format version 1.12.0 or later which supports per-face UV mapping.",
+  "fields": [
+    {
+      "id": "bones.reset",
+      "title": "Bone Reset",
+      "description": "When true, resets the bone to its bind pose before applying animations. This property has been deprecated in newer geometry format versions.",
+      "dataType": "boolean",
+      "isDeprecated": true,
+      "versionDeprecated": "1.16.0",
+      "note": "The reset property on bones was available in geometry v1.8.0 through v1.14.0 but is no longer used in modern formats."
+    },
+    {
+      "id": "bones.inflate",
+      "title": "Bone Inflate",
+      "description": "Expands or shrinks the bone's cubes. This property has been deprecated in newer geometry format versions.",
+      "dataType": "float",
+      "isDeprecated": true,
+      "versionDeprecated": "1.16.0",
+      "note": "The inflate property on bones was available in geometry v1.8.0 through v1.14.0 but is no longer used in modern formats. Use cube-level inflate instead."
+    },
+    {
+      "dataType": "boolean",
+      "id": "debug",
+      "title": "Debug",
+      "isRequired": false
+    },
+    {
+      "dataType": "version",
+      "id": "format_version",
+      "title": "Format Version",
+      "isRequired": true
+    },
+    {
+      "dataType": "object",
+      "id": "geometry.[a-zA-Z0-9_.'-:]+",
+      "title": "+ Geometry",
+      "isRequired": true,
+      "subForm": {
+        "fields": [
+          {
+            "dataType": "boolean",
+            "id": "debug",
+            "title": "Debug",
+            "isRequired": false
+          },
+          {
+            "dataType": "stringArray",
+            "id": "visible_bounds_offset",
+            "title": "Visible Bounds Offset",
+            "isRequired": false
+          },
+          {
+            "dataType": "int",
+            "id": "texturewidth",
+            "title": "Texturewidth",
+            "isRequired": false
+          },
+          {
+            "dataType": "int",
+            "id": "textureheight",
+            "title": "Textureheight",
+            "isRequired": false
+          },
+          {
+            "dataType": "string",
+            "id": "cape",
+            "title": "Cape",
+            "isRequired": false
+          },
+          {
+            "id": "bones",
+            "dataType": "objectArray",
+            "subForm": {
+              "fields": [
+                {
+                  "dataType": "string",
+                  "id": "name",
+                  "title": "Name",
+                  "isRequired": true
+                },
+                {
+                  "dataType": "boolean",
+                  "id": "reset",
+                  "title": "Reset",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "boolean",
+                  "id": "neverRender",
+                  "title": "NeverRender",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "string",
+                  "id": "parent",
+                  "title": "Parent",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "stringArray",
+                  "id": "pivot",
+                  "title": "Pivot",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "stringArray",
+                  "id": "rotation",
+                  "title": "Rotation",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "stringArray",
+                  "id": "bind_pose_rotation",
+                  "title": "Bind Pose Rotation",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "boolean",
+                  "id": "mirror",
+                  "title": "Mirror",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "boolean",
+                  "id": "debug",
+                  "title": "Debug",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "int",
+                  "id": "render_group_id",
+                  "title": "Render Group Id",
+                  "isRequired": false
+                },
+                {
+                  "id": "cubes",
+                  "dataType": "objectArray",
+                  "subForm": {
+                    "fields": [
+                      {
+                        "dataType": "stringArray",
+                        "id": "origin",
+                        "title": "Origin",
+                        "isRequired": false
+                      },
+                      {
+                        "dataType": "stringArray",
+                        "id": "size",
+                        "title": "Size",
+                        "isRequired": false
+                      },
+                      {
+                        "dataType": "stringArray",
+                        "id": "uv",
+                        "title": "Uv",
+                        "isRequired": false
+                      },
+                      {
+                        "dataType": "boolean",
+                        "id": "mirror",
+                        "title": "Mirror",
+                        "isRequired": false
+                      }
+                    ]
+                  },
+                  "alternates": [
+                    {
+                      "dataType": "stringArray",
+                      "id": "cubes",
+                      "title": "Cubes",
+                      "isRequired": false
+                    }
+                  ]
+                },
+                {
+                  "dataType": "keyedObjectCollection",
+                  "id": "locators",
+                  "title": "Locators",
+                  "isRequired": false,
+                  "subForm": {
+                    "fields": []
+                  },
+                  "keyDescription": "<identifier>",
+                  "alternates": [
+                    {
+                      "dataType": "keyedStringCollection",
+                      "id": "locators",
+                      "title": "<identifier>",
+                      "isRequired": false,
+                      "keyDescription": "<identifier>"
+                    }
+                  ]
+                },
+                {
+                  "dataType": "keyedObjectCollection",
+                  "id": "poly_mesh",
+                  "title": "Poly Mesh",
+                  "isRequired": false,
+                  "subForm": {
+                    "fields": [
+                      {
+                        "dataType": "boolean",
+                        "id": "normalized_uvs",
+                        "title": "Normalized Uvs",
+                        "isRequired": false
+                      },
+                      {
+                        "dataType": "stringArray",
+                        "id": "positions",
+                        "title": "Positions",
+                        "isRequired": false
+                      },
+                      {
+                        "dataType": "stringArray",
+                        "id": "normals",
+                        "title": "Normals",
+                        "isRequired": false
+                      },
+                      {
+                        "dataType": "stringArray",
+                        "id": "uvs",
+                        "title": "Uvs",
+                        "isRequired": false
+                      },
+                      {
+                        "dataType": "stringArray",
+                        "id": "polys",
+                        "title": "Polys",
+                        "isRequired": true
+                      }
+                    ]
+                  },
+                  "keyDescription": "<any array element>"
+                },
+                {
+                  "id": "texture_meshes",
+                  "dataType": "objectArray",
+                  "subForm": {
+                    "fields": [
+                      {
+                        "dataType": "string",
+                        "id": "texture",
+                        "title": "Texture",
+                        "isRequired": true
+                      },
+                      {
+                        "dataType": "stringArray",
+                        "id": "position",
+                        "title": "Position",
+                        "isRequired": false
+                      },
+                      {
+                        "dataType": "stringArray",
+                        "id": "local_pivot",
+                        "title": "Local Pivot",
+                        "isRequired": false
+                      },
+                      {
+                        "dataType": "stringArray",
+                        "id": "rotation",
+                        "title": "Rotation",
+                        "isRequired": false
+                      },
+                      {
+                        "dataType": "stringArray",
+                        "id": "scale",
+                        "title": "Scale",
+                        "isRequired": false,
+                        "alternates": [
+                          {
+                            "dataType": "stringArray",
+                            "id": "scale",
+                            "isRequired": false
+                          }
+                        ]
+                      },
+                      {
+                        "dataType": "boolean",
+                        "id": "use_pixel_depth",
+                        "title": "Use Pixel Depth",
+                        "isRequired": false
+                      }
+                    ]
+                  },
+                  "alternates": [
+                    {
+                      "dataType": "stringArray",
+                      "id": "texture_meshes",
+                      "title": "Texture Meshes",
+                      "isRequired": false
+                    }
+                  ]
+                }
+              ]
+            },
+            "alternates": [
+              {
+                "dataType": "stringArray",
+                "id": "bones",
+                "title": "Bones",
+                "isRequired": false
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "dataVersion": "1.8.0"
+}

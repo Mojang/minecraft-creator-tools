@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "is tamed"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [],
+  "description": "Sets that this entity is currently tamed.",
+  "title": "Is Tamed",
+  "samples": {
+    "/vanilla/behavior_pack/entities/llama.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_tamed/minecraft:is_tamed/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/parrot.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:parrot_tame/minecraft:is_tamed/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/trader_llama.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_tamed/minecraft:is_tamed/",
+        "content": {}
+      }
+    ]
+  },
+  "id": "minecraft:is_tamed"
+}

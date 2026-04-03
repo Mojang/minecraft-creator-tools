@@ -1,0 +1,73 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines jigsaw block connection and targeting metadata"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "name",
+      "title": "name",
+      "description": "The name identifier referenced by the 'target' field of another Jigsaw block.",
+      "dataType": "string"
+    },
+    {
+      "id": "pool",
+      "title": "pool",
+      "description": "The structure template pool containing possible structures to generate.",
+      "dataType": "string"
+    },
+    {
+      "id": "target",
+      "title": "target",
+      "description": "The name identifier of the Jigsaw block to target within the generated structure.",
+      "dataType": "string"
+    },
+    {
+      "id": "joint_type",
+      "title": "Jigsaw Joint Type",
+      "description": "The type of Jigsaw joint made with 'target'.",
+      "dataType": "string"
+    },
+    {
+      "id": "block",
+      "title": "block",
+      "description": "The serialization Id of the Jigsaw block before generation.",
+      "dataType": "string"
+    },
+    {
+      "id": "selection_priority",
+      "title": "selection_priority",
+      "description": "The priority used during target block selection.",
+      "dataType": "int"
+    },
+    {
+      "id": "final_block",
+      "title": "final_block",
+      "description": "The serialization Id to replace the starting Jigsaw block with.",
+      "dataType": "string"
+    },
+    {
+      "id": "pos",
+      "title": "pos",
+      "description": "The Jigsaw block position.",
+      "dataType": "object"
+    },
+    {
+      "id": "placement_priority",
+      "title": "placement_priority",
+      "description": "The priority used during target block placement.",
+      "dataType": "int"
+    }
+  ],
+  "description": "JigsawBlockMetadata",
+  "title": "JigsawBlockMetadata"
+}

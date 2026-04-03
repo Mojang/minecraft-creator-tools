@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Swim Wander Behavior",
+  "description": "Allows the entity to wander around while swimming, when not path-finding.",
+  "properties": {
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "interval": {
+      "title": "Interval",
+      "description": "Percent chance to start wandering, when not path-finding. 1 = 100%",
+      "type": "number",
+      "default": 0.008329999633133411
+    },
+    "look_ahead": {
+      "title": "Look Ahead",
+      "description": "Distance to look ahead for obstacle avoidance, while wandering.",
+      "type": "number",
+      "default": 5
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer",
+      "default": 0
+    },
+    "speed_multiplier": {
+      "title": "Speed Multiplier",
+      "description": "This multiplier modifies the entity's speed when wandering.",
+      "type": "number",
+      "default": 1
+    },
+    "wander_time": {
+      "title": "Wander Time",
+      "description": "Amount of time (in seconds) to wander after wandering behavior was successfully started.",
+      "type": "number",
+      "default": 5
+    }
+  }
+}

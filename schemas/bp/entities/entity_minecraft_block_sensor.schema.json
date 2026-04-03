@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Block Sensor",
+  "description": "Fires off a specified event when a block in the block list is broken within the sensor range.",
+  "properties": {
+    "on_break": {
+      "title": "Break",
+      "description": "List of blocks to watch for being broken to fire off a specified event. If a block is in multiple lists, multiple events will fire.\n\nProperties:\n• block_list (string[])\n• on_block_broken (string)",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "block_list": {
+            "title": "Block List",
+            "description": "List of blocks that trigger the on_block_broken event.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "on_block_broken": {
+            "title": "On Block Broken",
+            "description": "Event to call when a block in block_list is broken.",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sources": {
+      "title": "Sources",
+      "description": "List of sources that break the block to listen for. If none are specified, all block breaks will be detected.",
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "sensor_radius": {
+      "title": "Sensor Radius",
+      "description": "The maximum radial distance in which a specified block can be detected. The biggest radius is 32.0.",
+      "type": "number",
+      "default": 16
+    }
+  }
+}

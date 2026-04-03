@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Client Particles Particle Lifetime Expression",
+  "description": "Controls individual particle lifetimes using Molang expressions. The max_lifetime sets the absolute duration limit, while expiration_expression can terminate particles early when conditions are met (like leaving a certain area). Enables dynamic particle populations that respond to game state beyond simple time-based expiration.",
+  "properties": {
+    "expiration_expression": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "description": "\n\nProperties:\n• expression (string)\n• version (int)",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "expression": {
+                "title": "Expression",
+                "type": "string"
+              },
+              "version": {
+                "title": "Version",
+                "type": "integer"
+              }
+            }
+          }
+        }
+      ],
+      "title": "Expiration Expression",
+      "description": "When the expression is non-zero, the particle expires. Can be a number or Molang expression."
+    },
+    "max_lifetime": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "description": "\n\nProperties:\n• expression (string)\n• version (int)",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "expression": {
+                "title": "Expression",
+                "type": "string"
+              },
+              "version": {
+                "title": "Version",
+                "type": "integer"
+              }
+            }
+          }
+        }
+      ],
+      "title": "Max Lifetime",
+      "description": "The maximum lifetime of the particle in seconds. Can be a number or Molang expression."
+    }
+  }
+}

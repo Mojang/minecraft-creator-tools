@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Geode Feature",
+  "description": "\n\nProperties:\n• description ({ identifier })\n• inner_placements (string[])\n• min_outer_wall_distance (int)\n• max_outer_wall_distance (int)\n• min_distribution_points (int)\n• max_distribution_points (int)\n• min_point_offset (int)\n• max_point_offset (int)\n• ... and 4 more properties",
+  "type": "object",
+  "properties": {
+    "description": {
+      "title": "Description",
+      "description": "\n\nProperties:\n• identifier (string)",
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "title": "Identifier",
+          "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Description",
+          "description": "Create a Description",
+          "body": {
+            "identifier": ""
+          }
+        }
+      ]
+    },
+    "inner_placements": {
+      "title": "Inner Placements",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "min_outer_wall_distance": {
+      "title": "Min Outer Wall Distance",
+      "description": "The minimum distance each distribution point must be from the outer wall. [0,10]",
+      "type": "integer"
+    },
+    "max_outer_wall_distance": {
+      "title": "Max Outer Wall Distance",
+      "description": "The maximum distance each distribution point can be from the outer wall. [0,20]",
+      "type": "integer"
+    },
+    "min_distribution_points": {
+      "title": "Min Distribution Points",
+      "description": "The minimum number of points inside the distance field that can get generated. The distance field is the area consisting of all points with a minimum distance to all destribution points. [0,10]",
+      "type": "integer"
+    },
+    "max_distribution_points": {
+      "title": "Max Distribution Points",
+      "description": "The maximum number of points inside the distance field that can get generated. The distance field is the area consisting of all points with a minimum distance to all destribution points. [0,20]",
+      "type": "integer"
+    },
+    "min_point_offset": {
+      "title": "Min Point Offset",
+      "description": "The lowest possible value of random offset applied to the position of each distribution point. [0,10]",
+      "type": "integer"
+    },
+    "max_point_offset": {
+      "title": "Max Point Offset",
+      "description": "The highest possible value of random offset applied to the position of each distribution point. [0,10]",
+      "type": "integer"
+    },
+    "max_radius": {
+      "title": "Max Radius",
+      "description": "The maximum possible radius of the geode generated.",
+      "type": "integer"
+    },
+    "crack_point_offset": {
+      "title": "Crack Point Offset",
+      "description": "An offset applied to each distribution point that forms the geode crack opening. [0,10]",
+      "type": "integer"
+    },
+    "placements_require_layer0_alternate": {
+      "title": "Placements Require Layer0 Alternate",
+      "description": "If true, the potential placement block will only be placed on the alternate layer0 blocks that get placed. Potential placement blocks are blocks that depend on the existance of another block to be placed. The latter are the layer0 alternate blocks.",
+      "type": "boolean"
+    },
+    "invalid_blocks_threshold": {
+      "title": "Invalid Blocks Threshold",
+      "description": "The threshold of invalid blocks for a geode to have a distribution point in before it aborts generation entirely.",
+      "type": "integer"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Geode Feature",
+      "description": "Create a Geode Feature",
+      "body": {
+        "description": "",
+        "min_outer_wall_distance": 0,
+        "max_outer_wall_distance": 0,
+        "min_distribution_points": 0,
+        "max_distribution_points": 0,
+        "min_point_offset": 0,
+        "max_point_offset": 0,
+        "max_radius": 0,
+        "crack_point_offset": 0,
+        "placements_require_layer0_alternate": true,
+        "invalid_blocks_threshold": 0
+      }
+    }
+  ]
+}

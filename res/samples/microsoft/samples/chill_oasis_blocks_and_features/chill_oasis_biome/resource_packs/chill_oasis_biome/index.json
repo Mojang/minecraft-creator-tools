@@ -1,0 +1,11 @@
+{
+  "files": [
+    "manifest.json",
+    "pack_icon.png",
+    "sounds.json"
+  ],
+  "folders": [
+    "biomes",
+    "sounds"
+  ]
+}

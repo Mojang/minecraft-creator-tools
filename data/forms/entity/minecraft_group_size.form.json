@@ -1,0 +1,84 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "keeps track of nearby entities of the same type"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "filters",
+      "title": "Filters",
+      "description": "The list of conditions that must be satisfied for other entities to be counted towards group size.",
+      "dataType": "minecraftFilter",
+      "samples": {
+        "/vanilla/behavior_pack/entities/hoglin.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:hoglin_adult/minecraft:group_size/",
+            "content": {
+              "all_of": [
+                {
+                  "test": "has_component",
+                  "operator": "!=",
+                  "value": "minecraft:is_baby"
+                },
+                {
+                  "test": "is_family",
+                  "value": "hoglin"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "radius",
+      "title": "Radius",
+      "description": "Radius from center of entity.",
+      "defaultValue": 16,
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/hoglin.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:hoglin_adult/minecraft:group_size/",
+            "content": 32
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Keeps track of entity group size in the given radius.",
+  "title": "Group Size",
+  "samples": {
+    "/vanilla/behavior_pack/entities/hoglin.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:hoglin_adult/minecraft:group_size/",
+        "content": {
+          "radius": 32,
+          "filters": {
+            "all_of": [
+              {
+                "test": "has_component",
+                "operator": "!=",
+                "value": "minecraft:is_baby"
+              },
+              {
+                "test": "is_family",
+                "value": "hoglin"
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "id": "minecraft:group_size"
+}

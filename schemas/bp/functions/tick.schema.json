@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "behavior/tick",
+  "title": "Tick Configuration",
+  "description": "The tick.json file specifies which mcfunction files should run every game tick (20 times per second). Located at functions/tick.json in behavior packs. Functions listed here run at origin (0, 0, 0) in the overworld as soon as the world is initialized.",
+  "type": "object",
+  "properties": {
+    "0": {
+      "title": "0",
+      "description": "\n\nSample values:\n• tick: wiki/function_1",
+      "type": "string"
+    },
+    "1": {
+      "title": "1",
+      "description": "\n\nSample values:\n• tick: wiki/function_2",
+      "type": "string"
+    },
+    "values": {
+      "title": "Values",
+      "description": "An array of function paths to execute every tick. Function paths are relative to the functions folder without the .mcfunction extension (e.g., 'namespace/function_name').\n\nProperties:\n• value (string)\n\nSample values:\n• tick: null",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "values"
+  ]
+}

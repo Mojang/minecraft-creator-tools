@@ -1,0 +1,92 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines looping emitter with active and sleep times"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "active_time",
+      "title": "Active Time",
+      "description": "The time in seconds that the emitter is active. Can be a number or Molang expression.",
+      "dataType": "molang",
+      "defaultValue": 0,
+      "alternates": [
+        {
+          "id": "active_time",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "active_time",
+            "title": "Active Time",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "active_time",
+          "dataType": "float"
+        }
+      ]
+    },
+    {
+      "id": "sleep_time",
+      "title": "Sleep Time",
+      "description": "The time in seconds that the emitter sleeps between active periods. Can be a number or Molang expression.",
+      "dataType": "molang",
+      "defaultValue": 0,
+      "alternates": [
+        {
+          "id": "sleep_time",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "sleep_time",
+            "title": "Sleep Time",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "sleep_time",
+          "dataType": "float"
+        }
+      ]
+    }
+  ],
+  "description": "Creates repeating particle effects that cycle between active and dormant phases. The emitter runs for the active_time duration, pauses for sleep_time, then repeats indefinitely. Perfect for ambient effects like bubbling cauldrons, flickering torches, pulsing enchantment glows, or creature breathing animations.",
+  "title": "Client Particles Emitter Lifetime Looping",
+  "id": "emitter_lifetime_looping"
+}

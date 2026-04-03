@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "client_deferred_rendering/pbrfallbackconfig_pbrfallbackconfigsettings",
+  "title": "PBR Fallback Settings",
+  "description": "Struct PBRFallbackConfig PBRFallbackConfigSettings Client Deferred Rendering",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "title": "format_version",
+      "description": "format_version",
+      "type": "string"
+    },
+    "minecraft:pbr_fallback_settings": {
+      "$ref": "./minecraft_pbr_fallback_settings.schema.json",
+      "title": "minecraft:pbr_fallback_settings",
+      "description": "minecraft:pbr_fallback_settings\n\nProperties:\n• blocks ({ global_metalness_emissive_roughness })\n• actors ({ global_metalness_emissive_roughness })\n• particles ({ global_metalness_emissive_roughness })\n• items ({ global_metalness_emissive_roughness })"
+    }
+  }
+}

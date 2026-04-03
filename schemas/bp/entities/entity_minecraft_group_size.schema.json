@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Group Size",
+  "description": "Keeps track of entity group size in the given radius.",
+  "properties": {
+    "filters": {
+      "title": "Filters",
+      "description": "The list of conditions that must be satisfied for other entities to be counted towards group size.\n\nSample values:\n• hoglin: {\"all_of\":[{\"test\":\"has_component\",\"operator\":\"...",
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "radius": {
+      "title": "Radius",
+      "description": "Radius from center of entity.\n\nSample values:\n• hoglin: 32",
+      "type": "number",
+      "default": 16
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Preferred Path",
+  "description": "Specifies costing information for mobs that prefer to walk on preferred paths.",
+  "properties": {
+    "preferred_path_blocks": {
+      "title": "Preferred Path Blocks",
+      "description": "A list of block types with their associated pathfinding costs. Each entry specifies blocks and their cost value.\n\nProperties:\n• cost (int)\n• blocks (string[])\n\nSample values:\n• iron_golem: [{\"blocks\":[\"grass_path\"],\"cost\":0},{\"blocks\":[...",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "cost": {
+            "description": "The cost value for these blocks during pathfinding. Lower costs make paths more preferred.",
+            "type": "integer"
+          },
+          "blocks": {
+            "description": "Array of block identifiers that share this cost value.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "default_block_cost": {
+      "title": "Default Block Cost",
+      "description": "Cost for non-preferred blocks\n\nSample values:\n• iron_golem: 1.5",
+      "type": "number",
+      "default": 0
+    },
+    "jump_cost": {
+      "title": "Jump Cost",
+      "description": "Added cost for jumping up a node\n\nSample values:\n• iron_golem: 5",
+      "type": "integer",
+      "default": 0
+    },
+    "max_fall_blocks": {
+      "title": "Max Fall Blocks",
+      "description": "Distance mob can fall without taking damage\n\nSample values:\n• iron_golem: 1\n• warden: 20",
+      "type": "integer",
+      "default": 3
+    }
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "pack/resource_pack_manifest",
+  "title": "Resource Pack Manifest",
+  "description": "The manifest.json file for a Minecraft Bedrock Edition resource pack. Every resource pack requires a manifest with a unique UUID, version info, and module declarations. Resource packs contain textures, models, sounds, and UI customizations.",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "title": "Format Version",
+      "description": "The format version of this manifest file. Use 2 for modern packs.",
+      "type": "integer",
+      "default": 2
+    },
+    "header": {
+      "title": "Header",
+      "description": "The header section containing the pack's identity: name, description, unique UUID, and version.\n\nProperties:\n• modules\n• dependencies",
+      "$ref": "./pack_behavior_pack_rest_of_file.schema.json"
+    },
+    "modules": {
+      "title": "Modules",
+      "description": "Declares modules within the pack. For resource packs, use type 'resources'.\n\nProperties:\n• description\n• language (string)\n• type (string)\n• uuid (string)\n• version (string)\n• entry (string)",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "description": "Description of this module.",
+            "type": "string"
+          },
+          "language": {
+            "description": "The scripting language of this module (e.g., 'javascript').",
+            "type": "string"
+          },
+          "type": {
+            "description": "Type of this module.",
+            "type": "string"
+          },
+          "uuid": {
+            "description": "Unique identifier of this module.",
+            "type": "string"
+          },
+          "version": {
+            "description": "Version of this module.",
+            "type": "string"
+          },
+          "entry": {
+            "description": "Script entry point for this pack.",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "dependencies": {
+      "title": "Dependencies",
+      "description": "Optional list of other packs this pack depends on, referenced by UUID and version.\n\nProperties:\n• uuid (string)\n• module_name (string)\n• version (string)",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "description": "UUID of the dependency pack.",
+            "type": "string"
+          },
+          "module_name": {
+            "description": "Module name of the dependency.",
+            "type": "string"
+          },
+          "version": {
+            "description": "Version of the dependency.",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "metadata": {
+      "title": "Metadata",
+      "description": "Optional metadata about the pack including author names, license, and URL.",
+      "type": "object"
+    },
+    "capabilities": {
+      "title": "Capabilities",
+      "description": "Optional array of special capabilities required by this pack.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "subpacks": {
+      "title": "Subpacks",
+      "description": "Optional subpack options for different quality levels.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "format_version",
+    "header",
+    "modules"
+  ]
+}

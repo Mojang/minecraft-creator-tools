@@ -1,0 +1,136 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Loot Function",
+  "description": "Defines a function that modifies a loot table entry when selected.",
+  "properties": {
+    "function": {
+      "title": "Function",
+      "description": "The function type. Common values: 'set_count', 'set_data', 'set_damage', 'set_nbt', 'enchant_randomly', 'enchant_with_levels', 'looting_enchant', 'furnace_smelt', 'set_actor_id', 'set_book_contents', 'fill_container', 'exploration_map', 'set_banner_details', 'set_armor_trim'.",
+      "type": "string"
+    },
+    "count": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "min": {
+              "title": "Minimum",
+              "type": "integer"
+            },
+            "max": {
+              "title": "Maximum",
+              "type": "integer"
+            }
+          }
+        },
+        {
+          "type": "integer"
+        }
+      ],
+      "title": "Count",
+      "description": "For 'set_count' and 'looting_enchant': the count value or range.\n\nProperties:\n• min (int)\n• max (int)"
+    },
+    "data": {
+      "title": "Data",
+      "description": "For 'set_data': the data value or range to set.\n\nProperties:\n• min (int)\n• max (int)",
+      "type": "object",
+      "properties": {
+        "min": {
+          "title": "Minimum",
+          "type": "integer"
+        },
+        "max": {
+          "title": "Maximum",
+          "type": "integer"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Data",
+          "description": "For 'set_data': the data value or range to set.",
+          "body": {
+            "min": 0,
+            "max": 0
+          }
+        }
+      ]
+    },
+    "damage": {
+      "title": "Damage",
+      "description": "For 'set_damage': the damage percentage or range (0.0-1.0).\n\nProperties:\n• min (float)\n• max (float)",
+      "type": "object",
+      "properties": {
+        "min": {
+          "title": "Minimum",
+          "type": "number"
+        },
+        "max": {
+          "title": "Maximum",
+          "type": "number"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Damage",
+          "description": "For 'set_damage': the damage percentage or range (0.0-1.0).",
+          "body": {
+            "min": 0,
+            "max": 0
+          }
+        }
+      ]
+    },
+    "treasure": {
+      "title": "Treasure",
+      "description": "For 'enchant_randomly': whether to include treasure enchantments.",
+      "type": "boolean"
+    },
+    "levels": {
+      "title": "Levels",
+      "description": "For 'enchant_with_levels': the enchantment level or range.\n\nProperties:\n• min (int)\n• max (int)",
+      "type": "object",
+      "properties": {
+        "min": {
+          "title": "Minimum",
+          "type": "integer"
+        },
+        "max": {
+          "title": "Maximum",
+          "type": "integer"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Levels",
+          "description": "For 'enchant_with_levels': the enchantment level or range.",
+          "body": {
+            "min": 0,
+            "max": 0
+          }
+        }
+      ]
+    },
+    "id": {
+      "title": "Entity ID",
+      "description": "For 'set_actor_id': the entity identifier.",
+      "type": "string"
+    },
+    "destination": {
+      "title": "Destination",
+      "description": "For 'exploration_map': the structure destination type.",
+      "type": "string"
+    },
+    "conditions": {
+      "title": "Conditions",
+      "description": "Conditions that must be met for this function to apply.\n\nProperties:\n• condition (string)\n• chance (float)\n• looting_multiplier (float)\n• value (int)\n• default_chance (float)\n• peaceful (float)\n• easy (float)\n• normal (float)\n• ... and 4 more properties",
+      "type": "array",
+      "items": {
+        "$ref": "./loot_loot_condition.schema.json"
+      }
+    }
+  },
+  "required": [
+    "function"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "checks if entity has collisions enabled"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.has_collision",
+  "fields": [],
+  "description": "Returns 1.0 if the entity has collisions enabled, else it returns 0.0.",
+  "title": "Has Collision"
+}

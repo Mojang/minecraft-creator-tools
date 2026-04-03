@@ -1,0 +1,50 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "uses custom surface builder for terrain"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:surface_builder",
+  "fields": [
+    {
+      "id": "builder",
+      "dataType": "object",
+      "subFormId": "biome/minecraft_overworld",
+      "isRequired": true,
+      "alternates": [
+        {
+          "dataType": "object",
+          "subFormId": "biome/minecraft_frozen_ocean"
+        },
+        {
+          "dataType": "object",
+          "subFormId": "biome/minecraft_mesa"
+        },
+        {
+          "dataType": "object",
+          "subFormId": "biome/minecraft_swamp"
+        },
+        {
+          "dataType": "object",
+          "subFormId": "biome/minecraft_capped"
+        },
+        {
+          "dataType": "object",
+          "subFormId": "biome/minecraft_the_end"
+        }
+      ],
+      "description": "Controls the block types used for terrain generation.",
+      "title": "Builder"
+    }
+  ],
+  "description": "Controls the materials used for terrain generation.",
+  "title": "Biome Surface Builder"
+}

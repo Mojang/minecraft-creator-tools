@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "client_deferred_rendering/shadowstylizationconfig_shadowstylizationconfigsettings",
+  "title": "Shadow settings",
+  "description": "Struct ShadowStylizationConfig ShadowStylizationConfigSettings Client Deferred Rendering",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "title": "format_version",
+      "description": "format_version",
+      "type": "string"
+    },
+    "minecraft:shadow_settings": {
+      "title": "minecraft:shadow_settings",
+      "description": "minecraft:shadow_settings\n\nProperties:\n• shadow_style (string)\n• texel_size (int)",
+      "type": "object",
+      "properties": {
+        "shadow_style": {
+          "title": "enum ShadowStylizationConfig_ShadowStylizationConfigSettings_ShadowStylizationSettings_ShadowStyle",
+          "description": "enum ShadowStylizationConfig_ShadowStylizationConfigSettings_ShadowStylizationSettings_ShadowStyle",
+          "type": "string"
+        },
+        "texel_size": {
+          "title": "texel_size",
+          "description": "texel_size",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1024
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "ShadowStylizationConfig ShadowStylizationConfigSettings ShadowStylizationSettings",
+          "description": "ShadowStylizationConfig ShadowStylizationConfigSettings ShadowStylizationSettings",
+          "body": {
+            "shadow_style": "",
+            "texel_size": 0
+          }
+        }
+      ]
+    }
+  }
+}

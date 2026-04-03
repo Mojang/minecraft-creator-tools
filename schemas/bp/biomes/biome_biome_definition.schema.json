@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Biome Definition",
+  "description": "Contains a description and components to define a Biome.",
+  "properties": {
+    "components": {
+      "title": "Components",
+      "description": "Components for this Biome.\n\nProperties:\n• minecraft:climate (object)\n• minecraft:creature_spawn_probability (object)\n• minecraft:humidity (object)\n• minecraft:map_tints (object)\n• minecraft:mountain_parameters (object)\n• minecraft:multinoise_generation_rules (object)\n• minecraft:overworld_generation_rules (object)\n• minecraft:overworld_height (object)\n• ... and 6 more properties",
+      "$ref": "./biome_biome_components.schema.json"
+    },
+    "description": {
+      "title": "Description",
+      "description": "Non-component settings, including the Biome name.\n\nProperties:\n• identifier (string)",
+      "$ref": "./biome_biome_description.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Biome Description",
+          "description": "Contains non-component settings for a Biome.",
+          "body": {
+            "identifier": ""
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "components",
+    "description"
+  ]
+}

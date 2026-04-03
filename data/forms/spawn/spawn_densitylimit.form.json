@@ -1,0 +1,44 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "Spawn DensityLimit",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "limits spawn density on surface and underground"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "surface",
+      "title": "Surface",
+      "dataType": "int",
+      "defaultValue": -1,
+      "validity": [
+        {
+          "comparison": ">=",
+          "value": -1
+        }
+      ]
+    },
+    {
+      "id": "underground",
+      "title": "Underground",
+      "dataType": "int",
+      "defaultValue": -1,
+      "validity": [
+        {
+          "comparison": ">=",
+          "value": -1
+        }
+      ]
+    }
+  ],
+  "description": "Limits how many of this entity type can exist in an area, with separate caps for surface and underground spawning. This prevents overpopulation and controls mob density for performance and gameplay balance.",
+  "title": "Spawn DensityLimit"
+}

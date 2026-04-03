@@ -1,0 +1,60 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "triggers skeleton horse trap"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "duration",
+      "title": "Duration",
+      "description": "Amount of time in seconds the trap exists. After this amount of time is elapsed, the trap is removed from the world if it hasn't been activated",
+      "defaultValue": 1,
+      "dataType": "float"
+    },
+    {
+      "id": "within_radius",
+      "title": "Within Radius",
+      "description": "Distance in blocks that the player has to be within to trigger the horse trap",
+      "defaultValue": 0,
+      "dataType": "float"
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "hideSamples": true,
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "dataType": "int"
+    }
+  ],
+  "restrictions": [
+    {
+      "id": "minecraft:horse",
+      "type": "entity_type"
+    },
+    {
+      "id": "minecraft:mule",
+      "type": "entity_type"
+    },
+    {
+      "id": "minecraft:donkey",
+      "type": "entity_type"
+    },
+    {
+      "id": "minecraft:skeleton_horse",
+      "type": "entity_type"
+    }
+  ],
+  "description": "Allows Equine mobs to be Horse Traps and be triggered like them, spawning a lightning bolt and a bunch of horses when a player is nearby. Can only be used by Horses, Mules, Donkeys and Skeleton Horses.",
+  "title": "Skeleton Horse Trap Behavior",
+  "samples": {},
+  "id": "minecraft:behavior.skeleton_horse_trap"
+}

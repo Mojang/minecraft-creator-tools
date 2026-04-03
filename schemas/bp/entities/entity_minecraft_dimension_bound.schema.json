@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Dimension Bound",
+  "description": "Prevents the entity from changing dimension through portals.",
+  "properties": {}
+}

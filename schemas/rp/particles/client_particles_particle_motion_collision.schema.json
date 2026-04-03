@@ -1,0 +1,120 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Client Particles Particle Motion Collision",
+  "description": "Enables particle collision with world geometry. Configure collision radius, bounce coefficient (how much velocity is retained), friction to slow sliding, and whether to expire on impact. Essential for physical particles like rain hitting ground, debris bouncing off surfaces, or arrows embedding in blocks.",
+  "properties": {
+    "events": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "event": {
+                "type": "string"
+              },
+              "min_speed": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        {
+          "description": "\n\nProperties:\n• event (object)\n• min_speed (float) = 2",
+          "type": "object",
+          "properties": {
+            "event": {
+              "title": "Event",
+              "type": "object"
+            },
+            "min_speed": {
+              "title": "Min Speed",
+              "type": "number",
+              "default": 2
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Events (object)",
+              "description": "Use Events as an object",
+              "body": {
+                "event": "",
+                "min_speed": 2
+              }
+            }
+          ]
+        }
+      ],
+      "title": "Events",
+      "description": "\n\nProperties:\n• event (string)\n• min_speed (float)",
+      "defaultSnippets": [
+        {
+          "label": "Events (object)",
+          "description": "Use Events as an object",
+          "body": {
+            "event": "",
+            "min_speed": 2
+          }
+        }
+      ]
+    },
+    "coefficient_of_restitution": {
+      "title": "Coefficient Of Restitution",
+      "type": "number",
+      "default": 0
+    },
+    "collision_drag": {
+      "title": "Collision Drag",
+      "type": "number",
+      "default": 0
+    },
+    "collision_radius": {
+      "title": "Collision Radius",
+      "type": "number",
+      "maximum": 0.5
+    },
+    "enabled": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "string"
+        },
+        {
+          "description": "\n\nProperties:\n• expression (string)\n• version (int)",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "expression": {
+                "title": "Expression",
+                "type": "string"
+              },
+              "version": {
+                "title": "Version",
+                "type": "integer"
+              }
+            }
+          }
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "title": "Enabled"
+    },
+    "expire_on_contact": {
+      "title": "Expire On Contact",
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "collision_radius"
+  ]
+}

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Music Definition: Musical staff with notes -->
+  <line x1="1" y1="3" x2="15" y2="3" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.3"/>
+  <line x1="1" y1="6" x2="15" y2="6" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.3"/>
+  <line x1="1" y1="9" x2="15" y2="9" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.3"/>
+  <line x1="1" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.3"/>
+  <ellipse cx="4" cy="5" rx="1.5" ry="1" transform="rotate(-15 4 5)"/>
+  <line x1="5.2" y1="5" x2="5.2" y2="1" stroke="currentColor" stroke-width="0.8"/>
+  <ellipse cx="8" cy="8" rx="1.5" ry="1" transform="rotate(-15 8 8)"/>
+  <line x1="9.2" y1="8" x2="9.2" y2="4" stroke="currentColor" stroke-width="0.8"/>
+  <ellipse cx="12" cy="6" rx="1.5" ry="1" transform="rotate(-15 12 6)" fill-opacity="0.7"/>
+  <line x1="13.2" y1="6" x2="13.2" y2="2" stroke="currentColor" stroke-width="0.8"/>
+</svg>

@@ -1,0 +1,581 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Spawn Biome Conditions",
+  "description": "Defines the conditions under which an entity can spawn, including biome filters, brightness, height, and herd settings.",
+  "properties": {
+    "minecraft:spawns_lava": {
+      "title": "Spawns In Lava",
+      "description": "Indicates the entity can spawn in lava.",
+      "type": "object"
+    },
+    "minecraft:disallow_spawns_in_bubble": {
+      "title": "Disallow Spawns In Bubble",
+      "description": "Prevents spawning inside bubble columns.",
+      "type": "object"
+    },
+    "minecraft:biome_filter": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "string"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "string"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "string"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "integer"
+            },
+            "all_of": {
+              "title": "All Of",
+              "description": "All of these tests must pass.",
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "any_of": {
+              "title": "Any Of",
+              "description": "Any of these tests must pass.",
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "none_of": {
+              "title": "None Of",
+              "description": "None of these tests must pass.",
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "domain": {
+                "title": "Domain",
+                "description": "The domain the test should be performed in.",
+                "type": "string"
+              },
+              "operator": {
+                "title": "Operator",
+                "description": "The comparison to apply with 'value'.",
+                "type": "string"
+              },
+              "subject": {
+                "title": "Subject",
+                "description": "The subject of this filter test.",
+                "type": "string"
+              },
+              "test": {
+                "title": "Test",
+                "description": "The name of the test to apply.",
+                "type": "string"
+              },
+              "value": {
+                "title": "Value",
+                "description": "The value being compared with the test.",
+                "type": "integer"
+              },
+              "all_of": {
+                "title": "All Of",
+                "description": "All of these tests must pass.",
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "any_of": {
+                "title": "Any Of",
+                "description": "Any of these tests must pass.",
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "none_of": {
+                "title": "None Of",
+                "description": "None of these tests must pass.",
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "domain": {
+                    "title": "Domain",
+                    "description": "The domain the test should be performed in.",
+                    "type": "string"
+                  },
+                  "operator": {
+                    "title": "Operator",
+                    "description": "The comparison to apply with 'value'.",
+                    "type": "string"
+                  },
+                  "subject": {
+                    "title": "Subject",
+                    "description": "The subject of this filter test.",
+                    "type": "string"
+                  },
+                  "test": {
+                    "title": "Test",
+                    "description": "The name of the test to apply.",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "The value being compared with the test.",
+                    "type": "integer"
+                  },
+                  "all_of": {
+                    "title": "All Of",
+                    "description": "All of these tests must pass.",
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "any_of": {
+                    "title": "Any Of",
+                    "description": "Any of these tests must pass.",
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "none_of": {
+                    "title": "None Of",
+                    "description": "None of these tests must pass.",
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "domain": {
+                    "title": "Domain",
+                    "description": "The domain the test should be performed in.",
+                    "type": "string"
+                  },
+                  "operator": {
+                    "title": "Operator",
+                    "description": "The comparison to apply with 'value'.",
+                    "type": "string"
+                  },
+                  "subject": {
+                    "title": "Subject",
+                    "description": "The subject of this filter test.",
+                    "type": "string"
+                  },
+                  "test": {
+                    "title": "Test",
+                    "description": "The name of the test to apply.",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "The value being compared with the test.",
+                    "type": "integer"
+                  },
+                  "all_of": {
+                    "title": "All Of",
+                    "description": "All of these tests must pass.",
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "any_of": {
+                    "title": "Any Of",
+                    "description": "Any of these tests must pass.",
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "none_of": {
+                    "title": "None Of",
+                    "description": "None of these tests must pass.",
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "domain": {
+                    "title": "Domain",
+                    "description": "The domain the test should be performed in.",
+                    "type": "string"
+                  },
+                  "operator": {
+                    "title": "Operator",
+                    "description": "The comparison to apply with 'value'.",
+                    "type": "string"
+                  },
+                  "subject": {
+                    "title": "Subject",
+                    "description": "The subject of this filter test.",
+                    "type": "string"
+                  },
+                  "test": {
+                    "title": "Test",
+                    "description": "The name of the test to apply.",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "The value being compared with the test.",
+                    "type": "integer"
+                  },
+                  "all_of": {
+                    "title": "All Of",
+                    "description": "All of these tests must pass.",
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "any_of": {
+                    "title": "Any Of",
+                    "description": "Any of these tests must pass.",
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "none_of": {
+                    "title": "None Of",
+                    "description": "None of these tests must pass.",
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "description": "Array of filter objects.",
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      ],
+      "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects.\n\nProperties:\n• domain (string)\n• operator (string)\n• subject (string)\n• test (string)\n• value (int)\n• all_of\n• any_of\n• none_of"
+    },
+    "minecraft:spawns_on_block_filter": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "description": "A single block name string",
+          "type": "string"
+        },
+        {
+          "description": "An array of block name strings",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
+      "title": "Spawns On Block Filter",
+      "description": "Specifies blocks on which this entity can spawn. Can be a single block name string, an array of block objects with name property, or an array of strings representing block names."
+    },
+    "minecraft:spawns_on_block_prevented_filter": {
+      "title": "Spawns On Block Prevented Filter",
+      "description": "Specifies blocks on which this entity cannot spawn. Can be an array of block name strings.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "minecraft:herd": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "description": "Array of herd configurations.",
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      ],
+      "title": "Herd",
+      "description": "Specifies herd spawning configuration. Can be a single herd object or an array of herd objects."
+    },
+    "minecraft:permute_type": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "description": "Array of permutation configurations.",
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      ],
+      "title": "Permute Type",
+      "description": "Specifies permutation types for spawning. Can be a single object or an array of permutation objects."
+    },
+    "minecraft:brightness_filter": {
+      "title": "Minecraft Brightness Filter",
+      "description": "\n\nProperties:\n• adjust_for_weather (boolean) = false\n• max (int) = 15\n• min (int) = 0",
+      "$ref": "./spawn_spawn_brightnessfilter.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Spawn BrightnessFilter",
+          "description": "Restricts mob spawning based on light level at the spawn location. Hostile mobs typically spawn in darkness (light level 0-7), while passive mobs spawn in brighter areas. Allows setting min/max brightness thresholds and whether to adjust for spawning on a block surface.",
+          "body": {
+            "adjust_for_weather": false,
+            "max": 15,
+            "min": 0
+          }
+        }
+      ]
+    },
+    "minecraft:delay_filter": {
+      "title": "Minecraft Delay Filter",
+      "description": "\n\nProperties:\n• identifier (string) = \n• max (int) = 0\n• min (int) = 0\n• spawn_chance (int) = 100",
+      "$ref": "./spawn_spawn_delayfilter.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Spawn DelayFilter",
+          "description": "Delays entity spawning by a configurable amount of time after spawn conditions are met. Useful for preventing immediate respawning after mob deaths or creating spawn cooldowns for rare creatures.",
+          "body": {
+            "identifier": "",
+            "max": 0,
+            "min": 0,
+            "spawn_chance": 100
+          }
+        }
+      ]
+    },
+    "minecraft:density_limit": {
+      "title": "Minecraft Density Limit",
+      "description": "\n\nProperties:\n• surface (int) = -1\n• underground (int) = -1",
+      "$ref": "./spawn_spawn_densitylimit.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Spawn DensityLimit",
+          "description": "Limits how many of this entity type can exist in an area, with separate caps for surface and underground spawning. This prevents overpopulation and controls mob density for performance and gameplay balance.",
+          "body": {
+            "surface": -1,
+            "underground": -1
+          }
+        }
+      ]
+    },
+    "minecraft:difficulty_filter": {
+      "title": "Minecraft Difficulty Filter",
+      "description": "\n\nProperties:\n• max (string) = hard\n• min (string) = peaceful",
+      "$ref": "./spawn_spawn_difficultyfilter.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Spawn DifficultyFilter",
+          "description": "Restricts mob spawning to specific difficulty levels (Peaceful, Easy, Normal, Hard). For example, hostile mobs don't spawn on Peaceful, and some dangerous variants only appear on Hard difficulty.",
+          "body": {
+            "max": "hard",
+            "min": "peaceful"
+          }
+        }
+      ]
+    },
+    "minecraft:distance_filter": {
+      "title": "Minecraft Distance Filter",
+      "description": "\n\nProperties:\n• max (int) = 128\n• min (int) = 24",
+      "$ref": "./spawn_spawn_distancefilter.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Spawn DistanceFilter",
+          "description": "Controls spawning based on distance from the nearest player. Mobs typically spawn within a certain radius around players (24-128 blocks) and despawn when players move too far away.",
+          "body": {
+            "max": 128,
+            "min": 24
+          }
+        }
+      ]
+    },
+    "minecraft:height_filter": {
+      "title": "Minecraft Height Filter",
+      "description": "\n\nProperties:\n• max (int) = 128\n• min (int) = 24",
+      "$ref": "./spawn_spawn_heightfilter.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Spawn HeightFilter",
+          "description": "Restricts entity spawning to specific Y-coordinate ranges. Useful for creating depth-based mob distribution like slimes in swamps (below Y=40), or limiting surface mobs from spawning underground.",
+          "body": {
+            "max": 128,
+            "min": 24
+          }
+        }
+      ]
+    },
+    "minecraft:is_experimental": {
+      "title": "Minecraft Is Experimental",
+      "type": "object"
+    },
+    "minecraft:is_persistent": {
+      "title": "Minecraft Is Persistent",
+      "type": "object"
+    },
+    "minecraft:mob_event_filter": {
+      "title": "Minecraft Mob Event Filter",
+      "description": "\n\nProperties:\n• event (string) = ",
+      "$ref": "./spawn_spawn_mobeventfilter.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Spawn MobEventFilter",
+          "description": "Controls spawning based on whether a specific mob event is active. Mob events are world-level toggles (like raids or wandering traders) that can enable or disable certain spawn behaviors.",
+          "body": {
+            "event": ""
+          }
+        }
+      ]
+    },
+    "minecraft:player_in_village_filter": {
+      "title": "Minecraft Player In Village Filter",
+      "description": "\n\nProperties:\n• distance (int)\n• village_border_tolerance (int) = 10",
+      "$ref": "./spawn_spawn_playerinvillagefilter.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Spawn PlayerInVillageFilter",
+          "description": "Restricts spawning based on whether a player is within village boundaries. Used for village-specific spawns like iron golems, cats, and raid mobs that should only appear when players are near villages.",
+          "body": {
+            "distance": 0,
+            "village_border_tolerance": 10
+          }
+        }
+      ]
+    },
+    "minecraft:spawn_event": {
+      "title": "Minecraft Spawn Event",
+      "description": "\n\nProperties:\n• event (string) = ",
+      "$ref": "./spawn_spawn_mobeventfilter.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Spawn MobEventFilter",
+          "description": "Controls spawning based on whether a specific mob event is active. Mob events are world-level toggles (like raids or wandering traders) that can enable or disable certain spawn behaviors.",
+          "body": {
+            "event": ""
+          }
+        }
+      ]
+    },
+    "minecraft:spawns_above_block_filter": {
+      "title": "Minecraft Spawns Above Block Filter",
+      "description": "\n\nProperties:\n• blocks (object) = []\n• distance (int) = 1",
+      "$ref": "./spawn_spawn_spawnaboveblockfilter.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Spawns Above Block Filter",
+          "description": "Filters spawning based on blocks above the spawn location. This component appears to have been deprecated or changed in versions after 1.17.20.",
+          "body": {
+            "blocks": [],
+            "distance": 1
+          }
+        }
+      ]
+    },
+    "minecraft:spawns_on_surface": {
+      "title": "Minecraft Spawns On Surface",
+      "type": "object"
+    },
+    "minecraft:spawns_underground": {
+      "title": "Minecraft Spawns Underground",
+      "type": "object"
+    },
+    "minecraft:spawns_underwater": {
+      "title": "Minecraft Spawns Underwater",
+      "type": "object"
+    },
+    "minecraft:weight": {
+      "title": "Minecraft Weight",
+      "description": "\n\nProperties:\n• default (int)\n• rarity (int) = 0",
+      "$ref": "./spawn_spawn_weight.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Spawn Weight",
+          "description": "Defines the relative probability of this entity spawning compared to other entities in the same biome and spawn pool. Higher weight values mean more frequent spawns. A weight of 100 is typical for common mobs.",
+          "body": {
+            "default": 0,
+            "rarity": 0
+          }
+        }
+      ]
+    },
+    "minecraft:world_age_filter": {
+      "title": "Minecraft World Age Filter",
+      "description": "\n\nProperties:\n• max (int) = -1\n• min (int) = 0",
+      "$ref": "./spawn_spawn_worldagefilter.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Spawn WorldAgeFilter",
+          "description": "Restricts spawning based on how long the world has existed (measured in ticks). Useful for progressive difficulty where certain mobs only start appearing after the world has been played for a minimum amount of time.",
+          "body": {
+            "max": -1,
+            "min": 0
+          }
+        }
+      ]
+    }
+  }
+}

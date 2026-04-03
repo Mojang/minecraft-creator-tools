@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Game Event Movement Tracking",
+  "description": "Allows an entity to emit `entityMove`, `swim` and `flap` game events, depending on the block the entity is moving through. It is added by default to every mob. Add it again to override its behavior.",
+  "properties": {
+    "emit_flap": {
+      "title": "Emit Flap",
+      "description": "If true, the `flap` game event will be emitted when the entity moves through air.\n\nSample values:\n• allay: true",
+      "type": "boolean",
+      "default": false
+    },
+    "emit_move": {
+      "title": "Emit Move",
+      "description": "If true, the `entityMove` game event will be emitted when the entity moves on ground or through a solid.",
+      "type": "boolean",
+      "default": true
+    },
+    "emit_swim": {
+      "title": "Emit Swim",
+      "description": "If true, the `swim` game event will be emitted when the entity moves through a liquid.",
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

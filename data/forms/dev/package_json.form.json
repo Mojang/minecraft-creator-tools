@@ -1,0 +1,59 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "title": "Package.json",
+  "description": "Defines the structure of a Node.js package.json file.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines package.json metadata for a Node.js project"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "name",
+      "title": "Name",
+      "dataType": "string"
+    },
+    {
+      "id": "productName",
+      "title": "Product Name",
+      "dataType": "string"
+    },
+    {
+      "id": "main",
+      "title": "Main Entrypoint",
+      "dataType": "string"
+    },
+    {
+      "id": "homepage",
+      "title": "Homepage",
+      "dataType": "string"
+    },
+    {
+      "id": "icon",
+      "title": "Icon",
+      "dataType": "string"
+    },
+    {
+      "id": "private",
+      "title": "Private",
+      "dataType": "boolean"
+    },
+    {
+      "id": "description",
+      "title": "Description",
+      "dataType": "longFormString"
+    },
+    {
+      "id": "version",
+      "title": "Version",
+      "dataType": "string"
+    }
+  ]
+}
