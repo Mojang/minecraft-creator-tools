@@ -37,9 +37,17 @@ jobs:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Prep and Command Line Build
+      - name: Build Minecraft Add-on
         run: |
           npm ci
+          pushd mc
+          npm ci --legacy-peer-deps
+          npm run build
+          npm run package
+          popd
+
+      - name: Prep and Command Line Build
+        run: |
           pushd app
           npm ci
           npm run preparedevenvandjsnbuild --max_old_space_size=16384

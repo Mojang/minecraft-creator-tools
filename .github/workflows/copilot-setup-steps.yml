@@ -29,9 +29,16 @@ jobs:
       - name: Install JavaScript dependencies
         run: npm ci
 
+      - name: Build Minecraft Add-on
+        run: |
+          pushd mc
+          npm ci --legacy-peer-deps
+          npm run build
+          npm run package
+          popd
+
       - name: Prep and Command Line Build
         run: |
-          npm ci
           pushd app
           npm ci
           npm run preparedevenv --max_old_space_size=16384
