@@ -1,6 +1,6 @@
 {
   "name": "@minecraft/creator-tools-core",
-  "version": "0.0.1",
+  "version": "0.0.1-dev",
   "license": "MIT",
   "productName": "Minecraft Creator Tools Core Library",
   "description": "Core library for Minecraft Creator Tools - types and utilities for building Bedrock Edition add-ons",

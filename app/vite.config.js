@@ -633,7 +633,7 @@ export default defineConfig(({ command }) => {
       global: "globalThis",
       ENABLE_ANALYTICS: process.env.ENABLE_ANALYTICS === "true",
       BUILD_TARGET: JSON.stringify("web"),
-      BUILD_VERSION: JSON.stringify(process.env.npm_package_version || "0.0.1"),
+      BUILD_VERSION: JSON.stringify(process.env.npm_package_version || "0.0.1-dev"),
       BUILD_DATE: JSON.stringify(new Date().toISOString()),
     },
     ...(command === "serve" && {
