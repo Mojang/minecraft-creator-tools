@@ -1065,7 +1065,17 @@ export default class MinecraftMcpServer {
           basePath = path.join(args.outputPath, "resource_packs", parseResult.data.namespace || "custom");
         }
 
-        const fullPath = path.join(basePath, file.path);
+        const fullPath = path.resolve(basePath, file.path);
+        const resolvedOutputPath = path.resolve(args.outputPath);
+
+        // Prevent path traversal: ensure the resolved path stays within the output directory
+        if (!fullPath.startsWith(resolvedOutputPath + path.sep) && fullPath !== resolvedOutputPath) {
+          Log.error(
+            "Skipping file with path traversal outside output directory: " + file.path
+          );
+          return;
+        }
+
         const dirPath = path.dirname(fullPath);
 
         if (!fs.existsSync(dirPath)) {

@@ -692,6 +692,19 @@ export class ContentGenerator {
   private _warnings: string[] = [];
   private _errors: string[] = [];
 
+  /**
+   * Sanitizes an ID for safe use in file paths.
+   * Strips path separators and traversal sequences to prevent directory escape.
+   */
+  private static _sanitizeIdForPath(id: string): string {
+    // Remove null bytes, path separators, and traversal sequences
+    return id
+      .replace(/\0/g, "")
+      .replace(/\.\./g, "")
+      .replace(/[/\\]/g, "_")
+      .replace(/:/g, "_");
+  }
+
   constructor(definition: IMinecraftContentDefinition) {
     this._definition = definition;
     this._options = definition.options || {};
@@ -1120,6 +1133,7 @@ export class ContentGenerator {
   // ============================================================================
 
   private async _generateEntity(entity: IEntityTypeDefinition, result: IGeneratedContent): Promise<void> {
+    const safeId = ContentGenerator._sanitizeIdForPath(entity.id);
     const fullId = `${this._namespace}:${entity.id}`;
 
     // Build components from traits first
@@ -1268,7 +1282,7 @@ export class ContentGenerator {
     }
 
     result.entityBehaviors.push({
-      path: `entities/${entity.id}.json`,
+      path: `entities/${safeId}.json`,
       pack: "behavior",
       type: "json",
       content: behaviorEntity,
@@ -1277,7 +1291,7 @@ export class ContentGenerator {
     // Generate resource pack entity
     const resourceEntity = this._generateEntityResource(entity, fullId);
     result.entityResources.push({
-      path: `entity/${entity.id}.entity.json`,
+      path: `entity/${safeId}.entity.json`,
       pack: "resource",
       type: "json",
       content: resourceEntity,
@@ -1287,14 +1301,14 @@ export class ContentGenerator {
     const designResult = await this._generateEntityFromModelDesign(entity);
     if (designResult) {
       result.geometries.push({
-        path: `models/entity/${entity.id}.geo.json`,
+        path: `models/entity/${safeId}.geo.json`,
         pack: "resource",
         type: "json",
         content: designResult.geometry,
       });
       if (designResult.texture) {
         result.textures.push({
-          path: `textures/entity/${entity.id}.png`,
+          path: `textures/entity/${safeId}.png`,
           pack: "resource",
           type: "png",
           content: designResult.texture,
@@ -1304,7 +1318,7 @@ export class ContentGenerator {
       // Fallback: use legacy geometry + placeholder texture
       const geometry = this._generateEntityGeometry(entity);
       result.geometries.push({
-        path: `models/entity/${entity.id}.geo.json`,
+        path: `models/entity/${safeId}.geo.json`,
         pack: "resource",
         type: "json",
         content: geometry,
@@ -1312,7 +1326,7 @@ export class ContentGenerator {
       const texture = await this._generateEntityTexturePlaceholder(entity);
       if (texture) {
         result.textures.push({
-          path: `textures/entity/${entity.id}.png`,
+          path: `textures/entity/${safeId}.png`,
           pack: "resource",
           type: "png",
           content: texture,
@@ -1323,7 +1337,7 @@ export class ContentGenerator {
     // Generate render controller for the entity
     const renderController = this._generateEntityRenderController(entity);
     result.renderControllers.push({
-      path: `render_controllers/${entity.id}.render_controllers.json`,
+      path: `render_controllers/${safeId}.render_controllers.json`,
       pack: "resource",
       type: "json",
       content: renderController,
@@ -1993,6 +2007,7 @@ export class ContentGenerator {
   // ============================================================================
 
   private async _generateBlock(block: IBlockTypeDefinition, result: IGeneratedContent): Promise<void> {
+    const safeId = ContentGenerator._sanitizeIdForPath(block.id);
     const fullId = `${this._namespace}:${block.id}`;
 
     let components: Record<string, any> = {};
@@ -2158,7 +2173,7 @@ export class ContentGenerator {
     }
 
     result.blockBehaviors.push({
-      path: `blocks/${block.id}.json`,
+      path: `blocks/${safeId}.json`,
       pack: "behavior",
       type: "json",
       content: behaviorBlock,
@@ -2168,7 +2183,7 @@ export class ContentGenerator {
     const texture = await this._generateBlockTexturePlaceholder(block);
     if (texture) {
       result.textures.push({
-        path: `textures/blocks/${block.id}.png`,
+        path: `textures/blocks/${safeId}.png`,
         pack: "resource",
         type: "png",
         content: texture,
@@ -2221,6 +2236,7 @@ export class ContentGenerator {
   // ============================================================================
 
   private async _generateItem(item: IItemTypeDefinition, result: IGeneratedContent): Promise<void> {
+    const safeId = ContentGenerator._sanitizeIdForPath(item.id);
     const fullId = `${this._namespace}:${item.id}`;
 
     let components: Record<string, any> = {};
@@ -2349,7 +2365,7 @@ export class ContentGenerator {
     };
 
     result.itemBehaviors.push({
-      path: `items/${item.id}.json`,
+      path: `items/${safeId}.json`,
       pack: "behavior",
       type: "json",
       content: behaviorItem,
@@ -2359,7 +2375,7 @@ export class ContentGenerator {
     const texture = await this._generateItemTexturePlaceholder(item);
     if (texture) {
       result.textures.push({
-        path: `textures/items/${item.id}.png`,
+        path: `textures/items/${safeId}.png`,
         pack: "resource",
         type: "png",
         content: texture,
@@ -2446,6 +2462,7 @@ export class ContentGenerator {
   // ============================================================================
 
   private _generateLootTable(lootTable: ILootTableDefinition, result: IGeneratedContent): void {
+    const safeId = ContentGenerator._sanitizeIdForPath(lootTable.id);
     const nativeLootTable: any = {
       pools: lootTable.pools.map((pool) => ({
         rolls: pool.rolls,
@@ -2460,7 +2477,7 @@ export class ContentGenerator {
     };
 
     result.lootTables.push({
-      path: `loot_tables/${lootTable.id}.json`,
+      path: `loot_tables/${safeId}.json`,
       pack: "behavior",
       type: "json",
       content: nativeLootTable,
@@ -2472,6 +2489,8 @@ export class ContentGenerator {
     drops: IDropDefinition[],
     folder: string = "entities"
   ): IGeneratedFile {
+    const safeId = ContentGenerator._sanitizeIdForPath(id);
+    const safeFolder = ContentGenerator._sanitizeIdForPath(folder);
     const entries = drops.map((drop) => ({
       type: "item",
       name: drop.item.includes(":") ? drop.item : `minecraft:${drop.item}`,
@@ -2483,7 +2502,7 @@ export class ContentGenerator {
     }));
 
     return {
-      path: `loot_tables/${folder}/${id}.json`,
+      path: `loot_tables/${safeFolder}/${safeId}.json`,
       pack: "behavior",
       type: "json",
       content: {
@@ -2601,7 +2620,7 @@ export class ContentGenerator {
     }
 
     result.recipes.push({
-      path: `recipes/${recipe.id}.json`,
+      path: `recipes/${ContentGenerator._sanitizeIdForPath(recipe.id)}.json`,
       pack: "behavior",
       type: "json",
       content: nativeRecipe,
@@ -2627,7 +2646,7 @@ export class ContentGenerator {
     };
 
     result.spawnRules.push({
-      path: `spawn_rules/${spawnRule.entity.replace(":", "_")}.json`,
+      path: `spawn_rules/${ContentGenerator._sanitizeIdForPath(spawnRule.entity.replace(":", "_"))}.json`,
       pack: "behavior",
       type: "json",
       content: nativeSpawnRule,
@@ -2647,7 +2666,7 @@ export class ContentGenerator {
     };
 
     return {
-      path: `spawn_rules/${id}.json`,
+      path: `spawn_rules/${ContentGenerator._sanitizeIdForPath(id)}.json`,
       pack: "behavior",
       type: "json",
       content: nativeSpawnRule,
@@ -2699,13 +2718,14 @@ export class ContentGenerator {
   // ============================================================================
 
   private _generateFeature(feature: IFeatureDefinition, result: IGeneratedContent): void {
+    const safeId = ContentGenerator._sanitizeIdForPath(feature.id);
     if (feature.spread) {
       // Generate from spread definition
       this._generateFeatureFromSpread(feature, result);
     } else if (feature.nativeFeature) {
       // Use native feature directly
       result.features.push({
-        path: `features/${feature.id}.json`,
+        path: `features/${safeId}.json`,
         pack: "behavior",
         type: "json",
         content: feature.nativeFeature,
@@ -2713,7 +2733,7 @@ export class ContentGenerator {
 
       if (feature.nativeFeatureRule) {
         result.featureRules.push({
-          path: `feature_rules/${feature.id}.json`,
+          path: `feature_rules/${safeId}.json`,
           pack: "behavior",
           type: "json",
           content: feature.nativeFeatureRule,
@@ -2723,6 +2743,7 @@ export class ContentGenerator {
   }
 
   private _generateFeatureFromSpread(feature: IFeatureDefinition, result: IGeneratedContent): void {
+    const safeId = ContentGenerator._sanitizeIdForPath(feature.id);
     const spread = feature.spread!;
     const featureId = `${this._namespace}:${feature.id}`;
 
@@ -2741,7 +2762,7 @@ export class ContentGenerator {
     };
 
     result.features.push({
-      path: `features/${feature.id}_scatter.json`,
+      path: `features/${safeId}_scatter.json`,
       pack: "behavior",
       type: "json",
       content: scatterFeature,
@@ -2767,7 +2788,7 @@ export class ContentGenerator {
         };
 
         result.features.push({
-          path: `features/${feature.id}_placed.json`,
+          path: `features/${safeId}_placed.json`,
           pack: "behavior",
           type: "json",
           content: oreFeature,
@@ -2796,7 +2817,7 @@ export class ContentGenerator {
     };
 
     result.featureRules.push({
-      path: `feature_rules/${feature.id}.json`,
+      path: `feature_rules/${safeId}.json`,
       pack: "behavior",
       type: "json",
       content: featureRule,

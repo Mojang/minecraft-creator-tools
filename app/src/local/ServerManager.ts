@@ -1469,6 +1469,13 @@ export default class ServerManager {
     }
 
     if (!zipContentResponse) {
+      Log.message(
+        "Could not download the Bedrock Dedicated Server from '" +
+          serverZipUrl +
+          "'. This version may not be available for download yet. " +
+          "The web server will continue without a dedicated server."
+      );
+
       await this.creatorTools.notifyOperationEnded(
         operId,
         "Could not successfully download a file from '" + serverZipUrl + "'"
@@ -1543,13 +1550,21 @@ export default class ServerManager {
     return undefined;
   }
 
+  private static _getSafeVersion(): string {
+    const ver = constants.version;
+    if (ver.includes("-dev") || ver.includes("-semantically-released") || ver.startsWith("0.0.0")) {
+      return "0.0.1";
+    }
+    return ver;
+  }
+
   private async tryDownloadDedicatedServer(serverZipUrl: string) {
     let totalBytesDownloaded = 0;
     try {
       return await axios.get(serverZipUrl, {
         headers: {
           Accept: "application/octet-stream, application/json, text/plain, */*",
-          "User-Agent": "minecraft-creator-tools-" + constants.version,
+          "User-Agent": "minecraft-creator-tools-" + ServerManager._getSafeVersion(),
         },
         maxContentLength: Infinity,
         maxBodyLength: Infinity,
@@ -1559,8 +1574,22 @@ export default class ServerManager {
           Log.message("Downloading " + serverZipUrl + " - " + totalBytesDownloaded + " bytes downloaded");
         },
       });
-    } catch (e) {
-      Log.error("Could not find and download '" + serverZipUrl + "'");
+    } catch (e: any) {
+      const status = e?.response?.status;
+      const statusText = e?.response?.statusText;
+      const code = e?.code;
+      const message = e?.message;
+
+      let detail = "";
+      if (status) {
+        detail = ` (HTTP ${status}${statusText ? " " + statusText : ""})`;
+      } else if (code) {
+        detail = ` (${code}${message ? ": " + message : ""})`;
+      } else if (message) {
+        detail = ` (${message})`;
+      }
+
+      Log.error("Could not find and download '" + serverZipUrl + "'" + detail);
     }
 
     return undefined;
