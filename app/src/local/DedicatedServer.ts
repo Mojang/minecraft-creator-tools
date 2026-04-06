@@ -1659,6 +1659,48 @@ export default class DedicatedServer {
 
     await this.ensureServerFolders();
 
+    // On a full (non-patch) deploy, clear existing dev packs so old project content doesn't accumulate.
+    // BDS auto-loads everything in development_*_packs/, so leftover packs from previous projects
+    // would appear as unexpected content (e.g., custom features from a different add-on).
+    if (!isPatch) {
+      if (this.#behaviorPacksStorage) {
+        Log.message("Clearing previous behavior packs for fresh deployment.");
+        await this.#behaviorPacksStorage.rootFolder.deleteAllFolderContents();
+        await this.#behaviorPacksStorage.rootFolder.ensureExists();
+      }
+
+      if (this.#resourcePacksStorage) {
+        Log.message("Clearing previous resource packs for fresh deployment.");
+        await this.#resourcePacksStorage.rootFolder.deleteAllFolderContents();
+        await this.#resourcePacksStorage.rootFolder.ensureExists();
+      }
+
+      // When the deployed project changes, also wipe the world data so entities, items,
+      // and blocks from the previous project's packs don't persist in the LevelDB chunks.
+      // Detect a project change by checking if the world's existing pack references
+      // match the current project's behavior pack UUID.
+      if (this.#defaultWorldStorage) {
+        const currentBpId = deployProj.defaultBehaviorPackUniqueId;
+        const existingWorld = new MCWorld();
+        existingWorld.folder = this.#defaultWorldStorage.rootFolder;
+
+        await existingWorld.loadMetaFiles(false);
+
+        const existingBp = existingWorld.getBehaviorPack(currentBpId);
+
+        // If the world has pack refs but none match this project, it's from a different project
+        if (
+          existingWorld.worldBehaviorPacks &&
+          existingWorld.worldBehaviorPacks.length > 0 &&
+          !existingBp
+        ) {
+          Log.message("Project changed — resetting world data for clean state.");
+          await this.#defaultWorldStorage.rootFolder.deleteAllFolderContents();
+          await this.#defaultWorldStorage.rootFolder.ensureExists();
+        }
+      }
+    }
+
     if (this.#behaviorPacksStorage && this.#defaultWorldStorage) {
       let folderName = undefined;
 
@@ -1903,6 +1945,16 @@ export default class DedicatedServer {
 
       await mcworld.loadMetaFiles(false);
 
+      // On a full (non-patch) deploy, reset pack references so only the current
+      // project's packs are active. This prevents stale packs from previous
+      // projects appearing in the world.
+      if (!isPatch) {
+        mcworld.worldBehaviorPacks = [];
+        mcworld.worldResourcePacks = [];
+        mcworld.worldBehaviorPackHistory = { packs: [] };
+        mcworld.worldResourcePackHistory = { packs: [] };
+      }
+
       let needsSave =
         mcworld.ensureBehaviorPack(
           deployProj.defaultBehaviorPackUniqueId,
@@ -1914,6 +1966,10 @@ export default class DedicatedServer {
           deployProj.defaultResourcePackVersion,
           deployProj.name
         );
+
+      if (!isPatch) {
+        needsSave = true;
+      }
 
       if (hasScript) {
         if (!mcworld.betaApisExperiment) {

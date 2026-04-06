@@ -831,6 +831,9 @@ export interface IItemTypeDefinition {
 
   // ============ APPEARANCE ============
 
+  /** Primary color for recoloring the item texture (hex, e.g., "#4A7BA5") */
+  color?: string;
+
   /** Texture for inventory icon */
   icon?: string | ITextureSpec;
 

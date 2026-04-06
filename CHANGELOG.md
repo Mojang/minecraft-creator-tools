@@ -1,65 +1,167 @@
-# Changelog
+# Changelog — @minecraft/creator-tools
 
-## [0.1.80]
+All notable changes to the `@minecraft/creator-tools` npm package are documented below.
 
-### Updated
+For the full commit history, see [Releases](https://github.com/Mojang/minecraft-creator-tools/releases).
 
-- Command-line tool start
-- Refactor error collection in world processing
+---
 
-## [0.1.78]
+## [0.16.1] (2026-04-03)
 
-### Updated
+- Bug fixes in the serve UX
+- Fix forms for mctools.dev
 
-- In-project search start
-- User experience improvements and fixes
-- Many validator improvements
+## [0.16.0](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.16.0) (2026-04-02)
 
-## [0.1.70]
+- Modernized CLI entry point (ESM modules).
+- Added interactive Ink-based terminal UI for richer CLI experiences.
+- Integrated `@minecraft/bedrock-schemas` for schema-aware validation.
+- Added WebSocket-based server communication (`ws`).
+- Added JSONC (JSON with comments) support via `comment-json`.
+- Added PNG rendering capabilities (`pngjs`).
+- Upgraded `commander` to 14.x for improved CLI argument handling.
+- Added MCP (Model Context Protocol) server support (`mct mcp`)
+- Added supply-chain provenance attestations (SLSA).
 
-### Updated
+## [0.15.6](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.15.6) (2026-03-25)
 
-- Project Item List grouping and color coding
-- Validator improvements: texture handle calc
-- Start on back/forward nav
-- Some layout improvements for mobile
-- Side pane width adjust
+- First release with SLSA provenance attestations on npm.
+- Bug fixes and stability improvements.
 
-## [0.1.67]
+## [0.15.5](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.15.5) (2026-02-19)
 
-### Updated
+- Bug fixes and maintenance updates.
 
-- Validator bug fixes
-- Form refactoring
-- Clean up some dependencies
+## [0.15.3](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.15.3) (2025-12-31)
 
-## [0.1.66]
+- Bug fixes and content updates.
 
-### Updated
+## [0.15.2](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.15.2) (2025-12-10)
 
-- Sort items to improve clustering
-- Support JSON with comments in more places
-- Validator bug with how dependencies are tracked
-- Limit how many validator errors are shown until you scroll
+- Bug fixes.
 
-## [0.1.64]
+## [0.15.1](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.15.1) (2025-12-09)
 
-### Updated
+- Expanded bundled content (additional forms and schemas).
+- Bug fixes and improvements.
 
-- Improved warning messages for schema errors with a bit more detail
-- Fixed doc link
+## [0.15.0](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.15.0) (2025-11-18)
 
-## [0.1.63]
+- New minor release with additional features and content.
 
-### Added
+## [0.14.4](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.14.4) (2025-10-15)
 
-- Initial public validation capabilities
+- Bug fixes.
 
-## [0.1.0]
+## [0.14.3](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.14.3) (2025-10-04)
 
-### Added
+- Bug fixes.
 
-- Initial version work
+## [0.14.2](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.14.2) (2025-09-29)
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+- Bug fixes and content updates.
 
+## [0.14.1](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.14.1) (2025-09-10)
+
+- Bug fixes.
+
+## [0.14.0](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.14.0) (2025-09-08)
+
+- Added JSONC parsing support (`jsonc-parser`) for Minecraft content files with comments.
+- Added deterministic JSON serialization (`json-stable-stringify`).
+- Expanded bundled content and form definitions.
+
+## [0.13.1](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.13.1) (2025-08-27)
+
+- Bug fixes.
+
+## [0.13.0](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.13.0) (2025-08-14)
+
+- Expanded content definitions and validation forms.
+- Bug fixes and dependency cleanup.
+
+## [0.12.1](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.12.1) (2025-07-30)
+
+- Bug fixes.
+
+## [0.12.0](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.12.0) (2025-07-28)
+
+- Upgraded minimum Node.js runtime from 20.x to 22.x.
+- Added Zod schema validation (`zod`).
+- Added JSON Schema support (`json-schema`).
+- Significant expansion of bundled content and validation rules.
+- Removed legacy threading and AJV dependencies.
+
+## [0.11.1](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.11.1) (2025-05-29)
+
+- Bug fixes.
+
+## [0.11.0](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.11.0) (2025-05-16)
+
+- New features and expanded content handling.
+
+## [0.10.1](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.10.1) (2025-04-22)
+
+- Bug fixes.
+
+## [0.10.0](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.10.0) (2025-04-11)
+
+- Significant expansion of bundled content and validation forms.
+- Added content moderation support (`obscenity`).
+
+## [0.9.1](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.9.1) (2025-04-04)
+
+- Bug fixes and stabilization.
+
+## [0.9.0](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.9.0) (2025-03-18)
+
+- Added TGA texture file support (`@lunapaint/tga-codec`).
+- Expanded content definitions.
+
+## [0.8.0](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.8.0) (2025-03-03)
+
+- Major expansion of bundled content and web assets.
+- Added `view` and `edit` web-based UX commands for content inspection and editing.
+
+## [0.7.0](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.7.0) (2025-02-11)
+
+- New features and improvements.
+
+## [0.6.3](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.6.3) (2025-01-07)
+
+- Bug fixes.
+
+## [0.6.2](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.6.2) (2024-12-17)
+
+- Updated dependencies (`ajv`, `@octokit/rest`).
+
+## [0.6.1](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.6.1) (2024-12-05)
+
+- Bug fixes.
+
+## [0.6.0](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.6.0) (2024-11-21)
+
+- Expanded content and validation support.
+- Removed `trash` dependency.
+
+## [0.5.1](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.5.1) (2024-10-17)
+
+- Bug fixes.
+
+## [0.5.0](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.5.0) (2024-10-10)
+
+- Expanded content definitions.
+
+## [0.4.6](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.4.6) (2024-09-16)
+
+- Bug fixes.
+
+## [0.4.5](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.4.5) (2024-09-16)
+
+- Bug fixes.
+
+## [0.4.4](https://www.npmjs.com/package/@minecraft/creator-tools/v/0.4.4) (2024-09-09)
+
+- Initial public release on npm.
+- Core CLI commands: `validate`, `create`, `info`, `deploy`, `serve`.
+- Minecraft Bedrock add-on validation and project management.

@@ -2525,9 +2525,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
       return false;
     }
 
-    if (!rootFolder.isLoaded) {
-      await rootFolder.load();
-    }
+    await rootFolder.load(force);
 
     const dbFolder = await rootFolder.getFolderFromRelativePath("/db");
 
@@ -2536,9 +2534,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     const manifestFileArr: IFile[] = [];
 
     if (dbFolder) {
-      if (!dbFolder.isLoaded) {
-        await dbFolder.load();
-      }
+      await dbFolder.load(force);
 
       for (const fileName in dbFolder.files) {
         const file = dbFolder.files[fileName];

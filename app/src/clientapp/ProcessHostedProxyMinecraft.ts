@@ -449,33 +449,22 @@ export default class ProcessHostedMinecraft implements IMinecraft {
       return;
     }
 
-    const name = project.name + "_mct";
-    const worldFolder = this.dedicatedServerStorage.rootFolder.ensureFolder("worlds").ensureFolder(name);
+    const worldFolderName = project.deployWorldId;
+    const worldDisplayName = project.name + " _mct";
+    const worldFolder = this.dedicatedServerStorage.rootFolder.ensureFolder("worlds").ensureFolder(worldFolderName);
 
     await worldFolder.ensureExists();
 
-    // Log.debugAlert("Exporting folder to '" + worldFolder.storageRelativePath + "'");
-    await ProjectExporter.syncFlatPackRefWorldTo(this._creatorTools, project, worldFolder, name);
-
-    /*
-      name = project.name + "FPAA";
-    worldFolder = this.dedicatedServerStorage.rootFolder.ensureFolder("worlds").ensureFolder(name);
-
-    await worldFolder.ensureExists();
-
-    await ProjectExporter.syncFlatPackRefWorldTo(this._carto, project, worldFolder, name);
-    const spm = new ServerPropertiesManager();
-
-    spm.serverFolder = this.dedicatedServerStorage.rootFolder;
-    spm.levelName = name;
-    await spm.writeFile();*/
+    await ProjectExporter.syncFlatPackRefWorldTo(this._creatorTools, project, worldFolder, worldDisplayName);
 
     await worldFolder.saveAll();
+
+    await project.save();
 
     this.worldFolder = worldFolder;
     this._onWorldStorageReady.dispatch(this, worldFolder);
 
-    return name;
+    return worldDisplayName;
   }
 
   getDedicatedServerSyntax() {

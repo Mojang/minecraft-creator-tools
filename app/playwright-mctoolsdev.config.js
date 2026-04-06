@@ -17,8 +17,8 @@ export default defineConfig({
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  /* Retry failed tests once to handle transient network issues against the live site */
+  retries: process.env.CI ? 2 : 1,
   /* Limit parallelism to avoid overwhelming the production server with concurrent requests.
      Too many simultaneous browser instances all hitting mctools.dev causes net::ERR_TIMED_OUT. */
   workers: process.env.CI ? 1 : 3,

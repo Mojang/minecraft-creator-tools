@@ -84,10 +84,16 @@
   background: #3a3a3a;
 }
 
-/* Reduce gaps between slots and fix chip not filling slot evenly */
+/* Reduce gaps between slots and fix chip filling slot fully */
 .icose-componentList .etcse-componentSlot {
   margin-bottom: 2px;
-  padding: 2px;
+  /* Match the inset bevel exactly: 2px on dark sides (top-left), 1px on light sides (bottom-right)
+     so the outset chip fills flush against the groove */
+  padding: 2px 1px 1px 2px;
+}
+
+.icose-componentList .etcse-componentSlot .etcse-slotChip {
+  min-height: 32px;
 }
 
 .icose-componentList li {

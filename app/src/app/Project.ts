@@ -1264,6 +1264,18 @@ export default class Project {
     this.#data.lastMapDeployedDate = newValue;
   }
 
+  get deployWorldId(): string {
+    if (!this.#data.deployWorldId) {
+      this.#data.deployWorldId = Utilities.createUuid();
+    }
+
+    return this.#data.deployWorldId;
+  }
+
+  set deployWorldId(newValue: string) {
+    this.#data.deployWorldId = newValue;
+  }
+
   get previewImageBase64(): string | undefined {
     return this.#data.previewImageBase64;
   }

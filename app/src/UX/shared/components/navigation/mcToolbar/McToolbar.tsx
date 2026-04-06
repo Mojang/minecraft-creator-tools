@@ -132,6 +132,7 @@ function McToolbarItemRenderer({ item, variant }: { item: McToolbarItem; variant
     color: isDark ? mcColors.offWhite : mcColors.gray6,
     opacity: item.active === false ? 0.4 : 1,
     backgroundColor: "transparent",
+    borderRadius: 1,
     "&:hover": {
       backgroundColor: isDark ? mcColors.gray4 : mcColors.gray2,
       color: isDark ? mcColors.white : mcColors.gray6,

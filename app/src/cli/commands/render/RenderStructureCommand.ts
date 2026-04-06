@@ -101,7 +101,16 @@ export class RenderStructureCommand extends CommandBase implements ICommand {
     // Find the structure file in the project
     // Use multi-pass search: exact match first, then partial match
     let structureItem: ProjectItem | undefined;
-    const structurePathLower = structurePath.toLowerCase();
+
+    // Normalize the search path: forward slashes, and if absolute, make relative to project root
+    let normalizedSearch = structurePath.replace(/\\/g, "/").toLowerCase();
+    const projectRoot = (project.projectFolder?.fullPath || "").replace(/\\/g, "/").toLowerCase();
+    if (projectRoot && normalizedSearch.startsWith(projectRoot)) {
+      normalizedSearch = normalizedSearch.substring(projectRoot.length);
+      if (normalizedSearch.startsWith("/")) {
+        normalizedSearch = normalizedSearch.substring(1);
+      }
+    }
 
     // First pass: look for exact match (path ends with the exact filename)
     for (const item of project.items) {
@@ -112,7 +121,7 @@ export class RenderStructureCommand extends CommandBase implements ICommand {
       const itemPathLower = item.projectPath.toLowerCase();
       if (
         itemPathLower.endsWith(".mcstructure") &&
-        (itemPathLower === structurePathLower || itemPathLower.endsWith("/" + structurePathLower))
+        (itemPathLower === normalizedSearch || itemPathLower.endsWith("/" + normalizedSearch))
       ) {
         structureItem = item;
         break;
@@ -127,7 +136,7 @@ export class RenderStructureCommand extends CommandBase implements ICommand {
         }
 
         const itemPathLower = item.projectPath.toLowerCase();
-        if (itemPathLower.endsWith(".mcstructure") && itemPathLower.includes(structurePathLower)) {
+        if (itemPathLower.endsWith(".mcstructure") && itemPathLower.includes(normalizedSearch)) {
           structureItem = item;
           break;
         }

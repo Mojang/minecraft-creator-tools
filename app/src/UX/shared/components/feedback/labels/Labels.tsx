@@ -468,7 +468,7 @@ export const ServerInitializedLabel: React.FC<React.HTMLAttributes<HTMLSpanEleme
   <span className="label">
     <span className="label-light label-yellow">&#160;</span>
     <FontAwesomeIcon icon={faPowerOff} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Ready to connect</span> : <></>}
+    {!props.isCompact ? <span className="label-text">Start server</span> : <></>}
   </span>
 );
 

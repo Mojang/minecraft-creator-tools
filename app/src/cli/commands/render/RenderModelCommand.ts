@@ -112,7 +112,16 @@ export class RenderModelCommand extends CommandBase {
 
     // Find the geometry file in the project
     let geometryItem: ProjectItem | undefined;
-    const geometryPathLower = geometryPath.toLowerCase();
+
+    // Normalize the search path: forward slashes, and if absolute, make relative to project root
+    let normalizedSearch = geometryPath.replace(/\\/g, "/").toLowerCase();
+    const projectRoot = (project.projectFolder?.fullPath || "").replace(/\\/g, "/").toLowerCase();
+    if (projectRoot && normalizedSearch.startsWith(projectRoot)) {
+      normalizedSearch = normalizedSearch.substring(projectRoot.length);
+      if (normalizedSearch.startsWith("/")) {
+        normalizedSearch = normalizedSearch.substring(1);
+      }
+    }
 
     for (const item of project.items) {
       if (!item.projectPath) continue;
@@ -120,9 +129,9 @@ export class RenderModelCommand extends CommandBase {
       const itemPathLower = item.projectPath.toLowerCase();
       if (
         itemPathLower.endsWith(".json") &&
-        (itemPathLower === geometryPathLower ||
-          itemPathLower.endsWith("/" + geometryPathLower) ||
-          itemPathLower.includes(geometryPathLower))
+        (itemPathLower === normalizedSearch ||
+          itemPathLower.endsWith("/" + normalizedSearch) ||
+          itemPathLower.includes(normalizedSearch))
       ) {
         geometryItem = item;
         break;

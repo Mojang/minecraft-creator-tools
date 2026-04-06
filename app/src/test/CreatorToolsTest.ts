@@ -154,6 +154,9 @@ describe("deployJs", async () => {
       return;
     }
 
+    // Use a fixed deployWorldId so the output folder name is deterministic for test comparison
+    project.deployWorldId = "deployJs Test World";
+
     const worldSettings: IWorldSettings = {
       generator: Generator.infinite,
       gameType: GameType.survival,
@@ -2073,7 +2076,12 @@ describe("MolangEvaluator", () => {
     evaluator = new MolangEvaluator();
   });
 
-  const cases: { expr: string; queries?: Record<string, number>; arrays?: Record<string, string[]>; expected: import("../minecraft/MolangEvaluator").MolangValue }[] = [
+  const cases: {
+    expr: string;
+    queries?: Record<string, number>;
+    arrays?: Record<string, string[]>;
+    expected: import("../minecraft/MolangEvaluator").MolangValue;
+  }[] = [
     // Literals
     { expr: "1.0", expected: 1.0 },
     { expr: "0", expected: 0 },
@@ -2092,8 +2100,16 @@ describe("MolangEvaluator", () => {
     { expr: "q.is_baby", queries: { "query.is_baby": 1 }, expected: 1 },
 
     // Ternary — sheep render controller pattern
-    { expr: "query.is_baby ? Texture.baby : Texture.default", queries: { "query.is_baby": 0 }, expected: "Texture.default" },
-    { expr: "query.is_baby ? Texture.baby : Texture.default", queries: { "query.is_baby": 1 }, expected: "Texture.baby" },
+    {
+      expr: "query.is_baby ? Texture.baby : Texture.default",
+      queries: { "query.is_baby": 0 },
+      expected: "Texture.default",
+    },
+    {
+      expr: "query.is_baby ? Texture.baby : Texture.default",
+      queries: { "query.is_baby": 1 },
+      expected: "Texture.baby",
+    },
 
     // Array indexing — sheep geometry pattern
     {
@@ -2116,15 +2132,18 @@ describe("MolangEvaluator", () => {
     },
 
     // Nested ternary — wolf render controller pattern
-    { expr: "query.is_angry ? Texture.angry : (query.is_tamed ? Texture.tame : Texture.default)",
+    {
+      expr: "query.is_angry ? Texture.angry : (query.is_tamed ? Texture.tame : Texture.default)",
       queries: { "query.is_angry": 0, "query.is_tamed": 0 },
       expected: "Texture.default",
     },
-    { expr: "query.is_angry ? Texture.angry : (query.is_tamed ? Texture.tame : Texture.default)",
+    {
+      expr: "query.is_angry ? Texture.angry : (query.is_tamed ? Texture.tame : Texture.default)",
       queries: { "query.is_angry": 0, "query.is_tamed": 1 },
       expected: "Texture.tame",
     },
-    { expr: "query.is_angry ? Texture.angry : (query.is_tamed ? Texture.tame : Texture.default)",
+    {
+      expr: "query.is_angry ? Texture.angry : (query.is_tamed ? Texture.tame : Texture.default)",
       queries: { "query.is_angry": 1, "query.is_tamed": 0 },
       expected: "Texture.angry",
     },
@@ -2176,7 +2195,8 @@ describe("RenderControllerResolution", () => {
     expect(file!.content).to.not.be.undefined;
 
     // Parse the file content
-    const content = typeof file!.content === "string" ? file!.content : new TextDecoder().decode(file!.content as Uint8Array);
+    const content =
+      typeof file!.content === "string" ? file!.content : new TextDecoder().decode(file!.content as Uint8Array);
     const parsed = JSON.parse(content);
 
     expect(parsed.render_controllers).to.have.property("controller.render.sheep.v2");
@@ -2484,7 +2504,10 @@ describe("Phantom Edit Prevention", async () => {
     // setObjectContentIfSemanticallyDifferent should detect these are semantically equal
     const wasModified = file!.setObjectContentIfSemanticallyDifferent(parsed);
 
-    expect(wasModified).to.equal(false, "File should NOT be marked modified when content with comments is semantically the same");
+    expect(wasModified).to.equal(
+      false,
+      "File should NOT be marked modified when content with comments is semantically the same"
+    );
     expect(file!.needsSave).to.equal(false, "File should NOT need save for no-op on commented JSON");
   }).timeout(30000);
 
@@ -2516,7 +2539,10 @@ describe("Phantom Edit Prevention", async () => {
 
     const wasModified = file!.setObjectContentIfSemanticallyDifferent(parsed);
 
-    expect(wasModified).to.equal(false, "File should NOT be marked modified for trailing-comma JSON with same semantics");
+    expect(wasModified).to.equal(
+      false,
+      "File should NOT be marked modified for trailing-comma JSON with same semantics"
+    );
   }).timeout(30000);
 
   it("definition load/persist round-trip does not cause phantom edits for standard JSON", async () => {

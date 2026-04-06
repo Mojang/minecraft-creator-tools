@@ -312,6 +312,12 @@
   opacity: 0.6;
 }
 
+.cwiz-field-error {
+  font-size: 11px;
+  color: #ff6b6b;
+  margin-top: 2px;
+}
+
 .cwiz-traits-hint {
   margin-bottom: 8px;
 }
@@ -352,6 +358,19 @@
   background: currentColor;
   opacity: 0.2;
   margin-left: 8px;
+}
+
+.cwiz-trait-group-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #b0b0b0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+body.ct-light .cwiz-trait-group-label {
+  color: #5a5a5a;
 }
 
 .cwiz-traits-grid {

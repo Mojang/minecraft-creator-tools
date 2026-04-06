@@ -11,27 +11,31 @@
  */
 
 import { test, expect, Page } from "@playwright/test";
-
-const BASE_URL = "http://localhost:3000";
+import { preferBrowserStorageInProjectDialog } from "./WebTestUtilities";
 
 /**
  * Navigate to a JSON file in the editor by creating a project and clicking on a manifest
  */
 async function navigateToManifestFile(page: Page): Promise<void> {
-  // Go to home page
-  await page.goto(BASE_URL);
+  // Go to home page (uses Playwright's baseURL from config)
+  await page.goto("/");
   await page.waitForLoadState("networkidle");
 
   // Create a new project from Add-On Starter template
   const addOnStarterNewButton = page.getByRole("button", { name: "Create New" }).first();
   await addOnStarterNewButton.click();
+  await page.waitForTimeout(1000);
+
+  // Select browser storage for automated test flow
+  await preferBrowserStorageInProjectDialog(page);
 
   // Wait for dialog to appear and click Create Project
-  const createButton = page.locator("button:has-text('Create Project')").first();
+  const createButton = page.getByTestId("submit-button").first();
   await createButton.click();
 
-  // Wait for editor to load
-  await page.waitForTimeout(3000);
+  // Wait for editor to load (longer timeout for remote servers)
+  await page.waitForTimeout(12000);
+  await page.waitForLoadState("networkidle");
 
   await page.screenshot({ path: "debugoutput/screenshots/form-schema-project-loaded.png" });
 
@@ -150,8 +154,8 @@ test.describe("Form Schema Hover Integration @full", () => {
 
 test.describe("FormSchemaGenerator Unit-like Tests @full", () => {
   test("can access form definitions through browser context", async ({ page }) => {
-    // Navigate to the app
-    await page.goto(BASE_URL);
+    // Navigate to the app (uses Playwright's baseURL from config)
+    await page.goto("/");
     await page.waitForLoadState("networkidle");
 
     // Evaluate in browser context to check if form definitions can be loaded
@@ -173,7 +177,7 @@ test.describe("FormSchemaGenerator Unit-like Tests @full", () => {
   test("generates defaultSnippets for object alternates", async ({ page }) => {
     // This test verifies that when a field has boolean + object alternates,
     // the generated schema includes defaultSnippets for Monaco object completion
-    await page.goto(BASE_URL);
+    await page.goto("/");
     await page.waitForLoadState("networkidle");
 
     // Try to create a project - find a "New" button for Add-On Starter

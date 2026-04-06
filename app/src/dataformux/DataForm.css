@@ -27,7 +27,7 @@
 .df-form TEXTAREA {
   min-width: 320px;
   max-width: calc(100vw - 30px);
-  min-height: 100px;
+  min-height: 46px;
   line-height: normal;
   padding: 8px 12px;
   border-radius: 3px;
@@ -199,6 +199,7 @@
 .df-fieldWrap .MuiInputLabel-shrink {
   font-size: 16px;
   font-weight: 700;
+  left: -4px;
 }
 
 /* Input focus states — remove default outlines; MUI handles its own focus ring */

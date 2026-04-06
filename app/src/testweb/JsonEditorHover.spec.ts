@@ -14,14 +14,12 @@
 import { test, expect, Page } from "@playwright/test";
 import { enterEditor, preferBrowserStorageInProjectDialog, waitForEditorReady } from "./WebTestUtilities";
 
-const BASE_URL = "http://localhost:3000";
-
 /**
  * Navigate to a project in the editor
  */
 async function navigateToProject(page: Page): Promise<void> {
-  // Go to home page
-  await page.goto(BASE_URL);
+  // Go to home page (uses Playwright's baseURL from config)
+  await page.goto("/");
   await page.waitForLoadState("networkidle");
 
   // Create a new project from Add-On Starter template
@@ -36,8 +34,8 @@ async function navigateToProject(page: Page): Promise<void> {
   const createButton = page.locator("button:has-text('Create Project')").first();
   await createButton.click();
 
-  // Wait for editor to load
-  await page.waitForTimeout(5000);
+  // Wait for editor to load (longer timeout for remote servers)
+  await page.waitForTimeout(12000);
   await page.waitForLoadState("networkidle");
 
   // Take screenshot of initial state
@@ -84,7 +82,7 @@ test.describe("JSON Editor Hover Tests @full", () => {
       consoleLogs.push(msg.text());
     });
 
-    await page.goto(BASE_URL);
+    await page.goto("/");
     await page.waitForLoadState("networkidle");
 
     await page.screenshot({ path: "debugoutput/screenshots/json-hover-investigation.png" });

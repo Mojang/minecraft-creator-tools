@@ -344,81 +344,89 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
         return parts[parts.length - 1];
       };
 
+      // Helper to write a file only if it doesn't already exist (prevents overwriting)
+      const writeIfNew = (
+        folder: import("../../../storage/IFolder").default,
+        fileName: string,
+        content: string | Uint8Array
+      ) => {
+        if (folder.fileExists(fileName)) {
+          Log.debug(`Skipping "${fileName}" — file already exists in ${folder.fullPath}`);
+          return;
+        }
+        const file = folder.ensureFile(fileName);
+        file.setContent(content);
+      };
+
       if (bpFolder) {
         for (const entityFile of content.entityBehaviors) {
           const entitiesFolder = bpFolder.ensureFolder("entities");
-          const file = entitiesFolder.ensureFile(getFilename(entityFile.path));
-          file.setContent(JSON.stringify(entityFile.content, null, 2));
+          writeIfNew(entitiesFolder, getFilename(entityFile.path), JSON.stringify(entityFile.content, null, 2));
         }
 
         for (const blockFile of content.blockBehaviors) {
           const blocksFolder = bpFolder.ensureFolder("blocks");
-          const file = blocksFolder.ensureFile(getFilename(blockFile.path));
-          file.setContent(JSON.stringify(blockFile.content, null, 2));
+          writeIfNew(blocksFolder, getFilename(blockFile.path), JSON.stringify(blockFile.content, null, 2));
         }
 
         for (const itemFile of content.itemBehaviors) {
           const itemsFolder = bpFolder.ensureFolder("items");
-          const file = itemsFolder.ensureFile(getFilename(itemFile.path));
-          file.setContent(JSON.stringify(itemFile.content, null, 2));
+          writeIfNew(itemsFolder, getFilename(itemFile.path), JSON.stringify(itemFile.content, null, 2));
         }
 
         for (const lootFile of content.lootTables) {
           const lootFolder = bpFolder.ensureFolder("loot_tables");
-          const file = lootFolder.ensureFile(getFilename(lootFile.path));
-          file.setContent(JSON.stringify(lootFile.content, null, 2));
+          writeIfNew(lootFolder, getFilename(lootFile.path), JSON.stringify(lootFile.content, null, 2));
         }
 
         for (const recipeFile of content.recipes) {
           const recipesFolder = bpFolder.ensureFolder("recipes");
-          const file = recipesFolder.ensureFile(getFilename(recipeFile.path));
-          file.setContent(JSON.stringify(recipeFile.content, null, 2));
+          writeIfNew(recipesFolder, getFilename(recipeFile.path), JSON.stringify(recipeFile.content, null, 2));
         }
 
         for (const spawnFile of content.spawnRules) {
           const spawnFolder = bpFolder.ensureFolder("spawn_rules");
-          const file = spawnFolder.ensureFile(getFilename(spawnFile.path));
-          file.setContent(JSON.stringify(spawnFile.content, null, 2));
+          writeIfNew(spawnFolder, getFilename(spawnFile.path), JSON.stringify(spawnFile.content, null, 2));
         }
       }
 
       if (rpFolder) {
         for (const entityFile of content.entityResources) {
           const entityFolder = rpFolder.ensureFolder("entity");
-          const file = entityFolder.ensureFile(getFilename(entityFile.path));
-          file.setContent(JSON.stringify(entityFile.content, null, 2));
+          writeIfNew(entityFolder, getFilename(entityFile.path), JSON.stringify(entityFile.content, null, 2));
         }
 
         for (const geometryFile of content.geometries) {
+          // Determine subfolder from path (e.g., "models/blocks/slab.geo.json" -> "blocks",
+          // "models/entity/my_mob.geo.json" -> "entity")
+          const pathParts = geometryFile.path.split("/");
+          const subfolderName = pathParts.length >= 2 ? pathParts[pathParts.length - 2] : "entity";
           const modelsFolder = rpFolder.ensureFolder("models");
-          const entityModelsFolder = modelsFolder.ensureFolder("entity");
-          const file = entityModelsFolder.ensureFile(getFilename(geometryFile.path));
-          file.setContent(JSON.stringify(geometryFile.content, null, 2));
+          const subFolder = modelsFolder.ensureFolder(subfolderName);
+          writeIfNew(subFolder, getFilename(geometryFile.path), JSON.stringify(geometryFile.content, null, 2));
         }
 
         for (const textureFile of content.textures) {
-          // Determine the correct subfolder based on the texture path
-          // e.g., "textures/entity/my_mob.png" -> textures/entity
-          // e.g., "textures/blocks/my_block.png" -> textures/blocks
-          // e.g., "textures/items/my_item.png" -> textures/items
           const pathParts = textureFile.path.split("/");
           const subfolderName = pathParts.length >= 2 ? pathParts[pathParts.length - 2] : "entity";
 
           const texturesFolder = rpFolder.ensureFolder("textures");
           const subFolder = texturesFolder.ensureFolder(subfolderName);
-          const file = subFolder.ensureFile(getFilename(textureFile.path));
-          // Handle different content types for textures
+          const fileName = getFilename(textureFile.path);
+
+          if (subFolder.fileExists(fileName)) {
+            Log.debug(`Skipping texture "${fileName}" — file already exists`);
+            continue;
+          }
+
+          const file = subFolder.ensureFile(fileName);
           if (textureFile.content instanceof Uint8Array) {
-            // Binary PNG data
             file.setContent(textureFile.content);
           } else if (Array.isArray(textureFile.content)) {
-            // Array of pixel values - convert to Uint8Array
             file.setContent(new Uint8Array(textureFile.content as number[]));
           } else if (typeof textureFile.content === "string") {
-            // Placeholder string - write as text
             file.setContent(textureFile.content);
           } else {
-            // Object - serialize as JSON (fallback)
             Log.debug(`[ContentWizard] WARNING: Texture content is object, will serialize as JSON`);
             file.setContent(JSON.stringify(textureFile.content, null, 2));
           }
@@ -426,8 +434,11 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
 
         for (const renderControllerFile of content.renderControllers) {
           const renderControllersFolder = rpFolder.ensureFolder("render_controllers");
-          const file = renderControllersFolder.ensureFile(getFilename(renderControllerFile.path));
-          file.setContent(JSON.stringify(renderControllerFile.content, null, 2));
+          writeIfNew(
+            renderControllersFolder,
+            getFilename(renderControllerFile.path),
+            JSON.stringify(renderControllerFile.content, null, 2)
+          );
         }
 
         // Write terrain_texture.json if we have block textures

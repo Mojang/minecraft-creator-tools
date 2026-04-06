@@ -145,12 +145,18 @@ export const EXCLUSIVE_GROUPS = ["bodyShape", "movement", "temperament"];
 // ============================================================================
 
 export const BLOCK_TRAITS: ITraitInfo[] = [
-  { id: "solid", label: "Solid", description: "Standard solid block", category: "Basic" },
-  { id: "transparent", label: "Transparent", description: "See-through block", category: "Basic" },
-  { id: "slab", label: "Slab", description: "Half-height block", category: "Shape" },
-  { id: "stairs", label: "Stairs", description: "Stair-shaped block", category: "Shape" },
-  { id: "fence", label: "Fence", description: "Fence post shape", category: "Shape" },
-  { id: "door", label: "Door", description: "Openable door", category: "Interactive" },
+  { id: "solid", label: "Solid", description: "Standard solid block", category: "Basic", exclusiveGroup: "shape" },
+  {
+    id: "transparent",
+    label: "Transparent",
+    description: "See-through block",
+    category: "Basic",
+    exclusiveGroup: "shape",
+  },
+  { id: "slab", label: "Slab", description: "Half-height block", category: "Shape", exclusiveGroup: "shape" },
+  { id: "stairs", label: "Stairs", description: "Stair-shaped block", category: "Shape", exclusiveGroup: "shape" },
+  { id: "fence", label: "Fence", description: "Fence post shape", category: "Shape", exclusiveGroup: "shape" },
+  { id: "door", label: "Door", description: "Openable door", category: "Interactive", exclusiveGroup: "shape" },
   { id: "container", label: "Container", description: "Has inventory", category: "Interactive" },
   { id: "light_source", label: "Light Source", description: "Emits light", category: "Properties" },
   { id: "gravity", label: "Gravity", description: "Falls like sand", category: "Properties" },
@@ -162,21 +168,28 @@ export const BLOCK_TRAITS: ITraitInfo[] = [
 // ============================================================================
 
 export const ITEM_TRAITS: ITraitInfo[] = [
-  { id: "sword", label: "Sword", description: "Melee weapon", category: "Weapon" },
-  { id: "pickaxe", label: "Pickaxe", description: "Mining tool for stone", category: "Tool" },
-  { id: "axe", label: "Axe", description: "Chopping tool for wood", category: "Tool" },
-  { id: "shovel", label: "Shovel", description: "Digging tool", category: "Tool" },
+  { id: "sword", label: "Sword", description: "Melee weapon", category: "Weapon", exclusiveGroup: "type" },
+  { id: "pickaxe", label: "Pickaxe", description: "Mining tool for stone", category: "Tool", exclusiveGroup: "type" },
+  { id: "axe", label: "Axe", description: "Chopping tool for wood", category: "Tool", exclusiveGroup: "type" },
+  { id: "shovel", label: "Shovel", description: "Digging tool", category: "Tool", exclusiveGroup: "type" },
+  { id: "armor_helmet", label: "Helmet", description: "Head armor", category: "Armor", exclusiveGroup: "type" },
+  {
+    id: "armor_chestplate",
+    label: "Chestplate",
+    description: "Chest armor",
+    category: "Armor",
+    exclusiveGroup: "type",
+  },
+  { id: "armor_leggings", label: "Leggings", description: "Leg armor", category: "Armor", exclusiveGroup: "type" },
+  { id: "armor_boots", label: "Boots", description: "Foot armor", category: "Armor", exclusiveGroup: "type" },
   { id: "food", label: "Food", description: "Edible item", category: "Consumable" },
-  { id: "armor_helmet", label: "Helmet", description: "Head armor", category: "Armor" },
-  { id: "armor_chestplate", label: "Chestplate", description: "Chest armor", category: "Armor" },
-  { id: "armor_leggings", label: "Leggings", description: "Leg armor", category: "Armor" },
-  { id: "armor_boots", label: "Boots", description: "Foot armor", category: "Armor" },
   { id: "throwable", label: "Throwable", description: "Can be thrown", category: "Special" },
   {
     id: "custom",
     label: "Custom Item",
     description: "Start with a blank item and customize everything yourself",
     category: "Other",
+    exclusiveGroup: "type",
   },
 ];
 

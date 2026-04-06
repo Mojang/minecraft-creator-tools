@@ -39,12 +39,8 @@ import {
 import CreatorToolsHost from "../app/CreatorToolsHost";
 import ImageCodec from "../core/ImageCodec";
 import PngEncoder from "./PngEncoder";
-import {
-  TraitRegistry,
-  registerAllEntityTraits,
-  registerAllBlockTraits,
-  registerAllItemTraits,
-} from "./traits";
+import { generateItemTextureFromTemplate } from "./ItemTextureTemplates";
+import { TraitRegistry, registerAllEntityTraits, registerAllBlockTraits, registerAllItemTraits } from "./traits";
 import ModelDesignUtilities from "./ModelDesignUtilities";
 import TexturedRectangleGenerator from "./TexturedRectangleGenerator";
 import { applyTextureEffects } from "./TextureEffects";
@@ -65,6 +61,16 @@ function ensureTraitsInitialized(): void {
 // ============================================================================
 // GENERATED FILE TYPES
 // ============================================================================
+
+interface ILootFunction {
+  function: string;
+  count: number | { min: number; max: number };
+}
+
+interface ILootCondition {
+  condition: string;
+  chance?: number;
+}
 
 /**
  * Result of content generation - all files to be created.
@@ -383,10 +389,10 @@ const BLOCK_TRAIT_COMPONENTS: Record<BlockTraitId, Record<string, any>> = {
     "minecraft:flammable": { catch_chance_modifier: 5, destroy_chance_modifier: 5 },
   },
   slab: {
-    "minecraft:geometry": { identifier: "minecraft:geometry.slab" },
+    "minecraft:geometry": "minecraft:geometry.slab",
   },
   stairs: {
-    "minecraft:geometry": { identifier: "minecraft:geometry.stairs" },
+    "minecraft:geometry": "minecraft:geometry.stairs",
   },
   fence: {
     "minecraft:geometry": { identifier: "minecraft:geometry.fence" },
@@ -1393,12 +1399,16 @@ export class ContentGenerator {
       secondary, // variant 1: secondary as-is
       { r: Math.min(255, primary.r + 40), g: Math.max(0, primary.g - 15), b: Math.max(0, primary.b - 25) }, // variant 2: warmer/brighter
       { r: Math.max(0, secondary.r - 20), g: Math.max(0, secondary.g - 20), b: Math.min(255, secondary.b + 30) }, // variant 3: cooler/darker
-      { r: Math.min(255, Math.round((primary.r + secondary.r) / 2 + 30)), // variant 4: midtone lighter
+      {
+        r: Math.min(255, Math.round((primary.r + secondary.r) / 2 + 30)), // variant 4: midtone lighter
         g: Math.min(255, Math.round((primary.g + secondary.g) / 2 + 30)),
-        b: Math.min(255, Math.round((primary.b + secondary.b) / 2 + 30)) },
-      { r: Math.max(0, Math.round(primary.r * 0.6)), // variant 5: darkened primary
+        b: Math.min(255, Math.round((primary.b + secondary.b) / 2 + 30)),
+      },
+      {
+        r: Math.max(0, Math.round(primary.r * 0.6)), // variant 5: darkened primary
         g: Math.max(0, Math.round(primary.g * 0.6)),
-        b: Math.max(0, Math.round(primary.b * 0.6)) },
+        b: Math.max(0, Math.round(primary.b * 0.6)),
+      },
     ];
 
     // Build new textures dict with recolored versions
@@ -1989,6 +1999,7 @@ export class ContentGenerator {
     let properties: Record<string, any[]> = {};
     let permutations: any[] = [];
     let blockEvents: Record<string, any> = {};
+    let minecraftTraits: Record<string, any> = {};
 
     // Apply traits using the new trait system
     if (block.traits) {
@@ -2019,6 +2030,23 @@ export class ContentGenerator {
           // Merge events
           if (traitData.events) {
             blockEvents = { ...blockEvents, ...traitData.events };
+          }
+
+          // Merge Minecraft-native traits (e.g., minecraft:placement_position, minecraft:connection)
+          if (traitData.minecraftTraits) {
+            minecraftTraits = { ...minecraftTraits, ...traitData.minecraftTraits };
+          }
+
+          // Add geometry files to resource pack
+          if (traitData.geometryFiles) {
+            for (const geoFile of traitData.geometryFiles) {
+              result.geometries.push({
+                path: geoFile.path,
+                pack: "resource",
+                type: "json",
+                content: geoFile.content,
+              });
+            }
           }
         } else {
           // Fall back to legacy BLOCK_TRAIT_COMPONENTS lookup
@@ -2062,6 +2090,11 @@ export class ContentGenerator {
       }
     }
 
+    // Add geometry for blocks that don't already have one (solid cubes need minecraft:geometry.full_block)
+    if (!components["minecraft:geometry"]) {
+      components["minecraft:geometry"] = "minecraft:geometry.full_block";
+    }
+
     // Add material_instances to reference our generated texture
     const textureKey = `${this._namespace}_${block.id}`;
     if (!components["minecraft:material_instances"]) {
@@ -2078,8 +2111,11 @@ export class ContentGenerator {
       components = { ...components, ...block.components };
     }
 
+    // Use 1.26.0 if connection trait is used (requires that version), otherwise 1.21.40
+    const blockFormatVersion = minecraftTraits["minecraft:connection"] ? "1.26.0" : "1.21.40";
+
     const behaviorBlock: any = {
-      format_version: "1.21.0",
+      format_version: blockFormatVersion,
       "minecraft:block": {
         description: {
           identifier: fullId,
@@ -2100,6 +2136,11 @@ export class ContentGenerator {
     }
     if (Object.keys(mergedProperties).length > 0) {
       behaviorBlock["minecraft:block"].description.states = mergedProperties;
+    }
+
+    // Add Minecraft-native traits to description
+    if (Object.keys(minecraftTraits).length > 0) {
+      behaviorBlock["minecraft:block"].description.traits = minecraftTraits;
     }
 
     // Merge permutations from traits with those specified directly
@@ -2124,7 +2165,7 @@ export class ContentGenerator {
     });
 
     // Generate placeholder texture for the block
-    const texture = this._generateBlockTexturePlaceholder(block);
+    const texture = await this._generateBlockTexturePlaceholder(block);
     if (texture) {
       result.textures.push({
         path: `textures/blocks/${block.id}.png`,
@@ -2144,15 +2185,16 @@ export class ContentGenerator {
   /**
    * Generate a placeholder texture for a block.
    * Creates a simple 16x16 texture with the block's color.
+   * Uses async encoding to support browser environments via Canvas API.
    */
-  private _generateBlockTexturePlaceholder(block: IBlockTypeDefinition): Uint8Array {
+  private async _generateBlockTexturePlaceholder(block: IBlockTypeDefinition): Promise<Uint8Array> {
     // Get primary color from mapColor or default
     const primaryColor = block.mapColor || "#808080";
     // Create a slightly darker secondary color
     const secondaryColor = this._darkenColor(primaryColor, 0.15);
 
-    // Try to generate custom checkerboard, fall back to pre-encoded placeholder
-    const custom = PngEncoder.createCheckerboardPng(16, 16, primaryColor, secondaryColor, 4);
+    // Try async encoding first (works in both Node.js and browser)
+    const custom = await PngEncoder.createCheckerboardPngAsync(16, 16, primaryColor, secondaryColor, 4);
     return custom || PngEncoder.getPlaceholderTexture("block");
   }
 
@@ -2282,12 +2324,10 @@ export class ContentGenerator {
       components["minecraft:durability"] = { max_durability: item.tool.durability };
     }
 
-    // Add icon component to reference our generated texture
-    const textureKey = `${this._namespace}_${item.id}`;
+    // Add icon component using string shorthand (1.21.70+ format)
+    const textureKey = `${this._namespace}:${item.id}`;
     if (!components["minecraft:icon"]) {
-      components["minecraft:icon"] = {
-        texture: textureKey,
-      };
+      components["minecraft:icon"] = textureKey;
     }
 
     // Apply native components
@@ -2296,7 +2336,7 @@ export class ContentGenerator {
     }
 
     const behaviorItem: any = {
-      format_version: "1.21.0",
+      format_version: "1.21.70",
       "minecraft:item": {
         description: {
           identifier: fullId,
@@ -2316,7 +2356,7 @@ export class ContentGenerator {
     });
 
     // Generate placeholder texture for the item
-    const texture = this._generateItemTexturePlaceholder(item);
+    const texture = await this._generateItemTexturePlaceholder(item);
     if (texture) {
       result.textures.push({
         path: `textures/items/${item.id}.png`,
@@ -2329,33 +2369,23 @@ export class ContentGenerator {
 
   /**
    * Generate a placeholder texture for an item.
-   * Creates a simple 16x16 texture with the item's color based on its traits.
+   * Uses shaped templates (sword, helmet, etc.) recolored with the user's chosen color.
+   * Falls back to a checkerboard pattern if no template matches.
    */
-  private _generateItemTexturePlaceholder(item: IItemTypeDefinition): Uint8Array {
-    // Determine color based on item traits or type
-    let primaryColor = "#808080";
-    let secondaryColor = "#606060";
+  private async _generateItemTexturePlaceholder(item: IItemTypeDefinition): Promise<Uint8Array> {
+    const color = item.color || "#808080";
 
+    // Try template-based generation first (shaped icons recolored to user's color)
     if (item.traits) {
-      if (item.traits.includes("sword") || item.traits.includes("pickaxe") || item.traits.includes("axe")) {
-        primaryColor = "#A0A0A0"; // Metallic gray for tools/weapons
-        secondaryColor = "#707070";
-      } else if (item.traits.includes("food")) {
-        primaryColor = "#C08040"; // Brownish for food
-        secondaryColor = "#906030";
-      } else if (
-        item.traits.includes("armor_helmet") ||
-        item.traits.includes("armor_chestplate") ||
-        item.traits.includes("armor_leggings") ||
-        item.traits.includes("armor_boots")
-      ) {
-        primaryColor = "#6080C0"; // Bluish for armor
-        secondaryColor = "#405080";
+      const templateTexture = await generateItemTextureFromTemplate(item.traits, color);
+      if (templateTexture) {
+        return templateTexture;
       }
     }
 
-    // Try to generate custom checkerboard, fall back to pre-encoded placeholder
-    const custom = PngEncoder.createCheckerboardPng(16, 16, primaryColor, secondaryColor, 4);
+    // Fallback: checkerboard with the user's color
+    const secondaryColor = this._darkenColor(color, 0.2);
+    const custom = await PngEncoder.createCheckerboardPngAsync(16, 16, color, secondaryColor, 4);
     return custom || PngEncoder.getPlaceholderTexture("item");
   }
 
@@ -2393,7 +2423,7 @@ export class ContentGenerator {
     const textureData: Record<string, { textures: string }> = {};
 
     for (const item of items) {
-      const textureKey = `${this._namespace}_${item.id}`;
+      const textureKey = `${this._namespace}:${item.id}`;
       textureData[textureKey] = {
         textures: `textures/items/${item.id}`,
       };
@@ -2405,6 +2435,7 @@ export class ContentGenerator {
       type: "json",
       content: {
         resource_pack_name: this._namespace,
+        texture_name: "atlas.items",
         texture_data: textureData,
       },
     };
@@ -2466,8 +2497,11 @@ export class ContentGenerator {
     };
   }
 
-  private _buildLootFunctions(entry: { count?: number | { min: number; max: number }; lootingBonus?: number }): any[] | undefined {
-    const functions: any[] = [];
+  private _buildLootFunctions(entry: {
+    count?: number | { min: number; max: number };
+    lootingBonus?: number;
+  }): ILootFunction[] | undefined {
+    const functions: ILootFunction[] = [];
 
     if (entry.count) {
       if (typeof entry.count === "number") {
@@ -2490,14 +2524,14 @@ export class ContentGenerator {
     return functions.length > 0 ? functions : undefined;
   }
 
-  private _buildLootCondition(condition: any): any {
+  private _buildLootCondition(condition: { type: string; chance?: number }): ILootCondition {
     switch (condition.type) {
       case "killed_by_player":
         return { condition: "killed_by_player" };
       case "random_chance":
         return { condition: "random_chance", chance: condition.chance };
       default:
-        return condition;
+        return { condition: condition.type };
     }
   }
 

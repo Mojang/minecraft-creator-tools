@@ -101,10 +101,17 @@ export default class BehaviorPackManifestJsonEditor extends Component<
     BehaviorManifestJson: BehaviorManifestDefinition,
     typeA: BehaviorManifestDefinition
   ) {
-    this._doUpdate(true);
+    this._updateManager(true);
   }
 
   async _doUpdate(setState: boolean) {
+    const headerForm = Database.getForm("pack", "behavior_pack_header_json");
+    const restOfForm = Database.getForm("pack", "behavior_pack_rest_of_file");
+
+    if (!headerForm || !restOfForm) {
+      return;
+    }
+
     let selItem = this.state.selectedItem;
 
     if (selItem === undefined && this.state && this.state.fileToEdit && this.state.fileToEdit.manager) {

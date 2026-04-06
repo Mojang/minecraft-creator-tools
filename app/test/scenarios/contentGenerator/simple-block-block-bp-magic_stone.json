@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.0",
+  "format_version": "1.21.40",
   "minecraft:block": {
     "description": {
       "identifier": "test:magic_stone",
@@ -16,6 +16,7 @@
       },
       "minecraft:light_emission": 5,
       "minecraft:map_color": "#8800FF",
+      "minecraft:geometry": "minecraft:geometry.full_block",
       "minecraft:material_instances": {
         "*": {
           "texture": "test_magic_stone",

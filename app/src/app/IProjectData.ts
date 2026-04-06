@@ -85,6 +85,7 @@ export default interface IProjectData {
 
   lastMapDeployedDate?: Date;
   lastMapDeployedHash?: string;
+  deployWorldId?: string;
 
   showHiddenItems?: boolean;
   showFunctions?: boolean;

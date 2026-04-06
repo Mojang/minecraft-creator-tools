@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.0",
+  "format_version": "1.21.40",
   "minecraft:block": {
     "description": {
       "identifier": "mymod:goblin_totem",
@@ -12,6 +12,7 @@
         "seconds_to_destroy": 3
       },
       "minecraft:light_emission": 10,
+      "minecraft:geometry": "minecraft:geometry.full_block",
       "minecraft:material_instances": {
         "*": {
           "texture": "mymod_goblin_totem",

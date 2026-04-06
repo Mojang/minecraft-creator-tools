@@ -1,6 +1,4 @@
 import { Box, Card, CardActionArea, CardContent, Grid, Typography } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCube, faCubes, faLayerGroup } from "@fortawesome/free-solid-svg-icons";
 import { mcColors } from "../../hooks/theme/mcColors";
 import { useIntl } from "react-intl";
 import { PostCreateAction } from "../../../app/IProjectSeed";
@@ -9,17 +7,22 @@ interface GoalPickerProps {
   onGoalSelected: (action: PostCreateAction) => void;
 }
 
-const goals: { action: PostCreateAction; icon: typeof faCube; titleKey: string; descKey: string }[] = [
-  { action: "addMob", icon: faCube, titleKey: "home.goal_picker.make_mob", descKey: "home.goal_picker.make_mob_desc" },
+const goals: { action: PostCreateAction; iconSrc: string; titleKey: string; descKey: string }[] = [
+  {
+    action: "addMob",
+    iconSrc: "./res/images/icons/new_mob_240.png",
+    titleKey: "home.goal_picker.make_mob",
+    descKey: "home.goal_picker.make_mob_desc",
+  },
   {
     action: "addBlock",
-    icon: faCubes,
+    iconSrc: "./res/images/icons/new_block_240.png",
     titleKey: "home.goal_picker.make_block",
     descKey: "home.goal_picker.make_block_desc",
   },
   {
     action: "addItem",
-    icon: faLayerGroup,
+    iconSrc: "./res/images/icons/new_item_240.png",
     titleKey: "home.goal_picker.make_item",
     descKey: "home.goal_picker.make_item_desc",
   },
@@ -46,9 +49,9 @@ export default function GoalPicker({ onGoalSelected }: GoalPickerProps) {
                 return {
                   height: "100%",
                   transition: "none",
-                "@media (prefers-reduced-motion: no-preference)": {
-                  transition: "all 0.2s ease-in-out",
-                },
+                  "@media (prefers-reduced-motion: no-preference)": {
+                    transition: "all 0.2s ease-in-out",
+                  },
                   borderRadius: 1,
                   border: `2px solid ${isDark ? mcColors.green5 + "60" : mcColors.green4 + "40"}`,
                   backgroundColor: isDark ? mcColors.gray5 : mcColors.white,
@@ -68,14 +71,16 @@ export default function GoalPicker({ onGoalSelected }: GoalPickerProps) {
               >
                 <CardContent sx={{ textAlign: "center", p: 0 }}>
                   <Box
-                    sx={(theme) => ({
-                      fontSize: 36,
+                    component="img"
+                    src={goal.iconSrc}
+                    alt=""
+                    sx={{
+                      width: 48,
+                      height: 48,
                       mb: 1.5,
-                      color: theme.palette.mode === "dark" ? mcColors.green3 : mcColors.green5,
-                    })}
-                  >
-                    <FontAwesomeIcon icon={goal.icon} />
-                  </Box>
+                      imageRendering: "pixelated",
+                    }}
+                  />
                   <Typography variant="h6" component="h3" sx={{ fontWeight: 700, mb: 0.5 }}>
                     {intl.formatMessage({ id: goal.titleKey })}
                   </Typography>

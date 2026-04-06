@@ -482,31 +482,21 @@ export default class EntityTypeResourceEditor extends Component<
     let mainInterior = <></>;
 
     if (this.state.mode === EntityTypeResourceEditorMode.preview) {
-      // Find a geometry project item from the entity's children
-      let geometryItem: ProjectItem | undefined = undefined;
+      const entityId = this.state.entityTypeResource?.id;
 
-      if (this.props.item && this.props.item.childItems) {
-        for (const childRef of this.props.item.childItems) {
-          if (childRef.childItem.itemType === ProjectItemType.modelGeometryJson) {
-            geometryItem = childRef.childItem;
-            break;
-          }
-        }
-      }
-
-      if (geometryItem && this.props.creatorTools) {
+      if (entityId && this.props.creatorTools) {
         const viewerHeight = this.props.heightOffset + 50;
 
         mainInterior = (
           <div className="etre-preview-container">
             <LazyModelViewer
-              key={"etremv" + geometryItem.projectPath}
+              key={"etremv" + entityId}
               project={this.props.project}
               creatorTools={this.props.creatorTools}
               theme={this.props.theme}
               heightOffset={viewerHeight}
               readOnly={this.props.readOnly}
-              projectItem={geometryItem}
+              entityTypeId={entityId}
             />
           </div>
         );

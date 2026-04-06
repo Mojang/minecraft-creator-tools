@@ -1,5 +1,5 @@
 import { test, expect, ConsoleMessage } from "@playwright/test";
-import { processMessage, selectEditMode } from "./WebTestUtilities";
+import { isViteDevServer, processMessage, selectEditMode } from "./WebTestUtilities";
 
 /**
  * Tests to verify web worker functionality in the browser.
@@ -35,6 +35,11 @@ test.describe("Web Worker Tests @focused", () => {
   });
 
   test("should be able to create project worker", async ({ page }) => {
+    if (!(await isViteDevServer(page))) {
+      test.skip(true, "Vite dev server dynamic imports are not available on production builds");
+      return;
+    }
+
     // Test that the project worker can be instantiated
     const workerResult = await page.evaluate(async () => {
       try {
@@ -70,6 +75,11 @@ test.describe("Web Worker Tests @focused", () => {
   });
 
   test("should successfully load worker via ProjectWorkerManager", async ({ page }) => {
+    if (!(await isViteDevServer(page))) {
+      test.skip(true, "Vite dev server dynamic imports are not available on production builds");
+      return;
+    }
+
     // Test that the worker can be loaded through ProjectWorkerManager
     // which handles the Vite ?worker import correctly
     const result = await page.evaluate(async () => {
@@ -106,6 +116,11 @@ test.describe("Web Worker Tests @focused", () => {
   });
 
   test("should create worker and receive ready message", async ({ page }) => {
+    if (!(await isViteDevServer(page))) {
+      test.skip(true, "Vite ?worker imports are not available on production builds");
+      return;
+    }
+
     // Test that the worker can be created and sends back a ready message
     const result = await page.evaluate(async () => {
       try {
