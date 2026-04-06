@@ -112,7 +112,8 @@ export default class DeploymentStorageMinecraft implements IMinecraft {
       return;
     }
 
-    let name = this._project.name + "_mct";
+    const worldFolderName = this._project.deployWorldId;
+    const worldDisplayName = this._project.name + " _mct";
 
     const worldsFolder = await ProjectExporter.ensureMinecraftWorldsFolder(this._creatorTools);
 
@@ -121,18 +122,17 @@ export default class DeploymentStorageMinecraft implements IMinecraft {
       return;
     }
 
-    const worldFolder = worldsFolder.ensureFolder(name);
+    const worldFolder = worldsFolder.ensureFolder(worldFolderName);
 
     await worldFolder.ensureExists();
 
-    // Log.debugAlert("Exporting folder to '" + worldFolder.storageRelativePath + "'");
-    await ProjectExporter.syncFlatPackRefWorldTo(this._creatorTools, this._project, worldFolder, name);
-
-    name = Utilities.getSimpleString(this._project.name) + "_mct";
+    await ProjectExporter.syncFlatPackRefWorldTo(this._creatorTools, this._project, worldFolder, worldDisplayName);
 
     await worldFolder.saveAll();
 
-    return name;
+    await this._project.save();
+
+    return worldDisplayName;
   }
 
   async syncWithDeployment() {

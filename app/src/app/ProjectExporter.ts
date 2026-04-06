@@ -751,6 +751,7 @@ export default class ProjectExporter {
 
     await project.ensureLoadedProjectFolder();
 
+    const worldFolderName = project.deployWorldId;
     const title = project.name + " Test World";
 
     let targetFolder: IFolder | undefined;
@@ -763,7 +764,7 @@ export default class ProjectExporter {
         return;
       }
 
-      targetFolder = worldsFolder.ensureFolder(title);
+      targetFolder = worldsFolder.ensureFolder(worldFolderName);
 
       await targetFolder.ensureExists();
     } else {
@@ -774,7 +775,7 @@ export default class ProjectExporter {
         return;
       }
 
-      targetFolder = worldsFolder.ensureFolder(title);
+      targetFolder = worldsFolder.ensureFolder(worldFolderName);
 
       await targetFolder.ensureExists();
     }
@@ -786,6 +787,8 @@ export default class ProjectExporter {
 
       await mcworld.save();
     }
+
+    await project.save();
 
     await creatorTools.notifyOperationEnded(
       operId,

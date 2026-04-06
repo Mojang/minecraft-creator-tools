@@ -2384,35 +2384,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         }
       }
 
-      if (
-        this.props.filteredItems === undefined &&
-        this.props.project.effectiveEditPreference === ProjectEditPreference.summarized
-      ) {
-        const hasEntityContent = projectItems.some(
-          (item) =>
-            item.itemType === ProjectItemType.entityTypeBehavior || item.itemType === ProjectItemType.entityTypeResource
-        );
-        const hasSpawnRuleFiles = projectItems.some((item) => item.itemType === ProjectItemType.spawnRuleBehavior);
-        const hasLootTableFiles = projectItems.some((item) => item.itemType === ProjectItemType.lootTableBehavior);
-
-        const addDiscoverabilityHeader = (itemType: ProjectItemType) => {
-          if (lastItemType !== itemType) {
-            this._addTypeSpacer(projectListItems, itemType, true, itemsAdded);
-            this._itemTypes[itemsAdded] = ListItemType.typeSpacer;
-            this._itemIndices[itemsAdded] = itemType;
-            itemsAdded++;
-            lastItemType = itemType;
-          }
-        };
-
-        if (hasEntityContent && !hasSpawnRuleFiles) {
-          addDiscoverabilityHeader(ProjectItemType.spawnRuleBehavior);
-        }
-
-        if (hasEntityContent && !hasLootTableFiles) {
-          addDiscoverabilityHeader(ProjectItemType.lootTableBehavior);
-        }
-      }
+      // In summarized mode, spawn rules and loot tables are managed through the
+      // entity editor's Spawn and Loot tabs — no need to show empty category headers
+      // in the sidebar that could confuse users.
 
       const references = this.props.project.gitHubReferences;
 

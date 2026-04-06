@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.0",
+  "format_version": "1.21.70",
   "minecraft:item": {
     "description": {
       "identifier": "test:magic_apple",
@@ -27,9 +27,7 @@
           }
         ]
       },
-      "minecraft:icon": {
-        "texture": "test_magic_apple"
-      }
+      "minecraft:icon": "test:magic_apple"
     }
   }
 }

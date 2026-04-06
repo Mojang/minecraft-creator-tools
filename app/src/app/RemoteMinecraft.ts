@@ -815,7 +815,11 @@ export default class RemoteMinecraft implements IMinecraft {
       Log.message("Remote server stopped");
     } catch (e: any) {
       Log.error("Failed to stop remote server: " + (e.message || e));
-      this.errorMessage = "Failed to stop server";
+      this.errorMessage = "Failed to stop server: " + (e.message || e);
+      // Reset to stopped state so the UI doesn't get stuck on "(stopping...)"
+      // If the stop request failed (e.g., 404 because no server exists), the server
+      // is effectively stopped from the client's perspective.
+      this.setState(CreatorToolsMinecraftState.stopped);
     }
   }
 

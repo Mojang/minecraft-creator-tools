@@ -175,6 +175,17 @@ export interface IBlockTraitData extends ITraitData {
   /** Block event triggers */
   events?: Record<string, IBlockEvent>;
 
+  /** Geometry files to include in the resource pack (path → geo JSON content) */
+  geometryFiles?: { path: string; content: object }[];
+
+  /**
+   * Minecraft-native block traits to add to description.traits.
+   * These are built-in Minecraft traits like minecraft:placement_position
+   * and minecraft:connection that the engine handles automatically.
+   * Example: { "minecraft:placement_position": { enabled_states: ["minecraft:vertical_half"] } }
+   */
+  minecraftTraits?: Record<string, any>;
+
   /** Tags for categorization (e.g., ["stone", "pickaxe_mineable"]) */
   tags?: string[];
 

@@ -408,7 +408,10 @@ export default function ProjectPanel(props: ProjectPanelProps) {
                       <IconButton
                         size="small"
                         onClick={(e) => handleContextMenuOpen(e, project)}
-                        aria-label={intl.formatMessage({ id: "home.project_panel.more_options_for" }, { projectName: project.simplifiedName })}
+                        aria-label={intl.formatMessage(
+                          { id: "home.project_panel.more_options_for" },
+                          { projectName: project.simplifiedName }
+                        )}
                         sx={(theme) => ({
                           ml: 0.5,
                           color: theme.palette.mode === "dark" ? mcColors.gray3 : mcColors.gray4,
@@ -464,11 +467,13 @@ export default function ProjectPanel(props: ProjectPanelProps) {
           >
             {isExporting ? (
               <>
-                <CircularProgress size={12} color="inherit" /> {intl.formatMessage({ id: "home.project_panel.download_backup_progress" })}…
+                <CircularProgress size={12} color="inherit" />{" "}
+                {intl.formatMessage({ id: "home.project_panel.download_backup_progress" })}…
               </>
             ) : (
               <>
-                <FontAwesomeIcon icon={faDownload} style={{ fontSize: "0.75rem" }} /> {intl.formatMessage({ id: "home.project_panel.download_backup" })}
+                <FontAwesomeIcon icon={faDownload} style={{ fontSize: "0.75rem" }} />{" "}
+                {intl.formatMessage({ id: "home.project_panel.download_backup" })}
               </>
             )}
           </Typography>
@@ -498,7 +503,9 @@ export default function ProjectPanel(props: ProjectPanelProps) {
         }}
       >
         <MenuItem onClick={handleOpenClick}>{intl.formatMessage({ id: "home.project_panel.open_project" })}</MenuItem>
-        <MenuItem onClick={handleRemoveClick}>{intl.formatMessage({ id: "home.project_panel.remove_from_list" })}</MenuItem>
+        <MenuItem onClick={handleRemoveClick}>
+          {intl.formatMessage({ id: "home.project_panel.remove_from_list" })}
+        </MenuItem>
         {/* Delete option only available on web (not Electron/app) */}
         {!AppServiceProxy.hasAppServiceOrSim && props.onDeleteProject && (
           <MenuItem onClick={handleDeleteClick} sx={{ color: "error.main" }}>
@@ -515,7 +522,7 @@ export default function ProjectPanel(props: ProjectPanelProps) {
         aria-describedby="remove-project-dialog-description"
       >
         <DialogTitle id="remove-project-dialog-title">
-          {pendingAction === "delete" 
+          {pendingAction === "delete"
             ? intl.formatMessage({ id: "home.project_panel.delete_dialog_title" })
             : intl.formatMessage({ id: "home.project_panel.remove_dialog_title" })}
         </DialogTitle>
@@ -537,7 +544,7 @@ export default function ProjectPanel(props: ProjectPanelProps) {
             {intl.formatMessage({ id: "home.project_panel.cancel" })}
           </McButton>
           <McButton variant="green" onClick={handleConfirmAction}>
-            {pendingAction === "delete" 
+            {pendingAction === "delete"
               ? intl.formatMessage({ id: "home.project_panel.delete" })
               : intl.formatMessage({ id: "home.project_panel.remove" })}
           </McButton>

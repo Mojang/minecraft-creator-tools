@@ -112,6 +112,7 @@
 .mov-toolbar-inner {
   grid-column: 1;
   padding-top: 2px;
+  white-space: nowrap;
 }
 
 .mov-entityselector-area {

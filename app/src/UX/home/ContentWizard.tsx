@@ -53,7 +53,14 @@ import { ProjectScriptLanguage } from "../../app/IProjectData";
 import { BODY_TYPES, renderBodyTypeIcon } from "../shared/components/icons/BodyTypeIcons";
 import { renderBlockTraitIcon, renderItemTraitIcon } from "../shared/components/icons/TraitIcons";
 import EntityTraitPicker from "../editors/entityType/EntityTraitPicker";
-import { BLOCK_TRAITS, ITEM_TRAITS, getTraitIconColor, getTraitCardThemeStyle } from "../types/TraitData";
+import {
+  ENTITY_TRAITS,
+  BLOCK_TRAITS,
+  ITEM_TRAITS,
+  ITraitInfo,
+  getTraitIconColor,
+  getTraitCardThemeStyle,
+} from "../types/TraitData";
 import IProjectTheme from "../types/IProjectTheme";
 import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../app/CreatorToolsHost";
 
@@ -162,12 +169,16 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
     this._handleGalleryItemClick = this._handleGalleryItemClick.bind(this);
     this._toggleSection = this._toggleSection.bind(this);
 
+    const entityDefault = ContentWizard._getUniqueDefaultId("mob", ProjectItemType.entityTypeBehavior, props.project);
+    const blockDefault = ContentWizard._getUniqueDefaultId("block", ProjectItemType.blockTypeBehavior, props.project);
+    const itemDefault = ContentWizard._getUniqueDefaultId("item", ProjectItemType.itemTypeBehavior, props.project);
+
     this.state = {
       wizardType: props.initialType || ContentWizardType.launcher,
       step: 0,
       // Entity defaults
-      entityId: "my_mob",
-      entityDisplayName: "My Mob",
+      entityId: entityDefault.id,
+      entityDisplayName: entityDefault.displayName,
       entityIdManuallyEdited: false,
       entityTraits: [],
       entityHealth: 20,
@@ -177,16 +188,16 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
       entitySecondaryColor: "#3D6B2E",
       entityBodyType: "humanoid",
       // Block defaults
-      blockId: "my_block",
-      blockDisplayName: "My Block",
+      blockId: blockDefault.id,
+      blockDisplayName: blockDefault.displayName,
       blockIdManuallyEdited: false,
       blockTraits: [],
       blockDestroyTime: 1.5,
       blockLightEmission: 0,
       blockPrimaryColor: "#7B6B5A",
       // Item defaults
-      itemId: "my_item",
-      itemDisplayName: "My Item",
+      itemId: itemDefault.id,
+      itemDisplayName: itemDefault.displayName,
       itemIdManuallyEdited: false,
       itemTraits: [],
       itemMaxStack: 64,
@@ -221,6 +232,55 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
     this.setState({ expandedSections: expanded });
   }
 
+  /**
+   * Check if the given content ID already exists in the project for the given type.
+   * Returns an error message if a conflict is found, or undefined if the ID is available.
+   */
+  _getIdConflictError(id: string, wizardType: ContentWizardType): string | undefined {
+    if (!id || !this.props.project) {
+      return undefined;
+    }
+
+    const namespace = this.props.project.effectiveDefaultNamespace || "custom";
+    const fullId = `${namespace}:${id}`;
+
+    let itemType: ProjectItemType | undefined;
+    let contentLabel: string | undefined;
+
+    switch (wizardType) {
+      case ContentWizardType.entity:
+        itemType = ProjectItemType.entityTypeBehavior;
+        contentLabel = "mob";
+        break;
+      case ContentWizardType.block:
+        itemType = ProjectItemType.blockTypeBehavior;
+        contentLabel = "block";
+        break;
+      case ContentWizardType.item:
+        itemType = ProjectItemType.itemTypeBehavior;
+        contentLabel = "item";
+        break;
+    }
+
+    if (itemType === undefined) {
+      return undefined;
+    }
+
+    const existingItems = this.props.project.getItemsByType(itemType);
+    for (const item of existingItems) {
+      if (item.projectPath) {
+        // Check by filename (e.g., "my_block.json" matches id "my_block")
+        const fileName = item.projectPath.split("/").pop() || "";
+        const fileBaseName = fileName.replace(/\.json$/i, "").toLowerCase();
+        if (fileBaseName === id.toLowerCase()) {
+          return `A ${contentLabel} with ID "${fullId}" already exists in this project`;
+        }
+      }
+    }
+
+    return undefined;
+  }
+
   _handleBack() {
     if (this.state.step === 0) {
       this.setState({ wizardType: ContentWizardType.launcher });
@@ -230,9 +290,39 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
   }
 
   _handleNext() {
-    // Validate step 0: display name must not be empty
+    const wizType = this.state.wizardType;
+
+    // When leaving traits step (step 0), auto-generate name from traits if not manually edited
     if (this.state.step === 0) {
-      const wizType = this.state.wizardType;
+      if (wizType === ContentWizardType.entity && !this.state.entityIdManuallyEdited) {
+        const generated = this._generateNameFromTraits("mob", this.state.entityTraits, ENTITY_TRAITS);
+        const unique = ContentWizard._getUniqueDefaultId(
+          generated,
+          ProjectItemType.entityTypeBehavior,
+          this.props.project
+        );
+        this.setState({ entityId: unique.id, entityDisplayName: unique.displayName });
+      } else if (wizType === ContentWizardType.block && !this.state.blockIdManuallyEdited) {
+        const generated = this._generateNameFromTraits("block", this.state.blockTraits, BLOCK_TRAITS);
+        const unique = ContentWizard._getUniqueDefaultId(
+          generated,
+          ProjectItemType.blockTypeBehavior,
+          this.props.project
+        );
+        this.setState({ blockId: unique.id, blockDisplayName: unique.displayName });
+      } else if (wizType === ContentWizardType.item && !this.state.itemIdManuallyEdited) {
+        const generated = this._generateNameFromTraits("item", this.state.itemTraits, ITEM_TRAITS);
+        const unique = ContentWizard._getUniqueDefaultId(
+          generated,
+          ProjectItemType.itemTypeBehavior,
+          this.props.project
+        );
+        this.setState({ itemId: unique.id, itemDisplayName: unique.displayName });
+      }
+    }
+
+    // Validate step 1 (name/ID): display name must not be empty, and ID must not conflict
+    if (this.state.step === 1) {
       if (
         (wizType === ContentWizardType.entity &&
           (!this.state.entityDisplayName || this.state.entityDisplayName.trim() === "")) ||
@@ -243,8 +333,79 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
       ) {
         return;
       }
+
+      const currentId =
+        wizType === ContentWizardType.entity
+          ? this.state.entityId
+          : wizType === ContentWizardType.block
+            ? this.state.blockId
+            : this.state.itemId;
+      if (this._getIdConflictError(currentId, wizType)) {
+        return;
+      }
     }
     this.setState({ step: this.state.step + 1 });
+  }
+
+  /**
+   * Generate a descriptive default name from selected traits.
+   * Combines up to 2 traits to build short names like "hostile_flying_mob" or "slab_block".
+   * Keeps names under 20 characters for readability.
+   */
+  _generateNameFromTraits(baseType: string, selectedTraits: string[], traitList: ITraitInfo[]): string {
+    if (selectedTraits.length === 0) {
+      return baseType;
+    }
+
+    const toLabel = (id: string) => {
+      const info = traitList.find((t) => t.id === id);
+      return info
+        ? info.label
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "_")
+            .replace(/^_|_$/g, "")
+        : id;
+    };
+
+    // Separate exclusive-group traits from behavior traits
+    const exclusiveTraits = selectedTraits.filter((id) => {
+      const info = traitList.find((t) => t.id === id);
+      return info?.exclusiveGroup;
+    });
+    const behaviorTraits = selectedTraits.filter((id) => {
+      const info = traitList.find((t) => t.id === id);
+      return !info?.exclusiveGroup;
+    });
+
+    // Primary trait: the exclusive one (shape/type/body), or first selected
+    const primary = exclusiveTraits[0] || selectedTraits[0];
+    const primaryLabel = toLabel(primary);
+
+    // For items/blocks, the type trait IS the name (e.g., "sword", "slab")
+    if (baseType === "item" || baseType === "block") {
+      // Add a behavior modifier if it fits (e.g., "throwable_sword")
+      if (behaviorTraits.length > 0) {
+        const modifier = toLabel(behaviorTraits[0]);
+        const candidate = `${modifier}_${primaryLabel}`;
+        if (candidate.length <= 20) {
+          return candidate;
+        }
+      }
+      return primaryLabel;
+    }
+
+    // For mobs, combine modifier + base type (e.g., "hostile_flying_mob")
+    // Try: behavior + exclusive + "_mob"
+    if (behaviorTraits.length > 0 && exclusiveTraits.length > 0) {
+      const modifier = toLabel(behaviorTraits[0]);
+      const candidate = `${modifier}_${primaryLabel}_${baseType}`;
+      if (candidate.length <= 20) {
+        return candidate;
+      }
+    }
+
+    // Fallback: just primary + base type (e.g., "flying_mob", "hostile_mob")
+    return `${primaryLabel}_${baseType}`;
   }
 
   _handleComplete() {
@@ -260,19 +421,78 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
     this.props.onCancel();
   }
 
+  /**
+   * Generate a unique default ID that doesn't conflict with existing project items.
+   * If "my_block" exists, tries "my_block_1", "my_block_2", etc.
+   */
+  static _getUniqueDefaultId(
+    baseId: string,
+    itemType: ProjectItemType,
+    project: Project
+  ): { id: string; displayName: string } {
+    const existingItems = project.getItemsByType(itemType);
+    const existingNames = new Set(
+      existingItems
+        .filter((item) => item.projectPath)
+        .map((item) => {
+          const fileName = item.projectPath!.split("/").pop() || "";
+          return fileName.replace(/\.json$/i, "").toLowerCase();
+        })
+    );
+
+    const toDisplayName = (id: string) =>
+      id
+        .split("_")
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(" ");
+
+    if (!existingNames.has(baseId)) {
+      return { id: baseId, displayName: toDisplayName(baseId) };
+    }
+
+    for (let i = 1; i <= 100; i++) {
+      const candidate = `${baseId}_${i}`;
+      if (!existingNames.has(candidate)) {
+        return { id: candidate, displayName: toDisplayName(candidate) };
+      }
+    }
+
+    return { id: baseId, displayName: toDisplayName(baseId) };
+  }
+
   _handleWizardTypeSelect(type: ContentWizardType) {
-    this.setState({ wizardType: type, step: 0 });
+    const update: Partial<IContentWizardState> = { wizardType: type, step: 0 };
+
+    // Refresh default IDs to avoid conflicts when re-entering a wizard
+    if (type === ContentWizardType.entity) {
+      const def = ContentWizard._getUniqueDefaultId("mob", ProjectItemType.entityTypeBehavior, this.props.project);
+      update.entityId = def.id;
+      update.entityDisplayName = def.displayName;
+      update.entityIdManuallyEdited = false;
+    } else if (type === ContentWizardType.block) {
+      const def = ContentWizard._getUniqueDefaultId("block", ProjectItemType.blockTypeBehavior, this.props.project);
+      update.blockId = def.id;
+      update.blockDisplayName = def.displayName;
+      update.blockIdManuallyEdited = false;
+    } else if (type === ContentWizardType.item) {
+      const def = ContentWizard._getUniqueDefaultId("item", ProjectItemType.itemTypeBehavior, this.props.project);
+      update.itemId = def.id;
+      update.itemDisplayName = def.displayName;
+      update.itemIdManuallyEdited = false;
+    }
+
+    this.setState(update as any);
   }
 
   _getMaxSteps(): number {
     const extra = this.props.showProjectNameStep ? 1 : 0;
     switch (this.state.wizardType) {
       case ContentWizardType.entity:
-        return 4 + extra; // Basic, Traits, Stats, Appearance [, Project]
+        return 4 + extra; // Traits, Name, Stats, Appearance [, Project]
       case ContentWizardType.block:
-        return 3 + extra; // Basic, Traits, Properties [, Project]
+        return 3 + extra; // Traits, Name, Properties [, Project]
       case ContentWizardType.item:
-        return 3 + extra; // Basic, Traits, Properties [, Project]
+        return 3 + extra; // Traits, Name, Properties [, Project]
       default:
         return 2 + extra;
     }
@@ -330,7 +550,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
               traits: this.state.itemTraits.filter((t) => t !== ("custom" as ItemTraitId)),
               maxStackSize: this.state.itemMaxStack,
               durability: this.state.itemDurability > 0 ? this.state.itemDurability : undefined,
-              // Note: item color is used by ContentGenerator based on traits
+              color: this.state.itemPrimaryColor,
             },
           ],
         };
@@ -714,7 +934,18 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
     let stepTitle: string = "";
 
     switch (step) {
-      case 0: // Basic Info
+      case 0: // Traits
+        stepTitle = "Select Traits";
+        stepContent = (
+          <EntityTraitPicker
+            traits={this.state.entityTraits}
+            onTraitsChanged={(traits) => this.setState({ entityTraits: traits })}
+            theme={this.props.theme}
+          />
+        );
+        break;
+
+      case 1: // Basic Info
         stepTitle = "Basic Information";
         stepContent = (
           <div className="cwiz-step-content">
@@ -731,7 +962,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                       displayName
                         .toLowerCase()
                         .replace(/[^a-z0-9]+/g, "_")
-                        .replace(/^_|_$/g, "") || "my_mob";
+                        .replace(/^_|_$/g, "") || "mob";
                   }
                   this.setState(update as any);
                 }}
@@ -754,21 +985,17 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                 }}
                 placeholder="my_mob"
                 size="small"
+                error={!!this._getIdConflictError(this.state.entityId, ContentWizardType.entity)}
               />
-              <div className="cwiz-field-hint">Unique identifier (a-z, 0-9, underscore only)</div>
+              {this._getIdConflictError(this.state.entityId, ContentWizardType.entity) ? (
+                <div className="cwiz-field-error">
+                  {this._getIdConflictError(this.state.entityId, ContentWizardType.entity)}
+                </div>
+              ) : (
+                <div className="cwiz-field-hint">Unique identifier (a-z, 0-9, underscore only)</div>
+              )}
             </div>
           </div>
-        );
-        break;
-
-      case 1: // Traits
-        stepTitle = "Select Traits";
-        stepContent = (
-          <EntityTraitPicker
-            traits={this.state.entityTraits}
-            onTraitsChanged={(traits) => this.setState({ entityTraits: traits })}
-            theme={this.props.theme}
-          />
         );
         break;
 
@@ -869,7 +1096,62 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
     let stepTitle: string = "";
 
     switch (step) {
-      case 0: // Basic Info
+      case 0: // Traits
+        stepTitle = "Select Traits";
+        {
+          const shapeTraits = BLOCK_TRAITS.filter((t) => t.exclusiveGroup === "shape");
+          const behaviorTraits = BLOCK_TRAITS.filter((t) => !t.exclusiveGroup);
+
+          const renderTraitCard = (trait: ITraitInfo) => (
+            <div
+              key={trait.id}
+              className={`cwiz-trait ${
+                this.state.blockTraits.includes(trait.id as BlockTraitId) ? "cwiz-trait-selected" : ""
+              }`}
+              onClick={() => {
+                let traits = [...this.state.blockTraits];
+                const idx = traits.indexOf(trait.id as BlockTraitId);
+                if (idx >= 0) {
+                  traits.splice(idx, 1);
+                } else {
+                  if (trait.exclusiveGroup) {
+                    const exclusiveIds = BLOCK_TRAITS.filter(
+                      (t) => t.exclusiveGroup === trait.exclusiveGroup && t.id !== trait.id
+                    ).map((t) => t.id as BlockTraitId);
+                    traits = traits.filter((t) => !exclusiveIds.includes(t));
+                  }
+                  traits.push(trait.id as BlockTraitId);
+                }
+                this.setState({ blockTraits: traits });
+              }}
+            >
+              <div className="cwiz-trait-icon" style={{ color: getTraitIconColor(trait) }}>
+                {renderBlockTraitIcon(trait.id)}
+              </div>
+              <div className="cwiz-trait-text">
+                <div className="cwiz-trait-label">{trait.label}</div>
+                <div className="cwiz-trait-desc">{trait.description}</div>
+              </div>
+              {this.state.blockTraits.includes(trait.id as BlockTraitId) && (
+                <div className="cwiz-trait-check">&#10003;</div>
+              )}
+            </div>
+          );
+
+          stepContent = (
+            <div className="cwiz-step-content" style={getTraitCardThemeStyle(this.props.theme)}>
+              <div className="cwiz-trait-group-label">Block Shape (pick one)</div>
+              <div className="cwiz-traits-grid">{shapeTraits.map(renderTraitCard)}</div>
+              <div className="cwiz-trait-group-label" style={{ marginTop: "16px" }}>
+                Behaviors
+              </div>
+              <div className="cwiz-traits-grid">{behaviorTraits.map(renderTraitCard)}</div>
+            </div>
+          );
+        }
+        break;
+
+      case 1: // Basic Info
         stepTitle = "Basic Information";
         stepContent = (
           <div className="cwiz-step-content">
@@ -886,7 +1168,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                       displayName
                         .toLowerCase()
                         .replace(/[^a-z0-9]+/g, "_")
-                        .replace(/^_|_$/g, "") || "my_block";
+                        .replace(/^_|_$/g, "") || "block";
                   }
                   this.setState(update as any);
                 }}
@@ -907,49 +1189,17 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                     blockIdManuallyEdited: true,
                   });
                 }}
-                placeholder="my_block"
+                placeholder="block"
                 size="small"
+                error={!!this._getIdConflictError(this.state.blockId, ContentWizardType.block)}
               />
-              <div className="cwiz-field-hint">Unique identifier (a-z, 0-9, underscore only)</div>
-            </div>
-          </div>
-        );
-        break;
-
-      case 1: // Traits
-        stepTitle = "Select Traits";
-        stepContent = (
-          <div className="cwiz-step-content" style={getTraitCardThemeStyle(this.props.theme)}>
-            <div className="cwiz-traits-grid">
-              {BLOCK_TRAITS.map((trait) => (
-                <div
-                  key={trait.id}
-                  className={`cwiz-trait ${
-                    this.state.blockTraits.includes(trait.id as BlockTraitId) ? "cwiz-trait-selected" : ""
-                  }`}
-                  onClick={() => {
-                    const traits = [...this.state.blockTraits];
-                    const idx = traits.indexOf(trait.id as BlockTraitId);
-                    if (idx >= 0) {
-                      traits.splice(idx, 1);
-                    } else {
-                      traits.push(trait.id as BlockTraitId);
-                    }
-                    this.setState({ blockTraits: traits });
-                  }}
-                >
-                  <div className="cwiz-trait-icon" style={{ color: getTraitIconColor(trait) }}>
-                    {renderBlockTraitIcon(trait.id)}
-                  </div>
-                  <div className="cwiz-trait-text">
-                    <div className="cwiz-trait-label">{trait.label}</div>
-                    <div className="cwiz-trait-desc">{trait.description}</div>
-                  </div>
-                  {this.state.blockTraits.includes(trait.id as BlockTraitId) && (
-                    <div className="cwiz-trait-check">&#10003;</div>
-                  )}
+              {this._getIdConflictError(this.state.blockId, ContentWizardType.block) ? (
+                <div className="cwiz-field-error">
+                  {this._getIdConflictError(this.state.blockId, ContentWizardType.block)}
                 </div>
-              ))}
+              ) : (
+                <div className="cwiz-field-hint">Unique identifier (a-z, 0-9, underscore only)</div>
+              )}
             </div>
           </div>
         );
@@ -1005,7 +1255,62 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
     let stepTitle: string = "";
 
     switch (step) {
-      case 0: // Basic Info
+      case 0: // Traits
+        stepTitle = "Select Traits";
+        {
+          const typeTraits = ITEM_TRAITS.filter((t) => t.exclusiveGroup === "type");
+          const behaviorTraits = ITEM_TRAITS.filter((t) => !t.exclusiveGroup);
+
+          const renderItemTraitCard = (trait: ITraitInfo) => (
+            <div
+              key={trait.id}
+              className={`cwiz-trait ${
+                this.state.itemTraits.includes(trait.id as ItemTraitId) ? "cwiz-trait-selected" : ""
+              }`}
+              onClick={() => {
+                let traits = [...this.state.itemTraits];
+                const idx = traits.indexOf(trait.id as ItemTraitId);
+                if (idx >= 0) {
+                  traits.splice(idx, 1);
+                } else {
+                  if (trait.exclusiveGroup) {
+                    const exclusiveIds = ITEM_TRAITS.filter(
+                      (t) => t.exclusiveGroup === trait.exclusiveGroup && t.id !== trait.id
+                    ).map((t) => t.id as ItemTraitId);
+                    traits = traits.filter((t) => !exclusiveIds.includes(t));
+                  }
+                  traits.push(trait.id as ItemTraitId);
+                }
+                this.setState({ itemTraits: traits });
+              }}
+            >
+              <div className="cwiz-trait-icon" style={{ color: getTraitIconColor(trait) }}>
+                {renderItemTraitIcon(trait.id)}
+              </div>
+              <div className="cwiz-trait-text">
+                <div className="cwiz-trait-label">{trait.label}</div>
+                <div className="cwiz-trait-desc">{trait.description}</div>
+              </div>
+              {this.state.itemTraits.includes(trait.id as ItemTraitId) && (
+                <div className="cwiz-trait-check">&#10003;</div>
+              )}
+            </div>
+          );
+
+          stepContent = (
+            <div className="cwiz-step-content" style={getTraitCardThemeStyle(this.props.theme)}>
+              <div className="cwiz-trait-group-label">Item Type (pick one)</div>
+              <div className="cwiz-traits-grid">{typeTraits.map(renderItemTraitCard)}</div>
+              <div className="cwiz-trait-group-label" style={{ marginTop: "16px" }}>
+                Behaviors
+              </div>
+              <div className="cwiz-traits-grid">{behaviorTraits.map(renderItemTraitCard)}</div>
+            </div>
+          );
+        }
+        break;
+
+      case 1: // Basic Info
         stepTitle = "Basic Information";
         stepContent = (
           <div className="cwiz-step-content">
@@ -1022,7 +1327,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                       displayName
                         .toLowerCase()
                         .replace(/[^a-z0-9]+/g, "_")
-                        .replace(/^_|_$/g, "") || "my_item";
+                        .replace(/^_|_$/g, "") || "item";
                   }
                   this.setState(update as any);
                 }}
@@ -1043,49 +1348,17 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                     itemIdManuallyEdited: true,
                   });
                 }}
-                placeholder="my_item"
+                placeholder="item"
                 size="small"
+                error={!!this._getIdConflictError(this.state.itemId, ContentWizardType.item)}
               />
-              <div className="cwiz-field-hint">Unique identifier (a-z, 0-9, underscore only)</div>
-            </div>
-          </div>
-        );
-        break;
-
-      case 1: // Traits
-        stepTitle = "Select Traits";
-        stepContent = (
-          <div className="cwiz-step-content" style={getTraitCardThemeStyle(this.props.theme)}>
-            <div className="cwiz-traits-grid">
-              {ITEM_TRAITS.map((trait) => (
-                <div
-                  key={trait.id}
-                  className={`cwiz-trait ${
-                    this.state.itemTraits.includes(trait.id as ItemTraitId) ? "cwiz-trait-selected" : ""
-                  }`}
-                  onClick={() => {
-                    const traits = [...this.state.itemTraits];
-                    const idx = traits.indexOf(trait.id as ItemTraitId);
-                    if (idx >= 0) {
-                      traits.splice(idx, 1);
-                    } else {
-                      traits.push(trait.id as ItemTraitId);
-                    }
-                    this.setState({ itemTraits: traits });
-                  }}
-                >
-                  <div className="cwiz-trait-icon" style={{ color: getTraitIconColor(trait) }}>
-                    {renderItemTraitIcon(trait.id)}
-                  </div>
-                  <div className="cwiz-trait-text">
-                    <div className="cwiz-trait-label">{trait.label}</div>
-                    <div className="cwiz-trait-desc">{trait.description}</div>
-                  </div>
-                  {this.state.itemTraits.includes(trait.id as ItemTraitId) && (
-                    <div className="cwiz-trait-check">&#10003;</div>
-                  )}
+              {this._getIdConflictError(this.state.itemId, ContentWizardType.item) ? (
+                <div className="cwiz-field-error">
+                  {this._getIdConflictError(this.state.itemId, ContentWizardType.item)}
                 </div>
-              ))}
+              ) : (
+                <div className="cwiz-field-hint">Unique identifier (a-z, 0-9, underscore only)</div>
+              )}
             </div>
           </div>
         );

@@ -111,7 +111,7 @@ export default class BlockbenchModel {
     if (face.uv.length >= 4) {
       return {
         uv: [face.uv[0], face.uv[1]],
-        uv_size: [Math.abs(face.uv[2] - face.uv[0]), Math.abs(face.uv[3] - face.uv[1])],
+        uv_size: [face.uv[2] - face.uv[0], face.uv[3] - face.uv[1]],
       };
     } else if (face.uv.length >= 2) {
       return {
@@ -266,12 +266,24 @@ export default class BlockbenchModel {
     if (this.data?.resolution) {
       geo.textureheight = this.data.resolution.height;
       geo.texturewidth = this.data.resolution.width;
+
+      // For 1.10+ format, also update the description which the renderer reads first
+      if (geo.description) {
+        geo.description.texture_width = this.data.resolution.width;
+        geo.description.texture_height = this.data.resolution.height;
+      }
     }
 
     if (this.data?.visible_box && this.data.visible_box.length === 3) {
       geo.visible_bounds_width = this.data.visible_box[0];
       geo.visible_bounds_height = this.data.visible_box[1];
       geo.visible_bounds_offset = [0, this.data.visible_box[2], 0];
+
+      if (geo.description) {
+        geo.description.visible_bounds_width = this.data.visible_box[0];
+        geo.description.visible_bounds_height = this.data.visible_box[1];
+        geo.description.visible_bounds_offset = [0, this.data.visible_box[2], 0];
+      }
     }
     const bonesByName: { [name: string]: IGeometryBone } = {};
     const groupsByUuid: { [name: string]: IBlockbenchGroupItem } = {};

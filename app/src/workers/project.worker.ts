@@ -705,6 +705,16 @@ async function generateBlockThumbnail(
       }
     }
 
+    // Use the block's map_color for fallback if no texture is available
+    let blockColor: string | undefined;
+    const mapColorComp = blockTypeDef.getComponent("minecraft:map_color");
+    if (mapColorComp && mapColorComp.getData()) {
+      blockColor = typeof mapColorComp.getData() === "string" ? (mapColorComp.getData() as string) : undefined;
+    }
+    if (!blockColor) {
+      blockColor = blockTypeDef.mapColor;
+    }
+
     const svg = Model2DRenderer.renderToSvg(geometryToRender, {
       viewDirection: "iso-front-left",
       outputWidth: thumbnailWidth,
@@ -713,7 +723,7 @@ async function generateBlockThumbnail(
       depthShadingIntensity: 0.25,
       perspectiveStrength: 0,
       focalLength: 80,
-      fallbackColor: texturePixels ? "#888888" : "#6a6a6a",
+      fallbackColor: blockColor || (texturePixels ? "#888888" : "#6a6a6a"),
       padding: 2,
       texturePixels: texturePixels,
       textureWidth: textureWidth,

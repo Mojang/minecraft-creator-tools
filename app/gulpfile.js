@@ -605,6 +605,21 @@ gulp.task(
   gulp.parallel("postclean-vscwebbuild-node_modules", "postclean-vscwebbuild-toolbuild", "postclean-vscwebbuild-build")
 );
 
+// Package the VS Code extension into a .vsix file using @vscode/vsce.
+// The .vsix is written into toolbuild/vsc/ so semantic-release can find it
+// via the "app/toolbuild/vsc/*.vsix" asset glob.
+function packageVsix(done) {
+  try {
+    execSync("npx @vscode/vsce package --no-dependencies -o .", {
+      cwd: "toolbuild/vsc",
+      stdio: "inherit",
+    });
+    done();
+  } catch (err) {
+    done(err);
+  }
+}
+
 gulp.task(
   "vscbuild",
   gulp.series(
@@ -628,7 +643,8 @@ gulp.task(
       copyVscResSnapshots,
       copyVscResSamples,
       copyVscMc
-    )
+    ),
+    packageVsix
   )
 );
 

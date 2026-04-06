@@ -22,25 +22,50 @@ const PLACEHOLDER_TEXTURES = {
   item: "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAALUlEQVR4AaXBAQEAMAyDMI5/EXW6iyB5245AIokkkkgiiSSSSCKJJJJIIokk+ufpAv+MBfj8AAAAAElFTkSuQmCC",
 };
 
+export function parseHex(hex: string): { r: number; g: number; b: number } {
+  const h = hex.startsWith("#") ? hex.slice(1) : hex;
+  return {
+    r: parseInt(h.slice(0, 2), 16) || 128,
+    g: parseInt(h.slice(2, 4), 16) || 128,
+    b: parseInt(h.slice(4, 6), 16) || 128,
+  };
+}
+
+/**
+ * Generate checkerboard RGBA pixel data for two colors.
+ */
+function generateCheckerboardPixels(
+  width: number,
+  height: number,
+  primaryHex: string,
+  secondaryHex: string,
+  cellSize: number
+): Uint8Array {
+  const pixels = new Uint8Array(width * height * 4);
+  const primary = parseHex(primaryHex);
+  const secondary = parseHex(secondaryHex);
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const idx = (y * width + x) * 4;
+      const isSecondary = Math.floor(x / cellSize) % 2 === Math.floor(y / cellSize) % 2;
+      const color = isSecondary ? secondary : primary;
+
+      pixels[idx] = color.r;
+      pixels[idx + 1] = color.g;
+      pixels[idx + 2] = color.b;
+      pixels[idx + 3] = 255;
+    }
+  }
+
+  return pixels;
+}
+
 /**
  * Cross-platform PNG encoder that works in both browser and NodeJS environments.
  * Provides pre-encoded placeholder textures for reliable cross-platform use.
  */
 export default class PngEncoder {
-  /**
-   * Encode RGBA pixel data to PNG format.
-   * Delegates to ImageCodec.encodeToPngSync.
-   *
-   * @param pixels RGBA pixel data (4 bytes per pixel)
-   * @param width Image width in pixels
-   * @param height Image height in pixels
-   * @returns PNG data as Uint8Array, or undefined on error
-   * @deprecated Use ImageCodec.encodeToPngSync() directly.
-   */
-  static encodeRgbaToPng(pixels: Uint8Array, width: number, height: number): Uint8Array | undefined {
-    return ImageCodec.encodeToPngSync(pixels, width, height);
-  }
-
   /**
    * Create a simple solid-color texture.
    *
@@ -50,10 +75,7 @@ export default class PngEncoder {
    * @returns PNG data as Uint8Array
    */
   static createSolidColorPng(width: number, height: number, hexColor: string): Uint8Array | undefined {
-    const h = hexColor.startsWith("#") ? hexColor.slice(1) : hexColor;
-    const r = parseInt(h.slice(0, 2), 16) || 128;
-    const g = parseInt(h.slice(2, 4), 16) || 128;
-    const b = parseInt(h.slice(4, 6), 16) || 128;
+    const { r, g, b } = parseHex(hexColor);
 
     const decoded = ImageCodec.createSolidColor(width, height, r, g, b, 255);
     return ImageCodec.encodeToPngSync(decoded.pixels, decoded.width, decoded.height);
@@ -76,32 +98,7 @@ export default class PngEncoder {
     secondaryHex: string,
     cellSize: number = 8
   ): Uint8Array | undefined {
-    const pixels = new Uint8Array(width * height * 4);
-
-    const parseHex = (hex: string): { r: number; g: number; b: number } => {
-      const h = hex.startsWith("#") ? hex.slice(1) : hex;
-      return {
-        r: parseInt(h.slice(0, 2), 16) || 128,
-        g: parseInt(h.slice(2, 4), 16) || 128,
-        b: parseInt(h.slice(4, 6), 16) || 128,
-      };
-    };
-
-    const primary = parseHex(primaryHex);
-    const secondary = parseHex(secondaryHex);
-
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        const idx = (y * width + x) * 4;
-        const isSecondary = Math.floor(x / cellSize) % 2 === Math.floor(y / cellSize) % 2;
-        const color = isSecondary ? secondary : primary;
-
-        pixels[idx] = color.r;
-        pixels[idx + 1] = color.g;
-        pixels[idx + 2] = color.b;
-        pixels[idx + 3] = 255;
-      }
-    }
+    const pixels = generateCheckerboardPixels(width, height, primaryHex, secondaryHex, cellSize);
 
     // Try runtime encoding first
     const encoded = ImageCodec.encodeToPngSync(pixels, width, height);
@@ -118,6 +115,34 @@ export default class PngEncoder {
 
     // Last resort: return entity placeholder scaled
     return PngEncoder.getPlaceholderTexture("entity");
+  }
+
+  /**
+   * Async version of createCheckerboardPng that works in browser environments.
+   * Falls back to sync encoding first, then tries browser Canvas API.
+   */
+  static async createCheckerboardPngAsync(
+    width: number,
+    height: number,
+    primaryHex: string,
+    secondaryHex: string,
+    cellSize: number = 8
+  ): Promise<Uint8Array | undefined> {
+    const pixels = generateCheckerboardPixels(width, height, primaryHex, secondaryHex, cellSize);
+
+    // Try sync encoding first (Node.js)
+    const encoded = ImageCodec.encodeToPngSync(pixels, width, height);
+    if (encoded) {
+      return encoded;
+    }
+
+    // Try async browser encoding (Canvas API)
+    const browserEncoded = await ImageCodec.encodeToPngBrowser(pixels, width, height);
+    if (browserEncoded) {
+      return browserEncoded;
+    }
+
+    return undefined;
   }
 
   /**

@@ -83,6 +83,10 @@ interface IModelViewerState {
   ignoreAlpha?: boolean;
   /** Pre-transformed geometry from VanillaProjectManager (has VanillaGeometryTransforms applied). */
   transformedGeometry?: IGeometry;
+  /** Counter incremented after each bbmodel upload to force VolumeEditor remount. */
+  uploadGeneration?: number;
+  /** Geometry ProjectItem resolved during entity loading, used for full bbmodel export with textures. */
+  geometryProjectItem?: ProjectItem;
 }
 
 export default class ModelViewer extends Component<IModelViewerProps, IModelViewerState> {
@@ -681,6 +685,7 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
         // Find geometry and texture from project child items
         let modelDef: ModelGeometryDefinition | undefined;
         let textureData: Uint8Array | undefined;
+        let geometryProjectItem: ProjectItem | undefined;
 
         if (item.childItems) {
           for (const childRel of item.childItems) {
@@ -689,6 +694,7 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
             if (childItem.itemType === ProjectItemType.modelGeometryJson && childItem.primaryFile) {
               await childItem.loadContent();
               modelDef = await ModelGeometryDefinition.ensureOnFile(childItem.primaryFile);
+              geometryProjectItem = childItem;
             }
 
             if (childItem.itemType === ProjectItemType.texture && childItem.primaryFile) {
@@ -776,6 +782,7 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
             textureVariants: textureVariants,
             selectedTextureVariant: selectedVariant,
             entityResourceDef: etrd,
+            geometryProjectItem: geometryProjectItem,
             skipVanillaResources: true,
           }));
 
@@ -897,22 +904,25 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
   }
 
   async _handleOpenInBlockbench() {
-    // If we have a project item, use the full export which includes textures and animations
-    if (this.props.projectItem) {
+    // If we have a project item (from props or resolved during entity loading),
+    // use the full export which includes textures and animations
+    const modelItem = this.props.projectItem || this.state?.geometryProjectItem;
+
+    if (modelItem) {
       try {
-        if (!this.props.projectItem.isContentLoaded) {
-          await this.props.projectItem.loadContent();
+        if (!modelItem.isContentLoaded) {
+          await modelItem.loadContent();
         }
 
-        if (this.props.projectItem.project) {
-          await this.props.projectItem.project.processRelations(false);
+        if (modelItem.project) {
+          await modelItem.project.processRelations(false);
         }
 
-        const bbmodel = await BlockbenchModel.exportModel(this.props.projectItem);
+        const bbmodel = await BlockbenchModel.exportModel(modelItem);
 
         if (bbmodel) {
           const json = JSON.stringify(bbmodel);
-          const baseName = StorageUtilities.getBaseFromName(this.props.projectItem.name);
+          const baseName = StorageUtilities.getBaseFromName(modelItem.name);
           saveAs(new Blob([json], { type: "application/json" }), baseName + ".bbmodel");
           return;
         }
@@ -945,14 +955,37 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
     try {
       const jsonContent = await file.text();
       const bbm = BlockbenchModel.ensureFromContent(jsonContent);
+
+      // When uploading from a model viewer that is already showing a specific model,
+      // override the bbmodel's identifier to match the current model so that
+      // integrateIntoProject overwrites the existing geometry instead of creating a new file.
+      if (this.state.model && this.state.model.identifiers.length > 0) {
+        bbm.id = this.state.model.identifiers[0];
+      }
+
       await bbm.integrateIntoProject(this.props.project);
       await this.props.project.save();
       await this.props.project.inferProjectItemsFromFiles(true);
 
-      // Reload the viewer to show the updated model
+      // Reload the viewer to show the updated model.
+      // Increment uploadGeneration to force VolumeEditor remount — VolumeEditor
+      // creates its BabylonJS scene once and does not re-render entity meshes on
+      // prop changes, so a key change is needed for the new geometry/textures.
+      const nextGen = (this.state.uploadGeneration || 0) + 1;
       if (this.props.projectItem) {
         await this.loadFromModelItem(this.props.projectItem);
+      } else if (this.props.entityTypeId) {
+        // When loaded via entityTypeId (e.g., from the Visuals tab), clear the
+        // cached ID so loadFromEntityTypeId re-runs with fresh project data.
+        this._lastEntityTypeId = undefined;
+        await this.loadFromEntityTypeId(this.props.entityTypeId);
+      } else if (this.state?.geometryProjectItem) {
+        await this.loadFromModelItem(this.state.geometryProjectItem);
       }
+      // Use functional updater to merge uploadGeneration with the state that
+      // loadFromEntityTypeId / loadFromModelItem just set, rather than
+      // overwriting it with a plain object.
+      this.setState((prevState) => ({ ...prevState, uploadGeneration: nextGen }));
     } catch (err) {
       Log.error("Failed to import bbmodel: " + err);
     }
@@ -1042,7 +1075,8 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
       // BabylonJS scene once during componentDidMount and does not re-render
       // entity meshes on prop changes, so a key change is the simplest way to
       // get the new texture data on screen.
-      const volumeKey = "ve_" + (this.state.selectedTextureVariant || "default");
+      const volumeKey =
+        "ve_" + (this.state.selectedTextureVariant || "default") + "_" + (this.state.uploadGeneration || 0);
 
       interior = (
         <VolumeEditor
@@ -1179,7 +1213,7 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
                       onClick={this._handleOpenInBlockbench}
                       size="small"
                       startIcon={<FontAwesomeIcon icon={faCube} />}
-                      sx={{ textTransform: "none", fontSize: "0.8rem" }}
+                      sx={{ textTransform: "none", fontSize: "0.8rem", whiteSpace: "nowrap" }}
                     >
                       Edit in Blockbench
                     </Button>
@@ -1191,7 +1225,7 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
                       component="label"
                       size="small"
                       startIcon={<FontAwesomeIcon icon={faUpload} />}
-                      sx={{ textTransform: "none", fontSize: "0.8rem" }}
+                      sx={{ textTransform: "none", fontSize: "0.8rem", whiteSpace: "nowrap" }}
                     >
                       Upload .bbmodel
                       <input type="file" accept=".bbmodel" hidden onChange={this._handleUploadBbmodel} />

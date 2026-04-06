@@ -5,7 +5,9 @@ import "./EntityTypeEditor.css";
 import EntityTypeDefinition from "../../../minecraft/EntityTypeDefinition";
 import Database from "../../../minecraft/Database";
 import EntityTypeComponentSetEditor from "./EntityTypeComponentSetEditor";
-import McSelectableList, { McSelectableListItem } from "../../shared/components/inputs/mcSelectableList/McSelectableList";
+import McSelectableList, {
+  McSelectableListItem,
+} from "../../shared/components/inputs/mcSelectableList/McSelectableList";
 import { Stack, Button, Menu, MenuItem } from "@mui/material";
 import ManagedComponentGroup from "../../../minecraft/ManagedComponentGroup";
 import { CustomTabLabel } from "../../shared/components/feedback/labels/Labels";

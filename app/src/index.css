@@ -180,28 +180,28 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2d6b1e;
-  border-top: 3px solid #4a9636;
-  border-left: 3px solid #4a9636;
-  border-right: 3px solid #163a0e;
-  border-bottom: 3px solid #163a0e;
+  background: #3a3a3a;
+  border-top: 3px solid #555555;
+  border-left: 3px solid #555555;
+  border-right: 3px solid #222222;
+  border-bottom: 3px solid #222222;
   min-height: 32px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3e8828;
-  border-top-color: #5fb93e;
-  border-left-color: #5fb93e;
-  border-right-color: #1e4d14;
-  border-bottom-color: #1e4d14;
+  background: #4a4a4a;
+  border-top-color: #666666;
+  border-left-color: #666666;
+  border-right-color: #2a2a2a;
+  border-bottom-color: #2a2a2a;
 }
 
 ::-webkit-scrollbar-thumb:active {
-  background: #1e4d14;
-  border-top: 3px solid #163a0e;
-  border-left: 3px solid #163a0e;
-  border-right: 3px solid #4a9636;
-  border-bottom: 3px solid #4a9636;
+  background: #2a2a2a;
+  border-top: 3px solid #222222;
+  border-left: 3px solid #222222;
+  border-right: 3px solid #555555;
+  border-bottom: 3px solid #555555;
 }
 
 ::-webkit-scrollbar-corner {
@@ -212,7 +212,7 @@ body {
 @-moz-document url-prefix() {
   * {
     scrollbar-width: auto;
-    scrollbar-color: #3e8828 #1a1918;
+    scrollbar-color: #4a4a4a #1a1918;
   }
 }
 
@@ -223,27 +223,27 @@ body.ct-light ::-webkit-scrollbar-track {
 }
 
 body.ct-light ::-webkit-scrollbar-thumb {
-  background: #52a535;
-  border-top: 3px solid #86d562;
-  border-left: 3px solid #86d562;
-  border-right: 3px solid #2a641c;
-  border-bottom: 3px solid #2a641c;
+  background: #c8bfb0;
+  border-top: 3px solid #ddd5c8;
+  border-left: 3px solid #ddd5c8;
+  border-right: 3px solid #a89e8e;
+  border-bottom: 3px solid #a89e8e;
 }
 
 body.ct-light ::-webkit-scrollbar-thumb:hover {
-  background: #6bc24a;
-  border-top-color: #9ee87a;
-  border-left-color: #9ee87a;
-  border-right-color: #3e8828;
-  border-bottom-color: #3e8828;
+  background: #b8af9f;
+  border-top-color: #d0c8ba;
+  border-left-color: #d0c8ba;
+  border-right-color: #9a9080;
+  border-bottom-color: #9a9080;
 }
 
 body.ct-light ::-webkit-scrollbar-thumb:active {
-  background: #3e8828;
-  border-top: 3px solid #2a641c;
-  border-left: 3px solid #2a641c;
-  border-right: 3px solid #86d562;
-  border-bottom: 3px solid #86d562;
+  background: #a89e8e;
+  border-top: 3px solid #9a9080;
+  border-left: 3px solid #9a9080;
+  border-right: 3px solid #ddd5c8;
+  border-bottom: 3px solid #ddd5c8;
 }
 
 body.ct-light ::-webkit-scrollbar-corner {
@@ -252,7 +252,7 @@ body.ct-light ::-webkit-scrollbar-corner {
 
 @-moz-document url-prefix() {
   body.ct-light * {
-    scrollbar-color: #52a535 #d8d5d3;
+    scrollbar-color: #c8bfb0 #d8d5d3;
   }
 }
 

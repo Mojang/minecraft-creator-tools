@@ -680,7 +680,7 @@ export default class HttpServer {
           if (slot !== undefined) {
             client.slot = slot;
           }
-          Log.message(
+          Log.verbose(
             `[HttpServer] Client ${client.id} subscribed to events: ${eventNames.join(", ")} for slot ${slot}`
           );
         } else if (message.header.messagePurpose === "unsubscribe") {
@@ -3413,7 +3413,7 @@ export default class HttpServer {
       // Note: req not available here, using default headers
       res.writeHead(404, this.headers);
       res.end("Could not find '" + baseSegment + relativeUrl + "'");
-      Log.debug("404 Not Found: /" + baseSegment + relativeUrl);
+      Log.verbose("404 Not Found: /" + baseSegment + relativeUrl);
       return;
     }
 

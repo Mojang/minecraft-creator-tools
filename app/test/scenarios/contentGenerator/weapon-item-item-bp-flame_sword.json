@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.0",
+  "format_version": "1.21.70",
   "minecraft:item": {
     "description": {
       "identifier": "test:flame_sword",
@@ -19,9 +19,7 @@
       },
       "minecraft:can_destroy_in_creative": false,
       "minecraft:glint": true,
-      "minecraft:icon": {
-        "texture": "test_flame_sword"
-      }
+      "minecraft:icon": "test:flame_sword"
     }
   }
 }

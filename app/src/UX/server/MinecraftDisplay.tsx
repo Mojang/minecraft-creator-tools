@@ -871,7 +871,7 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
       );
     } else if (cs === CreatorToolsMinecraftState.initialized) {
       hostToolbarItems.push(
-        <Button key="serverInitted" onClick={this._stopDedicatedServerClick} title="Stop server" size="small">
+        <Button key="serverInitted" onClick={this._startClick} title="Start server and deploy project" size="small">
           <ServerInitializedLabel isCompact={isButtonCompact} />
         </Button>
       );

@@ -75,7 +75,7 @@ export default function LongFormStringField(props: ILongFormStringFieldProps): J
     <TextField
       fullWidth
       multiline
-      rows={4}
+      rows={2}
       key={"txa" + baseKey}
       id={field.id}
       value={value as string}

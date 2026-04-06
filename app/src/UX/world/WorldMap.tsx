@@ -1238,7 +1238,11 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
         await this._loadCustomBlockCache();
 
         this.setState({ loadingMessage: "Loading chunks..." });
-        await world.loadLevelDb(false, {
+        // Force-reload folder listings when the world is backed by remote storage
+        // (e.g., HTTP via npx mct edit). The folder may have been cached before BDS
+        // created the db/ directory. For local/zip worlds this is false (no-op reload).
+        const forceReload = world.isListeningToStorage;
+        await world.loadLevelDb(forceReload, {
           // Enable lazy loading to dramatically reduce memory usage for large worlds
           lazyLoad: true,
           // Skip full world data processing - chunks are created on-demand when accessed

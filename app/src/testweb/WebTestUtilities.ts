@@ -272,6 +272,24 @@ export function getTestToolbarButton(page: Page) {
   return page.getByRole("button", { name: /^(Run|Test)$/i }).first();
 }
 
+/**
+ * Detect whether the page is running against a Vite dev server.
+ * Tests that rely on Vite-only features (e.g., ?worker imports, /src/ dynamic imports)
+ * should call this and skip when it returns false.
+ */
+export async function isViteDevServer(page: Page): Promise<boolean> {
+  return page.evaluate(() => {
+    try {
+      return (
+        !!(window as any).__vite_plugin_react_preamble_installed__ ||
+        document.querySelector('script[type="module"][src*="/@vite"]') !== null
+      );
+    } catch {
+      return false;
+    }
+  });
+}
+
 export async function waitForEditorReady(page: Page, timeoutMs: number = 15000): Promise<boolean> {
   const started = Date.now();
 
@@ -381,9 +399,17 @@ export async function enterEditor(
       }
     }
 
-    // Wait for editor to load - give it more time as project creation can be slow
-    await page.waitForTimeout(9000);
+    // Wait for editor to load. Use polling rather than a fixed timeout so this
+    // works reliably against both a local Vite dev server and a remote
+    // production site where network latency is unpredictable.
+    // First wait a minimum amount of time for the page to begin transitioning,
+    // then poll for the editor toolbar to appear.
+    await page.waitForTimeout(3000);
     await page.waitForLoadState("networkidle");
+
+    // Poll for early editor readiness (up to 20s more) before proceeding to
+    // mode selection. This replaces the previous fixed 9s wait.
+    const earlyReady = await waitForEditorReady(page, 20000);
 
     // Now that the editor is loaded, the FRE panel should be visible.
     // Select the desired editing mode (Focused/Full/Raw) before verifying UI.
