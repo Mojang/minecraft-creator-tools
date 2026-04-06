@@ -1,0 +1,30 @@
+{
+  "items": {
+    "children": {
+      "total_exp_required": { "title": "Total Exp Required", "default": 0 },
+      "groups": {
+        "title": "Groups",
+        "items": {
+          "children": {
+            "num_to_select": { "title": "Num To Select", "default": 0 },
+            "trades": {
+              "title": "Trades",
+              "items": {
+                "children": {
+                  "gives": {
+                    "title": "Gives",
+                    "oneOf": "uichoice"
+                  },
+                  "wants": {
+                    "title": "Wants",
+                    "oneOf": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

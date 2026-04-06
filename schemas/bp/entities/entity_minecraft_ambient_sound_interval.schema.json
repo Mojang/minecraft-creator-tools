@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Ambient Sound Interval",
+  "description": "Delay for an entity playing its sound",
+  "properties": {
+    "event_name": {
+      "title": "Event Name",
+      "description": "Level sound event to be played as the ambient sound.\n\nSample values:\n• allay: ambient\n• fox: sleep\n• fox: screech",
+      "type": "string",
+      "default": "ambient"
+    },
+    "event_names": {
+      "title": "Event Names",
+      "description": "List of dynamic level sound events, with conditions for choosing between them. Evaluated in order, first one wins. If none evaluate to true, 'event_name' will take precedence.\n\nProperties:\n• condition (string)\n• event_name (string)\n\nSample values:\n• allay: [{\"condition\":\"query.is_using_item\",\"event_name...\n• warden: [{\"condition\":\"query.anger_level(this) >= 80\",\"...",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "condition": {
+            "title": "Condition",
+            "description": "The condition that must be satisfied to select the given ambient sound",
+            "type": "string"
+          },
+          "event_name": {
+            "title": "Event Name",
+            "description": "Level sound event to be played as the ambient sound",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "range": {
+      "title": "Range",
+      "description": "Maximum time in seconds to randomly add to the ambient sound delay time.\n\nSample values:\n• allay: 5\n• fox: 160\n• warden: 4",
+      "type": "number",
+      "default": 16
+    },
+    "value": {
+      "title": "Value",
+      "description": "Minimum time in seconds before the entity plays its ambient sound again.\n\nSample values:\n• allay: 5\n• fox: 80\n• warden: 2",
+      "type": "number",
+      "default": 8
+    }
+  }
+}

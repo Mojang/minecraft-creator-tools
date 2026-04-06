@@ -1,0 +1,183 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Nap Behavior",
+  "description": "Allows mobs to occassionally stop and take a nap under certain conditions.",
+  "properties": {
+    "can_nap_filters": {
+      "title": "Can Nap Filters",
+      "description": "Conditions that need to be met for the entity to nap.\n\nProperties:\n• all_of (string)\n\nSample values:\n• fox: {\"all_of\":[{\"test\":\"in_water\",\"subject\":\"self\",...",
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "title": "All of",
+              "description": "\n\nSample values:\n• fox: [{\"test\":\"in_water\",\"subject\":\"self\",\"operator\"...",
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "all_of": {
+                "title": "All of",
+                "description": "\n\nSample values:\n• fox: [{\"test\":\"in_water\",\"subject\":\"self\",\"operator\"...",
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "all_of": {
+                    "title": "All of",
+                    "description": "\n\nSample values:\n• fox: [{\"test\":\"in_water\",\"subject\":\"self\",\"operator\"...",
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "all_of": {
+                    "title": "All of",
+                    "description": "\n\nSample values:\n• fox: [{\"test\":\"in_water\",\"subject\":\"self\",\"operator\"...",
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "all_of": {
+                    "title": "All of",
+                    "description": "\n\nSample values:\n• fox: [{\"test\":\"in_water\",\"subject\":\"self\",\"operator\"...",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "wake_mob_exceptions": {
+      "title": "Wake Mob Exceptions",
+      "description": "Filters for mobs that will not wake this entity from napping.\n\nProperties:\n• any_of (string)\n\nSample values:\n• fox: {\"any_of\":[{\"test\":\"trusts\",\"subject\":\"other\",\"...",
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "any_of": {
+              "title": "Any of",
+              "description": "\n\nSample values:\n• fox: [{\"test\":\"trusts\",\"subject\":\"other\",\"operator\":...",
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "any_of": {
+                "title": "Any of",
+                "description": "\n\nSample values:\n• fox: [{\"test\":\"trusts\",\"subject\":\"other\",\"operator\":...",
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "any_of": {
+                    "title": "Any of",
+                    "description": "\n\nSample values:\n• fox: [{\"test\":\"trusts\",\"subject\":\"other\",\"operator\":...",
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "any_of": {
+                    "title": "Any of",
+                    "description": "\n\nSample values:\n• fox: [{\"test\":\"trusts\",\"subject\":\"other\",\"operator\":...",
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "any_of": {
+                    "title": "Any of",
+                    "description": "\n\nSample values:\n• fox: [{\"test\":\"trusts\",\"subject\":\"other\",\"operator\":...",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "cooldown_max": {
+      "title": "Cooldown Max",
+      "description": "Maximum time in seconds the mob has to wait before using the goal again\n\nSample values:\n• fox: 7",
+      "type": "number",
+      "default": 0
+    },
+    "cooldown_min": {
+      "title": "Cooldown Min",
+      "description": "Minimum time in seconds the mob has to wait before using the goal again\n\nSample values:\n• fox: 2",
+      "type": "number",
+      "default": 0
+    },
+    "mob_detect_dist": {
+      "title": "Mob Detect Dist",
+      "description": "The block distance in x and z that will be checked for mobs that this mob detects\n\nSample values:\n• fox: 12",
+      "type": "number",
+      "default": 6
+    },
+    "mob_detect_height": {
+      "title": "Mob Detect Height",
+      "description": "The block distance in y that will be checked for mobs that this mob detects\n\nSample values:\n• fox: 6",
+      "type": "number",
+      "default": 6
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer"
+    }
+  }
+}

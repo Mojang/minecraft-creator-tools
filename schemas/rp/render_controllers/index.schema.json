@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "resource/render_controller_set",
+  "title": "Render Controller Set",
+  "description": "Defines geometry, materials, and textures for entity rendering.",
+  "type": "object",
+  "properties": {
+    "render_controllers": {
+      "description": "\n\nProperties:\n• geometry (string)\n• materials\n• textures (string[])\n• arrays ({ textures, materials, geometries })\n• part_visibility",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "geometry": {
+            "title": "Geometry",
+            "description": "A name or expression that describes which model to use for this item",
+            "type": "string"
+          },
+          "materials": {
+            "title": "Materials",
+            "description": "A name or expression that expresses logic for which material to use to display this particular entity",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "textures": {
+            "title": "Textures",
+            "description": "A name or expression that expresses logic for which texture to select",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "arrays": {
+            "$ref": "./lists.schema.json",
+            "title": "Lists",
+            "description": "Lists of available textures, materials, and geometries that can be selected\n\nProperties:\n• textures\n• materials\n• geometries"
+          },
+          "part_visibility": {
+            "title": "Part Visibility",
+            "description": "Lists of available textures, materials, and geometries that can be selected",
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

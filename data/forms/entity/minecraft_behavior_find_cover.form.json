@@ -1,0 +1,109 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "seeks cover when threatened"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "control_flags",
+      "title": "Control Flags",
+      "dataType": "stringArray",
+      "defaultValue": [],
+      "choices": [
+        {
+          "id": "jump",
+          "title": "Jump"
+        },
+        {
+          "id": "look",
+          "title": "Look"
+        },
+        {
+          "id": "move",
+          "title": "Move"
+        }
+      ]
+    },
+    {
+      "id": "cooldown_time",
+      "title": "Cooldown Time",
+      "description": "Time in seconds the mob has to wait before using the goal again",
+      "dataType": "float",
+      "defaultValue": 0,
+      "samples": {
+        "/vanilla/behavior_pack/entities/fox.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:fox_day/minecraft:behavior.find_cover/",
+            "content": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "dataType": "int",
+      "defaultValue": 0,
+      "samples": {
+        "/vanilla/behavior_pack/entities/fox.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:fox_day/minecraft:behavior.find_cover/",
+            "content": 9
+          }
+        ]
+      },
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal."
+    },
+    {
+      "id": "speed_multiplier",
+      "title": "Speed Multiplier",
+      "description": "Movement speed multiplier of the mob when using this AI Goal",
+      "dataType": "float",
+      "defaultValue": 1,
+      "samples": {
+        "/vanilla/behavior_pack/entities/fox.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:fox_thunderstorm/minecraft:behavior.find_cover/",
+            "content": 1
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:fox_day/minecraft:behavior.find_cover/",
+            "content": 1
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Allows the mob to seek shade.",
+  "title": "Entity Find Cover Behavior",
+  "samples": {
+    "/vanilla/behavior_pack/entities/fox.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:fox_thunderstorm/minecraft:behavior.find_cover/",
+        "content": {
+          "priority": 0,
+          "speed_multiplier": 1,
+          "cooldown_time": 0
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:fox_day/minecraft:behavior.find_cover/",
+        "content": {
+          "priority": 9,
+          "speed_multiplier": 1,
+          "cooldown_time": 5
+        }
+      }
+    ]
+  },
+  "id": "minecraft:behavior.find_cover"
+}

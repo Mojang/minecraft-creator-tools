@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "block/block_behavior_document",
+  "title": "Block Behavior Document",
+  "description": "A behavior pack block definition document for Minecraft Bedrock Edition. This describes the complete JSON file structure including format_version and the minecraft:block wrapper.",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "title": "Format Version",
+      "description": "The format version of this block behavior file. Determines which features and component schemas are available.",
+      "type": "string"
+    },
+    "minecraft:block": {
+      "title": "Block Definition",
+      "description": "The block definition container with all behavior pack block data.\n\nProperties:\n• permutations = []\n• components (object)\n• description (object)",
+      "$ref": "./block_blockdefinitiondocument.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "BlockDefinitionDocument",
+          "description": "Is a block definition with description, components, and permutations.",
+          "body": {
+            "permutations": [],
+            "description": ""
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "format_version",
+    "minecraft:block"
+  ]
+}

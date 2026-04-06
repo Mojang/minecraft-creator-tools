@@ -1,0 +1,132 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines flipbook animation for particle billboards"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "base_UV",
+      "title": "Base UV",
+      "dataType": "keyedStringCollection",
+      "minLength": 2,
+      "maxLength": 2,
+      "alternates": [
+        {
+          "id": "base_UV",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "base_UV",
+            "title": "Base UV",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "base_UV",
+          "dataType": "float"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "frames_per_second",
+      "title": "Frames Per Second",
+      "dataType": "float",
+      "defaultValue": 0
+    },
+    {
+      "id": "loop",
+      "title": "Loop",
+      "dataType": "boolean",
+      "defaultValue": false
+    },
+    {
+      "id": "max_frame",
+      "title": "Max Frame",
+      "dataType": "keyedStringCollection",
+      "alternates": [
+        {
+          "id": "max_frame",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "max_frame",
+            "title": "Max Frame",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "max_frame",
+          "dataType": "float"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "size_UV",
+      "title": "Size UV",
+      "dataType": "numberArray",
+      "defaultValue": [
+        1,
+        1
+      ],
+      "minLength": 2,
+      "maxLength": 2
+    },
+    {
+      "id": "step_UV",
+      "title": "Step UV",
+      "dataType": "numberArray",
+      "defaultValue": [
+        0,
+        0
+      ],
+      "minLength": 2,
+      "maxLength": 2
+    },
+    {
+      "id": "stretch_to_lifetime",
+      "title": "Stretch To Lifetime",
+      "dataType": "boolean",
+      "defaultValue": false
+    }
+  ],
+  "description": "Enables sprite sheet animation for particle billboards, cycling through frames over the particle's lifetime. Configure the texture grid dimensions, animation speed, and whether to loop or stretch timing. Essential for animated particles like animated flames, water splashes with frames, explosion sequences, and any particle using multi-frame textures.",
+  "title": "Client Particles Particle Appearance Billboard Flipbook Data",
+  "id": "particle_appearance_billboard flipbook_data"
+}

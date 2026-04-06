@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "is completely hidden when invisible"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "The entity can hide from hostile mobs while invisible.",
+  "fields": [],
+  "title": "Is Hidden When Invisible",
+  "samples": {
+    "/vanilla/behavior_pack/entities/allay.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:is_hidden_when_invisible/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/bat.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:is_hidden_when_invisible/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/blaze.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:is_hidden_when_invisible/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/bogged.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:is_hidden_when_invisible/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/breeze.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:is_hidden_when_invisible/",
+        "content": {}
+      }
+    ]
+  },
+  "id": "minecraft:is_hidden_when_invisible"
+}

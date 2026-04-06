@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines aim assist targeting categories"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "categories",
+      "title": "categories",
+      "description": "List of categories used by Camera Aim-Assist 'minecraft:aim_assist_preset'.",
+      "dataType": "objectArray"
+    }
+  ],
+  "description": "CameraAimAssistCategoriesDefinition",
+  "title": "CameraAimAssistCategoriesDefinition"
+}

@@ -1,0 +1,116 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Flocking",
+  "description": "Allows entities to flock in groups in water or not.",
+  "properties": {
+    "block_distance": {
+      "title": "Block Distance",
+      "description": "The amount of blocks away the entity will look at to push away from.\n\nSample values:\n• dolphin: 1",
+      "type": "number",
+      "default": 0
+    },
+    "block_weight": {
+      "title": "Block Weight",
+      "description": "The weight of the push back away from blocks.",
+      "type": "number",
+      "default": 0
+    },
+    "breach_influence": {
+      "title": "Breach Influence",
+      "description": "The amount of push back given to a flocker that breaches out of the water.",
+      "type": "number",
+      "default": 0
+    },
+    "cohesion_threshold": {
+      "title": "Cohesion Threshold",
+      "description": "The threshold in which to start applying cohesion.\n\nSample values:\n• dolphin: 6.5",
+      "type": "number",
+      "default": 1
+    },
+    "cohesion_weight": {
+      "title": "Cohesion Weight",
+      "description": "The weight applied for the cohesion steering of the flock.\n\nSample values:\n• dolphin: 1.85",
+      "type": "number",
+      "default": 1
+    },
+    "goal_weight": {
+      "title": "Goal Weight",
+      "description": "The weight on which to apply on the goal output.\n\nSample values:\n• dolphin: 2",
+      "type": "number",
+      "default": 0
+    },
+    "high_flock_limit": {
+      "title": "High Flock Limit",
+      "description": "Determines the high bound amount of entities that can be allowed in the flock.\n\nSample values:\n• dolphin: 8",
+      "type": "integer",
+      "default": 0
+    },
+    "in_water": {
+      "title": "In Water",
+      "description": "Tells the Flocking Component if the entity exists in water.",
+      "type": "boolean",
+      "default": false
+    },
+    "influence_radius": {
+      "title": "Influence Radius",
+      "description": "The area around the entity that allows others to be added to the flock.\n\nSample values:\n• dolphin: 6",
+      "type": "number",
+      "default": 0
+    },
+    "innner_cohesion_threshold": {
+      "title": "Innner Cohesion Threshold",
+      "description": "The distance in which the flocker will stop applying cohesion.\n\nSample values:\n• dolphin: 3.5",
+      "type": "number",
+      "default": 0
+    },
+    "loner_chance": {
+      "title": "Loner Chance",
+      "description": "The percentage chance between 0-1 that a fish will spawn and not want to join flocks. Invalid values will be capped at the end points.\n\nSample values:\n• dolphin: 0.1",
+      "type": "number",
+      "default": 0
+    },
+    "low_flock_limit": {
+      "title": "Low Flock Limit",
+      "description": "Determines the low bound amount of entities that can be allowed in the flock.\n\nSample values:\n• dolphin: 4",
+      "type": "integer",
+      "default": 0
+    },
+    "match_variants": {
+      "title": "Match Variants",
+      "description": "Tells the flockers that they can only match similar entities that also match the variant, mark variants, and color data of the other potential flockers.",
+      "type": "boolean",
+      "default": false
+    },
+    "max_height": {
+      "title": "Max Height",
+      "description": "The max height allowable in the air or water.\n\nSample values:\n• dolphin: 4",
+      "type": "number",
+      "default": 0
+    },
+    "min_height": {
+      "title": "Min Height",
+      "description": "The min height allowable in the air or water.\n\nSample values:\n• dolphin: 4",
+      "type": "number",
+      "default": 0
+    },
+    "separation_threshold": {
+      "title": "Separation Threshold",
+      "description": "The distance that is determined to be to close to another flocking and to start applying separation.\n\nSample values:\n• dolphin: 3",
+      "type": "number",
+      "default": 2
+    },
+    "separation_weight": {
+      "title": "Separation Weight",
+      "description": "The weight applied to the separation of the flock.\n\nSample values:\n• dolphin: 1.75",
+      "type": "number",
+      "default": 1
+    },
+    "use_center_of_mass": {
+      "title": "Use Center Of Mass",
+      "description": "Tells the flockers that they will follow flocks based on the center of mass.",
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

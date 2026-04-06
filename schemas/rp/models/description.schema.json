@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Description",
+  "description": "\n\nProperties:\n• identifier (string)\n• visible_bounds_offset (string[])\n• texture_width (int)\n• texture_height (int)",
+  "type": "object",
+  "properties": {
+    "identifier": {
+      "title": "Identifier",
+      "description": "Entity definition and Client Block definition files refer to this geometry via this identifier.",
+      "type": "string"
+    },
+    "visible_bounds_offset": {
+      "title": "Visible Bounds Offset",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "texture_width": {
+      "title": "Texture Width",
+      "description": "Assumed width in texels of the texture that will be bound to this geometry.",
+      "type": "integer"
+    },
+    "texture_height": {
+      "title": "Texture Height",
+      "description": "Assumed height in texels of the texture that will be bound to this geometry.",
+      "type": "integer"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Description",
+      "description": "Create a Description",
+      "body": {
+        "identifier": "",
+        "texture_width": 0,
+        "texture_height": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "returns armor material slot information"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.armor_material_slot",
+  "fields": [],
+  "description": "Takes the armor slot index as a parameter, and returns the armor material type in the requested armor slot. The valid values for the armor slot index are 0 (head), 1 (chest), 2 (legs) and 3 (feet).",
+  "title": "Armor Material Slot"
+}

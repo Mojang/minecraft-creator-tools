@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Add Rider",
+  "description": "Adds a rider to the entity.",
+  "properties": {
+    "entity_type": {
+      "title": "Entity type to ride",
+      "description": "Type of entity to acquire as a rider",
+      "type": "string"
+    },
+    "spawn_event": {
+      "title": "Spawn Event",
+      "description": "Trigger event when a rider is acquired",
+      "type": "string"
+    },
+    "riders": {
+      "title": "Riders",
+      "description": "List of riders to be added to the entity. Can only spawn as many riders as \"minecraft:rideable\" has \"seat_count\".\n\nProperties:\n• entity_type (string)\n• spawn_event (string) = \n\nSample values:\n• cave_spider: [{\"entity_type\":\"minecraft:bogged\"}]\n• cave_spider: [{\"entity_type\":\"minecraft:wither_skeleton\"}]",
+      "type": "array",
+      "items": {
+        "$ref": "./entity_rider_data.schema.json"
+      }
+    }
+  }
+}

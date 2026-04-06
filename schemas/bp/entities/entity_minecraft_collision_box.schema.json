@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Collision Box",
+  "description": "Sets the width and height of the Entity's collision box.",
+  "properties": {
+    "height": {
+      "title": "Height",
+      "description": "Height of the collision box in blocks. A negative value will be assumed to be 0.\n\nSample values:\n• allay: 0.6\n• armor_stand: 1.975\n• arrow: 0.25",
+      "type": "number",
+      "default": 1
+    },
+    "width": {
+      "title": "Width",
+      "description": "Width of the collision box in blocks. A negative value will be assumed to be 0. Min value is -100000000.000000 Max value is 100000000.000000\n\nSample values:\n• allay: 0.35\n• armor_stand: 0.5\n• arrow: 0.25",
+      "type": "number",
+      "default": 1
+    }
+  }
+}

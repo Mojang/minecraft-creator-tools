@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a single aim assist category with priorities"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "name",
+      "title": "name",
+      "description": "Name of the Aim-Assist Category used during lookup.",
+      "dataType": "string"
+    },
+    {
+      "id": "priorities",
+      "title": "priorities",
+      "description": "The set of priorities used when determining aim-assist selection.",
+      "dataType": "object"
+    }
+  ],
+  "description": "CameraAimAssistCategoryDefinition",
+  "title": "CameraAimAssistCategoryDefinition"
+}

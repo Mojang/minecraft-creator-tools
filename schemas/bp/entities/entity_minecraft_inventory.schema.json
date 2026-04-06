@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Inventory",
+  "description": "Defines this entity's inventory properties.",
+  "properties": {
+    "additional_slots_per_strength": {
+      "title": "Additional Slots Per Strength",
+      "description": "Number of slots that this entity can gain per extra strength",
+      "type": "integer",
+      "default": 0
+    },
+    "can_be_siphoned_from": {
+      "title": "Can Be Siphoned From",
+      "description": "If true, the contents of this inventory can be removed by a hopper",
+      "type": "boolean",
+      "default": false
+    },
+    "container_type": {
+      "title": "Container Type",
+      "description": "Type of container this entity has. Can be horse, minecart_chest, chest_boat, minecart_hopper, inventory, container or hopper",
+      "type": "string",
+      "default": "none"
+    },
+    "inventory_size": {
+      "title": "Inventory Size",
+      "description": "Number of slots the container has",
+      "type": "integer",
+      "default": 5
+    },
+    "private": {
+      "title": "Private",
+      "description": "If true, the entity will not drop its inventory on death",
+      "type": "boolean",
+      "default": false
+    },
+    "restrict_to_owner": {
+      "title": "Restrict To Owner",
+      "description": "If true, the entity's inventory can only be accessed by its owner or itself",
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

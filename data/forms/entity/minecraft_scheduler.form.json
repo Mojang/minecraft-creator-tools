@@ -1,0 +1,280 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "fires scheduled events based on time of day"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "min_delay_secs",
+            "comparison": "defined"
+          },
+          {
+            "field": "max_delay_secs",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has a delay between "
+          },
+          {
+            "type": "value",
+            "field": "min_delay_secs"
+          },
+          {
+            "type": "literal",
+            "text": " and "
+          },
+          {
+            "type": "value",
+            "field": "max_delay_secs"
+          },
+          {
+            "type": "literal",
+            "text": " seconds"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "min_delay_secs",
+            "comparison": "defined"
+          },
+          {
+            "field": "max_delay_secs",
+            "comparison": "undefined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has a minimum delay of "
+          },
+          {
+            "type": "value",
+            "field": "min_delay_secs"
+          },
+          {
+            "type": "literal",
+            "text": " seconds"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "scheduled_events",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has "
+          },
+          {
+            "type": "value",
+            "field": "scheduled_events.length"
+          },
+          {
+            "type": "plural",
+            "countField": "scheduled_events.length",
+            "singular": [
+              {
+                "type": "literal",
+                "text": " scheduled event"
+              }
+            ],
+            "plural": [
+              {
+                "type": "literal",
+                "text": " scheduled events"
+              }
+            ],
+            "includeCount": false
+          },
+          {
+            "type": "literal",
+            "text": " triggered by filter conditions"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "scheduled_events[0].event",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "triggers events like "
+          },
+          {
+            "type": "value",
+            "field": "scheduled_events[0].event",
+            "humanify": "minecraft"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "min_delay_secs",
+      "title": "The minimum the scheduler will be delayed.",
+      "dataType": "float"
+    },
+    {
+      "id": "max_delay_secs",
+      "title": "The maximum the scheduler will be delayed.",
+      "dataType": "float"
+    },
+    {
+      "id": "scheduled_events",
+      "title": "Scheduled Events",
+      "description": "The list of triggers that fire when the conditions match the given filter criteria. Can be an array of event objects or a single event object.",
+      "dataType": "objectArray",
+      "alternates": [
+        {
+          "id": "scheduled_events",
+          "dataType": "object"
+        }
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/fox.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:scheduler/",
+            "content": [
+              {
+                "filters": [
+                  {
+                    "test": "is_sleeping",
+                    "value": true
+                  }
+                ],
+                "event": "minecraft:ambient_sleep"
+              },
+              {
+                "filters": {
+                  "all_of": [
+                    {
+                      "test": "is_daytime",
+                      "value": false
+                    },
+                    {
+                      "test": "distance_to_nearest_player",
+                      "operator": ">",
+                      "value": 16
+                    }
+                  ]
+                },
+                "event": "minecraft:ambient_night"
+              },
+              {
+                "filters": {
+                  "all_of": [
+                    {
+                      "test": "is_sleeping",
+                      "value": false
+                    },
+                    {
+                      "any_of": [
+                        {
+                          "test": "is_daytime",
+                          "value": true
+                        },
+                        {
+                          "test": "distance_to_nearest_player",
+                          "operator": "<=",
+                          "value": 16
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "event": "minecraft:ambient_normal"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Fires off scheduled mob events at time of day events.",
+  "title": "Scheduler",
+  "samples": {
+    "/vanilla/behavior_pack/entities/fox.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:scheduler/",
+        "content": {
+          "min_delay_secs": 0,
+          "max_delay_secs": 0,
+          "scheduled_events": [
+            {
+              "filters": [
+                {
+                  "test": "is_sleeping",
+                  "value": true
+                }
+              ],
+              "event": "minecraft:ambient_sleep"
+            },
+            {
+              "filters": {
+                "all_of": [
+                  {
+                    "test": "is_daytime",
+                    "value": false
+                  },
+                  {
+                    "test": "distance_to_nearest_player",
+                    "operator": ">",
+                    "value": 16
+                  }
+                ]
+              },
+              "event": "minecraft:ambient_night"
+            },
+            {
+              "filters": {
+                "all_of": [
+                  {
+                    "test": "is_sleeping",
+                    "value": false
+                  },
+                  {
+                    "any_of": [
+                      {
+                        "test": "is_daytime",
+                        "value": true
+                      },
+                      {
+                        "test": "distance_to_nearest_player",
+                        "operator": "<=",
+                        "value": 16
+                      }
+                    ]
+                  }
+                ]
+              },
+              "event": "minecraft:ambient_normal"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "id": "minecraft:scheduler"
+}

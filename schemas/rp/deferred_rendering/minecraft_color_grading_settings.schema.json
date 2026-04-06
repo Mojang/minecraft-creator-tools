@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "minecraft:color_grading_settings",
+  "description": "minecraft:color_grading_settings\n\nProperties:\n• description ({ identifier })\n• color_grading ({ shadows, midtones, highlights })\n• tone_mapping ({ operator })",
+  "type": "object",
+  "properties": {
+    "description": {
+      "title": "description",
+      "description": "description\n\nProperties:\n• identifier (string)",
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "title": "identifier",
+          "description": "identifier",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "ColorGraderConfig ColorGradingParametersSrc ColorGradingSettings ColorGradingDescription",
+          "description": "ColorGraderConfig ColorGradingParametersSrc ColorGradingSettings ColorGradingDescription",
+          "body": {
+            "identifier": ""
+          }
+        }
+      ]
+    },
+    "color_grading": {
+      "$ref": "./color_grading.schema.json",
+      "title": "color_grading",
+      "description": "color_grading\n\nProperties:\n• shadows ({ gain, enabled, shadowsMax, ... })\n• midtones ({ contrast, gain, offset, ... })\n• highlights ({ gain, enabled, highlightsMin, ... })"
+    },
+    "tone_mapping": {
+      "title": "tone_mapping",
+      "description": "tone_mapping\n\nProperties:\n• operator (string)",
+      "type": "object",
+      "properties": {
+        "operator": {
+          "title": "enum dragon_framerenderer_modules_Tonemapper",
+          "description": "enum dragon_framerenderer_modules_Tonemapper",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "ColorGraderConfig ColorGradingParametersSrc ColorGradingSettings ToneMapping",
+          "description": "ColorGraderConfig ColorGradingParametersSrc ColorGradingSettings ToneMapping",
+          "body": {
+            "operator": ""
+          }
+        }
+      ]
+    }
+  }
+}

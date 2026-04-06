@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "checks if associated block has the given block state"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.has_block_state",
+  "fields": [],
+  "description": "Returns 1.0 if the associated block has the given block state or 0.0 if not.",
+  "title": "Has Block State"
+}

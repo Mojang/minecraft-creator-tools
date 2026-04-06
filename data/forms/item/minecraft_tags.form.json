@@ -1,0 +1,49 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:tags",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has item tags"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "tags",
+      "title": "Tags",
+      "description": "An array that can contain multiple item tags.",
+      "dataType": "stringArray",
+      "defaultValue": [],
+      "samples": {
+        "/vanilla/behavior_pack/items/apple.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:tags/",
+            "content": [
+              "minecraft:is_food"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "description": "The tags component specifies which tags an item has on it.",
+  "title": "Item Tags",
+  "samples": {
+    "/vanilla/behavior_pack/items/apple.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:tags/",
+        "content": {
+          "tags": [
+            "minecraft:is_food"
+          ]
+        }
+      }
+    ]
+  }
+}

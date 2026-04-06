@@ -1,0 +1,150 @@
+{
+  "minecraft_bone_visibility": {
+    "template": "bone_visibility",
+    "color": "#9b6bc9"
+  },
+  "minecraft_breathability": {
+    "template": "breathability",
+    "color": "#52a535"
+  },
+  "minecraft_collision_box": {
+    "template": "collision",
+    "color": "#52a535"
+  },
+  "minecraft_connection_rule": {
+    "template": "connection",
+    "color": "#7b9fe0"
+  },
+  "minecraft_crafting_table": {
+    "template": "crafting",
+    "color": "#e8a855"
+  },
+  "minecraft_custom_components": {
+    "template": "custom",
+    "color": "#7b9fe0"
+  },
+  "minecraft_destructible_by_explosion": {
+    "template": "explosion",
+    "color": "#c94545"
+  },
+  "minecraft_destructible_by_mining": {
+    "template": "mining",
+    "color": "#c94545"
+  },
+  "minecraft_destruction_particles": {
+    "template": "particles",
+    "color": "#c94545"
+  },
+  "minecraft_display_name": {
+    "template": "display_name",
+    "color": "#e8a855"
+  },
+  "minecraft_embedded_visual": {
+    "template": "embedded",
+    "color": "#9b6bc9"
+  },
+  "minecraft_entity_fall_on": {
+    "template": "entity_fall",
+    "color": "#e8a855"
+  },
+  "minecraft_flammable": {
+    "template": "flammable",
+    "color": "#c94545"
+  },
+  "minecraft_flower_pottable": {
+    "template": "flower_pot",
+    "color": "#e8a855"
+  },
+  "minecraft_friction": {
+    "template": "friction",
+    "color": "#52a535"
+  },
+  "minecraft_geometry": {
+    "template": "geometry",
+    "color": "#6bc9c9"
+  },
+  "minecraft_item_visual": {
+    "template": "item_visual",
+    "color": "#9b6bc9"
+  },
+  "minecraft_light_dampening": {
+    "template": "light_dampening",
+    "color": "#e8d855"
+  },
+  "minecraft_light_emission": {
+    "template": "light_emission",
+    "color": "#e8d855"
+  },
+  "minecraft_liquid_detection": {
+    "template": "liquid",
+    "color": "#7b9fe0"
+  },
+  "minecraft_loot": {
+    "template": "loot",
+    "color": "#e8a855"
+  },
+  "minecraft_map_color": {
+    "template": "map_color",
+    "color": "#9b6bc9"
+  },
+  "minecraft_material_instances": {
+    "template": "material",
+    "color": "#9b6bc9"
+  },
+  "minecraft_movable": {
+    "template": "movable",
+    "color": "#7b9fe0"
+  },
+  "minecraft_placement_filter": {
+    "template": "placement",
+    "color": "#e8a855"
+  },
+  "minecraft_precipitation_interactions": {
+    "template": "precipitation",
+    "color": "#7b9fe0"
+  },
+  "minecraft_queued_ticking": {
+    "template": "tick",
+    "color": "#d65c5c"
+  },
+  "minecraft_random_offset": {
+    "template": "random_offset",
+    "color": "#7b9fe0"
+  },
+  "minecraft_random_ticking": {
+    "template": "tick",
+    "color": "#d65c5c"
+  },
+  "minecraft_redstone_conductivity": {
+    "template": "redstone",
+    "color": "#d65c5c"
+  },
+  "minecraft_redstone_producer": {
+    "template": "redstone",
+    "color": "#d65c5c"
+  },
+  "minecraft_replaceable": {
+    "template": "replaceable",
+    "color": "#7b9fe0"
+  },
+  "minecraft_selection_box": {
+    "template": "selection",
+    "color": "#52a535"
+  },
+  "minecraft_support": {
+    "template": "support",
+    "color": "#7b9fe0"
+  },
+  "minecraft_tick": {
+    "template": "tick",
+    "color": "#d65c5c"
+  },
+  "minecraft_transformation": {
+    "template": "transformation",
+    "color": "#6bc9c9"
+  },
+  "minecraft_unit_cube": {
+    "template": "cube",
+    "color": "#6bc9c9"
+  }
+}

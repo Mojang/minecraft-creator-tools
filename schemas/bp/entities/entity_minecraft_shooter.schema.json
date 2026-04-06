@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Shooter",
+  "description": "Defines the entity's ranged attack behavior. The \"minecraft:behavior.ranged_attack\" goal uses this component to determine which projectiles to shoot.",
+  "properties": {
+    "sound": {
+      "title": "Sound",
+      "description": "Sound that is played when the shooter shoots a projectile.\n\nSample values:\n• bogged: bow\n• drowned: item.trident.throw",
+      "type": "string"
+    },
+    "aux_val": {
+      "title": "Aux Val",
+      "description": "ID of the Potion effect for the default projectile to be applied on hit.\n\nSample values:\n• bogged: 26",
+      "type": "integer",
+      "default": -1
+    },
+    "def": {
+      "title": "Def",
+      "description": "Actor definition to use as the default projectile for the ranged attack. The actor definition must have the projectile component to be able to be shot as a projectile.\n\nSample values:\n• blaze: minecraft:small_fireball\n• bogged: minecraft:arrow\n• drowned: minecraft:thrown_trident",
+      "type": "string"
+    },
+    "magic": {
+      "title": "Magic",
+      "description": "Sets whether the projectiles being used are flagged as magic. If set, the ranged attack goal will not be used at the same time as other magic goals, such as minecraft:behavior.drink_potion",
+      "type": "boolean",
+      "default": false
+    },
+    "power": {
+      "title": "Power",
+      "description": "Velocity in which the projectiles will be shot at. A power of 0 will be overwritten by the default projectile throw power.",
+      "type": "number",
+      "default": 0
+    },
+    "projectiles": {
+      "title": "Projectiles",
+      "description": "List of projectiles that can be used by the shooter. Projectiles are evaluated in the order of the list; After a projectile is chosen, the rest of the list is ignored.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

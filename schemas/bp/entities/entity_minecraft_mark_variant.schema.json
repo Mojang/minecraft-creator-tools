@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Mark Variant",
+  "description": "Mark Variant is typically used as an additional per-type way (besides `variant`) to express a different visual form of the same mob.",
+  "properties": {
+    "value": {
+      "title": "Value",
+      "description": "The Id of the mark_variant. By convention, 0 is the Id of the base entity.",
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

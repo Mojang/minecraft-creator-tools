@@ -1,0 +1,75 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "controls emitter lifetime events like creation and expiration"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "creation_event",
+      "title": "Creation Event",
+      "dataType": "objectArray",
+      "defaultValue": [],
+      "alternates": [
+        {
+          "id": "creation_event",
+          "dataType": "string"
+        }
+      ]
+    },
+    {
+      "id": "expiration_event",
+      "title": "Expiration Event",
+      "dataType": "objectArray",
+      "defaultValue": [],
+      "alternates": [
+        {
+          "id": "expiration_event",
+          "dataType": "string"
+        }
+      ]
+    },
+    {
+      "id": "looping_travel_distance_events",
+      "title": "Looping Travel Distance Events",
+      "dataType": "objectArray",
+      "defaultValue": [],
+      "subFormId": "client_particles/emitter_lifetime_events_travel_distance_events"
+    },
+    {
+      "id": "timeline",
+      "title": "Timeline",
+      "dataType": "objectArray",
+      "defaultValue": {},
+      "alternates": [
+        {
+          "id": "timeline",
+          "dataType": "string"
+        }
+      ]
+    },
+    {
+      "id": "travel_distance_events",
+      "title": "Travel Distance Events",
+      "dataType": "objectArray",
+      "defaultValue": {},
+      "alternates": [
+        {
+          "id": "travel_distance_events",
+          "dataType": "string"
+        }
+      ]
+    }
+  ],
+  "description": "Controls emitter lifetime events like creation and expiration.",
+  "title": "Client Particles Emitter Lifetime Events Proxy",
+  "id": "emitter_lifetime_events proxy"
+}

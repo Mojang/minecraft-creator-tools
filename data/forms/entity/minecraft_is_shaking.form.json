@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "is shaking"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [],
+  "description": "Sets that this entity is currently shaking.",
+  "title": "Is Shaking",
+  "samples": {
+    "/vanilla/behavior_pack/entities/hoglin.json": [
+      {
+        "path": "/minecraft:entity/component_groups/start_zombification/minecraft:is_shaking/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/skeleton.json": [
+      {
+        "path": "/minecraft:entity/component_groups/in_powder_snow/minecraft:is_shaking/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/strider.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:start_suffocating/minecraft:is_shaking/",
+        "content": {}
+      }
+    ]
+  },
+  "id": "minecraft:is_shaking"
+}

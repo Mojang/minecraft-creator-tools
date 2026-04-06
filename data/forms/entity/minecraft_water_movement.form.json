@@ -1,0 +1,45 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has a custom water drag factor"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "drag_factor",
+      "title": "Drag Factor",
+      "description": "Drag factor to determine movement speed when in water.",
+      "defaultValue": 0.8,
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/polar_bear.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:water_movement/",
+            "content": 0.98
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Customizes how the entity moves through water by adjusting drag coefficient. Lower values let entities glide through water easily like fish, while higher values create resistance for entities that struggle in water. Essential for aquatic mobs, boats, and any entity needing custom underwater physics.",
+  "title": "Water Movement",
+  "samples": {
+    "/vanilla/behavior_pack/entities/polar_bear.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:water_movement/",
+        "content": {
+          "drag_factor": 0.98
+        }
+      }
+    ]
+  },
+  "id": "minecraft:water_movement"
+}

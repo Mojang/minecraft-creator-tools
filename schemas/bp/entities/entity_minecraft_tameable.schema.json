@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Tameable",
+  "description": "This entity can be tamed",
+  "properties": {
+    "probability": {
+      "title": "Probability of being tamed",
+      "description": "The chance of taming the entity with each item use between 0.0 and 1.0, where 1.0 is 100%\n\nSample values:\n• parrot: 0.33",
+      "type": "number",
+      "default": 1
+    },
+    "tameItems": {
+      "title": "List of items that can be fed to an entity to tame them",
+      "type": "string"
+    },
+    "tame_event": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "title": "Event to fire when the entity is tamed",
+      "description": "Event to fire when the entity is tamed. Can be an object with event and target properties, or a simple event string.\n\nSample values:\n• parrot: {\"event\":\"minecraft:on_tame\",\"target\":\"self\"}"
+    },
+    "tame_items": {
+      "title": "Tame Items",
+      "description": "The list of items that can be used to tame this entity\n\nSample values:\n• parrot: [\"wheat_seeds\",\"pumpkin_seeds\",\"melon_seeds\",\"b...",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

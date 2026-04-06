@@ -1,0 +1,62 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "Color Proxy",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a color gradient with interpolation for particles"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "gradient",
+      "title": "Gradient",
+      "dataType": "keyedStringCollection",
+      "alternates": [],
+      "isRequired": true
+    },
+    {
+      "id": "interpolant",
+      "title": "Interpolant",
+      "dataType": "keyedStringCollection",
+      "alternates": [
+        {
+          "id": "interpolant",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "interpolant",
+            "title": "Interpolant",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "interpolant",
+          "dataType": "float"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Defines color gradients with smooth interpolation for particle effects. Use this to create particles that change color over their lifetime—from bright flames fading to smoke, magical auras shifting hues, or explosion flashes dimming over time. The gradient maps time points to colors, while the interpolant expression controls which color to sample.",
+  "title": "Client Particles Color Proxy"
+}

@@ -1,0 +1,32 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has min and max range"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Range",
+  "fields": [
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": "int",
+      "isRequired": true
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": "int",
+      "isRequired": true
+    }
+  ],
+  "description": "Define a range of integer value using a \"min\" and \"max\" limit and must be assigned to \"values\"",
+  "title": "Block Range"
+}

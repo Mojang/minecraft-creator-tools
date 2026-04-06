@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Biome The End",
+  "description": "Marks a biome as using End dimension terrain generation. Biomes with this component will use the characteristic End terrain style with end stone and void generation.",
+  "properties": {
+    "type": {
+      "title": "SurfaceBuilderType",
+      "description": "Use default Minecraft End terrain generation.",
+      "type": "string",
+      "enum": [
+        "minecraft:capped",
+        "minecraft:frozen_ocean",
+        "minecraft:mesa",
+        "minecraft:overworld",
+        "minecraft:swamp",
+        "minecraft:the_end"
+      ]
+    }
+  },
+  "required": [
+    "type"
+  ]
+}

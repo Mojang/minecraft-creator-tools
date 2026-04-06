@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Snacking Behavior",
+  "description": "Allows the mob to take a load off and snack on food that it found nearby.",
+  "properties": {
+    "items": {
+      "title": "Items",
+      "description": "Items that we are interested in snacking on",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "snacking_cooldown": {
+      "title": "Snacking Cooldown",
+      "description": "The cooldown time in seconds before the mob is able to snack again",
+      "type": "number",
+      "default": 7.5
+    },
+    "snacking_cooldown_min": {
+      "title": "Snacking Cooldown Min",
+      "description": "The minimum time in seconds before the mob is able to snack again",
+      "type": "number",
+      "default": 0.5
+    },
+    "snacking_stop_chance": {
+      "title": "Snacking Stop Chance",
+      "description": "This is the chance that the mob will stop snacking, from 0 to 1",
+      "type": "number",
+      "default": 0.0017
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer"
+    }
+  }
+}

@@ -1,0 +1,389 @@
+{
+  "format_version": "1.26.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:boat",
+      "is_summonable": true,
+      "is_spawnable": false
+    },
+    "components": {
+      "minecraft:balloonable": {},
+      "minecraft:buoyant": {
+        "apply_gravity": true,
+        "base_buoyancy": 1.0,
+        "big_wave_probability": 0.03,
+        "big_wave_speed": 10.0,
+        "liquid_blocks": [
+          "minecraft:water",
+          "minecraft:flowing_water"
+        ],
+        "simulate_waves": true
+      },
+      "minecraft:collision_box": {
+        "height": 0.455,
+        "width": 1.4
+      },
+      "minecraft:conditional_bandwidth_optimization": {
+        "conditional_values": [
+          {
+            "conditional_values": [
+              {
+                "subject": "self",
+                "test": "is_moving"
+              }
+            ],
+            "max_dropped_ticks": 0,
+            "max_optimized_distance": 0.0,
+            "use_motion_prediction_hints": true
+          }
+        ],
+        "default_values": {
+          "max_dropped_ticks": 20,
+          "max_optimized_distance": 60.0,
+          "use_motion_prediction_hints": true
+        }
+      },
+      "minecraft:hurt_on_condition": {
+        "damage_conditions": [
+          {
+            "cause": "lava",
+            "damage_per_tick": 4,
+            "filters": {
+              "subject": "self",
+              "test": "in_lava"
+            }
+          }
+        ]
+      },
+      "minecraft:inside_block_notifier": {
+        "block_list": [
+          {
+            "block": {
+              "name": "minecraft:bubble_column",
+              "states": {
+                "drag_down": true
+              }
+            },
+            "entered_block_event": {
+              "event": "minecraft:entered_bubble_column_down",
+              "target": "self"
+            },
+            "exited_block_event": {
+              "event": "minecraft:exited_bubble_column",
+              "target": "self"
+            }
+          },
+          {
+            "block": {
+              "name": "minecraft:bubble_column",
+              "states": {
+                "drag_down": false
+              }
+            },
+            "entered_block_event": {
+              "event": "minecraft:entered_bubble_column_up",
+              "target": "self"
+            },
+            "exited_block_event": {
+              "event": "minecraft:exited_bubble_column",
+              "target": "self"
+            }
+          }
+        ]
+      },
+      "minecraft:is_collidable": {},
+      "minecraft:is_stackable": {},
+      "minecraft:leashable": {
+        "presets": [
+          {
+            "filter": {
+              "subject": "other",
+              "test": "is_family",
+              "value": "happy_ghast"
+            },
+            "rotation_adjustment": 90,
+            "spring_type": "quad_dampened"
+          },
+          {
+            "hard_distance": 4.0,
+            "rotation_adjustment": 90,
+            "soft_distance": 2.0
+          }
+        ]
+      },
+      "minecraft:leashable_to": {},
+      "minecraft:loot": {
+        "table": "loot_tables/entities/boat.json"
+      },
+      "minecraft:physics": {},
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:rideable": {
+        "interact_text": "action.interact.ride.boat",
+        "passenger_max_width": 1.375,
+        "seats": [
+          {
+            "lock_rider_rotation": 90,
+            "min_rider_count": 0,
+            "max_rider_count": 1,
+            "position": [
+              0.0,
+              -0.2,
+              0.0
+            ],
+            "rotate_rider_by": -90
+          },
+          {
+            "lock_rider_rotation": 90,
+            "min_rider_count": 2,
+            "max_rider_count": 2,
+            "position": [
+              0.2,
+              -0.2,
+              0.0
+            ],
+            "rotate_rider_by": "query.has_any_family('blaze', 'creeper', 'enderman', 'illager', 'magmacube', 'piglin', 'player', 'skeleton', 'slime', 'villager', 'wandering_trader', 'witch', 'zombie', 'zombie_pigman', 'happy_ghast', 'copper_golem') ? -90 : 0"
+          },
+          {
+            "lock_rider_rotation": 90,
+            "min_rider_count": 2,
+            "max_rider_count": 2,
+            "position": [
+              -0.6,
+              -0.2,
+              0.0
+            ],
+            "rotate_rider_by": "query.has_any_family('blaze', 'creeper', 'enderman', 'illager', 'magmacube', 'piglin', 'player', 'skeleton', 'slime', 'villager', 'wandering_trader', 'witch', 'zombie', 'zombie_pigman', 'happy_ghast', 'copper_golem') ? -90 : 0"
+          }
+        ],
+        "pull_in_entities": true,
+        "seat_count": 2
+      },
+      "minecraft:type_family": {
+        "family": [
+          "boat",
+          "inanimate"
+        ]
+      }
+    },
+    "component_groups": {
+      "minecraft:above_bubble_column_down": {
+        "minecraft:buoyant": {
+          "apply_gravity": true,
+          "base_buoyancy": 1.0,
+          "liquid_blocks": [
+            "minecraft:water",
+            "minecraft:flowing_water"
+          ],
+          "drag_down_on_buoyancy_removed": 0.7,
+          "simulate_waves": false
+        },
+        "minecraft:out_of_control": {},
+        "minecraft:timer": {
+          "looping": false,
+          "time": 3,
+          "time_down_event": {
+            "event": "minecraft:sink",
+            "target": "self"
+          }
+        }
+      },
+      "minecraft:above_bubble_column_up": {
+        "minecraft:buoyant": {
+          "apply_gravity": true,
+          "base_buoyancy": 1.0,
+          "liquid_blocks": [
+            "minecraft:water",
+            "minecraft:flowing_water"
+          ],
+          "drag_down_on_buoyancy_removed": 0.7,
+          "simulate_waves": false
+        },
+        "minecraft:out_of_control": {}
+      },
+      "minecraft:can_ride_bamboo": {
+        "minecraft:rideable": {
+          "interact_text": "action.interact.ride.boat",
+          "seats": [
+            {
+              "min_rider_count": 0,
+              "lock_rider_rotation": 90,
+              "position": [
+                0.0,
+                0.1,
+                0.0
+              ],
+              "max_rider_count": 1,
+              "rotate_rider_by": -90
+            },
+            {
+              "min_rider_count": 2,
+              "lock_rider_rotation": 90,
+              "position": [
+                0.2,
+                0.1,
+                0.0
+              ],
+              "max_rider_count": 2,
+              "rotate_rider_by": "query.has_any_family('blaze', 'creeper', 'enderman', 'illager', 'magmacube', 'piglin', 'player', 'skeleton', 'slime', 'villager', 'wandering_trader', 'witch', 'zombie', 'zombie_pigman', 'happy_ghast', 'copper_golem') ? -90 : 0"
+            },
+            {
+              "min_rider_count": 2,
+              "lock_rider_rotation": 90,
+              "position": [
+                -0.6,
+                0.1,
+                0.0
+              ],
+              "max_rider_count": 2,
+              "rotate_rider_by": "query.has_any_family('blaze', 'creeper', 'enderman', 'illager', 'magmacube', 'piglin', 'player', 'skeleton', 'slime', 'villager', 'wandering_trader', 'witch', 'zombie', 'zombie_pigman', 'happy_ghast', 'copper_golem') ? -90 : 0"
+            }
+          ],
+          "passenger_max_width": 1.375,
+          "pull_in_entities": true,
+          "seat_count": 2
+        }
+      },
+      "minecraft:can_ride_default": {
+        "minecraft:rideable": {
+          "interact_text": "action.interact.ride.boat",
+          "seats": [
+            {
+              "min_rider_count": 0,
+              "lock_rider_rotation": 90,
+              "position": [
+                0.0,
+                -0.2,
+                0.0
+              ],
+              "max_rider_count": 1,
+              "rotate_rider_by": -90
+            },
+            {
+              "min_rider_count": 2,
+              "lock_rider_rotation": 90,
+              "position": [
+                0.2,
+                -0.2,
+                0.0
+              ],
+              "max_rider_count": 2,
+              "rotate_rider_by": "query.has_any_family('blaze', 'creeper', 'enderman', 'illager', 'magmacube', 'piglin', 'player', 'skeleton', 'slime', 'villager', 'wandering_trader', 'witch', 'zombie', 'zombie_pigman', 'happy_ghast', 'copper_golem') ? -90 : 0"
+            },
+            {
+              "min_rider_count": 2,
+              "lock_rider_rotation": 90,
+              "position": [
+                -0.6,
+                -0.2,
+                0.0
+              ],
+              "max_rider_count": 2,
+              "rotate_rider_by": "query.has_any_family('blaze', 'creeper', 'enderman', 'illager', 'magmacube', 'piglin', 'player', 'skeleton', 'slime', 'villager', 'wandering_trader', 'witch', 'zombie', 'zombie_pigman', 'happy_ghast', 'copper_golem') ? -90 : 0"
+            }
+          ],
+          "passenger_max_width": 1.375,
+          "pull_in_entities": true,
+          "seat_count": 2
+        }
+      },
+      "minecraft:floating": {
+        "minecraft:buoyant": {
+          "apply_gravity": true,
+          "big_wave_probability": 0.03,
+          "base_buoyancy": 1.0,
+          "big_wave_speed": 10.0,
+          "liquid_blocks": [
+            "minecraft:water",
+            "minecraft:flowing_water"
+          ],
+          "simulate_waves": true
+        }
+      }
+    },
+    "events": {
+      "minecraft:add_can_ride": {
+        "sequence": [
+          {
+            "filters": {
+              "test": "is_variant",
+              "operator": "!=",
+              "value": 7
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:can_ride_default"
+              ]
+            }
+          },
+          {
+            "filters": {
+              "test": "is_variant",
+              "operator": "==",
+              "value": 7
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:can_ride_bamboo"
+              ]
+            }
+          }
+        ]
+      },
+      "minecraft:entered_bubble_column_down": {
+        "add": {
+          "component_groups": [
+            "minecraft:above_bubble_column_down"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:floating"
+          ]
+        }
+      },
+      "minecraft:exited_bubble_column": {
+        "add": {
+          "component_groups": [
+            "minecraft:floating"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:above_bubble_column_down",
+            "minecraft:above_bubble_column_up"
+          ]
+        },
+        "trigger": "minecraft:add_can_ride"
+      },
+      "minecraft:entered_bubble_column_up": {
+        "add": {
+          "component_groups": [
+            "minecraft:above_bubble_column_up"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:floating"
+          ]
+        }
+      },
+      "minecraft:entity_spawned": {
+        "trigger": "minecraft:add_can_ride"
+      },
+      "minecraft:sink": {
+        "remove": {
+          "component_groups": [
+            "minecraft:floating",
+            "minecraft:can_ride_default",
+            "minecraft:can_ride_bamboo",
+            "minecraft:above_bubble_column_down",
+            "minecraft:above_bubble_column_up"
+          ]
+        }
+      }
+    }
+  }
+}

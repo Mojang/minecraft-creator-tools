@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "client_particles/particle_document",
+  "title": "Particle Effect Document",
+  "description": "A resource pack particle effect definition document for Minecraft Bedrock Edition. This describes the complete JSON file structure including format_version and the particle_effect wrapper. Particles use a component-based system with emitters controlling spawn rate and shape, and particle components controlling appearance and motion.",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "title": "Format Version",
+      "description": "The format version of this particle effect file. Use '1.10.0' or later for the modern particle system.",
+      "type": "string"
+    },
+    "particle_effect": {
+      "title": "Particle Effect",
+      "description": "The particle effect definition containing description and components.\n\nProperties:\n• components (object)\n• curves ({ horizontal_range, input, nodes, ... })\n• description (object)\n• events (object)",
+      "$ref": "./client_particles_particle_effect.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Particle Effect",
+          "description": "Defines a particle effect that can be spawned by entities, blocks, or scripts. Particle effects use a component-based system with emitters (controlling spawn rate and shape), appearance (billboard rendering and colors), and motion (physics and collision).",
+          "body": {
+            "components": "",
+            "description": ""
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "format_version",
+    "particle_effect"
+  ]
+}

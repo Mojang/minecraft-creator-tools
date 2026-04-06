@@ -1,0 +1,68 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "returns to its home location"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "calculate_new_path_radius",
+      "title": "Calculate New Path Radius",
+      "description": "Distance in blocks that the mob is considered close enough to the end of the current path. A new path will then be calculated to continue toward home.",
+      "defaultValue": 2,
+      "dataType": "float"
+    },
+    {
+      "id": "goal_radius",
+      "title": "Goal Radius",
+      "description": "Distance in blocks within the mob considers it has reached the goal. This is the \"wiggle room\" to stop the AI from bouncing back and forth trying to reach a specific spot.",
+      "defaultValue": 0.5,
+      "dataType": "float"
+    },
+    {
+      "id": "interval",
+      "title": "Interval",
+      "description": "A random value to determine when to randomly move somewhere. This has a 1/interval chance to choose this goal.",
+      "defaultValue": 120,
+      "dataType": "int"
+    },
+    {
+      "id": "on_failed",
+      "title": "Failed",
+      "description": "Event(s) to run when this goal fails.",
+      "dataType": "minecraftEventTrigger"
+    },
+    {
+      "id": "on_home",
+      "title": "Home",
+      "description": "Event(s) to run when this mob gets home.",
+      "dataType": "minecraftEventTrigger"
+    },
+    {
+      "id": "speed_multiplier",
+      "title": "Speed Multiplier",
+      "description": "Movement speed multiplier of the mob when using this AI Goal.",
+      "defaultValue": 1,
+      "dataType": "float"
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "hideSamples": true,
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "dataType": "int"
+    }
+  ],
+  "description": "Allows the mob to move back to the position they were spawned.",
+  "title": "Go Home Behavior",
+  "samples": {},
+  "id": "minecraft:behavior.go_home"
+}

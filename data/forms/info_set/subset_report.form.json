@@ -1,0 +1,53 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "provides a nested report for content subsets"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "info_set.subsetReport",
+  "title": "Subset Report",
+  "description": "Optional nested report emitted for a focused subset of content.",
+  "fields": [
+    {
+      "id": "id",
+      "title": "Identifier",
+      "dataType": "string"
+    },
+    {
+      "id": "title",
+      "title": "Title",
+      "dataType": "string"
+    },
+    {
+      "id": "status",
+      "title": "Status",
+      "dataType": "string"
+    },
+    {
+      "id": "details",
+      "title": "Details",
+      "dataType": "longFormString"
+    },
+    {
+      "id": "metrics",
+      "title": "Metrics",
+      "dataType": "keyedObjectCollection",
+      "subFormId": "info_set/feature_set_entry",
+      "allowCreateDelete": true
+    },
+    {
+      "id": "items",
+      "title": "Items",
+      "dataType": "stringArray",
+      "allowCreateDelete": true
+    }
+  ]
+}

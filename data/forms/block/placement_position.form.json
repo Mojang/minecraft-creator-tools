@@ -1,0 +1,38 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has placement position states"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Placement Position",
+  "fields": [
+    {
+      "id": "enabled_states",
+      "title": "Enabled States",
+      "description": "Which states to enable. Must specify at least one. Options: [\"minecraft:block_face\", \"minecraft:vertical_half\"].",
+      "dataType": "stringArray",
+      "minLength": 1,
+      "choices": [
+        {
+          "id": "minecraft:block_face",
+          "title": "Minecraft:block face"
+        },
+        {
+          "id": "minecraft:vertical_half",
+          "title": "Minecraft:vertical half"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Adds the \"minecraft:block_face\" and/or \"minecraft:vertical_half\" states and setter function to the block.",
+  "title": "Block Placement Position"
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "Grass Color Map",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "specifies a color map for grass rendering"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "color_map",
+      "title": "Grass Colormap",
+      "description": "Color map from textures/colormap to determine color of grass.",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "description": "Object specifying a color map for grass instead of a specific color.",
+  "title": "Grass Color Map Client Misc"
+}

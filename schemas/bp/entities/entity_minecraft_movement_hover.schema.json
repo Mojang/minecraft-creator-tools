@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Hover Movement",
+  "description": "This move control causes the mob to hover.",
+  "properties": {
+    "max_turn": {
+      "title": "Max Turn",
+      "description": "The maximum number in degrees the mob can turn per tick.",
+      "type": "number",
+      "default": 30
+    }
+  }
+}

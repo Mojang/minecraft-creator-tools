@@ -1,0 +1,106 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "3.0.0.Module",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a pack module with type, UUID, version, and optional script entry"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "description",
+      "title": "Description",
+      "dataType": "string"
+    },
+    {
+      "id": "entry",
+      "title": "Entry",
+      "dataType": "string"
+    },
+    {
+      "id": "language",
+      "title": "Language",
+      "dataType": "string"
+    },
+    {
+      "id": "type",
+      "title": "Type",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "uuid",
+      "title": "Uuid",
+      "dataType": "object",
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "version",
+      "dataType": "object",
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^([1-9]+)\\.([0-9]+)\\.([0-9]+)$"
+        }
+      ],
+      "subForm": {
+        "id": "version",
+        "title": "Version",
+        "fields": [
+          {
+            "id": "buildMeta",
+            "title": "BuildMeta",
+            "dataType": "string",
+            "defaultValue": ""
+          },
+          {
+            "id": "major",
+            "title": "Major",
+            "dataType": "int",
+            "defaultValue": 0
+          },
+          {
+            "id": "minor",
+            "title": "Minor",
+            "dataType": "int",
+            "defaultValue": 0
+          },
+          {
+            "id": "patch",
+            "title": "Patch",
+            "dataType": "int",
+            "defaultValue": 0
+          },
+          {
+            "id": "preRelease",
+            "title": "PreRelease",
+            "dataType": "string",
+            "defaultValue": ""
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "version",
+          "dataType": "string"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Declares a module within the pack. Modules define what the pack contains: 'data' for behavior packs, 'resources' for resource packs, or 'script' for packs with JavaScript/TypeScript code. Script modules require an entry point file path.",
+  "title": "Packmanifest Module"
+}

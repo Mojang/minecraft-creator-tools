@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a weighted structure in a structure set"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "structure",
+      "title": "structure",
+      "description": "Identifier of the Jigsaw Structure.",
+      "dataType": "string"
+    },
+    {
+      "id": "weight",
+      "title": "weight",
+      "description": "Weight of the Jigsaw Structure in the set. Higher weights are more likely to be selected.",
+      "dataType": "int"
+    }
+  ],
+  "description": "JigsawStructureSet Structure",
+  "title": "JigsawStructureSet Structure"
+}

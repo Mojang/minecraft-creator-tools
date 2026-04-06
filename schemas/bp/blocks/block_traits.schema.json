@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Block Traits",
+  "description": "Change the connection, multiblock state, placement position and/or direction behaviors of a block",
+  "properties": {
+    "minecraft:connection": {
+      "title": "Minecraft Connection",
+      "description": "Adds connection states to the block. The values of these states are updated when the block or neighboring blocks change.\n\nProperties:\n• enabled_states (string[])",
+      "$ref": "./block_connection.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Block Connection",
+          "description": "Adds connection states to the block. The values of these states are updated when the block or neighboring blocks change.",
+          "body": {
+            "enabled_states": ""
+          }
+        }
+      ]
+    },
+    "minecraft:multi_block": {
+      "title": "Minecraft Multi Block",
+      "description": "Adds the \"minecraft:multi_block_part\" state and multi block functionality to the block.\n\nProperties:\n• direction (string)\n• enabled_states (string[])\n• parts (int) = 2",
+      "$ref": "./block_multi_block.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Block Multi Block",
+          "description": "Adds the \"minecraft:multi_block_part\" state and multi block functionality to the block.",
+          "body": {
+            "direction": "",
+            "enabled_states": "",
+            "parts": 2
+          }
+        }
+      ]
+    },
+    "minecraft:placement_direction": {
+      "title": "Minecraft Placement Direction",
+      "description": "Adds the \"minecraft:cardinal_direction\", \"minecraft:facing_direction\" and/or \"minecraft:corner_and_cardinal_direction\" states and setter function to the block.\n\nProperties:\n• blocks_to_corner_with = []\n• enabled_states (string[])\n• y_rotation_offset (float)",
+      "$ref": "./block_placement_direction.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Block Placement Direction",
+          "description": "Adds the \"minecraft:cardinal_direction\", \"minecraft:facing_direction\" and/or \"minecraft:corner_and_cardinal_direction\" states and setter function to the block.",
+          "body": {
+            "blocks_to_corner_with": [],
+            "enabled_states": "",
+            "y_rotation_offset": 0
+          }
+        }
+      ],
+      "x-runtime-constraint-description": "\"y_rotation_offset\" can only be used when \"minecraft:cardinal_direction\" and/or \"minecraft:facing_direction\" are enabled in \"enabled_states\". and \"blocks_to_corner_with\" can only be used when \"minecraft:corner_and_cardinal_direction\" is enabled in \"enabled_states\"."
+    },
+    "minecraft:placement_position": {
+      "title": "Minecraft Placement Position",
+      "description": "Adds the \"minecraft:block_face\" and/or \"minecraft:vertical_half\" states and setter function to the block.\n\nProperties:\n• enabled_states (string[])",
+      "$ref": "./block_placement_position.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Block Placement Position",
+          "description": "Adds the \"minecraft:block_face\" and/or \"minecraft:vertical_half\" states and setter function to the block.",
+          "body": {
+            "enabled_states": ""
+          }
+        }
+      ]
+    }
+  }
+}

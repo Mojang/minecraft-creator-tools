@@ -1,0 +1,107 @@
+{
+  "format_version": "1.26.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:hopper_minecart",
+      "is_experimental": false,
+      "is_summonable": true,
+      "is_spawnable": false,
+      "spawn_category": "misc"
+    },
+    "components": {
+      "minecraft:collision_box": {
+        "height": 0.7,
+        "width": 0.98
+      },
+      "minecraft:conditional_bandwidth_optimization": {
+        "conditional_values": [
+          {
+            "conditional_values": [
+              {
+                "operator": "==",
+                "test": "is_moving",
+                "subject": "self",
+                "value": true
+              }
+            ],
+            "max_dropped_ticks": 0,
+            "max_optimized_distance": 0.0
+          }
+        ],
+        "default_values": {
+          "max_dropped_ticks": 20,
+          "max_optimized_distance": 60.0,
+          "use_motion_prediction_hints": true
+        }
+      },
+      "minecraft:inventory": {
+        "can_be_siphoned_from": true,
+        "inventory_size": 5,
+        "container_type": "minecart_hopper"
+      },
+      "minecraft:is_stackable": {},
+      "minecraft:physics": {},
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:rail_movement": {},
+      "minecraft:type_family": {
+        "family": [
+          "minecart",
+          "inanimate"
+        ]
+      }
+    },
+    "component_groups": {
+      "minecraft:hopper_active": {
+        "minecraft:item_hopper": {},
+        "minecraft:rail_sensor": {
+          "on_activate": {
+            "event": "minecraft:hopper_deactivate"
+          }
+        }
+      },
+      "minecraft:hopper_inactive": {
+        "minecraft:rail_sensor": {
+          "on_deactivate": {
+            "event": "minecraft:hopper_activate"
+          }
+        }
+      }
+    },
+    "events": {
+      "minecraft:hopper_activate": {
+        "add": {
+          "component_groups": [
+            "minecraft:hopper_active"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:hopper_inactive"
+          ]
+        }
+      },
+      "minecraft:entity_spawned": {
+        "add": {
+          "component_groups": [
+            "minecraft:hopper_active"
+          ]
+        }
+      },
+      "minecraft:hopper_deactivate": {
+        "add": {
+          "component_groups": [
+            "minecraft:hopper_inactive"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:hopper_active"
+          ]
+        }
+      }
+    }
+  }
+}

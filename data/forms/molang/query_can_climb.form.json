@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "checks if entity can climb"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.can_climb",
+  "fields": [],
+  "description": "Returns 1.0 if the entity can climb, else it returns 0.0.",
+  "title": "Can Climb"
+}

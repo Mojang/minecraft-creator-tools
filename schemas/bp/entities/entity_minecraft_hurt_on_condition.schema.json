@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Hurt On Condition",
+  "description": "Defines a set of conditions under which an entity should take damage.",
+  "properties": {
+    "damage_conditions": {
+      "title": "Damage Conditions",
+      "description": "List of damage conditions that when met can cause damage to the entity.\n\nProperties:\n• cause (string)\n• damage_per_tick (int) = 1\n• filters\n\nSample values:\n• allay: [{\"cause\":\"lava\",\"damage_per_tick\":4,\"filters\":...",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "cause": {
+            "title": "Cause",
+            "description": "The kind of damage that is caused to the entity. Various armors and spells use this to determine if the entity is immune.",
+            "type": "string"
+          },
+          "damage_per_tick": {
+            "title": "Damage Per Tick",
+            "description": "The amount of damage done each tick that the conditions are met.",
+            "type": "integer",
+            "default": 1
+          },
+          "filters": {
+            "title": "Filters",
+            "description": "The set of conditions that must be satisfied before the entity takes the defined damage.",
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "all_of": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "any_of": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "none_of": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

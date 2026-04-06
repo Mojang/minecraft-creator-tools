@@ -1,0 +1,45 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines blockdescriptorproxy configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "BlockDescriptorProxy",
+  "fields": [
+    {
+      "id": "name",
+      "title": "Name",
+      "dataType": "string"
+    },
+    {
+      "id": "states",
+      "title": "States",
+      "dataType": "int",
+      "alternates": [
+        {
+          "id": "states",
+          "dataType": "string"
+        },
+        {
+          "id": "states",
+          "dataType": "boolean"
+        }
+      ]
+    },
+    {
+      "id": "tags",
+      "title": "Tags",
+      "dataType": "string"
+    }
+  ],
+  "description": "Defines blockdescriptorproxy configuration.",
+  "title": "BlockDescriptorProxy Misc"
+}

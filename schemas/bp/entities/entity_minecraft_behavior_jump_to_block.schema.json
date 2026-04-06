@@ -1,0 +1,138 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Jump To Block Behavior",
+  "description": "Allows an entity to jump to another random block.",
+  "properties": {
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "cooldown_range": {
+      "title": "Cooldown Range",
+      "description": "Minimum and maximum cooldown time-range (positive, in seconds) between each attempted jump.\n\nProperties:\n• max (float) = 0\n• min (float) = 0\n\nSample values:\n• frog: [5,7]\n• goat: [30,60]",
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "$ref": "../../common/floatrange.schema.json"
+        }
+      ],
+      "x-runtime-constraint-description": "Check that the limits imposed on the range (minimum, maximum and maximum distance between values) are respected"
+    },
+    "forbidden_blocks": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      ],
+      "title": "Forbidden Blocks",
+      "description": "Blocks that the mob can't jump to.\n\nSample values:\n• frog: [\"minecraft:water\"]",
+      "defaultSnippets": [
+        {
+          "label": "Forbidden Blocks (default)",
+          "description": "Use default value: ",
+          "body": []
+        }
+      ]
+    },
+    "max_velocity": {
+      "title": "Max Velocity",
+      "description": "The maximum velocity with which the mob can jump.\n\nSample values:\n• frog: 1",
+      "type": "number",
+      "default": 1.5
+    },
+    "minimum_distance": {
+      "title": "Minimum Distance",
+      "description": "The minimum distance (in blocks) from the mob to a block, in order to consider jumping to it.\n\nSample values:\n• frog: 1",
+      "type": "integer",
+      "default": 2
+    },
+    "minimum_path_length": {
+      "title": "Minimum Path Length",
+      "description": "The minimum length (in blocks) of the mobs path to a block, in order to consider jumping to it.\n\nSample values:\n• frog: 2\n• goat: 8",
+      "type": "integer",
+      "default": 5
+    },
+    "preferred_blocks": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      ],
+      "title": "Preferred Blocks",
+      "description": "Blocks that the mob prefers jumping to.\n\nSample values:\n• frog: [\"minecraft:waterlily\",\"minecraft:big_dripleaf\"]",
+      "defaultSnippets": [
+        {
+          "label": "Preferred Blocks (default)",
+          "description": "Use default value: ",
+          "body": []
+        }
+      ]
+    },
+    "preferred_blocks_chance": {
+      "title": "Preferred Blocks Chance",
+      "description": "Chance (between 0.0 and 1.0) that the mob will jump to a preferred block, if in range. Only matters if preferred blocks are defined.\n\nSample values:\n• frog: 0.5",
+      "type": "number",
+      "maximum": 1,
+      "default": 1
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.\n\nSample values:\n• frog: 10\n• goat: 8",
+      "type": "integer",
+      "default": 0
+    },
+    "scale_factor": {
+      "title": "Scale Factor",
+      "description": "The scalefactor of the bounding box of the mob while it is jumping.\n\nSample values:\n• frog: 0.6",
+      "type": "number",
+      "default": 0.699999988079071
+    },
+    "search_height": {
+      "title": "Search Height",
+      "description": "The height (in blocks, in range [1, 15]) of the search box, centered around the mob.\n\nSample values:\n• frog: 4\n• goat: 10",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 15,
+      "default": 10
+    },
+    "search_width": {
+      "title": "Search Width",
+      "description": "The width (in blocks, in range [1, 15]) of the search box, centered around the mob.\n\nSample values:\n• frog: 8\n• goat: 10",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 15,
+      "default": 8
+    }
+  }
+}

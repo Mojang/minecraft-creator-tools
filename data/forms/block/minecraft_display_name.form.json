@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has display name "
+          },
+          {
+            "type": "value",
+            "field": "string"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [],
+  "scalarField": {
+    "id": "string",
+    "title": "Display Name",
+    "dataType": "string"
+  },
+  "description": "Specifies the language file key that maps to what text will be displayed when you hover over the block in your inventory and hotbar. If the string given can not be resolved as a loc string, the raw string given will be displayed. If this component is omitted, the name of the block will be used as the display name.",
+  "title": "Display Name",
+  "samples": {},
+  "id": "minecraft:display_name"
+}

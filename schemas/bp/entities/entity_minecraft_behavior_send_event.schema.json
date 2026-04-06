@@ -1,0 +1,155 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Send Event Behavior",
+  "description": "Allows the mob to send an event to another mob.",
+  "properties": {
+    "event_choices": {
+      "title": "Event Choices",
+      "description": "List of possible events to send with conditions, weights, and targeting parameters.\n\nProperties:\n• min_activation_range (float)\n• max_activation_range (float)\n• cooldown_time (float)\n• cast_duration (float)\n• particle_color (string)\n• weight (float)\n• filters (object)\n• start_sound_event (string)\n• ... and 1 more properties",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "min_activation_range": {
+            "title": "Min Activation Range",
+            "description": "Minimum distance from target to activate this event choice.",
+            "type": "number"
+          },
+          "max_activation_range": {
+            "title": "Max Activation Range",
+            "description": "Maximum distance from target to activate this event choice.",
+            "type": "number"
+          },
+          "cooldown_time": {
+            "title": "Cooldown Time",
+            "description": "Time in seconds before this choice can be used again.",
+            "type": "number"
+          },
+          "cast_duration": {
+            "title": "Cast Duration",
+            "description": "Time in seconds for the casting animation.",
+            "type": "number"
+          },
+          "particle_color": {
+            "title": "Particle Color",
+            "description": "Color of particles during casting, in hex format like '#RRGGBBAA'.",
+            "type": "string"
+          },
+          "weight": {
+            "title": "Weight",
+            "description": "Relative weight for random selection among event choices.",
+            "type": "number"
+          },
+          "filters": {
+            "title": "Filters",
+            "description": "Conditions that must be met for this event choice to be valid.",
+            "type": "object"
+          },
+          "start_sound_event": {
+            "title": "Start Sound Event",
+            "description": "Sound event to play when casting starts.",
+            "type": "string"
+          },
+          "sequence": {
+            "title": "Sequence",
+            "description": "List of events to send in order with timing.\n\nProperties:\n• base_delay (float)\n• event (string)\n• sound_event (string)",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "base_delay": {
+                  "title": "Base Delay",
+                  "description": "Delay in seconds before this step executes.",
+                  "type": "number"
+                },
+                "event": {
+                  "title": "Event",
+                  "description": "Event to send to the target entity.",
+                  "type": "string"
+                },
+                "sound_event": {
+                  "title": "Sound Event",
+                  "description": "Sound event to play when this step executes.",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "cast_duration": {
+      "title": "Cast Duration",
+      "description": "Time in seconds for the entire event sending process",
+      "type": "number"
+    },
+    "look_at_target": {
+      "title": "Look At Target",
+      "description": "If true, the mob will face the entity it sends an event to",
+      "type": "boolean",
+      "default": true
+    },
+    "sequence": {
+      "title": "Sequence",
+      "description": "List of events to send\n\nProperties:\n• base_delay (float) = 0\n• event\n• sound_event",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "base_delay": {
+            "title": "Base Delay",
+            "description": "Amount of time in seconds before starting this step",
+            "type": "number",
+            "default": 0
+          },
+          "event": {
+            "title": "Event",
+            "description": "The event to send to the entity",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "event": {
+                    "type": "string"
+                  },
+                  "target": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          },
+          "sound_event": {
+            "title": "Sound Event",
+            "description": "The sound event to play when this step happens",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "event": {
+                    "type": "string"
+                  },
+                  "target": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Spawn DifficultyFilter",
+  "description": "Restricts mob spawning to specific difficulty levels (Peaceful, Easy, Normal, Hard). For example, hostile mobs don't spawn on Peaceful, and some dangerous variants only appear on Hard difficulty.",
+  "properties": {
+    "max": {
+      "title": "SpawnDifficulty Legacy",
+      "type": "string",
+      "enum": [
+        "easy",
+        "hard",
+        "normal",
+        "peaceful"
+      ],
+      "default": "hard"
+    },
+    "min": {
+      "title": "SpawnDifficulty Legacy",
+      "type": "string",
+      "enum": [
+        "easy",
+        "hard",
+        "normal",
+        "peaceful"
+      ],
+      "default": "peaceful"
+    }
+  }
+}

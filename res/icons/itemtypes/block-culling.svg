@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Block Culling: Block with hidden/visible regions -->
+  <path d="M4 6L8 4L12 6L12 12L8 14L4 12L4 6Z" fill-opacity="0.2"/>
+  <path d="M4 6L8 8L8 14L4 12L4 6Z" fill-opacity="0.3"/>
+  <path d="M8 8L12 6L12 12L8 14L8 8Z" fill-opacity="0.5"/>
+  <path d="M4 6L8 4L12 6L8 8L4 6Z" fill-opacity="0.4"/>
+  <rect x="5" y="7" width="2" height="3" fill="none" stroke="currentColor" stroke-width="0.5" stroke-dasharray="1"/>
+  <rect x="9" y="7" width="2" height="3" fill-opacity="0.6"/>
+  <line x1="1" y1="3" x2="4" y2="6" stroke="currentColor" stroke-width="0.5" stroke-dasharray="1" stroke-opacity="0.5"/>
+</svg>

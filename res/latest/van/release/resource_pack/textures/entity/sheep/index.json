@@ -1,0 +1,11 @@
+{
+  "files": [
+    "sheep.texture_set.json",
+    "sheep.tga",
+    "sheep_baby.texture_set.json",
+    "sheep_baby.tga",
+    "sheep_baby_mers.tga",
+    "sheep_mers.tga"
+  ],
+  "folders": []
+}

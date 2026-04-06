@@ -1,0 +1,40 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has item-specific mining speed"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Item Specific Speed",
+  "fields": [
+    {
+      "id": "destroy_speed",
+      "title": "Destroy Speed",
+      "description": "Mining speed for that specific item. A negative number means the block can't be mined with that item.",
+      "dataType": "float",
+      "isRequired": true
+    },
+    {
+      "id": "item",
+      "title": "Item",
+      "description": "The item with a specific mining speed.",
+      "dataType": "string",
+      "alternates": [
+        {
+          "id": "item",
+          "dataType": "keyedStringCollection"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Defines mining speed bonuses for specific tool items when breaking this block. Map item identifiers to speed multipliers so diamond pickaxes mine faster than stone, or custom tools have specialized efficiency. Enables proper tool tier progression and specialized harvesting tools.",
+  "title": "Block Item Specific Speed"
+}

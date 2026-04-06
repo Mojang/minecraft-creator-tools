@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "resource/music_definitions",
+  "title": "Music Definitions",
+  "description": "The music_definitions.json file defines which music tracks play in different biomes and game states. Each key is a biome or game state identifier that maps to music event configuration. Located at sounds/music_definitions.json in resource packs.",
+  "type": "object",
+  "properties": {
+    "biome_music": {
+      "title": "Biome/State Music",
+      "description": "Music configuration keyed by biome identifier or game state (e.g., 'forest', 'desert', 'menu', 'creative', 'credits').\n\nProperties:\n• event_name (string)\n• min_delay (int) = 60\n• max_delay (int) = 180",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "event_name": {
+            "title": "Event Name",
+            "description": "The sound event identifier that plays music for this biome/state (e.g., 'music.overworld.forest', 'music.game.nether').",
+            "type": "string"
+          },
+          "min_delay": {
+            "title": "Minimum Delay",
+            "description": "The minimum delay in seconds before the music starts playing after entering this biome or after the previous track ends.",
+            "type": "integer",
+            "default": 60
+          },
+          "max_delay": {
+            "title": "Maximum Delay",
+            "description": "The maximum delay in seconds before the music starts playing. The actual delay is randomly chosen between min_delay and max_delay.",
+            "type": "integer",
+            "default": 180
+          }
+        }
+      }
+    },
+    "event_name": {
+      "title": "Event Name",
+      "description": "\n\nSample values:\n• music_definitions: music.overworld.forest\n• music_definitions: music.menu\n• music_definitions: music.game.credits",
+      "type": "string"
+    },
+    "max_delay": {
+      "title": "Max Delay",
+      "description": "\n\nSample values:\n• music_definitions: 180\n• music_definitions: 30",
+      "type": "number"
+    },
+    "min_delay": {
+      "title": "Min Delay",
+      "description": "\n\nSample values:\n• music_definitions: 60",
+      "type": "number"
+    }
+  }
+}

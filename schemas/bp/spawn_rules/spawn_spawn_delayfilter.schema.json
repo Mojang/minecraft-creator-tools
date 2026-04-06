@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Spawn DelayFilter",
+  "description": "Delays entity spawning by a configurable amount of time after spawn conditions are met. Useful for preventing immediate respawning after mob deaths or creating spawn cooldowns for rare creatures.",
+  "properties": {
+    "identifier": {
+      "title": "Identifier",
+      "type": "string",
+      "default": ""
+    },
+    "max": {
+      "title": "Max",
+      "type": "integer",
+      "default": 0
+    },
+    "min": {
+      "title": "Min",
+      "type": "integer",
+      "default": 0
+    },
+    "spawn_chance": {
+      "title": "Spawn Chance",
+      "type": "integer",
+      "default": 100
+    }
+  }
+}

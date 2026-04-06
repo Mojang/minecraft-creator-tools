@@ -1,0 +1,452 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "reacts to specific damage types"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "triggers",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has "
+          },
+          {
+            "type": "value",
+            "field": "triggers.length"
+          },
+          {
+            "type": "plural",
+            "countField": "triggers.length",
+            "singular": [
+              {
+                "type": "literal",
+                "text": " damage trigger"
+              }
+            ],
+            "plural": [
+              {
+                "type": "literal",
+                "text": " damage triggers"
+              }
+            ],
+            "includeCount": false
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "triggers[0].cause",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "monitors "
+          },
+          {
+            "type": "value",
+            "field": "triggers[0].cause"
+          },
+          {
+            "type": "literal",
+            "text": " damage"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "triggers[0].damage_multiplier",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "switch",
+            "cases": [
+              {
+                "conditions": [
+                  {
+                    "field": "triggers[0].damage_multiplier",
+                    "comparison": "=",
+                    "value": 0
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "is immune to this damage type"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "triggers[0].damage_multiplier",
+                    "comparison": "<",
+                    "value": 1
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "takes reduced damage ("
+                  },
+                  {
+                    "type": "value",
+                    "field": "triggers[0].damage_multiplier"
+                  },
+                  {
+                    "type": "literal",
+                    "text": "x multiplier)"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "triggers[0].damage_multiplier",
+                    "comparison": ">",
+                    "value": 1
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "takes increased damage ("
+                  },
+                  {
+                    "type": "value",
+                    "field": "triggers[0].damage_multiplier"
+                  },
+                  {
+                    "type": "literal",
+                    "text": "x multiplier)"
+                  }
+                ]
+              }
+            ],
+            "default": [
+              {
+                "type": "literal",
+                "text": "takes normal damage"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "triggers[0].deals_damage",
+            "comparison": "=",
+            "value": false
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "blocks the damage from being applied"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "triggers[0].on_damage",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "triggers events when damaged"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "deals_damage",
+      "title": "Deals Damage",
+      "description": "Defines how received damage affects the entity.",
+      "defaultValue": false,
+      "dataType": "boolean",
+      "choices": [
+        {
+          "id": "yes",
+          "versionIntroduced": "1.21.40",
+          "description": "Received damage is applied to the entity."
+        },
+        {
+          "id": "no",
+          "versionIntroduced": "1.21.40",
+          "description": "Received damage is not applied to the entity."
+        },
+        {
+          "id": "no_but_side_effects_apply",
+          "versionIntroduced": "1.21.40",
+          "description": "Received damage is not applied to the entity, but the side effects of the attack are. This means that the attacker's weapon loses durability, enchantment side effects are applied, and so on."
+        }
+      ],
+      "alternates": [
+        {
+          "id": "deals_damage",
+          "title": "Deals Damage",
+          "defaultValue": false,
+          "dataType": "boolean"
+        }
+      ]
+    },
+    {
+      "id": "triggers",
+      "title": "Triggers",
+      "description": "List of triggers with the events to call when taking specific kinds of damage.",
+      "dataType": "minecraftEventTriggerArray",
+      "subForm": {
+        "id": "damage_sensor_trigger",
+        "title": "Damage Sensor Trigger",
+        "fields": [
+          {
+            "id": "cause",
+            "title": "Cause",
+            "description": "Type of damage that triggers the events.",
+            "defaultValue": "none",
+            "dataType": "string"
+          },
+          {
+            "id": "damage_modifier",
+            "title": "Damage Modifier",
+            "description": "A modifier that adds/removes to the base damage received from the specified damage cause.",
+            "defaultValue": 0,
+            "dataType": "float"
+          },
+          {
+            "id": "damage_multiplier",
+            "title": "Damage Multiplier",
+            "description": "A multiplier that modifies the base damage received from the specified damage cause.",
+            "defaultValue": 1,
+            "dataType": "float"
+          },
+          {
+            "id": "deals_damage",
+            "title": "Deals Damage",
+            "description": "Defines how received damage affects the entity.",
+            "defaultValue": false,
+            "dataType": "boolean",
+            "alternates": [
+              {
+                "id": "deals_damage",
+                "dataType": "string"
+              }
+            ]
+          },
+          {
+            "id": "on_damage",
+            "title": "On Damage",
+            "description": "Defines which entities the trigger applies to, and which event to emit when damaged.",
+            "dataType": "minecraftEventTrigger"
+          },
+          {
+            "id": "on_damage_sound_event",
+            "title": "Damage Sound Event",
+            "description": "Defines what sound to play when the on_damage filters are met.",
+            "dataType": "minecraftEventReference"
+          },
+          {
+            "id": "filters",
+            "title": "Filters",
+            "description": "Filter conditions for when this trigger applies.",
+            "dataType": "minecraftFilter"
+          },
+          {
+            "id": "event",
+            "title": "Event",
+            "description": "Event to emit when the trigger conditions are met.",
+            "dataType": "string"
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "triggers",
+          "dataType": "object",
+          "subFormId": "damage_sensor_trigger"
+        }
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/allay.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:damage_sensor/",
+            "content": [
+              {
+                "deals_damage": "no",
+                "on_damage": {
+                  "filters": {
+                    "all_of": [
+                      {
+                        "subject": "other",
+                        "test": "is_family",
+                        "value": "player"
+                      },
+                      {
+                        "subject": "other",
+                        "test": "is_owner"
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/bat.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:damage_sensor/",
+            "content": {
+              "cause": "fall",
+              "deals_damage": "no"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/entities/blaze.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:damage_sensor/",
+            "content": {
+              "cause": "fall",
+              "deals_damage": "no"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/entities/breeze.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:damage_sensor/",
+            "content": [
+              {
+                "cause": "fall",
+                "deals_damage": "no"
+              },
+              {
+                "cause": "projectile",
+                "on_damage": {
+                  "filters": {
+                    "operator": "!=",
+                    "test": "is_family",
+                    "subject": "damager",
+                    "value": "wind_charge"
+                  }
+                },
+                "deals_damage": "no"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Defines what events to call when this entity is damaged by specific entities or items.",
+  "title": "Damage Sensor",
+  "samples": {
+    "/vanilla/behavior_pack/entities/allay.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:damage_sensor/",
+        "content": {
+          "triggers": [
+            {
+              "deals_damage": "no",
+              "on_damage": {
+                "filters": {
+                  "all_of": [
+                    {
+                      "subject": "other",
+                      "test": "is_family",
+                      "value": "player"
+                    },
+                    {
+                      "subject": "other",
+                      "test": "is_owner"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/bat.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:damage_sensor/",
+        "content": {
+          "triggers": {
+            "cause": "fall",
+            "deals_damage": "no"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/blaze.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:damage_sensor/",
+        "content": {
+          "triggers": {
+            "cause": "fall",
+            "deals_damage": "no"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/breeze.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:damage_sensor/",
+        "content": {
+          "triggers": [
+            {
+              "cause": "fall",
+              "deals_damage": "no"
+            },
+            {
+              "cause": "projectile",
+              "on_damage": {
+                "filters": {
+                  "operator": "!=",
+                  "test": "is_family",
+                  "subject": "damager",
+                  "value": "wind_charge"
+                }
+              },
+              "deals_damage": "no"
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/chicken.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:damage_sensor/",
+        "content": {
+          "triggers": {
+            "cause": "fall",
+            "deals_damage": "no"
+          }
+        }
+      }
+    ]
+  },
+  "id": "minecraft:damage_sensor"
+}

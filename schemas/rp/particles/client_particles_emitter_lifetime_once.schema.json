@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Client Particles Emitter Lifetime Once",
+  "description": "Creates a single-burst particle effect that runs once and stops. The emitter activates for the specified active_time duration, emits particles, then terminates. Ideal for impact effects like explosions, block breaking, critical hits, potion splashes, and other momentary visual feedback.",
+  "properties": {
+    "active_time": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "description": "\n\nProperties:\n• expression (string)\n• version (int)",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "expression": {
+                "title": "Expression",
+                "type": "string"
+              },
+              "version": {
+                "title": "Version",
+                "type": "integer"
+              }
+            }
+          }
+        }
+      ],
+      "title": "Active Time",
+      "description": "The time in seconds that the emitter is active. Can be a number or Molang expression."
+    }
+  }
+}

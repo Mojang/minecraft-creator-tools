@@ -1,0 +1,193 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:ore_feature",
+  "description": "Places a vein of blocks to simulate ore deposits. Despite the name, any block can be placed by this feature. During placement, existing world blocks are checked to see if they can be replaced by the new ore block based on the list in the may_replace field of a replace_rules entry. If no may_replace field is specified, the ore block can replace any existing block. Succeeds if at least one ore block is successfully placed. Fails if all ore block placements fail.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "generates clustered block veins like ore deposits"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "count",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "places up to "
+          },
+          {
+            "type": "value",
+            "field": "count"
+          },
+          {
+            "type": "literal",
+            "text": " blocks per vein"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "replace_rules",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "uses "
+          },
+          {
+            "type": "value",
+            "field": "replace_rules.length"
+          },
+          {
+            "type": "literal",
+            "text": " block replacement rules"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "format_version",
+      "title": "Format Version",
+      "dataType": "string"
+    },
+    {
+      "dataType": "object",
+      "id": "description",
+      "title": "Description",
+      "isRequired": true,
+      "subForm": {
+        "fields": [
+          {
+            "dataType": "string",
+            "id": "identifier",
+            "title": "Identifier",
+            "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+            "isRequired": true
+          }
+        ]
+      }
+    },
+    {
+      "dataType": "int",
+      "id": "count",
+      "title": "Count",
+      "description": "The number of blocks to be placed.",
+      "isRequired": true
+    },
+    {
+      "id": "replace_rules",
+      "dataType": "objectArray",
+      "subForm": {
+        "fields": [
+          {
+            "dataType": "stringArray",
+            "id": "may_replace",
+            "title": "May Replace",
+            "isRequired": false
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "dataType": "stringArray",
+          "id": "replace_rules",
+          "title": "Replace Rules",
+          "isRequired": false
+        }
+      ]
+    }
+  ],
+  "samples": {
+    "example": [
+      {
+        "path": "Malachite ore in different materials",
+        "content": {
+          "format_version": "1.13.0",
+          "minecraft:ore_feature": {
+            "description": {
+              "identifier": "example:malachite_ore_feature"
+            },
+            "count": 12,
+            "replace_rules": [
+              {
+                "places_block": "example:malachite_ore",
+                "may_replace": [
+                  "minecraft:stone"
+                ]
+              },
+              {
+                "places_block": "example:granite_malachite_ore",
+                "may_replace": [
+                  "minecraft:granite"
+                ]
+              },
+              {
+                "places_block": "example:andesite_malachite_ore",
+                "may_replace": [
+                  "minecraft:andesite"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "path": "Oil deposits in the sand",
+        "content": {
+          "format_version": "1.13.0",
+          "minecraft:ore_feature": {
+            "description": {
+              "identifier": "example:oil_deposit_feature"
+            },
+            "count": 12,
+            "replace_rules": [
+              {
+                "places_block": "example:oil_block",
+                "may_replace": [
+                  "minecraft:sand"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "path": "Using block descriptor objects with name property (vanilla format)",
+        "content": {
+          "format_version": "1.13.0",
+          "minecraft:ore_feature": {
+            "description": {
+              "identifier": "example:coal_ore_feature"
+            },
+            "count": 17,
+            "replace_rules": [
+              {
+                "places_block": "minecraft:coal_ore",
+                "may_replace": [
+                  {
+                    "name": "minecraft:stone"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "title": "Ore Feature"
+}

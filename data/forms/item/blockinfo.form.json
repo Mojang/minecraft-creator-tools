@@ -1,0 +1,77 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has block and digging speed configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "BlockInfo",
+  "fields": [
+    {
+      "id": "block",
+      "description": "Block to be dug.",
+      "dataType": "object",
+      "subForm": {
+        "id": "block",
+        "title": "Block",
+        "fields": [
+          {
+            "id": "name",
+            "title": "Name",
+            "dataType": "string",
+            "defaultValue": ""
+          },
+          {
+            "id": "states",
+            "title": "States",
+            "dataType": "int",
+            "defaultValue": {},
+            "alternates": [
+              {
+                "id": "states",
+                "dataType": "string"
+              },
+              {
+                "id": "states",
+                "dataType": "boolean"
+              }
+            ]
+          },
+          {
+            "id": "tags",
+            "title": "Tags",
+            "dataType": "string",
+            "defaultValue": ""
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "block",
+          "dataType": "string"
+        },
+        {
+          "id": "block",
+          "dataType": "object"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "speed",
+      "title": "Speed",
+      "description": "Digging speed for the correlating block(s).",
+      "dataType": "int",
+      "isRequired": true
+    }
+  ],
+  "description": "Associates a block type with a custom digging speed multiplier for the minecraft:digger component. Map blocks to speed values so pickaxes mine stone quickly, axes chop wood faster, and custom tools excel at specific materials. Enables tool specialization matching vanilla Minecraft conventions.",
+  "title": "Item BlockInfo"
+}

@@ -1,0 +1,88 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "TradeItem",
+  "title": "Trade Item",
+  "description": "Defines an item used in a trade, either as input (wants) or output (gives).",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "specifies "
+          },
+          {
+            "type": "value",
+            "field": "item"
+          },
+          {
+            "type": "literal",
+            "text": " as a trade item"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "item",
+      "title": "Item",
+      "description": "The item identifier, e.g., 'minecraft:emerald' or 'minecraft:coal'. Can include data value suffix like 'minecraft:coal:0'.",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "quantity",
+      "title": "Quantity",
+      "description": "Number of this item involved in the trade. Can be a fixed number or an object with min/max for random quantity.",
+      "dataType": "int",
+      "defaultValue": 1,
+      "minValue": 1,
+      "alternates": [
+        {
+          "id": "quantity",
+          "dataType": "object",
+          "subFormId": "trade/tradeitem_quantity"
+        }
+      ]
+    },
+    {
+      "id": "price_multiplier",
+      "title": "Price Multiplier",
+      "description": "Multiplier applied to price increases when supply/demand changes. Higher values mean prices fluctuate more. Typical value is 0.05.",
+      "dataType": "float",
+      "defaultValue": 0.05
+    },
+    {
+      "id": "filters",
+      "title": "Filters",
+      "description": "Optional filters that must pass for this item to be included in the trade.",
+      "dataType": "object",
+      "subFormId": "entityfilters/filter_group"
+    },
+    {
+      "id": "functions",
+      "title": "Functions",
+      "description": "Array of functions to apply to the trade item, such as enchantments.",
+      "dataType": "objectArray"
+    },
+    {
+      "id": "choice",
+      "title": "Choice",
+      "description": "Alternative items that can be traded.",
+      "dataType": "objectArray"
+    },
+    {
+      "id": "__DEP_fnctns",
+      "title": "__DEP_fnctns",
+      "description": "__DEP_fnctns",
+      "dataType": "object"
+    },
+    {
+      "id": "__DEP_fltrs",
+      "title": "__DEP_fltrs",
+      "description": "__DEP_fltrs",
+      "dataType": "object"
+    }
+  ]
+}

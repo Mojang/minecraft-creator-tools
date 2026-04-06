@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Wither Random Attack Pos Goal Behavior",
+  "description": "Allows the wither to launch random attacks.",
+  "properties": {
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer"
+    }
+  }
+}

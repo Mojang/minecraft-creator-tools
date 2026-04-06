@@ -1,0 +1,133 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:enchantable",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "slot",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can be enchanted as "
+          },
+          {
+            "type": "value",
+            "field": "slot"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "value",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has "
+          },
+          {
+            "type": "switch",
+            "cases": [
+              {
+                "conditions": [
+                  {
+                    "field": "value",
+                    "comparison": ">=",
+                    "value": 20
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "excellent"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "value",
+                    "comparison": ">=",
+                    "value": 14
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "good"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "value",
+                    "comparison": ">=",
+                    "value": 10
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "average"
+                  }
+                ]
+              }
+            ],
+            "default": [
+              {
+                "type": "literal",
+                "text": "low"
+              }
+            ]
+          },
+          {
+            "type": "literal",
+            "text": " enchantability ("
+          },
+          {
+            "type": "value",
+            "field": "value"
+          },
+          {
+            "type": "literal",
+            "text": ")"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "slot",
+      "title": "Slot",
+      "description": "Specifies which types of enchantments can be applied. For example, `bow` would allow this item to be enchanted as if it were a bow.",
+      "dataType": "string",
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "none|all|g_armor|armor_head|armor_torso|armor_feet|armor_legs|sword|bow|spear|crossbow|melee_spear|g_tool|hoe|shears|flintsteel|shield|g_digging|axe|pickaxe|shovel|fishing_rod|carrot_stick|elytra|cosmetic_head"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "Specifies the value of the enchantment (minimum of 0).",
+      "dataType": "int",
+      "isRequired": true
+    }
+  ],
+  "description": "The enchantable component specifies what enchantments can be applied to the item. Not all enchantments will have an effect on all item components.",
+  "title": "Item Enchantable",
+  "samples": {}
+}

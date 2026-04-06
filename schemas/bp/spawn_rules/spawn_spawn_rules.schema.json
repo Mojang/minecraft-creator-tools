@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Spawn Rules",
+  "description": "Defines the complete spawn rules for an entity type, including population control group, spawn conditions (biome, light, difficulty, etc.), and herd configuration. This is the root structure of a spawn_rules JSON file in behavior packs.",
+  "properties": {
+    "conditions": {
+      "title": "Conditions",
+      "description": "Array of spawn condition objects that define when and how this entity spawns.\n\nProperties:\n• minecraft:spawns_lava (object)\n• minecraft:disallow_spawns_in_bubble (object)\n• minecraft:biome_filter = {\"AND\":null,\"NOT\":nu\n• minecraft:spawns_on_block_filter = []\n• minecraft:spawns_on_block_prevented_filter (string[]) = []\n• minecraft:herd (object) = []\n• minecraft:permute_type (object) = []\n• minecraft:brightness_filter (object)\n• ... and 16 more properties",
+      "type": "array",
+      "items": {
+        "$ref": "./spawn_spawn_biomeconditions.schema.json"
+      }
+    },
+    "description": {
+      "title": "Description",
+      "description": "\n\nProperties:\n• identifier (string)\n• population_control (string) = ",
+      "$ref": "./spawn_spawn_description.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Spawn Description",
+          "description": "The description block that identifies which entity these spawn rules apply to, via the entity identifier (e.g., 'minecraft:zombie'). Also specifies the population control group for managing spawn caps.",
+          "body": {
+            "identifier": "",
+            "population_control": ""
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "description"
+  ]
+}

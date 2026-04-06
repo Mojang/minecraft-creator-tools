@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:projectile",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "projectile_entity",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "shoots "
+          },
+          {
+            "type": "value",
+            "field": "projectile_entity"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "minimum_critical_power",
+      "title": "Minimum Critical Power",
+      "description": "Specifies how long a player must charge a projectile for it to critically hit.",
+      "dataType": "float",
+      "defaultValue": 0
+    },
+    {
+      "id": "projectile_entity",
+      "title": "Projectile Entity",
+      "description": "Which entity is to be fired as a projectile.",
+      "dataType": "object",
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Projectile items shoot out, like an arrow.",
+  "title": "Item Projectile",
+  "samples": {}
+}

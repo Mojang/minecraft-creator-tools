@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "rolls around on the ground"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "probability",
+      "title": "Probability",
+      "description": "The probability that the mob will use the goal.",
+      "dataType": "float"
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "hideSamples": true,
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "dataType": "int"
+    }
+  ],
+  "description": "This allows the mob to roll forward.",
+  "title": "Roll Behavior",
+  "samples": {},
+  "id": "minecraft:behavior.roll"
+}

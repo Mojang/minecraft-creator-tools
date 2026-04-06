@@ -1,0 +1,90 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "controls initial rotation and spin rate of particles"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "rotation",
+      "title": "Rotation",
+      "dataType": "keyedStringCollection",
+      "defaultValue": 0,
+      "alternates": [
+        {
+          "id": "rotation",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "rotation",
+            "title": "Rotation",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "rotation",
+          "dataType": "float"
+        }
+      ]
+    },
+    {
+      "id": "rotation_rate",
+      "title": "Rotation Rate",
+      "dataType": "keyedStringCollection",
+      "defaultValue": 0,
+      "alternates": [
+        {
+          "id": "rotation_rate",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "rotation_rate",
+            "title": "Rotation Rate",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "rotation_rate",
+          "dataType": "float"
+        }
+      ]
+    }
+  ],
+  "description": "Sets the starting rotation angle and spin velocity for each particle. Initial rotation provides random orientation variety, while spin_rate creates continuous rotation during the particle's lifetime. Use for debris that tumbles, leaves spinning as they fall, sparks that twist, or any particle needing rotational motion.",
+  "title": "Client Particles Particle Initial Spin",
+  "id": "particle_initial_spin"
+}

@@ -1,0 +1,80 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "Spawn DifficultyFilter",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "spawns on difficulty "
+          },
+          {
+            "type": "value",
+            "field": "min"
+          },
+          {
+            "type": "literal",
+            "text": " to "
+          },
+          {
+            "type": "value",
+            "field": "max"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "max",
+      "title": "SpawnDifficulty Legacy",
+      "dataType": "string",
+      "choices": [
+        {
+          "id": "easy",
+          "title": "Easy"
+        },
+        {
+          "id": "hard",
+          "title": "Hard"
+        },
+        {
+          "id": "normal",
+          "title": "Normal"
+        },
+        {
+          "id": "peaceful",
+          "title": "Peaceful"
+        }
+      ],
+      "defaultValue": "hard"
+    },
+    {
+      "id": "min",
+      "title": "SpawnDifficulty Legacy",
+      "dataType": "string",
+      "choices": [
+        {
+          "id": "easy",
+          "title": "Easy"
+        },
+        {
+          "id": "hard",
+          "title": "Hard"
+        },
+        {
+          "id": "normal",
+          "title": "Normal"
+        },
+        {
+          "id": "peaceful",
+          "title": "Peaceful"
+        }
+      ],
+      "defaultValue": "peaceful"
+    }
+  ],
+  "description": "Restricts mob spawning to specific difficulty levels (Peaceful, Easy, Normal, Hard). For example, hostile mobs don't spawn on Peaceful, and some dangerous variants only appear on Hard difficulty.",
+  "title": "Spawn DifficultyFilter"
+}

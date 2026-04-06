@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Spawn Egg",
+  "description": "Defines the appearance of the spawn egg for this entity in the creative inventory.\n\nProperties:\n• texture (string)\n• base_color (string)\n• overlay_color (string)\n• texture_index (int)",
+  "type": "object",
+  "properties": {
+    "texture": {
+      "title": "Texture",
+      "type": "string"
+    },
+    "base_color": {
+      "title": "Base Color",
+      "type": "string"
+    },
+    "overlay_color": {
+      "title": "Overlay Color",
+      "type": "string"
+    },
+    "texture_index": {
+      "title": "Texture Index",
+      "type": "integer"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Spawn Egg",
+      "description": "Defines the appearance of the spawn egg for this entity in the creative inventory.",
+      "body": {
+        "texture": "",
+        "base_color": "",
+        "overlay_color": "",
+        "texture_index": 0
+      }
+    }
+  ]
+}

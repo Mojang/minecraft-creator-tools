@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Trunk Height",
+  "description": "Configuration object for the trunk height.\n\nProperties:\n• base (int)\n• intervals (string[])\n• min_height_for_canopy (int)",
+  "type": "object",
+  "properties": {
+    "base": {
+      "title": "Base",
+      "description": "Min height for the trunk.",
+      "type": "integer"
+    },
+    "intervals": {
+      "title": "Intervals",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "min_height_for_canopy": {
+      "title": "Min Height For Canopy",
+      "description": "Min height where the canopy can be placed.",
+      "type": "integer"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Trunk Height",
+      "description": "Configuration object for the trunk height.",
+      "body": {
+        "base": 0,
+        "min_height_for_canopy": 0
+      }
+    }
+  ]
+}

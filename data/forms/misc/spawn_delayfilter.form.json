@@ -1,0 +1,40 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines spawn delayfilter settings"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Spawn DelayFilter",
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "Identifier",
+      "dataType": "string"
+    },
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": "int"
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": "int"
+    },
+    {
+      "id": "spawn_chance",
+      "title": "Spawn Chance",
+      "dataType": "int"
+    }
+  ],
+  "description": "Defines spawn delayfilter settings.",
+  "title": "Spawn DelayFilter Misc"
+}

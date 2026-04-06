@@ -1,0 +1,118 @@
+{
+  "format_version": "1.26.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:egg",
+      "properties": {
+        "minecraft:climate_variant": {
+          "client_sync": true,
+          "default": "temperate",
+          "type": "enum",
+          "values": [
+            "temperate",
+            "warm",
+            "cold"
+          ]
+        }
+      },
+      "is_experimental": false,
+      "is_summonable": true,
+      "is_spawnable": false
+    },
+    "components": {
+      "minecraft:collision_box": {
+        "height": 0.25,
+        "width": 0.25
+      },
+      "minecraft:conditional_bandwidth_optimization": {
+        "default_values": {
+          "max_dropped_ticks": 7,
+          "max_optimized_distance": 80.0,
+          "use_motion_prediction_hints": true
+        }
+      },
+      "minecraft:physics": {},
+      "minecraft:projectile": {
+        "angle_offset": 0.0,
+        "on_hit": {
+          "impact_damage": {
+            "apply_knockback_to_blocking_targets": true,
+            "damage": 0,
+            "knockback": true,
+            "destroy_on_hit": true
+          },
+          "spawn_chance": {
+            "first_spawn_chance": 8,
+            "first_spawn_count": 1,
+            "spawn_baby": true,
+            "on_spawn": [
+              {
+                "event": "minecraft:hatch_warm",
+                "filters": {
+                  "domain": "minecraft:climate_variant",
+                  "subject": "other",
+                  "test": "enum_property",
+                  "value": "warm"
+                }
+              },
+              {
+                "event": "minecraft:hatch_cold",
+                "filters": {
+                  "domain": "minecraft:climate_variant",
+                  "subject": "other",
+                  "test": "enum_property",
+                  "value": "cold"
+                }
+              }
+            ],
+            "spawn_definition": "minecraft:chicken",
+            "second_spawn_chance": 32,
+            "second_spawn_count": 4
+          },
+          "particle_on_hit": {
+            "num_particles": 6,
+            "on_other_hit": true,
+            "on_entity_hit": true,
+            "particle_type": "iconcrack",
+            "particle_item_name": {
+              "blue_egg": {
+                "domain": "minecraft:climate_variant",
+                "test": "enum_property",
+                "value": "cold"
+              },
+              "brown_egg": {
+                "domain": "minecraft:climate_variant",
+                "test": "enum_property",
+                "value": "warm"
+              }
+            }
+          },
+          "remove_on_hit": {}
+        },
+        "gravity": 0.03,
+        "power": 1.5
+      },
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      }
+    },
+    "events": {
+      "minecraft:spawn_cold": {
+        "set_property": {
+          "minecraft:climate_variant": "cold"
+        }
+      },
+      "minecraft:spawn_temperate": {
+        "set_property": {
+          "minecraft:climate_variant": "temperate"
+        }
+      },
+      "minecraft:spawn_warm": {
+        "set_property": {
+          "minecraft:climate_variant": "warm"
+        }
+      }
+    }
+  }
+}

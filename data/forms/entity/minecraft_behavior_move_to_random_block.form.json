@@ -1,0 +1,42 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "moves to random blocks"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "block_distance",
+      "title": "Block Distance",
+      "description": "Defines the distance from the mob, in blocks, that the block to move to will be chosen.",
+      "defaultValue": 16,
+      "dataType": "float"
+    },
+    {
+      "id": "within_radius",
+      "title": "Within Radius",
+      "description": "Defines the distance in blocks the mob has to be from the block for the movement to be finished.",
+      "defaultValue": 0,
+      "dataType": "float"
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "hideSamples": true,
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "dataType": "int"
+    }
+  ],
+  "description": "Allows mob to move towards a random block.",
+  "title": "Move To Random Block Behavior",
+  "samples": {},
+  "id": "minecraft:behavior.move_to_random_block"
+}

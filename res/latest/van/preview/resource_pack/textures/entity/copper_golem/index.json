@@ -1,0 +1,32 @@
+{
+  "files": [
+    "copper_golem.png",
+    "copper_golem.texture_set.json",
+    "copper_golem_exposed.png",
+    "copper_golem_exposed.texture_set.json",
+    "copper_golem_exposed_mers.tga",
+    "copper_golem_eyes.png",
+    "copper_golem_eyes.texture_set.json",
+    "copper_golem_eyes_exposed.png",
+    "copper_golem_eyes_exposed.texture_set.json",
+    "copper_golem_eyes_exposed_mers.tga",
+    "copper_golem_eyes_mers.tga",
+    "copper_golem_eyes_oxidized.png",
+    "copper_golem_eyes_oxidized.texture_set.json",
+    "copper_golem_eyes_oxidized_mers.tga",
+    "copper_golem_eyes_weathered.png",
+    "copper_golem_eyes_weathered.texture_set.json",
+    "copper_golem_eyes_weathered_mers.tga",
+    "copper_golem_flower.png",
+    "copper_golem_flower.texture_set.json",
+    "copper_golem_flower_mers.tga",
+    "copper_golem_mers.tga",
+    "copper_golem_oxidized.png",
+    "copper_golem_oxidized.texture_set.json",
+    "copper_golem_oxidized_mers.tga",
+    "copper_golem_weathered.png",
+    "copper_golem_weathered.texture_set.json",
+    "copper_golem_weathered_mers.tga"
+  ],
+  "folders": []
+}

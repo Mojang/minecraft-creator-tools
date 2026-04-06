@@ -1,0 +1,178 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Biome Surface Builder",
+  "description": "Controls the materials used for terrain generation.",
+  "properties": {
+    "builder": {
+      "anyOf": [
+        {
+          "$ref": "./biome_minecraft_overworld.schema.json"
+        },
+        {
+          "description": "\n\nProperties:\n• foundation_material (string)\n• mid_material (string)\n• sea_floor_depth (int)\n• sea_floor_material (string)\n• sea_material (string)\n• top_material (string)\n• type (string)",
+          "$ref": "./biome_minecraft_frozen_ocean.schema.json",
+          "defaultSnippets": [
+            {
+              "label": "Biome Frozen Ocean (object)",
+              "description": "Similar to overworld_surface. Adds icebergs.",
+              "body": {
+                "foundation_material": "",
+                "mid_material": "",
+                "sea_floor_depth": 0,
+                "sea_floor_material": "",
+                "sea_material": "",
+                "top_material": "",
+                "type": ""
+              }
+            }
+          ]
+        },
+        {
+          "description": "\n\nProperties:\n• bryce_pillars (boolean)\n• clay_material (string)\n• foundation_material (string)\n• hard_clay_material (string)\n• has_forest (boolean)\n• mid_material (string)\n• sea_floor_depth (int)\n• sea_floor_material (string)\n• ... and 3 more properties",
+          "$ref": "./biome_minecraft_mesa.schema.json",
+          "defaultSnippets": [
+            {
+              "label": "Biome Mesa (object)",
+              "description": "Similar to overworld_surface. Adds colored strata and optional pillars.",
+              "body": {
+                "bryce_pillars": true,
+                "clay_material": "",
+                "foundation_material": "",
+                "hard_clay_material": "",
+                "has_forest": true,
+                "mid_material": "",
+                "sea_floor_depth": 0,
+                "sea_floor_material": "",
+                "sea_material": "",
+                "top_material": "",
+                "type": ""
+              }
+            }
+          ]
+        },
+        {
+          "description": "\n\nProperties:\n• foundation_material (string)\n• max_puddle_depth_below_sea_level (int)\n• mid_material (string)\n• sea_floor_depth (int)\n• sea_floor_material (string)\n• sea_material (string)\n• top_material (string)\n• type (string)",
+          "$ref": "./biome_minecraft_swamp.schema.json",
+          "defaultSnippets": [
+            {
+              "label": "Biome Swamp (object)",
+              "description": "Used to add decoration to the surface of swamp biomes such as water lilies.",
+              "body": {
+                "foundation_material": "",
+                "max_puddle_depth_below_sea_level": 0,
+                "mid_material": "",
+                "sea_floor_depth": 0,
+                "sea_floor_material": "",
+                "sea_material": "",
+                "top_material": "",
+                "type": ""
+              }
+            }
+          ]
+        },
+        {
+          "description": "\n\nProperties:\n• beach_material (string)\n• ceiling_materials (string)\n• floor_materials (string)\n• foundation_material (string)\n• sea_material (string)\n• type (string)",
+          "$ref": "./biome_minecraft_capped.schema.json",
+          "defaultSnippets": [
+            {
+              "label": "Biome Capped (object)",
+              "description": "Generates surface on blocks with non-solid blocks above or below.",
+              "body": {
+                "beach_material": "",
+                "ceiling_materials": "",
+                "floor_materials": "",
+                "foundation_material": "",
+                "sea_material": "",
+                "type": ""
+              }
+            }
+          ]
+        },
+        {
+          "description": "\n\nProperties:\n• type (string)",
+          "$ref": "./biome_minecraft_the_end.schema.json",
+          "defaultSnippets": [
+            {
+              "label": "Biome The End (object)",
+              "description": "Marks a biome as using End dimension terrain generation. Biomes with this component will use the characteristic End terrain style with end stone and void generation.",
+              "body": {
+                "type": ""
+              }
+            }
+          ]
+        }
+      ],
+      "title": "Builder",
+      "description": "Controls the block types used for terrain generation.\n\nProperties:\n• foundation_material (string)\n• mid_material (string)\n• sea_floor_depth (int)\n• sea_floor_material (string)\n• sea_material (string)\n• top_material (string)\n• type (string)",
+      "defaultSnippets": [
+        {
+          "label": "Biome Frozen Ocean (object)",
+          "description": "Similar to overworld_surface. Adds icebergs.",
+          "body": {
+            "foundation_material": "",
+            "mid_material": "",
+            "sea_floor_depth": 0,
+            "sea_floor_material": "",
+            "sea_material": "",
+            "top_material": "",
+            "type": ""
+          }
+        },
+        {
+          "label": "Biome Mesa (object)",
+          "description": "Similar to overworld_surface. Adds colored strata and optional pillars.",
+          "body": {
+            "bryce_pillars": true,
+            "clay_material": "",
+            "foundation_material": "",
+            "hard_clay_material": "",
+            "has_forest": true,
+            "mid_material": "",
+            "sea_floor_depth": 0,
+            "sea_floor_material": "",
+            "sea_material": "",
+            "top_material": "",
+            "type": ""
+          }
+        },
+        {
+          "label": "Biome Swamp (object)",
+          "description": "Used to add decoration to the surface of swamp biomes such as water lilies.",
+          "body": {
+            "foundation_material": "",
+            "max_puddle_depth_below_sea_level": 0,
+            "mid_material": "",
+            "sea_floor_depth": 0,
+            "sea_floor_material": "",
+            "sea_material": "",
+            "top_material": "",
+            "type": ""
+          }
+        },
+        {
+          "label": "Biome Capped (object)",
+          "description": "Generates surface on blocks with non-solid blocks above or below.",
+          "body": {
+            "beach_material": "",
+            "ceiling_materials": "",
+            "floor_materials": "",
+            "foundation_material": "",
+            "sea_material": "",
+            "type": ""
+          }
+        },
+        {
+          "label": "Biome The End (object)",
+          "description": "Marks a biome as using End dimension terrain generation. Biomes with this component will use the characteristic End terrain style with end stone and void generation.",
+          "body": {
+            "type": ""
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "builder"
+  ]
+}

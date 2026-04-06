@@ -1,0 +1,81 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "boolean",
+            "comparison": "equals",
+            "compareTo": false
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "is not selectable by cursor"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "boolean",
+            "comparison": "equals",
+            "compareTo": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has full block selection"
+          }
+        ]
+      },
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has a custom selection box"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "Defines the area of the block that is selected by the player's cursor (the outline shown when looking at the block). If set to true, default values are used (a full 16x16x16 block). If set to false, this block is not selectable by the player's cursor. If this component is omitted, default values are used.",
+  "fields": [
+    {
+      "id": "origin",
+      "title": "Origin",
+      "description": "Minimal position of the bounds of the selection box. \"origin\" is specified as [x, y, z] and must be in the range (-8, 0, -8) to (8, 16, 8), inclusive.",
+      "defaultValue": [
+        -8,
+        0,
+        -8
+      ],
+      "dataType": "point3"
+    },
+    {
+      "id": "size",
+      "title": "Size",
+      "description": "Size of each side of the selection box. Size is specified as [x, y, z]. \"origin\" + \"size\" must be in the range (-8, 0, -8) to (8, 16, 8), inclusive.",
+      "defaultValue": [
+        16,
+        16,
+        16
+      ],
+      "dataType": "point3"
+    }
+  ],
+  "scalarField": {
+    "id": "boolean",
+    "title": "Object enabled",
+    "tags": [
+      "presence"
+    ],
+    "dataType": "boolean"
+  },
+  "title": "Selection Box",
+  "samples": {},
+  "id": "minecraft:selection_box"
+}

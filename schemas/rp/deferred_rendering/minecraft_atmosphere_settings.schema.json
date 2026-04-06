@@ -1,0 +1,180 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "minecraft:atmosphere_settings",
+  "description": "minecraft:atmosphere_settings\n\nProperties:\n• description ({ identifier })\n• sky_zenith_color\n• sky_horizon_color\n• moon_mie_strength (float)\n• horizon_blend_stops ({ min, start, mie_start, ... })\n• rayleigh_strength (float)\n• sun_mie_strength (float)\n• sun_glare_shape (float)",
+  "type": "object",
+  "properties": {
+    "description": {
+      "title": "description",
+      "description": "description\n\nProperties:\n• identifier (string)",
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "title": "identifier",
+          "description": "identifier",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "AtmosphericScattering AtmosphericScatteringConfigSettings AtmosphericScatteringSettings AtmosphericScatteringDescription",
+          "description": "AtmosphericScattering AtmosphericScatteringConfigSettings AtmosphericScatteringSettings AtmosphericScatteringDescription",
+          "body": {
+            "identifier": ""
+          }
+        }
+      ]
+    },
+    "sky_zenith_color": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "minLength": 3,
+          "maxLength": 3
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          }
+        }
+      ],
+      "title": "sky_zenith_color",
+      "description": "sky_zenith_color"
+    },
+    "sky_horizon_color": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "minLength": 3,
+          "maxLength": 3
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          }
+        }
+      ],
+      "title": "sky_horizon_color",
+      "description": "sky_horizon_color"
+    },
+    "moon_mie_strength": {
+      "anyOf": [
+        {
+          "type": "number",
+          "maximum": 20
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        }
+      ],
+      "title": "moon_mie_strength",
+      "description": "moon_mie_strength"
+    },
+    "horizon_blend_stops": {
+      "$ref": "./horizon_blend_stops.schema.json",
+      "title": "horizon_blend_stops",
+      "description": "horizon_blend_stops\n\nProperties:\n• min (float)\n• start (float)\n• mie_start (float)\n• max (float)",
+      "defaultSnippets": [
+        {
+          "label": "AtmosphericScattering AtmosphericScatteringConfigSettings AtmosphericScatteringSettings HorizonBlendKeyFrames",
+          "description": "AtmosphericScattering AtmosphericScatteringConfigSettings AtmosphericScatteringSettings HorizonBlendKeyFrames",
+          "body": {
+            "min": 0,
+            "start": 0,
+            "mie_start": 0,
+            "max": 0
+          }
+        }
+      ]
+    },
+    "rayleigh_strength": {
+      "anyOf": [
+        {
+          "type": "number",
+          "maximum": 11
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        }
+      ],
+      "title": "rayleigh_strength",
+      "description": "rayleigh_strength"
+    },
+    "sun_mie_strength": {
+      "anyOf": [
+        {
+          "type": "number",
+          "maximum": 60
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        }
+      ],
+      "title": "sun_mie_strength",
+      "description": "sun_mie_strength"
+    },
+    "sun_glare_shape": {
+      "anyOf": [
+        {
+          "type": "number",
+          "maximum": 50
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        }
+      ],
+      "title": "sun_glare_shape",
+      "description": "sun_glare_shape"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "AtmosphericScattering AtmosphericScatteringConfigSettings AtmosphericScatteringSettings",
+      "description": "AtmosphericScattering AtmosphericScatteringConfigSettings AtmosphericScatteringSettings",
+      "body": {
+        "moon_mie_strength": 0,
+        "rayleigh_strength": 0,
+        "sun_mie_strength": 0,
+        "sun_glare_shape": 0
+      }
+    }
+  ]
+}

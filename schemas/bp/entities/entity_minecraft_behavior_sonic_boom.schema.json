@@ -1,0 +1,98 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Sonic Boom Behavior",
+  "description": "Allows this entity to perform a 'sonic boom' ranged attack",
+  "properties": {
+    "attack_cooldown": {
+      "title": "Attack Cooldown",
+      "description": "Cooldown in seconds required after using this attack until the entity can use sonic boom again.\n\nSample values:\n• warden: 2",
+      "type": "number",
+      "default": 5
+    },
+    "attack_damage": {
+      "title": "Attack Damage",
+      "description": "Attack damage of the sonic boom.\n\nSample values:\n• warden: 10",
+      "type": "number",
+      "default": 30
+    },
+    "attack_range_horizontal": {
+      "title": "Attack Range Horizontal",
+      "description": "Horizontal range (in blocks) at which the sonic boom can damage the target.",
+      "type": "number",
+      "default": 15
+    },
+    "attack_range_vertical": {
+      "title": "Attack Range Vertical",
+      "description": "Vertical range (in blocks) at which the sonic boom can damage the target.",
+      "type": "number",
+      "default": 20
+    },
+    "attack_sound": {
+      "title": "Attack Sound",
+      "description": "Sound event for the attack.\n\nSample values:\n• warden: sonic_boom",
+      "type": "string",
+      "default": ""
+    },
+    "charge_sound": {
+      "title": "Charge Sound",
+      "description": "Sound event for the charge up.\n\nSample values:\n• warden: sonic_charge",
+      "type": "string",
+      "default": ""
+    },
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "duration": {
+      "title": "Duration",
+      "description": "Goal duration in seconds\n\nSample values:\n• warden: 3",
+      "type": "number",
+      "default": 0
+    },
+    "duration_until_attack_sound": {
+      "title": "Duration Until Attack Sound",
+      "description": "Duration in seconds until the attack sound is played.",
+      "type": "number",
+      "default": 1.7000000476837158
+    },
+    "knockback_height_cap": {
+      "title": "Knockback Height Cap",
+      "description": "Height cap of the attack knockback's vertical delta.\n\nSample values:\n• warden: 0.5",
+      "type": "number",
+      "default": 0
+    },
+    "knockback_horizontal_strength": {
+      "title": "Knockback Horizontal Strength",
+      "description": "Horizontal strength of the attack's knockback applied to the attack target.\n\nSample values:\n• warden: 2.5",
+      "type": "number",
+      "default": 0
+    },
+    "knockback_vertical_strength": {
+      "title": "Knockback Vertical Strength",
+      "description": "Vertical strength of the attack's knockback applied to the attack target.\n\nSample values:\n• warden: 0.5",
+      "type": "number",
+      "default": 0
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.\n\nSample values:\n• warden: 3",
+      "type": "integer",
+      "default": 0
+    },
+    "speed_multiplier": {
+      "title": "Speed Multiplier",
+      "description": "This multiplier modifies the attacking entity's speed when moving toward the target.\n\nSample values:\n• warden: 1.2",
+      "type": "number",
+      "default": 1
+    }
+  }
+}

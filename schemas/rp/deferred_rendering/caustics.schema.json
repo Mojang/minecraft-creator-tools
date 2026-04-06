@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "caustics",
+  "description": "caustics\n\nProperties:\n• enabled (boolean)\n• power (int)\n• frame_length (float)\n• texture (string)\n• scale (float)",
+  "type": "object",
+  "properties": {
+    "enabled": {
+      "title": "enabled",
+      "description": "enabled",
+      "type": "boolean"
+    },
+    "power": {
+      "title": "power",
+      "description": "power",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 6
+    },
+    "frame_length": {
+      "title": "frame_length",
+      "description": "frame_length",
+      "type": "number",
+      "minimum": 0.009999999776482582,
+      "maximum": 5
+    },
+    "texture": {
+      "title": "texture",
+      "description": "texture",
+      "type": "string"
+    },
+    "scale": {
+      "title": "scale",
+      "description": "scale",
+      "type": "number",
+      "minimum": 0.10000000149011612,
+      "maximum": 5
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Mce Framebuilder CausticsParameters",
+      "description": "Mce Framebuilder CausticsParameters",
+      "body": {
+        "enabled": true,
+        "power": 0,
+        "frame_length": 0,
+        "texture": "",
+        "scale": 0
+      }
+    }
+  ]
+}

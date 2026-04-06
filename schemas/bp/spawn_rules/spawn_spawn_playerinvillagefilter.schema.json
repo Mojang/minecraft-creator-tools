@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Spawn PlayerInVillageFilter",
+  "description": "Restricts spawning based on whether a player is within village boundaries. Used for village-specific spawns like iron golems, cats, and raid mobs that should only appear when players are near villages.",
+  "properties": {
+    "distance": {
+      "title": "Distance",
+      "type": "integer"
+    },
+    "village_border_tolerance": {
+      "title": "Village Border Tolerance",
+      "type": "integer",
+      "default": 10
+    }
+  },
+  "required": [
+    "distance"
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Block Components Leashable",
+  "description": "Allows a block to have a lead tied to it.",
+  "properties": {
+    "offset": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        {
+          "description": "\n\nProperties:\n• x (float) = 0\n• y (float) = 0\n• z (float) = 0",
+          "type": "object",
+          "properties": {
+            "x": {
+              "title": "X",
+              "type": "number",
+              "default": 0
+            },
+            "y": {
+              "title": "Y",
+              "type": "number",
+              "default": 0
+            },
+            "z": {
+              "title": "Z",
+              "type": "number",
+              "default": 0
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Offset (object)",
+              "description": "Use Offset as an object",
+              "body": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            }
+          ]
+        }
+      ],
+      "title": "Offset",
+      "defaultSnippets": [
+        {
+          "label": "Offset (object)",
+          "description": "Use Offset as an object",
+          "body": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    }
+  }
+}

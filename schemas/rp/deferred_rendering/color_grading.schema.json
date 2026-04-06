@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "color_grading",
+  "description": "color_grading\n\nProperties:\n• shadows ({ gain, enabled, shadowsMax, ... })\n• midtones ({ contrast, gain, offset, ... })\n• highlights ({ gain, enabled, highlightsMin, ... })",
+  "type": "object",
+  "properties": {
+    "shadows": {
+      "$ref": "./shadows.schema.json",
+      "title": "shadows",
+      "description": "shadows\n\nProperties:\n• gain\n• enabled (boolean)\n• shadowsMax (float)\n• contrast\n• offset\n• gamma\n• saturation",
+      "defaultSnippets": [
+        {
+          "label": "ColorGraderConfig ColorGradingParametersSrc ColorGradingSettings Shadows",
+          "description": "ColorGraderConfig ColorGradingParametersSrc ColorGradingSettings Shadows",
+          "body": {
+            "enabled": true,
+            "shadowsMax": 0
+          }
+        }
+      ]
+    },
+    "midtones": {
+      "$ref": "./midtones.schema.json",
+      "title": "midtones",
+      "description": "midtones\n\nProperties:\n• contrast\n• gain\n• offset\n• gamma\n• saturation"
+    },
+    "highlights": {
+      "$ref": "./highlights.schema.json",
+      "title": "highlights",
+      "description": "highlights\n\nProperties:\n• gain\n• enabled (boolean)\n• highlightsMin (float)\n• contrast\n• offset\n• gamma\n• saturation",
+      "defaultSnippets": [
+        {
+          "label": "ColorGraderConfig ColorGradingParametersSrc ColorGradingSettings Highlights",
+          "description": "ColorGraderConfig ColorGradingParametersSrc ColorGradingSettings Highlights",
+          "body": {
+            "enabled": true,
+            "highlightsMin": 0
+          }
+        }
+      ]
+    }
+  }
+}

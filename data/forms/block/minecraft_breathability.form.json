@@ -1,0 +1,41 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has breathability type "
+          },
+          {
+            "type": "value",
+            "field": "_breathability"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [],
+  "isDeprecated": true,
+  "scalarField": {
+    "id": "_breathability",
+    "title": "Breathable as",
+    "defaultValue": "solid",
+    "dataType": "string",
+    "mustMatchChoices": true,
+    "choices": [
+      {
+        "id": "solid",
+        "title": "Solid"
+      },
+      {
+        "id": "air",
+        "title": "Air"
+      }
+    ]
+  },
+  "description": "Determines whether the block is breathable by defining if the block is treated as a `solid` or as `air`. The default is `solid` if this component is omitted.",
+  "title": "Breathability",
+  "id": "minecraft:breathability"
+}

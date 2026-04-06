@@ -1,0 +1,218 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "*.texture",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "uses texture '"
+          },
+          {
+            "type": "value",
+            "field": "*.texture"
+          },
+          {
+            "type": "literal",
+            "text": "'"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "*.render_method",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "switch",
+            "cases": [
+              {
+                "conditions": [
+                  {
+                    "field": "*.render_method",
+                    "comparison": "=",
+                    "value": "blend"
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "renders with transparency (blend)"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "*.render_method",
+                    "comparison": "=",
+                    "value": "alpha_test"
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "renders with cutout transparency (alpha_test)"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "*.render_method",
+                    "comparison": "=",
+                    "value": "double_sided"
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "renders double-sided"
+                  }
+                ]
+              }
+            ],
+            "default": [
+              {
+                "type": "literal",
+                "text": "renders opaque"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "*.face_dimming",
+            "comparison": "=",
+            "value": false
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has face dimming disabled"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "*.ambient_occlusion",
+            "comparison": "=",
+            "value": false
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has ambient occlusion disabled"
+          }
+        ]
+      }
+    ]
+  },
+  "tags": [
+    "visual"
+  ],
+  "note": "From 1.21.80 onward, when using a minecraft:geometry component or minecraft:material_instances component, you must include both.",
+  "customField": {
+    "id": "<custom material id>",
+    "title": "<Custom Material Instance Id>",
+    "dataType": 16,
+    "subFormId": "block/materialinstanceface"
+  },
+  "fields": [
+    {
+      "id": "*",
+      "title": "Default settings for all faces (*)",
+      "dataType": "object",
+      "subFormId": "block/materialinstanceface",
+      "alternates": [
+        {
+          "dataType": "string"
+        }
+      ]
+    },
+    {
+      "id": "north",
+      "title": "North",
+      "dataType": "object",
+      "subFormId": "block/materialinstanceface",
+      "alternates": [
+        {
+          "dataType": "string"
+        }
+      ]
+    },
+    {
+      "id": "south",
+      "title": "South",
+      "dataType": "object",
+      "subFormId": "block/materialinstanceface",
+      "alternates": [
+        {
+          "dataType": "string"
+        }
+      ]
+    },
+    {
+      "id": "east",
+      "title": "East",
+      "dataType": "object",
+      "subFormId": "block/materialinstanceface",
+      "alternates": [
+        {
+          "dataType": "string"
+        }
+      ]
+    },
+    {
+      "id": "west",
+      "title": "West",
+      "dataType": "object",
+      "subFormId": "block/materialinstanceface",
+      "alternates": [
+        {
+          "dataType": "string"
+        }
+      ]
+    },
+    {
+      "id": "up",
+      "title": "Up",
+      "dataType": "object",
+      "subFormId": "block/materialinstanceface",
+      "alternates": [
+        {
+          "dataType": "string"
+        }
+      ]
+    },
+    {
+      "id": "down",
+      "title": "Down",
+      "dataType": "object",
+      "subFormId": "block/materialinstanceface",
+      "alternates": [
+        {
+          "dataType": "string"
+        }
+      ]
+    }
+  ],
+  "description": "The material instances for a block. Maps face or material_instance names in a geometry file to an actual material instance. You can assign a material instance object to any of these faces: \"up\", \"down\", \"north\", \"south\", \"east\", \"west\", or \"*\". You can also give an instance the name of your choosing such as \"my_instance\", and then assign it to a face by doing \"north\":\"my_instance\".",
+  "title": "Material Instances",
+  "samples": {},
+  "id": "minecraft:material_instances"
+}

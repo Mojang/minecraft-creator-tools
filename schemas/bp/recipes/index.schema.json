@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "recipe/recipe_brewing_mix",
+  "title": "Brewing Mix Recipe",
+  "description": "A brewing recipe for Minecraft Bedrock Edition. Brewing recipes define how potions are created by combining a base potion with a reagent in a brewing stand.",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "title": "Format Version",
+      "description": "The format version of this recipe file.",
+      "type": "string"
+    },
+    "minecraft:recipe_brewing_mix": {
+      "$ref": "./brewing_mix_recipe_definition.schema.json",
+      "title": "Brewing Mix Recipe Definition",
+      "description": "The brewing mix recipe definition container.\n\nProperties:\n• description ({ identifier })\n• tags (string[])\n• input (string)\n• reagent (string)\n• output (string)",
+      "defaultSnippets": [
+        {
+          "label": "Brewing Mix Recipe Definition",
+          "description": "The brewing mix recipe definition container.",
+          "body": {
+            "description": "",
+            "tags": "",
+            "input": "",
+            "reagent": "",
+            "output": ""
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "format_version",
+    "minecraft:recipe_brewing_mix"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "Generation",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "specifies the generator type used for world generation in the dimension"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "generator_type",
+      "title": "Generator Type",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "description": "Specifies the generator type used for world generation in the dimension.",
+  "title": "Dimension Generation"
+}

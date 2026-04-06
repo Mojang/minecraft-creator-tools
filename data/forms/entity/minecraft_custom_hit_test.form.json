@@ -1,0 +1,181 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has custom hitboxes for combat"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "hitboxes",
+      "title": "Hitboxes",
+      "description": "List of hitboxes for melee and ranged hits against the entity.",
+      "dataType": "objectArray",
+      "subForm": {
+        "id": "hitbox_entry",
+        "fields": [
+          {
+            "id": "width",
+            "title": "Width",
+            "description": "Width of the hitbox.",
+            "dataType": "float"
+          },
+          {
+            "id": "height",
+            "title": "Height",
+            "description": "Height of the hitbox.",
+            "dataType": "float"
+          },
+          {
+            "id": "pivot",
+            "title": "Pivot",
+            "description": "Pivot point of the hitbox.",
+            "dataType": "point3"
+          }
+        ]
+      },
+      "samples": {
+        "/vanilla/behavior_pack/entities/hoglin.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:hoglin_baby/minecraft:custom_hit_test/",
+            "content": [
+              {
+                "width": 1,
+                "height": 0.85,
+                "pivot": [
+                  0,
+                  0.5,
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:hoglin_adult/minecraft:custom_hit_test/",
+            "content": [
+              {
+                "width": 2,
+                "height": 1.75,
+                "pivot": [
+                  0,
+                  1,
+                  0
+                ]
+              }
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/zoglin.json": [
+          {
+            "path": "/minecraft:entity/component_groups/zoglin_adult/minecraft:custom_hit_test/",
+            "content": [
+              {
+                "height": 1.75,
+                "pivot": [
+                  0,
+                  1,
+                  0
+                ],
+                "width": 2
+              }
+            ]
+          },
+          {
+            "path": "/minecraft:entity/component_groups/zoglin_baby/minecraft:custom_hit_test/",
+            "content": [
+              {
+                "height": 0.85,
+                "pivot": [
+                  0,
+                  0.5,
+                  0
+                ],
+                "width": 1
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "description": "List of hitboxes for melee and ranged hits against the entity.",
+  "title": "Custom Hit Test",
+  "samples": {
+    "/vanilla/behavior_pack/entities/hoglin.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:hoglin_baby/minecraft:custom_hit_test/",
+        "content": {
+          "hitboxes": [
+            {
+              "width": 1,
+              "height": 0.85,
+              "pivot": [
+                0,
+                0.5,
+                0
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:hoglin_adult/minecraft:custom_hit_test/",
+        "content": {
+          "hitboxes": [
+            {
+              "width": 2,
+              "height": 1.75,
+              "pivot": [
+                0,
+                1,
+                0
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zoglin.json": [
+      {
+        "path": "/minecraft:entity/component_groups/zoglin_adult/minecraft:custom_hit_test/",
+        "content": {
+          "hitboxes": [
+            {
+              "height": 1.75,
+              "pivot": [
+                0,
+                1,
+                0
+              ],
+              "width": 2
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/zoglin_baby/minecraft:custom_hit_test/",
+        "content": {
+          "hitboxes": [
+            {
+              "height": 0.85,
+              "pivot": [
+                0,
+                0.5,
+                0
+              ],
+              "width": 1
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "id": "minecraft:custom_hit_test"
+}

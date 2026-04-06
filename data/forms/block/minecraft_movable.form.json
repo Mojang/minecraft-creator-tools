@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has custom piston movement behavior"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:movable",
+  "fields": [
+    {
+      "id": "movement_type",
+      "title": "Movement Type",
+      "description": "[Required] How the block reacts to being pushed by another block like a piston. Must be one of the following options:\n\"push_pull\" - The default value for this field. The block will be pushed and pulled by a piston.\n\"push\" - The block will only be pulled by a piston and will ignore a sticky piston.\n\"popped\" - The block is destroyed when moved by a piston.\n\"immovable\" - The block is unaffected by a piston.",
+      "defaultValue": "push_pull",
+      "dataType": "string"
+    },
+    {
+      "id": "sticky",
+      "title": "Sticky",
+      "description": "[Optional] How the block should handle adjacent blocks around it when being pushed by another block like a piston. Must be one of the following options:\n\"same\" - Adjacent blocks to this block will be moved when moved. This excludes other blocks with the \"same\" property. This will only work with the movement_type: \"push_pull\".\n\"none\" - The default and will not move adjacent blocks.",
+      "defaultValue": "none",
+      "dataType": "string"
+    }
+  ],
+  "description": "The description identifier of the movable component\nExperimental toggles required: Upcoming Creator Features (in format versions before 1.21.100)",
+  "title": "Movable"
+}

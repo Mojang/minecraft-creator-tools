@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "BlockDefinitionDocument",
+  "description": "Is a block definition with description, components, and permutations.",
+  "properties": {
+    "permutations": {
+      "title": "Permutations",
+      "description": "Array of conditional component overrides. Each permutation has a Molang condition and components that override the base components when the condition is true.\n\nProperties:\n• components (object)\n• condition",
+      "type": "array",
+      "items": {
+        "$ref": "./block_permutation.schema.json"
+      }
+    },
+    "components": {
+      "title": "Components",
+      "description": "\n\nProperties:\n• minecraft:breathability (object)\n• minecraft:chest_obstruction (object)\n• minecraft:collision_box (boolean)\n• minecraft:connection_rule (object)\n• minecraft:crafting_table (object)\n• minecraft:destructible_by_explosion (boolean)\n• minecraft:destructible_by_mining (boolean)\n• minecraft:destruction_particles (object)\n• ... and 38 more properties",
+      "$ref": "./block_components_components.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Block Components Components",
+          "description": "Has custom geometry.",
+          "body": {
+            "minecraft:collision_box": true,
+            "minecraft:destructible_by_explosion": true,
+            "minecraft:destructible_by_mining": true,
+            "minecraft:flammable": true,
+            "minecraft:geometry": "",
+            "minecraft:selection_box": true
+          }
+        }
+      ],
+      "x-runtime-constraint-description": "Block cannot have both \"minecraft:redstone_producer\" and \"minecraft:redstone_consumer\" components."
+    },
+    "description": {
+      "title": "Description",
+      "description": "Information about the block, must have at minimum an \"identifier\" and can have also the following optional field \"menu_category\", \"states\" and/or \"traits\"\n\nProperties:\n• identifier (string)\n• menu_category (object)\n• states (object) = {}\n• traits (object) = {\"minecraft:connecti",
+      "$ref": "./block_description.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Block Description",
+          "description": "Information about the block, must have at minimum an \"identifier\" and can have also the following optional field \"menu_category\", \"states\" and/or \"traits\"",
+          "body": {
+            "identifier": "",
+            "states": {},
+            "traits": {
+              "minecraft:connection": {
+                "enabled_states": []
+              },
+              "minecraft:multi_block": {
+                "direction": "up",
+                "enabled_states": [],
+                "parts": 2
+              },
+              "minecraft:placement_direction": {
+                "blocks_to_corner_with": [],
+                "enabled_states": [],
+                "y_rotation_offset": null
+              },
+              "minecraft:placement_position": {
+                "enabled_states": []
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "description"
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Tamemount",
+  "description": "Allows the Entity to be tamed by mounting it.",
+  "properties": {
+    "attempt_temper_mod": {
+      "title": "Attempt Temper Mod",
+      "description": "The amount the entity's temper will increase when mounted.",
+      "type": "integer",
+      "default": 5
+    },
+    "autoRejectItems": {
+      "title": "AutoRejectItems",
+      "description": "The list of items that, if carried while interacting with the entity, will anger it.\n\nProperties:\n• item (string)",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "title": "Item",
+            "description": "Name of the item this entity dislikes and will cause it to get angry if used while untamed.",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "feed_items": {
+      "title": "Feed Items",
+      "description": "The list of items that can be used to increase the entity's temper and speed up the taming process.\n\nProperties:\n• item (string)\n• temper_mod (int) = 0\n\nSample values:\n• llama: [{\"item\":\"wheat\",\"temper_mod\":3},{\"item\":\"hay_b...",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "title": "Item",
+            "description": "Name of the item this entity likes and can be used to increase this entity's temper.",
+            "type": "string"
+          },
+          "temper_mod": {
+            "title": "Temper Mod",
+            "description": "The amount of temper this entity gains when fed this item.",
+            "type": "integer",
+            "default": 0
+          }
+        }
+      }
+    },
+    "feed_text": {
+      "title": "Feed Text",
+      "description": "The text that shows in the feeding interact button.\n\nSample values:\n• llama: action.interact.feed",
+      "type": "string"
+    },
+    "max_temper": {
+      "title": "Max Temper",
+      "description": "The maximum value for the entity's random starting temper.\n\nSample values:\n• llama: 30",
+      "type": "integer",
+      "default": 100
+    },
+    "min_temper": {
+      "title": "Min Temper",
+      "description": "The minimum value for the entity's random starting temper.",
+      "type": "integer",
+      "default": 0
+    },
+    "ride_text": {
+      "title": "Ride Text",
+      "description": "The text that shows in the riding interact button.\n\nSample values:\n• llama: action.interact.mount",
+      "type": "string"
+    },
+    "tame_event": {
+      "title": "Tame Event",
+      "description": "Event that triggers when the entity becomes tamed.\n\nSample values:\n• llama: {\"event\":\"minecraft:on_tame\",\"target\":\"self\"}",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "auto_reject_items": {
+      "title": "Auto Reject Items",
+      "description": "\n\nProperties:\n• item (string)",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "title": "Item",
+            "description": "\n\nSample values:\n• trader_llama: horsearmorleather",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

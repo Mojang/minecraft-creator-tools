@@ -1,0 +1,184 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Take Flower Behavior",
+  "description": "Allows the mob to accept flowers from another mob with the minecraft:offer_flower behavior.",
+  "properties": {
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "filters": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "title": "Filters",
+      "description": "Conditions that need to be met for the behavior to start.\n\nProperties:\n• domain (object)\n• operator (object)\n• subject (object)\n• test (string)\n• value (object)"
+    },
+    "max_head_rotation_y": {
+      "title": "Max Head Rotation Y",
+      "description": "Maximum rotation (in degrees), on the Y-axis, this entity can rotate its head while trying to look at the target.",
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "default": 30
+    },
+    "max_rotation_x": {
+      "title": "Max Rotation X",
+      "description": "Maximum rotation (in degrees), on the X-axis, this entity can rotate while trying to look at the target.",
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "default": 30
+    },
+    "max_wait_time": {
+      "title": "Max Wait Time",
+      "description": "The maximum amount of time (in seconds) for the mob to randomly wait for before taking the flower.",
+      "type": "number",
+      "default": 20
+    },
+    "min_distance_to_target": {
+      "title": "Min Distance To Target",
+      "description": "Minimum distance (in blocks) for the entity to be considered having reached its target.",
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "default": 2
+    },
+    "min_wait_time": {
+      "title": "Min Wait Time",
+      "description": "The minimum amount of time (in seconds) for the mob to randomly wait for before taking the flower.",
+      "type": "number",
+      "default": 4
+    },
+    "on_take_flower": {
+      "title": "Take Flower",
+      "description": "Event triggered when the entity takes a flower from another entity.\n\nProperties:\n• event (string) = \n• filters ({ domain, operator, subject, ... }) = {\"AND\":null,\"NOT\":nu\n• target (string) = self",
+      "$ref": "./entity_actordefinitiontrigger.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Entity ActorDefinitionTrigger",
+          "description": "Triggers an entity event when specified conditions are met. Events activate component groups that change entity behavior—transforming villagers into zombie villagers, switching mobs to aggressive mode, or triggering growth stages. Combine with filters to create conditional state machines that respond to gameplay.",
+          "body": {
+            "event": "",
+            "filters": {
+              "AND": null,
+              "NOT": null,
+              "OR": null,
+              "all": null,
+              "all_of": null,
+              "any": null,
+              "any_of": null,
+              "none_of": null
+            },
+            "target": "self"
+          }
+        }
+      ]
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer",
+      "default": 0
+    },
+    "search_area": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        {
+          "description": "\n\nProperties:\n• x (float) = 0\n• y (float) = 0\n• z (float) = 0",
+          "type": "object",
+          "properties": {
+            "x": {
+              "title": "X",
+              "type": "number",
+              "default": 0
+            },
+            "y": {
+              "title": "Y",
+              "type": "number",
+              "default": 0
+            },
+            "z": {
+              "title": "Z",
+              "type": "number",
+              "default": 0
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Search Area (object)",
+              "description": "Use Search Area as an object",
+              "body": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            }
+          ]
+        }
+      ],
+      "title": "Search Area",
+      "description": "The dimensions of the AABB used to search for a potential mob to take a flower from.",
+      "defaultSnippets": [
+        {
+          "label": "Search Area (object)",
+          "description": "Use Search Area as an object",
+          "body": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    "speed_multiplier": {
+      "title": "Speed Multiplier",
+      "description": "Movement speed multiplier of the mob when using this AI Goal.",
+      "type": "number",
+      "default": 0.5
+    }
+  }
+}

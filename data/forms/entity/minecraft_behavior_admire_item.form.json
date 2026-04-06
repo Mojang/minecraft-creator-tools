@@ -1,0 +1,157 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "will stop to admire valuable items"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "sound_interval",
+      "title": "Sound Interval",
+      "description": "The range of time in seconds to randomly wait before playing the sound again. Can be a number, an array [min, max], or an object with range_min and range_max.",
+      "defaultValue": 0,
+      "dataType": "int",
+      "alternates": [
+        {
+          "id": "sound_interval",
+          "dataType": "objectArray",
+          "subForm": {
+            "fields": [
+              {
+                "id": "0",
+                "dataType": "int"
+              },
+              {
+                "id": "1",
+                "dataType": "int"
+              }
+            ]
+          }
+        },
+        {
+          "id": "sound_interval",
+          "dataType": "object",
+          "subForm": {
+            "fields": [
+              {
+                "id": "range_min",
+                "dataType": "int",
+                "description": "Minimum interval"
+              },
+              {
+                "id": "range_max",
+                "dataType": "int",
+                "description": "Maximum interval"
+              },
+              {
+                "id": "min",
+                "dataType": "int",
+                "description": "Minimum interval"
+              },
+              {
+                "id": "max",
+                "dataType": "int",
+                "description": "Maximum interval"
+              }
+            ]
+          }
+        }
+      ],
+      "subFormId": "item_components/floatrange"
+    },
+    {
+      "id": "admire_item_sound",
+      "title": "Admire Item Sound",
+      "description": "The sound event to play when admiring the item",
+      "dataType": "string",
+      "defaultValue": ""
+    },
+    {
+      "id": "control_flags",
+      "title": "Control Flags",
+      "dataType": "stringArray",
+      "defaultValue": [],
+      "choices": [
+        {
+          "id": "jump",
+          "title": "Jump"
+        },
+        {
+          "id": "look",
+          "title": "Look"
+        },
+        {
+          "id": "move",
+          "title": "Move"
+        }
+      ]
+    },
+    {
+      "id": "on_admire_item_start",
+      "title": "Admire Item Start",
+      "description": "Event to run when the mob starts admiring an item.",
+      "dataType": "object",
+      "defaultValue": {
+        "event": "",
+        "filters": {
+          "AND": null,
+          "NOT": null,
+          "OR": null,
+          "all": null,
+          "all_of": null,
+          "any": null,
+          "any_of": null,
+          "none_of": null
+        },
+        "target": "self"
+      },
+      "subFormId": "entity/actordefinitiontrigger"
+    },
+    {
+      "id": "on_admire_item_stop",
+      "title": "Admire Item Stop",
+      "description": "Event to run when the mob stops admiring an item.",
+      "dataType": "object",
+      "defaultValue": {
+        "event": "",
+        "filters": {
+          "AND": null,
+          "NOT": null,
+          "OR": null,
+          "all": null,
+          "all_of": null,
+          "any": null,
+          "any_of": null,
+          "none_of": null
+        },
+        "target": "self"
+      },
+      "subFormId": "entity/actordefinitiontrigger"
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "dataType": "int",
+      "defaultValue": 0,
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal."
+    }
+  ],
+  "requires": [
+    {
+      "id": "minecraft:admire_item",
+      "type": "entity_component"
+    }
+  ],
+  "description": "Enables the mob to admire items that have been configured as admirable.",
+  "title": "Entity Admire Item Behavior",
+  "samples": {},
+  "id": "minecraft:behavior.admire_item"
+}

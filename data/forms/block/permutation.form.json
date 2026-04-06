@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has conditional component permutation"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Permutation",
+  "fields": [
+    {
+      "id": "components",
+      "title": "Components",
+      "dataType": "object",
+      "technicalDescription": "Block with \"geometry\" set at \"minecraft:geometry.full_block\" cannot have a \"random_offset\"",
+      "subFormId": "block_components/components",
+      "isRequired": true
+    },
+    {
+      "id": "condition",
+      "title": "Condition",
+      "dataType": "keyedStringCollection",
+      "alternates": [
+        {
+          "id": "condition",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "condition",
+            "title": "Condition",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "condition",
+          "dataType": "float"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Defines conditional component overrides based on block state values using Molang conditions. When the condition evaluates true, the permutation's components replace or merge with base components. Enables blocks that change appearance or behavior based on direction, power state, age, or custom properties.",
+  "title": "Block Permutation"
+}

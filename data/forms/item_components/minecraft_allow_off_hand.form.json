@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can be held in off hand"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "value",
+      "title": "value",
+      "description": "Determines whether the item can be placed in the off hand slot.",
+      "dataType": "boolean"
+    }
+  ],
+  "scalarFieldUpgradeName": "value",
+  "description": "The allow_off_hand component determines whether the item can be placed in the off hand slot of the inventory.",
+  "title": "Allow Off Hand",
+  "id": "minecraft:allow_off_hand"
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Random Stroll Behavior",
+  "description": "Allows a mob to randomly stroll around.",
+  "properties": {
+    "interval": {
+      "title": "Interval",
+      "description": "A random value to determine when to randomly move somewhere. This has a 1/interval chance to choose this goal",
+      "type": "integer",
+      "default": 120
+    },
+    "speed_multiplier": {
+      "title": "Speed Multiplier",
+      "description": "Movement speed multiplier of the mob when using this AI Goal\n\nSample values:\n• blaze: 1\n• cave_spider: 0.8",
+      "type": "number",
+      "default": 1
+    },
+    "xz_dist": {
+      "title": "Xz Dist",
+      "description": "Distance in blocks on ground that the mob will look for a new spot to move to. Must be at least 1",
+      "type": "integer",
+      "default": 10
+    },
+    "y_dist": {
+      "title": "y Dist",
+      "description": "Distance in blocks that the mob will look up or down for a new spot to move to. Must be at least 1",
+      "type": "integer",
+      "default": 7
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer"
+    }
+  }
+}

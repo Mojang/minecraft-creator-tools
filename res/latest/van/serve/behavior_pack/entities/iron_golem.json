@@ -1,0 +1,506 @@
+{
+  "format_version": "1.26.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:iron_golem",
+      "is_summonable": true,
+      "is_spawnable": true
+    },
+    "components": {
+      "minecraft:attack": {
+        "damage": {
+          "range_max": 21,
+          "range_min": 7
+        }
+      },
+      "minecraft:balloonable": {
+        "mass": 2.0
+      },
+      "minecraft:behavior.hurt_by_target": {
+        "entity_types": {
+          "filters": {
+            "operator": "not",
+            "test": "is_family",
+            "subject": "other",
+            "value": "creeper"
+          }
+        },
+        "priority": 2
+      },
+      "minecraft:behavior.look_at_player": {
+        "look_time": {
+          "min": 1,
+          "max": 2
+        },
+        "look_distance": 6,
+        "priority": 7
+      },
+      "minecraft:behavior.melee_box_attack": {
+        "track_target": true,
+        "priority": 1
+      },
+      "minecraft:behavior.move_through_village": {
+        "only_at_night": true,
+        "priority": 3,
+        "speed_multiplier": 0.6
+      },
+      "minecraft:behavior.move_towards_dwelling_restriction": {
+        "priority": 4
+      },
+      "minecraft:behavior.move_towards_target": {
+        "priority": 2,
+        "speed_multiplier": 0.9,
+        "within_radius": 32
+      },
+      "minecraft:behavior.nearest_attackable_target": {
+        "must_reach": true,
+        "must_see": true,
+        "entity_types": [
+          {
+            "filters": {
+              "AND": [
+                {
+                  "test": "is_family",
+                  "subject": 1,
+                  "operator": 0,
+                  "value": "monster"
+                },
+                {
+                  "test": "is_family",
+                  "subject": 1,
+                  "operator": 1,
+                  "value": "creeper"
+                }
+              ]
+            }
+          },
+          {
+            "filters": {
+              "AND": [
+                {
+                  "test": "is_family",
+                  "subject": 1,
+                  "operator": 0,
+                  "value": "hoglin"
+                },
+                {
+                  "test": "is_difficulty",
+                  "subject": 0,
+                  "operator": 1,
+                  "value": 0
+                }
+              ]
+            }
+          },
+          {
+            "filters": {
+              "AND": [
+                {
+                  "test": "is_family",
+                  "subject": 1,
+                  "operator": 0,
+                  "value": "zoglin"
+                },
+                {
+                  "test": "is_difficulty",
+                  "subject": 0,
+                  "operator": 1,
+                  "value": 0
+                }
+              ]
+            }
+          }
+        ],
+        "priority": 3
+      },
+      "minecraft:behavior.offer_flower": {
+        "filters": {
+          "test": "is_daytime"
+        },
+        "priority": 5
+      },
+      "minecraft:behavior.random_look_around": {
+        "priority": 8
+      },
+      "minecraft:behavior.random_stroll": {
+        "priority": 6,
+        "speed_multiplier": 0.6,
+        "xz_dist": 16
+      },
+      "minecraft:behavior.target_when_pushed": {
+        "entity_types": [
+          {
+            "filters": {
+              "all_of": [
+                {
+                  "subject": "other",
+                  "test": "is_family",
+                  "value": "monster"
+                },
+                {
+                  "operator": "not",
+                  "test": "is_family",
+                  "subject": "other",
+                  "value": "creeper"
+                }
+              ]
+            }
+          }
+        ],
+        "percent_chance": 5.0,
+        "priority": 1
+      },
+      "minecraft:can_climb": {},
+      "minecraft:collision_box": {
+        "height": 2.9,
+        "width": 1.4
+      },
+      "minecraft:conditional_bandwidth_optimization": {},
+      "minecraft:damage_sensor": {
+        "triggers": {
+          "cause": "fall",
+          "deals_damage": "no"
+        }
+      },
+      "minecraft:follow_range": {
+        "value": 64
+      },
+      "minecraft:health": {
+        "max": 100,
+        "value": 100
+      },
+      "minecraft:hurt_on_condition": {
+        "damage_conditions": [
+          {
+            "cause": "lava",
+            "damage_per_tick": 4,
+            "filters": {
+              "subject": "self",
+              "test": "in_lava"
+            }
+          }
+        ]
+      },
+      "minecraft:interact": {
+        "interactions": [
+          {
+            "health_amount": 25,
+            "interact_text": "action.interact.repair",
+            "on_interact": {
+              "filters": {
+                "all_of": [
+                  {
+                    "subject": "other",
+                    "test": "is_family",
+                    "value": "player"
+                  },
+                  {
+                    "domain": "hand",
+                    "subject": "other",
+                    "test": "has_equipment",
+                    "value": "iron_ingot"
+                  },
+                  {
+                    "test": "is_missing_health"
+                  }
+                ]
+              }
+            },
+            "play_sounds": "irongolem.repair",
+            "swing": false,
+            "use_item": true
+          }
+        ]
+      },
+      "minecraft:is_hidden_when_invisible": {},
+      "minecraft:jump.static": {},
+      "minecraft:knockback_resistance": {
+        "value": 1.0
+      },
+      "minecraft:leashable": {},
+      "minecraft:leashable_to": {},
+      "minecraft:loot": {
+        "table": "loot_tables/entities/iron_golem.json"
+      },
+      "minecraft:movement": {
+        "value": 0.25
+      },
+      "minecraft:movement.basic": {},
+      "minecraft:nameable": {},
+      "minecraft:navigation.walk": {
+        "avoid_damage_blocks": true,
+        "avoid_water": true,
+        "can_path_over_water": false,
+        "using_door_annotation": true
+      },
+      "minecraft:persistent": {},
+      "minecraft:physics": {},
+      "minecraft:preferred_path": {
+        "default_block_cost": 1.5,
+        "jump_cost": 5,
+        "preferred_path_blocks": [
+          {
+            "blocks": [
+              "grass_path"
+            ],
+            "cost": 0
+          },
+          {
+            "blocks": [
+              "cobblestone",
+              "stone",
+              "granite",
+              "polished_granite",
+              "diorite",
+              "polished_diorite",
+              "andesite",
+              "polished_andesite",
+              "stone_bricks",
+              "mossy_stone_bricks",
+              "cracked_stone_bricks",
+              "chiseled_stone_bricks",
+              "sandstone",
+              "cut_sandstone",
+              "chiseled_sandstone",
+              "smooth_sandstone",
+              "mossy_cobblestone",
+              "smooth_stone_slab",
+              "sandstone_slab",
+              "cobblestone_slab",
+              "brick_slab",
+              "stone_brick_slab",
+              "quartz_slab",
+              "nether_brick_slab",
+              "red_sandstone_slab",
+              "purpur_slab",
+              "prismarine_slab",
+              "dark_prismarine_slab",
+              "prismarine_brick_slab",
+              "mossy_cobblestone_slab",
+              "smooth_sandstone_slab",
+              "red_nether_brick_slab",
+              "end_stone_brick_slab",
+              "smooth_red_sandstone_slab",
+              "polished_andesite_slab",
+              "andesite_slab",
+              "diorite_slab",
+              "polished_diorite_slab",
+              "granite_slab",
+              "polished_granite_slab",
+              "mossy_stone_brick_slab",
+              "smooth_quartz_slab",
+              "normal_stone_slab",
+              "cut_sandstone_slab",
+              "cut_red_sandstone_slab",
+              "smooth_stone_double_slab",
+              "sandstone_double_slab",
+              "cobblestone_double_slab",
+              "brick_double_slab",
+              "stone_brick_double_slab",
+              "quartz_double_slab",
+              "nether_brick_double_slab",
+              "red_sandstone_double_slab",
+              "purpur_double_slab",
+              "prismarine_double_slab",
+              "dark_prismarine_double_slab",
+              "prismarine_brick_double_slab",
+              "mossy_cobblestone_double_slab",
+              "smooth_sandstone_double_slab",
+              "red_nether_brick_double_slab",
+              "end_stone_brick_double_slab",
+              "smooth_red_sandstone_double_slab",
+              "polished_andesite_double_slab",
+              "andesite_double_slab",
+              "diorite_double_slab",
+              "polished_diorite_double_slab",
+              "granite_double_slab",
+              "polished_granite_double_slab",
+              "mossy_stone_brick_double_slab",
+              "smooth_quartz_double_slab",
+              "normal_stone_double_slab",
+              "cut_sandstone_double_slab",
+              "cut_red_sandstone_double_slab",
+              "oak_slab",
+              "spruce_slab",
+              "birch_slab",
+              "jungle_slab",
+              "acacia_slab",
+              "dark_oak_slab",
+              "oak_double_slab",
+              "spruce_double_slab",
+              "birch_double_slab",
+              "jungle_double_slab",
+              "acacia_double_slab",
+              "dark_oak_double_slab",
+              "oak_planks",
+              "spruce_planks",
+              "birch_planks",
+              "jungle_planks",
+              "acacia_planks",
+              "dark_oak_planks",
+              "brick_block",
+              "nether_brick",
+              "red_nether_brick",
+              "end_bricks",
+              "red_sandstone",
+              "cut_red_sandstone",
+              "chiseled_red_sandstone",
+              "smooth_red_sandstone",
+              "white_stained_glass",
+              "orange_stained_glass",
+              "magenta_stained_glass",
+              "light_blue_stained_glass",
+              "yellow_stained_glass",
+              "lime_stained_glass",
+              "pink_stained_glass",
+              "gray_stained_glass",
+              "light_gray_stained_glass",
+              "cyan_stained_glass",
+              "purple_stained_glass",
+              "blue_stained_glass",
+              "brown_stained_glass",
+              "green_stained_glass",
+              "red_stained_glass",
+              "black_stained_glass",
+              "glass",
+              "glowstone",
+              "prismarine",
+              "emerald_block",
+              "diamond_block",
+              "lapis_block",
+              "gold_block",
+              "redstone_block",
+              "purple_glazed_terracotta",
+              "white_glazed_terracotta",
+              "orange_glazed_terracotta",
+              "magenta_glazed_terracotta",
+              "light_blue_glazed_terracotta",
+              "yellow_glazed_terracotta",
+              "lime_glazed_terracotta",
+              "pink_glazed_terracotta",
+              "gray_glazed_terracotta",
+              "silver_glazed_terracotta",
+              "cyan_glazed_terracotta",
+              "blue_glazed_terracotta",
+              "brown_glazed_terracotta",
+              "green_glazed_terracotta",
+              "red_glazed_terracotta",
+              "black_glazed_terracotta"
+            ],
+            "cost": 1
+          },
+          {
+            "blocks": [
+              "bed",
+              "lectern",
+              "composter",
+              "grindstone",
+              "blast_furnace",
+              "smoker",
+              "fletching_table",
+              "cartography_table",
+              "brewing_stand",
+              "smithing_table",
+              "cauldron",
+              "barrel",
+              "loom",
+              "stonecutter"
+            ],
+            "cost": 50
+          }
+        ],
+        "max_fall_blocks": 1
+      },
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:type_family": {
+        "family": [
+          "irongolem",
+          "mob"
+        ]
+      }
+    },
+    "component_groups": {
+      "minecraft:player_created": {
+        "minecraft:behavior.hurt_by_target": {
+          "entity_types": {
+            "filters": {
+              "all_of": [
+                {
+                  "test": "is_family",
+                  "operator": "not",
+                  "subject": "other",
+                  "value": "player"
+                },
+                {
+                  "test": "is_family",
+                  "operator": "not",
+                  "subject": "other",
+                  "value": "creeper"
+                }
+              ]
+            }
+          },
+          "priority": 2
+        }
+      },
+      "minecraft:village_created": {
+        "minecraft:behavior.defend_village_target": {
+          "must_reach": true,
+          "entity_types": [
+            {
+              "filters": {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "test": "is_family",
+                        "subject": 1,
+                        "operator": 0,
+                        "value": "mob"
+                      },
+                      {
+                        "test": "is_family",
+                        "subject": 1,
+                        "operator": 0,
+                        "value": "player"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "priority": 1
+        },
+        "minecraft:dweller": {
+          "dwelling_type": "village",
+          "can_find_poi": false,
+          "can_migrate": true,
+          "dweller_role": "defender",
+          "first_founding_reward": 0,
+          "update_interval_base": 60,
+          "update_interval_variant": 40
+        }
+      }
+    },
+    "events": {
+      "minecraft:from_player": {
+        "add": {
+          "component_groups": [
+            "minecraft:player_created"
+          ]
+        }
+      },
+      "minecraft:from_village": {
+        "add": {
+          "component_groups": [
+            "minecraft:village_created"
+          ]
+        }
+      }
+    }
+  }
+}

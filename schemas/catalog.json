@@ -1,0 +1,393 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "packageName": "@minecraft/bedrock-schemas",
+  "documents": [
+    {
+      "folder": "bp/entities",
+      "schemaFile": "index.schema.json",
+      "packType": "behavior",
+      "packFolder": "entities",
+      "title": "Entity Behavior",
+      "description": "A behavior pack entity definition document for Minecraft Bedrock Edition. This describes the complete JSON file structure including format_version and the minecraft:entity wrapper.",
+      "componentCount": 368
+    },
+    {
+      "folder": "bp/blocks",
+      "schemaFile": "index.schema.json",
+      "packType": "behavior",
+      "packFolder": "blocks",
+      "title": "Block Behavior",
+      "description": "A behavior pack block definition document for Minecraft Bedrock Edition. This describes the complete JSON file structure including format_version and the minecraft:block wrapper.",
+      "componentCount": 33
+    },
+    {
+      "folder": "bp/items",
+      "schemaFile": "index.schema.json",
+      "packType": "behavior",
+      "packFolder": "items",
+      "title": "Item Behavior",
+      "description": "A behavior pack item definition document for Minecraft Bedrock Edition. This describes the complete JSON file structure including format_version and the minecraft:item wrapper. Items define the properties, components, and behaviors of custom items that can be obtained and used by players.",
+      "componentCount": 2
+    },
+    {
+      "folder": "bp/biomes",
+      "schemaFile": "index.schema.json",
+      "packType": "behavior",
+      "packFolder": "biomes",
+      "title": "Biome",
+      "description": "Contains a format version and a biome definition",
+      "componentCount": 23
+    },
+    {
+      "folder": "bp/features",
+      "schemaFile": "index.schema.json",
+      "packType": "behavior",
+      "packFolder": "features",
+      "title": "Feature",
+      "description": "Defines a world generation feature document and its feature-specific properties.",
+      "componentCount": 60
+    },
+    {
+      "folder": "bp/feature_rules",
+      "schemaFile": "index.schema.json",
+      "packType": "behavior",
+      "packFolder": "feature_rules",
+      "title": "Feature Rule",
+      "description": "Feature Rule Definition",
+      "componentCount": 1
+    },
+    {
+      "folder": "bp/loot_tables",
+      "schemaFile": "index.schema.json",
+      "packType": "behavior",
+      "packFolder": "loot_tables",
+      "title": "Loot Table",
+      "description": "Defines the loot that can be generated when an entity is killed, a chest is opened, fishing is performed, or other gameplay events occur. Loot tables consist of one or more pools, each containing entries with items or references to other loot tables.",
+      "componentCount": 4
+    },
+    {
+      "folder": "bp/recipes",
+      "schemaFile": "index.schema.json",
+      "packType": "behavior",
+      "packFolder": "recipes",
+      "title": "Recipe",
+      "description": "A brewing recipe for Minecraft Bedrock Edition. Brewing recipes define how potions are created by combining a base potion with a reagent in a brewing stand.",
+      "componentCount": 1
+    },
+    {
+      "folder": "bp/spawn_rules",
+      "schemaFile": "index.schema.json",
+      "packType": "behavior",
+      "packFolder": "spawn_rules",
+      "title": "Spawn Rule",
+      "description": "A spawn rules definition document for Minecraft Bedrock Edition. This describes the complete JSON file structure including format_version and the minecraft:spawn_rules wrapper.",
+      "componentCount": 14
+    },
+    {
+      "folder": "bp/trading",
+      "schemaFile": "index.schema.json",
+      "packType": "behavior",
+      "packFolder": "trading",
+      "title": "Trade Table",
+      "description": "Contains internal metadata and type definitions for trade table structures. This form defines the data types used by trade tables, including TradeItem, TradeTier, TradeGroup, and other supporting structures.",
+      "componentCount": 0
+    },
+    {
+      "folder": "bp/dialogue",
+      "schemaFile": "index.schema.json",
+      "packType": "behavior",
+      "packFolder": "dialogue",
+      "title": "NPC Dialogue",
+      "description": "A Minecraft Bedrock Edition NPC dialogue definition document. Dialogue files define conversation scenes for NPCs, including dialogue text, buttons, and commands that execute when players interact with NPCs.",
+      "componentCount": 0
+    },
+    {
+      "folder": "bp/animations",
+      "schemaFile": "index.schema.json",
+      "packType": "behavior",
+      "packFolder": "animations",
+      "title": "Animation (BP)",
+      "description": "A Minecraft Bedrock Edition animation definition document. Animations define bone transformations (position, rotation, scale) over time for entities. They can be used in both behavior packs (for server-side animations) and resource packs (for client-side visual animations).",
+      "componentCount": 0
+    },
+    {
+      "folder": "bp/animation_controllers",
+      "schemaFile": "index.schema.json",
+      "packType": "behavior",
+      "packFolder": "animation_controllers",
+      "title": "Animation Controller (BP)",
+      "description": "A Minecraft Bedrock Edition animation controller definition document. Animation controllers use a state machine to control which animations play based on conditions. They can transition between states based on Molang queries.",
+      "componentCount": 0
+    },
+    {
+      "folder": "bp/voxel_shapes",
+      "schemaFile": "index.schema.json",
+      "packType": "behavior",
+      "packFolder": "voxel_shapes",
+      "title": "Voxel Shape",
+      "description": "A behavior pack voxel shape document for Minecraft Bedrock Edition. This describes the complete JSON file structure including format_version and the minecraft:voxel_shape wrapper.",
+      "componentCount": 4
+    },
+    {
+      "folder": "bp/functions",
+      "schemaFile": "tick.schema.json",
+      "packType": "behavior",
+      "packFolder": "functions",
+      "title": "Tick (functions)",
+      "description": "The tick.json file specifies which mcfunction files should run every game tick (20 times per second). Located at functions/tick.json in behavior packs. Functions listed here run at origin (0, 0, 0) in the overworld as soon as the world is initialized.",
+      "componentCount": 0
+    },
+    {
+      "folder": "bp/manifest",
+      "schemaFile": "index.schema.json",
+      "packType": "behavior",
+      "packFolder": "",
+      "title": "Behavior Pack Manifest",
+      "description": "Defines the header section of a behavior pack manifest or metadata document.",
+      "componentCount": 0
+    },
+    {
+      "folder": "rp/entity",
+      "schemaFile": "index.schema.json",
+      "packType": "resource",
+      "packFolder": "entity",
+      "title": "Entity Resource",
+      "description": "Defines an entity client resource definition document with format_version 1.10.0.",
+      "componentCount": 6
+    },
+    {
+      "folder": "rp/models",
+      "schemaFile": "index.schema.json",
+      "packType": "resource",
+      "packFolder": "models",
+      "title": "Model Geometry",
+      "description": "Modern geometry format using the 'minecraft:geometry' array pattern. Supports per-face UV mapping, cube rotation, and improved locator definitions. This is the recommended format for new content.",
+      "componentCount": 7
+    },
+    {
+      "folder": "rp/fogs",
+      "schemaFile": "index.schema.json",
+      "packType": "resource",
+      "packFolder": "fogs",
+      "title": "Fog",
+      "description": "A Minecraft Bedrock Edition fog settings definition document. Fog settings control the appearance of fog in different environments including distance-based fog, volumetric fog density, and media coefficients for scattering and absorption effects.",
+      "componentCount": 4
+    },
+    {
+      "folder": "rp/particles",
+      "schemaFile": "index.schema.json",
+      "packType": "resource",
+      "packFolder": "particles",
+      "title": "Particle",
+      "description": "A resource pack particle effect definition document for Minecraft Bedrock Edition. This describes the complete JSON file structure including format_version and the particle_effect wrapper. Particles use a component-based system with emitters controlling spawn rate and shape, and particle components controlling appearance and motion.",
+      "componentCount": 29
+    },
+    {
+      "folder": "rp/attachables",
+      "schemaFile": "index.schema.json",
+      "packType": "resource",
+      "packFolder": "attachables",
+      "title": "Attachable",
+      "description": "An attachable definition for Minecraft Bedrock Edition. Attachables define how items render when equipped or held by entities, including armor, weapons, tools, and other wearable/holdable items.",
+      "componentCount": 2
+    },
+    {
+      "folder": "rp/render_controllers",
+      "schemaFile": "index.schema.json",
+      "packType": "resource",
+      "packFolder": "render_controllers",
+      "title": "Render Controller",
+      "description": "Defines geometry, materials, and textures for entity rendering.",
+      "componentCount": 1
+    },
+    {
+      "folder": "rp/sounds",
+      "schemaFile": "index.schema.json",
+      "packType": "resource",
+      "packFolder": "sounds",
+      "title": "Sound Definition",
+      "description": "Defines sound events and their associated audio files. This file maps sound event identifiers to one or more sound files that can play when that event is triggered. Located at sounds/sound_definitions.json in resource packs.",
+      "componentCount": 0
+    },
+    {
+      "folder": "rp/textures",
+      "schemaFile": "blocks_resource.schema.json",
+      "packType": "resource",
+      "packFolder": "textures",
+      "title": "Blocks Resource (blocks.json)",
+      "description": "The blocks.json file in a resource pack defines texture and sound mappings for blocks. Each block entry maps a block identifier to its visual and audio properties.",
+      "componentCount": 0
+    },
+    {
+      "folder": "rp/textures",
+      "schemaFile": "terrain_texture.schema.json",
+      "packType": "resource",
+      "packFolder": "textures",
+      "title": "Terrain Texture",
+      "description": "The terrain_texture.json file defines the texture atlas for block textures. It maps texture names to texture file paths, allowing blocks to reference textures by name. Located at textures/terrain_texture.json in resource packs.",
+      "componentCount": 0
+    },
+    {
+      "folder": "rp/textures",
+      "schemaFile": "item_texture.schema.json",
+      "packType": "resource",
+      "packFolder": "textures",
+      "title": "Item Texture",
+      "description": "The item_texture.json file defines the texture atlas for item textures. It maps texture names to texture file paths, allowing items to reference textures by name. Located at textures/item_texture.json in resource packs.",
+      "componentCount": 0
+    },
+    {
+      "folder": "rp/textures",
+      "schemaFile": "flipbook_textures.schema.json",
+      "packType": "resource",
+      "packFolder": "textures",
+      "title": "Flipbook Textures",
+      "description": "The flipbook_textures.json file defines animated textures for blocks. Each entry specifies a texture that cycles through frames at a specified rate. Located at textures/flipbook_textures.json in resource packs.",
+      "componentCount": 0
+    },
+    {
+      "folder": "rp/block_culling",
+      "schemaFile": "index.schema.json",
+      "packType": "resource",
+      "packFolder": "block_culling",
+      "title": "Block Culling",
+      "description": "BlockCulling",
+      "componentCount": 0
+    },
+    {
+      "folder": "rp/ui",
+      "schemaFile": "index.schema.json",
+      "packType": "resource",
+      "packFolder": "ui",
+      "title": "UI Screen",
+      "description": "A UI screen definition file for Minecraft Bedrock Edition. UI screens define complete interface layouts including namespaces, element definitions, and global variables.",
+      "componentCount": 0
+    },
+    {
+      "folder": "rp/ui",
+      "schemaFile": "global_variables.schema.json",
+      "packType": "resource",
+      "packFolder": "ui",
+      "title": "UI Global Variables",
+      "description": "The _global_variables.json file that defines global variables used across all UI screens in Minecraft. Variables are defined with '$' prefix and can include colors, sizes, and other values.",
+      "componentCount": 0
+    },
+    {
+      "folder": "rp/biomes_client",
+      "schemaFile": "index.schema.json",
+      "packType": "resource",
+      "packFolder": "",
+      "title": "Biomes Client (legacy)",
+      "description": "The biomes_client.json file defines client-side visual properties for biomes, including water colors, fog colors, and transparency settings. This file does not use a format_version field.",
+      "componentCount": 0
+    },
+    {
+      "folder": "rp/textures",
+      "schemaFile": "texture_set.schema.json",
+      "packType": "resource",
+      "packFolder": "textures",
+      "title": "Texture Set",
+      "description": "Defines a PBR texture set document with format_version 1.21.30.",
+      "componentCount": 1
+    },
+    {
+      "folder": "rp/manifest",
+      "schemaFile": "index.schema.json",
+      "packType": "resource",
+      "packFolder": "",
+      "title": "Resource Pack Manifest",
+      "description": "The manifest.json file for a Minecraft Bedrock Edition resource pack. Every resource pack requires a manifest with a unique UUID, version info, and module declarations. Resource packs contain textures, models, sounds, and UI customizations.",
+      "componentCount": 1
+    },
+    {
+      "folder": "rp/texts",
+      "schemaFile": "languages.schema.json",
+      "packType": "resource",
+      "packFolder": "texts",
+      "title": "Languages",
+      "description": "The languages.json file is a simple array of locale codes that specifies which language translations are available in this resource pack. Located at texts/languages.json in resource packs.",
+      "componentCount": 0
+    },
+    {
+      "folder": "rp/sounds",
+      "schemaFile": "music_definitions.schema.json",
+      "packType": "resource",
+      "packFolder": "sounds",
+      "title": "Music Definitions",
+      "description": "The music_definitions.json file defines which music tracks play in different biomes and game states. Each key is a biome or game state identifier that maps to music event configuration. Located at sounds/music_definitions.json in resource packs.",
+      "componentCount": 0
+    },
+    {
+      "folder": "rp/deferred_rendering",
+      "schemaFile": "lighting.schema.json",
+      "packType": "resource",
+      "packFolder": "lighting",
+      "title": "Lighting",
+      "description": "Lighting Settings",
+      "componentCount": 2
+    },
+    {
+      "folder": "rp/deferred_rendering",
+      "schemaFile": "color_grading.schema.json",
+      "packType": "resource",
+      "packFolder": "color_grading",
+      "title": "Color Grading",
+      "description": "Minecraft's color grading system allows for many degrees of customization of the final image. You can control the saturation, contrast, gain, and offset of pixels per RGB channel. This can be done on a global scale regardless of pixel luminance, or it can be done on a more fine-grained scale with unique sets of parameters for shadows, midtones and highlights.",
+      "componentCount": 5
+    },
+    {
+      "folder": "rp/deferred_rendering",
+      "schemaFile": "atmospherics.schema.json",
+      "packType": "resource",
+      "packFolder": "atmospherics",
+      "title": "Atmospherics",
+      "description": "Customize atmospherics effects",
+      "componentCount": 2
+    },
+    {
+      "folder": "rp/deferred_rendering",
+      "schemaFile": "pbr.schema.json",
+      "packType": "resource",
+      "packFolder": "pbr",
+      "title": "PBR Fallback",
+      "description": "Struct PBRFallbackConfig PBRFallbackConfigSettings Client Deferred Rendering",
+      "componentCount": 1
+    },
+    {
+      "folder": "rp/deferred_rendering",
+      "schemaFile": "point_lights.schema.json",
+      "packType": "resource",
+      "packFolder": "point_lights",
+      "title": "Point Lights",
+      "description": "Struct PointLightConfig PointLightConfigSettings Client Deferred Rendering",
+      "componentCount": 0
+    },
+    {
+      "folder": "rp/deferred_rendering",
+      "schemaFile": "shadows.schema.json",
+      "packType": "resource",
+      "packFolder": "shadows",
+      "title": "Shadows",
+      "description": "Struct ShadowStylizationConfig ShadowStylizationConfigSettings Client Deferred Rendering",
+      "componentCount": 0
+    },
+    {
+      "folder": "rp/deferred_rendering",
+      "schemaFile": "water.schema.json",
+      "packType": "resource",
+      "packFolder": "water",
+      "title": "Water",
+      "description": "Struct WaterConfig WaterConfigSettingsV1 Client Deferred Rendering",
+      "componentCount": 4
+    },
+    {
+      "folder": "world",
+      "schemaFile": "world_packs.schema.json",
+      "packType": "world",
+      "packFolder": "",
+      "title": "World Packs",
+      "description": "The world_behavior_packs.json and world_resource_packs.json files define which add-on packs are active for a world. Located in the root of a world folder.",
+      "componentCount": 0
+    }
+  ]
+}

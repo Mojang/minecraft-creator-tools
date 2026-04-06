@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Client Particles Emitter Shape Entity Aabb",
+  "description": "Emits particles from random positions within the attached entity's axis-aligned bounding box. The emission volume automatically scales with entity size, making it perfect for body-covering effects like burning, freezing, poison clouds, healing auras, or damage feedback that should wrap around creatures of any size.",
+  "properties": {
+    "direction": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "minLength": 3,
+          "maxLength": 3
+        }
+      ],
+      "title": "Direction",
+      "description": "The direction of particle emission. Can be a string ('inwards' or 'outwards'), or an array of [x, y, z] Molang expressions."
+    },
+    "surface_only": {
+      "title": "Surface Only",
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

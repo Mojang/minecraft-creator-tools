@@ -1,0 +1,394 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Nearest Attackable Target Behavior",
+  "description": "Allows an entity to attack the closest target within a given subset of specific target types.",
+  "properties": {
+    "attack_interval|attack_interval_min": {
+      "type": "string"
+    },
+    "entity_types": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "cooldown": {
+                "title": "Cooldown",
+                "description": "The amount of time in seconds that the mob has to wait before selecting a target of the same type again",
+                "type": "number",
+                "default": 0
+              },
+              "filters": {
+                "title": "Filters",
+                "description": "Conditions that make this entry in the list valid",
+                "anyOf": [
+                  {
+                    "type": "object"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "all_of": {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
+                        }
+                      },
+                      "any_of": {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
+                        }
+                      },
+                      "none_of": {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "max_dist": {
+                "title": "Max Dist",
+                "description": "Maximum distance this mob can be away to be a valid choice",
+                "type": "number",
+                "default": 16
+              },
+              "must_see": {
+                "title": "Must See",
+                "description": "If true, the mob has to be visible to be a valid choice",
+                "type": "boolean",
+                "default": false
+              },
+              "must_see_forget_duration": {
+                "title": "Must See Forget Duration",
+                "description": "Determines the amount of time in seconds that this mob will look for a target before forgetting about it and looking for a new one when the target isn't visible any more",
+                "type": "number",
+                "default": 3
+              },
+              "reevaluate_description": {
+                "title": "Reevaluate Target",
+                "description": "If true, the targeting entity will continuously reevaluate the target and stop attacking if the target no longer meets the filter conditions.",
+                "type": "boolean",
+                "default": false
+              },
+              "sprint_speed_multiplier": {
+                "title": "Sprint Speed Multiplier",
+                "description": "Multiplier for the running speed. A value of 1.0 means the speed is unchanged",
+                "type": "number",
+                "default": 1
+              },
+              "walk_speed_multiplier": {
+                "title": "Walk Speed Multiplier",
+                "description": "Multiplier for the walking speed. A value of 1.0 means the speed is unchanged",
+                "type": "number",
+                "default": 1
+              },
+              "priority": {
+                "title": "Priority",
+                "type": "number"
+              }
+            }
+          }
+        },
+        {
+          "description": "\n\nProperties:\n• check_if_outnumbered (boolean) = false\n• cooldown (int) = 0\n• filters ({ domain, operator, subject, ... }) = {\"AND\":null,\"NOT\":nu\n• max_dist (float) = 16\n• max_flee (float) = 10\n• max_height (float) = -1\n• must_see (boolean)\n• must_see_forget_duration (int) = 3\n• ... and 4 more properties",
+          "type": "object",
+          "properties": {
+            "check_if_outnumbered": {
+              "title": "Check If Outnumbered",
+              "description": "If true, the mob will check if its outnumbered",
+              "type": "boolean",
+              "default": false
+            },
+            "cooldown": {
+              "title": "Cooldown",
+              "description": "The amount of time in seconds that the mob has to wait before selecting a target of the same type again",
+              "type": "integer",
+              "default": 0
+            },
+            "filters": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "domain": {
+                      "title": "Domain",
+                      "description": "The domain the test should be performed in.",
+                      "type": "object"
+                    },
+                    "operator": {
+                      "title": "Operator",
+                      "description": "The comparison to apply with 'value'.",
+                      "type": "object"
+                    },
+                    "subject": {
+                      "title": "Subject",
+                      "description": "The subject of this filter test.",
+                      "type": "object"
+                    },
+                    "test": {
+                      "title": "Test",
+                      "description": "The name of the test to apply.",
+                      "type": "string"
+                    },
+                    "value": {
+                      "title": "Value",
+                      "description": "The value being compared with the test.",
+                      "type": "object"
+                    }
+                  }
+                },
+                {
+                  "type": "object"
+                }
+              ],
+              "description": "Conditions that make this entry in the list valid\n\nProperties:\n• domain (object)\n• operator (object)\n• subject (object)\n• test (string)\n• value (object)"
+            },
+            "max_dist": {
+              "title": "Max Dist",
+              "description": "Maximum distance this mob can be away to be a valid choice",
+              "type": "number",
+              "default": 16
+            },
+            "max_flee": {
+              "title": "Max Flee",
+              "description": "Maximum distance this mob can be from the target to stop fleeing",
+              "type": "number",
+              "default": 10
+            },
+            "max_height": {
+              "title": "Max Height",
+              "description": "Maximum height this mob can be away to be a valid choice",
+              "type": "number",
+              "default": -1
+            },
+            "must_see": {
+              "title": "Must See",
+              "description": "If true, the mob has to be visible to be a valid choice",
+              "type": "boolean"
+            },
+            "must_see_forget_duration": {
+              "title": "Must See Forget Duration",
+              "description": "Determines the amount of time in seconds that this mob will look for a target before forgetting about it and looking for a new one when the target isn't visible any more",
+              "type": "integer",
+              "default": 3
+            },
+            "priority": {
+              "title": "Priority",
+              "description": "Priority for this mob type",
+              "type": "integer",
+              "default": 0
+            },
+            "reevaluate_description": {
+              "title": "Reevaluate Description",
+              "description": "If true, the mob will stop being targeted if it stops meeting any conditions.",
+              "type": "boolean",
+              "default": false
+            },
+            "sprint_speed_multiplier": {
+              "title": "Sprint Speed Multiplier",
+              "description": "Multiplier for the sprinting speed. A value of 1.0 means the speed is unchanged",
+              "type": "number",
+              "default": 1
+            },
+            "walk_speed_multiplier": {
+              "title": "Walk Speed Multiplier",
+              "description": "Multiplier for the walking speed. A value of 1.0 means the speed is unchanged",
+              "type": "number",
+              "default": 1
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Entity Types (object)",
+              "description": "Use Entity Types as an object",
+              "body": {
+                "check_if_outnumbered": false,
+                "cooldown": 0,
+                "filters": {
+                  "AND": null,
+                  "NOT": null,
+                  "OR": null,
+                  "all": null,
+                  "all_of": null,
+                  "any": null,
+                  "any_of": null,
+                  "none_of": null
+                },
+                "max_dist": 16,
+                "max_flee": 10,
+                "max_height": -1,
+                "must_see": true,
+                "must_see_forget_duration": 3,
+                "priority": 0,
+                "reevaluate_description": false,
+                "sprint_speed_multiplier": 1,
+                "walk_speed_multiplier": 1
+              }
+            }
+          ]
+        }
+      ],
+      "title": "Entity Types",
+      "description": "List of entity types that this mob considers valid targets\n\nProperties:\n• cooldown (float) = 0\n• filters\n• max_dist (float) = 16\n• must_see (boolean) = false\n• must_see_forget_duration (float) = 3\n• reevaluate_description (boolean) = false\n• sprint_speed_multiplier (float) = 1\n• walk_speed_multiplier (float) = 1\n• ... and 1 more properties\n\nSample values:\n• blaze: [{\"filters\":{\"AND\":[{\"test\":\"is_family\",\"subjec...\n• bogged: [{\"filters\":{\"test\":\"is_family\",\"subject\":\"othe...\n• cave_spider: [{\"filters\":{\"any_of\":[{\"test\":\"is_family\",\"sub...",
+      "defaultSnippets": [
+        {
+          "label": "Entity Types (object)",
+          "description": "Use Entity Types as an object",
+          "body": {
+            "check_if_outnumbered": false,
+            "cooldown": 0,
+            "filters": {
+              "AND": null,
+              "NOT": null,
+              "OR": null,
+              "all": null,
+              "all_of": null,
+              "any": null,
+              "any_of": null,
+              "none_of": null
+            },
+            "max_dist": 16,
+            "max_flee": 10,
+            "max_height": -1,
+            "must_see": true,
+            "must_see_forget_duration": 3,
+            "priority": 0,
+            "reevaluate_description": false,
+            "sprint_speed_multiplier": 1,
+            "walk_speed_multiplier": 1
+          }
+        }
+      ]
+    },
+    "attack_interval": {
+      "title": "Attack Interval",
+      "description": "Time range (in seconds) between searching for an attack target, range is in (0, \"attack_interval\"]. Only used if \"attack_interval\" is greater than 0, otherwise \"scan_interval\" is used.\n\nProperties:\n• max (float) = 0\n• min (float) = 0\n\nSample values:\n• cave_spider: {\"min\":10,\"max\":10}\n• cave_spider: {\"min\":5,\"max\":5}",
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "$ref": "../../common/floatrange.schema.json"
+        }
+      ]
+    },
+    "attack_owner": {
+      "title": "Attack Owner",
+      "description": "If true, this entity can attack its owner.",
+      "type": "boolean",
+      "default": false
+    },
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "must_reach": {
+      "title": "Must Reach",
+      "description": "If true, this entity requires a path to the target.",
+      "type": "boolean",
+      "default": false
+    },
+    "must_see": {
+      "title": "Must See",
+      "description": "Determines if target-validity requires this entity to be in range only, or both in range and in sight.\n\nSample values:\n• blaze: true",
+      "type": "boolean",
+      "default": false
+    },
+    "must_see_forget_duration": {
+      "title": "Must See Forget Duration",
+      "description": "Time (in seconds) the target must not be seen by this entity to become invalid. Used only if \"must_see\" is true.\n\nSample values:\n• drowned: 17",
+      "type": "number",
+      "default": 3
+    },
+    "persist_time": {
+      "title": "Persist Time",
+      "description": "Time (in seconds) this entity can continue attacking the target after the target is no longer valid.\n\nSample values:\n• drowned: 0.5",
+      "type": "number",
+      "default": 0
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.\n\nSample values:\n• blaze: 2\n• breeze: 1",
+      "type": "integer",
+      "default": 0
+    },
+    "reselect_targets": {
+      "title": "Reselect Targets",
+      "description": "Allows the attacking entity to update the nearest target, otherwise a target is only reselected after each \"scan_interval\" or \"attack_interval\".\n\nSample values:\n• bogged: true",
+      "type": "boolean",
+      "default": false
+    },
+    "scan_interval": {
+      "title": "Scan Interval",
+      "description": "If \"attack_interval\" is 0 or isn't declared, then between attacks: scanning for a new target occurs every amount of ticks equal to \"scan_interval\", minimum value is 1. Values under 10 can affect performance.",
+      "type": "integer",
+      "minimum": 1,
+      "default": 10
+    },
+    "set_persistent": {
+      "title": "Set Persistent",
+      "description": "Allows the actor to be set to persist upon targeting a player",
+      "type": "boolean",
+      "default": false
+    },
+    "target_acquisition_probability": {
+      "title": "Target Acquisition Probability",
+      "description": "Probability (0.0 to 1.0) that this entity will accept a found target. Checked each time a valid target is found during scanning.",
+      "type": "number",
+      "default": 1
+    },
+    "target_invisible_multiplier": {
+      "title": "Target Invisible Multiplier",
+      "description": "Multiplied with the target's armor coverage percentage to modify \"max_dist\" when detecting an invisible target.",
+      "type": "number",
+      "default": 0.699999988079071
+    },
+    "target_search_height": {
+      "title": "Target Search Height",
+      "description": "Maximum vertical target-search distance, if it's greater than the target type's \"max_dist\". A negative value defaults to \"entity_types\" greatest \"max_dist\".",
+      "type": "number",
+      "minimum": -1,
+      "default": -1
+    },
+    "target_sneak_visibility_multiplier": {
+      "title": "Target Sneak Visibility Multiplier",
+      "description": "Multiplied with the target type's \"max_dist\" when trying to detect a sneaking target.",
+      "type": "number",
+      "default": 0.800000011920929
+    },
+    "within_radius": {
+      "title": "Within Radius",
+      "description": "Maximum distance this entity can be from the target when following it, otherwise the target becomes invalid. This value is only used if the entity doesn't declare \"minecraft:follow_range\".\n\nSample values:\n• breeze: 24\n• drowned: 12",
+      "type": "number",
+      "default": 0
+    }
+  }
+}

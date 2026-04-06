@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Constraints",
+  "description": "Specific constraints that must be satisfied when placing this structure.\n\nProperties:\n• grounded (object)\n• unburied (object)\n• block_intersection ({ block_allowlist|block_whitelist })",
+  "type": "object",
+  "properties": {
+    "grounded": {
+      "title": "Grounded",
+      "description": "When specified, ensures the structure is on the ground.",
+      "type": "object"
+    },
+    "unburied": {
+      "title": "Unburied",
+      "description": "When specified, ensures the structure has air above it.",
+      "type": "object"
+    },
+    "block_intersection": {
+      "title": "Block Intersection",
+      "description": "When specified, ensures the structure only intersects with allowlisted blocks.\n\nProperties:\n• block_allowlist|block_whitelist (string[])",
+      "type": "object",
+      "properties": {
+        "block_allowlist|block_whitelist": {
+          "title": "Block Allowlist|block Whitelist",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Block Intersection",
+          "description": "When specified, ensures the structure only intersects with allowlisted blocks.",
+          "body": {
+            "block_allowlist|block_whitelist": ""
+          }
+        }
+      ]
+    }
+  }
+}

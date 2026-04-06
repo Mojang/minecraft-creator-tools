@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Test: Checkmark with test beaker -->
+  <path d="M5 1V5L2 13H9L6 5V1H5Z" fill-opacity="0.3"/>
+  <path d="M4 5H7" stroke="currentColor" stroke-width="0.8"/>
+  <ellipse cx="5.5" cy="10" rx="2" ry="1.5" fill-opacity="0.5"/>
+  <path d="M10 7L12 10L15 4" stroke="currentColor" stroke-width="2" fill="none"/>
+</svg>

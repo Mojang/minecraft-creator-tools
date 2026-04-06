@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Nameable",
+  "description": "Allows this entity to be named (e.g. using a name tag).",
+  "properties": {
+    "allow_name_tag_renaming": {
+      "title": "Allow Name Tag Renaming",
+      "description": "If true, this entity can be renamed with name tags",
+      "type": "boolean",
+      "default": true
+    },
+    "always_show": {
+      "title": "Always Show",
+      "description": "If true, the name will always be shown",
+      "type": "boolean",
+      "default": false
+    },
+    "default_trigger": {
+      "title": "Default Trigger",
+      "description": "Trigger to run when the entity gets named",
+      "type": "string"
+    },
+    "name_actions": {
+      "title": "Name Actions",
+      "description": "Describes the special names for this entity and the events to call when the entity acquires those names\n\nProperties:\n• name_filter (string)\n• on_named",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name_filter": {
+            "title": "Name Filter",
+            "description": "List of special names that will cause the events defined in 'on_named' to fire",
+            "type": "string"
+          },
+          "on_named": {
+            "title": "Named",
+            "description": "Event to be called when this entity acquires the name specified in 'name_filter'",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "event": {
+                    "type": "string"
+                  },
+                  "target": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

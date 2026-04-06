@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Random Hover Behavior",
+  "description": "Allows the mob to hover around randomly, close to the surface",
+  "properties": {
+    "hover_height": {
+      "title": "Hover Height",
+      "description": "The height above the surface which the mob will try to maintain\n\nSample values:\n• allay: [1,4]",
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "type": "object",
+          "properties": {
+            "min": {
+              "type": "integer",
+              "description": "Minimum value of the range"
+            },
+            "max": {
+              "type": "integer",
+              "description": "Maximum value of the range"
+            }
+          }
+        }
+      ]
+    },
+    "interval": {
+      "title": "Interval",
+      "description": "A random value to determine when to randomly move somewhere. This has a 1/interval chance to choose this goal\n\nSample values:\n• allay: 1",
+      "type": "integer",
+      "default": 120
+    },
+    "speed_multiplier": {
+      "title": "Speed Multiplier",
+      "description": "Movement speed multiplier of the mob when using this AI Goal",
+      "type": "number",
+      "default": 1
+    },
+    "xz_dist": {
+      "title": "Xz Dist",
+      "description": "Distance in blocks on ground that the mob will look for a new spot to move to. Must be at least 1\n\nSample values:\n• allay: 8",
+      "type": "integer",
+      "default": 10
+    },
+    "y_dist": {
+      "title": "y Dist",
+      "description": "Distance in blocks that the mob will look up or down for a new spot to move to. Must be at least 1\n\nSample values:\n• allay: 8",
+      "type": "integer",
+      "default": 7
+    },
+    "y_offset": {
+      "title": "y Offset",
+      "description": "Height in blocks to add to the selected target position\n\nSample values:\n• allay: -1",
+      "type": "number",
+      "default": 0
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer"
+    }
+  }
+}

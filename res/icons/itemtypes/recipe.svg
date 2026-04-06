@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Recipe: Crafting table grid -->
+  <rect x="2" y="2" width="12" height="12" rx="1" fill-opacity="0.15"/>
+  <rect x="3" y="3" width="3" height="3"/>
+  <rect x="7" y="3" width="3" height="3" fill-opacity="0.6"/>
+  <rect x="11" y="3" width="2" height="3" fill-opacity="0.3"/>
+  <rect x="3" y="7" width="3" height="3" fill-opacity="0.6"/>
+  <rect x="7" y="7" width="3" height="3"/>
+  <rect x="11" y="7" width="2" height="3" fill-opacity="0.6"/>
+  <rect x="3" y="11" width="3" height="2" fill-opacity="0.3"/>
+  <rect x="7" y="11" width="3" height="2" fill-opacity="0.6"/>
+  <rect x="11" y="11" width="2" height="2"/>
+</svg>

@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Look At Target Behavior",
+  "description": "Compels an entity to look at the target by rotating the head bone pose within a set limit.",
+  "properties": {
+    "angle_of_view_horizontal": {
+      "title": "Angle Of View Horizontal",
+      "description": "The angle in degrees that the mob can see rotated on the Y-axis (left-right).",
+      "type": "integer",
+      "maximum": 360,
+      "default": 360
+    },
+    "angle_of_view_vertical": {
+      "title": "Angle Of View Vertical",
+      "description": "The angle in degrees that the mob can see rotated on the X-axis (up-down).",
+      "type": "integer",
+      "maximum": 360,
+      "default": 360
+    },
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "look_distance": {
+      "title": "Look Distance",
+      "description": "The distance in blocks from which the entity will look at the nearest entity.\n\nSample values:\n• axe_turret.behavior: 12\n• bow_turret.behavior: 19\n• crossbow_turret.behavior: 15",
+      "type": "number",
+      "default": 8
+    },
+    "look_time": {
+      "title": "Look Time",
+      "description": "Time range to look at the nearest entity.\n\nProperties:\n• max (float) = 0\n• min (float) = 0\n\nSample values:\n• axe_turret.behavior: [1,5]",
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "$ref": "../../common/floatrange.schema.json"
+        }
+      ]
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.\n\nSample values:\n• wither: 5\n• axe_turret.behavior: 2\n• bow_turret.behavior: 1",
+      "type": "integer",
+      "default": 0
+    },
+    "probability": {
+      "title": "Probability",
+      "description": "The probability of looking at the target. A value of 1.00 is 100%.\n\nSample values:\n• axe_turret.behavior: 1",
+      "type": "number",
+      "maximum": 1,
+      "default": 0.019999999552965164
+    }
+  }
+}

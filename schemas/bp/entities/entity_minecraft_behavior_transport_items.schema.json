@@ -1,0 +1,254 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Transport Items Behavior",
+  "description": "A behavior that enables a mob to transport items from and to containers.",
+  "properties": {
+    "destination_container_types": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "description": "\n\nProperties:\n• name (string)\n• states\n• tags (string)",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "title": "Name",
+                "description": "Block identifier like 'minecraft:chest'",
+                "type": "string"
+              },
+              "states": {
+                "title": "States",
+                "description": "Block state values to match",
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "Block tags to match",
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "title": "Destination Container Types",
+      "description": "A list of block descriptors that should be container types to put items in. Can be simple block identifier strings or objects with name, states, and tags.\n\nProperties:\n• name (string) = \n• states (int) = {}\n• tags (string) = "
+    },
+    "source_container_types": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "description": "\n\nProperties:\n• name (string)\n• states\n• tags (string)",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "title": "Name",
+                "description": "Block identifier like 'minecraft:chest'",
+                "type": "string"
+              },
+              "states": {
+                "title": "States",
+                "description": "Block state values to match",
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "Block tags to match",
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "title": "Source Container Types",
+      "description": "A list of block descriptors that should be container types to take items from. Can be simple block identifier strings or objects with name, states, and tags.\n\nProperties:\n• name (string) = \n• states (int) = {}\n• tags (string) = "
+    },
+    "allow_simultaneous_interaction": {
+      "title": "Allow Simultaneous Interaction",
+      "description": "When true the mob will wait until a container is not used by other entities before starting to interact with it.",
+      "type": "boolean",
+      "default": false
+    },
+    "allowed_items": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      ],
+      "title": "Allowed Items",
+      "description": "A list of item descriptors that are the only items the mob is allowed to transport. If this and \"disallowed_items\" are both empty, then all items are allowed. If non-empty \"disallowed_items\" must be empty.",
+      "defaultSnippets": [
+        {
+          "label": "Allowed Items (default)",
+          "description": "Use default value: ",
+          "body": []
+        }
+      ]
+    },
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "disallowed_items": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      ],
+      "title": "Disallowed Items",
+      "description": "A list of item descriptors that are the mob is not allowed to transport. If non-empty \"allowed_items\" must be empty.",
+      "defaultSnippets": [
+        {
+          "label": "Disallowed Items (default)",
+          "description": "Use default value: ",
+          "body": []
+        }
+      ]
+    },
+    "idle_cooldown": {
+      "title": "Idle Cooldown",
+      "description": "When the mob cannot find a container in which to get or put items, the goal will stop being active for this amount of time in seconds.",
+      "type": "integer",
+      "default": 20
+    },
+    "initial_cooldown": {
+      "title": "Initial Cooldown",
+      "description": "How long the mob will wait after spawning or getting the goal added before the goal can start.",
+      "type": "integer",
+      "default": 0
+    },
+    "interaction_time": {
+      "title": "Interaction Time",
+      "description": "The amount of time in seconds spent interacting with the containers.",
+      "type": "number",
+      "default": 3
+    },
+    "max_stack_size": {
+      "title": "Max Stack Size",
+      "description": "The maximum stack size that the mob will try to take from a container.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 64,
+      "default": 64
+    },
+    "max_visited_containers": {
+      "title": "Max Visited Containers",
+      "description": "The maximum number of containers that the mob will try to take/place items from before going on cooldown and starting over.",
+      "type": "integer",
+      "default": 16
+    },
+    "place_strategy": {
+      "title": "Place Strategy",
+      "description": "The strategy to use for placing the transported item. Any - always place if there is room, With matching - place if there is a matching item in the container, With matching or empty - like With matching but will also place in empty containers",
+      "type": "string",
+      "enum": [
+        "any",
+        "with_matching",
+        "with_matching_or_empty"
+      ],
+      "default": "any"
+    },
+    "priority": {
+      "title": "Priority",
+      "type": "integer",
+      "default": 0
+    },
+    "search_distance": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        {
+          "description": "\n\nProperties:\n• x (float) = 0\n• y (float) = 0",
+          "type": "object",
+          "properties": {
+            "x": {
+              "title": "X",
+              "type": "number",
+              "default": 0
+            },
+            "y": {
+              "title": "Y",
+              "type": "number",
+              "default": 0
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Search Distance (object)",
+              "description": "Use Search Distance as an object",
+              "body": {
+                "x": 0,
+                "y": 0
+              }
+            }
+          ]
+        }
+      ],
+      "title": "Search Distance",
+      "description": "The maximum search distance horizontally and vertically at which to find containers for taking or placing items.",
+      "defaultSnippets": [
+        {
+          "label": "Search Distance (object)",
+          "description": "Use Search Distance as an object",
+          "body": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ]
+    },
+    "search_strategy": {
+      "title": "Search Strategy",
+      "description": "The strategy to use for finding source or destination containers. The nearest valid container or a random valid container in range.",
+      "type": "string",
+      "enum": [
+        "nearest",
+        "random"
+      ],
+      "default": "random"
+    }
+  }
+}

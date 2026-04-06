@@ -1,0 +1,278 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "checks if the entity has the '"
+          },
+          {
+            "type": "value",
+            "field": "value"
+          },
+          {
+            "type": "literal",
+            "text": "' component"
+          }
+        ]
+      }
+    ]
+  },
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
+  "fields": [
+    {
+      "id": "operator",
+      "title": "Operator",
+      "description": "(Optional) The comparison to apply with 'value'.",
+      "defaultValue": "equals",
+      "dataType": "string",
+      "choices": [
+        {
+          "id": "!=",
+          "title": "!=",
+          "description": "Test for inequality."
+        },
+        {
+          "id": "<",
+          "title": "<",
+          "description": "Test for less-than the value."
+        },
+        {
+          "id": "<=",
+          "title": "<=",
+          "description": "Test for less-than or equal to the value."
+        },
+        {
+          "id": "<>",
+          "title": "<>",
+          "description": "Test for inequality."
+        },
+        {
+          "id": "=",
+          "title": "=",
+          "description": "Test for equality."
+        },
+        {
+          "id": "==",
+          "title": "==",
+          "description": "Test for equality."
+        },
+        {
+          "id": ">",
+          "title": ">",
+          "description": "Test for greater-than the value."
+        },
+        {
+          "id": ">=",
+          "title": ">=",
+          "description": "Test for greater-than or equal to the value."
+        },
+        {
+          "id": "equals",
+          "title": "Equals",
+          "description": "Test for equality."
+        },
+        {
+          "id": "not",
+          "title": "Not",
+          "description": "Test for inequality."
+        }
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/sheep.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:interact/interactions[0]/on_interact/filters/all_of[2]/",
+            "content": "!="
+          },
+          {
+            "path": "/minecraft:entity/events/minecraft:on_eat_block/sequence[1]/filters/",
+            "content": "!="
+          }
+        ]
+      }
+    },
+    {
+      "id": "subject",
+      "title": "Subject",
+      "description": "(Optional) The subject of this filter test.",
+      "defaultValue": "self",
+      "dataType": "string",
+      "choices": [
+        {
+          "id": "block",
+          "title": "Block",
+          "description": "The block involved with the interaction."
+        },
+        {
+          "id": "damager",
+          "title": "Damager",
+          "description": "The damaging actor involved with the interaction."
+        },
+        {
+          "id": "other",
+          "title": "Other",
+          "description": "The other member of an interaction, not the caller."
+        },
+        {
+          "id": "parent",
+          "title": "Parent",
+          "description": "The caller's current parent."
+        },
+        {
+          "id": "player",
+          "title": "Player",
+          "description": "The player involved with the interaction."
+        },
+        {
+          "id": "self",
+          "title": "Self",
+          "description": "The entity or object calling the test"
+        },
+        {
+          "id": "target",
+          "title": "Target",
+          "description": "The caller's current target."
+        }
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/sheep.json": [
+          {
+            "path": "/minecraft:entity/events/minecraft:on_eat_block/sequence[1]/filters/",
+            "content": "self"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/sniffer.json": [
+          {
+            "path": "/minecraft:entity/events/on_scenting_success/sequence[0]/filters/",
+            "content": "self"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/zoglin.json": [
+          {
+            "path": "/minecraft:entity/events/minecraft:entity_transformed/sequence[0]/filters/",
+            "content": "other"
+          },
+          {
+            "path": "/minecraft:entity/events/minecraft:entity_transformed/sequence[1]/filters/",
+            "content": "other"
+          }
+        ]
+      }
+    },
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "(Required) The component name to look for",
+      "dataType": "string",
+      "samples": {
+        "/vanilla/behavior_pack/entities/sheep.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:interact/interactions[0]/on_interact/filters/all_of[2]/",
+            "content": "minecraft:is_baby"
+          },
+          {
+            "path": "/minecraft:entity/components/minecraft:interact/interactions[0]/on_interact/filters/all_of[3]/",
+            "content": "minecraft:is_dyeable"
+          },
+          {
+            "path": "/minecraft:entity/events/minecraft:on_eat_block/sequence[1]/filters/",
+            "content": "minecraft:is_baby"
+          }
+        ]
+      }
+    },
+    {
+      "id": "test",
+      "title": "Test",
+      "dataType": "string",
+      "samples": {
+        "/vanilla/behavior_pack/entities/sheep.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:interact/interactions[0]/on_interact/filters/all_of[2]/",
+            "content": "has_component"
+          },
+          {
+            "path": "/minecraft:entity/components/minecraft:interact/interactions[0]/on_interact/filters/all_of[3]/",
+            "content": "has_component"
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Returns true when the subject entity contains the named component.",
+  "title": "Has Component",
+  "samples": {
+    "samples": [
+      {
+        "path": "Full..",
+        "content": "{ \"test\": \"has_component\", \"subject\": \"self\", \"operator\": \"equals\", \"value\": \"minecraft:explode\" }"
+      },
+      {
+        "path": "Short (using Defaults)..",
+        "content": "{ \"test\": \"has_component\", \"value\": \"minecraft:explode\" }"
+      }
+    ],
+    "/vanilla/behavior_pack/entities/sheep.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:interact/interactions[0]/on_interact/filters/all_of[2]/",
+        "content": {
+          "test": "has_component",
+          "operator": "!=",
+          "value": "minecraft:is_baby"
+        }
+      },
+      {
+        "path": "/minecraft:entity/components/minecraft:interact/interactions[0]/on_interact/filters/all_of[3]/",
+        "content": {
+          "test": "has_component",
+          "value": "minecraft:is_dyeable"
+        }
+      },
+      {
+        "path": "/minecraft:entity/events/minecraft:on_eat_block/sequence[1]/filters/",
+        "content": {
+          "subject": "self",
+          "test": "has_component",
+          "operator": "!=",
+          "value": "minecraft:is_baby"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/sniffer.json": [
+      {
+        "path": "/minecraft:entity/events/on_scenting_success/sequence[0]/filters/",
+        "content": {
+          "test": "has_component",
+          "subject": "self",
+          "operator": "!=",
+          "value": "minecraft:is_baby"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zoglin.json": [
+      {
+        "path": "/minecraft:entity/events/minecraft:entity_transformed/sequence[0]/filters/",
+        "content": {
+          "subject": "other",
+          "test": "has_component",
+          "value": "minecraft:is_baby"
+        }
+      },
+      {
+        "path": "/minecraft:entity/events/minecraft:entity_transformed/sequence[1]/filters/",
+        "content": {
+          "test": "has_component",
+          "operator": "!=",
+          "subject": "other",
+          "value": "minecraft:is_baby"
+        }
+      }
+    ]
+  },
+  "id": "has_component"
+}

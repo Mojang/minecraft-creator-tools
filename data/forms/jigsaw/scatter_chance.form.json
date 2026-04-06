@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines scatter probability with numerator and denominator"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "denominator",
+      "title": "denominator",
+      "description": "Denominator for scatter probability.",
+      "dataType": "int"
+    },
+    {
+      "id": "numerator",
+      "title": "numerator",
+      "description": "Numerator for scatter probability.",
+      "dataType": "int"
+    }
+  ],
+  "description": "Scatter probability represented by an expression or an object with a numerator and denominator.",
+  "title": "Scatter Chance"
+}

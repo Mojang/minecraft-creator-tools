@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Beg Behavior",
+  "description": "Allows this mob to look at and follow the player that holds food they like.",
+  "properties": {
+    "items": {
+      "title": "Items",
+      "description": "List of items that this mob likes",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "look_distance": {
+      "title": "Look Distance",
+      "description": "Distance in blocks the mob will beg from",
+      "type": "number",
+      "default": 8
+    },
+    "look_time": {
+      "title": "Look Time",
+      "description": "The range of time in seconds this mob will stare at the player holding a food they like, begging for it",
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "type": "object",
+          "properties": {
+            "min": {
+              "type": "integer",
+              "description": "Minimum value of the range"
+            },
+            "max": {
+              "type": "integer",
+              "description": "Maximum value of the range"
+            }
+          }
+        }
+      ]
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer"
+    }
+  }
+}
