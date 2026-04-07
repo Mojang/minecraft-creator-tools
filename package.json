@@ -37,7 +37,7 @@
     "preparetest": "cd app && npm run preparetest",
     "preparemc": "cd app && npm run preparemc",
     "processdocs": "cd app && npm run processdocs",
-    "all": "cd app && npm run all",
+    "all": "cd samplecontent/addon && npm ci && npx gulp package && cd ../.. && cd mc && npm ci --legacy-peer-deps && npm run build && cd .. && cd app && npm run all",
     "validate": "cd app && npx mct validate",
     "jsntest": "cd app && npm run jsntest"
   },
