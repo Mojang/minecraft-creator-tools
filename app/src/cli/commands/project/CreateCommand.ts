@@ -82,8 +82,7 @@ export class CreateCommand extends CommandBase {
         "  $ mct create myproj addonStarter alice \"My new addon\" -o .      # Fully specified, no prompts\n" +
         "  $ mct create -y -o ./myproj alice \"Quick start\"                 # Skip the long prompt chain\n" +
         "  $ mct create                                                    # Fully interactive (asks every question)\n" +
-        "\nTip: pass `-y` (or `--yes`) in CI to accept all defaults.\n" +
-        "Tip: run `mct gallery` to see the list of available templates.\n"
+        "\nTip: pass `-y` (or `--yes`) in CI to accept all defaults.\n"
     );
   }
 
@@ -391,6 +390,21 @@ export class CreateCommand extends CommandBase {
     // Sync project from GitHub
     context.log.info(`Creating project '${title}' from template '${galProject.id}'...`);
 
+    // The template's pack folders (e.g. `behavior_packs/aop_mobs/`) get renamed
+    // to the user's chosen short name *after* the copy completes via
+    // `ProjectUtilities.renameDefaultFolders`. Per-file "Updating file: ..."
+    // messages emitted by `StorageUtilities.syncFolderTo` therefore reference
+    // staging paths that won't exist on disk once the create finishes — see
+    // ready-to-ship-report.md issue #5. Rewrite those paths inline so users see
+    // where files will actually land.
+    const packFolderRewrite = suggestedShortName
+      ? (msg: string) =>
+          msg.replace(
+            /(behavior_packs|resource_packs|skin_packs|world_templates)([\\/])[^\\/]+([\\/])/g,
+            `$1$2${suggestedShortName}$3`
+          )
+      : (msg: string) => msg;
+
     project = await ProjectExporter.syncProjectFromGitHub(
       true,
       context.creatorTools,
@@ -402,7 +416,7 @@ export class CreateCommand extends CommandBase {
       project,
       galProject.fileList,
       async (message: string) => {
-        context.log.info(message);
+        context.log.info(packFolderRewrite(message));
       },
       true
     );

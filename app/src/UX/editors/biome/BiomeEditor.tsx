@@ -18,6 +18,7 @@ import { ProjectItemType } from "../../../app/IProjectItemData";
 import BiomeResourceEditor from "./BiomeResourceEditor";
 import BiomeResourceDefinition from "../../../minecraft/BiomeResourceDefinition";
 import Utilities from "../../../core/Utilities";
+import StorageUtilities from "../../../storage/StorageUtilities";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
 import { WithLocalizationProps, withLocalization } from "../../withLocalization";
@@ -304,7 +305,12 @@ class BiomeEditor extends Component<IBiomeEditorProps, IBiomeEditorState> {
       >
         <EditorHeaderChip itemType={ProjectItemType.biomeBehavior} theme={this.props.theme}>
           <EditorHeaderBar
-            itemId={biomeDefinition.id || "unknown"}
+            itemId={
+              biomeDefinition.id ||
+              (this.state.fileToEdit?.name
+                ? Utilities.humanifyMinecraftName(StorageUtilities.getBaseFromName(this.state.fileToEdit.name))
+                : "(new biome)")
+            }
             itemType={ProjectItemType.biomeBehavior}
             typeName="Biome"
             formatVersion={biomeDefinition.data?.format_version}

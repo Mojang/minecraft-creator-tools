@@ -24,8 +24,6 @@ interface IStructureViewerState {
   structure: Structure | undefined;
   errorMessage?: string;
   loadingMessage?: string;
-  renderBannerDismissed?: boolean;
-  showRenderBanner?: boolean;
   loadAttempt: number;
 }
 
@@ -39,7 +37,6 @@ interface IStructureViewerState {
  */
 export default class StructureViewer extends Component<IStructureViewerProps, IStructureViewerState> {
   private _volumeEditorRef: RefObject<VolumeEditor>;
-  private _renderBannerTimeoutId: ReturnType<typeof setTimeout> | undefined;
 
   constructor(props: IStructureViewerProps) {
     super(props);
@@ -54,54 +51,21 @@ export default class StructureViewer extends Component<IStructureViewerProps, IS
     };
 
     this._handleRetry = this._handleRetry.bind(this);
-    this._handleDismissBanner = this._handleDismissBanner.bind(this);
-  }
-
-  componentWillUnmount() {
-    if (this._renderBannerTimeoutId) {
-      clearTimeout(this._renderBannerTimeoutId);
-      this._renderBannerTimeoutId = undefined;
-    }
-  }
-
-  private _scheduleRenderBanner() {
-    if (this._renderBannerTimeoutId) {
-      clearTimeout(this._renderBannerTimeoutId);
-    }
-    // After structure load completes, show a dismissible banner that gives users a
-    // Retry affordance in case the 3D viewport rendered garbled textures (red/cyan pixels
-    // from a failed Babylon texture-atlas bind). We can't reliably detect that from here,
-    // so we surface the retry option proactively but unobtrusively.
-    this._renderBannerTimeoutId = setTimeout(() => {
-      if (!this.state.renderBannerDismissed) {
-        this.setState({ showRenderBanner: true });
-      }
-    }, 2000);
   }
 
   private _handleRetry() {
-    if (this._renderBannerTimeoutId) {
-      clearTimeout(this._renderBannerTimeoutId);
-      this._renderBannerTimeoutId = undefined;
-    }
     this.setState(
       (prev) => ({
         isLoaded: false,
         structure: undefined,
         errorMessage: undefined,
         loadingMessage: "Retrying...",
-        showRenderBanner: false,
-        renderBannerDismissed: false,
         loadAttempt: prev.loadAttempt + 1,
       }),
       () => {
         this._loadStructure();
       }
     );
-  }
-
-  private _handleDismissBanner() {
-    this.setState({ showRenderBanner: false, renderBannerDismissed: true });
   }
 
   async componentDidMount() {
@@ -224,14 +188,6 @@ export default class StructureViewer extends Component<IStructureViewerProps, IS
         structure,
         loadingMessage: undefined,
       });
-      // When skipVanillaResources is true (e.g. headless render tests, MCP image
-      // generation), vanilla block textures are intentionally not fetched from
-      // mctools.dev — the untextured grey-cube render is expected, not a failure.
-      // Suppress the "textures may still be loading" banner in that case so it
-      // doesn't appear in screenshots/baselines.
-      if (!this.props.skipVanillaResources) {
-        this._scheduleRenderBanner();
-      }
     } catch (error) {
       Log.verbose("Error loading structure: " + error);
       this.setState({
@@ -294,28 +250,11 @@ export default class StructureViewer extends Component<IStructureViewerProps, IS
     // Get camera position from props or URL params
     const cameraPos = this._getCameraPositionFromProps();
 
-    // Render-fallback banner. Shown after structure loads (on non-headless chrome) so users
-    // have a visible retry affordance when Babylon.js materials / texture atlas fail and
-    // produce red/cyan garbled pixels. Dismissible.
-    const renderBanner =
-      this.state.showRenderBanner && !this.state.renderBannerDismissed ? (
-        <div className="sv-render-banner" role="status" aria-live="polite">
-          <span className="sv-render-banner-message">Couldn't render structure — textures may still be loading.</span>
-          <button className="sv-render-banner-button" onClick={this._handleRetry}>
-            Retry
-          </button>
-          <button className="sv-render-banner-dismiss" onClick={this._handleDismissBanner} aria-label="Dismiss">
-            Dismiss
-          </button>
-        </div>
-      ) : null;
-
     // When hideChrome is true, render without toolbar or any UI overlays
     if (hideChrome) {
       return (
         <div className="sv-container sv-no-chrome" style={{ height: containerHeight }}>
           <div className="sv-viewport sv-viewport-full">
-            {renderBanner}
             <VolumeEditor
               key={this.state.loadAttempt}
               ref={this._volumeEditorRef}
@@ -340,10 +279,17 @@ export default class StructureViewer extends Component<IStructureViewerProps, IS
       <div className="sv-container" style={{ height: containerHeight }}>
         <div className="sv-toolbar">
           <span className="sv-info">Structure: {dimensions} blocks</span>
+          <button
+            className="sv-toolbar-button"
+            onClick={this._handleRetry}
+            title="Reload textures and re-render"
+            aria-label="Reload structure"
+          >
+            Reload
+          </button>
         </div>
 
         <div className="sv-viewport">
-          {renderBanner}
           <VolumeEditor
             key={this.state.loadAttempt}
             ref={this._volumeEditorRef}

@@ -392,10 +392,14 @@ program.option("--all-commands", "Show all commands including content-production
 // This must be done before parsing so all commands are available
 registerAllCommands();
 
-// Handle --all-commands before configureCommander so we can show the full list
+// Handle --all-commands before configureCommander so we can show the full list.
+// We use console.log here directly rather than Log.message because LocalEnvironment
+// (which sets up the Log subscriber that writes to stdout in Node) is not yet
+// constructed at this point in CLI startup. Calling Log.message before then would
+// silently drop the output. See ready-to-ship-report.md issue #1.
 if (process.argv.includes("--all-commands")) {
-  Log.message("\nAll commands (including content-production tools):");
-  Log.message(commandRegistry.generateCategoryHelp(true));
+  console.log("\nAll commands (including content-production tools):");
+  console.log(commandRegistry.generateCategoryHelp(true));
   process.exit(0);
 }
 

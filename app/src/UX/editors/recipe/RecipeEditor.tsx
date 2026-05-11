@@ -51,6 +51,8 @@ import Project from "../../../app/Project";
 import IProjectTheme from "../../types/IProjectTheme";
 import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../../app/CreatorToolsHost";
+import Utilities from "../../../core/Utilities";
+import StorageUtilities from "../../../storage/StorageUtilities";
 
 export enum RecipeEditorMode {
   visual = 0,
@@ -274,12 +276,34 @@ class RecipeEditor extends Component<IRecipeEditorProps, IRecipeEditorState> {
           </div>
         );
       } else {
+        // Recipe shape isn't shaped or shapeless (could be furnace, brewing, smithing, etc.,
+        // or an empty stub from the wizard). Surface a clearer hint and a one-click seed for
+        // the most common case so the user isn't left at a dead end.
+        const isEmpty = recipeType === "unknown";
         modeArea = (
           <div className="rcre-unsupported">
-            <div className="rcre-unsupported-type">{recipeType} recipe</div>
+            <div className="rcre-unsupported-type">{isEmpty ? "Empty recipe" : `${recipeType} recipe`}</div>
             <div className="rcre-unsupported-hint">
-              Visual editor not yet available for this recipe type. Use the Properties tab or switch to raw JSON view.
+              {isEmpty
+                ? "This recipe has no content yet. Use the Properties tab to choose a recipe type, or click below to start with a shapeless recipe."
+                : "Visual editor not yet available for this recipe type. Use the Properties tab or switch to raw JSON view."}
             </div>
+            {isEmpty && (
+              <Button
+                variant="contained"
+                onClick={() =>
+                  this._handleShapelessRecipeChanged({
+                    description: { identifier: def.id || "" },
+                    tags: ["crafting_table"],
+                    ingredients: [],
+                    result: { item: "" },
+                  } as IRecipeShapeless)
+                }
+                style={{ marginTop: 12 }}
+              >
+                Start as shapeless recipe
+              </Button>
+            )}
           </div>
         );
       }
@@ -306,7 +330,12 @@ class RecipeEditor extends Component<IRecipeEditorProps, IRecipeEditorState> {
       >
         <EditorHeaderChip itemType={ProjectItemType.recipeBehavior} theme={this.props.theme}>
           <EditorHeaderBar
-            itemId={def.id || "unknown"}
+            itemId={
+              def.id ||
+              (this.state.fileToEdit?.name
+                ? Utilities.humanifyMinecraftName(StorageUtilities.getBaseFromName(this.state.fileToEdit.name))
+                : "(new recipe)")
+            }
             itemType={ProjectItemType.recipeBehavior}
             typeName={typeName}
             formatVersion={def.data.format_version}

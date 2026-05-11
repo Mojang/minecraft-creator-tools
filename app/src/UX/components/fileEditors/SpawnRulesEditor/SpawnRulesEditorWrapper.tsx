@@ -27,6 +27,10 @@ import SimplifiedSpawnRulesEditor from "./SimplifiedSpawnRulesEditor";
 import SpawnRulesEditor from "./SpawnRulesEditor";
 import IProjectTheme from "../../../types/IProjectTheme";
 import { getThemeColors } from "../../../hooks/theme/useThemeColors";
+import { EditorHeaderChip, EditorHeaderBar } from "../../../appShell/EditorHeader";
+import { ProjectItemType } from "../../../../app/IProjectItemData";
+import StorageUtilities from "../../../../storage/StorageUtilities";
+import Utilities from "../../../../core/Utilities";
 
 type SpawnRulesEditorWrapperProps = {
   project: Project;
@@ -67,8 +71,34 @@ export default function SpawnRulesEditorWrapper({
 
   const innerHeightOffset = (heightOffset ?? 0) + SUBTAB_BAR_HEIGHT;
 
+  // Read the spawn-rule identifier (and format version) directly from the file so the
+  // header chip stays consistent with the other editor surfaces (Biome, Recipe, etc.)
+  // — see `Spawn-rules editor header lacks a content-type badge` finding (C2).
+  // We tolerate parse failures: if the file is in an error state we fall back to the
+  // file's base name so users still see something meaningful instead of "unknown".
+  let spawnRuleId = "";
+  let formatVersion: string | undefined;
+  try {
+    const json = StorageUtilities.getJsonObject(file);
+    spawnRuleId = json?.["minecraft:spawn_rules"]?.description?.identifier ?? "";
+    formatVersion = typeof json?.format_version === "string" ? json.format_version : undefined;
+  } catch {
+    // ignored — fall back to file name below
+  }
+  const headerItemId =
+    spawnRuleId || (file.name ? Utilities.humanifyMinecraftName(StorageUtilities.getBaseFromName(file.name)) : "(new spawn rule)");
+
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      <EditorHeaderChip itemType={ProjectItemType.spawnRuleBehavior} theme={theme}>
+        <EditorHeaderBar
+          itemId={headerItemId}
+          itemType={ProjectItemType.spawnRuleBehavior}
+          typeName="Spawn Rules"
+          formatVersion={formatVersion}
+        />
+      </EditorHeaderChip>
+
       <div
         style={{
           borderBottom: `1px solid ${colors.sectionBorder}`,

@@ -11,7 +11,8 @@
 .sv-toolbar {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 12px;
   padding: 8px 16px;
   background-color: #2d2d2d;
   border-bottom: 1px solid #3d3d3d;
@@ -21,6 +22,22 @@
 .sv-info {
   font-size: 14px;
   color: #cccccc;
+}
+
+.sv-toolbar-button {
+  font-family: inherit;
+  font-size: 13px;
+  color: #cccccc;
+  background-color: transparent;
+  border: 1px solid #4a4a4a;
+  border-radius: 4px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.sv-toolbar-button:hover {
+  background-color: #3a3a3a;
+  color: #ffffff;
 }
 
 .sv-viewport {
