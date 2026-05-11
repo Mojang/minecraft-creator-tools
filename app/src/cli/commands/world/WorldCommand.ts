@@ -182,6 +182,23 @@ export class WorldCommand extends CommandBase implements ICommand {
       }
     }
 
+    if (context.json) {
+      // CI/automation friendly: emit world metadata as structured JSON.
+      context.log.data(
+        JSON.stringify({
+          schemaVersion: "1.0.0",
+          command: "world",
+          world: {
+            name: mcworld.name,
+            path: item.projectPath,
+            betaApis: mcworld.betaApisExperiment ?? null,
+            dataDrivenItems: mcworld.levelData?.dataDrivenItemsExperiment ?? null,
+          },
+        })
+      );
+      return;
+    }
+
     log.info("World name: " + mcworld.name);
     log.info("World path: " + item.projectPath);
 

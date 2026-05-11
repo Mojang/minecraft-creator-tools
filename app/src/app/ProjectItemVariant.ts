@@ -186,7 +186,7 @@ export default class ProjectItemVariant {
       this._item.storageType === ProjectItemStorageType.singleFile &&
       this._file === null &&
       (this.projectPath === null || this.projectPath === undefined) &&
-      (!this.variantType || this.variantType === ProjectItemVariantType.subPack) &&
+      this.variantType === ProjectItemVariantType.subPack &&
       this._item.project.projectFolder !== null &&
       this._item.project.projectFolder !== undefined
     ) {

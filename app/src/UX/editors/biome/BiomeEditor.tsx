@@ -6,7 +6,7 @@ import Database from "../../../minecraft/Database";
 import DataFormUtilities from "../../../dataform/DataFormUtilities";
 import BiomeBehaviorDefinition from "../../../minecraft/BiomeBehaviorDefinition";
 import ProjectItem from "../../../app/ProjectItem";
-import BiomeComponentSetEditor from "./BiomeComponentSetEditor";
+import DataFormComponentAccordion from "../../../dataformux/DataFormComponentAccordion";
 import { CustomTabLabel } from "../../shared/components/feedback/labels/Labels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import WebUtilities from "../../utils/WebUtilities";
@@ -20,13 +20,15 @@ import BiomeResourceDefinition from "../../../minecraft/BiomeResourceDefinition"
 import Utilities from "../../../core/Utilities";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
+import { EditorHeaderChip, EditorHeaderBar, EditorHeaderTabs } from "../../appShell/EditorHeader";
 
 export enum BiomeEditorMode {
   components = 0,
   visuals = 2,
 }
 
-interface IBiomeEditorProps extends IFileProps {
+interface IBiomeEditorProps extends IFileProps, WithLocalizationProps {
   heightOffset: number;
   readOnly: boolean;
   item: ProjectItem;
@@ -43,7 +45,7 @@ interface IBiomeEditorState {
   isLoaded: boolean;
 }
 
-export default class BiomeEditor extends Component<IBiomeEditorProps, IBiomeEditorState> {
+class BiomeEditor extends Component<IBiomeEditorProps, IBiomeEditorState> {
   private _lastFileEdited?: IFile;
 
   constructor(props: IBiomeEditorProps) {
@@ -89,11 +91,7 @@ export default class BiomeEditor extends Component<IBiomeEditorProps, IBiomeEdit
     this._updateManager(true);
   }
 
-  componentDidUpdate(
-    prevProps: Readonly<IBiomeEditorProps>,
-    prevState: Readonly<IBiomeEditorState>,
-    snapshot?: any
-  ): void {
+  componentDidUpdate(prevProps: Readonly<IBiomeEditorProps>, prevState: Readonly<IBiomeEditorState>): void {
     if (this.state && this.props.file !== this.state.fileToEdit) {
       this.setState(
         {
@@ -259,13 +257,12 @@ export default class BiomeEditor extends Component<IBiomeEditorProps, IBiomeEdit
 
     if (this.state.mode === BiomeEditorMode.components) {
       interior = (
-        <BiomeComponentSetEditor
-          biomeDefinition={biomeDefinition}
+        <DataFormComponentAccordion
+          componentSetItem={biomeDefinition}
+          formCategory="biome"
           theme={this.props.theme}
-          heightOffset={this.props.heightOffset + 92}
           readOnly={this.props.readOnly}
-          project={this.props.project}
-          creatorTools={this.props.creatorTools}
+          maxHeight={areaHeight}
         />
       );
     } else if (this.state.mode === BiomeEditorMode.visuals) {
@@ -285,7 +282,10 @@ export default class BiomeEditor extends Component<IBiomeEditorProps, IBiomeEdit
         interior = (
           <div className="bio-addResource">
             <Button variant="contained" onClick={this._addRelatedResourceClick}>
-              Add related resource for {Utilities.humanifyMinecraftName(this.state.fileToEdit.name)}
+              {this.props.intl.formatMessage(
+                { id: "project_editor.biome.add_resource" },
+                { biomeName: Utilities.humanifyMinecraftName(this.state.fileToEdit.name) }
+              )}
             </Button>
           </div>
         );
@@ -302,30 +302,41 @@ export default class BiomeEditor extends Component<IBiomeEditorProps, IBiomeEdit
           maxHeight: height,
         }}
       >
-        <div className="bio-header">
-          <Stack direction="row" spacing={1}>
-            <Button onClick={this._setComponentsMode} title="Components">
-              <CustomTabLabel
-                theme={this.props.theme}
-                isCompact={isButtonCompact}
-                isSelected={this.state.mode === BiomeEditorMode.components}
-                icon={<FontAwesomeIcon icon={faSliders} className="fa-lg" />}
-                title="Components"
-                text="Components"
-              />
-            </Button>
-            <Button onClick={this._setVisualsMode} title="Audio & Visuals">
-              <CustomTabLabel
-                theme={this.props.theme}
-                isCompact={isButtonCompact}
-                isSelected={this.state.mode === BiomeEditorMode.visuals}
-                icon={<FontAwesomeIcon icon={faTreeCity} className="fa-lg" />}
-                title="Audio & Visuals"
-                text="Audio & Visuals"
-              />
-            </Button>
-          </Stack>
-        </div>
+        <EditorHeaderChip itemType={ProjectItemType.biomeBehavior} theme={this.props.theme}>
+          <EditorHeaderBar
+            itemId={biomeDefinition.id || "unknown"}
+            itemType={ProjectItemType.biomeBehavior}
+            typeName="Biome"
+            formatVersion={biomeDefinition.data?.format_version}
+          />
+          <EditorHeaderTabs>
+            <Stack direction="row" spacing={0.5} aria-label="Biome editor tabs">
+              <Button onClick={this._setComponentsMode} title="Components">
+                <CustomTabLabel
+                  theme={this.props.theme}
+                  isCompact={isButtonCompact}
+                  isSelected={this.state.mode === BiomeEditorMode.components}
+                  icon={<FontAwesomeIcon icon={faSliders} className="fa-lg" />}
+                  title="Components"
+                  text="Components"
+                />
+              </Button>
+              <Button
+                onClick={this._setVisualsMode}
+                title={this.props.intl.formatMessage({ id: "project_editor.biome.tab_audio_visuals" })}
+              >
+                <CustomTabLabel
+                  theme={this.props.theme}
+                  isCompact={isButtonCompact}
+                  isSelected={this.state.mode === BiomeEditorMode.visuals}
+                  icon={<FontAwesomeIcon icon={faTreeCity} className="fa-lg" />}
+                  title={this.props.intl.formatMessage({ id: "project_editor.biome.tab_audio_visuals" })}
+                  text={this.props.intl.formatMessage({ id: "project_editor.biome.tab_audio_visuals" })}
+                />
+              </Button>
+            </Stack>
+          </EditorHeaderTabs>
+        </EditorHeaderChip>
         <div
           className="bio-area"
           style={{
@@ -339,3 +350,5 @@ export default class BiomeEditor extends Component<IBiomeEditorProps, IBiomeEdit
     );
   }
 }
+
+export default withLocalization(BiomeEditor);

@@ -147,8 +147,14 @@ export default class LootTableLivePreview extends Component<ILootTableLivePrevie
     );
   }
 
-  private _renderPools(pools: LootPool[]): JSX.Element | null {
-    if (pools.length === 0) return null;
+  private _renderPools(pools: LootPool[]): JSX.Element {
+    if (pools.length === 0) {
+      return (
+        <div style={{ padding: "12px", textAlign: "center" }}>
+          <em style={{ opacity: 0.6 }}>No loot pools yet</em>
+        </div>
+      );
+    }
 
     const isExpanded = this.state.expandedSections.has("pools");
 

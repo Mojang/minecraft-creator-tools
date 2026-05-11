@@ -16,8 +16,9 @@ import { ToolCommandRegistry, initializeToolCommands, ToolCommandContextFactory 
 import type { IToolCommandOutput } from "../../../../../app/toolcommands";
 import IProjectTheme from "../../../../types/IProjectTheme";
 import Log from "../../../../../core/Log";
+import { WithLocalizationProps, withLocalization } from "../../../../withLocalization";
 
-interface ISearchCommandEditorProps {
+interface ISearchCommandEditorProps extends WithLocalizationProps {
   theme: IProjectTheme;
   placeholder?: string;
   commitButton?: boolean;
@@ -49,7 +50,7 @@ interface ISearchCommandEditorState {
   matchedItemPaths?: Set<string>;
 }
 
-export default class SearchCommandEditor extends Component<ISearchCommandEditorProps, ISearchCommandEditorState> {
+class SearchCommandEditor extends Component<ISearchCommandEditorProps, ISearchCommandEditorState> {
   inputArea: React.RefObject<HTMLDivElement>;
   #isRetrieving = false;
 
@@ -211,7 +212,10 @@ export default class SearchCommandEditor extends Component<ISearchCommandEditorP
     context.scope = "ui";
 
     const completions = await ToolCommandRegistry.instance.getCompletions(content, content.length, context);
-    const limited = completions.slice(0, 15);
+    // Cap the suggestion list. See CommandBar.tsx for the rationale; 30 is
+    // generous for the built-in slash-command set without risking unbounded
+    // popup growth from argument completers.
+    const limited = completions.slice(0, 30);
 
     const prefix = this._getCompletionPrefix(content);
     const descriptions = this._buildCommandDescriptions(limited, content);
@@ -247,23 +251,23 @@ export default class SearchCommandEditor extends Component<ISearchCommandEditorP
 
     context.scope = "ui";
 
-    this.props.creatorTools.notifyStatusUpdate("Running: " + commandText);
+    this.props.creatorTools.notifyStatusUpdate(this.props.intl.formatMessage({ id: "project_editor.search_cmd.running" }) + commandText);
 
     try {
       const result = await ToolCommandRegistry.instance.execute(commandText, context);
 
       if (result) {
         if (result.success) {
-          this.props.creatorTools.notifyStatusUpdate(result.message || "Command completed");
+          this.props.creatorTools.notifyStatusUpdate(result.message || this.props.intl.formatMessage({ id: "project_editor.search_cmd.completed" }));
         } else {
-          this.props.creatorTools.notifyStatusUpdate("Error: " + (result.error?.message || "Command failed"));
+          this.props.creatorTools.notifyStatusUpdate(this.props.intl.formatMessage({ id: "project_editor.search_cmd.error_prefix" }) + (result.error?.message || this.props.intl.formatMessage({ id: "project_editor.search_cmd.failed" })));
         }
       } else {
-        this.props.creatorTools.notifyStatusUpdate("Unknown command: " + commandText);
+        this.props.creatorTools.notifyStatusUpdate(this.props.intl.formatMessage({ id: "project_editor.search_cmd.unknown" }) + commandText);
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.props.creatorTools.notifyStatusUpdate("Command error: " + msg);
+      this.props.creatorTools.notifyStatusUpdate(this.props.intl.formatMessage({ id: "project_editor.search_cmd.cmd_error" }) + msg);
     }
 
     // Clear the input after executing
@@ -565,7 +569,7 @@ export default class SearchCommandEditor extends Component<ISearchCommandEditorP
 
       accessoryToolbar = (
         <div className="sceed-bottomToolBarArea">
-          <Stack direction="row" spacing={1} aria-label="Search command editor actions">
+          <Stack direction="row" spacing={1} aria-label={this.props.intl.formatMessage({ id: "project_editor.search_cmd.actions_aria" })}>
             <IconButton
               size="small"
               onClick={this._commitContent}
@@ -682,7 +686,7 @@ export default class SearchCommandEditor extends Component<ISearchCommandEditorP
           role="combobox"
           aria-expanded={!!this.state.autoCompleteResults}
           aria-autocomplete="list"
-          aria-label="Search or enter command"
+          aria-label={this.props.intl.formatMessage({ id: "project_editor.search_cmd.search_aria" })}
           style={{
             height: editorHeight,
             backgroundColor: colors.background6,
@@ -708,9 +712,9 @@ export default class SearchCommandEditor extends Component<ISearchCommandEditorP
           id="sceed-forminput"
           className={this.props.isLarge ? "sceed-text-large" : "sceed-text"}
           autoFocus={true}
-          label={this.props.isLarge ? "Search:" : undefined}
+          label={this.props.isLarge ? this.props.intl.formatMessage({ id: "project_editor.search_cmd.search_label" }) : undefined}
           placeholder={
-            this.props.isLarge ? this.props.placeholder : this.props.placeholder || "Search or type / for commands..."
+            this.props.isLarge ? this.props.placeholder : this.props.placeholder || this.props.intl.formatMessage({ id: "project_editor.search_cmd.placeholder" })
           }
           inputProps={{
             "aria-label": "Search or enter command",
@@ -746,3 +750,5 @@ export default class SearchCommandEditor extends Component<ISearchCommandEditorP
     );
   }
 }
+
+export default withLocalization(SearchCommandEditor);

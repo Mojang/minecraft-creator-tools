@@ -800,15 +800,54 @@ export default class ModelDesignUtilities {
       return geoBone;
     });
 
+    // Auto-compute visible bounds from cube extents when not explicitly provided.
+    // The renderer uses visible_bounds_* to decide whether to draw the entity;
+    // a default of 1×1 culls any model larger than ~1 block, making it invisible.
+    // Bedrock units are 16 per block, so we convert max(|extent|)/16 → blocks
+    // and add a small margin. This was a recurring "invisible entity" cause.
+    let computedBoundsWidth: number | undefined;
+    let computedBoundsHeight: number | undefined;
+    let computedBoundsOffsetY: number | undefined;
+    if (!design.visibleBoundsSize) {
+      let minX = Infinity,
+        maxX = -Infinity,
+        minY = Infinity,
+        maxY = -Infinity,
+        minZ = Infinity,
+        maxZ = -Infinity;
+      for (const bone of design.bones) {
+        for (const cube of bone.cubes) {
+          const [ox, oy, oz] = cube.origin;
+          const [sx, sy, sz] = cube.size;
+          minX = Math.min(minX, ox);
+          maxX = Math.max(maxX, ox + sx);
+          minY = Math.min(minY, oy);
+          maxY = Math.max(maxY, oy + sy);
+          minZ = Math.min(minZ, oz);
+          maxZ = Math.max(maxZ, oz + sz);
+        }
+      }
+      if (Number.isFinite(minX) && Number.isFinite(maxX)) {
+        const widthUnits = Math.max(maxX - minX, maxZ - minZ);
+        const heightUnits = maxY - minY;
+        // Convert from units (16 per block) to blocks; add 25% margin; round up to >=1.
+        computedBoundsWidth = Math.max(1, Math.ceil((widthUnits / 16) * 1.25));
+        computedBoundsHeight = Math.max(1, Math.ceil((heightUnits / 16) * 1.25));
+        computedBoundsOffsetY = (minY + maxY) / 2 / 16;
+      }
+    }
+
     // Build the geometry object
     const geometry: IGeometry = {
       description: {
         identifier,
         texture_width: textureSize[0],
         texture_height: textureSize[1],
-        visible_bounds_width: design.visibleBoundsSize ? design.visibleBoundsSize[0] : 1,
-        visible_bounds_height: design.visibleBoundsSize ? design.visibleBoundsSize[1] : 1,
-        visible_bounds_offset: design.visibleBoundsOffset || [0, 0.5, 0],
+        visible_bounds_width: design.visibleBoundsSize ? design.visibleBoundsSize[0] : (computedBoundsWidth ?? 1),
+        visible_bounds_height: design.visibleBoundsSize ? design.visibleBoundsSize[1] : (computedBoundsHeight ?? 1),
+        visible_bounds_offset:
+          design.visibleBoundsOffset ||
+          (computedBoundsOffsetY !== undefined ? [0, computedBoundsOffsetY, 0] : [0, 0.5, 0]),
       },
       bones: geoBones,
     };

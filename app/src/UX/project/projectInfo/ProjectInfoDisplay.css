@@ -206,7 +206,9 @@
 }
 
 .mc-tab {
-  transition: color 0.15s ease, opacity 0.15s ease;
+  transition:
+    color 0.15s ease,
+    opacity 0.15s ease;
 }
 
 .mc-tab:hover:not(.mc-tab--selected) {
@@ -846,6 +848,11 @@
   min-width: 120px;
 }
 
+.pid-headerCodeCell {
+  width: 110px;
+  min-width: 90px;
+}
+
 .pid-headerActionsCell {
   width: 50px;
   min-width: 50px;
@@ -872,4 +879,80 @@
 .pid-validating {
   padding: 20px;
   padding-top: 19px;
+}
+
+/* ---- Mobile Card List ---- */
+.pid-cardList {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.pid-cardList .piid-card:last-child {
+  border-bottom: none;
+}
+
+/* ---- Mobile Responsive Styles ---- */
+.pid-title-mobile {
+  font-size: 13pt;
+  padding: 10px 14px;
+}
+
+.pid-toolArea-mobile {
+  flex-wrap: nowrap;
+  gap: 4px;
+  padding: 6px 8px;
+}
+
+.pid-toolArea-mobile .pid-topToolbar {
+  margin-right: 4px;
+  padding-right: 4px;
+  gap: 4px;
+  border-right: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+.pid-toolArea-mobile .pid-suiteDropdown {
+  flex: 1;
+  min-width: 0;
+}
+
+.pid-toolArea-mobile .pid-actionToolbar {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+@media only screen and (max-width: 600px) {
+  .pid-filterToolbar {
+    gap: 4px;
+    padding: 8px 10px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .pid-filterActions {
+    flex-wrap: nowrap;
+  }
+
+  .pid-statsBar {
+    padding: 10px 16px;
+    gap: 8px;
+  }
+
+  .pid-stat {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .pid-hero {
+    padding: 14px 16px;
+  }
+
+  .pid-heroTitle {
+    font-size: 18px;
+  }
+
+  .pid-heroImage {
+    width: 56px;
+    height: 56px;
+  }
 }

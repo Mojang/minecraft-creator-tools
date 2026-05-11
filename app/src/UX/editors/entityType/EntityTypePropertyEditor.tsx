@@ -22,8 +22,9 @@ import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import EntityTypeDefinition, { EntityPropertyType } from "../../../minecraft/EntityTypeDefinition";
 import Project from "../../../app/Project";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
-interface IEntityTypePropertyEditorProps {
+interface IEntityTypePropertyEditorProps extends WithLocalizationProps {
   entityTypeItem: EntityTypeDefinition;
   heightOffset: number;
   project: Project;
@@ -45,7 +46,7 @@ export enum EntityTypePropertyEditorDialogMode {
   newPropertyName = 1,
 }
 
-export default class EntityTypePropertyEditor extends Component<
+class EntityTypePropertyEditor extends Component<
   IEntityTypePropertyEditorProps,
   IEntityTypePropertyEditorState
 > {
@@ -235,9 +236,9 @@ export default class EntityTypePropertyEditor extends Component<
     if (this.state.dialogMode === EntityTypePropertyEditorDialogMode.newPropertyName) {
       return (
         <Dialog open={true} onClose={this._handleDialogCancel} key="etpe-addComponentOuter">
-          <DialogTitle>Add property</DialogTitle>
+          <DialogTitle>{this.props.intl.formatMessage({ id: "project_editor.entity_prop.add_dialog_title" })}</DialogTitle>
           <DialogContent>
-            <SetName onNameChanged={this.setNewName} defaultName="new property" theme={this.props.theme} />
+            <SetName onNameChanged={this.setNewName} defaultName={this.props.intl.formatMessage({ id: "project_editor.entity_prop.default_name" })} theme={this.props.theme} />
           </DialogContent>
           <DialogActions>
             <Button onClick={this._handleDialogCancel}>Cancel</Button>
@@ -289,17 +290,17 @@ export default class EntityTypePropertyEditor extends Component<
 
       const addMenuItems = [
         {
-          content: "String property",
+          content: this.props.intl.formatMessage({ id: "project_editor.entity_prop.string_property" }),
           key: "stringProperty",
           onClick: this._addNewStringProperty,
         },
         {
-          content: "Number property",
+          content: this.props.intl.formatMessage({ id: "project_editor.entity_prop.number_property" }),
           key: "numberProperty",
           onClick: this._addNewNumberProperty,
         },
         {
-          content: "True/false property",
+          content: this.props.intl.formatMessage({ id: "project_editor.entity_prop.boolean_property" }),
           key: "booleanProperty",
           onClick: this._addNewBooleanProperty,
         },
@@ -313,21 +314,21 @@ export default class EntityTypePropertyEditor extends Component<
               color it is, or how big it's grown.
             </div>
             <div style={{ marginBottom: "8px", opacity: 0.6, fontSize: "9pt" }}>
-              <strong>Examples:</strong>
+              <strong>{this.props.intl.formatMessage({ id: "project_editor.entity_prop.examples" })}</strong>
               <ul style={{ marginTop: "4px", paddingLeft: "20px" }}>
                 <li>
-                  <strong>is_tamed</strong> (true/false) — Track if this mob has been tamed
+                  <strong>{this.props.intl.formatMessage({ id: "project_editor.entity_prop.example_tamed" })}</strong> {this.props.intl.formatMessage({ id: "project_editor.entity_prop.example_tamed_desc" })}
                 </li>
                 <li>
-                  <strong>color</strong> (text) — Store the mob's color variant
+                  <strong>{this.props.intl.formatMessage({ id: "project_editor.entity_prop.example_color" })}</strong> {this.props.intl.formatMessage({ id: "project_editor.entity_prop.example_color_desc" })}
                 </li>
                 <li>
-                  <strong>growth_stage</strong> (number) — Track baby vs. adult state
+                  <strong>{this.props.intl.formatMessage({ id: "project_editor.entity_prop.example_growth" })}</strong> {this.props.intl.formatMessage({ id: "project_editor.entity_prop.example_growth_desc" })}
                 </li>
               </ul>
             </div>
             <div style={{ opacity: 0.6, fontSize: "9pt" }}>
-              Click <strong>Add Property</strong> above to create your first one.
+              Click <strong>{this.props.intl.formatMessage({ id: "project_editor.entity_prop.add_property" })}</strong> above to create your first one.
             </div>
           </div>
         );
@@ -404,7 +405,7 @@ export default class EntityTypePropertyEditor extends Component<
                 maxHeight: areaHeight,
               }}
             >
-              <List aria-label="List of properties">
+              <List aria-label={this.props.intl.formatMessage({ id: "project_editor.entity_prop.aria_list" })}>
                 {propList.map((item) => (
                   <ListItemButton
                     key={item.id}
@@ -425,12 +426,12 @@ export default class EntityTypePropertyEditor extends Component<
             }}
           >
             <div className="etpe-componentToolBarArea">
-              <Stack direction="row" spacing={1} aria-label="Property editing toolbar">
+              <Stack direction="row" spacing={1} aria-label={this.props.intl.formatMessage({ id: "project_editor.entity_prop.aria_toolbar" })}>
                 {showDeleteButton && this.state.activeProperty && (
                   <Button
                     key={"delete." + this.state.activeProperty}
                     onClick={() => this._deleteThisPropertyClick(this.state.activeProperty!)}
-                    title="Delete this property"
+                    title={this.props.intl.formatMessage({ id: "project_editor.entity_prop.delete_property" })}
                   >
                     <CustomLabel
                       text={"Delete this property"}
@@ -449,3 +450,5 @@ export default class EntityTypePropertyEditor extends Component<
     }
   }
 }
+
+export default withLocalization(EntityTypePropertyEditor);

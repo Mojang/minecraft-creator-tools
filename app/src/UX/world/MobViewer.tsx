@@ -6,8 +6,9 @@ import "./MobViewer.css";
 import ModelViewer from "./ModelViewer";
 import VanillaProjectManager from "../../minecraft/VanillaProjectManager";
 import Log from "../../core/Log";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
-interface IMobViewerProps {
+interface IMobViewerProps extends WithLocalizationProps {
   heightOffset: number;
   mobId?: string;
 }
@@ -24,7 +25,7 @@ interface IMobViewerState {
  * Uses ModelViewer with entityTypeId to leverage VanillaProjectManager for loading.
  * Access via URL: /?mode=mobviewer or /?mode=mobviewer&mob=pig
  */
-export default class MobViewer extends Component<IMobViewerProps, IMobViewerState> {
+class MobViewer extends Component<IMobViewerProps, IMobViewerState> {
   private _entityIds: string[] = [];
 
   constructor(props: IMobViewerProps) {
@@ -98,6 +99,21 @@ export default class MobViewer extends Component<IMobViewerProps, IMobViewerStat
         if (index >= 0) {
           initialIndex = index;
         }
+      } else {
+        // No specific mob requested — pick a known-renderable default rather than
+        // the alphabetical first entry. Vanilla's alphabetical first entity is
+        // `agent` (Education Edition), which lacks a vanilla resource-pack model
+        // and would otherwise crash the viewer on first paint with
+        // "Couldn't load model for minecraft:agent". `pig` is a familiar,
+        // always-renderable fallback that gives users an immediate working preview.
+        const preferredDefaults = ["pig", "cow", "sheep", "chicken", "zombie"];
+        for (const preferred of preferredDefaults) {
+          const idx = this._entityIds.findIndex((id) => id === preferred);
+          if (idx >= 0) {
+            initialIndex = idx;
+            break;
+          }
+        }
       }
 
       const currentId = this._entityIds[initialIndex] || "";
@@ -158,12 +174,24 @@ export default class MobViewer extends Component<IMobViewerProps, IMobViewerStat
     });
   }
 
+  private _getMobDisplayName(id: string): string {
+    if (!id) {
+      return "";
+    }
+    // Humanize "wither_skeleton" → "Wither Skeleton"
+    return id
+      .split("_")
+      .filter(Boolean)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ");
+  }
+
   render() {
     const { heightOffset } = this.props;
     const { isLoaded, currentMobIndex, currentEntityTypeId, errorMessage } = this.state;
     const isHeadless = this._isHeadlessMode();
 
-    // Headless mode: only render ModelViewer for CLI/batch rendering
+    // Run without display mode: only render ModelViewer for CLI/batch rendering
     if (isHeadless) {
       return (
         <div className="mv-container mv-headless" style={{ height: "100vh", width: "100vw" }}>
@@ -176,7 +204,7 @@ export default class MobViewer extends Component<IMobViewerProps, IMobViewerStat
       <div className="mv-container" style={{ height: `calc(100vh - ${heightOffset}px)` }}>
         <div className="mv-toolbar">
           <button className="mv-button" onClick={this._handlePrevMob} disabled={currentMobIndex <= 0}>
-            ← Prev
+            {this.props.intl.formatMessage({ id: "viewer.prev" })}
           </button>
 
           <select
@@ -198,18 +226,18 @@ export default class MobViewer extends Component<IMobViewerProps, IMobViewerStat
             onClick={this._handleNextMob}
             disabled={currentMobIndex >= this._entityIds.length - 1}
           >
-            Next →
+            {this.props.intl.formatMessage({ id: "viewer.next" })}
           </button>
 
           <span className="mv-info">
-            Mob {currentMobIndex + 1} of {this._entityIds.length}
+            {this.props.intl.formatMessage({ id: "viewer.mob.info" }, { current: currentMobIndex + 1, total: this._entityIds.length })}
           </span>
         </div>
 
         <div className="mv-mob-info">
-          <h2>{this._entityIds[currentMobIndex] || "Loading..."}</h2>
+          <h2>{this._getMobDisplayName(this._entityIds[currentMobIndex]) || "Loading..."}</h2>
           <div className="mv-mob-details">
-            <span>Type ID: {currentEntityTypeId}</span>
+            <span>{this.props.intl.formatMessage({ id: "viewer.mob.type_id" }, { id: currentEntityTypeId })}</span>
           </div>
         </div>
 
@@ -220,9 +248,11 @@ export default class MobViewer extends Component<IMobViewerProps, IMobViewerStat
         )}
 
         <div className="mv-footer">
-          <p>Use mouse to rotate, scroll to zoom</p>
+          <p>{this.props.intl.formatMessage({ id: "viewer.rotate_hint" })}</p>
         </div>
       </div>
     );
   }
 }
+
+export default withLocalization(MobViewer);

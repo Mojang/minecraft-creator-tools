@@ -1,4 +1,5 @@
 import { Component } from "react";
+import Log from "../../core/Log";
 import IFile from "../../storage/IFile";
 import "./AudioManager.css";
 import React from "react";
@@ -25,6 +26,7 @@ import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../app/CreatorTools
 import Project from "../../app/Project";
 import AudioItemProperties from "./AudioItemProperties";
 import IProjectTheme from "../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
 export enum AudioManagerMode {
   view = 0,
@@ -32,7 +34,7 @@ export enum AudioManagerMode {
   record = 2,
 }
 
-interface IAudioManagerProps {
+interface IAudioManagerProps extends WithLocalizationProps {
   file?: IFile;
   theme: IProjectTheme;
   initialContent?: Uint8Array;
@@ -58,7 +60,7 @@ interface IViewState {
   endTime?: number;
 }
 
-export default class AudioManager extends Component<IAudioManagerProps, IAudioManagerState> {
+class AudioManager extends Component<IAudioManagerProps, IAudioManagerState> {
   private rootElt: React.RefObject<HTMLDivElement>;
   private statusElt: React.RefObject<HTMLDivElement>;
   private viewAudioElement: HTMLDivElement | null = null;
@@ -182,11 +184,16 @@ export default class AudioManager extends Component<IAudioManagerProps, IAudioMa
 
         const me = this;
         if (navigator.mediaDevices) {
-          navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-            playlist.initRecorder(stream);
-            me.canRecord = true;
-            playlist.record();
-          });
+          navigator.mediaDevices
+            .getUserMedia({ audio: true })
+            .then((stream) => {
+              playlist.initRecorder(stream);
+              me.canRecord = true;
+              playlist.record();
+            })
+            .catch((err) => {
+              Log.error(`Mic permission denied or unavailable: ${err}`);
+            });
         } else if (getUserMedia && "MediaRecorder" in window) {
           getUserMedia({ audio: true }, (stream: any) => {
             playlist.initRecorder(stream);
@@ -600,12 +607,15 @@ export default class AudioManager extends Component<IAudioManagerProps, IAudioMa
     let str = "";
 
     if (viewState.startTime !== undefined && viewState.endTime !== undefined) {
-      str += "Selected: ";
+      str += this.props.intl.formatMessage({ id: "project_editor.audio.selected" });
 
       if (viewState.startTime === viewState.endTime) {
         str += viewState.startTime.toFixed(3);
       } else {
-        str += viewState.startTime.toFixed(3) + " to " + viewState.endTime.toFixed(3);
+        str += this.props.intl.formatMessage(
+          { id: "project_editor.audio.selected_range" },
+          { start: viewState.startTime.toFixed(3), end: viewState.endTime.toFixed(3) }
+        );
       }
     }
 
@@ -701,11 +711,21 @@ export default class AudioManager extends Component<IAudioManagerProps, IAudioMa
     if (this.state.mode === AudioManagerMode.record) {
       recordModeButtons = (
         <>
-          <IconButton onClick={this._toggleEdit} title="Toggles Edit mode" aria-label="Toggle edit mode" size="small">
+          <IconButton
+            onClick={this._toggleEdit}
+            title={this.props.intl.formatMessage({ id: "project_editor.audio.toggle_edit" })}
+            aria-label={this.props.intl.formatMessage({ id: "project_editor.audio.toggle_edit" })}
+            size="small"
+          >
             <FontAwesomeIcon icon={faEdit} className="fa-lg" />
           </IconButton>
           <Divider orientation="vertical" flexItem />
-          <IconButton onClick={this.stopRecording} title="Stops playback" aria-label="Stop playback" size="small">
+          <IconButton
+            onClick={this.stopRecording}
+            title={this.props.intl.formatMessage({ id: "project_editor.audio.stop_title" })}
+            aria-label={this.props.intl.formatMessage({ id: "project_editor.audio.stop_playback" })}
+            size="small"
+          >
             <FontAwesomeIcon icon={faStop} className="fa-lg" />
           </IconButton>
         </>
@@ -713,26 +733,61 @@ export default class AudioManager extends Component<IAudioManagerProps, IAudioMa
     } else {
       mainModeButtons = (
         <>
-          <IconButton onClick={this.pause} title="Pauses playback of the recording" aria-label="Pause playback" size="small">
+          <IconButton
+            onClick={this.pause}
+            title={this.props.intl.formatMessage({ id: "project_editor.audio.pause_title" })}
+            aria-label={this.props.intl.formatMessage({ id: "project_editor.audio.pause" })}
+            size="small"
+          >
             <FontAwesomeIcon icon={faPause} className="fa-lg" />
           </IconButton>
-          <IconButton onClick={this.play} title="Plays the selected track" aria-label="Play" size="small">
+          <IconButton
+            onClick={this.play}
+            title={this.props.intl.formatMessage({ id: "project_editor.audio.play_title" })}
+            aria-label={this.props.intl.formatMessage({ id: "project_editor.audio.play" })}
+            size="small"
+          >
             <FontAwesomeIcon icon={faPlay} className="fa-lg" />
           </IconButton>
-          <IconButton onClick={this.stop} title="Stops playback" aria-label="Stop" size="small">
+          <IconButton
+            onClick={this.stop}
+            title={this.props.intl.formatMessage({ id: "project_editor.audio.stop_title" })}
+            aria-label={this.props.intl.formatMessage({ id: "project_editor.audio.stop" })}
+            size="small"
+          >
             <FontAwesomeIcon icon={faStop} className="fa-lg" />
           </IconButton>
-          <IconButton onClick={this.rewind} title="Rewinds the current playback" aria-label="Rewind" size="small">
+          <IconButton
+            onClick={this.rewind}
+            title={this.props.intl.formatMessage({ id: "project_editor.audio.rewind_title" })}
+            aria-label={this.props.intl.formatMessage({ id: "project_editor.audio.rewind" })}
+            size="small"
+          >
             <FontAwesomeIcon icon={faBackward} className="fa-lg" />
           </IconButton>
-          <IconButton onClick={this.rewind} title="Forwards the current playback" aria-label="Forward" size="small">
+          <IconButton
+            onClick={this.rewind}
+            title={this.props.intl.formatMessage({ id: "project_editor.audio.forward_title" })}
+            aria-label={this.props.intl.formatMessage({ id: "project_editor.audio.forward" })}
+            size="small"
+          >
             <FontAwesomeIcon icon={faForward} className="fa-lg" />
           </IconButton>
           <Divider orientation="vertical" flexItem />
-          <IconButton onClick={this.zoomOut} title="Zooms out" aria-label="Zoom out" size="small">
+          <IconButton
+            onClick={this.zoomOut}
+            title={this.props.intl.formatMessage({ id: "project_editor.audio.zoom_out_title" })}
+            aria-label={this.props.intl.formatMessage({ id: "project_editor.audio.zoom_out" })}
+            size="small"
+          >
             <FontAwesomeIcon icon={faMagnifyingGlassMinus} className="fa-lg" />
           </IconButton>
-          <IconButton onClick={this.zoomIn} title="Zooms in on the current wave" aria-label="Zoom in" size="small">
+          <IconButton
+            onClick={this.zoomIn}
+            title={this.props.intl.formatMessage({ id: "project_editor.audio.zoom_in_title" })}
+            aria-label={this.props.intl.formatMessage({ id: "project_editor.audio.zoom_in" })}
+            size="small"
+          >
             <FontAwesomeIcon icon={faMagnifyingGlassPlus} className="fa-lg" />
           </IconButton>
         </>
@@ -743,14 +798,29 @@ export default class AudioManager extends Component<IAudioManagerProps, IAudioMa
       editModeButtons = (
         <>
           <Divider orientation="vertical" flexItem />
-          <IconButton onClick={this.setCursorStyle} title="Select an item" aria-label="Select item" size="small">
+          <IconButton
+            onClick={this.setCursorStyle}
+            title={this.props.intl.formatMessage({ id: "project_editor.audio.select_item_title" })}
+            aria-label={this.props.intl.formatMessage({ id: "project_editor.audio.select_item" })}
+            size="small"
+          >
             <FontAwesomeIcon icon={faMousePointer} className="fa-lg" />
           </IconButton>
-          <IconButton onClick={this.setSelectionStyle} title="Select an range" aria-label="Select range" size="small">
+          <IconButton
+            onClick={this.setSelectionStyle}
+            title={this.props.intl.formatMessage({ id: "project_editor.audio.select_range_title" })}
+            aria-label={this.props.intl.formatMessage({ id: "project_editor.audio.select_range" })}
+            size="small"
+          >
             <FontAwesomeIcon icon={faICursor} className="fa-lg" />
           </IconButton>
           <Divider orientation="vertical" flexItem />
-          <IconButton onClick={this.recordAdd} title="Records a new track" aria-label="Record new track" size="small">
+          <IconButton
+            onClick={this.recordAdd}
+            title={this.props.intl.formatMessage({ id: "project_editor.audio.record_title" })}
+            aria-label={this.props.intl.formatMessage({ id: "project_editor.audio.record" })}
+            size="small"
+          >
             <FontAwesomeIcon icon={faCircle} className="fa-lg aum-recordbutton" />
           </IconButton>
         </>
@@ -762,7 +832,9 @@ export default class AudioManager extends Component<IAudioManagerProps, IAudioMa
     if (this.state.mode !== AudioManagerMode.record) {
       audioItemProps = (
         <div>
-          <div className="aum-propTitle">Audio properties</div>
+          <div className="aum-propTitle">
+            {this.props.intl.formatMessage({ id: "project_editor.audio.properties_title" })}
+          </div>
           <AudioItemProperties
             setActivePersistable={this._handleNewChildPersistable}
             readOnly={this.props.readOnly || this.state.mode === AudioManagerMode.view}
@@ -778,7 +850,12 @@ export default class AudioManager extends Component<IAudioManagerProps, IAudioMa
     return (
       <div className="aum-outer">
         <div className="jse-toolBarArea">
-          <Stack direction="row" spacing={0.5} alignItems="center" aria-label="Audio editor">
+          <Stack
+            direction="row"
+            spacing={0.5}
+            alignItems="center"
+            aria-label={this.props.intl.formatMessage({ id: "project_editor.audio.toolbar_aria" })}
+          >
             {recordModeButtons}
             {mainModeButtons}
             {editModeButtons}
@@ -811,3 +888,5 @@ export default class AudioManager extends Component<IAudioManagerProps, IAudioMa
     );
   }
 }
+
+export default withLocalization(AudioManager);

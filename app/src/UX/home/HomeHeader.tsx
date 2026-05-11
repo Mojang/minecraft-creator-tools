@@ -1,8 +1,9 @@
 import "./HomeHeader.css";
 import { constants } from "../../core/Constants";
 import CreatorToolsHost from "../../app/CreatorToolsHost";
-import TextButton from "../shared/components/inputs/textButton/TextButton";
-import { Box } from "@mui/material";
+import { Box, IconButton, Tooltip } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
 import { mcColors } from "../hooks/theme/mcColors";
 import { useIntl } from "react-intl";
 
@@ -46,8 +47,23 @@ export default function HomeHeader({ isApp, toggleThemeMode, mode }: IHomeHeader
           src={CreatorToolsHost.contentWebRoot + "res/images/mctoolsbanner.png"}
           alt={intl.formatMessage({ id: "home.header.logo_alt" })}
           className="hhdr-image"
+          style={{
+            // The banner PNG is white pixel-art letters with thin black outlines on a
+            // transparent background — designed for dark wool. On the light wool
+            // backdrop this produces a low-contrast title (white-on-light-grey, well
+            // below 4.5:1). Inverting in light mode flips the white fill to black
+            // and the black outline to white, restoring 4.5:1+ contrast against the
+            // light texture without requiring a separate light-mode asset.
+            filter: isDark ? "none" : "invert(1)",
+          }}
           onError={(e) => {
+            // currentTarget can be null if the <img> was unmounted before the
+            // browser dispatched the error event (e.g. user navigated away
+            // while the banner was still loading).
             const target = e.currentTarget;
+            if (!target) {
+              return;
+            }
             target.style.display = "none";
             if (target.parentElement) {
               target.parentElement.textContent = "Minecraft Creator Tools";
@@ -72,7 +88,7 @@ export default function HomeHeader({ isApp, toggleThemeMode, mode }: IHomeHeader
             color: textColor,
           }}
         >
-          {intl.formatMessage({ id: "home.header.docs" })}
+          {intl.formatMessage({ id: "common.docs" })}
         </a>
         &#160;&#160;/&#160;&#160;
         <a
@@ -95,23 +111,48 @@ export default function HomeHeader({ isApp, toggleThemeMode, mode }: IHomeHeader
             color: textColor,
           }}
         >
-          {intl.formatMessage({ id: "home.header.github" })}
+          {intl.formatMessage({ id: "common.github" })}
         </a>
         {showModeButton && (
           <>
             <span key="lightsp">&nbsp;&nbsp;/&nbsp;&nbsp;</span>
-            <TextButton
-              sx={{ textDecoration: "underline" }}
-              key="lightLink"
-              style={{
-                color: textColor,
-              }}
-              onClick={toggleThemeMode}
+            <Tooltip
+              title={
+                isDark
+                  ? intl.formatMessage({ id: "home.header.light_mode" })
+                  : intl.formatMessage({ id: "home.header.dark_mode" })
+              }
             >
-              {isDark
-                ? intl.formatMessage({ id: "home.header.light_mode" })
-                : intl.formatMessage({ id: "home.header.dark_mode" })}
-            </TextButton>
+              <IconButton
+                key="themeToggle"
+                onClick={toggleThemeMode}
+                aria-label={
+                  isDark
+                    ? intl.formatMessage({ id: "home.header.light_mode" })
+                    : intl.formatMessage({ id: "home.header.dark_mode" })
+                }
+                aria-pressed={isDark}
+                size="small"
+                sx={{
+                  color: textColor,
+                  border: `1px solid ${isDark ? mcColors.gray3 : mcColors.gray4}`,
+                  borderRadius: 1,
+                  width: 32,
+                  height: 32,
+                  ml: 0.5,
+                  verticalAlign: "middle",
+                  "&:hover": {
+                    backgroundColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)",
+                  },
+                  "&:focus-visible": {
+                    outline: `2px solid ${mcColors.green4}`,
+                    outlineOffset: 2,
+                  },
+                }}
+              >
+                <FontAwesomeIcon icon={isDark ? faSun : faMoon} style={{ fontSize: "14px" }} />
+              </IconButton>
+            </Tooltip>
           </>
         )}
       </div>
@@ -121,14 +162,22 @@ export default function HomeHeader({ isApp, toggleThemeMode, mode }: IHomeHeader
           target="_blank"
           rel="noreferrer noopener"
         >
-          {intl.formatMessage({ id: "home.header.docs" })}
+          {intl.formatMessage({ id: "common.docs" })}
         </a>
         {showModeButton && (
-          <button onClick={toggleThemeMode}>
-            {isDark
-              ? intl.formatMessage({ id: "home.header.light_mode" })
-              : intl.formatMessage({ id: "home.header.dark_mode" })}
-          </button>
+          <IconButton
+            onClick={toggleThemeMode}
+            aria-label={
+              isDark
+                ? intl.formatMessage({ id: "home.header.light_mode" })
+                : intl.formatMessage({ id: "home.header.dark_mode" })
+            }
+            aria-pressed={isDark}
+            size="small"
+            sx={{ color: textColor, minWidth: 44, minHeight: 44 }}
+          >
+            <FontAwesomeIcon icon={isDark ? faSun : faMoon} />
+          </IconButton>
         )}
       </div>
     </Box>

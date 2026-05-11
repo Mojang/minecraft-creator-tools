@@ -549,9 +549,16 @@ describe("ActionSetUtilities", function () {
     for (const file of eventVerbForms) {
       it(`${file} should be assigned event_style (entity verb)`, () => {
         const form = loadForm(file);
-        // These forms' ids should match the eventVerbIds list in getBlockFromForm
+        // Runtime (ActionSetEditor.getBlockFromForm) keys event_style off the
+        // canonical action id derived from the form's filename — not form.id —
+        // because some upstream form files ship a non-canonical id (e.g.
+        // set_entity_property.form.json has id "Set Entity Property"). Verify
+        // the filename basename matches the eventVerbIds list in
+        // ActionSetEditor.getBlockFromForm; also assert the form loaded.
         const eventVerbIds = ["add_component_group", "remove_component_group", "set_property", "set_entity_property"];
-        expect(eventVerbIds).to.include(form.id);
+        const baseName = file.replace(/\.form\.json$/, "");
+        expect(eventVerbIds).to.include(baseName);
+        expect(form).to.have.property("id");
       });
     }
   });

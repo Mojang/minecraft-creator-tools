@@ -236,7 +236,12 @@ export default function CommandBar({ onSearchQueryChange, onSetProject, onProjec
       context.scope = "ui";
 
       const completions = await ToolCommandRegistry.instance.getCompletions(text, text.length, context);
-      const limited = completions.slice(0, 15);
+      // Cap the suggestion list. The cap exists so the popup doesn't grow unbounded
+      // when a command's argument completer returns thousands of items (e.g. block
+      // type IDs). 30 comfortably covers the entire built-in slash-command set
+      // (currently 17) with room for additions; argument completers that legitimately
+      // need more should paginate / fuzzy-rank inside their own getCompletions.
+      const limited = completions.slice(0, 30);
 
       const prefix = getCompletionPrefix(text);
       const descriptions = buildCommandDescriptions(limited, text);
@@ -289,8 +294,9 @@ export default function CommandBar({ onSearchQueryChange, onSetProject, onProjec
             creatorTools.notifyStatusUpdate("Error: " + (result.error?.message || "Command failed"));
           }
         } else {
-          lines.push("Unknown command: " + commandText);
-          creatorTools.notifyStatusUpdate("Unknown command: " + commandText);
+          const helpHint = " Type /help for available commands.";
+          lines.push("Unknown command: " + commandText + "." + helpHint);
+          creatorTools.notifyStatusUpdate("Unknown command: " + commandText + "." + helpHint);
         }
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : String(err);

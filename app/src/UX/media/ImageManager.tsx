@@ -14,8 +14,9 @@ import ProjectItem from "../../app/ProjectItem";
 import ImageCodec from "../../core/ImageCodec";
 import Log from "../../core/Log";
 import IProjectTheme from "../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
-interface IImageManagerProps {
+interface IImageManagerProps extends WithLocalizationProps {
   file?: IFile;
   projectItem?: ProjectItem;
   theme: IProjectTheme;
@@ -37,7 +38,7 @@ interface IImageManagerState {
   convertedImageUrl?: string; // For TGA files converted to data URL
 }
 
-export default class ImageManager extends Component<IImageManagerProps, IImageManagerState> {
+class ImageManager extends Component<IImageManagerProps, IImageManagerState> {
   private rootElt: React.RefObject<HTMLDivElement>;
   private imageElement: HTMLDivElement | null = null;
   private _activeEditorPersistable?: IPersistable;
@@ -218,7 +219,7 @@ export default class ImageManager extends Component<IImageManagerProps, IImageMa
     if (!this.props.readOnly && this.props.projectItem) {
       editToggle = (
         <div className="ifm-float">
-          <IconButton onClick={this._toggleEdit} size="small" title="Edit image" aria-label="Edit image">
+          <IconButton onClick={this._toggleEdit} size="small" title={this.props.intl.formatMessage({ id: "project_editor.image_mgr.edit_image" })} aria-label={this.props.intl.formatMessage({ id: "project_editor.image_mgr.edit_image" })}>
             <FontAwesomeIcon icon={faEdit} className="fa-lg" />
           </IconButton>
         </div>
@@ -245,7 +246,7 @@ export default class ImageManager extends Component<IImageManagerProps, IImageMa
           />
         );
       } else {
-        interior = <div>(Image does not have content.)</div>;
+        interior = <div>({this.props.intl.formatMessage({ id: "project_editor.image_mgr.no_content" })})</div>;
       }
     }
 
@@ -257,3 +258,5 @@ export default class ImageManager extends Component<IImageManagerProps, IImageMa
     );
   }
 }
+
+export default withLocalization(ImageManager);

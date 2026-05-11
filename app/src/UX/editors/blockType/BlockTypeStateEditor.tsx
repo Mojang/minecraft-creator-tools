@@ -23,8 +23,9 @@ import Project from "../../../app/Project";
 import SetNamespacedId from "../../project/naming/SetNamespacedId";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
-interface IBlockTypeStateEditorProps {
+interface IBlockTypeStateEditorProps extends WithLocalizationProps {
   blockTypeItem: BlockTypeDefinition;
   heightOffset: number;
   project: Project;
@@ -46,7 +47,7 @@ export enum BlockTypeStateEditorDialogMode {
   newStateName = 1,
 }
 
-export default class BlockTypeStateEditor extends Component<IBlockTypeStateEditorProps, IBlockTypeStateEditorState> {
+class BlockTypeStateEditor extends Component<IBlockTypeStateEditorProps, IBlockTypeStateEditorState> {
   constructor(props: IBlockTypeStateEditorProps) {
     super(props);
 
@@ -227,6 +228,11 @@ export default class BlockTypeStateEditor extends Component<IBlockTypeStateEdito
   }
 
   _deleteThisStateClick(stateId: string) {
+    // Confirmation before deleting block state
+    if (!window.confirm(`Delete state "${stateId}"?\n\nThis will remove the state definition from this block type.`)) {
+      return;
+    }
+
     if (stateId && stateId !== "trait_placement_direction" && stateId !== "trait_placement_position") {
       this.props.blockTypeItem.removeState(stateId);
     } else if (stateId === "trait_placement_direction") {
@@ -250,7 +256,7 @@ export default class BlockTypeStateEditor extends Component<IBlockTypeStateEdito
     if (this.state.dialogMode === BlockTypeStateEditorDialogMode.newStateName) {
       return (
         <Dialog open={true} onClose={this._handleDialogCancel} key="btse-addComponentOuter">
-          <DialogTitle>Add block state</DialogTitle>
+          <DialogTitle>{this.props.intl.formatMessage({ id: "project_editor.block_state.add_dialog_title" })}</DialogTitle>
           <DialogContent>
             <SetNamespacedId
               onNameChanged={this.setNewName}
@@ -306,17 +312,17 @@ export default class BlockTypeStateEditor extends Component<IBlockTypeStateEdito
       const traits = this.props.blockTypeItem.data?.description?.traits;
       const addMenuItems = [
         {
-          content: "String state",
+          content: this.props.intl.formatMessage({ id: "project_editor.block_state.string_state" }),
           key: "stringState",
           onClick: this._addNewStringState,
         },
         {
-          content: "Number state",
+          content: this.props.intl.formatMessage({ id: "project_editor.block_state.number_state" }),
           key: "numberState",
           onClick: this._addNewNumberState,
         },
         {
-          content: "True/false state",
+          content: this.props.intl.formatMessage({ id: "project_editor.block_state.boolean_state" }),
           key: "booleanState",
           onClick: this._addNewBooleanState,
         },
@@ -329,7 +335,7 @@ export default class BlockTypeStateEditor extends Component<IBlockTypeStateEdito
         const enabledPlacementDirectionStates = traits["minecraft:placement_direction"]?.enabled_states;
 
         if (enabledPlacementDirectionStates) {
-          let placementDirection = "Place Direction";
+          let placementDirection = this.props.intl.formatMessage({ id: "project_editor.block_state.place_direction" });
 
           if (enabledPlacementDirectionStates.length > 0) {
             placementDirection += " (" + enabledPlacementDirectionStates.join(", ") + ")";
@@ -350,7 +356,7 @@ export default class BlockTypeStateEditor extends Component<IBlockTypeStateEdito
         const enabledPlacementPositionStates = traits["minecraft:placement_position"]?.enabled_states;
 
         if (enabledPlacementPositionStates) {
-          let placementPosition = "Place Position";
+          let placementPosition = this.props.intl.formatMessage({ id: "project_editor.block_state.place_position" });
 
           if (enabledPlacementPositionStates.length > 0) {
             placementPosition += " (" + enabledPlacementPositionStates.join(", ") + ")";
@@ -372,11 +378,11 @@ export default class BlockTypeStateEditor extends Component<IBlockTypeStateEdito
       if (stateList.length === 0) {
         message = (
           <div className="btse-select">
-            <div style={{ marginBottom: 8, fontWeight: "bold" }}>No block states defined yet</div>
+            <div style={{ marginBottom: 8, fontWeight: "bold" }}>{this.props.intl.formatMessage({ id: "project_editor.block_state.no_states_title" })}</div>
             <div style={{ marginBottom: 12 }}>
-              Block states let your block have different appearances or behaviors (e.g., a door being open or closed).
+              {this.props.intl.formatMessage({ id: "project_editor.block_state.no_states_desc" })}
             </div>
-            <div>Click the + button above to add your first state.</div>
+            <div>{this.props.intl.formatMessage({ id: "project_editor.block_state.no_states_hint" })}</div>
           </div>
         );
       }
@@ -392,7 +398,7 @@ export default class BlockTypeStateEditor extends Component<IBlockTypeStateEdito
       if (!hasPlacementDirection) {
         addMenuItems.push({
           key: "cardinalFacingDirection",
-          content: "Direction state: cardinal/facing",
+          content: this.props.intl.formatMessage({ id: "project_editor.block_state.direction_state" }),
           onClick: this._ensureBlockPlacementDirectionTrait,
         });
       }
@@ -400,7 +406,7 @@ export default class BlockTypeStateEditor extends Component<IBlockTypeStateEdito
       if (!hasPlacementPosition) {
         addMenuItems.push({
           key: "placementPosition",
-          content: "Position state: block face/vertical half",
+          content: this.props.intl.formatMessage({ id: "project_editor.block_state.position_state" }),
           onClick: this._ensureBlockPlacementPositionTrait,
         });
       }
@@ -496,12 +502,12 @@ export default class BlockTypeStateEditor extends Component<IBlockTypeStateEdito
             }}
           >
             <div className="btse-componentToolBarArea">
-              <Stack direction="row" spacing={1} aria-label="Block type state editing">
+              <Stack direction="row" spacing={1} aria-label={this.props.intl.formatMessage({ id: "project_editor.block_state.aria_editing" })}>
                 {showDeleteButton && this.state.activeState && (
                   <Button
                     key={"delete." + this.state.activeState}
                     onClick={() => this._deleteThisStateClick(this.state.activeState!)}
-                    title="Delete this state"
+                    title={this.props.intl.formatMessage({ id: "project_editor.block_state.delete_state" })}
                   >
                     <CustomLabel
                       text={"Delete this state"}
@@ -520,3 +526,5 @@ export default class BlockTypeStateEditor extends Component<IBlockTypeStateEdito
     }
   }
 }
+
+export default withLocalization(BlockTypeStateEditor);

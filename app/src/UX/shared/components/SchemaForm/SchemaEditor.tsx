@@ -58,9 +58,29 @@ const SchemaEditor = forwardRef<SchemaEditorHandle, SchemaEditorProps>(
 
     if (schemaError || uiSchemaError) {
       return (
-        <Box>
-          {schemaError ? <Box>Json schema error: {JSON.stringify(schemaError)}</Box> : null}
-          {uiSchemaError ? <Box>Json ui schema error: {JSON.stringify(uiSchemaError)}</Box> : null}
+        <Box sx={{ padding: 2 }}>
+          {schemaError ? (
+            <Box sx={{ marginBottom: 2, padding: 2, backgroundColor: '#fff3cd', borderRadius: 1 }}>
+              <Box sx={{ fontWeight: 'bold', marginBottom: 1 }}>Schema unavailable — editing raw JSON</Box>
+              <details style={{ fontSize: '0.875rem', color: '#666' }}>
+                <summary style={{ cursor: 'pointer' }}>Details (for reporting)</summary>
+                <pre style={{ marginTop: '8px', fontSize: '0.75rem', overflow: 'auto' }}>
+                  {typeof schemaError === 'string' ? schemaError : JSON.stringify(schemaError, null, 2)}
+                </pre>
+              </details>
+            </Box>
+          ) : null}
+          {uiSchemaError ? (
+            <Box sx={{ padding: 2, backgroundColor: '#fff3cd', borderRadius: 1 }}>
+              <Box sx={{ fontWeight: 'bold', marginBottom: 1 }}>UI schema unavailable</Box>
+              <details style={{ fontSize: '0.875rem', color: '#666' }}>
+                <summary style={{ cursor: 'pointer' }}>Details (for reporting)</summary>
+                <pre style={{ marginTop: '8px', fontSize: '0.75rem', overflow: 'auto' }}>
+                  {typeof uiSchemaError === 'string' ? uiSchemaError : JSON.stringify(uiSchemaError, null, 2)}
+                </pre>
+              </details>
+            </Box>
+          ) : null}
         </Box>
       );
     }

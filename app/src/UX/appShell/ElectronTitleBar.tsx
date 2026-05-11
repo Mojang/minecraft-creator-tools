@@ -180,9 +180,9 @@ export default class ElectronTitleBar extends Component<IElectronTitleBarProps, 
     this.loadWindowState();
   }
 
-  _handleCloseClick() {
+  _handleCloseClick = () => {
     AppServiceProxy.sendAsync(AppServiceProxyCommands.windowClose, "");
-  }
+  };
 
   _handleDragStart(e: DragEvent<HTMLDivElement>) {
     AppServiceProxy.sendAsync(AppServiceProxyCommands.windowUpdate, "");

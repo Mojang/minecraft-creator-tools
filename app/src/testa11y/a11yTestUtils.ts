@@ -301,12 +301,24 @@ export async function findClippedTextElements(page: Page): Promise<{ selector: s
       if (style.overflow === "hidden" || style.overflowY === "hidden") {
         const diff = el.scrollHeight - el.clientHeight;
         if (diff > 2) {
+          // Skip elements that are *intentionally* hidden / off-screen and
+          // therefore "clip" by design rather than by accident.
+          //
+          // - `.app-skipLink` is anchored off-screen until focused (WCAG
+          //   2.4.1 Bypass Blocks pattern). It always reports as clipped.
+          // - `MuiCollapse-hidden` is the collapsed state of MUI's expand/
+          //   collapse component — clipping the contained content is the
+          //   entire point of the component when in its closed state.
+          const cls = el.className && typeof el.className === "string" ? el.className : "";
+          if (cls.includes("app-skipLink")) continue;
+          if (cls.includes("MuiCollapse-hidden")) continue;
+
           // Build a simple selector for reporting
           const tag = el.tagName.toLowerCase();
           const id = el.id ? `#${el.id}` : "";
-          const cls = el.className && typeof el.className === "string" ? `.${el.className.split(" ").join(".")}` : "";
+          const clsSel = cls && typeof cls === "string" ? `.${cls.split(" ").join(".")}` : "";
           results.push({
-            selector: `${tag}${id}${cls}`.substring(0, 120),
+            selector: `${tag}${id}${clsSel}`.substring(0, 120),
             clippedBy: diff,
           });
         }

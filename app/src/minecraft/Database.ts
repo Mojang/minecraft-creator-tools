@@ -20,6 +20,7 @@ import Utilities from "../core/Utilities";
 import NpmModule from "../devproject/NpmModule";
 import IMainInfoVersions from "./IMainInfoVersions";
 import IFormDefinition from "../dataform/IFormDefinition";
+import FieldUtilities from "../dataform/FieldUtilities";
 import ContentIndex, { AnnotationCategory } from "../core/ContentIndex";
 import IProjectInfoData from "../info/IProjectInfoData";
 import Project, { FolderContext } from "../app/Project";
@@ -253,57 +254,81 @@ export default class Database {
     return false;
   }
 
+  /**
+   * Forms are loaded from a single canonical location: `data/forms/`.
+   *
+   * Generation: the `gulp copybedrockschemas` task lays down
+   * `@minecraft/bedrock-schemas`'s upstream forms first, then OVERLAYS our
+   * checked-in overrides from `app/public_supplemental/data/local_forms/`
+   * directly on top of them (same-named files replace upstream copies).
+   *
+   * The result is a single merged tree at `public/data/forms/` (or
+   * `toolbuild/vsc/data/forms/` for the VSC extension), so this loader does
+   * not need a runtime fallback chain — there is only one place to look.
+   *
+   * To extend or replace an upstream form, drop a same-pathed file under
+   * `app/public_supplemental/data/local_forms/<sub>/<name>.form.json` and
+   * rebuild. To unsticky an override (e.g. because upstream caught up), just
+   * delete that file and rebuild.
+   */
+  private static readonly DEFAULT_FORMS_PATH = "data/forms/";
+
   static ensureFormLoadedSync(subFolder: string, name: string): IFormDefinition | undefined {
     name = name.toLowerCase();
 
     const extendedName = Database.getFormName(subFolder, name);
-    const expectedPath = (subFolder ? subFolder + "/" : "") + name;
 
     if (Database.uxCatalog[extendedName] !== undefined) {
       return Database.uxCatalog[extendedName];
     }
 
-    let path = "data/forms/";
+    return Database._tryLoadFormSync(Database.DEFAULT_FORMS_PATH, subFolder, name);
+  }
 
+  private static _tryLoadFormSync(basePath: string, subFolder: string, name: string): IFormDefinition | undefined {
+    let path = basePath;
     if (subFolder) {
       path += subFolder + "/";
     }
 
-    if (Database.local) {
-      const storage = Database.local.createStorage(path);
+    if (!Database.local) {
+      return undefined;
+    }
 
-      if (storage) {
-        if (!storage.rootFolder.isLoaded) {
-          if ((storage.rootFolder as any).loadSync) {
-            (storage.rootFolder as any).loadSync();
-          }
-        }
+    const storage = Database.local.createStorage(path);
 
-        const file = storage.rootFolder.files[name + ".form.json"];
-        if (file) {
-          if (!file.isContentLoaded) {
-            if ((file as any).loadContentSync) {
-              (file as any).loadContentSync();
-            }
-          }
+    if (!storage) {
+      return undefined;
+    }
 
-          return StorageUtilities.getJsonObject(file) as IFormDefinition;
-        }
-
-        // Form file not found - this is expected for generators without associated forms
-        // Don't log as failure since forms are optional
-        return undefined;
+    if (!storage.rootFolder.isLoaded) {
+      if ((storage.rootFolder as any).loadSync) {
+        (storage.rootFolder as any).loadSync();
       }
     }
 
-    return undefined;
+    const file = storage.rootFolder.files[name + ".form.json"];
+    if (!file) {
+      return undefined;
+    }
+
+    if (!file.isContentLoaded) {
+      if ((file as any).loadContentSync) {
+        (file as any).loadContentSync();
+      }
+    }
+
+    const res = StorageUtilities.getJsonObject(file) as IFormDefinition;
+    if (res) {
+      FieldUtilities.normalizeFormFieldDataTypes(res);
+    }
+    return res;
   }
 
   static async ensureFormLoaded(subFolder: string, name: string): Promise<IFormDefinition | undefined> {
     name = name.toLowerCase();
 
     const extendedName = Database.getFormName(subFolder, name);
-    const expectedPath = (subFolder ? subFolder + "/" : "") + name;
 
     if (Database.uxCatalog[extendedName] !== undefined) {
       return Database.uxCatalog[extendedName];
@@ -314,8 +339,24 @@ export default class Database {
       return undefined;
     }
 
-    let path = "data/forms/";
+    const res = await Database._tryLoadForm(Database.DEFAULT_FORMS_PATH, subFolder, name);
 
+    if (res) {
+      Database.uxCatalog[extendedName] = res;
+      Database.loadedFormCount++;
+      return res;
+    }
+
+    Database._missingForms.add(extendedName);
+    return undefined;
+  }
+
+  private static async _tryLoadForm(
+    basePath: string,
+    subFolder: string,
+    name: string
+  ): Promise<IFormDefinition | undefined> {
+    let path = basePath;
     if (subFolder) {
       path += subFolder + "/";
     }
@@ -323,48 +364,46 @@ export default class Database {
     if (Database.local) {
       const storage = Database.local.createStorage(path);
 
-      if (storage) {
-        if (!storage.rootFolder.isLoaded) {
-          await storage.rootFolder.load();
-        }
-
-        const file = storage.rootFolder.files[name + ".form.json"];
-
-        if (file) {
-          if (!file.isContentLoaded) {
-            await file.loadContent();
-          }
-
-          let res = StorageUtilities.getJsonObject(file) as IFormDefinition;
-          Database.uxCatalog[extendedName] = res;
-          Database.loadedFormCount++;
-
-          return res;
-        }
-
-        // Form file not found - this is expected for generators without associated forms
-        // Cache the miss to avoid re-fetching
-        Database._missingForms.add(extendedName);
+      if (!storage) {
         return undefined;
       }
-    } else {
-      path = CreatorToolsHost.contentWebRoot + path + name + ".form.json";
 
-      try {
-        const response = await axios.get(path);
-
-        Database.uxCatalog[extendedName] = response.data;
-        Database.loadedFormCount++;
-
-        return response.data as IFormDefinition;
-      } catch {
-        // Form file not found via HTTP - this is expected for generators without associated forms
-        // Cache the miss to avoid repeated 404 requests
-        Database._missingForms.add(extendedName);
+      if (!storage.rootFolder.isLoaded) {
+        await storage.rootFolder.load();
       }
+
+      const file = storage.rootFolder.files[name + ".form.json"];
+
+      if (!file) {
+        return undefined;
+      }
+
+      if (!file.isContentLoaded) {
+        await file.loadContent();
+      }
+
+      const res = StorageUtilities.getJsonObject(file) as IFormDefinition;
+      if (res) {
+        FieldUtilities.normalizeFormFieldDataTypes(res);
+      }
+      return res;
     }
 
-    return undefined;
+    // HTTP fallback: fetch directly. We swallow 404s silently because the local
+    // override directory is expected to be sparse (most forms have no override).
+    const httpPath = CreatorToolsHost.contentWebRoot + path + name + ".form.json";
+
+    try {
+      const response = await axios.get(httpPath);
+
+      const res = response.data as IFormDefinition;
+      if (res) {
+        FieldUtilities.normalizeFormFieldDataTypes(res);
+      }
+      return res;
+    } catch {
+      return undefined;
+    }
   }
 
   static isModelTemplateLoaded(name: string): boolean {
@@ -742,6 +781,25 @@ export default class Database {
 
     if (track === MinecraftTrack.eduPreview) {
       return Database.minecraftEduPreviewVersion;
+    }
+
+    // Test pinning hook: if MCT_TEST_PINNED_MC_VERSION (or _PREVIEW_VERSION) is set
+    // in the environment, treat it as the canonical "current Minecraft version" for
+    // this process. This insulates test baselines from upstream version drift —
+    // every validator that pulls "latest" from here (FormatVersionManager,
+    // MinEngineVersionManager, BaseGameVersionManager, etc.) will produce stable,
+    // deterministic output regardless of when the bedrock-samples version.json
+    // changes. Honors `force` so callers that explicitly want a refresh can bypass.
+    if (!force && typeof process !== "undefined" && process.env) {
+      if (track === MinecraftTrack.preview && process.env.MCT_TEST_PINNED_MC_PREVIEW_VERSION) {
+        Database.latestPreviewVersion = process.env.MCT_TEST_PINNED_MC_PREVIEW_VERSION;
+        return Database.latestPreviewVersion;
+      }
+
+      if (track === MinecraftTrack.main && process.env.MCT_TEST_PINNED_MC_VERSION) {
+        Database.latestVersion = process.env.MCT_TEST_PINNED_MC_VERSION;
+        return Database.latestVersion;
+      }
     }
 
     if (track === MinecraftTrack.preview && Database.latestPreviewVersion && !force) {

@@ -6,8 +6,9 @@ import { Autocomplete, TextField, FormControl, Select, MenuItem, SelectChangeEve
 import ProjectItem from "../../app/ProjectItem";
 import Database from "../../minecraft/Database";
 import IProjectTheme from "../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
-interface INewVariantProps extends IAppProps {
+interface INewVariantProps extends IAppProps, WithLocalizationProps {
   project?: Project;
   theme: IProjectTheme;
   projectItem: ProjectItem;
@@ -21,7 +22,7 @@ interface INewVariantState {
   newBasedOn: string | undefined;
 }
 
-export default class NewVariant extends Component<INewVariantProps, INewVariantState> {
+class NewVariant extends Component<INewVariantProps, INewVariantState> {
   constructor(props: INewVariantProps) {
     super(props);
 
@@ -97,7 +98,7 @@ export default class NewVariant extends Component<INewVariantProps, INewVariantS
 
   render() {
     if (this.state === null || !this.state.isLoaded) {
-      return <div>Loading...</div>;
+      return <div>{this.props.intl.formatMessage({ id: "project_editor.new_variant.loading" })}</div>;
     }
 
     const variants = this.props.projectItem.getVariantListMostImportantFirst();
@@ -124,7 +125,7 @@ export default class NewVariant extends Component<INewVariantProps, INewVariantS
     return (
       <div className="newvar-outer">
         <div className="newvar-options">
-          <div className="newvar-variantLabel">New Variant Label</div>
+          <div className="newvar-variantLabel">{this.props.intl.formatMessage({ id: "project_editor.new_variant.label" })}</div>
           <div className="newvar-variantCombo">
             <Autocomplete
               freeSolo
@@ -133,18 +134,18 @@ export default class NewVariant extends Component<INewVariantProps, INewVariantS
               onChange={this._handleLabelTextChange}
               size="small"
               fullWidth
-              renderInput={(params) => <TextField {...params} placeholder="Variant label" variant="outlined" />}
+              renderInput={(params) => <TextField {...params} placeholder={this.props.intl.formatMessage({ id: "project_editor.new_variant.placeholder" })} variant="outlined" />}
             />
           </div>
-          <div className="newvar-basedOnLabel">Based on</div>
+          <div className="newvar-basedOnLabel">{this.props.intl.formatMessage({ id: "project_editor.new_variant.based_on" })}</div>
           <div className="newvar-basedOnDropdown">
             <FormControl fullWidth size="small">
               <Select
                 defaultValue={variantLabels.length > 0 ? variantLabels[0] : ""}
                 onChange={this._handleBasedOnTextChange}
               >
-                {variantLabels.map((label, index) => (
-                  <MenuItem key={index} value={label}>
+                {variantLabels.map((label) => (
+                  <MenuItem key={label} value={label}>
                     {label}
                   </MenuItem>
                 ))}
@@ -156,3 +157,5 @@ export default class NewVariant extends Component<INewVariantProps, INewVariantS
     );
   }
 }
+
+export default withLocalization(NewVariant);

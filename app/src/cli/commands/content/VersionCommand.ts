@@ -36,7 +36,12 @@ export class VersionCommand extends CommandBase {
 
   async execute(context: ICommandContext): Promise<void> {
     if (context.json) {
-      const jsonOutput: Record<string, string> = { version: constants.version, name: constants.name };
+      const jsonOutput: Record<string, unknown> = {
+        schemaVersion: "1.0.0",
+        command: "version",
+        version: constants.version,
+        name: constants.name,
+      };
       if (context.creatorTools?.local) {
         const local = context.creatorTools.local as LocalUtilities;
         jsonOutput.userDataPath = local.userDataPath;

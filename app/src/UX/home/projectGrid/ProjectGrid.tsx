@@ -90,12 +90,6 @@ export default function ProjectGrid({ onAppGalleryAction, onSetProject, onProjec
     setTimeout(() => setGoalDialogMounted(false), 300);
   }, []);
 
-  const handleDismissGettingStarted = useCallback(() => {
-    setShowGettingStarted(false);
-    creatorTools.disableFirstRun = true;
-    creatorTools.save();
-  }, [creatorTools]);
-
   // Find the addonStarter template for goal-based creation
   const addonStarterTemplate = galleryData?.items.find((item) => item.id === "addonStarter");
 
@@ -123,9 +117,7 @@ export default function ProjectGrid({ onAppGalleryAction, onSetProject, onProjec
         })}
       >
         {!isSearchMode && <AddOnOverview />}
-        {showGettingStarted && !isSearchMode && (
-          <GettingStartedBanner onGoalSelected={handleGoalSelected} onDismiss={handleDismissGettingStarted} />
-        )}
+        {showGettingStarted && !isSearchMode && <GettingStartedBanner onGoalSelected={handleGoalSelected} />}
         <Box sx={{ mb: 3 }}>
           <Typography
             variant="caption"
@@ -219,11 +211,50 @@ export default function ProjectGrid({ onAppGalleryAction, onSetProject, onProjec
               </Card>
             </Grid>
           ) : (
-            templates.map((template, i) => (
-              <Grid item key={i} xs={12} sm={6} lg={3}>
-                <TemplateCard template={template} onNewProject={onNewProject} />
-              </Grid>
-            ))
+            (() => {
+              // Group templates into "Starter" vs "More". Prefer the `difficulty`
+              // metadata when set; otherwise fall back to a simple first-4 split.
+              const hasDifficulty = templates.some((t) => !!t.difficulty);
+              const starterTemplates = hasDifficulty
+                ? templates.filter((t) => !t.difficulty || t.difficulty === "beginner")
+                : templates.slice(0, 4);
+              const moreTemplates = hasDifficulty
+                ? templates.filter((t) => t.difficulty && t.difficulty !== "beginner")
+                : templates.slice(4);
+
+              const renderSection = (sectionTemplates: typeof templates, headingKey: string, keyPrefix: string) =>
+                sectionTemplates.length === 0 ? null : (
+                  <>
+                    <Grid item xs={12} key={`${keyPrefix}-heading`}>
+                      <Typography
+                        variant="overline"
+                        component="h3"
+                        sx={(theme) => ({
+                          mt: keyPrefix === "starter" ? 0 : 1,
+                          mb: 0.5,
+                          color: theme.palette.text.secondary,
+                          fontWeight: 700,
+                          letterSpacing: "0.5px",
+                        })}
+                      >
+                        {intl.formatMessage({ id: headingKey })}
+                      </Typography>
+                    </Grid>
+                    {sectionTemplates.map((template, i) => (
+                      <Grid item key={`${keyPrefix}-${i}`} xs={12} sm={6} lg={3}>
+                        <TemplateCard template={template} onNewProject={onNewProject} />
+                      </Grid>
+                    ))}
+                  </>
+                );
+
+              return (
+                <>
+                  {renderSection(starterTemplates, "home.project_grid.section_starter", "starter")}
+                  {renderSection(moreTemplates, "home.project_grid.section_more", "more")}
+                </>
+              );
+            })()
           )}
         </Grid>
         <Box marginTop={2} display="flex" justifyContent="flex-end">
@@ -333,8 +364,8 @@ export default function ProjectGrid({ onAppGalleryAction, onSetProject, onProjec
                   </Card>
                 </Grid>
               ) : (
-                snippets.map((snippet, i) => (
-                  <Grid item key={i} xs={12} sm={6} lg={3}>
+                snippets.map((snippet) => (
+                  <Grid item key={snippet.id} xs={12} sm={6} lg={3}>
                     <SnippetCard snippet={snippet} onOpen={onOpenSnippet} />
                   </Grid>
                 ))

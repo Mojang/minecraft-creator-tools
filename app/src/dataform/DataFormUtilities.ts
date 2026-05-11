@@ -65,6 +65,58 @@ export default class DataFormUtilities {
     return newDataObject;
   }
 
+  /**
+   * Returns true if the component data only contains default or empty values
+   * relative to the form definition — meaning it can be safely removed from
+   * the persisted JSON without losing any user intent.
+   */
+  public static isDefaultOrEmpty(formDefinition: IFormDefinition, data: unknown): boolean {
+    if (data === undefined || data === null) {
+      return true;
+    }
+
+    if (typeof data !== "object") {
+      return false;
+    }
+
+    const record = data as Record<string, unknown>;
+
+    for (const field of formDefinition.fields) {
+      const actual = record[field.id];
+
+      if (actual === undefined || actual === null) {
+        continue;
+      }
+
+      if (field.defaultValue !== undefined) {
+        if (typeof actual === "object" && typeof field.defaultValue === "object") {
+          if (JSON.stringify(actual) !== JSON.stringify(field.defaultValue)) {
+            return false;
+          }
+        } else if (actual !== field.defaultValue) {
+          return false;
+        }
+      } else {
+        if (typeof actual === "object") {
+          if (Array.isArray(actual) ? actual.length > 0 : Object.keys(actual as object).length > 0) {
+            return false;
+          }
+        } else if (actual !== "" && actual !== 0 && actual !== false) {
+          return false;
+        }
+      }
+    }
+
+    const fieldIds = new Set(formDefinition.fields.map((f) => f.id));
+    for (const key of Object.keys(record)) {
+      if (!fieldIds.has(key) && record[key] !== undefined && record[key] !== null) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   public static selectSubForm(form: IFormDefinition, select: string) {
     const selectors = select.split("/");
 

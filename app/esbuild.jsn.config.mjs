@@ -73,8 +73,6 @@ const buildOptions = {
     "playwright",
     "playwright-core",
     "esbuild-wasm",
-    "bufferutil",
-    "utf-8-validate",
     "@resvg/resvg-js",
     "react-devtools-core",
     // Ink TUI framework — only dynamically imported by ServeCommand,

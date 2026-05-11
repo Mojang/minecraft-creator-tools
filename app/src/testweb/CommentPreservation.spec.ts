@@ -26,6 +26,9 @@ import {
   openFileInMonaco,
   takeScreenshot,
   preferBrowserStorageInProjectDialog,
+  fillRequiredProjectDialogFields,
+  clickTemplateCreateButton,
+  getTemplateCard,
 } from "./WebTestUtilities";
 
 /**
@@ -516,7 +519,7 @@ test.describe("Comment Preservation - Entity Type Editor @full", () => {
     await page.waitForTimeout(500);
 
     // Look for Full Add-On template
-    const fullAddOnCard = page.locator('text="Full Add-On"').first();
+    const fullAddOnCard = getTemplateCard(page, "addonFull");
     let hasFullAddOn = false;
 
     if (await fullAddOnCard.isVisible({ timeout: 3000 })) {
@@ -537,28 +540,17 @@ test.describe("Comment Preservation - Entity Type Editor @full", () => {
       return;
     }
 
-    // Find and click the CREATE NEW button for Full Add-On
-    const fullAddOnSection = page.locator('div:has-text("Full Add-On")').filter({
-      has: page.locator('text="A full example add-on project"'),
-    });
+    // Click the Full Add-On template's "Create New" button via stable test id
+    const clicked = await clickTemplateCreateButton(page, "addonFull");
 
-    let createButton = fullAddOnSection.locator('button:has-text("CREATE NEW")').first();
-
-    if (!(await createButton.isVisible({ timeout: 2000 }))) {
-      createButton = fullAddOnSection.locator('button:has-text("New")').first();
-    }
-
-    if (!(await createButton.isVisible({ timeout: 2000 }))) {
-      // Fall back to third New button (Full Add-On is usually 3rd template)
-      createButton = page.getByRole("button", { name: "Create New" }).nth(2);
-    }
-
-    if (await createButton.isVisible({ timeout: 2000 })) {
-      await createButton.click();
+    if (clicked) {
       await page.waitForTimeout(1000);
 
       // Handle the storage location dialog before clicking submit
       await preferBrowserStorageInProjectDialog(page);
+
+      // Fill required Creator field if blank (validation blocks submit otherwise)
+      await fillRequiredProjectDialogFields(page);
 
       // Click Create Project on dialog
       const submitButton = page.getByTestId("submit-button");
@@ -571,6 +563,14 @@ test.describe("Comment Preservation - Entity Type Editor @full", () => {
       // Wait for project to load (Full Add-On fetches from GitHub)
       await page.waitForTimeout(8000);
       await page.waitForLoadState("networkidle");
+
+      // Wait for the New Project dialog to fully unmount so it doesn't
+      // intercept pointer events on the Show button below.
+      const projectDialog = page.locator('div.MuiDialog-root[role="presentation"]');
+      await projectDialog
+        .first()
+        .waitFor({ state: "detached", timeout: 5000 })
+        .catch(() => {});
 
       await page.screenshot({
         path: "debugoutput/screenshots/comment-entity-project-loaded.png",

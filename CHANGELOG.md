@@ -6,6 +6,18 @@ For the full commit history, see [Releases](https://github.com/Mojang/minecraft-
 
 ---
 
+## [Unreleased]
+
+### Changed
+
+- **Inspector view**: PASSED rule rows are now hidden by default. Errors,
+  warnings, and recommendations remain visible. To show passed rows again,
+  toggle the "Passed" filter chip at the top of the Inspector panel.
+- **Format on save**: now OFF by default. Hand-formatted JSON (compact arrays,
+  inline component groups, comments) is preserved on save. To re-enable
+  auto-format on every save, open the Settings panel and turn on
+  "Format JSON and script on save".
+
 ## [0.16.1] (2026-04-03)
 
 - Bug fixes in the serve UX

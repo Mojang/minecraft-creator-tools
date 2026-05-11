@@ -39,6 +39,8 @@ import EntityTypeStateEdge from "./EntityTypeStateEdge";
 import EntityTypeStateNode from "./EntityTypeStateNode";
 import { EntityTypeStateBuilder } from "../../../minecraft/EntityTypeStateBuilder";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
+import { IntlShape } from "react-intl";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // DIAGRAM LAYOUT CONSTANTS
@@ -88,9 +90,11 @@ enum EntityTypeDiagramType {
   statesAndConnections = 1,
 }
 
-const DiagramTypeStrings = ["Groups and events", "States and connections"];
+function getDiagramTypeStrings(intl: IntlShape): string[] {
+  return [intl.formatMessage({ id: "project_editor.entity_diag.groups_events" }), intl.formatMessage({ id: "project_editor.entity_diag.states_connections" })];
+}
 
-interface IEntityTypeDiagramEditorProps extends IAppProps {
+interface IEntityTypeDiagramEditorProps extends IAppProps, WithLocalizationProps {
   entityType: EntityTypeDefinition;
   project: Project;
   heightOffset: number;
@@ -130,7 +134,7 @@ export class EntityTypeGroupsAndEventsDiagramContext {
   entityEventsAdded: { [name: string]: Node } = {};
 }
 
-export default class EntityTypeDiagramEditor extends Component<
+class EntityTypeDiagramEditor extends Component<
   IEntityTypeDiagramEditorProps,
   IEntityTypeDiagramEditorState
 > {
@@ -622,7 +626,7 @@ export default class EntityTypeDiagramEditor extends Component<
   async _handleDiagramTypeChange(event: SelectChangeEvent<string>) {
     let newDiagramType = EntityTypeDiagramType.groupsAndEvents;
 
-    if (event.target.value === DiagramTypeStrings[1]) {
+    if (event.target.value === getDiagramTypeStrings(this.props.intl)[1]) {
       newDiagramType = EntityTypeDiagramType.statesAndConnections;
     }
 
@@ -776,10 +780,10 @@ export default class EntityTypeDiagramEditor extends Component<
           <div className="etde-dropdownArea">
             <FormControl size="small">
               <Select
-                value={DiagramTypeStrings[this.state.activeDiagramType ?? 0]}
+                value={getDiagramTypeStrings(this.props.intl)[this.state.activeDiagramType ?? 0]}
                 onChange={this._handleDiagramTypeChange}
               >
-                {DiagramTypeStrings.map((item, index) => (
+                {getDiagramTypeStrings(this.props.intl).map((item, index) => (
                   <MenuItem key={index} value={item}>
                     {item}
                   </MenuItem>
@@ -788,11 +792,11 @@ export default class EntityTypeDiagramEditor extends Component<
             </FormControl>
           </div>
           <div className="etde-toolBar">
-            <Stack direction="row" spacing={1} aria-label="Diagram editing">
-              <Button onClick={this._handleEventAddComponentGroup} title="Add component group">
+            <Stack direction="row" spacing={1} aria-label={this.props.intl.formatMessage({ id: "project_editor.entity_diag.aria_editing" })}>
+              <Button onClick={this._handleEventAddComponentGroup} title={this.props.intl.formatMessage({ id: "project_editor.entity_diag.add_group" })}>
                 <CustomLabel
                   isCompact={false}
-                  text="Add component group"
+                  text={this.props.intl.formatMessage({ id: "project_editor.entity_diag.add_group" })}
                   icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
                 />
               </Button>
@@ -812,3 +816,5 @@ export default class EntityTypeDiagramEditor extends Component<
     );
   }
 }
+
+export default withLocalization(EntityTypeDiagramEditor);

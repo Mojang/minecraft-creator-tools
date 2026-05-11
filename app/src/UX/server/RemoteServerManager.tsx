@@ -57,10 +57,10 @@ export default class RemoteServerManager extends Component<IRemoteServerManagerP
           <div className="rsm-actionsHeader">Minecraft</div>
           <div className="rsm-actionsToolBarArea">
             <Stack direction="row" spacing={1} aria-label="Remote server actions">
-              <IconButton key="zoomIn" title="Zoom into the text editor" size="small">
+              <IconButton key="zoomIn" title="Zoom into the text editor" aria-label="Zoom in" size="small">
                 <FontAwesomeIcon icon={faSearchPlus} className="fa-lg" />
               </IconButton>
-              <IconButton key="zoomOut" title="Zoom out of the text editor" size="small">
+              <IconButton key="zoomOut" title="Zoom out of the text editor" aria-label="Zoom out" size="small">
                 <FontAwesomeIcon icon={faSearchMinus} className="fa-lg" />
               </IconButton>
             </Stack>

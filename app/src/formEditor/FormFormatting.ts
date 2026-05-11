@@ -11,6 +11,10 @@ export function normalizeTitle(title?: string) {
   if (!title) {
     return "[UNKNOWN]";
   }
+
+  // Strip common namespace prefixes (e.g., "minecraft:spawns_on_surface" → "spawns_on_surface")
+  title = title.replace(/^minecraft:/i, "");
+
   return title
     .replace(/([a-z])([A-Z])/g, "$1 $2")
     .split(/_|:| /g)

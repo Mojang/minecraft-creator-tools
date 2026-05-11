@@ -7,8 +7,9 @@ import Database from "../../minecraft/Database";
 import IProperty from "../../dataform/IProperty";
 import IConversionSettings from "../../core/IConversionSettings";
 import IProjectTheme from "../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
-interface IConvertProps extends IAppProps {
+interface IConvertProps extends IAppProps, WithLocalizationProps {
   project?: Project;
   theme: IProjectTheme;
   initialData: IConversionSettings;
@@ -20,7 +21,7 @@ interface IConvertState {
   data: IConversionSettings;
 }
 
-export default class Convert extends Component<IConvertProps, IConvertState> {
+class Convert extends Component<IConvertProps, IConvertState> {
   constructor(props: IConvertProps) {
     super(props);
 
@@ -63,13 +64,13 @@ export default class Convert extends Component<IConvertProps, IConvertState> {
 
   render() {
     if (this.state === null || !this.state.isLoaded) {
-      return <div>Loading...</div>;
+      return <div>{this.props.intl.formatMessage({ id: "convert.loading" })}</div>;
     }
 
     const form = Database.getForm("tool", "convert");
 
     if (!form) {
-      return <div className="cv-loading">Form not found</div>;
+      return <div className="cv-loading">{this.props.intl.formatMessage({ id: "convert.form_not_found" })}</div>;
     }
 
     return (
@@ -85,3 +86,5 @@ export default class Convert extends Component<IConvertProps, IConvertState> {
     );
   }
 }
+
+export default withLocalization(Convert);

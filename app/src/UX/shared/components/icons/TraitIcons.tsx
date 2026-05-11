@@ -333,25 +333,6 @@ const DoorIcon: React.FC = () => (
   </svg>
 );
 
-/** Container - chest / box with lid. */
-const ContainerIcon: React.FC = () => (
-  <svg
-    viewBox="0 0 24 24"
-    width="20"
-    height="20"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.8"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <rect x="3" y="10" width="18" height="10" rx="1" />
-    <path d="M3 10 L3 7 Q3 5, 5 5 L19 5 Q21 5, 21 7 L21 10" />
-    <line x1="3" y1="10" x2="21" y2="10" />
-    <rect x="10" y="12" width="4" height="2" rx="0.5" fill="currentColor" />
-  </svg>
-);
-
 /** Light Source - sun / glow. */
 const LightSourceIcon: React.FC = () => (
   <svg
@@ -412,6 +393,60 @@ const RedstoneSignalIcon: React.FC = () => (
     <path d="M15 12 L20 12" />
     <circle cx="12" cy="4" r="1.5" fill="currentColor" />
     <circle cx="12" cy="20" r="1.5" fill="currentColor" />
+  </svg>
+);
+
+/** Flammable - fire / flame. */
+const FlammableIcon: React.FC = () => (
+  <svg
+    viewBox="0 0 24 24"
+    width="20"
+    height="20"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M12 2 C12 2, 8 8, 8 13 Q8 19, 12 21 Q16 19, 16 13 C16 8, 12 2, 12 2 Z" />
+    <path d="M12 10 C12 10, 10 13, 10 15 Q10 18, 12 19 Q14 18, 14 15 C14 13, 12 10, 12 10 Z" fill="currentColor" />
+  </svg>
+);
+
+/** Explosion Resistant - shield / blast resistance. */
+const ExplosionResistantIcon: React.FC = () => (
+  <svg
+    viewBox="0 0 24 24"
+    width="20"
+    height="20"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M12 3 L4 7 L4 13 Q4 19, 12 22 Q20 19, 20 13 L20 7 Z" />
+    <path d="M9 12 L11 14 L15 10" />
+  </svg>
+);
+
+/** Slippery - ice crystal / sliding surface. */
+const SlipperyIcon: React.FC = () => (
+  <svg
+    viewBox="0 0 24 24"
+    width="20"
+    height="20"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <line x1="12" y1="2" x2="12" y2="22" />
+    <line x1="2" y1="12" x2="22" y2="12" />
+    <line x1="5" y1="5" x2="19" y2="19" />
+    <line x1="19" y1="5" x2="5" y2="19" />
+    <circle cx="12" cy="12" r="2" fill="currentColor" />
   </svg>
 );
 
@@ -647,10 +682,12 @@ export const BlockTraitIconMap: Record<string, React.FC> = {
   stairs: StairsIcon,
   fence: FenceIcon,
   door: DoorIcon,
-  container: ContainerIcon,
   light_source: LightSourceIcon,
   gravity: GravityIcon,
   redstone_signal: RedstoneSignalIcon,
+  flammable: FlammableIcon,
+  explosion_resistant: ExplosionResistantIcon,
+  slippery: SlipperyIcon,
 };
 
 /**

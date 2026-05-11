@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useIntl } from "react-intl";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileCode, faSave } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -98,13 +99,16 @@ export const ExportLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>> = () =
 
 export const MCPackLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
   props: ICompactableLabelProps
-) => (
-  <span className="label label-toolbar3">
-    <FontAwesomeIcon icon={faBoxOpen} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Export</span> : <></>}
-    <FontAwesomeIcon icon={faSortDown} className="fa-lg label-arrow" />
-  </span>
-);
+) => {
+  const intl = useIntl();
+  return (
+    <span className="label label-toolbar3">
+      <FontAwesomeIcon icon={faBoxOpen} className="fa-lg" />
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.export" })}</span> : <></>}
+      <FontAwesomeIcon icon={faSortDown} className="fa-lg label-arrow" />
+    </span>
+  );
+};
 
 export const RemoteMinecraftLabel: React.FC<
   React.HTMLAttributes<HTMLSpanElement> & {
@@ -121,7 +125,10 @@ export const RemoteMinecraftLabel: React.FC<
   isWebServer: boolean;
   connectedName?: string;
 }) => {
-  let labelText = props.isWebServer ? "Login" : "Remote";
+  const intl = useIntl();
+  let labelText = props.isWebServer
+    ? intl.formatMessage({ id: "label.login" })
+    : intl.formatMessage({ id: "label.remote" });
   if (props.connectedName) {
     labelText = props.connectedName;
   }
@@ -145,6 +152,7 @@ export const RemoteMinecraftLabel: React.FC<
 export const DedicatedServerMinecraftLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
   props: ISelectableLabelProps
 ) => {
+  const intl = useIntl();
   const colors = getLabelColors(props.isSelected);
   return (
     <span
@@ -157,7 +165,7 @@ export const DedicatedServerMinecraftLabel: React.FC<React.HTMLAttributes<HTMLSp
       }}
     >
       <FontAwesomeIcon icon={faPlug} className="fa-lg" />
-      {!props.isCompact ? <span className="label-text">Server</span> : <></>}
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.server" })}</span> : <></>}
     </span>
   );
 };
@@ -165,6 +173,7 @@ export const DedicatedServerMinecraftLabel: React.FC<React.HTMLAttributes<HTMLSp
 export const WebSocketMinecraftLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
   props: ISelectableLabelProps
 ) => {
+  const intl = useIntl();
   const colors = getLabelColors(props.isSelected);
   return (
     <span
@@ -177,7 +186,7 @@ export const WebSocketMinecraftLabel: React.FC<React.HTMLAttributes<HTMLSpanElem
       }}
     >
       <FontAwesomeIcon icon={faPlug} className="fa-lg" />
-      {!props.isCompact ? <span className="label-text">Minecraft Windows app</span> : <></>}
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.minecraft_windows_app" })}</span> : <></>}
     </span>
   );
 };
@@ -185,6 +194,7 @@ export const WebSocketMinecraftLabel: React.FC<React.HTMLAttributes<HTMLSpanElem
 export const ConnectModeLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
   props: ISelectableLabelProps
 ) => {
+  const intl = useIntl();
   const colors = getLabelColors(props.isSelected);
   return (
     <span
@@ -197,7 +207,7 @@ export const ConnectModeLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & 
       }}
     >
       <FontAwesomeIcon icon={faCircleInfo} className="fa-lg" />
-      {!props.isCompact ? <span className="label-text">Mode</span> : <></>}
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.mode" })}</span> : <></>}
     </span>
   );
 };
@@ -205,6 +215,7 @@ export const ConnectModeLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & 
 export const WorldSettingsLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
   props: ISelectableLabelProps
 ) => {
+  const intl = useIntl();
   const colors = getLabelColors(props.isSelected);
   return (
     <span
@@ -217,7 +228,7 @@ export const WorldSettingsLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> 
       }}
     >
       <FontAwesomeIcon icon={faGlobe} className="fa-lg" />
-      {!props.isCompact ? <span className="label-text">Server Settings</span> : <></>}
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.server_settings" })}</span> : <></>}
     </span>
   );
 };
@@ -225,6 +236,7 @@ export const WorldSettingsLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> 
 export const InteractLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
   props: ISelectableLabelProps
 ) => {
+  const intl = useIntl();
   const colors = getLabelColors(props.isSelected);
   return (
     <span
@@ -237,7 +249,7 @@ export const InteractLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISe
       }}
     >
       <FontAwesomeIcon icon={faUserEdit} className="fa-lg" />
-      {!props.isCompact ? <span className="label-text">Interact</span> : <></>}
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.interact" })}</span> : <></>}
     </span>
   );
 };
@@ -245,6 +257,7 @@ export const InteractLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISe
 export const ToolEditorLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
   props: ISelectableLabelProps
 ) => {
+  const intl = useIntl();
   const colors = getLabelColors(props.isSelected);
   return (
     <span
@@ -257,7 +270,7 @@ export const ToolEditorLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & I
       }}
     >
       <FontAwesomeIcon icon={faScrewdriverWrench} className="fa-lg" />
-      {!props.isCompact ? <span className="label-text">Tools</span> : <></>}
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.tools" })}</span> : <></>}
     </span>
   );
 };
@@ -265,6 +278,7 @@ export const ToolEditorLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & I
 export const DocumentationTypesLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
   props: ISelectableLabelProps
 ) => {
+  const intl = useIntl();
   const colors = getLabelColors(props.isSelected);
   return (
     <span
@@ -277,7 +291,7 @@ export const DocumentationTypesLabel: React.FC<React.HTMLAttributes<HTMLSpanElem
       }}
     >
       <FontAwesomeIcon icon={faCode} className="fa-lg" />
-      {!props.isCompact ? <span className="label-text">Types</span> : <></>}
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.types" })}</span> : <></>}
     </span>
   );
 };
@@ -286,13 +300,12 @@ export const CustomSelectableDropdownLabel: React.FC<
   React.HTMLAttributes<HTMLSpanElement> & ISelectableCustomLabelProps
 > = (props: ISelectableCustomLabelProps) => {
   const colors = getLabelColors(props.isSelected);
-  const isDark = CreatorToolsHost.theme === CreatorToolsThemeStyle.dark;
   return (
     <span
       className={"label-dropdown"}
       style={{
         borderColor: props.isSelected ? colors.borderColor : "inherit",
-        color: props.isSelected ? mcColors.green4 : "inherit",
+        color: props.isSelected ? colors.color : "inherit",
         fontWeight: props.isSelected ? "bold" : "normal",
         textDecoration: props.isSelected ? "underline" : "none",
         backgroundColor: props.isSelected ? colors.backgroundColor : "inherit",
@@ -335,7 +348,7 @@ export const CustomTabLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & IS
       style={{
         borderLeftColor: colors.borderColor,
         borderRightColor: colors.borderColor,
-        color: props.isSelected ? mcColors.green4 : colors.color,
+        color: colors.color,
         fontWeight: props.isSelected ? "bold" : "normal",
         textDecoration: props.isSelected ? "underline" : "none",
         backgroundColor: colors.backgroundColor,
@@ -350,6 +363,7 @@ export const CustomTabLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & IS
 export const UnassociatedDocumentationLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
   props: ISelectableLabelProps
 ) => {
+  const intl = useIntl();
   const colors = getLabelColors(props.isSelected);
   return (
     <span
@@ -362,20 +376,26 @@ export const UnassociatedDocumentationLabel: React.FC<React.HTMLAttributes<HTMLS
       }}
     >
       <FontAwesomeIcon icon={faLinkSlash} className="fa-lg" />
-      {!props.isCompact ? <span className="label-text">Unlinked Docs</span> : <></>}
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.unlinked_docs" })}</span> : <></>}
     </span>
   );
 };
 
-export const ViewLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
-  props: ICompactableLabelProps
-) => (
-  <span className="label label-toolbar3">
-    <FontAwesomeIcon icon={faColumns} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">View</span> : <></>}
-    <FontAwesomeIcon icon={faSortDown} className="fa-lg label-arrow" />
-  </span>
-);
+export const ViewLabel: React.FC<
+  React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps & { modeText?: string }
+> = (props: ICompactableLabelProps & { modeText?: string }) => {
+  const intl = useIntl();
+  const viewText = intl.formatMessage({ id: "label.view" });
+
+  const labelText = props.modeText ? `${viewText}: ${props.modeText}` : viewText;
+  return (
+    <span className="label label-toolbar3" aria-label={labelText}>
+      <FontAwesomeIcon icon={faColumns} className="fa-lg" />
+      {!props.isCompact ? <span className="label-text">{labelText}</span> : <></>}
+      <FontAwesomeIcon icon={faSortDown} className="fa-lg label-arrow" />
+    </span>
+  );
+};
 
 export const ItemActionsLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICustomIconLabelProps> = (
   props: ICustomIconLabelProps
@@ -389,145 +409,193 @@ export const ItemActionsLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & 
 
 export const ConnectLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
   props: ICompactableLabelProps
-) => (
-  <span className="label label-toolbar">
-    <FontAwesomeIcon icon={faServer} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Minecraft</span> : <></>}
-  </span>
-);
+) => {
+  const intl = useIntl();
+  return (
+    <span className="label label-toolbar">
+      <FontAwesomeIcon icon={faServer} className="fa-lg" />
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.minecraft" })}</span> : <></>}
+    </span>
+  );
+};
 
 export const NewLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
   props: ICompactableLabelProps
-) => (
-  <span className="label label-toolbar">
-    <FontAwesomeIcon icon={faFile} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Open</span> : <></>}
-  </span>
-);
+) => {
+  const intl = useIntl();
+  return (
+    <span className="label label-toolbar">
+      <FontAwesomeIcon icon={faFile} className="fa-lg" />
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.open" })}</span> : <></>}
+    </span>
+  );
+};
 
 export const ExportBackupLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
   props: ICompactableLabelProps
-) => (
-  <span className="label label-toolbar">
-    <FontAwesomeIcon icon={faFileExport} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Download Backup</span> : <></>}
-  </span>
-);
+) => {
+  const intl = useIntl();
+  return (
+    <span className="label label-toolbar">
+      <FontAwesomeIcon icon={faFileExport} className="fa-lg" />
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.download_backup" })}</span> : <></>}
+    </span>
+  );
+};
 
 export const LocalFolderLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
   props: ICompactableLabelProps
-) => (
-  <span className="label label-toolbar">
-    <FontAwesomeIcon icon={faComputer} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Open Project Folder</span> : <></>}
-  </span>
-);
+) => {
+  const intl = useIntl();
+  return (
+    <span className="label label-toolbar">
+      <FontAwesomeIcon icon={faComputer} className="fa-lg" />
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.open_project_folder" })}</span> : <></>}
+    </span>
+  );
+};
 
 export const DownloadLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
   props: ICompactableLabelProps
-) => (
-  <span className="label label-toolbar">
-    <FontAwesomeIcon icon={faDownload} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Download Report</span> : <></>}
-    <FontAwesomeIcon icon={faSortDown} className="fa-lg label-arrow" />
-  </span>
-);
+) => {
+  const intl = useIntl();
+  return (
+    <span className="label label-toolbar">
+      <FontAwesomeIcon icon={faDownload} className="fa-lg" />
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.download_report" })}</span> : <></>}
+      <FontAwesomeIcon icon={faSortDown} className="fa-lg label-arrow" />
+    </span>
+  );
+};
 
 export const ServerStartLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
   props: ICompactableLabelProps
-) => (
-  <span className="label">
-    <FontAwesomeIcon icon={faPowerOff} className="fa-lg" />
-    <span className="label-text">Start</span>
-  </span>
-);
+) => {
+  const intl = useIntl();
+  return (
+    <span className="label">
+      <FontAwesomeIcon icon={faPowerOff} className="fa-lg" />
+      <span className="label-text">{intl.formatMessage({ id: "label.start" })}</span>
+    </span>
+  );
+};
 
 export const ServerStartingLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
   props: ICompactableLabelProps
-) => (
-  <span className="label">
-    <span className="label-light label-yellow">&#160;</span>
-    <FontAwesomeIcon icon={faPowerOff} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">(starting...)</span> : <></>}
-  </span>
-);
+) => {
+  const intl = useIntl();
+  return (
+    <span className="label">
+      <span className="label-light label-yellow">&#160;</span>
+      <FontAwesomeIcon icon={faPowerOff} className="fa-lg" />
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.starting" })}</span> : <></>}
+    </span>
+  );
+};
 
 export const ServerInitializingLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
   props: ICompactableLabelProps
-) => (
-  <span className="label">
-    <span className="label-light label-yellow">&#160;</span>
-    <FontAwesomeIcon icon={faPowerOff} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">(loading...)</span> : <></>}
-  </span>
-);
+) => {
+  const intl = useIntl();
+  return (
+    <span className="label">
+      <span className="label-light label-yellow">&#160;</span>
+      <FontAwesomeIcon icon={faPowerOff} className="fa-lg" />
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.initializing" })}</span> : <></>}
+    </span>
+  );
+};
 
 export const ServerInitializedLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
   props: ICompactableLabelProps
-) => (
-  <span className="label">
-    <span className="label-light label-yellow">&#160;</span>
-    <FontAwesomeIcon icon={faPowerOff} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Start server</span> : <></>}
-  </span>
-);
+) => {
+  const intl = useIntl();
+  return (
+    <span className="label">
+      <span className="label-light label-yellow">&#160;</span>
+      <FontAwesomeIcon icon={faPowerOff} className="fa-lg" />
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.start_server" })}</span> : <></>}
+    </span>
+  );
+};
 
 export const ServerStoppingLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
   props: ICompactableLabelProps
-) => (
-  <span className="label">
-    <span className="label-light label-yellow">&#160;</span>
-    <FontAwesomeIcon icon={faPowerOff} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">(stopping...)</span> : <></>}
-  </span>
-);
+) => {
+  const intl = useIntl();
+  return (
+    <span className="label">
+      <span className="label-light label-yellow">&#160;</span>
+      <FontAwesomeIcon icon={faPowerOff} className="fa-lg" />
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.stopping" })}</span> : <></>}
+    </span>
+  );
+};
 export const ServerStopLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
   props: ICompactableLabelProps
-) => (
-  <span className="label">
-    <FontAwesomeIcon icon={faStop} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Stop</span> : <></>}
-  </span>
-);
+) => {
+  const intl = useIntl();
+  return (
+    <span className="label">
+      <FontAwesomeIcon icon={faStop} className="fa-lg" />
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.stop" })}</span> : <></>}
+    </span>
+  );
+};
 
 export const ServerRestartLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
   props: ICompactableLabelProps
-) => (
-  <span className="label">
-    <span className="label-light label-green">&#160;</span>
-    <FontAwesomeIcon icon={faServer} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Restart</span> : <></>}
-  </span>
-);
+) => {
+  const intl = useIntl();
+  return (
+    <span className="label">
+      <span className="label-light label-green">&#160;</span>
+      <FontAwesomeIcon icon={faServer} className="fa-lg" />
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.restart" })}</span> : <></>}
+    </span>
+  );
+};
 
 export const BackLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
   props: ICompactableLabelProps
-) => (
-  <span className="label">
-    <FontAwesomeIcon icon={faArrowLeft} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Back</span> : <></>}
-  </span>
-);
+) => {
+  const intl = useIntl();
+  return (
+    <span className="label">
+      <FontAwesomeIcon icon={faArrowLeft} className="fa-lg" />
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.back" })}</span> : <></>}
+    </span>
+  );
+};
 
-export const EditLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>> = () => (
-  <span className="label label-toolbar3">
-    <FontAwesomeIcon icon={faEdit} className="fa-lg" />
-    <span className="label-text">Edit this copy</span>
-  </span>
-);
+export const EditLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>> = () => {
+  const intl = useIntl();
+  return (
+    <span className="label label-toolbar3">
+      <FontAwesomeIcon icon={faEdit} className="fa-lg" />
+      <span className="label-text">{intl.formatMessage({ id: "label.edit_this_copy" })}</span>
+    </span>
+  );
+};
 
-export const OpenInMinecraftLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>> = () => (
-  <span className="label label-toolbar3">
-    <FontAwesomeIcon icon={faPlay} className="fa-lg" />
-    <span className="label-text">Open in Minecraft</span>
-  </span>
-);
+export const OpenInMinecraftLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>> = () => {
+  const intl = useIntl();
+  return (
+    <span className="label label-toolbar3">
+      <FontAwesomeIcon icon={faPlay} className="fa-lg" />
+      <span className="label-text">{intl.formatMessage({ id: "label.open_in_minecraft" })}</span>
+    </span>
+  );
+};
 
-export const TopsMapLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>> = () => (
-  <span className="label label-toolbar3">
-    <span className="label-text">Tops</span>
-  </span>
-);
+export const TopsMapLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>> = () => {
+  const intl = useIntl();
+  return (
+    <span className="label label-toolbar3">
+      <span className="label-text">{intl.formatMessage({ id: "label.tops" })}</span>
+    </span>
+  );
+};
 
 export const PlusMapLevelLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>> = () => (
   <span className="label label-toolbar3">
@@ -541,12 +609,15 @@ export const MinusMapLevelLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>>
   </span>
 );
 
-export const TeleportInMinecraftLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>> = () => (
-  <span className="label label-toolbar3">
-    <FontAwesomeIcon icon={faMagic} className="fa-lg" />
-    <span className="label-text">Teleport</span>
-  </span>
-);
+export const TeleportInMinecraftLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>> = () => {
+  const intl = useIntl();
+  return (
+    <span className="label label-toolbar3">
+      <FontAwesomeIcon icon={faMagic} className="fa-lg" />
+      <span className="label-text">{intl.formatMessage({ id: "label.teleport" })}</span>
+    </span>
+  );
+};
 
 export const DownArrowLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>> = () => (
   <span className="label-arrowouter">
@@ -584,22 +655,28 @@ export const CustomSlimLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & I
 
 export const DeployLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
   props: ICompactableLabelProps
-) => (
-  <span className="label label-toolbar3">
-    <FontAwesomeIcon icon={faPlay} className="fa-lg label-rpad" />
-    {!props.isCompact ? <span className="label-text">Test</span> : <></>}
-    <FontAwesomeIcon icon={faSortDown} className="fa-lg label-arrow" />
-  </span>
-);
+) => {
+  const intl = useIntl();
+  return (
+    <span className="label label-toolbar3">
+      <FontAwesomeIcon icon={faPlay} className="fa-lg label-rpad" />
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.test" })}</span> : <></>}
+      <FontAwesomeIcon icon={faSortDown} className="fa-lg label-arrow" />
+    </span>
+  );
+};
 
 export const PushToMinecraftLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
   props: ICompactableLabelProps
-) => (
-  <span className="label">
-    <FontAwesomeIcon icon={faPlay} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Deploy to Minecraft</span> : <></>}
-  </span>
-);
+) => {
+  const intl = useIntl();
+  return (
+    <span className="label">
+      <FontAwesomeIcon icon={faPlay} className="fa-lg" />
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.deploy_to_minecraft" })}</span> : <></>}
+    </span>
+  );
+};
 
 export const SaveLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>> = () => (
   <span className="label-text">
@@ -615,22 +692,28 @@ export const OpenInExplorerLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>
 
 export const SettingsLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
   props: ICompactableLabelProps
-) => (
-  <span className="label label-toolbar">
-    <FontAwesomeIcon icon={faGear} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Settings</span> : <></>}
-  </span>
-);
+) => {
+  const intl = useIntl();
+  return (
+    <span className="label label-toolbar">
+      <FontAwesomeIcon icon={faGear} className="fa-lg" />
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.settings" })}</span> : <></>}
+    </span>
+  );
+};
 
 export const HelpLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
   props: ICompactableLabelProps
-) => (
-  <span className="label label-toolbar3">
-    <FontAwesomeIcon icon={faCircleQuestion} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Help</span> : <></>}
-    <FontAwesomeIcon icon={faSortDown} className="fa-lg label-arrow" />
-  </span>
-);
+) => {
+  const intl = useIntl();
+  return (
+    <span className="label label-toolbar3">
+      <FontAwesomeIcon icon={faCircleQuestion} className="fa-lg" />
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.help" })}</span> : <></>}
+      <FontAwesomeIcon icon={faSortDown} className="fa-lg label-arrow" />
+    </span>
+  );
+};
 
 export const VideoLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>> = () => (
   <span className="label">
@@ -646,12 +729,15 @@ export const HomeLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>> = () => 
 
 export const AddLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
   props: ICompactableLabelProps
-) => (
-  <span className="label">
-    <FontAwesomeIcon icon={faPlus} className="fa-lg" />
-    {!props.isCompact ? <span className="label">Add</span> : <></>}
-  </span>
-);
+) => {
+  const intl = useIntl();
+  return (
+    <span className="label">
+      <FontAwesomeIcon icon={faPlus} className="fa-lg" />
+      {!props.isCompact ? <span className="label">{intl.formatMessage({ id: "label.add" })}</span> : <></>}
+    </span>
+  );
+};
 
 export const CheckIcon: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
   props: ISelectableLabelProps
@@ -779,16 +865,20 @@ export const TypesIcon: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelect
 
 export const ExcludeEdgesLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
   props: ICompactableLabelProps
-) => (
-  <span className="label">
-    <FontAwesomeIcon icon={faCube} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Hide edges</span> : <></>}
-  </span>
-);
+) => {
+  const intl = useIntl();
+  return (
+    <span className="label">
+      <FontAwesomeIcon icon={faCube} className="fa-lg" />
+      {!props.isCompact ? <span className="label-text">{intl.formatMessage({ id: "label.hide_edges" })}</span> : <></>}
+    </span>
+  );
+};
 
 export const InfoTabLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
   props: ISelectableLabelProps
 ) => {
+  const intl = useIntl();
   const isDark = CreatorToolsHost.theme === CreatorToolsThemeStyle.dark;
   return (
     <span
@@ -808,7 +898,7 @@ export const InfoTabLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISel
       }}
     >
       <FontAwesomeIcon icon={faListDots} style={{ fontSize: "16px" }} />
-      {!props.isCompact && <span>Items</span>}
+      {!props.isCompact && <span>{intl.formatMessage({ id: "label.tab.items" })}</span>}
       {props.isSelected && (
         <span
           style={{
@@ -829,7 +919,9 @@ export const InfoTabLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISel
 export const SummaryTabLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
   props: ISelectableLabelProps
 ) => {
+  const intl = useIntl();
   const isDark = CreatorToolsHost.theme === CreatorToolsThemeStyle.dark;
+  const summaryText = intl.formatMessage({ id: "label.tab.summary" });
   return (
     <span
       className={props.isSelected ? "mc-tab mc-tab--selected" : "mc-tab"}
@@ -846,10 +938,10 @@ export const SummaryTabLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & I
         fontWeight: props.isSelected ? 600 : 400,
         color: props.isSelected ? (isDark ? mcColors.white : mcColors.gray6) : isDark ? mcColors.gray2 : mcColors.gray5,
       }}
-      title="Summary"
+      title={summaryText}
     >
       <FontAwesomeIcon icon={faCircleInfo} style={{ fontSize: "16px" }} />
-      {!props.isCompact && <span>Summary</span>}
+      {!props.isCompact && <span>{summaryText}</span>}
       {props.isSelected && (
         <span
           style={{
@@ -870,6 +962,7 @@ export const SummaryTabLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & I
 export const WarningFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelValueProps> = (
   props: ISelectableLabelValueProps
 ) => {
+  const intl = useIntl();
   // Theme-aware colors for WCAG AA compliance (4.5:1 contrast ratio minimum)
   const isLightTheme = CreatorToolsHost.theme === CreatorToolsThemeStyle.light;
   const activeColor = isLightTheme ? "#8b6914" : "#ffd54f"; // Dark amber for light, bright yellow for dark
@@ -897,10 +990,10 @@ export const WarningFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> 
       }}
       role="checkbox"
       aria-checked={props.isSelected}
-      aria-label={`Filter by warnings${props.value ? `, ${props.value} items` : ""}`}
+      aria-label={intl.formatMessage({ id: "label.filter.warning_aria" }, { count: props.value ?? 0 })}
     >
       <FontAwesomeIcon icon={faCircleQuestion} style={{ fontSize: "14px" }} aria-hidden="true" />
-      {!props.isCompact && <span>Warning{props.value ? ` (${props.value})` : ""}</span>}
+      {!props.isCompact && <span>{intl.formatMessage({ id: "label.filter.warning" })}{props.value ? ` (${props.value})` : ""}</span>}
     </span>
   );
 };
@@ -908,6 +1001,7 @@ export const WarningFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> 
 export const RecommendationsFilterLabel: React.FC<
   React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelValueProps
 > = (props: ISelectableLabelValueProps) => {
+  const intl = useIntl();
   // Theme-aware colors for WCAG AA compliance (4.5:1 contrast ratio minimum)
   const isLightTheme = CreatorToolsHost.theme === CreatorToolsThemeStyle.light;
   const activeColor = isLightTheme ? "#0d4a6f" : "#5dade2"; // Darker blue for light, bright blue for dark
@@ -935,10 +1029,10 @@ export const RecommendationsFilterLabel: React.FC<
       }}
       role="checkbox"
       aria-checked={props.isSelected}
-      aria-label={`Filter by recommendations${props.value ? `, ${props.value} items` : ""}`}
+      aria-label={intl.formatMessage({ id: "label.filter.recommendations_aria" }, { count: props.value ?? 0 })}
     >
       <FontAwesomeIcon icon={faCircleArrowUp} style={{ fontSize: "14px" }} aria-hidden="true" />
-      {!props.isCompact && <span>Recommendations{props.value ? ` (${props.value})` : ""}</span>}
+      {!props.isCompact && <span>{intl.formatMessage({ id: "label.filter.recommendations" })}{props.value ? ` (${props.value})` : ""}</span>}
     </span>
   );
 };
@@ -946,6 +1040,7 @@ export const RecommendationsFilterLabel: React.FC<
 export const ErrorFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelValueProps> = (
   props: ISelectableLabelValueProps
 ) => {
+  const intl = useIntl();
   // Theme-aware colors for WCAG AA compliance (4.5:1 contrast ratio minimum)
   const isLightTheme = CreatorToolsHost.theme === CreatorToolsThemeStyle.light;
   const activeColor = isLightTheme ? "#922b21" : "#ff6b6b"; // Darker red for light, bright red for dark
@@ -973,10 +1068,10 @@ export const ErrorFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & 
       }}
       role="checkbox"
       aria-checked={props.isSelected}
-      aria-label={`Filter by errors${props.value ? `, ${props.value} items` : ""}`}
+      aria-label={intl.formatMessage({ id: "label.filter.errors_aria" }, { count: props.value ?? 0 })}
     >
       <FontAwesomeIcon icon={faCircleExclamation} style={{ fontSize: "14px" }} aria-hidden="true" />
-      {!props.isCompact && <span>Errors{props.value ? ` (${props.value})` : ""}</span>}
+      {!props.isCompact && <span>{intl.formatMessage({ id: "label.filter.errors" })}{props.value ? ` (${props.value})` : ""}</span>}
     </span>
   );
 };
@@ -984,6 +1079,7 @@ export const ErrorFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & 
 export const InfoFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelValueProps> = (
   props: ISelectableLabelValueProps
 ) => {
+  const intl = useIntl();
   // Theme-aware colors for WCAG AA compliance (4.5:1 contrast ratio minimum)
   const isLightTheme = CreatorToolsHost.theme === CreatorToolsThemeStyle.light;
   const activeColor = isLightTheme ? "#3d3d3d" : "#bdc3c7"; // Very dark gray for light, light gray for dark
@@ -1011,10 +1107,10 @@ export const InfoFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & I
       }}
       role="checkbox"
       aria-checked={props.isSelected}
-      aria-label={`Filter by info${props.value ? `, ${props.value} items` : ""}`}
+      aria-label={intl.formatMessage({ id: "label.filter.info_aria" }, { count: props.value ?? 0 })}
     >
       <FontAwesomeIcon icon={faCircleInfo} style={{ fontSize: "14px" }} aria-hidden="true" />
-      {!props.isCompact && <span>Info{props.value ? ` (${props.value})` : ""}</span>}
+      {!props.isCompact && <span>{intl.formatMessage({ id: "label.filter.info" })}{props.value ? ` (${props.value})` : ""}</span>}
     </span>
   );
 };
@@ -1022,6 +1118,7 @@ export const InfoFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & I
 export const SuccessFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelValueProps> = (
   props: ISelectableLabelValueProps
 ) => {
+  const intl = useIntl();
   // Theme-aware colors for WCAG AA compliance (4.5:1 contrast ratio minimum)
   const isLightTheme = CreatorToolsHost.theme === CreatorToolsThemeStyle.light;
   const activeColor = isLightTheme ? "#145a32" : "#2ecc71"; // Darker green for light, bright green for dark
@@ -1049,10 +1146,10 @@ export const SuccessFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> 
       }}
       role="checkbox"
       aria-checked={props.isSelected}
-      aria-label={`Filter by passed items${props.value ? `, ${props.value} items` : ""}`}
+      aria-label={intl.formatMessage({ id: "label.filter.passed_aria" }, { count: props.value ?? 0 })}
     >
       <FontAwesomeIcon icon={faCircleCheck} style={{ fontSize: "14px" }} aria-hidden="true" />
-      {!props.isCompact && <span>Passed{props.value ? ` (${props.value})` : ""}</span>}
+      {!props.isCompact && <span>{intl.formatMessage({ id: "label.filter.passed" })}{props.value ? ` (${props.value})` : ""}</span>}
     </span>
   );
 };
@@ -1060,6 +1157,7 @@ export const SuccessFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> 
 export const FailureFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelValueProps> = (
   props: ISelectableLabelValueProps
 ) => {
+  const intl = useIntl();
   // Theme-aware colors for WCAG AA compliance (4.5:1 contrast ratio minimum)
   const isLightTheme = CreatorToolsHost.theme === CreatorToolsThemeStyle.light;
   const activeColor = isLightTheme ? "#7b241c" : "#ff7675"; // Darker red for light, bright coral for dark
@@ -1087,10 +1185,10 @@ export const FailureFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> 
       }}
       role="checkbox"
       aria-checked={props.isSelected}
-      aria-label={`Filter by failed items${props.value ? `, ${props.value} items` : ""}`}
+      aria-label={intl.formatMessage({ id: "label.filter.failed_aria" }, { count: props.value ?? 0 })}
     >
       <FontAwesomeIcon icon={faCircleXmark} style={{ fontSize: "14px" }} aria-hidden="true" />
-      {!props.isCompact && <span>Failed{props.value ? ` (${props.value})` : ""}</span>}
+      {!props.isCompact && <span>{intl.formatMessage({ id: "label.filter.failed" })}{props.value ? ` (${props.value})` : ""}</span>}
     </span>
   );
 };

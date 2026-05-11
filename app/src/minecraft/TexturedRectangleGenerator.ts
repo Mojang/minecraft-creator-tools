@@ -32,8 +32,10 @@ export default class TexturedRectangleGenerator {
   /**
    * Maps new TexturedRectangleType to legacy NoisePatternType for internal processing.
    */
-  private static texturedRectangleTypeToPattern(type: TexturedRectangleType): NoisePatternType | "solid" {
+  private static texturedRectangleTypeToPattern(type: TexturedRectangleType): NoisePatternType | "solid" | "none" {
     switch (type) {
+      case "none":
+        return "none";
       case "solid":
         return "solid";
       case "random_noise":
@@ -68,13 +70,18 @@ export default class TexturedRectangleGenerator {
     contextString?: string
   ): string {
     // Parse colors
-    const colors = config.colors.map((c) => NoiseGenerationUtilities.parseColorInput(c));
+    const colors = (config.colors || []).map((c) => NoiseGenerationUtilities.parseColorInput(c));
     if (colors.length === 0) {
-      // Default to white if no colors provided
+      // Default to white if no colors provided (ignored for "none")
       colors.push({ r: 255, g: 255, b: 255, a: 255 });
     }
 
     const pattern = this.texturedRectangleTypeToPattern(config.type);
+
+    // Handle "none" - return an empty transparent SVG
+    if (pattern === "none") {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}"></svg>`;
+    }
 
     // Handle solid color - just return a simple rect
     if (pattern === "solid") {
@@ -308,17 +315,21 @@ export default class TexturedRectangleGenerator {
     contextString?: string
   ): Uint8Array {
     // Parse colors
-    const colors = config.colors.map((c) => NoiseGenerationUtilities.parseColorInput(c));
+    const colors = (config.colors || []).map((c) => NoiseGenerationUtilities.parseColorInput(c));
     if (colors.length === 0) {
-      // Default to white if no colors provided
+      // Default to white if no colors provided (ignored for "none")
       colors.push({ r: 255, g: 255, b: 255, a: 255 });
     }
 
     const pattern = this.texturedRectangleTypeToPattern(config.type);
     let pixels: Uint8Array;
 
-    // Handle solid color - fill with first color
-    if (pattern === "solid") {
+    if (pattern === "none") {
+      // Fully transparent background. Uint8Array defaults to zero, so every RGBA
+      // byte — including the alpha channel — is 0, producing a fully transparent image.
+      pixels = new Uint8Array(width * height * 4);
+    } else if (pattern === "solid") {
+      // Handle solid color - fill with first color
       pixels = new Uint8Array(width * height * 4);
       const color = colors[0];
       for (let i = 0; i < width * height; i++) {

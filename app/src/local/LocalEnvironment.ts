@@ -347,6 +347,24 @@ export default class LocalEnvironment {
       return;
     }
 
+    // In MCP/stdio mode, only send errors and important messages to stderr.
+    // Regular messages and debug output would show as [warning] in VS Code's
+    // MCP output panel, which is confusing for users.
+    if (this.logToStdError) {
+      let context = "";
+      if (item.context && item.context.length > 0) {
+        context = item.context + " ";
+      }
+
+      if (item.level === LogItemLevel.error) {
+        console.error(consoleText_fgRed + context + "Error: " + item.message + consoleText_reset);
+      } else if (item.level === LogItemLevel.important) {
+        console.error(consoleText_fgYellow + context + item.message + consoleText_reset);
+      }
+      // Suppress message/verbose/debug in MCP mode — they're not actionable
+      return;
+    }
+
     let context = "";
 
     if (this.displayVerbose) {
@@ -358,25 +376,15 @@ export default class LocalEnvironment {
     }
 
     if (item.level === LogItemLevel.verbose) {
-      if (this.logToStdError) {
-        console.error(consoleText_fgGray + context + item.message + consoleText_reset);
-      } else {
-        console.log(consoleText_fgGray + context + item.message + consoleText_reset);
-      }
+      console.log(consoleText_fgGray + context + item.message + consoleText_reset);
     } else if (item.level === LogItemLevel.error) {
       console.error(consoleText_fgRed + context + "Error: " + item.message + consoleText_reset);
     } else if (item.level === LogItemLevel.important) {
-      if (this.logToStdError) {
-        console.error(consoleText_fgYellow + context + "Important: " + item.message + consoleText_reset);
-      } else {
-        console.warn(consoleText_fgYellow + context + "Important: " + item.message + consoleText_reset);
-      }
+      // NOTE: This is the Log framework's own output handler — using Log.important()
+      // here would cause infinite recursion. console.log with yellow coloring is intentional.
+      console.log(consoleText_fgYellow + context + "Important: " + item.message + consoleText_reset);
     } else {
-      if (this.logToStdError) {
-        console.error(context + item.message);
-      } else {
-        console.log(context + item.message);
-      }
+      console.log(context + item.message);
     }
   }
 

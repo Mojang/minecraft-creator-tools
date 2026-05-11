@@ -51,14 +51,29 @@ function descend(object: any, entry: HierarchyEntry): unknown {
 }
 
 export const updateObjectByHierarchy = (object: DynamicObject, value: unknown, hierarchy: Hierarchy) => {
-  const ref = hierarchy.slice(0, hierarchy.length - 1).reduce<any>((obj, entry) => obj[entry.key], object);
-
   const key = hierarchy[hierarchy.length - 1]?.key;
   if (!key) {
     throw new Error("[updateObjectByHierarchy]: Failed to find valid key when updating object by hierarchy");
   }
 
-  ref[key] = value;
+  // Walk the hierarchy, materializing intermediate objects/arrays if any are missing.
+  // Without this, leaf inputs (e.g. number fields like `min` / `max` on a range
+  // property) crash with "Cannot set properties of undefined (setting 'min')"
+  // when the user starts typing before the parent object has been initialized
+  // by a render pass. Insertion semantics match `insertIntoObjectByHierarchy`:
+  // arrays are created when the next hierarchy entry is an array item, objects
+  // otherwise.
+  let current: any = object;
+  for (let i = 0; i < hierarchy.length - 1; ++i) {
+    const entry = hierarchy[i];
+    if (current[entry.key] === undefined || current[entry.key] === null) {
+      const nextIsArrayItem = hierarchy[i + 1]?.isArrayItem;
+      current[entry.key] = nextIsArrayItem ? [] : {};
+    }
+    current = current[entry.key];
+  }
+
+  current[key] = value;
 };
 
 /*

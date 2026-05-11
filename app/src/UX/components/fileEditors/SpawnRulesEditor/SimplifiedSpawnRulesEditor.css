@@ -1,0 +1,307 @@
+/* SimplifiedSpawnRulesEditor styles */
+
+.ssre-outer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 12px 16px;
+  box-sizing: border-box;
+  font-size: 13px;
+}
+
+/* Native form controls (input, button, select, textarea) do not inherit the
+   page font by default — they fall back to the OS UI font. The editor now
+   uses MUI components (TextField, Button, IconButton, Chip, ButtonBase) for
+   all form controls, but this safety net stays in case a child editor or
+   embedded form renders raw HTML controls. See docs/ux/Components.md →
+   Form Controls. */
+.ssre-outer input,
+.ssre-outer button,
+.ssre-outer select,
+.ssre-outer textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.ssre-search {
+  display: flex;
+  margin-bottom: 12px;
+}
+
+/* Default entry at top */
+.ssre-defaultEntry {
+  border: 1px solid #555;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  background: #2a2a2a;
+  overflow: hidden;
+  /* Establish a stacking context so descendant inputs always paint above
+     this wrapper; without this, transient layout shifts during MUI focus
+     animations could cause hit-tests to land on the wrapper instead of
+     the actual input. See RoundTripPersistence F6. */
+  position: relative;
+  z-index: 0;
+}
+
+/* Form controls inside the default entry must always receive pointer
+   events themselves, never have them swallowed by an animating wrapper. */
+.ssre-defaultEntry input,
+.ssre-defaultEntry textarea,
+.ssre-defaultEntry button,
+.ssre-defaultEntry select {
+  position: relative;
+  z-index: 1;
+}
+
+.ssre-defaultHeader {
+  /* Rendered as MUI ButtonBase — reset its inline-flex defaults to a full-width
+     row with left-aligned content so it visually matches the previous div. */
+  display: flex !important;
+  width: 100%;
+  justify-content: flex-start !important;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  user-select: none;
+  font-weight: 600;
+  font-size: 13px;
+  color: #ddd;
+  background: #333;
+  border-bottom: 1px solid #444;
+  text-align: left;
+}
+
+.ssre-defaultHeader:hover {
+  background: #3a3a3a;
+}
+
+.ssre-expandIcon {
+  font-size: 10px;
+  color: #888;
+  transition: transform 0.15s ease;
+  width: 12px;
+  text-align: center;
+}
+
+.ssre-expandIconOpen {
+  transform: rotate(180deg);
+}
+
+/* Category sections */
+.ssre-category {
+  margin-bottom: 14px;
+}
+
+.ssre-categoryName {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #555;
+}
+
+.ssre-categoryNameToggle {
+  /* MUI ButtonBase — force full-width left-aligned layout so labels still
+     occupy the row width like the original div did. */
+  width: 100%;
+  justify-content: flex-start !important;
+  user-select: none;
+  gap: 6px;
+  padding: 4px 4px 4px 0 !important;
+  border-radius: 3px;
+  transition: background 0.1s ease;
+  text-align: left;
+}
+
+.ssre-categoryNameToggle:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.ssre-categoryNameToggle:focus-visible {
+  outline: 2px solid #5a7aaa;
+  outline-offset: 2px;
+}
+
+.ssre-categoryNameDisabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.ssre-categoryNameLabel {
+  flex: 1;
+}
+
+.ssre-tagList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Multi-column layout for wider viewports — checkboxes flow into columns
+   so the user can scan many biomes at a glance instead of scrolling a
+   long single column. The biome row is kept intact via break-inside. */
+@media (min-width: 900px) {
+  .ssre-tagList {
+    display: block;
+    column-count: 2;
+    column-gap: 16px;
+  }
+  .ssre-tagList > .ssre-biomeRow {
+    break-inside: avoid;
+    -webkit-column-break-inside: avoid;
+    page-break-inside: avoid;
+    display: block;
+  }
+}
+
+@media (min-width: 1300px) {
+  .ssre-tagList {
+    column-count: 3;
+  }
+}
+
+@media (min-width: 1700px) {
+  .ssre-tagList {
+    column-count: 4;
+  }
+}
+
+/* Individual biome row */
+.ssre-biomeRow {
+  border: 1px solid transparent;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+}
+
+.ssre-biomeRowSelected {
+  border-color: #4a7a4a;
+  background: #2a3a2a;
+}
+
+.ssre-biomeHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  user-select: none;
+  font-size: 13px;
+  color: #f0f0f0;
+  transition: background 0.1s ease;
+}
+
+.ssre-biomeHeader:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.ssre-checkbox {
+  font-size: 14px;
+  color: #bbb;
+  width: 18px;
+  text-align: center;
+}
+
+/* When the checkbox is rendered as a MUI ButtonBase (toggle) keep it square. */
+.ssre-checkboxButton {
+  height: 22px;
+  border-radius: 3px !important;
+  padding: 2px !important;
+}
+
+.ssre-checkboxChecked {
+  color: #7fdc7f;
+}
+
+.ssre-biomeLabel {
+  flex: 1;
+  font-size: 13px;
+  /* Rendered as MUI ButtonBase — left-align label text. */
+  justify-content: flex-start !important;
+  text-align: left;
+  padding: 2px 4px !important;
+  border-radius: 3px !important;
+}
+
+.ssre-biomeExpand {
+  /* MUI IconButton — size override for the inline chevron. */
+  font-size: 11px !important;
+  color: #888 !important;
+  padding: 4px !important;
+  transition: transform 0.15s ease;
+}
+
+.ssre-biomeExpand:hover {
+  color: #ddd !important;
+}
+
+.ssre-biomeExpandOpen {
+  transform: rotate(180deg);
+}
+
+/* Expanded config panel for a biome */
+.ssre-configPanel {
+  padding: 8px 12px 10px 38px;
+  background: rgba(0, 0, 0, 0.15);
+  border-top: 1px solid #3a3a3a;
+}
+
+.ssre-configRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  color: #ddd;
+}
+
+.ssre-configLabel {
+  min-width: 110px;
+  color: #f0f0f0;
+  font-weight: 600;
+}
+
+.ssre-useDefault {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #aaa;
+  cursor: pointer;
+  user-select: none;
+  padding: 2px 0;
+  margin-bottom: 6px;
+}
+
+.ssre-useDefault:hover {
+  color: #bbb;
+}
+
+/* Block filter chips — rendered as MUI <Chip>; the row is a flex container. */
+.ssre-blockList {
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.ssre-blockAdd {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+/* Summary at bottom */
+.ssre-summary {
+  margin-top: 12px;
+  padding: 8px 12px;
+  color: #e8e8e8;
+  background: #2c2c2c;
+  border-radius: 4px;
+  border: 1px solid #555;
+}

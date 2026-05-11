@@ -503,6 +503,28 @@ describe("ContentGenerator", function () {
       expect(rpManifest.modules[0].type).to.equal("resources");
     });
 
+    // Regression: recurring "invisible entity" root cause was that
+    // the BP manifest had no `dependencies` array linking to the RP, so Bedrock
+    // never loaded the RP and entities rendered invisible.
+    it("should declare a BP→RP dependency in the behavior pack manifest", async function () {
+      const definition: IMinecraftContentDefinition = {
+        schemaVersion: "1.0.0",
+        namespace: "bp_rp_dep_test",
+        displayName: "BP→RP Dep Test",
+      };
+
+      const generator = new ContentGenerator(definition);
+      const result = await generator.generate();
+
+      const bpManifest = result.behaviorPackManifest!.content as any;
+      const rpManifest = result.resourcePackManifest!.content as any;
+      assert.isArray(bpManifest.dependencies, "BP manifest must include dependencies array");
+      expect(bpManifest.dependencies.length).to.be.greaterThan(0);
+      const dep = bpManifest.dependencies.find((d: any) => d.uuid === rpManifest.header.uuid);
+      assert.isDefined(dep, "BP dependencies must reference the sibling RP header UUID");
+      expect(dep.version).to.deep.equal([1, 0, 0]);
+    });
+
     it("should use namespace in manifest if no displayName", async function () {
       const definition: IMinecraftContentDefinition = {
         schemaVersion: "1.0.0",
@@ -755,6 +777,178 @@ describe("ContentGenerator", function () {
 
       // Should have wearable component
       expect(components["minecraft:wearable"]).to.exist;
+    });
+
+    it("should render item.icon with generate+pixelArt into a distinct PNG", async function () {
+      // Same item authored two ways: once with just a color, once with an explicit
+      // ITextureSpec (generate + pixelArt). The two textures MUST differ — if they're
+      // identical, item.icon is being silently ignored (the bug we're preventing).
+      const defWithColor: any = {
+        schemaVersion: "1.0.0",
+        namespace: "test",
+        itemTypes: [{ id: "orc_tooth", displayName: "Orc Tooth", color: "#C0C0C0" }],
+      };
+      const defWithIcon: any = {
+        schemaVersion: "1.0.0",
+        namespace: "test",
+        itemTypes: [
+          {
+            id: "orc_tooth",
+            displayName: "Orc Tooth",
+            color: "#C0C0C0",
+            icon: {
+              generate: { type: "none", colors: [] },
+              pixelArt: [
+                {
+                  lines: [
+                    "XXXXXXXXXXXXXXXX",
+                    "XXXXXXXXXXXXXXXX",
+                    "XXXXXXXXXXXXXXXX",
+                    "XXXXXXXXXXXXXXXX",
+                    "XXXXXXXXXXXXXXXX",
+                    "XXXXXXXXXXXXXXXX",
+                    "XXXXXXXXXXXXXXXX",
+                    "XXXXXXXXXXXXXXXX",
+                    "XXXXXXXXXXXXXXXX",
+                    "XXXXXXXXXXXXXXXX",
+                    "XXXXXXXXXXXXXXXX",
+                    "XXXXXXXXXXXXXXXX",
+                    "XXXXXXXXXXXXXXXX",
+                    "XXXXXXXXXXXXXXXX",
+                    "XXXXXXXXXXXXXXXX",
+                    "XXXXXXXXXXXXXXXX",
+                  ],
+                  palette: { X: { hex: "#FF0000" } },
+                },
+              ],
+            },
+          },
+        ],
+      };
+
+      const r1 = await new ContentGenerator(defWithColor).generate();
+      const r2 = await new ContentGenerator(defWithIcon).generate();
+
+      const png1 = r1.textures.find((t) => t.path.endsWith("orc_tooth.png"))?.content as Uint8Array;
+      const png2 = r2.textures.find((t) => t.path.endsWith("orc_tooth.png"))?.content as Uint8Array;
+      expect(png1, "color-only PNG should be emitted").to.be.instanceOf(Uint8Array);
+      expect(png2, "icon-spec PNG should be emitted").to.be.instanceOf(Uint8Array);
+
+      // The two PNGs must not be byte-identical — if they are, item.icon was ignored.
+      let identical = png1.length === png2.length;
+      if (identical) {
+        for (let i = 0; i < png1.length; i++) {
+          if (png1[i] !== png2[i]) {
+            identical = false;
+            break;
+          }
+        }
+      }
+      expect(identical, "item.icon must change the generated PNG; got identical bytes").to.equal(false);
+    });
+
+    it("should skip placeholder PNG when item.icon is a file reference string", async function () {
+      const def: any = {
+        schemaVersion: "1.0.0",
+        namespace: "test",
+        itemTypes: [
+          {
+            id: "prebuilt_item",
+            displayName: "Prebuilt",
+            icon: "textures/items/prebuilt_item",
+          },
+        ],
+      };
+
+      const result = await new ContentGenerator(def).generate();
+      const png = result.textures.find((t) => t.path.endsWith("prebuilt_item.png"));
+      expect(png, "file-reference icon should not emit a placeholder PNG").to.be.undefined;
+    });
+
+    it("should render block.texture.all with generate into a distinct PNG vs mapColor fallback", async function () {
+      const defWithMapColor: any = {
+        schemaVersion: "1.0.0",
+        namespace: "test",
+        blockTypes: [{ id: "neon_block", displayName: "Neon Block", mapColor: "#C0C0C0" }],
+      };
+      const defWithTexture: any = {
+        schemaVersion: "1.0.0",
+        namespace: "test",
+        blockTypes: [
+          {
+            id: "neon_block",
+            displayName: "Neon Block",
+            mapColor: "#C0C0C0",
+            texture: {
+              all: {
+                generate: { type: "solid", colors: ["#FF00FF"] },
+              },
+            },
+          },
+        ],
+      };
+
+      const r1 = await new ContentGenerator(defWithMapColor).generate();
+      const r2 = await new ContentGenerator(defWithTexture).generate();
+
+      const png1 = r1.textures.find((t) => t.path.endsWith("neon_block.png"))?.content as Uint8Array;
+      const png2 = r2.textures.find((t) => t.path.endsWith("neon_block.png"))?.content as Uint8Array;
+      expect(png1, "mapColor-only block PNG should be emitted").to.be.instanceOf(Uint8Array);
+      expect(png2, "texture-spec block PNG should be emitted").to.be.instanceOf(Uint8Array);
+
+      let identical = png1.length === png2.length;
+      if (identical) {
+        for (let i = 0; i < png1.length; i++) {
+          if (png1[i] !== png2[i]) {
+            identical = false;
+            break;
+          }
+        }
+      }
+      expect(identical, "block.texture must change the generated PNG; got identical bytes").to.equal(false);
+    });
+
+    it("should emit minecraft:shooter + minecraft:chargeable for chargeable projectile items", async function () {
+      const def: any = {
+        schemaVersion: "1.0.0",
+        namespace: "test",
+        itemTypes: [
+          {
+            id: "magic_bow",
+            displayName: "Magic Bow",
+            projectile: { projectile: "arrow", chargeable: true, launchPower: 1.5 },
+          },
+        ],
+      };
+
+      const result = await new ContentGenerator(def).generate();
+      const item = result.itemBehaviors[0].content as any;
+      const components = item["minecraft:item"].components;
+      expect(components["minecraft:shooter"], "chargeable item should emit minecraft:shooter").to.exist;
+      expect(components["minecraft:shooter"].projectiles[0].projectile).to.equal("minecraft:arrow");
+      expect(components["minecraft:chargeable"], "chargeable item should emit minecraft:chargeable").to.exist;
+      expect(components["minecraft:throwable"], "chargeable item should NOT emit minecraft:throwable").to.not.exist;
+    });
+
+    it("should emit minecraft:throwable for non-chargeable projectile items", async function () {
+      const def: any = {
+        schemaVersion: "1.0.0",
+        namespace: "test",
+        itemTypes: [
+          {
+            id: "snow_ball",
+            displayName: "Snow Ball",
+            projectile: { projectile: "snowball" },
+          },
+        ],
+      };
+
+      const result = await new ContentGenerator(def).generate();
+      const item = result.itemBehaviors[0].content as any;
+      const components = item["minecraft:item"].components;
+      expect(components["minecraft:throwable"], "non-chargeable item should emit minecraft:throwable").to.exist;
+      expect(components["minecraft:projectile"].projectile_entity).to.equal("minecraft:snowball");
+      expect(components["minecraft:shooter"], "non-chargeable item should NOT emit minecraft:shooter").to.not.exist;
     });
   });
 
@@ -1522,6 +1716,26 @@ describe("Advanced ContentGenerator Tests", function () {
 
       // Should have swimming navigation
       expect(components["minecraft:navigation.swim"]).to.exist;
+    });
+
+    // Regression: generated aquatic entities had BOTH
+    // `minecraft:movement.basic` (added as default) and `minecraft:movement.sway`
+    // (added by the aquatic trait). Bedrock allows only one move-control
+    // component and emits "Mobs can only have 1 Move Control Component".
+    it("should not emit two minecraft:movement.* controllers on aquatic entities", async function () {
+      const generator = new ContentGenerator(AdvancedContentFixtures.AQUATIC_ENTITY);
+      const result = await generator.generate();
+
+      const entity = result.entityBehaviors[0].content as any;
+      const components = entity["minecraft:entity"].components;
+      const movementKeys = Object.keys(components).filter((k) => k.startsWith("minecraft:movement."));
+      expect(
+        movementKeys.length,
+        `expected exactly one movement.* controller, got ${movementKeys.join(", ")}`
+      ).to.equal(1);
+      // The aquatic trait's controller (sway) should win over the default basic.
+      expect(components["minecraft:movement.basic"]).to.be.undefined;
+      expect(components["minecraft:movement.sway"]).to.exist;
     });
 
     it("should handle rideable entity", async function () {

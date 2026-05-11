@@ -482,8 +482,8 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
               defaultValue={targetStrings[0]}
               onChange={this._handleTrackChange}
             >
-              {targetStrings.map((targetString, index) => (
-                <MenuItem key={index} value={targetString}>
+              {targetStrings.map((targetString) => (
+                <MenuItem key={targetString} value={targetString}>
                   {targetString}
                 </MenuItem>
               ))}

@@ -14,7 +14,6 @@ import Manifest, { parseManifest } from "../../../minecraft/manifests/Manifest";
 import { Tests } from "./CheckManifestData";
 import * as ValidationData from "./CheckManifestData";
 import { ProjectItemType } from "../../../app/IProjectItemData";
-import ProjectUtilities from "../../../app/ProjectUtilities";
 
 type PackDesc = {
   type?: PackType;
@@ -219,7 +218,13 @@ export default class CheckManifestGenerator implements IProjectInfoGenerator {
       return results;
     }
 
-    const hasVVFiles = ProjectUtilities.isVibrantVisualsEnhanced(manifestItem.project);
+    // Check for VV files scoped to THIS pack only, not the entire project.
+    // A project may have multiple resource packs where only some contain PBR content.
+    const owningPack = manifestItem.project.packs.find(
+      (p) => p.projectItem.projectPath && manifestItem.projectPath?.startsWith(p.projectItem.projectPath)
+    );
+
+    const hasVVFilesInPack = owningPack?.hasVibrantVisualsContent() ?? false;
 
     const capabilities = manifest.capabilities;
     let hasPbr = false;
@@ -245,7 +250,7 @@ export default class CheckManifestGenerator implements IProjectInfoGenerator {
       }
     }
 
-    if (hasVVFiles && !hasPbr) {
+    if (hasVVFilesInPack && !hasPbr && !manifestItem.project.isVanillaEditSession) {
       results.push(
         resultFromTest(Tests.HasPBRFilesButNoManifestCapability, {
           id: this.id,

@@ -6,11 +6,11 @@
         "identifier": "geometry.elephant",
         "texture_width": 128,
         "texture_height": 58,
-        "visible_bounds_width": 1,
-        "visible_bounds_height": 1,
+        "visible_bounds_width": 3,
+        "visible_bounds_height": 2,
         "visible_bounds_offset": [
           0,
-          0.5,
+          0.5625,
           0
         ]
       },

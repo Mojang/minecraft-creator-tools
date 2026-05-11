@@ -660,6 +660,9 @@ export default class FormJsonDocumentationGenerator {
     formObj.generated_doNotEdit = undefined;
     formObj.generatedFromSchema_doNotEdit = undefined;
 
+    // Normalize any legacy numeric dataType values to string equivalents
+    FieldUtilities.normalizeFormFieldDataTypes(formObj);
+
     outputFile.setContent(JSON.stringify(formObj, undefined, 2));
 
     await outputFile.saveContent();
@@ -1279,6 +1282,12 @@ export default class FormJsonDocumentationGenerator {
       const folder = schemaFolder.folders[folderName];
 
       if (folder) {
+        // Skip beta schema folders — they contain experimental definitions
+        // that should not be included in form generation or documentation.
+        if (folder.name === "beta") {
+          continue;
+        }
+
         if (
           !folder.name.startsWith("1.") &&
           !folder.name.startsWith("v1") &&

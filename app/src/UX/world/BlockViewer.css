@@ -164,7 +164,7 @@
   color: #aaaacc;
 }
 
-/* Headless mode - full viewport canvas for CLI rendering */
+/* Run without display mode - full viewport canvas for CLI rendering */
 .bv-headless {
   padding: 0;
   margin: 0;

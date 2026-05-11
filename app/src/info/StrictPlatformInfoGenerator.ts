@@ -34,6 +34,10 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const infoItems: ProjectInfoItem[] = [];
 
+    if (project.isVanillaEditSession) {
+      return infoItems;
+    }
+
     const itemsCopy = project.getItemsCopy();
 
     for (let i = 0; i < itemsCopy.length; i++) {

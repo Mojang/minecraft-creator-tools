@@ -1,0 +1,118 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   LOOT ENTRY EDITOR - Inline editor for a loot table entry's properties
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.lee-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 3px solid #66bb6a;
+}
+
+.lee-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.lee-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.lee-field-inline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lee-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.lee-input {
+  padding: 4px 8px;
+  font-size: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #e0e0e0;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.lee-input:focus {
+  border-color: #66bb6a;
+}
+
+.lee-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.lee-input-name {
+  width: 200px;
+}
+
+.lee-input-number {
+  width: 56px;
+  text-align: center;
+}
+
+.lee-select {
+  padding: 4px 8px;
+  font-size: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #e0e0e0;
+  outline: none;
+  cursor: pointer;
+}
+
+.lee-select:focus {
+  border-color: #66bb6a;
+}
+
+.lee-probability-hint {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+}
+
+.lee-quantity-section {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lee-quantity-separator {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.lee-done-btn {
+  padding: 4px 14px;
+  font-size: 11px;
+  border: 1px solid rgba(76, 175, 80, 0.4);
+  border-radius: 3px;
+  background: rgba(76, 175, 80, 0.15);
+  color: #81c784;
+  cursor: pointer;
+  transition: background 0.15s;
+  align-self: flex-end;
+}
+
+.lee-done-btn:hover {
+  background: rgba(76, 175, 80, 0.25);
+}

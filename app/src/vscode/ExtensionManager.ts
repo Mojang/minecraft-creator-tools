@@ -1808,7 +1808,7 @@ export default class ExtensionManager {
   <script defer="true" src="${scriptPath}"></script>
   </head>
     <body>
-      <div id="root"></div>
+      <div id="root" translate="no" class="notranslate"></div>
     </body>
   </html>`;
   }
@@ -1915,9 +1915,41 @@ export default class ExtensionManager {
               const jsonOpenItem = JSON.parse(args.data);
 
               if (jsonOpenItem.path) {
-                //Log.verbose("Opening item at " + jsonOpenItem.path);
-                const uri = vscode.Uri.parse(jsonOpenItem.path);
-                const isJsonFile = jsonOpenItem.path.toLowerCase().endsWith(".json");
+                let rawPath: string = jsonOpenItem.path;
+
+                // Normalize path shapes coming from the webview:
+                //   - Windows absolute paths (`C:/…`, `C:\…`)           -> Uri.file
+                //   - POSIX absolute paths (`/…`)                       -> Uri.file
+                //   - `file:/c:/…` or `file:/home/...` (malformed)      -> repair to `file:///…`, then Uri.parse
+                //   - `file:///c:/…` (proper file URI)                  -> Uri.parse
+                //   - Other schemes (e.g. `vscode-vfs://`)              -> Uri.parse
+                //
+                // Why this matters: `Uri.parse("C:/Users/x/main.ts")` parses scheme=`c`,
+                // which then fails to open and shows VS Code's "The editor could not be
+                // opened because the file was not found" dialog. Also, stripping `file:/`
+                // entirely would turn POSIX malformed URIs like `file:/home/user/a.json`
+                // into `home/user/a.json`, incorrectly losing the leading slash.
+                const fileUriSingleSlash = /^file:\/(?!\/)/i; // matches `file:/X` but not `file://…`
+                if (fileUriSingleSlash.test(rawPath)) {
+                  rawPath = rawPath.replace(fileUriSingleSlash, "file:///");
+                }
+
+                const looksLikeWindowsPath = /^[a-zA-Z]:[\\/]/.test(rawPath);
+                const looksLikePosixPath = rawPath.startsWith("/") && !rawPath.startsWith("//");
+                const hasFullScheme = /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(rawPath);
+
+                let uri: vscode.Uri;
+                if (!hasFullScheme && (looksLikeWindowsPath || looksLikePosixPath)) {
+                  uri = vscode.Uri.file(rawPath);
+                } else {
+                  uri = vscode.Uri.parse(rawPath);
+                }
+
+                Log.verbose(
+                  `asyncopenItem: rawPath="${jsonOpenItem.path}" -> normalized="${rawPath}" -> uri="${uri.toString()}" (scheme=${uri.scheme}, fsPath=${uri.fsPath})`
+                );
+
+                const isJsonFile = rawPath.toLowerCase().endsWith(".json");
 
                 // Check user setting for default editor preference
                 const config = vscode.workspace.getConfiguration("mctools.jsonEditor");

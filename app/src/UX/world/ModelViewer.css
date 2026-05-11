@@ -59,7 +59,11 @@
 
 .mov-retry-button {
   padding: 6px 16px;
-  background-color: #52a535;
+  /* Darker green than the brand `#52a535` so white text reaches 6.7:1 contrast
+   * (WCAG 1.4.3 AA). The brand green at `#52a535` only yields ~3.1:1 with
+   * white, which fails AA for non-large text. The lighter brand green is
+   * preserved on hover for visual feedback (still ≥3:1 with white). */
+  background-color: #2d6a14;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -70,7 +74,7 @@
 }
 
 .mov-retry-button:hover {
-  background-color: #63c244;
+  background-color: #3a7d20;
 }
 
 /* High-contrast mode: use system colors for visibility */

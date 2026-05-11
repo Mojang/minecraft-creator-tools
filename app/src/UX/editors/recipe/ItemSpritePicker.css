@@ -1,0 +1,175 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   ITEM SPRITE PICKER - Searchable item selection panel
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.rcisp-container {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  background: #f5f5f5;
+  overflow: hidden;
+}
+
+.rcisp-container-dark {
+  background: #2d2d2d;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.rcisp-search-bar {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+}
+
+.rcisp-container-dark .rcisp-search-bar {
+  background: #383838;
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.rcisp-search-input {
+  flex: 1;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+  padding: 4px 8px;
+  font-size: 12px;
+  outline: none;
+  background: #fafafa;
+  color: #333333;
+}
+
+.rcisp-container-dark .rcisp-search-input {
+  background: #2a2a2a;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #e0e0e0;
+}
+
+.rcisp-search-input:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 0 1px rgba(76, 175, 80, 0.3);
+}
+
+.rcisp-scroll-area {
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.rcisp-category {
+  padding: 2px 0;
+}
+
+.rcisp-category-header {
+  padding: 4px 10px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #888888;
+  user-select: none;
+}
+
+.rcisp-container-dark .rcisp-category-header {
+  color: #999999;
+}
+
+.rcisp-item-grid {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 2px 6px;
+  gap: 0px;
+}
+
+.rcisp-item-cell {
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background-color 0.1s;
+}
+
+.rcisp-item-cell:hover {
+  background: rgba(76, 175, 80, 0.15);
+}
+
+.rcisp-item-cell-selected {
+  background: rgba(76, 175, 80, 0.3);
+  outline: 2px solid #4caf50;
+  outline-offset: -1px;
+}
+
+.rcisp-item-cell[draggable="true"] {
+  cursor: grab;
+}
+
+.rcisp-item-cell[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.rcisp-empty-message {
+  padding: 16px;
+  text-align: center;
+  font-size: 12px;
+  color: #888888;
+  font-style: italic;
+}
+
+.rcisp-container-dark .rcisp-empty-message {
+  color: #999999;
+}
+
+.rcisp-raw-input-row {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  gap: 4px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.rcisp-container-dark .rcisp-raw-input-row {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.rcisp-raw-input {
+  flex: 1;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+  padding: 3px 6px;
+  font-size: 11px;
+  font-family: monospace;
+  outline: none;
+  background: #fafafa;
+  color: #333333;
+}
+
+.rcisp-container-dark .rcisp-raw-input {
+  background: #2a2a2a;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #e0e0e0;
+}
+
+.rcisp-raw-input:focus {
+  border-color: #4caf50;
+}
+
+.rcisp-raw-button {
+  padding: 3px 8px;
+  font-size: 11px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  background: #e8e8e8;
+  cursor: pointer;
+  color: #333333;
+}
+
+.rcisp-container-dark .rcisp-raw-button {
+  background: #484848;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #e0e0e0;
+}
+
+.rcisp-raw-button:hover {
+  background: #4caf50;
+  color: #ffffff;
+  border-color: #4caf50;
+}

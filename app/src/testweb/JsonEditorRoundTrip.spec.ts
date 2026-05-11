@@ -73,20 +73,30 @@ async function setMonacoContent(page: Page, content: string): Promise<void> {
 /**
  * Navigate away from the current file by clicking another sidebar item,
  * then return to the target file.
+ *
+ * Strategy: click a known stable, non-folder item (e.g. "Project Settings"
+ * or "Dashboard") via its treeitem role rather than walking `.pit-name`
+ * elements — the latter can land on a section header and collapse the
+ * Scripts group, hiding the file we want to reopen afterwards.
  */
 async function navigateAwayAndBack(page: Page, targetFilePattern: string): Promise<void> {
-  const sidebarItems = page.locator(".pit-name");
-  const count = await sidebarItems.count();
-  const targetLower = targetFilePattern.toLowerCase();
-
-  for (let i = 0; i < Math.min(count, 15); i++) {
-    const item = sidebarItems.nth(i);
-    if (!(await item.isVisible({ timeout: 500 }).catch(() => false))) continue;
-    const text = ((await item.textContent()) || "").trim().toLowerCase();
-    if (text.length > 0 && !text.includes(targetLower)) {
+  const candidates = ["Project Settings", "Dashboard"];
+  for (const name of candidates) {
+    const item = page.getByRole("treeitem", { name }).first();
+    if (await item.isVisible({ timeout: 500 }).catch(() => false)) {
       await item.click();
       await page.waitForTimeout(2000);
       break;
+    }
+  }
+
+  // Re-expand the Scripts section if it was collapsed, so `main` is visible.
+  const scriptsSection = page.getByRole("treeitem", { name: /^scripts/i }).first();
+  if (await scriptsSection.isVisible({ timeout: 500 }).catch(() => false)) {
+    const expanded = await scriptsSection.getAttribute("aria-expanded").catch(() => null);
+    if (expanded === "false") {
+      await scriptsSection.click();
+      await page.waitForTimeout(500);
     }
   }
 

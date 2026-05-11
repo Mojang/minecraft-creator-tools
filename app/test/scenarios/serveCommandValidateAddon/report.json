@@ -172,6 +172,11 @@
           "defaultMessage": "Behavior pack manifest found."
         }
       },
+      "CDWORLDDATA": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Custom Dimension World Data Validation (CDWORLDDATA)"
+        }
+      },
       "MINENGINEVER": {
         "1": {
           "defaultMessage": "Min Engine Version completed successfully",
@@ -399,6 +404,11 @@
       "gIx": 200,
       "iTp": 2,
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
+    },
+    {
+      "gId": "CDWORLDDATA",
+      "gIx": 2,
+      "iTp": 8
     },
     {
       "gId": "MINENGINEVER",

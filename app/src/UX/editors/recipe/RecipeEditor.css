@@ -1,0 +1,120 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   RECIPE EDITOR - Main shell and shared styles
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.rcre-area {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.rcre-loading {
+  padding: 24px;
+  text-align: center;
+  font-size: 14px;
+  color: #888888;
+}
+
+.rcre-main-area {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.rcre-content-area {
+  padding: 0;
+}
+
+/* ─── Properties Panel ─── */
+.rcre-properties-panel {
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rcre-properties-panel-dark {
+  color: #e0e0e0;
+}
+
+.rcre-prop-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rcre-prop-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555555;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.rcre-prop-label-dark {
+  color: #aaaaaa;
+}
+
+.rcre-prop-input {
+  padding: 6px 10px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  font-size: 13px;
+  background: #ffffff;
+  color: #333333;
+  outline: none;
+  max-width: 400px;
+}
+
+.rcre-prop-input-dark {
+  background: #383838;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #e0e0e0;
+}
+
+.rcre-prop-input:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 0 1px rgba(76, 175, 80, 0.3);
+}
+
+.rcre-tag-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rcre-tag-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #555555;
+  cursor: pointer;
+  user-select: none;
+}
+
+.rcre-tag-item-dark {
+  color: #cccccc;
+}
+
+.rcre-tag-item input[type="checkbox"] {
+  accent-color: #4caf50;
+}
+
+/* ─── Unsupported recipe type fallback ─── */
+.rcre-unsupported {
+  padding: 24px;
+  text-align: center;
+  color: #888888;
+}
+
+.rcre-unsupported-type {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.rcre-unsupported-hint {
+  font-size: 12px;
+  color: #aaaaaa;
+}

@@ -47,6 +47,7 @@ import {
 import Utilities from "../../core/Utilities";
 import IProjectTheme from "../types/IProjectTheme";
 import type { IProjectItemEditorNavigationTarget } from "../project/ProjectItemEditor";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
 // Minimum widths for resizable panes
 const MIN_EDITOR_WIDTH = 300;
@@ -54,7 +55,7 @@ const MIN_PREVIEW_WIDTH = 200;
 const MAX_PREVIEW_WIDTH = 600;
 const DEFAULT_PREVIEW_WIDTH = 260;
 
-interface IJsonEditorProps {
+interface IJsonEditorProps extends WithLocalizationProps {
   heightOffset: number;
   readOnly: boolean;
   project: Project;
@@ -88,7 +89,7 @@ interface IJsonEditorState {
   previewWidth: number;
 }
 
-export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorState> {
+class JsonEditor extends Component<IJsonEditorProps, IJsonEditorState> {
   editor?: MonacoType.editor.IStandaloneCodeEditor;
   diffEditor?: MonacoType.editor.IDiffEditor;
   _needsPersistence: boolean = false;
@@ -827,7 +828,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
 
     const position = this.editor.getPosition();
     if (!position) {
-      this._showStatusMessage("Place cursor on a JSON property to see documentation.");
+      this._showStatusMessage(this.props.intl.formatMessage({ id: "project_editor.json_ed.place_cursor_property" }));
       return;
     }
 
@@ -848,7 +849,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
       trimmed === "]" ||
       trimmed === ","
     ) {
-      this._showStatusMessage("Place cursor on a JSON property name to see documentation.");
+      this._showStatusMessage(this.props.intl.formatMessage({ id: "project_editor.json_ed.place_cursor_name" }));
       return;
     }
 
@@ -869,7 +870,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
     const markers = this._monaco.editor.getModelMarkers({ resource: model.uri });
 
     if (markers.length === 0) {
-      this._showStatusMessage("No issues found — nothing to fix.");
+      this._showStatusMessage(this.props.intl.formatMessage({ id: "project_editor.json_ed.no_issues" }));
       return;
     }
 
@@ -1201,7 +1202,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
     if (this.state.livePreviewError) {
       return (
         <div className="jse-preview-error">
-          <div className="jse-preview-error-title">⚠️ JSON Parse Error</div>
+          <div className="jse-preview-error-title">⚠️ {this.props.intl.formatMessage({ id: "project_editor.json_ed.json_parse_error" })}</div>
           <div className="jse-preview-error-message">{this.state.livePreviewError}</div>
         </div>
       );
@@ -1381,7 +1382,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
           }}
         >
           <div className="jse-toolBar">
-            <Stack direction="row" spacing={0.5} aria-label="JSON editor toolbar" />
+            <Stack direction="row" spacing={0.5} aria-label={this.props.intl.formatMessage({ id: "project_editor.json_ed.toolbar_aria" })} />
           </div>
           <div className="jse-content">
             <div className="jse-editor-pane">
@@ -1426,8 +1427,8 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
         interior = (
           <div>
             <div className="jse-dffEditorHeader">
-              <div className="jse-coreLabel">Initial snapshot</div>
-              <div className="jse-diffLabel">{coreUri || "Current file"}</div>
+              <div className="jse-coreLabel">{this.props.intl.formatMessage({ id: "project_editor.json_ed.initial_snapshot" })}</div>
+              <div className="jse-diffLabel">{coreUri || this.props.intl.formatMessage({ id: "project_editor.json_ed.current_file" })}</div>
             </div>
             <div>
               <DiffEditor
@@ -1511,6 +1512,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
                 fontSize: this.props.preferredTextSize,
                 readOnly: this.props.readOnly,
                 renderValidationDecorations: this.props.readOnly ? "on" : "editable",
+                wordWrap: "on",
                 codeLens: true,
                 inlayHints: { enabled: "on" },
                 quickSuggestions: {
@@ -1545,6 +1547,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
                 fontSize: this.props.preferredTextSize,
                 readOnly: this.props.readOnly,
                 renderValidationDecorations: this.props.readOnly ? "on" : "editable",
+                wordWrap: "on",
                 codeLens: true,
                 inlayHints: { enabled: "on" },
                 quickSuggestions: {
@@ -1588,42 +1591,42 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
         }}
       >
         <div className="jse-toolBar">
-          <Stack direction="row" spacing={0.5} aria-label="JSON editor toolbar">
-            <IconButton size="small" onClick={this._zoomIn} title="Zoom into the JSON text editor" aria-label="Zoom in">
+          <Stack direction="row" spacing={0.5} aria-label={this.props.intl.formatMessage({ id: "project_editor.json_ed.toolbar_aria" })}>
+            <IconButton size="small" onClick={this._zoomIn} title={this.props.intl.formatMessage({ id: "project_editor.json_ed.zoom_in_title" })} aria-label="Zoom in">
               <FontAwesomeIcon icon={faSearchPlus} />
             </IconButton>
             <IconButton
               size="small"
               onClick={this._zoomOut}
-              title="Zoom out of the JSON text editor"
+              title={this.props.intl.formatMessage({ id: "project_editor.json_ed.zoom_out_title" })}
               aria-label="Zoom out"
             >
               <FontAwesomeIcon icon={faSearchMinus} />
             </IconButton>
-            <IconButton size="small" onClick={this._openFind} title="Find in JSON (Ctrl+F)" aria-label="Find in JSON">
+            <IconButton size="small" onClick={this._openFind} title={this.props.intl.formatMessage({ id: "project_editor.json_ed.find_title" })} aria-label={this.props.intl.formatMessage({ id: "project_editor.json_ed.find_aria" })}>
               <FontAwesomeIcon icon={faSearch} />
             </IconButton>
             <IconButton
               size="small"
               onClick={this._showHoverDocs}
-              title="Show hover documentation (Ctrl+K Ctrl+I)"
-              aria-label="Show hover documentation"
+              title={this.props.intl.formatMessage({ id: "project_editor.json_ed.hover_docs_title" })}
+              aria-label={this.props.intl.formatMessage({ id: "project_editor.json_ed.hover_docs_aria" })}
             >
               <FontAwesomeIcon icon={faEye} />
             </IconButton>
             <IconButton
               size="small"
               onClick={this._showQuickFix}
-              title="Go to next issue and show quick fixes (Ctrl+.)"
-              aria-label="Go to next issue and show quick fixes"
+              title={this.props.intl.formatMessage({ id: "project_editor.json_ed.quick_fix_title" })}
+              aria-label={this.props.intl.formatMessage({ id: "project_editor.json_ed.quick_fix_aria" })}
             >
               <FontAwesomeIcon icon={faExclamationTriangle} />
             </IconButton>
             <IconButton
               size="small"
               onClick={this._toggleQuickDiff}
-              title={this.state.showQuickDiff ? "Hide diff view" : "Compare with initial snapshot"}
-              aria-label="Toggle diff view"
+              title={this.state.showQuickDiff ? this.props.intl.formatMessage({ id: "project_editor.json_ed.hide_diff" }) : this.props.intl.formatMessage({ id: "project_editor.json_ed.compare_snapshot" })}
+              aria-label={this.props.intl.formatMessage({ id: "project_editor.json_ed.toggle_diff_aria" })}
             >
               <FontAwesomeIcon icon={faCodeBranch} />
             </IconButton>
@@ -1631,8 +1634,8 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
               <IconButton
                 size="small"
                 onClick={this._toggleLivePreview}
-                title={this.state.showLivePreview ? "Hide live preview" : "Show live preview"}
-                aria-label="Toggle live preview"
+                title={this.state.showLivePreview ? this.props.intl.formatMessage({ id: "project_editor.json_ed.hide_preview" }) : this.props.intl.formatMessage({ id: "project_editor.json_ed.show_preview" })}
+                aria-label={this.props.intl.formatMessage({ id: "project_editor.json_ed.toggle_preview_aria" })}
               >
                 <FontAwesomeIcon icon={this.state.showLivePreview ? faEyeSlash : faEye} />
               </IconButton>
@@ -1659,7 +1662,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
               <div
                 className="jse-resize-divider"
                 onMouseDown={this._handleResizeStart}
-                title="Drag to resize preview panel"
+                title={this.props.intl.formatMessage({ id: "project_editor.json_ed.resize_title" })}
               >
                 <div className="jse-resize-handle" />
               </div>
@@ -1676,3 +1679,6 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
     );
   }
 }
+
+export { JsonEditor };
+export default withLocalization(JsonEditor);

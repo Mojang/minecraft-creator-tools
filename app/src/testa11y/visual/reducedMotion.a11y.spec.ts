@@ -41,8 +41,14 @@ test.describe("Reduced Motion — Home Page @comprehensive-a11y @reduced-motion 
         const animDuration = parseFloat(styles.animationDuration);
         const transitionDuration = parseFloat(styles.transitionDuration);
 
-        // Flag elements with non-trivial animations still running
-        if (animName !== "none" && animDuration > 0) {
+        // Only flag animations that take longer than 200ms — anything
+        // shorter is imperceptible to a user who has requested reduced
+        // motion. This avoids false positives from no-op animations that
+        // libraries use as event-firing hooks (e.g. MUI's
+        // `mui-auto-fill-cancel`, which has a 0.00001s duration whose only
+        // purpose is to trigger `animationend` so MUI can detect browser
+        // autofill).
+        if (animName !== "none" && animDuration > 0.2) {
           const tag = el.tagName.toLowerCase();
           const cls = el.className && typeof el.className === "string" ? el.className.split(" ")[0] : "";
           results.push(`${tag}.${cls}: animation=${animName} (${animDuration}s)`);
@@ -61,9 +67,19 @@ test.describe("Reduced Motion — Home Page @comprehensive-a11y @reduced-motion 
       console.log("Elements with animations despite reduced-motion:", animatedElements);
     }
 
-    // Warn but don't fail — some CSS libraries may have residual animations.
-    // A strict pass would require 0 animations.
-    console.log(`Animated elements with reduced-motion: ${animatedElements.length} (should ideally be 0)`);
+    console.log(`Animated elements with reduced-motion: ${animatedElements.length} (should be 0)`);
+
+    // Hardened: we install a global `@media (prefers-reduced-motion: reduce)`
+    // rule in `App.css` that neutralizes every animation and transition
+    // duration to 0.01ms, so any leak indicates either (a) an inline `style`
+    // override that forgot to gate on the preference, or (b) a `!important`
+    // animation duration somewhere that overrides our global rule. Either
+    // way it is a real bug — fail the test and surface the offending
+    // selectors.
+    expect(
+      animatedElements,
+      "No elements should have non-trivial animations / transitions when the user has requested reduced motion"
+    ).toHaveLength(0);
   });
 });
 

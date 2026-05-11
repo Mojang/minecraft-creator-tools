@@ -73,14 +73,15 @@ export { DoorBlockTrait } from "./DoorBlockTrait";
 export { TrapdoorBlockTrait } from "./TrapdoorBlockTrait";
 export { ButtonBlockTrait } from "./ButtonBlockTrait";
 export { LeverBlockTrait } from "./LeverBlockTrait";
-export { ContainerBlockTrait } from "./ContainerBlockTrait";
 export { CraftingStationBlockTrait } from "./CraftingStationBlockTrait";
+export { RedstoneProducerBlockTrait } from "./RedstoneProducerBlockTrait";
 
 // Placement
 export { RotatableHorizontalBlockTrait } from "./RotatableHorizontalBlockTrait";
 export { RotatableAllBlockTrait } from "./RotatableAllBlockTrait";
 export { SlabBlockTrait } from "./SlabBlockTrait";
 export { StairsBlockTrait } from "./StairsBlockTrait";
+export { FenceBlockTrait } from "./FenceBlockTrait";
 
 // Special
 export { LightSourceBlockTrait } from "./LightSourceBlockTrait";
@@ -89,6 +90,9 @@ export { PassableBlockTrait } from "./PassableBlockTrait";
 export { TransparentBlockTrait } from "./TransparentBlockTrait";
 export { GravityAffectedBlockTrait } from "./GravityAffectedBlockTrait";
 export { CropBlockTrait } from "./CropBlockTrait";
+export { FlammableBlockTrait } from "./FlammableBlockTrait";
+export { ExplosionResistantBlockTrait } from "./ExplosionResistantBlockTrait";
+export { SlipperyBlockTrait } from "./SlipperyBlockTrait";
 
 // ============================================================================
 // ITEM TRAITS
@@ -162,18 +166,22 @@ import { DoorBlockTrait } from "./DoorBlockTrait";
 import { TrapdoorBlockTrait } from "./TrapdoorBlockTrait";
 import { ButtonBlockTrait } from "./ButtonBlockTrait";
 import { LeverBlockTrait } from "./LeverBlockTrait";
-import { ContainerBlockTrait } from "./ContainerBlockTrait";
 import { CraftingStationBlockTrait } from "./CraftingStationBlockTrait";
+import { RedstoneProducerBlockTrait } from "./RedstoneProducerBlockTrait";
 import { RotatableHorizontalBlockTrait } from "./RotatableHorizontalBlockTrait";
 import { RotatableAllBlockTrait } from "./RotatableAllBlockTrait";
 import { SlabBlockTrait } from "./SlabBlockTrait";
 import { StairsBlockTrait } from "./StairsBlockTrait";
+import { FenceBlockTrait } from "./FenceBlockTrait";
 import { LightSourceBlockTrait } from "./LightSourceBlockTrait";
 import { VariableLightBlockTrait } from "./VariableLightBlockTrait";
 import { PassableBlockTrait } from "./PassableBlockTrait";
 import { TransparentBlockTrait } from "./TransparentBlockTrait";
 import { GravityAffectedBlockTrait } from "./GravityAffectedBlockTrait";
 import { CropBlockTrait } from "./CropBlockTrait";
+import { FlammableBlockTrait } from "./FlammableBlockTrait";
+import { ExplosionResistantBlockTrait } from "./ExplosionResistantBlockTrait";
+import { SlipperyBlockTrait } from "./SlipperyBlockTrait";
 
 // Item traits
 import { SwordItemTrait } from "./SwordItemTrait";
@@ -250,14 +258,15 @@ export function registerAllBlockTraits(): void {
   TraitRegistry.registerBlockTrait(new TrapdoorBlockTrait());
   TraitRegistry.registerBlockTrait(new ButtonBlockTrait());
   TraitRegistry.registerBlockTrait(new LeverBlockTrait());
-  TraitRegistry.registerBlockTrait(new ContainerBlockTrait());
   TraitRegistry.registerBlockTrait(new CraftingStationBlockTrait());
+  TraitRegistry.registerBlockTrait(new RedstoneProducerBlockTrait());
 
   // Placement
   TraitRegistry.registerBlockTrait(new RotatableHorizontalBlockTrait());
   TraitRegistry.registerBlockTrait(new RotatableAllBlockTrait());
   TraitRegistry.registerBlockTrait(new SlabBlockTrait());
   TraitRegistry.registerBlockTrait(new StairsBlockTrait());
+  TraitRegistry.registerBlockTrait(new FenceBlockTrait());
 
   // Special
   TraitRegistry.registerBlockTrait(new LightSourceBlockTrait());
@@ -266,6 +275,9 @@ export function registerAllBlockTraits(): void {
   TraitRegistry.registerBlockTrait(new TransparentBlockTrait());
   TraitRegistry.registerBlockTrait(new GravityAffectedBlockTrait());
   TraitRegistry.registerBlockTrait(new CropBlockTrait());
+  TraitRegistry.registerBlockTrait(new FlammableBlockTrait());
+  TraitRegistry.registerBlockTrait(new ExplosionResistantBlockTrait());
+  TraitRegistry.registerBlockTrait(new SlipperyBlockTrait());
 }
 
 /**

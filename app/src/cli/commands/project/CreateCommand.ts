@@ -74,6 +74,17 @@ export class CreateCommand extends CommandBase {
 
   configure(cmd: Command): void {
     // Arguments are configured via metadata.arguments
+
+    cmd.addHelpText(
+      "after",
+      "\nExamples:\n" +
+        "  $ mct create -y -o ./myproj                                     # Non-interactive with defaults\n" +
+        "  $ mct create myproj addonStarter alice \"My new addon\" -o .      # Fully specified, no prompts\n" +
+        "  $ mct create -y -o ./myproj alice \"Quick start\"                 # Skip the long prompt chain\n" +
+        "  $ mct create                                                    # Fully interactive (asks every question)\n" +
+        "\nTip: pass `-y` (or `--yes`) in CI to accept all defaults.\n" +
+        "Tip: run `mct gallery` to see the list of available templates.\n"
+    );
   }
 
   async execute(context: ICommandContext): Promise<void> {
@@ -118,7 +129,9 @@ export class CreateCommand extends CommandBase {
     ) {
       if (!LocalUtilities.eulaAcceptedViaEnvironment) {
         context.log.error(
-          "EULA not accepted. Run 'npx mct eula' first, or set MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA=true"
+          "EULA not accepted. Accept it via:\n" +
+            "  Interactive:    mct eula\n" +
+            "  Non-interactive: mct eula --accept   (or set MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA=true)"
         );
         context.setExitCode(ErrorCodes.INIT_ERROR);
         return;
@@ -141,17 +154,24 @@ export class CreateCommand extends CommandBase {
     let title = newName;
 
     if (!title) {
-      const titleQuestions: DistinctQuestion<any>[] = [];
-      titleQuestions.push({
-        type: "input",
-        name: "title",
-        default: "My Project",
-        message: "What's your preferred project title?",
-      });
-      const titleAnswer = await inquirer.prompt(titleQuestions);
+      if (context.yes) {
+        // Non-interactive: use a sensible default. Pro users in CI usually
+        // pass `name` as the first positional arg; this fallback exists only
+        // to keep --yes from hanging on stdin.
+        title = "MyProject";
+      } else {
+        const titleQuestions: DistinctQuestion<any>[] = [];
+        titleQuestions.push({
+          type: "input",
+          name: "title",
+          default: "My Project",
+          message: "What's your preferred project title?",
+        });
+        const titleAnswer = await inquirer.prompt(titleQuestions);
 
-      if (titleAnswer["title"]) {
-        title = titleAnswer["title"];
+        if (titleAnswer["title"]) {
+          title = titleAnswer["title"];
+        }
       }
     }
 
@@ -167,18 +187,20 @@ export class CreateCommand extends CommandBase {
     if (applyDescription === undefined) {
       applyDescription = title;
 
-      const descriptionQuestions: DistinctQuestion<any>[] = [];
-      descriptionQuestions.push({
-        type: "input",
-        name: "description",
-        default: applyDescription,
-        message: "What's your preferred project description?",
-      });
+      if (!context.yes) {
+        const descriptionQuestions: DistinctQuestion<any>[] = [];
+        descriptionQuestions.push({
+          type: "input",
+          name: "description",
+          default: applyDescription,
+          message: "What's your preferred project description?",
+        });
 
-      const descriptionAnswer = await inquirer.prompt(descriptionQuestions);
+        const descriptionAnswer = await inquirer.prompt(descriptionQuestions);
 
-      if (descriptionAnswer["description"]) {
-        applyDescription = descriptionAnswer["description"];
+        if (descriptionAnswer["description"]) {
+          applyDescription = descriptionAnswer["description"];
+        }
       }
 
       if (applyDescription === undefined) {
@@ -188,17 +210,21 @@ export class CreateCommand extends CommandBase {
 
     // Get creator
     if (!creator) {
-      const creatorQuestions: DistinctQuestion<any>[] = [];
-      creatorQuestions.push({
-        type: "input",
-        name: "creator",
-        default: "Creator",
-        message: "What's your creator name?",
-      });
-      const creatorAnswer = await inquirer.prompt(creatorQuestions);
+      if (context.yes) {
+        creator = "Creator";
+      } else {
+        const creatorQuestions: DistinctQuestion<any>[] = [];
+        creatorQuestions.push({
+          type: "input",
+          name: "creator",
+          default: "Creator",
+          message: "What's your creator name?",
+        });
+        const creatorAnswer = await inquirer.prompt(creatorQuestions);
 
-      if (creatorAnswer["creator"]) {
-        creator = creatorAnswer["creator"];
+        if (creatorAnswer["creator"]) {
+          creator = creatorAnswer["creator"];
+        }
       }
     }
 
@@ -207,27 +233,36 @@ export class CreateCommand extends CommandBase {
     if (!newName) {
       newName = title?.replace(/ /gi, "-").toLowerCase();
 
-      questions.push({
-        type: "input",
-        name: "name",
-        default: newName,
-        message: "What's your preferred project short name? (<20 chars, no spaces)",
-      });
+      if (!context.yes) {
+        questions.push({
+          type: "input",
+          name: "name",
+          default: newName,
+          message: "What's your preferred project short name? (<20 chars, no spaces)",
+        });
+      }
     }
 
     // Handle folder creation for single project
     if (!context.inputFolder && (!context.outputFolder || context.outputFolder === "out") && isSingleFolder) {
-      const folderNameQuestions: DistinctQuestion<any>[] = [];
+      let folderName: string | undefined;
 
-      folderNameQuestions.push({
-        type: "input",
-        name: "folderName",
-        default: newName,
-        message: "What's your preferred folder name?",
-      });
+      if (context.yes) {
+        // Non-interactive: derive from short name or title.
+        folderName = newName;
+      } else {
+        const folderNameQuestions: DistinctQuestion<any>[] = [];
 
-      const folderNameAnswer = await inquirer.prompt(folderNameQuestions);
-      const folderName = folderNameAnswer["folderName"];
+        folderNameQuestions.push({
+          type: "input",
+          name: "folderName",
+          default: newName,
+          message: "What's your preferred folder name?",
+        });
+
+        const folderNameAnswer = await inquirer.prompt(folderNameQuestions);
+        folderName = folderNameAnswer["folderName"];
+      }
 
       if (folderName) {
         const path =
@@ -290,27 +325,44 @@ export class CreateCommand extends CommandBase {
 
     // Prompt for template if not specified
     if (!galProject) {
-      const projectTypeChoices: { name: string; value: number }[] = [];
+      if (context.yes) {
+        // Non-interactive default: pick the first available project template
+        // (typically `addonStarter`). Pro CI users should pass `template` as the
+        // second positional argument to be explicit.
+        for (let i = 0; i < galProjects.length; i++) {
+          if (galProjects[i].type === GalleryItemType.project) {
+            galProject = galProjects[i];
+            break;
+          }
+        }
+        if (!galProject) {
+          context.log.error("No template available in the gallery and no template specified. Pass a template name as the second arg.");
+          context.setExitCode(ErrorCodes.INIT_ERROR);
+          return;
+        }
+      } else {
+        const projectTypeChoices: { name: string; value: number }[] = [];
 
-      for (let i = 0; i < galProjects.length; i++) {
-        const galProjectCand = galProjects[i];
+        for (let i = 0; i < galProjects.length; i++) {
+          const galProjectCand = galProjects[i];
 
-        if (galProjectCand.type === GalleryItemType.project)
-          projectTypeChoices.push({
-            name: galProjectCand.id + ": " + galProjectCand.title,
-            value: i,
-          });
+          if (galProjectCand.type === GalleryItemType.project)
+            projectTypeChoices.push({
+              name: galProjectCand.id + ": " + galProjectCand.title,
+              value: i,
+            });
+        }
+
+        questions.push({
+          type: "list",
+          name: "projectSource",
+          message: "What template should we use?",
+          choices: projectTypeChoices,
+        });
       }
-
-      questions.push({
-        type: "list",
-        name: "projectSource",
-        message: "What template should we use?",
-        choices: projectTypeChoices,
-      });
     }
 
-    if (!galProject || !newName) {
+    if ((!galProject || !newName) && !context.yes) {
       const answers = await inquirer.prompt(questions);
 
       if (answers) {

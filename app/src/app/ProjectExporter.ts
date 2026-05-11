@@ -301,40 +301,48 @@ export default class ProjectExporter {
     return projectBuild;
   }
 
-  static async deployProject(creatorTools: CreatorTools, project: Project, deployTargetFolder: IFolder) {
+  static async deployProject(
+    creatorTools: CreatorTools,
+    project: Project,
+    deployTargetFolder: IFolder,
+    folderDeploy: FolderDeploy = FolderDeploy.developmentFolders
+  ) {
     const ctProjectBuild = await ProjectExporter.prepareProject(project);
 
     if (!ctProjectBuild) {
       return false;
     }
 
-    await ProjectExporter.deployProjectPacks(
-      project,
-      ctProjectBuild,
-      deployTargetFolder,
-      undefined,
-      FolderDeploy.developmentFolders
-    );
+    await ProjectExporter.deployProjectPacks(project, ctProjectBuild, deployTargetFolder, undefined, folderDeploy);
 
     await deployTargetFolder.saveAll();
 
-    const targetResourcePacksFolder = deployTargetFolder.ensureFolder("development_resource_packs");
-    const rpDeployFolderExists = await targetResourcePacksFolder.exists();
+    const rpFolderName =
+      folderDeploy === FolderDeploy.noFolders
+        ? undefined
+        : folderDeploy === FolderDeploy.developmentFolders
+          ? "development_resource_packs"
+          : "resource_packs";
 
-    if (rpDeployFolderExists) {
-      await project.ensureProjectFolder();
+    if (rpFolderName) {
+      const targetResourcePacksFolder = deployTargetFolder.ensureFolder(rpFolderName);
+      const rpDeployFolderExists = await targetResourcePacksFolder.exists();
 
-      const rpi = await project.getDefaultResourcePackFolder();
+      if (rpDeployFolderExists) {
+        await project.ensureProjectFolder();
 
-      if (rpi) {
-        const deployProjectFolder = targetResourcePacksFolder.ensureFolder(project.name);
+        const rpi = await project.getDefaultResourcePackFolder();
 
-        await deployProjectFolder.ensureExists();
+        if (rpi) {
+          const deployProjectFolder = targetResourcePacksFolder.ensureFolder(project.name);
 
-        await StorageUtilities.syncFolderTo(rpi, deployProjectFolder, true, true, true, [
-          "/mcworlds",
-          "/minecraftWorlds",
-        ]);
+          await deployProjectFolder.ensureExists();
+
+          await StorageUtilities.syncFolderTo(rpi, deployProjectFolder, true, true, true, [
+            "/mcworlds",
+            "/minecraftWorlds",
+          ]);
+        }
       }
     }
 

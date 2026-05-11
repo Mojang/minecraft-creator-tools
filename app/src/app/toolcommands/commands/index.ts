@@ -16,6 +16,16 @@ export { removeCommand, RemoveCommand } from "./RemoveCommand";
 export { renameCommand, RenameCommand } from "./RenameCommand";
 export { scriptCommand, ScriptCommand } from "./ScriptCommand";
 export { openSampleCommand, OpenSampleCommand } from "./OpenSampleCommand";
+export { validateCommand, ValidateCommand } from "./ValidateCommand";
+export { infoCommand, InfoCommand } from "./InfoCommand";
+export { exportCommand, ExportCommand } from "./ExportCommand";
+export { deployCommand, DeployCommand } from "./DeployCommand";
+export { switchModeCommand, SwitchModeCommand } from "./SwitchModeCommand";
+export { toggleInspectorCommand, ToggleInspectorCommand } from "./ToggleInspectorCommand";
+export { reloadProjectCommand, ReloadProjectCommand } from "./ReloadProjectCommand";
+export { openFileCommand, OpenFileCommand } from "./OpenFileCommand";
+export { formatDocumentCommand, FormatDocumentCommand } from "./FormatDocumentCommand";
+export { openSettingsCommand, OpenSettingsCommand } from "./OpenSettingsCommand";
 
 import { helpCommand } from "./HelpCommand";
 import { createCommand } from "./CreateCommand";
@@ -24,6 +34,16 @@ import { removeCommand } from "./RemoveCommand";
 import { renameCommand } from "./RenameCommand";
 import { scriptCommand } from "./ScriptCommand";
 import { openSampleCommand } from "./OpenSampleCommand";
+import { validateCommand } from "./ValidateCommand";
+import { infoCommand } from "./InfoCommand";
+import { exportCommand } from "./ExportCommand";
+import { deployCommand } from "./DeployCommand";
+import { switchModeCommand } from "./SwitchModeCommand";
+import { toggleInspectorCommand } from "./ToggleInspectorCommand";
+import { reloadProjectCommand } from "./ReloadProjectCommand";
+import { openFileCommand } from "./OpenFileCommand";
+import { formatDocumentCommand } from "./FormatDocumentCommand";
+import { openSettingsCommand } from "./OpenSettingsCommand";
 import type { IToolCommand } from "../IToolCommand";
 import { ToolCommandRegistry } from "../ToolCommandRegistry";
 
@@ -39,6 +59,16 @@ export const allToolCommands: IToolCommand[] = [
   renameCommand,
   scriptCommand,
   openSampleCommand,
+  validateCommand,
+  infoCommand,
+  exportCommand,
+  deployCommand,
+  switchModeCommand,
+  toggleInspectorCommand,
+  reloadProjectCommand,
+  openFileCommand,
+  formatDocumentCommand,
+  openSettingsCommand,
 ];
 
 /**

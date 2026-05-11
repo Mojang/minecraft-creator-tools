@@ -35,8 +35,29 @@ export default class ComponentSlot extends Component<IComponentSlotProps, ICompo
   }
 
   async componentDidUpdate(prevProps: IComponentSlotProps) {
-    if (prevProps.componentId !== this.props.componentId || prevProps.componentData !== this.props.componentData) {
+    // We compare data by serialized content rather than reference because
+    // ManagedComponent.setProperty mutates the underlying object in place
+    // (see app/src/minecraft/ManagedComponent.ts setProperty). Reference
+    // comparison would miss those mutations and the summary would stay
+    // stale — producing prose that contradicts the toggles right next to
+    // it.
+    if (prevProps.componentId !== this.props.componentId) {
       await this.loadSummary();
+      return;
+    }
+    if (this.componentDataSignature(prevProps.componentData) !== this.componentDataSignature(this.props.componentData)) {
+      await this.loadSummary();
+    }
+  }
+
+  private componentDataSignature(data: IComponentSlotProps["componentData"]): string {
+    if (data === undefined || data === null) return String(data);
+    if (typeof data !== "object") return typeof data + ":" + String(data);
+    try {
+      return JSON.stringify(data);
+    } catch {
+      // Fall back to identity if data has cycles
+      return "obj:" + (data as any)?.constructor?.name;
     }
   }
 

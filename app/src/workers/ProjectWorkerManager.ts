@@ -205,17 +205,26 @@ export default class ProjectWorkerManager implements IProjectWorkerManager {
     if (response.type === ProjectWorkerMessageType.validationComplete) {
       const validationResp = response as IValidationCompleteResponse;
       const pending = this._pendingRequests.get(validationResp.requestId);
-      if (pending?.streaming?.onValidationComplete) {
-        // Await the callback in case it's async (e.g., preloading forms)
-        await pending.streaming.onValidationComplete(validationResp.infoItems);
-      }
-      // Mark validation complete and resolve the promise so the caller can continue.
-      // IMPORTANT: Do NOT delete the pending request from the map yet — thumbnail
-      // batches arrive AFTER validation and need the streaming callbacks. The request
-      // is cleaned up in the thumbnailsFinished handler instead.
-      if (pending?.isStreaming) {
-        pending.validationComplete = true;
-        pending.resolve({ validationComplete: true });
+      try {
+        if (pending?.streaming?.onValidationComplete) {
+          // Await the callback in case it's async (e.g., preloading forms)
+          await pending.streaming.onValidationComplete(validationResp.infoItems);
+        }
+        // Mark validation complete and resolve the promise so the caller can continue.
+        // IMPORTANT: Do NOT delete the pending request from the map yet — thumbnail
+        // batches arrive AFTER validation and need the streaming callbacks. The request
+        // is cleaned up in the thumbnailsFinished handler instead.
+        if (pending?.isStreaming) {
+          pending.validationComplete = true;
+          pending.resolve({ validationComplete: true });
+        }
+      } catch (callbackError) {
+        // If the callback throws, reject the promise so callers aren't stuck forever
+        Log.debug("Validation callback failed: " + callbackError);
+        if (pending) {
+          this._pendingRequests.delete(validationResp.requestId);
+          pending.reject(callbackError instanceof Error ? callbackError : new Error(String(callbackError)));
+        }
       }
       return;
     }
@@ -265,7 +274,7 @@ export default class ProjectWorkerManager implements IProjectWorkerManager {
   private _handleWorkerError(event: ErrorEvent) {
     // Don't use Log.debugAlert here as it might show a dialog to the user
     // Worker errors are expected in some environments and should be handled gracefully
-    console.warn("Project worker error:", event.message);
+    Log.debug(`Project worker error: ${event.message}`);
 
     // Reject all pending requests
     for (const pending of this._pendingRequests.values()) {
@@ -515,7 +524,7 @@ export default class ProjectWorkerManager implements IProjectWorkerManager {
       return this._deserializeInfoItems(result.infoItems, project);
     } catch (e) {
       // Don't show an alert - just log and fall back to main thread processing
-      console.warn("Worker info set generation failed, falling back to main thread:", e);
+      Log.debug(`Worker info set generation failed, falling back to main thread: ${e}`);
       return undefined;
     }
   }

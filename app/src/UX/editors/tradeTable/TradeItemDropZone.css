@@ -1,0 +1,36 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   TRADE ITEM DROP ZONE - Drag target for adding trades to a group
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ttio-drop-zone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px;
+  border: 2px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 12px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s,
+    color 0.15s;
+  min-height: 44px;
+}
+
+.ttio-drop-zone:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.ttio-drop-zone-active {
+  border-color: #4caf50;
+  background: rgba(76, 175, 80, 0.12);
+  color: #81c784;
+}
+
+.ttio-drop-zone-icon {
+  font-size: 16px;
+}

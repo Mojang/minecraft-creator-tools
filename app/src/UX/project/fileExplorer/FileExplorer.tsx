@@ -67,17 +67,21 @@ import IFile from "../../../storage/IFile";
 import StorageUtilities from "../../../storage/StorageUtilities";
 import WebUtilities from "../../utils/WebUtilities";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock, faFolderPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faFolderPlus, faXmark, faCircleInfo, faAngleUp } from "@fortawesome/free-solid-svg-icons";
 import FileExplorerFilePreview from "./FileExplorerFilePreview";
 import { FileExplorerProvider, IFileExplorerContextValue, FileExplorerMode } from "./FileExplorerContext";
 import { getAnnotationsForFolder } from "../../types/ItemAnnotationUtilities";
 import ProjectItemUtilities from "../../../app/ProjectItemUtilities";
 import ColorUtilities from "../../../core/ColorUtilities";
 import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../../app/CreatorToolsHost";
+import { CreatorToolsEditPreference } from "../../../app/ICreatorToolsData";
+import Log from "../../../core/Log";
 import ProjectItemTypeIcon from "../projectNavigation/ProjectItemTypeIcon";
 import ProjectItem from "../../../app/ProjectItem";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
+import { Tooltip } from "@mui/material";
+import { ProjectItemTypeGroupColors, ProjectItemTypeGroup } from "../../../app/ProjectItemTypeInfo";
 
 // Re-export FileExplorerMode from context for backward compatibility
 export { FileExplorerMode };
@@ -107,6 +111,8 @@ interface IFileExplorerProps {
 interface IFileExplorerState {
   newFolderName: string | undefined;
   selectedItem: IFile | IFolder | null | undefined;
+  collapseAllToken: number;
+  expandedFolderCount: number;
 }
 
 export default class FileExplorer extends Component<IFileExplorerProps, IFileExplorerState> {
@@ -121,8 +127,11 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
     this._handleNewFolderSelected = this._handleNewFolderSelected.bind(this);
     this._handleFileDelete = this._handleFileDelete.bind(this);
     this._handleFileRename = this._handleFileRename.bind(this);
+    this._handleFileOpenAsRaw = this._handleFileOpenAsRaw.bind(this);
     this._handleMruItemClick = this._handleMruItemClick.bind(this);
     this._handleMruItemRemove = this._handleMruItemRemove.bind(this);
+    this._handleCollapseAll = this._handleCollapseAll.bind(this);
+    this._handleFolderExpandedChange = this._handleFolderExpandedChange.bind(this);
 
     let sel = this.props.selectedItem;
 
@@ -133,6 +142,8 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
     this.state = {
       newFolderName: undefined,
       selectedItem: sel,
+      collapseAllToken: 0,
+      expandedFolderCount: 0,
     };
   }
 
@@ -157,7 +168,29 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
       onFolderSelected: this._handleNewFolderSelected,
       onFileDelete: this._handleFileDelete,
       onFileRename: this._handleFileRename,
+      onFileOpenAsRaw: this._handleFileOpenAsRaw,
     };
+  }
+
+  /**
+   * "Open as Raw" menu action: switch the user into Raw editing mode (so the
+   * editor surface renders the JSON/text editor instead of the form/visual
+   * editor) and select the file. This gives experts a one-click escape hatch
+   * for files that have a heavy custom editor by default (manifests, entity
+   * behavior, biomes, etc.).
+   */
+  _handleFileOpenAsRaw(file: IFile) {
+    const tools = this.props.creatorTools;
+    if (tools) {
+      tools.editPreference = CreatorToolsEditPreference.raw;
+      // Persist so the choice survives navigation/refresh. Best-effort: a
+      // failed save doesn't block opening the file in Raw mode, but we log so
+      // the failure isn't completely invisible.
+      Promise.resolve(tools.save()).catch((err) => {
+        Log.debug("FileExplorer: persisting Raw edit preference failed: " + (err instanceof Error ? err.message : String(err)));
+      });
+    }
+    this._handleNewFileSelected(file);
   }
 
   async _handleFileDelete(file: IFile) {
@@ -304,6 +337,138 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
       this.props.creatorTools.removeFromMru(path);
       this.forceUpdate();
     }
+  }
+
+  /**
+   * Task 085: triggered by the toolbar "Collapse all" button. Bumps a
+   * token that every descendant FileExplorerFolder watches; each folder
+   * resets its local isExpanded state when the token changes. We also
+   * optimistically zero the expanded count to hide the button immediately.
+   */
+  private _handleCollapseAll() {
+    this.setState({
+      collapseAllToken: this.state.collapseAllToken + 1,
+      expandedFolderCount: 0,
+    });
+  }
+
+  /**
+   * Callback invoked by FileExplorerFolder whenever its expansion
+   * state changes (including initial mount). Used to drive the
+   * visibility of the "Collapse all" button.
+   */
+  private _handleFolderExpandedChange(delta: number) {
+    this.setState((prev) => ({
+      expandedFolderCount: Math.max(0, prev.expandedFolderCount + delta),
+    }));
+  }
+
+  /**
+   * Renders a small header with a "?" icon that reveals a tooltip explaining
+   * what the folder-label colors mean. Placed above the tree so the legend
+   * is discoverable without taking up significant vertical space (Task 056).
+   */
+  private _renderColorLegendHeader() {
+    // Only show in explorer mode — the folder picker shows a flat folder list.
+    if (this.props.mode !== FileExplorerMode.explorer) {
+      return <></>;
+    }
+
+    const legendEntries: { group: ProjectItemTypeGroup; label: string }[] = [
+      { group: ProjectItemTypeGroup.scriptsLogic, label: "Scripts & logic" },
+      { group: ProjectItemTypeGroup.entityTypes, label: "Entities" },
+      { group: ProjectItemTypeGroup.itemTypes, label: "Items" },
+      { group: ProjectItemTypeGroup.blockTypes, label: "Blocks" },
+      { group: ProjectItemTypeGroup.worldWorldgen, label: "World / worldgen" },
+      { group: ProjectItemTypeGroup.modelsAnimations, label: "Models & animations" },
+      { group: ProjectItemTypeGroup.texturesAudio, label: "Textures & audio" },
+      { group: ProjectItemTypeGroup.uiUx, label: "UI" },
+      { group: ProjectItemTypeGroup.configDev, label: "Config & dev" },
+      { group: ProjectItemTypeGroup.packaging, label: "Packaging" },
+      { group: ProjectItemTypeGroup.skinPersona, label: "Skins & personas" },
+      { group: ProjectItemTypeGroup.meta, label: "Docs & meta" },
+    ];
+
+    const tooltipContent = (
+      <div style={{ padding: 4, fontSize: 12 }}>
+        <div style={{ fontWeight: 600, marginBottom: 6 }}>Folder label colors</div>
+        {legendEntries.map((entry) => {
+          const c = ProjectItemTypeGroupColors[entry.group];
+          const color = c ? `rgb(${c.red}, ${c.green}, ${c.blue})` : "inherit";
+          return (
+            <div
+              key={entry.group}
+              style={{ display: "flex", alignItems: "center", gap: 6, lineHeight: "18px" }}
+            >
+              <span
+                style={{
+                  display: "inline-block",
+                  width: 10,
+                  height: 10,
+                  borderRadius: 2,
+                  backgroundColor: color,
+                  flexShrink: 0,
+                }}
+              />
+              <span style={{ color }}>{entry.label}</span>
+            </div>
+          );
+        })}
+      </div>
+    );
+
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          gap: 8,
+          padding: "2px 6px 0 6px",
+        }}
+      >
+        {/* Task 085: "Collapse all" icon button only shown when at least one folder is expanded. */}
+        {this.state.expandedFolderCount > 0 && (
+          <span
+            tabIndex={0}
+            role="button"
+            aria-label="Collapse all folders"
+            title="Collapse all folders"
+            onClick={this._handleCollapseAll}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                this._handleCollapseAll();
+              }
+            }}
+            style={{
+              cursor: "pointer",
+              fontSize: 12,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
+              opacity: 0.75,
+            }}
+          >
+            <FontAwesomeIcon icon={faAngleUp} />
+            <span>Collapse all</span>
+          </span>
+        )}
+        <span style={{ opacity: 0.6, display: "inline-flex", alignItems: "center" }}>
+          <Tooltip title={tooltipContent} placement="bottom-end" arrow>
+            <span
+              tabIndex={0}
+              role="button"
+              aria-label="Folder color legend"
+              style={{ cursor: "help", fontSize: 12, display: "inline-flex", alignItems: "center", gap: 4 }}
+            >
+              <FontAwesomeIcon icon={faCircleInfo} />
+              <span>Legend</span>
+            </span>
+          </Tooltip>
+        </span>
+      </div>
+    );
   }
 
   render() {
@@ -496,6 +661,7 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
             }}
             role="tree"
           >
+            {this._renderColorLegendHeader()}
             {mruSection}
             <FileExplorerFolder
               folder={this.props.rootFolder}
@@ -505,6 +671,8 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
               fileExplorer={this}
               displayFolderDetail={false}
               depth={0}
+              collapseAllToken={this.state.collapseAllToken}
+              onExpandedChange={this._handleFolderExpandedChange}
             />
           </div>
           {previewArea}

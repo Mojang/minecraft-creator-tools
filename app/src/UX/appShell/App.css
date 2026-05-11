@@ -22,3 +22,162 @@
 .app-editor {
   width: 100vw;
 }
+
+/*
+ * Skip-to-main-content link (WCAG 2.4.1 — Bypass Blocks).
+ *
+ * This is the first focusable element on every page. It's visually hidden
+ * off-screen by default but slides into view as soon as a keyboard user
+ * tabs to it, giving them a one-Tab way to jump past the global header /
+ * navigation rail to the page's main content.
+ *
+ * - `clip` + negative offset hides it from sighted users without removing
+ *   it from the tab order or screen-reader output.
+ * - On `:focus` / `:focus-visible` we promote it to the top-left corner with
+ *   high contrast styling so sighted keyboard users see where focus has
+ *   landed and can confirm the action.
+ * - Solid background + border — survives forced-colors / high-contrast modes.
+ */
+.app-skipLink {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  z-index: 10000;
+  background: #000000;
+  color: #ffffff;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 2px solid #ffffff;
+  border-radius: 4px;
+  font-family: "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+}
+
+.app-skipLink:focus,
+.app-skipLink:focus-visible {
+  left: 8px;
+  top: 8px;
+  width: auto;
+  height: auto;
+  outline: 3px solid #ffd400;
+  outline-offset: 2px;
+}
+
+@media (forced-colors: active) {
+  .app-skipLink {
+    background: Canvas;
+    color: CanvasText;
+    border-color: CanvasText;
+  }
+  .app-skipLink:focus,
+  .app-skipLink:focus-visible {
+    outline: 3px solid Highlight;
+  }
+}
+
+/*
+ * Reduced-motion accessibility (WCAG 2.3.3 — Animation from Interactions).
+ *
+ * Users who set "Reduce motion" at the OS or browser level have explicitly
+ * asked us NOT to animate. MUI's defaults (`MuiPaper` 0.3s background-color
+ * transition, `MuiCollapse` 0.3s height transition, `MuiCardActionArea`
+ * 0.25s focus-highlight transition, MUI ripples, etc.) do not inherently
+ * honor this preference, so we install a belt-and-suspenders rule that
+ * neutralizes every animation/transition on the page when the preference
+ * is active. Durations are set to 0.01ms (rather than 0) because some
+ * libraries still rely on `transitionend` firing — 0.01ms ensures the
+ * event still fires synchronously without any visible motion.
+ *
+ * This is the WCAG-recommended pattern; it is intentionally global so a
+ * page-level opt-in is impossible to forget when adding new components.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/*
+ * Session-ended view ("View session ended" / "Edit session ended")
+ *
+ * Shown after the user clicks Close on a `mct view` or `mct edit` session.
+ * The on-disk content server has been shut down; the page is now a dead-end
+ * for that session. We render a branded, theme-aware terminal screen with:
+ *  - Minecrafter title + Noto Sans body (consistent with the rest of the app)
+ *  - Theme-aware background that fills the entire viewport (no white band)
+ *  - A clear next-action ("Close this tab") so the user has somewhere to go
+ *
+ * Theme tokens come from the host theme via inline style on `.app-sessionEnded`
+ * so the page works in both light and dark mode.
+ */
+.app-sessionEnded {
+  width: 100vw;
+  min-height: 100vh;
+  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+  font-family: "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+}
+
+.app-sessionEnded-card {
+  max-width: 480px;
+  width: 100%;
+  padding: 32px 36px;
+  border: 1px solid rgba(82, 165, 53, 0.35);
+  border-radius: 4px;
+  text-align: center;
+  background: rgba(82, 165, 53, 0.08);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+}
+
+.app-sessionEnded-title {
+  font-family: "Minecrafter", "Noto Sans", sans-serif;
+  font-size: 28px;
+  font-weight: normal;
+  letter-spacing: 1px;
+  margin: 0 0 12px 0;
+  color: #52a535;
+  text-shadow: 2px 2px 0 rgba(42, 100, 28, 0.3);
+}
+
+.app-sessionEnded-message {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 20px 0;
+  opacity: 0.92;
+}
+
+.app-sessionEnded-button {
+  font-family: "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  padding: 8px 20px;
+  border-radius: 4px;
+  border: 1px solid #52a535;
+  background: #52a535;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 120ms ease-in-out;
+}
+
+.app-sessionEnded-button:hover,
+.app-sessionEnded-button:focus-visible {
+  background: #2a641c;
+  border-color: #2a641c;
+  outline: 2px solid #86d562;
+  outline-offset: 2px;
+}

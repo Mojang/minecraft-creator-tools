@@ -6,7 +6,12 @@
  */
 
 import { test, Page } from "@playwright/test";
-import { selectEditMode } from "./WebTestUtilities";
+import {
+  selectEditMode,
+  clickTemplateCreateButton,
+  preferBrowserStorageInProjectDialog,
+  fillRequiredProjectDialogFields,
+} from "./WebTestUtilities";
 
 async function createFullAddOnProject(page: Page): Promise<boolean> {
   try {
@@ -14,19 +19,16 @@ async function createFullAddOnProject(page: Page): Promise<boolean> {
     await page.waitForLoadState("networkidle");
     await page.waitForTimeout(500);
 
-    // Find CREATE NEW for Full Add-On
-    const fullAddOnSection = page.locator('div:has-text("Full Add-On")').filter({
-      has: page.locator('text="A full example add-on project"'),
-    });
-    let createButton = fullAddOnSection.locator('button:has-text("CREATE NEW")').first();
-    if (!(await createButton.isVisible({ timeout: 3000 }))) {
-      createButton = page.locator('button:has-text("New")').or(page.locator('button:has-text("CREATE NEW")')).nth(2);
+    // Click the Full Add-On template's "Create New" button via stable test id
+    const clicked = await clickTemplateCreateButton(page, "addonFull");
+    if (!clicked) {
+      return false;
     }
-    if (!(await createButton.isVisible({ timeout: 3000 }))) {
-      createButton = page.getByRole("button", { name: "Create New" }).first();
-    }
-    await createButton.click();
     await page.waitForTimeout(1000);
+
+    // Handle the storage location dialog and required Creator field
+    await preferBrowserStorageInProjectDialog(page);
+    await fillRequiredProjectDialogFields(page);
 
     const okButton = page.getByTestId("submit-button").first();
     if (await okButton.isVisible({ timeout: 3000 })) {

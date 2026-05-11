@@ -1,0 +1,100 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   TRADE EDITOR - Inline editor for a single trade's wants/gives properties
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.te-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 3px solid #66bb6a;
+}
+
+.te-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+}
+
+.te-section:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.te-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: #81c784;
+}
+
+.te-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.te-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.te-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.te-quantity-section {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.te-quantity-separator {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.te-done-btn {
+  align-self: flex-end !important;
+}
+
+.te-itembin {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px 4px 4px;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.15);
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+
+.te-itembin-drag-over {
+  border-color: #4caf50;
+  background: rgba(76, 175, 80, 0.12);
+}
+
+.te-itembin-sprite {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.04);
+}

@@ -404,7 +404,7 @@ export default function ProjectPanel(props: ProjectPanelProps) {
                   </McListItem>
                   {/* More options button */}
                   {props.onRemoveProject && (
-                    <Tooltip title={intl.formatMessage({ id: "home.project_panel.more_options" })} arrow>
+                    <Tooltip title={intl.formatMessage({ id: "common.more_options" })} arrow>
                       <IconButton
                         size="small"
                         onClick={(e) => handleContextMenuOpen(e, project)}
@@ -541,12 +541,12 @@ export default function ProjectPanel(props: ProjectPanelProps) {
         </DialogContent>
         <DialogActions>
           <McButton variant="stone" onClick={handleCancelAction}>
-            {intl.formatMessage({ id: "home.project_panel.cancel" })}
+            {intl.formatMessage({ id: "common.cancel" })}
           </McButton>
           <McButton variant="green" onClick={handleConfirmAction}>
             {pendingAction === "delete"
-              ? intl.formatMessage({ id: "home.project_panel.delete" })
-              : intl.formatMessage({ id: "home.project_panel.remove" })}
+              ? intl.formatMessage({ id: "common.delete" })
+              : intl.formatMessage({ id: "common.remove" })}
           </McButton>
         </DialogActions>
       </Dialog>

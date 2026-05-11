@@ -21,8 +21,9 @@ import {
 } from "./MinecraftCommandsLanguage";
 import IProjectTheme from "../types/IProjectTheme";
 import type { IProjectItemEditorNavigationTarget } from "../project/ProjectItemEditor";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
-interface IFunctionEditorProps {
+interface IFunctionEditorProps extends WithLocalizationProps {
   file?: IFile;
   project?: Project;
   title?: string;
@@ -49,7 +50,7 @@ interface IFunctionEditorState {
   content?: string;
 }
 
-export default class FunctionEditor extends Component<IFunctionEditorProps, IFunctionEditorState> {
+class FunctionEditor extends Component<IFunctionEditorProps, IFunctionEditorState> {
   editor?: monaco.editor.IStandaloneCodeEditor;
   _decorationIds: string[] = [];
   _validationTimeout?: number;
@@ -400,7 +401,7 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
             isWholeLine: true,
             className: className,
             glyphMarginClassName: "mcfe-glyphMarginClass",
-            glyphMarginHoverMessage: { value: "Running command '" + command + "'" },
+            glyphMarginHoverMessage: { value: this.props.intl.formatMessage({ id: "project_editor.func_ed.running_command" }, { command }) },
             //hoverMessage: [{ value: "hover2" }]
           },
         };
@@ -414,7 +415,7 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
         const result = await this.props.creatorTools.runCommand(command, this.props.project);
 
         let commandSuccess = false;
-        let successMessage = "Run.";
+        let successMessage = this.props.intl.formatMessage({ id: "project_editor.func_ed.run_default" });
 
         if (result && result.data && typeof result.data === "string") {
           if (result.data.indexOf("{") >= 0) {
@@ -553,18 +554,18 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
       toolBarArea = (
         <div className="mcfe-toolBarArea">
           <div className="mcfe-title">
-            <span>{this.props.title ? this.props.title : this.props.isCommandEditor ? "Commands" : "Function"}</span>
+            <span>{this.props.title ? this.props.title : this.props.isCommandEditor ? this.props.intl.formatMessage({ id: "project_editor.func_ed.commands_title" }) : this.props.intl.formatMessage({ id: "project_editor.func_ed.function_title" })}</span>
           </div>
           <div className="mcfe-toolbar">
-            <Stack direction="row" spacing={0.5} aria-label="Function editor toolbar">
-              <IconButton size="small" onClick={this._zoomIn} title="Zoom in" aria-label="Zoom in">
+            <Stack direction="row" spacing={0.5} aria-label={this.props.intl.formatMessage({ id: "project_editor.func_ed.toolbar_aria" })}>
+              <IconButton size="small" onClick={this._zoomIn} title={this.props.intl.formatMessage({ id: "project_editor.func_ed.zoom_in" })} aria-label={this.props.intl.formatMessage({ id: "project_editor.func_ed.zoom_in" })}>
                 <FontAwesomeIcon icon={faSearchPlus} className="fa-sm" />
               </IconButton>
-              <IconButton size="small" onClick={this._zoomOut} title="Zoom out" aria-label="Zoom out">
+              <IconButton size="small" onClick={this._zoomOut} title={this.props.intl.formatMessage({ id: "project_editor.func_ed.zoom_out" })} aria-label={this.props.intl.formatMessage({ id: "project_editor.func_ed.zoom_out" })}>
                 <FontAwesomeIcon icon={faSearchMinus} className="fa-sm" />
               </IconButton>
               {isConnected && (
-                <IconButton size="small" onClick={this._clearRun} title="Clear results" aria-label="Clear results">
+                <IconButton size="small" onClick={this._clearRun} title={this.props.intl.formatMessage({ id: "project_editor.func_ed.clear_results" })} aria-label={this.props.intl.formatMessage({ id: "project_editor.func_ed.clear_results" })}>
                   <FontAwesomeIcon icon={faRemoveFormat} className="fa-sm" />
                 </IconButton>
               )}
@@ -572,8 +573,8 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
                 <IconButton
                   size="small"
                   onClick={this._sendFunction}
-                  title="Send commands to Minecraft"
-                  aria-label="Send commands to Minecraft"
+                  title={this.props.intl.formatMessage({ id: "project_editor.func_ed.send_commands" })}
+                  aria-label={this.props.intl.formatMessage({ id: "project_editor.func_ed.send_commands" })}
                 >
                   <FontAwesomeIcon icon={faPlay} className="fa-sm" />
                 </IconButton>
@@ -590,13 +591,13 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
       accessoryToolbar = (
         <div className={accessoryClass}>
           <div className="mcfe-accessoryToolBar">
-            <Stack direction="row" spacing={0.5} aria-label="Function editor additional tools">
+            <Stack direction="row" spacing={0.5} aria-label={this.props.intl.formatMessage({ id: "project_editor.func_ed.addl_tools_aria" })}>
               {this.props.creatorTools.activeMinecraftState !== CreatorToolsMinecraftState.none && (
                 <IconButton
                   size="small"
                   onClick={this._sendFunction}
-                  title="Send command to Minecraft"
-                  aria-label="Send command to Minecraft"
+                  title={this.props.intl.formatMessage({ id: "project_editor.func_ed.send_command" })}
+                  aria-label={this.props.intl.formatMessage({ id: "project_editor.func_ed.send_command" })}
                 >
                   <FontAwesomeIcon icon={faPlay} className="fa-sm" />
                 </IconButton>
@@ -635,3 +636,5 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
     );
   }
 }
+
+export default withLocalization(FunctionEditor);

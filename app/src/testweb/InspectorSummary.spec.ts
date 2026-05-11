@@ -73,12 +73,18 @@ test.describe("MCTools Web - Inspector Summary View @full", () => {
       await expect(inspectorTitle.first()).toBeVisible({ timeout: 15000 });
     }
 
-    // Look for Summary tab
-    const summaryTab = page.locator("button[title='Summary Tab']");
+    // Look for Summary tab. The button no longer has a title attribute —
+    // it uses role="tab" + id="pid-tab-summary" + aria-controls. Selecting
+    // by id is the most stable.
+    const summaryTab = page.locator("#pid-tab-summary");
     if ((await summaryTab.count()) > 0) {
       console.log("Found Summary tab button");
       await summaryTab.click();
       await page.waitForTimeout(1000);
+      // Hard assertion: the tab actually switched to Summary mode.
+      await expect(summaryTab).toHaveAttribute("aria-selected", "true");
+    } else {
+      throw new Error("Summary tab #pid-tab-summary not found in Inspector header");
     }
 
     // Take screenshot of Summary view
@@ -103,20 +109,23 @@ test.describe("MCTools Web - Inspector Summary View @full", () => {
     // Wait for validation to complete
     await page.waitForTimeout(8000);
 
-    // Click on Summary tab
-    const summaryTab = page.locator("button[title='Summary Tab']");
-    if ((await summaryTab.count()) > 0) {
-      await summaryTab.click();
-      await page.waitForTimeout(1000);
-    }
+    // Click on Summary tab (role=tab, id=pid-tab-summary)
+    const summaryTab = page.locator("#pid-tab-summary");
+    await expect(summaryTab).toBeVisible({ timeout: 5000 });
+    await summaryTab.click();
+    await page.waitForTimeout(1000);
+    await expect(summaryTab).toHaveAttribute("aria-selected", "true");
 
     // Take screenshot of Summary view with categories
     await page.screenshot({ path: "debugoutput/screenshots/inspector-summary-04-categories.png", fullPage: true });
 
-    // Look for category cards (using the stat card class)
+    // Look for category cards (using the stat card class). These render in
+    // the Summary view; if the test reports 0 it means we never made it onto
+    // the Summary tab, which we now treat as a hard failure.
     const categoryCards = page.locator(".pis-statCard");
     const cardCount = await categoryCards.count();
     console.log(`Found ${cardCount} category cards`);
+    expect(cardCount).toBeGreaterThan(0);
 
     // Take screenshot
     await page.screenshot({ path: "debugoutput/screenshots/inspector-summary-05-category-cards.png", fullPage: true });
@@ -125,25 +134,24 @@ test.describe("MCTools Web - Inspector Summary View @full", () => {
     const categoryHeaders = page.locator(".pis-statCardHeader");
     const headerCount = await categoryHeaders.count();
     console.log(`Found ${headerCount} category headers`);
+    expect(headerCount).toBeGreaterThan(0);
 
     // Try clicking on a category header to expand/collapse
-    if (headerCount > 0) {
-      const firstHeader = categoryHeaders.first();
-      console.log("Clicking on first category header to toggle");
-      await firstHeader.click();
-      await page.waitForTimeout(500);
-      await page.screenshot({ path: "debugoutput/screenshots/inspector-summary-06-after-toggle.png", fullPage: true });
-    }
+    const firstHeader = categoryHeaders.first();
+    console.log("Clicking on first category header to toggle");
+    await firstHeader.click();
+    await page.waitForTimeout(500);
+    await page.screenshot({ path: "debugoutput/screenshots/inspector-summary-06-after-toggle.png", fullPage: true });
 
-    // Check for section content (expanded state)
-    const sectionContent = page.locator(".pis-sectionContent");
-    const contentCount = await sectionContent.count();
-    console.log(`Found ${contentCount} expanded sections`);
-
-    // Check for stat items within sections
-    const statItems = page.locator(".pis-statItem");
+    // Check for stat items within sections. After expanding the first
+     // category, we expect to see at least one stat item rendered. The
+     // .pis-statItem class covers most categories; categories with summary
+     // texture-memory cards use .pis-statItemCard. Accept either ΓÇö the
+     // important thing is that expanding produced visible content.
+    const statItems = page.locator(".pis-statItem, .pis-statItemCard");
     const statCount = await statItems.count();
-    console.log(`Found ${statCount} stat items`);
+    console.log(`Found ${statCount} stat items / cards`);
+    expect(statCount).toBeGreaterThan(0);
 
     // Take screenshot showing stats
     await page.screenshot({ path: "debugoutput/screenshots/inspector-summary-07-stat-items.png", fullPage: true });
@@ -168,11 +176,11 @@ test.describe("MCTools Web - Inspector Summary View @full", () => {
     await page.waitForTimeout(10000);
 
     // Click on Summary tab
-    const summaryTab = page.locator("button[title='Summary Tab']");
-    if ((await summaryTab.count()) > 0) {
-      await summaryTab.click();
-      await page.waitForTimeout(1000);
-    }
+    const summaryTab = page.locator("#pid-tab-summary");
+    await expect(summaryTab).toBeVisible({ timeout: 5000 });
+    await summaryTab.click();
+    await page.waitForTimeout(1000);
+    await expect(summaryTab).toHaveAttribute("aria-selected", "true");
 
     // Take screenshot of Summary with combined stats
     await page.screenshot({ path: "debugoutput/screenshots/inspector-summary-08-combined-stats.png", fullPage: true });
@@ -189,6 +197,7 @@ test.describe("MCTools Web - Inspector Summary View @full", () => {
     // Expand all categories to see all stats
     const categoryHeaders = page.locator(".pis-statCardHeader");
     const headerCount = await categoryHeaders.count();
+    expect(headerCount).toBeGreaterThan(0);
 
     for (let i = 0; i < Math.min(headerCount, 5); i++) {
       const header = categoryHeaders.nth(i);
@@ -224,12 +233,12 @@ test.describe("MCTools Web - Inspector Summary View @full", () => {
     await page.waitForTimeout(8000);
 
     // Click on Info tab (should show individual validation items)
-    const infoTab = page.locator("button[title='Info Tab']");
-    if ((await infoTab.count()) > 0) {
-      console.log("Clicking on Info tab");
-      await infoTab.click();
-      await page.waitForTimeout(1000);
-    }
+    const infoTab = page.locator("#pid-tab-items");
+    await expect(infoTab).toBeVisible({ timeout: 5000 });
+    console.log("Clicking on Info tab");
+    await infoTab.click();
+    await page.waitForTimeout(1000);
+    await expect(infoTab).toHaveAttribute("aria-selected", "true");
 
     // Take screenshot of Info view
     await page.screenshot({ path: "debugoutput/screenshots/inspector-summary-10-info-tab.png", fullPage: true });
@@ -267,33 +276,31 @@ test.describe("MCTools Web - Inspector Summary View @full", () => {
     await page.screenshot({ path: "debugoutput/screenshots/inspector-summary-11-initial-tab.png", fullPage: true });
 
     // Click Summary tab
-    const summaryTab = page.locator("button[title='Summary Tab']");
-    if ((await summaryTab.count()) > 0) {
-      await summaryTab.click();
-      await page.waitForTimeout(500);
-      await page.screenshot({
-        path: "debugoutput/screenshots/inspector-summary-12-summary-selected.png",
-        fullPage: true,
-      });
-    }
+    const summaryTab = page.locator("#pid-tab-summary");
+    const infoTab = page.locator("#pid-tab-items");
+    await expect(summaryTab).toBeVisible({ timeout: 5000 });
+    await summaryTab.click();
+    await page.waitForTimeout(500);
+    await expect(summaryTab).toHaveAttribute("aria-selected", "true");
+    await page.screenshot({
+      path: "debugoutput/screenshots/inspector-summary-12-summary-selected.png",
+      fullPage: true,
+    });
 
     // Click Info tab
-    const infoTab = page.locator("button[title='Info Tab']");
-    if ((await infoTab.count()) > 0) {
-      await infoTab.click();
-      await page.waitForTimeout(500);
-      await page.screenshot({ path: "debugoutput/screenshots/inspector-summary-13-info-selected.png", fullPage: true });
-    }
+    await infoTab.click();
+    await page.waitForTimeout(500);
+    await expect(infoTab).toHaveAttribute("aria-selected", "true");
+    await page.screenshot({ path: "debugoutput/screenshots/inspector-summary-13-info-selected.png", fullPage: true });
 
     // Switch back to Summary
-    if ((await summaryTab.count()) > 0) {
-      await summaryTab.click();
-      await page.waitForTimeout(500);
-      await page.screenshot({
-        path: "debugoutput/screenshots/inspector-summary-14-back-to-summary.png",
-        fullPage: true,
-      });
-    }
+    await summaryTab.click();
+    await page.waitForTimeout(500);
+    await expect(summaryTab).toHaveAttribute("aria-selected", "true");
+    await page.screenshot({
+      path: "debugoutput/screenshots/inspector-summary-14-back-to-summary.png",
+      fullPage: true,
+    });
 
     expect(consoleErrors.length).toBeLessThanOrEqual(5);
   });
@@ -316,11 +323,11 @@ test.describe("MCTools Web - Inspector Summary View @full", () => {
     await page.waitForTimeout(10000);
 
     // Click on Summary tab
-    const summaryTab = page.locator("button[title='Summary Tab']");
-    if ((await summaryTab.count()) > 0) {
-      await summaryTab.click();
-      await page.waitForTimeout(1000);
-    }
+    const summaryTab = page.locator("#pid-tab-summary");
+    await expect(summaryTab).toBeVisible({ timeout: 5000 });
+    await summaryTab.click();
+    await page.waitForTimeout(1000);
+    await expect(summaryTab).toHaveAttribute("aria-selected", "true");
 
     // Take high-res screenshot for visual inspection
     await page.screenshot({
@@ -361,6 +368,8 @@ test.describe("MCTools Web - Inspector Summary View @full", () => {
     const valueCount = await statValues.count();
 
     console.log(`Found ${labelCount} stat labels and ${valueCount} stat values`);
+    expect(labelCount).toBeGreaterThan(0);
+    expect(valueCount).toBeGreaterThan(0);
 
     // Log a sample of the stat content for review
     if (labelCount > 0) {

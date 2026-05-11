@@ -102,6 +102,8 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
   private _id?: string;
   private _isLoaded: boolean = false;
   private _loadedWithComments: boolean = false;
+  /** Set during persist() so the resulting onFileContentUpdated event doesn't wipe our already-current in-memory state. */
+  private _isSelfPersisting: boolean = false;
 
   private _managedComponents: { [id: string]: IManagedComponent | undefined } = {};
 
@@ -290,6 +292,13 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
   }
 
   _handleFileUpdated(file: IFile, fileB: IFile) {
+    // Skip when this update came from our own persist() call — the in-memory
+    // state already matches what we just wrote, so resetting it (and forcing a
+    // re-parse) would leave the editor stuck on "Loading mob definition..."
+    // until the next prop change.
+    if (this._isSelfPersisting) {
+      return;
+    }
     this._data = undefined;
     this._isLoaded = false;
     this._wrapper = undefined;
@@ -1054,7 +1063,12 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
       return false;
     }
 
-    return this._file.setObjectContentIfSemanticallyDifferent(this._wrapper);
+    this._isSelfPersisting = true;
+    try {
+      return this._file.setObjectContentIfSemanticallyDifferent(this._wrapper);
+    } finally {
+      this._isSelfPersisting = false;
+    }
   }
 
   /**

@@ -27,19 +27,20 @@ import ProjectItem from "../../app/ProjectItem";
 import Project from "../../app/Project";
 import ProjectInfoSet from "../../info/ProjectInfoSet";
 import ProjectInfoItem from "../../info/ProjectInfoItem";
-import JsonEditor from "./JsonEditor";
+import { JsonEditor } from "./JsonEditor";
 import ValidationIssuesPanel, { IValidationIssueClickInfo } from "../project/ValidationIssuesPanel";
 import IPersistable from "../types/IPersistable";
 import { InfoItemType } from "../../info/IInfoItemData";
 import * as monaco from "monaco-editor";
 import IProjectTheme from "../types/IProjectTheme";
 import type { IProjectItemEditorNavigationTarget } from "../project/ProjectItemEditor";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
 // Split ratio: 80% editor, 20% validation panel
 const EDITOR_HEIGHT_PERCENT = 80;
 const PANEL_HEIGHT_PERCENT = 20;
 
-interface IJsonEditorWithValidationProps {
+interface IJsonEditorWithValidationProps extends WithLocalizationProps {
   heightOffset: number;
   readOnly: boolean;
   project: Project;
@@ -60,7 +61,7 @@ interface IJsonEditorWithValidationState {
   issues: ProjectInfoItem[];
 }
 
-export default class JsonEditorWithValidation extends Component<
+class JsonEditorWithValidation extends Component<
   IJsonEditorWithValidationProps,
   IJsonEditorWithValidationState
 > {
@@ -323,6 +324,7 @@ export default class JsonEditorWithValidation extends Component<
             onUpdatePreferredTextSize={this.props.onUpdatePreferredTextSize}
             onUpdateLivePreviewWidth={this.props.onUpdateLivePreviewWidth}
             onOpenProjectItem={this.props.onOpenProjectItem}
+            intl={this.props.intl}
           />
         </div>
         <ValidationIssuesPanel
@@ -336,3 +338,5 @@ export default class JsonEditorWithValidation extends Component<
     );
   }
 }
+
+export default withLocalization(JsonEditorWithValidation);

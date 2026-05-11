@@ -487,6 +487,194 @@ export default class ProjectItemCreateManager {
     await project.save();
   }
 
+  /**
+   * "Empty file" / "Open as Raw" companion: drops a minimally-valid stub at the
+   * conventional sub-folder for `contentType` under the project's default
+   * behavior or resource pack. Used by the Add dialog's "Empty File (advanced)"
+   * path so power users can author files that don't fit an existing wizard.
+   *
+   * If `desiredName` is omitted or already taken, a numeric suffix is appended
+   * (handled by `_generateFileNameForNewItem`). Returns the created
+   * `ProjectItem` so callers can select/open it.
+   */
+  static async createNewEmptyStubFile(
+    project: Project,
+    contentType: ProjectItemType,
+    desiredName?: string
+  ): Promise<ProjectItem | undefined> {
+    const config = ProjectItemCreateManager._getEmptyStubConfig(contentType);
+    if (!config) {
+      Log.error("createNewEmptyStubFile: unsupported contentType " + contentType);
+      return undefined;
+    }
+
+    const baseFileName = (desiredName && desiredName.trim()) || config.defaultBaseName;
+
+    let defaultPath: string | undefined;
+    if (config.folderContext === FolderContext.resourcePack) {
+      defaultPath = await ProjectItemCreateManager._getDefaultResourcePackFolderPath(project, config.subfolder);
+    } else {
+      defaultPath = await ProjectItemCreateManager._getDefaultBehaviorPackFolderPath(project, config.subfolder);
+    }
+
+    if (defaultPath === undefined) {
+      return undefined;
+    }
+
+    const candidateFilePath = await ProjectItemCreateManager._generateFileNameForNewItem(
+      project,
+      defaultPath,
+      baseFileName,
+      config.extension
+    );
+
+    if (candidateFilePath === undefined) {
+      return undefined;
+    }
+
+    const pi = project.ensureItemByProjectPath(
+      candidateFilePath,
+      ProjectItemStorageType.singleFile,
+      StorageUtilities.getLeafName(candidateFilePath),
+      contentType,
+      config.folderContext,
+      undefined,
+      ProjectItemCreationType.normal
+    );
+
+    const file = await pi.loadFileContent();
+
+    if (file !== null && config.stubContent !== undefined) {
+      file.setContent(config.stubContent);
+    }
+
+    await project.save();
+
+    return pi;
+  }
+
+  /**
+   * Map a content type to the sub-folder, default file name, extension, and
+   * minimally-valid stub content used by `createNewEmptyStubFile`. Stubs are
+   * intentionally tiny — the goal is to land an editable file at the right
+   * path, not to template a fully-valid definition (the wizards do that).
+   *
+   * TODO: the `format_version` in JSON stubs is hardcoded to `STUB_FORMAT_VERSION`
+   * below. The rest of the codebase resolves the latest format version
+   * dynamically (see `FormatVersionManager` and `Database.getLatestVersionInfo`).
+   * When this method becomes async-friendly, pull the version from there so
+   * stubs don't go stale.
+   */
+  private static readonly STUB_FORMAT_VERSION = "1.21.0";
+
+  // Lazily built on first access. Building this eagerly via a static IIFE caused
+  // a "Cannot read properties of undefined (reading 'behaviorPack')" crash at
+  // module load when this file ended up earlier in a circular import chain than
+  // ./Project (which exports FolderContext).
+  private static _emptyStubConfigsCache:
+    | Partial<
+        Record<
+          ProjectItemType,
+          { subfolder: string; defaultBaseName: string; extension: string; folderContext: FolderContext; body: string }
+        >
+      >
+    | undefined;
+
+  private static get EMPTY_STUB_CONFIGS(): Partial<
+    Record<
+      ProjectItemType,
+      { subfolder: string; defaultBaseName: string; extension: string; folderContext: FolderContext; body: string }
+    >
+  > {
+    if (ProjectItemCreateManager._emptyStubConfigsCache) {
+      return ProjectItemCreateManager._emptyStubConfigsCache;
+    }
+    const v = ProjectItemCreateManager.STUB_FORMAT_VERSION;
+    const json = (body: string) => body;
+    const bp = FolderContext.behaviorPack;
+    ProjectItemCreateManager._emptyStubConfigsCache = {
+      [ProjectItemType.entityTypeBehavior]: {
+        subfolder: "entities",
+        defaultBaseName: "entity",
+        extension: "json",
+        folderContext: bp,
+        body: json(`{\n  "format_version": "${v}",\n  "minecraft:entity": {\n    "description": {},\n    "components": {}\n  }\n}\n`),
+      },
+      [ProjectItemType.blockTypeBehavior]: {
+        subfolder: "blocks",
+        defaultBaseName: "block",
+        extension: "json",
+        folderContext: bp,
+        body: json(`{\n  "format_version": "${v}",\n  "minecraft:block": {\n    "description": {},\n    "components": {}\n  }\n}\n`),
+      },
+      [ProjectItemType.itemTypeBehavior]: {
+        subfolder: "items",
+        defaultBaseName: "item",
+        extension: "json",
+        folderContext: bp,
+        body: json(`{\n  "format_version": "${v}",\n  "minecraft:item": {\n    "description": {},\n    "components": {}\n  }\n}\n`),
+      },
+      [ProjectItemType.lootTableBehavior]: {
+        subfolder: "loot_tables",
+        defaultBaseName: "loot_table",
+        extension: "json",
+        folderContext: bp,
+        body: '{\n  "pools": []\n}\n',
+      },
+      [ProjectItemType.recipeBehavior]: {
+        subfolder: "recipes",
+        defaultBaseName: "recipe",
+        extension: "json",
+        folderContext: bp,
+        body: json(`{\n  "format_version": "${v}",\n  "minecraft:recipe_shapeless": {\n    "description": {},\n    "tags": [],\n    "ingredients": [],\n    "result": {}\n  }\n}\n`),
+      },
+      [ProjectItemType.spawnRuleBehavior]: {
+        subfolder: "spawn_rules",
+        defaultBaseName: "spawn_rule",
+        extension: "json",
+        folderContext: bp,
+        body: json(`{\n  "format_version": "${v}",\n  "minecraft:spawn_rules": {\n    "description": {},\n    "conditions": []\n  }\n}\n`),
+      },
+      [ProjectItemType.MCFunction]: {
+        subfolder: "functions",
+        defaultBaseName: "action",
+        extension: "mcfunction",
+        folderContext: bp,
+        body: "# New function — add commands below\n",
+      },
+      [ProjectItemType.unknownJson]: {
+        subfolder: "",
+        defaultBaseName: "untitled",
+        extension: "json",
+        folderContext: bp,
+        body: "{}\n",
+      },
+    };
+    return ProjectItemCreateManager._emptyStubConfigsCache;
+  }
+
+  private static _getEmptyStubConfig(contentType: ProjectItemType):
+    | {
+        subfolder: string;
+        defaultBaseName: string;
+        extension: string;
+        folderContext: FolderContext;
+        stubContent?: string;
+      }
+    | undefined {
+    const entry = ProjectItemCreateManager.EMPTY_STUB_CONFIGS[contentType];
+    if (!entry) {
+      return undefined;
+    }
+    return {
+      subfolder: entry.subfolder,
+      defaultBaseName: entry.defaultBaseName,
+      extension: entry.extension,
+      folderContext: entry.folderContext,
+      stubContent: entry.body,
+    };
+  }
+
   static async createNewActionSet(project: Project) {
     const defaultPath = await this._getDefaultBehaviorPackFolderPath(project, "actions");
 

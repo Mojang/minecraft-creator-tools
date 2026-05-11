@@ -50,8 +50,9 @@ import {
 import FeatureComponentEditor from "./FeatureComponentEditor";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
-interface IFeatureTreeEditorProps {
+interface IFeatureTreeEditorProps extends WithLocalizationProps {
   pipeline: IFeaturePipeline;
   selectedNode: FeaturePipelineNode | undefined;
   onNodeSelected: (node: FeaturePipelineNode | undefined) => void;
@@ -66,7 +67,7 @@ interface IFeatureTreeEditorState {
   expandedNodes: Set<string>;
 }
 
-export default class FeatureTreeEditor extends Component<IFeatureTreeEditorProps, IFeatureTreeEditorState> {
+class FeatureTreeEditor extends Component<IFeatureTreeEditorProps, IFeatureTreeEditorState> {
   constructor(props: IFeatureTreeEditorProps) {
     super(props);
 
@@ -207,10 +208,10 @@ export default class FeatureTreeEditor extends Component<IFeatureTreeEditorProps
 
     if (node.nodeType === "unfulfilledFeature") {
       displayName = getShortId(node.referencedId);
-      displayType = isVanilla ? "Vanilla Feature" : "Missing Feature";
+      displayType = isVanilla ? this.props.intl.formatMessage({ id: "project_editor.feature_tree.vanilla_type" }) : this.props.intl.formatMessage({ id: "project_editor.feature_tree.missing_type" });
     } else if (node.nodeType === "featureRule") {
       displayName = node.shortId || getShortId(node.id);
-      displayType = "Feature Rule";
+      displayType = this.props.intl.formatMessage({ id: "project_editor.feature_tree.feature_rule" });
     } else {
       displayName = node.shortId || getShortId(node.id);
       displayType = getFeatureTypeName(node.featureType);
@@ -249,7 +250,7 @@ export default class FeatureTreeEditor extends Component<IFeatureTreeEditorProps
           )}
 
           {/* Vanilla badge */}
-          {isVanilla && <span className="fte-vanillaBadge">vanilla</span>}
+          {isVanilla && <span className="fte-vanillaBadge">{this.props.intl.formatMessage({ id: "project_editor.feature_tree.vanilla_badge" })}</span>}
         </div>
 
         {/* Render children */}
@@ -275,9 +276,9 @@ export default class FeatureTreeEditor extends Component<IFeatureTreeEditorProps
           <div className="fte-emptyStateIcon">
             <FontAwesomeIcon icon={faLayerGroup} />
           </div>
-          <div className="fte-emptyStateTitle">Select a Feature</div>
+          <div className="fte-emptyStateTitle">{this.props.intl.formatMessage({ id: "project_editor.feature_tree.select_title" })}</div>
           <div className="fte-emptyStateMessage">
-            Choose a feature or feature rule from the tree on the left to view and edit its settings.
+            {this.props.intl.formatMessage({ id: "project_editor.feature_tree.select_desc" })}
           </div>
         </div>
       );
@@ -288,12 +289,12 @@ export default class FeatureTreeEditor extends Component<IFeatureTreeEditorProps
             <FontAwesomeIcon icon={faTriangleExclamation} />
           </div>
           <div className="fte-emptyStateTitle">
-            {selectedNode.isVanillaReference ? "Vanilla Feature" : "Missing Feature"}
+            {selectedNode.isVanillaReference ? this.props.intl.formatMessage({ id: "project_editor.feature_tree.vanilla_type" }) : this.props.intl.formatMessage({ id: "project_editor.feature_tree.missing_type" })}
           </div>
           <div className="fte-emptyStateMessage">
             {selectedNode.isVanillaReference
-              ? `This feature (${selectedNode.referencedId}) is a vanilla Minecraft feature and cannot be edited.`
-              : `The feature "${selectedNode.referencedId}" was not found in this project. You may need to create it.`}
+              ? this.props.intl.formatMessage({ id: "project_editor.feature_tree.vanilla_cannot_edit" }, { featureId: selectedNode.referencedId })
+              : this.props.intl.formatMessage({ id: "project_editor.feature_tree.missing_not_found" }, { featureName: selectedNode.referencedId })}
           </div>
         </div>
       );
@@ -346,7 +347,7 @@ export default class FeatureTreeEditor extends Component<IFeatureTreeEditorProps
             color: treeColors.foreground1,
           }}
         >
-          <div className="fte-treePanelHeader">Feature Hierarchy</div>
+          <div className="fte-treePanelHeader">{this.props.intl.formatMessage({ id: "project_editor.feature_tree.hierarchy_header" })}</div>
           <div
             className="fte-treeList"
             style={{
@@ -371,3 +372,5 @@ export default class FeatureTreeEditor extends Component<IFeatureTreeEditorProps
     );
   }
 }
+
+export default withLocalization(FeatureTreeEditor);

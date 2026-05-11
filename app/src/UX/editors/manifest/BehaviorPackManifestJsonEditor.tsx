@@ -10,8 +10,9 @@ import StorageUtilities from "../../../storage/StorageUtilities";
 import Utilities from "../../../core/Utilities";
 import Project from "../../../app/Project";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
-interface IBehaviorPackManifestJsonEditorProps extends IFileProps {
+interface IBehaviorPackManifestJsonEditorProps extends IFileProps, WithLocalizationProps {
   heightOffset: number;
   project: Project;
   readOnly: boolean;
@@ -24,7 +25,7 @@ interface IBehaviorPackManifestJsonEditorState {
   selectedItem: BehaviorManifestDefinition | undefined;
 }
 
-export default class BehaviorPackManifestJsonEditor extends Component<
+class BehaviorPackManifestJsonEditor extends Component<
   IBehaviorPackManifestJsonEditorProps,
   IBehaviorPackManifestJsonEditorState
 > {
@@ -247,8 +248,8 @@ export default class BehaviorPackManifestJsonEditor extends Component<
     const headerForm = Database.getForm("pack", "behavior_pack_header_json");
     const restOfForm = Database.getForm("pack", "behavior_pack_rest_of_file");
 
-    let behaviorPackTitle = "Behavior Pack Manifest";
-    let behaviorPackSubtitle = "Behavior Pack Manifest";
+    let behaviorPackTitle = this.props.intl.formatMessage({ id: "project_editor.bp_manifest.default_title" });
+    let behaviorPackSubtitle = this.props.intl.formatMessage({ id: "project_editor.bp_manifest.default_title" });
     let behaviorPackUuid: string | undefined;
 
     if (def && !def.header) {
@@ -286,9 +287,9 @@ export default class BehaviorPackManifestJsonEditor extends Component<
           {behaviorPackUuid && (
             <div
               className="bpme-header-uuid"
-              title="Unique identifier for this pack. Keep this the same unless you are replacing the pack."
+              title={this.props.intl.formatMessage({ id: "project_editor.bp_manifest.uuid_tooltip" })}
             >
-              <span className="bpme-header-uuid-label">Pack UUID:</span>
+              <span className="bpme-header-uuid-label">{this.props.intl.formatMessage({ id: "project_editor.bp_manifest.uuid_label" })}</span>
               <span className="bpme-header-uuid-value">{behaviorPackUuid}</span>
             </div>
           )}
@@ -321,3 +322,5 @@ export default class BehaviorPackManifestJsonEditor extends Component<
     );
   }
 }
+
+export default withLocalization(BehaviorPackManifestJsonEditor);

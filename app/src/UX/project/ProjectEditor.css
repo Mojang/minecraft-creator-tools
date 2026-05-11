@@ -346,6 +346,25 @@
   z-index: 0;
 }
 
+/*
+ * Forced-colors / Windows High Contrast.
+ *
+ * The statusbar's `background-color` and `color` are applied via inline
+ * React styles (`style={{ backgroundColor: colors.background1, ... }}`).
+ * Browsers reset inline `background-color` to `Canvas` under forced-colors
+ * but leave the inline `color` untouched, which produces a near-white-on-
+ * white contrast failure even though the rendered pixels in non-forced-
+ * colors mode are perfectly legible. Pin to system color tokens so HC
+ * users always see legible text on a real background.
+ */
+@media (forced-colors: active) {
+  .pe-statusbar,
+  .pe-statusbar-extended {
+    background-color: Canvas !important;
+    color: CanvasText !important;
+  }
+}
+
 /* Extended status bar when tool pane is visible */
 .pe-statusbar-extended {
   grid-row-start: 3;

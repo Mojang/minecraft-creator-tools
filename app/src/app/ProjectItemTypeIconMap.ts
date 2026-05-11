@@ -15,11 +15,24 @@
 
 import { ProjectItemType } from "./IProjectItemData";
 import { ProjectItemTypeGroup, getProjectItemTypeGroup } from "./ProjectItemTypeInfo";
+import CreatorToolsHost from "./CreatorToolsHost";
 
 /**
- * Base path for item type SVG icons.
+ * Base path for item type SVG icons (relative to the content web root).
+ * In VS Code webviews this needs to be resolved against
+ * `CreatorToolsHost.contentWebRoot` (the `asWebviewUri` of the extension
+ * root), because absolute paths like "/res/..." resolve to the webview
+ * sandbox origin and get a 403. In the web build `contentWebRoot` is empty
+ * and the path stays relative to the page, which is also correct.
  */
-export const ICON_BASE_PATH = "/res/icons/itemtypes";
+export const ICON_BASE_PATH = "res/icons/itemtypes";
+
+function resolveIconPath(filename: string): string {
+  const root = CreatorToolsHost.contentWebRoot || "";
+  // contentWebRoot, when set, already ends with a slash (via
+  // StorageUtilities.ensureEndsWithDelimiter in CreatorToolsHost.init).
+  return `${root}${ICON_BASE_PATH}/${filename}`;
+}
 
 /**
  * Maps specific ProjectItemType values to their SVG icon filenames.
@@ -198,7 +211,7 @@ export function getIconFilenameForProjectItemType(itemType: ProjectItemType): st
  */
 export function getIconPathForProjectItemType(itemType: ProjectItemType): string {
   const filename = getIconFilenameForProjectItemType(itemType);
-  return `${ICON_BASE_PATH}/${filename}`;
+  return resolveIconPath(filename);
 }
 
 /**
@@ -206,5 +219,5 @@ export function getIconPathForProjectItemType(itemType: ProjectItemType): string
  */
 export function getIconPathForProjectItemTypeGroup(group: ProjectItemTypeGroup): string {
   const filename = ProjectItemTypeGroupIconFiles[group] || "default.svg";
-  return `${ICON_BASE_PATH}/${filename}`;
+  return resolveIconPath(filename);
 }

@@ -12,8 +12,9 @@ import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../app/CreatorTools
 import { getThemeColors } from "../hooks/theme/useThemeColors";
 import Project from "../../app/Project";
 import IProjectTheme from "../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
-interface IMolangEditorProps {
+interface IMolangEditorProps extends WithLocalizationProps {
   file?: IFile;
   project?: Project;
   title?: string;
@@ -36,7 +37,7 @@ interface IMolangEditorState {
   content?: string;
 }
 
-export default class MolangEditor extends Component<IMolangEditorProps, IMolangEditorState> {
+class MolangEditor extends Component<IMolangEditorProps, IMolangEditorState> {
   editor?: MonacoType.editor.IStandaloneCodeEditor;
   _monaco: typeof MonacoType | null = null;
   _decorationIds: string[] = [];
@@ -159,7 +160,7 @@ export default class MolangEditor extends Component<IMolangEditorProps, IMolangE
           "}",
         ].join("\n"),
         insertTextRules: this._monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-        documentation: "If-Else Statement",
+        documentation: this.props.intl.formatMessage({ id: "project_editor.molang_ed.ifelse_doc" }),
       },
     ];
 
@@ -355,14 +356,14 @@ export default class MolangEditor extends Component<IMolangEditorProps, IMolangE
     toolBarArea = (
       <div className="mcme-toolBarArea">
         <div className="mcme-title">
-          <span>Molang Expression</span>
+          <span>{this.props.intl.formatMessage({ id: "project_editor.molang_ed.title" })}</span>
         </div>
         <div className="mcme-toolbar">
-          <Stack direction="row" spacing={0.5} aria-label="Molang editor actions">
-            <IconButton onClick={this._zoomIn} title="Toggle whether supporting files are shown" aria-label="Zoom in">
+          <Stack direction="row" spacing={0.5} aria-label={this.props.intl.formatMessage({ id: "project_editor.molang_ed.toolbar_aria" })}>
+            <IconButton onClick={this._zoomIn} title={this.props.intl.formatMessage({ id: "project_editor.molang_ed.zoom_in_title" })} aria-label="Zoom in">
               <FontAwesomeIcon icon={faSearchPlus} className="fa-lg" />
             </IconButton>
-            <IconButton onClick={this._zoomOut} title="Toggle whether supporting files are shown" aria-label="Zoom out">
+            <IconButton onClick={this._zoomOut} title={this.props.intl.formatMessage({ id: "project_editor.molang_ed.zoom_in_title" })} aria-label="Zoom out">
               <FontAwesomeIcon icon={faSearchMinus} className="fa-lg" />
             </IconButton>
           </Stack>
@@ -396,3 +397,5 @@ export default class MolangEditor extends Component<IMolangEditorProps, IMolangE
     );
   }
 }
+
+export default withLocalization(MolangEditor);

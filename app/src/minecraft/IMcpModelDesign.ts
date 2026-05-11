@@ -46,6 +46,7 @@ export interface IMcpColorRGBA {
  * This unified concept replaces separate "color" and "noise" properties for easier AI reasoning.
  */
 export type TexturedRectangleType =
+  | "none" // No background fill - produces a fully transparent rectangle (useful for pixelArt-only textures)
   | "solid" // Solid color fill - uses first color in colors array
   | "random_noise" // Simple random noise - each pixel randomly picks from colors
   | "dither_noise" // Ordered dithering using Bayer matrix - creates regular pattern
@@ -83,6 +84,7 @@ export interface IMcpTexturedRectangle {
    * Array of colors to use. For "solid", only the first color is used.
    * For noise types, provide 2+ colors for richer textures.
    * Colors can be hex strings ("#FF0000") or rgb strings ("rgb(255,0,0)").
+   * For "none", colors are ignored and may be omitted (background is fully transparent).
    */
   colors: (string | IMcpColorRGBA)[];
 

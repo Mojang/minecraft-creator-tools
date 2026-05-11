@@ -86,8 +86,7 @@ export default class RenderControllerSetEditor extends Component<
 
   componentDidUpdate(
     prevProps: Readonly<IRenderControllerSetEditorProps>,
-    prevState: Readonly<IRenderControllerSetEditorState>,
-    snapshot?: any
+    prevState: Readonly<IRenderControllerSetEditorState>
   ): void {
     if (this.state && prevProps.file !== this.state.fileToEdit) {
       this._updateManager();

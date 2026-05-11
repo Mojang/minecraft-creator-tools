@@ -7,6 +7,7 @@
 
 import { app, BrowserWindow, IpcMain, Screen, Display } from "electron";
 import CreatorTools from "../app/CreatorTools";
+import { WindowState } from "../app/ICreatorToolsData";
 
 export class WindowCommandHandler {
   displays: Display[] = [];
@@ -67,7 +68,7 @@ export class WindowCommandHandler {
       (this._creatorTools as any).slot = this.displays.length * 2 - 1;
     }
 
-    if ((this._creatorTools as any).windowState === 3) {
+    if ((this._creatorTools as any).windowState === WindowState.docked) {
       this._applySideDock();
     }
   }
@@ -89,7 +90,7 @@ export class WindowCommandHandler {
       this.window.unmaximize();
       this.window.restore();
 
-      (this._creatorTools as any).windowState = 0;
+      (this._creatorTools as any).windowState = WindowState.regular;
     }
   }
 
@@ -115,7 +116,15 @@ export class WindowCommandHandler {
   private _storeLastValues(): boolean {
     let isChanged = false;
 
-    if ((this._creatorTools as any).windowState !== 3) {
+    // Skip saving bounds when maximized or side-docked.
+    // On Windows, maximized windows report oversized bounds (e.g., x=-8, y=-8)
+    // that include hidden borders. Saving those would corrupt the normal-state
+    // dimensions, causing the window to restore slightly off-screen.
+    if (
+      (this._creatorTools as any).windowState !== WindowState.docked &&
+      (this._creatorTools as any).windowState !== WindowState.maximized &&
+      !this.window.isMaximized()
+    ) {
       const pos = this.window.getPosition();
 
       if ((this._creatorTools as any).windowX !== pos[0]) {
@@ -203,9 +212,9 @@ export class WindowCommandHandler {
     let state = (this._creatorTools as any).windowState;
 
     if (this.window.isMinimized()) {
-      state = 1;
+      state = WindowState.minimized;
     } else if (this.window.isMaximized()) {
-      state = 2;
+      state = WindowState.maximized;
     }
 
     this.window.webContents.send("appsvc", "asyncgetWindowState|" + slargs[0] + "|" + state);
@@ -240,11 +249,11 @@ export class WindowCommandHandler {
 
     this.window.restore();
 
-    if ((this._creatorTools as any).windowState === 3) {
+    if ((this._creatorTools as any).windowState === WindowState.docked) {
       this._restoreFromSideDock();
     }
 
-    (this._creatorTools as any).windowState = 0;
+    (this._creatorTools as any).windowState = WindowState.regular;
 
     this._saveMct();
 
@@ -254,13 +263,13 @@ export class WindowCommandHandler {
   async windowLeftSide(_event: Electron.IpcMainInvokeEvent, data: string): Promise<void> {
     const slargs = data.split("|");
 
-    if ((this._creatorTools as any).windowState !== 3) {
+    if ((this._creatorTools as any).windowState !== WindowState.docked) {
       this._restore();
       this._storeLastValues();
 
       this.setSlotFromClosest(10);
 
-      (this._creatorTools as any).windowState = 3;
+      (this._creatorTools as any).windowState = WindowState.docked;
     } else {
       if ((this._creatorTools as any).slot > 0) {
         (this._creatorTools as any).slot--;
@@ -278,13 +287,13 @@ export class WindowCommandHandler {
   async windowRightSide(_event: Electron.IpcMainInvokeEvent, data: string): Promise<void> {
     const slargs = data.split("|");
 
-    if ((this._creatorTools as any).windowState !== 3) {
+    if ((this._creatorTools as any).windowState !== WindowState.docked) {
       this._restore();
       this._storeLastValues();
 
       this.setSlotFromClosest(1);
 
-      (this._creatorTools as any).windowState = 3;
+      (this._creatorTools as any).windowState = WindowState.docked;
     } else {
       if ((this._creatorTools as any).slot < this.displays.length * 2) {
         (this._creatorTools as any).slot++;
@@ -331,12 +340,12 @@ export class WindowCommandHandler {
   async windowMaximize(_event: Electron.IpcMainInvokeEvent, data: string): Promise<void> {
     const slargs = data.split("|");
 
-    if ((this._creatorTools as any).windowState === 3) {
+    if ((this._creatorTools as any).windowState === WindowState.docked) {
       this._restoreFromSideDock();
     }
 
     this.window.maximize();
-    (this._creatorTools as any).windowState = 2;
+    (this._creatorTools as any).windowState = WindowState.maximized;
     this._saveMct();
 
     this.window.webContents.send("appsvc", "asyncwindowMaximize|" + slargs[0] + "|");
@@ -349,8 +358,8 @@ export class WindowCommandHandler {
   }
 
   windowWasMoved(): void {
-    if ((this._creatorTools as any).windowState === 3) {
-      (this._creatorTools as any).windowState = 0;
+    if ((this._creatorTools as any).windowState === WindowState.docked) {
+      (this._creatorTools as any).windowState = WindowState.regular;
       this._undoPinToTop();
     }
 
@@ -358,8 +367,8 @@ export class WindowCommandHandler {
   }
 
   windowWasResized(): void {
-    if ((this._creatorTools as any).windowState === 3) {
-      (this._creatorTools as any).windowState = 0;
+    if ((this._creatorTools as any).windowState === WindowState.docked) {
+      (this._creatorTools as any).windowState = WindowState.regular;
       this._undoPinToTop();
     }
 

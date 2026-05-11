@@ -1,0 +1,241 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SHAPELESS RECIPE EDITOR - Ingredient list editor
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.rcslre-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.rcslre-crafting-area {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Ingredients list panel */
+.rcslre-ingredients-frame {
+  background: #8b7355;
+  border: 4px solid;
+  border-color: #5e4a31 #c4a882 #c4a882 #5e4a31;
+  padding: 8px;
+  border-radius: 2px;
+  min-width: 220px;
+}
+
+.rcslre-ingredients-frame-dark {
+  background: #6b5a45;
+  border-color: #4a3d2a #9e8a6e #9e8a6e #4a3d2a;
+}
+
+.rcslre-ingredients-header {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #e0d5c3;
+  padding: 2px 4px 6px 4px;
+}
+
+.rcslre-ingredient-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px;
+  border-radius: 2px;
+  transition: background-color 0.1s;
+}
+
+.rcslre-ingredient-row:nth-child(even) {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.rcslre-ingredient-row:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.rcslre-ingredient-name {
+  flex: 1;
+  font-size: 12px;
+  color: #e0d5c3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rcslre-ingredient-remove {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(229, 57, 53, 0.7);
+  color: #ffffff;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+  cursor: pointer;
+  padding: 0;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.rcslre-ingredient-row:hover .rcslre-ingredient-remove {
+  opacity: 1;
+}
+
+.rcslre-ingredient-remove:hover {
+  background: #c62828;
+}
+
+.rcslre-add-area {
+  padding: 8px 4px 4px 4px;
+}
+
+.rcslre-add-button {
+  width: 100%;
+  padding: 6px 12px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  background: transparent;
+  color: #e0d5c3;
+  font-size: 12px;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s;
+}
+
+.rcslre-add-button:hover {
+  background: rgba(76, 175, 80, 0.2);
+  border-color: #4caf50;
+  color: #ffffff;
+}
+
+.rcslre-add-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.rcslre-drop-zone {
+  border: 2px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  padding: 12px;
+  text-align: center;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  transition:
+    border-color 0.15s,
+    background-color 0.15s;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rcslre-drop-zone-active {
+  border-color: #4caf50;
+  background: rgba(76, 175, 80, 0.15);
+  color: #ffffff;
+}
+
+.rcslre-limit-warning {
+  padding: 4px 8px;
+  font-size: 10px;
+  color: #ff9800;
+  text-align: center;
+}
+
+/* Arrow */
+.rcslre-arrow {
+  display: flex;
+  align-items: center;
+  font-size: 32px;
+  color: #8b7355;
+  user-select: none;
+  padding-top: 40px;
+}
+
+.rcslre-arrow-dark {
+  color: #c4a882;
+}
+
+/* Result area */
+.rcslre-result-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding-top: 20px;
+}
+
+.rcslre-result-frame {
+  background: #8b7355;
+  border: 4px solid;
+  border-color: #5e4a31 #c4a882 #c4a882 #5e4a31;
+  padding: 8px;
+  border-radius: 2px;
+}
+
+.rcslre-result-frame-dark {
+  background: #6b5a45;
+  border-color: #4a3d2a #9e8a6e #9e8a6e #4a3d2a;
+}
+
+.rcslre-count-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rcslre-count-label {
+  font-size: 12px;
+  color: #666666;
+}
+
+.rcslre-count-label-dark {
+  color: #aaaaaa;
+}
+
+.rcslre-count-input {
+  width: 48px;
+  padding: 2px 4px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  font-size: 12px;
+  text-align: center;
+  background: #fafafa;
+  color: #333333;
+}
+
+.rcslre-count-input-dark {
+  background: #383838;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #e0e0e0;
+}
+
+/* Palette area */
+.rcslre-palette-area {
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding-top: 12px;
+}
+
+.rcslre-palette-area-dark {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.rcslre-palette-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #888888;
+  margin-bottom: 8px;
+}
+
+.rcslre-palette-label-dark {
+  color: #999999;
+}

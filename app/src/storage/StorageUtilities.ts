@@ -1934,6 +1934,48 @@ export default class StorageUtilities {
     return candFileName;
   }
 
+  /**
+   * Write a file to a folder only if it doesn't already exist (prevents overwriting).
+   * Logs a debug message and returns false when the file is already present.
+   */
+  static writeFileIfNew(folder: IFolder, fileName: string, content: string | Uint8Array): boolean {
+    if (folder.fileExists(fileName)) {
+      Log.debug(`Skipping "${fileName}" — file already exists in ${folder.fullPath}`);
+      return false;
+    }
+
+    const file = folder.ensureFile(fileName);
+    file.setContent(content);
+
+    return true;
+  }
+
+  /**
+   * Recursively deep-merges two plain JSON-compatible objects. Values in `override`
+   * take precedence over `base` for scalar and array keys; nested plain objects are
+   * merged recursively. Not suitable for Date, RegExp, class instances, etc.
+   */
+  static deepMergeJsonObjects(base: any, override: any): any {
+    const result = { ...base };
+
+    for (const key of Object.keys(override)) {
+      if (
+        typeof result[key] === "object" &&
+        result[key] !== null &&
+        !Array.isArray(result[key]) &&
+        typeof override[key] === "object" &&
+        override[key] !== null &&
+        !Array.isArray(override[key])
+      ) {
+        result[key] = StorageUtilities.deepMergeJsonObjects(result[key], override[key]);
+      } else {
+        result[key] = override[key];
+      }
+    }
+
+    return result;
+  }
+
   static async ensureFilesFromJson(
     storage: IStorage,
     json: string | { [name: string]: object | string }

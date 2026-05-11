@@ -11,6 +11,7 @@ import {
   faChevronDown,
   faChevronRight,
   faFolderOpen,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import IProjectSeed from "../../../app/IProjectSeed";
 import { MinecraftTrack } from "../../../app/ICreatorToolsData";
@@ -70,6 +71,7 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
     onDirectoryPicked: () => setDirErrorMessage(null),
     checkEmptyDir: true,
   });
+  const [creatorError, setCreatorError] = useState<string | null>(null);
   const { trackEvent } = useTelemetry();
   const intl = useIntl();
 
@@ -112,6 +114,13 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
       target: (formData.get("target") as string) ?? "",
     };
 
+    // Validate creator name is not empty (task 028)
+    if (!formValues.creator.trim()) {
+      setCreatorError(intl.formatMessage({ id: "home.new_project.creator_required" }));
+      return;
+    }
+    setCreatorError(null);
+
     const suggestedName = ProjectUtilities.getSuggestedProjectName(template);
     const suggestedCreator = tools.creator ? tools.creator : DefaultCreatorName;
     const suggestedShortName = ProjectUtilities.getSuggestedProjectShortName(suggestedCreator, suggestedName);
@@ -141,6 +150,17 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
         [TelemetryProperties.IS_SHORT_NAME_CUSTOMIZED]: isShortNameCustomized,
       },
     });
+
+    const activeProject = tools.activeMinecraft?.activeProject;
+    if (activeProject && activeProject.hasUnsavedChanges()) {
+      const projName = activeProject.simplifiedName || activeProject.name || "current project";
+      const proceed = window.confirm(
+        `Discard unsaved changes in "${projName}"?\n\nCreating a new project will close the current project without saving.`
+      );
+      if (!proceed) {
+        return;
+      }
+    }
 
     onNewProject({
       name: formValues.title,
@@ -203,16 +223,61 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
             background: isDark
               ? `linear-gradient(180deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.default} 100%)`
               : `linear-gradient(180deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.default} 100%)`,
+            // a11y (WCAG 1.4.1, 1.4.11): under `forced-colors: active`, browsers reset
+            // background-image to `none`, which would leave this dialog transparent and
+            // bleed page content through. Provide an opaque fallback via background-color
+            // and a forced-colors media block that paints the system Canvas color.
+            backgroundColor: theme.palette.background.default,
             border: `2px solid ${theme.palette.divider}`,
             borderRadius: "4px",
             overflow: "visible",
             boxShadow: isDark
               ? "0 24px 48px rgba(0,0,0,0.4), 0 12px 24px rgba(0,0,0,0.3)"
               : "0 24px 48px rgba(0,0,0,0.15), 0 12px 24px rgba(0,0,0,0.1)",
+            "@media (forced-colors: active)": {
+              backgroundColor: "Canvas",
+              color: "CanvasText",
+              border: "2px solid CanvasText",
+              forcedColorAdjust: "none",
+            },
           };
         },
       }}
+      slotProps={{
+        // Backdrop also goes transparent in forced-colors mode (default scrim is rgba(0,0,0,0.5))
+        // so we add an explicit opaque fallback that maps to the system color.
+        backdrop: {
+          sx: {
+            "@media (forced-colors: active)": {
+              backgroundColor: "Canvas",
+              opacity: 0.85,
+            },
+          },
+        },
+      }}
     >
+      {/* Close button in top-right corner (task 030) */}
+      <Button
+        onClick={close}
+        sx={(theme) => ({
+          position: "absolute",
+          top: 8,
+          right: 8,
+          minWidth: 0,
+          width: 32,
+          height: 32,
+          borderRadius: "4px",
+          color: theme.palette.text.primary,
+          zIndex: 10,
+          bgcolor: theme.palette.mode === "dark" ? "rgba(0,0,0,0.6)" : "rgba(255,255,255,0.8)",
+          "&:hover": {
+            bgcolor: theme.palette.mode === "dark" ? "rgba(0,0,0,0.8)" : "rgba(255,255,255,0.95)",
+          },
+        })}
+        aria-label={intl.formatMessage({ id: "common.close" })}
+      >
+        <FontAwesomeIcon icon={faXmark} />
+      </Button>
       {/* Hero Header with Template Image */}
       <Box
         sx={(theme) => {
@@ -270,7 +335,7 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
               };
             }}
           >
-            {template.title}
+            {template.titleKey ? intl.formatMessage({ id: template.titleKey }) : template.title}
           </Typography>
         </Box>
       </Box>
@@ -310,9 +375,19 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
             autoFocus
           />
           <FormField
-            defaultValue={suggestedCreator}
+            required
             id="creator"
             label={intl.formatMessage({ id: "home.new_project.creator" })}
+            placeholder={intl.formatMessage({ id: "home.new_project.creator_placeholder" })}
+            error={Boolean(creatorError)}
+            helperText={creatorError}
+            onChange={() => setCreatorError(null)}
+          />
+          <FormField
+            defaultValue={suggestedDesc}
+            id="description"
+            label={intl.formatMessage({ id: "home.new_project.description" })}
+            type="textarea"
           />
           <Box
             onClick={() => setShowAdvanced(!showAdvanced)}
@@ -367,12 +442,6 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
                 </FormField>
               </Box>
             </Box>
-            <FormField
-              defaultValue={suggestedDesc}
-              id="description"
-              label={intl.formatMessage({ id: "home.new_project.description" })}
-              type="textarea"
-            />
           </Collapse>
         </Box>
 
@@ -623,7 +692,7 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
 
       <DialogActions sx={{ p: 2, pt: 1.5, gap: 1 }}>
         <McButton variant="stone" onClick={close}>
-          {intl.formatMessage({ id: "home.new_project.cancel" })}
+          {intl.formatMessage({ id: "common.cancel" })}
         </McButton>
         <McButton
           variant="green"

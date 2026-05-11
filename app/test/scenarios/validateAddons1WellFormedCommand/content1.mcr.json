@@ -139,8 +139,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "",
-    "infoGenerationTime": 796,
-    "endToEndGenerationTime": 950,
+    "infoGenerationTime": 394,
+    "endToEndGenerationTime": 688,
     "summary": {
       "CADDONIREQ": {
         "1": {
@@ -423,5 +423,5 @@
   ],
   "generatorName": "Minecraft Creator Tools",
   "suite": 2,
-  "generatorVersion": "0.0.1"
+  "generatorVersion": "0.0.1-dev"
 }

@@ -642,12 +642,12 @@
 }
 
 .df-fieldWrapRequiredEmpty::before {
-  content: "Required";
+  content: "* Required";
   position: absolute;
   top: 6px;
   right: 10px;
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
   color: #e8a033;
   text-transform: uppercase;
   letter-spacing: 0.5px;

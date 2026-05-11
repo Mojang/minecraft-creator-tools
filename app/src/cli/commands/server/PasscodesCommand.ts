@@ -93,7 +93,13 @@ export class PasscodesCommand extends CommandBase {
         updateState: this.getFriendlyPasscode(context.localEnv.updateStatePasscode),
         admin: this.getFriendlyPasscode(context.localEnv.adminPasscode),
       };
-      context.log.data(JSON.stringify({ passcodes }));
+      context.log.data(
+        JSON.stringify({
+          schemaVersion: "1.0.0",
+          command: "passcodes",
+          passcodes,
+        })
+      );
       return;
     }
 

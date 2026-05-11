@@ -124,6 +124,19 @@
 .ppe-sectionIcon {
   font-size: 0.9rem;
   opacity: 0.9;
+  /* a11y: keep the Minecraft-green accent on the icon even after we
+     switched the section-header text color to high-contrast foreground1
+     for WCAG 1.4.3. Icons only need 3:1 (WCAG 1.4.11) which #52a535
+     meets against both light and dark section backgrounds. */
+  color: #52a535;
+}
+
+@media (forced-colors: active) {
+  /* In Windows High Contrast, the green is replaced with system colors;
+     LinkText keeps the icon visually distinct from the surrounding text. */
+  .ppe-sectionIcon {
+    color: LinkText;
+  }
 }
 
 .ppe-sectionContent {

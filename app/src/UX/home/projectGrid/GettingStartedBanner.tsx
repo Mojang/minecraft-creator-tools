@@ -1,6 +1,6 @@
-import { Box, IconButton, Paper, Typography } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaw, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faPaw } from "@fortawesome/free-solid-svg-icons";
 import { mcColors } from "../../hooks/theme/mcColors";
 import { useIntl } from "react-intl";
 import GoalPicker from "./GoalPicker";
@@ -8,10 +8,9 @@ import { PostCreateAction } from "../../../app/IProjectSeed";
 
 interface GettingStartedBannerProps {
   onGoalSelected: (action: PostCreateAction) => void;
-  onDismiss: () => void;
 }
 
-export default function GettingStartedBanner({ onGoalSelected, onDismiss }: GettingStartedBannerProps) {
+export default function GettingStartedBanner({ onGoalSelected }: GettingStartedBannerProps) {
   const intl = useIntl();
 
   return (
@@ -31,15 +30,6 @@ export default function GettingStartedBanner({ onGoalSelected, onDismiss }: Gett
         };
       }}
     >
-      <IconButton
-        onClick={onDismiss}
-        size="small"
-        aria-label={intl.formatMessage({ id: "home.getting_started.dismiss" })}
-        sx={{ position: "absolute", top: 8, right: 8, opacity: 0.6, "&:hover": { opacity: 1 } }}
-      >
-        <FontAwesomeIcon icon={faTimes} />
-      </IconButton>
-
       <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1.5 }}>
         <Box
           sx={(theme) => ({ fontSize: 24, color: theme.palette.mode === "dark" ? mcColors.green3 : mcColors.green5 })}

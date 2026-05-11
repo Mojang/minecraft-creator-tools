@@ -74,12 +74,31 @@ export class ExportWorldCommand extends CommandBase {
         }
 
         if (context.json) {
-          context.log.data(JSON.stringify({ success: true, outputPath: outputPath }));
+          context.log.data(
+            JSON.stringify({
+              schemaVersion: "1.0.0",
+              command: "exportworld",
+              project: project.name,
+              success: true,
+              outputPath: outputPath,
+            })
+          );
         } else {
           context.log.success(`Exported: ${outputPath}`);
         }
       } catch (err) {
-        context.log.error("Failed to export world: " + (err instanceof Error ? err.message : String(err)));
+        if (context.json) {
+          context.log.data(
+            JSON.stringify({
+              schemaVersion: "1.0.0",
+              command: "exportworld",
+              success: false,
+              error: err instanceof Error ? err.message : String(err),
+            })
+          );
+        } else {
+          context.log.error("Failed to export world: " + (err instanceof Error ? err.message : String(err)));
+        }
         context.setExitCode(ErrorCodes.INIT_ERROR);
         return;
       }

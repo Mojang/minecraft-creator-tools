@@ -33,6 +33,8 @@ import {
   verifyInEditor,
   takeScreenshot,
   preferBrowserStorageInProjectDialog,
+  clickTemplateCreateButton,
+  getTemplateCard,
 } from "./WebTestUtilities";
 
 const SCREENSHOT_DIR = "debugoutput/screenshots/json-enhancements";
@@ -541,25 +543,22 @@ test.describe("Component Summary Features @full", () => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
 
-    // Try to find the Full Add-On template
-    const fullAddOnCard = page.locator('text="Full Add-On"').first();
-    let createButton;
-
-    if (await fullAddOnCard.isVisible({ timeout: 3000 })) {
-      // Find New button near Full Add-On
-      const fullAddOnSection = page.locator('div:has-text("Full Add-On")').filter({
-        has: page.locator('text="A full example add-on project"'),
-      });
-      createButton = fullAddOnSection.locator('button:has-text("New"), button:has-text("CREATE NEW")').first();
+    // Try to find the Full Add-On template (preferred for component summaries test)
+    let clicked = false;
+    if (await getTemplateCard(page, "addonFull").isVisible({ timeout: 3000 }).catch(() => false)) {
+      clicked = await clickTemplateCreateButton(page, "addonFull");
     }
 
-    if (!createButton || !(await createButton.isVisible({ timeout: 2000 }))) {
-      // Fall back to first New button (Add-On Starter doesn't have entities)
+    if (!clicked) {
+      // Fall back to Add-On Starter (no entities; test may skip later steps)
       console.log("Full Add-On template not found, using Add-On Starter");
-      createButton = page.getByRole("button", { name: "Create New" }).first();
+      clicked = await clickTemplateCreateButton(page, "addonStarter");
     }
 
-    await createButton.click();
+    if (!clicked) {
+      // Final fallback: click the first Create New button on page
+      await page.getByRole("button", { name: "Create New" }).first().click();
+    }
     await page.waitForTimeout(1000);
 
     // Select browser storage for automated test flow

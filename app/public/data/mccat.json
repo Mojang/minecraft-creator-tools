@@ -120,7 +120,8 @@
     },
     {
       "n": "bamboo",
-      "mc": "#F7E9A3"
+      "mc": "#F7E9A3",
+      "sh": 21
     },
     {
       "n": "bamboo_block",
@@ -444,7 +445,8 @@
       "n": "budding_amethyst"
     },
     {
-      "n": "bush"
+      "n": "bush",
+      "sh": 21
     },
     {
       "n": "button",
@@ -616,13 +618,16 @@
       "sh": 37
     },
     {
-      "n": "cave_vines"
+      "n": "cave_vines",
+      "sh": 21
     },
     {
-      "n": "cave_vines_body_with_berries"
+      "n": "cave_vines_body_with_berries",
+      "sh": 21
     },
     {
-      "n": "cave_vines_head_with_berries"
+      "n": "cave_vines_head_with_berries",
+      "sh": 21
     },
     {
       "n": "chain",
@@ -2431,7 +2436,8 @@
     },
     {
       "n": "firefly_bush",
-      "mc": "#7CBD6B"
+      "mc": "#7CBD6B",
+      "sh": 21
     },
     {
       "n": "fletching_table",
@@ -2608,7 +2614,8 @@
     },
     {
       "n": "hanging_roots",
-      "mc": "#8F6449"
+      "mc": "#8F6449",
+      "sh": 21
     },
     {
       "n": "hard_glass",
@@ -2903,7 +2910,8 @@
     {
       "n": "kelp",
       "ic": "dried_kelp_f",
-      "mc": "#52753A"
+      "mc": "#52753A",
+      "sh": 21
     },
     {
       "n": "ladder",
@@ -4367,13 +4375,15 @@
     {
       "n": "reeds",
       "ic": "reeds",
-      "mc": "#7CBD6B"
+      "mc": "#7CBD6B",
+      "sh": 21
     },
     {
       "n": "sugar_cane",
       "m": "reeds",
       "ic": "reeds",
-      "mc": "#7CBD6B"
+      "mc": "#7CBD6B",
+      "sh": 21
     },
     {
       "n": "reinforced_deepslate",
@@ -4527,7 +4537,8 @@
     {
       "n": "seagrass",
       "ic": "_car",
-      "mc": "#7CBD6B"
+      "mc": "#7CBD6B",
+      "sh": 21
     },
     {
       "n": "seaLantern",
@@ -5550,7 +5561,8 @@
     },
     {
       "n": "sweet_berry_bush",
-      "mc": "#7CBD6B"
+      "mc": "#7CBD6B",
+      "sh": 21
     },
     {
       "n": "tall_dry_grass",
@@ -5777,7 +5789,8 @@
     },
     {
       "n": "twisting_vines",
-      "mc": "#3C5A5A"
+      "mc": "#3C5A5A",
+      "sh": 21
     },
     {
       "n": "underwater_torch",
@@ -6342,7 +6355,8 @@
     },
     {
       "n": "weeping_vines",
-      "mc": "#80314E"
+      "mc": "#80314E",
+      "sh": 21
     },
     {
       "n": "wheat",

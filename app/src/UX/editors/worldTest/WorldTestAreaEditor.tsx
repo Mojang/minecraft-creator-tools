@@ -262,10 +262,10 @@ export default class WorldTestAreaEditor extends Component<IWorldTestAreaEditorP
           <div className="wtae-actionsAreaDropdown">{scriptDropdown}</div>
           <div className="wtae-actionsAreaToolbar">
             <Stack direction="row" spacing={1} aria-label="World test area actions">
-              <IconButton onClick={this._addScriptClick} title="Add a new script" size="small">
+              <IconButton onClick={this._addScriptClick} title="Add a new script" aria-label="Add a new script" size="small">
                 <FontAwesomeIcon icon={faPlusCircle} className="fa-lg" />
               </IconButton>
-              <IconButton onClick={this._runSimulation} title="Run simulation" size="small">
+              <IconButton onClick={this._runSimulation} title="Run simulation" aria-label="Run simulation" size="small">
                 <FontAwesomeIcon icon={faPlayCircle} className="fa-lg" />
               </IconButton>
             </Stack>

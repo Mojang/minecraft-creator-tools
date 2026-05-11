@@ -11,8 +11,9 @@ import CommandRunner from "../../app/CommandRunner";
 import { mcColors } from "../hooks/theme/mcColors";
 import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../app/CreatorToolsHost";
 import IProjectTheme from "../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
-interface ITextEditorProps {
+interface ITextEditorProps extends WithLocalizationProps {
   file?: IFile;
   theme: IProjectTheme;
   placeholder?: string;
@@ -39,7 +40,7 @@ interface ITextEditorState {
   initialContent?: string;
 }
 
-export default class TextEditor extends Component<ITextEditorProps, ITextEditorState> {
+class TextEditor extends Component<ITextEditorProps, ITextEditorState> {
   constructor(props: ITextEditorProps) {
     super(props);
 
@@ -205,8 +206,8 @@ export default class TextEditor extends Component<ITextEditorProps, ITextEditorS
 
       accessoryToolbar = (
         <div className="texed-bottomToolBarArea">
-          <Stack direction="row" spacing={1} aria-label="Text editor actions">
-            <IconButton onClick={this._commitContent} title="Send this function over to Minecraft" aria-label="Send to Minecraft" size="small">
+          <Stack direction="row" spacing={1} aria-label={this.props.intl.formatMessage({ id: "project_editor.text_ed.toolbar_aria" })}>
+            <IconButton onClick={this._commitContent} title={this.props.intl.formatMessage({ id: "project_editor.text_ed.send_title" })} aria-label={this.props.intl.formatMessage({ id: "project_editor.text_ed.send_aria" })} size="small">
               <FontAwesomeIcon icon={faPlay} className="fa-lg" />
             </IconButton>
           </Stack>
@@ -280,15 +281,15 @@ export default class TextEditor extends Component<ITextEditorProps, ITextEditorS
         <div className="texed-toolBarArea">
           <div className="texed-title">&#160;</div>
           <div className="texed-toolbar">
-            <Stack direction="row" spacing={1} aria-label="Text editor actions">
-              <IconButton onClick={this._zoomIn} title="Zoom into the text editor" aria-label="Zoom in" size="small">
+            <Stack direction="row" spacing={1} aria-label={this.props.intl.formatMessage({ id: "project_editor.text_ed.toolbar_aria" })}>
+              <IconButton onClick={this._zoomIn} title={this.props.intl.formatMessage({ id: "project_editor.text_ed.zoom_in_title" })} aria-label={this.props.intl.formatMessage({ id: "project_editor.text_ed.zoom_in_aria" })} size="small">
                 <FontAwesomeIcon icon={faSearchPlus} className="fa-lg" />
               </IconButton>
-              <IconButton onClick={this._zoomOut} title="Zoom out of the text editor" aria-label="Zoom out" size="small">
+              <IconButton onClick={this._zoomOut} title={this.props.intl.formatMessage({ id: "project_editor.text_ed.zoom_out_title" })} aria-label={this.props.intl.formatMessage({ id: "project_editor.text_ed.zoom_out_aria" })} size="small">
                 <FontAwesomeIcon icon={faSearchMinus} className="fa-lg" />
               </IconButton>
               {this.props.runCommandButton && (
-                <IconButton onClick={this._sendFunction} title="Send this function over to Minecraft" aria-label="Send to Minecraft" size="small">
+                <IconButton onClick={this._sendFunction} title={this.props.intl.formatMessage({ id: "project_editor.text_ed.send_title" })} aria-label={this.props.intl.formatMessage({ id: "project_editor.text_ed.send_aria" })} size="small">
                   <FontAwesomeIcon icon={faPlay} className="fa-lg" />
                 </IconButton>
               )}
@@ -315,3 +316,5 @@ export default class TextEditor extends Component<ITextEditorProps, ITextEditorS
     );
   }
 }
+
+export default withLocalization(TextEditor);

@@ -375,9 +375,50 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
                 ? new Date(lastStatus.time).getTime()
                 : 0;
           const lastStatusUpdate = new Date().getTime() - lastStatusTime;
-          const hasActiveOperations = this.props.creatorTools.activeOperations.length > 0;
+          // In Focused mode, validation ops shouldn't be surfaced as progress
+          // activity — the user has opted out of seeing inspector/validation,
+          // so a validation operation running in the background would leave the
+          // status bar showing "progress" (with a stale non-validation tooltip
+          // like "Done loading project files...") long after project load is
+          // actually done. Exclude validation-topic operations from the
+          // "active operations" signal in focused mode.
+          const relevantActiveOps = isFocusedMode
+            ? this.props.creatorTools.activeOperations.filter((op) => op.topic !== StatusTopic.validation)
+            : this.props.creatorTools.activeOperations;
+          const hasActiveOperations = relevantActiveOps.length > 0;
           const isProgressMessage = lastStatus.message.match(/\(\d+(?:\.\d+)?%\)/) !== null;
           const isValidationProgress = lastStatus.topic === StatusTopic.validation && isProgressMessage;
+
+          // When the progress bar (pickaxe) is shown because an operation is
+          // still active, the message we display in its tooltip should describe
+          // that active operation — not whatever the most recent status push
+          // happened to be. Otherwise, finishing one short operation (e.g.
+          // project load → "Done loading project files for 'X'") while a
+          // longer one keeps running in the background (e.g. validation) leaves
+          // the pickaxe visible with a misleading "Done…" tooltip until the
+          // background work finishes, which can look like the bar is stuck.
+          // Walk back through the status history to find the most recent
+          // status that belongs to a still-active operation.
+          let progressStatus = lastStatus;
+          if (hasActiveOperations) {
+            const activeOpIds = new Set<number>();
+            for (const op of relevantActiveOps) {
+              if (op.operationId !== undefined && op.operationId !== null) {
+                activeOpIds.add(op.operationId);
+              }
+            }
+            for (let i = this.props.creatorTools.status.length - 1; i >= 0; i--) {
+              const candidate = this.props.creatorTools.status[i];
+              if (
+                candidate.operationId !== undefined &&
+                candidate.operationId !== null &&
+                activeOpIds.has(candidate.operationId)
+              ) {
+                progressStatus = candidate;
+                break;
+              }
+            }
+          }
 
           if (!skipStatusDisplay) {
             const shouldShowProgress =
@@ -385,8 +426,11 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
 
             if (lastStatusUpdate < MESSAGE_FADEOUT_TIME || hasActiveOperations) {
               if (shouldShowProgress) {
-                // Extract percentage from message (format: "... (18%)" or "... (18.5%)")
-                const percentMatch = lastStatus.message.match(/\((\d+(?:\.\d+)?)%\)/);
+                // Extract percentage from the active operation's message
+                // (format: "... (18%)" or "... (18.5%)") rather than
+                // lastStatus.message, so the bar reflects the operation that's
+                // actually keeping it on screen.
+                const percentMatch = progressStatus.message.match(/\((\d+(?:\.\d+)?)%\)/);
                 const progressPercent = percentMatch ? parseFloat(percentMatch[1]) : 0;
                 // Calculate how many of 8 blocks should be filled (0-8)
                 const filledBlocks = Math.floor((progressPercent / 100) * 8);
@@ -397,7 +441,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
                     <div
                       key={i}
                       className={`sa-woodBlock ${i < filledBlocks ? "sa-woodBlockFilled" : "sa-woodBlockEmpty"}`}
-                      title={lastStatus.message}
+                      title={progressStatus.message}
                     >
                       <img
                         src={CreatorToolsHost.contentWebRoot + "res/images/icons/wood-block.png"}
@@ -411,7 +455,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
                 interior = (
                   <div
                     className="sa-progressOuter"
-                    title={lastStatus.message}
+                    title={progressStatus.message}
                     role="progressbar"
                     aria-valuemin={0}
                     aria-valuemax={100}
@@ -421,7 +465,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
                       src={CreatorToolsHost.contentWebRoot + "res/images/icons/pickaxe-progress.png"}
                       alt="Working..."
                       className="sa-progressPickaxe"
-                      title={lastStatus.message}
+                      title={progressStatus.message}
                     />
                     <div className="sa-woodBlockBar">{woodBlocks}</div>
                   </div>

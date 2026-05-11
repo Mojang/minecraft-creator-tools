@@ -1,0 +1,250 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCHEMA FORM STYLES - Minecraft Creator Tools
+   
+   Mirrors DataForm styling for consistency across the app.
+   Design: blocky Minecraft aesthetic, green accents, card-based fields.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   FIELD WRAPPER - Card-style field containers
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.sf-fieldWrap {
+  padding: 16px 14px 20px 14px;
+  margin: 4px 0;
+  border-radius: 4px;
+  border: 1px solid rgba(107, 101, 98, 0.2);
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.sf-fieldWrap:hover {
+  border-color: rgba(107, 101, 98, 0.35);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.sf-fieldWrap:focus-within {
+  border-color: #52a535;
+  box-shadow: 0 0 0 2px rgba(82, 165, 53, 0.15);
+}
+
+.sf-fieldWrap label {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.sf-fieldWrap .MuiInputLabel-shrink {
+  font-size: 16px;
+  font-weight: 700;
+  left: -4px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   FIELD DESCRIPTION
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.sf-fieldDescription {
+  font-size: 11px;
+  padding: 4px 0;
+  margin: 4px 0;
+  line-height: 1.4;
+  opacity: 0.7;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   DEFAULT VALUE DISPLAY
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.sf-defaultValue {
+  padding: 8px 12px;
+  margin-top: 8px;
+  font-size: 11px;
+  font-style: italic;
+  background: rgba(107, 101, 98, 0.08);
+  border-radius: 3px;
+  border-left: 2px solid rgba(107, 101, 98, 0.3);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CHECKBOX / SWITCH ROW
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.sf-checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sf-checkboxLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: inherit;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SLIDER COMPONENT
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.sf-sliderSet {
+  display: grid;
+  margin-top: 8px;
+  grid-template-columns: 1fr 80px;
+  gap: 12px;
+  align-items: center;
+}
+
+.sf-sliderTitle {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row: 1;
+  font-size: 14px;
+  font-weight: 700;
+  padding-top: 4px;
+  padding-bottom: 8px;
+  color: inherit;
+}
+
+.sf-slider {
+  grid-column: 1;
+  grid-row: 2;
+  padding: 4px 0;
+  padding-left: 0;
+  padding-top: 12px;
+}
+
+.sf-sliderInput {
+  grid-column: 2;
+  grid-row: 2;
+  padding: 4px 0;
+}
+
+.sf-sliderInput input {
+  text-align: center;
+  border-radius: 3px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ELEMENT BIN - Container for array items
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.sf-elementBinTitle {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.8;
+  margin-bottom: 6px;
+}
+
+.sf-elementBin {
+  padding: 10px 12px;
+  min-height: 60px;
+  border: 1px solid rgba(107, 101, 98, 0.25);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.05);
+  max-height: calc(100vh - 300px);
+  overflow-y: auto;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ARRAY ITEM CARD
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.sf-arrayItemCard {
+  padding: 12px 14px 14px 14px;
+  border: 2px solid rgba(107, 101, 98, 0.3);
+  border-radius: 4px;
+  margin-bottom: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: border-color 0.15s ease;
+  position: relative;
+}
+
+.sf-arrayItemCard:hover {
+  border-color: rgba(107, 101, 98, 0.5);
+}
+
+.sf-arrayItemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.sf-arrayItemIndex {
+  font-size: 14px;
+  font-weight: 700;
+  color: inherit;
+  opacity: 0.9;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ADD BUTTON - Green Minecraft-style
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.sf-addButton {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #3d7a2a;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.15s ease;
+}
+
+.sf-addButton:hover {
+  background-color: #4a9432;
+}
+
+.sf-addButton:active {
+  background-color: #2a641c;
+}
+
+/* Toolbar row at top of bin */
+.sf-binToolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 8px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SECTION ACCORDION - Compact header
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.sf-sectionHeader {
+  font-size: 12pt;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.sf-sectionHeaderSmall {
+  font-size: 11pt;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SCHEMA ROOT WRAPPER
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.sf-root {
+  padding: 8px 12px;
+}
+
+.sf-description {
+  font-size: 11px;
+  padding: 8px 0 16px 0;
+  line-height: 1.5;
+  opacity: 0.85;
+}

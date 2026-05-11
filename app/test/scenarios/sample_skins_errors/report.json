@@ -216,7 +216,6 @@
       },
       "textureImages.vanillaGameTextureCoverage": {
         "overrideCount": 0,
-        "vanillaTextureCount": 2526,
         "percent": 0
       },
       "textureImagesTier0.nonVanillaTextureMemoryTier": {
@@ -393,7 +392,7 @@
     "warningCount": 0,
     "testSuccessCount": 36,
     "testFailCount": 0,
-    "testNotApplicableCount": 14,
+    "testNotApplicableCount": 15,
     "errorSummary": "",
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
@@ -415,6 +414,11 @@
           "title": "Beta Features",
           "defaultMessage": "Beta Features completed successfully",
           "testCompleteSuccesses": 1
+        }
+      },
+      "CDWORLDDATA": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Custom Dimension World Data Validation (CDWORLDDATA)"
         }
       },
       "CHECKFEATUREDEPRECATION": {
@@ -900,6 +904,11 @@
       "iTp": 1,
       "gId": "CBFG",
       "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "CDWORLDDATA",
+      "gIx": 2
     },
     {
       "iTp": 8,
@@ -1421,7 +1430,6 @@
         },
         "vanillaGameTextureCoverage": {
           "overrideCount": 0,
-          "vanillaTextureCount": 2526,
           "percent": 0
         }
       }

@@ -85,7 +85,17 @@ test.describe("VSCode Web Extension - Sidebar Views", () => {
     await page.waitForTimeout(5000);
   });
 
-  test("should show Minecraft icon in activity bar", async ({ page }) => {
+  // NOTE: `@vscode/test-web` 1.113.0 (the pinned version we use for these
+  // tests — see app/package.json `vscweb` script) does not populate custom
+  // view containers into the activity bar DOM. Under the harness, the activity
+  // bar only exposes the bottom items ("Accounts", "Manage"). This affects all
+  // activity-bar-based interactions — the view itself works (see
+  // VscWebCommands.spec.ts "should execute Show Minecraft View command" and
+  // the in-webview assertions in VscWebMainView.spec.ts), it just isn't
+  // reachable by clicking the activity bar under the current test harness.
+  // When we bump @vscode/test-web past the pinned commit, remove `.fixme` and
+  // verify these pass.
+  test.fixme("should show Minecraft icon in activity bar", async ({ page }) => {
     await takeScreenshot(page, "sidebar-activity-bar-initial");
 
     // Get all activity bar items
@@ -99,36 +109,33 @@ test.describe("VSCode Web Extension - Sidebar Views", () => {
 
     await takeScreenshot(page, "sidebar-activity-bar-items");
 
-    // The Minecraft icon should be in the activity bar
-    // Note: may not be present if extension didn't activate
-    console.log("Has Minecraft activity bar item:", hasMinecraft);
+    // The Minecraft activity bar item MUST be present — it is the primary surface
+    // for MCT in VS Code. If this assertion fails, the extension either failed to
+    // activate or its `viewsContainers` contribution isn't being picked up.
+    expect(hasMinecraft, `Minecraft activity bar item not found. Visible items: ${JSON.stringify(activityItems)}`).toBe(
+      true
+    );
   });
 
-  test("should show MCTools view when clicking Minecraft activity", async ({ page }) => {
+  test.fixme("should show MCTools view when clicking Minecraft activity", async ({ page }) => {
     await takeScreenshot(page, "sidebar-mctools-view-before");
 
     // Try to click on Minecraft activity bar item
     const clicked = await clickActivityBarItem(page, "Minecraft");
 
-    if (clicked) {
-      await page.waitForTimeout(2000);
-      await takeScreenshot(page, "sidebar-mctools-view-clicked");
+    expect(clicked, "Could not click the Minecraft activity bar item").toBe(true);
 
-      // Check if the sidebar content changed
-      const sidebarContent = page.locator(".sidebar .pane-body");
-      const hasContent = (await sidebarContent.count()) > 0;
+    await page.waitForTimeout(2000);
+    await takeScreenshot(page, "sidebar-mctools-view-clicked");
 
-      console.log("MCTools sidebar view visible:", hasContent);
+    // The sidebar pane should have content and the MCT webview iframe should be
+    // present. We don't reach into the iframe here — VscWebMainView.spec.ts does
+    // deeper webview content assertions.
+    const sidebarContent = page.locator(".sidebar .pane-body");
+    await expect(sidebarContent.first()).toBeVisible({ timeout: 5000 });
 
-      // Check for webview in sidebar (MCTools uses webview for its views)
-      const sidebarWebview = page.locator(".sidebar iframe, .sidebar .webview-container");
-      const hasWebview = (await sidebarWebview.count()) > 0;
-
-      console.log("Sidebar contains webview:", hasWebview);
-    } else {
-      console.log("Minecraft activity bar item not found");
-      await takeScreenshot(page, "sidebar-mctools-not-found");
-    }
+    const sidebarWebview = page.locator(".sidebar iframe, .sidebar .webview-container");
+    await expect(sidebarWebview.first()).toBeAttached({ timeout: 10000 });
   });
 
   test("should show Explorer with workspace files", async ({ page }) => {

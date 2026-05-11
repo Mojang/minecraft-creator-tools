@@ -1,4 +1,4 @@
-import { Component, ReactChild } from "react";
+import { Component, ReactNode } from "react";
 import "./MinecraftButton.css";
 import { Button } from "@mui/material";
 import { getThemeColors } from "../../../../hooks/theme/useThemeColors";
@@ -8,7 +8,7 @@ interface IMinecraftButtonProps {
   theme: IProjectTheme;
   className?: string;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  children: ReactChild[] | ReactChild;
+  children: ReactNode;
 }
 
 interface IMinecraftButtonState {

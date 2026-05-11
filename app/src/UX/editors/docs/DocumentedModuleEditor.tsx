@@ -24,8 +24,9 @@ import DocumentedScriptEnum from "../../../minecraft/docs/DocumentedScriptEnum";
 import DocumentedScriptEnumEditor from "./DocumentedScriptEnumEditor";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
-interface IDocumentedModuleEditorProps extends IFileProps {
+interface IDocumentedModuleEditorProps extends IFileProps, WithLocalizationProps {
   heightOffset: number;
   theme: IProjectTheme;
   typesReadOnly: boolean;
@@ -49,7 +50,7 @@ export enum ModuleEditorMode {
   unassociatedDocs = 2,
 }
 
-export default class DocumentedModuleEditor extends Component<
+class DocumentedModuleEditor extends Component<
   IDocumentedModuleEditorProps,
   IDocumentedModuleEditorState
 > {
@@ -323,7 +324,7 @@ export default class DocumentedModuleEditor extends Component<
         itemAnnotationColl.push({
           path: filePath,
           type: ItemAnnotationType.error,
-          message: filePath + " is not associated with this module.",
+          message: filePath + this.props.intl.formatMessage({ id: "project_editor.doc_module.not_associated" }),
         });
 
         itemAnnotations[file.storageRelativePath] = itemAnnotationColl;
@@ -359,7 +360,7 @@ export default class DocumentedModuleEditor extends Component<
         }
       }
 
-      return <div>Loading...</div>;
+      return <div>{this.props.intl.formatMessage({ id: "project_editor.doc_module.loading" })}</div>;
     }
 
     const filteredClassListing = this.getClassListing(true);
@@ -439,7 +440,7 @@ export default class DocumentedModuleEditor extends Component<
               maxHeight: classHeight,
             }}
           >
-            <List aria-label="List of document script modules">
+            <List aria-label={this.props.intl.formatMessage({ id: "project_editor.doc_module.class_list_aria" })}>
               {classListing.map((item, index) => (
                 <ListItemButton key={item.key} onClick={() => this._handleClassSelected(index, item)}>
                   {item.icon}
@@ -462,7 +463,7 @@ export default class DocumentedModuleEditor extends Component<
     }
 
     if (!form) {
-      return <div>(Error loading form)...</div>;
+      return <div>{this.props.intl.formatMessage({ id: "project_editor.doc_module.error_loading" })}</div>;
     }
 
     return (
@@ -476,7 +477,7 @@ export default class DocumentedModuleEditor extends Component<
         }}
       >
         <div className="dme-header">
-          {dm.name} version {dm.version}
+          {dm.name}{this.props.intl.formatMessage({ id: "project_editor.doc_module.version_separator" })}{dm.version}
         </div>
 
         <div className="dme-moduleProps">
@@ -487,20 +488,20 @@ export default class DocumentedModuleEditor extends Component<
             theme={this.props.theme}
             readOnly={this.props.typesReadOnly}
           ></DataForm>
-          <Stack direction="row" spacing={0.5} aria-label="Documented module actions">
-            <Button onClick={this._setTypesMode} title="Edit documentation by types">
+            <Stack direction="row" spacing={0.5} aria-label={this.props.intl.formatMessage({ id: "project_editor.doc_module.actions_aria" })}>
+            <Button onClick={this._setTypesMode} title={this.props.intl.formatMessage({ id: "project_editor.doc_module.edit_by_types_title" })}>
               <CustomTabLabel
                 icon={<FontAwesomeIcon icon={faCode} className="fa-lg" />}
-                text={"All Types (" + allClassListing.length + ")"}
+                text={this.props.intl.formatMessage({ id: "project_editor.doc_module.all_types_tab" }) + allClassListing.length + ")"}
                 isCompact={isButtonCompact}
                 isSelected={this.state.mode === ModuleEditorMode.types}
                 theme={this.props.theme}
               />
             </Button>
-            <Button onClick={this._setTypesNeedingEditsMode} title="Edit documentation by types that need edits">
+            <Button onClick={this._setTypesNeedingEditsMode} title={this.props.intl.formatMessage({ id: "project_editor.doc_module.edit_by_need_edits_title" })}>
               <CustomTabLabel
                 icon={<FontAwesomeIcon icon={faPenToSquare} className="fa-lg" />}
-                text={"Needs Edits (" + filteredClassListing.length + ")"}
+                text={this.props.intl.formatMessage({ id: "project_editor.doc_module.needs_edits_tab" }) + filteredClassListing.length + ")"}
                 isCompact={isButtonCompact}
                 isSelected={this.state.mode === ModuleEditorMode.typesNeedingEdits}
                 theme={this.props.theme}
@@ -508,7 +509,7 @@ export default class DocumentedModuleEditor extends Component<
             </Button>
             <Button
               onClick={this._setUnassociatedDocsMode}
-              title="Remove or associate documentation that might be abandoned"
+              title={this.props.intl.formatMessage({ id: "project_editor.doc_module.unassociated_docs_title" })}
             >
               <UnassociatedDocumentationLabel
                 isCompact={isButtonCompact}
@@ -523,3 +524,5 @@ export default class DocumentedModuleEditor extends Component<
     );
   }
 }
+
+export default withLocalization(DocumentedModuleEditor);

@@ -161,6 +161,100 @@ export default class FieldUtilities {
     return undefined;
   }
 
+  /**
+   * Legacy numeric-to-string mapping for FieldDataType.
+   * Before commit b08a02db2, FieldDataType was a numeric enum. Some form.json files
+   * still contain numeric dataType values from that era. This map converts them
+   * to the current string-based FieldDataType values.
+   */
+  private static readonly _legacyNumericDataTypeMap: { [key: number]: FieldDataType } = {
+    0: FieldDataType.int,
+    1: FieldDataType.boolean,
+    2: FieldDataType.string,
+    3: FieldDataType.float,
+    4: FieldDataType.stringEnum,
+    5: FieldDataType.intEnum,
+    6: FieldDataType.intBoolean,
+    7: FieldDataType.number,
+    8: FieldDataType.stringLookup,
+    9: FieldDataType.intValueLookup,
+    10: FieldDataType.long,
+    11: FieldDataType.point3,
+    12: FieldDataType.intPoint3,
+    13: FieldDataType.longFormString,
+    14: FieldDataType.keyedObjectCollection,
+    15: FieldDataType.objectArray,
+    16: FieldDataType.object,
+    17: FieldDataType.stringArray,
+    18: FieldDataType.intRange,
+    19: FieldDataType.floatRange,
+    20: FieldDataType.minecraftFilter,
+    21: FieldDataType.percentRange,
+    22: FieldDataType.minecraftEventTrigger,
+    23: FieldDataType.longFormStringArray,
+    24: FieldDataType.keyedStringCollection,
+    25: FieldDataType.version,
+    26: FieldDataType.uuid,
+    27: FieldDataType.keyedBooleanCollection,
+    28: FieldDataType.keyedStringArrayCollection,
+    29: FieldDataType.arrayOfKeyedStringCollection,
+    30: FieldDataType.keyedKeyedStringArrayCollection,
+    31: FieldDataType.keyedNumberCollection,
+    32: FieldDataType.numberArray,
+    33: FieldDataType.checkboxListAsStringArray,
+    34: FieldDataType.molang,
+    35: FieldDataType.molangArray,
+    36: FieldDataType.point2,
+    37: FieldDataType.localizableString,
+    38: FieldDataType.keyedNumberArrayCollection,
+    39: FieldDataType.minecraftEventReference,
+  };
+
+  /**
+   * Converts a legacy numeric FieldDataType value to its string equivalent.
+   * If the value is already a string, returns it as-is.
+   */
+  static normalizeFieldDataType(dataType: FieldDataType | number): FieldDataType {
+    if (typeof dataType === "number") {
+      return FieldUtilities._legacyNumericDataTypeMap[dataType] ?? FieldDataType.string;
+    }
+    return dataType;
+  }
+
+  /**
+   * Normalizes all numeric dataType values in a form definition (and its nested
+   * subForms/alternates) to string-based FieldDataType values.
+   */
+  static normalizeFormFieldDataTypes(form: IFormDefinition) {
+    if (!form.fields) {
+      return;
+    }
+
+    for (const field of form.fields) {
+      FieldUtilities.normalizeFieldDataTypes(field);
+    }
+
+    if (form.scalarField) {
+      FieldUtilities.normalizeFieldDataTypes(form.scalarField);
+    }
+  }
+
+  private static normalizeFieldDataTypes(field: IField) {
+    if (field.dataType !== undefined) {
+      field.dataType = FieldUtilities.normalizeFieldDataType(field.dataType);
+    }
+
+    if (field.alternates) {
+      for (const alt of field.alternates) {
+        FieldUtilities.normalizeFieldDataTypes(alt);
+      }
+    }
+
+    if (field.subForm) {
+      FieldUtilities.normalizeFormFieldDataTypes(field.subForm);
+    }
+  }
+
   static getStringKeyedFieldType(fieldType: FieldDataType) {
     switch (fieldType) {
       case FieldDataType.string:

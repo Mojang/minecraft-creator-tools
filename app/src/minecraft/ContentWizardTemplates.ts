@@ -430,17 +430,6 @@ export const BlockTemplates: Record<string, IBlockTypeDefinition> = {
   },
 
   /**
-   * Container block
-   */
-  container_block: {
-    id: "custom_chest",
-    displayName: "Custom Chest",
-    traits: ["solid", "container"],
-    texture: blockTexture(TexturePatterns.wood_oak),
-    sounds: "wood",
-  },
-
-  /**
    * Door block
    */
   door_block: {

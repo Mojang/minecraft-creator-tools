@@ -36,6 +36,7 @@
  */
 
 import React, { ReactNode } from "react";
+import { useIntl } from "react-intl";
 import { Dialog, DialogTitle, DialogContent, DialogActions, IconButton, useTheme, Box } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -94,8 +95,8 @@ export default function McDialog({
   open,
   title,
   children,
-  cancelButton = "Cancel",
-  confirmButton = "OK",
+  cancelButton,
+  confirmButton,
   onCancel,
   onConfirm,
   showCloseButton = true,
@@ -112,8 +113,17 @@ export default function McDialog({
   sx,
   "aria-describedby": ariaDescribedBy,
 }: McDialogProps) {
+  const intl = useIntl();
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
+
+  // Default button text to localized common strings when not explicitly provided
+  if (cancelButton === undefined) {
+    cancelButton = intl.formatMessage({ id: "common.cancel" });
+  }
+  if (confirmButton === undefined) {
+    confirmButton = intl.formatMessage({ id: "common.ok" });
+  }
 
   const handleClose = (event: object, reason: "backdropClick" | "escapeKeyDown") => {
     if (reason === "backdropClick" && !closeOnBackdropClick) {
@@ -173,11 +183,11 @@ export default function McDialog({
             {title}
             {headerContent}
           </Box>
-          {showCloseButton && (
+          {showCloseButton && onCancel && (
             <IconButton
               onClick={onCancel}
               size="small"
-              aria-label="Close dialog"
+              aria-label={intl.formatMessage({ id: "dialog.close_aria" })}
               sx={{
                 color: isDark ? mcColors.gray3 : mcColors.gray4,
                 "&:hover": {

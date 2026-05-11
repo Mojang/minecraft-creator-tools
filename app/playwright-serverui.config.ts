@@ -22,7 +22,7 @@ export default defineConfig({
   testDir: "./src/testweb",
 
   // Only run server UI tests
-  testMatch: "ServerUI.spec.ts",
+  testMatch: ["ServerUI.spec.ts", "PseudoLocaleServerUI.spec.ts"],
 
   outputDir: "./debugoutput/playwright-serverui-results",
 

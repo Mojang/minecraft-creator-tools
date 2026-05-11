@@ -55,7 +55,8 @@ export class SetCommand extends CommandBase {
   };
 
   configure(cmd: Command): void {
-    // Arguments are configured via metadata.arguments
+    // --list shows all settable properties; useful for CI / automation.
+    cmd.option("--list", "List all settable property names, then exit.");
   }
 
   async execute(context: ICommandContext): Promise<void> {
@@ -63,6 +64,27 @@ export class SetCommand extends CommandBase {
 
     const propertyName = context.subCommand;
     const propertyValue = context.propertyValue;
+
+    // --list / `mct set list` discovery path.
+    const wantsList = propertyName === "list" || Boolean(context.commandOptions?.list);
+    if (wantsList) {
+      if (context.json) {
+        context.log.data(
+          JSON.stringify({
+            schemaVersion: "1.0.0",
+            command: "set",
+            properties: AVAILABLE_PROPERTIES,
+          })
+        );
+      } else {
+        context.log.info("Settable properties:");
+        for (const p of AVAILABLE_PROPERTIES) {
+          context.log.info(`  ${p}`);
+        }
+      }
+      this.logComplete(context);
+      return;
+    }
 
     if (!propertyName) {
       context.log.error(`No property specified. Available properties: ${AVAILABLE_PROPERTIES.join(", ")}`);
@@ -93,7 +115,7 @@ export class SetCommand extends CommandBase {
         continue;
       }
 
-      if (!context.quiet) {
+      if (!context.quiet && !context.json) {
         context.log.info(`Setting '${propCanon}' = '${trimmedValue}' in project: ${project.name}`);
       }
 
@@ -120,7 +142,18 @@ export class SetCommand extends CommandBase {
           break;
       }
 
-      if (!context.quiet) {
+      if (context.json) {
+        context.log.data(
+          JSON.stringify({
+            schemaVersion: "1.0.0",
+            command: "set",
+            project: project.name,
+            property: propCanon,
+            value: trimmedValue,
+            success: true,
+          })
+        );
+      } else if (!context.quiet) {
         context.log.success(`Updated ${propCanon} for project: ${project.name}`);
       }
     }

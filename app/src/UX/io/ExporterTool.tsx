@@ -64,7 +64,7 @@ export default class ExporterToolEditor extends Component<IExporterToolProps, IE
     });
   }
 
-  _handleImportPathUpdate(e: React.ChangeEvent<HTMLInputElement>) {
+  _handleImportPathUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (this.state == null) {
       return;
     }
@@ -73,18 +73,18 @@ export default class ExporterToolEditor extends Component<IExporterToolProps, IE
       importPath: e.target.value,
       exportPath: this.state.exportPath,
     });
-  }
+  };
 
-  _handleTypeChange(e: React.ChangeEvent<HTMLInputElement>) {
+  _handleTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === undefined) {
       Log.unexpectedUndefined("HTC");
       return;
     }
 
     //const result = e.target.value;
-  }
+  };
 
-  _handleExportPathUpdate(e: React.ChangeEvent<HTMLInputElement>) {
+  _handleExportPathUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (this.state == null) {
       return;
     }
@@ -93,7 +93,7 @@ export default class ExporterToolEditor extends Component<IExporterToolProps, IE
       importPath: this.state.importPath,
       exportPath: e.target.value,
     });
-  }
+  };
 
   render() {
     let dialogInterior = <></>;

@@ -5,6 +5,7 @@ import Project from "../app/Project";
 import IFile from "../storage/IFile";
 import IFolder from "../storage/IFolder";
 import ProjectItem from "../app/ProjectItem";
+import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import BehaviorManifestDefinition from "./BehaviorManifestDefinition";
 import ResourceManifestDefinition from "./ResourceManifestDefinition";
 import SkinManifestDefinition from "./SkinManifestDefinition";
@@ -107,6 +108,10 @@ export default class Pack {
 
     this._items = this.project.items.filter((item) => item.projectPath?.startsWith(folderPath));
     return this._items;
+  }
+
+  hasVibrantVisualsContent(): boolean {
+    return this.getPackItems().some((item) => ProjectItemUtilities.isVibrantVisualsRelated(item));
   }
 
   static ensureOnFolder(folder: IFolder, packType: PackType, project: Project, projectItem: ProjectItem) {

@@ -1,0 +1,160 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   DICE ROLL EDITOR - Visual explanation of loot pool roll mechanics
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.dre-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dre-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.dre-header-icon {
+  font-size: 16px;
+  color: #66bb6a;
+}
+
+.dre-explanation {
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.65);
+  padding: 6px 10px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid #66bb6a;
+}
+
+.dre-explanation-highlight {
+  font-weight: 700;
+  color: #81c784;
+}
+
+.dre-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.dre-mode-toggle {
+  display: flex;
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.dre-mode-btn {
+  padding: 4px 12px;
+  font-size: 11px;
+  border: none;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.6);
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.dre-mode-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dre-mode-btn-active {
+  background: rgba(76, 175, 80, 0.25);
+  color: #81c784;
+  font-weight: 600;
+}
+
+.dre-input-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dre-input-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  min-width: 30px;
+}
+
+.dre-input {
+  width: 52px;
+  padding: 4px 6px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #e0e0e0;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.dre-input:focus {
+  border-color: #66bb6a;
+}
+
+.dre-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dre-range-separator {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 0 2px;
+}
+
+.dre-bonus-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dre-bonus-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.dre-bonus-input {
+  width: 44px;
+  padding: 3px 5px;
+  font-size: 12px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.25);
+  color: #bdbdbd;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.dre-bonus-input:focus {
+  border-color: #66bb6a;
+}
+
+.dre-bonus-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dre-bonus-tooltip {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.35);
+  font-style: italic;
+}

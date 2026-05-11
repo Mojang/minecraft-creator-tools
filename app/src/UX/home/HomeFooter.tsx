@@ -25,11 +25,11 @@ export default class HomeFooter extends Component<IHomeFooterProps, IHomeFooterS
     this.state = {};
   }
 
-  private _doManageConsent() {
+  private _doManageConsent = () => {
     if ((window as any).manageConsent) {
       (window as any).manageConsent();
     }
-  }
+  };
 
   async _handleExportAllKey(event: React.KeyboardEvent) {
     if (event.key === "Enter" && this.props.onExportAllRequested) {

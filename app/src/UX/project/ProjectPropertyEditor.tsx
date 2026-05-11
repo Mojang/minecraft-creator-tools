@@ -170,8 +170,10 @@ import { MinecraftTrack } from "../../app/ICreatorToolsData";
 import { CreatorToolsTargetSettings } from "../../app/CreatorTools";
 import { getThemeColors } from "../hooks/theme/useThemeColors";
 import IProjectTheme from "../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
+import { IntlShape } from "react-intl";
 
-interface IProjectPropertyEditorProps extends IAppProps {
+interface IProjectPropertyEditorProps extends IAppProps, WithLocalizationProps {
   project: Project;
   theme: IProjectTheme;
   heightOffset: number;
@@ -196,16 +198,31 @@ export enum GitHubPropertyType {
   title = 6,
 }
 
-export const ScriptVersionStrings = ["Latest Stable (2.0)", "Stable 1.x"];
-export const ProjectFocusStrings = ["General", "GameTests", "World", "Sample Behavior", "Editor Extension"];
-export const ProjectEditorPreferences = [
-  "<default Creator Tools preferences>",
-  "Visual editors, plus hide advanced items",
-  "Visual editors",
-  "Raw JSON/JavaScript Editing",
-];
+export function getScriptVersionStrings(intl: IntlShape): string[] {
+  return [
+    intl.formatMessage({ id: "project_editor.props.script_latest_stable" }),
+    intl.formatMessage({ id: "project_editor.props.script_stable_1x" }),
+  ];
+}
+export function getProjectFocusStrings(intl: IntlShape): string[] {
+  return [
+    intl.formatMessage({ id: "project_editor.props.focus_general" }),
+    intl.formatMessage({ id: "project_editor.props.focus_gametests" }),
+    intl.formatMessage({ id: "project_editor.props.focus_world" }),
+    intl.formatMessage({ id: "project_editor.props.focus_sample_behavior" }),
+    intl.formatMessage({ id: "project_editor.props.focus_editor_extension" }),
+  ];
+}
+export function getProjectEditorPreferences(intl: IntlShape): string[] {
+  return [
+    intl.formatMessage({ id: "project_editor.props.pref_default" }),
+    intl.formatMessage({ id: "project_editor.props.pref_visual_hide_advanced" }),
+    intl.formatMessage({ id: "project_editor.props.pref_visual" }),
+    intl.formatMessage({ id: "project_editor.props.pref_raw_json" }),
+  ];
+}
 
-export default class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProjectPropertyEditorState> {
+class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProjectPropertyEditorState> {
   private tentativeGitHubMode: string = "existing";
   private tentativeGitHubRepoName?: string;
   private tentativeGitHubOwner?: string;
@@ -386,7 +403,12 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
   async _rescanFiles() {
     this.props.project.resetProjectItems();
     await this.props.project.inferProjectItemsFromFilesRootFolder(true);
-    await this.props.creatorTools.notifyStatusUpdate("Rescanned " + this.props.project.projectFolder?.fullPath);
+    await this.props.creatorTools.notifyStatusUpdate(
+      this.props.intl.formatMessage(
+        { id: "project_editor.props.rescanned" },
+        { path: this.props.project.projectFolder?.fullPath }
+      )
+    );
     this.forceUpdate();
 
     if (this.props.onContentUpdated) {
@@ -514,7 +536,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
     data: { value?: string | string[] }
   ) {
-    if (data.value === "TypeScript") {
+    if (data.value === this.props.intl.formatMessage({ id: "project_editor.props.typescript" })) {
       this.props.project.preferredScriptLanguage = ProjectScriptLanguage.typeScript;
     } else {
       this.props.project.preferredScriptLanguage = ProjectScriptLanguage.javaScript;
@@ -546,11 +568,11 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
     data: { value?: string | string[] }
   ) {
-    if (data.value === ProjectEditorPreferences[1]) {
+    if (data.value === getProjectEditorPreferences(this.props.intl)[1]) {
       this.props.project.editPreference = ProjectEditPreference.summarized;
-    } else if (data.value === ProjectEditorPreferences[2]) {
+    } else if (data.value === getProjectEditorPreferences(this.props.intl)[2]) {
       this.props.project.editPreference = ProjectEditPreference.editors;
-    } else if (data.value === ProjectEditorPreferences[3]) {
+    } else if (data.value === getProjectEditorPreferences(this.props.intl)[3]) {
       this.props.project.editPreference = ProjectEditPreference.raw;
     } else {
       this.props.project.editPreference = ProjectEditPreference.default;
@@ -565,7 +587,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     data: { value?: string | string[] }
   ) {
     let i = 0;
-    for (const str in ProjectFocusStrings) {
+    for (const str in getProjectFocusStrings(this.props.intl)) {
       if (data.value === str) {
         this.props.project.focus = i;
       }
@@ -600,7 +622,12 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
 
     const index = this.props.creatorTools.track ? (this.props.creatorTools.track as number) : 0;
 
-    targetStrings.push("<default to " + CreatorToolsTargetSettings[index] + ">");
+    targetStrings.push(
+      this.props.intl.formatMessage(
+        { id: "project_editor.props.default_target" },
+        { target: CreatorToolsTargetSettings[index] }
+      )
+    );
 
     for (const targetString of CreatorToolsTargetSettings) {
       targetStrings.push(targetString);
@@ -624,25 +651,35 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
       CreatorToolsHost.hostType === HostType.webPlusServices &&
       (this.props.project.gitHubOwner === undefined || this.props.project.gitHubRepoName === undefined)
     ) {
-      gitHubInner.push(<div key="notConnected">(project is not connected to GitHub)</div>);
+      gitHubInner.push(
+        <div key="notConnected">
+          {this.props.intl.formatMessage({ id: "project_editor.props.not_connected_github" })}
+        </div>
+      );
 
       gitHubConnect = (
-          <Dialog
-            cancelButton="Cancel"
-            confirmButton="Confirm"
-            key="cghC"
-            content={
-              <ConnectToGitHub
-                onGitHubProjectUpdated={this._githubProjectUpdated}
-                project={this.props.project}
-                creatorTools={this.props.creatorTools}
-              />
-            }
-            onConfirm={this._handleConnectToGitHub}
-            header="Select GitHub Project"
-            trigger={<Button content="Connect to GitHub Project" iconPosition="before" primary />}
-          />
-        );
+        <Dialog
+          cancelButton="Cancel"
+          confirmButton={this.props.intl.formatMessage({ id: "project_editor.props.confirm" })}
+          key="cghC"
+          content={
+            <ConnectToGitHub
+              onGitHubProjectUpdated={this._githubProjectUpdated}
+              project={this.props.project}
+              creatorTools={this.props.creatorTools}
+            />
+          }
+          onConfirm={this._handleConnectToGitHub}
+          header={this.props.intl.formatMessage({ id: "project_editor.props.select_github_project" })}
+          trigger={
+            <Button
+              content={this.props.intl.formatMessage({ id: "project_editor.props.connect_github_project" })}
+              iconPosition="before"
+              primary
+            />
+          }
+        />
+      );
     } else if (CreatorToolsHost.hostType === HostType.webPlusServices) {
       let gitHubFolder = <></>;
 
@@ -651,7 +688,9 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
       if (this.props.project.gitHubFolder !== undefined) {
         gitHubFolder = (
           <div key="ghfo">
-            <div className="ppe-ghheader">Folder:</div>
+            <div className="ppe-ghheader">
+              {this.props.intl.formatMessage({ id: "project_editor.props.folder_label" })}
+            </div>
             <div>{this.props.project.gitHubFolder}</div>
           </div>
         );
@@ -659,14 +698,16 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
 
       gitHubInner.push(
         <div key="ghProjInfo">
-          <div className="ppe-ghheader">Project:</div>
+          <div className="ppe-ghheader">
+            {this.props.intl.formatMessage({ id: "project_editor.props.project_label" })}
+          </div>
           <div>
             {this.props.project.gitHubOwner}/{this.props.project.gitHubRepoName}
           </div>
           {gitHubFolder}
           <div>
             <div className="ppe-ghshareableUrl" id="ppe-ghshareableUrlLabel">
-              Shareable URL:
+              {this.props.intl.formatMessage({ id: "project_editor.props.shareable_url_label" })}
             </div>
             <Input
               aria-labelledby="ppe-ghshareableUrlLabel"
@@ -677,7 +718,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
             />
             <div>
               <a target="_blank" rel="noreferrer" href={ghUrl} className="ppe-link">
-                Link
+                {this.props.intl.formatMessage({ id: "project_editor.props.link" })}
               </a>
             </div>
           </div>
@@ -685,22 +726,28 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
       );
 
       gitHubConnect = (
-          <Dialog
-            cancelButton="Cancel"
-            confirmButton="Confirm"
-            key="selectGHP"
-            content={
-              <ConnectToGitHub
-                onGitHubProjectUpdated={this._githubProjectUpdated}
-                project={this.props.project}
-                creatorTools={this.props.creatorTools}
-              />
-            }
-            onConfirm={this._handleConnectToGitHub}
-            header="Select GitHub Project"
-            trigger={<Button content="Connect to GitHub Project" iconPosition="before" primary />}
-          />
-        );
+        <Dialog
+          cancelButton="Cancel"
+          confirmButton={this.props.intl.formatMessage({ id: "project_editor.props.confirm" })}
+          key="selectGHP"
+          content={
+            <ConnectToGitHub
+              onGitHubProjectUpdated={this._githubProjectUpdated}
+              project={this.props.project}
+              creatorTools={this.props.creatorTools}
+            />
+          }
+          onConfirm={this._handleConnectToGitHub}
+          header={this.props.intl.formatMessage({ id: "project_editor.props.select_github_project" })}
+          trigger={
+            <Button
+              content={this.props.intl.formatMessage({ id: "project_editor.props.connect_github_project" })}
+              iconPosition="before"
+              primary
+            />
+          }
+        />
+      );
     }
 
     let behaviorPackUniqueIdIsError = false;
@@ -749,14 +796,17 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
       const projFolder = this.props.project.projectFolder;
 
       if (projFolder !== null && projFolder !== undefined) {
-        rescanStr = "Re-scan files at " + projFolder.fullPath;
+        rescanStr = this.props.intl.formatMessage(
+          { id: "project_editor.props.rescan_files_at" },
+          { path: projFolder.fullPath }
+        );
       }
 
       localTools.push(
         <div title={rescanStr} key="rescanLt">
           <Button
             key="rescan"
-            content="Re-scan files"
+            content={this.props.intl.formatMessage({ id: "project_editor.props.rescan_files" })}
             icon={<FontAwesomeIcon icon={faBinoculars} className="fa-lg" />}
             onClick={this._rescanFiles}
             iconPosition="before"
@@ -794,8 +844,6 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     };
 
     const contentStyle: React.CSSProperties = {
-      minHeight: height,
-      maxHeight: height,
       background: brand?.background2,
     };
 
@@ -804,20 +852,30 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
       borderColor: brand?.background4,
     };
 
+    // a11y (WCAG 1.4.3): section header text uses foreground1 (high-contrast offWhite/offBlack)
+    // for ≥4.5:1 contrast on the section header background. The previous value of
+    // `brand.foreground` (Minecraft green) measured 3.07:1 on background2 in dark mode.
+    // The accent green is preserved on the icon (.ppe-sectionIcon) via CSS, where the
+    // 3:1 minimum for non-text contrast (WCAG 1.4.11) is met.
     const sectionHeaderStyle: React.CSSProperties = {
       background: brand?.background2,
-      color: brand?.foreground,
+      color: brand?.foreground1,
       borderBottomColor: brand?.background4,
     };
 
+    // a11y (WCAG 1.4.3): use foreground5 in dark mode (orange) but switch to a darker
+    // warning color in light mode where contrast against background2 is acceptable.
     const advancedSectionHeaderStyle: React.CSSProperties = {
       background: brand?.background2,
-      color: brand?.foreground5, // Orange for advanced/warning
+      color: isDarkMode ? brand?.foreground5 : "#9a4a00", // Orange for advanced/warning
       borderBottomColor: brand?.background4,
     };
 
+    // a11y (WCAG 1.4.3): field labels use foreground1 (offWhite/offBlack) for ≥4.5:1
+    // contrast on the section background. The previous value of `brand.foreground6`
+    // measured 2.03:1 in dark mode and ~3.55:1 in light mode against background3.
     const labelStyle: React.CSSProperties = {
-      color: brand?.foreground6,
+      color: brand?.foreground1,
     };
 
     const uuidFieldStyle: React.CSSProperties = {
@@ -829,7 +887,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
       <div className={"ppe-outer" + (isDarkMode ? " ppe-dark" : " ppe-light")} style={outerStyle}>
         <div className="ppe-header">
           <FontAwesomeIcon icon={faCubes} className="ppe-headerIcon" />
-          Project Properties
+          {this.props.intl.formatMessage({ id: "project_editor.props.header" })}
         </div>
 
         <div className="ppe-content" style={contentStyle}>
@@ -837,12 +895,12 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
           <div className="ppe-section" style={sectionStyle}>
             <div className="ppe-sectionHeader" style={sectionHeaderStyle}>
               <FontAwesomeIcon icon={faUser} className="ppe-sectionIcon" />
-              Basic Information
+              {this.props.intl.formatMessage({ id: "project_editor.props.basic_information" })}
             </div>
             <div className="ppe-sectionContent">
               <div className="ppe-field">
                 <label className="ppe-fieldLabel" style={labelStyle} id="ppe-creatorlabel">
-                  Creator
+                  {this.props.intl.formatMessage({ id: "project_editor.props.creator" })}
                 </label>
                 <Input
                   aria-labelledby="ppe-creatorlabel"
@@ -855,20 +913,20 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
               </div>
               <div className="ppe-field">
                 <label className="ppe-fieldLabel" style={labelStyle} id="ppe-namelabel">
-                  Name
+                  {this.props.intl.formatMessage({ id: "project_editor.props.name" })}
                 </label>
                 <Input
                   aria-labelledby="ppe-namelabel"
                   className="ppe-fieldInput"
                   clearable
-                  placeholder="project name"
+                  placeholder={this.props.intl.formatMessage({ id: "project_editor.props.name_placeholder" })}
                   value={this.state.name}
                   onChange={this._handleNameChanged}
                 />
               </div>
               <div className="ppe-field">
                 <label className="ppe-fieldLabel" style={labelStyle} id="ppe-shortNamelabel">
-                  Short Name
+                  {this.props.intl.formatMessage({ id: "project_editor.props.short_name" })}
                 </label>
                 <Input
                   aria-labelledby="ppe-shortNamelabel"
@@ -885,7 +943,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
               </div>
               <div className="ppe-field">
                 <label className="ppe-fieldLabel" style={labelStyle} id="ppe-namespacelabel">
-                  Namespace
+                  {this.props.intl.formatMessage({ id: "project_editor.props.namespace" })}
                 </label>
                 <Input
                   className="ppe-fieldInput"
@@ -899,39 +957,39 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
               </div>
               <div className="ppe-field">
                 <label className="ppe-fieldLabel" style={labelStyle} id="ppe-titlelabel">
-                  Title
+                  {this.props.intl.formatMessage({ id: "project_editor.props.title" })}
                 </label>
                 <Input
                   aria-labelledby="ppe-titlelabel"
                   className="ppe-fieldInput"
                   clearable
-                  placeholder="project title"
+                  placeholder={this.props.intl.formatMessage({ id: "project_editor.props.title_placeholder" })}
                   value={this.state.title}
                   onChange={this._handleTitleChanged}
                 />
               </div>
               <div className="ppe-field ppe-field-full">
                 <label className="ppe-fieldLabel" style={labelStyle} id="ppe-descriptionlabel">
-                  Description
+                  {this.props.intl.formatMessage({ id: "project_editor.props.description" })}
                 </label>
                 <TextArea
                   aria-labelledby="ppe-descriptionlabel"
                   className="ppe-fieldTextArea"
-                  placeholder="description"
+                  placeholder={this.props.intl.formatMessage({ id: "project_editor.props.description_placeholder" })}
                   value={this.props.project.description}
                   onChange={this._handleDescriptionChanged}
                 />
               </div>
               <div className="ppe-field">
                 <label className="ppe-fieldLabel" style={labelStyle} id="ppe-versionlabel">
-                  Version
+                  {this.props.intl.formatMessage({ id: "project_editor.props.version" })}
                 </label>
                 <div className="ppe-versionInputs">
                   <Input
                     className="ppe-versionInput"
                     clearable
-                    aria-label="Major version number"
-                    placeholder="major"
+                    aria-label={this.props.intl.formatMessage({ id: "project_editor.props.aria_major_version" })}
+                    placeholder={this.props.intl.formatMessage({ id: "project_editor.props.major_placeholder" })}
                     value={versionMajor + ""}
                     onChange={this._handleVersionMajorChanged}
                   />
@@ -939,8 +997,8 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
                   <Input
                     className="ppe-versionInput"
                     clearable
-                    aria-label="Minor version number"
-                    placeholder="minor"
+                    aria-label={this.props.intl.formatMessage({ id: "project_editor.props.aria_minor_version" })}
+                    placeholder={this.props.intl.formatMessage({ id: "project_editor.props.minor_placeholder" })}
                     value={versionMinor + ""}
                     onChange={this._handleVersionMinorChanged}
                   />
@@ -948,8 +1006,8 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
                   <Input
                     className="ppe-versionInput"
                     clearable
-                    aria-label="Patch version number"
-                    placeholder="patch"
+                    aria-label={this.props.intl.formatMessage({ id: "project_editor.props.aria_patch_version" })}
+                    placeholder={this.props.intl.formatMessage({ id: "project_editor.props.patch_placeholder" })}
                     value={versionPatch + ""}
                     onChange={this._handleVersionPatchChanged}
                   />
@@ -962,53 +1020,53 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
           <div className="ppe-section" style={sectionStyle}>
             <div className="ppe-sectionHeader" style={sectionHeaderStyle}>
               <FontAwesomeIcon icon={faFileSignature} className="ppe-sectionIcon" />
-              Project Settings
+              {this.props.intl.formatMessage({ id: "project_editor.props.project_settings" })}
             </div>
             <div className="ppe-sectionContent">
               <div className="ppe-field">
                 <label className="ppe-fieldLabel" style={labelStyle} id="ppe-focuslabel">
-                  Type
+                  {this.props.intl.formatMessage({ id: "project_editor.props.type" })}
                 </label>
                 <Dropdown
                   aria-labelledby="ppe-focuslabel"
                   className="ppe-fieldDropdown"
-                  items={ProjectFocusStrings}
-                  placeholder="Select your focus"
-                  defaultValue={ProjectFocusStrings[this.props.project.focus]}
+                  items={getProjectFocusStrings(this.props.intl)}
+                  placeholder={this.props.intl.formatMessage({ id: "project_editor.props.select_focus" })}
+                  defaultValue={getProjectFocusStrings(this.props.intl)[this.props.project.focus]}
                   onChange={this._handleFocusChange}
                 />
               </div>
               <div className="ppe-field">
                 <label className="ppe-fieldLabel" style={labelStyle} id="ppe-tracklabel">
-                  Target Minecraft
+                  {this.props.intl.formatMessage({ id: "project_editor.props.target_minecraft" })}
                 </label>
                 <Dropdown
                   aria-labelledby="ppe-tracklabel"
                   className="ppe-fieldDropdown"
                   items={targetStrings}
-                  placeholder="Select which version of Minecraft to target"
+                  placeholder={this.props.intl.formatMessage({ id: "project_editor.props.select_target_version" })}
                   defaultValue={targetStrings[this.props.project.track ? (this.props.project.track as number) + 1 : 0]}
                   onChange={this._handleTrackChange}
                 />
               </div>
               <div className="ppe-field">
                 <label className="ppe-fieldLabel" style={labelStyle} id="ppe-defaultEditlabel">
-                  Edit Experience
+                  {this.props.intl.formatMessage({ id: "project_editor.props.edit_experience" })}
                 </label>
                 <Dropdown
-                  items={ProjectEditorPreferences}
+                  items={getProjectEditorPreferences(this.props.intl)}
                   aria-labelledby="ppe-defaultEditlabel"
                   className="ppe-fieldDropdown"
-                  placeholder="Select your edit experience"
-                  defaultValue={ProjectEditorPreferences[this.props.project.editPreference]}
+                  placeholder={this.props.intl.formatMessage({ id: "project_editor.props.select_edit_experience" })}
+                  defaultValue={getProjectEditorPreferences(this.props.intl)[this.props.project.editPreference]}
                   onChange={this._handleEditPreferenceChange}
                 />
                 <div className="ppe-fieldNote">
                   {this.props.project.effectiveEditPreference === ProjectEditPreference.summarized ||
                   this.props.project.editPreference === ProjectEditPreference.editors
-                    ? "Visual editors may remove some formatting/comments in JSON files. "
+                    ? this.props.intl.formatMessage({ id: "project_editor.props.visual_editors_warning" })
                     : ""}
-                  Use '...' menu on items for Raw JSON editing.
+                  {this.props.intl.formatMessage({ id: "project_editor.props.raw_json_hint" })}
                 </div>
               </div>
             </div>
@@ -1018,21 +1076,21 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
           <div className="ppe-section" style={sectionStyle}>
             <div className="ppe-sectionHeader" style={sectionHeaderStyle}>
               <FontAwesomeIcon icon={faCode} className="ppe-sectionIcon" />
-              Script Settings
+              {this.props.intl.formatMessage({ id: "project_editor.props.script_settings" })}
             </div>
             <div className="ppe-sectionContent">
               <div className="ppe-field">
                 <label className="ppe-fieldLabel" style={labelStyle} id="ppe-scriptLanguagelabel">
-                  Language
+                  {this.props.intl.formatMessage({ id: "project_editor.props.language" })}
                 </label>
                 <Dropdown
-                  items={["JavaScript", "TypeScript"]}
+                  items={[this.props.intl.formatMessage({ id: "project_editor.props.javascript" }), "TypeScript"]}
                   aria-labelledby="ppe-scriptLanguagelabel"
                   className="ppe-fieldDropdown"
-                  placeholder="Select your language"
+                  placeholder={this.props.intl.formatMessage({ id: "project_editor.props.select_language" })}
                   defaultValue={
                     this.props.project.preferredScriptLanguage === ProjectScriptLanguage.javaScript
-                      ? "JavaScript"
+                      ? this.props.intl.formatMessage({ id: "project_editor.props.javascript" })
                       : "TypeScript"
                   }
                   onChange={this._handleLanguageChange}
@@ -1040,17 +1098,17 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
               </div>
               <div className="ppe-field">
                 <label className="ppe-fieldLabel" style={labelStyle} id="ppe-scriptVersionlabel">
-                  Script Version
+                  {this.props.intl.formatMessage({ id: "project_editor.props.script_version" })}
                 </label>
                 <Dropdown
-                  items={ScriptVersionStrings}
+                  items={getScriptVersionStrings(this.props.intl)}
                   aria-labelledby="ppe-scriptVersionlabel"
                   className="ppe-fieldDropdown"
-                  placeholder="Select your version"
+                  placeholder={this.props.intl.formatMessage({ id: "project_editor.props.select_version" })}
                   defaultValue={
                     this.props.project.scriptVersion === ProjectScriptVersion.latestStable
                       ? "Latest Stable"
-                      : "Stable 1.x"
+                      : this.props.intl.formatMessage({ id: "project_editor.props.script_stable_1x" })
                   }
                   onChange={this._handleVersionChange}
                 />
@@ -1063,7 +1121,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
             <div className="ppe-section" style={sectionStyle}>
               <div className="ppe-sectionHeader" style={sectionHeaderStyle}>
                 <FontAwesomeIcon icon={faGithub} className="ppe-sectionIcon" />
-                GitHub Integration
+                {this.props.intl.formatMessage({ id: "project_editor.props.github_integration" })}
               </div>
               <div className="ppe-sectionContent">
                 {gitHubInner}
@@ -1079,7 +1137,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
             <div className="ppe-section" style={sectionStyle}>
               <div className="ppe-sectionHeader" style={sectionHeaderStyle}>
                 <FontAwesomeIcon icon={faWrench} className="ppe-sectionIcon" />
-                Tools
+                {this.props.intl.formatMessage({ id: "project_editor.props.tools_section" })}
               </div>
               <div className="ppe-sectionContent ppe-toolsContent">{localTools}</div>
             </div>
@@ -1089,12 +1147,12 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
           <div className="ppe-section ppe-section-advanced" style={sectionStyle}>
             <div className="ppe-sectionHeader" style={advancedSectionHeaderStyle}>
               <FontAwesomeIcon icon={faFingerprint} className="ppe-sectionIcon" />
-              Advanced - Unique Identifiers
+              {this.props.intl.formatMessage({ id: "project_editor.props.advanced_uuids" })}
             </div>
             <div className="ppe-sectionContent">
               <div className="ppe-uuidField" style={uuidFieldStyle}>
                 <label className="ppe-fieldLabel" style={labelStyle} id="ppe-bpuniqueidlabel">
-                  Behavior Pack UUID
+                  {this.props.intl.formatMessage({ id: "project_editor.props.behavior_pack_uuid" })}
                 </label>
                 <div className="ppe-uuidRow">
                   <Input
@@ -1106,10 +1164,10 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
                     value={this.props.project.defaultBehaviorPackUniqueId}
                   />
                   <Button
-                    content="Generate"
+                    content={this.props.intl.formatMessage({ id: "project_editor.props.generate" })}
                     icon={<FontAwesomeIcon icon={faDice} />}
                     onClick={this._createNewBehaviorPackUniqueId}
-                    aria-label="Randomly generate a new Behavior Pack Unique Id"
+                    aria-label={this.props.intl.formatMessage({ id: "project_editor.props.aria_generate_bp_uuid" })}
                     iconPosition="before"
                     primary
                   />
@@ -1117,7 +1175,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
               </div>
               <div className="ppe-uuidField" style={uuidFieldStyle}>
                 <label className="ppe-fieldLabel" style={labelStyle} id="ppe-rpuniqueidlabel">
-                  Resource Pack UUID
+                  {this.props.intl.formatMessage({ id: "project_editor.props.resource_pack_uuid" })}
                 </label>
                 <div className="ppe-uuidRow">
                   <Input
@@ -1129,10 +1187,10 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
                     value={this.props.project.defaultResourcePackUniqueId}
                   />
                   <Button
-                    content="Generate"
+                    content={this.props.intl.formatMessage({ id: "project_editor.props.generate" })}
                     icon={<FontAwesomeIcon icon={faDice} />}
                     onClick={this._createNewResourcePackUniqueId}
-                    aria-label="Randomly generate a new Resource Pack Unique Id"
+                    aria-label={this.props.intl.formatMessage({ id: "project_editor.props.aria_generate_rp_uuid" })}
                     iconPosition="before"
                     primary
                   />
@@ -1140,7 +1198,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
               </div>
               <div className="ppe-uuidField" style={uuidFieldStyle}>
                 <label className="ppe-fieldLabel" style={labelStyle} id="ppe-datauniqueidlabel">
-                  Data UUID
+                  {this.props.intl.formatMessage({ id: "project_editor.props.data_uuid" })}
                 </label>
                 <div className="ppe-uuidRow">
                   <Input
@@ -1152,10 +1210,10 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
                     value={this.props.project.defaultDataUniqueId}
                   />
                   <Button
-                    content="Generate"
+                    content={this.props.intl.formatMessage({ id: "project_editor.props.generate" })}
                     icon={<FontAwesomeIcon icon={faDice} />}
                     onClick={this._createNewDataUniqueId}
-                    aria-label="Randomly generate a new Data Unique Id"
+                    aria-label={this.props.intl.formatMessage({ id: "project_editor.props.aria_generate_data_uuid" })}
                     iconPosition="before"
                     primary
                   />
@@ -1163,7 +1221,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
               </div>
               <div className="ppe-uuidField" style={uuidFieldStyle}>
                 <label className="ppe-fieldLabel" style={labelStyle} id="ppe-scriptuniqueidlabel">
-                  Script UUID
+                  {this.props.intl.formatMessage({ id: "project_editor.props.script_uuid" })}
                 </label>
                 <div className="ppe-uuidRow">
                   <Input
@@ -1175,10 +1233,10 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
                     value={this.props.project.defaultScriptModuleUniqueId}
                   />
                   <Button
-                    content="Generate"
+                    content={this.props.intl.formatMessage({ id: "project_editor.props.generate" })}
                     icon={<FontAwesomeIcon icon={faDice} />}
                     onClick={this._createNewScriptUniqueId}
-                    aria-label="Randomly generate a new Script Unique Id"
+                    aria-label={this.props.intl.formatMessage({ id: "project_editor.props.aria_generate_script_uuid" })}
                     iconPosition="before"
                     primary
                   />
@@ -1191,3 +1249,5 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     );
   }
 }
+
+export default withLocalization(ProjectPropertyEditor);

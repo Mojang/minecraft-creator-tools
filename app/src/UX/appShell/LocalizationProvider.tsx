@@ -33,6 +33,7 @@ import trTRMessages from "../../locales/tr_TR.json";
 import ukUAMessages from "../../locales/uk_UA.json";
 import zhCNMessages from "../../locales/zh_CN.json";
 import zhTWMessages from "../../locales/zh_TW.json";
+import pseudoMessages from "../../locales/pseudo.json";
 
 type Messages = Record<string, string>;
 
@@ -65,6 +66,7 @@ const messages: Record<string, Messages> = {
   uk_UA: ukUAMessages,
   zh_CN: zhCNMessages,
   zh_TW: zhTWMessages,
+  pseudo: pseudoMessages,
 };
 
 export interface ILocalizationProviderProps {
@@ -74,7 +76,7 @@ export interface ILocalizationProviderProps {
 
 export const LocalizationProvider: React.FC<ILocalizationProviderProps> = ({ children, locale = "en_US" }) => {
   const selectedLocale = messages[locale] ? locale : "en_US";
-  const selectedMessages = messages[selectedLocale];
+  const selectedMessages = { ...enUSMessages, ...messages[selectedLocale] };
   const bcp47Locale = selectedLocale.replace("_", "-");
 
   return (
@@ -94,6 +96,13 @@ export const LocalizationProvider: React.FC<ILocalizationProviderProps> = ({ chi
 };
 
 export function getUserLocale(): string {
+  // Allow ?locale=xx_YY override for testing (e.g. ?locale=pseudo)
+  const urlParams = new URLSearchParams(window.location.search);
+  const overrideLocale = urlParams.get("locale");
+  if (overrideLocale && messages[overrideLocale]) {
+    return overrideLocale;
+  }
+
   const browserLocale = navigator.language || "en";
   const fileFormatLocale = browserLocale.replace("-", "_");
 

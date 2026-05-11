@@ -12,8 +12,9 @@ import DocumentedCommandEditor from "./DocumentedCommandEditor";
 import CreatorTools from "../../../app/CreatorTools";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
-interface IDocumentedCommandSetEditorProps extends IFileProps {
+interface IDocumentedCommandSetEditorProps extends IFileProps, WithLocalizationProps {
   heightOffset: number;
   theme: IProjectTheme;
   typesReadOnly: boolean;
@@ -28,7 +29,7 @@ interface IDocumentedCommandSetEditorState {
   isLoaded: boolean;
 }
 
-export default class DocumentedCommandSetEditor extends Component<
+class DocumentedCommandSetEditor extends Component<
   IDocumentedCommandSetEditorProps,
   IDocumentedCommandSetEditorState
 > {
@@ -160,7 +161,7 @@ export default class DocumentedCommandSetEditor extends Component<
         }
       }
 
-      return <div>Loading...</div>;
+      return <div>{this.props.intl.formatMessage({ id: "project_editor.doc_cmdset.loading" })}</div>;
     }
 
     if (this.props.setActivePersistable !== undefined) {
@@ -191,7 +192,7 @@ export default class DocumentedCommandSetEditor extends Component<
     }
 
     if (!form) {
-      return <div>(Error loading form)...</div>;
+      return <div>{this.props.intl.formatMessage({ id: "project_editor.doc_cmdset.error_loading" })}</div>;
     }
 
     return (
@@ -231,7 +232,7 @@ export default class DocumentedCommandSetEditor extends Component<
             }}
           >
             <McSelectableList
-              aria-label="List of document command sets"
+              aria-label={this.props.intl.formatMessage({ id: "project_editor.doc_cmdset.list_aria" })}
               items={commandListing}
               onSelectedIndexChange={this._handleCommandSelected}
             />
@@ -250,3 +251,5 @@ export default class DocumentedCommandSetEditor extends Component<
     );
   }
 }
+
+export default withLocalization(DocumentedCommandSetEditor);

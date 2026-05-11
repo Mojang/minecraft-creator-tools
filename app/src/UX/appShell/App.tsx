@@ -38,6 +38,7 @@ import ImportFromUrl from "../io/ImportFromUrl";
 import ProjectCreateManager from "../../app/ProjectCreateManager";
 import telemetryService from "../../analytics/Telemetry";
 import { TelemetryEvents, TelemetryProperties, TelemetrySeverity } from "../../analytics/TelemetryConstants";
+import ErrorService from "../../core/ErrorService";
 import ImportFiles from "../io/ImportFiles";
 
 // Lazy-loaded heavy components (Babylon.js ~8MB)
@@ -78,6 +79,7 @@ export enum AppMode {
   worldViewer = 25, // Standalone 3D world viewer with URL param for .mcworld data
   sessionEnded = 23, // View session has ended (server shut down)
   itemViewer = 24, // Standalone item/attachable viewer
+  notFound = 26, // Invalid route — display a 404 view with a "Go home" button
 }
 
 interface AppProps {
@@ -216,7 +218,9 @@ export default class App extends Component<AppProps, AppState> {
 
       this.initProject(project);
 
-      await project.ensureProjectFolder();
+      await project.ensureProjectFolder().catch((err) => {
+        Log.error(`App startup: ensureProjectFolder failed: ${err}`);
+      });
 
       if (this.state) {
         if (this._isMountedInternal) {
@@ -371,6 +375,55 @@ export default class App extends Component<AppProps, AppState> {
     window.history.replaceState(null, "", window.location.pathname + window.location.search);
   }
 
+  /**
+   * Routes the user away from the 404 view back to the home page, replacing
+   * the offending pathname so reloading won't immediately re-trigger the 404.
+   */
+  private _handleReturnHomeFromNotFound = () => {
+    try {
+      if (typeof window !== "undefined" && window.history && window.history.replaceState) {
+        window.history.replaceState(null, "", "/");
+      }
+    } catch {
+      // noop - history APIs may be unavailable in some embedded hosts
+    }
+    this.setState((prev) => ({ ...prev, mode: AppMode.home }));
+  };
+
+  /**
+   * Returns true when the given pathname can't be served by this SPA's known
+   * routes. Known routes all resolve to the same entry HTML (root or an
+   * *.html file), so any other path segment means the user typed an invalid
+   * URL. Used by the 404 view.
+   */
+  private _isInvalidSpaPathname(pathname: string): boolean {
+    if (!pathname || pathname === "/" || pathname === "") {
+      return false;
+    }
+
+    // Strip the deployment base path (e.g. "/preview/") so a project deployed
+    // to a subfolder still treats its root as valid. Use CreatorToolsHost's
+    // known roots when available, otherwise allow anything ending in .html.
+    const lower = pathname.toLowerCase();
+
+    // Any HTML entry file is considered valid (index.html, devindex.html, ...)
+    if (lower.endsWith(".html") || lower.endsWith(".htm")) {
+      return false;
+    }
+
+    // Trailing slash on a base path (e.g. "/app/") is valid
+    if (lower.endsWith("/")) {
+      // Only treat as invalid if the path contains additional path segments
+      // beyond a single base. /app/ is fine, /foo/bar/ is not.
+      const segments = lower.split("/").filter(Boolean);
+      return segments.length > 1;
+    }
+
+    // Anything else — like /foo or /foo/bar — with no extension and no trailing
+    // slash is a path this SPA doesn't know how to serve.
+    return true;
+  }
+
   private _handleHashChange() {
     const result = this._getStateFromUrlWithSideEffects(true);
 
@@ -419,7 +472,16 @@ export default class App extends Component<AppProps, AppState> {
       // This prevents a flash of the home page when the app was launched
       // with a specific mode (e.g., webserver via mct serve)
       const modeFromInitial = this._getModeFromString(CreatorToolsHost.initialMode);
-      nextMode = modeFromInitial ?? AppMode.home;
+      if (modeFromInitial) {
+        nextMode = modeFromInitial;
+      } else if (typeof window !== "undefined" && this._isInvalidSpaPathname(window.location.pathname)) {
+        // Render an explicit 404 view for invalid pathnames rather than
+        // silently falling back to home.
+        Log.debug(`[App] Unknown route, rendering 404 view. Attempted path: ${window.location.pathname}`);
+        nextMode = AppMode.notFound;
+      } else {
+        nextMode = AppMode.home;
+      }
     }
 
     this._updateWindowTitle(nextMode, this.state.activeProject);
@@ -677,6 +739,10 @@ export default class App extends Component<AppProps, AppState> {
         this.props.saveAllRetriever(this._saveAll);
       }
 
+      // Make _saveAll available to the global error overlay so the user can
+      // persist active-project work when an uncaught error is surfaced.
+      ErrorService.setSaveAllHandler(this._saveAll);
+
       const ct = CreatorToolsHost.getCreatorTools();
 
       if (ct && !ct.isLoaded) {
@@ -725,6 +791,12 @@ export default class App extends Component<AppProps, AppState> {
       if (mode) {
         initialAppMode = mode;
       }
+    } else if (typeof window !== "undefined" && this._isInvalidSpaPathname(window.location.pathname)) {
+      // User typed a URL path that this SPA doesn't know about and there's no
+      // hash or mode query to rescue it. Render an explicit 404 view instead
+      // of silently falling back to the home page.
+      Log.debug(`[App] Unknown route, rendering 404 view. Attempted path: ${window.location.pathname}`);
+      initialAppMode = AppMode.notFound;
     }
 
     let selectedItem: string | undefined = undefined;
@@ -1043,6 +1115,9 @@ export default class App extends Component<AppProps, AppState> {
 
     // Unsubscribe from theme changes
     CreatorToolsHost.onThemeChanged.unsubscribe(this._handleThemeChanged);
+
+    // Release the save-all handler from the global error overlay.
+    ErrorService.setSaveAllHandler(undefined);
 
     // Unsubscribe from content storage shutdown notifications
     if (this._contentStorage) {
@@ -2157,6 +2232,28 @@ export default class App extends Component<AppProps, AppState> {
     return CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? this.props.darkTheme : this.props.lightTheme;
   }
 
+  /**
+   * Skip-to-main-content link (WCAG 2.4.1 — Bypass Blocks).
+   *
+   * This is the first focusable element in the App's render output. It is
+   * visually hidden until focused, then slides into the top-left corner with
+   * high-contrast styling. Because several modes (Home, ProjectEditor, etc.)
+   * use early-return render paths that bypass the `#top-level` wrapper, we
+   * render this link as a fragment-level sibling so it is present regardless
+   * of which interior is shown.
+   *
+   * The link targets `#main-content`. Each interior is responsible for either
+   * (a) being wrapped by the `app-editor` div (which carries `id="main-content"`),
+   * or (b) containing its own `<main>` landmark — either path satisfies WCAG 2.4.1.
+   */
+  private renderSkipLink() {
+    return (
+      <a key="app-skipLink" className="app-skipLink" href="#main-content">
+        Skip to main content
+      </a>
+    );
+  }
+
   render() {
     let interior = <></>;
 
@@ -2211,14 +2308,43 @@ export default class App extends Component<AppProps, AppState> {
         </div>
       );
     } else if (this.state.mode === AppMode.sessionEnded) {
-      // View session has ended (server shut down via Close button)
+      // View / Edit session has ended (server shut down via Close button).
+      // Use isViewMode (still true at this point because CreatorToolsHost.readOnly /
+      // contentUrl reflect the original launch parameters) to differentiate the
+      // copy: a `mct view` session says "View", a `mct edit` session says "Edit".
+      // Both render with full Minecraft branding so the screen doesn't look like
+      // a generic browser error page.
+      const isDarkTheme = CreatorToolsHost.theme === CreatorToolsThemeStyle.dark;
+      const sessionLabel = isViewMode ? "View" : "Edit";
+      const sessionMessage = isViewMode
+        ? "The content viewer has been closed. Your project files are unchanged on disk."
+        : "The content editor has been closed. Any unsaved changes are still on disk; reopen with mct edit when you're ready.";
+
       interior = (
-        <div className="app-loadingArea" key="app-session-ended">
-          <div className="app-loading" aria-live="polite">
-            View session ended
-          </div>
-          <div className="app-subloading" aria-live="polite">
-            The content viewer has been closed. You can close this browser tab.
+        <div
+          className="app-sessionEnded"
+          key="app-session-ended"
+          style={{
+            background: isDarkTheme ? "#262423" : "#ede5e2",
+            color: isDarkTheme ? "#ede5e2" : "#262423",
+          }}
+        >
+          <div className="app-sessionEnded-card" role="status" aria-live="polite">
+            <h1 className="app-sessionEnded-title">{sessionLabel} session ended</h1>
+            <p className="app-sessionEnded-message">{sessionMessage}</p>
+            <button
+              type="button"
+              className="app-sessionEnded-button"
+              onClick={() => {
+                try {
+                  window.close();
+                } catch {
+                  // window.close may be blocked if the page wasn't opened by a script
+                }
+              }}
+            >
+              Close this tab
+            </button>
           </div>
         </div>
       );
@@ -2402,6 +2528,53 @@ export default class App extends Component<AppProps, AppState> {
           cameraZ={this.state.cameraZ}
         />
       );
+    } else if (this.state.mode === AppMode.notFound) {
+      interior = (
+        <div
+          role="alert"
+          aria-live="polite"
+          data-testid="app-not-found"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100vh",
+            padding: "24px",
+            textAlign: "center",
+            gap: "12px",
+          }}
+        >
+          <div style={{ fontSize: "48px", fontWeight: 700 }}>404</div>
+          <div style={{ fontSize: "18px", fontWeight: 600 }}>That page doesn&apos;t exist</div>
+          <div style={{ maxWidth: "480px", fontSize: "14px", opacity: 0.8 }}>
+            The URL you entered isn&apos;t something this app knows how to show. Head back to the home page and try
+            again.
+          </div>
+          <button
+            type="button"
+            onClick={this._handleReturnHomeFromNotFound}
+            style={{
+              marginTop: "8px",
+              padding: "8px 20px",
+              fontSize: "14px",
+              cursor: "pointer",
+              border: "1px solid currentColor",
+              borderRadius: "4px",
+              background: "transparent",
+              color: "inherit",
+            }}
+          >
+            Go home
+          </button>
+        </div>
+      );
+      return (
+        <>
+          {this.renderSkipLink()}
+          {interior}
+        </>
+      );
     } else if (this.state.mode === AppMode.home) {
       interior = (
         <Home
@@ -2424,7 +2597,12 @@ export default class App extends Component<AppProps, AppState> {
           onProjectSelected={this._handleProjectSelected}
         />
       );
-      return <>{interior}</>;
+      return (
+        <>
+          {this.renderSkipLink()}
+          {interior}
+        </>
+      );
     } else if (this.state.activeProject !== null && CreatorToolsHost.initialMode === "projectitem") {
       interior = (
         <ProjectEditor
@@ -2493,7 +2671,12 @@ export default class App extends Component<AppProps, AppState> {
             onProjectSelected={this._handleProjectSelected}
           />
         );
-        return <>{interior}</>;
+        return (
+          <>
+            {this.renderSkipLink()}
+            {interior}
+          </>
+        );
       } else if (this.state.activeProject.originalSampleId) {
         // show main view (no sidebar) if it's a code sample.
         interior = (
@@ -2540,6 +2723,7 @@ export default class App extends Component<AppProps, AppState> {
 
     return (
       <>
+        {this.renderSkipLink()}
         <div
           id="top-level"
           style={{
@@ -2549,6 +2733,7 @@ export default class App extends Component<AppProps, AppState> {
         >
           {top}
           <div
+            id="main-content"
             className="app-editor"
             style={{
               minHeight: height,

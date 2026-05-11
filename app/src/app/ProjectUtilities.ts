@@ -944,6 +944,11 @@ export default class ProjectUtilities {
   }
 
   static getSuggestedProjectNameFromElements(id?: string, gitHubFolder?: string, gitHubRepoName?: string) {
+    // Special case for addonStarter: use "My Add-On" (task 027)
+    if (id === "addonStarter") {
+      return "My Add-On";
+    }
+
     let projName = "my";
 
     if (id) {
@@ -1054,6 +1059,31 @@ export default class ProjectUtilities {
 
     await ProjectUtilities.randomizeAllUids(project);
 
+    // Friendly-name fallback for the addon starter (and similar gallery templates).
+    // The "myaddonStarter" string comes from `getSuggestedProjectNameFromElements`
+    // when callers ignore the `addonStarter` special case (line 947) and feed the
+    // raw "my" + galleryId derivation back into processNewProject. That string
+    // also leaks into the description because the New Project Dialog defaults
+    // description to the title. Substitute a friendlier title and a non-tautological
+    // description so first-time creators don't see "myaddonStarter / myaddonStarter"
+    // in their pack manifest.
+    const friendlyTitle = ProjectUtilities.makeFriendlyProjectTitle(title);
+    if (friendlyTitle !== title) {
+      title = friendlyTitle;
+      // If the description was just a copy of the auto-derived title, swap it out too.
+      if (
+        !description ||
+        description === title ||
+        ProjectUtilities.makeFriendlyProjectTitle(description) === friendlyTitle
+      ) {
+        description = "An add-on starter project. Customize this in manifest.json or via the editor.";
+      }
+    } else if (description && description === title) {
+      // Title was already friendly but description tautologically copies it. Provide a
+      // gentle nudge so the manifest isn't "Foo / Foo".
+      description = title + " — customize this description in manifest.json or via the editor.";
+    }
+
     await ProjectUtilities.applyTitle(project, title);
     await ProjectUtilities.applyDescription(project, description);
     await ProjectUtilities.ensureGeneratedWith(project, isWeb);
@@ -1065,6 +1095,25 @@ export default class ProjectUtilities {
     await pur.updateProject();
 
     await project.save(true);
+  }
+
+  /**
+   * Detects the auto-derived "my" + galleryId pattern (e.g. "myaddonStarter")
+   * produced by `getSuggestedProjectNameFromElements` when the addonStarter
+   * special case is bypassed, and substitutes a human-readable title.
+   *
+   * Currently only normalises the addon starter family — extend with additional
+   * checks if more gallery templates start leaking technical ids into manifests.
+   */
+  static makeFriendlyProjectTitle(title: string): string {
+    if (!title) {
+      return title;
+    }
+    const lower = title.trim().toLowerCase();
+    if (lower === "myaddonstarter") {
+      return "My Add-on Starter";
+    }
+    return title;
   }
 
   static async setNewModuleId(project: Project, newModuleId: string, oldModuleId: string) {
@@ -1306,6 +1355,8 @@ export default class ProjectUtilities {
     project.defaultScriptModuleUniqueId = Utilities.createUuid();
 
     const itemsCopy = project.getItemsCopy();
+    let assignedDefaultBehaviorPack = false;
+    let assignedDefaultResourcePack = false;
 
     for (let i = 0; i < itemsCopy.length; i++) {
       const pi = itemsCopy[i];
@@ -1324,7 +1375,16 @@ export default class ProjectUtilities {
               bpManifestJson.id !== oldUids["defaultBehaviorPack"] &&
               bpManifestJson.id !== project.defaultBehaviorPackUniqueId
             ) {
-              await bpManifestJson.setUuid(Utilities.createUuid(), project);
+              if (!assignedDefaultBehaviorPack) {
+                // Assign the project's default behavior pack UUID to the first unmatched manifest
+                // so that applyTitle/applyDescription can find it by UUID later.
+                await bpManifestJson.setUuid(project.defaultBehaviorPackUniqueId, project);
+                assignedDefaultBehaviorPack = true;
+              } else {
+                await bpManifestJson.setUuid(Utilities.createUuid(), project);
+              }
+            } else {
+              assignedDefaultBehaviorPack = true;
             }
           }
         } else if (pi.itemType === ProjectItemType.resourcePackManifestJson) {
@@ -1337,7 +1397,16 @@ export default class ProjectUtilities {
               rpManifestJson.id !== oldUids["defaultResourcePack"] &&
               rpManifestJson.id !== project.defaultResourcePackUniqueId
             ) {
-              await rpManifestJson.setUuid(Utilities.createUuid(), project);
+              if (!assignedDefaultResourcePack) {
+                // Assign the project's default resource pack UUID to the first unmatched manifest
+                // so that applyTitle/applyDescription can find it by UUID later.
+                await rpManifestJson.setUuid(project.defaultResourcePackUniqueId, project);
+                assignedDefaultResourcePack = true;
+              } else {
+                await rpManifestJson.setUuid(Utilities.createUuid(), project);
+              }
+            } else {
+              assignedDefaultResourcePack = true;
             }
           }
         }

@@ -188,9 +188,15 @@ export default class SoundDefinitionLivePreview extends Component<
     );
   }
 
-  private _renderDefinitions(): JSX.Element | null {
+  private _renderDefinitions(): JSX.Element {
     const { soundData } = this.state;
-    if (!soundData || soundData.definitions.length === 0) return null;
+    if (!soundData || soundData.definitions.length === 0) {
+      return (
+        <div style={{ padding: "12px", textAlign: "center" }}>
+          <em style={{ opacity: 0.6 }}>No sound definitions yet</em>
+        </div>
+      );
+    }
 
     // Group definitions by category
     const byCategory: { [key: string]: SoundDefinition[] } = {};

@@ -166,7 +166,7 @@
       },
       "textureImages.vanillaGameTextureCoverage": {
         "overrideCount": 0,
-        "vanillaTextureCount": 2381,
+        "vanillaTextureCount": 2526,
         "percent": 0
       },
       "textureImagesTier0.nonVanillaTextureMemoryTier": {
@@ -348,8 +348,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "",
-    "infoGenerationTime": 901,
-    "endToEndGenerationTime": 928,
+    "infoGenerationTime": 620,
+    "endToEndGenerationTime": 648,
     "reds": 1058,
     "summary": {
       "BASEGAMEVER": {
@@ -1421,7 +1421,7 @@
       "fs": {
         "vanillaGameTextureCoverage": {
           "overrideCount": 0,
-          "vanillaTextureCount": 2381,
+          "vanillaTextureCount": 2526,
           "percent": 0
         }
       }
@@ -1699,5 +1699,5 @@
   ],
   "generatorName": "Minecraft Creator Tools",
   "suite": 0,
-  "generatorVersion": "0.0.1"
+  "generatorVersion": "0.0.1-dev"
 }

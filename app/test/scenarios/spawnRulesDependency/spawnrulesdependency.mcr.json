@@ -150,7 +150,7 @@
       },
       "textureImages.vanillaGameTextureCoverage": {
         "overrideCount": 0,
-        "vanillaTextureCount": 2381,
+        "vanillaTextureCount": 2526,
         "percent": 0
       },
       "textureImagesTier0.nonVanillaTextureMemoryTier": {
@@ -332,8 +332,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CPACKICON000] Found 1 error in Pack Icon check",
-    "infoGenerationTime": 1530,
-    "endToEndGenerationTime": 1559,
+    "infoGenerationTime": 1087,
+    "endToEndGenerationTime": 1117,
     "reds": 1574,
     "summary": {
       "BASEGAMEVER": {
@@ -1433,7 +1433,7 @@
       "fs": {
         "vanillaGameTextureCoverage": {
           "overrideCount": 0,
-          "vanillaTextureCount": 2381,
+          "vanillaTextureCount": 2526,
           "percent": 0
         }
       }
@@ -1711,5 +1711,5 @@
   ],
   "generatorName": "Minecraft Creator Tools",
   "suite": 0,
-  "generatorVersion": "0.0.1"
+  "generatorVersion": "0.0.1-dev"
 }

@@ -91,9 +91,10 @@ async function executeViaRegistry(options: any): Promise<void> {
     quiet: options.quiet,
     json: options.json,
     debug: options.debug,
+    yes: options.yes,
     outputType: options.outputType,
     dryRun: options.dryRun,
-    isolated: options.isolated,
+    isolated: options.isolated || options.offline,
     unsafeSkipSignatureValidation: options.unsafeSkipSignatureValidation,
     // Server options from command-specific options
     port: capturedState.args.port || capturedState.commandOptions.port || options.port,
@@ -125,6 +126,9 @@ async function executeViaRegistry(options: any): Promise<void> {
     warnOnly: options.warnOnly,
     // Documentation options from command-specific options
     referenceFolder: capturedState.commandOptions.referenceFolder,
+    // Pass through the entire raw command-specific options object so commands
+    // can access their own --options without each one needing a typed field.
+    commandOptions: capturedState.commandOptions,
   };
 
   // Build command args from captured state
@@ -188,6 +192,18 @@ function displayMctHeader(inputPath: string, outputPath: string, editInPlace: bo
 // Legacy constants (44, 53, 56, 57) removed — all commands now use ErrorCodes.
 
 const program = new Command();
+
+// Configure help formatting up-front so subcommand help also benefits.
+// Without this, help text on Windows can render with collapsed blank lines
+// when stdout columns are unset (piped/captured output) — the description
+// then visually runs into the next section ("create --help" was reported as
+// "mashed together" by the prograde review). A modest but explicit width
+// keeps boxWrap honest and leaves room for examples in `addHelpText("after", ...)`.
+const _helpWidth = (process.stdout && process.stdout.columns) || 100;
+program.configureHelp({
+  helpWidth: _helpWidth,
+  showGlobalOptions: false,
+});
 
 let creatorTools: CreatorTools | undefined;
 const projectStarts: (IProjectStartInfo | undefined)[] = [];
@@ -253,6 +269,10 @@ program
   .option("--ew, --ensure-world", "Ensures that a flat GameTest world is synchronized with the project.")
   .option("--isolated", "Do not load vanilla Minecraft resources (e.g., textures, ground blocks) from the web")
   .option(
+    "--offline",
+    "Alias for --isolated. Skip loading vanilla Minecraft web resources (textures, ground blocks); useful for CI environments where network is unreliable. Note: some other code paths (e.g. latest-version checks) may still attempt network requests."
+  )
+  .option(
     "--bpu, --behavior-pack <behavior pack uuid>",
     "Adds a set of behavior pack UUIDs as references for any worlds that are updated."
   )
@@ -283,6 +303,7 @@ program
   .option("-q, --quiet", "Suppress non-essential output. Only show errors and final results.")
   .option("--warn-only", "Report validation errors as warnings without setting a failure exit code.")
   .option("--json", "Output results in JSON format for machine parsing.")
+  .option("-y, --yes", "Auto-accept defaults for all interactive prompts (CI / non-interactive use).")
   .option(
     "--experimental-ssl-cert <path>",
     "(Experimental) Path to SSL certificate file in PEM format. Use with --experimental-ssl-key. " +
@@ -408,7 +429,7 @@ if (capturedTaskType === TaskType.mcp || options.json) {
   localEnv.logToStdError = true;
 }
 
-if (options.isolated) {
+if (options.isolated || options.offline) {
   CreatorToolsHost.contentWebRoot = "";
 } else {
   CreatorToolsHost.contentWebRoot = "https://mctools.dev/";
@@ -511,55 +532,75 @@ if (!errorLevel && (experimentalSslCertPath || experimentalSslPfxPath)) {
 // Only run the CLI main function if not in a test environment
 if (!isTestEnvironment && !errorLevel) {
   (async () => {
-    // Note: registerAllCommands() was already called before configureCommander()
-    // to ensure all commands are available for registration with Commander.js
+    try {
+      // Note: registerAllCommands() was already called before configureCommander()
+      // to ensure all commands are available for registration with Commander.js
 
-    creatorTools = ClUtils.getCreatorTools(localEnv, options.basePath);
+      creatorTools = ClUtils.getCreatorTools(localEnv, options.basePath);
 
-    if (!creatorTools) {
-      Log.fail("Failed to initialize Creator Tools");
-      errorLevel = 1;
-      return;
-    }
+      if (!creatorTools) {
+        Log.fail("Failed to initialize Creator Tools");
+        errorLevel = 1;
+        return;
+      }
 
-    sm = new ServerManager(localEnv, creatorTools);
-    sm.runOnce = options.once;
+      sm = new ServerManager(localEnv, creatorTools);
+      sm.runOnce = options.once;
 
-    await creatorTools.load();
+      await creatorTools.load();
 
-    creatorTools.onStatusAdded.subscribe(ClUtils.handleStatusAdded);
+      creatorTools.onStatusAdded.subscribe(ClUtils.handleStatusAdded);
 
-    await loadPacks();
-    await loadProjects();
+      await loadPacks();
+      await loadProjects();
 
-    // Set passcodes if provided via command line
-    if (options.displayPasscode || options.updatePasscode || options.adminPasscode || options.fullReadOnlyPasscode) {
-      await setPasscode(
-        options.displayPasscode,
-        options.fullReadOnlyPasscode,
-        options.updatePasscode,
-        options.adminPasscode
-      );
-    }
+      // Set passcodes if provided via command line
+      if (options.displayPasscode || options.updatePasscode || options.adminPasscode || options.fullReadOnlyPasscode) {
+        await setPasscode(
+          options.displayPasscode,
+          options.fullReadOnlyPasscode,
+          options.updatePasscode,
+          options.adminPasscode
+        );
+      }
 
-    // For long-running server commands, set up stdin handling for interactive control
-    // But NOT when in runOnce mode (used for automated testing) since there's no interactive input
-    const isLongRunningCommand =
-      capturedTaskType === TaskType.runDedicatedServer ||
-      capturedTaskType === TaskType.serve ||
-      capturedTaskType === TaskType.view ||
-      capturedTaskType === TaskType.edit;
+      // For long-running server commands, set up stdin handling for interactive control
+      // But NOT when in runOnce mode (used for automated testing) since there's no interactive input
+      const isLongRunningCommand =
+        capturedTaskType === TaskType.runDedicatedServer ||
+        capturedTaskType === TaskType.serve ||
+        capturedTaskType === TaskType.view ||
+        capturedTaskType === TaskType.edit;
 
-    if (isLongRunningCommand && !options.once) {
-      hookInput();
-    }
+      if (isLongRunningCommand && !options.once) {
+        hookInput();
+      }
 
-    // Execute via the modular command registry
-    await executeViaRegistry(options);
+      // Execute via the modular command registry
+      await executeViaRegistry(options);
 
-    // Exit unless this is a long-running server command (those handle their own lifecycle)
-    if (!isLongRunningCommand) {
-      await doExit();
+      // Exit unless this is a long-running server command (those handle their own lifecycle)
+      if (!isLongRunningCommand) {
+        await doExit();
+      }
+    } catch (err: any) {
+      // Top-level guard: ensure the CLI never exits via an "Uncaught exception"
+      // stack trace. Pro users in CI need a clean message + a non-zero exit
+      // code, not a Node stack dump. Any code path that throws (load failures,
+      // bad input paths, JSON parse errors, etc.) lands here.
+      const message = err && err.message ? err.message : String(err);
+      Log.error(message);
+      if (process.env.MCT_DEBUG === "1" || options.debug) {
+        // Only show the stack when explicitly debugging.
+        // eslint-disable-next-line no-console
+        console.error(err && err.stack ? err.stack : err);
+      }
+      errorLevel = errorLevel || 1;
+      try {
+        await doExit();
+      } catch {
+        process.exit(errorLevel);
+      }
     }
   })();
 } // end if (!isTestEnvironment)

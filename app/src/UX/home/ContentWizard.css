@@ -806,7 +806,10 @@ img.cwiz-main-img {
   font-size: 13px;
   font-weight: 700;
   margin-bottom: 6px;
-  opacity: 0.9;
+  /* No opacity dampening on the section heading — opacity:0.9 dropped the
+     effective contrast below 4.5:1 on the light wool background, especially
+     at this small font size. Section headings should read at full body-text
+     contrast. */
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -823,7 +826,9 @@ img.cwiz-main-img {
 .cwiz-wizard-section-copy {
   font-size: 13px;
   line-height: 1.5;
-  opacity: 0.72;
+  /* Slight de-emphasis from the heading, but still well above the 4.5:1
+     contrast threshold in both themes. 0.72 was too faint in light mode. */
+  opacity: 0.85;
 }
 
 .cwiz-section-emphasis {

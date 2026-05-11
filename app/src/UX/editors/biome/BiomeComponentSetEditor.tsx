@@ -9,13 +9,15 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import BiomeAddComponent from "./BiomeAddComponent";
 import Project from "../../../app/Project";
 import CreatorTools from "../../../app/CreatorTools";
-import BiomeBehaviorDefinition from "../../../minecraft/BiomeBehaviorDefinition";
+import IManagedComponentSetItem from "../../../minecraft/IManagedComponentSetItem";
 import Utilities from "../../../core/Utilities";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
-interface IBiomeComponentSetEditorProps {
-  biomeDefinition: BiomeBehaviorDefinition;
+interface IBiomeComponentSetEditorProps extends WithLocalizationProps {
+  biomeDefinition: IManagedComponentSetItem;
+  formCategory?: string;
   readOnly: boolean;
   project: Project;
   heightOffset: number;
@@ -35,10 +37,7 @@ export enum BiomeComponentEditorDialog {
   addComponent = 1,
 }
 
-export default class BiomeComponentSetEditor extends Component<
-  IBiomeComponentSetEditorProps,
-  IBiomeComponentSetEditorState
-> {
+class BiomeComponentSetEditor extends Component<IBiomeComponentSetEditorProps, IBiomeComponentSetEditorState> {
   constructor(props: IBiomeComponentSetEditorProps) {
     super(props);
     this._addComponent = this._addComponent.bind(this);
@@ -70,22 +69,26 @@ export default class BiomeComponentSetEditor extends Component<
     this._updateManager();
   }
 
+  get formCategory(): string {
+    return this.props.formCategory || "biome";
+  }
+
   async _updateManager() {
     const componentListing = this.getUsableComponentsForUIList();
 
     if (componentListing && componentListing.length > 0) {
       const formId = this.getComponentFormFromId(componentListing[0].id);
 
-      if (!Database.isFormLoaded("biome", formId)) {
-        await Database.ensureFormLoaded("biome", formId);
+      if (!Database.isFormLoaded(this.formCategory, formId)) {
+        await Database.ensureFormLoaded(this.formCategory, formId);
       }
     }
 
     if (this.state.activeComponentId) {
       const formId = this.getComponentFormFromId(componentListing[0].id);
 
-      if (!Database.isFormLoaded("biome", formId)) {
-        await Database.ensureFormLoaded("biome", formId);
+      if (!Database.isFormLoaded(this.formCategory, formId)) {
+        await Database.ensureFormLoaded(this.formCategory, formId);
       }
     }
 
@@ -119,7 +122,7 @@ export default class BiomeComponentSetEditor extends Component<
   async _handleComponentSelected(id: string) {
     const formId = this.getComponentFormFromId(id);
 
-    await Database.ensureFormLoaded("biome", formId);
+    await Database.ensureFormLoaded(this.formCategory, formId);
 
     this.setState({
       activeComponentId: id,
@@ -146,24 +149,20 @@ export default class BiomeComponentSetEditor extends Component<
 
   getUsableComponentsForUIList() {
     const componentSet: any[] = [];
-    const colors = getThemeColors();
 
     const comps = this.props.biomeDefinition.getComponents();
 
     for (let i = 0; i < comps.length; i++) {
       const comp = comps[i];
+      const isSelected = comp.id === this.state?.activeComponentId;
 
       componentSet.push({
         id: comp.id,
         content: (
-          <div
-            className="biocse-componentWrapper"
-            style={{
-              backgroundColor: colors.sectionHeaderBackground,
-              borderColor: colors.sectionBorder,
-            }}
-          >
-            {Utilities.humanifyMinecraftName(comp.id)}
+          <div className={`biocse-componentSlot ${isSelected ? "biocse-slotSelected" : ""}`}>
+            <div className="biocse-slotChip">
+              <span className="biocse-slotText">{Utilities.humanifyMinecraftName(comp.id)}</span>
+            </div>
           </div>
         ),
         name: comp.id,
@@ -224,7 +223,7 @@ export default class BiomeComponentSetEditor extends Component<
       return;
     }
 
-    const form = await Database.ensureFormLoaded("biome", this.getComponentFormFromId(name));
+    const form = await Database.ensureFormLoaded(this.formCategory, this.getComponentFormFromId(name));
 
     if (form !== undefined) {
       const newDataObject = DataFormUtilities.generateDefaultItem(form);
@@ -270,7 +269,7 @@ export default class BiomeComponentSetEditor extends Component<
         const componentName = this.state.activeComponentId;
 
         const formId = this.getComponentFormFromId(componentName);
-        const form = Database.getForm("biome", formId);
+        const form = Database.getForm(this.formCategory, formId);
 
         if (form) {
           activeContent = (
@@ -290,31 +289,55 @@ export default class BiomeComponentSetEditor extends Component<
       }
     }
 
+    const colors = getThemeColors();
+
     const addComponentDialog = this.state.dialogMode === BiomeComponentEditorDialog.addComponent && (
-      <Dialog open={true} onClose={this._handleDialogCancel} className="biocse-addComponentDialog">
-        <DialogTitle>Add Biome Component</DialogTitle>
+      <Dialog
+        open={true}
+        onClose={this._handleDialogCancel}
+        className="biocse-addComponentDialog"
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            backgroundColor: colors.sectionHeaderBackground,
+            color: colors.contentForeground,
+          },
+        }}
+      >
+        <DialogTitle>{this.props.intl.formatMessage({ id: "project_editor.biome_comp.add_dialog_title" })}</DialogTitle>
         <DialogContent>
           <BiomeAddComponent
             onSelectedNewComponentId={this.setSelectedNewComponentId}
             theme={this.props.theme}
+            formCategory={this.formCategory}
             existingComponents={this.props.biomeDefinition.getComponents()}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={this._handleDialogCancel}>Cancel</Button>
-          <Button onClick={this._handleAddComponentOK}>OK</Button>
+          <Button variant="contained" color="success" onClick={this._handleAddComponentOK}>
+            OK
+          </Button>
         </DialogActions>
       </Dialog>
     );
 
-    const colors = getThemeColors();
-
     return (
       <div className="biocse-area">
         <div className="biocse-toolArea">
-          <Stack direction="row" spacing={1} aria-label="Component toolbar">
-            <Button key="addComponent" onClick={this._handleAddComponentClick} title="Add Component">
+          <Stack
+            direction="row"
+            spacing={1}
+            aria-label={this.props.intl.formatMessage({ id: "project_editor.biome_comp.aria_toolbar" })}
+          >
+            <Button
+              key="addComponent"
+              onClick={this._handleAddComponentClick}
+              title={this.props.intl.formatMessage({ id: "project_editor.biome_comp.add_component" })}
+            >
               <FontAwesomeIcon icon={faPlus} className="fa-lg" />
+              &nbsp;{this.props.intl.formatMessage({ id: "project_editor.biome_comp.add_component" })}
             </Button>
           </Stack>
         </div>
@@ -359,3 +382,5 @@ export default class BiomeComponentSetEditor extends Component<
     );
   }
 }
+
+export default withLocalization(BiomeComponentSetEditor);

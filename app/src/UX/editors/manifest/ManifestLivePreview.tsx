@@ -9,6 +9,7 @@
  */
 
 import React, { Component } from "react";
+import { Tooltip } from "@mui/material";
 import SectionIcon from "../../shared/components/icons/SectionIcon";
 import "./ManifestLivePreview.css";
 
@@ -230,7 +231,9 @@ export default class ManifestLivePreview extends Component<IManifestLivePreviewP
               </div>
             )}
             <div className="mnlp-meta-item">
-              <span className="mnlp-meta-label">Format:</span>
+              <Tooltip title="Minecraft manifest format version. Use 2 for most modern add-ons." arrow>
+                <span className="mnlp-meta-label">Format:</span>
+              </Tooltip>
               <span className="mnlp-meta-value">{data.formatVersion}</span>
             </div>
             {data.packScope && (
@@ -252,7 +255,9 @@ export default class ManifestLivePreview extends Component<IManifestLivePreviewP
               </div>
             )}
             <div className="mnlp-meta-item mnlp-uuid">
-              <span className="mnlp-meta-label">UUID:</span>
+              <Tooltip title="Unique identifier for this pack. Keep this the same unless you are replacing the pack." arrow>
+                <span className="mnlp-meta-label">UUID:</span>
+              </Tooltip>
               <span className="mnlp-meta-value mnlp-mono">{data.uuid}</span>
             </div>
             {data.authors && data.authors.length > 0 && (
@@ -279,9 +284,7 @@ export default class ManifestLivePreview extends Component<IManifestLivePreviewP
     );
   }
 
-  private _renderModules(modules: ParsedModule[]): JSX.Element | null {
-    if (modules.length === 0) return null;
-
+  private _renderModules(modules: ParsedModule[]): JSX.Element {
     const isExpanded = this.state.expandedSections.has("modules");
 
     return (
@@ -294,26 +297,30 @@ export default class ManifestLivePreview extends Component<IManifestLivePreviewP
         </div>
         {isExpanded && (
           <div className="mnlp-section-content">
-            {modules.map((mod, index) => (
-              <div key={index} className="mnlp-module-item">
-                <span className="mnlp-module-icon">{this._getModuleIcon(mod.type)}</span>
-                <div className="mnlp-module-info">
-                  <div className="mnlp-module-type">{mod.type}</div>
-                  <div className="mnlp-module-version">v{mod.version}</div>
-                  {mod.language && <div className="mnlp-module-lang">{mod.language}</div>}
-                  {mod.entry && <div className="mnlp-module-entry">{mod.entry}</div>}
+            {modules.length === 0 ? (
+              <em style={{ padding: "8px", display: "block", opacity: 0.6 }}>No modules defined</em>
+            ) : (
+              modules.map((mod, index) => (
+                <div key={index} className="mnlp-module-item">
+                  <span className="mnlp-module-icon">{this._getModuleIcon(mod.type)}</span>
+                  <div className="mnlp-module-info">
+                    <Tooltip title="Module type: data (behaviors/content), resources (textures/models), script (game logic), or world_template (pre-built worlds)" arrow>
+                      <div className="mnlp-module-type">{mod.type}</div>
+                    </Tooltip>
+                    <div className="mnlp-module-version">v{mod.version}</div>
+                    {mod.language && <div className="mnlp-module-lang">{mod.language}</div>}
+                    {mod.entry && <div className="mnlp-module-entry">{mod.entry}</div>}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         )}
       </div>
     );
   }
 
-  private _renderDependencies(dependencies: ParsedDependency[]): JSX.Element | null {
-    if (dependencies.length === 0) return null;
-
+  private _renderDependencies(dependencies: ParsedDependency[]): JSX.Element {
     const isExpanded = this.state.expandedSections.has("dependencies");
 
     return (
@@ -326,26 +333,28 @@ export default class ManifestLivePreview extends Component<IManifestLivePreviewP
         </div>
         {isExpanded && (
           <div className="mnlp-section-content">
-            {dependencies.map((dep, index) => (
-              <div key={index} className="mnlp-dep-item">
-                <span className="mnlp-dep-icon"><SectionIcon type="link" /></span>
-                <div className="mnlp-dep-info">
-                  <div className="mnlp-dep-name">
-                    {dep.moduleName || (dep.uuid ? dep.uuid.substring(0, 8) + "..." : "Unknown")}
+            {dependencies.length === 0 ? (
+              <em style={{ padding: "8px", display: "block", opacity: 0.6 }}>No dependencies defined</em>
+            ) : (
+              dependencies.map((dep, index) => (
+                <div key={index} className="mnlp-dep-item">
+                  <span className="mnlp-dep-icon"><SectionIcon type="link" /></span>
+                  <div className="mnlp-dep-info">
+                    <div className="mnlp-dep-name">
+                      {dep.moduleName || (dep.uuid ? dep.uuid.substring(0, 8) + "..." : "Unknown")}
+                    </div>
+                    <div className="mnlp-dep-version">v{dep.version}</div>
                   </div>
-                  <div className="mnlp-dep-version">v{dep.version}</div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         )}
       </div>
     );
   }
 
-  private _renderCapabilities(capabilities: string[]): JSX.Element | null {
-    if (capabilities.length === 0) return null;
-
+  private _renderCapabilities(capabilities: string[]): JSX.Element {
     const isExpanded = this.state.expandedSections.has("capabilities");
 
     return (
@@ -358,13 +367,17 @@ export default class ManifestLivePreview extends Component<IManifestLivePreviewP
         </div>
         {isExpanded && (
           <div className="mnlp-section-content">
-            <div className="mnlp-capabilities-list">
-              {capabilities.map((cap, index) => (
-                <span key={index} className="mnlp-capability-tag">
-                  {cap}
-                </span>
-              ))}
-            </div>
+            {capabilities.length === 0 ? (
+              <em style={{ padding: "8px", display: "block", opacity: 0.6 }}>No capabilities defined</em>
+            ) : (
+              <div className="mnlp-capabilities-list">
+                {capabilities.map((cap, index) => (
+                  <span key={index} className="mnlp-capability-tag">
+                    {cap}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>

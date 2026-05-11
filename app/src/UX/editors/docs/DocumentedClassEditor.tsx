@@ -16,8 +16,9 @@ import Utilities from "../../../core/Utilities";
 import CreatorTools from "../../../app/CreatorTools";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
-interface IDocumentedClassEditorProps extends IFileProps {
+interface IDocumentedClassEditorProps extends IFileProps, WithLocalizationProps {
   heightOffset: number;
   theme: IProjectTheme;
   typesReadOnly: boolean;
@@ -33,7 +34,7 @@ interface IDocumentedClassEditorState {
   isLoaded: boolean;
 }
 
-export default class DocumentedClassEditor extends Component<IDocumentedClassEditorProps, IDocumentedClassEditorState> {
+class DocumentedClassEditor extends Component<IDocumentedClassEditorProps, IDocumentedClassEditorState> {
   constructor(props: IDocumentedClassEditorProps) {
     super(props);
 
@@ -132,7 +133,7 @@ export default class DocumentedClassEditor extends Component<IDocumentedClassEdi
           fields: [
             {
               id: "description",
-              title: "Description",
+              title: this.props.intl.formatMessage({ id: "project_editor.doc_class.description_field" }),
               dataType: FieldDataType.longFormString,
               validity: [{ comparison: "nonempty" }],
             },
@@ -146,11 +147,11 @@ export default class DocumentedClassEditor extends Component<IDocumentedClassEdi
         let indentLevel = 0;
 
         if (infoJsonName === "_class") {
-          title = "Class Description";
+          title = this.props.intl.formatMessage({ id: "project_editor.doc_class.class_description" });
 
           if (this.props.docClass.docClass.raw_tsdoc_text) {
             subTitle =
-              "Default Description: " +
+              this.props.intl.formatMessage({ id: "project_editor.doc_class.default_description" }) +
               MinecraftUtilities.cleanUpScriptDescription(this.props.docClass.docClass.raw_tsdoc_text);
           }
 
@@ -160,7 +161,7 @@ export default class DocumentedClassEditor extends Component<IDocumentedClassEdi
 
           if (func) {
             if (func.raw_tsdoc_text) {
-              subTitle = "Default Description: " + MinecraftUtilities.cleanUpScriptDescription(func.raw_tsdoc_text);
+              subTitle = this.props.intl.formatMessage({ id: "project_editor.doc_class.default_description" }) + MinecraftUtilities.cleanUpScriptDescription(func.raw_tsdoc_text);
             }
 
             if (func.arguments && func.arguments.length > 0) {
@@ -197,7 +198,7 @@ export default class DocumentedClassEditor extends Component<IDocumentedClassEdi
               if (func.return_type.is_errorable) {
                 const throwsField: IField = {
                   id: "throws",
-                  title: "Throws",
+                  title: this.props.intl.formatMessage({ id: "project_editor.doc_class.throws_field" }),
                   subForm: Database.getForm("documentation", "simple_info_json"),
                   visualExperience: FieldVisualExperience.deemphasized,
                   dataType: FieldDataType.object,
@@ -215,7 +216,7 @@ export default class DocumentedClassEditor extends Component<IDocumentedClassEdi
 
                 const argsField: IField = {
                   id: "returns",
-                  title: "Returns (" + returnTypeName + ")",
+                  title: this.props.intl.formatMessage({ id: "project_editor.doc_class.returns_field" }) + returnTypeName + ")",
                   subForm: Database.getForm("documentation", "simple_info_json"),
                   visualExperience: FieldVisualExperience.deemphasized,
                   dataType: FieldDataType.object,
@@ -229,7 +230,7 @@ export default class DocumentedClassEditor extends Component<IDocumentedClassEdi
 
             if (prop) {
               if (prop.raw_tsdoc_text) {
-                subTitle = "Default Description: " + MinecraftUtilities.cleanUpScriptDescription(prop.raw_tsdoc_text);
+                subTitle = this.props.intl.formatMessage({ id: "project_editor.doc_class.default_description" }) + MinecraftUtilities.cleanUpScriptDescription(prop.raw_tsdoc_text);
               }
             }
           }
@@ -296,3 +297,5 @@ export default class DocumentedClassEditor extends Component<IDocumentedClassEdi
     );
   }
 }
+
+export default withLocalization(DocumentedClassEditor);

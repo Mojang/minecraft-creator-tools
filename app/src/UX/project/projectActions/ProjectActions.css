@@ -140,6 +140,23 @@
   margin-bottom: 28px;
 }
 
+/*
+ * Beginner tip box rendered above the export cards in summarized edit
+ * preference. The inline style applies a translucent green tint over the
+ * pact-outer panel; under `forced-colors: active` the inline background
+ * is reset to Canvas (white) while the inline foreground color survives,
+ * which produces a near-white-on-white contrast failure even though the
+ * rendered pixels in non-forced-colors mode are perfectly legible. Pin
+ * to system color tokens so HC users always get a real background.
+ */
+@media (forced-colors: active) {
+  .pact-beginnerTip {
+    background-color: Canvas !important;
+    color: CanvasText !important;
+    border-left-color: LinkText !important;
+  }
+}
+
 .pact-sectionHeader {
   display: flex;
   align-items: center;
@@ -329,4 +346,76 @@
 
 .pact-tileBin {
   width: 100%;
+}
+
+
+/* Compact action strip — used in Full / Raw modes (CreatorToolsEditPreference.editors / .raw)
+ * to replace the large card grids with a one-row icon toolbar. Colors are pulled from
+ * mcColors via theme-mode helper classes (.pact-compactStrip-dark / -light). */
+.pact-compactStrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  padding: 8px 12px;
+  margin: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+.pact-compactStrip-dark {
+  background-color: #262423; /* mcColors.gray6 */
+  border-color: #484543; /* mcColors.gray5 */
+}
+
+.pact-compactStrip-light {
+  background-color: #e5e3e1; /* mcColors.gray1 */
+  border-color: #cecccb; /* mcColors.gray2 */
+}
+
+.pact-compactStripBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px !important;
+}
+
+/* Compact action strip groups: each labeled cluster of icons sits inside a
+ * .pact-compactGroup so users see *what* the icons do at a glance instead of
+ * having to hover each one. Groups wrap onto new rows on narrow widths. */
+.pact-compactGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-right: 12px;
+  padding-right: 12px;
+  border-right: 1px solid transparent;
+}
+
+.pact-compactStrip-dark .pact-compactGroup {
+  border-right-color: #484543; /* mcColors.gray5 */
+}
+
+.pact-compactStrip-light .pact-compactGroup {
+  border-right-color: #cecccb; /* mcColors.gray2 */
+}
+
+.pact-compactGroup:last-child {
+  border-right: none;
+  margin-right: 0;
+  padding-right: 0;
+}
+
+.pact-compactGroupTitle {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.7;
+  margin-bottom: 2px;
+  padding: 0 4px;
+}
+
+.pact-compactGroupButtons {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
 }

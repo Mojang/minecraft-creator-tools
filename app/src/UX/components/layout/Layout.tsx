@@ -30,6 +30,7 @@ export default function Layout({ children, isApp, onSaveBackups }: LayoutProps) 
           <HomeHeader isApp={isApp} toggleThemeMode={toggleMode} mode={mode} />
         </AppBar>
         <Box
+          id="main-content"
           component="main"
           sx={{
             mt: contentVerticalSpacing,
@@ -46,6 +47,7 @@ export default function Layout({ children, isApp, onSaveBackups }: LayoutProps) 
             sx={{
               flex: 1,
               mb: 4,
+              pb: { xs: 4, md: 6 },
               maxWidth: "85vw",
               ml: "auto",
               mr: "auto",

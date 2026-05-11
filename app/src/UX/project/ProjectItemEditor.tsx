@@ -129,6 +129,7 @@ import EntityTypeResourceEditor from "../editors/entityType/EntityTypeResourceEd
 import BlockTypeEditor from "../editors/blockType/BlockTypeEditor";
 import AudioManager from "../media/AudioManager";
 import ItemTypeEditor from "../editors/itemType/ItemTypeEditor";
+import RecipeEditor from "../editors/recipe/RecipeEditor";
 import GeneralFormEditor from "../codeEditors/GeneralFormEditor";
 import ProjectItemVariant from "../../app/ProjectItemVariant";
 import { CustomLabel, CustomTabLabel } from "../shared/components/feedback/labels/Labels";
@@ -140,13 +141,14 @@ import BiomeEditor from "../editors/biome/BiomeEditor";
 import FeatureEditor from "../editors/feature/FeatureEditor";
 import VoxelShapeEditor from "../editors/voxelShape/VoxelShapeEditor";
 import { faPlus, faCubes } from "@fortawesome/free-solid-svg-icons";
-import { ProjectItemEditorView } from "./ProjectEditorUtilities";
+import { ProjectItemEditorView, hasSpecializedFormEditor } from "./ProjectEditorUtilities";
 import ProjectMap from "./ProjectMap";
 import BiomeResourceEditor from "../editors/biome/BiomeResourceEditor";
 import IProjectTheme from "../types/IProjectTheme";
-import SpawnRulesEditor from "../components/fileEditors/SpawnRulesEditor/SpawnRulesEditor";
-import LootTableEditor from "../components/fileEditors/lootTableEditor/LootTableEditor";
-import TradeTableEditor from "../components/fileEditors/tradeTableEditor/TradeTableEditor";
+import SpawnRulesEditorWrapper from "../components/fileEditors/SpawnRulesEditor/SpawnRulesEditorWrapper";
+import LootTableVisualEditor from "../editors/lootTable/LootTableVisualEditor";
+import TradeTableVisualEditor from "../editors/tradeTable/TradeTableVisualEditor";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
 enum ProjectItemEditorDirtyState {
   clean = 0,
@@ -154,7 +156,7 @@ enum ProjectItemEditorDirtyState {
   itemDirty = 2,
 }
 
-interface IProjectItemEditorProps extends IAppProps {
+interface IProjectItemEditorProps extends IAppProps, WithLocalizationProps {
   project: Project;
   theme: IProjectTheme;
   heightOffset: number;
@@ -186,7 +188,7 @@ interface IProjectItemEditorState {
   activeViewTarget?: string;
 }
 
-export default class ProjectItemEditor extends Component<IProjectItemEditorProps, IProjectItemEditorState> {
+class ProjectItemEditor extends Component<IProjectItemEditorProps, IProjectItemEditorState> {
   private _activeEditorPersistable?: IPersistable;
   private _isMountedInternal = false;
   private _pendingUpdateItem: ProjectItem | null = null;
@@ -204,6 +206,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
     this._handleVariantButton = this._handleVariantButton.bind(this);
     this._handleDefaultVariant = this._handleDefaultVariant.bind(this);
     this._handleDrodownValChange = this._handleDrodownValChange.bind(this);
+    this._handleToggleFormRaw = this._handleToggleFormRaw.bind(this);
 
     if (this.props.activeProjectItem && this.props.activeProjectItem.isContentLoaded) {
       this.state = {
@@ -215,11 +218,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
         dirtyState: ProjectItemEditorDirtyState.clean,
         loadedItem: null,
       };
-
-      this._updateFromProps();
     }
-
-    this._pendingUpdateItem = null;
   }
 
   componentDidUpdate(prevProps: IProjectItemEditorProps, prevState: IProjectItemEditorState) {
@@ -298,6 +297,16 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
 
   componentDidMount() {
     this._isMountedInternal = true;
+
+    // If the constructor started async loading but _handleItemLoaded was called
+    // before _isMountedInternal was true (causing setState to be skipped),
+    // retry now that we're properly mounted.
+    if (this.props.activeProjectItem && this.props.activeProjectItem !== this.state.loadedItem) {
+      // Clear any pending-update guard left over from the pre-mount load so
+      // _updateFromProps runs a fresh cycle instead of short-circuiting.
+      this._pendingUpdateItem = null;
+      this._updateFromProps();
+    }
   }
 
   componentWillUnmount(): void {
@@ -306,7 +315,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
 
   getActiveProjectItemName() {
     if (this.props.activeProjectItem === null || this.props.activeProjectItem === undefined) {
-      return "(no project item selected)";
+      return this.props.intl.formatMessage({ id: "project_editor.proj_item.no_item_path" });
     } else {
       return this.props.activeProjectItem.projectPath;
     }
@@ -347,14 +356,14 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
     if (value && typeof value === "string") {
       let fromIndex = value.indexOf("from ");
 
-      if (value === "Single editor view") {
+      if (value === this.props.intl.formatMessage({ id: "project_editor.proj_item.single_editor_view" })) {
         this.setState({
           dirtyState: this.state.dirtyState,
           loadedItem: this.state.loadedItem,
           activeView: ProjectItemEditorView.singleFileEditor,
           activeViewTarget: undefined,
         });
-      } else if (value === "Single JSON view") {
+      } else if (value === this.props.intl.formatMessage({ id: "project_editor.proj_item.single_json_view" })) {
         this.setState({
           dirtyState: this.state.dirtyState,
           loadedItem: this.state.loadedItem,
@@ -376,8 +385,32 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
     }
   }
 
+  /**
+   * Toggles between the specialized form editor and the raw Monaco JSON editor
+   * for items that have a specialized editor available. This backs the per-item
+   * Form/Raw toggle added for Task 001 so users can switch views even when the
+   * item has no variants (no variant dropdown is rendered).
+   */
+  _handleToggleFormRaw() {
+    const ep = this.props.project.effectiveEditPreference;
+    const editorExplicitlyForced =
+      this.props.initialView === ProjectItemEditorView.singleFileEditorForced ||
+      this.state.activeView === ProjectItemEditorView.singleFileEditorForced;
+    const currentlyRaw =
+      this.props.initialView === ProjectItemEditorView.singleFileRaw ||
+      (ep === ProjectEditPreference.raw && !editorExplicitlyForced) ||
+      this.state.activeView === ProjectItemEditorView.singleFileRaw;
+
+    this.setState({
+      dirtyState: this.state.dirtyState,
+      loadedItem: this.state.loadedItem,
+      activeView: currentlyRaw ? ProjectItemEditorView.singleFileEditorForced : ProjectItemEditorView.singleFileRaw,
+      activeViewTarget: undefined,
+    });
+  }
+
   render() {
-    let descrip = "No project item selected";
+    let descrip = this.props.intl.formatMessage({ id: "project_editor.proj_item.no_selected" });
     let file: IFile | null = null;
 
     if (this.props.activeProjectItem) {
@@ -410,29 +443,41 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
                   });
                 }
               });
-              descrip += " - Loading...";
+              descrip += this.props.intl.formatMessage({ id: "project_editor.proj_item.loading" });
             } else if (!this.props.activeProjectItem.isContentLoaded) {
-              descrip += " - Loading...";
+              descrip += this.props.intl.formatMessage({ id: "project_editor.proj_item.loading" });
             } else if (this.props.activeVariant === "" || this.props.activeVariant === undefined) {
-              descrip += " - No default file. Please select a variant if one exists.";
+              descrip += this.props.intl.formatMessage({ id: "project_editor.proj_item.no_default_file" });
             } else {
-              descrip += " - No file for variant `" + this.props.activeVariant + "`.";
+              descrip += this.props.intl.formatMessage(
+                { id: "project_editor.proj_item.no_file_variant" },
+                { variant: this.props.activeVariant }
+              );
             }
           } else {
             // Check if content is still loading
             if (!this.props.activeProjectItem.isContentLoaded) {
-              descrip += " - Loading...";
+              descrip += this.props.intl.formatMessage({ id: "project_editor.proj_item.loading" });
             } else if (this.props.activeVariant === "" || this.props.activeVariant === undefined) {
-              descrip += " - No default file. Please select a variant if one exists.";
+              descrip += this.props.intl.formatMessage({ id: "project_editor.proj_item.no_default_file" });
             } else {
-              descrip += " - No file for variant `" + this.props.activeVariant + "`.";
+              descrip += this.props.intl.formatMessage(
+                { id: "project_editor.proj_item.no_file_variant" },
+                { variant: this.props.activeVariant }
+              );
             }
           }
         } else if (file.isContentLoaded) {
           if (file.content === null) {
-            descrip = "No default content for " + descrip[0].toLowerCase() + descrip.substring(1);
+            descrip =
+              this.props.intl.formatMessage({ id: "project_editor.proj_item.no_default_content" }) +
+              descrip[0].toLowerCase() +
+              descrip.substring(1);
           } else {
-            descrip = "Loaded " + descrip[0].toLowerCase() + descrip.substring(1);
+            descrip =
+              this.props.intl.formatMessage({ id: "project_editor.proj_item.loaded" }) +
+              descrip[0].toLowerCase() +
+              descrip.substring(1);
           }
         }
       }
@@ -463,7 +508,9 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           }}
         >
           <FontAwesomeIcon icon={faCubes} style={{ fontSize: 48, marginBottom: 16, opacity: 0.5 }} />
-          <div style={{ fontSize: "1.1em", marginBottom: 12, fontWeight: "bold" }}>Select an item to start editing</div>
+          <div style={{ fontSize: "1.1em", marginBottom: 12, fontWeight: "bold" }}>
+            {this.props.intl.formatMessage({ id: "project_editor.proj_item.select_item_heading" })}
+          </div>
           <div style={{ maxWidth: 360, lineHeight: 1.5 }}>
             Choose a file from the project list on the left, or use the <strong>+ Add</strong> button to create new
             content like entities, blocks, or items.
@@ -566,6 +613,36 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
             setActivePersistable={this._handleNewChildPersistable}
           />
         );
+      } else if (file !== null && (file.type === "js" || file.type === "ts" || file.type === "mjs")) {
+        // Script files can be rendered even when content isn't loaded yet - JavaScriptEditor handles loading internally
+        let pref = this.props.project.preferredScriptLanguage;
+
+        if (file.type === "ts") {
+          pref = ProjectScriptLanguage.typeScript;
+        }
+
+        let role = ScriptEditorRole.script;
+
+        if (this.props.activeProjectItem.itemType === ProjectItemType.testJs) {
+          role = ScriptEditorRole.gameTest;
+        }
+
+        interior = (
+          <LazyJavaScriptEditor
+            role={role}
+            creatorTools={this.props.creatorTools}
+            theme={this.props.theme}
+            onUpdatePreferredTextSize={this._onUpdatePreferredTextSize}
+            preferredTextSize={this.props.creatorTools.preferredTextSize}
+            readOnly={readOnly}
+            project={this.props.project}
+            scriptLanguage={pref}
+            heightOffset={heightOffset}
+            file={file}
+            navigationTarget={navigationTarget}
+            setActivePersistable={this._handleNewChildPersistable}
+          />
+        );
       } else if (file !== null && file.isContentLoaded && file.content !== null) {
         if (this.props.setActivePersistable !== undefined) {
           this.props.setActivePersistable(this);
@@ -593,36 +670,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
 
         const formCategoryData = FormMappings["" + projItem.itemType];
 
-        if (file.type === "js" || file.type === "ts" || file.type === "mjs") {
-          let pref = this.props.project.preferredScriptLanguage;
-
-          if (file.type === "ts") {
-            pref = ProjectScriptLanguage.typeScript;
-          }
-
-          let role = ScriptEditorRole.script;
-
-          if (projItem.itemType === ProjectItemType.testJs) {
-            role = ScriptEditorRole.gameTest;
-          }
-
-          interior = (
-            <LazyJavaScriptEditor
-              role={role}
-              creatorTools={this.props.creatorTools}
-              theme={this.props.theme}
-              onUpdatePreferredTextSize={this._onUpdatePreferredTextSize}
-              preferredTextSize={this.props.creatorTools.preferredTextSize}
-              readOnly={readOnly}
-              project={this.props.project}
-              scriptLanguage={pref}
-              heightOffset={heightOffset}
-              file={file}
-              navigationTarget={navigationTarget}
-              setActivePersistable={this._handleNewChildPersistable}
-            />
-          );
-        } else if (file.type === "mcfunction") {
+        if (file.type === "mcfunction") {
           // because electron doesn't work in debug electron due to odd pathing reasons, use a text editor instead
           if (Utilities.isDebug && CreatorToolsHost.hostType === HostType.electronWeb) {
             interior = (
@@ -701,6 +749,24 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
         ) {
           interior = (
             <ItemTypeEditor
+              project={this.props.project}
+              creatorTools={this.props.creatorTools}
+              readOnly={this.props.readOnly}
+              heightOffset={heightOffset}
+              theme={this.props.theme}
+              file={file}
+              item={this.props.activeProjectItem}
+              setActivePersistable={this._handleNewChildPersistable}
+            />
+          );
+        } else if (
+          file.type === "json" &&
+          projItem.itemType === ProjectItemType.recipeBehavior &&
+          !showRaw &&
+          !showValidation
+        ) {
+          interior = (
+            <RecipeEditor
               project={this.props.project}
               creatorTools={this.props.creatorTools}
               readOnly={this.props.readOnly}
@@ -819,12 +885,13 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           !showValidation
         ) {
           interior = (
-            <SpawnRulesEditor
+            <SpawnRulesEditorWrapper
               project={this.props.project}
               file={file}
               readOnly={this.props.readOnly}
               setActivePersistable={this._handleNewChildPersistable}
               heightOffset={heightOffset}
+              theme={this.props.theme}
             />
           );
         } else if (
@@ -834,7 +901,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           !showValidation
         ) {
           interior = (
-            <TradeTableEditor
+            <TradeTableVisualEditor
               project={this.props.project}
               file={file}
               readOnly={this.props.readOnly}
@@ -849,10 +916,12 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           !showValidation
         ) {
           interior = (
-            <LootTableEditor
+            <LootTableVisualEditor
               project={this.props.project}
               file={file}
+              readOnly={this.props.readOnly}
               setActivePersistable={this._handleNewChildPersistable}
+              heightOffset={heightOffset}
             />
           );
         } else if (
@@ -1175,18 +1244,25 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
       const items: string[] = [];
       let dropdownVal = "";
 
-      items.push("Single editor view");
+      // Only offer "Single editor view" when this item actually has a specialized
+      // form editor to show — otherwise both modes render identical Monaco.
+      const itemHasFormEditor = hasSpecializedFormEditor(this.props.activeProjectItem.itemType);
+      if (itemHasFormEditor) {
+        items.push("Single editor view");
+      }
       items.push("Single JSON view");
 
       if (this.state.activeView === ProjectItemEditorView.singleFileEditor || this.state.activeView === undefined) {
-        dropdownVal = "Single editor view";
+        dropdownVal = itemHasFormEditor
+          ? this.props.intl.formatMessage({ id: "project_editor.proj_item.single_editor_view" })
+          : this.props.intl.formatMessage({ id: "project_editor.proj_item.single_json_view" });
       } else if (this.state.activeView === ProjectItemEditorView.singleFileRaw) {
-        dropdownVal = "Single JSON view";
+        dropdownVal = this.props.intl.formatMessage({ id: "project_editor.proj_item.single_json_view" });
       }
 
       if (this.props.activeProjectItem.defaultFile && this.props.activeProjectItem.defaultFile.content !== null) {
         if (this.state.activeView === ProjectItemEditorView.diff && !this.state.activeViewTarget) {
-          dropdownVal = "Diff from default item";
+          dropdownVal = this.props.intl.formatMessage({ id: "project_editor.proj_item.diff_from_default" });
         }
 
         items.push("Diff from default item");
@@ -1194,7 +1270,8 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
 
       for (const variant of variantList) {
         if (variant.label !== undefined && variant.label !== "") {
-          const label = "Diff from " + variant.label;
+          const label =
+            this.props.intl.formatMessage({ id: "project_editor.proj_item.diff_from_prefix" }) + variant.label;
 
           if (this.state.activeView === ProjectItemEditorView.diff && this.state.activeViewTarget === variant.label) {
             dropdownVal = label;
@@ -1241,23 +1318,36 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
               color: colors.foreground1,
             }}
           >
-            <Stack direction="row" spacing={1} aria-label="Item actions">
+            <Stack
+              direction="row"
+              spacing={1}
+              aria-label={this.props.intl.formatMessage({ id: "project_editor.proj_item.actions_aria" })}
+            >
               {!this.props.readOnly && (
-                <Button key="newVariant" onClick={this._handleNewVariant} title="New variant">
+                <Button
+                  key="newVariant"
+                  onClick={this._handleNewVariant}
+                  title={this.props.intl.formatMessage({ id: "project_editor.proj_item.new_variant_title" })}
+                >
                   <CustomLabel
                     isCompact={false}
-                    text="New Variant"
+                    text={this.props.intl.formatMessage({ id: "project_editor.proj_item.new_variant_label" })}
                     icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
                   />
                 </Button>
               )}
-              <Stack direction="row" spacing={1} role="tablist" aria-label="Variants">
+              <Stack
+                direction="row"
+                spacing={1}
+                role="tablist"
+                aria-label={this.props.intl.formatMessage({ id: "project_editor.proj_item.variants_aria" })}
+              >
                 {this.props.activeProjectItem.defaultFile &&
                   this.props.activeProjectItem.defaultFile.content !== null && (
                     <Button
                       key="v."
                       onClick={this._handleDefaultVariant}
-                      title="Default item"
+                      title={this.props.intl.formatMessage({ id: "project_editor.proj_item.default_item_title" })}
                       role="tab"
                       id={getVariantTabId("default")}
                       aria-selected={activeVariant === "" || activeVariant === undefined}
@@ -1268,7 +1358,12 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
                         theme={this.props.theme}
                         isSelected={activeVariant === "" || activeVariant === undefined}
                         icon={<FontAwesomeIcon icon={faFile} className="fa-lg" />}
-                        text={"Default" + (primaryVariantLabel === undefined ? " (primary)" : "")}
+                        text={
+                          this.props.intl.formatMessage({ id: "project_editor.proj_item.default_label" }) +
+                          (primaryVariantLabel === undefined
+                            ? this.props.intl.formatMessage({ id: "project_editor.proj_item.primary_suffix" })
+                            : "")
+                        }
                         isCompact={false}
                       />
                     </Button>
@@ -1291,7 +1386,12 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
                           theme={this.props.theme}
                           isSelected={variant.label === activeVariant}
                           icon={<FontAwesomeIcon icon={faFile} className="fa-lg" />}
-                          text={variant.label + (variant.label === primaryVariantLabel ? " (primary)" : "")}
+                          text={
+                            variant.label +
+                            (variant.label === primaryVariantLabel
+                              ? this.props.intl.formatMessage({ id: "project_editor.proj_item.primary_suffix" })
+                              : "")
+                          }
                           isCompact={false}
                         />
                       </Button>
@@ -1306,7 +1406,11 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
         </div>
       );
     } else {
+      // Raw/Form switching is available via the editor menu and global edit
+      // preference, so no inline tab switcher is rendered here.
       return <div className="pie-outer">{interior}</div>;
     }
   }
 }
+
+export default withLocalization(ProjectItemEditor);

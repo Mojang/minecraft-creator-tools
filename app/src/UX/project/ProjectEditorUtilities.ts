@@ -17,6 +17,7 @@ import StorageUtilities from "../../storage/StorageUtilities";
 import ZipStorage from "../../storage/ZipStorage";
 import telemetryService from "../../analytics/Telemetry";
 import { TelemetryEvents, TelemetryProperties, WorldDownloadProperties } from "../../analytics/TelemetryConstants";
+import { ProjectEditPreference } from "../../app/IProjectData";
 
 export const MaxModeActions = 7;
 
@@ -40,6 +41,85 @@ export enum ProjectItemEditorView {
   map = 3,
   validationWithJson = 4,
   singleFileEditorForced = 5, // Explicit "Open in Editor" action - overrides raw preference
+}
+
+/**
+ * Returns true when an item with the given active editor view is currently
+ * being rendered in the raw text/JSON editor (not a structured form editor).
+ *
+ * The default `singleFileEditor` view defers to the project's edit preference:
+ * in Raw Mode it renders as text; otherwise it renders the structured form.
+ * `singleFileRaw`, `validationWithJson`, and `diff` always render as text;
+ * `singleFileEditorForced` always renders the structured form (overriding Raw).
+ *
+ * Used by `getItemMenuItems` to decide whether the JSON toggle should read
+ * "Open in Visual Editor" (when currently in text) or "Open in Text Editor"
+ * (when currently in the structured editor). Keep in sync with the
+ * `showRaw` / `showValidation` computation in
+ * `ProjectItemEditor.render()` — if a new view is added that renders as raw
+ * text, list it here too.
+ */
+export function isItemViewShowingTextEditor(
+  itemView: ProjectItemEditorView | undefined,
+  editPreference: ProjectEditPreference | undefined
+): boolean {
+  if (
+    itemView === ProjectItemEditorView.singleFileRaw ||
+    itemView === ProjectItemEditorView.validationWithJson ||
+    itemView === ProjectItemEditorView.diff
+  ) {
+    return true;
+  }
+
+  if (itemView === ProjectItemEditorView.singleFileEditorForced) {
+    return false;
+  }
+
+  // `singleFileEditor` (or undefined) — defer to the project preference.
+  return editPreference === ProjectEditPreference.raw;
+}
+
+/**
+ * Returns true for project item types that have a specialized form-based editor
+ * distinct from the raw Monaco JSON view. Used to decide whether to show the
+ * per-item Form/Raw toggle.
+ *
+ * Keep in sync with the specialized-editor if/else chain in
+ * `ProjectItemEditor.render()` (see files that import specialized editors like
+ * BehaviorPackManifestJsonEditor, EntityTypeEditor, etc.). If an item type is
+ * not listed here, the user-visible Form toggle is hidden so we don't promise
+ * a form UI that doesn't exist.
+ */
+export function hasSpecializedFormEditor(itemType: ProjectItemType): boolean {
+  switch (itemType) {
+    case ProjectItemType.entityTypeBehavior:
+    case ProjectItemType.blockTypeBehavior:
+    case ProjectItemType.itemTypeBehavior:
+    case ProjectItemType.recipeBehavior:
+    case ProjectItemType.actionSet:
+    case ProjectItemType.modelGeometryJson:
+    case ProjectItemType.worldTest:
+    case ProjectItemType.scriptTypesJson:
+    case ProjectItemType.packageJson:
+    case ProjectItemType.behaviorPackManifestJson:
+    case ProjectItemType.spawnRuleBehavior:
+    case ProjectItemType.tradingBehaviorJson:
+    case ProjectItemType.lootTableBehavior:
+    case ProjectItemType.entityTypeResource:
+    case ProjectItemType.attachableResourceJson:
+    case ProjectItemType.biomeBehavior:
+    case ProjectItemType.biomeResource:
+    case ProjectItemType.featureBehavior:
+    case ProjectItemType.featureRuleBehavior:
+    case ProjectItemType.voxelShapeBehavior:
+    case ProjectItemType.commandSetDefinitionJson:
+    case ProjectItemType.contentIndexJson:
+    case ProjectItemType.contentReportJson:
+    case ProjectItemType.dataForm:
+      return true;
+    default:
+      return false;
+  }
 }
 
 export enum ProjectEditorMode {
@@ -121,7 +201,31 @@ export default class ProjectEditorUtilities {
     projectItem: ProjectItem,
     focusFilterPath: string | undefined,
     issueCount?: number,
-    isRawEditPreference?: boolean
+    /**
+     * True when the targeted item is *currently* being viewed in the raw text
+     * editor (either the explicit raw view, the validation+JSON split, or the
+     * default editor showing as raw because the project's edit preference is
+     * Raw and the user hasn't forced the structured view). When true, the JSON
+     * toggle entry reads "Open in Visual Editor" (action: viewInEditor); when
+     * false it reads "Open in Text Editor" (action: viewAsJson). Callers that
+     * cannot determine this (e.g. a context menu on a non-active item) should
+     * fall back to the project's edit preference.
+     */
+    isCurrentlyShowingTextEditor?: boolean,
+    /**
+     * When false, the Focus / Clear focus entry is omitted. Set this to
+     * false in callers (like the main toolbar's Item Actions button) that
+     * have no way to route the focus intent back to the ProjectItemList's
+     * internal focus state. Defaults to true for backward compatibility
+     * with the project tree's right-click menu.
+     */
+    includeFocus: boolean = true,
+    /**
+     * When false, the "View on map" entry is omitted. Focused (summarized)
+     * mode hides the project map view, so surfacing the entry from context
+     * menus is a dead end — callers pass false there.
+     */
+    includeViewOnMap: boolean = true
   ) {
     let path = "";
 
@@ -129,10 +233,12 @@ export default class ProjectEditorUtilities {
       path = projectItem.projectPath;
     }
 
-    const itemMenu: any[] = [
-      {
+    const itemMenu: any[] = [];
+
+    if (includeFocus) {
+      itemMenu.push({
         key: "focusMenu|" + path,
-        content: focusFilterPath === projectItem.projectPath ? "Clear focus" : "Focus",
+        content: focusFilterPath === projectItem.projectPath ? "Clear focus" : "Focus on this item",
         tag: {
           path: projectItem.projectPath,
           action:
@@ -140,11 +246,14 @@ export default class ProjectEditorUtilities {
               ? ProjectEditorItemAction.unfocus
               : ProjectEditorItemAction.focus,
         },
-      },
-      {
+      });
+      itemMenu.push({
         key: "nav-divider|" + path,
         kind: "divider",
-      },
+      });
+    }
+
+    itemMenu.push(
       {
         key: "download|" + path,
         content: "Download",
@@ -154,8 +263,8 @@ export default class ProjectEditorUtilities {
         key: "rename|" + path,
         content: "Rename",
         tag: { path: projectItem.projectPath, action: ProjectEditorItemAction.renameItem },
-      },
-    ];
+      }
+    );
 
     // Add "View Issues" menu item if there are issues
     if (issueCount !== undefined && issueCount > 0) {
@@ -175,12 +284,18 @@ export default class ProjectEditorUtilities {
     }
 
     if (StorageUtilities.getTypeFromName(path) === "json") {
-      // When in raw editing mode, show "Open in Editor" to open the structured editor
-      // When in other modes, show "Open in Text Editor" to open the raw JSON editor
-      if (isRawEditPreference) {
+      // When the item is currently being shown in the text/raw editor, the
+      // toggle should offer "Open in Visual Editor" to switch into the
+      // structured form view. Otherwise, offer "Open in Text Editor" to
+      // switch into the raw JSON view. This keeps the menu honest about the
+      // *current* state of the item — not just the global edit preference —
+      // so users who temporarily flipped one file into text mode see the
+      // inverse action on both the per-item ... menu and the toolbar's
+      // Item Actions menu.
+      if (isCurrentlyShowingTextEditor) {
         itemMenu.push({
           key: "viewInEditor|" + path,
-          content: "Open in Editor",
+          content: "Open in Visual Editor",
           tag: { path: projectItem.projectPath, action: ProjectEditorItemAction.viewInEditor },
         });
       } else {
@@ -192,11 +307,13 @@ export default class ProjectEditorUtilities {
       }
     }
 
-    itemMenu.push({
-      key: "viewAsMap|" + path,
-      content: "View on map",
-      tag: { path: projectItem.projectPath, action: ProjectEditorItemAction.viewOnMap },
-    });
+    if (includeViewOnMap) {
+      itemMenu.push({
+        key: "viewAsMap|" + path,
+        content: "View on map",
+        tag: { path: projectItem.projectPath, action: ProjectEditorItemAction.viewOnMap },
+      });
+    }
 
     itemMenu.push({ key: "delete-divider|" + path, kind: "divider" });
     itemMenu.push({

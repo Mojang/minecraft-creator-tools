@@ -17,6 +17,9 @@ const ignorableTokens = [
   "getDerivedStateFromProps", // React class component lifecycle warning
   "Invalid prop `value` supplied to", // MUI TextareaAutosize prop type warning
   "not yet mounted", // React setState on unmounted component warning
+  "expected a ReactNode", // MUI v5 PropTypes false positives with React 18.3 (children, startIcon, primary, secondary)
+  "expected a single ReactElement", // MUI v5 Tooltip/Grow/Fade PropTypes false positives with React 18.3
+  "MISSING_TRANSLATION", // react-intl missing translation warnings during locale development
   "willReadFrequently", // Canvas2D performance hint from headless Chromium (Babylon.js getImageData calls)
   "Vertex buffer is not big enough", // ANGLE D3D backend limitation in headless Chromium WebGL
 ];
@@ -248,8 +251,12 @@ export async function gotoWithTheme(page: Page, mode: ThemeMode, path: string = 
   const separator = path.includes("?") ? "&" : "?";
   const url = `${path}${separator}${themeParam}`;
 
-  await page.goto(url);
-  await page.waitForLoadState("networkidle");
+  // IMPORTANT: do NOT use waitForLoadState("networkidle"). Vite's HMR
+  // WebSocket keeps the network perpetually busy, so networkidle never
+  // fires in dev mode and causes 60s timeouts. "load" waits for all
+  // resources (scripts, images, styles) to finish and is reliable for
+  // both Vite dev and production builds.
+  await page.goto(url, { waitUntil: "load" });
   await page.waitForTimeout(500);
 }
 
@@ -261,6 +268,79 @@ export async function preferBrowserStorageInProjectDialog(page: Page): Promise<v
     await browserStorageRadio.check({ force: true });
     await page.waitForTimeout(250);
     console.log("preferBrowserStorageInProjectDialog: Selected Browser Storage for automated test flow");
+  }
+}
+
+/**
+ * Returns a locator for the "Create New" button on a specific template card,
+ * keyed by the template's gallery id (e.g. "addonStarter", "addonFull",
+ * "tsStarter"). Template ids correspond to entries in
+ * `app/public/data/gallery.json`.
+ *
+ * Prefer this helper over positional indexing (`nth(N)`) or text matching
+ * which break when the gallery layout changes or when localized strings
+ * shift.
+ */
+export function getTemplateCreateButton(page: Page, templateId: string) {
+  return page.getByTestId(`template-create-${templateId}`);
+}
+
+/**
+ * Returns a locator for an entire template card, keyed by gallery id.
+ * Useful for verifying a template is present before clicking its action.
+ */
+export function getTemplateCard(page: Page, templateId: string) {
+  return page.getByTestId(`template-card-${templateId}`);
+}
+
+/**
+ * Click the "Create New" button on the template card matching `templateId`.
+ * If "See more templates" is visible (only the recommended templates are
+ * shown), expand it first.
+ *
+ * Returns true on success, false if the button could not be located.
+ */
+export async function clickTemplateCreateButton(page: Page, templateId: string): Promise<boolean> {
+  const button = getTemplateCreateButton(page, templateId);
+
+  if (!(await button.isVisible({ timeout: 3000 }).catch(() => false))) {
+    // Expand "See more templates" if needed and retry
+    const seeMore = page.locator('text="See more templates"').first();
+    if (await seeMore.isVisible({ timeout: 1500 }).catch(() => false)) {
+      await seeMore.click();
+      await page.waitForTimeout(500);
+    }
+  }
+
+  if (!(await button.isVisible({ timeout: 3000 }).catch(() => false))) {
+    return false;
+  }
+
+  await button.scrollIntoViewIfNeeded().catch(() => {});
+  await button.click();
+  return true;
+}
+
+/**
+ * Fills the required "Creator" field on the New Project dialog if it is empty.
+ *
+ * The dialog validates that the creator name is not empty (task 028) and will
+ * silently refuse to submit if it is. Tests previously relied on the field
+ * being pre-populated; now we always fill it explicitly so submission succeeds.
+ */
+export async function fillRequiredProjectDialogFields(page: Page, values?: { creator?: string }): Promise<void> {
+  const creator = values?.creator ?? "TestCreator";
+
+  // FormField renders a TextField with name={id}; the actual <input> uses that
+  // name attribute. Match by name to avoid label-text fragility.
+  const creatorInput = page.locator('input[name="creator"]').first();
+  if (await creatorInput.isVisible({ timeout: 1500 }).catch(() => false)) {
+    const current = (await creatorInput.inputValue().catch(() => "")) || "";
+    if (!current.trim()) {
+      await creatorInput.fill(creator);
+      await page.waitForTimeout(150);
+      console.log(`fillRequiredProjectDialogFields: Set Creator = "${creator}"`);
+    }
   }
 }
 
@@ -358,8 +438,9 @@ export async function enterEditor(
     if (themeMode) {
       await gotoWithTheme(page, themeMode, "/");
     } else {
-      await page.goto("/");
-      await page.waitForLoadState("networkidle");
+      // Use "load" instead of "networkidle". Vite's HMR WebSocket keeps the
+      // network perpetually busy in dev mode, so networkidle never fires.
+      await page.goto("/", { waitUntil: "load" });
       await page.waitForTimeout(1000);
     }
 
@@ -381,6 +462,7 @@ export async function enterEditor(
     // The button has data-testid="submit-button" and text "Create Project"
     const createButton = page.getByTestId("submit-button");
     await preferBrowserStorageInProjectDialog(page);
+    await fillRequiredProjectDialogFields(page);
 
     try {
       await expect(createButton).toBeVisible({ timeout: 5000 });
@@ -404,8 +486,9 @@ export async function enterEditor(
     // production site where network latency is unpredictable.
     // First wait a minimum amount of time for the page to begin transitioning,
     // then poll for the editor toolbar to appear.
+    // Do NOT use waitForLoadState("networkidle") here — Vite's HMR WebSocket
+    // keeps the network perpetually busy and the wait would never fire.
     await page.waitForTimeout(3000);
-    await page.waitForLoadState("networkidle");
 
     // Poll for early editor readiness (up to 20s more) before proceeding to
     // mode selection. This replaces the previous fixed 9s wait.

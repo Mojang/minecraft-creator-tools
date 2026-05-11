@@ -34,8 +34,26 @@ export default class ItemComponentSlot extends Component<IItemComponentSlotProps
   }
 
   async componentDidUpdate(prevProps: IItemComponentSlotProps) {
-    if (prevProps.componentId !== this.props.componentId || prevProps.componentData !== this.props.componentData) {
+    // Compare by serialized content because ManagedComponent.setProperty
+    // mutates the data object in place; reference comparison misses those
+    // updates and the summary text would stay stale. See ComponentSlot.tsx
+    // for the entity-flavored explanation.
+    if (prevProps.componentId !== this.props.componentId) {
       await this.loadSummary();
+      return;
+    }
+    if (this.componentDataSignature(prevProps.componentData) !== this.componentDataSignature(this.props.componentData)) {
+      await this.loadSummary();
+    }
+  }
+
+  private componentDataSignature(data: IItemComponentSlotProps["componentData"]): string {
+    if (data === undefined || data === null) return String(data);
+    if (typeof data !== "object") return typeof data + ":" + String(data);
+    try {
+      return JSON.stringify(data);
+    } catch {
+      return "obj:" + (data as any)?.constructor?.name;
     }
   }
 

@@ -35,7 +35,12 @@ export interface IMinecraftEventTriggerEditorProps extends IFormComponentProps {
   heightOffset: number;
   theme: IProjectTheme;
   constrainHeight?: boolean;
-  entityTypeDefinition: EntityTypeDefinition;
+  // Optional at runtime: this editor can be rendered in form contexts where
+  // the parent doesn't have an EntityTypeDefinition to wire up (e.g. block /
+  // item event triggers). Methods that touch this prop must guard for
+  // undefined; otherwise clicking Add in the new-event dialog crashes with
+  // "Cannot read properties of undefined (reading 'addEvent')".
+  entityTypeDefinition?: EntityTypeDefinition;
   onChange?: (field: IField, data: MinecraftEventTrigger) => void;
 }
 
@@ -123,7 +128,7 @@ export default class MinecraftEventTriggerEditor extends Component<
   }
 
   private _handleSetNameOK() {
-    if (this.state.selectedName) {
+    if (this.state.selectedName && this.props.entityTypeDefinition) {
       this.props.entityTypeDefinition.addEvent(this.state.selectedName);
       this.props.data.event = this.state.selectedName;
 
@@ -168,7 +173,7 @@ export default class MinecraftEventTriggerEditor extends Component<
       let actionDesignInterior = <></>;
 
       if (this.props.data.event) {
-        eventItem = this.props.entityTypeDefinition.getEvent(this.props.data.event);
+        eventItem = this.props.entityTypeDefinition?.getEvent(this.props.data.event);
 
         if (eventItem) {
           actionDesignInterior = (
@@ -182,7 +187,10 @@ export default class MinecraftEventTriggerEditor extends Component<
               project={this.props.project}
               constrainHeight={this.props.constrainHeight}
               heightOffset={this.props.heightOffset}
-              entityType={this.props.entityTypeDefinition}
+              // Safe to assert: eventItem only becomes truthy when
+              // entityTypeDefinition?.getEvent returned something, which
+              // requires the prop to be defined.
+              entityType={this.props.entityTypeDefinition!}
               event={eventItem}
               id={this.props.data.event}
             />

@@ -1,0 +1,182 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SHAPED RECIPE EDITOR - Minecraft crafting table grid
+   
+   Visual layout:
+   ┌──────────────────────────────────────────────────────────────────┐
+   │  ┌─────────────────────┐          ┌──────────┐                  │
+   │  │  [A] [B] [C]        │   ═══►   │ [Result] │                  │
+   │  │  [D] [E] [F]        │          │  ×count   │                  │
+   │  │  [G] [H] [I]        │          └──────────┘                  │
+   │  └─────────────────────┘                                        │
+   │                                                                  │
+   │  ┌──────────────────────────────────────────────────────────┐   │
+   │  │  Item Palette (search + drag items to grid)              │   │
+   │  └──────────────────────────────────────────────────────────┘   │
+   └──────────────────────────────────────────────────────────────────┘
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.rcsre-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+/* Crafting area: grid + arrow + result */
+.rcsre-crafting-area {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* 3x3 Crafting grid styled like Minecraft's crafting table */
+.rcsre-grid-frame {
+  background: #8b7355;
+  border: 4px solid;
+  border-color: #5e4a31 #c4a882 #c4a882 #5e4a31;
+  padding: 8px;
+  border-radius: 2px;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+.rcsre-grid-frame-dark {
+  background: #6b5a45;
+  border-color: #4a3d2a #9e8a6e #9e8a6e #4a3d2a;
+}
+
+.rcsre-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+
+/* Arrow between grid and result */
+.rcsre-arrow {
+  display: flex;
+  align-items: center;
+  font-size: 32px;
+  color: #8b7355;
+  user-select: none;
+}
+
+.rcsre-arrow-dark {
+  color: #c4a882;
+}
+
+/* Result slot area */
+.rcsre-result-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.rcsre-result-frame {
+  background: #8b7355;
+  border: 4px solid;
+  border-color: #5e4a31 #c4a882 #c4a882 #5e4a31;
+  padding: 8px;
+  border-radius: 2px;
+}
+
+.rcsre-result-frame-dark {
+  background: #6b5a45;
+  border-color: #4a3d2a #9e8a6e #9e8a6e #4a3d2a;
+}
+
+.rcsre-count-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rcsre-count-label {
+  font-size: 12px;
+  color: #666666;
+}
+
+.rcsre-count-label-dark {
+  color: #aaaaaa;
+}
+
+.rcsre-count-input {
+  width: 48px;
+  padding: 2px 4px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  font-size: 12px;
+  text-align: center;
+  background: #fafafa;
+  color: #333333;
+}
+
+.rcsre-count-input-dark {
+  background: #383838;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #e0e0e0;
+}
+
+/* Palette area */
+.rcsre-palette-area {
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding-top: 12px;
+}
+
+.rcsre-palette-area-dark {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.rcsre-palette-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #888888;
+  margin-bottom: 8px;
+}
+
+.rcsre-palette-label-dark {
+  color: #999999;
+}
+
+/* Key legend (which characters map to which items) */
+.rcsre-key-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.rcsre-key-entry {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #555555;
+}
+
+.rcsre-key-entry-dark {
+  color: #bbbbbb;
+}
+
+.rcsre-key-char {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: #e0d5c3;
+  border: 1px solid #8b7355;
+  border-radius: 2px;
+  font-weight: bold;
+  font-size: 11px;
+  font-family: monospace;
+}
+
+.rcsre-key-char-dark {
+  background: #5e4a31;
+  border-color: #9e8a6e;
+  color: #e0d5c3;
+}

@@ -1,0 +1,128 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   TRADE TIER VISUAL EDITOR - Visual editor for a single trade tier
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ttv-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ttv-tier-meta {
+  padding: 10px 12px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid #66bb6a;
+}
+
+.ttv-meta-field {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ttv-meta-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.ttv-meta-hint {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+  flex-basis: 100%;
+}
+
+.ttv-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.ttv-group-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 2px 4px 2px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+.ttv-group-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ttv-group-num-to-select {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.ttv-group-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.ttv-group-remove {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.ttv-group-remove:hover {
+  color: #ef5350 !important;
+}
+
+.ttv-trades-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ttv-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 12px;
+  text-align: center;
+}
+
+.ttv-empty-icon {
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.ttv-add-group-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.ttv-add-group-btn:hover {
+  border-color: rgba(76, 175, 80, 0.4);
+  color: #81c784;
+  background: rgba(76, 175, 80, 0.05);
+}

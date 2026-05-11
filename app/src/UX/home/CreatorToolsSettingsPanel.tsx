@@ -30,6 +30,7 @@ interface ICreatorToolsSettingsPanelState {
   disableFirstRun: boolean;
   editPreference: CreatorToolsEditPreference;
   themePreference: ThemePreference;
+  savedFlashKey: number;
 }
 
 export default class CreatorToolsSettingsPanel extends Component<
@@ -60,8 +61,13 @@ export default class CreatorToolsSettingsPanel extends Component<
       disableFirstRun: this.props.creatorTools.disableFirstRun,
       editPreference: this.props.creatorTools.editPreference ?? CreatorToolsEditPreference.summarized,
       themePreference: this.props.creatorTools.themePreference ?? ThemePreference.deviceDefault,
+      savedFlashKey: 0,
     };
   }
+
+  private _flashSaved = () => {
+    this.setState((prev) => ({ savedFlashKey: prev.savedFlashKey + 1 }));
+  };
 
   componentDidMount(): void {
     this.doLoad();
@@ -104,6 +110,7 @@ export default class CreatorToolsSettingsPanel extends Component<
     this.setState({
       formatBeforeSave: e.target.checked,
     });
+    this._flashSaved();
   }
 
   _handleDisableFirstRunChanged(e: React.ChangeEvent<HTMLInputElement>) {
@@ -120,6 +127,7 @@ export default class CreatorToolsSettingsPanel extends Component<
     this.setState({
       disableFirstRun: !e.target.checked,
     });
+    this._flashSaved();
   }
 
   async _handleTrackChange(event: SelectChangeEvent<string>) {
@@ -132,6 +140,7 @@ export default class CreatorToolsSettingsPanel extends Component<
     }
 
     await this.props.creatorTools.save();
+    this._flashSaved();
   }
 
   _handleAutoStartChanged(e: React.ChangeEvent<HTMLInputElement>) {
@@ -145,6 +154,7 @@ export default class CreatorToolsSettingsPanel extends Component<
     this.setState({
       autoStartMinecraft: this.props.creatorTools.autoStartMinecraft,
     });
+    this._flashSaved();
   }
 
   _handleEditPreferenceChange(event: SelectChangeEvent<string>) {
@@ -158,6 +168,7 @@ export default class CreatorToolsSettingsPanel extends Component<
 
     this.props.creatorTools.save();
     this.setState({ editPreference: this.props.creatorTools.editPreference });
+    this._flashSaved();
   }
 
   _selectEditPreference(preference: CreatorToolsEditPreference) {
@@ -167,6 +178,7 @@ export default class CreatorToolsSettingsPanel extends Component<
     if (this.props.onEditPreferenceChanged) {
       this.props.onEditPreferenceChanged();
     }
+    this._flashSaved();
   }
 
   _handleThemePreferenceChange(event: SelectChangeEvent<number>) {
@@ -183,7 +195,11 @@ export default class CreatorToolsSettingsPanel extends Component<
       newTheme = CreatorToolsThemeStyle.light;
     } else {
       // Device default: use OS preference
-      if (typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      if (
+        typeof window !== "undefined" &&
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      ) {
         newTheme = CreatorToolsThemeStyle.dark;
       } else {
         newTheme = CreatorToolsThemeStyle.light;
@@ -204,6 +220,7 @@ export default class CreatorToolsSettingsPanel extends Component<
         // localStorage may be unavailable in private browsing
       }
     }
+    this._flashSaved();
   }
 
   _handleFocusedClick = () => {
@@ -229,6 +246,7 @@ export default class CreatorToolsSettingsPanel extends Component<
     this.setState({
       serverFolderPath: e.target.value,
     });
+    this._flashSaved();
   }
 
   private async _handleSelectFolderClick() {
@@ -331,7 +349,7 @@ export default class CreatorToolsSettingsPanel extends Component<
         <div className="csp-propertyNote">
           {editPreference === CreatorToolsEditPreference.summarized ||
           editPreference === CreatorToolsEditPreference.editors
-            ? "Visual editors may reformat JSON files. Your content is preserved — only whitespace and comments may change. "
+            ? "Visual editors normalize whitespace when they save. Comments and exact field ordering inside JSON files may be lost on save. For files where formatting matters, use Raw mode. "
             : ""}
           You can edit items as Raw JSON using the '...' menu on items in the list.
         </div>
@@ -364,6 +382,11 @@ export default class CreatorToolsSettingsPanel extends Component<
     coreProps.push(
       <div className="csp-label csp-formatbeforesavelabel" key="csp-formatbeforesavelabel">
         Format JSON and script on save
+        <div className="csp-propertyNote" style={{ fontSize: 12, opacity: 0.7, marginTop: 4 }}>
+          Off by default for pro safety. Turn on if you want the editor to auto-format hand-written JSON each save.
+          Note: enabling may rewrite whitespace, normalize array layouts, and remove comments inside JSON files you
+          have not opened.
+        </div>
       </div>
     );
 
@@ -388,12 +411,16 @@ export default class CreatorToolsSettingsPanel extends Component<
 
     // Row 4: Deployment Target - label left, dropdown right
     coreProps.push(
-      <div className="csp-label csp-defaultDeployTargetlabel" id="csp-defaultDeployTargetlabel">
+      <div
+        className="csp-label csp-defaultDeployTargetlabel"
+        key="csp-defaultDeployTargetlabel"
+        id="csp-defaultDeployTargetlabel"
+      >
         Deployment Target
       </div>
     );
     coreProps.push(
-      <div className="csp-defaultDeployTarget">
+      <div className="csp-defaultDeployTarget" key="csp-defaultDeployTarget">
         <Select
           value={contentSourceIds[0] || ""}
           aria-labelledby="csp-defaultDeployTargetlabel"
@@ -420,7 +447,10 @@ export default class CreatorToolsSettingsPanel extends Component<
     coreProps.push(
       <div className="csp-trackinput" key="csp-trackinput">
         <Select
-          value={CreatorToolsTargetSettings[this.props.creatorTools.effectiveTrack as number] || CreatorToolsTargetSettings[0]}
+          value={
+            CreatorToolsTargetSettings[this.props.creatorTools.effectiveTrack as number] ||
+            CreatorToolsTargetSettings[0]
+          }
           onChange={this._handleTrackChange}
           size="small"
           sx={{ minWidth: 240 }}
@@ -438,7 +468,9 @@ export default class CreatorToolsSettingsPanel extends Component<
     coreProps.push(
       <div className="csp-label csp-showwelcomelabel" key="csp-showwelcomelabel">
         Show welcome panel
-        <div style={{ fontSize: "0.75rem", opacity: 0.7, marginTop: "2px" }}>Display the welcome dialog with mode selection when opening a project</div>
+        <div style={{ fontSize: "0.75rem", opacity: 0.7, marginTop: "2px" }}>
+          Display the welcome dialog with mode selection when opening a project
+        </div>
       </div>
     );
 
@@ -497,6 +529,11 @@ export default class CreatorToolsSettingsPanel extends Component<
       <div className="csp-grid">
         {coreProps}
         {serverProps}
+        {this.state.savedFlashKey > 0 && (
+          <div key={this.state.savedFlashKey} className="csp-savedToast" role="status" aria-live="polite">
+            <FontAwesomeIcon icon={faCheckCircle} /> Saved
+          </div>
+        )}
       </div>
     );
   }

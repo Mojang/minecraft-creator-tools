@@ -207,7 +207,7 @@ export class GenerateSchemaPackageCommand extends CommandBase implements IComman
         prepublishOnly: "npm run typecheck",
       },
       devDependencies: {
-        typescript: "^5.0.0",
+        typescript: "5.0.0",
       },
       exports,
       repository: {
@@ -305,9 +305,16 @@ export class GenerateSchemaPackageCommand extends CommandBase implements IComman
    * Generates .npmignore — excludes dev/build files from the published package.
    */
   private static _writeNpmIgnore(outPath: string): void {
-    const content = [".git/", ".vscode/", "tsconfig.json", ".npmignore", "dist/", "settings-template.json", ""].join(
-      "\n"
-    );
+    const content = [
+      ".git/",
+      ".github/",
+      ".gitattributes",
+      ".vscode/",
+      "tsconfig.json",
+      ".npmignore",
+      "dist/",
+      "",
+    ].join("\n");
 
     fs.writeFileSync(path.join(outPath, ".npmignore"), content);
   }

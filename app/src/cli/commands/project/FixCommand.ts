@@ -41,11 +41,38 @@ const AVAILABLE_FIXES = [
   "setnewestminengineversion",
 ];
 
+/**
+ * Per-fix metadata for pro-grade discoverability.
+ *
+ * `safety` ratings:
+ *  - `safe`         — Affects metadata only; no JSON content lost; no functional change to gameplay.
+ *  - `idempotent`   — Re-running produces no further change once applied. Safe to script.
+ *  - `destructive`  — Modifies UUIDs, file contents, or other identifiers in ways that may break
+ *                     downstream references (saved worlds, deployed packs, dependent packs).
+ *
+ * `reversible`: whether the fix can be reverted by re-running another fix or via git only.
+ */
 const FIX_DESCRIPTIONS: Record<string, string> = {
   latestbetascriptversion: "Update @minecraft script module dependencies to the latest beta versions",
   randomizealluids: "Regenerate all UUIDs in manifest files (use when cloning projects to avoid conflicts)",
   setnewestformatversions: "Update format_version fields across all definition files to the newest supported version",
   setnewestminengineversion: "Update min_engine_version in manifests to the newest supported version",
+};
+
+const FIX_METADATA: Record<string, { safety: "safe" | "idempotent" | "destructive"; reversible: string }> = {
+  latestbetascriptversion: { safety: "idempotent", reversible: "Pin a specific version in package.json to revert." },
+  randomizealluids: {
+    safety: "destructive",
+    reversible: "Not reversible by another fix. Use git to recover. Will break existing world references to this pack.",
+  },
+  setnewestformatversions: {
+    safety: "idempotent",
+    reversible: "Edit each file's format_version manually to the prior value, or revert via git.",
+  },
+  setnewestminengineversion: {
+    safety: "idempotent",
+    reversible: "Edit manifest min_engine_version manually to the prior value, or revert via git.",
+  },
 };
 
 export class FixCommand extends CommandBase {
@@ -71,13 +98,59 @@ export class FixCommand extends CommandBase {
   };
 
   configure(cmd: Command): void {
-    // Arguments are configured via metadata.arguments
+    // --list adds a discovery affordance for CI: prints all available fixes
+    // with their descriptions, safety classifications, and reversibility hints.
+    cmd.option("--list", "List all available fixes with safety/reversibility metadata, then exit.");
+
+    cmd.addHelpText(
+      "after",
+      "\nExamples:\n" +
+        "  $ mct fix randomizealluids -i ./myproj                # Re-randomize manifest UUIDs (after cloning a project)\n" +
+        "  $ mct fix setnewestformatversions -i ./myproj         # Bump format_version fields to the newest supported\n" +
+        "  $ mct fix setnewestminengineversion -i ./myproj       # Bump min_engine_version in manifests\n" +
+        "  $ mct fix latestbetascriptversion -i ./myproj         # Pin @minecraft script modules to latest beta\n" +
+        "  $ mct fix randomizealluids -i ./myproj -n             # Dry-run: report what would change, write nothing\n" +
+        "  $ mct fix randomizealluids -i ./myproj --json         # Machine-readable result for CI\n" +
+        "  $ mct fix --list                                      # Discover available fixes (and which are reversible)\n" +
+        "\nTip: combine with `--quiet --json` in CI to suppress chatter and parse the result.\n" +
+        "Tip: most fixes edit files in place — commit/stash before running them.\n"
+    );
   }
 
   async execute(context: ICommandContext): Promise<void> {
     this.logStart(context);
 
     const fixName = context.subCommand;
+
+    // --list / `mct fix list` discovery path. Honours --json for CI.
+    const wantsList = fixName === "list" || Boolean(context.commandOptions?.list);
+    if (wantsList) {
+      const fixes = AVAILABLE_FIXES.map((id) => ({
+        id,
+        description: FIX_DESCRIPTIONS[id],
+        safety: FIX_METADATA[id]?.safety ?? "unknown",
+        reversible: FIX_METADATA[id]?.reversible ?? "Unknown — review the source before running.",
+      }));
+      if (context.json) {
+        context.log.data(
+          JSON.stringify({
+            schemaVersion: "1.0.0",
+            command: "fix",
+            fixes,
+          })
+        );
+      } else {
+        context.log.info("Available fixes:");
+        for (const f of fixes) {
+          context.log.info(`  ${f.id}  [${f.safety}]`);
+          context.log.info(`    ${f.description}`);
+          context.log.info(`    Reversibility: ${f.reversible}`);
+          context.log.info("");
+        }
+      }
+      this.logComplete(context);
+      return;
+    }
 
     if (!fixName) {
       context.log.error(

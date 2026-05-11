@@ -49,8 +49,9 @@ import Log from "../../../core/Log";
 import "./BlockTypeOverviewPanel.css";
 import IProjectTheme from "../../types/IProjectTheme";
 import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../../app/CreatorToolsHost";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
-interface IBlockTypeOverviewPanelProps {
+interface IBlockTypeOverviewPanelProps extends WithLocalizationProps {
   blockType: BlockTypeDefinition;
   creatorTools: CreatorTools;
   project: Project;
@@ -86,7 +87,7 @@ interface IBlockTypeOverviewPanelState {
   expectedTextureIds?: string[]; // Debug: texture IDs expected from blocks.json
 }
 
-export default class BlockTypeOverviewPanel extends Component<
+class BlockTypeOverviewPanel extends Component<
   IBlockTypeOverviewPanelProps,
   IBlockTypeOverviewPanelState
 > {
@@ -367,7 +368,7 @@ export default class BlockTypeOverviewPanel extends Component<
 
   _renderComponentList(components: IComponentSummary[]) {
     if (components.length === 0) {
-      return <div className="btop-emptyMessage">No components defined yet. Components control how your block works — like how it looks, how slippery it is, or how bright it glows. Use the Components tab to add them.</div>;
+      return <div className="btop-emptyMessage">{this.props.intl.formatMessage({ id: "project_editor.block_overview.no_components" })}</div>;
     }
 
     return (
@@ -483,30 +484,30 @@ export default class BlockTypeOverviewPanel extends Component<
             <div className="btop-blockId">{blockId}</div>
             {geometryId && (
               <div className="btop-blockGeometry">
-                <span className="btop-detailLabel">Geometry:</span> {geometryId}
+                <span className="btop-detailLabel">{this.props.intl.formatMessage({ id: "project_editor.block_overview.geometry_label" })}</span> {geometryId}
               </div>
             )}
             {isSimpleBlock && expectedTextures && expectedTextures.length > 0 && (
               <div className="btop-blockGeometry">
-                <span className="btop-detailLabel">Expected textures:</span> {expectedTextures.join(", ")}
+                <span className="btop-detailLabel">{this.props.intl.formatMessage({ id: "project_editor.block_overview.textures_label" })}</span> {expectedTextures.join(", ")}
               </div>
             )}
             {isSimpleBlock && (!expectedTextures || expectedTextures.length === 0) && (
               <div className="btop-blockGeometry">
-                <span className="btop-detailLabel">Unit cube:</span> No texture IDs in blocks.json
+                <span className="btop-detailLabel">{this.props.intl.formatMessage({ id: "project_editor.block_overview.unit_cube_label" })}</span> {this.props.intl.formatMessage({ id: "project_editor.block_overview.no_textures" })}
               </div>
             )}
             <div className="btop-blockStats">
               <span className="btop-stat">
-                {this.state.stateCount} state{this.state.stateCount !== 1 ? "s" : ""}
+                {this.props.intl.formatMessage({ id: "project_editor.block_overview.state_count_stat" }, { count: this.state.stateCount })}
               </span>
               <span className="btop-statSep">•</span>
               <span className="btop-stat">
-                {this.state.baseComponents.length} component{this.state.baseComponents.length !== 1 ? "s" : ""}
+                {this.props.intl.formatMessage({ id: "project_editor.block_overview.component_count_stat" }, { count: this.state.baseComponents.length })}
               </span>
               <span className="btop-statSep">•</span>
               <span className="btop-stat">
-                {this.state.permutations.length} permutation{this.state.permutations.length !== 1 ? "s" : ""}
+                {this.props.intl.formatMessage({ id: "project_editor.block_overview.permutation_count_stat" }, { count: this.state.permutations.length })}
               </span>
             </div>
           </div>
@@ -517,34 +518,34 @@ export default class BlockTypeOverviewPanel extends Component<
     return (
       <div className={"btop-outer" + (CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? " btop-outer-dark" : " btop-outer-light")}>
         <div className="btop-previewSection">
-          <EditorContentPanel theme={this.props.theme} variant="raised" header="Block Preview">
+          <EditorContentPanel theme={this.props.theme} variant="raised" header={this.props.intl.formatMessage({ id: "project_editor.block_overview.block_preview" })}>
             <div className="btop-blockViewer">{blockPreviewContent}</div>
-            <div className="btop-modelHint">Drag to rotate · Scroll to zoom</div>
+            <div className="btop-modelHint">{this.props.intl.formatMessage({ id: "project_editor.block_overview.drag_hint" })}</div>
           </EditorContentPanel>
         </div>
         <div className="btop-detailsSection">
-          <EditorContentPanel theme={this.props.theme} variant="raised" header="Block Configuration">
+          <EditorContentPanel theme={this.props.theme} variant="raised" header={this.props.intl.formatMessage({ id: "project_editor.block_overview.block_config" })}>
             <div className="btop-detailsScroll">
               {/* States summary */}
               <div className="btop-sectionGroup">
                 <div className="btop-groupHeader" onClick={this._handleStatesClick} onKeyDown={(e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); this._handleStatesClick(); } }} role="button" tabIndex={0}>
-                  <span className="btop-groupName">States ({this.state.stateCount})</span>
-                  <span className="btop-groupLink">Edit</span>
+                  <span className="btop-groupName">{this.props.intl.formatMessage({ id: "project_editor.block_overview.states_count" }, { count: this.state.stateCount })}</span>
+                  <span className="btop-groupLink">{this.props.intl.formatMessage({ id: "common.edit" })}</span>
                 </div>
                 {this.state.stateCount > 0 ? (
                   <div className="btop-stateInfo">
-                    This block has {this.state.stateCount} state{this.state.stateCount !== 1 ? "s" : ""} defined.
+                    {this.props.intl.formatMessage({ id: "project_editor.block_overview.states_info" }, { count: this.state.stateCount })}
                   </div>
                 ) : (
-                  <div className="btop-emptyMessage">No states defined. States let your block change — like a door that opens and closes, or a lamp that turns on and off. Most simple blocks don't need states.</div>
+                  <div className="btop-emptyMessage">{this.props.intl.formatMessage({ id: "project_editor.block_overview.no_states" })}</div>
                 )}
               </div>
 
               {/* Base Components */}
               <div className="btop-sectionGroup">
                 <div className="btop-groupHeader" onClick={this._handleBaseClick} onKeyDown={(e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); this._handleBaseClick(); } }} role="button" tabIndex={0}>
-                  <span className="btop-groupName">Base Components ({this.state.baseComponents.length})</span>
-                  <span className="btop-groupLink">Edit</span>
+                  <span className="btop-groupName">{this.props.intl.formatMessage({ id: "project_editor.block_overview.base_components_count" }, { count: this.state.baseComponents.length })}</span>
+                  <span className="btop-groupLink">{this.props.intl.formatMessage({ id: "common.edit" })}</span>
                 </div>
                 {this._renderComponentList(this.state.baseComponents)}
               </div>
@@ -553,8 +554,8 @@ export default class BlockTypeOverviewPanel extends Component<
               {this.state.permutations.length > 0 && (
                 <div className="btop-sectionGroup">
                   <div className="btop-groupHeader" onClick={this._handlePermutationsClick} onKeyDown={(e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); this._handlePermutationsClick(); } }} role="button" tabIndex={0}>
-                    <span className="btop-groupName">Permutations ({this.state.permutations.length})</span>
-                    <span className="btop-groupLink">Edit</span>
+                    <span className="btop-groupName">{this.props.intl.formatMessage({ id: "project_editor.block_overview.permutations_count" }, { count: this.state.permutations.length })}</span>
+                    <span className="btop-groupLink">{this.props.intl.formatMessage({ id: "common.edit" })}</span>
                   </div>
                   {this.state.permutations.map((perm) => this._renderPermutation(perm))}
                 </div>
@@ -566,3 +567,5 @@ export default class BlockTypeOverviewPanel extends Component<
     );
   }
 }
+
+export default withLocalization(BlockTypeOverviewPanel);

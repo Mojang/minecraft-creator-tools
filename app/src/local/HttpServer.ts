@@ -4354,7 +4354,7 @@ export default class HttpServer {
     <script defer="true" src="/app/web.js"></script>
     </head>
       <body>
-        <div id="root"></div>
+        <div id="root" translate="no" class="notranslate"></div>
       </body>
     </html>`;
   }

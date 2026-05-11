@@ -14,6 +14,22 @@ import * as fs from "fs";
 import { chunksToLinesAsync } from "@rauschma/stringio";
 import Log from "../core/Log";
 import TestPaths, { ITestEnvironment } from "./TestPaths";
+import { applyTestVersionPin } from "./TestVersionPin";
+
+// Pin the "current Minecraft version" before any spawned CLI subprocess starts,
+// so its environment inherits the pin and validators emit deterministic
+// version-bearing messages. See TestVersionPin.ts for rationale.
+applyTestVersionPin();
+
+// Auto-accept the Minecraft EULA for spawned CLI subprocesses in tests.
+// `mct create`, `mct add`, and `mct dedicatedserve` gate on EULA acceptance and
+// will exit with a non-zero code otherwise. Test environments (especially CI)
+// don't have an interactively-accepted EULA on disk, so we set the documented
+// non-interactive opt-in env var here. Spawned subprocesses inherit process.env
+// automatically, so this propagates without per-spawn plumbing.
+if (typeof process !== "undefined" && process.env && !process.env.MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA) {
+  process.env.MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA = "true";
+}
 
 export let creatorTools: CreatorTools | undefined = undefined;
 export let scenariosFolder: IFolder | undefined = undefined;

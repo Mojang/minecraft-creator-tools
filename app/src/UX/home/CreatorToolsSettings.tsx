@@ -5,8 +5,9 @@ import CreatorToolsSettingsPanel from "./CreatorToolsSettingsPanel";
 import IPersistable from "../types/IPersistable";
 import { getThemeColors } from "../hooks/theme/useThemeColors";
 import IProjectTheme from "../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
-interface ICreatorToolsSettingsProps extends IAppProps {
+interface ICreatorToolsSettingsProps extends IAppProps, WithLocalizationProps {
   heightOffset: number;
   theme: IProjectTheme;
   setActivePersistable?: (persistObject: IPersistable) => void;
@@ -15,7 +16,7 @@ interface ICreatorToolsSettingsProps extends IAppProps {
 
 interface ICreatorToolsSettingsState {}
 
-export default class CreatorToolsSettings extends Component<ICreatorToolsSettingsProps, ICreatorToolsSettingsState> {
+class CreatorToolsSettings extends Component<ICreatorToolsSettingsProps, ICreatorToolsSettingsState> {
   private _activeEditorPersistable?: IPersistable;
 
   constructor(props: ICreatorToolsSettingsProps) {
@@ -64,7 +65,7 @@ export default class CreatorToolsSettings extends Component<ICreatorToolsSetting
             color: colors.foreground1,
           }}
         >
-          Creator Tools Settings
+          {this.props.intl.formatMessage({ id: "settings.header" })}
         </h2>
         <div
           className="cs-panelArea"
@@ -84,3 +85,5 @@ export default class CreatorToolsSettings extends Component<ICreatorToolsSetting
     );
   }
 }
+
+export default withLocalization(CreatorToolsSettings);

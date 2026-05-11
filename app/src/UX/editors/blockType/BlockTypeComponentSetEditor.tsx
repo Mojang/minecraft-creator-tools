@@ -29,6 +29,8 @@ import IManagedComponent from "../../../minecraft/IManagedComponent";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
 import { getComponentDescription } from "../../../minecraft/ComponentDescriptions";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
+import { IntlShape } from "react-intl";
 
 export enum BlockComponentCategory {
   geometry = 0,
@@ -96,28 +98,28 @@ function getBlockComponentCategory(componentId: string): BlockComponentCategory 
 }
 
 // Get category description
-function getBlockComponentCategoryDescription(category: BlockComponentCategory): string {
+function getBlockComponentCategoryDescription(category: BlockComponentCategory, intl: IntlShape): string {
   switch (category) {
     case BlockComponentCategory.geometry:
-      return "Geometry";
+      return intl.formatMessage({ id: "project_editor.block_comp.category_geometry" });
     case BlockComponentCategory.material:
-      return "Materials";
+      return intl.formatMessage({ id: "project_editor.block_comp.category_materials" });
     case BlockComponentCategory.light:
-      return "Lighting";
+      return intl.formatMessage({ id: "project_editor.block_comp.category_lighting" });
     case BlockComponentCategory.physics:
-      return "Physics";
+      return intl.formatMessage({ id: "project_editor.block_comp.category_physics" });
     case BlockComponentCategory.destruction:
-      return "Destruction";
+      return intl.formatMessage({ id: "project_editor.block_comp.category_destruction" });
     case BlockComponentCategory.interaction:
       return "Interaction";
     case BlockComponentCategory.redstone:
-      return "Redstone";
+      return intl.formatMessage({ id: "project_editor.block_comp.category_redstone" });
     case BlockComponentCategory.misc:
       return "Other";
   }
 }
 
-interface IBlockTypeComponentSetEditorProps {
+interface IBlockTypeComponentSetEditorProps extends WithLocalizationProps {
   componentSet: IManagedComponentSetItem;
   isVisualsMode: boolean;
   permutation?: ManagedPermutation;
@@ -144,7 +146,7 @@ export enum BlockTypeComponentEditorDialog {
   addComponent = 1,
 }
 
-export default class BlockTypeComponentSetEditor extends Component<
+class BlockTypeComponentSetEditor extends Component<
   IBlockTypeComponentSetEditorProps,
   IBlockTypeComponentSetEditorState
 > {
@@ -488,7 +490,7 @@ export default class BlockTypeComponentSetEditor extends Component<
     if (this.state.dialogMode === BlockTypeComponentEditorDialog.addComponent) {
       return (
         <Dialog open={true} className="bcose-addComponentDialog" key="bcose-addComponentOuter">
-          <DialogTitle>Add block type component</DialogTitle>
+          <DialogTitle>{this.props.intl.formatMessage({ id: "project_editor.block_comp.add_dialog_title" })}</DialogTitle>
           <DialogContent>
             <BlockTypeAddComponent
               onNewComponentSelected={this.setSelectedNewComponentId}
@@ -526,7 +528,7 @@ export default class BlockTypeComponentSetEditor extends Component<
               componentId="minecraft:base_properties"
               componentData={{}}
               isSelected={isSelected}
-              title="Base Properties"
+              title={this.props.intl.formatMessage({ id: "project_editor.block_comp.base_properties" })}
             />
           ),
         });
@@ -591,7 +593,7 @@ export default class BlockTypeComponentSetEditor extends Component<
 
         // Add category header if this is a new category
         if (!categoriesDisplayed[attribCategory]) {
-          const attribCategoryDescrip = getBlockComponentCategoryDescription(attribCategory);
+          const attribCategoryDescrip = getBlockComponentCategoryDescription(attribCategory, this.props.intl);
           categoriesDisplayed[attribCategory] = true;
           componentList.push({
             key: "attribCat" + attribCategory,
@@ -633,7 +635,7 @@ export default class BlockTypeComponentSetEditor extends Component<
 
           // Add component header with large icon
           const activeColor = getBlockComponentColor(component.id);
-          const attribCategoryDesc = getBlockComponentCategoryDescription(attribCategory);
+          const attribCategoryDesc = getBlockComponentCategoryDescription(attribCategory, this.props.intl);
 
           componentForms.push(
             <div
@@ -731,7 +733,7 @@ export default class BlockTypeComponentSetEditor extends Component<
             <div className="bcose-componentArea">
               <div className="bcose-titleArea">{title}</div>
               <div className="bcose-componentToolBarArea">
-                <Stack direction="row" spacing={1} aria-label="Block type component actions">
+                <Stack direction="row" spacing={1} aria-label={this.props.intl.formatMessage({ id: "project_editor.block_comp.aria_actions" })}>
                   <Button
                     size="small"
                     title="Add component"
@@ -755,7 +757,7 @@ export default class BlockTypeComponentSetEditor extends Component<
             >
               {componentList.length === 0 ? (
                 <div style={{ padding: "16px", opacity: 0.7, fontStyle: "italic" }}>
-                  No components added yet. Components define how your block looks and works. Click the + button to add one — try starting with Geometry or Material.
+                  {this.props.intl.formatMessage({ id: "project_editor.block_comp.empty_state" })}
                 </div>
               ) : (
                 <McSelectableList
@@ -784,3 +786,5 @@ export default class BlockTypeComponentSetEditor extends Component<
     }
   }
 }
+
+export default withLocalization(BlockTypeComponentSetEditor);

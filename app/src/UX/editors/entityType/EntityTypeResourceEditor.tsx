@@ -8,7 +8,9 @@ import IProperty from "../../../dataform/IProperty";
 import EntityTypeResourceDefinition from "../../../minecraft/EntityTypeResourceDefinition";
 import ProjectItem from "../../../app/ProjectItem";
 import RenderControllerSetDefinition from "../../../minecraft/RenderControllerSetDefinition";
-import RenderControllerSetEditor, { RenderControllerSetEditorFocus } from "../renderController/RenderControllerSetEditor";
+import RenderControllerSetEditor, {
+  RenderControllerSetEditorFocus,
+} from "../renderController/RenderControllerSetEditor";
 import { ProjectItemType } from "../../../app/IProjectItemData";
 import MinecraftDefinitions from "../../../minecraft/MinecraftDefinitions";
 import IPersistable from "../../types/IPersistable";
@@ -31,9 +33,11 @@ import { LazyModelViewer } from "../../appShell/LazyComponents";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
 import { ProjectEditPreference } from "../../../app/IProjectData";
+import WebUtilities from "../../utils/WebUtilities";
 
 import IField from "../../../dataform/IField";
 import StorageUtilities from "../../../storage/StorageUtilities";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
 export enum EntityTypeResourceEditorMode {
   preview = 0,
@@ -44,7 +48,7 @@ export enum EntityTypeResourceEditorMode {
   audio = 5,
 }
 
-interface IEntityTypeResourceEditorProps extends IFileProps {
+interface IEntityTypeResourceEditorProps extends IFileProps, WithLocalizationProps {
   heightOffset: number;
   readOnly: boolean;
   displayHeader?: boolean;
@@ -65,10 +69,7 @@ interface IEntityTypeResourceEditorState {
   loadTimedOut: boolean;
 }
 
-export default class EntityTypeResourceEditor extends Component<
-  IEntityTypeResourceEditorProps,
-  IEntityTypeResourceEditorState
-> {
+class EntityTypeResourceEditor extends Component<IEntityTypeResourceEditorProps, IEntityTypeResourceEditorState> {
   private _lastFileEdited?: IFile;
   private _childPersistables: IPersistable[];
   private _loadingTimeout: ReturnType<typeof setTimeout> | undefined;
@@ -333,7 +334,7 @@ export default class EntityTypeResourceEditor extends Component<
       if (this.state && this.state.loadTimedOut) {
         return (
           <div className="etre-loading">
-            <div>Unable to load entity resource data.</div>
+            <div>{this.props.intl.formatMessage({ id: "project_editor.entity_res.loading_error" })}</div>
             <button
               className="etre-retry-button"
               onClick={() => {
@@ -358,7 +359,7 @@ export default class EntityTypeResourceEditor extends Component<
       this.props.setActivePersistable(this);
     }
 
-    let isButtonCompact = false;
+    let isButtonCompact = WebUtilities.getWidth() <= 600;
 
     const resourceDefinition = this.state.fileToEdit.manager as EntityTypeResourceDefinition;
     const def = resourceDefinition.dataWrapper;
@@ -367,7 +368,7 @@ export default class EntityTypeResourceEditor extends Component<
       if (this.state.loadTimedOut) {
         return (
           <div className="etre-loading">
-            <div>Unable to load definition data.</div>
+            <div>{this.props.intl.formatMessage({ id: "project_editor.entity_res.loading_def_error" })}</div>
             <button
               className="etre-retry-button"
               onClick={() => {
@@ -418,7 +419,7 @@ export default class EntityTypeResourceEditor extends Component<
             color: headerColors.foreground2,
           }}
         >
-          Entity Type Visuals and Audio
+          {this.props.intl.formatMessage({ id: "project_editor.entity_res.header" })}
         </div>
       );
     }
@@ -506,7 +507,9 @@ export default class EntityTypeResourceEditor extends Component<
             <div className="etre-empty-state-icon">
               <FontAwesomeIcon icon={faEye} className="fa-2x" />
             </div>
-            <div className="etre-empty-state-title">No 3D Preview Available</div>
+            <div className="etre-empty-state-title">
+              {this.props.intl.formatMessage({ id: "project_editor.entity_res.no_preview_title" })}
+            </div>
             <div className="etre-empty-state-message">
               This entity does not have associated geometry that can be previewed. Add geometry references to enable 3D
               preview.
@@ -558,17 +561,27 @@ export default class EntityTypeResourceEditor extends Component<
         <div className="etre-mainArea">
           {this.props.project.effectiveEditPreference !== ProjectEditPreference.summarized && (
             <div className="etre-toolBarArea">
-              <Stack direction="row" spacing={0.5} aria-label="Actions">
-                <Button onClick={this._setPreviewMode} title="Preview — See how your mob looks in 3D">
+              <Stack
+                direction="row"
+                spacing={0.5}
+                aria-label={this.props.intl.formatMessage({ id: "project_editor.entity_res.aria_actions" })}
+              >
+                <Button
+                  onClick={this._setPreviewMode}
+                  title={this.props.intl.formatMessage({ id: "project_editor.entity_res.tooltip_preview" })}
+                >
                   <CustomTabLabel
                     icon={<FontAwesomeIcon icon={faEye} className="fa-lg" />}
-                    text={"Preview"}
+                    text={this.props.intl.formatMessage({ id: "project_editor.entity_res.tab_preview" })}
                     isCompact={isButtonCompact}
                     isSelected={this.state.mode === EntityTypeResourceEditorMode.preview}
                     theme={this.props.theme}
                   />
                 </Button>
-                <Button onClick={this._setTexturesMode} title="Textures — Manage mob skin textures">
+                <Button
+                  onClick={this._setTexturesMode}
+                  title={this.props.intl.formatMessage({ id: "project_editor.entity_res.tooltip_textures" })}
+                >
                   <CustomTabLabel
                     icon={<FontAwesomeIcon icon={faPaintBrush} className="fa-lg" />}
                     text={"Textures"}
@@ -577,7 +590,10 @@ export default class EntityTypeResourceEditor extends Component<
                     theme={this.props.theme}
                   />
                 </Button>
-                <Button onClick={this._setGeometryMode} title="Geometry — Edit mob 3D models">
+                <Button
+                  onClick={this._setGeometryMode}
+                  title={this.props.intl.formatMessage({ id: "project_editor.entity_res.tooltip_geometry" })}
+                >
                   <CustomTabLabel
                     icon={<FontAwesomeIcon icon={faCube} className="fa-lg" />}
                     text={"Geometry"}
@@ -586,7 +602,10 @@ export default class EntityTypeResourceEditor extends Component<
                     theme={this.props.theme}
                   />
                 </Button>
-                <Button onClick={this._setMaterialsMode} title="Materials — Configure rendering materials">
+                <Button
+                  onClick={this._setMaterialsMode}
+                  title={this.props.intl.formatMessage({ id: "project_editor.entity_res.tooltip_materials" })}
+                >
                   <CustomTabLabel
                     icon={<FontAwesomeIcon icon={faSliders} className="fa-lg" />}
                     text={"Materials"}
@@ -595,7 +614,10 @@ export default class EntityTypeResourceEditor extends Component<
                     theme={this.props.theme}
                   />
                 </Button>
-                <Button onClick={this._setAnimationsMode} title="Animations — Manage mob movement animations">
+                <Button
+                  onClick={this._setAnimationsMode}
+                  title={this.props.intl.formatMessage({ id: "project_editor.entity_res.tooltip_animations" })}
+                >
                   <CustomTabLabel
                     icon={<FontAwesomeIcon icon={faPersonWalkingArrowLoopLeft} className="fa-lg" />}
                     text={"Animations"}
@@ -616,3 +638,5 @@ export default class EntityTypeResourceEditor extends Component<
     );
   }
 }
+
+export default withLocalization(EntityTypeResourceEditor);

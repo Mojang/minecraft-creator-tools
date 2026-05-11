@@ -44,7 +44,8 @@ export class AutotestCommand extends CommandBase implements ICommand {
     if (!localEnv.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula) {
       log.error(
         "To run auto-tests, you must first accept the Minecraft End User License Agreement.\n" +
-          "Run 'mct eula' to accept it, or set MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA=true"
+          "  Interactive:    mct eula\n" +
+          "  Non-interactive: mct eula --accept   (or set MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA=true)"
       );
       context.setExitCode(ErrorCodes.INIT_ERROR);
       return;

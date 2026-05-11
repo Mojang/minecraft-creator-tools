@@ -103,6 +103,24 @@ export class SetServerPropsCommand extends CommandBase implements ICommand {
       motd = "(unspecified; used for display purposes only)";
     }
 
+    if (context.json) {
+      // CI / scripting friendly: emit current properties as structured JSON
+      // with the now-standard schemaVersion + command discriminator.
+      log.data(
+        JSON.stringify({
+          schemaVersion: "1.0.0",
+          command: "setserverprops",
+          properties: {
+            domainName: localEnv.serverDomainName ?? null,
+            port: localEnv.serverHostPort ?? null,
+            title: localEnv.serverTitle ?? null,
+            messageOfTheDay: localEnv.serverMessageOfTheDay ?? null,
+          },
+        })
+      );
+      return;
+    }
+
     log.info("\nServer Properties:");
     log.info("  Domain name: " + domainName);
     log.info("  Port: " + port);

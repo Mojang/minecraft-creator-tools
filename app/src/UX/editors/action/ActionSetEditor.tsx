@@ -36,8 +36,9 @@ import DataFormUtilities from "../../../dataform/DataFormUtilities";
 import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../../app/CreatorToolsHost";
 import { getMinecraftBlocklyConfig } from "../../blockly/blocklyMinecraftTheme";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
-interface IActionSetEditorProps {
+interface IActionSetEditorProps extends WithLocalizationProps {
   heightOffset: number;
   readOnly: boolean;
   displayTypeDropdown?: boolean;
@@ -65,7 +66,7 @@ const DEFAULT_BLOCK_Y_SPACING = 240;
 
 export const ActionSetTargetTypeStrings = ["General", "Script"];
 
-export default class ActionSetEditor extends Component<IActionSetEditorProps, IActionSetEditorState> {
+class ActionSetEditor extends Component<IActionSetEditorProps, IActionSetEditorState> {
   private _lastFileEdited?: IFile;
   private static blocklyCatalog: IBlocklyCatalog;
   private static catalogLoaded: boolean = false;
@@ -187,8 +188,15 @@ export default class ActionSetEditor extends Component<IActionSetEditorProps, IA
     return mainActionGroupId;
   }
 
-  async getBlockFromForm(form: IFormDefinition, isChainable: boolean, isContainer?: boolean) {
-    if (!form.id) {
+  async getBlockFromForm(form: IFormDefinition, isChainable: boolean, isContainer?: boolean, blockTypeId?: string) {
+    // blockTypeId (when provided) is the canonical action id derived from the
+    // form's filename (e.g. "set_entity_property"). Some upstream form files
+    // have a non-canonical `id` field (e.g. set_entity_property.form.json
+    // currently ships with id "Set Entity Property"), so prefer blockTypeId
+    // for both the Blockly block type and the event-verb style lookup.
+    const effectiveId = blockTypeId || form.id;
+
+    if (!effectiveId) {
       return;
     }
 
@@ -210,12 +218,12 @@ export default class ActionSetEditor extends Component<IActionSetEditorProps, IA
 
     // Entity event verb-specific style overrides
     const eventVerbIds = ["add_component_group", "remove_component_group", "set_property", "set_entity_property"];
-    if (form.id && eventVerbIds.includes(form.id)) {
+    if (eventVerbIds.includes(effectiveId)) {
       blockStyle = "event_style";
     }
 
     const blockCore: IBlocklyBlockDefinition = {
-      type: form.id,
+      type: effectiveId,
       tooltip: form.description ? form.description : form.title,
       style: blockStyle,
       message0: "",
@@ -449,7 +457,7 @@ export default class ActionSetEditor extends Component<IActionSetEditorProps, IA
 
     for (const action of availableActions) {
       if (action.form) {
-        const blockAction = await this.getBlockFromForm(action.form, true);
+        const blockAction = await this.getBlockFromForm(action.form, true, undefined, action.id);
         this.ensureBlockType(action.id, blockAction);
       }
 
@@ -1026,8 +1034,8 @@ export default class ActionSetEditor extends Component<IActionSetEditorProps, IA
       return (
         <div className={"ase-emptyState" + (isDarkLoading ? " ase-emptyState-dark" : "")}>
           <div className="ase-emptyState-icon">&#9881;</div>
-          <div className="ase-emptyState-title">{!actionSet ? "Preparing action set..." : "Loading toolbox..."}</div>
-          <div className="ase-emptyState-hint">The Action Designer is loading block definitions and categories.</div>
+          <div className="ase-emptyState-title">{!actionSet ? this.props.intl.formatMessage({ id: "project_editor.action_set.preparing" }) : this.props.intl.formatMessage({ id: "project_editor.action_set.loading_toolbox" })}</div>
+          <div className="ase-emptyState-hint">{this.props.intl.formatMessage({ id: "project_editor.action_set.loading_hint" })}</div>
         </div>
       );
     }
@@ -1062,18 +1070,18 @@ export default class ActionSetEditor extends Component<IActionSetEditorProps, IA
             </FormControl>
           </div>
           <div className="ase-toolBar">
-            <Stack direction="row" spacing={1} aria-label="Action set actions">
-              <Button key="addComponentGroupAdd" title="Add component group">
+            <Stack direction="row" spacing={1} aria-label={this.props.intl.formatMessage({ id: "project_editor.action_set.actions_aria" })}>
+              <Button key="addComponentGroupAdd" title={this.props.intl.formatMessage({ id: "project_editor.action_set.add_component_group" })}>
                 <CustomLabel
                   isCompact={false}
-                  text="Add component group"
+                  text={this.props.intl.formatMessage({ id: "project_editor.action_set.add_component_group" })}
                   icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
                 />
               </Button>
-              <Button key="addEventAdd" title="Add event">
+              <Button key="addEventAdd" title={this.props.intl.formatMessage({ id: "project_editor.action_set.add_action" })}>
                 <CustomLabel
                   isCompact={false}
-                  text="Add action"
+                  text={this.props.intl.formatMessage({ id: "project_editor.action_set.add_action" })}
                   icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
                 />
               </Button>
@@ -1089,12 +1097,12 @@ export default class ActionSetEditor extends Component<IActionSetEditorProps, IA
     const editorToolbar = (
       <div className={"ase-editorToolbar" + (isDark ? " ase-editorToolbar-dark" : "")}>
         <span className="ase-editorToolbar-title">
-          Action Designer{isMaximized && this.props.title ? " — " + this.props.title : ""}
+          {this.props.intl.formatMessage({ id: "project_editor.action_set.title" })}{isMaximized && this.props.title ? " — " + this.props.title : ""}
         </span>
         <button
           className={"ase-editorToolbar-btn" + (isDark ? " ase-editorToolbar-btn-dark" : "")}
           onClick={this._toggleMaximize}
-          title={isMaximized ? "Restore (Esc)" : "Maximize"}
+          title={isMaximized ? this.props.intl.formatMessage({ id: "project_editor.action_set.restore" }) : this.props.intl.formatMessage({ id: "project_editor.action_set.maximize" })}
         >
           <FontAwesomeIcon icon={isMaximized ? faCompress : faExpand} />
         </button>
@@ -1136,3 +1144,5 @@ export default class ActionSetEditor extends Component<IActionSetEditorProps, IA
     );
   }
 }
+
+export default withLocalization(ActionSetEditor);

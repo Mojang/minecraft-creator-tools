@@ -129,7 +129,9 @@ import {
   faEye,
   faCode,
   faBookOpen,
+  faGraduationCap,
 } from "@fortawesome/free-solid-svg-icons";
+import { faYoutube } from "@fortawesome/free-brands-svg-icons";
 import { getThemeColors } from "../hooks/theme/useThemeColors";
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Stack, TextField } from "@mui/material";
 
@@ -188,6 +190,7 @@ import ProjectEditorUtilities, {
   MaxModeActions,
   ProjectEditorItemAction,
   ProjectItemEditorView,
+  isItemViewShowingTextEditor,
 } from "./ProjectEditorUtilities";
 import { IWorldSettings } from "../../minecraft/IWorldSettings";
 import WorldSettingsArea from "../server/WorldSettingsArea";
@@ -195,7 +198,7 @@ import IFile, { FileUpdateType } from "../../storage/IFile";
 import ProjectActions from "./projectActions/ProjectActions";
 import ProjectInfoSet from "../../info/ProjectInfoSet";
 import { IAnnotatedValue } from "../../core/AnnotatedValue";
-import { ProjectRole } from "../../app/IProjectData";
+import { ProjectEditPreference, ProjectRole } from "../../app/IProjectData";
 import ProjectUtilities from "../../app/ProjectUtilities";
 import Convert from "../io/Convert";
 import IConversionSettings from "../../core/IConversionSettings";
@@ -217,6 +220,7 @@ import QuickOpenDialog from "../appShell/QuickOpenDialog";
 import ProjectSearchDialog from "../appShell/ProjectSearchDialog";
 import KeyboardShortcutHelp from "../appShell/KeyboardShortcutHelp";
 import EditorTabBar from "../appShell/EditorTabBar";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
 const EDITOR_TICK_INTERVAL = 50;
 
@@ -247,7 +251,7 @@ const GRID_ITEMS_ON_RIGHT_COLUMNS = "min(300px, 40vw) 1fr 4px ";
 const GRID_DEFAULT_COLUMNS = "1fr 1fr min(300px, 40vw)";
 const HEIGHT_OFFSET_MINUS = 11;
 
-interface IProjectEditorProps extends IAppProps {
+interface IProjectEditorProps extends IAppProps, WithLocalizationProps {
   onModeChangeRequested?: (mode: AppMode) => void;
   onActiveProjectItemChangeRequested?: (projectItem: ProjectItem, itemView: ProjectItemEditorView) => void;
   project: Project;
@@ -348,7 +352,7 @@ export enum ProjectStatusAreaMode {
   hidden = 10,
 }
 
-export default class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> {
+class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> {
   private _authWindow: Window | null = null;
   private _activeEditorPersistable?: IPersistable;
   private _isMountedInternal = false;
@@ -492,6 +496,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._openKeyboardShortcutHelp = this._openKeyboardShortcutHelp.bind(this);
     this._closeKeyboardShortcutHelp = this._closeKeyboardShortcutHelp.bind(this);
     this._openDocumentation = this._openDocumentation.bind(this);
+    this._openLearningPortal = this._openLearningPortal.bind(this);
+    this._openScriptApiReference = this._openScriptApiReference.bind(this);
+    this._openCreatorYouTube = this._openCreatorYouTube.bind(this);
     this.launchFlatButton = this.launchFlatButton.bind(this);
     this._setActiveEditorPersistable = this._setActiveEditorPersistable.bind(this);
     this._handleDownloadMCWorld = this._handleDownloadMCWorld.bind(this);
@@ -798,7 +805,19 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   _openDocumentation() {
+    window.open("https://learn.microsoft.com/minecraft/creator/documents/mctoolsoverview", "_blank");
+  }
+
+  _openLearningPortal() {
     window.open("https://learn.microsoft.com/minecraft/creator/", "_blank");
+  }
+
+  _openScriptApiReference() {
+    window.open("https://learn.microsoft.com/en-us/minecraft/creator/scriptapi/", "_blank");
+  }
+
+  _openCreatorYouTube() {
+    window.open("https://www.youtube.com/@minecraftcreatorchannel", "_blank");
   }
 
   _closeKeyboardShortcutHelp() {
@@ -1024,7 +1043,11 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         // Use ensureInfoSetGenerated which will use the combined web worker operation
         // when available, processing relations and generating info set in a single
         // worker round-trip for better performance
-        await this.props.project.ensureIndevInfoSetGenerated();
+        try {
+          await this.props.project.ensureIndevInfoSetGenerated();
+        } catch (e) {
+          Log.debug("Info set generation failed: " + e);
+        }
         this._onNotifyNewAllItemSetLoaded();
       }
     } else if (this._asyncLoadAttempts < 5) {
@@ -1537,7 +1560,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
               me._processInputtedEntry((entry as any).fullPath, childEntry);
             });
           });
-        } else if (dtitem.kind === "file") {
+        } else if (dtitem.kind === this.props.intl.formatMessage({ id: "project_editor.view_menu.list_type_file" })) {
           const file = dtitem.getAsFile();
           if (file) {
             let content = undefined;
@@ -2206,15 +2229,24 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       const persistResult = await this.ensurePersistentBrowserStorage();
 
       if (persistResult && this.props.isPersisted) {
-        await this.props.creatorTools.notifyOperationEnded(operId, "Saved '" + projName + "'.");
+        await this.props.creatorTools.notifyOperationEnded(
+          operId,
+          this.props.intl.formatMessage({ id: "project_editor.status.saved" }, { projectName: projName })
+        );
       } else {
         await this.props.creatorTools.notifyOperationEnded(
           operId,
-          "✅ Saved '" + projName + "'. Use Export → Download & Install in Minecraft to keep a permanent copy."
+          this.props.intl.formatMessage(
+            { id: "project_editor.status.saved_with_export_tip" },
+            { projectName: projName }
+          )
         );
       }
     } else {
-      await this.props.creatorTools.notifyOperationEnded(operId, "Saved '" + projName + "'.");
+      await this.props.creatorTools.notifyOperationEnded(
+        operId,
+        this.props.intl.formatMessage({ id: "project_editor.status.saved" }, { projectName: projName })
+      );
     }
   }
 
@@ -2857,7 +2889,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       return;
     }
 
-    let productPhrase = "Minecraft";
+    let productPhrase = this.props.intl.formatMessage({ id: "project_editor.label.minecraft" });
 
     if (this.props.creatorTools.minecraftGameMode === MinecraftGameConnectionMode.localMinecraftPreview) {
       productPhrase = "Minecraft Preview";
@@ -3389,15 +3421,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       data.tag.path !== undefined &&
       data.tag.action !== undefined
     ) {
-      const me = this;
-
-      window.setTimeout(() => {
-        me.handleProjectItemAction(data.tag.path, data.tag.action);
-      }, 1);
+      this.handleProjectItemAction(data.tag.path, data.tag.action);
     }
 
-    e.stopPropagation();
-    e.preventDefault();
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
   }
 
   private async _handleDownloadMCWorldWithPacks(e: SyntheticEvent | undefined, data: any | undefined) {
@@ -3585,13 +3615,16 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
   private async _handleDownloadFlatWorldWithPacks(e: SyntheticEvent | undefined, data: any | undefined) {
     try {
-      await this._ensurePersisted();
-
-      await ProjectEditorUtilities.launchFlatWorldWithPacksDownload(this.props.creatorTools, this.props.project);
-
+      // Record the user's deploy-target choice up front so the toolbar's
+      // active deploy button reflects the selection even if the download
+      // itself fails or is cancelled by the user.
       if (data && data.icon && (data.icon as any).key) {
         this._setNewDeployKey((data.icon as any).key, this._handleDownloadFlatWorldWithPacks, data);
       }
+
+      await this._ensurePersisted();
+
+      await ProjectEditorUtilities.launchFlatWorldWithPacksDownload(this.props.creatorTools, this.props.project);
     } catch (e) {
       await this._handleExportFailure("Download flat world with packs", e);
     }
@@ -3937,11 +3970,11 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           this._handleProjectItemSelected(projectItem, ProjectItemEditorView.validationWithJson);
           break;
         case ProjectEditorItemAction.deleteItem:
-          actionType = "Delete";
+          actionType = this.props.intl.formatMessage({ id: "common.delete" });
           this._handleDialogDoneAndClear(false, ProjectEditorDialog.deleteItem);
           break;
         case ProjectEditorItemAction.renameItem:
-          actionType = "Rename";
+          actionType = this.props.intl.formatMessage({ id: "project_editor.common.rename" });
           this._handleDialogDoneAndClear(false, ProjectEditorDialog.renameItem);
           break;
       }
@@ -4287,7 +4320,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       viewMode = CreatorToolsEditorViewMode.mainFocus;
     }
     if (this.props.project.errorState === ProjectErrorState.projectFolderOrFileDoesNotExist) {
-      let error = "Could not find project data folder. ";
+      let error = this.props.intl.formatMessage({ id: "project_editor.error.project_folder_not_found" });
 
       if (this.props.project.mainDeployFolderPath) {
         error += this.props.project.mainDeployFolderPath;
@@ -4315,9 +4348,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         exportKeys[nextExportKey] = {
           key: nextExportKey,
           icon: <FontAwesomeIcon icon={faLink} key={nextExportKey} className="fa-lg" />,
-          content: "Shareable Link",
+          content: this.props.intl.formatMessage({ id: "project_editor.export_menu.shareable_link" }),
           onClick: this._handleGetShareableLinkClick,
-          title: "Get a shareable link of this project.",
+          title: this.props.intl.formatMessage({ id: "project_editor.export_menu.shareable_link_title" }),
         };
         exportMenu.push(exportKeys[nextExportKey]);
 
@@ -4330,11 +4363,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       exportKeys[nextExportKey] = {
         key: nextExportKey,
         icon: <FontAwesomeIcon icon={faBox} key={nextExportKey} className="fa-lg" />,
-        content: isFocusedMode ? "Download Add-On" : "Add-On File",
+        content: isFocusedMode
+          ? this.props.intl.formatMessage({ id: "project_editor.export_menu.addon_focused" })
+          : this.props.intl.formatMessage({ id: "project_editor.export_menu.addon_full" }),
         onClick: this._handleExportMCAddonClick,
         title: isFocusedMode
-          ? "Download your add-on to use in Minecraft"
-          : "Exports this set of project files as a MCAddon, for use in Minecraft",
+          ? this.props.intl.formatMessage({ id: "project_editor.export_menu.addon_focused_title" })
+          : this.props.intl.formatMessage({ id: "project_editor.export_menu.addon_full_title" }),
       };
       exportMenu.push(exportKeys[nextExportKey]);
 
@@ -4343,9 +4378,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         exportKeys[nextExportKey] = {
           key: nextExportKey,
           icon: <FontAwesomeIcon icon={faComputer} key={nextExportKey} className="fa-lg" />,
-          content: "Export to a folder on this device",
+          content: this.props.intl.formatMessage({ id: "project_editor.export_menu.export_folder" }),
           onClick: this._handleExportToLocalFolderClick,
-          title: "Save directly to a folder on your computer for local editing",
+          title: this.props.intl.formatMessage({ id: "project_editor.export_menu.export_folder_title" }),
         };
         exportMenu.push(exportKeys[nextExportKey]);
       }
@@ -4356,9 +4391,11 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         key: nextExportKey,
         icon: <FontAwesomeIcon icon={faGlobe} key={nextExportKey} className="fa-lg" />,
         onClick: this._handleExportFlatWorldWithPacks,
-        content: isFocusedMode ? "Playable World File" : "Flat world with packs embedded",
+        content: isFocusedMode
+          ? this.props.intl.formatMessage({ id: "project_editor.export_menu.flat_world_focused" })
+          : this.props.intl.formatMessage({ id: "project_editor.export_menu.flat_world_full" }),
         title: isFocusedMode
-          ? "Download a world file you can play and share with friends"
+          ? this.props.intl.formatMessage({ id: "project_editor.export_menu.flat_world_focused_title" })
           : "Get this pack in a sample .mcworld file with packs in this project added",
       };
       exportMenu.push(exportKeys[nextExportKey]);
@@ -4369,8 +4406,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           key: nextExportKey,
           icon: <FontAwesomeIcon icon={faGlobe} key={nextExportKey} className="fa-lg" />,
           onClick: this._handleExportFlatWorldWithPackRefs,
-          content: "Flat world with pack references",
-          title: "Get this pack in a sample .mcworld file with references to this Add-On packs",
+          content: this.props.intl.formatMessage({ id: "project_editor.export_menu.flat_world_refs" }),
+          title: this.props.intl.formatMessage({ id: "project_editor.export_menu.flat_world_refs_title" }),
         };
         exportMenu.push(exportKeys[nextExportKey]);
       }
@@ -4385,11 +4422,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     exportKeys[nextExportKey] = {
       icon: <FontAwesomeIcon icon={faFileArchive} key={nextExportKey} className="fa-lg" />,
       key: nextExportKey,
-      content: isFocusedMode ? "Download Project Backup" : "Project full zip",
+      content: isFocusedMode
+        ? this.props.intl.formatMessage({ id: "project_editor.export_menu.backup_focused" })
+        : this.props.intl.formatMessage({ id: "project_editor.export_menu.backup_full" }),
       onClick: this._handleExportZipClick,
       title: isFocusedMode
-        ? "Download everything as a zip file for backup or sharing"
-        : "Download a .zip file for sharing or uploading",
+        ? this.props.intl.formatMessage({ id: "project_editor.export_menu.backup_focused_title" })
+        : this.props.intl.formatMessage({ id: "project_editor.export_menu.backup_full_title" }),
     };
     exportMenu.push(exportKeys[nextExportKey]);
 
@@ -4403,8 +4442,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         key: nextExportKey,
         icon: <FontAwesomeIcon icon={faFileArchive} key={nextExportKey} className="fa-lg" />,
         onClick: this._handleExportDeploymentZipClick,
-        content: "Deployment folder zip",
-        title: "Download folder for incorporating into Minecraft",
+        content: this.props.intl.formatMessage({ id: "project_editor.export_menu.deployment_zip" }),
+        title: this.props.intl.formatMessage({ id: "project_editor.export_menu.deployment_zip_title" }),
       };
       exportMenu.push(exportKeys[nextExportKey]);
     }
@@ -4452,9 +4491,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         exportKeys[nextExportKey] = {
           key: nextExportKey,
           icon: <FontAwesomeIcon icon={faBox} className="fa-lg" />,
-          content: title + " world",
+          content: this.props.intl.formatMessage({ id: "project_editor.export_menu.world_item" }, { title }),
           onClick: this._handleExportWorld,
-          title: "Download " + title,
+          title: this.props.intl.formatMessage({ id: "project_editor.export_menu.world_item_title" }, { title }),
         };
 
         exportMenu.push(exportKeys[nextExportKey]);
@@ -4464,9 +4503,12 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           exportKeys[nextExportKey] = {
             key: nextExportKey,
             icon: <FontAwesomeIcon icon={faComputer} key={nextExportKey} className="fa-lg" />,
-            content: title + " conversion...",
+            content: this.props.intl.formatMessage({ id: "project_editor.export_menu.world_conversion" }, { title }),
             onClick: this._handleConvertToClick,
-            title: "Convert and export " + title,
+            title: this.props.intl.formatMessage(
+              { id: "project_editor.export_menu.world_conversion_title" },
+              { title }
+            ),
           };
           exportMenu.push(exportKeys[nextExportKey]);
         }
@@ -4475,9 +4517,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         deployKeys[dlsKey] = {
           key: dlsKey + "A",
           icon: <FontAwesomeIcon icon={faBox} key={dlsKey} className="fa-lg" />,
-          content: title + " mcworld",
+          content: this.props.intl.formatMessage({ id: "project_editor.deploy_menu.world_mcworld" }, { title }),
           onClick: this._handleDeployWorldPackClick,
-          title: "Downloads " + title + " in a MCWorld",
+          title: this.props.intl.formatMessage({ id: "project_editor.deploy_menu.world_mcworld_title" }, { title }),
         };
         deployMenu.push(deployKeys[dlsKey]);
 
@@ -4485,9 +4527,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         deployKeys[miKey] = {
           key: miKey + "A",
           icon: <FontAwesomeIcon icon={faBox} key={miKey} className="fa-lg" />,
-          content: title + " and test assets mcworld",
+          content: this.props.intl.formatMessage({ id: "project_editor.deploy_menu.world_test_assets" }, { title }),
           onClick: this._handleDeployWorldAndTestAssetsPackClick,
-          title: "Deploys " + title + " and test assets in a zip",
+          title: this.props.intl.formatMessage({ id: "project_editor.deploy_menu.world_test_assets_title" }, { title }),
         };
         deployMenu.push(deployKeys[miKey]);
 
@@ -4496,9 +4538,15 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           deployKeys[miKeyA] = {
             key: miKeyA,
             icon: <FontAwesomeIcon icon={faBox} key={miKeyA} className="fa-lg" />,
-            content: title + " and test assets to Minecraft",
+            content: this.props.intl.formatMessage(
+              { id: "project_editor.deploy_menu.world_test_assets_local" },
+              { title }
+            ),
             onClick: this._handleDeployWorldAndTestAssetsLocalClick,
-            title: "Deploys " + title + " and test assets in a zip",
+            title: this.props.intl.formatMessage(
+              { id: "project_editor.deploy_menu.world_test_assets_title" },
+              { title }
+            ),
           };
           deployMenu.push(deployKeys[miKeyA]);
         }
@@ -4517,9 +4565,12 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       deployKeys[deployRemoteKey] = {
         key: deployRemoteKey + "A",
         icon: <FontAwesomeIcon icon={faBox} key={deployRemoteKey} className="fa-lg" />,
-        content: "Deploy to " + this.props.creatorTools.remoteServerUrl,
+        content: this.props.intl.formatMessage(
+          { id: "project_editor.deploy_menu.remote_server" },
+          { serverUrl: this.props.creatorTools.remoteServerUrl }
+        ),
         onClick: this._handleDeployToRemoteServerClick,
-        title: "Deploys this to a remote Dev Tools server",
+        title: this.props.intl.formatMessage({ id: "project_editor.deploy_menu.remote_server_title" }),
       };
       deployMenu.push(deployKeys[deployRemoteKey]);
     }
@@ -4530,7 +4581,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       this.props.creatorTools.minecraftGameMode !== MinecraftGameConnectionMode.remoteMinecraft
     ) {
       const deployToMinecraftGame = "deployPacksToMinecraftGame";
-      let productPhrase = "Minecraft";
+      let productPhrase = this.props.intl.formatMessage({ id: "project_editor.label.minecraft" });
 
       if (this.props.creatorTools.minecraftGameMode === MinecraftGameConnectionMode.localMinecraftPreview) {
         productPhrase = "Minecraft Preview";
@@ -4539,7 +4590,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       deployKeys[deployToMinecraftGame] = {
         key: deployToMinecraftGame + "A",
         icon: <FontAwesomeIcon icon={faBox} key={deployToMinecraftGame} className="fa-lg" />,
-        content: "Packs to " + productPhrase,
+        content: this.props.intl.formatMessage(
+          { id: "project_editor.deploy_menu.packs_to_game" },
+          { product: productPhrase }
+        ),
         onClick: this._handleDeployPacksToMinecraftGameClick,
         title: "Deploys packs in this project this to a local Minecraft game",
       };
@@ -4552,7 +4606,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       this.props.creatorTools.minecraftGameMode !== MinecraftGameConnectionMode.remoteMinecraft
     ) {
       const deployToMinecraftGame = "deployPacksAndWorldToMinecraftGame";
-      let productPhrase = "Minecraft";
+      let productPhrase = this.props.intl.formatMessage({ id: "project_editor.label.minecraft" });
 
       if (this.props.creatorTools.minecraftGameMode === MinecraftGameConnectionMode.localMinecraftPreview) {
         productPhrase = "Minecraft Preview";
@@ -4561,7 +4615,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       deployKeys[deployToMinecraftGame] = {
         key: deployToMinecraftGame + "A",
         icon: <FontAwesomeIcon icon={faBox} key={deployToMinecraftGame} className="fa-lg" />,
-        content: "Packs & world to " + productPhrase,
+        content: this.props.intl.formatMessage(
+          { id: "project_editor.deploy_menu.packs_world_to_game" },
+          { product: productPhrase }
+        ),
         onClick: this._handleDeployPacksAndWorldsToMinecraftGameClick,
         title: "Deploys packs, worlds, and a test world in this project this to a local Minecraft game",
       };
@@ -4570,11 +4627,15 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       deployKeys[deployToMinecraftGame] = {
         key: deployToMinecraftGame + "B",
         icon: <FontAwesomeIcon icon={faBox} key={deployToMinecraftGame} className="fa-lg" />,
-        content: "Packs & world to " + productPhrase + " & open",
+        content: this.props.intl.formatMessage(
+          { id: "project_editor.deploy_menu.packs_world_to_game_open" },
+          { product: productPhrase }
+        ),
         onClick: this._handleDeployPacksAndWorldsToMinecraftGameAndOpenClick,
-        title:
-          "Deploys packs, worlds, and a test world in this project this to a local Minecraft game, and then opens it up in " +
-          productPhrase,
+        title: this.props.intl.formatMessage(
+          { id: "project_editor.deploy_menu.packs_world_to_game_open_title" },
+          { product: productPhrase }
+        ),
       };
       deployMenu.push(deployKeys[deployToMinecraftGame]);
     }
@@ -4589,9 +4650,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       deployKeys[deployToDedicatedServer] = {
         key: deployToDedicatedServer + "A",
         icon: <FontAwesomeIcon icon={faServer} key={deployToDedicatedServer} className="fa-lg" />,
-        content: "Deploy to Dedicated Server",
+        content: this.props.intl.formatMessage({ id: "project_editor.deploy_menu.dedicated_server" }),
         onClick: this._handleDeployToDedicatedServerClick,
-        title: "Open the Dedicated Server management screen to deploy and test with a local BDS instance",
+        title: this.props.intl.formatMessage({ id: "project_editor.deploy_menu.dedicated_server_title" }),
       };
       deployMenu.push(deployKeys[deployToDedicatedServer]);
     }
@@ -4600,9 +4661,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     deployKeys[deployFolderZip] = {
       key: deployFolderZip + "A",
       icon: <FontAwesomeIcon icon={faBox} key={deployFolderZip} className="fa-lg" />,
-      content: "Save deploy folder as zip",
+      content: this.props.intl.formatMessage({ id: "project_editor.deploy_menu.deploy_folder_zip" }),
       onClick: this._handleDeployAsZipClick,
-      title: "Deploys this as a full zip that can be copied into your Minecraft folder",
+      title: this.props.intl.formatMessage({ id: "project_editor.deploy_menu.deploy_folder_zip_title" }),
     };
     deployMenu.push(deployKeys[deployFolderZip]);
 
@@ -4617,7 +4678,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       icon: (
         <img
           className="pe-menuIcon"
-          alt="Flat world with packs"
+          alt={this.props.intl.formatMessage({ id: "project_editor.deploy_menu.flat_world_packs" })}
           role="presentation"
           key={flatBp}
           src={CreatorToolsHost.contentWebRoot + "res/images/menuicons/grass_path_side.png"}
@@ -4625,7 +4686,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       ),
       onClick: this._handleDownloadFlatWorldWithPacks,
       content: "Flat world with packs",
-      title: "Get this pack in a sample .mcworld file with packs in this project added",
+      title: this.props.intl.formatMessage({ id: "project_editor.common.flat_world_packs_title" }),
     };
     deployMenu.push(deployKeys[flatBp]);
 
@@ -4635,7 +4696,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       icon: (
         <img
           className="pe-menuIcon"
-          alt="Editor project with packs"
+          alt={this.props.intl.formatMessage({ id: "project_editor.deploy_menu.editor_project_packs" })}
           role="presentation"
           key={defaultEditorWorldWithPacks}
           src={CreatorToolsHost.contentWebRoot + "res/images/menuicons/grass_side_carried.png"}
@@ -4643,7 +4704,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       ),
       onClick: this._handleDeployDownloadEditorWorldWithPacks,
       content: "Editor project with packs",
-      title: "Get this pack in a sample .mcproject file",
+      title: this.props.intl.formatMessage({ id: "project_editor.deploy_menu.editor_project_packs_title" }),
     };
     deployMenu.push(deployKeys[defaultEditorWorldWithPacks]);
 
@@ -4658,7 +4719,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       icon: (
         <img
           className="pe-menuIcon"
-          alt="Custom world with packs"
+          alt={this.props.intl.formatMessage({ id: "project_editor.deploy_menu.custom_world_packs" })}
           role="presentation"
           key={defaultWorldWithPacks}
           src={CreatorToolsHost.contentWebRoot + "res/images/menuicons/grass_side_carried.png"}
@@ -4666,7 +4727,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       ),
       onClick: this._handleDeployDownloadWorldWithPacks,
       content: "Custom world with packs",
-      title: "Get a custom pack in a sample .mcworld file, using the sample pack configuration",
+      title: this.props.intl.formatMessage({ id: "project_editor.deploy_menu.custom_world_packs_title" }),
     };
     deployMenu.push(deployKeys[defaultWorldWithPacks]);
 
@@ -4675,8 +4736,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       key: defaultWorldWithPacks + "B",
       icon: <FontAwesomeIcon icon={faEdit} key={configureProjectWorld} className="fa-lg" />,
       onClick: this._handleChangeWorldSettingsClick,
-      content: "Change custom world with pack settings",
-      title: "Change your custom world with pack settings",
+      content: this.props.intl.formatMessage({ id: "project_editor.deploy_menu.change_world_settings" }),
+      title: this.props.intl.formatMessage({ id: "project_editor.deploy_menu.change_world_settings_title" }),
     };
     deployMenu.push(deployKeys[configureProjectWorld]);
 
@@ -4700,8 +4761,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           key: nextExportKey,
           icon: <FontAwesomeIcon icon={faGlobe} className="fa-lg" />,
           onClick: this._handleDownloadMCWorld,
-          content: name + " World", // note this content is critical for matching, see onClick
-          title: "Get the " + name + " .mcworld file",
+          content: this.props.intl.formatMessage({ id: "project_editor.export_menu.world_download" }, { name }), // note this content is critical for matching, see onClick
+          title: this.props.intl.formatMessage({ id: "project_editor.export_menu.world_download_title" }, { name }),
         };
         exportMenu.push(exportKeys[nextExportKey]);
 
@@ -4711,8 +4772,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
             key: nextExportKey,
             icon: <FontAwesomeIcon icon={faGlobe} className="fa-lg" />,
             onClick: this._handleDownloadMCWorldWithPacks,
-            content: name + " World with packs embedded",
-            title: "Get the " + name + " .mcworld file with packs in this project added",
+            content: this.props.intl.formatMessage({ id: "project_editor.export_menu.world_with_packs" }, { name }),
+            title: this.props.intl.formatMessage({ id: "project_editor.export_menu.world_with_packs_title" }, { name }),
           };
           exportMenu.push(exportKeys[nextExportKey]);
 
@@ -4721,8 +4782,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
             key: "downloadBPR|" + pi.name,
             icon: <FontAwesomeIcon icon={faGlobe} className="fa-lg" />,
             onClick: this._handleExportMCWorldWithPackRefs,
-            content: name + " World with pack references",
-            title: "Get the " + name + " .mcworld file with references to this Add-On packs",
+            content: this.props.intl.formatMessage({ id: "project_editor.export_menu.world_with_refs" }, { name }),
+            title: this.props.intl.formatMessage({ id: "project_editor.export_menu.world_with_refs_title" }, { name }),
           };
           exportMenu.push(exportKeys[nextExportKey]);
         }
@@ -4757,10 +4818,15 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         // In view/edit mode with content session, show a Close button on the far right of the toolbar
         // (closeButton is rendered separately from toolbarItems)
         closeButton = (
-          <Stack direction="row" spacing={1} aria-label="Close session" sx={{ minHeight: TOOLBAR_MIN_HEIGHT }}>
+          <Stack
+            direction="row"
+            spacing={1}
+            aria-label={this.props.intl.formatMessage({ id: "project_editor.aria.close_session" })}
+            sx={{ minHeight: TOOLBAR_MIN_HEIGHT }}
+          >
             <Button
               onClick={this._handleCloseViewClick}
-              title="Close session and shut down server"
+              title={this.props.intl.formatMessage({ id: "project_editor.toolbar.close_session_title" })}
               startIcon={
                 <span className="fa-lg">
                   <FontAwesomeIcon icon={faTimes} className="fa-lg" />
@@ -4773,12 +4839,22 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         );
 
         // In edit mode (content session but not read-only), also show Save button
+        if (viewMode === CreatorToolsEditorViewMode.mainFocus) {
+          toolbarItems.push({
+            key: "itemsFocusA",
+            content: isMobile ? undefined : this.props.intl.formatMessage({ id: "project_editor.toolbar.view_items" }),
+            icon: <FontAwesomeIcon icon={faList} className="fa-lg" />,
+            title: this.props.intl.formatMessage({ id: "project_editor.common.items" }),
+            onClick: this._setItemsFocus,
+          });
+        }
+
         if (!this.props.isViewMode) {
           toolbarItems.push({
             icon: <SaveLabel />,
             key: "save",
             onClick: this._handleSaveClick,
-            title: "Save (Ctrl+S)",
+            title: this.props.intl.formatMessage({ id: "project_editor.toolbar.save" }),
           });
         }
       } else {
@@ -4789,14 +4865,24 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           kind: "toggle",
           active: true,
           onClick: this._handleHomeClick,
-          title: "Home/Project List",
+          title: this.props.intl.formatMessage({ id: "project_editor.toolbar.home" }),
         });
+
+        if (viewMode === CreatorToolsEditorViewMode.mainFocus) {
+          toolbarItems.push({
+            key: "itemsFocusA",
+            content: isMobile ? undefined : this.props.intl.formatMessage({ id: "project_editor.toolbar.view_items" }),
+            icon: <FontAwesomeIcon icon={faList} className="fa-lg" />,
+            title: this.props.intl.formatMessage({ id: "project_editor.common.items" }),
+            onClick: this._setItemsFocus,
+          });
+        }
 
         toolbarItems.push({
           icon: <SaveLabel />,
           key: "save",
           onClick: this._handleSaveClick,
-          title: "Save (Ctrl+S)",
+          title: this.props.intl.formatMessage({ id: "project_editor.toolbar.save" }),
         });
       }
 
@@ -4863,7 +4949,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           key: "undo",
           icon: <FontAwesomeIcon icon={faUndo} className="fa-lg" />,
           active: undoMenuItems.length > 0,
-          title: "Undo (Ctrl+Z)",
+          title: this.props.intl.formatMessage({ id: "project_editor.toolbar.undo" }),
           menu: undoMenuItems,
           onMenuOpenChange: this._toggleUndoMenuOpen,
           onClick: this._setToVersion,
@@ -4875,7 +4961,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
             key: "undoMenu",
             onClick: this._toggleUndoMenuOpen,
             active: true,
-            title: "Undo History",
+            title: this.props.intl.formatMessage({ id: "project_editor.toolbar.undo_history" }),
           });
         }
 
@@ -4883,7 +4969,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           key: "redo",
           icon: <FontAwesomeIcon icon={faRedo} className="fa-lg" />,
           active: redoMenuItems.length > 0,
-          title: "Redo (Ctrl+Y)",
+          title: this.props.intl.formatMessage({ id: "project_editor.toolbar.redo" }),
           menu: redoMenuItems,
           onMenuOpenChange: this._toggleRedoMenuOpen,
           onClick: this._setToVersion,
@@ -4895,19 +4981,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
             key: "redoMenu",
             onClick: this._toggleRedoMenuOpen,
             active: true,
-            title: "Redo History",
+            title: this.props.intl.formatMessage({ id: "project_editor.toolbar.redo_history" }),
           });
         }
-      }
-
-      if (viewMode === CreatorToolsEditorViewMode.mainFocus) {
-        toolbarItems.push({
-          key: "itemsFocusA",
-          content: "View Items",
-          icon: <FontAwesomeIcon icon={faSitemap} className="fa-lg" />,
-          title: "Items",
-          onClick: this._setItemsFocus,
-        });
       }
 
       if (CreatorToolsHost.hostType === HostType.electronWeb || CreatorToolsHost.hostType === HostType.vsCodeMainWeb)
@@ -4915,27 +4991,41 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           icon: <OpenInExplorerLabel />,
           key: "openInExplorer",
           onClick: this._openInExplorerClick,
-          title: "Open in Explorer",
+          title: this.props.intl.formatMessage({ id: "project_editor.toolbar.open_in_explorer" }),
         });
 
       const viewMenuItems: any[] = [];
 
-      const listTypeLabel = this.state.displayFileView ? "file" : "item";
+      const listTypeLabel = this.state.displayFileView
+        ? "file"
+        : this.props.intl.formatMessage({ id: "project_editor.view_menu.list_type_item" });
 
       if (!isFullyCompact) {
         viewMenuItems.push({
           key: "itemsOnLeft",
-          content: "Editor/view and " + listTypeLabel + " list on the left",
+          content: this.props.intl.formatMessage(
+            { id: "project_editor.view_menu.items_on_left" },
+            { listType: listTypeLabel }
+          ),
           icon: <FontAwesomeIcon icon={faSquareCaretLeft} className="fa-lg" />,
-          title: "Editor/view and " + listTypeLabel + " list on the left",
+          title: this.props.intl.formatMessage(
+            { id: "project_editor.view_menu.items_on_left" },
+            { listType: listTypeLabel }
+          ),
           onClick: this._setItemsOnLeft,
         });
 
         viewMenuItems.push({
           key: "itemsOnRight",
-          content: "Editor/view and " + listTypeLabel + " list on the right",
+          content: this.props.intl.formatMessage(
+            { id: "project_editor.view_menu.items_on_right" },
+            { listType: listTypeLabel }
+          ),
           icon: <FontAwesomeIcon icon={faSquareCaretRight} className="fa-lg" />,
-          title: "Editor/view and " + listTypeLabel + " list on the right",
+          title: this.props.intl.formatMessage(
+            { id: "project_editor.view_menu.items_on_right" },
+            { listType: listTypeLabel }
+          ),
           onClick: this._setItemsOnRight,
         });
 
@@ -4947,26 +5037,30 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
       viewMenuItems.push({
         key: "mainFocus",
-        content: "Editor/view only",
+        content: this.props.intl.formatMessage({ id: "project_editor.view_menu.editor_only" }),
         icon: <FontAwesomeIcon icon={faWindowMaximize} className="fa-lg" />,
-        title: "Editor/view only",
+        title: this.props.intl.formatMessage({ id: "project_editor.view_menu.editor_only" }),
         onClick: this._setMainFocus,
       });
 
       viewMenuItems.push({
         key: "itemsFocus",
-        content: this.state.displayFileView ? "File list only" : "Item list only",
+        content: this.state.displayFileView
+          ? this.props.intl.formatMessage({ id: "project_editor.view_menu.file_list_only" })
+          : this.props.intl.formatMessage({ id: "project_editor.view_menu.item_list_only" }),
         icon: <FontAwesomeIcon icon={faSitemap} className="fa-lg" />,
-        title: this.state.displayFileView ? "File list only" : "Item list only",
+        title: this.state.displayFileView
+          ? this.props.intl.formatMessage({ id: "project_editor.view_menu.file_list_only" })
+          : this.props.intl.formatMessage({ id: "project_editor.view_menu.item_list_only" }),
         onClick: this._setItemsFocus,
       });
 
       if (Utilities.isPreview) {
         viewMenuItems.push({
           key: "toolboxFocus",
-          content: "Toolbox",
+          content: this.props.intl.formatMessage({ id: "project_editor.view_menu.toolbox" }),
           icon: <FontAwesomeIcon icon={faTools} className="fa-lg" />,
-          title: "Toolbox",
+          title: this.props.intl.formatMessage({ id: "project_editor.view_menu.toolbox" }),
           onClick: this._setToolboxFocus,
         });
       }
@@ -4983,7 +5077,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           key: "viewAsItems",
           content: (this.state.displayFileView ? "    " : " •  ") + "Show list as items",
           icon: <FontAwesomeIcon icon={faList} className="fa-lg" />,
-          title: "Show list as items",
+          title: this.props.intl.formatMessage({ id: "project_editor.view_menu.show_as_items" }),
           onClick: this._viewAsItems,
         });
 
@@ -4991,7 +5085,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           key: "viewAsFiles",
           content: (this.state.displayFileView ? " •  " : "    ") + "Show list as files",
           icon: <FontAwesomeIcon icon={faFolderTree} className="fa-lg" />,
-          title: "Show list as files",
+          title: this.props.intl.formatMessage({ id: "project_editor.view_menu.show_as_files" }),
           onClick: this._viewAsFiles,
         });
       }
@@ -5007,10 +5101,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           content:
             this.state.viewMode === CreatorToolsEditorViewMode.itemsOnLeftAndMinecraftToolbox ||
             this.state.viewMode === CreatorToolsEditorViewMode.itemsOnRightAndMinecraftToolbox
-              ? "Hide Toolbox Pane"
+              ? this.props.intl.formatMessage({ id: "project_editor.view_menu.hide_toolbox" })
               : "Show Toolbox Pane",
           icon: <FontAwesomeIcon icon={faTools} className="fa-lg" />,
-          title: "Show Toolbox Pane",
+          title: this.props.intl.formatMessage({ id: "project_editor.view_menu.show_toolbox" }),
           onClick: this._toggleMinecraftToolbox,
         });
       }
@@ -5024,25 +5118,31 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
       viewMenuItems.push({
         key: "focusedMode",
-        content: (editPref === CreatorToolsEditPreference.summarized ? " ✓  " : "    ") + "Focused Mode",
+        content:
+          (editPref === CreatorToolsEditPreference.summarized ? " ✓  " : "    ") +
+          this.props.intl.formatMessage({ id: "project_editor.view_menu.focused_mode" }),
         icon: <FontAwesomeIcon icon={faWandMagicSparkles} className="fa-lg" />,
-        title: "Focused Mode — simplified visual editors (Alt+1)",
+        title: this.props.intl.formatMessage({ id: "project_editor.view_menu.focused_mode_title" }),
         onClick: this._handleSetFocusedMode,
       });
 
       viewMenuItems.push({
         key: "fullMode",
-        content: (editPref === CreatorToolsEditPreference.editors ? " ✓  " : "    ") + "Full Mode",
+        content:
+          (editPref === CreatorToolsEditPreference.editors ? " ✓  " : "    ") +
+          this.props.intl.formatMessage({ id: "project_editor.view_menu.full_mode" }),
         icon: <FontAwesomeIcon icon={faEye} className="fa-lg" />,
-        title: "Full Mode — all files with visual editors (Alt+2)",
+        title: this.props.intl.formatMessage({ id: "project_editor.view_menu.full_mode_title" }),
         onClick: this._handleSetFullMode,
       });
 
       viewMenuItems.push({
         key: "rawMode",
-        content: (editPref === CreatorToolsEditPreference.raw ? " ✓  " : "    ") + "Raw Mode",
+        content:
+          (editPref === CreatorToolsEditPreference.raw ? " ✓  " : "    ") +
+          this.props.intl.formatMessage({ id: "project_editor.view_menu.raw_mode" }),
         icon: <FontAwesomeIcon icon={faCode} className="fa-lg" />,
-        title: "Raw Mode — direct JSON editing (Alt+3)",
+        title: this.props.intl.formatMessage({ id: "project_editor.view_menu.raw_mode_title" }),
         onClick: this._handleSetRawMode,
       });
 
@@ -5053,17 +5153,17 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
       viewMenuItems.push({
         key: "searchInFiles",
-        content: "Search in Files",
+        content: this.props.intl.formatMessage({ id: "project_editor.view_menu.search_in_files" }),
         icon: <FontAwesomeIcon icon={faSearch} className="fa-lg" />,
-        title: "Search across all project files (Ctrl+Shift+F)",
+        title: this.props.intl.formatMessage({ id: "project_editor.view_menu.search_in_files_title" }),
         onClick: this._openProjectSearch,
       });
 
       viewMenuItems.push({
         key: "quickOpen",
-        content: "Quick Open",
+        content: this.props.intl.formatMessage({ id: "project_editor.view_menu.quick_open" }),
         icon: <FontAwesomeIcon icon={faSearch} className="fa-lg" />,
-        title: "Quick Open — navigate to any file (Ctrl+P)",
+        title: this.props.intl.formatMessage({ id: "project_editor.view_menu.quick_open_title" }),
         onClick: this._openQuickOpen,
       });
 
@@ -5075,9 +5175,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
         viewMenuItems.push({
           key: "closeOtherTabs",
-          content: "Close Other Tabs",
+          content: this.props.intl.formatMessage({ id: "project_editor.view_menu.close_other_tabs" }),
           icon: <FontAwesomeIcon icon={faTimes} className="fa-lg" />,
-          title: "Close all tabs except the current tab",
+          title: this.props.intl.formatMessage({ id: "project_editor.view_menu.close_other_tabs_title" }),
           onClick: this._handleCloseOtherTabs,
         });
       }
@@ -5085,25 +5185,51 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       if (this.state.openTabs.length > 0) {
         viewMenuItems.push({
           key: "closeAllTabs",
-          content: "Close All Tabs",
+          content: this.props.intl.formatMessage({ id: "project_editor.view_menu.close_all_tabs" }),
           icon: <FontAwesomeIcon icon={faTimes} className="fa-lg" />,
-          title: "Close all open tabs (Ctrl+Shift+W)",
+          title: this.props.intl.formatMessage({ id: "project_editor.view_menu.close_all_tabs_title" }),
           onClick: this._handleCloseAllTabs,
         });
       }
 
+      let viewModeText: string;
+      if (editPref === CreatorToolsEditPreference.summarized) {
+        viewModeText = this.props.intl.formatMessage({ id: "project_editor.view_menu.focused_mode" });
+      } else if (editPref === CreatorToolsEditPreference.raw) {
+        viewModeText = this.props.intl.formatMessage({ id: "project_editor.view_menu.raw_mode" });
+      } else {
+        viewModeText = this.props.intl.formatMessage({ id: "project_editor.view_menu.full_mode" });
+      }
+
       toolbarItems.push({
-        icon: <ViewLabel isCompact={isButtonCompact} />,
+        icon: <ViewLabel isCompact={isButtonCompact} modeText={viewModeText} />,
         key: "more",
         active: this.state.menuState === ProjectEditorMenuState.viewMenu || undefined,
-        title: "View",
+        title: this.props.intl.formatMessage({ id: "project_editor.common.view" }),
         menu: viewMenuItems,
         menuOpen: this.state.menuState === ProjectEditorMenuState.viewMenu,
         onMenuOpenChange: this._handleViewMenuOpen,
       });
 
       if (this.state.activeProjectItem) {
-        const itemMenuItems = ProjectEditorUtilities.getItemMenuItems(this.state.activeProjectItem, undefined);
+        const itemMenuItemsIsFocused = this.props.project?.effectiveEditPreference === ProjectEditPreference.summarized;
+        // The toolbar's Item Actions button always targets the active item, so
+        // we can compute "currently in text editor" from the live view state.
+        // This makes the JSON toggle entry read "Open in Visual Editor" when
+        // the user is looking at raw JSON — even if they got there via the
+        // per-item menu rather than by switching the global edit preference.
+        const isCurrentlyShowingTextEditor = isItemViewShowingTextEditor(
+          this.state.itemView,
+          this.props.project?.effectiveEditPreference
+        );
+        const itemMenuItems = ProjectEditorUtilities.getItemMenuItems(
+          this.state.activeProjectItem,
+          undefined,
+          undefined,
+          isCurrentlyShowingTextEditor,
+          false, // omit Focus/Clear focus — the toolbar has no route to ProjectItemList's focus state
+          !itemMenuItemsIsFocused // omit View on map in Focused mode
+        );
 
         for (const item of itemMenuItems) {
           (item as any).onClick = this._itemMenuClick;
@@ -5119,7 +5245,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           ),
           key: "itemActions",
           active: this.state.menuState === ProjectEditorMenuState.itemMenu || undefined,
-          title: "Item Actions",
+          title: this.props.intl.formatMessage({ id: "project_editor.toolbar.item_actions" }),
           menu: itemMenuItems,
           menuOpen: this.state.menuState === ProjectEditorMenuState.itemMenu,
           onMenuOpenChange: this._handleItemMenuOpen,
@@ -5127,8 +5253,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       }
     } else {
       toolbarItems.push({
-        key: "itemsFocus",
-        content: "Items",
+        content: this.props.intl.formatMessage({ id: "project_editor.common.items" }),
+        key: "toolboxLandingFocus",
         icon: <HomeLabel />,
         title: "Items",
         onClick: this._setToolboxLandingFocus,
@@ -5136,9 +5262,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
       toolbarItems.push({
         key: "itemsFocus",
-        content: "Items",
+        content: this.props.intl.formatMessage({ id: "project_editor.common.items" }),
         icon: <FontAwesomeIcon icon={faSitemap} className="fa-lg" />,
-        title: "Items",
+        title: this.props.intl.formatMessage({ id: "project_editor.common.items" }),
         onClick: this._setItemsFocus,
       });
     }
@@ -5147,17 +5273,21 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       icon: <SettingsLabel isCompact={isButtonCompact} />,
       key: "settings",
       onClick: this._showSettingsClick,
-      title: "Settings",
+      title: this.props.intl.formatMessage({ id: "project_editor.common.settings" }),
     });
 
-    if (this.props.project.role !== ProjectRole.documentation && this.props.project.role !== ProjectRole.meta) {
+    if (
+      !isMobile &&
+      this.props.project.role !== ProjectRole.documentation &&
+      this.props.project.role !== ProjectRole.meta
+    ) {
       toolbarItems.push({
         icon: <MinecraftLabel isCompact={isButtonCompact} />,
         key: "connect",
         kind: "toggle",
         onClick: this._showMinecraftClick,
         active: true,
-        title: "Open Minecraft tools and connections",
+        title: this.props.intl.formatMessage({ id: "project_editor.toolbar.minecraft_tools" }),
       });
     }
 
@@ -5165,7 +5295,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       toolbarItems.push({
         key: "export",
         icon: <MCPackLabel isCompact={isButtonCompact} />,
-        title: isButtonCompact ? "" : "Export (F3)",
+        title: this.props.intl.formatMessage({ id: "project_editor.toolbar.export" }),
         active: true,
         menuOpen: this.state.menuState === ProjectEditorMenuState.exportMenu,
         onMenuOpenChange: this._handleExportMenuOpen,
@@ -5175,7 +5305,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       const exportItem = exportKeys[this.state.lastExportKey];
 
       toolbarItems.push({
-        icon: <CustomLabel icon={exportItem.icon} text="Export" isCompact={isButtonCompact} />,
+        icon: (
+          <CustomLabel
+            icon={exportItem.icon}
+            text={this.props.intl.formatMessage({ id: "project_editor.common.export" })}
+            isCompact={isButtonCompact}
+          />
+        ),
         key: "export",
         onClick: exportItem.onClick,
         active: true,
@@ -5198,13 +5334,19 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           menuOpen: this.state.menuState === ProjectEditorMenuState.deployMenu,
           menu: deployMenu,
           active: true,
-          title: "Test in Minecraft (F5)",
+          title: this.props.intl.formatMessage({ id: "project_editor.toolbar.test_in_minecraft" }),
         });
       } else {
         const deployItem = deployKeys[this.state.lastDeployKey];
 
         toolbarItems.push({
-          icon: <CustomLabel icon={deployItem.icon} text="Test" isCompact={isButtonCompact} />,
+          icon: (
+            <CustomLabel
+              icon={deployItem.icon}
+              text={this.props.intl.formatMessage({ id: "project_editor.common.test" })}
+              isCompact={isButtonCompact}
+            />
+          ),
           key: "deploy",
           onClick: deployItem.onClick,
           active: true,
@@ -5219,15 +5361,51 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     const helpMenu = [
       {
         key: "keyboardShortcuts",
-        content: "Keyboard Shortcuts",
+        content: this.props.intl.formatMessage({ id: "project_editor.help_menu.keyboard_shortcuts" }),
         icon: <FontAwesomeIcon icon={faKeyboard} className="fa-lg" />,
         onClick: this._openKeyboardShortcutHelp,
       },
       {
+        key: "learningPortal",
+        content: this.props.intl.formatMessage({ id: "project_editor.help_menu.learning_portal" }),
+        icon: <FontAwesomeIcon icon={faGraduationCap} className="fa-lg" />,
+        onClick: this._openLearningPortal,
+      },
+      {
         key: "documentation",
-        content: "Documentation",
+        content: this.props.intl.formatMessage({ id: "project_editor.help_menu.documentation" }),
         icon: <FontAwesomeIcon icon={faBookOpen} className="fa-lg" />,
         onClick: this._openDocumentation,
+      },
+      {
+        key: "scriptApiReference",
+        content: this.props.intl.formatMessage({ id: "project_editor.help_menu.script_api_reference" }),
+        icon: (
+          <span
+            aria-hidden="true"
+            style={{
+              fontFamily: "monospace",
+              fontWeight: 700,
+              fontSize: "1.1em",
+              lineHeight: 1,
+              /* Match the width of a fa-lg icon so the label lines up with siblings */
+              display: "inline-block",
+              width: "1.25em",
+              textAlign: "center",
+              letterSpacing: "-0.1em",
+            }}
+          >
+            {"{ }"}
+          </span>
+        ),
+        onClick: this._openScriptApiReference,
+      },
+      { key: "help-divider", kind: "divider" },
+      {
+        key: "creatorYouTube",
+        content: this.props.intl.formatMessage({ id: "project_editor.help_menu.creator_youtube" }),
+        icon: <FontAwesomeIcon icon={faYoutube} className="fa-lg" />,
+        onClick: this._openCreatorYouTube,
       },
     ];
 
@@ -5235,7 +5413,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       icon: <HelpLabel isCompact={isButtonCompact} />,
       key: "help",
       menu: helpMenu,
-      title: "Help",
+      title: this.props.intl.formatMessage({ id: "project_editor.common.help" }),
     });
 
     let interior = <></>;
@@ -5411,24 +5589,42 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       if (this.state.dragStyle === ProjectEditorDragStyle.addOverwriteOrActiveItem) {
         effectArea = (
           <div className="pe-zoneDragOver">
-            <div className="pe-dragZone1">Drop any additional files here.</div>
+            <div className="pe-dragZone1">
+              {this.props.intl.formatMessage({ id: "project_editor.drag_drop.drop_files" })}
+            </div>
             <div className="pe-dragZone2">
-              Replace the contents of {this.state.activeProjectItem ? this.state.activeProjectItem.name : ""}.
+              {this.props.intl.formatMessage(
+                { id: "project_editor.drag_drop.replace_contents" },
+                { itemName: this.state.activeProjectItem ? this.state.activeProjectItem.name : "" }
+              )}
             </div>
           </div>
         );
       } else {
-        effectArea = <div className="pe-singleDragOver">Drop any additional files here.</div>;
+        effectArea = (
+          <div className="pe-singleDragOver">
+            {this.props.intl.formatMessage({ id: "project_editor.drag_drop.drop_files" })}
+          </div>
+        );
       }
     }
 
     if (this.state !== null && this.state.dialog === ProjectEditorDialog.renameItem && this.state.activeProjectItem) {
       effectArea = (
         <Dialog open={true} key="pil-renameOuter" onClose={this._handleDialogDone}>
-          <DialogTitle>{"Rename " + this.state.activeProjectItem.name}</DialogTitle>
+          <DialogTitle>
+            {this.props.intl.formatMessage(
+              { id: "project_editor.dialog.rename_title" },
+              { itemName: this.state.activeProjectItem.name }
+            )}
+          </DialogTitle>
           <DialogContent>
             <div className="pil-dialog" key="pil-renameDia">
-              <TextField size="small" placeholder="new name" onChange={this._handleNewProjectItemName} />
+              <TextField
+                size="small"
+                placeholder={this.props.intl.formatMessage({ id: "project_editor.dialog.rename_placeholder" })}
+                onChange={this._handleNewProjectItemName}
+              />
               <span className="pil-extension">
                 .{StorageUtilities.getTypeFromName(this.state.activeProjectItem.name)}
               </span>
@@ -5465,16 +5661,14 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         if (warningItems.length === 1) {
           warnings = (
             <div className="pil-deleteWarning">
-              <div>The following item is using this. Deleting will remove any associated links from:</div>
+              <div>{this.props.intl.formatMessage({ id: "project_editor.dialog.delete_warning_singular" })}</div>
               <ul>{warningItems}</ul>
             </div>
           );
         } else if (warningItems.length > 1) {
           warnings = (
             <div className="pil-deleteWarning">
-              <div>
-                The following items are using this. Deleting will remove any associated links in the following items:
-              </div>
+              <div>{this.props.intl.formatMessage({ id: "project_editor.dialog.delete_warning_plural" })}</div>
               <ul>{warningItems}</ul>
             </div>
           );
@@ -5483,10 +5677,15 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
       effectArea = (
         <Dialog open={true} key="pil-deleteOuter" onClose={this._handleDialogDone}>
-          <DialogTitle>{"Delete " + this.state.activeProjectItem.name + "?"}</DialogTitle>
+          <DialogTitle>
+            {this.props.intl.formatMessage(
+              { id: "project_editor.dialog.delete_title" },
+              { itemName: this.state.activeProjectItem.name }
+            )}
+          </DialogTitle>
           <DialogContent>
             <div className="pil-dialog" key="pil-deleteConfirmDia">
-              Are you sure you wish to delete{" "}
+              {this.props.intl.formatMessage({ id: "project_editor.dialog.delete_confirm" })}{" "}
               <span className="pil-inlineSource" style={{ backgroundColor: colors.background3 }}>
                 {this.state.activeProjectItem.title}
               </span>
@@ -5496,7 +5695,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           <DialogActions>
             <Button onClick={this._handleDialogDone}>Cancel</Button>
             <Button onClick={this._handleConfirmDelete} variant="contained">
-              OK
+              {this.props.intl.formatMessage({ id: "project_editor.common.ok" })}
             </Button>
           </DialogActions>
         </Dialog>
@@ -5507,12 +5706,12 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       );
       effectArea = (
         <Dialog open={true} className={"pe-shareProjectDialog"} onClose={this._handleDialogDone}>
-          <DialogTitle>Share a link to this project</DialogTitle>
+          <DialogTitle>{this.props.intl.formatMessage({ id: "project_editor.dialog.share_title" })}</DialogTitle>
           <DialogContent>{dialogContent}</DialogContent>
           <DialogActions>
             <Button onClick={this._handleDialogDone}>Cancel</Button>
             <Button onClick={this._handleDialogDone} variant="contained">
-              OK
+              {this.props.intl.formatMessage({ id: "project_editor.common.ok" })}
             </Button>
           </DialogActions>
         </Dialog>
@@ -5520,7 +5719,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     } else if (this.state.dialog === ProjectEditorDialog.convertTo) {
       effectArea = (
         <Dialog open={true} onClose={this._handleDialogDone}>
-          <DialogTitle>Convert</DialogTitle>
+          <DialogTitle>{this.props.intl.formatMessage({ id: "project_editor.dialog.convert_title" })}</DialogTitle>
           <DialogContent>
             <Convert
               creatorTools={this.props.creatorTools}
@@ -5533,7 +5732,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           <DialogActions>
             <Button onClick={this._handleDialogDone}>Cancel</Button>
             <Button onClick={this._handleConvertOK} variant="contained">
-              OK
+              {this.props.intl.formatMessage({ id: "project_editor.common.ok" })}
             </Button>
           </DialogActions>
         </Dialog>
@@ -5546,10 +5745,14 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       effectArea = (
         <Dialog open={true} onClose={this._handleDialogDone} maxWidth="sm" fullWidth>
           <DialogTitle>
-            {"Import " +
-              ((this.state.dialogData as IProjectItemSeed).fileSource
-                ? (this.state.dialogData as IProjectItemSeed).fileSource!.name
-                : "")}
+            {this.props.intl.formatMessage(
+              { id: "project_editor.dialog.import_title" },
+              {
+                fileName: (this.state.dialogData as IProjectItemSeed).fileSource
+                  ? (this.state.dialogData as IProjectItemSeed).fileSource!.name
+                  : "",
+              }
+            )}
           </DialogTitle>
           <DialogContent>
             <IntegrateItem
@@ -5564,7 +5767,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           <DialogActions>
             <Button onClick={this._handleDialogDone}>Cancel</Button>
             <Button onClick={this._handleIntegrateItemOK} variant="contained">
-              OK
+              {this.props.intl.formatMessage({ id: "project_editor.common.ok" })}
             </Button>
           </DialogActions>
         </Dialog>
@@ -5572,7 +5775,12 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     } else if (this.state.dialog === ProjectEditorDialog.newVariant && this.state.activeProjectItem) {
       effectArea = (
         <Dialog open={true} onClose={this._handleDialogDone}>
-          <DialogTitle>{"New Variant for " + this.state.activeProjectItem.projectPath}</DialogTitle>
+          <DialogTitle>
+            {this.props.intl.formatMessage(
+              { id: "project_editor.dialog.new_variant_title" },
+              { projectPath: this.state.activeProjectItem.projectPath }
+            )}
+          </DialogTitle>
           <DialogContent>
             <NewVariant
               creatorTools={this.props.creatorTools}
@@ -5585,7 +5793,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           <DialogActions>
             <Button onClick={this._handleDialogDone}>Cancel</Button>
             <Button onClick={this._handleNewVariantOK} variant="contained">
-              OK
+              {this.props.intl.formatMessage({ id: "project_editor.common.ok" })}
             </Button>
           </DialogActions>
         </Dialog>
@@ -5604,12 +5812,14 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       );
       effectArea = (
         <Dialog open={true} onClose={this._handleDialogDone}>
-          <DialogTitle>World settings</DialogTitle>
+          <DialogTitle>
+            {this.props.intl.formatMessage({ id: "project_editor.dialog.world_settings_title" })}
+          </DialogTitle>
           <DialogContent>{dialogContent}</DialogContent>
           <DialogActions>
             <Button onClick={this._handleDialogDone}>Cancel</Button>
             <Button onClick={this._handleDialogDone} variant="contained">
-              OK
+              {this.props.intl.formatMessage({ id: "project_editor.common.ok" })}
             </Button>
           </DialogActions>
         </Dialog>
@@ -5681,6 +5891,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           onVisualSeedUpdateRequested={this._incrementVisualSeed}
           readOnly={this.props.readOnly}
           activeProjectItem={this.state.activeProjectItem}
+          activeItemView={this.state.itemView}
           tentativeProjectItem={this.state.tentativeProjectItem}
         />
       );
@@ -5698,7 +5909,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       column2 = (
         <main
           className="pe-colAll"
-          aria-label="Main content area"
+          aria-label={this.props.intl.formatMessage({ id: "project_editor.aria.main_content" })}
           style={{
             border: border,
             height: "calc(100vh - " + String(heightOffset - HEIGHT_OFFSET_MINUS) + "px)",
@@ -5718,7 +5929,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       );
     } else if (viewMode === CreatorToolsEditorViewMode.itemsFocus) {
       column2 = (
-        <section aria-label="Item listing area" className="pe-itemlist pe-colAll">
+        <section
+          aria-label={this.props.intl.formatMessage({ id: "project_editor.aria.item_listing" })}
+          className="pe-itemlist pe-colAll"
+        >
           {itemList}
         </section>
       );
@@ -5751,7 +5965,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       );
     } else if (viewMode === CreatorToolsEditorViewMode.itemsOnLeft) {
       column1 = (
-        <section aria-label="Item listing area" className="pe-itemlist pe-col1">
+        <section
+          aria-label={this.props.intl.formatMessage({ id: "project_editor.aria.item_listing" })}
+          className="pe-itemlist pe-col1"
+        >
           {itemList}
         </section>
       );
@@ -5770,7 +5987,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       );
       column3 = (
         <main
-          aria-label="Main content area"
+          aria-label={this.props.intl.formatMessage({ id: "project_editor.aria.main_content" })}
           className="pe-col3and4"
           style={{
             borderRight: border,
@@ -5784,13 +6001,16 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       );
     } else if (viewMode === CreatorToolsEditorViewMode.itemsOnLeftAndMinecraftToolbox) {
       column1 = (
-        <section aria-label="Item listing area" className="pe-itemlist pe-col1">
+        <section
+          aria-label={this.props.intl.formatMessage({ id: "project_editor.aria.item_listing" })}
+          className="pe-itemlist pe-col1"
+        >
           {itemList}
         </section>
       );
       column2 = (
         <main
-          aria-label="Main content area"
+          aria-label={this.props.intl.formatMessage({ id: "project_editor.aria.main_content" })}
           className="pe-col2"
           style={{
             border: border,
@@ -5829,7 +6049,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       );
       column2 = (
         <main
-          aria-label="Main content area"
+          aria-label={this.props.intl.formatMessage({ id: "project_editor.aria.main_content" })}
           className="pe-col2"
           style={{
             border: border,
@@ -5840,7 +6060,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         </main>
       );
       column3 = (
-        <section aria-label="Item listing area" className="pe-itemlist pe-col4">
+        <section
+          aria-label={this.props.intl.formatMessage({ id: "project_editor.aria.item_listing" })}
+          className="pe-itemlist pe-col4"
+        >
           {itemList}
         </section>
       );
@@ -5848,7 +6071,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       // items on right
       column1 = (
         <main
-          aria-label="Main content area"
+          aria-label={this.props.intl.formatMessage({ id: "project_editor.aria.main_content" })}
           className="pe-col1and2"
           style={{
             borderLeft: border,
@@ -5876,7 +6099,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       );
 
       column3 = (
-        <section aria-label="Item listing area" className="pe-itemlist pe-col4">
+        <section
+          aria-label={this.props.intl.formatMessage({ id: "project_editor.aria.item_listing" })}
+          className="pe-itemlist pe-col4"
+        >
           {itemList}
         </section>
       );
@@ -5892,18 +6118,23 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     if (!this.props.hideMainToolbar) {
       // Transform toolbarItems to McToolbarItem format
       const mcToolbarItems: McToolbarItem[] = toolbarItems.map((item: any) => {
-        // Transform menu items if present
+        // Transform menu items if present. IMPORTANT: spread the original
+        // menuItem first so ad-hoc fields like `tag` (used by the item
+        // actions handler to carry { path, action }) survive the copy.
+        // Without this, _itemMenuClick sees data.tag === undefined and
+        // every Item Actions menu entry silently no-ops.
         let mcMenu: McToolbarMenuItem[] | undefined;
         if (item.menu && item.menu.length > 0) {
           mcMenu = item.menu
             .filter((menuItem: any) => menuItem !== undefined && menuItem !== null)
             .map((menuItem: any) => ({
+              ...menuItem,
               key: menuItem.key,
               content: menuItem.content,
               icon: menuItem.icon,
               onClick: menuItem.onClick,
               disabled: menuItem.disabled,
-              divider: menuItem.kind === "divider",
+              divider: menuItem.divider === true || menuItem.kind === "divider",
             }));
         }
 
@@ -5935,10 +6166,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
       toolbarArea = (
         <div className={toolbarContainerClass}>
-          <section aria-label="ToolBar" className={toolbarStyle}>
+          <section
+            aria-label={this.props.intl.formatMessage({ id: "project_editor.aria.toolbar" })}
+            className={toolbarStyle}
+          >
             <McToolbar
               items={mcToolbarItems}
-              aria-label="Project Editor main toolbar"
+              aria-label={this.props.intl.formatMessage({ id: "project_editor.aria.main_toolbar" })}
               variant="primary"
               sx={{ minHeight: TOOLBAR_MIN_HEIGHT }}
             />
@@ -5953,7 +6187,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     if (this.state.statusAreaMode !== ProjectStatusAreaMode.hidden) {
       statusArea = (
         <section
-          aria-label="Status and item area"
+          aria-label={this.props.intl.formatMessage({ id: "project_editor.aria.status_area" })}
           className={statusBarClass}
           style={{
             backgroundColor: colors.background1,
@@ -6006,7 +6240,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
               borderBottom: "1px solid #b0cfe0",
             }}
           >
-            📖 Viewing content — changes will not be saved
+            {"📖 " + this.props.intl.formatMessage({ id: "project_editor.status.view_mode_banner" })}
           </div>
         )}
         {effectArea}
@@ -6033,3 +6267,5 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     );
   }
 }
+
+export default withLocalization(ProjectEditor);

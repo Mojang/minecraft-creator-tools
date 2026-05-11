@@ -119,7 +119,21 @@ const ENTITY_TRAIT_SIGNATURES: Record<EntityTraitId, ITraitSignature> = {
       const hasFollowParent = "minecraft:behavior.follow_parent" in components;
       if (typeFamily) {
         const families: string[] = typeFamily.family || [];
-        const quadrupedFamilies = ["cow", "pig", "sheep", "horse", "donkey", "mule", "llama", "goat", "wolf", "fox", "cat", "ocelot", "animal"];
+        const quadrupedFamilies = [
+          "cow",
+          "pig",
+          "sheep",
+          "horse",
+          "donkey",
+          "mule",
+          "llama",
+          "goat",
+          "wolf",
+          "fox",
+          "cat",
+          "ocelot",
+          "animal",
+        ];
         if (families.some((f) => quadrupedFamilies.includes(f.toLowerCase()))) return 0.9;
       }
       // follow_parent + breedable suggests a land animal but not enough for body type
@@ -663,11 +677,13 @@ const BLOCK_TRAIT_SIGNATURES: Record<BlockTraitId, ITraitSignature> = {
   },
 
   fence: {
-    optionalComponents: ["minecraft:geometry"],
+    optionalComponents: ["minecraft:support", "minecraft:connection_rule", "minecraft:geometry"],
     validator: (components) => {
+      const support = components["minecraft:support"];
+      if (support?.shape === "fence") return 1.0;
+      if ("minecraft:connection_rule" in components) return 0.7;
       const geometry = components["minecraft:geometry"];
-      if (geometry && JSON.stringify(geometry).includes("fence")) return 1.0;
-      // Fences have specific collision properties
+      if (geometry && JSON.stringify(geometry).includes("fence")) return 0.8;
       const collision = components["minecraft:collision_box"];
       if (collision?.size && collision.size[0] < 16) return 0.6;
       return 0;
@@ -704,13 +720,6 @@ const BLOCK_TRAIT_SIGNATURES: Record<BlockTraitId, ITraitSignature> = {
   },
 
   // Functional
-  container: {
-    optionalComponents: ["minecraft:inventory"],
-    validator: (components) => {
-      return "minecraft:inventory" in components ? 1.0 : 0;
-    },
-  },
-
   workstation: {
     optionalComponents: ["minecraft:crafting_table"],
     validator: (components) => {
@@ -748,8 +757,9 @@ const BLOCK_TRAIT_SIGNATURES: Record<BlockTraitId, ITraitSignature> = {
 
   // Redstone
   redstone_signal: {
-    optionalComponents: ["minecraft:redstone_conductivity"],
+    optionalComponents: ["minecraft:redstone_conductivity", "minecraft:redstone_producer"],
     validator: (components) => {
+      if ("minecraft:redstone_producer" in components) return 1.0;
       const redstone = components["minecraft:redstone_conductivity"];
       if (redstone?.emits_redstone) return 1.0;
       return 0;
@@ -796,6 +806,34 @@ const BLOCK_TRAIT_SIGNATURES: Record<BlockTraitId, ITraitSignature> = {
       // Pressure plates are flat
       const collision = components["minecraft:collision_box"];
       if (collision?.size && collision.size[1] <= 1) return 0.6;
+      return 0;
+    },
+  },
+
+  // Properties
+  flammable: {
+    optionalComponents: ["minecraft:flammable"],
+    validator: (components) => {
+      return "minecraft:flammable" in components ? 1.0 : 0;
+    },
+  },
+
+  explosion_resistant: {
+    optionalComponents: ["minecraft:destructible_by_explosion"],
+    validator: (components) => {
+      const explosionData = components["minecraft:destructible_by_explosion"];
+      if (explosionData === false) return 1.0;
+      if (explosionData?.explosion_resistance !== undefined && explosionData.explosion_resistance >= 1000) return 1.0;
+      return 0;
+    },
+  },
+
+  slippery: {
+    optionalComponents: ["minecraft:friction"],
+    validator: (components) => {
+      const friction = components["minecraft:friction"];
+      if (typeof friction === "number" && friction < 0.3) return 1.0;
+      if (typeof friction === "number" && friction < 0.4) return 0.6;
       return 0;
     },
   },

@@ -9,8 +9,9 @@ import DataForm, { IDataFormProps } from "../../dataformux/DataForm";
 import IProperty from "../../dataform/IProperty";
 import Project from "../../app/Project";
 import IProjectTheme from "../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
-interface INpmPackageEditorProps extends IFileProps {
+interface INpmPackageEditorProps extends IFileProps, WithLocalizationProps {
   heightOffset: number;
   readOnly: boolean;
   project: Project;
@@ -23,7 +24,7 @@ interface INpmPackageEditorState {
   selectedItem: NpmPackageDefinition | undefined;
 }
 
-export default class NpmPackageEditor extends Component<INpmPackageEditorProps, INpmPackageEditorState> {
+class NpmPackageEditor extends Component<INpmPackageEditorProps, INpmPackageEditorState> {
   private _lastFileEdited?: IFile;
 
   constructor(props: INpmPackageEditorProps) {
@@ -165,7 +166,7 @@ export default class NpmPackageEditor extends Component<INpmPackageEditorProps, 
 
     itemListings.push({
       key: "defaultNpmPackageJson",
-      header: "Default Components",
+      header: this.props.intl.formatMessage({ id: "npm_package.default_components" }),
       headerMedia: " ",
       content: " ",
     });
@@ -211,7 +212,7 @@ export default class NpmPackageEditor extends Component<INpmPackageEditorProps, 
         }
       }
 
-      return <div>Loading...</div>;
+      return <div>{this.props.intl.formatMessage({ id: "npm_package.loading" })}</div>;
     }
 
     if (this.props.setActivePersistable !== undefined) {
@@ -222,13 +223,13 @@ export default class NpmPackageEditor extends Component<INpmPackageEditorProps, 
     const def = npmJsonFile.definition;
 
     if (def === undefined) {
-      return <div className="npme-loading">Loading definition...</div>;
+      return <div className="npme-loading">{this.props.intl.formatMessage({ id: "npm_package.loading_def" })}</div>;
     }
 
     const form = Database.getForm("dev", "package_json");
 
     if (!form) {
-      return <div className="npme-loading">Form not found</div>;
+      return <div className="npme-loading">{this.props.intl.formatMessage({ id: "npm_package.form_not_found" })}</div>;
     }
 
     return (
@@ -258,3 +259,5 @@ export default class NpmPackageEditor extends Component<INpmPackageEditorProps, 
     );
   }
 }
+
+export default withLocalization(NpmPackageEditor);

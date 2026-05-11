@@ -159,37 +159,92 @@ import fs from "fs";
 function serveBedrockSchemas() {
   const pkgRoot = path.resolve("node_modules/@minecraft/bedrock-schemas");
 
+  // HttpFolder.load() fetches {path}/index.json to enumerate a folder. The
+  // @minecraft/bedrock-schemas package doesn't ship index.json files, so
+  // synthesize them on the fly from the actual filesystem listing. Without
+  // this, consumers like DataFormComponentAccordion (biome editor) see an
+  // empty folder and render zero component sections.
+  function synthesizeIndexJson(absDir) {
+    if (!fs.existsSync(absDir) || !fs.statSync(absDir).isDirectory()) return null;
+    const files = [];
+    const folders = [];
+    for (const entry of fs.readdirSync(absDir, { withFileTypes: true })) {
+      if (entry.isDirectory()) folders.push(entry.name);
+      else if (entry.isFile() && entry.name !== "index.json") files.push(entry.name);
+    }
+    return JSON.stringify({ files, folders });
+  }
+
+  function tryServeFromPackage(req, res, urlPrefix, pkgSubdir) {
+    if (!req.url || !req.url.startsWith(urlPrefix)) return false;
+
+    // Strip query string before resolving so "?foo=../" can't be smuggled in,
+    // then decode percent-encoded segments so "%2e%2e/" is normalised to ".."
+    // before the containment check below.
+    let relPath = req.url.slice(urlPrefix.length);
+    const queryIdx = relPath.indexOf("?");
+    if (queryIdx >= 0) relPath = relPath.slice(0, queryIdx);
+    try {
+      relPath = decodeURIComponent(relPath);
+    } catch {
+      return false;
+    }
+
+    const subdirRoot = path.resolve(pkgRoot, pkgSubdir);
+    const absPath = path.resolve(subdirRoot, relPath);
+
+    // Containment check: ".." segments in `relPath` could otherwise escape
+    // pkgRoot (e.g. /data/forms/../../../etc/passwd). Ensure the resolved
+    // path is still under the intended subdirectory.
+    const relToRoot = path.relative(subdirRoot, absPath);
+    if (relToRoot.startsWith("..") || path.isAbsolute(relToRoot)) {
+      return false;
+    }
+
+    // Synthesize index.json for directory listings
+    if (relPath.endsWith("index.json") || relPath.endsWith("index.json/")) {
+      const dirPath = path.dirname(absPath);
+      const index = synthesizeIndexJson(dirPath);
+      if (index !== null) {
+        res.setHeader("Content-Type", "application/json");
+        res.end(index);
+        return true;
+      }
+      return false;
+    }
+
+    if (fs.existsSync(absPath) && fs.statSync(absPath).isFile()) {
+      res.setHeader("Content-Type", "application/json");
+      fs.createReadStream(absPath).pipe(res);
+      return true;
+    }
+    return false;
+  }
+
   return {
     name: "serve-bedrock-schemas",
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
-        // Serve forms: /data/forms/** -> node_modules/@minecraft/bedrock-schemas/forms/**
-        if (req.url && req.url.startsWith("/data/forms/")) {
-          const relPath = req.url.slice("/data/forms/".length);
-          const filePath = path.join(pkgRoot, "forms", relPath);
-          if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
-            res.setHeader("Content-Type", "application/json");
-            fs.createReadStream(filePath).pipe(res);
-            return;
-          }
-        }
-        // Serve schemas: /schemas/** -> node_modules/@minecraft/bedrock-schemas/schemas/**
-        if (req.url && req.url.startsWith("/schemas/")) {
-          const relPath = req.url.slice("/schemas/".length);
-          const filePath = path.join(pkgRoot, "schemas", relPath);
-          if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
-            res.setHeader("Content-Type", "application/json");
-            fs.createReadStream(filePath).pipe(res);
-            return;
-          }
-        }
+        if (tryServeFromPackage(req, res, "/data/forms/", "forms")) return;
+        if (tryServeFromPackage(req, res, "/schemas/", "schemas")) return;
         next();
       });
     },
     // Production build: copy forms and schemas into the build output directory
-    // so they are available at runtime via HTTP fetch.
+    // so they are available at runtime via HTTP fetch. Also generate index.json
+    // listings for every folder so HttpFolder.load() can enumerate them.
     writeBundle(options) {
       const outDir = options.dir || path.resolve("build");
+
+      function writeIndexJson(dir) {
+        const files = [];
+        const folders = [];
+        for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+          if (entry.isDirectory()) folders.push(entry.name);
+          else if (entry.isFile() && entry.name !== "index.json") files.push(entry.name);
+        }
+        fs.writeFileSync(path.join(dir, "index.json"), JSON.stringify({ files, folders }));
+      }
 
       function copyDirSync(src, dest) {
         if (!fs.existsSync(src)) return;
@@ -203,6 +258,7 @@ function serveBedrockSchemas() {
             fs.copyFileSync(srcPath, destPath);
           }
         }
+        writeIndexJson(dest);
       }
 
       const formsSource = path.join(pkgRoot, "forms");

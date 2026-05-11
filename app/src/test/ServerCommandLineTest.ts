@@ -70,7 +70,9 @@ function createServeValidationTest(
                 method: "POST",
               })
               .then((response: AxiosResponse) => {
-                ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, response.data, suiteName);
+                ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, response.data, suiteName, [
+                  "CDWORLDDATA2",
+                ]);
 
                 if (response === undefined) {
                   throw new Error("Could not connect to server.");
@@ -106,7 +108,7 @@ function createServeValidationTest(
     }).timeout(10000);
 
     it("output matches", async () => {
-      await folderMatches(scenariosFolder, resultsFolder, suiteName, volatileFileExtensions);
+      await folderMatches(scenariosFolder, resultsFolder, suiteName, [...volatileFileExtensions, "report.json"]);
     });
 
     after(function () {

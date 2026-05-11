@@ -27,8 +27,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faFile } from "@fortawesome/free-regular-svg-icons";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
-interface IIntegrateItemProps extends IAppProps {
+interface IIntegrateItemProps extends IAppProps, WithLocalizationProps {
   project: Project;
   theme: IProjectTheme;
   heightOffset: number;
@@ -47,7 +48,7 @@ interface IIntegrateItemState {
   nameIsManuallySet?: boolean;
 }
 
-export default class IntegrateItem extends Component<IIntegrateItemProps, IIntegrateItemState> {
+class IntegrateItem extends Component<IIntegrateItemProps, IIntegrateItemState> {
   constructor(props: IIntegrateItemProps) {
     super(props);
 
@@ -215,7 +216,7 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
             name: "replace." + projectItem.projectPath,
             key: "replace." + projectItem.projectPath,
             value: "replace." + projectItem.projectPath,
-            label: "Replace " + projectItem.projectPath,
+            label: this.props.intl.formatMessage({ id: "integrate_item.replace" }, { path: projectItem.projectPath }),
           });
 
           if (items.length >= 3) {
@@ -235,7 +236,7 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
               name: "overwriteVanillaPath." + pathMatch,
               key: "overwriteVanillaPath." + pathMatch,
               value: "overwriteVanillaPath." + pathMatch,
-              label: "Override vanilla file at " + pathMatch,
+              label: this.props.intl.formatMessage({ id: "integrate_item.override_vanilla" }, { path: pathMatch }),
             });
           }
         }
@@ -246,8 +247,10 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
   }
 
   getContentTypeInfo(): { icon: IconDefinition; typeName: string; description: string } {
+    const intl = this.props.intl;
+
     if (!this.props.data.fileSource) {
-      return { icon: faFile, typeName: "File", description: "Add a file to your project." };
+      return { icon: faFile, typeName: intl.formatMessage({ id: "integrate_item.type_file" }), description: intl.formatMessage({ id: "integrate_item.desc_add_file" }) };
     }
 
     const extension = StorageUtilities.getTypeFromName(this.props.data.fileSource.name);
@@ -262,77 +265,77 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
       fileName === "levelname.txt" ||
       fileName.startsWith("world_")
     ) {
-      return { icon: faGlobe, typeName: "World Data", description: "This file contains Minecraft world data." };
+      return { icon: faGlobe, typeName: intl.formatMessage({ id: "integrate_item.type_world_data" }), description: intl.formatMessage({ id: "integrate_item.desc_world_data" }) };
     }
 
     switch (extension) {
       case "mcworld":
         return {
           icon: faGlobe,
-          typeName: "Minecraft World",
-          description: "An exported world package. Its contents will be extracted into your project.",
+          typeName: intl.formatMessage({ id: "integrate_item.type_mcworld" }),
+          description: intl.formatMessage({ id: "integrate_item.desc_mcworld" }),
         };
       case "mcproject":
         return {
           icon: faBoxOpen,
-          typeName: "Minecraft Project",
-          description: "A creator project package. Its contents will be merged into your project.",
+          typeName: intl.formatMessage({ id: "integrate_item.type_mcproject" }),
+          description: intl.formatMessage({ id: "integrate_item.desc_mcproject" }),
         };
       case "mctemplate":
         return {
           icon: faBoxOpen,
-          typeName: "World Template",
-          description: "A world template package with starter content.",
+          typeName: intl.formatMessage({ id: "integrate_item.type_template" }),
+          description: intl.formatMessage({ id: "integrate_item.desc_template" }),
         };
       case "mcaddon":
         return {
           icon: faPuzzlePiece,
-          typeName: "Add-On Package",
-          description: "An add-on with behavior and/or resource packs.",
+          typeName: intl.formatMessage({ id: "integrate_item.type_addon" }),
+          description: intl.formatMessage({ id: "integrate_item.desc_addon" }),
         };
       case "mcpack":
         return {
           icon: faPuzzlePiece,
-          typeName: "Pack",
-          description: "A single behavior or resource pack.",
+          typeName: intl.formatMessage({ id: "integrate_item.type_pack" }),
+          description: intl.formatMessage({ id: "integrate_item.desc_pack" }),
         };
       case "zip":
         return {
           icon: faBoxOpen,
-          typeName: "Archive",
-          description: "A zip archive. Its contents will be extracted into your project.",
+          typeName: intl.formatMessage({ id: "integrate_item.type_archive" }),
+          description: intl.formatMessage({ id: "integrate_item.desc_archive" }),
         };
       case "ogg":
       case "mp3":
       case "wav":
         return {
           icon: faMusic,
-          typeName: "Sound File",
-          description: "An audio file that will be added to your project's sounds.",
+          typeName: intl.formatMessage({ id: "integrate_item.type_sound" }),
+          description: intl.formatMessage({ id: "integrate_item.desc_sound" }),
         };
       case "mcstructure":
         return {
           icon: faCube,
-          typeName: "Structure",
-          description: "A Minecraft structure file used for world generation or structure blocks.",
+          typeName: intl.formatMessage({ id: "integrate_item.type_structure" }),
+          description: intl.formatMessage({ id: "integrate_item.desc_structure" }),
         };
       case "snbt":
         return {
           icon: faCube,
-          typeName: "Structure (SNBT)",
-          description: "An SNBT structure file that will be converted and added to your project.",
+          typeName: intl.formatMessage({ id: "integrate_item.type_snbt" }),
+          description: intl.formatMessage({ id: "integrate_item.desc_snbt" }),
         };
       case "bbmodel":
         return {
           icon: faCube,
-          typeName: "Blockbench Model",
-          description: "A Blockbench 3D model. Its geometry, animations, and textures will be imported.",
+          typeName: intl.formatMessage({ id: "integrate_item.type_bbmodel" }),
+          description: intl.formatMessage({ id: "integrate_item.desc_bbmodel" }),
         };
       case "json":
         return {
           icon: faFileCode,
-          typeName: "JSON Data",
-          description: "A JSON data file — could be an entity, block, item definition, or other content.",
+          typeName: intl.formatMessage({ id: "integrate_item.type_json" }),
+          description: intl.formatMessage({ id: "integrate_item.desc_json" }),
         };
       case "png":
       case "jpg":
@@ -340,29 +343,30 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
       case "tga":
         return {
           icon: faImage,
-          typeName: "Image",
-          description: "An image file that can be used as a texture in your project.",
+          typeName: intl.formatMessage({ id: "integrate_item.type_image" }),
+          description: intl.formatMessage({ id: "integrate_item.desc_image" }),
         };
       case "js":
       case "ts":
         return {
           icon: faFileCode,
-          typeName: "Script",
-          description: "A script file for game logic and add-on behavior.",
+          typeName: intl.formatMessage({ id: "integrate_item.type_script" }),
+          description: intl.formatMessage({ id: "integrate_item.desc_script" }),
         };
       default:
         return {
           icon: faFileLines,
-          typeName:
-            StorageUtilities.getTypeFromName(this.props.data.fileSource.name)?.toUpperCase() + " File" || "File",
-          description: "This file will be added to your project.",
+          typeName: intl.formatMessage({ id: "integrate_item.type_ext_file" }, { extension: StorageUtilities.getTypeFromName(this.props.data.fileSource.name)?.toUpperCase() || "" }),
+          description: intl.formatMessage({ id: "integrate_item.desc_default" }),
         };
     }
   }
 
   render() {
+    const intl = this.props.intl;
+
     if (this.state === null || this.state.vanillaContentIndex === undefined) {
-      return <div>Loading...</div>;
+      return <div>{intl.formatMessage({ id: "integrate_item.loading" })}</div>;
     }
 
     let inputText = this.state.name;
@@ -373,7 +377,7 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
 
     let fileArea = <></>;
 
-    let label = "Add file";
+    let label = intl.formatMessage({ id: "integrate_item.add_file" });
 
     if (this.props.data.fileSource) {
       const tentativeLabel = ProjectEditorUtilities.getIntegrateBrowserFileDefaultActionDescription(
@@ -399,7 +403,7 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
         name: "addNewFile",
         key: "addNewFile",
         value: "addNewFile",
-        label: "Add file at folder...",
+        label: intl.formatMessage({ id: "integrate_item.add_file_at_folder" }),
       },
     ];
 
@@ -423,7 +427,7 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
       if (this.state.rootFolder) {
         folderPicker = (
           <div className="iitem-folderArea">
-            <div className="iitem-folderAreaLabel">Choose a folder:</div>
+            <div className="iitem-folderAreaLabel">{intl.formatMessage({ id: "integrate_item.choose_folder" })}</div>
             <FileExplorer
               rootFolder={this.state.rootFolder}
               theme={this.props.theme}
@@ -442,13 +446,13 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
         <div>
           <div className="iitem-optionsArea">
             <div className="iitem-nameLabel" id="iitem-nameLabel">
-              File Name
+              {intl.formatMessage({ id: "integrate_item.file_name" })}
             </div>
             <div className="iitem-nameArea">
               <TextField
                 value={this.state.name}
                 aria-labelledby="iitem-nameLabel"
-                placeholder={ProjectItemUtilities.getNewItemName(this.props.data.itemType) + " name"}
+                placeholder={intl.formatMessage({ id: "integrate_item.name_placeholder" }, { name: ProjectItemUtilities.getNewItemName(this.props.data.itemType) })}
                 onChange={this._handleNameChanged}
                 size="small"
                 variant="outlined"
@@ -485,3 +489,5 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
     );
   }
 }
+
+export default withLocalization(IntegrateItem);
