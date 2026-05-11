@@ -163,9 +163,8 @@ export default class FieldUtilities {
 
   /**
    * Legacy numeric-to-string mapping for FieldDataType.
-   * Before commit b08a02db2, FieldDataType was a numeric enum. Some form.json files
-   * still contain numeric dataType values from that era. This map converts them
-   * to the current string-based FieldDataType values.
+   * Some form.json files still contain numeric dataType values from that era. 
+   * This map converts them to the current string-based FieldDataType values.
    */
   private static readonly _legacyNumericDataTypeMap: { [key: number]: FieldDataType } = {
     0: FieldDataType.int,
