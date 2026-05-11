@@ -81,8 +81,12 @@ export function ensureResultFolder(scenarioName: string) {
 export async function collectLines(readable: Readable, data: string[]) {
   for await (const line of chunksToLinesAsync(readable)) {
     if (line !== undefined && line.length >= 0) {
-      let lineUp = line.replace(/\\n/g, "");
-      lineUp = lineUp.replace(/\\r/g, "");
+      // Strip real newlines and carriage returns (e.g. trailing \r from \r\n line splits on Windows).
+      // NOTE: Do NOT use /\\n/ or /\\r/ here — those regexes match a literal backslash followed by n/r,
+      // which corrupts JSON output containing escaped Windows paths like "C:\\node_modules\\..." and
+      // produces "Bad Unicode escape" errors when the result is JSON.parse'd downstream.
+      let lineUp = line.replace(/\n/g, "");
+      lineUp = lineUp.replace(/\r/g, "");
 
       if (!lineUp.includes("ebugger")) {
         data.push(lineUp);
