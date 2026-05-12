@@ -21,6 +21,9 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 export interface ICraftingSlotProps {
   itemId?: string;
+  /** Optional Bedrock pre-flattening data value (e.g. for legacy `minecraft:planks`).
+   * Forwarded to ItemSpriteIcon so the right variant texture is shown. */
+  data?: number;
   row: number;
   col: number;
   darkTheme?: boolean;
@@ -101,7 +104,13 @@ export default class CraftingSlot extends Component<ICraftingSlotProps, ICraftin
           onDrop={this._handleDrop}
           onClick={this._handleClick}
         >
-          <ItemSpriteIcon itemId={this.props.itemId} empty={!hasItem} size="large" darkTheme={this.props.darkTheme} />
+          <ItemSpriteIcon
+            itemId={this.props.itemId}
+            data={this.props.data}
+            empty={!hasItem}
+            size="large"
+            darkTheme={this.props.darkTheme}
+          />
         </div>
         {hasItem && (
           <IconButton

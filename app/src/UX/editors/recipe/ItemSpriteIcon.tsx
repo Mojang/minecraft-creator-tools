@@ -16,11 +16,17 @@ import "./ItemSpriteIcon.css";
 import Utilities from "../../../core/Utilities";
 import CreatorToolsHost from "../../../app/CreatorToolsHost";
 import ItemSpriteDatabase from "./ItemSpriteDatabase";
+import { resolveLegacyItem } from "../../../minecraft/LegacyItemMap";
 
 export type ItemSpriteSize = "small" | "medium" | "large";
 
 export interface IItemSpriteIconProps {
   itemId?: string;
+  /** Optional Bedrock pre-flattening data value. When provided alongside a
+   * legacy item id (e.g. `minecraft:planks` + data 4), the icon resolves to
+   * the modern flattened id (`minecraft:acacia_planks`) so the right sprite
+   * is shown instead of the 4-letter placeholder. */
+  data?: number;
   /** Pre-resolved sprite filename from the static catalog (e.g. "apple.png"). When provided, used instead of guessing from itemId. */
   spriteFilename?: string | null;
   /** Atlas X pixel offset (from catalog). When set alongside atlasY, renders from the atlas. */
@@ -168,7 +174,12 @@ export default class ItemSpriteIcon extends Component<IItemSpriteIconProps, IIte
       );
     }
 
-    const itemId = this.props.itemId!;
+    const rawItemId = this.props.itemId!;
+    // Resolve legacy (pre-flattening) ids like `minecraft:planks` + data 4 to
+    // their modern flattened equivalent (`minecraft:acacia_planks`) so the
+    // catalog/atlas lookup can find a real sprite. Falls back to the raw id
+    // when nothing matches, preserving custom-namespaced items untouched.
+    const itemId = resolveLegacyItem(rawItemId, this.props.data) || rawItemId;
     const displayName = this.props.title || ItemSpriteIcon.getDisplayName(itemId);
     const slotClass = "rcisi-slot rcisi-slot-" + size + (isDark ? " rcisi-slot-dark" : "");
 

@@ -192,8 +192,20 @@ class RecipeEditor extends Component<IRecipeEditorProps, IRecipeEditorState> {
     const def = this._getDefinition();
     if (!def?.data) return "unknown";
 
+    // Detect every recipe variant the engine supports — not just the two the
+    // visual editor handles. If we only checked shaped/shapeless, furnace,
+    // brewing-mix/container, smithing-transform/trim and material-reduction
+    // recipes would all be misclassified as `unknown` (i.e. "empty"), and the
+    // empty-state's "Start as shapeless recipe" button would overwrite their
+    // contents on click. See ready-to-ship-report follow-up.
     if (def.data["minecraft:recipe_shaped"]) return "shaped";
     if (def.data["minecraft:recipe_shapeless"]) return "shapeless";
+    if (def.data["minecraft:recipe_furnace"]) return "furnace";
+    if (def.data["minecraft:recipe_brewing_mix"]) return "brewing_mix";
+    if (def.data["minecraft:recipe_brewing_container"]) return "brewing_container";
+    if (def.data["minecraft:recipe_smithing_transform"]) return "smithing_transform";
+    if (def.data["minecraft:recipe_smithing_trim"]) return "smithing_trim";
+    if (def.data["minecraft:recipe_material_reduction"]) return "material_reduction";
     return "unknown";
   }
 
@@ -244,8 +256,17 @@ class RecipeEditor extends Component<IRecipeEditorProps, IRecipeEditorState> {
     }
 
     const recipeType = this._getRecipeType();
-    const typeName =
-      recipeType === "shaped" ? "Shaped Recipe" : recipeType === "shapeless" ? "Shapeless Recipe" : "Recipe";
+    const recipeTypeLabels: Record<string, string> = {
+      shaped: "Shaped Recipe",
+      shapeless: "Shapeless Recipe",
+      furnace: "Furnace Recipe",
+      brewing_mix: "Brewing Mix Recipe",
+      brewing_container: "Brewing Container Recipe",
+      smithing_transform: "Smithing Transform Recipe",
+      smithing_trim: "Smithing Trim Recipe",
+      material_reduction: "Material Reduction Recipe",
+    };
+    const typeName = recipeTypeLabels[recipeType] ?? "Recipe";
 
     // Build the mode-specific content
     let modeArea: React.ReactNode;
@@ -276,33 +297,52 @@ class RecipeEditor extends Component<IRecipeEditorProps, IRecipeEditorState> {
           </div>
         );
       } else {
-        // Recipe shape isn't shaped or shapeless (could be furnace, brewing, smithing, etc.,
-        // or an empty stub from the wizard). Surface a clearer hint and a one-click seed for
-        // the most common case so the user isn't left at a dead end.
+        // Recipe shape isn't shaped or shapeless. This branch covers two distinct
+        // cases that we used to confuse: (1) a truly empty recipe stub from the
+        // wizard with no recipe key at all (`unknown`), and (2) a valid recipe
+        // type the visual editor doesn't yet support (furnace/brewing/smithing/etc.).
+        // Only case (1) gets the "Start as shapeless" seed button — offering it
+        // for case (2) would silently overwrite the user's recipe data.
         const isEmpty = recipeType === "unknown";
+        const friendlyType = recipeTypeLabels[recipeType] ?? "this";
         modeArea = (
           <div className="rcre-unsupported">
-            <div className="rcre-unsupported-type">{isEmpty ? "Empty recipe" : `${recipeType} recipe`}</div>
+            <div className="rcre-unsupported-type">{isEmpty ? "Empty recipe" : friendlyType}</div>
             <div className="rcre-unsupported-hint">
               {isEmpty
                 ? "This recipe has no content yet. Use the Properties tab to choose a recipe type, or click below to start with a shapeless recipe."
-                : "Visual editor not yet available for this recipe type. Use the Properties tab or switch to raw JSON view."}
+                : `Visual editor not yet available for ${friendlyType.toLowerCase()}. Use the Properties tab or switch to raw JSON view.`}
             </div>
             {isEmpty && (
-              <Button
-                variant="contained"
-                onClick={() =>
-                  this._handleShapelessRecipeChanged({
-                    description: { identifier: def.id || "" },
-                    tags: ["crafting_table"],
-                    ingredients: [],
-                    result: { item: "" },
-                  } as IRecipeShapeless)
-                }
-                style={{ marginTop: 12 }}
-              >
-                Start as shapeless recipe
-              </Button>
+              <div style={{ display: "flex", gap: 8, marginTop: 12, justifyContent: "center", flexWrap: "wrap" }}>
+                <Button
+                  variant="contained"
+                  onClick={() =>
+                    this._handleShapedRecipeChanged({
+                      description: { identifier: def.id || "" },
+                      tags: ["crafting_table"],
+                      pattern: ["   ", "   ", "   "],
+                      key: {},
+                      result: { item: "" },
+                    } as IRecipeShaped)
+                  }
+                >
+                  Start as shaped recipe
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() =>
+                    this._handleShapelessRecipeChanged({
+                      description: { identifier: def.id || "" },
+                      tags: ["crafting_table"],
+                      ingredients: [],
+                      result: { item: "" },
+                    } as IRecipeShapeless)
+                  }
+                >
+                  Start as shapeless recipe
+                </Button>
+              </div>
             )}
           </div>
         );

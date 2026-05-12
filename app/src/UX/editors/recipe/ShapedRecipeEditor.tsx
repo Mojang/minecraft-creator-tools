@@ -27,6 +27,7 @@ import ItemSpriteIcon from "./ItemSpriteIcon";
 import ItemSpritePicker, { RECIPE_DRAG_TYPE } from "./ItemSpritePicker";
 import { IRecipeShaped, IRecipeKeyItem, IRecipeResultItem } from "../../../minecraft/IRecipeBehavior";
 import Project from "../../../app/Project";
+import { resolveLegacyItem } from "../../../minecraft/LegacyItemMap";
 
 export interface IShapedRecipeEditorProps {
   recipeData: IRecipeShaped;
@@ -303,12 +304,16 @@ export default class ShapedRecipeEditor extends Component<IShapedRecipeEditorPro
 
     for (const [char, keyItem] of Object.entries(key)) {
       if (!keyItem) continue;
+      // Use the legacy-resolved id for the display label too so legacy
+      // entries like (`planks`, data 4) read as "Acacia Planks" instead of
+      // the generic "Planks", matching the icon shown alongside.
+      const resolvedId = resolveLegacyItem(keyItem.item, keyItem.data) || keyItem.item;
       entries.push(
         <div key={char} className={"rcsre-key-entry" + (isDark ? " rcsre-key-entry-dark" : "")}>
           <span className={"rcsre-key-char" + (isDark ? " rcsre-key-char-dark" : "")}>{char}</span>
           <span>= </span>
-          <ItemSpriteIcon itemId={keyItem.item} size="small" darkTheme={isDark} />
-          <span>{ItemSpriteIcon.getDisplayName(keyItem.item)}</span>
+          <ItemSpriteIcon itemId={keyItem.item} data={keyItem.data} size="small" darkTheme={isDark} />
+          <span>{ItemSpriteIcon.getDisplayName(resolvedId)}</span>
         </div>
       );
     }
@@ -319,6 +324,23 @@ export default class ShapedRecipeEditor extends Component<IShapedRecipeEditorPro
 
   render() {
     const isDark = this.props.darkTheme;
+
+    // Build a quick item-id → data lookup from the recipe's key map so the
+    // grid slots can render legacy (pre-flattening) variants with the
+    // correct icon (e.g. `minecraft:planks` data 4 → acacia planks). The
+    // grid itself only stores ids — data values live on the key entries.
+    const itemIdToData = new Map<string, number>();
+    if (this.props.recipeData?.key) {
+      for (const keyItem of Object.values(this.props.recipeData.key)) {
+        if (keyItem && keyItem.item && typeof keyItem.data === "number") {
+          itemIdToData.set(keyItem.item, keyItem.data);
+        }
+      }
+    }
+    const resultData =
+      this.props.recipeData?.result && typeof this.props.recipeData.result.data === "number"
+        ? this.props.recipeData.result.data
+        : undefined;
 
     return (
       <div className="rcsre-container">
@@ -333,6 +355,7 @@ export default class ShapedRecipeEditor extends Component<IShapedRecipeEditorPro
                     row={r}
                     col={c}
                     itemId={cell || undefined}
+                    data={cell ? itemIdToData.get(cell) : undefined}
                     darkTheme={isDark}
                     onItemDrop={this._handleSlotDrop}
                     onSlotClick={this._handleSlotClick}
@@ -368,6 +391,7 @@ export default class ShapedRecipeEditor extends Component<IShapedRecipeEditorPro
               <div style={{ position: "relative", display: "inline-flex" }}>
                 <ItemSpriteIcon
                   itemId={this.state.resultItem || undefined}
+                  data={resultData}
                   empty={!this.state.resultItem}
                   size="large"
                   darkTheme={isDark}
