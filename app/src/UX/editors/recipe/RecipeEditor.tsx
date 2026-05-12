@@ -198,14 +198,15 @@ class RecipeEditor extends Component<IRecipeEditorProps, IRecipeEditorState> {
     // recipes would all be misclassified as `unknown` (i.e. "empty"), and the
     // empty-state's "Start as shapeless recipe" button would overwrite their
     // contents on click. See ready-to-ship-report follow-up.
-    if (def.data["minecraft:recipe_shaped"]) return "shaped";
-    if (def.data["minecraft:recipe_shapeless"]) return "shapeless";
-    if (def.data["minecraft:recipe_furnace"]) return "furnace";
-    if (def.data["minecraft:recipe_brewing_mix"]) return "brewing_mix";
-    if (def.data["minecraft:recipe_brewing_container"]) return "brewing_container";
-    if (def.data["minecraft:recipe_smithing_transform"]) return "smithing_transform";
-    if (def.data["minecraft:recipe_smithing_trim"]) return "smithing_trim";
-    if (def.data["minecraft:recipe_material_reduction"]) return "material_reduction";
+    const data = def.data as unknown as Record<string, unknown>;
+    if (data["minecraft:recipe_shaped"]) return "shaped";
+    if (data["minecraft:recipe_shapeless"]) return "shapeless";
+    if (data["minecraft:recipe_furnace"]) return "furnace";
+    if (data["minecraft:recipe_brewing_mix"]) return "brewing_mix";
+    if (data["minecraft:recipe_brewing_container"]) return "brewing_container";
+    if (data["minecraft:recipe_smithing_transform"]) return "smithing_transform";
+    if (data["minecraft:recipe_smithing_trim"]) return "smithing_trim";
+    if (data["minecraft:recipe_material_reduction"]) return "material_reduction";
     return "unknown";
   }
 
