@@ -139,7 +139,7 @@ export default function InspectPanel({ onFilesSubmitted, editFolder, openAppFold
             {isApp && (
               <Box sx={{ display: "flex" }}>
                 <McButton variant="green" fullWidth onClick={handleOpenAppFolder}>
-                  {intl.formatMessage({ id: "home.inspect_panel.open_project_folder" })}
+                  {intl.formatMessage({ id: "common.open_project_folder" })}
                 </McButton>
               </Box>
             )}

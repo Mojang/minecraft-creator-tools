@@ -55,7 +55,7 @@ export default class MeasureButton extends Component<IMeasureButtonProps, IMeasu
           </div>
           <div className="mbut-toolArea">
             <Stack direction="row" spacing={1} aria-label="Measure actions">
-              <IconButton key="closeMeasure" onClick={this._closeMeasure} title="Close this Measure" size="small">
+              <IconButton key="closeMeasure" onClick={this._closeMeasure} title="Close this Measure" aria-label="Close measure" size="small">
                 <FontAwesomeIcon icon={faXmark} className="fa-md" />
               </IconButton>
             </Stack>

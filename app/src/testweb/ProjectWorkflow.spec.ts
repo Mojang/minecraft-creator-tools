@@ -20,6 +20,9 @@ import {
   enableAllFileTypes,
   takeScreenshot,
   preferBrowserStorageInProjectDialog,
+  fillRequiredProjectDialogFields,
+  clickTemplateCreateButton,
+  waitForEditorReady,
 } from "./WebTestUtilities";
 
 test.describe("Project Template Selection @full", () => {
@@ -59,11 +62,9 @@ test.describe("Project Template Selection @full", () => {
   });
 
   test("should create project from Add-On Starter template", async ({ page }) => {
-    // Find the first New button (Add-On Starter)
-    const addOnStarterNew = page.getByRole("button", { name: "Create New" }).first();
-    await expect(addOnStarterNew).toBeVisible({ timeout: 5000 });
-
-    await addOnStarterNew.click();
+    // Click the Add-On Starter template's Create New button via stable test id
+    const clicked = await clickTemplateCreateButton(page, "addonStarter");
+    expect(clicked).toBe(true);
     await page.waitForTimeout(1000);
 
     // Verify dialog appeared
@@ -81,18 +82,19 @@ test.describe("Project Template Selection @full", () => {
     // Select browser storage for automated test flow
     await preferBrowserStorageInProjectDialog(page);
 
+    // Fill required Creator field if blank (validation blocks submit otherwise)
+    await fillRequiredProjectDialogFields(page);
+
     // Click create/OK button
     const createButton = page.getByTestId("submit-button");
     await expect(createButton).toBeVisible();
     await createButton.click();
 
-    // Wait for editor to load
-    await page.waitForTimeout(5000);
-    await page.waitForLoadState("networkidle");
-
-    // Verify we're in the editor
-    const viewButton = page.getByRole("button", { name: "View" }).first();
-    await expect(viewButton).toBeVisible({ timeout: 10000 });
+    // Wait for editor to load — use the shared editor-ready check which
+    // covers multiple toolbar/welcome variants instead of requiring a
+    // single "View" button to appear.
+    const ready = await waitForEditorReady(page, 20000);
+    expect(ready).toBe(true);
 
     await takeScreenshot(page, "debugoutput/screenshots/workflow-addon-starter-editor");
 

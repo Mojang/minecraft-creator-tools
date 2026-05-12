@@ -5,8 +5,9 @@ import Database from "../../../minecraft/Database";
 import { Stack } from "@mui/material";
 import IManagedComponentSetItem from "../../../minecraft/IManagedComponentSetItem";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
-interface IEventEditorEditorProps {
+interface IEventEditorEditorProps extends WithLocalizationProps {
   componentSetItem: IManagedComponentSetItem;
   isDefault: boolean;
   theme: IProjectTheme;
@@ -14,7 +15,7 @@ interface IEventEditorEditorProps {
 
 interface IEventEditorEditorState {}
 
-export default class EventEditorEditor extends Component<IEventEditorEditorProps, IEventEditorEditorState> {
+class EventEditorEditor extends Component<IEventEditorEditorProps, IEventEditorEditorState> {
   constructor(props: IEventEditorEditorProps) {
     super(props);
 
@@ -52,7 +53,7 @@ export default class EventEditorEditor extends Component<IEventEditorEditorProps
     let title = <></>;
 
     if (this.props.isDefault) {
-      title = <div>Default</div>;
+      title = <div>{this.props.intl.formatMessage({ id: "project_editor.event_ed.default_title" })}</div>;
     }
 
     const componentGroupAdds: any[] = [];
@@ -62,7 +63,7 @@ export default class EventEditorEditor extends Component<IEventEditorEditorProps
         <div className="eved-componentArea">
           <div className="eved-titleArea">{title}</div>
           <div className="eved-componentToolBarArea">
-            <Stack direction="row" spacing={0.5} aria-label="Event editing toolbar">
+            <Stack direction="row" spacing={0.5} aria-label={this.props.intl.formatMessage({ id: "project_editor.event_ed.toolbar_aria" })}>
               {/* Toolbar items can be added here */}
             </Stack>
           </div>
@@ -72,3 +73,5 @@ export default class EventEditorEditor extends Component<IEventEditorEditorProps
     );
   }
 }
+
+export default withLocalization(EventEditorEditor);

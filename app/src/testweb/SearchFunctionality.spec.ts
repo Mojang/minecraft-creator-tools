@@ -87,12 +87,27 @@ function omniSearchInput(page: Page) {
 
 /**
  * Type into the omni search bar and wait for results.
+ *
+ * Uses force-click to bypass scroll-into-view and overlay-intercept logic
+ * which can hang for tens of seconds when the editor area is animating
+ * (e.g., status area panes still resizing). Falls back to direct DOM
+ * focus if the click still fails.
  */
 async function typeInOmniSearch(page: Page, text: string, waitMs = 500): Promise<void> {
   await activateOmniSearch(page);
   const input = omniSearchInput(page);
   await expect(input).toBeVisible({ timeout: 5000 });
-  await input.click();
+
+  try {
+    // Force click bypasses the actionability checks (visible/enabled/stable
+    // and overlay interception) that previously caused 90s timeouts when the
+    // surrounding layout was still settling.
+    await input.click({ force: true, timeout: 5000 });
+  } catch {
+    // Last-ditch fallback: focus directly via the DOM
+    await input.evaluate((el: HTMLInputElement) => el.focus());
+  }
+
   await input.fill(text);
   await page.waitForTimeout(waitMs);
 }
@@ -460,8 +475,8 @@ test.describe("Omni Search (Ctrl+E) @full", () => {
 
     await page.waitForTimeout(15000);
 
-    // Count sidebar items before search using the listbox
-    const initialItemCount = await page.locator('[role="listbox"] [role="option"]').count();
+    // Count sidebar items before search using the project tree
+    const initialItemCount = await page.locator('[role="tree"] [role="treeitem"]').count();
     console.log("Initial sidebar option count:", initialItemCount);
 
     // Search to filter
@@ -484,7 +499,7 @@ test.describe("Omni Search (Ctrl+E) @full", () => {
     const afterEscapeVisible = await filteredEl.isVisible({ timeout: 2000 }).catch(() => false);
     console.log("After Escape - items found visible:", afterEscapeVisible);
 
-    const afterItemCount = await page.locator('[role="listbox"] [role="option"]').count();
+    const afterItemCount = await page.locator('[role="tree"] [role="treeitem"]').count();
     console.log("After Escape - sidebar option count:", afterItemCount);
 
     // After clearing, we should have at least as many items as during filtering

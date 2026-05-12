@@ -4,7 +4,7 @@ import Project from "../../../app/Project";
 import { ProjectItemType } from "../../../app/IProjectItemData";
 import ProjectItem from "../../../app/ProjectItem";
 import { ProjectEditorMode, ProjectItemEditorView } from "../ProjectEditorUtilities";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, MenuItem, Select, TextField, FormControl, InputLabel, Alert } from "@mui/material";
 
 import { GitHubPropertyType } from "../ProjectPropertyEditor";
 import NewEntityType from "../../editors/entityType/NewEntityType";
@@ -31,9 +31,11 @@ import ProjectCreateManager from "../../../app/ProjectCreateManager";
 import ContentWizard, { ContentWizardAction } from "../../home/ContentWizard";
 import { IMinecraftContentDefinition } from "../../../minecraft/IContentMetaSchema";
 import { ContentGenerator } from "../../../minecraft/ContentGenerator";
+import { ContentWriter } from "../../../minecraft/ContentWriter";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
 import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../../app/CreatorToolsHost";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
 export enum EntityTypeCommand {
   select,
@@ -50,7 +52,7 @@ export enum ListItemType {
   references,
 }
 
-interface IProjectAddButtonProps extends IAppProps {
+interface IProjectAddButtonProps extends IAppProps, WithLocalizationProps {
   theme: IProjectTheme;
   onActiveProjectItemChangeRequested?: (projectItem: ProjectItem, itemView: ProjectItemEditorView) => void;
   onActiveReferenceChangeRequested?: (reference: IGitHubInfo) => void;
@@ -70,6 +72,13 @@ interface IProjectAddButtonState {
   collapsedItemTypes: number[];
   contextFocusedItem?: number;
   collapsedStoragePaths: string[];
+
+  /** Empty-file dialog: filename the user is typing (without extension) */
+  emptyFileName?: string;
+  /** Empty-file dialog: chosen content type (drives sub-folder + extension) */
+  emptyFileContentType?: ProjectItemType;
+  /** Empty-file dialog: validation error to surface inline */
+  emptyFileError?: string | null;
 }
 
 export enum ProjectAddButtonDialogType {
@@ -81,12 +90,13 @@ export enum ProjectAddButtonDialogType {
   newNamedGenericDialog = 8,
   newNamedGenericPlusFolderDialog = 9,
   contentWizardDialog = 10,
+  newEmptyFileDialog = 11,
 }
 
 export const PROJECT_ADD_BUTTON_QUICK_ACTION_EVENT = "mct-project-add-quick-action";
 export type ProjectAddButtonQuickAction = "entityType" | "blockType" | "itemType";
 
-export default class ProjectAddButton extends Component<IProjectAddButtonProps, IProjectAddButtonState> {
+class ProjectAddButton extends Component<IProjectAddButtonProps, IProjectAddButtonState> {
   tentativeGitHubMode: string = "existing";
   tentativeGitHubRepoName?: string;
   tentativeGitHubOwner?: string;
@@ -140,6 +150,11 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     this._handleContentWizardCancel = this._handleContentWizardCancel.bind(this);
     this._handleContentWizardQuickAction = this._handleContentWizardQuickAction.bind(this);
     this._handleQuickActionRequest = this._handleQuickActionRequest.bind(this);
+    this._handleNewEmptyFileClick = this._handleNewEmptyFileClick.bind(this);
+    this._handleEmptyFileNameChange = this._handleEmptyFileNameChange.bind(this);
+    this._handleEmptyFileContentTypeChange = this._handleEmptyFileContentTypeChange.bind(this);
+    this._handleEmptyFileConfirm = this._handleEmptyFileConfirm.bind(this);
+    this._handleEmptyFileCancel = this._handleEmptyFileCancel.bind(this);
 
     this.state = {
       activeItem: undefined,
@@ -296,6 +311,18 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     this.launchNewNamespacedDefinition(ProjectItemType.featureBehavior, "geode_feature.json");
   }
 
+  _handleNewBiomeClick = () => {
+    this.launchNewNamespacedDefinition(ProjectItemType.biomeBehavior);
+  };
+
+  _handleNewFeatureClick = () => {
+    this.launchNewNamespacedDefinition(ProjectItemType.featureBehavior);
+  };
+
+  _handleNewFeatureRuleClick = () => {
+    this.launchNewNamespacedDefinition(ProjectItemType.featureRuleBehavior);
+  };
+
   _handleNewLootTableClick() {
     this.launchNewNamedGeneric(ProjectItemType.lootTableBehavior);
   }
@@ -327,6 +354,16 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
 
     if (this._isCreating) return;
     this._isCreating = true;
+
+    // Close the dialog immediately so the user gets responsive feedback.
+    // Content generation continues asynchronously below; closing first avoids
+    // leaving the modal open during the long await chain (and protects against
+    // any subsequent setState being lost to a parent re-render).
+    this.setState((prevState) => ({
+      ...prevState,
+      dialogMode: ProjectAddButtonDialogType.noDialog,
+    }));
+
     try {
       // Snapshot existing project items before creation so we can find newly created ones
       const itemsBefore = new Set(this.props.project.items.map((i) => i.projectPath));
@@ -334,129 +371,8 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
       const generator = new ContentGenerator(definition);
       const content = await generator.generate();
 
-      // Write generated files to the project
-      const bpFolder = await this.props.project.ensureDefaultBehaviorPackFolder();
-      const rpFolder = await this.props.project.ensureDefaultResourcePackFolder();
-
-      // Helper to extract filename from path like "entities/orc.json" -> "orc.json"
-      const getFilename = (filePath: string) => {
-        const parts = filePath.split("/");
-        return parts[parts.length - 1];
-      };
-
-      // Helper to write a file only if it doesn't already exist (prevents overwriting)
-      const writeIfNew = (
-        folder: import("../../../storage/IFolder").default,
-        fileName: string,
-        content: string | Uint8Array
-      ) => {
-        if (folder.fileExists(fileName)) {
-          Log.debug(`Skipping "${fileName}" — file already exists in ${folder.fullPath}`);
-          return;
-        }
-        const file = folder.ensureFile(fileName);
-        file.setContent(content);
-      };
-
-      if (bpFolder) {
-        for (const entityFile of content.entityBehaviors) {
-          const entitiesFolder = bpFolder.ensureFolder("entities");
-          writeIfNew(entitiesFolder, getFilename(entityFile.path), JSON.stringify(entityFile.content, null, 2));
-        }
-
-        for (const blockFile of content.blockBehaviors) {
-          const blocksFolder = bpFolder.ensureFolder("blocks");
-          writeIfNew(blocksFolder, getFilename(blockFile.path), JSON.stringify(blockFile.content, null, 2));
-        }
-
-        for (const itemFile of content.itemBehaviors) {
-          const itemsFolder = bpFolder.ensureFolder("items");
-          writeIfNew(itemsFolder, getFilename(itemFile.path), JSON.stringify(itemFile.content, null, 2));
-        }
-
-        for (const lootFile of content.lootTables) {
-          const lootFolder = bpFolder.ensureFolder("loot_tables");
-          writeIfNew(lootFolder, getFilename(lootFile.path), JSON.stringify(lootFile.content, null, 2));
-        }
-
-        for (const recipeFile of content.recipes) {
-          const recipesFolder = bpFolder.ensureFolder("recipes");
-          writeIfNew(recipesFolder, getFilename(recipeFile.path), JSON.stringify(recipeFile.content, null, 2));
-        }
-
-        for (const spawnFile of content.spawnRules) {
-          const spawnFolder = bpFolder.ensureFolder("spawn_rules");
-          writeIfNew(spawnFolder, getFilename(spawnFile.path), JSON.stringify(spawnFile.content, null, 2));
-        }
-      }
-
-      if (rpFolder) {
-        for (const entityFile of content.entityResources) {
-          const entityFolder = rpFolder.ensureFolder("entity");
-          writeIfNew(entityFolder, getFilename(entityFile.path), JSON.stringify(entityFile.content, null, 2));
-        }
-
-        for (const geometryFile of content.geometries) {
-          // Determine subfolder from path (e.g., "models/blocks/slab.geo.json" -> "blocks",
-          // "models/entity/my_mob.geo.json" -> "entity")
-          const pathParts = geometryFile.path.split("/");
-          const subfolderName = pathParts.length >= 2 ? pathParts[pathParts.length - 2] : "entity";
-          const modelsFolder = rpFolder.ensureFolder("models");
-          const subFolder = modelsFolder.ensureFolder(subfolderName);
-          writeIfNew(subFolder, getFilename(geometryFile.path), JSON.stringify(geometryFile.content, null, 2));
-        }
-
-        for (const textureFile of content.textures) {
-          const pathParts = textureFile.path.split("/");
-          const subfolderName = pathParts.length >= 2 ? pathParts[pathParts.length - 2] : "entity";
-
-          const texturesFolder = rpFolder.ensureFolder("textures");
-          const subFolder = texturesFolder.ensureFolder(subfolderName);
-          const fileName = getFilename(textureFile.path);
-
-          if (subFolder.fileExists(fileName)) {
-            Log.debug(`Skipping texture "${fileName}" — file already exists`);
-            continue;
-          }
-
-          const file = subFolder.ensureFile(fileName);
-          if (textureFile.content instanceof Uint8Array) {
-            file.setContent(textureFile.content);
-          } else if (Array.isArray(textureFile.content)) {
-            file.setContent(new Uint8Array(textureFile.content as number[]));
-          } else if (typeof textureFile.content === "string") {
-            file.setContent(textureFile.content);
-          } else {
-            Log.debug(`[ContentWizard] WARNING: Texture content is object, will serialize as JSON`);
-            file.setContent(JSON.stringify(textureFile.content, null, 2));
-          }
-        }
-
-        for (const renderControllerFile of content.renderControllers) {
-          const renderControllersFolder = rpFolder.ensureFolder("render_controllers");
-          writeIfNew(
-            renderControllersFolder,
-            getFilename(renderControllerFile.path),
-            JSON.stringify(renderControllerFile.content, null, 2)
-          );
-        }
-
-        // Write terrain_texture.json if we have block textures
-        if (content.terrainTextures) {
-          const texturesFolder = rpFolder.ensureFolder("textures");
-          const file = texturesFolder.ensureFile("terrain_texture.json");
-          file.setContent(JSON.stringify(content.terrainTextures.content, null, 2));
-        }
-
-        // Write item_texture.json if we have item textures
-        if (content.itemTextures) {
-          const texturesFolder = rpFolder.ensureFolder("textures");
-          const file = texturesFolder.ensureFile("item_texture.json");
-          file.setContent(JSON.stringify(content.itemTextures.content, null, 2));
-        }
-      }
-
-      await this.props.project.save();
+      // Write generated files to the project using shared utility
+      await ContentWriter.writeGeneratedContent(this.props.project, content);
 
       // Re-infer project items from the newly created files
       await this.props.project.inferProjectItemsFromFiles(true);
@@ -480,20 +396,19 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
       // Ensure the item's category is expanded so it's visible
       this._ensureItemTypeExpanded(createdProjectItem);
 
-      this.setState({
+      this.setState((prevState) => ({
+        ...prevState,
         activeItem: createdProjectItem,
         dialogMode: ProjectAddButtonDialogType.noDialog,
-        isLoaded: this.state.isLoaded,
-        maxItemsToShow: this.state.maxItemsToShow,
-        contextFocusedItem: this.state.contextFocusedItem,
         collapsedItemTypes: this.props.creatorTools.collapsedTypes,
-        collapsedStoragePaths: this.state.collapsedStoragePaths,
-      });
+      }));
 
       // Select the newly created item in the editor
       if (createdProjectItem && this.props.onActiveProjectItemChangeRequested) {
         this.props.onActiveProjectItemChangeRequested(createdProjectItem, ProjectItemEditorView.singleFileEditor);
       }
+    } catch (err) {
+      Log.debug("Content wizard creation failed: " + err);
     } finally {
       this._isCreating = false;
     }
@@ -562,6 +477,9 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
               this.launchNewNamespacedDefinition(galleryItem.targetType, galleryItem.id);
             }
             break;
+          case ContentWizardAction.newEmptyFile:
+            this._handleNewEmptyFileClick();
+            break;
           default:
             Log.error("Unhandled Content Wizard quick action: " + action);
         }
@@ -598,6 +516,84 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
   _handleNewFunctionClick() {
     if (this.props.project) {
       ProjectItemCreateManager.createNewFunction(this.props.project);
+    }
+  }
+
+  /**
+   * Open the "Empty File (advanced)" dialog (Add → Content Wizard → More
+   * Options → Empty File). The dialog asks for a base file name and a content
+   * type; on confirm we drop a minimally-valid stub at the conventional folder
+   * for that content type. This gives experts a path to author files that
+   * don't fit any of the wizards (e.g. a custom recipe variant or a one-off
+   * loot table) without leaving the Add flow.
+   */
+  _handleNewEmptyFileClick() {
+    this.setState({
+      dialogMode: ProjectAddButtonDialogType.newEmptyFileDialog,
+      emptyFileName: "",
+      emptyFileContentType: ProjectItemType.unknownJson,
+      emptyFileError: null,
+    });
+  }
+
+  _handleEmptyFileNameChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+    this.setState({ emptyFileName: e.target.value, emptyFileError: null });
+  }
+
+  _handleEmptyFileContentTypeChange(value: ProjectItemType) {
+    this.setState({ emptyFileContentType: value });
+  }
+
+  _handleEmptyFileCancel() {
+    this.setState({
+      dialogMode: ProjectAddButtonDialogType.noDialog,
+      emptyFileName: undefined,
+      emptyFileContentType: undefined,
+      emptyFileError: null,
+    });
+  }
+
+  async _handleEmptyFileConfirm() {
+    if (!this.props.project) {
+      return;
+    }
+
+    const contentType = this.state.emptyFileContentType ?? ProjectItemType.unknownJson;
+    const rawName = (this.state.emptyFileName ?? "").trim();
+
+    // Allow empty name (the helper auto-derives one); otherwise validate that
+    // the user didn't sneak path traversal or invalid filename chars in.
+    if (rawName) {
+      if (/[<>:"/\\|?*\x00-\x1f]/.test(rawName)) {
+        this.setState({ emptyFileError: "File name contains invalid characters." });
+        return;
+      }
+    }
+
+    // Strip any extension the user typed — the stub helper applies the right one.
+    const lastDot = rawName.lastIndexOf(".");
+    const baseName = lastDot > 0 ? rawName.substring(0, lastDot) : rawName;
+
+    try {
+      const created = await ProjectItemCreateManager.createNewEmptyStubFile(
+        this.props.project,
+        contentType,
+        baseName || undefined
+      );
+
+      this.setState((prevState) => ({
+        activeItem: created ?? prevState.activeItem,
+        dialogMode: ProjectAddButtonDialogType.noDialog,
+        emptyFileName: undefined,
+        emptyFileContentType: undefined,
+        emptyFileError: null,
+      }));
+
+      if (created && this.props.onActiveProjectItemChangeRequested) {
+        this.props.onActiveProjectItemChangeRequested(created, ProjectItemEditorView.singleFileEditor);
+      }
+    } catch (e) {
+      this.setState({ emptyFileError: "Could not create file: " + (e instanceof Error ? e.message : String(e)) });
     }
   }
 
@@ -1165,7 +1161,38 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
         key: "worldGen",
         content: "World Gen",
         menu: {
-          items: this.getMenuItemsFromGalleryItems(GalleryItemType.worldGen),
+          items: [
+            {
+              id: "biome",
+              key: "pab-biome",
+              onClick: this._handleNewBiomeClick,
+              content: "New Biome",
+            },
+            {
+              id: "feature",
+              key: "pab-feature",
+              onClick: this._handleNewFeatureClick,
+              content: "New Feature",
+            },
+            {
+              id: "featureRule",
+              key: "pab-featureRule",
+              onClick: this._handleNewFeatureRuleClick,
+              content: "New Feature Rule",
+            },
+            {
+              id: "structure",
+              key: "pab-structure-worldgen",
+              onClick: this._handleNewStructureClick,
+              content: "New Structure",
+            },
+            ...(this.getMenuItemsFromGalleryItems(GalleryItemType.worldGen) as any[]).filter((gi) => {
+              // Avoid duplicating the explicit entries above if the gallery contains
+              // similarly-named presets (defensive — keyed by case-insensitive title).
+              const c = (gi.content || "").toString().toLowerCase();
+              return c !== "new biome" && c !== "new feature" && c !== "new feature rule" && c !== "new structure";
+            }),
+          ],
         },
       },
       {
@@ -1266,7 +1293,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     ) {
       dialogArea = (
         <Dialog open={true} key="pab-newEntityOuter" onClose={this._handleCancel}>
-          <DialogTitle>New Mob Based on Existing</DialogTitle>
+          <DialogTitle>{this.props.intl.formatMessage({ id: "project_editor.dialog.new_mob_title" })}</DialogTitle>
           <DialogContent>
             <NewEntityType
               theme={this.props.theme}
@@ -1278,10 +1305,10 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
           </DialogContent>
           <DialogActions>
             <McButton variant="stone" onClick={this._handleCancel}>
-              Cancel
+              {this.props.intl.formatMessage({ id: "common.cancel" })}
             </McButton>
             <McButton variant="green" onClick={this._handleNewEntityType}>
-              Add
+              {this.props.intl.formatMessage({ id: "project_editor.common.add" })}
             </McButton>
           </DialogActions>
         </Dialog>
@@ -1293,7 +1320,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     ) {
       dialogArea = (
         <Dialog open={true} key="pab-newItemOuter" onClose={this._handleCancel}>
-          <DialogTitle>New Item Based on Existing</DialogTitle>
+          <DialogTitle>{this.props.intl.formatMessage({ id: "project_editor.dialog.new_item_title" })}</DialogTitle>
           <DialogContent>
             <NewItemType
               theme={this.props.theme}
@@ -1305,10 +1332,10 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
           </DialogContent>
           <DialogActions>
             <McButton variant="stone" onClick={this._handleCancel}>
-              Cancel
+              {this.props.intl.formatMessage({ id: "common.cancel" })}
             </McButton>
             <McButton variant="green" onClick={this._handleNewItemType}>
-              Add
+              {this.props.intl.formatMessage({ id: "project_editor.common.add" })}
             </McButton>
           </DialogActions>
         </Dialog>
@@ -1320,7 +1347,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     ) {
       dialogArea = (
         <Dialog open={true} key="pab-newBlockTypeOuter" onClose={this._handleCancel}>
-          <DialogTitle>New Block Based on Existing</DialogTitle>
+          <DialogTitle>{this.props.intl.formatMessage({ id: "project_editor.dialog.new_block_title" })}</DialogTitle>
           <DialogContent>
             <NewBlockType
               key="pab-newBlockTypeDia"
@@ -1332,10 +1359,10 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
           </DialogContent>
           <DialogActions>
             <McButton variant="stone" onClick={this._handleCancel}>
-              Cancel
+              {this.props.intl.formatMessage({ id: "common.cancel" })}
             </McButton>
             <McButton variant="green" onClick={this._handleNewBlockType}>
-              Add
+              {this.props.intl.formatMessage({ id: "project_editor.common.add" })}
             </McButton>
           </DialogActions>
         </Dialog>
@@ -1348,7 +1375,10 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
       dialogArea = (
         <Dialog open={true} key="btse-addComponentOuter" onClose={this._handleCancel}>
           <DialogTitle>
-            {"Add new " + ProjectItemUtilities.getNewItemName(newItemState?.itemType ?? ProjectItemType.unknown)}
+            {this.props.intl.formatMessage(
+              { id: "project_editor.dialog.add_new_named" },
+              { name: ProjectItemUtilities.getNewItemName(newItemState?.itemType ?? ProjectItemType.unknown) }
+            )}
           </DialogTitle>
           <DialogContent>
             <SetNamespacedId
@@ -1360,10 +1390,10 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
           </DialogContent>
           <DialogActions>
             <McButton variant="stone" onClick={this._handleCancel}>
-              Cancel
+              {this.props.intl.formatMessage({ id: "common.cancel" })}
             </McButton>
             <McButton variant="green" onClick={this._handleNewGeneric}>
-              Add
+              {this.props.intl.formatMessage({ id: "project_editor.common.add" })}
             </McButton>
           </DialogActions>
         </Dialog>
@@ -1376,7 +1406,10 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
       dialogArea = (
         <Dialog open={true} key="btse-addComponentOuter2" onClose={this._handleCancel}>
           <DialogTitle>
-            {"Add new " + ProjectItemUtilities.getNewItemName(newItemState?.itemType ?? ProjectItemType.unknown)}
+            {this.props.intl.formatMessage(
+              { id: "project_editor.dialog.add_new_named" },
+              { name: ProjectItemUtilities.getNewItemName(newItemState?.itemType ?? ProjectItemType.unknown) }
+            )}
           </DialogTitle>
           <DialogContent>
             <SetName
@@ -1387,10 +1420,10 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
           </DialogContent>
           <DialogActions>
             <McButton variant="stone" onClick={this._handleCancel}>
-              Cancel
+              {this.props.intl.formatMessage({ id: "common.cancel" })}
             </McButton>
             <McButton variant="green" onClick={this._handleNewGeneric}>
-              Add
+              {this.props.intl.formatMessage({ id: "project_editor.common.add" })}
             </McButton>
           </DialogActions>
         </Dialog>
@@ -1400,36 +1433,9 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
       this.props.project !== null &&
       this.state.dialogMode === ProjectAddButtonDialogType.newNamedGenericPlusFolderDialog
     ) {
-      dialogArea = (
-        <Dialog open={true} key="pab-addComponentOuter" onClose={this._handleCancel}>
-          <DialogTitle>
-            {"Add new " + ProjectItemUtilities.getNewItemName(newItemState?.itemType ?? ProjectItemType.unknown)}
-          </DialogTitle>
-          <DialogContent>
-            <SetNameAndFolder
-              heightOffset={this.props.heightOffset}
-              theme={this.props.theme}
-              project={this.props.project}
-              creatorTools={this.props.creatorTools}
-              rootFolder={this.state.newItemSeed?.folder}
-              defaultName={this.state.newItemSeed?.name}
-              creationData={this.state.newItemSeed?.creationData}
-              itemType={
-                this.state.newItemSeed?.itemType ? this.state.newItemSeed?.itemType : ProjectItemType.unknownJson
-              }
-              onNewItemSeedUpdated={this._setNewItemSeed}
-            />
-          </DialogContent>
-          <DialogActions>
-            <McButton variant="stone" onClick={this._handleCancel}>
-              Cancel
-            </McButton>
-            <McButton variant="green" onClick={this._handleNewGeneric}>
-              Add
-            </McButton>
-          </DialogActions>
-        </Dialog>
-      );
+      // Intentionally left empty — rendered separately below using the
+      // open-prop pattern so MUI's exit transition completes and the portal
+      // is cleaned up (otherwise the backdrop can persist after Add).
     } else if (
       this.state !== null &&
       this.props.project !== null &&
@@ -1438,6 +1444,55 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
       // Content wizard dialog intentionally left empty here;
       // rendered separately below using the open prop pattern for proper MUI cleanup.
     }
+
+    const namedGenericPlusFolderOpen =
+      this.state !== null &&
+      this.props.project !== null &&
+      this.state.dialogMode === ProjectAddButtonDialogType.newNamedGenericPlusFolderDialog;
+
+    const namedGenericPlusFolderDialog = (
+      <Dialog
+        open={namedGenericPlusFolderOpen}
+        key="pab-addComponentOuter"
+        onClose={this._handleCancel}
+        maxWidth="md"
+        fullWidth
+      >
+        {namedGenericPlusFolderOpen && this.props.project && (
+          <>
+            <DialogTitle>
+              {this.props.intl.formatMessage(
+                { id: "project_editor.dialog.add_new_named" },
+                { name: ProjectItemUtilities.getNewItemName(newItemState?.itemType ?? ProjectItemType.unknown) }
+              )}
+            </DialogTitle>
+            <DialogContent>
+              <SetNameAndFolder
+                heightOffset={this.props.heightOffset}
+                theme={this.props.theme}
+                project={this.props.project}
+                creatorTools={this.props.creatorTools}
+                rootFolder={this.state.newItemSeed?.folder}
+                defaultName={this.state.newItemSeed?.name}
+                creationData={this.state.newItemSeed?.creationData}
+                itemType={
+                  this.state.newItemSeed?.itemType ? this.state.newItemSeed?.itemType : ProjectItemType.unknownJson
+                }
+                onNewItemSeedUpdated={this._setNewItemSeed}
+              />
+            </DialogContent>
+            <DialogActions>
+              <McButton variant="stone" onClick={this._handleCancel}>
+                {this.props.intl.formatMessage({ id: "common.cancel" })}
+              </McButton>
+              <McButton variant="green" onClick={this._handleNewGeneric}>
+                {this.props.intl.formatMessage({ id: "project_editor.common.add" })}
+              </McButton>
+            </DialogActions>
+          </>
+        )}
+      </Dialog>
+    );
 
     // Always render the content wizard Dialog and control visibility via the open prop.
     // This ensures MUI's exit transition completes and the portal is properly cleaned up,
@@ -1459,12 +1514,12 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
         {wizardOpen && (
           <>
             <DialogTitle>
-              Add New Content
+              {this.props.intl.formatMessage({ id: "project_editor.dialog.add_new_content" })}
               <button
                 className="pab-dialog-close-btn"
                 onClick={this._handleContentWizardCancel}
-                title="Close"
-                aria-label="Close"
+                title={this.props.intl.formatMessage({ id: "common.close" })}
+                aria-label={this.props.intl.formatMessage({ id: "common.close" })}
               >
                 <FontAwesomeIcon icon={faTimes} />
               </button>
@@ -1486,6 +1541,80 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
       </Dialog>
     );
 
+    // "Empty File (advanced)" dialog — surfaces when the user picks the
+    // newEmptyFile option from the wizard launcher's More Options section.
+    // Lets experts pick a content type and base name, then drops a stub file
+    // at the conventional folder so they can author it directly.
+    const emptyFileDialogOpen =
+      this.state !== null &&
+      this.props.project !== null &&
+      this.state.dialogMode === ProjectAddButtonDialogType.newEmptyFileDialog;
+
+    const emptyFileTypeOptions: { value: ProjectItemType; label: string; ext: string; folder: string }[] = [
+      { value: ProjectItemType.unknownJson, label: "Plain JSON file", ext: ".json", folder: "" },
+      { value: ProjectItemType.entityTypeBehavior, label: "Entity (behavior)", ext: ".json", folder: "entities/" },
+      { value: ProjectItemType.blockTypeBehavior, label: "Block (behavior)", ext: ".json", folder: "blocks/" },
+      { value: ProjectItemType.itemTypeBehavior, label: "Item (behavior)", ext: ".json", folder: "items/" },
+      { value: ProjectItemType.lootTableBehavior, label: "Loot table", ext: ".json", folder: "loot_tables/" },
+      { value: ProjectItemType.recipeBehavior, label: "Recipe", ext: ".json", folder: "recipes/" },
+      { value: ProjectItemType.spawnRuleBehavior, label: "Spawn rule", ext: ".json", folder: "spawn_rules/" },
+      { value: ProjectItemType.MCFunction, label: "Function (.mcfunction)", ext: ".mcfunction", folder: "functions/" },
+    ];
+    const selectedEmptyFileType = this.state.emptyFileContentType ?? ProjectItemType.unknownJson;
+    const selectedTypeOption = emptyFileTypeOptions.find((o) => o.value === selectedEmptyFileType);
+
+    const emptyFileDialog = (
+      <Dialog open={emptyFileDialogOpen} key="pab-emptyFileOuter" onClose={this._handleEmptyFileCancel} maxWidth="sm" fullWidth>
+        {emptyFileDialogOpen && (
+          <>
+            <DialogTitle>Add empty file</DialogTitle>
+            <DialogContent>
+              <div style={{ display: "flex", flexDirection: "column", gap: 16, marginTop: 8 }}>
+                <FormControl size="small" fullWidth>
+                  <InputLabel id="pab-emptyFile-typeLabel">Content type</InputLabel>
+                  <Select
+                    labelId="pab-emptyFile-typeLabel"
+                    label="Content type"
+                    value={selectedEmptyFileType}
+                    onChange={(e) => this._handleEmptyFileContentTypeChange(e.target.value as ProjectItemType)}
+                  >
+                    {emptyFileTypeOptions.map((opt) => (
+                      <MenuItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label={"File name (extension " + (selectedTypeOption?.ext ?? ".json") + " is added automatically)"}
+                  placeholder="e.g. my_thing"
+                  value={this.state.emptyFileName ?? ""}
+                  onChange={this._handleEmptyFileNameChange}
+                  inputProps={{ "aria-label": "Empty file name" }}
+                />
+                {this.state.emptyFileError && <Alert severity="error">{this.state.emptyFileError}</Alert>}
+                <div style={{ fontSize: 12, opacity: 0.7 }}>
+                  Drops a minimally-valid stub at the conventional folder for this content type
+                  (e.g. <code>behavior_packs/&lt;pack&gt;/{selectedTypeOption?.folder || "..."}</code>).
+                  You can edit it freely — the wizards aren&rsquo;t involved.
+                </div>
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <McButton variant="stone" onClick={this._handleEmptyFileCancel}>
+                {this.props.intl.formatMessage({ id: "common.cancel" })}
+              </McButton>
+              <McButton variant="green" onClick={this._handleEmptyFileConfirm}>
+                {this.props.intl.formatMessage({ id: "project_editor.common.add" })}
+              </McButton>
+            </DialogActions>
+          </>
+        )}
+      </Dialog>
+    );
+
     let addButton = <></>;
 
     if (this.props.project) {
@@ -1494,7 +1623,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
           <Button
             variant="outlined"
             startIcon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
-            aria-label="Add new content"
+            aria-label={this.props.intl.formatMessage({ id: "project_editor.sidebar.add_new_content_aria" })}
             onClick={this._handleContentWizardClick}
             size="small"
             sx={{
@@ -1504,7 +1633,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
               color: "inherit",
             }}
           >
-            Add
+            {this.props.intl.formatMessage({ id: "label.add" })}
           </Button>
         </div>
       );
@@ -1520,8 +1649,12 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
       >
         {addButton}
         {dialogArea}
+        {namedGenericPlusFolderDialog}
         {contentWizardDialog}
+        {emptyFileDialog}
       </div>
     );
   }
 }
+
+export default withLocalization(ProjectAddButton);

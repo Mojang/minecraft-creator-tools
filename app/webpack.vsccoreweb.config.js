@@ -157,6 +157,13 @@ const webExtensionConfig = {
   performance: {
     hints: false,
   },
+  cache: {
+    type: "filesystem",
+    cacheDirectory: path.join(__dirname, "node_modules", ".cache", "webpack-vsccoreweb"),
+    buildDependencies: {
+      config: [__filename],
+    },
+  },
   devtool: "nosources-source-map", // create a source map that points to the original source file
   infrastructureLogging: {
     level: "log", // enables logging required for problem matchers

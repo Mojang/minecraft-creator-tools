@@ -298,13 +298,13 @@
     "warningCount": 0,
     "testSuccessCount": 36,
     "testFailCount": 1,
-    "testNotApplicableCount": 13,
+    "testNotApplicableCount": 14,
     "errorSummary": "ERROR: [CPACKICON101] pack_icon image file not found for Unnamed pack. It must use the .png extension.",
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CPACKICON000] Found 1 error in Pack Icon check",
-    "infoGenerationTime": 799,
-    "endToEndGenerationTime": 837,
+    "infoGenerationTime": 573,
+    "endToEndGenerationTime": 613,
     "reds": 440,
     "summary": {
       "BASEGAMEVER": {
@@ -322,6 +322,11 @@
           "title": "Beta Features",
           "defaultMessage": "Beta Features completed successfully",
           "testCompleteSuccesses": 1
+        }
+      },
+      "CDWORLDDATA": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Custom Dimension World Data Validation (CDWORLDDATA)"
         }
       },
       "CHECKFEATUREDEPRECATION": {
@@ -841,6 +846,11 @@
       "iTp": 1,
       "gId": "CBFG",
       "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "CDWORLDDATA",
+      "gIx": 2
     },
     {
       "iTp": 8,
@@ -1609,5 +1619,5 @@
   ],
   "generatorName": "Minecraft Creator Tools",
   "suite": 0,
-  "generatorVersion": "0.0.1"
+  "generatorVersion": "0.0.1-dev"
 }

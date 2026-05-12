@@ -323,7 +323,11 @@ export default class CreatorTools {
 
   public get formatBeforeSave() {
     if (this.#data.formatBeforeSave === undefined) {
-      return true;
+      // Default OFF for pro-grade safety: many creators hand-format their JSON
+      // (compact arrays for [1,0,0] versions, inline component groups, custom
+      // indentation), and silently reformatting on save destroys diff signal
+      // and intentional formatting. Opt-in is the safer default.
+      return false;
     }
 
     return this.#data.formatBeforeSave;
@@ -1617,6 +1621,12 @@ export default class CreatorTools {
     if (includeDefaultItems) {
       await ProjectUtilities.ensureDefaultItems(newProject);
     }
+
+    // Default-item generation writes files to storage, which fires file-update events
+    // that get recorded in changedFilesSinceLastSaved. For a brand-new project, none
+    // of these represent user edits — they are the initial on-disk state. Reset the
+    // change tracker so dirty-change indicators only appear after actual user edits.
+    newProject.changedFilesSinceLastSaved = {};
 
     this.projects.push(newProject);
 

@@ -1,0 +1,14 @@
+{
+  "packs": [
+    {
+      "uuid": "afeeb2ab-0404-4518-822f-9837117e78e1",
+      "version": [
+        0,
+        0,
+        1
+      ],
+      "name": "simple",
+      "can_be_redownloaded": false
+    }
+  ]
+}

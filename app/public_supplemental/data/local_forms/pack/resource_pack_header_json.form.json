@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "title": "Resource Pack Header",
+  "description": "Defines the header section of a resource pack manifest. Includes the pack's identity (name, description), its UUID, the version of the pack, and the minimum engine version required to load it.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines the name, description, UUID, version, and minimum engine version for a resource pack header"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "name",
+      "title": "Name",
+      "description": "Display name shown in the in-game pack list. Use a friendly title (e.g., 'My Add-on Starter Resources') rather than the project's technical id.",
+      "dataType": "string"
+    },
+    {
+      "id": "description",
+      "title": "Description",
+      "description": "Multi-line description shown in the pack details panel. Explains what visual or audio assets the pack provides.",
+      "dataType": "longFormString"
+    },
+    {
+      "id": "uuid",
+      "title": "Pack UUID",
+      "description": "Unique 36-character identifier (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx). Two packs with the same UUID will conflict — generate a fresh UUID per pack.",
+      "dataType": "uuid",
+      "isRequired": true
+    },
+    {
+      "id": "version",
+      "title": "Version",
+      "description": "Semantic version of this pack: either a string like \"1.0.0\" or an array of three numbers like [1, 0, 0]. Bump when you ship updates so dependent packs/world saves can reference the right version.",
+      "dataType": "version"
+    },
+    {
+      "id": "min_engine_version",
+      "title": "Minimum Engine Version",
+      "description": "The earliest Minecraft Bedrock engine version required to load this pack, as an array of three numbers like [1, 21, 0]. Older clients will reject the pack as incompatible.",
+      "dataType": "numberArray"
+    },
+    {
+      "id": "pack_scope",
+      "title": "Pack Scope",
+      "description": "Optional. 'world' = the pack only applies inside a world (the default for most add-ons). 'any' = the pack can be loaded globally (typically only used for resource overrides or system packs).",
+      "dataType": "stringEnum",
+      "enumValues": ["world", "any"]
+    }
+  ]
+}

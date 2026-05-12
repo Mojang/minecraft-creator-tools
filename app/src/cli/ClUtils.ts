@@ -188,7 +188,12 @@ export default class ClUtils {
     const exists = await workFolder.exists();
 
     if (!exists) {
-      throw new Error("Specified folder path '" + workFolder.fullPath + "' does not exist within '" + __dirname + "'.");
+      // Use a CLI-friendly message — referring to the bundled CLI's own
+      // installation directory ("__dirname") only confuses creators who are
+      // pointing at their own project folder.
+      throw new Error(
+        `Input folder does not exist: '${workFolder.fullPath}'. Use -i <path> to specify the project folder, or run from inside the project.`
+      );
     }
 
     await workFolder.load();

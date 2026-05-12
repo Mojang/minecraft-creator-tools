@@ -20,7 +20,7 @@ import Project, { ProjectAutoDeploymentMode } from "../app/Project";
 
 import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
-import ProjectExporter from "../app/ProjectExporter";
+import ProjectExporter, { FolderDeploy } from "../app/ProjectExporter";
 import ZipStorage from "../storage/ZipStorage";
 import * as fs from "fs";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
@@ -764,5 +764,185 @@ describe("deploy-project-isolation", async () => {
     const shouldClear =
       worldCheck.worldBehaviorPacks !== undefined && worldCheck.worldBehaviorPacks.length > 0 && !existingBp;
     expect(shouldClear).to.equal(false, "Same project should not trigger world reset");
+  });
+});
+
+describe("deploy-layout-mode", async () => {
+  before((done) => {
+    removeResultFolder("deployLayout");
+    done();
+  });
+
+  it("deploys packs without development_ wrappers using noFolders", async function () {
+    this.timeout(30000);
+
+    const project = await _loadProjectFromScenario("deployCommand");
+
+    if (!creatorTools || !resultsFolder) {
+      assert.fail("Not properly initialized");
+      return;
+    }
+
+    const layoutFolder = resultsFolder.ensureFolder("deployLayout").ensureFolder("noFolders");
+    await layoutFolder.ensureExists();
+
+    const result = await ProjectExporter.deployProject(creatorTools, project, layoutFolder, FolderDeploy.noFolders);
+
+    expect(result).to.equal(true);
+
+    await layoutFolder.load(true);
+
+    // Should NOT have development_behavior_packs or behavior_packs wrapper folders
+    expect(layoutFolder.folders["development_behavior_packs"]).to.be.undefined;
+    expect(layoutFolder.folders["development_resource_packs"]).to.be.undefined;
+    expect(layoutFolder.folders["behavior_packs"]).to.be.undefined;
+    expect(layoutFolder.folders["resource_packs"]).to.be.undefined;
+
+    // Should have pack folders with _bp suffix directly in the target
+    const folderNames = Object.keys(layoutFolder.folders);
+    const bpFolders = folderNames.filter((n) => n.endsWith("_bp"));
+    expect(bpFolders.length).to.be.greaterThan(0, "Should have at least one _bp folder");
+  });
+
+  it("deploys packs with retail folders using retailFolders", async function () {
+    this.timeout(30000);
+
+    const project = await _loadProjectFromScenario("deployCommand");
+
+    if (!creatorTools || !resultsFolder) {
+      assert.fail("Not properly initialized");
+      return;
+    }
+
+    const retailFolder = resultsFolder.ensureFolder("deployLayout").ensureFolder("retailFolders");
+    await retailFolder.ensureExists();
+
+    const result = await ProjectExporter.deployProject(creatorTools, project, retailFolder, FolderDeploy.retailFolders);
+
+    expect(result).to.equal(true);
+
+    await retailFolder.load(true);
+
+    // Should have behavior_packs (not development_behavior_packs)
+    expect(retailFolder.folders["behavior_packs"], "Should have behavior_packs folder").to.not.be.undefined;
+    expect(retailFolder.folders["development_behavior_packs"], "Should NOT have development_behavior_packs").to.be
+      .undefined;
+  });
+
+  it("deploys packs with development folders by default", async function () {
+    this.timeout(30000);
+
+    const project = await _loadProjectFromScenario("deployCommand");
+
+    if (!creatorTools || !resultsFolder) {
+      assert.fail("Not properly initialized");
+      return;
+    }
+
+    const devFolder = resultsFolder.ensureFolder("deployLayout").ensureFolder("devFolders");
+    await devFolder.ensureExists();
+
+    const result = await ProjectExporter.deployProject(creatorTools, project, devFolder);
+
+    expect(result).to.equal(true);
+
+    await devFolder.load(true);
+
+    // Default should use development folders
+    expect(devFolder.folders["development_behavior_packs"], "Should have development_behavior_packs folder").to.not.be
+      .undefined;
+    expect(devFolder.folders["behavior_packs"], "Should NOT have bare behavior_packs").to.be.undefined;
+  });
+
+  it("layout deploy produces pack contents that match development deploy", async function () {
+    this.timeout(30000);
+
+    const project = await _loadProjectFromScenario("deployCommand");
+
+    if (!creatorTools || !resultsFolder) {
+      assert.fail("Not properly initialized");
+      return;
+    }
+
+    // Deploy with development folders
+    const devFolder = resultsFolder.ensureFolder("deployLayout").ensureFolder("compareDevDeploy");
+    await devFolder.ensureExists();
+    await ProjectExporter.deployProject(creatorTools, project, devFolder, FolderDeploy.developmentFolders);
+
+    // Deploy with no folders (layout)
+    const layoutFolder = resultsFolder.ensureFolder("deployLayout").ensureFolder("compareLayoutDeploy");
+    await layoutFolder.ensureExists();
+    await ProjectExporter.deployProject(creatorTools, project, layoutFolder, FolderDeploy.noFolders);
+
+    // Both should produce the same behavior pack content (just in different folder structures)
+    await devFolder.load(true);
+    await layoutFolder.load(true);
+
+    const dbpFolder = devFolder.folders["development_behavior_packs"];
+    expect(dbpFolder).to.not.be.undefined;
+
+    if (dbpFolder) {
+      await dbpFolder.load(true);
+      const devPackNames = Object.keys(dbpFolder.folders);
+      expect(devPackNames.length).to.be.greaterThan(0);
+
+      const layoutPackNames = Object.keys(layoutFolder.folders).filter((n) => n.endsWith("_bp"));
+      expect(layoutPackNames.length).to.be.greaterThan(0, "Layout should have _bp folders");
+    }
+  });
+});
+
+describe("deploy-folder-deploy-resource-packs", async () => {
+  before((done) => {
+    removeResultFolder("deployResourcePacks");
+    done();
+  });
+
+  it("deploys resource packs alongside behavior packs", async function () {
+    this.timeout(30000);
+
+    // deployJs has both BP and RP
+    const project = await _loadProjectFromSampleContent("deployJs");
+
+    if (!creatorTools || !resultsFolder) {
+      assert.fail("Not properly initialized");
+      return;
+    }
+
+    const targetFolder = resultsFolder.ensureFolder("deployResourcePacks").ensureFolder("devFolders");
+    await targetFolder.ensureExists();
+
+    const result = await ProjectExporter.deployProject(creatorTools, project, targetFolder);
+
+    expect(result).to.equal(true);
+
+    await targetFolder.load(true);
+
+    const dbpFolder = targetFolder.folders["development_behavior_packs"];
+    expect(dbpFolder, "Should have development_behavior_packs").to.not.be.undefined;
+  });
+
+  it("layout mode deploys resource packs without wrapper folders", async function () {
+    this.timeout(30000);
+
+    const project = await _loadProjectFromSampleContent("deployJs");
+
+    if (!creatorTools || !resultsFolder) {
+      assert.fail("Not properly initialized");
+      return;
+    }
+
+    const targetFolder = resultsFolder.ensureFolder("deployResourcePacks").ensureFolder("layoutFolders");
+    await targetFolder.ensureExists();
+
+    const result = await ProjectExporter.deployProject(creatorTools, project, targetFolder, FolderDeploy.noFolders);
+
+    expect(result).to.equal(true);
+
+    await targetFolder.load(true);
+
+    // Should NOT have development_behavior_packs or development_resource_packs
+    expect(targetFolder.folders["development_behavior_packs"]).to.be.undefined;
+    expect(targetFolder.folders["development_resource_packs"]).to.be.undefined;
   });
 });

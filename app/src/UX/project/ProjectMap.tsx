@@ -11,8 +11,9 @@ import ProjectItemUtilities from "../../app/ProjectItemUtilities";
 import { ProjectItemType } from "../../app/IProjectItemData";
 import ProjectItem from "../../app/ProjectItem";
 import IProjectTheme from "../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
-interface IProjectMapProps extends IAppProps {
+interface IProjectMapProps extends IAppProps, WithLocalizationProps {
   project: Project;
   theme: IProjectTheme;
   heightOffset: number;
@@ -52,7 +53,7 @@ const RESOURCE_SIDE_COLUMN_MAX = 9;
 const COLUMN_Y_SYNC_THRESHOLD = 240;
 const COLUMN_Y_SYNC_OFFSET = 200;
 
-export default class ProjectMap extends Component<IProjectMapProps, IProjectMapState> {
+class ProjectMap extends Component<IProjectMapProps, IProjectMapState> {
   constructor(props: IProjectMapProps) {
     super(props);
 
@@ -173,18 +174,18 @@ export default class ProjectMap extends Component<IProjectMapProps, IProjectMapS
     const height = "calc(100vh - " + this.props.heightOffset + "px)";
 
     if (!this.state || !this.state.context) {
-      return <div className="pmap-loading">Loading...</div>;
+      return <div className="pmap-loading">{this.props.intl.formatMessage({ id: "project_editor.project_map.loading" })}</div>;
     }
 
     if (this.state.context.nodes.length === 0) {
       return (
         <div className="pmap-container pmap-empty" style={{ height: height }}>
           <div className="pmap-empty-message">
-            <p>No relationships to display.</p>
+            <p>{this.props.intl.formatMessage({ id: "project_editor.project_map.empty_title" })}</p>
             <p>
-              The File Map shows connections between related items like entity types, spawn rules, textures, and models.
+              {this.props.intl.formatMessage({ id: "project_editor.project_map.empty_desc" })}
             </p>
-            <p>Add more content or connect items to see their relationships here.</p>
+            <p>{this.props.intl.formatMessage({ id: "project_editor.project_map.empty_hint" })}</p>
           </div>
         </div>
       );
@@ -295,3 +296,5 @@ export default class ProjectMap extends Component<IProjectMapProps, IProjectMapS
     return node;
   }
 }
+
+export default withLocalization(ProjectMap);

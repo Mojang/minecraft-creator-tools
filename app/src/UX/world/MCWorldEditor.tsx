@@ -10,8 +10,9 @@ import IAppProps from "../../UX/appShell/IAppProps";
 import DataForm from "../../dataformux/DataForm";
 import Project from "../../app/Project";
 import IProjectTheme from "../../UX/types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
-interface IMCWorldEditorProps extends IAppProps {
+interface IMCWorldEditorProps extends IAppProps, WithLocalizationProps {
   heightOffset: number;
   project?: Project;
   readOnly: boolean;
@@ -27,7 +28,7 @@ interface IMCWorldEditorState {
   folderToEdit: IFolder | undefined;
 }
 
-export default class MCWorldEditor extends Component<IMCWorldEditorProps, IMCWorldEditorState> {
+class MCWorldEditor extends Component<IMCWorldEditorProps, IMCWorldEditorState> {
   private _lastFileEdited?: IFile;
   private _lastFolderEdited?: IFolder;
 
@@ -127,7 +128,7 @@ export default class MCWorldEditor extends Component<IMCWorldEditorProps, IMCWor
     const height = "calc(100vh - " + this.props.heightOffset + "px)";
 
     if (Database.uxCatalog === null || this.state === null) {
-      return <div>Loading...</div>;
+      return <div>{this.props.intl.formatMessage({ id: "project_editor.mc_world.loading" })}</div>;
     }
 
     if (
@@ -144,7 +145,7 @@ export default class MCWorldEditor extends Component<IMCWorldEditorProps, IMCWor
         }
       }
 
-      return <div>Loading...</div>;
+      return <div>{this.props.intl.formatMessage({ id: "project_editor.mc_world.loading" })}</div>;
     } else if (
       this.props.folder &&
       (this.state === null ||
@@ -159,7 +160,7 @@ export default class MCWorldEditor extends Component<IMCWorldEditorProps, IMCWor
         }
       }
 
-      return <div>Loading...</div>;
+      return <div>{this.props.intl.formatMessage({ id: "project_editor.mc_world.loading" })}</div>;
     }
 
     if (this.props.setActivePersistable !== undefined) {
@@ -177,7 +178,7 @@ export default class MCWorldEditor extends Component<IMCWorldEditorProps, IMCWor
     }
 
     if (!mcworld) {
-      return <div>Loading...</div>;
+      return <div>{this.props.intl.formatMessage({ id: "project_editor.mc_world.loading" })}</div>;
     }
 
     let propsArea = <></>;
@@ -223,3 +224,5 @@ export default class MCWorldEditor extends Component<IMCWorldEditorProps, IMCWor
     );
   }
 }
+
+export default withLocalization(MCWorldEditor);

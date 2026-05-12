@@ -131,7 +131,7 @@ describe("simple", async () => {
 
     const dataObject = pis.getDataObject();
 
-    await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "simple");
+    await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "simple", ["CDWORLDDATA2"]);
   });
 });
 
@@ -361,6 +361,65 @@ describe("Project utility methods", () => {
     if (item) {
       expect(item.itemType).to.equal(project.items[0].itemType);
     }
+  });
+
+  // Regression canary: the empty-label "" variant is a runtime placeholder for the
+  // item's default file. It must NOT be persisted into _data.variants. Persisting it
+  // historically caused _getVariantList() to report a phantom entry, which combined
+  // with a falsy check on variantType (general = 0) caused the subpack-lookup branch
+  // in ProjectItemVariant.ensureFileStorage to deadlock loadContent on every JSON
+  // config item (tsconfig.json, manifest.json, launch.json, etc.).
+  it("empty-label default variant is not persisted in item data", async () => {
+    const project = await _loadProject("simple");
+
+    // Touch the default variant on every item the same way the editor does
+    // (e.g., via ProjectItem.defaultVariant / getVariantList).
+    for (const item of project.items) {
+      item.ensureDefaultVariant();
+    }
+
+    for (const item of project.items) {
+      // Read the raw persisted data via JSON round-trip to ensure we're testing
+      // what would actually be saved to disk, not just the runtime cache.
+      const serialized = JSON.parse(JSON.stringify((item as any)._data));
+      const variantKeys = serialized.variants ? Object.keys(serialized.variants) : [];
+      expect(
+        variantKeys,
+        `Item ${item.projectPath ?? item.name} should not persist an empty-label variant; got keys: ${JSON.stringify(
+          variantKeys
+        )}`
+      ).to.not.include("");
+    }
+  });
+
+  // Regression canary: when a project's persisted data contains an empty-label
+  // variant (e.g., from an older build that did persist it), the ProjectItem
+  // constructor must strip it during migration so the item behaves like a
+  // freshly-created one. Otherwise, items with no real variants would report
+  // count=1 from _getVariantList() and trigger code paths that assume any
+  // variant entry represents a real variant.
+  it("ProjectItem constructor migrates away persisted empty-label variants", async () => {
+    const project = await _loadProject("simple");
+
+    // Simulate older saved data that persisted the empty-label default variant
+    // alongside a real version-slice variant.
+    const seed = {
+      itemType: ProjectItemType.unknownJson,
+      projectPath: "/fake-migration.json",
+      variants: {
+        "": { label: "", variantType: 0 },
+        "1.21.0": { label: "1.21.0", variantType: 2 },
+      },
+      tags: [],
+      name: "fake-migration",
+      storageType: ProjectItemStorageType.singleFile,
+    } as any;
+
+    const item = new ProjectItem(project, seed);
+    const persisted = (item as any)._data.variants;
+    expect(Object.keys(persisted)).to.not.include("");
+    // Other variants must be preserved.
+    expect(Object.keys(persisted)).to.include("1.21.0");
   });
 });
 

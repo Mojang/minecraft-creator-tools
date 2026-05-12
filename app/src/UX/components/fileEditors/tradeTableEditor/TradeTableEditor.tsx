@@ -61,8 +61,11 @@ export default function TradeTableEditor({ project, file, setActivePersistable, 
   }, [onPersist, setActivePersistable]);
 
   return (
-    /* the height offset calculation is necessary because of the way the parent components are designed - relative positioning doesn't work as expected */
-    <FlexBox sx={{ height: `calc(100vh - ${heightOffset ?? 0}px)`, overflowY: "auto" }} column>
+    /* Fill the interior of the parent editor pane (which already accounts for
+       toolbar/header heights) instead of computing against the viewport — using
+       100vh minus a heightOffset frequently overshoots the actual container
+       and produces a doubled scrollbar. */
+    <FlexBox sx={{ height: "100%", minHeight: 0, overflowY: "auto" }} column>
       {parsedData && contentKey && (
         <SchemaEditor
           key={contentKey}

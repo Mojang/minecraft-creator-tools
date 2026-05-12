@@ -50,11 +50,18 @@ import ProjectEditorUtilities, {
   ProjectEditorItemAction,
   ProjectEditorMode,
   ProjectItemEditorView,
+  isItemViewShowingTextEditor,
 } from "../ProjectEditorUtilities";
 import StorageUtilities from "../../../storage/StorageUtilities";
 import { ListItemButton, Button as MuiButton, Menu, MenuItem, Divider } from "@mui/material";
 
-import { AssetsIcon, AdvancedFilesIcon, FunctionsIcon, TypesIcon, CheckIcon } from "../../shared/components/feedback/labels/Labels";
+import {
+  AssetsIcon,
+  AdvancedFilesIcon,
+  FunctionsIcon,
+  TypesIcon,
+  CheckIcon,
+} from "../../shared/components/feedback/labels/Labels";
 import { GitHubPropertyType } from "../ProjectPropertyEditor";
 import ProjectUtilities, { NewEntityTypeAddMode } from "../../../app/ProjectUtilities";
 import IGitHubInfo from "../../../app/IGitHubInfo";
@@ -68,6 +75,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFolder } from "@fortawesome/free-regular-svg-icons";
 import { faCaretDown, faCaretRight, faClock, faListCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import ProjectItemUtilities from "../../../app/ProjectItemUtilities";
+import { getProjectItemTypeGroup } from "../../../app/ProjectItemTypeInfo";
 import ProjectInfoSet from "../../../info/ProjectInfoSet";
 import IProjectItemSeed from "../../../app/IProjectItemSeed";
 import ProjectInfoItem from "../../../info/ProjectInfoItem";
@@ -81,12 +89,17 @@ import ProjectItemTypeIcon from "./ProjectItemTypeIcon";
 import React from "react";
 import { List as VirtualList, RowComponentProps } from "react-window";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
 /**
  * Local MenuButton compatibility wrapper.
  * Replaces @fluentui/react-northstar MenuButton with MUI Menu.
  * Props: trigger, menu (array of menu item descriptors), onMenuItemClick,
- *        contextMenu (if true, opens on right-click), open, onBlur, className, style.
+ *        contextMenu (if true, opens on right-click), open, onBlur, className, style,
+ *        triggerIsButton (if true, the trigger is itself an interactive element
+ *        — e.g. a `<button>` — so the wrapper is rendered as a passive `<span>`
+ *        to avoid `nested-interactive` accessibility violations; the wrapper's
+ *        onClick still receives bubbled clicks from the inner button).
  */
 function MenuButton(props: {
   trigger: React.ReactNode;
@@ -97,6 +110,14 @@ function MenuButton(props: {
   onBlur?: (e: React.SyntheticEvent<HTMLElement>) => void;
   className?: string;
   style?: React.CSSProperties;
+  triggerIsButton?: boolean;
+  /**
+   * Accessible name for the rendered button when the trigger has no visible text.
+   * Required for axe `aria-command-name` (WCAG 4.1.2) when the trigger is purely
+   * an icon or background image. Ignored in passive-wrapper mode (contextMenu /
+   * triggerIsButton) since the inner element provides its own name.
+   */
+  ariaLabel?: string;
 }) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const menuItems: any[] = Array.isArray(props.menu) ? props.menu : (props.menu?.items ?? []);
@@ -146,14 +167,123 @@ function MenuButton(props: {
     }
   };
 
+  // Merge caller-provided inline styles with the reset styles needed to make
+  // the trigger element transparent so it inherits the surrounding label/cell
+  // appearance. We render a <span role="button"> rather than a real <button>
+  // because some callers pass a MUI <Button> (or other <button>) as the
+  // trigger, and nesting <button> inside <button> is invalid HTML and triggers
+  // React's validateDOMNesting warning. Caller styles take precedence.
+  const buttonStyle: React.CSSProperties = {
+    background: "none",
+    border: "none",
+    padding: 0,
+    margin: 0,
+    font: "inherit",
+    color: "inherit",
+    cursor: "pointer",
+    textAlign: "inherit",
+    display: "inline-flex",
+    ...(props.style || {}),
+  };
+
+  // Decide whether the wrapper element should itself act as an interactive
+  // button. We render it as a passive `<span>` (no role, no tabIndex, no
+  // aria-haspopup) in two cases:
+  //   1. `contextMenu` mode — the wrapper has no left-click action, so giving
+  //      it `role="button"` is misleading to AT users and creates a duplicate
+  //      interactive control.
+  //   2. `triggerIsButton` — the trigger contains its own real `<button>`
+  //      (e.g. the `.pil-showMenu` "Show" button); making the wrapper also a
+  //      button produces axe `nested-interactive` violations.
+  // In both cases, click events from inside still bubble to the wrapper's
+  // `onClick`, so menu opening continues to work.
+  const isPassiveWrapper = props.contextMenu === true || props.triggerIsButton === true;
+
+  if (isPassiveWrapper) {
+    return (
+      <span
+        className={props.className}
+        style={buttonStyle}
+        onClick={handleClick}
+        onContextMenu={handleContextMenu}
+        onBlur={props.onBlur as any}
+      >
+        {props.trigger}
+        <Menu
+          anchorEl={anchorEl}
+          open={isOpen}
+          onClose={handleClose}
+          slotProps={{
+            paper: {
+              sx: {
+                minWidth: 220,
+                "& .MuiMenuItem-root": {
+                  fontSize: "13px",
+                  padding: "4px 14px",
+                  gap: "10px",
+                  minHeight: "28px",
+                },
+                "& .MuiList-root": {
+                  paddingTop: "4px",
+                  paddingBottom: "4px",
+                },
+              },
+            },
+          }}
+        >
+          {menuItems.map((item: any, idx: number) => {
+            if (item.kind === "divider") {
+              return <Divider key={item.key || idx} sx={{ my: 0.5 }} />;
+            }
+            if (item.kind === "header") {
+              return (
+                <MenuItem
+                  key={item.key || idx}
+                  disabled
+                  sx={{
+                    opacity: "1 !important",
+                    fontWeight: 600,
+                    fontSize: "11px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                    color: "text.secondary",
+                    pointerEvents: "none",
+                  }}
+                >
+                  {item.content || item.label}
+                </MenuItem>
+              );
+            }
+            return (
+              <MenuItem
+                key={item.key || idx}
+                onClick={(e) => handleItemClick(e, item)}
+                disabled={item.disabled}
+                sx={item.destructive ? { color: "error.main" } : undefined}
+              >
+                {item.icon && <span style={{ display: "inline-flex", marginRight: 8 }}>{item.icon}</span>}
+                {item.content || item.label}
+              </MenuItem>
+            );
+          })}
+        </Menu>
+      </span>
+    );
+  }
+
   return (
     <span
+      role="button"
+      tabIndex={0}
       className={props.className}
-      style={props.style}
+      style={buttonStyle}
       onClick={handleClick}
       onContextMenu={handleContextMenu}
       onKeyDown={handleKeyDown}
       onBlur={props.onBlur as any}
+      aria-haspopup="menu"
+      aria-expanded={isOpen}
+      aria-label={props.ariaLabel}
     >
       {props.trigger}
       <Menu
@@ -269,7 +399,7 @@ export enum ListItemType {
   references,
 }
 
-interface IProjectItemListProps extends IAppProps {
+interface IProjectItemListProps extends IAppProps, WithLocalizationProps {
   theme: IProjectTheme;
   onActiveProjectItemChangeRequested?: (projectItem: ProjectItem, itemView: ProjectItemEditorView) => void;
   onActiveReferenceChangeRequested?: (reference: IGitHubInfo) => void;
@@ -285,6 +415,14 @@ interface IProjectItemListProps extends IAppProps {
   allInfoSet: ProjectInfoSet;
   allInfoSetGenerated: boolean;
   activeProjectItem: ProjectItem | null;
+  /**
+   * The current editor view of the active project item. Used so the per-item
+   * context menu can display "Open in Visual Editor" instead of "Open in Text
+   * Editor" when the active item is currently being shown in the raw text
+   * editor — keeping the toggle entry honest about the current state rather
+   * than just the global edit preference.
+   */
+  activeItemView?: ProjectItemEditorView;
   tentativeProjectItem: ProjectItem | null;
   heightOffset: number;
   readOnly: boolean;
@@ -343,6 +481,12 @@ const VirtualizedRow = ({
   const item = items[index];
   if (!item) return null;
 
+  // Use `role="treeitem"` (not `option`) so the row is allowed to host
+  // interactive descendants such as the per-item "..." MenuButton trigger.
+  // ARIA spec forbids interactive children inside `role="option"` (axe rule:
+  // nested-interactive). `treeitem` is the natural semantic for a hierarchical
+  // project navigator and explicitly permits interactive children.
+  // The container above (.pil-list) is set to `role="tree"` to match.
   return (
     <ListItemButton
       style={style}
@@ -353,7 +497,8 @@ const VirtualizedRow = ({
       }}
       onContextMenu={onContextMenu}
       aria-label={item["aria-label"]}
-      role={item.role || "option"}
+      aria-selected={index === selectedItemIndex}
+      role={item.role || "treeitem"}
       disableGutters
       sx={{ padding: 0, minHeight: 0, height: 36, boxSizing: "border-box" }}
     >
@@ -362,7 +507,7 @@ const VirtualizedRow = ({
   );
 };
 
-export default class ProjectItemList extends Component<IProjectItemListProps, IProjectItemListState> {
+class ProjectItemList extends Component<IProjectItemListProps, IProjectItemListState> {
   private _activeProject: Project | null = null;
   private _itemIndices: any[] = [];
   private _itemTypes: any[] = [];
@@ -733,6 +878,15 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this._loadItems();
   }
 
+  private _showDevFilesClick = () => {
+    if (!this.props.project) {
+      return;
+    }
+
+    this.props.project.showDevFiles = !this.props.project.showDevFiles;
+    this._loadItems();
+  };
+
   private _toggleMruPane() {
     this.props.creatorTools.showMruPane = !this.props.creatorTools.showMruPane;
     this.props.creatorTools.save();
@@ -950,6 +1104,18 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
   }
 
   _handleItemTypeToggle(e: SyntheticEvent<HTMLElement, Event>, data?: any | undefined) {
+    // Defensive: only process as a header-toggle when invoked with the expected data
+    // shape (an object whose .content.key starts with "eit.<itemType>"). This prevents
+    // unrelated synthetic events (e.g., focus/blur, bubbled clicks from other UI like
+    // the Settings form, or stale keyboard activations) from collapsing sidebar
+    // sections as a side effect.
+    if (!data || !data.content || typeof data.content.key !== "string") {
+      return;
+    }
+    if (!data.content.key.startsWith("eit.")) {
+      return;
+    }
+
     if (data.content && data.content.key) {
       const period = data.content.key.lastIndexOf(".");
 
@@ -983,13 +1149,13 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
   }
 
   _handleItemTypeDoubleClick(e: SyntheticEvent<HTMLDivElement, Event>, data?: any | undefined) {
-    if (e && e.currentTarget && e.currentTarget.title) {
-      for (let i = 0; i < MaxItemTypes; i++) {
-        const hideName = "Hide " + ProjectItemUtilities.getPluralDescriptionForType(i) + " items";
-        const showName = "Show " + ProjectItemUtilities.getPluralDescriptionForType(i) + " items";
-
-        if (hideName === e.currentTarget.title || showName === e.currentTarget.title) {
-          this.props.creatorTools.ensureAllTypesCollapsedExcept(i);
+    const target = e.currentTarget;
+    if (target) {
+      const itemTypeStr = target.getAttribute("data-item-type");
+      if (itemTypeStr !== null) {
+        const itemType = parseInt(itemTypeStr, 10);
+        if (!isNaN(itemType) && itemType >= 0 && itemType < MaxItemTypes) {
+          this.props.creatorTools.ensureAllTypesCollapsedExcept(itemType);
 
           this.props.creatorTools.save();
 
@@ -1004,7 +1170,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
             collapsedItemTypes: this.props.creatorTools.collapsedTypes,
             collapsedStoragePaths: this.state.collapsedStoragePaths,
           });
-          return;
         }
       }
     }
@@ -1116,36 +1281,45 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
   _addTypeSpacer(projectListItems: any[], itemType: ProjectItemType, isToggleable: boolean, itemIndex: number) {
     // Use the display group type so that e.g. JS and TS share the same "Scripts" header
     const displayType = ProjectItemList._getDisplayGroupType(itemType);
-    let name = ProjectItemUtilities.getPluralDescriptionForType(displayType);
+    let name = this.props.intl.formatMessage({ id: "project_item_type.header." + ProjectItemType[displayType] });
 
     // In Focused mode, use friendlier category names
     if (this.props.project && this.props.project.effectiveEditPreference === ProjectEditPreference.summarized) {
       switch (displayType) {
         case ProjectItemType.entityTypeBehavior:
-          name = "Mobs";
+          name = this.props.intl.formatMessage({ id: "project_item_list.category_mobs" });
           break;
         case ProjectItemType.blockTypeBehavior:
-          name = "Blocks";
+          name = this.props.intl.formatMessage({ id: "project_item_list.category_blocks" });
           break;
         case ProjectItemType.itemTypeBehavior:
-          name = "Items";
+          name = this.props.intl.formatMessage({ id: "project_item_list.category_items" });
           break;
         case ProjectItemType.ts:
-          name = "Game Logic";
+          name = this.props.intl.formatMessage({ id: "project_item_list.category_game_logic" });
           break;
         case ProjectItemType.lootTableBehavior:
-          name = "Loot Tables";
+          name = this.props.intl.formatMessage({ id: "project_item_list.category_loot_tables" });
           break;
         case ProjectItemType.spawnRuleBehavior:
-          name = "Spawn Rules";
+          name = this.props.intl.formatMessage({ id: "project_item_list.category_spawn_rules" });
           break;
       }
     }
 
     const color = ProjectItemUtilities.getColorForType(itemType);
-    const tooltip = ProjectItemUtilities.getTooltipForType(itemType);
+    const tooltip = this.props.intl.formatMessage({
+      id: "project_item_type.tooltip." + getProjectItemTypeGroup(itemType),
+    });
 
+    // Pre-composite the type tint over the page background so the resulting
+    // color is opaque. axe-core can't reliably compute contrast for elements
+    // with rgba() backgrounds — it falls back to white and reports false
+    // 1.06:1 failures even when the rendered pixels look fine. See
+    // ColorUtilities.composite for the rationale. The tint is the type color
+    // at 20% over `theme.background1` (which is the bg of `#top-level`).
     color.alpha = 0.2;
+    const headerBgColor = ColorUtilities.composite(color, ColorUtilities.fromCss(this.props.theme.background1));
 
     let additionalData = <></>;
 
@@ -1157,7 +1331,10 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         const totalVal = Utilities.getSimpleNumeric(items[0].getFeatureContaining("total"));
 
         if (countVal !== undefined && totalVal !== undefined) {
-          const statSummary = countVal + " files, " + totalVal + " bytes";
+          const statSummary = this.props.intl.formatMessage(
+            { id: "project_item_list.stat_summary" },
+            { count: countVal, total: totalVal }
+          );
 
           // Only show byte sizes in Raw mode; other modes show just the count
           if (this.props.project && this.props.project.effectiveEditPreference === ProjectEditPreference.raw) {
@@ -1179,7 +1356,11 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     let toggle = <></>;
 
-    const isExpanded = !this.props.creatorTools.collapsedTypes.includes(displayType);
+    // In Focused (summarized) mode, always treat categories as expanded so that the
+    // sidebar doesn't appear empty when a user's saved collapse state hides all
+    // content categories. See task #034 (Focused-mode sidebar too empty).
+    const isFocusedMode = this.props.project?.effectiveEditPreference === ProjectEditPreference.summarized;
+    const isExpanded = isFocusedMode || !this.props.creatorTools.collapsedTypes.includes(displayType);
     const headerKey = "eit." + displayType;
     const handleHeaderToggle = (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault();
@@ -1189,14 +1370,27 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     if (isToggleable) {
       toggle = (
-        <div className="pil-itemTypeCollapsedToggle" title={(isExpanded ? "Hide" : "Show") + " " + name}>
+        <div
+          className="pil-itemTypeCollapsedToggle"
+          title={this.props.intl.formatMessage(
+            { id: isExpanded ? "project_item_list.hide_name" : "project_item_list.show_name" },
+            { name }
+          )}
+          // The caret icon is purely decorative — it visually mirrors the
+          // expanded/collapsed state already conveyed by the surrounding
+          // ListItemButton option. Setting `aria-expanded` directly on a
+          // role-less <div> trips axe's `aria-allowed-attr` rule (the attribute
+          // is only allowed on elements with certain roles, e.g. button), so we
+          // hide the toggle from AT instead.
+          aria-hidden="true"
+        >
           <FontAwesomeIcon icon={isExpanded ? faCaretDown : faCaretRight} className="fa-md" />
         </div>
       );
     }
 
     (projectListItems as any).push({
-      role: "option",
+      role: "treeitem",
       onClick: this._handleItemTypeToggle,
       key: "type" + itemType + "|",
       "aria-label": name,
@@ -1204,12 +1398,17 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         <div
           className="pil-itemTypeHeader"
           key={headerKey}
+          data-item-type={itemType}
           onClick={handleHeaderToggle}
           onDoubleClick={this._handleItemTypeDoubleClick}
-          title={isExpanded ? "Hide " + name + " items" : "Show " + name + " items"}
+          title={
+            isExpanded
+              ? this.props.intl.formatMessage({ id: "project_item_list.hide_items" }, { name })
+              : this.props.intl.formatMessage({ id: "project_item_list.show_items" }, { name })
+          }
           style={{
             color: this.props.theme.foreground1,
-            backgroundColor: ColorUtilities.toCss(color),
+            backgroundColor: ColorUtilities.toCss(headerBgColor),
           }}
         >
           {toggle}
@@ -1256,7 +1455,15 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     if (isToggleable) {
       toggle = (
-        <div className="pil-storagePathCollapsedToggle" title={(isExpanded ? "Hide" : "Show") + " " + folderPath}>
+        <div
+          className="pil-storagePathCollapsedToggle"
+          title={this.props.intl.formatMessage(
+            { id: isExpanded ? "project_item_list.hide_name" : "project_item_list.show_name" },
+            { name: folderPath }
+          )}
+          // Decorative caret — see note on pil-itemTypeCollapsedToggle above.
+          aria-hidden="true"
+        >
           <FontAwesomeIcon icon={isExpanded ? faCaretDown : faCaretRight} className="fa-md" />
         </div>
       );
@@ -1277,7 +1484,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     };
 
     (projectListItems as any).push({
-      role: "option",
+      role: "treeitem",
       onClick: this._handleStoragePathToggle,
       key: "eitb." + itemType + "." + keyPath,
       "aria-label": folderDisplayPath,
@@ -1286,7 +1493,11 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           className="pil-pathHeader"
           key={headerKey}
           onClick={handlePathToggle}
-          title={(isExpanded ? "Hide " : "Show ") + folderPath}
+          title={
+            isExpanded
+              ? this.props.intl.formatMessage({ id: "project_item_list.hide_name" }, { name: folderPath })
+              : this.props.intl.formatMessage({ id: "project_item_list.show_name" }, { name: folderPath })
+          }
           style={{
             color: this.props.theme.foreground1,
             backgroundColor: ColorUtilities.toCss(ColorUtilities.darker(typeColor, 0.1)),
@@ -1434,14 +1645,10 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         itemItems.push(
           <span
             className="pil-itemIndicatorRO"
-            title={
-              issues.length +
-              " validation issue" +
-              (issues.length !== 1 ? "s" : "") +
-              ":\n" +
-              errorMessage +
-              "\nClick to view validation issues"
-            }
+            title={this.props.intl.formatMessage(
+              { id: "project_item_list.validation_issues_tooltip" },
+              { count: issues.length, errors: errorMessage }
+            )}
             key={"pil-ii" + projectItem.projectPath + (isFocused ? ".focus" : "")}
             onClick={handleValidationClick}
             style={{ cursor: "pointer" }}
@@ -1458,7 +1665,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       }
 
       (projectListItems as any).push({
-        role: "option",
+        role: "treeitem",
         key: "pila-ro" + projectItem.projectPath + (isFocused ? ".focus" : ""),
         "aria-label": name,
         content: (
@@ -1508,12 +1715,24 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
       // Check if user is in raw editing preference mode
       const isRawEditPreference = this.props.project?.effectiveEditPreference === ProjectEditPreference.raw;
+      const isFocusedMode = this.props.project?.effectiveEditPreference === ProjectEditPreference.summarized;
+
+      // For the active item only, the JSON toggle entry should reflect the
+      // currently-displayed editor view (so it offers "Open in Visual Editor"
+      // when the user is currently looking at raw JSON). For non-active items
+      // we fall back to the project's edit preference.
+      const isActiveItem = projectItem === this.props.activeProjectItem;
+      const isCurrentlyShowingTextEditor = isActiveItem
+        ? isItemViewShowingTextEditor(this.props.activeItemView, this.props.project?.effectiveEditPreference)
+        : isRawEditPreference;
 
       const itemMenu = ProjectEditorUtilities.getItemMenuItems(
         projectItem,
         this.state.focusFilter,
         issues ? issues.length : 0,
-        isRawEditPreference
+        isCurrentlyShowingTextEditor,
+        true,
+        !isFocusedMode
       );
 
       let nameCss = "pil-name pit-name";
@@ -1535,13 +1754,13 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       ) {
         const manifestHint =
           projectItem.itemType === ProjectItemType.behaviorPackManifestJson
-            ? "Defines your behavior pack's name, version, and dependencies"
-            : "Defines your resource pack's name, version, and dependencies";
+            ? this.props.intl.formatMessage({ id: "project_item_list.bp_manifest_hint" })
+            : this.props.intl.formatMessage({ id: "project_item_list.rp_manifest_hint" });
         title = title ? manifestHint + "\n" + title : manifestHint;
       }
 
       if (projectItem.errorStatus === ProjectItemErrorStatus.unprocessable) {
-        name = "(error) " + name;
+        name = this.props.intl.formatMessage({ id: "project_item_list.error_prefix" }, { name });
       }
 
       const itemItems = [];
@@ -1565,6 +1784,13 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
       if (issues === undefined) {
         nameSpan++;
+      }
+
+      // On the focused banner row, keep the label in column 2 only so we can
+      // place an explicit Clear Focus button in column 3 and the ellipsis menu
+      // in column 4.
+      if (isFocused) {
+        nameSpan = 1;
       }
 
       itemItems.push(
@@ -1593,10 +1819,32 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         />
       );
 
-      if (projectItem === this.props.activeProjectItem || sourceImage !== "") {
+      if (isFocused) {
+        const handleClearFocus = (e: React.MouseEvent) => {
+          e.stopPropagation();
+          e.preventDefault();
+          this._clearFocus();
+        };
+        itemItems.push(
+          <MuiButton
+            key={"pil-clearFocus." + projectItem.projectPath}
+            className="pil-clearFocusButton"
+            style={{ gridColumn: 3 }}
+            onClick={handleClearFocus}
+            size="small"
+            variant="outlined"
+            title={this.props.intl.formatMessage({ id: "project_item_list.clear_focus_tooltip" })}
+            aria-label={this.props.intl.formatMessage({ id: "project_item_list.clear_focus_aria" })}
+          >
+            {this.props.intl.formatMessage({ id: "project_item_list.clear_focus" })}
+          </MuiButton>
+        );
+      }
+
+      if (isFocused || projectItem === this.props.activeProjectItem || sourceImage !== "") {
         let icoInterior = <></>;
 
-        if (projectItem === this.props.activeProjectItem) {
+        if (projectItem === this.props.activeProjectItem || isFocused) {
           icoInterior = (
             <div
               className="pil-expandButton"
@@ -1611,15 +1859,16 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         itemItems.push(
           <MenuButton
             className="pil-itemIcon"
+            ariaLabel={`More options for ${name}`}
             style={{
-              gridColumn: issues ? 3 : 4,
+              gridColumn: issues && !isFocused ? 3 : 4,
               backgroundImage: sourceImage,
             }}
             key={"pil-mba." + projectItem.projectPath + (isFocused ? ".focus" : "")}
             trigger={
               <span
                 className={
-                  projectItem === this.props.activeProjectItem
+                  projectItem === this.props.activeProjectItem || isFocused
                     ? "pil-contextMenuButton"
                     : "pil-contextMenuButton pil-cmbUnfocused"
                 }
@@ -1656,14 +1905,10 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
             }}
             className="pil-itemIndicator"
             key={"pil-mbc." + projectItem.projectPath + (isFocused ? ".focus" : "")}
-            title={
-              issues.length +
-              " validation issue" +
-              (issues.length !== 1 ? "s" : "") +
-              ":\n" +
-              errorMessage +
-              "\nClick to view validation issues"
-            }
+            title={this.props.intl.formatMessage(
+              { id: "project_item_list.validation_issues_tooltip" },
+              { count: issues.length, errors: errorMessage }
+            )}
             onClick={handleValidationClick}
           >
             <div className="pil-itemIndicatorInterior">{issues.length}</div>
@@ -1672,7 +1917,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       }
 
       (projectListItems as any).push({
-        role: "option",
+        role: "treeitem",
         key: "pila-eoa" + projectItem.projectPath + (isFocused ? ".focus" : ""),
         "aria-label": name,
         content: (
@@ -1690,7 +1935,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     if (this.props.readOnly) {
       (projectListItems as any).push({
-        role: "option",
+        role: "treeitem",
         key: "pil-ghitemr." + sig,
         "aria-label": name,
         content: (
@@ -1702,7 +1947,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     } else {
       const itemMenu = [
         {
-          content: "Delete",
+          content: this.props.intl.formatMessage({ id: "common.delete" }),
           tag: sig,
           destructive: true,
         },
@@ -1711,7 +1956,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       const nameCss = "pil-name pit-name";
 
       (projectListItems as any).push({
-        role: "option",
+        role: "treeitem",
         key: "pil-ghitemz." + sig,
         "aria-label": name,
         content: (
@@ -1731,7 +1976,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
             <MenuButton
               trigger={
                 <span className="pil-contextMenuButton" aria-haspopup="false">
-                  <Button content="..." aria-label="More options" />
+                  <Button content="..." aria-label={this.props.intl.formatMessage({ id: "common.more_options" })} />
                 </span>
               }
               menu={itemMenu}
@@ -2025,6 +2270,30 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     const fileName = StorageUtilities.getLeafName(projectItem.projectPath);
 
+    // Hide non-Minecraft developer config files by default — creators don't need to see
+    // VS Code / TypeScript / NPM / lint configs unless they explicitly opt in via
+    // "Show dev files". This declutters the Full/Raw mode tree. Opt-in is driven by
+    // `project.showDevFiles` (see ProjectItemList show-menu toggle).
+    const isDevFileType =
+      projectItem.itemType === ProjectItemType.tsconfigJson ||
+      projectItem.itemType === ProjectItemType.jsconfigJson ||
+      projectItem.itemType === ProjectItemType.packageJson ||
+      projectItem.itemType === ProjectItemType.packageLockJson ||
+      projectItem.itemType === ProjectItemType.vsCodeLaunchJson ||
+      projectItem.itemType === ProjectItemType.vsCodeTasksJson ||
+      projectItem.itemType === ProjectItemType.vsCodeSettingsJson ||
+      projectItem.itemType === ProjectItemType.vsCodeExtensionsJson ||
+      projectItem.itemType === ProjectItemType.justConfigTs ||
+      projectItem.itemType === ProjectItemType.esLintConfigMjs ||
+      projectItem.itemType === ProjectItemType.env ||
+      projectItem.itemType === ProjectItemType.prettierRcJson ||
+      projectItem.itemType === ProjectItemType.docfxJson ||
+      projectItem.itemType === ProjectItemType.jsdocJson;
+
+    if (isDevFileType && !this.props.project.showDevFiles) {
+      return false;
+    }
+
     let perTypeShouldShow = true;
 
     if (
@@ -2092,7 +2361,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     // Reset header positions for sticky header tracking
     this._headerPositions = [];
 
-    const searchSummaryText = this.props.filteredItems ? this.props.filteredItems.length + " items found" : "";
+    const searchSummaryText = this.props.filteredItems
+      ? this.props.intl.formatMessage(
+          { id: "project_item_list.items_found" },
+          { count: this.props.filteredItems.length }
+        )
+      : "";
     const searchSummaryContent = (
       <div
         className="pil-fixedLineRow"
@@ -2126,7 +2400,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     // otherwise it creates a visible empty 36px row above Dashboard.
     if (this.props.filteredItems !== undefined) {
       (projectListItems as any).push({
-        role: "option",
+        role: "treeitem",
         key: "pilb-searchsum",
         content: searchSummaryContent,
       });
@@ -2134,12 +2408,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     if (this.props.filteredItems === undefined) {
       (projectListItems as any).push({
-        role: "option",
+        role: "treeitem",
         key: "pilats",
-        "aria-label": "Dashboard",
+        "aria-label": this.props.intl.formatMessage({ id: "project_item_list.dashboard" }),
         content: (
           <div className="pil-fixedLine" key="pil-ats">
-            Dashboard
+            {this.props.intl.formatMessage({ id: "project_item_list.dashboard" })}
           </div>
         ),
       });
@@ -2147,12 +2421,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       // Hide File Map in easy mode (summarized)
       if (this.props.creatorTools.editPreference !== CreatorToolsEditPreference.summarized) {
         (projectListItems as any).push({
-          role: "option",
+          role: "treeitem",
           key: "pilmap",
-          "aria-label": "Project Files",
+          "aria-label": this.props.intl.formatMessage({ id: "project_item_list.project_files" }),
           content: (
             <div className="pil-fixedLine" key="pil-map">
-              Project Files
+              {this.props.intl.formatMessage({ id: "project_item_list.project_files" })}
             </div>
           ),
         });
@@ -2163,7 +2437,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       if (this.props.allInfoSet.info.defaultIcon && this.props.allInfoSet.info.defaultIcon) {
         projectContent = (
           <div className="pil-fixedLine pil-fixedLineRow" key="pil-fixpropj">
-            <div className="pil-projectName">Project Settings</div>
+            <div className="pil-projectName">
+              {this.props.intl.formatMessage({ id: "project_item_list.project_settings" })}
+            </div>
             <div
               className="pil-projectIcon"
               style={{
@@ -2175,15 +2451,15 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       } else {
         projectContent = (
           <div className="pil-fixedLine" key="pil-fixpropa">
-            Project Settings
+            {this.props.intl.formatMessage({ id: "project_item_list.project_settings" })}
           </div>
         );
       }
 
       (projectListItems as any).push({
-        role: "option",
+        role: "treeitem",
         key: "pilb-proje",
-        "aria-label": "Project Settings",
+        "aria-label": this.props.intl.formatMessage({ id: "project_item_list.project_settings" }),
         content: projectContent,
       });
 
@@ -2193,12 +2469,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       // when editPreference === CreatorToolsEditPreference.summarized.
       if (this.props.creatorTools.editPreference !== CreatorToolsEditPreference.summarized) {
         (projectListItems as any).push({
-          role: "option",
+          role: "treeitem",
           key: "pilb-insp",
-          "aria-label": "Check for Problems",
+          "aria-label": this.props.intl.formatMessage({ id: "project_item_list.check_for_problems" }),
           content: (
             <div className="pil-fixedLine" key="pil-insp">
-              Check for Problems
+              {this.props.intl.formatMessage({ id: "project_item_list.check_for_problems" })}
             </div>
           ),
         });
@@ -2272,7 +2548,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
             focusMenuItems.push({
               key: "focus-entities-header",
-              content: "Entities",
+              content: this.props.intl.formatMessage({ id: "project_item_list.entities_header" }),
               kind: "header",
               menu: entityMenuItems,
             });
@@ -2291,7 +2567,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
             focusMenuItems.push({
               key: "focus-blocks-header",
-              content: "Blocks",
+              content: this.props.intl.formatMessage({ id: "project_item_list.category_blocks" }),
               kind: "header",
               menu: blockMenuItems,
             });
@@ -2310,7 +2586,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
             focusMenuItems.push({
               key: "focus-items-header",
-              content: "Items",
+              content: this.props.intl.formatMessage({ id: "project_item_list.category_items" }),
               kind: "header",
               menu: itemMenuItems,
             });
@@ -2335,6 +2611,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
             if (
               this.props.filteredItems !== undefined ||
+              this.props.project?.effectiveEditPreference === ProjectEditPreference.summarized ||
               !this.state.collapsedItemTypes.includes(ProjectItemList._getDisplayGroupType(projectItem.itemType))
             ) {
               const folderPath = projectItem.folderPath;
@@ -2425,18 +2702,18 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           isCompact={true}
         />
       ),
-      content: "Game Logic",
+      content: this.props.intl.formatMessage({ id: "project_item_list.category_game_logic" }),
       key: "pil-hideShowFunctions",
       onClick: this._showFunctionsClick,
-      title: "Toggle whether scripts and functions are shown",
+      title: this.props.intl.formatMessage({ id: "project_item_list.toggle_functions_tooltip" }),
     });
 
     showMenuItems.push({
       icon: <TypesIcon theme={this.props.theme} isSelected={this.props.project?.showTypes === true} isCompact={true} />,
       key: "pil-hideShowTypes",
-      content: "Types",
+      content: this.props.intl.formatMessage({ id: "project_item_list.show_types" }),
       onClick: this._showTypesClick,
-      title: "Toggle whether world details and mob, block, and item types are shown",
+      title: this.props.intl.formatMessage({ id: "project_item_list.toggle_types_tooltip" }),
     });
 
     showMenuItems.push({
@@ -2444,18 +2721,32 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         <AssetsIcon theme={this.props.theme} isSelected={this.props.project?.showAssets === true} isCompact={true} />
       ),
       key: "pil-hideShowAssets",
-      content: "Assets",
+      content: this.props.intl.formatMessage({ id: "project_item_list.show_assets" }),
       onClick: this._showAssetsClick,
-      title: "Toggle whether assets (models, images, UI and sound) are shown",
+      title: this.props.intl.formatMessage({ id: "project_item_list.toggle_assets_tooltip" }),
     });
 
     showMenuItems.push({
       icon: <CheckIcon theme={this.props.theme} isSelected={this.props.creatorTools.showMruPane} isCompact={true} />,
       key: "pil-hideShowMru",
-      content: "Recent Items",
+      content: this.props.intl.formatMessage({ id: "project_item_list.show_recent_items" }),
       onClick: this._toggleMruPane,
-      title: "Toggle whether recently used items are shown at the top",
+      title: this.props.intl.formatMessage({ id: "project_item_list.toggle_mru_tooltip" }),
     });
+
+    // In Full/Raw mode, offer an opt-in toggle to reveal VS Code / TS / NPM / lint config files
+    // that are hidden by default (they clutter the tree for Minecraft creators).
+    if (this.props.project && this.props.project.effectiveEditPreference !== ProjectEditPreference.summarized) {
+      showMenuItems.push({
+        icon: (
+          <CheckIcon theme={this.props.theme} isSelected={this.props.project.showDevFiles === true} isCompact={true} />
+        ),
+        key: "pil-hideShowDevFiles",
+        content: "Show dev files (package.json, .vscode, tsconfig, …)",
+        onClick: this._showDevFilesClick,
+        title: "Reveal TypeScript, NPM, VS Code, and lint configuration files in the tree.",
+      });
+    }
 
     if (addedEntityMenu || addedItemMenu || addedBlockMenu || this.state.focusFilter) {
       showMenuItems.push({
@@ -2466,20 +2757,20 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       if (this.state.focusFilter) {
         showMenuItems.push({
           key: "pil-clearFocus",
-          content: "Clear focus",
+          content: this.props.intl.formatMessage({ id: "project_item_list.clear_focus" }),
           onClick: this._clearFocus,
-          title: "Clear focus",
+          title: this.props.intl.formatMessage({ id: "project_item_list.clear_focus" }),
         });
       }
 
       if (addedEntityMenu || addedItemMenu || addedBlockMenu) {
         showMenuItems.push({
           key: "pil-focus",
-          content: "Focus on...",
+          content: this.props.intl.formatMessage({ id: "project_item_list.focus_on" }),
           menu: {
             items: focusMenuItems,
           },
-          title: "Focus on",
+          title: this.props.intl.formatMessage({ id: "project_item_list.focus_on" }),
         });
       }
     }
@@ -2494,9 +2785,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           />
         ),
         key: "pil-hideShowSlash",
-        content: "All Single Files (Advanced)",
+        content: this.props.intl.formatMessage({ id: "project_item_list.all_single_files" }),
         onClick: this._showAllClick,
-        title: "Show all files, including single files not normally shown in summarized mode",
+        title: this.props.intl.formatMessage({ id: "project_item_list.all_single_files_tooltip" }),
       });
     }
 
@@ -2522,7 +2813,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           content: pack,
           active: this.state.packFilter === pack,
           onClick: this._showPackClick,
-          title: "Toggle whether pack is shown",
+          title: this.props.intl.formatMessage({ id: "project_item_list.toggle_pack_tooltip" }),
         });
       }
     }
@@ -2561,7 +2852,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         <div className={"pil-mruSection" + (isDark ? "" : " pil-mruSection-light")}>
           <div className="pil-mruHeader">
             <FontAwesomeIcon icon={faClock} className="fa-xs" />
-            <span>Recent</span>
+            <span>{this.props.intl.formatMessage({ id: "project_item_list.recent" })}</span>
           </div>
           {mruItems.map((item, index) => {
             const itemColor = ProjectItemUtilities.getColorForType(item.itemType);
@@ -2613,9 +2904,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
                 <span
                   className="pil-mruItemRemove"
                   onClick={(e) => this._handleMruItemRemove(e, item)}
-                  title="Remove from recent"
+                  title={this.props.intl.formatMessage({ id: "project_item_list.remove_from_recent" })}
                   role="button"
-                  aria-label={"Remove " + item.name + " from recent"}
+                  aria-label={this.props.intl.formatMessage(
+                    { id: "project_item_list.remove_name_from_recent" },
+                    { name: item.name }
+                  )}
                 >
                   <FontAwesomeIcon icon={faXmark} />
                 </span>
@@ -2681,11 +2975,13 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           <div className={this.props.readOnly ? "pil-newarea" : "pil-showMenu"}>
             <MenuButton
               menu={showMenuItems}
+              triggerIsButton
               trigger={
                 <Button
                   icon={<FontAwesomeIcon icon={faListCheck} className="fa-lg" />}
-                  content="Show"
-                  aria-label="Show or hide different categories of items on the list"
+                  content={this.props.intl.formatMessage({ id: "project_item_list.show_button" })}
+                  aria-label={this.props.intl.formatMessage({ id: "project_item_list.show_button_aria" })}
+                  aria-haspopup="menu"
                 />
               }
             />
@@ -2723,8 +3019,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
                   height: Math.max(100, this._getListPixelHeight() - mruSectionHeight),
                   overflowX: "hidden",
                 }}
-                role="listbox"
-                aria-label="List of items within this project"
+                role="tree"
+                aria-label={this.props.intl.formatMessage({ id: "project_item_list.list_aria" })}
               />
             )}
           </div>
@@ -2733,3 +3029,5 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     );
   }
 }
+
+export default withLocalization(ProjectItemList);

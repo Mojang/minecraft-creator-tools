@@ -1,0 +1,54 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   CRAFTING SLOT - Individual grid cell for shaped recipe editor
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.rccs-container {
+  position: relative;
+  display: inline-flex;
+  cursor: pointer;
+}
+
+.rccs-drop-target {
+  border: 2px solid transparent;
+  border-radius: 2px;
+  transition:
+    border-color 0.15s,
+    background-color 0.15s;
+}
+
+.rccs-drop-target:hover {
+  border-color: rgba(76, 175, 80, 0.4);
+}
+
+.rccs-drag-over {
+  border-color: #4caf50 !important;
+  background: rgba(76, 175, 80, 0.15);
+}
+
+.rccs-clear-button {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  background: #e53935;
+  color: #ffffff;
+  font-size: 10px;
+  line-height: 14px;
+  text-align: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 1;
+  padding: 0;
+}
+
+.rccs-container:hover .rccs-clear-button {
+  opacity: 1;
+}
+
+.rccs-clear-button:hover {
+  background: #c62828;
+}

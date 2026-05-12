@@ -25,8 +25,9 @@ import LogItemArea from "../appShell/LogItemArea";
 import { ProjectStatusAreaMode } from "../project/ProjectEditor";
 import { StatusTopic } from "../../app/Status";
 import IProjectTheme from "../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
-interface IMinecraftToolEditorProps extends IAppProps {
+interface IMinecraftToolEditorProps extends IAppProps, WithLocalizationProps {
   heightOffset: number;
   project?: Project;
   theme: IProjectTheme;
@@ -41,7 +42,7 @@ interface IMinecraftToolEditorState {
   minecraftStatus: ProjectStatusAreaMode;
 }
 
-export default class MinecraftToolEditor extends Component<IMinecraftToolEditorProps, IMinecraftToolEditorState> {
+class MinecraftToolEditor extends Component<IMinecraftToolEditorProps, IMinecraftToolEditorState> {
   private _activeEditorPersistable?: IPersistable;
   private _commandValues: string[] = [];
 
@@ -115,9 +116,9 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
     this.props.creatorTools.save();
   }
 
-  _updatePreferredTextSize(newTextSize: number) {
+  _updatePreferredTextSize = (newTextSize: number) => {
     this.props.creatorTools.preferredTextSize = newTextSize;
-  }
+  };
 
   async _handleCommandChange(event: SelectChangeEvent<string>) {
     await this.persist();
@@ -185,7 +186,7 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
   getNameForTool(index: number) {
     const customTool = this.props.creatorTools.getCustomTool(index);
 
-    let name = "Tool " + (index + 1);
+    let name = this.props.intl.formatMessage({ id: "project_editor.mc_tool.default_name" }) + (index + 1);
 
     if (customTool.name) {
       name = customTool.name;
@@ -214,7 +215,7 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
     this._commandValues = [];
 
     for (let i = 0; i < 9; i++) {
-      const name = "Ctrl-" + (i + 1).toString() + ": " + this.getNameForTool(i);
+      const name = this.props.intl.formatMessage({ id: "project_editor.mc_tool.ctrl_prefix" }) + (i + 1).toString() + ": " + this.getNameForTool(i);
 
       this._commandValues.push(name);
     }
@@ -294,7 +295,7 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
           </div>
           <div className="mts-toolName">
             <span className="mts-label" id="mts-toolNameLabel">
-              Name:
+              {this.props.intl.formatMessage({ id: "project_editor.mc_tool.name_label" })}
             </span>
             <TextField
               size="small"
@@ -315,12 +316,12 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
               exclusive
               onChange={this._handleCommandTypeChange}
               size="small"
-              aria-label="Tool type"
+              aria-label={this.props.intl.formatMessage({ id: "project_editor.mc_tool.type_aria" })}
             >
-              <ToggleButton value="Commands" title="Commands" aria-label="Commands">
+              <ToggleButton value="Commands" title={this.props.intl.formatMessage({ id: "project_editor.mc_tool.type_commands" })} aria-label={this.props.intl.formatMessage({ id: "project_editor.mc_tool.type_commands" })}>
                 <span className="mts-typeIcon">/say</span>
               </ToggleButton>
-              <ToggleButton value="Script" title="Script" aria-label="Script">
+              <ToggleButton value="Script" title={this.props.intl.formatMessage({ id: "project_editor.mc_tool.type_script" })} aria-label={this.props.intl.formatMessage({ id: "project_editor.mc_tool.type_script" })}>
                 <span className="mts-typeIcon">&#123; &#125;</span>
               </ToggleButton>
             </ToggleButtonGroup>
@@ -340,3 +341,5 @@ export default class MinecraftToolEditor extends Component<IMinecraftToolEditorP
     );
   }
 }
+
+export default withLocalization(MinecraftToolEditor);

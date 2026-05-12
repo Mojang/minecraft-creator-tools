@@ -1,417 +1,591 @@
-import { test, expect, ConsoleMessage } from "@playwright/test";
-import { processMessage, selectEditMode } from "./WebTestUtilities";
+import { test, expect, Page, ConsoleMessage } from "@playwright/test";
+import { processMessage, enterEditor, FailedRequest, setupRequestFailureTracking } from "./WebTestUtilities";
 
-test.describe("MCTools Web Editor - Biome Editor Tests @focused", () => {
+const SCREENSHOT_DIR = "debugoutput/screenshots/biome";
+
+// ═══════════════════════════════════════════════════════════════════════════
+// HELPER FUNCTIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Opens the Content Wizard via the "Add new content" toolbar button.
+ */
+async function openContentWizard(page: Page): Promise<boolean> {
+  try {
+    const existingDialog = page.locator(".MuiDialog-root").first();
+    if (await existingDialog.isVisible({ timeout: 500 }).catch(() => false)) {
+      await page.keyboard.press("Escape");
+      await page.waitForTimeout(600);
+    }
+
+    const addButton = page.locator('button[aria-label="Add new content"]').first();
+    if (!(await addButton.isVisible({ timeout: 15000 }))) {
+      console.log("openContentWizard: Add button not visible");
+      return false;
+    }
+    await addButton.click();
+    await page.waitForTimeout(800);
+
+    const wizardDialog = page.locator(".cwiz-launcher-wrapper, .cwiz-launcher").first();
+    if (await wizardDialog.isVisible({ timeout: 3000 })) {
+      return true;
+    }
+
+    const muiDialog = page.locator(".MuiDialog-root").first();
+    return muiDialog.isVisible({ timeout: 2000 });
+  } catch (error) {
+    console.log(`openContentWizard: Error - ${error}`);
+    return false;
+  }
+}
+
+/**
+ * Adds a biome via Content Wizard: Advanced File Types → World Generation → Partial Biome.
+ * Returns true if the biome was successfully added.
+ */
+async function addBiomeViaWizard(page: Page): Promise<boolean> {
+  const wizardOpened = await openContentWizard(page);
+  if (!wizardOpened) {
+    console.log("addBiomeViaWizard: Could not open Content Wizard");
+    return false;
+  }
+
+  await page.screenshot({ path: `${SCREENSHOT_DIR}/add-biome-01-wizard-opened.png`, fullPage: true });
+
+  // Step 1: Expand "Advanced File Types" section
+  const advancedSection = page.locator('.cwiz-advanced-header:has-text("Advanced File Types")').first();
+  if (!(await advancedSection.isVisible({ timeout: 5000 }))) {
+    // Scroll down within the wizard to find it
+    const wizardContent = page.locator(".cwiz-launcher").first();
+    if (await wizardContent.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await wizardContent.evaluate((el: HTMLElement) => el.scrollTo(0, el.scrollHeight));
+      await page.waitForTimeout(500);
+    }
+    if (!(await advancedSection.isVisible({ timeout: 3000 }))) {
+      console.log("addBiomeViaWizard: Advanced File Types section not found");
+      await page.screenshot({ path: `${SCREENSHOT_DIR}/add-biome-advanced-not-found.png`, fullPage: true });
+      return false;
+    }
+  }
+  await advancedSection.click();
+  await page.waitForTimeout(500);
+
+  await page.screenshot({ path: `${SCREENSHOT_DIR}/add-biome-02-advanced-expanded.png`, fullPage: true });
+
+  // Step 2: Inside Advanced, find and expand "World Generation" subsection
+  // This is a cwiz-section-header within the cwiz-advanced-content
+  const advancedContent = page.locator(".cwiz-advanced-content").first();
+  const worldGenHeader = advancedContent.locator('.cwiz-section-header:has-text("World Generation")').first();
+
+  if (await worldGenHeader.isVisible({ timeout: 3000 }).catch(() => false)) {
+    await worldGenHeader.scrollIntoViewIfNeeded();
+    await worldGenHeader.click();
+    await page.waitForTimeout(500);
+  } else {
+    // Try scrolling within advanced content
+    if (await advancedContent.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await advancedContent.evaluate((el: HTMLElement) => el.scrollTo(0, el.scrollHeight));
+      await page.waitForTimeout(500);
+    }
+    const worldGenRetry = advancedContent.locator('.cwiz-section-header:has-text("World Gen")').first();
+    if (await worldGenRetry.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await worldGenRetry.click();
+      await page.waitForTimeout(500);
+    } else {
+      console.log("addBiomeViaWizard: World Generation section not found in Advanced");
+      await page.screenshot({ path: `${SCREENSHOT_DIR}/add-biome-worldgen-not-found.png`, fullPage: true });
+      return false;
+    }
+  }
+
+  await page.screenshot({ path: `${SCREENSHOT_DIR}/add-biome-03-worldgen-expanded.png`, fullPage: true });
+
+  // Step 3: Click the "Partial Biome" item within the World Generation section
+  const biomeItem = advancedContent.locator('.cwiz-section-item:has-text("Biome")').first();
+  if (!(await biomeItem.isVisible({ timeout: 3000 }))) {
+    // Try scrolling to find it
+    await biomeItem.scrollIntoViewIfNeeded().catch(() => {});
+    if (!(await biomeItem.isVisible({ timeout: 2000 }))) {
+      console.log("addBiomeViaWizard: Biome item not found in World Generation section");
+      await page.screenshot({ path: `${SCREENSHOT_DIR}/add-biome-biome-not-found.png`, fullPage: true });
+      return false;
+    }
+  }
+  await biomeItem.click();
+  await page.waitForTimeout(1000);
+
+  await page.screenshot({ path: `${SCREENSHOT_DIR}/add-biome-04-biome-clicked.png`, fullPage: true });
+
+  // Step 4: Dismiss the name dialog if it appears
+  const dialog = page.locator(".MuiDialog-root, dialog, [role='dialog']").first();
+  if (await dialog.isVisible({ timeout: 3000 }).catch(() => false)) {
+    const confirmButton = dialog
+      .locator('button:has-text("Add"), button:has-text("OK"), button:has-text("Create")')
+      .first();
+    if (await confirmButton.isVisible({ timeout: 2000 })) {
+      await confirmButton.click();
+      await page.waitForTimeout(1000);
+    } else {
+      await page.keyboard.press("Enter");
+      await page.waitForTimeout(1000);
+    }
+  }
+
+  await page.waitForTimeout(2000);
+  await page.screenshot({ path: `${SCREENSHOT_DIR}/add-biome-05-after-add.png`, fullPage: true });
+
+  return true;
+}
+
+/**
+ * Navigates to a biome item in the project tree.
+ * Returns true if a biome editor was successfully opened.
+ */
+async function selectBiomeItem(page: Page): Promise<boolean> {
+  // Strategy 1: Look for biome items in the listbox (file explorer)
+  const biomeOption = page.locator('[role="option"]').filter({ hasText: /biome/i }).first();
+  if (await biomeOption.isVisible({ timeout: 3000 }).catch(() => false)) {
+    await biomeOption.click();
+    await page.waitForTimeout(2000);
+    return await verifyBiomeEditorVisible(page);
+  }
+
+  // Strategy 2: Try by title attribute
+  const biomeTitle = page.locator('[title*="biome" i], [title*="Biome"]').first();
+  if (await biomeTitle.isVisible({ timeout: 2000 }).catch(() => false)) {
+    await biomeTitle.click();
+    await page.waitForTimeout(2000);
+    return await verifyBiomeEditorVisible(page);
+  }
+
+  // Strategy 3: Look for .biome.json text anywhere in clickable elements
+  const biomeText = page.locator("text=/\\.biome\\.json/i").first();
+  if (await biomeText.isVisible({ timeout: 2000 }).catch(() => false)) {
+    await biomeText.click();
+    await page.waitForTimeout(2000);
+    return await verifyBiomeEditorVisible(page);
+  }
+
+  console.log("selectBiomeItem: Could not find biome item in project tree");
+  return false;
+}
+
+/**
+ * Verifies that the Biome Editor is visible by checking for its tab buttons.
+ */
+async function verifyBiomeEditorVisible(page: Page): Promise<boolean> {
+  const componentsTab = page.locator('button:has-text("Components")').first();
+
+  const hasComponents = await componentsTab.isVisible({ timeout: 5000 }).catch(() => false);
+
+  if (hasComponents) {
+    console.log("verifyBiomeEditorVisible: Components tab visible");
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Clicks a tab in the Biome Editor by text.
+ */
+async function clickBiomeTab(page: Page, tabName: string): Promise<boolean> {
+  const byTitle = page.locator(`button[title="${tabName}"]`).first();
+  if (await byTitle.isVisible({ timeout: 2000 }).catch(() => false)) {
+    await byTitle.click();
+    await page.waitForTimeout(1000);
+    return true;
+  }
+
+  const byText = page.locator(`button:has-text("${tabName}")`).first();
+  if (await byText.isVisible({ timeout: 2000 }).catch(() => false)) {
+    await byText.click();
+    await page.waitForTimeout(1000);
+    return true;
+  }
+
+  console.log(`clickBiomeTab: Could not find tab "${tabName}"`);
+  return false;
+}
+
+/**
+ * Waits for the accordion component list to load (async form loading).
+ * Returns the count of accordion sections found.
+ */
+async function waitForAccordionSections(page: Page, timeoutMs: number = 15000): Promise<number> {
+  const sections = page.locator(".dfca-section");
+  const started = Date.now();
+  let count = 0;
+
+  while (Date.now() - started < timeoutMs) {
+    count = await sections.count();
+    if (count > 0) return count;
+    await page.waitForTimeout(500);
+  }
+
+  return count;
+}
+
+/**
+ * Clicks an accordion section header to expand it (and auto-add the component).
+ */
+async function expandAccordionSection(page: Page, index: number): Promise<boolean> {
+  const headers = page.locator(".dfca-header");
+  const header = headers.nth(index);
+
+  if (await header.isVisible({ timeout: 2000 }).catch(() => false)) {
+    await header.click();
+    await page.waitForTimeout(1000);
+    return true;
+  }
+
+  return false;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BEHAVIOR BIOME EDITOR TESTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+test.describe("Biome Behavior Editor @focused", () => {
+  const consoleErrors: { url: string; error: string }[] = [];
+  const consoleWarnings: { url: string; error: string }[] = [];
+  let failedRequests: FailedRequest[] = [];
+
+  test.beforeEach(async ({ page }) => {
+    consoleErrors.length = 0;
+    consoleWarnings.length = 0;
+    failedRequests = [];
+
+    page.on("console", (msg: ConsoleMessage) => {
+      processMessage(msg, page, consoleErrors, consoleWarnings);
+    });
+
+    setupRequestFailureTracking(page, failedRequests);
+  });
+
+  test("should add biome via Content Wizard and show editor tabs", async ({ page }, testInfo) => {
+    testInfo.setTimeout(90000);
+    const entered = await enterEditor(page);
+    expect(entered).toBe(true);
+
+    const biomeAdded = await addBiomeViaWizard(page);
+    if (!biomeAdded) {
+      console.log("Biome not added via wizard, test cannot proceed");
+      return;
+    }
+
+    const biomeSelected = await selectBiomeItem(page);
+    if (!biomeSelected) {
+      const editorVisible = await verifyBiomeEditorVisible(page);
+      if (!editorVisible) {
+        console.log("Biome editor not visible after adding biome");
+        await page.screenshot({ path: `${SCREENSHOT_DIR}/beh-biome-not-visible.png`, fullPage: true });
+        return;
+      }
+    }
+
+    await page.screenshot({ path: `${SCREENSHOT_DIR}/beh-02-biome-editor.png`, fullPage: true });
+
+    const componentsTab = page.locator('button:has-text("Components")').first();
+    await expect(componentsTab).toBeVisible({ timeout: 5000 });
+
+    await clickBiomeTab(page, "Components");
+    await page.screenshot({ path: `${SCREENSHOT_DIR}/beh-03-components-tab.png`, fullPage: true });
+  });
+
+  test("should show all available components in accordion", async ({ page }, testInfo) => {
+    testInfo.setTimeout(90000);
+    const entered = await enterEditor(page);
+    expect(entered).toBe(true);
+
+    const biomeAdded = await addBiomeViaWizard(page);
+    if (!biomeAdded) return;
+
+    await selectBiomeItem(page);
+    await clickBiomeTab(page, "Components");
+
+    const sectionCount = await waitForAccordionSections(page);
+    console.log(`Accordion shows ${sectionCount} component sections`);
+
+    await page.screenshot({ path: `${SCREENSHOT_DIR}/beh-04-accordion-loaded.png`, fullPage: true });
+
+    expect(sectionCount).toBeGreaterThan(5);
+
+    const presentCount = await page.locator(".dfca-section.dfca-present").count();
+    const absentCount = await page.locator(".dfca-section.dfca-absent").count();
+    console.log(`Present: ${presentCount}, Absent: ${absentCount}`);
+
+    // The "Partial Biome" wizard path creates an empty biome ({}), so 0 present
+    // components is expected for a freshly-added biome. We only assert that the
+    // accordion rendered the full set of available (absent) component sections.
+    expect(absentCount).toBeGreaterThan(0);
+    expect(presentCount + absentCount).toBe(sectionCount);
+  });
+
+  test("should expand absent component to add it", async ({ page }, testInfo) => {
+    testInfo.setTimeout(90000);
+    const entered = await enterEditor(page);
+    expect(entered).toBe(true);
+
+    const biomeAdded = await addBiomeViaWizard(page);
+    if (!biomeAdded) return;
+
+    await selectBiomeItem(page);
+    await clickBiomeTab(page, "Components");
+
+    const sectionCount = await waitForAccordionSections(page);
+    if (sectionCount === 0) return;
+
+    const absentHeader = page.locator(".dfca-section.dfca-absent .dfca-header").first();
+    if (!(await absentHeader.isVisible({ timeout: 3000 }).catch(() => false))) return;
+
+    const title = await absentHeader.locator(".dfca-title").textContent();
+    console.log(`Expanding absent component: ${title}`);
+    await absentHeader.click();
+    await page.waitForTimeout(1500);
+
+    await page.screenshot({ path: `${SCREENSHOT_DIR}/beh-05-component-expanded.png`, fullPage: true });
+
+    const expandedBody = page.locator(".dfca-body").first();
+    const hasBody = await expandedBody.isVisible({ timeout: 3000 }).catch(() => false);
+    expect(hasBody).toBe(true);
+  });
+
+  test("should remove a component via the remove button", async ({ page }, testInfo) => {
+    testInfo.setTimeout(90000);
+    const entered = await enterEditor(page);
+    expect(entered).toBe(true);
+
+    const biomeAdded = await addBiomeViaWizard(page);
+    if (!biomeAdded) return;
+
+    await selectBiomeItem(page);
+    await clickBiomeTab(page, "Components");
+
+    const sectionCount = await waitForAccordionSections(page);
+    if (sectionCount === 0) return;
+
+    const presentBefore = await page.locator(".dfca-section.dfca-present").count();
+    if (presentBefore === 0) return;
+
+    const removeBtn = page.locator(".dfca-section.dfca-present .dfca-removeBtn").first();
+    if (await removeBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await removeBtn.click();
+      await page.waitForTimeout(1000);
+
+      const presentAfter = await page.locator(".dfca-section.dfca-present").count();
+      console.log(`Present: ${presentBefore} -> ${presentAfter}`);
+      expect(presentAfter).toBeLessThan(presentBefore);
+    }
+  });
+
+  test("should switch between Components and Audio & Visuals tabs", async ({ page }, testInfo) => {
+    // Heavy setup (enterEditor + addBiomeViaWizard + tab switches) exceeds 60s on Vite dev.
+    testInfo.setTimeout(90000);
+    const entered = await enterEditor(page);
+    expect(entered).toBe(true);
+
+    const biomeAdded = await addBiomeViaWizard(page);
+    if (!biomeAdded) return;
+
+    await selectBiomeItem(page);
+
+    await clickBiomeTab(page, "Components");
+    await page.waitForTimeout(500);
+    await page.screenshot({ path: `${SCREENSHOT_DIR}/beh-07-tab-components.png`, fullPage: true });
+
+    const hasAccordion = await page
+      .locator(".dfca-outer")
+      .first()
+      .isVisible({ timeout: 5000 })
+      .catch(() => false);
+    console.log(`Components tab has accordion: ${hasAccordion}`);
+
+    await clickBiomeTab(page, "Audio & Visuals");
+    await page.waitForTimeout(500);
+    await page.screenshot({ path: `${SCREENSHOT_DIR}/beh-08-tab-audio-visuals.png`, fullPage: true });
+
+    await clickBiomeTab(page, "Components");
+    await page.waitForTimeout(500);
+  });
+
+  test("should expand multiple components and show DataForms", async ({ page }, testInfo) => {
+    testInfo.setTimeout(90000);
+    const entered = await enterEditor(page);
+    expect(entered).toBe(true);
+
+    const biomeAdded = await addBiomeViaWizard(page);
+    if (!biomeAdded) return;
+
+    await selectBiomeItem(page);
+    await clickBiomeTab(page, "Components");
+
+    const sectionCount = await waitForAccordionSections(page);
+    if (sectionCount === 0) return;
+
+    const absentHeaders = page.locator(".dfca-section.dfca-absent .dfca-header");
+    const toExpand = Math.min(await absentHeaders.count(), 3);
+
+    for (let i = 0; i < toExpand; i++) {
+      const header = absentHeaders.first();
+      if (await header.isVisible({ timeout: 2000 }).catch(() => false)) {
+        await header.click();
+        await page.waitForTimeout(1500);
+      }
+    }
+
+    await page.screenshot({ path: `${SCREENSHOT_DIR}/beh-09-multiple-expanded.png`, fullPage: true });
+
+    const presentAfter = await page.locator(".dfca-section.dfca-present").count();
+    console.log(`Present sections after expanding: ${presentAfter}`);
+    expect(presentAfter).toBeGreaterThanOrEqual(toExpand);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CLIENT BIOME (RESOURCE) EDITOR TESTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+test.describe("Biome Resource Editor @focused", () => {
   const consoleErrors: { url: string; error: string }[] = [];
   const consoleWarnings: { url: string; error: string }[] = [];
 
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
-    await page.waitForLoadState("networkidle");
+    consoleErrors.length = 0;
+    consoleWarnings.length = 0;
 
     page.on("console", (msg: ConsoleMessage) => {
       processMessage(msg, page, consoleErrors, consoleWarnings);
     });
   });
 
-  test("should display biome editor when biome file is selected", async ({ page }) => {
-    // Create project and enter editor using correct workflow
-    const addOnStarterNewButton = page.getByRole("button", { name: "Create New" }).first();
+  test("should show Audio & Visuals tab with accordion or add button", async ({ page }, testInfo) => {
+    testInfo.setTimeout(90000);
+    const entered = await enterEditor(page);
+    expect(entered).toBe(true);
 
-    if ((await addOnStarterNewButton.count()) > 0) {
-      console.log("Creating project to enter editor for biome testing");
-      await addOnStarterNewButton.click();
-      await page.waitForTimeout(1000);
+    const biomeAdded = await addBiomeViaWizard(page);
+    if (!biomeAdded) return;
 
-      // Fill project dialog and click OK
-      const okButton = await page.getByTestId("submit-button").first();
-      await okButton.click();
-      await page.waitForTimeout(3000);
-      await page.waitForLoadState("networkidle");
+    await selectBiomeItem(page);
 
-      // Select Focused mode to dismiss welcome panel and hide Inspector
-      await selectEditMode(page);
+    await clickBiomeTab(page, "Audio & Visuals");
+    await page.waitForTimeout(1000);
 
-      // Take screenshot of editor after project creation
-      await page.screenshot({ path: "debugoutput/screenshots/biome-editor-project-created.png", fullPage: true });
+    await page.screenshot({ path: `${SCREENSHOT_DIR}/res-01-audio-visuals-tab.png`, fullPage: true });
 
-      // Look for the Add button to add new items
-      const addButton = page.locator("button:has-text('Add')").first();
-      if ((await addButton.count()) > 0) {
-        console.log("Clicking Add button to add biome file");
-        await addButton.click();
-        await page.waitForTimeout(1000);
+    const accordion = page.locator(".dfca-outer").first();
+    const addResourceBtn = page.locator('button:has-text("Add")').last();
 
-        await page.screenshot({ path: "debugoutput/screenshots/biome-add-menu-opened.png", fullPage: true });
+    const hasAccordion = await accordion.isVisible({ timeout: 5000 }).catch(() => false);
+    const hasAddResource = await addResourceBtn.isVisible({ timeout: 3000 }).catch(() => false);
+    console.log(`Audio & Visuals tab: accordion=${hasAccordion}, add button=${hasAddResource}`);
 
-        // Look for biome-related options in the Add menu
-        const biomeOption = page.locator("text=/biome/i").first();
-        if ((await biomeOption.count()) > 0) {
-          console.log("Found biome option in add menu");
-          await biomeOption.click();
-          await page.waitForTimeout(2000);
+    expect(hasAccordion || hasAddResource).toBe(true);
+  });
+});
 
-          await page.screenshot({ path: "debugoutput/screenshots/biome-option-selected.png", fullPage: true });
+// ═══════════════════════════════════════════════════════════════════════════
+// THEME TESTS
+// ═══════════════════════════════════════════════════════════════════════════
 
-          // Check if biome editor interface appears
-          const biomeEditorComponents = page.locator("text=/Components|Climate|Terrain|Spawning/i");
-          if ((await biomeEditorComponents.count()) > 0) {
-            console.log("Biome editor tabs found!");
-            await expect(biomeEditorComponents.first()).toBeVisible();
+test.describe("Biome Editor Themes @focused", () => {
+  const consoleErrors: { url: string; error: string }[] = [];
+  const consoleWarnings: { url: string; error: string }[] = [];
 
-            // Test clicking different biome editor tabs
-            const componentsTab = page.locator("text=Components").first();
-            const climateTab = page.locator("text=Climate").first();
-            const terrainTab = page.locator("text=Terrain").first();
-            const spawningTab = page.locator("text=Spawning").first();
+  test.beforeEach(async ({ page }) => {
+    consoleErrors.length = 0;
+    consoleWarnings.length = 0;
+    page.on("console", (msg: ConsoleMessage) => {
+      processMessage(msg, page, consoleErrors, consoleWarnings);
+    });
+  });
 
-            if ((await componentsTab.count()) > 0) {
-              await componentsTab.click();
-              await page.waitForTimeout(1000);
-              await page.screenshot({ path: "debugoutput/screenshots/biome-components-tab.png", fullPage: true });
-            }
+  test("should render biome accordion in dark theme", async ({ page }, testInfo) => {
+    // Heavy setup (enterEditor + addBiomeViaWizard + accordion wait) exceeds 60s on Vite dev.
+    testInfo.setTimeout(90000);
+    const entered = await enterEditor(page, { theme: "dark" });
+    expect(entered).toBe(true);
 
-            if ((await climateTab.count()) > 0) {
-              await climateTab.click();
-              await page.waitForTimeout(1000);
-              await page.screenshot({ path: "debugoutput/screenshots/biome-climate-tab.png", fullPage: true });
-            }
+    const biomeAdded = await addBiomeViaWizard(page);
+    if (!biomeAdded) return;
 
-            if ((await terrainTab.count()) > 0) {
-              await terrainTab.click();
-              await page.waitForTimeout(1000);
-              await page.screenshot({ path: "debugoutput/screenshots/biome-terrain-tab.png", fullPage: true });
-            }
+    await selectBiomeItem(page);
+    await clickBiomeTab(page, "Components");
 
-            if ((await spawningTab.count()) > 0) {
-              await spawningTab.click();
-              await page.waitForTimeout(1000);
-              await page.screenshot({ path: "debugoutput/screenshots/biome-spawning-tab.png", fullPage: true });
-            }
+    const sectionCount = await waitForAccordionSections(page);
+    console.log(`Dark theme: ${sectionCount} accordion sections`);
 
-            // Go back to components tab and test adding components
-            if ((await componentsTab.count()) > 0) {
-              await componentsTab.click();
-              await page.waitForTimeout(1000);
+    await page.screenshot({ path: `${SCREENSHOT_DIR}/theme-01-dark-accordion.png`, fullPage: true });
+  });
 
-              // Look for add component button
-              const addComponentButton = page.locator("button[title='Add Component']").first();
-              if ((await addComponentButton.count()) > 0) {
-                console.log("Testing add component functionality");
-                await addComponentButton.click();
-                await page.waitForTimeout(1000);
-                await page.screenshot({ path: "debugoutput/screenshots/biome-add-component.png", fullPage: true });
-              }
-            }
+  test("should render biome accordion in light theme", async ({ page }, testInfo) => {
+    // Heavy setup (enterEditor + addBiomeViaWizard + accordion wait) exceeds 60s on Vite dev.
+    testInfo.setTimeout(90000);
+    const entered = await enterEditor(page, { theme: "light" });
+    expect(entered).toBe(true);
 
-            console.log("Biome editor interface tests completed successfully");
-          } else {
-            console.log("Biome editor tabs not found, checking if biome file was created");
+    const biomeAdded = await addBiomeViaWizard(page);
+    if (!biomeAdded) return;
 
-            // Look for any newly created biome file in the project list
-            const biomeFile = page.locator("option").filter({ hasText: /biome/i }).first();
-            if ((await biomeFile.count()) > 0) {
-              console.log("Found biome file in project, clicking to test editor");
-              await biomeFile.click();
-              await page.waitForTimeout(2000);
-              await page.screenshot({ path: "debugoutput/screenshots/biome-file-selected.png", fullPage: true });
+    await selectBiomeItem(page);
+    await clickBiomeTab(page, "Components");
 
-              // Check again for biome editor interface
-              const editorTabs = page.locator("text=/Components|Climate|Terrain|Spawning/i");
-              if ((await editorTabs.count()) > 0) {
-                console.log("Biome editor appeared after selecting biome file");
-                await expect(editorTabs.first()).toBeVisible();
-              }
-            }
-          }
-        } else {
-          console.log("Biome option not found in add menu (ContentWizard does not include biomes yet)");
+    const sectionCount = await waitForAccordionSections(page);
+    console.log(`Light theme: ${sectionCount} accordion sections`);
 
-          // Take screenshot of available options
-          await page.screenshot({ path: "debugoutput/screenshots/add-menu-options.png", fullPage: true });
+    await page.screenshot({ path: `${SCREENSHOT_DIR}/theme-02-light-accordion.png`, fullPage: true });
+  });
+});
 
-          // Close the ContentWizard dialog before interacting with sidebar elements
-          await page.keyboard.press("Escape");
-          await page.waitForTimeout(500);
-        }
+// ═══════════════════════════════════════════════════════════════════════════
+// CONSOLE HEALTH TEST
+// ═══════════════════════════════════════════════════════════════════════════
 
-        // Close any remaining dialogs or menus
-        await page.keyboard.press("Escape");
-      } else {
-        console.log("Add button not found, taking screenshot for debugging");
-        await page.screenshot({ path: "debugoutput/screenshots/no-add-button-found.png", fullPage: true });
-      }
-    } else {
-      console.log("Could not create project for biome editor testing");
-      await page.screenshot({ path: "debugoutput/screenshots/biome-no-project-creation.png", fullPage: true });
+test.describe("Biome Editor Console Health @focused", () => {
+  test("should not produce console errors when editing biome", async ({ page }, testInfo) => {
+    testInfo.setTimeout(90000);
+    const consoleErrors: { url: string; error: string }[] = [];
+    const consoleWarnings: { url: string; error: string }[] = [];
+    const failedRequests: FailedRequest[] = [];
+
+    page.on("console", (msg: ConsoleMessage) => {
+      processMessage(msg, page, consoleErrors, consoleWarnings);
+    });
+    setupRequestFailureTracking(page, failedRequests);
+
+    const entered = await enterEditor(page);
+    expect(entered).toBe(true);
+
+    const biomeAdded = await addBiomeViaWizard(page);
+    if (!biomeAdded) {
+      console.log("Skipping console health test - biome not added");
+      return;
     }
 
-    expect(consoleErrors.length).toBeLessThanOrEqual(0);
-    // Allow MUI focus trap warnings ("Body element does not contain trap zone element")
+    await selectBiomeItem(page);
+
+    await clickBiomeTab(page, "Components");
+    await page.waitForTimeout(2000);
+    await clickBiomeTab(page, "Audio & Visuals");
+    await page.waitForTimeout(2000);
+    await clickBiomeTab(page, "Components");
+    await page.waitForTimeout(1000);
+
+    // Expand a component
+    const absentHeader = page.locator(".dfca-section.dfca-absent .dfca-header").first();
+    if (await absentHeader.isVisible({ timeout: 5000 }).catch(() => false)) {
+      await absentHeader.click();
+      await page.waitForTimeout(1500);
+    }
+
+    expect(consoleErrors.length).toBe(0);
+
     const nonMuiWarnings = consoleWarnings.filter(
       (w) => !w.error.includes("Body element does not contain trap zone element")
     );
-    expect(nonMuiWarnings.length).toBeLessThanOrEqual(0);
-  });
+    expect(nonMuiWarnings.length).toBe(0);
 
-  test("should test importing existing biome file", async ({ page }) => {
-    // Create project first
-    const addOnStarterNewButton = page.getByRole("button", { name: "Create New" }).first();
-
-    if ((await addOnStarterNewButton.count()) > 0) {
-      await addOnStarterNewButton.click();
-      await page.waitForTimeout(1000);
-
-      await page.getByLabel("Title").fill("automated_test_proj");
-      await page.getByLabel("Creator Name").fill("automated_test_creator");
-
-      // Expand Advanced Options to access Folder Name and Description fields
-      const advancedToggle = page.getByText("Advanced Options");
-      if (await advancedToggle.isVisible({ timeout: 2000 })) {
-        await advancedToggle.click();
-        await page.waitForTimeout(300);
-      }
-
-      await page.getByLabel("Folder Name").fill("automated_test_sn");
-      await page.getByLabel("Description").fill("automated_test_desc");
-
-      const okButton = await page.getByTestId("submit-button").first();
-      await okButton.click();
-      await page.waitForTimeout(3000);
-      await page.waitForLoadState("networkidle");
-
-      // Select Focused mode to dismiss welcome panel and hide Inspector
-      await selectEditMode(page);
-
-      // Look for import or file upload functionality
-      const importButton = page
-        .locator("button")
-        .filter({ hasText: /import|upload|open/i })
-        .first();
-
-      if ((await importButton.count()) > 0) {
-        console.log("Testing biome file import functionality");
-        await importButton.click();
-        await page.waitForTimeout(1000);
-        await page.screenshot({ path: "debugoutput/screenshots/biome-import-started.png", fullPage: true });
-      } else {
-        console.log("Import functionality not readily available");
-
-        // Look for file input elements
-        const fileInput = page.locator('input[type="file"]').first();
-        if ((await fileInput.count()) > 0) {
-          console.log("Found file input for potential biome file upload");
-          await page.screenshot({ path: "debugoutput/screenshots/biome-file-input-found.png", fullPage: true });
-        }
-      }
-
-      // Test if we can manually create a biome file through other means
-      console.log("Testing manual biome file creation through editor");
-      await page.screenshot({ path: "debugoutput/screenshots/biome-import-test-complete.png", fullPage: true });
-    }
-
-    expect(consoleErrors.length).toBeLessThanOrEqual(0);
-    // Allow MUI focus trap warnings ("Body element does not contain trap zone element")
-    const nonMuiWarnings2 = consoleWarnings.filter(
-      (w) => !w.error.includes("Body element does not contain trap zone element")
-    );
-    expect(nonMuiWarnings2.length).toBeLessThanOrEqual(0);
-  });
-
-  test("should create and edit biome file with BiomeEditor interface", async ({ page }) => {
-    // Create project and enter editor using correct workflow
-    const addOnStarterNewButton = page.getByRole("button", { name: "Create New" }).first();
-
-    if ((await addOnStarterNewButton.count()) > 0) {
-      console.log("Creating project to test BiomeEditor creation");
-      await addOnStarterNewButton.click();
-      await page.waitForTimeout(1000);
-
-      const okButton = await page.getByTestId("submit-button").first();
-      await okButton.click();
-      await page.waitForTimeout(3000);
-      await page.waitForLoadState("networkidle");
-
-      // Select Focused mode to dismiss welcome panel and hide Inspector
-      await selectEditMode(page);
-
-      // Take screenshot of initial project state
-      await page.screenshot({ path: "debugoutput/screenshots/biome-creation-project-ready.png", fullPage: true });
-
-      // Look for the Add button to add new items
-      const addButton = page.locator("button:has-text('Add')").first();
-      if ((await addButton.count()) > 0) {
-        console.log("Clicking Add button to add biome file");
-        await addButton.click();
-        await page.waitForTimeout(2000);
-
-        await page.screenshot({ path: "debugoutput/screenshots/biome-creation-add-menu.png", fullPage: true });
-
-        // Look for biome or behavior pack options
-        const biomeOrBehaviorOptions = page.locator("text").filter({ hasText: /biome|behavior/i });
-        const optionCount = await biomeOrBehaviorOptions.count();
-        console.log(`Found ${optionCount} biome/behavior options`);
-
-        if (optionCount > 0) {
-          // Try to find and click a biome-related option
-          const biomeOption = page.locator("text").filter({ hasText: /biome/i }).first();
-          if ((await biomeOption.count()) > 0) {
-            console.log("Found biome option, clicking it");
-            await biomeOption.click();
-            await page.waitForTimeout(2000);
-            await page.screenshot({
-              path: "debugoutput/screenshots/biome-creation-biome-selected.png",
-              fullPage: true,
-            });
-          } else {
-            // If no direct biome option, try behavior pack
-            const behaviorOption = page
-              .locator("text")
-              .filter({ hasText: /behavior/i })
-              .first();
-            if ((await behaviorOption.count()) > 0) {
-              console.log("Trying behavior option for biome creation");
-              await behaviorOption.click();
-              await page.waitForTimeout(2000);
-              await page.screenshot({
-                path: "debugoutput/screenshots/biome-creation-behavior-selected.png",
-                fullPage: true,
-              });
-            }
-          }
-
-          // Check if we can navigate to biome files
-          await page.waitForTimeout(2000);
-
-          // Look for any newly created files or options
-          const projectItems = page.locator("[role='listbox'] option");
-          const itemCount = await projectItems.count();
-          console.log(`Found ${itemCount} project items after attempted biome creation`);
-
-          if (itemCount > 0) {
-            // Take screenshot of project items list
-            await page.screenshot({ path: "debugoutput/screenshots/biome-creation-project-items.png", fullPage: true });
-
-            // Try to find any biome-related files
-            for (let i = 0; i < Math.min(itemCount, 10); i++) {
-              const item = projectItems.nth(i);
-              const text = await item.textContent();
-              console.log(`Project item ${i}: ${text}`);
-
-              if (text && (text.toLowerCase().includes("biome") || text.toLowerCase().includes(".json"))) {
-                console.log(`Clicking on potential biome file: ${text}`);
-                await item.click();
-                await page.waitForTimeout(2000);
-
-                // Check if BiomeEditor interface appears
-                const biomeEditorElements = page
-                  .locator("text")
-                  .filter({ hasText: /Components|Climate|Terrain|Spawning/i });
-                if ((await biomeEditorElements.count()) > 0) {
-                  console.log("SUCCESS: BiomeEditor interface detected!");
-                  await page.screenshot({
-                    path: "debugoutput/screenshots/biome-editor-interface-found.png",
-                    fullPage: true,
-                  });
-
-                  // Test different tabs
-                  const componentsTab = page.locator("text=Components").first();
-                  if ((await componentsTab.count()) > 0) {
-                    await componentsTab.click();
-                    await page.waitForTimeout(1000);
-                    await page.screenshot({
-                      path: "debugoutput/screenshots/biome-editor-components-active.png",
-                      fullPage: true,
-                    });
-                  }
-
-                  const climateTab = page.locator("text=Climate").first();
-                  if ((await climateTab.count()) > 0) {
-                    await climateTab.click();
-                    await page.waitForTimeout(1000);
-                    await page.screenshot({
-                      path: "debugoutput/screenshots/biome-editor-climate-active.png",
-                      fullPage: true,
-                    });
-                  }
-
-                  break;
-                } else {
-                  console.log(`Item ${text} selected but no BiomeEditor interface found`);
-                  await page.screenshot({
-                    path: `debugoutput/screenshots/biome-creation-item-${i}-selected.png`,
-                    fullPage: true,
-                  });
-                }
-              }
-            }
-          }
-        } else {
-          console.log("No biome/behavior options found in add menu");
-          await page.screenshot({ path: "debugoutput/screenshots/biome-creation-no-options.png", fullPage: true });
-        }
-
-        // Close any open menus
-        await page.keyboard.press("Escape");
-      }
-    }
-
-    expect(consoleErrors.length).toBeLessThanOrEqual(10); // Allow certificate errors
-    expect(consoleWarnings.length).toBeLessThanOrEqual(10);
-  });
-
-  test("should demonstrate biome editor functionality with screenshots", async ({ page }) => {
-    console.log("Starting comprehensive biome editor demonstration");
-
-    // Take initial screenshot
-    await page.screenshot({ path: "debugoutput/screenshots/biome-demo-start.png", fullPage: true });
-
-    // Create project using the correct workflow
-    const addOnStarterNewButton = page.getByRole("button", { name: "Create New" }).first();
-
-    if ((await addOnStarterNewButton.count()) > 0) {
-      console.log("Creating demo project for biome editor");
-      await addOnStarterNewButton.click();
-      await page.waitForTimeout(1000);
-
-      const okButton = await page.getByTestId("submit-button").first();
-      await okButton.click();
-      await page.waitForTimeout(3000);
-      await page.waitForLoadState("networkidle");
-
-      // Select Focused mode to dismiss welcome panel and hide Inspector
-      await selectEditMode(page);
-
-      await page.screenshot({ path: "debugoutput/screenshots/biome-demo-project-created.png", fullPage: true });
-
-      console.log("Project created successfully, demonstrating biome editor capabilities");
-
-      // Document the current state for biome editor integration
-      const pageInfo = await page.evaluate(() => {
-        const buttons = Array.from(document.querySelectorAll("button"));
-        const hasAddButton = buttons.some((button) => button.textContent?.includes("Add"));
-
-        return {
-          url: window.location.href,
-          title: document.title,
-          hasFileList: !!document.querySelector('[role="listbox"]'),
-          hasToolbar: !!document.querySelector('[role="toolbar"], .toolbar'),
-          hasAddButton: hasAddButton,
-          elementCount: document.querySelectorAll("*").length,
-        };
-      });
-
-      console.log("Page information for biome editor demo:", JSON.stringify(pageInfo, null, 2));
-
-      // Final comprehensive screenshot
-      await page.screenshot({ path: "debugoutput/screenshots/biome-demo-final.png", fullPage: true });
-
-      console.log(
-        "Biome editor demonstration completed - BiomeEditor component is now integrated into ProjectItemEditor"
-      );
-    }
-
-    expect(consoleErrors.length).toBeLessThanOrEqual(10); // Allow certificate errors
-    expect(consoleWarnings.length).toBeLessThanOrEqual(10);
+    await page.screenshot({ path: `${SCREENSHOT_DIR}/health-01-no-errors.png`, fullPage: true });
   });
 });

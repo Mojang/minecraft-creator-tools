@@ -36,13 +36,41 @@ export class EulaCommand extends CommandBase {
   };
 
   configure(cmd: Command): void {
-    // No additional arguments
+    // Pro-grade additions for non-interactive CI:
+    //   --accept   Accept EULA without prompting
+    //   --status   Print current EULA acceptance state and exit
+    cmd.option("--accept", "Accept the EULA + Privacy Statement non-interactively (no prompt). Equivalent to setting MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA=true.");
+    cmd.option("--status", "Print current EULA acceptance state and exit. Honours --json.");
   }
 
   async execute(context: ICommandContext): Promise<void> {
     this.logStart(context);
 
     await context.localEnv.load();
+
+    const wantsStatus = Boolean(context.commandOptions?.status);
+    const wantsAccept = Boolean(context.commandOptions?.accept) || context.yes;
+
+    if (wantsStatus) {
+      const accepted =
+        context.localEnv.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula ||
+        LocalUtilities.eulaAcceptedViaEnvironment;
+      const acceptedViaEnv = LocalUtilities.eulaAcceptedViaEnvironment;
+      if (context.json) {
+        context.log.data(
+          JSON.stringify({
+            schemaVersion: "1.0.0",
+            command: "eula",
+            accepted,
+            acceptedViaEnvironment: acceptedViaEnv,
+          })
+        );
+      } else {
+        context.log.info(`EULA accepted: ${accepted}${acceptedViaEnv ? " (via environment variable)" : ""}`);
+      }
+      this.logComplete(context);
+      return;
+    }
 
     // Check if EULA was accepted via environment variable (Docker-friendly)
     if (LocalUtilities.eulaAcceptedViaEnvironment) {
@@ -54,6 +82,28 @@ export class EulaCommand extends CommandBase {
       );
       context.localEnv.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula = true;
       await context.localEnv.save();
+      return;
+    }
+
+    if (wantsAccept) {
+      // Non-interactive acceptance — for CI / Docker / scripted environments.
+      // Equivalent to confirming the prompt with `yes`. The user is still
+      // responsible for reading the EULA at the URLs printed below.
+      context.log.info(
+        "Accepting EULA non-interactively (--accept / --yes).\n" +
+          "    Minecraft End User License Agreement: https://minecraft.net/eula\n" +
+          "    Minecraft Privacy Statement: https://go.microsoft.com/fwlink/?LinkId=521839\n"
+      );
+      context.localEnv.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula = true;
+      await context.localEnv.save();
+      if (context.json) {
+        context.log.data(
+          JSON.stringify({ schemaVersion: "1.0.0", command: "eula", accepted: true, acceptedViaEnvironment: false })
+        );
+      } else {
+        context.log.success("EULA accepted.");
+      }
+      this.logComplete(context);
       return;
     }
 

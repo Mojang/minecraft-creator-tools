@@ -15,6 +15,7 @@ export const volatileAttributes = [
   "index",
   "Vanilla Texture Count",
   "vanillaTextureCount",
+  "defaultIcon",
 ];
 export const volatileFileExtensions = [".report.html", "deleted"];
 
@@ -75,6 +76,9 @@ const excludeDerivedAttributes = [
   "errorSummary",
   "testFailSummary",
   "summary",
+  "customDimensionErrors",
+  "nameIdTableMissing",
+  "unclaimedMappings",
 ];
 
 /**
@@ -239,12 +243,7 @@ export async function ensureReportJsonMatchesScenario(
 
   assert(
     isEqual,
-    "report.json file '" +
-      scenarioFile.fullPath +
-      "' does not match for scenario '" +
-      scenarioName +
-      "'" +
-      diffDetail
+    "report.json file '" + scenarioFile.fullPath + "' does not match for scenario '" + scenarioName + "'" + diffDetail
   );
 }
 

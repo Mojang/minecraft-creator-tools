@@ -25,6 +25,7 @@ import {
 import { CommandRegistry } from "../cli/core/CommandRegistry";
 import { getAllCommands } from "../cli/commands/index";
 import { TaskType, OutputType } from "../cli/ClUtils";
+import { CommandContextFactory } from "../cli/core/CommandContextFactory";
 import Project from "../app/Project";
 import CreatorTools from "../app/CreatorTools";
 import LocalEnvironment from "../local/LocalEnvironment";
@@ -140,6 +141,7 @@ function createMockContext(overrides: Partial<ICommandContext> = {}): ICommandCo
     // Input/Output
     inputFolder: "/mock/input",
     inputFolderSpecified: false,
+    inputFolderAutoDiscovered: false,
     outputFolder: "/mock/output",
     inputStorage: undefined as any,
     outputStorage: undefined as any,
@@ -154,6 +156,7 @@ function createMockContext(overrides: Partial<ICommandContext> = {}): ICommandCo
     verbose: false,
     quiet: false,
     json: false,
+    yes: false,
     dryRun: false,
     outputType: OutputType.normal,
     taskType: TaskType.noCommand,
@@ -166,6 +169,7 @@ function createMockContext(overrides: Partial<ICommandContext> = {}): ICommandCo
     type: undefined,
     newName: undefined,
     projectStartsWith: undefined,
+    commandOptions: {},
 
     // Grouped Options
     server: {
@@ -2000,5 +2004,153 @@ describe("Telemetry build configuration", () => {
 
     expect(content).to.include("js.monitor.azure.com");
     expect(content).to.include("wcpstatic.microsoft.com");
+  });
+});
+
+// ============================================================================
+// PROJECT ROOT AUTO-DISCOVERY TESTS
+// ============================================================================
+
+describe("resolveProjectRoot", () => {
+  const fs = require("fs");
+  const path = require("path");
+  const os = require("os");
+
+  let tempBase: string;
+
+  beforeEach(() => {
+    tempBase = fs.mkdtempSync(path.join(os.tmpdir(), "mct-discovery-"));
+  });
+
+  afterEach(() => {
+    fs.rmSync(tempBase, { recursive: true, force: true });
+  });
+
+  it("should return startDir when it already is a project root (has package.json)", () => {
+    fs.writeFileSync(path.join(tempBase, "package.json"), "{}");
+    const result = CommandContextFactory.resolveProjectRoot(tempBase);
+    expect(result).to.equal(tempBase);
+  });
+
+  it("should return startDir when it has behavior_packs folder", () => {
+    fs.mkdirSync(path.join(tempBase, "behavior_packs"));
+    const result = CommandContextFactory.resolveProjectRoot(tempBase);
+    expect(result).to.equal(tempBase);
+  });
+
+  it("should return startDir when it has resource_packs folder", () => {
+    fs.mkdirSync(path.join(tempBase, "resource_packs"));
+    const result = CommandContextFactory.resolveProjectRoot(tempBase);
+    expect(result).to.equal(tempBase);
+  });
+
+  it("should return startDir when it has development_behavior_packs folder", () => {
+    fs.mkdirSync(path.join(tempBase, "development_behavior_packs"));
+    const result = CommandContextFactory.resolveProjectRoot(tempBase);
+    expect(result).to.equal(tempBase);
+  });
+
+  it("should walk up one level to find project root", () => {
+    fs.writeFileSync(path.join(tempBase, "package.json"), "{}");
+    const subDir = path.join(tempBase, "src");
+    fs.mkdirSync(subDir);
+
+    const result = CommandContextFactory.resolveProjectRoot(subDir);
+    expect(result).to.equal(tempBase);
+  });
+
+  it("should walk up multiple levels to find project root", () => {
+    fs.writeFileSync(path.join(tempBase, "package.json"), "{}");
+    const deep = path.join(tempBase, "behavior_packs", "my_bp", "entities");
+    fs.mkdirSync(deep, { recursive: true });
+
+    const result = CommandContextFactory.resolveProjectRoot(deep);
+    expect(result).to.equal(tempBase);
+  });
+
+  it("should return startDir when no project indicators found anywhere", () => {
+    const emptyDir = path.join(tempBase, "empty");
+    fs.mkdirSync(emptyDir);
+
+    const result = CommandContextFactory.resolveProjectRoot(emptyDir);
+    expect(result).to.equal(emptyDir);
+  });
+
+  it("should stop at MAX_DISCOVERY_LEVELS", () => {
+    // Create a project root one level beyond MAX_DISCOVERY_LEVELS — should NOT be found
+    fs.writeFileSync(path.join(tempBase, "package.json"), "{}");
+
+    let deep = tempBase;
+    for (let i = 0; i < CommandContextFactory.MAX_DISCOVERY_LEVELS + 1; i++) {
+      deep = path.join(deep, `level${i}`);
+      fs.mkdirSync(deep);
+    }
+
+    const result = CommandContextFactory.resolveProjectRoot(deep);
+    // Should not find the root because it's beyond MAX_DISCOVERY_LEVELS
+    expect(result).to.equal(deep);
+  });
+
+  it("should find project root at exactly MAX_DISCOVERY_LEVELS up", () => {
+    // Create a project root exactly MAX_DISCOVERY_LEVELS levels up — should be found
+    fs.writeFileSync(path.join(tempBase, "package.json"), "{}");
+
+    let deep = tempBase;
+    for (let i = 0; i < CommandContextFactory.MAX_DISCOVERY_LEVELS; i++) {
+      deep = path.join(deep, `level${i}`);
+      fs.mkdirSync(deep);
+    }
+
+    const result = CommandContextFactory.resolveProjectRoot(deep);
+    expect(result).to.equal(tempBase);
+  });
+
+  it("should prefer the nearest project root when multiple exist", () => {
+    // Root has package.json
+    fs.writeFileSync(path.join(tempBase, "package.json"), "{}");
+
+    // Create a closer project root
+    const mid = path.join(tempBase, "subproject");
+    fs.mkdirSync(mid);
+    fs.writeFileSync(path.join(mid, "package.json"), "{}");
+
+    const deep = path.join(mid, "src");
+    fs.mkdirSync(deep);
+
+    const result = CommandContextFactory.resolveProjectRoot(deep);
+    expect(result).to.equal(mid);
+  });
+
+  it("should detect behavior_pack (singular) as project indicator", () => {
+    fs.mkdirSync(path.join(tempBase, "behavior_pack"));
+    const subDir = path.join(tempBase, "scripts");
+    fs.mkdirSync(subDir);
+
+    const result = CommandContextFactory.resolveProjectRoot(subDir);
+    expect(result).to.equal(tempBase);
+  });
+
+  it("should detect development_resource_packs as project indicator", () => {
+    fs.mkdirSync(path.join(tempBase, "development_resource_packs"));
+    const subDir = path.join(tempBase, "data");
+    fs.mkdirSync(subDir);
+
+    const result = CommandContextFactory.resolveProjectRoot(subDir);
+    expect(result).to.equal(tempBase);
+  });
+
+  it("isProjectRoot should return false for empty directory", () => {
+    const emptyDir = path.join(tempBase, "empty");
+    fs.mkdirSync(emptyDir);
+    expect(CommandContextFactory.isProjectRoot(emptyDir)).to.be.false;
+  });
+
+  it("isProjectRoot should return true for directory with package.json", () => {
+    fs.writeFileSync(path.join(tempBase, "package.json"), "{}");
+    expect(CommandContextFactory.isProjectRoot(tempBase)).to.be.true;
+  });
+
+  it("isProjectRoot should return false for non-existent directory", () => {
+    expect(CommandContextFactory.isProjectRoot(path.join(tempBase, "nonexistent"))).to.be.false;
   });
 });

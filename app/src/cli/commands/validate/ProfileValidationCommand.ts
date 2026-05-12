@@ -87,7 +87,18 @@ export class ProfileValidationCommand extends CommandBase {
       }
     });
 
-    context.log.success("Profiling complete. Check output folder for CPU trace.");
+    if (context.json) {
+      context.log.data(
+        JSON.stringify({
+          schemaVersion: "1.0.0",
+          command: "profilevalidation",
+          success: true,
+          message: "Profiling complete. Check output folder for CPU trace.",
+        })
+      );
+    } else {
+      context.log.success("Profiling complete. Check output folder for CPU trace.");
+    }
     this.logComplete(context);
   }
 

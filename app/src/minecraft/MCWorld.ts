@@ -220,6 +220,21 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
   chunks: Map<number, Map<number, Map<number, WorldChunk>>> = new Map();
 
+  /**
+   * All dimension IDs found in LevelDB chunk keys, including custom dimensions (>= 1000).
+   * Populated during processWorldData or buildMinimalWorldIndex.
+   */
+  private _dimensionIdsInChunks: Set<number> = new Set();
+
+  /**
+   * Parsed DimensionNameIdTable from LevelDB: maps dimension name to numeric ID.
+   * Undefined if the DimensionNameIdTable key was not found.
+   */
+  private _dimensionNameIdTable: Map<string, number> | undefined;
+
+  /** Whether the DimensionNameIdTable key exists in the LevelDB */
+  private _hasDimensionNameIdTable = false;
+
   /** LRU cache for chunk data - manages memory by evicting old chunks */
   private _chunkCache?: WorldChunkCache;
 
@@ -321,6 +336,41 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
   /** Get the chunk cache (only available when using chunk caching) */
   public get chunkCache(): WorldChunkCache | undefined {
     return this._chunkCache;
+  }
+
+  /** All dimension IDs found in LevelDB chunk keys, including custom dimensions (>= 1000). */
+  public get dimensionIdsInChunks(): ReadonlySet<number> {
+    return this._dimensionIdsInChunks;
+  }
+
+  /** Whether the DimensionNameIdTable key was found in the LevelDB. */
+  public get hasDimensionNameIdTable(): boolean {
+    return this._hasDimensionNameIdTable;
+  }
+
+  /** Parsed DimensionNameIdTable: maps dimension name to numeric ID. Undefined if not found. */
+  public get dimensionNameIdTable(): ReadonlyMap<string, number> | undefined {
+    return this._dimensionNameIdTable;
+  }
+
+  /** Parse DimensionNameIdTable NBT bytes into the name-to-ID map. */
+  private _parseDimensionNameIdTable(tableBytes: Uint8Array) {
+    this._hasDimensionNameIdTable = true;
+
+    const tableNbt = new NbtBinary();
+    tableNbt.context = this.name + " DimensionNameIdTable";
+    tableNbt.fromBinary(tableBytes, true, false, 0, true);
+
+    if (tableNbt.singleRoot) {
+      this._dimensionNameIdTable = new Map();
+      const children = tableNbt.singleRoot.getTagChildren();
+
+      for (const child of children) {
+        if (child.name && (child.type === NbtTagType.int || child.type === NbtTagType.long)) {
+          this._dimensionNameIdTable.set(child.name, child.valueAsInt);
+        }
+      }
+    }
   }
 
   /**
@@ -2674,6 +2724,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
     this.chunks = new Map();
     this.chunkCount = 0;
+    this._dimensionIdsInChunks = new Set();
+    this._dimensionNameIdTable = undefined;
+    this._hasDimensionNameIdTable = false;
 
     const processOper = await this._project?.creatorTools.notifyOperationStarted(
       "Building minimal index for '" + this.name + "' world",
@@ -2714,6 +2767,18 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
         if (processedKeys % yieldInterval === 0) {
           await new Promise((resolve) => setTimeout(resolve, 0));
         }
+      }
+
+      // Handle DimensionNameIdTable before skipping named keys
+      if (keyname === "DimensionNameIdTable") {
+        const keyValue = this.levelDb.keys.get(keyname);
+
+        if (keyValue && typeof keyValue !== "boolean" && keyValue.value) {
+          this._parseDimensionNameIdTable(keyValue.value);
+        } else {
+          this._hasDimensionNameIdTable = true;
+        }
+        continue;
       }
 
       // Skip known named keys using the same filtering approach as processWorldData.
@@ -2816,9 +2881,15 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
         if (hasDimensionParam) {
           dim = DataUtilities.getSignedInteger(keyBytes[8], keyBytes[9], keyBytes[10], keyBytes[11], true);
 
+          // Track all dimension IDs, including custom dimensions (>= 1000)
+          this._dimensionIdsInChunks.add(dim);
+
           if (dim < 0 || dim > 2) {
-            continue; // Invalid dimension
+            continue; // Skip custom/invalid dimensions from chunk index
           }
+        } else {
+          // 9/10-byte keys are overworld (dim 0)
+          this._dimensionIdsInChunks.add(0);
         }
 
         // Track unique chunks
@@ -3265,6 +3336,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
     this.chunks = new Map();
     this.chunkCount = 0;
+    this._dimensionIdsInChunks = new Set();
+    this._dimensionNameIdTable = undefined;
+    this._hasDimensionNameIdTable = false;
 
     const processOper = await this._project?.creatorTools.notifyOperationStarted(
       "Starting second-pass load of '" + this.name + "' world",
@@ -3389,6 +3463,12 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
           levelChunkMeta.fromBinary(levelChunkMetaBytes, true, false, 12, true);
 
           this._levelChunkMetaData = levelChunkMeta;
+        }
+      } else if (keyname === "DimensionNameIdTable" && keyValue) {
+        if (keyValue.value) {
+          this._parseDimensionNameIdTable(keyValue.value);
+        } else {
+          this._hasDimensionNameIdTable = true;
         }
       } else if (keyname.startsWith("structuretemplate_")) {
       } else if (keyname.startsWith("digp") && keyValue) {
@@ -3569,11 +3649,17 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
           if (hasDimensionParam) {
             dim = DataUtilities.getSignedInteger(keyBytes[8], keyBytes[9], keyBytes[10], keyBytes[11], true);
 
+            // Track all dimension IDs, including custom dimensions (>= 1000)
+            this._dimensionIdsInChunks.add(dim);
+
             if (dim < 1 || dim > 2) {
               // note overworld dimension = 0, but should be omitted so we should not see overworld = 0.
-              this._pushError("Unexpected dimension index. (" + dim + ")");
+              // Custom dimensions (>= 1000) are also skipped from chunk processing.
               continue;
             }
+          } else {
+            // 9/10-byte keys are overworld (dim 0)
+            this._dimensionIdsInChunks.add(0);
           }
 
           if (this._minX === undefined || x * 16 < this._minX) {

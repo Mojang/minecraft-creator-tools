@@ -68,6 +68,14 @@ export interface IFileExplorerContextValue {
 
   /** Callback to rename a file */
   onFileRename?: (file: IFile, newName: string) => void;
+
+  /**
+   * Optional callback to open a file in the Raw (text/JSON) editor.
+   * When provided, the file detail context menu will surface an
+   * "Open as Raw" entry. Implementations should switch the user to
+   * Raw editing mode (CreatorToolsEditPreference.raw) and select the file.
+   */
+  onFileOpenAsRaw?: (file: IFile) => void;
 }
 
 /**
@@ -119,6 +127,7 @@ const defaultContextValue: IFileExplorerContextValue = {
   onFolderSelected: undefined,
   onFileDelete: undefined,
   onFileRename: undefined,
+  onFileOpenAsRaw: undefined,
 };
 
 /**

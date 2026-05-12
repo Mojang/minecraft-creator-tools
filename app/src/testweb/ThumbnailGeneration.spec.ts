@@ -9,7 +9,14 @@
  * thumbnail images appear in the sidebar for both Models and Mobs sections.
  */
 import { test, expect, Page, ConsoleMessage } from "@playwright/test";
-import { processMessage, selectEditMode, preferBrowserStorageInProjectDialog } from "./WebTestUtilities";
+import {
+  processMessage,
+  selectEditMode,
+  preferBrowserStorageInProjectDialog,
+  fillRequiredProjectDialogFields,
+  clickTemplateCreateButton,
+  waitForEditorReady,
+} from "./WebTestUtilities";
 
 // Increase timeout for this test since thumbnail generation takes time
 test.setTimeout(120_000);
@@ -23,45 +30,21 @@ async function createFullAddOnProject(page: Page): Promise<boolean> {
     await page.waitForLoadState("networkidle");
     await page.waitForTimeout(1000);
 
-    // Find Full Add-On template
-    const fullAddOnCard = page.locator('text="Full Add-On"').first();
-
-    if (!(await fullAddOnCard.isVisible({ timeout: 5000 }))) {
-      const seeMoreTemplates = page.locator('text="See more templates"').first();
-      if (await seeMoreTemplates.isVisible({ timeout: 2000 })) {
-        await seeMoreTemplates.click();
-        await page.waitForTimeout(1000);
-      }
-    }
-
-    // Find the CREATE NEW button for Full Add-On (it's typically the 3rd Create New button)
-    const createButtons = page.getByRole("button", { name: "Create New" });
-    const buttonCount = await createButtons.count();
-    console.log(`Found ${buttonCount} Create New buttons`);
-
-    // Full Add-On is the third template card (index 2)
-    let createButton;
-    if (buttonCount >= 3) {
-      createButton = createButtons.nth(2);
-    } else {
-      // Fallback: try to find it near Full Add-On text
-      const fullAddOnSection = page.locator('div:has-text("Full Add-On")').filter({
-        has: page.locator('text="A full example add-on project"'),
-      });
-      createButton = fullAddOnSection.locator('button:has-text("New")').first();
-    }
-
-    if (!(await createButton.isVisible({ timeout: 3000 }))) {
+    // Click the Full Add-On template's "Create New" button via stable test id
+    const clicked = await clickTemplateCreateButton(page, "addonFull");
+    if (!clicked) {
       console.log("Could not find CREATE NEW button for Full Add-On template");
       return false;
     }
 
     console.log("Clicking CREATE NEW for Full Add-On project");
-    await createButton.click();
     await page.waitForTimeout(1500);
 
     // Select browser storage for automated test flow
     await preferBrowserStorageInProjectDialog(page);
+
+    // Fill required Creator field if blank (validation blocks submit otherwise)
+    await fillRequiredProjectDialogFields(page);
 
     // Click submit on project creation dialog
     const okButton = page.getByTestId("submit-button").first();
@@ -71,10 +54,15 @@ async function createFullAddOnProject(page: Page): Promise<boolean> {
       await page.keyboard.press("Enter");
     }
 
-    // Wait for project to load (Full Add-On fetches from GitHub)
-    await page.waitForTimeout(8000);
-    await page.waitForLoadState("networkidle");
-    await page.waitForTimeout(2000);
+    // Full Add-On fetches from GitHub; wait via shared editor-ready helper
+    // instead of fixed sleeps to avoid races when running tests in parallel.
+    await page.waitForTimeout(3000);
+    const ready = await waitForEditorReady(page, 30000);
+    if (!ready) {
+      console.log("createFullAddOnProject: editor did not become ready");
+      return false;
+    }
+    await page.waitForTimeout(1000);
     return true;
   } catch (error) {
     console.log(`Error creating Full Add-On project: ${error}`);

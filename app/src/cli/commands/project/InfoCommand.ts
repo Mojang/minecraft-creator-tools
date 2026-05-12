@@ -61,14 +61,33 @@ export class InfoCommand extends CommandBase {
       ).length;
 
       if (context.json) {
+        // Stable schema for CI consumers. Bump the schemaVersion when changing
+        // the shape of this object so downstream scripts can branch safely.
+        const errorOnlyCount = pis.items.filter(
+          (item) =>
+            item.itemType === InfoItemType.error || item.itemType === InfoItemType.internalProcessingError
+        ).length;
+        const warningOnlyCount = pis.items.filter((item) => item.itemType === InfoItemType.warning).length;
+        const recommendationCount = pis.items.filter((item) => item.itemType === InfoItemType.recommendation).length;
+
         const jsonOutput = {
+          schemaVersion: "1.0.0",
+          command: "info",
           name: project.name,
           description: project.description || "",
           behaviorPackFolder: bpFolder ? bpFolder.storageRelativePath : null,
           resourcePackFolder: rpFolder ? rpFolder.storageRelativePath : null,
           itemCount: items.length,
           items: items.map((item) => ({ type: item.typeTitle, path: item.projectPath })),
+          // Existing field kept for backwards compatibility — counts errors+warnings together.
           errorCount: errorCount,
+          // Newly added richer counts.
+          counts: {
+            errors: errorOnlyCount,
+            warnings: warningOnlyCount,
+            recommendations: recommendationCount,
+            total: errorOnlyCount + warningOnlyCount + recommendationCount,
+          },
         };
         context.log.data(JSON.stringify(jsonOutput));
         return;

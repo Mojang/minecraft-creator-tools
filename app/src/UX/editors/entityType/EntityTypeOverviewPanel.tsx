@@ -29,8 +29,9 @@ import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../../app/CreatorTo
 import { mcColors } from "../../hooks/theme/mcColors";
 import { getComponentDescription } from "../../../minecraft/ComponentDescriptions";
 import { getFriendlyComponentGroupName, getFriendlyComponentName } from "../../utils/ComponentFriendlyNames";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
-interface IEntityTypeOverviewPanelProps {
+interface IEntityTypeOverviewPanelProps extends WithLocalizationProps {
   entityType: EntityTypeDefinition;
   creatorTools: CreatorTools;
   project: Project;
@@ -62,7 +63,7 @@ interface IEntityTypeOverviewPanelState {
   hideWhatsNext: boolean;
 }
 
-export default class EntityTypeOverviewPanel extends Component<
+class EntityTypeOverviewPanel extends Component<
   IEntityTypeOverviewPanelProps,
   IEntityTypeOverviewPanelState
 > {
@@ -301,8 +302,7 @@ export default class EntityTypeOverviewPanel extends Component<
         <div className="etop-componentList">
           <div className="etop-emptyState">
             <span className="etop-emptyText">
-              No behaviors configured yet. Behaviors control what your mob does — like wandering around, chasing
-              players, or running from wolves. Switch to the Components tab to add them.
+              {this.props.intl.formatMessage({ id: "project_editor.entity_overview.no_behaviors" })}
             </span>
           </div>
         </div>
@@ -337,6 +337,9 @@ export default class EntityTypeOverviewPanel extends Component<
               ) : (
                 comp.displayName
               )}
+              {comp.displayName !== comp.componentId && (
+                <span className="etop-componentRawId"> {comp.componentId}</span>
+              )}
             </span>
           </div>
         ))}
@@ -358,10 +361,10 @@ export default class EntityTypeOverviewPanel extends Component<
           }}
           role="button"
           tabIndex={0}
-          title="States are optional variants (like Baby or Adult) that can change behaviors"
+          title={this.props.intl.formatMessage({ id: "project_editor.entity_overview.states_tooltip" })}
         >
           <span className="etop-groupName">{group.displayName}</span>
-          <span className="etop-groupLink" title="Edit this state in the Components tab">Edit state</span>
+          <span className="etop-groupLink" title={this.props.intl.formatMessage({ id: "project_editor.entity_overview.edit_state_tooltip" })}>{this.props.intl.formatMessage({ id: "project_editor.entity_overview.edit_state" })}</span>
         </div>
         {this._renderComponentList(group.components, group.groupId)}
       </div>
@@ -395,7 +398,7 @@ export default class EntityTypeOverviewPanel extends Component<
             fontSize: "12px",
           }}
         >
-          Loading model...
+          {this.props.intl.formatMessage({ id: "project_editor.entity_overview.loading_model" })}
         </div>
       );
     } else {
@@ -420,15 +423,15 @@ export default class EntityTypeOverviewPanel extends Component<
         }
       >
         <div className="etop-modelSection">
-          <EditorContentPanel theme={this.props.theme} variant="raised" header="Model Preview">
-            <div className="etop-modelViewer" role="img" aria-label="3D model preview of mob">
+          <EditorContentPanel theme={this.props.theme} variant="raised" header={this.props.intl.formatMessage({ id: "project_editor.entity_overview.model_preview" })}>
+            <div className="etop-modelViewer" role="img" aria-label={this.props.intl.formatMessage({ id: "project_editor.entity_overview.model_aria" })}>
               {modelViewerContent}
             </div>
-            <div className="etop-modelHint">Drag to rotate · Scroll to zoom</div>
+            <div className="etop-modelHint">{this.props.intl.formatMessage({ id: "project_editor.entity_overview.drag_hint" })}</div>
           </EditorContentPanel>
         </div>
         <div className="etop-behaviorsSection">
-          <EditorContentPanel theme={this.props.theme} variant="raised" header="Behaviors">
+          <EditorContentPanel theme={this.props.theme} variant="raised" header={this.props.intl.formatMessage({ id: "project_editor.entity_overview.behaviors" })}>
             <div className="etop-behaviorsScroll">
               {/* What's Next? Guidance - dismissible, hidden once user clicks close */}
               {!this.state.hideWhatsNext && (
@@ -444,8 +447,8 @@ export default class EntityTypeOverviewPanel extends Component<
               >
                 <button
                   onClick={this._handleDismissWhatsNext}
-                  title="Dismiss"
-                  aria-label="Dismiss guidance"
+                  title={this.props.intl.formatMessage({ id: "common.dismiss" })}
+                  aria-label={this.props.intl.formatMessage({ id: "project_editor.entity_overview.dismiss_aria" })}
                   style={{
                     position: "absolute",
                     top: 4,
@@ -470,7 +473,7 @@ export default class EntityTypeOverviewPanel extends Component<
                     marginBottom: "6px",
                   }}
                 >
-                  What's next?
+                  {this.props.intl.formatMessage({ id: "project_editor.entity_overview.whats_next" })}
                 </div>
                 <div
                   style={{
@@ -479,8 +482,7 @@ export default class EntityTypeOverviewPanel extends Component<
                     lineHeight: 1.6,
                   }}
                 >
-                  Use the tabs above to: add <strong>Spawn</strong> rules so your mob appears in the world, configure{" "}
-                  <strong>Loot</strong> drops, or customize <strong>Visuals</strong>.
+                  {this.props.intl.formatMessage({ id: "project_editor.entity_overview.whats_next_body" })}
                 </div>
               </div>
               )}
@@ -498,10 +500,10 @@ export default class EntityTypeOverviewPanel extends Component<
                   }}
                   role="button"
                   tabIndex={0}
-                  title="These behaviors are always active on your mob"
+                  title={this.props.intl.formatMessage({ id: "project_editor.entity_overview.base_tooltip" })}
                 >
-                  <span className="etop-groupName">Base Behaviors</span>
-                  <span className="etop-groupLink" title="Edit base behaviors in the Components tab">Edit</span>
+                  <span className="etop-groupName">{this.props.intl.formatMessage({ id: "project_editor.entity_overview.base_behaviors" })}</span>
+                  <span className="etop-groupLink" title={this.props.intl.formatMessage({ id: "project_editor.entity_overview.edit_base" })}>{this.props.intl.formatMessage({ id: "common.edit" })}</span>
                 </div>
                 {this._renderComponentList(this.state.defaultComponents, "default")}
               </div>
@@ -515,3 +517,5 @@ export default class EntityTypeOverviewPanel extends Component<
     );
   }
 }
+
+export default withLocalization(EntityTypeOverviewPanel);

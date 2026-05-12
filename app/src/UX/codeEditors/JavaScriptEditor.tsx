@@ -31,9 +31,10 @@ import { getThemeColors } from "../hooks/theme/useThemeColors";
 import { ScriptEditorRole } from "../utils/ScriptEditorRole";
 import IProjectTheme from "../types/IProjectTheme";
 import type { IProjectItemEditorNavigationTarget } from "../project/ProjectItemEditor";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 export { ScriptEditorRole };
 
-interface IJavaScriptEditorProps extends IAppProps {
+interface IJavaScriptEditorProps extends IAppProps, WithLocalizationProps {
   heightOffset: number;
   project?: Project;
   theme: IProjectTheme;
@@ -58,7 +59,7 @@ interface IJavaScriptEditorState {
   proposedLeft?: number;
 }
 
-export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, IJavaScriptEditorState> {
+class JavaScriptEditor extends Component<IJavaScriptEditorProps, IJavaScriptEditorState> {
   editor?: MonacoType.editor.IStandaloneCodeEditor;
   _activeModel: any; // think of "model" as a file.
   _monaco: typeof MonacoType | null = null;
@@ -957,7 +958,7 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
             size="small"
             id="projSearch"
             className="home-search"
-            placeholder="add a code snippet"
+            placeholder={this.props.intl.formatMessage({ id: "project_editor.js_ed.snippet_placeholder" })}
             value={this.state.snippetSearch || ""}
             onChange={this._handleNewSearch}
           />
@@ -966,7 +967,7 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
     } else {
       writeableTools.push(
         <div key="roLabel" className="jse-toolBarLabel">
-          read-only
+          {this.props.intl.formatMessage({ id: "project_editor.js_ed.read_only" })}
         </div>
       );
     }
@@ -1005,7 +1006,7 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
       >
         <div className="jse-commands">
           <div className="jse-toolBarArea">
-            <Stack direction="row" spacing={1} aria-label="Javascript Editor toolbar">
+            <Stack direction="row" spacing={1} aria-label={this.props.intl.formatMessage({ id: "project_editor.js_ed.toolbar_aria" })}>
               <IconButton onClick={this._zoomIn} title="Zoom into the text editor" aria-label="Zoom in" size="small">
                 <FontAwesomeIcon icon={faSearchPlus} className="fa-lg" />
               </IconButton>
@@ -1027,3 +1028,5 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
     );
   }
 }
+
+export default withLocalization(JavaScriptEditor);

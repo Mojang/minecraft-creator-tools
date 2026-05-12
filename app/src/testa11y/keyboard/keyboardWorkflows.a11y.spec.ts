@@ -9,7 +9,7 @@
  */
 
 import { test, expect } from "../fixtures";
-import { gotoWithTheme, preferBrowserStorageInProjectDialog } from "../../testweb/WebTestUtilities";
+import { enterEditor, gotoWithTheme, preferBrowserStorageInProjectDialog } from "../../testweb/WebTestUtilities";
 
 test.describe("Keyboard Workflow — Project Creation @comprehensive-a11y @keyboard", () => {
   test("create project via keyboard only", async ({ page }) => {
@@ -44,13 +44,35 @@ test.describe("Keyboard Workflow — Project Creation @comprehensive-a11y @keybo
     // Select browser storage so we don't need a folder picker
     await preferBrowserStorageInProjectDialog(page);
 
-    // Step 3: Press Tab through dialog fields — verify we can reach the submit button
+    // Step 3a: Use keyboard-only navigation to the required Creator field and type a name.
+    // The dialog autofocuses the Title field, but Creator is required and must be filled
+    // before submission (HTML5 `required` will block the form otherwise). This exercises
+    // the realistic keyboard-only flow: Tab → Tab → type.
+    let reachedCreator = false;
+    for (let i = 0; i < 10; i++) {
+      const onCreator = await page.evaluate(() => {
+        const el = document.activeElement as HTMLInputElement | null;
+        return el?.getAttribute("name") === "creator" || el?.getAttribute("id") === "creator";
+      });
+      if (onCreator) {
+        reachedCreator = true;
+        break;
+      }
+      await page.keyboard.press("Tab");
+    }
+    expect(reachedCreator, "Should be able to Tab to the Creator field").toBe(true);
+
+    // Type a creator name purely via keyboard
+    await page.keyboard.type("KeyboardTester");
+    await page.waitForTimeout(150);
+
+    // Step 3b: Continue tabbing to verify we can reach the submit button
     let reachedSubmit = false;
     for (let i = 0; i < 20; i++) {
       await page.keyboard.press("Tab");
       const focused = await page.evaluate(() => {
         const el = document.activeElement;
-        return el?.getAttribute("data-testid") === "submit-button" || el?.textContent?.includes("Create Project");
+        return el?.getAttribute("data-testid") === "submit-button";
       });
       if (focused) {
         reachedSubmit = true;
@@ -146,30 +168,18 @@ test.describe("Keyboard Workflow — Navigation @comprehensive-a11y @keyboard", 
 
 test.describe("Keyboard Workflow — Editor Navigation @comprehensive-a11y @keyboard", () => {
   test("Tab through editor regions after project creation", async ({ page }) => {
-    await gotoWithTheme(page, "dark");
-    await page.waitForTimeout(500);
-
-    // Create a project
-    const createNewBtn = page.getByRole("button", { name: "Create New" }).first();
-    if (!(await createNewBtn.isVisible({ timeout: 5000 }).catch(() => false))) {
+    // Use the shared enterEditor helper so we actually land inside the project
+    // editor (the inline flow used in the original P0 fix only got us partway
+    // — it never filled the required Creator field, so the dialog stayed open
+    // and the test was effectively measuring tab order *inside the dialog*,
+    // which is unrelated to editor navigation).
+    const entered = await enterEditor(page, { theme: "dark", editMode: "focused" });
+    if (!entered) {
       test.skip();
       return;
     }
-
-    await createNewBtn.click();
+    await page.waitForLoadState("networkidle").catch(() => undefined);
     await page.waitForTimeout(500);
-
-    await preferBrowserStorageInProjectDialog(page);
-
-    const submitBtn = page.getByTestId("submit-button");
-    if (await submitBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await submitBtn.click();
-    } else {
-      await page.keyboard.press("Enter");
-    }
-
-    await page.waitForTimeout(9000);
-    await page.waitForLoadState("networkidle");
 
     // Now Tab through the editor and collect what regions we hit
     const regionElements: string[] = [];
@@ -180,10 +190,20 @@ test.describe("Keyboard Workflow — Editor Navigation @comprehensive-a11y @keyb
         const role = el?.getAttribute("role") ?? "";
         const ariaLabel = el?.getAttribute("aria-label") ?? "";
         const tag = el?.tagName?.toLowerCase() ?? "";
-        return `${tag}[role=${role}][aria-label=${ariaLabel}]`;
+        const dataTestId = el?.getAttribute("data-testid") ?? "";
+        const text = (el?.textContent ?? "").substring(0, 30).replace(/\s+/g, " ").trim();
+        const cls = el?.getAttribute("class")?.split(" ")[0] ?? "";
+        return `${tag}[role=${role}][aria-label=${ariaLabel}][testid=${dataTestId}][cls=${cls}][text=${text}]`;
       });
       regionElements.push(info);
     }
+
+    // Log everything we saw, deduped by occurrence count, for debuggability
+    // when this test fails.
+    const counts = new Map<string, number>();
+    for (const e of regionElements) counts.set(e, (counts.get(e) ?? 0) + 1);
+    console.log(`Editor tab stops (${regionElements.length} presses):`);
+    for (const [k, v] of counts) console.log(`  x${v} ${k}`);
 
     // Should reach at least a few distinct interactive elements in the editor
     const uniqueElements = new Set(regionElements);

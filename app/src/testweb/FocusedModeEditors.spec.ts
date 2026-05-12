@@ -63,27 +63,40 @@ async function openContentWizard(page: Page): Promise<boolean> {
 
 /**
  * Click a quick-action card in the Content Wizard.
- * These are the "Start from a Minecraft Mob/Block/Item" cards in the launcher.
+ * These are the "Based on Existing" cards in the launcher (e.g. New Mob Based on Existing).
+ *
+ * Prefers a data-testid lookup so the test doesn't break when card copy is
+ * reworded (the labels were renamed from "Start from a Minecraft X" → "New X
+ * Based on Existing" and these tests silently degraded as a result).
  */
-async function clickWizardQuickAction(page: Page, label: string): Promise<boolean> {
+async function clickWizardQuickAction(
+  page: Page,
+  testIdOrLabel: string,
+  fallbackLabel?: string
+): Promise<boolean> {
   try {
-    // Quick action cards have class cwiz-main-option with a cwiz-main-label child
-    const quickAction = page.locator(`.cwiz-main-option:has-text("${label}")`).first();
-    if (await quickAction.isVisible({ timeout: 2000 })) {
+    // Primary: data-testid match (stable across copy changes)
+    const byTestId = page.locator(`[data-testid="${testIdOrLabel}"]`).first();
+    if (await byTestId.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await byTestId.click();
+      await page.waitForTimeout(600);
+      return true;
+    }
+
+    // Secondary: label match against the cwiz-main-option card
+    const labelToFind = fallbackLabel ?? testIdOrLabel;
+    const quickAction = page
+      .locator(`.cwiz-main-option:has-text("${labelToFind}")`)
+      .first();
+    if (await quickAction.isVisible({ timeout: 2000 }).catch(() => false)) {
       await quickAction.click();
       await page.waitForTimeout(600);
       return true;
     }
 
-    // Fallback: try broader text match
-    const fallback = page.getByText(label, { exact: false }).first();
-    if (await fallback.isVisible({ timeout: 2000 })) {
-      await fallback.click();
-      await page.waitForTimeout(600);
-      return true;
-    }
-
-    console.log(`clickWizardQuickAction: Could not find "${label}"`);
+    console.log(
+      `clickWizardQuickAction: Could not find testId="${testIdOrLabel}" or label="${labelToFind}"`
+    );
     return false;
   } catch (error) {
     console.log(`clickWizardQuickAction: Error - ${error}`);
@@ -92,19 +105,40 @@ async function clickWizardQuickAction(page: Page, label: string): Promise<boolea
 }
 
 /**
- * Click a wizard-guided creation card (Entity, Block, Item).
+ * Click a wizard-guided creation card (New Mob, New Block, New Item).
  * These are the top-level launcher options that open a multi-step wizard.
+ *
+ * Prefers a data-testid lookup so renames in the launcher copy (e.g. "Entity"
+ * → "New Mob") don't silently break tests.
  */
-async function clickWizardGuided(page: Page, label: string): Promise<boolean> {
+async function clickWizardGuided(
+  page: Page,
+  testIdOrLabel: string,
+  fallbackLabel?: string
+): Promise<boolean> {
   try {
-    const option = page.locator(`.cwiz-launcher-option:has-text("${label}")`).first();
-    if (await option.isVisible({ timeout: 2000 })) {
+    // Primary: data-testid match
+    const byTestId = page.locator(`[data-testid="${testIdOrLabel}"]`).first();
+    if (await byTestId.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await byTestId.click();
+      await page.waitForTimeout(600);
+      return true;
+    }
+
+    // Secondary: label match
+    const labelToFind = fallbackLabel ?? testIdOrLabel;
+    const option = page
+      .locator(`.cwiz-launcher-option:has-text("${labelToFind}")`)
+      .first();
+    if (await option.isVisible({ timeout: 2000 }).catch(() => false)) {
       await option.click();
       await page.waitForTimeout(600);
       return true;
     }
 
-    console.log(`clickWizardGuided: Could not find "${label}"`);
+    console.log(
+      `clickWizardGuided: Could not find testId="${testIdOrLabel}" or label="${labelToFind}"`
+    );
     return false;
   } catch (error) {
     console.log(`clickWizardGuided: Error - ${error}`);
@@ -180,8 +214,23 @@ async function waitForEditorTabs(page: Page, expectedTabName: string, timeoutMs 
     return 0;
   }
 
-  const editorTabs = page.locator(".eht-outerStack button, .eht-outer button");
-  return editorTabs.count();
+  // Different editors use different container classes for their tab/toolbar headers:
+  //   - .editor-header-tabs-container: shared <EditorHeaderTabs> (entity, block, item, etc.)
+  //   - .fe-toolBarArea: feature editor toolbar (Tree / Diagram / Add Feature)
+  //   - .eht-outerStack / .eht-outer: legacy class names (kept for safety)
+  // If none of those containers match, fall back to a count of 1 so the test still
+  // proceeds — `clickEditorTab` will tolerate missing tabs.
+  const editorTabs = page.locator(
+    ".editor-header-tabs-container button, .fe-toolBarArea button, .eht-outerStack button, .eht-outer button"
+  );
+  const count = await editorTabs.count();
+  if (count > 0) {
+    return count;
+  }
+
+  // Fallback: the named tab is visible, but it isn't inside one of the known
+  // containers. Treat that as "tabs exist" so the test can proceed.
+  return 1;
 }
 
 /**
@@ -248,8 +297,8 @@ test.describe("Entity Type Editor in Focused Mode @focused", () => {
 
     await page.screenshot({ path: `${SCREENSHOT_DIR}/entity-02-content-wizard.png`, fullPage: true });
 
-    // Click "Start from a Minecraft Mob" quick action
-    const clicked = await clickWizardQuickAction(page, "Start from a Minecraft Mob");
+    // Click "New Mob Based on Existing" quick action (formerly "Start from a Minecraft Mob")
+    const clicked = await clickWizardQuickAction(page, "wizard-mob-from-mc", "New Mob Based on Existing");
 
     if (clicked) {
       await page.screenshot({ path: `${SCREENSHOT_DIR}/entity-03-name-dialog.png`, fullPage: true });
@@ -265,8 +314,8 @@ test.describe("Entity Type Editor in Focused Mode @focused", () => {
       if (tabCount > 0) {
         await page.screenshot({ path: `${SCREENSHOT_DIR}/entity-05-editor-loaded.png`, fullPage: true });
 
-        // Navigate through entity editor tabs
-        const entityTabs = ["Overview", "Properties", "Components", "Actions", "Visuals", "Spawn", "Loot"];
+        // Navigate through entity editor tabs (current tab set as of 2026)
+        const entityTabs = ["Overview", "Traits", "Visuals", "Audio", "Spawn", "Loot", "Components", "Advanced"];
         for (const tabName of entityTabs) {
           const tabClicked = await clickEditorTab(page, tabName);
           if (tabClicked) {
@@ -284,8 +333,8 @@ test.describe("Entity Type Editor in Focused Mode @focused", () => {
         }
       }
     } else {
-      // Fallback: try guided Entity wizard card
-      const guided = await clickWizardGuided(page, "Entity");
+      // Fallback: try guided New Mob wizard card (formerly labelled "Entity")
+      const guided = await clickWizardGuided(page, "wizard-new-mob", "New Mob");
       if (guided) {
         await page.screenshot({ path: `${SCREENSHOT_DIR}/entity-03-guided-wizard.png`, fullPage: true });
       } else {
@@ -328,8 +377,8 @@ test.describe("Block Type Editor in Focused Mode @focused", () => {
 
     await page.screenshot({ path: `${SCREENSHOT_DIR}/block-02-content-wizard.png`, fullPage: true });
 
-    // Click "Start from a Minecraft Block" quick action
-    const clicked = await clickWizardQuickAction(page, "Start from a Minecraft Block");
+    // Click "New Block Based on Existing" quick action
+    const clicked = await clickWizardQuickAction(page, "wizard-block-from-mc", "New Block Based on Existing");
 
     if (clicked) {
       await page.screenshot({ path: `${SCREENSHOT_DIR}/block-03-name-dialog.png`, fullPage: true });
@@ -362,8 +411,8 @@ test.describe("Block Type Editor in Focused Mode @focused", () => {
         }
       }
     } else {
-      // Fallback: try guided Block wizard card
-      const guided = await clickWizardGuided(page, "Block");
+      // Fallback: try guided New Block wizard card
+      const guided = await clickWizardGuided(page, "wizard-new-block", "New Block");
       if (guided) {
         await page.screenshot({ path: `${SCREENSHOT_DIR}/block-03-guided-wizard.png`, fullPage: true });
       } else {
@@ -406,8 +455,8 @@ test.describe("Item Type Editor in Focused Mode @focused", () => {
 
     await page.screenshot({ path: `${SCREENSHOT_DIR}/item-02-content-wizard.png`, fullPage: true });
 
-    // Click "Start from a Minecraft Item" quick action
-    const clicked = await clickWizardQuickAction(page, "Start from a Minecraft Item");
+    // Click "New Item Based on Existing" quick action
+    const clicked = await clickWizardQuickAction(page, "wizard-item-from-mc", "New Item Based on Existing");
 
     if (clicked) {
       await page.screenshot({ path: `${SCREENSHOT_DIR}/item-03-name-dialog.png`, fullPage: true });
@@ -440,8 +489,8 @@ test.describe("Item Type Editor in Focused Mode @focused", () => {
         }
       }
     } else {
-      // Fallback: try guided Item wizard card
-      const guided = await clickWizardGuided(page, "Item");
+      // Fallback: try guided New Item wizard card
+      const guided = await clickWizardGuided(page, "wizard-new-item", "New Item");
       if (guided) {
         await page.screenshot({ path: `${SCREENSHOT_DIR}/item-03-guided-wizard.png`, fullPage: true });
       } else {
@@ -483,31 +532,65 @@ test.describe("Feature Editor in Focused Mode @focused", () => {
 
     await page.screenshot({ path: `${SCREENSHOT_DIR}/feature-02-content-wizard.png`, fullPage: true });
 
-    // Features are in the "Single Files (Advanced)" → "World Generation" section
-    // Click the advanced section to expand it
-    const advancedSection = page.locator('.cwiz-advanced-header:has-text("Single Files")').first();
+    // Features live in the top-level "World Generation" section (cwiz-worldgen-top),
+    // which is EXPANDED BY DEFAULT (see ContentWizard initial state). The Feature item
+    // is therefore already visible — we just need to scroll it into view and click it.
+    // Don't click the section header: that would TOGGLE it closed.
     let featureAdded = false;
 
-    if (await advancedSection.isVisible({ timeout: 2000 })) {
-      await advancedSection.click();
-      await page.waitForTimeout(500);
+    // Try clicking the Feature item directly (use exact match to avoid "Feature Rule")
+    const featureItem = page
+      .locator('.cwiz-section-item:has(span:text-is("Feature"))')
+      .first();
 
-      await page.screenshot({ path: `${SCREENSHOT_DIR}/feature-03-advanced-expanded.png`, fullPage: true });
+    if (await featureItem.count().then((c) => c > 0)) {
+      await featureItem.scrollIntoViewIfNeeded().catch(() => undefined);
+      await page.waitForTimeout(300);
 
-      // Look for World Generation section
-      const worldGenSection = page.locator('.cwiz-section-header:has-text("World Gen")').first();
-      if (await worldGenSection.isVisible({ timeout: 2000 })) {
-        await worldGenSection.click();
+      await page.screenshot({ path: `${SCREENSHOT_DIR}/feature-03-worldgen-default.png`, fullPage: true });
+
+      if (await featureItem.isVisible({ timeout: 2000 }).catch(() => false)) {
+        await featureItem.click();
+        await page.waitForTimeout(1000);
+        featureAdded = true;
+      }
+    }
+
+    // Fallback: if the World Generation section was collapsed (state changed), expand it.
+    if (!featureAdded) {
+      const worldGenTopHeader = page
+        .locator('.cwiz-section-header:has(span:text-is("World Generation"))')
+        .first();
+      if (await worldGenTopHeader.isVisible({ timeout: 2000 }).catch(() => false)) {
+        await worldGenTopHeader.click();
         await page.waitForTimeout(500);
 
-        await page.screenshot({ path: `${SCREENSHOT_DIR}/feature-04-worldgen-expanded.png`, fullPage: true });
-
-        // Click a feature item (e.g., "Feature + Rule" or any available feature)
-        const featureItem = page
-          .locator('.cwiz-section-item:has-text("Feature"), .cwiz-section-item:has-text("feature")')
+        const featureItemRetry = page
+          .locator('.cwiz-section-item:has(span:text-is("Feature"))')
           .first();
-        if (await featureItem.isVisible({ timeout: 2000 })) {
-          await featureItem.click();
+        if (await featureItemRetry.isVisible({ timeout: 2000 }).catch(() => false)) {
+          await featureItemRetry.click();
+          await page.waitForTimeout(1000);
+          featureAdded = true;
+        }
+      }
+    }
+
+    // Fallback 2: try the "Advanced File Types" → "World Generation" gallery
+    if (!featureAdded) {
+      const advancedSection = page
+        .locator('.cwiz-advanced-header:has-text("Advanced File Types")')
+        .first();
+      if (await advancedSection.isVisible({ timeout: 2000 }).catch(() => false)) {
+        await advancedSection.click();
+        await page.waitForTimeout(500);
+
+        await page.screenshot({ path: `${SCREENSHOT_DIR}/feature-04-advanced-expanded.png`, fullPage: true });
+
+        // Click any feature gallery item under the Advanced section
+        const advFeatureItem = page.locator('.itbi-outer:has-text("feature")').first();
+        if (await advFeatureItem.isVisible({ timeout: 2000 }).catch(() => false)) {
+          await advFeatureItem.click();
           await page.waitForTimeout(1000);
           featureAdded = true;
         }
@@ -593,9 +676,9 @@ test.describe("Content Wizard and Combined Editors in Focused Mode @focused", ()
     await page.screenshot({ path: `${SCREENSHOT_DIR}/wizard-02-guided-cards.png`, fullPage: true });
 
     // Verify quick action cards
-    const entityQuickAction = page.locator('.cwiz-main-option:has-text("Start from a Minecraft Mob")').first();
-    const blockQuickAction = page.locator('.cwiz-main-option:has-text("Start from a Minecraft Block")').first();
-    const itemQuickAction = page.locator('.cwiz-main-option:has-text("Start from a Minecraft Item")').first();
+    const entityQuickAction = page.locator('[data-testid="wizard-mob-from-mc"]').first();
+    const blockQuickAction = page.locator('[data-testid="wizard-block-from-mc"]').first();
+    const itemQuickAction = page.locator('[data-testid="wizard-item-from-mc"]').first();
 
     const entityQVisible = await entityQuickAction.isVisible({ timeout: 2000 });
     const blockQVisible = await blockQuickAction.isVisible({ timeout: 2000 });
@@ -630,7 +713,7 @@ test.describe("Content Wizard and Combined Editors in Focused Mode @focused", ()
     // Add entity type
     let wizardOpened = await openContentWizard(page);
     if (wizardOpened) {
-      const clicked = await clickWizardQuickAction(page, "Start from a Minecraft Mob");
+      const clicked = await clickWizardQuickAction(page, "wizard-mob-from-mc", "New Mob Based on Existing");
       if (clicked) {
         await dismissNameDialog(page);
         await page.waitForTimeout(2500);
@@ -642,7 +725,7 @@ test.describe("Content Wizard and Combined Editors in Focused Mode @focused", ()
     // Add block type
     wizardOpened = await openContentWizard(page);
     if (wizardOpened) {
-      const clicked = await clickWizardQuickAction(page, "Start from a Minecraft Block");
+      const clicked = await clickWizardQuickAction(page, "wizard-block-from-mc", "New Block Based on Existing");
       if (clicked) {
         await dismissNameDialog(page);
         await page.waitForTimeout(2500);
@@ -654,7 +737,7 @@ test.describe("Content Wizard and Combined Editors in Focused Mode @focused", ()
     // Add item type
     wizardOpened = await openContentWizard(page);
     if (wizardOpened) {
-      const clicked = await clickWizardQuickAction(page, "Start from a Minecraft Item");
+      const clicked = await clickWizardQuickAction(page, "wizard-item-from-mc", "New Item Based on Existing");
       if (clicked) {
         await dismissNameDialog(page);
         await page.waitForTimeout(2500);

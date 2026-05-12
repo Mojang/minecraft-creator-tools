@@ -2,9 +2,12 @@ import { Component, SyntheticEvent } from "react";
 import "./EntityTypeComponentSetEditor.css";
 import DataForm from "../../../dataformux/DataForm";
 import Database from "../../../minecraft/Database";
-import McSelectableList, { McSelectableListItem } from "../../shared/components/inputs/mcSelectableList/McSelectableList";
+import McSelectableList, {
+  McSelectableListItem,
+} from "../../shared/components/inputs/mcSelectableList/McSelectableList";
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -39,8 +42,9 @@ import { ProjectItemType } from "../../../app/IProjectItemData";
 import IProjectTheme from "../../types/IProjectTheme";
 import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../../app/CreatorToolsHost";
 import { getComponentDescription } from "../../../minecraft/ComponentDescriptions";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
-interface IEntityTypeComponentSetEditorProps {
+interface IEntityTypeComponentSetEditorProps extends WithLocalizationProps {
   componentSetItem: IManagedComponentSetItem;
   entityTypeItem: EntityTypeDefinition;
   isDefault: boolean;
@@ -62,6 +66,7 @@ interface IEntityTypeComponentSetEditorState {
   searchFilter?: string;
   showComponentsHelp?: boolean;
   collapsedCategories?: { [key: number]: boolean };
+  isAddingComponent?: boolean;
 }
 
 enum EntityTypeComponentEditorDialog {
@@ -69,7 +74,7 @@ enum EntityTypeComponentEditorDialog {
   addComponent,
 }
 
-export default class EntityTypeComponentSetEditor extends Component<
+class EntityTypeComponentSetEditor extends Component<
   IEntityTypeComponentSetEditorProps,
   IEntityTypeComponentSetEditorState
 > {
@@ -181,8 +186,7 @@ export default class EntityTypeComponentSetEditor extends Component<
 
   componentDidUpdate(
     prevProps: Readonly<IEntityTypeComponentSetEditorProps>,
-    prevState: Readonly<IEntityTypeComponentSetEditorState>,
-    snapshot?: any
+    prevState: Readonly<IEntityTypeComponentSetEditorState>
   ): void {
     if (prevProps.componentSetItem !== this.props.componentSetItem) {
       this._updateManager();
@@ -290,7 +294,12 @@ export default class EntityTypeComponentSetEditor extends Component<
 
       if (
         typeof window !== "undefined" &&
-        !window.confirm(`Remove component "${componentName}" (${componentId}) from this entity?`)
+        !window.confirm(
+          this.props.intl.formatMessage(
+            { id: "project_editor.entity_comp.confirm_remove" },
+            { componentName, componentId }
+          )
+        )
       ) {
         return;
       }
@@ -371,20 +380,31 @@ export default class EntityTypeComponentSetEditor extends Component<
   }
 
   private async _handleAddComponentOK() {
-    if (this.state.selectedNewComponentId) {
-      await this._addComponent(this.state.selectedNewComponentId);
-
+    if (this.state.selectedNewComponentId && !this.state.isAddingComponent) {
       this.setState({
         loadedFormCount: this.state.loadedFormCount,
-        dialogMode: EntityTypeComponentEditorDialog.none,
-        activeComponentId: this.state.selectedNewComponentId,
+        isAddingComponent: true,
       });
+
+      try {
+        await this._addComponent(this.state.selectedNewComponentId);
+
+        this.setState({
+          loadedFormCount: this.state.loadedFormCount,
+          dialogMode: EntityTypeComponentEditorDialog.none,
+          activeComponentId: this.state.selectedNewComponentId,
+          isAddingComponent: false,
+        });
+      } catch (e) {
+        this.setState({ isAddingComponent: false });
+        throw e;
+      }
     }
   }
 
   render() {
     if (this.state === undefined || this.state.loadedFormCount === undefined) {
-      return <div className="etcse-loading">Loading...</div>;
+      return <div className="etcse-loading">{this.props.intl.formatMessage({ id: "common.loading" })}</div>;
     }
 
     const isNarrow = this.props.displayNarrow;
@@ -392,7 +412,9 @@ export default class EntityTypeComponentSetEditor extends Component<
     if (this.state.dialogMode === EntityTypeComponentEditorDialog.addComponent) {
       return (
         <Dialog open={true} key="etcse-addComponentOuter">
-          <DialogTitle>Add component</DialogTitle>
+          <DialogTitle>
+            {this.props.intl.formatMessage({ id: "project_editor.entity_comp.add_component_title" })}
+          </DialogTitle>
           <DialogContent>
             <EntityTypeAddComponent
               onNewComponentSelected={this.setSelectedNewComponentId}
@@ -401,9 +423,16 @@ export default class EntityTypeComponentSetEditor extends Component<
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={this._handleDialogCancel}>Cancel</Button>
-            <Button onClick={this._handleAddComponentOK} variant="contained">
-              Add
+            <Button onClick={this._handleDialogCancel} disabled={this.state.isAddingComponent}>
+              Cancel
+            </Button>
+            <Button
+              onClick={this._handleAddComponentOK}
+              variant="contained"
+              disabled={this.state.isAddingComponent || !this.state.selectedNewComponentId}
+              startIcon={this.state.isAddingComponent ? <CircularProgress size={16} color="inherit" /> : undefined}
+            >
+              {this.state.isAddingComponent ? "Adding..." : "Add"}
             </Button>
           </DialogActions>
         </Dialog>
@@ -413,7 +442,6 @@ export default class EntityTypeComponentSetEditor extends Component<
       const componentForms = [];
       const componentList: McSelectableListItem[] = [];
       const componentDropdown = [];
-      const colors = getThemeColors();
 
       let selectedIndex = 0;
       let selectedIndexDropdown = 0;
@@ -483,9 +511,19 @@ export default class EntityTypeComponentSetEditor extends Component<
           key: "addSlot" + category,
           content: (
             <div className="etcse-addSlotWrapper">
-              <button className="etcse-addSlot" onClick={handleClick} title={`Add ${categoryLabel}`} type="button">
+              <button
+                className="etcse-addSlot"
+                onClick={handleClick}
+                title={this.props.intl.formatMessage(
+                  { id: "project_editor.entity_comp.add_category" },
+                  { categoryLabel }
+                )}
+                type="button"
+              >
                 <span className="etcse-addSlotIcon">+</span>
-                <span>Add {categoryLabel}</span>
+                <span>
+                  {this.props.intl.formatMessage({ id: "project_editor.entity_comp.add_category" }, { categoryLabel })}
+                </span>
               </button>
             </div>
           ),
@@ -540,7 +578,11 @@ export default class EntityTypeComponentSetEditor extends Component<
                     collapsed[attribCategory] = !isCategoryCollapsed;
                     this.setState({ collapsedCategories: collapsed });
                   }}
-                  title={isCategoryCollapsed ? "Expand category" : "Collapse category"}
+                  title={
+                    isCategoryCollapsed
+                      ? this.props.intl.formatMessage({ id: "project_editor.entity_comp.expand_category" })
+                      : this.props.intl.formatMessage({ id: "project_editor.entity_comp.collapse_category" })
+                  }
                 >
                   <FontAwesomeIcon
                     icon={isCategoryCollapsed ? faChevronRight : faChevronDown}
@@ -568,8 +610,6 @@ export default class EntityTypeComponentSetEditor extends Component<
 
           componentDropdown.push(humanVersion);
 
-          // Get the component color for the slot styling
-          const slotColor = getComponentColor(component.id);
           const isSelected = component.id === this.state?.activeComponentId;
 
           componentList.push({
@@ -616,14 +656,14 @@ export default class EntityTypeComponentSetEditor extends Component<
                   <IconButton
                     size="small"
                     className="etcse-componentHeaderDelete"
-                    title={
-                      "Delete this " +
-                      EntityTypeDefinition.getComponentCategoryDescription(attribCategory).toLowerCase()
-                    }
-                    aria-label={
-                      "Delete this " +
-                      EntityTypeDefinition.getComponentCategoryDescription(attribCategory).toLowerCase()
-                    }
+                    title={this.props.intl.formatMessage(
+                      { id: "project_editor.entity_comp.delete_category" },
+                      { category: EntityTypeDefinition.getComponentCategoryDescription(attribCategory).toLowerCase() }
+                    )}
+                    aria-label={this.props.intl.formatMessage(
+                      { id: "project_editor.entity_comp.delete_category" },
+                      { category: EntityTypeDefinition.getComponentCategoryDescription(attribCategory).toLowerCase() }
+                    )}
                     onClick={(e) => this._deleteThisComponentClick(e, { tag: component.id })}
                     sx={{ opacity: 0.6, "&:hover": { opacity: 1 } }}
                   >
@@ -641,8 +681,10 @@ export default class EntityTypeComponentSetEditor extends Component<
                   if (cgs.length === 1) {
                     componentForms.push(
                       <div className="etcse-note" key="etcse.note">
-                        This component is used in the {getFriendlyComponentGroupName(cgs[0].id)} state. Its settings
-                        will be overridden when that group is applied.
+                        {this.props.intl.formatMessage(
+                          { id: "project_editor.entity_comp.override_single" },
+                          { group: getFriendlyComponentGroupName(cgs[0].id) }
+                        )}
                       </div>
                     );
                   } else if (cgs.length >= 2) {
@@ -658,8 +700,10 @@ export default class EntityTypeComponentSetEditor extends Component<
 
                     componentForms.push(
                       <div className="etcse-note" key="etcse.note2">
-                        This component is used in the {strCgList} states. Its settings will be overridden when one of
-                        those groups is applied.
+                        {this.props.intl.formatMessage(
+                          { id: "project_editor.entity_comp.override_multi" },
+                          { list: strCgList }
+                        )}
                       </div>
                     );
                   }
@@ -677,14 +721,14 @@ export default class EntityTypeComponentSetEditor extends Component<
                   let noteStr = "";
 
                   if (this.props.entityTypeItem.getComponent(component.id)) {
-                    noteStr = "This component is used in the default configuration. ";
+                    noteStr = this.props.intl.formatMessage({ id: "project_editor.entity_comp.default_config" });
                   }
 
                   if (cgsA.length === 1) {
-                    noteStr +=
-                      "This component is used in the " +
-                      getFriendlyComponentGroupName(cgsA[0].id) +
-                      " state. Its settings will be overridden when that state is active.";
+                    noteStr += this.props.intl.formatMessage(
+                      { id: "project_editor.entity_comp.state_override_single" },
+                      { group: getFriendlyComponentGroupName(cgsA[0].id) }
+                    );
                   } else if (cgsA.length >= 2) {
                     let strCgList = "";
 
@@ -696,14 +740,18 @@ export default class EntityTypeComponentSetEditor extends Component<
                       }
                     }
 
-                    noteStr +=
-                      "This component is used in " +
-                      strCgList +
-                      " states. Its settings will be overridden when one of those states is active.";
+                    noteStr += this.props.intl.formatMessage(
+                      { id: "project_editor.entity_comp.state_override_multi" },
+                      { list: strCgList }
+                    );
                   }
 
                   if (noteStr.length > 0) {
-                    componentForms.push(<div className="etcse-note">{noteStr}</div>);
+                    componentForms.push(
+                      <div className="etcse-note" key={`etcse-note-state-${component.id}`}>
+                        {noteStr}
+                      </div>
+                    );
                   }
                 }
               }
@@ -738,7 +786,10 @@ export default class EntityTypeComponentSetEditor extends Component<
               } else {
                 componentForms.push(
                   <div className="etcse-noeditor" key="etcse-noed">
-                    (No editor is available for the {component.id} type.)
+                    {this.props.intl.formatMessage(
+                      { id: "project_editor.entity_comp.no_editor" },
+                      { componentId: component.id }
+                    )}
                   </div>
                 );
               }
@@ -768,18 +819,15 @@ export default class EntityTypeComponentSetEditor extends Component<
         areaClass = "etcse-area-narrow" + themeClass;
       }
 
-      let componentBinClassName = "etcse-componentBin";
-
-      if (this.props.displayNarrow) {
-        componentBinClassName += " etcse-componentBin-narrow";
-      }
-
       // Build breadcrumb navigation
       const entityName = this.props.entityTypeItem.shortId
         ? Utilities.humanifyMinecraftName(this.props.entityTypeItem.shortId)
-        : Utilities.humanifyMinecraftName(this.props.entityTypeItem.id || "Mob");
+        : Utilities.humanifyMinecraftName(
+            this.props.entityTypeItem.id ||
+              this.props.intl.formatMessage({ id: "project_editor.entity_comp.mob_fallback" })
+          );
       const groupName = this.props.isDefault
-        ? "Default (base state)"
+        ? this.props.intl.formatMessage({ id: "project_editor.entity_comp.default_base_state" })
         : getFriendlyComponentGroupName(this.props.title || "Group");
       const componentName = this.state.activeComponentId
         ? Utilities.humanifyMinecraftName(this.state.activeComponentId)
@@ -809,26 +857,31 @@ export default class EntityTypeComponentSetEditor extends Component<
           <div className="etcse-componentArea">
             <div className="etcse-titleArea">{title}</div>
             <div className="etcse-componentToolBarArea">
-              <button className="eat-mcBtn" title="Add component" onClick={this._handleAddComponentClick}>
-                <FontAwesomeIcon icon={faPlus} /> Add component
+              <button
+                className="eat-mcBtn"
+                title={this.props.intl.formatMessage({ id: "project_editor.entity_comp.add_component_title" })}
+                onClick={this._handleAddComponentClick}
+              >
+                <FontAwesomeIcon icon={faPlus} />{" "}
+                {this.props.intl.formatMessage({ id: "project_editor.entity_comp.add_component_title" })}
               </button>
               {components.length > 0 && (
                 <div className="etcse-searchFilterWrapper">
                   <input
                     className="etcse-searchFilter"
                     type="text"
-                    placeholder="Filter components..."
+                    placeholder={this.props.intl.formatMessage({ id: "project_editor.entity_comp.filter_placeholder" })}
                     value={this.state.searchFilter || ""}
                     onChange={this._handleSearchFilterChanged}
-                    aria-label="Filter components"
+                    aria-label={this.props.intl.formatMessage({ id: "project_editor.entity_comp.filter_aria" })}
                   />
                   {this.state.searchFilter && (
                     <button
                       className="etcse-searchFilterClear"
                       onClick={this._handleSearchFilterClear}
-                      title="Clear filter"
+                      title={this.props.intl.formatMessage({ id: "project_editor.entity_comp.clear_filter" })}
                       type="button"
-                      aria-label="Clear filter"
+                      aria-label={this.props.intl.formatMessage({ id: "project_editor.entity_comp.clear_filter" })}
                     >
                       <FontAwesomeIcon icon={faXmark} />
                     </button>
@@ -838,28 +891,36 @@ export default class EntityTypeComponentSetEditor extends Component<
             </div>
           </div>
           {this.state.showComponentsHelp && (
-            <div className="etcse-helpHint" role="note" aria-label="How components, attributes, and groups work">
+            <div
+              className="etcse-helpHint"
+              role="note"
+              aria-label={this.props.intl.formatMessage({ id: "project_editor.entity_comp.help_aria" })}
+            >
               <button
                 className="etcse-helpHintDismiss"
                 onClick={this._handleDismissHelp}
-                title="Dismiss help"
-                aria-label="Dismiss help"
+                title={this.props.intl.formatMessage({ id: "project_editor.entity_comp.dismiss_help" })}
+                aria-label={this.props.intl.formatMessage({ id: "project_editor.entity_comp.dismiss_help" })}
               >
                 <FontAwesomeIcon icon={faXmark} />
               </button>
-              <div className="etcse-helpHintTitle">New here? Start with these building blocks.</div>
-              <div className="etcse-helpHintBody">
-                <strong>Behaviors (components)</strong> are reusable actions (like attack, movement, or AI goals).
+              <div className="etcse-helpHintTitle">
+                {this.props.intl.formatMessage({ id: "project_editor.entity_comp.help_title" })}
               </div>
               <div className="etcse-helpHintBody">
-                <strong>Stats (attributes)</strong> are number-based values (like health, speed, and damage).
+                <strong>{this.props.intl.formatMessage({ id: "project_editor.entity_comp.help_behaviors" })}</strong>{" "}
+                {this.props.intl.formatMessage({ id: "project_editor.entity_comp.help_behaviors_desc" })}
               </div>
               <div className="etcse-helpHintBody">
-                <strong>Groups</strong> are named bundles you can turn on for different states of your mob.
+                <strong>{this.props.intl.formatMessage({ id: "project_editor.entity_comp.help_stats" })}</strong>{" "}
+                {this.props.intl.formatMessage({ id: "project_editor.entity_comp.help_stats_desc" })}
+              </div>
+              <div className="etcse-helpHintBody">
+                <strong>{this.props.intl.formatMessage({ id: "project_editor.entity_comp.help_groups" })}</strong>{" "}
+                {this.props.intl.formatMessage({ id: "project_editor.entity_comp.help_groups_desc" })}
               </div>
               <div className="etcse-helpHintNext">
-                Next: select a component on the left, edit values on the right, then add more with Add component.
-                Changes save automatically as you edit.
+                {this.props.intl.formatMessage({ id: "project_editor.entity_comp.help_hint_next" })}
               </div>
             </div>
           )}
@@ -878,7 +939,9 @@ export default class EntityTypeComponentSetEditor extends Component<
                     onChange={this._handleComponentSelectedFromDropdown}
                   >
                     {componentDropdown.length === 0 ? (
-                      <MenuItem disabled>No components available</MenuItem>
+                      <MenuItem disabled>
+                        {this.props.intl.formatMessage({ id: "project_editor.entity_comp.no_components" })}
+                      </MenuItem>
                     ) : (
                       componentDropdown.map((item) => (
                         <MenuItem key={item} value={item}>
@@ -894,7 +957,7 @@ export default class EntityTypeComponentSetEditor extends Component<
                 variant="inset"
                 theme={this.props.theme}
                 itemType={ProjectItemType.entityTypeBehavior}
-                header="Components"
+                header={this.props.intl.formatMessage({ id: "project_editor.entity_comp.header" })}
                 compactHeader
                 className="etcse-componentListPanel"
                 style={{
@@ -929,3 +992,5 @@ export default class EntityTypeComponentSetEditor extends Component<
     }
   }
 }
+
+export default withLocalization(EntityTypeComponentSetEditor);

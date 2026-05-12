@@ -70,7 +70,6 @@ export type TraitCategory =
   | "tool"
   | "armor"
   | "consumable"
-  | "container"
   | "placement"
   | "usable"
   | "basic"

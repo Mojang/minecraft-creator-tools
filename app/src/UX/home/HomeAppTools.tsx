@@ -12,9 +12,9 @@ interface IHomeAppToolsState {}
 export default class HomeAppTools extends Component<IHomeAppToolsProps, IHomeAppToolsState> {
   componentDidMount() {}
 
-  private async _handleLoginClick() {
+  private _handleLoginClick = async () => {
     AppServiceProxy.sendAsync("augerLogin", "");
-  }
+  };
 
   render() {
     return (

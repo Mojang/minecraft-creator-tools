@@ -30,8 +30,9 @@ import EntityTypeResourceDefinition from "../../minecraft/EntityTypeResourceDefi
 import CreatorToolsHost from "../../app/CreatorToolsHost";
 import IProjectTheme from "../../UX/types/IProjectTheme";
 import { IGeometry } from "../../minecraft/IModelGeometry";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
-interface IModelViewerProps {
+interface IModelViewerProps extends WithLocalizationProps {
   creatorTools?: CreatorTools;
   heightOffset: number;
   theme?: IProjectTheme;
@@ -89,7 +90,7 @@ interface IModelViewerState {
   geometryProjectItem?: ProjectItem;
 }
 
-export default class ModelViewer extends Component<IModelViewerProps, IModelViewerState> {
+class ModelViewer extends Component<IModelViewerProps, IModelViewerState> {
   _lastFile: IFile | undefined;
   _volumeEditor: VolumeEditor | undefined;
   _lastEntityTypeId: string | undefined;
@@ -147,8 +148,23 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
     this._loadingTimeoutId = setTimeout(() => {
       // If we're still showing the loading spinner after 15s, show an error
       if (!this.state.transformedGeometry && !this.state.model && !this.state.loadError) {
+        const assetId =
+          this.props.entityTypeId ||
+          this.props.attachableTypeId ||
+          this.props.geometryUrl ||
+          this.props.geometryId ||
+          (this.props.projectItem ? this.props.projectItem.projectPath : undefined) ||
+          "unknown";
+        const assetPath =
+          this.props.geometryUrl ||
+          this.props.textureUrl ||
+          (this.props.projectItem ? this.props.projectItem.projectPath : undefined) ||
+          this.props.entityTypeId ||
+          this.props.attachableTypeId ||
+          "unknown";
+        Log.error(`ModelViewer: Model load timed out after 15s for ${assetId}. Asset path: ${assetPath}`);
         this.setState({
-          loadError: "Model took too long to load. The model data may be missing or unavailable.",
+          loadError: `Couldn't load model for ${assetId}. Textures or model data may be unavailable.`,
         });
       }
     }, 15000);
@@ -865,7 +881,7 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
   }
 
   _resetViewClick() {
-    if (this._volumeEditor !== undefined) {
+    if (this._volumeEditor != null) {
       this._volumeEditor.resetCamera();
     }
   }
@@ -1007,7 +1023,7 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
               this.setState({ loadError: undefined }, () => this._update());
             }}
           >
-            Retry
+            {this.props.intl.formatMessage({ id: "common.retry" })}
           </button>
         </div>
       );
@@ -1016,7 +1032,7 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
     let interior = (
       <div className="mov-loading-area" role="status" aria-live="polite">
         <div className="mov-loading-spinner" />
-        <span>Loading model...</span>
+        <span>{this.props.intl.formatMessage({ id: "viewer.model.loading" })}</span>
       </div>
     );
     let selectionDetails = <></>;
@@ -1146,7 +1162,10 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
 
     let blockAdder = <></>;
 
-    if (this._volumeEditor !== undefined) {
+    // Use `!=` to catch both undefined (initial state) and null (React passes
+    // null to the ref callback on unmount/replacement). The field is typed
+    // VolumeEditor | undefined, but the ref bypasses that.
+    if (this._volumeEditor != null) {
       this._volumeEditor.resize();
     }
 
@@ -1164,7 +1183,7 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
               <Select
                 value={this.state.selectedTextureVariant || ""}
                 onChange={this._handleTextureVariantChange}
-                aria-label="Select texture variant"
+                aria-label={this.props.intl.formatMessage({ id: "viewer.model.variant_aria" })}
                 sx={{
                   fontSize: "0.75rem",
                   height: 28,
@@ -1204,30 +1223,40 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
           <div className="mov-toolbar-area">
             <div className="mov-toolbar-inner">
               <Stack direction="row" spacing={1} alignItems="center" aria-label="Model viewer toolbar">
-                <IconButton onClick={this._resetViewClick} title="Reset Camera" size="small">
+                <IconButton onClick={this._resetViewClick} title={this.props.intl.formatMessage({ id: "viewer.model.reset_camera" })} size="small">
                   <VideoLabel />
                 </IconButton>
                 {this.state?.model && (
-                  <Tooltip title="Download as Blockbench model (.bbmodel)">
+                  <Tooltip title={this.props.intl.formatMessage({ id: "viewer.model.edit_blockbench_tooltip" })}>
                     <Button
                       onClick={this._handleOpenInBlockbench}
                       size="small"
                       startIcon={<FontAwesomeIcon icon={faCube} />}
-                      sx={{ textTransform: "none", fontSize: "0.8rem", whiteSpace: "nowrap" }}
+                      sx={{
+                        textTransform: "none",
+                        fontSize: "0.8rem",
+                        whiteSpace: "nowrap",
+                        minWidth: width <= 600 ? "auto" : undefined,
+                      }}
                     >
-                      Edit in Blockbench
+                      {width > 600 ? this.props.intl.formatMessage({ id: "viewer.model.edit_blockbench" }) : ""}
                     </Button>
                   </Tooltip>
                 )}
                 {this.props.project && (
-                  <Tooltip title="Upload a Blockbench model (.bbmodel) to integrate into this project">
+                  <Tooltip title={this.props.intl.formatMessage({ id: "viewer.model.upload_bbmodel_tooltip" })}>
                     <Button
                       component="label"
                       size="small"
                       startIcon={<FontAwesomeIcon icon={faUpload} />}
-                      sx={{ textTransform: "none", fontSize: "0.8rem", whiteSpace: "nowrap" }}
+                      sx={{
+                        textTransform: "none",
+                        fontSize: "0.8rem",
+                        whiteSpace: "nowrap",
+                        minWidth: width <= 600 ? "auto" : undefined,
+                      }}
                     >
-                      Upload .bbmodel
+                      {width > 600 ? this.props.intl.formatMessage({ id: "viewer.model.upload_bbmodel" }) : ""}
                       <input type="file" accept=".bbmodel" hidden onChange={this._handleUploadBbmodel} />
                     </Button>
                   </Tooltip>
@@ -1237,7 +1266,7 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
                     <Select
                       value={this.state.selectedTextureVariant || ""}
                       onChange={this._handleTextureVariantChange}
-                      aria-label="Select texture variant"
+                      aria-label={this.props.intl.formatMessage({ id: "viewer.model.variant_aria" })}
                       sx={{ fontSize: "0.8rem", height: 32, minWidth: 120 }}
                     >
                       {this.state.textureVariants.map((variant) => (
@@ -1260,3 +1289,5 @@ export default class ModelViewer extends Component<IModelViewerProps, IModelView
     );
   }
 }
+
+export default withLocalization(ModelViewer);

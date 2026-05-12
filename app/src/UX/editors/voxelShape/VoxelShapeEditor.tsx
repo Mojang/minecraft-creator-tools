@@ -40,11 +40,12 @@ import CreatorTools from "../../../app/CreatorTools";
 import Project from "../../../app/Project";
 import { IVoxelShapeBox } from "../../../minecraft/IVoxelShapeFile";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
 // Lazy load ModelViewer for 3D preview
 const ModelViewer = lazy(() => import("../../world/ModelViewer"));
 
-interface IVoxelShapeEditorProps extends IFileProps {
+interface IVoxelShapeEditorProps extends IFileProps, WithLocalizationProps {
   heightOffset: number;
   readOnly: boolean;
   item: ProjectItem;
@@ -61,7 +62,7 @@ interface IVoxelShapeEditorState {
   textureData?: Uint8Array;
 }
 
-export default class VoxelShapeEditor extends Component<IVoxelShapeEditorProps, IVoxelShapeEditorState> {
+class VoxelShapeEditor extends Component<IVoxelShapeEditorProps, IVoxelShapeEditorState> {
   private _lastFileEdited?: IFile;
 
   constructor(props: IVoxelShapeEditorProps) {
@@ -319,7 +320,7 @@ export default class VoxelShapeEditor extends Component<IVoxelShapeEditorProps, 
                 variant="contained"
                 size="small"
               >
-                Add Box
+                {this.props.intl.formatMessage({ id: "project_editor.voxel_ed.add_box" })}
               </Button>
               <Button
                 startIcon={<FontAwesomeIcon icon={faTrash} />}
@@ -340,16 +341,16 @@ export default class VoxelShapeEditor extends Component<IVoxelShapeEditorProps, 
                 selected={index === this.state.selectedBoxIndex}
                 onClick={() => this._handleBoxSelected(index)}
               >
-                <ListItemText primary={`Box ${index + 1}`} secondary={this._formatBoxCoords(box)} />
+                <ListItemText primary={this.props.intl.formatMessage({ id: "project_editor.voxel_ed.box_label" }) + (index + 1)} secondary={this._formatBoxCoords(box)} />
               </ListItemButton>
             ))}
           </List>
         </div>
         {this.state.selectedBoxIndex >= 0 && definition.boxes[this.state.selectedBoxIndex] && (
           <div className="vse-boxEditor">
-            <h4>Edit Box {this.state.selectedBoxIndex + 1}</h4>
+            <h4>{this.props.intl.formatMessage({ id: "project_editor.voxel_ed.edit_box_label" })}{this.state.selectedBoxIndex + 1}</h4>
             <div className="vse-coordRow">
-              <span className="vse-coordLabel">Min:</span>
+              <span className="vse-coordLabel">{this.props.intl.formatMessage({ id: "project_editor.voxel_ed.min_label" })}</span>
               <TextField
                 type="number"
                 size="small"
@@ -359,7 +360,7 @@ export default class VoxelShapeEditor extends Component<IVoxelShapeEditorProps, 
                 }
                 disabled={this.props.readOnly}
                 className="vse-coordInput"
-                placeholder="X"
+                placeholder={this.props.intl.formatMessage({ id: "project_editor.voxel_ed.placeholder_x" })}
               />
               <TextField
                 type="number"
@@ -370,7 +371,7 @@ export default class VoxelShapeEditor extends Component<IVoxelShapeEditorProps, 
                 }
                 disabled={this.props.readOnly}
                 className="vse-coordInput"
-                placeholder="Y"
+                placeholder={this.props.intl.formatMessage({ id: "project_editor.voxel_ed.placeholder_y" })}
               />
               <TextField
                 type="number"
@@ -381,11 +382,11 @@ export default class VoxelShapeEditor extends Component<IVoxelShapeEditorProps, 
                 }
                 disabled={this.props.readOnly}
                 className="vse-coordInput"
-                placeholder="Z"
+                placeholder={this.props.intl.formatMessage({ id: "project_editor.voxel_ed.placeholder_z" })}
               />
             </div>
             <div className="vse-coordRow">
-              <span className="vse-coordLabel">Max:</span>
+              <span className="vse-coordLabel">{this.props.intl.formatMessage({ id: "project_editor.voxel_ed.max_label" })}</span>
               <TextField
                 type="number"
                 size="small"
@@ -395,7 +396,7 @@ export default class VoxelShapeEditor extends Component<IVoxelShapeEditorProps, 
                 }
                 disabled={this.props.readOnly}
                 className="vse-coordInput"
-                placeholder="X"
+                placeholder={this.props.intl.formatMessage({ id: "project_editor.voxel_ed.placeholder_x" })}
               />
               <TextField
                 type="number"
@@ -406,7 +407,7 @@ export default class VoxelShapeEditor extends Component<IVoxelShapeEditorProps, 
                 }
                 disabled={this.props.readOnly}
                 className="vse-coordInput"
-                placeholder="Y"
+                placeholder={this.props.intl.formatMessage({ id: "project_editor.voxel_ed.placeholder_y" })}
               />
               <TextField
                 type="number"
@@ -417,7 +418,7 @@ export default class VoxelShapeEditor extends Component<IVoxelShapeEditorProps, 
                 }
                 disabled={this.props.readOnly}
                 className="vse-coordInput"
-                placeholder="Z"
+                placeholder={this.props.intl.formatMessage({ id: "project_editor.voxel_ed.placeholder_z" })}
               />
             </div>
           </div>
@@ -432,7 +433,7 @@ export default class VoxelShapeEditor extends Component<IVoxelShapeEditorProps, 
 
       if (this.state.textureData) {
         previewContent = (
-          <Suspense fallback={<div className="vse-previewLoading">Loading 3D viewer...</div>}>
+          <Suspense fallback={<div className="vse-previewLoading">{this.props.intl.formatMessage({ id: "project_editor.voxel_ed.loading_3d" })}</div>}>
             <ModelViewer
               creatorTools={this.props.creatorTools}
               project={this.props.project}
@@ -448,10 +449,10 @@ export default class VoxelShapeEditor extends Component<IVoxelShapeEditorProps, 
       } else {
         // Trigger async texture generation
         this._generatePreviewTexture(definition);
-        previewContent = <div className="vse-previewLoading">Generating preview...</div>;
+        previewContent = <div className="vse-previewLoading">{this.props.intl.formatMessage({ id: "project_editor.voxel_ed.generating_preview" })}</div>;
       }
     } else {
-      previewContent = <div className="vse-noPreview">Add boxes to see preview</div>;
+      previewContent = <div className="vse-noPreview">{this.props.intl.formatMessage({ id: "project_editor.voxel_ed.no_preview" })}</div>;
     }
 
     const rightPanel = <div className="vse-rightPanel">{previewContent}</div>;
@@ -469,7 +470,7 @@ export default class VoxelShapeEditor extends Component<IVoxelShapeEditorProps, 
       >
         <div className="vse-header">
           <div className="vse-identifier">
-            <strong>Identifier:</strong> {definition.id || "(unnamed)"}
+            <strong>{this.props.intl.formatMessage({ id: "project_editor.voxel_ed.identifier_label" })}</strong> {definition.id || this.props.intl.formatMessage({ id: "project_editor.voxel_ed.unnamed" })}
           </div>
         </div>
         <div
@@ -486,3 +487,5 @@ export default class VoxelShapeEditor extends Component<IVoxelShapeEditorProps, 
     );
   }
 }
+
+export default withLocalization(VoxelShapeEditor);

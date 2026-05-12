@@ -157,10 +157,17 @@ export const BLOCK_TRAITS: ITraitInfo[] = [
   { id: "stairs", label: "Stairs", description: "Stair-shaped block", category: "Shape", exclusiveGroup: "shape" },
   { id: "fence", label: "Fence", description: "Fence post shape", category: "Shape", exclusiveGroup: "shape" },
   { id: "door", label: "Door", description: "Openable door", category: "Interactive", exclusiveGroup: "shape" },
-  { id: "container", label: "Container", description: "Has inventory", category: "Interactive" },
   { id: "light_source", label: "Light Source", description: "Emits light", category: "Properties" },
   { id: "gravity", label: "Gravity", description: "Falls like sand", category: "Properties" },
   { id: "redstone_signal", label: "Redstone Signal", description: "Outputs redstone", category: "Redstone" },
+  { id: "flammable", label: "Flammable", description: "Can catch fire and burn", category: "Properties" },
+  {
+    id: "explosion_resistant",
+    label: "Explosion Resistant",
+    description: "Highly resistant to explosions",
+    category: "Properties",
+  },
+  { id: "slippery", label: "Slippery", description: "Low-friction surface", category: "Properties" },
 ];
 
 // ============================================================================

@@ -398,6 +398,7 @@ export default class Project {
 
   hasInferredFiles = false;
   #readOnlySafety = false;
+  #isVanillaEditSession: boolean | undefined;
 
   get unknownFiles(): IFile[] {
     return [...this._unknownFiles];
@@ -935,6 +936,9 @@ export default class Project {
       } else if (this.creatorTools.editPreference === CreatorToolsEditPreference.editors) {
         return ProjectEditPreference.editors;
       } else if (this.creatorTools.editPreference === CreatorToolsEditPreference.summarized) {
+        if (this.isVanillaEditSession) {
+          return ProjectEditPreference.editors;
+        }
         return ProjectEditPreference.summarized;
       }
 
@@ -1170,6 +1174,17 @@ export default class Project {
     }
 
     return false;
+  }
+
+  get showDevFiles() {
+    return this.#data.showDevFiles === true;
+  }
+
+  set showDevFiles(show: boolean) {
+    if (show !== this.showDevFiles) {
+      this.#data.showDevFiles = show;
+      this._onPropertyChanged.dispatch(this, "showDevFiles");
+    }
   }
 
   get showHiddenItems() {
@@ -1780,6 +1795,15 @@ export default class Project {
    * Separated from ensureInfoSetGenerated to allow tracking via promise.
    */
   private async _performInfoSetGeneration(infoSet: ProjectInfoSet): Promise<ProjectInfoSet> {
+    // Track the worker-tracked operation across the entire try/catch so we can
+    // guarantee it is ended in the finally block. Without this, edge cases where
+    // the worker resolves but doesn't fire both streaming callbacks (or where any
+    // statement between notifyOperationStarted and the success branch throws) would
+    // leak the operation, leaving the status-bar pickaxe progress indicator stuck
+    // visible "forever" with a stale tooltip from whatever last status got pushed
+    // (often "Done loading project files for '<title>'").
+    let workerOperationId: number | undefined;
+
     // Try to use combined worker operation in browser environments
     // @ts-ignore
     if (typeof window !== "undefined" && !this.#relationsProcessed) {
@@ -1787,10 +1811,11 @@ export default class Project {
         const workerManager = getProjectWorkerManager();
         if (workerManager && workerManager.isSupported) {
           // Start an operation on the main thread to track progress
-          const operationId = await this.#creatorTools.notifyOperationStarted(
+          workerOperationId = await this.#creatorTools.notifyOperationStarted(
             `Validating '${this.simplifiedName}' (0%)`,
             StatusTopic.validation
           );
+          const operationId = workerOperationId;
 
           // Create progress callback that forwards to CreatorTools status updates
           const onProgress = (message: string, percent?: number) => {
@@ -1885,11 +1910,22 @@ export default class Project {
 
               // End the operation - progress bar disappears immediately
               await this.#creatorTools.notifyOperationEnded(operationId, "", StatusTopic.validation);
+              workerOperationId = undefined;
 
               return infoSet;
             } else if (!result) {
               // Worker didn't support the operation - fall through to main thread
               await this.#creatorTools.notifyOperationEnded(operationId, "", StatusTopic.validation);
+              workerOperationId = undefined;
+            } else {
+              // Edge case: worker resolved but at least one streaming callback
+              // (relationsComplete / validationComplete) didn't fire as expected.
+              // Treat as a partial failure and fall back to main-thread processing.
+              // The finally block below will end the operation so the status-bar
+              // progress indicator clears.
+              Log.verbose(
+                `[Project] Worker streaming incomplete (relations=${relationsComplete}, validation=${validationComplete}); falling back to main thread`
+              );
             }
           } catch (e) {
             // End the operation with error
@@ -1899,12 +1935,24 @@ export default class Project {
               StatusTopic.validation,
               true
             );
+            workerOperationId = undefined;
             throw e;
           }
         }
       } catch (e) {
         // Fall back to main thread processing if worker fails
         Log.verbose("Combined worker operation not available, falling back to main thread: " + e);
+      } finally {
+        // Safety net: if for any reason the worker-tracked operation wasn't
+        // already ended on a success / handled-failure path above, end it now
+        // so the status-bar progress indicator doesn't stay stuck visible
+        // forever. This protects against partial-streaming edge cases and any
+        // unexpected throw between notifyOperationStarted and the branches
+        // that end the operation explicitly.
+        if (workerOperationId !== undefined) {
+          await this.#creatorTools.notifyOperationEnded(workerOperationId, "", StatusTopic.validation);
+          workerOperationId = undefined;
+        }
       }
     }
 
@@ -2360,6 +2408,39 @@ export default class Project {
     return this.defaultBehaviorPackUniqueId === "ee649bcf-256c-4013-9068-6a802b89d756";
   }
 
+  get isVanillaEditSession(): boolean {
+    if (this.#isVanillaEditSession !== undefined) {
+      return this.#isVanillaEditSession;
+    }
+
+    this.computeIsVanillaEditSession();
+    return this.#isVanillaEditSession!;
+  }
+
+  computeIsVanillaEditSession() {
+    for (const pack of this.#packs) {
+      if (pack.folder && pack.folder.name === "vanilla") {
+        this.#isVanillaEditSession = true;
+        return;
+      }
+    }
+
+    for (const item of this.items) {
+      for (const variant of item.getVariantList()) {
+        if (
+          variant.variantType === ProjectItemVariantType.versionSlice ||
+          variant.variantType === ProjectItemVariantType.versionSliceAlt ||
+          variant.variantType === ProjectItemVariantType.versionSliceAltPacks
+        ) {
+          this.#isVanillaEditSession = true;
+          return;
+        }
+      }
+    }
+
+    this.#isVanillaEditSession = false;
+  }
+
   ensureStoragePathIsNotCollapsed(storagePath: string) {
     const newCollapsedPaths: string[] = [];
 
@@ -2378,6 +2459,9 @@ export default class Project {
     deepScanJson?: boolean
   ) {
     if (!this.hasInferredFiles || force) {
+      // Reset cached vanilla-edit-session flag so it's recomputed after items are inferred
+      this.#isVanillaEditSession = undefined;
+
       await this.ensureProjectFolder();
 
       if (this.projectCabinetFile !== null) {
@@ -3302,6 +3386,13 @@ export default class Project {
     this.ensureDefaultWorldName();
 
     this.#isInflated = true;
+
+    // Freshly loaded content is, by definition, not user-modified yet. Any file-update
+    // events that fired while subscriptions were being wired up during load/inflate
+    // (e.g., default-item generation, auto-migrations, template population) represent
+    // the loaded state, not user edits. Clear the change tracker so dirty/change
+    // indicators only light up in response to actual user actions after load.
+    this.changedFilesSinceLastSaved = {};
   }
 
   async deletePreferencesFile() {

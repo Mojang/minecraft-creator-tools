@@ -1,0 +1,118 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   ITEM SPRITE ICON - Minecraft-style item display
+   
+   Renders a single Minecraft item as a pixelated sprite in a slot-like frame.
+   Used in recipe editors, item pickers, and crafting grids.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.rcisi-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  image-rendering: pixelated;
+}
+
+.rcisi-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #8b8b8b;
+  border: 1px solid;
+  border-color: #ffffff #373737 #373737 #ffffff;
+  box-sizing: border-box;
+  image-rendering: pixelated;
+  overflow: hidden;
+}
+
+.rcisi-slot-dark {
+  background: #585858;
+  border-color: #7a7a7a #2a2a2a #2a2a2a #7a7a7a;
+}
+
+.rcisi-slot-small {
+  width: 32px;
+  height: 32px;
+}
+
+.rcisi-slot-medium {
+  width: 48px;
+  height: 48px;
+}
+
+.rcisi-slot-large {
+  width: 64px;
+  height: 64px;
+}
+
+.rcisi-image {
+  image-rendering: pixelated;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Atlas-based sprite: uses CSS background-position on the single atlas image */
+.rcisi-atlas-sprite {
+  image-rendering: pixelated;
+  pointer-events: none;
+  user-select: none;
+  overflow: hidden;
+}
+
+.rcisi-slot-small .rcisi-image {
+  width: 24px;
+  height: 24px;
+}
+
+.rcisi-slot-medium .rcisi-image {
+  width: 36px;
+  height: 36px;
+}
+
+.rcisi-slot-large .rcisi-image {
+  width: 48px;
+  height: 48px;
+}
+
+.rcisi-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 1px 1px 0px #3f3f3f;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.rcisi-slot-small .rcisi-fallback {
+  width: 24px;
+  height: 24px;
+  font-size: 8px;
+}
+
+.rcisi-slot-medium .rcisi-fallback {
+  width: 36px;
+  height: 36px;
+  font-size: 10px;
+}
+
+.rcisi-slot-large .rcisi-fallback {
+  width: 48px;
+  height: 48px;
+  font-size: 12px;
+}
+
+.rcisi-empty {
+  background: #555555;
+  border-color: #373737 #8b8b8b #8b8b8b #373737;
+}
+
+.rcisi-empty-dark {
+  background: #3a3a3a;
+  border-color: #2a2a2a #606060 #606060 #2a2a2a;
+}

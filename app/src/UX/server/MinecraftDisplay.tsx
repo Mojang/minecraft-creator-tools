@@ -71,6 +71,7 @@ import WorldsDialog from "./WorldsDialog";
 import { faGlobe } from "@fortawesome/free-solid-svg-icons";
 import MinecraftUtilities from "../../minecraft/MinecraftUtilities";
 import IProjectTheme from "../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
 export enum MinecraftDisplayMode {
   activeMinecraft = 0,
@@ -86,7 +87,7 @@ export enum SidebarTab {
   stats = 2,
 }
 
-interface IMinecraftDisplayProps extends IAppProps {
+interface IMinecraftDisplayProps extends IAppProps, WithLocalizationProps {
   heightOffset: number;
   project?: Project;
   forceCompact?: boolean;
@@ -110,7 +111,7 @@ interface IMinecraftDisplayState {
   connectedPlayers: string[];
 }
 
-export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, IMinecraftDisplayState> {
+class MinecraftDisplay extends Component<IMinecraftDisplayProps, IMinecraftDisplayState> {
   private _commandValues: string[] = [];
   private _isMountedInternal = false;
 
@@ -683,6 +684,7 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
       isButtonCompact = true;
     }
 
+    const intl = this.props.intl;
     const toolbarItems: JSX.Element[] = [];
     const hostToolbarItems: JSX.Element[] = [];
     const interiorElements = [];
@@ -692,7 +694,7 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
     // Only show Mode tab on mctools.dev website or Electron app, not in web server mode
     if (!this.props.isWebServer) {
       toolbarItems.push(
-        <Button key="info" onClick={this._setWelcomeMode} title="Managing Minecraft" size="small">
+        <Button key="info" onClick={this._setWelcomeMode} title={intl.formatMessage({ id: "project_editor.minecraft.managing_minecraft" })} size="small">
           <ConnectModeLabel
             isCompact={isButtonCompact}
             isSelected={
@@ -712,7 +714,7 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
           <Button
             key="dedicatedServer"
             onClick={this._setDedicatedServerMode}
-            title="Deploy this project to Minecraft hosted locally"
+            title={intl.formatMessage({ id: "project_editor.minecraft.deploy_locally" })}
             size="small"
           >
             <DedicatedServerMinecraftLabel
@@ -732,7 +734,7 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
           <Button
             key="minecraftWebSockets"
             onClick={this._setWebSocketMode}
-            title="Deploy this project to Minecraft hosted locally"
+            title={intl.formatMessage({ id: "project_editor.minecraft.deploy_locally" })}
             size="small"
           >
             <WebSocketMinecraftLabel
@@ -761,7 +763,7 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
       if (slot !== undefined && slot >= 0) {
         connectedName = this._getSlotLabel(slot);
       } else {
-        connectedName = "Connected";
+        connectedName = intl.formatMessage({ id: "project_editor.minecraft.connected" });
       }
     }
 
@@ -773,7 +775,7 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
         <Button
           key="remote"
           onClick={this._setRemoteMinecraftMode}
-          title="Deploy this project to Minecraft hosted remotely"
+          title={intl.formatMessage({ id: "project_editor.minecraft.deploy_remotely" })}
           size="small"
         >
           <RemoteMinecraftLabel
@@ -794,7 +796,7 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
     // In other modes, show the Server Settings tab in the bottom toolbar
     if (!this.props.isWebServer) {
       toolbarItems.push(
-        <Button key="worldSettings" onClick={this._setWorldSettingsMode} title="Configure world settings" size="small">
+        <Button key="worldSettings" onClick={this._setWorldSettingsMode} title={intl.formatMessage({ id: "project_editor.minecraft.configure_world" })} size="small">
           <WorldSettingsLabel
             isCompact={isButtonCompact}
             isSelected={this.state.mode === MinecraftDisplayMode.worldSettings}
@@ -816,7 +818,7 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
     // );
 
     toolbarItems.push(
-      <Button key="toolEditor" onClick={this._setToolEditor} title="Configure tool settings" size="small">
+      <Button key="toolEditor" onClick={this._setToolEditor} title={intl.formatMessage({ id: "project_editor.minecraft.configure_tools" })} size="small">
         <ToolEditorLabel
           isCompact={isButtonCompact}
           isSelected={this.state.mode === MinecraftDisplayMode.toolEditor}
@@ -835,7 +837,7 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
         <Button
           key="serverStart"
           onClick={this._startClick}
-          title="Start server"
+          title={intl.formatMessage({ id: "project_editor.minecraft.start_server" })}
           disabled={
             this.props.creatorTools.defaultMinecraftFlavor === MinecraftFlavor.processHostedProxy &&
             this.props.creatorTools.dedicatedServerMode === DedicatedServerMode.auto &&
@@ -852,7 +854,7 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
         <Button
           key="serverInitting"
           onClick={this._stopDedicatedServerClick}
-          title="Cancel server init; stop server"
+          title={intl.formatMessage({ id: "project_editor.minecraft.cancel_init_stop" })}
           size="small"
         >
           <ServerInitializingLabel isCompact={isButtonCompact} />
@@ -863,7 +865,7 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
         <Button
           key="serverStarting"
           onClick={this._stopDedicatedServerClick}
-          title="Cancel server start; stop server"
+          title={intl.formatMessage({ id: "project_editor.minecraft.cancel_start_stop" })}
           size="small"
         >
           <ServerStartingLabel isCompact={isButtonCompact} />
@@ -871,24 +873,24 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
       );
     } else if (cs === CreatorToolsMinecraftState.initialized) {
       hostToolbarItems.push(
-        <Button key="serverInitted" onClick={this._startClick} title="Start server and deploy project" size="small">
+        <Button key="serverInitted" onClick={this._startClick} title={intl.formatMessage({ id: "project_editor.minecraft.start_deploy" })} size="small">
           <ServerInitializedLabel isCompact={isButtonCompact} />
         </Button>
       );
     } else if (cs === CreatorToolsMinecraftState.stopping) {
       hostToolbarItems.push(
-        <Button key="serverStop" onClick={this._stopDedicatedServerClick} title="Stopping" size="small">
+        <Button key="serverStop" onClick={this._stopDedicatedServerClick} title={intl.formatMessage({ id: "project_editor.minecraft.stopping" })} size="small">
           <ServerStoppingLabel isCompact={isButtonCompact} />
         </Button>
       );
     } else if (cs === CreatorToolsMinecraftState.started) {
       hostToolbarItems.push(
-        <Button key="serverRestart" onClick={this._restartDedicatedServerClick} title="Restart server" size="small">
+        <Button key="serverRestart" onClick={this._restartDedicatedServerClick} title={intl.formatMessage({ id: "project_editor.minecraft.restart_server" })} size="small">
           <ServerRestartLabel isCompact={isButtonCompact} />
         </Button>
       );
       hostToolbarItems.push(
-        <Button key="serverStop" onClick={this._stopDedicatedServerClick} title="Stop server" size="small">
+        <Button key="serverStop" onClick={this._stopDedicatedServerClick} title={intl.formatMessage({ id: "project_editor.minecraft.stop_server" })} size="small">
           <ServerStopLabel isCompact={isButtonCompact} />
         </Button>
       );
@@ -905,7 +907,7 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
             <Select
               value={currentSlot >= 0 && currentSlot < slots.length ? slots[currentSlot] : slots[0]}
               onChange={this._handleSlotChanged}
-              inputProps={{ "aria-label": "Select server slot" }}
+              inputProps={{ "aria-label": intl.formatMessage({ id: "project_editor.minecraft.select_server_slot" }) }}
             >
               {slots.map((slot) => (
                 <MenuItem key={slot} value={slot}>
@@ -915,7 +917,7 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
             </Select>
           </FormControl>
           <IconButton
-            title="Edit slot settings"
+            title={intl.formatMessage({ id: "project_editor.minecraft.edit_slot_settings" })}
             onClick={this._openSlotSettings}
             className="mid-slotSettingsButton"
             size="small"
@@ -931,12 +933,12 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
           <Button
             key="worlds"
             onClick={this._openWorldsDialog}
-            title="Manage world backups"
+            title={intl.formatMessage({ id: "project_editor.minecraft.manage_worlds" })}
             className="mid-worldsButton"
             size="small"
             startIcon={<FontAwesomeIcon icon={faGlobe} className="fa-sm" />}
           >
-            Worlds
+            {intl.formatMessage({ id: "project_editor.minecraft.worlds" })}
           </Button>
         );
       }
@@ -970,7 +972,7 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
         cs === CreatorToolsMinecraftState.started)
     ) {
       hostToolbarItems.push(
-        <Button key="play" onClick={this._deployToMinecraft} title="Deploy this project to Minecraft" size="small">
+        <Button key="play" onClick={this._deployToMinecraft} title={intl.formatMessage({ id: "project_editor.minecraft.deploy_to_minecraft" })} size="small">
           <PushToMinecraftLabel isCompact={isButtonCompact} />
         </Button>
       );
@@ -1100,7 +1102,7 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
                   <div className="mid-messages-list">
                     {logItems.length === 0 ? (
                       <div className="mid-message-item">
-                        <span className="mid-message-text">No messages yet...</span>
+                        <span className="mid-message-text">{intl.formatMessage({ id: "project_editor.minecraft.no_messages" })}</span>
                       </div>
                     ) : (
                       logItems.map((item: IStatus, index: number) => {
@@ -1145,7 +1147,7 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
               sidebarContent = (
                 <div className="mid-players-panel">
                   {players.length === 0 ? (
-                    <div className="mid-no-players">No players connected</div>
+                    <div className="mid-no-players">{intl.formatMessage({ id: "project_editor.minecraft.no_players" })}</div>
                   ) : (
                     <ul className="mid-players-list">
                       {players.map((player, index) => (
@@ -1176,19 +1178,19 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
                       className={"mid-sidebar-tab" + (this.state.sidebarTab === SidebarTab.messages ? " active" : "")}
                       onClick={() => this._handleSidebarTabChange(SidebarTab.messages)}
                     >
-                      Messages
+                      {intl.formatMessage({ id: "project_editor.minecraft.tab_messages" })}
                     </button>
                     <button
                       className={"mid-sidebar-tab" + (this.state.sidebarTab === SidebarTab.players ? " active" : "")}
                       onClick={() => this._handleSidebarTabChange(SidebarTab.players)}
                     >
-                      Players
+                      {intl.formatMessage({ id: "project_editor.minecraft.tab_players" })}
                     </button>
                     <button
                       className={"mid-sidebar-tab" + (this.state.sidebarTab === SidebarTab.stats ? " active" : "")}
                       onClick={() => this._handleSidebarTabChange(SidebarTab.stats)}
                     >
-                      Stats
+                      {intl.formatMessage({ id: "project_editor.minecraft.tab_stats" })}
                     </button>
                   </div>
                   <div className="mid-sidebar-content">{sidebarContent}</div>
@@ -1437,24 +1439,24 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
       const dialogContent = (
         <div className="mid-slotSettingsContent">
           <div className="mid-slotSettingsSection">
-            <div className="mid-slotSettingsSectionHeader">Slot Information</div>
+            <div className="mid-slotSettingsSectionHeader">{intl.formatMessage({ id: "project_editor.minecraft.slot_info" })}</div>
             <div className="mid-slotSettingsRow">
-              <span className="mid-slotSettingsLabel">Slot:</span>
+              <span className="mid-slotSettingsLabel">{intl.formatMessage({ id: "project_editor.minecraft.slot_label" })}</span>
               <span className="mid-slotSettingsValue">
-                {currentSlot} (port {MinecraftUtilities.getPortForSlot(currentSlot)})
+                {intl.formatMessage({ id: "project_editor.minecraft.slot_value" }, { slot: currentSlot, port: MinecraftUtilities.getPortForSlot(currentSlot) })}
               </span>
             </div>
             <div className="mid-slotSettingsRow">
-              <span className="mid-slotSettingsLabel">Server Version:</span>
-              <span className="mid-slotSettingsValue">{slotConfig?.serverVersion ?? "Unknown"}</span>
+              <span className="mid-slotSettingsLabel">{intl.formatMessage({ id: "project_editor.minecraft.server_version" })}</span>
+              <span className="mid-slotSettingsValue">{slotConfig?.serverVersion ?? intl.formatMessage({ id: "project_editor.minecraft.unknown" })}</span>
             </div>
             <div className="mid-slotSettingsRow">
-              <span className="mid-slotSettingsLabel">Status:</span>
-              <span className="mid-slotSettingsValue">{isServerRunning ? "Running" : "Stopped"}</span>
+              <span className="mid-slotSettingsLabel">{intl.formatMessage({ id: "project_editor.minecraft.status_label" })}</span>
+              <span className="mid-slotSettingsValue">{isServerRunning ? intl.formatMessage({ id: "project_editor.minecraft.status_running" }) : intl.formatMessage({ id: "project_editor.minecraft.status_stopped" })}</span>
             </div>
           </div>
           <div className="mid-slotSettingsSection">
-            <div className="mid-slotSettingsSectionHeader">World Settings</div>
+            <div className="mid-slotSettingsSectionHeader">{intl.formatMessage({ id: "project_editor.minecraft.world_settings" })}</div>
             <div
               className="mid-slotSettingsWorldArea"
               style={{
@@ -1473,7 +1475,7 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
               />
             </div>
             {!isServerRunning && (
-              <div className="mid-slotSettingsNote">Settings will be applied the next time the server starts.</div>
+              <div className="mid-slotSettingsNote">{intl.formatMessage({ id: "project_editor.minecraft.settings_applied_note" })}</div>
             )}
           </div>
         </div>
@@ -1482,22 +1484,22 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
       // Build footer buttons based on server state
       const footerButtons = isServerRunning ? (
         <DialogActions className="mid-slotSettingsFooter">
-          <Button onClick={this._closeSlotSettings}>Close</Button>
+          <Button onClick={this._closeSlotSettings}>{intl.formatMessage({ id: "common.close" })}</Button>
           <Button variant="contained" onClick={this._saveAndRestartServer}>
-            Save and Restart Server
+            {intl.formatMessage({ id: "project_editor.minecraft.save_and_restart" })}
           </Button>
         </DialogActions>
       ) : (
         <DialogActions className="mid-slotSettingsFooter">
           <Button variant="contained" onClick={this._closeSlotSettings}>
-            OK
+            {intl.formatMessage({ id: "common.ok" })}
           </Button>
         </DialogActions>
       );
 
       slotSettingsDialog = (
         <Dialog open={true} onClose={this._closeSlotSettings}>
-          <DialogTitle>{"Slot " + currentSlot + " Settings"}</DialogTitle>
+          <DialogTitle>{intl.formatMessage({ id: "project_editor.minecraft.slot_settings_title" }, { slot: currentSlot })}</DialogTitle>
           <DialogContent>{dialogContent}</DialogContent>
           {footerButtons}
         </Dialog>
@@ -1523,13 +1525,13 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
           />
         )}
         <div className="mid-hostToolBarArea" key="hostToolBar">
-          <Stack direction="row" spacing={1} aria-label="Host actions">
+          <Stack direction="row" spacing={1} aria-label={intl.formatMessage({ id: "project_editor.minecraft.host_actions_aria" })}>
             {hostToolbarItems}
           </Stack>
         </div>
         <div className="mid-main">{interiorElements}</div>
         <div className="mid-actionsToolBarArea" key="actionsToolBar">
-          <Stack direction="row" spacing={1} aria-label="Minecraft actions">
+          <Stack direction="row" spacing={1} aria-label={intl.formatMessage({ id: "project_editor.minecraft.actions_aria" })}>
             {toolbarItems}
           </Stack>
         </div>
@@ -1537,3 +1539,5 @@ export default class MinecraftDisplay extends Component<IMinecraftDisplayProps, 
     );
   }
 }
+
+export default withLocalization(MinecraftDisplay);

@@ -108,7 +108,9 @@ export default class ProjectItemRelations {
     const indexStartTime = Date.now();
     await index.build(project);
     const indexBuildTime = Date.now() - indexStartTime;
-    Log.verbose(`[RelationsIndex] Index built in ${indexBuildTime}ms, isBuilt=${index.isBuilt}, entityResources=${index.entityResourcesById.size}, animations=${index.animationsById.size}, models=${index.modelsById.size}`);
+    Log.verbose(
+      `[RelationsIndex] Index built in ${indexBuildTime}ms, isBuilt=${index.isBuilt}, entityResources=${index.entityResourcesById.size}, animations=${index.animationsById.size}, models=${index.modelsById.size}`
+    );
 
     // Report progress at most ~20 times total (every 5% of progress)
     const progressInterval = Math.max(100, Math.floor(totalItems / 20));
@@ -129,7 +131,11 @@ export default class ProjectItemRelations {
       }
     }
     const processTime = Date.now() - processStartTime;
-    Log.verbose(`[RelationsIndex] Relations processing completed in ${processTime}ms for ${itemsToProcess.length} items`);
+    Log.verbose(
+      `[RelationsIndex] Relations processing completed in ${processTime}ms for ${itemsToProcess.length} items`
+    );
+
+    project.computeIsVanillaEditSession();
   }
 
   static async calculateForItems(items: ProjectItem[], onProgress?: RelationsProgressCallback) {

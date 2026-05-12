@@ -47,6 +47,12 @@ export interface RenderOptions {
   forceNewContext?: boolean;
   /** Force a page reload even when reusing context. Use for multi-angle renders where only URL params change. */
   forceReload?: boolean;
+  /**
+   * When rendering blocks, skip the gradient skybox and paint a uniform light
+   * sky-blue clearColor instead. Used by the block sprite atlas pipeline so
+   * composited thumbnails don't carry a gradient background.
+   */
+  flatBackground?: boolean;
 }
 
 export interface RenderResult {
@@ -578,7 +584,8 @@ export default class PlaywrightPageRenderer {
    * Uses headless mode to hide UI chrome and get full-viewport canvas.
    */
   async renderBlock(blockName: string, options: RenderOptions = {}): Promise<RenderResult> {
-    return this.renderModel(`/?mode=blockviewer&block=${encodeURIComponent(blockName)}&headless=true`, options);
+    const flat = options.flatBackground ? "&flatbg=true" : "";
+    return this.renderModel(`/?mode=blockviewer&block=${encodeURIComponent(blockName)}&headless=true${flat}`, options);
   }
 
   /**
@@ -613,7 +620,8 @@ export default class PlaywrightPageRenderer {
       }
 
       // Use headless=true to hide UI chrome and get full-viewport canvas
-      const modelPath = `/?mode=blockviewer&block=${encodeURIComponent(block.name)}&headless=true`;
+      const flat = options.flatBackground ? "&flatbg=true" : "";
+      const modelPath = `/?mode=blockviewer&block=${encodeURIComponent(block.name)}&headless=true${flat}`;
       const result = useFastMode
         ? await this.renderModelFast(modelPath, options)
         : await this.renderModel(modelPath, options);

@@ -138,8 +138,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CADDONIREQ000] Found 11 errors in Cooperative Add-On Item Requirements Generator check\nTESTFAIL: [CADDONREQ000] Found 5 errors in Cooperative Add-On Requirements check",
-    "infoGenerationTime": 808,
-    "endToEndGenerationTime": 965,
+    "infoGenerationTime": 272,
+    "endToEndGenerationTime": 572,
     "summary": {
       "CADDONIREQ": {
         "0": {
@@ -560,5 +560,5 @@
   ],
   "generatorName": "Minecraft Creator Tools",
   "suite": 2,
-  "generatorVersion": "0.0.1"
+  "generatorVersion": "0.0.1-dev"
 }

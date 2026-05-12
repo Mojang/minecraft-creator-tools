@@ -316,6 +316,9 @@ export interface ICommandContext {
   /** True if the user explicitly specified -i / --input-folder on the command line */
   inputFolderSpecified: boolean;
 
+  /** True if the input folder was auto-discovered by walking up from cwd to find a project root */
+  inputFolderAutoDiscovered: boolean;
+
   /** Output folder path (resolved to absolute), may equal inputFolder */
   outputFolder: string;
 
@@ -359,6 +362,16 @@ export interface ICommandContext {
   /** Output in JSON format for machine parsing */
   json: boolean;
 
+  /**
+   * Non-interactive mode (`-y` / `--yes`). When true, commands MUST NOT prompt the user
+   * via inquirer or stdin. They should accept supplied args + sensible defaults, or fail
+   * fast with a clear error if a required value is missing. This is what CI scripts
+   * and `mct mcp` (MCP server) use to drive commands without a TTY.
+   *
+   * Implies the same behaviour as `--quiet` for prompts (but does not silence output).
+   */
+  yes: boolean;
+
   /** Dry-run mode - show what would be done without making changes */
   dryRun: boolean;
 
@@ -398,6 +411,16 @@ export interface ICommandContext {
 
   /** Reference folder path for documentation generation (skip existing files) */
   referenceFolder?: string;
+
+  /**
+   * Raw command-specific options captured from Commander.js for this invocation.
+   * Use this when a single command introduces an option that doesn't merit its
+   * own typed field on the context. Prefer adding a typed field for options that
+   * are shared by multiple commands.
+   *
+   * Example: `context.commandOptions.format` for `mct exportaddon --format mcaddon`.
+   */
+  commandOptions: Record<string, any>;
 
   // -------------------------------------------------------------------------
   // Grouped Options

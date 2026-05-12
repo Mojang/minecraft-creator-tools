@@ -23,6 +23,7 @@ import BlockTypeOverviewPanel from "./BlockTypeOverviewPanel";
 import { EditorHeaderChip, EditorHeaderBar, EditorHeaderTabs } from "../../appShell/EditorHeader";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
 export enum BlockTypeEditorMode {
   overview = 0,
@@ -33,7 +34,7 @@ export enum BlockTypeEditorMode {
   loot = 5,
 }
 
-interface IBlockTypeEditorProps extends IFileProps {
+interface IBlockTypeEditorProps extends IFileProps, WithLocalizationProps {
   heightOffset: number;
   readOnly: boolean;
   item: ProjectItem;
@@ -48,7 +49,7 @@ interface IBlockTypeEditorState {
   isLoaded: boolean;
 }
 
-export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IBlockTypeEditorState> {
+class BlockTypeEditor extends Component<IBlockTypeEditorProps, IBlockTypeEditorState> {
   private _lastFileEdited?: IFile;
 
   constructor(props: IBlockTypeEditorProps) {
@@ -104,11 +105,7 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
     this._isMounted = false;
   }
 
-  componentDidUpdate(
-    prevProps: Readonly<IBlockTypeEditorProps>,
-    prevState: Readonly<IBlockTypeEditorState>,
-    snapshot?: any
-  ): void {
+  componentDidUpdate(prevProps: Readonly<IBlockTypeEditorProps>, prevState: Readonly<IBlockTypeEditorState>): void {
     if (prevProps.file !== this.state.fileToEdit) {
       this._updateManager();
     }
@@ -256,7 +253,9 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
       this.state.fileToEdit.manager === undefined ||
       Database.uxCatalog === null
     ) {
-      return <div className="bte-loading">Loading block type...</div>;
+      return (
+        <div className="bte-loading">{this.props.intl.formatMessage({ id: "project_editor.block.loading_type" })}</div>
+      );
     }
 
     if (this.props.setActivePersistable !== undefined) {
@@ -266,7 +265,11 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
     const bt = this.state.fileToEdit.manager as BlockTypeDefinition;
 
     if (bt._data === undefined) {
-      return <div className="bte-message">Loading block definition...</div>;
+      return (
+        <div className="bte-message">
+          {this.props.intl.formatMessage({ id: "project_editor.block.loading_definition" })}
+        </div>
+      );
     }
 
     // Calculate counts for tab badges
@@ -280,8 +283,12 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
     // countable items that help users gauge content at a glance. Other tabs
     // (Actions, Visuals, Loot, etc.) represent categories rather than countable
     // collections, so counts would not be meaningful.
-    const statesLabel = isButtonCompact ? "States" : `States (${stateCount})`;
-    const componentsLabel = isButtonCompact ? "Components" : `Components (${componentCount})`;
+    const statesLabel = isButtonCompact
+      ? this.props.intl.formatMessage({ id: "project_editor.block.tab_states" })
+      : this.props.intl.formatMessage({ id: "project_editor.block.tab_states_count" }, { count: stateCount });
+    const componentsLabel = isButtonCompact
+      ? this.props.intl.formatMessage({ id: "project_editor.block.tab_components" })
+      : this.props.intl.formatMessage({ id: "project_editor.block.tab_components_count" }, { count: componentCount });
 
     let modeArea = <></>;
 
@@ -376,12 +383,15 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
           <EditorHeaderBar
             itemId={bt.id}
             itemType={ProjectItemType.blockTypeBehavior}
-            typeName="Block Type"
+            typeName={this.props.intl.formatMessage({ id: "project_editor.block.type_name" })}
             formatVersion={bt.formatVersion}
           />
           <EditorHeaderTabs>
             <Stack direction="row" spacing={0.5} aria-label="Block type actions">
-              <Button onClick={this._setOverviewMode} title="Block overview with preview and component summary">
+              <Button
+                onClick={this._setOverviewMode}
+                title={this.props.intl.formatMessage({ id: "project_editor.block.tooltip_overview" })}
+              >
                 <CustomTabLabel
                   icon={<FontAwesomeIcon icon={faHome} className="fa-lg" />}
                   text={"Overview"}
@@ -390,7 +400,13 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
                   theme={this.props.theme}
                 />
               </Button>
-              <Button onClick={this._setStatesMode} title={`Edit block states (${stateCount} states)`}>
+              <Button
+                onClick={this._setStatesMode}
+                title={this.props.intl.formatMessage(
+                  { id: "project_editor.block.tooltip_states" },
+                  { count: stateCount }
+                )}
+              >
                 <CustomTabLabel
                   icon={<FontAwesomeIcon icon={faSliders} className="fa-lg" />}
                   text={statesLabel}
@@ -401,7 +417,10 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
               </Button>
               <Button
                 onClick={this._setComponentsMode}
-                title={`Edit components and permutations (${componentCount} components, ${permutationCount} permutations)`}
+                title={this.props.intl.formatMessage(
+                  { id: "project_editor.block.tooltip_components" },
+                  { componentCount, permutationCount }
+                )}
               >
                 <CustomTabLabel
                   icon={<FontAwesomeIcon icon={faSquarePlus} className="fa-lg" />}
@@ -411,7 +430,10 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
                   theme={this.props.theme}
                 />
               </Button>
-              <Button onClick={this._setActionsMode} title="Edit block events and actions">
+              <Button
+                onClick={this._setActionsMode}
+                title={this.props.intl.formatMessage({ id: "project_editor.block.tooltip_actions" })}
+              >
                 <CustomTabLabel
                   icon={<FontAwesomeIcon icon={faBolt} className="fa-lg" />}
                   text={"Actions"}
@@ -420,7 +442,10 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
                   theme={this.props.theme}
                 />
               </Button>
-              <Button onClick={this._setVisualsMode} title="Edit visual properties">
+              <Button
+                onClick={this._setVisualsMode}
+                title={this.props.intl.formatMessage({ id: "project_editor.block.tooltip_visuals" })}
+              >
                 <CustomTabLabel
                   icon={<FontAwesomeIcon icon={faCow} className="fa-lg" />}
                   text={"Visuals"}
@@ -438,3 +463,5 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
     );
   }
 }
+
+export default withLocalization(BlockTypeEditor);

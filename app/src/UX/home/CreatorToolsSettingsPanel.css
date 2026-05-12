@@ -236,3 +236,31 @@
 .csp-dspathinput input {
   width: 300px;
 }
+
+/* 'Saved' confirmation toast — appears briefly when a setting is changed */
+.csp-savedToast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background-color: rgba(40, 40, 40, 0.95);
+  color: #86d562;
+  border: 1px solid rgba(134, 213, 98, 0.4);
+  border-radius: 4px;
+  font-size: 13px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  animation: csp-savedToast-fade 1.5s ease-out forwards;
+}
+
+@keyframes csp-savedToast-fade {
+  0% { opacity: 0; transform: translateY(6px); }
+  15% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-2px); }
+}
+

@@ -74,6 +74,9 @@
     "completedWorldDataProcessing": true,
     "worldLoadErrors": 0,
     "commands": [],
+    "customDimensionErrors": 0,
+    "nameIdTableMissing": 0,
+    "unclaimedMappings": 0,
     "featureSets": {
       "languageCatalog.size": {
         "instanceCount": 1,
@@ -216,7 +219,6 @@
       },
       "textureImages.vanillaGameTextureCoverage": {
         "overrideCount": 0,
-        "vanillaTextureCount": 2526,
         "percent": 0
       },
       "textureImagesTier0.nonVanillaTextureMemoryTier": {
@@ -393,7 +395,7 @@
     "warningCount": 1,
     "testSuccessCount": 36,
     "testFailCount": 0,
-    "testNotApplicableCount": 14,
+    "testNotApplicableCount": 15,
     "errorSummary": "",
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [UNLINK191] (/pack_icon.png) Texture does not have any items in this pack that are using this.",
@@ -415,6 +417,11 @@
           "title": "Beta Features",
           "defaultMessage": "Beta Features completed successfully",
           "testCompleteSuccesses": 1
+        }
+      },
+      "CDWORLDDATA": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Custom Dimension World Data Validation (CDWORLDDATA)"
         }
       },
       "CHECKFEATUREDEPRECATION": {
@@ -905,6 +912,11 @@
       "iTp": 1,
       "gId": "CBFG",
       "gIx": 1
+    },
+    {
+      "gId": "CDWORLDDATA",
+      "gIx": 2,
+      "iTp": 8
     },
     {
       "iTp": 8,
@@ -1426,7 +1438,6 @@
         },
         "vanillaGameTextureCoverage": {
           "overrideCount": 0,
-          "vanillaTextureCount": 2526,
           "percent": 0
         }
       }

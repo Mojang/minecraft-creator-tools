@@ -10,11 +10,11 @@
   },
   "main": "./index.lib.js",
   "dependencies": {
-    "@octokit/rest": "19.0.13",
+    "@octokit/rest": "22.0.1",
     "@lunapaint/tga-codec": "0.1.0",
     "@modelcontextprotocol/sdk": "1.28.0",
     "@rauschma/stringio": "1.4.0",
-    "axios": "1.13.6",
+    "axios": "1.15.0",
     "esbuild-wasm": "0.21.3",
     "esprima-next": "6.0.2",
     "exifr": "7.1.3",

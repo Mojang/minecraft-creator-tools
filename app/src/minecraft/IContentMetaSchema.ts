@@ -514,7 +514,6 @@ export type BlockTraitId =
   | "trapdoor"
 
   // Functional
-  | "container"
   | "workstation"
   | "light_source"
   | "gravity"
@@ -525,7 +524,12 @@ export type BlockTraitId =
   | "redstone_receiver"
   | "button"
   | "lever"
-  | "pressure_plate";
+  | "pressure_plate"
+
+  // Properties
+  | "flammable"
+  | "explosion_resistant"
+  | "slippery";
 
 /**
  * Block shape types.

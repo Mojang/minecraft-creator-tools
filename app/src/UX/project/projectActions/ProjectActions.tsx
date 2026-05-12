@@ -10,7 +10,6 @@ import {
   faCubes,
   faCode,
   faImage,
-  faWandMagicSparkles,
   faGlobe,
   faFileCode,
   faLayerGroup,
@@ -23,7 +22,7 @@ import ProjectEditorUtilities, {
 } from "../ProjectEditorUtilities";
 import telemetry from "../../../analytics/Telemetry";
 import { TelemetryEvents, TelemetryProperties } from "../../../analytics/TelemetryConstants";
-import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../../app/CreatorToolsHost";
+import CreatorToolsHost, { CreatorToolsThemeStyle, HostType } from "../../../app/CreatorToolsHost";
 import { faFolder, faFileZipper } from "@fortawesome/free-regular-svg-icons";
 import MinecraftButton from "../../shared/components/inputs/minecraftButton/MinecraftButton";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
@@ -31,7 +30,8 @@ import { ProjectItemType } from "../../../app/IProjectItemData";
 import { CreatorToolsEditPreference } from "../../../app/ICreatorToolsData";
 import IProjectTheme from "../../types/IProjectTheme";
 import { mcColors } from "../../hooks/theme/mcColors";
-import { Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Tooltip } from "@mui/material";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import McButton from "../../shared/components/inputs/mcButton/McButton";
 import NewEntityType from "../../editors/entityType/NewEntityType";
 import NewBlockType from "../../editors/blockType/NewBlockType";
@@ -42,8 +42,9 @@ import ProjectCreateManager from "../../../app/ProjectCreateManager";
 import ProjectItem from "../../../app/ProjectItem";
 import { ContentGenerator } from "../../../minecraft/ContentGenerator";
 import Log from "../../../core/Log";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
-interface IProjectActionsProps extends IAppProps {
+interface IProjectActionsProps extends IAppProps, WithLocalizationProps {
   project: Project;
   theme: IProjectTheme;
   heightOffset: number;
@@ -64,7 +65,7 @@ interface IProjectActionsState {
   quickAddDialog: "none" | "entity" | "block" | "item";
 }
 
-export default class ProjectActions extends Component<IProjectActionsProps, IProjectActionsState> {
+class ProjectActions extends Component<IProjectActionsProps, IProjectActionsState> {
   constructor(props: IProjectActionsProps) {
     super(props);
 
@@ -447,7 +448,7 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
     try {
       await ProjectEditorUtilities.launchFlatWorldWithPacksDownload(this.props.creatorTools, this.props.project);
     } catch (error) {
-      this._notifyExportError("Download flat world", error);
+      this._notifyExportError(this.props.intl.formatMessage({ id: "project_editor.actions.error_flat_world" }), error);
     }
   }
 
@@ -455,7 +456,10 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
     try {
       await ProjectEditorUtilities.launchWorldWithPacksDownload(this.props.creatorTools, this.props.project);
     } catch (error) {
-      this._notifyExportError("Download project world", error);
+      this._notifyExportError(
+        this.props.intl.formatMessage({ id: "project_editor.actions.error_project_world" }),
+        error
+      );
     }
   }
 
@@ -463,7 +467,10 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
     try {
       await ProjectEditorUtilities.launchLocalExport(this.props.creatorTools, this.props.project);
     } catch (error) {
-      this._notifyExportError("Export to folder", error);
+      this._notifyExportError(
+        this.props.intl.formatMessage({ id: "project_editor.actions.error_export_folder" }),
+        error
+      );
     }
   }
 
@@ -474,8 +481,157 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
     try {
       await ProjectEditorUtilities.launchZipExport(this.props.creatorTools, this.props.project);
     } catch (error) {
-      this._notifyExportError("Export zip", error);
+      this._notifyExportError(this.props.intl.formatMessage({ id: "project_editor.actions.error_export_zip" }), error);
     }
+  }
+
+  /**
+   * Compact icon-strip view of the dashboard actions, used in Full/Raw modes
+   * (CreatorToolsEditPreference.editors / .raw) where the large card grid wastes
+   * vertical space for power users. Each icon is 32x32 with a tooltip
+   * containing a short label + (where applicable) a keyboard-shortcut hint.
+   *
+   * Actions wired here are limited to those ProjectActions can already perform
+   * locally (Inspect, edit details, the various export/launch routines, plus
+   * the existing quick-add dialogs). Save/Undo/Redo/Reload live at the
+   * ProjectEditor level and keep their own keyboard shortcuts.
+   */
+  private renderCompactActionStrip(isDark: boolean) {
+    const intl = this.props.intl;
+    type CompactButton = {
+      key: string;
+      icon: IconDefinition;
+      label: string;
+      shortcut?: string;
+      onClick: () => void;
+      disabled?: boolean;
+      hidden?: boolean;
+    };
+    const groups: { key: string; title: string; buttons: CompactButton[] }[] = [
+      {
+        key: "inspect",
+        title: intl.formatMessage({ id: "project_editor.actions.group_inspect" }),
+        buttons: [
+          {
+            key: "inspect",
+            icon: faMagnifyingGlass,
+            label: intl.formatMessage({ id: "project_editor.actions.inspect_project" }),
+            onClick: this._inspectProject,
+          },
+        ],
+      },
+      {
+        key: "add",
+        title: intl.formatMessage({ id: "project_editor.actions.group_add" }),
+        buttons: [
+          {
+            key: "addMob",
+            icon: faCube,
+            label: intl.formatMessage({ id: "project_editor.actions.add_mob" }),
+            onClick: this._handleQuickAddEntity,
+          },
+          {
+            key: "addBlock",
+            icon: faCubes,
+            label: intl.formatMessage({ id: "project_editor.actions.add_block" }),
+            onClick: this._handleQuickAddBlock,
+          },
+          {
+            key: "addItem",
+            icon: faLayerGroup,
+            label: intl.formatMessage({ id: "project_editor.actions.add_item" }),
+            onClick: this._handleQuickAddItem,
+          },
+        ],
+      },
+      {
+        key: "export",
+        title: intl.formatMessage({ id: "project_editor.actions.group_export" }),
+        buttons: [
+          {
+            key: "exportZip",
+            icon: faFileZipper,
+            label: intl.formatMessage({
+              id:
+                CreatorToolsHost.hostType === HostType.web || CreatorToolsHost.hostType === HostType.webPlusServices
+                  ? "project_editor.actions.download_mcaddon_web"
+                  : "project_editor.actions.download_mcaddon",
+            }),
+            onClick: this._exportZip,
+          },
+          {
+            key: "exportLocal",
+            icon: faFolder,
+            label: intl.formatMessage({ id: "project_editor.actions.save_to_folder" }),
+            onClick: this._exportLocal,
+            hidden: typeof window === "undefined" || (window as any).showDirectoryPicker === undefined,
+          },
+          {
+            key: "flatWorld",
+            icon: faGlobe,
+            label: intl.formatMessage({ id: "project_editor.actions.download_flat_world" }),
+            onClick: this._downloadFlatWorld,
+          },
+          {
+            key: "projectWorld",
+            icon: faGlobe,
+            label: intl.formatMessage({ id: "project_editor.actions.download_project_world" }),
+            onClick: this._downloadProjectWorld,
+          },
+        ],
+      },
+      {
+        key: "edit",
+        title: intl.formatMessage({ id: "project_editor.actions.group_edit" }),
+        buttons: [
+          {
+            key: "editDetails",
+            icon: faEdit,
+            label: intl.formatMessage({ id: "project_editor.actions.edit_project_details" }),
+            onClick: this._editProjectDetails,
+          },
+        ],
+      },
+    ];
+
+    return (
+      <div
+        className={
+          "pact-compactStrip" + (isDark ? " pact-compactStrip-dark" : " pact-compactStrip-light")
+        }
+        role="toolbar"
+        aria-label={intl.formatMessage({ id: "project_editor.actions.aria_quick_add" })}
+      >
+        {groups
+          .map((g) => ({ ...g, buttons: g.buttons.filter((b) => !b.hidden) }))
+          .filter((g) => g.buttons.length > 0)
+          .map((g) => (
+            <div key={g.key} className="pact-compactGroup" role="group" aria-label={g.title}>
+              <div className="pact-compactGroupTitle">{g.title}</div>
+              <div className="pact-compactGroupButtons">
+                {g.buttons.map((b) => {
+                  const tooltipLabel = b.shortcut ? `${b.label} (${b.shortcut})` : b.label;
+                  return (
+                    <Tooltip key={b.key} title={tooltipLabel} placement="bottom">
+                      <span>
+                        <IconButton
+                          onClick={b.onClick}
+                          disabled={b.disabled}
+                          aria-label={b.label}
+                          size="small"
+                          className="pact-compactStripBtn"
+                        >
+                          <FontAwesomeIcon icon={b.icon} />
+                        </IconButton>
+                      </span>
+                    </Tooltip>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+      </div>
+    );
   }
 
   render() {
@@ -490,9 +646,21 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
       { icon: faCube, label: "Mob Types", count: this.state.entityCount },
       { icon: faCubes, label: "Block Types", count: this.state.blockCount },
       { icon: faLayerGroup, label: "Item Types", count: this.state.itemCount },
-      { icon: faCode, label: "Game Logic", count: this.state.scriptCount },
-      { icon: faImage, label: "Textures", count: this.state.textureCount },
-      { icon: faFileCode, label: "Functions", count: this.state.functionCount },
+      {
+        icon: faCode,
+        label: this.props.intl.formatMessage({ id: "project_editor.actions.game_logic" }),
+        count: this.state.scriptCount,
+      },
+      {
+        icon: faImage,
+        label: this.props.intl.formatMessage({ id: "project_editor.actions.textures" }),
+        count: this.state.textureCount,
+      },
+      {
+        icon: faFileCode,
+        label: this.props.intl.formatMessage({ id: "project_editor.actions.functions" }),
+        count: this.state.functionCount,
+      },
     ].filter((s) => s.count > 0);
 
     const hasStats = stats.length > 0;
@@ -535,19 +703,26 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
                   <LocTokenBox
                     creatorTools={this.props.creatorTools}
                     project={project}
-                    value={project.title || "Untitled Project"}
+                    value={
+                      project.title || this.props.intl.formatMessage({ id: "project_editor.actions.untitled_project" })
+                    }
                   />
                 </h1>
                 <button
                   className="pact-editButton"
                   onClick={this._editProjectDetails}
-                  title="Edit project details"
-                  aria-label="Edit project details"
+                  title={this.props.intl.formatMessage({ id: "project_editor.actions.edit_project_details" })}
+                  aria-label={this.props.intl.formatMessage({ id: "project_editor.actions.edit_project_details" })}
                 >
                   <FontAwesomeIcon icon={faEdit} />
                 </button>
               </div>
-              {project.creator && <div className="pact-projectCreator">by {project.creator}</div>}
+              {project.creator && (
+                <div className="pact-projectCreator">
+                  {this.props.intl.formatMessage({ id: "project_editor.actions.by_creator" })}
+                  {project.creator}
+                </div>
+              )}
               {project.description && (
                 <p className="pact-projectDescription">
                   <LocTokenBox creatorTools={this.props.creatorTools} project={project} value={project.description} />
@@ -570,182 +745,204 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
           )}
         </div>
 
-        {/* Quick Actions Section - Inspector is hidden in Focused/summarized mode */}
-        {this.props.creatorTools.editPreference !== CreatorToolsEditPreference.summarized && (
-          <div className="pact-section">
-            <div className="pact-sectionHeader">
-              <FontAwesomeIcon icon={faWandMagicSparkles} className="pact-sectionIcon" />
-              <h2>Quick Actions</h2>
-            </div>
-            <div className="pact-cardGrid">
-              <MinecraftButton
-                className="pact-actionCard pact-cardPrimary"
-                key="pact-inspectProject"
-                theme={this.props.theme}
-                onClick={this._inspectProject}
-              >
-                <div className="pact-cardContent pact-cardContentCompact">
-                  <div className="pact-cardIconLarge">
-                    <FontAwesomeIcon icon={faMagnifyingGlass} fixedWidth />
-                  </div>
-                  <div className="pact-cardText">
-                    <div className="pact-cardTitle">Inspect Project</div>
-                    <div className="pact-cardDesc">
-                      Find errors, spot unused files, and check for common issues in your project
+        {/*
+         * In Full / Raw editing modes (editPreference !== summarized) we render a
+         * single compact icon strip in place of the three card-grid sections below
+         * (Quick Actions / Export / Run in Minecraft). Power users get all the
+         * actions they need in roughly one row instead of scrolling past three
+         * tall card-grid sections. Focused (summarized) mode keeps the original
+         * card-grid layout because it is the gentle, beginner-friendly default.
+         */}
+        {this.props.creatorTools.editPreference !== CreatorToolsEditPreference.summarized &&
+          this.renderCompactActionStrip(isDark)}
+
+        {this.props.creatorTools.editPreference === CreatorToolsEditPreference.summarized && (
+          <>
+            {/* Quick Actions Section - Inspector is hidden in Focused/summarized mode */}
+            {/* (Inspector card is intentionally NOT rendered in summarized mode — see render guard.) */}
+
+            {/* Export Section */}
+            <div className="pact-section">
+              <div className="pact-sectionHeader">
+                <FontAwesomeIcon icon={faFolder} className="pact-sectionIcon" />
+                <h2>{this.props.intl.formatMessage({ id: "project_editor.actions.export_project" })}</h2>
+              </div>
+              {this.props.creatorTools.editPreference === CreatorToolsEditPreference.summarized && (
+                <div
+                  className="pact-beginnerTip"
+                  style={{
+                    padding: "12px 16px",
+                    marginBottom: "12px",
+                    fontSize: "13px",
+                    lineHeight: 1.5,
+                    color: isDark ? mcColors.gray2 : mcColors.gray5,
+                    backgroundColor: isDark ? `${mcColors.green7}35` : `${mcColors.green3}22`,
+                    borderRadius: "2px",
+                    borderLeft: `3px solid ${mcColors.green4}`,
+                  }}
+                >
+                  <strong>
+                    {this.props.intl.formatMessage({ id: "project_editor.actions.export_beginner_tip_prefix" })}
+                  </strong>{" "}
+                  {this.props.intl.formatMessage({ id: "project_editor.actions.export_beginner_tip_suffix" })}
+                </div>
+              )}
+              <div className="pact-cardGrid">
+                <MinecraftButton
+                  className="pact-actionCard pact-cardPrimary"
+                  key="pact-exportZip"
+                  theme={this.props.theme}
+                  onClick={this._exportZip}
+                >
+                  <div className="pact-cardContent">
+                    <div className="pact-cardIcon">
+                      <FontAwesomeIcon icon={faFileZipper} fixedWidth />
+                    </div>
+                    <div className="pact-cardText">
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                          flexWrap: "wrap",
+                          marginBottom: "4px",
+                        }}
+                      >
+                        <div className="pact-cardTitle" style={{ marginBottom: 0 }}>
+                          {this.props.intl.formatMessage({
+                            id:
+                              CreatorToolsHost.hostType === HostType.web ||
+                              CreatorToolsHost.hostType === HostType.webPlusServices
+                                ? "project_editor.actions.download_mcaddon_web"
+                                : "project_editor.actions.download_mcaddon",
+                          })}
+                        </div>
+                      </div>
+                      <div className="pact-cardDesc">
+                        {this.props.intl.formatMessage({
+                          id:
+                            CreatorToolsHost.hostType === HostType.web ||
+                            CreatorToolsHost.hostType === HostType.webPlusServices
+                              ? "project_editor.actions.download_mcaddon_web_desc"
+                              : "project_editor.actions.download_mcaddon_desc",
+                        })}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </MinecraftButton>
-            </div>
-          </div>
-        )}
+                </MinecraftButton>
 
-        {/* Export Section */}
-        <div className="pact-section">
-          <div className="pact-sectionHeader">
-            <FontAwesomeIcon icon={faFolder} className="pact-sectionIcon" />
-            <h2>Export Project</h2>
-          </div>
-          <div
-            style={{
-              padding: "12px 16px",
-              marginBottom: "12px",
-              fontSize: "13px",
-              lineHeight: 1.5,
-              color: isDark ? mcColors.gray2 : mcColors.gray5,
-              backgroundColor: isDark ? `${mcColors.green7}35` : `${mcColors.green3}22`,
-              borderRadius: "2px",
-              borderLeft: `3px solid ${mcColors.green4}`,
-            }}
-          >
-            <strong>Most beginners should start with the first card below.</strong> It creates one file you can open in
-            Minecraft right away or send to a friend.
-          </div>
-          <div className="pact-cardGrid">
-            <MinecraftButton
-              className="pact-actionCard pact-cardPrimary"
-              key="pact-exportZip"
-              theme={this.props.theme}
-              onClick={this._exportZip}
-            >
-              <div className="pact-cardContent">
-                <div className="pact-cardIcon">
-                  <FontAwesomeIcon icon={faFileZipper} fixedWidth />
-                </div>
-                <div className="pact-cardText">
-                  <div
-                    style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", marginBottom: "4px" }}
+                {window.showDirectoryPicker !== undefined && (
+                  <MinecraftButton
+                    className="pact-actionCard"
+                    key="pact-exportLocalFolder"
+                    theme={this.props.theme}
+                    onClick={this._exportLocal}
                   >
-                    <div className="pact-cardTitle" style={{ marginBottom: 0 }}>
-                      Download &amp; Install in Minecraft (.mcaddon)
+                    <div className="pact-cardContent">
+                      <div className="pact-cardIcon">
+                        <FontAwesomeIcon icon={faFolder} />
+                      </div>
+                      <div className="pact-cardText">
+                        <div className="pact-cardTitle">
+                          {this.props.intl.formatMessage({ id: "project_editor.actions.save_to_folder" })}
+                        </div>
+                        <div className="pact-cardDesc">
+                          {this.props.intl.formatMessage({ id: "project_editor.actions.save_to_folder_desc" })}
+                        </div>
+                      </div>
+                    </div>
+                  </MinecraftButton>
+                )}
+              </div>
+            </div>
+
+            {/* Run in Minecraft Section */}
+            <div className="pact-section">
+              <div className="pact-sectionHeader">
+                <FontAwesomeIcon icon={faGlobe} className="pact-sectionIcon" />
+                <h2>{this.props.intl.formatMessage({ id: "project_editor.actions.test_in_minecraft" })}</h2>
+              </div>
+              <div className="pact-cardGrid">
+                <MinecraftButton
+                  className="pact-actionCard pact-cardMinecraft"
+                  key="pact-dlFlatWorld"
+                  theme={this.props.theme}
+                  onClick={this._downloadFlatWorld}
+                >
+                  <div className="pact-cardContent">
+                    <div className="pact-cardIconImage">
+                      <img
+                        alt={this.props.intl.formatMessage({ id: "project_editor.actions.flat_world_alt" })}
+                        src={
+                          CreatorToolsHost.contentWebRoot +
+                          "res/latest/van/serve/resource_pack/textures/blocks/grass_path_side.png"
+                        }
+                      />
+                    </div>
+                    <div className="pact-cardText">
+                      <div className="pact-cardTitle">
+                        {this.props.intl.formatMessage({ id: "project_editor.actions.download_flat_world" })}
+                      </div>
+                      <div className="pact-cardDesc">
+                        {this.props.intl.formatMessage({ id: "project_editor.actions.flat_world_desc" })}
+                      </div>
                     </div>
                   </div>
-                  <div className="pact-cardDesc">
-                    Download one file you can double-click to open in Minecraft, keep as a shareable copy, or send to
-                    another device.
-                  </div>
-                </div>
-              </div>
-            </MinecraftButton>
+                </MinecraftButton>
 
-            {window.showDirectoryPicker !== undefined && (
-              <MinecraftButton
-                className="pact-actionCard"
-                key="pact-exportLocalFolder"
-                theme={this.props.theme}
-                onClick={this._exportLocal}
+                <MinecraftButton
+                  className="pact-actionCard pact-cardMinecraft"
+                  key="pact-dlProjectWorld"
+                  theme={this.props.theme}
+                  onClick={this._downloadProjectWorld}
+                >
+                  <div className="pact-cardContent">
+                    <div className="pact-cardIconImage">
+                      <img
+                        alt={this.props.intl.formatMessage({ id: "project_editor.actions.project_world_alt" })}
+                        src={
+                          CreatorToolsHost.contentWebRoot +
+                          "res/latest/van/serve/resource_pack/textures/blocks/grass_side_carried.png"
+                        }
+                      />
+                    </div>
+                    <div className="pact-cardText">
+                      <div className="pact-cardTitle">
+                        {this.props.intl.formatMessage({ id: "project_editor.actions.download_project_world" })}
+                      </div>
+                      <div className="pact-cardDesc">
+                        {this.props.intl.formatMessage({ id: "project_editor.actions.project_world_desc" })}
+                      </div>
+                    </div>
+                  </div>
+                </MinecraftButton>
+              </div>
+              <div
+                style={{
+                  padding: "10px 16px",
+                  marginTop: "8px",
+                  fontSize: "12px",
+                  lineHeight: 1.5,
+                  color: isDark ? mcColors.gray2 : mcColors.gray4,
+                  fontStyle: "italic",
+                }}
               >
-                <div className="pact-cardContent">
-                  <div className="pact-cardIcon">
-                    <FontAwesomeIcon icon={faFolder} />
-                  </div>
-                  <div className="pact-cardText">
-                    <div className="pact-cardTitle">Save project files to a folder</div>
-                    <div className="pact-cardDesc">
-                      Use this when you want the raw project files on disk for editing, backups, or another tool.
+                <div>{this.props.intl.formatMessage({ id: "project_editor.actions.mcworld_footer_tip" })}</div>
+                {typeof navigator !== "undefined" &&
+                  navigator.platform &&
+                  navigator.platform.toUpperCase().indexOf("WIN") >= 0 && (
+                    <div style={{ marginTop: "6px" }}>
+                      {this.props.intl.formatMessage({ id: "project_editor.actions.mcworld_footer_tip_windows" })}
                     </div>
-                  </div>
-                </div>
-              </MinecraftButton>
-            )}
-          </div>
-        </div>
-
-        {/* Run in Minecraft Section */}
-        <div className="pact-section">
-          <div className="pact-sectionHeader">
-            <FontAwesomeIcon icon={faGlobe} className="pact-sectionIcon" />
-            <h2>Test in Minecraft</h2>
-          </div>
-          <div className="pact-cardGrid">
-            <MinecraftButton
-              className="pact-actionCard pact-cardMinecraft"
-              key="pact-dlFlatWorld"
-              theme={this.props.theme}
-              onClick={this._downloadFlatWorld}
-            >
-              <div className="pact-cardContent">
-                <div className="pact-cardIconImage">
-                  <img
-                    alt="Flat world"
-                    src={
-                      CreatorToolsHost.contentWebRoot +
-                      "res/latest/van/serve/resource_pack/textures/blocks/grass_path_side.png"
-                    }
-                  />
-                </div>
-                <div className="pact-cardText">
-                  <div className="pact-cardTitle">Download a flat test world</div>
-                  <div className="pact-cardDesc">
-                    Best first test — open a simple flat world with your add-on already installed.
-                  </div>
-                </div>
+                  )}
               </div>
-            </MinecraftButton>
-
-            <MinecraftButton
-              className="pact-actionCard pact-cardMinecraft"
-              key="pact-dlProjectWorld"
-              theme={this.props.theme}
-              onClick={this._downloadProjectWorld}
-            >
-              <div className="pact-cardContent">
-                <div className="pact-cardIconImage">
-                  <img
-                    alt="Project world"
-                    src={
-                      CreatorToolsHost.contentWebRoot +
-                      "res/latest/van/serve/resource_pack/textures/blocks/grass_side_carried.png"
-                    }
-                  />
-                </div>
-                <div className="pact-cardText">
-                  <div className="pact-cardTitle">Download a regular project world</div>
-                  <div className="pact-cardDesc">
-                    Use a normal Minecraft world if you want hills, caves, and regular terrain while testing.
-                  </div>
-                </div>
-              </div>
-            </MinecraftButton>
-          </div>
-          <div
-            style={{
-              padding: "10px 16px",
-              marginTop: "8px",
-              fontSize: "12px",
-              lineHeight: 1.5,
-              color: isDark ? mcColors.gray2 : mcColors.gray4,
-              fontStyle: "italic",
-            }}
-          >
-            After downloading, double-click the .mcworld file to open it directly in Minecraft. Your add-on will be
-            installed automatically.
-          </div>
-        </div>
+            </div>
+          </>
+        )}
 
         {this.state.quickAddDialog === "entity" && (
           <Dialog open={true} onClose={this._handleQuickAddCancel}>
-            <DialogTitle>New Mob Based on Existing</DialogTitle>
+            <DialogTitle>{this.props.intl.formatMessage({ id: "project_editor.dialog.new_mob_title" })}</DialogTitle>
             <DialogContent>
               <NewEntityType
                 theme={this.props.theme}
@@ -756,17 +953,17 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
             </DialogContent>
             <DialogActions>
               <McButton variant="stone" onClick={this._handleQuickAddCancel}>
-                Cancel
+                {this.props.intl.formatMessage({ id: "common.cancel" })}
               </McButton>
               <McButton variant="green" onClick={this._handleCreateEntity}>
-                Add
+                {this.props.intl.formatMessage({ id: "project_editor.common.add" })}
               </McButton>
             </DialogActions>
           </Dialog>
         )}
         {this.state.quickAddDialog === "block" && (
           <Dialog open={true} onClose={this._handleQuickAddCancel}>
-            <DialogTitle>New Block Based on Existing</DialogTitle>
+            <DialogTitle>{this.props.intl.formatMessage({ id: "project_editor.dialog.new_block_title" })}</DialogTitle>
             <DialogContent>
               <NewBlockType
                 theme={this.props.theme}
@@ -777,17 +974,17 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
             </DialogContent>
             <DialogActions>
               <McButton variant="stone" onClick={this._handleQuickAddCancel}>
-                Cancel
+                {this.props.intl.formatMessage({ id: "common.cancel" })}
               </McButton>
               <McButton variant="green" onClick={this._handleCreateBlock}>
-                Add
+                {this.props.intl.formatMessage({ id: "project_editor.common.add" })}
               </McButton>
             </DialogActions>
           </Dialog>
         )}
         {this.state.quickAddDialog === "item" && (
           <Dialog open={true} onClose={this._handleQuickAddCancel}>
-            <DialogTitle>New Item Based on Existing</DialogTitle>
+            <DialogTitle>{this.props.intl.formatMessage({ id: "project_editor.dialog.new_item_title" })}</DialogTitle>
             <DialogContent>
               <NewItemType
                 theme={this.props.theme}
@@ -798,10 +995,10 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
             </DialogContent>
             <DialogActions>
               <McButton variant="stone" onClick={this._handleQuickAddCancel}>
-                Cancel
+                {this.props.intl.formatMessage({ id: "common.cancel" })}
               </McButton>
               <McButton variant="green" onClick={this._handleCreateItem}>
-                Add
+                {this.props.intl.formatMessage({ id: "project_editor.common.add" })}
               </McButton>
             </DialogActions>
           </Dialog>
@@ -810,3 +1007,5 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
     );
   }
 }
+
+export default withLocalization(ProjectActions);

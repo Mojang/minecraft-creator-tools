@@ -31,8 +31,9 @@ import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import { FolderContext } from "../../../app/Project";
 import IProperty from "../../../dataform/IProperty";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
-interface IFeatureComponentEditorProps {
+interface IFeatureComponentEditorProps extends WithLocalizationProps {
   selectedNode: FeaturePipelineNode | undefined;
   project: Project;
   theme: IProjectTheme;
@@ -51,7 +52,7 @@ interface IFeatureComponentEditorState {
   currentJsonData: any;
 }
 
-export default class FeatureComponentEditor extends Component<
+class FeatureComponentEditor extends Component<
   IFeatureComponentEditorProps,
   IFeatureComponentEditorState
 > {
@@ -311,18 +312,18 @@ export default class FeatureComponentEditor extends Component<
           <FontAwesomeIcon icon={faTriangleExclamation} />
         </div>
         <div className="fce-unfulfilledTitle">
-          {isVanilla ? "Vanilla Feature Reference" : "Missing Feature Reference"}
+          {isVanilla ? this.props.intl.formatMessage({ id: "project_editor.feature_comp.vanilla_title" }) : this.props.intl.formatMessage({ id: "project_editor.feature_comp.missing_title" })}
         </div>
         <div className="fce-unfulfilledId">{referencedId}</div>
         <div className="fce-unfulfilledMessage">
           {isVanilla
-            ? "This references a vanilla Minecraft feature that is built into the game."
-            : "This feature is referenced but cannot be found in the project."}
+            ? this.props.intl.formatMessage({ id: "project_editor.feature_comp.vanilla_desc" })
+            : this.props.intl.formatMessage({ id: "project_editor.feature_comp.missing_desc" })}
         </div>
         {!isVanilla && (
           <div className="fce-unfulfilledActions">
             <button className="fce-createButton" disabled aria-label="Create feature">
-              <FontAwesomeIcon icon={faPlus} /> Create Feature
+              <FontAwesomeIcon icon={faPlus} /> {this.props.intl.formatMessage({ id: "project_editor.feature_comp.create_feature" })}
             </button>
           </div>
         )}
@@ -372,9 +373,9 @@ export default class FeatureComponentEditor extends Component<
     // No form available - show raw info
     return (
       <div className="fce-noForm">
-        <div className="fce-noFormMessage">Form editor not available for this feature type.</div>
+        <div className="fce-noFormMessage">{this.props.intl.formatMessage({ id: "project_editor.feature_comp.no_form_editor" })}</div>
         <button className="fce-goToFileButton" onClick={this._handleGoToFile} aria-label="Edit raw JSON">
-          <FontAwesomeIcon icon={faExternalLinkAlt} /> Edit Raw JSON
+          <FontAwesomeIcon icon={faExternalLinkAlt} /> {this.props.intl.formatMessage({ id: "project_editor.feature_comp.edit_raw_json" })}
         </button>
       </div>
     );
@@ -410,7 +411,7 @@ export default class FeatureComponentEditor extends Component<
         >
           {this._renderToolbar()}
           <div className="fce-emptyState">
-            <div className="fce-emptyStateMessage">Select a node from the tree or diagram to view its properties.</div>
+            <div className="fce-emptyStateMessage">{this.props.intl.formatMessage({ id: "project_editor.feature_comp.empty_state" })}</div>
           </div>
           {this.state.showFeatureTypePicker && (
             <FeatureTypePicker
@@ -450,3 +451,5 @@ export default class FeatureComponentEditor extends Component<
     );
   }
 }
+
+export default withLocalization(FeatureComponentEditor);

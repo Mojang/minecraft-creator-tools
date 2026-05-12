@@ -236,6 +236,7 @@ export default function McSelectableList({
                 sx: { color: isDark ? mcColors.white : mcColors.gray6 },
               }}
               secondaryTypographyProps={{
+                component: "div",
                 sx: { color: isDark ? mcColors.gray2 : mcColors.gray5 },
               }}
             />
@@ -250,4 +251,3 @@ export default function McSelectableList({
     </List>
   );
 }
-

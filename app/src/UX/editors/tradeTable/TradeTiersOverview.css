@@ -1,0 +1,110 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   TRADE TIERS OVERVIEW - Multi-tier overview with collapsible tier cards
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.tto-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tto-tier-card {
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  overflow: hidden;
+}
+
+.tto-tier-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: background 0.15s;
+  user-select: none;
+}
+
+.tto-tier-card-header:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.tto-tier-expand {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+  width: 14px;
+  text-align: center;
+  transition: transform 0.15s;
+}
+
+.tto-tier-expand-open {
+  transform: rotate(90deg);
+}
+
+.tto-tier-number {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.tto-tier-summary {
+  flex: 1;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.tto-tier-remove-btn {
+  padding: 2px 8px;
+  font-size: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    opacity 0.15s,
+    background 0.15s,
+    color 0.15s;
+}
+
+.tto-tier-card-header:hover .tto-tier-remove-btn {
+  opacity: 1;
+}
+
+.tto-tier-remove-btn:hover {
+  background: rgba(229, 57, 53, 0.15);
+  color: #ef5350;
+  border-color: rgba(229, 57, 53, 0.3);
+}
+
+.tto-tier-body {
+  padding: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.tto-add-tier-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s,
+    background 0.15s;
+  width: 100%;
+}
+
+.tto-add-tier-btn:hover {
+  border-color: rgba(76, 175, 80, 0.4);
+  color: #81c784;
+  background: rgba(76, 175, 80, 0.05);
+}

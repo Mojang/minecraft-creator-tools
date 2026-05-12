@@ -10,7 +10,16 @@
  */
 
 import { test, expect, ConsoleMessage, Page } from "@playwright/test";
-import { processMessage, gotoWithTheme, ThemeMode, selectEditMode, takeScreenshot } from "./WebTestUtilities";
+import {
+  processMessage,
+  gotoWithTheme,
+  ThemeMode,
+  selectEditMode,
+  takeScreenshot,
+  clickTemplateCreateButton,
+  preferBrowserStorageInProjectDialog,
+  fillRequiredProjectDialogFields,
+} from "./WebTestUtilities";
 
 // ---------------------------------------------------------------------------
 // Helpers (mirrored from DataFormEditor.spec.ts / RoundTripPersistence.spec.ts)
@@ -26,29 +35,16 @@ async function createFullAddOnProject(page: Page, themeMode?: ThemeMode): Promis
     }
     await page.waitForTimeout(500);
 
-    const fullAddOnCard = page.locator('text="Full Add-On"').first();
-    if (!(await fullAddOnCard.isVisible({ timeout: 5000 }))) {
-      const seeMore = page.locator('text="See more templates"').first();
-      if (await seeMore.isVisible({ timeout: 2000 })) {
-        await seeMore.click();
-        await page.waitForTimeout(1000);
-      }
+    const clicked = await clickTemplateCreateButton(page, "addonFull");
+    if (!clicked) {
+      console.log("Could not find CREATE NEW button for Full Add-On template");
+      return false;
     }
-
-    const fullAddOnSection = page.locator('div:has-text("Full Add-On")').filter({
-      has: page.locator('text="A full example add-on project"'),
-    });
-
-    let createButton = fullAddOnSection.locator('button:has-text("CREATE NEW")').first();
-    if (!(await createButton.isVisible({ timeout: 3000 }))) {
-      createButton = page.locator('button:has-text("New")').or(page.locator('button:has-text("CREATE NEW")')).nth(2);
-    }
-    if (!(await createButton.isVisible({ timeout: 3000 }))) {
-      createButton = page.getByRole("button", { name: "Create New" }).first();
-    }
-
-    await createButton.click();
     await page.waitForTimeout(1000);
+
+    // Handle the storage location dialog and required Creator field
+    await preferBrowserStorageInProjectDialog(page);
+    await fillRequiredProjectDialogFields(page);
 
     const okButton = page.getByTestId("submit-button").first();
     if (await okButton.isVisible({ timeout: 3000 })) {
@@ -351,6 +347,14 @@ async function findEditableInput(
     const disabled = await input.isDisabled();
     if (readOnly !== null || disabled) continue;
 
+    // Skip search-style inputs (e.g. "Search biomes\u2026" in SimplifiedSpawnRulesEditor)
+    const placeholder = (await input.getAttribute("placeholder")) || "";
+    if (/search/i.test(placeholder)) continue;
+
+    // Skip number inputs — these tests append string suffixes which would fail
+    const inputType = (await input.getAttribute("type")) || "";
+    if (inputType === "number") continue;
+
     const value = await input.inputValue();
     return { locator: input, value, index: i };
   }
@@ -643,7 +647,8 @@ test.describe("Component CRUD Tests @full", () => {
     const newValue = originalValue + "_upd";
 
     console.log(`Updating input: "${originalValue}" → "${newValue}"`);
-    await editableHit.locator.click();
+    await editableHit.locator.scrollIntoViewIfNeeded().catch(() => {});
+    await editableHit.locator.click({ force: true });
     await editableHit.locator.fill(newValue);
     await page.keyboard.press("Tab");
     await page.waitForTimeout(500);

@@ -10,8 +10,9 @@ import IProperty from "../../dataform/IProperty";
 import CreatorTools from "../../app/CreatorTools";
 import { getThemeColors } from "../hooks/theme/useThemeColors";
 import IProjectTheme from "../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
-interface IDataFormEditorProps extends IFileProps {
+interface IDataFormEditorProps extends IFileProps, WithLocalizationProps {
   heightOffset: number;
   theme: IProjectTheme;
   creatorTools: CreatorTools;
@@ -24,7 +25,7 @@ interface IDataFormEditorState {
   isLoaded: boolean;
 }
 
-export default class DataFormEditor extends Component<IDataFormEditorProps, IDataFormEditorState> {
+class DataFormEditor extends Component<IDataFormEditorProps, IDataFormEditorState> {
   constructor(props: IDataFormEditorProps) {
     super(props);
 
@@ -100,7 +101,7 @@ export default class DataFormEditor extends Component<IDataFormEditorProps, IDat
     if (this.state && !this.state.isLoaded) {
       this.doLoad();
 
-      return <div>Loading...</div>;
+      return <div>{this.props.intl.formatMessage({ id: "project_editor.data_form.loading" })}</div>;
     }
 
     const formHeight = "calc(100vh - " + this.props.heightOffset + "px)";
@@ -109,7 +110,7 @@ export default class DataFormEditor extends Component<IDataFormEditorProps, IDat
     const form = Database.getForm("form", "dataform");
 
     if (!form) {
-      return <div>(Error loading form)...</div>;
+      return <div>{this.props.intl.formatMessage({ id: "project_editor.data_form.error_loading" })}</div>;
     }
 
     const colors = getThemeColors();
@@ -148,3 +149,5 @@ export default class DataFormEditor extends Component<IDataFormEditorProps, IDat
     );
   }
 }
+
+export default withLocalization(DataFormEditor);

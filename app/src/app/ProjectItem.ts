@@ -75,6 +75,14 @@ export default class ProjectItem {
     this.sortVariantsMostImportantLast = this.sortVariantsMostImportantLast.bind(this);
     if (incomingData) {
       this._data = incomingData;
+      // Migration: older projects may have persisted an empty-label default variant
+      // (label: "", variantType: general). The empty-label variant is purely a runtime
+      // placeholder for the item's default file and should not be persisted; leaving
+      // it in #data.variants makes _getVariantList() report a phantom entry that other
+      // code paths (e.g. variant.ensureFileStorage subpack lookup) can mishandle.
+      if (this._data.variants && this._data.variants[""] !== undefined) {
+        delete this._data.variants[""];
+      }
     } else {
       this._data = {
         variants: {},
@@ -260,7 +268,18 @@ export default class ProjectItem {
   _getVariantList() {
     const vararr = [];
 
+    // The empty-label default variant is intentionally NOT persisted in
+    // _data.variants (see ensureVariant). If it has been instantiated as a
+    // runtime placeholder, include it first so callers iterating the variant
+    // list still see the item's default file/content.
+    if (this._variants[""] !== undefined) {
+      vararr.push(this._variants[""]);
+    }
+
     for (const key in this._data.variants) {
+      if (key === "") {
+        continue;
+      }
       const variant = this.ensureVariant(key);
       vararr.push(variant);
     }
@@ -329,13 +348,22 @@ export default class ProjectItem {
         this._data.variants = {};
       }
 
-      if (this._data.variants[label] === undefined) {
-        this._data.variants[label] = { label: label, variantType: ProjectItemVariantType.general };
+      // The empty-label default variant is a runtime placeholder for the item's
+      // default file and is not persisted in #data.variants. Use a transient data
+      // object so the runtime ProjectItemVariant still works without leaking a
+      // phantom entry into the saved project (which historically caused
+      // _getVariantList() to report count=1 on items that have no real variants).
+      let variantData = this._data.variants[label];
+      if (variantData === undefined) {
+        variantData = { label: label, variantType: ProjectItemVariantType.general };
+        if (label !== "") {
+          this._data.variants[label] = variantData;
+        }
       }
 
       this._primaryFile = undefined;
 
-      this._variants[label] = new ProjectItemVariant(this, this._data.variants[label], pv);
+      this._variants[label] = new ProjectItemVariant(this, variantData, pv);
     }
 
     return this._variants[label];
@@ -1483,7 +1511,7 @@ export default class ProjectItem {
   }
 
   async loadFileContent() {
-    if (this._isFileContentProcessed && this._defaultFile) {
+    if (this._isFileContentProcessed) {
       return this._defaultFile;
     }
 
@@ -1499,6 +1527,12 @@ export default class ProjectItem {
 
     if (this._defaultFile) {
       await this.loadFileStorage();
+    } else if (variants.length > 0 && !this._isFileContentProcessed) {
+      // For variant-only items (no default file), mark as processed after
+      // all variant files have been loaded. Without this, isContentLoaded
+      // stays false forever because loadFileStorage() requires _defaultFile.
+      this._isFileContentProcessed = true;
+      this._fireLoadedEvent();
     }
 
     return this._defaultFile;

@@ -33,8 +33,9 @@ import { ProjectScriptLanguage } from "../../../app/IProjectData";
 import SetNamespacedId from "../../project/naming/SetNamespacedId";
 import ProjectItemRelations from "../../../app/ProjectItemRelations";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
-interface IItemTypeActionEditorProps extends IFileProps {
+interface IItemTypeActionEditorProps extends IFileProps, WithLocalizationProps {
   isVisualsMode: boolean;
   heightOffset: number;
   readOnly: boolean;
@@ -59,7 +60,7 @@ export enum ItemTypeActionEditorDialogMode {
   newActionComponent = 1,
 }
 
-export default class ItemTypeActionEditor extends Component<IItemTypeActionEditorProps, IItemTypeActionEditorState> {
+class ItemTypeActionEditor extends Component<IItemTypeActionEditorProps, IItemTypeActionEditorState> {
   private _lastFileEdited?: IFile;
 
   constructor(props: IItemTypeActionEditorProps) {
@@ -382,7 +383,7 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
         >
           <div className="itae-toolBarArea">
             <div className="itae-tools">
-              <Stack direction="row" spacing={1} aria-label="Actions">
+              <Stack direction="row" spacing={1} aria-label={this.props.intl.formatMessage({ id: "project_editor.item_action.aria_actions" })}>
                 <Button onClick={this._addNewAction} title="Add action">
                   <CustomLabel
                     isCompact={isButtonCompact}
@@ -400,3 +401,5 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
     }
   }
 }
+
+export default withLocalization(ItemTypeActionEditor);

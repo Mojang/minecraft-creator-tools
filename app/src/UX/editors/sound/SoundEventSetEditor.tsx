@@ -10,13 +10,14 @@ import SoundCatalogDefinition from "../../../minecraft/SoundCatalogDefinition";
 import IProjectTheme from "../../types/IProjectTheme";
 import { FieldDataType } from "../../../dataform/IField";
 import IFormDefinition from "../../../dataform/IFormDefinition";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
 export enum SoundEventSetType {
   entity,
   block,
 }
 
-interface ISoundEventSetSoundEditorProps extends IAppProps {
+interface ISoundEventSetSoundEditorProps extends IAppProps, WithLocalizationProps {
   readOnly: boolean;
   project: Project;
   typeId: string;
@@ -31,7 +32,7 @@ interface ISoundEventSetEditorState {
   soundEventSet: ISoundEventSet | undefined;
 }
 
-export default class SoundEventSetEditor extends Component<ISoundEventSetSoundEditorProps, ISoundEventSetEditorState> {
+class SoundEventSetEditor extends Component<ISoundEventSetSoundEditorProps, ISoundEventSetEditorState> {
   constructor(props: ISoundEventSetSoundEditorProps) {
     super(props);
 
@@ -172,7 +173,7 @@ export default class SoundEventSetEditor extends Component<ISoundEventSetSoundEd
 
     let header = <></>;
     if (this.props.displayHeader === undefined || this.props.displayHeader) {
-      header = <div className="sevs-header">Sound Event Set</div>;
+      header = <div className="sevs-header">{this.props.intl.formatMessage({ id: "project_editor.sound_event.header" })}</div>;
     }
 
     if (!form) {
@@ -200,3 +201,5 @@ export default class SoundEventSetEditor extends Component<ISoundEventSetSoundEd
     );
   }
 }
+
+export default withLocalization(SoundEventSetEditor);

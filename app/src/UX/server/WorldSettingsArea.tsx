@@ -8,8 +8,9 @@ import { BackupType, IPackageReference, IWorldSettings } from "../../minecraft/I
 import { Difficulty, GameType, Generator } from "../../minecraft/WorldLevelDat";
 import PackManager from "../io/PackageManager";
 import TemplateManager from "../io/TemplateManager";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
-interface IWorldSettingsAreaProps extends IAppProps {
+interface IWorldSettingsAreaProps extends IAppProps, WithLocalizationProps {
   setActivePersistable?: (persistObject: IPersistable) => void;
   forceCompact?: boolean;
   isAdditive?: boolean;
@@ -32,13 +33,46 @@ interface IWorldSettingsAreaState {
   backupType?: BackupType;
 }
 
-export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps, IWorldSettingsAreaState> {
+class WorldSettingsArea extends Component<IWorldSettingsAreaProps, IWorldSettingsAreaState> {
   private _activeEditorPersistable?: IPersistable;
 
-  private _gameTypes = ["Survival", "Creative", "Adventure"];
-  private _difficulty = ["Peaceful", "Easy", "Normal", "Hard"];
-  private _generator = ["Old", "Infinite", "Flat"];
-  private _backupTypes = ["No backup", "On start/stop only", "Every 5 minutes", "Every 2 minutes"];
+  private _getGameTypes() {
+    const intl = this.props.intl;
+    return [
+      intl.formatMessage({ id: "world_settings.game_type_survival" }),
+      intl.formatMessage({ id: "world_settings.game_type_creative" }),
+      intl.formatMessage({ id: "world_settings.game_type_adventure" }),
+    ];
+  }
+
+  private _getDifficulty() {
+    const intl = this.props.intl;
+    return [
+      intl.formatMessage({ id: "world_settings.difficulty_peaceful" }),
+      intl.formatMessage({ id: "world_settings.difficulty_easy" }),
+      intl.formatMessage({ id: "world_settings.difficulty_normal" }),
+      intl.formatMessage({ id: "world_settings.difficulty_hard" }),
+    ];
+  }
+
+  private _getGenerator() {
+    const intl = this.props.intl;
+    return [
+      intl.formatMessage({ id: "world_settings.generator_old" }),
+      intl.formatMessage({ id: "world_settings.generator_infinite" }),
+      intl.formatMessage({ id: "world_settings.generator_flat" }),
+    ];
+  }
+
+  private _getBackupTypes() {
+    const intl = this.props.intl;
+    return [
+      intl.formatMessage({ id: "world_settings.backup_none" }),
+      intl.formatMessage({ id: "world_settings.backup_start_stop" }),
+      intl.formatMessage({ id: "world_settings.backup_5min" }),
+      intl.formatMessage({ id: "world_settings.backup_2min" }),
+    ];
+  }
 
   constructor(props: IWorldSettingsAreaProps) {
     super(props);
@@ -109,8 +143,9 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
   }
 
   _handleGameTypeChanged(event: SelectChangeEvent<string>) {
-    for (let i = 0; i < this._gameTypes.length; i++) {
-      const gameType = this._gameTypes[i];
+    const gameTypes = this._getGameTypes();
+    for (let i = 0; i < gameTypes.length; i++) {
+      const gameType = gameTypes[i];
 
       if (gameType === event.target.value && this.state.gameType !== i) {
         this.props.worldSettings.gameType = i;
@@ -133,10 +168,11 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
   }
 
   _handleDifficultyChanged(event: SelectChangeEvent<string>) {
-    for (let i = 0; i < this._difficulty.length; i++) {
-      const difficulty = this._difficulty[i];
+    const difficulty = this._getDifficulty();
+    for (let i = 0; i < difficulty.length; i++) {
+      const diff = difficulty[i];
 
-      if (difficulty === event.target.value && this.state.difficulty !== i) {
+      if (diff === event.target.value && this.state.difficulty !== i) {
         this.props.worldSettings.difficulty = i;
 
         this._notifyUpdated();
@@ -157,8 +193,9 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
   }
 
   _handleBackupTypeChanged(event: SelectChangeEvent<string>) {
-    for (let i = 0; i < this._backupTypes.length; i++) {
-      const backupType = this._backupTypes[i];
+    const backupTypes = this._getBackupTypes();
+    for (let i = 0; i < backupTypes.length; i++) {
+      const backupType = backupTypes[i];
 
       if (backupType === event.target.value && this.state.backupType !== i) {
         this.props.worldSettings.backupType = i;
@@ -182,8 +219,9 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
   }
 
   _handleGeneratorChanged(event: SelectChangeEvent<string>) {
-    for (let i = 0; i < this._generator.length; i++) {
-      const gen = this._generator[i];
+    const generator = this._getGenerator();
+    for (let i = 0; i < generator.length; i++) {
+      const gen = generator[i];
 
       if (gen === event.target.value && this.state.generator !== i) {
         this.props.worldSettings.generator = i;
@@ -300,6 +338,12 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
     }
 
     const settingsProps = [];
+    const intl = this.props.intl;
+
+    const gameTypes = this._getGameTypes();
+    const difficulty = this._getDifficulty();
+    const generator = this._getGenerator();
+    const backupTypes = this._getBackupTypes();
 
     let enableCustomWorldOptions = true;
 
@@ -313,7 +357,7 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
     if (this.props.displayName) {
       settingsProps.push(
         <div className={"wsa-label wsa-namelabel" + outerClassNameModifier} key="namelabel" id="wsa-label-name">
-          World name
+          {intl.formatMessage({ id: "world_settings.world_name" })}
         </div>
       );
 
@@ -338,7 +382,7 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
           key="gametypelabel"
           id="wsa-label-gametype"
         >
-          Game type
+          {intl.formatMessage({ id: "world_settings.game_type" })}
         </div>
       );
 
@@ -347,8 +391,8 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
           <Select
             value={
               this.props.worldSettings && this.props.worldSettings.gameType !== undefined
-                ? this._gameTypes[this.props.worldSettings.gameType]
-                : "Creative"
+                ? gameTypes[this.props.worldSettings.gameType]
+                : gameTypes[GameType.creative]
             }
             key="gtInput"
             aria-labelledby="wsa-label-gametype"
@@ -356,7 +400,7 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
             onChange={this._handleGameTypeChanged}
             size="small"
           >
-            {this._gameTypes.map((gt) => (
+            {gameTypes.map((gt) => (
               <MenuItem key={gt} value={gt}>
                 {gt}
               </MenuItem>
@@ -371,7 +415,7 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
           key="gamedifflabel"
           id="wsa-label-gamediff"
         >
-          Difficulty
+          {intl.formatMessage({ id: "world_settings.difficulty" })}
         </div>
       );
 
@@ -380,8 +424,8 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
           <Select
             value={
               this.props.worldSettings && this.props.worldSettings.difficulty !== undefined
-                ? this._difficulty[this.props.worldSettings.difficulty]
-                : "Normal"
+                ? difficulty[this.props.worldSettings.difficulty]
+                : difficulty[Difficulty.normal]
             }
             key="gdInput"
             aria-labelledby="wsa-label-gamediff"
@@ -389,7 +433,7 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
             onChange={this._handleDifficultyChanged}
             size="small"
           >
-            {this._difficulty.map((d) => (
+            {difficulty.map((d) => (
               <MenuItem key={d} value={d}>
                 {d}
               </MenuItem>
@@ -408,7 +452,7 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
                 disabled={!enableCustomWorldOptions}
               />
             }
-            label="Editor Mode"
+            label={intl.formatMessage({ id: "world_settings.editor_mode" })}
           />
         </div>
       );
@@ -422,15 +466,17 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
                 onChange={this._handleTransientWorld}
               />
             }
-            label="Transient World"
-            title="When enabled, world data is not backed up and each deployment starts fresh. Useful for development."
+            label={intl.formatMessage({ id: "world_settings.transient_world" })}
+            title={intl.formatMessage({ id: "world_settings.transient_world_tooltip" })}
           />
         </div>
       );
 
       settingsProps.push(
         <div className={"wsa-label wsa-packlabel" + outerClassNameModifier} key="packslabel">
-          {this.props.isAdditive === true ? "Additional Packs" : "Packs"}
+          {this.props.isAdditive === true
+            ? intl.formatMessage({ id: "world_settings.additional_packs" })
+            : intl.formatMessage({ id: "world_settings.packs" })}
         </div>
       );
 
@@ -454,14 +500,14 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
       if (!this.props.isAdditive) {
         settingsProps.push(
           <div className={"wsa-label wsa-worldsettingslabel" + outerClassNameModifier} key="wslabel">
-            When creating a new world:
+            {intl.formatMessage({ id: "world_settings.when_creating_new" })}
           </div>
         );
       }
 
       settingsProps.push(
         <div className={"wsa-label wsa-templatelabel" + outerClassNameModifier} key="templateslabel">
-          Use world template
+          {intl.formatMessage({ id: "world_settings.use_world_template" })}
         </div>
       );
 
@@ -483,7 +529,7 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
 
       settingsProps.push(
         <div className={"wsa-label wsa-genlabel" + outerClassNameModifier} key="genlabel">
-          Or map style
+          {intl.formatMessage({ id: "world_settings.or_map_style" })}
         </div>
       );
 
@@ -492,16 +538,16 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
           <Select
             value={
               this.props.worldSettings && this.props.worldSettings.generator !== undefined
-                ? this._generator[this.props.worldSettings?.generator]
-                : "Flat"
+                ? generator[this.props.worldSettings?.generator]
+                : generator[Generator.flat]
             }
             key="genInput"
-            aria-label="Map Style"
+            aria-label={intl.formatMessage({ id: "world_settings.map_style_aria" })}
             disabled={!enableCustomWorldOptions}
             onChange={this._handleGeneratorChanged}
             size="small"
           >
-            {this._generator.map((g) => (
+            {generator.map((g) => (
               <MenuItem key={g} value={g}>
                 {g}
               </MenuItem>
@@ -512,14 +558,14 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
 
       settingsProps.push(
         <div className={"wsa-label wsa-seedlabel" + outerClassNameModifier} key="seedlabel">
-          &#160;&#160;&#160;&#160;Seed
+          &#160;&#160;&#160;&#160;{intl.formatMessage({ id: "world_settings.seed" })}
         </div>
       );
 
       settingsProps.push(
         <div className="wsa-seedinput" key="seedinput">
           <TextField
-            aria-label="World Seed"
+            aria-label={intl.formatMessage({ id: "world_settings.seed_aria" })}
             value={this.state.seed === undefined ? "" : this.state.seed.toString()}
             disabled={!enableCustomWorldOptions}
             onChange={this._handleSeedChanged}
@@ -534,7 +580,7 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
     if (this.props.displayGameAdminProperties) {
       settingsProps.push(
         <div className={"wsa-label wsa-backuplabel" + outerClassNameModifier} key="backuplabel" id="wsa-label-backup">
-          Backup
+          {intl.formatMessage({ id: "world_settings.backup" })}
         </div>
       );
 
@@ -543,15 +589,15 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
           <Select
             value={
               this.props.worldSettings && this.props.worldSettings.backupType !== undefined
-                ? this._backupTypes[this.props.worldSettings.backupType]
-                : "Every 5 minutes"
+                ? backupTypes[this.props.worldSettings.backupType]
+                : backupTypes[BackupType.every5Minutes]
             }
             key="backupInput"
             aria-labelledby="wsa-label-backup"
             onChange={this._handleBackupTypeChanged}
             size="small"
           >
-            {this._backupTypes.map((bt) => (
+            {backupTypes.map((bt) => (
               <MenuItem key={bt} value={bt}>
                 {bt}
               </MenuItem>
@@ -568,3 +614,5 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
     );
   }
 }
+
+export default withLocalization(WorldSettingsArea);

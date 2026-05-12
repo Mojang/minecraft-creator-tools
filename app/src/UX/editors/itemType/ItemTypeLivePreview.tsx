@@ -272,9 +272,7 @@ export default class ItemTypeLivePreview extends Component<IItemTypeLivePreviewP
     );
   }
 
-  private _renderComponents(components: ParsedComponent[]): JSX.Element | null {
-    if (components.length === 0) return null;
-
+  private _renderComponents(components: ParsedComponent[]): JSX.Element {
     const isExpanded = this.state.expandedSections.has("components");
 
     return (
@@ -287,26 +285,28 @@ export default class ItemTypeLivePreview extends Component<IItemTypeLivePreviewP
         </div>
         {isExpanded && (
           <div className="itlp-section-content">
-            {components.map((comp, index) => (
-              <div
-                key={index}
-                className="itlp-component-item"
-                onClick={() => this.props.onNavigate?.(`minecraft:item.components.${comp.name}`)}
-              >
-                <img src={comp.iconPath} alt={comp.shortName || "Component icon"} className="itlp-component-icon" />
-                <span className="itlp-component-name">{comp.shortName}</span>
-                {comp.summary && <span className="itlp-component-summary">{comp.summary}</span>}
-              </div>
-            ))}
+            {components.length === 0 ? (
+              <em style={{ padding: "8px", display: "block", opacity: 0.6 }}>No components yet</em>
+            ) : (
+              components.map((comp, index) => (
+                <div
+                  key={index}
+                  className="itlp-component-item"
+                  onClick={() => this.props.onNavigate?.(`minecraft:item.components.${comp.name}`)}
+                >
+                  <img src={comp.iconPath} alt={comp.shortName || "Component icon"} className="itlp-component-icon" />
+                  <span className="itlp-component-name">{comp.shortName}</span>
+                  {comp.summary && <span className="itlp-component-summary">{comp.summary}</span>}
+                </div>
+              ))
+            )}
           </div>
         )}
       </div>
     );
   }
 
-  private _renderEvents(events: string[]): JSX.Element | null {
-    if (events.length === 0) return null;
-
+  private _renderEvents(events: string[]): JSX.Element {
     const isExpanded = this.state.expandedSections.has("events");
 
     return (
@@ -319,16 +319,20 @@ export default class ItemTypeLivePreview extends Component<IItemTypeLivePreviewP
         </div>
         {isExpanded && (
           <div className="itlp-section-content">
-            {events.map((event, index) => (
-              <div
-                key={index}
-                className="itlp-event-item"
-                onClick={() => this.props.onNavigate?.(`minecraft:item.events.${event}`)}
-              >
-                <img src={getSectionIcons().event} alt="Event icon" className="itlp-event-icon" />
-                <span className="itlp-event-name">{event}</span>
-              </div>
-            ))}
+            {events.length === 0 ? (
+              <em style={{ padding: "8px", display: "block", opacity: 0.6 }}>No events yet</em>
+            ) : (
+              events.map((event, index) => (
+                <div
+                  key={index}
+                  className="itlp-event-item"
+                  onClick={() => this.props.onNavigate?.(`minecraft:item.events.${event}`)}
+                >
+                  <img src={getSectionIcons().event} alt="Event icon" className="itlp-event-icon" />
+                  <span className="itlp-event-name">{event}</span>
+                </div>
+              ))
+            )}
           </div>
         )}
       </div>

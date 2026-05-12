@@ -12,11 +12,16 @@
 }
 
 .pil-expandButton {
-  margin-top: 3px;
-  padding-left: 6px;
-  margin-left: 3px;
-  width: 24px;
-  height: 25px;
+  /* Centered by the parent .pil-itemIcon (display: inline-flex,
+     align-items/justify-content: center). Use box-sizing: border-box so
+     this matches the validation indicator's outer box exactly. */
+  box-sizing: border-box;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 .pil-showMenu .ui-menu__itemicon {
@@ -45,7 +50,9 @@
 }
 
 .pil-inlineSource {
-  display: inline-block;
+  /* Inline so the trailing "?" stays on the same line as the file name even
+     when the name wraps across a line break inside the dialog. */
+  display: inline;
 }
 
 .pil-showMenu {
@@ -128,6 +135,25 @@
   width: 100%;
 }
 
+/*
+ * Forced-colors / Windows High Contrast.
+ *
+ * Browsers reset inline `background-color` (set via React inline `style`)
+ * to `Canvas` under forced-colors, but our inline `color` survives — that
+ * combination produces a "near-white text on white" contrast failure even
+ * though the rendered pixels are clearly readable in non-forced-colors mode.
+ *
+ * Pin both fg and bg to system tokens that are guaranteed to have AAA
+ * contrast (`ButtonText` over `ButtonFace`), so the category headers stay
+ * legible in High Contrast mode regardless of the type tint.
+ */
+@media (forced-colors: active) {
+  .pil-itemTypeHeader {
+    background-color: ButtonFace !important;
+    color: ButtonText !important;
+  }
+}
+
 /* The MenuButton wrapper span needs to span columns 3-5 so pil-headerLabel fills the space */
 .pil-itemTypeHeader > span:not(.pil-headerIcon):not(.pil-itemTypeCollapsedToggle) {
   grid-column-start: 3;
@@ -198,7 +224,31 @@
   display: block;
   height: 36px;
   padding-top: 1px;
-  background-color: #d88800;
+  /* Subtler than the saturated orange — desaturated amber that still signals focus */
+  background-color: rgba(216, 136, 0, 0.35);
+}
+
+.pil-clearFocusButton {
+  align-self: center;
+  justify-self: end;
+  margin-right: 4px;
+  min-width: 0;
+  padding: 2px 8px;
+  /* Match the height of the ... menu button (pil-itemIcon is 30px) */
+  height: 30px;
+  font-size: 11px;
+  line-height: 1;
+  text-transform: none;
+  white-space: nowrap;
+  background-color: transparent !important;
+  color: inherit !important;
+  border-width: 1px !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+}
+
+.pil-clearFocusButton:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.55) !important;
 }
 
 .pil-itemLabel {
@@ -213,22 +263,34 @@
 
 .pil-itemIcon {
   background-size: cover;
-  width: 30px;
-  margin-top: 3px;
-  height: 30px;
+  /* Match the validation indicator (.pil-itemIndicator) exactly so the two
+     controls line up as identical boxes when both appear on the same row. */
+  box-sizing: border-box;
+  width: 26px;
+  height: 26px;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
 }
 
 .pil-itemIndicator {
+  /* Identical box dimensions to .pil-itemIcon so the orange badge and the
+     gray "..." button render at the same height and width. */
+  box-sizing: border-box;
   border: solid 0px;
   grid-column: 4;
   line-height: 1;
-  padding: 4px 5px 4px 4px;
+  /* No padding — inner .pil-itemIndicatorInterior centers the count. */
+  padding: 0;
   margin: 0px 0px 0px 1px;
   align-self: center;
   box-shadow: none;
-  width: 24px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background-color: #d88800;
-  height: auto;
   flex-shrink: 0;
 }
 
@@ -237,15 +299,21 @@
 }
 
 .pil-itemIndicatorRO {
+  /* Same box dimensions as .pil-itemIndicator / .pil-itemIcon so all three
+     line up as identical boxes on the same row. */
+  box-sizing: border-box;
   border: solid 0px;
   grid-column: 4;
   line-height: 1;
-  padding: 4px 5px 4px 4px;
+  padding: 0;
   margin: 0px 0px 0px 1px;
   align-self: center;
   box-shadow: none;
-  width: 24px;
-  height: auto;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background-color: #d88800;
   text-align: center;
   flex-shrink: 0;
@@ -324,11 +392,14 @@
 .pil-dialog {
   min-height: 90px;
   margin-top: 20px;
-  vertical-align: top;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .pil-extension {
-  padding-left: 8px;
+  /* Vertically centered with the TextField via flex on .pil-dialog */
+  line-height: 1;
 }
 
 /* Sticky header that shows current item type when scrolling */

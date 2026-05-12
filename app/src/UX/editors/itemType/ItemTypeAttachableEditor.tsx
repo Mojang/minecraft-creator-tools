@@ -23,6 +23,7 @@ import ItemTypeDefinition from "../../../minecraft/ItemTypeDefinition";
 import { faSquarePlus } from "@fortawesome/free-regular-svg-icons";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
 export enum ItemTypeAttachableEditorMode {
   textures = 0,
@@ -32,7 +33,7 @@ export enum ItemTypeAttachableEditorMode {
   components = 4,
 }
 
-interface IItemTypeAttachableEditorProps extends IFileProps {
+interface IItemTypeAttachableEditorProps extends IFileProps, WithLocalizationProps {
   heightOffset: number;
   readOnly: boolean;
   creatorTools: creatorTools;
@@ -53,7 +54,7 @@ interface IItemTypeAttachableEditorState {
   attachable: AttachableResourceDefinition | undefined;
 }
 
-export default class ItemTypeAttachableEditor extends Component<
+class ItemTypeAttachableEditor extends Component<
   IItemTypeAttachableEditorProps,
   IItemTypeAttachableEditorState
 > {
@@ -321,7 +322,7 @@ export default class ItemTypeAttachableEditor extends Component<
             color: headerColors.foreground2,
           }}
         >
-          Item Type Visuals and Audio
+          {this.props.intl.formatMessage({ id: "project_editor.item_attach.header" })}
         </div>
       );
     }
@@ -427,7 +428,7 @@ export default class ItemTypeAttachableEditor extends Component<
               color: colors.contentForeground,
             }}
           >
-            <Stack direction="row" spacing={0.5} aria-label="Actions">
+            <Stack direction="row" spacing={0.5} aria-label={this.props.intl.formatMessage({ id: "project_editor.item_attach.aria_actions" })}>
               {this.state.behaviorItem && (
                 <Button onClick={this._setComponentsMode} title="Components">
                   <CustomTabLabel
@@ -486,3 +487,5 @@ export default class ItemTypeAttachableEditor extends Component<
     );
   }
 }
+
+export default withLocalization(ItemTypeAttachableEditor);

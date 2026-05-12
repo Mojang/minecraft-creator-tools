@@ -60,6 +60,7 @@ import { getThemeColors } from "../hooks/theme/useThemeColors";
 import IProjectTheme from "../types/IProjectTheme";
 import Log from "../../core/Log";
 
+
 interface IVscProjectLandingProps extends IAppProps {
   project: Project;
   theme: IProjectTheme;
@@ -79,7 +80,7 @@ interface IVscProjectLandingState {
   statusMessage: string;
 }
 
-export default class VscProjectLanding extends Component<IVscProjectLandingProps, IVscProjectLandingState> {
+class VscProjectLanding extends Component<IVscProjectLandingProps, IVscProjectLandingState> {
   constructor(props: IVscProjectLandingProps) {
     super(props);
 
@@ -219,10 +220,10 @@ export default class VscProjectLanding extends Component<IVscProjectLandingProps
       const newBytes = await ProjectExporter.generateFlatBetaApisWorldWithPacksZipBytes(creatorTools, project, name);
 
       if (newBytes) {
-        this.setState({ statusMessage: "Saving " + fileName + "..." });
+        this.setState({ statusMessage: `Saving ${fileName}...` });
         const saved = await this._saveBinaryFile(new Uint8Array(newBytes), fileName, "Minecraft World");
         if (saved) {
-          this.setState({ statusMessage: "Saved " + fileName });
+          this.setState({ statusMessage: `Saved ${fileName}` });
         } else {
           this.setState({ statusMessage: "" });
         }
@@ -230,7 +231,7 @@ export default class VscProjectLanding extends Component<IVscProjectLandingProps
         this.setState({ statusMessage: "Failed to create world package" });
       }
     } catch (e) {
-      this.setState({ statusMessage: "Error creating world: " + String(e) });
+      this.setState({ statusMessage: `Error creating world: ${String(e)}` });
     } finally {
       this.setState({ isExporting: false });
     }
@@ -256,10 +257,10 @@ export default class VscProjectLanding extends Component<IVscProjectLandingProps
         const newBytes = await mcworld.getBytes();
 
         if (newBytes) {
-          this.setState({ statusMessage: "Saving " + fileName + "..." });
+          this.setState({ statusMessage: `Saving ${fileName}...` });
           const saved = await this._saveBinaryFile(new Uint8Array(newBytes), fileName, "Minecraft World");
           if (saved) {
-            this.setState({ statusMessage: "Saved " + fileName });
+            this.setState({ statusMessage: `Saved ${fileName}` });
           } else {
             this.setState({ statusMessage: "" });
           }
@@ -270,7 +271,7 @@ export default class VscProjectLanding extends Component<IVscProjectLandingProps
         this.setState({ statusMessage: "Failed to create world" });
       }
     } catch (e) {
-      this.setState({ statusMessage: "Error creating world: " + String(e) });
+      this.setState({ statusMessage: `Error creating world: ${String(e)}` });
     } finally {
       this.setState({ isExporting: false });
     }
@@ -297,15 +298,15 @@ export default class VscProjectLanding extends Component<IVscProjectLandingProps
       const arrayBuffer = await zipBlob.arrayBuffer();
       const data = new Uint8Array(arrayBuffer);
 
-      this.setState({ statusMessage: "Saving " + fileName + "..." });
+      this.setState({ statusMessage: `Saving ${fileName}...` });
       const saved = await this._saveBinaryFile(data, fileName, "Zip Archive");
       if (saved) {
-        this.setState({ statusMessage: "Saved " + fileName });
+        this.setState({ statusMessage: `Saved ${fileName}` });
       } else {
         this.setState({ statusMessage: "" });
       }
     } catch (e) {
-      this.setState({ statusMessage: "Error creating zip: " + String(e) });
+      this.setState({ statusMessage: `Error creating zip: ${String(e)}` });
     } finally {
       this.setState({ isExporting: false });
     }
@@ -327,22 +328,44 @@ export default class VscProjectLanding extends Component<IVscProjectLandingProps
 
     const hasStats = stats.length > 0;
 
+    const fallbackSrc =
+      CreatorToolsHost.theme === CreatorToolsThemeStyle.dark
+        ? `${CreatorToolsHost.contentWebRoot}res/images/templates/redflower_darkbg.png`
+        : `${CreatorToolsHost.contentWebRoot}res/images/templates/redflower_lightbg.png`;
+
+    const handleImgError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+      const img = e.currentTarget;
+      // currentTarget can be null if the <img> was unmounted before the browser
+      // dispatched the error event (e.g. project list re-rendered while the
+      // preview was still loading).
+      if (!img) {
+        return;
+      }
+      Log.verbose(`VscProjectLanding: preview image failed to load: ${img.src}`);
+      // Hide the broken-image placeholder (alt text + icon) if the image can't be
+      // fetched (e.g. webview CSP, missing bundle asset, or contentWebRoot not set).
+      img.style.display = "none";
+    };
+
     let imgElt = (
       <img
         alt="Project preview"
         style={{
           imageRendering: "pixelated",
         }}
-        src={
-          CreatorToolsHost.theme === CreatorToolsThemeStyle.dark
-            ? `${CreatorToolsHost.contentWebRoot}res/images/templates/redflower_darkbg.png`
-            : `${CreatorToolsHost.contentWebRoot}res/images/templates/redflower_lightbg.png`
-        }
+        src={fallbackSrc}
+        onError={handleImgError}
       />
     );
 
     if (project.previewImageBase64) {
-      imgElt = <img alt="Project preview" src={`data:image/png;base64,${project.previewImageBase64}`} />;
+      imgElt = (
+        <img
+          alt="Project preview"
+          src={`data:image/png;base64,${project.previewImageBase64}`}
+          onError={handleImgError}
+        />
+      );
     }
 
     const colors = getThemeColors();
@@ -382,13 +405,13 @@ export default class VscProjectLanding extends Component<IVscProjectLandingProps
                 <button
                   className="vspl-editButton"
                   onClick={this._editProjectDetails}
-                  title="Edit project details"
-                  aria-label="Edit project details"
+                  title="Edit project settings"
+                  aria-label="Edit project settings"
                 >
                   <FontAwesomeIcon icon={faEdit} />
                 </button>
               </div>
-              {project.creator && <div className="vspl-projectCreator">by {project.creator}</div>}
+              {project.creator && <div className="vspl-projectCreator">{`by ${project.creator}`}</div>}
               {project.description && (
                 <p className="vspl-projectDescription">
                   <LocTokenBox creatorTools={this.props.creatorTools} project={project} value={project.description} />
@@ -450,8 +473,8 @@ export default class VscProjectLanding extends Component<IVscProjectLandingProps
                     <FontAwesomeIcon icon={faMagnifyingGlass} fixedWidth />
                   </div>
                   <div className="vspl-cardText">
-                    <div className="vspl-cardTitle">Inspect Project</div>
-                    <div className="vspl-cardDesc">Find errors, unused files, and common issues</div>
+                  <div className="vspl-cardTitle">Inspect Project</div>
+                  <div className="vspl-cardDesc">Find errors, unused files, and common issues</div>
                   </div>
                 </div>
               </MinecraftButton>
@@ -543,3 +566,5 @@ export default class VscProjectLanding extends Component<IVscProjectLandingProps
     );
   }
 }
+
+export default VscProjectLanding;

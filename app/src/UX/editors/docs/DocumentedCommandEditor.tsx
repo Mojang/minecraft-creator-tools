@@ -13,8 +13,9 @@ import IFormDefinition from "../../../dataform/IFormDefinition";
 import CreatorTools from "../../../app/CreatorTools";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
-interface IDocumentedCommandEditorProps extends IFileProps {
+interface IDocumentedCommandEditorProps extends IFileProps, WithLocalizationProps {
   heightOffset: number;
   theme: IProjectTheme;
   typesReadOnly: boolean;
@@ -29,7 +30,7 @@ interface IDocumentedCommandEditorState {
   isLoaded: boolean;
 }
 
-export default class DocumentedCommandEditor extends Component<
+class DocumentedCommandEditor extends Component<
   IDocumentedCommandEditorProps,
   IDocumentedCommandEditorState
 > {
@@ -165,7 +166,7 @@ export default class DocumentedCommandEditor extends Component<
           fields: [
             {
               id: "description",
-              title: "Description",
+              title: this.props.intl.formatMessage({ id: "project_editor.doc_cmd.description_field" }),
               dataType: FieldDataType.longFormString,
               validity: [{ comparison: "nonempty" }],
             },
@@ -180,13 +181,13 @@ export default class DocumentedCommandEditor extends Component<
         let addFormToCollection: any[] = coreForms;
 
         if (infoJsonName === "_command") {
-          title = "Command Description";
+          title = this.props.intl.formatMessage({ id: "project_editor.doc_cmd.command_description" });
 
           indentLevel = 0;
 
           infoForm.fields.push({
             id: "overloads",
-            title: "Overloads",
+            title: this.props.intl.formatMessage({ id: "project_editor.doc_cmd.overloads_field" }),
             allowCreateDelete: false,
             subForm: Database.getForm("command", "overload"),
             subFields: overloadSubfields,
@@ -211,7 +212,7 @@ export default class DocumentedCommandEditor extends Component<
             title += " (" + param.type + ")";
 
             if (param.is_optional) {
-              title += " (optional)";
+              title += this.props.intl.formatMessage({ id: "project_editor.doc_cmd.optional_suffix" });
             }
           }
 
@@ -231,7 +232,7 @@ export default class DocumentedCommandEditor extends Component<
 
             infoForm.fields.push({
               id: "values",
-              title: "Values",
+              title: this.props.intl.formatMessage({ id: "project_editor.doc_cmd.values_field" }),
               subForm: Database.getForm("command", "value"),
               subFields: valueSubfields,
               objectArrayToSubFieldKey: "name",
@@ -295,9 +296,11 @@ export default class DocumentedCommandEditor extends Component<
           ></DataForm>
         </div>
         <div className="dcomme-commandProps">{coreForms}</div>
-        <div className="dcomme-section">Enums specific to this type</div>
+        <div className="dcomme-section">{this.props.intl.formatMessage({ id: "project_editor.doc_cmd.enums_section" })}</div>
         <div className="dcomme-commandProps">{localEnumForms}</div>
       </div>
     );
   }
 }
+
+export default withLocalization(DocumentedCommandEditor);

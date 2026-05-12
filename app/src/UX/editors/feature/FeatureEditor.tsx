@@ -47,13 +47,14 @@ import FeatureTypePicker from "./FeatureTypePicker";
 import { FolderContext } from "../../../app/Project";
 import { ProjectItemCreationType } from "../../../app/IProjectItemData";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
 export enum FeatureEditorMode {
   tree = 0,
   diagram = 1,
 }
 
-interface IFeatureEditorProps extends IFileProps {
+interface IFeatureEditorProps extends IFileProps, WithLocalizationProps {
   heightOffset: number;
   readOnly: boolean;
   item: ProjectItem;
@@ -72,7 +73,7 @@ interface IFeatureEditorState {
   diagramRefreshKey: number;
 }
 
-export default class FeatureEditor extends Component<IFeatureEditorProps, IFeatureEditorState> {
+class FeatureEditor extends Component<IFeatureEditorProps, IFeatureEditorState> {
   private _lastFileEdited?: IFile;
 
   constructor(props: IFeatureEditorProps) {
@@ -316,7 +317,7 @@ export default class FeatureEditor extends Component<IFeatureEditorProps, IFeatu
 
   _getTitle(): string {
     if (!this.state.pipeline?.startingNode) {
-      return "Feature Editor";
+      return this.props.intl.formatMessage({ id: "project_editor.feature.title_fallback" });
     }
 
     const node = this.state.pipeline.startingNode;
@@ -324,7 +325,7 @@ export default class FeatureEditor extends Component<IFeatureEditorProps, IFeatu
       return node.referencedId;
     }
 
-    return node.id || "Feature Editor";
+    return node.id || this.props.intl.formatMessage({ id: "project_editor.feature.title_fallback" });
   }
 
   render() {
@@ -342,7 +343,7 @@ export default class FeatureEditor extends Component<IFeatureEditorProps, IFeatu
             color: colors.sectionHeaderForeground,
           }}
         >
-          <div className="fe-loading">Loading feature pipeline...</div>
+          <div className="fe-loading">{this.props.intl.formatMessage({ id: "project_editor.feature.loading" })}</div>
         </div>
       );
     }
@@ -408,28 +409,28 @@ export default class FeatureEditor extends Component<IFeatureEditorProps, IFeatu
             }}
           >
             <Stack direction="row" spacing={1} aria-label="Feature editor actions">
-              <Button onClick={this._setTreeMode} title="View feature hierarchy as a tree">
+              <Button onClick={this._setTreeMode} title={this.props.intl.formatMessage({ id: "project_editor.feature.tooltip_tree" })}>
                 <CustomTabLabel
                   icon={<FontAwesomeIcon icon={faList} className="fa-lg" />}
-                  text={"Tree"}
+                  text={this.props.intl.formatMessage({ id: "project_editor.feature.tab_tree" })}
                   isCompact={WebUtilities.getWidth() < 1016}
                   isSelected={this.state.mode === FeatureEditorMode.tree}
                   theme={this.props.theme}
                 />
               </Button>
-              <Button onClick={this._setDiagramMode} title="View feature hierarchy as a diagram">
+              <Button onClick={this._setDiagramMode} title={this.props.intl.formatMessage({ id: "project_editor.feature.tooltip_diagram" })}>
                 <CustomTabLabel
                   icon={<FontAwesomeIcon icon={faDiagramProject} className="fa-lg" />}
-                  text={"Diagram"}
+                  text={this.props.intl.formatMessage({ id: "project_editor.feature.tab_diagram" })}
                   isCompact={WebUtilities.getWidth() < 1016}
                   isSelected={this.state.mode === FeatureEditorMode.diagram}
                   theme={this.props.theme}
                 />
               </Button>
-              <Button onClick={this._handleAddFeatureClick} title="Add a new feature to the project">
+              <Button onClick={this._handleAddFeatureClick} title={this.props.intl.formatMessage({ id: "project_editor.feature.tooltip_add" })}>
                 <CustomTabLabel
                   icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
-                  text={"Add Feature"}
+                  text={this.props.intl.formatMessage({ id: "project_editor.feature.add_feature" })}
                   isCompact={WebUtilities.getWidth() < 1016}
                   isSelected={false}
                   theme={this.props.theme}
@@ -459,3 +460,5 @@ export default class FeatureEditor extends Component<IFeatureEditorProps, IFeatu
     );
   }
 }
+
+export default withLocalization(FeatureEditor);

@@ -189,7 +189,7 @@ export default function useSchemaForm(
         updateObjectValue(val, context.hierarchy);
       };
 
-      return renderer.renderSimpleProperty({ element, type, handleValidation: validationCallback });
+      return renderer.renderSimpleProperty({ element, type, handleValidation: validationCallback, uiDef });
     };
 
     /* generates ui for a checkbox */
@@ -202,7 +202,7 @@ export default function useSchemaForm(
 
       const parentRef = (getValueByHierarchy(value.current, context.hierarchy) ?? {}) as DynamicObject;
       const boolValue = parentRef?.[key];
-      const element = { key, title, default: uiDef?.default ?? definition.default };
+      const element = { key, title, default: uiDef?.default ?? definition.default, description: uiDef?.description ?? definition.description ?? "" };
 
       return renderer.renderCheckBox({
         element,
@@ -458,19 +458,21 @@ export default function useSchemaForm(
         references,
       };
 
+      const rootUiDef = uiHints as UIDefinition | null;
+
       if (!isReady) {
         return renderer.renderLoading();
       }
 
       try {
         return (
-          <>{renderer.renderSchema({ title, properties, context, generateProperty, isExporting, exportToJsonFile })}</>
+          <>{renderer.renderSchema({ title, properties, context, generateProperty, isExporting, exportToJsonFile, hideRootTitle: rootUiDef?.hideRootTitle })}</>
         );
       } catch (error) {
         return renderer.renderError(error);
       }
     },
-    [exportToJsonFile, generateProperty, isExporting, isReady, renderer]
+    [exportToJsonFile, generateProperty, isExporting, isReady, renderer, uiHints]
   );
 
   /* updates validation data based on the `newValue` supplied */

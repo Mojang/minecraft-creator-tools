@@ -288,7 +288,11 @@ export default class RemoteServerSettingsPanel extends Component<
 
     if (!isConnected) {
       serverProps.push(
-        <div className={"rssp-label rssp-pclabel" + outerClassNameModifier} key="pclabel">
+        <div
+          className={"rssp-label rssp-pclabel" + outerClassNameModifier}
+          key="pclabel"
+          id="rssp-label-pclabel"
+        >
           Server Passcode
         </div>
       );
@@ -312,6 +316,11 @@ export default class RemoteServerSettingsPanel extends Component<
             onChange={this._handleRemoteServerPasscodeChanged}
             size="small"
             sx={{ maxWidth: 200 }}
+            inputProps={{
+              // Wire the visible "Server Passcode" label to the input
+              // (WCAG 1.3.1 / 4.1.2 — every form control needs an accessible name).
+              "aria-labelledby": "rssp-label-pclabel",
+            }}
           />
           {passwordMessage}
         </div>
@@ -350,6 +359,7 @@ export default class RemoteServerSettingsPanel extends Component<
               }
               displayEmpty
               onChange={this._handleSlotChanged}
+              labelId="rssp-label-portlabel"
             >
               <MenuItem value="" disabled>
                 Choose a deployment slot

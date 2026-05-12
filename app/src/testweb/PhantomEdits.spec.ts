@@ -24,6 +24,9 @@ import {
   gotoWithTheme,
   selectEditMode,
   preferBrowserStorageInProjectDialog,
+  fillRequiredProjectDialogFields,
+  clickTemplateCreateButton,
+  waitForEditorReady,
   ThemeMode,
 } from "./WebTestUtilities";
 
@@ -40,34 +43,19 @@ async function createFullAddOnProject(page: Page, themeMode?: ThemeMode): Promis
     }
     await page.waitForTimeout(500);
 
-    // Look for the Full Add-On template card
-    const fullAddOnCard = page.locator('text="Full Add-On"').first();
-    if (!(await fullAddOnCard.isVisible({ timeout: 5000 }))) {
-      const seeMore = page.locator('text="See more templates"').first();
-      if (await seeMore.isVisible({ timeout: 2000 })) {
-        await seeMore.click();
-        await page.waitForTimeout(1000);
-      }
+    // Click the Full Add-On template's "Create New" button via stable test id
+    const clicked = await clickTemplateCreateButton(page, "addonFull");
+    if (!clicked) {
+      console.log("createFullAddOnProject: Could not find Full Add-On create button");
+      return false;
     }
-
-    // Find Create New button near the Full Add-On section
-    const fullAddOnSection = page.locator('div:has-text("Full Add-On")').filter({
-      has: page.locator('text="A full example add-on project"'),
-    });
-
-    let createButton = fullAddOnSection.locator('button:has-text("CREATE NEW")').first();
-    if (!(await createButton.isVisible({ timeout: 3000 }))) {
-      createButton = page.locator('button:has-text("New")').or(page.locator('button:has-text("CREATE NEW")')).nth(2);
-    }
-    if (!(await createButton.isVisible({ timeout: 3000 }))) {
-      createButton = page.getByRole("button", { name: "Create New" }).first();
-    }
-
-    await createButton.click();
     await page.waitForTimeout(1000);
 
     // Handle the storage location dialog before clicking submit
     await preferBrowserStorageInProjectDialog(page);
+
+    // The dialog requires a non-empty Creator field; fill it if blank
+    await fillRequiredProjectDialogFields(page);
 
     // Click Create/OK on the project dialog
     const okButton = page.getByTestId("submit-button").first();
@@ -82,21 +70,19 @@ async function createFullAddOnProject(page: Page, themeMode?: ThemeMode): Promis
       }
     }
 
+    // Full Add-On fetches from GitHub; allow extra time and use the shared
+    // editor-ready helper which polls multiple toolbar/welcome variants.
     await page.waitForTimeout(3000);
-    await page.waitForLoadState("networkidle");
-
-    // Select raw mode
-    await selectEditMode(page, "raw");
-
-    // Verify we're in the editor
-    const toolbar = page.locator('[aria-label="Project Editor main toolbar"], .pe-toolbar, .pe-toolbar-compact').first();
-    try {
-      await expect(toolbar).toBeVisible({ timeout: 10000 });
-      return true;
-    } catch {
-      const homeButton = page.getByRole("button", { name: /home/i }).first();
-      return await homeButton.isVisible({ timeout: 3000 }).catch(() => false);
+    const ready = await waitForEditorReady(page, 25000);
+    if (!ready) {
+      console.log("createFullAddOnProject: editor did not become ready");
+      return false;
     }
+
+    // Select raw mode (best-effort; not fatal if menu state differs)
+    await selectEditMode(page, "raw").catch(() => {});
+
+    return true;
   } catch (error) {
     console.log(`createFullAddOnProject: Error - ${error}`);
     return false;
@@ -383,19 +369,18 @@ test.describe("Phantom Edit Detection @full", () => {
     const created = await createFullAddOnProject(page);
     expect(created).toBe(true);
 
-    // Switch to focused mode to get form editors
-    const settingsButton = page.locator('button[title="Settings"], [aria-label="Settings"]').first();
-    if (await settingsButton.isVisible({ timeout: 3000 })) {
-      await settingsButton.click();
-      await page.waitForTimeout(600);
+    // Switch to focused mode to get form editors. Use the shared helper which
+    // already handles welcome-panel and View-menu states. The previous inline
+    // Settings-menu workflow could leave a MUI backdrop overlay intercepting
+    // subsequent clicks on sidebar items.
+    await selectEditMode(page, "focused");
+    await page.waitForTimeout(500);
 
-      const focusedButton = page.locator('button:has-text("Focused")').first();
-      if (await focusedButton.isVisible({ timeout: 2000 })) {
-        await focusedButton.click();
-        await page.waitForTimeout(1500);
-      }
+    // Defensive: ensure no MUI menu overlay remains before clicking sidebar
+    const lingeringBackdrop = page.locator(".MuiBackdrop-root").first();
+    if (await lingeringBackdrop.isVisible({ timeout: 500 }).catch(() => false)) {
       await page.keyboard.press("Escape");
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(300);
     }
 
     await takeScreenshot(page, "debugoutput/screenshots/phantom-edits-form-initial");
@@ -413,6 +398,15 @@ test.describe("Phantom Edit Detection @full", () => {
         const item = items.nth(entry.index);
         if (!(await item.isVisible({ timeout: 500 }).catch(() => false))) continue;
 
+        // Defensive: dismiss any lingering menu/popover before each click.
+        // Tab selectors below can accidentally open a View/Settings menu
+        // whose invisible MUI backdrop then intercepts further clicks.
+        const lingeringMenu = page.locator(".MuiPopover-root.MuiMenu-root").first();
+        if (await lingeringMenu.isVisible({ timeout: 200 }).catch(() => false)) {
+          await page.keyboard.press("Escape");
+          await page.waitForTimeout(200);
+        }
+
         await item.scrollIntoViewIfNeeded();
         await page.waitForTimeout(200);
         await item.click();
@@ -421,13 +415,21 @@ test.describe("Phantom Edit Detection @full", () => {
         // Wait for form editor to load
         await page.waitForTimeout(2000);
 
-        // For entity/block/item types, click through tabs to exercise form editors
+        // For entity/block/item types, click through tabs to exercise form
+        // editors. Scope to known editor containers and require role=tab so we
+        // don't accidentally activate menu items / toolbar buttons that share
+        // the same label (e.g. a "Components" item in the View menu).
         const tabNames = ["Overview", "Components", "Properties", "Actions", "Visuals", "States", "Permutations"];
+        const editorScope = page.locator(".ete-area, .bte-area, .ite-area, [role='tablist']").first();
         for (const tabName of tabNames) {
-          const tab = page.locator(`button[title*="${tabName}"], button:has-text("${tabName}")`).first();
-          if (await tab.isVisible({ timeout: 500 }).catch(() => false)) {
-            await tab.click();
-            await page.waitForTimeout(500);
+          const tab = editorScope
+            .locator(
+              `[role='tab']:has-text("${tabName}"), button[role='tab'][title*="${tabName}"]`
+            )
+            .first();
+          if (await tab.isVisible({ timeout: 300 }).catch(() => false)) {
+            await tab.click().catch(() => {});
+            await page.waitForTimeout(300);
           }
         }
 

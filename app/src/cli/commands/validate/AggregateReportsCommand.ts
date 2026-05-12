@@ -160,9 +160,32 @@ export class AggregateReportsCommand extends CommandBase {
 
     if (projectList.length > 0) {
       await this.saveAggregatedReports(context, projectList, inputFolder);
-      context.log.success(`Aggregated ${projectList.length} project reports.`);
+      if (context.json) {
+        context.log.data(
+          JSON.stringify({
+            schemaVersion: "1.0.0",
+            command: "aggregatereports",
+            success: true,
+            projectsAggregated: projectList.length,
+          })
+        );
+      } else {
+        context.log.success(`Aggregated ${projectList.length} project reports.`);
+      }
     } else {
-      context.log.warn("Did not find any report JSON files.");
+      if (context.json) {
+        context.log.data(
+          JSON.stringify({
+            schemaVersion: "1.0.0",
+            command: "aggregatereports",
+            success: true,
+            projectsAggregated: 0,
+            warning: "Did not find any report JSON files.",
+          })
+        );
+      } else {
+        context.log.warn("Did not find any report JSON files.");
+      }
     }
 
     this.logComplete(context);

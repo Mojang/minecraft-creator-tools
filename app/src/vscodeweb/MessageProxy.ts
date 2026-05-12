@@ -118,10 +118,20 @@ export default class MessageProxy {
         if (argSplit.length >= 2) {
           const index = parseInt(argSplit[1]);
 
-          if (index >= 0) {
+          if (!isNaN(index) && index >= 0) {
             const promiseResolver = MessageProxy._pendingPromiseResolvers[index];
 
-            promiseResolver(message.data);
+            // Guard against spurious or duplicate async responses (e.g. messages from other
+            // sources whose command happens to start with "async", or a response arriving
+            // after the resolver has already been called/cleared).
+            if (typeof promiseResolver === "function") {
+              // Clear before calling to prevent double-invocation if the same message is
+              // delivered twice, and to let the entry be garbage collected.
+              MessageProxy._pendingPromiseResolvers[index] = undefined as any;
+              MessageProxy._pendingPromiseRejecters[index] = undefined as any;
+
+              promiseResolver(message.data);
+            }
           }
         }
       } else {

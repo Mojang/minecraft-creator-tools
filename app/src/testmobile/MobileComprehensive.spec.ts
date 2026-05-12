@@ -325,6 +325,70 @@ test.describe("Mobile: Individual Editors @mobile", () => {
 // Group 6: Inspector / Validation
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Group 5.5: Project Settings
+// ---------------------------------------------------------------------------
+
+test.describe("Mobile: Project Settings @mobile", () => {
+  test("project settings at mobile width", async ({ page }) => {
+    test.setTimeout(60000);
+    setupConsoleTracking(page);
+
+    const entered = await enterEditor(page, { theme: "dark", editMode: "full" });
+    if (!entered) {
+      test.skip(true, "Could not enter editor — skipping");
+      return;
+    }
+
+    await page.waitForTimeout(2000);
+
+    // Try to navigate to Project Settings (formerly labelled "Project Properties").
+    // Prefer the current "Project Settings" label and keep the legacy "Properties"
+    // fallbacks for back-compat with any older pre-rename UIs that might still ship.
+    const propsItem = page
+      .getByText("Project Settings")
+      .or(page.getByText("Project Properties"))
+      .or(page.getByText("Properties"))
+      .first();
+
+    if (await propsItem.isVisible({ timeout: 5000 }).catch(() => false)) {
+      await propsItem.click();
+    } else {
+      // Try via option dropdown
+      const propsOption = page.locator("option:has-text('Settings'), option:has-text('Properties')");
+      if (await propsOption.isVisible({ timeout: 3000 }).catch(() => false)) {
+        await propsOption.click();
+      }
+    }
+
+    await page.waitForTimeout(2000);
+
+    // Screenshot: Project Settings at mobile
+    await page.screenshot({ path: `${SCREENSHOT_DIR}/mobile-project-properties.png`, fullPage: true });
+
+    // Measure the gap: get the ppe-outer height vs its parent
+    const measurements = await page.evaluate(() => {
+      const ppeOuter = document.querySelector(".ppe-outer");
+      const parent = ppeOuter?.parentElement;
+      const grandparent = parent?.parentElement;
+      return {
+        ppeOuter: ppeOuter ? { h: ppeOuter.clientHeight, oh: (ppeOuter as HTMLElement).offsetHeight } : null,
+        parent: parent ? { h: parent.clientHeight, tag: parent.tagName, class: parent.className } : null,
+        grandparent: grandparent
+          ? { h: grandparent.clientHeight, tag: grandparent.tagName, class: grandparent.className }
+          : null,
+      };
+    });
+    console.log("Project Settings measurements:", JSON.stringify(measurements, null, 2));
+
+    await assertNoHorizontalOverflow(page, 50);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Group 6: Inspector / Validation
+// ---------------------------------------------------------------------------
+
 test.describe("Mobile: Inspector & Validation @mobile", () => {
   test("inspector panel at mobile width", async ({ page }) => {
     setupConsoleTracking(page);
@@ -343,6 +407,130 @@ test.describe("Mobile: Inspector & Validation @mobile", () => {
     }
 
     await page.screenshot({ path: `${SCREENSHOT_DIR}/mobile-inspector-light.png`, fullPage: true });
+    await assertNoHorizontalOverflow(page, 50);
+  });
+
+  test("inspector items view at mobile width", async ({ page }) => {
+    test.setTimeout(120000);
+    setupConsoleTracking(page);
+
+    // Enter editor to create a project, then navigate to inspector
+    const entered = await enterEditor(page, { theme: "light", editMode: "full" });
+    if (!entered) {
+      test.skip(true, "Could not enter editor — skipping");
+      return;
+    }
+
+    await page.waitForTimeout(2000);
+
+    // Try to find Inspector in the project items list
+    let foundInspector = false;
+    const inspectorItem = page
+      .getByText("Check for Problems")
+      .or(page.getByText("Validation"))
+      .or(page.getByText("Inspector"))
+      .first();
+
+    if (await inspectorItem.isVisible({ timeout: 5000 }).catch(() => false)) {
+      await inspectorItem.click();
+      foundInspector = true;
+    } else {
+      // On mobile, sidebar may not be visible. Try selecting via option dropdown
+      const inspectorOption = page.locator("option:has-text('Inspector')");
+      if (await inspectorOption.isVisible({ timeout: 3000 }).catch(() => false)) {
+        await inspectorOption.click();
+        foundInspector = true;
+      }
+    }
+
+    if (!foundInspector) {
+      // Navigate directly by modifying the hash
+      const currentUrl = page.url();
+      const hashIdx = currentUrl.indexOf("#");
+      const baseUrl = hashIdx >= 0 ? currentUrl.substring(0, hashIdx) : currentUrl;
+      await page.goto(baseUrl + "#inspector");
+      await page.waitForTimeout(3000);
+    }
+
+    // Wait for validation to run
+    await page.waitForTimeout(8000);
+
+    // Screenshot: Summary tab at mobile
+    await page.screenshot({ path: `${SCREENSHOT_DIR}/mobile-inspector-summary.png`, fullPage: true });
+
+    // Click Items tab (the list icon tab)
+    const itemsTab = page.locator("#pid-tab-items");
+    if (await itemsTab.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await itemsTab.click();
+      await page.waitForTimeout(1000);
+    }
+
+    // Screenshot: Items view with card list at mobile
+    await page.screenshot({ path: `${SCREENSHOT_DIR}/mobile-inspector-items.png`, fullPage: true });
+
+    // Screenshot: scroll down to see more cards
+    await page.evaluate(() => {
+      const wrapper = document.querySelector(".pid-tableWrapper");
+      if (wrapper) wrapper.scrollTop = wrapper.scrollHeight;
+    });
+    await page.waitForTimeout(500);
+    await page.screenshot({ path: `${SCREENSHOT_DIR}/mobile-inspector-items-scrolled.png`, fullPage: true });
+
+    await assertNoHorizontalOverflow(page, 50);
+  });
+
+  test("inspector items view at mobile width — dark theme", async ({ page }) => {
+    test.setTimeout(120000);
+    setupConsoleTracking(page);
+
+    const entered = await enterEditor(page, { theme: "dark", editMode: "full" });
+    if (!entered) {
+      test.skip(true, "Could not enter editor — skipping");
+      return;
+    }
+
+    await page.waitForTimeout(2000);
+
+    // Try to find Inspector in project items
+    let foundInspector = false;
+    const inspectorItem = page
+      .getByText("Check for Problems")
+      .or(page.getByText("Validation"))
+      .or(page.getByText("Inspector"))
+      .first();
+
+    if (await inspectorItem.isVisible({ timeout: 5000 }).catch(() => false)) {
+      await inspectorItem.click();
+      foundInspector = true;
+    } else {
+      const inspectorOption = page.locator("option:has-text('Inspector')");
+      if (await inspectorOption.isVisible({ timeout: 3000 }).catch(() => false)) {
+        await inspectorOption.click();
+        foundInspector = true;
+      }
+    }
+
+    if (!foundInspector) {
+      const currentUrl = page.url();
+      const hashIdx = currentUrl.indexOf("#");
+      const baseUrl = hashIdx >= 0 ? currentUrl.substring(0, hashIdx) : currentUrl;
+      await page.goto(baseUrl + "#inspector");
+      await page.waitForTimeout(3000);
+    }
+
+    // Wait for validation
+    await page.waitForTimeout(8000);
+
+    // Click Items tab
+    const itemsTab = page.locator("#pid-tab-items");
+    if (await itemsTab.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await itemsTab.click();
+      await page.waitForTimeout(1000);
+    }
+
+    // Screenshot: Items view dark theme at mobile
+    await page.screenshot({ path: `${SCREENSHOT_DIR}/mobile-inspector-items-dark.png`, fullPage: true });
+
     await assertNoHorizontalOverflow(page, 50);
   });
 });

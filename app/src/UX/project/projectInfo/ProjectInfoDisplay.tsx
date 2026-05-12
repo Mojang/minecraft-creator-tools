@@ -1,4 +1,5 @@
 import { Component, UIEvent } from "react";
+import * as React from "react";
 import "./ProjectInfoDisplay.css";
 import IAppProps from "../../appShell/IAppProps";
 import Project from "../../../app/Project";
@@ -8,8 +9,10 @@ import ProjectInfoItem from "../../../info/ProjectInfoItem";
 import Utilities from "../../../core/Utilities";
 import {
   Button,
+  Divider,
   FormControl,
   IconButton,
+  ListSubheader,
   Menu,
   MenuItem,
   Select,
@@ -23,7 +26,13 @@ interface McMenuItemData {
   icon?: { key?: string } | React.ReactNode;
   [key: string]: any;
 }
-import { CustomLabel, DownArrowLabel, DownloadLabel, InfoTabLabel, SummaryTabLabel } from "../../shared/components/feedback/labels/Labels";
+import {
+  CustomLabel,
+  DownArrowLabel,
+  DownloadLabel,
+  InfoTabLabel,
+  SummaryTabLabel,
+} from "../../shared/components/feedback/labels/Labels";
 
 import { InfoItemType, NumberInfoItemTypes } from "../../../info/IInfoItemData";
 import WebUtilities from "../../utils/WebUtilities";
@@ -40,6 +49,13 @@ import {
   faImage,
   faFileCode,
   faLayerGroup,
+  faCircleExclamation,
+  faCircleQuestion,
+  faCircleArrowUp,
+  faCircleInfo,
+  faCircleCheck,
+  faCircleXmark,
+  faList,
 } from "@fortawesome/free-solid-svg-icons";
 import IFile from "../../../storage/IFile";
 import StorageUtilities from "../../../storage/StorageUtilities";
@@ -53,8 +69,10 @@ import LocTokenBox from "../../shared/components/inputs/locTokenBox/LocTokenBox"
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
 import McChip from "../../shared/components/inputs/mcChip/McChip";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
+import { IntlShape } from "react-intl";
 
-interface IProjectInfoDisplayProps extends IAppProps {
+interface IProjectInfoDisplayProps extends IAppProps, WithLocalizationProps {
   project?: Project;
   heightOffset: number;
   theme: IProjectTheme;
@@ -95,59 +113,61 @@ interface IProjectInfoDisplayState {
  * Matches the stats bar categories for consistency.
  * Order matters - more specific categories should be listed first to avoid false matches.
  */
-const STAT_CATEGORIES: { [key: string]: { title: string; icon: string; prefixes: string[] } } = {
-  textures: {
-    title: "Textures & Media",
-    icon: "🖼️",
-    prefixes: [
-      "textureimage",
-      "texture",
-      "sound",
-      "audio",
-      "animation",
-      "model",
-      "geometry",
-      "particle",
-      "material",
-      "rendercontroller",
-    ],
-  },
-  scripts: {
-    title: "Scripts & Functions",
-    icon: "📜",
-    prefixes: [
-      "apisused",
-      "typescript",
-      "javascript",
-      "script",
-      "api",
-      "mcfunction",
-      "executesubcommand",
-      "command",
-      "prettier",
-    ],
-  },
-  entities: {
-    title: "Mob Types",
-    icon: "🐾",
-    prefixes: ["entitytype", "entitymetadata", "entityidentifier", "spawnrule"],
-  },
-  blocks: {
-    title: "Block Types",
-    icon: "🧱",
-    prefixes: ["blocktype", "blockcatalog", "blockculling"],
-  },
-  items: {
-    title: "Item Types",
-    icon: "⚔️",
-    prefixes: ["itemtype"],
-  },
-  other: {
-    title: "Other Statistics",
-    icon: "📊",
-    prefixes: [],
-  },
-};
+function getStatCategories(intl: IntlShape): { [key: string]: { title: string; icon: string; prefixes: string[] } } {
+  return {
+    textures: {
+      title: intl.formatMessage({ id: "project_editor.info.stat_category_textures" }),
+      icon: "🖼️",
+      prefixes: [
+        "textureimage",
+        "texture",
+        "sound",
+        "audio",
+        "animation",
+        "model",
+        "geometry",
+        "particle",
+        "material",
+        "rendercontroller",
+      ],
+    },
+    scripts: {
+      title: intl.formatMessage({ id: "project_editor.info.stat_category_scripts" }),
+      icon: "📜",
+      prefixes: [
+        "apisused",
+        "typescript",
+        "javascript",
+        "script",
+        "api",
+        "mcfunction",
+        "executesubcommand",
+        "command",
+        "prettier",
+      ],
+    },
+    entities: {
+      title: "Mob Types",
+      icon: "🐾",
+      prefixes: ["entitytype", "entitymetadata", "entityidentifier", "spawnrule"],
+    },
+    blocks: {
+      title: "Block Types",
+      icon: "🧱",
+      prefixes: ["blocktype", "blockcatalog", "blockculling"],
+    },
+    items: {
+      title: "Item Types",
+      icon: "⚔️",
+      prefixes: ["itemtype"],
+    },
+    other: {
+      title: intl.formatMessage({ id: "project_editor.info.stat_category_other" }),
+      icon: "📊",
+      prefixes: [],
+    },
+  };
+}
 
 export enum ProjectInfoDisplayMode {
   info,
@@ -159,21 +179,24 @@ export enum ProjectInfoDisplayMenuState {
   exportMenu,
 }
 
-export const SuiteTitles = [
-  "In-Development Validation",
-  "Current Platform Versions",
-  "Cooperative Add-On Best Practices",
-  "Sharing Best Practices",
-  "Sharing Best Practices (Strict)",
-];
+export function getSuiteTitles(intl: IntlShape): string[] {
+  return [
+    intl.formatMessage({ id: "project_editor.info.suite_indev" }),
+    intl.formatMessage({ id: "project_editor.info.suite_platform" }),
+    intl.formatMessage({ id: "project_editor.info.suite_coop" }),
+    intl.formatMessage({ id: "project_editor.info.suite_sharing" }),
+    intl.formatMessage({ id: "project_editor.info.suite_sharing_strict" }),
+  ];
+}
 
 export enum InfoItemCommand {
   itemSelect,
   runUpdater,
 }
 
-export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayProps, IProjectInfoDisplayState> {
+class ProjectInfoDisplay extends Component<IProjectInfoDisplayProps, IProjectInfoDisplayState> {
   private _isMountedInternal: boolean = false;
+  private _exportTriggerRef = React.createRef<HTMLElement>();
 
   constructor(props: IProjectInfoDisplayProps) {
     super(props);
@@ -218,7 +241,11 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       lastExportFunction: undefined,
       lastExportData: undefined,
       displayErrors: true,
-      displaySuccess: true,
+      // Pro-grade default: passed checks are noise. Experts want errors and
+      // warnings on first open; passed/info chips can still be toggled on
+      // when they want to verify rule coverage. Hiding 39 PASSED rows
+      // interleaved with 2 warnings is hostile.
+      displaySuccess: false,
       displayWarnings: true,
       displayRecommendation: true,
       displayFailure: true,
@@ -438,7 +465,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   categorizeFeatureSet(featName: string): string {
     const lowerName = featName.toLowerCase().replace(/[^a-z]/g, "");
 
-    for (const [categoryKey, categoryInfo] of Object.entries(STAT_CATEGORIES)) {
+    for (const [categoryKey, categoryInfo] of Object.entries(getStatCategories(this.props.intl))) {
       if (categoryKey === "other") continue;
       for (const prefix of categoryInfo.prefixes) {
         if (lowerName.startsWith(prefix) || lowerName.includes(prefix)) {
@@ -532,7 +559,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     } = {};
 
     // Initialize all categories
-    for (const categoryKey of Object.keys(STAT_CATEGORIES)) {
+    for (const categoryKey of Object.keys(getStatCategories(this.props.intl))) {
       grouped[categoryKey] = [];
     }
 
@@ -866,7 +893,11 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
     if (iconBase64 && iconBase64.length > 100) {
       iconContent = (
-        <img alt="Project icon" src={`data:image/png;base64,${iconBase64}`} style={{ imageRendering: "pixelated" }} />
+        <img
+          alt={this.props.intl.formatMessage({ id: "project_editor.info.project_icon_alt" })}
+          src={`data:image/png;base64,${iconBase64}`}
+          style={{ imageRendering: "pixelated" }}
+        />
       );
     } else if (project?.previewImageBase64) {
       iconContent = (
@@ -922,7 +953,11 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             <div className="pid-titleRow">
               <h1 className="pid-heroTitle">{renderTitle()}</h1>
             </div>
-            {displayCreator && <div className="pid-heroCreator">by {displayCreator}</div>}
+            {displayCreator && (
+              <div className="pid-heroCreator">
+                {this.props.intl.formatMessage({ id: "project_editor.info.by_creator" }, { creator: displayCreator })}
+              </div>
+            )}
             {rawDescription && <p className="pid-heroDescription">{renderDescription()}</p>}
           </div>
         </div>
@@ -947,7 +982,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       },
       {
         icon: faCode,
-        label: "Scripts",
+        label: this.props.intl.formatMessage({ id: "project_editor.info.stats_scripts" }),
         count: project.getItemsByType(ProjectItemType.ts).length + project.getItemsByType(ProjectItemType.js).length,
       },
       { icon: faImage, label: "Textures", count: project.getItemsByType(ProjectItemType.texture).length },
@@ -980,7 +1015,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
     const categoryCards: JSX.Element[] = [];
 
-    for (const [categoryKey, categoryInfo] of Object.entries(STAT_CATEGORIES)) {
+    for (const [categoryKey, categoryInfo] of Object.entries(getStatCategories(this.props.intl))) {
       const items = grouped[categoryKey];
       if (!items || items.length === 0) continue;
 
@@ -1128,13 +1163,23 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             {hasLines && (
               <div className="pis-statMetric">
                 <span className="pis-metricValue">{Utilities.addCommasToNumber(lineTotal)}</span>
-                <span className="pis-metricLabel">lines (across {this.formatCount(fileCount, "item")})</span>
+                <span className="pis-metricLabel">
+                  {this.props.intl.formatMessage(
+                    { id: "project_editor.info.lines_across" },
+                    { count: this.formatCount(fileCount, "item") }
+                  )}
+                </span>
               </div>
             )}
             {hasSize && (
               <div className="pis-statMetric">
                 <span className="pis-metricValue">{this.formatBytes(sizeTotal)}</span>
-                <span className="pis-metricLabel">bytes (across {this.formatCount(fileCount, "item")})</span>
+                <span className="pis-metricLabel">
+                  {this.props.intl.formatMessage(
+                    { id: "project_editor.info.bytes_across" },
+                    { count: this.formatCount(fileCount, "item") }
+                  )}
+                </span>
               </div>
             )}
           </div>
@@ -1334,7 +1379,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
         let str = Utilities.consistentStringifyTrimmed(data);
         if (Array.isArray(data)) {
           if (str === "[]") {
-            return "(empty)";
+            return this.props.intl.formatMessage({ id: "project_editor.info.data_empty" });
           }
 
           str = str.substring(1, str.length - 1);
@@ -1348,7 +1393,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       return data;
     }
 
-    return "(not defined)";
+    return this.props.intl.formatMessage({ id: "project_editor.info.data_not_defined" });
   }
 
   private _toggleErrorFilter() {
@@ -1544,36 +1589,20 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       },
     });
 
-    this.setState({
-      selectedInfoSet: this.state.selectedInfoSet,
-      viewMode: ProjectInfoDisplayMode.info,
-      menuState: this.state.menuState,
-      lastExportKey: this.state.lastExportKey,
-      lastExportFunction: this.state.lastExportFunction,
-      lastExportData: this.state.lastExportData,
-      activeSuite: this.state.activeSuite,
-      displayErrors: this.state.displayErrors,
-      displaySuccess: this.state.displaySuccess,
-      maxItems: this.state.maxItems,
-      displayWarnings: this.state.displayWarnings,
-      displayRecommendation: this.state.displayRecommendation,
-      displayFailure: this.state.displayFailure,
-      displayInfo: this.state.displayInfo,
-      isLoading: this.state.isLoading,
-    });
+    this.setState((prev) => ({ ...prev, viewMode: ProjectInfoDisplayMode.info }));
   }
 
   _handleSuiteChange(event: SelectChangeEvent<string>) {
     let targetedSuite = ProjectInfoSuite.defaultInDevelopment;
     const value = event.target.value;
 
-    if (value === SuiteTitles[1]) {
+    if (value === getSuiteTitles(this.props.intl)[1]) {
       targetedSuite = ProjectInfoSuite.currentPlatformVersions;
-    } else if (value === SuiteTitles[2]) {
+    } else if (value === getSuiteTitles(this.props.intl)[2]) {
       targetedSuite = ProjectInfoSuite.cooperativeAddOn;
-    } else if (value === SuiteTitles[3]) {
+    } else if (value === getSuiteTitles(this.props.intl)[3]) {
       targetedSuite = ProjectInfoSuite.sharing;
-    } else if (value === SuiteTitles[4]) {
+    } else if (value === getSuiteTitles(this.props.intl)[4]) {
       targetedSuite = ProjectInfoSuite.sharingStrict;
     }
 
@@ -1585,8 +1614,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     telemetry.trackEvent({
       name: TelemetryEvents.INSPECTOR_SUITE_CHANGED,
       properties: {
-        [TelemetryProperties.OLD_VALUE]: SuiteTitles[this.state.activeSuite] || "Unknown",
-        [TelemetryProperties.NEW_VALUE]: SuiteTitles[targetedSuite] || "Unknown",
+        [TelemetryProperties.OLD_VALUE]: getSuiteTitles(this.props.intl)[this.state.activeSuite] || "Unknown",
+        [TelemetryProperties.NEW_VALUE]: getSuiteTitles(this.props.intl)[targetedSuite] || "Unknown",
       },
     });
 
@@ -1649,22 +1678,11 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       },
     });
 
-    this.setState({
-      selectedInfoSet: this.state.selectedInfoSet,
-      viewMode: ProjectInfoDisplayMode.summary,
-      menuState: this.state.menuState,
-      lastExportKey: this.state.lastExportKey,
-      lastExportFunction: this.state.lastExportFunction,
-      lastExportData: this.state.lastExportData,
-      activeSuite: this.state.activeSuite,
-      displayErrors: this.state.displayErrors,
-      displaySuccess: this.state.displaySuccess,
-      displayWarnings: this.state.displayWarnings,
-      displayRecommendation: this.state.displayRecommendation,
-      displayFailure: this.state.displayFailure,
-      displayInfo: this.state.displayInfo,
-      isLoading: this.state.isLoading,
-    });
+    // Use functional setState with partial merge so the view switch is guaranteed
+    // even if a concurrent async status update is in flight. Previously this method
+    // explicitly copied most state fields from this.state, which could clobber
+    // newer values written by _handleStatusUpdates/_generateInfoSetInternal.
+    this.setState((prev) => ({ ...prev, viewMode: ProjectInfoDisplayMode.summary }));
   }
 
   /**
@@ -1741,6 +1759,11 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       menuState: ProjectInfoDisplayMenuState.noMenu,
       exportMenuAnchorEl: null,
     });
+
+    // Return focus to the trigger button after the menu closes for keyboard/screen-reader users.
+    window.setTimeout(() => {
+      this._exportTriggerRef.current?.focus();
+    }, 0);
   }
 
   private _setNewExportKey(
@@ -1762,12 +1785,14 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       return;
     }
 
+    this._handleExportMenuClose();
+
     const date = new Date();
     const projName = this.props.project ? this.props.project.simplifiedName : "report";
 
     const reportHtml = this.state.selectedInfoSet.getReportHtml(projName, projName, date.getTime().toString());
 
-    saveAs(new Blob([reportHtml]), projName + " " + SuiteTitles[this.state.activeSuite] + ".html");
+    saveAs(new Blob([reportHtml]), projName + " " + getSuiteTitles(this.props.intl)[this.state.activeSuite] + ".html");
 
     this._setNewExportKey("htmlReport", this._downloadHtmlReport, undefined);
   }
@@ -1777,12 +1802,14 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       return;
     }
 
+    this._handleExportMenuClose();
+
     const pisLines = this.state.selectedInfoSet.getItemCsvLines();
 
     const projName = this.props.project ? this.props.project.name : "report";
     const csvContent = ProjectInfoSet.CommonCsvHeader + "\n" + pisLines.join("\n");
 
-    saveAs(new Blob([csvContent]), projName + " " + SuiteTitles[this.state.activeSuite] + ".csv");
+    saveAs(new Blob([csvContent]), projName + " " + getSuiteTitles(this.props.intl)[this.state.activeSuite] + ".csv");
 
     this._setNewExportKey("csvFile", this._downloadCsvReport, undefined);
   }
@@ -1854,9 +1881,9 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     exportKeys[nextExportKey] = {
       key: nextExportKey,
       icon: <FontAwesomeIcon icon={faFileInvoice} key={nextExportKey} className="fa-lg" />,
-      content: "HTML Report",
+      content: this.props.intl.formatMessage({ id: "project_editor.info.html_report" }),
       onClick: this._downloadHtmlReport,
-      title: "Get an HTML full report of this content.",
+      title: this.props.intl.formatMessage({ id: "project_editor.info.html_report_tooltip" }),
     };
 
     exportMenu.push(exportKeys[nextExportKey]);
@@ -1866,9 +1893,9 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     exportKeys[nextExportKey] = {
       key: nextExportKey,
       icon: <FontAwesomeIcon icon={faFileCsv} key={nextExportKey} className="fa-lg" />,
-      content: "CSV File",
+      content: this.props.intl.formatMessage({ id: "project_editor.info.csv_file" }),
       onClick: this._downloadCsvReport,
-      title: "Get an CSV file of errors and items.",
+      title: this.props.intl.formatMessage({ id: "project_editor.info.csv_file_tooltip" }),
     };
 
     exportMenu.push(exportKeys[nextExportKey]);
@@ -1925,11 +1952,15 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       this.state.displaySuccess &&
       this.state.displayFailure;
     const isCompactFilters = width < 1116;
+    const isMobile = width <= 600;
     const errorCount = countsByType[InfoItemType.error] + countsByType[InfoItemType.internalProcessingError];
     const warningCount = countsByType[InfoItemType.warning];
     const recommendationCount = countsByType[InfoItemType.recommendation];
+    const infoCount = countsByType[InfoItemType.info];
     const successCount = countsByType[InfoItemType.testCompleteSuccess];
     const failureCount = countsByType[InfoItemType.testCompleteFail];
+
+    const dimmedSx = { opacity: 0.5 };
 
     const toolbarItems = [
       {
@@ -1938,10 +1969,12 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             variant="green"
             selected={allFiltersOn}
             onClick={this._showAllFilters}
-            ariaLabel="Show all filter types"
-            title="Show all item types"
+            compact={isMobile}
+            icon={isMobile ? <FontAwesomeIcon icon={faList} /> : undefined}
+            ariaLabel={this.props.intl.formatMessage({ id: "project_editor.info.filter_all_aria" })}
+            title={this.props.intl.formatMessage({ id: "project_editor.info.filter_all_tooltip" })}
           >
-            All
+            {isMobile ? null : this.props.intl.formatMessage({ id: "project_editor.info.filter_all" })}
           </McChip>
         ),
         key: "showAllFilter",
@@ -1952,11 +1985,18 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             variant="error"
             selected={this.state.displayErrors}
             onClick={this._toggleErrorFilter}
-            count={errorCount > 0 ? errorCount : undefined}
-            ariaLabel={`Filter by errors${errorCount > 0 ? `, ${errorCount} items` : ""}`}
-            title="Toggle whether error items show"
+            count={errorCount}
+            compact={isMobile}
+            icon={isMobile ? <FontAwesomeIcon icon={faCircleExclamation} /> : undefined}
+            ariaLabel={`Filter by errors, ${errorCount} items`}
+            title={this.props.intl.formatMessage({ id: "project_editor.info.filter_errors_tooltip" })}
+            sx={errorCount === 0 ? dimmedSx : undefined}
           >
-            {isCompactFilters ? "Err" : "Errors"}
+            {isMobile
+              ? null
+              : isCompactFilters
+                ? this.props.intl.formatMessage({ id: "project_editor.info.filter_errors_compact" })
+                : "Errors"}
           </McChip>
         ),
         key: "errorFilter",
@@ -1967,11 +2007,18 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             variant="warning"
             selected={this.state.displayWarnings}
             onClick={this._toggleWarningFilter}
-            count={warningCount > 0 ? warningCount : undefined}
-            ariaLabel={`Filter by warnings${warningCount > 0 ? `, ${warningCount} items` : ""}`}
-            title="Toggle whether warning items show"
+            count={warningCount}
+            compact={isMobile}
+            icon={isMobile ? <FontAwesomeIcon icon={faCircleQuestion} /> : undefined}
+            ariaLabel={`Filter by warnings, ${warningCount} items`}
+            title={this.props.intl.formatMessage({ id: "project_editor.info.filter_warnings_tooltip" })}
+            sx={warningCount === 0 ? dimmedSx : undefined}
           >
-            {isCompactFilters ? "Warn" : "Warnings"}
+            {isMobile
+              ? null
+              : isCompactFilters
+                ? this.props.intl.formatMessage({ id: "project_editor.info.filter_warnings_compact" })
+                : this.props.intl.formatMessage({ id: "project_editor.info.filter_warnings" })}
           </McChip>
         ),
         key: "warningFilter",
@@ -1982,11 +2029,18 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             variant="recommendation"
             selected={this.state.displayRecommendation}
             onClick={this._toggleRecommendationFilter}
-            count={recommendationCount > 0 ? recommendationCount : undefined}
-            ariaLabel={`Filter by recommendations${recommendationCount > 0 ? `, ${recommendationCount} items` : ""}`}
-            title="Toggle whether recommendation items show"
+            count={recommendationCount}
+            compact={isMobile}
+            icon={isMobile ? <FontAwesomeIcon icon={faCircleArrowUp} /> : undefined}
+            ariaLabel={`Filter by recommendations, ${recommendationCount} items`}
+            title={this.props.intl.formatMessage({ id: "project_editor.info.filter_recommendations_tooltip" })}
+            sx={recommendationCount === 0 ? dimmedSx : undefined}
           >
-            {isCompactFilters ? "Tips" : "Recommendations"}
+            {isMobile
+              ? null
+              : isCompactFilters
+                ? this.props.intl.formatMessage({ id: "project_editor.info.filter_recommendations_compact" })
+                : "Recommendations"}
           </McChip>
         ),
         key: "recoFilter",
@@ -1997,10 +2051,18 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             variant="info"
             selected={this.state.displayInfo}
             onClick={this._toggleInfoFilter}
-            ariaLabel="Filter by info"
-            title="Toggle whether information items show"
+            count={infoCount}
+            compact={isMobile}
+            icon={isMobile ? <FontAwesomeIcon icon={faCircleInfo} /> : undefined}
+            ariaLabel={`Filter by info, ${infoCount} items`}
+            title={this.props.intl.formatMessage({ id: "project_editor.info.filter_information_tooltip" })}
+            sx={infoCount === 0 ? dimmedSx : undefined}
           >
-            {isCompactFilters ? "Info" : "Information"}
+            {isMobile
+              ? null
+              : isCompactFilters
+                ? "Info"
+                : this.props.intl.formatMessage({ id: "project_editor.info.filter_information" })}
           </McChip>
         ),
         key: "infoFilter",
@@ -2011,11 +2073,18 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             variant="passed"
             selected={this.state.displaySuccess}
             onClick={this._toggleSuccessFilter}
-            count={successCount > 0 ? successCount : undefined}
-            ariaLabel={`Filter by passed items${successCount > 0 ? `, ${successCount} items` : ""}`}
-            title="Toggle whether passed items show"
+            count={successCount}
+            compact={isMobile}
+            icon={isMobile ? <FontAwesomeIcon icon={faCircleCheck} /> : undefined}
+            ariaLabel={`Filter by passed items, ${successCount} items`}
+            title={this.props.intl.formatMessage({ id: "project_editor.info.filter_passed_tooltip" })}
+            sx={successCount === 0 ? dimmedSx : undefined}
           >
-            {isCompactFilters ? "Pass" : "Passed"}
+            {isMobile
+              ? null
+              : isCompactFilters
+                ? this.props.intl.formatMessage({ id: "project_editor.info.filter_passed_compact" })
+                : "Passed"}
           </McChip>
         ),
         key: "successFilter",
@@ -2026,11 +2095,18 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             variant="error"
             selected={this.state.displayFailure}
             onClick={this._toggleFailureFilter}
-            count={failureCount > 0 ? failureCount : undefined}
-            ariaLabel={`Filter by failed items${failureCount > 0 ? `, ${failureCount} items` : ""}`}
-            title="Toggle whether failed items show"
+            count={failureCount}
+            compact={isMobile}
+            icon={isMobile ? <FontAwesomeIcon icon={faCircleXmark} /> : undefined}
+            ariaLabel={`Filter by failed items, ${failureCount} items`}
+            title={this.props.intl.formatMessage({ id: "project_editor.info.filter_failed_tooltip" })}
+            sx={failureCount === 0 ? dimmedSx : undefined}
           >
-            {isCompactFilters ? "Fail" : "Failed"}
+            {isMobile
+              ? null
+              : isCompactFilters
+                ? this.props.intl.formatMessage({ id: "project_editor.info.filter_failed_compact" })
+                : "Failed"}
           </McChip>
         ),
         key: "failureFilter",
@@ -2049,7 +2125,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       // Check if title looks like a loc key (contains dot, no spaces, short)
       titleIsLocKey = !!title && title.includes(".") && !title.includes(" ") && title.length < 100;
     } else {
-      title = "Report";
+      title = this.props.intl.formatMessage({ id: "project_editor.info.report_fallback" });
     }
 
     let outer = <></>;
@@ -2079,7 +2155,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
               color: colors.foreground3,
             }}
           >
-            Please wait — checking your project for issues...{" "}
+            {this.props.intl.formatMessage({ id: "project_editor.info.loading_message" })}{" "}
             {this.state.loadStatus ? "(" + this.state.loadStatus + ")" : ""}
           </div>
         </div>
@@ -2158,13 +2234,21 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
         // Only add the Key Items section if there are actual rows to display
         if (rows.length > 0) {
-          lines.push(<div className="pis-areaHeader">Key Items</div>);
           lines.push(
-            <table className="pis-detailTable">
+            <div className="pis-areaHeader" key="summary-key-items-header">
+              {this.props.intl.formatMessage({ id: "project_editor.info.key_items_header" })}
+            </div>
+          );
+          lines.push(
+            <table className="pis-detailTable" key="summary-key-items-table">
               <thead>
                 <tr>
-                  <td className="pis-itemDataHeader">Item</td>
-                  <td className="pis-itemValueHeader">Value</td>
+                  <td className="pis-itemDataHeader">
+                    {this.props.intl.formatMessage({ id: "project_editor.info.item_col" })}
+                  </td>
+                  <td className="pis-itemValueHeader">
+                    {this.props.intl.formatMessage({ id: "project_editor.info.value_col" })}
+                  </td>
                 </tr>
               </thead>
               <tbody>{rows}</tbody>
@@ -2297,13 +2381,15 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
           id={activePanelId}
           aria-labelledby={activeTabId}
           style={{
-            maxHeight: height > 300 ? contentAreaHeightSmall : "inherit",
+            flex: 1,
+            minHeight: 0,
+            overflowY: "auto",
           }}
         >
           {/* Hero Section - Project Overview */}
           {this.renderHeroSection(
             infoSet,
-            title || "Project",
+            title || this.props.intl.formatMessage({ id: "project_editor.info.project_fallback" }),
             this.props.project?.creator,
             this.props.project?.description
           )}
@@ -2317,7 +2403,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
                 aria-labelledby="dssp-pathlabel"
                 value={this.state.searchTerm}
                 onChange={this._handleSearchTermChanged}
-                placeholder="🔍 Search statistics..."
+                placeholder={this.props.intl.formatMessage({ id: "project_editor.info.search_placeholder" })}
                 size="small"
                 variant="outlined"
                 fullWidth
@@ -2335,7 +2421,9 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
                       : "rgba(0, 0, 0, 0.02)",
                 }}
               >
-                <div className="pis-areaHeader">Project Information</div>
+                <div className="pis-areaHeader">
+                  {this.props.intl.formatMessage({ id: "project_editor.info.project_information" })}
+                </div>
                 <div className="pis-summaryArea">{lines}</div>
               </div>
             )}
@@ -2351,7 +2439,9 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
                       : "rgba(0, 0, 0, 0.02)",
                 }}
               >
-                <div className="pis-contentSummaryHeader">Content Statistics</div>
+                <div className="pis-contentSummaryHeader">
+                  {this.props.intl.formatMessage({ id: "project_editor.info.content_statistics" })}
+                </div>
                 {this.renderCategorizedStats(infoSet.info.featureSets)}
               </div>
             )}
@@ -2361,7 +2451,12 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
               <div className="pis-detailsSection">
                 <div className="pis-detailsToggle" onClick={this._toggleDetails}>
                   <span className={`pis-sectionToggle ${this.state.showDetails ? "pis-expanded" : "pis-collapsed"}`} />
-                  <span>Detailed Metrics ({detailRows.length} items)</span>
+                  <span>
+                    {this.props.intl.formatMessage(
+                      { id: "project_editor.info.detailed_metrics" },
+                      { count: detailRows.length }
+                    )}
+                  </span>
                 </div>
                 {this.state.showDetails && (
                   <div className="pis-detailsContent">
@@ -2370,6 +2465,38 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
                     </table>
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* Empty state — ensures the Summary panel always shows something so
+                it is clearly distinct from the Items panel even when no summary
+                data is available yet. */}
+            {lines.length === 0 && detailRows.length === 0 && !(infoSet && infoSet.info.featureSets) && (
+              <div
+                className="pis-sectionCard"
+                style={{
+                  padding: "24px",
+                  textAlign: "center",
+                  opacity: 0.75,
+                }}
+                data-testid="pid-summary-empty"
+              >
+                <div style={{ fontSize: "14px", fontWeight: 600, marginBottom: "4px" }}>
+                  {this.props.intl.formatMessage(
+                    { id: "project_editor.info.summary_empty_title", defaultMessage: "Summary" },
+                    {}
+                  )}
+                </div>
+                <div style={{ fontSize: "13px" }}>
+                  {this.props.intl.formatMessage(
+                    {
+                      id: "project_editor.info.summary_empty_body",
+                      defaultMessage:
+                        "No summary data is available yet. Switch to the Items tab for detailed checks, or run a report to populate this view.",
+                    },
+                    {}
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -2447,6 +2574,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
                 itemSet={this.state.selectedInfoSet}
                 item={item}
                 isBand={itemsShown % 2 === 1}
+                isMobile={isMobile}
                 theme={this.props.theme}
                 key={"pid" + i}
                 creatorTools={this.props.creatorTools}
@@ -2464,11 +2592,18 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
           id={activePanelId}
           aria-labelledby={activeTabId}
           style={{
-            maxHeight: height > 300 ? contentAreaHeightSmall : "inherit",
+            flex: 1,
+            minHeight: 0,
+            backgroundColor: colors.background3,
           }}
         >
           <div className="pid-filterToolbar">
-            <Stack direction="row" spacing={1} aria-label="Filter actions" className="pid-filterActions">
+            <Stack
+              direction="row"
+              spacing={1}
+              aria-label={this.props.intl.formatMessage({ id: "project_editor.info.aria_filter_actions" })}
+              className="pid-filterActions"
+            >
               {toolbarItems.map((item) => (
                 <div key={item.key} className="pid-filterControl">
                   {item.chip}
@@ -2490,17 +2625,29 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
                 gap: "12px",
               }}
               role="status"
-              aria-label={warningCount > 0 ? "Checks passed with warnings" : "All checks passed"}
+              aria-label={
+                warningCount > 0
+                  ? this.props.intl.formatMessage({ id: "project_editor.info.checks_passed_aria" })
+                  : this.props.intl.formatMessage({ id: "project_editor.info.all_passed_aria" })
+              }
             >
               <span style={{ fontSize: "24px" }}>{warningCount > 0 ? "⚠️" : "✅"}</span>
               <div>
                 <div style={{ fontWeight: "bold", fontSize: "14px" }}>
-                  {warningCount > 0 ? "Your add-on has some warnings to review" : "Your add-on looks great!"}
+                  {warningCount > 0
+                    ? this.props.intl.formatMessage({ id: "project_editor.info.warning_title" })
+                    : this.props.intl.formatMessage({ id: "project_editor.info.success_title" })}
                 </div>
                 <div style={{ fontSize: "12px", marginTop: "2px" }}>
                   {warningCount > 0
-                    ? `${successCount} checks passed with ${warningCount} warning${warningCount !== 1 ? "s" : ""} to review.`
-                    : `All ${successCount} checks passed. Ready to export and test in Minecraft!`}
+                    ? this.props.intl.formatMessage(
+                        { id: "project_editor.info.warning_passed_with_warnings" },
+                        { successCount, warningCount }
+                      )
+                    : this.props.intl.formatMessage(
+                        { id: "project_editor.info.success_all_passed" },
+                        { count: successCount }
+                      )}
                 </div>
               </div>
             </div>
@@ -2509,36 +2656,126 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             className="pid-tableWrapper"
             style={{
               overflowY: height > 300 ? "auto" : "inherit",
+              backgroundColor: colors.background3,
             }}
             tabIndex={height > 300 ? 0 : -1}
             onScroll={this._handleListScroll}
           >
-            <table
-              className="pid-area"
-              style={{
-                backgroundColor: colors.background3,
-                color: colors.foreground3,
-              }}
-              cellPadding={0}
-              cellSpacing={0}
-            >
-              <thead>
-                <tr
-                  className="pid-headerRow"
-                  style={{
-                    backgroundColor: colors.background3,
-                    color: colors.foreground3,
+            {/*
+             * Empty-state: when itemRows is empty, the most common cause is that
+             * the user's active filter chips (errors/warnings/recommendations/failures)
+             * have 0 items, while INFORMATION and PASSED — which are off by default —
+             * have data. Telling them what's hidden + offering Show all turns a
+             * confusing blank table into a guided next step.
+             */}
+            {itemRows.length === 0 && this.state.selectedInfoSet && this.state.selectedInfoSet.items.length > 0 && (
+              <div
+                className="pid-emptyState"
+                role="status"
+                style={{
+                  padding: "24px 20px",
+                  margin: "12px 0",
+                  border: "1px dashed rgba(82, 165, 53, 0.45)",
+                  borderRadius: "4px",
+                  backgroundColor: "rgba(82, 165, 53, 0.06)",
+                  textAlign: "center",
+                  color: colors.foreground3,
+                }}
+              >
+                <div style={{ fontSize: "14px", fontWeight: 600, marginBottom: "6px" }}>
+                  {this.props.intl.formatMessage({ id: "project_editor.info.items_empty_title" })}
+                </div>
+                <div style={{ fontSize: "13px", marginBottom: "12px", opacity: 0.85 }}>
+                  {(() => {
+                    const totalItems = this.state.selectedInfoSet.items.length;
+                    const visibleItemTypes = new Set<InfoItemType>();
+                    if (this.state.displayErrors) {
+                      visibleItemTypes.add(InfoItemType.error);
+                      visibleItemTypes.add(InfoItemType.internalProcessingError);
+                    }
+                    if (this.state.displayWarnings) visibleItemTypes.add(InfoItemType.warning);
+                    if (this.state.displayRecommendation) visibleItemTypes.add(InfoItemType.recommendation);
+                    if (this.state.displayInfo) visibleItemTypes.add(InfoItemType.info);
+                    if (this.state.displaySuccess) visibleItemTypes.add(InfoItemType.testCompleteSuccess);
+                    if (this.state.displayFailure) visibleItemTypes.add(InfoItemType.testCompleteFail);
+                    const hidden = this.state.selectedInfoSet.items.filter((it) => !visibleItemTypes.has(it.itemType))
+                      .length;
+                    return hidden > 0
+                      ? this.props.intl.formatMessage(
+                          { id: "project_editor.info.items_empty_hint_hidden" },
+                          { hidden }
+                        )
+                      : this.props.intl.formatMessage(
+                          { id: "project_editor.info.items_empty_hint" },
+                          { totalItems }
+                        );
+                  })()}
+                </div>
+                <Button
+                  size="small"
+                  variant="contained"
+                  onClick={this._showAllFilters}
+                  sx={{
+                    backgroundColor: "#52a535",
+                    textTransform: "none",
+                    fontFamily: '"Noto Sans", "Helvetica Neue", Arial, sans-serif',
+                    "&:hover": { backgroundColor: "#2a641c" },
                   }}
                 >
-                  <th className="pid-headerCell pid-headerTypeCell">Type</th>
-                  <th className="pid-headerCell">Check</th>
-                  <th className="pid-headerCell">Message</th>
-                  <th className="pid-headerCell">File</th>
-                  <th className="pid-headerCell pid-headerActionsCell">Details</th>
-                </tr>
-              </thead>
-              <tbody>{itemRows}</tbody>
-            </table>
+                  {this.props.intl.formatMessage({ id: "project_editor.info.items_empty_show_all" })}
+                </Button>
+              </div>
+            )}
+            {isMobile ? (
+              <div
+                className="pid-cardList"
+                style={{
+                  color: colors.foreground3,
+                }}
+              >
+                {itemRows}
+              </div>
+            ) : (
+              <table
+                className="pid-area"
+                style={{
+                  backgroundColor: colors.background3,
+                  color: colors.foreground3,
+                }}
+                cellPadding={0}
+                cellSpacing={0}
+              >
+                <thead>
+                  <tr
+                    className="pid-headerRow"
+                    style={{
+                      backgroundColor: colors.background3,
+                      color: colors.foreground3,
+                    }}
+                  >
+                    <th className="pid-headerCell pid-headerTypeCell">
+                      {this.props.intl.formatMessage({ id: "project_editor.info.table_type" })}
+                    </th>
+                    <th className="pid-headerCell pid-headerCodeCell">
+                      {this.props.intl.formatMessage({ id: "project_editor.info.table_code" })}
+                    </th>
+                    <th className="pid-headerCell">
+                      {this.props.intl.formatMessage({ id: "project_editor.info.table_check" })}
+                    </th>
+                    <th className="pid-headerCell">
+                      {this.props.intl.formatMessage({ id: "project_editor.info.table_message" })}
+                    </th>
+                    <th className="pid-headerCell">
+                      {this.props.intl.formatMessage({ id: "project_editor.info.table_file" })}
+                    </th>
+                    <th className="pid-headerCell pid-headerActionsCell">
+                      {this.props.intl.formatMessage({ id: "project_editor.info.table_details" })}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>{itemRows}</tbody>
+              </table>
+            )}
           </div>
         </div>
       );
@@ -2549,36 +2786,44 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
         style={{
           backgroundColor: colors.background1,
           color: colors.foreground1,
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
         }}
       >
         <div
           className="pid-outer"
           style={{
-            maxHeight: height < 300 ? "calc(100vh - " + (this.props.heightOffset - 3) + "px)" : "inherit",
-            overflowY: height < 300 ? "auto" : "inherit",
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            minHeight: 0,
+            overflow: "hidden",
           }}
-          tabIndex={height < 300 ? 0 : -1}
+          tabIndex={-1}
         >
-          <h2 className="pid-title">
+          <h2 className={`pid-title${isMobile ? " pid-title-mobile" : ""}`}>
             Project Inspector for{" "}
             {titleIsLocKey && this.props.project ? (
               <LocTokenBox
                 project={this.props.project}
-                value={title || "Project"}
+                value={title || this.props.intl.formatMessage({ id: "project_editor.info.project_fallback" })}
                 creatorTools={this.props.creatorTools}
               />
             ) : (
               title
             )}
           </h2>
-          <div className="pid-toolArea">
+          <div className={`pid-toolArea${isMobile ? " pid-toolArea-mobile" : ""}`}>
             <div
               className="pid-topToolbar"
               role="tablist"
-              aria-label="Inspector views"
+              aria-label={this.props.intl.formatMessage({ id: "project_editor.info.aria_inspector_views" })}
               onKeyDown={this._handleTabKeyDown}
             >
               <button
+                type="button"
                 onClick={this._setSummaryMode}
                 role="tab"
                 id="pid-tab-summary"
@@ -2590,10 +2835,11 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
                 <SummaryTabLabel
                   theme={this.props.theme}
                   isSelected={this.state.viewMode === ProjectInfoDisplayMode.summary}
-                  isCompact={width < 1100}
+                  isCompact={isMobile || width < 1100}
                 />
               </button>
               <button
+                type="button"
                 onClick={this._setInfoMode}
                 role="tab"
                 id="pid-tab-items"
@@ -2605,21 +2851,41 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
                 <InfoTabLabel
                   theme={this.props.theme}
                   isSelected={this.state.viewMode === ProjectInfoDisplayMode.info}
-                  isCompact={width < 1100}
+                  isCompact={isMobile || width < 1100}
                 />
               </button>
             </div>
-            <div className="pid-suiteTitle" id="pid-suiteTitle">
-              Suite:
-            </div>
+            {!isMobile && (
+              <div className="pid-suiteTitle" id="pid-suiteTitle">
+                {this.props.intl.formatMessage({ id: "project_editor.info.suite_label" })}
+              </div>
+            )}
             <div className="pid-suiteDropdown">
-              <FormControl size="small" sx={{ minWidth: 180 }}>
+              <FormControl size="small" sx={{ minWidth: isMobile ? 0 : 180, maxWidth: isMobile ? 140 : undefined }}>
                 <Select
                   aria-labelledby="pid-suiteTitle"
-                  value={SuiteTitles[this.state.activeSuite] || ""}
+                  aria-label={
+                    isMobile ? this.props.intl.formatMessage({ id: "project_editor.info.suite_label" }) : undefined
+                  }
+                  value={getSuiteTitles(this.props.intl)[this.state.activeSuite] || ""}
                   onChange={this._handleSuiteChange}
+                  sx={
+                    isMobile
+                      ? {
+                          fontSize: "12px",
+                          "& .MuiSelect-select": {
+                            paddingRight: "24px",
+                            paddingLeft: "8px",
+                            paddingTop: "4px",
+                            paddingBottom: "4px",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          },
+                        }
+                      : undefined
+                  }
                 >
-                  {SuiteTitles.map((title) => (
+                  {getSuiteTitles(this.props.intl).map((title) => (
                     <MenuItem key={title} value={title}>
                       {title}
                     </MenuItem>
@@ -2628,21 +2894,33 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
               </FormControl>
             </div>
             <div className="pid-actionToolbar">
-              <Stack direction="row" spacing={0.5} aria-label="Report actions">
+              <Stack
+                direction="row"
+                spacing={0.5}
+                aria-label={this.props.intl.formatMessage({ id: "project_editor.info.aria_report_actions" })}
+              >
                 {!this.state.lastExportKey ? (
                   <>
-                    <Button size="small" onClick={this._handleExportMenuOpen} title="Deploy">
-                      <DownloadLabel isCompact={width < 1116} />
+                    <Button
+                      size="small"
+                      ref={this._exportTriggerRef as React.RefObject<HTMLButtonElement>}
+                      onClick={this._handleExportMenuOpen}
+                      title={this.props.intl.formatMessage({ id: "project_editor.info.deploy_tooltip" })}
+                    >
+                      <DownloadLabel isCompact={isMobile || width < 1116} />
                     </Button>
                     <Menu
                       anchorEl={this.state.exportMenuAnchorEl}
                       open={this.state.menuState === ProjectInfoDisplayMenuState.exportMenu}
                       onClose={this._handleExportMenuClose}
                     >
+                      <ListSubheader disableSticky>Full report</ListSubheader>
                       <MenuItem onClick={this._downloadHtmlReport}>
                         <FontAwesomeIcon icon={faFileInvoice} className="fa-lg" style={{ marginRight: 8 }} />
                         HTML Report
                       </MenuItem>
+                      <Divider />
+                      <ListSubheader disableSticky>Data export</ListSubheader>
                       <MenuItem onClick={this._downloadCsvReport}>
                         <FontAwesomeIcon icon={faFileCsv} className="fa-lg" style={{ marginRight: 8 }} />
                         CSV File
@@ -2673,7 +2951,13 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
                         isCompact={false}
                       />
                     </Button>
-                    <IconButton size="small" onClick={this._handleExportMenuOpen} title="Export Options" aria-label="Export options">
+                    <IconButton
+                      size="small"
+                      ref={this._exportTriggerRef as React.RefObject<HTMLButtonElement>}
+                      onClick={this._handleExportMenuOpen}
+                      title={this.props.intl.formatMessage({ id: "project_editor.info.export_options" })}
+                      aria-label={this.props.intl.formatMessage({ id: "project_editor.info.aria_export_options" })}
+                    >
                       <DownArrowLabel />
                     </IconButton>
                     <Menu
@@ -2681,10 +2965,13 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
                       open={this.state.menuState === ProjectInfoDisplayMenuState.exportMenu}
                       onClose={this._handleExportMenuClose}
                     >
+                      <ListSubheader disableSticky>Full report</ListSubheader>
                       <MenuItem onClick={this._downloadHtmlReport}>
                         <FontAwesomeIcon icon={faFileInvoice} className="fa-lg" style={{ marginRight: 8 }} />
                         HTML Report
                       </MenuItem>
+                      <Divider />
+                      <ListSubheader disableSticky>Data export</ListSubheader>
                       <MenuItem onClick={this._downloadCsvReport}>
                         <FontAwesomeIcon icon={faFileCsv} className="fa-lg" style={{ marginRight: 8 }} />
                         CSV File
@@ -2702,3 +2989,5 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     );
   }
 }
+
+export default withLocalization(ProjectInfoDisplay);

@@ -779,6 +779,10 @@ export default class BlockMeshFactory {
 
       case BlockShape.door:
         sourceMesh = this.createDoorMesh(name, block);
+        // Iron/copper/glass doors have transparent cutouts; alpha-test renders
+        // those pixels as see-through instead of black. Wooden doors have no
+        // transparent pixels so the cutoff is a no-op for them.
+        this._applyAlphaTest(sourceMesh, 0.1);
         this._applyWaterLogging(block, sourceMesh);
         break;
 
@@ -851,6 +855,13 @@ export default class BlockMeshFactory {
         const isOpen = block.properties["open_bit"]?.value === true;
         sourceMesh = this.createTrapdoorMesh(name, block, isOpen);
         if (sourceMesh !== undefined) {
+          // Many trapdoors (iron, copper, sculk-variants, waxed_copper, etc.)
+          // have transparent grating cutouts in their diffuse texture. Without
+          // alpha-test those holes render as black because the texture's alpha
+          // channel is ignored. Applying alpha-test with a low cutoff matches
+          // vanilla behavior and also covers fully-opaque wooden trapdoors
+          // safely (their alpha is all 1.0 so nothing is clipped).
+          this._applyAlphaTest(sourceMesh, 0.1);
           this._applyWaterLogging(block, sourceMesh);
         }
         break;
@@ -2493,56 +2504,143 @@ export default class BlockMeshFactory {
    * Creates a billboard (X-shaped cross) mesh for vegetation blocks like flowers,
    * saplings, tall grass, mushrooms, dead bush, etc.
    * Two perpendicular planes at ±45° angles with the block's texture applied.
+   *
+   * Manual vertex construction (no MergeMeshes / bakeCurrentTransformIntoVertices):
+   * we previously composed the X-cross by creating two unit planes, rotating each
+   * ±45°, baking the rotation into vertices, then MergeMeshes'ing them together.
+   * That sequence interacted badly with `mesh.clone()` + thin instance cloning —
+   * subsequent clones (chunks 2+) rendered as oversized opaque rectangles instead
+   * of alpha-cutout crosses (#5 in run20260506 second-pass, F1). Building the
+   * vertex / UV / index / normal buffers directly bypasses that path entirely.
    */
   public createTexturedBillboardMesh(meshName: string, blockTypeName: string): BABYLON.Mesh | undefined {
     const blockType = Database.ensureBlockType(blockTypeName);
     if (!blockType) return undefined;
 
-    let texPath = ProjectDefinitionUtilities.getVanillaBlockTexture(blockType, "up");
+    // useCarried=false: Billboards are in-world rendering, not inventory display.
+    // Some vanilla blocks (e.g., wildflowers) define carried_textures pointing to
+    // an item icon (textures/items/...) whose RGB is filled with the icon color
+    // even in transparent regions, producing a solid-color rectangle on a
+    // alpha-cutout billboard. Always prefer the in-world block texture here.
+    let texPath = ProjectDefinitionUtilities.getVanillaBlockTexture(blockType, "up", false);
     if (!texPath) {
-      texPath = ProjectDefinitionUtilities.getVanillaBlockTexture(blockType, "side");
+      texPath = ProjectDefinitionUtilities.getVanillaBlockTexture(blockType, "side", false);
     }
     if (!texPath) return undefined;
 
-    const material = this._ensureMaterialFromPath(texPath);
-    // Enable alpha for vegetation transparency — override the opaque defaults
-    // from _ensureMaterialFromPath since vegetation textures have alpha cutouts
-    if (material instanceof BABYLON.StandardMaterial) {
-      material.unfreeze();
-      if (material.diffuseTexture) {
-        (material.diffuseTexture as BABYLON.Texture).hasAlpha = true;
-      }
-      material.transparencyMode = BABYLON.Material.MATERIAL_ALPHATEST;
-      material.alphaCutOff = 0.3;
-      material.useAlphaFromDiffuseTexture = true;
-      material.backFaceCulling = false;
-      material.freeze();
-    }
+    // Use a SEPARATE billboard material (not the cached opaque material from
+    // _ensureMaterialFromPath). Creating fresh ensures alpha-cutout settings are
+    // applied BEFORE the first material.freeze() / shader compile — Babylon may
+    // not pick up transparencyMode changes after a material has been frozen.
+    const material = this._ensureBillboardMaterialFromPath(texPath);
 
-    const planeOpts = {
-      size: 1,
-      sideOrientation: BABYLON.Mesh.DOUBLESIDE,
-      frontUVs: new BABYLON.Vector4(0, 0, 1, 1),
-      backUVs: new BABYLON.Vector4(0, 0, 1, 1),
+    if (this._scene === null) return undefined;
+
+    // Manually build an X-cross of two unit squares.
+    // Plane A: rotated +45° around Y. Vertices traverse from (-r, +0.5, +r) →
+    // (+r, +0.5, -r) on top edge, with r = sin(45°) * 0.5 = 0.35355.
+    // Plane B: rotated -45° around Y → (-r, +0.5, -r) → (+r, +0.5, +r) on top.
+    // Each plane has 4 vertices laid out as front face + back face (DOUBLESIDE),
+    // matching the structure CreatePlane produced.
+    const r = Math.SQRT2 * 0.5 * 0.5; // ≈ 0.35355
+    const positions: number[] = [];
+    const indices: number[] = [];
+    const uvs: number[] = [];
+    const normals: number[] = [];
+
+    const addPlane = (
+      ax: number, az: number,
+      bx: number, bz: number,
+      nx: number, nz: number
+    ) => {
+      const baseIdx = positions.length / 3;
+      // Top-left, Top-right, Bottom-right, Bottom-left
+      positions.push(ax, +0.5, az);
+      positions.push(bx, +0.5, bz);
+      positions.push(bx, -0.5, bz);
+      positions.push(ax, -0.5, az);
+      uvs.push(0, 1);
+      uvs.push(1, 1);
+      uvs.push(1, 0);
+      uvs.push(0, 0);
+      normals.push(nx, 0, nz);
+      normals.push(nx, 0, nz);
+      normals.push(nx, 0, nz);
+      normals.push(nx, 0, nz);
+      // Front face: TL, TR, BR | TL, BR, BL
+      indices.push(baseIdx + 0, baseIdx + 1, baseIdx + 2);
+      indices.push(baseIdx + 0, baseIdx + 2, baseIdx + 3);
+      // Back face (DOUBLESIDE): TR, TL, BL | TR, BL, BR
+      indices.push(baseIdx + 1, baseIdx + 0, baseIdx + 3);
+      indices.push(baseIdx + 1, baseIdx + 3, baseIdx + 2);
     };
 
-    // Create two perpendicular planes forming an X and merge into single mesh
-    // so thin instances work (parent mesh has geometry, not child planes)
-    const planeA = BABYLON.MeshBuilder.CreatePlane(meshName + "_a", planeOpts, this._scene);
-    planeA.rotation.y = Math.PI / 4;
-    planeA.bakeCurrentTransformIntoVertices();
+    // Plane A (+45°): edge from (-r, _, +r) to (+r, _, -r); normal perpendicular
+    // = (sin(135°), 0, cos(135°)) ≈ (0.707, 0, -0.707)
+    addPlane(-r, +r, +r, -r, Math.SQRT1_2, -Math.SQRT1_2);
+    // Plane B (-45°): edge from (-r, _, -r) to (+r, _, +r); normal ≈ (0.707, 0, 0.707)
+    addPlane(-r, -r, +r, +r, Math.SQRT1_2, Math.SQRT1_2);
 
-    const planeB = BABYLON.MeshBuilder.CreatePlane(meshName + "_b", planeOpts, this._scene);
-    planeB.rotation.y = -Math.PI / 4;
-    planeB.bakeCurrentTransformIntoVertices();
+    const mesh = new BABYLON.Mesh(meshName, this._scene);
+    const vd = new BABYLON.VertexData();
+    vd.positions = positions;
+    vd.indices = indices;
+    vd.uvs = uvs;
+    vd.normals = normals;
+    vd.applyToMesh(mesh, false);
 
-    const merged = BABYLON.Mesh.MergeMeshes([planeA, planeB], true, true, undefined, false, true);
-    if (!merged) return undefined;
+    mesh.material = material;
+    return mesh;
+  }
 
-    merged.name = meshName;
-    merged.material = material;
+  /**
+   * Creates (or returns cached) a StandardMaterial for billboard (vegetation)
+   * rendering with proper alpha-cutout settings.
+   *
+   * Why a separate cache from `_ensureMaterialFromPath`: the regular path bakes
+   * an opaque texture+material (no transparency mode set) for use on full-cube
+   * blocks. Vegetation needs ALPHATEST + alpha-from-diffuse so the X-cross
+   * planes show only the textured pixels and let the rest go transparent.
+   */
+  private _ensureBillboardMaterialFromPath(blockPath: string): BABYLON.StandardMaterial {
+    const cacheKey = "bb:" + blockPath;
+    const cached = this._materials.get(cacheKey);
+    if (cached instanceof BABYLON.StandardMaterial) return cached;
 
-    return merged;
+    if (this._scene === null) {
+      throw new Error("Scene is null in _ensureBillboardMaterialFromPath");
+    }
+
+    const mat = new BABYLON.StandardMaterial("bbmat." + blockPath, this._scene);
+    mat.alpha = 1.0;
+
+    const path = CreatorToolsHost.getVanillaContentRoot() + "res/latest/van/serve/resource_pack/" + blockPath + ".png";
+
+    const texture = new BABYLON.Texture(path, this._scene, true, false, BABYLON.Texture.NEAREST_SAMPLINGMODE);
+    texture.anisotropicFilteringLevel = 1;
+    texture.hasAlpha = true;
+    texture.uScale = 1;
+    texture.vScale = -1;
+
+    (texture as any)._onError = () => {
+      mat.diffuseTexture = null;
+    };
+
+    mat.diffuseTexture = texture;
+    mat.specularColor = new BABYLON.Color3(0.04, 0.04, 0.04);
+    mat.emissiveColor = new BABYLON.Color3(0.15, 0.15, 0.15);
+    mat.zOffset = -2;
+
+    mat.useAlphaFromDiffuseTexture = true;
+    mat.transparencyMode = BABYLON.Material.MATERIAL_ALPHATEST;
+    mat.alphaCutOff = 0.3;
+    mat.backFaceCulling = false;
+
+    this._materials.set(cacheKey, mat);
+
+    this._fixTexturePremultiply(path, texture, mat);
+
+    return mat;
   }
 
   /**

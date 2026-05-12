@@ -46,8 +46,6 @@ const electronExternals = [
   "electron-devtools-installer",
 
   // Native modules - can't be bundled (contain .node binaries)
-  "bufferutil",
-  "utf-8-validate",
   "@resvg/resvg-js",
 
   // Optional/dev dependencies - not needed at runtime

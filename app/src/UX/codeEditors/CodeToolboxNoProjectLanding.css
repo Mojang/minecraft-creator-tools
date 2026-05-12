@@ -13,7 +13,10 @@
   --ctl-border-inner: #4a4a4a;
   --ctl-text: #ffffff;
   --ctl-text-muted: #b0b0b0;
-  --ctl-text-dim: #aaaaaa;
+  /* Dimmed text token for body descriptions (.ctl-sectionDesc, .ctl-featureDesc).
+   * Previously #aaaaaa which produces ~4.5:1 borderline on the panel surface.
+   * #c4c4c4 yields ~5.7:1 on #3a3a3a panels, comfortably above WCAG 1.4.3 AA. */
+  --ctl-text-dim: #c4c4c4;
   --ctl-accent: #52a535;
   --ctl-accent-light: #6bc74c;
   --ctl-feature-bg: rgba(255, 255, 255, 0.03);
@@ -30,7 +33,9 @@
   --ctl-border-inner: #e8e8e8;
   --ctl-text: #1a1a1a;
   --ctl-text-muted: #555555;
-  --ctl-text-dim: #888888;
+  /* See dark-theme comment on --ctl-text-dim. #888888 on white = 3.55:1 (FAILS
+   * AA 4.5:1). #5e5e5e gives 6.7:1, AA-clean for body text. */
+  --ctl-text-dim: #5e5e5e;
   --ctl-accent: #3d8a28;
   --ctl-accent-light: #52a535;
   --ctl-feature-bg: rgba(0, 0, 0, 0.02);

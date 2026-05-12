@@ -129,11 +129,11 @@ export default function Footer({ isApp, onSaveBackups }: FooterProps) {
         </TextButton>
         &nbsp;|&nbsp;
         <Link href={docsUrl} target="_blank" rel="noreferrer noopener">
-          {intl.formatMessage({ id: "home.footer.docs" })}
+          {intl.formatMessage({ id: "common.docs" })}
         </Link>
         &nbsp;|&nbsp;
         <Link href={githubUrl} target="_blank" rel="noreferrer noopener">
-          {intl.formatMessage({ id: "home.footer.github" })}
+          {intl.formatMessage({ id: "common.github" })}
         </Link>
         &nbsp;|&nbsp;
         <Link href={reportUrl} target="_blank" rel="noreferrer noopener">

@@ -24,6 +24,7 @@ interface IStructureViewerState {
   structure: Structure | undefined;
   errorMessage?: string;
   loadingMessage?: string;
+  loadAttempt: number;
 }
 
 /**
@@ -46,7 +47,25 @@ export default class StructureViewer extends Component<IStructureViewerProps, IS
       isLoaded: false,
       structure: undefined,
       loadingMessage: "Initializing...",
+      loadAttempt: 0,
     };
+
+    this._handleRetry = this._handleRetry.bind(this);
+  }
+
+  private _handleRetry() {
+    this.setState(
+      (prev) => ({
+        isLoaded: false,
+        structure: undefined,
+        errorMessage: undefined,
+        loadingMessage: "Retrying...",
+        loadAttempt: prev.loadAttempt + 1,
+      }),
+      () => {
+        this._loadStructure();
+      }
+    );
   }
 
   async componentDidMount() {
@@ -56,7 +75,7 @@ export default class StructureViewer extends Component<IStructureViewerProps, IS
       // No structure URL provided — show error immediately, don't wait for props
       this.setState({
         isLoaded: true,
-        errorMessage: "No structure URL provided. Use the &structure=/path/to/file parameter.",
+        errorMessage: "No structure loaded. Open one from the project sidebar.",
         loadingMessage: undefined,
       });
       return;
@@ -133,7 +152,7 @@ export default class StructureViewer extends Component<IStructureViewerProps, IS
     if (!structureUrl) {
       this.setState({
         isLoaded: true,
-        errorMessage: "No structure URL provided. Use &structure=/path/to/structure parameter.",
+        errorMessage: "No structure loaded. Open one from the project sidebar.",
       });
       return;
     }
@@ -203,7 +222,14 @@ export default class StructureViewer extends Component<IStructureViewerProps, IS
             <div className="sv-error-content">
               <div className="sv-error-icon">⚠</div>
               <div className="sv-error-message">{errorMessage}</div>
-              <button className="sv-error-button" onClick={() => window.history.back()}>Go Back</button>
+              <div className="sv-error-actions">
+                <button className="sv-error-button" onClick={this._handleRetry}>
+                  Retry
+                </button>
+                <button className="sv-render-banner-dismiss" onClick={() => window.history.back()}>
+                  Go Back
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -230,6 +256,7 @@ export default class StructureViewer extends Component<IStructureViewerProps, IS
         <div className="sv-container sv-no-chrome" style={{ height: containerHeight }}>
           <div className="sv-viewport sv-viewport-full">
             <VolumeEditor
+              key={this.state.loadAttempt}
               ref={this._volumeEditorRef}
               blockVolume={structure.cube}
               entities={structure.entities}
@@ -252,10 +279,19 @@ export default class StructureViewer extends Component<IStructureViewerProps, IS
       <div className="sv-container" style={{ height: containerHeight }}>
         <div className="sv-toolbar">
           <span className="sv-info">Structure: {dimensions} blocks</span>
+          <button
+            className="sv-toolbar-button"
+            onClick={this._handleRetry}
+            title="Reload textures and re-render"
+            aria-label="Reload structure"
+          >
+            Reload
+          </button>
         </div>
 
         <div className="sv-viewport">
           <VolumeEditor
+            key={this.state.loadAttempt}
             ref={this._volumeEditorRef}
             blockVolume={structure.cube}
             entities={structure.entities}

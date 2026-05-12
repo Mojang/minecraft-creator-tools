@@ -27,13 +27,14 @@ export default function HeroBanner() {
           <Box
             component="div"
             aria-hidden="true"
-            maxHeight="10em"
+            maxHeight="7em"
             sx={{
               width: "100%",
               borderRadius: 0,
               backgroundImage: `url("${CreatorToolsHost.contentWebRoot}res/images/home/HeroBanner_380bg.jpg")`,
               backgroundSize: "contain",
               backgroundRepeat: "repeat-x",
+              overflow: "hidden",
             }}
           >
             <Box
@@ -42,9 +43,10 @@ export default function HeroBanner() {
               src={CreatorToolsHost.contentWebRoot + "res/images/home/HeroBanner.jpg"}
               alt={intl.formatMessage({ id: "home.hero.banner_alt" })}
               aria-hidden="true"
-              maxHeight="10em"
+              maxHeight="7em"
               sx={{
                 maxWidth: "100%",
+                display: "block",
               }}
             />
           </Box>

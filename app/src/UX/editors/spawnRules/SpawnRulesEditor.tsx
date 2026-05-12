@@ -8,8 +8,9 @@ import IProperty from "../../../dataform/IProperty";
 import SpawnRulesBehaviorDefinition from "../../../minecraft/SpawnRulesBehaviorDefinition";
 import Project from "../../../app/Project";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
-interface ISpawnRulesEditorProps extends IFileProps {
+interface ISpawnRulesEditorProps extends IFileProps, WithLocalizationProps {
   heightOffset: number;
   readOnly: boolean;
   project: Project;
@@ -23,7 +24,7 @@ interface ISpawnRulesEditorState {
   selectedItem: SpawnRulesBehaviorDefinition | undefined;
 }
 
-export default class SpawnRulesEditor extends Component<ISpawnRulesEditorProps, ISpawnRulesEditorState> {
+class SpawnRulesEditor extends Component<ISpawnRulesEditorProps, ISpawnRulesEditorState> {
   private _lastFileEdited?: IFile;
 
   constructor(props: ISpawnRulesEditorProps) {
@@ -177,7 +178,7 @@ export default class SpawnRulesEditor extends Component<ISpawnRulesEditorProps, 
 
     let header = <></>;
     if (this.props.displayHeader === undefined || this.props.displayHeader) {
-      header = <div className="sre-header">Spawn Rules</div>;
+      header = <div className="sre-header">{this.props.intl.formatMessage({ id: "project_editor.spawn_rules.header" })}</div>;
     }
 
     if (!form) {
@@ -211,3 +212,5 @@ export default class SpawnRulesEditor extends Component<ISpawnRulesEditorProps, 
     );
   }
 }
+
+export default withLocalization(SpawnRulesEditor);

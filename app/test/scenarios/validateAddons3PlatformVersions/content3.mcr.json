@@ -117,8 +117,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [FORMATVER000] Found 12 errors in Format Version check\nTESTFAIL: [MINENGINEVER000] Found 3 errors in Min Engine Version check",
-    "infoGenerationTime": 786,
-    "endToEndGenerationTime": 964,
+    "infoGenerationTime": 259,
+    "endToEndGenerationTime": 578,
     "summary": {
       "BASEGAMEVER": {
         "2": {
@@ -521,5 +521,5 @@
   ],
   "generatorName": "Minecraft Creator Tools",
   "suite": 1,
-  "generatorVersion": "0.0.1"
+  "generatorVersion": "0.0.1-dev"
 }

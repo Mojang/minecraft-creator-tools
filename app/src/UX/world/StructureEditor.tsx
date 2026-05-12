@@ -26,8 +26,9 @@ import Entity from "../../minecraft/Entity";
 import WebUtilities from "../../UX/utils/WebUtilities";
 import Project from "../../app/Project";
 import IProjectTheme from "../../UX/types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
-interface IStructureEditorProps extends IFileProps {
+interface IStructureEditorProps extends IFileProps, WithLocalizationProps {
   creatorTools: CreatorTools;
   heightOffset: number;
   theme: IProjectTheme;
@@ -46,7 +47,7 @@ interface IStructureEditorState {
   searchTerm: string;
 }
 
-export default class StructureEditor extends Component<IStructureEditorProps, IStructureEditorState> {
+class StructureEditor extends Component<IStructureEditorProps, IStructureEditorState> {
   _lastFile: IFile | undefined;
   _searchBlockCube: BlockVolume;
   _mainWorld: VolumeEditor | undefined;
@@ -84,15 +85,47 @@ export default class StructureEditor extends Component<IStructureEditorProps, IS
     this._updateFile();
   }
 
+  // Ensure we run the load logic on the initial mount too. Without this, if the
+  // component is created with `file` already populated and `isContentLoaded=true`
+  // (which is the common case when the parent awaits `loadContent` before
+  // rendering us), nothing triggers the first `_updateFile` call and the
+  // "Loading …" placeholder stays up forever.
+  componentDidMount() {
+    this._updateFile();
+  }
+
   async _updateFile() {
     if (this._lastFile !== this.props.file) {
       this._lastFile = this.props.file;
 
       let newExcludeEdges = false;
 
-      if (this.state !== null) {
+      // `this.state` may be undefined here — `componentDidMount` calls
+      // `_updateFile` before any setState has run, and the constructor in this
+      // class does not initialize `this.state`. A `!== null` check alone passes
+      // for `undefined`, so guard against both.
+      if (this.state != null) {
         newExcludeEdges = this.state.excludeEdges;
       }
+
+      const file = this.props.file;
+      Log.verbose(
+        `StructureEditor._updateFile: file=${
+          file ? file.storageRelativePath : "undefined"
+        } isContentLoaded=${file?.isContentLoaded} type=${file?.type} contentKind=${
+          file === undefined
+            ? "no-file"
+            : file.content === undefined
+              ? "undefined"
+              : file.content === null
+                ? "null"
+                : typeof file.content === "string"
+                  ? `string(len=${file.content.length})`
+                  : file.content instanceof Uint8Array
+                    ? `Uint8Array(len=${file.content.length})`
+                    : `other(${typeof file.content})`
+        }`
+      );
 
       if (this.props.file !== undefined && this.props.file.isContentLoaded) {
         const file = this.props.file;
@@ -455,7 +488,7 @@ export default class StructureEditor extends Component<IStructureEditorProps, IS
   }
 
   render() {
-    let interior = <div className="ste-loading-area">Loading {this.props.file.storageRelativePath}...</div>;
+    let interior = <div className="ste-loading-area">{this.props.intl.formatMessage({ id: "project_editor.struct_ed.loading" }, { path: this.props.file.storageRelativePath })}</div>;
     let canvasHeight = this.props.heightOffset + 50; // Toolbar height only
     let isButtonCompact = false;
     const width = WebUtilities.getWidth();
@@ -568,8 +601,8 @@ export default class StructureEditor extends Component<IStructureEditorProps, IS
         <div className="ste-toolbar">
           <div className="ste-toolbar-area">
             <div className="ste-toolbar-inner">
-              <Stack direction="row" spacing={1} aria-label="Structure editor toolbar">
-                <IconButton onClick={this._resetViewClick} title="Reset Camera" size="small">
+                <Stack direction="row" spacing={1} aria-label={this.props.intl.formatMessage({ id: "project_editor.struct_ed.toolbar_aria" })}>
+                <IconButton onClick={this._resetViewClick} title={this.props.intl.formatMessage({ id: "project_editor.struct_ed.reset_camera" })} size="small">
                   <VideoLabel />
                 </IconButton>
                 {!this.props.readOnly && (
@@ -577,14 +610,14 @@ export default class StructureEditor extends Component<IStructureEditorProps, IS
                     value="excludeEdges"
                     selected={this.state?.excludeEdges ?? false}
                     onChange={this._excludeEdgesToggle}
-                    title="Exclude Edges"
+                    title={this.props.intl.formatMessage({ id: "project_editor.struct_ed.exclude_edges" })}
                     size="small"
                   >
                     <ExcludeEdgesLabel isCompact={isButtonCompact} />
                   </ToggleButton>
                 )}
                 {AppServiceProxy.hasAppServiceOrDebug && (
-                  <IconButton onClick={this._pushToMinecraft} title="Push to Minecraft" size="small">
+                  <IconButton onClick={this._pushToMinecraft} title={this.props.intl.formatMessage({ id: "project_editor.struct_ed.push_to_mc" })} size="small">
                     <PushToMinecraftLabel isCompact={isButtonCompact} />
                   </IconButton>
                 )}
@@ -607,3 +640,5 @@ export default class StructureEditor extends Component<IStructureEditorProps, IS
     );
   }
 }
+
+export default withLocalization(StructureEditor);

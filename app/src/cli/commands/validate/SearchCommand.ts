@@ -202,7 +202,21 @@ export class SearchCommand extends CommandBase {
       await csvResultsFile.saveContent();
     }
 
-    context.log.success(`Found ${searchResults.results.length} results for '${searchTerm}'`);
+    if (context.json) {
+      // CI consumers want the results as parseable JSON on stdout, not just
+      // written to a file. Add the standard schemaVersion + command discriminator.
+      context.log.data(
+        JSON.stringify({
+          schemaVersion: "1.0.0",
+          command: "search",
+          searchTerm: searchResults.searchTerm,
+          resultsCount: searchResults.results.length,
+          results: searchResults.results,
+        })
+      );
+    } else {
+      context.log.success(`Found ${searchResults.results.length} results for '${searchTerm}'`);
+    }
     this.logComplete(context);
   }
 }

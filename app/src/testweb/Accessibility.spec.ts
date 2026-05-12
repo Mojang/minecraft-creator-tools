@@ -170,7 +170,12 @@ test.describe("Accessibility Tests - Landing Page @focused", () => {
 });
 
 test.describe("Accessibility Tests - Editor Interface @focused", () => {
-  test("editor interface should have no critical accessibility violations", async ({ page }) => {
+  test("editor interface should have no critical accessibility violations", async ({ page }, testInfo) => {
+    // Two-pass Axe analysis with a settle delay between passes accommodates the
+    // editor's async dashboard rendering. Default 60s wasn't enough margin
+    // under parallel worker load.
+    testInfo.setTimeout(90000);
+
     // Enter editor using centralized helper
     const enteredEditor = await enterEditor(page);
 
@@ -180,22 +185,51 @@ test.describe("Accessibility Tests - Editor Interface @focused", () => {
       return;
     }
 
+    // Let the dashboard / Quick Actions / async-loaded toolbar buttons settle
+    // before scanning. Without this, Axe occasionally catches mid-render DOM
+    // (e.g. an icon button that hasn't received its aria-label yet, a tooltip
+    // mid-fade, or a focusable element with not-yet-applied role) and reports
+    // a transient critical violation that disappears a few hundred ms later.
+    // We can't use waitForLoadState("networkidle") here — Vite's HMR WebSocket
+    // keeps the network perpetually busy in dev mode.
+    await page.waitForTimeout(1500);
+
     await page.screenshot({ path: "debugoutput/screenshots/a11y-editor-interface.png", fullPage: true });
 
-    const accessibilityScanResults = await new AxeBuilder({ page })
-      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
-      // Exclude aria-toggle-field-name - this is a FluentUI Northstar library limitation
-      // where List items with selectableListBehavior get role="option" but the library
-      // doesn't support passing aria-label to the <li> element. The items do have visible
-      // text content which should be accessible.
-      .disableRules(["aria-toggle-field-name"])
-      .analyze();
+    /**
+     * Run an Axe scan and return only the critical/serious violations.
+     */
+    const scanCritical = async () => {
+      const results = await new AxeBuilder({ page })
+        .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+        // Exclude aria-toggle-field-name - this is a FluentUI Northstar library
+        // limitation where List items with selectableListBehavior get
+        // role="option" but the library doesn't support passing aria-label to
+        // the <li> element. The items do have visible text content which
+        // should be accessible.
+        .disableRules(["aria-toggle-field-name"])
+        .analyze();
+
+      const critical = results.violations.filter((v) => v.impact === "critical" || v.impact === "serious");
+      return { results, critical };
+    };
+
+    let { results: accessibilityScanResults, critical: criticalViolations } = await scanCritical();
+
+    // If the first scan found critical violations, give the DOM a moment to
+    // settle and rescan. Only treat the rescan result as authoritative — this
+    // eliminates flakiness from transient mid-render violations (parallel
+    // worker load, slow icon hydration) without weakening the assertion for
+    // genuine regressions, which will still appear on both passes.
+    if (criticalViolations.length > 0) {
+      console.log(
+        `Editor - First scan found ${criticalViolations.length} critical violation(s); rescanning after 2s settle…`
+      );
+      await page.waitForTimeout(2000);
+      ({ results: accessibilityScanResults, critical: criticalViolations } = await scanCritical());
+    }
 
     await saveAccessibilityResults(accessibilityScanResults.violations, "Editor Interface", page);
-
-    const criticalViolations = accessibilityScanResults.violations.filter(
-      (v) => v.impact === "critical" || v.impact === "serious"
-    );
 
     // Log detailed info about violations for debugging
     criticalViolations.forEach((v) => {
@@ -722,7 +756,8 @@ test.describe("Accessibility Tests - Dark Mode @focused", () => {
 
 test.describe("Accessibility Tests - Theme Comparison @focused", () => {
   test("compare accessibility between light and dark modes", async ({ page }, testInfo) => {
-    testInfo.setTimeout(60000);
+    // 4 navigations + 2 axe analyses against a Vite dev server can exceed 60s.
+    testInfo.setTimeout(180000);
     // Test light mode
     await gotoWithTheme(page, "light");
     await page.waitForTimeout(500);
@@ -770,9 +805,22 @@ test.describe("Accessibility Tests - Theme Comparison @focused", () => {
     await page.screenshot({ path: "debugoutput/screenshots/a11y-comparison-dark.png", fullPage: true });
   });
 
-  test("McButton should be accessible in both themes", async ({ page }) => {
+  test("McButton should be accessible in both themes", async ({ page }, testInfo) => {
+    // Two gotoWithTheme navigations + two axe scans can exceed the default
+    // 60s when the suite is running 4 workers in parallel against the Vite dev server.
+    testInfo.setTimeout(120000);
     for (const mode of ["light", "dark"] as ThemeMode[]) {
       await gotoWithTheme(page, mode);
+
+      // Wait for at least one button to render before running axe with
+      // .include("button"). On slow runs (CI, parallel workers), the page
+      // can still be hydrating when axe runs and "No elements found for
+      // include in page Context" is raised.
+      await page
+        .locator("button")
+        .first()
+        .waitFor({ state: "attached", timeout: 10000 })
+        .catch(() => {});
 
       const accessibilityScanResults = await new AxeBuilder({ page })
         .include("button")
@@ -792,7 +840,9 @@ test.describe("Accessibility Tests - Theme Comparison @focused", () => {
     }
   });
 
-  test("project creation dialog should be accessible in both themes", async ({ page }) => {
+  test("project creation dialog should be accessible in both themes", async ({ page }, testInfo) => {
+    // Two-theme iteration with dialog open + Axe analysis exceeds the default 60s budget.
+    testInfo.setTimeout(120000);
     for (const mode of ["light", "dark"] as ThemeMode[]) {
       await gotoWithTheme(page, mode);
 
@@ -913,7 +963,9 @@ test.describe("Accessibility Summary Reports - Both Themes @focused", () => {
   });
 
   test("generate full editor accessibility report for both themes", async ({ page }, testInfo) => {
-    testInfo.setTimeout(90000);
+    // Two enterEditor() iterations (~30s each) plus full-page Axe analysis and
+    // screenshots exceed the previous 90s budget under parallel worker load.
+    testInfo.setTimeout(180000);
     for (const mode of ["light", "dark"] as ThemeMode[]) {
       const enteredEditor = await enterEditor(page, mode);
 

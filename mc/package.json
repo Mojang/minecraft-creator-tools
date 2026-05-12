@@ -12,6 +12,7 @@
     "typescript": "5.0.2"
   },
   "scripts": {
+    "rebuild-deps": "npm rebuild --no-ignore-scripts esbuild",
     "lint": "just-scripts lint",
     "build": "just-scripts build-ingame",
     "clean": "just-scripts clean",

@@ -3,6 +3,7 @@ import Box from "@mui/material/Box/Box";
 import Card from "@mui/material/Card/Card";
 import Modal from "@mui/material/Modal/Modal";
 import { useState } from "react";
+import { useIntl } from "react-intl";
 import { Definition, FullDefinition, isSchemaDefinition } from "./SchemaParser";
 import { OneOfChoice } from "./UISchema";
 import { normalizeTitle } from "../../../../formEditor/FormFormatting";
@@ -17,6 +18,7 @@ interface OneOfModalProps {
 
 export default function OneOfModal({ title, options, optionDefinitions, onSelect }: OneOfModalProps) {
   const [isOpen, setIsOpen] = useState(true);
+  const intl = useIntl();
 
   return (
     <Modal open={isOpen}>
@@ -24,7 +26,7 @@ export default function OneOfModal({ title, options, optionDefinitions, onSelect
         <Card>
           <CardContent>
             <Typography variant="h2" color="secondary" gutterBottom>
-              {title || "Select Option:"}
+              {title || intl.formatMessage({ id: "dialog.select_option" })}
             </Typography>
             <FlexBox column>
               {options
@@ -42,7 +44,7 @@ export default function OneOfModal({ title, options, optionDefinitions, onSelect
                           setIsOpen(false);
                         }}
                       >
-                        Select
+                        {intl.formatMessage({ id: "common.select" })}
                       </Button>
                     </Box>
                     <Box>
@@ -57,7 +59,7 @@ export default function OneOfModal({ title, options, optionDefinitions, onSelect
           <CardActions>
             <FlexBox justifyContent="flex-end" pr={8}>
               <Button color="warning" variant="outlined" onClick={() => setIsOpen(false)}>
-                Cancel
+                {intl.formatMessage({ id: "common.cancel" })}
               </Button>
             </FlexBox>
           </CardActions>

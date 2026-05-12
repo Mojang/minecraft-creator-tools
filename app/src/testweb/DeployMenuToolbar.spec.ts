@@ -39,8 +39,11 @@ test.describe("Deploy Menu and Toolbar Overflow @focused", () => {
     await expect(toolbar).toBeVisible({ timeout: 5000 });
 
     // ── Step 1: Verify the default deploy/Test button is visible ──
-    // Before any deploy action, the button should say "Test" with a dropdown
-    const runButton = toolbar.getByRole("button", { name: /run|test|deploy/i }).first();
+    // Before any deploy action, the button should say "Test" with a dropdown.
+    // The accessible name is sourced from the localized tooltip
+    // ("Preview in Minecraft (F5)" in en_US), not the visible "Test" caption,
+    // so the regex needs to match either form.
+    const runButton = toolbar.getByRole("button", { name: /run|test|deploy|preview/i }).first();
     await expect(runButton).toBeVisible({ timeout: 5000 });
     console.log("Found Test/Deploy button in toolbar");
 

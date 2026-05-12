@@ -15,8 +15,9 @@ import { WorldViewMode } from "../../world/WorldViewTypes";
 import BlockLocation from "../../../minecraft/BlockLocation";
 import WorldTestArea from "../../../worldtest/WorldTestArea";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
-interface IWorldTestEditorProps extends IFileProps {
+interface IWorldTestEditorProps extends IFileProps, WithLocalizationProps {
   heightOffset: number;
   readOnly: boolean;
   theme: IProjectTheme;
@@ -33,7 +34,7 @@ interface IWorldTestEditorState {
   selectionBlockTo?: BlockLocation;
 }
 
-export default class WorldTestEditor extends Component<IWorldTestEditorProps, IWorldTestEditorState> {
+class WorldTestEditor extends Component<IWorldTestEditorProps, IWorldTestEditorState> {
   private _lastFileEdited?: IFile;
 
   get worldTest() {
@@ -242,7 +243,7 @@ export default class WorldTestEditor extends Component<IWorldTestEditorProps, IW
         }
       }
 
-      return <div>Loading...</div>;
+      return <div>{this.props.intl.formatMessage({ id: "project_editor.world_test.loading" })}</div>;
     }
 
     if (this.props.setActivePersistable !== undefined) {
@@ -252,7 +253,7 @@ export default class WorldTestEditor extends Component<IWorldTestEditorProps, IW
     const worldTestManager = this.state.fileToEdit.manager as WorldTestManager;
 
     if (worldTestManager === undefined || worldTestManager.worldTest === undefined) {
-      return <div>(could not find world test)...</div>;
+      return <div>{this.props.intl.formatMessage({ id: "project_editor.world_test.not_found" })}</div>;
     }
 
     const worldList: string[] = [];
@@ -386,7 +387,7 @@ export default class WorldTestEditor extends Component<IWorldTestEditorProps, IW
               <FormControl size="small" sx={{ minWidth: 200 }}>
                 <Select value={worldSelection} displayEmpty onChange={this._handleWorldChange}>
                   <MenuItem value="" disabled>
-                    Select a world
+                    {this.props.intl.formatMessage({ id: "project_editor.world_test.select_world" })}
                   </MenuItem>
                   {worldList.map((item) => (
                     <MenuItem key={item} value={item}>
@@ -403,11 +404,11 @@ export default class WorldTestEditor extends Component<IWorldTestEditorProps, IW
                 onClick={this._addAreaClick}
                 aria-describedby="instruction-message-primary-button"
               >
-                Add test area
+                {this.props.intl.formatMessage({ id: "project_editor.world_test.add_area" })}
               </Button>
             </div>
             <div className="wte-topTools">
-              <Stack direction="row" spacing={1} aria-label="World test actions"></Stack>
+              <Stack direction="row" spacing={1} aria-label={this.props.intl.formatMessage({ id: "project_editor.world_test.actions_aria" })}></Stack>
             </div>
           </div>
         </div>
@@ -419,3 +420,5 @@ export default class WorldTestEditor extends Component<IWorldTestEditorProps, IW
     );
   }
 }
+
+export default withLocalization(WorldTestEditor);

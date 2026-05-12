@@ -30,6 +30,7 @@ import DataForm from "../../dataformux/DataForm";
 import { ProjectItemCreationType, ProjectItemType } from "../../app/IProjectItemData";
 import { FolderContext } from "../../app/Project";
 import IProjectTheme from "../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
 export enum ImageEditsToolType {
   pixel = 0,
@@ -55,7 +56,7 @@ export enum ImageEditorDialogState {
   properties = 1,
 }
 
-interface IImageEditorProps {
+interface IImageEditorProps extends WithLocalizationProps {
   theme: IProjectTheme;
   content?: Uint8Array;
   projectItem: ProjectItem;
@@ -82,7 +83,7 @@ interface IImageEditorState {
   scale: number;
 }
 
-export default class ImageEditor extends Component<IImageEditorProps, IImageEditorState> {
+class ImageEditor extends Component<IImageEditorProps, IImageEditorState> {
   private imageCanvasElt: React.RefObject<HTMLDivElement>;
   private canvas: HTMLCanvasElement | null = null;
   private canvasContext: CanvasRenderingContext2D | null = null;
@@ -958,7 +959,7 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
     const toolMenuItems = [
       {
         key: "pencil",
-        label: "Pencil",
+        label: this.props.intl.formatMessage({ id: "project_editor.image_ed.pencil" }),
         selected: this.state.tool === ImageEditsToolType.pixel,
         icon: <FontAwesomeIcon icon={faPencil} className="fa-lg" />,
         onClick: () => {
@@ -971,7 +972,7 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
       },
       {
         key: "line",
-        label: "Line",
+        label: this.props.intl.formatMessage({ id: "project_editor.image_ed.line" }),
         selected: this.state.tool === ImageEditsToolType.line,
         icon: <FontAwesomeIcon icon={faDrawPolygon} className="fa-lg" />,
         onClick: () => {
@@ -984,7 +985,7 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
       },
       {
         key: "fill",
-        label: "Fill",
+        label: this.props.intl.formatMessage({ id: "project_editor.image_ed.fill" }),
         selected: this.state.tool === ImageEditsToolType.fill,
         icon: <FontAwesomeIcon icon={faFill} className="fa-lg" />,
         onClick: () => {
@@ -997,7 +998,7 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
       },
       {
         key: "rectangleSolid",
-        label: "Rectangle (Solid)",
+        label: this.props.intl.formatMessage({ id: "project_editor.image_ed.rect_solid" }),
         selected: this.state.tool === ImageEditsToolType.rectangleFilled,
         icon: <FontAwesomeIcon icon={faRectangleTimes} className="fa-lg" />,
         onClick: () => {
@@ -1010,7 +1011,7 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
       },
       {
         key: "rectangleOutline",
-        label: "Rectangle (Outline)",
+        label: this.props.intl.formatMessage({ id: "project_editor.image_ed.rect_outline" }),
         selected: this.state.tool === ImageEditsToolType.rectangleOutline,
         icon: <FontAwesomeIcon icon={faRectangleTimes} className="fa-lg" />,
         onClick: () => {
@@ -1023,7 +1024,7 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
       },
       {
         key: "triangleSolid",
-        label: "Triangle (Solid)",
+        label: this.props.intl.formatMessage({ id: "project_editor.image_ed.tri_solid" }),
         selected: this.state.tool === ImageEditsToolType.triangleFilled,
         icon: <FontAwesomeIcon icon={faShapes} className="fa-lg" />,
         onClick: () => {
@@ -1036,7 +1037,7 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
       },
       {
         key: "triangleOutline",
-        label: "Triangle (Outline)",
+        label: this.props.intl.formatMessage({ id: "project_editor.image_ed.tri_outline" }),
         selected: this.state.tool === ImageEditsToolType.triangleOutline,
         icon: <FontAwesomeIcon icon={faShapes} className="fa-lg" />,
         onClick: () => {
@@ -1049,7 +1050,7 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
       },
       {
         key: "circleFilled",
-        label: "Circle (Solid)",
+        label: this.props.intl.formatMessage({ id: "project_editor.image_ed.circle_solid" }),
         selected: this.state.tool === ImageEditsToolType.circleFilled,
         icon: <FontAwesomeIcon icon={faCircle} className="fa-lg" />,
         onClick: () => {
@@ -1062,7 +1063,7 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
       },
       {
         key: "circleOutline",
-        label: "Circle (Outline)",
+        label: this.props.intl.formatMessage({ id: "project_editor.image_ed.circle_outline" }),
         selected: this.state.tool === ImageEditsToolType.circleOutline,
         icon: <FontAwesomeIcon icon={faCircle} className="fa-lg" />,
         onClick: () => {
@@ -1083,7 +1084,7 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
       if (form) {
         dialogArea = (
           <Dialog open={true} onClose={this._handleCloseDialog} key="ie-cancel">
-            <DialogTitle>{StorageUtilities.getBaseFromName(this.props.name) + " Properties"}</DialogTitle>
+            <DialogTitle>{StorageUtilities.getBaseFromName(this.props.name) + this.props.intl.formatMessage({ id: "project_editor.image_ed.properties_title" })}</DialogTitle>
             <DialogContent>
               <DataForm
                 theme={this.props.theme}
@@ -1096,7 +1097,7 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
               />
             </DialogContent>
             <DialogActions>
-              <Button onClick={this._handleCloseDialog}>Done</Button>
+              <Button onClick={this._handleCloseDialog}>{this.props.intl.formatMessage({ id: "project_editor.image_ed.done" })}</Button>
             </DialogActions>
           </Dialog>
         );
@@ -1109,12 +1110,12 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
       <div className="ie-outer">
         {dialogArea}
         <div className="ie-toolBar">
-          <Stack direction="row" spacing={1} aria-label="Component editing toolbar">
+          <Stack direction="row" spacing={1} aria-label={this.props.intl.formatMessage({ id: "project_editor.image_ed.toolbar_aria" })}>
             <Button key="undo" onClick={this._undo}>
-              <CustomLabel isCompact={false} text="Undo" icon={<FontAwesomeIcon icon={faUndo} className="fa-lg" />} />
+              <CustomLabel isCompact={false} text={this.props.intl.formatMessage({ id: "project_editor.image_ed.undo" })} icon={<FontAwesomeIcon icon={faUndo} className="fa-lg" />} />
             </Button>
             <Button key="redo" onClick={this._redo}>
-              <CustomLabel isCompact={false} text="Redo" icon={<FontAwesomeIcon icon={faRedo} className="fa-lg" />} />
+              <CustomLabel isCompact={false} text={this.props.intl.formatMessage({ id: "project_editor.image_ed.redo" })} icon={<FontAwesomeIcon icon={faRedo} className="fa-lg" />} />
             </Button>
             <label style={{ display: "flex", alignItems: "center", gap: 4 }}>
               <input
@@ -1123,10 +1124,10 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
                 onChange={(e) => this.setState({ drawColor: e.target.value })}
                 style={{ width: 28, height: 28, border: "none", background: "none", padding: 0 }}
               />
-              <span>Color</span>
+              <span>{this.props.intl.formatMessage({ id: "project_editor.image_ed.color" })}</span>
             </label>
-            <Button key="draw" onClick={this._handleToolMenuOpen} title="Draw">
-              <CustomLabel isCompact={false} text="Draw" icon={<FontAwesomeIcon icon={faPencil} className="fa-lg" />} />
+            <Button key="draw" onClick={this._handleToolMenuOpen} title={this.props.intl.formatMessage({ id: "project_editor.image_ed.draw" })}>
+              <CustomLabel isCompact={false} text={this.props.intl.formatMessage({ id: "project_editor.image_ed.draw" })} icon={<FontAwesomeIcon icon={faPencil} className="fa-lg" />} />
             </Button>
             <Menu anchorEl={this.state.toolMenuAnchorEl} open={toolMenuOpen} onClose={this._handleToolMenuClose}>
               {toolMenuItems.map((item) => (
@@ -1141,24 +1142,24 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
                 </MenuItem>
               ))}
             </Menu>
-            <Button key="zoomIn" onClick={this._zoomIn} title="Zoom in">
+            <Button key="zoomIn" onClick={this._zoomIn} title={this.props.intl.formatMessage({ id: "project_editor.image_ed.zoom_in" })}>
               <CustomLabel
                 isCompact={false}
                 text=""
                 icon={<FontAwesomeIcon icon={faMagnifyingGlassPlus} className="fa-lg" />}
               />
             </Button>
-            <Button key="zoomOut" onClick={this._zoomOut} title="Zoom out">
+            <Button key="zoomOut" onClick={this._zoomOut} title={this.props.intl.formatMessage({ id: "project_editor.image_ed.zoom_out" })}>
               <CustomLabel
                 isCompact={false}
                 text=""
                 icon={<FontAwesomeIcon icon={faMagnifyingGlassMinus} className="fa-lg" />}
               />
             </Button>
-            <Button key="properties" onClick={this._showPropertiesDialog} title="Design">
+            <Button key="properties" onClick={this._showPropertiesDialog} title={this.props.intl.formatMessage({ id: "project_editor.image_ed.design_title" })}>
               <CustomLabel
                 isCompact={false}
-                text="Properties"
+                text={this.props.intl.formatMessage({ id: "project_editor.image_ed.properties" })}
                 icon={<FontAwesomeIcon icon={faGear} className="fa-lg" />}
               />
             </Button>
@@ -1169,3 +1170,5 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
     );
   }
 }
+
+export default withLocalization(ImageEditor);

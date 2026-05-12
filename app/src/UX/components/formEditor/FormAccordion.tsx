@@ -19,6 +19,12 @@ const renderHierarchyTitles = (hierarchy: Hierarchy, seperator: string = ">") =>
   ));
 };
 
+const renderLeafTitle = (hierarchy: Hierarchy) => {
+  const leaf = hierarchy[hierarchy.length - 1];
+  if (!leaf) return null;
+  return <span>{formatter.normalizeTitle(leaf.title)}</span>;
+};
+
 interface FormAccordianProps {
   children?: ReactNode;
   onRemove?: () => void;
@@ -26,33 +32,43 @@ interface FormAccordianProps {
   hierarchy: Hierarchy;
   hideByDefault?: boolean;
   titleSize?: "default" | "small";
+  /** When true, show full breadcrumb trail. When false (default), show only the leaf title. */
+  showBreadcrumbs?: boolean;
 }
 export default function FormAccordian(props: FormAccordianProps) {
-  const { children, hierarchy, onRemove, onAdd, hideByDefault, titleSize } = props;
+  const { children, hierarchy, onRemove, onAdd, hideByDefault, titleSize, showBreadcrumbs } = props;
   const [isExpanded, setIsExpanded] = useState(!hideByDefault);
+
+  const titleContent = showBreadcrumbs ? renderHierarchyTitles(hierarchy) : renderLeafTitle(hierarchy);
+  const isSmall = titleSize === "small";
+
   return (
     <Accordion id={getFullKey(hierarchy)} expanded={isExpanded} sx={{ m: 0, pr: 0, boxShadow: 1 }}>
       <FlexBox m={0} justifyContent="space-between" borderRadius={1} bgcolor={mcColors.gray4}>
         <FlexBox pl={2} m={0} alignItems="center">
           {onRemove && (
             <Box>
-              <Button color="warning" variant="outlined" onClick={onRemove}>
+              <Button color="warning" variant="outlined" onClick={onRemove} size="small">
                 -
               </Button>
             </Box>
           )}
-          <Box py={1.5}>
-            {titleSize === "small" ? (
-              <Typography variant="h4" color={mcColors.white}>
-                {renderHierarchyTitles(hierarchy)}
-              </Typography>
-            ) : (
-              <Typography variant="h3">{renderHierarchyTitles(hierarchy)}</Typography>
-            )}
+          <Box py={1}>
+            <Typography
+              component="div"
+              sx={{
+                fontSize: isSmall ? "11pt" : "12pt",
+                fontWeight: 600,
+                letterSpacing: "0.2px",
+                color: mcColors.white,
+              }}
+            >
+              {titleContent}
+            </Typography>
           </Box>
         </FlexBox>
 
-        <Box px={2} mt={2} mr={0} onClick={() => setIsExpanded((prev) => !prev)}>
+        <Box px={2} mt={1.5} mr={0} onClick={() => setIsExpanded((prev) => !prev)} sx={{ cursor: "pointer" }}>
           <FontAwesomeIcon icon={isExpanded ? faChevronCircleUp : faChevronCircleDown} size="lg" />
         </Box>
       </FlexBox>
@@ -60,14 +76,23 @@ export default function FormAccordian(props: FormAccordianProps) {
         <FlexBox column>
           <Box>{children}</Box>{" "}
           {onAdd && (
-            <FlexBox justifyContent="center" px={2}>
+            <FlexBox px={2} py={0.5}>
               <Button
-                fullWidth
+                size="small"
                 variant="contained"
-                startIcon={<FontAwesomeIcon icon={faPlus} size="lg" />}
+                startIcon={<FontAwesomeIcon icon={faPlus} />}
                 onClick={onAdd}
+                sx={{
+                  backgroundColor: "#3d7a2a",
+                  "&:hover": { backgroundColor: "#4a9432" },
+                  "&:active": { backgroundColor: "#2a641c" },
+                  textTransform: "none",
+                  fontWeight: 600,
+                  fontSize: "12px",
+                  px: 2,
+                }}
               >
-                Add Item to {hierarchy[hierarchy.length - 1]?.title || "list"}
+                Add
               </Button>
             </FlexBox>
           )}

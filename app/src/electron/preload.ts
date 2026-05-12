@@ -317,7 +317,7 @@ contextBridge.exposeInMainWorld("api", {
     }
   },
   receive: (channel: string, func: (...args: any[]) => void): void => {
-    const validChannels = ["appsvc", "agent:event"];
+    const validChannels = ["appsvc", "agent:event", "error:fatal"];
 
     if (validChannels.includes(channel)) {
       ipcRenderer.on(channel, (_event: Electron.IpcRendererEvent, ...args: any[]) => func(...args));

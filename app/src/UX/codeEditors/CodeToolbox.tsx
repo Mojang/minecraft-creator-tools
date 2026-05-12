@@ -30,6 +30,19 @@ export enum CodeToolboxMode {
   done = 2,
 }
 
+/**
+ * Browser-safe replacement for node's `path.isAbsolute`. Returns true when the
+ * given (forward-slash-normalized) path is a Windows drive path, a POSIX
+ * absolute path, or a URI (file:, vscode-vfs:, http:, etc.).
+ */
+function looksLikeAbsolutePath(p: string): boolean {
+  return (
+    /^[a-zA-Z]:\//.test(p) || // Windows drive path (already normalized to "/")
+    p.startsWith("/") || // POSIX absolute
+    /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(p) // URI scheme prefix
+  );
+}
+
 export default class CodeToolbox extends Component<ICodeToolboxProps, ICodeToolboxState> {
   constructor(props: ICodeToolboxProps) {
     super(props);
@@ -52,7 +65,20 @@ export default class CodeToolbox extends Component<ICodeToolboxProps, ICodeToolb
 
     const storage = newProjectItem.primaryFile.parentFolder.storage;
 
-    if (storage instanceof MessageProxyStorage) {
+    // Only prepend the storage channel id if `fullPath` looks like a path that's
+    // relative to the storage root. Some storage backends (notably the VS Code
+    // extension-host-backed storage used via MessageProxyStorage for project
+    // content) return file paths that are already absolute — e.g. a Windows
+    // drive path `C:/…`, a POSIX absolute path `/…`, or a full URI like
+    // `file:/c:/…`. Prefixing the channel id onto those produces broken paths
+    // such as `<channelId>/file:/c:/…/scripts/main.ts`, which then hits VS
+    // Code's "editor could not be opened because the file was not found"
+    // dialog.
+    //
+    // Note: node's `path.isAbsolute` is not available in the browser bundle
+    // (webpack `resolve.fallback` sets `path: false`), so we use the inline
+    // helper below.
+    if (storage instanceof MessageProxyStorage && !looksLikeAbsolutePath(path)) {
       path = Utilities.ensureEndsWithSlash(storage.channelId) + Utilities.ensureNotStartsWithSlash(path);
     }
 

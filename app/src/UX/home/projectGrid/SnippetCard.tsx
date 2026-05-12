@@ -109,7 +109,7 @@ export default function SnippetCard({ snippet, onOpen }: SnippetCardProps) {
         })}
       >
         <McButton variant="stone" fullWidth onClick={handleOpen}>
-          {intl.formatMessage({ id: "home.snippet_card.open" })}
+          {intl.formatMessage({ id: "common.open" })}
         </McButton>
       </CardActions>
     </Card>

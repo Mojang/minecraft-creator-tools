@@ -25,6 +25,8 @@ import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
 import { getComponentDescription } from "../../../minecraft/ComponentDescriptions";
 import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../../app/CreatorToolsHost";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
+import { IntlShape } from "react-intl";
 
 export enum ItemComponentCategory {
   combat = 0,
@@ -117,22 +119,22 @@ function getItemComponentCategory(componentId: string): ItemComponentCategory {
 }
 
 // Get category description
-function getItemComponentCategoryDescription(category: ItemComponentCategory): string {
+function getItemComponentCategoryDescription(category: ItemComponentCategory, intl: IntlShape): string {
   switch (category) {
     case ItemComponentCategory.combat:
-      return "Combat";
+      return intl.formatMessage({ id: "project_editor.item_comp.category_combat" });
     case ItemComponentCategory.tools:
-      return "Tools";
+      return intl.formatMessage({ id: "project_editor.item_comp.category_tools" });
     case ItemComponentCategory.food:
-      return "Food";
+      return intl.formatMessage({ id: "project_editor.item_comp.category_food" });
     case ItemComponentCategory.appearance:
-      return "Appearance";
+      return intl.formatMessage({ id: "project_editor.item_comp.category_appearance" });
     case ItemComponentCategory.interaction:
       return "Interaction";
     case ItemComponentCategory.storage:
-      return "Storage";
+      return intl.formatMessage({ id: "project_editor.item_comp.category_storage" });
     case ItemComponentCategory.enchantment:
-      return "Enchantment";
+      return intl.formatMessage({ id: "project_editor.item_comp.category_enchantment" });
     case ItemComponentCategory.misc:
       return "Other";
     default:
@@ -140,7 +142,7 @@ function getItemComponentCategoryDescription(category: ItemComponentCategory): s
   }
 }
 
-interface IItemTypeComponentSetEditorProps {
+interface IItemTypeComponentSetEditorProps extends WithLocalizationProps {
   itemTypeDefinition: IManagedComponentSetItem;
   isVisualsMode: boolean;
   isDefault: boolean;
@@ -164,7 +166,7 @@ export enum ItemTypeComponentEditorDialog {
   addComponent = 1,
 }
 
-export default class ItemTypeComponentSetEditor extends Component<
+class ItemTypeComponentSetEditor extends Component<
   IItemTypeComponentSetEditorProps,
   IItemTypeComponentSetEditorState
 > {
@@ -399,7 +401,7 @@ export default class ItemTypeComponentSetEditor extends Component<
     if (this.state.dialogMode === ItemTypeComponentEditorDialog.addComponent) {
       return (
         <Dialog open={true} className="icose-addComponentDialog" key="icose-addComponentOuter">
-          <DialogTitle>Add item type component</DialogTitle>
+          <DialogTitle>{this.props.intl.formatMessage({ id: "project_editor.item_comp.add_dialog_title" })}</DialogTitle>
           <DialogContent>
             <ItemTypeAddComponent
               isVisualsMode={this.props.isVisualsMode}
@@ -451,7 +453,7 @@ export default class ItemTypeComponentSetEditor extends Component<
 
         // Add category header if this is a new category
         if (!categoriesDisplayed[attribCategory]) {
-          const attribCategoryDescrip = getItemComponentCategoryDescription(attribCategory);
+          const attribCategoryDescrip = getItemComponentCategoryDescription(attribCategory, this.props.intl);
           categoriesDisplayed[attribCategory] = true;
           componentList.push({
             key: "attribCat" + attribCategory,
@@ -490,7 +492,7 @@ export default class ItemTypeComponentSetEditor extends Component<
 
           // Add component header with large icon
           const activeColor = getItemComponentColor(component.id);
-          const attribCategoryDesc = getItemComponentCategoryDescription(attribCategory);
+          const attribCategoryDesc = getItemComponentCategoryDescription(attribCategory, this.props.intl);
 
           // Add component header with large icon FIRST
           componentForms.push(
@@ -520,7 +522,7 @@ export default class ItemTypeComponentSetEditor extends Component<
             <Stack
               direction="row"
               spacing={1}
-              aria-label="Item type component actions"
+              aria-label={this.props.intl.formatMessage({ id: "project_editor.item_comp.aria_actions" })}
               key={"icose-toolbar" + component.id}
             >
               <IconButton
@@ -648,3 +650,5 @@ export default class ItemTypeComponentSetEditor extends Component<
     }
   }
 }
+
+export default withLocalization(ItemTypeComponentSetEditor);

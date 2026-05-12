@@ -62,6 +62,7 @@ import CheckManifestGenerator from "../projectGenerators/checkManifest/CheckMani
 import CheckResourcePackDependenciesGenerator from "../projectGenerators/CheckResourcePackDependenciesGenerator";
 import CheckWorldPackReferencesGenerator from "../projectGenerators/CheckWorldPackReferencesGenerator";
 import CrossReferenceIndexGenerator from "../CrossReferenceIndexGenerator";
+import CustomDimensionWorldDataInfoGenerator from "../CustomDimensionWorldDataInfoGenerator";
 
 export const TestsToExcludeFromDefaultSuite = ["CADDONREQ", "CADDONIREQ", "LANGFILES", "SHARING", "VANDUPES"];
 
@@ -125,6 +126,7 @@ export default class GeneratorRegistrations {
     new CommunitySchemaItemInfoGenerator(),
     new WorldItemInfoGenerator(),
     new WorldDataInfoGenerator(),
+    new CustomDimensionWorldDataInfoGenerator(),
     new CooperativeAddOnItemRequirementsGenerator(),
     new UnlinkedItemInfoGenerator(),
   ];

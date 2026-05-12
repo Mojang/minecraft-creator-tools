@@ -48,6 +48,10 @@ export default function GoalPicker({ onGoalSelected }: GoalPickerProps) {
                 const isDark = theme.palette.mode === "dark";
                 return {
                   height: "100%",
+                  // See note in TemplateCard.tsx — allow content to extend
+                  // beyond the card's flex-stretched height when WCAG 1.4.12
+                  // text-spacing overrides are active.
+                  overflow: "visible",
                   transition: "none",
                   "@media (prefers-reduced-motion: no-preference)": {
                     transition: "all 0.2s ease-in-out",

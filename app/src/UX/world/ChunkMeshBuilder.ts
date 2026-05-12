@@ -1482,19 +1482,31 @@ export default class ChunkMeshBuilder {
           bbMesh.freezeWorldMatrix();
           meshes.push(bbMesh);
         } else {
-          const matrices = new Float32Array(billboardPositions.length * 16);
+          // Use createInstance() rather than thin instances. Thin instances
+          // intermittently rendered freshly-cloned billboard chunks as a single
+          // giant tilted opaque rectangle covering half the canvas — the buffer
+          // upload appeared to interact poorly with Babylon's shader-effect
+          // cache for newly-cloned alpha-cutout vegetation meshes (run20260506
+          // second-pass F1). createInstance() produces one InstancedMesh per
+          // billboard which shares the template geometry but each gets its own
+          // world matrix, sidestepping the issue. The cost is N InstancedMesh
+          // objects per chunk rather than one mesh + N matrices, which for the
+          // ≤200 billboards per chunk is acceptable.
           for (let i = 0; i < billboardPositions.length; i++) {
-            const m = BABYLON.Matrix.Translation(
+            const inst = bbMesh.createInstance(`${bbMesh.name}_i${i}`);
+            inst.position = new BABYLON.Vector3(
               billboardPositions[i].x + 0.5,
               billboardPositions[i].y + 0.5,
               billboardPositions[i].z + 0.5
             );
-            m.copyToArray(matrices, i * 16);
+            inst.isPickable = false;
+            inst.freezeWorldMatrix();
           }
-          bbMesh.thinInstanceSetBuffer("matrix", matrices, 16, false);
-          bbMesh.thinInstanceRefreshBoundingInfo(true);
+          // The parent bbMesh is the geometry source; hide it so it doesn't
+          // also render at world origin. Disposing bbMesh later auto-disposes
+          // its InstancedMesh children, so we don't track them separately.
+          bbMesh.isVisible = false;
           bbMesh.isPickable = false;
-          bbMesh.alwaysSelectAsActiveMesh = true;
           meshes.push(bbMesh);
         }
         continue;

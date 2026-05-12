@@ -29,6 +29,7 @@ import ProjectExporter from "../app/ProjectExporter";
 import ProjectUtilities from "../app/ProjectUtilities";
 import ProjectItemCreateManager from "../app/ProjectItemCreateManager";
 import ClUtils from "../cli/ClUtils";
+import { CommandContextFactory } from "../cli/core/CommandContextFactory";
 import CreatorToolsHost from "../app/CreatorToolsHost";
 import StorageUtilities from "../storage/StorageUtilities";
 import ModelDesignUtilities from "../minecraft/ModelDesignUtilities";
@@ -582,7 +583,7 @@ export default class MinecraftMcpServer {
 
     return {
       content: [{ type: "text", text: "Successfully moved player in session" }],
-      structuredContent: { state: result },
+      structuredContent: { state: result ?? {} },
     };
   }
 
@@ -650,7 +651,7 @@ export default class MinecraftMcpServer {
           text: `Successfully started session "${args.sessionName}" on slot ${targetSlot} (port ${port}).`,
         },
       ],
-      structuredContent: { state: result },
+      structuredContent: { state: result ?? {} },
     };
   }
 
@@ -1003,6 +1004,10 @@ export default class MinecraftMcpServer {
       localFolderPath: args.folderPathToCreateProjectAt,
     });
 
+    // Load existing project structure so that addFromGallery places files into
+    // the correct existing pack folders rather than creating new ones.
+    await project.inferProjectItemsFromFiles();
+
     let result = await this._add(project, args.templateType, args.name);
 
     if (!result) {
@@ -1048,9 +1053,37 @@ export default class MinecraftMcpServer {
       const generator = new ContentGenerator(parseResult.data as any);
       const generated = await generator.generate();
 
-      // Ensure output directory exists
-      if (!fs.existsSync(args.outputPath)) {
-        fs.mkdirSync(args.outputPath, { recursive: true });
+      // Resolve where artifacts should actually land. The user may have passed a
+      // folder that's inside an existing project, a newly-created empty folder, or
+      // a folder that already has unrelated content. See _resolveProjectRoot for
+      // the heuristic.
+      const resolved = MinecraftMcpServer._resolveProjectRoot(args.outputPath, {
+        namespace: parseResult.data.namespace,
+        displayName: parseResult.data.displayName,
+      });
+      const projectRoot = resolved.root;
+
+      // Ensure the resolved project root exists
+      if (!fs.existsSync(projectRoot)) {
+        fs.mkdirSync(projectRoot, { recursive: true });
+      }
+
+      const namespace = parseResult.data.namespace || "custom";
+
+      // Detect existing pack folders so we can reuse them instead of creating duplicates.
+      // If a project was previously created (e.g., via createProject), use the first existing
+      // behavior/resource pack folder rather than creating a new namespace-based one.
+      let bpBasePath = path.join(projectRoot, "behavior_packs", namespace);
+      let rpBasePath = path.join(projectRoot, "resource_packs", namespace);
+
+      const existingBpFolder = MinecraftMcpServer._findExistingPackFolder(path.join(projectRoot, "behavior_packs"));
+      const existingRpFolder = MinecraftMcpServer._findExistingPackFolder(path.join(projectRoot, "resource_packs"));
+
+      if (existingBpFolder) {
+        bpBasePath = existingBpFolder;
+      }
+      if (existingRpFolder) {
+        rpBasePath = existingRpFolder;
       }
 
       // Write generated files
@@ -1058,21 +1091,19 @@ export default class MinecraftMcpServer {
 
       // Helper to write files
       const writeFile = (file: { path: string; pack: string; type: string; content: object | string | Uint8Array }) => {
-        let basePath = args.outputPath;
+        let basePath = projectRoot;
         if (file.pack === "behavior") {
-          basePath = path.join(args.outputPath, "behavior_packs", parseResult.data.namespace || "custom");
+          basePath = bpBasePath;
         } else if (file.pack === "resource") {
-          basePath = path.join(args.outputPath, "resource_packs", parseResult.data.namespace || "custom");
+          basePath = rpBasePath;
         }
 
         const fullPath = path.resolve(basePath, file.path);
-        const resolvedOutputPath = path.resolve(args.outputPath);
+        const resolvedOutputPath = path.resolve(projectRoot);
 
         // Prevent path traversal: ensure the resolved path stays within the output directory
         if (!fullPath.startsWith(resolvedOutputPath + path.sep) && fullPath !== resolvedOutputPath) {
-          Log.error(
-            "Skipping file with path traversal outside output directory: " + file.path
-          );
+          Log.error("Skipping file with path traversal outside output directory: " + file.path);
           return;
         }
 
@@ -1080,6 +1111,12 @@ export default class MinecraftMcpServer {
 
         if (!fs.existsSync(dirPath)) {
           fs.mkdirSync(dirPath, { recursive: true });
+        }
+
+        // Do not overwrite files that already exist (e.g., files created by
+        // designModel or manually by the user). Only write new files.
+        if (fs.existsSync(fullPath)) {
+          return;
         }
 
         if (file.type === "json") {
@@ -1098,9 +1135,14 @@ export default class MinecraftMcpServer {
         filesWritten.push(fullPath);
       };
 
-      // Write all generated files
-      if (generated.behaviorPackManifest) writeFile(generated.behaviorPackManifest);
-      if (generated.resourcePackManifest) writeFile(generated.resourcePackManifest);
+      // Write all generated files — but preserve existing manifest UUIDs
+      // and merge texture atlas files rather than overwriting them.
+      if (generated.behaviorPackManifest) {
+        MinecraftMcpServer._writeManifestPreservingUuids(bpBasePath, generated.behaviorPackManifest, filesWritten);
+      }
+      if (generated.resourcePackManifest) {
+        MinecraftMcpServer._writeManifestPreservingUuids(rpBasePath, generated.resourcePackManifest, filesWritten);
+      }
 
       for (const file of generated.entityBehaviors) writeFile(file);
       for (const file of generated.entityResources) writeFile(file);
@@ -1117,11 +1159,28 @@ export default class MinecraftMcpServer {
       for (const file of generated.geometries) writeFile(file);
       for (const file of generated.renderControllers) writeFile(file);
 
-      // Write terrain_texture.json for blocks
-      if (generated.terrainTextures) writeFile(generated.terrainTextures);
+      // Merge singleton resource pack files: these are pack-wide catalogs where
+      // each MCP call should ADD entries rather than overwrite the entire file.
+      if (generated.terrainTextures) {
+        MinecraftMcpServer._writeSingletonJsonMerging(rpBasePath, generated.terrainTextures, filesWritten);
+      }
+      if (generated.itemTextures) {
+        MinecraftMcpServer._writeSingletonJsonMerging(rpBasePath, generated.itemTextures, filesWritten);
+      }
+      if (generated.blocksCatalog) {
+        MinecraftMcpServer._writeSingletonJsonMerging(rpBasePath, generated.blocksCatalog, filesWritten);
+      }
+      if (generated.soundDefinitions) {
+        MinecraftMcpServer._writeSingletonJsonMerging(rpBasePath, generated.soundDefinitions, filesWritten);
+      }
+      if (generated.musicDefinitions) {
+        MinecraftMcpServer._writeSingletonJsonMerging(rpBasePath, generated.musicDefinitions, filesWritten);
+      }
 
-      // Write item_texture.json for items
-      if (generated.itemTextures) writeFile(generated.itemTextures);
+      // Also merge any items in the sounds array that target singleton files
+      for (const file of generated.sounds) {
+        MinecraftMcpServer._writeSingletonJsonMerging(rpBasePath, file, filesWritten);
+      }
 
       // Build summary
       const summary = generated.summary;
@@ -1133,6 +1192,7 @@ export default class MinecraftMcpServer {
       summaryText += `- ${summary.recipeCount} recipes\n`;
       summaryText += `- ${summary.spawnRuleCount} spawn rules\n`;
       summaryText += `- ${summary.featureCount} features\n`;
+      summaryText += `\nProject root: ${projectRoot}\n(${resolved.reason})\n`;
 
       if (summary.warnings.length > 0) {
         summaryText += `\nWarnings:\n${summary.warnings.map((w) => `- ${w}`).join("\n")}`;
@@ -1146,6 +1206,8 @@ export default class MinecraftMcpServer {
         content: [{ type: "text", text: summaryText }],
         structuredContent: {
           filesWritten,
+          projectRoot,
+          projectRootReason: resolved.reason,
           summary: generated.summary,
         },
       };
@@ -1154,6 +1216,265 @@ export default class MinecraftMcpServer {
         content: [{ type: "text", text: `Error generating content: ${error}` }],
       };
     }
+  }
+
+  /**
+   * Finds the first existing pack folder inside a container directory (e.g., behavior_packs/).
+   * Returns the folder path if a pack (folder with manifest.json) is found, otherwise undefined.
+   */
+  private static _findExistingPackFolder(containerPath: string): string | undefined {
+    if (!fs.existsSync(containerPath)) {
+      return undefined;
+    }
+
+    try {
+      for (const entry of fs.readdirSync(containerPath, { withFileTypes: true })) {
+        if (entry.isDirectory()) {
+          const manifestPath = path.join(containerPath, entry.name, "manifest.json");
+          if (fs.existsSync(manifestPath)) {
+            return path.join(containerPath, entry.name);
+          }
+        }
+      }
+    } catch {
+      // If we can't read the directory, fall through to create a new folder
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Returns true when the supplied folder already looks like a Bedrock resource
+   * pack — i.e. it contains a top-level manifest.json whose modules include a
+   * `resources` module. Used by designModel to avoid creating a nested
+   * `resource_packs/` subdirectory inside an RP that the caller passed
+   * directly, which previously caused a recurring "files written to the wrong
+   * path" symptom.
+   */
+  private static _isResourcePackFolder(folderPath: string): boolean {
+    try {
+      const manifestPath = path.join(folderPath, "manifest.json");
+      if (!fs.existsSync(manifestPath)) {
+        return false;
+      }
+      const raw = fs.readFileSync(manifestPath, "utf8");
+      const parsed = JSON.parse(raw);
+      const modules: any[] = Array.isArray(parsed?.modules) ? parsed.modules : [];
+      return modules.some((m) => m && typeof m.type === "string" && m.type === "resources");
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Sanitize a display name or namespace into a safe folder name.
+   * Lower-cases, replaces non-alphanumeric runs with '_', trims.
+   * Caps length at 64 characters to keep resulting paths well under the
+   * Windows MAX_PATH limit once nested inside the project/pack hierarchy.
+   */
+  private static _toSafeFolderName(name: string): string {
+    return (
+      name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "")
+        .slice(0, 64) || "addon"
+    );
+  }
+
+  /**
+   * Returns the list of visible child entries in a directory, or an empty array if
+   * the directory doesn't exist / can't be read. Hidden/system files (.git, .DS_Store,
+   * Thumbs.db, desktop.ini) are ignored when deciding whether a folder is "empty".
+   */
+  private static _visibleChildren(folder: string): string[] {
+    if (!fs.existsSync(folder)) {
+      return [];
+    }
+    try {
+      return fs.readdirSync(folder).filter((name) => {
+        if (name.startsWith(".")) return false;
+        const lower = name.toLowerCase();
+        return lower !== "thumbs.db" && lower !== "desktop.ini";
+      });
+    } catch {
+      return [];
+    }
+  }
+
+  /**
+   * Resolves where content should actually be generated, given a user-provided outputPath.
+   *
+   * Heuristic (in priority order):
+   *   1. If outputPath (or a parent within 2 levels) has a Minecraft project reference point
+   *      — package.json, behavior_packs/, resource_packs/, or a manifest.json — anchor to
+   *      that project root. This is the most common "add to existing project" case.
+   *   2. If outputPath doesn't exist, or is empty (ignoring hidden/system files), use it
+   *      directly as the project root.
+   *   3. Otherwise (outputPath is non-empty with unrelated content), create a subfolder
+   *      named after the namespace/displayName and use that as the root.
+   *
+   * Returns both the resolved root and a human-readable reason string (useful for the
+   * tool response so agents learn where files landed and why).
+   */
+  private static _resolveProjectRoot(
+    outputPath: string,
+    definition: { namespace?: string; displayName?: string }
+  ): { root: string; reason: string } {
+    const normalized = path.resolve(outputPath);
+
+    // Walk up at most 2 levels looking for a project reference point.
+    let current = normalized;
+    for (let depth = 0; depth <= 2; depth++) {
+      if (!fs.existsSync(current)) {
+        // Parent doesn't exist — stop walking up.
+        break;
+      }
+      const entries = new Set(MinecraftMcpServer._visibleChildren(current));
+
+      if (entries.has("behavior_packs") || entries.has("resource_packs")) {
+        return {
+          root: current,
+          reason:
+            depth === 0
+              ? "outputPath already contains behavior_packs/ or resource_packs/ — using it as project root"
+              : `found behavior_packs/ or resource_packs/ ${depth} level(s) above outputPath — anchoring to that project root`,
+        };
+      }
+      if (entries.has("manifest.json")) {
+        // outputPath itself is a pack folder — use its grandparent (project root).
+        const grandparent = path.dirname(path.dirname(current));
+        return {
+          root: grandparent,
+          reason: "outputPath appears to be inside a pack (manifest.json present) — anchoring to the project root",
+        };
+      }
+      if (entries.has("package.json")) {
+        return {
+          root: current,
+          reason:
+            depth === 0
+              ? "outputPath contains package.json — treating it as the project root"
+              : `package.json found ${depth} level(s) above outputPath — anchoring to that repo root`,
+        };
+      }
+      // Don't walk up further if the current folder isn't obviously a candidate for "inside a project"
+      if (depth === 0) {
+        current = path.dirname(current);
+      } else {
+        break;
+      }
+    }
+
+    // No reference point found. Check whether outputPath is empty.
+    const visible = MinecraftMcpServer._visibleChildren(normalized);
+    if (!fs.existsSync(normalized) || visible.length === 0) {
+      return {
+        root: normalized,
+        reason: "outputPath is empty (or does not yet exist) — using it directly as the project root",
+      };
+    }
+
+    // Non-empty with unrelated content — create a namespaced subfolder to avoid collisions.
+    const subfolderName = MinecraftMcpServer._toSafeFolderName(
+      definition.namespace || definition.displayName || "addon"
+    );
+    return {
+      root: path.join(normalized, subfolderName),
+      reason: `outputPath is non-empty and has no Minecraft project markers — creating subfolder "${subfolderName}" to avoid clobbering existing content`,
+    };
+  }
+
+  /**
+   * Writes a manifest.json file, but preserves the UUIDs from any existing manifest
+   * at the same location. This prevents breaking worlds that already reference the pack
+   * when content is added across multiple MCP calls.
+   */
+  private static _writeManifestPreservingUuids(
+    packBasePath: string,
+    manifestFile: { path: string; pack: string; type: string; content: object | string | Uint8Array },
+    filesWritten: string[]
+  ) {
+    const fullPath = path.join(packBasePath, manifestFile.path);
+    const dirPath = path.dirname(fullPath);
+
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
+
+    const newManifest = manifestFile.content as any;
+
+    // If an existing manifest is present, preserve its header UUID, module UUIDs, and dependencies
+    if (fs.existsSync(fullPath)) {
+      try {
+        const existing = JSON.parse(fs.readFileSync(fullPath, "utf-8"));
+
+        if (existing.header?.uuid) {
+          newManifest.header.uuid = existing.header.uuid;
+        }
+        if (existing.header?.version) {
+          newManifest.header.version = existing.header.version;
+        }
+
+        // Preserve module UUIDs
+        if (existing.modules && Array.isArray(existing.modules) && newManifest.modules) {
+          for (let i = 0; i < Math.min(existing.modules.length, newManifest.modules.length); i++) {
+            if (existing.modules[i]?.uuid) {
+              newManifest.modules[i].uuid = existing.modules[i].uuid;
+            }
+          }
+        }
+
+        // Preserve dependencies (they contain cross-pack UUID references)
+        if (existing.dependencies && !newManifest.dependencies) {
+          newManifest.dependencies = existing.dependencies;
+        }
+      } catch {
+        // If existing manifest is malformed, just write the new one
+      }
+    }
+
+    fs.writeFileSync(fullPath, JSON.stringify(newManifest, null, 2), "utf-8");
+    filesWritten.push(fullPath);
+  }
+
+  /**
+   * Writes a singleton JSON file (terrain_texture.json, item_texture.json, blocks.json,
+   * sound_definitions.json, music_definitions.json, etc.), deep-merging with any existing
+   * data so that previously-added entries are preserved instead of being overwritten.
+   *
+   * Merge strategy:
+   * - Recursively merges object keys: new entries win on conflict, but existing
+   *   object-valued entries are recursively merged rather than replaced.
+   * - Scalar top-level keys from the existing file are preserved if absent in the new content.
+   * - This handles texture_data in terrain/item_texture.json, block entries in blocks.json,
+   *   entity_sounds.entities in sounds.json, sound_definitions entries, etc.
+   */
+  private static _writeSingletonJsonMerging(
+    packBasePath: string,
+    singletonFile: { path: string; pack: string; type: string; content: object | string | Uint8Array },
+    filesWritten: string[]
+  ) {
+    const fullPath = path.join(packBasePath, singletonFile.path);
+    const dirPath = path.dirname(fullPath);
+
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
+
+    let newContent = singletonFile.content as any;
+
+    if (fs.existsSync(fullPath)) {
+      try {
+        const existing = JSON.parse(fs.readFileSync(fullPath, "utf-8"));
+        newContent = StorageUtilities.deepMergeJsonObjects(existing, newContent);
+      } catch {
+        // If existing file is malformed JSON, just write the new content
+      }
+    }
+
+    fs.writeFileSync(fullPath, JSON.stringify(newContent, null, 2), "utf-8");
+    filesWritten.push(fullPath);
   }
 
   /**
@@ -2764,8 +3085,26 @@ export default class MinecraftMcpServer {
     const project = new Project(this._creatorTools, path.basename(projectPath), null);
     project.setProjectFolder(projectFolder);
 
-    // Ensure pack structure exists (creates if empty folder)
-    const rpFolder = await project.ensureDefaultResourcePackFolder();
+    // Determine the resource-pack folder to write into.
+    //
+    // Previously this always called
+    // `ensureDefaultResourcePackFolder()`, which created a nested
+    // `resource_packs/<auto-named>/` *inside* the supplied projectPath. When
+    // callers passed projectPath = `…/resource_packs/<my_rp>` (i.e. the RP
+    // itself), files landed at `…/resource_packs/<my_rp>/resource_packs/contoso_*/models/…`
+    // instead of `…/resource_packs/<my_rp>/models/…`, leaving the entity
+    // referencing a non-existent geometry and rendering as the default cube.
+    //
+    // We now detect when the supplied folder already IS a resource pack — by
+    // the presence of a manifest.json with a `resources` module — and write
+    // directly into it.
+    let rpFolder;
+    if (MinecraftMcpServer._isResourcePackFolder(projectPath)) {
+      rpFolder = projectFolder;
+      Log.debug(`designModel: projectPath is already a resource pack — writing directly into it.`);
+    } else {
+      rpFolder = await project.ensureDefaultResourcePackFolder();
+    }
 
     // Infer existing items for auto-wiring discovery
     await project.inferProjectItemsFromFilesRootFolder();
@@ -2943,17 +3282,18 @@ export default class MinecraftMcpServer {
 
       const renderer = this._cachedRenderer;
 
-      // Build model viewer URL
+      // Build model viewer URL.
+      // NOTE: Do NOT append cameraX/cameraY/cameraZ here. VolumeEditor's ModelPreview
+      // view mode auto-frames the shot based on the model's actual bounds (see
+      // _calculateEntityMeshBounds / _calculateModelBoundsFromEntities). Passing fixed
+      // camera coordinates overrides auto-framing and produces shots that are either
+      // comically zoomed in for large models or tiny for small models.
       let modelViewerUrl = `/?mode=modelviewer&geometry=${encodeURIComponent(geometryPath)}&skipVanilla=true`;
       if (textureDataUrl) {
         modelViewerUrl += `&texture=${encodeURIComponent(texturePath)}`;
       }
 
-      // Default isometric camera angle
-      const cameraX = 0.7;
-      const cameraY = 0.5;
-      const cameraZ = 0.7;
-      const angleUrl = modelViewerUrl + `&cameraX=${cameraX}&cameraY=${cameraY}&cameraZ=${cameraZ}`;
+      const angleUrl = modelViewerUrl;
 
       const result = await renderer.renderModelFast(angleUrl, {
         width: 768,
@@ -3270,16 +3610,16 @@ export default class MinecraftMcpServer {
 
       const renderer = this._cachedRenderer;
 
-      // Build structure viewer URL
+      // Build structure viewer URL.
+      // NOTE: Do NOT append cameraX/cameraY/cameraZ here. VolumeEditor's Structure
+      // view mode auto-frames the shot based on the block volume's dimensions
+      // (maxDim * 1.5 diagonal offset). Passing fixed camera coordinates overrides
+      // auto-framing and mis-frames both tiny and large structures.
       let structureViewerUrl = `/?mode=structureviewer&structure=${encodeURIComponent(structurePath)}&hideChrome=true`;
       structureViewerUrl += `&skipVanilla=false`;
       structureViewerUrl += `&contentRoot=${encodeURIComponent("https://mctools.dev/")}`;
 
-      // Default isometric camera angle
-      const cameraX = 0.7;
-      const cameraY = 0.5;
-      const cameraZ = 0.7;
-      const angleUrl = structureViewerUrl + `&cameraX=${cameraX}&cameraY=${cameraY}&cameraZ=${cameraZ}`;
+      const angleUrl = structureViewerUrl;
 
       const result = await renderer.renderModelFast(angleUrl, {
         width: 800,
@@ -4072,13 +4412,34 @@ export default class MinecraftMcpServer {
         {
           title: "Create Minecraft content from simplified meta-schema",
           description:
-            "Creates Minecraft Bedrock content (entities, blocks, items, etc.) from a simplified, AI-friendly meta-schema. " +
-            "The schema supports three levels of abstraction: traits (pre-packaged bundles), simplified properties, and native components. " +
-            "A single definition generates all required behavior pack and resource pack files including manifests, entity definitions, " +
-            "block definitions, item definitions, loot tables, recipes, spawn rules, and features.",
+            "Create a complete Minecraft Bedrock behavior-pack + resource-pack from a single AI-friendly meta-schema. " +
+            "Use this when you are authoring an add-on with multiple entities/blocks/items, loot tables, recipes, spawn rules, " +
+            "features, or structures \u2014 it emits manifests and cross-references for you. " +
+            "\n\n" +
+            "When NOT to use this tool:\n" +
+            "  - For a standalone 3D model preview (no project, just a PNG + .geo.json): use `designModel`.\n" +
+            "  - For a standalone structure preview (.mcstructure only): use `designStructure`.\n" +
+            "  - For a single texture PNG from pixel art: use `writeImageFileFromPixelArt` or `previewTextureSpec`.\n" +
+            "  - To analyze or reverse-engineer an existing project: use `getEffectiveContentSchema`.\n" +
+            "\n" +
+            "The meta-schema has three layers of abstraction you can mix freely: " +
+            "(1) traits \u2014 pre-packaged bundles (e.g. 'sword', 'humanoid', 'container'); " +
+            "(2) simplified properties (health, damage, color, icon, etc.); " +
+            "(3) raw `components` \u2014 full escape hatch to native Minecraft JSON.",
           inputSchema: {
             definition: MinecraftContentSchema,
-            outputPath: z.string().describe("Absolute path to the folder where content should be generated"),
+            outputPath: z
+              .string()
+              .describe(
+                "Absolute path to the folder where content should be generated. Pass the user's current " +
+                  "project folder AS-IS \u2014 do NOT append a new subfolder named after the project. " +
+                  "The tool auto-resolves the actual write location: " +
+                  "(1) if the folder already contains behavior_packs/, resource_packs/, package.json, or a " +
+                  "manifest.json, it anchors to that project root; " +
+                  "(2) if the folder is empty or doesn't exist yet, it writes directly there; " +
+                  "(3) only if the folder has unrelated existing content does it create a namespaced subfolder. " +
+                  "The response reports the resolved project root under `projectRoot`."
+              ),
           },
         },
         this._createMinecraftContentOp
@@ -4247,31 +4608,40 @@ export default class MinecraftMcpServer {
     const mcpTexturedRectangleSchema = z
       .object({
         type: z
-          .enum(["solid", "random_noise", "dither_noise", "perlin_noise", "stipple_noise", "gradient"])
+          .enum(["none", "solid", "random_noise", "dither_noise", "perlin_noise", "stipple_noise", "gradient"])
           .describe(
-            "Fill algorithm: 'solid' for flat color, 'stipple_noise' for organic textures (skin, stone), " +
-              "'dither_noise' for structured patterns (metal, fabric), 'perlin_noise' for smooth organic (grass, water), " +
-              "'random_noise' for rough textures (gravel), 'gradient' for smooth transitions"
+            "Fill algorithm. " +
+              "'none' = fully transparent background (pair with pixelArt for icon-style textures with see-through edges). " +
+              "'solid' = flat single color (uses first entry in colors). " +
+              "'stipple_noise' = organic materials (skin, stone, leather). " +
+              "'dither_noise' = structured patterns (metal, fabric, bricks). " +
+              "'perlin_noise' = smooth organic (grass, water, clouds). " +
+              "'random_noise' = rough/grainy textures (gravel, sand). " +
+              "'gradient' = smooth color transitions."
           ),
         colors: z
           .array(z.string())
+          .optional()
           .describe(
-            "Colors to use. For 'solid', only first color is used. " +
-              "For noise types, provide 2+ colors for richer textures (hex like '#FF0000')"
+            "Colors to use (hex like '#FF0000'). Required for all types except 'none' (omit or pass []). " +
+              "For 'solid', only the first color is used. For noise types, provide 2+ colors for richer textures."
           ),
         factor: z
           .number()
           .optional()
-          .describe("Noise intensity from 0 to 1. Higher = more variation. Default: 0.2. Ignored for 'solid'."),
-        seed: z.number().optional().describe("Random seed for deterministic results. Ignored for 'solid'."),
+          .describe(
+            "Noise intensity from 0 to 1. Higher = more variation. Default: 0.2. Ignored for 'solid' and 'none'."
+          ),
+        seed: z.number().optional().describe("Random seed for deterministic results. Ignored for 'solid' and 'none'."),
         pixelSize: z
           .number()
           .optional()
-          .describe("Size of noise pixels. Larger = blockier. Default: 1. Ignored for 'solid'."),
+          .describe("Size of noise pixels. Larger = blockier. Default: 1. Ignored for 'solid' and 'none'."),
         scale: z.number().optional().describe("For perlin_noise: controls smoothness. Larger = smoother. Default: 4."),
       })
       .describe(
-        "Textured rectangle fill - use type:'solid' for flat colors, or noise types for Minecraft-style textures"
+        "Textured rectangle fill. Use type:'none' for transparent icon backgrounds with pixelArt overlays, " +
+          "type:'solid' for flat colors, or one of the noise/gradient types for Minecraft-style procedural textures."
       );
 
     // ============================================================================
@@ -4778,6 +5148,98 @@ export default class MinecraftMcpServer {
       this._designStructureOp
     );
 
+    // ========================================================================
+    // TEXTURE / IMAGE FILE TOOLS
+    // ========================================================================
+
+    this._registerTool(
+      "writeImageFile",
+      {
+        title: "Write a texture image from base64 data",
+        description:
+          "Writes base64-encoded image data to a PNG file. Use this for saving textures generated externally " +
+          "or for converting between image formats. The image is returned as a preview after writing.\n\n" +
+          "Requires `allowImageFileWritesInDescendentFolders: true` in `.mct/mcp/prefs.json`.",
+        inputSchema: {
+          filePath: z.string().describe("Absolute path to write the image file (should end in .png)"),
+          base64Data: z.string().describe("Base64-encoded image data (PNG, JPEG, or WebP)"),
+          mimeType: z
+            .string()
+            .optional()
+            .describe("MIME type of the input image (e.g., 'image/png'). Auto-detected if omitted."),
+        },
+      },
+      this._writeImageFileFromBase64Op
+    );
+
+    this._registerTool(
+      "writeImageFileFromSvg",
+      {
+        title: "Create a texture image from SVG markup",
+        description:
+          "Converts SVG markup to a PNG texture file. Great for creating Minecraft textures with crisp lines, " +
+          "geometric patterns, and precise color control. SVG is rendered at the specified dimensions " +
+          "(default: native SVG size) and saved as PNG.\n\n" +
+          "Requires `allowImageFileWritesInDescendentFolders: true` in `.mct/mcp/prefs.json`.",
+        inputSchema: {
+          filePath: z.string().describe("Absolute path to write the PNG file"),
+          svgContent: z.string().describe("SVG markup string to render as a texture"),
+          width: z.number().optional().describe("Output width in pixels (e.g., 16 for a standard Minecraft texture)"),
+          height: z.number().optional().describe("Output height in pixels (e.g., 16 for a standard Minecraft texture)"),
+        },
+      },
+      this._writeImageFileFromSvgOp
+    );
+
+    this._registerTool(
+      "writeImageFileFromPixelArt",
+      {
+        title: "Create a texture image from ASCII pixel art",
+        description:
+          "Creates a PNG texture from an ASCII art definition with a color palette. " +
+          "Each character in the art maps to a color, and space characters are transparent. " +
+          "Perfect for creating Minecraft block textures (16x16), item icons, and entity skins " +
+          "with a simple, readable format.\n\n" +
+          "Example: lines=['RRR','RGR','RRR'], palette={R:{hex:'#FF0000'},G:{hex:'#00FF00'}}\n\n" +
+          "Requires `allowImageFileWritesInDescendentFolders: true` in `.mct/mcp/prefs.json`.",
+        inputSchema: {
+          filePath: z.string().describe("Absolute path to write the PNG file"),
+          lines: z
+            .array(z.string())
+            .describe(
+              "Array of strings forming the pixel art. Each character maps to a palette color. Space = transparent."
+            ),
+          palette: z
+            .record(
+              z.string(),
+              z.object({
+                r: z.number().optional().describe("Red (0-255)"),
+                g: z.number().optional().describe("Green (0-255)"),
+                b: z.number().optional().describe("Blue (0-255)"),
+                a: z.number().optional().describe("Alpha (0-255, default 255)"),
+                hex: z.string().optional().describe("Hex color like '#FF0000' (alternative to r/g/b)"),
+              })
+            )
+            .describe("Map of single characters to colors. Do not define space — it is reserved for transparency."),
+          scale: z
+            .number()
+            .optional()
+            .describe("Scale factor — each art pixel becomes scale×scale output pixels. Default: 1."),
+          backgroundColor: z
+            .object({
+              r: z.number().optional(),
+              g: z.number().optional(),
+              b: z.number().optional(),
+              a: z.number().optional(),
+              hex: z.string().optional(),
+            })
+            .optional()
+            .describe("Background fill color. Default: fully transparent."),
+        },
+      },
+      this._writeImageFileFromPixelArtOp
+    );
+
     // Add a dynamic worldSession resource that returns real session data
     this._server.registerResource(
       "worldSession",
@@ -4897,7 +5359,14 @@ export default class MinecraftMcpServer {
 
     this._creatorTools = creatorTools;
     this._env = env;
-    this._workingFolder = workingFolder;
+
+    // Apply project root auto-discovery to the working folder
+    if (workingFolder) {
+      this._workingFolder = CommandContextFactory.resolveProjectRoot(workingFolder);
+    } else {
+      this._workingFolder = workingFolder;
+    }
+
     this._creatorTools.onStatusAdded.subscribe(MinecraftMcpServer.handleStatusAdded);
 
     if (this._workingFolder) {

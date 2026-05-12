@@ -168,43 +168,85 @@ test.describe("Focus Management — Focus Order @comprehensive-a11y @keyboard", 
     await gotoWithTheme(page, "dark");
     await page.waitForTimeout(500);
 
-    // Collect focus positions as we Tab through the page
-    const focusPositions: { x: number; y: number; text: string }[] = [];
+    // Collect focus positions as we Tab through the page.
+    //
+    // We use page-absolute Y (rect.top + window.scrollY) instead of viewport
+    // y, because focusing an element below the fold causes the browser to
+    // auto-scroll, which would otherwise produce phantom "focus jumped up"
+    // signals. The first focusable element after page load is the
+    // visually-hidden ".app-skipLink" we added in P1-7 — it's intentionally
+    // anchored to the top of the page so users can jump past the masthead,
+    // so we exclude it from the order check.
+    const focusPositions: { x: number; y: number; text: string; isSkip: boolean }[] = [];
 
     for (let i = 0; i < 20; i++) {
       await page.keyboard.press("Tab");
 
       const pos = await page.evaluate(() => {
-        const el = document.activeElement;
+        const el = document.activeElement as HTMLElement | null;
         if (!el || el === document.body) return null;
         const rect = el.getBoundingClientRect();
         return {
-          x: rect.left,
-          y: rect.top,
+          x: rect.left + window.scrollX,
+          y: rect.top + window.scrollY,
           text: (el.textContent ?? "").substring(0, 30),
+          isSkip: !!(el.classList && el.classList.contains("app-skipLink")),
         };
       });
 
       if (pos) focusPositions.push(pos);
     }
 
-    // Check that focus generally progresses top-to-bottom, left-to-right
-    // Allow some deviations (e.g., toolbar items may be in a row)
-    let outOfOrderCount = 0;
-    for (let i = 1; i < focusPositions.length; i++) {
-      const prev = focusPositions[i - 1];
-      const curr = focusPositions[i];
-      // Major regression: focus jumps significantly upward
+    // Drop the skip link from order analysis — it is *intentionally* anchored
+    // at the top of the page (regardless of where it appears in the DOM) and
+    // exists so users can bypass the navigation. Including it in the
+    // "monotonically increasing y" check would create a guaranteed regression
+    // every time it appears.
+    const ordered = focusPositions.filter((p) => !p.isSkip);
+
+    // Multi-region pages (sidebar + main) inevitably produce some upward
+    // jumps when focus crosses from the bottom of one region to the top of
+    // another — that's a meaningful sequence, not a regression. We
+    // distinguish "crossing-region jumps" (allowed; large) from "reorder
+    // within a single column" (worth flagging; should be small): a real
+    // intra-region regression is one where focus moves up by more than 100
+    // px AND the horizontal X position is roughly the same column (within
+    // 200 px).
+    let intraRegionRegressions = 0;
+    let crossRegionJumps = 0;
+    for (let i = 1; i < ordered.length; i++) {
+      const prev = ordered[i - 1];
+      const curr = ordered[i];
       if (curr.y < prev.y - 100) {
-        outOfOrderCount++;
-        console.log(
-          `Focus order regression: "${prev.text}" (y=${prev.y.toFixed(0)}) → "${curr.text}" (y=${curr.y.toFixed(0)})`
-        );
+        if (Math.abs(curr.x - prev.x) < 200) {
+          intraRegionRegressions++;
+          console.log(
+            `Intra-region focus regression: "${prev.text}" (x=${prev.x.toFixed(0)}, y=${prev.y.toFixed(0)}) → ` +
+              `"${curr.text}" (x=${curr.x.toFixed(0)}, y=${curr.y.toFixed(0)})`
+          );
+        } else {
+          crossRegionJumps++;
+          console.log(
+            `Cross-region focus jump (allowed): "${prev.text}" → "${curr.text}" ` +
+              `(Δx=${(curr.x - prev.x).toFixed(0)}, Δy=${(curr.y - prev.y).toFixed(0)})`
+          );
+        }
       }
     }
 
-    console.log(`Focus order: ${focusPositions.length} elements, ${outOfOrderCount} major regressions`);
-    // Allow at most 2 out-of-order jumps (toolbars, etc.)
-    expect(outOfOrderCount, "Focus order should generally follow visual reading order").toBeLessThanOrEqual(2);
+    console.log(
+      `Focus order: ${ordered.length} elements, ${intraRegionRegressions} intra-region regressions, ` +
+        `${crossRegionJumps} cross-region jumps`
+    );
+
+    // Intra-region regressions are real bugs. Cross-region jumps are
+    // expected on multi-column layouts — capped generously at 4 to catch a
+    // catastrophic structural break (e.g., focus zig-zagging between
+    // unrelated columns repeatedly).
+    expect(
+      intraRegionRegressions,
+      "Within a single column, focus order should follow visual reading order"
+    ).toBeLessThanOrEqual(2);
+    expect(crossRegionJumps, "Focus should not zig-zag across regions").toBeLessThanOrEqual(4);
   });
 });

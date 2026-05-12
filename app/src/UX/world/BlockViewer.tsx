@@ -44,9 +44,10 @@ import Database from "../../minecraft/Database";
 import Block from "../../minecraft/Block";
 import BlockType from "../../minecraft/BlockType";
 import Log from "../../core/Log";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 import "./BlockViewer.css";
 
-interface IBlockViewerProps {
+interface IBlockViewerProps extends WithLocalizationProps {
   heightOffset: number;
   blockName?: string;
   showAllBlocks?: boolean;
@@ -59,7 +60,7 @@ interface IBlockViewerState {
   errorMessage?: string;
 }
 
-export default class BlockViewer extends Component<IBlockViewerProps, IBlockViewerState> {
+class BlockViewer extends Component<IBlockViewerProps, IBlockViewerState> {
   private _canvasRef: RefObject<HTMLCanvasElement>;
   private _engine: BABYLON.Engine | null = null;
   private _scene: BABYLON.Scene | null = null;
@@ -115,8 +116,22 @@ export default class BlockViewer extends Component<IBlockViewerProps, IBlockView
 
     this._scene = new BABYLON.Scene(this._engine);
 
-    // Use shared scene configuration (clearColor, fog) — same as VolumeEditor/WorldRenderer
-    MinecraftEnvironment.configureScene(this._scene);
+    const params = new URLSearchParams(window.location.search);
+    // Flat neutral background (light sky blue) — opt-in via ?flatbg=true for
+    // atlas/thumbnail captures so composited sprites sit on a uniform,
+    // non-gradient ground instead of the skybox's vertical gradient.
+    // Default-off so existing visual regression snapshots remain stable.
+    const flatBackground = params.get("flatbg") === "true";
+
+    if (flatBackground) {
+      // Match zenith tint used elsewhere so the picker feels consistent.
+      this._scene.clearColor = new BABYLON.Color4(0.72, 0.85, 0.95, 1.0);
+      // Disable fog so distance doesn't wash out the block silhouette.
+      this._scene.fogMode = BABYLON.Scene.FOGMODE_NONE;
+    } else {
+      // Use shared scene configuration (clearColor, fog) — same as VolumeEditor/WorldRenderer
+      MinecraftEnvironment.configureScene(this._scene);
+    }
 
     // Create camera
     this._camera = new BABYLON.ArcRotateCamera(
@@ -134,8 +149,11 @@ export default class BlockViewer extends Component<IBlockViewerProps, IBlockView
     // Use shared lighting pipeline — same as VolumeEditor/WorldRenderer
     MinecraftEnvironment.configureLighting(this._scene);
 
-    // Create shared sky dome for consistent background across all 3D viewers
-    MinecraftEnvironment.createSkyDome(this._scene);
+    // Skip the gradient sky dome in flat-background mode — we want a uniform
+    // clearColor so the block reads as an icon, not a scene screenshot.
+    if (!flatBackground) {
+      MinecraftEnvironment.createSkyDome(this._scene);
+    }
 
     // Create block mesh factory with mock bounds
     const mockBounds = {
@@ -302,7 +320,7 @@ export default class BlockViewer extends Component<IBlockViewerProps, IBlockView
     const currentBlockType = blockTypes[currentBlockIndex];
     const blockName = currentBlockType?.shortId || "Loading...";
 
-    // Headless mode: only render canvas for CLI/batch rendering
+    // Run without display mode: only render canvas for CLI/batch rendering
     if (isHeadless) {
       return (
         <div className="bv-container bv-headless" style={{ height: "100vh", width: "100vw" }}>
@@ -315,7 +333,7 @@ export default class BlockViewer extends Component<IBlockViewerProps, IBlockView
       <div className="bv-container" style={{ height: `calc(100vh - ${heightOffset}px)` }}>
         <div className="bv-toolbar">
           <button className="bv-button" onClick={this._handlePrevBlock} disabled={currentBlockIndex <= 0}>
-            ← Prev
+            {this.props.intl.formatMessage({ id: "viewer.prev" })}
           </button>
 
           <select
@@ -337,11 +355,14 @@ export default class BlockViewer extends Component<IBlockViewerProps, IBlockView
             onClick={this._handleNextBlock}
             disabled={currentBlockIndex >= blockTypes.length - 1}
           >
-            Next →
+            {this.props.intl.formatMessage({ id: "viewer.next" })}
           </button>
 
           <span className="bv-info">
-            Block {currentBlockIndex + 1} of {blockTypes.length}
+            {this.props.intl.formatMessage(
+              { id: "viewer.block.info" },
+              { current: currentBlockIndex + 1, total: blockTypes.length }
+            )}
           </span>
         </div>
 
@@ -349,7 +370,12 @@ export default class BlockViewer extends Component<IBlockViewerProps, IBlockView
           <h2>{blockName}</h2>
           {currentBlockType && (
             <div className="bv-block-details">
-              <span>Base Type: {currentBlockType.baseType?.name || "unknown"}</span>
+              <span>
+                {this.props.intl.formatMessage(
+                  { id: "viewer.block.base_type" },
+                  { name: currentBlockType.baseType?.name || "unknown" }
+                )}
+              </span>
               {currentBlockType.mapColor && (
                 <span
                   className="bv-color-swatch"
@@ -368,9 +394,11 @@ export default class BlockViewer extends Component<IBlockViewerProps, IBlockView
         <canvas ref={this._canvasRef} className="bv-canvas" data-testid="block-viewer-canvas" />
 
         <div className="bv-footer">
-          <p>Use mouse to rotate, scroll to zoom</p>
+          <p>{this.props.intl.formatMessage({ id: "viewer.rotate_hint" })}</p>
         </div>
       </div>
     );
   }
 }
+
+export default withLocalization(BlockViewer);

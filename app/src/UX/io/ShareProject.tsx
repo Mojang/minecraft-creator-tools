@@ -17,8 +17,9 @@ import IStorage from "../../storage/IStorage";
 import FileExplorer, { FileExplorerMode } from "../project/fileExplorer/FileExplorer";
 import QRCode from "react-qr-code";
 import IProjectTheme from "../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
-interface IShareProjectProps extends IAppProps {
+interface IShareProjectProps extends IAppProps, WithLocalizationProps {
   project: Project;
   theme: IProjectTheme;
 }
@@ -29,9 +30,10 @@ interface IShareProjectState {
   title: string | undefined;
   exampleStorage?: IStorage | undefined;
   exampleErrorMessage?: string | undefined;
+  copyErrorMessage?: string | undefined;
 }
 
-export default class ShareProject extends Component<IShareProjectProps, IShareProjectState> {
+class ShareProject extends Component<IShareProjectProps, IShareProjectState> {
   _fullLinkElt: HTMLDivElement | undefined;
   _fullUrlLinkElt: HTMLDivElement | undefined;
   _projectLinkElt: HTMLDivElement | undefined;
@@ -62,7 +64,12 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
   }
 
   componentDidMount() {
-    window.setTimeout(this._ensureLoaded, 1);
+    window.setTimeout(() => {
+      void this._ensureLoaded().catch((err) => {
+        Log.error(`ShareProject load failed: ${err}`);
+        this.setState({ exampleErrorMessage: "Failed to load project sharing info: " + err.message });
+      });
+    }, 1);
   }
 
   async _ensureLoaded() {
@@ -324,7 +331,8 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
 
       image.src = url;
     } catch (err: any) {
-      alert(err.message);
+      Log.error(`QR code copy failed: ${err}`);
+      this.setState({ copyErrorMessage: "Failed to copy QR code: " + err.message });
     }
   }
 
@@ -343,8 +351,10 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
   }
 
   render() {
+    const intl = this.props.intl;
+
     if (this.state === null || this.state.contentUrl === undefined) {
-      return <div>Generating link...</div>;
+      return <div>{intl.formatMessage({ id: "share_project.generating" })}</div>;
     }
 
     const contentUrlValue = this.state.contentUrl;
@@ -354,77 +364,114 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
 
     if (this.state.exampleErrorMessage) {
       shareContent.push(
-        <div className="shp-contentAreaHeader">
-          <div className="shp-contentHeader">Could not generate links with changed content.</div>
+        <div className="shp-contentAreaHeader" key="shp-error-header">
+          <div className="shp-contentHeader">{intl.formatMessage({ id: "share_project.error_header" })}</div>
           <div>{this.state.exampleErrorMessage}</div>
         </div>
       );
     } else if (contentUrlValue && this.state.exampleStorage) {
       shareContent.push(
-        <div className="shp-contentAreaHeader">
-          <div className="shp-contentHeader">Links with your changed content</div>
+        <div className="shp-contentAreaHeader" key="shp-content-header">
+          <div className="shp-contentHeader">{intl.formatMessage({ id: "share_project.changes_header" })}</div>
         </div>
       );
-      shareContent.push(<div className="shp-summaryCell">Full Link with Changes</div>);
       shareContent.push(
-        <div className="shp-contentCell" ref={(c: HTMLDivElement) => this._setFullLink(c)}>
+        <div className="shp-summaryCell" key="shp-full-link-label">
+          {intl.formatMessage({ id: "share_project.full_link_label" })}
+        </div>
+      );
+      shareContent.push(
+        <div className="shp-contentCell" key="shp-full-link-cell" ref={(c: HTMLDivElement) => this._setFullLink(c)}>
           <a href={contentUrlValue}>{this.state.title}</a>
         </div>
       );
       shareContent.push(
-        <div className="shp-copyButton">
-          <IconButton onClick={this._copyFullLink} size="small" title="Copy full link" aria-label="Copy full link">
+        <div className="shp-copyButton" key="shp-full-link-copy">
+          <IconButton
+            onClick={this._copyFullLink}
+            size="small"
+            title={intl.formatMessage({ id: "share_project.copy_full_link" })}
+            aria-label={intl.formatMessage({ id: "share_project.copy_full_link" })}
+          >
             <FontAwesomeIcon icon={faCopy} className="fa-lg" />
           </IconButton>
         </div>
       );
-      shareContent.push(<div className="shp-summaryCell">URL with Changes ({contentUrlValue.length} chars)</div>);
       shareContent.push(
-        <div className="shp-contentCell" ref={(c: HTMLDivElement) => this._setFullUrlLink(c)} title={contentUrlValue}>
+        <div className="shp-summaryCell" key="shp-url-label">
+          {intl.formatMessage({ id: "share_project.url_changes_label" }, { length: contentUrlValue.length })}
+        </div>
+      );
+      shareContent.push(
+        <div
+          className="shp-contentCell"
+          key="shp-url-cell"
+          ref={(c: HTMLDivElement) => this._setFullUrlLink(c)}
+          title={contentUrlValue}
+        >
           {contentUrlValue}
         </div>
       );
 
       shareContent.push(
-        <div className="shp-copyButton">
-          <IconButton onClick={this._copyFullUrlLink} size="small" title="Copy URL" aria-label="Copy URL">
+        <div className="shp-copyButton" key="shp-url-copy">
+          <IconButton
+            onClick={this._copyFullUrlLink}
+            size="small"
+            title={intl.formatMessage({ id: "share_project.copy_url" })}
+            aria-label={intl.formatMessage({ id: "share_project.copy_url" })}
+          >
             <FontAwesomeIcon icon={faCopy} className="fa-lg" />
           </IconButton>
         </div>
       );
-      shareContent.push(<div className="shp-summaryCell">URL with Changes QR Code</div>);
+      shareContent.push(
+        <div className="shp-summaryCell" key="shp-qr-label">
+          {intl.formatMessage({ id: "share_project.qr_label" })}
+        </div>
+      );
       if (contentUrlValue.length < 4200) {
         shareContent.push(
-          <div className="shp-contentCell" ref={(c: HTMLDivElement) => this._setQrCodeLink(c)} title={contentUrlValue}>
+          <div
+            className="shp-contentCell"
+            key="shp-qr-cell"
+            ref={(c: HTMLDivElement) => this._setQrCodeLink(c)}
+            title={contentUrlValue}
+          >
             <QRCode value={contentUrlValue} />
           </div>
         );
 
         shareContent.push(
-          <div className="shp-copyButton">
-            <IconButton onClick={this._copyQrCodeLink} size="small" title="Copy QR code" aria-label="Copy QR code">
+          <div className="shp-copyButton" key="shp-qr-copy">
+            <IconButton
+              onClick={this._copyQrCodeLink}
+              size="small"
+              title={intl.formatMessage({ id: "share_project.copy_qr" })}
+              aria-label={intl.formatMessage({ id: "share_project.copy_qr" })}
+            >
               <FontAwesomeIcon icon={faCopy} className="fa-lg" />
             </IconButton>
           </div>
         );
       } else {
         shareContent.push(
-          <div className="shp-contentCell" title={contentUrlValue}>
-            URL is too long - {contentUrlValue} - for a QR code (over 4200 characters.
+          <div className="shp-contentCell" key="shp-qr-too-long" title={contentUrlValue}>
+            {intl.formatMessage({ id: "share_project.url_too_long" }, { length: contentUrlValue.length })}
           </div>
         );
       }
 
       shareContent.push(
-        <div className="shp-contentArea">
+        <div className="shp-contentArea" key="shp-content-area">
           <div className="shp-contentWarning">
             <span className="shp-warningIcon">
               <FontAwesomeIcon icon={faTriangleExclamation} className="fa-lg" />
             </span>
-            <span className="shp-warningText">
-              This changed content is <b>directly included</b> within the links above. By sharing "with Changes" links,
-              you are sharing this content:
-            </span>
+            <span
+              className="shp-warningText"
+              dangerouslySetInnerHTML={{ __html: intl.formatMessage({ id: "share_project.content_warning" }) }}
+            />
           </div>
 
           <div className="shp-contentDisplay">
@@ -446,17 +493,35 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
 
     return (
       <div className="shp-outer">
+        {this.state.copyErrorMessage && (
+          <div
+            style={{
+              padding: "8px",
+              backgroundColor: "#ffebee",
+              color: "#c62828",
+              marginBottom: "8px",
+              borderRadius: "4px",
+            }}
+          >
+            {this.state.copyErrorMessage}
+          </div>
+        )}
         <div className="shp-optionsArea">
-          <div className="shp-summaryCell">Project Start Link</div>
+          <div className="shp-summaryCell">{intl.formatMessage({ id: "share_project.project_link_label" })}</div>
           <div className="shp-contentCell" ref={(c: HTMLDivElement) => this._setProjectLink(c)}>
             <a href={baseProjectUrlValue}>{this.state.title}</a>
           </div>
           <div className="shp-copyButton">
-            <IconButton onClick={this._copyProjectLink} size="small" title="Copy project link" aria-label="Copy project link">
+            <IconButton
+              onClick={this._copyProjectLink}
+              size="small"
+              title={intl.formatMessage({ id: "share_project.copy_project_link" })}
+              aria-label={intl.formatMessage({ id: "share_project.copy_project_link" })}
+            >
               <FontAwesomeIcon icon={faCopy} className="fa-lg" />
             </IconButton>
           </div>
-          <div className="shp-summaryCell">Project Start URL</div>
+          <div className="shp-summaryCell">{intl.formatMessage({ id: "share_project.project_url_label" })}</div>
           <div
             className="shp-contentCell"
             ref={(c: HTMLDivElement) => this._setProjectUrlLink(c)}
@@ -465,7 +530,12 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
             {baseProjectUrlValue}
           </div>
           <div className="shp-copyButton">
-            <IconButton onClick={this._copyProjectUrlLink} size="small" title="Copy project URL" aria-label="Copy project URL">
+            <IconButton
+              onClick={this._copyProjectUrlLink}
+              size="small"
+              title={intl.formatMessage({ id: "share_project.copy_project_url" })}
+              aria-label={intl.formatMessage({ id: "share_project.copy_project_url" })}
+            >
               <FontAwesomeIcon icon={faCopy} className="fa-lg" />
             </IconButton>
           </div>
@@ -475,3 +545,5 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
     );
   }
 }
+
+export default withLocalization(ShareProject);

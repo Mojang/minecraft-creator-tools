@@ -10,7 +10,7 @@
  * (effective viewport: 320×256 CSS pixels).
  */
 
-import { test, expect, Page, ConsoleMessage } from "@playwright/test";
+import { test, expect, Page, ConsoleMessage, TestInfo } from "@playwright/test";
 import { processMessage, enterEditor } from "../testweb/WebTestUtilities";
 
 /** Collect console errors during each test. */
@@ -25,12 +25,26 @@ function setupConsoleTracking(page: Page) {
   return { consoleErrors, consoleWarnings };
 }
 
+/**
+ * Extract a stable zoom-level label from the active Playwright project name.
+ *
+ * Both `reflow-400pct` and `reflow-200pct` projects exercise the same specs but
+ * at different viewport sizes. Without this, both projects would write to
+ * identical screenshot paths (last-writer-wins), erasing the 400% evidence we
+ * actually need for MAS 1.4.10.
+ */
+function zoomLabel(testInfo: TestInfo): string {
+  const project = testInfo.project.name; // e.g. "reflow-400pct"
+  const match = project.match(/(\d+pct)/);
+  return match ? match[1] : project;
+}
+
 // ---------------------------------------------------------------------------
 // Home Page reflow
 // ---------------------------------------------------------------------------
 
 test.describe("Reflow: Home Page @reflow", () => {
-  test("home page should not have a horizontal scrollbar at 400% zoom", async ({ page }) => {
+  test("home page should not have a horizontal scrollbar at 400% zoom", async ({ page }, testInfo) => {
     setupConsoleTracking(page);
 
     await page.goto("/");
@@ -38,7 +52,7 @@ test.describe("Reflow: Home Page @reflow", () => {
     await page.waitForTimeout(1500);
 
     await page.screenshot({
-      path: "debugoutput/screenshots/reflow-home-400pct.png",
+      path: `debugoutput/screenshots/reflow-home-${zoomLabel(testInfo)}.png`,
       fullPage: true,
     });
 
@@ -56,7 +70,7 @@ test.describe("Reflow: Home Page @reflow", () => {
 // ---------------------------------------------------------------------------
 
 test.describe("Reflow: Status Area @reflow", () => {
-  test("status area list should not be cropped at 400% zoom", async ({ page }) => {
+  test("status area list should not be cropped at 400% zoom", async ({ page }, testInfo) => {
     setupConsoleTracking(page);
 
     const entered = await enterEditor(page, { editMode: "full" });
@@ -77,7 +91,7 @@ test.describe("Reflow: Status Area @reflow", () => {
     }
 
     await page.screenshot({
-      path: "debugoutput/screenshots/reflow-status-area-expanded-400pct.png",
+      path: `debugoutput/screenshots/reflow-status-area-expanded-${zoomLabel(testInfo)}.png`,
       fullPage: true,
     });
 
@@ -115,7 +129,7 @@ test.describe("Reflow: Status Area @reflow", () => {
 // ---------------------------------------------------------------------------
 
 test.describe("Reflow: Project Editor @reflow", () => {
-  test("editor toolbar should remain accessible at 400% zoom", async ({ page }) => {
+  test("editor toolbar should remain accessible at 400% zoom", async ({ page }, testInfo) => {
     setupConsoleTracking(page);
 
     const entered = await enterEditor(page, { editMode: "focused" });
@@ -125,7 +139,7 @@ test.describe("Reflow: Project Editor @reflow", () => {
     }
 
     await page.screenshot({
-      path: "debugoutput/screenshots/reflow-editor-400pct.png",
+      path: `debugoutput/screenshots/reflow-editor-${zoomLabel(testInfo)}.png`,
       fullPage: true,
     });
 
@@ -153,7 +167,7 @@ test.describe("Reflow: Project Editor @reflow", () => {
     expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 50);
   });
 
-  test("project item list should be scrollable at 400% zoom", async ({ page }) => {
+  test("project item list should be scrollable at 400% zoom", async ({ page }, testInfo) => {
     setupConsoleTracking(page);
 
     const entered = await enterEditor(page, { editMode: "full" });
@@ -171,7 +185,7 @@ test.describe("Reflow: Project Editor @reflow", () => {
     }
 
     await page.screenshot({
-      path: "debugoutput/screenshots/reflow-items-list-400pct.png",
+      path: `debugoutput/screenshots/reflow-items-list-${zoomLabel(testInfo)}.png`,
       fullPage: true,
     });
 

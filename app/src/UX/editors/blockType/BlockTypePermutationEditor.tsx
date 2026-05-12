@@ -17,8 +17,9 @@ import ManagedPermutation from "../../../minecraft/ManagedPermutation";
 import { faPlus, faFillDrip } from "@fortawesome/free-solid-svg-icons";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
-interface IBlockTypePermutationEditorProps extends IFileProps {
+interface IBlockTypePermutationEditorProps extends IFileProps, WithLocalizationProps {
   isVisualsMode: boolean;
   heightOffset: number;
   readOnly: boolean;
@@ -35,7 +36,7 @@ interface IBlockTypePermutationEditorState {
   isLoaded: boolean;
 }
 
-export default class BlockTypePermutationEditor extends Component<
+class BlockTypePermutationEditor extends Component<
   IBlockTypePermutationEditorProps,
   IBlockTypePermutationEditorState
 > {
@@ -124,7 +125,7 @@ export default class BlockTypePermutationEditor extends Component<
 
     itemListings.push({
       key: "baseBlockType",
-      header: "(base)",
+      header: this.props.intl.formatMessage({ id: "project_editor.block_perm.base_label" }),
       headerMedia: " ",
       content: " ",
     });
@@ -271,7 +272,7 @@ export default class BlockTypePermutationEditor extends Component<
           }}
         >
           <div className="btpe-componentListHeader">
-            <div className="btpe-setsLabel">Sets:</div>
+            <div className="btpe-setsLabel">{this.props.intl.formatMessage({ id: "project_editor.block_perm.sets_label" })}</div>
             <div
               className="btpe-toolBarArea"
               style={{
@@ -279,11 +280,11 @@ export default class BlockTypePermutationEditor extends Component<
                 color: colors.contentForeground,
               }}
             >
-              <Stack direction="row" spacing={1} aria-label="Block type permutations actions">
+              <Stack direction="row" spacing={1} aria-label={this.props.intl.formatMessage({ id: "project_editor.block_perm.aria_actions" })}>
                 <Button
                   onClick={this._addPermutation}
                   disabled={this.props.readOnly}
-                  title="Edit documentation by types"
+                  title={this.props.intl.formatMessage({ id: "project_editor.block_perm.edit_docs" })}
                 >
                   <CustomLabel
                     icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
@@ -292,10 +293,10 @@ export default class BlockTypePermutationEditor extends Component<
                   />
                 </Button>
                 {canHaveSets && !bt.hasCustomPermutationConditions() && (
-                  <Button onClick={this._fillPermutations} title="Edit documentation by types">
+                  <Button onClick={this._fillPermutations} title={this.props.intl.formatMessage({ id: "project_editor.block_perm.edit_docs" })}>
                     <CustomLabel
                       icon={<FontAwesomeIcon icon={faFillDrip} className="fa-lg" />}
-                      text={"Fill remaining..."}
+                      text={this.props.intl.formatMessage({ id: "project_editor.block_perm.fill_remaining" })}
                       isCompact={isButtonCompact}
                     />
                   </Button>
@@ -348,3 +349,5 @@ export default class BlockTypePermutationEditor extends Component<
     );
   }
 }
+
+export default withLocalization(BlockTypePermutationEditor);

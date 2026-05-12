@@ -16,18 +16,18 @@ import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../../app/CreatorTo
 
 // Duration to keep dialog mounted after closing (should match exit animation duration)
 const DIALOG_EXIT_ANIMATION_MS = 300;
-const beginnerTemplateDescriptions: Record<string, string> = {
-  addonStarter: "Start with a blank add-on and build your own ideas step by step.",
-  tsStarter: "Start a coding project with example files so you can add game logic quickly.",
-  addonFull: "Open a complete sample add-on with mobs you can explore and edit.",
-  "editor-basics": "Start an Editor add-on project with simple examples for learning.",
-  dlStarter: "Try Vibrant Visuals with a simple starter pack you can tweak right away.",
-  scriptBox: "Use a small sandbox project to test scripts and see what they do.",
-  "editor-scriptBox": "Start a basic Editor script project for quick experiments.",
-  cottaGame: "Play a complete sample game built with TypeScript — great for learning game logic.",
-  registeringExampleCustomComponent: "See how to add custom behavior to blocks and items using components.",
-  "editor-multi": "Explore a full-featured Editor add-on with advanced integration examples.",
-};
+const beginnerTemplateIds = [
+  "addonStarter",
+  "tsStarter",
+  "addonFull",
+  "editor-basics",
+  "dlStarter",
+  "scriptBox",
+  "editor-scriptBox",
+  "cottaGame",
+  "registeringExampleCustomComponent",
+  "editor-multi",
+];
 
 interface TemplateCardProps {
   template: IGalleryItem;
@@ -75,7 +75,9 @@ export default function TemplateCard({ template, onNewProject }: TemplateCardPro
   const baseDescription = template.descriptionKey
     ? intl.formatMessage({ id: template.descriptionKey })
     : template.description;
-  const templateDescription = beginnerTemplateDescriptions[template.id] ?? baseDescription;
+  const templateDescription = beginnerTemplateIds.includes(template.id)
+    ? intl.formatMessage({ id: `home.template.desc_${template.id}` })
+    : baseDescription;
 
   return (
     <>
@@ -90,12 +92,21 @@ export default function TemplateCard({ template, onNewProject }: TemplateCardPro
       <Card
         variant="outlined"
         elevation={0}
+        data-testid={`template-card-${template.id}`}
         sx={(theme) => {
           const isDark = theme.palette.mode === "dark";
           return {
             height: "100%",
             display: "flex",
             flexDirection: "column",
+            // MUI's <Card> defaults to overflow:hidden so its rounded
+            // corners can mask child backgrounds. That clips content under
+            // WCAG 1.4.12 user-style overrides (line-height, letter-
+            // spacing, word-spacing) where the title/description grow
+            // beyond the card's flex height. Allow overflow so text
+            // remains readable; the rounded border still renders correctly
+            // because none of our card children paint past the border.
+            overflow: "visible",
             transition: "none",
             "@media (prefers-reduced-motion: no-preference)": {
               transition: "all 0.2s ease-in-out",
@@ -104,7 +115,6 @@ export default function TemplateCard({ template, onNewProject }: TemplateCardPro
             border: isDark ? `2px solid ${mcColors.gray5}` : "1px solid rgba(0,0,0,0.12)",
             backgroundColor: isDark ? mcColors.gray5 : mcColors.white,
             boxShadow: "none",
-            cursor: "pointer",
             "&:hover": {
               transform: "translateY(-4px)",
               boxShadow: isDark
@@ -115,7 +125,22 @@ export default function TemplateCard({ template, onNewProject }: TemplateCardPro
           };
         }}
       >
-        <CardContent sx={{ flexGrow: 1, p: 0 }}>
+        <CardContent sx={{ flexGrow: 1, p: 0, position: "relative" }}>
+          {template.id === "addonStarter" && (
+            <Box
+              sx={{
+                position: "absolute",
+                top: 6,
+                right: 6,
+                zIndex: 2,
+                pointerEvents: "none",
+              }}
+            >
+              <McBadge variant="green" size="small">
+                {intl.formatMessage({ id: "home.template_card.recommended" })}
+              </McBadge>
+            </Box>
+          )}
           <ImageOverlay
             image={reader.getGalleryImage(template)}
             item={template}
@@ -140,11 +165,6 @@ export default function TemplateCard({ template, onNewProject }: TemplateCardPro
                 {template.titleKey ? intl.formatMessage({ id: template.titleKey }) : template.title}
               </Typography>
               <Box sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: "4px" }}>
-                {template.id === "addonStarter" && (
-                  <McBadge variant="green" size="small">
-                    {intl.formatMessage({ id: "home.template_card.recommended" })}
-                  </McBadge>
-                )}
                 {template.difficulty === "beginner" && (
                   <McBadge variant="green" size="small">
                     {intl.formatMessage({ id: "home.template_card.beginner_friendly" })}
@@ -189,7 +209,12 @@ export default function TemplateCard({ template, onNewProject }: TemplateCardPro
             borderTop: theme.palette.mode === "dark" ? "none" : `1px solid ${mcColors.gray3}20`,
           })}
         >
-          <McButton variant="green" fullWidth onClick={onOpenProjectDialog}>
+          <McButton
+            variant="green"
+            fullWidth
+            onClick={onOpenProjectDialog}
+            dataTestId={`template-create-${template.id}`}
+          >
             {intl.formatMessage({ id: "home.template_card.create_new" })}
           </McButton>
         </CardActions>

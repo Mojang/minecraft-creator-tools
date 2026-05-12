@@ -1502,7 +1502,9 @@ export default class Utilities {
       return btoa(binary);
     }
 
-    return Buffer.from(binary).toString("base64"); //btoa(binary);
+    // See arrayBufferToBase64 below — `Buffer.from(string)` defaults to
+    // UTF-8 and will corrupt any byte >= 0x80. Pass the Uint8Array directly.
+    return Buffer.from(bytes).toString("base64");
   }
 
   static arrayBufferToBase64(buffer: ArrayBuffer) {
@@ -1523,7 +1525,12 @@ export default class Utilities {
       return btoa(binary);
     }
 
-    return Buffer.from(binary).toString("base64"); // btoa(binary);
+    // IMPORTANT: `Buffer.from(str)` defaults to UTF-8, which corrupts any
+    // byte >= 0x80 (turning it into a 0xC3 0xXX two-byte sequence). We've
+    // built `binary` via `String.fromCharCode(byte)` so each char already
+    // holds a single byte value 0..255 — pass the Uint8Array directly to
+    // avoid the UTF-8 round-trip.
+    return Buffer.from(bytes).toString("base64");
   }
 
   static base64ToArrayBuffer(base64buffer: string) {

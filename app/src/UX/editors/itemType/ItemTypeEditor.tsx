@@ -22,8 +22,9 @@ import { EditorHeaderChip, EditorHeaderBar, EditorHeaderTabs } from "../../appSh
 import { ProjectItemType } from "../../../app/IProjectItemData";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
-interface IItemTypeEditorProps extends IFileProps {
+interface IItemTypeEditorProps extends IFileProps, WithLocalizationProps {
   heightOffset: number;
   readOnly: boolean;
   item: ProjectItem;
@@ -44,7 +45,7 @@ export enum ItemTypeEditorMode {
   actions = 3,
 }
 
-export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IItemTypeEditorState> {
+class ItemTypeEditor extends Component<IItemTypeEditorProps, IItemTypeEditorState> {
   private _lastFileEdited?: IFile;
 
   constructor(props: IItemTypeEditorProps) {
@@ -66,11 +67,7 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
     this._updateManager();
   }
 
-  componentDidUpdate(
-    prevProps: Readonly<IItemTypeEditorProps>,
-    prevState: Readonly<IItemTypeEditorState>,
-    snapshot?: any
-  ): void {
+  componentDidUpdate(prevProps: Readonly<IItemTypeEditorProps>, prevState: Readonly<IItemTypeEditorState>): void {
     if (this.state && this.props.file !== this.state.fileToEdit) {
       this.setState(
         {
@@ -278,10 +275,22 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
         }}
       >
         <EditorHeaderChip itemType={ProjectItemType.itemTypeBehavior} theme={this.props.theme}>
-          <EditorHeaderBar itemId={itbd.id} itemType={ProjectItemType.itemTypeBehavior} typeName="Item Type" formatVersion={itbd.formatVersion} />
+          <EditorHeaderBar
+            itemId={itbd.id}
+            itemType={ProjectItemType.itemTypeBehavior}
+            typeName={this.props.intl.formatMessage({ id: "project_editor.item.type_name" })}
+            formatVersion={itbd.formatVersion}
+          />
           <EditorHeaderTabs>
-            <Stack direction="row" spacing={0.5} aria-label="Item type actions">
-              <Button onClick={this._setPropertiesMode} title="Edit item base properties">
+            <Stack
+              direction="row"
+              spacing={0.5}
+              aria-label={this.props.intl.formatMessage({ id: "project_editor.item.aria_actions" })}
+            >
+              <Button
+                onClick={this._setPropertiesMode}
+                title={this.props.intl.formatMessage({ id: "project_editor.item.tooltip_components" })}
+              >
                 <CustomTabLabel
                   icon={<FontAwesomeIcon icon={faSquarePlus} className="fa-lg" />}
                   text={"Components"}
@@ -290,7 +299,10 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
                   theme={this.props.theme}
                 />
               </Button>
-              <Button onClick={this._setActionsMode} title="Edit item events and actions">
+              <Button
+                onClick={this._setActionsMode}
+                title={this.props.intl.formatMessage({ id: "project_editor.item.tooltip_actions" })}
+              >
                 <CustomTabLabel
                   icon={<FontAwesomeIcon icon={faBolt} className="fa-lg" />}
                   text={"Actions"}
@@ -299,7 +311,10 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
                   theme={this.props.theme}
                 />
               </Button>
-              <Button onClick={this._setVisualsMode} title="Edit item core properties">
+              <Button
+                onClick={this._setVisualsMode}
+                title={this.props.intl.formatMessage({ id: "project_editor.item.tooltip_visuals" })}
+              >
                 <CustomTabLabel
                   icon={<FontAwesomeIcon icon={faCow} className="fa-lg" />}
                   text={"Visuals"}
@@ -317,3 +332,5 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
     );
   }
 }
+
+export default withLocalization(ItemTypeEditor);

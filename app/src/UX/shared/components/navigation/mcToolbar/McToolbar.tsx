@@ -31,7 +31,13 @@ import { mcColors } from "../../../../hooks/theme/mcColors";
 export interface McToolbarMenuItem {
   key: string;
   content: ReactNode;
-  onClick?: () => void;
+  /**
+   * Click handler. Matches the legacy Fluent UI Northstar contract of
+   * (event, data) — most handlers ignore both args, but some (e.g., deploy
+   * handlers in ProjectEditor) read the clicked menu item from `data` to
+   * update state like the active deploy target.
+   */
+  onClick?: (event?: unknown, data?: McToolbarMenuItem) => void;
   disabled?: boolean;
   icon?: ReactNode;
   divider?: boolean;
@@ -96,7 +102,56 @@ function McToolbarItemRenderer({ item, variant }: { item: McToolbarItem; variant
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
 
+  // Controlled tooltip state. Without this, MUI keeps the tooltip visible
+  // after a click as long as the cursor is still hovering the button — which
+  // produces the "Settings tooltip overlapping the page header" rendering bug
+  // when the click also navigates to a new view (the new content renders
+  // underneath a tooltip that nothing has dismissed). Forcing the tooltip
+  // closed on click also dismisses it for split buttons and overflow menus
+  // before their menus open.
+  //
+  // Implementation note: just calling `setTooltipOpen(false)` on click isn't
+  // enough — the cursor is usually still hovering the button after the click,
+  // and MUI fires onOpen again (or never closes its internal hover delay
+  // timer) which re-opens the tooltip. We additionally maintain a
+  // `suppressed` ref that ignores onOpen requests until the user leaves the
+  // trigger (onClose fires) and comes back. This produces the desired UX:
+  // tooltip dismisses on click and stays dismissed until a fresh hover.
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+  const suppressTooltipRef = useRef(false);
+  const handleTooltipOpen = useCallback(() => {
+    if (!suppressTooltipRef.current) {
+      setTooltipOpen(true);
+    }
+  }, []);
+  const handleTooltipClose = useCallback(() => {
+    setTooltipOpen(false);
+    suppressTooltipRef.current = false;
+  }, []);
+  const dismissTooltip = useCallback(() => {
+    suppressTooltipRef.current = true;
+    setTooltipOpen(false);
+  }, []);
+
+  // Secondary tooltip state for split-button "More options" arrow.
+  const [secondaryTooltipOpen, setSecondaryTooltipOpen] = useState(false);
+  const suppressSecondaryTooltipRef = useRef(false);
+  const handleSecondaryTooltipOpen = useCallback(() => {
+    if (!suppressSecondaryTooltipRef.current) {
+      setSecondaryTooltipOpen(true);
+    }
+  }, []);
+  const handleSecondaryTooltipClose = useCallback(() => {
+    setSecondaryTooltipOpen(false);
+    suppressSecondaryTooltipRef.current = false;
+  }, []);
+  const dismissSecondaryTooltip = useCallback(() => {
+    suppressSecondaryTooltipRef.current = true;
+    setSecondaryTooltipOpen(false);
+  }, []);
+
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    dismissTooltip();
     if (item.menu && item.menu.length > 0) {
       setAnchorEl(event.currentTarget);
     }
@@ -108,7 +163,12 @@ function McToolbarItemRenderer({ item, variant }: { item: McToolbarItem; variant
   };
 
   const handleMenuItemClick = (menuItem: McToolbarMenuItem) => {
-    menuItem.onClick?.();
+    // Pass the menu item as the "data" argument so handlers can read the
+    // clicked menu item (icon key, content, etc.). The Fluent UI Northstar
+    // onClick contract was (event, data); we preserve that for legacy
+    // handlers like _handleDownloadFlatWorldWithPacks that branch on
+    // (data.icon as any).key to update toolbar state.
+    menuItem.onClick?.(undefined, menuItem);
     handleMenuClose();
   };
 
@@ -206,10 +266,19 @@ function McToolbarItemRenderer({ item, variant }: { item: McToolbarItem; variant
     return (
       <>
         <Box sx={{ display: "inline-flex", alignItems: "center", flexShrink: 0 }}>
-          <Tooltip title={item.title || ""} placement="bottom">
+          <Tooltip
+            title={item.title || ""}
+            placement="bottom"
+            open={tooltipOpen}
+            onOpen={handleTooltipOpen}
+            onClose={handleTooltipClose}
+          >
             <span>
               <IconButton
-                onClick={() => item.onClick?.()}
+                onClick={() => {
+                  dismissTooltip();
+                  item.onClick?.();
+                }}
                 disabled={item.disabled}
                 title={item.title}
                 aria-label={item["aria-label"] || item.title}
@@ -225,14 +294,23 @@ function McToolbarItemRenderer({ item, variant }: { item: McToolbarItem; variant
               </IconButton>
             </span>
           </Tooltip>
-          <Tooltip title="More options" placement="bottom">
+          <Tooltip
+            title="More options"
+            placement="bottom"
+            open={secondaryTooltipOpen}
+            onOpen={handleSecondaryTooltipOpen}
+            onClose={handleSecondaryTooltipClose}
+          >
             <span>
               <IconButton
-                onClick={(e) => setAnchorEl(e.currentTarget)}
+                onClick={(e) => {
+                  dismissSecondaryTooltip();
+                  setAnchorEl(e.currentTarget);
+                }}
                 disabled={item.disabled}
                 aria-haspopup="true"
                 aria-expanded={isMenuOpen ? "true" : undefined}
-                aria-label="More deploy options"
+                aria-label={item.title ? `More ${item.title} options` : "More options"}
                 sx={{
                   ...buttonSx,
                   borderTopLeftRadius: 0,
@@ -256,7 +334,13 @@ function McToolbarItemRenderer({ item, variant }: { item: McToolbarItem; variant
   if (item.icon && !item.content) {
     return (
       <>
-        <Tooltip title={item.title || ""} placement="bottom">
+        <Tooltip
+          title={item.title || ""}
+          placement="bottom"
+          open={tooltipOpen}
+          onOpen={handleTooltipOpen}
+          onClose={handleTooltipClose}
+        >
           <span>
             <IconButton
               onClick={handleMenuOpen}
@@ -309,7 +393,13 @@ function McToolbarItemRenderer({ item, variant }: { item: McToolbarItem; variant
   // Button with text (and optional icon)
   return (
     <>
-      <Tooltip title={item.title || ""} placement="bottom">
+      <Tooltip
+        title={item.title || ""}
+        placement="bottom"
+        open={tooltipOpen}
+        onOpen={handleTooltipOpen}
+        onClose={handleTooltipClose}
+      >
         <span>
           <Button
             onClick={handleMenuOpen}
@@ -576,7 +666,8 @@ export default function McToolbar({
                         <MenuItem
                           key={menuItem.key}
                           onClick={() => {
-                            menuItem.onClick?.();
+                            // See handleMenuItemClick — match Fluent UI Northstar (event, data) contract.
+                            menuItem.onClick?.(undefined, menuItem);
                             setOverflowAnchorEl(null);
                           }}
                           disabled={menuItem.disabled}

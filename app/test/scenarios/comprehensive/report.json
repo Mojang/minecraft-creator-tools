@@ -681,7 +681,6 @@
       },
       "textureImages.vanillaGameTextureCoverage": {
         "overrideCount": 0,
-        "vanillaTextureCount": 2526,
         "percent": 0
       },
       "textureImagesTier0.nonVanillaTextureMemoryTier": {
@@ -891,13 +890,13 @@
     },
     "errorCount": 2,
     "internalProcessingErrorCount": 0,
-    "warningCount": 16,
+    "warningCount": 15,
     "testSuccessCount": 39,
     "testFailCount": 1,
-    "testNotApplicableCount": 10,
+    "testNotApplicableCount": 11,
     "errorSummary": "ERROR: [CPACKICON101] pack_icon image file not found for comprehensive_bp. It must use the .png extension.\nERROR: [CPACKICON101] pack_icon image file not found for comprehensive_rp. It must use the .png extension.",
     "internalProcessingErrorSummary": "",
-    "warningSummary": "WARNING: [COMJSON134] (/resource_packs/comprehensive_rp/render_controllers/sample_entity.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0\nWARNING: [COMJSON134] (/resource_packs/comprehensive_rp/render_controllers/sample_entity.json) JSON structure error: (render_controllers.controller.render.sample_entity.uv_anim) is missing and it is required\nWARNING: [COMJSON139] (/behavior_packs/comprehensive_bp/dialogue/sample_dialogue.json) JSON structure error: () The property minecraft:dialogue is not defined in the schema and the schema does not allow additional properties\nWARNING: [COMJSON144] (/behavior_packs/comprehensive_bp/spawn_rules/sample_entity.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0, 1.12.0\nWARNING: [COMJSON145] (/behavior_packs/comprehensive_bp/trading/sample_trading.json) JSON structure error: () The property minecraft:trading is not defined in the schema and the schema does not allow additional properties\nWARNING: [FORMATVER178] (/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json) Behavior animation version (1.20.10) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER198] (/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json) Behavior animation controller version (1.20.10) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER218] (/resource_packs/comprehensive_rp/animations/sample_entity_resource.json) Resource animation version (1.20.10) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER238] (/resource_packs/comprehensive_rp/animation_controllers/sample_entity_resource.json) Resource animation controller version (1.20.10) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER258] (/behavior_packs/comprehensive_bp/spawn_rules/sample_entity.json) Spawn rules version (1.20.10) has a higher minor version number compared to the expected version (1.12.0)\nWARNING: [JSON114] (/resource_packs/comprehensive_rp/manifest.json) Version format needs updating: The version is written as numbers [1,0,0] but should be text like \"1.0.0\". This is easy to fix — just change it to a quoted string.\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/sample_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/sample_recipe.json to `minecraft:stick`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json to `minecraft:dirt`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json to `minecraft:stick`\nWARNING: [UNLINK399] (/resource_packs/comprehensive_rp/entity/sample_entity.json) Link to texture is not found in this pack: /resource_packs/comprehensive_rp/entity/sample_entity.json to `textures/entity/sample_entity`",
+    "warningSummary": "WARNING: [COMJSON134] (/resource_packs/comprehensive_rp/render_controllers/sample_entity.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0\nWARNING: [COMJSON134] (/resource_packs/comprehensive_rp/render_controllers/sample_entity.json) JSON structure error: (render_controllers.controller.render.sample_entity.uv_anim) is missing and it is required\nWARNING: [COMJSON139] (/behavior_packs/comprehensive_bp/dialogue/sample_dialogue.json) JSON structure error: () The property minecraft:dialogue is not defined in the schema and the schema does not allow additional properties\nWARNING: [COMJSON144] (/behavior_packs/comprehensive_bp/spawn_rules/sample_entity.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0, 1.12.0\nWARNING: [COMJSON145] (/behavior_packs/comprehensive_bp/trading/sample_trading.json) JSON structure error: () The property minecraft:trading is not defined in the schema and the schema does not allow additional properties\nWARNING: [FORMATVER178] (/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json) Behavior animation version (1.20.10) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER198] (/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json) Behavior animation controller version (1.20.10) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER218] (/resource_packs/comprehensive_rp/animations/sample_entity_resource.json) Resource animation version (1.20.10) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER238] (/resource_packs/comprehensive_rp/animation_controllers/sample_entity_resource.json) Resource animation controller version (1.20.10) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER258] (/behavior_packs/comprehensive_bp/spawn_rules/sample_entity.json) Spawn rules version (1.20.10) has a higher minor version number compared to the expected version (1.12.0)\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/sample_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/sample_recipe.json to `minecraft:stick`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json to `minecraft:dirt`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json to `minecraft:stick`\nWARNING: [UNLINK399] (/resource_packs/comprehensive_rp/entity/sample_entity.json) Link to texture is not found in this pack: /resource_packs/comprehensive_rp/entity/sample_entity.json to `textures/entity/sample_entity`\nWARNING: [UNLINK399] (/resource_packs/comprehensive_rp/particles/sample_particle.json) Link to texture is not found in this pack: /resource_packs/comprehensive_rp/particles/sample_particle.json to `textures/particle/sample_particle`",
     "testFailSummary": "TESTFAIL: [CPACKICON000] Found 2 errors in Pack Icon check",
     "reds": 11004,
     "summary": {
@@ -916,6 +915,11 @@
           "title": "Beta Features",
           "defaultMessage": "Beta Features completed successfully",
           "testCompleteSuccesses": 1
+        }
+      },
+      "CDWORLDDATA": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Custom Dimension World Data Validation (CDWORLDDATA)"
         }
       },
       "CHECKFEATUREDEPRECATION": {
@@ -1290,10 +1294,6 @@
           "defaultMessage": "JSON Schema Validation completed successfully",
           "testCompleteSuccesses": 1
         },
-        "114": {
-          "defaultMessage": "Version format needs updating",
-          "warnings": 1
-        },
         "1110": {
           "defaultMessage": "Entity type is not at a current format version"
         },
@@ -1639,7 +1639,7 @@
         },
         "100": {
           "title": "BP Module Dependency",
-          "defaultMessage": "Behavior pack dependency on 2.7.0-beta at @minecraft/server"
+          "defaultMessage": "Behavior pack dependency on 2.9.0-beta at @minecraft/server"
         }
       },
       "SNDSDEF": {
@@ -1822,6 +1822,11 @@
       "iTp": 1,
       "gId": "CBFG",
       "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "CDWORLDDATA",
+      "gIx": 2
     },
     {
       "iTp": 8,
@@ -2445,13 +2450,6 @@
       "iTp": 1,
       "gId": "JSON",
       "gIx": 1
-    },
-    {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 114,
-      "p": "/resource_packs/comprehensive_rp/manifest.json",
-      "d": "The version is written as numbers [1,0,0] but should be text like \"1.0.0\". This is easy to fix — just change it to a quoted string."
     },
     {
       "iTp": 2,
@@ -3442,7 +3440,7 @@
       "gId": "SCRIPTMODULE",
       "gIx": 100,
       "p": "/behavior_packs/comprehensive_bp/manifest.json",
-      "d": "2.7.0-beta",
+      "d": "2.9.0-beta",
       "iId": "@minecraft/server"
     },
     {
@@ -3521,7 +3519,6 @@
       "fs": {
         "vanillaGameTextureCoverage": {
           "overrideCount": 0,
-          "vanillaTextureCount": 2526,
           "percent": 0
         }
       }

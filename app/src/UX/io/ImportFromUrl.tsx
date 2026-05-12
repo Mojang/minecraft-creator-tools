@@ -1,6 +1,6 @@
 import { Component } from "react";
 import "./ImportFromUrl.css";
-import { Button } from "@mui/material";
+import { Button, Snackbar } from "@mui/material";
 import IAppProps from "../appShell/IAppProps";
 import { AppMode } from "../appShell/App";
 import Project from "../../app/Project";
@@ -28,6 +28,7 @@ interface IImportFromUrlState {
   storage?: IStorage | undefined;
   galleryId?: string | undefined;
   errorMessage?: string | undefined;
+  cancelToastOpen?: boolean;
 }
 
 export default class ImportFromUrl extends Component<IImportFromUrlProps, IImportFromUrlState> {
@@ -36,6 +37,8 @@ export default class ImportFromUrl extends Component<IImportFromUrlProps, IImpor
 
     this._openProject = this._openProject.bind(this);
     this._navigateToHome = this._navigateToHome.bind(this);
+    this._cancelImport = this._cancelImport.bind(this);
+    this._handleCancelToastClose = this._handleCancelToastClose.bind(this);
 
     this.state = {};
   }
@@ -132,6 +135,23 @@ export default class ImportFromUrl extends Component<IImportFromUrlProps, IImpor
     }
   }
 
+  _cancelImport() {
+    // Show a brief "Import canceled" toast before navigating back to the
+    // home page. We delay navigation so the Snackbar has time to appear
+    // (this component is unmounted on navigation).
+    this.setState({ cancelToastOpen: true });
+    if (this.props.creatorTools) {
+      this.props.creatorTools.notifyStatusUpdate("Import canceled");
+    }
+    window.setTimeout(() => {
+      this._navigateToHome();
+    }, 1200);
+  }
+
+  _handleCancelToastClose() {
+    this.setState({ cancelToastOpen: false });
+  }
+
   _openProject() {
     if (this.props.onNewProjectFromGallerySelected && this.state.galleryId) {
       this.props.onNewProjectFromGallerySelected(this.state.galleryId, this.state.storage?.rootFolder);
@@ -141,14 +161,37 @@ export default class ImportFromUrl extends Component<IImportFromUrlProps, IImpor
   render() {
     let interior = <></>;
 
+    const acceptedFormatsHelp = (
+      <div className="ifu-urlFormatsHelp">
+        <div className="ifu-urlFormatsHelpTitle">Accepted URL formats for importing content:</div>
+        <ul className="ifu-urlFormatsHelpList">
+          <li>
+            <code>#open=gp/&lt;gallery-id&gt;</code> — open a gallery sample by id
+          </li>
+          <li>
+            <code>#view=gp/&lt;gallery-id&gt;&amp;updates=&lt;json&gt;</code> — view a sample with
+            update content
+          </li>
+          <li>
+            Example: <code>?open=gp/starter.manifest.json</code>
+          </li>
+        </ul>
+      </div>
+    );
+
     if (!this.state || (!this.state.errorMessage && !this.state.storage)) {
-      interior = <div className="ifu-loading">Loading content from URL...</div>;
+      interior = (
+        <div className="ifu-loading">
+          Loading content from URL...
+          {acceptedFormatsHelp}
+        </div>
+      );
     }
 
     let buttonArea = [];
 
     buttonArea.push(
-      <Button key="cancelHomePage" onClick={this._navigateToHome}>
+      <Button key="cancelHomePage" onClick={this._cancelImport}>
         Cancel/Home Page
       </Button>
     );
@@ -158,6 +201,7 @@ export default class ImportFromUrl extends Component<IImportFromUrlProps, IImpor
         <div className="ifu-error">
           <h1>Error loading content from URL</h1>
           <p>{this.state.errorMessage}</p>
+          {acceptedFormatsHelp}
         </div>
       );
     } else if (this.state.storage) {
@@ -211,6 +255,13 @@ export default class ImportFromUrl extends Component<IImportFromUrlProps, IImpor
         <footer className="ifu-footer">
           <HomeFooter theme={this.props.theme} creatorTools={this.props.creatorTools} displayStorageHandling={false} />
         </footer>
+        <Snackbar
+          open={!!this.state.cancelToastOpen}
+          autoHideDuration={3000}
+          onClose={this._handleCancelToastClose}
+          message="Import canceled"
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        />
       </div>
     );
   }

@@ -2,6 +2,7 @@ import { test, expect, ConsoleMessage } from "@playwright/test";
 import { promises as fs } from "fs";
 import path from "path";
 import {
+  fillRequiredProjectDialogFields,
   getExportToolbarButton,
   getTestToolbarButton,
   preferBrowserStorageInProjectDialog,
@@ -66,6 +67,10 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow @focused", () 
     const okButton = await page.getByTestId("submit-button").first();
     await expect(okButton).toBeVisible();
     await preferBrowserStorageInProjectDialog(page);
+    // The Creator field has no defaultValue (per task 028 — users must actively
+    // type their creator name); without filling it, form submit silently rejects
+    // with a validation error and we never enter the editor.
+    await fillRequiredProjectDialogFields(page);
 
     console.log("Clicking OK to create project and enter editor");
     await okButton.click();
@@ -224,6 +229,10 @@ test.describe("MCTools Web Editor - Comprehensive Editor Workflow @focused", () 
 
     const okButton = await page.getByTestId("submit-button").first();
     await preferBrowserStorageInProjectDialog(page);
+    // The Creator field has no defaultValue (per task 028 — users must actively
+    // type their creator name); without filling it, form submit silently rejects
+    // with a validation error and we never enter the editor.
+    await fillRequiredProjectDialogFields(page);
     await okButton.click();
     await page.waitForTimeout(9000);
     await page.waitForLoadState("networkidle");

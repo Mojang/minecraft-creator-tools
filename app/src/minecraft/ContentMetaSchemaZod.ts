@@ -37,15 +37,22 @@ export const McpColorSchema = z.union([
 export const TexturedRectangleSchema = z
   .object({
     type: z
-      .enum(["solid", "random_noise", "dither_noise", "perlin_noise", "stipple_noise", "gradient"])
-      .describe("Fill algorithm: solid, or noise types for Minecraft-style textures"),
-    colors: z.array(McpColorSchema).min(1).describe("Colors to use. For solid, only first is used"),
+      .enum(["none", "solid", "random_noise", "dither_noise", "perlin_noise", "stipple_noise", "gradient"])
+      .describe(
+        "Fill algorithm: 'none' (fully transparent background — use with pixelArt for icon-style overlays), 'solid' (single color), or noise/gradient types for Minecraft-style textures"
+      ),
+    colors: z
+      .array(McpColorSchema)
+      .optional()
+      .describe(
+        "Colors to use. Required for all types except 'none'. For 'solid', only the first color is used. Omit or pass [] when type is 'none'."
+      ),
     factor: z.number().min(0).max(1).optional().describe("Noise intensity (0-1). Default: 0.2"),
     seed: z.number().int().optional().describe("Random seed for deterministic results"),
     pixelSize: z.number().int().min(1).optional().describe("Pixel size for noise. Default: 1"),
     scale: z.number().optional().describe("Scale for perlin noise. Default: 4"),
   })
-  .describe("Procedural texture using Minecraft-style patterns");
+  .describe("Procedural texture using Minecraft-style patterns (or a transparent background when type is 'none')");
 
 /**
  * Pixel art overlay.
@@ -55,10 +62,15 @@ export const PixelArtSchema = z
     scaleMode: z
       .enum(["unit", "exact", "cover"])
       .optional()
-      .describe("How to scale: unit (1 char = 1 MC unit), exact (1 char = 1 pixel), cover (stretch to fill)"),
-    x: z.number().optional().describe("X offset from left edge"),
-    y: z.number().optional().describe("Y offset from top edge"),
-    lines: z.array(z.string()).describe("Rows of characters from top to bottom. Space = transparent"),
+      .describe(
+        "How the lines/palette grid is scaled onto the target rectangle. Default is 'unit'. " +
+          "'unit' = each character represents 1 Minecraft unit (recommended for blocks/entities); x and y are in Minecraft units. " +
+          "'exact' = each character represents 1 pixel at the native texture resolution; x and y are in pixels (use for precise 16x16 item icons). " +
+          "'cover' = the grid is stretched to fill the entire face/texture (x and y are ignored; can cause non-square stretching)."
+      ),
+    x: z.number().optional().describe("X offset from the left edge. Units depend on scaleMode (see scaleMode)."),
+    y: z.number().optional().describe("Y offset from the top edge. Units depend on scaleMode (see scaleMode)."),
+    lines: z.array(z.string()).describe("Rows of characters from top to bottom. Space (' ') is always transparent."),
     palette: z
       .record(
         z.object({
@@ -79,10 +91,19 @@ export const PixelArtSchema = z
 export const TextureSpecSchema = z
   .object({
     file: z.string().optional().describe("Reference existing texture file (relative to resource pack)"),
-    generate: TexturedRectangleSchema.optional().describe("Generate texture procedurally"),
-    pixelArt: z.array(PixelArtSchema).optional().describe("Pixel art overlays"),
+    generate: TexturedRectangleSchema.optional().describe(
+      "Generate texture procedurally. Use type:'none' with pixelArt for icon-style textures with a transparent background."
+    ),
+    pixelArt: z
+      .array(PixelArtSchema)
+      .optional()
+      .describe(
+        "Pixel art overlays drawn on top of the background. Space characters are transparent so you can layer art over (or without) a generated background."
+      ),
   })
-  .describe("Texture specification - file reference or procedural generation");
+  .describe(
+    "Texture specification. Precedence: 'file' (use existing PNG) > 'generate'+'pixelArt' (procedural) > fallback (item.color / block.mapColor + trait-based template)."
+  );
 
 /**
  * Geometry template types.
@@ -96,12 +117,20 @@ export const GeometryTemplateSchema = z
  */
 export const GeometrySpecSchema = z
   .object({
-    file: z.string().optional().describe("Reference existing geometry file"),
-    template: GeometryTemplateSchema.optional().describe("Use a template geometry"),
+    file: z.string().optional().describe("Reference an existing geometry file (relative to the resource pack)."),
+    template: GeometryTemplateSchema.optional().describe(
+      "Use a built-in template (humanoid, quadruped, etc.). Fastest path for common body types."
+    ),
     // Note: full IMcpModelDesign is complex, accepting any object for now
-    design: z.record(z.any()).optional().describe("Inline model design (IMcpModelDesign format)"),
+    design: z
+      .record(z.any())
+      .optional()
+      .describe("Inline model design (IMcpModelDesign format). Use for fully custom geometry with bones and cubes."),
   })
-  .describe("Geometry specification - file reference, template, or inline design");
+  .describe(
+    "Geometry specification. Precedence (if multiple are provided): 'file' > 'design' > 'template'. " +
+      "Use 'template' for a quick start, 'design' for custom models, 'file' to reference a .geo.json asset you already ship."
+  );
 
 // ============================================================================
 // ENTITY TYPE SCHEMAS
@@ -188,7 +217,16 @@ export const EntityBehaviorPresetSchema = z
     "seek_water",
     "seek_land",
   ])
-  .describe("Simplified behavior that maps to AI components");
+  .describe(
+    "Pre-built AI behavior that maps to one or more native minecraft:behavior.* components. " +
+      "Movement: 'wander' (random walks, most land mobs), 'swim' (aquatic mobs), 'fly_around' (flying mobs), 'float' (stay upright in water), 'climb' (spiders/cave-dwellers). " +
+      "Combat: 'melee_attack' (approach+strike, zombies), 'ranged_attack' (pair with ranged_attacker trait/projectile), " +
+      "'target_players' (aggros players in range), 'target_monsters' (iron-golem style), 'flee_when_hurt' (run from attacker), 'retaliate' (fight back when hit). " +
+      "Social: 'follow_owner' (tamed pets), 'follow_parent' (babies follow adults), 'herd' (cluster with same type), 'avoid_players' (endermen/foxes). " +
+      "Interaction: 'look_at_player' (turns head), 'beg' (wolf begging for food), 'tempt' (follow held breed items), 'sit_command' (tamed sit/stand). " +
+      "Actions: 'eat_grass' (cow/sheep grass-eating), 'break_doors' (zombie-style), 'open_doors' (villager-style), 'pick_up_items' (collect dropped items), 'sleep_in_bed' (villager sleep cycle). " +
+      "Environment: 'hide_from_sun' (burns in daylight — undead), 'go_home_at_night' (return to bed at dusk), 'seek_water' (fish out of water), 'seek_land' (drowning prevention for non-aquatic)."
+  );
 
 /**
  * Drop definition.
@@ -217,17 +255,41 @@ export const EntityAppearanceSchema = z
     textureStyle: z
       .enum(["solid", "spotted", "striped", "gradient", "organic", "armored"])
       .optional()
-      .describe("Texture pattern style"),
-    scale: z.number().optional().describe("Scale multiplier"),
-    eyes: z.enum(["normal", "glowing", "red", "none"]).optional().describe("Eye style"),
+      .describe(
+        "Procedural pattern used when the auto-generated texture is produced from primary/secondaryColor. " +
+          "'solid' = flat color, 'spotted' = stipple (organic materials), 'striped' = dithered bands, " +
+          "'gradient' = smooth transition, 'organic' = perlin noise (fur/stone), 'armored' = stippled with highlight effect. " +
+          "Ignored when 'texture' is explicitly provided."
+      ),
+    scale: z
+      .number()
+      .optional()
+      .describe("Scale multiplier. Equivalent to the top-level entity.scale; if both are set, appearance.scale wins."),
+    eyes: z
+      .enum(["normal", "glowing", "red", "none"])
+      .optional()
+      .describe(
+        "Eye treatment. 'normal' (default) = no special treatment. 'glowing' = emissive material (glows in the dark). " +
+          "'red' = tinted emissive (spider/enderman style). 'none' = no eye treatment hint. " +
+          "Applied via the entity's material/render controller."
+      ),
     particles: z
       .array(z.enum(["flames", "smoke", "drip", "sparkle", "hearts"]))
       .optional()
-      .describe("Particle effects"),
-    texture: TextureSpecSchema.optional().describe("Custom texture (overrides auto-generation)"),
-    geometry: GeometrySpecSchema.optional().describe("Custom geometry (overrides bodyType)"),
+      .describe(
+        "Ambient particle effects emitted from the entity. Wired into the resource-pack client entity's particle_effects map. " +
+          "Useful for visual flair (flames on fire mobs, hearts when happy, etc.)."
+      ),
+    texture: TextureSpecSchema.optional().describe(
+      "Custom texture. When provided, it overrides auto-generation from primary/secondaryColor and textureStyle."
+    ),
+    geometry: GeometrySpecSchema.optional().describe(
+      "Custom geometry. When provided, it overrides the geometry inferred from bodyType."
+    ),
   })
-  .describe("Simplified appearance specification");
+  .describe(
+    "Simplified appearance specification. Fields are mixed into the resource-pack client entity and the generated texture/geometry."
+  );
 
 /**
  * Tameable configuration.
@@ -256,6 +318,11 @@ export const BreedableConfigSchema = z.object({
 
 /**
  * Spawn configuration.
+ *
+ * There are two spawn-rule shapes: inline on an entity (this one, `entity.spawning`) and a
+ * separate top-level `spawnRules[]` entry (SpawnRuleSchema). Use the inline form for a rule
+ * bound to a single entity. Use the top-level form when the rule references an entity defined
+ * elsewhere (e.g. a vanilla entity) or when you want the rule file separate from the entity.
  */
 export const SpawnConfigSchema = z
   .object({
@@ -276,7 +343,11 @@ export const SpawnConfigSchema = z
     populationCap: z.number().int().optional().describe("Max population in area"),
     rarity: z.number().optional().describe("1 in N chance per spawn cycle"),
   })
-  .describe("Spawn configuration");
+  .describe(
+    "Inline spawn configuration for an entity. Use this as `entity.spawning` when the spawn rule belongs " +
+      "to a single custom entity. For spawn rules that reference external entities or that you want as " +
+      "separate files, use the top-level `spawnRules[]` (SpawnRuleSchema) instead."
+  );
 
 /**
  * Entity sounds.
@@ -386,16 +457,22 @@ export const BlockSoundSchema = z
  */
 export const BlockTextureSchema = z
   .object({
-    all: z.union([z.string(), TextureSpecSchema]).optional().describe("All sides same texture"),
-    up: z.union([z.string(), TextureSpecSchema]).optional().describe("Top face"),
-    down: z.union([z.string(), TextureSpecSchema]).optional().describe("Bottom face"),
-    north: z.union([z.string(), TextureSpecSchema]).optional().describe("North face"),
-    south: z.union([z.string(), TextureSpecSchema]).optional().describe("South face"),
-    east: z.union([z.string(), TextureSpecSchema]).optional().describe("East face"),
-    west: z.union([z.string(), TextureSpecSchema]).optional().describe("West face"),
-    side: z.union([z.string(), TextureSpecSchema]).optional().describe("All side faces"),
+    all: z.union([z.string(), TextureSpecSchema]).optional().describe("All six faces use this texture."),
+    up: z.union([z.string(), TextureSpecSchema]).optional().describe("Top face (overrides 'all')."),
+    down: z.union([z.string(), TextureSpecSchema]).optional().describe("Bottom face (overrides 'all')."),
+    north: z.union([z.string(), TextureSpecSchema]).optional().describe("North face (overrides 'all' and 'side')."),
+    south: z.union([z.string(), TextureSpecSchema]).optional().describe("South face (overrides 'all' and 'side')."),
+    east: z.union([z.string(), TextureSpecSchema]).optional().describe("East face (overrides 'all' and 'side')."),
+    west: z.union([z.string(), TextureSpecSchema]).optional().describe("West face (overrides 'all' and 'side')."),
+    side: z
+      .union([z.string(), TextureSpecSchema])
+      .optional()
+      .describe("Shorthand for the four side faces (north/south/east/west). Overrides 'all' for side faces."),
   })
-  .describe("Block texture specification - per-face or uniform");
+  .describe(
+    "Block texture specification. Precedence per face: individual face (up/down/north/south/east/west) > 'side' (for side faces) > 'all'. " +
+      "Note: the current placeholder PNG generator picks a single representative face in this order: all > side > up > north > south > east > west > down."
+  );
 
 /**
  * Flammable config.
@@ -421,11 +498,18 @@ export const BlockTypeSchema = z
     lightEmission: z.number().int().min(0).max(15).optional().describe("Light emission (0-15)"),
     lightDampening: z.number().int().min(0).max(15).optional().describe("Light dampening (0-15)"),
     flammable: z.union([z.boolean(), FlammableConfigSchema]).optional().describe("Flammability"),
-    mapColor: z.string().optional().describe("Map color (hex)"),
+    mapColor: z
+      .string()
+      .optional()
+      .describe(
+        "Map color (hex). Also used as the fallback color for the auto-generated placeholder texture when 'texture' is not provided."
+      ),
     shape: BlockShapeSchema.optional().describe("Block shape"),
     drops: z.array(DropSchema).optional().describe("What drops when mined"),
 
-    texture: BlockTextureSchema.optional().describe("Texture specification"),
+    texture: BlockTextureSchema.optional().describe(
+      "Texture specification. If omitted, a placeholder is generated from mapColor."
+    ),
     geometry: GeometrySpecSchema.optional().describe("Custom geometry"),
     sounds: BlockSoundSchema.optional().describe("Sound set"),
 
@@ -515,6 +599,27 @@ export const ArmorPropertiesSchema = z.object({
 });
 
 /**
+ * Projectile properties (bow/crossbow/throwable items).
+ */
+export const ProjectilePropertiesSchema = z
+  .object({
+    projectile: z
+      .string()
+      .describe(
+        "Entity ID to shoot/throw (e.g., 'minecraft:arrow', 'minecraft:snowball', or a custom 'namespace:arrow_of_doom')."
+      ),
+    launchPower: z.number().optional().describe("Launch power multiplier. Default: 1.0."),
+    chargeable: z
+      .boolean()
+      .optional()
+      .describe(
+        "True for bow/crossbow-style items that charge while held (emits minecraft:shooter + minecraft:chargeable). " +
+          "False/omitted for snowball-style throwables (emits minecraft:throwable)."
+      ),
+  })
+  .describe("Projectile behavior for items that shoot or throw an entity.");
+
+/**
  * Item type definition.
  */
 export const ItemTypeSchema = z
@@ -531,10 +636,27 @@ export const ItemTypeSchema = z
     tool: ToolPropertiesSchema.optional().describe("Tool properties"),
     weapon: WeaponPropertiesSchema.optional().describe("Weapon properties"),
     armor: ArmorPropertiesSchema.optional().describe("Armor properties"),
+    projectile: ProjectilePropertiesSchema.optional().describe(
+      "Projectile behavior — emits minecraft:shooter (+minecraft:chargeable when chargeable=true) or minecraft:throwable."
+    ),
     glint: z.boolean().optional().describe("Enchanted glint effect"),
     fuel: z.number().int().optional().describe("Burn duration in ticks"),
 
-    icon: z.union([z.string(), TextureSpecSchema]).optional().describe("Inventory icon"),
+    color: z
+      .string()
+      .optional()
+      .describe(
+        "Primary color (hex, e.g., '#4A7BA5') for recoloring the auto-generated trait-based icon. " +
+          "Ignored when 'icon' is provided (icon takes precedence)."
+      ),
+    icon: z
+      .union([z.string(), TextureSpecSchema])
+      .optional()
+      .describe(
+        "Inventory icon. Three modes: (1) string = use an existing texture file path (no placeholder PNG is emitted); " +
+          "(2) ITextureSpec with 'file' = same as (1); (3) ITextureSpec with 'generate' and/or 'pixelArt' = procedurally generated placeholder. " +
+          "If this field is omitted entirely, a placeholder is auto-generated from 'traits' + 'color'."
+      ),
     geometry: GeometrySpecSchema.optional().describe("3D model when held"),
 
     components: z.record(z.any()).optional().describe("Native Minecraft components"),
@@ -704,14 +826,29 @@ export const ScatterPatternSchema = z.object({
  */
 export const FeatureSpreadSchema = z
   .object({
-    places: z.array(FeaturePlacementSchema).describe("What to place"),
-    count: z.union([z.number().int(), z.object({ min: z.number().int(), max: z.number().int() })]).optional(),
-    heightPlacement: HeightPlacementSchema.optional(),
-    scatter: ScatterPatternSchema.optional(),
-    biomes: z.array(z.string()).optional(),
-    rarity: z.number().optional().describe("1 in N chunks"),
+    places: z
+      .array(FeaturePlacementSchema)
+      .describe(
+        "What to place. Use 'block' for single blocks, 'ore' for vein generation (pair with replacesBlocks), 'tree'/'vegetation' for botanical features, 'structure' for pre-built .mcstructure placements."
+      ),
+    count: z
+      .union([z.number().int(), z.object({ min: z.number().int(), max: z.number().int() })])
+      .optional()
+      .describe("Placements per generation attempt (fixed count or {min,max})."),
+    heightPlacement: HeightPlacementSchema.optional().describe(
+      "Where vertically to place. 'surface' = top of world, 'underground' = below surface, 'fixed' = at Y=y, 'range' = within [min, max]."
+    ),
+    scatter: ScatterPatternSchema.optional().describe(
+      "Distribution around the base point. 'uniform' spreads across a radius, 'cluster' groups tightly, 'line' places in a line."
+    ),
+    biomes: z.array(z.string()).optional().describe("Biome IDs in which this feature generates."),
+    rarity: z.number().optional().describe("1 in N chunks - lower N = more frequent"),
   })
-  .describe("Simplified feature spread - generates complete feature rule + hierarchy");
+  .describe(
+    "Simplified feature spread. Best for common patterns: ore veins, surface vegetation, tree clusters. " +
+      "Generates the native feature + feature_rule JSONs and places them in the correct folders. " +
+      "Use 'nativeFeature' + 'nativeFeatureRule' on FeatureSchema only when you need raw JSON control (e.g., weighted_random, conditional features)."
+  );
 
 /**
  * Feature definition.
@@ -720,11 +857,25 @@ export const FeatureSchema = z
   .object({
     id: z.string().describe("Unique identifier"),
     displayName: z.string().optional(),
-    spread: FeatureSpreadSchema.optional().describe("Simplified feature spread"),
-    nativeFeature: z.record(z.any()).optional().describe("Native Minecraft feature JSON"),
-    nativeFeatureRule: z.record(z.any()).optional().describe("Native feature rule JSON"),
+    spread: FeatureSpreadSchema.optional().describe(
+      "Simplified feature spread (recommended). Covers 80% of use cases with less boilerplate."
+    ),
+    nativeFeature: z
+      .record(z.any())
+      .optional()
+      .describe(
+        "Escape hatch: raw Minecraft feature JSON (minecraft:scatter_feature, minecraft:ore_feature, etc.). Use only if 'spread' doesn't cover your case."
+      ),
+    nativeFeatureRule: z
+      .record(z.any())
+      .optional()
+      .describe(
+        "Escape hatch: raw Minecraft feature_rule JSON (minecraft:feature_rule). Pair with nativeFeature when you need full control over conditions/distribution."
+      ),
   })
-  .describe("Feature definition for world generation");
+  .describe(
+    "Feature definition for world generation. Prefer 'spread' over 'nativeFeature'/'nativeFeatureRule' when possible."
+  );
 
 // ============================================================================
 // LOOT TABLE SCHEMAS
@@ -744,21 +895,40 @@ export const LootEntrySchema = z.object({
 
 /**
  * Loot condition.
+ *
+ * Conditions gate when a loot pool is rolled; all conditions in a pool's `conditions`
+ * array must be true (logical AND). Use multiple pools if you need OR semantics.
  */
 export const LootConditionSchema = z.union([
-  z.object({ type: z.literal("killed_by_player") }),
-  z.object({ type: z.literal("random_chance"), chance: z.number() }),
-  z.object({ type: z.literal("looting_enchant"), multiplier: z.number() }),
+  z
+    .object({ type: z.literal("killed_by_player") })
+    .describe("Only roll this pool if the entity was killed directly by a player."),
+  z
+    .object({ type: z.literal("random_chance"), chance: z.number() })
+    .describe("Roll this pool with the given probability (0-1)."),
+  z
+    .object({ type: z.literal("looting_enchant"), multiplier: z.number() })
+    .describe("Multiply rolls by the Looting enchantment level times the given multiplier."),
 ]);
 
 /**
  * Loot pool.
  */
-export const LootPoolSchema = z.object({
-  rolls: z.union([z.number().int(), z.object({ min: z.number().int(), max: z.number().int() })]),
-  entries: z.array(LootEntrySchema),
-  conditions: z.array(LootConditionSchema).optional(),
-});
+export const LootPoolSchema = z
+  .object({
+    rolls: z
+      .union([z.number().int(), z.object({ min: z.number().int(), max: z.number().int() })])
+      .describe("How many entries to pick from this pool (fixed count or {min,max} range)."),
+    entries: z.array(LootEntrySchema).describe("Candidate items; `weight` controls relative pick probability."),
+    conditions: z
+      .array(LootConditionSchema)
+      .optional()
+      .describe(
+        "Gate conditions for this pool. ALL listed conditions must be true (logical AND). " +
+          "Use separate pools if you need OR semantics."
+      ),
+  })
+  .describe("A single loot pool: rolls `rolls` times from `entries` if all `conditions` pass.");
 
 /**
  * Loot table definition.
@@ -776,21 +946,49 @@ export const LootTableSchema = z
 
 /**
  * Recipe definition.
+ *
+ * The optional fields below are consumed differently per `type`:
+ *   - type='shaped'    → uses `pattern` + `key`; ignores `ingredients`/`input`/`experience`/`cookTime`.
+ *   - type='shapeless' → uses `ingredients`;     ignores `pattern`/`key`/`input`/`experience`/`cookTime`.
+ *   - type='furnace'   → uses `input` (+ optional `experience`, `cookTime`); ignores `pattern`/`key`/`ingredients`.
+ *   - type='brewing'   → uses `input` + `ingredients[0]` (reagent); other shape fields ignored.
+ *   - type='smithing'  → uses `input` + `ingredients[0]` (addition); other shape fields ignored.
  */
 export const RecipeSchema = z
   .object({
     id: z.string().describe("Unique identifier"),
-    type: z.enum(["shaped", "shapeless", "furnace", "brewing", "smithing"]),
-    result: z.union([z.string(), z.object({ item: z.string(), count: z.number().int() })]),
-    pattern: z.array(z.string()).optional().describe("Pattern for shaped (e.g., ['###', ' | ', ' | '])"),
-    key: z.record(z.string()).optional().describe("Key mapping for shaped"),
-    ingredients: z.array(z.string()).optional().describe("Ingredients for shapeless"),
-    input: z.string().optional().describe("Input for furnace"),
-    experience: z.number().optional().describe("XP for furnace"),
-    cookTime: z.number().int().optional().describe("Cook time for furnace"),
-    unlocksWith: z.array(z.string()).optional().describe("Items that unlock recipe"),
+    type: z
+      .enum(["shaped", "shapeless", "furnace", "brewing", "smithing"])
+      .describe(
+        "Recipe category. Determines which of the remaining fields are used (see RecipeSchema comment). " +
+          "Providing fields that don't apply to the chosen type is ignored (not an error)."
+      ),
+    result: z
+      .union([z.string(), z.object({ item: z.string(), count: z.number().int() })])
+      .describe("Output item. String = single item ID; object = item + count."),
+    pattern: z
+      .array(z.string())
+      .optional()
+      .describe("Pattern for type='shaped' (e.g., ['###', ' | ', ' | ']). Ignored for other types."),
+    key: z
+      .record(z.string())
+      .optional()
+      .describe("Key → item-id map for type='shaped' pattern characters. Ignored for other types."),
+    ingredients: z
+      .array(z.string())
+      .optional()
+      .describe(
+        "Ingredients for type='shapeless'. For 'brewing' and 'smithing', ingredients[0] is the reagent/addition."
+      ),
+    input: z
+      .string()
+      .optional()
+      .describe("Input item for type='furnace' / 'brewing' / 'smithing'. Ignored for shaped/shapeless."),
+    experience: z.number().optional().describe("XP reward for type='furnace'. Ignored for other types."),
+    cookTime: z.number().int().optional().describe("Cook time (ticks) for type='furnace'. Ignored for other types."),
+    unlocksWith: z.array(z.string()).optional().describe("Items that unlock recipe in the recipe book."),
   })
-  .describe("Recipe definition");
+  .describe("Recipe definition. See the RecipeSchema comment for which fields apply to each `type`.");
 
 // ============================================================================
 // SPAWN RULE SCHEMAS
@@ -798,10 +996,15 @@ export const RecipeSchema = z
 
 /**
  * Spawn rule definition.
+ *
+ * Top-level spawn rule that can reference any entity ID (custom or vanilla).
+ * Use this form when the rule should live in a separate file or reference an entity
+ * defined outside this pack. For rules tightly bound to a single custom entity,
+ * prefer the inline `entity.spawning` (SpawnConfigSchema) form.
  */
 export const SpawnRuleSchema = z
   .object({
-    entity: z.string().describe("Entity ID this rule applies to"),
+    entity: z.string().describe("Entity ID this rule applies to (can be vanilla or custom, namespaced)."),
     biomes: z.array(z.string()).optional(),
     weight: z.number().optional(),
     groupSize: z.object({ min: z.number().int(), max: z.number().int() }).optional(),
@@ -812,7 +1015,11 @@ export const SpawnRuleSchema = z
     spawnOn: z.array(z.string()).optional(),
     populationCap: z.number().int().optional(),
   })
-  .describe("Spawn rule definition");
+  .describe(
+    "Top-level spawn rule (emitted as a separate spawn_rules/*.json file). Prefer inline `entity.spawning` " +
+      "for rules bound to a single custom entity; use this form when the rule references a non-local entity " +
+      "or when you want the rule file decoupled from the entity definition."
+  );
 
 // ============================================================================
 // SHARED RESOURCES

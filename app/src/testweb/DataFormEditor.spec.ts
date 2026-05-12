@@ -20,7 +20,15 @@
  */
 
 import { test, expect, ConsoleMessage, Page } from "@playwright/test";
-import { processMessage, gotoWithTheme, ThemeMode, selectEditMode } from "./WebTestUtilities";
+import {
+  processMessage,
+  gotoWithTheme,
+  ThemeMode,
+  selectEditMode,
+  clickTemplateCreateButton,
+  preferBrowserStorageInProjectDialog,
+  fillRequiredProjectDialogFields,
+} from "./WebTestUtilities";
 
 // Entity type editor tabs
 const ENTITY_EDITOR_TABS = [
@@ -43,38 +51,18 @@ async function createFullAddOnProject(page: Page, themeMode?: ThemeMode): Promis
     }
     await page.waitForTimeout(500);
 
-    // Find and click the "New" button for the Full Add-On template
-    const fullAddOnCard = page.locator('text="Full Add-On"').first();
-
-    if (!(await fullAddOnCard.isVisible({ timeout: 5000 }))) {
-      // Try to find "See more templates" button
-      const seeMoreTemplates = page.locator('text="See more templates"').first();
-      if (await seeMoreTemplates.isVisible({ timeout: 2000 })) {
-        await seeMoreTemplates.click();
-        await page.waitForTimeout(1000);
-      }
-    }
-
-    // Find the CREATE NEW button for Full Add-On
-    const fullAddOnSection = page.locator('div:has-text("Full Add-On")').filter({
-      has: page.locator('text="A full example add-on project"'),
-    });
-
-    let createButton = fullAddOnSection.locator('button:has-text("CREATE NEW")').first();
-
-    if (!(await createButton.isVisible({ timeout: 3000 }))) {
-      // Fall back to clicking the third New button (Full Add-On is usually 3rd template)
-      createButton = page.locator('button:has-text("New")').or(page.locator('button:has-text("CREATE NEW")')).nth(2);
-    }
-
-    if (!(await createButton.isVisible({ timeout: 3000 }))) {
+    // Click the Full Add-On template's "Create New" button via stable test id
+    const clicked = await clickTemplateCreateButton(page, "addonFull");
+    if (!clicked) {
       console.log("Could not find CREATE NEW button for Full Add-On template");
-      createButton = page.getByRole("button", { name: "Create New" }).first();
+      return false;
     }
-
     console.log("Clicking CREATE NEW for Full Add-On project");
-    await createButton.click();
     await page.waitForTimeout(1000);
+
+    // Handle the storage location dialog and required Creator field
+    await preferBrowserStorageInProjectDialog(page);
+    await fillRequiredProjectDialogFields(page);
 
     // Click OK on the project creation dialog
     const okButton = page.getByTestId("submit-button").first();

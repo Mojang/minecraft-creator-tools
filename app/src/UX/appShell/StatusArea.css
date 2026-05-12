@@ -5,9 +5,11 @@
   padding-left: 10px;
   display: grid;
   grid-template-columns: 1fr 30px;
+  grid-template-rows: auto 1fr;
   height: 100%;
   max-width: calc(100vw);
   overflow: hidden;
+  margin-top: -1px;
 }
 
 .sa-singleline {
@@ -115,31 +117,14 @@
   grid-column-start: 1;
   grid-column-end: 3;
   grid-row: 2;
+  overflow: hidden;
 }
 
 .sa-list {
-  max-height: 200px;
-  height: 42vh;
-  min-height: 108px;
+  height: 100%;
   overflow-y: auto;
   overflow-x: auto;
   max-width: calc(100vw - 43px);
-}
-
-@media only screen and (max-height: 600px) {
-  .sa-list {
-    max-height: 120px;
-    height: 25vh;
-    min-height: 60px;
-  }
-}
-
-@media only screen and (max-width: 600px) {
-  .sa-list {
-    max-height: 150px;
-    height: 25vh;
-    min-height: 60px;
-  }
 }
 
 .sa-list UL {
@@ -147,8 +132,10 @@
 }
 
 .sa-list LI {
-  min-height: 1.25rem;
+  min-height: 1rem;
   white-space: nowrap;
+  padding-top: 1px;
+  padding-bottom: 1px;
 }
 
 .sa-list .ui-list__itemcontent {

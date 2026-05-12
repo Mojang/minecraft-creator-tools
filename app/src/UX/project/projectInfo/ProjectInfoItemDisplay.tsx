@@ -7,10 +7,10 @@ import { InfoItemType } from "../../../info/IInfoItemData";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleCheck,
-  faCircleQuestion,
   faCircleXmark,
   faCircleArrowUp,
   faCircleExclamation,
+  faTriangleExclamation,
   faCircleInfo,
   faWrench,
   faInfoCircle,
@@ -38,6 +38,7 @@ interface IProjectInfoItemDisplayProps extends IAppProps {
   item: ProjectInfoItem;
   itemSet: ProjectInfoSet;
   isBand: boolean;
+  isMobile?: boolean;
   theme: IProjectTheme;
   onInfoItemCommand: (command: InfoItemCommand, item: ProjectInfoItem) => Promise<void>;
 }
@@ -240,7 +241,7 @@ export default class ProjectInfoItemDisplay extends Component<
       typeIcon = <FontAwesomeIcon icon={faCircleArrowUp} className="piid-typeIcon" aria-hidden="true" />;
     } else if (item.itemType === InfoItemType.warning) {
       indicatorCellBg = "piid-indicator-warning";
-      typeIcon = <FontAwesomeIcon icon={faCircleQuestion} className="piid-typeIcon" aria-hidden="true" />;
+      typeIcon = <FontAwesomeIcon icon={faTriangleExclamation} className="piid-typeIcon" aria-hidden="true" />;
     } else if (item.itemType === InfoItemType.info || item.itemType === InfoItemType.featureAggregate) {
       indicatorCellBg = "piid-indicator-info";
       typeIcon = <FontAwesomeIcon icon={faCircleInfo} className="piid-typeIcon" aria-hidden="true" />;
@@ -340,6 +341,54 @@ export default class ProjectInfoItemDisplay extends Component<
       </>
     );
 
+    if (this.props.isMobile) {
+      return (
+        <div
+          className={`piid-card ${indicatorCellBg}${canNavigate ? " piid-rowClickable" : ""}`}
+          style={{
+            backgroundColor: this.props.isBand ? colors.background2 : "transparent",
+          }}
+          onClick={canNavigate ? this._projectClick : undefined}
+          tabIndex={canNavigate ? 0 : -1}
+          role={canNavigate ? "button" : undefined}
+        >
+          <div className="piid-cardHeader">
+            <div className="piid-typeContainer">
+              {typeIcon}
+              <span className={this.getTypeBadgeClass(item.itemType)}>{typeLabel}</span>
+            </div>
+            <span className="piid-code" title={`Rule code ${errorCode}`}>
+              {errorCode}
+            </span>
+            <div className="piid-actionsContainer">
+              {infoButton}
+              {actionsElement}
+            </div>
+          </div>
+          <div className="piid-cardBody">
+            <div className="piid-cardRule" style={{ color: colors.foreground2 }}>
+              {ruleInfoCell}
+            </div>
+            {message && (
+              <div className="piid-cardMessage" style={{ color: colors.foreground2 }}>
+                {message}
+              </div>
+            )}
+            {location && (
+              <div
+                className="piid-cardLocation"
+                style={{ color: colors.foreground2 }}
+                title={location}
+                onClick={location ? this._projectClick : undefined}
+              >
+                <span className="piid-locationLink">{location}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
     return (
       <tr
         className={`piid-row${canNavigate ? " piid-rowClickable" : ""}`}
@@ -357,6 +406,17 @@ export default class ProjectInfoItemDisplay extends Component<
             {typeIcon}
             <span className={this.getTypeBadgeClass(item.itemType)}>{typeLabel}</span>
           </div>
+        </td>
+
+        {/* Error code column */}
+        <td
+          className="piid-cell piid-codeCell"
+          style={{
+            color: colors.foreground2,
+          }}
+          title={`Rule code ${errorCode}`}
+        >
+          <span className="piid-code">{errorCode}</span>
         </td>
 
         {/* Rule info column - title and area */}

@@ -23,6 +23,7 @@ import {
   getProjectItemCount,
   hasToolbarButton,
   takeScreenshot,
+  switchToRawEditPreference,
 } from "../testshared/TestUtilities";
 import os from "os";
 
@@ -1055,5 +1056,134 @@ test.describe("Electron App Tests", () => {
     // Basic assertions
     expect(windowInfo.isVisible).toBe(true);
     expect(appInfo.name).toBeDefined();
+  });
+
+  // ==================== JSON Editor Loading Tests ====================
+
+  test("should load JSON editor without getting stuck on Loading for manifest", async () => {
+    // Ensure we're in the editor with Raw mode
+    if (!(await isInEditor(page))) {
+      await enterEditor(page);
+    }
+
+    if (!(await isAppRunning(electronApp, page))) {
+      test.skip();
+      return;
+    }
+
+    // Switch to raw edit preference so JSON files show in Monaco
+    const switched = await switchToRawEditPreference(page);
+    console.log(`Switched to raw mode: ${switched}`);
+
+    if (!(await isAppRunning(electronApp, page))) {
+      test.skip();
+      return;
+    }
+
+    // Select the manifest item (present in all projects)
+    const selected = await selectProjectItem(page, "manifest");
+    console.log(`Selected manifest: ${selected}`);
+
+    if (!selected) {
+      console.log("Could not select manifest item - skipping");
+      return;
+    }
+
+    await takeScreenshot(page, "electron-json-editor-manifest-initial");
+
+    // Wait for the editor to appear - the Monaco editor should render within a few seconds
+    // If it stays on "Loading..." this will fail
+    const monacoEditor = page.locator(".monaco-editor").first();
+    let monacoVisible = false;
+
+    try {
+      await monacoEditor.waitFor({ state: "visible", timeout: 10000 });
+      monacoVisible = true;
+    } catch {
+      monacoVisible = false;
+    }
+
+    await takeScreenshot(page, "electron-json-editor-manifest-loaded");
+
+    // Check for the "Loading..." text as a fallback diagnostic
+    if (!monacoVisible) {
+      const loadingLabel = page.locator(".pie-loadingLabel").first();
+      const loadingText = await loadingLabel.textContent().catch(() => "");
+      console.log(`Loading label text: "${loadingText}"`);
+    }
+
+    expect(monacoVisible).toBe(true);
+  });
+
+  test("should load JSON editor for a second item click without getting stuck", async () => {
+    if (!(await isInEditor(page))) {
+      await enterEditor(page);
+    }
+
+    if (!(await isAppRunning(electronApp, page))) {
+      test.skip();
+      return;
+    }
+
+    // Select first manifest item
+    const selectedFirst = await selectProjectItem(page, "manifest");
+    if (!selectedFirst) {
+      console.log("Could not select manifest - skipping");
+      return;
+    }
+
+    // Wait for Monaco editor to load for the first item
+    const editor1 = page.locator(".monaco-editor").first();
+    try {
+      await editor1.waitFor({ state: "visible", timeout: 10000 });
+    } catch {
+      console.log("First item editor did not load - skipping");
+      return;
+    }
+
+    // Now click a different JSON-file item.
+    // Try "main" (TypeScript file in add-on starter project) or "tsconfig"
+    let secondSelected = false;
+    for (const candidate of ["main", "tsconfig"]) {
+      secondSelected = await selectProjectItem(page, candidate);
+      if (secondSelected) {
+        console.log(`Selected second item: "${candidate}"`);
+        break;
+      }
+    }
+
+    if (!secondSelected) {
+      console.log("No second code file found to test - skipping");
+      return;
+    }
+
+    await takeScreenshot(page, "electron-json-editor-second-item-initial");
+
+    // Wait for an editor to appear (Monaco for raw JSON, or a code/script editor)
+    // Also check that the "Loading..." label is NOT visible, which would indicate a stuck state.
+    const monacoEditor = page.locator(".monaco-editor").first();
+    const loadingLabel = page.locator(".pie-loadingLabel:has-text('Loading')").first();
+    let editorLoaded = false;
+
+    try {
+      await monacoEditor.waitFor({ state: "visible", timeout: 10000 });
+      editorLoaded = true;
+    } catch {
+      // Monaco not found - check if some other editor rendered instead of "Loading..."
+      const isStuckLoading = await loadingLabel.isVisible({ timeout: 1000 }).catch(() => false);
+      if (!isStuckLoading) {
+        // Not stuck on Loading, some other editor type rendered
+        editorLoaded = true;
+      }
+    }
+
+    await takeScreenshot(page, "electron-json-editor-second-item-loaded");
+
+    if (!editorLoaded) {
+      const labelText = await loadingLabel.textContent().catch(() => "");
+      console.log(`Second item stuck on loading: "${labelText}"`);
+    }
+
+    expect(editorLoaded).toBe(true);
   });
 });

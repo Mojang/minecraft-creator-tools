@@ -91,6 +91,7 @@ export default interface IProjectData {
   showFunctions?: boolean;
   showAssets?: boolean;
   showTypes?: boolean;
+  showDevFiles?: boolean;
 
   gitHubRepoName?: string;
   gitHubOwner?: string;

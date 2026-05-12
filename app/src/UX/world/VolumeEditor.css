@@ -48,7 +48,7 @@
  * ═══════════════════════════════════════════════════════════════════ */
 
 .ve-left-toolbar {
-  width: 48px;
+  width: 64px;
   height: 100%;
   background-color: rgba(28, 28, 30, 0.98);
   border-right: 1px solid rgba(255, 255, 255, 0.1);
@@ -61,7 +61,7 @@
 }
 
 .ve-tool-btn {
-  width: 40px;
+  width: 56px;
   height: 48px;
   background-color: transparent;
   border: none;
@@ -105,12 +105,13 @@
   font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
   font-size: 9px;
   color: rgba(255, 255, 255, 0.7);
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.2px;
   white-space: nowrap;
+  /* Ensure long labels like "Properties" / "Controls" don't overflow the
+   * narrow 40px button. They get clipped instead of bleeding outside. */
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 40px;
 }
 
 .ve-tool-btn-active .ve-tool-label {

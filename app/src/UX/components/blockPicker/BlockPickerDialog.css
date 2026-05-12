@@ -1,0 +1,125 @@
+/* BlockPickerDialog styles */
+
+.bpd-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 8px !important;
+}
+
+.bpd-closeBtn {
+  margin-left: auto;
+}
+
+.bpd-content {
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  min-height: 360px;
+  max-height: 70vh;
+}
+
+.bpd-searchRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.bpd-searchIcon {
+  color: #aaa;
+  font-size: 14px;
+}
+
+.bpd-acceptTyped {
+  margin: 10px 16px 0 !important;
+  align-self: flex-start;
+}
+
+.bpd-loading,
+.bpd-empty {
+  padding: 24px;
+  text-align: center;
+  color: #aaa;
+  font-size: 13px;
+}
+
+.bpd-sectionHeader {
+  padding: 12px 16px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #fff;
+}
+
+.bpd-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 8px;
+  padding: 4px 16px 12px;
+  overflow-y: auto;
+}
+
+.bpd-tile {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 6px !important;
+  border: 1px solid rgba(128, 128, 128, 0.25) !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-radius: 6px !important;
+  text-align: center;
+  font-family: inherit !important;
+  color: inherit !important;
+  transition:
+    background 0.1s ease,
+    border-color 0.1s ease;
+}
+
+.bpd-tile:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: #5a7aaa !important;
+}
+
+.bpd-tileImage {
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  /* Pixel-art preservation for vanilla 16x16 textures scaled up */
+  image-rendering: pixelated;
+}
+
+.bpd-tileImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+}
+
+.bpd-tileLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #f0f0f0;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bpd-tileId {
+  font-size: 10px;
+  color: #aaa;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

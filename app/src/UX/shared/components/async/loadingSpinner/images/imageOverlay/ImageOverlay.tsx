@@ -28,8 +28,14 @@ export default function ImageOverlay({ image, item, children, alt }: ImageOverla
       sx={{
         position: "relative",
         width: "100%",
-        height: "128px",
-        overflow: "hidden",
+        // Use minHeight rather than a fixed height so cards can grow
+        // vertically when the user has applied text-spacing overrides per
+        // WCAG 1.4.12. With a hard `height` + `overflow: hidden` the title
+        // and description got clipped under aggressive line-height /
+        // letter-spacing overrides; minHeight preserves the original visual
+        // uniformity in the default case while allowing legitimate growth
+        // when content demands it.
+        minHeight: "128px",
         imageRendering: "pixelated",
         backgroundImage: `url("${image}")`,
         backgroundPositionX: backgroundPositionX,
@@ -62,7 +68,11 @@ export default function ImageOverlay({ image, item, children, alt }: ImageOverla
           px={1.5}
           py={1}
           sx={{
-            overflow: "hidden",
+            // No `overflow: hidden` here — under WCAG 1.4.12 user-style
+            // overrides the title/description text grows beyond the
+            // default 128px card height; clipping it would lose content.
+            // Allowing overflow visibly extends the card and is the
+            // conformant behavior per the criterion.
             width: "100%",
           }}
         >

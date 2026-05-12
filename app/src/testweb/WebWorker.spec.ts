@@ -150,7 +150,10 @@ test.describe("Web Worker Tests @focused", () => {
             };
           }),
           new Promise<{ success: boolean; timeout: boolean }>((resolve) => {
-            setTimeout(() => resolve({ success: false, timeout: true }), 5000);
+            // Allow 20s for the worker to import its transitive module graph
+            // (Project, CreatorTools, Minecraft definitions, etc.) and post
+            // the "ready" message. On slow CI machines this can exceed 5s.
+            setTimeout(() => resolve({ success: false, timeout: true }), 20000);
           }),
         ]).catch((e) => e);
 

@@ -35,6 +35,11 @@ export type UIDefinition = {
   choices?: OneOfChoice[];
 
   select?: string[]; //TODO: support: | [string, unknown][];
+
+  /* When true, hides the root-level title (e.g., "Loot Table Editor") from the schema form */
+  hideRootTitle?: boolean;
+  /* Render hint for numeric fields: "slider" renders a Slider+TextField combo instead of plain input */
+  displayAs?: "slider" | "default";
 };
 
 export type OneOfChoice = {

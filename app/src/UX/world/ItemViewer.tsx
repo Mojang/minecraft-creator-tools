@@ -15,7 +15,7 @@
  * URL PARAMETERS:
  * - ?mode=itemviewer            — Opens the item viewer with the first item selected
  * - ?mode=itemviewer&item=bow   — Opens directly to a specific item
- * - ?headless=true              — Headless mode for CLI/batch snapshot rendering
+ * - ?headless=true              — Run without display mode for CLI/batch snapshot rendering
  */
 
 import { Component } from "react";
@@ -159,7 +159,7 @@ export default class ItemViewer extends Component<IItemViewerProps, IItemViewerS
     const { heightOffset } = this.props;
     const { isLoaded, currentItemIndex, currentAttachableTypeId, errorMessage, isHeadless } = this.state;
 
-    // Headless mode: only render ModelViewer for CLI/batch rendering
+    // Run without display mode: only render ModelViewer for CLI/batch rendering
     if (isHeadless) {
       return (
         <div className="mv-container mv-headless" style={{ height: "100vh", width: "100vw" }}>

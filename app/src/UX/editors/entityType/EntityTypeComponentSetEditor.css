@@ -135,6 +135,11 @@
 /* Component bin panel */
 .etcse-componentBinPanel {
   overflow: hidden;
+  /* Keep the form area usable. As the second column (1fr) in the inner grid,
+     this min-width grows the grid past the parent's width when the viewport
+     is narrow, which (combined with the parent's container query) triggers
+     a horizontal scrollbar instead of crushing the form. */
+  min-width: 360px;
 }
 
 .etcse-componentBinPanel .editor-panel-content {

@@ -51,7 +51,9 @@ export class DedicatedServeCommand extends CommandBase implements ICommand {
       // Check for environment variable
       if (!this.checkEnvEula()) {
         log.error(
-          "EULA not accepted. Run 'mct eula' to accept, or set MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA=true"
+          "EULA not accepted. Accept it via:\n" +
+            "  Interactive:    mct eula\n" +
+            "  Non-interactive: mct eula --accept   (or set MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA=true)"
         );
         context.setExitCode(ErrorCodes.INIT_ERROR);
         return;

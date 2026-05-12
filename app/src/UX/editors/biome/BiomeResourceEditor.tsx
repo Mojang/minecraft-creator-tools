@@ -7,7 +7,7 @@ import DataFormUtilities from "../../../dataform/DataFormUtilities";
 import ProjectItem from "../../../app/ProjectItem";
 import CreatorTools from "../../../app/CreatorTools";
 import Project from "../../../app/Project";
-import DataForm from "../../../dataformux/DataForm";
+import DataFormComponentAccordion from "../../../dataformux/DataFormComponentAccordion";
 import BiomeResourceDefinition from "../../../minecraft/BiomeResourceDefinition";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
@@ -75,8 +75,7 @@ export default class BiomeResourceEditor extends Component<IBiomeResourceEditorP
 
   componentDidUpdate(
     prevProps: Readonly<IBiomeResourceEditorProps>,
-    prevState: Readonly<IBiomeResourceEditorState>,
-    snapshot?: any
+    prevState: Readonly<IBiomeResourceEditorState>
   ): void {
     if (this.state && this.props.file !== this.state.fileToEdit) {
       this.setState(
@@ -192,17 +191,17 @@ export default class BiomeResourceEditor extends Component<IBiomeResourceEditorP
     }
 
     const biomeDefinition = this.state.fileToEdit.manager as BiomeResourceDefinition;
-    const form = Database.getForm("client_biome", "client_biome_components");
 
     let interior = <></>;
 
-    if (this.state.mode === BiomeResourceEditorMode.components && form) {
+    if (this.state.mode === BiomeResourceEditorMode.components) {
       interior = (
-        <DataForm
-          definition={form}
-          directObject={biomeDefinition.clientBiomeData.components}
-          readOnly={this.props.readOnly}
+        <DataFormComponentAccordion
+          componentSetItem={biomeDefinition}
+          formCategory="client_biome"
           theme={this.props.theme}
+          readOnly={this.props.readOnly}
+          maxHeight={height}
         />
       );
     }

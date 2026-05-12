@@ -217,7 +217,7 @@ export class RenderVanillaCommand extends CommandBase {
     if (isBlock) {
       results = await renderer.renderBlocks(
         items,
-        { width: 512, height: 512, renderWaitTime, fastMode: true },
+        { width: 512, height: 512, renderWaitTime, fastMode: true, flatBackground: true },
         progressCb
       );
     } else if (isItem) {
@@ -275,7 +275,12 @@ export class RenderVanillaCommand extends CommandBase {
 
     let result;
     if (isBlock) {
-      result = await renderer.renderBlock(identifier, { width: 512, height: 512, renderWaitTime: 5000 });
+      result = await renderer.renderBlock(identifier, {
+        width: 512,
+        height: 512,
+        renderWaitTime: 5000,
+        flatBackground: true,
+      });
     } else if (isItem) {
       result = await renderer.renderItem(identifier, { width: 512, height: 512, renderWaitTime: 8000 });
     } else if (isMob) {

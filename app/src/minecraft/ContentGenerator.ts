@@ -35,6 +35,8 @@ import {
   ISpawnConfig,
   EntityBehaviorPreset,
   IGenerationOptions,
+  ITextureSpec,
+  IBlockTexture,
 } from "./IContentMetaSchema";
 import CreatorToolsHost from "../app/CreatorToolsHost";
 import ImageCodec from "../core/ImageCodec";
@@ -135,6 +137,15 @@ export interface IGeneratedContent {
 
   /** item_texture.json entries */
   itemTextures?: IGeneratedFile;
+
+  /** blocks.json resource pack catalog (singleton, should be merged across calls) */
+  blocksCatalog?: IGeneratedFile;
+
+  /** sound_definitions.json (singleton, should be merged across calls) */
+  soundDefinitions?: IGeneratedFile;
+
+  /** music_definitions.json (singleton, should be merged across calls) */
+  musicDefinitions?: IGeneratedFile;
 
   /** Summary of what was generated */
   summary: IGenerationSummary;
@@ -412,12 +423,6 @@ const BLOCK_TRAIT_COMPONENTS: Record<BlockTraitId, Record<string, any>> = {
       event: "toggle_open",
     },
   },
-  container: {
-    "minecraft:inventory": {
-      container_type: "container",
-      inventory_size: 27,
-    },
-  },
   workstation: {},
   light_source: {
     "minecraft:light_emission": 15,
@@ -449,6 +454,15 @@ const BLOCK_TRAIT_COMPONENTS: Record<BlockTraitId, Record<string, any>> = {
   },
   pressure_plate: {
     "minecraft:geometry": { identifier: "minecraft:geometry.pressure_plate" },
+  },
+  flammable: {
+    "minecraft:flammable": { catch_chance_modifier: 5, destroy_chance_modifier: 20 },
+  },
+  explosion_resistant: {
+    "minecraft:destructible_by_explosion": { explosion_resistance: 1200 },
+  },
+  slippery: {
+    "minecraft:friction": 0.1,
   },
 };
 
@@ -698,11 +712,7 @@ export class ContentGenerator {
    */
   private static _sanitizeIdForPath(id: string): string {
     // Remove null bytes, path separators, and traversal sequences
-    return id
-      .replace(/\0/g, "")
-      .replace(/\.\./g, "")
-      .replace(/[/\\]/g, "_")
-      .replace(/:/g, "_");
+    return id.replace(/\0/g, "").replace(/\.\./g, "").replace(/[/\\]/g, "_").replace(/:/g, "_");
   }
 
   constructor(definition: IMinecraftContentDefinition) {
@@ -983,9 +993,12 @@ export class ContentGenerator {
       },
     };
 
-    // Generate manifests
-    result.behaviorPackManifest = this._generateBehaviorManifest();
+    // Generate manifests. Resource pack first so the behavior pack can declare
+    // a dependency on it — without this link, Bedrock will not load the RP at
+    // runtime and entities/blocks/items render invisible.
     result.resourcePackManifest = this._generateResourceManifest();
+    const rpHeaderUuid = (result.resourcePackManifest.content as any)?.header?.uuid;
+    result.behaviorPackManifest = this._generateBehaviorManifest(rpHeaderUuid);
 
     // Generate entities
     if (this._definition.entityTypes) {
@@ -1054,6 +1067,7 @@ export class ContentGenerator {
     // Generate terrain_texture.json for blocks
     if (this._definition.blockTypes && this._definition.blockTypes.length > 0) {
       result.terrainTextures = this._generateTerrainTextures(this._definition.blockTypes);
+      result.blocksCatalog = this._generateBlocksCatalog(this._definition.blockTypes);
     }
 
     // Generate item_texture.json for items
@@ -1072,31 +1086,45 @@ export class ContentGenerator {
   // MANIFEST GENERATION
   // ============================================================================
 
-  private _generateBehaviorManifest(): IGeneratedFile {
+  private _generateBehaviorManifest(resourcePackHeaderUuid?: string): IGeneratedFile {
     const uuid1 = this._generateUuid();
     const uuid2 = this._generateUuid();
+
+    const content: any = {
+      format_version: 2,
+      header: {
+        name: this._definition.displayName || `${this._namespace} Behavior Pack`,
+        description: this._definition.description || `Generated content for ${this._namespace}`,
+        uuid: uuid1,
+        version: [1, 0, 0],
+        min_engine_version: [1, 21, 0],
+      },
+      modules: [
+        {
+          type: "data",
+          uuid: uuid2,
+          version: [1, 0, 0],
+        },
+      ],
+    };
+
+    // BP must declare a dependency on its sibling RP, otherwise Bedrock won't
+    // load the RP and all entities/blocks render invisible. This was a recurring
+    // root-cause bug that historically required many server restarts to identify.
+    if (resourcePackHeaderUuid) {
+      content.dependencies = [
+        {
+          uuid: resourcePackHeaderUuid,
+          version: [1, 0, 0],
+        },
+      ];
+    }
 
     return {
       path: "manifest.json",
       pack: "behavior",
       type: "json",
-      content: {
-        format_version: 2,
-        header: {
-          name: this._definition.displayName || `${this._namespace} Behavior Pack`,
-          description: this._definition.description || `Generated content for ${this._namespace}`,
-          uuid: uuid1,
-          version: [1, 0, 0],
-          min_engine_version: [1, 21, 0],
-        },
-        modules: [
-          {
-            type: "data",
-            uuid: uuid2,
-            version: [1, 0, 0],
-          },
-        ],
-      },
+      content,
     };
   }
 
@@ -1219,6 +1247,17 @@ export class ContentGenerator {
       }
     }
 
+    // Deduplicate movement controllers. Bedrock allows only ONE
+    // `minecraft:movement.*` component per entity; having both `movement.basic`
+    // (added as default above) and a trait-provided controller like
+    // `movement.sway` triggers a "Mobs can only have 1 Move Control Component"
+    // error at runtime. If a trait supplied a more specific movement.* the
+    // default basic controller must be dropped.
+    const movementKeys = Object.keys(components).filter((k) => k.startsWith("minecraft:movement."));
+    if (movementKeys.length > 1 && components["minecraft:movement.basic"] !== undefined) {
+      delete components["minecraft:movement.basic"];
+    }
+
     // Apply simplified properties
     if (entity.health !== undefined) {
       components["minecraft:health"] = { value: entity.health, max: entity.health };
@@ -1234,6 +1273,10 @@ export class ContentGenerator {
     }
     if (entity.scale !== undefined) {
       components["minecraft:scale"] = { value: entity.scale };
+    }
+    // appearance.scale overrides entity.scale if both are set (documented in schema).
+    if (entity.appearance?.scale !== undefined) {
+      components["minecraft:scale"] = { value: entity.appearance.scale };
     }
 
     // Apply native components (override everything)
@@ -1380,6 +1423,37 @@ export class ContentGenerator {
   }
 
   /**
+   * Maps an appearance.textureStyle value to the corresponding TexturedRectangleType
+   * used in model-design textures. Falls back to the template's existing background type
+   * (or 'stipple_noise') when no textureStyle is specified.
+   */
+  private _textureStyleToType(
+    textureStyle: "solid" | "spotted" | "striped" | "gradient" | "organic" | "armored" | undefined,
+    fallback: string | undefined
+  ): any {
+    if (!textureStyle) {
+      return fallback || "stipple_noise";
+    }
+    switch (textureStyle) {
+      case "solid":
+        return "solid";
+      case "spotted":
+        return "stipple_noise";
+      case "striped":
+        return "dither_noise";
+      case "gradient":
+        return "gradient";
+      case "organic":
+        return "perlin_noise";
+      case "armored":
+        // Stippled base + an outset lighting effect is applied by the caller.
+        return "stipple_noise";
+      default:
+        return fallback || "stipple_noise";
+    }
+  }
+
+  /**
    * Creates a recolored copy of a model design template using the user's primary/secondary colors.
    * Each named texture in the template gets a distinct color derived from the user's choices,
    * producing visually distinct faces that make it obvious how to customize the mob.
@@ -1388,7 +1462,8 @@ export class ContentGenerator {
     template: IMcpModelDesign,
     primaryColor: string,
     secondaryColor: string,
-    entityId: string
+    entityId: string,
+    textureStyle?: "solid" | "spotted" | "striped" | "gradient" | "organic" | "armored"
   ): IMcpModelDesign {
     const parseHex = (hex: string): { r: number; g: number; b: number } => {
       const h = hex.startsWith("#") ? hex.slice(1) : hex;
@@ -1449,11 +1524,14 @@ export class ContentGenerator {
 
       newTextures[name] = {
         background: {
-          type: original.background?.type || "stipple_noise",
+          type: this._textureStyleToType(textureStyle, original.background?.type),
           colors: [c1, c2, c3],
           seed: (original.background?.seed || 1000) + i,
         },
-        effects: original.effects,
+        effects:
+          textureStyle === "armored"
+            ? { ...(original.effects || {}), lighting: { preset: "outset", intensity: 0.4 } }
+            : original.effects,
         pixelArt: original.pixelArt,
       };
     }
@@ -1495,7 +1573,7 @@ export class ContentGenerator {
     }
 
     // Recolor the template with the user's colors
-    const design = this._recolorModelDesign(template, primaryColor, secondaryColor, entity.id);
+    const design = this._recolorModelDesign(template, primaryColor, secondaryColor, entity.id, appearance.textureStyle);
 
     // Convert model design to geometry + atlas regions
     const conversionResult = ModelDesignUtilities.convertToGeometry(design);
@@ -1637,26 +1715,57 @@ export class ContentGenerator {
     const textureId = `textures/entity/${entity.id}`;
     const renderControllerId = `controller.render.${this._namespace}.${entity.id}`;
 
+    // Eye style controls the material selection. 'glowing' and 'red' use an emissive
+    // material so the entity glows in low light; 'normal'/'none' use the default alphatest.
+    const eyes = appearance.eyes;
+    const material = eyes === "glowing" || eyes === "red" ? "entity_emissive" : "entity_alphatest";
+
+    const description: any = {
+      identifier: fullId,
+      materials: {
+        default: material,
+      },
+      textures: {
+        default: textureId,
+      },
+      geometry: {
+        default: geometryId,
+      },
+      render_controllers: [renderControllerId],
+      spawn_egg: {
+        base_color: appearance.primaryColor || "#5B8C3E",
+        overlay_color: appearance.secondaryColor || "#3D6B2E",
+      },
+    };
+
+    // Ambient particle effects (flames, smoke, etc.). These are referenced by an
+    // animation/emitter controller. We emit the particle_effects map so the agent's
+    // chosen effects are at least declared and addressable; a full emitter controller
+    // can be layered on top by raw components if needed.
+    if (appearance.particles && appearance.particles.length > 0) {
+      const particleMap: { [key: string]: string } = {
+        flames: "minecraft:mobflame_emitter",
+        smoke: "minecraft:mobspell_emitter",
+        drip: "minecraft:water_drip_particle",
+        sparkle: "minecraft:villager_happy",
+        hearts: "minecraft:heart_particle",
+      };
+      const particle_effects: { [key: string]: string } = {};
+      for (const p of appearance.particles) {
+        const mapped = particleMap[p];
+        if (mapped) {
+          particle_effects[p] = mapped;
+        }
+      }
+      if (Object.keys(particle_effects).length > 0) {
+        description.particle_effects = particle_effects;
+      }
+    }
+
     return {
       format_version: "1.10.0",
       "minecraft:client_entity": {
-        description: {
-          identifier: fullId,
-          materials: {
-            default: "entity_alphatest",
-          },
-          textures: {
-            default: textureId,
-          },
-          geometry: {
-            default: geometryId,
-          },
-          render_controllers: [renderControllerId],
-          spawn_egg: {
-            base_color: appearance.primaryColor || "#5B8C3E",
-            overlay_color: appearance.secondaryColor || "#3D6B2E",
-          },
-        },
+        description,
       },
     };
   }
@@ -2002,6 +2111,92 @@ export class ContentGenerator {
     return encoded || PngEncoder.getPlaceholderTexture("entity");
   }
 
+  /**
+   * Render an ITextureSpec to PNG bytes.
+   *
+   * Precedence:
+   *   1. If `spec` is a string or `spec.file` is set, the caller should use that file reference
+   *      directly — this helper returns `undefined` so no placeholder PNG is emitted.
+   *   2. If `spec.generate` and/or `spec.pixelArt` is set, build the PNG procedurally.
+   *      - `generate` controls the background (use type: "none" for a transparent background).
+   *      - `pixelArt` layers are drawn on top.
+   *      - `spec.effects` are applied last.
+   *   3. Returns `undefined` if the spec has nothing renderable.
+   */
+  private async _renderTextureSpecToPng(
+    spec: string | ITextureSpec | undefined,
+    width: number,
+    height: number,
+    contextString: string
+  ): Promise<Uint8Array | undefined> {
+    if (!spec) {
+      return undefined;
+    }
+
+    // String shorthand = file reference; caller should skip placeholder.
+    if (typeof spec === "string") {
+      return undefined;
+    }
+
+    // Explicit file reference = skip placeholder.
+    if (spec.file) {
+      return undefined;
+    }
+
+    const hasGenerate = !!spec.generate;
+    const hasPixelArt = spec.pixelArt && spec.pixelArt.length > 0;
+
+    if (!hasGenerate && !hasPixelArt && !spec.effects) {
+      return undefined;
+    }
+
+    // Build background. Default is transparent when only pixelArt is specified.
+    let pixels: Uint8Array;
+    if (hasGenerate) {
+      pixels = TexturedRectangleGenerator.generatePixels(spec.generate!, width, height, contextString);
+    } else {
+      pixels = new Uint8Array(width * height * 4); // transparent
+    }
+
+    // Overlay pixel art layers.
+    if (hasPixelArt) {
+      TexturedRectangleGenerator.applyPixelArtLayers(pixels, width, height, spec.pixelArt!);
+    }
+
+    // Apply post-processing effects.
+    if (spec.effects) {
+      applyTextureEffects(pixels, width, height, spec.effects);
+    }
+
+    // Encode. Try sync first, then async (browser).
+    let encoded = ImageCodec.encodeToPngSync(pixels, width, height);
+    if (!encoded) {
+      encoded = await ImageCodec.encodeToPngBrowser(pixels, width, height);
+    }
+    return encoded || undefined;
+  }
+
+  /**
+   * Pick the most representative face from an IBlockTexture to drive the single-PNG
+   * placeholder we currently emit per block. Preference order: all, side, up, north,
+   * south, east, west, down.
+   */
+  private _pickBlockFaceTexture(texture: IBlockTexture | undefined): string | ITextureSpec | undefined {
+    if (!texture) {
+      return undefined;
+    }
+    return (
+      texture.all ??
+      texture.side ??
+      texture.up ??
+      texture.north ??
+      texture.south ??
+      texture.east ??
+      texture.west ??
+      texture.down
+    );
+  }
+
   // ============================================================================
   // BLOCK GENERATION
   // ============================================================================
@@ -2199,16 +2394,31 @@ export class ContentGenerator {
 
   /**
    * Generate a placeholder texture for a block.
-   * Creates a simple 16x16 texture with the block's color.
-   * Uses async encoding to support browser environments via Canvas API.
+   *
+   * Precedence:
+   *   1. `block.texture` (ITextureSpec) — rendered via _renderTextureSpecToPng.
+   *   2. `block.mapColor` — checkerboard fallback.
+   *
+   * Returns undefined if block.texture is a string/file reference (no placeholder needed).
    */
-  private async _generateBlockTexturePlaceholder(block: IBlockTypeDefinition): Promise<Uint8Array> {
-    // Get primary color from mapColor or default
+  private async _generateBlockTexturePlaceholder(block: IBlockTypeDefinition): Promise<Uint8Array | undefined> {
+    // 1. Honor block.texture if it specifies inline generate/pixelArt content.
+    const faceSpec = this._pickBlockFaceTexture(block.texture);
+    if (faceSpec) {
+      const rendered = await this._renderTextureSpecToPng(faceSpec, 16, 16, `block-${block.id}`);
+      if (rendered) {
+        return rendered;
+      }
+      // String or { file: ... } means "use an existing file" — don't emit a placeholder.
+      if (typeof faceSpec === "string" || faceSpec.file) {
+        return undefined;
+      }
+    }
+
+    // 2. Fallback: checkerboard from mapColor.
     const primaryColor = block.mapColor || "#808080";
-    // Create a slightly darker secondary color
     const secondaryColor = this._darkenColor(primaryColor, 0.15);
 
-    // Try async encoding first (works in both Node.js and browser)
     const custom = await PngEncoder.createCheckerboardPngAsync(16, 16, primaryColor, secondaryColor, 4);
     return custom || PngEncoder.getPlaceholderTexture("block");
   }
@@ -2340,6 +2550,41 @@ export class ContentGenerator {
       components["minecraft:durability"] = { max_durability: item.tool.durability };
     }
 
+    // Projectile properties (bow/crossbow-style chargeable shooters, or throwables like snowballs).
+    if (item.projectile) {
+      const projectileEntityId = item.projectile.projectile.includes(":")
+        ? item.projectile.projectile
+        : `minecraft:${item.projectile.projectile}`;
+      const launchPower = item.projectile.launchPower ?? 1.0;
+
+      if (item.projectile.chargeable) {
+        // Bow/crossbow: charge-while-held + release-to-shoot.
+        components["minecraft:shooter"] = {
+          projectiles: [
+            {
+              projectile: projectileEntityId,
+              launch_power_scale: launchPower,
+            },
+          ],
+        };
+        components["minecraft:chargeable"] = { movement_modifier: 0.5 };
+        components["minecraft:use_modifiers"] = { use_duration: 999999, movement_modifier: 0.5 };
+      } else {
+        // Throwable (snowball/egg style): single-use, no charge.
+        components["minecraft:throwable"] = {
+          do_swing_animation: true,
+          launch_power_scale: launchPower,
+          max_draw_duration: 0,
+          max_launch_power: launchPower,
+          min_draw_duration: 0,
+          scale_power_by_draw_duration: false,
+        };
+        components["minecraft:projectile"] = {
+          projectile_entity: projectileEntityId,
+        };
+      }
+    }
+
     // Add icon component using string shorthand (1.21.70+ format)
     const textureKey = `${this._namespace}:${item.id}`;
     if (!components["minecraft:icon"]) {
@@ -2385,13 +2630,29 @@ export class ContentGenerator {
 
   /**
    * Generate a placeholder texture for an item.
-   * Uses shaped templates (sword, helmet, etc.) recolored with the user's chosen color.
-   * Falls back to a checkerboard pattern if no template matches.
+   *
+   * Precedence:
+   *   1. `item.icon` (ITextureSpec) — rendered via _renderTextureSpecToPng. If it's a
+   *      string/file reference, no placeholder is emitted (caller should skip).
+   *   2. `item.traits` — shaped template (sword/pickaxe/etc.) recolored with item.color.
+   *   3. Fallback — checkerboard with item.color.
    */
-  private async _generateItemTexturePlaceholder(item: IItemTypeDefinition): Promise<Uint8Array> {
+  private async _generateItemTexturePlaceholder(item: IItemTypeDefinition): Promise<Uint8Array | undefined> {
+    // 1. Honor item.icon if it specifies inline generate/pixelArt content.
+    if (item.icon !== undefined) {
+      const rendered = await this._renderTextureSpecToPng(item.icon, 16, 16, `item-${item.id}`);
+      if (rendered) {
+        return rendered;
+      }
+      // String or { file: ... } means "use an existing file" — don't emit a placeholder.
+      if (typeof item.icon === "string" || item.icon.file) {
+        return undefined;
+      }
+    }
+
     const color = item.color || "#808080";
 
-    // Try template-based generation first (shaped icons recolored to user's color)
+    // 2. Try template-based generation (shaped icons recolored to user's color).
     if (item.traits) {
       const templateTexture = await generateItemTextureFromTemplate(item.traits, color);
       if (templateTexture) {
@@ -2399,7 +2660,7 @@ export class ContentGenerator {
       }
     }
 
-    // Fallback: checkerboard with the user's color
+    // 3. Fallback: checkerboard with the user's color.
     const secondaryColor = this._darkenColor(color, 0.2);
     const custom = await PngEncoder.createCheckerboardPngAsync(16, 16, color, secondaryColor, 4);
     return custom || PngEncoder.getPlaceholderTexture("item");
@@ -2454,6 +2715,35 @@ export class ContentGenerator {
         texture_name: "atlas.items",
         texture_data: textureData,
       },
+    };
+  }
+
+  /**
+   * Generate blocks.json catalog for the resource pack.
+   * This maps block identifiers to their texture and sound references.
+   */
+  private _generateBlocksCatalog(blocks: IBlockTypeDefinition[]): IGeneratedFile {
+    const blockEntries: Record<string, any> = {};
+
+    for (const block of blocks) {
+      const fullId = `${this._namespace}:${block.id}`;
+      const textureKey = `${this._namespace}_${block.id}`;
+      const entry: any = {
+        textures: textureKey,
+      };
+
+      if (block.sounds) {
+        entry.sound = block.sounds;
+      }
+
+      blockEntries[fullId] = entry;
+    }
+
+    return {
+      path: "blocks.json",
+      pack: "resource",
+      type: "json",
+      content: blockEntries,
     };
   }
 

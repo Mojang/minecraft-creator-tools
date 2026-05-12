@@ -79,7 +79,14 @@ export class SetupCommand extends CommandBase {
       }
 
       if (context.json) {
-        context.log.data(JSON.stringify({ results, projectPath: project.localFolderPath || project.name }));
+        context.log.data(
+          JSON.stringify({
+            schemaVersion: "1.0.0",
+            command: "setup",
+            results,
+            projectPath: project.localFolderPath || project.name,
+          })
+        );
       }
 
       if (!context.quiet && !packageJsonUpdated) {

@@ -21,7 +21,7 @@
 .vip-title {
   font-weight: 600;
   font-size: 12px;
-  color: #ccc;
+  color: #f0f0f0;
 }
 
 .vip-counts {
@@ -37,19 +37,19 @@
 }
 
 .vip-count-error {
-  color: #ef5350;
+  color: #ff7066;
 }
 
 .vip-count-warning {
-  color: #ffc107;
+  color: #ffd24a;
 }
 
 .vip-count-recommendation {
-  color: #42a5f5;
+  color: #6ab8f0;
 }
 
 .vip-count-info {
-  color: #90a4ae;
+  color: #b0bec5;
 }
 
 .vip-issues-list {
@@ -101,34 +101,63 @@
 }
 
 .vip-icon-error {
-  color: #ef5350;
+  color: #ff7066;
 }
 
 .vip-icon-warning {
-  color: #ffc107;
+  color: #ffd24a;
 }
 
 .vip-icon-recommendation {
-  color: #42a5f5;
+  color: #6ab8f0;
 }
 
 .vip-icon-info {
-  color: #90a4ae;
+  color: #b0bec5;
 }
 
+/*
+ * Issue code badge — colored by severity, with high-contrast text.
+ * Each badge uses a solid background paired with white text (≥ 7:1 contrast)
+ * so the rule code is clearly readable at 10px against the dark panel.
+ */
 .vip-issue-code {
   flex-shrink: 0;
-  font-family: monospace;
+  font-family: "Consolas", "Monaco", monospace;
   font-size: 10px;
-  color: #888;
-  background-color: rgba(255, 255, 255, 0.05);
-  padding: 1px 4px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: #ffffff;
+  background-color: #4a4a4a;
+  border: 1px solid #2a2a2a;
+  padding: 1px 5px;
   border-radius: 2px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+}
+
+.vip-issue-error .vip-issue-code {
+  background-color: #c0392b;
+  border-color: #922b21;
+}
+
+.vip-issue-warning .vip-issue-code {
+  background-color: #b9770e;
+  border-color: #7e5109;
+}
+
+.vip-issue-recommendation .vip-issue-code {
+  background-color: #2980b9;
+  border-color: #1a5276;
+}
+
+.vip-issue-info .vip-issue-code {
+  background-color: #5d6d7e;
+  border-color: #34495e;
 }
 
 .vip-issue-message {
   flex: 1;
-  color: #ddd;
+  color: #f0f0f0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -137,9 +166,9 @@
 .vip-issue-content {
   flex-shrink: 0;
   max-width: 200px;
-  font-family: monospace;
+  font-family: "Consolas", "Monaco", monospace;
   font-size: 10px;
-  color: #888;
+  color: #b8b8b8;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

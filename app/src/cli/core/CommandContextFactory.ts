@@ -65,6 +65,7 @@
  */
 
 import path from "path";
+import fs from "fs";
 import Project, { ProjectAutoDeploymentMode } from "../../app/Project";
 import CreatorTools from "../../app/CreatorTools";
 import LocalEnvironment from "../../local/LocalEnvironment";
@@ -109,6 +110,7 @@ export interface IRawOptions {
   verbose?: boolean;
   quiet?: boolean;
   json?: boolean;
+  yes?: boolean;
   dryRun?: boolean;
 
   // Output
@@ -166,6 +168,9 @@ export interface IRawOptions {
 
   // Documentation
   referenceFolder?: string;
+
+  /** Raw command-specific options forwarded from Commander (escape hatch for per-command flags). */
+  commandOptions?: Record<string, any>;
 }
 
 /**
@@ -185,6 +190,103 @@ export interface ICommandArgs {
  * Factory for creating ICommandContext instances.
  */
 export class CommandContextFactory {
+  /** Folder names that indicate a Minecraft project root. */
+  static readonly PROJECT_INDICATOR_FOLDERS = [
+    "behavior_packs",
+    "behavior_pack",
+    "development_behavior_packs",
+    "resource_packs",
+    "resource_pack",
+    "development_resource_packs",
+  ];
+
+  /** Maximum number of parent levels to walk when auto-discovering a project root. */
+  static readonly MAX_DISCOVERY_LEVELS = 8;
+
+  /**
+   * Walk up from `startDir` to find the nearest Minecraft project root.
+   *
+   * A folder qualifies as a project root if it contains:
+   * - A `package.json` file, OR
+   * - A child folder matching one of the Minecraft pack folder conventions
+   *   (behavior_packs, resource_packs, etc.)
+   *
+   * The search stops when:
+   * - A qualifying folder is found (returned immediately)
+   * - MAX_DISCOVERY_LEVELS parent directories have been checked
+   * - The folder is at a "second-order root" — its parent is a filesystem
+   *   root (e.g. `C:\projects` on Windows, `/home` on Unix), to avoid
+   *   scanning broad top-level directories
+   * - The filesystem root is reached
+   *
+   * If no qualifying folder is found, `startDir` is returned unchanged
+   * (preserving the current cwd-fallback behavior).
+   */
+  static resolveProjectRoot(startDir: string, log?: ILogger): string {
+    let current = path.resolve(startDir);
+
+    for (let level = 0; level <= CommandContextFactory.MAX_DISCOVERY_LEVELS; level++) {
+      // Second-order root boundary: stop if the parent of `current` is a
+      // filesystem root.  This prevents considering folders like C:\projects\
+      // or /home/ which are too broad to be a project root.
+      const parent = path.dirname(current);
+
+      if (level > 0 && parent === path.dirname(parent)) {
+        // `parent` is a filesystem root (e.g. C:\ or /), so `current` is a
+        // top-level directory — too high to be a project.
+        break;
+      }
+
+      if (CommandContextFactory.isProjectRoot(current)) {
+        if (level > 0) {
+          log?.verbose(`Auto-discovered project root: ${current}`);
+        }
+        return current;
+      }
+
+      // Move to parent directory
+      if (parent === current) {
+        // Reached filesystem root
+        break;
+      }
+
+      current = parent;
+    }
+
+    return startDir;
+  }
+
+  /**
+   * Check whether a directory looks like a Minecraft project root.
+   *
+   * Returns true if the directory contains a `package.json` file or any
+   * of the standard Minecraft pack folder names.
+   */
+  static isProjectRoot(dir: string): boolean {
+    try {
+      if (fs.existsSync(path.join(dir, "package.json"))) {
+        return true;
+      }
+
+      for (const folderName of CommandContextFactory.PROJECT_INDICATOR_FOLDERS) {
+        const candidate = path.join(dir, folderName);
+
+        try {
+          if (fs.statSync(candidate).isDirectory()) {
+            return true;
+          }
+        } catch {
+          // Folder doesn't exist — continue
+        }
+      }
+    } catch (err) {
+      // Permission error or similar — can't read this directory
+      Log.debug(`isProjectRoot: could not inspect '${dir}': ${err}`);
+    }
+
+    return false;
+  }
+
   /**
    * Create a fully-hydrated command context.
    *
@@ -209,6 +311,9 @@ export class CommandContextFactory {
     const verbose = options.verbose ?? false;
     const quiet = options.quiet ?? false;
     const json = options.json ?? false;
+    // Implicit --yes: when --json is set, the caller is non-interactive (CI / MCP).
+    // Treat it as if --yes was also supplied so commands skip prompts and use defaults.
+    const yes = options.yes ?? json;
     const dryRun = options.dryRun ?? false;
 
     // Parse output type - if --json flag is set, use json output type
@@ -218,8 +323,20 @@ export class CommandContextFactory {
     const log = createLogger(verbose, quiet, debug, false, json);
 
     // Resolve input/output folders to absolute paths
-    // Relative paths should be resolved against process.cwd()
-    const rawInputFolder = options.inputFolder || process.cwd();
+    // When -i is not specified, auto-discover the nearest project root by
+    // walking up from cwd (checks for package.json or *_packs folders).
+    let inputFolderAutoDiscovered = false;
+    let rawInputFolder: string;
+
+    if (options.inputFolder) {
+      rawInputFolder = options.inputFolder;
+    } else {
+      const cwd = process.cwd();
+      const discovered = CommandContextFactory.resolveProjectRoot(cwd, log);
+      rawInputFolder = discovered;
+      inputFolderAutoDiscovered = discovered !== cwd;
+    }
+
     const inputFolder = path.isAbsolute(rawInputFolder) ? rawInputFolder : path.resolve(process.cwd(), rawInputFolder);
 
     const rawOutputFolder = options.outputFolder || rawInputFolder;
@@ -311,6 +428,7 @@ export class CommandContextFactory {
       // Input/Output
       inputFolder,
       inputFolderSpecified: options.inputFolder !== undefined,
+      inputFolderAutoDiscovered,
       outputFolder,
       outputFile: options.outputFile,
       inputStorage,
@@ -326,6 +444,7 @@ export class CommandContextFactory {
       verbose,
       quiet,
       json,
+      yes,
       dryRun,
       outputType,
       taskType,
@@ -340,6 +459,7 @@ export class CommandContextFactory {
       description: args.description,
       projectStartsWith: options.projectStartsWith,
       referenceFolder: options.referenceFolder,
+      commandOptions: options.commandOptions || {},
 
       // Grouped options
       server,

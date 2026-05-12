@@ -1,0 +1,124 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   DataFormComponentAccordion — Accordion-style "show all components" editor
+
+   Shows every available component for a definition type. Components that
+   are present in the data are expanded; absent ones are collapsed/dimmed.
+   Editing an absent component auto-adds it; clearing all values removes it.
+
+   Good for types with ≤30 components (biome, client_biome, etc.).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.dfca-outer {
+  width: 100%;
+  overflow-y: auto;
+  padding: 0 4px 8px 4px;
+}
+
+.dfca-loading {
+  padding: 12px;
+  opacity: 0.6;
+}
+
+/* ── Individual component section ──────────────────────────────────── */
+
+.dfca-section {
+  margin-bottom: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.dfca-section.dfca-present {
+  border-left: 3px solid #52a535;
+}
+
+.dfca-section.dfca-absent {
+  opacity: 0.7;
+}
+
+.dfca-section.dfca-absent:hover {
+  opacity: 0.9;
+}
+
+/* ── Section header (clickable) ────────────────────────────────────── */
+
+.dfca-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.1s ease;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.dfca-header:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.dfca-chevron {
+  flex-shrink: 0;
+  width: 14px;
+  text-align: center;
+  opacity: 0.6;
+}
+
+.dfca-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dfca-badge {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 400;
+  padding: 1px 6px;
+  border-radius: 2px;
+  opacity: 0.7;
+}
+
+.dfca-badge-present {
+  background: rgba(82, 165, 53, 0.2);
+  color: #7fcf60;
+}
+
+.dfca-badge-absent {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ── Section body (form content) ───────────────────────────────────── */
+
+.dfca-body {
+  padding: 4px 8px 8px 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dfca-description {
+  font-size: 11px;
+  opacity: 0.6;
+  margin-bottom: 6px;
+  padding: 0 2px;
+}
+
+/* ── Remove button ─────────────────────────────────────────────────── */
+
+.dfca-removeBtn {
+  flex-shrink: 0;
+  opacity: 0.4;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border: none;
+  background: transparent;
+  color: inherit;
+}
+
+.dfca-removeBtn:hover {
+  opacity: 0.9;
+  color: #e05050;
+}

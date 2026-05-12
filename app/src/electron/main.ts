@@ -60,7 +60,10 @@ import StorageUtilities from "../storage/StorageUtilities";
 import LocalEnvironment from "../local/LocalEnvironment";
 import Log from "../core/Log";
 
-// Error handler for uncaught exceptions
+// Error handler for uncaught exceptions.
+// Before exiting, attempt to forward the error to the focused renderer so it
+// can display the global error overlay (giving the user a chance to copy
+// details). We delay the exit briefly so the IPC message has time to land.
 function handleException(err: Error): void {
   Log.error(
     "Unfortunately, the application could not continue to run.\n\nApplication error:\n" +
@@ -69,7 +72,25 @@ function handleException(err: Error): void {
   );
 
   process.removeListener("uncaughtException", handleException);
-  app.exit(9);
+
+  let notifiedRenderer = false;
+  try {
+    const target =
+      BrowserWindow.getFocusedWindow() ||
+      (BrowserWindow.getAllWindows().length > 0 ? BrowserWindow.getAllWindows()[0] : undefined);
+    if (target && !target.isDestroyed()) {
+      target.webContents.send("error:fatal", {
+        message: err?.message || String(err),
+        stack: err?.stack,
+      });
+      notifiedRenderer = true;
+    }
+  } catch {
+    // ignore — best effort only
+  }
+
+  // Give the renderer a moment to paint the overlay before tearing down.
+  setTimeout(() => app.exit(9), notifiedRenderer ? 2000 : 0);
 }
 
 // Use production mode if packaged, or if ELECTRON_FORCE_PROD is set (for testing with built files)

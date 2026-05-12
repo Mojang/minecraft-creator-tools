@@ -19,6 +19,7 @@ import JigsawStructureDefinition from "./JigsawStructureDefinition";
 import JigsawStructureSetDefinition from "./JigsawStructureSetDefinition";
 import JigsawTemplatePoolDefinition from "./JigsawTemplatePoolDefinition";
 import MusicDefinitionCatalogDefinition from "./MusicDefinitionCatalogDefinition";
+import MinecraftUtilities from "./MinecraftUtilities";
 import RenderControllerSetDefinition from "./RenderControllerSetDefinition";
 import ResourceManifestDefinition from "./ResourceManifestDefinition";
 import SoundCatalogDefinition from "./SoundCatalogDefinition";
@@ -131,11 +132,22 @@ export default class MinecraftDefinitions {
     if (def && (def as any).getFormatVersion) {
       const fv = await (def as any).getFormatVersion();
 
-      if (!(fv instanceof Array)) {
+      // format_version may be expressed as either a 3-number array ([1,0,2]) or a
+      // string ("1.0.2"). Normalize to a number[] so consumers can display it
+      // uniformly (e.g., fv.join(".")).
+      if (fv === undefined || fv === null) {
         return undefined;
       }
 
-      return fv;
+      if (fv instanceof Array) {
+        return fv;
+      }
+
+      if (typeof fv === "string" || typeof fv === "number") {
+        return MinecraftUtilities.getVersionArrayFrom(fv);
+      }
+
+      return undefined;
     }
 
     return undefined;

@@ -1728,6 +1728,7 @@ export default class FormMarkdownDocumentationGenerator {
   }
 
   public sanitizeDescription(description: string) {
+    description = description.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
     description = description.trim();
 
     if (description.length > 10 && !description.endsWith(".") && !description.endsWith(":")) {
@@ -2709,6 +2710,7 @@ export default class FormMarkdownDocumentationGenerator {
         const jsonO = StorageUtilities.getJsonObject(file);
 
         if (jsonO) {
+          FieldUtilities.normalizeFormFieldDataTypes(jsonO);
           formsByPath[file.storageRelativePath] = jsonO;
         }
 

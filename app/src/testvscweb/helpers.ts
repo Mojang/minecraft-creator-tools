@@ -343,3 +343,114 @@ export function collectConsoleErrors(page: Page): string[] {
 
   return errors;
 }
+
+/**
+ * Subscribe to every channel that can surface a runtime failure inside the VS Code
+ * workbench OR any embedded webview iframe, and append messages into a shared array.
+ *
+ * Captures:
+ *  - `console.error` from any frame (Playwright fires `page.on('console')` for frames too)
+ *  - Uncaught exceptions via `page.on('pageerror')`
+ *  - Extension-surfaced info/warning/error notifications whose text starts with
+ *    "Webview:" — these are produced by MCT's `logMessage` -> `showInformationMessage`
+ *    pipeline in ExtensionManager, which is how our client-side error handlers in
+ *    `vscwebindex.tsx` get errors out of the webview and into the host.
+ *
+ * The returned `errors` array is populated asynchronously as the page runs. The
+ * returned `assertNoErrors` helper is intended for use at the end of a test:
+ *
+ *   const { errors, assertNoErrors } = collectAllWebviewErrors(page);
+ *   await doStuff(page);
+ *   assertNoErrors();
+ *
+ * The `ignorePatterns` parameter lets tests whitelist known-benign noise (e.g.
+ * monaco worker rejections, favicon 404s).
+ */
+export function collectAllWebviewErrors(
+  page: Page,
+  ignorePatterns: (string | RegExp)[] = []
+): {
+  errors: string[];
+  assertNoErrors: (context?: string) => void;
+} {
+  const errors: string[] = [];
+
+  const isIgnored = (msg: string) =>
+    ignorePatterns.some((p) => (typeof p === "string" ? msg.includes(p) : p.test(msg)));
+
+  page.on("console", (msg) => {
+    if (msg.type() === "error") {
+      const text = msg.text();
+      if (!isIgnored(text)) {
+        errors.push("[console.error] " + text);
+      }
+    }
+  });
+
+  page.on("pageerror", (err) => {
+    const text = (err && (err.stack || err.message)) || String(err);
+    if (!isIgnored(text)) {
+      errors.push("[pageerror] " + text);
+    }
+  });
+
+  const assertNoErrors = (context?: string) => {
+    if (errors.length === 0) return;
+    const header = context ? `Unexpected errors during "${context}":` : "Unexpected errors:";
+    const detail = errors.map((e, i) => `  ${i + 1}. ${e}`).join("\n");
+    throw new Error(`${header}\n${detail}`);
+  };
+
+  return { errors, assertNoErrors };
+}
+
+/**
+ * Collect any VS Code notifications whose visible text matches the given predicate.
+ * MCT surfaces uncaught webview errors via `showInformationMessage("Webview: ...")`
+ * from the extension host; this helper asserts none of those have appeared.
+ */
+export async function assertNoMctErrorNotifications(page: Page): Promise<void> {
+  const toasts = page.locator(".notifications-toasts .notification-toast");
+  const count = await toasts.count();
+  const bad: string[] = [];
+  for (let i = 0; i < count; i++) {
+    const text = (await toasts.nth(i).textContent()) || "";
+    if (
+      /Webview:\s*(Uncaught error|Unhandled promise rejection|initAsync failed|Error processing message)/i.test(text)
+    ) {
+      bad.push(text.trim());
+    }
+  }
+  if (bad.length > 0) {
+    throw new Error("MCT surfaced webview error notifications:\n" + bad.map((b, i) => `  ${i + 1}. ${b}`).join("\n"));
+  }
+}
+
+/**
+ * Find the MCT main view webview frame (nested inside VS Code's outer webview
+ * iframe). VS Code wraps webview content in two iframes — the outer one is the
+ * host-side `vscode-webview` iframe, the inner one (`#active-frame`) contains the
+ * actual extension HTML. We return the innermost frame that contains MCT's
+ * `#root` element.
+ */
+export async function findMctMainViewFrame(page: Page, timeoutMs = 20000): Promise<Frame | null> {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    for (const frame of page.frames()) {
+      try {
+        const hasRoot = await frame.locator("#root").count();
+        if (hasRoot > 0) {
+          // Make sure this isn't the outer root (VS Code's own body has no #root).
+          const url = frame.url();
+          if (url.includes("vscode-webview") || url.includes("vscode-cdn") || url.includes("webview")) {
+            return frame;
+          }
+        }
+      } catch {
+        // frame may have been detached; skip
+      }
+    }
+    await page.waitForTimeout(500);
+  }
+  return null;
+}

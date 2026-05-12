@@ -29,6 +29,8 @@ import ProcessHostedProxyMinecraft from "./clientapp/ProcessHostedProxyMinecraft
 import { minecraftToolDarkTheme, minecraftToolLightTheme } from "./core/StandardInit";
 import { ThemeProvider } from "@mui/material";
 import { createMcTheme } from "./UX/hooks/theme/UseTheme";
+import { LocalizationProvider, getUserLocale } from "./UX/appShell/LocalizationProvider";
+import { GlobalErrorBoundary, GlobalErrorOverlay } from "./UX/appShell/errorOverlay";
 import StorageUtilities from "./storage/StorageUtilities";
 import IStorage, { IFileUpdateEvent } from "./storage/IStorage";
 import IFile from "./storage/IFile";
@@ -143,6 +145,19 @@ function logToExtension(message: string) {
 
 LogItem.alertFunction = logToExtension;
 
+// Global error handlers — surface any uncaught browser-side errors back to the extension
+// host so they show up in the VS Code notifications / output, instead of silently crashing
+// the webview (which tends to manifest as the MCT pane "disappearing" a few seconds after load).
+window.addEventListener("error", (evt) => {
+  try {
+    const err = evt.error;
+    const details = (err && (err.stack || err.message)) || evt.message || "(no message)";
+    logToExtension("Uncaught error: " + details + " @ " + evt.filename + ":" + evt.lineno + ":" + evt.colno);
+  } catch {
+    // swallow — we can't do anything more
+  }
+});
+
 window.addEventListener("message", (event) => {
   // Log.message("New message in vsc browser to: " + JSON.stringify(event.data));
   try {
@@ -170,6 +185,18 @@ window.addEventListener("message", (event) => {
 window.addEventListener("unhandledrejection", (evt) => {
   if (evt?.reason?.stack?.includes?.("/monaco/min/vs") || evt?.reason?.stack?.includes?.("/dist/vs")) {
     evt.stopImmediatePropagation();
+    return;
+  }
+
+  try {
+    const reason = evt.reason;
+    const details =
+      (reason && (reason.stack || reason.message)) ||
+      (typeof reason === "string" ? reason : JSON.stringify(reason)) ||
+      "(no reason)";
+    logToExtension("Unhandled promise rejection: " + details);
+  } catch {
+    // swallow
   }
 });
 
@@ -310,16 +337,41 @@ async function initAsync() {
   const initialMode = CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? "dark" : "light";
   root.render(
     <React.StrictMode>
-      <ThemeProvider theme={createMcTheme(initialMode as "light" | "dark")}>
-        <App
-          darkTheme={darkTheme}
-          lightTheme={lightTheme}
-          fileContentRetriever={setGetContentCallback}
-          saveAllRetriever={setSaveAllCallback}
-        />
-      </ThemeProvider>
+      <LocalizationProvider locale={getUserLocale()}>
+        <ThemeProvider theme={createMcTheme(initialMode as "light" | "dark")}>
+          <GlobalErrorBoundary>
+            <App
+              darkTheme={darkTheme}
+              lightTheme={lightTheme}
+              fileContentRetriever={setGetContentCallback}
+              saveAllRetriever={setSaveAllCallback}
+            />
+          </GlobalErrorBoundary>
+          {/* Sibling overlay for non-fatal (recoverable) errors so it can render even while App is alive. */}
+          <GlobalErrorOverlay />
+        </ThemeProvider>
+      </LocalizationProvider>
     </React.StrictMode>
   );
 }
 
-initAsync();
+initAsync().catch((err) => {
+  const details =
+    (err && (err.stack || err.message)) || (typeof err === "string" ? err : JSON.stringify(err)) || "(unknown)";
+  logToExtension("initAsync failed: " + details);
+
+  // Render a visible fallback so the pane doesn't silently go blank.
+  try {
+    const container = document.getElementById("root");
+    if (container) {
+      container.innerHTML =
+        '<div style="padding:12px;font-family:var(--vscode-font-family);color:var(--vscode-errorForeground);">' +
+        "<h3>Minecraft Creator Tools failed to load</h3>" +
+        '<pre style="white-space:pre-wrap;font-size:11px;">' +
+        String(details).replace(/</g, "&lt;") +
+        "</pre></div>";
+    }
+  } catch {
+    // swallow
+  }
+});

@@ -65,6 +65,7 @@ import { faTriangleExclamation, faFileLines, faLayerGroup } from "@fortawesome/f
 import "./FeatureDiagramEditor.css";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // DIAGRAM LAYOUT CONSTANTS
@@ -77,7 +78,7 @@ const DIAGRAM_FEATURE_X_SPACING = 280;
 const DIAGRAM_INITIAL_X = 100;
 const DIAGRAM_UNUSED_FEATURES_X_OFFSET = 600; // X position for unused features panel
 
-interface IFeatureDiagramEditorProps {
+interface IFeatureDiagramEditorProps extends WithLocalizationProps {
   pipeline: IFeaturePipeline;
   selectedNode: FeaturePipelineNode | undefined;
   onNodeSelected: (node: FeaturePipelineNode | undefined) => void;
@@ -102,7 +103,7 @@ interface IFeatureDiagramEditorState {
   pendingConnectionSourceHandle: string | undefined;
 }
 
-export default class FeatureDiagramEditor extends Component<IFeatureDiagramEditorProps, IFeatureDiagramEditorState> {
+class FeatureDiagramEditor extends Component<IFeatureDiagramEditorProps, IFeatureDiagramEditorState> {
   constructor(props: IFeatureDiagramEditorProps) {
     super(props);
 
@@ -816,7 +817,7 @@ export default class FeatureDiagramEditor extends Component<IFeatureDiagramEdito
     if (allNodes.length === 0) {
       return (
         <div className="fde-previewEmpty">
-          <div className="fde-previewEmptyMessage">No features to preview.</div>
+          <div className="fde-previewEmptyMessage">{this.props.intl.formatMessage({ id: "project_editor.feature_diag.no_preview" })}</div>
         </div>
       );
     }
@@ -844,12 +845,12 @@ export default class FeatureDiagramEditor extends Component<IFeatureDiagramEdito
 
         if (node.nodeType === "unfulfilledFeature") {
           summaryText = node.isVanillaReference
-            ? `References vanilla feature: ${getShortId(node.referencedId)}`
-            : `Missing feature: ${getShortId(node.referencedId)}`;
+            ? this.props.intl.formatMessage({ id: "project_editor.feature_diag.vanilla_ref" }, { featureId: getShortId(node.referencedId) })
+            : this.props.intl.formatMessage({ id: "project_editor.feature_diag.missing_ref" }, { featureId: getShortId(node.referencedId) });
           icon = faTriangleExclamation;
           iconClass = "fde-previewIcon fde-previewIconWarning";
         } else if (node.nodeType === "featureRule") {
-          summaryText = `Feature rule "${getShortId(node.id)}" places features in the world`;
+          summaryText = this.props.intl.formatMessage({ id: "project_editor.feature_diag.rule_desc" }, { name: getShortId(node.id) });
           icon = faFileLines;
           iconClass = "fde-previewIcon fde-previewIconRule";
         } else {
@@ -859,48 +860,48 @@ export default class FeatureDiagramEditor extends Component<IFeatureDiagramEdito
           // Generate contextual description based on feature type
           switch (node.featureType) {
             case "aggregate_feature":
-              summaryText = `"${shortId}" combines ${node.children.length} features together`;
+              summaryText = this.props.intl.formatMessage({ id: "project_editor.feature_diag.aggregate_desc" }, { name: shortId, count: node.children.length });
               break;
             case "sequence_feature":
-              summaryText = `"${shortId}" places ${node.children.length} features in sequence`;
+              summaryText = this.props.intl.formatMessage({ id: "project_editor.feature_diag.sequence_desc" }, { name: shortId, count: node.children.length });
               break;
             case "weighted_random_feature":
-              summaryText = `"${shortId}" randomly selects from ${node.children.length} features`;
+              summaryText = this.props.intl.formatMessage({ id: "project_editor.feature_diag.weighted_random_desc" }, { name: shortId, count: node.children.length });
               break;
             case "scatter_feature":
-              summaryText = `"${shortId}" scatters features across the terrain`;
+              summaryText = this.props.intl.formatMessage({ id: "project_editor.feature_diag.scatter_desc" }, { name: shortId });
               break;
             case "search_feature":
-              summaryText = `"${shortId}" searches for valid placement locations`;
+              summaryText = this.props.intl.formatMessage({ id: "project_editor.feature_diag.search_desc" }, { name: shortId });
               break;
             case "snap_to_surface_feature":
-              summaryText = `"${shortId}" snaps features to the surface`;
+              summaryText = this.props.intl.formatMessage({ id: "project_editor.feature_diag.snap_desc" }, { name: shortId });
               break;
             case "surface_relative_threshold_feature":
-              summaryText = `"${shortId}" places features relative to surface threshold`;
+              summaryText = this.props.intl.formatMessage({ id: "project_editor.feature_diag.rect_layout_desc" }, { name: shortId });
               break;
             case "single_block_feature":
-              summaryText = `"${shortId}" places a single block`;
+              summaryText = this.props.intl.formatMessage({ id: "project_editor.feature_diag.single_block_desc" }, { name: shortId });
               break;
             case "ore_feature":
-              summaryText = `"${shortId}" generates ore deposits`;
+              summaryText = this.props.intl.formatMessage({ id: "project_editor.feature_diag.ore_desc" }, { name: shortId });
               break;
             case "tree_feature":
-              summaryText = `"${shortId}" generates a tree structure`;
+              summaryText = this.props.intl.formatMessage({ id: "project_editor.feature_diag.tree_desc" }, { name: shortId });
               break;
             case "geode_feature":
-              summaryText = `"${shortId}" generates a geode formation`;
+              summaryText = this.props.intl.formatMessage({ id: "project_editor.feature_diag.geode_desc" }, { name: shortId });
               break;
             case "structure_template_feature":
-              summaryText = `"${shortId}" places a structure template`;
+              summaryText = this.props.intl.formatMessage({ id: "project_editor.feature_diag.structure_desc" }, { name: shortId });
               break;
             case "cave_carver_feature":
             case "underwater_cave_carver_feature":
             case "nether_cave_carver_feature":
-              summaryText = `"${shortId}" carves cave passages`;
+              summaryText = this.props.intl.formatMessage({ id: "project_editor.feature_diag.cave_desc" }, { name: shortId });
               break;
             case "vegetation_patch_feature":
-              summaryText = `"${shortId}" creates vegetation patches`;
+              summaryText = this.props.intl.formatMessage({ id: "project_editor.feature_diag.vegetation_desc" }, { name: shortId });
               break;
             default:
               summaryText = `"${shortId}" (${typeName})`;
@@ -929,9 +930,9 @@ export default class FeatureDiagramEditor extends Component<IFeatureDiagramEdito
             backgroundColor: colors.background1,
           }}
         >
-          <div className="fde-previewHeaderTitle">Feature Chain Summary</div>
+          <div className="fde-previewHeaderTitle">{this.props.intl.formatMessage({ id: "project_editor.feature_diag.chain_summary" })}</div>
           <div className="fde-previewHeaderSubtitle">
-            {allNodes.length} feature{allNodes.length !== 1 ? "s" : ""} in this pipeline
+            {this.props.intl.formatMessage({ id: "project_editor.feature_diag.pipeline_count" }, { count: allNodes.length })}
           </div>
         </div>
         <div className="fde-previewList">{previewItems}</div>
@@ -1023,7 +1024,7 @@ export default class FeatureDiagramEditor extends Component<IFeatureDiagramEdito
             backgroundColor: diagramColors.background3,
           }}
         >
-          <div className="fde-emptyMessage">No features in this pipeline to display.</div>
+          <div className="fde-emptyMessage">{this.props.intl.formatMessage({ id: "project_editor.feature_diag.no_features_diagram" })}</div>
         </div>
       );
     }
@@ -1096,3 +1097,5 @@ export default class FeatureDiagramEditor extends Component<IFeatureDiagramEdito
     );
   }
 }
+
+export default withLocalization(FeatureDiagramEditor);

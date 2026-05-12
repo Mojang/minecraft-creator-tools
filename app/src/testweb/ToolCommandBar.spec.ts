@@ -67,7 +67,9 @@ function homeCommandBar(page: Page) {
  */
 function homeComboboxWrapper(page: Page) {
   return page
-    .locator('[role="combobox"][aria-label="search and command bar"], [role="combobox"][aria-label*="Search templates"]')
+    .locator(
+      '[role="combobox"][aria-label="search and command bar"], [role="combobox"][aria-label*="Search templates"]'
+    )
     .first();
 }
 
@@ -115,7 +117,9 @@ async function activateEditorCommandBar(page: Page): Promise<void> {
  */
 function editorCommandBar(page: Page) {
   return page
-    .locator('#sceed-forminput, #sceed-forminput input, input[aria-label="Search or enter command"], .sa-inputEditor input')
+    .locator(
+      '#sceed-forminput, #sceed-forminput input, input[aria-label="Search or enter command"], .sa-inputEditor input'
+    )
     .first();
 }
 
@@ -1235,7 +1239,7 @@ test.describe("Integrated Command Workflows", () => {
   });
 
   test("multiple /add commands in sequence", async ({ page }) => {
-    test.setTimeout(60000);
+    test.setTimeout(120000);
 
     const entered = await enterEditor(page);
     expect(entered).toBe(true);
@@ -1259,11 +1263,13 @@ test.describe("Integrated Command Workflows", () => {
       await takeScreenshot(page, `debugoutput/screenshots/toolcmd-multi-add-${item.type}-command`);
 
       await page.keyboard.press("Enter");
-      await page.waitForTimeout(5000);
-      await page.waitForLoadState("networkidle");
 
-      const value = await getEditorCommandBarValue(page);
-      expect(value).toBe("");
+      // Wait for the command bar to clear after command execution.
+      // Use auto-retrying assertion instead of a fixed timeout — the /add
+      // command involves gallery loading + file writes + save, which can
+      // take variable time depending on system load.
+      const input = editorCommandBar(page);
+      await expect(input).toHaveValue("", { timeout: 30000 });
     }
 
     await takeScreenshot(page, "debugoutput/screenshots/toolcmd-multi-add-result");

@@ -1955,7 +1955,21 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
       this._canvasOuterDiv = elt;
 
       if (this._engine == null) {
-        this.initialize();
+        try {
+          this.initialize();
+        } catch (e: any) {
+          // Most commonly: Babylon.js throws "WebGL not supported" when the user's
+          // browser/device has WebGL disabled (corp policy, GPU blocklist, headless
+          // environment). Fall through to the loadError UI so the user gets a
+          // readable message and a retry button instead of an uncaught exception.
+          const msg = (e && (e.message || String(e))) || "Failed to initialize 3D view.";
+          const isWebGl = typeof msg === "string" && msg.toLowerCase().includes("webgl");
+          this.setState({
+            loadError: isWebGl
+              ? "3D preview requires WebGL, which is not available in this browser. Enable hardware acceleration or try a different browser to use the 3D editor."
+              : "Could not initialize the 3D view: " + msg,
+          });
+        }
       }
     } else {
       this._applyCanvasProps();
@@ -2092,14 +2106,23 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
             const forward = self._camera.getForwardRay().direction;
             const absX = Math.abs(forward.x);
             const absZ = Math.abs(forward.z);
-            let label = "";
+            let direction = "";
+            let axis = "";
             if (absX > absZ) {
-              label = forward.x > 0 ? "→ +X" : "← -X";
+              direction = forward.x > 0 ? "east" : "west";
+              axis = forward.x > 0 ? " (+X)" : " (−X)";
             } else {
-              label = forward.z > 0 ? "↑ +Z" : "↓ -Z";
+              direction = forward.z > 0 ? "south" : "north";
+              axis = forward.z > 0 ? " (+Z)" : " (−Z)";
             }
-            const yLabel = forward.y > 0.3 ? " ↗ Up" : forward.y < -0.3 ? " ↘ Down" : "";
-            self._axisIndicator.text = "Facing: " + label + yLabel;
+            if (forward.y > 0.3) {
+              direction = "up";
+              axis = " (+Y)";
+            } else if (forward.y < -0.3) {
+              direction = "down";
+              axis = " (−Y)";
+            }
+            self._axisIndicator.text = "Facing: " + direction + axis;
           }
         });
       }
@@ -5441,7 +5464,7 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
               <span className="ve-tool-icon">
                 <FontAwesomeIcon icon={faKeyboard} />
               </span>
-              <span className="ve-tool-label">Controls</span>
+              <span className="ve-tool-label">Help</span>
             </button>
             <button
               className={`ve-tool-btn ${activeTool === EditorTool.Properties ? "ve-tool-btn-active" : ""}`}

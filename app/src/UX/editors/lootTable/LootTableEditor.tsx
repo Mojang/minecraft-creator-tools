@@ -8,8 +8,9 @@ import IProperty from "../../../dataform/IProperty";
 import LootTableBehaviorDefinition from "../../../minecraft/LootTableBehaviorDefinition";
 import Project from "../../../app/Project";
 import IProjectTheme from "../../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
-interface ILootTableEditorProps extends IFileProps {
+interface ILootTableEditorProps extends IFileProps, WithLocalizationProps {
   heightOffset: number;
   readOnly: boolean;
   project: Project;
@@ -23,7 +24,7 @@ interface ILootTableEditorState {
   selectedItem: LootTableBehaviorDefinition | undefined;
 }
 
-export default class LootTableEditor extends Component<ILootTableEditorProps, ILootTableEditorState> {
+class LootTableEditor extends Component<ILootTableEditorProps, ILootTableEditorState> {
   private _lastFileEdited?: IFile;
 
   constructor(props: ILootTableEditorProps) {
@@ -169,7 +170,7 @@ export default class LootTableEditor extends Component<ILootTableEditorProps, IL
 
     let header = <></>;
     if (this.props.displayHeader === undefined || this.props.displayHeader) {
-      header = <div className="ltb-header">Loot Table</div>;
+      header = <div className="ltb-header">{this.props.intl.formatMessage({ id: "project_editor.loot_table.header" })}</div>;
     }
 
     if (!form) {
@@ -203,3 +204,5 @@ export default class LootTableEditor extends Component<ILootTableEditorProps, IL
     );
   }
 }
+
+export default withLocalization(LootTableEditor);

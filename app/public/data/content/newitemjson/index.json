@@ -32,6 +32,7 @@
     "voxel_shape.json",
     "water.json",
     "geode_feature.json",
-    "trading.json"
+    "trading.json",
+    "trade_table.json"
   ]
 }

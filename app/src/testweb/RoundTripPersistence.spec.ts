@@ -26,6 +26,9 @@ import {
   enableAllFileTypes,
   openFileInMonaco,
   switchToRawMode,
+  clickTemplateCreateButton,
+  preferBrowserStorageInProjectDialog,
+  fillRequiredProjectDialogFields,
 } from "./WebTestUtilities";
 
 // ---------------------------------------------------------------------------
@@ -42,29 +45,16 @@ async function createFullAddOnProject(page: Page, themeMode?: ThemeMode): Promis
     }
     await page.waitForTimeout(500);
 
-    const fullAddOnCard = page.locator('text="Full Add-On"').first();
-    if (!(await fullAddOnCard.isVisible({ timeout: 5000 }))) {
-      const seeMore = page.locator('text="See more templates"').first();
-      if (await seeMore.isVisible({ timeout: 2000 })) {
-        await seeMore.click();
-        await page.waitForTimeout(1000);
-      }
+    const clicked = await clickTemplateCreateButton(page, "addonFull");
+    if (!clicked) {
+      console.log("createFullAddOnProject: Could not find Full Add-On create button");
+      return false;
     }
-
-    const fullAddOnSection = page.locator('div:has-text("Full Add-On")').filter({
-      has: page.locator('text="A full example add-on project"'),
-    });
-
-    let createButton = fullAddOnSection.locator('button:has-text("CREATE NEW")').first();
-    if (!(await createButton.isVisible({ timeout: 3000 }))) {
-      createButton = page.locator('button:has-text("New")').or(page.locator('button:has-text("CREATE NEW")')).nth(2);
-    }
-    if (!(await createButton.isVisible({ timeout: 3000 }))) {
-      createButton = page.getByRole("button", { name: "Create New" }).first();
-    }
-
-    await createButton.click();
     await page.waitForTimeout(1000);
+
+    // Handle the storage location dialog and required Creator field
+    await preferBrowserStorageInProjectDialog(page);
+    await fillRequiredProjectDialogFields(page);
 
     const okButton = page.getByTestId("submit-button").first();
     if (await okButton.isVisible({ timeout: 3000 })) {
@@ -351,6 +341,14 @@ async function findEditableInput(
     const disabled = await input.isDisabled();
     if (readOnly !== null || disabled) continue;
 
+    // Skip search-style inputs (e.g. "Search biomes\u2026" in SimplifiedSpawnRulesEditor)
+    const placeholder = (await input.getAttribute("placeholder")) || "";
+    if (/search/i.test(placeholder)) continue;
+
+    // Skip number inputs — these tests append string suffixes which would fail
+    const inputType = (await input.getAttribute("type")) || "";
+    if (inputType === "number") continue;
+
     const value = await input.inputValue();
     return { locator: input, value, index: i };
   }
@@ -414,7 +412,8 @@ test.describe("Round-Trip Persistence Tests @full", () => {
     const newValue = originalValue + "_rt";
 
     console.log(`Spawn tab input ${hit.index}: "${originalValue}" → "${newValue}"`);
-    await hit.locator.click();
+    await hit.locator.scrollIntoViewIfNeeded().catch(() => {});
+    await hit.locator.click({ force: true });
     await hit.locator.fill(newValue);
     await page.keyboard.press("Tab");
     await page.waitForTimeout(500);
@@ -574,11 +573,22 @@ test.describe("Round-Trip Persistence Tests @full", () => {
       await btn.click();
       await page.waitForTimeout(800);
 
-      // Broad dropdown selector: MUI Select, native select, combobox
-      const ddCount = await page
-        .locator("[role='combobox'], select, .MuiSelect-select")
-        .count();
+      // Broad dropdown selector: MUI Select, native select, combobox.
+      // Skip MUI Autocomplete chip-style multiselects (their textContent stays
+      // empty regardless of which chip is selected) so persistence comparison
+      // can use the visible label.
+      const ddLocator = page.locator(
+        "[role='combobox']:not(.MuiAutocomplete-input):not([class*='Autocomplete']), select, .MuiSelect-select"
+      );
+      const ddCount = await ddLocator.count();
       if (ddCount > 0) {
+        const candidate = ddLocator.first();
+        const candidateText = ((await candidate.textContent().catch(() => "")) || "").trim();
+        if (candidateText.length === 0) {
+          // Empty text means the dropdown is likely chip-driven; skip this component.
+          realIdx++;
+          continue;
+        }
         targetPreferIndex = realIdx;
         dropdownFound = true;
         console.log(`Found dropdown in component "${text}" (realIdx ${realIdx})`);
@@ -595,7 +605,9 @@ test.describe("Round-Trip Persistence Tests @full", () => {
     await clickRealComponent(page, componentButtons, targetPreferIndex);
     await page.waitForTimeout(800);
 
-    const dropdown = page.locator("[role='combobox'], select, .MuiSelect-select").first();
+    const dropdown = page
+      .locator("[role='combobox']:not(.MuiAutocomplete-input):not([class*='Autocomplete']), select, .MuiSelect-select")
+      .first();
     const originalText = ((await dropdown.textContent()) || "").trim();
     console.log(`Dropdown original text: "${originalText}"`);
 
@@ -641,7 +653,9 @@ test.describe("Round-Trip Persistence Tests @full", () => {
     await clickRealComponent(page, componentButtons, targetPreferIndex);
     await page.waitForTimeout(800);
 
-    const dropdownAfter = page.locator("[role='combobox'], select, .MuiSelect-select").first();
+    const dropdownAfter = page
+      .locator("[role='combobox']:not(.MuiAutocomplete-input):not([class*='Autocomplete']), select, .MuiSelect-select")
+      .first();
     if (await dropdownAfter.isVisible({ timeout: 3000 }).catch(() => false)) {
       const persistedText = ((await dropdownAfter.textContent()) || "").trim();
       console.log(`Dropdown persisted text: "${persistedText}" (expected: "${selectedOptionText}")`);
@@ -696,10 +710,24 @@ test.describe("Round-Trip Persistence Tests @full", () => {
       const disabled = await input.isDisabled();
       if (readOnly !== null || disabled) continue;
 
-      originalValue = await input.inputValue();
-      newValue = originalValue + "_persist";
+      // Skip search-style inputs (e.g. "Search biomes…" in SimplifiedSpawnRulesEditor)
+      const placeholder = (await input.getAttribute("placeholder")) || "";
+      if (/search/i.test(placeholder)) continue;
 
-      await input.click();
+      originalValue = await input.inputValue();
+      // For number inputs (e.g. Min/Max herd size in SimplifiedSpawnRulesEditor),
+      // produce a different numeric value rather than appending a string suffix.
+      const inputType = (await input.getAttribute("type")) || "";
+      if (inputType === "number") {
+        const parsed = parseInt(originalValue, 10);
+        const baseline = Number.isNaN(parsed) ? 0 : parsed;
+        newValue = String(baseline + 1);
+      } else {
+        newValue = originalValue + "_persist";
+      }
+
+      await input.scrollIntoViewIfNeeded().catch(() => {});
+      await input.click({ force: true });
       await input.fill(newValue);
       await page.keyboard.press("Tab");
       await page.waitForTimeout(300);

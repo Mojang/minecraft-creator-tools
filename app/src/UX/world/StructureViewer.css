@@ -11,7 +11,8 @@
 .sv-toolbar {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 12px;
   padding: 8px 16px;
   background-color: #2d2d2d;
   border-bottom: 1px solid #3d3d3d;
@@ -21,6 +22,22 @@
 .sv-info {
   font-size: 14px;
   color: #cccccc;
+}
+
+.sv-toolbar-button {
+  font-family: inherit;
+  font-size: 13px;
+  color: #cccccc;
+  background-color: transparent;
+  border: 1px solid #4a4a4a;
+  border-radius: 4px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.sv-toolbar-button:hover {
+  background-color: #3a3a3a;
+  color: #ffffff;
 }
 
 .sv-viewport {
@@ -120,6 +137,69 @@
   left: 0;
   right: 0;
   bottom: 0;
+}
+
+/* Render-fallback banner overlay — shown when rendering may have failed */
+.sv-render-banner {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background-color: rgba(45, 45, 45, 0.95);
+  color: #ffffff;
+  border: 1px solid #5a3e0a;
+  border-left: 4px solid #f0a020;
+  border-radius: 4px;
+  font-size: 13px;
+  max-width: 90%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.sv-render-banner-message {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.sv-render-banner-button {
+  padding: 4px 12px;
+  background-color: var(--mc-green-6);
+  color: var(--mc-white);
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.sv-render-banner-button:hover {
+  background-color: var(--mc-green-5);
+}
+
+.sv-render-banner-dismiss {
+  background: transparent;
+  color: #cccccc;
+  border: 1px solid #5d5d5d;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  border-radius: 2px;
+}
+
+.sv-render-banner-dismiss:hover {
+  color: #ffffff;
+  border-color: #8d8d8d;
+}
+
+.sv-error-actions {
+  display: flex;
+  gap: 8px;
 }
 
 /* High-contrast mode: ensure text is readable against system background */

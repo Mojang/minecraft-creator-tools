@@ -127,6 +127,19 @@
   max-width: 250px;
 }
 
+/* Error code cell */
+.piid-codeCell {
+  width: 110px;
+  min-width: 90px;
+  max-width: 140px;
+}
+
+.piid-code {
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
 .piid-ruleContainer {
   display: flex;
   flex-direction: column;
@@ -365,6 +378,71 @@
   word-wrap: break-word;
   font-size: small;
   vertical-align: top;
+}
+
+/* ---- Mobile Card Layout ---- */
+.piid-card {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+  border-left: 3px solid transparent;
+}
+
+.piid-card.piid-rowClickable {
+  cursor: pointer;
+}
+
+.piid-card.piid-rowClickable:hover {
+  background-color: rgba(82, 165, 53, 0.08) !important;
+}
+
+.piid-cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.piid-cardHeader .piid-typeContainer {
+  flex-shrink: 0;
+}
+
+.piid-cardHeader .piid-code {
+  flex: 1;
+  min-width: 0;
+}
+
+.piid-cardHeader .piid-actionsContainer {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.piid-cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 4px;
+}
+
+.piid-cardRule {
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.piid-cardMessage {
+  font-size: 12px;
+  line-height: 1.4;
+  opacity: 0.85;
+  word-wrap: break-word;
+}
+
+.piid-cardLocation {
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 11px;
+  opacity: 0.7;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .piid-indicator {

@@ -21,7 +21,7 @@
     "contentFileCounts": 15,
     "contentFolderCounts": 10,
     "defaultBehaviorPackUuid": "123e4567-e89b-12d3-a456-426614174000",
-    "defaultIcon": "wolQTkcNChoKAAAADUlIRFIAAADCgAAAAMKACAIAAABMXMO2wpwAAADDt0lEQVR4wpzDrcORQQkAMAzDgMOAasKqw5jDqcKdwow+chABwoHCm33Cq8ODw6bDvCAeAADDrQAAaAcAQDsAAMOaAQDDkA4AwoB2AADCtAMAwqAdAADDrQAAaAcAQDsAAMOaAQDDkA4AwoB2AADCtAMAwqAdAADDrQAAaAcAQDsAAMOaAQDDkA4AwoB2AADCtAMAwqAdAADDrQAAaAcAQDsAAMOaAQDDkA4AwoB2AADCtAMAwqAdAADDrQAAaAcAQDsAAMOaAQDDkA4AwoB2AADCtAMAwqAdAADDrQAAaAcAQDsAAMOaAQDDkA4AwoB2AADCtAMAwqAdAADDrQAAaAcAQDsAAMOaAQDDkA4AwoB2AADCtAMAwqAdAADDrQAAaAcAQDsAAMOaAQDDkA4AwoB2AADCtMO7T8KPwoPCowzDlcKGYQAAAABJRU5Ewq5CYMKC",
+    "defaultIcon": "iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAIAAABMXPacAAAA90lEQVR4nO3RQQkAMAzAwGqq2OmdjD5yEAGBm32rw+b8IB4AAO0AAGgHAEA7AADaAQDQDgCAdgAAtAMAoB0AAO0AAGgHAEA7AADaAQDQDgCAdgAAtAMAoB0AAO0AAGgHAEA7AADaAQDQDgCAdgAAtAMAoB0AAO0AAGgHAEA7AADaAQDQDgCAdgAAtAMAoB0AAO0AAGgHAEA7AADaAQDQDgCAdgAAtAMAoB0AAO0AAGgHAEA7AADaAQDQDgCAdgAAtAMAoB0AAO0AAGgHAEA7AADaAQDQDgCAdgAAtAMAoB0AAO0AAGgHAEA7AADaAQDQDgCAdgAAtPtPj4OjDNWGYQAAAABJRU5ErkJggg==",
     "defaultBehaviorPackMinEngineVersion": "1.21.0",
     "minBehaviorPackMinEngineVersionString": "1.21.0",
     "minBehaviorPackMinEngineVersion": 11021000,
@@ -364,7 +364,6 @@
       },
       "textureImages.vanillaGameTextureCoverage": {
         "overrideCount": 0,
-        "vanillaTextureCount": 2526,
         "percent": 0
       },
       "textureImagesTier0.nonVanillaTextureMemoryTier": {
@@ -544,13 +543,13 @@
     },
     "errorCount": 0,
     "internalProcessingErrorCount": 0,
-    "warningCount": 9,
+    "warningCount": 8,
     "testSuccessCount": 39,
     "testFailCount": 0,
-    "testNotApplicableCount": 11,
+    "testNotApplicableCount": 12,
     "errorSummary": "",
     "internalProcessingErrorSummary": "",
-    "warningSummary": "WARNING: [COMJSON144] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0, 1.12.0\nWARNING: [FORMATVER218] (/resource_packs/diverse_rp/animations/sample_mob_animations.json) Resource animation version (1.21.0) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER238] (/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json) Resource animation controller version (1.21.0) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER258] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) Spawn rules version (1.21.0) has a higher minor version number compared to the expected version (1.12.0)\nWARNING: [JSON114] (/resource_packs/diverse_rp/manifest.json) Version format needs updating: The version is written as numbers [1,0,0] but should be text like \"1.0.0\". This is easy to fix — just change it to a quoted string.\nWARNING: [JSON139] (/behavior_packs/diverse_bp/dialogue/sample_dialogue.json) Structure issue: In \"minecraft:npc_dialogue.scenes[0]\": {\"scene_tag\":\"sample_greeting\"... - object value found, but a string is required\nWARNING: [JSON139] (/behavior_packs/diverse_bp/dialogue/sample_dialogue.json) Structure issue: In \"minecraft:npc_dialogue.scenes[1]\": {\"scene_tag\":\"sample_trade\",\"n... - object value found, but a string is required\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:iron_ingot`\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:stick`",
+    "warningSummary": "WARNING: [COMJSON144] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0, 1.12.0\nWARNING: [FORMATVER218] (/resource_packs/diverse_rp/animations/sample_mob_animations.json) Resource animation version (1.21.0) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER238] (/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json) Resource animation controller version (1.21.0) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER258] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) Spawn rules version (1.21.0) has a higher minor version number compared to the expected version (1.12.0)\nWARNING: [JSON139] (/behavior_packs/diverse_bp/dialogue/sample_dialogue.json) Structure issue: In \"minecraft:npc_dialogue.scenes[0]\": {\"scene_tag\":\"sample_greeting\"... - object value found, but a string is required\nWARNING: [JSON139] (/behavior_packs/diverse_bp/dialogue/sample_dialogue.json) Structure issue: In \"minecraft:npc_dialogue.scenes[1]\": {\"scene_tag\":\"sample_trade\",\"n... - object value found, but a string is required\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:iron_ingot`\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:stick`",
     "testFailSummary": "",
     "reds": 5248,
     "summary": {
@@ -569,6 +568,11 @@
           "title": "Beta Features",
           "defaultMessage": "Beta Features completed successfully",
           "testCompleteSuccesses": 1
+        }
+      },
+      "CDWORLDDATA": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Custom Dimension World Data Validation (CDWORLDDATA)"
         }
       },
       "CHECKFEATUREDEPRECATION": {
@@ -856,10 +860,6 @@
           "title": "JSON Parse Error (Schema Validation)",
           "defaultMessage": "JSON Schema Validation completed successfully",
           "testCompleteSuccesses": 1
-        },
-        "114": {
-          "defaultMessage": "Version format needs updating",
-          "warnings": 1
         },
         "139": {
           "defaultMessage": "Structure issue",
@@ -1329,6 +1329,11 @@
     },
     {
       "iTp": 8,
+      "gId": "CDWORLDDATA",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
       "gId": "CHECKFEATUREDEPRECATION",
       "gIx": 2
     },
@@ -1764,13 +1769,6 @@
       "iTp": 1,
       "gId": "JSON",
       "gIx": 1
-    },
-    {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 114,
-      "p": "/resource_packs/diverse_rp/manifest.json",
-      "d": "The version is written as numbers [1,0,0] but should be text like \"1.0.0\". This is easy to fix — just change it to a quoted string."
     },
     {
       "iTp": 4,
@@ -2487,7 +2485,6 @@
       "fs": {
         "vanillaGameTextureCoverage": {
           "overrideCount": 0,
-          "vanillaTextureCount": 2526,
           "percent": 0
         }
       }

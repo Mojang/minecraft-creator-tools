@@ -9,8 +9,9 @@ import Project from "../../app/Project";
 import Utilities from "../../core/Utilities";
 import StorageUtilities from "../../storage/StorageUtilities";
 import IProjectTheme from "../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
-interface IGeneralFormEditorProps extends IFileProps {
+interface IGeneralFormEditorProps extends IFileProps, WithLocalizationProps {
   heightOffset: number;
   formCategory: string;
   formName: string;
@@ -27,7 +28,7 @@ interface IGeneralFormEditorState {
   isLoaded: boolean;
 }
 
-export default class GeneralFormEditor extends Component<IGeneralFormEditorProps, IGeneralFormEditorState> {
+class GeneralFormEditor extends Component<IGeneralFormEditorProps, IGeneralFormEditorState> {
   constructor(props: IGeneralFormEditorProps) {
     super(props);
 
@@ -105,7 +106,7 @@ export default class GeneralFormEditor extends Component<IGeneralFormEditorProps
       this.state.isLoaded === false ||
       this.state.jsonObject === undefined
     ) {
-      return <div className="gfe-loading">Loading...</div>;
+      return <div className="gfe-loading">{this.props.intl.formatMessage({ id: "project_editor.gen_form.loading" })}</div>;
     }
 
     if (this.props.setActivePersistable !== undefined) {
@@ -116,7 +117,7 @@ export default class GeneralFormEditor extends Component<IGeneralFormEditorProps
 
     let header = <></>;
     if (this.props.displayHeader === undefined || this.props.displayHeader) {
-      header = <div className="gfe-header">General</div>;
+      header = <div className="gfe-header">{this.props.intl.formatMessage({ id: "project_editor.gen_form.header" })}</div>;
     }
 
     let jsonO: object | undefined = this.state.jsonObject;
@@ -126,7 +127,7 @@ export default class GeneralFormEditor extends Component<IGeneralFormEditorProps
     }
 
     if (!form) {
-      return <div className="gfe-loading">Form not found</div>;
+      return <div className="gfe-loading">{this.props.intl.formatMessage({ id: "project_editor.gen_form.form_not_found" })}</div>;
     }
 
     return (
@@ -157,3 +158,5 @@ export default class GeneralFormEditor extends Component<IGeneralFormEditorProps
     );
   }
 }
+
+export default withLocalization(GeneralFormEditor);

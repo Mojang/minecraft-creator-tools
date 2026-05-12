@@ -6,8 +6,12 @@ test.describe("MCTools Web Application - Advanced Features @focused", () => {
   const consoleWarnings: { url: string; error: string }[] = [];
 
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
-    await page.waitForLoadState("networkidle");
+    // Use "commit" (fires immediately when navigation is committed). Vite's HMR
+    // WebSocket keeps the network busy so "networkidle" never fires, and even
+    // "domcontentloaded"/"load" can hang under heavy parallel worker load while
+    // Vite transforms modules. After commit, we wait for React to mount content.
+    await page.goto("/", { waitUntil: "commit" });
+    await page.locator("#root > *").first().waitFor({ state: "attached", timeout: 45000 });
 
     page.on("console", (msg: ConsoleMessage) => {
       processMessage(msg, page, consoleErrors, consoleWarnings);
@@ -42,9 +46,7 @@ test.describe("MCTools Web Application - Advanced Features @focused", () => {
   });
 
   test("should support keyboard navigation", async ({ page }) => {
-    await page.goto("/");
-    await page.waitForLoadState("networkidle");
-
+    // beforeEach already navigated; no need to navigate again. Just exercise the page.
     // Test basic keyboard navigation
     await page.keyboard.press("Tab");
 
@@ -63,13 +65,12 @@ test.describe("MCTools Web Application - Advanced Features @focused", () => {
   });
 
   test("should handle browser refresh gracefully", async ({ page }) => {
-    // Reload the page
-    await page.reload();
-    await page.waitForLoadState("networkidle");
-
-    // Verify page still works after refresh
-    const body = page.locator("body");
-    await expect(body).toBeVisible();
+    // Re-navigate instead of reload(). Under parallel worker load against
+    // Vite dev server, page.reload() can hang waiting for any wait condition.
+    // A fresh goto with waitUntil:"commit" is the most reliable way to test
+    // "refresh" behavior, then we poll for React to mount.
+    await page.goto("/", { waitUntil: "commit" });
+    await page.locator("#root > *").first().waitFor({ state: "attached", timeout: 30000 });
 
     // Check that content has loaded
     const hasContent = await page.evaluate(() => {

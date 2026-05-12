@@ -37,6 +37,11 @@ import Database from "../minecraft/Database";
 import LocalEnvironment from "../local/LocalEnvironment";
 import LocalUtilities from "../local/LocalUtilities";
 import IFolder from "../storage/IFolder";
+import { applyTestVersionPin } from "./TestVersionPin";
+
+// Pin the "current Minecraft version" used by validators so test baselines
+// are insulated from upstream version drift. See TestVersionPin.ts.
+applyTestVersionPin();
 
 // ---------------------------------------------------------------------------
 // Path Constants

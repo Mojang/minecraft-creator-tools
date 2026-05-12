@@ -33,6 +33,7 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 import React from "react";
+import { useIntl } from "react-intl";
 import { ProjectItemType } from "../../app/IProjectItemData";
 import ProjectItemUtilities from "../../app/ProjectItemUtilities";
 import ColorUtilities from "../../core/ColorUtilities";
@@ -160,6 +161,8 @@ export interface IEditorHeaderBarProps {
  * Contains icon, title, and optional badge.
  */
 export const EditorHeaderBar: React.FC<IEditorHeaderBarProps> = (props) => {
+  const intl = useIntl();
+
   return (
     <div className="editor-header-bar">
       {props.thumbnailUrl ? (
@@ -181,8 +184,11 @@ export const EditorHeaderBar: React.FC<IEditorHeaderBarProps> = (props) => {
       )}
       {props.typeName && <span className="editor-header-badge">{props.typeName}</span>}
       {props.formatVersion && (
-        <span className="editor-header-format-version" title="Minecraft format version this content uses">
-          v{props.formatVersion}
+        <span
+          className="editor-header-format-version"
+          title={intl.formatMessage({ id: "editor_header.format_version_tooltip" })}
+        >
+          {intl.formatMessage({ id: "editor_header.format_version_prefix" }, { version: props.formatVersion })}
         </span>
       )}
       {props.children}

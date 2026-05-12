@@ -11,6 +11,7 @@ import IProjectTheme from "../../types/IProjectTheme";
 
 interface IBiomeAddComponentProps {
   theme: IProjectTheme;
+  formCategory?: string;
   onSelectedNewComponentId: (id: string) => void;
   existingComponents: IManagedComponent[];
   setActivePersistable?: (persistObject: IPersistable) => void;
@@ -44,7 +45,7 @@ export default class BiomeAddComponent extends Component<IBiomeAddComponentProps
       this.state.selectedComponentId &&
       (!this.state.selectedForm || this.state.selectedForm.id !== this.state.selectedComponentId)
     ) {
-      const form = await Database.ensureFormLoaded("biome", this.state.selectedComponentId);
+      const form = await Database.ensureFormLoaded(this.props.formCategory || "biome", this.state.selectedComponentId);
 
       this.setState({
         biomeComponentList: this.state.biomeComponentList,
@@ -57,7 +58,8 @@ export default class BiomeAddComponent extends Component<IBiomeAddComponentProps
       return;
     }
 
-    const formsFolder = await Database.getFormsFolder("biome");
+    const formCategory = this.props.formCategory || "biome";
+    const formsFolder = await Database.getFormsFolder(formCategory);
 
     const componentMenuItems: any[] = [];
     const existingComponentIds = new Set(this.props.existingComponents.map((comp) => comp.id));
@@ -66,32 +68,33 @@ export default class BiomeAddComponent extends Component<IBiomeAddComponentProps
       if (fileName.startsWith("minecraft") && fileName.endsWith(".form.json")) {
         const baseName = fileName.substring(0, fileName.length - 10);
 
-        // Skip if component already exists
-        if (existingComponentIds.has(baseName)) {
+        let canonName = "minecraft:" + BiomeBehaviorDefinition.getComponentFromBaseFileName(baseName);
+
+        // Skip if component already exists (compare canonical names)
+        if (existingComponentIds.has(canonName)) {
           continue;
         }
 
-        const form = await Database.ensureFormLoaded("biome", baseName);
+        const form = await Database.ensureFormLoaded(formCategory, baseName);
 
         if (form && !form.isDeprecated && !form.isInternal) {
-          let canonName = "minecraft:" + BiomeBehaviorDefinition.getComponentFromBaseFileName(baseName);
-
           componentMenuItems.push({
             id: canonName,
             key: canonName,
             tag: canonName,
             content: Utilities.humanifyMinecraftName(canonName),
+            description: form.description || "",
           });
         }
       }
     }
 
     componentMenuItems.sort((a, b) => {
-      if (a.header < b.header) {
+      if (a.content < b.content) {
         return -1;
       }
 
-      if (a.header > b.header) {
+      if (a.content > b.content) {
         return 1;
       }
 

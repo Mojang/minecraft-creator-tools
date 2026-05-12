@@ -313,10 +313,12 @@ export default class JsonSchemaGenerator {
       parts.push(`\n\n*${msg}*`);
     }
 
-    // Add properties summary for object fields - show what THIS FIELD contains
-    // First check subFormId reference, then inline subForm
+    // Add properties summary for object fields - show what THIS FIELD contains.
+    // Only add if the field doesn't already have a meaningful description, to avoid
+    // cluttering editor UIs with auto-generated property listings.
+    const hasRealDescription = description && !JsonSchemaGenerator.isPlaceholderDescription(description);
     const childFields = DataFormUtilities.getFieldChildProperties(field, context?.formsBySubFormId);
-    if (childFields && childFields.length > 0) {
+    if (!hasRealDescription && childFields && childFields.length > 0) {
       const propsText = JsonSchemaGenerator.formatPropertiesSummary(childFields);
       if (propsText) {
         parts.push("\n\n" + propsText);

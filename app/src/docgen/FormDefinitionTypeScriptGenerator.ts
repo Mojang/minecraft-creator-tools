@@ -820,12 +820,14 @@ export default class FormDefinitionTypeScriptGenerator {
 
     await this.appendType(form, content, 0);
 
-    dtsFile.setContent(content.join("\n"));
+    // Normalize line endings to LF — form data may contain embedded \r\n in descriptions or samples
+    dtsFile.setContent(content.join("\n").replace(/\r/g, ""));
 
     await dtsFile.saveContent();
   }
 
   public static sanitizeDescription(description: string) {
+    description = description.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
     description = description.trim();
 
     description = Utilities.ensureFirstCharIsUpperCase(description);
@@ -1165,6 +1167,8 @@ export default class FormDefinitionTypeScriptGenerator {
     maxLineLength: number,
     asteriskSpacing: number
   ) {
+    // Normalize line endings to LF to avoid CRLF leaking into output
+    text = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
     const lines = this.splitIntoLines(text, maxLineLength);
 
     for (const line of lines) {

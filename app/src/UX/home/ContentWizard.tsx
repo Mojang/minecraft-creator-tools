@@ -63,6 +63,7 @@ import {
 } from "../types/TraitData";
 import IProjectTheme from "../types/IProjectTheme";
 import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../app/CreatorToolsHost";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
 // ============================================================================
 // WIZARD TYPE ENUM
@@ -92,13 +93,14 @@ export enum ContentWizardAction {
   newLootTable = 7,
   newStructure = 8,
   galleryItem = 10, // A specific gallery item was selected
+  newEmptyFile = 11, // Create an empty (or minimally-stubbed) file at a chosen folder
 }
 
 // ============================================================================
 // SHARED INTERFACES
 // ============================================================================
 
-export interface IContentWizardProps extends IAppProps {
+export interface IContentWizardProps extends IAppProps, WithLocalizationProps {
   project: Project;
   theme: IProjectTheme;
   heightOffset: number;
@@ -127,6 +129,7 @@ interface IContentWizardState {
   entityPrimaryColor: string;
   entitySecondaryColor: string;
   entityBodyType: string;
+  entityBodyTypeManuallyEdited: boolean;
   // Block state
   blockId: string;
   blockDisplayName: string;
@@ -156,7 +159,7 @@ interface IContentWizardState {
 // MAIN WIZARD COMPONENT
 // ============================================================================
 
-export default class ContentWizard extends Component<IContentWizardProps, IContentWizardState> {
+class ContentWizard extends Component<IContentWizardProps, IContentWizardState> {
   constructor(props: IContentWizardProps) {
     super(props);
 
@@ -187,6 +190,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
       entityPrimaryColor: "#5B8C3E",
       entitySecondaryColor: "#3D6B2E",
       entityBodyType: "humanoid",
+      entityBodyTypeManuallyEdited: false,
       // Block defaults
       blockId: blockDefault.id,
       blockDisplayName: blockDefault.displayName,
@@ -273,7 +277,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
         const fileName = item.projectPath.split("/").pop() || "";
         const fileBaseName = fileName.replace(/\.json$/i, "").toLowerCase();
         if (fileBaseName === id.toLowerCase()) {
-          return `A ${contentLabel} with ID "${fullId}" already exists in this project`;
+          return this.props.intl.formatMessage({ id: "wizard.id_conflict" }, { contentLabel: contentLabel, fullId });
         }
       }
     }
@@ -419,6 +423,20 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
 
   _handleCancel() {
     this.props.onCancel();
+  }
+
+  /**
+   * If a body-type trait is selected, return the matching body type id so the
+   * Appearance step defaults to it. Returns undefined if no body-type trait is selected.
+   */
+  static _deriveBodyTypeFromTraits(traits: EntityTraitId[]): string | undefined {
+    const bodyTypeTraitIds = new Set(BODY_TYPES.map((bt) => bt.id));
+    for (const t of traits) {
+      if (bodyTypeTraitIds.has(t)) {
+        return t;
+      }
+    }
+    return undefined;
   }
 
   /**
@@ -634,9 +652,9 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
           <div className="cwiz-wizard-section cwiz-guided-section">
             <div className="cwiz-section-headingRow">
               <div>
-                <div className="cwiz-wizard-section-title">⭐ Guided Setup — Recommended</div>
+                <div className="cwiz-wizard-section-title">⭐ {this.props.intl.formatMessage({ id: "wizard.guided_title" })}</div>
                 <div className="cwiz-wizard-section-copy">
-                  Answer a few simple questions and we'll build the files for you.
+                  {this.props.intl.formatMessage({ id: "wizard.guided_desc" })}
                 </div>
               </div>
             </div>
@@ -649,13 +667,13 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                 <div className="cwiz-launcher-option-icon">
                   <img
                     src={CreatorToolsHost.contentWebRoot + "res/images/icons/new_mob_240.png"}
-                    alt="New Mob"
+                    alt={this.props.intl.formatMessage({ id: "wizard.new_mob_alt" })}
                     className="cwiz-launcher-option-img"
                   />
                 </div>
                 <div className="cwiz-launcher-option-content">
-                  <div className="cwiz-launcher-option-label">New Mob</div>
-                  <div className="cwiz-launcher-option-desc">Step-by-step — traits, stats & appearance</div>
+                  <div className="cwiz-launcher-option-label">{this.props.intl.formatMessage({ id: "wizard.new_mob" })}</div>
+                  <div className="cwiz-launcher-option-desc">{this.props.intl.formatMessage({ id: "wizard.new_mob_desc" })}</div>
                 </div>
               </div>
               <div
@@ -666,13 +684,13 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                 <div className="cwiz-launcher-option-icon">
                   <img
                     src={CreatorToolsHost.contentWebRoot + "res/images/icons/new_block_240.png"}
-                    alt="New Block"
+                    alt={this.props.intl.formatMessage({ id: "wizard.new_block_alt" })}
                     className="cwiz-launcher-option-img"
                   />
                 </div>
                 <div className="cwiz-launcher-option-content">
-                  <div className="cwiz-launcher-option-label">New Block</div>
-                  <div className="cwiz-launcher-option-desc">Step-by-step — shape, hardness & texture</div>
+                  <div className="cwiz-launcher-option-label">{this.props.intl.formatMessage({ id: "wizard.new_block" })}</div>
+                  <div className="cwiz-launcher-option-desc">{this.props.intl.formatMessage({ id: "wizard.new_block_desc" })}</div>
                 </div>
               </div>
               <div
@@ -683,13 +701,13 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                 <div className="cwiz-launcher-option-icon">
                   <img
                     src={CreatorToolsHost.contentWebRoot + "res/images/icons/new_item_240.png"}
-                    alt="New Item"
+                    alt={this.props.intl.formatMessage({ id: "wizard.new_item_alt" })}
                     className="cwiz-launcher-option-img"
                   />
                 </div>
                 <div className="cwiz-launcher-option-content">
-                  <div className="cwiz-launcher-option-label">New Item</div>
-                  <div className="cwiz-launcher-option-desc">Step-by-step — tool, food, weapon & more</div>
+                  <div className="cwiz-launcher-option-label">{this.props.intl.formatMessage({ id: "wizard.new_item" })}</div>
+                  <div className="cwiz-launcher-option-desc">{this.props.intl.formatMessage({ id: "wizard.new_item_desc" })}</div>
                 </div>
               </div>
             </div>
@@ -699,9 +717,9 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
           <div className="cwiz-wizard-section cwiz-example-section">
             <div className="cwiz-section-headingRow">
               <div>
-                <div className="cwiz-wizard-section-title">Start from an Existing Example</div>
+                <div className="cwiz-wizard-section-title">{this.props.intl.formatMessage({ id: "wizard.existing_example_title" })}</div>
                 <div className="cwiz-wizard-section-copy">
-                  Use these when you want something familiar to remix — pick from your project or vanilla Minecraft.
+                  {this.props.intl.formatMessage({ id: "wizard.existing_example_desc" })}
                 </div>
               </div>
             </div>
@@ -717,8 +735,8 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                   className="cwiz-main-icon cwiz-main-img"
                 />
                 <div className="cwiz-main-content">
-                  <div className="cwiz-main-label">New Mob Based on Existing</div>
-                  <div className="cwiz-main-desc">Customize a mob from your project or any vanilla Minecraft mob</div>
+                  <div className="cwiz-main-label">{this.props.intl.formatMessage({ id: "wizard.mob_from_existing" })}</div>
+                  <div className="cwiz-main-desc">{this.props.intl.formatMessage({ id: "wizard.mob_from_existing_desc" })}</div>
                 </div>
               </div>
               <div
@@ -732,9 +750,9 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                   className="cwiz-main-icon cwiz-main-img"
                 />
                 <div className="cwiz-main-content">
-                  <div className="cwiz-main-label">New Block Based on Existing</div>
+                  <div className="cwiz-main-label">{this.props.intl.formatMessage({ id: "wizard.block_from_existing" })}</div>
                   <div className="cwiz-main-desc">
-                    Customize a block from your project or any vanilla Minecraft block
+                    {this.props.intl.formatMessage({ id: "wizard.block_from_existing_desc" })}
                   </div>
                 </div>
               </div>
@@ -749,9 +767,9 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                   className="cwiz-main-icon cwiz-main-img"
                 />
                 <div className="cwiz-main-content">
-                  <div className="cwiz-main-label">New Item Based on Existing</div>
+                  <div className="cwiz-main-label">{this.props.intl.formatMessage({ id: "wizard.item_from_existing" })}</div>
                   <div className="cwiz-main-desc">
-                    Customize an item from your project or any vanilla Minecraft item
+                    {this.props.intl.formatMessage({ id: "wizard.item_from_existing_desc" })}
                   </div>
                 </div>
               </div>
@@ -763,8 +781,8 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                     className="cwiz-main-icon cwiz-main-img"
                   />
                   <div className="cwiz-main-content">
-                    <div className="cwiz-main-label">Spawn Rules</div>
-                    <div className="cwiz-main-desc">Control where and when mobs appear in the world</div>
+                    <div className="cwiz-main-label">{this.props.intl.formatMessage({ id: "wizard.spawn_rules" })}</div>
+                    <div className="cwiz-main-desc">{this.props.intl.formatMessage({ id: "wizard.spawn_rules_desc" })}</div>
                   </div>
                 </div>
               ) : (
@@ -778,8 +796,8 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                     className="cwiz-main-icon cwiz-main-img"
                   />
                   <div className="cwiz-main-content">
-                    <div className="cwiz-main-label">Spawn Rules</div>
-                    <div className="cwiz-main-desc">Control where and when mobs appear in the world</div>
+                    <div className="cwiz-main-label">{this.props.intl.formatMessage({ id: "wizard.spawn_rules" })}</div>
+                    <div className="cwiz-main-desc">{this.props.intl.formatMessage({ id: "wizard.spawn_rules_desc" })}</div>
                   </div>
                 </div>
               )}
@@ -791,8 +809,8 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                     className="cwiz-main-icon cwiz-main-img"
                   />
                   <div className="cwiz-main-content">
-                    <div className="cwiz-main-label">Loot Table</div>
-                    <div className="cwiz-main-desc">Define what items drop from mobs or chests</div>
+                    <div className="cwiz-main-label">{this.props.intl.formatMessage({ id: "wizard.loot_table" })}</div>
+                    <div className="cwiz-main-desc">{this.props.intl.formatMessage({ id: "wizard.loot_table_desc" })}</div>
                   </div>
                 </div>
               ) : (
@@ -806,8 +824,8 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                     className="cwiz-main-icon cwiz-main-img"
                   />
                   <div className="cwiz-main-content">
-                    <div className="cwiz-main-label">Loot Table</div>
-                    <div className="cwiz-main-desc">Define what items drop from mobs or chests</div>
+                    <div className="cwiz-main-label">{this.props.intl.formatMessage({ id: "wizard.loot_table" })}</div>
+                    <div className="cwiz-main-desc">{this.props.intl.formatMessage({ id: "wizard.loot_table_desc" })}</div>
                   </div>
                 </div>
               )}
@@ -818,7 +836,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
           <div className="cwiz-section" key="cwiz-more-content">
             <div className="cwiz-section-header" onClick={() => this._toggleSection("more-content")}>
               <FontAwesomeIcon icon={expandedSections.includes("more-content") ? faChevronDown : faChevronRight} />
-              <span>More Options</span>
+              <span>{this.props.intl.formatMessage({ id: "wizard.more_options" })}</span>
               {!expandedSections.includes("more-content") && <span className="cwiz-section-badge">2</span>}
             </div>
             {expandedSections.includes("more-content") && (
@@ -826,18 +844,36 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                 <div
                   className="cwiz-section-item"
                   onClick={() => this._handleQuickAction(ContentWizardAction.newTypeScript)}
-                  title="Add a new script file (requires coding)"
+                  title={this.props.intl.formatMessage({ id: "wizard.script_file_tooltip" })}
                 >
                   <FontAwesomeIcon icon={faCode} className="cwiz-section-item-icon" />
-                  <span>{isTypeScript ? "TypeScript File" : "JavaScript File"} (requires coding)</span>
+                  <span>{isTypeScript ? this.props.intl.formatMessage({ id: "wizard.typescript_file" }) : this.props.intl.formatMessage({ id: "wizard.javascript_file" })}{this.props.intl.formatMessage({ id: "wizard.requires_coding" })}</span>
                 </div>
                 <div
                   className="cwiz-section-item"
                   onClick={() => this._handleQuickAction(ContentWizardAction.newFunction)}
-                  title="Add a .mcfunction file"
+                  title={this.props.intl.formatMessage({ id: "wizard.function_file_tooltip" })}
                 >
                   <FontAwesomeIcon icon={faTerminal} className="cwiz-section-item-icon" />
-                  <span>Function File</span>
+                  <span>{this.props.intl.formatMessage({ id: "wizard.function_file" })}</span>
+                </div>
+                <div
+                  className="cwiz-section-item"
+                  data-testid="wizard-new-empty-file"
+                  onClick={() => this._handleQuickAction(ContentWizardAction.newEmptyFile)}
+                  title="Create an empty stub file at a chosen folder — useful when you want full control over the contents"
+                >
+                  <FontAwesomeIcon icon={faFile} className="cwiz-section-item-icon" />
+                  <span>{this.props.intl.formatMessage({ id: "wizard.empty_file_advanced" })}</span>
+                </div>
+                <div
+                  className="cwiz-section-item"
+                  data-testid="wizard-new-empty-file"
+                  onClick={() => this._handleQuickAction(ContentWizardAction.newEmptyFile)}
+                  title="Create an empty stub file at a chosen folder — useful when you want full control over the contents"
+                >
+                  <FontAwesomeIcon icon={faFile} className="cwiz-section-item-icon" />
+                  <span>Empty File (advanced)</span>
                 </div>
               </div>
             )}
@@ -846,7 +882,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
           <div className="cwiz-section" key="cwiz-worldgen-top">
             <div className="cwiz-section-header" onClick={() => this._toggleSection("worldgen-top")}>
               <FontAwesomeIcon icon={expandedSections.includes("worldgen-top") ? faChevronDown : faChevronRight} />
-              <span>World Generation</span>
+              <span>{this.props.intl.formatMessage({ id: "wizard.world_generation" })}</span>
               {!expandedSections.includes("worldgen-top") && (
                 <span className="cwiz-section-badge">{(featureItem ? 1 : 0) + (featureRuleItem ? 1 : 0) + 1}</span>
               )}
@@ -861,7 +897,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                     title={featureItem.description}
                   >
                     <FontAwesomeIcon icon={faFile} className="cwiz-section-item-icon" />
-                    <span>Feature</span>
+                    <span>{this.props.intl.formatMessage({ id: "wizard.feature" })}</span>
                   </div>
                 )}
                 {featureRuleItem && (
@@ -872,17 +908,17 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                     title={featureRuleItem.description}
                   >
                     <FontAwesomeIcon icon={faFile} className="cwiz-section-item-icon" />
-                    <span>Feature Rule</span>
+                    <span>{this.props.intl.formatMessage({ id: "wizard.feature_rule" })}</span>
                   </div>
                 )}
                 <div
                   key="worldgen-structure"
                   className="cwiz-section-item"
                   onClick={() => this._handleQuickAction(ContentWizardAction.newStructure)}
-                  title="Create a starter .mcstructure file for use in world generation"
+                  title={this.props.intl.formatMessage({ id: "wizard.structure_tooltip" })}
                 >
                   <FontAwesomeIcon icon={faFile} className="cwiz-section-item-icon" />
-                  <span>Structure</span>
+                  <span>{this.props.intl.formatMessage({ id: "wizard.structure" })}</span>
                 </div>
               </div>
             )}
@@ -892,7 +928,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
           <div className="cwiz-advanced-section">
             <div className="cwiz-advanced-header" onClick={() => this._toggleSection("advanced")}>
               <FontAwesomeIcon icon={expandedSections.includes("advanced") ? faChevronDown : faChevronRight} />
-              <span>Advanced File Types</span>
+              <span>{this.props.intl.formatMessage({ id: "wizard.advanced_file_types" })}</span>
               {!expandedSections.includes("advanced") && (
                 <span className="cwiz-section-badge">
                   {entityItemBlockFiles.length +
@@ -906,12 +942,12 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
             </div>
             {expandedSections.includes("advanced") && (
               <div className="cwiz-advanced-content">
-                {renderGallerySection("Mob/Item/Block Types", "adv-eib", entityItemBlockFiles)}
-                {renderGallerySection("Spawn Rules, Loot Tables & Recipes", "adv-slr", spawnLootRecipes)}
-                {renderGallerySection("World Generation", "adv-wg", worldGenAdvanced)}
-                {renderGallerySection("World Gen Single Files", "adv-wgsf", worldGenFiles)}
-                {renderGallerySection("Visuals", "adv-vis", visualFiles)}
-                {renderGallerySection("Catalog Files", "adv-cat", catalogFiles)}
+                {renderGallerySection(this.props.intl.formatMessage({ id: "wizard.gallery_mob_item_block" }), "adv-eib", entityItemBlockFiles)}
+                {renderGallerySection(this.props.intl.formatMessage({ id: "wizard.gallery_spawn_loot_recipes" }), "adv-slr", spawnLootRecipes)}
+                {renderGallerySection(this.props.intl.formatMessage({ id: "wizard.gallery_world_gen" }), "adv-wg", worldGenAdvanced)}
+                {renderGallerySection(this.props.intl.formatMessage({ id: "wizard.gallery_world_gen_single" }), "adv-wgsf", worldGenFiles)}
+                {renderGallerySection(this.props.intl.formatMessage({ id: "wizard.gallery_visuals" }), "adv-vis", visualFiles)}
+                {renderGallerySection(this.props.intl.formatMessage({ id: "wizard.gallery_catalog" }), "adv-cat", catalogFiles)}
               </div>
             )}
           </div>
@@ -920,7 +956,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
         {/* Cancel Button - Fixed Footer */}
         <div className="cwiz-footer">
           <button className="cwiz-btn cwiz-btn-stone" onClick={this.props.onCancel}>
-            Cancel
+            {this.props.intl.formatMessage({ id: "wizard.cancel" })}
           </button>
         </div>
       </div>
@@ -935,22 +971,31 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
 
     switch (step) {
       case 0: // Traits
-        stepTitle = "Select Traits";
+        stepTitle = this.props.intl.formatMessage({ id: "wizard.select_traits" });
         stepContent = (
           <EntityTraitPicker
             traits={this.state.entityTraits}
-            onTraitsChanged={(traits) => this.setState({ entityTraits: traits })}
+            onTraitsChanged={(traits) => {
+              const update: Partial<IContentWizardState> = { entityTraits: traits };
+              if (!this.state.entityBodyTypeManuallyEdited) {
+                const derived = ContentWizard._deriveBodyTypeFromTraits(traits);
+                if (derived) {
+                  update.entityBodyType = derived;
+                }
+              }
+              this.setState(update as IContentWizardState);
+            }}
             theme={this.props.theme}
           />
         );
         break;
 
       case 1: // Basic Info
-        stepTitle = "Basic Information";
+        stepTitle = this.props.intl.formatMessage({ id: "wizard.basic_information" });
         stepContent = (
           <div className="cwiz-step-content">
             <div className="cwiz-field">
-              <label>Display Name</label>
+              <label>{this.props.intl.formatMessage({ id: "wizard.display_name" })}</label>
               <TextField
                 fullWidth
                 value={this.state.entityDisplayName}
@@ -966,13 +1011,13 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                   }
                   this.setState(update as any);
                 }}
-                placeholder="My Mob"
+                placeholder={this.props.intl.formatMessage({ id: "wizard.display_name_mob_placeholder" })}
                 size="small"
               />
-              <div className="cwiz-field-hint">Name shown in-game</div>
+              <div className="cwiz-field-hint">{this.props.intl.formatMessage({ id: "wizard.name_in_game_hint" })}</div>
             </div>
             <div className="cwiz-field">
-              <label>Mob ID</label>
+              <label>{this.props.intl.formatMessage({ id: "wizard.mob_id" })}</label>
               <TextField
                 fullWidth
                 value={this.state.entityId}
@@ -983,7 +1028,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                     entityIdManuallyEdited: true,
                   });
                 }}
-                placeholder="my_mob"
+                placeholder={this.props.intl.formatMessage({ id: "wizard.mob_id_placeholder" })}
                 size="small"
                 error={!!this._getIdConflictError(this.state.entityId, ContentWizardType.entity)}
               />
@@ -992,7 +1037,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                   {this._getIdConflictError(this.state.entityId, ContentWizardType.entity)}
                 </div>
               ) : (
-                <div className="cwiz-field-hint">Unique identifier (a-z, 0-9, underscore only)</div>
+                <div className="cwiz-field-hint">{this.props.intl.formatMessage({ id: "wizard.id_hint" })}</div>
               )}
             </div>
           </div>
@@ -1000,11 +1045,11 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
         break;
 
       case 2: // Stats
-        stepTitle = "Mob Stats";
+        stepTitle = this.props.intl.formatMessage({ id: "wizard.mob_stats" });
         stepContent = (
           <div className="cwiz-step-content">
             <div className="cwiz-field">
-              <label>Health: {this.state.entityHealth}</label>
+              <label>{this.props.intl.formatMessage({ id: "wizard.health" }, { value: this.state.entityHealth })}</label>
               <Slider
                 min={1}
                 max={100}
@@ -1014,7 +1059,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
               />
             </div>
             <div className="cwiz-field">
-              <label>Attack Damage: {this.state.entityDamage}</label>
+              <label>{this.props.intl.formatMessage({ id: "wizard.attack_damage" }, { value: this.state.entityDamage })}</label>
               <Slider
                 min={0}
                 max={20}
@@ -1024,7 +1069,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
               />
             </div>
             <div className="cwiz-field">
-              <label>Movement Speed: {this.state.entitySpeed.toFixed(2)}</label>
+              <label>{this.props.intl.formatMessage({ id: "wizard.movement_speed" }, { value: this.state.entitySpeed.toFixed(2) })}</label>
               <Slider
                 min={0.1}
                 max={1.0}
@@ -1039,16 +1084,19 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
         break;
 
       case 3: // Appearance
-        stepTitle = "Appearance";
+        stepTitle = this.props.intl.formatMessage({ id: "wizard.appearance" });
         stepContent = (
           <div className="cwiz-step-content">
             <div className="cwiz-field">
-              <label>Body Type</label>
+              <label>{this.props.intl.formatMessage({ id: "wizard.body_type" })}</label>
               <Select
                 fullWidth
                 value={this.state.entityBodyType}
                 onChange={(e) => {
-                  this.setState({ entityBodyType: e.target.value as string });
+                  this.setState({
+                    entityBodyType: e.target.value as string,
+                    entityBodyTypeManuallyEdited: true,
+                  });
                 }}
                 size="small"
               >
@@ -1066,7 +1114,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
               </Select>
             </div>
             <div className="cwiz-field">
-              <label>Primary Color</label>
+              <label>{this.props.intl.formatMessage({ id: "wizard.primary_color" })}</label>
               <input
                 type="color"
                 value={this.state.entityPrimaryColor}
@@ -1074,7 +1122,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
               />
             </div>
             <div className="cwiz-field">
-              <label>Secondary Color</label>
+              <label>{this.props.intl.formatMessage({ id: "wizard.secondary_color" })}</label>
               <input
                 type="color"
                 value={this.state.entitySecondaryColor}
@@ -1097,7 +1145,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
 
     switch (step) {
       case 0: // Traits
-        stepTitle = "Select Traits";
+        stepTitle = this.props.intl.formatMessage({ id: "wizard.select_traits" });
         {
           const shapeTraits = BLOCK_TRAITS.filter((t) => t.exclusiveGroup === "shape");
           const behaviorTraits = BLOCK_TRAITS.filter((t) => !t.exclusiveGroup);
@@ -1140,10 +1188,10 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
 
           stepContent = (
             <div className="cwiz-step-content" style={getTraitCardThemeStyle(this.props.theme)}>
-              <div className="cwiz-trait-group-label">Block Shape (pick one)</div>
+              <div className="cwiz-trait-group-label">{this.props.intl.formatMessage({ id: "wizard.block_shape" })}</div>
               <div className="cwiz-traits-grid">{shapeTraits.map(renderTraitCard)}</div>
               <div className="cwiz-trait-group-label" style={{ marginTop: "16px" }}>
-                Behaviors
+                {this.props.intl.formatMessage({ id: "wizard.behaviors" })}
               </div>
               <div className="cwiz-traits-grid">{behaviorTraits.map(renderTraitCard)}</div>
             </div>
@@ -1152,11 +1200,11 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
         break;
 
       case 1: // Basic Info
-        stepTitle = "Basic Information";
+        stepTitle = this.props.intl.formatMessage({ id: "wizard.basic_information" });
         stepContent = (
           <div className="cwiz-step-content">
             <div className="cwiz-field">
-              <label>Display Name</label>
+              <label>{this.props.intl.formatMessage({ id: "wizard.display_name" })}</label>
               <TextField
                 fullWidth
                 value={this.state.blockDisplayName}
@@ -1172,13 +1220,13 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                   }
                   this.setState(update as any);
                 }}
-                placeholder="My Block"
+                placeholder={this.props.intl.formatMessage({ id: "wizard.display_name_block_placeholder" })}
                 size="small"
               />
-              <div className="cwiz-field-hint">Name shown in-game</div>
+              <div className="cwiz-field-hint">{this.props.intl.formatMessage({ id: "wizard.name_in_game_hint" })}</div>
             </div>
             <div className="cwiz-field">
-              <label>Block ID</label>
+              <label>{this.props.intl.formatMessage({ id: "wizard.block_id" })}</label>
               <TextField
                 fullWidth
                 value={this.state.blockId}
@@ -1189,7 +1237,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                     blockIdManuallyEdited: true,
                   });
                 }}
-                placeholder="block"
+                placeholder={this.props.intl.formatMessage({ id: "wizard.block_id_placeholder" })}
                 size="small"
                 error={!!this._getIdConflictError(this.state.blockId, ContentWizardType.block)}
               />
@@ -1198,7 +1246,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                   {this._getIdConflictError(this.state.blockId, ContentWizardType.block)}
                 </div>
               ) : (
-                <div className="cwiz-field-hint">Unique identifier (a-z, 0-9, underscore only)</div>
+                <div className="cwiz-field-hint">{this.props.intl.formatMessage({ id: "wizard.id_hint" })}</div>
               )}
             </div>
           </div>
@@ -1206,11 +1254,11 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
         break;
 
       case 2: // Properties
-        stepTitle = "Block Properties";
+        stepTitle = this.props.intl.formatMessage({ id: "wizard.block_properties" });
         stepContent = (
           <div className="cwiz-step-content">
             <div className="cwiz-field">
-              <label>Mining Speed: {this.state.blockDestroyTime.toFixed(1)}s</label>
+              <label>{this.props.intl.formatMessage({ id: "wizard.mining_speed" }, { value: this.state.blockDestroyTime.toFixed(1) })}</label>
               <Slider
                 min={0}
                 max={10}
@@ -1219,10 +1267,10 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                 onChange={(e, value) => this.setState({ blockDestroyTime: Number(value) || 1.5 })}
                 size="small"
               />
-              <div className="cwiz-field-hint">0 = instant break, higher = harder</div>
+              <div className="cwiz-field-hint">{this.props.intl.formatMessage({ id: "wizard.mining_speed_hint" })}</div>
             </div>
             <div className="cwiz-field">
-              <label>Light Emission: {this.state.blockLightEmission}</label>
+              <label>{this.props.intl.formatMessage({ id: "wizard.light_emission" }, { value: this.state.blockLightEmission })}</label>
               <Slider
                 min={0}
                 max={15}
@@ -1230,10 +1278,10 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                 onChange={(e, value) => this.setState({ blockLightEmission: Number(value) || 0 })}
                 size="small"
               />
-              <div className="cwiz-field-hint">15 = full brightness like glowstone</div>
+              <div className="cwiz-field-hint">{this.props.intl.formatMessage({ id: "wizard.light_emission_hint" })}</div>
             </div>
             <div className="cwiz-field">
-              <label>Block Color</label>
+              <label>{this.props.intl.formatMessage({ id: "wizard.block_color" })}</label>
               <input
                 type="color"
                 value={this.state.blockPrimaryColor}
@@ -1256,7 +1304,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
 
     switch (step) {
       case 0: // Traits
-        stepTitle = "Select Traits";
+        stepTitle = this.props.intl.formatMessage({ id: "wizard.select_traits" });
         {
           const typeTraits = ITEM_TRAITS.filter((t) => t.exclusiveGroup === "type");
           const behaviorTraits = ITEM_TRAITS.filter((t) => !t.exclusiveGroup);
@@ -1299,10 +1347,10 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
 
           stepContent = (
             <div className="cwiz-step-content" style={getTraitCardThemeStyle(this.props.theme)}>
-              <div className="cwiz-trait-group-label">Item Type (pick one)</div>
+              <div className="cwiz-trait-group-label">{this.props.intl.formatMessage({ id: "wizard.item_type" })}</div>
               <div className="cwiz-traits-grid">{typeTraits.map(renderItemTraitCard)}</div>
               <div className="cwiz-trait-group-label" style={{ marginTop: "16px" }}>
-                Behaviors
+                {this.props.intl.formatMessage({ id: "wizard.behaviors" })}
               </div>
               <div className="cwiz-traits-grid">{behaviorTraits.map(renderItemTraitCard)}</div>
             </div>
@@ -1311,11 +1359,11 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
         break;
 
       case 1: // Basic Info
-        stepTitle = "Basic Information";
+        stepTitle = this.props.intl.formatMessage({ id: "wizard.basic_information" });
         stepContent = (
           <div className="cwiz-step-content">
             <div className="cwiz-field">
-              <label>Display Name</label>
+              <label>{this.props.intl.formatMessage({ id: "wizard.display_name" })}</label>
               <TextField
                 fullWidth
                 value={this.state.itemDisplayName}
@@ -1331,13 +1379,13 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                   }
                   this.setState(update as any);
                 }}
-                placeholder="My Item"
+                placeholder={this.props.intl.formatMessage({ id: "wizard.display_name_item_placeholder" })}
                 size="small"
               />
-              <div className="cwiz-field-hint">Name shown in-game</div>
+              <div className="cwiz-field-hint">{this.props.intl.formatMessage({ id: "wizard.name_in_game_hint" })}</div>
             </div>
             <div className="cwiz-field">
-              <label>Item ID</label>
+              <label>{this.props.intl.formatMessage({ id: "wizard.item_id" })}</label>
               <TextField
                 fullWidth
                 value={this.state.itemId}
@@ -1348,7 +1396,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                     itemIdManuallyEdited: true,
                   });
                 }}
-                placeholder="item"
+                placeholder={this.props.intl.formatMessage({ id: "wizard.item_id_placeholder" })}
                 size="small"
                 error={!!this._getIdConflictError(this.state.itemId, ContentWizardType.item)}
               />
@@ -1357,7 +1405,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                   {this._getIdConflictError(this.state.itemId, ContentWizardType.item)}
                 </div>
               ) : (
-                <div className="cwiz-field-hint">Unique identifier (a-z, 0-9, underscore only)</div>
+                <div className="cwiz-field-hint">{this.props.intl.formatMessage({ id: "wizard.id_hint" })}</div>
               )}
             </div>
           </div>
@@ -1365,11 +1413,11 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
         break;
 
       case 2: // Properties
-        stepTitle = "Item Properties";
+        stepTitle = this.props.intl.formatMessage({ id: "wizard.item_properties" });
         stepContent = (
           <div className="cwiz-step-content">
             <div className="cwiz-field">
-              <label>Max Stack Size: {this.state.itemMaxStack}</label>
+              <label>{this.props.intl.formatMessage({ id: "wizard.max_stack_size" }, { value: this.state.itemMaxStack })}</label>
               <Slider
                 min={1}
                 max={64}
@@ -1379,7 +1427,7 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
               />
             </div>
             <div className="cwiz-field">
-              <label>Durability: {this.state.itemDurability || "None"}</label>
+              <label>{this.state.itemDurability ? this.props.intl.formatMessage({ id: "wizard.durability" }, { value: this.state.itemDurability }) : this.props.intl.formatMessage({ id: "wizard.durability_none" })}</label>
               <Slider
                 min={0}
                 max={2000}
@@ -1388,10 +1436,10 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
                 onChange={(e, value) => this.setState({ itemDurability: Number(value) || 0 })}
                 size="small"
               />
-              <div className="cwiz-field-hint">0 = no durability (stacks normally)</div>
+              <div className="cwiz-field-hint">{this.props.intl.formatMessage({ id: "wizard.durability_hint" })}</div>
             </div>
             <div className="cwiz-field">
-              <label>Item Color</label>
+              <label>{this.props.intl.formatMessage({ id: "wizard.item_color" })}</label>
               <input
                 type="color"
                 value={this.state.itemPrimaryColor}
@@ -1412,25 +1460,24 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
 
     // If this is the project-name step (final extra step), override title and content
     const isProjectNameStep = this.props.showProjectNameStep && isLastStep;
-    const displayTitle = isProjectNameStep ? "Name Your Project" : stepTitle;
+    const displayTitle = isProjectNameStep ? this.props.intl.formatMessage({ id: "wizard.name_your_project" }) : stepTitle;
     const displayContent = isProjectNameStep ? (
       <div className="cwiz-step-content" style={{ padding: "16px 20px" }}>
         <div className="cwiz-field-hint" style={{ marginBottom: 16 }}>
-          Your {typeName.toLowerCase()} is ready! Give your project a name — this is what you'll see in your project
-          list. You can always change it later.
+          {this.props.intl.formatMessage({ id: "wizard.project_ready_desc" }, { typeName: typeName.toLowerCase() })}
         </div>
         <div className="cwiz-field">
-          <label>Project Name</label>
+          <label>{this.props.intl.formatMessage({ id: "wizard.project_name" })}</label>
           <TextField
             fullWidth
             value={this.state.projectName}
             onChange={(e) => this.setState({ projectName: e.target.value || "" })}
-            placeholder="My Add-On"
+            placeholder={this.props.intl.formatMessage({ id: "wizard.project_name_placeholder" })}
             size="small"
             autoFocus
           />
           <div className="cwiz-field-hint">
-            This is the name of your add-on project, not the {typeName.toLowerCase()} itself.
+            {this.props.intl.formatMessage({ id: "wizard.project_name_hint" }, { typeName: typeName.toLowerCase() })}
           </div>
         </div>
       </div>
@@ -1441,9 +1488,9 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
     return (
       <div className={"cwiz-wizard" + (CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? " cwiz-dark" : "")}>
         <div className="cwiz-wizard-header">
-          <div className="cwiz-wizard-title">Create {typeName}</div>
+          <div className="cwiz-wizard-title">{this.props.intl.formatMessage({ id: "wizard.create_type" }, { typeName })}</div>
           <div className="cwiz-wizard-step-indicator">
-            Step {this.state.step + 1} of {maxSteps}: {displayTitle}
+            {this.props.intl.formatMessage({ id: "wizard.step_indicator" }, { current: this.state.step + 1, total: maxSteps, title: displayTitle })}
           </div>
           <div className="cwiz-wizard-progress">
             {Array.from({ length: maxSteps }).map((_, i) => (
@@ -1455,20 +1502,20 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
         <div className="cwiz-wizard-footer">
           <button className="cwiz-btn cwiz-btn-stone" onClick={this._handleBack}>
             <FontAwesomeIcon icon={faArrowLeft} />
-            Back
+            {this.props.intl.formatMessage({ id: "wizard.back" })}
           </button>
           <button className="cwiz-btn cwiz-btn-stone" onClick={this._handleCancel}>
-            Cancel
+            {this.props.intl.formatMessage({ id: "wizard.cancel" })}
           </button>
           {isLastStep ? (
             <button className="cwiz-btn cwiz-btn-primary" onClick={this._handleComplete}>
               <FontAwesomeIcon icon={faCheck} />
-              Create
+              {this.props.intl.formatMessage({ id: "wizard.create" })}
             </button>
           ) : (
             <button className="cwiz-btn cwiz-btn-primary" onClick={this._handleNext}>
               <FontAwesomeIcon icon={faArrowRight} />
-              Next
+              {this.props.intl.formatMessage({ id: "wizard.next" })}
             </button>
           )}
         </div>
@@ -1491,3 +1538,5 @@ export default class ContentWizard extends Component<IContentWizardProps, IConte
     }
   }
 }
+
+export default withLocalization(ContentWizard);

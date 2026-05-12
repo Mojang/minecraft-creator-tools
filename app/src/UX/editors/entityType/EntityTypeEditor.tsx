@@ -8,7 +8,7 @@ import EntityTypeComponentSetEditor from "./EntityTypeComponentSetEditor";
 import McSelectableList, {
   McSelectableListItem,
 } from "../../shared/components/inputs/mcSelectableList/McSelectableList";
-import { Stack, Button, Menu, MenuItem } from "@mui/material";
+import { Stack, Button, Menu, MenuItem, Alert, Box } from "@mui/material";
 import ManagedComponentGroup from "../../../minecraft/ManagedComponentGroup";
 import { CustomTabLabel } from "../../shared/components/feedback/labels/Labels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,6 +16,8 @@ import { ProjectEditPreference } from "../../../app/IProjectData";
 import {
   faBolt,
   faBone,
+  faChevronLeft,
+  faChevronRight,
   faCow,
   faDiagramProject,
   faEgg,
@@ -49,10 +51,11 @@ import { getThemeColors, getThemedColor, ThemeColors } from "../../hooks/theme/u
 import IProjectTheme from "../../types/IProjectTheme";
 import { getFriendlyComponentGroupName } from "../../utils/ComponentFriendlyNames";
 import EntityTraitPicker from "./EntityTraitPicker";
-import SpawnRulesEditor from "../../components/fileEditors/SpawnRulesEditor/SpawnRulesEditor";
-import LootTableEditor from "../../components/fileEditors/lootTableEditor/LootTableEditor";
+import SpawnRulesEditorWrapper from "../../components/fileEditors/SpawnRulesEditor/SpawnRulesEditorWrapper";
+import LootTableVisualEditor from "../lootTable/LootTableVisualEditor";
 import SoundEventSetEditor, { SoundEventSetType } from "../sound/SoundEventSetEditor";
 import EntityTypeResourceDefinition from "../../../minecraft/EntityTypeResourceDefinition";
+import { WithLocalizationProps, withLocalization } from "../../withLocalization";
 
 export enum EntityTypeEditorMode {
   overview = 0,
@@ -78,9 +81,9 @@ const ACTIONS_MODE_HEIGHT_OFFSET = 115;
 const SPAWN_RULES_MODE_HEIGHT_OFFSET = 92;
 const VISUALS_MODE_HEIGHT_OFFSET = 72;
 const LOOT_MODE_HEIGHT_OFFSET = 92;
-const COMPACT_MODE_TRIGGER_WIDTH = 900;
+const COMPACT_MODE_TRIGGER_WIDTH = 1200;
 
-interface IEntityTypeEditorProps extends IFileProps {
+interface IEntityTypeEditorProps extends IFileProps, WithLocalizationProps {
   heightOffset: number;
   readOnly: boolean;
   item: ProjectItem;
@@ -97,11 +100,11 @@ interface IEntityTypeEditorState {
   selectedItem: EntityTypeDefinition | ManagedComponentGroup | IEventWrapper | undefined;
   initialComponentId?: string;
   loadTimedOut: boolean;
-  showAdvancedGroups: boolean;
   advancedMenuAnchorEl: HTMLElement | null;
+  statesCollapsed: boolean;
 }
 
-export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, IEntityTypeEditorState> {
+class EntityTypeEditor extends Component<IEntityTypeEditorProps, IEntityTypeEditorState> {
   private _loadingTimeout: ReturnType<typeof setTimeout> | undefined;
   private static _lastActiveMode: EntityTypeEditorMode = OVERVIEW_MODE_DEFAULT;
 
@@ -124,7 +127,6 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     this._setLootMode = this._setLootMode.bind(this);
     this._setPropertiesMode = this._setPropertiesMode.bind(this);
     this._setTraitsMode = this._setTraitsMode.bind(this);
-    this._toggleAdvancedGroups = this._toggleAdvancedGroups.bind(this);
     this._handleAdvancedMenuOpen = this._handleAdvancedMenuOpen.bind(this);
     this._handleAdvancedMenuClose = this._handleAdvancedMenuClose.bind(this);
     this._handleOpenEventFull = this._handleOpenEventFull.bind(this);
@@ -135,8 +137,8 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
       mode: EntityTypeEditor._lastActiveMode,
       selectedItem: undefined,
       loadTimedOut: false,
-      showAdvancedGroups: false,
       advancedMenuAnchorEl: null,
+      statesCollapsed: false,
     };
   }
 
@@ -155,11 +157,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     }
   }
 
-  componentDidUpdate(
-    prevProps: Readonly<IEntityTypeEditorProps>,
-    prevState: Readonly<IEntityTypeEditorState>,
-    snapshot?: any
-  ): void {
+  componentDidUpdate(prevProps: Readonly<IEntityTypeEditorProps>, prevState: Readonly<IEntityTypeEditorState>): void {
     if (this.state && this.props.file !== this.state.fileToEdit) {
       this.setState(
         {
@@ -515,7 +513,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     let itemListings = undefined;
 
     if (this.state.mode === EntityTypeEditorMode.components) {
-      itemListings = this.getComponentGroupListings(this.state.showAdvancedGroups);
+      itemListings = this.getComponentGroupListings();
     } else {
       itemListings = this.getEventListings();
     }
@@ -567,28 +565,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     }
   }
 
-  private _toggleAdvancedGroups() {
-    this.setState((prevState) => {
-      const showAdvancedGroups = !prevState.showAdvancedGroups;
-      let selectedItem = prevState.selectedItem;
-
-      if (
-        !showAdvancedGroups &&
-        selectedItem instanceof ManagedComponentGroup &&
-        prevState.fileToEdit.manager instanceof EntityTypeDefinition
-      ) {
-        selectedItem = prevState.fileToEdit.manager as EntityTypeDefinition;
-      }
-
-      return {
-        ...prevState,
-        showAdvancedGroups,
-        selectedItem,
-      };
-    });
-  }
-
-  getComponentGroupListings(includeAdvanced: boolean) {
+  getComponentGroupListings() {
     if (!this.state || !this.state.fileToEdit) {
       return [];
     }
@@ -606,25 +583,23 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
 
     const componentGroups = et.getComponentGroups();
 
-    if (includeAdvanced) {
-      for (const compGroup of componentGroups) {
-        let id = compGroup.id;
+    for (const compGroup of componentGroups) {
+      let id = compGroup.id;
 
-        let colon = id.indexOf(":");
+      let colon = id.indexOf(":");
 
-        if (colon >= 0) {
-          id = id.substring(colon + 1);
-        }
-
-        const header = getFriendlyComponentGroupName(id);
-
-        itemListings.push({
-          key: "cg." + compGroup.id,
-          header: header,
-          headerMedia: " ",
-          content: " ",
-        });
+      if (colon >= 0) {
+        id = id.substring(colon + 1);
       }
+
+      const header = getFriendlyComponentGroupName(id);
+
+      itemListings.push({
+        key: "cg." + compGroup.id,
+        header: header,
+        headerMedia: " ",
+        content: " ",
+      });
     }
 
     return itemListings;
@@ -752,8 +727,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
               }}
             >
               <FontAwesomeIcon icon={faDiagramProject} style={{ marginRight: "6px", opacity: 0.7 }} />
-              This diagram shows how your mob makes decisions. Each box is a behavior group, and arrows show transitions
-              between them.
+              {this.props.intl.formatMessage({ id: "project_editor.entity.diagram_description" })}
             </div>
             <EntityTypeDiagramEditor
               creatorTools={this.props.creatorTools}
@@ -790,12 +764,12 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
         );
       }
     } else if (this.state.mode === EntityTypeEditorMode.components) {
-      const items = this.getComponentGroupListings(this.state.showAdvancedGroups);
+      const items = this.getComponentGroupListings();
 
       const cgs = et.getComponentGroups();
 
       selectedIndex = 0;
-      if (this.state.selectedItem instanceof ManagedComponentGroup && this.state.showAdvancedGroups) {
+      if (this.state.selectedItem instanceof ManagedComponentGroup) {
         const groupIndex = cgs.indexOf(this.state.selectedItem);
         if (groupIndex >= 0) {
           selectedIndex = groupIndex + 1;
@@ -811,10 +785,6 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
           entityTypeDefinition = this.state.fileToEdit.manager as EntityTypeDefinition;
 
           if (selItem === undefined && items && items.length > 0) {
-            selItem = entityTypeDefinition;
-          }
-
-          if (!this.state.showAdvancedGroups && selItem instanceof ManagedComponentGroup) {
             selItem = entityTypeDefinition;
           }
         }
@@ -843,60 +813,86 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
               <div className="ete-emptyStateIcon">
                 <FontAwesomeIcon icon={faSquarePlus} className="fa-2x" />
               </div>
-              <div className="ete-emptyStateTitle">Select a State</div>
+              <div className="ete-emptyStateTitle">
+                {this.props.intl.formatMessage({ id: "project_editor.entity.select_state" })}
+              </div>
               <div className="ete-emptyStateMessage">
-                Choose a state from the list on the left to see its behaviors and properties. Each state represents a
-                variant (like Baby or Adult) that can change how your mob behaves.
+                {this.props.intl.formatMessage({ id: "project_editor.entity.select_state_hint" })}
               </div>
             </div>
           );
         }
       }
 
+      const statesCollapsed = this.state.statesCollapsed;
+
       return (
         <EditorPanelGrid
           theme={this.props.theme}
           itemType={ProjectItemType.entityTypeBehavior}
-          columns="280px 1fr"
+          columns={statesCollapsed ? "32px 1fr" : "280px 1fr"}
           className="ete-componentEditorInterior"
         >
-          <EditorContentPanel
-            variant="inset"
-            theme={this.props.theme}
-            itemType={ProjectItemType.entityTypeBehavior}
-            header="States (Advanced)"
-            compactHeader
-            className="ete-groupsPanel"
-            title="Use base state for most edits. Advanced states are optional per-variant overrides."
-          >
-            <div className="ete-groupsInfo">
-              Start with <strong>Default (base state)</strong>. Enable advanced states only if you need different
-              behaviors for Baby, Adult, or special variants.
-            </div>
-            <div className="ete-groupsToggleRow">
-              <Button size="small" onClick={this._toggleAdvancedGroups}>
-                {this.state.showAdvancedGroups ? "Hide advanced states" : "Show advanced states"}
-              </Button>
-            </div>
-            <div
-              className="ete-listInterior"
-              style={{ minHeight: componentListHeight, maxHeight: componentListHeight }}
+          {statesCollapsed ? (
+            <EditorContentPanel
+              variant="inset"
+              theme={this.props.theme}
+              itemType={ProjectItemType.entityTypeBehavior}
+              className="ete-groupsPanel ete-groupsPanel-collapsed"
             >
-              <McSelectableList
-                aria-label="List of components"
-                selectedIndex={selectedIndex}
-                items={items}
-                onSelectedIndexChange={this._handleItemSelected}
-              />
-              {this.state.showAdvancedGroups && (
+              <button
+                className="ete-statesToggle ete-statesToggle-expand"
+                onClick={() => this.setState({ statesCollapsed: false })}
+                title={this.props.intl.formatMessage({ id: "project_editor.entity.states_header" })}
+                aria-label={this.props.intl.formatMessage({ id: "project_editor.entity.states_header" })}
+              >
+                <FontAwesomeIcon icon={faChevronRight} />
+              </button>
+            </EditorContentPanel>
+          ) : (
+            <EditorContentPanel
+              variant="inset"
+              theme={this.props.theme}
+              itemType={ProjectItemType.entityTypeBehavior}
+              header={this.props.intl.formatMessage({ id: "project_editor.entity.states_header" })}
+              compactHeader
+              className="ete-groupsPanel"
+              title={this.props.intl.formatMessage({ id: "project_editor.entity.states_hint" })}
+            >
+              <button
+                className="ete-statesToggle ete-statesToggle-collapse"
+                onClick={() => this.setState({ statesCollapsed: true })}
+                title="Collapse states list"
+                aria-label="Collapse states list"
+              >
+                <FontAwesomeIcon icon={faChevronLeft} />
+              </button>
+              <div className="ete-groupsInfo">
+                {this.props.intl.formatMessage({ id: "project_editor.entity.states_guidance" })}
+              </div>
+              <div
+                className="ete-listInterior"
+                style={{ minHeight: componentListHeight, maxHeight: componentListHeight }}
+              >
+                <McSelectableList
+                  aria-label="List of components"
+                  selectedIndex={selectedIndex}
+                  items={items}
+                  onSelectedIndexChange={this._handleItemSelected}
+                />
                 <div className="ete-addStateRow">
-                  <button className="eat-mcBtn" onClick={this._handleAddState}>
-                    <FontAwesomeIcon icon={faPlus} /> Add state
-                  </button>
+                  <Button
+                    className="eat-mcBtn"
+                    size="small"
+                    onClick={this._handleAddState}
+                    startIcon={<FontAwesomeIcon icon={faPlus} />}
+                  >
+                    {this.props.intl.formatMessage({ id: "project_editor.entity.add_state" })}
+                  </Button>
                 </div>
-              )}
-            </div>
-          </EditorContentPanel>
+              </div>
+            </EditorContentPanel>
+          )}
           <EditorContentPanel
             variant="raised"
             theme={this.props.theme}
@@ -949,10 +945,14 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
               <div className="ete-emptyStateIcon">
                 <FontAwesomeIcon icon={faBolt} className="fa-2x" />
               </div>
-              <div className="ete-emptyStateTitle">No Action Selected</div>
+              <div className="ete-emptyStateTitle">
+                {this.props.intl.formatMessage({ id: "project_editor.entity.no_action_selected" })}
+              </div>
               <div className="ete-emptyStateMessage">
                 Actions trigger entity behavior changes when events fire — for example, growing up or becoming angry.
-                Select an action from the list on the left, or click <strong>Add Action</strong> above to create one.
+                Select an action from the list on the left, or click{" "}
+                <strong>{this.props.intl.formatMessage({ id: "project_editor.entity.add_action" })}</strong> above to
+                create one.
               </div>
             </div>
           );
@@ -970,14 +970,14 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
             variant="inset"
             theme={this.props.theme}
             itemType={ProjectItemType.entityTypeBehavior}
-            header="Actions"
+            header={this.props.intl.formatMessage({ id: "project_editor.entity.actions_header" })}
             compactHeader
             className="ete-groupsPanel"
           >
             <div className="ete-addButtonRow">
               <button className="ete-addActionBtn" onClick={this._handleAddAction}>
                 <FontAwesomeIcon icon={faPlus} style={{ marginRight: "6px" }} />
-                Add Action
+                {this.props.intl.formatMessage({ id: "project_editor.entity.add_action_btn" })}
               </button>
             </div>
             <div
@@ -985,7 +985,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
               style={{ minHeight: componentListHeight, maxHeight: componentListHeight }}
             >
               <McSelectableList
-                aria-label="List of mob actions"
+                aria-label={this.props.intl.formatMessage({ id: "project_editor.entity.aria_actions_list" })}
                 items={items}
                 onSelectedIndexChange={this._handleItemSelected}
               />
@@ -1012,7 +1012,13 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
       }
 
       if (!spawnItem.primaryFile) {
-        return <>Error: Spawn File Expected And Not Found</>;
+        return (
+          <Box height="2.5em">
+            <Alert severity="error" sx={{ m: 2 }}>
+              Error: Spawn File Expected And Not Found
+            </Alert>
+          </Box>
+        );
       }
 
       return (
@@ -1022,11 +1028,12 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
             borderColor: colors.sectionBorder,
           }}
         >
-          <SpawnRulesEditor
+          <SpawnRulesEditorWrapper
             project={this.props.project}
             file={spawnItem.primaryFile}
             heightOffset={this.props.heightOffset + SPAWN_RULES_MODE_HEIGHT_OFFSET}
             setActivePersistable={this.props.setActivePersistable}
+            theme={this.props.theme}
           />
         </div>
       );
@@ -1103,7 +1110,25 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
       }
 
       if (!lootTableItem.primaryFile) {
-        return <>Error: Loot Table File Expected And Not Found</>;
+        // The relationship was created (e.g. just after Save) but the linked
+        // item's file storage hasn't been resolved yet. Kick off the load and
+        // re-render once it's ready instead of showing a hard error.
+        lootTableItem
+          .loadFileContent()
+          .then(() => {
+            if (this.state.mode === EntityTypeEditorMode.loot) {
+              this.forceUpdate();
+            }
+          })
+          .catch((e) => {
+            Log.debug("Failed to load loot table file: " + e);
+          });
+
+        return (
+          <div className="ete-message">
+            {this.props.intl.formatMessage({ id: "project_editor.entity.loading_definition" })}
+          </div>
+        );
       }
 
       return (
@@ -1113,7 +1138,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
             borderColor: colors.sectionBorder,
           }}
         >
-          <LootTableEditor
+          <LootTableVisualEditor
             readOnly={this.props.readOnly}
             project={this.props.project}
             file={lootTableItem.primaryFile}
@@ -1124,7 +1149,6 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
       );
     }
 
-    console.warn("Unexpected error: No Valid State Found", selectedIndex, this.state.mode);
     return <>Unexpected error: No Valid State Found</>;
   }
   private buildAddNewLootTable(colors: ThemeColors): ReactNode {
@@ -1153,7 +1177,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
             marginBottom: "8px",
           }}
         >
-          No loot drops yet
+          {this.props.intl.formatMessage({ id: "project_editor.entity.no_loot" })}
         </div>
         <div
           style={{
@@ -1163,8 +1187,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
             maxWidth: "400px",
           }}
         >
-          Loot is what items your mob drops when defeated by a player. Common examples include raw meat (for animals),
-          bones (for skeletons), or rare items (for bosses).
+          {this.props.intl.formatMessage({ id: "project_editor.entity.loot_description" })}
         </div>
         <Button
           variant="contained"
@@ -1172,7 +1195,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
           style={{ backgroundColor: mcColors.green4, color: "#fff", textTransform: "none" }}
         >
           <FontAwesomeIcon icon={faBone} style={{ marginRight: "8px" }} />
-          Add Loot Table
+          {this.props.intl.formatMessage({ id: "project_editor.entity.add_loot_table" })}
         </Button>
       </div>
     );
@@ -1204,7 +1227,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
             marginBottom: "8px",
           }}
         >
-          No spawn rules configured yet
+          {this.props.intl.formatMessage({ id: "project_editor.entity.no_spawn_rules" })}
         </div>
         <div
           style={{
@@ -1214,8 +1237,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
             maxWidth: "400px",
           }}
         >
-          Spawn rules control where and when your mob appears in the world. Add spawn rules to make your mob spawn
-          naturally in Minecraft.
+          {this.props.intl.formatMessage({ id: "project_editor.entity.spawn_description" })}
         </div>
         <Button
           variant="contained"
@@ -1223,7 +1245,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
           style={{ backgroundColor: mcColors.green4, color: "#fff", textTransform: "none" }}
         >
           <FontAwesomeIcon icon={faEgg} style={{ marginRight: "8px" }} />
-          Add Spawn Rules
+          {this.props.intl.formatMessage({ id: "project_editor.entity.add_spawn_rules" })}
         </Button>
       </div>
     );
@@ -1251,7 +1273,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
       if (this.state && this.state.loadTimedOut) {
         return (
           <div className="ete-loading">
-            <div>Unable to load mob definition. The data may not be available.</div>
+            <div>{this.props.intl.formatMessage({ id: "project_editor.entity.loading_error" })}</div>
             <button
               className="ete-retry-button"
               onClick={() => {
@@ -1264,12 +1286,14 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
                 this._updateManager();
               }}
             >
-              Retry
+              {this.props.intl.formatMessage({ id: "common.retry" })}
             </button>
           </div>
         );
       }
-      return <div className="ete-loading">Loading mob...</div>;
+      return (
+        <div className="ete-loading">{this.props.intl.formatMessage({ id: "project_editor.entity.loading" })}</div>
+      );
     }
 
     if (this.props.setActivePersistable !== undefined) {
@@ -1283,7 +1307,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
       if (this.state.loadTimedOut) {
         return (
           <div className="ete-loading">
-            <div>Unable to load mob definition data.</div>
+            <div>{this.props.intl.formatMessage({ id: "project_editor.entity.loading_data_error" })}</div>
             <button
               className="ete-retry-button"
               onClick={() => {
@@ -1296,12 +1320,16 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
                 this._updateManager();
               }}
             >
-              Retry
+              {this.props.intl.formatMessage({ id: "common.retry" })}
             </button>
           </div>
         );
       }
-      return <div className="ete-message">Loading mob definition...</div>;
+      return (
+        <div className="ete-message">
+          {this.props.intl.formatMessage({ id: "project_editor.entity.loading_definition" })}
+        </div>
+      );
     }
 
     // Calculate counts for tab badges
@@ -1310,8 +1338,8 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     const eventCount = et.getEvents().length;
 
     // Labels for tabs
-    const componentsLabel = "Components";
-    const actionsLabel = "Actions";
+    const componentsLabel = this.props.intl.formatMessage({ id: "project_editor.entity.tab_components" });
+    const actionsLabel = this.props.intl.formatMessage({ id: "project_editor.entity.tab_actions" });
 
     const componentListHeight = "calc(100vh - " + String(this.props.heightOffset + topHeight) + "px)";
     const modeArea = this.buildModeArea(colors, et, selectedIndex, componentListHeight);
@@ -1329,61 +1357,83 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
             itemId={et.id}
             displayName={et.shortId ? (Utilities.humanifyMinecraftName(et.shortId) as string) : undefined}
             itemType={ProjectItemType.entityTypeBehavior}
-            typeName="Mob"
+            typeName={this.props.intl.formatMessage({ id: "project_editor.entity.type_name" })}
             formatVersion={et.formatVersion}
             thumbnailUrl={this._getThumbnailUrl()}
           />
           <EditorHeaderTabs>
-            <Stack direction="row" spacing={0.5} aria-label="Mob type actions">
-              <Button onClick={this._setOverviewMode} title="Overview — Basic information and model preview">
+            <Stack
+              direction="row"
+              spacing={0.5}
+              aria-label={this.props.intl.formatMessage({ id: "project_editor.entity.aria_mob_actions" })}
+            >
+              <Button
+                onClick={this._setOverviewMode}
+                title={this.props.intl.formatMessage({ id: "project_editor.entity.tooltip_overview" })}
+              >
                 <CustomTabLabel
                   icon={<FontAwesomeIcon icon={faHome} className="fa-lg" />}
-                  text={"Overview"}
+                  text={this.props.intl.formatMessage({ id: "project_editor.entity.tab_overview" })}
                   isCompact={isButtonCompact}
                   isSelected={this.state.mode === EntityTypeEditorMode.overview}
                   theme={this.props.theme}
                 />
               </Button>
-              <Button onClick={this._setTraitsMode} title="Traits — High-level mob traits and behaviors">
+              <Button
+                onClick={this._setTraitsMode}
+                title={this.props.intl.formatMessage({ id: "project_editor.entity.tooltip_traits" })}
+              >
                 <CustomTabLabel
                   icon={<FontAwesomeIcon icon={faPuzzlePiece} className="fa-lg" />}
-                  text={"Traits"}
+                  text={this.props.intl.formatMessage({ id: "project_editor.entity.tab_traits" })}
                   isCompact={isButtonCompact}
                   isSelected={this.state.mode === EntityTypeEditorMode.traits}
                   theme={this.props.theme}
                 />
               </Button>
-              <Button onClick={this._setVisualsMode} title="Visuals — Change how your mob looks (textures, models)">
+              <Button
+                onClick={this._setVisualsMode}
+                title={this.props.intl.formatMessage({ id: "project_editor.entity.tooltip_visuals" })}
+              >
                 <CustomTabLabel
                   icon={<FontAwesomeIcon icon={faCow} className="fa-lg" />}
-                  text={"Visuals"}
+                  text={this.props.intl.formatMessage({ id: "project_editor.entity.tab_visuals" })}
                   isCompact={isButtonCompact}
                   isSelected={this.state.mode === EntityTypeEditorMode.visuals}
                   theme={this.props.theme}
                 />
               </Button>
-              <Button onClick={this._setAudioMode} title="Audio — Configure mob sound effects">
+              <Button
+                onClick={this._setAudioMode}
+                title={this.props.intl.formatMessage({ id: "project_editor.entity.tooltip_audio" })}
+              >
                 <CustomTabLabel
                   icon={<FontAwesomeIcon icon={faVolumeUp} className="fa-lg" />}
-                  text={"Audio"}
+                  text={this.props.intl.formatMessage({ id: "project_editor.entity.tab_audio" })}
                   isCompact={isButtonCompact}
                   isSelected={this.state.mode === EntityTypeEditorMode.audio}
                   theme={this.props.theme}
                 />
               </Button>
-              <Button onClick={this._setSpawnRulesMode} title="Spawn — Where and when your mob appears in the world">
+              <Button
+                onClick={this._setSpawnRulesMode}
+                title={this.props.intl.formatMessage({ id: "project_editor.entity.tooltip_spawn" })}
+              >
                 <CustomTabLabel
                   icon={<FontAwesomeIcon icon={faEgg} className="fa-lg" />}
-                  text={"Spawn"}
+                  text={this.props.intl.formatMessage({ id: "project_editor.entity.tab_spawn" })}
                   isCompact={isButtonCompact}
                   isSelected={this.state.mode === EntityTypeEditorMode.spawnRules}
                   theme={this.props.theme}
                 />
               </Button>
-              <Button onClick={this._setLootMode} title="Loot — Items dropped when your mob is defeated">
+              <Button
+                onClick={this._setLootMode}
+                title={this.props.intl.formatMessage({ id: "project_editor.entity.tooltip_loot" })}
+              >
                 <CustomTabLabel
                   icon={<FontAwesomeIcon icon={faBone} className="fa-lg" />}
-                  text={"Loot"}
+                  text={this.props.intl.formatMessage({ id: "project_editor.entity.tab_loot" })}
                   isCompact={isButtonCompact}
                   isSelected={this.state.mode === EntityTypeEditorMode.loot}
                   theme={this.props.theme}
@@ -1391,7 +1441,10 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
               </Button>
               <Button
                 onClick={this._setComponentsMode}
-                title={`Components — Stats and abilities (${componentCount} components, ${componentGroupCount} groups)`}
+                title={this.props.intl.formatMessage(
+                  { id: "project_editor.entity.tooltip_components" },
+                  { componentCount, groupCount: componentGroupCount }
+                )}
               >
                 <CustomTabLabel
                   icon={<FontAwesomeIcon icon={faSquarePlus} className="fa-lg" />}
@@ -1401,25 +1454,28 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
                   theme={this.props.theme}
                 />
               </Button>
-              <Button onClick={this._handleAdvancedMenuOpen} title="More — Properties, AI Behaviors, Actions">
+              <Button
+                onClick={this._handleAdvancedMenuOpen}
+                title={this.props.intl.formatMessage({ id: "project_editor.entity.tooltip_more" })}
+              >
                 <CustomTabLabel
                   icon={<FontAwesomeIcon icon={faEllipsisV} className="fa-lg" />}
                   text={
                     this.state.mode === EntityTypeEditorMode.properties
                       ? this.props.project.effectiveEditPreference === ProjectEditPreference.summarized
-                        ? "Advanced (Properties) ▾"
-                        : "More (Properties) ▾"
+                        ? this.props.intl.formatMessage({ id: "project_editor.entity.advanced_properties" })
+                        : this.props.intl.formatMessage({ id: "project_editor.entity.tab_more_props" })
                       : this.state.mode === EntityTypeEditorMode.stateDiagrams
                         ? this.props.project.effectiveEditPreference === ProjectEditPreference.summarized
-                          ? "Advanced (AI Behaviors) ▾"
-                          : "More (AI Behaviors) ▾"
+                          ? this.props.intl.formatMessage({ id: "project_editor.entity.advanced_ai" })
+                          : this.props.intl.formatMessage({ id: "project_editor.entity.tab_more_ai" })
                         : this.state.mode === EntityTypeEditorMode.actions
                           ? this.props.project.effectiveEditPreference === ProjectEditPreference.summarized
-                            ? "Advanced (Actions) ▾"
-                            : "More (Actions) ▾"
+                            ? this.props.intl.formatMessage({ id: "project_editor.entity.advanced_actions" })
+                            : this.props.intl.formatMessage({ id: "project_editor.entity.tab_more_actions" })
                           : this.props.project.effectiveEditPreference === ProjectEditPreference.summarized
-                            ? "Advanced ▾"
-                            : "More ▾"
+                            ? this.props.intl.formatMessage({ id: "project_editor.entity.advanced" })
+                            : this.props.intl.formatMessage({ id: "project_editor.entity.tab_more" })
                   }
                   isCompact={isButtonCompact}
                   isSelected={
@@ -1456,7 +1512,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
                   sx={{ gap: 1.5, fontSize: 13 }}
                 >
                   <FontAwesomeIcon icon={faSliders} fixedWidth />
-                  Properties
+                  {this.props.intl.formatMessage({ id: "project_editor.entity.menu_properties" })}
                 </MenuItem>
                 <MenuItem
                   onClick={() => {
@@ -1467,7 +1523,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
                   sx={{ gap: 1.5, fontSize: 13 }}
                 >
                   <FontAwesomeIcon icon={faDiagramProject} fixedWidth />
-                  AI Behaviors
+                  {this.props.intl.formatMessage({ id: "project_editor.entity.menu_ai_behaviors" })}
                 </MenuItem>
                 <MenuItem
                   onClick={() => {
@@ -1490,3 +1546,5 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     );
   }
 }
+
+export default withLocalization(EntityTypeEditor);

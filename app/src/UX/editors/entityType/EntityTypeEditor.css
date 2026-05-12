@@ -36,8 +36,8 @@
 }
 
 .ete-componentEditorInterior.editor-panel-grid {
-  /* Override grid template for proper panel layout */
-  grid-template-columns: 280px 1fr;
+  /* Allow the columns prop (via --grid-columns var) to drive the layout so the
+     states sidebar can collapse to a narrow rail. */
   grid-template-rows: 1fr;
 }
 
@@ -45,10 +45,49 @@
 .ete-groupsPanel {
   min-width: 280px;
   max-width: 280px;
+  position: relative;
+}
+
+.ete-groupsPanel.ete-groupsPanel-collapsed {
+  min-width: 32px;
+  max-width: 32px;
 }
 
 .ete-groupsPanel .editor-panel-content {
   overflow: hidden !important;
+}
+
+/* Collapse / expand toggle for the states sidebar */
+.ete-statesToggle {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  font-size: 11px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+
+.ete-statesToggle:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.ete-statesToggle-expand {
+  position: static;
+  width: 100%;
+  height: 32px;
 }
 
 /* Component groups info text */
@@ -57,10 +96,6 @@
   color: #888;
   padding: 4px 8px;
   line-height: 1.3;
-}
-
-.ete-groupsToggleRow {
-  padding: 2px 8px 6px;
 }
 
 .ete-addStateRow {
@@ -76,10 +111,28 @@
 .ete-itemBinPanel {
   min-width: 0;
   flex: 1;
+  /* Establish a containment context so the inner editor can react to the
+     panel's actual rendered width (separate from viewport width). */
+  container-type: inline-size;
 }
 
 .ete-itemBinPanel > .editor-panel-content {
+  /* Default: no horizontal scrollbar — the inner panels handle their own
+     overflow, and on wide layouts the grid fills the available space. */
   overflow-x: hidden !important;
+}
+
+/* When the panel is genuinely narrower than the inner editor's minimum
+   usable width (~640px = 280px components list + 360px form), enable
+   horizontal scrolling and force the inner grid to its minimum so the
+   form area stays usable. */
+@container (max-width: 640px) {
+  .ete-itemBinPanel > .editor-panel-content {
+    overflow-x: auto !important;
+  }
+  .ete-itemBinPanel .ete-componentEditorInterior {
+    min-width: 640px;
+  }
 }
 
 .ete-componentEditorInteriorFull {

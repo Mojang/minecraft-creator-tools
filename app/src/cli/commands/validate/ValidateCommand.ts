@@ -122,7 +122,16 @@ export class ValidateCommand extends CommandBase {
 
     if (context.projects.length === 0) {
       if (context.json) {
-        context.log.data(JSON.stringify({ projects: [], errors: 0, warnings: 0 }));
+        context.log.data(
+          JSON.stringify({
+            schemaVersion: "1.0.0",
+            command: "validate",
+            projects: [],
+            errors: 0,
+            warnings: 0,
+            recommendations: 0,
+          })
+        );
       } else {
         context.log.warn("No projects found to validate. Use -i to specify a project folder.");
       }
@@ -409,6 +418,8 @@ export class ValidateCommand extends CommandBase {
 
     context.log.data(
       JSON.stringify({
+        schemaVersion: "1.0.0",
+        command: "validate",
         projects,
         errors: totalErrors,
         warnings: totalWarnings,

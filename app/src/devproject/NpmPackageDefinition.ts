@@ -9,11 +9,12 @@ import Project from "../app/Project";
 import { PackageJSON } from "@npm/types";
 
 export const DevDependenciesDefault: Record<string, string> = {
-  "@minecraft/core-build-tasks": "^5.2.0",
-  "eslint-plugin-minecraft-linting": "^2.0.2",
-  "source-map": "^0.7.4",
-  "ts-node": "^10.9.1",
-  typescript: "^5.5.4",
+  "@minecraft/core-build-tasks": "5.2.0",
+  "@minecraft/creator-tools": "0.16.2",
+  "eslint-plugin-minecraft-linting": "2.0.2",
+  "source-map": "0.7.4",
+  "ts-node": "10.9.1",
+  typescript: "5.5.4",
 };
 
 export const ScriptsDefault: Record<string, string> = {
@@ -21,6 +22,7 @@ export const ScriptsDefault: Record<string, string> = {
   build: "just-scripts build",
   "build:production": "just-scripts build --production",
   clean: "just-scripts clean",
+  deploy: "npm run build && npx mct deploy env -i .",
   "local-deploy": "just-scripts local-deploy",
   mcaddon: "just-scripts mcaddon",
   "mcaddon:production": "just-scripts mcaddon --production",
@@ -32,11 +34,11 @@ export const ScriptsDefault: Record<string, string> = {
 };
 
 export const DependenciesDefault: Record<string, string> = {
-  "@minecraft/math": "^2.2.7",
-  "@minecraft/server": "^2.0.0",
-  "@minecraft/server-editor": "^0.1.0-beta.1.21.30-preview.24",
-  "@minecraft/server-ui": "^2.0.0",
-  "@minecraft/vanilla-data": "^1.21.90",
+  "@minecraft/math": "2.4.0",
+  "@minecraft/server": "2.0.0",
+  "@minecraft/server-editor": "0.1.0-beta.1.21.30-preview.24",
+  "@minecraft/server-ui": "2.0.0",
+  "@minecraft/vanilla-data": "1.26.13",
 };
 
 export const OverridesDefault: { [name: string]: any } = {
@@ -65,6 +67,7 @@ export const SetupRequiredScripts: Record<string, string> = {
   lint: "just-scripts lint",
   build: "just-scripts build",
   clean: "just-scripts clean",
+  deploy: "npm run build && npx mct deploy env -i .",
   "local-deploy": "just-scripts local-deploy",
   mcaddon: "just-scripts mcaddon",
 };
@@ -88,6 +91,26 @@ export const NpmPackageSettingAllowList = [
   "private",
   "scripts",
 ];
+
+/**
+ * Strips semver range prefixes (^, ~, >=, etc.) from a version string,
+ * returning an exact pinned version. This prevents uncontrolled automatic
+ * upgrades when `npm install` is run.
+ */
+export function pinVersion(version: string): string {
+  return version.replace(/^[~^>=<]+/, "");
+}
+
+/**
+ * Strips semver range prefixes from every value in a dependency record.
+ */
+export function pinDependencies(deps: Record<string, string>): Record<string, string> {
+  const pinned: Record<string, string> = {};
+  for (const key of Object.keys(deps)) {
+    pinned[key] = pinVersion(deps[key]);
+  }
+  return pinned;
+}
 
 export default class NpmPackageDefinition {
   private _file?: IFile;
@@ -230,6 +253,8 @@ export default class NpmPackageDefinition {
 
       if (!isValidDevDependencies) {
         this.definition.devDependencies = DevDependenciesDefault;
+      } else {
+        this.definition.devDependencies = pinDependencies(this.definition.devDependencies);
       }
     }
 
@@ -245,6 +270,8 @@ export default class NpmPackageDefinition {
 
       if (!isValidDependencies) {
         this.definition.dependencies = DependenciesDefault;
+      } else {
+        this.definition.dependencies = pinDependencies(this.definition.dependencies);
       }
     }
 
@@ -346,6 +373,25 @@ export default class NpmPackageDefinition {
       if (!this.definition.dependencies[depName]) {
         this.definition.dependencies[depName] = SetupRequiredDependencies[depName];
         changed = true;
+      }
+    }
+
+    // Pin all dependency versions (strip ^ and ~ prefixes)
+    for (const depName in this.definition.dependencies) {
+      const pinned = pinVersion(this.definition.dependencies[depName]);
+      if (pinned !== this.definition.dependencies[depName]) {
+        this.definition.dependencies[depName] = pinned;
+        changed = true;
+      }
+    }
+
+    if (this.definition.devDependencies) {
+      for (const depName in this.definition.devDependencies) {
+        const pinned = pinVersion(this.definition.devDependencies[depName]);
+        if (pinned !== this.definition.devDependencies[depName]) {
+          this.definition.devDependencies[depName] = pinned;
+          changed = true;
+        }
       }
     }
 

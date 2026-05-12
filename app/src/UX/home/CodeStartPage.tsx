@@ -11,13 +11,14 @@ import AppServiceProxy from "../../core/AppServiceProxy";
 import Log from "../../core/Log";
 import { ProjectTileDisplayMode } from "../project/ProjectTile";
 import IProjectTheme from "../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
 enum CodeStartPageMode {
   gallery = 0,
   addingProject = 1,
 }
 
-interface ICodeStartPageProps extends IAppProps {
+interface ICodeStartPageProps extends IAppProps, WithLocalizationProps {
   project: Project | null;
   theme: IProjectTheme;
   forceNewProject: boolean;
@@ -36,7 +37,7 @@ interface ICodeStartPageState {
   search: string | undefined;
 }
 
-export default class CodeStartPage extends Component<ICodeStartPageProps, ICodeStartPageState> {
+class CodeStartPage extends Component<ICodeStartPageProps, ICodeStartPageState> {
   constructor(props: ICodeStartPageProps) {
     super(props);
 
@@ -95,6 +96,7 @@ export default class CodeStartPage extends Component<ICodeStartPageProps, ICodeS
       additionalLoadingMessage: additionalMessage,
     });
   }
+
 
   private async _handleProjectGalleryCommand(command: GalleryProjectCommand, project: IGalleryItem) {
     switch (command) {
@@ -174,13 +176,13 @@ export default class CodeStartPage extends Component<ICodeStartPageProps, ICodeS
 
       AppServiceProxy.sendAsync("closeAllStartPages", "");
     } else {
-      Log.message("Please specify a new project name.");
+      Log.message(this.props.intl.formatMessage({ id: "code_start.specify_name" }));
     }
   }
 
   render() {
     if (!this.state || !this.state.gallery) {
-      return <div className="csp-outer">Loading...</div>;
+      return <div className="csp-outer">{this.props.intl.formatMessage({ id: "code_start.loading" })}</div>;
     }
 
     let message = <></>;
@@ -189,7 +191,7 @@ export default class CodeStartPage extends Component<ICodeStartPageProps, ICodeS
     let mainMessage = this.state.loadingMessage;
 
     if (this.props.forceNewProject && !mainMessage) {
-      mainMessage = "To start a new Minecraft project, set a name and select a Minecraft template.";
+      mainMessage = this.props.intl.formatMessage({ id: "code_start.new_project_prompt" });
     }
 
     if (this.state.additionalLoadingMessage) {
@@ -212,7 +214,7 @@ export default class CodeStartPage extends Component<ICodeStartPageProps, ICodeS
       <div className="csp-outer">
         <div className="csp-header">
           <div className="csp-header-content">
-            <h1 className="csp-title">New Minecraft Project</h1>
+            <h1 className="csp-title">{this.props.intl.formatMessage({ id: "code_start.title" })}</h1>
             {message}
           </div>
         </div>
@@ -221,8 +223,8 @@ export default class CodeStartPage extends Component<ICodeStartPageProps, ICodeS
             <TextField
               id="projectNameInput"
               className="csp-input"
-              label="Project Name"
-              placeholder="Enter project name"
+              label={this.props.intl.formatMessage({ id: "code_start.project_name" })}
+              placeholder={this.props.intl.formatMessage({ id: "code_start.project_name_placeholder" })}
               value={this.state.newProjectName || ""}
               onChange={this._handleNewProjectName}
               size="small"
@@ -235,9 +237,9 @@ export default class CodeStartPage extends Component<ICodeStartPageProps, ICodeS
                 variant="contained"
                 className="csp-createButton"
                 onClick={this._createProject}
-                title="Create project"
+                title={this.props.intl.formatMessage({ id: "code_start.create_title" })}
               >
-                Create
+                {this.props.intl.formatMessage({ id: "code_start.create" })}
               </Button>
             </div>
           )}
@@ -245,7 +247,7 @@ export default class CodeStartPage extends Component<ICodeStartPageProps, ICodeS
             <TextField
               id="projSearch"
               className="csp-search"
-              placeholder="Search templates..."
+              placeholder={this.props.intl.formatMessage({ id: "code_start.search_placeholder" })}
               value={this.state.search || ""}
               onChange={this._handleNewSearch}
               size="small"
@@ -267,3 +269,5 @@ export default class CodeStartPage extends Component<ICodeStartPageProps, ICodeS
     );
   }
 }
+
+export default withLocalization(CodeStartPage);

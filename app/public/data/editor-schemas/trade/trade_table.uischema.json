@@ -1,4 +1,5 @@
 {
+  "hideRootTitle": true,
   "items": {
     "children": {
       "total_exp_required": { "title": "Total Exp Required", "default": 0 },

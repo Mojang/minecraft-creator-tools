@@ -22,6 +22,7 @@ import {
   FormControlLabel,
   CircularProgress,
   InputAdornment,
+  IconButton,
 } from "@mui/material";
 import Project from "../../app/Project";
 import ProjectItem from "../../app/ProjectItem";
@@ -55,17 +56,23 @@ interface IProjectSearchDialogState {
   useRegex: boolean;
   totalFilesSearched: number;
   replacedCount: number;
+  showOptions: boolean;
+  liveRegionText: string;
+  regexError?: string;
 }
 
 const MAX_RESULTS = 200;
 const SEARCH_DEBOUNCE_MS = 200;
+const LIVE_REGION_DEBOUNCE_MS = 300;
 
 export default class ProjectSearchDialog extends Component<IProjectSearchDialogProps, IProjectSearchDialogState> {
   private _inputRef = createRef<HTMLInputElement>();
   private _searchTimer: ReturnType<typeof setTimeout> | null = null;
+  private _liveRegionTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(props: IProjectSearchDialogProps) {
     super(props);
+    const showOptions = localStorage.getItem("mct.searchDialog.showOptions") === "true";
     this.state = {
       query: "",
       replaceText: "",
@@ -77,6 +84,9 @@ export default class ProjectSearchDialog extends Component<IProjectSearchDialogP
       useRegex: false,
       totalFilesSearched: 0,
       replacedCount: 0,
+      showOptions,
+      liveRegionText: "",
+      regexError: undefined,
     };
     this._handleQueryChange = this._handleQueryChange.bind(this);
     this._handleReplaceTextChange = this._handleReplaceTextChange.bind(this);
@@ -86,15 +96,41 @@ export default class ProjectSearchDialog extends Component<IProjectSearchDialogP
     this._toggleReplace = this._toggleReplace.bind(this);
     this._handleReplaceOne = this._handleReplaceOne.bind(this);
     this._handleReplaceAll = this._handleReplaceAll.bind(this);
+    this._toggleOptions = this._toggleOptions.bind(this);
+    this._clearQuery = this._clearQuery.bind(this);
   }
 
   componentDidMount() {
     setTimeout(() => this._inputRef.current?.focus(), 100);
   }
 
+  componentDidUpdate(prevProps: IProjectSearchDialogProps, prevState: IProjectSearchDialogState) {
+    // Clamp selectedIndex when results change to prevent stale selection
+    if (prevState.results !== this.state.results) {
+      const newIndex =
+        this.state.results.length === 0 ? 0 : Math.min(this.state.selectedIndex, this.state.results.length - 1);
+      if (newIndex !== this.state.selectedIndex) {
+        this.setState({ selectedIndex: newIndex });
+      }
+
+      // Update live region for screen readers
+      if (this._liveRegionTimer) {
+        clearTimeout(this._liveRegionTimer);
+      }
+      this._liveRegionTimer = setTimeout(() => {
+        const count = this.state.results.length;
+        const text = count === 0 ? "No results" : `${count}${count >= MAX_RESULTS ? " or more" : ""} results`;
+        this.setState({ liveRegionText: text });
+      }, LIVE_REGION_DEBOUNCE_MS);
+    }
+  }
+
   componentWillUnmount() {
     if (this._searchTimer) {
       clearTimeout(this._searchTimer);
+    }
+    if (this._liveRegionTimer) {
+      clearTimeout(this._liveRegionTimer);
     }
   }
 
@@ -118,7 +154,13 @@ export default class ProjectSearchDialog extends Component<IProjectSearchDialogP
 
   _handleKeyDown(e: React.KeyboardEvent) {
     if (e.key === "Escape") {
-      this.props.onClose();
+      // First Escape clears query if non-empty, second Escape closes dialog
+      if (this.state.query.length > 0) {
+        e.preventDefault();
+        this._clearQuery();
+      } else {
+        this.props.onClose();
+      }
       return;
     }
 
@@ -171,6 +213,20 @@ export default class ProjectSearchDialog extends Component<IProjectSearchDialogP
 
   _toggleReplace() {
     this.setState((prev) => ({ showReplace: !prev.showReplace }));
+  }
+
+  _toggleOptions() {
+    this.setState(
+      (prev) => ({ showOptions: !prev.showOptions }),
+      () => {
+        localStorage.setItem("mct.searchDialog.showOptions", this.state.showOptions.toString());
+      }
+    );
+  }
+
+  _clearQuery() {
+    this.setState({ query: "", results: [], selectedIndex: 0, totalFilesSearched: 0 });
+    this._inputRef.current?.focus();
   }
 
   async _handleReplaceOne() {
@@ -253,10 +309,24 @@ export default class ProjectSearchDialog extends Component<IProjectSearchDialogP
     if (this.state.useRegex) {
       try {
         regex = new RegExp(query, this.state.caseSensitive ? "g" : "gi");
-      } catch {
-        // Invalid regex — show no results
-        this.setState({ results: [], isSearching: false, totalFilesSearched: 0 });
+        // Clear any previous regex error on success
+        if (this.state.regexError) {
+          this.setState({ regexError: undefined });
+        }
+      } catch (err: any) {
+        // Invalid regex — show error and no results
+        this.setState({ 
+          results: [], 
+          isSearching: false, 
+          totalFilesSearched: 0,
+          regexError: err.message 
+        });
         return;
+      }
+    } else {
+      // Clear regex error when not in regex mode
+      if (this.state.regexError) {
+        this.setState({ regexError: undefined });
       }
     }
 
@@ -409,10 +479,25 @@ export default class ProjectSearchDialog extends Component<IProjectSearchDialogP
         }}
       >
         <DialogContent sx={{ p: 1.5 }}>
+          {/* Live region for screen reader announcements */}
+          <div
+            aria-live="polite"
+            aria-atomic="true"
+            style={{
+              position: "absolute",
+              width: "1px",
+              height: "1px",
+              overflow: "hidden",
+              clip: "rect(0, 0, 0, 0)",
+            }}
+          >
+            {this.state.liveRegionText}
+          </div>
+
           <TextField
             inputRef={this._inputRef}
             fullWidth
-            placeholder="Search across all project files... (min 2 chars)"
+            placeholder="Type at least 2 characters to search"
             value={query}
             onChange={this._handleQueryChange}
             onKeyDown={this._handleKeyDown}
@@ -421,14 +506,37 @@ export default class ProjectSearchDialog extends Component<IProjectSearchDialogP
             autoFocus
             aria-label="Search across project files"
             InputProps={{
-              endAdornment: isSearching ? (
-                <InputAdornment position="end">
-                  <CircularProgress size={18} />
-                </InputAdornment>
-              ) : undefined,
+              endAdornment: (
+                <>
+                  {query.length > 0 && (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={this._clearQuery}
+                        edge="end"
+                        size="small"
+                        aria-label="Clear search"
+                        sx={{ mr: isSearching ? 0.5 : 0 }}
+                      >
+                        ×
+                      </IconButton>
+                    </InputAdornment>
+                  )}
+                  {isSearching && (
+                    <InputAdornment position="end">
+                      <CircularProgress size={18} />
+                    </InputAdornment>
+                  )}
+                </>
+              ),
             }}
             sx={{ mb: 0.5 }}
           />
+
+          {this.state.regexError && (
+            <Box sx={{ mb: 0.5, px: 1, py: 0.5, backgroundColor: "#ffebee", color: "#c62828", borderRadius: "4px", fontSize: "0.875rem" }}>
+              Invalid regex: {this.state.regexError}
+            </Box>
+          )}
 
           {this.state.showReplace && (
             <Box sx={{ display: "flex", gap: 0.5, mb: 0.5, alignItems: "center" }}>
@@ -483,37 +591,24 @@ export default class ProjectSearchDialog extends Component<IProjectSearchDialogP
           )}
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5, pl: 0.5 }}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={this.state.showReplace}
-                  onChange={this._toggleReplace}
-                  size="small"
-                  sx={{ p: 0.25 }}
-                />
-              }
-              label={<Typography variant="caption">Replace</Typography>}
-              sx={{ m: 0 }}
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={this.state.caseSensitive}
-                  onChange={this._toggleCaseSensitive}
-                  size="small"
-                  sx={{ p: 0.25 }}
-                />
-              }
-              label={<Typography variant="caption">Match case</Typography>}
-              sx={{ m: 0 }}
-            />
-            <FormControlLabel
-              control={
-                <Checkbox checked={this.state.useRegex} onChange={this._toggleRegex} size="small" sx={{ p: 0.25 }} />
-              }
-              label={<Typography variant="caption">Regex</Typography>}
-              sx={{ m: 0 }}
-            />
+            <Typography
+              variant="caption"
+              component="button"
+              onClick={this._toggleOptions}
+              sx={{
+                cursor: "pointer",
+                px: 0.5,
+                py: 0.25,
+                border: "1px solid",
+                borderColor: "divider",
+                borderRadius: "4px",
+                backgroundColor: "action.hover",
+                "&:hover": { backgroundColor: "action.selected" },
+              }}
+              title="Toggle search options"
+            >
+              Options {this.state.showOptions ? "▾" : "▸"}
+            </Typography>
             {query.length >= 2 && !isSearching && (
               <Typography variant="caption" color="text.secondary" sx={{ ml: "auto" }}>
                 {results.length}
@@ -522,6 +617,42 @@ export default class ProjectSearchDialog extends Component<IProjectSearchDialogP
               </Typography>
             )}
           </Box>
+
+          {this.state.showOptions && (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5, pl: 0.5 }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.showReplace}
+                    onChange={this._toggleReplace}
+                    size="small"
+                    sx={{ p: 0.25 }}
+                  />
+                }
+                label={<Typography variant="caption">Replace</Typography>}
+                sx={{ m: 0 }}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.caseSensitive}
+                    onChange={this._toggleCaseSensitive}
+                    size="small"
+                    sx={{ p: 0.25 }}
+                  />
+                }
+                label={<Typography variant="caption">Match case</Typography>}
+                sx={{ m: 0 }}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox checked={this.state.useRegex} onChange={this._toggleRegex} size="small" sx={{ p: 0.25 }} />
+                }
+                label={<Typography variant="caption">Regex</Typography>}
+                sx={{ m: 0 }}
+              />
+            </Box>
+          )}
 
           <List dense sx={{ maxHeight: "calc(70vh - 120px)", overflow: "auto" }}>
             {results.map((result, i) => {

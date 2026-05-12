@@ -23,15 +23,17 @@ export default class SetNamespacedId extends Component<ISetNamespacedIdProps, IS
   constructor(props: ISetNamespacedIdProps) {
     super(props);
 
-    this._handleNameSelected = this._handleNameSelected.bind(this);
-
     this.state = {
       namespace: this.props.defaultNamespace,
       name: this.props.defaultName,
     };
   }
 
-  _handleNamespaceSelected(event: ChangeEvent<HTMLInputElement>) {
+  // Arrow-property handlers — `this` is captured from the class instance, so we
+  // don't need to manually `.bind(this)` in the constructor. This avoids the
+  // production crash where a newly-added handler was wired into JSX but never
+  // bound, causing `this` to be undefined when MUI invoked it.
+  _handleNamespaceSelected = (event: ChangeEvent<HTMLInputElement>) => {
     const val = event.target.value;
 
     this.setState(
@@ -43,9 +45,9 @@ export default class SetNamespacedId extends Component<ISetNamespacedIdProps, IS
         this.props.onNameChanged(val + ":" + this.state.name);
       }
     );
-  }
+  };
 
-  _handleNameSelected(event: ChangeEvent<HTMLInputElement>) {
+  _handleNameSelected = (event: ChangeEvent<HTMLInputElement>) => {
     const val = event.target.value;
 
     this.setState(
@@ -58,7 +60,7 @@ export default class SetNamespacedId extends Component<ISetNamespacedIdProps, IS
         this.props.onNameChanged(ns + ":" + val);
       }
     );
-  }
+  };
 
   render() {
     if (this.state === null) {

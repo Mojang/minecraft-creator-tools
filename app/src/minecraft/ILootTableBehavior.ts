@@ -4,12 +4,15 @@
 import IMinMixRange from "./jsoncommon/IMinMixRange";
 
 export default interface ILootTableBehavior {
-  pools: any[];
+  pools: ILootTableBehaviorPool[];
 }
 
 export interface ILootTableBehaviorPool {
-  rolls: number;
+  rolls: number | IMinMixRange;
   entries: ILootTableBehaviorEntry[];
+  conditions?: unknown[];
+  bonus_rolls?: number | IMinMixRange;
+  tiers?: unknown;
 }
 
 export interface ILootTableBehaviorEntry {
@@ -17,6 +20,7 @@ export interface ILootTableBehaviorEntry {
   name?: string;
   weight?: number;
   functions?: ILootTableBehaviorFunction[];
+  conditions?: unknown[];
 }
 
 export interface ILootTableBehaviorFunction {

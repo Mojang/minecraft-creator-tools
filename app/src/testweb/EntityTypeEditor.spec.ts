@@ -13,7 +13,15 @@
  */
 
 import { test, expect, ConsoleMessage } from "@playwright/test";
-import { processMessage, gotoWithTheme, ThemeMode, selectEditMode } from "./WebTestUtilities";
+import {
+  processMessage,
+  gotoWithTheme,
+  ThemeMode,
+  selectEditMode,
+  clickTemplateCreateButton,
+  preferBrowserStorageInProjectDialog,
+  fillRequiredProjectDialogFields,
+} from "./WebTestUtilities";
 
 // Full-suite runs can be slower on shared CI/dev machines; avoid flaky 30s test timeouts.
 test.setTimeout(60000);
@@ -42,41 +50,18 @@ async function createFullAddOnProject(page: any, themeMode?: ThemeMode): Promise
     }
     await page.waitForTimeout(500);
 
-    // Find and click the "New" button for the Full Add-On template
-    // First, find the Full Add-On card by looking for its title text
-    const fullAddOnCard = page.locator('text="Full Add-On"').first();
-
-    if (!(await fullAddOnCard.isVisible({ timeout: 5000 }))) {
-      // Scroll to find it or click "See more templates"
-      const seeMoreTemplates = page.locator('text="See more templates"').first();
-      if (await seeMoreTemplates.isVisible({ timeout: 2000 })) {
-        await seeMoreTemplates.click();
-        await page.waitForTimeout(1000);
-      }
-    }
-
-    // Now find the New button near the Full Add-On template
-    // Look for a card containing "Full Add-On" and find the CREATE NEW button in it
-    const fullAddOnSection = page.locator('div:has-text("Full Add-On")').filter({
-      has: page.locator('text="A full example add-on project"'),
-    });
-
-    let createButton = fullAddOnSection.locator('button:has-text("CREATE NEW")').first();
-
-    if (!(await createButton.isVisible({ timeout: 3000 }))) {
-      // Try alternative: look for New button after Full Add-On text
-      createButton = page.locator('button:has-text("New")').or(page.locator('button:has-text("CREATE NEW")')).nth(2); // Full Add-On is usually the 3rd template
-    }
-
-    if (!(await createButton.isVisible({ timeout: 3000 }))) {
+    // Click the Full Add-On template's "Create New" button via stable test id
+    const clicked = await clickTemplateCreateButton(page, "addonFull");
+    if (!clicked) {
       console.log("Could not find CREATE NEW button for Full Add-On template");
-      // Fall back to clicking the first New button
-      createButton = page.getByRole("button", { name: "Create New" }).first();
+      return false;
     }
-
     console.log("Clicking CREATE NEW for Full Add-On project");
-    await createButton.click();
     await page.waitForTimeout(1000);
+
+    // Handle the storage location dialog and required Creator field
+    await preferBrowserStorageInProjectDialog(page);
+    await fillRequiredProjectDialogFields(page);
 
     // Click OK on the project creation dialog
     const okButton = page.getByTestId("submit-button").first();
@@ -235,7 +220,7 @@ async function selectEntityType(page: any, entityName: string): Promise<boolean>
     }
 
     // Strategy 3: Role-based search - try each match until EntityTypeEditor appears
-    const entityItems = page.locator(`[role="option"]:has-text("${entityName}")`);
+    const entityItems = page.locator(`[role="treeitem"]:has-text("${entityName}"), [role="option"]:has-text("${entityName}")`);
     const itemCount = await entityItems.count();
     for (let i = 0; i < Math.min(itemCount, 4); i++) {
       if (
@@ -249,7 +234,7 @@ async function selectEntityType(page: any, entityName: string): Promise<boolean>
     }
 
     // Try scrolling the list to find the entity
-    const projectList = page.locator('[role="listbox"]').first();
+    const projectList = page.locator('[role="tree"], [role="listbox"]').first();
     if (await projectList.isVisible()) {
       await projectList.evaluate((el: HTMLElement) => {
         el.scrollTop = 0;
@@ -292,6 +277,13 @@ async function clickEditorTab(page: any, tabName: string): Promise<boolean> {
   const patterns = tabTitlePatterns[tabName] || [tabName.toLowerCase()];
 
   try {
+    // Dismiss any open MUI Menu/Popover whose invisible backdrop would intercept clicks.
+    const openBackdrop = page.locator(".MuiModal-root .MuiBackdrop-root").first();
+    if (await openBackdrop.isVisible({ timeout: 200 }).catch(() => false)) {
+      await page.keyboard.press("Escape").catch(() => {});
+      await page.waitForTimeout(150);
+    }
+
     // Strategy 0: Look for buttons within .ete-area (EntityTypeEditor) first - most precise
     const eteArea = page.locator(".ete-area");
     if (await eteArea.isVisible({ timeout: 2000 }).catch(() => false)) {

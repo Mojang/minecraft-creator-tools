@@ -36,14 +36,18 @@ test.describe("Text Spacing — Home Page @comprehensive-a11y @visual-a11y", () 
         fullPage: true,
       });
 
-      // Allow some clipping (e.g., intentionally constrained card areas), but flag extreme amounts.
-      // Gallery template cards use fixed heights, so some clipping with text spacing overrides is expected.
+      // Allow at most 2 minor clips (small MUI internals like <legend>
+      // elements or any harmless 3-5px leftovers). The previously-allowed
+      // 15-element budget masked real card-content clipping per WCAG
+      // 1.4.12 — that has now been fixed at the component level
+      // (TemplateCard / GoalPicker / ImageOverlay no longer hard-clip
+      // content), so we tighten the threshold to lock in the gain.
       const majorClips = clipped.filter((c) => c.clippedBy > 20);
       console.log(`Text spacing: ${majorClips.length} elements with >20px clipping in ${theme} mode`);
       expect(
         majorClips.length,
         `Found ${majorClips.length} elements with major text clipping (>20px) in ${theme} mode`
-      ).toBeLessThanOrEqual(15);
+      ).toBeLessThanOrEqual(2);
     });
 
     test(`home page — ${theme} mode — no horizontal overflow with text spacing`, async ({ page }) => {
@@ -84,7 +88,7 @@ test.describe("Text Spacing — Editor @comprehensive-a11y @visual-a11y", () => 
     expect(
       majorClips.length,
       `Found ${majorClips.length} elements with major text clipping in editor`
-    ).toBeLessThanOrEqual(5); // Editor has more constrained areas
+    ).toBeLessThanOrEqual(2); // Editor: tightened from 5 once the card-level fixes from the home page were validated; allow a very small budget for MUI internals.
   });
 
   test("editor — no horizontal overflow with text spacing", async ({ page }) => {

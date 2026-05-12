@@ -60,7 +60,7 @@ export default class HomeNewProjectItemFromFile extends Component<
     });
   }
 
-  _handleFolderSelected(folder: IFolder) {
+  _handleFolderSelected = (folder: IFolder) => {
     this.setState({
       name: this.state.name,
       nameIsManuallySet: this.state.nameIsManuallySet,
@@ -77,9 +77,9 @@ export default class HomeNewProjectItemFromFile extends Component<
         fileSource: this.state.data?.fileSource,
       });
     }*/
-  }
+  };
 
-  _handleNameChanged(e: React.ChangeEvent<HTMLInputElement>) {
+  _handleNameChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (this.props.creatorTools === null || this.state == null) {
       return;
     }
@@ -108,9 +108,9 @@ export default class HomeNewProjectItemFromFile extends Component<
       selectedItem: this.state.selectedItem,
       selectedFolder: this.state.selectedFolder,
     });
-  }
+  };
 
-  _handleTypeChange(e: React.ChangeEvent<HTMLInputElement>) {
+  _handleTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const dataValue = e.target.value;
     if (dataValue === undefined) {
       Log.unexpectedUndefined("IITC");
@@ -172,7 +172,7 @@ export default class HomeNewProjectItemFromFile extends Component<
       action: newAction,
       selectedFolder: this.state.selectedFolder,
     });
-  }
+  };
 
   getRelatedFiles() {
     const items = [];

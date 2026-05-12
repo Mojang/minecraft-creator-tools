@@ -17,6 +17,7 @@ interface McChipProps {
   disabled?: boolean;
   icon?: ReactNode;
   count?: number | string;
+  compact?: boolean;
   className?: string;
   sx?: object;
   ariaLabel?: string;
@@ -135,6 +136,7 @@ export default function McChip({
   disabled = false,
   icon,
   count,
+  compact = false,
   className,
   sx,
   ariaLabel,
@@ -143,6 +145,11 @@ export default function McChip({
   const [isPressed, setIsPressed] = useState(false);
   const colors = colorPalettes[variant];
   const px = 1; // Border pixel size
+  const contentPx = compact ? "8px" : "12px";
+  const contentPy = compact ? "3px" : "6px";
+  const contentFontSize = compact ? "11px" : "14px";
+  const countPx = compact ? "5px" : "8px";
+  const countFontSize = compact ? "11px" : "14px";
 
   const handleMouseDown = () => {
     if (!disabled) setIsPressed(true);
@@ -239,14 +246,14 @@ export default function McChip({
                 gridRow: 2,
                 backgroundColor: bgColor,
                 color: textColor,
-                px: "12px",
-                py: "6px",
+                px: contentPx,
+                py: contentPy,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: "8px",
+                gap: compact ? "4px" : "8px",
                 fontWeight: 600,
-                fontSize: "14px",
+                fontSize: contentFontSize,
                 textTransform: "uppercase",
                 letterSpacing: "0.3px",
                 fontFamily: '"Noto Sans", sans-serif',
@@ -260,10 +267,10 @@ export default function McChip({
                 <Box
                   sx={{
                     backgroundColor: "rgba(0, 0, 0, 0.2)",
-                    px: "8px",
+                    px: countPx,
                     py: "2px",
                     borderRadius: "2px",
-                    fontSize: "14px",
+                    fontSize: countFontSize,
                     fontWeight: 700,
                     fontFamily: '"Consolas", "Monaco", monospace',
                   }}
@@ -317,14 +324,14 @@ export default function McChip({
             sx={{
               backgroundColor: bgColor,
               color: textColor,
-              px: "12px",
-              py: "6px",
+              px: contentPx,
+              py: contentPy,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              gap: "8px",
+              gap: compact ? "4px" : "8px",
               fontWeight: 500,
-              fontSize: "14px",
+              fontSize: contentFontSize,
               textTransform: "uppercase",
               letterSpacing: "0.3px",
               fontFamily: '"Noto Sans", sans-serif',
@@ -337,10 +344,10 @@ export default function McChip({
               <Box
                 sx={{
                   backgroundColor: "rgba(255, 255, 255, 0.1)",
-                  px: "8px",
+                  px: countPx,
                   py: "2px",
                   borderRadius: "2px",
-                  fontSize: "14px",
+                  fontSize: countFontSize,
                   fontWeight: 700,
                   fontFamily: '"Consolas", "Monaco", monospace',
                 }}

@@ -1,6 +1,7 @@
 const gulp = require("gulp");
 const del = require("del");
 const fs = require("fs");
+const path = require("path");
 const { execSync } = require("child_process");
 const newer = require("gulp-newer");
 const importTransform = require("./tools/gulp-importTransform");
@@ -251,19 +252,44 @@ function stripSourceMapA() {
 }
 
 function customizeSiteBody() {
+  // Match the root div with or without the translate="no"/notranslate opt-out attributes.
+  // The HTML source declares them to prevent in-browser translation extensions from
+  // breaking React/Monaco DOM, but the body inserted from site/index.body.html also
+  // declares them, so the swap remains a no-op for those attributes.
   return gulp
     .src(["site/index.body.html"], { base: "" })
-    .pipe(textReplaceStream("build/index.html", /<div id="root"><\/div>/gi));
+    .pipe(textReplaceStream("build/index.html", /<div id="root"(?:\s+[^>]*)?><\/div>/gi));
 }
 
 function copyCheckedInRes() {
-  return gulp.src(["public_supplemental/**/*"]).pipe(gulp.dest("public/"));
+  // Exclude public_supplemental/data/local_forms/ — those overrides are
+  // applied by `mergeLocalFormsIntoPublic` and `mergeLocalFormsIntoVsc`
+  // directly onto the bedrock-schemas baseline (single output location).
+  // Without this exclusion, overrides would land at public/data/local_forms/
+  // and require runtime fallback logic in Database.ts.
+  return gulp
+    .src(["public_supplemental/**/*", "!public_supplemental/data/local_forms/**"])
+    .pipe(gulp.dest("public/"));
 }
 
 // Copy forms from @minecraft/bedrock-schemas package directly to VSC toolbuild
 // (VSC extension is self-contained, so it needs its own copy)
 function copyVscBedrockSchemasForms() {
-  return gulp.src(["node_modules/@minecraft/bedrock-schemas/forms/**/*"]).pipe(gulp.dest("toolbuild/vsc/data/forms/"));
+  return gulp
+    .src(["node_modules/@minecraft/bedrock-schemas/forms/**/*"])
+    .pipe(newer("toolbuild/vsc/data/forms/"))
+    .pipe(gulp.dest("toolbuild/vsc/data/forms/"));
+}
+
+// Overlay our checked-in form OVERRIDES on top of the bedrock-schemas baseline
+// inside the VSC toolbuild output. Same files (e.g. pack/behavior_pack_header_json.form.json)
+// in `public_supplemental/data/local_forms/` REPLACE the upstream copy. This produces
+// a single canonical location (`toolbuild/vsc/data/forms/`) the VSC extension can read
+// without runtime branching.
+function mergeLocalFormsIntoVsc() {
+  return gulp
+    .src(["public_supplemental/data/local_forms/**/*"])
+    .pipe(gulp.dest("toolbuild/vsc/data/forms/"));
 }
 
 // Copy forms from @minecraft/bedrock-schemas into public/data/forms/ so they are
@@ -272,11 +298,58 @@ function copyBedrockSchemaFormsToPublic() {
   return gulp.src(["node_modules/@minecraft/bedrock-schemas/forms/**/*"]).pipe(gulp.dest("public/data/forms/"));
 }
 
+// Overlay our checked-in form OVERRIDES on top of the bedrock-schemas baseline.
+// Source-of-truth lives at `public_supplemental/data/local_forms/`; same-named
+// files (e.g. pack/behavior_pack_header_json.form.json) REPLACE upstream copies.
+// Producing a single canonical `public/data/forms/` location means consumers
+// (Database.ensureFormLoaded, HttpFolder, tests) all hit one place — no runtime
+// fallback chain needed.
+//
+// Why not patch node_modules directly? Because npm install would clobber it.
+// Why not contribute upstream? We should — but the npm release cadence on
+// `@minecraft/bedrock-schemas` is out of band, so the build-time merge is the
+// bridge. When upstream catches up, delete the override file and the merge
+// becomes a no-op for that form.
+function mergeLocalFormsIntoPublic() {
+  return gulp
+    .src(["public_supplemental/data/local_forms/**/*"])
+    .pipe(gulp.dest("public/data/forms/"));
+}
+
+// Generate index.json files for each forms subdirectory so the web app's
+// HttpFolder can discover form files at runtime (Vite doesn't serve directory listings).
+function generateFormIndexFiles(done) {
+  const formsDir = path.join(__dirname, "public/data/forms");
+  if (!fs.existsSync(formsDir)) {
+    done();
+    return;
+  }
+
+  const subdirs = fs.readdirSync(formsDir, { withFileTypes: true }).filter((d) => d.isDirectory());
+  for (const dir of subdirs) {
+    const dirPath = path.join(formsDir, dir.name);
+    const files = fs.readdirSync(dirPath).filter((f) => f.endsWith(".json") && f !== "index.json");
+    const indexData = { files: files, folders: [] };
+    fs.writeFileSync(path.join(dirPath, "index.json"), JSON.stringify(indexData));
+  }
+  done();
+}
+
 function copyVscData() {
   return gulp
-    .src(["public/data/**/*.json", "public/data/**/*.zip", "public/data/**/*.mcworld", "!public/data/forms/**"], {
-      encoding: false,
-    })
+    .src(
+      [
+        "public/data/**/*.json",
+        "public/data/**/*.zip",
+        "public/data/**/*.mcworld",
+        "public/data/atlases/**/*.png",
+        "!public/data/forms/**",
+      ],
+      {
+        encoding: false,
+      }
+    )
+    .pipe(newer("toolbuild/vsc/data/"))
     .pipe(gulp.dest("toolbuild/vsc/data/"));
 }
 
@@ -334,12 +407,14 @@ function copyJsNodeDocs() {
 function copyVscResPreviewMetadataVanillaData() {
   return gulp
     .src(["public/res/latest/van/preview/metadata/vanilladata_modules/**/*"], { allowEmpty: true })
+    .pipe(newer("toolbuild/vsc/res/latest/van/preview/metadata/vanilladata_modules/"))
     .pipe(gulp.dest("toolbuild/vsc/res/latest/van/preview/metadata/vanilladata_modules/"));
 }
 
 function copyVscResPreviewMetadataCommandModules() {
   return gulp
     .src(["public/res/latest/van/preview/metadata/command_modules/**/*"], { allowEmpty: true })
+    .pipe(newer("toolbuild/vsc/res/latest/van/preview/metadata/command_modules/"))
     .pipe(gulp.dest("toolbuild/vsc/res/latest/van/preview/metadata/command_modules/"));
 }
 
@@ -348,33 +423,52 @@ function copyVscResPreviewMetadataIndex() {
     .src(["public/res/latest/van/preview/metadata/index.json", "public/res/latest/van/preview/metadata/README.md"], {
       allowEmpty: true,
     })
+    .pipe(newer("toolbuild/vsc/res/latest/van/preview/metadata/"))
     .pipe(gulp.dest("toolbuild/vsc/res/latest/van/preview/metadata/"));
 }
 
 function copyVscResSchemas() {
-  return gulp.src(["public/res/latest/schemas/**/*"]).pipe(gulp.dest("toolbuild/vsc/res/latest/schemas/"));
+  return gulp
+    .src(["public/res/latest/schemas/**/*"])
+    .pipe(newer("toolbuild/vsc/res/latest/schemas/"))
+    .pipe(gulp.dest("toolbuild/vsc/res/latest/schemas/"));
 }
 
 // Copy official schemas from @minecraft/bedrock-schemas to toolbuild/vsc/schemas/
 // These are used by Database.getOfficialSchema() for JSON validation
 function copyVscSchemas() {
-  return gulp.src(["node_modules/@minecraft/bedrock-schemas/schemas/**/*"]).pipe(gulp.dest("toolbuild/vsc/schemas/"));
+  return gulp
+    .src(["node_modules/@minecraft/bedrock-schemas/schemas/**/*"])
+    .pipe(newer("toolbuild/vsc/schemas/"))
+    .pipe(gulp.dest("toolbuild/vsc/schemas/"));
 }
 
 function copyVscResImages() {
-  return gulp.src(["public/res/images/**/*"], { encoding: false }).pipe(gulp.dest("toolbuild/vsc/res/images/"));
+  return gulp
+    .src(["public/res/images/**/*"], { encoding: false })
+    .pipe(newer("toolbuild/vsc/res/images/"))
+    .pipe(gulp.dest("toolbuild/vsc/res/images/"));
 }
 
 function copyVscResIcons() {
-  return gulp.src(["public/res/icons/**/*"], { encoding: false }).pipe(gulp.dest("toolbuild/vsc/res/icons/"));
+  return gulp
+    .src(["public/res/icons/**/*"], { encoding: false })
+    .pipe(newer("toolbuild/vsc/res/icons/"))
+    .pipe(gulp.dest("toolbuild/vsc/res/icons/"));
 }
 
 function copyVscResSnapshots() {
-  return gulp.src(["public/res/snapshots/**/*"], { encoding: false }).pipe(gulp.dest("toolbuild/vsc/res/snapshots/"));
+  return gulp
+    .src(["public/res/snapshots/**/*"], { encoding: false })
+    .pipe(newer("toolbuild/vsc/res/snapshots/"))
+    .pipe(gulp.dest("toolbuild/vsc/res/snapshots/"));
 }
 
 function copyVscResSamples() {
-  return gulp.src(["public/res/samples/**/*"], { encoding: false }).pipe(gulp.dest("toolbuild/vsc/res/samples/"));
+  return gulp
+    .src(["public/res/samples/**/*"], { encoding: false })
+    .pipe(newer("toolbuild/vsc/res/samples/"))
+    .pipe(gulp.dest("toolbuild/vsc/res/samples/"));
 }
 
 function copyJsNodeResSamples() {
@@ -385,7 +479,10 @@ function copyJsNodeResSamples() {
 }
 
 function copyVscMc() {
-  return gulp.src(["public/data/content/**/*.mcaddon"], { encoding: false }).pipe(gulp.dest("toolbuild/vsc/mc/"));
+  return gulp
+    .src(["public/data/content/**/*.mcaddon"], { encoding: false })
+    .pipe(newer("toolbuild/vsc/mc/"))
+    .pipe(gulp.dest("toolbuild/vsc/mc/"));
 }
 
 function copyJsNodeResPreviewMetadataVanillaData() {
@@ -470,11 +567,14 @@ function copyJsNodeDocker() {
 }
 
 function copyVscAssets() {
-  return gulp.src(["vscode/**/*.json"]).pipe(gulp.dest("toolbuild/vsc/"));
+  return gulp.src(["vscode/**/*.json"]).pipe(newer("toolbuild/vsc/")).pipe(gulp.dest("toolbuild/vsc/"));
 }
 
 function copyVscDocs() {
-  return gulp.src(["../CHANGELOG.md", "../LICENSE.md", "vscode/README.md"]).pipe(gulp.dest("toolbuild/vsc/"));
+  return gulp
+    .src(["../CHANGELOG.md", "../LICENSE.md", "vscode/README.md"])
+    .pipe(newer("toolbuild/vsc/"))
+    .pipe(gulp.dest("toolbuild/vsc/"));
 }
 
 gulp.task("clean-jsnbuild", function () {
@@ -580,7 +680,18 @@ gulp.task("copyjsnodedata", gulp.series(copyJsNodeData));
 
 gulp.task(
   "copybedrockschemas",
-  gulp.parallel(copyVscBedrockSchemasForms, copyVscSchemas, copyBedrockSchemaFormsToPublic)
+  gulp.series(
+    // Step 1: lay down the bedrock-schemas baseline into both web (public/data/forms/)
+    // and VSC (toolbuild/vsc/data/forms/) outputs in parallel.
+    gulp.parallel(copyVscBedrockSchemasForms, copyVscSchemas, copyBedrockSchemaFormsToPublic),
+    // Step 2: overlay our checked-in form OVERRIDES on top of the baseline.
+    // Same-named files (e.g. pack/behavior_pack_header_json.form.json) replace
+    // upstream copies, producing a single canonical output location with no
+    // runtime fallback chain.
+    gulp.parallel(mergeLocalFormsIntoPublic, mergeLocalFormsIntoVsc),
+    // Step 3: regenerate index.json files for HttpFolder discovery.
+    generateFormIndexFiles
+  )
 );
 
 gulp.task("vsccoreexebuild", compileVscCoreExeBuild);
@@ -610,7 +721,8 @@ gulp.task(
 // via the "app/toolbuild/vsc/*.vsix" asset glob.
 function packageVsix(done) {
   try {
-    execSync("npx @vscode/vsce package --no-dependencies -o .", {
+    const vscePath = require.resolve("@vscode/vsce/vsce");
+    execSync(`node "${vscePath}" package --no-dependencies -o .`, {
       cwd: "toolbuild/vsc",
       stdio: "inherit",
     });
@@ -647,6 +759,42 @@ gulp.task(
     packageVsix
   )
 );
+
+// vscdevbuild: Fastest incremental VSC build for F5 debugging.
+// Skips the .vsix packaging step — the extensionDevelopmentPath launch config
+// loads directly from toolbuild/vsc/, so there's no need to repackage on every run.
+// Also skips clean-vscbuild for fast iteration; use vscbuild or vscfullbuild for
+// a clean-slate build before packaging or release.
+gulp.task(
+  "vscdevbuild",
+  gulp.series(
+    copyCheckedInRes,
+    gulp.parallel(
+      "vsccoreexebuild",
+      "vsccorewebbuild",
+      gulp.series(compileVscWebBuild, "postclean-vscwebbuild"),
+      copyVscAssets,
+      copyVscDocs,
+      copyVscData,
+      copyVscBedrockSchemasForms,
+      copyVscResPreviewMetadataVanillaData,
+      copyVscResPreviewMetadataCommandModules,
+      copyVscResPreviewMetadataIndex,
+      copyVscResSchemas,
+      copyVscSchemas,
+      copyVscResImages,
+      copyVscResIcons,
+      copyVscResSnapshots,
+      copyVscResSamples,
+      copyVscMc
+    )
+  )
+);
+
+// vscfullbuild: Clean + build + package. Equivalent to vscbuild now that
+// vscbuild includes its own clean-vscbuild step; retained for clarity in
+// CI/release scripts and for symmetry with other *fullbuild tasks.
+gulp.task("vscfullbuild", gulp.series("clean-vscbuild", "vscbuild"));
 
 function compileWebJsBuild(done) {
   // Use direct tsc invocation instead of gulp-typescript for TypeScript 5.x compatibility
@@ -728,8 +876,21 @@ function convertVanillaTgaToPng() {
   return gulp.src("package.json").pipe(tgaToPng(vanillaDirectories));
 }
 
+function generateItemCatalog(done) {
+  const { execSync } = require("child_process");
+  try {
+    console.log("Generating item catalog and sprite atlas...");
+    execSync("node scripts/generate-item-catalog.mjs", { stdio: "inherit", cwd: __dirname });
+    done();
+  } catch (err) {
+    console.error("Item catalog generation failed:", err.message);
+    done(err);
+  }
+}
+
 gulp.task("createresserve", copyResLatestPreviewToServe);
 gulp.task("tgatopng", convertVanillaTgaToPng);
+gulp.task("generateitemcatalog", generateItemCatalog);
 
 gulp.task("vscwebbuild", gulp.series("clean-vscwebbuild", compileVscWebBuild, "postclean-vscwebbuild"));
 
@@ -767,7 +928,8 @@ gulp.task(
       copyCheckedInRes
     ),
     copyResLatestPreviewToServe,
-    convertVanillaTgaToPng
+    convertVanillaTgaToPng,
+    generateItemCatalog
   )
 );
 

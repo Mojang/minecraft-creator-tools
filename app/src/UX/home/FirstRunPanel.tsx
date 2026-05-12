@@ -18,8 +18,9 @@ import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../app/CreatorTools
 import { CreatorToolsEditPreference } from "../../app/ICreatorToolsData";
 import "./FirstRunPanel.css";
 import IProjectTheme from "../types/IProjectTheme";
+import { WithLocalizationProps, withLocalization } from "../withLocalization";
 
-interface IFirstRunPanelProps {
+interface IFirstRunPanelProps extends WithLocalizationProps {
   creatorTools: CreatorTools;
   theme: IProjectTheme;
   onDismiss: () => void;
@@ -31,7 +32,7 @@ interface IFirstRunPanelState {
   dontShowAgain: boolean;
 }
 
-export default class FirstRunPanel extends Component<IFirstRunPanelProps, IFirstRunPanelState> {
+class FirstRunPanel extends Component<IFirstRunPanelProps, IFirstRunPanelState> {
   constructor(props: IFirstRunPanelProps) {
     super(props);
 
@@ -104,8 +105,8 @@ export default class FirstRunPanel extends Component<IFirstRunPanelProps, IFirst
         <button
           className="frp-dismissButton"
           onClick={this._handleDismiss}
-          title="Dismiss"
-          aria-label="Dismiss welcome panel"
+          title={this.props.intl.formatMessage({ id: "first_run.dismiss_title" })}
+          aria-label={this.props.intl.formatMessage({ id: "first_run.dismiss_aria" })}
         >
           <FontAwesomeIcon icon={faTimes} />
         </button>
@@ -113,10 +114,9 @@ export default class FirstRunPanel extends Component<IFirstRunPanelProps, IFirst
         {/* Welcome Header */}
         <div className="frp-header">
           <div className="frp-headerText">
-            <h1 className="frp-title">Welcome to Minecraft Creator Tools!</h1>
+            <h1 className="frp-title">{this.props.intl.formatMessage({ id: "first_run.welcome_title" })}</h1>
             <p className="frp-subtitle">
-              Create, edit, and validate your Minecraft Bedrock Edition add-ons. Choose your editing experience below.
-              You can change this anytime in Settings.
+              {this.props.intl.formatMessage({ id: "first_run.welcome_subtitle" })}
             </p>
           </div>
         </div>
@@ -136,10 +136,10 @@ export default class FirstRunPanel extends Component<IFirstRunPanelProps, IFirst
             </div>
             <div className="frp-optionContent">
               <div className="frp-optionTitle">
-                Focused <span className="frp-recommendedBadge">Recommended</span>
+                {this.props.intl.formatMessage({ id: "first_run.focused" })} <span className="frp-recommendedBadge">{this.props.intl.formatMessage({ id: "first_run.recommended" })}</span>
               </div>
               <div className="frp-optionDesc">
-                Step-by-step guidance for creating your first add-on — simplified views with only essential options.
+                {this.props.intl.formatMessage({ id: "first_run.focused_desc" })}
               </div>
             </div>
             {selectedPreference === CreatorToolsEditPreference.summarized && (
@@ -161,9 +161,9 @@ export default class FirstRunPanel extends Component<IFirstRunPanelProps, IFirst
               <FontAwesomeIcon icon={faEye} />
             </div>
             <div className="frp-optionContent">
-              <div className="frp-optionTitle">Full</div>
+              <div className="frp-optionTitle">{this.props.intl.formatMessage({ id: "first_run.full" })}</div>
               <div className="frp-optionDesc">
-                Complete file access with visual editors — see all project files and use form-based editing.
+                {this.props.intl.formatMessage({ id: "first_run.full_desc" })}
               </div>
             </div>
             {selectedPreference === CreatorToolsEditPreference.editors && (
@@ -185,9 +185,9 @@ export default class FirstRunPanel extends Component<IFirstRunPanelProps, IFirst
               <FontAwesomeIcon icon={faCode} />
             </div>
             <div className="frp-optionContent">
-              <div className="frp-optionTitle">Raw</div>
+              <div className="frp-optionTitle">{this.props.intl.formatMessage({ id: "first_run.raw" })}</div>
               <div className="frp-optionDesc">
-                Direct JSON editing with full control — edit raw Minecraft data files for maximum flexibility.
+                {this.props.intl.formatMessage({ id: "first_run.raw_desc" })}
               </div>
             </div>
             {selectedPreference === CreatorToolsEditPreference.raw && (
@@ -202,10 +202,12 @@ export default class FirstRunPanel extends Component<IFirstRunPanelProps, IFirst
         <div className="frp-footer">
           <FormControlLabel
             control={<Checkbox checked={this.state.dontShowAgain} onChange={this._handleDontShowAgainChange} />}
-            label="Don't show this again"
+            label={this.props.intl.formatMessage({ id: "first_run.dont_show_again" })}
           />
         </div>
       </div>
     );
   }
 }
+
+export default withLocalization(FirstRunPanel);

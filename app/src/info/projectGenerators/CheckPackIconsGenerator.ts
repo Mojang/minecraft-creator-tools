@@ -36,6 +36,10 @@ export default class CheckPackIconsGenerator implements IProjectInfoGenerator {
   async generate(project: Project): Promise<ProjectInfoItem[]> {
     const results: ProjectInfoItem[] = [];
 
+    if (project.isVanillaEditSession) {
+      return results;
+    }
+
     for (const pack of project.packs) {
       if (requiresPackIcon(pack)) {
         const result = await this.getResultForPack(pack);

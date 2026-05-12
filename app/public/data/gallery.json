@@ -1968,6 +1968,15 @@
       "descriptionKey": "gallery.loot_table.description"
     },
     {
+      "title": "Trade Table",
+      "description": "Defines a villager-style trading economy: tiers of trades, the items each side wants and gives, and the experience required to unlock subsequent tiers.",
+      "id": "trade_table",
+      "type": 21,
+      "targetType": 45,
+      "titleKey": "gallery.trade_table.title",
+      "descriptionKey": "gallery.trade_table.description"
+    },
+    {
       "title": "Recipe (Shapeless)",
       "description": "Used to define how a player can create new items from a set of existing items - without a need for a specific arrangement",
       "id": "recipe_shapeless",
