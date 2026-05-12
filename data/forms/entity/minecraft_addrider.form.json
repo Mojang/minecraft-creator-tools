@@ -1,0 +1,236 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "adds a rider to this entity"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "entity_type",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "spawns with a "
+          },
+          {
+            "type": "value",
+            "field": "entity_type",
+            "humanify": "minecraft"
+          },
+          {
+            "type": "literal",
+            "text": " rider"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "spawn_event",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "triggering event on spawn"
+          }
+        ]
+      }
+    ]
+  },
+  "title": "Add Rider",
+  "requires": [
+    {
+      "id": "minecraft:rideable",
+      "type": "entity_component"
+    }
+  ],
+  "description": "Adds a rider to the entity.",
+  "fields": [
+    {
+      "id": "entity_type",
+      "title": "Entity type to ride",
+      "description": "Type of entity to acquire as a rider",
+      "dataType": "stringLookup",
+      "lookupId": "entityType"
+    },
+    {
+      "id": "spawn_event",
+      "description": "Trigger event when a rider is acquired",
+      "dataType": "minecraftEventReference",
+      "lookupId": "entityTypeEvents",
+      "title": "Spawn Event"
+    },
+    {
+      "id": "riders",
+      "title": "Riders",
+      "description": "List of riders to be added to the entity. Can only spawn as many riders as \"minecraft:rideable\" has \"seat_count\".",
+      "dataType": "objectArray",
+      "subFormId": "entity/rider_data",
+      "mergeSubForm": true,
+      "samples": {
+        "/vanilla/behavior_pack/entities/cave_spider.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:spider_bogged_jockey/minecraft:addrider/",
+            "content": [
+              {
+                "entity_type": "minecraft:bogged"
+              }
+            ]
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:spider_wither_jockey/minecraft:addrider/",
+            "content": [
+              {
+                "entity_type": "minecraft:wither_skeleton"
+              }
+            ]
+          }
+        ]
+      },
+      "defaultValue": []
+    }
+  ],
+  "samples": {
+    "/vanilla/behavior_pack/entities/cave_spider.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_bogged_jockey/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:bogged"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_wither_jockey/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:wither_skeleton"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_jockey/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:skeleton"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_parched_jockey/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:parched"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_stray_jockey/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:stray"
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/spider.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_bogged_jockey/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:bogged"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_wither_jockey/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:wither_skeleton"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_jockey/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:skeleton"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_stray_jockey/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:stray"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_parched_jockey/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:parched"
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/strider.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:strider_piglin_jockey/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:zombie_pigman",
+              "spawn_event": "minecraft:spawn_as_strider_jockey"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:strider_parent_jockey/minecraft:addrider/",
+        "content": {
+          "riders": [
+            {
+              "entity_type": "minecraft:strider",
+              "spawn_event": "minecraft:spawn_baby_strider_jockey"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "id": "minecraft:addrider"
+}

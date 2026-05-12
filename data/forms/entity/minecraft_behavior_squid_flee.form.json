@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "swims away from threats"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "priority",
+      "title": "Priority",
+      "hideSamples": true,
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "dataType": "int"
+    }
+  ],
+  "restrictions": [
+    {
+      "id": "minecraft:squid",
+      "type": "entity_type"
+    }
+  ],
+  "description": "Allows the squid to swim away.",
+  "title": "Squid Flee Behavior",
+  "samples": {},
+  "id": "minecraft:behavior.squid_flee"
+}

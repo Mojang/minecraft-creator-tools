@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "RandomPoolAlias",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "creates a pool alias with a random list of targets"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "alias",
+      "title": "Alias",
+      "description": "Alias of Random Pool",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "targets",
+      "title": "Targets",
+      "description": "List of potential pools",
+      "dataType": "objectArray",
+      "subFormId": "world/jigsawtemplatepool",
+      "isRequired": true
+    }
+  ],
+  "description": "Pool alias for a Random list of targets",
+  "title": "Structure RandomPoolAlias"
+}

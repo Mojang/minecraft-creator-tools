@@ -1,0 +1,126 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "boolean",
+            "comparison": "equals",
+            "compareTo": false
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "cannot catch fire from neighbors"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "boolean",
+            "comparison": "equals",
+            "compareTo": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "is flammable (default values)"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "catch_chance_modifier",
+            "comparison": "defined"
+          },
+          {
+            "field": "destroy_chance_modifier",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "is flammable (catch: "
+          },
+          {
+            "type": "value",
+            "field": "catch_chance_modifier"
+          },
+          {
+            "type": "literal",
+            "text": ", destroy: "
+          },
+          {
+            "type": "value",
+            "field": "destroy_chance_modifier"
+          },
+          {
+            "type": "literal",
+            "text": ")"
+          }
+        ]
+      },
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "is flammable"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "Describes the flammable properties for this block. If set to true, default values are used (catch: 5, destroy: 20, same as planks). If set to false, or if this component is omitted, the block will not be able to catch on fire naturally from neighbors, but it can still be directly ignited.",
+  "fields": [
+    {
+      "id": "catch_chance_modifier",
+      "title": "Catch Chance Modifier",
+      "description": "A modifier affecting the chance that this block will catch flame when next to a fire. Values are greater than or equal to 0, with a higher number meaning more likely to catch on fire. For a \"catch_chance_modifier\" greater than 0, the fire will continue to burn until the block is destroyed (or it will burn forever if the \"destroy_chance_modifier\" is 0). If the \"catch_chance_modifier\" is 0, and the block is directly ignited, the fire will eventually burn out without destroying the block (or it will have a chance to be destroyed if \"destroy_chance_modifier\" is greater than 0). The default value of 5 is the same as that of Planks.",
+      "defaultValue": 5,
+      "dataType": "int"
+    },
+    {
+      "id": "destroy_chance_modifier",
+      "title": "Destroy Chance Modifier",
+      "description": "A modifier affecting the chance that this block will be destroyed by flames when on fire. Values are greater than or equal to 0, with a higher number meaning more likely to be destroyed by fire. For a \"destroy_chance_modifier\" of 0, the block will never be destroyed by fire, and the fire will burn forever if the \"catch_chance_modifier\" is greater than 0. The default value of 20 is the same as that of Planks.",
+      "defaultValue": 20,
+      "dataType": "int"
+    }
+  ],
+  "scalarField": {
+    "id": "boolean",
+    "title": "Object enabled",
+    "tags": [
+      "presence"
+    ],
+    "dataType": "boolean"
+  },
+  "samples": {
+    "Block Fabricator": [
+      {
+        "path": "https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json",
+        "content": {
+          "destroy_chance_modifier": 20,
+          "catch_chance_modifier": 5
+        }
+      }
+    ],
+    "Block Leaf Pile": [
+      {
+        "path": "https://github.com/microsoft/minecraft-samples/tree/main/creator_camp/behavior_packs/creator_camp/blocks/leaf_pile.block.json",
+        "content": {
+          "destroy_chance_modifier": 100,
+          "catch_chance_modifier": 100
+        }
+      }
+    ]
+  },
+  "title": "Flammable",
+  "id": "minecraft:flammable"
+}

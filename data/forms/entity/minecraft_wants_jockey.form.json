@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "wants to become a jockey"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [],
+  "description": "Sets that this entity wants to become a jockey.",
+  "title": "Wants Jockey",
+  "id": "minecraft:wants_jockey"
+}

@@ -1,0 +1,67 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "DirectionSettings Proxy",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "controls direction settings for effects"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "custom_direction",
+      "title": "Custom Direction",
+      "dataType": "keyedStringCollection",
+      "minLength": 3,
+      "maxLength": 3,
+      "alternates": [
+        {
+          "id": "custom_direction",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "custom_direction",
+            "title": "Custom Direction",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "custom_direction",
+          "dataType": "float"
+        }
+      ]
+    },
+    {
+      "id": "min_speed_threshold",
+      "title": "Min Speed Threshold",
+      "dataType": "float"
+    },
+    {
+      "id": "mode",
+      "title": "Particle Appearance Billboard Direction Settings Mode",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "description": "Controls direction settings for effects.",
+  "title": "DirectionSettings Proxy Client Misc"
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "music_play",
+  "title": "Play Music",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "plays a music track"
+          }
+        ]
+      }
+    ]
+  },
+  "tags": [
+    "script",
+    "action"
+  ],
+  "fields": [
+    {
+      "id": "location",
+      "title": "Location Offset",
+      "dataType": "locationOffset",
+      "priority": 10
+    },
+    {
+      "id": "trackName",
+      "title": "Play Track",
+      "dataType": "string",
+      "isRequired": true,
+      "priority": 1
+    }
+  ],
+  "description": "Plays a music track for one or more players. Music tracks are longer audio files defined in sound_definitions.json under the music category. Unlike short sound effects, music respects the Music volume slider and can fade in/out smoothly."
+}

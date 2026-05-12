@@ -1,0 +1,1556 @@
+{
+  "namespace": "how_to_play",
+
+  "how_to_play_screen@how_to_play_common.screen_base": {
+    "$selector_stack_panel": "how_to_play.how_to_play_selector_stack_panel",
+    "$section_content_panels": "how_to_play.how_to_play_section_content_panels",
+    "$header_safezone_control": "common_store.store_top_bar_filler",
+    "$header_bar_control": "common_store.store_top_bar",
+    "$is_full_screen_layout": true,
+    "$fill_alpha": 1.0
+  },
+
+  "how_to_play_selector_stack_panel": {
+    "type": "stack_panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "orientation": "vertical",
+    "$default_selector_toggle_index": 2,
+    "controls": [
+      {
+        "how_to_play_selector_pane": {
+          "type": "stack_panel",
+          "controls": [
+            // Make sure the $toggle_group_forced_index values match the respective enum values in HowToPlayScreenController.h
+            { "getting_started_category@how_to_play_common.topic_category": { "$category": "gettingStarted" } },
+            { "moving_around_button@how_to_play.moving_around_button": { "$toggle_group_forced_index": 0 } },
+            { "gathering_resources_button@how_to_play.gathering_resources_button": { "$toggle_group_forced_index": 1 } },
+            { "selecting_items_button@how_to_play.selecting_items_button": { "$toggle_group_forced_index": 2 } },
+            { "placing_blocks_button@how_to_play.placing_blocks_button": { "$toggle_group_forced_index": 3 } },
+            { "inventory_button@how_to_play.inventory_button": { "$toggle_group_forced_index": 4 } },
+
+            { "preparing_for_the_night_category@how_to_play_common.topic_category": { "$category": "preparingForTheNight" } },
+            { "your_first_craft_button@how_to_play.your_first_craft_button": { "$toggle_group_forced_index": 5 } },
+            { "recipe_book_button@how_to_play.recipe_book_button": { "$toggle_group_forced_index": 6 } },
+            { "the_crafting_table_button@how_to_play.the_crafting_table_button": { "$toggle_group_forced_index": 7 } },
+            { "crafting_a_tool_button@how_to_play.crafting_a_tool_button": { "$toggle_group_forced_index": 8 } },
+            { "mining_button@how_to_play.mining_button": { "$toggle_group_forced_index": 9 } },
+
+            { "surviving_the_first_night_category@how_to_play_common.topic_category": { "$category": "survivingTheFirstNight" } },
+            { "nightfall_new_button@how_to_play.nightfall_new_button": { "$toggle_group_forced_index": 10 } },
+            { "building_a_shelter_button@how_to_play.building_a_shelter_button": { "$toggle_group_forced_index": 11 } },
+            { "death_and_respawn_button@how_to_play.death_and_respawn_button": { "$toggle_group_forced_index": 12 } },
+
+            { "getting_settled_category@how_to_play_common.topic_category": { "$category": "gettingSettled" } },
+            { "food_button@how_to_play.food_button": { "$toggle_group_forced_index": 13 } },
+            { "beds_new_button@how_to_play.beds_new_button": { "$toggle_group_forced_index": 14 } },
+            { "improved_tools_button@how_to_play.improved_tools_button": { "$toggle_group_forced_index": 15 } },
+
+            {
+              "education_category@how_to_play_common.topic_category": {
+                "$category": "education",
+                "ignored": "(not $education_edition)"
+              }
+            },
+            { "world_builder_button@how_to_play.world_builder_button": { "$toggle_group_forced_index": 18 } },
+            { "permission_blocks_button@how_to_play.permission_blocks_button": { "$toggle_group_forced_index": 17 } },
+            { "chalkboard_button@how_to_play.chalkboard_button": { "$toggle_group_forced_index": 18 } },
+            { "chemistry_button@how_to_play.chemistry_button": { "$toggle_group_forced_index": 19 } },
+            { "npc_button@how_to_play.npc_button": { "$toggle_group_forced_index": 20 } },
+            { "camera_button@how_to_play.camera_button": { "$toggle_group_forced_index": 21 } },
+            { "portfolio_button@how_to_play.portfolio_button": { "$toggle_group_forced_index": 22 } },
+            { "classroom_mode_button@how_to_play.classroom_mode_button": { "$toggle_group_forced_index": 23 } },
+            { "code_builder_button@how_to_play.code_builder_button": { "$toggle_group_forced_index": 24 } },
+
+            {
+              "padding_1@how_to_play_common.padding": {
+                "size": [ 0, 10 ]
+              }
+            },
+            {
+              "playing_together_button@how_to_play.playing_together_button": {
+                "$toggle_group_forced_index": 25,
+                "ignored": "$education_edition"
+              }
+            },
+            { "encyclopedia_button@how_to_play.encyclopedia_button": { "$toggle_group_forced_index": 26 } }
+          ]
+        }
+      }
+    ]
+  },
+
+  "how_to_play_section_content_panels": {
+    "type": "stack_panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "size": [ "100% - 5px", "100%c + 5px" ],
+    "offset": [ 2, 0 ],
+    "controls": [
+      {
+        "general_tips_sections": {
+          "type": "stack_panel",
+          "controls": [
+            {
+              "section_contents_header@how_to_play_common.section_contents_header": {}
+            },
+            { "moving_around_section@how_to_play.moving_around_section": {} },
+            { "gathering_resources_section@how_to_play.gathering_resources_section": {} },
+            { "selecting_items_section@how_to_play.selecting_items_section": {} },
+            { "placing_blocks_section@how_to_play.placing_blocks_section": {} },
+            { "inventory_section@how_to_play.inventory_section": {} },
+
+            { "your_first_craft_section@how_to_play.your_first_craft_section": {} },
+            { "recipe_book_section@how_to_play.recipe_book_section": {} },
+            { "the_crafting_table_section@how_to_play.the_crafting_table_section": {} },
+            { "crafting_a_tool_section@how_to_play.crafting_a_tool_section": {} },
+            { "mining_section@how_to_play.mining_section": {} },
+
+            { "nightfall_new_section@how_to_play.nightfall_new_section": {} },
+            { "building_a_shelter_section@how_to_play.building_a_shelter_section": {} },
+            { "death_and_respawn_section@how_to_play.death_and_respawn_section": {} },
+
+            { "food_section@how_to_play.food_section": {} },
+            { "beds_new_section@how_to_play.beds_new_section": {} },
+            { "improved_tools_section@how_to_play.improved_tools_section": {} },
+
+            { "world_builder_section@how_to_play.world_builder_section": { "ignored": "(not $education_edition)" } },
+            { "permission_blocks_section@how_to_play.permission_blocks_section": { "ignored": "(not $education_edition)" } },
+            { "chalkboard_section@how_to_play.chalkboard_section": { "ignored": "(not $education_edition)" } },
+            { "chemistry_section@how_to_play.chemistry_section": { "ignored": "(not $education_edition)" } },
+            { "npc_section@how_to_play.npc_section": { "ignored": "(not $education_edition)" } },
+            { "camera_section@how_to_play.camera_section": { "ignored": "(not $education_edition)" } },
+            { "portfolio_section@how_to_play.portfolio_section": { "ignored": "(not $education_edition)" } },
+            { "classroom_mode_section@how_to_play.classroom_mode_section": { "ignored": "(not $education_edition)" } },
+            { "code_builder_section@how_to_play.code_builder_section": { "ignored": "(not $education_edition)" } },
+
+            { "playing_together_section@how_to_play.playing_together_section": { "ignored": "$education_edition" } },
+            { "encyclopedia_section@how_to_play.encyclopedia_section": {} },
+            {
+              "section_contents_footer@how_to_play_common.section_contents_footer": {}
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "moving_around_button@how_to_play_common.section_toggle_button": {
+    "$section_topic": "movingAround"
+  },
+
+  "moving_around_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "movingAround_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "paragraph_1@how_to_play_common.paragraph": {
+          "$text": "howtoplay.movingAround.text.1"
+        }
+      },
+      { "padding_1@how_to_play_common.padding": {} },
+      {
+        "paragraph_2_keyboard@how_to_play_common.paragraph_keyboard": {
+          "$text": "howtoplay.movingAround.text.2.keyboard"
+        }
+      },
+      {
+        "paragraph_2_gamepad@how_to_play_common.paragraph_gamepad": {
+          "$text": "howtoplay.movingAround.text.2.gamepad"
+        }
+      },
+      {
+        "paragraph_touch_joystick_tap@how_to_play_common.paragraph_touch_no_icons": {
+          "$text": "howtoplay.movingAround.text.2.touch"
+        }
+      },
+      { "padding_2@how_to_play_common.padding": {} },
+      {
+        "paragraph_3a_keyboard@how_to_play_common.paragraph_keyboard": {
+          "$text": "howtoplay.movingAround.text.3a.keyboard"
+        }
+      },
+      {
+        "paragraph_3b_keyboard@how_to_play_common.paragraph_keyboard": {
+          "$text": "howtoplay.movingAround.text.3b.keyboard"
+        }
+      },
+      {
+        "paragraph_3a_gamepad@how_to_play_common.paragraph_gamepad": {
+          "$text": "howtoplay.movingAround.text.3.gamepad"
+        }
+      },
+      {
+        "paragraph_3b_gamepad@how_to_play_common.paragraph_gamepad": {
+          "$text": "howtoplay.movingAround.text.3b.gamepad"
+        }
+      },
+      {
+        "paragraph_3_touch_joystick_tap@how_to_play_common.paragraph_touch_joystick_tap": {
+          "$text": "howtoplay.movingAround.text.3.touch.joystick_tap"
+        }
+      },
+      {
+        "paragraph_3a_touch_classic_dpad@how_to_play_common.paragraph_touch_classic_dpad": {
+          "$text": "howtoplay.movingAround.text.3a.touch.classic_dpad"
+        }
+      },
+      {
+        "paragraph_3b_touch_classic_dpad@how_to_play_common.paragraph_touch_classic_dpad": {
+          "$text": "howtoplay.movingAround.text.3b.touch.classic_dpad"
+        }
+      },
+      {
+        "paragraph_3c_touch_classic_dpad@how_to_play_common.paragraph_touch_classic_dpad": {
+          "$text": "howtoplay.movingAround.text.3c.touch.classic_dpad"
+        }
+      },
+      {
+        "paragraph_3d_touch_classic_dpad@how_to_play_common.paragraph_touch_classic_dpad": {
+          "$text": "howtoplay.movingAround.text.3d.touch.classic_dpad"
+        }
+      },
+      {
+        "paragraph_3e_touch_classic_dpad@how_to_play_common.paragraph_touch_classic_dpad": {
+          "$text": "howtoplay.movingAround.text.3e.touch.classic_dpad"
+        }
+      },
+      {
+        "paragraph_3_touch_joystick_crosshair@how_to_play_common.paragraph_touch_joystick_crosshair": {
+          "$text": "howtoplay.movingAround.text.3.touch.joystick_crosshair"
+        }
+      },
+      {
+        "image_1@how_to_play_common.image": {
+          "texture": "textures/ui/welcome",
+          "size": [ "100%", "200px" ]
+        }
+      }
+    ]
+  },
+
+  "gathering_resources_button@how_to_play_common.section_toggle_button": {
+    "$section_topic": "gatheringResources"
+  },
+
+  "gathering_resources_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "gatheringResources_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "paragraph_1@how_to_play_common.paragraph": {
+          "$text": "howtoplay.gatheringResources.text.1"
+        }
+      },
+      { "padding_1@how_to_play_common.padding": {} },
+      {
+        "paragraph_2_keyboard@how_to_play_common.paragraph_keyboard": {
+          "$text": "howtoplay.gatheringResources.text.2.pc"
+        }
+      },
+      {
+        "paragraph_2_gamepad@how_to_play_common.paragraph_gamepad": {
+          "$text": "howtoplay.gatheringResources.text.2.nottouch"
+        }
+      },
+      {
+        "paragraph_2_touch_joystick_tap@how_to_play_common.paragraph_touch_joystick_tap": {
+          "$line_padding": 3.0,
+          "$text": "howtoplay.gatheringResources.text.2.touch"
+        }
+      },
+      {
+        "paragraph_2_touch_classic_dpad@how_to_play_common.paragraph_touch_classic_dpad": {
+          "$line_padding": 3.0,
+          "$text": "howtoplay.gatheringResources.text.2.touch"
+        }
+      },
+      {
+        "paragraph_2_touch_joystick_crosshair@how_to_play_common.paragraph_touch_joystick_crosshair": {
+          "$text": "howtoplay.gatheringResources.text.2.touch.joystick_crosshair"
+        }
+      },
+      { "padding_2@how_to_play_common.padding": {} },
+      {
+        "paragraph_3@how_to_play_common.paragraph": {
+          "$text": "howtoplay.gatheringResources.text.3"
+        }
+      }
+    ]
+  },
+
+  "selecting_items_button@how_to_play_common.section_toggle_button": {
+    "$section_topic": "selectingItems"
+  },
+
+  "selecting_items_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "selectingItems_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "paragraph_1@how_to_play_common.paragraph": {
+          "$text": "howtoplay.selectingItems.text.1"
+        }
+      },
+      { "padding_1@how_to_play_common.padding": {} },
+      {
+        "paragraph_2_keyboard@how_to_play_common.paragraph_keyboard": {
+          "$text": "howtoplay.selectingItems.text.2.keyboard"
+        }
+      },
+      {
+        "paragraph_2_gamepad@how_to_play_common.paragraph_gamepad": {
+          "$text": "howtoplay.selectingItems.text.2.gamepad"
+        }
+      },
+      {
+        "paragraph_touch_joystick_tap@how_to_play_common.paragraph_touch_no_icons": {
+          "$text": "howtoplay.selectingItems.text.2.touch"
+        }
+      },
+      { "padding_2@how_to_play_common.padding": {} },
+      {
+        "paragraph_3_keyboard@how_to_play_common.paragraph_keyboard": {
+          "$text": "howtoplay.selectingItems.text.3.nottouch"
+        }
+      },
+      {
+        "paragraph_3_gamepad@how_to_play_common.paragraph_gamepad": {
+          "$text": "howtoplay.selectingItems.text.3.nottouch"
+        }
+      },
+      {
+        "paragraph_3_touch_joystick_tap@how_to_play_common.paragraph_touch_joystick_tap": {
+          "$text": "howtoplay.selectingItems.text.3.touch",
+          "$line_padding": 3.0
+        }
+      },
+      {
+        "paragraph_3_touch_classic_dpad@how_to_play_common.paragraph_touch_classic_dpad": {
+          "$text": "howtoplay.selectingItems.text.3.touch",
+          "$line_padding": 3.0
+        }
+      },
+      {
+        "paragraph_3_touch_joystick_crosshair@how_to_play_common.paragraph_touch_joystick_crosshair": {
+          "$text": "howtoplay.selectingItems.text.3.touch.joystick_crosshair"
+        }
+      },
+      { "padding_3@how_to_play_common.padding": {} },
+      {
+        "header_1@how_to_play_common.header": {
+          "$text": "howtoplay.selectingItems.header.1"
+        }
+      },
+      {
+        "image_1_not_touch@how_to_play_common.image": {
+          "bindings": [
+            {
+              "binding_name": "(not #touch_being_used)",
+              "binding_name_override": "#visible"
+            }
+          ],
+          "texture": "textures/ui/selecting_items_desktop",
+          "size": [ "100%", "175px" ]
+        }
+      },
+      {
+        "image_1_touch@how_to_play_common.image": {
+          "bindings": [
+            {
+              "binding_name": "(#touch_being_used)",
+              "binding_name_override": "#visible"
+            }
+          ],
+          "texture": "textures/ui/selecting_items_mobile",
+          "size": [ "100%", "175px" ]
+        }
+      }
+    ]
+  },
+
+  "placing_blocks_button@how_to_play_common.section_toggle_button": {
+    "$section_topic": "placingBlocks"
+  },
+
+  "placing_blocks_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "placingBlocks_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "paragraph_1@how_to_play_common.paragraph": {
+          "$text": "howtoplay.placingBlocks.text.1"
+        }
+      },
+      { "padding_1@how_to_play_common.padding": {} },
+      {
+        "paragraph_2_keyboard@how_to_play_common.paragraph_keyboard": {
+          "$text": "howtoplay.placingBlocks.text.2.nottouch"
+        }
+      },
+      {
+        "paragraph_2_gamepad@how_to_play_common.paragraph_gamepad": {
+          "$text": "howtoplay.placingBlocks.text.2.nottouch"
+        }
+      },
+      {
+        "paragraph_2_touch_joystick_tap@how_to_play_common.paragraph_touch_joystick_tap": {
+          "$text": "howtoplay.placingBlocks.text.2.touch",
+          "$line_padding": 3.0
+        }
+      },
+      {
+        "paragraph_2_touch_classic_dpad@how_to_play_common.paragraph_touch_classic_dpad": {
+          "$text": "howtoplay.placingBlocks.text.2.touch",
+          "$line_padding": 3.0
+        }
+      },
+      {
+        "paragraph_2_touch_joystick_crosshair@how_to_play_common.paragraph_touch_joystick_crosshair": {
+          "$text": "howtoplay.placingBlocks.text.2.touch.joystick_crosshair"
+        }
+      },
+      { "padding_2@how_to_play_common.padding": {} },
+      {
+        "paragraph_3@how_to_play_common.paragraph": {
+          "$text": "howtoplay.placingBlocks.text.3"
+        }
+      }
+    ]
+  },
+
+  "inventory_button@how_to_play_common.section_toggle_button": {
+    "$section_topic": "inventory"
+  },
+
+  "inventory_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "inventory_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "image_1_not_touch@how_to_play_common.image": {
+          "bindings": [
+            {
+              "binding_name": "(not #touch_being_used)",
+              "binding_name_override": "#visible"
+            }
+          ],
+          "texture": "textures/ui/inventory_desktop",
+          "size": [ "100%", "175px" ]
+        }
+      },
+      {
+        "image_1_touch@how_to_play_common.image": {
+          "bindings": [
+            {
+              "binding_name": "(#touch_being_used)",
+              "binding_name_override": "#visible"
+            }
+          ],
+          "texture": "textures/ui/inventory_mobile",
+          "size": [ "100%", "175px" ]
+        }
+      },
+      {
+        "header_1@how_to_play_common.header": {
+          "$text": "howtoplay.inventory.header.1"
+        }
+      },
+      {
+        "paragraph_1_keyboard@how_to_play_common.paragraph_keyboard": {
+          "$text": "howtoplay.inventory.text.1.pc_console"
+        }
+      },
+      {
+        "paragraph_1_gamepad@how_to_play_common.paragraph_gamepad": {
+          "$text": "howtoplay.inventory.text.1.pc_console"
+        }
+      },
+      {
+        "paragraph_1_touch@how_to_play_common.paragraph_touch": {
+          "$text": "howtoplay.inventory.text.1.touch"
+        }
+      },
+      { "padding_2@how_to_play_common.padding": {} },
+      {
+        "header_2@how_to_play_common.header": {
+          "$text": "howtoplay.inventory.header.2"
+        }
+      },
+      {
+        "paragraph_2_keyboard@how_to_play_common.paragraph_keyboard": {
+          "$text": "howtoplay.inventory.text.2.keyboard"
+        }
+      },
+      {
+        "paragraph_2_gamepad@how_to_play_common.paragraph_gamepad": {
+          "$text": "howtoplay.inventory.text.2.gamepad"
+        }
+      },
+      {
+        "paragraph_2_touch@how_to_play_common.paragraph_touch_no_icons": {
+          "$text": "howtoplay.inventory.text.2.touch"
+        }
+      }
+    ]
+  },
+
+  "your_first_craft_button@how_to_play_common.section_toggle_button": {
+    "$section_topic": "yourFirstCraft"
+  },
+
+  "your_first_craft_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "yourFirstCraft_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "image_1_not_touch@how_to_play_common.image": {
+          "bindings": [
+            {
+              "binding_name": "(not #touch_being_used)",
+              "binding_name_override": "#visible"
+            }
+          ],
+          "texture": "textures/ui/first_craft_desktop",
+          "size": [ "100%", "175px" ]
+        }
+      },
+      {
+        "image_1_touch@how_to_play_common.image": {
+          "bindings": [
+            {
+              "binding_name": "(#touch_being_used)",
+              "binding_name_override": "#visible"
+            }
+          ],
+          "texture": "textures/ui/first_craft_mobile",
+          "size": [ "100%", "175px" ]
+        }
+      },
+      {
+        "header_1@how_to_play_common.header": {
+          "$text": "howtoplay.yourFirstCraft.header.1"
+        }
+      },
+      {
+        "paragraph_1@how_to_play_common.paragraph": {
+          "$text": "howtoplay.yourFirstCraft.text.1"
+        }
+      },
+      { "padding_2@how_to_play_common.padding": {} },
+      {
+        "paragraph_2@how_to_play_common.paragraph": {
+          "$text": "howtoplay.yourFirstCraft.text.2"
+        }
+      },
+      { "padding_3@how_to_play_common.padding": {} },
+      {
+        "paragraph_3_touch@how_to_play_common.paragraph_touch_no_icons": {
+          "$text": "howtoplay.yourFirstCraft.text.3.touch"
+        }
+      },
+      {
+        "paragraph_3_keyboard@how_to_play_common.paragraph_keyboard": {
+          "$text": "howtoplay.yourFirstCraft.text.3.keyboard"
+        }
+      },
+      {
+        "paragraph_3_gamepad@how_to_play_common.paragraph_gamepad_no_icons": {
+          "$text": "howtoplay.yourFirstCraft.text.3.gamepad"
+        }
+      },
+      { "padding_4@how_to_play_common.padding": {} },
+      {
+        "header_2@how_to_play_common.header": {
+          "$text": "howtoplay.yourFirstCraft.header.2"
+        }
+      },
+      {
+        "paragraph_4@how_to_play_common.paragraph": {
+          "$text": "howtoplay.yourFirstCraft.text.4"
+        }
+      },
+      { "padding_5@how_to_play_common.padding": {} },
+      {
+        "paragraph_5@how_to_play_common.paragraph": {
+          "$text": "howtoplay.yourFirstCraft.text.5"
+        }
+      }
+    ]
+  },
+
+  "recipe_book_button@how_to_play_common.section_toggle_button": {
+    "$section_topic": "recipeBook"
+  },
+
+  "recipe_book_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "recipeBook_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "paragraph_1_keyboard@how_to_play_common.paragraph_keyboard": {
+          "$text": "howtoplay.recipeBook.text.1.keyboard"
+        }
+      },
+      {
+        "paragraph_1_gamepad@how_to_play_common.paragraph_gamepad_no_icons": {
+          "$text": "howtoplay.recipeBook.text.1.gamepad"
+        }
+      },
+      {
+        "paragraph_1_touch@how_to_play_common.paragraph_touch_no_icons": {
+          "$text": "howtoplay.recipeBook.text.1.touch"
+        }
+      },
+      { "padding_1@how_to_play_common.padding": {} },
+      {
+        "paragraph_2_keyboard@how_to_play_common.paragraph_keyboard": {
+          "$text": "howtoplay.recipeBook.text.2.keyboard"
+        }
+      },
+      {
+        "paragraph_2_gamepad@how_to_play_common.paragraph_gamepad_no_icons": {
+          "$text": "howtoplay.recipeBook.text.2.gamepad"
+        }
+      },
+      {
+        "paragraph_2_touch@how_to_play_common.paragraph_touch_no_icons": {
+          "$text": "howtoplay.recipeBook.text.2.touch"
+        }
+      }
+    ]
+  },
+
+  "the_crafting_table_button@how_to_play_common.section_toggle_button": {
+    "$section_topic": "theCraftingTable"
+  },
+
+  "the_crafting_table_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "theCraftingTable_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "image_1@how_to_play_common.image": {
+          "texture": "textures/ui/crafting_table",
+          "size": [ "100%", "200px" ]
+        }
+      },
+      {
+        "paragraph_1@how_to_play_common.paragraph_with_icons": {
+          "$text": "howtoplay.theCraftingTable.text.1"
+        }
+      },
+      { "padding_2@how_to_play_common.padding": {} },
+      {
+        "paragraph_2_keyboard@how_to_play_common.paragraph_keyboard": {
+          "$text": "howtoplay.theCraftingTable.text.2.keyboard"
+        }
+      },
+      {
+        "paragraph_2_gamepad@how_to_play_common.paragraph_gamepad": {
+          "$text": "howtoplay.theCraftingTable.text.2.gamepad"
+        }
+      },
+      {
+        "paragraph_2_touch@how_to_play_common.paragraph_touch_no_icons": {
+          "$text": "howtoplay.theCraftingTable.text.2.touch"
+        }
+      }
+    ]
+  },
+
+  "crafting_a_tool_button@how_to_play_common.section_toggle_button": {
+    "$section_topic": "craftingATool"
+  },
+
+  "crafting_a_tool_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "craftingATool_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "paragraph_1@how_to_play_common.paragraph_with_icons": {
+          "$text": "howtoplay.craftingATool.text.1"
+        }
+      },
+      { "padding_1@how_to_play_common.padding": {} },
+      {
+        "paragraph_2_keyboard@how_to_play_common.paragraph_keyboard": {
+          "$text": "howtoplay.craftingATool.text.2.keyboard"
+        }
+      },
+      {
+        "paragraph_2_gamepad@how_to_play_common.paragraph_gamepad": {
+          "$text": "howtoplay.craftingATool.text.2.gamepad"
+        }
+      },
+      {
+        "paragraph_2_touch@how_to_play_common.paragraph_touch": {
+          "$text": "howtoplay.craftingATool.text.2.touch"
+        }
+      }
+    ]
+  },
+
+  "mining_button@how_to_play_common.section_toggle_button": {
+    "$section_topic": "mining"
+  },
+
+  "mining_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "mining_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "image_1@how_to_play_common.image": {
+          "texture": "textures/ui/mining",
+          "size": [ "100%", "200px" ]
+        }
+      },
+      {
+        "paragraph_1@how_to_play_common.paragraph_with_icons": {
+          "$text": "howtoplay.mining.text.1"
+        }
+      },
+      { "padding_2@how_to_play_common.padding": {} },
+      {
+        "paragraph_2@how_to_play_common.paragraph_with_icons": {
+          "$text": "howtoplay.mining.text.2"
+        }
+      },
+      { "padding_3@how_to_play_common.padding": {} },
+      {
+        "paragraph_3@how_to_play_common.paragraph_with_icons": {
+          "$text": "howtoplay.mining.text.3"
+        }
+      }
+    ]
+  },
+
+  "nightfall_new_button@how_to_play_common.section_toggle_button": {
+    "$section_topic": "nightfallNew"
+  },
+
+  "nightfall_new_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "nightfallNew_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "paragraph_1@how_to_play_common.paragraph": {
+          "$text": "howtoplay.nightfall.new.text.1"
+        }
+      },
+      { "padding_1@how_to_play_common.padding": {} },
+      {
+        "paragraph_2@how_to_play_common.paragraph": {
+          "$text": "howtoplay.nightfall.new.text.2"
+        }
+      },
+      { "padding_2@how_to_play_common.padding": {} },
+      {
+        "paragraph_3@how_to_play_common.paragraph": {
+          "$text": "howtoplay.nightfall.new.text.3"
+        }
+      },
+      { "padding_3@how_to_play_common.padding": {} },
+      {
+        "paragraph_4_keyboard@how_to_play_common.paragraph_keyboard": {
+          "$text": "howtoplay.nightfall.new.text.4.keyboard"
+        }
+      },
+      {
+        "paragraph_4_gamepad@how_to_play_common.paragraph_gamepad": {
+          "$text": "howtoplay.nightfall.new.text.4.gamepad"
+        }
+      },
+      {
+        "paragraph_4_touch_joystick_tap@how_to_play_common.paragraph_touch_joystick_tap": {
+          "$text": "howtoplay.nightfall.new.text.4.touch"
+        }
+      },
+      {
+        "paragraph_4_touch_classic_dpad@how_to_play_common.paragraph_touch_classic_dpad": {
+          "$text": "howtoplay.nightfall.new.text.4.touch"
+        }
+      },
+      {
+        "paragraph_4_touch_joystick_crosshair@how_to_play_common.paragraph_touch_joystick_crosshair": {
+          "$text": "howtoplay.nightfall.new.text.4.touch.crosshair"
+        }
+      }
+    ]
+  },
+
+  "building_a_shelter_button@how_to_play_common.section_toggle_button": {
+    "$section_topic": "buildingAShelter"
+  },
+
+  "building_a_shelter_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "buildingAShelter_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "image_1@how_to_play_common.image": {
+          "texture": "textures/ui/building_a_shelter",
+          "size": [ "100%", "200px" ]
+        }
+      },
+      {
+        "paragraph_1@how_to_play_common.paragraph": {
+          "$text": "howtoplay.buildingAShelter.text.1"
+        }
+      },
+      { "padding_2@how_to_play_common.padding": {} },
+      {
+        "paragraph_2@how_to_play_common.paragraph": {
+          "$text": "howtoplay.buildingAShelter.text.2"
+        }
+      },
+      { "padding_3@how_to_play_common.padding": {} },
+      {
+        "paragraph_3@how_to_play_common.paragraph": {
+          "$text": "howtoplay.buildingAShelter.text.3"
+        }
+      }
+    ]
+  },
+
+  "death_and_respawn_button@how_to_play_common.section_toggle_button": {
+    "$section_topic": "deathAndRespawn"
+  },
+
+  "death_and_respawn_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "deathAndRespawn_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "paragraph_1@how_to_play_common.paragraph_with_icons": {
+          "$text": "howtoplay.deathAndRespawn.text.1"
+        }
+      },
+      { "padding_1@how_to_play_common.padding": {} },
+      {
+        "paragraph_2@how_to_play_common.paragraph": {
+          "$text": "howtoplay.deathAndRespawn.text.2"
+        }
+      }
+    ]
+  },
+
+  "food_button@how_to_play_common.section_toggle_button": {
+    "$section_topic": "food"
+  },
+
+  "food_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "food_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "paragraph_1@how_to_play_common.paragraph": {
+          "$text": "howtoplay.food.text.1"
+        }
+      },
+      { "padding_1@how_to_play_common.padding": {} },
+      {
+        "paragraph_2_keyboard@how_to_play_common.paragraph_keyboard": {
+          "$text": "howtoplay.food.text.2.keyboard"
+        }
+      },
+      {
+        "paragraph_2_gamepad@how_to_play_common.paragraph_gamepad": {
+          "$text": "howtoplay.food.text.2.gamepad"
+        }
+      },
+      {
+        "paragraph_2_touch@how_to_play_common.paragraph_touch": {
+          "$text": "howtoplay.food.text.2.touch"
+        }
+      },
+      { "padding_2@how_to_play_common.padding": {} },
+      {
+        "paragraph_3@how_to_play_common.paragraph": {
+          "$text": "howtoplay.food.text.3"
+        }
+      }
+    ]
+  },
+
+  "beds_new_button@how_to_play_common.section_toggle_button": {
+    "$section_topic": "bedsNew"
+  },
+
+  "beds_new_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "bedsNew_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "paragraph_1@how_to_play_common.paragraph": {
+          "$text": "howtoplay.bedsNew.text.1"
+        }
+      },
+      { "padding_1@how_to_play_common.padding": {} },
+      {
+        "paragraph_2@how_to_play_common.paragraph": {
+          "$text": "howtoplay.bedsNew.text.2"
+        }
+      },
+      { "padding_2@how_to_play_common.padding": {} },
+      {
+        "paragraph_3@how_to_play_common.paragraph": {
+          "$text": "howtoplay.bedsNew.text.3"
+        }
+      }
+    ]
+  },
+
+  "improved_tools_button@how_to_play_common.section_toggle_button": {
+    "$section_topic": "improvedTools"
+  },
+
+  "improved_tools_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "improvedTools_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "paragraph_1@how_to_play_common.paragraph": {
+          "$text": "howtoplay.improvedTools.text.1"
+        }
+      },
+      { "padding_1@how_to_play_common.padding": {} },
+      {
+        "paragraph_2@how_to_play_common.paragraph": {
+          "$text": "howtoplay.improvedTools.text.2"
+        }
+      }
+    ]
+  },
+
+  "world_builder_button@how_to_play_common.edu_section_toggle_button": {
+    "$section_topic": "worldBuilder"
+  },
+
+  "world_builder_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "worldBuilder_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "paragraph_1@how_to_play_common.paragraph": {
+          "$text": "howtoplay.worldBuilder.text.1"
+        }
+      },
+      { "padding_1@how_to_play_common.padding": {} },
+      {
+        "paragraph_2@how_to_play_common.paragraph": {
+          "$text": "howtoplay.worldBuilder.text.2"
+        }
+      },
+      { "padding_2@how_to_play_common.padding": {} },
+      {
+        "paragraph_3@how_to_play_common.paragraph": {
+          "$text": "howtoplay.worldBuilder.text.3"
+        }
+      },
+      { "padding_3@how_to_play_common.small_padding": {} },
+      {
+        "paragraph_4@how_to_play_common.paragraph": {
+          "$text": "howtoplay.worldBuilder.text.4"
+        }
+      },
+      { "padding_4@how_to_play_common.padding": {} },
+      {
+        "paragraph_5@how_to_play_common.paragraph": {
+          "$text": "howtoplay.worldBuilder.text.5"
+        }
+      },
+      { "padding_5@how_to_play_common.small_padding": {} },
+      {
+        "paragraph_6@how_to_play_common.paragraph": {
+          "$text": "howtoplay.worldBuilder.text.6"
+        }
+      },
+      {
+        "paragraph_7@how_to_play_common.paragraph": {
+          "$text": "howtoplay.worldBuilder.text.7"
+        }
+      },
+      { "padding_7@how_to_play_common.padding": {} },
+      {
+        "paragraph_8@how_to_play_common.paragraph": {
+          "$text": "howtoplay.worldBuilder.text.8"
+        }
+      },
+      { "padding_8@how_to_play_common.small_padding": {} },
+      {
+        "paragraph_9@how_to_play_common.paragraph": {
+          "$text": "howtoplay.worldBuilder.text.9"
+        }
+      }
+    ]
+  },
+
+  "permission_blocks_button@how_to_play_common.edu_section_toggle_button": {
+    "$section_topic": "permissionBlocks"
+  },
+
+  "permission_blocks_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "permissionBlocks_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "paragraph_1@how_to_play_common.paragraph": {
+          "$text": "howtoplay.permissionBlocks.text.1"
+        }
+      },
+      { "padding_1@how_to_play_common.padding": {} },
+      {
+        "header_1@how_to_play_common.header": {
+          "$text": "howtoplay.permissionBlocks.title.1"
+        }
+      },
+      {
+        "paragraph_2@how_to_play_common.paragraph": {
+          "$text": "howtoplay.permissionBlocks.text.2"
+        }
+      },
+      { "padding_3@how_to_play_common.padding": {} },
+      {
+        "paragraph_3@how_to_play_common.paragraph": {
+          "$text": "howtoplay.permissionBlocks.text.3"
+        }
+      },
+      { "padding_4@how_to_play_common.padding": {} },
+      {
+        "paragraph_4@how_to_play_common.paragraph": {
+          "$text": "howtoplay.permissionBlocks.text.4"
+        }
+      },
+      { "padding_5@how_to_play_common.padding": {} },
+      {
+        "paragraph_5@how_to_play_common.paragraph": {
+          "$text": "howtoplay.permissionBlocks.text.5"
+        }
+      },
+      { "padding_7@how_to_play_common.padding": {} },
+      {
+        "header_2@how_to_play_common.header": {
+          "$text": "howtoplay.permissionBlocks.title.2"
+        }
+      },
+      {
+        "paragraph_6@how_to_play_common.paragraph": {
+          "$text": "howtoplay.permissionBlocks.text.6"
+        }
+      }
+    ]
+  },
+
+  "chalkboard_button@how_to_play_common.edu_section_toggle_button": {
+    "$section_topic": "chalkboard"
+  },
+
+  "chalkboard_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "chalkboard_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "paragraph_1_keyboard@how_to_play_common.paragraph_keyboard": {
+          "$text": "howtoplay.chalkboard.text.1"
+        }
+      },
+      {
+        "paragraph_1_gamepad@how_to_play_common.paragraph_gamepad": {
+          "$text": "howtoplay.chalkboard.text.1"
+        }
+      },
+      {
+        "paragraph_1_touch@how_to_play_common.paragraph_touch": {
+          "$text": "howtoplay.chalkboard.text.1.touch"
+        }
+      }
+    ]
+  },
+
+  "chemistry_button@how_to_play_common.edu_section_toggle_button": {
+    "$section_topic": "chemistry"
+  },
+
+  "chemistry_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "chemistry_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "paragraph_1@how_to_play_common.paragraph": {
+          "$text": "howtoplay.chemistry.text.1"
+        }
+      },
+      { "padding_1@how_to_play_common.padding": {} },
+      {
+        "paragraph_2@how_to_play_common.paragraph": {
+          "$text": "howtoplay.chemistry.text.2"
+        }
+      }
+    ]
+  },
+
+  "npc_button@how_to_play_common.edu_section_toggle_button": {
+    "$section_topic": "npc"
+  },
+
+  "npc_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "npc_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "paragraph_1@how_to_play_common.paragraph": {
+          "$text": "howtoplay.npc.text.1"
+        }
+      },
+      { "padding_1@how_to_play_common.padding": {} },
+      {
+        "paragraph_2@how_to_play_common.paragraph": {
+          "$text": "howtoplay.npc.text.2"
+        }
+      },
+      { "padding_2@how_to_play_common.padding": {} },
+      {
+        "paragraph_3@how_to_play_common.paragraph": {
+          "$text": "howtoplay.npc.text.3"
+        }
+      }
+    ]
+  },
+
+  "camera_button@how_to_play_common.edu_section_toggle_button": {
+    "$section_topic": "camera"
+  },
+
+  "camera_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "camera_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "paragraph_1@how_to_play_common.paragraph": {
+          "$text": "howtoplay.camera.text.1"
+        }
+      },
+      { "padding_1@how_to_play_common.padding": {} },
+      {
+        "paragraph_2_keyboard@how_to_play_common.paragraph_keyboard": {
+          "$text": "howtoplay.camera.text.2"
+        }
+      },
+      {
+        "paragraph_2_gamepad@how_to_play_common.paragraph_gamepad": {
+          "$text": "howtoplay.camera.text.2"
+        }
+      },
+      {
+        "paragraph_2_touch@how_to_play_common.paragraph_touch": {
+          "$text": "howtoplay.camera.text.2.touch"
+        }
+      },
+      { "padding_2@how_to_play_common.padding": {} },
+      {
+        "paragraph_3_keyboard@how_to_play_common.paragraph_keyboard": {
+          "$text": "howtoplay.camera.text.3"
+        }
+      },
+      {
+        "paragraph_3_gamepad@how_to_play_common.paragraph_gamepad": {
+          "$text": "howtoplay.camera.text.3"
+        }
+      },
+      {
+        "paragraph_3_touch@how_to_play_common.paragraph_touch": {
+          "$text": "howtoplay.camera.text.3.touch"
+        }
+      },
+      { "padding_3@how_to_play_common.padding": {} },
+      {
+        "paragraph_4@how_to_play_common.paragraph": {
+          "$text": "howtoplay.camera.text.4"
+        }
+      }
+    ]
+  },
+
+  "portfolio_button@how_to_play_common.edu_section_toggle_button": {
+    "$section_topic": "portfolio"
+  },
+
+  "portfolio_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "portfolio_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "paragraph_1_keyboard@how_to_play_common.paragraph_keyboard": {
+          "$text": "howtoplay.portfolio.text.1"
+        }
+      },
+      {
+        "paragraph_1_gamepad@how_to_play_common.paragraph_gamepad": {
+          "$text": "howtoplay.portfolio.text.1"
+        }
+      },
+      {
+        "paragraph_1_touch@how_to_play_common.paragraph_touch": {
+          "$text": "howtoplay.portfolio.text.1.touch"
+        }
+      }
+    ]
+  },
+
+  "classroom_mode_button@how_to_play_common.edu_section_toggle_button": {
+    "$section_topic": "classroomMode"
+  },
+
+  "classroom_mode_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "classroomMode_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "paragraph_1@how_to_play_common.paragraph": {
+          "$text": "howtoplay.classroomMode.text.1"
+        }
+      },
+      { "padding_1@how_to_play_common.padding": {} },
+      {
+        "paragraph_2@how_to_play_common.paragraph": {
+          "ignored": "$is_ios",
+          "$text": "howtoplay.classroomMode.text.2"
+        }
+      }
+    ]
+  },
+
+  "code_builder_button@how_to_play_common.edu_section_toggle_button": {
+    "$section_topic": "codeBuilder"
+  },
+
+  "code_builder_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "codeBuilder_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "paragraph_1@how_to_play_common.paragraph": {
+          "$text": "howtoplay.codeBuilder.text.1"
+        }
+      },
+      { "padding_1@how_to_play_common.padding": {} },
+      {
+        "paragraph_2_keyboard@how_to_play_common.paragraph_keyboard": {
+          "$text": "howtoplay.codeBuilder.text.2"
+        }
+      },
+      {
+        "paragraph_2_gamepad@how_to_play_common.paragraph_gamepad": {
+          "$text": "howtoplay.codeBuilder.text.2"
+        }
+      },
+      {
+        "paragraph_2_touch@how_to_play_common.paragraph_touch": {
+          "$text": "howtoplay.codeBuilder.text.2.touch"
+        }
+      }
+    ]
+  },
+
+  "playing_together_button@how_to_play_common.section_toggle_button": {
+    "$section_topic": "playingTogether"
+  },
+
+  "playing_together_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "playingTogether_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "paragraph_1@how_to_play_common.paragraph": {
+          "$text": "howtoplay.playingTogether.text.1"
+        }
+      },
+      { "padding_1@how_to_play_common.padding": {} },
+      {
+        "header_1@how_to_play_common.header": {
+          "$text": "howtoplay.playingTogether.header.1"
+        }
+      },
+      {
+        "paragraph_2@how_to_play_common.paragraph": {
+          "$text": "howtoplay.playingTogether.text.2"
+        }
+      },
+      { "padding_2@how_to_play_common.padding": {} },
+      {
+        "header_2@how_to_play_common.header": {
+          "$text": "howtoplay.playingTogether.header.2"
+        }
+      },
+      {
+        "paragraph_3@how_to_play_common.paragraph": {
+          "$text": "howtoplay.playingTogether.text.3"
+        }
+      },
+      { "padding_3@how_to_play_common.padding": {} },
+      {
+        "paragraph_4@how_to_play_common.paragraph": {
+          "$text": "howtoplay.playingTogether.text.4"
+        }
+      },
+      { "padding_4@how_to_play_common.padding": {} },
+      {
+        "paragraph_5@how_to_play_common.paragraph": {
+          "$text": "howtoplay.playingTogether.text.5"
+        }
+      },
+      { "padding_5@how_to_play_common.padding": {} },
+      {
+        "header_3@how_to_play_common.header": {
+          "$text": "howtoplay.playingTogether.header.3"
+        }
+      },
+      {
+        "paragraph_6@how_to_play_common.paragraph": {
+          "$text": "howtoplay.playingTogether.text.6"
+        }
+      },
+      { "padding_6@how_to_play_common.padding": {} },
+      {
+        "paragraph_7@how_to_play_common.paragraph": {
+          "$text": "howtoplay.playingTogether.text.7"
+        }
+      },
+      { "padding_7@how_to_play_common.padding": {} },
+      {
+        "paragraph_8@how_to_play_common.paragraph": {
+          "$text": "howtoplay.playingTogether.text.8"
+        }
+      },
+      {
+        "realms_button@how_to_play.try_realms_action_button": {
+          "size": [ "29%", 25 ],
+          "$button_text": "howtoplay.playingTogether.realms",
+          "bindings": [
+            {
+              "binding_name": "#should_show_subscription_tab",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "sign_in_button@how_to_play.try_realms_action_button": {
+          "size": [ "40%", 25 ],
+          "$button_text": "howtoplay.playingTogether.signIn",
+          "bindings": [
+            {
+              "binding_name": "(not #should_show_subscription_tab)",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      { "padding_8@how_to_play_common.padding": {} },
+      {
+        "header_4@how_to_play_common.header": {
+          "$text": "howtoplay.playingTogether.header.4"
+        }
+      },
+      {
+        "paragraph_9@how_to_play_common.paragraph": {
+          "$text": "howtoplay.playingTogether.text.9"
+        }
+      },
+      { "padding_9@how_to_play_common.padding": {} },
+      {
+        "paragraph_10@how_to_play_common.paragraph": {
+          "$text": "howtoplay.playingTogether.text.10"
+        }
+      }
+    ]
+  },
+
+  "try_realms_action_button@how_to_play_common.action_button": {
+    "$anchor": "center",
+    "$offset": [ 0, 0 ],
+    "$pressed_button_name": "try_realms_button"
+  },
+
+  "encyclopedia_button@how_to_play_common.section_toggle_button": {
+    "$section_topic": "encyclopedia",
+    "$button_type_panel": "how_to_play_common.glyph_button_control",
+    "$glyph_texture": "textures/ui/arrowRight"
+  },
+
+  "encyclopedia_section@how_to_play_common.main_sections": {
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "encyclopedia_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "paragraph_1@how_to_play_common.paragraph": {
+          "$text": "howtoplay.encyclopedia.text.1"
+        }
+      }
+    ]
+  }
+
+}

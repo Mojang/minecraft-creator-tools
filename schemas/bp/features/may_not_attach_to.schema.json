@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "May Not Attach To",
+  "description": "Denylist which specifies where the block can't be placed.",
+  "type": "object",
+  "properties": {
+    "top": {
+      "title": "Top",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "bottom": {
+      "title": "Bottom",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "north": {
+      "title": "North",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "east": {
+      "title": "East",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "south": {
+      "title": "South",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "west": {
+      "title": "West",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "all": {
+      "title": "All",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sides": {
+      "title": "Sides",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "diagonal": {
+      "title": "Diagonal",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Timer Flag 2 Behavior",
+  "description": "Fires an event when this behavior starts, then waits for a duration before stopping. When stopping due to that timeout or due to being interrupted by another behavior, fires another event. query.timer_flag_2 will return 1.0 on both the client and server when this behavior is running, and 0.0 otherwise.",
+  "properties": {
+    "cooldown_range": {
+      "oneOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "type": "object",
+          "properties": {
+            "min": {
+              "type": "number",
+              "description": "Minimum value of the range"
+            },
+            "max": {
+              "type": "number",
+              "description": "Maximum value of the range"
+            }
+          }
+        }
+      ],
+      "title": "Cooldown Range",
+      "description": "Goal cooldown range in seconds. Can be a range object or a single number.\n\nSample values:\n• sniffer: {\"min\":0,\"max\":0}"
+    },
+    "duration_range": {
+      "oneOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "type": "object",
+          "properties": {
+            "min": {
+              "type": "number",
+              "description": "Minimum value of the range"
+            },
+            "max": {
+              "type": "number",
+              "description": "Maximum value of the range"
+            }
+          }
+        }
+      ],
+      "title": "Duration Range",
+      "description": "Goal duration range in seconds. Can be a range object or a single number.\n\nSample values:\n• sniffer: {\"min\":2,\"max\":5}"
+    },
+    "control_flags": {
+      "title": "Control Flags",
+      "description": "\n\nSample values:\n• sniffer: [\"move\"]",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "on_end": {
+      "title": "End",
+      "description": "Event(s) to run when the goal ends.\n\nSample values:\n• sniffer: {\"event\":\"on_rising_end\",\"target\":\"self\"}",
+      "$ref": "./entity_actordefinitiontrigger.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Entity ActorDefinitionTrigger",
+          "description": "Triggers an entity event when specified conditions are met. Events activate component groups that change entity behavior—transforming villagers into zombie villagers, switching mobs to aggressive mode, or triggering growth stages. Combine with filters to create conditional state machines that respond to gameplay.",
+          "body": {
+            "event": "",
+            "filters": {
+              "AND": null,
+              "NOT": null,
+              "OR": null,
+              "all": null,
+              "all_of": null,
+              "any": null,
+              "any_of": null,
+              "none_of": null
+            },
+            "target": "self"
+          }
+        }
+      ]
+    },
+    "on_start": {
+      "title": "Start",
+      "description": "Event(s) to run when the goal starts.",
+      "$ref": "./entity_actordefinitiontrigger.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Entity ActorDefinitionTrigger",
+          "description": "Triggers an entity event when specified conditions are met. Events activate component groups that change entity behavior—transforming villagers into zombie villagers, switching mobs to aggressive mode, or triggering growth stages. Combine with filters to create conditional state machines that respond to gameplay.",
+          "body": {
+            "event": "",
+            "filters": {
+              "AND": null,
+              "NOT": null,
+              "OR": null,
+              "all": null,
+              "all_of": null,
+              "any": null,
+              "any_of": null,
+              "none_of": null
+            },
+            "target": "self"
+          }
+        }
+      ]
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.\n\nSample values:\n• sniffer: 2",
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

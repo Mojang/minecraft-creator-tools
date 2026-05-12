@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines spawn rules settings"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Spawn Rules",
+  "fields": [
+    {
+      "id": "conditions",
+      "title": "Conditions",
+      "dataType": "object",
+      "subFormId": "misc/spawn_biomeconditions"
+    },
+    {
+      "id": "description",
+      "title": "Description",
+      "dataType": "object",
+      "subFormId": "misc/spawn_description",
+      "isRequired": true
+    }
+  ],
+  "description": "Defines spawn rules settings.",
+  "title": "Spawn Rules Misc"
+}

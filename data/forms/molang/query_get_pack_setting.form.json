@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "returns value of pack setting slider"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.get_pack_setting",
+  "fields": [],
+  "description": "Returns value of Pack Setting slider, parameter is name of slider. Available on the Client (Resource Packs) only.",
+  "title": "Get Pack Setting"
+}

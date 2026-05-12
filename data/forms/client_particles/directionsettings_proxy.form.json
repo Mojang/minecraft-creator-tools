@@ -1,0 +1,78 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "DirectionSettings Proxy",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "controls direction settings for particle motion"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "custom_direction",
+      "title": "Custom Direction",
+      "dataType": "keyedStringCollection",
+      "minLength": 3,
+      "maxLength": 3,
+      "alternates": [
+        {
+          "id": "custom_direction",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "custom_direction",
+            "title": "Custom Direction",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "custom_direction",
+          "dataType": "float"
+        }
+      ]
+    },
+    {
+      "id": "min_speed_threshold",
+      "title": "Min Speed Threshold",
+      "dataType": "float",
+      "defaultValue": 0
+    },
+    {
+      "id": "mode",
+      "title": "Particle Appearance Billboard Direction Settings Mode",
+      "dataType": "string",
+      "choices": [
+        {
+          "id": "custom",
+          "title": "Custom"
+        },
+        {
+          "id": "derive_from_velocity",
+          "title": "Derive from velocity"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Controls the initial direction and velocity of emitted particles. Direction settings determine whether particles spray outward from the emitter, inward toward its center, or follow a custom vector defined by Molang expressions. This affects effects like explosions (outward), implosions (inward), or directional streams like breath attacks and water flows.",
+  "title": "Client Particles DirectionSettings Proxy"
+}

@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a documented command"
+          }
+        ]
+      }
+    ]
+  },
+  "title": "Documented Command",
+  "fields": [
+    {
+      "id": "id",
+      "title": "Id",
+      "dataType": "string"
+    },
+    {
+      "id": "name",
+      "title": "Name",
+      "dataType": "string"
+    }
+  ],
+  "description": "Defines a documented command."
+}

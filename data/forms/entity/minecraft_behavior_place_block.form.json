@@ -1,0 +1,76 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "places blocks in the world"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:behavior.place_block",
+  "fields": [
+    {
+      "id": "affected_by_griefing_rule",
+      "title": "Affected By Griefing Rule",
+      "description": "If true, whether the goal is affected by the mob griefing game rule.",
+      "dataType": "boolean"
+    },
+    {
+      "id": "can_place",
+      "title": "Can Place",
+      "description": "Filters for if the entity should try to place its block. Self and Target are set.",
+      "dataType": "minecraftFilter"
+    },
+    {
+      "id": "chance",
+      "title": "Chance",
+      "description": "Chance each tick for the entity to try and place a block.",
+      "dataType": "float"
+    },
+    {
+      "id": "on_place",
+      "title": "Place",
+      "description": "Trigger ran if the entity does place its block. Self, Target, and Block are set.",
+      "dataType": "minecraftEventTrigger"
+    },
+    {
+      "id": "placeable_carried_blocks",
+      "title": "Placeable Carried Blocks",
+      "description": "Block descriptors for which blocks are valid to be placed from the entity's carried item, if empty all blocks are valid.",
+      "dataType": "stringArray"
+    },
+    {
+      "id": "randomly_placeable_blocks",
+      "title": "Randomly Placeable Blocks",
+      "description": "Weighted block descriptors for which blocks should be randomly placed, if empty the entity will try to place its carried block from placeable_carried_blocks.",
+      "dataType": "stringArray"
+    },
+    {
+      "id": "xz_range",
+      "title": "Xz Range",
+      "description": "XZ range from which the entity will try and place blocks in.",
+      "dataType": "intRange"
+    },
+    {
+      "id": "y_range",
+      "title": "y Range",
+      "description": "Y range from which the entity will try and place blocks in.",
+      "dataType": "intRange"
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "hideSamples": true,
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "dataType": "int"
+    }
+  ],
+  "description": "AI goal that makes entities place blocks into the world, like Endermen placing their carried block or snow golems leaving snow trails. Configure which blocks can be placed, where they can be placed, and how often the entity attempts placement. Creates mobs that modify the environment.",
+  "title": "Place Block Behavior",
+  "samples": {}
+}

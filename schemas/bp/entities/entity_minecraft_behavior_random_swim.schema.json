@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Random Swim Behavior",
+  "description": "Allows an entity to randomly move through water",
+  "properties": {
+    "avoid_surface": {
+      "title": "Avoid Surface",
+      "description": "If true, the mob will avoid surface water blocks by swimming below them",
+      "type": "boolean",
+      "default": true
+    },
+    "interval": {
+      "title": "Interval",
+      "description": "A random value to determine when to randomly move somewhere. This has a 1/interval chance to choose this goal\n\nSample values:\n• guardian: 80",
+      "type": "integer",
+      "default": 120
+    },
+    "speed_multiplier": {
+      "title": "Speed Multiplier",
+      "description": "Movement speed multiplier of the mob when using this AI Goal\n\nSample values:\n• elder_guardian: 0.5\n• guardian: 1",
+      "type": "number",
+      "default": 1
+    },
+    "xz_dist": {
+      "title": "Xz Dist",
+      "description": "Distance in blocks on ground that the mob will look for a new spot to move to. Must be at least 1\n\nSample values:\n• dolphin: 20",
+      "type": "integer",
+      "default": 10
+    },
+    "y_dist": {
+      "title": "y Dist",
+      "description": "Distance in blocks that the mob will look up or down for a new spot to move to. Must be at least 1",
+      "type": "integer",
+      "default": 7
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer"
+    }
+  }
+}

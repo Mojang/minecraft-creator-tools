@@ -1,0 +1,30 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines spawn distancefilter settings"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Spawn DistanceFilter",
+  "fields": [
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": "int"
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": "int"
+    }
+  ],
+  "description": "Defines spawn distancefilter settings.",
+  "title": "Spawn DistanceFilter Misc"
+}

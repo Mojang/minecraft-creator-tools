@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Eat Mob Behavior",
+  "description": "Allows the entity to eat a specified Mob.",
+  "properties": {
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "eat_animation_time": {
+      "title": "Eat Animation Time",
+      "description": "Sets the time in seconds the eat animation should play for.\n\nSample values:\n• frog: 0.3",
+      "type": "number",
+      "default": 1
+    },
+    "eat_mob_sound": {
+      "title": "Eat Mob Sound",
+      "description": "Sets the sound that should play when eating a mob.\n\nSample values:\n• frog: tongue",
+      "type": "string",
+      "default": ""
+    },
+    "loot_table": {
+      "title": "Loot Table",
+      "description": "The loot table for loot to be dropped when eating a mob.\n\nSample values:\n• frog: loot_tables/entities/frog.json",
+      "type": "string",
+      "default": ""
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.\n\nSample values:\n• frog: 7",
+      "type": "integer",
+      "default": 0
+    },
+    "pull_in_force": {
+      "title": "Pull In Force",
+      "description": "Sets the force which the mob-to-be-eaten is pulled towards the eating mob.\n\nSample values:\n• frog: 0.75",
+      "type": "number",
+      "default": 1
+    },
+    "reach_mob_distance": {
+      "title": "Reach Mob Distance",
+      "description": "Sets the desired distance to be reached before eating the mob.\n\nSample values:\n• frog: 1.75",
+      "type": "number",
+      "default": 1
+    },
+    "run_speed": {
+      "title": "Run Speed",
+      "description": "Sets the entity's speed when running toward the target.\n\nSample values:\n• frog: 2",
+      "type": "number",
+      "default": 1
+    }
+  }
+}

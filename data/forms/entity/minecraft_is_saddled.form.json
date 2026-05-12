@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "is saddled"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [],
+  "description": "Sets that this entity is currently saddled.",
+  "title": "Is Saddled",
+  "samples": {
+    "/vanilla/behavior_pack/entities/pig.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:pig_saddled/minecraft:is_saddled/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/strider.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:strider_saddled/minecraft:is_saddled/",
+        "content": {}
+      }
+    ]
+  },
+  "id": "minecraft:is_saddled"
+}

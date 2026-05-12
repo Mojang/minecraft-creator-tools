@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Leashable To",
+  "description": "Allows players to leash entities to this entity, retrieve entities already leashed to it, or free them using shears. For the last interaction to work, the leashed entities must have \"can_be_cut\" set to true in their \"minecraft:leashable\" component.",
+  "properties": {
+    "can_retrieve_from": {
+      "title": "Can Retrieve From",
+      "description": "Allows players to retrieve entities that are leashed to this entity.",
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

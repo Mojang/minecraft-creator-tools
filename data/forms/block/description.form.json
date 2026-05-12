@@ -1,0 +1,77 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has block identifier, states, and traits"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Description",
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "Identifier",
+      "description": "Must have a namespace and can't use the \"minecraft\" one. Example: \"namespace:my_block\"",
+      "dataType": "string",
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^\\S+$"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "menu_category",
+      "title": "Menu Category",
+      "description": "Configures the block behavior in inventory and menu category",
+      "dataType": "object",
+      "defaultValue": {
+        "category": "none",
+        "group": "",
+        "is_hidden_in_commands": false
+      },
+      "subFormId": "block/menu_category"
+    },
+    {
+      "id": "states",
+      "title": "States",
+      "description": "Define custom states for a block that can be referenced in permutation. Each state must contain an array or a \"values\" with an array or a \"min\"/\"max\" range",
+      "dataType": "object",
+      "defaultValue": {}
+    },
+    {
+      "id": "traits",
+      "title": "Traits",
+      "description": "Change the connection, multiblock state, placement position and/or direction behaviors of a block",
+      "dataType": "object",
+      "defaultValue": {
+        "minecraft:connection": {
+          "enabled_states": []
+        },
+        "minecraft:multi_block": {
+          "direction": "up",
+          "enabled_states": [],
+          "parts": 2
+        },
+        "minecraft:placement_direction": {
+          "blocks_to_corner_with": [],
+          "enabled_states": [],
+          "y_rotation_offset": null
+        },
+        "minecraft:placement_position": {
+          "enabled_states": []
+        }
+      },
+      "subFormId": "block/traits"
+    }
+  ],
+  "description": "Information about the block, must have at minimum an \"identifier\" and can have also the following optional field \"menu_category\", \"states\" and/or \"traits\"",
+  "title": "Block Description"
+}

@@ -1,0 +1,21 @@
+{
+  "files": [
+    "sulfur_cube_baby.png",
+    "sulfur_cube_baby.texture_set.json",
+    "sulfur_cube_baby_mers.png",
+    "sulfur_cube_baby_mers.tga",
+    "sulfur_cube_inner.png",
+    "sulfur_cube_inner.texture_set.json",
+    "sulfur_cube_inner_mers.png",
+    "sulfur_cube_inner_mers.tga",
+    "sulfur_cube_outer.png",
+    "sulfur_cube_outer.texture_set.json",
+    "sulfur_cube_outer_mers.png",
+    "sulfur_cube_outer_mers.tga",
+    "sulfur_cube_tnt.png",
+    "sulfur_cube_tnt.texture_set.json",
+    "sulfur_cube_tnt_mers.png",
+    "sulfur_cube_tnt_mers.tga"
+  ],
+  "folders": []
+}

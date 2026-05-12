@@ -1,0 +1,65 @@
+{
+  "format_version": "1.26.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:shulker_bullet",
+      "is_experimental": false,
+      "is_summonable": false,
+      "is_spawnable": false,
+      "spawn_category": "misc"
+    },
+    "components": {
+      "minecraft:collision_box": {
+        "height": 0.625,
+        "width": 0.625
+      },
+      "minecraft:conditional_bandwidth_optimization": {
+        "default_values": {
+          "max_dropped_ticks": 7,
+          "max_optimized_distance": 80.0,
+          "use_motion_prediction_hints": true
+        }
+      },
+      "minecraft:physics": {
+        "has_collision": false
+      },
+      "minecraft:projectile": {
+        "anchor": 1,
+        "crit_particle_on_hurt": true,
+        "homing": true,
+        "destroyOnHurt": true,
+        "gravity": 0.05,
+        "hit_sound": "bullet.hit",
+        "on_hit": {
+          "impact_damage": {
+            "apply_knockback_to_blocking_targets": true,
+            "damage": 4,
+            "knockback": true,
+            "should_bounce": true
+          },
+          "mob_effect": {
+            "amplifier": 0,
+            "durationhard": 200,
+            "effect": "levitation",
+            "durationeasy": 200,
+            "durationnormal": 200
+          },
+          "particle_on_hit": {
+            "on_other_hit": true,
+            "particle_type": "largeexplode"
+          },
+          "remove_on_hit": {}
+        },
+        "offset": [
+          0,
+          -0.1,
+          0
+        ],
+        "power": 1.6,
+        "uncertainty_base": 16,
+        "uncertainty_multiplier": 4
+      }
+    },
+    "events": null
+  }
+}

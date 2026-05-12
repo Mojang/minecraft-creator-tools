@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "is a biome definition"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "components",
+      "title": "Components",
+      "description": "Components for this Biome.",
+      "dataType": "object",
+      "subFormId": "biome/biome_components",
+      "isRequired": true
+    },
+    {
+      "id": "description",
+      "title": "Description",
+      "description": "Non-component settings, including the Biome name.",
+      "dataType": "object",
+      "subFormId": "biome/biome_description",
+      "isRequired": true
+    }
+  ],
+  "description": "Contains a description and components to define a Biome.",
+  "title": "Biome Definition",
+  "id": "Biome Definition"
+}

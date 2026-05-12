@@ -1,0 +1,42 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines spawn densitylimit settings"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Spawn DensityLimit",
+  "fields": [
+    {
+      "id": "surface",
+      "title": "Surface",
+      "dataType": "int",
+      "validity": [
+        {
+          "comparison": ">=",
+          "value": -1
+        }
+      ]
+    },
+    {
+      "id": "underground",
+      "title": "Underground",
+      "dataType": "int",
+      "validity": [
+        {
+          "comparison": ">=",
+          "value": -1
+        }
+      ]
+    }
+  ],
+  "description": "Defines spawn densitylimit settings.",
+  "title": "Spawn DensityLimit Misc"
+}

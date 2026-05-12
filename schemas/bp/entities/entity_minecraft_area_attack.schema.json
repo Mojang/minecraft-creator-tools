@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Area Attack",
+  "description": "A component that does damage to entities that get within range.",
+  "properties": {
+    "cause": {
+      "title": "Cause",
+      "description": "The type of damage that is applied to entities that enter the damage range. A list of available damage sources can be found at [Entity Damage Sources located in the Vanilla Listings Documentation](../../VanillaListingsReference/AddonEntityDamageSources.md).\n\nSample values:\n• magma_cube: entity_attack",
+      "type": "string"
+    },
+    "entity_filter": {
+      "title": "Entity Filter",
+      "description": "The set of entities that are valid to apply the damage to when within range.\n\nSample values:\n• magma_cube: {\"any_of\":[{\"subject\":\"other\",\"test\":\"is_family...",
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "damage_per_tick": {
+      "title": "Damage Per Tick",
+      "description": "How much damage per tick is applied to entities that enter the damage range.\n\nSample values:\n• magma_cube: 6\n• magma_cube: 4\n• magma_cube: 3",
+      "type": "integer",
+      "default": 2
+    },
+    "damage_range": {
+      "title": "Damage Range",
+      "description": "How close a hostile entity must be to have the damage applied.\n\nSample values:\n• magma_cube: 0.15",
+      "type": "number",
+      "default": 0.2
+    },
+    "damage_cooldown": {
+      "title": "Damage Cooldown",
+      "description": "Attack cooldown (in seconds) for how often this entity can attack a target.\n\nSample values:\n• magma_cube: 0.5",
+      "type": "number",
+      "default": 0
+    },
+    "play_attack_sound": {
+      "title": "Play Attack Sound",
+      "description": "If the entity should play their attack sound when attacking a target.",
+      "type": "boolean",
+      "default": true
+    },
+    "use_self_as_damage_source": {
+      "title": "Use Self As Damage Source",
+      "description": "If the entity should use itself as the damage source when attacking a target. If set to `false`, the target entity won't retaliate and its `minecraft:damage_sensor` won't be able to identify the attacker as the damage source.",
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

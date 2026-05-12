@@ -1,0 +1,176 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Particle Effect",
+  "description": "Defines a particle effect that can be spawned by entities, blocks, or scripts. Particle effects use a component-based system with emitters (controlling spawn rate and shape), appearance (billboard rendering and colors), and motion (physics and collision).",
+  "properties": {
+    "components": {
+      "title": "Components",
+      "description": "\n\nProperties:\n• minecraft:particle_initial_speed\n• minecraft:particle_expire_if_in_blocks (string[])\n• minecraft:particle_expire_if_not_in_blocks (string[])\n• minecraft:particle_kill_plane [maxLen: 4]\n• minecraft:emitter_initialization (object)\n• minecraft:emitter_lifetime_events (object)\n• minecraft:emitter_lifetime_expression (object)\n• minecraft:emitter_lifetime_looping (object)\n• ... and 21 more properties",
+      "$ref": "./client_particles_particle_effect_component.schema.json"
+    },
+    "curves": {
+      "description": "\n\nProperties:\n• horizontal_range = 1\n• input\n• nodes\n• type (object)",
+      "type": "object",
+      "properties": {
+        "horizontal_range": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "string"
+            },
+            {
+              "description": "\n\nProperties:\n• expression (string)\n• version (int)",
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "expression": {
+                    "title": "Expression",
+                    "type": "string"
+                  },
+                  "version": {
+                    "title": "Version",
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Horizontal Range"
+        },
+        "input": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "string"
+            },
+            {
+              "description": "\n\nProperties:\n• expression (string)\n• version (int)",
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "expression": {
+                    "title": "Expression",
+                    "type": "string"
+                  },
+                  "version": {
+                    "title": "Version",
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Input"
+        },
+        "nodes": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "string"
+            },
+            {
+              "description": "\n\nProperties:\n• expression (string)\n• version (int)",
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "expression": {
+                    "title": "Expression",
+                    "type": "string"
+                  },
+                  "version": {
+                    "title": "Version",
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Nodes"
+        },
+        "type": {
+          "title": "Type",
+          "type": "object"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Curves",
+          "description": "Create a Curves",
+          "body": {
+            "horizontal_range": 1,
+            "input": "",
+            "nodes": "",
+            "type": ""
+          }
+        }
+      ]
+    },
+    "description": {
+      "title": "Description",
+      "description": "The description MUST contain an identifier and basic_render_parameters.",
+      "$ref": "./client_particles_particle_effect_description.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Particle Effect Description",
+          "description": "The description MUST contain an identifier and basic_render_parameters.",
+          "body": {
+            "basic_render_parameters": "",
+            "identifier": ""
+          }
+        }
+      ]
+    },
+    "events": {
+      "title": "Events",
+      "description": "\n\nProperties:\n• expression = 0\n• log (string) = \n• particle_effect (object) = {\"effect\":\"\",\"pre_ef\n• randomize\n• sequence\n• sound_effect (object)",
+      "$ref": "./client_particles_particle_event_node.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Particle Event Node",
+          "description": "Defines actions triggered by particle events like spawning, collision, or expiration. Event nodes can run Molang expressions to modify variables, spawn nested particle effects, play sounds, or control emitter state. Chain multiple effects together for complex reactions like explosions spawning secondary debris particles.",
+          "body": {
+            "expression": 0,
+            "log": "",
+            "particle_effect": {
+              "effect": "",
+              "pre_effect_expression": 0,
+              "type": null
+            }
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "components",
+    "description"
+  ]
+}

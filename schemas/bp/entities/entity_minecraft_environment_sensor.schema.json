@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Environment Sensor",
+  "description": "Creates a trigger based on environment conditions.",
+  "properties": {
+    "triggers": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "title": "Triggers",
+      "description": "The list of triggers that fire when the environment conditions match the given filter criteria. Can be an array of trigger objects or a single trigger object.\n\nSample values:\n• breeze: [{\"event\":\"minecraft:stop_playing_idle_ground_s...\n• cave_spider: {\"event\":\"minecraft:become_neutral\",\"filters\":{...\n• cave_spider: {\"event\":\"minecraft:become_hostile\",\"filters\":{..."
+    }
+  }
+}

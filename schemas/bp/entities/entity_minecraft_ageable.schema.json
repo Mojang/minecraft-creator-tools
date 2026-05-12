@@ -1,0 +1,121 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Ageable",
+  "description": "Adds a timer for the entity to grow up. It can be accelerated by giving the entity the items it likes as defined by feed_items.",
+  "properties": {
+    "duration": {
+      "title": "Duration",
+      "description": "Length of time before an entity grows up (-1 to always stay a baby)\n\nSample values:\n• chicken: 1200",
+      "type": "number",
+      "default": 1200
+    },
+    "feed_items": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "item": {
+                "title": "Item",
+                "description": "The item identifier.",
+                "type": "string"
+              },
+              "growth": {
+                "title": "Growth",
+                "description": "How much the entity ages when fed this item.",
+                "type": "number"
+              }
+            }
+          }
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "title": "Feed Items",
+      "description": "List of items that can be fed to an entity to age them up. Can be a single item string, an array of strings, or an array of objects with item and growth properties.\n\nSample values:\n• chicken: [\"wheat_seeds\",\"beetroot_seeds\",\"melon_seeds\",\"...\n• cow: wheat\n• dolphin: [\"fish\",\"salmon\"]"
+    },
+    "drop_items": {
+      "title": "Drop Items",
+      "description": "List of items that are dropped when an entity grows up",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "grow_up": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "title": "Grow up event",
+      "description": "Event to fire when an entity grows up. Can be an object with event and target properties, or a simple event string.\n\nSample values:\n• chicken: {\"event\":\"minecraft:ageable_grow_up\",\"target\":\"...\n• dolphin: {\"event\":\"ageable_grow_up\",\"target\":\"self\"}"
+    },
+    "interact_filters": {
+      "title": "Interact Filters",
+      "description": "List of conditions to meet so that the entity can be fed.",
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "pause_growth_items": {
+      "title": "Pause Growth Items",
+      "description": "List of items that can be fed to the entity to pause growth for baby entities.\n\nSample values:\n• chicken: [\"golden_dandelion\"]",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "reset_growth_items": {
+      "title": "Reset Growth Items",
+      "description": "List of items that can be used to reset growth for baby entities.\n\nSample values:\n• chicken: [\"golden_dandelion\"]",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

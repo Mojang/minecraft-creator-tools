@@ -1,0 +1,8 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Interaction: Block/block placer icon - Orange -->
+  <rect x="3" y="5" width="10" height="8" fill="#e8a855"/>
+  <rect x="3" y="3" width="8" height="2" fill="#e8a855" opacity="0.8"/>
+  <rect x="11" y="5" width="2" height="6" fill="#c48a45" opacity="0.7"/>
+  <rect x="4" y="6" width="4" height="4" fill="#c48a45"/>
+  <rect x="5" y="7" width="2" height="2" fill="#ffffff" opacity="0.3"/>
+</svg>

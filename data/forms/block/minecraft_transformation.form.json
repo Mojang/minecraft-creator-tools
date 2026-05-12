@@ -1,0 +1,53 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has custom rotation, scale, or translation"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "rotation",
+      "title": "Rotation",
+      "description": "The block's rotation in increments of 90 degrees",
+      "dataType": "stringArray"
+    },
+    {
+      "id": "rotation_pivot",
+      "title": "Rotation Pivot",
+      "description": "The point to apply rotation around",
+      "dataType": "point3"
+    },
+    {
+      "id": "scale",
+      "title": "Scale",
+      "description": "The block's scale",
+      "dataType": "point3"
+    },
+    {
+      "id": "scale_pivot",
+      "title": "Scale Pivot",
+      "description": "The point to apply scale around",
+      "dataType": "point3"
+    },
+    {
+      "id": "translation",
+      "title": "Translation",
+      "description": "The block's translation",
+      "dataType": "point3"
+    }
+  ],
+  "tags": [
+    "visual"
+  ],
+  "description": "The block's translation, rotation and scale with respect to the center of its world position",
+  "title": "Transformation",
+  "id": "minecraft:transformation"
+}

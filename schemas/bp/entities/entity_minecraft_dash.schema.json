@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Dash",
+  "description": "Ability for a rideable entity to dash.",
+  "properties": {
+    "cooldown_time": {
+      "title": "Cooldown Time",
+      "description": "The dash cooldown in seconds. Default value is 1.000000.\n\nSample values:\n• camel: 2.75",
+      "type": "number",
+      "default": 1
+    },
+    "horizontal_momentum": {
+      "title": "Horizontal Momentum",
+      "description": "Horizontal momentum of the dash.\n\nSample values:\n• camel: 20",
+      "type": "number",
+      "default": 1
+    },
+    "vertical_momentum": {
+      "title": "Vertical Momentum",
+      "description": "Vertical momentum of the dash.\n\nSample values:\n• camel: 0.6",
+      "type": "number",
+      "default": 1
+    }
+  }
+}

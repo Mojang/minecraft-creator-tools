@@ -1,0 +1,535 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Tree Feature",
+  "description": "\n\nProperties:\n• acacia_trunk ({ branches, trunk_decoration, trunk_width, ... })\n• cherry_trunk ({ branches, trunk_height })\n• fallen_trunk ({ trunk_decoration })\n• mangrove_trunk ({ trunk_decoration, trunk_width, trunk_height, ... })\n• mega_trunk ({ branches, trunk_decoration, trunk_width, ... })\n• trunk ({ trunk_decoration, can_be_submerged })\n• canopy ({ canopy_decoration, canopy_offset, min_width, ... })\n• mangrove_canopy\n• ... and 17 more properties",
+  "type": "object",
+  "properties": {
+    "acacia_trunk": {
+      "$ref": "./acacia_trunk.schema.json",
+      "title": "Acacia Trunk",
+      "description": "\n\nProperties:\n• branches ({ branch_canopy })\n• trunk_decoration ({ decoration_block, decoration_blocks_sequence, decoration_chance, ... })\n• trunk_width (int)\n• trunk_height ({ base, intervals, min_height_for_canopy })\n• trunk_lean ({ allow_diagonal_growth })",
+      "defaultSnippets": [
+        {
+          "label": "Acacia Trunk",
+          "description": "Create a Acacia Trunk",
+          "body": {
+            "trunk_width": 0,
+            "trunk_height": "",
+            "trunk_lean": ""
+          }
+        }
+      ]
+    },
+    "cherry_trunk": {
+      "title": "Cherry Trunk",
+      "description": "\n\nProperties:\n• branches ({ branch_canopy, tree_type_weights })\n• trunk_height ({ base, intervals })",
+      "type": "object",
+      "properties": {
+        "branches": {
+          "title": "Branches",
+          "description": "Configuration object for branches.",
+          "type": "object",
+          "properties": {
+            "branch_canopy": {
+              "$ref": "./branch_canopy_2.schema.json",
+              "title": "Branch Canopy",
+              "description": "Configuration object for the canopy."
+            },
+            "tree_type_weights": {
+              "$ref": "./tree_type_weights.schema.json",
+              "title": "Tree Type Weights",
+              "description": "Configuration object to pick a tree variant based on a weighted random number.",
+              "defaultSnippets": [
+                {
+                  "label": "Tree Type Weights",
+                  "description": "Configuration object to pick a tree variant based on a weighted random number.",
+                  "body": {
+                    "one_branch": 0,
+                    "two_branches": 0,
+                    "two_branches_and_trunk": 0
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "trunk_height": {
+          "title": "Trunk Height",
+          "description": "Configuration object for the trunk height.",
+          "type": "object",
+          "properties": {
+            "base": {
+              "title": "Base",
+              "description": "Min height for the trunk.",
+              "type": "integer"
+            },
+            "intervals": {
+              "title": "Intervals",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Trunk Height",
+              "description": "Configuration object for the trunk height.",
+              "body": {
+                "base": 0
+              }
+            }
+          ]
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Cherry Trunk",
+          "description": "Create a Cherry Trunk",
+          "body": {
+            "branches": "",
+            "trunk_height": ""
+          }
+        }
+      ]
+    },
+    "fallen_trunk": {
+      "title": "Fallen Trunk",
+      "description": "\n\nProperties:\n• trunk_decoration ({ decoration_block, decoration_blocks_sequence, decoration_chance, ... })",
+      "type": "object",
+      "properties": {
+        "trunk_decoration": {
+          "$ref": "./trunk_decoration_2.schema.json",
+          "title": "Trunk Decoration",
+          "description": "Configuration object for the trunk decoration.",
+          "defaultSnippets": [
+            {
+              "label": "Trunk Decoration",
+              "description": "Configuration object for the trunk decoration.",
+              "body": {
+                "decoration_block": "",
+                "num_steps": 0,
+                "step_direction": ""
+              }
+            }
+          ]
+        }
+      }
+    },
+    "mangrove_trunk": {
+      "$ref": "./mangrove_trunk.schema.json",
+      "title": "Mangrove Trunk",
+      "description": "\n\nProperties:\n• trunk_decoration ({ decoration_block, decoration_blocks_sequence, decoration_chance, ... })\n• trunk_width (int)\n• trunk_height ({ base, height_rand_a, height_rand_b })\n• branches (object)",
+      "defaultSnippets": [
+        {
+          "label": "Mangrove Trunk",
+          "description": "Create a Mangrove Trunk",
+          "body": {
+            "trunk_width": 0,
+            "trunk_height": ""
+          }
+        }
+      ]
+    },
+    "mega_trunk": {
+      "$ref": "./mega_trunk.schema.json",
+      "title": "Mega Trunk",
+      "description": "\n\nProperties:\n• branches ({ branch_canopy, branch_length, branch_altitude_factor })\n• trunk_decoration ({ decoration_block, decoration_blocks_sequence, decoration_chance, ... })\n• trunk_width (int)\n• trunk_height ({ base, intervals })",
+      "defaultSnippets": [
+        {
+          "label": "Mega Trunk",
+          "description": "Create a Mega Trunk",
+          "body": {
+            "trunk_width": 0,
+            "trunk_height": ""
+          }
+        }
+      ]
+    },
+    "trunk": {
+      "title": "Trunk",
+      "description": "\n\nProperties:\n• trunk_decoration ({ decoration_block, decoration_blocks_sequence, decoration_chance, ... })\n• can_be_submerged ({ max_depth })",
+      "type": "object",
+      "properties": {
+        "trunk_decoration": {
+          "$ref": "./trunk_decoration_5.schema.json",
+          "title": "Trunk Decoration",
+          "description": "Configuration object for the trunk decoration.",
+          "defaultSnippets": [
+            {
+              "label": "Trunk Decoration",
+              "description": "Configuration object for the trunk decoration.",
+              "body": {
+                "decoration_block": "",
+                "num_steps": 0,
+                "step_direction": ""
+              }
+            }
+          ]
+        },
+        "can_be_submerged": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "max_depth": {
+                  "title": "Max Depth",
+                  "description": "Defines the max depth at which the trunk can be submerged.",
+                  "type": "integer"
+                }
+              }
+            },
+            {
+              "description": "Specifies if the trunk can be submerged.",
+              "type": "boolean"
+            }
+          ],
+          "title": "Can Be Submerged",
+          "description": "Specifies if the trunk can be submerged."
+        }
+      }
+    },
+    "canopy": {
+      "$ref": "./canopy_4.schema.json",
+      "title": "Canopy",
+      "description": "\n\nProperties:\n• canopy_decoration ({ decoration_block, decoration_blocks_sequence, decoration_chance, ... })\n• canopy_offset ({ min, max })\n• min_width (int)\n• canopy_slope ({ rise, run })\n• variation_chance (string[])",
+      "defaultSnippets": [
+        {
+          "label": "Canopy",
+          "description": "Create a Canopy",
+          "body": {
+            "canopy_offset": "",
+            "min_width": 0
+          }
+        }
+      ]
+    },
+    "mangrove_canopy": {
+      "title": "Mangrove Canopy",
+      "description": "\n\nProperties:\n• canopy_decoration ({ decoration_block, decoration_blocks_sequence, decoration_chance, ... })\n• leaf_placement_attempts (int)\n• leaf_blocks (string[])",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "canopy_decoration": {
+            "$ref": "./canopy_decoration_8.schema.json",
+            "title": "Canopy Decoration",
+            "description": "Configuration object for the canopy decoration.",
+            "defaultSnippets": [
+              {
+                "label": "Canopy Decoration",
+                "description": "Configuration object for the canopy decoration.",
+                "body": {
+                  "decoration_block": "",
+                  "num_steps": 0,
+                  "step_direction": ""
+                }
+              }
+            ]
+          },
+          "leaf_placement_attempts": {
+            "title": "Leaf Placement Attempts",
+            "description": "Max number of attempts to create leaf blocks.",
+            "type": "integer"
+          },
+          "leaf_blocks": {
+            "title": "Leaf Blocks",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "mangrove_roots": {
+      "$ref": "./mangrove_roots.schema.json",
+      "title": "Mangrove Roots",
+      "description": "\n\nProperties:\n• root_decoration ({ decoration_block, decoration_blocks_sequence, decoration_chance, ... })\n• max_root_width (int)\n• max_root_length (int)\n• above_root (object)\n• roots_may_grow_through (string[])",
+      "defaultSnippets": [
+        {
+          "label": "Mangrove Roots",
+          "description": "Create a Mangrove Roots",
+          "body": {
+            "max_root_width": 0,
+            "max_root_length": 0,
+            "roots_may_grow_through": ""
+          }
+        }
+      ]
+    },
+    "description": {
+      "title": "Description",
+      "description": "\n\nProperties:\n• identifier (string)",
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "title": "Identifier",
+          "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Description",
+          "description": "Create a Description",
+          "body": {
+            "identifier": ""
+          }
+        }
+      ]
+    },
+    "base_block": {
+      "title": "Base Block",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "base_cluster": {
+      "$ref": "./base_cluster.schema.json",
+      "title": "Base Cluster",
+      "description": "Clusters of blocks randomly replaced with \"base_block\" around the base of the tree.",
+      "defaultSnippets": [
+        {
+          "label": "Base Cluster",
+          "description": "Clusters of blocks randomly replaced with \"base_block\" around the base of the tree.",
+          "body": {
+            "may_replace": "",
+            "num_clusters": 0,
+            "cluster_radius": 0
+          }
+        }
+      ]
+    },
+    "may_grow_on": {
+      "title": "May Grow On",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "may_replace": {
+      "title": "May Replace",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "may_grow_through": {
+      "title": "May Grow Through",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "fancy_trunk": {
+      "$ref": "./fancy_trunk.schema.json",
+      "title": "Fancy Trunk",
+      "description": "\n\nProperties:\n• trunk_height ({ base, variance })\n• trunk_width (int)\n• branches (object)",
+      "defaultSnippets": [
+        {
+          "label": "Fancy Trunk",
+          "description": "Create a Fancy Trunk",
+          "body": {
+            "trunk_height": "",
+            "trunk_width": 0,
+            "branches": ""
+          }
+        }
+      ]
+    },
+    "acacia_canopy": {
+      "title": "Acacia Canopy",
+      "description": "\n\nProperties:\n• canopy_size (int)\n• simplify_canopy (boolean)",
+      "type": "object",
+      "properties": {
+        "canopy_size": {
+          "title": "Canopy Size",
+          "description": "The size of the canopy.",
+          "type": "integer"
+        },
+        "simplify_canopy": {
+          "title": "Simplify Canopy",
+          "description": "If true the canopy uses a simple pattern.",
+          "type": "boolean"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Acacia Canopy",
+          "description": "Create a Acacia Canopy",
+          "body": {
+            "canopy_size": 0,
+            "simplify_canopy": true
+          }
+        }
+      ]
+    },
+    "cherry_canopy": {
+      "title": "Cherry Canopy",
+      "description": "\n\nProperties:\n• trunk_width (int)",
+      "type": "object",
+      "properties": {
+        "trunk_width": {
+          "title": "Trunk Width",
+          "description": "The width of the tree trunk.",
+          "type": "integer"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Cherry Canopy",
+          "description": "Create a Cherry Canopy",
+          "body": {
+            "trunk_width": 0
+          }
+        }
+      ]
+    },
+    "fancy_canopy": {
+      "title": "Fancy Canopy",
+      "description": "\n\nProperties:\n• height (int)\n• radius (int)",
+      "type": "object",
+      "properties": {
+        "height": {
+          "title": "Height",
+          "description": "Number of layers for the canopy.",
+          "type": "integer"
+        },
+        "radius": {
+          "title": "Radius",
+          "description": "The radius of the canopy.",
+          "type": "integer"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Fancy Canopy",
+          "description": "Create a Fancy Canopy",
+          "body": {
+            "height": 0,
+            "radius": 0
+          }
+        }
+      ]
+    },
+    "mega_canopy": {
+      "$ref": "./mega_canopy_4.schema.json",
+      "title": "Mega Canopy",
+      "description": "\n\nProperties:\n• base_radius (int)\n• core_width (int)\n• simplify_canopy (boolean)",
+      "defaultSnippets": [
+        {
+          "label": "Mega Canopy",
+          "description": "Create a Mega Canopy",
+          "body": {
+            "base_radius": 0,
+            "core_width": 0,
+            "simplify_canopy": true
+          }
+        }
+      ]
+    },
+    "mega_pine_canopy": {
+      "title": "Mega Pine Canopy",
+      "description": "\n\nProperties:\n• base_radius (int)\n• core_width (int)",
+      "type": "object",
+      "properties": {
+        "base_radius": {
+          "title": "Base Radius",
+          "description": "Radius of the canopy.",
+          "type": "integer"
+        },
+        "core_width": {
+          "title": "Core Width",
+          "description": "Width of the tree trunk.",
+          "type": "integer"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Mega Pine Canopy",
+          "description": "Create a Mega Pine Canopy",
+          "body": {
+            "base_radius": 0,
+            "core_width": 0
+          }
+        }
+      ]
+    },
+    "pine_canopy": {
+      "title": "Pine Canopy",
+      "description": "\n\nProperties:\n• base_radius (int)",
+      "type": "object",
+      "properties": {
+        "base_radius": {
+          "title": "Base Radius",
+          "description": "Radius of the canopy.",
+          "type": "integer"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Pine Canopy",
+          "description": "Create a Pine Canopy",
+          "body": {
+            "base_radius": 0
+          }
+        }
+      ]
+    },
+    "roofed_canopy": {
+      "$ref": "./roofed_canopy_4.schema.json",
+      "title": "Roofed Canopy",
+      "description": "\n\nProperties:\n• canopy_height (int)\n• core_width (int)\n• outer_radius (int)\n• inner_radius (int)",
+      "defaultSnippets": [
+        {
+          "label": "Roofed Canopy",
+          "description": "Create a Roofed Canopy",
+          "body": {
+            "canopy_height": 0,
+            "core_width": 0,
+            "outer_radius": 0,
+            "inner_radius": 0
+          }
+        }
+      ]
+    },
+    "spruce_canopy": {
+      "title": "Spruce Canopy",
+      "type": "object",
+      "properties": {}
+    },
+    "random_spread_canopy": {
+      "title": "Random Spread Canopy",
+      "description": "\n\nProperties:\n• leaf_placement_attempts (int)\n• leaf_blocks (string[])",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "leaf_placement_attempts": {
+            "title": "Leaf Placement Attempts",
+            "description": "Max number of attempts to create leaf blocks.",
+            "type": "integer"
+          },
+          "leaf_blocks": {
+            "title": "Leaf Blocks",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Tree Feature",
+      "description": "Create a Tree Feature",
+      "body": {
+        "description": ""
+      }
+    }
+  ]
+}

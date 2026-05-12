@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Sittable",
+  "description": "Defines the entity's 'sit' state.",
+  "properties": {
+    "sit_event": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "title": "Sit Event",
+      "description": "Event to run when the entity enters the 'sit' state. Can be an object with event and target properties, or a simple event string."
+    },
+    "stand_event": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "title": "Stand Event",
+      "description": "Event to run when the entity exits the 'sit' state. Can be an object with event and target properties, or a simple event string."
+    }
+  }
+}

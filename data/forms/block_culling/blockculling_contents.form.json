@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "specifies block culling content with bone, cube, and face data"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "face",
+      "title": "Facing",
+      "description": "Facing",
+      "dataType": "string"
+    },
+    {
+      "id": "bone",
+      "title": "bone",
+      "description": "bone",
+      "dataType": "string"
+    },
+    {
+      "id": "cube",
+      "title": "cube",
+      "description": "cube",
+      "dataType": "int"
+    }
+  ],
+  "description": "BlockCulling Contents",
+  "title": "BlockCulling Contents"
+}

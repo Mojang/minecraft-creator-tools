@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Fog Distance Settings with Transition",
+  "description": "Distance fog settings that include transition fog support (primarily for water).",
+  "properties": {
+    "fog_start": {
+      "title": "Fog Start",
+      "description": "The distance at which fog begins. For render distance type, this is a percentage (0.0-1.0). For fixed type, this is in blocks.",
+      "type": "number"
+    },
+    "fog_end": {
+      "title": "Fog End",
+      "description": "The distance at which fog is fully opaque. For render distance type, this is a percentage (0.0-1.0). For fixed type, this is in blocks.",
+      "type": "number"
+    },
+    "fog_color": {
+      "title": "Fog Color",
+      "description": "The color of the fog as a hex string (e.g., '#ABD2FF') or RGB array.",
+      "type": "string"
+    },
+    "render_distance_type": {
+      "title": "Render Distance Type",
+      "description": "How fog distances are calculated. 'fixed' uses block distances, 'render' uses percentage of render distance.",
+      "type": "string",
+      "enum": [
+        "fixed",
+        "render"
+      ]
+    },
+    "transition_fog": {
+      "title": "Transition Fog",
+      "description": "Settings for fog transition when entering this environment.",
+      "type": "object",
+      "properties": {
+        "init_fog": {
+          "title": "Initial Fog",
+          "description": "The initial fog settings when entering transition.",
+          "$ref": "./fog_fog_distance_settings.schema.json",
+          "defaultSnippets": [
+            {
+              "label": "Fog Distance Settings",
+              "description": "Distance fog settings for a specific environment type (air, water, lava, etc.).",
+              "body": {
+                "fog_start": 0,
+                "fog_end": 0,
+                "fog_color": "",
+                "render_distance_type": ""
+              }
+            }
+          ]
+        },
+        "min_percent": {
+          "title": "Minimum Percent",
+          "description": "The minimum fog percentage during transition.",
+          "type": "number"
+        },
+        "mid_seconds": {
+          "title": "Mid Seconds",
+          "description": "Time in seconds to reach the mid-point of the transition.",
+          "type": "number"
+        },
+        "mid_percent": {
+          "title": "Mid Percent",
+          "description": "The fog percentage at the mid-point of transition.",
+          "type": "number"
+        },
+        "max_seconds": {
+          "title": "Max Seconds",
+          "description": "Total time in seconds for the full transition.",
+          "type": "number"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Fog Transition",
+          "description": "Settings for fog transition when entering this environment.",
+          "body": {
+            "min_percent": 0,
+            "mid_seconds": 0,
+            "mid_percent": 0,
+            "max_seconds": 0
+          }
+        }
+      ]
+    }
+  }
+}

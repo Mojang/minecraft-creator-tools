@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "resource/terrain_texture",
+  "title": "Terrain Texture Atlas",
+  "description": "The terrain_texture.json file defines the texture atlas for block textures. It maps texture names to texture file paths, allowing blocks to reference textures by name. Located at textures/terrain_texture.json in resource packs.",
+  "type": "object",
+  "properties": {
+    "resource_pack_name": {
+      "title": "Resource Pack Name",
+      "description": "The name of the resource pack this atlas belongs to.",
+      "type": "string"
+    },
+    "texture_name": {
+      "title": "Texture Name",
+      "description": "The name of the texture atlas. Typically 'atlas.terrain' for block textures.",
+      "type": "string",
+      "default": "atlas.terrain"
+    },
+    "padding": {
+      "title": "Padding",
+      "description": "The padding in pixels between textures in the atlas to prevent bleeding.",
+      "type": "integer",
+      "default": 8
+    },
+    "num_mip_levels": {
+      "title": "Number of Mip Levels",
+      "description": "The number of mipmap levels to generate for the atlas.",
+      "type": "integer",
+      "default": 4
+    },
+    "texture_data": {
+      "title": "Texture Data",
+      "description": "A collection of texture definitions keyed by texture name. Each entry maps a texture name to its source file(s).",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "textures": {
+            "title": "Textures",
+            "description": "Array of texture file paths. Multiple paths can be provided for variants (used with aux values in older versions).",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "overlay_color": {
+            "title": "Overlay Color",
+            "description": "A color to overlay on top of the texture, specified as a hex color code.",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "textures": {
+      "title": "Textures",
+      "description": "\n\nSample values:\n• terrain_texture: [\"textures/blocks/stone\"]",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "resource_pack_name",
+    "texture_name",
+    "texture_data"
+  ]
+}

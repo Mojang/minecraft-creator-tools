@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "entity/entity_behavior_document",
+  "title": "Entity Behavior Document",
+  "description": "A behavior pack entity definition document for Minecraft Bedrock Edition. This describes the complete JSON file structure including format_version and the minecraft:entity wrapper.",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "title": "Format Version",
+      "description": "The format version of this entity behavior file. Determines which features and component schemas are available.",
+      "type": "string"
+    },
+    "minecraft:entity": {
+      "title": "Entity Definition",
+      "description": "The entity definition container with all behavior pack entity data.",
+      "$ref": "./entity_actor_document.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Entity Actor Document",
+          "description": "The root structure for entity behavior definitions in behavior packs. Contains the entity's unique identifier, components that define its capabilities, component groups for state variations, and events that trigger state changes. Every custom mob, NPC, or creature requires an actor document defining its AI, health, movement, and interactions.",
+          "body": {
+            "component_groups": {},
+            "description": ""
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "format_version",
+    "minecraft:entity"
+  ]
+}

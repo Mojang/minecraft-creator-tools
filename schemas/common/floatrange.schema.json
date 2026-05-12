@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "item_components/floatrange",
+  "title": "Item Components FloatRange",
+  "description": "Has minimum and maximum float values.",
+  "type": "object",
+  "properties": {
+    "max": {
+      "title": "Max",
+      "type": "number",
+      "default": 0
+    },
+    "min": {
+      "title": "Min",
+      "type": "number",
+      "default": 0
+    }
+  }
+}

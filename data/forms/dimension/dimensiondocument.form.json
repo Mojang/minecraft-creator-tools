@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "DimensionDocument",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "represents the root document for a custom dimension definition"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "minecraft:dimension",
+      "title": "Minecraft Dimension",
+      "dataType": "object",
+      "subFormId": "dimension/dimension",
+      "isRequired": true
+    }
+  ],
+  "description": "Represents the root document for a custom dimension definition.",
+  "title": "DimensionDocument"
+}

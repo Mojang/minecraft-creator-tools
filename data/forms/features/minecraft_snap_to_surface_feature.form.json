@@ -1,0 +1,180 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:snap_to_surface_feature",
+  "description": "Snaps the y-value of a feature placement pos to the floor or the ceiling within the provided vertical_search_range. The placement biome is preserved. If the snap position goes outside of the placement biome, placement will fail.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "adjusts Y position to snap features to floor or ceiling"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "feature_to_snap",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "snaps "
+          },
+          {
+            "type": "value",
+            "field": "feature_to_snap"
+          },
+          {
+            "type": "literal",
+            "text": " to surface"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "surface",
+            "comparison": "=",
+            "value": "ceiling"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "targets ceiling surface"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "surface",
+            "comparison": "=",
+            "value": "floor"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "targets floor surface"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "vertical_search_range",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "searches "
+          },
+          {
+            "type": "value",
+            "field": "vertical_search_range"
+          },
+          {
+            "type": "literal",
+            "text": " blocks vertically"
+          }
+        ],
+        "priority": 3
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "format_version",
+      "title": "Format Version",
+      "dataType": "string"
+    },
+    {
+      "dataType": "object",
+      "id": "description",
+      "title": "Description",
+      "isRequired": true,
+      "subForm": {
+        "fields": [
+          {
+            "dataType": "string",
+            "id": "identifier",
+            "title": "Identifier",
+            "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+            "isRequired": true
+          }
+        ]
+      }
+    },
+    {
+      "dataType": "int",
+      "id": "vertical_search_range",
+      "title": "Vertical Search Range",
+      "description": "Range to search for a floor or ceiling for snaping the feature.",
+      "isRequired": true
+    },
+    {
+      "dataType": "string",
+      "id": "surface",
+      "title": "Surface",
+      "description": "Defines the surface that the y-value of the placement position will be snapped to. Valid values: 'ceiling', 'floor' and 'random_horizontal'",
+      "isRequired": false
+    },
+    {
+      "dataType": "boolean",
+      "id": "allow_air_placement",
+      "title": "Allow Air Placement",
+      "description": "Determines whether the feature can snap through air blocks. Defaults to true.",
+      "isRequired": false
+    },
+    {
+      "dataType": "boolean",
+      "id": "allow_underwater_placement",
+      "title": "Allow Underwater Placement",
+      "description": "Determines whether the feature can snap through water blocks. Defaults to false.",
+      "isRequired": false
+    },
+    {
+      "dataType": "stringArray",
+      "id": "allowed_surface_blocks",
+      "title": "Allowed Surface Blocks",
+      "description": "A list of blocks that the feature is permitted to snap to. Leaving this empty results in the feature snapping to blocks that can provide support for the given face (up/down/horizontal)",
+      "isRequired": false
+    },
+    {
+      "dataType": "boolean",
+      "id": "embed_in_surface",
+      "title": "Embed In Surface",
+      "description": "Determines whether the placed feature should be embedded in the found surface.",
+      "isRequired": false
+    }
+  ],
+  "samples": {
+    "example": [
+      {
+        "path": "Scattering multiple different plants around a monument",
+        "content": {
+          "format_version": "1.13.0",
+          "minecraft:snap_to_surface_feature": {
+            "description": {
+              "identifier": "example:cave_vine_snapped_to_ceiling_feature"
+            },
+            "feature_to_snap": "example:cave_vine_feature",
+            "vertical_search_range": 12,
+            "surface": "ceiling",
+            "allowed_surface_blocks": {
+              "name": "minecraft:cobblestone"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "title": "Snap To Surface Feature"
+}

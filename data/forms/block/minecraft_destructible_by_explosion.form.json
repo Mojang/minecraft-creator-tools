@@ -1,0 +1,204 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "explosion_resistance",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "switch",
+            "cases": [
+              {
+                "conditions": [
+                  {
+                    "field": "explosion_resistance",
+                    "comparison": ">=",
+                    "value": 1200
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "is nearly indestructible by explosions (resistance: "
+                  },
+                  {
+                    "type": "value",
+                    "field": "explosion_resistance"
+                  },
+                  {
+                    "type": "literal",
+                    "text": ")"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "explosion_resistance",
+                    "comparison": ">=",
+                    "value": 30
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "is very blast resistant (resistance: "
+                  },
+                  {
+                    "type": "value",
+                    "field": "explosion_resistance"
+                  },
+                  {
+                    "type": "literal",
+                    "text": ")"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "explosion_resistance",
+                    "comparison": ">=",
+                    "value": 6
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "has standard blast resistance (resistance: "
+                  },
+                  {
+                    "type": "value",
+                    "field": "explosion_resistance"
+                  },
+                  {
+                    "type": "literal",
+                    "text": ")"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "explosion_resistance",
+                    "comparison": ">",
+                    "value": 0
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "is fragile to explosions (resistance: "
+                  },
+                  {
+                    "type": "value",
+                    "field": "explosion_resistance"
+                  },
+                  {
+                    "type": "literal",
+                    "text": ")"
+                  }
+                ]
+              }
+            ],
+            "default": [
+              {
+                "type": "literal",
+                "text": "is easily destroyed by explosions"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "explosion_resistance",
+      "title": "Explosion Resistance",
+      "description": "Sets the explosion resistance for the block. Greater values result in greater resistance to explosions. The scale will be different for different explosion power levels. A negative value or 0 means it will easily explode; larger numbers increase level of resistance.",
+      "defaultValue": 0,
+      "dataType": "float"
+    }
+  ],
+  "scalarField": {
+    "id": "boolean",
+    "title": "Object enabled",
+    "tags": [
+      "presence"
+    ],
+    "dataType": "boolean"
+  },
+  "samples": {
+    "Example": [
+      {
+        "path": "Boolean",
+        "content": true
+      }
+    ],
+    "Block Fabricator": [
+      {
+        "path": "https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json",
+        "content": {
+          "explosion_resistance": 15
+        }
+      }
+    ],
+    "Block Gray Ore": [
+      {
+        "path": "https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/gray_ore.block.json",
+        "content": {
+          "explosion_resistance": 96
+        }
+      }
+    ],
+    "Block Palm Leave": [
+      {
+        "path": "https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave.block.json",
+        "content": {
+          "explosion_resistance": 1.3
+        }
+      }
+    ],
+    "Block White Sand": [
+      {
+        "path": "https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/white_sand.block.json",
+        "content": {
+          "explosion_resistance": 1.1
+        }
+      }
+    ],
+    "Block Leaf Pile": [
+      {
+        "path": "https://github.com/microsoft/minecraft-samples/tree/main/creator_camp/behavior_packs/creator_camp/blocks/leaf_pile.block.json",
+        "content": {
+          "explosion_resistance": 0.5
+        }
+      }
+    ],
+    "Block Orange Ore": [
+      {
+        "path": "https://github.com/microsoft/minecraft-samples/tree/main/custom_features/basic_orange_ore/behavior_packs/basic_orange_ore/blocks/orange_ore.block.json",
+        "content": {
+          "explosion_resistance": 30
+        }
+      }
+    ],
+    "Apple Block": [
+      {
+        "path": "https://github.com/microsoft/minecraft-samples/tree/main/custom_features/example_feature_set/behavior_packs/example_feature_set/blocks/apple_block.json",
+        "content": {
+          "explosion_resistance": 2.9
+        }
+      }
+    ]
+  },
+  "description": "Describes the destructible by explosion properties for this block. If set to true, the block will have the default explosion resistance. If set to false, this block is indestructible by explosion. If the component is omitted, the block will have the default explosion resistance.",
+  "title": "Destructible By Explosion",
+  "id": "minecraft:destructible_by_explosion"
+}

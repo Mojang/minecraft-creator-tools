@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Nap Behavior",
+  "description": "Allows mobs to occassionally stop and take a nap under certain conditions.",
+  "properties": {
+    "can_nap_filters": {
+      "title": "Can Nap Filters",
+      "description": "Conditions that need to be met for the entity to nap.",
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "wake_mob_exceptions": {
+      "title": "Wake Mob Exceptions",
+      "description": "Filters for mobs that will not wake this entity from napping.",
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "cooldown_max": {
+      "title": "Cooldown Max",
+      "description": "Maximum time in seconds the mob has to wait before using the goal again",
+      "type": "number",
+      "default": 0
+    },
+    "cooldown_min": {
+      "title": "Cooldown Min",
+      "description": "Minimum time in seconds the mob has to wait before using the goal again",
+      "type": "number",
+      "default": 0
+    },
+    "mob_detect_dist": {
+      "title": "Mob Detect Dist",
+      "description": "The block distance in x and z that will be checked for mobs that this mob detects",
+      "type": "number",
+      "default": 6
+    },
+    "mob_detect_height": {
+      "title": "Mob Detect Height",
+      "description": "The block distance in y that will be checked for mobs that this mob detects",
+      "type": "number",
+      "default": 6
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer"
+    }
+  }
+}

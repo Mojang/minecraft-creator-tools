@@ -1,0 +1,1 @@
+import{O as t}from"./vendor-octokit-core-BiTxxUTr.js";import{r as o}from"./vendor-octokit-plugin-request-log-BP-rPh_7.js";import{p as s}from"./vendor-octokit-plugin-paginate-rest-DqJ5hcT8.js";import{l as r}from"./vendor-octokit-plugin-rest-endpoint-methods-CRP2_u2u.js";const e="22.0.1",n=t.plugin(o,r,s).defaults({userAgent:`octokit-rest.js/${e}`});export{n as O};

@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "resource/flipbook_textures",
+  "title": "Flipbook Textures",
+  "description": "The flipbook_textures.json file defines animated textures for blocks. Each entry specifies a texture that cycles through frames at a specified rate. Located at textures/flipbook_textures.json in resource packs.",
+  "type": "object",
+  "properties": {
+    "flipbook_texture": {
+      "title": "Flipbook Texture",
+      "description": "\n\nSample values:\n• flipbook_textures: textures/blocks/fire_0",
+      "type": "string"
+    },
+    "atlas_tile": {
+      "title": "Atlas Tile",
+      "description": "\n\nSample values:\n• flipbook_textures: fire_0",
+      "type": "string"
+    },
+    "ticks_per_frame": {
+      "title": "Ticks Per Frame",
+      "description": "\n\nSample values:\n• flipbook_textures: 3",
+      "type": "number"
+    }
+  }
+}

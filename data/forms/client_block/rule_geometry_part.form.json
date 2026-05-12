@@ -1,0 +1,62 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "Rule Geometry Part",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "specifies a geometry part for culling"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "bone",
+      "title": "Bone",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "cube",
+      "title": "Cube",
+      "dataType": "int"
+    },
+    {
+      "id": "face",
+      "title": "Facing",
+      "dataType": "string",
+      "choices": [
+        {
+          "id": "down",
+          "title": "Down"
+        },
+        {
+          "id": "east",
+          "title": "East"
+        },
+        {
+          "id": "north",
+          "title": "North"
+        },
+        {
+          "id": "south",
+          "title": "South"
+        },
+        {
+          "id": "up",
+          "title": "Up"
+        },
+        {
+          "id": "west",
+          "title": "West"
+        }
+      ]
+    }
+  ],
+  "description": "Specifies a geometry part for culling.",
+  "title": "Client Block Rule Geometry Part"
+}

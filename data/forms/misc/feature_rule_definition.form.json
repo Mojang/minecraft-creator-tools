@@ -1,0 +1,43 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines feature rule definition configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Feature Rule Definition",
+  "fields": [
+    {
+      "id": "description",
+      "description": "Identifier for the Feature Rule and Feature to place.",
+      "dataType": "object",
+      "subFormId": "misc/feature_rule_description",
+      "title": "Description",
+      "isRequired": true
+    },
+    {
+      "id": "conditions",
+      "title": "Conditions",
+      "description": "Parameters to control where and when the feature will be placed.",
+      "dataType": "object",
+      "subFormId": "misc/feature_rule_conditions",
+      "isRequired": true
+    },
+    {
+      "id": "distribution",
+      "title": "Distribution",
+      "description": "Parameters controlling the initial scatter of the feature.",
+      "dataType": "object",
+      "subFormId": "misc/scatter_params"
+    }
+  ],
+  "description": "Defines feature rule definition configuration.",
+  "title": "Feature Rule Definition Misc"
+}

@@ -1,0 +1,67 @@
+{
+  "format_version": "1.26.30",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:chest_minecart",
+      "is_experimental": false,
+      "is_summonable": true,
+      "is_spawnable": false,
+      "spawn_category": "misc"
+    },
+    "components": {
+      "minecraft:collision_box": {
+        "height": 0.7,
+        "width": 0.98
+      },
+      "minecraft:conditional_bandwidth_optimization": {
+        "conditional_values": [
+          {
+            "conditional_values": [
+              {
+                "operator": "==",
+                "test": "is_moving",
+                "subject": "self",
+                "value": true
+              }
+            ],
+            "max_dropped_ticks": 0,
+            "max_optimized_distance": 0.0
+          }
+        ],
+        "default_values": {
+          "max_dropped_ticks": 20,
+          "max_optimized_distance": 60.0,
+          "use_motion_prediction_hints": true
+        }
+      },
+      "minecraft:inventory": {
+        "can_be_siphoned_from": true,
+        "inventory_size": 27,
+        "container_type": "minecart_chest"
+      },
+      "minecraft:is_stackable": {},
+      "minecraft:physics": {},
+      "minecraft:pushable_by_entity": {
+        "presets": [
+          {
+            "push_mode": "legacy_minecart",
+            "strength_multiplier": 0.1,
+            "min_distance": 0.0001,
+            "push_scale_self": 0.5,
+            "push_scale_other": 0.25
+          }
+        ]
+      },
+      "minecraft:pushable_by_block": {
+      },
+      "minecraft:rail_movement": {},
+      "minecraft:type_family": {
+        "family": [
+          "minecart",
+          "inanimate"
+        ]
+      }
+    },
+    "events": null
+  }
+}

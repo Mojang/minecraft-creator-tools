@@ -1,0 +1,338 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines trade configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Trade",
+  "fields": [
+    {
+      "id": "gives",
+      "title": "Gives",
+      "dataType": "objectArray",
+      "minLength": 1,
+      "subForm": {
+        "id": "gives",
+        "title": "Gives",
+        "fields": [
+          {
+            "id": "__DEP_fltrs",
+            "title": "DEP Fltrs",
+            "dataType": "object"
+          },
+          {
+            "id": "__DEP_fnctns",
+            "title": "DEP Fnctns",
+            "dataType": "object"
+          },
+          {
+            "id": "filters",
+            "title": "Filters",
+            "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects.",
+            "dataType": "object",
+            "subForm": {
+              "id": "filters",
+              "title": "Filters",
+              "fields": [
+                {
+                  "id": "domain",
+                  "title": "Domain",
+                  "description": "The domain the test should be performed in.",
+                  "dataType": "object"
+                },
+                {
+                  "id": "operator",
+                  "title": "Operator",
+                  "description": "The comparison to apply with 'value'.",
+                  "dataType": "object"
+                },
+                {
+                  "id": "subject",
+                  "title": "Subject",
+                  "description": "The subject of this filter test.",
+                  "dataType": "object"
+                },
+                {
+                  "id": "test",
+                  "title": "Test",
+                  "description": "The name of the test to apply.",
+                  "dataType": "string",
+                  "isRequired": true
+                },
+                {
+                  "id": "value",
+                  "title": "Value",
+                  "description": "The value being compared with the test.",
+                  "dataType": "object"
+                }
+              ]
+            },
+            "alternates": [
+              {
+                "id": "filters",
+                "dataType": "object"
+              }
+            ]
+          },
+          {
+            "id": "functions",
+            "title": "Functions",
+            "dataType": "stringArray"
+          },
+          {
+            "id": "item",
+            "title": "Item",
+            "dataType": "object",
+            "isRequired": true
+          },
+          {
+            "id": "price_multiplier",
+            "title": "Price Multiplier",
+            "dataType": "float"
+          },
+          {
+            "id": "quantity",
+            "title": "Quantity",
+            "dataType": "int",
+            "alternates": [
+              {
+                "id": "quantity",
+                "dataType": "object",
+                "subForm": {
+                  "id": "quantity",
+                  "title": "Quantity",
+                  "fields": [
+                    {
+                      "id": "max",
+                      "title": "Max",
+                      "dataType": "int",
+                      "validity": [
+                        {
+                          "comparison": ">=",
+                          "value": 1
+                        }
+                      ]
+                    },
+                    {
+                      "id": "min",
+                      "title": "Min",
+                      "dataType": "int",
+                      "validity": [
+                        {
+                          "comparison": ">=",
+                          "value": 1
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "gives",
+          "dataType": "object",
+          "readOnly": true,
+          "subForm": {
+            "id": "gives",
+            "title": "Gives",
+            "fields": [
+              {
+                "id": "choice",
+                "title": "Choice",
+                "dataType": "object",
+                "isRequired": true
+              }
+            ]
+          }
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "max_uses",
+      "title": "Max Uses",
+      "dataType": "int"
+    },
+    {
+      "id": "reward_exp",
+      "title": "Reward Exp",
+      "dataType": "boolean"
+    },
+    {
+      "id": "trader_exp",
+      "title": "Trader Exp",
+      "dataType": "int"
+    },
+    {
+      "id": "wants",
+      "title": "Wants",
+      "dataType": "objectArray",
+      "minLength": 1,
+      "subForm": {
+        "id": "wants",
+        "title": "Wants",
+        "fields": [
+          {
+            "id": "__DEP_fltrs",
+            "title": "DEP Fltrs",
+            "dataType": "object"
+          },
+          {
+            "id": "__DEP_fnctns",
+            "title": "DEP Fnctns",
+            "dataType": "object"
+          },
+          {
+            "id": "filters",
+            "title": "Filters",
+            "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects.",
+            "dataType": "object",
+            "subForm": {
+              "id": "filters",
+              "title": "Filters",
+              "fields": [
+                {
+                  "id": "domain",
+                  "title": "Domain",
+                  "description": "The domain the test should be performed in.",
+                  "dataType": "object"
+                },
+                {
+                  "id": "operator",
+                  "title": "Operator",
+                  "description": "The comparison to apply with 'value'.",
+                  "dataType": "object"
+                },
+                {
+                  "id": "subject",
+                  "title": "Subject",
+                  "description": "The subject of this filter test.",
+                  "dataType": "object"
+                },
+                {
+                  "id": "test",
+                  "title": "Test",
+                  "description": "The name of the test to apply.",
+                  "dataType": "string",
+                  "isRequired": true
+                },
+                {
+                  "id": "value",
+                  "title": "Value",
+                  "description": "The value being compared with the test.",
+                  "dataType": "object"
+                }
+              ]
+            },
+            "alternates": [
+              {
+                "id": "filters",
+                "dataType": "object"
+              }
+            ]
+          },
+          {
+            "id": "functions",
+            "title": "Functions",
+            "dataType": "stringArray"
+          },
+          {
+            "id": "item",
+            "title": "Item",
+            "dataType": "object",
+            "isRequired": true
+          },
+          {
+            "id": "price_multiplier",
+            "title": "Price Multiplier",
+            "dataType": "float"
+          },
+          {
+            "id": "quantity",
+            "title": "Quantity",
+            "dataType": "int",
+            "alternates": [
+              {
+                "id": "quantity",
+                "dataType": "object",
+                "subForm": {
+                  "id": "quantity",
+                  "title": "Quantity",
+                  "fields": [
+                    {
+                      "id": "max",
+                      "title": "Max",
+                      "dataType": "int",
+                      "validity": [
+                        {
+                          "comparison": ">=",
+                          "value": 1
+                        }
+                      ]
+                    },
+                    {
+                      "id": "min",
+                      "title": "Min",
+                      "dataType": "int",
+                      "validity": [
+                        {
+                          "comparison": ">=",
+                          "value": 1
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "wants",
+          "dataType": "object",
+          "readOnly": true,
+          "subForm": {
+            "id": "wants",
+            "title": "Wants",
+            "fields": [
+              {
+                "id": "choice",
+                "title": "Choice",
+                "dataType": "object",
+                "isRequired": true
+              }
+            ]
+          }
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "weight",
+      "title": "Weight",
+      "dataType": "int",
+      "validity": [
+        {
+          "comparison": ">=",
+          "value": 1
+        }
+      ]
+    }
+  ],
+  "description": "Defines trade configuration.",
+  "title": "Trade Misc"
+}

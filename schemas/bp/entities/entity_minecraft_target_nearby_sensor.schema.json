@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Target Nearby Sensor",
+  "description": "Defines the entity's range within which it can see or sense other entities to target them.",
+  "properties": {
+    "on_inside_range": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "title": "On Inside Range",
+      "description": "Event to call when an entity gets in the inside range. Can be an object with event and target properties, or a simple event string.\n\nSample values:\n• blaze: {\"event\":\"switch_to_melee\",\"target\":\"self\"}"
+    },
+    "on_outside_range": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "title": "On Outside Range",
+      "description": "Event to call when an entity gets outside the outside range. Can be an object with event and target properties, or a simple event string.\n\nSample values:\n• blaze: {\"event\":\"switch_to_ranged\",\"target\":\"self\"}"
+    },
+    "inside_range": {
+      "title": "Inside Range",
+      "description": "Maximum distance in blocks that another entity will be considered in the 'inside' range\n\nSample values:\n• blaze: 2",
+      "type": "number",
+      "default": 1
+    },
+    "must_see": {
+      "title": "Must See",
+      "description": "Whether the other entity needs to be visible to trigger 'inside' events\n\nSample values:\n• blaze: true",
+      "type": "boolean",
+      "default": false
+    },
+    "on_vision_lost_inside_range": {
+      "title": "Vision Lost Inside Range",
+      "description": "Event to call when an entity exits visual range. Can specify 'event' for the name of the event and 'target' for the target of the event",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "outside_range": {
+      "title": "Outside Range",
+      "description": "Maximum distance in blocks that another entity will be considered in the 'outside' range\n\nSample values:\n• blaze: 3",
+      "type": "number",
+      "default": 5
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines spawn playerinvillagefilter settings"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Spawn PlayerInVillageFilter",
+  "fields": [
+    {
+      "id": "distance",
+      "title": "Distance",
+      "dataType": "int",
+      "isRequired": true
+    },
+    {
+      "id": "village_border_tolerance",
+      "title": "Village Border Tolerance",
+      "dataType": "int"
+    }
+  ],
+  "description": "Defines spawn playerinvillagefilter settings.",
+  "title": "Spawn PlayerInVillageFilter Misc"
+}

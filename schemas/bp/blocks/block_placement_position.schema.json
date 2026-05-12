@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Block Placement Position",
+  "description": "Adds the \"minecraft:block_face\" and/or \"minecraft:vertical_half\" states and setter function to the block.",
+  "properties": {
+    "enabled_states": {
+      "title": "Enabled States",
+      "description": "Which states to enable. Must specify at least one. Options: [\"minecraft:block_face\", \"minecraft:vertical_half\"].",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "minecraft:block_face",
+          "minecraft:vertical_half"
+        ]
+      },
+      "minLength": 1
+    }
+  },
+  "required": [
+    "enabled_states"
+  ]
+}

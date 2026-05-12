@@ -1,0 +1,15 @@
+{
+  "files": [
+    "villager.png",
+    "villager.texture_set.json",
+    "villager_baby.png",
+    "villager_baby.texture_set.json",
+    "villager_baby_mers.tga",
+    "villager_mers.tga"
+  ],
+  "folders": [
+    "biomes",
+    "levels",
+    "professions"
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Mangrove Roots",
+  "description": "\n\nProperties:\n• root_decoration ({ decoration_block, decoration_blocks_sequence, decoration_chance, ... })\n• max_root_width (int)\n• max_root_length (int)\n• above_root (object)\n• roots_may_grow_through (string[])",
+  "type": "object",
+  "properties": {
+    "root_decoration": {
+      "$ref": "./root_decoration.schema.json",
+      "title": "Root Decoration",
+      "description": "Configuration object for the root decoration.",
+      "defaultSnippets": [
+        {
+          "label": "Root Decoration",
+          "description": "Configuration object for the root decoration.",
+          "body": {
+            "decoration_block": "",
+            "num_steps": 0,
+            "step_direction": ""
+          }
+        }
+      ]
+    },
+    "max_root_width": {
+      "title": "Max Root Width",
+      "description": "Max width that the roots can occupy. The width increases up to the max width while moving downwards. When a max width is reached, roots will grow vertically.",
+      "type": "integer"
+    },
+    "max_root_length": {
+      "title": "Max Root Length",
+      "description": "Max length for the roots.",
+      "type": "integer"
+    },
+    "above_root": {
+      "title": "Above Root",
+      "description": "Configuration object for blocks decorating the top of the roots.",
+      "type": "object",
+      "properties": {}
+    },
+    "roots_may_grow_through": {
+      "title": "Roots May Grow Through",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Mangrove Roots",
+      "description": "Create a Mangrove Roots",
+      "body": {
+        "max_root_width": 0,
+        "max_root_length": 0,
+        "roots_may_grow_through": ""
+      }
+    }
+  ]
+}

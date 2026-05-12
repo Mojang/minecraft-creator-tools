@@ -1,0 +1,427 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Client Particles Particle Effect Component",
+  "description": "Container for all particle effect components that define behavior and appearance. Components control every aspect of particle effects: emitter shape and rate, particle lifetime and motion, visual appearance and colors, collision responses, and event triggers. Combine components to build complex effects from reusable, modular pieces.",
+  "properties": {
+    "minecraft:particle_initial_speed": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "minLength": 3,
+          "maxLength": 3
+        }
+      ],
+      "title": "Particle Initial Speed",
+      "description": "The initial speed of particles. Can be a number, Molang expression, or array of [x, y, z] speeds."
+    },
+    "minecraft:particle_expire_if_in_blocks": {
+      "title": "Particle Expire If In Blocks",
+      "description": "List of block identifiers. Particles will expire when they are in any of these blocks.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "minecraft:particle_expire_if_not_in_blocks": {
+      "title": "Particle Expire If Not In Blocks",
+      "description": "List of block identifiers. Particles will expire when they are NOT in any of these blocks.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "minecraft:particle_kill_plane": {
+      "title": "Particle Kill Plane",
+      "description": "A plane (A, B, C, D coefficients) that kills particles when they cross it. Defined as an array of 4 numbers [A, B, C, D] where Ax + By + Cz + D = 0.",
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          }
+        ]
+      },
+      "minLength": 4,
+      "maxLength": 4
+    },
+    "minecraft:emitter_initialization": {
+      "title": "Minecraft Emitter Initialization",
+      "description": "\n\nProperties:\n• creation_expression = 0\n• per_update_expression = 0",
+      "$ref": "./client_particles_emitter_initialization.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Emitter Initialization",
+          "description": "Defines Molang expressions that run when the emitter is created and on each update. Useful for initializing and updating emitter variables.",
+          "body": {
+            "creation_expression": 0,
+            "per_update_expression": 0
+          }
+        }
+      ]
+    },
+    "minecraft:emitter_lifetime_events": {
+      "title": "Minecraft Emitter Lifetime Events",
+      "type": "object"
+    },
+    "minecraft:emitter_lifetime_expression": {
+      "title": "Minecraft Emitter Lifetime Expression",
+      "description": "\n\nProperties:\n• activation_expression = 1\n• expiration_expression = 0",
+      "$ref": "./client_particles_emitter_lifetime_expression.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Emitter Lifetime Expression",
+          "description": "Controls when the emitter activates and expires using Molang expressions. The activation expression starts particle emission when it evaluates to non-zero, and the expiration expression stops it. This enables dynamic effects tied to entity state—like flames that only appear when an entity is on fire, or magic particles that pulse with the caster's mana.",
+          "body": {
+            "activation_expression": 1,
+            "expiration_expression": 0
+          }
+        }
+      ]
+    },
+    "minecraft:emitter_lifetime_looping": {
+      "title": "Minecraft Emitter Lifetime Looping",
+      "description": "\n\nProperties:\n• active_time = 0\n• sleep_time = 0",
+      "$ref": "./client_particles_emitter_lifetime_looping.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Emitter Lifetime Looping",
+          "description": "Creates repeating particle effects that cycle between active and dormant phases. The emitter runs for the active_time duration, pauses for sleep_time, then repeats indefinitely. Perfect for ambient effects like bubbling cauldrons, flickering torches, pulsing enchantment glows, or creature breathing animations.",
+          "body": {
+            "active_time": 0,
+            "sleep_time": 0
+          }
+        }
+      ]
+    },
+    "minecraft:emitter_lifetime_once": {
+      "title": "Minecraft Emitter Lifetime Once",
+      "description": "\n\nProperties:\n• active_time = 0",
+      "$ref": "./client_particles_emitter_lifetime_once.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Emitter Lifetime Once",
+          "description": "Creates a single-burst particle effect that runs once and stops. The emitter activates for the specified active_time duration, emits particles, then terminates. Ideal for impact effects like explosions, block breaking, critical hits, potion splashes, and other momentary visual feedback.",
+          "body": {
+            "active_time": 0
+          }
+        }
+      ]
+    },
+    "minecraft:emitter_local_space": {
+      "title": "Minecraft Emitter Local Space",
+      "type": "object"
+    },
+    "minecraft:emitter_rate_instant": {
+      "title": "Minecraft Emitter Rate Instant",
+      "description": "\n\nProperties:\n• num_particles",
+      "$ref": "./client_particles_emitter_rate_instant.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Emitter Rate Instant",
+          "description": "Spawns all particles in a single instant burst when the emitter activates. Unlike steady emission that spawns particles over time, this creates an immediate cloud of particles—perfect for explosions, block destruction debris, potion splash impacts, ender teleportation effects, and any effect that needs an instantaneous particle release.",
+          "body": {
+            "num_particles": ""
+          }
+        }
+      ]
+    },
+    "minecraft:emitter_rate_manual": {
+      "title": "Minecraft Emitter Rate Manual",
+      "description": "\n\nProperties:\n• max_particles",
+      "$ref": "./client_particles_emitter_rate_manual.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Emitter Rate Manual",
+          "description": "Allows manual control over particle emission through events rather than automatic spawning. Particles are only created when explicitly triggered via Molang or particle events, up to the max_particles limit. Useful for effects that should only spawn under specific conditions, like damage indicators, pickup sparkles, or script-controlled visual feedback.",
+          "body": {
+            "max_particles": ""
+          }
+        }
+      ]
+    },
+    "minecraft:emitter_rate_steady": {
+      "title": "Minecraft Emitter Rate Steady",
+      "description": "\n\nProperties:\n• max_particles\n• spawn_rate",
+      "$ref": "./client_particles_emitter_rate_steady.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Emitter Rate Steady",
+          "description": "Continuously spawns particles at a consistent rate over time. The spawn_rate controls how many particles appear per second, while max_particles limits the total active count. This is the most common emission mode, used for ongoing effects like torch flames, mob auras, weather effects, potion bubbles, and ambient environmental particles.",
+          "body": {
+            "max_particles": "",
+            "spawn_rate": ""
+          }
+        }
+      ]
+    },
+    "minecraft:emitter_shape_box": {
+      "title": "Minecraft Emitter Shape Box",
+      "description": "\n\nProperties:\n• direction (string)\n• offset = [0,0,0] [maxLen: 3]\n• half_dimensions [maxLen: 3]\n• surface_only (boolean) = false",
+      "$ref": "./client_particles_emitter_shape_box.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Emitter Shape Box",
+          "description": "Emits particles from random positions within a rectangular box volume. Define the box using half_dimensions (distance from center to each edge) and offset from the emitter. Particles can emit outward from spawn points, inward toward center, or in custom directions. Ideal for area effects like smoke filling a room, rain in a region, or magic barriers.",
+          "body": {
+            "direction": "",
+            "offset": [
+              0,
+              0,
+              0
+            ],
+            "half_dimensions": "",
+            "surface_only": false
+          }
+        }
+      ]
+    },
+    "minecraft:emitter_shape_custom": {
+      "title": "Minecraft Emitter Shape Custom",
+      "description": "\n\nProperties:\n• direction = [0,0,0] [maxLen: 3]\n• offset = [0,0,0] [maxLen: 3]",
+      "$ref": "./client_particles_emitter_shape_custom.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Emitter Shape Custom",
+          "description": "Emits particles from positions calculated by custom Molang expressions. Unlike preset shapes, this gives complete control over spawn locations using math expressions that can create rings, spirals, waves, or any procedural pattern. Use the offset expressions to define X, Y, Z coordinates relative to the emitter for complex artistic effects.",
+          "body": {
+            "direction": [
+              0,
+              0,
+              0
+            ],
+            "offset": [
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      ]
+    },
+    "minecraft:emitter_shape_disc": {
+      "title": "Minecraft Emitter Shape Disc",
+      "description": "\n\nProperties:\n• direction (string)\n• offset = [0,0,0] [maxLen: 3]\n• radius = 1\n• plane_normal (string) = [0,1,0]\n• surface_only (boolean) = false",
+      "$ref": "./client_particles_emitter_shape_disc.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Emitter Shape Disc",
+          "description": "Emits particles from random positions on a flat circular disc. Configure the radius and plane normal to control disc size and orientation. Surface_only restricts spawns to the disc edge for ring effects. Perfect for ground-based effects like summoning circles, shockwaves, splash impacts, and aura rings around entities.",
+          "body": {
+            "direction": "",
+            "offset": [
+              0,
+              0,
+              0
+            ],
+            "radius": 1,
+            "plane_normal": [
+              0,
+              1,
+              0
+            ],
+            "surface_only": false
+          }
+        }
+      ]
+    },
+    "minecraft:emitter_shape_entity_aabb": {
+      "title": "Minecraft Emitter Shape Entity Aabb",
+      "description": "\n\nProperties:\n• direction (string)\n• surface_only (boolean) = false",
+      "$ref": "./client_particles_emitter_shape_entity_aabb.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Emitter Shape Entity Aabb",
+          "description": "Emits particles from random positions within the attached entity's axis-aligned bounding box. The emission volume automatically scales with entity size, making it perfect for body-covering effects like burning, freezing, poison clouds, healing auras, or damage feedback that should wrap around creatures of any size.",
+          "body": {
+            "direction": "",
+            "surface_only": false
+          }
+        }
+      ]
+    },
+    "minecraft:emitter_shape_point": {
+      "title": "Minecraft Emitter Shape Point",
+      "description": "\n\nProperties:\n• direction [maxLen: 3]\n• offset = [0,0,0] [maxLen: 3]",
+      "$ref": "./client_particles_emitter_shape_point.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Emitter Shape Point",
+          "description": "Emits all particles from a single point in space, offset from the emitter origin. This is the simplest and most common emission shape—all particles spawn at the same location and spread outward based on their initial velocity. Used for torches, candles, sparks, magic projectile cores, and any effect with a focused emission source.",
+          "body": {
+            "offset": [
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      ]
+    },
+    "minecraft:emitter_shape_sphere": {
+      "title": "Minecraft Emitter Shape Sphere",
+      "description": "\n\nProperties:\n• direction (string)\n• offset = [0,0,0] [maxLen: 3]\n• radius = 1\n• surface_only (boolean) = false",
+      "$ref": "./client_particles_emitter_shape_sphere.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Emitter Shape Sphere",
+          "description": "Emits particles from random positions within a spherical volume. Configure the radius to set sphere size and surface_only to restrict spawns to the outer shell. Direction can be inward, outward, or custom. Ideal for explosions, magical orbs, bubble columns, mob spawn effects, and any effect needing uniform 3D distribution.",
+          "body": {
+            "direction": "",
+            "offset": [
+              0,
+              0,
+              0
+            ],
+            "radius": 1,
+            "surface_only": false
+          }
+        }
+      ]
+    },
+    "minecraft:particle_appearance_billboard": {
+      "title": "Minecraft Particle Appearance Billboard",
+      "description": "\n\nProperties:\n• facing_camera_mode (string)\n• size [maxLen: 2]\n• direction (object)\n• uv (object)",
+      "$ref": "./client_particles_particle_appearance_billboard.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Particle Appearance Billboard",
+          "description": "Controls how particle sprites render and orient toward the camera. The facing_camera_mode determines billboard behavior: 'lookat_xyz' always faces the camera (classic sprites), 'rotate_y' only rotates vertically (tall flames), and direction modes align with particle velocity (arrows, sparks). Size controls particle dimensions using Molang for dynamic scaling.",
+          "body": {
+            "facing_camera_mode": "",
+            "size": ""
+          }
+        }
+      ]
+    },
+    "minecraft:particle_appearance_lighting": {
+      "title": "Minecraft Particle Appearance Lighting",
+      "type": "object"
+    },
+    "minecraft:particle_appearance_tinting": {
+      "title": "Minecraft Particle Appearance Tinting",
+      "description": "\n\nProperties:\n• color [maxLen: 4]",
+      "$ref": "./client_particles_particle_appearance_tinting.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Particle Appearance Tinting",
+          "description": "Applies color tinting to particle textures, from simple solid colors to complex gradients. Use hex colors for static tints, RGBA arrays with Molang for dynamic colors, or gradient objects to blend between colors over particle lifetime. Essential for flames fading orange-to-gray, magical auras shifting colors, or any effect needing color variation.",
+          "body": {
+            "color": ""
+          }
+        }
+      ]
+    },
+    "minecraft:particle_initial_spin": {
+      "title": "Minecraft Particle Initial Spin",
+      "description": "\n\nProperties:\n• rotation = 0\n• rotation_rate = 0",
+      "$ref": "./client_particles_particle_initial_spin.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Particle Initial Spin",
+          "description": "Sets the starting rotation angle and spin velocity for each particle. Initial rotation provides random orientation variety, while spin_rate creates continuous rotation during the particle's lifetime. Use for debris that tumbles, leaves spinning as they fall, sparks that twist, or any particle needing rotational motion.",
+          "body": {
+            "rotation": 0,
+            "rotation_rate": 0
+          }
+        }
+      ]
+    },
+    "minecraft:particle_initialization": {
+      "title": "Minecraft Particle Initialization",
+      "description": "\n\nProperties:\n• per_render_expression = 0\n• per_update_expression = 0",
+      "$ref": "./client_particles_particle_initialization.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Particle Initialization",
+          "description": "Runs Molang expressions when each individual particle spawns to initialize per-particle variables. Unlike emitter_initialization which runs once per emitter, this executes for every particle—enabling randomized properties, unique trajectories, or per-particle state that persists through the particle's lifetime.",
+          "body": {
+            "per_render_expression": 0,
+            "per_update_expression": 0
+          }
+        }
+      ]
+    },
+    "minecraft:particle_lifetime_events": {
+      "title": "Minecraft Particle Lifetime Events",
+      "type": "object"
+    },
+    "minecraft:particle_lifetime_expression": {
+      "title": "Minecraft Particle Lifetime Expression",
+      "description": "\n\nProperties:\n• expiration_expression = 0\n• max_lifetime",
+      "$ref": "./client_particles_particle_lifetime_expression.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Particle Lifetime Expression",
+          "description": "Controls individual particle lifetimes using Molang expressions. The max_lifetime sets the absolute duration limit, while expiration_expression can terminate particles early when conditions are met (like leaving a certain area). Enables dynamic particle populations that respond to game state beyond simple time-based expiration.",
+          "body": {
+            "expiration_expression": 0
+          }
+        }
+      ]
+    },
+    "minecraft:particle_motion_collision": {
+      "title": "Minecraft Particle Motion Collision",
+      "description": "\n\nProperties:\n• events\n• coefficient_of_restitution (float) = 0\n• collision_drag (float) = 0\n• collision_radius (float)\n• enabled = 1\n• expire_on_contact (boolean) = false",
+      "$ref": "./client_particles_particle_motion_collision.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Particle Motion Collision",
+          "description": "Enables particle collision with world geometry. Configure collision radius, bounce coefficient (how much velocity is retained), friction to slow sliding, and whether to expire on impact. Essential for physical particles like rain hitting ground, debris bouncing off surfaces, or arrows embedding in blocks.",
+          "body": {
+            "coefficient_of_restitution": 0,
+            "collision_drag": 0,
+            "collision_radius": 0,
+            "enabled": 1,
+            "expire_on_contact": false
+          }
+        }
+      ]
+    },
+    "minecraft:particle_motion_dynamic": {
+      "title": "Minecraft Particle Motion Dynamic",
+      "description": "\n\nProperties:\n• linear_acceleration = [0,0,0] [maxLen: 3]\n• linear_drag_coefficient = 0\n• rotation_acceleration = 0\n• rotation_drag_coefficient = 0",
+      "$ref": "./client_particles_particle_motion_dynamic.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Particle Motion Dynamic",
+          "description": "Applies physics simulation to particle movement including gravity, acceleration, and air resistance. Linear acceleration adds constant force (gravity pulls down, wind pushes sideways), while drag slows particles over time. Rotation acceleration and drag control spinning. Creates natural-feeling motion for smoke rising, debris falling, or leaves drifting.",
+          "body": {
+            "linear_acceleration": [
+              0,
+              0,
+              0
+            ],
+            "linear_drag_coefficient": 0,
+            "rotation_acceleration": 0,
+            "rotation_drag_coefficient": 0
+          }
+        }
+      ]
+    },
+    "minecraft:particle_motion_parametric": {
+      "title": "Minecraft Particle Motion Parametric",
+      "description": "\n\nProperties:\n• relative_position [maxLen: 3]\n• direction [maxLen: 3]\n• rotation",
+      "$ref": "./client_particles_particle_motion_parametric.schema.json"
+    }
+  }
+}

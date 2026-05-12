@@ -1,0 +1,23 @@
+{
+  "files": [
+    "chicken.png",
+    "chicken.texture_set.json",
+    "chicken_cold.png",
+    "chicken_cold.texture_set.json",
+    "chicken_cold_baby.png",
+    "chicken_cold_baby.texture_set.json",
+    "chicken_cold_baby_mers.tga",
+    "chicken_cold_mers.tga",
+    "chicken_mers.tga",
+    "chicken_temperate_baby.png",
+    "chicken_temperate_baby.texture_set.json",
+    "chicken_temperate_baby_mers.tga",
+    "chicken_warm.png",
+    "chicken_warm.texture_set.json",
+    "chicken_warm_baby.png",
+    "chicken_warm_baby.texture_set.json",
+    "chicken_warm_baby_mers.tga",
+    "chicken_warm_mers.tga"
+  ],
+  "folders": []
+}

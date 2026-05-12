@@ -1,0 +1,48 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "Spawn WorldAgeFilter",
+  "title": "World Age Filter",
+  "description": "Restricts spawning based on how long the world has existed (measured in ticks). Useful for progressive difficulty where certain mobs only start appearing after the world has been played for a minimum amount of time.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "spawns when world age is "
+          },
+          {
+            "type": "value",
+            "field": "min"
+          },
+          {
+            "type": "literal",
+            "text": " to "
+          },
+          {
+            "type": "value",
+            "field": "max"
+          },
+          {
+            "type": "literal",
+            "text": " ticks"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": "int",
+      "defaultValue": -1
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": "int",
+      "defaultValue": 0
+    }
+  ]
+}

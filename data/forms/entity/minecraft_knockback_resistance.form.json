@@ -1,0 +1,114 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "value",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has knockback resistance of "
+          },
+          {
+            "type": "value",
+            "field": "value"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:knockback_resistance",
+  "title": "Knockback Resistance",
+  "description": "Determines an entity's resistance to knockback from melee attacks. A value of 0.0 means no resistance, while 1.0 provides full immunity to knockback (like iron golems).",
+  "scalarFieldUpgradeName": "value",
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "The amount of knockback resistance, from 0.0 (none) to 1.0 (full immunity).",
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/armor_stand.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+            "content": 1
+          }
+        ],
+        "/vanilla/behavior_pack/entities/ender_dragon.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+            "content": 100
+          }
+        ],
+        "/vanilla/behavior_pack/entities/iron_golem.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+            "content": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "max",
+      "title": "Maximum Value",
+      "description": "Maximum potential knockback resistance for this entity.",
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/ender_dragon.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+            "content": 100
+          }
+        ]
+      }
+    }
+  ],
+  "samples": {
+    "/vanilla/behavior_pack/entities/armor_stand.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "value": 1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/breeze.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "value": 0
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/ender_dragon.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "max": 100,
+          "value": 100
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/iron_golem.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "value": 1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/warden.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "value": 1
+        }
+      }
+    ]
+  }
+}

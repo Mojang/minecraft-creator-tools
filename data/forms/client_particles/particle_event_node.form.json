@@ -1,0 +1,90 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a particle event with effects and expressions"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "expression",
+      "title": "Expression",
+      "dataType": "keyedStringCollection",
+      "defaultValue": 0,
+      "alternates": [
+        {
+          "id": "expression",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "expression",
+            "title": "Expression",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "expression",
+          "dataType": "float"
+        }
+      ]
+    },
+    {
+      "id": "log",
+      "title": "Log",
+      "dataType": "string",
+      "defaultValue": ""
+    },
+    {
+      "id": "particle_effect",
+      "title": "Particle Effect",
+      "dataType": "object",
+      "defaultValue": {
+        "effect": "",
+        "pre_effect_expression": 0,
+        "type": null
+      },
+      "subFormId": "client_particles/particle_visual_effect_event"
+    },
+    {
+      "id": "randomize",
+      "title": "Randomize",
+      "dataType": "objectArray",
+      "subFormId": "client_particles/particle_event_random_node"
+    },
+    {
+      "id": "sequence",
+      "title": "Sequence",
+      "dataType": "objectArray",
+      "subFormId": "client_particles/particle_event_node"
+    },
+    {
+      "id": "sound_effect",
+      "title": "Sound Effect",
+      "dataType": "object",
+      "subFormId": "client_particles/particle_sound_effect_event"
+    }
+  ],
+  "description": "Defines actions triggered by particle events like spawning, collision, or expiration. Event nodes can run Molang expressions to modify variables, spawn nested particle effects, play sounds, or control emitter state. Chain multiple effects together for complex reactions like explosions spawning secondary debris particles.",
+  "title": "Client Particles Particle Event Node",
+  "id": "particle_event_node"
+}

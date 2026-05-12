@@ -1,0 +1,343 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "breathes_air",
+            "comparison": "==",
+            "value": false
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "cannot breathe in air"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "breathes_water",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can breathe underwater"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "breathes_lava",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can breathe in lava"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "breathes_solids",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can breathe inside solid blocks"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "total_supply",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "with "
+          },
+          {
+            "type": "switch",
+            "cases": [
+              {
+                "conditions": [
+                  {
+                    "field": "total_supply",
+                    "comparison": ">",
+                    "value": 60
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "high breath capacity"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "total_supply",
+                    "comparison": "<",
+                    "value": 10
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "low breath capacity"
+                  }
+                ]
+              }
+            ],
+            "default": [
+              {
+                "type": "literal",
+                "text": "moderate breath capacity"
+              }
+            ]
+          },
+          {
+            "type": "literal",
+            "text": " ("
+          },
+          {
+            "type": "value",
+            "field": "total_supply"
+          },
+          {
+            "type": "literal",
+            "text": "s)"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "suffocate_time",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "taking damage every "
+          },
+          {
+            "type": "value",
+            "field": "suffocate_time"
+          },
+          {
+            "type": "literal",
+            "text": "s when suffocating"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "inhale_time",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "recovering breath in "
+          },
+          {
+            "type": "value",
+            "field": "inhale_time"
+          },
+          {
+            "type": "literal",
+            "text": "s"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "total_supply",
+      "title": "Total air supply",
+      "description": "Time in seconds the entity can hold its breath.",
+      "dataType": "int",
+      "experienceType": "slider",
+      "suggestedMaxValue": 120,
+      "defaultValue": 15,
+      "samples": {
+        "/vanilla/behavior_pack/entities/bat.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:breathable/",
+            "content": 15
+          }
+        ],
+        "/vanilla/behavior_pack/entities/bogged.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:breathable/",
+            "content": 15
+          }
+        ]
+      }
+    },
+    {
+      "id": "suffocate_time",
+      "title": "Suffocate length",
+      "description": "Time in seconds between suffocation damage.",
+      "dataType": "int",
+      "defaultValue": -20
+    },
+    {
+      "id": "breathes_air",
+      "title": "Breathes in air",
+      "description": "If set, this entity can breathe in air.",
+      "dataType": "boolean",
+      "defaultValue": true
+    },
+    {
+      "id": "breathes_lava",
+      "title": "Breathes in lava",
+      "description": "If set, this entity can breathe in lava.",
+      "dataType": "boolean",
+      "defaultValue": true
+    },
+    {
+      "id": "breathes_solids",
+      "title": "Breathes in solids",
+      "description": "If set, this entity can breathe in solid blocks.",
+      "dataType": "boolean",
+      "defaultValue": false
+    },
+    {
+      "id": "breathes_water",
+      "title": "Breathes in water",
+      "description": "If set, this entity can breathe in water.",
+      "dataType": "boolean",
+      "defaultValue": false,
+      "samples": {
+        "/vanilla/behavior_pack/entities/bogged.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:breathable/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "generates_bubbles",
+      "description": "If set, this entity will have visible bubbles while in water.",
+      "dataType": "boolean",
+      "defaultValue": true,
+      "title": "Generates Bubbles"
+    },
+    {
+      "id": "inhale_time",
+      "description": "Time in seconds to recover breath to maximum.",
+      "dataType": "number",
+      "defaultValue": 0,
+      "title": "Inhale Time"
+    },
+    {
+      "id": "breathe_blocks",
+      "title": "Breathable blocks",
+      "description": "List of blocks this entity can breathe in, in addition to the selected items above.",
+      "dataType": "stringArray",
+      "lookupId": "blockType"
+    },
+    {
+      "id": "non_breathe_blocks",
+      "title": "Non-breathable blocks",
+      "description": "List of blocks this entity cannot breathe in, in addition to the selected items above.",
+      "dataType": "stringArray",
+      "lookupId": "blockType"
+    },
+    {
+      "id": "suffocateTime",
+      "title": "SuffocateTime",
+      "dataType": "number"
+    },
+    {
+      "id": "totalSupply",
+      "title": "TotalSupply",
+      "dataType": "number",
+      "samples": {
+        "/vanilla/behavior_pack/entities/allay.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:breathable/",
+            "content": 15
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Defines what blocks this entity can breathe in and gives them the ability to suffocate.",
+  "title": "Breathable",
+  "samples": {
+    "/vanilla/behavior_pack/entities/allay.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:breathable/",
+        "content": {
+          "suffocateTime": 0,
+          "totalSupply": 15
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/bat.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:breathable/",
+        "content": {
+          "suffocate_time": 0,
+          "total_supply": 15
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/bogged.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:breathable/",
+        "content": {
+          "breathes_water": true,
+          "suffocate_time": 0,
+          "total_supply": 15
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/breeze.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:breathable/",
+        "content": {
+          "suffocate_time": 0,
+          "total_supply": 15
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/cave_spider.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:breathable/",
+        "content": {
+          "suffocate_time": 0,
+          "total_supply": 15
+        }
+      }
+    ]
+  },
+  "id": "minecraft:breathable"
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Pushable By Entity",
+  "description": "Allows an entity to be pushed by other entities.",
+  "properties": {
+    "presets": {
+      "title": "Presets",
+      "description": "Defines how this entity behaves when pushed by another entity. The first preset whose \"filter\" conditions are met will be applied; if none match, a default configuration is used instead.\n\nSample values:\n• boat: [{\"push_mode\":\"legacy_boat\",\"strength_multiplie...",
+      "type": "array",
+      "items": {
+        "$ref": "./entity_pushablebyentitypreset.schema.json"
+      }
+    }
+  }
+}

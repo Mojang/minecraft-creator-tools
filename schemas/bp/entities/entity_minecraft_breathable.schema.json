@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Breathable",
+  "description": "Defines what blocks this entity can breathe in and gives them the ability to suffocate.",
+  "properties": {
+    "total_supply": {
+      "title": "Total air supply",
+      "description": "Time in seconds the entity can hold its breath.\n\nSample values:\n• bat: 15",
+      "type": "integer",
+      "default": 15
+    },
+    "suffocate_time": {
+      "title": "Suffocate length",
+      "description": "Time in seconds between suffocation damage.",
+      "type": "integer",
+      "default": -20
+    },
+    "breathes_air": {
+      "title": "Breathes in air",
+      "description": "If set, this entity can breathe in air.",
+      "type": "boolean",
+      "default": true
+    },
+    "breathes_lava": {
+      "title": "Breathes in lava",
+      "description": "If set, this entity can breathe in lava.",
+      "type": "boolean",
+      "default": true
+    },
+    "breathes_solids": {
+      "title": "Breathes in solids",
+      "description": "If set, this entity can breathe in solid blocks.",
+      "type": "boolean",
+      "default": false
+    },
+    "breathes_water": {
+      "title": "Breathes in water",
+      "description": "If set, this entity can breathe in water.\n\nSample values:\n• bogged: true",
+      "type": "boolean",
+      "default": false
+    },
+    "generates_bubbles": {
+      "title": "Generates Bubbles",
+      "description": "If set, this entity will have visible bubbles while in water.",
+      "type": "boolean",
+      "default": true
+    },
+    "inhale_time": {
+      "title": "Inhale Time",
+      "description": "Time in seconds to recover breath to maximum.",
+      "type": "number",
+      "default": 0
+    },
+    "breathe_blocks": {
+      "title": "Breathable blocks",
+      "description": "List of blocks this entity can breathe in, in addition to the selected items above.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "non_breathe_blocks": {
+      "title": "Non-breathable blocks",
+      "description": "List of blocks this entity cannot breathe in, in addition to the selected items above.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "suffocateTime": {
+      "title": "SuffocateTime",
+      "type": "number"
+    },
+    "totalSupply": {
+      "title": "TotalSupply",
+      "description": "\n\nSample values:\n• allay: 15",
+      "type": "number"
+    }
+  }
+}

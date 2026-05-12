@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Apply Knockback Rules Instance",
+  "description": "Intance of rules definition.",
+  "properties": {
+    "check_if_target_is_immersed_in_water": {
+      "title": "Check If Target Is Immersed In Water",
+      "description": "Whether or not the target should be fully immersed in water for the knockback rules to apply.",
+      "type": "boolean",
+      "default": false
+    },
+    "filter": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "description": "Filter for the entity type that will be affected by these knockback rules."
+    },
+    "horizontal_hit_angle_scale": {
+      "title": "Horizontal Hit Angle Scale",
+      "description": "Scaling factor to angle the knockback horizontally based on the attacker's aim direction.",
+      "type": "number",
+      "default": 0
+    },
+    "horizontal_power": {
+      "title": "Horizontal Power",
+      "description": "Power with which a target should be knocked backwards.",
+      "type": "number",
+      "default": 1
+    },
+    "scale_previous_velocity": {
+      "title": "Scale Previous Velocity",
+      "description": "Scaling factor to apply to the target's velocity before applying knockback.",
+      "type": "number",
+      "maximum": 1,
+      "default": 0.5
+    },
+    "scale_with_damage": {
+      "title": "Scale With Damage",
+      "description": "Scaling factor to the magnitude of knockback based on the inverse square of the damage.",
+      "type": "boolean",
+      "default": false
+    },
+    "vertical_hit_angle_scale": {
+      "title": "Vertical Hit Angle Scale",
+      "description": "Scaling factor to angle the knockback vertically based on the attacker's aim direction.",
+      "type": "number",
+      "maximum": 1,
+      "default": 0
+    },
+    "vertical_position_angle_scale": {
+      "title": "Vertical Position Angle Scale",
+      "description": "Scaling factor to angle the knockback vertically based on the difference in the attacker's feet position to the target's feet position.",
+      "type": "number",
+      "maximum": 1,
+      "default": 0
+    },
+    "vertical_power": {
+      "title": "Vertical Power",
+      "description": "Power with which a target should be knocked upwards.",
+      "type": "number",
+      "default": 0.4000000059604645
+    },
+    "vertical_velocity_cap": {
+      "title": "Vertical Velocity Cap",
+      "description": "Maximum allowed Y velocity after target's knockback rules have been evaluated.",
+      "type": "number",
+      "default": 0.4000000059604645
+    }
+  }
+}

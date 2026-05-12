@@ -1,0 +1,164 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Damage Sensor",
+  "description": "Defines what events to call when this entity is damaged by specific entities or items.",
+  "properties": {
+    "deals_damage": {
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "string",
+          "enum": [
+            "yes",
+            "no",
+            "no_but_side_effects_apply"
+          ]
+        },
+        {
+          "title": "Deals Damage",
+          "type": "boolean",
+          "default": false
+        }
+      ],
+      "title": "Deals Damage",
+      "description": "Defines how received damage affects the entity.\n\nValues:\n• yes: Received damage is applied to the entity.\n• no: Received damage is not applied to the entity.\n• no_but_side_effects_apply: Received damage is not applied to the entity, but the side effects of the attack are. This means that the attacker's weapon loses durability, enchantment side effects are applied, and so on."
+    },
+    "triggers": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "cause": {
+                    "title": "Cause",
+                    "description": "Type of damage that triggers the events.",
+                    "type": "string",
+                    "default": "none"
+                  },
+                  "damage_modifier": {
+                    "title": "Damage Modifier",
+                    "description": "A modifier that adds/removes to the base damage received from the specified damage cause.",
+                    "type": "number",
+                    "default": 0
+                  },
+                  "damage_multiplier": {
+                    "title": "Damage Multiplier",
+                    "description": "A multiplier that modifies the base damage received from the specified damage cause.",
+                    "type": "number",
+                    "default": 1
+                  },
+                  "deals_damage": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "title": "Deals Damage",
+                    "description": "Defines how received damage affects the entity.",
+                    "defaultSnippets": [
+                      {
+                        "label": "Deals Damage: true (enable)",
+                        "description": "Defines how received damage affects the entity.",
+                        "body": true
+                      },
+                      {
+                        "label": "Deals Damage: false (disable)",
+                        "description": "Defines how received damage affects the entity.",
+                        "body": false
+                      }
+                    ]
+                  },
+                  "on_damage": {
+                    "title": "On Damage",
+                    "description": "Defines which entities the trigger applies to, and which event to emit when damaged.",
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "event": {
+                            "type": "string"
+                          },
+                          "target": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "on_damage_sound_event": {
+                    "title": "Damage Sound Event",
+                    "description": "Defines what sound to play when the on_damage filters are met.",
+                    "type": "string"
+                  },
+                  "filters": {
+                    "title": "Filters",
+                    "description": "Filter conditions for when this trigger applies.",
+                    "anyOf": [
+                      {
+                        "type": "object"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "all_of": {
+                            "type": "array",
+                            "items": {
+                              "type": "object"
+                            }
+                          },
+                          "any_of": {
+                            "type": "array",
+                            "items": {
+                              "type": "object"
+                            }
+                          },
+                          "none_of": {
+                            "type": "array",
+                            "items": {
+                              "type": "object"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "event": {
+                    "title": "Event",
+                    "description": "Event to emit when the trigger conditions are met.",
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "title": "Triggers",
+      "description": "List of triggers with the events to call when taking specific kinds of damage.\n\nSample values:\n• allay: [{\"deals_damage\":\"no\",\"on_damage\":{\"filters\":{\"...\n• bat: {\"cause\":\"fall\",\"deals_damage\":\"no\"}\n• breeze: [{\"cause\":\"fall\",\"deals_damage\":\"no\"},{\"cause\":..."
+    }
+  }
+}

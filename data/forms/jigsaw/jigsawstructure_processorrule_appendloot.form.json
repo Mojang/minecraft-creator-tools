@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "adds loot table content to a block entity"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "type",
+      "title": "Block Entity Modifier Type",
+      "description": "The type of block entity modifier.",
+      "dataType": "string"
+    },
+    {
+      "id": "loot_table",
+      "title": "Loot Table",
+      "description": "The loot table to append to the block entity.",
+      "dataType": "string"
+    }
+  ],
+  "description": "Modifier will attempt to add loot to a block entity.",
+  "title": "JigsawStructure ProcessorRule AppendLoot"
+}

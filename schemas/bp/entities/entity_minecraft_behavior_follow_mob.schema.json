@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Follow Mob Behavior",
+  "description": "Allows the mob to follow other mobs.",
+  "properties": {
+    "filters": {
+      "title": "Filters",
+      "description": "If non-empty, provides criteria for filtering which nearby Mobs can be followed. If empty default criteria will be used, which will exclude Players, Squid variants, Fish variants, Tadpoles, Dolphins, and mobs of the same type as the owner of the Goal.",
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "preferred_actor_type": {
+      "title": "Preferred Actor Type",
+      "description": "The type of actor to prefer following. If left unspecified, a random actor among those in range will be chosen.",
+      "type": "string"
+    },
+    "search_range": {
+      "title": "Search Range",
+      "description": "The distance in blocks it will look for a mob to follow\n\nSample values:\n• parrot: 20",
+      "type": "integer",
+      "default": 0
+    },
+    "speed_multiplier": {
+      "title": "Speed Multiplier",
+      "description": "Movement speed multiplier of the mob when using this AI Goal\n\nSample values:\n• parrot: 1",
+      "type": "number",
+      "default": 1
+    },
+    "stop_distance": {
+      "title": "Stop Distance",
+      "description": "The distance in blocks this mob stops from the mob it is following\n\nSample values:\n• parrot: 3",
+      "type": "number",
+      "default": 2
+    },
+    "use_home_position_restriction": {
+      "title": "Use Home Position Restriction",
+      "description": "If true, the mob will respect the 'minecraft:home' component's 'restriction_radius' field when choosing a target to follow. If false, it will choose target position without considering home restrictions.",
+      "type": "boolean",
+      "default": true
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer"
+    }
+  }
+}

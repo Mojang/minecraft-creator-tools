@@ -1,0 +1,176 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "stays afloat while swimming in water"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "sink_with_passengers",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "sinks when carrying passengers"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "sink_with_passengers",
+            "comparison": "==",
+            "value": false
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "floats even with passengers"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "time_under_water_to_dismount_passengers",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "dismounts passengers after "
+          },
+          {
+            "type": "value",
+            "field": "time_under_water_to_dismount_passengers"
+          },
+          {
+            "type": "literal",
+            "text": "s underwater"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "chance_per_tick_to_float",
+      "title": "Chance Per Tick To Float",
+      "description": "The chance per tick to cause an upward impulse.",
+      "dataType": "float",
+      "defaultValue": 0.800000011920929
+    },
+    {
+      "id": "control_flags",
+      "title": "Control Flags",
+      "dataType": "stringArray",
+      "defaultValue": [],
+      "choices": [
+        {
+          "id": "jump",
+          "title": "Jump"
+        },
+        {
+          "id": "look",
+          "title": "Look"
+        },
+        {
+          "id": "move",
+          "title": "Move"
+        }
+      ]
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "dataType": "int",
+      "defaultValue": 0,
+      "samples": {
+        "/vanilla/behavior_pack/entities/allay.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.float/",
+            "content": 7
+          }
+        ],
+        "/vanilla/behavior_pack/entities/cave_spider.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.float/",
+            "content": 1
+          }
+        ]
+      },
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal."
+    },
+    {
+      "id": "sink_with_passengers",
+      "title": "Sink With Passengers",
+      "description": "If true, the mob will keep sinking as long as it has passengers.",
+      "dataType": "boolean",
+      "defaultValue": false
+    },
+    {
+      "id": "time_under_water_to_dismount_passengers",
+      "title": "Time Under Water To Dismount Passengers",
+      "description": "Time in seconds that a floating vehicles head can be underwater before it causes its passengers to dismount.",
+      "dataType": "float",
+      "defaultValue": 0
+    }
+  ],
+  "description": "Allows the mob to stay afloat while swimming. Passengers will be kicked out the moment the mob's head goes underwater, which may not happen for tall mobs.",
+  "title": "Entity Float Behavior",
+  "samples": {
+    "/vanilla/behavior_pack/entities/allay.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.float/",
+        "content": {
+          "priority": 7
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/bat.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.float/",
+        "content": {
+          "priority": 0
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/blaze.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.float/",
+        "content": {
+          "priority": 0
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/breeze.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.float/",
+        "content": {
+          "priority": 0
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/cave_spider.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.float/",
+        "content": {
+          "priority": 1
+        }
+      }
+    ]
+  },
+  "id": "minecraft:behavior.float"
+}

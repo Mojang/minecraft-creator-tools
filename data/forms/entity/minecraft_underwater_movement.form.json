@@ -1,0 +1,86 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has a custom underwater movement speed"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:underwater_movement",
+  "title": "Underwater Movement",
+  "description": "Defines the speed with which an entity can move through water.",
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "Movement speed of the entity under water.",
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/dolphin.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+            "content": 0.15
+          }
+        ],
+        "/vanilla/behavior_pack/entities/elder_guardian.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+            "content": 0.3
+          }
+        ],
+        "/vanilla/behavior_pack/entities/frog.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+            "content": 0.15
+          }
+        ],
+        "/vanilla/behavior_pack/entities/guardian.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+            "content": 0.12
+          }
+        ]
+      }
+    }
+  ],
+  "samples": {
+    "/vanilla/behavior_pack/entities/dolphin.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.15
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/elder_guardian.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.3
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/frog.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.15
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/guardian.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:underwater_movement/",
+        "content": {
+          "value": 0.12
+        }
+      }
+    ]
+  }
+}

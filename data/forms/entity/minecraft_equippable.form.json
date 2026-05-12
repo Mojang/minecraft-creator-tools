@@ -1,0 +1,204 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has equipment slots that accept items"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "slots",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "with "
+          },
+          {
+            "type": "value",
+            "field": "slots.length"
+          },
+          {
+            "type": "plural",
+            "countField": "slots.length",
+            "singular": [
+              {
+                "type": "literal",
+                "text": " slot"
+              }
+            ],
+            "plural": [
+              {
+                "type": "literal",
+                "text": " slots"
+              }
+            ],
+            "includeCount": false
+          },
+          {
+            "type": "literal",
+            "text": " available"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "slots[0].item",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "accepts "
+          },
+          {
+            "type": "value",
+            "field": "slots[0].item"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "slots[0].on_equip",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "triggers events when equipped"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "slots",
+      "title": "Slots",
+      "description": "List of slots and the item that can be equipped.",
+      "dataType": "objectArray",
+      "subForm": {
+        "id": "",
+        "description": "List of slots and the item that can be equipped.",
+        "fields": [
+          {
+            "id": "accepted_items",
+            "title": "Accepted Items",
+            "description": "The list of items that can go in this slot.",
+            "dataType": "stringArray"
+          },
+          {
+            "id": "interact_text",
+            "title": "Interact Text",
+            "description": "Text to be displayed when the entity can be equipped with this item when playing with Touch-screen controls.",
+            "dataType": "string"
+          },
+          {
+            "id": "item",
+            "title": "Item",
+            "description": "Identifier of the item that can be equipped for this slot.",
+            "dataType": "string"
+          },
+          {
+            "id": "on_equip",
+            "title": "Equip",
+            "description": "Event to trigger when this entity is equipped with this item.",
+            "dataType": "minecraftEventTrigger"
+          },
+          {
+            "id": "on_unequip",
+            "title": "Unequip",
+            "description": "Event to trigger when this item is removed from this entity.",
+            "dataType": "minecraftEventTrigger"
+          },
+          {
+            "id": "slot",
+            "title": "Slot",
+            "description": "The slot number of this slot.",
+            "defaultValue": 0,
+            "dataType": "int"
+          }
+        ]
+      },
+      "samples": {
+        "/vanilla/behavior_pack/entities/llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_tamed/minecraft:equippable/",
+            "content": [
+              {
+                "slot": 1,
+                "item": "carpet",
+                "accepted_items": [
+                  "carpet"
+                ]
+              }
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/trader_llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_tamed/minecraft:equippable/",
+            "content": [
+              {
+                "slot": 1,
+                "item": "carpet",
+                "accepted_items": [
+                  "carpet"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Defines an entity's behavior for having items equipped to it.",
+  "title": "Equippable",
+  "samples": {
+    "/vanilla/behavior_pack/entities/llama.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_tamed/minecraft:equippable/",
+        "content": {
+          "slots": [
+            {
+              "slot": 1,
+              "item": "carpet",
+              "accepted_items": [
+                "carpet"
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/trader_llama.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_tamed/minecraft:equippable/",
+        "content": {
+          "slots": [
+            {
+              "slot": 1,
+              "item": "carpet",
+              "accepted_items": [
+                "carpet"
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "id": "minecraft:equippable"
+}

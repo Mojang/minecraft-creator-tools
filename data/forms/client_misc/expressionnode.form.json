@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a Molang expression node"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "expression",
+      "title": "expression",
+      "description": "expression",
+      "dataType": "string"
+    },
+    {
+      "id": "version",
+      "title": "version",
+      "description": "version",
+      "dataType": "int"
+    }
+  ],
+  "description": "ExpressionNode",
+  "title": "ExpressionNode"
+}

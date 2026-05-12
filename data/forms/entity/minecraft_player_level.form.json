@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has a level system"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:player.level",
+  "title": "Player Level",
+  "description": "Defines the player's level.",
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "The initial value of the player level.",
+      "dataType": "int"
+    },
+    {
+      "id": "max",
+      "title": "Maximum Value",
+      "description": "The maximum player level value of the entity.",
+      "dataType": "int",
+      "samples": {
+        "/vanilla/behavior_pack/entities/player.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:player.level/",
+            "content": 24791
+          }
+        ]
+      }
+    }
+  ],
+  "samples": {
+    "/vanilla/behavior_pack/entities/player.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:player.level/",
+        "content": {
+          "max": 24791,
+          "value": 0
+        }
+      }
+    ]
+  }
+}

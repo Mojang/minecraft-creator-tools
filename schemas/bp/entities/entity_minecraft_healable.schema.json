@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Healable",
+  "description": "How entities heal",
+  "properties": {
+    "force_use": {
+      "title": "Whether an item can be used even if the entity is at full health",
+      "description": "Determines if item can be used regardless of entity being at full health.\n\nSample values:\n• parrot: true",
+      "type": "boolean",
+      "default": false
+    },
+    "filters": {
+      "title": "Additional filters when healing happens",
+      "description": "The filter group that defines the conditions for using this item to heal the entity.\n\nSample values:\n• parrot: {\"operator\":\"!=\",\"test\":\"is_riding\",\"value\":true}",
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "items": {
+      "title": "Items",
+      "description": "The array of items that can be used to heal this entity.\n\nSample values:\n• llama: [{\"item\":\"wheat\",\"heal_amount\":2},{\"item\":\"hay_...\n• parrot: [{\"effects\":[{\"amplifier\":0,\"chance\":1,\"duratio...",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "heal_amount": {
+            "title": "Heal Amount",
+            "description": "The amount of health this entity gains when fed this item.",
+            "type": "integer",
+            "default": 1
+          },
+          "item": {
+            "title": "Item",
+            "description": "Item identifier that can be used to heal this entity.",
+            "type": "string"
+          },
+          "effects": {
+            "title": "Effects",
+            "description": "\n\nProperties:\n• amplifier (number)\n• chance (number)\n• duration (number)\n• name (string)",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "amplifier": {
+                  "title": "Amplifier",
+                  "description": "\n\nSample values:\n• parrot: 0",
+                  "type": "number"
+                },
+                "chance": {
+                  "title": "Chance",
+                  "description": "\n\nSample values:\n• parrot: 1",
+                  "type": "number"
+                },
+                "duration": {
+                  "title": "Duration",
+                  "description": "\n\nSample values:\n• parrot: 1000",
+                  "type": "number"
+                },
+                "name": {
+                  "title": "Name",
+                  "description": "\n\nSample values:\n• parrot: fatal_poison",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

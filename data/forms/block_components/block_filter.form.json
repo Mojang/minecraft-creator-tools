@@ -1,0 +1,34 @@
+{
+  "id": "block_filter",
+  "fields": [
+    {
+      "id": "name",
+      "title": "Name",
+      "dataType": "string",
+      "defaultValue": ""
+    },
+    {
+      "id": "states",
+      "title": "States",
+      "dataType": "int",
+      "defaultValue": {},
+      "alternates": [
+        {
+          "id": "states",
+          "dataType": "string"
+        },
+        {
+          "id": "states",
+          "dataType": "boolean"
+        }
+      ]
+    },
+    {
+      "id": "tags",
+      "title": "Tags",
+      "dataType": "string",
+      "defaultValue": ""
+    }
+  ],
+  "title": "Block Filter"
+}

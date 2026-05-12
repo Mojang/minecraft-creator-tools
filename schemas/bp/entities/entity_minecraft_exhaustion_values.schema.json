@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Exhaustion Values",
+  "description": "Defines how much exhaustion each player action should take.",
+  "properties": {
+    "attack": {
+      "title": "Attack",
+      "description": "Amount of exhaustion applied when attacking.\n\nSample values:\n• player: 0.1",
+      "type": "number",
+      "default": 0.1
+    },
+    "damage": {
+      "title": "Damage",
+      "description": "Amount of exhaustion applied when taking damage.\n\nSample values:\n• player: 0.1",
+      "type": "number",
+      "default": 0.1
+    },
+    "heal": {
+      "title": "Heal",
+      "description": "Amount of exhaustion applied when healed through food regeneration.\n\nSample values:\n• player: 6",
+      "type": "number",
+      "default": 6
+    },
+    "jump": {
+      "title": "Jump",
+      "description": "Amount of exhaustion applied when jumping.\n\nSample values:\n• player: 0.05",
+      "type": "number",
+      "default": 0.05
+    },
+    "lunge": {
+      "title": "Lunge",
+      "description": "Amount of exhaustion applied when triggering the lunge enchantment, multiplied by the enchantment level.\n\nSample values:\n• player: 4",
+      "type": "number",
+      "default": 4
+    },
+    "mine": {
+      "title": "Mine",
+      "description": "Amount of exhaustion applied when mining.\n\nSample values:\n• player: 0.005",
+      "type": "number",
+      "default": 0.005
+    },
+    "sprint": {
+      "title": "Sprint",
+      "description": "Amount of exhaustion applied when sprinting.\n\nSample values:\n• player: 0.1",
+      "type": "number",
+      "default": 0.01
+    },
+    "sprint_jump": {
+      "title": "Sprint Jump",
+      "description": "Amount of exhaustion applied when sprint jumping.\n\nSample values:\n• player: 0.2",
+      "type": "number",
+      "default": 0.2
+    },
+    "swim": {
+      "title": "Swim",
+      "description": "Amount of exhaustion applied when swimming.\n\nSample values:\n• player: 0.01",
+      "type": "number",
+      "default": 0.01
+    },
+    "walk": {
+      "title": "Walk",
+      "description": "Amount of exhaustion applied when walking.",
+      "type": "number",
+      "default": 0
+    }
+  }
+}

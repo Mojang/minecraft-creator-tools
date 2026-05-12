@@ -1,0 +1,96 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a random particle event with weighted effects"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "expression",
+      "title": "Expression",
+      "dataType": "keyedStringCollection",
+      "defaultValue": 0,
+      "alternates": [
+        {
+          "id": "expression",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "expression",
+            "title": "Expression",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "expression",
+          "dataType": "float"
+        }
+      ]
+    },
+    {
+      "id": "log",
+      "title": "Log",
+      "dataType": "string",
+      "defaultValue": ""
+    },
+    {
+      "id": "particle_effect",
+      "title": "Particle Effect",
+      "dataType": "object",
+      "defaultValue": {
+        "effect": "",
+        "pre_effect_expression": 0,
+        "type": null
+      },
+      "subFormId": "client_particles/particle_visual_effect_event"
+    },
+    {
+      "id": "randomize",
+      "title": "Randomize",
+      "dataType": "objectArray",
+      "subFormId": "client_particles/particle_event_random_node"
+    },
+    {
+      "id": "sequence",
+      "title": "Sequence",
+      "dataType": "objectArray",
+      "subFormId": "client_particles/particle_event_node"
+    },
+    {
+      "id": "sound_effect",
+      "title": "Sound Effect",
+      "dataType": "object",
+      "subFormId": "client_particles/particle_sound_effect_event"
+    },
+    {
+      "id": "weight",
+      "title": "Weight",
+      "dataType": "float",
+      "isRequired": true
+    }
+  ],
+  "description": "Triggers one of several possible effects randomly when a particle event fires, with weighted probability. Assign weights to different event outcomes for varied responses—like impacts sometimes spawning sparks, sometimes dust, with configurable chances. Adds natural variation to effects without needing complex Molang logic.",
+  "title": "Client Particles Particle Event Random Node",
+  "id": "particle_event_random_node"
+}

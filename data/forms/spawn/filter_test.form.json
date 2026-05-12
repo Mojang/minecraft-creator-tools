@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a filter test condition"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "domain",
+      "dataType": "string",
+      "description": "The domain the test should be performed in.",
+      "title": "Domain"
+    },
+    {
+      "id": "operator",
+      "dataType": "string",
+      "description": "The comparison to apply with 'value'.",
+      "title": "Operator"
+    },
+    {
+      "id": "subject",
+      "dataType": "string",
+      "description": "The subject of this filter test.",
+      "title": "Subject"
+    },
+    {
+      "id": "value",
+      "dataType": "int",
+      "description": "The value being compared with the test.",
+      "title": "Value"
+    },
+    {
+      "id": "test",
+      "title": "Test",
+      "description": "The name of the test to apply.",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "description": "A single filter condition used to test entity or world properties. Filters check things like biome type, weather, time of day, or entity attributes. Multiple filters can be combined with all_of, any_of, and none_of operators.",
+  "title": "Spawn Filter Test",
+  "id": "Filter Test"
+}

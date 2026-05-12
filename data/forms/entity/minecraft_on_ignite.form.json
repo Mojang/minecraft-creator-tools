@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "triggers an event when set on fire"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "event",
+      "title": "Event",
+      "description": "The event to run when the conditions for this trigger are met.",
+      "dataType": "string"
+    },
+    {
+      "id": "filters",
+      "title": "Filters",
+      "description": "The list of conditions for this trigger to execute.",
+      "dataType": "minecraftFilter"
+    },
+    {
+      "id": "target",
+      "title": "Target",
+      "description": "The target of the event.",
+      "defaultValue": "self",
+      "dataType": "string"
+    }
+  ],
+  "description": "Adds a trigger to call when this entity is set on fire.",
+  "title": "On Ignite",
+  "id": "minecraft:on_ignite"
+}

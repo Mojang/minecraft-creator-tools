@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "visual/actor_resource_definition.v1.10.0",
+  "title": "Actor Resource Definition (v1.10.0)",
+  "description": "Defines an entity client resource definition document with format_version 1.10.0.",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "title": "Format Version",
+      "description": "Specifies the format version of this client entity definition. Determines which features and syntax are available.",
+      "type": "string"
+    },
+    "minecraft:client_entity": {
+      "title": "Client Entity",
+      "description": "Defines the client-side rendering properties for an entity, including textures, geometry, animations, and render controllers.",
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "./description.schema.json",
+          "title": "Description",
+          "description": "Contains all the visual definition properties for this entity, including identifier, textures, geometry, materials, animations, and spawn egg settings.",
+          "defaultSnippets": [
+            {
+              "label": "Description",
+              "description": "Contains all the visual definition properties for this entity, including identifier, textures, geometry, materials, animations, and spawn egg settings.",
+              "body": {
+                "identifier": "",
+                "queryable_geometry": "",
+                "enable_attachables": true,
+                "held_item_ignores_lighting": true,
+                "hide_armor": true
+              }
+            }
+          ]
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Client Entity",
+          "description": "Defines the client-side rendering properties for an entity, including textures, geometry, animations, and render controllers.",
+          "body": {
+            "description": ""
+          }
+        }
+      ]
+    },
+    "minecraft:attachable": {
+      "title": "Attachable",
+      "description": "\n\nProperties:\n• description ({ identifier, min_engine_version, materials, ... })",
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "./description_2.schema.json",
+          "title": "Description",
+          "description": "\n\nProperties:\n• identifier (string)\n• min_engine_version\n• materials (object)\n• textures (object)\n• geometry (object)\n• queryable_geometry (string)\n• spawn_egg ({ texture, base_color, overlay_color, ... })\n• scripts ({ variables, initialize, pre_animation, ... })\n• ... and 9 more properties",
+          "defaultSnippets": [
+            {
+              "label": "Description",
+              "description": "Create a Description",
+              "body": {
+                "identifier": "",
+                "queryable_geometry": "",
+                "enable_attachables": true,
+                "held_item_ignores_lighting": true,
+                "hide_armor": true
+              }
+            }
+          ]
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Attachable",
+          "description": "Create a Attachable",
+          "body": {
+            "description": ""
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "format_version"
+  ]
+}

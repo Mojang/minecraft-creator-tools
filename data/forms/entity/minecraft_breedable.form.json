@@ -1,0 +1,553 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can be bred"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "breed_cooldown",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "with a "
+          },
+          {
+            "type": "switch",
+            "cases": [
+              {
+                "conditions": [
+                  {
+                    "field": "breed_cooldown",
+                    "comparison": ">",
+                    "value": 120
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "long"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "breed_cooldown",
+                    "comparison": "<",
+                    "value": 30
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "short"
+                  }
+                ]
+              }
+            ],
+            "default": [
+              {
+                "type": "literal",
+                "text": "standard"
+              }
+            ]
+          },
+          {
+            "type": "literal",
+            "text": " cooldown ("
+          },
+          {
+            "type": "value",
+            "field": "breed_cooldown"
+          },
+          {
+            "type": "literal",
+            "text": "s)"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "causes_pregnancy",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "becomes pregnant instead of spawning babies"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "require_tame",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "requires taming first"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "allow_sitting",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can breed while sitting"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "Allows an entity to establish a way to get into the love state used for breeding.",
+  "note": "This component is commonly used in conjunction with the 'minecraft:behavior.breed' component.",
+  "fields": [
+    {
+      "id": "allow_sitting",
+      "description": "If true, entities can breed while sitting",
+      "dataType": "boolean",
+      "defaultValue": false,
+      "title": "Allow Sitting"
+    },
+    {
+      "id": "blend_attributes",
+      "description": "If true, the entities will blend their attributes in the offspring after they breed. For example, horses blend their health, movement, and jump_strength in their offspring.",
+      "dataType": "boolean",
+      "defaultValue": true
+    },
+    {
+      "id": "breed_cooldown",
+      "description": "Time in seconds before the Entity can breed again.",
+      "dataType": "float",
+      "defaultValue": 60,
+      "title": "Breed Cooldown"
+    },
+    {
+      "id": "breed_items",
+      "description": "The list of items that can be used to get the entity into the 'love' state. Can be a single item or an array.",
+      "dataType": "stringArray",
+      "alternates": [
+        {
+          "id": "breed_items",
+          "dataType": "string"
+        }
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/chicken.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:chicken_adult/minecraft:breedable/",
+            "content": [
+              "wheat_seeds",
+              "beetroot_seeds",
+              "melon_seeds",
+              "pumpkin_seeds",
+              "pitcher_pod",
+              "torchflower_seeds"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/cow.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:cow_adult/minecraft:breedable/",
+            "content": [
+              "wheat"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/frog.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:breedable/",
+            "content": [
+              "slime_ball"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/goat.json": [
+          {
+            "path": "/minecraft:entity/component_groups/goat_adult/minecraft:breedable/",
+            "content": [
+              "wheat"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_adult/minecraft:breedable/",
+            "content": [
+              "hay_block"
+            ]
+          }
+        ]
+      },
+      "title": "Breed Items"
+    },
+    {
+      "id": "breeds_with",
+      "description": "The entity definitions that this entity can breed with. Can be a single object or an array.",
+      "dataType": "objectArray",
+      "alternates": [
+        {
+          "id": "breeds_with",
+          "dataType": "object",
+          "subForm": {
+            "id": "breed_with_single",
+            "fields": [
+              {
+                "id": "baby_type",
+                "description": "The entity definition of this entity's babies.",
+                "dataType": "string"
+              },
+              {
+                "id": "breed_event",
+                "description": "Event to run when this entity breeds. Can be a simple event name string or a trigger object with event and optional filters.",
+                "dataType": "string",
+                "alternates": [
+                  {
+                    "id": "breed_event",
+                    "dataType": "object",
+                    "subFormId": "ActorDefinitionTrigger"
+                  }
+                ]
+              },
+              {
+                "id": "mate_type",
+                "description": "The entity definition that this entity can mate with.",
+                "dataType": "stringLookup",
+                "lookupId": "entityTypePlusVariants"
+              }
+            ]
+          }
+        }
+      ],
+      "subForm": {
+        "fields": [
+          {
+            "id": "baby_type",
+            "description": "The entity definition of this entity's babies.",
+            "dataType": "string"
+          },
+          {
+            "id": "breed_event",
+            "description": "Event to run when this entity breeds. Can be a simple event name string or a trigger object with event and optional filters.",
+            "dataType": "string",
+            "alternates": [
+              {
+                "id": "breed_event",
+                "dataType": "object",
+                "subFormId": "ActorDefinitionTrigger"
+              }
+            ]
+          },
+          {
+            "id": "mate_type",
+            "description": "The entity definition that this entity can mate with.",
+            "dataType": "stringLookup",
+            "lookupId": "entityTypePlusVariants"
+          }
+        ]
+      },
+      "samples": {
+        "/vanilla/behavior_pack/entities/chicken.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:chicken_adult/minecraft:breedable/",
+            "content": {
+              "minecraft:chicken": {}
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/entities/cow.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:cow_adult/minecraft:breedable/",
+            "content": {
+              "minecraft:cow": {}
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/entities/frog.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:breedable/",
+            "content": {
+              "minecraft:frog": {
+                "event": "become_pregnant",
+                "target": "self"
+              }
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/entities/goat.json": [
+          {
+            "path": "/minecraft:entity/component_groups/goat_adult/minecraft:breedable/",
+            "content": {
+              "minecraft:goat": {}
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/entities/llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_adult/minecraft:breedable/",
+            "content": {
+              "minecraft:llama": {}
+            }
+          }
+        ]
+      },
+      "title": "Breeds With"
+    },
+    {
+      "id": "causes_pregnancy",
+      "description": "If true, the entity will become pregnant instead of spawning a baby.",
+      "dataType": "boolean",
+      "defaultValue": false,
+      "samples": {
+        "/vanilla/behavior_pack/entities/frog.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:breedable/",
+            "content": true
+          }
+        ]
+      },
+      "title": "Causes Pregnancy"
+    },
+    {
+      "id": "deny_parents_variant",
+      "description": "Determines how likely the baby of parents with the same variant will deny that variant and take a random variant within the given range instead.",
+      "dataType": "object",
+      "subForm": {
+        "fields": [
+          {
+            "id": "chance",
+            "description": "The percentage chance of denying the parents' variant.",
+            "dataType": "float"
+          },
+          {
+            "id": "max_variant",
+            "description": "The inclusive maximum of the variant range.",
+            "dataType": "string"
+          },
+          {
+            "id": "min_variant",
+            "description": "The inclusive minimum of the variant range.",
+            "dataType": "string"
+          }
+        ]
+      }
+    },
+    {
+      "id": "environment_requirements",
+      "description": "The list of nearby block requirements to get the entity into the 'love' state.",
+      "dataType": "objectArray",
+      "subForm": {
+        "fields": [
+          {
+            "id": "block_types",
+            "description": "The block types required nearby for the entity to breed.",
+            "dataType": "stringArray"
+          },
+          {
+            "id": "count",
+            "description": "The number of the required block types nearby for the entity to breed.",
+            "dataType": "int"
+          },
+          {
+            "id": "radius",
+            "description": "How many blocks radius from the mob's center to search in for the required blocks. Bounded between 0 and 16.",
+            "dataType": "float",
+            "minValue": 0,
+            "maxValue": 16
+          }
+        ]
+      },
+      "title": "Environment Requirements"
+    },
+    {
+      "id": "extra_baby_chance",
+      "description": "Chance that up to 16 babies will spawn.",
+      "dataType": "percentRange",
+      "defaultValue": 0,
+      "title": "Extra Baby Chance"
+    },
+    {
+      "id": "inherit_tamed",
+      "description": "If true, the babies will be automatically tamed if its parents are.",
+      "dataType": "boolean"
+    },
+    {
+      "id": "love_filters",
+      "description": "The filters to run when attempting to fall in love.",
+      "dataType": "minecraftFilter",
+      "title": "Love Filters"
+    },
+    {
+      "id": "mutation_factor",
+      "description": "Determines how likely the babies are to NOT inherit one of their parent's variances.",
+      "dataType": "object",
+      "subForm": {
+        "fields": [
+          {
+            "id": "color",
+            "description": "The percentage chance of denying the parents' variant.",
+            "dataType": "percentRange",
+            "alternates": [
+              {
+                "id": "color",
+                "dataType": "float"
+              }
+            ]
+          },
+          {
+            "id": "variant",
+            "description": "The percentage chance of a mutation on the entity's variant type.",
+            "dataType": "percentRange",
+            "alternates": [
+              {
+                "id": "variant",
+                "dataType": "float"
+              }
+            ]
+          },
+          {
+            "id": "extra_variant",
+            "description": "The percentage chance of a mutation on the entity's extra variant type.",
+            "dataType": "percentRange",
+            "alternates": [
+              {
+                "id": "extra_variant",
+                "dataType": "float"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "require_full_health",
+      "description": "If true, the entity needs to be at full health before it can breed.",
+      "dataType": "boolean",
+      "defaultValue": false,
+      "title": "Require Full Health"
+    },
+    {
+      "id": "require_tame",
+      "description": "If true, the entities need to be tamed first before they can breed.",
+      "dataType": "boolean",
+      "defaultValue": true,
+      "samples": {
+        "/vanilla/behavior_pack/entities/llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_adult/minecraft:breedable/",
+            "content": true
+          }
+        ]
+      },
+      "title": "Require Tame"
+    }
+  ],
+  "title": "Breedable",
+  "samples": {
+    "/vanilla/behavior_pack/entities/chicken.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:chicken_adult/minecraft:breedable/",
+        "content": {
+          "require_tame": false,
+          "breeds_with": {
+            "minecraft:chicken": {}
+          },
+          "breed_items": [
+            "wheat_seeds",
+            "beetroot_seeds",
+            "melon_seeds",
+            "pumpkin_seeds",
+            "pitcher_pod",
+            "torchflower_seeds"
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/cow.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:cow_adult/minecraft:breedable/",
+        "content": {
+          "require_tame": false,
+          "breed_items": [
+            "wheat"
+          ],
+          "breeds_with": {
+            "minecraft:cow": {}
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/frog.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:breedable/",
+        "content": {
+          "breed_items": [
+            "slime_ball"
+          ],
+          "breeds_with": {
+            "minecraft:frog": {
+              "event": "become_pregnant",
+              "target": "self"
+            }
+          },
+          "causes_pregnancy": true,
+          "require_tame": false
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/goat.json": [
+      {
+        "path": "/minecraft:entity/component_groups/goat_adult/minecraft:breedable/",
+        "content": {
+          "require_tame": false,
+          "breed_items": [
+            "wheat"
+          ],
+          "breeds_with": {
+            "minecraft:goat": {}
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/llama.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_adult/minecraft:breedable/",
+        "content": {
+          "require_tame": true,
+          "breeds_with": {
+            "minecraft:llama": {}
+          },
+          "breed_items": [
+            "hay_block"
+          ]
+        }
+      }
+    ]
+  },
+  "id": "minecraft:breedable"
+}

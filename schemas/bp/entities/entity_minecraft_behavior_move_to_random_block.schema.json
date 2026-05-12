@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Move To Random Block Behavior",
+  "description": "Allows mob to move towards a random block.",
+  "properties": {
+    "block_distance": {
+      "title": "Block Distance",
+      "description": "Defines the distance from the mob, in blocks, that the block to move to will be chosen.",
+      "type": "number",
+      "default": 16
+    },
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer",
+      "default": 0
+    },
+    "speed_multiplier": {
+      "title": "Speed Multiplier",
+      "description": "Movement speed multiplier of the mob when using this AI Goal",
+      "type": "number",
+      "default": 1
+    },
+    "within_radius": {
+      "title": "Within Radius",
+      "description": "Defines the distance in blocks the mob has to be from the block for the movement to be finished.",
+      "type": "number",
+      "default": 0
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "files": [
+    "ApplyKnockbackRulesComponentDefinition.json",
+    "CroakGoalDefinition.json",
+    "EmergeGoalDefinition.json",
+    "FireAtTargetGoalDefinition.json",
+    "FollowCaravanGoalDefinition.json",
+    "MakeLoveGoalDefinition.json",
+    "PushableByEntityComponentDefinition.json",
+    "ReceiveLoveGoalDefinition.json",
+    "RestrictOpenDoorGoalDefinition.json",
+    "RestrictSunGoalDefinition.json",
+    "RiseToLiquidLevelGoalDefinition.json",
+    "RollGoalDefinition.json",
+    "RunAroundLikeCrazyGoalDefinition.json",
+    "ScaredGoalDefinition.json",
+    "ShareItemsGoalDefinition.json",
+    "SitGoalDefinition.json",
+    "SkeletonHorseTrapGoalDefinition.json",
+    "SneezeGoalDefinition.json",
+    "SwellGoalDefinition.json",
+    "TargetWhenPushedGoalDefinition.json",
+    "TradeInterestGoalDefinition.json",
+    "ActorDefinitions.json"
+  ],
+  "folders": []
+}

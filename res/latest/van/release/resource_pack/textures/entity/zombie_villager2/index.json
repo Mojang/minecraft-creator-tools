@@ -1,0 +1,14 @@
+{
+  "files": [
+    "zombie-villager.png",
+    "zombie-villager.texture_set.json",
+    "zombie-villager_baby.png",
+    "zombie-villager_baby.texture_set.json",
+    "zombie-villager_baby_mers.tga",
+    "zombie-villager_mers.tga"
+  ],
+  "folders": [
+    "biomes",
+    "professions"
+  ]
+}

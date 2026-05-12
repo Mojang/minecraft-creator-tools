@@ -1,0 +1,110 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Distance",
+  "description": "Distance-based fog settings for air, water, lava, and weather conditions.",
+  "type": "object",
+  "properties": {
+    "air": {
+      "title": "Air",
+      "description": "Fog settings when the player is in air.",
+      "$ref": "./fog_fog_distance_settings.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Fog Distance Settings",
+          "description": "Distance fog settings for a specific environment type (air, water, lava, etc.).",
+          "body": {
+            "fog_start": 0,
+            "fog_end": 0,
+            "fog_color": "",
+            "render_distance_type": ""
+          }
+        }
+      ]
+    },
+    "water": {
+      "title": "Water",
+      "description": "Fog settings when the player is in water.",
+      "$ref": "./fog_fog_distance_settings_with_transition.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Fog Distance Settings with Transition",
+          "description": "Distance fog settings that include transition fog support (primarily for water).",
+          "body": {
+            "fog_start": 0,
+            "fog_end": 0,
+            "fog_color": "",
+            "render_distance_type": ""
+          }
+        }
+      ]
+    },
+    "lava": {
+      "title": "Lava",
+      "description": "Fog settings when the player is in lava.",
+      "$ref": "./fog_fog_distance_settings.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Fog Distance Settings",
+          "description": "Distance fog settings for a specific environment type (air, water, lava, etc.).",
+          "body": {
+            "fog_start": 0,
+            "fog_end": 0,
+            "fog_color": "",
+            "render_distance_type": ""
+          }
+        }
+      ]
+    },
+    "lava_resistance": {
+      "title": "Lava Resistance",
+      "description": "Fog settings when the player is in lava with fire resistance.",
+      "$ref": "./fog_fog_distance_settings.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Fog Distance Settings",
+          "description": "Distance fog settings for a specific environment type (air, water, lava, etc.).",
+          "body": {
+            "fog_start": 0,
+            "fog_end": 0,
+            "fog_color": "",
+            "render_distance_type": ""
+          }
+        }
+      ]
+    },
+    "weather": {
+      "title": "Weather",
+      "description": "Fog settings during weather conditions.",
+      "$ref": "./fog_fog_distance_settings.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Fog Distance Settings",
+          "description": "Distance fog settings for a specific environment type (air, water, lava, etc.).",
+          "body": {
+            "fog_start": 0,
+            "fog_end": 0,
+            "fog_color": "",
+            "render_distance_type": ""
+          }
+        }
+      ]
+    },
+    "powder_snow": {
+      "title": "Powder Snow",
+      "description": "Fog settings when the player is in powder snow.",
+      "$ref": "./fog_fog_distance_settings.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Fog Distance Settings",
+          "description": "Distance fog settings for a specific environment type (air, water, lava, etc.).",
+          "body": {
+            "fog_start": 0,
+            "fog_end": 0,
+            "fog_color": "",
+            "render_distance_type": ""
+          }
+        }
+      ]
+    }
+  }
+}

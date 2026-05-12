@@ -1,0 +1,48 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "fields": [
+    {
+      "id": "vibration",
+      "description": "Type of vibration to emit.",
+      "dataType": "string",
+      "mustMatchChoices": true,
+      "choices": [
+        {
+          "id": "entity_interact"
+        },
+        {
+          "id": "entity_act"
+        },
+        {
+          "id": "entity_die"
+        }
+      ]
+    }
+  ],
+  "tags": [
+    "entityevent"
+  ],
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "emits a vibration from the entity"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "Allows the entity to emit a vibration having the entity itself as its source.",
+  "id": "emit_vibration",
+  "title": "Emit Vibration",
+  "samples": {
+    "samples": [
+      {
+        "path": "Example:",
+        "content": "{\r\n\t\"emit_vibration\": {\r\n\t\t\"vibration\": \"entity_act\"\r\n\t}\r\n}"
+      }
+    ]
+  }
+}

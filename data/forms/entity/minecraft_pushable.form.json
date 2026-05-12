@@ -1,0 +1,196 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "switch",
+            "cases": [
+              {
+                "conditions": [
+                  {
+                    "field": "is_pushable",
+                    "comparison": "=",
+                    "value": true
+                  },
+                  {
+                    "field": "is_pushable_by_piston",
+                    "comparison": "=",
+                    "value": true
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "can be pushed by other entities and pistons"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "is_pushable",
+                    "comparison": "=",
+                    "value": true
+                  },
+                  {
+                    "field": "is_pushable_by_piston",
+                    "comparison": "=",
+                    "value": false
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "can be pushed by other entities but not by pistons"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "is_pushable",
+                    "comparison": "=",
+                    "value": false
+                  },
+                  {
+                    "field": "is_pushable_by_piston",
+                    "comparison": "=",
+                    "value": true
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "cannot be pushed by other entities but can be pushed by pistons"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "is_pushable",
+                    "comparison": "=",
+                    "value": false
+                  },
+                  {
+                    "field": "is_pushable_by_piston",
+                    "comparison": "=",
+                    "value": false
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "cannot be pushed by entities or pistons (immovable)"
+                  }
+                ]
+              }
+            ],
+            "default": [
+              {
+                "type": "literal",
+                "text": "can be pushed by entities and pistons"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "is_pushable",
+      "title": "Is Pushable",
+      "description": "Whether the entity can be pushed by other entities.",
+      "defaultValue": true,
+      "dataType": "boolean",
+      "samples": {
+        "/vanilla/behavior_pack/entities/allay.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:pushable/",
+            "content": true
+          }
+        ],
+        "/vanilla/behavior_pack/entities/blaze.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:pushable/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "is_pushable_by_piston",
+      "title": "Is Pushable By Piston",
+      "description": "Whether the entity can be pushed by pistons safely.",
+      "defaultValue": true,
+      "dataType": "boolean",
+      "samples": {
+        "/vanilla/behavior_pack/entities/allay.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:pushable/",
+            "content": true
+          }
+        ],
+        "/vanilla/behavior_pack/entities/armor_stand.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:pushable/",
+            "content": true
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Defines what can push an entity between other entities and pistons.",
+  "title": "Pushable",
+  "samples": {
+    "/vanilla/behavior_pack/entities/allay.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:pushable/",
+        "content": {
+          "is_pushable": true,
+          "is_pushable_by_piston": true
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/armor_stand.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:pushable/",
+        "content": {
+          "is_pushable": false,
+          "is_pushable_by_piston": true
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/arrow.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:pushable/",
+        "content": {
+          "is_pushable": false,
+          "is_pushable_by_piston": true
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/blaze.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:pushable/",
+        "content": {
+          "is_pushable": true,
+          "is_pushable_by_piston": true
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/boat.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:pushable/",
+        "content": {
+          "is_pushable": true,
+          "is_pushable_by_piston": true
+        }
+      }
+    ]
+  },
+  "id": "minecraft:pushable"
+}

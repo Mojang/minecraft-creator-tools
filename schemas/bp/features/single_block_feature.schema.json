@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Single Block Feature",
+  "description": "\n\nProperties:\n• description ({ identifier })\n• places_block\n• enforce_placement_rules (boolean)\n• enforce_survivability_rules (boolean)\n• randomize_rotation (boolean)\n• may_attach_to ({ min_sides_must_attach, auto_rotate, top, ... })\n• may_not_attach_to ({ top, bottom, north, ... })\n• may_replace (string[])",
+  "type": "object",
+  "properties": {
+    "description": {
+      "title": "Description",
+      "description": "\n\nProperties:\n• identifier (string)",
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "title": "Identifier",
+          "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Description",
+          "description": "Create a Description",
+          "body": {
+            "identifier": ""
+          }
+        }
+      ]
+    },
+    "places_block": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "block": {
+                "title": "Block",
+                "description": "Reference to the block to be placed.",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "title": "Places Block",
+          "description": "Reference to the block to be placed.",
+          "type": "object"
+        },
+        {
+          "title": "Places Block",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
+      "description": "\n\nProperties:\n• block (object)"
+    },
+    "enforce_placement_rules": {
+      "title": "Enforce Placement Rules",
+      "description": "If true, enforce the block's canPlace check.",
+      "type": "boolean"
+    },
+    "enforce_survivability_rules": {
+      "title": "Enforce Survivability Rules",
+      "description": "If true, enforce the block's canSurvive check.",
+      "type": "boolean"
+    },
+    "randomize_rotation": {
+      "title": "Randomize Rotation",
+      "description": "If true, randomizes the block's cardinal orientation.",
+      "type": "boolean"
+    },
+    "may_attach_to": {
+      "$ref": "./may_attach_to.schema.json",
+      "title": "May Attach To",
+      "description": "Allowlist which specifies where the block can be placed.",
+      "defaultSnippets": [
+        {
+          "label": "May Attach To",
+          "description": "Allowlist which specifies where the block can be placed.",
+          "body": {
+            "min_sides_must_attach": 0,
+            "auto_rotate": true
+          }
+        }
+      ]
+    },
+    "may_not_attach_to": {
+      "$ref": "./may_not_attach_to.schema.json",
+      "title": "May Not Attach To",
+      "description": "Denylist which specifies where the block can't be placed."
+    },
+    "may_replace": {
+      "title": "May Replace",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Single Block Feature",
+      "description": "Create a Single Block Feature",
+      "body": {
+        "description": "",
+        "enforce_placement_rules": true,
+        "enforce_survivability_rules": true,
+        "randomize_rotation": true
+      }
+    }
+  ]
+}

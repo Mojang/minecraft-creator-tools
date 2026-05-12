@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Brewing Mix Recipe Definition",
+  "description": "The brewing mix recipe definition container.",
+  "type": "object",
+  "properties": {
+    "description": {
+      "title": "Description",
+      "description": "The recipe description containing identifier.",
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "title": "Identifier",
+          "description": "The unique identifier for this recipe.",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Description",
+          "description": "The recipe description containing identifier.",
+          "body": {
+            "identifier": ""
+          }
+        }
+      ]
+    },
+    "tags": {
+      "title": "Tags",
+      "description": "Tags that specify this is a brewing_stand recipe.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "input": {
+      "title": "Input",
+      "description": "The input potion type (e.g., 'minecraft:potion_type:awkward').",
+      "type": "string"
+    },
+    "reagent": {
+      "title": "Reagent",
+      "description": "The reagent item that modifies the potion (e.g., 'minecraft:blaze_powder').",
+      "type": "string"
+    },
+    "output": {
+      "title": "Output",
+      "description": "The output potion type (e.g., 'minecraft:potion_type:strength').",
+      "type": "string"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Brewing Mix Recipe Definition",
+      "description": "The brewing mix recipe definition container.",
+      "body": {
+        "description": "",
+        "tags": "",
+        "input": "",
+        "reagent": "",
+        "output": ""
+      }
+    }
+  ]
+}

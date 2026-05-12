@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Apply Knockback Rules",
+  "description": "Defines how an entity applies knockback.",
+  "properties": {
+    "presets": {
+      "title": "Presets",
+      "description": "Array of rules instances defining how knockback should be applied to the entity.\n\nSample values:\n• egg: [{\"vertical_power\":0.12,\"vertical_velocity_cap\"...\n• iron_golem: [{\"horizontal_power\":1.3,\"vertical_power\":0.39,...\n• player: [{\"filter\":{\"test\":\"enum_property\",\"subject\":\"o...",
+      "type": "array",
+      "items": {
+        "$ref": "./entity_minecraft_apply_knockback_rules_instance.schema.json"
+      }
+    }
+  }
+}

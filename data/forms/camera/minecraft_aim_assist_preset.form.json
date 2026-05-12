@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines aim assist preset file"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "format_version",
+      "title": "format_version",
+      "description": "Version of the JSON schema for this file. Aim-assist preset requires at least version 1.21.50.",
+      "dataType": "string"
+    },
+    {
+      "id": "minecraft:aim_assist_preset",
+      "title": "minecraft:aim_assist_preset",
+      "description": "A single Camera Aim-Assist Preset Definition.",
+      "dataType": "object"
+    }
+  ],
+  "description": "Aim Assist Preset",
+  "title": "Aim Assist Preset"
+}

@@ -1,0 +1,182 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Angry",
+  "description": "Defines an entity's 'angry' state using a timer.",
+  "properties": {
+    "angry_sound": {
+      "title": "Angry Sound",
+      "description": "The sound event to play when the mob is angry",
+      "type": "string"
+    },
+    "sound_interval": {
+      "title": "Sound Interval",
+      "description": "The range of time in seconds to randomly wait before playing the sound again.",
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "type": "object",
+          "properties": {
+            "min": {
+              "type": "integer",
+              "description": "Minimum value of the range"
+            },
+            "max": {
+              "type": "integer",
+              "description": "Maximum value of the range"
+            }
+          }
+        }
+      ],
+      "default": 0
+    },
+    "duration": {
+      "title": "Duration",
+      "description": "The amount of time in seconds that the entity will be angry.",
+      "type": "integer",
+      "default": 25
+    },
+    "duration_delta": {
+      "title": "Duration Delta",
+      "description": "Variance in seconds added to the duration [-delta, delta].",
+      "type": "integer",
+      "default": 0
+    },
+    "filters": {
+      "title": "Anger exemption filters",
+      "description": "Filter out mob types that it should not attack while angry (other Piglins)",
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "broadcast_anger": {
+      "title": "Broadcast Anger",
+      "description": "If set, other entities of the same entity definition within the broadcastRange will also become angry",
+      "type": "boolean",
+      "default": false
+    },
+    "broadcast_anger_on_attack": {
+      "title": "Broadcast Anger On Attack",
+      "description": "If set, other entities of the same entity definition within the broadcastRange will also become angry whenever this mob attacks",
+      "type": "boolean",
+      "default": false
+    },
+    "broadcast_range": {
+      "title": "Broadcast Range",
+      "description": "Distance in blocks within which other entities of the same entity type will become angry",
+      "type": "integer",
+      "default": 20
+    },
+    "broadcast_targets": {
+      "title": "Broadcast Targets",
+      "description": "A list of entity families to broadcast anger to",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "broadcast_filters": {
+      "title": "Broadcast Filters",
+      "description": "Conditions that make this entry in the list valid",
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "calm_event": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "title": "Calm Event",
+      "description": "Event to fire when this entity is calmed down. Can be a simple event name string or an object with event and target properties."
+    },
+    "broadcast_anger_on_being_attacked": {
+      "title": "Broadcast Anger On Being Attacked",
+      "description": "If true, other entities of the same entity definition within the broadcastRange will also become angry whenever this mob is attacked",
+      "type": "boolean",
+      "default": false
+    },
+    "broadcast_anger_when_dying": {
+      "title": "Broadcast Anger When Dying",
+      "description": "If false, when this mob is killed it does not spread its anger to other entities of the same entity definition within the broadcastRange",
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

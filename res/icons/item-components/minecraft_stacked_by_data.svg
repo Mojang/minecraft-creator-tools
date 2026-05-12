@@ -1,0 +1,9 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Misc: Stacked by data - Gray/Blue -->
+  <rect x="3" y="8" width="5" height="6" fill="#7b9fe0"/>
+  <rect x="8" y="8" width="5" height="6" fill="#5c8dd6"/>
+  <rect x="4" y="9" width="2" height="2" fill="#ffffff" opacity="0.3"/>
+  <rect x="9" y="9" width="2" height="2" fill="#ffffff" opacity="0.3"/>
+  <rect x="5" y="4" width="6" height="3" fill="#333333"/>
+  <rect x="6" y="5" width="4" height="1" fill="#ffffff" opacity="0.5"/>
+</svg>

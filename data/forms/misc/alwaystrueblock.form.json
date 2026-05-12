@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines alwaystrueblock configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "AlwaysTrueBlock",
+  "fields": [
+    {
+      "id": "predicate_type",
+      "title": "BlockType",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "description": "Predicate that always evaluates to true. This is the default predicate if no other predicate is specified.",
+  "title": "AlwaysTrueBlock Misc"
+}

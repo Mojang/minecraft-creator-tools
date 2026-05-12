@@ -1,0 +1,135 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Transformation",
+  "description": "Defines an entity's transformation from the current definition into another",
+  "properties": {
+    "delay": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "block_assist_chance": {
+              "title": "Block Assist Chance",
+              "description": "Chance that the entity will look for nearby blocks that can speed up the transformation. Value must be between 0.0 and 1.0",
+              "type": "number",
+              "default": 0
+            },
+            "block_chance": {
+              "title": "Block Chance",
+              "description": "Chance that, once a block is found, will help speed up the transformation",
+              "type": "number",
+              "default": 0
+            },
+            "block_max": {
+              "title": "Block Max",
+              "description": "Maximum number of blocks the entity will look for to aid in the transformation. If not defined or set to 0, it will be set to the block radius",
+              "type": "integer",
+              "default": 0
+            },
+            "block_radius": {
+              "title": "Block Radius",
+              "description": "Distance in Blocks that the entity will search for blocks that can help the transformation",
+              "type": "integer",
+              "default": 0
+            },
+            "block_types": {
+              "title": "Block Types",
+              "description": "List of blocks that can help the transformation of this entity",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "range_max": {
+              "title": "Range Max",
+              "description": "Time in seconds to be added to value to have the maximum random time range value until the entity transforms (if non-zero then the time in seconds before the entity transforms will be random between value+range_min and value+range_max)",
+              "type": "number",
+              "default": 0
+            },
+            "range_min": {
+              "title": "Range Min",
+              "description": "Time in seconds to be added to value to have the minimum random time range value until the entity transforms (if non-zero then the time in seconds before the entity transforms will be random between value+range_min and value+range_max)",
+              "type": "number",
+              "default": 0
+            },
+            "value": {
+              "title": "Value",
+              "description": "Time in seconds before the entity transforms",
+              "type": "number",
+              "default": 0
+            }
+          }
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "title": "Delay",
+      "description": "Defines the properties of the delay for the transformation. Can be a simple number (seconds) or a complex object.\n\nSample values:\n• pig: 0.5"
+    },
+    "add": {
+      "title": "Add",
+      "description": "List of components to add to the entity after the transformation",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "component_groups": {
+            "title": "Component Groups",
+            "description": "Names of component groups to add",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "begin_transform_sound": {
+      "title": "Begin Transform Sound",
+      "description": "Sound to play when the transformation starts",
+      "type": "string"
+    },
+    "drop_equipment": {
+      "title": "Drop Equipment",
+      "description": "Cause the entity to drop all equipment upon transformation",
+      "type": "boolean",
+      "default": false
+    },
+    "drop_inventory": {
+      "title": "Drop Inventory",
+      "description": "Cause the entity to drop all items in inventory upon transformation\n\nSample values:\n• skeleton: true",
+      "type": "boolean",
+      "default": false
+    },
+    "into": {
+      "title": "Into",
+      "description": "Entity Definition that this entity will transform into\n\nSample values:\n• pig: minecraft:pig_zombie\n• skeleton: minecraft:stray\n• stray: minecraft:skeleton",
+      "type": "string"
+    },
+    "keep_level": {
+      "title": "Keep Level",
+      "description": "If this entity has trades and has leveled up, it should maintain that level after transformation.\n\nSample values:\n• skeleton: true",
+      "type": "boolean",
+      "default": false
+    },
+    "keep_owner": {
+      "title": "Keep Owner",
+      "description": "If this entity is owned by another entity, it should remain owned after transformation.",
+      "type": "boolean",
+      "default": false
+    },
+    "preserve_equipment": {
+      "title": "Preserve Equipment",
+      "description": "Cause the entity to keep equipment after going through transformation\n\nSample values:\n• skeleton: true",
+      "type": "boolean",
+      "default": false
+    },
+    "transformation_sound": {
+      "title": "Transformation Sound",
+      "description": "Sound to play when the entity is done transforming\n\nSample values:\n• pig: mob.pig.death\n• skeleton: convert_to_stray",
+      "type": "string"
+    }
+  }
+}

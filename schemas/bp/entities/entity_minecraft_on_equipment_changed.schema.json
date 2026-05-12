@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity On Equipment Changed",
+  "description": "Allows to specify events to execute when equipment is set in the entity's default equipment slots. Doesn't apply to \"minecraft:inventory\", use \"minecraft:equippable\" instead.",
+  "properties": {
+    "slots": {
+      "title": "Slots",
+      "description": "A list of slot-specific events to execute when the entity's equipment changes in those slots.",
+      "type": "array",
+      "items": {
+        "$ref": "./entity_onequipmentchangedslotentrydescriptor.schema.json"
+      }
+    }
+  }
+}

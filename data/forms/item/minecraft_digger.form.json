@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:digger",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can dig blocks faster"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "destroy_speeds",
+      "title": "Destroy Speeds",
+      "description": "A list of blocks to dig with correlating speeds of digging.",
+      "dataType": "objectArray",
+      "defaultValue": [],
+      "subFormId": "item_components/blockinfo"
+    },
+    {
+      "id": "use_efficiency",
+      "title": "Use Efficiency",
+      "description": "Determines whether this item should be impacted if the efficiency enchantment is applied to it.",
+      "dataType": "boolean",
+      "defaultValue": false
+    }
+  ],
+  "description": "Digger item component specifies how quickly this item can dig specific blocks.",
+  "title": "Item Digger"
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "specifies durability properties"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:durability",
+  "fields": [
+    {
+      "id": "damage_chance",
+      "title": "Damage Chance",
+      "description": "Specifies the percentage chance of this item losing durability. Default is set to 100. Defined as an int range with min and max value.",
+      "dataType": "object",
+      "subFormId": "misc/intrange"
+    },
+    {
+      "id": "max_durability",
+      "title": "Max Durability",
+      "description": "Max durability is the amount of damage that this item can take before breaking. This is a required parameter and has a minimum of 0.",
+      "dataType": "int",
+      "isRequired": true
+    }
+  ],
+  "description": "The durability item component specifies how much damage the item takes before breaking, and allows the item to be combined to repair or augment them.",
+  "title": "Minecraft Durability Misc"
+}

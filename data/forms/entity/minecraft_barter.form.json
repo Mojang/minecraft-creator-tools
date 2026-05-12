@@ -1,0 +1,54 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can barter with players"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "barter_table",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "uses loot table "
+          },
+          {
+            "type": "value",
+            "field": "barter_table"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "barter_table",
+      "description": "Loot table that's used to drop a random item.",
+      "dataType": "stringLookup",
+      "lookupId": "lootTable",
+      "title": "Barter Table"
+    },
+    {
+      "id": "cooldown_after_being_attacked",
+      "description": "Duration, in seconds, for which mob won't barter items if it was hurt.",
+      "dataType": "intRange",
+      "maxValue": 60,
+      "defaultValue": 0,
+      "title": "Cooldown After Being Attacked"
+    }
+  ],
+  "description": "Enables the component to drop an item as a barter exchange.",
+  "title": "Barter",
+  "samples": {},
+  "id": "minecraft:barter"
+}

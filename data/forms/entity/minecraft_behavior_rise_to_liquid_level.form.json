@@ -1,0 +1,105 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "stays at a level in liquid"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:behavior.rise_to_liquid_level",
+  "description": "Allows the mob to stay at a certain level when in liquid.",
+  "fields": [
+    {
+      "id": "control_flags",
+      "title": "Control Flags",
+      "dataType": "stringArray",
+      "defaultValue": [],
+      "choices": [
+        {
+          "id": "jump",
+          "title": "Jump"
+        },
+        {
+          "id": "look",
+          "title": "Look"
+        },
+        {
+          "id": "move",
+          "title": "Move"
+        }
+      ]
+    },
+    {
+      "id": "liquid_y_offset",
+      "title": "Liquid y Offset",
+      "description": "Target distance down from the liquid surface. i.e. Positive values move the target Y down.",
+      "dataType": "float",
+      "defaultValue": 0,
+      "samples": {
+        "/vanilla/behavior_pack/entities/strider.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:strider_pathing_behaviors/minecraft:behavior.rise_to_liquid_level/",
+            "content": 0.25
+          }
+        ]
+      }
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "dataType": "int",
+      "defaultValue": 0,
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal."
+    },
+    {
+      "id": "rise_delta",
+      "title": "Rise Delta",
+      "description": "Movement up in Y per tick when below the liquid surface.",
+      "dataType": "float",
+      "defaultValue": 0,
+      "samples": {
+        "/vanilla/behavior_pack/entities/strider.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:strider_pathing_behaviors/minecraft:behavior.rise_to_liquid_level/",
+            "content": 0.01
+          }
+        ]
+      }
+    },
+    {
+      "id": "sink_delta",
+      "title": "Sink Delta",
+      "description": "Movement down in Y per tick when above the liquid surface.",
+      "dataType": "float",
+      "defaultValue": 0,
+      "samples": {
+        "/vanilla/behavior_pack/entities/strider.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:strider_pathing_behaviors/minecraft:behavior.rise_to_liquid_level/",
+            "content": 0.01
+          }
+        ]
+      }
+    }
+  ],
+  "title": "Entity Rise To Liquid Level Behavior",
+  "samples": {
+    "/vanilla/behavior_pack/entities/strider.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:strider_pathing_behaviors/minecraft:behavior.rise_to_liquid_level/",
+        "content": {
+          "priority": 0,
+          "liquid_y_offset": 0.25,
+          "rise_delta": 0.01,
+          "sink_delta": 0.01
+        }
+      }
+    ]
+  }
+}
