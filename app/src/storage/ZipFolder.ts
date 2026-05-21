@@ -176,7 +176,14 @@ export default class ZipFolder extends FolderBase implements IFolder {
     this._jsz.forEach((relativePath: string, file: JSZip.JSZipObject) => {
       // some zip files use \ as a delimiter (??)
       relativePath = relativePath.replace(/\\/gi, ZipStorage.slashFolderDelimiter);
-
+      // Skip entries whose leaf name contains '#'. The '#' character is used internally
+      // as a container-path delimiter (e.g. archive.mcr#inner/path), so files whose
+      // actual name includes '#' break path resolution and can cause hangs.
+      const leafName = StorageUtilities.getLeafName(relativePath);
+      if (leafName.includes("#")) {
+        Log.debug("Skipping zip entry with '#' in filename (unsupported path character): " + relativePath, "ZipFolder");
+        return; // skip this forEach entry
+      }
       const countDelim = Utilities.countChar(relativePath, ZipStorage.slashFolderDelimiter);
 
       if (countDelim === 0) {

@@ -2374,7 +2374,18 @@ export default class StorageUtilities {
     await source.loadContent(true);
 
     if (source.content == null) {
-      Log.debug("No content for file " + source.storageRelativePath);
+      // The source could not be fetched (e.g. transient HTTP error). The
+      // target file was already created in memory by the caller; skipping
+      // here means it never gets written to disk. Surface this as an error
+      // so users / logs know the project save came up short, instead of
+      // failing silently. See HttpFile.loadContent for retry behaviour.
+      Log.error(
+        "Could not copy file '" +
+          source.storageRelativePath +
+          "' to '" +
+          target.storageRelativePath +
+          "' - source had no content."
+      );
       return;
     }
 

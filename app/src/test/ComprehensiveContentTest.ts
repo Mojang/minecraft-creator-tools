@@ -4,12 +4,12 @@
 import { expect, assert } from "chai";
 import CreatorTools from "../app/CreatorTools";
 import Project, { ProjectAutoDeploymentMode } from "../app/Project";
-import ProjectInfoSet from "../info/ProjectInfoSet";
-import { ProjectInfoSuite } from "../info/IProjectInfoData";
 import IFolder from "../storage/IFolder";
 import { ProjectItemType } from "../app/IProjectItemData";
-import { ensureReportJsonMatchesScenario } from "./TestUtilities";
 import TestPaths, { ITestEnvironment } from "./TestPaths";
+import ProjectInfoSet from "../info/ProjectInfoSet";
+import { ProjectInfoSuite } from "../info/IProjectInfoData";
+import { ensureReportJsonMatchesScenario } from "./TestUtilities";
 
 let creatorTools: CreatorTools | undefined = undefined;
 let scenariosFolder: IFolder | undefined = undefined;

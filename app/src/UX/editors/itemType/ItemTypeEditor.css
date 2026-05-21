@@ -41,3 +41,7 @@
   padding: 3px;
   grid-template-columns: 200px 1fr;
 }
+
+.ite-visualsSubTabs {
+  padding: 6px 11px 4px 11px;
+}

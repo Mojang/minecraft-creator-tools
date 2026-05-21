@@ -98,16 +98,23 @@ import StorageUtilities from "../storage/StorageUtilities";
 import ContentIndex from "../core/ContentIndex";
 import IProjectMetaState from "./IProjectMetaState";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
-import SummaryInfoGenerator from "./SummaryInfoGenerator";
+import SummaryInfoGenerator from "./projectGenerators/summaryInfo/SummaryInfoGenerator";
 import HashUtilities from "../core/HashUtilities";
 import Database from "../minecraft/Database";
 import telemetryService from "../analytics/Telemetry";
 import { TelemetryEvents, TelemetryProperties } from "../analytics/TelemetryConstants";
 import InfoGeneratorTopicUtilities from "./InfoGeneratorTopicUtilities";
-import CrossReferenceIndexGenerator from "./CrossReferenceIndexGenerator";
-import TypesInfoGenerator from "./TypesInfoGenerator";
+import CrossReferenceIndexGenerator from "./projectGenerators/crossReferenceIndex/CrossReferenceIndexGenerator";
+import TypesInfoGenerator from "./projectGenerators/typesInfo/TypesInfoGenerator";
 
 const ItemBatchSize = 500;
+
+/** Maximum time (ms) a single project/item generator or loadContent call may run
+ *  before being force-skipped. Prevents a stuck promise from wedging the entire
+ *  validation pipeline (e.g. a file whose path confuses the storage layer).
+ *  Set high enough to accommodate legitimately large worlds (e.g. LevelDB loads). */
+const GeneratorTimeoutMs = 1_200_000; // 20 minutes
+const LoadContentTimeoutMs = 600_000; // 10 minutes
 
 /**
  * Controls how aggressively generators should constrain resource consumption.
@@ -166,6 +173,9 @@ export default class ProjectInfoSet {
   _isGenerating: boolean = false;
   _completedGeneration: boolean = false;
   _excludeTests?: string[];
+  /** If the web worker crashed and validation fell back to the main thread,
+   *  this holds the error message from the worker failure. */
+  workerFallbackReason?: string;
   private _pendingGenerateRequests: ((value: unknown) => void)[] = [];
 
   static CommonCsvHeader = "Test,TestId,Type,Item,Message,Data,Path";
@@ -746,6 +756,19 @@ export default class ProjectInfoSet {
       ];
       await InfoGeneratorTopicUtilities.preloadAllForms(allGeneratorIds);
 
+      // If the worker crashed and we fell back to main-thread validation, emit
+      // a visible info item so the reason shows up in the validation report.
+      if (this.workerFallbackReason) {
+        genItems.push(
+          new ProjectInfoItem(
+            InfoItemType.internalProcessingError,
+            "WORKER",
+            503,
+            "Background worker failed, fell back to main-thread validation: " + this.workerFallbackReason
+          )
+        );
+      }
+
       if (this.project?.errorState === ProjectErrorState.cabinetFileCouldNotBeProcessed) {
         genItems.push(
           new ProjectInfoItem(
@@ -795,9 +818,35 @@ export default class ProjectInfoSet {
 
             GeneratorRegistrations.configureForSuite(gen, this.suite);
 
+            // Heartbeat: if a generator runs for more than a few seconds without finishing,
+            // update the in-browser status message with elapsed time so the user can see that
+            // a particular generator (and not the whole UI) is stuck, instead of a frozen "(10%)".
+            const genStart = Date.now();
+            Log.verbose(`[Validation] Starting project generator '${gen.id}' (${gen.title})`);
+            const heartbeat = setInterval(() => {
+              const elapsedSec = Math.round((Date.now() - genStart) / 1000);
+              const msg =
+                baseValidationMessage +
+                " - " +
+                gen.title +
+                " (" +
+                projGenPercent +
+                "%) - running " +
+                elapsedSec +
+                "s...";
+              this.project?.creatorTools.notifyOperationUpdate(valOperId, msg, StatusTopic.validation);
+              if (onProgress) {
+                onProgress(`Validating: ${gen.title} (running ${elapsedSec}s)`, projGenPercent);
+              }
+              Log.verbose(`[Validation] Generator '${gen.id}' still running after ${elapsedSec}s`);
+            }, 5000);
+
             try {
-              const genStart = Date.now();
-              const results = await gen.generate(this.project, genContentIndex);
+              const results = await Utilities.withTimeout(
+                gen.generate(this.project, genContentIndex),
+                GeneratorTimeoutMs,
+                `project generator '${gen.id}'`
+              );
               generatorTimings.push({ phase: "project", id: gen.id, durationMs: Date.now() - genStart });
 
               for (const item of results) {
@@ -805,6 +854,8 @@ export default class ProjectInfoSet {
               }
             } catch (e: any) {
               // V--- add a breakpoint to the line below to catch validator exceptions (1 of 3) ---V
+              const detail = e && e.stack ? e.stack : e && e.message ? e.message : String(e);
+              Log.error(`[Validation] Project generator '${gen.id}' (${gen.title}) threw: ${detail}`);
               genItems.push(
                 new ProjectInfoItem(
                   InfoItemType.internalProcessingError,
@@ -820,6 +871,8 @@ export default class ProjectInfoSet {
                   "Could not connect to network to retrieve resources for validation. Details: " + e.toString()
                 );
               }
+            } finally {
+              clearInterval(heartbeat);
             }
           }
         }
@@ -849,7 +902,47 @@ export default class ProjectInfoSet {
           }
 
           if (!pi.isContentLoaded) {
-            await pi.loadContent();
+            const loadStart = Date.now();
+            const slowLoadWarn = setTimeout(() => {
+              const msg =
+                baseValidationMessage +
+                " - loading item " +
+                (i + 1) +
+                "/" +
+                itemsCopy.length +
+                " (" +
+                (pi.projectPath ?? pi.name ?? "?") +
+                ")...";
+              this.project?.creatorTools.notifyOperationUpdate(valOperId, msg, StatusTopic.validation);
+              Log.verbose(
+                `[Validation] Item still loading after 10s: index=${i} type=${pi.itemType} path=${
+                  pi.projectPath ?? "(none)"
+                }`
+              );
+            }, 10000);
+            try {
+              await Utilities.withTimeout(
+                pi.loadContent(),
+                LoadContentTimeoutMs,
+                `loadContent for item index=${i} path=${pi.projectPath ?? "(none)"}`
+              );
+            } catch (e: any) {
+              Log.error(
+                `[Validation] loadContent threw for item index=${i} type=${pi.itemType} path=${
+                  pi.projectPath ?? "(none)"
+                }: ${e && e.stack ? e.stack : e}`
+              );
+            } finally {
+              clearTimeout(slowLoadWarn);
+              const ms = Date.now() - loadStart;
+              if (ms > 5000) {
+                Log.verbose(
+                  `[Validation] Slow loadContent (${ms}ms): index=${i} type=${pi.itemType} path=${
+                    pi.projectPath ?? "(none)"
+                  }`
+                );
+              }
+            }
           }
 
           for (let j = 0; j < itemGenerators.length; j++) {
@@ -860,11 +953,15 @@ export default class ProjectInfoSet {
 
               try {
                 const itemGenStart = Date.now();
-                const results = await gen.generate(pi, genContentIndex, {
-                  performAggressiveCleanup: this.performAggressiveCleanup,
-                  constrainResourceConsumption: this.constrainResourceConsumption,
-                  onProgress: onProgress,
-                });
+                const results = await Utilities.withTimeout(
+                  gen.generate(pi, genContentIndex, {
+                    performAggressiveCleanup: this.performAggressiveCleanup,
+                    constrainResourceConsumption: this.constrainResourceConsumption,
+                    onProgress: onProgress,
+                  }),
+                  GeneratorTimeoutMs,
+                  `item generator '${gen.id}' on item index=${i} path=${pi.projectPath ?? "(none)"}`
+                );
                 itemGenTimings[gen.id] += Date.now() - itemGenStart;
 
                 for (const item of results) {
@@ -872,6 +969,11 @@ export default class ProjectInfoSet {
                 }
               } catch (e: any) {
                 // V--- add a breakpoint to the line below to catch validator exceptions (2 of 3) ---V
+                Log.error(
+                  `[Validation] Item generator '${gen.id}' threw on item index=${i} path=${
+                    pi.projectPath ?? "(none)"
+                  }: ${e && e.stack ? e.stack : e}`
+                );
                 genItems.push(
                   new ProjectInfoItem(
                     InfoItemType.internalProcessingError,
@@ -2273,8 +2375,21 @@ function _addReportJson(data) {
       const file = folder.files[fileName];
 
       if (file) {
-        if (!file.isContentLoaded) {
-          await file.loadContent();
+        try {
+          if (!file.isContentLoaded) {
+            await Utilities.withTimeout(
+              file.loadContent(),
+              LoadContentTimeoutMs,
+              `preProcessFolder file '${file.storageRelativePath}'`
+            );
+          }
+        } catch (e: any) {
+          Log.error(
+            `[Validation] preProcessFolder: failed to load '${file.storageRelativePath}': ${
+              e && e.message ? e.message : e
+            }`
+          );
+          continue;
         }
 
         if (file.content !== null) {
@@ -2341,8 +2456,21 @@ function _addReportJson(data) {
       const file = folder.files[fileName];
 
       if (file) {
-        if (!file.isContentLoaded) {
-          await file.loadContent();
+        try {
+          if (!file.isContentLoaded) {
+            await Utilities.withTimeout(
+              file.loadContent(),
+              LoadContentTimeoutMs,
+              `processFolder file '${file.storageRelativePath}'`
+            );
+          }
+        } catch (e: any) {
+          Log.error(
+            `[Validation] processFolder: failed to load '${file.storageRelativePath}': ${
+              e && e.message ? e.message : e
+            }`
+          );
+          continue;
         }
 
         if (file.content !== null) {
@@ -2379,13 +2507,22 @@ function _addReportJson(data) {
             for (const fileGen of fileGenerators) {
               if (this.matchesSuite(fileGen)) {
                 try {
-                  const results = await fileGen.generate(project, file, genContentIndex);
+                  const results = await Utilities.withTimeout(
+                    fileGen.generate(project, file, genContentIndex),
+                    GeneratorTimeoutMs,
+                    `file generator '${fileGen.id}' on '${file.storageRelativePath}'`
+                  );
 
                   for (const item of results) {
                     this.pushItem(genItems, genItemsByStoragePath, item);
                   }
                 } catch (e: any) {
                   // V--- add a breakpoint to the line below to catch validator exceptions (3 of 3) ---V
+                  Log.error(
+                    `[Validation] File generator '${fileGen.id}' threw on '${file.fullPath}': ${
+                      e && e.stack ? e.stack : e
+                    }`
+                  );
                   genItems.push(
                     new ProjectInfoItem(
                       InfoItemType.internalProcessingError,

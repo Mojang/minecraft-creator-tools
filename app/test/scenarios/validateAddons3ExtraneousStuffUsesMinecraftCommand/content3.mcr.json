@@ -144,8 +144,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CADDONIREQ000] Found 2 errors in Cooperative Add-On Item Requirements Generator check\nTESTFAIL: [CADDONREQ000] Found 3 errors in Cooperative Add-On Requirements check\nTESTFAIL: [MINENGINEVER000] Found 2 errors in Min Engine Version check",
-    "infoGenerationTime": 280,
-    "endToEndGenerationTime": 597,
+    "infoGenerationTime": 457,
+    "endToEndGenerationTime": 638,
     "summary": {
       "CADDONIREQ": {
         "0": {

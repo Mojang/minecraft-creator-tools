@@ -158,6 +158,14 @@ import fs from "fs";
 // This avoids maintaining checked-in copies in public/ and ensures version consistency.
 function serveBedrockSchemas() {
   const pkgRoot = path.resolve("node_modules/@minecraft/bedrock-schemas");
+  // Local overlay for known bugs / drift in the upstream @minecraft/bedrock-schemas
+  // package. Same-named files under public_supplemental/schemas/ REPLACE the upstream
+  // copy at runtime (dev) and in the production bundle. Mirrors the
+  // public_supplemental/data/local_forms/ overlay pattern used by gulp for the VSC
+  // extension and command-line tool. When upstream ships a fix, delete the override
+  // file and this becomes a no-op. See app/public_supplemental/schemas/README
+  // considerations and gulpfile.js mergeLocalSchemasIntoVsc.
+  const supplementalRoot = path.resolve("public_supplemental");
 
   // HttpFolder.load() fetches {path}/index.json to enumerate a folder. The
   // @minecraft/bedrock-schemas package doesn't ship index.json files, so
@@ -201,6 +209,13 @@ function serveBedrockSchemas() {
       return false;
     }
 
+    // Overlay: prefer a checked-in supplemental copy if one exists for this
+    // exact path. Same containment check applies.
+    const overlayRoot = path.resolve(supplementalRoot, pkgSubdir);
+    const overlayPath = path.resolve(overlayRoot, relPath);
+    const overlayRel = path.relative(overlayRoot, overlayPath);
+    const overlayInside = !overlayRel.startsWith("..") && !path.isAbsolute(overlayRel);
+
     // Synthesize index.json for directory listings
     if (relPath.endsWith("index.json") || relPath.endsWith("index.json/")) {
       const dirPath = path.dirname(absPath);
@@ -211,6 +226,12 @@ function serveBedrockSchemas() {
         return true;
       }
       return false;
+    }
+
+    if (overlayInside && fs.existsSync(overlayPath) && fs.statSync(overlayPath).isFile()) {
+      res.setHeader("Content-Type", "application/json");
+      fs.createReadStream(overlayPath).pipe(res);
+      return true;
     }
 
     if (fs.existsSync(absPath) && fs.statSync(absPath).isFile()) {
@@ -268,6 +289,13 @@ function serveBedrockSchemas() {
       const schemasSource = path.join(pkgRoot, "schemas");
       const schemasDest = path.join(outDir, "schemas");
       copyDirSync(schemasSource, schemasDest);
+
+      // Overlay supplemental forms/schemas on top of the upstream copies so
+      // production builds get the same bug-fix overrides that dev mode serves.
+      const overlayFormsSource = path.join(supplementalRoot, "forms");
+      if (fs.existsSync(overlayFormsSource)) copyDirSync(overlayFormsSource, formsDest);
+      const overlaySchemasSource = path.join(supplementalRoot, "schemas");
+      if (fs.existsSync(overlaySchemasSource)) copyDirSync(overlaySchemasSource, schemasDest);
     },
   };
 }

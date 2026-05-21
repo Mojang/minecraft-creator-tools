@@ -600,6 +600,31 @@ export default class Utilities {
     return isNegative ? "-" + result : result;
   }
 
+  /**
+   * Format a byte count as a human-readable string ("0 B", "1.5 KB",
+   * "2.3 MB", "4 GB"). Uses binary (1024) units. Sub-1024 values are
+   * rendered as integer bytes; values below 10 in their target unit
+   * keep one decimal of precision; larger values are rounded to an
+   * integer to keep the string compact (e.g. for narrow sidebar columns).
+   */
+  static formatByteSize(totalBytes: number): string {
+    if (!Number.isFinite(totalBytes) || totalBytes < 0) {
+      return "0 B";
+    }
+    if (totalBytes < 1024) {
+      return totalBytes + " B";
+    }
+    const units = ["KB", "MB", "GB"];
+    let value = totalBytes / 1024;
+    let unitIndex = 0;
+    while (value >= 1024 && unitIndex < units.length - 1) {
+      value /= 1024;
+      unitIndex++;
+    }
+    const display = value < 10 ? value.toFixed(1) : Math.round(value).toString();
+    return display + " " + units[unitIndex];
+  }
+
   static sanitizeJavascriptName(name: string) {
     name = name.trim();
 
@@ -963,6 +988,31 @@ export default class Utilities {
     }
 
     return lineCount;
+  }
+
+  /**
+   * Wraps a promise with a timeout. If the promise does not settle within
+   * `timeoutMs` milliseconds, the returned promise rejects with an error.
+   * The original promise is NOT cancelled (JavaScript has no cancellation
+   * primitive), but callers can safely move on.
+   */
+  static withTimeout<T>(promise: Promise<T>, timeoutMs: number, label?: string): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      const timer = setTimeout(() => {
+        reject(new Error(`Operation timed out after ${timeoutMs}ms` + (label ? `: ${label}` : "")));
+      }, timeoutMs);
+
+      promise.then(
+        (value) => {
+          clearTimeout(timer);
+          resolve(value);
+        },
+        (err) => {
+          clearTimeout(timer);
+          reject(err);
+        }
+      );
+    });
   }
 
   static stripLinesContaining(content: string, lineContains: string) {

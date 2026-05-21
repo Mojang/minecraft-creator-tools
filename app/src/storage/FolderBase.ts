@@ -276,7 +276,7 @@ export default abstract class FolderBase implements IFolder {
     }
 
     if (path.length < 2) {
-      throw Error("Path is too short.");
+      throw Error("Path is too short: '" + path + "' (in folder '" + this.storageRelativePath + "').");
     }
 
     path = this.canonicalizePath(path);
@@ -339,7 +339,7 @@ export default abstract class FolderBase implements IFolder {
     }
 
     if (path.length < 2) {
-      throw Error("Path is too short.");
+      throw Error("Path is too short: '" + path + "' (in folder '" + this.storageRelativePath + "').");
     }
 
     path = this.canonicalizePath(path);
@@ -429,7 +429,7 @@ export default abstract class FolderBase implements IFolder {
     }
 
     if (path.length < 2) {
-      throw Error("Path is too short.");
+      throw Error("Path is too short: '" + path + "' (in folder '" + this.storageRelativePath + "').");
     }
 
     path = this.canonicalizePath(path);
@@ -551,7 +551,7 @@ export default abstract class FolderBase implements IFolder {
     }
 
     if (path.length < 2) {
-      throw Error("Path is too short.");
+      throw Error("Path is too short: '" + path + "' (in folder '" + this.storageRelativePath + "').");
     }
 
     path = this.canonicalizePath(path);

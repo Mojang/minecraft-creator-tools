@@ -172,11 +172,6 @@
           "defaultMessage": "Behavior pack manifest found."
         }
       },
-      "CDWORLDDATA": {
-        "2": {
-          "defaultMessage": "No applicable items found for test Custom Dimension World Data Validation (CDWORLDDATA)"
-        }
-      },
       "MINENGINEVER": {
         "1": {
           "defaultMessage": "Min Engine Version completed successfully",
@@ -184,12 +179,12 @@
           "title": "Min Engine Version"
         },
         "120": {
-          "defaultMessage": "Behavior pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.10) or its previous minor version",
+          "defaultMessage": "Behavior pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
           "recommendations": 1,
           "title": "BP Minor Low"
         },
         "220": {
-          "defaultMessage": "Resource pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.10) or its previous minor version",
+          "defaultMessage": "Resource pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
           "recommendations": 1,
           "title": "RP Minor Low"
         },
@@ -404,11 +399,6 @@
       "gIx": 200,
       "iTp": 2,
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
-    },
-    {
-      "gId": "CDWORLDDATA",
-      "gIx": 2,
-      "iTp": 8
     },
     {
       "gId": "MINENGINEVER",

@@ -1,0 +1,170 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+import ProjectInfoItem from "../../ProjectInfoItem";
+import IProjectInfoGenerator from "../../IProjectInfoGenerator";
+import { InfoItemType } from "../../IInfoItemData";
+import ProjectInfoSet from "../../ProjectInfoSet";
+import Project from "../../../app/Project";
+import StorageUtilities from "../../../storage/StorageUtilities";
+import {
+  CheckFeatureDeprecationInfoGeneratorTest,
+  DEPRECATED_BLOCKS,
+  DEPRECATED_TEXTURES,
+  DEPRECATED_TEXTURE_ENTRIES,
+} from "./CheckFeatureDeprecationInfoData";
+
+/***********
+ * Generator for Checking Feature Deprecation
+ *
+ * Will check:
+ *  * blocks.json for deprecated block overrides (fletching_table, smithing_table)
+ *  * terrain_texture.json for deprecated texture entries
+ *  * textures/blocks/ folder for deprecated textures
+ *
+ * @see {@link ../../../../public/data/forms/mctoolsval/checkfeaturedeprecation.form.json} for topic definitions
+ */
+
+export default class CheckFeatureDeprecationInfoGenerator implements IProjectInfoGenerator {
+  id = "CHECKFEATUREDEPRECATION";
+  title = "Feature Deprecation";
+
+  summarize(info: any, infoSet: ProjectInfoSet) {
+    info.deprecatedBlockOverride = infoSet.getSummedDataValue(
+      this.id,
+      CheckFeatureDeprecationInfoGeneratorTest.deprecatedBlockOverride
+    );
+
+    info.deprecatedTerrainTexture = infoSet.getSummedDataValue(
+      this.id,
+      CheckFeatureDeprecationInfoGeneratorTest.deprecatedTerrainTexture
+    );
+
+    info.deprecatedTexture = infoSet.getSummedDataValue(
+      this.id,
+      CheckFeatureDeprecationInfoGeneratorTest.deprecatedTexture
+    );
+  }
+
+  async generate(project: Project): Promise<ProjectInfoItem[]> {
+    const items: ProjectInfoItem[] = [];
+    const projItems = project.getItemsCopy();
+
+    for (const item of projItems) {
+      if (item.name === "blocks.json") {
+        if (!item.isContentLoaded) {
+          await item.loadContent();
+        }
+
+        if (!item.primaryFile) {
+          continue;
+        }
+
+        if (!item.primaryFile.isContentLoaded) {
+          await item.primaryFile.loadContent();
+        }
+
+        const content = item.primaryFile.content;
+        if (!content || typeof content !== "string") {
+          continue;
+        }
+
+        try {
+          const parsedContent = StorageUtilities.getJsonObject(item.primaryFile);
+          if (parsedContent) {
+            for (const deprecatedBlock of DEPRECATED_BLOCKS) {
+              if (parsedContent[deprecatedBlock]) {
+                items.push(
+                  new ProjectInfoItem(
+                    InfoItemType.warning,
+                    this.id,
+                    CheckFeatureDeprecationInfoGeneratorTest.deprecatedBlockOverride,
+                    `Entity [${deprecatedBlock}] will be affected in an upcoming client update.`,
+                    item,
+                    deprecatedBlock
+                  )
+                );
+              }
+            }
+          }
+        } catch (error) {
+          items.push(
+            new ProjectInfoItem(
+              InfoItemType.warning,
+              this.id,
+              CheckFeatureDeprecationInfoGeneratorTest.jsonParseError,
+              `Failed to parse JSON for entity. Error: ${error}`,
+              item
+            )
+          );
+        }
+      }
+
+      if (item.name === "terrain_texture.json") {
+        if (!item.isContentLoaded) {
+          await item.loadContent();
+        }
+
+        if (!item.primaryFile) {
+          continue;
+        }
+
+        if (!item.primaryFile.isContentLoaded) {
+          await item.primaryFile.loadContent();
+        }
+
+        const content = item.primaryFile.content;
+        if (!content || typeof content !== "string") {
+          continue;
+        }
+
+        const parsedContent = StorageUtilities.getJsonObject(item.primaryFile);
+        try {
+          if (parsedContent) {
+            for (const deprecatedTexture of DEPRECATED_TEXTURE_ENTRIES) {
+              if (parsedContent.texture_data[deprecatedTexture]) {
+                items.push(
+                  new ProjectInfoItem(
+                    InfoItemType.warning,
+                    this.id,
+                    CheckFeatureDeprecationInfoGeneratorTest.deprecatedTerrainTexture,
+                    `Entity [${deprecatedTexture}] will be affected in an upcoming client update.`,
+                    item,
+                    deprecatedTexture
+                  )
+                );
+              }
+            }
+          }
+        } catch (error) {
+          items.push(
+            new ProjectInfoItem(
+              InfoItemType.warning,
+              this.id,
+              CheckFeatureDeprecationInfoGeneratorTest.jsonParseError,
+              `Failed to parse JSON for entity. Error: ${error}`,
+              item
+            )
+          );
+        }
+      }
+
+      if (item.getFolder()?.name === "blocks") {
+        if (DEPRECATED_TEXTURES.includes(item.name)) {
+          items.push(
+            new ProjectInfoItem(
+              InfoItemType.warning,
+              this.id,
+              CheckFeatureDeprecationInfoGeneratorTest.deprecatedTexture,
+              `Texture [${item.name}] will be affected in an upcoming client update. Please resubmit with no modifications to this texture.`,
+              item,
+              item.name
+            )
+          );
+        }
+      }
+    }
+
+    return items;
+  }
+}

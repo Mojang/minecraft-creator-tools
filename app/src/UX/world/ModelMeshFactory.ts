@@ -88,9 +88,31 @@
  * - invertY MUST remain true - Critical for correct texture orientation
  * - noMipmap = true for pixel art
  *
- * DO NOT ADD these material settings (causes ghostly/transparent appearance):
- * - mat.useAlphaFromDiffuseTexture = true  ← WRONG
- * - mat.alphaMode = 1                       ← WRONG
+ * ALPHA / TRANSPARENCY:
+ * - Minecraft custom block / entity textures may contain BOTH fully-transparent
+ *   cutout pixels (alpha == 0) AND semi-transparent pixels (e.g. glass / water /
+ *   fishbowl, alpha somewhere between 1 and 254). For example,
+ *   `bubble_fish_blue.png` (the fishbowl + fish in the custom_blocks sample) has
+ *   ~2900 alpha-0 pixels and a wide distribution of intermediate alpha values for
+ *   the glass shell.
+ *
+ * - Correct settings:
+ *     texture.hasAlpha = true
+ *     mat.useAlphaFromDiffuseTexture = true
+ *     mat.transparencyMode = BABYLON.Material.MATERIAL_ALPHATESTANDBLEND
+ *
+ *   ALPHATESTANDBLEND treats fully-transparent pixels as cutouts (so they don't
+ *   blend or write depth) AND blends semi-transparent pixels properly.
+ *
+ *   forceDepthWrite is also enabled so opaque pixels in an otherwise-translucent
+ *   texture still write to the depth buffer -- without this, a solid sub-mesh
+ *   (e.g. the fish inside a glass bowl) ends up showing its back face through its
+ *   front face because Babylon's transparent pass skips depth writes by default.
+ *
+ * - DO NOT use these (each has visible problems):
+ *     mat.transparencyMode = MATERIAL_OPAQUE      ← ignores alpha (no glass)
+ *     mat.transparencyMode = MATERIAL_ALPHATEST   ← binary only (no glass shading)
+ *     mat.alphaMode = ALPHA_COMBINE alone         ← no cutouts, sort artifacts
  *
  * UV COORDINATE MAPPING (_uvToVector4):
  * -------------------------------------
@@ -126,11 +148,6 @@
  * - Model rotated 90°: Body bone has bind_pose_rotation not being applied
  * - Cow laying flat: bind_pose_rotation [90,0,0] not processed; check BoneTransform map
  * - Parts scattered wrong: Check rotation sign convention (negate X and Y)
- *
- * TESTING:
- * --------
- * npx playwright test MobViewer.spec.ts --project=chromium
- * npx playwright test MobViewer.spec.ts --project=chromium --update-snapshots
  *
  * ==========================================================================================
  */
@@ -1074,10 +1091,39 @@ export class ModelMeshFactory {
       const h = size[1]; // height (Y dimension)
       const d = size[2]; // depth (Z dimension)
 
-      mcFaceUVs["east"] = this._uvToVector4(u, v + d, d, h, texWidth, texHeight);
-      mcFaceUVs["north"] = this._uvToVector4(u + d, v + d, w, h, texWidth, texHeight);
-      mcFaceUVs["west"] = this._uvToVector4(u + d + w, v + d, d, h, texWidth, texHeight);
-      mcFaceUVs["south"] = this._uvToVector4(u + d + w + d, v + d, w, h, texWidth, texHeight);
+      // Bedrock BoxUV strip layout (left -> right in the texture):
+      //
+      //     [ West (d) ][ North (w) ][ East (d) ][ South (w) ]
+      //
+      // with top/bottom rectangles directly above the north slot:
+      //
+      //     [ blank ][ Up (w x d) ][ Down (w x d) ][ blank ]
+      //     [ West  ][ North      ][ East         ][ South ]
+      //
+      // Cross-check with the Steve player skin (head uv [0,0] size [8,8,8]): the
+      // leftmost side-strip slot (u=0..7, v=8..15) is the OUTER face of the right
+      // arm. Steve faces -Z, so Steve's right side is -X (west). Therefore the
+      // leftmost strip slot is the WEST face.
+      //
+      // For the NORTH and SOUTH faces, additionally, Babylon's CreateBox places its
+      // front-face uMin at +X and its back-face uMin at -X -- the OPPOSITE of what
+      // Bedrock's strip says (north uMin = -X, south uMin = +X). So we mirror the
+      // U axis on those two rects.
+      //
+      // The previous version of this file had two bugs that partially cancelled:
+      //   (1) It labeled the leftmost slot "east" and the third slot "west", which
+      //       puts the artist's head-front content on the tail-back side of the model.
+      //   (2) It did not U-mirror the north/south rects, which put side-face features
+      //       drawn at the head-end of the strip slots on the tail end of the model.
+      // Both must be fixed for correct rendering. Symptom of fixing only (1): side
+      // eye still appears on the tail end. Symptom of fixing only (2): side eye is
+      // correct, but the fish's "face" appears on the tail end of the model.
+      mcFaceUVs["west"] = this._uvToVector4(u, v + d, d, h, texWidth, texHeight);
+      const northRect = this._uvToVector4(u + d, v + d, w, h, texWidth, texHeight);
+      mcFaceUVs["north"] = new BABYLON.Vector4(northRect.z, northRect.y, northRect.x, northRect.w);
+      mcFaceUVs["east"] = this._uvToVector4(u + d + w, v + d, d, h, texWidth, texHeight);
+      const southRect = this._uvToVector4(u + d + w + d, v + d, w, h, texWidth, texHeight);
+      mcFaceUVs["south"] = new BABYLON.Vector4(southRect.z, southRect.y, southRect.x, southRect.w);
       mcFaceUVs["up"] = this._uvToVector4(u + d, v, w, d, texWidth, texHeight);
       mcFaceUVs["down"] = this._uvToVector4(u + d + w, v, w, d, texWidth, texHeight);
     } else if (cube.uv && typeof cube.uv === "object") {
@@ -1469,6 +1515,23 @@ export class ModelMeshFactory {
       texture.wrapV = BABYLON.Texture.CLAMP_ADDRESSMODE;
 
       mat.diffuseTexture = texture;
+      // Alpha test + blend: Minecraft custom-block / entity textures often combine
+      // hard cutout pixels (alpha == 0) with semi-transparent pixels (glass,
+      // water, the fishbowl in bubble_fish_blue.png). ALPHATESTANDBLEND handles
+      // both in one pass: cutouts don't blend or write depth, and intermediate
+      // alpha values blend correctly for the glass look.
+      mat.useAlphaFromDiffuseTexture = true;
+      mat.transparencyMode = BABYLON.Material.MATERIAL_ALPHATESTANDBLEND;
+      // Force depth writes even though the material is in the transparent pass.
+      // Without this, fully-opaque pixels in an otherwise-translucent texture do
+      // not write to the depth buffer, so back faces of the same mesh can draw on
+      // top of front faces (visible symptom on bubble_fish: the solid fish cube
+      // inside the glass bowl appears to show its interior / back surface
+      // through the front). With forceDepthWrite the opaque parts of the texture
+      // occlude geometry behind them correctly; the alpha-tested cutout pixels
+      // are still rejected before the depth write, so glass translucency through
+      // those cutouts continues to composite correctly.
+      mat.forceDepthWrite = true;
       // Disable back-face culling for entity models. In Minecraft, entity rendering
       // shows back faces — important for entities with alpha-tested textures
       // (like the skeleton's rib cage) where back faces must be visible through

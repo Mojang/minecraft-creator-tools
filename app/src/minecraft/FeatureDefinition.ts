@@ -46,6 +46,7 @@ export const FeatureTypes = [
   "fossil_feature",
   "geode_feature",
   "growing_plant_feature",
+  "height_difference_filter_feature",
   "multiface_feature",
   "nether_cave_carver_feature",
   "ore_feature",

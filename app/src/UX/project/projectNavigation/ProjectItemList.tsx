@@ -498,6 +498,13 @@ const VirtualizedRow = ({
       onContextMenu={onContextMenu}
       aria-label={item["aria-label"]}
       aria-selected={index === selectedItemIndex}
+      // a11y (WCAG 4.1.2): expandable category headers push `aria-expanded` so
+      // screen readers can announce the collapsed/expanded state of the group.
+      // The decorative caret inside the row is `aria-hidden`, so this attribute
+      // is the only programmatic state signal.
+      aria-expanded={
+        typeof item["aria-expanded"] === "boolean" ? (item["aria-expanded"] as boolean) : undefined
+      }
       role={item.role || "treeitem"}
       disableGutters
       sx={{ padding: 0, minHeight: 0, height: 36, boxSizing: "border-box" }}
@@ -1328,7 +1335,12 @@ class ProjectItemList extends Component<IProjectItemListProps, IProjectItemListS
 
       if (items.length === 1) {
         const countVal = items[0].getFeatureContaining("count");
-        const totalVal = Utilities.getSimpleNumeric(items[0].getFeatureContaining("total"));
+        // Keep the raw byte total so we can format it ourselves in Raw mode
+        // (Utilities.getSimpleNumeric rounds to "k"/"m" suffixes which, when
+        // we appended "b", produced the mixed "198b" / "2kb" output that
+        // Utilities.formatByteSize is meant to replace).
+        const rawTotalBytes = items[0].getFeatureContaining("total");
+        const totalVal = Utilities.getSimpleNumeric(rawTotalBytes);
 
         if (countVal !== undefined && totalVal !== undefined) {
           const statSummary = this.props.intl.formatMessage(
@@ -1338,9 +1350,18 @@ class ProjectItemList extends Component<IProjectItemListProps, IProjectItemListS
 
           // Only show byte sizes in Raw mode; other modes show just the count
           if (this.props.project && this.props.project.effectiveEditPreference === ProjectEditPreference.raw) {
+            // Display sizes in a consistent unit so users can quickly scan
+            // the list. Previously the value was always rendered as bytes
+            // ("198b") OR raw kilobytes ("2kb") depending on what the
+            // generator emitted, which made mixed-size groups awkward to
+            // compare ("1 @ 198b" next to "2 @ 2kb"). Normalize to a
+            // human-readable string with one decimal of precision.
+            const formattedSize = Utilities.formatByteSize(
+              typeof rawTotalBytes === "number" ? rawTotalBytes : Number(rawTotalBytes) || 0
+            );
             additionalData = (
               <span className="pil-stats" title={statSummary}>
-                {countVal} @ {totalVal}b
+                {countVal} @ {formattedSize}
               </span>
             );
           } else {
@@ -1394,6 +1415,10 @@ class ProjectItemList extends Component<IProjectItemListProps, IProjectItemListS
       onClick: this._handleItemTypeToggle,
       key: "type" + itemType + "|",
       "aria-label": name,
+      // a11y (WCAG 4.1.2): expose the collapsed/expanded state of this category
+      // group so AT users know whether children will appear below. Only set when
+      // the row is actually toggleable — non-toggleable headers leave it unset.
+      "aria-expanded": isToggleable ? isExpanded : undefined,
       content: (
         <div
           className="pil-itemTypeHeader"

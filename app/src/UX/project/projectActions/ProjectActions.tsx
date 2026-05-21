@@ -502,6 +502,7 @@ class ProjectActions extends Component<IProjectActionsProps, IProjectActionsStat
       key: string;
       icon: IconDefinition;
       label: string;
+      shortLabel?: string;
       shortcut?: string;
       onClick: () => void;
       disabled?: boolean;
@@ -516,6 +517,7 @@ class ProjectActions extends Component<IProjectActionsProps, IProjectActionsStat
             key: "inspect",
             icon: faMagnifyingGlass,
             label: intl.formatMessage({ id: "project_editor.actions.inspect_project" }),
+            shortLabel: intl.formatMessage({ id: "project_editor.actions.compact_inspect_short" }),
             onClick: this._inspectProject,
           },
         ],
@@ -528,18 +530,21 @@ class ProjectActions extends Component<IProjectActionsProps, IProjectActionsStat
             key: "addMob",
             icon: faCube,
             label: intl.formatMessage({ id: "project_editor.actions.add_mob" }),
+            shortLabel: intl.formatMessage({ id: "project_editor.actions.compact_mob_short" }),
             onClick: this._handleQuickAddEntity,
           },
           {
             key: "addBlock",
             icon: faCubes,
             label: intl.formatMessage({ id: "project_editor.actions.add_block" }),
+            shortLabel: intl.formatMessage({ id: "project_editor.actions.compact_block_short" }),
             onClick: this._handleQuickAddBlock,
           },
           {
             key: "addItem",
             icon: faLayerGroup,
             label: intl.formatMessage({ id: "project_editor.actions.add_item" }),
+            shortLabel: intl.formatMessage({ id: "project_editor.actions.compact_item_short" }),
             onClick: this._handleQuickAddItem,
           },
         ],
@@ -557,12 +562,14 @@ class ProjectActions extends Component<IProjectActionsProps, IProjectActionsStat
                   ? "project_editor.actions.download_mcaddon_web"
                   : "project_editor.actions.download_mcaddon",
             }),
+            shortLabel: intl.formatMessage({ id: "project_editor.actions.compact_mcaddon_short" }),
             onClick: this._exportZip,
           },
           {
             key: "exportLocal",
             icon: faFolder,
             label: intl.formatMessage({ id: "project_editor.actions.save_to_folder" }),
+            shortLabel: intl.formatMessage({ id: "project_editor.actions.compact_folder_short" }),
             onClick: this._exportLocal,
             hidden: typeof window === "undefined" || (window as any).showDirectoryPicker === undefined,
           },
@@ -570,12 +577,14 @@ class ProjectActions extends Component<IProjectActionsProps, IProjectActionsStat
             key: "flatWorld",
             icon: faGlobe,
             label: intl.formatMessage({ id: "project_editor.actions.download_flat_world" }),
+            shortLabel: intl.formatMessage({ id: "project_editor.actions.compact_flat_world_short" }),
             onClick: this._downloadFlatWorld,
           },
           {
             key: "projectWorld",
             icon: faGlobe,
             label: intl.formatMessage({ id: "project_editor.actions.download_project_world" }),
+            shortLabel: intl.formatMessage({ id: "project_editor.actions.compact_project_world_short" }),
             onClick: this._downloadProjectWorld,
           },
         ],
@@ -588,6 +597,7 @@ class ProjectActions extends Component<IProjectActionsProps, IProjectActionsStat
             key: "editDetails",
             icon: faEdit,
             label: intl.formatMessage({ id: "project_editor.actions.edit_project_details" }),
+            shortLabel: intl.formatMessage({ id: "project_editor.actions.compact_edit_details_short" }),
             onClick: this._editProjectDetails,
           },
         ],
@@ -613,7 +623,13 @@ class ProjectActions extends Component<IProjectActionsProps, IProjectActionsStat
                   const tooltipLabel = b.shortcut ? `${b.label} (${b.shortcut})` : b.label;
                   return (
                     <Tooltip key={b.key} title={tooltipLabel} placement="bottom">
-                      <span>
+                      {/* Compact icon button with a tiny visible caption.
+                          Icon-only toolbars rely on tooltips, but visible
+                          short labels let users scan the strip without
+                          hovering each glyph (and read fine on touch where
+                          tooltips don't fire). The aria-label remains the
+                          full descriptive label for screen readers. */}
+                      <span className="pact-compactBtnCell">
                         <IconButton
                           onClick={b.onClick}
                           disabled={b.disabled}
@@ -623,6 +639,11 @@ class ProjectActions extends Component<IProjectActionsProps, IProjectActionsStat
                         >
                           <FontAwesomeIcon icon={b.icon} />
                         </IconButton>
+                        {b.shortLabel && (
+                          <span className="pact-compactBtnLabel" aria-hidden="true">
+                            {b.shortLabel}
+                          </span>
+                        )}
                       </span>
                     </Tooltip>
                   );

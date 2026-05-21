@@ -172,17 +172,17 @@
     "worldLoadErrors": 0,
     "commands": [
       "#",
-      "effect",
       "execute",
-      "fill",
-      "give",
+      "scoreboard",
       "particle",
       "playsound",
-      "say",
-      "scoreboard",
+      "tp",
+      "effect",
       "setblock",
-      "summon",
-      "tp"
+      "fill",
+      "say",
+      "give",
+      "summon"
     ],
     "featureSets": {
       "runtimeIdentifier.noRuntimeIdentifier": {
@@ -1057,17 +1057,17 @@
         },
         "116": {
           "title": "Block Minor High",
-          "defaultMessage": "Block type version (1.20.10) has a lower minor version number compared to the expected version (1.26.10) or its previous minor version",
+          "defaultMessage": "Block type version (1.20.10) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
           "recommendations": 1
         },
         "136": {
           "title": "Item Minor High",
-          "defaultMessage": "Item type version (1.20.10) has a lower minor version number compared to the expected version (1.26.10) or its previous minor version",
+          "defaultMessage": "Item type version (1.20.10) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
           "recommendations": 2
         },
         "156": {
           "title": "Recipe Minor High",
-          "defaultMessage": "Recipe version (1.20.10) has a lower minor version number compared to the expected version (1.26.10) or its previous minor version",
+          "defaultMessage": "Recipe version (1.20.10) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
           "recommendations": 2
         },
         "178": {
@@ -1095,7 +1095,7 @@
           "warnings": 1
         },
         "296": {
-          "defaultMessage": "Entity type resource version (1.20.10) has a lower minor version number compared to the expected version (1.26.10) or its previous minor version",
+          "defaultMessage": "Entity type resource version (1.20.10) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
           "recommendations": 1
         },
         "619": {
@@ -1463,12 +1463,12 @@
         },
         "120": {
           "title": "BP Minor Low",
-          "defaultMessage": "Behavior pack manifest (1.20.10) has a lower minor version number compared to the expected version (1.26.10) or its previous minor version",
+          "defaultMessage": "Behavior pack manifest (1.20.10) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
           "recommendations": 1
         },
         "220": {
           "title": "RP Minor Low",
-          "defaultMessage": "Resource pack manifest (1.20.10) has a lower minor version number compared to the expected version (1.26.10) or its previous minor version",
+          "defaultMessage": "Resource pack manifest (1.20.10) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
           "recommendations": 1
         },
         "605": {

@@ -39,6 +39,15 @@ export interface IFeatureTypePickerProps {
   onSelect: (featureType: string, featureName: string) => void;
   onClose: () => void;
   theme: IProjectTheme;
+  /**
+   * "create" (default): show name input and create a new feature file.
+   * "change": hide name input; used to convert an existing feature's type.
+   */
+  mode?: "create" | "change";
+  /** Currently-selected feature type, used in change mode to pre-highlight. */
+  initialSelectedType?: string;
+  /** Optional dialog title override. */
+  title?: string;
 }
 
 interface IFeatureTypePickerState {
@@ -105,7 +114,7 @@ export default class FeatureTypePicker extends Component<IFeatureTypePickerProps
     super(props);
     this.state = {
       featureName: "feature",
-      selectedType: undefined,
+      selectedType: props.initialSelectedType,
       userEditedName: false,
     };
   }
@@ -184,12 +193,19 @@ export default class FeatureTypePicker extends Component<IFeatureTypePickerProps
       return null;
     }
 
+    const mode = this.props.mode ?? "create";
+    const dialogTitle = this.props.title ?? (mode === "change" ? "Change Feature Type" : "Add Feature");
+    const description =
+      mode === "change"
+        ? "Pick a different type for this feature:"
+        : "Select the type of feature to create:";
+
     return (
       <McDialog
         open={this.props.isOpen}
         onCancel={this.props.onClose}
         onConfirm={this._handleConfirm}
-        title="Add Feature"
+        title={dialogTitle}
         cancelButton="Cancel"
         confirmButton="OK"
         confirmDisabled={!this.state.selectedType}
@@ -197,24 +213,26 @@ export default class FeatureTypePicker extends Component<IFeatureTypePickerProps
         fullWidth
       >
         <div className="ftp-content">
-          <div className="ftp-nameSection">
-            <label className="ftp-nameLabel" htmlFor="featureName">
-              Feature Name:
-            </label>
-            <input
-              id="featureName"
-              type="text"
-              className="ftp-nameInput"
-              value={this.state.featureName}
-              onChange={this._handleNameChange}
-              placeholder="feature"
-              autoFocus
-            />
-            <div className="ftp-nameHint">
-              This will be used as the identifier (e.g., mypack:{this.state.featureName})
+          {mode === "create" && (
+            <div className="ftp-nameSection">
+              <label className="ftp-nameLabel" htmlFor="featureName">
+                Feature Name:
+              </label>
+              <input
+                id="featureName"
+                type="text"
+                className="ftp-nameInput"
+                value={this.state.featureName}
+                onChange={this._handleNameChange}
+                placeholder="feature"
+                autoFocus
+              />
+              <div className="ftp-nameHint">
+                This will be used as the identifier (e.g., mypack:{this.state.featureName})
+              </div>
             </div>
-          </div>
-          <div className="ftp-description">Select the type of feature to create:</div>
+          )}
+          <div className="ftp-description">{description}</div>
           <div className="ftp-categories">{featureCategories.map((cat) => this._renderCategory(cat))}</div>
         </div>
       </McDialog>

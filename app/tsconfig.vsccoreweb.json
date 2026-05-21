@@ -4,22 +4,26 @@
 		"target": "es2022",
 		"outDir": "dist",
 		"lib": [
-			"es2022","WebWorker"
+			"es2022",
+			"WebWorker"
 		],
-		"types": [ "wicg-file-system-access"],
+		"types": [
+			"wicg-file-system-access"
+		],
 		"sourceMap": true,
 		"rootDir": "src",
 		"skipLibCheck": true,
 		"esModuleInterop": true,
 		"resolveJsonModule": true,
-		"strict": true,   /* enable all strict type-checking options */
-		"noImplicitReturns": true, 
+		"strict": true, /* enable all strict type-checking options */
+		"noImplicitReturns": true,
 		"noFallthroughCasesInSwitch": true,
-	//	"noUnusedParameters": true, 
+		//	"noUnusedParameters": true, 
 	},
 	"exclude": [
+		"**/*.spec.ts",
 		"src/UX/**/*",
-		"src/UXex/**/*",		
+		"src/UXex/**/*",
 		"src/workers/**/*",
 		"src/UX/world/**/*",
 		"src/monaco/**/*",
@@ -46,10 +50,10 @@
 		"src/electron/**/*",
 		"playwright*.config.ts",
 		"playwright*.config.js",
-		"out/**/*",		
+		"out/**/*",
 		"public/**/*",
-		"debugoutput/**/*",		
-		"build/**/*",		
+		"debugoutput/**/*",
+		"build/**/*",
 		"toolbuild/**/*",
 		"archive/**/*",
 		"scriptlibs/**/*",

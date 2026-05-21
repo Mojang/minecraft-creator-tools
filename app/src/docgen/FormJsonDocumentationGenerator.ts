@@ -33,6 +33,15 @@ export default class FormJsonDocumentationGenerator {
   defRefs: { [name: string]: number } = {};
   defCategories: { [name: string]: string } = {};
 
+  /**
+   * Map from `${refId}|${propName}` -> the form path emitted for an alias or marker property
+   * by `exportContainerComponentForms` (e.g. `"...|minecraft:subsurface_builder" ->
+   * "biome/minecraft_subsurface_builder"`). Populated before `exportJsonSchemaForms` runs so
+   * that the parent container's per-property `subFormId` values can be redirected to the
+   * alias form file rather than the shared underlying definition's form file.
+   */
+  containerAliasFormPaths: { [refIdAndProp: string]: string } = {};
+
   public async updateFormSource(folder: IFolder, isPreview?: boolean) {
     this.defsById = {};
     this.defsByTitle = {};
@@ -56,6 +65,15 @@ export default class FormJsonDocumentationGenerator {
     const formJsonFolder = folder.ensureFolder("forms");
     await formJsonFolder.ensureExists();
 
+    // Run the container-component alias/marker pass FIRST so that the alias-form path map is
+    // populated before `exportJsonSchemaForms` produces the parent container forms (e.g.
+    // biome_components.form.json). That lets the parent's per-property `subFormId` values
+    // be redirected to the alias form file (biome/minecraft_subsurface_builder) rather than
+    // the shared underlying definition's form file (biome/minecraft_surface_builder).
+    Log.verbose("[FormJsonDocGen] Exporting container-component alias/marker forms...");
+    await this.exportContainerComponentForms(formJsonFolder);
+    Log.verbose("[FormJsonDocGen] Container-component alias/marker forms exported");
+
     Log.verbose("[FormJsonDocGen] Exporting JSON schema forms...");
     await this.exportJsonSchemaForms(formJsonFolder);
     Log.verbose("[FormJsonDocGen] JSON schema forms exported");
@@ -65,6 +83,7 @@ export default class FormJsonDocumentationGenerator {
     this.defsByTitle = {};
     this.defRefs = {};
     this.defCategories = {};
+    this.containerAliasFormPaths = {};
 
     // Request garbage collection if available (requires --expose-gc flag)
     if (typeof global !== "undefined" && (global as any).gc) {
@@ -1009,6 +1028,336 @@ export default class FormJsonDocumentationGenerator {
     Log.verbose(`[FormJsonDocGen] exportJsonSchemaForms: Done, processed ${processed} total`);
   }
 
+  /**
+   * Walks every *Components container schema in `defsByTitle` and emits a form file for the
+   * subset of its `properties` that the title-keyed `exportJsonSchemaForms` pass misses,
+   * because that pass is keyed on `def.title` rather than on the container's property names.
+   *
+   * Three specific gaps are filled:
+   *
+   *   1. **Property-name aliases.** A `$ref` shared by two or more properties of the same
+   *      container -- e.g. biome's `minecraft:surface_builder` and `minecraft:subsurface_builder`
+   *      both resolve to the same surface-builder definition. The title-keyed pass only emits
+   *      the form whose name matches the def's title; the other(s) are emitted here so each
+   *      alias gets its own reference page carrying its property-level description.
+   *
+   *      A unique `$ref` whose def title differs from the property name (e.g. `Block
+   *      Breathability Component` backing `minecraft:breathability`) is intentionally NOT
+   *      treated as an alias -- those primitive-typed components are documented via the
+   *      legacy doc_modules path under a different category (`block/`) and stubbing them
+   *      here would create duplicates.
+   *
+   *   2. **Documented marker components.** A `$ref` pointing at a definition that is a
+   *      "true marker" (no properties, no oneOf/anyOf/allOf, no enum, no items, no type)
+   *      AND whose title matches the property name (e.g. `minecraft:partially_frozen`).
+   *      The title-keyed pass skips these via `getIsStandaloneSchemaFile` because there are
+   *      no fields, but they exist as authored markers and deserve a stub reference page.
+   *
+   *      Defs that express a primitive-OR-object union via `oneOf` (e.g. `minecraft:fuel`,
+   *      `minecraft:glint`) are intentionally NOT treated as markers -- they have rich
+   *      content inside their union branches and are documented under their canonical
+   *      category (e.g. `item_components/`) via a different code path.
+   *
+   *   3. **Documented dictionary-shape components.** A `$ref` pointing at an object def
+   *      with no fixed `properties` whose shape is expressed via `propertyNames` and/or
+   *      `additionalProperties` (e.g. `minecraft:instrument_sound` -> `{ propertyNames:
+   *      { pattern: "^(up|down)$" }, additionalProperties: { type: "string", enum: [...] }
+   *      }`), AND whose title -- after a looser case/space/`_component`-tolerant
+   *      normalization -- matches the property name. The title-keyed pass skips these
+   *      because `getIsStandaloneSchemaFile` requires non-empty `properties`, so without
+   *      this case a newly added dict-shape block/entity/item component would silently
+   *      never get a reference page. Fields are synthesized from the dict's key pattern
+   *      and value schema (see `synthesizeDictionaryShapeFields`).
+   *
+   * Inline (non-$ref) container properties are also skipped: in practice they are primitive
+   * leaf values, not separately documentable components.
+   *
+   * The form's `id`, file name, and (preferred) description come from the **property name and
+   * property-level description on the container** so each alias's own meaning is preserved.
+   */
+  public async exportContainerComponentForms(formJsonFolder: IFolder) {
+    const containerKeys = Object.keys(this.defsByTitle);
+    let emitted = 0;
+
+    for (const containerKey of containerKeys) {
+      const containerDef = this.defsByTitle[containerKey];
+      if (!containerDef || !containerDef.title || !containerDef.properties) {
+        continue;
+      }
+
+      // Heuristic: "*Components" container schemas are the canonical roster of available
+      // components for a given Bedrock content area (Biome Components, Block Components,
+      // Item Components, etc.). Their `properties` are the source of truth for what should
+      // exist as a per-component form.
+      if (containerDef.title.indexOf("Components") < 0) {
+        continue;
+      }
+
+      const category = this.defCategories[containerKey] ?? "misc";
+
+      // First pass: build a map from each `$ref` target to every container-property name
+      // that uses it. A property name is considered an "alias" only when its `$ref` is
+      // shared by another property in the same container -- that's the genuine alias case
+      // (e.g. biome's `minecraft:surface_builder` and `minecraft:subsurface_builder` both
+      // resolve to the same surface-builder definition). A property pointing at a unique
+      // `$ref` whose def happens to have a different title (e.g. `minecraft:breathability`
+      // pointing at a marker def titled `Block Breathability Component`) is NOT an alias --
+      // it's a primitive-typed component documented via the legacy doc_modules path, and
+      // we must not stub it here.
+      const stripNs = (s: string) => (s.startsWith("minecraft:") || s.startsWith("minecraft_") ? s.substring(10) : s);
+      // Looser normalization used by the dictionary-shape detection below: lowercases,
+      // strips the `minecraft:`/`minecraft_` namespace, normalizes whitespace/hyphens to
+      // underscores, and tolerates a trailing ` component` / `_component` suffix on def
+      // titles. This lets us match titles like `"Instrument Sound"` to property name
+      // `"minecraft:instrument_sound"`, and `"Material Instances Component"` to
+      // `"minecraft:material_instances"`, without disturbing the stricter case-sensitive
+      // comparisons used by the alias/marker passes above.
+      const looseMatchKey = (s: string) => {
+        let v = stripNs(s).toLowerCase().trim();
+        v = v.replace(/[\s\-]+/g, "_");
+        if (v.endsWith("_component")) {
+          v = v.substring(0, v.length - "_component".length);
+        }
+        return v;
+      };
+      const refToPropNames: { [refId: string]: string[] } = {};
+      for (const candidatePropName in containerDef.properties) {
+        const candidate: JSONSchema7 | boolean | undefined = containerDef.properties[candidatePropName] as
+          | JSONSchema7
+          | boolean
+          | undefined;
+        if (
+          candidate &&
+          typeof candidate !== "boolean" &&
+          candidate.$ref &&
+          candidate.$ref.startsWith("#/definitions/")
+        ) {
+          const refId = candidate.$ref.substring(14);
+          if (!refToPropNames[refId]) {
+            refToPropNames[refId] = [];
+          }
+          refToPropNames[refId].push(candidatePropName);
+        }
+      }
+
+      for (const propName in containerDef.properties) {
+        const propNode = containerDef.properties[propName];
+        if (!propNode || typeof propNode === "boolean") {
+          continue;
+        }
+
+        // Only attempt this for `$ref`-based properties. Inline/anonymous properties on
+        // container schemas are typically primitive-typed component values that are richly
+        // documented elsewhere (e.g. via the legacy doc_modules path); we shouldn't emit
+        // empty stubs for them.
+        const refStr = propNode.$ref;
+        if (!refStr || !refStr.startsWith("#/definitions/")) {
+          continue;
+        }
+        const refId = refStr.substring(14);
+        const targetDef = this.defsById[refId];
+        if (!targetDef) {
+          continue;
+        }
+
+        const targetTitle = targetDef.title;
+        const targetHasProperties = !!targetDef.properties && Object.keys(targetDef.properties).length > 0;
+
+        // A "true marker" def has no schema content beyond title/description -- no
+        // properties, no oneOf/anyOf/allOf branches, no enum, no items, no
+        // additionalProperties, no `type`. Components that express a "primitive value or
+        // object" shape via `oneOf` (e.g. `minecraft:fuel`, `minecraft:glint`) are NOT
+        // markers; they have rich content inside their union branches and are documented
+        // via the legacy doc_modules path under their canonical category (`item_components`).
+        // Stubbing them here would create noisy duplicates in the wrong category.
+        const targetIsTrueMarker =
+          !targetHasProperties &&
+          !targetDef.oneOf &&
+          !targetDef.anyOf &&
+          !targetDef.allOf &&
+          !targetDef.enum &&
+          !(targetDef as any).items &&
+          targetDef.additionalProperties === undefined &&
+          !targetDef.type;
+
+        // A "dictionary-shape" def has no fixed `properties` but DOES describe an
+        // open-ended object via `additionalProperties` and/or `propertyNames` (e.g.
+        // `minecraft:instrument_sound` -> `{ propertyNames: { pattern: "^(up|down)$" },
+        // additionalProperties: { type: "string", enum: [...] } }`). The title-keyed
+        // `exportJsonSchemaForms` pass skips these because `getIsStandaloneSchemaFile`
+        // requires a non-empty `properties` map, so without this third case the
+        // component would silently never get a per-component reference page when a new
+        // schema version introduces it.
+        const targetIsDictionaryShape =
+          !targetHasProperties &&
+          !targetDef.oneOf &&
+          !targetDef.anyOf &&
+          !targetDef.allOf &&
+          !targetDef.enum &&
+          !(targetDef as any).items &&
+          (targetDef.additionalProperties !== undefined || targetDef.propertyNames !== undefined);
+
+        const propNameNormalized = stripNs(propName);
+        const targetTitleNormalized = targetTitle ? stripNs(targetTitle) : "";
+
+        // Genuine alias: this `$ref` is reused by more than one property in the same
+        // container, AND this property is not the one whose name matches the def's title
+        // (the title-keyed pass already produced THAT one).
+        const sharingPropNames = refToPropNames[refId] ?? [];
+        const isAlias = sharingPropNames.length > 1 && targetTitleNormalized !== propNameNormalized;
+
+        // Documented marker: a true-marker def whose own title matches the property name,
+        // indicating the definition itself was authored as a marker FOR this specific
+        // component (the biome `partially_frozen` case).
+        const isDocumentedMarker = targetIsTrueMarker && !!targetTitle && targetTitleNormalized === propNameNormalized;
+
+        // Documented dictionary: a dictionary-shape def whose own title -- under the
+        // looser case/space/`_component`-suffix-tolerant normalization -- matches the
+        // property name. This intentionally requires the title to be authored for THIS
+        // component so we don't stub coincidental dict-shape refs. Uses `looseMatchKey`
+        // rather than `stripNs` because schema authors capitalize / space these titles
+        // inconsistently (e.g. `"Instrument Sound"`, `"Material Instances Component"`).
+        const isDocumentedDictionary =
+          targetIsDictionaryShape && !!targetTitle && looseMatchKey(targetTitle) === looseMatchKey(propName);
+
+        if (!isAlias && !isDocumentedMarker && !isDocumentedDictionary) {
+          continue;
+        }
+
+        const fileName = this.getFormFileName(propName);
+
+        // Honor the same exclusion list applied by processAndExportJsonSchemaNode.
+        let matchesExclusion = false;
+        for (const exclusion of JsonFormExclusionList) {
+          if (fileName.indexOf(exclusion) >= 0) {
+            matchesExclusion = true;
+            break;
+          }
+        }
+        if (matchesExclusion) {
+          continue;
+        }
+
+        // Build the form using the resolved def's structure but with id/title derived from
+        // the alias property name. For markers this comes back with `fields: []`, which is
+        // the desired stub.
+        const innerForm = await this.getJsonFormFromJsonSchemaDefinition(targetDef, propName, undefined, 0);
+        if (!innerForm) {
+          continue;
+        }
+
+        // For dictionary-shape defs `getJsonFormFromJsonSchemaDefinition` returns
+        // `fields: []` because the def has no fixed `properties` -- the schema content
+        // lives in `propertyNames`/`additionalProperties`. Synthesize fields from those
+        // so the resulting reference page documents the allowed keys + value type
+        // rather than rendering as a contentless stub.
+        if (isDocumentedDictionary && (!innerForm.fields || innerForm.fields.length === 0)) {
+          innerForm.fields = this.synthesizeDictionaryShapeFields(targetDef);
+        }
+
+        // The container's per-property description is authored specifically for this alias
+        // ("Sub Surface Builders allow..."). Prefer it over the shared def's description.
+        if (propNode.description) {
+          innerForm.description = FormJsonDocumentationGenerator.humanifyText(propNode.description);
+        }
+
+        await this.annotateFormJson(innerForm, fileName, category);
+        await this.mergeToFile(formJsonFolder, fileName, innerForm, category, true);
+
+        // Record the emitted form path so the parent container's per-property `subFormId`
+        // can be redirected here by `getFormPathForJsonSchemaForm` when it runs during the
+        // subsequent `exportJsonSchemaForms` pass.
+        this.containerAliasFormPaths[refId + "|" + propName] = category + "/" + fileName;
+        emitted++;
+      }
+    }
+
+    Log.verbose(`[FormJsonDocGen] exportContainerComponentForms: Emitted ${emitted} alias/marker/dictionary form(s)`);
+  }
+
+  /**
+   * Synthesizes `IField`s for a dictionary-shape JSON schema definition (an object def
+   * with no fixed `properties`, whose shape is described by `propertyNames` and/or
+   * `additionalProperties`). Used by `exportContainerComponentForms` so that components
+   * like `minecraft:instrument_sound` -- which describe a small map of fixed keys (e.g.
+   * `up` / `down`) to enum values -- still produce a meaningful reference page rather
+   * than a blank stub.
+   *
+   * Strategy:
+   *  - If `propertyNames.pattern` is a simple full-string alternation of literals such as
+   *    `"^(up|down)$"`, emit one field per literal (each typed from `additionalProperties`).
+   *  - Otherwise emit a single wildcard `"*"` field representing an arbitrary key, again
+   *    typed from `additionalProperties`.
+   *  - When `additionalProperties` carries an `enum`, surface it as a `stringEnum` /
+   *    `intEnum` so the markdown generator renders the allowed values.
+   */
+  private synthesizeDictionaryShapeFields(targetDef: JSONSchema7): IField[] {
+    const propertyNames =
+      targetDef.propertyNames && typeof targetDef.propertyNames !== "boolean"
+        ? (targetDef.propertyNames as JSONSchema7)
+        : undefined;
+    const valueSchema =
+      targetDef.additionalProperties && typeof targetDef.additionalProperties !== "boolean"
+        ? (targetDef.additionalProperties as JSONSchema7)
+        : undefined;
+
+    // Try to extract concrete keys from a `^(a|b|c)$` style pattern. Anything more complex
+    // (character classes, quantifiers, lookarounds, etc.) is treated as "arbitrary key".
+    let keys: string[] | undefined;
+    const pattern = propertyNames?.pattern;
+    if (pattern) {
+      const alternationMatch = pattern.match(/^\^\(([A-Za-z0-9_:\-|]+)\)\$$/);
+      if (alternationMatch) {
+        const parts = alternationMatch[1]
+          .split("|")
+          .map((p) => p.trim())
+          .filter((p) => p.length > 0);
+        // Must be all simple literals (no regex metachars) to be safe.
+        if (parts.length > 0 && parts.every((p) => /^[A-Za-z0-9_:\-]+$/.test(p))) {
+          keys = parts;
+        }
+      }
+    }
+
+    const makeField = (id: string, title: string): IField => {
+      const f: IField = {
+        id,
+        title,
+        dataType: FieldDataType.string,
+      };
+      if (valueSchema) {
+        if (valueSchema.description) {
+          f.description = FormJsonDocumentationGenerator.humanifyText(valueSchema.description);
+        }
+        if (Array.isArray(valueSchema.enum) && valueSchema.enum.length > 0) {
+          f.dataType = valueSchema.type === "integer" ? FieldDataType.intEnum : FieldDataType.stringEnum;
+          f.enumValues = valueSchema.enum.filter((v) => typeof v === "string" || typeof v === "number") as (
+            | string
+            | number
+          )[];
+        } else if (valueSchema.type === "integer") {
+          f.dataType = FieldDataType.int;
+        } else if (valueSchema.type === "number") {
+          f.dataType = FieldDataType.number;
+        } else if (valueSchema.type === "boolean") {
+          f.dataType = FieldDataType.boolean;
+        } else if (valueSchema.type === "object") {
+          f.dataType = FieldDataType.object;
+        }
+      }
+      return f;
+    };
+
+    if (keys && keys.length > 0) {
+      return keys.map((k) => makeField(k, Utilities.humanifyMinecraftName(k)));
+    }
+
+    // No enumerable keys -- emit a single wildcard placeholder so the docs at least
+    // document the value type. The id `"*"` matches the convention used elsewhere
+    // (see `minecraft_material_instances.form.json`).
+    return [makeField("*", "<key>")];
+  }
+
   getIsStandaloneSchemaFile(keyOrTitle: string) {
     if (keyOrTitle.startsWith("#/definitions/")) {
       keyOrTitle = keyOrTitle.substring(14);
@@ -1039,10 +1388,23 @@ export default class FormJsonDocumentationGenerator {
     return false;
   }
 
-  public getFormPathForJsonSchemaForm(schemaKey: string): string {
+  public getFormPathForJsonSchemaForm(schemaKey: string, propName?: string): string {
     if (schemaKey.startsWith("#/definitions/")) {
       schemaKey = schemaKey.substring(14);
     }
+
+    // If the caller knows the property name on the parent container, see whether
+    // exportContainerComponentForms emitted an alias form keyed by that propName for this
+    // ref. If so, prefer that path so the parent container's subFormId points at the
+    // alias form file (e.g. biome/minecraft_subsurface_builder) rather than the shared
+    // underlying definition's form file (e.g. biome/minecraft_surface_builder).
+    if (propName) {
+      const aliasPath = this.containerAliasFormPaths[schemaKey + "|" + propName];
+      if (aliasPath) {
+        return aliasPath;
+      }
+    }
+
     const form = this.getDefinitionFromId(schemaKey);
 
     let title = form && form.title ? form.title : schemaKey;
@@ -1305,6 +1667,21 @@ export default class FormJsonDocumentationGenerator {
 
         if (categoryName.startsWith("1.")) {
           categoryName = "misc";
+        }
+
+        // Alias parallel `<x>_components/` schema folders to their parent `<x>`
+        // category so the schema-derived form files land alongside the
+        // canonical per-component reference pages in a single folder. Without
+        // this, e.g. `server/block_components/` would write to
+        // `content/forms/block_components/`, which is a shadow folder no
+        // downstream tool (markdown catalog, schema package generator, UI
+        // editors) actually reads.
+        if (
+          categoryName === "block_components" ||
+          categoryName === "item_components" ||
+          categoryName === "world_components"
+        ) {
+          categoryName = categoryName.substring(0, categoryName.length - "_components".length);
         }
 
         if (
@@ -2343,7 +2720,7 @@ export default class FormJsonDocumentationGenerator {
           alreadyProcessedFieldList.push(id);
 
           if (this.getIsStandaloneSchemaFile(id)) {
-            fieldNode.subFormId = this.getFormPathForJsonSchemaForm(id);
+            fieldNode.subFormId = this.getFormPathForJsonSchemaForm(id, propName);
             fieldNode.dataType = FieldDataType.keyedStringCollection;
           } else {
             const subDefNode = this.getDefinitionFromId(id);
@@ -2383,7 +2760,7 @@ export default class FormJsonDocumentationGenerator {
         alreadyProcessedFieldList.push(id);
 
         if (this.getIsStandaloneSchemaFile(id)) {
-          fieldNode.subFormId = this.getFormPathForJsonSchemaForm(id);
+          fieldNode.subFormId = this.getFormPathForJsonSchemaForm(id, propName);
           fieldNode.dataType = FieldDataType.objectArray;
         } else {
           const subDefNode = this.getDefinitionFromId(id);
@@ -2406,7 +2783,7 @@ export default class FormJsonDocumentationGenerator {
       const id = (childNode as any).$ref;
 
       if (this.getIsStandaloneSchemaFile(id)) {
-        fieldNode.subFormId = this.getFormPathForJsonSchemaForm(id);
+        fieldNode.subFormId = this.getFormPathForJsonSchemaForm(id, propName);
         fieldNode.dataType = FieldDataType.object;
       } else {
         if (!alreadyProcessedFieldList.includes(id)) {
@@ -2441,7 +2818,7 @@ export default class FormJsonDocumentationGenerator {
       const id = (childNode.additionalProperties as any).$ref;
 
       if (this.getIsStandaloneSchemaFile(id)) {
-        fieldNode.subFormId = this.getFormPathForJsonSchemaForm(id);
+        fieldNode.subFormId = this.getFormPathForJsonSchemaForm(id, propName);
         fieldNode.dataType = childNode.type === "array" ? FieldDataType.objectArray : FieldDataType.object;
       } else {
         if (!alreadyProcessedFieldList.includes(id)) {

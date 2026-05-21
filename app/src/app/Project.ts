@@ -1942,6 +1942,9 @@ export default class Project {
       } catch (e) {
         // Fall back to main thread processing if worker fails
         Log.verbose("Combined worker operation not available, falling back to main thread: " + e);
+        // Record the worker failure so it surfaces in the validation report — this
+        // helps diagnose content that causes the worker to crash (e.g. unusual paths).
+        infoSet.workerFallbackReason = e instanceof Error ? e.message : String(e);
       } finally {
         // Safety net: if for any reason the worker-tracked operation wasn't
         // already ended on a success / handled-failure path above, end it now

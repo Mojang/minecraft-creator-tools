@@ -1460,7 +1460,19 @@ export default class ProjectItem {
       this._project.projectFolder !== null &&
       this._project.projectFolder !== undefined
     ) {
-      const prefixPaths = this.projectPath.split("#");
+      // Split on '#' to handle container paths (e.g. archive.mcr#inner/path).
+      // However, a '#' that appears at the start of a path component is part of
+      // the filename, not a container delimiter — re-join those segments.
+      const rawParts = this.projectPath.split("#");
+      const prefixPaths: string[] = [];
+      for (let k = 0; k < rawParts.length; k++) {
+        if (k > 0 && prefixPaths.length > 0 && prefixPaths[prefixPaths.length - 1].endsWith("/")) {
+          // Previous segment ends with '/' so the '#' was the start of a filename
+          prefixPaths[prefixPaths.length - 1] += "#" + rawParts[k];
+        } else {
+          prefixPaths.push(rawParts[k]);
+        }
+      }
 
       if (prefixPaths.length > 1) {
         let folderToLoadFrom: IFolder | undefined = this._project.projectFolder;

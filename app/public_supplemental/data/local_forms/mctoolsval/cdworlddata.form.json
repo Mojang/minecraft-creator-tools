@@ -1,0 +1,44 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "validates custom dimension world data in LevelDB"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "cdworlddata",
+  "title": "Custom Dimension World Data",
+  "description": "Validates LevelDB world data for proper custom dimension usage. Checks that creator content uses only custom dimension IDs (>= 1000), that the DimensionNameIdTable key is present when custom dimension chunks exist, and that name-ID mappings have corresponding chunk data.",
+  "fields": [
+    {
+      "id": "101",
+      "title": "Name-ID Table Missing",
+      "messageType": "error",
+      "dataType": "string",
+      "description": "The LevelDB contains custom dimension chunk data but is missing the required DimensionNameIdTable key. This table is needed by Chunker to correctly associate dimension names with their chunk data on load.",
+      "technicalDescription": "No data is passed for this topic."
+    },
+    {
+      "id": "102",
+      "title": "Vanilla Dim Chunk Data",
+      "messageType": "error",
+      "dataType": "string",
+      "description": "The LevelDB contains chunk data for a vanilla dimension (Overworld, Nether, or The End). Creator add-on content must only include chunk data for custom dimensions (ID >= 1000). Vanilla chunk data is expected for world templates and is ignored there.",
+      "technicalDescription": "Data contains the vanilla dimension ID as a number."
+    },
+    {
+      "id": "103",
+      "title": "Unclaimed Dim Mappings",
+      "messageType": "warning",
+      "dataType": "string",
+      "description": "The DimensionNameIdTable contains name-ID mappings for dimensions that have no corresponding chunk data in the LevelDB. May indicate incomplete cleanup or leftover development data.",
+      "technicalDescription": "Data contains the dimension name. Content field contains the dimension ID."
+    }
+  ]
+}

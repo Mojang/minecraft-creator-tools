@@ -201,11 +201,16 @@ const ENTITY_TRAIT_SIGNATURES: Record<EntityTraitId, ITraitSignature> = {
   // Behavior archetypes
   hostile: {
     optionalComponents: ["minecraft:behavior.nearest_attackable_target", "minecraft:behavior.hurt_by_target"],
-    conflictsWith: ["passive"],
+    conflictsWith: ["passive", "neutral"],
     validator: (components) => {
       const hasTargeting = "minecraft:behavior.nearest_attackable_target" in components;
       const hasHurtBy = "minecraft:behavior.hurt_by_target" in components;
       const hasAttack = "minecraft:attack" in components || "minecraft:behavior.melee_attack" in components;
+
+      // If `minecraft:angry` is present, the targeting/hurt-by behaviors live
+      // inside a conditional component group (the neutral pattern) — the mob
+      // isn't unconditionally hostile.
+      if ("minecraft:angry" in components) return 0;
 
       // Check if targeting players
       const targeting = components["minecraft:behavior.nearest_attackable_target"];
@@ -220,7 +225,7 @@ const ENTITY_TRAIT_SIGNATURES: Record<EntityTraitId, ITraitSignature> = {
 
   passive: {
     requiredComponents: ["minecraft:behavior.panic"],
-    conflictsWith: ["hostile"],
+    conflictsWith: ["hostile", "neutral"],
     validator: (components) => {
       const hasPanic = "minecraft:behavior.panic" in components;
       const hasNoAttack = !("minecraft:attack" in components) && !("minecraft:behavior.melee_attack" in components);
@@ -232,15 +237,21 @@ const ENTITY_TRAIT_SIGNATURES: Record<EntityTraitId, ITraitSignature> = {
   },
 
   neutral: {
-    optionalComponents: ["minecraft:behavior.hurt_by_target"],
+    optionalComponents: ["minecraft:behavior.hurt_by_target", "minecraft:angry"],
     conflictsWith: ["hostile", "passive"],
     validator: (components) => {
       const hurtBy = components["minecraft:behavior.hurt_by_target"];
       const alertsSameType = hurtBy?.alert_same_type === true;
+      const hasAngry = "minecraft:angry" in components;
       const hasPanic = "minecraft:behavior.panic" in components;
       const hasAttack = "minecraft:attack" in components;
 
-      // Neutral mobs retaliate but don't seek targets
+      // Neutral mobs flip between a calm and an angry state. The angry state
+      // is what gives them attack/targeting behavior, so the calm-state
+      // signature is the `minecraft:angry` retaliation component plus a
+      // hurt_by_target reaction with alert_same_type.
+      if (hasAngry && alertsSameType) return 0.95;
+      if (hasAngry) return 0.85;
       if (alertsSameType && !("minecraft:behavior.nearest_attackable_target" in components)) return 0.9;
       if (hurtBy && hasAttack && hasPanic) return 0.7;
       return 0;
@@ -1373,11 +1384,21 @@ export default class TraitDetector {
 
       resolved.push(result);
 
-      // Mark conflicts as excluded
+      // Mark conflicts as excluded. Conflicts are treated as symmetric: if
+      // trait A says it conflicts with B, picking A also excludes B even if
+      // B's signature didn't list A. This keeps mutually-exclusive groups
+      // like the temperament traits (hostile/passive/neutral) consistent
+      // when only one side declares the relationship.
       const sig = signatures[result.traitId];
       if (sig?.conflictsWith) {
         for (const conflict of sig.conflictsWith) {
           excluded.add(conflict);
+        }
+      }
+      for (const [otherId, otherSig] of Object.entries(signatures)) {
+        if (otherId === result.traitId) continue;
+        if (otherSig.conflictsWith?.includes(result.traitId)) {
+          excluded.add(otherId);
         }
       }
     }

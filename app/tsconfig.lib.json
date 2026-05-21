@@ -2,8 +2,10 @@
   "compilerOptions": {
     "target": "es2022",
     "module": "commonjs",
-    "lib": ["es2022"],
-    "declaration":true,
+    "lib": [
+      "es2022"
+    ],
+    "declaration": true,
     "declarationDir": "./toolbuild/lib",
     "outDir": "./toolbuild/lib",
     "rootDir": "./src",
@@ -18,7 +20,9 @@
     "resolveJsonModule": true,
     "noEmit": false,
     "emitDeclarationOnly": false,
-    "types": ["node"]
+    "types": [
+      "node"
+    ]
   },
   "include": [
     "src/index.lib.ts",
@@ -72,6 +76,7 @@
     "src/storage/FileSystemFolder.ts",
     "src/storage/FileSystemStorage.ts",
     "**/*.test.ts",
-    "**/*.test.tsx"
+    "**/*.test.tsx",
+    "**/*.spec.ts"
   ]
 }

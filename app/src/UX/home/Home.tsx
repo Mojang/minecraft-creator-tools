@@ -106,6 +106,13 @@ export default function Home({ creatorTools, ...props }: HomeProps) {
               item
               xs={12}
               md={3}
+              // On mobile (xs) the file-picker column previously stacked above
+              // the templates/educational content, which buried "What is an
+              // Add-On?" and "Create your first mob" below "Reopen Your Work"
+              // and "Recent Projects" — bad first impression for new users on
+              // phones. Flip the order on xs so educational content appears
+              // first; restore the original two-column layout from md upward.
+              order={{ xs: 2, md: 1 }}
               sx={{
                 display: "flex",
                 flexDirection: "column",
@@ -136,7 +143,7 @@ export default function Home({ creatorTools, ...props }: HomeProps) {
               )}
             </Grid>
 
-            <Grid item xs={12} md={9}>
+            <Grid item xs={12} md={9} order={{ xs: 1, md: 2 }}>
               <div id="templates">
                 <ProjectGrid
                   onAppGalleryAction={props.onGalleryItemCommand}

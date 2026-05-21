@@ -1,0 +1,60 @@
+import Project from "../../../app/Project";
+import IProjectInfoGenerator from "../../IProjectInfoGenerator";
+import ProjectInfoItem from "../../ProjectInfoItem";
+import ProjectItem from "../../../app/ProjectItem";
+import { resultFromTest } from "../../tests/TestDefinition";
+import { getWorldTemplates } from "../../../app/ProjectItemUtilities";
+import StorageUtilities from "../../../storage/StorageUtilities";
+import { ForbiddenTests, AllowedExtensionsByType, BlockedFilesByType, PackageType } from "./CheckForbiddenFilesData";
+
+/**
+ * Validates files against forbidden file lists and allowed extensions.
+ *
+ * @see {@link ../../../../public/data/forms/mctoolsval/forbfile.form.json} for topic definitions
+ */
+export default class CheckForbiddenFilesGenerator implements IProjectInfoGenerator {
+  id: string = "FORBFILE";
+  title: string = "Forbidden Files";
+  canAlwaysProcess = true;
+
+  async generate(project: Project): Promise<ProjectInfoItem[]> {
+    const packs = project.packs.map((pack) => [pack.getPackItems(), pack.packType] as const);
+    const templates = getWorldTemplates(project.items).map((template) => [template.items, "WorldTemplate"] as const);
+
+    const packages = [...packs, ...templates];
+
+    const results = await Promise.all(packages.map(([items, type]) => this.validateItemPackage(items, type)));
+
+    return results.flat();
+  }
+
+  private async validateItemPackage(items: readonly ProjectItem[], type: PackageType): Promise<ProjectInfoItem[]> {
+    // I'm avoiding reading ("ensuring") the whole file, we just need the path, we do need to extract the extension though
+    const files = items.map((item) => [item, "." + StorageUtilities.getTypeFromName(item.name)] as const);
+    const fileResults = files.flatMap(([item, ext]) => this.resultsForFile(type, item, ext));
+
+    return fileResults;
+  }
+
+  private resultsForFile(type: PackageType, item: ProjectItem, ext: string) {
+    const results = [];
+
+    const allowedExts = AllowedExtensionsByType[type];
+    const isFolder = item.projectPath?.endsWith("/");
+    if (!isFolder && allowedExts !== "*" && !allowedExts.has(ext)) {
+      results.push(resultFromTest(ForbiddenTests.ExtNotInAllowList, { id: this.id, item, data: ext }));
+    }
+
+    if (BlockedFilesByType[type].has(item.name)) {
+      results.push(resultFromTest(ForbiddenTests.InvalidFileName, { id: this.id, item }));
+    }
+
+    if (item.projectPath?.includes("$")) {
+      results.push(resultFromTest(ForbiddenTests.ContainsInvalidCharacter, { id: this.id, item }));
+    }
+
+    return results;
+  }
+
+  summarize() {}
+}

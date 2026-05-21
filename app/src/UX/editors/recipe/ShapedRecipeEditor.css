@@ -147,6 +147,11 @@
   flex-wrap: wrap;
   gap: 8px;
   padding: 8px 0;
+  /* Reserve room for a single row of key entries so the layout doesn't
+     jump when the first item is dragged onto the grid (or the last is
+     removed). Sprite icon (~28px small) + 16px vertical padding. */
+  min-height: 50px;
+  box-sizing: border-box;
 }
 
 .rcsre-key-entry {

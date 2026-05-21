@@ -37,7 +37,16 @@ function isIgnorableViewError(message: string): boolean {
     return true;
   }
   // Status code 404 messages are also expected
-  if (message.includes("status of 404")) {
+  if (message.includes("status of 404") || message.includes("status code 404")) {
+    return true;
+  }
+  // In-app "Failed to retrieve file from '...' after N attempt(s): AxiosError ..."
+  // log lines come from the storage layer's retry logger. They fire for optional
+  // sample-content assets that legitimately don't exist (e.g. HD/subpack texture
+  // variants under `/api/content/altdiffs/...`) and also when the dev server
+  // tears down between requests (Network Error). Treat all of these as expected
+  // in view-mode tests; they don't indicate a problem with `mct view` itself.
+  if (message.includes("Failed to retrieve file from")) {
     return true;
   }
   // Window.close() permission error is expected behavior
@@ -48,8 +57,12 @@ function isIgnorableViewError(message: string): boolean {
   if (message.includes("GL_INVALID") || message.includes("glGetProgramiv")) {
     return true;
   }
-  // Connection refused errors occur when server is shutting down
-  if (message.includes("ERR_CONNECTION_REFUSED") || message.includes("net::ERR_")) {
+  // Connection refused / network errors occur when server is shutting down
+  if (
+    message.includes("ERR_CONNECTION_REFUSED") ||
+    message.includes("net::ERR_") ||
+    message.includes("Network Error")
+  ) {
     return true;
   }
   // Use the standard ignorable message check

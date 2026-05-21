@@ -48,6 +48,33 @@ export default class HttpFile extends FileBase implements IFile {
     await this.loadContent(true);
   }
 
+  /**
+   * Number of fetch attempts for `loadContent`. A transient network blip or
+   * intermittent 5xx from the content origin used to be swallowed silently
+   * (see `} catch (e) {}` in the binary branch below), leaving `_content`
+   * null while `lastLoadedOrSaved` was still set. Callers like
+   * `StorageUtilities.syncFileTo` then bail with no copy, and downstream
+   * `FileSystemFile.saveContent` skips writing because content is null —
+   * producing a project save that is missing a different random subset of
+   * files on each run. Retrying transient failures here is the cheapest fix.
+   */
+  private static readonly MAX_LOAD_ATTEMPTS = 3;
+
+  private static isRetryableLoadError(e: unknown): boolean {
+    const err = e as { response?: { status?: number }; code?: string };
+    const status = err?.response?.status;
+    // No HTTP response (network / DNS / abort) — retry.
+    if (status === undefined) {
+      return true;
+    }
+    // Retry on 5xx, 408 (Request Timeout), and 429 (Too Many Requests).
+    return status >= 500 || status === 408 || status === 429;
+  }
+
+  private static async delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
   async loadContent(force?: boolean): Promise<Date> {
     //        Log.assert(this.fullPath.startsWith("/"), "Expecting a full absolute path");
 
@@ -67,57 +94,100 @@ export default class HttpFile extends FileBase implements IFile {
 
         return this.lastLoadedOrSaved;
       } else {
+        // Mark in-flight BEFORE the await so concurrent callers wait via
+        // `_pendingLoadRequests` instead of issuing duplicate HTTP requests
+        // for the same file. Without this, the dedupe branch above was
+        // unreachable in practice.
+        this._isLoading = true;
         this._content = null;
 
         const path = this.fullPath;
+        const isBinary = StorageUtilities.getEncodingByFileName(this.name) === EncodingType.ByteBuffer;
 
-        if (StorageUtilities.getEncodingByFileName(this.name) === EncodingType.ByteBuffer) {
+        const headers: Record<string, string> = {};
+        if (this._parentFolder.storage.authToken) {
+          headers["Authorization"] = `Bearer mctauth=${this._parentFolder.storage.authToken}`;
+        }
+
+        let lastError: unknown = undefined;
+
+        for (let attempt = 1; attempt <= HttpFile.MAX_LOAD_ATTEMPTS; attempt++) {
           try {
-            const headers: Record<string, string> = {};
-            if (this._parentFolder.storage.authToken) {
-              headers["Authorization"] = `Bearer mctauth=${this._parentFolder.storage.authToken}`;
-            }
-            const response = await axios.get(path, {
-              responseType: "arraybuffer",
-              headers,
-            });
+            if (isBinary) {
+              const response = await axios.get(path, {
+                responseType: "arraybuffer",
+                headers,
+              });
 
-            this._content = new Uint8Array(response.data);
-          } catch (e) {}
-        } else {
-          let result = null;
+              this._content = new Uint8Array(response.data);
+            } else {
+              const response = await axios.get(path, {
+                headers,
+              });
 
-          try {
-            const headers: Record<string, string> = {};
-            if (this._parentFolder.storage.authToken) {
-              headers["Authorization"] = `Bearer mctauth=${this._parentFolder.storage.authToken}`;
-            }
-            const response = await axios.get(path, {
-              headers,
-            });
+              let result = response.data;
 
-            result = response.data;
-
-            if (typeof result === "object") {
-              try {
-                result = JSON.stringify(result, null, 2);
-              } catch (e) {
-                Log.fail("Could not convert file to JSON");
+              if (typeof result === "object") {
+                try {
+                  result = JSON.stringify(result, null, 2);
+                } catch (e) {
+                  Log.fail("Could not convert file to JSON");
+                }
               }
+
+              if (response.status !== 200) {
+                Log.verbose("Could not retrieve file from '" + path + "' - response code is " + response.status);
+              }
+
+              if (result === null || result === "null") {
+                Log.verbose("Could not retrieve file from '" + path + "' - result is null.");
+                result = null;
+              }
+
+              this._content = result;
             }
 
-            if (response.status !== 200) {
-              Log.verbose("Could not retrieve file from '" + path + "' - response code is " + response.status);
-            }
-
-            if (result === null || result === "null") {
-              Log.verbose("Could not retrieve file from '" + path + "' - result is null.");
-            }
+            lastError = undefined;
+            break;
           } catch (e) {
-            Log.verbose("Could not retrieve file from '" + path + "' - " + e + " - " + (e as any)?.stack);
-          }
+            lastError = e;
 
-          this._content = result;
+            if (attempt < HttpFile.MAX_LOAD_ATTEMPTS && HttpFile.isRetryableLoadError(e)) {
+              // Exponential backoff: 100ms, 200ms, 400ms ...
+              const backoffMs = 100 * Math.pow(2, attempt - 1);
+              Log.verbose(
+                "Transient failure loading '" +
+                  path +
+                  "' (attempt " +
+                  attempt +
+                  "/" +
+                  HttpFile.MAX_LOAD_ATTEMPTS +
+                  "). Retrying in " +
+                  backoffMs +
+                  "ms. " +
+                  e
+              );
+              await HttpFile.delay(backoffMs);
+              continue;
+            }
+
+            // Non-retryable or out of attempts. Stop retrying.
+            break;
+          }
+        }
+
+        if (lastError !== undefined) {
+          // Surface the failure clearly so callers (and developers reading
+          // logs) can see why a project save came up short. The original
+          // code silently swallowed this for binary files.
+          Log.error(
+            "Failed to retrieve file from '" +
+              path +
+              "' after " +
+              HttpFile.MAX_LOAD_ATTEMPTS +
+              " attempt(s): " +
+              lastError
+          );
         }
 
         this.lastLoadedOrSaved = new Date();

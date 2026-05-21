@@ -84,6 +84,16 @@
   background: #3a3a3a;
 }
 
+/* Tighten spacing between category header and the first component item below it */
+.icose-componentList .etcse-slotCategoryHeader {
+  padding: 10px 0 1px 0;
+  margin-bottom: 0;
+}
+
+.icose-componentList .etcse-slotCategoryHeader:first-child {
+  padding-top: 2px;
+}
+
 /* Reduce gaps between slots and fix chip filling slot fully */
 .icose-componentList .etcse-componentSlot {
   margin-bottom: 2px;
@@ -226,7 +236,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 12px color-mix(in srgb, var(--header-icon-color, #e8a855) 30%, transparent),
+  box-shadow:
+    0 0 12px color-mix(in srgb, var(--header-icon-color, #e8a855) 30%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   flex-shrink: 0;
 }

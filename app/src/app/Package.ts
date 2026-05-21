@@ -171,11 +171,19 @@ export default class Package {
 
         const reportHtml = pis.getReportHtml(file.name, file.storageRelativePath, hash);
 
-        summaryFile.setContent(reportHtml, FileUpdateType.versionlessEdit);
+        // Only persist the report file if the source storage is writable.
+        // Packs loaded over HTTP (e.g. galleries / community downloads) live
+        // in a read-only HttpStorage; calling setContent there throws
+        // "HttpFile is read-only." (see GitHub issue #116). Skipping the
+        // write keeps the in-memory summaryObject so report data is still
+        // available to callers; only the side-effect cache file is dropped.
+        if (!file.parentFolder.storage.readOnly) {
+          summaryFile.setContent(reportHtml, FileUpdateType.versionlessEdit);
 
-        await summaryFile.saveContent();
+          await summaryFile.saveContent();
 
-        this.reportFile = summaryFile;
+          this.reportFile = summaryFile;
+        }
 
         summaryObject = pis.getDataObject(file.name, file.storageRelativePath, hash);
       }

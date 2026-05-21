@@ -274,7 +274,7 @@ export default class FormMarkdownDocumentationGenerator {
       outputFolder,
       ExportMode.itemComponents,
       "/ItemReference/Examples/ItemComponents/",
-      "/item_components/minecraft_",
+      "/item/minecraft_",
       "Items",
       "Item Component"
     );
@@ -415,7 +415,7 @@ export default class FormMarkdownDocumentationGenerator {
       outputFolder,
       ExportMode.itemComponents,
       "/ItemReference/Examples/ItemComponentList.md",
-      "/item_components/minecraft_",
+      "/item/minecraft_",
       "Item Components",
       "./ItemComponents"
     );
@@ -425,7 +425,7 @@ export default class FormMarkdownDocumentationGenerator {
       outputFolder,
       ExportMode.itemComponents,
       "/ItemReference/Examples/ItemComponents/TOC.yml",
-      "/item_components/minecraft_",
+      "/item/minecraft_",
       "- name: Item Components List\n  href: ../ItemComponentList.md"
     );
 
@@ -1573,7 +1573,7 @@ export default class FormMarkdownDocumentationGenerator {
     // Render the form body first, then extract headings for a TOC.
     // This guarantees TOC bookmarks match the actual rendered headings exactly.
     const bodyContent: string[] = [];
-    await this.appendForm(form, bodyContent, 0);
+    await this.appendForm(form, bodyContent, 0, undefined, undefined, undefined, undefined, undefined, exportMode);
 
     // Extract top-level sub-section headings (### level) from rendered body for the TOC
     const tocEntries: { text: string; bookmark: string }[] = [];
@@ -1858,7 +1858,8 @@ export default class FormMarkdownDocumentationGenerator {
     formStack?: string[],
     formsAppended?: { [name: string]: boolean },
     jsonPath?: string,
-    choicesAppended?: { [fingerprint: string]: string }
+    choicesAppended?: { [fingerprint: string]: string },
+    pageMode?: ExportMode
   ) {
     if (!formStack) {
       formStack = [];
@@ -1920,7 +1921,7 @@ export default class FormMarkdownDocumentationGenerator {
 
     if (form.requires) {
       let descStr = "";
-      const entityComponents = [];
+      const componentDeps: { id: string; type?: string }[] = [];
 
       if (!Array.isArray(form.requires)) {
         Log.debug("Malformed requires node at `" + JSON.stringify(form.requires) + "`");
@@ -1938,9 +1939,17 @@ export default class FormMarkdownDocumentationGenerator {
             );
             content.push("> ");
             content.push(
-              "> * [minecraft:behavior.nearest_attackable_target](../EntityGoals/minecraftBehavior_nearest_attackable_target.md)"
+              this.getRequiresLinkLine(
+                { id: "minecraft:behavior.nearest_attackable_target", type: "entity_component" },
+                pageMode
+              )
             );
-            content.push("> * [minecraft:behavior.hurt_by_target](../EntityGoals/minecraftBehavior_hurt_by_target.md)");
+            content.push(
+              this.getRequiresLinkLine(
+                { id: "minecraft:behavior.hurt_by_target", type: "entity_component" },
+                pageMode
+              )
+            );
           } else if (
             dep.type === "entity_component" ||
             dep.type === "item_component" ||
@@ -1952,29 +1961,21 @@ export default class FormMarkdownDocumentationGenerator {
               }
               descStr += dep.description;
             }
-            entityComponents.push(dep.id);
+            componentDeps.push({ id: dep.id, type: dep.type });
           }
         }
       }
 
-      if (entityComponents.length > 0) {
+      if (componentDeps.length > 0) {
         content.push("> [!Note]");
-        if (entityComponents.length === 1) {
+        if (componentDeps.length === 1) {
           content.push("> Requires the following component in order to work properly:");
         } else {
           content.push("> Requires the following components in order to work properly:");
         }
         content.push("> ");
-        for (const entityComponent of entityComponents) {
-          content.push(
-            "> * [" +
-              Utilities.humanifyMinecraftName(entityComponent) +
-              " (" +
-              entityComponent +
-              ")](../EntityComponents/minecraftComponent_" +
-              this.getFileNameFromJsonKey(entityComponent.substring(10)) +
-              ".md)"
-          );
+        for (const dep of componentDeps) {
+          content.push(this.getRequiresLinkLine(dep, pageMode));
         }
 
         if (descStr.length >= 0) {
@@ -2153,7 +2154,11 @@ export default class FormMarkdownDocumentationGenerator {
           modifiedSubFieldId = "(deprecated) " + modifiedSubFieldId;
         }
 
-        let fieldRow = "| " + (field.alternates ? modifiedSubFieldId : field.id) + " | ";
+        const rawFieldIdCell = field.alternates ? modifiedSubFieldId : field.id;
+        // Field ids occasionally contain literal `|` (e.g. `attack_interval|attack_interval_min`),
+        // which would otherwise split the table row into too many columns.
+        const fieldIdCell = rawFieldIdCell.replace(/(?<!\\)\|/g, "\\|");
+        let fieldRow = "| " + fieldIdCell + " | ";
 
         if (field.defaultValue !== undefined) {
           fieldRow += this.getValueAsString(field.defaultValue);
@@ -2200,7 +2205,8 @@ export default class FormMarkdownDocumentationGenerator {
                 formStack,
                 formsAppended,
                 childFieldJsonPath,
-                choicesAppended
+                choicesAppended,
+                pageMode
               );
             }
             formsAppended[subFormTitle] = true;
@@ -2240,14 +2246,21 @@ export default class FormMarkdownDocumentationGenerator {
                 formStack,
                 formsAppended,
                 childFieldJsonPath,
-                choicesAppended
+                choicesAppended,
+                pageMode
               );
             }
             formsAppended[fieldName] = true;
           }
-        } else if (field.choices) {
+        } else if (field.choices || (field.enumValues && field.enumValues.length > 0)) {
+          // Normalize `enumValues` (shorthand: just a `(string | number)[]`) into the
+          // richer `ISimpleReference[]` shape that the rest of this branch expects.
+          // Per IField.enumValues: `choices` takes precedence when both are set.
+          const choicesList: { id: string | number | boolean; title?: string; description?: string }[] =
+            field.choices ?? (field.enumValues as (string | number)[]).map((v) => ({ id: v }));
+
           // Deduplicate identical choices tables
-          const choicesFingerprint = this.getChoicesFingerprint(field.choices);
+          const choicesFingerprint = this.getChoicesFingerprint(choicesList);
           const existingChoicesName = choicesAppended[choicesFingerprint];
 
           if (existingChoicesName) {
@@ -2265,7 +2278,7 @@ export default class FormMarkdownDocumentationGenerator {
             subContent.push("|Value       |Title |Description |");
             subContent.push("|:-----------|:-----|:-----------|");
 
-            for (const choice of field.choices) {
+            for (const choice of choicesList) {
               let choiceRow = "";
 
               choiceRow += "| " + choice.id;
@@ -2278,10 +2291,22 @@ export default class FormMarkdownDocumentationGenerator {
             }
           }
         } else if (field.dataType === FieldDataType.minecraftEventTrigger) {
-          fieldRow +=
-            " | [" +
-            DataFormUtilities.getFieldTypeDescription(field.dataType) +
-            "](../Definitions/NestedTables/triggers.md) | ";
+          // The canonical reference page lives only under EntityReference. Link
+          // to it from entity/item pages with a depth-correct relative path;
+          // event triggers don't apply to block components, so render the type
+          // label as plain text there.
+          const typeLabel = DataFormUtilities.getFieldTypeDescription(field.dataType);
+          if (pageMode === ExportMode.blockComponents) {
+            fieldRow += " | " + typeLabel + " | ";
+          } else {
+            const triggersPath = this.getRelativeRefPath(
+              pageMode,
+              "EntityReference",
+              "Definitions/NestedTables",
+              "triggers.md"
+            );
+            fieldRow += " | [" + typeLabel + "](" + triggersPath + ") | ";
+          }
         } else {
           let fieldTypes = "";
 
@@ -2627,11 +2652,130 @@ export default class FormMarkdownDocumentationGenerator {
     value = value.replace(/  /gi, " ");
     value = value.trim();
 
+    // Escape unescaped pipes so they don't break the surrounding markdown table row.
+    value = value.replace(/(?<!\\)\|/g, "\\|");
+
     return value;
   }
 
   public getMarkdownBookmark(id: string) {
-    return id.toLowerCase().replace(/ /gi, "-").replace(/\(/gi, "").replace(/\)/gi, "");
+    // Lowercase, spaces -> hyphens, then strip everything that DocFX's anchor
+    // generator drops (parens, dots, commas, quotes, slashes, colons, etc.).
+    // This must match the slugifier that produced the heading anchor;
+    // mismatches show up as `bookmark-not-found` warnings in PR validation.
+    return id
+      .toLowerCase()
+      .replace(/ /g, "-")
+      .replace(/[^a-z0-9_-]/g, "");
+  }
+
+  /**
+   * Look up the reference-root + sub-folder a given page-emission mode targets.
+   * Returns undefined for modes that don't have a stable component-page location.
+   */
+  private getRefLocationForMode(mode?: ExportMode): { root: string; subdir: string } | undefined {
+    switch (mode) {
+      case ExportMode.entityComponents:
+        return { root: "EntityReference", subdir: "EntityComponents" };
+      case ExportMode.AIGoals:
+        return { root: "EntityReference", subdir: "EntityGoals" };
+      case ExportMode.itemComponents:
+        return { root: "ItemReference", subdir: "ItemComponents" };
+      case ExportMode.blockComponents:
+        return { root: "BlockReference", subdir: "BlockComponents" };
+      default:
+        return undefined;
+    }
+  }
+
+  /**
+   * Compute a relative markdown link path from a page rendered in `fromMode`
+   * to a target file living at `toRoot/Examples/toSubdir/toFile`. If `fromMode`
+   * is unknown, defaults to the legacy "EntityComponents-origin" assumption.
+   */
+  private getRelativeRefPath(
+    fromMode: ExportMode | undefined,
+    toRoot: string,
+    toSubdir: string,
+    toFile: string
+  ): string {
+    const from = this.getRefLocationForMode(fromMode) ?? { root: "EntityReference", subdir: "EntityComponents" };
+    if (from.root === toRoot) {
+      if (from.subdir === toSubdir) {
+        return "./" + toFile;
+      }
+      return "../" + toSubdir + "/" + toFile;
+    }
+    return "../../../" + toRoot + "/Examples/" + toSubdir + "/" + toFile;
+  }
+
+  /**
+   * Build the markdown bullet for a single `requires` dependency, dispatching
+   * on the dependency type (entity / item / block component, or behavior goal)
+   * and on the current page's reference-root so that cross-reference links
+   * resolve correctly. Returns a `> * [...](...)` line, or, for dependencies
+   * with no canonical umbrella page (e.g. abstract `minecraft:navigation`),
+   * a bullet without a link.
+   */
+  private getRequiresLinkLine(dep: { id: string; type?: string }, pageMode?: ExportMode): string {
+    const id = dep.id;
+    const name = id.startsWith("minecraft:") ? id.substring("minecraft:".length) : id;
+    const label = Utilities.humanifyMinecraftName(id) + " (" + id + ")";
+
+    // Behavior goals (id of the form `minecraft:behavior.*`) live under
+    // EntityGoals/ with the `minecraftBehavior_` prefix, not EntityComponents/.
+    if (dep.type === "entity_component" && name.startsWith("behavior.")) {
+      const goalCanon = this.getFileNameFromJsonKey(name.substring("behavior.".length));
+      const path = this.getRelativeRefPath(
+        pageMode,
+        "EntityReference",
+        "EntityGoals",
+        "minecraftBehavior_" + goalCanon + ".md"
+      );
+      return "> * [" + label + "](" + path + ")";
+    }
+
+    // Abstract entity dependencies that have only per-variant pages,
+    // no canonical umbrella page. List intentionally narrow — extend only
+    // when a new abstract dep is observed in `requires` data.
+    if (dep.type === "entity_component" && name === "navigation") {
+      return "> * " + label;
+    }
+
+    if (dep.type === "entity_component") {
+      const canon = this.getFileNameFromJsonKey(name);
+      const path = this.getRelativeRefPath(
+        pageMode,
+        "EntityReference",
+        "EntityComponents",
+        "minecraftComponent_" + canon + ".md"
+      );
+      return "> * [" + label + "](" + path + ")";
+    }
+
+    if (dep.type === "item_component") {
+      const canon = this.getFileNameFromJsonKey(name);
+      const path = this.getRelativeRefPath(
+        pageMode,
+        "ItemReference",
+        "ItemComponents",
+        "minecraft_" + canon + ".md"
+      );
+      return "> * [" + label + "](" + path + ")";
+    }
+
+    if (dep.type === "block_component") {
+      const canon = this.getFileNameFromJsonKey(name);
+      const path = this.getRelativeRefPath(
+        pageMode,
+        "BlockReference",
+        "BlockComponents",
+        "minecraftBlock_" + canon + ".md"
+      );
+      return "> * [" + label + "](" + path + ")";
+    }
+
+    return "> * " + label;
   }
 
   public getFormsFromFilter(

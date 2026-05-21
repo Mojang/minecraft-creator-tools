@@ -117,8 +117,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [FORMATVER000] Found 12 errors in Format Version check\nTESTFAIL: [MINENGINEVER000] Found 3 errors in Min Engine Version check",
-    "infoGenerationTime": 259,
-    "endToEndGenerationTime": 578,
+    "infoGenerationTime": 441,
+    "endToEndGenerationTime": 618,
     "summary": {
       "BASEGAMEVER": {
         "2": {

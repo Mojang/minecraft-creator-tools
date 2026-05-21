@@ -25,7 +25,7 @@ import { FeaturePipelineNode } from "./FeaturePipelineUtilities";
 import DataForm, { IDataFormProps } from "../../../dataformux/DataForm";
 import Database from "../../../minecraft/Database";
 import FeatureTypePicker from "./FeatureTypePicker";
-import { Stack, IconButton } from "@mui/material";
+import { Stack, IconButton, Button } from "@mui/material";
 import { ProjectItemType, ProjectItemCreationType } from "../../../app/IProjectItemData";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import { FolderContext } from "../../../app/Project";
@@ -47,6 +47,7 @@ interface IFeatureComponentEditorState {
   formLoaded: boolean;
   dataFormProps: IDataFormProps | undefined;
   showFeatureTypePicker: boolean;
+  showChangeTypePicker: boolean;
   pendingAddCallback: ((featureId: string | undefined) => void) | undefined;
   currentFile: IFile | undefined;
   currentJsonData: any;
@@ -64,6 +65,7 @@ class FeatureComponentEditor extends Component<
       formLoaded: false,
       dataFormProps: undefined,
       showFeatureTypePicker: false,
+      showChangeTypePicker: false,
       pendingAddCallback: undefined,
       currentFile: undefined,
       currentJsonData: undefined,
@@ -298,6 +300,76 @@ class FeatureComponentEditor extends Component<
     }
   };
 
+  _handleChangeTypeClick = () => {
+    this.setState({ showChangeTypePicker: true });
+  };
+
+  _handleChangeTypePickerClose = () => {
+    this.setState({ showChangeTypePicker: false });
+  };
+
+  /**
+   * Rewrites the currently-selected feature file, swapping its `minecraft:<oldType>`
+   * key for `minecraft:<newType>` while preserving the inner block (description, etc.).
+   * Used by the "Change Feature Type" fallback when no form is available for the
+   * current type (unknown / unrecognized / missing form file).
+   */
+  _handleChangeTypeSelected = async (newFeatureType: string, _featureName: string) => {
+    this.setState({ showChangeTypePicker: false });
+
+    const node = this.props.selectedNode;
+    if (!node || node.nodeType === "unfulfilledFeature") return;
+
+    const file = node.item.primaryFile;
+    if (!file) return;
+
+    try {
+      await file.loadContent(false);
+      const content = file.content;
+      if (typeof content !== "string") return;
+
+      const jsonData = JSON.parse(content);
+
+      // Find the existing minecraft:* feature key (if any) and preserve its inner block.
+      let innerBlock: any = undefined;
+      let existingKey: string | undefined;
+      for (const key of Object.keys(jsonData)) {
+        if (key.startsWith("minecraft:") && key !== "minecraft:feature_rules" && typeof jsonData[key] === "object") {
+          existingKey = key;
+          innerBlock = jsonData[key];
+          break;
+        }
+      }
+
+      if (!innerBlock) {
+        // Build a minimal inner block with a default identifier
+        const projectName = this.props.project.name?.toLowerCase().replace(/[^a-z0-9_]/g, "_") || "mypack";
+        innerBlock = {
+          description: {
+            identifier: `${projectName}:${node.item.name?.replace(/\.[^.]+$/, "") || "feature"}`,
+          },
+        };
+      }
+
+      if (existingKey) {
+        delete jsonData[existingKey];
+      }
+      jsonData[`minecraft:${newFeatureType}`] = innerBlock;
+
+      file.setContent(JSON.stringify(jsonData, null, 2));
+      await file.saveContent();
+      if (file.manager) {
+        await file.manager.persist();
+      }
+
+      // Update the node's featureType so the form re-loads for the new type.
+      (node as any).featureType = newFeatureType;
+      await this._loadFormForNode();
+    } catch (e) {
+      Log.verbose("Failed to change feature type: " + e);
+    }
+  };
+
   _renderUnfulfilledNode(node: FeaturePipelineNode): JSX.Element {
     if (node.nodeType !== "unfulfilledFeature") {
       return <></>;
@@ -370,13 +442,30 @@ class FeatureComponentEditor extends Component<
       );
     }
 
-    // No form available - show raw info
+    // No form available for this feature type — offer a guided path forward
+    // instead of dead-ending in raw JSON. The user can pick a known feature
+    // type (which rewrites the file in place) or fall back to raw JSON.
+    const currentTypeLabel = node.featureType
+      ? `minecraft:${node.featureType}`
+      : this.props.intl.formatMessage({ id: "project_editor.feature_comp.unknown_type" });
+
     return (
       <div className="fce-noForm">
-        <div className="fce-noFormMessage">{this.props.intl.formatMessage({ id: "project_editor.feature_comp.no_form_editor" })}</div>
-        <button className="fce-goToFileButton" onClick={this._handleGoToFile} aria-label="Edit raw JSON">
-          <FontAwesomeIcon icon={faExternalLinkAlt} /> {this.props.intl.formatMessage({ id: "project_editor.feature_comp.edit_raw_json" })}
-        </button>
+        <div className="fce-noFormMessage">
+          {this.props.intl.formatMessage(
+            { id: "project_editor.feature_comp.no_form_editor_v2" },
+            { type: currentTypeLabel }
+          )}
+        </div>
+        <Stack direction="row" spacing={1} justifyContent="center" sx={{ mt: 1 }}>
+          <Button variant="contained" color="primary" onClick={this._handleChangeTypeClick}>
+            {this.props.intl.formatMessage({ id: "project_editor.feature_comp.change_feature_type" })}
+          </Button>
+          <Button variant="text" onClick={this._handleGoToFile}>
+            <FontAwesomeIcon icon={faExternalLinkAlt} style={{ marginRight: 6 }} />
+            {this.props.intl.formatMessage({ id: "project_editor.feature_comp.edit_raw_json" })}
+          </Button>
+        </Stack>
       </div>
     );
   }
@@ -421,6 +510,17 @@ class FeatureComponentEditor extends Component<
               onClose={this._handleFeaturePickerClose}
             />
           )}
+          {this.state.showChangeTypePicker && (
+            // No selected node in this branch, so there's nothing to seed
+            // initialSelectedType with — the picker opens with no preselection.
+            <FeatureTypePicker
+              isOpen={true}
+              theme={this.props.theme}
+              mode="change"
+              onSelect={this._handleChangeTypeSelected}
+              onClose={this._handleChangeTypePickerClose}
+            />
+          )}
         </div>
       );
     }
@@ -445,6 +545,20 @@ class FeatureComponentEditor extends Component<
             theme={this.props.theme}
             onSelect={this._handleFeatureTypeSelected}
             onClose={this._handleFeaturePickerClose}
+          />
+        )}
+        {this.state.showChangeTypePicker && (
+          <FeatureTypePicker
+            isOpen={true}
+            theme={this.props.theme}
+            mode="change"
+            // FeaturePipelineNode is a union of IFeaturePipelineNode (has
+            // featureType) and IUnfulfilledFeatureNode (does not). Narrow
+            // with an `in` check so unfulfilled placeholder nodes don't
+            // crash the type-checker and just open the picker unseeded.
+            initialSelectedType={"featureType" in node ? node.featureType : undefined}
+            onSelect={this._handleChangeTypeSelected}
+            onClose={this._handleChangeTypePickerClose}
           />
         )}
       </div>

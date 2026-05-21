@@ -8,8 +8,8 @@
  * background-position instead of issuing one HTTP request per block.
  *
  * Inputs:
- *   /data/block-atlas.json           — { tileSize, cols, rows, file, blocks }
- *   /data/atlases/block-sprites.png  — the composited sheet
+ *   /data/block-atlas.json                       — { tileSize, cols, rows, file, blocks }
+ *   /res/latest/van/gen/block-sprites.png        — the composited sheet
  *
  * Both are committed and produced off-line by
  * `npm run generate-block-atlas` (stitches render snapshots in
@@ -55,9 +55,7 @@ export default class BlockSpriteDatabase {
         const response = await fetch(url);
         if (!response.ok) {
           Log.debug(
-            "BlockSpriteDatabase: atlas manifest unavailable (HTTP " +
-              response.status +
-              "), using per-icon fallback"
+            "BlockSpriteDatabase: atlas manifest unavailable (HTTP " + response.status + "), using per-icon fallback"
           );
           return;
         }
@@ -67,7 +65,7 @@ export default class BlockSpriteDatabase {
           return;
         }
         BlockSpriteDatabase._manifest = manifest;
-        BlockSpriteDatabase._atlas.setAtlasUrl(CreatorToolsHost.contentWebRoot + "data/" + manifest.file);
+        BlockSpriteDatabase._atlas.setAtlasUrl(CreatorToolsHost.contentWebRoot + manifest.file);
       } catch (err) {
         // Atlas missing or malformed — callers fall back to individual icons.
         Log.debug("BlockSpriteDatabase: atlas load failed, using per-icon fallback: " + err);

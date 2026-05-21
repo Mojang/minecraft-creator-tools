@@ -14,6 +14,8 @@ import IManagedComponent from "./IManagedComponent";
 import { ManagedComponent } from "./ManagedComponent";
 import IEventAction from "./IEventAction";
 import IEventActionSet from "./IEventActionSet";
+import IComponentGroup from "./IComponentGroup";
+import { EntityTraitId } from "./IContentMetaSchema";
 import StorageUtilities from "../storage/StorageUtilities";
 import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
@@ -26,7 +28,6 @@ import SpawnRulesBehaviorDefinition from "./SpawnRulesBehaviorDefinition";
 import IDefinition from "./IDefinition";
 import IEventWrapper from "./IEventWrapper";
 import Utilities from "../core/Utilities";
-import IComponentGroup from "./IComponentGroup";
 
 export enum EntityTypeComponentCategory {
   attribute = 0,
@@ -726,6 +727,145 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
 
     this._data.components = newBehaviorPacks;
     this._managedComponents = newManagedComponents;
+  }
+
+  /**
+   * Snapshot of the current set of entity traits inferred from this
+   * entity's components and component groups. Used by the Traits tab to
+   * compute the diff against the user's new selection without round-tripping
+   * through stale picker state.
+   *
+   * Imported lazily to avoid a circular dependency between
+   * EntityTypeDefinition and TraitDetector / trait registration.
+   */
+  detectCurrentTraits(minConfidence: number = 0.6): EntityTraitId[] {
+    if (!this._data) {
+      return [];
+    }
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const TraitDetector = require("./TraitDetector").default as typeof import("./TraitDetector").default;
+    const components = this._data.components || {};
+    const componentGroups: Record<string, Record<string, any>> = {};
+    if (this._data.component_groups) {
+      for (const [name, group] of Object.entries(this._data.component_groups)) {
+        if (group && typeof group === "object") {
+          componentGroups[name] = group as Record<string, any>;
+        }
+      }
+    }
+    return TraitDetector.detectEntityTraits(components, componentGroups, minConfidence).map(
+      (r: { traitId: string }) => r.traitId as EntityTraitId
+    );
+  }
+
+  /**
+   * Apply the diff between two trait selections to this entity, adding
+   * components/component groups/events for newly-selected traits and
+   * removing them for de-selected traits. Used by the Traits tab so toggles
+   * actually persist to the underlying JSON. Caller is responsible for
+   * `persist()` and UI refresh.
+   *
+   * Unknown trait ids are logged (via Log.error) and skipped rather than
+   * silently dropped — that surfaces renamed/removed trait ids as real bugs.
+   */
+  applyTraitChanges(oldTraits: EntityTraitId[], newTraits: EntityTraitId[]): void {
+    if (!this._data) {
+      return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { TraitRegistry } = require("./traits/ContentTraits") as typeof import("./traits/ContentTraits");
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { registerAllEntityTraits } = require("./traits") as typeof import("./traits");
+    if (!EntityTypeDefinition._entityTraitsRegistered) {
+      registerAllEntityTraits();
+      EntityTypeDefinition._entityTraitsRegistered = true;
+    }
+
+    const oldSet = new Set(oldTraits);
+    const newSet = new Set(newTraits);
+    const added = newTraits.filter((t) => !oldSet.has(t));
+    const removed = oldTraits.filter((t) => !newSet.has(t));
+
+    // Removals first so re-adding a trait restores its components even if a
+    // different code path previously removed them.
+    for (const traitId of removed) {
+      const trait = TraitRegistry.getEntityTrait(traitId);
+      if (!trait) {
+        Log.error("EntityTypeDefinition.applyTraitChanges: unknown trait id '" + traitId + "' (remove)");
+        continue;
+      }
+      this._removeTraitData(trait.getData());
+    }
+
+    for (const traitId of added) {
+      const trait = TraitRegistry.getEntityTrait(traitId);
+      if (!trait) {
+        Log.error("EntityTypeDefinition.applyTraitChanges: unknown trait id '" + traitId + "' (add)");
+        continue;
+      }
+      this._addTraitData(trait.getData());
+    }
+  }
+
+  private static _entityTraitsRegistered = false;
+
+  private _addTraitData(data: {
+    components?: Record<string, unknown>;
+    componentGroups?: Record<string, Record<string, unknown>>;
+    events?: Record<string, unknown>;
+  }): void {
+    this._ensureBehaviorPackDataInitialized();
+    const bp = this._data as IEntityTypeBehaviorPack;
+
+    if (data.components) {
+      for (const [id, value] of Object.entries(data.components)) {
+        // Use the managed API so component-added events fire and the editor UI
+        // refreshes if it is observing them.
+        this.addComponent(id, value as IComponent);
+      }
+    }
+
+    if (data.componentGroups) {
+      for (const [name, group] of Object.entries(data.componentGroups)) {
+        bp.component_groups[name] = { ...(group as Record<string, unknown>) } as IComponentGroup;
+      }
+    }
+
+    if (data.events) {
+      for (const [name, event] of Object.entries(data.events)) {
+        bp.events[name] = { ...(event as Record<string, unknown>) } as IEventActionSet;
+      }
+    }
+  }
+
+  private _removeTraitData(data: {
+    components?: Record<string, unknown>;
+    componentGroups?: Record<string, Record<string, unknown>>;
+    events?: Record<string, unknown>;
+  }): void {
+    const bp = this._data;
+    if (!bp) {
+      return;
+    }
+
+    if (data.components && bp.components) {
+      for (const id of Object.keys(data.components)) {
+        this.removeComponent(id);
+      }
+    }
+
+    if (data.componentGroups && bp.component_groups) {
+      for (const name of Object.keys(data.componentGroups)) {
+        delete bp.component_groups[name];
+      }
+    }
+
+    if (data.events && bp.events) {
+      for (const name of Object.keys(data.events)) {
+        delete bp.events[name];
+      }
+    }
   }
 
   _ensureBehaviorPackDataInitialized() {

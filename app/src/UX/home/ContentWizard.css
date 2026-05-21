@@ -846,7 +846,13 @@ img.cwiz-main-img {
 
 .cwiz-guided-section {
   border-color: rgba(82, 165, 53, 0.32);
-  background: linear-gradient(180deg, rgba(82, 165, 53, 0.08) 0%, rgba(82, 165, 53, 0.03) 100%);
+  /* Light-theme tint was previously 0.08 → 0.03 which was so faint the
+     "GUIDED SETUP — RECOMMENDED" callout barely registered against the
+     dialog background, defeating the purpose of highlighting it as the
+     recommended path. Bumping the gradient to 0.18 → 0.06 mirrors the
+     dark-theme treatment (~3x the previous tint) while staying well below
+     the contrast threshold that would compete with the inner cards. */
+  background: linear-gradient(180deg, rgba(82, 165, 53, 0.18) 0%, rgba(82, 165, 53, 0.06) 100%);
 }
 
 .cwiz-example-section {
