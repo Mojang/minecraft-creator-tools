@@ -24,6 +24,7 @@ import { faTriangleExclamation, faPlus, faExternalLinkAlt } from "@fortawesome/f
 import { FeaturePipelineNode } from "./FeaturePipelineUtilities";
 import DataForm, { IDataFormProps } from "../../../dataformux/DataForm";
 import Database from "../../../minecraft/Database";
+import FeatureDefinition from "../../../minecraft/FeatureDefinition";
 import FeatureTypePicker from "./FeatureTypePicker";
 import { Stack, IconButton, Button } from "@mui/material";
 import { ProjectItemType, ProjectItemCreationType } from "../../../app/IProjectItemData";
@@ -174,16 +175,35 @@ class FeatureComponentEditor extends Component<
 
   _handlePropertyChanged = async (props: IDataFormProps, property: IProperty, newValue: any, updatingObject?: any) => {
     const { currentFile, currentJsonData } = this.state;
+    const node = this.props.selectedNode;
 
-    if (currentFile && currentJsonData) {
-      // Save the modified JSON back to the file
-      currentFile.setContent(JSON.stringify(currentJsonData, null, 2));
-      await currentFile.saveContent();
-
-      if (currentFile.manager) {
-        await currentFile.manager.persist();
-      }
+    if (!currentFile || !currentJsonData || !node) {
+      return;
     }
+
+    // Rebuild the complete JSON with the minecraft:* wrapper.
+    // DataForm edits the inner block (formData) which may be the same object
+    // as currentJsonData when the wrapper key was absent at parse time. We
+    // must re-wrap so the saved file always has the correct structure.
+    let jsonToSave = currentJsonData;
+    const featureTypeKey =
+      node.nodeType === "featureRule" ? "minecraft:feature_rules" : node.featureType ? "minecraft:" + node.featureType : undefined;
+
+    if (featureTypeKey && !currentJsonData[featureTypeKey]) {
+      // currentJsonData IS the inner block — wrap it.
+      const innerBlock = { ...currentJsonData };
+      const fmtVer = innerBlock.format_version;
+      delete innerBlock.format_version;
+      // Also remove the synthetic json.description key that downscale may create
+      delete innerBlock["json.description"];
+      jsonToSave = {
+        format_version: fmtVer || "1.13.0",
+        [featureTypeKey]: innerBlock,
+      };
+    }
+
+    currentFile.setContent(JSON.stringify(jsonToSave, null, 2));
+    await currentFile.saveContent();
   };
 
   componentDidMount() {
@@ -255,6 +275,10 @@ class FeatureComponentEditor extends Component<
                 // Determine noun for summarizer based on node type
                 const summarizerNoun = node.nodeType === "featureRule" ? "feature rule" : "feature";
 
+                // Use the item name as a stable key so DataForm doesn't
+                // remount inputs on every keystroke (objectIncrement fallback).
+                const stableKey = node.item.name || formName || "feature";
+
                 if (this._isMounted) {
                   this.setState({
                     formLoaded: true,
@@ -265,7 +289,7 @@ class FeatureComponentEditor extends Component<
                       definition: form,
                       theme: this.props.theme,
                       readOnly: this.props.readOnly,
-                      objectKey: undefined,
+                      objectKey: stableKey,
                       project: this.props.project,
                       lookupProvider: this.props.project,
                       onPropertyChanged: this._handlePropertyChanged,
@@ -358,8 +382,14 @@ class FeatureComponentEditor extends Component<
 
       file.setContent(JSON.stringify(jsonData, null, 2));
       await file.saveContent();
-      if (file.manager) {
-        await file.manager.persist();
+
+      // Force the FeatureDefinition manager to reload from the updated file
+      // content, so its cached _data stays in sync and persist() doesn't
+      // overwrite our changes with stale data.
+      if (file.manager && file.manager instanceof FeatureDefinition) {
+        (file.manager as any)._isLoaded = false;
+        (file.manager as any)._loadedWithComments = false;
+        await file.manager.load();
       }
 
       // Update the node's featureType so the form re-loads for the new type.

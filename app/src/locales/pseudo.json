@@ -761,7 +761,7 @@
   "project_editor.feature_comp.missing_desc": "⟦This feature is referenced but cannot be found in the project.⟧",
   "project_editor.feature_comp.create_feature": "⟦Create Feature⟧",
   "project_editor.feature_comp.no_form_editor": "⟦Form editor not available for this feature type.⟧",
-  "project_editor.feature_comp.no_form_editor_v2": "⟦There's no visual editor for {type} yet. Pick a different feature type below, or open the raw JSON.⟧",
+  "project_editor.feature_comp.no_form_editor_v2": "⟦This feature doesn't have a feature type yet. Pick a feature type below, or open the raw JSON.⟧",
   "project_editor.feature_comp.unknown_type": "⟦this feature type⟧",
   "project_editor.feature_comp.change_feature_type": "⟦Change Feature Type⟧",
   "project_editor.feature_comp.edit_raw_json": "⟦Edit Raw JSON⟧",

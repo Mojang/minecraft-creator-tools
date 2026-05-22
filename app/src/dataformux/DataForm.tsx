@@ -479,7 +479,14 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     // Store working value for floating point input handling
     this._workingValues[id] = data;
 
-    const result = this._propertyManager.processInputUpdate(id, data, this._getCurrentDirectObject());
+    // Ensure we have a direct object to update — create one if undefined
+    // (e.g. when a sub-form object hasn't been initialized yet).
+    let currentObj = this._getCurrentDirectObject();
+    if (currentObj === undefined) {
+      currentObj = {};
+    }
+
+    const result = this._propertyManager.processInputUpdate(id, data, currentObj);
 
     if (!result) {
       return;
@@ -770,7 +777,14 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     // Get the field to determine the correct default value
     const field = this._getFieldById(id);
     const fieldDefaultValue = field?.defaultValue === true || field?.defaultValue === 1;
-    const result = this._propertyManager.toggleBooleanProperty(id, fieldDefaultValue, this._getCurrentDirectObject());
+
+    // Ensure we have a direct object — create one if undefined
+    let currentObj = this._getCurrentDirectObject();
+    if (currentObj === undefined) {
+      currentObj = {};
+    }
+
+    const result = this._propertyManager.toggleBooleanProperty(id, fieldDefaultValue, currentObj);
 
     if (this.props.onPropertyChanged !== undefined) {
       this.props.onPropertyChanged(this.props, result.property, result.newValue, result.updatedDirectObject);
@@ -860,7 +874,13 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
    * Delegates to FormPropertyManager and updates component state.
    */
   _setPropertyValue(id: string, val: any) {
-    const result = this._propertyManager.setPropertyValue(id, val, this._getCurrentDirectObject());
+    // Ensure we have a direct object to update — create one if undefined
+    let currentObj = this._getCurrentDirectObject();
+    if (currentObj === undefined) {
+      currentObj = {};
+    }
+
+    const result = this._propertyManager.setPropertyValue(id, val, currentObj);
 
     if (this.props.onPropertyChanged !== undefined) {
       this.props.onPropertyChanged(this.props, result.property, result.newValue, result.updatedDirectObject);

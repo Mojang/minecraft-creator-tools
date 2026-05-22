@@ -223,7 +223,7 @@ export default class FeatureDefinition implements IDefinition {
 
     Log.assert(this._data !== null, "FDP");
 
-    if (!this._data) {
+    if (!this._data || Object.keys(this._data).length === 0) {
       return false;
     }
 

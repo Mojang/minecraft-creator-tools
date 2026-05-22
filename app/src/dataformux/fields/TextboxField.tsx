@@ -238,7 +238,6 @@ export default function TextboxField(props: ITextboxFieldProps): JSX.Element {
         key={"fri" + baseKey}
         id={field.id}
         value={strVal}
-        defaultValue={defaultValue !== undefined ? String(defaultValue) : undefined}
         onChange={handleInputChange}
         size="small"
         fullWidth
