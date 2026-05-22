@@ -186,8 +186,9 @@ class FeatureComponentEditor extends Component<
     // as currentJsonData when the wrapper key was absent at parse time. We
     // must re-wrap so the saved file always has the correct structure.
     let jsonToSave = currentJsonData;
+    const featureType = node.nodeType !== "unfulfilledFeature" ? node.featureType : undefined;
     const featureTypeKey =
-      node.nodeType === "featureRule" ? "minecraft:feature_rules" : node.featureType ? "minecraft:" + node.featureType : undefined;
+      node.nodeType === "featureRule" ? "minecraft:feature_rules" : featureType ? "minecraft:" + featureType : undefined;
 
     if (featureTypeKey && !currentJsonData[featureTypeKey]) {
       // currentJsonData IS the inner block — wrap it.
