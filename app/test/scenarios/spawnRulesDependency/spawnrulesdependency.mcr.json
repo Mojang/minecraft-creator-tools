@@ -332,8 +332,8 @@
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CPACKICON000] Found 1 error in Pack Icon check",
-    "infoGenerationTime": 1087,
-    "endToEndGenerationTime": 1117,
+    "infoGenerationTime": 970,
+    "endToEndGenerationTime": 999,
     "reds": 1574,
     "summary": {
       "BASEGAMEVER": {

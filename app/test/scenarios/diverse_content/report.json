@@ -21,7 +21,6 @@
     "contentFileCounts": 15,
     "contentFolderCounts": 10,
     "defaultBehaviorPackUuid": "123e4567-e89b-12d3-a456-426614174000",
-    "defaultIcon": "iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAIAAABMXPacAAAA90lEQVR4nO3RQQkAMAzAwGqq2OmdjD5yEAGBm32rw+b8IB4AAO0AAGgHAEA7AADaAQDQDgCAdgAAtAMAoB0AAO0AAGgHAEA7AADaAQDQDgCAdgAAtAMAoB0AAO0AAGgHAEA7AADaAQDQDgCAdgAAtAMAoB0AAO0AAGgHAEA7AADaAQDQDgCAdgAAtAMAoB0AAO0AAGgHAEA7AADaAQDQDgCAdgAAtAMAoB0AAO0AAGgHAEA7AADaAQDQDgCAdgAAtAMAoB0AAO0AAGgHAEA7AADaAQDQDgCAdgAAtAMAoB0AAO0AAGgHAEA7AADaAQDQDgCAdgAAtPtPj4OjDNWGYQAAAABJRU5ErkJggg==",
     "defaultBehaviorPackMinEngineVersion": "1.21.0",
     "minBehaviorPackMinEngineVersionString": "1.21.0",
     "minBehaviorPackMinEngineVersion": 11021000,
@@ -120,8 +119,8 @@
     "completedWorldDataProcessing": true,
     "worldLoadErrors": 0,
     "commands": [
-      "give",
-      "say"
+      "say",
+      "give"
     ],
     "featureSets": {
       "runtimeIdentifier.noRuntimeIdentifier": {
@@ -690,17 +689,17 @@
         },
         "120": {
           "title": "Block Patch High",
-          "defaultMessage": "Block type version (1.21.0) has a lower patch version number compared to the expected version (1.26.10)",
+          "defaultMessage": "Block type version (1.21.0) has a lower patch version number compared to the expected version (1.26.20)",
           "recommendations": 1
         },
         "140": {
           "title": "Item Patch High",
-          "defaultMessage": "Item type version (1.21.0) has a lower patch version number compared to the expected version (1.26.10)",
+          "defaultMessage": "Item type version (1.21.0) has a lower patch version number compared to the expected version (1.26.20)",
           "recommendations": 2
         },
         "160": {
           "title": "Recipe Patch High",
-          "defaultMessage": "Recipe version (1.21.0) has a lower patch version number compared to the expected version (1.26.10)",
+          "defaultMessage": "Recipe version (1.21.0) has a lower patch version number compared to the expected version (1.26.20)",
           "recommendations": 1
         },
         "218": {

@@ -116,14 +116,28 @@
   padding-bottom: 13px;
 }
 
+/*
+ * Layout note: .etre-mainArea is a flex column with overflow-y: auto.
+ * Its children stack: toolbar → etre-form → etre-rc-header → wrapper(rencoe-inline).
+ *
+ * .etre-form MUST be `flex: 0 0 auto` so it sizes to the DataForm content.
+ * If it is `flex: 1 1 auto; min-height: 0`, the sibling .rencoe-inline (which
+ * carries an inline `minHeight: calc(100vh - ...)`) forces .etre-form to collapse
+ * to 0 height. With the default `overflow: visible`, the DataForm content then
+ * paints OVER the rcHeader, producing the headers-on-top-of-headers visual bug
+ * on Visuals → Textures / Geometry / Materials tabs.
+ *
+ * Likewise, .etre-rc-header is `flex-shrink: 0` so it cannot collapse when the
+ * inline render-controller editor is tall.
+ */
 .etre-form {
-  flex: 1 1 auto;
-  min-height: 0;
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
 }
 
 .etre-rc-header {
+  flex: 0 0 auto;
   padding-left: 20px;
   padding-top: 10px;
 }

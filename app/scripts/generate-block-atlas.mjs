@@ -7,8 +7,8 @@
  *   Snapshots are 3D renders produced by the CLI's `rendervanilla` command.
  *
  * OUTPUT (committed):
- *   public/data/atlases/block-sprites.png   — tiled atlas, TILE_SIZE per cell
- *   public/data/block-atlas.json            — { tileSize, cols, rows, file, blocks }
+ *   public/res/latest/van/gen/block-sprites.png  — tiled atlas, TILE_SIZE per cell
+ *   public/data/block-atlas.json                 — { tileSize, cols, rows, file, blocks }
  *
  * Unlike the item catalog's sprite atlas (which runs on every dlres because
  * item textures are tiny flat PNGs lifted from the resource pack), this
@@ -32,8 +32,8 @@ import { join, resolve } from "path";
 
 const DEFAULT_SNAPSHOTS_DIR = "debugoutput/res/snapshots";
 const DEFAULT_TILE_SIZE = 64;
-const ATLAS_DIR = "public/data/atlases";
-const ATLAS_PNG = "public/data/atlases/block-sprites.png";
+const ATLAS_DIR = "public/res/latest/van/gen";
+const ATLAS_PNG = "public/res/latest/van/gen/block-sprites.png";
 const ATLAS_JSON = "public/data/block-atlas.json";
 
 // ── Arg parsing ──────────────────────────────────────────────────────────
@@ -160,7 +160,7 @@ const manifest = {
   tileSize,
   cols,
   rows,
-  file: "atlases/block-sprites.png",
+  file: "res/latest/van/gen/block-sprites.png",
   blocks,
 };
 writeFileSync(ATLAS_JSON, JSON.stringify(manifest));

@@ -543,6 +543,10 @@ class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProj
     }
 
     this.props.project.save();
+    // forceUpdate is required: the <Dropdown> is a controlled <select> whose value
+    // comes from props.project.preferredScriptLanguage. Without re-rendering, the
+    // user's selection reverts on the next unrelated render.
+    this.forceUpdate();
   }
 
   _handleTrackChange(
@@ -586,13 +590,18 @@ class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProj
     event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
     data: { value?: string | string[] }
   ) {
-    let i = 0;
-    for (const str in getProjectFocusStrings(this.props.intl)) {
-      if (data.value === str) {
+    // NOTE: A previous version of this used `for (const str in getProjectFocusStrings(...))`,
+    // which iterates over array INDICES ("0","1",...), not the localized strings. The
+    // comparison `data.value === str` therefore never matched, leaving project.focus stuck
+    // at General regardless of which option the user picked. Iterate values instead.
+    const focusStrings = getProjectFocusStrings(this.props.intl);
+    for (let i = 0; i < focusStrings.length; i++) {
+      if (data.value === focusStrings[i]) {
         this.props.project.focus = i;
+        this.props.project.save();
+        this.forceUpdate();
+        return;
       }
-
-      i++;
     }
   }
 
@@ -600,11 +609,21 @@ class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProj
     event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
     data: { value?: string | string[] }
   ) {
-    if (data.value === "Latest Beta") {
-      this.props.project.scriptVersion = ProjectScriptVersion.latestStable;
-    } else {
+    // The actual option strings come from getScriptVersionStrings:
+    //   [0] = "Latest Stable (2.7.0)" -> latestStable
+    //   [1] = "Stable 1.x"          -> stable10
+    // A prior version compared against the literal "Latest Beta", which was
+    // never one of the option strings — so EVERY selection silently fell into
+    // the else branch and set the version to stable10.
+    const versionStrings = getScriptVersionStrings(this.props.intl);
+    if (data.value === versionStrings[1]) {
       this.props.project.scriptVersion = ProjectScriptVersion.stable10;
+    } else {
+      this.props.project.scriptVersion = ProjectScriptVersion.latestStable;
     }
+
+    this.props.project.save();
+    this.forceUpdate();
   }
 
   render() {
@@ -1084,14 +1103,17 @@ class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProj
                   {this.props.intl.formatMessage({ id: "project_editor.props.language" })}
                 </label>
                 <Dropdown
-                  items={[this.props.intl.formatMessage({ id: "project_editor.props.javascript" }), "TypeScript"]}
+                  items={[
+                    this.props.intl.formatMessage({ id: "project_editor.props.javascript" }),
+                    this.props.intl.formatMessage({ id: "project_editor.props.typescript" }),
+                  ]}
                   aria-labelledby="ppe-scriptLanguagelabel"
                   className="ppe-fieldDropdown"
                   placeholder={this.props.intl.formatMessage({ id: "project_editor.props.select_language" })}
                   defaultValue={
                     this.props.project.preferredScriptLanguage === ProjectScriptLanguage.javaScript
                       ? this.props.intl.formatMessage({ id: "project_editor.props.javascript" })
-                      : "TypeScript"
+                      : this.props.intl.formatMessage({ id: "project_editor.props.typescript" })
                   }
                   onChange={this._handleLanguageChange}
                 />
@@ -1107,7 +1129,7 @@ class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProj
                   placeholder={this.props.intl.formatMessage({ id: "project_editor.props.select_version" })}
                   defaultValue={
                     this.props.project.scriptVersion === ProjectScriptVersion.latestStable
-                      ? "Latest Stable"
+                      ? this.props.intl.formatMessage({ id: "project_editor.props.script_latest_stable" })
                       : this.props.intl.formatMessage({ id: "project_editor.props.script_stable_1x" })
                   }
                   onChange={this._handleVersionChange}
@@ -1251,3 +1273,4 @@ class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProj
 }
 
 export default withLocalization(ProjectPropertyEditor);
+

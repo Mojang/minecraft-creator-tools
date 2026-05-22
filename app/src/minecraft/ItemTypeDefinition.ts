@@ -454,6 +454,49 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
     return false;
   }
 
+  /**
+   * Returns the texture short-name referenced by this item's `minecraft:icon`
+   * component, if any. The icon component accepts several shapes:
+   *   "minecraft:icon": "sample_item"                              (1.21.70+ shorthand)
+   *   "minecraft:icon": { "texture": "sample_item" }               (legacy)
+   *   "minecraft:icon": { "textures": "sample_item" }              (variant)
+   *   "minecraft:icon": { "textures": { "default": "sample_item" } } (state-keyed)
+   * The returned value is a key into the resource pack's
+   * `textures/item_texture.json` catalog (NOT a file path).
+   */
+  getIconTextureKey(): string | undefined {
+    const comp = this.getComponent("minecraft:icon");
+    if (!comp) return undefined;
+
+    const data = comp.getData();
+    if (typeof data === "string") {
+      return data;
+    }
+
+    if (data && typeof data === "object") {
+      const obj = data as { texture?: unknown; textures?: unknown };
+      if (typeof obj.texture === "string") {
+        return obj.texture;
+      }
+      if (typeof obj.textures === "string") {
+        return obj.textures;
+      }
+      if (obj.textures && typeof obj.textures === "object") {
+        const tx = obj.textures as { [key: string]: unknown };
+        if (typeof tx.default === "string") {
+          return tx.default;
+        }
+        for (const key in tx) {
+          if (typeof tx[key] === "string") {
+            return tx[key] as string;
+          }
+        }
+      }
+    }
+
+    return undefined;
+  }
+
   persist(): boolean {
     if (this._file === undefined) {
       return false;

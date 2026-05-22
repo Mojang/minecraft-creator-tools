@@ -1,0 +1,18 @@
+{
+  "name": "starter-hello-world-tests",
+  "version": "0.1.0",
+  "description": "My Minecraft Addon Project",
+  "private": true,
+  "scripts": {
+    "lint": "just-scripts lint",
+    "build": "just-scripts build",
+    "clean": "just-scripts clean",
+    "deploy": "npm run build && npx mct deploy env -i .",
+    "local-deploy": "just-scripts local-deploy",
+    "mcaddon": "just-scripts mcaddon"
+  },
+  "dependencies": {
+    "@minecraft/server": "2.0.0",
+    "@minecraft/server-ui": "2.0.0"
+  }
+}

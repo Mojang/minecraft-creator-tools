@@ -78,6 +78,39 @@
   text-align: center;
 }
 
+/* No-texture friendly placeholder (shown when a block has no texture yet,
+   so beginners never see the 3D engine's magenta missing-texture fallback). */
+.btop-noTexturePlaceholder {
+  gap: 12px;
+}
+
+.btop-noTextureIcon {
+  background: linear-gradient(135deg, #5a6c7d 0%, #3a4a5a 100%);
+}
+
+.btop-noTextureIconGlyph {
+  font-size: 36px;
+  color: #ffffff;
+  opacity: 0.85;
+}
+
+.btop-noTextureTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--btop-text);
+}
+
+.btop-noTextureBody {
+  font-size: 13px;
+  color: var(--btop-text-muted);
+  max-width: 320px;
+  line-height: 1.4;
+}
+
+.btop-noTextureAction {
+  margin-top: 8px;
+}
+
 .btop-blockIcon {
   width: 80px;
   height: 80px;

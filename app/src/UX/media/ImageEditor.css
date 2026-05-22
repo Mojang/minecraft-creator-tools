@@ -6,20 +6,85 @@
 }
 
 .ie-toolBar {
-  padding-left: 80px;
+  padding: 6px 12px;
   flex-shrink: 0;
+  /* Subtle elevated band so the toolbar reads as a distinct surface
+     above the canvas. rgba overlays adapt to both light/dark themes
+     by tinting the underlying theme background rather than hardcoding
+     a colour. */
+  background-color: rgba(127, 127, 127, 0.12);
+  border-bottom: 1px solid rgba(127, 127, 127, 0.25);
+}
+
+/* Allow toolbar contents to wrap to a second row on narrow widths so the
+   trailing Properties button doesn't get clipped. */
+.ie-toolBar .MuiStack-root {
+  flex-wrap: wrap;
+  row-gap: 4px;
 }
 
 .ie-contents {
   flex: 1;
   overflow: auto;
   min-height: 0;
+  padding: 12px;
+  /* Checkerboard so the canvas area reads as a distinct workspace even
+     when the source image is small (e.g. a 16x16 item icon). The two
+     light/dark rgba layers tint the underlying theme background so the
+     pattern is visible against both light and dark surfaces. */
+  background-color: rgba(0, 0, 0, 0.18);
+  background-image:
+    linear-gradient(45deg, rgba(255, 255, 255, 0.06) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255, 255, 255, 0.06) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.06) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.06) 75%);
+  background-size: 16px 16px;
+  background-position:
+    0 0,
+    0 8px,
+    8px -8px,
+    -8px 0;
 }
 
 .ie-image {
   padding: 6px;
   image-rendering: pixelated;
   display: block;
+  /* Outline + shadow so the actual canvas bounds are obvious against
+     the checkerboard workspace, especially for small icon-sized images. */
+  outline: 1px solid rgba(127, 127, 127, 0.55);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* MRU swatch strip in the toolbar. Each swatch is a small clickable square
+   that sets drawColor. The selected swatch (matching current drawColor) gets
+   an outline for visual feedback. */
+.ie-colorMru {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 3px;
+  padding: 0 4px;
+}
+
+.ie-colorSwatch {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid rgba(0, 0, 0, 0.45);
+  outline: 1px solid rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  image-rendering: pixelated;
+}
+
+.ie-colorSwatch:hover {
+  outline-color: rgba(255, 255, 255, 0.7);
+}
+
+.ie-colorSwatchSelected {
+  outline: 2px solid #ffd166;
+  outline-offset: 1px;
 }
 
 .ie-float {

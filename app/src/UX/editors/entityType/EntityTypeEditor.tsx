@@ -51,6 +51,9 @@ import { getThemeColors, getThemedColor, ThemeColors } from "../../hooks/theme/u
 import IProjectTheme from "../../types/IProjectTheme";
 import { getFriendlyComponentGroupName } from "../../utils/ComponentFriendlyNames";
 import EntityTraitPicker from "./EntityTraitPicker";
+import { applyEntityTraitChanges } from "../../../minecraft/EntityTraitApplier";
+import TraitDetector from "../../../minecraft/TraitDetector";
+import { EntityTraitId } from "../../../minecraft/IContentMetaSchema";
 import SpawnRulesEditorWrapper from "../../components/fileEditors/SpawnRulesEditor/SpawnRulesEditorWrapper";
 import LootTableVisualEditor from "../lootTable/LootTableVisualEditor";
 import SoundEventSetEditor, { SoundEventSetType } from "../sound/SoundEventSetEditor";
@@ -127,6 +130,7 @@ class EntityTypeEditor extends Component<IEntityTypeEditorProps, IEntityTypeEdit
     this._setLootMode = this._setLootMode.bind(this);
     this._setPropertiesMode = this._setPropertiesMode.bind(this);
     this._setTraitsMode = this._setTraitsMode.bind(this);
+    this._handleTraitsChanged = this._handleTraitsChanged.bind(this);
     this._handleAdvancedMenuOpen = this._handleAdvancedMenuOpen.bind(this);
     this._handleAdvancedMenuClose = this._handleAdvancedMenuClose.bind(this);
     this._handleOpenEventFull = this._handleOpenEventFull.bind(this);
@@ -249,6 +253,35 @@ class EntityTypeEditor extends Component<IEntityTypeEditorProps, IEntityTypeEdit
 
   _setTraitsMode() {
     this._setMode(EntityTypeEditorMode.traits);
+  }
+
+  _handleTraitsChanged(newTraits: EntityTraitId[]) {
+    if (this.props.readOnly) {
+      return;
+    }
+
+    const file = this.state?.fileToEdit;
+    const et = file?.manager as EntityTypeDefinition | undefined;
+    if (!et || !et._data) {
+      return;
+    } // Re-detect the current trait state from the entity itself so the diff
+    // is computed against ground truth rather than stale picker state.
+    const components = et._data.components || {};
+    const componentGroups: Record<string, Record<string, any>> = {};
+    if (et._data.component_groups) {
+      for (const [name, group] of Object.entries(et._data.component_groups)) {
+        if (group && typeof group === "object") {
+          componentGroups[name] = group as Record<string, any>;
+        }
+      }
+    }
+    const detected = TraitDetector.detectEntityTraits(components, componentGroups, 0.6).map(
+      (r) => r.traitId
+    ) as EntityTraitId[];
+
+    applyEntityTraitChanges(et, detected, newTraits);
+
+    this._doUpdate();
   }
 
   _setComponentsMode() {
@@ -700,7 +733,12 @@ class EntityTypeEditor extends Component<IEntityTypeEditorProps, IEntityTypeEdit
             overflowY: "auto",
           }}
         >
-          <EntityTraitPicker entityType={et} theme={this.props.theme} readOnly={this.props.readOnly} />
+          <EntityTraitPicker
+            entityType={et}
+            theme={this.props.theme}
+            readOnly={this.props.readOnly}
+            onTraitsChanged={this._handleTraitsChanged}
+          />
         </div>
       );
     } else if (this.state.mode === EntityTypeEditorMode.stateDiagrams) {

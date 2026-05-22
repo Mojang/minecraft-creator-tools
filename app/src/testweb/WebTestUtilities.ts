@@ -11,6 +11,16 @@ const ignorableTokens = [
   'unique "key" prop', // React key warnings - tracked separately as tech debt
   "Encountered two children with the same key", // React duplicate key warning
   "404 (Not Found)", // Map viewer may request textures that don't exist for certain block types
+  // Chrome auto-logs "Failed to load resource: the server responded with a status of <code>" for
+  // any HTTP error response. These are network-layer failures and are the proper concern of
+  // setupRequestFailureTracking (which filters them through ignorable404Patterns and reports
+  // useful context). When a test only checks consoleErrors, browser-generated resource-load
+  // errors are noise — production environments often have stray 404s (favicons, optional assets,
+  // empty-status-text variants like "404 ()") that have nothing to do with the JS behavior the
+  // test is exercising. Excluded here so per-test consoleErrors assertions remain focused on
+  // genuine JavaScript errors. Tests that need to assert specific network behavior should use
+  // setupRequestFailureTracking instead.
+  "Failed to load resource",
   "Support for defaultProps will be removed", // React 18 deprecation warning from FluentUI Northstar
   "findDOMNode is deprecated", // React 18 deprecation warning from FluentUI Northstar
   "with both value and defaultValue props", // MUI controlled/uncontrolled input warnings

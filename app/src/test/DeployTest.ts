@@ -40,6 +40,21 @@ let resultsFolder: IFolder | undefined = undefined;
   resultsFolder = env.resultsFolder;
 })();
 
+async function _loadProjectFromSampleContent(name: string) {
+  if (!creatorTools || !scenariosFolder || !resultsFolder) {
+    assert.fail("Not properly initialized");
+  }
+
+  const project = new Project(creatorTools, name, null);
+
+  project.autoDeploymentMode = ProjectAutoDeploymentMode.noAutoDeployment;
+  project.localFolderPath = TestPaths.sampleContentPath(name);
+
+  await project.inferProjectItemsFromFiles();
+
+  return project;
+}
+
 async function _loadProjectFromScenario(scenarioName: string) {
   if (!creatorTools || !scenariosFolder || !resultsFolder) {
     assert.fail("Not properly initialized");
@@ -56,21 +71,6 @@ async function _loadProjectFromScenario(scenarioName: string) {
 
   project.autoDeploymentMode = ProjectAutoDeploymentMode.noAutoDeployment;
   project.localFolderPath = StorageUtilities.ensureEndsWithDelimiter(scenarioFolder.fullPath);
-
-  await project.inferProjectItemsFromFiles();
-
-  return project;
-}
-
-async function _loadProjectFromSampleContent(name: string) {
-  if (!creatorTools || !scenariosFolder || !resultsFolder) {
-    assert.fail("Not properly initialized");
-  }
-
-  const project = new Project(creatorTools, name, null);
-
-  project.autoDeploymentMode = ProjectAutoDeploymentMode.noAutoDeployment;
-  project.localFolderPath = TestPaths.sampleContentPath(name);
 
   await project.inferProjectItemsFromFiles();
 
@@ -125,7 +125,7 @@ describe("deploy-packaging", async () => {
   it("packages project to ZipStorage correctly", async function () {
     this.timeout(30000);
 
-    const project = await _loadProjectFromScenario("deployCommand");
+    const project = await _loadProjectFromSampleContent("simple");
 
     if (!creatorTools || !resultsFolder) {
       assert.fail("Not properly initialized");
@@ -170,7 +170,7 @@ describe("deploy-packaging", async () => {
   it("can round-trip zip binary through ZipStorage", async function () {
     this.timeout(30000);
 
-    const project = await _loadProjectFromScenario("deployCommand");
+    const project = await _loadProjectFromSampleContent("simple");
 
     if (!creatorTools) {
       assert.fail("Not properly initialized");
@@ -213,7 +213,7 @@ describe("deploy-server-simulation", async () => {
   it("simulates full deploy workflow to folder", async function () {
     this.timeout(60000);
 
-    const project = await _loadProjectFromScenario("deployCommand");
+    const project = await _loadProjectFromSampleContent("simple");
 
     if (!creatorTools || !resultsFolder) {
       assert.fail("Not properly initialized");
@@ -278,7 +278,7 @@ describe("deploy-incremental", async () => {
   it("detects differences between deployments", async function () {
     this.timeout(60000);
 
-    const project = await _loadProjectFromScenario("deployCommand");
+    const project = await _loadProjectFromSampleContent("simple");
 
     if (!creatorTools) {
       assert.fail("Not properly initialized");
@@ -347,7 +347,7 @@ describe("deploy-multi-chunk-body", async () => {
     // This tests the fix for the bug where body.length === 1 check failed
     // for larger payloads that arrive in multiple chunks
 
-    const project = await _loadProjectFromScenario("deployCommand");
+    const project = await _loadProjectFromSampleContent("simple");
 
     if (!creatorTools) {
       assert.fail("Not properly initialized");

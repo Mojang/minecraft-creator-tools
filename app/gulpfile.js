@@ -267,9 +267,7 @@ function copyCheckedInRes() {
   // directly onto the bedrock-schemas baseline (single output location).
   // Without this exclusion, overrides would land at public/data/local_forms/
   // and require runtime fallback logic in Database.ts.
-  return gulp
-    .src(["public_supplemental/**/*", "!public_supplemental/data/local_forms/**"])
-    .pipe(gulp.dest("public/"));
+  return gulp.src(["public_supplemental/**/*", "!public_supplemental/data/local_forms/**"]).pipe(gulp.dest("public/"));
 }
 
 // Copy forms from @minecraft/bedrock-schemas package directly to VSC toolbuild
@@ -287,9 +285,19 @@ function copyVscBedrockSchemasForms() {
 // a single canonical location (`toolbuild/vsc/data/forms/`) the VSC extension can read
 // without runtime branching.
 function mergeLocalFormsIntoVsc() {
-  return gulp
-    .src(["public_supplemental/data/local_forms/**/*"])
-    .pipe(gulp.dest("toolbuild/vsc/data/forms/"));
+  return gulp.src(["public_supplemental/data/local_forms/**/*"]).pipe(gulp.dest("toolbuild/vsc/data/forms/"));
+}
+
+// Overlay our checked-in JSON schema OVERRIDES on top of the bedrock-schemas
+// baseline inside the VSC toolbuild output. Same-named files under
+// `public_supplemental/schemas/` (e.g. rp/models/index.schema.json) REPLACE the
+// upstream copy so Monaco's JSON validator inside the VSC extension sees the
+// corrected types. Mirrors `mergeLocalFormsIntoVsc` — when upstream
+// `@minecraft/bedrock-schemas` ships a fix, delete the override file and this
+// becomes a no-op for that schema. The web app gets the same overlay applied by
+// vite.config.js's serveBedrockSchemas plugin (dev) and writeBundle (prod).
+function mergeLocalSchemasIntoVsc() {
+  return gulp.src(["public_supplemental/schemas/**/*"]).pipe(gulp.dest("toolbuild/vsc/schemas/"));
 }
 
 // Copy forms from @minecraft/bedrock-schemas into public/data/forms/ so they are
@@ -311,9 +319,7 @@ function copyBedrockSchemaFormsToPublic() {
 // bridge. When upstream catches up, delete the override file and the merge
 // becomes a no-op for that form.
 function mergeLocalFormsIntoPublic() {
-  return gulp
-    .src(["public_supplemental/data/local_forms/**/*"])
-    .pipe(gulp.dest("public/data/forms/"));
+  return gulp.src(["public_supplemental/data/local_forms/**/*"]).pipe(gulp.dest("public/data/forms/"));
 }
 
 // Generate index.json files for each forms subdirectory so the web app's
@@ -337,18 +343,9 @@ function generateFormIndexFiles(done) {
 
 function copyVscData() {
   return gulp
-    .src(
-      [
-        "public/data/**/*.json",
-        "public/data/**/*.zip",
-        "public/data/**/*.mcworld",
-        "public/data/atlases/**/*.png",
-        "!public/data/forms/**",
-      ],
-      {
-        encoding: false,
-      }
-    )
+    .src(["public/data/**/*.json", "public/data/**/*.zip", "public/data/**/*.mcworld", "!public/data/forms/**"], {
+      encoding: false,
+    })
     .pipe(newer("toolbuild/vsc/data/"))
     .pipe(gulp.dest("toolbuild/vsc/data/"));
 }
@@ -684,11 +681,11 @@ gulp.task(
     // Step 1: lay down the bedrock-schemas baseline into both web (public/data/forms/)
     // and VSC (toolbuild/vsc/data/forms/) outputs in parallel.
     gulp.parallel(copyVscBedrockSchemasForms, copyVscSchemas, copyBedrockSchemaFormsToPublic),
-    // Step 2: overlay our checked-in form OVERRIDES on top of the baseline.
-    // Same-named files (e.g. pack/behavior_pack_header_json.form.json) replace
-    // upstream copies, producing a single canonical output location with no
-    // runtime fallback chain.
-    gulp.parallel(mergeLocalFormsIntoPublic, mergeLocalFormsIntoVsc),
+    // Step 2: overlay our checked-in form and schema OVERRIDES on top of the
+    // baseline. Same-named files (e.g. pack/behavior_pack_header_json.form.json,
+    // rp/models/index.schema.json) replace upstream copies, producing a single
+    // canonical output location with no runtime fallback chain.
+    gulp.parallel(mergeLocalFormsIntoPublic, mergeLocalFormsIntoVsc, mergeLocalSchemasIntoVsc),
     // Step 3: regenerate index.json files for HttpFolder discovery.
     generateFormIndexFiles
   )
@@ -901,7 +898,20 @@ gulp.task("clean-webbuild", function () {
 });
 
 gulp.task("clean-res", function () {
-  return del(["public/res/latest", "public/res/samples"]);
+  // Preserve the checked-in vanilla block-sprite atlas
+  // (public/res/latest/van/gen/block-sprites.png). Regenerating it requires
+  // rendering every block in Babylon.js and takes ~1 hour, so it is committed
+  // to the repo (see .gitignore allowlist). Deleting `public/res/latest`
+  // wholesale during `preparedevenv` would wipe it out, so we use negation
+  // patterns to keep the gen folder and the atlas file.
+  return del([
+    "public/res/latest/**",
+    "!public/res/latest",
+    "!public/res/latest/van",
+    "!public/res/latest/van/gen",
+    "!public/res/latest/van/gen/block-sprites.png",
+    "public/res/samples",
+  ]);
 });
 
 gulp.task("customizesite", gulp.series(customizeSiteCsp, customizeSiteHead, customizeSiteBody));

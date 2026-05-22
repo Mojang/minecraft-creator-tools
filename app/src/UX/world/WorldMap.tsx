@@ -2683,6 +2683,17 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
     this._curLayer = new MCLayer();
 
     (this._curLayer as L.GridLayer).addTo(this._map);
+
+    // The Leaflet container may have been 0×0 when the map was first created
+    // (e.g. the component was just remounted after a view-mode switch). Schedule
+    // an invalidateSize() on the next animation frame so that Leaflet re-measures
+    // the container *after* the browser has laid out the new DOM and then
+    // re-requests tiles for the correct viewport.
+    requestAnimationFrame(() => {
+      if (this._map) {
+        this._map.invalidateSize();
+      }
+    });
   }
 
   setTopsLevel(): void {
@@ -3342,8 +3353,18 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
   }
 
   _doResize() {
-    if (this._map) {
-      this._map.invalidateSize();
+    if (!this._map) return;
+
+    const prevSize = this._map.getSize();
+    this._map.invalidateSize();
+    const newSize = this._map.getSize();
+
+    // If the map was previously 0×0 (created before the container was in the
+    // DOM) and now has real dimensions, the existing tile layer never got a
+    // chance to request tiles. Rebuild the layer so Leaflet requests the full
+    // viewport worth of tiles.
+    if ((prevSize.x === 0 || prevSize.y === 0) && newSize.x > 0 && newSize.y > 0 && this._curLayer) {
+      this._ensureLayer();
     }
   }
 

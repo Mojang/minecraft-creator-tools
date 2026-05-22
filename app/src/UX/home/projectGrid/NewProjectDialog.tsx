@@ -223,10 +223,6 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
             background: isDark
               ? `linear-gradient(180deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.default} 100%)`
               : `linear-gradient(180deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.default} 100%)`,
-            // a11y (WCAG 1.4.1, 1.4.11): under `forced-colors: active`, browsers reset
-            // background-image to `none`, which would leave this dialog transparent and
-            // bleed page content through. Provide an opaque fallback via background-color
-            // and a forced-colors media block that paints the system Canvas color.
             backgroundColor: theme.palette.background.default,
             border: `2px solid ${theme.palette.divider}`,
             borderRadius: "4px",
@@ -381,7 +377,16 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
             placeholder={intl.formatMessage({ id: "home.new_project.creator_placeholder" })}
             error={Boolean(creatorError)}
             helperText={creatorError}
-            onChange={() => setCreatorError(null)}
+            onChange={(e) => {
+              const v = (e.target as HTMLInputElement).value;
+              setCreatorError(v.trim() ? null : intl.formatMessage({ id: "home.new_project.creator_required" }));
+            }}
+            onBlur={(e) => {
+              const v = (e.target as HTMLInputElement).value;
+              if (!v.trim()) {
+                setCreatorError(intl.formatMessage({ id: "home.new_project.creator_required" }));
+              }
+            }}
           />
           <FormField
             defaultValue={suggestedDesc}

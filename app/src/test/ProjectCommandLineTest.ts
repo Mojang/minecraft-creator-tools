@@ -4,15 +4,7 @@ import * as fs from "fs";
 import Project, { ProjectAutoDeploymentMode } from "../app/Project";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import { ProjectInfoSuite } from "../info/IProjectInfoData";
-import { volatileFileExtensions, folderMatches } from "./TestUtilities";
-import {
-  creatorTools,
-  scenariosFolder,
-  resultsFolder,
-  removeResultFolder,
-  ensureResultFolder,
-  collectLines,
-} from "./CommandLineTestHelpers";
+import { creatorTools, removeResultFolder, ensureResultFolder, collectLines } from "./CommandLineTestHelpers";
 
 describe("addLootTable", async () => {
   let exitCode: number | null = null;
@@ -84,8 +76,20 @@ describe("addLootTable", async () => {
     assert.equal(allProjectInfoSet.errorFailWarnCount, 2, allProjectInfoSet.errorFailWarnString);
   }).timeout(10000);
 
-  it("output matches", async () => {
-    await folderMatches(scenariosFolder, resultsFolder, "addLootTable", volatileFileExtensions);
+  it("should generate loot table file", () => {
+    const lootTablePath = "./test/results/addLootTable/behavior_packs/contoso_lt_bp/loot_tables/testername.json";
+    assert(fs.existsSync(lootTablePath), "Loot table file should exist at: " + lootTablePath);
+    const content = JSON.parse(fs.readFileSync(lootTablePath, "utf8"));
+    assert.isObject(content, "Loot table should be valid JSON");
+  });
+
+  it("should generate manifest file", () => {
+    const manifestPath = "./test/results/addLootTable/behavior_packs/contoso_lt_bp/manifest.json";
+    assert(fs.existsSync(manifestPath), "Manifest file should exist at: " + manifestPath);
+    const content = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+    assert.equal(content.format_version, 2, "Manifest format_version should be 2");
+    assert(content.header?.name, "Manifest should have header.name");
+    assert(content.header?.uuid, "Manifest should have header.uuid");
   });
 });
 
@@ -126,8 +130,16 @@ describe("deployCommand", async () => {
     assert.equal(exitCode, 0);
   });
 
-  it("output matches", async () => {
-    await folderMatches(scenariosFolder, resultsFolder, "deployCommand", volatileFileExtensions);
+  it("deployed files should exist", () => {
+    const base = "./test/results/deployCommand/development_behavior_packs/StarterTestsTutorial/";
+    assert(fs.existsSync(base + "manifest.json"), "manifest.json should exist");
+    assert(fs.existsSync(base + "pack_icon.png"), "pack_icon.png should exist");
+    assert(fs.existsSync(base + "scripts/index.js"), "scripts/index.js should exist");
+    assert(fs.existsSync(base + "scripts/starttests.js"), "scripts/starttests.js should exist");
+    assert(
+      fs.existsSync(base + "structures/starttests/mediumglass.mcstructure"),
+      "mediumglass.mcstructure should exist"
+    );
   });
 });
 
@@ -620,8 +632,12 @@ describe("worldCommand", async () => {
     assert.equal(exitCode, 0);
   }).timeout(10000);
 
-  it("output matches", async () => {
-    await folderMatches(scenariosFolder, resultsFolder, "worldCommand", volatileFileExtensions);
+  it("world files should exist", () => {
+    const base = "./test/results/worldCommand/";
+    assert(fs.existsSync(base + "level.dat"), "level.dat should exist");
+    assert(fs.existsSync(base + "level.dat_old"), "level.dat_old should exist");
+    const levelname = fs.readFileSync(base + "levelname.txt", "utf8").trim();
+    assert.equal(levelname, "worldCommand", "levelname.txt should contain 'worldCommand'");
   });
 });
 

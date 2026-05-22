@@ -55,11 +55,18 @@ export default function ImageOverlay({ image, item, children, alt }: ImageOverla
         }}
       />
       <Box
-        alignContent="flex-end"
-        justifyContent="flex-start"
         sx={{
           position: "absolute",
           display: "flex",
+          // Pin the title/description block to the bottom of the overlay.
+          // The previous `alignContent: flex-end` is ignored on a single-row
+          // flex container, so children flowed from the top and collided with
+          // top-right card badges (e.g. "RECOMMENDED"). Using `alignItems` on
+          // a column flex container keeps content out of the badge zone AND
+          // sits the text on the darkest part of the gradient where contrast
+          // is highest.
+          flexDirection: "column",
+          justifyContent: "flex-end",
           inset: 0,
           background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.2) 100%)",
         }}

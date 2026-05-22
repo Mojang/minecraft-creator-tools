@@ -224,6 +224,9 @@
   display: block;
   height: 36px;
   padding-top: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+  min-width: 0;
   /* Subtler than the saturated orange — desaturated amber that still signals focus */
   background-color: rgba(216, 136, 0, 0.35);
 }
@@ -259,6 +262,9 @@
   padding-top: 1px;
   overflow: hidden;
   white-space: nowrap;
+  /* Prevent the label from expanding the 1fr grid column beyond the
+     available panel width, which would push the badge off-screen. */
+  min-width: 0;
 }
 
 .pil-itemIcon {

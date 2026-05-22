@@ -1,0 +1,40 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Sample Add-on Pack",
+    "description": "Sample Add-on Resource Pack",
+    "uuid": "9405c6b3-81dd-4eba-8f0d-36f4c58ea51b",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      26,
+      20
+    ]
+  },
+  "modules": [
+    {
+      "description": "Add-on Pack Resources",
+      "type": "resources",
+      "uuid": "523d72d2-3ba9-498a-bc63-8beb5fe268cb",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "e1a34acf-365a-42d9-83f4-6db0412b8fa6",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}

@@ -10,7 +10,18 @@ export default function AddOnOverview() {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <Box sx={{ mb: 3 }}>
+    <Box
+      sx={(theme) => ({
+        mb: 3,
+        // Give the expander a subtle surface so the click target reads as a
+        // distinct interactive card. Previously it sat directly on the page
+        // background with no chrome, which made it visually disappear in
+        // light mode and confused users about whether it was clickable.
+        backgroundColor: theme.palette.mode === "dark" ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.035)",
+        border: `1px solid ${theme.palette.mode === "dark" ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.1)"}`,
+        borderRadius: 1,
+      })}
+    >
       <Box
         onClick={() => setExpanded(!expanded)}
         role="button"
@@ -27,8 +38,8 @@ export default function AddOnOverview() {
           alignItems: "center",
           gap: 1,
           cursor: "pointer",
-          py: 1,
-          px: 0.5,
+          py: 1.25,
+          px: 1.25,
           borderRadius: 1,
           "&:hover": {
             backgroundColor: theme.palette.mode === "dark" ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.03)",

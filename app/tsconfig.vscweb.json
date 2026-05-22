@@ -5,9 +5,12 @@
 		"outDir": "dist",
 		"moduleResolution": "node",
 		"lib": [
-			"es2022","dom"
+			"es2022",
+			"dom"
 		],
-		"types": [ "wicg-file-system-access"],
+		"types": [
+			"wicg-file-system-access"
+		],
 		"sourceMap": true,
 		"inlineSourceMap": false,
 		"inlineSources": false,
@@ -20,10 +23,11 @@
 		"esModuleInterop": true,
 		"resolveJsonModule": true,
 		"strict": true,
-		"noImplicitReturns": true, 
+		"noImplicitReturns": true,
 		"noFallthroughCasesInSwitch": true,
 	},
 	"exclude": [
+		"**/*.spec.ts",
 		"src/monaco/**/*",
 		"src/local/**/*",
 		"src/cli/**/*",
@@ -48,7 +52,7 @@
 		"public/**/*",
 		"dist/**/*",
 		"tools/**/*",
-		"debugoutput/**/*",		
+		"debugoutput/**/*",
 		"build/**/*",
 		"toolbuild/**/*",
 		"archive/**/*",

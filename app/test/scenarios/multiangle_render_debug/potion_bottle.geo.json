@@ -7,7 +7,7 @@
         "texture_width": 64,
         "texture_height": 24,
         "visible_bounds_width": 1,
-        "visible_bounds_height": 1,
+        "visible_bounds_height": 2,
         "visible_bounds_offset": [
           0,
           0.5,

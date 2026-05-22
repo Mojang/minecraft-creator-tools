@@ -18,6 +18,7 @@
 	},
 	"include": [
 		"src/test/**/*",
+		"src/**/*.spec.ts",
 		"src/types/**/*",
 		"src/cli/ui/commands/**/*.ts"
 	],

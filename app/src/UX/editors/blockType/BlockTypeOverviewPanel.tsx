@@ -38,6 +38,9 @@ import Project from "../../../app/Project";
 import ProjectItem from "../../../app/ProjectItem";
 import { ProjectItemType } from "../../../app/IProjectItemData";
 import { EditorContentPanel } from "../../appShell/EditorContentPanel";
+import { Button } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPalette } from "@fortawesome/free-solid-svg-icons";
 import ModelViewer from "../../world/ModelViewer";
 import Database from "../../../minecraft/Database";
 import DataFormUtilities from "../../../dataform/DataFormUtilities";
@@ -87,10 +90,7 @@ interface IBlockTypeOverviewPanelState {
   expectedTextureIds?: string[]; // Debug: texture IDs expected from blocks.json
 }
 
-class BlockTypeOverviewPanel extends Component<
-  IBlockTypeOverviewPanelProps,
-  IBlockTypeOverviewPanelState
-> {
+class BlockTypeOverviewPanel extends Component<IBlockTypeOverviewPanelProps, IBlockTypeOverviewPanelState> {
   constructor(props: IBlockTypeOverviewPanelProps) {
     super(props);
 
@@ -366,9 +366,17 @@ class BlockTypeOverviewPanel extends Component<
     this.props.onNavigateToTab("states");
   }
 
+  _handleAddTextureClick = () => {
+    this.props.onNavigateToTab("visuals");
+  };
+
   _renderComponentList(components: IComponentSummary[]) {
     if (components.length === 0) {
-      return <div className="btop-emptyMessage">{this.props.intl.formatMessage({ id: "project_editor.block_overview.no_components" })}</div>;
+      return (
+        <div className="btop-emptyMessage">
+          {this.props.intl.formatMessage({ id: "project_editor.block_overview.no_components" })}
+        </div>
+      );
     }
 
     return (
@@ -415,10 +423,54 @@ class BlockTypeOverviewPanel extends Component<
     const geometryId = blockType.geometryIdentifier;
     const { geometryItem, textureItem, textureData, isSimpleBlock } = this.state;
 
-    // Determine what to render for the block preview
+    // Determine what to render for the block preview.
+    const hasUsableTexture = (!!textureData && textureData.length > 0) || !!textureItem;
+
     let blockPreviewContent: React.ReactNode;
 
-    if (!isSimpleBlock && geometryItem) {
+    if (!hasUsableTexture) {
+      // Friendly placeholder for blocks that have no texture yet (newly created
+      // via the wizard, or whose texture failed to load).
+      const expectedTextures = this.state.expectedTextureIds;
+      blockPreviewContent = (
+        <div className="btop-blockPreviewInfo btop-noTexturePlaceholder">
+          <div className="btop-blockIcon btop-noTextureIcon">
+            <FontAwesomeIcon icon={faPalette} className="btop-noTextureIconGlyph" />
+          </div>
+          <div className="btop-blockDetails">
+            <div className="btop-noTextureTitle">
+              {this.props.intl.formatMessage({ id: "project_editor.block_overview.no_texture_title" })}
+            </div>
+            <div className="btop-noTextureBody">
+              {this.props.intl.formatMessage({ id: "project_editor.block_overview.no_texture_body" })}
+            </div>
+            <div className="btop-blockId">{blockId}</div>
+            {geometryId && (
+              <div className="btop-blockGeometry">
+                <span className="btop-detailLabel">
+                  {this.props.intl.formatMessage({ id: "project_editor.block_overview.geometry_label" })}
+                </span>{" "}
+                {geometryId}
+              </div>
+            )}
+            {isSimpleBlock && expectedTextures && expectedTextures.length > 0 && (
+              <div className="btop-blockGeometry">
+                <span className="btop-detailLabel">
+                  {this.props.intl.formatMessage({ id: "project_editor.block_overview.textures_label" })}
+                </span>{" "}
+                {expectedTextures.join(", ")}
+              </div>
+            )}
+            <div className="btop-noTextureAction">
+              <Button variant="contained" color="primary" onClick={this._handleAddTextureClick}>
+                <FontAwesomeIcon icon={faPalette} style={{ marginRight: 6 }} />
+                {this.props.intl.formatMessage({ id: "project_editor.block_overview.add_texture_cta" })}
+              </Button>
+            </div>
+          </div>
+        </div>
+      );
+    } else if (!isSimpleBlock && geometryItem) {
       // Complex block with custom geometry - use ModelViewer
       blockPreviewContent = (
         <ModelViewer
@@ -484,30 +536,48 @@ class BlockTypeOverviewPanel extends Component<
             <div className="btop-blockId">{blockId}</div>
             {geometryId && (
               <div className="btop-blockGeometry">
-                <span className="btop-detailLabel">{this.props.intl.formatMessage({ id: "project_editor.block_overview.geometry_label" })}</span> {geometryId}
+                <span className="btop-detailLabel">
+                  {this.props.intl.formatMessage({ id: "project_editor.block_overview.geometry_label" })}
+                </span>{" "}
+                {geometryId}
               </div>
             )}
             {isSimpleBlock && expectedTextures && expectedTextures.length > 0 && (
               <div className="btop-blockGeometry">
-                <span className="btop-detailLabel">{this.props.intl.formatMessage({ id: "project_editor.block_overview.textures_label" })}</span> {expectedTextures.join(", ")}
+                <span className="btop-detailLabel">
+                  {this.props.intl.formatMessage({ id: "project_editor.block_overview.textures_label" })}
+                </span>{" "}
+                {expectedTextures.join(", ")}
               </div>
             )}
             {isSimpleBlock && (!expectedTextures || expectedTextures.length === 0) && (
               <div className="btop-blockGeometry">
-                <span className="btop-detailLabel">{this.props.intl.formatMessage({ id: "project_editor.block_overview.unit_cube_label" })}</span> {this.props.intl.formatMessage({ id: "project_editor.block_overview.no_textures" })}
+                <span className="btop-detailLabel">
+                  {this.props.intl.formatMessage({ id: "project_editor.block_overview.unit_cube_label" })}
+                </span>{" "}
+                {this.props.intl.formatMessage({ id: "project_editor.block_overview.no_textures" })}
               </div>
             )}
             <div className="btop-blockStats">
               <span className="btop-stat">
-                {this.props.intl.formatMessage({ id: "project_editor.block_overview.state_count_stat" }, { count: this.state.stateCount })}
+                {this.props.intl.formatMessage(
+                  { id: "project_editor.block_overview.state_count_stat" },
+                  { count: this.state.stateCount }
+                )}
               </span>
               <span className="btop-statSep">•</span>
               <span className="btop-stat">
-                {this.props.intl.formatMessage({ id: "project_editor.block_overview.component_count_stat" }, { count: this.state.baseComponents.length })}
+                {this.props.intl.formatMessage(
+                  { id: "project_editor.block_overview.component_count_stat" },
+                  { count: this.state.baseComponents.length }
+                )}
               </span>
               <span className="btop-statSep">•</span>
               <span className="btop-stat">
-                {this.props.intl.formatMessage({ id: "project_editor.block_overview.permutation_count_stat" }, { count: this.state.permutations.length })}
+                {this.props.intl.formatMessage(
+                  { id: "project_editor.block_overview.permutation_count_stat" },
+                  { count: this.state.permutations.length }
+                )}
               </span>
             </div>
           </div>
@@ -516,35 +586,87 @@ class BlockTypeOverviewPanel extends Component<
     }
 
     return (
-      <div className={"btop-outer" + (CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? " btop-outer-dark" : " btop-outer-light")}>
+      <div
+        className={
+          "btop-outer" +
+          (CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? " btop-outer-dark" : " btop-outer-light")
+        }
+      >
         <div className="btop-previewSection">
-          <EditorContentPanel theme={this.props.theme} variant="raised" header={this.props.intl.formatMessage({ id: "project_editor.block_overview.block_preview" })}>
+          <EditorContentPanel
+            theme={this.props.theme}
+            variant="raised"
+            header={this.props.intl.formatMessage({ id: "project_editor.block_overview.block_preview" })}
+          >
             <div className="btop-blockViewer">{blockPreviewContent}</div>
-            <div className="btop-modelHint">{this.props.intl.formatMessage({ id: "project_editor.block_overview.drag_hint" })}</div>
+            <div className="btop-modelHint">
+              {this.props.intl.formatMessage({ id: "project_editor.block_overview.drag_hint" })}
+            </div>
           </EditorContentPanel>
         </div>
         <div className="btop-detailsSection">
-          <EditorContentPanel theme={this.props.theme} variant="raised" header={this.props.intl.formatMessage({ id: "project_editor.block_overview.block_config" })}>
+          <EditorContentPanel
+            theme={this.props.theme}
+            variant="raised"
+            header={this.props.intl.formatMessage({ id: "project_editor.block_overview.block_config" })}
+          >
             <div className="btop-detailsScroll">
               {/* States summary */}
               <div className="btop-sectionGroup">
-                <div className="btop-groupHeader" onClick={this._handleStatesClick} onKeyDown={(e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); this._handleStatesClick(); } }} role="button" tabIndex={0}>
-                  <span className="btop-groupName">{this.props.intl.formatMessage({ id: "project_editor.block_overview.states_count" }, { count: this.state.stateCount })}</span>
+                <div
+                  className="btop-groupHeader"
+                  onClick={this._handleStatesClick}
+                  onKeyDown={(e: React.KeyboardEvent) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      this._handleStatesClick();
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                >
+                  <span className="btop-groupName">
+                    {this.props.intl.formatMessage(
+                      { id: "project_editor.block_overview.states_count" },
+                      { count: this.state.stateCount }
+                    )}
+                  </span>
                   <span className="btop-groupLink">{this.props.intl.formatMessage({ id: "common.edit" })}</span>
                 </div>
                 {this.state.stateCount > 0 ? (
                   <div className="btop-stateInfo">
-                    {this.props.intl.formatMessage({ id: "project_editor.block_overview.states_info" }, { count: this.state.stateCount })}
+                    {this.props.intl.formatMessage(
+                      { id: "project_editor.block_overview.states_info" },
+                      { count: this.state.stateCount }
+                    )}
                   </div>
                 ) : (
-                  <div className="btop-emptyMessage">{this.props.intl.formatMessage({ id: "project_editor.block_overview.no_states" })}</div>
+                  <div className="btop-emptyMessage">
+                    {this.props.intl.formatMessage({ id: "project_editor.block_overview.no_states" })}
+                  </div>
                 )}
               </div>
 
               {/* Base Components */}
               <div className="btop-sectionGroup">
-                <div className="btop-groupHeader" onClick={this._handleBaseClick} onKeyDown={(e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); this._handleBaseClick(); } }} role="button" tabIndex={0}>
-                  <span className="btop-groupName">{this.props.intl.formatMessage({ id: "project_editor.block_overview.base_components_count" }, { count: this.state.baseComponents.length })}</span>
+                <div
+                  className="btop-groupHeader"
+                  onClick={this._handleBaseClick}
+                  onKeyDown={(e: React.KeyboardEvent) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      this._handleBaseClick();
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                >
+                  <span className="btop-groupName">
+                    {this.props.intl.formatMessage(
+                      { id: "project_editor.block_overview.base_components_count" },
+                      { count: this.state.baseComponents.length }
+                    )}
+                  </span>
                   <span className="btop-groupLink">{this.props.intl.formatMessage({ id: "common.edit" })}</span>
                 </div>
                 {this._renderComponentList(this.state.baseComponents)}
@@ -553,8 +675,24 @@ class BlockTypeOverviewPanel extends Component<
               {/* Permutations */}
               {this.state.permutations.length > 0 && (
                 <div className="btop-sectionGroup">
-                  <div className="btop-groupHeader" onClick={this._handlePermutationsClick} onKeyDown={(e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); this._handlePermutationsClick(); } }} role="button" tabIndex={0}>
-                    <span className="btop-groupName">{this.props.intl.formatMessage({ id: "project_editor.block_overview.permutations_count" }, { count: this.state.permutations.length })}</span>
+                  <div
+                    className="btop-groupHeader"
+                    onClick={this._handlePermutationsClick}
+                    onKeyDown={(e: React.KeyboardEvent) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        this._handlePermutationsClick();
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    <span className="btop-groupName">
+                      {this.props.intl.formatMessage(
+                        { id: "project_editor.block_overview.permutations_count" },
+                        { count: this.state.permutations.length }
+                      )}
+                    </span>
                     <span className="btop-groupLink">{this.props.intl.formatMessage({ id: "common.edit" })}</span>
                   </div>
                   {this.state.permutations.map((perm) => this._renderPermutation(perm))}

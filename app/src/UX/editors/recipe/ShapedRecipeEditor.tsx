@@ -229,10 +229,15 @@ export default class ShapedRecipeEditor extends Component<IShapedRecipeEditorPro
     this.props.onRecipeChanged(updated);
   }
 
-  private _handleSlotDrop(row: number, col: number, itemId: string): void {
+  private _handleSlotDrop(row: number, col: number, itemId: string, source?: { row: number; col: number }): void {
     if (this.props.readOnly) return;
 
     const newGrid = this.state.grid.map((r) => [...r]);
+    if (source) {
+      // Move: clear the source cell first so an item dragged from one slot
+      // to another doesn't get duplicated.
+      newGrid[source.row][source.col] = null;
+    }
     newGrid[row][col] = itemId;
     this.setState({ grid: newGrid, activeSlot: null });
     this._emitChange(newGrid);
@@ -318,7 +323,7 @@ export default class ShapedRecipeEditor extends Component<IShapedRecipeEditorPro
       );
     }
 
-    if (entries.length === 0) return null;
+    if (entries.length === 0) return <div className="rcsre-key-legend rcsre-key-legend-empty" />;
     return <div className="rcsre-key-legend">{entries}</div>;
   }
 

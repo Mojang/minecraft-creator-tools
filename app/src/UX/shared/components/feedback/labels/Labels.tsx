@@ -299,16 +299,23 @@ export const DocumentationTypesLabel: React.FC<React.HTMLAttributes<HTMLSpanElem
 export const CustomSelectableDropdownLabel: React.FC<
   React.HTMLAttributes<HTMLSpanElement> & ISelectableCustomLabelProps
 > = (props: ISelectableCustomLabelProps) => {
-  const colors = getLabelColors(props.isSelected);
+  // We deliberately do NOT reuse `getLabelColors` (which targets toolbar
+  // tabs and fills with bright #52a535 — white-on-that is ~3.5:1, below
+  // WCAG AA, and clashed with the MUI MenuItem selected highlight, giving
+  // a "double rectangle" inset look in the dropdown).
+  //
+  // Use a 2px Minecraft-green border with no fill; the MUI MenuItem's own
+  // selected highlight provides row shading and white bold text stays
+  // readable on it.
+  const selectedBorder = "#52a535";
   return (
     <span
       className={"label-dropdown"}
       style={{
-        borderColor: props.isSelected ? colors.borderColor : "inherit",
-        color: props.isSelected ? colors.color : "inherit",
+        color: props.isSelected ? "#ffffff" : "inherit",
         fontWeight: props.isSelected ? "bold" : "normal",
-        textDecoration: props.isSelected ? "underline" : "none",
-        backgroundColor: props.isSelected ? colors.backgroundColor : "inherit",
+        border: props.isSelected ? `2px solid ${selectedBorder}` : "2px solid transparent",
+        boxSizing: "border-box",
       }}
     >
       {props.icon}
@@ -970,7 +977,9 @@ export const WarningFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> 
   // Subtle background tints — selected gets a light wash, unselected is transparent
   const selectedBg = isLightTheme ? "rgba(255, 180, 0, 0.12)" : "rgba(255, 193, 7, 0.10)";
   const unselectedBg = "transparent";
-  const borderColor = isLightTheme ? "rgba(0, 0, 0, 0.12)" : "rgba(255, 255, 255, 0.15)";
+  // a11y (WCAG 1.4.11): unselected border must hit 3:1 non-text contrast against the chip's
+  // background so the chip outline is perceivable without relying on color cues.
+  const borderColor = isLightTheme ? "rgba(0, 0, 0, 0.45)" : "rgba(255, 255, 255, 0.45)";
   return (
     <span
       className="filter-chip"
@@ -1009,7 +1018,8 @@ export const RecommendationsFilterLabel: React.FC<
   // Subtle background tints — selected gets a light wash, unselected is transparent
   const selectedBg = isLightTheme ? "rgba(52, 152, 219, 0.12)" : "rgba(93, 173, 226, 0.10)";
   const unselectedBg = "transparent";
-  const borderColor = isLightTheme ? "rgba(0, 0, 0, 0.12)" : "rgba(255, 255, 255, 0.15)";
+  // a11y (WCAG 1.4.11): see WarningFilterLabel above.
+  const borderColor = isLightTheme ? "rgba(0, 0, 0, 0.45)" : "rgba(255, 255, 255, 0.45)";
   return (
     <span
       className="filter-chip"
@@ -1048,7 +1058,8 @@ export const ErrorFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & 
   // Subtle background tints — selected gets a light wash, unselected is transparent
   const selectedBg = isLightTheme ? "rgba(231, 76, 60, 0.12)" : "rgba(255, 107, 107, 0.10)";
   const unselectedBg = "transparent";
-  const borderColor = isLightTheme ? "rgba(0, 0, 0, 0.12)" : "rgba(255, 255, 255, 0.15)";
+  // a11y (WCAG 1.4.11): see WarningFilterLabel above.
+  const borderColor = isLightTheme ? "rgba(0, 0, 0, 0.45)" : "rgba(255, 255, 255, 0.45)";
   return (
     <span
       className="filter-chip"
@@ -1087,7 +1098,8 @@ export const InfoFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & I
   // Subtle background tints — selected gets a light wash, unselected is transparent
   const selectedBg = isLightTheme ? "rgba(127, 140, 141, 0.10)" : "rgba(189, 195, 199, 0.08)";
   const unselectedBg = "transparent";
-  const borderColor = isLightTheme ? "rgba(0, 0, 0, 0.12)" : "rgba(255, 255, 255, 0.15)";
+  // a11y (WCAG 1.4.11): see WarningFilterLabel above.
+  const borderColor = isLightTheme ? "rgba(0, 0, 0, 0.45)" : "rgba(255, 255, 255, 0.45)";
   return (
     <span
       className="filter-chip"
@@ -1126,7 +1138,8 @@ export const SuccessFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> 
   // Subtle background tints — selected gets a light wash, unselected is transparent
   const selectedBg = isLightTheme ? "rgba(39, 174, 96, 0.12)" : "rgba(46, 204, 113, 0.10)";
   const unselectedBg = "transparent";
-  const borderColor = isLightTheme ? "rgba(0, 0, 0, 0.12)" : "rgba(255, 255, 255, 0.15)";
+  // a11y (WCAG 1.4.11): see WarningFilterLabel above.
+  const borderColor = isLightTheme ? "rgba(0, 0, 0, 0.45)" : "rgba(255, 255, 255, 0.45)";
   return (
     <span
       className="filter-chip"
@@ -1165,7 +1178,8 @@ export const FailureFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> 
   // Subtle background tints — selected gets a light wash, unselected is transparent
   const selectedBg = isLightTheme ? "rgba(192, 57, 43, 0.12)" : "rgba(231, 76, 60, 0.10)";
   const unselectedBg = "transparent";
-  const borderColor = isLightTheme ? "rgba(0, 0, 0, 0.12)" : "rgba(255, 255, 255, 0.15)";
+  // a11y (WCAG 1.4.11): see WarningFilterLabel above.
+  const borderColor = isLightTheme ? "rgba(0, 0, 0, 0.45)" : "rgba(255, 255, 255, 0.45)";
   return (
     <span
       className="filter-chip"

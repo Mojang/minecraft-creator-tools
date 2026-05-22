@@ -74,6 +74,7 @@ interface IImageEditorState {
   imageEdits?: ImageEditsDefinition;
   allAsyncItemsLoaded: boolean;
   drawColor: string;
+  colorMru: string[];
   menuState: ImageEditorMenuState;
   dialogState: ImageEditorDialogState;
   tool: ImageEditsToolType;
@@ -112,6 +113,7 @@ class ImageEditor extends Component<IImageEditorProps, IImageEditorState> {
       imageEdits: undefined,
       allAsyncItemsLoaded: false,
       drawColor: "#000000",
+      colorMru: [],
       menuState: ImageEditorMenuState.noMenu,
       dialogState: ImageEditorDialogState.noDialog,
       tool: ImageEditsToolType.pixel,
@@ -230,15 +232,97 @@ class ImageEditor extends Component<IImageEditorProps, IImageEditorState> {
     this._redrawImage(imageEdits);
 
     if (this.getIsLoaded(imageEdits)) {
+      let colorMru = this.state.colorMru;
+
+      if (colorMru.length === 0) {
+        const imageColors = this._extractColorsFromBackground(imageEdits);
+        if (imageColors.length > 0) {
+          colorMru = imageColors;
+        }
+      }
+
       this.setState({
         content: this.state.content,
         drawColor: this.state.drawColor,
+        colorMru: colorMru,
         tool: this.state.tool,
         isDrawing: this.state.isDrawing,
         drawingItem: this.state.drawingItem,
         imageEdits: imageEdits,
         allAsyncItemsLoaded: true,
       });
+    }
+  }
+
+  // Maximum number of swatches shown in the MRU strip
+  static MAX_COLOR_MRU = 12;
+
+  _normalizeHex(color: string): string | undefined {
+    if (!color) {
+      return undefined;
+    }
+    const c = color.trim().toLowerCase();
+    if (/^#[0-9a-f]{6}$/.test(c)) {
+      return c;
+    }
+    if (/^#[0-9a-f]{3}$/.test(c)) {
+      return "#" + c[1] + c[1] + c[2] + c[2] + c[3] + c[3];
+    }
+    return undefined;
+  }
+
+  _pushColorMru(color: string) {
+    const normalized = this._normalizeHex(color);
+    if (!normalized) {
+      return;
+    }
+    const existing = this.state.colorMru.filter((c) => c !== normalized);
+    const next = [normalized, ...existing].slice(0, ImageEditor.MAX_COLOR_MRU);
+    if (next.length === this.state.colorMru.length && next.every((c, i) => c === this.state.colorMru[i])) {
+      return;
+    }
+    this.setState({ colorMru: next });
+  }
+
+  _extractColorsFromBackground(imageEdits: ImageEditsDefinition): string[] {
+    const bg = imageEdits.backgroundItem;
+    if (!bg || !bg.imageElement || !bg.isImageElementLoaded) {
+      return [];
+    }
+    const img = bg.imageElement as HTMLImageElement;
+    const w = img.naturalWidth || imageEdits.width;
+    const h = img.naturalHeight || imageEdits.height;
+    if (!w || !h) {
+      return [];
+    }
+    try {
+      const off = document.createElement("canvas");
+      off.width = w;
+      off.height = h;
+      const ctx = off.getContext("2d");
+      if (!ctx) {
+        return [];
+      }
+      ctx.drawImage(img, 0, 0, w, h);
+      const data = ctx.getImageData(0, 0, w, h).data;
+      const counts = new Map<string, number>();
+      for (let i = 0; i < data.length; i += 4) {
+        const a = data[i + 3];
+        if (a < 16) {
+          continue; // skip transparent pixels
+        }
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        const hex =
+          "#" + r.toString(16).padStart(2, "0") + g.toString(16).padStart(2, "0") + b.toString(16).padStart(2, "0");
+        counts.set(hex, (counts.get(hex) || 0) + 1);
+      }
+      const sorted = [...counts.entries()].sort((a, b) => b[1] - a[1]);
+      return sorted.slice(0, ImageEditor.MAX_COLOR_MRU).map((e) => e[0]);
+    } catch (e) {
+      // Cross-origin or other failure — just skip.
+      return [];
     }
   }
 
@@ -363,6 +447,28 @@ class ImageEditor extends Component<IImageEditorProps, IImageEditorState> {
         type: ImageItemType.rectangle,
         coords: [],
       });
+    } else if (
+      this.state.tool === ImageEditsToolType.circleOutline ||
+      this.state.tool === ImageEditsToolType.circleFilled
+    ) {
+      drawingItem = new ImageItem({
+        origin: { x: pos.x, y: pos.y },
+        strokeColor: ColorUtilities.fromCss(this.state.drawColor),
+        isFilled: this.state.tool === ImageEditsToolType.circleFilled ? true : false,
+        type: ImageItemType.circle,
+        coords: [],
+      });
+    } else if (
+      this.state.tool === ImageEditsToolType.triangleOutline ||
+      this.state.tool === ImageEditsToolType.triangleFilled
+    ) {
+      drawingItem = new ImageItem({
+        origin: { x: pos.x, y: pos.y },
+        strokeColor: ColorUtilities.fromCss(this.state.drawColor),
+        isFilled: this.state.tool === ImageEditsToolType.triangleFilled ? true : false,
+        type: ImageItemType.triangle,
+        coords: [],
+      });
     }
     this.setState({ isDrawing: true, drawingItem: drawingItem });
   };
@@ -379,7 +485,11 @@ class ImageEditor extends Component<IImageEditorProps, IImageEditorState> {
     } else if (
       (this.state.tool === ImageEditsToolType.line ||
         this.state.tool === ImageEditsToolType.rectangleFilled ||
-        this.state.tool === ImageEditsToolType.rectangleOutline) &&
+        this.state.tool === ImageEditsToolType.rectangleOutline ||
+        this.state.tool === ImageEditsToolType.circleFilled ||
+        this.state.tool === ImageEditsToolType.circleOutline ||
+        this.state.tool === ImageEditsToolType.triangleFilled ||
+        this.state.tool === ImageEditsToolType.triangleOutline) &&
       this.state.drawingItem
     ) {
       if (pos.x !== this.state.drawingItem.coord0x || pos.y !== this.state.drawingItem.coord0y) {
@@ -394,12 +504,17 @@ class ImageEditor extends Component<IImageEditorProps, IImageEditorState> {
   };
 
   _onCanvasMouseUp = (evt?: MouseEvent) => {
+    const wasDrawing = this.state.isDrawing;
     if (this.state.isDrawing && this.state.drawingItem && evt) {
       this.state.imageEdits?.addNewDrawingItem(this.state.drawingItem);
     }
     this.setState({ isDrawing: false, drawingItem: undefined });
 
     this._persistCanvasToContent();
+
+    if (wasDrawing) {
+      this._pushColorMru(this.state.drawColor);
+    }
   };
 
   _addPixel(x: number, y: number, color: string) {
@@ -487,6 +602,47 @@ class ImageEditor extends Component<IImageEditorProps, IImageEditorState> {
           this.canvasContext.strokeRect(x0, y0, w, h);
         }
         break;
+
+      case ImageItemType.circle: {
+        this.canvasContext.fillStyle = color;
+        this.canvasContext.strokeStyle = color;
+
+        const cx = (item.x + item.coord0x) / 2 + 0.5;
+        const cy = (item.y + item.coord0y) / 2 + 0.5;
+        const rx = Math.abs(item.coord0x - item.x) / 2 + 0.5;
+        const ry = Math.abs(item.coord0y - item.y) / 2 + 0.5;
+
+        this.canvasContext.beginPath();
+        this.canvasContext.ellipse(cx, cy, rx, ry, 0, 0, 2 * Math.PI);
+        if (item.isFilled) {
+          this.canvasContext.fill();
+        } else {
+          this.canvasContext.stroke();
+        }
+        break;
+      }
+
+      case ImageItemType.triangle: {
+        this.canvasContext.fillStyle = color;
+        this.canvasContext.strokeStyle = color;
+
+        const tx0 = Math.min(item.x, item.coord0x);
+        const ty0 = Math.min(item.y, item.coord0y);
+        const tx1 = Math.max(item.x, item.coord0x) + 1;
+        const ty1 = Math.max(item.y, item.coord0y) + 1;
+
+        this.canvasContext.beginPath();
+        this.canvasContext.moveTo(tx0, ty1);
+        this.canvasContext.lineTo((tx0 + tx1) / 2, ty0);
+        this.canvasContext.lineTo(tx1, ty1);
+        this.canvasContext.closePath();
+        if (item.isFilled) {
+          this.canvasContext.fill();
+        } else {
+          this.canvasContext.stroke();
+        }
+        break;
+      }
 
       case ImageItemType.image:
         if (item.isImageElementLoaded && item.imageElement) {
@@ -586,7 +742,7 @@ class ImageEditor extends Component<IImageEditorProps, IImageEditorState> {
 
     const s = this.scale;
     // Map logical pixel (x,y) to the center of its scaled block in canvas pixel coords
-    const idx = (lx: number, ly: number) => ((ly * s) * w + (lx * s)) * 4;
+    const idx = (lx: number, ly: number) => (ly * s * w + lx * s) * 4;
 
     const logicalW = w / s;
     const logicalH = h / s;
@@ -854,12 +1010,18 @@ class ImageEditor extends Component<IImageEditorProps, IImageEditorState> {
     }
 
     if (imageEdits.stackPosition === undefined) {
+      if (imageEdits.items.length <= 0) {
+        return;
+      }
       imageEdits.stackPosition = imageEdits.items.length - 1;
-      this._redrawImage();
     } else if (imageEdits.stackPosition > 0) {
       imageEdits.stackPosition--;
-      this._redrawImage();
+    } else {
+      return;
     }
+
+    this._redrawImage();
+    this._persistCanvasToContent();
   }
 
   _redo() {
@@ -869,14 +1031,18 @@ class ImageEditor extends Component<IImageEditorProps, IImageEditorState> {
       return;
     }
 
-    if (imageEdits.stackPosition !== undefined && imageEdits.stackPosition < imageEdits.items.length) {
-      imageEdits.stackPosition++;
-
-      if (imageEdits.stackPosition === imageEdits.items.length) {
-        imageEdits.stackPosition = undefined;
-      }
-      this._redrawImage();
+    if (imageEdits.stackPosition === undefined || imageEdits.stackPosition >= imageEdits.items.length) {
+      return;
     }
+
+    imageEdits.stackPosition++;
+
+    if (imageEdits.stackPosition === imageEdits.items.length) {
+      imageEdits.stackPosition = undefined;
+    }
+
+    this._redrawImage();
+    this._persistCanvasToContent();
   }
 
   private _handleToolMenuOpen(event: React.MouseEvent<HTMLButtonElement>) {
@@ -1084,7 +1250,10 @@ class ImageEditor extends Component<IImageEditorProps, IImageEditorState> {
       if (form) {
         dialogArea = (
           <Dialog open={true} onClose={this._handleCloseDialog} key="ie-cancel">
-            <DialogTitle>{StorageUtilities.getBaseFromName(this.props.name) + this.props.intl.formatMessage({ id: "project_editor.image_ed.properties_title" })}</DialogTitle>
+            <DialogTitle>
+              {StorageUtilities.getBaseFromName(this.props.name) +
+                this.props.intl.formatMessage({ id: "project_editor.image_ed.properties_title" })}
+            </DialogTitle>
             <DialogContent>
               <DataForm
                 theme={this.props.theme}
@@ -1097,7 +1266,9 @@ class ImageEditor extends Component<IImageEditorProps, IImageEditorState> {
               />
             </DialogContent>
             <DialogActions>
-              <Button onClick={this._handleCloseDialog}>{this.props.intl.formatMessage({ id: "project_editor.image_ed.done" })}</Button>
+              <Button onClick={this._handleCloseDialog}>
+                {this.props.intl.formatMessage({ id: "project_editor.image_ed.done" })}
+              </Button>
             </DialogActions>
           </Dialog>
         );
@@ -1110,12 +1281,24 @@ class ImageEditor extends Component<IImageEditorProps, IImageEditorState> {
       <div className="ie-outer">
         {dialogArea}
         <div className="ie-toolBar">
-          <Stack direction="row" spacing={1} aria-label={this.props.intl.formatMessage({ id: "project_editor.image_ed.toolbar_aria" })}>
+          <Stack
+            direction="row"
+            spacing={1}
+            aria-label={this.props.intl.formatMessage({ id: "project_editor.image_ed.toolbar_aria" })}
+          >
             <Button key="undo" onClick={this._undo}>
-              <CustomLabel isCompact={false} text={this.props.intl.formatMessage({ id: "project_editor.image_ed.undo" })} icon={<FontAwesomeIcon icon={faUndo} className="fa-lg" />} />
+              <CustomLabel
+                isCompact={false}
+                text={this.props.intl.formatMessage({ id: "project_editor.image_ed.undo" })}
+                icon={<FontAwesomeIcon icon={faUndo} className="fa-lg" />}
+              />
             </Button>
             <Button key="redo" onClick={this._redo}>
-              <CustomLabel isCompact={false} text={this.props.intl.formatMessage({ id: "project_editor.image_ed.redo" })} icon={<FontAwesomeIcon icon={faRedo} className="fa-lg" />} />
+              <CustomLabel
+                isCompact={false}
+                text={this.props.intl.formatMessage({ id: "project_editor.image_ed.redo" })}
+                icon={<FontAwesomeIcon icon={faRedo} className="fa-lg" />}
+              />
             </Button>
             <label style={{ display: "flex", alignItems: "center", gap: 4 }}>
               <input
@@ -1126,8 +1309,38 @@ class ImageEditor extends Component<IImageEditorProps, IImageEditorState> {
               />
               <span>{this.props.intl.formatMessage({ id: "project_editor.image_ed.color" })}</span>
             </label>
-            <Button key="draw" onClick={this._handleToolMenuOpen} title={this.props.intl.formatMessage({ id: "project_editor.image_ed.draw" })}>
-              <CustomLabel isCompact={false} text={this.props.intl.formatMessage({ id: "project_editor.image_ed.draw" })} icon={<FontAwesomeIcon icon={faPencil} className="fa-lg" />} />
+            {this.state.colorMru.length > 0 && (
+              <div
+                className="ie-colorMru"
+                role="toolbar"
+                aria-label={this.props.intl.formatMessage({ id: "project_editor.image_ed.recent_colors" })}
+              >
+                {this.state.colorMru.map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    className={
+                      "ie-colorSwatch" +
+                      (this._normalizeHex(this.state.drawColor) === c ? " ie-colorSwatchSelected" : "")
+                    }
+                    style={{ backgroundColor: c }}
+                    title={c}
+                    aria-label={c}
+                    onClick={() => this.setState({ drawColor: c })}
+                  />
+                ))}
+              </div>
+            )}
+            <Button
+              key="draw"
+              onClick={this._handleToolMenuOpen}
+              title={this.props.intl.formatMessage({ id: "project_editor.image_ed.draw" })}
+            >
+              <CustomLabel
+                isCompact={false}
+                text={this.props.intl.formatMessage({ id: "project_editor.image_ed.draw" })}
+                icon={<FontAwesomeIcon icon={faPencil} className="fa-lg" />}
+              />
             </Button>
             <Menu anchorEl={this.state.toolMenuAnchorEl} open={toolMenuOpen} onClose={this._handleToolMenuClose}>
               {toolMenuItems.map((item) => (
@@ -1142,21 +1355,33 @@ class ImageEditor extends Component<IImageEditorProps, IImageEditorState> {
                 </MenuItem>
               ))}
             </Menu>
-            <Button key="zoomIn" onClick={this._zoomIn} title={this.props.intl.formatMessage({ id: "project_editor.image_ed.zoom_in" })}>
+            <Button
+              key="zoomIn"
+              onClick={this._zoomIn}
+              title={this.props.intl.formatMessage({ id: "project_editor.image_ed.zoom_in" })}
+            >
               <CustomLabel
-                isCompact={false}
+                isCompact={true}
                 text=""
                 icon={<FontAwesomeIcon icon={faMagnifyingGlassPlus} className="fa-lg" />}
               />
             </Button>
-            <Button key="zoomOut" onClick={this._zoomOut} title={this.props.intl.formatMessage({ id: "project_editor.image_ed.zoom_out" })}>
+            <Button
+              key="zoomOut"
+              onClick={this._zoomOut}
+              title={this.props.intl.formatMessage({ id: "project_editor.image_ed.zoom_out" })}
+            >
               <CustomLabel
-                isCompact={false}
+                isCompact={true}
                 text=""
                 icon={<FontAwesomeIcon icon={faMagnifyingGlassMinus} className="fa-lg" />}
               />
             </Button>
-            <Button key="properties" onClick={this._showPropertiesDialog} title={this.props.intl.formatMessage({ id: "project_editor.image_ed.design_title" })}>
+            <Button
+              key="properties"
+              onClick={this._showPropertiesDialog}
+              title={this.props.intl.formatMessage({ id: "project_editor.image_ed.design_title" })}
+            >
               <CustomLabel
                 isCompact={false}
                 text={this.props.intl.formatMessage({ id: "project_editor.image_ed.properties" })}

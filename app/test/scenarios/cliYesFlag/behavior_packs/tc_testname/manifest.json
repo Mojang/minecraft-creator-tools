@@ -1,0 +1,68 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Sample Add-on Pack",
+    "description": "Sample Add-on Behavior Pack",
+    "uuid": "e1a34acf-365a-42d9-83f4-6db0412b8fa6",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      26,
+      20
+    ]
+  },
+  "modules": [
+    {
+      "description": "Behavior",
+      "version": [
+        1,
+        0,
+        0
+      ],
+      "uuid": "e25e01c1-87b4-43f5-9609-ed04b9643b93",
+      "type": "data"
+    },
+    {
+      "description": "Script resources",
+      "language": "javascript",
+      "type": "script",
+      "uuid": "0f243a85-4377-4953-8ec7-48e64ab1e3f2",
+      "version": [
+        0,
+        0,
+        1
+      ],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "9405c6b3-81dd-4eba-8f0d-36f4c58ea51b",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "module_name": "@minecraft/server",
+      "version": [
+        2,
+        7,
+        0
+      ]
+    },
+    {
+      "module_name": "@minecraft/server-ui",
+      "version": [
+        2,
+        0,
+        0
+      ]
+    }
+  ]
+}

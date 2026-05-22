@@ -32,8 +32,8 @@ const TERRAIN_TEXTURES = "public/res/latest/van/serve/resource_pack/textures/ter
 const ITEM_SPRITE_DIR = "public/res/latest/van/serve/resource_pack/textures/items";
 const BLOCK_SPRITE_DIR = "public/res/latest/van/serve/resource_pack/textures/blocks";
 const OUTPUT = "public/data/recipe-item-catalog.json";
-const ATLAS_OUTPUT_DIR = "public/data/atlases";
-const ATLAS_PNG = "public/data/atlases/item-sprites.png";
+const ATLAS_OUTPUT_DIR = "public/res/latest/van/gen";
+const ATLAS_PNG = "public/res/latest/van/gen/item-sprites.png";
 const SPRITE_SIZE = 16; // Minecraft item sprites are 16×16
 
 // ── Categorisation ────────────────────────────────────────────────────────
@@ -1188,7 +1188,7 @@ for (let i = 0; i < atlasItems.length; i++) {
 // it to show as modified after every dev-env build even when inputs are unchanged.
 const output = {
   version: 3,
-  atlas: { cols, rows, spriteSize: SPRITE_SIZE, file: "atlases/item-sprites.png" },
+  atlas: { cols, rows, spriteSize: SPRITE_SIZE, file: "res/latest/van/gen/item-sprites.png" },
   items: catalog,
 };
 writeFileSync(OUTPUT, JSON.stringify(output));

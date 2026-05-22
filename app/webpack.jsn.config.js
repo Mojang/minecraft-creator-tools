@@ -76,6 +76,7 @@ const jsnConfig = {
       {
         test: /\.ts$/,
         exclude: [
+          /\.spec\.ts$/,
           /node_modules/,
           /[/\\]UX[/\\]/,
           /[/\\]UXex[/\\]/,

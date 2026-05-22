@@ -3586,7 +3586,14 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
 
             this._entityMeshes.set(posName, box);
 
-            this._addBlockEvents(box);
+            // Pass setRenderingGroup=false: entity meshes must stay in the default
+            // renderingGroupId (0) along with the checkerboard floor / ground
+            // plane. Babylon clears the depth buffer between rendering groups by
+            // default, so if entity bones land in group 1 (as block meshes do)
+            // they render on top of the group-0 floor regardless of geometry —
+            // making the mob visible "through" the floor when the camera is
+            // below it.
+            this._addBlockEvents(box, false);
           }
         }
       }
@@ -3845,14 +3852,17 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
     }
   }
 
-  _addBlockEvents(box: BABYLON.AbstractMesh) {
+  _addBlockEvents(box: BABYLON.AbstractMesh, setRenderingGroup: boolean = true) {
     if (this._scene == null) {
       return;
     }
 
-    // Set rendering group to render on top of ground plane
-    // Skip for instanced meshes - they inherit from source mesh
-    if (!(box instanceof BABYLON.InstancedMesh)) {
+    // Set rendering group to render on top of ground plane.
+    // Skip for instanced meshes - they inherit from source mesh.
+    // Skip when setRenderingGroup is false (entity meshes — they must stay in
+    // the default group 0 to share a depth buffer with the floor; otherwise
+    // they render on top of the floor regardless of geometry).
+    if (setRenderingGroup && !(box instanceof BABYLON.InstancedMesh)) {
       box.renderingGroupId = 1;
     }
 
@@ -3860,7 +3870,7 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
 
     if (meshes.length > 0) {
       for (let i = 0; i < meshes.length; i++) {
-        this._addBlockEvents(meshes[i]);
+        this._addBlockEvents(meshes[i], setRenderingGroup);
       }
 
       return;

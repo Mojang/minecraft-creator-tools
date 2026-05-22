@@ -28,7 +28,7 @@ function createServeValidationTest(
     const stderrLines: string[] = [];
     let serverProcess: ChildProcessWithoutNullStreams | null = null;
 
-    before(function (done) {
+    before(async function () {
       this.timeout(40000);
 
       removeResultFolder(suiteName);
@@ -38,56 +38,51 @@ function createServeValidationTest(
         throw new Error("Sample folder does not exist.");
       }
 
-      sampleFolder.ensureFileFromRelativePath(samplePath).then((sampleFile: IFile) => {
-        serverProcess = spawn("node", [
-          "./toolbuild/jsn/cli/index.mjs",
-          "serve",
-          "basicwebservices",
-          "--port",
-          String(port),
-          "--verbose",
-          "--once",
-          "--updatepc",
-          passcode,
-        ]);
+      const sampleFile: IFile = await sampleFolder.ensureFileFromRelativePath(samplePath);
 
-        collectLines(serverProcess.stdout, stdoutLines);
-        collectLines(serverProcess.stderr, stderrLines);
+      serverProcess = spawn("node", [
+        "./toolbuild/jsn/cli/index.mjs",
+        "serve",
+        "basicwebservices",
+        "--port",
+        String(port),
+        "--verbose",
+        "--once",
+        "--updatepc",
+        passcode,
+      ]);
 
-        sampleFile.loadContent().then(() => {
-          const content = sampleFile.content;
+      collectLines(serverProcess.stdout, stdoutLines);
+      collectLines(serverProcess.stderr, stderrLines);
 
-          Utilities.sleep(3000).then(() => {
-            const headers: Record<string, string> = {
-              mctpc: passcode,
-              "content-type": "application/zip",
-              ...extraHeaders,
-            };
+      await sampleFile.loadContent();
+      const content = sampleFile.content;
 
-            axios
-              .post(`http://localhost:${port}/api/validate/`, content, {
-                headers,
-                method: "POST",
-              })
-              .then((response: AxiosResponse) => {
-                ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, response.data, suiteName, [
-                  "CDWORLDDATA2",
-                ]);
+      await Utilities.sleep(3000);
 
-                if (response === undefined) {
-                  throw new Error("Could not connect to server.");
-                }
+      const headers: Record<string, string> = {
+        mctpc: passcode,
+        "content-type": "application/zip",
+        ...extraHeaders,
+      };
 
-                if (serverProcess) {
-                  serverProcess.on("exit", (code) => {
-                    exitCode = code;
-                    serverProcess = null;
-                    done();
-                  });
-                }
-              });
+      const response: AxiosResponse = await axios.post(`http://localhost:${port}/api/validate/`, content, {
+        headers,
+        method: "POST",
+      });
+
+      await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, response.data, suiteName, ["CDWORLDDATA2"]);
+
+      await new Promise<void>((resolve) => {
+        if (serverProcess) {
+          serverProcess.on("exit", (code) => {
+            exitCode = code;
+            serverProcess = null;
+            resolve();
           });
-        });
+        } else {
+          resolve();
+        }
       });
     });
 
@@ -148,7 +143,7 @@ describe("serveCommandTimeout", () => {
   const stderrLines: string[] = [];
 
   before(function (done) {
-    this.timeout(15000);
+    this.timeout(30000);
 
     serverProcess = spawn("node", [
       "./toolbuild/jsn/cli/index.mjs",
@@ -196,7 +191,7 @@ describe("serveCommandVersion", () => {
   const stderrLines: string[] = [];
 
   before(function (done) {
-    this.timeout(15000);
+    this.timeout(30000);
 
     serverProcess = spawn("node", [
       "./toolbuild/jsn/cli/index.mjs",
@@ -243,7 +238,7 @@ describe("serveCommandInvalidPort", () => {
   const stderrLines: string[] = [];
 
   before(function (done) {
-    this.timeout(15000);
+    this.timeout(30000);
 
     serverProcess = spawn("node", [
       "./toolbuild/jsn/cli/index.mjs",

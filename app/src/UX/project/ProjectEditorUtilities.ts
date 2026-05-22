@@ -295,13 +295,13 @@ export default class ProjectEditorUtilities {
       if (isCurrentlyShowingTextEditor) {
         itemMenu.push({
           key: "viewInEditor|" + path,
-          content: "Open in Visual Editor",
+          content: "Open in visual editor",
           tag: { path: projectItem.projectPath, action: ProjectEditorItemAction.viewInEditor },
         });
       } else {
         itemMenu.push({
           key: "viewAsJson|" + path,
-          content: "Open in Text Editor",
+          content: "Open in text editor",
           tag: { path: projectItem.projectPath, action: ProjectEditorItemAction.viewAsJson },
         });
       }
@@ -310,7 +310,7 @@ export default class ProjectEditorUtilities {
     if (includeViewOnMap) {
       itemMenu.push({
         key: "viewAsMap|" + path,
-        content: "View on map",
+        content: "View on file map",
         tag: { path: projectItem.projectPath, action: ProjectEditorItemAction.viewOnMap },
       });
     }

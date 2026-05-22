@@ -215,14 +215,18 @@ export default class RenderControllerSetEditor extends Component<
         break;
     }
 
+    // When rendered inline (nested inside another scrolling container such as
+    // EntityTypeResourceEditor's .etre-mainArea), do NOT force a viewport-height
+    // box — the inline element should size to its content so it stacks naturally
+    // below the resource-form and rcHeader siblings. Forcing minHeight/maxHeight
+    // on an inline instance was the root cause of the Visuals tab overlap bug:
+    // it made the flex sibling .etre-form collapse to 0 and overflow visibly.
+    const outerStyle = this.props.isInline
+      ? undefined
+      : { minHeight: height, maxHeight: height };
+
     return (
-      <div
-        className={outerClassName}
-        style={{
-          minHeight: height,
-          maxHeight: height,
-        }}
-      >
+      <div className={outerClassName} style={outerStyle}>
         {header}
         <div className="rencoe-mainArea">
           <div className="rencoe-form">

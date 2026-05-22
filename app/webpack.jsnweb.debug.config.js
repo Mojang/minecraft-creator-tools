@@ -71,6 +71,7 @@ const webExtensionConfig = {
       {
         test: /\.ts$/,
         exclude: [
+          /\.spec\.ts$/,
           /\/node_modules\//,
           /\/toolbuild\//,
           /\/debugoutput\//,

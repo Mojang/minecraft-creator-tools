@@ -44,7 +44,7 @@ interface ICatalogAtlas {
   cols: number;
   rows: number;
   spriteSize: number;
-  file: string; // relative path from data/ to atlas PNG
+  file: string; // path relative to contentWebRoot (e.g. "res/latest/van/gen/item-sprites.png")
 }
 
 interface ICatalogFile {
@@ -106,7 +106,7 @@ export default class ItemSpriteDatabase {
           ItemSpriteDatabase._atlasSpriteSize = catalog.atlas.spriteSize;
           ItemSpriteDatabase._atlasCols = catalog.atlas.cols;
           ItemSpriteDatabase._atlasRows = catalog.atlas.rows;
-          ItemSpriteDatabase._atlas.setAtlasUrl(CreatorToolsHost.contentWebRoot + "data/" + catalog.atlas.file);
+          ItemSpriteDatabase._atlas.setAtlasUrl(CreatorToolsHost.contentWebRoot + catalog.atlas.file);
         }
 
         const items: IItemSpriteEntry[] = catalog.items.map((entry) => ({
@@ -215,9 +215,7 @@ export default class ItemSpriteDatabase {
   }
 
   static async getAllAvailableItems(project?: Project): Promise<IItemSpriteEntry[]> {
-    const cached = project
-      ? ItemSpriteDatabase._projectCache.get(project)
-      : ItemSpriteDatabase._noProjectCache;
+    const cached = project ? ItemSpriteDatabase._projectCache.get(project) : ItemSpriteDatabase._noProjectCache;
     if (cached) {
       return cached;
     }
