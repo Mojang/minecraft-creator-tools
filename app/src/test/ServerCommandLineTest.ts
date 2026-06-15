@@ -14,6 +14,68 @@ import {
 
 const SERVER_STARTUP_TIMEOUT_MS = 15000;
 
+/**
+ * POSTs `body` to `url` with the given headers, retrying briefly on transient
+ * connection errors (ECONNREFUSED / ECONNRESET / EAI_AGAIN and the
+ * AggregateErrors that wrap them). The serve command logs its "Web UI
+ * available at:" line just before — or in CI, sometimes microseconds before —
+ * the underlying socket transitions to listening, so a single early POST can
+ * race the listen() callback and fail. This helper papers over that race
+ * without masking real validation failures (non-network errors are rethrown
+ * immediately).
+ */
+async function postWithRetry(
+  url: string,
+  body: Uint8Array | Buffer | string,
+  headers: Record<string, string>,
+  maxAttempts: number = 8,
+  initialDelayMs: number = 100
+): Promise<AxiosResponse> {
+  let lastError: unknown;
+  let delayMs = initialDelayMs;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await axios.post(url, body, { headers, method: "POST" });
+    } catch (err) {
+      lastError = err;
+      if (!isTransientConnectError(err) || attempt === maxAttempts) {
+        throw err;
+      }
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+      delayMs = Math.min(delayMs * 2, 1000);
+    }
+  }
+
+  throw lastError;
+}
+
+function isTransientConnectError(err: unknown): boolean {
+  if (!err || typeof err !== "object") {
+    return false;
+  }
+
+  const transientCodes = new Set([
+    "ECONNREFUSED",
+    "ECONNRESET",
+    "EAI_AGAIN",
+    "ENOTFOUND",
+    "ETIMEDOUT",
+    "EPIPE",
+  ]);
+
+  const e = err as { code?: unknown; errors?: unknown };
+  if (typeof e.code === "string" && transientCodes.has(e.code)) {
+    return true;
+  }
+
+  if (Array.isArray(e.errors)) {
+    return e.errors.some((inner) => isTransientConnectError(inner));
+  }
+
+  return false;
+}
+
 async function waitForServerStartup(
   stdoutLines: string[],
   stderrLines: string[],
@@ -92,6 +154,9 @@ function createServeValidationTest(
 
       await sampleFile.loadContent();
       const content = sampleFile.content;
+      if (content === null) {
+        throw new Error(`Sample file '${samplePath}' loaded with null content.`);
+      }
 
       await waitForServerStartup(stdoutLines, stderrLines, serverProcess, port);
 
@@ -101,10 +166,11 @@ function createServeValidationTest(
         ...extraHeaders,
       };
 
-      const response: AxiosResponse = await axios.post(`http://localhost:${port}/api/validate/`, content, {
-        headers,
-        method: "POST",
-      });
+      const response: AxiosResponse = await postWithRetry(
+        `http://127.0.0.1:${port}/api/validate/`,
+        content,
+        headers
+      );
 
       await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, response.data, suiteName, ["CDWORLDDATA2"]);
 

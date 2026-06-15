@@ -236,6 +236,21 @@ export class ServeCommand extends CommandBase implements ICommand {
         httpServer.setMcpRequireAuth(true);
       }
 
+      // Wait for the underlying socket to actually be in listening state before
+      // announcing the URL. The "Web UI available at:" line is treated as the
+      // readiness signal by ServerCommandLineTest; if we log it before listen()
+      // has bound the port, the test may send a POST that hits ECONNREFUSED
+      // (surfaced as AggregateError when DNS returns both ::1 and 127.0.0.1).
+      try {
+        await httpServer.waitForReady(30000);
+      } catch (err) {
+        log.error(
+          "HTTP server failed to start listening: " + (err instanceof Error ? err.message : String(err))
+        );
+        context.setExitCode(ErrorCodes.INIT_ERROR);
+        return;
+      }
+
       const port = localEnv.serverHostPort || 6126;
       const adminPc = localEnv.adminPasscode;
       const webUiUrl = adminPc ? `http://localhost:${port}/#tempPasscode=${adminPc}` : `http://localhost:${port}`;
